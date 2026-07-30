@@ -16,14 +16,14 @@ active_session:
   github_issue: "736,737"
   github_issues: ["736", "737"]
   artifacts_dir: docs/sessions/S027-vaa-quality/
-  current_stage: 11-verify-impl
+  current_stage: 13-deploy-smoke
   feature_ids: [F26, F27]
   feature_note: "F26 VAA #736; F27 TCA #737; deepen F6.f / F12 / F7.g"
   started_at: "2026-07-29"
   preset: Lean+build+11
   preset_status: approved
   context_briefs: []
-  note: "T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip 0886093"
+  note: "D-S027-11-approve; UI preview declined; T6.5/13 in progress; tip b5f5c32"
   routing_plan:
   - stage: 00-context
     required: true
@@ -59,7 +59,7 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-29"
   - stage: 08-verify-build
     required: true
@@ -72,11 +72,14 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: in_progress
+    status: completed
+    completed: "2026-07-30"
+    note: "D-S027-11-approve"
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: "2026-07-30"
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -96,14 +99,14 @@ sessions:
   github_issue: "736,737"
   github_issues: ["736", "737"]
   artifacts_dir: docs/sessions/S027-vaa-quality/
-  current_stage: 11-verify-impl
+  current_stage: 13-deploy-smoke
   feature_ids: [F26, F27]
   feature_note: "F26 VAA #736; F27 TCA #737; deepen F6.f / F12 / F7.g"
   started_at: "2026-07-29"
   preset: Lean+build+11
   preset_status: approved
   context_briefs: []
-  note: "T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip 0886093"
+  note: "D-S027-11-approve; UI preview declined; T6.5/13 in progress; tip b5f5c32"
   routing_plan:
   - stage: 00-context
     required: true
@@ -139,7 +142,7 @@ sessions:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: "2026-07-29"
   - stage: 08-verify-build
     required: true
@@ -152,11 +155,14 @@ sessions:
   - stage: 11-verify-impl
     required: true
     mode: full
-    status: in_progress
+    status: completed
+    completed: "2026-07-30"
+    note: "D-S027-11-approve"
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: "2026-07-30"
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -4068,9 +4074,9 @@ stages:
     previous_tip_sha: 0f77194
     session_id: S027-vaa-quality
     evolve_cycle_id: EV-021
-    note: "T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip 0886093; tip 0580c78; #736/#737"
-    tip_sha: 0886093
-    tip_sha_full: 08860930ea8fa531e6af158724606f0da8799fed
+    note: "T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip b5f5c32; tip 0580c78; #736/#737"
+    tip_sha: b5f5c32
+    tip_sha_full: b5f5c321d6762ae50d0d90785aaf4e19f06f290da531e6af158724606f0da8799fed
     current_stage: 07-build
     substeps:
       task_loop:
@@ -4095,8 +4101,8 @@ stages:
       active_task: T6.3
       active_task_status: pending
       decision_id: D-S027-07-T6.2-complete
-      tip_sha: 0886093
-      tip_sha_full: 08860930ea8fa531e6af158724606f0da8799fed
+      tip_sha: b5f5c32
+      tip_sha_full: b5f5c321d6762ae50d0d90785aaf4e19f06f290da531e6af158724606f0da8799fed
       branch: evolve/EV-021-vaa-quality
       feature_ids:
       - F26
@@ -4479,7 +4485,7 @@ stages:
       status: in_progress
       mode: full
       started_at: '2026-07-29'
-      note: 'T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip 0886093; #736/#737'
+      note: 'T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip b5f5c32; #736/#737'
       active_milestone: M6
       active_task: T6.1
       active_task_status: pending
@@ -6213,6 +6219,25 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S027-11-approve
+  date: "2026-07-30"
+  timestamp: "2026-07-30"
+  resolved_at: "2026-07-30"
+  session_id: S027-vaa-quality
+  evolve_cycle_id: EV-021
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: "11-verify-impl approve F26+F27 — UI preview declined"
+  summary: "UI preview declined (option 2); F26+F27+deepen approved from reports; proceed to 13-deploy-smoke; tip b5f5c32"
+  decision: "UI preview declined (option 2); F26+F27+deepen approved from reports; proceed to 13-deploy-smoke"
+  related_issues: ["736", "737"]
+  related_commits: [b5f5c32]
+  branch: evolve/EV-021-vaa-quality
+  artifacts:
+    - docs/sessions/S027-vaa-quality/reports/verify-impl.md
 - id: D-S027-07-T2.2-complete
   date: "2026-07-29"
   timestamp: "2026-07-29"
@@ -14452,7 +14477,7 @@ evolve_cycles:
       - 09-qa
       - 12-verify-deploy
     note: "Lean+build+11 approved E21-4"
-  current_stage: 07-build
+  current_stage: 13-deploy-smoke
   stages:
     00-context:
       status: completed
@@ -14479,28 +14504,34 @@ evolve_cycles:
       completed: "2026-07-29"
       note: "COMPLETE Batch T all 1; execution-plan approved; Gate B Lean → 07 @ T0.1"
     07-build:
-      status: in_progress
+      status: completed
       started: "2026-07-29"
-      tip_sha: a2ebef0
-      tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
-      note: "M5 complete (T5.1–T5.3); next M6 T6.1 API/workbench smoke VAA+TCA; tip a2ebef0; #736/#737"
+      tip_sha: b5f5c32
+      note: "COMPLETE — M0–M6; tip b5f5c32; D-S027-11-approve → 13; #736/#737"
     08-verify-build:
-      status: pending
+      status: completed
     10-e2e:
-      status: pending
+      status: completed
     11-verify-impl:
-      status: pending
+      status: completed
+      completed: "2026-07-30"
+      note: "D-S027-11-approve — UI preview declined; F26+F27+deepen approved; tip b5f5c32"
+      artifacts:
+        - docs/sessions/S027-vaa-quality/reports/verify-impl.md
     13-deploy-smoke:
-      status: pending
+      status: in_progress
+      started: "2026-07-30"
+      tip_sha: b5f5c32
+      note: "T6.5/13 in progress; D-S027-11-approve; tip b5f5c32; #736/#737"
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: passed
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
     phase_d: pending
     deploy: pending
   adrs: []
@@ -14531,6 +14562,8 @@ evolve_cycles:
       status: completed
     - path: docs/sessions/S027-vaa-quality/reports/execution-plan.md
       status: completed
+    - path: docs/sessions/S027-vaa-quality/reports/verify-impl.md
+      status: completed
     - path: docs/sessions/S027-vaa-quality/session-brief.md
       status: in_progress
     - path: docs/sessions/S027-vaa-quality/routing-plan.md
@@ -14542,6 +14575,7 @@ evolve_cycles:
   issues: []
   github_issues: ["736", "737"]
   notes:
+    - '2026-07-30 S027/EV-021 D-S027-11-approve — UI preview declined (option 2); F26+F27+deepen approved from reports; 11-verify-impl COMPLETE; C→D + phase_c passed; 13-deploy-smoke STARTED (T6.5); tip b5f5c32; #736/#737'
     - '2026-07-30 S027/EV-021 M5 COMPLETE (T5.1–T5.3 F7.g catalog unlock + WMO golden packs); next M6 T6.1 API/workbench smoke VAA+TCA; tip a2ebef0; commits 1d4595d/a2ebef0; #736/#737'
     - '2026-07-30 S027/EV-021 M4 F27 T3+C1 complete (T4.1–T4.4); next M5 T5.1 F7.g catalog unlock Vitest; tip 3f9cc13; #737'
     - '2026-07-29 S027/EV-021 T4.1 COMPLETE (F27 theme T3 tc-advisory-A2-2 golden stubs); next T4.2 convert fidelity A2-2; tip 9dc0295; #737'
@@ -14552,7 +14586,7 @@ evolve_cycles:
     - '2026-07-29 S027/EV-021 04 COMPLETE Batch T 1×6; M0 done; 07 @ T1.1; Gate B Lean passed; #736/#737'
     - '2026-07-29 S027/EV-021 04-tech-plan STARTED (D-S027-02-phase-a) — Gate A Lean; Batch F 1,1,1; handoff from 02 PASS; #736/#737'
     - '2026-07-29 S027/EV-021 02-verify-plan COMPLETE — PASS; 12 auto + S02.M1/M2/L1=1; spec F24/F25/F26/F27 consistency fix; report reports/02-verify-plan-audit.md; Gate A Lean → 04'
-  decision_refs: [E21-1, E21-2, E21-3, E21-4, E21-D1, E21-D2, E21-D3, E21-D4, E21-E1, S02.M1, S02.M2, S02.L1, D-S027-EV021-s02m1-1, D-S027-EV021-s02m2-1, D-S027-EV021-s02l1-1, D-S027-02-phase-a, E21-T1, E21-T2, E21-T3, E21-T4, E21-T5, E21-T6, D-S027-04-plan-approve, D-S027-07-T1.3-complete, D-S027-07-T1.4-complete, D-S027-07-T2.1-complete, D-S027-07-T2.2-complete]
+  decision_refs: [E21-1, E21-2, E21-3, E21-4, E21-D1, E21-D2, E21-D3, E21-D4, E21-E1, S02.M1, S02.M2, S02.L1, D-S027-EV021-s02m1-1, D-S027-EV021-s02m2-1, D-S027-EV021-s02l1-1, D-S027-02-phase-a, E21-T1, E21-T2, E21-T3, E21-T4, E21-T5, E21-T6, D-S027-04-plan-approve, D-S027-07-T1.3-complete, D-S027-07-T1.4-complete, D-S027-07-T2.1-complete, D-S027-07-T2.2-complete, D-S027-11-approve]
 - id: EV-019
   status: completed
   cycle_type: feature
@@ -18805,7 +18839,7 @@ git_history:
   pending_commit:
   tip_sha: a2ebef0
   tip_sha_full: a2ebef070b6ae31aaa71e0f2014ecb84799431bd
-  note: 'T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip 0886093; branch not pushed; #736/#737'
+  note: 'T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip b5f5c32; branch not pushed; #736/#737'
   notes:
   - '2026-07-30 S027/EV-021 tip synced — a2ebef0 (a2ebef070b6ae31aaa71e0f2014ecb84799431bd); M5 complete T5.1–T5.3; stage 07-build; next M6 T6.1; not pushed; #736/#737'
   - '2026-07-30 S027/EV-021 tip synced — 3f9cc13 (3f9cc13d5c0f4be9c0b6dd8d356e8b0b2e41e644); M4 complete T4.1–T4.4; stage 07-build; next M5 T5.1; not pushed; #737'
@@ -18894,7 +18928,7 @@ git_history:
   - 2026-07-21 S019/EV-014 workflow-state update — T6.6 completed via D-S019-EV014-Q15-mock-waive; progress 29/29; gates.c_to_d=pending_checkpoint; session/cycle remain open (5b3db91)
   - '2026-07-21 S019/EV-014 T6.6 docs @ 8fc9fec — "[T6.6] docs: partial 13-deploy-smoke H0c/H1/H4/H5; BYOC blocked" on cursor/s019-t66-deploy-smoke-151c; H0c/H1/H4/H5 PASS; allowlist/auth/BYOC still pending; progress 28/29 (D-S019-EV014-T66-partial)'
   - '2026-07-21 S019/EV-014 T6.6 BLOCKED (D-S019-EV014-T66-partial) — branch cursor/s019-t66-deploy-smoke-151c (base tip of #771 / t64 @ 7fba0a5); H0c/H1/H4/H5 PASS; allowlist/auth/BYOC pending; commit later recorded @ 8fc9fec; progress 28/29'
-  - 2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip 0886093
+  - 2026-07-21 S019/EV-014 T6.5 COMPLETE — deploy-checklist.md PASS; next T6.6; progress 28/29; tip b5f5c32
   - '2026-07-21 S019/EV-014 PR #771 CI/CD Pipeline success (29846488131); tip 2ce8bb9; T6.4 complete; next T6.5'
   - 2026-07-21 S019/EV-014 T6.4 COMPLETE — 08-verify-build PASS on cursor/s019-t64-verify-build-7820 (prettier UJ e2e + badge_audit gifts drop); next T6.5; progress 27/29; report verification-report.md
   - '2026-07-21 S019/EV-014 T6.3 completed @ 9f755d5 — Playwright UJ-027–030 6/6 green; PR #770 open (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/770); next T6.4; progress 26/29'

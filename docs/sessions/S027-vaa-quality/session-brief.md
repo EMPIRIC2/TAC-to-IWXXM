@@ -62,8 +62,9 @@ See [routing-plan.md](./routing-plan.md). **Approved** Lean+build+11 (E21-4).
 
 ## Current stage
 
-**07-build** — T6.1 + T6.2 (08-verify-build) **PASS**; next **T6.3** 10-e2e (UJ-037/038).
-Tip: `0886093`.
+**13-deploy-smoke** — T6.4 / 11-verify-impl **Approved** (D-S027-11-approve; UI preview declined).
+Next: evolve PR → merge approval → Render redeploy → H1–H5.
+Tip: `b5f5c32`.
 
 ## Links
 

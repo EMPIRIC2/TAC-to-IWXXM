@@ -1,14 +1,15 @@
 # 11-verify-impl — S027 / EV-021 (F26 / F27)
 
-> Date: 2026-07-30 · Branch: `evolve/EV-021-vaa-quality` · Tip: `0886093` (+ T6.3 report)  
-> Inputs: `verification-report.md` (08), `e2e-report.md` (10), `acceptance-criteria.md`
+> Date: 2026-07-30 · Branch: `evolve/EV-021-vaa-quality` · Tip: `b5f5c32`  
+> Inputs: `verification-report.md` (08), `e2e-report.md` (10), `acceptance-criteria.md`  
+> Decision: **D-S027-11-approve** — UI preview declined; F26/F27/deepen approved → 13
 
 ## UI preview
 
-AskQuestion tool unavailable in this environment. **Offer recorded as pending user reply:**
-
-- Non-deployed local preview of VAA/TCA Examples + convert (not staging/production)?
-- Options: Yes / No (approve from reports) / Later / Explain
+| Choice | Result |
+|--------|--------|
+| Offer | Non-deployed local VAA/TCA Examples + convert (not staging/production) |
+| User | **2 — No — approve from reports/tests only** |
 
 ## Per-criterion status
 
@@ -47,15 +48,22 @@ AskQuestion tool unavailable in this environment. **Offer recorded as pending us
 T0 proves catalog + API smoke in-process. **Browser H4–H5 deferred to T6.5 / 13-deploy-smoke**
 (same Lean+build+11 pattern as S026). Recorded in `e2e-report.md`.
 
-## Sign-off table (awaiting user)
+## Sign-off table
 
 | Fn | Reviewer | Date | Result |
 |----|----------|------|--------|
-| F26 | — | — | pending user |
-| F27 | — | — | pending user |
-| F6.f / F12 / F7.g | — | — | pending user |
+| F26 | user | 2026-07-30 | **Approved** (D-S027-11-approve) |
+| F27 | user | 2026-07-30 | **Approved** (D-S027-11-approve) |
+| F6.f / F12 / F7.g | user | 2026-07-30 | **Approved** (D-S027-11-approve) |
 
-## Recommendation
+## Scope analysis
 
-Approve F26/F27 AC from reports (**option 1**) and proceed to **T6.5 / 13-deploy-smoke**
-(API+FE redeploy + H1–H5), unless a local UI preview is requested first.
+| Check | Result |
+|-------|--------|
+| Features in cycle | F26, F27 (+ deepen F6.f / F12 / F7.g) |
+| Undocumented (creep) | none |
+| Missing (gap) | none for cycle scope; H4–H5 live pending 13 |
+
+## Verdict
+
+**11-verify-impl COMPLETE.** Proceed to **T6.5 / 13-deploy-smoke** (PR → merge approval → Render → H1–H5).

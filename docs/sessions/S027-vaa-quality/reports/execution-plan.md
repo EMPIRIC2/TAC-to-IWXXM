@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — Build |
+| **Active phase** | Phase D — Verify / Deploy |
 | **Active milestone** | M6 — Smoke / verify / AC / deploy |
-| **Active task** | T6.4 |
-| **Tasks** | 24 / ~25 completed (T6.4–T6.5 remain) |
+| **Active task** | T6.5 |
+| **Tasks** | 25 / ~26 completed (T6.5 remain) |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -111,8 +111,8 @@
 | T6.1 | Test | API/workbench smoke VAA + TCA (lint/convert) | TC-F26-005; TC-F27-005 | T5.3 | **completed** |
 | T6.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | M0–M5 | **completed** |
 | T6.3 | Test | 10-e2e — UJ-037 / UJ-038 (+ UJ-032 deepen) | 10 | T6.2 | **completed** |
-| T6.4 | Docs | 11-verify-impl — per-Fn AC sign-off F26/F27 + deepen | 11 | T6.3 | **in_progress** |
-| T6.5 | Test | 13-deploy-smoke — redeploy if API/FE; H1–H3 if API; **H4–H5 when FE** | 13; E21-T4 | T6.4 | **pending** |
+| T6.4 | Docs | 11-verify-impl — per-Fn AC sign-off F26/F27 + deepen | 11 | T6.3 | **completed** (D-S027-11-approve) |
+| T6.5 | Test | 13-deploy-smoke — redeploy if API/FE; H1–H3 if API; **H4–H5 when FE** | 13; E21-T4 | T6.4 | **in_progress** |
 
 ## Data Dependencies
 
