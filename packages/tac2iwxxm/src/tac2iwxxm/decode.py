@@ -13,6 +13,7 @@ import msgspec
 
 from tac2iwxxm.glossary import (
     explain_glossary_token,
+    meaning_for,
     resolve_location_name,
 )
 
@@ -31,6 +32,21 @@ _TAF_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})
 _TAF_FM = re.compile(r"^FM(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})$")
 _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
+_SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
+_SIG_SPEED_KT = re.compile(r"^(?P<spd>\d{1,3})KT$")
+_SIG_LAT = re.compile(r"^(?P<hemi>[NS])(?P<deg>\d{1,2})(?P<min>\d{2})?$")
+_SIG_LON = re.compile(r"^(?P<hemi>[EW])(?P<deg>\d{1,3})(?P<min>\d{2})?$")
+_SIG_DIR = frozenset({"N", "NE", "E", "SE", "S", "SW", "W", "NW"})
+_SIG_DIR_NAME = {
+    "N": "North",
+    "NE": "Northeast",
+    "E": "East",
+    "SE": "Southeast",
+    "S": "South",
+    "SW": "Southwest",
+    "W": "West",
+    "NW": "Northwest",
+}
 _WX = re.compile(
     r"^(?P<int>\+|-|VC)?"
     r"(?P<desc>MI|PR|BC|DR|BL|SH|TS|FZ)?"
@@ -285,17 +301,71 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Report type ({product})"
     if upper == "=":
         return "Report terminator"
-    if _STATION.match(upper) and seen.get("station", 0) == 0:
-        seen["station"] = 1
-        place = resolve_location_name(upper)
-        if place:
-            return f"Originating FIR / location indicator {upper} ({place})"
-        return f"Originating FIR / location indicator ({upper})"
+    if upper == "VALID":
+        return "Validity period marker"
+    if upper.isdigit() and seen.get("rtype") and not seen.get("seq"):
+        seen["seq"] = 1
+        return f"Sequence number ({int(upper)})"
     if m := _SIG_VALID.match(upper):
+        seen["valid_period"] = 1
         return (
             f"Valid day {int(m.group('d1'))} {m.group('h1')}:{m.group('m1')} UTC"
             f" to day {int(m.group('d2'))} {m.group('h2')}:{m.group('m2')} UTC"
         )
+
+    # MWO designator often carries a trailing hyphen (``YUSO-``).
+    icao = upper.rstrip("-")
+    if _STATION.match(icao):
+        if seen.get("station", 0) == 0:
+            seen["station"] = 1
+            place = resolve_location_name(icao)
+            if place:
+                return f"Originating FIR / location indicator {icao} ({place})"
+            return f"Originating FIR / location indicator ({icao})"
+        if seen.get("valid_period") and not seen.get("mwo"):
+            seen["mwo"] = 1
+            place = resolve_location_name(icao)
+            if place:
+                return f"Originating meteorological watch office {icao} ({place})"
+            return f"Originating meteorological watch office ({icao})"
+        if not seen.get("fir_icao"):
+            seen["fir_icao"] = 1
+            return f"Affected FIR / ATS region ({icao})"
+
+    if upper in {"FIR/UIR", "FIR", "UIR"}:
+        return explain_glossary_token(upper, fallback="Flight information region")
+    if m := _SIG_FL.match(upper):
+        return f"Flight level {int(m.group('fl'))}"
+    if upper == "MOV":
+        seen["mov"] = 1
+        return explain_glossary_token(upper, fallback="Moving")
+    if upper in _SIG_DIR:
+        if seen.get("mov") and not seen.get("mov_dir"):
+            seen["mov_dir"] = 1
+            return f"Movement direction ({_SIG_DIR_NAME[upper]})"
+        return _SIG_DIR_NAME[upper]
+    if m := _SIG_SPEED_KT.match(upper):
+        return f"Speed {int(m.group('spd'))} kt"
+    if m := _SIG_LAT.match(upper):
+        hemi = "North" if m.group("hemi") == "N" else "South"
+        mins = m.group("min")
+        if mins:
+            return f"Latitude {int(m.group('deg'))}°{mins}' {hemi[0]}"
+        return f"Latitude {int(m.group('deg'))}° {hemi}"
+    if m := _SIG_LON.match(upper):
+        hemi = "East" if m.group("hemi") == "E" else "West"
+        mins = m.group("min")
+        if mins:
+            return f"Longitude {int(m.group('deg'))}°{mins}' {hemi[0]}"
+        return f"Longitude {int(m.group('deg'))}° {hemi}"
+    if upper in {"OF", "AND"}:
+        return explain_glossary_token(upper, fallback=upper.capitalize())
+
+    # FIR proper name (e.g. SHANLON) when not a known glossary hazard token.
+    if icao.isalpha() and len(icao) >= 4 and seen.get("station") and not seen.get("fir_name") and not meaning_for(icao):
+        seen["fir_name"] = 1
+        return f"FIR name ({icao})"
+
     # Glossary-backed intensity / hazard / movement tokens (F9 deepen).
     return explain_glossary_token(upper)
 

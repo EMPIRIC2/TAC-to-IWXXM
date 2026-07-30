@@ -45,6 +45,10 @@ _OFFICIAL_TOKENS: dict[str, str] = {
     "SEV": "severe",
     "MOD": "moderate",
     "HVY": "heavy",
+    "VALID": "validity period marker",
+    "OF": "of",
+    "AND": "and",
+    "FIR/UIR": "flight information region / upper information region",
     # Hazards
     "TS": "thunderstorm",
     "TSGR": "thunderstorm with hail",
