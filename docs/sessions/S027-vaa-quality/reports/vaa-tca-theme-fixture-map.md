@@ -91,7 +91,7 @@ rejection + bulletin-neighbor no silent-swap.
 | XML | `…/tc-advisory-A2-2.xml` |
 | Assert | convert(defaults) → `canonicalize_xml` == vendor; root `iwxxm:TropicalCycloneAdvisory` |
 | TC | TC-F27-002 / TC-F27-003 |
-| Notes | GLORIA / YUFO; `RMK: NIL` → remarks `nilReason=inapplicable` |
+| Notes | GLORIA / YUFO; `RMK: NIL` → remarks `nilReason=inapplicable`; **Closed** S027 T4.2 |
 
 ### F27 theme T1 — exceptional lint/encode (HARD)
 

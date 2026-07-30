@@ -1,8 +1,8 @@
-"""TC-F27-002 / TC-F27-003 — TCA annex3 golden stubs (S027 / EV-021 T4.1 / F27 theme T3).
+"""TC-F27-002 / TC-F27-003 — TCA annex3 golden (S027 / EV-021 T4.1–T4.2 / F27 theme T3).
 
 Asserts WMO ``tc-advisory-A2-2`` is in the annex3 pack, root
-``iwxxm:TropicalCycloneAdvisory``, and convert → M-xsd/M-sch under default
-settings. Canonical golden equality is **T4.2** convert fidelity (ADR-032 / E21-2).
+``iwxxm:TropicalCycloneAdvisory``, convert → M-xsd/M-sch under default
+settings, and ``canonicalize_xml`` equals vendor golden (ADR-032 / E21-2).
 
 Always write “F27 theme T3” (not F20 TAF T3) — D-S027-EV021-s02m1-1.
 """
@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 MANIFEST_PATH = FIXTURES / "manifest.json"
@@ -90,6 +91,23 @@ def test_tc_f27_003_tca_m_xsd_sch(case_id: str) -> None:
     assert not blocking, f"M-xsd/M-sch blocking for {case_id}: {[(i.code, i.message) for i in blocking]}"
 
 
+@pytest.mark.parametrize("case_id", TCA_CASE_IDS)
+def test_tc_f27_002_tca_m_golden(case_id: str) -> None:
+    from tac2iwxxm import convert
+
+    case = next(c for c in _load_manifest()["cases"] if c["id"] == case_id)
+    tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
+    golden = (FIXTURES / case["golden"]).read_text(encoding="utf-8")
+    result = convert(
+        tac,
+        product="TCA",
+        profile=PROFILE,
+        iwxxm_version=IWXXM_VERSION,
+    )
+    assert result.ok is True
+    assert canonicalize_xml(result.xml) == canonicalize_xml(golden)
+
+
 def test_tc_f27_002_tca_a2_2_content_signals() -> None:
     """GLORIA / YUFO seed: advisory root + cyclone identity under product=tca."""
     from tac2iwxxm import convert
@@ -101,7 +119,13 @@ def test_tc_f27_002_tca_a2_2_content_signals() -> None:
     assert ir.get("iwxxm_root") == "TropicalCycloneAdvisory"
     assert "GLORIA" in str(ir.get("tc_name", "")).upper()
     assert "YUFO" in str(ir.get("tcac", "")).upper()
+    assert ir.get("remarks_nil") is True
+    assert ir.get("observation_time") == "2004-09-25T18:00:00Z"
+    assert len(ir.get("forecasts") or []) == 4
     result = convert(tac, product="TCA", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
     assert result.ok is True
     assert _has_root(result.xml, "TropicalCycloneAdvisory")
     assert "GLORIA" in result.xml.upper()
+    assert 'nilReason="http://codes.wmo.int/common/nil/inapplicable"' in result.xml
+    assert "aixm:designator" in result.xml
+    assert "metce:TropicalCyclone" in result.xml

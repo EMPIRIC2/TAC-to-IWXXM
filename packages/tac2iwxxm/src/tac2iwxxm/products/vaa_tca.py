@@ -24,13 +24,35 @@ _CLOUD_CHUNK = re.compile(
 )
 _DIR_DEG = {
     "N": 0,
+    "NNE": 22,
     "NE": 45,
+    "ENE": 67,
     "E": 90,
+    "ESE": 112,
     "SE": 135,
+    "SSE": 157,
     "S": 180,
+    "SSW": 202,
     "SW": 225,
+    "WSW": 247,
     "W": 270,
+    "WNW": 292,
     "NW": 315,
+    "NNW": 337,
+}
+_MOV_TCA = re.compile(
+    r"(?P<dir>NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)\s+"
+    r"(?P<spd>\d+)\s*(?P<uom>KMH|KM/?H|KT|MPS)?",
+    re.IGNORECASE,
+)
+_CB_WI = re.compile(
+    r"WI\s+(?P<rad>\d+)\s*NM\s+OF\s+TC\s+CENTRE(?:\s+TOP\s+FL(?P<fl>\d+))?",
+    re.IGNORECASE,
+)
+_INTST_MAP = {
+    "INTSF": "INTENSIFY",
+    "WKN": "WEAKEN",
+    "NC": "NO_CHANGE",
 }
 
 
@@ -77,7 +99,7 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
     return f"{year}-{month}-{m.group('dd')}T{m.group('hh')}:{m.group('mi')}:00Z"
 
 
-def _latlon(token: str) -> tuple[float, float] | None:
+def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | None:
     m = _PSN.search(token)
     if m is None:
         m = re.search(r"(?P<ns>[NS])(?P<lat>\d{4})\s+(?P<ew>[EW])(?P<lon>\d{5})", token)
@@ -97,7 +119,9 @@ def _latlon(token: str) -> tuple[float, float] | None:
         lat = -lat
     if m.group("ew") == "W":
         lon = -lon
-    return round(lat, 2), round(lon, 2)
+    if ndigits is None:
+        return lat, lon
+    return round(lat, ndigits), round(lon, ndigits)
 
 
 def _point_to_pair(ns: str, lat: str, ew: str, lon: str) -> tuple[float, float]:
@@ -285,11 +309,76 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
         raise ValueError("unable to parse TCA DTG")
 
     obs = fields.get("OBS PSN", "")
-    psn = _latlon(obs)
+    psn = _latlon(obs, ndigits=None)
+    obs_time = _day_hhmm_to_iso(obs, issue_iso=issue)
     max_wind = fields.get("MAX WIND", "")
     wind_m = re.search(r"(\d+)\s*MPS", max_wind.upper())
     pressure = fields.get("C", "")
     pressure_m = re.search(r"(\d+)\s*HPA", pressure.upper())
+
+    cb_raw = " ".join(fields.get("CB", "").split())
+    cb: dict[str, Any] | None = None
+    if cb_raw.upper() == "NIL":
+        cb = {"nil": True}
+    else:
+        cb_m = _CB_WI.search(cb_raw)
+        if cb_m:
+            cb = {
+                "radius_nm": int(cb_m.group("rad")),
+                "upper_fl": int(cb_m.group("fl")) if cb_m.group("fl") else None,
+            }
+
+    mov_raw = " ".join(fields.get("MOV", "").split())
+    movement: dict[str, Any] | None = None
+    mov_m = _MOV_TCA.search(mov_raw)
+    if mov_m:
+        uom_raw = (mov_m.group("uom") or "KMH").upper().replace("/", "")
+        if uom_raw in {"KMH", "KMHR"}:
+            speed_uom = "km/h"
+        elif uom_raw == "KT":
+            speed_uom = "[kn_i]"
+        else:
+            speed_uom = "m/s"
+        movement = {
+            "status": "MOVING",
+            "direction_deg": _DIR_DEG[mov_m.group("dir").upper()],
+            "speed": int(mov_m.group("spd")),
+            "speed_uom": speed_uom,
+        }
+    elif re.search(r"\bSTNR\b", mov_raw.upper()):
+        movement = {"status": "STATIONARY"}
+
+    intst_raw = " ".join(fields.get("INTST CHANGE", "").split()).upper()
+    intensity_change = _INTST_MAP.get(intst_raw)
+
+    forecasts: list[dict[str, Any]] = []
+    for hours in (6, 12, 18, 24):
+        psn_key = f"FCST PSN +{hours} HR"
+        wind_key = f"FCST MAX WIND +{hours} HR"
+        psn_raw = fields.get(psn_key, "")
+        if not psn_raw:
+            continue
+        parts = " ".join(psn_raw.split())
+        time_iso = _day_hhmm_to_iso(parts, issue_iso=issue)
+        fcst_psn = _latlon(parts, ndigits=None)
+        wind_raw = fields.get(wind_key, "")
+        wind_fm = re.search(r"(\d+)\s*MPS", wind_raw.upper())
+        forecasts.append(
+            {
+                "hours": hours,
+                "time": time_iso,
+                "lat": fcst_psn[0] if fcst_psn else None,
+                "lon": fcst_psn[1] if fcst_psn else None,
+                "max_wind_mps": int(wind_fm.group(1)) if wind_fm else None,
+            }
+        )
+
+    remarks = " ".join(fields.get("RMK", "").split())
+    remarks_nil = not remarks or remarks.upper() == "NIL"
+
+    nxt_raw = " ".join((fields.get("NXT MSG") or fields.get("NXT ADVISORY") or "").split())
+    next_nil = bool(re.search(r"\bNO\s+MSG\s+EXP\b", nxt_raw.upper()))
+    next_adv = None if next_nil else _parse_dtg(nxt_raw)
 
     return {
         "ir_version": 1,
@@ -298,11 +387,20 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
         "tcac": fields.get("TCAC", "UNKNOWN"),
         "tc_name": fields.get("TC", "UNKNOWN"),
         "advisory_number": fields.get("ADVISORY NR", ""),
+        "observation_time": obs_time,
         "lat": psn[0] if psn else None,
         "lon": psn[1] if psn else None,
+        "cb": cb,
+        "movement": movement,
+        "intensity_change": intensity_change,
         "max_wind_mps": int(wind_m.group(1)) if wind_m else None,
         "central_pressure_hpa": int(pressure_m.group(1)) if pressure_m else None,
-        "movement": fields.get("MOV", ""),
+        "forecasts": forecasts,
+        "remarks": "" if remarks_nil else remarks,
+        "remarks_nil": remarks_nil,
+        "next_advisory_time": next_adv,
+        "next_advisory_nil": next_nil,
+        "movement_raw": mov_raw,
         "iwxxm_root": "TropicalCycloneAdvisory",
         "raw": text,
     }

@@ -66,7 +66,7 @@ def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
     for case in cases:
         assert (FIXTURES / case["tac"]).is_file()
         assert (FIXTURES / case["golden"]).is_file()
-        assert case["product"] in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"}
+        assert case["product"] in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}
 
 
 ANNEX3_CASE_IDS = (
