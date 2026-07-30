@@ -22,7 +22,9 @@ _SUPPORTED = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA
 _WIND = re.compile(r"^(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<unit>KT|MPS)$")
 _VIS_SM = re.compile(r"^(?P<mod>[PM])?(?P<val>\d{1,2})SM$")
 _VIS_M = re.compile(r"^\d{4}$")
-_CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?$")
+# Minimum visibility with compass sector (e.g. 1200NE) — after prevailing metres.
+_VIS_MIN = re.compile(r"^(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)$")
+_CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?P<ctype>CB|TCU)?$")
 _TEMP = re.compile(r"^(?P<t>M?\d{2})/(?P<td>M?\d{2})$")
 _ALT = re.compile(r"^A(?P<val>\d{4})$")
 _QNH = re.compile(r"^Q(?P<val>\d{3,4})$")
@@ -31,6 +33,8 @@ _STATION = re.compile(r"^[A-Z][A-Z0-9]{3}$")
 _TAF_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})$")
 _TAF_FM = re.compile(r"^FM(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})$")
 _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
+# METAR/SPECI trend time indicators (TL/AT/FM + HHMM) — distinct from TAF FMDDHHMM.
+_TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
 _SIG_SPEED_KT = re.compile(r"^(?P<spd>\d{1,3})KT$")
@@ -46,6 +50,12 @@ _SIG_DIR_NAME = {
     "SW": "Southwest",
     "W": "West",
     "NW": "Northwest",
+}
+_CLOUD_TYPE = {"CB": "cumulonimbus", "TCU": "towering cumulus"}
+_TREND_TIME_LABEL = {
+    "TL": "until",
+    "AT": "at",
+    "FM": "from",
 }
 _WX = re.compile(
     r"^(?P<int>\+|-|VC)?"
@@ -133,9 +143,11 @@ def _fmt_cloud(m: re.Match[str], *, forecast: bool) -> str:
     if forecast:
         amount = f"Forecast {amount[0].lower()}{amount[1:]}"
     height = m.group("hgt")
+    ctype = m.group("ctype")
+    type_note = f" ({_CLOUD_TYPE[ctype]})" if ctype else ""
     if height:
-        return f"{amount} at {int(height) * 100:,} ft"
-    return amount
+        return f"{amount} at {int(height) * 100:,} ft{type_note}"
+    return f"{amount}{type_note}"
 
 
 def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
@@ -200,6 +212,17 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Nil report (no observation)"
     if upper == "CAVOK":
         return "Ceiling and visibility OK"
+    if upper == "NOSIG":
+        seen["in_trend"] = 1
+        return "No significant change expected"
+    if upper == "TEMPO":
+        seen["in_trend"] = 1
+        return "Temporary fluctuations expected during the following period"
+    if upper == "BECMG":
+        seen["in_trend"] = 1
+        return "Becoming — gradual change during the following period"
+    if upper == "NSW":
+        return "No significant weather"
     if upper == "RMK":
         return "Remarks section"
     if upper == "AO1":
@@ -221,11 +244,19 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if m := _WIND.match(upper):
         return _fmt_wind(m, label="Surface wind")
     if m := _VIS_SM.match(upper):
-        return _fmt_vis_sm(m, label="Prevailing visibility")
+        label = "Trend visibility" if seen.get("in_trend") else "Prevailing visibility"
+        return _fmt_vis_sm(m, label=label)
+    if m := _VIS_MIN.match(upper):
+        compass = _SIG_DIR_NAME[m.group("dir")]
+        return f"Minimum visibility {int(m.group('vis'))} m toward {compass} ({m.group('dir')})"
     if _VIS_M.match(upper):
-        return f"Prevailing visibility {int(upper)} m"
+        label = "Trend visibility" if seen.get("in_trend") else "Prevailing visibility"
+        return f"{label} {int(upper)} m"
+    if m := _TREND_TIME.match(upper):
+        kind = m.group("kind")
+        return f"Trend time — {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
     if m := _CLOUD.match(upper):
-        return _fmt_cloud(m, forecast=False)
+        return _fmt_cloud(m, forecast=bool(seen.get("in_trend")))
     if m := _TEMP.match(upper):
         return f"Temperature {_signed_temp(m.group('t'))} °C, dewpoint {_signed_temp(m.group('td'))} °C"
     if m := _ALT.match(upper):
@@ -233,7 +264,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if m := _QNH.match(upper):
         return f"QNH {int(m.group('val'))} hPa"
     if m := _WX.match(upper):
-        return _fmt_wx(m, forecast=False)
+        return _fmt_wx(m, forecast=bool(seen.get("in_trend")))
     if upper.startswith("PK") or upper == "WND":
         return "Peak wind remarks token"
     _ = product
