@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M7 — Smoke / verify / deploy |
-| **Active task** | T7.1 |
-| **Tasks** | 20 / 24 |
+| **Active task** | T7.2 |
+| **Tasks** | 21 / 24 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -106,8 +106,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T7.1 | Test | API convert/validate smoke | TC-EV023 | T6.4 | in_progress |
-| T7.2 | Config | 08-verify-build | 08 | M0–M6 | pending |
+| T7.1 | Test | API convert/validate smoke | TC-EV023 | T6.4 | completed |
+| T7.2 | Config | 08-verify-build | 08 | M0–M6 | in_progress |
 | T7.3 | Test | 10-e2e smoke | 10 | T7.2 | pending |
 | T7.4 | Test | 13-deploy-smoke when behavior ships | 13; E23-4 | T7.3 | pending |
 
