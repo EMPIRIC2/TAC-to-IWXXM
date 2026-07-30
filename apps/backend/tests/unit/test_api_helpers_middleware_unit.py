@@ -39,6 +39,19 @@ def test_split_manual_entries_vaa_tca_keep_multiline() -> None:
     assert api_module.split_manual_entries(tca, product="tca") == [tca.strip()]
 
 
+def test_split_manual_entries_sigmet_airmet_keep_multiline() -> None:
+    sigmet = (
+        "YUDD SIGMET 2 VALID 101200/101600 YUSO-\n"
+        "YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN=\n"
+    )
+    assert api_module.split_manual_entries(sigmet, product="SIGMET") == [sigmet.strip()]
+    airmet = (
+        "YUDD AIRMET 1 VALID 101200/101600 YUSO-\n"
+        "YUDD SHANLON FIR/UIR ISOL TS FCST N OF S50 TOP FL350 MOV E 20KT WKN=\n"
+    )
+    assert api_module.split_manual_entries(airmet, product="airmet") == [airmet.strip()]
+
+
 @pytest.mark.parametrize(
     "value,max_length,expected",
     [

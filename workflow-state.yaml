@@ -1,11 +1,36 @@
-overall_status: in_progress  # pipeline idle — active_session null after S027/EV-021 close 2026-07-30
+overall_status: in_progress  # S028 hotfix open — SIGMET multiline split (BUG-2026-07-30)
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 27
+session_counter: 28
 evolve_cycle_counter: 21
-active_session: null
+active_session:
+  id: S028-sigmet-multiline-split
+  type: hotfix
+  intent: "Hotfix BUG-2026-07-30 — SIGMET/AIRMET multi-line manual TAC incorrectly line-split → PARSE_ERROR unable to parse SIGMET header on WMO A6-1a-TS UI example"
+  status: in_progress
+  branch: fix/BUG-2026-07-30-sigmet-multiline-split
+  orchestrator: 14-hotfix
+  evolve_cycle_id: null
+  artifacts_dir: docs/sessions/S028-sigmet-multiline-split/
+  current_stage: 14-hotfix
+  started_at: "2026-07-30"
+  context_briefs: []
+  bug_report: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    completed: "2026-07-30"
+    note: Session open via workflow-state-manager open_session (hotfix); routing 14-only pending user amend for 15
+  - stage: 14-hotfix
+    required: true
+    mode: full
+    status: in_progress
+    started: "2026-07-30"
+    note: "BUG-2026-07-30 open — pointer docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md"
 sessions:
 - id: S027-vaa-quality
   type: feature
@@ -5807,16 +5832,21 @@ stages:
     completed_at: '2026-07-27'
     note: 'H0c/H1/H4/H5 PASS; live UJ-032 PASS (Examples load + authed Convert → ZIP 1); PyPI Trusted Publisher still pending'
   14-hotfix:
-    status: completed
-    session_id: S012-empty-bearer-lint-tac
-    current_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
-    bug_status: resolved
+    status: in_progress
+    session_id: S028-sigmet-multiline-split
+    current_bug: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
+    bug_status: open
     remediation_path: local-first
-    note: 'BUG-2026-07-15 resolved; PR #721 merged 6412b21; production verified; Cursor rule frontend-auth-token-hydrate.mdc'
-    completed_at: '2026-07-15'
-    pr_number: 721
-    merge_sha: 6412b21
+    started_at: '2026-07-30'
+    started: '2026-07-30'
+    note: 'S028 open — BUG-2026-07-30 SIGMET/AIRMET multi-line manual TAC line-split → PARSE_ERROR; prior S012 resolved (kept in notes)'
+    prior_session_id: S012-empty-bearer-lint-tac
+    prior_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
+    prior_bug_status: resolved
+    prior_pr_number: 721
+    prior_merge_sha: 6412b21
     notes:
+    - 2026-07-30 — S028-sigmet-multiline-split open (BUG-2026-07-30 SIGMET/AIRMET multi-line split); pointer docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md; cleared S012 as current.
     - 2026-07-15 — S012-empty-bearer-lint-tac open (empty Bearer on lint-tac/decode-tac + lint UX issue details); cleared stale S009 pointer.
     - 2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4).
     - 2026-07-12 — S006 closed (S006-R5); docs reorg unblocked — open via 00-context (process session), not 14-hotfix.
@@ -18882,8 +18912,9 @@ git_history:
   pending_commit:
   tip_sha: df56d1f
   tip_sha_full: df56d1fce29a22970d72b49c77733e0616369e43
-  note: 'S027/EV-021 CLOSED (D-S027-close) — PR #794 merged df56d1f; H1–H5 + live VAA/TCA smoke PASS; F26/F27 Done; active_session=null; pipeline idle; upcoming docs close commit pending; #736/#737'
+  note: 'S028 open — hotfix BUG-2026-07-30 sigmet-multiline-split; branch fix/BUG-2026-07-30-sigmet-multiline-split recorded active (base main); session_counter 28; tip remains df56d1f on main until checkout'
   notes:
+  - '2026-07-30 S028-sigmet-multiline-split open — branch fix/BUG-2026-07-30-sigmet-multiline-split recorded active (base main @ df56d1f); session_counter 28; stages.14-hotfix in_progress; bug docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md'
   - '2026-07-30 S027/EV-021 CLOSED (D-S027-close) — PR #794 merged df56d1f; workflow-state update + upcoming docs close commit pending; active_session=null; pipeline idle on main; #736/#737'
   - '2026-07-30 S027/EV-021 13-deploy-smoke COMPLETE (D-S027-E21-13-merge) — tip df56d1f; H1–H5 + live VAA/TCA PASS; deploys dep-d9lmsdflk1mc739232ug / dep-d9lmsefqj5pc739d3it0; #736/#737'
   - '2026-07-30 S027/EV-021 tip synced — a2ebef0 (a2ebef070b6ae31aaa71e0f2014ecb84799431bd); M5 complete T5.1–T5.3; stage 07-build; next M6 T6.1; not pushed; #736/#737'
@@ -19095,6 +19126,17 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: fix/BUG-2026-07-30-sigmet-multiline-split
+    purpose: "S028 hotfix BUG-2026-07-30 — SIGMET/AIRMET multi-line manual TAC incorrectly line-split"
+    base: main
+    status: active
+    created: '2026-07-30'
+    created_at: '2026-07-30'
+    session_id: S028-sigmet-multiline-split
+    note: 'Session opened; git create deferred to parent/14-hotfix; base main @ df56d1f'
+    tip_sha: df56d1f
+    tip_sha_full: df56d1fce29a22970d72b49c77733e0616369e43
+    pushed: false
   - name: evolve/EV-021-vaa-quality
     purpose: "S027/EV-021 VAA + TCA quality bars (#736/#737); F26/F27"
     base: main

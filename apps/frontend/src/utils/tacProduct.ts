@@ -68,15 +68,20 @@ export function resolveConvertProduct(
   return selection;
 }
 
-/** Products whose TAC is a multi-line template document (must not be line-split). */
-const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>(['VAA', 'TCA']);
+/** Products whose TAC is a multi-line document (must not be line-split). */
+const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>([
+  'SIGMET',
+  'AIRMET',
+  'VAA',
+  'TCA',
+]);
 
 /**
  * Split manual TAC input into conversion entries (mirrors backend
  * ``split_manual_entries``).
  *
- * METAR/SPECI/TAF/SIGMET/AIRMET: one entry per non-empty line.
- * VAA/TCA: entire buffer is one advisory document (F26/F27).
+ * METAR/SPECI/TAF: one entry per non-empty line.
+ * SIGMET/AIRMET/VAA/TCA: entire buffer is one document (header/body or advisory).
  *
  * @param manualText - Editor buffer
  * @param product - Resolved convert product
