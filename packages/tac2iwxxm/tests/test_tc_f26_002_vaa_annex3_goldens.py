@@ -5,7 +5,6 @@ Asserts WMO ``va-advisory-A7-2`` is in the annex3 pack, root
 equals vendor golden under default convert settings (ADR-032 / E21-2).
 
 Always write “F26 theme V3” (not F23 VA-SIGMET V3) — D-S027-EV021-s02m1-1.
-T2.2 deepens convert fidelity; M-golden is ``xfail(strict=True)`` until then.
 """
 
 from __future__ import annotations
@@ -92,10 +91,6 @@ def test_tc_f26_003_vaa_m_xsd_sch(case_id: str) -> None:
     assert not blocking, f"M-xsd/M-sch blocking for {case_id}: {[(i.code, i.message) for i in blocking]}"
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="T2.2 — convert fidelity toward vendor va-advisory-A7-2 (canonicalize_xml)",
-)
 @pytest.mark.parametrize("case_id", VAA_CASE_IDS)
 def test_tc_f26_002_vaa_m_golden(case_id: str) -> None:
     from tac2iwxxm import convert
@@ -124,8 +119,11 @@ def test_tc_f26_002_vaa_a7_2_content_signals() -> None:
     assert ir.get("iwxxm_root") == "VolcanicAshAdvisory"
     assert "KARYMSKY" in str(ir.get("volcano", "")).upper()
     assert str(ir.get("vaac", "")).upper() == "TOKYO"
+    assert ir.get("eruption_date") == "2024-09-23T00:00:00Z"
+    assert any(f.get("status") == "NO_VOLCANIC_ASH_EXPECTED" for f in ir.get("forecasts") or [])
     result = convert(tac, product="VAA", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
     assert result.ok is True
     assert _has_root(result.xml, "VolcanicAshAdvisory")
     assert "TOKYO" in result.xml
     assert "KARYMSKY" in result.xml.upper() or "Karymsky" in result.xml
+    assert 'status="NO_VOLCANIC_ASH_EXPECTED"' in result.xml
