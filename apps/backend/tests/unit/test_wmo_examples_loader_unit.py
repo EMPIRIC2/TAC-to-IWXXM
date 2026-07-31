@@ -168,6 +168,40 @@ class TestWMOExamplesLoaderHelpers:
         assert loader._extract_scenario("metar") is None
         assert loader._detect_available_versions() == ["2025-2"]
 
+    def test_examples_dir_prefers_vendor_iwxxm_layout(self, tmp_path):
+        vendor = tmp_path / "2025-2" / "IWXXM" / "examples"
+        vendor.mkdir(parents=True)
+        mirrored = tmp_path / "2025-2" / "examples"
+        mirrored.mkdir(parents=True)
+        loader = WMOExamplesLoader(schemas_base_path=tmp_path)
+
+        assert loader._examples_dir("2025-2") == vendor
+
+    def test_examples_dir_falls_back_to_mirrored_layout(self, tmp_path):
+        mirrored = tmp_path / "2025-2" / "examples"
+        mirrored.mkdir(parents=True)
+        loader = WMOExamplesLoader(schemas_base_path=tmp_path)
+
+        assert loader._examples_dir("2025-2") == mirrored
+
+    def test_examples_dir_default_when_missing(self, tmp_path):
+        loader = WMOExamplesLoader(schemas_base_path=tmp_path)
+        expected = tmp_path / "2025-2" / "examples"
+        assert loader._examples_dir("2025-2") == expected
+        assert not expected.exists()
+
+    def test_detect_available_versions_vendor_layout_and_skips_files(self, tmp_path):
+        vendor = tmp_path / "2025-2" / "IWXXM" / "examples"
+        vendor.mkdir(parents=True)
+        (tmp_path / "README.md").write_text("skip me")
+        loader = WMOExamplesLoader(schemas_base_path=tmp_path)
+
+        assert loader._detect_available_versions() == ["2025-2"]
+
+    def test_detect_available_versions_missing_base(self, tmp_path):
+        loader = WMOExamplesLoader(schemas_base_path=tmp_path / "does-not-exist")
+        assert loader._detect_available_versions() == []
+
     def test_load_wmo_examples_convenience_function(self, tmp_path):
         examples_dir = _make_examples_dir(tmp_path)
         _write_xml(examples_dir, "speci-A1.xml")
