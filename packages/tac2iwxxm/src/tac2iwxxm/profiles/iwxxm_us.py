@@ -6,7 +6,7 @@ AerodromeVariableRVR) per ADR-013 / docs/context/general-tac-iwxxm-converter.md.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3 import NS, build_observation_and_trends, obs_timestamp
@@ -21,6 +21,10 @@ def _us_gml_id(ir: dict[str, Any], product: str) -> str:
         return f"{root}.us.var.rvr.{station}"
     if ir.get("observed_lightning"):
         return f"{root}.us.ltg.{station}"
+    if ir.get("snow_increase"):
+        return f"{root}.us.snincr.{station}"
+    if ir.get("inoperative_sensor_hrefs"):
+        return f"{root}.us.sensor.{station}"
     if ir.get("peak_wind_dir_deg") is not None:
         return f"{root}.us.pk.wnd.{station}"
     if ir.get("sea_level_pressure_hpa") is not None:
@@ -104,15 +108,71 @@ def _vop_addendum_inner(ir: dict[str, Any]) -> str:
 """
 
 
+def _snow_increase_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``snowIncrease`` from FMH-1 SNINCR."""
+    snow_raw = ir.get("snow_increase")
+    if not isinstance(snow_raw, dict):
+        return ""
+    snow: dict[str, Any] = snow_raw
+    incr = int(str(snow["increase_in"]))
+    depth = int(str(snow["depth_in"]))
+    elem = escape(str(snow["processed_weather_element_href"]))
+    vtype = escape(str(snow["value_type_href"]))
+    period = escape(str(snow.get("value_period") or "PT1H"))
+    return f"""          <iwxxm-us:snowIncrease>
+            <iwxxm-us:SnowIncrease>
+              <iwxxm-us:snowDepthIncrease>
+                <iwxxm-us:ProcessedProperty>
+                  <iwxxm-us:processedWeatherElement xlink:href="{elem}"/>
+                  <iwxxm-us:valueType xlink:href="{vtype}"/>
+                  <iwxxm-us:valuePeriod>{period}</iwxxm-us:valuePeriod>
+                  <iwxxm-us:processedValue uom="[in_i]">{incr}</iwxxm-us:processedValue>
+                </iwxxm-us:ProcessedProperty>
+              </iwxxm-us:snowDepthIncrease>
+              <iwxxm-us:snowDepth uom="[in_i]">{depth}</iwxxm-us:snowDepth>
+            </iwxxm-us:SnowIncrease>
+          </iwxxm-us:snowIncrease>
+"""
+
+
+def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
+    """Serialize observation-level ``iwxxm-us:InoperativeSensors`` for sensor-NO remarks."""
+    hrefs_raw = ir.get("inoperative_sensor_hrefs")
+    if not isinstance(hrefs_raw, list) or not hrefs_raw:
+        return ""
+    hrefs = [f"{item}" for item in cast(list[object], hrefs_raw)]
+    failed_parts: list[str] = [
+        "          <iwxxm-us:failedSensors>",
+        "            <iwxxm-us:FailedSensors>",
+    ]
+    for href in hrefs:
+        failed_parts.append(f'              <iwxxm-us:parameter xlink:href="{escape(href)}"/>')
+    failed_parts.extend(
+        [
+            "            </iwxxm-us:FailedSensors>",
+            "          </iwxxm-us:failedSensors>",
+        ]
+    )
+    body = "\n".join(failed_parts)
+    return f"""      <iwxxm:extension>
+        <iwxxm-us:InoperativeSensors>
+{body}
+        </iwxxm-us:InoperativeSensors>
+      </iwxxm:extension>
+"""
+
+
 def _addendum_extension(ir: dict[str, Any]) -> str:
     """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
     free_text = str(ir.get("remarks_free_text") or "").strip()
     has_vop = isinstance(ir.get("observed_lightning"), dict)
+    has_snow = isinstance(ir.get("snow_increase"), dict)
     if (
         not ir.get("observing_system_type")
         and ir.get("sea_level_pressure_hpa") is None
         and not free_text
         and not has_vop
+        and not has_snow
     ):
         return ""
     parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
@@ -125,6 +185,9 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         parts.append(
             f'          <iwxxm-us:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-us:seaLevelPressure>'
         )
+    snow = _snow_increase_addendum_inner(ir)
+    if snow:
+        parts.append(snow.rstrip("\n"))
     vop = _vop_addendum_inner(ir)
     if vop:
         parts.append(vop.rstrip("\n"))
@@ -206,11 +269,12 @@ def emit_metar_speci_iwxxm_us(
     automated = "true" if ir.get("auto") else "false"
 
     addendum = _addendum_extension(ir)
+    sensors = _inoperative_sensors_extension(ir)
     peak = _peak_wind_extension(ir)
     var_rvr = _variable_rvr_extension(ir)
     observation, trends = build_observation_and_trends(
         ir,
-        addendum_extension=addendum,
+        addendum_extension=addendum + sensors,
         peak_extension=peak,
         rvr_extension=var_rvr,
     )

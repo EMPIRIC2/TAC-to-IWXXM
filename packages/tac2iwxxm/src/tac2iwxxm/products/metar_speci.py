@@ -98,12 +98,31 @@ _LTG_REMARK = re.compile(
     r"(?:\s+(?P<sector>ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?"
     r"\b"
 )
-# Structured tokens removed before free-text retain (AO/SLP/PK/LTG — T/P stay in free-text).
+# FMH-1 snow depth increase: SNINCR ii/dd (inches increase / inches on ground).
+_SNINCR = re.compile(r"\bSNINCR\s+(?P<incr>\d{1,2})/(?P<depth>\d{1,2})\b")
+# FMH-1 sensor status → NWS Sensor codelist (iwxxm-us FailedSensors.parameter).
+_SENSOR_NO_HREF = "https://codes.nws.noaa.gov/FMH-1/Sensor/{code}"
+_SENSOR_NO_CODES = {
+    "CHINO": "CEILING",
+    "RVRNO": "RUNWAY_VISUAL_RANGE",
+    "VISNO": "VISIBILITY",
+    "FZRANO": "FREEZING_PRECIPITATION",
+    "PNO": "PRECIPITATION",
+    "PWINO": "PRESENT_WEATHER",
+    "TSNO": "THUNDERSTORM",
+}
+_SENSOR_NO = re.compile(r"\b(?P<tok>" + "|".join(_SENSOR_NO_CODES) + r")\b")
+_SNOW_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/SNOW"
+# GRIB2 Code Table 4.10 entry 1 — accumulation (iwxxm-us PDF SnowIncrease sample).
+_STAT_ACCUM_HREF = "http://codes.wmo.int/grib2/codeflag/4.10/1"
+# Structured tokens removed before free-text retain (AO/SLP/PK/LTG/SNINCR/sensor-NO — T/P stay).
 _CONSUMED_REMARK = re.compile(
     r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b|"
     r"(?:\b(?:OCNL|FRQ|CONS)\s+)?LTG(?:IC|CC|CG)*"
     r"(?:\s+(?:DSNT|VC))?"
-    r"(?:\s+(?:ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?\b"
+    r"(?:\s+(?:ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?\b|"
+    r"\bSNINCR\s+\d{1,2}/\d{1,2}\b|"
+    r"\b(?:" + "|".join(_SENSOR_NO_CODES) + r")\b"
 )
 
 
@@ -307,7 +326,7 @@ def _parse_lightning_remark(remarks: str) -> dict[str, Any] | None:
 
 def _remarks_free_text(remarks: str) -> str:
     """
-    Return REMARKS remainder after removing structured AO/SLP/PK/LTG tokens.
+    Return REMARKS remainder after removing structured AO/SLP/PK/LTG/SNINCR/sensor tokens.
 
     Additive T/P and plain language stay so ``iwxxm_us`` can retain them in
     ``humanReadableText`` (#667 / UJ-026 never-drop).
@@ -319,7 +338,7 @@ def _remarks_free_text(remarks: str) -> str:
 
 def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
-    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, LTG, T, P).
+    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, LTG, SNINCR, sensor-NO, T, P).
 
     Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
     TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
@@ -359,6 +378,24 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     lightning = _parse_lightning_remark(remarks)
     if lightning is not None:
         ir["observed_lightning"] = lightning
+
+    snincr = _SNINCR.search(remarks)
+    if snincr is not None:
+        ir["snow_increase"] = {
+            "increase_in": int(snincr.group("incr")),
+            "depth_in": int(snincr.group("depth")),
+            "processed_weather_element_href": _SNOW_ELEMENT_HREF,
+            "value_type_href": _STAT_ACCUM_HREF,
+            "value_period": "PT1H",
+        }
+
+    sensor_hrefs: list[str] = []
+    for m in _SENSOR_NO.finditer(remarks):
+        code = _SENSOR_NO_CODES[m.group("tok")]
+        sensor_hrefs.append(_SENSOR_NO_HREF.format(code=code))
+    if sensor_hrefs:
+        # Preserve order, drop duplicates.
+        ir["inoperative_sensor_hrefs"] = list(dict.fromkeys(sensor_hrefs))
 
     temp_tenths = _RMK_T.search(remarks)
     if temp_tenths is not None:
