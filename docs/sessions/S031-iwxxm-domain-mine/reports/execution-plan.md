@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build (07) |
-| **Active milestone** | M4 / M6 / M7 remaining |
-| **Active task** | T4.1 |
-| **Tasks** | 14 / 22 |
+| **Active milestone** | M7 remaining |
+| **Active task** | T7.1 |
+| **Tasks** | 19 / 22 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -79,8 +79,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Docs | COVERAGE_MATRIX + canonical deltas (only durable) | TC-EV024-008 | T3.3 | pending |
-| T4.2 | Docs | Re-scrape Guidance / sch assert ids → gap list for children | #804/#800 | T4.1 | pending |
+| T4.1 | Docs | COVERAGE_MATRIX + canonical deltas (only durable) | TC-EV024-008 | T3.3 | **completed** |
+| T4.2 | Docs | Re-scrape Guidance / sch assert ids → gap list for children | #804/#800 | T4.1 | **completed** |
 
 ### M5 — Sample menu / UJ-039 (catalog)
 
@@ -95,8 +95,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | Expand WMOExamplesLoader / validate fixtures for in-scope stems | TC-EV024-007 | T1.2 | pending |
-| T6.2 | Code | Wire or document deferrals with child-issue links | TC-EV024-007 | T6.1 | pending |
+| T6.1 | Test | Expand WMOExamplesLoader / validate fixtures for in-scope stems | TC-EV024-007 | T1.2 | **completed** |
+| T6.2 | Code | Wire or document deferrals with child-issue links | TC-EV024-007 | T6.1 | **completed** |
 
 ### M7 — Child issues + smoke
 
