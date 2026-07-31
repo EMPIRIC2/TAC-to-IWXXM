@@ -26,9 +26,15 @@
 | E25-M | decision | 01 Document Manifest? | **2** — lean delta + **new UJ-040/041**; deepen UJ-010/026/034/039; skip Spec/Config/API/Deploy |
 | E25-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** (`D-S032-E25-E1`) |
 | S02.M1 | decision | #809 soft→strict? | **1** — soft-compare first; `wmoPass` only when ADR-032 equality holds (`D-S032-EV025-s02m1-1`) |
-| S02.M2 | decision | Dig ❌ residuals? | **1** — aim close all in-cycle; residuals → child issues; don’t block Gate C (`D-S032-EV025-s02m2-1`) |
+| S02.M2 | decision | Dig ❌ residuals? | **1** — aim close all in-cycle; soft child-issue deferral **superseded by E25-T5=3** (encode residual blocks Gate C) (`D-S032-EV025-s02m2-1` → `D-S032-EV025-t5-3`) |
 | S02.L1 | decision | SCH deferrals? | **1** — TC-EV025-010 may document SCH deferrals without blocking Lane A goldens (`D-S032-EV025-s02l1-1`) |
 | E25-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,1,1; Lean → **04-tech-plan** (`D-S032-02-phase-a`) |
+| E25-T1 | decision | Milestone order? | **1** — M0→#810→#811→#812→adjacent→#809 soft→strict→validate→Gate C (`D-S032-EV025-t1-1`) |
+| E25-T2 | decision | Golden grain? | **1** — encode (+lint) per dig type/row where feasible (`D-S032-EV025-t2-1`) |
+| E25-T3 | decision | New deps? | **2** — AskQuestion per new dep (prefer none) (`D-S032-EV025-t3-2`) |
+| E25-T4 | decision | Dual-lane sequencing? | **1** — finish Lane A then Lane B (`D-S032-EV025-t4-1`) |
+| E25-T5 | decision | Dig ❌ residuals / Gate C? | **3** — any encode residual **blocks Gate C**; supersedes S02.M2 soft deferral (`D-S032-EV025-t5-3`) |
+| E25-T6 | decision | Draft plan? | **1** — draft execution plan from T1–T5; Gate B next (`D-S032-EV025-t6-1`) |
 
 **Scope (verbatim)**:
 Dual-lane engine cycle from EV-024 children: (A) encode/lint/golden/validate all ❌

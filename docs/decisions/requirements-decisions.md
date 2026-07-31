@@ -338,8 +338,14 @@
 | EV-025/tests | TC | TC-EV025-001..010 | confirmed |
 | EV-025/api | API | No new routes; thin convert/validate smoke if needed | confirmed |
 | EV-025/S02.M1 | #809 golden | Soft-compare first; `wmoPass` only when ADR-032 equality holds | confirmed |
-| EV-025/S02.M2 | Dig residuals | Aim close all ❌ in-cycle; residuals → child issues; don’t block Gate C | confirmed |
+| EV-025/S02.M2 | Dig residuals | Aim close all ❌ in-cycle; soft Gate C deferral **superseded by E25-T5=3** | amended |
 | EV-025/S02.L1 | SCH smoke | TC-EV025-010 may document SCH deferrals without blocking Lane A goldens | confirmed |
 | EV-025/E25-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
+| EV-025/E25-T1 | Milestone order | M0→#810→#811→#812→adjacent→#809→validate→Gate C | confirmed |
+| EV-025/E25-T2 | Goldens | Per dig type/row encode (+lint) | confirmed |
+| EV-025/E25-T3 | Deps | AskQuestion per new dep | confirmed |
+| EV-025/E25-T4 | Lanes | Finish Lane A then Lane B | confirmed |
+| EV-025/E25-T5 | Gate C residuals | Encode residual **blocks** Gate C (supersedes S02.M2 soft deferral) | confirmed |
+| EV-025/E25-T6 | Draft plan | Draft from T1–T5; Gate B pending | confirmed |
 
 

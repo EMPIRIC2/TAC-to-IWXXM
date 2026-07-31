@@ -53,7 +53,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: EV-025 orchestrator in_progress; 02 COMPLETE (Batch F 1,1,1); Gate A → 04-tech-plan
+    note: EV-025 orchestrator in_progress; 04 Batch T 1,1,2,1,3,1 draft plan; Gate B pending
   - stage: 01-requirements
     required: true
     mode: delta
@@ -73,7 +73,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-07-31'
-    note: STARTED (delta) after Gate A PASS
+    note: 'E25-T1..T6=1,1,2,1,3,1; draft execution-plan (28 tasks M0–M7); Gate B pending; T5 supersedes S02.M2'
   - stage: 07-build
     required: true
     mode: full
@@ -4116,11 +4116,12 @@ stages:
     previous_evolve_cycle_id: EV-024
     previous_note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; execution-plan
       approved (D-S031-04-plan-approve); Gate B Lean → 07 @ T0.1; #804/#807/#773'
-    prior_note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; execution-plan
-      approved (D-S031-04-plan-approve); Gate B Lean → 07 @ T0.1; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS (D-S032-02-phase-a); #810/#811/#812/#809'
+    prior_note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS (D-S032-02-phase-a); #810/#811/#812/#809'
+    note: 'S032/EV-025 04-tech-plan in_progress 2026-07-31 (delta) — Batch T E25-T1..T6=1,1,2,1,3,1 locked;
+      draft execution-plan 28 tasks M0–M7 + 04-tech-plan.md; Gate B pending (do not start 07); T5=3 supersedes
+      S02.M2 Gate C soft deferral; #810/#811/#812/#809'
     decision_refs:
     - D-S032-02-phase-a
     - D-S032-EV025-s02m1-1
@@ -4129,19 +4130,36 @@ stages:
     - S02.M1
     - S02.M2
     - S02.L1
+    - E25-T1
+    - E25-T2
+    - E25-T3
+    - E25-T4
+    - E25-T5
+    - E25-T6
+    - D-S032-EV025-t1-1
+    - D-S032-EV025-t2-1
+    - D-S032-EV025-t3-2
+    - D-S032-EV025-t4-1
+    - D-S032-EV025-t5-3
+    - D-S032-EV025-t6-1
     substeps:
       phase_1_toolchain:
-        status: pending
+        status: completed
+        notes: Reuse monorepo pins; no new toolchain
       phase_2_interview:
-        status: pending
+        status: completed
+        notes: E25-T1..T6 locked 1,1,2,1,3,1 (Batch T)
       phase_3_execution_plan:
-        status: pending
+        status: in_progress
+        notes: draft docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md (28 tasks) — Gate B pending
       phase_4_user_review:
         status: pending
+        notes: Gate B AskQuestion pending
       phase_5_back_add:
         status: pending
       phase_6_documents:
-        status: pending
+        status: in_progress
+        notes: draft 04-tech-plan.md + execution-plan.md
     active_session:
       session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
@@ -4152,7 +4170,7 @@ stages:
       started: '2026-07-31'
       completed_at: null
       completed: null
-      note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS; #810/#811/#812/#809'
+      note: 'S032/EV-025 04 Batch T locked 1,1,2,1,3,1; draft plan 28 tasks; Gate B pending; #810/#811/#812/#809'
       deepen:
       - F6
       - F12
@@ -4161,10 +4179,24 @@ stages:
       - F23
       decision_refs:
       - D-S032-02-phase-a
-      - D-S032-EV025-s02m1-1
-      - D-S032-EV025-s02m2-1
-      - D-S032-EV025-s02l1-1
+      - E25-T1
+      - E25-T2
+      - E25-T3
+      - E25-T4
+      - E25-T5
+      - E25-T6
+      - D-S032-EV025-t1-1
+      - D-S032-EV025-t2-1
+      - D-S032-EV025-t3-2
+      - D-S032-EV025-t4-1
+      - D-S032-EV025-t5-3
+      - D-S032-EV025-t6-1
+      artifacts:
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
     artifacts:
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
     - docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
     - .cursor/artifacts/execution-plan-monorepo.md
     - docs/ops/staging-secrets-matrix.md
@@ -4195,16 +4227,24 @@ stages:
       - F2
       - F13
       - F23
-      note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS (D-S032-02-phase-a); #810/#811/#812/#809'
+      note: 'S032/EV-025 04 Batch T E25-T1..T6=1,1,2,1,3,1; draft execution-plan 28 tasks M0–M7; Gate B pending; T5 supersedes S02.M2; #810/#811/#812/#809'
       decision_refs:
       - D-S032-02-phase-a
-      - D-S032-EV025-s02m1-1
-      - D-S032-EV025-s02m2-1
-      - D-S032-EV025-s02l1-1
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      artifacts: []
+      - E25-T1
+      - E25-T2
+      - E25-T3
+      - E25-T4
+      - E25-T5
+      - E25-T6
+      - D-S032-EV025-t1-1
+      - D-S032-EV025-t2-1
+      - D-S032-EV025-t3-2
+      - D-S032-EV025-t4-1
+      - D-S032-EV025-t5-3
+      - D-S032-EV025-t6-1
+      artifacts:
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
     - session_id: S031-iwxxm-domain-mine
       evolve_cycle_id: EV-024
       skill_id: 04-tech-plan
@@ -4773,6 +4813,8 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-31 S032/EV-025 04 Batch T locked E25-T1..T6=1,1,2,1,3,1 — draft execution-plan 28 tasks M0–M7
+      + 04-tech-plan.md; Gate B pending (do not start 07); T5=3 supersedes S02.M2 Gate C soft deferral; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 04-tech-plan STARTED (D-S032-02-phase-a) — Gate A Lean (Batch F 1,1,1 +
       consistency PASS); gates.a_to_b passed; mode delta; interview pending; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 04-tech-plan STARTED (D-S031-02-phase-a) — Gate A Lean (Batch F 1,1,1 +
@@ -7549,9 +7591,10 @@ stages:
     completed_at: null
     completed: null
     current_stage: 04-tech-plan
-    note: 'S032/EV-025 04-tech-plan in_progress (delta) — current_stage 04-tech-plan; 02 COMPLETE Batch F 1,1,1; Gate A PASS; #810/#811/#812/#809'
-    prior_note: 'S032/EV-025 02-verify-plan in_progress (delta) — current_stage 02-verify-plan; 01 COMPLETE E25-E1=1; #810/#811/#812/#809'
+    note: 'S032/EV-025 04-tech-plan in_progress (delta) — Batch T E25-T1..T6=1,1,2,1,3,1; draft plan; Gate B pending; #810/#811/#812/#809'
+    prior_note: 'S032/EV-025 04-tech-plan in_progress (delta) — current_stage 04-tech-plan; 02 COMPLETE Batch F 1,1,1; Gate A PASS; #810/#811/#812/#809'
     notes:
+    - '2026-07-31 S032/EV-025 04 Batch T locked 1,1,2,1,3,1 — draft execution-plan 28 tasks; Gate B pending (b_to_c still pending); T5 supersedes S02.M2; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 02-verify-plan COMPLETE (D-S032-02-phase-a) — PASS; Batch F 1,1,1; 12 auto; Gate A Lean → 04-tech-plan; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; #810/#811/#812/#809'
     - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809; advance 02-verify-plan in_progress'
     - '2026-07-31 S032/EV-025 02-verify-plan STARTED (delta) — docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; D-S032-E25-E1; #810/#811/#812/#809'
@@ -7865,6 +7908,165 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S032-EV025-t6-1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: E25-T6 draft plan from T1–T5
+  summary: E25-T6 = 1 — Draft execution-plan from T1–T5; Gate B AskQuestion next
+  decision: E25-T6 option 1 confirmed 2026-07-31 — Draft plan from T1–T5 (28 tasks M0–M7); Gate B pending.
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-T6
+  - D-S032-EV025-t1-1
+  - D-S032-EV025-t2-1
+  - D-S032-EV025-t3-2
+  - D-S032-EV025-t4-1
+  - D-S032-EV025-t5-3
+  answers:
+    E25-T6: '1'
+  tip_sha: 406a769
+  tip_sha_full: 406a7695f95ee74b716ee3ef43c83728438a2b90
+- id: D-S032-EV025-t5-3
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: E25-T5 dig ❌ encode residual blocks Gate C (supersedes S02.M2 soft deferral)
+  summary: E25-T5 = 3 — Dig ❌ encode residual blocks Gate C; supersedes D-S032-EV025-s02m2-1
+  decision: 'E25-T5 option 3 confirmed 2026-07-31 — Any dig ❌ encode residual blocks Gate C (no child-issue
+    escape for encode gaps). Supersedes D-S032-EV025-s02m2-1 / S02.M2 Gate C soft deferral for encode residuals.
+    Unchanged: S02.L1 Schematron deferrals (SCH ≠ dig ❌ encode gap).'
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-T5
+  - D-S032-EV025-s02m2-1
+  - S02.M2
+  answers:
+    E25-T5: '3'
+  tip_sha: 406a769
+  tip_sha_full: 406a7695f95ee74b716ee3ef43c83728438a2b90
+- id: D-S032-EV025-t4-1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: E25-T4 Lane A then Lane B
+  summary: E25-T4 = 1 — Finish Lane A (US REMARKS) then Lane B (#809)
+  decision: E25-T4 option 1 confirmed 2026-07-31 — Finish Lane A (iwxxm-us REMARKS) then Lane B (#809 VA multi-location).
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-T4
+  answers:
+    E25-T4: '1'
+  tip_sha: 406a769
+  tip_sha_full: 406a7695f95ee74b716ee3ef43c83728438a2b90
+- id: D-S032-EV025-t3-2
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: E25-T3 AskQuestion per new dep
+  summary: E25-T3 = 2 — AskQuestion per new dependency (prefer none)
+  decision: E25-T3 option 2 confirmed 2026-07-31 — AskQuestion per new dependency; prefer none.
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-T3
+  answers:
+    E25-T3: '2'
+  tip_sha: 406a769
+  tip_sha_full: 406a7695f95ee74b716ee3ef43c83728438a2b90
+- id: D-S032-EV025-t2-1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: E25-T2 per dig type/row encode (+lint) goldens
+  summary: E25-T2 = 1 — Per dig type/row encode (+lint) goldens where feasible
+  decision: E25-T2 option 1 confirmed 2026-07-31 — Per dig type/row encode (+lint) goldens where feasible.
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-T2
+  answers:
+    E25-T2: '1'
+  tip_sha: 406a769
+  tip_sha_full: 406a7695f95ee74b716ee3ef43c83728438a2b90
+- id: D-S032-EV025-t1-1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: E25-T1 milestone order M0→#810→#811→#812→adjacent→#809→validate→Gate C
+  summary: E25-T1 = 1 — M0→#810→#811→#812→adjacent→#809→validate→Gate C audit/smoke
+  decision: E25-T1 option 1 confirmed 2026-07-31 — Order M0 → #810 → #811 → #812 → adjacent → #809 → validate → Gate C audit/smoke.
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-T1
+  answers:
+    E25-T1: '1'
+  tip_sha: 406a769
+  tip_sha_full: 406a7695f95ee74b716ee3ef43c83728438a2b90
 - id: D-S032-02-phase-a
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -23933,7 +24135,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: Orchestrator in_progress; 02 COMPLETE (Batch F 1,1,1); Gate A → 04-tech-plan
+      note: Orchestrator in_progress; 04 Batch T locked; Gate B pending
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -23955,7 +24157,7 @@ evolve_cycles:
       started: '2026-07-31'
       started_at: '2026-07-31'
       mode: delta
-      note: STARTED (delta) after Gate A PASS
+      note: 'Batch T E25-T1..T6=1,1,2,1,3,1; draft execution-plan 28 tasks M0–M7; Gate B pending; T5 supersedes S02.M2'
     07-build:
       status: pending
     08-verify-build:
@@ -23989,7 +24191,10 @@ evolve_cycles:
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
   - docs/decisions/product-audit.md
   - docs/decisions/product-decisions.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
   notes:
+  - '2026-07-31 S032/EV-025 04 Batch T locked E25-T1..T6=1,1,2,1,3,1 — draft plan 28 tasks; gates.b_to_c still pending; T5=3 supersedes S02.M2; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 02 PASS → 04 (Batch F 1,1,1 / D-S032-02-phase-a) — gates.a_to_b + phase_a passed; #810/#811/#812/#809'
   - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809; 02-verify-plan in_progress'
   - '2026-07-31 S032/EV-025 01-requirements STARTED (delta) — pending E25-E1 AskQuestion; artifacts: reports/01-requirements.md + feature-list/user-journeys/test-plan + requirements-decisions; UJ-040/041 + TC-EV025; deepen F6/F12/F2/F13/F23; #810/#811/#812/#809'

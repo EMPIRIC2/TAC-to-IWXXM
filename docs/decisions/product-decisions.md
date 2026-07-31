@@ -79,3 +79,9 @@
 | 2026-07-31 | S02.M2 | approved | D-S032-EV025-s02m2-1 — aim close all dig ❌ in-cycle; residuals → child issues (don’t block Gate C) |
 | 2026-07-31 | S02.L1 | approved | D-S032-EV025-s02l1-1 — TC-EV025-010 may document SCH deferrals without blocking Lane A goldens |
 | 2026-07-31 | D-S032-02-phase-a | approved | Gate A PASS (Lean skip AskQuestion) → 04-tech-plan |
+| 2026-07-31 | E25-T1 | approved | D-S032-EV025-t1-1 — M0→#810→#811→#812→adjacent→#809→validate→Gate C |
+| 2026-07-31 | E25-T2 | approved | D-S032-EV025-t2-1 — per dig type/row encode (+lint) goldens |
+| 2026-07-31 | E25-T3 | approved | D-S032-EV025-t3-2 — AskQuestion per new dep |
+| 2026-07-31 | E25-T4 | approved | D-S032-EV025-t4-1 — Lane A then Lane B |
+| 2026-07-31 | E25-T5 | approved | D-S032-EV025-t5-3 — dig ❌ encode residual blocks Gate C (supersedes S02.M2) |
+| 2026-07-31 | E25-T6 | approved | D-S032-EV025-t6-1 — draft execution plan; Gate B pending |

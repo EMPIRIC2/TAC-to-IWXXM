@@ -1038,8 +1038,8 @@ validate smoke. Named tickets #810 / #811 / #812 plus all remaining dig ❌ type
 1. `POST /api/v1/convert` with `profile=iwxxm_us` and a US REMARKS accept fixture.
 2. Response XML contains expected extension blocks; optional validate round-trip.
 
-**Acceptance**: TC-EV025-001..007 green (or explicit deferrals with child issues for residual
-types after best-effort — prefer close all dig ❌ in-cycle per E25-4c=3).
+**Acceptance**: TC-EV025-001..007 green. Dig ❌ encode residuals **block Gate C**
+(E25-T5=3 — supersedes soft child-issue deferral from S02.M2).
 
 **Automated tests**: TC-EV025-001..007; package annex3/`iwxxm_us` goldens.
 

@@ -1112,7 +1112,7 @@ Before closing S013 / EV-009:
 ### EV-025 verify/deploy gate
 
 - [ ] TC-EV025-001..003 named tickets green
-- [ ] TC-EV025-004 adjacent ❌ pack green or residual children filed
+- [ ] TC-EV025-004 adjacent ❌ pack green — dig ❌ encode residuals **block Gate C** (E25-T5=3; supersedes soft child-issue deferral)
 - [ ] TC-EV025-005..007 UJ-039/010/026 deepen green
 - [ ] TC-EV025-008..009 #809 soft→strict / promote path green
 - [ ] TC-EV025-010 validate smoke green or deferred with rationale
