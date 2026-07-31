@@ -10,7 +10,8 @@
 **Issues**: [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
 **Started**: 2026-07-31  
 **Branch**: `evolve/EV-026-va-multi-location-equality`  
-**Status**: **in_progress** — Gate B passed; **07-build** @ T0.1
+**Status**: **completed** — #817 merged `101f555`; 13 PASS; closed 2026-07-31  
+**Closeout PR**: [#818](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818)
 
 ### Scope (Phase 0 — locked 2026-07-31)
 
@@ -34,6 +35,10 @@
 | E26-T4 | decision | Gate C? | **1** — equality + `wmoPass` + #809 closed required (no soft escape) |
 | E26-T5 | decision | Draft plan? | **1** — plan as written |
 | E26-04 | decision | Gate B? | **1** — approve M0–M3 → **07-build** @ T0.1 (`D-S033-04-plan-approve`) |
+| E26-817 | decision | Merge #817? | **1** — merge to main (`D-S033-817-merge`) |
+| E26-13 | decision | Run 13? | **1** — optional 13 after merge (`D-S033-13-start`) |
+| E26-13p | decision | 13 results? | **PASS** — H0c–H5 + catalog + VA convert (`D-S033-13-smoke-pass`) |
+| E26-close | decision | Phase 4 close? | **1** — approve deploy + close S033/EV-026 (`D-S033-EV026-phase4-close`) |
 
 **Scope (verbatim)**: Residual from EV-025 soft path — make
 `canonicalize_xml(convert(sigmet-multi-location-VA.tac))` equal vendor XML under annex3 +

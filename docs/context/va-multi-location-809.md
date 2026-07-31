@@ -9,15 +9,16 @@
 
 ## Verdict
 
-Soft path is **done**. Ticket stays open until ADR-032 `canonicalize_xml` equality under
-defaults, then catalog may flip `wmoReference` → `wmoPass` (TC-EV025-009 / UJ-041).
+**Complete (S033 / EV-026).** Soft path (EV-025) + ADR-032 `canonicalize_xml` equality under
+defaults + catalog `wmoPass` (TC-EV025-009 / UJ-041) shipped in [#817](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817);
+live smoke PASS; #809 closed.
 
 | Gate | Status |
 |------|--------|
-| Package soft-compare golden (TC-EV025-008) | ✅ |
+| Package soft-compare golden (TC-EV025-008) | ✅ (superseded by strict) |
 | Multi-location OBS/FCST encode (`analysisCollection` ×2) | ✅ |
 | M-xsd / M-sch smoke on convert output | ✅ |
-| Catalog `wmoReference` + FIXTURE_GAPS note | ✅ |
+| Catalog `wmoPass` + FIXTURE_GAPS cleared | ✅ EV-026 |
 | ADR-032 equality → `wmoPass` (TC-EV025-009 promote) | ✅ EV-026 |
 
 ## Runtime SoT
@@ -25,11 +26,11 @@ defaults, then catalog may flip `wmoReference` → `wmoPass` (TC-EV025-009 / UJ-
 | Asset | Path |
 |-------|------|
 | Vendor TAC/XML | `vendor/schemas/iwxxm/2025-2/IWXXM/examples/sigmet-multi-location-VA.{tac,xml}` |
-| Package golden | `packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_multi_location_va.tac` (`soft_compare: true` in manifest) |
+| Package golden | `packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_multi_location_va.tac` (strict ADR-032 equality) |
 | Encode | `packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py` (`_sigmet_location_analysis_xml`) |
 | Parse | `packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py` (AND multi-location VA) |
-| Catalog | `apps/frontend/src/fixtures/examples/examplesCatalog.ts` id `sigmet_multi_location_va` |
-| Gaps | `apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md` (#809 equality pending) |
+| Catalog | `apps/frontend/src/fixtures/examples/examplesCatalog.ts` id `sigmet_multi_location_va` (`wmoPass`) |
+| Gaps | `apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md` (#809 equality passer recorded)
 | Policy | [ADR-032](../adr/ADR-032-wmo-default-golden-glossary.md) §Decision (1)+(2) |
 
 ## Prior art (do not restart)
