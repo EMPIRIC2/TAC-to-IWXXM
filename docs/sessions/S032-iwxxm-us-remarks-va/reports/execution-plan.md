@@ -1,6 +1,6 @@
 # Execution plan — S032 / EV-025 (#810–#812 iwxxm-us REMARKS + #809 VA multi-location)
 
-> **Status**: **draft** (2026-07-31) — E25-T1..T6 (1 / 1 / 2 / 1 / 3 / 1) — awaiting Gate B approve  
+> **Status**: **approved** (2026-07-31) — E25-T1..T6 (1 / 1 / 2 / 1 / 3 / 1); Gate B=`1` (`D-S032-04-plan-approve`)  
 > **Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
 > **Evolve cycle**: EV-025  
 > **Features**: deepen F6 / F6.b / F12 / F2 / F13 / F23 — no new Fn  
@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — Tech plan (draft) |
-| **Active milestone** | — (await Gate B → M0) |
-| **Active task** | — |
-| **Tasks** | 0 / 28 |
+| **Active phase** | Phase C — Build |
+| **Active milestone** | M0 complete → next M1 |
+| **Active task** | T1.1 (next) |
+| **Tasks** | 2 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -54,8 +54,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T0.1 | Docs | Map TC-EV025-001..010 → dig checklist rows / fixture paths; `reports/us-remarks-va-theme-map.md` | TC-EV025 | — | pending |
-| T0.2 | Docs | Code-audit dig table: ❌/⚠/✅ vs current `tac2iwxxm`/`tac-validate`; list M1–M4 work queue | mining notes | T0.1 | pending |
+| T0.1 | Docs | Map TC-EV025-001..010 → dig checklist rows / fixture paths; `reports/us-remarks-va-theme-map.md` | TC-EV025 | — | **completed** |
+| T0.2 | Docs | Code-audit dig table: ❌/⚠/✅ vs current `tac2iwxxm`/`tac-validate`; list M1–M4 work queue | mining notes | T0.1 | **completed** |
 
 ### M1 — #810 Variable RVR / meanRVR withheld
 
@@ -152,5 +152,4 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 
 ## Gate B → C
 
-Await user approve of this draft (milestone structure + tech stack + E25-T5 Gate C rule).  
-On approve: mark plan **approved**; Lean skip 05 → **07-build** @ T0.1.
+**PASSED** 2026-07-31 — user Gate B=`1` (`D-S032-04-plan-approve`). Lean skip 05 → **07-build** @ T0.1.
