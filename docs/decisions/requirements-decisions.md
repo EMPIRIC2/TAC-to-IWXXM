@@ -337,5 +337,9 @@
 | EV-025/journeys | UJ | **UJ-040** US REMARKS pack; **UJ-041** #809 promote; deepen 010/026/034/039 | confirmed |
 | EV-025/tests | TC | TC-EV025-001..010 | confirmed |
 | EV-025/api | API | No new routes; thin convert/validate smoke if needed | confirmed |
+| EV-025/S02.M1 | #809 golden | Soft-compare first; `wmoPass` only when ADR-032 equality holds | confirmed |
+| EV-025/S02.M2 | Dig residuals | Aim close all ❌ in-cycle; residuals → child issues; don’t block Gate C | confirmed |
+| EV-025/S02.L1 | SCH smoke | TC-EV025-010 may document SCH deferrals without blocking Lane A goldens | confirmed |
+| EV-025/E25-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
 
 

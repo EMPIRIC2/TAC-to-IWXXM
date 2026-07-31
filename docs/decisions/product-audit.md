@@ -240,3 +240,33 @@ Phase A checkpoint → **04-tech-plan** (Lean+build; 05 skipped per S9.M1).
 ### Next
 
 Gate A PASS (Lean) → **04-tech-plan** (`D-S027-02-phase-a`).
+
+---
+
+## S032 / EV-025 delta (2026-07-31) — iwxxm-us REMARKS + VA multi-location
+
+**Session**: S032-iwxxm-us-remarks-va  
+**Report**: `docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md`  
+**Status**: **PASS** — Batch F S02.M1/M2/L1 all option **1** (2026-07-31)
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 7 |
+| Auto-approved (high) | 12 |
+| Fix-in-place | 3 (`spec.md` EV-024 Done + S032/EV-025 section) |
+| User-approved (medium/low) | 3 (all option 1) |
+
+### Consistency
+
+| Check | Result |
+|-------|--------|
+| Feature ↔ Spec / Journey / Test | Pass (after spec fix) |
+| #809 soft→strict | Pass (S02.M1=1) |
+| Dig ❌ residuals vs Gate C | Pass (S02.M2=1) |
+| SCH deferrals vs Lane A | Pass (S02.L1=1) |
+| Connectivity H4–H5 | Pass (N/A — no UI) |
+
+### Next
+
+Gate A PASS (Lean) → **04-tech-plan** (`D-S032-02-phase-a`).
+

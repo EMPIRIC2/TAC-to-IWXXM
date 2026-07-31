@@ -36,7 +36,7 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 01-requirements
+  current_stage: 04-tech-plan
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -53,21 +53,27 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: EV-025 orchestrator in_progress; 01-requirements in_progress (pending E25-E1)
+    note: EV-025 orchestrator in_progress; 02 COMPLETE (Batch F 1,1,1); Gate A → 04-tech-plan
   - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'COMPLETE (delta) — E25-E1=1; D-S032-E25-E1; reports/01-requirements.md + corpus deltas; handoff 02-verify-plan; #810/#811/#812/#809'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); 12 auto; report reports/02-verify-plan-audit.md; D-S032-02-phase-a; Gate A Lean → 04; #810/#811/#812/#809'
+  - stage: 04-tech-plan
     required: true
     mode: delta
     status: in_progress
     started: '2026-07-31'
-    note: 'STARTED (delta) — pending E25-E1 AskQuestion; reports/01-requirements.md + corpus deltas written; #810/#811/#812/#809'
-  - stage: 02-verify-plan
-    required: true
-    mode: delta
-    status: pending
-  - stage: 04-tech-plan
-    required: true
-    mode: delta
-    status: pending
+    note: STARTED (delta) after Gate A PASS
   - stage: 07-build
     required: true
     mode: full
@@ -2876,25 +2882,27 @@ stages:
     - docs/context/iwxxm-us-remarks-va.md
     - docs/decisions/evolve-decisions.md
   01-requirements:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-07-31'
     started: '2026-07-31'
-    completed_at: null
-    completed: null
+    completed_at: '2026-07-31'
+    completed: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
     prior_note: 'S031/EV-024 01-requirements COMPLETE 2026-07-30 (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25;
       D-S031-E24-E1; report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan;
       #804/#807/#773'
-    note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
+    note: 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23;
+      D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan;
+      #810/#811/#812/#809'
     substeps:
       interviews:
-        status: in_progress
+        status: completed
         completed: null
         total: null
         current_template: null
-        current_section: pending_E25-E1
+        current_section: complete
         planned_docs:
           status:
             feature-list: completed
@@ -2908,12 +2916,13 @@ stages:
     active_session:
       session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-31'
       started: '2026-07-31'
-      completed_at: null
-      note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'S032/EV-025 01-requirements COMPLETE (delta) — E25-E1=1; D-S032-E25-E1; handoff 02-verify-plan; #810/#811/#812/#809'
       deepen:
       - F6
       - F12
@@ -2928,6 +2937,7 @@ stages:
       - F23
       decision_refs:
       - E25-E1
+      - D-S032-E25-E1
       artifacts:
       - docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
       - docs/feature-list.md
@@ -2935,15 +2945,17 @@ stages:
       - docs/test-plan.md
       - docs/decisions/requirements-decisions.md
     delta_substages:
-    - status: in_progress
+    - status: completed
       mode: delta
       session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       started_at: '2026-07-31'
       started: '2026-07-31'
-      completed_at: null
-      completed: null
-      note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'S032/EV-025 01-requirements COMPLETE (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1;
+        report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan;
+        #810/#811/#812/#809'
       deepen:
       - F6
       - F12
@@ -2964,6 +2976,7 @@ stages:
       - docs/decisions/requirements-decisions.md
       decision_refs:
       - E25-E1
+      - D-S032-E25-E1
     - status: completed
       mode: delta
       session_id: S031-iwxxm-domain-mine
@@ -3449,6 +3462,7 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 01-requirements COMPLETE (E24-E1=1 / D-S031-E24-E1) — deepen F6/F2/F4/F12/F13/F25;
       report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan; #804/#807/#773'
     - '2026-07-30 S030/EV-023 01-requirements COMPLETE (E23-E1=1 / D-S030-E23-E1) — deepen F6/F2/F12/F13;
@@ -3544,30 +3558,29 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-07-30'
-    started: '2026-07-30'
-    completed_at: '2026-07-30'
-    completed: '2026-07-30'
-    session_id: S031-iwxxm-domain-mine
-    evolve_cycle_id: EV-024
-    prior_note: 'S030/EV-023 02-verify-plan COMPLETE 2026-07-30 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
-      Lean → 04; report docs/sessions/S030-apac-encode-validate/reports/02-verify-plan-audit.md; #800'
-    note: 'S031/EV-024 02-verify-plan COMPLETE 2026-07-30 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
-      Lean → 04; report docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md; D-S031-02-phase-a;
-      #804/#807/#773'
+    started_at: '2026-07-31'
+    started: '2026-07-31'
+    completed_at: '2026-07-31'
+    completed: '2026-07-31'
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    prior_note: 'S032/EV-025 02-verify-plan STARTED 2026-07-31 (delta) — in_progress; artifact docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; D-S032-E25-E1; #810/#811/#812/#809'
+    note: 'S032/EV-025 02-verify-plan COMPLETE 2026-07-31 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
+      Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; D-S032-02-phase-a;
+      #810/#811/#812/#809'
     auto_approved: 12
     contradictions_resolved: null
     contradictions_deferred: null
     decision_refs:
-    - E24-E1
-    - D-S031-E24-E1
+    - E25-E1
+    - D-S032-E25-E1
     - S02.M1
     - S02.M2
     - S02.L1
-    - D-S031-EV024-s02m1-1
-    - D-S031-EV024-s02m2-1
-    - D-S031-EV024-s02l1-1
-    - D-S031-02-phase-a
+    - D-S032-EV025-s02m1-1
+    - D-S032-EV025-s02m2-1
+    - D-S032-EV025-s02l1-1
+    - D-S032-02-phase-a
     substeps:
       inventory:
         status: completed
@@ -3583,34 +3596,42 @@ stages:
     current_document: null
     current_statement: null
     active_session:
-      session_id: S031-iwxxm-domain-mine
-      evolve_cycle_id: EV-024
+      session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-07-30'
-      started: '2026-07-30'
-      completed_at: '2026-07-30'
-      completed: '2026-07-30'
-      note: 'S031/EV-024 02-verify-plan COMPLETE (delta) — PASS; Batch F 1,1,1; Gate A Lean → 04; #804/#807/#773'
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'S032/EV-025 02-verify-plan COMPLETE 2026-07-31 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; D-S032-02-phase-a; #810/#811/#812/#809'
       deepen:
       - F6
-      - F2
-      - F4
       - F12
+      - F2
       - F13
-      - F25
+      - F23
+      auto_approved: 12
       decision_refs:
-      - D-S031-02-phase-a
-      - D-S031-EV024-s02m1-1
-      - D-S031-EV024-s02m2-1
-      - D-S031-EV024-s02l1-1
+      - E25-E1
+      - D-S032-E25-E1
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - D-S032-EV025-s02m1-1
+      - D-S032-EV025-s02m2-1
+      - D-S032-EV025-s02l1-1
+      - D-S032-02-phase-a
       artifacts:
-      - docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
+      - docs/decisions/product-audit.md
+      - docs/decisions/product-decisions.md
     artifacts:
-    - docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
+    - docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
     - docs/sessions/S030-apac-encode-validate/reports/02-verify-plan-audit.md
     - docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/02-verify-plan-audit.md
@@ -3620,6 +3641,39 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      mode: delta
+      deepen:
+      - F6
+      - F12
+      - F2
+      - F13
+      - F23
+      auto_approved: 12
+      note: 'S032/EV-025 02-verify-plan COMPLETE 2026-07-31 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
+        Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; D-S032-02-phase-a;
+        #810/#811/#812/#809'
+      decision_refs:
+      - E25-E1
+      - D-S032-E25-E1
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - D-S032-EV025-s02m1-1
+      - D-S032-EV025-s02m2-1
+      - D-S032-EV025-s02l1-1
+      - D-S032-02-phase-a
+      artifacts:
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
+      - docs/decisions/product-audit.md
+      - docs/decisions/product-decisions.md
     - session_id: S031-iwxxm-domain-mine
       evolve_cycle_id: EV-024
       skill_id: 02-verify-plan
@@ -3907,6 +3961,9 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-31 S032/EV-025 02-verify-plan COMPLETE (D-S032-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1;
+      Gate A Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md;
+      #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 02-verify-plan COMPLETE (D-S031-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1;
       Gate A Lean → 04; report docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md;
       #804/#807/#773'
@@ -4047,84 +4104,66 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-07-30'
-    started: '2026-07-30'
-    completed_at: '2026-07-30'
-    completed: '2026-07-30'
+    started_at: '2026-07-31'
+    started: '2026-07-31'
+    completed_at: null
+    completed: null
     previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
-    previous_session_id: S030-apac-encode-validate
-    previous_evolve_cycle_id: EV-023
-    previous_note: 'S030/EV-023 04-tech-plan COMPLETE (delta) — Batch T E23-T1..T6=1,1,2,2,1,1;
-      execution-plan approved (D-S030-04-plan-approve); Gate B Lean → 07 @ T0.1; #800'
-    session_id: S031-iwxxm-domain-mine
-    evolve_cycle_id: EV-024
-    note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; execution-plan
+    previous_session_id: S031-iwxxm-domain-mine
+    previous_evolve_cycle_id: EV-024
+    previous_note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; execution-plan
       approved (D-S031-04-plan-approve); Gate B Lean → 07 @ T0.1; #804/#807/#773'
+    prior_note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; execution-plan
+      approved (D-S031-04-plan-approve); Gate B Lean → 07 @ T0.1; #804/#807/#773'
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS (D-S032-02-phase-a); #810/#811/#812/#809'
     decision_refs:
-    - D-S031-04-plan-approve
-    - D-S031-E24-T-batch
-    - E24-T1
-    - E24-T2
-    - E24-T3
-    - E24-T4
-    - E24-T5
-    - D-S031-02-phase-a
-    - D-S031-EV024-s02m1-1
-    - D-S031-EV024-s02m2-1
-    - D-S031-EV024-s02l1-1
+    - D-S032-02-phase-a
+    - D-S032-EV025-s02m1-1
+    - D-S032-EV025-s02m2-1
+    - D-S032-EV025-s02l1-1
     - S02.M1
     - S02.M2
     - S02.L1
     substeps:
       phase_1_toolchain:
-        status: completed
-        notes: Monorepo toolchain baseline from 2026-06-15 plan; EV-004 delta reuses pins
+        status: pending
       phase_2_interview:
-        status: completed
-        notes: E24-T1..T5 locked 1,1,2,2,1 (D-S031-E24-T-batch)
+        status: pending
       phase_3_execution_plan:
-        status: completed
-        notes: docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md approved
+        status: pending
       phase_4_user_review:
-        status: completed
-        notes: D-S031-04-plan-approve — Gate B → 07 @ T0.1
+        status: pending
       phase_5_back_add:
-        status: completed
+        status: pending
       phase_6_documents:
-        status: completed
+        status: pending
     active_session:
-      session_id: S031-iwxxm-domain-mine
-      evolve_cycle_id: EV-024
+      session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
       skill_id: 04-tech-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-07-30'
-      started: '2026-07-30'
-      completed_at: '2026-07-30'
-      completed: '2026-07-30'
-      note: 'S031/EV-024 04-tech-plan COMPLETE (delta) — E24-T1..T5=1,1,2,2,1; Gate B Lean → 07 @ T0.1; #804/#807/#773'
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: null
+      completed: null
+      note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS; #810/#811/#812/#809'
       deepen:
       - F6
-      - F2
-      - F4
       - F12
+      - F2
       - F13
-      - F25
+      - F23
       decision_refs:
-      - D-S031-04-plan-approve
-      - D-S031-E24-T-batch
-      - E24-T1
-      - E24-T2
-      - E24-T3
-      - E24-T4
-      - E24-T5
-      - D-S031-02-phase-a
-      - D-S031-EV024-s02m1-1
-      - D-S031-EV024-s02m2-1
-      - D-S031-EV024-s02l1-1
+      - D-S032-02-phase-a
+      - D-S032-EV025-s02m1-1
+      - D-S032-EV025-s02m2-1
+      - D-S032-EV025-s02l1-1
     artifacts:
     - docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
     - .cursor/artifacts/execution-plan-monorepo.md
@@ -4141,6 +4180,31 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
+      skill_id: 04-tech-plan
+      status: in_progress
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: null
+      completed: null
+      mode: delta
+      deepen:
+      - F6
+      - F12
+      - F2
+      - F13
+      - F23
+      note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS (D-S032-02-phase-a); #810/#811/#812/#809'
+      decision_refs:
+      - D-S032-02-phase-a
+      - D-S032-EV025-s02m1-1
+      - D-S032-EV025-s02m2-1
+      - D-S032-EV025-s02l1-1
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      artifacts: []
     - session_id: S031-iwxxm-domain-mine
       evolve_cycle_id: EV-024
       skill_id: 04-tech-plan
@@ -4709,6 +4773,8 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-31 S032/EV-025 04-tech-plan STARTED (D-S032-02-phase-a) — Gate A Lean (Batch F 1,1,1 +
+      consistency PASS); gates.a_to_b passed; mode delta; interview pending; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 04-tech-plan STARTED (D-S031-02-phase-a) — Gate A Lean (Batch F 1,1,1 +
       consistency PASS); gates.a_to_b passed; mode delta; interview pending; #804/#807/#773'
     - '2026-07-30 S030/EV-023 04 COMPLETE Batch T E23-T1..T6=1,1,2,2,1,1; execution-plan approved (D-S030-04-plan-approve);
@@ -4780,15 +4846,6 @@ stages:
     - S011/EV-008 delta 04-tech-plan completed 2026-07-13 — execution-plan.md approved (D-S011-04-plan-approve-A)
     - S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata
     - S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved
-    active_session:
-      session_id: S027-vaa-quality
-      evolve_cycle_id: EV-021
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-07-29'
-      completed_at: '2026-07-29'
-      note: S027/EV-021 04 COMPLETE — Batch T all 1; Gate B Lean → 07 @ T0.1
   05-verify-tech:
     status: completed
     started_at: '2026-06-15T01:15:00Z'
@@ -7491,10 +7548,13 @@ stages:
     started_at: '2026-07-31'
     completed_at: null
     completed: null
-    current_stage: 01-requirements
-    note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; current_stage 01-requirements; #810/#811/#812/#809'
-    prior_note: 'S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; orchestrator continues; current_stage 01-requirements; #810/#811/#812/#809'
+    current_stage: 04-tech-plan
+    note: 'S032/EV-025 04-tech-plan in_progress (delta) — current_stage 04-tech-plan; 02 COMPLETE Batch F 1,1,1; Gate A PASS; #810/#811/#812/#809'
+    prior_note: 'S032/EV-025 02-verify-plan in_progress (delta) — current_stage 02-verify-plan; 01 COMPLETE E25-E1=1; #810/#811/#812/#809'
     notes:
+    - '2026-07-31 S032/EV-025 02-verify-plan COMPLETE (D-S032-02-phase-a) — PASS; Batch F 1,1,1; 12 auto; Gate A Lean → 04-tech-plan; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; #810/#811/#812/#809'
+    - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809; advance 02-verify-plan in_progress'
+    - '2026-07-31 S032/EV-025 02-verify-plan STARTED (delta) — docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; D-S032-E25-E1; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 01-requirements STARTED (delta) — pending E25-E1 AskQuestion; artifacts: reports/01-requirements.md + feature-list/user-journeys/test-plan + requirements-decisions; UJ-040/041 + TC-EV025; deepen F6/F12/F2/F13/F23; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 OPEN — Phase 0 intake E25-1=1, E25-2=1, E25-3=1, E25-4b=2 + E25-4c=3, E25-ui=1 (D-S032-E25-phase0); Lean+build; awaiting 00 exit; #810/#811/#812/#809'
@@ -7805,6 +7865,133 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S032-02-phase-a
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 16-evolve
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: checkpoint
+  status: confirmed
+  topic: Gate A Lean → 04-tech-plan
+  summary: S032/EV-025 02-verify-plan COMPLETE Batch F 1,1,1 → 04-tech-plan
+  decision: 'Gate A Lean (Batch F S02.M1/M2/L1 all Approve=1). 02-verify-plan PASS — 12 auto-approved;
+    phase_a passed (Lean; routine AskQuestion skipped); advance to 04-tech-plan (in_progress, mode delta).
+    Report: docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md.'
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - D-S032-EV025-s02m1-1
+  - D-S032-EV025-s02m2-1
+  - D-S032-EV025-s02l1-1
+  - S02.M1
+  - S02.M2
+  - S02.L1
+- id: D-S032-EV025-s02l1-1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.L1 Schematron deferrals may document child issues without blocking Lane A encode goldens
+  summary: S02.L1 = 1 — Approve TC-EV025-010 combined-catalog smoke may document Schematron deferrals with child issues
+  decision: S02.L1 option 1 confirmed 2026-07-31 — TC-EV025-010 combined-catalog smoke may document Schematron
+    deferrals with child issues without blocking Lane A encode goldens. Batch F / 02-verify-plan.
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - S02.L1
+  - D-S032-02-phase-a
+  answers:
+    S02.L1: '1'
+- id: D-S032-EV025-s02m2-1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.M2 residual dig ❌ types may file child issues rather than block Gate C
+  summary: S02.M2 = 1 — Approve E25-4c=3 best-effort; residual types may file child issues (TC-EV025-004)
+  decision: S02.M2 option 1 confirmed 2026-07-31 — E25-4c=3 aims to close all dig ❌ types in-cycle; residual
+    types after best-effort may still file child issues (TC-EV025-004) rather than block Gate C. Batch F / 02-verify-plan.
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - S02.M2
+  - D-S032-02-phase-a
+  answers:
+    S02.M2: '1'
+- id: D-S032-EV025-s02m1-1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.M1 #809 soft-compare golden first; flip wmoPass when ADR-032 equality holds
+  summary: S02.M1 = 1 — Approve #809 may ship first as soft-compare golden; flip wmoPass only when ADR-032 equality holds
+  decision: 'S02.M1 option 1 confirmed 2026-07-31 — #809 may ship first as soft-compare golden; flip wmoPass
+    only when ADR-032 equality holds (TC-EV025-008 then 009). Batch F / 02-verify-plan.'
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - S02.M1
+  - D-S032-02-phase-a
+  answers:
+    S02.M1: '1'
+- id: D-S032-E25-E1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: Close 01 → start 02-verify-plan
+  summary: E25-E1=1 — close 01-requirements; start 02-verify-plan
+  decision: E25-E1=1 — Close 01-requirements (completed) and advance to 02-verify-plan (in_progress, mode
+    delta). Handoff S032/EV-025 deepen F6/F12/F2/F13/F23 (#810/#811/#812/#809).
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-E1
+  - D-S032-E25-phase0
+  answers:
+    E25-E1: '1'
+  tip_sha: f28d159
+  tip_sha_full: f28d159c7cf7dd0a266391b169f78295d0df0976
 - id: D-S032-E25-phase0
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -15433,7 +15620,17 @@ artifacts:
   created_at: '2026-07-31'
   updated_at: '2026-07-31'
   status: written
-  note: 'S032/EV-025 01 delta in_progress — pending E25-E1; #810/#811/#812/#809'
+  note: 'S032/EV-025 01 COMPLETE — E25-E1=1; D-S032-E25-E1; #810/#811/#812/#809'
+- path: docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
+  kind: stage-report
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S032/EV-025 02-verify-plan PASS (Batch F 1,1,1); Gate A Lean → 04 (D-S032-02-phase-a); #810/#811/#812/#809'
 - path: docs/feature-list.md
   kind: corpus-delta
   session_id: S032-iwxxm-us-remarks-va
@@ -15473,7 +15670,7 @@ artifacts:
   created_at: '2026-07-31'
   updated_at: '2026-07-31'
   status: written
-  note: EV-025 section — pending E25-E1 close
+  note: EV-025 section — E25-E1=1 closed; handoff 02-verify-plan
 - path: docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
   kind: execution-plan
   session_id: S031-iwxxm-domain-mine
@@ -23718,7 +23915,7 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     notes: "Lean+build + 13 when behavior ships; 11 optional if UI; 09 covered by 08+10"
-  current_stage: 01-requirements
+  current_stage: 04-tech-plan
   stages:
     00-context:
       status: completed
@@ -23728,17 +23925,29 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: Orchestrator in_progress; 01-requirements in_progress (pending E25-E1)
+      note: Orchestrator in_progress; 02 COMPLETE (Batch F 1,1,1); Gate A → 04-tech-plan
     01-requirements:
+      status: completed
+      started: '2026-07-31'
+      started_at: '2026-07-31'
+      completed: '2026-07-31'
+      completed_at: '2026-07-31'
+      mode: delta
+      note: 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809'
+    02-verify-plan:
+      status: completed
+      started: '2026-07-31'
+      started_at: '2026-07-31'
+      completed: '2026-07-31'
+      completed_at: '2026-07-31'
+      mode: delta
+      note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); 12 auto; report reports/02-verify-plan-audit.md; D-S032-02-phase-a; Gate A Lean → 04; #810/#811/#812/#809'
+    04-tech-plan:
       status: in_progress
       started: '2026-07-31'
       started_at: '2026-07-31'
       mode: delta
-      note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
-    02-verify-plan:
-      status: pending
-    04-tech-plan:
-      status: pending
+      note: STARTED (delta) after Gate A PASS
     07-build:
       status: pending
     08-verify-build:
@@ -23748,12 +23957,12 @@ evolve_cycles:
     13-deploy-smoke:
       status: pending
   gates:
-    a_to_b: pending
+    a_to_b: passed
     b_to_c: pending
     c_to_d: pending
     deploy: pending
   checkpoints:
-    phase_a: pending
+    phase_a: passed
     phase_b: pending
     phase_c: pending
     phase_d: pending
@@ -23769,7 +23978,12 @@ evolve_cycles:
   - docs/user-journeys.md
   - docs/test-plan.md
   - docs/decisions/requirements-decisions.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
+  - docs/decisions/product-audit.md
+  - docs/decisions/product-decisions.md
   notes:
+  - '2026-07-31 S032/EV-025 02 PASS → 04 (Batch F 1,1,1 / D-S032-02-phase-a) — gates.a_to_b + phase_a passed; #810/#811/#812/#809'
+  - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809; 02-verify-plan in_progress'
   - '2026-07-31 S032/EV-025 01-requirements STARTED (delta) — pending E25-E1 AskQuestion; artifacts: reports/01-requirements.md + feature-list/user-journeys/test-plan + requirements-decisions; UJ-040/041 + TC-EV025; deepen F6/F12/F2/F13/F23; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 OPEN — Phase 0 intake E25-1=1, E25-2=1, E25-3=1, E25-4b=2 dual lane + E25-4c=3 all ❌ US types, E25-ui=1 N/A (D-S032-E25-phase0); Lean+build; #810/#811/#812/#809'
@@ -23778,14 +23992,15 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: 22a94b7
-  tip_sha_full: 22a94b7645cbe28138447ece55957484f0b98afb
+  tip_sha: f28d159
+  tip_sha_full: f28d159c7cf7dd0a266391b169f78295d0df0976
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'S032/EV-025 01-requirements in_progress — branch evolve/EV-025-iwxxm-us-remarks-va active (local, tip 22a94b7); no new commits invented; pending E25-E1; #810/#811/#812/#809'
+  note: 'S032/EV-025 tip f28d159 — 01 COMPLETE (E25-E1=1); 02-verify-plan in_progress; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — f28d159 (f28d159c7cf7dd0a266391b169f78295d0df0976); "[S032] docs: lock EV-025 Phase 0–01 (UJ-040/041, TC-EV025)"; stage 01-requirements; 02-verify-plan in_progress; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 01-requirements STARTED (delta) — pending E25-E1 AskQuestion; artifacts: reports/01-requirements.md + feature-list/user-journeys/test-plan + requirements-decisions; UJ-040/041 + TC-EV025; deepen F6/F12/F2/F13/F23; #810/#811/#812/#809; tip 22a94b7; commits not invented'
   - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; branch active locally @ 22a94b7; commits not invented; handoff 01-requirements; #810/#811/#812/#809'
   - '2026-07-30 S031/EV-024 Phase 4 close D-S031-merge-close — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0; H0c/H1/H3/H4/H5 + catalog + convert PASS; session archived; #804/#807/#773'
@@ -25120,11 +25335,33 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 branch created locally (base main @ 22a94b7); 00-context COMPLETE; Phase 0 locked E25-*; #810/#811/#812/#809'
-    tip_sha: 22a94b7
-    tip_sha_full: 22a94b7645cbe28138447ece55957484f0b98afb
+    note: 'S032/EV-025 tip f28d159 — 01 COMPLETE (E25-E1=1); 02-verify-plan in_progress; Phase 0–01 docs locked; #810/#811/#812/#809'
+    tip_sha: f28d159
+    tip_sha_full: f28d159c7cf7dd0a266391b169f78295d0df0976
     pushed: false
   commits:
+  - sha: f28d159
+    sha_full: f28d159c7cf7dd0a266391b169f78295d0df0976
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[S032] docs: lock EV-025 Phase 0–01 (UJ-040/041, TC-EV025)"
+    stage: "01-requirements"
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/context/README.md
+    - docs/context/iwxxm-us-remarks-va.md
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/requirements-decisions.md
+    - docs/feature-list.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/routing-plan.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/session-brief.md
+    - docs/test-plan.md
+    - docs/user-journeys.md
+    - workflow-state.yaml
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'Phase 0–01 lock; E25-E1=1 advances to 02-verify-plan'
   - sha: 864783e
     sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
     branch: main

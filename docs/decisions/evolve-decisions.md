@@ -10,7 +10,7 @@
 **Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810), [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811), [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812), [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
 **Started**: 2026-07-31  
 **Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
-**Status**: **in_progress** — Phase 0–1 locked; next 01-requirements
+**Status**: **in_progress** — Gate A PASS; next **04-tech-plan**
 
 ### Scope (Phase 0 — locked 2026-07-31)
 
@@ -24,6 +24,11 @@
 | E25-4c | decision | Adjacent US breadth? | **3** — **all remaining ❌ US types** from dig checklist |
 | E25-ui | decision | UI preview? | **1** — N/A (no UI this session) |
 | E25-M | decision | 01 Document Manifest? | **2** — lean delta + **new UJ-040/041**; deepen UJ-010/026/034/039; skip Spec/Config/API/Deploy |
+| E25-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** (`D-S032-E25-E1`) |
+| S02.M1 | decision | #809 soft→strict? | **1** — soft-compare first; `wmoPass` only when ADR-032 equality holds (`D-S032-EV025-s02m1-1`) |
+| S02.M2 | decision | Dig ❌ residuals? | **1** — aim close all in-cycle; residuals → child issues; don’t block Gate C (`D-S032-EV025-s02m2-1`) |
+| S02.L1 | decision | SCH deferrals? | **1** — TC-EV025-010 may document SCH deferrals without blocking Lane A goldens (`D-S032-EV025-s02l1-1`) |
+| E25-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,1,1; Lean → **04-tech-plan** (`D-S032-02-phase-a`) |
 
 **Scope (verbatim)**:
 Dual-lane engine cycle from EV-024 children: (A) encode/lint/golden/validate all ❌

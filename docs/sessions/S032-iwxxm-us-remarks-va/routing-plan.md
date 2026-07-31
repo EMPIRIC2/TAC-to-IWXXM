@@ -8,9 +8,9 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Session open; Phase 0 locked E25-* |
-| 16-evolve | yes | orchestrator | **in_progress** | EV-025 Phase 0–1 locked; next 01 |
-| 01-requirements | yes | delta | **in_progress** | E25-M=2 written; pending E25-E1 close → 02 |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 16-evolve | yes | orchestrator | **in_progress** | EV-025 Gate A PASS; next 04 |
+| 01-requirements | yes | delta | **completed** | E25-E1 — report 01-requirements.md |
+| 02-verify-plan | yes | delta | **completed** | PASS — Batch F 1,1,1; report 02-verify-plan-audit.md |
 | 04-tech-plan | yes | delta | pending | Milestones: US type packs + #809 golden |
 | 07-build | yes | full | pending | tac2iwxxm / tac-validate / goldens / validate |
 | 08-verify-build | yes | delta | pending | — |
@@ -34,3 +34,4 @@ No new deployable / no new Fn. Dual lane is large but still delta-mode on F6.b +
 | Intake | E25-1=1, E25-2=1, E25-3=1, E25-4→2+3 → **E25-4b=2** dual lane + **E25-4c=3** all ❌ US | 2026-07-31 |
 | Routing | Lean+build + 13-when-ships | 2026-07-31 |
 | UI | E25-ui=1 N/A | 2026-07-31 |
+| Gate A / 02 | Batch F 1,1,1; `D-S032-02-phase-a` → 04 | 2026-07-31 |

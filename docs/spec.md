@@ -415,7 +415,7 @@ metar-to-IWXXM/
 - **Purpose**: METAR/SPECI/TAF vendor golden equality under defaults; Examples catalog marks
   **strict** WMO-passers (plus SIGMET/AIRMET keepers when green). **EV-024 amend**: official
   WMO **reference** samples may also load (UJ-039; ADR-032).
-- **Status**: **Done** (S026 / EV-020; PR #793); catalog deepen **In progress** (S031 / EV-024).
+- **Status**: **Done** (S026 / EV-020; PR #793); catalog deepen **Done** (S031 / EV-024; PR #813).
 - **Journeys / tests**: UJ-036; **UJ-039**; TC-F25-001..004; TC-EV024-004..006; deepen UJ-032 / TC-F7-008.
 - **Policy**: ADR-032 (amended EV-024).
 - **Source**: feature-list F25; evolve-decisions EV-020 / EV-024.
@@ -465,7 +465,7 @@ metar-to-IWXXM/
   (#807), and IWXXM-US/MDL (#773); wire validate/CI; load official WMO examples from the
   workbench **Examples / sample menu** (**UJ-039**). Deepen F6/F2/F4/F12/F13/F25 (+ F6.b) —
   no new Fn. Exclude #806 (WIS2).
-- **Status**: **In progress** (S031 / EV-024).
+- **Status**: **Done** (S031 / EV-024; PR #813 / #814). Children #809–#812 filed for engine work.
 - **Components**: `docs/domain/mining/*` + rules/canonicals; `apps/frontend` examples catalog;
   validate/convert fixture surfaces; no new deployable.
 - **Journeys / tests**: **UJ-039**; deepen UJ-036/UJ-032; TC-EV024-001..008; H4–H5 when FE ships.
@@ -473,6 +473,21 @@ metar-to-IWXXM/
   translation-failed happy-path; no US-in-WMO catalog mix.
 - **Non-goals**: #806; big-bang encode engines; hand-edit `vendor/schemas/*`; USWX; PDF/clone commits.
 - **Source**: feature-list S031 deepen; evolve-decisions EV-024; ADR-032 amend.
+- **Follow-on**: S032 / EV-025 implements #809–#812 (+ full dig ❌ US types).
+
+### S032 / EV-025 — iwxxm-us REMARKS encode + VA multi-location (#810–#812 / #809)
+
+- **Purpose**: Dual-lane engine cycle — (A) encode/lint/golden/validate all dig ❌ iwxxm-us
+  METAR/SPECI REMARKS types (#810/#811/#812 + adjacent checklist); (B) #809
+  `sigmet-multi-location-VA` annex3 golden soft→strict / catalog promote under ADR-032.
+  Deepen F6.b / F12 / F2 / F13 / F23 — no new Fn.
+- **Status**: **In progress** (S032 / EV-025).
+- **Components**: `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`,
+  annex3/`iwxxm_us` fixtures; catalog tier for #809; no new deployable / no new UI surface.
+- **Journeys / tests**: **UJ-040**, **UJ-041**; deepen UJ-010/026/034/039; TC-EV025-001..010;
+  13 when API convert/validate ships.
+- **Non-goals**: USWX; vendor hand-edits; US in WMO menu; #808; #738; roadmap SWX/VONA/WAFS.
+- **Source**: feature-list S032 deepen; evolve-decisions EV-025; dig checklist #773 children.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 
