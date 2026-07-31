@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M0 complete → next M1 |
-| **Active task** | T1.1 (next) |
-| **Tasks** | 2 / 28 |
+| **Active milestone** | M1 complete → next M2 |
+| **Active task** | T2.1 (next) |
+| **Tasks** | 5 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -61,9 +61,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Red golden(s) for Variable RVR + meanRVR withheld / nilReason | TC-EV025-001 | T0.2 | pending |
-| T1.2 | Code | Encode `AerodromeVariableRVR` (+ lint registry if needed) | #810; F6.b/F12 | T1.1 | pending |
-| T1.3 | Test | Green encode/lint; update COVERAGE_MATRIX / IWXXM_CONVERSION rows | TC-EV025-001 | T1.2 | pending |
+| T1.1 | Test | Red golden(s) for Variable RVR + meanRVR withheld / nilReason | TC-EV025-001 | T0.2 | **completed** |
+| T1.2 | Code | Encode `AerodromeVariableRVR` (+ lint registry if needed) | #810; F6.b/F12 | T1.1 | **completed** |
+| T1.3 | Test | Green encode/lint; update COVERAGE_MATRIX / IWXXM_CONVERSION rows | TC-EV025-001 | T1.2 | **completed** |
 
 ### M2 — #811 Lightning / VisuallyObservablePhenomena
 

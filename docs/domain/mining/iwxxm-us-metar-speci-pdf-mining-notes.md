@@ -27,7 +27,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 |------------|------------------|---------------|---------------------|---------|-------|
 | Addendum | AO1/AO2, SLP, PRESFR/RR, snow, CONTRAIL, AURORA, FROPA flags, sunshine, `$`, text | ⚠ partial | ⚠ | ⚠ | Container; AO2/SLP often started |
 | AerodromePeakWind | PK WND | ⚠ / ✅ theme | ⚠ | ⚠ | F15 deepen cited AO2/SLP/PK WND |
-| AerodromeVariableRVR | Variable RVR | ❌/⚠ | ⚠ | ❌ | meanRVR withheld pattern in PDF |
+| AerodromeVariableRVR | Variable RVR | ✅ | ⚠ | ✅ | S032/#810 — meanRVR withheld; TC-EV025-001 |
 | AerodromeWindShift | WSHFT / FROPA | ⚠ | ⚠ | ❌ | |
 | CharacterOfTheSky / CloudTypes | Sky character RMK | ❌ | ⚠ | ❌ | |
 | ConvectiveCloudLocation / Types | CB/TCU location/motion | ❌/⚠ | ⚠ | ❌ | |

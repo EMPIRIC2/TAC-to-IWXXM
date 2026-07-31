@@ -10,7 +10,7 @@
 |------------|------------|----------|------------|
 | Addendum (AO2/SLP/`humanReadableText`) | ⚠ partial | `_addendum_extension`; goldens `metar_us_ao2_slp`, etc. | M4.6 deepen residuals |
 | AerodromePeakWind | ✅ | `_peak_wind_extension`; `metar_us_pk_wnd` | M4.1 only if deepen gaps |
-| AerodromeVariableRVR | ❌ | no emitter | **M1** (#810) |
+| AerodromeVariableRVR | ✅ | `_variable_rvr_extension`; TC-EV025-001 | **done** M1 (#810) |
 | AerodromeWindShift | ❌ | — | **M4.1** |
 | CharacterOfTheSky / CloudTypes | ❌ | — | **M4.2** |
 | ConvectiveCloudLocation / Types | ❌ | — | **M4.2** |
