@@ -112,6 +112,12 @@
 - One task per atomic commit: `[T{n}.{m}] …`
 - PR to main when M0–M7 complete (or M7.3 deferred if no deploy)
 
+## PR Plan
+
+| PR | URL | Status |
+|----|-----|--------|
+| EV-024 / S031 | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813 | open (T7.3 deploy deferred D1) |
+
 ## PR checklist (draft)
 
 - [x] Mining notes indexed; matrices complete
