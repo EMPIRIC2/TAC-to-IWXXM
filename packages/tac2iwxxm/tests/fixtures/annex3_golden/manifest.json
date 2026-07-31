@@ -244,6 +244,15 @@
       "note": "V1 NO VA EXP seed expanded into V3 golden pack"
     },
     {
+      "id": "sigmet_multi_location_va",
+      "product": "SIGMET",
+      "theme": "V3",
+      "tac": "sigmet_multi_location_va.tac",
+      "seed": "sigmet-multi-location-VA",
+      "soft_compare": true,
+      "note": "TC-EV025-008 / #809 soft-compare gate; ADR-032 equality = TC-EV025-009"
+    },
+    {
       "id": "vaa_a7_2",
       "product": "VAA",
       "theme": "V3",
