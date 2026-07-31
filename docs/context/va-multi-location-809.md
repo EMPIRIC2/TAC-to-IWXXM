@@ -1,7 +1,7 @@
 # Scoped context — #809 VA multi-location (soft→strict residual)
 
 **Mode:** scoped · **Date:** 2026-07-31  
-**Status:** active (S033 / EV-026 — equality cycle)  
+**Status:** closed (S033 / EV-026 — equality + `wmoPass` shipped; #809 closed)  
 **Session:** S033-va-multi-location-equality · **Cycle:** EV-026  
 **Issue:** [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
 **Parent cycles:** S031/EV-024 (wired `wmoReference`) · S032/EV-025 (soft-compare shipped in [#816](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816), merged)  
@@ -18,7 +18,7 @@ defaults, then catalog may flip `wmoReference` → `wmoPass` (TC-EV025-009 / UJ-
 | Multi-location OBS/FCST encode (`analysisCollection` ×2) | ✅ |
 | M-xsd / M-sch smoke on convert output | ✅ |
 | Catalog `wmoReference` + FIXTURE_GAPS note | ✅ |
-| ADR-032 equality → `wmoPass` (TC-EV025-009 promote) | ❌ deferred |
+| ADR-032 equality → `wmoPass` (TC-EV025-009 promote) | ✅ EV-026 |
 
 ## Runtime SoT
 

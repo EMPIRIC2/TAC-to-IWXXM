@@ -12,10 +12,10 @@
 | Field | Value |
 |-------|-------|
 | Soft path | Shipped #816 — soft golden + multi-location encode |
-| Catalog | `sigmet_multi_location_va` = `wmoReference` |
-| Strict equality | In progress — 07-build |
-| Issue | #809 open |
-| Active task | T2.3 |
+| Catalog | `sigmet_multi_location_va` = `wmoPass` |
+| Strict equality | **Green** — TC-EV025-008 |
+| Issue | #809 **closed** |
+| Active task | T3.4 (when ships) |
 
 ## Locked policy
 
@@ -70,9 +70,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Docs | Gate C dig — equality + promote checklist | E26-T4 | T2.3 | pending |
-| T3.2 | Test | 08-verify-build + 10-e2e smoke (VA stem + catalog) | routing | T3.1 | pending |
-| T3.3 | Docs | Close GitHub #809 | #809 AC | T3.2 | pending |
+| T3.1 | Docs | Gate C dig — equality + promote checklist — [t3-1-gate-c-dig.md](t3-1-gate-c-dig.md) | E26-T4 | T2.3 | completed |
+| T3.2 | Test | 08-verify-build + 10-e2e smoke (VA stem + catalog) — [verification-report.md](verification-report.md) | routing | T3.1 | completed |
+| T3.3 | Docs | Close GitHub #809 | #809 AC | T3.2 | completed |
 | T3.4 | Deploy | 13-deploy-smoke **when** API/catalog ships | E26-3 | T3.2 | pending |
 
 ## Data Dependencies
@@ -90,11 +90,11 @@
 
 ## Success criteria
 
-- [ ] `canonicalize_xml` equality under annex3 + default pin
-- [ ] Catalog `wmoPass` for `sigmet_multi_location_va`
-- [ ] TC-EV025-008..009 strict green
-- [ ] #809 closed
-- [ ] No new deps without AskQuestion
+- [x] `canonicalize_xml` equality under annex3 + default pin
+- [x] Catalog `wmoPass` for `sigmet_multi_location_va`
+- [x] TC-EV025-008..009 strict green
+- [x] #809 closed
+- [x] No new deps without AskQuestion
 - [ ] 13 when behavior ships (T3.4)
 
 ## Gate B → C
@@ -102,4 +102,4 @@
 | Gate | Result | Date |
 |------|--------|------|
 | B→C | **PASSED** — Batch T `1,1,2,1,1`; M0–M3 / 12 tasks approved → **07-build** @ T0.1 (`D-S033-04-plan-approve`) | 2026-07-31 |
-| C (encode) | Pending — equality + `wmoPass` + #809 closed (`E26-T4`) | — |
+| C (encode) | **PASSED** — equality + `wmoPass` + #809 closed (`E26-T4`) | 2026-07-31 |

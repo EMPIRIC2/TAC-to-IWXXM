@@ -12,10 +12,10 @@
 | 01-requirements | yes | delta | **completed** | E26-E1 — report 01-requirements.md |
 | 02-verify-plan | yes | delta | **completed** | PASS — Batch F 1,1,1; Gate A → 04 |
 | 04-tech-plan | yes | delta | **completed** | Batch T 1,1,2,1,1; Gate B → 07 |
-| 07-build | yes | full | **in_progress** | @ T0.1 canonicalize dig |
-| 08-verify-build | yes | delta | pending | — |
+| 07-build | yes | full | **completed** | M0–M3 encode/catalog; T3.4 when ships |
+| 08-verify-build | yes | delta | **completed** | PASS — verification-report.md |
 | 09-qa | no | — | skipped | 08+10 cover |
-| 10-e2e | yes | smoke | pending | Convert/validate + catalog Vitest |
+| 10-e2e | yes | smoke | **completed** | 008/009 + catalog Vitest |
 | 11-verify-impl | no | — | skipped | Catalog/Vitest only (E26-ui=N/A) |
 | 12-verify-deploy | no | — | skipped | — |
 | 13-deploy-smoke | when ships | full | pending | If API image behavior changes |
@@ -36,3 +36,5 @@ operator-visible convert/validate behavior ships.
 | UI preview | N/A — catalog/Vitest only | 2026-07-31 |
 | Batch T | E26-T1..T5 = 1,1,2,1,1 | 2026-07-31 |
 | Gate B / 04 | `1` — M0–M3 approved → 07 @ T0.1 (`D-S033-04-plan-approve`) | 2026-07-31 |
+| Gate C | equality + `wmoPass` + #809 closed | 2026-07-31 |
+| 08/10 | PASS smoke | 2026-07-31 |
