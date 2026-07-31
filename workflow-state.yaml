@@ -5,13 +5,14 @@ project:
   output_directory: docs/
 session_counter: 31
 evolve_cycle_counter: 24
-active_session:
-  id: S031-iwxxm-domain-mine
+active_session: null
+sessions:
+- id: S031-iwxxm-domain-mine
   type: feature
   intent: 'Domain mine strongest bundle — #804 IWXXM/ tree + #807 wmo-im org refresh + #773 IWXXM-US/MDL;
     discovery-first with full ticket acceptance (notes, matrices, fixture/catalog wiring, durable promotions,
     child engine issues). Exclude #806 (WIS2).'
-  status: in_progress
+  status: completed
   branch: evolve/EV-024-iwxxm-domain-mine
   orchestrator: 16-evolve
   evolve_cycle_id: EV-024
@@ -22,14 +23,6 @@ active_session:
   - '773'
   artifacts_dir: docs/sessions/S031-iwxxm-domain-mine/
   current_stage: null
-  active_task: null
-  active_task_status: completed
-  active_milestone: M7
-  tip_sha: 681436a
-  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
-  pr_number: 813
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-  pr_status: open
   feature_ids:
   - F6
   - F2
@@ -49,9 +42,18 @@ active_session:
   - 09-qa
   - 12-verify-deploy
   started_at: '2026-07-30'
+  completed_at: '2026-07-30'
+  tip_sha: 864783e
+  tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
+  pr_number: 813
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+  pr_status: merged
+  merge_sha: 864783e
+  close_decision_id: D-S031-merge-close
+  close_note: 'Phase 4 close 2026-07-30 (D-S031-merge-close option 1) — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0 LIVE; H0c/H1/H3/H4/H5 + EV-024 catalog + live convert PASS; #804/#807/#773'
   context_briefs:
   - docs/context/iwxxm-domain-mine.md
-  note: 'S031/EV-024 Phase C complete; tip 681436a; CI GREEN on PR #813 (required checks pass; Deploy skipped on PR branch); awaiting merge approval for #813; T7.3 deferred D1; #804/#807/#773'
+  note: 'D-S031-merge-close — Phase 4 close 2026-07-30; EV-024/S031 complete; PR #813 864783e; smoke PASS; #804/#807/#773'
   routing_plan:
   - stage: 00-context
     required: true
@@ -63,9 +65,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-07-30'
-    note: 'Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
+    completed: '2026-07-30'
+    note: 'COMPLETE — Phase 4 close D-S031-merge-close; EV-024 completed; PR #813 864783e; 13 PASS; #804/#807/#773'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -93,7 +96,7 @@ active_session:
     status: completed
     started: '2026-07-30'
     completed: '2026-07-30'
-    note: 'COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813'
+    note: 'COMPLETE — T0.1–T7.2 done; T7.3 via 13 after merge; tip 864783e; PR #813'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -111,12 +114,15 @@ active_session:
   - stage: 11-verify-impl
     required: false
     mode: optional
-    status: pending
+    status: skipped
+    note: optional — not run (Lean+build preset)
   - stage: 13-deploy-smoke
     required: false
     mode: when_ships
-    status: deferred
-    note: 'D1 — after merge #813'
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: 'COMPLETE — PASS; PR #813 merged 864783e; CI 30595410610; API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0; H0c/H1/H3/H4/H5 + catalog + convert; report deploy-smoke.md; #804/#807/#773'
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -137,7 +143,6 @@ active_session:
     required: false
     status: skipped
     note: Lean+build preset
-sessions:
 - id: S030-apac-encode-validate
   type: feature
   intent: Implement encode/validate/lint deltas from APAC FAQ + codes.wmo.int + WMO-306 historical digs
@@ -6994,11 +6999,11 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json);
       operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: deferred
+    status: completed
     started_at: '2026-07-30'
     started: '2026-07-30'
-    completed: null
-    completed_at: null
+    completed: '2026-07-30'
+    completed_at: '2026-07-30'
     previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
     previous_session_id: S030-apac-encode-validate
@@ -7008,43 +7013,52 @@ stages:
     previous_note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; report deploy-smoke.md; #800'
     session_id: S031-iwxxm-domain-mine
     evolve_cycle_id: EV-024
-    note: 'S031/EV-024 13-deploy-smoke DEFERRED (D1 — PR first) — after merge #813; tip 304df52; #804/#807/#773'
-    tip_sha: 304df52
-    tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
-    overall: deferred
+    note: 'S031/EV-024 13-deploy-smoke COMPLETE PASS — PR #813 merged 864783e; CI 30595410610; API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0; H0c/H1/H3/H4/H5 + catalog + convert; D-S031-merge-close; report deploy-smoke.md; #804/#807/#773'
+    tip_sha: 864783e
+    tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
+    overall: pass
     active_task: T7.3
-    active_task_status: deferred
+    active_task_status: completed
     progress: 22/22
-    do_not_auto_merge: true
+    do_not_auto_merge: false
+    decision_id: D-S031-merge-close
     pr_number: 813
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-    pr_status: open
-    merge_sha: null
-    ci_run: null
-    report: null
+    pr_status: merged
+    merge_sha: 864783e
+    ci_run: '30595410610'
+    api_deploy: dep-d9lvcr2jnfac73bbn340
+    fe_deploy: dep-d9lvcrrl550s73cuhvf0
+    report: docs/sessions/S031-iwxxm-domain-mine/reports/deploy-smoke.md
     delta_substages:
     - id: S031-iwxxm-domain-mine
       session_id: S031-iwxxm-domain-mine
       evolve_cycle_id: EV-024
       skill_id: 13-deploy-smoke
-      status: deferred
+      status: completed
       mode: when_ships
       started: '2026-07-30'
       started_at: '2026-07-30'
-      completed: null
-      completed_at: null
+      completed: '2026-07-30'
+      completed_at: '2026-07-30'
       branch: evolve/EV-024-iwxxm-domain-mine
-      tip_sha: 304df52
-      tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
-      note: 'D1 — after merge #813; T7.3 deferred'
+      tip_sha: 864783e
+      tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
+      note: 'COMPLETE — PASS; PR #813 864783e; CI 30595410610; H0c/H1/H3/H4/H5 + catalog + convert; D-S031-merge-close'
       active_milestone: M7
       active_task: T7.3
-      active_task_status: deferred
+      active_task_status: completed
       progress: 22/22
-      overall: deferred
+      overall: pass
+      decision_id: D-S031-merge-close
       pr_number: 813
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-      pr_status: open
+      pr_status: merged
+      merge_sha: 864783e
+      ci_run: '30595410610'
+      api_deploy: dep-d9lvcr2jnfac73bbn340
+      fe_deploy: dep-d9lvcrrl550s73cuhvf0
+      report: docs/sessions/S031-iwxxm-domain-mine/reports/deploy-smoke.md
       feature_ids:
       - F6
       - F2
@@ -7761,16 +7775,16 @@ deployment:
   staging:
     status: deployed
     last_verified: '2026-07-30'
-    commit_deployed: af98690
-    commit_head: af98690
+    commit_deployed: 864783e
+    commit_head: 864783e
     drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
     deploy_ids:
-      api: dep-d9lsvabm8hqs739dpqlg
-      frontend: dep-d9lmsefqj5pc739d3it0
-    ci_deploy_run: '30586719518'
+      api: dep-d9lvcr2jnfac73bbn340
+      frontend: dep-d9lvcrrl550s73cuhvf0
+    ci_deploy_run: '30595410610'
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:main-latest
@@ -7799,6 +7813,7 @@ deployment:
       h0ci: pass
       uj032: pass
     notes:
+    - '2026-07-30 S031/EV-024 13-deploy-smoke COMPLETE — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0 LIVE; H0c/H1/H3/H4/H5 + EV-024 catalog + live convert PASS; D-S031-merge-close; #804/#807/#773'
     - '2026-07-30 S030/EV-023 13-deploy-smoke COMPLETE — PR #801 merged af98690; CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; #800'
     - '2026-07-30 S027/EV-021 13-deploy-smoke COMPLETE — PR #794 merged df56d1f; deploys dep-d9lmsdflk1mc739232ug
       / dep-d9lmsefqj5pc739d3it0; H1–H5 + live VAA/TCA smoke PASS; F26/F27 Done; #736/#737'
@@ -8042,6 +8057,44 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S031-merge-close
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: close_session
+  category: session-close
+  status: confirmed
+  topic: 'Phase 4 close — merge #813 + 13-deploy-smoke + close S031/EV-024'
+  summary: 'D-S031-merge-close (option 1) COMPLETE — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0 LIVE; H0c/H1/H3/H4/H5 + EV-024 catalog + live convert PASS; session archived; active_session=null'
+  decision: 'Phase 4 close S031/EV-024. D-S031-merge-close — user chose option 1: merge PR #813, run 13-deploy-smoke, then close. PR #813 merged 864783e; main CI 30595410610 SUCCESS including Deploy; API dep-d9lvcr2jnfac73bbn340 live; FE dep-d9lvcrrl550s73cuhvf0 live; H0c/H1/H3/H4/H5 PASS; EV-024 catalog strings in App chunk PASS; live convert PASS. Archive session; active_session=null; mark EV-024 completed. Artifacts: deploy-smoke.md, evolve-summary.md, docs/evolve-report-EV-024.md. #804/#807/#773.'
+  user_option: 1
+  related_prs:
+  - 813
+  related_pr: 813
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - D-S031-04-plan-approve
+  - D-S031-open
+  tip_sha: 864783e
+  tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
+  merge_sha: 864783e
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+  pr_status: merged
+  ci_run: '30595410610'
+  api_deploy: dep-d9lvcr2jnfac73bbn340
+  fe_deploy: dep-d9lvcrrl550s73cuhvf0
+  close_note: 'Phase 4 close 2026-07-30 — EV-024/S031 complete; PR #813 864783e; smoke PASS; #804/#807/#773'
+  artifact:
+  - docs/sessions/S031-iwxxm-domain-mine/reports/deploy-smoke.md
+  - docs/sessions/S031-iwxxm-domain-mine/reports/evolve-summary.md
+  - docs/evolve-report-EV-024.md
 - id: D-S031-04-plan-approve
   date: '2026-07-30'
   timestamp: '2026-07-30'
@@ -23542,10 +23595,11 @@ evolve_cycles:
   - F13
   - F25
   title: "IWXXM domain mine (#804 + #807 + #773)"
-  status: in_progress
+  status: completed
   started: '2026-07-30'
   started_at: '2026-07-30'
-  completed: null
+  completed: '2026-07-30'
+  completed_at: '2026-07-30'
   scope_summary: 'Domain mine #804+#807+#773; full ticket AC; exclude #806; discovery-first; child engine
     tickets later; Lean+build'
   github_issue: '804'
@@ -23585,9 +23639,10 @@ evolve_cycles:
       completed: '2026-07-30'
       note: Phase 0 locked E24-1..4
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-07-30'
-      note: 'Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1'
+      completed: '2026-07-30'
+      note: 'COMPLETE — Phase 4 close D-S031-merge-close; PR #813 864783e; 13 PASS'
     01-requirements:
       status: completed
       mode: delta
@@ -23628,34 +23683,57 @@ evolve_cycles:
       completed: '2026-07-30'
       note: catalog/validate smoke PASS (T7.2)
     11-verify-impl:
-      status: pending
+      status: skipped
       mode: optional
+      note: optional — not run (Lean+build preset)
     13-deploy-smoke:
-      status: deferred
+      status: completed
       mode: when_ships
-      note: 'D1 — after merge #813'
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      active_task: T7.3
+      active_task_status: completed
+      note: 'COMPLETE — PASS; PR #813 864783e; CI 30595410610; H0c/H1/H3/H4/H5 + catalog + convert'
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
-    phase_d: pending
-    deploy: pending
+    phase_d: passed
+    deploy: passed
   adrs: []
   artifacts:
+  - path: docs/sessions/S031-iwxxm-domain-mine/reports/deploy-smoke.md
+    status: completed
+    session_id: S031-iwxxm-domain-mine
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    overall: pass
+    tip_sha: 864783e
+    note: 'T7.3 PASS — PR #813 864783e; H0c/H1/H3/H4/H5 + catalog + convert'
+  - path: docs/sessions/S031-iwxxm-domain-mine/reports/evolve-summary.md
+    status: completed
+    session_id: S031-iwxxm-domain-mine
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'EV-024 cycle complete; Phase 4 close D-S031-merge-close 2026-07-30'
+  - path: docs/evolve-report-EV-024.md
+    status: completed
+    session_id: S031-iwxxm-domain-mine
+    note: evolve report EV-024
   - path: docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md
     status: written
-    note: T7.2 08+10 smoke PASS; tip 304df52
+    note: T7.2 08+10 smoke PASS
   - path: docs/sessions/S031-iwxxm-domain-mine/reports/domain-mine-theme-map.md
     status: written
     note: T0.1 theme map
   - path: docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
     status: approved
-    note: 'COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; PR #813 open'
+    note: 'COMPLETE — T0.1–T7.3; PR #813 merged 864783e'
   - path: docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
     status: written
     note: PASS — Batch F 1,1,1; Gate A Lean → 04 (D-S031-02-phase-a)
@@ -23692,13 +23770,24 @@ evolve_cycles:
   - E24-T4
   - E24-T5
   - D-S031-04-plan-approve
+  - D-S031-merge-close
+  active_milestone: M7
+  active_task: null
+  active_task_status: completed
+  progress: 22/22
+  pushed: true
   pr_number: 813
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-  pr_status: open
-  note: 'S031/EV-024 in_progress — Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
-  tip_sha: 681436a
-  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+  pr_status: merged
+  merge_sha: 864783e
+  pr_title: '[EV-024] IWXXM domain mine + WMO reference sample menu (S031 / #804 #807 #773)'
+  do_not_auto_merge: false
+  close_decision_id: D-S031-merge-close
+  note: 'EV-024 COMPLETE — Phase 4 close D-S031-merge-close 2026-07-30; PR #813 864783e; CI 30595410610; H0c/H1/H3/H4/H5 + catalog + convert PASS; session closed; #804/#807/#773'
+  tip_sha: 864783e
+  tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
   notes:
+  - '2026-07-30 S031/EV-024 Phase 4 close D-S031-merge-close — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0 LIVE; H0c/H1/H3/H4/H5 + EV-024 catalog + live convert PASS; session archived; active_session=null; #804/#807/#773'
   - '2026-07-30 S031/EV-024 tip bump 681436a — chore: sync workflow-state after Phase C; CI GREEN on PR #813 (Deploy skipped); awaiting merge approval; session/cycle remain open; #804/#807/#773'
   - '2026-07-30 S031/EV-024 state-drift SYNC — tip 304df52; T0.1–T7.2 completed; T7.3 deferred D1; gates.c_to_d + phase_c passed; PR #813 open; CI watching; #804/#807/#773'
   - '2026-07-30 S031/EV-024 04 COMPLETE → 07 @ T0.1 (E24-T1..T5=1,1,2,2,1 / D-S031-04-plan-approve) — gates.b_to_c + phase_b passed; #804/#807/#773'
@@ -23710,18 +23799,19 @@ evolve_cycles:
   - '2026-07-30 S031/EV-024 OPEN — Phase 0 locked E24-1..4; deepen F6/F2/F4/F12/F13/F25; Lean+build approved;
     handoff 01-requirements; branch evolve/EV-024-iwxxm-domain-mine; tip deb43cf; #804/#807/#773'
 git_history:
-  current_branch: evolve/EV-024-iwxxm-domain-mine
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: 681436a
-  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+  tip_sha: 864783e
+  tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
   pr_number: 813
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-  pr_status: open
-  merge_sha: null
-  note: 'S031/EV-024 tip 681436a; CI GREEN on PR #813; Phase C complete; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
+  pr_status: merged
+  merge_sha: 864783e
+  note: 'S031/EV-024 CLOSED — PR #813 merged 864783e; CI 30595410610; 13 PASS; active_session=null; #804/#807/#773'
   notes:
+  - '2026-07-30 S031/EV-024 Phase 4 close D-S031-merge-close — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0; H0c/H1/H3/H4/H5 + catalog + convert PASS; session archived; #804/#807/#773'
   - '2026-07-30 S031/EV-024 tip bump 681436a — workflow-state sync commit; CI GREEN on PR #813 (required checks pass; Deploy skipped); awaiting merge approval; #804/#807/#773'
   - '2026-07-30 S031/EV-024 state-drift SYNC — tip 304df52; PR #813 open; T0.1–T7.2 atomic commits landed; T7.3 deferred D1; branch pushed; #804/#807/#773'
   - '2026-07-30 S031/EV-024 OPEN — branch evolve/EV-024-iwxxm-domain-mine recorded active (base main @
@@ -25026,22 +25116,37 @@ git_history:
   - name: evolve/EV-024-iwxxm-domain-mine
     purpose: 'S031/EV-024 #804+#807+#773 IWXXM domain mine (discovery-first)'
     base: main
-    status: active
+    status: merged
     created: '2026-07-30'
     created_at: '2026-07-30'
+    merged_at: '2026-07-30'
     session_id: S031-iwxxm-domain-mine
     evolve_cycle_id: EV-024
-    note: 'S031/EV-024 tip 681436a; CI GREEN on PR #813; Phase C complete; awaiting merge approval; #804/#807/#773'
-    tip_sha: 681436a
-    tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+    note: 'S031/EV-024 PR #813 merged 864783e; 13-deploy-smoke PASS; EV-024 cycle complete; #804/#807/#773'
+    tip_sha: 864783e
+    tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
+    merge_sha: 864783e
     pushed: true
+    pr_id: PR-EV-024
     pr_number: 813
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-    pr_status: open
+    pr_title: '[EV-024] IWXXM domain mine + WMO reference sample menu (S031 / #804 #807 #773)'
     pr_base: main
     pr_head: evolve/EV-024-iwxxm-domain-mine
-    do_not_auto_merge: true
+    pr_status: merged
+    do_not_auto_merge: false
   commits:
+  - sha: 864783e
+    sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
+    branch: main
+    message: 'Merge pull request #813 from EMPIRIC2/evolve/EV-024-iwxxm-domain-mine'
+    stage: 13-deploy-smoke
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-31T01:05:39Z'
+    pushed: true
+    note: 'PR #813 merge; D-S031-merge-close; CI 30595410610; 13 PASS'
   - sha: 681436a
     sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
     branch: evolve/EV-024-iwxxm-domain-mine
