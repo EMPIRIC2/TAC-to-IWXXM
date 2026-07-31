@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M6 |
-| **Active task** | T6.1 (next) |
-| **Tasks** | 21 / 28 |
+| **Active milestone** | M7 |
+| **Active task** | T7.1 (next) |
+| **Tasks** | 25 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -107,10 +107,10 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | US fixtures never appear in WMO sample menu | TC-EV025-005 | T4.7 | pending |
-| T6.2 | Test | Malformed US REMARKS diagnostics | TC-EV025-006 | T4.7 | pending |
-| T6.3 | Test | Unparsed REMARKS remain in `humanReadableText` | TC-EV025-007 | T4.7 | pending |
-| T6.4 | Test | Combined-catalog validate smoke; SCH deferrals documented OK (S02.L1) — does **not** waive dig ❌ | TC-EV025-010 | T4.7 | pending |
+| T6.1 | Test | US fixtures never appear in WMO sample menu | TC-EV025-005 | T4.7 | **completed** |
+| T6.2 | Test | Malformed US REMARKS diagnostics | TC-EV025-006 | T4.7 | **completed** |
+| T6.3 | Test | Unparsed REMARKS remain in `humanReadableText` | TC-EV025-007 | T4.7 | **completed** |
+| T6.4 | Test | Combined-catalog validate smoke; SCH deferrals documented OK (S02.L1) — does **not** waive dig ❌ | TC-EV025-010 | T4.7 | **completed** |
 
 ### M7 — Gate C dig close + smoke
 
