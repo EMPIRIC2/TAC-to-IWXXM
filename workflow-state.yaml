@@ -37,7 +37,7 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 07-build
-  note: 'S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812); next T4.1 AerodromeWindShift; tip 2e25a37'
+  note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -54,7 +54,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: EV-025 orchestrator in_progress; Gate B approved; 07-build M3 COMPLETE @ tip 2e25a37; next T4.1 AerodromeWindShift; progress 11/28
+    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -81,7 +81,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-31'
-    note: 'S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors); next T4.1 AerodromeWindShift; tip 2e25a37; progress 11/28'
+    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5135,16 +5135,16 @@ stages:
     previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors); next T4.1 AerodromeWindShift; tip 2e25a37; progress 11/28'
-    tip_sha: 2e25a37
-    tip_sha_full: 2e25a37c5f14b8523646538417d27a60eeb17072
+    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+    tip_sha: 07d73e3
+    tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
     current_stage: M4
     current_milestone: M4
-    current_task: T4.1
+    current_task: T4.6
     active_milestone: M4
-    active_task: T4.1
+    active_task: T4.6
     active_task_status: pending
-    progress: 11/28
+    progress: 16/28
     pr_number: null
     pr_url: null
     pr_status: null
@@ -5163,11 +5163,12 @@ stages:
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812); next T4.1 AerodromeWindShift; tip 2e25a37'
+      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
       active_milestone: M4
       current_milestone: M4
-      active_task: T4.1
-      current_task: T4.1
+      active_task: T4.6
+      current_task: T4.6
+      active_task_status: pending
       deepen:
       - F6
       - F12
@@ -5182,12 +5183,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T4.1
+        current_task: T4.6
         active_task_status: pending
         active_milestone: M4
         phase: C
         milestone: M4
-        notes: 'M3 COMPLETE (T3.1–T3.3 #812); next T4.1 AerodromeWindShift; tip 2e25a37; progress 11/28'
+        notes: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
     delta_substages:
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
@@ -5199,16 +5200,16 @@ stages:
       completed: null
       completed_at: null
       mode: full
-      note: 'S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors); next T4.1 AerodromeWindShift; tip 2e25a37; progress 11/28'
+      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
       active_milestone: M4
       current_milestone: M4
-      active_task: T4.1
-      current_task: T4.1
+      active_task: T4.6
+      current_task: T4.6
       active_task_status: pending
-      progress: 11/28
+      progress: 16/28
       decision_id: D-S032-04-plan-approve
-      tip_sha: 2e25a37
-      tip_sha_full: 2e25a37c5f14b8523646538417d27a60eeb17072
+      tip_sha: 07d73e3
+      tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
       branch: evolve/EV-025-iwxxm-us-remarks-va
       deepen:
       - F6
@@ -5524,6 +5525,15 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.5 STARTED — MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem; tip 30d37a1; progress 15/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.4 COMPLETE (VariableCeilingHeight / VariableSky / VariableVisibility) @ 30d37a1 — next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.4 STARTED — VariableCeilingHeight / VariableSky / VariableVisibility; tip e4a0383; progress 14/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.3 COMPLETE (Sector / Obscurations / SecondLocation / TowerVisibility) @ e4a0383 — next T4.4 VariableCeilingHeight / VariableSky / VariableVisibility; progress 14/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.3 STARTED — Sector / Obscurations / SecondLocation / TowerVisibility; tip cc3c40f; progress 13/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.2 COMPLETE (CharacterOfTheSky / convective clouds / HailstoneSize) @ cc3c40f — next T4.3 Sector / Obscurations / SecondLocation / TowerVisibility; progress 13/28; commits bfd8659/cc3c40f; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.1 COMPLETE (AerodromeWindShift / TC-EV025-004) @ bfd8659 — PeakWind already ✅ (no deepen); next T4.2 CharacterOfTheSky / CloudTypes / ConvectiveCloud* / HailstoneSize; progress 12/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.1 in_progress (AerodromeWindShift / TC-EV025-004); M3 done tip 0a268d3; progress 11/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors) — tip 2e25a37; next T4.1 AerodromeWindShift; progress 11/28; commits 2b51859/d4a6421/55fce51/2e25a37; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T3.1+T3.2 done (#812 encode) — tip d4a6421; next T3.3 matrix green; progress 10/28; commits 2b51859/d4a6421; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M2 COMPLETE (T2.1–T2.3 #811 Lightning/VOP) — tip 5ebc70b; next T3.1 #812 SnowIncrease/sensors; progress 8/28; #810/#811/#812/#809'
@@ -7594,9 +7604,18 @@ stages:
     completed_at: null
     completed: null
     current_stage: 07-build
-    note: 'S032/EV-025 07-build — M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors); next T4.1 AerodromeWindShift; tip 2e25a37; progress 11/28'
-    prior_note: 'S032/EV-025 07-build — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421; progress 10/28'
+    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+    prior_note: 'S032/EV-025 07-build — T4.5 in_progress (MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem); tip 30d37a1; progress 15/28'
     notes:
+    - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.5 STARTED — MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem; tip 30d37a1; progress 15/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.4 COMPLETE (VariableCeilingHeight / VariableSky / VariableVisibility) @ 30d37a1 — next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.4 STARTED — VariableCeilingHeight / VariableSky / VariableVisibility; tip e4a0383; progress 14/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.3 COMPLETE (Sector / Obscurations / SecondLocation / TowerVisibility) @ e4a0383 — next T4.4 VariableCeilingHeight / VariableSky / VariableVisibility; progress 14/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.3 STARTED — Sector / Obscurations / SecondLocation / TowerVisibility; tip cc3c40f; progress 13/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.2 COMPLETE (CharacterOfTheSky / convective clouds / HailstoneSize) @ cc3c40f — next T4.3 Sector / Obscurations / SecondLocation / TowerVisibility; progress 13/28; commits bfd8659/cc3c40f; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.1 COMPLETE (AerodromeWindShift / TC-EV025-004) @ bfd8659 — PeakWind already ✅ (no deepen); next T4.2 CharacterOfTheSky / CloudTypes / ConvectiveCloud* / HailstoneSize; progress 12/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.1 in_progress (AerodromeWindShift / TC-EV025-004); M3 done tip 0a268d3; progress 11/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors) — tip 2e25a37; next T4.1 AerodromeWindShift; progress 11/28; commits 2b51859/d4a6421/55fce51/2e25a37; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M2 COMPLETE (T2.1–T2.3 #811 Lightning/VOP) — tip 5ebc70b; next T3.1 #812 SnowIncrease/sensors; progress 8/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T2.1 in_progress (#811 Lightning/VOP red goldens TC-EV025-002); M0+M1 done tip 9d1e49a; #810/#811/#812/#809'
@@ -24183,7 +24202,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: Orchestrator in_progress; Gate B approved; 07-build M3 COMPLETE @ tip 2e25a37; next T4.1; progress 11/28
+      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24213,13 +24232,15 @@ evolve_cycles:
       started: '2026-07-31'
       started_at: '2026-07-31'
       mode: full
+      current_stage: M4
       current_milestone: M4
-      current_task: T4.1
-      progress: 11/28
-      tip_sha: 2e25a37
-      tip_sha_full: 2e25a37c5f14b8523646538417d27a60eeb17072
+      current_task: T4.6
+      active_task: T4.6
+      progress: 16/28
+      tip_sha: 07d73e3
+      tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
       active_task_status: pending
-      note: 'S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors); next T4.1 AerodromeWindShift; tip 2e25a37; progress 11/28'
+      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
     08-verify-build:
       status: pending
     10-e2e:
@@ -24255,7 +24276,23 @@ evolve_cycles:
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+  active_milestone: M4
+  current_task: T4.6
+  active_task: T4.6
+  active_task_status: pending
+  progress: 16/28
+  tip_sha: 07d73e3
+  tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
   notes:
+  - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.5 STARTED — MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem; tip 30d37a1; progress 15/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.4 COMPLETE (VariableCeilingHeight / VariableSky / VariableVisibility) @ 30d37a1 — next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.4 STARTED — VariableCeilingHeight / VariableSky / VariableVisibility; tip e4a0383; progress 14/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.3 COMPLETE (Sector / Obscurations / SecondLocation / TowerVisibility) @ e4a0383 — next T4.4 VariableCeilingHeight / VariableSky / VariableVisibility; progress 14/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.3 STARTED — Sector / Obscurations / SecondLocation / TowerVisibility; tip cc3c40f; progress 13/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.2 COMPLETE (CharacterOfTheSky / convective clouds / HailstoneSize) @ cc3c40f — next T4.3 Sector / Obscurations / SecondLocation / TowerVisibility; progress 13/28; commits bfd8659/cc3c40f; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.1 COMPLETE (AerodromeWindShift / TC-EV025-004) @ bfd8659 — PeakWind already ✅ (no deepen); next T4.2 CharacterOfTheSky / CloudTypes / ConvectiveCloud* / HailstoneSize; progress 12/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.1 in_progress (AerodromeWindShift / TC-EV025-004); M3 done tip 0a268d3; progress 11/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 M3 COMPLETE (T3.1–T3.3 #812 SnowIncrease/sensors) — tip 2e25a37; next T4.1 AerodromeWindShift; progress 11/28; commits 2b51859/d4a6421/55fce51/2e25a37; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T3.1+T3.2 done (#812 encode) — tip d4a6421; next T3.3 matrix green; progress 10/28; commits 2b51859/d4a6421; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 M2 COMPLETE (T2.1–T2.3 #811 Lightning/VOP) — tip 5ebc70b; next T3.1 #812 SnowIncrease/sensors; progress 8/28; #810/#811/#812/#809'
@@ -24272,14 +24309,21 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: 2e25a37
-  tip_sha_full: 2e25a37c5f14b8523646538417d27a60eeb17072
+  tip_sha: 07d73e3
+  tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'S032/EV-025 tip 2e25a37 — M3 COMPLETE (T3.1–T3.3 #812); next T4.1 AerodromeWindShift; progress 11/28; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
+  note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — 07d73e3 (07d73e3a73b66c7f0f561019f778e9386bb47dec); "[T4.5] feat: encode MaxMinTemperatures, precip ProcessedProperty, AO codelists"; T4.5 COMPLETE; next T4.6 pending (Addendum residuals + RecentWeather); progress 16/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — 30d37a1 (30d37a1a3f22a7ee7cef930f1c3bea5ac9c0843a); "[T4.4] feat: encode VariableCeilingHeight, VariableSky, VariableVisibility"; T4.4 COMPLETE; next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.4 STARTED — VariableCeilingHeight / VariableSky / VariableVisibility; tip e4a0383 unchanged; progress 14/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — e4a0383 (e4a038339d968217b928ba3d10cf3a4e5cbffef5); "[T4.3] feat: encode SectorVisibility, Obscurations, second-site, TowerVisibility"; T4.3 COMPLETE; next T4.4 VariableCeilingHeight / VariableSky / VariableVisibility; progress 14/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — cc3c40f (cc3c40fcd0be03e9b0b76990be4518ba78aa5eff); "[T4.2] feat: encode CharacterOfTheSky, convective clouds, HailstoneSize"; T4.2 COMPLETE; next T4.3 Sector / Obscurations / SecondLocation / TowerVisibility; progress 13/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — bfd8659 (bfd865956407cfd73523e7d73426e2b29e3bcca6); "[T4.1] feat: encode iwxxm-us AerodromeWindShift from WSHFT/FROPA"; T4.1 COMPLETE; PeakWind no deepen; next T4.2 CharacterOfTheSky / CloudTypes / ConvectiveCloud* / HailstoneSize; progress 12/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — 0a268d3 (0a268d385aeac9d2b6274939ed728d8e2211158c); "[S032] chore: record M3 complete tip in workflow-state"; T4.1 AerodromeWindShift in_progress; progress 11/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 2e25a37 (2e25a37c5f14b8523646538417d27a60eeb17072); "[S032] chore: record M2–M3 tip shas in workflow-state"; M3 COMPLETE T3.1–T3.3 #812; next T4.1 AerodromeWindShift; progress 11/28; recorded 55fce51/2e25a37; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — d4a6421 (d4a642182eeaf44783818dab02118138b3e52348); "[T3.2] feat: encode iwxxm-us SnowIncrease and InoperativeSensors"; T3.1+T3.2 done; next T3.3; progress 10/28; recorded 2b51859/d4a6421; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 5ebc70b (5ebc70bd19252fc200e121608a1d6632d5b7b80d); "[T2.3] docs: mark #811 Lightning / VOP encode green in matrices"; M2 COMPLETE T2.1–T2.3; next T3.1 #812; progress 8/28; #810/#811/#812/#809'
@@ -25623,11 +25667,107 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 tip 2e25a37 — M3 COMPLETE (T3.1–T3.3 #812); next T4.1; progress 11/28; #810/#811/#812/#809'
-    tip_sha: 2e25a37
-    tip_sha_full: 2e25a37c5f14b8523646538417d27a60eeb17072
+    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+    tip_sha: 07d73e3
+    tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
     pushed: false
   commits:
+  - sha: 07d73e3
+    sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T4.5] feat: encode MaxMinTemperatures, precip ProcessedProperty, AO codelists"
+    stage: "07-build"
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/domain/IWXXM_CONVERSION.md
+    - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+    - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
+    - packages/tac2iwxxm/tests/test_tc_ev025_004_maxmin_processed.py
+    timestamp: '2026-07-31T15:30:00Z'
+    pushed: false
+    note: 'T4.5 MaxMinTemperatures + ProcessedProperty + ObservingSystem encode; progress 16/28'
+  - sha: 30d37a1
+    sha_full: 30d37a1a3f22a7ee7cef930f1c3bea5ac9c0843a
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T4.4] feat: encode VariableCeilingHeight, VariableSky, VariableVisibility"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+    - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
+    - packages/tac2iwxxm/tests/test_tc_ev025_004_variable_cig_sky_vis.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T4.4 VariableCeilingHeight / VariableSky / VariableVisibility encode; progress 15/28'
+  - sha: e4a0383
+    sha_full: e4a038339d968217b928ba3d10cf3a4e5cbffef5
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T4.3] feat: encode SectorVisibility, Obscurations, second-site, TowerVisibility"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+    - packages/tac2iwxxm/tests/test_tc_ev025_004_sector_obscuration_tower.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T4.3 SectorVisibility / Obscurations / SecondLocation / TowerVisibility encode; progress 14/28'
+  - sha: cc3c40f
+    sha_full: cc3c40fcd0be03e9b0b76990be4518ba78aa5eff
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T4.2] feat: encode CharacterOfTheSky, convective clouds, HailstoneSize"
+    stage: 07-build / 16-evolve
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+    - packages/tac2iwxxm/tests/test_tc_ev025_004_sky_convective_hail.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T4.2 CharacterOfTheSky / ConvectiveCloud* / HailstoneSize encode; progress 13/28'
+  - sha: bfd8659
+    sha_full: bfd865956407cfd73523e7d73426e2b29e3bcca6
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T4.1] feat: encode iwxxm-us AerodromeWindShift from WSHFT/FROPA"
+    stage: 07-build / 16-evolve
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+    - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
+    - packages/tac2iwxxm/tests/test_tc_ev025_004_wind_shift.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T4.1 AerodromeWindShift encode from WSHFT/FROPA; PeakWind already ✅ (no deepen); progress 12/28'
   - sha: 2e25a37
     sha_full: 2e25a37c5f14b8523646538417d27a60eeb17072
     branch: evolve/EV-025-iwxxm-us-remarks-va
