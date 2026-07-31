@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-30 (S030 / EV-023 — TC-EV023-001..009 #800)
+> **Last updated**: 2026-07-30 (S031 / EV-024 — TC-EV024-001..008 #804/#807/#773)
 
 ## Scope
 
@@ -87,6 +87,7 @@ Unified manual live test harness against Render staging:
 | UJ-036 | F25 | WMO-passing Examples + METAR/SPECI/TAF goldens | H4–H5 if FE | TC-F25-001..004 |
 | UJ-037 | F26 | VAA registry + WMO golden (defaults) | H4–H5 if FE | TC-F26-001..006 |
 | UJ-038 | F27 | TCA registry + WMO golden (defaults) | H4–H5 if FE | TC-F27-001..006 |
+| UJ-039 | F25/F7.g deepen | Load official WMO examples from sample menu | H4–H5 if FE | TC-EV024-004..006 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -957,6 +958,83 @@ Before closing S013 / EV-009:
 - [ ] TC-EV023-007..009 green or deferred with rationale (P2)
 - [ ] Informative translation suite does not fail CI on 2023-1 XML byte diffs
 - [ ] 13-deploy-smoke when convert/validate behavior ships (E23-4)
+
+## EV-024 / S031 — IWXXM domain mine + WMO sample menu (#804 / #807 / #773)
+
+### TC-EV024-001: #804 folder×relevancy + examples matrix
+
+- **Level**: T0 (docs / mining)
+- **Objective**: Every path under vendor/pin `IWXXM/` (+ sibling triage) has an explicit
+  relevancy call; every official example stem has a surface decision
+  (validate / convert / UI catalog / defer)
+- **Pass criteria**: Mining notes exist and are indexed in `docs/domain/mining/README.md`
+- **Source**: #804; E24-3=3a
+
+### TC-EV024-002: #807 org / sibling refresh
+
+- **Level**: T0 (docs / mining)
+- **Objective**: wmo-im org ranking refreshed vs pin v2025-2; IWXXM family + encode-adjacent
+  lineage re-checked; WIS2/#806 explicitly out
+- **Pass criteria**: Org mining notes updated; durable rows promoted or deferred with rationale
+- **Source**: #807; E24-x exclude #806
+
+### TC-EV024-003: #773 IWXXM-US / MDL coverage checklist
+
+- **Level**: T0 (docs / mining)
+- **Objective**: METAR/SPECI (and TAF companion) model types mapped TAC×encode×validate×fixture;
+  RULE_SOURCE_URLS rows for PDF + modelling + VLab
+- **Pass criteria**: Mining notes + catalog rows; US examples not mixed into WMO catalog
+- **Source**: #773; F6.b
+
+### TC-EV024-004: Sample menu lists official WMO stems (UJ-039)
+
+- **Level**: T0 / T2
+- **Objective**: Product-in-scope official WMO stems with TAC peers appear in Examples /
+  sample menu (strict passer **or** WMO reference tier per ADR-032 amend)
+- **Pass criteria**: Catalog Vitest / `FIXTURE_GAPS.md` accurate; provenance to vendor paths;
+  translation-failed excluded from happy-path
+- **Source**: E24-C; UJ-039; #804
+
+### TC-EV024-005: Load WMO sample into editor (UJ-039)
+
+- **Level**: T0 / T2
+- **Objective**: Selecting a registered WMO sample loads TAC into the workbench editor with
+  correct product and non-operational provenance banner
+- **Pass criteria**: Unit/smoke green for ≥1 stem per in-scope product that has a TAC peer
+  (or documented defer + child issue)
+- **Source**: UJ-039; F7.g deepen
+
+### TC-EV024-006: Strict vs reference badge (UJ-039 / UJ-036 deepen)
+
+- **Level**: T0
+- **Objective**: UI/catalog metadata distinguishes `wmoPass` (ADR-032 equality) from WMO
+  reference samples
+- **Pass criteria**: Catalog tests assert both tiers; no silent demotion of strict bar
+- **Source**: ADR-032 amend; E24-C
+
+### TC-EV024-007: Validate/CI wire in-scope stems
+
+- **Level**: T0 / T2
+- **Objective**: In-scope WMO stems exercised on validate (and convert soft-compare where TAC
+  exists) or explicitly deferred with child issue
+- **Pass criteria**: Coverage report / pytest expands beyond prior subset; roadmap-only marked
+- **Source**: #804; E24-C=C1 portion
+
+### TC-EV024-008: Durable promotions + child issues
+
+- **Level**: T0
+- **Objective**: Durable findings promoted; ❌/⚠ encode/lint/SCH gaps filed as child issues
+  (link #800 / quality tickets); no big-bang encode in this cycle
+- **Pass criteria**: PR checklist + issue comments on #804/#807/#773 with links
+- **Source**: E24-3=3a; discovery-first archetype
+
+### EV-024 verify/deploy gate
+
+- [ ] TC-EV024-001..003 mining deliverables complete
+- [ ] TC-EV024-004..006 sample menu / UJ-039 green
+- [ ] TC-EV024-007 validate/CI wire or deferrals with children
+- [ ] TC-EV024-008 promotions + child issues filed
+- [ ] 13-deploy-smoke when catalog/API behavior ships (E24-4)
 
 ## F9 deepen (S026 / EV-020) — glossary registry
 

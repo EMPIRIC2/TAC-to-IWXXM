@@ -23,9 +23,16 @@ diverge structurally. Separately, decode explanations for SIGMET/AIRMET use cate
    non-default profiles, alternate IWXXM versions, or special flags. Encoder may use stable
    `gml:id` strategy as needed for equality (same pattern as F23). Applies to VAA
    (`va-advisory-A7-2`) and TCA (`tc-advisory-A2-2`) under S027 / EV-021 (E21-2).
-2. **UI catalog gate (F7.g deepen)**: Examples control lists **only** demos that pass (1) for
-   in-scope products; SIGMET keepers retained; translation-failed WMO fixtures are not
-   happy-path Examples.
+2. **UI catalog gate (F7.g deepen)** — **amended S031 / EV-024 (E24-C)**:
+   - **Strict passers** (`wmoPass`): demos that satisfy (1) for in-scope products; SIGMET
+     keepers retained.
+   - **WMO reference samples** (EV-024): official WMO example stems with TAC peers for
+     product-in-scope may appear in the Examples / sample menu and **load TAC into the
+     workbench** even when convert is not yet `canonicalize_xml`-equal. UI must distinguish
+     strict passers from reference samples (badge / copy). Encode gaps stay on child issues.
+   - **Still excluded** from happy-path Examples: translation-failed / quarantine WMO fixtures;
+     IWXXM-US examples in the WMO catalog; roadmap-only IWXXM-only products (WAFS/QVACI)
+     unless a later decision opts them in.
 3. **Extensible decode glossary (F9 deepen)**: Prefer **official / near-official** token
    meanings (WMO code lists, Annex 3 / Manual on Codes cites, in-repo domain tables, F3 /
    OpenAIP names when resolvable). Ship a versioned YAML/JSON file as **overrides / additions**
@@ -53,3 +60,6 @@ diverge structurally. Separately, decode explanations for SIGMET/AIRMET use cate
 - Multi-milestone encode work for METAR/SPECI/TAF/AIRMET under F25/F24.
 - New package data file(s) for glossary; config-spec documents path/override if any.
 - 11-verify-impl signs off F24/F25 AC explicitly (routing C=1).
+- **EV-024**: Sample menu can grow with official WMO reference stems without waiting for
+  encode equality; operators must still see which demos are strict passers vs reference.
+  `FIXTURE_GAPS.md` / catalog tests track both tiers (**UJ-039** / TC-EV024-*).

@@ -53,6 +53,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-036 | WMO-passing Examples catalog + METAR/SPECI/TAF goldens | apps/frontend / CI | F25 (+F7.g) | T0 / T2 / **T3** / H4–H5 |
 | UJ-037 | VAA lint / convert→validate WMO golden | UI / API / CI | F26 (+F6.f/F12) | T0 / T2 / **T3** |
 | UJ-038 | TCA lint / convert→validate WMO golden | UI / API / CI | F27 (+F6.f/F12) | T0 / T2 / **T3** |
+| UJ-039 | Load official WMO IWXXM examples from sample menu | apps/frontend / CI | F25/F7.g deepen (EV-024) | T0 / T2 / **T3** / H4–H5 |
 | — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -929,27 +930,70 @@ IWXXM example **under default convert settings** (`profile=annex3`, default pinn
 **Actor**: Operator / CI maintainer
 
 **Goal**: METAR/SPECI/TAF convert matches WMO vendor XML under **default** settings; workbench
-**Examples** control offers **only** demos that pass that bar (plus SIGMET keepers from F23;
-AIRMET when F24 passes). Non-passers removed/hidden.
+**Examples** marks **strict passers** (`wmoPass`) for demos that pass that bar (plus SIGMET
+keepers from F23; AIRMET when F24 passes). **EV-024 deepen**: official WMO stems that are not
+yet equal may still appear as **WMO reference** samples — see **UJ-039** / ADR-032 amend.
+Translation-failed fixtures remain excluded from happy-path Examples.
 
-**Feature**: F25 (+ deepen F6 / F7.g / F15 / F20) — S026 / EV-020
+**Feature**: F25 (+ deepen F6 / F7.g / F15 / F20) — S026 / EV-020; catalog tiers S031 / EV-024
 
 **Steps (operator)**:
 
-1. Open **Examples** — only WMO-passing (or documented keepers) appear for in-scope products.
+1. Open **Examples** — strict passers and (when EV-024 ships) WMO reference samples for
+   in-scope products; UI distinguishes the two.
 2. Load METAR / SPECI / TAF / SIGMET / AIRMET (when ready) WMO example — editor + product set;
    demo banner shows non-operational provenance pointing at vendor (or mirrored fixture).
-3. Convert → Strict Validation succeeds; decode shows glossary English (UJ-020 deepen).
+3. For strict passers: Convert → Strict Validation succeeds; decode shows glossary English
+   (UJ-020 deepen). Reference samples may not convert-equal yet.
 
 **Steps (CI)**:
 
-1. Golden pack: listed WMO TAC→XML cases equal under defaults + `canonicalize_xml`.
-2. Catalog unit tests: no non-passing in-scope demo ids; provenance policy enforced.
-3. Deepen TC-F7-008 for WMO-only policy.
+1. Golden pack: listed WMO TAC→XML cases equal under defaults + `canonicalize_xml` (strict).
+2. Catalog unit tests: provenance policy; tier badges; no translation-failed in happy-path.
+3. Deepen TC-F7-008; **UJ-039** / TC-EV024 for expanded sample menu.
 
-**Acceptance**: TC-F25-001..004 green; H4–H5 when FE redeployed.
+**Acceptance**: TC-F25-001..004 green; H4–H5 when FE redeployed; EV-024 sample menu via UJ-039.
 
-**Automated tests**: TC-F25-*; TC-F7-008 deepen; TC-F9 deepen.
+**Automated tests**: TC-F25-*; TC-F7-008 deepen; TC-F9 deepen; TC-EV024-*.
+
+---
+
+### UJ-039: Load Official WMO IWXXM Examples from Sample Menu (S031 / EV-024)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Official WMO IWXXM package examples (vendor pin `IWXXM/examples/`, product-in-scope
+stems with TAC peers) are available from the workbench **Examples / sample menu** and load
+into the editor. Operators can try the real WMO corpus without waiting for encode parity.
+Strict passers remain badged; non-equal official stems load as **WMO reference** samples.
+Encode/lint/SCH gaps are tracked as child issues — not blocked by menu listing.
+
+**Feature**: Deepen F25 / F7.g (+ F6/F2 wiring) — S031 / EV-024 · Issues #804 / #807 / #773
+(exclude #806)
+
+**Steps (operator)**:
+
+1. Open **Examples / sample menu** — see official WMO stems for in-scope products (beyond the
+   prior subset), each with provenance to vendor / mirrored fixture paths.
+2. Distinguish **strict passer** vs **WMO reference** (badge or equivalent copy).
+3. Select a stem → TAC loads into the editor; product/profile set appropriately; banner shows
+   non-operational / WMO-example provenance.
+4. Optionally convert / validate — reference samples need not be `canonicalize_xml`-equal yet.
+5. Confirm translation-failed / quarantine examples are **not** offered as happy-path samples.
+6. Confirm IWXXM-US examples are **not** mixed into the WMO sample list.
+
+**Steps (CI)**:
+
+1. Catalog Vitest: in-scope WMO stems with TAC peers are registered (or explicitly deferred in
+   `FIXTURE_GAPS.md` with rationale + child issue link).
+2. Load-path unit/smoke: selecting a registered stem populates editor body from fixture.
+3. Validate/CI matrix covers wired stems (TC-EV024 validate surface).
+4. H4–H5 when FE catalog ships to deployed static site.
+
+**Acceptance**: TC-EV024-004..006 green; deepen TC-F25-003 / TC-F7-008; `FIXTURE_GAPS.md`
+accurate; ADR-032 amend honored.
+
+**Automated tests**: TC-EV024-*; TC-F25-003 deepen; examplesCatalog Vitest.
 
 ---
 
@@ -970,7 +1014,8 @@ diagnostics on negatives. Never confuse with VA SIGMET (`iwxxm:VolcanicAshSIGMET
 2. Load / paste WMO VAA accept TAC; lint — registry codes only.
 3. Convert → Strict Validation — pass; root `iwxxm:VolcanicAshAdvisory`.
 4. Paste a known-bad VAA negative — lint returns registry codes (no silent success).
-5. Examples control lists VAA demos **only** when they pass the golden bar (E21-3).
+5. Examples control lists VAA **strict passers** when they pass the golden bar (E21-3);
+   additional official WMO VAA stems may load as **reference** samples per **UJ-039** / ADR-032 amend.
 
 **Steps (CI — T0)**:
 
@@ -1001,7 +1046,8 @@ under defaults; XSD+Schematron pass; negatives diagnostic. Never confuse with TC
 2. Load / paste WMO TCA accept TAC; lint — registry codes only.
 3. Convert → Strict Validation — pass; root `iwxxm:TropicalCycloneAdvisory`.
 4. Paste a known-bad TCA negative — lint returns registry codes.
-5. Examples control lists TCA demos **only** when they pass the golden bar (E21-3).
+5. Examples control lists TCA **strict passers** when they pass the golden bar (E21-3);
+   additional official WMO TCA stems may load as **reference** samples per **UJ-039** / ADR-032 amend.
 
 **Steps (CI — T0)**:
 

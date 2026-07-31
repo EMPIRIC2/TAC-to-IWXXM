@@ -3,6 +3,85 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-024 — IWXXM domain mine (#804 + #807 + #773) (S031)
+
+**Session**: S031-iwxxm-domain-mine  
+**Features**: Deepen **F6** / **F2** / **F4** / **F12** / **F13** / **F25** (+ **F6.b** US map via #773) — no new Fn  
+**Issues**: [#804](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/804), [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807), [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773) — **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)  
+**Started**: 2026-07-30  
+**Branch**: `evolve/EV-024-iwxxm-domain-mine`  
+**Status**: **in_progress** (Phase 0–1 locked → **01-requirements**)
+
+### Scope (Phase 0 — locked 2026-07-30)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E24-1 | decision | Session open? | **1a+Build** — open feature session via 00-context; Lean+build path |
+| E24-2 | decision | Issue set? | **2b** — #804 + #807 + #773 (IWXXM-US/MDL in same cycle) |
+| E24-3 | decision | Depth / deliverables? | **3a** — full ticket acceptance: mining notes + relevancy/examples matrices + in-scope fixture/catalog wiring + durable doc promotions + child engine issues |
+| E24-4 | decision | Routing preset? | **4b** — Lean+build `00→16→01→02→04→07→08→10`; skip 03/05/06/09/12; **11** optional; **13** when catalog/API ships |
+| E24-x | decision | Exclude? | **#806** — F8/F17 WIS2 lane (user locked) |
+| E24-ui | decision | Non-deployed UI preview? | **UIb** — No; proceed from docs/repo only (2026-07-30); re-offer at 11 if catalog ships |
+| E24-M | decision | 01 Document Manifest? | **M3** — lean delta + **new UJ-039** (not only deepen UJ-036); skip Spec/Config/API/Deploy |
+| E24-C | decision | Catalog / fixture policy? | **C3+C2+C1 hybrid** — discovery + validate/CI wire + **WMO IWXXM examples loadable from sample menu**; strict `wmoPass` vs WMO reference tiers; ADR-032 amend; encode gaps → child issues (do not block menu listing) |
+| E24-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** |
+| S02.M1 | decision | Catalog reference field? | **1** — defer to **04**; prefer `wmoReference?: boolean` (`D-S031-EV024-s02m1-1`) |
+| S02.M2 | decision | Which stems in sample menu? | **1** — product-in-scope + TAC peers; SWX/VONA/WAFS/QVACI deferred (`D-S031-EV024-s02m2-1`) |
+| S02.L1 | decision | Vitest catalog policy? | **1** — amend tests in **07** for pass **or** reference (`D-S031-EV024-s02l1-1`) |
+| E24-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,1,1; Lean → **04-tech-plan** (`D-S031-02-phase-a`) |
+| E24-T1 | decision | Milestone order? | **1** — M0→#804→#807→#773→promote→catalog→validate→children/smoke |
+| E24-T2 | decision | Badge UX? | **1** — “WMO passer” vs “WMO reference”; no new route |
+| E24-T3 | decision | New deps? | **2** — AskQuestion per new dep (prefer none) |
+| E24-T4 | decision | Mine parallelism? | **2** — sequential M1→M2→M3 |
+| E24-T5 | decision | Approve plan → 07? | **1** — M0–M7 approved; B→C → 07 @ T0.1 |
+
+**Scope (verbatim)**:
+Domain mine (strongest bundle): deep IWXXM/ tree ingest (#804) vs org-level sibling refresh
+for encode/validate (#807), plus IWXXM-US / MDL (#773). Same archetype as #800 prep —
+discovery-first; child engine tickets later. Full ticket acceptance (3a). Keep #806 out.
+**Operator ask (E24-C)**: WMO IWXXM examples must be loadable from the sample menu (UJ-039).
+
+**In:**
+- #804 folder-by-folder relevancy + official examples matrix + wire in-scope stems
+- #807 org/sibling refresh (iwxxm family + lineage; skip WIS2)
+- #773 METAR/SPECI PDF + modelling coverage checklist + RULE_SOURCE_URLS / COVERAGE_MATRIX
+- Sample menu: official WMO stems with TAC peers (strict passer **or** WMO reference)
+- Promote durable findings; file child issues for ❌/⚠ encode/lint/SCH gaps
+
+**Out:**
+- #806 WIS2; new product encode engines this cycle; hand-edit vendor schemas; USWX;
+  mixing US examples into WMO catalog; committing PDF/full clones;
+  translation-failed as happy-path Examples
+
+### Fn allocation (approved)
+
+| Fn | Role |
+|----|------|
+| Deepen **F6** / **F6.b** | Convert goldens + US RMK→iwxxm-us map from #773 (wiring/docs; engine gaps → children) |
+| Deepen **F2** / **F13** | Validate fixtures / Schematron relevancy from package `rule/` + examples |
+| Deepen **F4** | Pin vs tip drift notes; version-aware example surfaces |
+| Deepen **F12** | Lint citation / registry rows where mining promotes durable TAC rules |
+| Deepen **F25** / **F7.g** | Expand sample menu (UJ-039) + strict vs reference tiers (ADR-032 amend) |
+
+### Routing (approved)
+
+Lean+build + **13 when ships**: `00→16→01→02→04→07→08→10` (+ `13` if catalog/API ships).  
+Build skills: `mine-domain-sources`, `extract-pdf-to-repo`.
+
+### Docs updated in 01 (delta)
+
+| Doc / area | Delta |
+|------------|-------|
+| `docs/feature-list.md` | S031 deepen; EV-023 → Done |
+| `docs/user-journeys.md` | **UJ-039** + UJ-036 deepen |
+| `docs/test-plan.md` | TC-EV024-001..008 |
+| `docs/adr/ADR-032-*.md` | Catalog gate amend (strict vs reference) |
+| `docs/decisions/requirements-decisions.md` | EV-024 table |
+| `docs/domain/mining/*` | (07-build) New notes for #804/#807/#773 + README index |
+| Frontend fixtures | (07-build) `examplesCatalog` / `FIXTURE_GAPS.md` |
+
+---
+
 ## Cycle EV-023 — APAC FAQ + codes + WMO-306 encode/validate deltas (#800) (S030)
 
 **Session**: S030-apac-encode-validate  

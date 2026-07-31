@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-30 (S030 / EV-023 — #800 APAC/codes encode–validate deepen in progress)
+> **Last updated**: 2026-07-30 (S031 / EV-024 — #804/#807/#773 IWXXM domain mine + WMO sample menu)
 
 ## Summary
 
@@ -740,7 +740,8 @@
   1. Listed WMO TAC→XML cases equal under defaults (**TC-F25-001**; **E20-E1**: `metar-A3-1`,
      `speci-A3-2`, `taf-A5-1`, `taf-A5-2` — A5-2 is WMO AMD/CNL cancel example)
   2. XSD+Schematron on those goldens (**TC-F25-002**)
-  3. FE catalog WMO-passers only; provenance vendor/mirrored (**TC-F25-003**; deepen TC-F7-008)
+  3. FE catalog: strict WMO-passers badged; provenance vendor/mirrored (**TC-F25-003**; deepen
+     TC-F7-008) — **EV-024 / UJ-039** also allows official **WMO reference** samples (ADR-032 amend)
   4. Load example → convert smoke; H4–H5 when FE deploys (**TC-F25-004** / **UJ-036**)
 - **Journeys / tests**: **UJ-036**; **TC-F25-001..004**; deepen **UJ-032** / **TC-F7-008**
 - **Out of scope**: New SWX/VONA/VAA/TCA quality bars; forcing translation-failed examples to
@@ -756,9 +757,10 @@
 
 ### F7.g deepen (S026 / EV-020 — WMO-passing examples only)
 
-- **Status note**: F7.g remains under F7 Planned; this cycle replaces catalog bodies/policy so
-  the workbench Examples control only offers **strict WMO-passing** demos for in-scope products
-  (**UJ-036** / **TC-F25-003**).
+- **Status note**: F7.g remains under F7 Planned; S026 replaced catalog bodies/policy so the
+  workbench Examples control offered **strict WMO-passing** demos for in-scope products
+  (**UJ-036** / **TC-F25-003**). **Amended S031 / EV-024**: official WMO **reference** samples
+  may also appear and load (**UJ-039**; ADR-032 amend) — strict passers remain distinctly badged.
 
 ### F26: VAA Quality Bar — S027 / EV-021
 
@@ -843,38 +845,73 @@
 
 ### F6 / F2 / F12 / F13 deepen (S030 / EV-023 — APAC FAQ + codes + WMO-306 encode deltas)
 
-- **Status**: **In progress** (S030 / EV-023) — no new Fn; deepen existing convert / validate / lint
+- **Status**: **Done** — S030 / EV-023 closed 2026-07-30 (PR [#801](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801)
+  `af98690`; closeout [#802](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/802) `5c7d3b5`; #800)
 - **Issue**: [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800) (supersedes #797 impl backlog)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2** (FAQ / 2019 Manual / translation suite are informative only)
 - **What it does**: Close encode/lint/SCH gaps from APAC IWXXM FAQs 3rd, codes.wmo.int dual
   registers, iwxxm-translation parity notes, and optional WMO-306 2019/upd-2021 corroboration
-- **P0 acceptance**:
-  1. TAC `NSC` → IWXXM must not also emit layered `<iwxxm:cloud>`; convert + XSD/SCH **negative** fixtures; tighten lint beyond research `NSC_PRESENT` if needed
-  2. Missing WX / related gaps match `TAC-to-XML-Guidance.txt` + translation examples (`common/nil` vs `iwxxm/nil` per product/XSD vocabulary)
-  3. Unreliable TAC → quarantine with original TAC on `translationFailedTAC`; no operational TAC-in-XML-comments; no partial translate; regression vs official `*-translation-failed.xml` attr matrix
-- **P1 acceptance**:
-  4. Dual-register colour href policy tested offline (`49-2/AviationColourCode` vs `iwxxm/AviationColourCode`; dual nil SCH RDF); vendor CSV/RDF SoT (not live HTML)
-  5. Amd79-80-2023 METAR/TAF/VAA/TCA **TAC** → our **2025-2** IWXXM → XSD+SCH as **informative** CI/nightly (no 2023-1 XML byte-match; ignore `gml:id`, translation* attrs, clock fields); SIGMET/AIRMET stay on official schemas.wmo.int examples
-  6. `translationCentre*` designator/name only for cross-State / Translation Centre; default in-State omit or config-gate
-- **P2 acceptance** (actionable; coordinate siblings):
-  7. SIGMET FIR / “S OF” → polygon helpers — coordinate [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) / F23 geometry
-  8. COLLECT / multi-version namespaces — F16–F19 dissemination/bulletin; not single-report convert SoT
-  9. Optional #798/#719 encode QA only if gaps survive defer-to-latest; coverage matrix citations stay accurate
-- **Out of scope**: #740/#741; PDF remine; AMHS/FTBP ops; FAQ/2019 as equal-weight SoT; `.local/` binaries; SAF/runway-state under 2025-2
-- **Packages**: `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate` (+ thin backend wrappers)
-- **Source**: E23-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-023; mining notes under `docs/domain/mining/`; standing `IWXXM_CONVERSION.md` / `IWXXM_VALIDATION.md` / `TAC_VALIDATION.md` / `COVERAGE_MATRIX.md`
+- **Source**: E23-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-023
 
-### F6 deepen (S030 / EV-023)
+### F6 / F2 / F4 / F12 / F13 / F25 deepen (S031 / EV-024 — IWXXM domain mine + WMO sample menu)
 
-- **Status note**: F6 remains **Implemented**; this cycle deepens encode correctness + informative goldens + geometry/COLLECT hooks per #800.
+- **Status**: **In progress** (S031 / EV-024) — no new Fn; discovery-first + sample-menu wiring
+- **Issues**: [#804](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/804),
+  [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807),
+  [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773) — **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)
+- **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2** (+ `iwxxm-us` pin for #773)
+- **What it does**:
+  1. **#804** — Folder-by-folder relevancy of `IWXXM/` (+ sibling triage); official examples
+     stem×surface matrix; wire in-scope stems into validate/CI; load WMO examples from the
+     workbench **Examples / sample menu** (**UJ-039**)
+  2. **#807** — Refresh wmo-im org / sibling ranking for encode/validate (not a substitute for #804)
+  3. **#773** — Mine IWXXM-US METAR/SPECI PDF + MDL modelling → coverage checklist + catalog rows
+  4. Promote durable findings; file **child issues** for encode/lint/SCH gaps (no big-bang engine rewrite)
+- **Catalog policy (E24-C / ADR-032 amend)**: Sample menu lists official WMO example stems with
+  TAC peers for in-scope products even when convert is not yet `canonicalize_xml`-equal.
+  Retain a **strict passer** badge (`wmoPass`) for ADR-032 equality; non-equal official stems
+  are **WMO reference** samples (loadable). Translation-failed / quarantine stems stay out of
+  happy-path Examples. IWXXM-US examples never mix into the WMO catalog. Roadmap-only
+  (WAFS/QVACI) deferred unless explicitly opted in during 04.
+- **Acceptance**:
+  1. Mining notes + folder×relevancy + examples matrix (#804); org refresh notes (#807); US
+     type×TAC×encode×validate checklist (#773); indexed in `docs/domain/mining/README.md`
+  2. Durable promotions to `RULE_SOURCE_URLS` / `COVERAGE_MATRIX` / canonicals where findings stick
+  3. Validate/CI surfaces exercise in-scope WMO stems (or explicit defer + child issue)
+  4. **UJ-039**: operator can load official WMO IWXXM example TAC from the sample menu for
+     product-in-scope stems; `FIXTURE_GAPS.md` updated
+  5. Child issues filed for ❌/⚠ encode/lint/SCH gaps; link #800 / product quality tickets
+- **Journeys / tests**: **UJ-039** (new); deepen **UJ-036** / **UJ-032**; **TC-EV024-001..008**
+- **Out of scope**: #806 WIS2; new product encode engines this cycle; hand-edit `vendor/schemas/*`;
+  USWX; committing PDF/full clones; mixing US into WMO catalog
+- **Packages / apps**: domain docs; `apps/frontend` examples catalog; validate/convert fixture
+  surfaces; thin backend loaders as needed
+- **Source**: E24-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-024;
+  [ADR-032](adr/ADR-032-wmo-default-golden-glossary.md) (amended)
 
-### F2 / F13 deepen (S030 / EV-023)
+### F6 / F6.b deepen (S031 / EV-024)
 
-- **Status note**: F2/F13 remain **Implemented**; add SCH/XSD negative fixtures and dual-register / nil policy tests under pin v2025-2.
+- **Status note**: F6 remains **Implemented**; this cycle deepens goldens/wiring + F6.b US map
+  from #773 (engine gaps → child issues).
 
-### F12 deepen (S030 / EV-023)
+### F2 / F13 deepen (S031 / EV-024)
 
-- **Status note**: F12 remains **Implemented**; tighten NSC / related lint codes via ADR-028 registry as needed for P0.
+- **Status note**: F2/F13 remain **Implemented**; expand validate fixtures / Schematron relevancy
+  from package `rule/` + official examples.
+
+### F4 deepen (S031 / EV-024)
+
+- **Status note**: F4 remains **Implemented**; pin vs tip drift notes; version-aware example surfaces.
+
+### F12 deepen (S031 / EV-024)
+
+- **Status note**: F12 remains **Implemented**; lint citation / registry rows only where mining
+  promotes durable TAC rules (engine work → children).
+
+### F25 / F7.g deepen (S031 / EV-024)
+
+- **Status note**: F25 remains **Done** for strict parity; this cycle **deepens the sample menu**
+  so official WMO stems are loadable (UJ-039) under the ADR-032 amend (strict vs reference).
 
 ## Platform Feature Details (Monorepo Migration)
 
