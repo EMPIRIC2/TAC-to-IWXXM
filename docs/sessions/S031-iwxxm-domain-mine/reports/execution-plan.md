@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build (07) |
-| **Active milestone** | M7 (T7.3 deploy decision) |
-| **Active task** | T7.3 |
-| **Tasks** | 21 / 22 |
+| **Active milestone** | M7 complete (T7.3 deferred) |
+| **Active task** | — |
+| **Tasks** | 22 / 22 (T7.3 deferred by D1) |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -104,7 +104,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T7.1 | Docs | File child issues for ❌/⚠ encode/lint/SCH; comment on #804/#807/#773 | TC-EV024-008 | T4.2; T5.4; T6.2 | **completed** (#809–#812) |
 | T7.2 | Test | 08-verify-build + 10-e2e smoke (catalog/validate) | routing | T7.1 | **completed** (see verification-report.md) |
-| T7.3 | Deploy | 13-deploy-smoke **when** catalog ships (E24-4) | connectivity | T7.2 | pending (catalog shipped — await deploy decision) |
+| T7.3 | Deploy | 13-deploy-smoke **when** catalog ships (E24-4) | connectivity | T7.2 | **deferred** (D1 — PR first; deploy after merge) |
 
 ## Git Strategy
 
@@ -114,9 +114,10 @@
 
 ## PR checklist (draft)
 
-- [ ] Mining notes indexed; matrices complete
-- [ ] Sample menu loads official WMO stems (strict + reference)
-- [ ] Vitest/catalog policy updated
-- [ ] Validate/CI wire or deferrals
-- [ ] Child issues filed; durable promotions committed
-- [ ] #806 not in scope
+- [x] Mining notes indexed; matrices complete
+- [x] Sample menu loads official WMO stems (strict + reference)
+- [x] Vitest/catalog policy updated
+- [x] Validate/CI wire or deferrals
+- [x] Child issues filed; durable promotions committed
+- [x] #806 not in scope
+- [x] T7.3 deploy deferred (D1 — after merge)
