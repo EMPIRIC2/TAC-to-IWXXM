@@ -87,8 +87,10 @@ export function GoldenExamplesSelect({
                 {items.map((ex) => (
                   <SelectItem key={ex.id} value={ex.id} title={ex.provenance}>
                     {ex.wmoPass && ex.wmoSeed
-                      ? `${ex.label} · ${ex.wmoSeed}`
-                      : ex.label}
+                      ? `${ex.label} · WMO passer · ${ex.wmoSeed}`
+                      : ex.wmoReference && ex.wmoSeed
+                        ? `${ex.label} · WMO reference · ${ex.wmoSeed}`
+                        : ex.label}
                   </SelectItem>
                 ))}
               </SelectGroup>

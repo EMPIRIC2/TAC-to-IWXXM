@@ -2,8 +2,9 @@
  * Frontend-only golden examples catalog (F7.g / #780 / F25 W4 / F26–F27 / ADR-032).
  *
  * Bodies are copied from package fixtures — never import Python at runtime.
- * In-scope METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA TAC demos are **WMO-passers only**
- * (E20-F4 + S02.M2 incremental unlock; F26/F27 goldens green → unlock VAA/TCA).
+ * In-scope TAC demos are **WMO passers** (`wmoPass`) and/or **WMO reference** samples
+ * (`wmoReference`) per ADR-032 amend / UJ-039 (EV-024). Translation-failed and US
+ * demos stay out of the WMO happy-path list.
  */
 
 import type { OperatorInputMode } from '@/utils/inputKind';
@@ -15,6 +16,8 @@ import metarBasicGolden from './bodies/metar_basic.golden.xml?raw';
 import metarMultiAhl from './bodies/metar_multi_ahl.txt?raw';
 import sigmetA61aTs from './bodies/sigmet_a6_1a_ts.tac?raw';
 import sigmetA61bCnl from './bodies/sigmet_a6_1b_cnl.tac?raw';
+import sigmetMultiLocationVa from './bodies/sigmet_multi_location_va.tac?raw';
+import sigmetVaEggx from './bodies/sigmet_va_eggx.tac?raw';
 import speciA32 from './bodies/speci_a3_2.tac?raw';
 import tafA51 from './bodies/taf_a5_1.tac?raw';
 import tafA52 from './bodies/taf_a5_2.tac?raw';
@@ -63,10 +66,15 @@ export interface GoldenExample {
   provenance: string;
   /**
    * True when this TAC demo passes ADR-032 WMO default golden bar (or SIGMET keeper).
-   * Required for WMO_SCOPE_PRODUCTS TAC rows (TC-F25-003 / TC-F26-005 / TC-F27-005).
+   * Strict passers for WMO_SCOPE_PRODUCTS (TC-F25-003 / TC-F26-005 / TC-F27-005).
    */
   wmoPass?: boolean;
-  /** Vendor / annex3 seed id when ``wmoPass`` (e.g. ``metar-A3-1``). */
+  /**
+   * Official WMO example loadable from the sample menu before convert equality
+   * (ADR-032 amend / UJ-039). Mutually exclusive with ``wmoPass`` for UI tier copy.
+   */
+  wmoReference?: boolean;
+  /** Vendor / annex3 seed id when ``wmoPass`` or ``wmoReference`` (e.g. ``metar-A3-1``). */
   wmoSeed?: string;
 }
 
@@ -85,8 +93,8 @@ const VENDOR =
 /**
  * Curated demo examples for convert + validate workbench.
  *
- * WMO-scope TAC rows: only unlocked WMO-passers (E20-F4 / S02.M2). AHL / IWXXM modes
- * remain non-WMO-scope demos.
+ * WMO-scope TAC rows: strict passers and official WMO reference samples (EV-024).
+ * AHL / IWXXM modes remain non-WMO-scope demos.
  */
 export const EXAMPLES: readonly GoldenExample[] = [
   {
@@ -154,6 +162,28 @@ export const EXAMPLES: readonly GoldenExample[] = [
     provenance: `${PKG}/annex3_golden/sigmet_a6_1b_cnl.tac`,
     wmoPass: true,
     wmoSeed: 'sigmet-A6-1b-CNL',
+  },
+  {
+    id: 'sigmet_va_eggx',
+    label: 'VA SIGMET WMO EGGX (reference)',
+    product: 'SIGMET',
+    inputMode: 'tac',
+    body: sigmetVaEggx,
+    nonOperational: true,
+    provenance: `${PKG}/annex3_golden/sigmet_va_eggx.tac`,
+    wmoReference: true,
+    wmoSeed: 'sigmet-VA-EGGX',
+  },
+  {
+    id: 'sigmet_multi_location_va',
+    label: 'VA SIGMET WMO multi-location (reference)',
+    product: 'SIGMET',
+    inputMode: 'tac',
+    body: sigmetMultiLocationVa,
+    nonOperational: true,
+    provenance: `${PKG}/annex3_golden/sigmet_multi_location_va.tac`,
+    wmoReference: true,
+    wmoSeed: 'sigmet-multi-location-VA',
   },
   {
     id: 'airmet_a6_1a_ts',
