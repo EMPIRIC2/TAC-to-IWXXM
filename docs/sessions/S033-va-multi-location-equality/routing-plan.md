@@ -8,7 +8,7 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Session open; Phase 0 locked A–E |
-| 16-evolve | yes | orchestrator | **in_progress** | 13 PASS; awaiting user approve + cycle close |
+| 16-evolve | yes | orchestrator | **completed** | Phase 4 close `D-S033-EV026-phase4-close` |
 | 01-requirements | yes | delta | **completed** | E26-E1 — report 01-requirements.md |
 | 02-verify-plan | yes | delta | **completed** | PASS — Batch F 1,1,1; Gate A → 04 |
 | 04-tech-plan | yes | delta | **completed** | Batch T 1,1,2,1,1; Gate B → 07 |
@@ -41,3 +41,4 @@ operator-visible convert/validate behavior ships.
 | PR #817 | Merged to `main` @ `101f555` (`D-S033-817-merge`) | 2026-07-31 |
 | 13 start | Choice **1** — run 13 after #817 (`D-S033-13-start`) | 2026-07-31 |
 | 13 smoke | PASS H0c–H5 + catalog/convert (`D-S033-13-smoke-pass`); user approve pending | 2026-07-31 |
+| Phase 4 close | Choice **1** — approve 13 + close EV-026 (`D-S033-EV026-phase4-close`) | 2026-07-31 |

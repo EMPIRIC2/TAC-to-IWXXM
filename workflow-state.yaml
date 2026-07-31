@@ -109,10 +109,12 @@ sessions:
   pr_status: merged
   closeout_pr_number: 818
   closeout_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818
-  closeout_pr_status: open
+  closeout_pr_status: merged
+  closeout_merge_sha: 8c76421
+  closeout_merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
   close_decision_id: D-S033-EV026-phase4-close
-  close_note: 'Phase 4 close 2026-07-31 (D-S033-EV026-phase4-close option 1) — approve 13 results; PR #817 merged 101f555; #818 closeout docs; #809 closed; EV-026/S033 complete'
-  note: 'D-S033-EV026-phase4-close — Phase 4 close 2026-07-31; EV-026/S033 complete; PR #817 101f555; 13 PASS; #818 closeout docs; #809 closed'
+  close_note: 'Phase 4 close 2026-07-31 (D-S033-EV026-phase4-close option 1) — approve 13 results; PR #817 merged 101f555; #818 closeout docs MERGED @ 8c76421; #809 closed; EV-026/S033 complete'
+  note: 'D-S033-EV026-phase4-close — Phase 4 close 2026-07-31; EV-026/S033 complete; PR #817 101f555; 13 PASS; #818 MERGED @ 8c76421 (D-S033-818-merge); #809 closed'
 - id: S032-iwxxm-us-remarks-va
   type: feature
   intent: "Dual-lane F6.b: encode all ❌ iwxxm-us REMARKS types from #773 dig (#810+#811+#812 + adjacent) plus #809 WMO sigmet-multi-location-VA annex3 golden"
@@ -7482,6 +7484,36 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S033-818-merge
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: close_session
+  category: merge
+  status: confirmed
+  topic: 'Closeout docs PR #818 merged'
+  summary: 'PR #818 MERGED @ 8c76421 — closeout docs; EV-026 remains completed; active_session=null'
+  decision: 'Closeout docs PR #818 merged to main at 8c76421 (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818). Session already closed; do not reopen active_session.'
+  user_intent: '1 close complete — #818 merged'
+  pr_number: 818
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818
+  pr_status: merged
+  merge_sha: 8c76421
+  merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
+  tip_sha: 8c76421
+  tip_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-EV026-phase4-close
+  - D-S033-817-merge
+  related_prs:
+  - 818
+  - 817
 - id: D-S033-EV026-phase4-close
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -23116,6 +23148,7 @@ evolve_cycles:
   - docs/context/va-multi-location-809.md
   - docs/decisions/evolve-decisions.md
   decision_refs:
+  - D-S033-818-merge
   - D-S033-EV026-phase4-close
   - D-S033-13-smoke-pass
   - D-S033-13-start
@@ -23139,8 +23172,9 @@ evolve_cycles:
   active_task: T3.4
   active_task_status: completed
   progress: 12/12
-  note: 'D-S033-EV026-phase4-close — Phase 4 close 2026-07-31; EV-026/S033 complete; PR #817 101f555; 13 PASS; #818 closeout docs; #809 closed'
+  note: 'D-S033-EV026-phase4-close — Phase 4 close 2026-07-31; EV-026/S033 complete; PR #817 101f555; 13 PASS; #818 MERGED @ 8c76421 (D-S033-818-merge); #809 closed'
   notes:
+  - '2026-07-31 S033/EV-026 PR #818 MERGED @ 8c76421 (D-S033-818-merge) — closeout docs; tip 8c76421; EV-026 remains completed; active_session=null'
   - '2026-07-31 S033/EV-026 CLOSED — Phase 4 close D-S033-EV026-phase4-close option 1; PR #817 merged 101f555; 13 PASS approved; #818 closeout docs; #809 closed; active_session=null'
   - '2026-07-31 S033/EV-026 13-deploy-smoke PASS (D-S033-13-smoke-pass) — H0c–H5 + catalog/convert; deploys dep-d9miestbedkc73dr3j9g / dep-d9mietnqj5pc73d3c8a0 @ 101f555; pending user approve + cycle close; progress 12/12'
   - '2026-07-31 S033/EV-026 13-deploy-smoke STARTED (D-S033-13-start choice 1) — after #817 merge @ 101f555; T3.4 in_progress'
@@ -23159,23 +23193,33 @@ evolve_cycles:
   completed_at: '2026-07-31'
   closeout_pr_number: 818
   closeout_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818
+  closeout_pr_status: merged
   closeout_pr_note: closeout docs (deploy-smoke / evolve-summary / evolve-report)
+  closeout_merge_sha: 8c76421
+  closeout_merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
   close_decision_id: D-S033-EV026-phase4-close
-  close_note: 'Phase 4 close 2026-07-31 (D-S033-EV026-phase4-close option 1) — approve 13 results; PR #817 merged 101f555; #818 closeout docs; #809 closed; EV-026/S033 complete'
+  close_note: 'Phase 4 close 2026-07-31 (D-S033-EV026-phase4-close option 1) — approve 13 results; PR #817 merged 101f555; #818 MERGED @ 8c76421; #809 closed; EV-026/S033 complete'
+  note: 'D-S033-EV026-phase4-close — Phase 4 close 2026-07-31; EV-026/S033 complete; PR #817 101f555; 13 PASS; #818 MERGED @ 8c76421 (D-S033-818-merge); #809 closed'
 git_history:
   current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 101f555
-  tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  tip_sha: 8c76421
+  tip_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
   pr_number: 817
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
   pr_status: merged
   merge_sha: 101f555
   merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
-  note: 'S033/EV-026 CLOSED D-S033-EV026-phase4-close — PR #817 101f555; 13 PASS; #818 closeout docs branch docs/S033-ev026-deploy-smoke; active_session=null'
+  closeout_pr_number: 818
+  closeout_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818
+  closeout_pr_status: merged
+  closeout_merge_sha: 8c76421
+  closeout_merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
+  note: 'S033/EV-026 close complete — #817 @ 101f555; #818 MERGED @ 8c76421 (D-S033-818-merge); active_session=null'
   notes:
+  - '2026-07-31 S033/EV-026 PR #818 MERGED @ 8c76421 (D-S033-818-merge) — closeout docs; branch docs/S033-ev026-deploy-smoke; tip 8c76421; active_session=null'
   - '2026-07-31 S033/EV-026 CLOSED — Phase 4 close D-S033-EV026-phase4-close; PR #817 merged 101f555; 13 PASS approved; docs branch docs/S033-ev026-deploy-smoke / PR #818; active_session=null'
   - '2026-07-31 S033/EV-026 PR #817 MERGED @ 101f555 (D-S033-817-merge) — merge_commit 101f55586efacaee67bcd4260a04aa6758502123; optional 13/T3.4 when_ships pending user'
   - '2026-07-31 S033/EV-026 tip synced — 7e08051; Gate C PASS (D-S033-gate-c); 07/08/10 complete; T3.4/13 when_ships; #809 closed; awaiting PR'
@@ -23441,15 +23485,21 @@ git_history:
   - name: docs/S033-ev026-deploy-smoke
     purpose: S033/EV-026 13-deploy-smoke + closeout docs
     base: main
-    status: open
+    status: merged
     created: '2026-07-31'
     created_at: '2026-07-31'
+    merged_at: '2026-07-31'
     session_id: S033-va-multi-location-equality
     evolve_cycle_id: EV-026
     pr_number: 818
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818
-    pr_status: open
-    note: 'PR #818 closeout docs (deploy-smoke / evolve-summary / evolve-report-EV-026)'
+    pr_status: merged
+    merge_sha: 8c76421
+    merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
+    tip_sha: 8c76421
+    tip_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
+    note: 'MERGED via PR #818 @ 8c76421 (D-S033-818-merge) — closeout docs'
+    pushed: true
   - name: feat/EV-022-sigmet-decode-residuals
     purpose: S029/EV-022 F9 deepen — SIGMET/AIRMET decode residual A6-1a tokens
     base: main
