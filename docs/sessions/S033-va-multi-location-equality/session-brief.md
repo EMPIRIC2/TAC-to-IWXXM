@@ -1,7 +1,7 @@
 ---
 session_id: S033-va-multi-location-equality
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-026-va-multi-location-equality
 started_at: 2026-07-31
 intent: "#809 residual — ADR-032 canonicalize_xml equality for sigmet-multi-location-VA under defaults; promote catalog wmoReference→wmoPass; close issue"
