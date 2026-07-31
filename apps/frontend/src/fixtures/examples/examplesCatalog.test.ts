@@ -151,6 +151,7 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
     expect(eggx?.wmoSeed).toBe('sigmet-VA-EGGX');
     const multi = getExampleById('sigmet_multi_location_va');
     expect(multi?.wmoReference).toBe(true);
+    expect(multi?.wmoPass).not.toBe(true);
     expect(multi?.wmoSeed).toBe('sigmet-multi-location-VA');
     expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(4);
   });

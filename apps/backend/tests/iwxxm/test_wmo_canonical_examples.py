@@ -146,10 +146,11 @@ EV024_IN_SCOPE_STEMS = (
     "tc-advisory-A2-2",
 )
 
-# Convert soft-compare / M-golden deferred — validate XML still required (TC-EV024-007).
+# Convert soft-compare done for multi-location VA (TC-EV025-008); ADR-032 M-golden
+# equality / wmoPass still pending (TC-EV025-009 / #809). Validate XML still required.
 EV024_CONVERT_DEFERRED_STEMS = frozenset(
     {
-        "sigmet-multi-location-VA",  # child: multi-location VA encode
+        "sigmet-multi-location-VA",  # soft-compare green; equality/wmoPass pending
         "sigmet-A6-2-TC",  # #738 quality bar
     }
 )

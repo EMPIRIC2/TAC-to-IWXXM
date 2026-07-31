@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M5 |
-| **Active task** | T5.1 (next) |
-| **Tasks** | 18 / 28 |
+| **Active milestone** | M6 |
+| **Active task** | T6.1 (next) |
+| **Tasks** | 21 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -99,9 +99,9 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Test | Soft-compare package golden for `sigmet-multi-location-VA` | TC-EV025-008; S02.M1 | T4.7 | pending |
-| T5.2 | Code | Convert fidelity until soft golden stable | #809; F23/F6 | T5.1 | pending |
-| T5.3 | Test | Promote `wmoPass` only when ADR-032 equality holds; else reference + FIXTURE_GAPS | TC-EV025-009 | T5.2 | pending |
+| T5.1 | Test | Soft-compare package golden for `sigmet-multi-location-VA` | TC-EV025-008; S02.M1 | T4.7 | **completed** |
+| T5.2 | Code | Convert fidelity until soft golden stable | #809; F23/F6 | T5.1 | **completed** |
+| T5.3 | Test | Promote `wmoPass` only when ADR-032 equality holds; else reference + FIXTURE_GAPS | TC-EV025-009 | T5.2 | **completed** |
 
 ### M6 — Deepen / validate smoke
 
