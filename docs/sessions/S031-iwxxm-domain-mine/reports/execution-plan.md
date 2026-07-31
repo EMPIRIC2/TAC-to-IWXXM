@@ -117,7 +117,7 @@
 | PR | URL | Status |
 |----|-----|--------|
 | EV-024 / S031 | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813 | **merged** `864783e` |
-| EV-024 closeout | (pending) | open — state + deploy-smoke + evolve report |
+| EV-024 closeout | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/814 | open — state + deploy-smoke + evolve report |
 
 ## PR checklist (draft)
 
