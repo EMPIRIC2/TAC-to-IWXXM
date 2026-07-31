@@ -21,11 +21,12 @@
 | Publisher | WMO (community GitHub org) |
 | Official landing | https://github.com/wmo-im |
 | Pin / edition | Runtime: `vendor/manifest.json` → iwxxm **v2025-2**, iwxxm-codelists **49-2** |
-| Date mined | 2026-07-14 |
+| Date mined | 2026-07-14 (initial); **refreshed 2026-07-30** (S031/EV-024 / #807) |
 | Access | public |
 | Label | mixed (see tiers below) |
 | Local Tier A clones | `.local/reference/wmo-im-tier-a/` — deep mine: [wmo-im-tier-a-mining-notes.md](./wmo-im-tier-a-mining-notes.md) |
 | Local Tier B clones | `.local/reference/wmo-im-tier-b/` — deep mine: [wmo-im-tier-b-mining-notes.md](./wmo-im-tier-b-mining-notes.md) |
+| Deep IWXXM/ tree | **#804** — [wmo-im-iwxxm-IWXXM-tree-mining-notes.md](./wmo-im-iwxxm-IWXXM-tree-mining-notes.md) (does not replace this org pass) |
 
 ---
 
@@ -188,5 +189,64 @@ Topic hierarchy currently lists aviation `metar`, `taf`, `qvaci` under `weather/
 
 1. Diff `documentation/manual/FM205.adoc` @ `v2025-2` against WMO-306 Vol I.3 mining notes for superseded package tables.
 2. Inventory `iwxxm-translation` products × Amendment folders vs F6 matrix (informative only).
-3. Map WIS2 aviation topic gaps (SPECI, SIGMET, AIRMET, VAA, TCA, SWX) if F8 needs routing labels.
+3. ~~Map WIS2 aviation topic gaps~~ → **#806** (out of EV-024 encode/validate lane).
+
+---
+
+## Refresh 2026-07-30 (S031 / EV-024 / #807)
+
+**Purpose:** Re-check Tier A/B claims against current `vendor/manifest.json` and org listing;
+confirm nothing material for **encode/validate** was missed. Deep `IWXXM/` walk remains **#804**.
+
+### Current pins (confirm)
+
+| Bundle | Tag | SHA (short) | Notes |
+|--------|-----|-------------|-------|
+| iwxxm | v2025-2 | `35180cbe3bec` | Deep tree → #804 notes |
+| iwxxm-codelists | 49-2 | `b0511b76a59a` | Offline RDF still under pin `IWXXM/rule/` |
+| iwxxm-modelling | v2025-2 | `ec099bfd5453` | Informative tooling only |
+| iwxxm-translation | master | `a251e8bcff2b` | Informative fixtures (EV-023 suite) |
+| iwxxm-us | 3.0 | (pin path) | **#773** US/MDL dig — not wmo-im org |
+
+### Org listing spot-check (2026-07-30)
+
+`gh api orgs/wmo-im/repos` still ~100+ public repos. **No new Tier A IWXXM-family repo**
+appeared outside the four already pinned. New/near names remain WIS2 / WMDR / Hydro / BUFR /
+expert-team — stay Tier C for encode/validate.
+
+### Explicit skip one-liners (encode/validate lane)
+
+| Repo / area | Skip rationale |
+|-------------|----------------|
+| WIS2 / wis2box / wis2-* / WIS2 | **#806** — F8/F17 exchange lane; not EV-024 |
+| BUFR4 / GRIB2 / GRIB3 / translations | Wrong FM family for aviation TAC→IWXXM |
+| WMDR / WCMP / Hydro / WHOS | Metadata / hydro — out of product scope |
+| pymetdecoder | SYNOP/SHIP — not aviation TAC |
+| VolumeC1 | CCCC list only |
+| CCT | 306 Vol I.2 — stay demoted vs 4678 / 49-2 |
+| collect / saf / metce / opm / met-basic | Historical; prefer pin `externalSchema` + schemas.wmo.int |
+| et-* / tt-* scratchpads | No Annex 3 encode SoT |
+
+### Ranking changes vs 2026-07-14
+
+| Claim | Refresh result |
+|-------|----------------|
+| Four Tier A IWXXM repos | **Unchanged** — still the only encode/validate concentration |
+| COLLECT stand-alone demoted | **Unchanged** |
+| WIS2 Tier B for F8 | **Unchanged** but **out of this cycle** (#806) |
+| Deep examples / rule scrape | **Moved to #804** notes (complement, not replace) |
+
+### Child-issue seeds from org refresh
+
+| Gap | Action |
+|-----|--------|
+| FM205.adoc vs WMO-306 Vol I.3 drift | Optional child after #804 M4 Guidance pass |
+| Codelist CSV vs Manual discrepancy | Already policy: Manual wins; no new ticket unless pin drifts |
+| New encode-adjacent repo | None found 2026-07-30 |
+
+### Implications (refresh)
+
+- Proceed **#804** for tree/examples; **#773** for US (not org).
+- Do **not** open WIS2 mining under EV-024.
+- No vendor re-pin required from this refresh (no SHA drift evidence vs encode needs).
 ```
