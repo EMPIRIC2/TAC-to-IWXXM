@@ -13,7 +13,7 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M4 |
+| **Active milestone** | M5 |
 | **Active task** | T5.1 (next) |
 | **Tasks** | 18 / 28 |
 | **Last updated** | 2026-07-31 |

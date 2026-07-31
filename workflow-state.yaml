@@ -37,7 +37,7 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 07-build
-  note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+  note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -54,7 +54,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -81,7 +81,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-31'
-    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5135,16 +5135,16 @@ stages:
     previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
-    tip_sha: 5d80611
-    tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
-    current_stage: M4
-    current_milestone: M4
-    current_task: T4.7
-    active_milestone: M4
-    active_task: T4.7
-    active_task_status: in_progress
-    progress: 17/28
+    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+    tip_sha: c1a503f
+    tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
+    current_stage: M5
+    current_milestone: M5
+    current_task: T5.1
+    active_milestone: M5
+    active_task: T5.1
+    active_task_status: pending
+    progress: 18/28
     pr_number: null
     pr_url: null
     pr_status: null
@@ -5163,12 +5163,12 @@ stages:
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
-      active_milestone: M4
-      current_milestone: M4
-      active_task: T4.7
-      current_task: T4.7
-      active_task_status: in_progress
+      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+      active_milestone: M5
+      current_milestone: M5
+      active_task: T5.1
+      current_task: T5.1
+      active_task_status: pending
       deepen:
       - F6
       - F12
@@ -5183,12 +5183,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T4.7
-        active_task_status: in_progress
-        active_milestone: M4
+        current_task: T5.1
+        active_task_status: pending
+        active_milestone: M5
         phase: C
-        milestone: M4
-        notes: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+        milestone: M5
+        notes: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
     delta_substages:
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
@@ -5200,16 +5200,16 @@ stages:
       completed: null
       completed_at: null
       mode: full
-      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
-      active_milestone: M4
-      current_milestone: M4
-      active_task: T4.7
-      current_task: T4.7
-      active_task_status: in_progress
-      progress: 17/28
+      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+      active_milestone: M5
+      current_milestone: M5
+      active_task: T5.1
+      current_task: T5.1
+      active_task_status: pending
+      progress: 18/28
       decision_id: D-S032-04-plan-approve
-      tip_sha: 5d80611
-      tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
+      tip_sha: c1a503f
+      tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
       branch: evolve/EV-025-iwxxm-us-remarks-va
       deepen:
       - F6
@@ -5525,6 +5525,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
@@ -7606,9 +7607,10 @@ stages:
     completed_at: null
     completed: null
     current_stage: 07-build
-    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
-    prior_note: 'T4.6 COMPLETE @ 5d80611 (PRESFR/RR, Addendum flags, RecentWeather); next T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+    prior_note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
     notes:
+    - '2026-07-31 S032/EV-025 T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
@@ -24206,7 +24208,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24236,15 +24238,15 @@ evolve_cycles:
       started: '2026-07-31'
       started_at: '2026-07-31'
       mode: full
-      current_stage: M4
-      current_milestone: M4
-      current_task: T4.7
-      active_task: T4.7
-      progress: 17/28
-      tip_sha: 5d80611
-      tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
-      active_task_status: in_progress
-      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+      current_stage: M5
+      current_milestone: M5
+      current_task: T5.1
+      active_task: T5.1
+      progress: 18/28
+      tip_sha: c1a503f
+      tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
+      active_task_status: pending
+      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
     08-verify-build:
       status: pending
     10-e2e:
@@ -24280,14 +24282,15 @@ evolve_cycles:
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
-  active_milestone: M4
-  current_task: T4.7
-  active_task: T4.7
-  active_task_status: in_progress
-  progress: 17/28
-  tip_sha: 5d80611
-  tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
+  active_milestone: M5
+  current_task: T5.1
+  active_task: T5.1
+  active_task_status: pending
+  progress: 18/28
+  tip_sha: c1a503f
+  tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
   notes:
+  - '2026-07-31 S032/EV-025 T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
@@ -24315,14 +24318,15 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: 5d80611
-  tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
+  tip_sha: c1a503f
+  tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+  note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — c1a503f (c1a503ffec7c59a2a484265febc13971a598a87a); "[T4.7] docs: Lane A dig checklist encode refresh PASS"; T4.7 COMPLETE (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); progress 18/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 5d80611 (5d806118f11fe2fa4559d9bdbcd98622edc5eb86); "[T4.6] feat: encode PRESFR/RR, Addendum flags, RecentWeather"; T4.6 COMPLETE; T4.7 in_progress (Lane A dig checklist refresh); progress 17/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 4230257 (4230257533982fb2223d04a9a685f65041c644b3); "[S032] chore: record T4.5 tip and advance to T4.6"; T4.6 in_progress (Addendum residuals + RecentWeather); progress 16/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 07d73e3 (07d73e3a73b66c7f0f561019f778e9386bb47dec); "[T4.5] feat: encode MaxMinTemperatures, precip ProcessedProperty, AO codelists"; T4.5 COMPLETE; next T4.6 pending (Addendum residuals + RecentWeather); progress 16/28; #810/#811/#812/#809'
@@ -25675,11 +25679,22 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
-    tip_sha: 5d80611
-    tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
+    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+    tip_sha: c1a503f
+    tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
     pushed: false
   commits:
+  - sha: c1a503f
+    sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T4.7] docs: Lane A dig checklist encode refresh PASS"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed: 4
+    timestamp: '2026-07-31T15:50:02Z'
+    pushed: false
+    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   - sha: 5d80611
     sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
     branch: evolve/EV-025-iwxxm-us-remarks-va
@@ -25690,7 +25705,7 @@ git_history:
     files_changed: 8
     timestamp: '2026-07-31T15:49:24Z'
     pushed: false
-    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   - sha: 4230257
     sha_full: 4230257533982fb2223d04a9a685f65041c644b3
     branch: evolve/EV-025-iwxxm-us-remarks-va
