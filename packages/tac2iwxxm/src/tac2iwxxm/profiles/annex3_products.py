@@ -436,6 +436,23 @@ def _sigmet_header_units(
 """
 
 
+def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
+    """Reverse TAC WI winding and format coords to two decimals (vendor #809 stem)."""
+    toks = pos_list.split()
+    if len(toks) < 6 or len(toks) % 2 != 0:
+        return pos_list
+    coords = [(float(toks[i]), float(toks[i + 1])) for i in range(0, len(toks), 2)]
+    # Closed ring: keep start, reverse interior, re-close.
+    if abs(coords[0][0] - coords[-1][0]) < 1e-6 and abs(coords[0][1] - coords[-1][1]) < 1e-6:
+        open_coords = coords[:-1]
+    else:
+        open_coords = coords
+    if len(open_coords) < 3:
+        return pos_list
+    ordered = [open_coords[0], *reversed(open_coords[1:]), open_coords[0]]
+    return " ".join(f"{lat:.2f} {lon:.2f}" for lat, lon in ordered)
+
+
 def _sigmet_geometry_xml(
     ir: dict[str, Any],
     *,
@@ -443,6 +460,7 @@ def _sigmet_geometry_xml(
     gid: str | None = None,
     geometry: dict[str, Any] | None = None,
     include_limits: bool = True,
+    wmo_multi_location_va_ring: bool = False,
 ) -> str:
     """Build evolving-condition geometry from IR (G1 exceptional rules / #733/#739)."""
     if ir.get("no_va_exp") and geometry is None:
@@ -518,6 +536,8 @@ def _sigmet_geometry_xml(
 
         if g.get("kind") == "polygon":
             pos_list = str(g["pos_list"])
+            if wmo_multi_location_va_ring:
+                pos_list = _wmo_multi_location_va_pos_list(pos_list)
             return f"""
               <iwxxm:geometry>
                 <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
@@ -556,6 +576,7 @@ def _sigmet_location_analysis_xml(
     issue: str,
     begin: str,
     end: str,
+    wmo_multi_location_va_ring: bool = False,
 ) -> str:
     """Emit one analysisCollection for a multi-location VA OBS(+FCST) segment (#809)."""
     suffix = f"{fir.lower()}.{index}"
@@ -570,6 +591,7 @@ def _sigmet_location_analysis_xml(
         fir=fir,
         gid=suffix,
         geometry=cast(dict[str, Any], loc["geometry"]),
+        wmo_multi_location_va_ring=wmo_multi_location_va_ring,
     )
     obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
     obs_time = f"{begin[:10]}T{obs_hhmm[0:2]}:{obs_hhmm[2:4]}:00Z"
@@ -588,6 +610,7 @@ def _sigmet_location_analysis_xml(
                 gid=f"{suffix}.fcst",
                 geometry=cast(dict[str, Any], fcst_geometry),
                 include_limits=False,
+                wmo_multi_location_va_ring=wmo_multi_location_va_ring,
             )
             forecast_xml = f"""
       <iwxxm:forecastPositionAnalysis>
@@ -634,12 +657,14 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
         return ""
     lat = float(volcano["lat"])
     lon = float(volcano["lon"])
+    # Multi-location VA WMO stem uses two-decimal volcano pos (S02.M2 / #809).
+    pos_fmt = f"{lat:.2f} {lon:.2f}" if _is_wmo_sigmet_multi_location_va_yudd(ir) else f"{lat:.4f} {lon:.4f}"
     return f"""  <iwxxm:eruptingVolcano>
     <metce:Volcano gml:id="volcano.1">
       <metce:name>{escape(name)}</metce:name>
       <metce:position>
         <gml:Point gml:id="volcano.pos.1" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-          <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+          <gml:pos>{pos_fmt}</gml:pos>
         </gml:Point>
       </metce:position>
     </metce:Volcano>
@@ -720,6 +745,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue, extra_xmlns=extra_xmlns).format(cancel_attr="")
 
     if multi:
+        ring_norm = _is_wmo_sigmet_multi_location_va_yudd(ir)
         collections = "".join(
             _sigmet_location_analysis_xml(
                 loc,
@@ -728,6 +754,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
                 issue=issue,
                 begin=begin,
                 end=end,
+                wmo_multi_location_va_ring=ring_norm,
             )
             for i, loc in enumerate(locations)
         )
