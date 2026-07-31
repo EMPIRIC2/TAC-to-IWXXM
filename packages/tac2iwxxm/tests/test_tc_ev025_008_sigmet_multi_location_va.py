@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
 from lxml import etree
 from metar_shared.xml_canonical import canonicalize_xml
 
@@ -52,10 +51,6 @@ def test_tc_ev025_008_package_and_vendor_fixtures_present() -> None:
     assert package_tac == vendor_tac
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="EV-026 T1.1 red — equality pending encoder themes T1.2–T1.4 (remove xfail in T1.5)",
-)
 def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
     """ADR-032 strict equality vs vendor (EV-026)."""
     from tac2iwxxm import convert
