@@ -25,8 +25,8 @@ active_session:
   active_task: null
   active_task_status: completed
   active_milestone: M7
-  tip_sha: 304df52
-  tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+  tip_sha: 681436a
+  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
   pr_number: 813
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
   pr_status: open
@@ -51,7 +51,7 @@ active_session:
   started_at: '2026-07-30'
   context_briefs:
   - docs/context/iwxxm-domain-mine.md
-  note: 'S031/EV-024 SYNC — T0.1–T7.2 completed; T7.3 deferred D1; tip 304df52; PR #813 open; CI watching; Phase C done; awaiting merge/close; #804/#807/#773'
+  note: 'S031/EV-024 Phase C complete; tip 681436a; CI GREEN on PR #813 (required checks pass; Deploy skipped on PR branch); awaiting merge approval for #813; T7.3 deferred D1; #804/#807/#773'
   routing_plan:
   - stage: 00-context
     required: true
@@ -65,7 +65,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-30'
-    note: 'Phase C done; PR #813 open; awaiting merge/close; tip 304df52; T7.3 deferred D1; #804/#807/#773'
+    note: 'Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -23587,7 +23587,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-30'
-      note: 'Phase C done; PR #813 open; awaiting merge/close; tip 304df52; T7.3 deferred D1'
+      note: 'Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1'
     01-requirements:
       status: completed
       mode: delta
@@ -23695,10 +23695,11 @@ evolve_cycles:
   pr_number: 813
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
   pr_status: open
-  note: 'S031/EV-024 in_progress — Phase C done (07+08+10); T7.3 deferred D1; tip 304df52; PR #813 open; awaiting merge/close; #804/#807/#773'
-  tip_sha: 304df52
-  tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+  note: 'S031/EV-024 in_progress — Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
+  tip_sha: 681436a
+  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
   notes:
+  - '2026-07-30 S031/EV-024 tip bump 681436a — chore: sync workflow-state after Phase C; CI GREEN on PR #813 (Deploy skipped); awaiting merge approval; session/cycle remain open; #804/#807/#773'
   - '2026-07-30 S031/EV-024 state-drift SYNC — tip 304df52; T0.1–T7.2 completed; T7.3 deferred D1; gates.c_to_d + phase_c passed; PR #813 open; CI watching; #804/#807/#773'
   - '2026-07-30 S031/EV-024 04 COMPLETE → 07 @ T0.1 (E24-T1..T5=1,1,2,2,1 / D-S031-04-plan-approve) — gates.b_to_c + phase_b passed; #804/#807/#773'
   - '2026-07-30 S031/EV-024 02 PASS → 04 (Batch F 1,1,1 / D-S031-02-phase-a) — gates.a_to_b + phase_a passed; #804/#807/#773'
@@ -23713,14 +23714,15 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: 304df52
-  tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+  tip_sha: 681436a
+  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
   pr_number: 813
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
   pr_status: open
   merge_sha: null
-  note: 'S031/EV-024 SYNC — tip 304df52; PR #813 open; T0.1–T7.2 landed; T7.3 deferred D1; pushed; CI watching; #804/#807/#773'
+  note: 'S031/EV-024 tip 681436a; CI GREEN on PR #813; Phase C complete; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
   notes:
+  - '2026-07-30 S031/EV-024 tip bump 681436a — workflow-state sync commit; CI GREEN on PR #813 (required checks pass; Deploy skipped); awaiting merge approval; #804/#807/#773'
   - '2026-07-30 S031/EV-024 state-drift SYNC — tip 304df52; PR #813 open; T0.1–T7.2 atomic commits landed; T7.3 deferred D1; branch pushed; #804/#807/#773'
   - '2026-07-30 S031/EV-024 OPEN — branch evolve/EV-024-iwxxm-domain-mine recorded active (base main @
     deb43cf); session_counter 31; evolve_cycle_counter 24; Lean+build; Phase 0 locked E24-1..4; #804/#807/#773'
@@ -25029,9 +25031,9 @@ git_history:
     created_at: '2026-07-30'
     session_id: S031-iwxxm-domain-mine
     evolve_cycle_id: EV-024
-    note: 'S031/EV-024 SYNC — tip 304df52; PR #813 open; T0.1–T7.2 done; T7.3 deferred D1; #804/#807/#773'
-    tip_sha: 304df52
-    tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+    note: 'S031/EV-024 tip 681436a; CI GREEN on PR #813; Phase C complete; awaiting merge approval; #804/#807/#773'
+    tip_sha: 681436a
+    tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
     pushed: true
     pr_number: 813
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
@@ -25040,6 +25042,17 @@ git_history:
     pr_head: evolve/EV-024-iwxxm-domain-mine
     do_not_auto_merge: true
   commits:
+  - sha: 681436a
+    sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: 'chore: sync S031/EV-024 workflow-state after Phase C'
+    stage: 16-evolve
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:57:09-04:00'
+    pushed: true
+    note: 'tip bump; CI GREEN on PR #813; session/cycle remain open'
   - sha: 304df52
     sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
     branch: evolve/EV-024-iwxxm-domain-mine
@@ -25050,7 +25063,7 @@ git_history:
     files_changed: null
     timestamp: '2026-07-30T20:47:07-04:00'
     pushed: true
-    note: tip; PR #813 recorded
+    note: PR #813 recorded
   - sha: f168935
     sha_full: f168935bae28facfb194d470022d9f5334da5045
     branch: evolve/EV-024-iwxxm-domain-mine
