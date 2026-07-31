@@ -323,6 +323,19 @@
 | EV-024/S02.L1 | Vitest | Amend examplesCatalog tests for pass **or** reference in 07 | confirmed |
 | EV-024/E24-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
 
+## EV-027 / #815 — Official WMO decode residual matrix (2026-07-31)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-027/E27-1 | Session | Open S034 / EV-027; #815 inventory + residual matrix + CI | confirmed |
+| EV-027/E27-2 | Routing | Lean+build; 13 when ships; skip 03/05/06/09/11/12 | confirmed |
+| EV-027/E27-3 | UI preview | Defer until after build (`D-S034-open` Q3=2) | confirmed |
+| EV-027/E27-4 | Triage | Fix decode when cheap; else allowlist + child issue (no silent leftovers) | confirmed |
+| EV-027/E27-M | Docs | **Lean** — feature-list + user-journeys (UJ-042) + test-plan (TC-EV027-001..005) + requirements/evolve decisions; skip Spec/Config/API/Deploy | confirmed |
+| EV-027/E27-UJ | Journey | **New UJ-042**; deepen UJ-039 / UJ-020 | confirmed |
+| EV-027/E27-TC | TC ids | **New TC-EV027-001..005** | confirmed |
+| EV-027/E27-E1 | Close 01 | Mark 01 completed → start 02-verify-plan | confirmed |
+
 ## EV-026 / #809 — VA multi-location ADR-032 equality / wmoPass (2026-07-31)
 
 | ID | Topic | Decision | Status |

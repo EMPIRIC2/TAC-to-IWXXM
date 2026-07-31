@@ -25,7 +25,8 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S033-va-multi-location-equality](S033-va-multi-location-equality/session-brief.md) | feature | in_progress | #809 ADR-032 equality → wmoPass; EV-026 | evolve/EV-026-va-multi-location-equality | 2026-07-31 | — |
+| [S034-wmo-decode-residual-matrix](S034-wmo-decode-residual-matrix/session-brief.md) | feature | in_progress | #815 official WMO decode residual matrix; EV-027 | evolve/EV-027-wmo-decode-residual-matrix | 2026-07-31 | — |
+| [S033-va-multi-location-equality](S033-va-multi-location-equality/session-brief.md) | feature | completed | #809 ADR-032 equality → wmoPass; EV-026; PR #817/#818 | evolve/EV-026-va-multi-location-equality | 2026-07-31 | 2026-07-31 |
 | [S032-iwxxm-us-remarks-va](S032-iwxxm-us-remarks-va/session-brief.md) | feature | completed | iwxxm-us REMARKS + #809 soft; EV-025; PR #816 | evolve/EV-025-iwxxm-us-remarks-va | 2026-07-31 | 2026-07-31 |
 | [S029-sigmet-decode-residuals](S029-sigmet-decode-residuals/session-brief.md) | feature | in_progress | F9 deepen — SIGMET/AIRMET decode residual A6-1a tokens; EV-022 | feat/EV-022-sigmet-decode-residuals | 2026-07-30 | — |
 | [S028-sigmet-multiline-split](S028-sigmet-multiline-split/session-brief.md) | hotfix | completed | BUG-2026-07-30 SIGMET multiline split; PR #796 | fix/BUG-2026-07-30-sigmet-multiline-split | 2026-07-30 | 2026-07-30 |

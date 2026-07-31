@@ -3,10 +3,162 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 33
-evolve_cycle_counter: 26
-active_session: null
+session_counter: 34
+evolve_cycle_counter: 27
+active_session:
+  id: S034-wmo-decode-residual-matrix
+  type: feature
+  intent: "#815 — official WMO decode residual matrix; inventory ∪ FIXTURE_GAPS + CI gate; Lean+build"
+  status: in_progress
+  branch: evolve/EV-027-wmo-decode-residual-matrix
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-027
+  github_issues:
+  - '815'
+  feature_ids:
+  - F25
+  - F9
+  - F7
+  artifacts_dir: docs/sessions/S034-wmo-decode-residual-matrix/
+  routing_plan_summary: "Lean+build 00→16→01→02→04→07→08→10 (+13 when ships)"
+  preset: Lean+build
+  preset_status: approved
+  note_skipped: "Lean+build — skip 03/05/06/09/11/12; 13 when_ships"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  current_stage: 02-verify-plan
+  started_at: '2026-07-31'
+  context_briefs:
+  - docs/context/wmo-decode-residual-matrix.md
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: "Phase 0 locked D-S034-open=1,1,2,1"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-07-31'
+    note: "Phase 0 done; 01 interview"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: in_progress
+    started: '2026-07-31'
+    note: 'S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: smoke
+    status: pending
+  - stage: 13-deploy-smoke
+    required: when_ships
+    mode: full
+    status: pending
 sessions:
+- id: S034-wmo-decode-residual-matrix
+  type: feature
+  intent: "#815 — official WMO decode residual matrix; inventory ∪ FIXTURE_GAPS + CI gate; Lean+build"
+  status: in_progress
+  branch: evolve/EV-027-wmo-decode-residual-matrix
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-027
+  github_issues:
+  - '815'
+  feature_ids:
+  - F25
+  - F9
+  - F7
+  artifacts_dir: docs/sessions/S034-wmo-decode-residual-matrix/
+  routing_plan_summary: "Lean+build 00→16→01→02→04→07→08→10 (+13 when ships)"
+  preset: Lean+build
+  preset_status: approved
+  note_skipped: "Lean+build — skip 03/05/06/09/11/12; 13 when_ships"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  current_stage: 02-verify-plan
+  started_at: '2026-07-31'
+  context_briefs:
+  - docs/context/wmo-decode-residual-matrix.md
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: "Phase 0 locked D-S034-open=1,1,2,1"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-07-31'
+    note: "Phase 0 done; 01 interview"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: in_progress
+    started: '2026-07-31'
+    note: 'S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: smoke
+    status: pending
+  - stage: 13-deploy-smoke
+    required: when_ships
+    mode: full
+    status: pending
 - id: S033-va-multi-location-equality
   type: feature
   intent: "#809 residual — ADR-032 canonicalize_xml equality for sigmet-multi-location-VA; promote wmoPass; close issue"
@@ -2784,27 +2936,26 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: iwxxm-us-remarks-va
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
+    scoped_slug: wmo-decode-residual-matrix
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
     started_at: '2026-07-31'
     completed_at: '2026-07-31'
-    completed: '2026-07-31'
     substeps:
       phase0: completed
       phase1a: pending
       phase1b: skipped
       phase1c: skipped
-      phase2: completed
-      phase3: completed
-      phase4: completed
-    note: 'S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
-    prior_note: 'S031/EV-024 00-context COMPLETE — Phase 0 locked E24-1..4; F6/F2/F4/F12/F13/F25 deepen; Lean+build approved; tip deb43cf; #804/#807/#773'
+      phase2: pending
+      phase3: pending
+      phase4: pending
+    note: 'S034/EV-027 00-context COMPLETE — Phase 0 locked D-S034-open=1,1,2,1; artifacts written; handoff 01-requirements; #815'
+    prior_note: 'S034/EV-027 00-context STARTED — Phase 0 lock pending AskQuestion D-S034-open; #815 official WMO decode residual matrix; Lean+build; F25/F9/F7'
     artifacts:
-    - docs/sessions/S032-iwxxm-us-remarks-va/
-    - docs/sessions/S032-iwxxm-us-remarks-va/session-brief.md
-    - docs/sessions/S032-iwxxm-us-remarks-va/routing-plan.md
-    - docs/context/iwxxm-us-remarks-va.md
+    - docs/sessions/S034-wmo-decode-residual-matrix/
+    - docs/sessions/S034-wmo-decode-residual-matrix/session-brief.md
+    - docs/sessions/S034-wmo-decode-residual-matrix/routing-plan.md
+    - docs/context/wmo-decode-residual-matrix.md
     - docs/decisions/evolve-decisions.md
   01-requirements:
     status: completed
@@ -2813,48 +2964,71 @@ stages:
     started: '2026-07-31'
     completed_at: '2026-07-31'
     completed: '2026-07-31'
-    session_id: S033-va-multi-location-equality
-    evolve_cycle_id: EV-026
-    prior_note: 'S033/EV-026 01-requirements STARTED (delta) — #809 ADR-032 equality; F23/F6/F7; D-S033-open; interview pending'
-    note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    prior_note: 'S034/EV-027 01-requirements STARTED (delta) — deepen F25/F9/F7.g; D-S034-open=1,1,2,1; starting delta interview; #815'
+    note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
     substeps:
       interviews:
         status: completed
         completed: 1
-        total: 1
         current_template: complete
         current_section: complete
-        planned_docs:
-          status:
-            feature-list: completed
-            spec: skipped
-            user-journeys: completed
-            test-plan: completed
-            api-contract: skipped
-            coverage-matrix: skipped
-            ADR: skipped
-            requirements-decisions: completed
     active_session:
-      session_id: S033-va-multi-location-equality
-      evolve_cycle_id: EV-026
+      session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
       status: completed
       mode: delta
       started_at: '2026-07-31'
       started: '2026-07-31'
       completed_at: '2026-07-31'
       completed: '2026-07-31'
-      note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
+      note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; handoff 02-verify-plan; #815'
       feature_ids:
-      - F23
-      - F6
+      - F25
+      - F9
       - F7
       decision_refs:
-      - D-S033-open
-      - E26-E1
-      - E26-M
-      - E26-TC
-      - D-S033-E26-E1
+      - D-S034-open
+      - E27-1
+      - E27-2
+      - E27-3
+      - E27-4
+      - E27-E1
+      - E27-M
+      - E27-UJ
+      - E27-TC
+      - D-S034-E27-E1
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
+      deepen:
+      - F25
+      - F9
+      - F7
+      feature_ids:
+      - F25
+      - F9
+      - F7
+      artifacts:
+      - docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/decisions/evolve-decisions.md
+      decision_refs:
+      - E27-E1
+      - E27-M
+      - E27-UJ
+      - E27-TC
+      - D-S034-E27-E1
     - status: completed
       mode: delta
       session_id: S033-va-multi-location-equality
@@ -3379,6 +3553,8 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - 'S034/EV-027 01-requirements COMPLETE 2026-07-31 (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; report docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md; handoff 02-verify-plan; #815'
+    - '2026-07-31 S034/EV-027 01-requirements STARTED (delta) — deepen F25/F9/F7.g; D-S034-open=1,1,2,1; starting delta interview; #815'
     - 'S033/EV-026 01-requirements COMPLETE 2026-07-31 (delta) — E26-E1=1; deepen F23/F6/F7.g; D-S033-E26-E1; report docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md; handoff 02-verify-plan; #809'
     - '2026-07-31 S033/EV-026 01-requirements STARTED (delta) — #809 ADR-032 equality; F23/F6/F7; D-S033-open; interview pending'
     - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809'
@@ -3423,57 +3599,46 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: completed
+    status: in_progress
     mode: delta
     started_at: '2026-07-31'
     started: '2026-07-31'
-    completed_at: '2026-07-31'
-    completed: '2026-07-31'
-    session_id: S033-va-multi-location-equality
-    evolve_cycle_id: EV-026
-    prior_note: 'S033/EV-026 02-verify-plan STARTED (delta) — D-S033-E26-E1; #809'
-    note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
-    auto_approved: 12
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    prior_note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
+    note: 'S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
-    - D-S033-E26-E1
-    - S02.M1
-    - S02.M2
-    - S02.L1
-    - D-S033-02-phase-a
+    - D-S034-E27-E1
+    - E27-E1
     substeps:
       inventory:
-        status: completed
+        status: pending
       consistency_check:
-        status: completed
+        status: pending
       statement_review:
-        auto_approved: 12
+        auto_approved: 0
         pending:
         reviewed:
     current_document:
     current_statement:
     active_session:
-      session_id: S033-va-multi-location-equality
-      evolve_cycle_id: EV-026
+      session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
       skill_id: 02-verify-plan
-      status: completed
+      status: in_progress
       mode: delta
       started_at: '2026-07-31'
       started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
+      note: 'S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
       feature_ids:
-      - F23
-      - F6
+      - F25
+      - F9
       - F7
       decision_refs:
-      - D-S033-E26-E1
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      - D-S033-02-phase-a
+      - D-S034-E27-E1
+      - E27-E1
     artifacts:
     - docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
@@ -3489,6 +3654,25 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
+      skill_id: 02-verify-plan
+      status: in_progress
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      mode: delta
+      deepen:
+      - F25
+      - F9
+      - F7
+      feature_ids:
+      - F25
+      - F9
+      - F7
+      note: 'S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
+      decision_refs:
+      - D-S034-E27-E1
+      - E27-E1
     - session_id: S033-va-multi-location-equality
       evolve_cycle_id: EV-026
       skill_id: 02-verify-plan
@@ -3815,6 +3999,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-31 S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
     - '2026-07-31 S033/EV-026 02-verify-plan COMPLETE (D-S033-02-phase-a) — PASS; Batch F 1,1,1; Gate A Lean → 04-tech-plan; report docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md; #809'
     - '2026-07-31 S033/EV-026 02-verify-plan STARTED (delta) — D-S033-E26-E1; #809'
     - '2026-07-31 S032/EV-025 02-verify-plan COMPLETE (D-S032-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; #810/#811/#812/#809'
@@ -23200,8 +23385,126 @@ evolve_cycles:
   close_decision_id: D-S033-EV026-phase4-close
   close_note: 'Phase 4 close 2026-07-31 (D-S033-EV026-phase4-close option 1) — approve 13 results; PR #817 merged 101f555; #818 MERGED @ 8c76421; #809 closed; EV-026/S033 complete'
   note: 'D-S033-EV026-phase4-close — Phase 4 close 2026-07-31; EV-026/S033 complete; PR #817 101f555; 13 PASS; #818 MERGED @ 8c76421 (D-S033-818-merge); #809 closed'
+- id: EV-027
+  session_id: S034-wmo-decode-residual-matrix
+  cycle_type: feature
+  feature_ids:
+  - F25
+  - F9
+  - F7
+  title: "Official WMO decode residual matrix (#815)"
+  status: in_progress
+  started: '2026-07-31'
+  started_at: '2026-07-31'
+  completed: null
+  scope_summary: |
+    #815 — every in-scope official WMO TAC peer loadable (or FIXTURE_GAPS) + decode residual
+    matrix empty or allowlisted; CI gate. Deepen F25/F9/F7.g. Lean+build.
+    Phase 0 locked D-S034-open=1,1,2,1 (E27-1..4).
+  github_issues:
+  - '815'
+  branch: evolve/EV-027-wmo-decode-residual-matrix
+  preset: Lean+build
+  preset_status: approved
+  current_stage: 02-verify-plan
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 10-e2e
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 11-verify-impl
+    - 12-verify-deploy
+    when_ships:
+    - 13-deploy-smoke
+    note: "Lean+build — skip 03/05/06/09/11/12; 13 when_ships"
+  stages:
+    00-context:
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      note: Phase 0 locked D-S034-open=1,1,2,1
+    16-evolve:
+      status: in_progress
+      started: '2026-07-31'
+      note: Phase 0 done; 01-requirements delta interview
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
+    02-verify-plan:
+      status: in_progress
+      mode: delta
+      started: '2026-07-31'
+      note: 'S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
+    04-tech-plan:
+      status: pending
+      mode: delta
+    07-build:
+      status: pending
+      mode: full
+    08-verify-build:
+      status: pending
+      mode: delta
+    10-e2e:
+      status: pending
+      mode: smoke
+    13-deploy-smoke:
+      status: pending
+      mode: when_ships
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  decision_refs:
+  - D-S034-open
+  - E27-1
+  - E27-2
+  - E27-3
+  - E27-4
+  - D-S034-E27-E1
+  - E27-E1
+  answers:
+    E27-1: '1'
+    E27-2: '1'
+    E27-3: '2'
+    E27-4: '1'
+    E27-E1: '1'
+  artifacts:
+  - path: docs/sessions/S034-wmo-decode-residual-matrix/session-brief.md
+    status: approved
+  - path: docs/sessions/S034-wmo-decode-residual-matrix/routing-plan.md
+    status: approved
+  - path: docs/context/wmo-decode-residual-matrix.md
+    status: draft
+  - path: docs/decisions/evolve-decisions.md
+    status: approved
+  - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md
+    status: completed
+  notes:
+  - '2026-07-31 S034/EV-027 01-requirements COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; handoff 02-verify-plan; #815'
+  - '2026-07-31 S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
+  - '2026-07-31 S034/EV-027 Phase 0 locked D-S034-open=1,1,2,1 — E27-1..4; handoff 01-requirements; branch evolve/EV-027-wmo-decode-residual-matrix; #815'
 git_history:
-  current_branch: main
+  current_branch: evolve/EV-027-wmo-decode-residual-matrix
   ahead_of_origin: 0
   pushed: true
   pending_commit:
@@ -23217,9 +23520,9 @@ git_history:
   closeout_pr_status: merged
   closeout_merge_sha: 8c76421
   closeout_merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
-  note: 'S033/EV-026 close complete — #817 @ 101f555; #818 MERGED @ 8c76421 (D-S033-818-merge); active_session=null'
+  note: 'S034/EV-027 Phase 0 locked D-S034-open=1,1,2,1; 01-requirements STARTED; branch evolve/EV-027-wmo-decode-residual-matrix'
   notes:
-  - '2026-07-31 S033/EV-026 PR #818 MERGED @ 8c76421 (D-S033-818-merge) — closeout docs; branch docs/S033-ev026-deploy-smoke; tip 8c76421; active_session=null'
+  - '2026-07-31 S034/EV-027 OPEN — Phase 0 locked D-S034-open=1,1,2,1; 01-requirements STARTED; branch evolve/EV-027-wmo-decode-residual-matrix; #815'
   - '2026-07-31 S033/EV-026 CLOSED — Phase 4 close D-S033-EV026-phase4-close; PR #817 merged 101f555; 13 PASS approved; docs branch docs/S033-ev026-deploy-smoke / PR #818; active_session=null'
   - '2026-07-31 S033/EV-026 PR #817 MERGED @ 101f555 (D-S033-817-merge) — merge_commit 101f55586efacaee67bcd4260a04aa6758502123; optional 13/T3.4 when_ships pending user'
   - '2026-07-31 S033/EV-026 tip synced — 7e08051; Gate C PASS (D-S033-gate-c); 07/08/10 complete; T3.4/13 when_ships; #809 closed; awaiting PR'
@@ -23482,6 +23785,11 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-027-wmo-decode-residual-matrix
+    base: main
+    status: active
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
   - name: docs/S033-ev026-deploy-smoke
     purpose: S033/EV-026 13-deploy-smoke + closeout docs
     base: main

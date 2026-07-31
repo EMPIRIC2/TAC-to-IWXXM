@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-31 (S033 / EV-026 — #809 VA multi-location ADR-032 equality / wmoPass)
+> **Last updated**: 2026-07-31 (S034 / EV-027 — #815 official WMO decode residual matrix)
 
 ## Summary
 
@@ -911,10 +911,10 @@
 
 ### F23 / F6 / F7.g deepen (S033 / EV-026 — #809 VA multi-location equality)
 
-- **Status**: **In progress** (S033 / EV-026) — no new Fn; equality + catalog promote
+- **Status**: **Done** (S033 / EV-026) — PR #817 / #818; #809 closed
 - **Issues**: [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2**
-- **What it does**: Make `canonicalize_xml(convert(sigmet-multi-location-VA.tac))` equal
+- **What it did**: Make `canonicalize_xml(convert(sigmet-multi-location-VA.tac))` equal
   vendor XML under annex3 + default pin (ADR-032); flip soft golden → strict; promote
   catalog `wmoReference` → `wmoPass`; close #809
 - **Acceptance**:
@@ -927,23 +927,65 @@
 - **Out of scope**: US REMARKS reopen; #738; sample-menu removal
 - **Packages / apps**: `packages/tac2iwxxm` encode + annex3 golden; frontend catalog /
   FIXTURE_GAPS / Vitest (no new UI surface)
-- **Source**: E26-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-026;
+- **Source**: E26-*; [evolve-report-EV-026.md](evolve-report-EV-026.md);
   [Context: va-multi-location-809](context/va-multi-location-809.md)
 
 ### F6 deepen (S033 / EV-026)
 
 - **Status note**: F6 remains **Implemented**; encoder deltas for multi-location VA shape /
-  metadata so ADR-032 equality holds.
+  metadata so ADR-032 equality holds. **Done** with EV-026.
 
 ### F7.g deepen (S033 / EV-026)
 
 - **Status note**: F7 remains **Planned**; catalog tier flip only (`wmoPass`) when equality
-  holds — no new UI surface.
+  holds — no new UI surface. **Done** with EV-026.
 
 ### F23 deepen (S033 / EV-026)
 
-- **Status note**: F23 remains **Done**; this cycle completes #809 multi-location VA
-  convert equality / catalog promote (**UJ-041**).
+- **Status note**: F23 remains **Done**; EV-026 completed #809 multi-location VA convert
+  equality / catalog promote (**UJ-041**).
+
+### F25 / F9 / F7.g deepen (S034 / EV-027 — #815 official WMO decode residual matrix)
+
+- **Status**: **In progress** (S034 / EV-027) — no new Fn; inventory + residual CI gate
+- **Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815)
+- **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2**
+- **What it does**:
+  1. Inventory official WMO TAC peers under the vendor pin; match catalog ∪ `FIXTURE_GAPS`
+  2. Every in-scope peer loads from the sample menu **or** has an explicit gap + child issue
+  3. Decode residual matrix: happy-path official TAC → `residuals == []` except documented
+     expected-residual allowlist (`E27-4` triage: fix when cheap, else allowlist + child)
+  4. Unexpected residuals fail parametrized CI (not only manual UI checks)
+- **Acceptance**:
+  1. Inventory SoT checked in (docs or generated list) matches catalog ∪ `FIXTURE_GAPS`
+  2. Load path green for registered stems (ADR-032 `wmoPass` / `wmoReference`)
+  3. Residual matrix CI green for happy-path peers; allowlist documented; child issues for
+     stems deferred in-cycle
+  4. GitHub #815 closable when AC met
+- **Journeys / tests**: **UJ-042** (new); deepen **UJ-039** / **UJ-020**; **TC-EV027-001..005**
+  (`E27-UJ=1`, `E27-TC=1`)
+- **Out of scope**: inventing TAC; encode equality promotion; IWXXM-US in WMO menu; new
+  products beyond F6 seven; deferred SWX/VONA/WAFS/QVACI / TC-SIGMET A6-2 unless catalogued
+- **Packages / apps**: `packages/tac2iwxxm` decode + fixtures; FE catalog / FIXTURE_GAPS /
+  Vitest; optional H4–H5 when FE ships
+- **Source**: E27-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-027;
+  [Context: wmo-decode-residual-matrix](context/wmo-decode-residual-matrix.md)
+- **Supersedes**: S029 / EV-022 (parked) narrow SIGMET A6-1a residual work
+
+### F25 deepen (S034 / EV-027)
+
+- **Status note**: F25 remains **Done**; this cycle deepens beyond catalog listing to
+  **decode residual emptiness** on official TAC peers (**UJ-042** / TC-EV027).
+
+### F9 deepen (S034 / EV-027)
+
+- **Status note**: F9 remains **Done**; matrix asserts `decode_tac` residuals empty or
+  allowlisted for official WMO peers (deepen **UJ-020**).
+
+### F7.g deepen (S034 / EV-027)
+
+- **Status note**: F7 remains **Planned**; inventory ↔ catalog ∪ `FIXTURE_GAPS` completeness
+  for official WMO TAC peers (deepen **UJ-039**).
 
 ## Platform Feature Details (Monorepo Migration)
 
