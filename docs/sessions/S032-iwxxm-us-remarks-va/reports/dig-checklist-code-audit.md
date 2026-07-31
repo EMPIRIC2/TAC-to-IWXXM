@@ -33,7 +33,7 @@
 
 | Stem | Validate | Package golden | Catalog | Queue |
 |------|----------|----------------|---------|-------|
-| `sigmet-multi-location-VA` | ✅ inventory | ❌ soft M-golden | `wmoReference` | **M5** soft→strict |
+| `sigmet-multi-location-VA` | ✅ inventory | ✅ soft-compare (TC-EV025-008) | `wmoReference` (equality pending) | **done** M5 soft; T5.3 defer wmoPass |
 
 ## M1–M4 work queue (ordered)
 
@@ -49,4 +49,4 @@
 
 ## Next
 
-`[T5.1]` Soft-compare package golden for `sigmet-multi-location-VA` (Lane B / #809).
+`[T7.2]` 08-verify-build + 10-e2e smoke (Gate C encode PASS @ T7.1).

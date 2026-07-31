@@ -43,7 +43,7 @@
 
 | Item | Status |
 |------|--------|
-| #809 `sigmet-multi-location-VA` soft→strict | **M5** pending |
+| #809 `sigmet-multi-location-VA` soft→strict | **M5** soft ✅; equality/`wmoPass` deferred (T5.3) |
 
 ## Gate C encode (Lane A)
 
