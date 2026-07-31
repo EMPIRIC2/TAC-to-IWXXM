@@ -5,7 +5,7 @@
 **Features deepened**: F6 / F6.b / F12 / F2 / F13 / F23 — no new Fn  
 **Issues**: #810 / #811 / #812 / #809  
 **Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
-**PR**: pending open (close after merge — `D-S032-EV025-closeout=1`)  
+**PR**: [#816](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816) open — close EV-025 after merge (`D-S032-EV025-closeout=1`)  
 **Close decision**: Defer T7.3 / 13-deploy-smoke until API convert/validate ships; open PR to main
 
 ## Outcomes

@@ -139,7 +139,7 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 
 | PR | URL | Status |
 |----|-----|--------|
-| EV-025 / S032 | — | pending |
+| EV-025 / S032 | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816 | open |
 
 ## PR checklist (draft)
 

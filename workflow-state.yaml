@@ -38,7 +38,7 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 13-deploy-smoke
-  note: 'closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 27/28'
+  note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -55,7 +55,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: 'closeout=1; T7.3 deferred; PR opening; EV-025 remains in_progress until merge'
+    note: 'PR #816 open; closeout=1; await merge to close EV-025; tip 50d3d0a'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -127,6 +127,9 @@ active_session:
     required: false
     status: skipped
     note: Lean+build preset
+  pr_number: 816
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+  pr_status: open
 sessions:
 - id: S031-iwxxm-domain-mine
   type: feature
@@ -5002,8 +5005,8 @@ stages:
     evolve_cycle_id: EV-025
     note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress 27/28;
       #810/#811/#812/#809'
-    tip_sha: 1e46b38
-    tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
+    tip_sha: 50d3d0a
+    tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
     current_stage: M7
     current_milestone: M7
     current_task: T7.3
@@ -5011,9 +5014,9 @@ stages:
     active_task: T7.3
     active_task_status: deferred
     progress: 27/28
-    pr_number:
-    pr_url:
-    pr_status:
+    pr_number: 816
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+    pr_status: open
     merge_sha:
     decision_refs:
     - D-S032-04-plan-approve
@@ -5399,6 +5402,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 PR #816 open; tip 50d3d0a; T7.3 deferred'
     - 2026-07-31 S032/EV-025 closeout=1; T7.3 deferred; PR opening
     - '2026-07-31 S032/EV-025 T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 27/28;
       #810/#811/#812/#809'
@@ -6952,7 +6956,7 @@ stages:
       H0c/H1/H3/H4/H5 + catalog + convert; D-S031-merge-close; report deploy-smoke.md; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 13-deploy-smoke deferred D-S032-EV025-closeout=1; when ships after merge; #810/#811/#812/#809'
+    note: 'S032/EV-025 deferred D-S032-EV025-closeout=1; when ships after merge; PR #816 open awaiting merge'
     tip_sha: 864783e
     tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
     overall: pass
@@ -6961,9 +6965,9 @@ stages:
     progress: 22/22
     do_not_auto_merge: false
     decision_id: D-S031-merge-close
-    pr_number: 813
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-    pr_status: merged
+    pr_number: 816
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+    pr_status: open
     merge_sha: 864783e
     ci_run: '30595410610'
     api_deploy: dep-d9lvcr2jnfac73bbn340
@@ -7437,9 +7441,10 @@ stages:
     completed_at:
     completed:
     current_stage: 13-deploy-smoke
-    note: 'closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 27/28'
+    note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
     prior_note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
     notes:
+    - '2026-07-31 S032/EV-025 PR #816 open — https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816; await merge'
     - 2026-07-31 S032/EV-025 closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close 
       EV-025; progress 27/28
     - 2026-07-31 S032/EV-025 T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 
@@ -7489,6 +7494,11 @@ stages:
     - '2026-07-31 S032/EV-025 OPEN — Phase 0 intake E25-1=1, E25-2=1, E25-3=1, E25-4b=2 + E25-4c=3, E25-ui=1 (D-S032-E25-phase0); Lean+build;
       awaiting 00 exit; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 COMPLETE — Phase 4 close D-S031-merge-close; PR #813 864783e; 13 PASS; #804/#807/#773'
+    pr_number: 816
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+    pr_status: open
+    tip_sha: 50d3d0a
+    tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
   15-service-health:
     status: completed
     session_id: S022-rename-cutover
@@ -15431,7 +15441,9 @@ artifacts:
   created_at: '2026-07-31'
   updated_at: '2026-07-31'
   status: in_progress
-  note: closeout=1; PR pending; close EV-025 after merge
+  note: 'PR #816 open; close EV-025 after merge'
+  pr_number: 816
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
 - path: docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
   type: session-report
   kind: e2e-report
@@ -23558,7 +23570,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: 'closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 27/28'
+      note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -23625,6 +23637,9 @@ evolve_cycles:
     13-deploy-smoke:
       status: deferred
       note: deferred D-S032-EV025-closeout=1; when ships after merge
+      pr_number: 816
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+      pr_status: open
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -23662,9 +23677,10 @@ evolve_cycles:
   active_task: T7.3
   active_task_status: deferred
   progress: 27/28
-  tip_sha: 1e46b38
-  tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
+  tip_sha: 50d3d0a
+  tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
   notes:
+  - '2026-07-31 S032/EV-025 PR #816 open — https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816; tip 50d3d0a; close after merge'
   - 2026-07-31 S032/EV-025 closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025;
     progress 27/28; D-S032-EV025-closeout=1
   - '2026-07-31 S032/EV-025 T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 27/28;
@@ -23711,6 +23727,9 @@ evolve_cycles:
     Lean+build; #810/#811/#812/#809'
   note_closeout: closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 
     27/28
+  pr_number: 816
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+  pr_status: open
 git_history:
   current_branch: evolve/EV-025-iwxxm-us-remarks-va
   ahead_of_origin: 38
@@ -25038,10 +25057,13 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 27/28'
-    tip_sha: 1e46b38
-    tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
-    pushed: false
+    note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
+    tip_sha: 50d3d0a
+    tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
+    pushed: true
+    pr_number: 816
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+    pr_status: open
   commits:
   - sha: 1e46b38
     sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
@@ -25056,7 +25078,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
     - workflow-state.yaml
     timestamp: '2026-07-31T17:07:59Z'
-    pushed: false
+    pushed: true
     note: 'T7.2 COMPLETE 08+10 PASS; Gate C encode PASS; tip 1e46b38; next T7.3/13 when ships or open PR; progress 27/28'
   - sha: 8bfb1b2
     sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
@@ -25071,7 +25093,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/t4-7-lane-a-dig-refresh.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/t7-1-gate-c-dig-close.md
     timestamp: '2026-07-31T17:04:40Z'
-    pushed: false
+    pushed: true
     note: 'T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28'
   - sha: c7f4b80
     sha_full: c7f4b807b80c92bf0f705c584df953fdbaf290a5
@@ -25084,7 +25106,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     - packages/tac2iwxxm/tests/test_tc_ev025_010_combined_catalog_smoke.py
     timestamp: '2026-07-31T17:03:55Z'
-    pushed: false
+    pushed: true
     note: 'T6.4 combined WMO+US catalog validate smoke; M6 complete'
   - sha: abb3a7b
     sha_full: abb3a7b4bfef7859c817322c6e0bdd9e90df68ed
@@ -25096,7 +25118,7 @@ git_history:
     files_changed:
     - packages/tac2iwxxm/tests/test_tc_ev025_006_007_remarks_diagnostics.py
     timestamp: '2026-07-31T17:03:44Z'
-    pushed: false
+    pushed: true
     note: 'T6.2 deepen malformed US REMARKS + humanReadableText'
   - sha: b88d22f
     sha_full: b88d22fa5e83624170c1c87ec8c0a6c625c46cd0
@@ -25108,7 +25130,7 @@ git_history:
     files_changed:
     - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
     timestamp: '2026-07-31T17:03:33Z'
-    pushed: false
+    pushed: true
     note: 'T6.1 US fixtures stay out of WMO sample menu'
   - sha: 5f941e7
     sha_full: 5f941e78ecf624c25d184fc0fe112b3546c6a06c
@@ -25124,7 +25146,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     - packages/tac2iwxxm/tests/test_tc_ev025_009_sigmet_multi_location_va_promote.py
     timestamp: '2026-07-31T16:58:52Z'
-    pushed: false
+    pushed: true
     note: 'M5 COMPLETE (T5.1–T5.3 #809 soft→reference); tip 5f941e7; next T6.1; progress 21/28'
   - sha: ceae93c
     sha_full: ceae93cf4dcfb79dac93487e37894ad15112cebb
@@ -25137,7 +25159,7 @@ git_history:
     - packages/tac2iwxxm/tests/fixtures/annex3_golden/manifest.json
     - packages/tac2iwxxm/tests/test_tc_ev025_008_sigmet_multi_location_va.py
     timestamp: '2026-07-31T16:58:41Z'
-    pushed: false
+    pushed: true
     note: 'T5.1 soft-compare golden TC-EV025-008; progress toward M5'
   - sha: 788633e
     sha_full: 788633e40ef374c09d816568b6148f195d6c925b
@@ -25150,7 +25172,7 @@ git_history:
     - packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py
     - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
     timestamp: '2026-07-31T16:58:29Z'
-    pushed: false
+    pushed: true
     note: 'T5.2 multi-location VA OBS/FCST encode'
   - sha: c1a503f
     sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
@@ -25161,7 +25183,7 @@ git_history:
     evolve_cycle_id: EV-025
     files_changed: 4
     timestamp: '2026-07-31T15:50:02Z'
-    pushed: false
+    pushed: true
     note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   - sha: 5d80611
     sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
@@ -25172,7 +25194,7 @@ git_history:
     evolve_cycle_id: EV-025
     files_changed: 8
     timestamp: '2026-07-31T15:49:24Z'
-    pushed: false
+    pushed: true
     note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
   - sha: 4230257
     sha_full: 4230257533982fb2223d04a9a685f65041c644b3
@@ -25184,7 +25206,7 @@ git_history:
     files_changed:
     - workflow-state.yaml
     timestamp: '2026-07-31T15:44:33Z'
-    pushed: false
+    pushed: true
     note: 'T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28'
   - sha: 07d73e3
     sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
@@ -25204,7 +25226,7 @@ git_history:
     - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
     - packages/tac2iwxxm/tests/test_tc_ev025_004_maxmin_processed.py
     timestamp: '2026-07-31T15:30:00Z'
-    pushed: false
+    pushed: true
     note: 'T4.5 MaxMinTemperatures + ProcessedProperty + ObservingSystem encode; progress 16/28'
   - sha: 30d37a1
     sha_full: 30d37a1a3f22a7ee7cef930f1c3bea5ac9c0843a
@@ -25224,7 +25246,7 @@ git_history:
     - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
     - packages/tac2iwxxm/tests/test_tc_ev025_004_variable_cig_sky_vis.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T4.4 VariableCeilingHeight / VariableSky / VariableVisibility encode; progress 15/28'
   - sha: e4a0383
     sha_full: e4a038339d968217b928ba3d10cf3a4e5cbffef5
@@ -25243,7 +25265,7 @@ git_history:
     - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
     - packages/tac2iwxxm/tests/test_tc_ev025_004_sector_obscuration_tower.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T4.3 SectorVisibility / Obscurations / SecondLocation / TowerVisibility encode; progress 14/28'
   - sha: cc3c40f
     sha_full: cc3c40fcd0be03e9b0b76990be4518ba78aa5eff
@@ -25261,7 +25283,7 @@ git_history:
     - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
     - packages/tac2iwxxm/tests/test_tc_ev025_004_sky_convective_hail.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T4.2 CharacterOfTheSky / ConvectiveCloud* / HailstoneSize encode; progress 13/28'
   - sha: bfd8659
     sha_full: bfd865956407cfd73523e7d73426e2b29e3bcca6
@@ -25280,7 +25302,7 @@ git_history:
     - packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py
     - packages/tac2iwxxm/tests/test_tc_ev025_004_wind_shift.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T4.1 AerodromeWindShift encode from WSHFT/FROPA; PeakWind already ✅ (no deepen); progress 12/28'
   - sha: 2e25a37
     sha_full: 2e25a37c5f14b8523646538417d27a60eeb17072
@@ -25292,7 +25314,7 @@ git_history:
     files_changed:
     - workflow-state.yaml
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'chore tip-sha sync after M2–M3 progress'
   - sha: 55fce51
     sha_full: 55fce513adadd5e372f1d58a27763d8fb862cf46
@@ -25308,7 +25330,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T3.3 #812 SnowIncrease/sensors matrices green; M3 complete'
   - sha: d4a6421
     sha_full: d4a642182eeaf44783818dab02118138b3e52348
@@ -25321,7 +25343,7 @@ git_history:
     - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
     - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T3.2 SnowIncrease / InoperativeSensors encode + green tests'
   - sha: 2b51859
     sha_full: 2b5185976d62d3d22f17bfb619f3a0af3f39b974
@@ -25334,7 +25356,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     - packages/tac2iwxxm/tests/test_tc_ev025_003_snow_sensors.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T3.1 red TC-EV025-003'
   - sha: 5ebc70b
     sha_full: 5ebc70bd19252fc200e121608a1d6632d5b7b80d
@@ -25350,7 +25372,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T2.3 #811 Lightning/VOP matrices green'
   - sha: 0db1748
     sha_full: 0db1748f4e51f2f9f9a2f130837ce695e39f4030
@@ -25363,7 +25385,7 @@ git_history:
     - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
     - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T2.2 Lightning/VOP encode + green tests'
   - sha: 619114d
     sha_full: 619114da8cf89b3adf14b7cb1c1ff4693a771cd7
@@ -25375,7 +25397,7 @@ git_history:
     files_changed:
     - packages/tac2iwxxm/tests/test_tc_ev025_002_lightning_vop.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T2.1 red TC-EV025-002'
   - sha: 9d1e49a
     sha_full: 9d1e49a11aad51d94822a3026351f6b8d0703bd4
@@ -25391,7 +25413,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T1.3 #810 Variable RVR matrices green'
   - sha: "3923954"
     sha_full: 39239549e84bb3a6a1d5b94b97ed43207e9cbae1
@@ -25406,7 +25428,7 @@ git_history:
     - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
     - packages/tac2iwxxm/tests/test_tc_ev025_001_variable_rvr.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T1.2 AerodromeVariableRVR encode + green tests'
   - sha: bfb9672
     sha_full: bfb96729c70f84d701ad1d49aeda2852e39be4ab
@@ -25418,7 +25440,7 @@ git_history:
     files_changed:
     - packages/tac2iwxxm/tests/test_tc_ev025_001_variable_rvr.py
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T1.1 red TC-EV025-001'
   - sha: 2323ca9
     sha_full: 2323ca9ecadfb23f3507a8319d1af8c8655baed0
@@ -25430,7 +25452,7 @@ git_history:
     files_changed:
     - workflow-state.yaml
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'M0 tip/workflow-state sync'
   - sha: f1e19a9
     sha_full: f1e19a958edd69d35e620c15287da7eb57d985c6
@@ -25443,7 +25465,7 @@ git_history:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T0.2 dig checklist code-audit + M1–M4 work queue'
   - sha: 02f8b4d
     sha_full: 02f8b4dc9178da4f77b6608fc7455433e95e0d38
@@ -25455,7 +25477,7 @@ git_history:
     files_changed:
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'T0.1 TC-EV025 theme → fixtures/dig map'
   - sha: 70d2e5b
     sha_full: 70d2e5ba1bedc16fa0dcc85e467e3d32bd2bad1a
@@ -25473,7 +25495,7 @@ git_history:
     - docs/test-plan.md
     - workflow-state.yaml
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'Gate B=1 approve → 07 @ T0.1'
   - sha: d41e9d4
     sha_full: d41e9d4a1f4193d5017270d9998306a6e8843aee
@@ -25493,7 +25515,7 @@ git_history:
     - docs/user-journeys.md
     - workflow-state.yaml
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'Batch T draft plan 28 tasks; Gate B pending'
   - sha: 0a5c408
     sha_full: 0a5c408efbb46818009d5cf431046560e0e52df6
@@ -25512,7 +25534,7 @@ git_history:
     - docs/spec.md
     - workflow-state.yaml
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'Gate A closeout — Batch F 1,1,1; D-S032-02-phase-a; handoff 04-tech-plan'
   - sha: f28d159
     sha_full: f28d159c7cf7dd0a266391b169f78295d0df0976
@@ -25534,7 +25556,7 @@ git_history:
     - docs/user-journeys.md
     - workflow-state.yaml
     timestamp: '2026-07-31'
-    pushed: false
+    pushed: true
     note: 'Phase 0–01 lock; E25-E1=1 advances to 02-verify-plan'
   - sha: 864783e
     sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
