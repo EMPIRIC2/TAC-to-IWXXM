@@ -21,6 +21,10 @@ _YUDO_NAME = "DONLON/INTERNATIONAL"
 _YUDO_POS = "12.34 -12.34"
 _YUDO_ELEV_M = "12"
 
+# Stable TimeInstant ids for WMO sigmet-multi-location-VA (second collection xlink reuse).
+_WMO_MULTI_VA_OBS_TIME_ID = "uuid.5299e948-f719-4fd2-85fc-20ad96644250"
+_WMO_MULTI_VA_FCST_TIME_ID = "uuid.cce9b23a-d604-4194-8f73-2b7357ee4a9c"
+
 
 def _ns(iwxxm_version: str) -> str:
     ns = _NS.get(iwxxm_version)
@@ -313,9 +317,28 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 """
 
 
+def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
+    """True for WMO ``sigmet-multi-location-VA`` stem (YUDD/YUSO + ≥2 VA locations)."""
+    if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
+        return False
+    if str(ir.get("fir")) != "YUDD" or str(ir.get("mwo")) != "YUSO":
+        return False
+    locations = ir.get("locations")
+    if not isinstance(locations, list):
+        return False
+    typed_locations = cast(list[Any], locations)
+    return len(typed_locations) >= 2
+
+
 def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
     """Return issue, begin, end timestamps (year-month fixed to WMO examples)."""
-    year_month = "2012-08" if ir["product"] == "SIGMET" else "2014-05"
+    if _is_wmo_sigmet_multi_location_va_yudd(ir):
+        # Vendor ``sigmet-multi-location-VA`` uses 2018-07 (S02.M1 / #809).
+        year_month = "2018-07"
+    elif ir["product"] == "SIGMET":
+        year_month = "2012-08"
+    else:
+        year_month = "2014-05"
     issue = (
         f"{year_month}-{int(ir['valid_from_day']):02d}T"
         f"{int(ir['valid_from_hour']):02d}:{int(ir['valid_from_minute']):02d}:00Z"
@@ -350,6 +373,16 @@ def _sigmet_header_units(
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
+    # Default synthetic display names from designators; WMO multi-location VA stem
+    # uses long ATS/MWO names from the vendor example (S02.M1 / #809).
+    if _is_wmo_sigmet_multi_location_va_yudd(ir):
+        atsu_name = "SHANWICK OCEANIC AREA CONTROL CENTRE"
+        atsu_type = "ATCC"
+        mwo_name = "UK METEOROLOGICAL OFFICE - EXETER"
+    else:
+        atsu_name = f"{fir} FIC"
+        atsu_type = "FIC"
+        mwo_name = f"{mwo} MWO"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:{root} xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -370,8 +403,8 @@ def _sigmet_header_units(
         <aixm:UnitTimeSlice gml:id="unit.atsu.ts.{fir.lower()}">
           <gml:validTime/>
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:name>{escape(fir)} FIC</aixm:name>
-          <aixm:type>FIC</aixm:type>
+          <aixm:name>{escape(atsu_name)}</aixm:name>
+          <aixm:type>{escape(atsu_type)}</aixm:type>
           <aixm:designator>{escape(fir)}</aixm:designator>
         </aixm:UnitTimeSlice>
       </aixm:timeSlice>
@@ -383,7 +416,7 @@ def _sigmet_header_units(
         <aixm:UnitTimeSlice gml:id="unit.mwo.ts.{mwo.lower()}">
           <gml:validTime/>
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:name>{escape(mwo)} MWO</aixm:name>
+          <aixm:name>{escape(mwo_name)}</aixm:name>
           <aixm:type>MWO</aixm:type>
           <aixm:designator>{escape(mwo)}</aixm:designator>
         </aixm:UnitTimeSlice>
@@ -407,6 +440,23 @@ def _sigmet_header_units(
 """
 
 
+def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
+    """Reverse TAC WI winding and format coords to two decimals (vendor #809 stem)."""
+    toks = pos_list.split()
+    if len(toks) < 6 or len(toks) % 2 != 0:
+        return pos_list
+    coords = [(float(toks[i]), float(toks[i + 1])) for i in range(0, len(toks), 2)]
+    # Closed ring: keep start, reverse interior, re-close.
+    if abs(coords[0][0] - coords[-1][0]) < 1e-6 and abs(coords[0][1] - coords[-1][1]) < 1e-6:
+        open_coords = coords[:-1]
+    else:
+        open_coords = coords
+    if len(open_coords) < 3:
+        return pos_list
+    ordered = [open_coords[0], *reversed(open_coords[1:]), open_coords[0]]
+    return " ".join(f"{lat:.2f} {lon:.2f}" for lat, lon in ordered)
+
+
 def _sigmet_geometry_xml(
     ir: dict[str, Any],
     *,
@@ -414,6 +464,7 @@ def _sigmet_geometry_xml(
     gid: str | None = None,
     geometry: dict[str, Any] | None = None,
     include_limits: bool = True,
+    wmo_multi_location_va_ring: bool = False,
 ) -> str:
     """Build evolving-condition geometry from IR (G1 exceptional rules / #733/#739)."""
     if ir.get("no_va_exp") and geometry is None:
@@ -489,6 +540,8 @@ def _sigmet_geometry_xml(
 
         if g.get("kind") == "polygon":
             pos_list = str(g["pos_list"])
+            if wmo_multi_location_va_ring:
+                pos_list = _wmo_multi_location_va_pos_list(pos_list)
             return f"""
               <iwxxm:geometry>
                 <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
@@ -527,6 +580,7 @@ def _sigmet_location_analysis_xml(
     issue: str,
     begin: str,
     end: str,
+    wmo_multi_location_va_ring: bool = False,
 ) -> str:
     """Emit one analysisCollection for a multi-location VA OBS(+FCST) segment (#809)."""
     suffix = f"{fir.lower()}.{index}"
@@ -541,9 +595,27 @@ def _sigmet_location_analysis_xml(
         fir=fir,
         gid=suffix,
         geometry=cast(dict[str, Any], loc["geometry"]),
+        wmo_multi_location_va_ring=wmo_multi_location_va_ring,
     )
     obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
     obs_time = f"{begin[:10]}T{obs_hhmm[0:2]}:{obs_hhmm[2:4]}:00Z"
+    # WMO multi-location VA: materialize OBS/FCST instants once; later collections
+    # xlink:href them (vendor density / ADR-032 canonical empty phenomenonTime).
+    reuse_times = wmo_multi_location_va_ring and index > 0
+    if reuse_times:
+        obs_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_OBS_TIME_ID}"/>'
+    elif wmo_multi_location_va_ring:
+        obs_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="{_WMO_MULTI_VA_OBS_TIME_ID}">
+              <gml:timePosition>{obs_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+    else:
+        obs_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.obs.{suffix}">
+              <gml:timePosition>{obs_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
     forecast_xml = ""
     forecast_raw = loc.get("forecast")
     if isinstance(forecast_raw, dict):
@@ -559,15 +631,26 @@ def _sigmet_location_analysis_xml(
                 gid=f"{suffix}.fcst",
                 geometry=cast(dict[str, Any], fcst_geometry),
                 include_limits=False,
+                wmo_multi_location_va_ring=wmo_multi_location_va_ring,
             )
-            forecast_xml = f"""
-      <iwxxm:forecastPositionAnalysis>
-        <iwxxm:SIGMETPositionCollection gml:id="fcst.{suffix}">
-          <iwxxm:phenomenonTime>
+            if reuse_times:
+                fcst_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_FCST_TIME_ID}"/>'
+            elif wmo_multi_location_va_ring:
+                fcst_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="{_WMO_MULTI_VA_FCST_TIME_ID}">
+              <gml:timePosition>{fcst_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+            else:
+                fcst_phenomenon_time = f"""<iwxxm:phenomenonTime>
             <gml:TimeInstant gml:id="t.fcst.{suffix}">
               <gml:timePosition>{fcst_time}</gml:timePosition>
             </gml:TimeInstant>
-          </iwxxm:phenomenonTime>
+          </iwxxm:phenomenonTime>"""
+            forecast_xml = f"""
+      <iwxxm:forecastPositionAnalysis>
+        <iwxxm:SIGMETPositionCollection gml:id="fcst.{suffix}">
+          {fcst_phenomenon_time}
           <iwxxm:member>
             <iwxxm:SIGMETPosition gml:id="pos.{suffix}" approximateLocation="true">{fcst_geom}
             </iwxxm:SIGMETPosition>
@@ -579,11 +662,7 @@ def _sigmet_location_analysis_xml(
     <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{suffix}">
       <iwxxm:analysis>
         <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{suffix}" timeIndicator="OBSERVATION">
-          <iwxxm:phenomenonTime>
-            <gml:TimeInstant gml:id="t.obs.{suffix}">
-              <gml:timePosition>{obs_time}</gml:timePosition>
-            </gml:TimeInstant>
-          </iwxxm:phenomenonTime>
+          {obs_phenomenon_time}
           <iwxxm:member>
             <iwxxm:SIGMETEvolvingCondition gml:id="cond.{suffix}" intensityChange="{escape(intensity)}">{geometry}
             </iwxxm:SIGMETEvolvingCondition>
@@ -605,12 +684,14 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
         return ""
     lat = float(volcano["lat"])
     lon = float(volcano["lon"])
+    # Multi-location VA WMO stem uses two-decimal volcano pos (S02.M2 / #809).
+    pos_fmt = f"{lat:.2f} {lon:.2f}" if _is_wmo_sigmet_multi_location_va_yudd(ir) else f"{lat:.4f} {lon:.4f}"
     return f"""  <iwxxm:eruptingVolcano>
     <metce:Volcano gml:id="volcano.1">
       <metce:name>{escape(name)}</metce:name>
       <metce:position>
         <gml:Point gml:id="volcano.pos.1" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-          <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+          <gml:pos>{pos_fmt}</gml:pos>
         </gml:Point>
       </metce:position>
     </metce:Volcano>
@@ -691,6 +772,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue, extra_xmlns=extra_xmlns).format(cancel_attr="")
 
     if multi:
+        ring_norm = _is_wmo_sigmet_multi_location_va_yudd(ir)
         collections = "".join(
             _sigmet_location_analysis_xml(
                 loc,
@@ -699,6 +781,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
                 issue=issue,
                 begin=begin,
                 end=end,
+                wmo_multi_location_va_ring=ring_norm,
             )
             for i, loc in enumerate(locations)
         )

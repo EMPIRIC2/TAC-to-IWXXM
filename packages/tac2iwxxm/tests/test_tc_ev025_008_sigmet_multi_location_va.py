@@ -1,8 +1,7 @@
-"""TC-EV025-008 — #809 sigmet-multi-location-VA soft-compare golden (S032 / EV-025 T5.1).
+"""TC-EV025-008 — #809 sigmet-multi-location-VA ADR-032 equality (S033 / EV-026 T1.1).
 
-Soft gate (S02.M1): convert annex3 → ``iwxxm:VolcanicAshSIGMET`` with multi-location
-geometry / forecast collections aligned to vendor structure. Full
-``canonicalize_xml`` equality is TC-EV025-009 / T5.3 under ADR-032.
+Strict gate (E26-TC=1): convert annex3 → ``canonicalize_xml`` equals vendor XML under
+default pin. Soft-compare / inequality assert removed. Catalog promote remains TC-EV025-009.
 """
 
 from __future__ import annotations
@@ -43,7 +42,7 @@ def test_tc_ev025_008_package_and_vendor_fixtures_present() -> None:
     assert case["product"] == "SIGMET"
     assert case.get("theme") == "V3"
     assert case.get("seed") == "sigmet-multi-location-VA"
-    assert case.get("soft_compare") is True
+    assert case.get("soft_compare") is not True
     assert (FIXTURES / case["tac"]).is_file()
     assert VENDOR_STEM.with_suffix(".tac").is_file()
     assert VENDOR_STEM.with_suffix(".xml").is_file()
@@ -52,8 +51,8 @@ def test_tc_ev025_008_package_and_vendor_fixtures_present() -> None:
     assert package_tac == vendor_tac
 
 
-def test_tc_ev025_008_soft_compare_multi_location_va() -> None:
-    """Soft structural gate vs vendor (not ADR-032 equality)."""
+def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
+    """ADR-032 strict equality vs vendor (EV-026)."""
     from tac2iwxxm import convert
     from tac2iwxxm.products.sigmet_airmet import parse_sigmet
 
@@ -95,7 +94,6 @@ def test_tc_ev025_008_soft_compare_multi_location_va() -> None:
     assert len(actual_pos) >= 4
     assert len(actual_pos) == len(vendor_pos)
 
-    # Soft FL-band presence (both location clouds).
     actual_text = result.xml
     assert ">250<" in actual_text and ">370<" in actual_text
     assert ">150<" in actual_text and ">300<" in actual_text
@@ -105,8 +103,7 @@ def test_tc_ev025_008_soft_compare_multi_location_va() -> None:
     name = volcano.findtext(f"{METCE}name") or ""
     assert "ASHVAL" in name.upper()
 
-    # Soft-compare must not silently claim ADR-032 equality.
-    assert canonicalize_xml(result.xml) != canonicalize_xml(vendor_xml)
+    assert canonicalize_xml(result.xml) == canonicalize_xml(vendor_xml)
 
 
 def test_tc_ev025_008_soft_m_xsd_smoke() -> None:

@@ -176,13 +176,13 @@ export const EXAMPLES: readonly GoldenExample[] = [
   },
   {
     id: 'sigmet_multi_location_va',
-    label: 'VA SIGMET WMO multi-location (reference)',
+    label: 'VA SIGMET WMO multi-location (passer)',
     product: 'SIGMET',
     inputMode: 'tac',
     body: sigmetMultiLocationVa,
     nonOperational: true,
     provenance: `${PKG}/annex3_golden/sigmet_multi_location_va.tac`,
-    wmoReference: true,
+    wmoPass: true,
     wmoSeed: 'sigmet-multi-location-VA',
   },
   {

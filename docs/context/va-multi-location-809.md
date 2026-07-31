@@ -1,7 +1,8 @@
 # Scoped context — #809 VA multi-location (soft→strict residual)
 
 **Mode:** scoped · **Date:** 2026-07-31  
-**Status:** active (residual after EV-025 soft path)  
+**Status:** closed (S033 / EV-026 — equality + `wmoPass` shipped; #809 closed)  
+**Session:** S033-va-multi-location-equality · **Cycle:** EV-026  
 **Issue:** [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
 **Parent cycles:** S031/EV-024 (wired `wmoReference`) · S032/EV-025 (soft-compare shipped in [#816](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816), merged)  
 **Features:** F23 deepen · F6 convert · F7.g catalog tiers (ADR-032 amend)
@@ -17,7 +18,7 @@ defaults, then catalog may flip `wmoReference` → `wmoPass` (TC-EV025-009 / UJ-
 | Multi-location OBS/FCST encode (`analysisCollection` ×2) | ✅ |
 | M-xsd / M-sch smoke on convert output | ✅ |
 | Catalog `wmoReference` + FIXTURE_GAPS note | ✅ |
-| ADR-032 equality → `wmoPass` (TC-EV025-009 promote) | ❌ deferred |
+| ADR-032 equality → `wmoPass` (TC-EV025-009 promote) | ✅ EV-026 |
 
 ## Runtime SoT
 
@@ -49,15 +50,16 @@ defaults, then catalog may flip `wmoReference` → `wmoPass` (TC-EV025-009 / UJ-
 - Volcano `MT ASHVAL` + FL bands 150/300 and 250/370
 - Soft gate **asserts inequality** today (`canonicalize_xml(ours) != vendor`) so promote cannot silently pass
 
-## Equality blockers (live on `main` after #816)
+## Equality blockers (confirmed T0.1 — S033 dig)
 
-Canonical diff themes vs vendor XML (not exhaustive — encoder-shaped work):
+Live `canonicalize_xml` themes vs vendor (see
+[t0-1-canonicalize-diff-themes.md](../sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md)):
 
-1. **Calendar year-month** — SIGMET annex3 helper hardcodes `2012-08`; vendor example uses `2018-07` (TAC has day/hour only). Same class of issue as other WMO stems that needed example-specific stamps for ADR-032.
-2. **ATS / MWO display metadata** — ours emits synthetic `YUDD FIC` / `YUSO MWO` (+ type `FIC`); vendor uses long names (`SHANWICK OCEANIC…`, `UK METEOROLOGICAL OFFICE - EXETER`) and ATS type `ATCC`.
-3. **Ring vertex order** — same closed polygon points, different sequence (TAC WI order vs vendor example order).
-4. **Coordinate formatting** — ours `:.4f` (`42.0000`); vendor two-decimal style (`42.00`).
-5. **phenomenonTime / TimeInstant density** — ours always materializes OBS/FCST instants per collection; vendor canonical shape differs on some empty/nil vs filled nodes (confirm when implementing).
+1. **Calendar year-month** — ours `2012-08-10`; vendor `2018-07-10` (TAC has day/hour only). → T1.2
+2. **ATS / MWO display metadata** — ours `YUDD FIC` / `YUSO MWO` (+ type `FIC`); vendor `SHANWICK OCEANIC…` / `UK METEOROLOGICAL OFFICE - EXETER` (+ type `ATCC`). → T1.2
+3. **Ring vertex order** — same closed rings; ours TAC WI order; vendor opposite winding / reorder. → T1.3
+4. **Coordinate formatting** — ours `:.4f` (`42.2833`); vendor two-decimal (`42.28`). → T1.3
+5. **phenomenonTime density** — ours 4 filled `TimeInstant`s; vendor 2 filled + 2 `xlink:href` reuse. → T1.4
 
 Promote flip checklist when equality holds:
 

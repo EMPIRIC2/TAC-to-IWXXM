@@ -6,7 +6,7 @@
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-31 (S032 / EV-025 — UJ-040/041 #810–#812/#809; deepen UJ-010/026/034/039)
+> **Last updated**: 2026-07-31 (S033 / EV-026 — UJ-041 #809 ADR-032 equality / wmoPass)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -55,7 +55,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-038 | TCA lint / convert→validate WMO golden | UI / API / CI | F27 (+F6.f/F12) | T0 / T2 / **T3** |
 | UJ-039 | Load official WMO IWXXM examples from sample menu | apps/frontend / CI | F25/F7.g deepen (EV-024) | T0 / T2 / **T3** / H4–H5 |
 | UJ-040 | Convert METAR/SPECI with structured iwxxm-us REMARKS | library / API / CI | F6.b deepen (EV-025) | T0 / T2 (+ T3 smoke if API ships) |
-| UJ-041 | Promote sigmet-multi-location-VA to WMO passer | library / CI / catalog | F23 deepen (EV-025) | T0 / T2 |
+| UJ-041 | Promote sigmet-multi-location-VA to WMO passer | library / CI / catalog | F23 deepen (EV-025 soft; EV-026 equality) | T0 / T2 |
 | — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -881,9 +881,12 @@ XSD+Schematron; useful diagnostics on negative fixtures. VA path stays on API
 6. Confirm adjacency: VA phenomenon / WV-shaped TAC does not silent-succeed as general
    `iwxxm:SIGMET`; VAA advisory TAC is not treated as VA SIGMET.
 
-**Deepen (S032 / EV-025)**: #809 multi-location VA stem — package golden / soft→strict and
-catalog promote path (**UJ-041** / TC-EV025-008..009). Does not change product enum (still
-`product=sigmet` content-selected root).
+**Deepen (S032 / EV-025)**: #809 multi-location VA stem — soft-compare golden shipped
+(**UJ-041** / TC-EV025-008 soft). Does not change product enum (still `product=sigmet`
+content-selected root).
+
+**Deepen (S033 / EV-026)**: ADR-032 equality under defaults → strict TC-EV025-008 + catalog
+`wmoPass` (TC-EV025-009); close #809.
 
 **Steps (CI — T0)**:
 
@@ -1047,28 +1050,29 @@ validate smoke. Named tickets #810 / #811 / #812 plus all remaining dig ❌ type
 
 ---
 
-### UJ-041: Promote sigmet-multi-location-VA to WMO Passer (S032 / EV-025)
+### UJ-041: Promote sigmet-multi-location-VA to WMO Passer (S032 soft / S033 equality)
 
 **Actor**: CI maintainer / package harness
 
-**Goal**: Vendor stem `sigmet-multi-location-VA` gains a package annex3 golden (or soft-compare
-gate) with root `iwxxm:VolcanicAshSIGMET` and multi-location geometry / forecast collections per
-Guidance. Catalog may promote from `wmoReference` → `wmoPass` **only** when ADR-032
-`canonicalize_xml` equality holds under default convert settings.
+**Goal**: Vendor stem `sigmet-multi-location-VA` has package annex3 convert equal to vendor
+XML under ADR-032 defaults (`canonicalize_xml`), root `iwxxm:VolcanicAshSIGMET`, multi-location
+OBS/FCST collections per Guidance. Catalog tier is `wmoPass` (strict passer). Soft-compare
+path already shipped in EV-025 / #816; **EV-026** completes equality + promote.
 
-**Feature**: Deepen F23 — S032 / EV-025 · Issue [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
+**Feature**: Deepen F23 / F6 / F7.g — S033 / EV-026 · Issue [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
 
 **Steps (CI — T0)**:
 
-1. Convert vendor TAC peer → assert root and multi-location shape (soft gate acceptable initially).
-2. When equality holds under defaults, flip catalog tier to `wmoPass` and assert Vitest/catalog.
-3. Keep sample-menu listing if already present as reference until promote (UJ-039).
+1. Convert vendor TAC peer under annex3 + default pin → `canonicalize_xml` **equals** vendor XML.
+2. Flip catalog tier `wmoReference` → `wmoPass`; Vitest/catalog assert; clear FIXTURE_GAPS note.
+3. Sample-menu listing remains (now as passer) — UJ-039 deepen.
 
-**Acceptance**: TC-EV025-008..009 green; deepen UJ-034 / TC-F23-003 adjacency.
+**Acceptance**: TC-EV025-008..009 green under **strict** semantics (EV-026); deepen UJ-034 /
+TC-F23-003 adjacency; #809 closable.
 
-**Automated tests**: TC-EV025-008..009; FIXTURE_GAPS / catalog row for stem.
+**Automated tests**: TC-EV025-008..009 (reused ids — `E26-TC=1`); FIXTURE_GAPS / catalog row.
 
-**Source**: #809 · S031 gap list · ADR-032
+**Source**: #809 · [Context: va-multi-location-809](context/va-multi-location-809.md) · ADR-032
 
 ---
 
