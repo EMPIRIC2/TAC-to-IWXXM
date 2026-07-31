@@ -3,9 +3,112 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 31
-evolve_cycle_counter: 24
-active_session: null
+session_counter: 32
+evolve_cycle_counter: 25
+active_session:
+  id: S032-iwxxm-us-remarks-va
+  type: feature
+  intent: "Dual-lane F6.b: encode all ❌ iwxxm-us REMARKS types from #773 dig (#810+#811+#812 + adjacent) plus #809 WMO sigmet-multi-location-VA annex3 golden"
+  status: in_progress
+  branch: evolve/EV-025-iwxxm-us-remarks-va
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-025
+  github_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  feature_ids:
+  - F6
+  - F12
+  - F2
+  - F13
+  - F23
+  artifacts_dir: docs/sessions/S032-iwxxm-us-remarks-va/
+  routing_plan_summary: "Lean+build 00→16→01→02→04→07→08→10 (+13 when ships)"
+  preset: Lean+build
+  preset_status: approved
+  note_skipped: "Lean+build — skip 03/05/06/09/12; 11 optional if UI; 09 covered by 08+10; 13 when_ships"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  current_stage: 01-requirements
+  started_at: '2026-07-31'
+  context_briefs:
+  - docs/context/iwxxm-us-remarks-va.md
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: Phase 0 locked E25-*; artifacts written; handoff 01-requirements
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-07-31'
+    note: EV-025 orchestrator in_progress; 01-requirements in_progress (pending E25-E1)
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: in_progress
+    started: '2026-07-31'
+    note: 'STARTED (delta) — pending E25-E1 AskQuestion; reports/01-requirements.md + corpus deltas written; #810/#811/#812/#809'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: smoke
+    status: pending
+  - stage: 13-deploy-smoke
+    required: false
+    mode: when_ships
+    status: pending
+    note: when behavior ships
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    note: Lean+build preset
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    note: Lean+build preset
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    note: Lean+build preset
+  - stage: 09-qa
+    required: false
+    status: skipped
+    note: Lean+build — covered by 08+10
+  - stage: 11-verify-impl
+    required: false
+    status: skipped
+    note: optional if UI — N/A (E25-ui=1)
+  - stage: 12-verify-deploy
+    required: false
+    status: skipped
+    note: Lean+build preset
 sessions:
 - id: S031-iwxxm-domain-mine
   type: feature
@@ -2750,176 +2853,48 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: iwxxm-domain-mine
-    session_id: S031-iwxxm-domain-mine
-    evolve_cycle_id: EV-024
-    started_at: '2026-07-30'
-    completed_at: '2026-07-30'
-    completed: '2026-07-30'
+    scoped_slug: iwxxm-us-remarks-va
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    started_at: '2026-07-31'
+    completed_at: '2026-07-31'
+    completed: '2026-07-31'
     substeps:
       phase0: completed
       phase1a: pending
       phase1b: skipped
       phase1c: skipped
-      phase2: pending
-      phase3: pending
-      phase4: pending
-    note: 'S031/EV-024 00-context COMPLETE — Phase 0 locked E24-1..4; F6/F2/F4/F12/F13/F25 deepen; Lean+build
-      approved; tip deb43cf; #804/#807/#773'
-    prior_note: 'S030/EV-023 00-context COMPLETE — Phase 0 locked E23-1=A, E23-2=all ticket, E23-3=A, E23-4=B
-      (D-S030-E23-phase0); F6/F2/F12/F13 deepen; Lean+build approved; tip dead991' 
+      phase2: completed
+      phase3: completed
+      phase4: completed
+    note: 'S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
+    prior_note: 'S031/EV-024 00-context COMPLETE — Phase 0 locked E24-1..4; F6/F2/F4/F12/F13/F25 deepen; Lean+build approved; tip deb43cf; #804/#807/#773'
     artifacts:
-    - docs/sessions/S031-iwxxm-domain-mine/
-    - docs/sessions/S031-iwxxm-domain-mine/session-brief.md
-    - docs/sessions/S031-iwxxm-domain-mine/routing-plan.md
-    - docs/context/iwxxm-domain-mine.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/
+    - docs/sessions/S032-iwxxm-us-remarks-va/session-brief.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/routing-plan.md
+    - docs/context/iwxxm-us-remarks-va.md
     - docs/decisions/evolve-decisions.md
-    - docs/sessions/S025-sigmet-quality/
-    - docs/sessions/S025-sigmet-quality/session-brief.md
-    - docs/sessions/S025-sigmet-quality/routing-plan.md
-    - docs/context/sigmet-quality.md
-    - docs/decisions/evolve-decisions.md
-    - docs/feature-list.md
-    - docs/sessions/S023-public-app-privacy/
-    - docs/context/public-app-privacy.md
-    - docs/context/rename-cutover-781.md
-    - docs/sessions/S022-rename-cutover/
-    - docs/sessions/S021-golden-examples-ui/session-brief.md
-    - docs/sessions/S021-golden-examples-ui/routing-plan.md
-    - docs/context/golden-examples-ui.md
-    - docs/sessions/S020-aerodrome-quality/session-brief.md
-    - docs/sessions/S020-aerodrome-quality/routing-plan.md
-    - docs/context/aerodrome-quality.md
-    - docs/decisions/evolve-decisions.md
-    - docs/feature-list.md
-    - docs/sessions/S020-aerodrome-quality/
-    - docs/sessions/S019-dissemination-upload/session-brief.md
-    - docs/sessions/S019-dissemination-upload/routing-plan.md
-    - docs/sessions/S018-metar-remarks-667/session-brief.md
-    - docs/sessions/S018-metar-remarks-667/routing-plan.md
-    - docs/context/issue-555-feedback.md
-    - docs/sessions/S004-issue-555-feedback/session-brief.md
-    - docs/sessions/S004-issue-555-feedback/routing-plan.md
-    - docs/context/realtime-tac-ingest.md
-    - docs/sessions/S008-general-tac-iwxxm-converter/session-brief.md
-    - docs/sessions/S008-general-tac-iwxxm-converter/routing-plan.md
-    - docs/sessions/S015-metar-lint-quality/session-brief.md
-    - docs/sessions/S015-metar-lint-quality/routing-plan.md
-    - docs/context/metar-lint-quality.md
-    - docs/decisions/evolve-decisions.md
-    - docs/sessions/S016-manual-tac-input-modes/session-brief.md
-    - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
-    - docs/context/manual-tac-input-modes.md
-    notes:
-    - '2026-07-30 S031/EV-024 00-context COMPLETE — Phase 0 locked E24-1..4; deepen F6/F2/F4/F12/F13/F25;
-      Lean+build approved; handoff 01-requirements; #804/#807/#773'
-    - '2026-07-30 S030/EV-023 00-context COMPLETE — Phase 0 locked E23-1=A, E23-2=all ticket, E23-3=A, E23-4=B
-      (D-S030-E23-phase0); deepen F6/F2/F12/F13; Lean+build approved; handoff 01-requirements; #800'
-    - '2026-07-29 S025/EV-019 00-context COMPLETE — Phase 0 locked Batch1+2 E19-1..8 (D-S025-E19-batch2);
-      F23 Planned in feature-list; paused before 01 (E19-8=B); #733/#739'
-    - 2026-07-29 S025/EV-019 00-context OPEN — Batch 1 E19-1..4 all A locked (D-S025-E19-batch1); Lean+build;
-      Batch 2 pending; F23 provisional
-    - 2026-07-27 S023/EV-017 00-context COMPLETE — E17-4A..E17-11 locked (D-S023-E17-scope-lock); F21/F22;
-      IndexedDB F5/F7; Solution A privacy + GPC; abuse controls; 30d legacy archive; handoff 01-requirements
-    - 2026-07-27 — S023-public-app-privacy/EV-017 opened (feature); D-S023-00-open; 00 in_progress; Standard
-      routing;
-    - 2026-07-27 — S022-rename-cutover opened (ops); D-S022-00-approve-routing; 00 completed; current_stage=15-service-health;
-      no evolve cycle
-    - '2026-07-22 S021/EV-016 00-context COMPLETE — Batch1 E16-1..E16-4 all A; Phase 0 scope locked; Lean+build;
-      handoff 01-requirements (deepen F7 / #780)'
-    - 2026-07-22 S020/EV-015 00-context COMPLETE — Batch2 E15-5..E15-8 all A; Phase 0 scope approved;
-      F20 written to feature-list; handoff 01-requirements
-    - 2026-07-22 S020/EV-015 parent artifacts recorded (session-brief, routing-plan, docs/context/aerodrome-quality.md,
-      evolve-decisions EV-015); Batch1+routing locked; Phase 0 Batch2 pending — 00-context stays in_progress
-    - 2026-07-21 S019/EV-014 Phase 0 APPROVED (Q23=A–D + Q24=A Full) — multi-DB Postgres/MySQL/SQLServer/SQLite;
-      F16–F19; 01-requirements delta completed; handoff 02-verify-plan (D-S019-EV014-phase0-approve /
-      D-S019-EV014-01-requirements-delta)
-    - '2026-07-21 S019/EV-014 Phase 0 Batch 5 locked (AskQuestion waived cloud): Q20=B,C,A,D all four
-      extras IN — A) DDL/create-if-missing supersedes Batch 1 require-existing-only; B) drag-drop IWXXM/TAC
-      in addition to convert-then-send; C) multi-DB beyond Postgres (vendor list open I-S019-EV014-Q20C-vendors);
-      D) AMHS/SWIM/AFS adapters IN. Resolves I-S019-EV014-Q14r-extras-enum. Q21=A staging/test OK for
-      merge; live BYOC demos required before cycle close (with Q15=A). Q22=A Full routing proposed. Draft
-      Fn F16-F19 in session-brief+evolve-decisions only (no feature-list rows). Phase 0 awaiting (1) Q20C
-      vendors (2) user approval Fn+scope+Full routing.'
-    - '2026-07-21 S019/EV-014 Phase 0 Batch 4 locked (AskQuestion waived cloud): Q14r=B keep Q14=A literal
-      + expand design DDL/drag-drop/multi-DB/and-or AMHS (user chose expand over recommended pack A);
-      I-S019-EV014-Q14-batch1 resolved scope-expanded-intentionally; open Ambiguity I-S019-EV014-Q14r-extras-enum
-      (v1 IN-set not enumerated) blocks Phase 0. Q17=A testing-only staging wis2box (Render/Docker); amend
-      Q12=B = test harness; live WIS2 BYOC. Q18≈A BYOC one-shot paste SMTP/gateway in drawer (memory-only)
-      not deploy-only operator SMTP; testing also BYOC. Q19=A work history stays Supabase tac_work_sessions/kv_upload_key;
-      never store destination secrets. No F16+.'
-    - '2026-07-20/21 S019/EV-014 Phase 0 Batch 3 clarifications (AskQuestion waived cloud): Q10 locked
-      - NOT drop Supabase Auth; send/ops destination BYO Postgres only; Q10A=D deploy-time app auth (ADR-021);
-      Q10B N/A. Q11=A+B max SSRF baseline + required DISSEMINATION_EGRESS_ALLOWLIST (empty=no user-URI
-      egress in prod). Q12=B Q13=A Q15=A still locked; Q14=A only profiles OOS + Contradiction vs Batch
-      1 require-existing/Q1=A (I-S019-EV014-Q14-batch1) - superseded by Batch 4 Q14r; Q16 BYO operator
-      credentials (except staging wis2box). ADR-021/F5 tensions eased; non-goals push sinks/paste-keys
-      still open. No F16+.'
-    - '2026-07-20 S019/EV-014 Phase 0 Batch 3 PARTIAL (superseded by clarifications above): Q10 Ambiguity
-      / Q11 pending / Q14 multi-select Ambiguity recorded; Q12=B Q13=A Q14=B Q15=A locked.'
-    - 2026-07-20 S019/EV-014 Phase 0 Batch 2 locked Assumed (Q5=A Q6=B Q7=A Q8=C Q9=A); Batch 1 still
-      locked; Batch 3 pending; no F16+; advisory Q8=C needs credential/environment readiness interview
-    - 2026-07-20 S019-dissemination-upload/EV-014 00-context — session open; Phase 0 intake partial (Batch
-      1 Assumed); AskQuestion UI waived (cloud); Batch 2 / routing approval pending; S018/EV-013 closed
-      Q0=A waive
-    - 2026-07-20 S018/EV-013 00-context completed — Phase 0 intake locked Assumed (E13-1/E13-2/E13-3);
-      AskQuestion UI waived (cloud); Standard routing; handoff 16-evolve → 01-requirements
-    - 2026-07-20 S016/EV-012 00-context completed — Phase 0 intake locked; lean+13 routing approved (D-S016-EV012-route-1);
-      handoff to 01-requirements
-    - 2026-07-19 S015/EV-011 00-context completed — routing approved (D-S015-EV011-route-1); max expansion
-      scope (D-S015-EV011-research-1); handoff to 01-requirements
-    - 2026-07-19 S015/EV-011 open — scoped_slug metar-lint-quality; Phase 0 intake locked; routing approval
-      pending; S011 session-brief.md updated on disk to completed
-    - '2026-07-15 S012-empty-bearer-lint-tac open — scoped hotfix empty Bearer lint-tac/decode-tac + lint
-      UX; S011/EV-008 paused (PR #716 remains open)'
-    - 'GitHub #555 parent feedback; 2/4 items done in S001; auto-clear + error log remain'
-    - 2026-06-25 scoped run S005 — docs/context/issue-671-docker-db.md (#671 Docker DB connect failure)
-    - 2026-06-25 scoped run S006 — docs/context/issue-664-output-filename.md (#664 custom output filename,
-      manual input; frontend-only)
-    - 'Prior scoped_slug before S008 amend: issue-555-feedback (completed 2026-06-23)'
-    - 2026-07-12 S008 amend — scoped refresh realtime-tac-ingest linked from S008 (general-tac brief remains;
-      new brief for ingest/data-entry delta)
-    - '2026-07-12 interview issues resolved (D-S008-realtime-amend-q9q13): I-S008-template-drift-worker
-      via Q10=A; I-S008-f5-f6-metar-only-vs-multiproduct-ui via Q9=A'
-    - '2026-07-12 proposed features for 01-requirements delta: F7 (multi-product TAC sessions), F8 (near-RT
-      ingest pipeline)'
-    - 2026-07-12 D-S008-realtime-amend-q14q18 — package-first; postpone auth + push sinks; parse gate
-      + shared TAC rule pack; research bulletin-aware default; scale worker replicas. Pending Ambiguity
-      I-S008-package-first-scope (F7/F8 scope)
-    - 2026-07-12 D-S008-realtime-amend-q19q22 locked — Q19=A package APIs only (F7/F8 Planned docs; no
-      worker/UI/auth/sinks build); Q20=B packages/iwxxm-validate + TAC validate pkg TBD; Q21=A bulletin
-      split v1; Q22=A scoped brief then 01. I-S008-package-first-scope resolved.
-    - 2026-07-12 scoped refresh completed — phase4 done; brief docs/context/realtime-tac-ingest.md active
-      and indexed in docs/context/README.md; overall 00-context completed for this scoped refresh
-    - 2026-07-13 S011 open — scoped_slug f7-operator-ui; Phase 0 completed, phase1a in_progress; F7 operator
-      UI packaging (user-approved defaults)
-    - 'Phase 1A: frontend F6.e pickers exist; no spans; no decode API; no CodeMirror/Monaco; admin still
-      live; convert hard-fails incomplete TAC'
-    - 'Phase 2: contradictions — #697 vs F5 admin corpus; #694/#702 need new span schema vs api-contract
-      unchanged validate shape'
-    - Phase 3 R1–R6 resolved by user 2026-07-13; R6 BYO-only includes Postgres/DATABASE_URL/SQL URIs
-    - Phase 4 wrote docs/context/f7-operator-ui.md; indexed in docs/context/README.md
   01-requirements:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-07-30'
-    started: '2026-07-30'
-    completed_at: '2026-07-30'
-    completed: '2026-07-30'
-    session_id: S031-iwxxm-domain-mine
-    evolve_cycle_id: EV-024
-    prior_note: 'S030/EV-023 01-requirements COMPLETE 2026-07-30 (delta) — E23-E1=1; deepen F6/F2/F12/F13; D-S030-E23-E1;
-      report docs/sessions/S030-apac-encode-validate/reports/01-requirements.md; handoff 02-verify-plan; #800'
-    note: 'S031/EV-024 01-requirements COMPLETE 2026-07-30 (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25;
+    started_at: '2026-07-31'
+    started: '2026-07-31'
+    completed_at: null
+    completed: null
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    prior_note: 'S031/EV-024 01-requirements COMPLETE 2026-07-30 (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25;
       D-S031-E24-E1; report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan;
       #804/#807/#773'
+    note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
     substeps:
       interviews:
-        status: completed
+        status: in_progress
         completed: null
         total: null
         current_template: null
-        current_section: complete
+        current_section: pending_E25-E1
         planned_docs:
           status:
             feature-list: completed
@@ -2928,39 +2903,67 @@ stages:
             test-plan: completed
             api-contract: pending
             coverage-matrix: pending
-            ADR: completed
+            ADR: pending
+            requirements-decisions: completed
     active_session:
-      session_id: S031-iwxxm-domain-mine
-      evolve_cycle_id: EV-024
-      status: completed
+      session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
+      status: in_progress
       mode: delta
-      started_at: '2026-07-30'
-      started: '2026-07-30'
-      completed_at: '2026-07-30'
-      note: 'S031/EV-024 01-requirements COMPLETE (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25; handoff 02; #804/#807/#773'
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: null
+      note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
       deepen:
       - F6
-      - F2
-      - F4
       - F12
+      - F2
       - F13
-      - F25
+      - F23
       feature_ids:
       - F6
-      - F2
-      - F4
       - F12
+      - F2
       - F13
-      - F25
+      - F23
       decision_refs:
-      - E24-E1
-      - D-S031-E24-E1
-      - E24-ui
-      - D-S031-E24-ui
-      - D-S031-open
+      - E25-E1
       artifacts:
-      - docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/decisions/requirements-decisions.md
     delta_substages:
+    - status: in_progress
+      mode: delta
+      session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: null
+      completed: null
+      note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
+      deepen:
+      - F6
+      - F12
+      - F2
+      - F13
+      - F23
+      feature_ids:
+      - F6
+      - F12
+      - F2
+      - F13
+      - F23
+      artifacts:
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/decisions/requirements-decisions.md
+      decision_refs:
+      - E25-E1
     - status: completed
       mode: delta
       session_id: S031-iwxxm-domain-mine
@@ -7483,274 +7486,19 @@ stages:
   16-evolve:
     status: in_progress
     mode: orchestrator
-    session_id: S031-iwxxm-domain-mine
-    evolve_cycle_id: EV-024
-    started_at: '2026-07-30'
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    started_at: '2026-07-31'
     completed_at: null
     completed: null
-    current_stage: 07-build
-    tip_sha: deb43cf
-    tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
-    note: 'S031/EV-024 in_progress — 04 COMPLETE (D-S031-04-plan-approve); 07-build in_progress @ T0.1; Gate B Lean; tip deb43cf; #804/#807/#773'
+    current_stage: 01-requirements
+    note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; current_stage 01-requirements; #810/#811/#812/#809'
+    prior_note: 'S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; orchestrator continues; current_stage 01-requirements; #810/#811/#812/#809'
     notes:
-    - '2026-07-30 S031/EV-024 04 COMPLETE → 07 @ T0.1 (E24-T1..T5=1,1,2,2,1 / D-S031-04-plan-approve); Gate B; #804/#807/#773'
-    - '2026-07-30 S031/EV-024 02 PASS → 04 (Batch F 1,1,1 / D-S031-02-phase-a) — Gate A Lean; deepen F6/F2/F4/F12/F13/F25; #804/#807/#773'
-    - '2026-07-30 S031/EV-024 01-requirements STARTED (delta) — E24-ui=UIb (docs/repo only); deepen F6/F2/F4/F12/F13/F25;
-      #804/#807/#773'
-    - '2026-07-30 S031/EV-024 OPEN — Phase 0 locked E24-1..4; deepen F6/F2/F4/F12/F13/F25; Lean+build approved;
-      handoff 01-requirements; branch evolve/EV-024-iwxxm-domain-mine; tip deb43cf; #804/#807/#773'
-    - '2026-07-30 S030/EV-023 Phase 4 close D-S030-close — session archived; active_session null; user chose 1+2+3; PR #802 merged 5c7d3b5; #800'
-    - '2026-07-30 S030/EV-023 13-deploy-smoke COMPLETE — PR #801 merged af98690; CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; report deploy-smoke.md; progress 24/24; Phase 4 close pending; #800'
-    - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
-    - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
-    - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
-    - '2026-07-30 T6.1+T6.2 complete (06372ce, 18f1d68); T6.3 in_progress'
-    - '2026-07-30 S030/EV-023 M4 COMPLETE (T4.1–T4.4 dual-register colour/nil + translationCentre) @ 5c131b7 (5c131b77a66b35c4bc0ab270c36fa52879fbaf8c) — commits 50d576d/6a63de9/9b5b29f/5c131b7; next T5.1 / M5; progress 14/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
-    - '2026-07-30 S030/EV-023 T4.1 COMPLETE @ 50d576d (50d576de1c28a6ba8062a56ee8732747d400635e) — offline dual-register colour + dual nil TC-EV023-004; next T4.2 encode href policy (in_progress); progress 11/24; stage 07-build; branch evolve/EV-023-apac-encode-validate; #800'
-    - '2026-07-30 S030/EV-023 tip synced — 3b28479 (3b28479c47e705ae99b5b83b4e7845542c7a201b); M3 complete T3.1–T3.2; next T4.1; stage 07-build; recorded 69d4cf5/11edba3/3b28479; branch evolve/EV-023-apac-encode-validate; not pushed; #800'
-    - '2026-07-30 S030/EV-023 07-build M3 complete T3.1–T3.2 translationFailedTAC quarantine; next T4.1 / M4; tip 69d4cf5 [T3.1]; T3.2 staged; branch evolve/EV-023-apac-encode-validate; #800'
-    - '2026-07-30 S030/EV-023 07-build M2 complete T2.1–T2.2 missing WX / Guidance nils; next T3.1 / M3; tip 83bc386 [T2.2]; branch evolve/EV-023-apac-encode-validate; #800'
-    - '2026-07-30 S030/EV-023 07-build M1 complete T1.1–T1.3; next T2.1 / M2; tip 6f1067d [T1.3]; branch evolve/EV-023-apac-encode-validate; #800'
-    - '2026-07-30 S030/EV-023 07-build M1 complete; next T2.1 missing WX nils; tip 9280a31 (HEAD=T1.2; T1.3 uncommitted at update); branch evolve/EV-023-apac-encode-validate; #800'
-    - '2026-07-30 S030/EV-023 07-build M0 complete (T0.1–T0.3); next T1.1 NSC fixtures;
-      tip branch evolve/EV-023-apac-encode-validate; D-S030-E23-M0; #800'
-    - '2026-07-30 S030/EV-023 04 COMPLETE → 07 @ T0.1 (Batch T E23-T1..T6=1,1,2,2,1,1 / D-S030-04-plan-approve); Gate B; #800'
-    - '2026-07-30 S030/EV-023 02 PASS → 04 (Batch F 1,1,1 / D-S030-02-phase-a) — Gate A Lean; deepen F6/F2/F12/F13; #800'
-    - '2026-07-30 S030/EV-023 01 COMPLETE → 02 (E23-E1=1 / D-S030-E23-E1) — deepen F6/F2/F12/F13; #800'
-    - '2026-07-30 S030/EV-023 Phase 0 locked E23-1=A, E23-2=all ticket, E23-3=A, E23-4=B (D-S030-E23-phase0);
-      deepen F6/F2/F12/F13; 01 in progress; branch active; #800'
-    - '2026-07-30 S030/EV-023 OPEN — #800; branch evolve/EV-023-apac-encode-validate; Lean+build proposed;
-      tip dead991; after D-S029-park'
-    - '2026-07-30 S029/EV-022 CANCELLED/parked (D-S029-park) — Parked/closed without Phase 0 lock — user
-      prioritized #800 (APAC FAQ encode/validate). Re-open via 00-context when ready.'
-    - 2026-07-30 S029/EV-022 OPEN — F9 deepen SIGMET/AIRMET decode residuals; branch feat/EV-022-sigmet-decode-residuals;
-      Lean routing; tip 17c93bd
-    - '2026-07-30 S027/EV-021 Phase 4 close D-S027-close — cycle+session completed; PR #794 merged df56d1f;
-      H1–H5 + live VAA/TCA smoke PASS; F26/F27 Done; #736/#737'
-    - '2026-07-30 S027/EV-021 13-deploy-smoke COMPLETE (D-S027-E21-13-merge) — PASS; H1–H5 + live VAA/TCA;
-      deploys dep-d9lmsdflk1mc739232ug / dep-d9lmsefqj5pc739d3it0; report deploy-smoke.md; #736/#737'
-    - '2026-07-29 S026/EV-020 Phase 4 close D-S026-close — cycle+session completed; PR #793 merged 0f77194;
-      H1–H5 + live F24/F25 smoke PASS; F24/F25 Done; #731'
-    - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE (D-S026-E20-13-merge) — PASS; H1–H5 + live F24/F25;
-      deploys dep-d9l5ihf10e5c73fs5420 / dep-d9l5ii9t0dsc73fr60gg; report deploy-smoke.md; #731'
-    - '2026-07-29 S026/EV-020 07-build COMPLETE — M0–M6 all tasks done; tip merge 0f77194; #731'
-    - '2026-07-29 S025/EV-019 Phase 4 close D-S025-close — cycle+session completed; PR #792 merged afffe86;
-      H1–H5 + live SIGMET smoke PASS; F23 Done; #733/#739'
-    - '2026-07-29 S025/EV-019 13-deploy-smoke COMPLETE (D-S025-13-deploy-A) — PASS; H1–H5 + live SIGMET
-      smoke; deploys dep-d9l11761egvs738ho3r0 / dep-d9l1187avr4c739rfl10; report deploy-smoke.md; #733/#739'
-    - '2026-07-29 S025/EV-019 07-build COMPLETE — M0–M5 / 29 tasks; PR #792 merged afffe86; #733/#739'
-    - '2026-07-29 S025/EV-019 10-e2e COMPLETE — T5.5 T0 PASS UJ-034 / TC-F23-001..006; report e2e-report.md;
-      handoff 13-deploy-smoke T5.6; progress 26/29; tip 1a6dc9a; #733/#739'
-    - '2026-07-29 S025/EV-019 08-verify-build COMPLETE PASS — T5.4 @ 846d50f; handoff 10-e2e T5.5; progress
-      25/29; #733/#739'
-    - '2026-07-29 S025/EV-019 07-build M5 T5.1–T5.2 DONE — FE catalog SIGMET/VA; next T5.3 API smoke;
-      progress 23/29; tip e300168; #733/#739'
-    - '2026-07-29 S025/EV-019 07-build M4 COMPLETE — T4.3–T4.6 done; next T5.1 Vitest SIGMET/VA catalog;
-      progress 21/29; tip 0d0f875; #733/#739'
-    - '2026-07-29 S025/EV-019 07-build T4.3 STARTED — C1 fixtures in_progress (F20 pattern); progress
-      17/29 → 18th; tip 5f37aed; #733/#739'
-    - '2026-07-29 S025/EV-019 07-build M3 COMPLETE — T3.3–T3.4 adjacency + VolcanicAshSIGMET root; next
-      T4.1; #733/#739'
-    - '2026-07-29 S025/EV-019 07-build M3 T3.1–T3.2 DONE @ e041786 — V1 VA SIGMET fixtures/lint (#739);
-      next T3.3 adjacency (encode root → T3.4); #733/#739'
-    - '2026-07-29 S025/EV-019 07-build M3 T3.3 next (D-S025-T2.3-A) — M2 complete; T3.1–T3.2 V1 done;
-      tip e4ac4bc; #733/#739'
-    - '2026-07-29 S025/EV-019 CONTINUE resume 07-build @ T2.1 (D-S025-16-continue) — pointer synced from
-      stale S023/EV-017; M0+M1 done; tip 1391270; #733/#739'
-    - '2026-07-28 S023/EV-017 13-deploy-smoke COMPLETE — smoke approved; API SUPABASE_* removed; redeploy
-      dep-d9kii12jobas73fl4bi0; tip 7837cd1; #783'
-    - '2026-07-28 S023/EV-017 13-deploy-smoke SMOKE PASS (pending user approve) — H0c–H5 PASS; Playwright
-      5/5; tip 7837cd1; optional SUPABASE_* cleanup; validate-existing 2026-07-28; report deploy-smoke.md;
-      #783'
-    - '2026-07-28 S023/EV-017 13-deploy-smoke STARTED — tip 52c14e9 (12 tip 62af980); checklist READY;
-      optional API SUPABASE_* cleanup; #783'
-    - '2026-07-28 S023/EV-017 12-verify-deploy COMPLETE — READY; mitigations+rollback approved; artifact
-      reports/deploy-checklist.md; tip 62af980; next 13; #783'
-    - '2026-07-28 S023/EV-017 12-verify-deploy STARTED — tip 62af980; #783'
-    - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories
-      disposed; verify-impl.md; tip 17ad563; next 12-verify-deploy; #783'
-    - '2026-07-28 S023/EV-017 D-S023-11-ui-preview-declined — UI preview declined (option 2 reports/tests
-      only); journey + feature sign-off next; tip 657d440; #783'
-    - '2026-07-28 S023/EV-017 tip 657d440 — [10] fix coverage_boost + 09/10 reports; 11-verify-impl still
-      in_progress; verify-impl.md draft untracked; #783'
-    - '2026-07-28 S023/EV-017 11-verify-impl STARTED — UI preview AskQuestion pending before feature approval;
-      scope F21/F22 + F5/F7.h deepen; tip 836c1a4; uncommitted coverage_boost + qa/e2e reports + workflow-state;
-      #783'
-    - '2026-07-28 S023/EV-017 Phase D 09+10 COMPLETE — 09 pass_with_advisories (qa-report.md); 10 T0 PASS
-      8 Playwright+Vitest+F21 (e2e-report.md); next 11-verify-impl; tip 836c1a4; uncommitted coverage_boost
-      + reports + workflow-state; #783'
-    - '2026-07-28 S023/EV-017 Phase C PASSED (D-S023-phase-c-A / user 2 then 1) — commit 836c1a4 then
-      proceed Phase D; 09-qa+10-e2e STARTED parallel; tip 836c1a4; #783'
-    - '2026-07-28 S023/EV-017 08-verify-build COMPLETE PASS — pyasn1 0.6.4 (D-S023-08-pyasn1-A); ecdsa
-      ignored; report verification-report.md; C→D criteria met; Phase C checkpoint pending; tip 73f8389
-      (locks uncommitted); #783'
-    - '2026-07-28 S023/EV-017 08-verify-build FAIL (security gate blocking C→D) — pending pyasn1 0.6.3→0.6.4
-      (PYSEC-2026-3455/3456/3457); ecdsa PYSEC-2026-1325 ignored; report verification-report.md; tip 73f8389;
-      #783'
-    - '2026-07-28 S023/EV-017 08-verify-build STARTED — M7 COMPLETE (T7.1–T7.4); 07-build COMPLETE; tip
-      73f8389; PRs #786/#787/#788 merged; security WIP stashed; #783'
-    - '2026-07-28 S023/EV-017 T7.4 checklist COMMITTED @ d459164 — still blocked (D-S023-07-T7.4-blocked)
-      awaiting RENDER_API_KEY; T7.2 pending after T7.4; progress 27/~28; tip d459164; interim draft PR
-      #786; #783'
-    - '2026-07-28 S023/EV-017 T7.3 COMPLETE @ f5aa024 — T7.4 blocked (D-S023-07-T7.4-blocked); T7.2 pending
-      after T7.4; progress 27/~28; tip f5aa024; interim draft PR #786; #783'
-    - '2026-07-28 S023/EV-017 T7.1 COMPLETE @ ad28389 — Playwright public UJ + Auth-gone + privacy smoke;
-      active_task T7.2 pending; progress 26/~28; tip ad28389; interim draft PR #786; #783'
-    - '2026-07-28 S023/EV-017 M5 COMPLETE (T5.1–T5.5) @ 91fd231 — T5.4 delete packages/auth; T5.5 ops
-      note docs/ops/legacy-tac-work-sessions-archive.md; active_milestone M6 (Privacy preference center);
-      active_task T6.1; progress 22/~28; tip 91fd231; interim draft PR #786 stale until push (ahead 33);
-      #783'
-    - '2026-07-28 S023/EV-017 T5.4 COMPLETE @ c9cebfa — delete packages/auth; drop Docker/CI/Makefile
-      coverage gates; active_task T5.5; progress 21/~28; tip c9cebfa; #783'
-    - '2026-07-28 S023/EV-017 T5.3 COMPLETE @ 5772a42 — unmount work-sessions API; TC-F21-auth-gone green;
-      active_task T5.4 in_progress (delete packages/auth); progress 21/~28; tip 5772a42; #783'
-    - '2026-07-28 S023/EV-017 T5.2 COMPLETE @ 5800cfc — strip auth routers/JWT/DISABLE_AUTH; active_task
-      T5.3; progress 20/~28; tip 5800cfc; #783'
-    - '2026-07-28 S023/EV-017 T5.1 committed red @ a38da22 — auth router/JWT gate removal red TDD; active_task
-      T5.2 in_progress (strip auth routers/JWT gates); progress 19/~28; tip a38da22; #783'
-    - '2026-07-28 S023/EV-017 M4 COMPLETE (T4.1–T4.3) — retire api.disableAuth from runtime config.json
-      path; active_milestone M5 (Backend Auth + work-sessions teardown); active_task T5.1 in_progress;
-      progress 18/~28; tip 13c9cf3; commit 13c9cf3; #783'
-    - '2026-07-28 S023/EV-017 T4.1–T4.2 COMPLETE — FE auth-gone tests + remove Auth UX / stop Bearer on
-      public API; active_milestone M4; active_task T4.3; progress 14/~28; tip be1e848; commits 277b903/be1e848;
-      #783'
-    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body
-      + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress
-      12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
-    - '2026-07-28 S023/EV-017 M3 COMPLETE (T3.1–T3.3) — abuse controls (slowapi rate-limit + max-body
-      + dissemination decorator); active_milestone M4 (Frontend Auth removal); active_task T4.1; progress
-      12/~28; tip ce4bf45; commits 151a1c2/452c86f/ce4bf45; #783'
-    - '2026-07-28 S023/EV-017 M2 COMPLETE (T2.1–T2.5) — IndexedDB wire + export/import UI + verification-report-M2;
-      active_milestone M3; active_task T3.1; progress 9/~28; tip 2783bcb; commits dac094a/303083d/2783bcb;
-      #783'
-    - '2026-07-28 S024/EV-018 04 COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved
-      (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C passed; handoff 07-build @ T1.1; #785'
-    - '2026-07-28 S024/EV-018 07-build STARTED (D-S024-04-plan-approve-A B→C) — active task T1.1; M1–M4
-      / 14 tasks; progress 0/14; #785'
-    - '2026-07-28 S023/EV-017 04 COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution
-      plan approved (7 milestones; delete packages/auth; single-deploy cutover; slowapi baselines); 05/06
-      skipped (Standard); B→C passed; handoff 07-build @ T1.1; #783'
-    - '2026-07-28 S023/EV-017 07-build STARTED (D-S023-04-plan-approve-A B→C) — active task T1.1 (Accept
-      ADR-031; mark ADR-020 Superseded); M1–M7 / 27 tasks; progress 0/27; #783'
-    - '2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete
-      packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then
-      approve; artifacts drafted; awaiting plan approve AskQuestion; #783'
-    - '2026-07-28 S023/EV-017 Phase A PASSED (D-S023-02-phase-a-A) — gates.a_to_b passed; 04-tech-plan
-      STARTED (delta); 03 skipped (04 prerequisite waived); #783'
-    - '2026-07-27 S023/EV-017 02 COMPLETE — D-S023-02-C-EV017-A; 10 auto-approved; C1–4+C6 fixed; C5 deferred
-      04/12; Phase A AskQuestion next → 04-tech-plan (03 skipped); #783'
-    - '2026-07-27 S023/EV-017 01 COMPLETE — D-S023-01-requirements-delta; F21/F22 corpus deltas; handoff
-      02-verify-plan (pending user gate); #783'
-    - '2026-07-27 S023/EV-017 16-evolve STARTED — 00-context COMPLETE; E17-4A..E17-11 locked (D-S023-E17-scope-lock);
-      F21/F22; current_stage 01-requirements; #783'
-    - '2026-07-27 S023/EV-017 16-evolve PENDING — session opened (D-S023-00-open); awaiting 00-context
-      Phase 0 completion before orchestrator start; #783'
-    - '2026-07-27 S021/EV-016 16-evolve COMPLETE — Phase 4 close D-S021-EV016-phase4-close — EV-016/S021
-      complete; PR #782 c49f22b; #780 CLOSED; live H4–H5/UJ-032 waived to #781 (D-S021-EV016-13-waive-live-h4h5);
-      next_backlog_issue=781; no new session opened'
-    - '2026-07-27 S021/EV-016 PR #782 MERGED (c49f22b); #780 CLOSED; current_stage→13-deploy-smoke in_progress;
-      user directed finish EV-016 (H4–H5) then close; #781 next backlog (no new cycle yet)'
-    - S021/EV-016 08-verify-build COMPLETE 2026-07-26 — PASS; artifact docs/sessions/S021-golden-examples-ui/reports/verification-report.md;
-      tip 90a8507; C→D still pending until 09+10+11; ready for 09-qa and 10-e2e (parallel)
-    - S021/EV-016 08-verify-build STARTED 2026-07-26 — milestone-boundary verify after M1–M3 complete
-      (11/11; T1.1–T3.4); tip 1896829; gates.c_to_d / phase_c still pending until 08 PASS
-    - 2026-07-26 S021/EV-016 Phase B→C APPROVED (E16-16) — Batch 2 plan approved; 04 COMPLETE; gates.b_to_c
-      + checkpoints.phase_b passed; 07-build STARTED @ T1.1
-    - 2026-07-26 S021/EV-016 Phase A→B APPROVED (E16-10) — gates.a_to_b passed; 04-tech-plan STARTED (delta);
-      next FE catalog + FileConverter wiring
-    - 2026-07-22 S021/EV-016 02 COMPLETE — PASS; handoff 04-tech-plan pending until Phase A→B
-    - 2026-07-22 S021/EV-016 open — orchestrator in_progress after Phase 0; current_stage 01-requirements
-      pending
-    - '2026-07-22 S020/EV-015 16-evolve COMPLETE — Phase 4 close D-S020-EV015-phase4-close; EV-015 completed;
-      F20 Done; PR #778 eae8bdc'
-    - 2026-07-22 S020/EV-015 T5.7 PASS; F20 Done on main eae8bdc; Phase 4 close pending — 07+13 completed;
-      cycle/session remain open for Phase 4.
-    - '2026-07-22 S020/EV-015 PR #778 MERGED to main @ eae8bdc (eae8bdcfea86351f7755c8e54750ac14a33130b1);
-      T5.7 still in_progress — awaiting Deploy/GHCR main-latest + Render redeploy; then H1–H5 + catalog
-      taf/speci; progress 27/28; gates.c_to_d remains pending.'
-    - ? 2026-07-22 S020/EV-015 T5.6 tip recorded — tip/sha dc64b77 (dc64b77d07913c582668239c537832be381efad1);
-        message "[T5.6] docs
-      : 11-verify-impl PASS (D-S020-EV015-11-A; H4–H5→T5.7)"; stage 11-verify-impl; appended git_history.commits;
-        T5.7 in_progress (13-deploy-smoke); progress 27/28; evolve PR to be opened; merge required before
-        GHCR main-latest image redeploy; H1–H5 after merge; gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.6 COMPLETE (D-S020-EV015-11-A) — 11-verify-impl PASS (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md);
-      F20+F6/F12 deepen approved_live_deferred (live H4–H5 at T5.7); active_task T5.7 pending; progress
-      27/28; tip still 766606b (T5.6 commit pending — not yet recorded in git_history); gates.c_to_d remains
-      pending until T5.7 / Phase C close.
-    - 2026-07-22 S020/EV-015 T5.6 STARTED — 11-verify-impl draft written (docs/sessions/S020-aerodrome-quality/reports/verify-impl.md)
-      awaiting user sign-off; AskQuestion for F20 (recommend approve with H4–H5 deferred to T5.7); active_task
-      T5.6 in_progress; progress 26/28 until approve; tip 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d);
-      T5.5 commit recorded; gates.c_to_d remains pending.
-    - ? 2026-07-22 S020/EV-015 T5.5 tip recorded — tip/sha 766606b (766606bad6f74d481c5215952ccb91e34bb9bb8d);
-        message "[T5.5] test
-      : 09-qa + 10-e2e UJ-031 / TC-F20-001..006 (T0 PASS)"; stage 09-qa/10-e2e; appended git_history.commits;
-        T5.6 in_progress (11-verify-impl awaiting sign-off); progress 26/28; gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.5 COMPLETE — 09-qa pass_with_advisories (H4–H5→13) + 10-e2e T0 PASS (162
-      pytest + 10 Vitest); next T5.6 11-verify-impl pending; progress 26/28; tip ca79381 (T5.5 commit
-      pending); gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.5 STARTED — 09-qa + 10-e2e (UJ-031 / TC-F20-001..006) in parallel; active_task
-      T5.5 in_progress; M5 and 07-build remain active; progress 25/28 until T5.5 completes; tip ca79381;
-      gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.4 COMPLETE @ ca79381 — 08-verify-build PASS (format/lint/typecheck; tac-validate
-      471; tac2iwxxm 232; frontend 674; H0c CORS; F20/F15 catalog smokes; pip-audit SKIPPED ambient; detect-secrets
-      on commit PASS); next T5.5 09+10; progress 25/28; tip ca79381; gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.4 STARTED — 08-verify-build lint/typecheck/format/full suites; active_task
-      T5.4 in_progress; M5 and 07-build remain active; progress 24/28 until T5.4 completes; gates.c_to_d
-      remains pending.
-    - 2026-07-22 S020/EV-015 T5.3 COMPLETE @ 80e638c — API smoke taf+speci; next T5.4; progress 24/28;
-      gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.3 STARTED — API smoke product=taf + product=speci lint+convert + catalog
-      GET (TC-F20-005); active_task T5.3 in_progress; M5 and 07-build remain active; progress 23/28; gates.c_to_d
-      remains pending.
-    - 2026-07-22 S020/EV-015 T5.2 COMPLETE @ b630aa8 — FE catalog panel TAF tag filters/copy (E15-14;
-      UJ-031); report t52-fe-catalog-taf-tags.md; next T5.3 API smoke product=taf+speci; progress 23/28;
-      gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.2 STARTED — FE extend catalog panel filters/copy for TAF (E15-14; UJ-031);
-      active_task T5.2 in_progress; M5 and 07-build remain active; progress 22/28; gates.c_to_d remains
-      pending.
-    - 2026-07-22 S020/EV-015 T5.1 COMPLETE @ 1810db4 — red TDD Vitest catalog panel TAF tag filters/copy
-      (E15-14; TC-F20-005); report t51-vitest-catalog-taf-tags.md; next T5.2 FE extend catalog panel filters/copy
-      for TAF; progress 22/28; gates.c_to_d remains pending.
-    - 2026-07-22 S020/EV-015 T5.1 STARTED — Vitest catalog panel filters/copy for TAF tags (E15-14; TC-F20-005);
-      active_task T5.1 in_progress; M5 and 07-build remain active.
-    - 2026-07-22 S020/EV-015 T4.4 COMPLETE — test_tc_f20_001_registry_completeness.py (7 tests); tac-validate
-      471 passed; M4 closed; next T5.1 Vitest catalog TAF tags.
-    - 2026-07-22 S020/EV-015 T4.3 COMPLETE @ 53ae150 — COVERAGE_MATRIX F20 acc checklist closed (T1–T4/S1–S3/C1
-      closed or deferred); ISSUE_CATALOG regen (ADR line F20/EV-015). Next T4.4 TC-F20-001 registry completeness.
-    - 2026-07-22 S020/EV-015 T4.3 STARTED — COVERAGE_MATRIX F20 acc checklist + ISSUE_CATALOG regen (F20
-      acc4); tip acee58f; dep T4.2 complete
-    - 2026-07-22 S020/EV-015 T4.2 COMPLETE @ acee58f — Encode/defer C1 (MULTI_REPORT_BULLETIN + c1 tags;
-      CRS/translationFailedTAC/COLLECT/code-list convert-only on COVERAGE_MATRIX). Next T4.3 matrix checklist
-      + ISSUE_CATALOG regen.
-    - 2026-07-22 S020/EV-015 T4.2 Encode/defer C1 STARTED (in_progress); tip 0e269fd — T4.1 COMPLETE (C1
-      fixtures)
-    - 2026-07-22 S020/EV-015 T4.1 COMPLETE @ 0e269fd — C1 lint fixtures (reportStatus NORMAL/AMD/COR,
-      nilReasons NIL/NSC, one-report multi bulletins, nil-with-body negatives). CRS convert-only deferred
-      to T4.2. Assertions land with T4.2. Next T4.2 Encode/defer C1.
-    - '2026-07-22 S020/EV-015 T4.1 STARTED — common-rule fixtures (C1: reportStatus / nilReasons / CRS
-      / one-report) where lint applies; tip 5557e9f; assertions deferred to T4.2 per S020 T*.1 pattern'
-    - 2026-07-22 S020/EV-015 M3 T3.1–T3.6 COMPLETE; next T4.1 Common C1 fixtures; tip d1fb9d2
-    - 2026-07-22 S020/EV-015 M2 T2.1–T2.3 + M3 T3.1–T3.4 COMPLETE; next T3.5 SPECI goldens S3 (TC-F20-003);
-      D-S020-EV015-q22-a; tip 039712f
-    - 2026-07-22 S020/EV-015 Phase B PASSED (D-S020-EV015-phase-b-pass) — gates.b_to_c passed; 07-build
-      STARTED at T0.1; do not re-open Phase 0/B
-    - 2026-07-22 S020/EV-015 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A) — 04-exit consistency
-      PASS; Phase B checkpoint pending; do not start 07
-    - 2026-07-22 S020/EV-015 Phase A PASSED (D-S020-EV015-phase-a-pass) — gates.a_to_b passed; 04-tech-plan
-      STARTED (delta)
-    - 2026-07-22 S020/EV-015 02 COMPLETE — PASS (D-S020-EV015-s1m1-1/s1m2-2/s9m1-1); rename aerodrome-quality;
-      Phase A checkpoint pending before 04; do not start 04
-    - 2026-07-22 S020/EV-015 01→02 — 01-requirements COMPLETE (E15-10 / D-S020-EV015-01-confirm = A);
-      interviews 6/6; 02-verify-plan delta started
-    - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B approved; user_confirm
-      pending before 01 complete / 02-verify-plan
-    - 2026-07-22 S020/EV-015 16-evolve in_progress — 00-context completed; handoff 01-requirements; Phase
-      0 Batch1+Batch2 locked (E15-1..E15-8 all A)
-    - '2026-07-21 S019/EV-014 closeout hygiene — 16-evolve completed/idle (EV-014 closed; no active evolve
-      cycle); PR #774 merged 915f41e; draft PR #770 closed superseded; issues #729/#2/#6 closed'
-    - 2026-07-21 S019/EV-014 16-evolve COMPLETE — Phase 4 close D-S019-EV014-phase4-close; EV-014 completed
-    prior_note: S029/EV-022 OPEN — F9 deepen SIGMET/AIRMET decode residuals; Lean 00→16→01 light→07→10
-      smoke→13 optional; Phase 0 intake pending
+    - '2026-07-31 S032/EV-025 01-requirements STARTED (delta) — pending E25-E1 AskQuestion; artifacts: reports/01-requirements.md + feature-list/user-journeys/test-plan + requirements-decisions; UJ-040/041 + TC-EV025; deepen F6/F12/F2/F13/F23; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 OPEN — Phase 0 intake E25-1=1, E25-2=1, E25-3=1, E25-4b=2 + E25-4c=3, E25-ui=1 (D-S032-E25-phase0); Lean+build; awaiting 00 exit; #810/#811/#812/#809'
+    - '2026-07-30 S031/EV-024 COMPLETE — Phase 4 close D-S031-merge-close; PR #813 864783e; 13 PASS; #804/#807/#773'
   15-service-health:
     status: completed
     session_id: S022-rename-cutover
@@ -8057,6 +7805,33 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S032-E25-phase0
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 00-context
+  status: confirmed
+  category: scope
+  topic: 'EV-025 Phase 0 lock — iwxxm-us REMARKS encode + VA multi-location golden'
+  summary: 'E25-1=1, E25-2=1, E25-3=1, E25-4→2+3 clarified as E25-4b=2 dual lane + E25-4c=3 all ❌ US types, E25-ui=1 N/A'
+  decision: 'E25-1=1, E25-2=1, E25-3=1, E25-4→2+3 clarified as E25-4b=2 dual lane + E25-4c=3 all ❌ US types, E25-ui=1 N/A'
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions: []
+  answers:
+    E25-1: '1'
+    E25-2: '1'
+    E25-3: '1'
+    E25-4b: '2'
+    E25-4c: '3'
+    E25-ui: '1'
 - id: D-S031-merge-close
   date: '2026-07-30'
   timestamp: '2026-07-30'
@@ -8351,8 +8126,7 @@ decisions_log:
   status: confirmed
   topic: S02.M1 defer catalog reference-tier metadata field to 04
   summary: S02.M1 = 1 — Approve defer catalog metadata field for reference tier to 04 (prefer wmoReference?)
-  decision: S02.M1 option 1 confirmed 2026-07-30 — Catalog metadata field for reference tier deferred to
-    04; prefer additive wmoReference?: boolean (keep wmoPass/wmoSeed). Batch F / 02-verify-plan.
+  decision: 'S02.M1 option 1 confirmed 2026-07-30 — Catalog metadata field for reference tier deferred to 04; prefer additive wmoReference?: boolean (keep wmoPass/wmoSeed). Batch F / 02-verify-plan.'
   related_issues:
   - '804'
   - '807'
@@ -15608,6 +15382,98 @@ decisions_log:
   preset: Lean+build
   preset_status: approved
 artifacts:
+- path: docs/sessions/S032-iwxxm-us-remarks-va/session-brief.md
+  kind: session-brief
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S032/EV-025 Phase 0 locked E25-*; dual-lane REMARKS + VA; #810/#811/#812/#809'
+- path: docs/sessions/S032-iwxxm-us-remarks-va/routing-plan.md
+  kind: routing-plan
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'Lean+build 00→16→01→02→04→07→08→10 (+13 when ships)'
+- path: docs/context/iwxxm-us-remarks-va.md
+  kind: context-scoped
+  slug: iwxxm-us-remarks-va
+  topic: 'iwxxm-us REMARKS encode (full dig ❌) + VA multi-location golden (S032/EV-025)'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'Scoped context brief; Phase 0 locked E25-*'
+- path: docs/decisions/evolve-decisions.md
+  kind: decisions-log
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 16-evolve
+  skill_id: 16-evolve
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: EV-025 section — Phase 0 locked E25-*; handoff 01-requirements
+- path: docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
+  kind: stage-report
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S032/EV-025 01 delta in_progress — pending E25-E1; #810/#811/#812/#809'
+- path: docs/feature-list.md
+  kind: corpus-delta
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: EV-025 delta — deepen F6.b / F12 / F2 / F13 / F23
+- path: docs/user-journeys.md
+  kind: corpus-delta
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: EV-025 — UJ-040/041 (+ deepen UJ-010/026/034/039)
+- path: docs/test-plan.md
+  kind: corpus-delta
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: EV-025 — TC-EV025-001..010
+- path: docs/decisions/requirements-decisions.md
+  kind: decisions-log
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: EV-025 section — pending E25-E1 close
 - path: docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
   kind: execution-plan
   session_id: S031-iwxxm-domain-mine
@@ -23798,19 +23664,130 @@ evolve_cycles:
     deepen F6/F2/F4/F12/F13/F25; #804/#807/#773'
   - '2026-07-30 S031/EV-024 OPEN — Phase 0 locked E24-1..4; deepen F6/F2/F4/F12/F13/F25; Lean+build approved;
     handoff 01-requirements; branch evolve/EV-024-iwxxm-domain-mine; tip deb43cf; #804/#807/#773'
-git_history:
-  current_branch: main
-  ahead_of_origin: 0
-  pushed: true
-  pending_commit: null
-  tip_sha: 864783e
-  tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
-  pr_number: 813
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-  pr_status: merged
-  merge_sha: 864783e
-  note: 'S031/EV-024 CLOSED — PR #813 merged 864783e; CI 30595410610; 13 PASS; active_session=null; #804/#807/#773'
+- id: EV-025
+  session_id: S032-iwxxm-us-remarks-va
+  cycle_type: feature
+  feature_ids:
+  - F6
+  - F12
+  - F2
+  - F13
+  - F23
+  title: "iwxxm-us REMARKS encode (full dig ❌) + VA multi-location golden"
+  status: in_progress
+  started: '2026-07-31'
+  started_at: '2026-07-31'
+  completed: null
+  completed_at: null
+  scope_summary: |
+    Dual lane (E25-4b=2, E25-4c=3): (1) Full AC for #810 Variable RVR/meanRVR,
+    #811 Lightning/VOP, #812 SnowIncrease+sensor outage, PLUS all remaining ❌ US
+    types from iwxxm-us METAR/SPECI dig checklist (lint+encode+goldens+validate smoke;
+    US-only, not WMO menu). (2) #809 WMO sigmet-multi-location-VA annex3 golden
+    (soft→strict / wmoPass when ADR-032 equality holds). Lean+build routing.
+    Out: USWX, vendor hand-edits, mixing US into WMO catalog, #808 release-line dig.
+  github_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  issues:
+  - 810
+  - 811
+  - 812
+  - 809
+  branch: evolve/EV-025-iwxxm-us-remarks-va
+  preset: Lean+build
+  preset_status: approved
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 10-e2e
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 11-verify-impl
+    - 12-verify-deploy
+    notes: "Lean+build + 13 when behavior ships; 11 optional if UI; 09 covered by 08+10"
+  current_stage: 01-requirements
+  stages:
+    00-context:
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      note: Phase 0 locked E25-*; artifacts written; handoff 01-requirements
+    16-evolve:
+      status: in_progress
+      started: '2026-07-31'
+      note: Orchestrator in_progress; 01-requirements in_progress (pending E25-E1)
+    01-requirements:
+      status: in_progress
+      started: '2026-07-31'
+      started_at: '2026-07-31'
+      mode: delta
+      note: 'S032/EV-025 01-requirements in_progress (delta) — pending E25-E1; UJ-040/041 + TC-EV025; #810/#811/#812/#809'
+    02-verify-plan:
+      status: pending
+    04-tech-plan:
+      status: pending
+    07-build:
+      status: pending
+    08-verify-build:
+      status: pending
+    10-e2e:
+      status: pending
+    13-deploy-smoke:
+      status: pending
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - docs/sessions/S032-iwxxm-us-remarks-va/session-brief.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/routing-plan.md
+  - docs/context/iwxxm-us-remarks-va.md
+  - docs/decisions/evolve-decisions.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
+  - docs/feature-list.md
+  - docs/user-journeys.md
+  - docs/test-plan.md
+  - docs/decisions/requirements-decisions.md
   notes:
+  - '2026-07-31 S032/EV-025 01-requirements STARTED (delta) — pending E25-E1 AskQuestion; artifacts: reports/01-requirements.md + feature-list/user-journeys/test-plan + requirements-decisions; UJ-040/041 + TC-EV025; deepen F6/F12/F2/F13/F23; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 OPEN — Phase 0 intake E25-1=1, E25-2=1, E25-3=1, E25-4b=2 dual lane + E25-4c=3 all ❌ US types, E25-ui=1 N/A (D-S032-E25-phase0); Lean+build; #810/#811/#812/#809'
+git_history:
+  current_branch: evolve/EV-025-iwxxm-us-remarks-va
+  ahead_of_origin: 0
+  pushed: false
+  pending_commit: null
+  tip_sha: 22a94b7
+  tip_sha_full: 22a94b7645cbe28138447ece55957484f0b98afb
+  pr_number: null
+  pr_url: null
+  pr_status: null
+  merge_sha: null
+  note: 'S032/EV-025 01-requirements in_progress — branch evolve/EV-025-iwxxm-us-remarks-va active (local, tip 22a94b7); no new commits invented; pending E25-E1; #810/#811/#812/#809'
+  notes:
+  - '2026-07-31 S032/EV-025 01-requirements STARTED (delta) — pending E25-E1 AskQuestion; artifacts: reports/01-requirements.md + feature-list/user-journeys/test-plan + requirements-decisions; UJ-040/041 + TC-EV025; deepen F6/F12/F2/F13/F23; #810/#811/#812/#809; tip 22a94b7; commits not invented'
+  - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; branch active locally @ 22a94b7; commits not invented; handoff 01-requirements; #810/#811/#812/#809'
   - '2026-07-30 S031/EV-024 Phase 4 close D-S031-merge-close — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0; H0c/H1/H3/H4/H5 + catalog + convert PASS; session archived; #804/#807/#773'
   - '2026-07-30 S031/EV-024 tip bump 681436a — workflow-state sync commit; CI GREEN on PR #813 (required checks pass; Deploy skipped); awaiting merge approval; #804/#807/#773'
   - '2026-07-30 S031/EV-024 state-drift SYNC — tip 304df52; PR #813 open; T0.1–T7.2 atomic commits landed; T7.3 deferred D1; branch pushed; #804/#807/#773'
@@ -25135,6 +25112,18 @@ git_history:
     pr_head: evolve/EV-024-iwxxm-domain-mine
     pr_status: merged
     do_not_auto_merge: false
+  - name: evolve/EV-025-iwxxm-us-remarks-va
+    purpose: 'S032/EV-025 iwxxm-us REMARKS encode (full dig ❌) + #809 VA multi-location golden'
+    base: main
+    status: active
+    created: '2026-07-31'
+    created_at: '2026-07-31'
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    note: 'S032/EV-025 branch created locally (base main @ 22a94b7); 00-context COMPLETE; Phase 0 locked E25-*; #810/#811/#812/#809'
+    tip_sha: 22a94b7
+    tip_sha_full: 22a94b7645cbe28138447ece55957484f0b98afb
+    pushed: false
   commits:
   - sha: 864783e
     sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e

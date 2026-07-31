@@ -6,7 +6,7 @@
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-30 (S030 / EV-023 — #800 deepen UJ-001/005/006/016; no new UJ)
+> **Last updated**: 2026-07-31 (S032 / EV-025 — UJ-040/041 #810–#812/#809; deepen UJ-010/026/034/039)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -54,6 +54,8 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-037 | VAA lint / convert→validate WMO golden | UI / API / CI | F26 (+F6.f/F12) | T0 / T2 / **T3** |
 | UJ-038 | TCA lint / convert→validate WMO golden | UI / API / CI | F27 (+F6.f/F12) | T0 / T2 / **T3** |
 | UJ-039 | Load official WMO IWXXM examples from sample menu | apps/frontend / CI | F25/F7.g deepen (EV-024) | T0 / T2 / **T3** / H4–H5 |
+| UJ-040 | Convert METAR/SPECI with structured iwxxm-us REMARKS | library / API / CI | F6.b deepen (EV-025) | T0 / T2 (+ T3 smoke if API ships) |
+| UJ-041 | Promote sigmet-multi-location-VA to WMO passer | library / CI / catalog | F23 deepen (EV-025) | T0 / T2 |
 | — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -275,6 +277,10 @@ US extension XML (profile isolation). See also UJ-026 for annex3 exclusion messa
 
 **Tier**: T0 / T2 primarily.
 
+**Deepen (S032 / EV-025)**: New structured REMARKS codecs (#810–#812 + adjacent) must not
+weaken malformed-path diagnostics — unknown / broken US remark tokens still surface issues;
+partial success may encode recognized elements and retain remainder (UJ-026).
+
 ---
 
 ### UJ-026: METAR REMARKS retain / exclusion (#667)
@@ -288,6 +294,9 @@ US extension XML (profile isolation). See also UJ-026 for annex3 exclusion messa
 3. Additive `T########` / `P####` parsed into IR and retained in free-text until structured codecs land.
 
 **Tier**: T0 / T2 primarily.
+
+**Deepen (S032 / EV-025)**: As dig ❌ types gain structured codecs (UJ-040), acceptance (2)
+expands to those types; any still-unparsed tokens remain in `humanReadableText` (never drop).
 
 **Automated tests**:
 - Package: `packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py`
@@ -872,6 +881,10 @@ XSD+Schematron; useful diagnostics on negative fixtures. VA path stays on API
 6. Confirm adjacency: VA phenomenon / WV-shaped TAC does not silent-succeed as general
    `iwxxm:SIGMET`; VAA advisory TAC is not treated as VA SIGMET.
 
+**Deepen (S032 / EV-025)**: #809 multi-location VA stem — package golden / soft→strict and
+catalog promote path (**UJ-041** / TC-EV025-008..009). Does not change product enum (still
+`product=sigmet` content-selected root).
+
 **Steps (CI — T0)**:
 
 1. Registry CI: every emitted SIGMET / VA SIGMET code is registered; catalog export in sync.
@@ -993,7 +1006,69 @@ Encode/lint/SCH gaps are tracked as child issues — not blocked by menu listing
 **Acceptance**: TC-EV024-004..006 green; deepen TC-F25-003 / TC-F7-008; `FIXTURE_GAPS.md`
 accurate; ADR-032 amend honored.
 
-**Automated tests**: TC-EV024-*; TC-F25-003 deepen; examplesCatalog Vitest.
+**Deepen (S032 / EV-025)**: New US REMARKS goldens / fixtures (**UJ-040**) remain **out** of
+the WMO sample menu — regression assert in TC-EV025-005.
+
+**Automated tests**: TC-EV024-*; TC-F25-003 deepen; examplesCatalog Vitest; TC-EV025-005.
+
+---
+
+### UJ-040: Convert METAR/SPECI with Structured iwxxm-us REMARKS (S032 / EV-025)
+
+**Actor**: Package / API consumer / CI maintainer
+
+**Goal**: Under `profile=iwxxm_us`, METAR/SPECI REMARKS that map to dig ❌ US extension types
+encode to the corresponding `iwxxm-us` elements (pin XSD 3.0), with goldens and combined-catalog
+validate smoke. Named tickets #810 / #811 / #812 plus all remaining dig ❌ types.
+
+**Feature**: Deepen F6.b / F12 / F2·F13 — S032 / EV-025
+
+**Steps (CI — T0)**:
+
+1. For each dig ❌ type (or fixture pack): TAC with REMARKS → `tac2iwxxm` convert `iwxxm_us`.
+2. Assert extension element(s) present per PDF/XSD (e.g. Variable RVR, ObservedLightning,
+   SnowIncrease, FailedSensors, …).
+3. Run `iwxxm-validate` combined catalog smoke on emitted XML.
+4. Negatives / malformed tokens still diagnostics (**UJ-010**); unparsed remainder in
+   `humanReadableText` (**UJ-026**).
+5. Confirm annex3 profile still excludes US extension XML (`REMARKS_EXCLUDED` path).
+
+**Steps (API — T2 / optional T3)**:
+
+1. `POST /api/v1/convert` with `profile=iwxxm_us` and a US REMARKS accept fixture.
+2. Response XML contains expected extension blocks; optional validate round-trip.
+
+**Acceptance**: TC-EV025-001..007 green (or explicit deferrals with child issues for residual
+types after best-effort — prefer close all dig ❌ in-cycle per E25-4c=3).
+
+**Automated tests**: TC-EV025-001..007; package annex3/`iwxxm_us` goldens.
+
+**Source**: #810 / #811 / #812 · dig checklist · E25-*
+
+---
+
+### UJ-041: Promote sigmet-multi-location-VA to WMO Passer (S032 / EV-025)
+
+**Actor**: CI maintainer / package harness
+
+**Goal**: Vendor stem `sigmet-multi-location-VA` gains a package annex3 golden (or soft-compare
+gate) with root `iwxxm:VolcanicAshSIGMET` and multi-location geometry / forecast collections per
+Guidance. Catalog may promote from `wmoReference` → `wmoPass` **only** when ADR-032
+`canonicalize_xml` equality holds under default convert settings.
+
+**Feature**: Deepen F23 — S032 / EV-025 · Issue [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
+
+**Steps (CI — T0)**:
+
+1. Convert vendor TAC peer → assert root and multi-location shape (soft gate acceptable initially).
+2. When equality holds under defaults, flip catalog tier to `wmoPass` and assert Vitest/catalog.
+3. Keep sample-menu listing if already present as reference until promote (UJ-039).
+
+**Acceptance**: TC-EV025-008..009 green; deepen UJ-034 / TC-F23-003 adjacency.
+
+**Automated tests**: TC-EV025-008..009; FIXTURE_GAPS / catalog row for stem.
+
+**Source**: #809 · S031 gap list · ADR-032
 
 ---
 

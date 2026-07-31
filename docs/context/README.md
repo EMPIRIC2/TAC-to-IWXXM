@@ -28,6 +28,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [golden-examples-ui](golden-examples-ui.md) | Pre-loaded workbench golden examples (#780) | active | 2026-07-22 | F7, S021/EV-016 |
 | [sigmet-quality](sigmet-quality.md) | General + VA SIGMET quality bars (#733/#739) | active | 2026-07-29 | F23, S025/EV-019 |
 | [iwxxm-domain-mine](iwxxm-domain-mine.md) | WMO IWXXM/ tree + org refresh + IWXXM-US/MDL mine (#804/#807/#773) | active | 2026-07-30 | F6, F2, F4, F12, F13, F25, S031/EV-024 |
+| [iwxxm-us-remarks-va](iwxxm-us-remarks-va.md) | iwxxm-us REMARKS encode (full dig ❌) + VA multi-location golden (#810–#812/#809) | active | 2026-07-31 | F6, F12, F2, F13, F23, S032/EV-025 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.

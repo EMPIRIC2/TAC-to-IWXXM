@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-30 (S031 / EV-024 — #804/#807/#773 IWXXM domain mine + WMO sample menu)
+> **Last updated**: 2026-07-31 (S032 / EV-025 — #810–#812 iwxxm-us REMARKS encode + #809 VA multi-location)
 
 ## Summary
 
@@ -855,7 +855,7 @@
 
 ### F6 / F2 / F4 / F12 / F13 / F25 deepen (S031 / EV-024 — IWXXM domain mine + WMO sample menu)
 
-- **Status**: **In progress** (S031 / EV-024) — no new Fn; discovery-first + sample-menu wiring
+- **Status**: **Done** (S031 / EV-024) — discovery + sample-menu wiring; children #809–#812
 - **Issues**: [#804](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/804),
   [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807),
   [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773) — **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)
@@ -888,30 +888,59 @@
   surfaces; thin backend loaders as needed
 - **Source**: E24-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-024;
   [ADR-032](adr/ADR-032-wmo-default-golden-glossary.md) (amended)
+- **Follow-on**: S032 / EV-025 implements children **#809–#812** (+ full dig ❌ US types)
 
-### F6 / F6.b deepen (S031 / EV-024)
+### F6 / F6.b / F12 / F2 / F13 + F23 deepen (S032 / EV-025 — iwxxm-us REMARKS encode + VA multi-location)
 
-- **Status note**: F6 remains **Implemented**; this cycle deepens goldens/wiring + F6.b US map
-  from #773 (engine gaps → child issues).
+- **Status**: **In progress** (S032 / EV-025) — no new Fn; dual-lane engine + goldens
+- **Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810),
+  [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811),
+  [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812),
+  [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
+- **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2** + `iwxxm-us` **3.0**
+- **What it does**:
+  1. **Lane A (F6.b / F12 / F2·F13)** — Encode all ❌ (and still-⚠) US METAR/SPECI REMARKS
+     types from the #773 dig checklist: named #810 Variable RVR / meanRVR; #811 Lightning /
+     VisuallyObservablePhenomena; #812 SnowIncrease + sensor outage; **plus** WindShift,
+     sky/convective, hail, sector/obscuration, second-site/tower, variable CIG/SKY/VIS,
+     max/min temps, ProcessedProperty, Addendum residuals, codelist hrefs, …
+  2. **Lane B (F23)** — #809 package annex3 golden for `sigmet-multi-location-VA`
+     (soft→strict); promote catalog to `wmoPass` only when ADR-032 equality holds
+- **Acceptance**:
+  1. Each dig ❌ US type: lint recognition as needed + `profile=iwxxm_us` encode to pin XSD +
+     golden + combined-catalog validate smoke — or explicit deferred child with rationale
+  2. #810 / #811 / #812 GitHub acceptance checkboxes closable
+  3. US fixtures never appear in WMO sample menu (**UJ-039** deepen)
+  4. Malformed US REMARKS still yield diagnostics (**UJ-010**); unparsed remainder retained
+     (**UJ-026**)
+  5. #809 soft-compare or M-golden; `wmoPass` only under ADR-032 defaults (**UJ-041**)
+- **Journeys / tests**: **UJ-040** (new US REMARKS pack); **UJ-041** (new #809 promote);
+  deepen **UJ-010** / **UJ-026** / **UJ-034** / **UJ-039**; **TC-EV025-001..010**
+- **Out of scope**: USWX; vendor hand-edits; US in WMO menu; #808; #738; roadmap SWX/VONA/WAFS
+- **Packages / apps**: `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`,
+  annex3/`iwxxm_us` fixtures; thin API smoke; catalog tier for #809 only (no new UI surface)
+- **Source**: E25-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-025;
+  dig [iwxxm-us-metar-speci-pdf-mining-notes.md](domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md)
 
-### F2 / F13 deepen (S031 / EV-024)
+### F6 / F6.b deepen (S032 / EV-025)
 
-- **Status note**: F2/F13 remain **Implemented**; expand validate fixtures / Schematron relevancy
-  from package `rule/` + official examples.
+- **Status note**: F6 remains **Implemented**; this cycle **deepens F6.b** to encode the full
+  dig ❌ US REMARKS set (#810–#812 + adjacent).
 
-### F4 deepen (S031 / EV-024)
+### F12 deepen (S032 / EV-025)
 
-- **Status note**: F4 remains **Implemented**; pin vs tip drift notes; version-aware example surfaces.
+- **Status note**: F12 remains **Implemented**; US REMARKS recognition / registry rows as needed
+  for Lane A.
 
-### F12 deepen (S031 / EV-024)
+### F2 / F13 deepen (S032 / EV-025)
 
-- **Status note**: F12 remains **Implemented**; lint citation / registry rows only where mining
-  promotes durable TAC rules (engine work → children).
+- **Status note**: F2/F13 remain **Implemented**; combined-catalog validate smoke for
+  iwxxm-us extension blocks.
 
-### F25 / F7.g deepen (S031 / EV-024)
+### F23 deepen (S032 / EV-025)
 
-- **Status note**: F25 remains **Done** for strict parity; this cycle **deepens the sample menu**
-  so official WMO stems are loadable (UJ-039) under the ADR-032 amend (strict vs reference).
+- **Status note**: F23 remains **Done**; this cycle adds #809 multi-location VA convert golden
+  / catalog promote path (**UJ-041**).
 
 ## Platform Feature Details (Monorepo Migration)
 

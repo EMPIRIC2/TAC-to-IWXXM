@@ -323,4 +323,19 @@
 | EV-024/S02.L1 | Vitest | Amend examplesCatalog tests for pass **or** reference in 07 | confirmed |
 | EV-024/E24-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
 
+## EV-025 / #810+#811+#812+#809 — iwxxm-us REMARKS encode + VA multi-location (2026-07-31)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-025/E25-1 | Session | Open S032; #810+#811+#812 one cycle | confirmed |
+| EV-025/E25-2 | Depth | Full ticket AC (lint + encode + goldens + validate smoke) | confirmed |
+| EV-025/E25-3 | Routing | Lean+build; 13 when behavior ships; skip 03/05/06/09/11/12 | confirmed |
+| EV-025/E25-4b | Scope | Dual lane: US pack + #809 VA multi-location | confirmed |
+| EV-025/E25-4c | US breadth | All remaining dig ❌ US types | confirmed |
+| EV-025/E25-ui | UI | N/A — no UI this session | confirmed |
+| EV-025/manifest | Docs | **M2** lean + journeys: feature-list + test-plan + **UJ-040/041** + deepen UJ-010/026/034/039; skip Spec/Config/API/Deploy | confirmed |
+| EV-025/journeys | UJ | **UJ-040** US REMARKS pack; **UJ-041** #809 promote; deepen 010/026/034/039 | confirmed |
+| EV-025/tests | TC | TC-EV025-001..010 | confirmed |
+| EV-025/api | API | No new routes; thin convert/validate smoke if needed | confirmed |
+
 

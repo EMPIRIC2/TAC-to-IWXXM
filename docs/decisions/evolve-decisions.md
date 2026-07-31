@@ -3,6 +3,59 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-025 — iwxxm-us REMARKS encode + VA multi-location (#810–#812 + #809) (S032)
+
+**Session**: S032-iwxxm-us-remarks-va  
+**Features**: Deepen **F6** / **F6.b** / **F12** / **F2** / **F13** + deepen **F23** (#809) — no new Fn  
+**Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810), [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811), [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812), [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
+**Started**: 2026-07-31  
+**Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
+**Status**: **in_progress** — Phase 0–1 locked; next 01-requirements
+
+### Scope (Phase 0 — locked 2026-07-31)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E25-1 | decision | Session + bundling? | **1** — S032 / EV-025; #810+#811+#812 in one cycle |
+| E25-2 | decision | Depth / AC? | **1** — full ticket AC (lint as needed + encode + goldens + validate smoke; US-only) |
+| E25-3 | decision | Routing? | **1** — Lean+build `00→16→01→02→04→07→08→10` (+13 when ships); skip 03/05/06/09/11/12 |
+| E25-4 | decision | Out-of-scope? | **2+3** clarified → see E25-4b / E25-4c |
+| E25-4b | ambiguity | #809 + adjacent? | **2** — **dual lane**: US pack + #809 VA multi-location same cycle |
+| E25-4c | decision | Adjacent US breadth? | **3** — **all remaining ❌ US types** from dig checklist |
+| E25-ui | decision | UI preview? | **1** — N/A (no UI this session) |
+| E25-M | decision | 01 Document Manifest? | **2** — lean delta + **new UJ-040/041**; deepen UJ-010/026/034/039; skip Spec/Config/API/Deploy |
+
+**Scope (verbatim)**:
+Dual-lane engine cycle from EV-024 children: (A) encode/lint/golden/validate all ❌
+iwxxm-us METAR/SPECI REMARKS types from the #773 dig (named #810/#811/#812 plus full
+adjacent checklist); (B) #809 WMO `sigmet-multi-location-VA` annex3 golden soft→strict.
+US never enters WMO sample menu. No USWX, no vendor hand-edits, no #808.
+
+**In:**
+- #810 Variable RVR / meanRVR withheld
+- #811 Lightning / VisuallyObservablePhenomena (+ related frequency/type)
+- #812 SnowIncrease + sensor outage remarks
+- All other dig ❌/still-⚠ US extension types (WindShift, sky/convective, hail, sector,
+  obscuration, second-site/tower, variable CIG/SKY/VIS, max/min temps, ProcessedProperty,
+  Addendum residuals, codelist hrefs, …)
+- #809 `sigmet-multi-location-VA` package golden + catalog tier promote only under ADR-032
+
+**Out:**
+- USWX; vendor schema hand-edits; US in WMO menu; #808; #738 TC SIGMET; roadmap products
+
+### Fn allocation (approved)
+
+| Fn | Role |
+|----|------|
+| Deepen **F6** / **F6.b** | RMK → iwxxm-us encode + US goldens |
+| Deepen **F12** | US REMARKS tac-validate / registry as needed |
+| Deepen **F2** / **F13** | Combined catalog / extension-block validate smoke |
+| Deepen **F23** | #809 VA multi-location convert golden |
+
+### Routing (approved)
+
+Lean+build + **13 when ships**: `00→16→01→02→04→07→08→10` (+ `13` if API behavior ships).
+
 ## Cycle EV-024 — IWXXM domain mine (#804 + #807 + #773) (S031)
 
 **Session**: S031-iwxxm-domain-mine  
