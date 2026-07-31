@@ -46,7 +46,7 @@ Full id list: extract via `sch:pattern/@id` on pin `iwxxm.sch` (do not hand-edit
 |------|--------------|----------------|-------------|----------------|
 | In-scope happy-path (METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA passers) | ✅ CI | ✅ where F25/F23/… | ✅ `wmoPass` | — |
 | `sigmet-VA-EGGX` | ✅ | ⚠ package golden (F23) | ✅ `wmoReference` | Deepen only if equality fails under defaults |
-| `sigmet-multi-location-VA` | ✅ (M6 inventory) | ❌ not M-golden | ✅ `wmoReference` | **File child** — multi-location VA encode |
+| `sigmet-multi-location-VA` | ✅ (M6 inventory) | ❌ not M-golden | ✅ `wmoReference` | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) |
 | `sigmet-A6-2-TC` | ✅ | D | D | #738 |
 | `*-translation-failed*` / NIL-collect | ✅ quarantine / shape | — / D | — | #800 survivors |
 | SWX / VONA / WAFS / QVACI | D | D | D | #740 / #741 / roadmap |
@@ -55,10 +55,10 @@ Full id list: extract via `sch:pattern/@id` on pin `iwxxm.sch` (do not hand-edit
 
 See [iwxxm-us-metar-speci-pdf-mining-notes.md](../../../domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md) checklist. Priority clusters for issues:
 
-1. Variable RVR / meanRVR withheld  
-2. Lightning + VisuallyObservablePhenomena  
-3. SnowIncrease / sensor outage remarks  
-4. Combined iwxxm-us validate expectations for extension blocks  
+1. Variable RVR / meanRVR withheld — [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810)  
+2. Lightning + VisuallyObservablePhenomena — [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811)  
+3. SnowIncrease / sensor outage remarks — [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812)  
+4. Combined iwxxm-us validate expectations for extension blocks (fold into #810–#812 as needed)  
 
 ## Explicit non-gaps this cycle
 

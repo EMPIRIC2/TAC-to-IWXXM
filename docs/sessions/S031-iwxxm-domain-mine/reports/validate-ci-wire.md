@@ -21,9 +21,17 @@
 
 | Stem | Reason | Ticket |
 |------|--------|--------|
-| `sigmet-multi-location-VA` | No annex3 M-golden / equality pack this cycle | *filed in T7.1* |
+| `sigmet-multi-location-VA` | No annex3 M-golden / equality pack this cycle | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) |
 | `sigmet-A6-2-TC` | Quality bar OOS sample menu | #738 |
 | SWX / VONA / WAFS / QVACI | Roadmap (S02.M2) | #740 / #741 |
+
+## US / MDL children (#773)
+
+| Gap | Ticket |
+|-----|--------|
+| Variable RVR / meanRVR withheld | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) |
+| Lightning / VisuallyObservablePhenomena | [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) |
+| SnowIncrease / sensor outage | [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) |
 
 ## Not wired as happy-path
 

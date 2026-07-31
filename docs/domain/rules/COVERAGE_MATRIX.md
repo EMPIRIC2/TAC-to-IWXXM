@@ -311,11 +311,11 @@ Discovery-first cycle: mine → promote durable rows → wire sample menu / vali
 | US METAR/SPECI.pdf + modelling + VLab URL rows | [RULE_SOURCE_URLS §5](./RULE_SOURCE_URLS.md) · [PDF dig](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md) | ✅ M3 |
 | `wmoReference` catalog tier + VA EGGX / multi-location menu | ADR-032 amend · `examplesCatalog.ts` · FIXTURE_GAPS | ✅ M5 |
 | In-scope stems on validate CI (XML well-formed/XSD/GML) | `test_wmo_canonical_examples` + loader inventory (M6) | ✅ / wire |
-| Multi-location VA **convert** equality | Child issue (encode deepen) — menu stays **reference** | ⚠ → child |
+| Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — menu stays **reference** | ⚠ → #809 |
 | TC SIGMET A6-2 menu / encode bar | Existing #738 | ⚠ deferred |
 | SWX / VONA / WAFS / QVACI sample menu | Existing #740 / #741 + S02.M2 | ❌ roadmap |
-| US extension encode gaps (VariableRVR, Lightning, …) | Child issues under F6.b / F15 deepen | ⚠ → children |
-| Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → children (link #800 survivors) | ⚠ → children |
+| US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | ⚠ → children |
+| Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → #809 + #800 survivors | ⚠ → children |
 
 ### METAR (US) — #773 type checklist (durable summary)
 

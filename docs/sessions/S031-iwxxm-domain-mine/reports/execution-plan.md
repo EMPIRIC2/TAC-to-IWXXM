@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build (07) |
-| **Active milestone** | M7 remaining |
-| **Active task** | T7.1 |
-| **Tasks** | 19 / 22 |
+| **Active milestone** | M7 |
+| **Active task** | T7.2 |
+| **Tasks** | 20 / 22 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -102,7 +102,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T7.1 | Docs | File child issues for ❌/⚠ encode/lint/SCH; comment on #804/#807/#773 | TC-EV024-008 | T4.2; T5.4; T6.2 | pending |
+| T7.1 | Docs | File child issues for ❌/⚠ encode/lint/SCH; comment on #804/#807/#773 | TC-EV024-008 | T4.2; T5.4; T6.2 | **completed** (#809–#812) |
 | T7.2 | Test | 08-verify-build + 10-e2e smoke (catalog/validate) | routing | T7.1 | pending |
 | T7.3 | Deploy | 13-deploy-smoke **when** catalog ships (E24-4) | connectivity | T7.2 | pending |
 
