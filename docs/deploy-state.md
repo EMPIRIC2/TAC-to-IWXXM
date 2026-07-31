@@ -1,17 +1,17 @@
 # Deploy State
 
-> Last updated: 2026-07-30  
-> Status: deployed (S027 / EV-021 F26 VAA + F27 TCA — smoke COMPLETE)
+> Last updated: 2026-07-31  
+> Status: deployed (S033 / EV-026 #809 VA multi-location equality — smoke COMPLETE)
 
 ## Deployment Log
 
 | # | Step | Status | Started | Completed | Notes |
 |---|------|--------|---------|-----------|-------|
-| 1 | Deploy | done | 2026-07-30 | 2026-07-30 | Main CI Deploy after #794 merge `df56d1f` |
-| 2 | Smoke tests | done | 2026-07-30 | 2026-07-30 | H0c/H1/H3/H4/H5 + live VAA/TCA catalog/lint/convert |
-| 3 | Health check | done | 2026-07-30 | 2026-07-30 | `/health` 200; `tac2iwxxm_available` |
-| 4 | Changelog | done | 2026-07-30 | 2026-07-30 | `docs/CHANGELOG.md` S027 entry |
-| 5 | Monitoring baseline | done | 2026-07-30 | 2026-07-30 | Convert VAA/TCA multipart smoke <2s |
+| 1 | Deploy | done | 2026-07-31 | 2026-07-31 | Main CI Deploy after #817 merge `101f555` |
+| 2 | Smoke tests | done | 2026-07-31 | 2026-07-31 | H0c/H1/H3/H4/H5 + catalog wmoPass + VA SIGMET convert |
+| 3 | Health check | done | 2026-07-31 | 2026-07-31 | `/health` 200; `tac2iwxxm_available` |
+| 4 | Changelog | done | 2026-07-31 | 2026-07-31 | `docs/CHANGELOG.md` S033 entry |
+| 5 | Monitoring baseline | done | 2026-07-31 | 2026-07-31 | Live SIGMET convert + FE App chunk catalog check |
 
 ## Current Deployment
 
@@ -21,9 +21,9 @@
 | Deploy URL (API) | https://metar-to-iwxxm-api.onrender.com |
 | Deploy URL (FE) | https://metar-to-iwxxm-frontend-v4-web.onrender.com |
 | Deploy mode | GHCR `main-latest` + Render deploy hooks |
-| Commit | `df56d1f` (merge #794) |
+| Commit | `101f555` (merge #817) |
 | Branch | main |
-| API deploy id | dep-d9lmsdflk1mc739232ug |
-| FE deploy id | dep-d9lmsefqj5pc739d3it0 |
+| API deploy id | dep-d9miestbedkc73dr3j9g |
+| FE deploy id | dep-d9mietnqj5pc73d3c8a0 |
 | Images | `backend:main-latest` · `frontend:main-latest` |
-| Session report | docs/sessions/S027-vaa-quality/reports/deploy-smoke.md |
+| Session report | docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md |

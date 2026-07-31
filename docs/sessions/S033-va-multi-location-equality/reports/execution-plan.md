@@ -15,7 +15,9 @@
 | Catalog | `sigmet_multi_location_va` = `wmoPass` |
 | Strict equality | **Green** — TC-EV025-008 |
 | Issue | #809 **closed** |
-| Active task | T3.4 (when ships) |
+| Active task | T3.4 **completed** (13 PASS; user approve pending) |
+| PR | [#817](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817) **merged** @ `101f555` |
+| Progress | 12/12 |
 
 ## Locked policy
 
@@ -73,7 +75,7 @@
 | T3.1 | Docs | Gate C dig — equality + promote checklist — [t3-1-gate-c-dig.md](t3-1-gate-c-dig.md) | E26-T4 | T2.3 | completed |
 | T3.2 | Test | 08-verify-build + 10-e2e smoke (VA stem + catalog) — [verification-report.md](verification-report.md) | routing | T3.1 | completed |
 | T3.3 | Docs | Close GitHub #809 | #809 AC | T3.2 | completed |
-| T3.4 | Deploy | 13-deploy-smoke **when** API/catalog ships | E26-3 | T3.2 | pending |
+| T3.4 | Deploy | 13-deploy-smoke **when** API/catalog ships | E26-3 | T3.2 | completed |
 
 ## Data Dependencies
 
@@ -84,9 +86,9 @@
 
 ## Git Strategy
 
-- Branch: `evolve/EV-026-va-multi-location-equality`
+- Branch: `evolve/EV-026-va-multi-location-equality` (**merged**)
 - One task per atomic commit: `[T{n}.{m}] …`
-- PR to `main` when M3 verify green
+- PR [#817](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817) merged to `main` @ `101f555` (`D-S033-817-merge`)
 
 ## Success criteria
 
@@ -95,7 +97,7 @@
 - [x] TC-EV025-008..009 strict green
 - [x] #809 closed
 - [x] No new deps without AskQuestion
-- [ ] 13 when behavior ships (T3.4)
+- [x] 13 when behavior ships (T3.4) — PASS; pending user approve deploy results
 
 ## Gate B → C
 

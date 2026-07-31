@@ -66,3 +66,7 @@ formatting, phenomenonTime density — see Context brief.
 1. ADR-032 equality green under defaults
 2. Catalog `wmoPass` for `sigmet_multi_location_va`
 3. #809 closed
+
+## PR
+
+[#817](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817) **merged** to `main` @ `101f555` (`D-S033-817-merge`). Optional 13 / T3.4 when_ships pending user.

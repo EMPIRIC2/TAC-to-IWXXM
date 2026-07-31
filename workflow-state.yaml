@@ -48,7 +48,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: 'Gate C PASS (D-S033-gate-c); 07/08/10 done; awaiting PR + 13 when_ships (T3.4); tip 7e08051; #809 closed'
+    note: '13 PASS; awaiting user approve deploy results + cycle close (D-S033-13-smoke-pass)'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -94,8 +94,10 @@ active_session:
   - stage: 13-deploy-smoke
     required: false
     mode: when_ships
-    status: pending
-    note: 'when_ships / T3.4 — await API/catalog ship + PR'
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS; pending user approve D-S033-13 — report deploy-smoke.md; deploys dep-d9miestbedkc73dr3j9g / dep-d9mietnqj5pc73d3c8a0 @ 101f555'
 sessions:
 - id: S032-iwxxm-us-remarks-va
   type: feature
@@ -7123,39 +7125,65 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + 
       redeploy required before 13
   13-deploy-smoke:
-    status: waived
-    started_at: '2026-07-30'
-    started: '2026-07-30'
-    completed: '2026-07-30'
-    completed_at: '2026-07-30'
+    status: completed
+    started_at: '2026-07-31'
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    completed_at: '2026-07-31'
     previous_started_at: '2026-07-30'
-    previous_completed_at: '2026-07-30'
-    previous_session_id: S031-iwxxm-domain-mine
-    previous_evolve_cycle_id: EV-024
-    previous_tip_sha: 864783e
-    previous_overall: pass
-    previous_note: 'S031/EV-024 13-deploy-smoke COMPLETE PASS — PR #813 merged 864783e; CI 30595410610; API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0;
-      H0c/H1/H3/H4/H5 + catalog + convert; D-S031-merge-close; report deploy-smoke.md; #804/#807/#773'
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
-    note: 'WAIVED — T7.3 deferred at Phase 4 close (D-S032-EV025-phase4-close); deploy gate waived for EV-025/S032'
-    tip_sha: 864783e
-    tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
-    overall: waived
-    active_task: T7.3
-    active_task_status: waived
-    progress: 22/22
+    previous_completed_at: '2026-07-31'
+    previous_session_id: S032-iwxxm-us-remarks-va
+    previous_evolve_cycle_id: EV-025
+    previous_tip_sha: 1e46b38
+    previous_overall: waived
+    previous_note: 'WAIVED — T7.3 deferred at Phase 4 close (D-S032-EV025-phase4-close); deploy gate waived for EV-025/S032'
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    note: 'PASS; pending user approve D-S033-13 — H0c–H5 + EV-026 catalog/convert; API dep-d9miestbedkc73dr3j9g FE dep-d9mietnqj5pc73d3c8a0 @ 101f555'
+    tip_sha: 101f555
+    tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+    overall: pass
+    active_task: T3.4
+    active_task_status: completed
+    progress: 12/12
     do_not_auto_merge: false
-    decision_id: D-S032-EV025-phase4-close
-    pr_number: 816
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+    decision_id: D-S033-13-smoke-pass
+    pr_number: 817
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
     pr_status: merged
-    merge_sha: 2412312
-    ci_run: '30595410610'
-    api_deploy: dep-d9lvcr2jnfac73bbn340
-    fe_deploy: dep-d9lvcrrl550s73cuhvf0
-    report: docs/sessions/S031-iwxxm-domain-mine/reports/deploy-smoke.md
+    merge_sha: 101f555
+    merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+    api_deploy: dep-d9miestbedkc73dr3j9g
+    fe_deploy: dep-d9mietnqj5pc73d3c8a0
+    report: docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
     delta_substages:
+    - id: S033-va-multi-location-equality
+      session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
+      skill_id: 13-deploy-smoke
+      status: completed
+      mode: when_ships
+      started: '2026-07-31'
+      started_at: '2026-07-31'
+      completed: '2026-07-31'
+      completed_at: '2026-07-31'
+      branch: evolve/EV-026-va-multi-location-equality
+      tip_sha: 101f555
+      tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+      note: 'PASS; pending user approve D-S033-13 — report deploy-smoke.md'
+      decision_id: D-S033-13-smoke-pass
+      overall: pass
+      pr_number: 817
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+      pr_status: merged
+      merge_sha: 101f555
+      active_milestone: M3
+      active_task: T3.4
+      active_task_status: completed
+      progress: 12/12
+      report: docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
+      api_deploy: dep-d9miestbedkc73dr3j9g
+      fe_deploy: dep-d9mietnqj5pc73d3c8a0
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
@@ -7712,21 +7740,25 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: '2026-07-30'
-    commit_deployed: 864783e
-    commit_head: 864783e
+    last_verified: '2026-07-31'
+    commit_deployed: 101f555
+    commit_deployed_full: 101f55586efacaee67bcd4260a04aa6758502123
+    commit_head: 101f555
+    commit_head_full: 101f55586efacaee67bcd4260a04aa6758502123
     drift: false
     urls:
       api: https://metar-to-iwxxm-api.onrender.com
       frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
     deploy_ids:
-      api: dep-d9lvcr2jnfac73bbn340
-      frontend: dep-d9lvcrrl550s73cuhvf0
-    ci_deploy_run: '30595410610'
+      api: dep-d9miestbedkc73dr3j9g
+      frontend: dep-d9mietnqj5pc73d3c8a0
+    report: docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:main-latest
-      note: S023/EV-017 13 COMPLETE — Auth leftovers removed; API redeploy dep-d9kii12jobas73fl4bi0; health tiers pass; empiric2 imagePath
+      note: 'S033/EV-026 13 PASS after #817 @ 101f555 — API dep-d9miestbedkc73dr3j9g FE dep-d9mietnqj5pc73d3c8a0; pending user approve'
     health_tiers:
       H0ci: pass
       H0c: pass
@@ -7749,7 +7781,11 @@ deployment:
       h5: pass
       h0ci: pass
       uj032: pass
+      h2_note: pass-or-skipped — live_api covers DB-ish; not separately run
+      EV026_catalog_convert: pass
     notes:
+    - '2026-07-31 S033/EV-026 13-deploy-smoke PASS (D-S033-13-smoke-pass) — PR #817 @ 101f555; API dep-d9miestbedkc73dr3j9g + FE dep-d9mietnqj5pc73d3c8a0;
+      H0ci/H0c/H1–H5 pass (H2 pass-or-skipped via live_api); EV-026 catalog/convert PASS; report deploy-smoke.md; pending user approve + cycle close'
     - '2026-07-30 S031/EV-024 13-deploy-smoke COMPLETE — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340
       + FE dep-d9lvcrrl550s73cuhvf0 LIVE; H0c/H1/H3/H4/H5 + EV-024 catalog + live convert PASS; D-S031-merge-close; #804/#807/#773'
     - '2026-07-30 S030/EV-023 13-deploy-smoke COMPLETE — PR #801 merged af98690; CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg
@@ -7974,6 +8010,87 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S033-13-smoke-pass
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: deploy-smoke
+  status: confirmed
+  topic: '13-deploy-smoke PASS after #817 (pending user approve results)'
+  summary: 'H0c–H5 + EV-026 catalog/convert PASS on Render after #817 @ 101f555'
+  decision: 'H0c–H5 + EV-026 catalog/convert PASS on Render after #817; smoke complete; awaiting user approve deploy results + cycle close'
+  tip_sha: 101f555
+  tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  pr_number: 817
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+  api_deploy: dep-d9miestbedkc73dr3j9g
+  fe_deploy: dep-d9mietnqj5pc73d3c8a0
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-13-start
+  - D-S033-817-merge
+  artifacts:
+  - docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
+  overall: pass
+  pending: user_approve_deploy_results
+- id: D-S033-13-start
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: stage-start
+  status: confirmed
+  topic: 'Start optional 13-deploy-smoke after #817'
+  summary: 'User approved optional 13 after #817 (choice 1); T3.4 in_progress'
+  decision: 'User approved optional 13 after #817 (choice 1) — start 13-deploy-smoke / T3.4'
+  tip_sha: 101f555
+  tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  pr_number: 817
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-817-merge
+  - D-S033-gate-c
+  user_option: '1'
+  user_intent: '1'
+- id: D-S033-817-merge
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: merge
+  status: confirmed
+  topic: 'Approve merge of PR #817 (S033 / EV-026)'
+  summary: 'PR #817 merged to main @ 101f555; optional 13-deploy-smoke / T3.4 next'
+  decision: 'User approved merge of #817; merged to main at 101f555; optional 13-deploy-smoke next'
+  tip_sha: 101f555
+  tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  merge_sha: 101f555
+  merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  pr_number: 817
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+  pr_status: merged
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-gate-c
+  - D-S033-04-plan-approve
+  user_intent: 'Approve merge of #817 (then optional 13)'
 - id: D-S033-gate-c
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -15808,6 +15925,17 @@ decisions_log:
   preset: Lean+build
   preset_status: approved
 artifacts:
+- path: docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
+  kind: deploy-smoke
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  task_id: T3.4
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S033/EV-026 13 PASS (D-S033-13-smoke-pass); pending user approve; tip 101f555'
 - path: docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
   kind: stage-report
   session_id: S033-va-multi-location-equality
@@ -24245,7 +24373,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: 'Gate C PASS (D-S033-gate-c); awaiting PR + 13 when_ships (T3.4); tip 7e08051; #809 closed'
+      note: '13 PASS; awaiting user approve deploy results + cycle close (D-S033-13-smoke-pass)'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24272,10 +24400,10 @@ evolve_cycles:
       current_task: T3.4
       active_task: T3.4
       active_milestone: M3
-      active_task_status: deferred
-      progress: 11/12
-      tip_sha: 7e08051
-      note: 'COMPLETE — M0–M3 except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c)'
+      active_task_status: completed
+      progress: 12/12
+      tip_sha: 101f555
+      note: 'COMPLETE — M0–M3 incl. T3.4 via 13 PASS; tip 101f555; #809 closed; Gate C PASS (D-S033-gate-c)'
     08-verify-build:
       status: completed
       started: '2026-07-31'
@@ -24295,22 +24423,28 @@ evolve_cycles:
       tip_sha: 7e08051
       note: 'PASS smoke — TC-EV025-008/009 + Vitest'
     13-deploy-smoke:
-      status: pending
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
       mode: when_ships
-      note: 'when_ships / T3.4'
+      overall: pass
+      report: docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
+      tip_sha: 101f555
+      note: 'PASS; pending user approve D-S033-13 — H0c–H5 + EV-026 catalog/convert; deploys dep-d9miestbedkc73dr3j9g / dep-d9mietnqj5pc73d3c8a0'
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
     phase_d: pending
-    deploy: pending
+    deploy: passed
   adrs: []
   artifacts:
+  - docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
   - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
   - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
   - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
@@ -24323,6 +24457,9 @@ evolve_cycles:
   - docs/context/va-multi-location-809.md
   - docs/decisions/evolve-decisions.md
   decision_refs:
+  - D-S033-13-smoke-pass
+  - D-S033-13-start
+  - D-S033-817-merge
   - D-S033-open
   - D-S033-E26-E1
   - D-S033-02-phase-a
@@ -24330,12 +24467,23 @@ evolve_cycles:
   - D-S033-04-plan-approve
   - D-S033-gate-c
   - D-S032-EV025-809-handoff
-  tip_sha: 7e08051
-  tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+  tip_sha: 101f555
+  tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  commit_deployed: 101f555
+  pr_number: 817
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+  pr_status: merged
+  merge_sha: 101f555
+  merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  merge_commit: 101f55586efacaee67bcd4260a04aa6758502123
   active_task: T3.4
-  active_task_status: deferred
-  progress: 11/12
+  active_task_status: completed
+  progress: 12/12
+  note: '13 PASS (D-S033-13-smoke-pass); gates.deploy passed; awaiting user approve deploy results + cycle close; phase_d pending'
   notes:
+  - '2026-07-31 S033/EV-026 13-deploy-smoke PASS (D-S033-13-smoke-pass) — H0c–H5 + catalog/convert; deploys dep-d9miestbedkc73dr3j9g / dep-d9mietnqj5pc73d3c8a0 @ 101f555; pending user approve + cycle close; progress 12/12'
+  - '2026-07-31 S033/EV-026 13-deploy-smoke STARTED (D-S033-13-start choice 1) — after #817 merge @ 101f555; T3.4 in_progress'
+  - '2026-07-31 S033/EV-026 PR #817 MERGED @ 101f555 (D-S033-817-merge) — Gate C done; deploy checkpoint pending optional 13/T3.4'
   - '2026-07-31 S033/EV-026 Gate C PASS (D-S033-gate-c) — 07/08/10 complete; T3.4/13 when_ships; tip 7e08051; #809 closed; awaiting PR'
   - '2026-07-31 S033/EV-026 T0.1 COMPLETE — t0-1-canonicalize-diff-themes.md; @ T1.1 flip TC-EV025-008 strict (expect red); progress 1/12; #809'
   - '2026-07-31 S033/EV-026 07-build STARTED (D-S033-04-plan-approve B→C) — @ T0.1 canonicalize dig themes; plan docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md; #809'
@@ -24350,17 +24498,18 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-026-va-multi-location-equality
   ahead_of_origin: 0
-  pushed: false
+  pushed: true
   pending_commit:
-  tip_sha: 7e08051
-  tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
-  pr_number:
-  pr_url:
-  pr_status:
-  merge_sha:
-  merge_sha_full:
-  note: 'S033/EV-026 Gate C PASS @ 7e08051; 07/08/10 done; T3.4/13 when_ships; awaiting PR; #809 closed'
+  tip_sha: 101f555
+  tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  pr_number: 817
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+  pr_status: merged
+  merge_sha: 101f555
+  merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  note: 'S033/EV-026 PR #817 MERGED @ 101f555 (D-S033-817-merge); Gate C done; optional 13/T3.4 when_ships pending user; #809 closed'
   notes:
+  - '2026-07-31 S033/EV-026 PR #817 MERGED @ 101f555 (D-S033-817-merge) — merge_commit 101f55586efacaee67bcd4260a04aa6758502123; optional 13/T3.4 when_ships pending user'
   - '2026-07-31 S033/EV-026 tip synced — 7e08051; Gate C PASS (D-S033-gate-c); 07/08/10 complete; T3.4/13 when_ships; #809 closed; awaiting PR'
   - '2026-07-31 S032/EV-025 branch merged via PR #816 2412312; D-S032-EV025-phase4-close; active_session=null'
   - '2026-07-31 S032/EV-025 tip synced — 1e46b38 (1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7); "[T7.2] test: 08-verify-build + 10-e2e smoke PASS";
@@ -25690,15 +25839,21 @@ git_history:
   - name: evolve/EV-026-va-multi-location-equality
     purpose: 'S033/EV-026 #809 VA multi-location ADR-032 equality / wmoPass'
     base: main
-    status: active
+    status: merged
     created: '2026-07-31'
     created_at: '2026-07-31'
+    merged_at: '2026-07-31'
     session_id: S033-va-multi-location-equality
     evolve_cycle_id: EV-026
-    note: 'S033/EV-026 Gate C PASS — tip 7e08051; 07/08/10 done; T3.4/13 when_ships; awaiting PR; #809 closed'
-    tip_sha: 7e08051
-    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
-    pushed: false
+    note: 'MERGED via PR #817 101f555 (D-S033-817-merge); optional 13/T3.4 when_ships pending user; #809 closed'
+    tip_sha: 101f555
+    tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+    pushed: true
+    pr_number: 817
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+    pr_status: merged
+    merge_sha: 101f555
+    merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
   - sha: 7e08051
     sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3

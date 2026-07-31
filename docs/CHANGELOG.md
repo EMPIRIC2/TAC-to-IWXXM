@@ -2,6 +2,20 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-31 — S033 EV-026 (#809 VA multi-location equality)
+
+### Changed
+- **F23 / F6 / F7**: WMO `sigmet-multi-location-VA` encoder matches vendor under annex3
+  defaults (ADR-032 `canonicalize_xml` equality): calendar/ATS–MWO stamps, ring order +
+  2dp coords, phenomenonTime xlink reuse.
+- Examples catalog `sigmet_multi_location_va` promoted **wmoReference → wmoPass** (UJ-041).
+
+### Deploy
+- PR [#817](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817) merged (`101f555`).
+- Live smoke COMPLETE (H0c–H5 + catalog passer + VA SIGMET convert).
+  API `dep-d9miestbedkc73dr3j9g` · FE `dep-d9mietnqj5pc73d3c8a0`.
+  Report: [deploy-smoke.md](sessions/S033-va-multi-location-equality/reports/deploy-smoke.md).
+
 ## 2026-07-30 — S027 EV-021 (F26 VAA + F27 TCA quality)
 
 ### Added
