@@ -325,7 +325,7 @@ Full type×TAC×encode×validate table lives in the [PDF dig](../mining/iwxxm-us
 |---------|--------|----------|---------|-------------|
 | Addendum / AO2 / SLP / PK WND | ⚠ partial | ⚠ | ⚠ | F15 deepen continue |
 | Variable RVR | ✅ S032/#810 | ⚠ | ✅ TC-EV025-001 | Validate smoke M6 |
-| Wind shift / FROPA | ❌/⚠ | ⚠ | ❌ | Encode + goldens (M4.1) |
+| Wind shift / FROPA | ✅ S032/M4.1 | ⚠ | ✅ TC-EV025-004 | Validate smoke M6 |
 | Lightning / VisuallyObservablePhenomena | ✅ S032/#811 (lightning) | ⚠ | ✅ TC-EV025-002 | Convection/sky/obscuration → M4; validate M6 |
 | SnowIncrease / sensor outage | ✅ S032/#812 | ⚠ | ✅ TC-EV025-003 | Validate smoke M6 |
 | Codelist hrefs (NWS) | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov |

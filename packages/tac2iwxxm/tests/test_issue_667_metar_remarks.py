@@ -72,7 +72,7 @@ def test_annex3_speci_emits_remarks_excluded_with_rmk_span() -> None:
 
 
 def test_parse_strips_structured_tokens_from_remarks_free_text() -> None:
-    """AO/SLP/PK are consumed; T/P and plain language remain for never-drop emit."""
+    """AO/SLP/PK/WSHFT are consumed; T/P and plain language remain for never-drop emit."""
     tac = "METAR KJFK 231751Z 18012KT 10SM CLR 15/07 A3005 RMK AO2 SLP176 PK WND 28045/1745 T01560070 P0001 WSHFT 1715="
     ir = parse_metar_speci(tac, product="METAR")
     assert ir.get("remarks_present") is True
@@ -80,13 +80,15 @@ def test_parse_strips_structured_tokens_from_remarks_free_text() -> None:
     assert ir.get("sea_level_pressure_hpa") == 1017.6
     assert ir.get("peak_wind_dir_deg") == 280
     assert ir.get("peak_wind_speed_kt") == 45
+    assert ir.get("wind_shift_hour") == 17
+    assert ir.get("wind_shift_minute") == 15
     free = ir.get("remarks_free_text") or ""
     assert "AO2" not in free
     assert "SLP176" not in free
     assert "PK WND" not in free
+    assert "WSHFT" not in free
     assert "T01560070" in free
     assert "P0001" in free
-    assert "WSHFT 1715" in free
 
 
 def test_iwxxm_us_peak_wind_and_free_text_coexist() -> None:

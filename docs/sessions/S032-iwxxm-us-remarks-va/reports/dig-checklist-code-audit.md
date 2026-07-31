@@ -11,7 +11,7 @@
 | Addendum (AO2/SLP/`humanReadableText`) | ⚠ partial | `_addendum_extension`; goldens `metar_us_ao2_slp`, etc. | M4.6 deepen residuals |
 | AerodromePeakWind | ✅ | `_peak_wind_extension`; `metar_us_pk_wnd` | M4.1 only if deepen gaps |
 | AerodromeVariableRVR | ✅ | `_variable_rvr_extension`; TC-EV025-001 | **done** M1 (#810) |
-| AerodromeWindShift | ❌ | — | **M4.1** |
+| AerodromeWindShift | ✅ | `_wind_shift_extension`; TC-EV025-004 WSHFT/FROPA | **done** M4.1 |
 | CharacterOfTheSky / CloudTypes | ❌ | — | **M4.2** |
 | ConvectiveCloudLocation / Types | ❌ | — | **M4.2** |
 | HailstoneSize | ❌ | — | **M4.2** |
@@ -40,8 +40,8 @@
 1. **M1** — AerodromeVariableRVR (+ meanRVR withheld) — **done**  
 2. **M2** — ObservedLightning* + VisuallyObservablePhenomena (lightning) — **done**  
 3. **M3** — SnowIncrease + sensor-outage types — **done**  
-4. **M4.1** — AerodromeWindShift (+ PeakWind deepen if needed)  
-5. **M4.2** — Sky / convective / hail  
+4. **M4.1** — AerodromeWindShift (+ PeakWind deepen if needed) — **done**
+5. **M4.2** — Sky / convective / hail
 6. **M4.3** — Sector / obscuration / second-site / tower  
 7. **M4.4** — Variable CIG/SKY/VIS  
 8. **M4.5** — Max/min + ProcessedProperty / codelists  

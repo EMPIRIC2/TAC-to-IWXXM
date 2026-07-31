@@ -70,6 +70,8 @@ _RMK = re.compile(r"\bRMK\b(?P<rmk>.*)$")
 _AO = re.compile(r"\bAO(?P<ao>[12])\b")
 _SLP = re.compile(r"\bSLP(?P<code>\d{3})\b")
 _PK_WND = re.compile(r"\bPK\s+WND\s+(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hhmm>\d{4})\b")
+# FMH-1 wind shift: WSHFT hhmm [FROPA] → iwxxm-us AerodromeWindShift.
+_WSHFT = re.compile(r"\bWSHFT\s+(?P<hhmm>\d{4})(?P<fropa>\s+FROPA)?\b")
 _RMK_T = re.compile(r"\bT(?P<tsign>[01])(?P<tttt>\d{3})(?P<dsign>[01])(?P<dddd>\d{3})\b")
 _RMK_P = re.compile(r"\bP(?P<p>\d{4})\b")
 _COR_AFTER_TIME = re.compile(r"^\s*COR\b\s*")
@@ -115,9 +117,10 @@ _SENSOR_NO = re.compile(r"\b(?P<tok>" + "|".join(_SENSOR_NO_CODES) + r")\b")
 _SNOW_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/SNOW"
 # GRIB2 Code Table 4.10 entry 1 — accumulation (iwxxm-us PDF SnowIncrease sample).
 _STAT_ACCUM_HREF = "http://codes.wmo.int/grib2/codeflag/4.10/1"
-# Structured tokens removed before free-text retain (AO/SLP/PK/LTG/SNINCR/sensor-NO — T/P stay).
+# Structured tokens removed before free-text retain (AO/SLP/PK/WSHFT/LTG/SNINCR/sensor-NO — T/P stay).
 _CONSUMED_REMARK = re.compile(
     r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b|"
+    r"\bWSHFT\s+\d{4}(?:\s+FROPA)?\b|"
     r"(?:\b(?:OCNL|FRQ|CONS)\s+)?LTG(?:IC|CC|CG)*"
     r"(?:\s+(?:DSNT|VC))?"
     r"(?:\s+(?:ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?\b|"
@@ -338,7 +341,7 @@ def _remarks_free_text(remarks: str) -> str:
 
 def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
-    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, LTG, SNINCR, sensor-NO, T, P).
+    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, WSHFT, LTG, SNINCR, sensor-NO, T, P).
 
     Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
     TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
@@ -374,6 +377,15 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
         hhmm = pk.group("hhmm")
         ir["peak_wind_hour"] = int(hhmm[0:2])
         ir["peak_wind_minute"] = int(hhmm[2:4])
+
+    if re.search(r"\bWSHFT\b", remarks) and _WSHFT.search(remarks) is None:
+        issues.append("malformed WSHFT group in REMARKS")
+    wshft = _WSHFT.search(remarks)
+    if wshft is not None:
+        hhmm_ws = wshft.group("hhmm")
+        ir["wind_shift_hour"] = int(hhmm_ws[0:2])
+        ir["wind_shift_minute"] = int(hhmm_ws[2:4])
+        ir["wind_shift_frontal_passage"] = bool(wshft.group("fropa"))
 
     lightning = _parse_lightning_remark(remarks)
     if lightning is not None:

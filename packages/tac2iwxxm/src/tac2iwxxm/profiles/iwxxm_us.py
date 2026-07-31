@@ -1,7 +1,7 @@
 """IWXXM-US profile XML writer for METAR/SPECI (F6.b).
 
 Emits WMO annex3 body plus ``iwxxm-us`` extension blocks (Addendum, AerodromePeakWind,
-AerodromeVariableRVR) per ADR-013 / docs/context/general-tac-iwxxm-converter.md.
+AerodromeWindShift, AerodromeVariableRVR) per ADR-013 / docs/context/general-tac-iwxxm-converter.md.
 """
 
 from __future__ import annotations
@@ -27,6 +27,8 @@ def _us_gml_id(ir: dict[str, Any], product: str) -> str:
         return f"{root}.us.sensor.{station}"
     if ir.get("peak_wind_dir_deg") is not None:
         return f"{root}.us.pk.wnd.{station}"
+    if ir.get("wind_shift_hour") is not None:
+        return f"{root}.us.wshft.{station}"
     if ir.get("sea_level_pressure_hpa") is not None:
         return f"{root}.us.ao2.slp.{station}"
     if ir.get("nil"):
@@ -45,6 +47,14 @@ def _peak_timestamp(ir: dict[str, Any]) -> str:
     day = int(ir["day"])
     hour = int(ir["peak_wind_hour"])
     minute = int(ir["peak_wind_minute"])
+    return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+
+
+def _wind_shift_timestamp(ir: dict[str, Any]) -> str:
+    """Wind-shift time on the same calendar month as observation fixtures."""
+    day = int(ir["day"])
+    hour = int(ir["wind_shift_hour"])
+    minute = int(ir["wind_shift_minute"])
     return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
 
 
@@ -214,6 +224,24 @@ def _peak_wind_extension(ir: dict[str, Any]) -> str:
 """
 
 
+def _wind_shift_extension(ir: dict[str, Any]) -> str:
+    """Serialize surface-wind ``iwxxm-us:AerodromeWindShift`` when WSHFT present."""
+    if ir.get("wind_shift_hour") is None:
+        return ""
+    stamp = _wind_shift_timestamp(ir)
+    attrs = ' frontalPassage="true"' if ir.get("wind_shift_frontal_passage") else ""
+    return f"""          <iwxxm:extension>
+            <iwxxm-us:AerodromeWindShift{attrs}>
+              <iwxxm-us:timeOfWindShift>
+                <gml:TimeInstant gml:id="t.wshft">
+                  <gml:timePosition>{stamp}</gml:timePosition>
+                </gml:TimeInstant>
+              </iwxxm-us:timeOfWindShift>
+            </iwxxm-us:AerodromeWindShift>
+          </iwxxm:extension>
+"""
+
+
 def _variable_rvr_extension(ir: dict[str, Any]) -> str:
     """Serialize RVR ``iwxxm-us:AerodromeVariableRVR`` when variable min/max present."""
     rvr = ir.get("rvr")
@@ -271,11 +299,12 @@ def emit_metar_speci_iwxxm_us(
     addendum = _addendum_extension(ir)
     sensors = _inoperative_sensors_extension(ir)
     peak = _peak_wind_extension(ir)
+    wshft = _wind_shift_extension(ir)
     var_rvr = _variable_rvr_extension(ir)
     observation, trends = build_observation_and_trends(
         ir,
         addendum_extension=addendum + sensors,
-        peak_extension=peak,
+        peak_extension=peak + wshft,
         rvr_extension=var_rvr,
     )
 

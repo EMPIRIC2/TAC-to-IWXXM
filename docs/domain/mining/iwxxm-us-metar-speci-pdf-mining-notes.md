@@ -28,7 +28,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | Addendum | AO1/AO2, SLP, PRESFR/RR, snow, CONTRAIL, AURORA, FROPA flags, sunshine, `$`, text | ⚠ partial | ⚠ | ⚠ | Container; AO2/SLP often started |
 | AerodromePeakWind | PK WND | ⚠ / ✅ theme | ⚠ | ⚠ | F15 deepen cited AO2/SLP/PK WND |
 | AerodromeVariableRVR | Variable RVR | ✅ | ⚠ | ✅ | S032/#810 — meanRVR withheld; TC-EV025-001 |
-| AerodromeWindShift | WSHFT / FROPA | ⚠ | ⚠ | ❌ | |
+| AerodromeWindShift | WSHFT / FROPA | ✅ | ⚠ | ✅ | S032/M4.1 — TC-EV025-004 |
 | CharacterOfTheSky / CloudTypes | Sky character RMK | ❌ | ⚠ | ❌ | |
 | ConvectiveCloudLocation / Types | CB/TCU location/motion | ❌/⚠ | ⚠ | ❌ | |
 | FailedSensors / InoperativeSensors / MeteorologicalSensors | Sensor outage | ✅ | ⚠ | ✅ | S032/#812 — CHINO/RVRNO/… → Sensor hrefs; TC-EV025-003 |

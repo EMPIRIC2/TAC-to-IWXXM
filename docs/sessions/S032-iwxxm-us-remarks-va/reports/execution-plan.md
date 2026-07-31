@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M3 complete → next M4 |
-| **Active task** | T4.1 (next) |
-| **Tasks** | 11 / 28 |
+| **Active milestone** | M4 |
+| **Active task** | T4.2 (next) |
+| **Tasks** | 12 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -87,7 +87,7 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test+Code | AerodromeWindShift (+ PeakWind deepen if still ❌/⚠) | TC-EV025-004 | T3.3 | pending |
+| T4.1 | Test+Code | AerodromeWindShift (+ PeakWind deepen if still ❌/⚠) | TC-EV025-004 | T3.3 | **completed** |
 | T4.2 | Test+Code | CharacterOfTheSky / CloudTypes / ConvectiveCloud* / HailstoneSize | TC-EV025-004 | T4.1 | pending |
 | T4.3 | Test+Code | Sector / Obscurations / SecondLocation / TowerVisibility | TC-EV025-004 | T4.2 | pending |
 | T4.4 | Test+Code | VariableCeilingHeight / VariableSky / VariableVisibility | TC-EV025-004 | T4.3 | pending |
