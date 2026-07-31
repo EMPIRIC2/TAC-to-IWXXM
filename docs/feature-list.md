@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-31 (S032 / EV-025 — #810–#812 iwxxm-us REMARKS encode + #809 VA multi-location)
+> **Last updated**: 2026-07-31 (S033 / EV-026 — #809 VA multi-location ADR-032 equality / wmoPass)
 
 ## Summary
 
@@ -888,59 +888,62 @@
   surfaces; thin backend loaders as needed
 - **Source**: E24-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-024;
   [ADR-032](adr/ADR-032-wmo-default-golden-glossary.md) (amended)
-- **Follow-on**: S032 / EV-025 implements children **#809–#812** (+ full dig ❌ US types)
+- **Follow-on**: S032 / EV-025 implemented #810–#812 (+ dig ❌ US); #809 soft path only —
+  equality residual → S033 / EV-026
 
 ### F6 / F6.b / F12 / F2 / F13 + F23 deepen (S032 / EV-025 — iwxxm-us REMARKS encode + VA multi-location)
 
-- **Status**: **In progress** (S032 / EV-025) — no new Fn; dual-lane engine + goldens
+- **Status**: **Done** (S032 / EV-025; PR [#816](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816)
+  `2412312`) — Lane A complete; Lane B soft-compare shipped; #809 left open for equality
 - **Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810),
   [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811),
-  [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812),
-  [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
+  [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) **closed**;
+  [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) **open** (soft done)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2** + `iwxxm-us` **3.0**
-- **What it does**:
-  1. **Lane A (F6.b / F12 / F2·F13)** — Encode all ❌ (and still-⚠) US METAR/SPECI REMARKS
-     types from the #773 dig checklist: named #810 Variable RVR / meanRVR; #811 Lightning /
-     VisuallyObservablePhenomena; #812 SnowIncrease + sensor outage; **plus** WindShift,
-     sky/convective, hail, sector/obscuration, second-site/tower, variable CIG/SKY/VIS,
-     max/min temps, ProcessedProperty, Addendum residuals, codelist hrefs, …
-  2. **Lane B (F23)** — #809 package annex3 golden for `sigmet-multi-location-VA`
-     (soft→strict); promote catalog to `wmoPass` only when ADR-032 equality holds
+- **What it did**:
+  1. **Lane A** — Encode dig ❌ US METAR/SPECI REMARKS (#810/#811/#812 + adjacent)
+  2. **Lane B** — #809 soft-compare golden + multi-location encode; catalog stayed
+     `wmoReference` (`D-S032-EV025-s02m1-1`)
+- **Journeys / tests**: **UJ-040**; **UJ-041** (soft path); **TC-EV025-001..010**
+- **Follow-on**: S033 / EV-026 — ADR-032 equality → `wmoPass` (**UJ-041** promote)
+- **Source**: E25-*; [evolve-report-EV-025.md](evolve-report-EV-025.md);
+  [Context: va-multi-location-809](context/va-multi-location-809.md)
+
+### F23 / F6 / F7.g deepen (S033 / EV-026 — #809 VA multi-location equality)
+
+- **Status**: **In progress** (S033 / EV-026) — no new Fn; equality + catalog promote
+- **Issues**: [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)
+- **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2**
+- **What it does**: Make `canonicalize_xml(convert(sigmet-multi-location-VA.tac))` equal
+  vendor XML under annex3 + default pin (ADR-032); flip soft golden → strict; promote
+  catalog `wmoReference` → `wmoPass`; close #809
 - **Acceptance**:
-  1. Each dig ❌ US type: lint recognition as needed + `profile=iwxxm_us` encode to pin XSD +
-     golden + combined-catalog validate smoke — or explicit deferred child with rationale
-  2. #810 / #811 / #812 GitHub acceptance checkboxes closable
-  3. US fixtures never appear in WMO sample menu (**UJ-039** deepen)
-  4. Malformed US REMARKS still yield diagnostics (**UJ-010**); unparsed remainder retained
-     (**UJ-026**)
-  5. #809 soft-compare or M-golden; `wmoPass` only under ADR-032 defaults (**UJ-041**)
-- **Journeys / tests**: **UJ-040** (new US REMARKS pack); **UJ-041** (new #809 promote);
-  deepen **UJ-010** / **UJ-026** / **UJ-034** / **UJ-039**; **TC-EV025-001..010**
-- **Out of scope**: USWX; vendor hand-edits; US in WMO menu; #808; #738; roadmap SWX/VONA/WAFS
-- **Packages / apps**: `packages/tac2iwxxm`, `packages/tac-validate`, `packages/iwxxm-validate`,
-  annex3/`iwxxm_us` fixtures; thin API smoke; catalog tier for #809 only (no new UI surface)
-- **Source**: E25-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-025;
-  dig [iwxxm-us-metar-speci-pdf-mining-notes.md](domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md)
+  1. TC-EV025-008 green under **strict** equality (no soft_compare / inequality assert)
+  2. TC-EV025-009 expects equality + catalog `wmoPass: true`
+  3. FIXTURE_GAPS equality-pending note removed / closed
+  4. GitHub #809 closed
+- **Journeys / tests**: deepen **UJ-041** / **UJ-034** / **UJ-039**; reuse **TC-EV025-008..009**
+  (EV-026 semantics — `E26-TC=1`)
+- **Out of scope**: US REMARKS reopen; #738; sample-menu removal
+- **Packages / apps**: `packages/tac2iwxxm` encode + annex3 golden; frontend catalog /
+  FIXTURE_GAPS / Vitest (no new UI surface)
+- **Source**: E26-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-026;
+  [Context: va-multi-location-809](context/va-multi-location-809.md)
 
-### F6 / F6.b deepen (S032 / EV-025)
+### F6 deepen (S033 / EV-026)
 
-- **Status note**: F6 remains **Implemented**; this cycle **deepens F6.b** to encode the full
-  dig ❌ US REMARKS set (#810–#812 + adjacent).
+- **Status note**: F6 remains **Implemented**; encoder deltas for multi-location VA shape /
+  metadata so ADR-032 equality holds.
 
-### F12 deepen (S032 / EV-025)
+### F7.g deepen (S033 / EV-026)
 
-- **Status note**: F12 remains **Implemented**; US REMARKS recognition / registry rows as needed
-  for Lane A.
+- **Status note**: F7 remains **Planned**; catalog tier flip only (`wmoPass`) when equality
+  holds — no new UI surface.
 
-### F2 / F13 deepen (S032 / EV-025)
+### F23 deepen (S033 / EV-026)
 
-- **Status note**: F2/F13 remain **Implemented**; combined-catalog validate smoke for
-  iwxxm-us extension blocks.
-
-### F23 deepen (S032 / EV-025)
-
-- **Status note**: F23 remains **Done**; this cycle adds #809 multi-location VA convert golden
-  / catalog promote path (**UJ-041**).
+- **Status note**: F23 remains **Done**; this cycle completes #809 multi-location VA
+  convert equality / catalog promote (**UJ-041**).
 
 ## Platform Feature Details (Monorepo Migration)
 

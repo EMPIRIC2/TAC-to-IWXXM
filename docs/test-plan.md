@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-31 (S032 / EV-025 — TC-EV025-001..010 #810–#812/#809)
+> **Last updated**: 2026-07-31 (S033 / EV-026 — TC-EV025-008..009 strict / wmoPass #809)
 
 ## Scope
 
@@ -89,7 +89,7 @@ Unified manual live test harness against Render staging:
 | UJ-038 | F27 | TCA registry + WMO golden (defaults) | H4–H5 if FE | TC-F27-001..006 |
 | UJ-039 | F25/F7.g deepen | Load official WMO examples from sample menu | H4–H5 if FE | TC-EV024-004..006 |
 | UJ-040 | F6.b deepen | Structured iwxxm-us REMARKS encode pack | — (API T3 optional) | TC-EV025-001..007 |
-| UJ-041 | F23 deepen | sigmet-multi-location-VA soft→strict / wmoPass | — | TC-EV025-008..009 |
+| UJ-041 | F23 deepen | sigmet-multi-location-VA ADR-032 equality / wmoPass (EV-026) | — | TC-EV025-008..009 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -1092,15 +1092,20 @@ Before closing S013 / EV-009:
 
 - **Given** vendor `sigmet-multi-location-VA.{tac,xml}` under pin
 - **When** convert annex3 (default settings)
-- **Then** root `iwxxm:VolcanicAshSIGMET`; multi-location geometry / forecast collections; soft-compare gate allowed until equality
+- **Then** root `iwxxm:VolcanicAshSIGMET`; multi-location geometry / forecast collections;
+  **`canonicalize_xml` equal to vendor XML** under ADR-032 defaults (EV-026 — soft-compare
+  / inequality assert removed; `E26-TC=1` reuses this id)
 - **Tier**: T0
+- **History**: EV-025 shipped soft-compare gate; EV-026 requires strict equality
 
 ### TC-EV025-009: #809 catalog promote to wmoPass (UJ-041)
 
-- **Given** soft golden from TC-EV025-008
-- **When** `canonicalize_xml` equality holds under ADR-032 defaults
-- **Then** catalog tier may flip `wmoReference` → `wmoPass`; Vitest/catalog assert; else remain reference with FIXTURE_GAPS note
+- **Given** equality from TC-EV025-008
+- **When** catalog / Vitest assert under ADR-032 defaults
+- **Then** catalog tier is `wmoPass` (`wmoPass: true`); FIXTURE_GAPS equality-pending note
+  removed; sample-menu label is passer not reference
 - **Tier**: T0
+- **History**: EV-025 allowed `wmoReference` until equality; EV-026 requires promote
 
 ### TC-EV025-010: Combined-catalog validate smoke for US extension blocks (F2/F13)
 
@@ -1111,13 +1116,24 @@ Before closing S013 / EV-009:
 
 ### EV-025 verify/deploy gate
 
-- [ ] TC-EV025-001..003 named tickets green
-- [ ] TC-EV025-004 adjacent ❌ pack green — dig ❌ encode residuals **block Gate C** (E25-T5=3; supersedes soft child-issue deferral)
-- [ ] TC-EV025-005..007 UJ-039/010/026 deepen green
-- [ ] TC-EV025-008..009 #809 soft→strict / promote path green
-- [ ] TC-EV025-010 validate smoke green or deferred with rationale
-- [ ] 13-deploy-smoke if API convert/validate behavior ships
-- [ ] 13-deploy-smoke when catalog/API behavior ships (E24-4)
+- [x] TC-EV025-001..003 named tickets green (#816)
+- [x] TC-EV025-004 adjacent ❌ pack green (#816)
+- [x] TC-EV025-005..007 UJ-039/010/026 deepen green (#816)
+- [x] TC-EV025-008 soft-compare green (#816); **strict** deferred → EV-026
+- [x] TC-EV025-009 stayed `wmoReference` until equality (#816); promote → EV-026
+- [x] TC-EV025-010 validate smoke green (#816)
+- [ ] 13-deploy-smoke if API convert/validate behavior ships (waived at EV-025 close)
+
+## EV-026 / S033 — #809 VA multi-location ADR-032 equality / wmoPass
+
+Reuses **TC-EV025-008..009** with strict semantics (`E26-TC=1`). No new TC ids.
+
+### EV-026 verify/deploy gate
+
+- [ ] TC-EV025-008 strict equality green (no soft_compare)
+- [ ] TC-EV025-009 catalog `wmoPass` + FIXTURE_GAPS cleared
+- [ ] #809 GitHub closed
+- [ ] 13-deploy-smoke if API convert/validate / catalog behavior ships
 
 ## F9 deepen (S026 / EV-020) — glossary registry
 

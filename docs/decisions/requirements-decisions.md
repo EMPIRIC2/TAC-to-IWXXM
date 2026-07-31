@@ -323,6 +323,21 @@
 | EV-024/S02.L1 | Vitest | Amend examplesCatalog tests for pass **or** reference in 07 | confirmed |
 | EV-024/E24-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
 
+## EV-026 / #809 — VA multi-location ADR-032 equality / wmoPass (2026-07-31)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-026/E26-1 | Session | Open S033 / EV-026; #809 equality only | confirmed |
+| EV-026/E26-2 | Depth | ADR-032 equality → catalog `wmoPass` → close #809 | confirmed |
+| EV-026/E26-3 | Routing | Lean+build; 13 when ships; skip 03/05/06/09/11/12 | confirmed |
+| EV-026/E26-4 | Out | No US REMARKS reopen; no #738 | confirmed |
+| EV-026/E26-ui | UI | N/A — catalog/Vitest only | confirmed |
+| EV-026/E26-M | Docs | **Lean** — feature-list + user-journeys (UJ-041) + test-plan (008/009 strict) + requirements/evolve decisions; skip Spec/Config/API/Deploy | confirmed |
+| EV-026/E26-TC | TC ids | **Reuse** TC-EV025-008..009 with EV-026 strict/`wmoPass` semantics | confirmed |
+| EV-026/E26-E1 | Close 01 | Mark 01 completed → start 02-verify-plan | confirmed |
+| EV-026/E26-T1..T5 | Batch T | Order/grain/deps/Gate C/draft = **1,1,2,1,1** | confirmed |
+| EV-026/E26-04 | Gate B | Approve M0–M3 (12 tasks) → 07-build @ T0.1 | confirmed |
+
 ## EV-025 / #810+#811+#812+#809 — iwxxm-us REMARKS encode + VA multi-location (2026-07-31)
 
 | ID | Topic | Decision | Status |

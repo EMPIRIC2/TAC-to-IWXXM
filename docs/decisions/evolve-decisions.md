@@ -3,6 +3,61 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-026 — #809 VA multi-location ADR-032 equality / wmoPass (S033)
+
+**Session**: S033-va-multi-location-equality  
+**Features**: Deepen **F23** / **F6** / **F7.g** — no new Fn  
+**Issues**: [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
+**Started**: 2026-07-31  
+**Branch**: `evolve/EV-026-va-multi-location-equality`  
+**Status**: **in_progress** — Gate B passed; **07-build** @ T0.1
+
+### Scope (Phase 0 — locked 2026-07-31)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E26-1 | decision | Session + cycle? | **1** — S033 / EV-026; #809 equality only (`D-S033-open=1`) |
+| E26-2 | decision | Depth / AC? | **1** — ADR-032 equality under defaults → catalog `wmoPass` → close #809 |
+| E26-3 | decision | Routing? | **1** — Lean+build `00→16→01→02→04→07→08→10` (+13 when ships) |
+| E26-4 | decision | Out-of-scope? | **1** — no US REMARKS reopen; no #738 |
+| E26-ui | decision | UI preview? | **N/A** — catalog/Vitest only |
+| E26-M | decision | Document Manifest? | **1** — lean: feature-list + UJ-041 + test-plan 008/009 + decisions; skip Spec/Config/API/Deploy (`D-S033-E26-M`) |
+| E26-TC | decision | TC ids? | **1** — reuse TC-EV025-008..009 with strict/`wmoPass` semantics (`D-S033-E26-TC`) |
+| E26-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** (`D-S033-E26-E1`) |
+| S02.M1 | decision | Example stamps? | **1** — calendar / ATS–MWO stamps OK for this stem (`D-S033-EV026-s02m1-1`) |
+| S02.M2 | decision | Geometry normalize? | **1** — ring order + coord format toward vendor for this stem (`D-S033-EV026-s02m2-1`) |
+| S02.L1 | decision | New UJ? | **1** — deepen UJ-041 only (`D-S033-EV026-s02l1-1`) |
+| E26-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,1,1; Lean → **04-tech-plan** (`D-S033-02-phase-a`) |
+| E26-T1 | decision | Build order? | **1** — dig → red → encoder themes → green → catalog → verify/close (`D-S033-E26-T-batch`) |
+| E26-T2 | decision | Encoder grain? | **1** — one commit per blocker theme then equality green |
+| E26-T3 | decision | New deps? | **2** — AskQuestion per new dep (prefer none) |
+| E26-T4 | decision | Gate C? | **1** — equality + `wmoPass` + #809 closed required (no soft escape) |
+| E26-T5 | decision | Draft plan? | **1** — plan as written |
+| E26-04 | decision | Gate B? | **1** — approve M0–M3 → **07-build** @ T0.1 (`D-S033-04-plan-approve`) |
+
+**Scope (verbatim)**: Residual from EV-025 soft path — make
+`canonicalize_xml(convert(sigmet-multi-location-VA.tac))` equal vendor XML under annex3 +
+default pin (ADR-032); promote TC/catalog to `wmoPass`; close #809.
+
+**In:** encoder deltas for known blockers (calendar stamp, ATS/MWO metadata, ring order,
+coord format, phenomenonTime); strict golden flip; catalog + FIXTURE_GAPS; issue close.
+
+**Out:** #810–#812 reopen; #738 TC SIGMET A6-2; sample-menu removal.
+
+### Fn allocation (approved)
+
+| Fn | Role |
+|----|------|
+| Deepen **F23** | VA multi-location convert equality |
+| Deepen **F6** | annex3 encode shape |
+| Deepen **F7.g** | Catalog tier `wmoPass` (ADR-032) |
+
+### Routing (approved)
+
+Lean+build + **13 when ships**: `00→16→01→02→04→07→08→10` (+ `13` if API behavior ships).
+
+---
+
 ## Cycle EV-025 — iwxxm-us REMARKS encode + VA multi-location (#810–#812 + #809) (S032)
 
 **Session**: S032-iwxxm-us-remarks-va  

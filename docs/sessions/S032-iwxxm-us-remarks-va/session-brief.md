@@ -1,7 +1,8 @@
 ---
 session_id: S032-iwxxm-us-remarks-va
 type: feature
-status: in_progress
+status: completed
+completed_at: 2026-07-31
 branch: evolve/EV-025-iwxxm-us-remarks-va
 started_at: 2026-07-31
 intent: "Dual-lane: encode all ❌ iwxxm-us REMARKS types from #773 dig (#810+#811+#812 + adjacent) plus #809 WMO sigmet-multi-location-VA annex3 golden"

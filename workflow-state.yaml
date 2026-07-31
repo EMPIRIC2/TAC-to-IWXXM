@@ -3,9 +3,91 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 32
-evolve_cycle_counter: 25
-active_session: null
+session_counter: 33
+evolve_cycle_counter: 26
+active_session:
+  id: S033-va-multi-location-equality
+  type: feature
+  intent: "#809 residual — ADR-032 canonicalize_xml equality for sigmet-multi-location-VA; promote wmoPass; close issue"
+  status: in_progress
+  branch: evolve/EV-026-va-multi-location-equality
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-026
+  github_issues:
+  - '809'
+  feature_ids:
+  - F23
+  - F6
+  - F7
+  artifacts_dir: docs/sessions/S033-va-multi-location-equality/
+  routing_plan_summary: "Lean+build 00→16→01→02→04→07→08→10 (+13 when ships)"
+  preset: Lean+build
+  preset_status: approved
+  note_skipped: "Lean+build — skip 03/05/06/09/11/12; 13 when_ships"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  current_stage: 07-build
+  started_at: '2026-07-31'
+  context_briefs:
+  - docs/context/va-multi-location-809.md
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'Phase 0 locked D-S033-open=1'
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-07-31'
+    note: 'EV-026 Phase 0 locked; handoff 01'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
+  - stage: 07-build
+    required: true
+    mode: full
+    status: in_progress
+    started: '2026-07-31'
+    note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: smoke
+    status: pending
+  - stage: 13-deploy-smoke
+    required: false
+    mode: when_ships
+    status: pending
 sessions:
 - id: S032-iwxxm-us-remarks-va
   type: feature
@@ -2834,61 +2916,77 @@ stages:
     started: '2026-07-31'
     completed_at: '2026-07-31'
     completed: '2026-07-31'
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
-    prior_note: 'S031/EV-024 01-requirements COMPLETE 2026-07-30 (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25; D-S031-E24-E1; report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md;
-      handoff 02-verify-plan; #804/#807/#773'
-    note: 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md;
-      handoff 02-verify-plan; #810/#811/#812/#809'
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    prior_note: 'S033/EV-026 01-requirements STARTED (delta) — #809 ADR-032 equality; F23/F6/F7; D-S033-open; interview pending'
+    note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
     substeps:
       interviews:
         status: completed
-        completed:
-        total:
-        current_template:
+        completed: 1
+        total: 1
+        current_template: complete
         current_section: complete
         planned_docs:
           status:
             feature-list: completed
-            spec: pending
+            spec: skipped
             user-journeys: completed
             test-plan: completed
-            api-contract: pending
-            coverage-matrix: pending
-            ADR: pending
+            api-contract: skipped
+            coverage-matrix: skipped
+            ADR: skipped
             requirements-decisions: completed
     active_session:
-      session_id: S032-iwxxm-us-remarks-va
-      evolve_cycle_id: EV-025
+      session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
       status: completed
       mode: delta
       started_at: '2026-07-31'
       started: '2026-07-31'
       completed_at: '2026-07-31'
       completed: '2026-07-31'
-      note: 'S032/EV-025 01-requirements COMPLETE (delta) — E25-E1=1; D-S032-E25-E1; handoff 02-verify-plan; #810/#811/#812/#809'
-      deepen:
-      - F6
-      - F12
-      - F2
-      - F13
-      - F23
+      note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
       feature_ids:
-      - F6
-      - F12
-      - F2
-      - F13
       - F23
+      - F6
+      - F7
       decision_refs:
-      - E25-E1
-      - D-S032-E25-E1
+      - D-S033-open
+      - E26-E1
+      - E26-M
+      - E26-TC
+      - D-S033-E26-E1
+    delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
+      deepen:
+      - F23
+      - F6
+      - F7
+      feature_ids:
+      - F23
+      - F6
+      - F7
       artifacts:
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
+      - docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md
       - docs/feature-list.md
       - docs/user-journeys.md
       - docs/test-plan.md
+      - docs/decisions/evolve-decisions.md
       - docs/decisions/requirements-decisions.md
-    delta_substages:
+      decision_refs:
+      - E26-E1
+      - E26-M
+      - E26-TC
+      - D-S033-E26-E1
     - status: completed
       mode: delta
       session_id: S032-iwxxm-us-remarks-va
@@ -3401,6 +3499,9 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - 'S033/EV-026 01-requirements COMPLETE 2026-07-31 (delta) — E26-E1=1; deepen F23/F6/F7.g; D-S033-E26-E1; report docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md;
+      handoff 02-verify-plan; #809'
+    - '2026-07-31 S033/EV-026 01-requirements STARTED (delta) — #809 ADR-032 equality; F23/F6/F7; D-S033-open; interview pending'
     - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md;
       handoff 02-verify-plan; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 01-requirements COMPLETE (E24-E1=1 / D-S031-E24-E1) — deepen F6/F2/F4/F12/F13/F25; report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md;
@@ -3486,25 +3587,19 @@ stages:
     started: '2026-07-31'
     completed_at: '2026-07-31'
     completed: '2026-07-31'
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
-    prior_note: 'S032/EV-025 02-verify-plan STARTED 2026-07-31 (delta) — in_progress; artifact docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md;
-      D-S032-E25-E1; #810/#811/#812/#809'
-    note: 'S032/EV-025 02-verify-plan COMPLETE 2026-07-31 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md;
-      D-S032-02-phase-a; #810/#811/#812/#809'
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    prior_note: 'S033/EV-026 02-verify-plan STARTED (delta) — D-S033-E26-E1; #809'
+    note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
     auto_approved: 12
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
-    - E25-E1
-    - D-S032-E25-E1
+    - D-S033-E26-E1
     - S02.M1
     - S02.M2
     - S02.L1
-    - D-S032-EV025-s02m1-1
-    - D-S032-EV025-s02m2-1
-    - D-S032-EV025-s02l1-1
-    - D-S032-02-phase-a
+    - D-S033-02-phase-a
     substeps:
       inventory:
         status: completed
@@ -3512,16 +3607,13 @@ stages:
         status: completed
       statement_review:
         auto_approved: 12
-        pending: 0
+        pending:
         reviewed:
-        - S02.M1
-        - S02.M2
-        - S02.L1
     current_document:
     current_statement:
     active_session:
-      session_id: S032-iwxxm-us-remarks-va
-      evolve_cycle_id: EV-025
+      session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
       skill_id: 02-verify-plan
       status: completed
       mode: delta
@@ -3529,30 +3621,19 @@ stages:
       started: '2026-07-31'
       completed_at: '2026-07-31'
       completed: '2026-07-31'
-      note: 'S032/EV-025 02-verify-plan COMPLETE 2026-07-31 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md;
-        D-S032-02-phase-a; #810/#811/#812/#809'
-      deepen:
-      - F6
-      - F12
-      - F2
-      - F13
+      note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
+      feature_ids:
       - F23
-      auto_approved: 12
+      - F6
+      - F7
       decision_refs:
-      - E25-E1
-      - D-S032-E25-E1
+      - D-S033-E26-E1
       - S02.M1
       - S02.M2
       - S02.L1
-      - D-S032-EV025-s02m1-1
-      - D-S032-EV025-s02m2-1
-      - D-S032-EV025-s02l1-1
-      - D-S032-02-phase-a
-      artifacts:
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
-      - docs/decisions/product-audit.md
-      - docs/decisions/product-decisions.md
+      - D-S033-02-phase-a
     artifacts:
+    - docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
@@ -3566,6 +3647,29 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      mode: delta
+      deepen:
+      - F23
+      - F6
+      - F7
+      auto_approved: 12
+      note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
+      decision_refs:
+      - D-S033-E26-E1
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - D-S033-02-phase-a
+      artifacts:
+      - docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md
     - session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       skill_id: 02-verify-plan
@@ -3881,6 +3985,9 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-31 S033/EV-026 02-verify-plan COMPLETE (D-S033-02-phase-a) — PASS; Batch F 1,1,1; Gate A Lean → 04-tech-plan; report docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md;
+      #809'
+    - '2026-07-31 S033/EV-026 02-verify-plan STARTED (delta) — D-S033-E26-E1; #809'
     - '2026-07-31 S032/EV-025 02-verify-plan COMPLETE (D-S032-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A Lean → 04; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md;
       #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 02-verify-plan COMPLETE (D-S031-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A Lean → 04; report docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md;
@@ -4020,60 +4127,42 @@ stages:
     started: '2026-07-31'
     completed_at: '2026-07-31'
     completed: '2026-07-31'
-    previous_started_at: '2026-07-30'
-    previous_completed_at: '2026-07-30'
-    previous_session_id: S031-iwxxm-domain-mine
-    previous_evolve_cycle_id: EV-024
-    previous_note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; execution-plan approved (D-S031-04-plan-approve);
-      Gate B Lean → 07 @ T0.1; #804/#807/#773'
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
-    prior_note: 'S032/EV-025 04-tech-plan in_progress 2026-07-31 (delta) — Batch T E25-T1..T6=1,1,2,1,3,1 locked; draft execution-plan; Gate B
-      pending; #810/#811/#812/#809'
-    note: 'S032/EV-025 04-tech-plan COMPLETE 2026-07-31 (delta) — Gate B=1; execution-plan approved (D-S032-04-plan-approve); E25-T1..T6=1,1,2,1,3,1;
+    previous_started_at: '2026-07-31'
+    previous_completed_at: '2026-07-31'
+    previous_session_id: S032-iwxxm-us-remarks-va
+    previous_evolve_cycle_id: EV-025
+    previous_note: 'S032/EV-025 04-tech-plan COMPLETE 2026-07-31 (delta) — Gate B=1; execution-plan approved (D-S032-04-plan-approve); E25-T1..T6=1,1,2,1,3,1;
       handoff 07 @ T0.1; #810/#811/#812/#809'
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    prior_note: 'S033/EV-026 04-tech-plan STARTED (D-S033-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #809'
+    note: 'COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
     decision_refs:
-    - D-S032-04-plan-approve
-    - D-S032-02-phase-a
-    - D-S032-EV025-s02m1-1
-    - D-S032-EV025-s02m2-1
-    - D-S032-EV025-s02l1-1
-    - S02.M1
-    - S02.M2
-    - S02.L1
-    - E25-T1
-    - E25-T2
-    - E25-T3
-    - E25-T4
-    - E25-T5
-    - E25-T6
-    - D-S032-EV025-t1-1
-    - D-S032-EV025-t2-1
-    - D-S032-EV025-t3-2
-    - D-S032-EV025-t4-1
-    - D-S032-EV025-t5-3
-    - D-S032-EV025-t6-1
+    - D-S033-04-plan-approve
+    - D-S033-E26-T-batch
+    - E26-T1
+    - E26-T2
+    - E26-T3
+    - E26-T4
+    - E26-T5
+    - D-S033-02-phase-a
+    - D-S033-E26-E1
     substeps:
       phase_1_toolchain:
         status: completed
-        notes: Reuse monorepo pins; no new toolchain
       phase_2_interview:
         status: completed
-        notes: E25-T1..T6 locked 1,1,2,1,3,1 (Batch T)
       phase_3_execution_plan:
         status: completed
-        notes: docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md approved
       phase_4_user_review:
         status: completed
-        notes: D-S032-04-plan-approve — Gate B=1 → 07 @ T0.1
       phase_5_back_add:
         status: completed
       phase_6_documents:
         status: completed
-        notes: 04-tech-plan.md + execution-plan.md
     active_session:
-      session_id: S032-iwxxm-us-remarks-va
-      evolve_cycle_id: EV-025
+      session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
       skill_id: 04-tech-plan
       status: completed
       mode: delta
@@ -4081,31 +4170,27 @@ stages:
       started: '2026-07-31'
       completed_at: '2026-07-31'
       completed: '2026-07-31'
-      note: 'S032/EV-025 04 COMPLETE Gate B=1; D-S032-04-plan-approve; handoff 07 @ T0.1; #810/#811/#812/#809'
-      deepen:
-      - F6
-      - F12
-      - F2
-      - F13
+      note: 'COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
+      feature_ids:
       - F23
+      - F6
+      - F7
       decision_refs:
-      - D-S032-04-plan-approve
-      - E25-T1
-      - E25-T2
-      - E25-T3
-      - E25-T4
-      - E25-T5
-      - E25-T6
-      - D-S032-EV025-t1-1
-      - D-S032-EV025-t2-1
-      - D-S032-EV025-t3-2
-      - D-S032-EV025-t4-1
-      - D-S032-EV025-t5-3
-      - D-S032-EV025-t6-1
+      - D-S033-04-plan-approve
+      - D-S033-E26-T-batch
+      - E26-T1
+      - E26-T2
+      - E26-T3
+      - E26-T4
+      - E26-T5
+      - D-S033-02-phase-a
+      - D-S033-E26-E1
       artifacts:
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
+      - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+      - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
     artifacts:
+    - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+    - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
     - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
     - docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
@@ -4123,6 +4208,32 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      mode: delta
+      deepen:
+      - F23
+      - F6
+      - F7
+      note: 'COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
+      decision_refs:
+      - D-S033-04-plan-approve
+      - D-S033-E26-T-batch
+      - E26-T1
+      - E26-T2
+      - E26-T3
+      - E26-T4
+      - E26-T5
+      - D-S033-02-phase-a
+      artifacts:
+      - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+      - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
     - session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       skill_id: 04-tech-plan
@@ -4712,6 +4823,9 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-31 S033/EV-026 04 COMPLETE Gate B=1 (D-S033-04-plan-approve) — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); B→C; handoff 07 @ T0.1; #809'
+    - '2026-07-31 S033/EV-026 04 Batch T locked E26-T1..T5=1,1,2,1,1 (D-S033-E26-T-batch) — draft execution-plan 12 tasks M0–M3 + 04-tech-plan.md; Gate B approved; #809'
+    - '2026-07-31 S033/EV-026 04-tech-plan STARTED (D-S033-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #809'
     - '2026-07-31 S032/EV-025 04 COMPLETE Gate B=1 (D-S032-04-plan-approve) — execution-plan approved; B→C; handoff 07 @ T0.1; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 04 Batch T locked E25-T1..T6=1,1,2,1,3,1 — draft execution-plan 28 tasks M0–M7 + 04-tech-plan.md; Gate B pending
       (do not start 07); T5=3 supersedes S02.M2 Gate C soft deferral; #810/#811/#812/#809'
@@ -4998,85 +5112,92 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-07-31'
     started: '2026-07-31'
-    completed: '2026-07-31'
-    completed_at: '2026-07-31'
-    previous_started_at: '2026-07-30'
-    previous_completed_at: '2026-07-30'
-    previous_session_id: S031-iwxxm-domain-mine
-    previous_evolve_cycle_id: EV-024
-    previous_tip_sha: 304df52
-    previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
-    note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress 27/28;
+    previous_started_at: '2026-07-31'
+    previous_completed_at: '2026-07-31'
+    previous_session_id: S032-iwxxm-us-remarks-va
+    previous_evolve_cycle_id: EV-025
+    previous_tip_sha: 50d3d0a
+    previous_note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress 27/28;
       #810/#811/#812/#809'
-    tip_sha: 50d3d0a
-    tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
-    current_stage: M7
-    current_milestone: M7
-    current_task: T7.3
-    active_milestone: M7
-    active_task: T7.3
-    active_task_status: deferred
-    progress: 27/28
-    pr_number: 816
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-    pr_status: open
-    merge_sha:
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    note: 'S033/EV-026 07-build — T0.1 COMPLETE (t0-1-canonicalize-diff-themes.md); @ T1.1 flip TC-EV025-008 strict (expect red); progress 1/12; #809'
+    current_stage: M1
+    current_milestone: M1
+    current_task: T1.1
+    active_milestone: M1
+    active_task: T1.1
+    active_task_status: in_progress
+    progress: 1/12
     decision_refs:
-    - D-S032-04-plan-approve
+    - D-S033-04-plan-approve
+    - D-S033-E26-T-batch
     artifacts:
-    - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
-    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
-    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
-    - docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
-    - docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
+    - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
+    - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+    - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
     active_session:
-      session_id: S032-iwxxm-us-remarks-va
-      evolve_cycle_id: EV-025
+      session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
       skill_id: 07-build
-      status: completed
+      status: in_progress
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress
-        27/28; #810/#811/#812/#809'
-      active_milestone: M7
-      current_milestone: M7
-      active_task: T7.3
-      current_task: T7.3
-      active_task_status: deferred
+      note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
+      active_milestone: M1
+      current_milestone: M1
+      active_task: T1.1
+      current_task: T1.1
+      active_task_status: in_progress
       deepen:
-      - F6
-      - F12
-      - F2
-      - F13
       - F23
+      - F6
+      - F7
       decision_refs:
-      - D-S032-04-plan-approve
+      - D-S033-04-plan-approve
+      - D-S033-E26-T-batch
       artifacts:
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
-      completed_at: '2026-07-31'
-      progress: 27/28
-      tip_sha: 1e46b38
+      - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
+      - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+      progress: 1/12
     substeps:
       task_loop:
-        status: completed
-        current_task: T7.3
-        active_task_status: deferred
-        active_milestone: M7
+        status: in_progress
+        current_task: T1.1
+        active_task_status: in_progress
+        active_milestone: M1
         phase: C
-        milestone: M7
-        notes: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress
-          27/28; #810/#811/#812/#809'
+        milestone: M1
+        notes: 'S033/EV-026 T0.1 COMPLETE; @ T1.1 flip TC-EV025-008 strict (expect red); #809'
     delta_substages:
+    - id: S033-va-multi-location-equality
+      session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      mode: full
+      note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
+      active_milestone: M1
+      current_milestone: M1
+      active_task: T1.1
+      current_task: T1.1
+      active_task_status: in_progress
+      progress: 1/12
+      decision_id: D-S033-04-plan-approve
+      branch: evolve/EV-026-va-multi-location-equality
+      deepen:
+      - F23
+      - F6
+      - F7
+      artifacts:
+      - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
+      - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
@@ -5445,6 +5566,8 @@ stages:
     - '2026-07-31 S032/EV-025 T2.1 in_progress (#811 Lightning/VOP red goldens TC-EV025-002); M0+M1 done tip 9d1e49a; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M1 COMPLETE (T1.1–T1.3 #810) — tip 9d1e49a; next T2.1 #811 Lightning/VOP; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M0 COMPLETE (T0.1+T0.2) — tip f1e19a9; next T1.1; #810/#811/#812/#809'
+    - '2026-07-31 S033/EV-026 T0.1 COMPLETE — docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md; @ T1.1 flip TC-EV025-008 strict (expect red); progress 1/12; #809'
+    - '2026-07-31 S033/EV-026 07-build STARTED (D-S033-04-plan-approve B→C) — @ T0.1 canonicalize dig themes; plan docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md; #809'
     - '2026-07-31 S032/EV-025 07-build STARTED (D-S032-04-plan-approve B→C) — @ T0.1; M0 theme map + dig audit; plan docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md;
       #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 07-build COMPLETE (state-drift sync) — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22;
@@ -7800,6 +7923,134 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S033-04-plan-approve
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 04 Decision — Approve execution plan / Gate B → 07 @ T0.1
+  summary: S033/EV-026 04 COMPLETE Gate B=1; handoff 07-build @ T0.1
+  decision: 'Gate B=1 (option 1) — approve execution-plan M0–M3 (12 tasks); B→C → 07-build in_progress @ T0.1. Batch T E26-T1..T5=1,1,2,1,1. Approved plan: docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md. Lean skip 05.'
+  user_option: 1
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-E26-T-batch
+  - E26-T1
+  - E26-T2
+  - E26-T3
+  - E26-T4
+  - E26-T5
+  - D-S033-02-phase-a
+  answers:
+    GateB: '1'
+- id: D-S033-E26-T-batch
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: Batch T lock — E26-T1..T5
+  summary: E26-T1=1, T2=1, T3=2, T4=1, T5=1
+  decision: 'Batch T locked 2026-07-31 — E26-T1=1, E26-T2=1, E26-T3=2, E26-T4=1, E26-T5=1. Feeds execution-plan approval (D-S033-04-plan-approve) and Gate B → 07 @ T0.1.'
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-04-plan-approve
+  - E26-T1
+  - E26-T2
+  - E26-T3
+  - E26-T4
+  - E26-T5
+  answers:
+    E26-T1: '1'
+    E26-T2: '1'
+    E26-T3: '2'
+    E26-T4: '1'
+    E26-T5: '1'
+- id: D-S033-02-phase-a
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 16-evolve
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: checkpoint
+  status: confirmed
+  topic: Gate A Lean → 04-tech-plan
+  summary: S033/EV-026 02-verify-plan COMPLETE Batch F 1,1,1 → 04-tech-plan
+  decision: 'Gate A Lean (Batch F S02.M1/M2/L1 all Approve=1). 02-verify-plan PASS — phase_a passed (Lean; routine AskQuestion skipped); advance to 04-tech-plan (in_progress, mode delta). Report: docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md.'
+  user_option: 1
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-E26-E1
+  - S02.M1
+  - S02.M2
+  - S02.L1
+- id: D-S033-E26-E1
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: Close 01 → start 02-verify-plan
+  summary: E26-E1=1 — close 01-requirements; start 02-verify-plan
+  decision: E26-E1=1 — Close 01-requirements (completed) and advance to 02-verify-plan (in_progress, mode delta). Handoff S033/EV-026 deepen
+    F23/F6/F7.g (#809). E26-M=1 lean corpus; E26-TC=1 reuse TC-EV025-008..009.
+  user_option: 1
+  related_issues:
+  - '809'
+  related_decisions:
+  - E26-E1
+  - E26-M
+  - E26-TC
+  - D-S033-open
+  answers:
+    E26-E1: '1'
+    E26-M: '1'
+    E26-TC: '1'
+- id: D-S033-open
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session-open
+  status: confirmed
+  topic: 'Open S033 / EV-026 #809 VA multi-location ADR-032 equality'
+  summary: 'Open S033/EV-026 for #809 equality; Lean+build; UI N/A; closeout of EV-025 already on main e3733a4'
+  decision: 'Open S033/EV-026 for #809 equality; Lean+build; UI N/A; closeout of EV-025 already on main e3733a4'
+  user_option: 1
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S032-EV025-809-handoff
+  tip_sha: e3733a4
+  tip_sha_full: e3733a479fc62718455a71de397fbea7e7a104b0
+  preset: Lean+build
+  preset_status: approved
 - id: D-S032-EV025-phase4-close
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -15481,6 +15732,57 @@ decisions_log:
   preset: Lean+build
   preset_status: approved
 artifacts:
+- path: docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
+  kind: stage-report
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 07-build
+  skill_id: 07-build
+  task_id: T0.1
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S033/EV-026 T0.1 COMPLETE — canonicalize dig themes; next T1.1 flip TC-EV025-008 strict (expect red); #809'
+- path: docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+  kind: execution-plan
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: approved
+  note: 'S033/EV-026 04 COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; M0–M3 (12 tasks); Gate B → 07 @ T0.1 (D-S033-04-plan-approve); #809'
+- path: docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
+  kind: stage-report
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S033/EV-026 04-tech-plan COMPLETE — Batch T 1,1,2,1,1; Gate B Lean → 07 (D-S033-04-plan-approve); #809'
+- path: docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md
+  kind: stage-report
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S033/EV-026 01 COMPLETE — E26-E1=1; D-S033-E26-E1; #809'
+- path: docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md
+  kind: stage-report
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S033/EV-026 02-verify-plan PASS (Batch F 1,1,1); Gate A Lean → 04 (D-S033-02-phase-a); #809'
 - path: docs/sessions/S032-iwxxm-us-remarks-va/reports/evolve-summary.md
   type: session-report
   kind: evolve-summary
@@ -23795,6 +24097,135 @@ evolve_cycles:
   note: 'Phase 4 close D-S032-EV025-phase4-close — EV-025/S032 complete; PR #816 2412312; T7.3/13 waived; #809 equality residual handed to next cycle; #810/#811/#812 closed on GitHub'
   decision_refs:
   - D-S032-EV025-phase4-close
+- id: EV-026
+  session_id: S033-va-multi-location-equality
+  cycle_type: feature
+  feature_ids:
+  - F23
+  - F6
+  - F7
+  title: "#809 VA multi-location ADR-032 equality / wmoPass"
+  status: in_progress
+  started: '2026-07-31'
+  started_at: '2026-07-31'
+  completed: null
+  scope_summary: 'residual EV-025 soft path → ADR-032 equality → wmoPass → close #809'
+  github_issues:
+  - '809'
+  issues:
+  - 809
+  branch: evolve/EV-026-va-multi-location-equality
+  preset: Lean+build
+  preset_status: approved
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 10-e2e
+    optional_stages:
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 11-verify-impl
+    - 12-verify-deploy
+    note: "Lean+build — skip 03/05/06/09/11/12; 13 when_ships"
+  current_stage: 07-build
+  stages:
+    00-context:
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'Phase 0 locked D-S033-open=1'
+    16-evolve:
+      status: in_progress
+      started: '2026-07-31'
+      note: 'EV-026 Phase 0 locked; handoff 01-requirements'
+    01-requirements:
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      mode: delta
+      note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
+    02-verify-plan:
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      mode: delta
+      note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S033-02-phase-a; #809'
+    04-tech-plan:
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      mode: delta
+      note: 'COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
+    07-build:
+      status: in_progress
+      started: '2026-07-31'
+      mode: full
+      current_task: T1.1
+      active_task: T1.1
+      active_milestone: M1
+      progress: 1/12
+      note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
+    08-verify-build:
+      status: pending
+      mode: delta
+    10-e2e:
+      status: pending
+      mode: smoke
+    13-deploy-smoke:
+      status: pending
+      mode: when_ships
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
+  - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+  - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
+  - docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md
+  - docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md
+  - docs/sessions/S033-va-multi-location-equality/session-brief.md
+  - docs/sessions/S033-va-multi-location-equality/routing-plan.md
+  - docs/context/va-multi-location-809.md
+  - docs/decisions/evolve-decisions.md
+  decision_refs:
+  - D-S033-open
+  - D-S033-E26-E1
+  - D-S033-02-phase-a
+  - D-S033-E26-T-batch
+  - D-S033-04-plan-approve
+  - D-S032-EV025-809-handoff
+  tip_sha: e3733a4
+  tip_sha_full: e3733a479fc62718455a71de397fbea7e7a104b0
+  notes:
+  - '2026-07-31 S033/EV-026 T0.1 COMPLETE — t0-1-canonicalize-diff-themes.md; @ T1.1 flip TC-EV025-008 strict (expect red); progress 1/12; #809'
+  - '2026-07-31 S033/EV-026 07-build STARTED (D-S033-04-plan-approve B→C) — @ T0.1 canonicalize dig themes; plan docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md; #809'
+  - '2026-07-31 S033/EV-026 04 COMPLETE Gate B=1 (D-S033-04-plan-approve) — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); B→C; handoff 07 @ T0.1; #809'
+  - '2026-07-31 S033/EV-026 04 Batch T locked E26-T1..T5=1,1,2,1,1 (D-S033-E26-T-batch) — draft execution-plan 12 tasks M0–M3 + 04-tech-plan.md; Gate B approved; #809'
+  - '2026-07-31 S033/EV-026 04-tech-plan STARTED (D-S033-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #809'
+  - '2026-07-31 S033/EV-026 02-verify-plan COMPLETE (D-S033-02-phase-a) — PASS; Batch F 1,1,1; Gate A Lean → 04-tech-plan; report docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md; #809'
+  - '2026-07-31 S033/EV-026 01-requirements COMPLETE (delta) — E26-E1=1; deepen F23/F6/F7.g; D-S033-E26-E1; handoff 02-verify-plan; #809'
+  - '2026-07-31 S033/EV-026 02-verify-plan STARTED (delta) — D-S033-E26-E1; #809'
+  - '2026-07-31 S033/EV-026 01-requirements STARTED (delta) — #809 ADR-032 equality; F23/F6/F7; D-S033-open; interview pending'
+  - '2026-07-31 S033/EV-026 OPEN — Phase 0 locked D-S033-open=1; Lean+build; #809 ADR-032 equality residual from EV-025; handoff 01-requirements; branch evolve/EV-026-va-multi-location-equality @ e3733a4'
 git_history:
   current_branch: main
   ahead_of_origin: 0
@@ -25134,6 +25565,18 @@ git_history:
     merge_sha: 2412312
     merge_sha_full: 241231200169b59f12eceac75dae6df9d987678f
     merged_at: '2026-07-31'
+  - name: evolve/EV-026-va-multi-location-equality
+    purpose: 'S033/EV-026 #809 VA multi-location ADR-032 equality / wmoPass'
+    base: main
+    status: active
+    created: '2026-07-31'
+    created_at: '2026-07-31'
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    note: 'S033/EV-026 OPEN — D-S033-open=1; Lean+build; #809 residual from EV-025; base main @ e3733a4'
+    tip_sha: e3733a4
+    tip_sha_full: e3733a479fc62718455a71de397fbea7e7a104b0
+    pushed: false
   commits:
   - sha: 1e46b38
     sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7

@@ -1,0 +1,38 @@
+# Routing plan — S033-va-multi-location-equality
+
+**Preset:** Lean+build + **13 when behavior ships** (**approved** D-S033-open=1)  
+**Orchestrator:** 16-evolve · **Cycle:** EV-026  
+**Path:** `00→16→01→02→04→07→08→10` (+ `13` if convert/validate ships)  
+**Skip:** `03, 05, 06, 09, 11, 12`
+
+| Stage | Required | Mode | Status | Notes |
+|-------|----------|------|--------|-------|
+| 00-context | yes | scoped | **completed** | Session open; Phase 0 locked A–E |
+| 16-evolve | yes | orchestrator | **in_progress** | EV-026; handoff 01 |
+| 01-requirements | yes | delta | **completed** | E26-E1 — report 01-requirements.md |
+| 02-verify-plan | yes | delta | **completed** | PASS — Batch F 1,1,1; Gate A → 04 |
+| 04-tech-plan | yes | delta | **completed** | Batch T 1,1,2,1,1; Gate B → 07 |
+| 07-build | yes | full | **in_progress** | @ T0.1 canonicalize dig |
+| 08-verify-build | yes | delta | pending | — |
+| 09-qa | no | — | skipped | 08+10 cover |
+| 10-e2e | yes | smoke | pending | Convert/validate + catalog Vitest |
+| 11-verify-impl | no | — | skipped | Catalog/Vitest only (E26-ui=N/A) |
+| 12-verify-deploy | no | — | skipped | — |
+| 13-deploy-smoke | when ships | full | pending | If API image behavior changes |
+
+## Skip rationale
+
+Encoder-shaped deepen on existing annex3 VA SIGMET path + catalog tier flip. No new
+deployable / no new Fn. Soft path already green — do not re-litigate. 13 only when
+operator-visible convert/validate behavior ships.
+
+## Approved
+
+| Gate | Decision | Date |
+|------|----------|------|
+| Session open | S033 / `evolve/EV-026-va-multi-location-equality` | 2026-07-31 |
+| Intake A–E | Closeout commit + #809 equality only + Lean+build + UI N/A (`D-S033-open=1`) | 2026-07-31 |
+| Routing | Lean+build + 13-when-ships | 2026-07-31 |
+| UI preview | N/A — catalog/Vitest only | 2026-07-31 |
+| Batch T | E26-T1..T5 = 1,1,2,1,1 | 2026-07-31 |
+| Gate B / 04 | `1` — M0–M3 approved → 07 @ T0.1 (`D-S033-04-plan-approve`) | 2026-07-31 |
