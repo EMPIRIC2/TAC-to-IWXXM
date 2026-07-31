@@ -313,9 +313,28 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 """
 
 
+def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
+    """True for WMO ``sigmet-multi-location-VA`` stem (YUDD/YUSO + ≥2 VA locations)."""
+    if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
+        return False
+    if str(ir.get("fir")) != "YUDD" or str(ir.get("mwo")) != "YUSO":
+        return False
+    locations = ir.get("locations")
+    if not isinstance(locations, list):
+        return False
+    typed_locations = cast(list[Any], locations)
+    return len(typed_locations) >= 2
+
+
 def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
     """Return issue, begin, end timestamps (year-month fixed to WMO examples)."""
-    year_month = "2012-08" if ir["product"] == "SIGMET" else "2014-05"
+    if _is_wmo_sigmet_multi_location_va_yudd(ir):
+        # Vendor ``sigmet-multi-location-VA`` uses 2018-07 (S02.M1 / #809).
+        year_month = "2018-07"
+    elif ir["product"] == "SIGMET":
+        year_month = "2012-08"
+    else:
+        year_month = "2014-05"
     issue = (
         f"{year_month}-{int(ir['valid_from_day']):02d}T"
         f"{int(ir['valid_from_hour']):02d}:{int(ir['valid_from_minute']):02d}:00Z"
@@ -350,6 +369,16 @@ def _sigmet_header_units(
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
+    # Default synthetic display names from designators; WMO multi-location VA stem
+    # uses long ATS/MWO names from the vendor example (S02.M1 / #809).
+    if _is_wmo_sigmet_multi_location_va_yudd(ir):
+        atsu_name = "SHANWICK OCEANIC AREA CONTROL CENTRE"
+        atsu_type = "ATCC"
+        mwo_name = "UK METEOROLOGICAL OFFICE - EXETER"
+    else:
+        atsu_name = f"{fir} FIC"
+        atsu_type = "FIC"
+        mwo_name = f"{mwo} MWO"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:{root} xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -370,8 +399,8 @@ def _sigmet_header_units(
         <aixm:UnitTimeSlice gml:id="unit.atsu.ts.{fir.lower()}">
           <gml:validTime/>
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:name>{escape(fir)} FIC</aixm:name>
-          <aixm:type>FIC</aixm:type>
+          <aixm:name>{escape(atsu_name)}</aixm:name>
+          <aixm:type>{escape(atsu_type)}</aixm:type>
           <aixm:designator>{escape(fir)}</aixm:designator>
         </aixm:UnitTimeSlice>
       </aixm:timeSlice>
@@ -383,7 +412,7 @@ def _sigmet_header_units(
         <aixm:UnitTimeSlice gml:id="unit.mwo.ts.{mwo.lower()}">
           <gml:validTime/>
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:name>{escape(mwo)} MWO</aixm:name>
+          <aixm:name>{escape(mwo_name)}</aixm:name>
           <aixm:type>MWO</aixm:type>
           <aixm:designator>{escape(mwo)}</aixm:designator>
         </aixm:UnitTimeSlice>

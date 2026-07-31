@@ -15,7 +15,7 @@
 | Catalog | `sigmet_multi_location_va` = `wmoReference` |
 | Strict equality | In progress — 07-build |
 | Issue | #809 open |
-| Active task | T1.1 |
+| Active task | T1.2 |
 
 ## Locked policy
 
@@ -53,7 +53,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T1.1 | Test | Flip TC-EV025-008 to strict equality (expect red) | TC-EV025-008; E26-TC | T0.1 | completed |
-| T1.2 | Code | Calendar year-month + ATS/MWO display stamps for this stem | S02.M1; #809 | T1.1 | pending |
+| T1.2 | Code | Calendar year-month + ATS/MWO display stamps for this stem | S02.M1; #809 | T1.1 | completed |
 | T1.3 | Code | Ring vertex order + coordinate formatting toward vendor | S02.M2; #809 | T1.2 | pending |
 | T1.4 | Code | phenomenonTime / TimeInstant density alignment | Context blocker 5 | T1.3 | pending |
 | T1.5 | Test | TC-EV025-008 green under `canonicalize_xml` equality | TC-EV025-008 | T1.4 | pending |
