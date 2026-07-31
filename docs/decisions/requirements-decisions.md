@@ -335,6 +335,10 @@
 | EV-027/E27-UJ | Journey | **New UJ-042**; deepen UJ-039 / UJ-020 | confirmed |
 | EV-027/E27-TC | TC ids | **New TC-EV027-001..005** | confirmed |
 | EV-027/E27-E1 | Close 01 | Mark 01 completed → start 02-verify-plan | confirmed |
+| EV-027/S02.M1 | Allowlist SoT | Package test artifact; FIXTURE_GAPS = catalog/load gaps only | confirmed |
+| EV-027/S02.M2 | Gate C bar | All seven target empty residuals; allowlist only with standing-doc intent (F9 G4 / ADR-025) + child issue | confirmed |
+| EV-027/S02.L1 | Inventory SoT | Pytest-discovered vendor/mirrored TAC peers | confirmed |
+| EV-027/E27-02 | Gate A | PASS Batch F 1,2,1 → 04-tech-plan | confirmed |
 
 ## EV-026 / #809 — VA multi-location ADR-032 equality / wmoPass (2026-07-31)
 

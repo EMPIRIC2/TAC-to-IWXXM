@@ -42,14 +42,22 @@ Derived from D-S034-open / E27-* / corpus deltas already locked:
 11. S029/EV-022 parked work superseded/broadened by #815
 12. 13-deploy-smoke only when FE/decode chrome ships
 
-## Medium confidence (Batch F — pending)
+## Medium confidence (Batch F — locked)
 
-| ID | Statement | Options |
-|----|-----------|---------|
-| S02.M1 | Expected-residual **allowlist SoT** is a package test artifact (module/YAML next to fixtures); `FIXTURE_GAPS.md` stays catalog/load gaps only | 1 Approve · 2 Put allowlist in FIXTURE_GAPS · 3 Explain |
-| S02.M2 | **METAR/SPECI/TAF** happy-path official peers must reach `residuals == []` to close Gate C; **VAA/TCA (G4)** may remain on allowlist + child issue without blocking close | 1 Approve · 2 All seven must be empty · 3 Explain |
-| S02.L1 | Inventory SoT for TC-EV027-001 is **pytest-discovered** vendor/mirrored TAC peers (checked-in list or discovery helper), not a hand-only docs table | 1 Approve · 2 Docs-only inventory OK · 3 Explain |
+| ID | Statement | Decision |
+|----|-----------|----------|
+| S02.M1 | Expected-residual **allowlist SoT** is a package test artifact (module/YAML next to fixtures); `FIXTURE_GAPS.md` stays catalog/load gaps only | **1** Approve — `D-S034-EV027-s02m1-1` |
+| S02.M2 | All seven products target `residuals == []` for happy-path official peers to close Gate C; allowlist entries allowed **only** when standing docs mark residuals intentional (F9 **G4** / ADR-025 sparse best-effort) + linked child issue — check docs, no silent leftovers | **2** (+ doc check) — `D-S034-EV027-s02m2-2` |
+| S02.L1 | Inventory SoT for TC-EV027-001 is **pytest-discovered** vendor/mirrored TAC peers (checked-in list or discovery helper), not a hand-only docs table | **1** Approve — `D-S034-EV027-s02l1-1` |
+
+### S02.M2 doc evidence
+
+| Source | Intentional residual policy |
+|--------|------------------------------|
+| `feature-list.md` F9 **G4** | VAA/TCA decode spans: best-effort + **explicit residuals** in v1 |
+| F9 acceptance / ADR-025 | Sparse products best-effort; residuals named in “Not decoded: …” |
+| #815 / E27-4 | Unexpected residuals = defect; expected = allowlist (now gated on doc intent) |
 
 ## Gate A
 
-Pending Batch F answers (`D-S034-02-phase-a`).
+**PASS** (`D-S034-02-phase-a`) — Batch F **1, 2, 1**; Lean → **04-tech-plan**.

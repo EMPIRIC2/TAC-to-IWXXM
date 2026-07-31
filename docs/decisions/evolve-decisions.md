@@ -24,6 +24,10 @@
 | E27-UJ | decision | Journey id? | **1** — new **UJ-042**; deepen UJ-039 / UJ-020 |
 | E27-TC | decision | TC ids? | **1** — new **TC-EV027-001..005** |
 | E27-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** (`D-S034-E27-E1`) |
+| S02.M1 | decision | Allowlist SoT? | **1** — package test artifact; FIXTURE_GAPS = catalog/load only (`D-S034-EV027-s02m1-1`) |
+| S02.M2 | decision | Gate C residual bar? | **2** — all seven target empty; allowlist only if standing docs say intentional (F9 G4 / ADR-025) + child issue (`D-S034-EV027-s02m2-2`) |
+| S02.L1 | decision | Inventory SoT? | **1** — pytest-discovered vendor/mirrored peers (`D-S034-EV027-s02l1-1`) |
+| E27-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,2,1; Lean → **04-tech-plan** (`D-S034-02-phase-a`) |
 
 **Scope (verbatim)**: Every in-scope official WMO IWXXM TAC peer from the vendor pin is
 loadable from the workbench sample menu (or explicitly deferred in `FIXTURE_GAPS`) and

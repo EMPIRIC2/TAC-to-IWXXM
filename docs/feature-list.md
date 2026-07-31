@@ -953,8 +953,9 @@
 - **What it does**:
   1. Inventory official WMO TAC peers under the vendor pin; match catalog ∪ `FIXTURE_GAPS`
   2. Every in-scope peer loads from the sample menu **or** has an explicit gap + child issue
-  3. Decode residual matrix: happy-path official TAC → `residuals == []` except documented
-     expected-residual allowlist (`E27-4` triage: fix when cheap, else allowlist + child)
+  3. Decode residual matrix: happy-path official TAC → `residuals == []` for all seven
+     products (**S02.M2=2**); allowlist only when standing docs mark residuals intentional
+     (F9 **G4** / ADR-025) + linked child issue — fix when cheap otherwise (`E27-4`)
   4. Unexpected residuals fail parametrized CI (not only manual UI checks)
 - **Acceptance**:
   1. Inventory SoT checked in (docs or generated list) matches catalog ∪ `FIXTURE_GAPS`

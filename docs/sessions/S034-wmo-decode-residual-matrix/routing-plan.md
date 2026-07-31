@@ -10,8 +10,8 @@
 | 00-context | yes | scoped | **completed** | Phase 0 locked D-S034-open=1,1,2,1 |
 | 16-evolve | yes | orchestrator | in_progress | Phase 0 done; 01 interview |
 | 01-requirements | yes | delta | **completed** | E27-M/UJ/TC=1,1,1; D-S034-E27-E1 |
-| 02-verify-plan | yes | delta | in_progress | Consistency + Gate A Lean |
-| 04-tech-plan | yes | delta | pending | Inventory + residual matrix + CI tasks |
+| 02-verify-plan | yes | delta | **completed** | PASS Batch F 1,2,1; Gate A → 04 |
+| 04-tech-plan | yes | delta | in_progress | Inventory + residual matrix + CI tasks |
 | 07-build | yes | full | pending | Matrix tests + decode fixes / allowlist |
 | 08-verify-build | yes | delta | pending | Full suite green |
 | 09-qa | no | — | skipped | 08+10 cover |
