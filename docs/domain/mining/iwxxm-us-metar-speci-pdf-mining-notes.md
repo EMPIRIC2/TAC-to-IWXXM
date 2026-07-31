@@ -35,14 +35,14 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | HailstoneSize | GR size | ❌ | ⚠ | ❌ | |
 | MaxMinTemperatures | 1/6-hr max/min | ⚠ | ⚠ | ❌ | |
 | Obscurations | Obscuration layers | ❌ | ⚠ | ❌ | |
-| ObservedLightning / Frequency / Type | Lightning RMK | ❌ | ⚠ | ❌ | Rich PDF samples |
+| ObservedLightning / Frequency / Type | Lightning RMK | ✅ | ⚠ | ✅ | S032/#811 — TC-EV025-002; PDF sample shapes |
 | ObservedAtSecondLocation / SensorLocation / TowerVisibility | Second-site / tower | ❌ | ⚠ | ❌ | |
 | RecentWeather | RE… | ⚠ | ⚠ | ❌ | May overlap WMO recent |
 | Sector / SectorVisibility | Sector vis | ❌ | ⚠ | ❌ | |
 | SnowIncrease | Snow depth increase | ❌ | ⚠ | ❌ | |
 | ProcessedProperty + statistical codelists | PNO / stats | ❌ | ⚠ | ❌ | |
 | VariableCeilingHeight / Sky / Visibility | Variable CIG/SKY/VIS | ❌ | ⚠ | ❌ | |
-| VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ❌ | ⚠ | ❌ | |
+| VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ lightning | ⚠ | ✅ | S032/#811 — lightning via Addendum; convection/sky/obscuration → M4 |
 | Codelists (ObservingSystemType, Pressure*, QualitativeDistance, Statistical*) | FMH-1 / NWS codes URIs | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov hrefs from PDF |
 
 **Legend:** ✅ encoded/tested · ⚠ partial / unconfirmed · ❌ missing — refine in M4/M7 children after code audit.

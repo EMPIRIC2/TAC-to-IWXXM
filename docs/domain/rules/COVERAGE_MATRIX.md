@@ -314,7 +314,7 @@ Discovery-first cycle: mine → promote durable rows → wire sample menu / vali
 | Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — menu stays **reference** | ⚠ → #809 |
 | TC SIGMET A6-2 menu / encode bar | Existing #738 | ⚠ deferred |
 | SWX / VONA / WAFS / QVACI sample menu | Existing #740 / #741 + S02.M2 | ❌ roadmap |
-| US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | #810 ✅ encode (S032 T1); #811/#812 open |
+| US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | #810/#811 ✅ encode (S032 T1/T2); #812 open |
 | Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → #809 + #800 survivors | ⚠ → children |
 
 ### METAR (US) — #773 type checklist (durable summary)
@@ -326,7 +326,7 @@ Full type×TAC×encode×validate table lives in the [PDF dig](../mining/iwxxm-us
 | Addendum / AO2 / SLP / PK WND | ⚠ partial | ⚠ | ⚠ | F15 deepen continue |
 | Variable RVR | ✅ S032/#810 | ⚠ | ✅ TC-EV025-001 | Validate smoke M6 |
 | Wind shift / FROPA | ❌/⚠ | ⚠ | ❌ | Encode + goldens (M4.1) |
-| Lightning / VisuallyObservablePhenomena | ❌ | ⚠ | ❌ | US REMARKS pack |
+| Lightning / VisuallyObservablePhenomena | ✅ S032/#811 (lightning) | ⚠ | ✅ TC-EV025-002 | Convection/sky/obscuration → M4; validate M6 |
 | SnowIncrease / sensor outage | ❌ | ⚠ | ❌ | Lint + encode |
 | Codelist hrefs (NWS) | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov |
 

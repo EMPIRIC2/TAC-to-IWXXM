@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M1 complete → next M2 |
-| **Active task** | T2.1 (next) |
-| **Tasks** | 5 / 28 |
+| **Active milestone** | M2 complete → next M3 |
+| **Active task** | T3.1 (next) |
+| **Tasks** | 8 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -69,9 +69,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Red golden(s) for ObservedLightning / Frequency / Type + VOP bundle | TC-EV025-002 | T1.3 | pending |
-| T2.2 | Code | Encode lightning + VOP (+ related); lint as needed | #811; F6.b/F12 | T2.1 | pending |
-| T2.3 | Test | Green pack; matrix rows | TC-EV025-002 | T2.2 | pending |
+| T2.1 | Test | Red golden(s) for ObservedLightning / Frequency / Type + VOP bundle | TC-EV025-002 | T1.3 | **completed** |
+| T2.2 | Code | Encode lightning + VOP (+ related); lint as needed | #811; F6.b/F12 | T2.1 | **completed** |
+| T2.3 | Test | Green pack; matrix rows | TC-EV025-002 | T2.2 | **completed** |
 
 ### M3 — #812 SnowIncrease + sensor outage
 

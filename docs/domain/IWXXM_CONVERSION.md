@@ -273,6 +273,7 @@ Encode national content in IWXXM **`extension`** blocks per MDL / iwxxm-us — d
 | `observingSystemType` | AO1 / AO2 |
 | `AerodromePeakWind` | PK WND |
 | `AerodromeVariableRVR` | Variable RVR body group `R…/minVmax` (FT); meanRVR withheld (`nilReason` withheld) — S032 / #810 |
+| `VisuallyObservablePhenomena` / `ObservedLightning` | FMH-1 lightning REMARKS (`LTG` / `OCNL|FRQ|CONS` + type + `DSNT|VC` + sector) — S032 / #811 |
 | `AerodromeWindShift` | WSHFT |
 | `pressureChangeIndicator` | PRESRR / PRESFR |
 | `seaLevelPressure` | SLPppp / SLPNO |
