@@ -80,7 +80,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-31'
-    note: 'STARTED @ T0.1; M0 theme map + dig audit'
+    note: 'M0 T0.1+T0.2 completed; next T1.1'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5134,14 +5134,14 @@ stages:
     previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 07-build STARTED 2026-07-31 @ T0.1 (D-S032-04-plan-approve) — M0 theme map + dig audit; #810/#811/#812/#809'
-    tip_sha: 149ed5a
-    tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
-    current_stage: M0
-    active_milestone: M0
-    active_task: T0.1
-    active_task_status: in_progress
-    progress: 0/28
+    note: 'S032/EV-025 07-build in_progress — M0 T0.1+T0.2 completed; next T1.1; tip f1e19a9; #810/#811/#812/#809'
+    tip_sha: f1e19a9
+    tip_sha_full: f1e19a958edd69d35e620c15287da7eb57d985c6
+    current_stage: M1
+    active_milestone: M1
+    active_task: T1.1
+    active_task_status: pending
+    progress: 2/28
     pr_number: null
     pr_url: null
     pr_status: null
@@ -5160,9 +5160,9 @@ stages:
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'STARTED @ T0.1; M0 theme map + dig audit; #810/#811/#812/#809'
-      active_milestone: M0
-      active_task: T0.1
+      note: 'M0 T0.1+T0.2 completed; next T1.1; #810/#811/#812/#809'
+      active_milestone: M1
+      active_task: T1.1
       deepen:
       - F6
       - F12
@@ -5177,12 +5177,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T0.1
-        active_task_status: in_progress
-        active_milestone: M0
+        current_task: T1.1
+        active_task_status: pending
+        active_milestone: M1
         phase: C
-        milestone: M0
-        notes: 'Gate B approved; M0 theme map + dig audit in progress / written'
+        milestone: M1
+        notes: 'M0 T0.1+T0.2 completed; next T1.1 Variable RVR red goldens'
     delta_substages:
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
@@ -5194,14 +5194,14 @@ stages:
       completed: null
       completed_at: null
       mode: full
-      note: 'STARTED @ T0.1 (D-S032-04-plan-approve) — M0 theme map + dig audit; #810/#811/#812/#809'
-      active_milestone: M0
-      active_task: T0.1
-      active_task_status: in_progress
-      progress: 0/28
+      note: 'M0 T0.1+T0.2 completed; next T1.1; tip f1e19a9; #810/#811/#812/#809'
+      active_milestone: M1
+      active_task: T1.1
+      active_task_status: pending
+      progress: 2/28
       decision_id: D-S032-04-plan-approve
-      tip_sha: 149ed5a
-      tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
+      tip_sha: f1e19a9
+      tip_sha_full: f1e19a958edd69d35e620c15287da7eb57d985c6
       branch: evolve/EV-025-iwxxm-us-remarks-va
       deepen:
       - F6
@@ -5517,6 +5517,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 M0 COMPLETE (T0.1+T0.2) — tip f1e19a9; next T1.1; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 07-build STARTED (D-S032-04-plan-approve B→C) — @ T0.1; M0 theme map + dig audit; plan docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 07-build COMPLETE (state-drift sync) — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     - '2026-07-30 S031/EV-024 07-build STARTED (D-S031-04-plan-approve B→C) — active task T0.1; plan
@@ -7581,9 +7582,10 @@ stages:
     completed_at: null
     completed: null
     current_stage: 07-build
-    note: 'S032/EV-025 07-build in_progress @ M0 — Gate B approved (D-S032-04-plan-approve); #810/#811/#812/#809'
-    prior_note: 'S032/EV-025 04-tech-plan in_progress (delta) — Batch T E25-T1..T6=1,1,2,1,3,1; draft plan; Gate B pending; #810/#811/#812/#809'
+    note: 'S032/EV-025 07-build in_progress — M0 T0.1+T0.2 done; next T1.1; #810/#811/#812/#809'
+    prior_note: 'S032/EV-025 07-build in_progress @ M0 — Gate B approved (D-S032-04-plan-approve); #810/#811/#812/#809'
     notes:
+    - '2026-07-31 S032/EV-025 M0 COMPLETE (T0.1+T0.2 @ f1e19a9/02f8b4d) — next T1.1; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 Gate B=1 (D-S032-04-plan-approve) — 04 COMPLETE → 07 @ T0.1; M0 theme map + dig audit; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 04 Batch T locked 1,1,2,1,3,1 — draft execution-plan 28 tasks; Gate B pending (b_to_c still pending); T5 supersedes S02.M2; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 02-verify-plan COMPLETE (D-S032-02-phase-a) — PASS; Batch F 1,1,1; 12 auto; Gate A Lean → 04-tech-plan; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; #810/#811/#812/#809'
@@ -7936,8 +7938,8 @@ decisions_log:
   - D-S032-02-phase-a
   answers:
     GateB: '1'
-  tip_sha: 149ed5a
-  tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
+  tip_sha: 70d2e5b
+  tip_sha_full: 70d2e5ba1bedc16fa0dcc85e467e3d32bd2bad1a
 - id: D-S032-EV025-t6-1
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -24195,7 +24197,7 @@ evolve_cycles:
       started: '2026-07-31'
       started_at: '2026-07-31'
       mode: full
-      note: 'STARTED @ T0.1; M0 theme map + dig audit'
+      note: 'M0 T0.1+T0.2 completed; next T1.1'
     08-verify-build:
       status: pending
     10-e2e:
@@ -24244,14 +24246,15 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: 149ed5a
-  tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
+  tip_sha: f1e19a9
+  tip_sha_full: f1e19a958edd69d35e620c15287da7eb57d985c6
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'S032/EV-025 tip 149ed5a — Gate B approved; 07-build @ M0; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
+  note: 'S032/EV-025 tip f1e19a9 — M0 T0.1+T0.2 completed; next T1.1; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — f1e19a9 (f1e19a958edd69d35e620c15287da7eb57d985c6); "[T0.2] docs: dig checklist code-audit and M1–M4 work queue"; M0 done; next T1.1; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 149ed5a (149ed5a8cb2ea6801af8853f81b563885c3fe6f8); "[S032] chore: record 04 draft tip sha in workflow-state"; stage 04→07 Gate B; parent will commit T0.1/T0.2 docs; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — d41e9d4 (d41e9d4a1f4193d5017270d9998306a6e8843aee); "[S032] docs: draft EV-025 execution plan (E25-T1..T6)"; stage 04-tech-plan; Gate B pending; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 0a5c408 (0a5c408efbb46818009d5cf431046560e0e52df6); "[S032] docs: close EV-025 Gate A (02 Batch F 1,1,1)"; stage 02-verify-plan; 04-tech-plan in_progress; #810/#811/#812/#809'
@@ -25590,11 +25593,54 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 tip 149ed5a — Gate B approved; 07-build @ M0; #810/#811/#812/#809'
-    tip_sha: 149ed5a
-    tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
+    note: 'S032/EV-025 tip f1e19a9 — M0 T0.1+T0.2 completed; next T1.1; #810/#811/#812/#809'
+    tip_sha: f1e19a9
+    tip_sha_full: f1e19a958edd69d35e620c15287da7eb57d985c6
     pushed: false
   commits:
+  - sha: f1e19a9
+    sha_full: f1e19a958edd69d35e620c15287da7eb57d985c6
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T0.2] docs: dig checklist code-audit and M1–M4 work queue"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T0.2 dig checklist code-audit + M1–M4 work queue'
+  - sha: 02f8b4d
+    sha_full: 02f8b4dc9178da4f77b6608fc7455433e95e0d38
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T0.1] docs: map TC-EV025 themes to fixtures and dig rows"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T0.1 TC-EV025 theme → fixtures/dig map'
+  - sha: 70d2e5b
+    sha_full: 70d2e5ba1bedc16fa0dcc85e467e3d32bd2bad1a
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[S032] docs: approve EV-025 Gate B → 07-build"
+    stage: 04-tech-plan
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/product-decisions.md
+    - docs/decisions/requirements-decisions.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/routing-plan.md
+    - docs/test-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'Gate B=1 approve → 07 @ T0.1'
   - sha: d41e9d4
     sha_full: d41e9d4a1f4193d5017270d9998306a6e8843aee
     branch: evolve/EV-025-iwxxm-us-remarks-va
