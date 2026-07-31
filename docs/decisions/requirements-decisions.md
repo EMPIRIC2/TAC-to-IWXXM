@@ -305,4 +305,22 @@
 | EV-023/journeys | Tests | TC-EV023-001..009; deepen UJ-001/005/006/016 | confirmed |
 | EV-023/api | API | No new routes expected; optional convert flag for translationCentre (name in 04) | confirmed |
 
+## EV-024 / #804+#807+#773 — IWXXM domain mine + WMO sample menu (2026-07-30)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-024/E24-1 | Session | Open S031 via 00-context; Lean+build | confirmed |
+| EV-024/E24-2 | Issues | #804+#807+#773; exclude #806 | confirmed |
+| EV-024/E24-3 | Depth | Full ticket AC (mine + matrices + wire + promote + child issues) | confirmed |
+| EV-024/E24-4 | Routing | Lean+build; 13 when catalog/API ships | confirmed |
+| EV-024/E24-ui | UI preview | UIb — docs/repo only; re-offer at 11 | confirmed |
+| EV-024/manifest | Docs | M3 — lean delta + **new UJ-039**; skip Spec/Config/API/Deploy | confirmed |
+| EV-024/E24-C | Catalog | Hybrid C1+C2+C3: discovery + validate/CI wire + **WMO examples in sample menu**; strict vs reference tiers; ADR-032 amend; encode gaps → children | confirmed |
+| EV-024/journeys | UJ | **UJ-039** new; deepen UJ-036/UJ-032 | confirmed |
+| EV-024/tests | TC | TC-EV024-001..008 | confirmed |
+| EV-024/S02.M1 | Catalog field | `wmoReference?: boolean` in 04 (keep wmoPass/wmoSeed) | confirmed |
+| EV-024/S02.M2 | Stem set | Product-in-scope + TAC peers; SWX/VONA/WAFS/QVACI deferred | confirmed |
+| EV-024/S02.L1 | Vitest | Amend examplesCatalog tests for pass **or** reference in 07 | confirmed |
+| EV-024/E24-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
+
 

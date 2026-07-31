@@ -59,6 +59,22 @@ class WMOExamplesLoader:
         """
         self.schemas_base_path = Path(schemas_base_path)
 
+    def _examples_dir(self, version: str) -> Path:
+        """
+        Resolve the examples directory for a version.
+
+        Prefer vendor pin layout ``{version}/IWXXM/examples``, then mirrored
+        ``{version}/examples`` (schemas.wmo.int / local mirror).
+        """
+        candidates = (
+            self.schemas_base_path / version / "IWXXM" / "examples",
+            self.schemas_base_path / version / "examples",
+        )
+        for candidate in candidates:
+            if candidate.exists():
+                return candidate
+        return candidates[1]
+
     def load_examples(self, version: str, message_types: Optional[List[str]] = None) -> List[WMOExample]:
         """
         Load all examples for a specific IWXXM version.
@@ -70,7 +86,7 @@ class WMOExamplesLoader:
         Returns:
             List of WMOExample objects
         """
-        examples_dir = self.schemas_base_path / version / "examples"
+        examples_dir = self._examples_dir(version)
 
         if not examples_dir.exists():
             logger.warning(f"Examples directory not found: {examples_dir}")
@@ -165,7 +181,7 @@ class WMOExamplesLoader:
         Returns:
             Guidance document content or None if not found
         """
-        guidance_file = self.schemas_base_path / version / "examples" / "TAC-to-XML-Guidance.txt"
+        guidance_file = self._examples_dir(version) / "TAC-to-XML-Guidance.txt"
 
         if guidance_file.exists():
             return guidance_file.read_text(encoding="utf-8")
@@ -256,7 +272,9 @@ class WMOExamplesLoader:
             return versions
 
         for version_dir in self.schemas_base_path.iterdir():
-            if version_dir.is_dir() and (version_dir / "examples").exists():
+            if not version_dir.is_dir():
+                continue
+            if (version_dir / "IWXXM" / "examples").exists() or (version_dir / "examples").exists():
                 versions.append(version_dir.name)
 
         return sorted(versions)

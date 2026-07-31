@@ -14,6 +14,8 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 
 | Notes | Focus |
 |-------|-------|
+| [wmo-im-iwxxm-IWXXM-tree-mining-notes.md](./wmo-im-iwxxm-IWXXM-tree-mining-notes.md) | #804 — `IWXXM/` folder relevancy + official examples stem×surface matrix (S031/EV-024) |
+| [iwxxm-us-metar-speci-pdf-mining-notes.md](./iwxxm-us-metar-speci-pdf-mining-notes.md) | #773 — IWXXM-US METAR/SPECI PDF + MDL type×TAC×encode checklist (S031/EV-024) |
 | [iwxxm-2025-2-reference-set-mining-notes.md](./iwxxm-2025-2-reference-set-mining-notes.md) | Progress tracker for IWXXM validation/conversion reference inventory (§1–§6) |
 | [awc-data-api-mining-notes.md](./awc-data-api-mining-notes.md) | NOAA AWC Data API — live TAC/IWXXM fixtures (informative) |
 | [community-wmo-iwxxm-wayback-mining-notes.md](./community-wmo-iwxxm-wayback-mining-notes.md) | Community IWXXM home via Wayback — package×Amd compatibility table |

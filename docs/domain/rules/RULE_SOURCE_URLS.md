@@ -533,6 +533,31 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Label:** normative-schema (national)
 - **MDL context:** https://vlab.noaa.gov/web/mdl/data-modeling
 - **Vendor:** `vendor/schemas/iwxxm-us`
+- **Mined:** 2026-07-14; enriched 2026-07-30 (#773 / EV-024)
+
+### IWXXM-US METAR and SPECI.pdf (MDL model documentation v3.0)
+
+- **Publisher:** NOAA / NWS MDL
+- **URL:** https://vlab.noaa.gov/web/mdl/data-modeling  
+  Document: `METAR and SPECI.pdf` (VLab documents/6609493/…; Data Modeling Report 23 Dec 2022)
+- **Access:** public PDF via VLab
+- **Applies to:** products=[METAR,SPECI]; profiles=[**iwxxm_us**]; role=[conversion, iwxxm-validation]
+- **Gap vs GIFTs:** Maps FMH-1 REMARKS → `iwxxm-us` types (Addendum, PeakWind, VariableRVR, Lightning, …)
+- **Consumer:** `tac2iwxxm`, `tac-validate`, `iwxxm-validate`
+- **Label:** normative-conversion-notes (national)
+- **Caveats:** Supplement to WMO IWXXM — does not replace Annex 3. Local extract: `.local/reference/iwxxm-us-metar-speci-pdf/` · dig: [mining/iwxxm-us-metar-speci-pdf-mining-notes.md](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md)
+- **Mined:** 2026-07-30 (#773)
+
+### NOAA-MDL/iwxxm-us-modelling
+
+- **Publisher:** NOAA / NWS MDL
+- **URL:** https://github.com/NOAA-MDL/iwxxm-us-modelling
+- **Access:** public
+- **Applies to:** profiles=[**iwxxm_us**]; role=[conversion, iwxxm-validation] (UML→XSD provenance)
+- **Consumer:** maintainers (compare generated schemas to vendor pin)
+- **Label:** informative (tooling)
+- **Caveats:** EA project binary; prefer published XSD/PDF/HTML as auditable trail; do not hand-edit `vendor/schemas/iwxxm-us`
+- **Mined:** 2026-07-30 (#773)
 
 ### Aviation Weather Center Data API (live fixtures)
 

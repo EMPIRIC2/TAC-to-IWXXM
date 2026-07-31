@@ -1,8 +1,9 @@
 # Coverage matrix — F6 product × profile × rule sources
 
 **Ticket:** [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719) · impl [#800](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/800) (supersedes #797 backlog)  
-**Mined:** 2026-07-30 (APAC FAQs / codes / translation · #797 · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798 · prior EUR Doc 014)  
+**Mined:** 2026-07-30 (APAC FAQs / codes / translation · #797 · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798 · prior EUR Doc 014 · **S031/EV-024** #804/#807/#773)  
 **S030 / EV-023 theme map:** [apac-encode-theme-fixture-map.md](../../sessions/S030-apac-encode-validate/reports/apac-encode-theme-fixture-map.md) (TC-EV023-001..009)  
+**S031 / EV-024 theme map:** [domain-mine-theme-map.md](../../sessions/S031-iwxxm-domain-mine/reports/domain-mine-theme-map.md) (TC-EV024-001..008) · stem matrix [wmo-im-iwxxm-IWXXM-tree-mining-notes.md](../mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md)  
 **Legend:** ✅ normative URL present · ⚠ partial / paywall cite · ❌ blocked / TBD
 
 “Validation” in matrices = TAC token/template/vocab rules (not always full grammar offline).  
@@ -106,12 +107,14 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | TAF | FC/FT → LC/LT | `iwxxm:TAF` | `taf-A5-1`, cancel `taf-A5-2` |
 | SIGMET | WS → LS | `iwxxm:SIGMET` | `sigmet-A6-1a-TS`, CNL `…-1b-CNL` |
 | SIGMET TC | WC → LY | `iwxxm:TropicalCycloneSIGMET` | `sigmet-A6-2-TC` |
-| SIGMET VA | WV → LV | `iwxxm:VolcanicAshSIGMET` | `sigmet-VA-EGGX` |
+| SIGMET VA | WV → LV | `iwxxm:VolcanicAshSIGMET` | `sigmet-VA-EGGX` · `sigmet-multi-location-VA` (UI **wmoReference**; convert soft) |
 | AIRMET | WA → LW | `iwxxm:AIRMET` | `airmet-A6-1a-TS` |
 | VAA | FV → LU | `iwxxm:VolcanicAshAdvisory` | `va-advisory-A7-2` |
 | TCA | FK → LK | `iwxxm:TropicalCycloneAdvisory` | `tc-advisory-A2-2` |
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
+
+**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). Roadmap stems (SWX/VONA/WAFS/QVACI) and TC SIGMET `#738` stay out of happy-path menu (S02.M2).
 
 ---
 
@@ -128,7 +131,9 @@ Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quaran
 | PPT-02 Framework (informative) | TAC sunset ~2030; AHL TAC bulletin heading | translation attrs + `translationFailedTAC`; METAR/SIGMET capacity vs TAC; package×line matrix | package versions + ≤2021-2 deprecation messaging | cite |
 | OPMET IWXXM Exchange Guidelines 5th (public) | — | Translation Centre; partial translation; `permissibleUsage` | Schematron-by-version / partial % (ROC stats) | cite + bulletin AMHS |
 | ICAO APAC IWXXM FAQs 3rd (public, informative) | NSC exclusivity warn | NSC omit layers; `translationFailedTAC`; translationCentre gate; FIR→polygon | NSC co-occurrence SCH smoke | COLLECT multi-version NS hooks (F16–F19; `dissemination.collect_namespaces`) · cite · #800 · [theme map](../../sessions/S030-apac-encode-validate/reports/apac-encode-theme-fixture-map.md) |
-| WIS2 aviation (cookbook/guide/WTH) | — | — (no TAC encode) | — | F8 routing / Annex 3 use-rights; not COLLECT packing |
+| wmo-im/iwxxm `IWXXM/` tree (#804 dig) | Official `.tac` accept | Stem×surface wire; Guidance re-scrape | Pin XSD/SCH + examples | Examples catalog (UJ-039) · [tree dig](../mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md) |
+| IWXXM-US METAR/SPECI.pdf (#773) | US REMARKS types | `iwxxm_us` extension encode gaps → children | Combined catalog | US samples only (not WMO menu) · [PDF dig](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md) |
+| WIS2 aviation (cookbook/guide/WTH) | — | — (no TAC encode) | — | F8 routing / Annex 3 use-rights; not COLLECT packing · **#806 OOS** EV-024 |
 | Doc 10003 published (paywall) | — | translation-centre metadata / exchange | version/transition prose if present | cite |
 | Doc 10003 Advance 2014 draft (historical) | — | IWXXM v1 lineage; weather lists obsolete | 1.0RC2 sample only | lineage notes |
 | iwxxm-modelling UML/EA (informative) | — | WithNilReason / extension lineage | SCH **Pattern ID** taxonomy (not runtime SCH path) | cite |
@@ -292,3 +297,36 @@ Hard themes from #737 + guidance §Tropical Cyclone Advisory + vendor `tc-adviso
 | **T2** TCA ↔ TC SIGMET adjacency | Product/root guards (T3.3–T3.4) | Never emit `TropicalCycloneSIGMET` under `product=tca` | TC-F27-006 | ✅ Closed (S027 T3.3–T3.4) |
 | **T3** TCA golden convert + SCH | — | `tc-advisory-A2-2` defaults `canonicalize_xml` (T4.1–T4.2) | M-xsd / M-sch / M-golden (TC-F27-002/003) | ✅ Closed (S027 T4.1–T4.2; T4.3) |
 | **C1** Common rules | ✅ where TAC | Shared pattern | translation-failed not happy-path (TC-F27-004) | ✅ Closed (S027 T4.4) |
+
+---
+
+## Domain mine durable promotions — S031 / EV-024 (#804 / #807 / #773)
+
+Discovery-first cycle: mine → promote durable rows → wire sample menu / validate → **child issues** for encode (no big-bang). Theme map: [domain-mine-theme-map.md](../../sessions/S031-iwxxm-domain-mine/reports/domain-mine-theme-map.md). Guidance/SCH gap inventory: [guidance-sch-assert-gap-list.md](../../sessions/S031-iwxxm-domain-mine/reports/guidance-sch-assert-gap-list.md).
+
+| Durable finding | Promoted to | Status |
+|-----------------|-------------|--------|
+| Pin `IWXXM/` folder×relevancy + stem×surface (V/C/U/D) | [tree dig](../mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md) · example table above · UJ-039 catalog | ✅ M1 |
+| Org / sibling refresh; explicit #806 WIS2 skip | [org dig](../mining/wmo-im-org-mining-notes.md) | ✅ M2 |
+| US METAR/SPECI.pdf + modelling + VLab URL rows | [RULE_SOURCE_URLS §5](./RULE_SOURCE_URLS.md) · [PDF dig](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md) | ✅ M3 |
+| `wmoReference` catalog tier + VA EGGX / multi-location menu | ADR-032 amend · `examplesCatalog.ts` · FIXTURE_GAPS | ✅ M5 |
+| In-scope stems on validate CI (XML well-formed/XSD/GML) | `test_wmo_canonical_examples` + loader inventory (M6) | ✅ / wire |
+| Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — menu stays **reference** | ⚠ → #809 |
+| TC SIGMET A6-2 menu / encode bar | Existing #738 | ⚠ deferred |
+| SWX / VONA / WAFS / QVACI sample menu | Existing #740 / #741 + S02.M2 | ❌ roadmap |
+| US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | ⚠ → children |
+| Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → #809 + #800 survivors | ⚠ → children |
+
+### METAR (US) — #773 type checklist (durable summary)
+
+Full type×TAC×encode×validate table lives in the [PDF dig](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md). Matrix status for planning:
+
+| Cluster | Encode | Validate | Fixture | Child focus |
+|---------|--------|----------|---------|-------------|
+| Addendum / AO2 / SLP / PK WND | ⚠ partial | ⚠ | ⚠ | F15 deepen continue |
+| Variable RVR / wind shift / FROPA | ❌/⚠ | ⚠ | ❌ | Encode + goldens |
+| Lightning / VisuallyObservablePhenomena | ❌ | ⚠ | ❌ | US REMARKS pack |
+| SnowIncrease / sensor outage | ❌ | ⚠ | ❌ | Lint + encode |
+| Codelist hrefs (NWS) | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov |
+
+Do **not** mix US examples into the WMO sample menu (UJ-039 / E24-C).

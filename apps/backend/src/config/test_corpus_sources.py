@@ -8,15 +8,16 @@ translation pairs, NWS examples, and operational API snapshots.
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Project root path
+# apps/backend/src/config → repo root (prefer vendor pin over legacy apps/schemas)
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+_REPO_ROOT = Path(__file__).resolve().parents[4]
 
 # External test corpus sources
 TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
     "wmo_canonical_examples": {
         "type": "mirrored",
-        "path": PROJECT_ROOT / "schemas" / "iwxxm" / "{version}" / "examples",
-        "description": "Official WMO canonical examples from schemas.wmo.int",
+        "path": _REPO_ROOT / "vendor" / "schemas" / "iwxxm" / "{version}" / "IWXXM" / "examples",
+        "description": "Official WMO canonical examples from vendor pin (schemas.wmo.int)",
         "products": [
             "METAR",
             "SPECI",

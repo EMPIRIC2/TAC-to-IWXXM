@@ -412,12 +412,13 @@ metar-to-IWXXM/
 
 ### F25 — WMO official example parity + UI gate (S026 / EV-020) — Done
 
-- **Purpose**: METAR/SPECI/TAF vendor golden equality under defaults; Examples catalog =
-  WMO-passers only (plus SIGMET/AIRMET keepers when green).
-- **Status**: **Done** (S026 / EV-020; PR #793).
-- **Journeys / tests**: UJ-036; TC-F25-001..004; deepen UJ-032 / TC-F7-008.
-- **Policy**: ADR-032.
-- **Source**: feature-list F25; evolve-decisions EV-020.
+- **Purpose**: METAR/SPECI/TAF vendor golden equality under defaults; Examples catalog marks
+  **strict** WMO-passers (plus SIGMET/AIRMET keepers when green). **EV-024 amend**: official
+  WMO **reference** samples may also load (UJ-039; ADR-032).
+- **Status**: **Done** (S026 / EV-020; PR #793); catalog deepen **In progress** (S031 / EV-024).
+- **Journeys / tests**: UJ-036; **UJ-039**; TC-F25-001..004; TC-EV024-004..006; deepen UJ-032 / TC-F7-008.
+- **Policy**: ADR-032 (amended EV-024).
+- **Source**: feature-list F25; evolve-decisions EV-020 / EV-024.
 
 ### F26 — VAA quality bar (S027 / EV-021) — Done
 
@@ -452,11 +453,26 @@ metar-to-IWXXM/
 
 - **Purpose**: Cross-cutting encode/lint/SCH deltas from APAC FAQs, codes.wmo.int, and
   iwxxm-translation mining — **deepen F6/F2/F12/F13** (no new Fn). Full #800 P0+P1+actionable P2.
-- **Status**: **In progress** (S030 / EV-023).
+- **Status**: **Done** (S030 / EV-023; PR #801 / #802).
 - **Journeys / tests**: No new UJ; TC-EV023-001..009; deepen UJ-001/005/006/016.
 - **API**: No new routes expected; optional convert flag for `translationCentre*` (name in 04).
 - **Non-goals**: #740/#741; PDF remine; FAQ/2019 as equal-weight SoT; `.local/` binaries.
 - **Source**: feature-list F6/F2/F12/F13 deepen; evolve-decisions EV-023; #800.
+
+### S031 / EV-024 — IWXXM domain mine + WMO sample menu (#804 / #807 / #773)
+
+- **Purpose**: Discovery-first domain mine of WMO `IWXXM/` tree (#804), wmo-im org/siblings
+  (#807), and IWXXM-US/MDL (#773); wire validate/CI; load official WMO examples from the
+  workbench **Examples / sample menu** (**UJ-039**). Deepen F6/F2/F4/F12/F13/F25 (+ F6.b) —
+  no new Fn. Exclude #806 (WIS2).
+- **Status**: **In progress** (S031 / EV-024).
+- **Components**: `docs/domain/mining/*` + rules/canonicals; `apps/frontend` examples catalog;
+  validate/convert fixture surfaces; no new deployable.
+- **Journeys / tests**: **UJ-039**; deepen UJ-036/UJ-032; TC-EV024-001..008; H4–H5 when FE ships.
+- **Catalog policy**: ADR-032 amend — strict `wmoPass` vs WMO reference (loadable); no
+  translation-failed happy-path; no US-in-WMO catalog mix.
+- **Non-goals**: #806; big-bang encode engines; hand-edit `vendor/schemas/*`; USWX; PDF/clone commits.
+- **Source**: feature-list S031 deepen; evolve-decisions EV-024; ADR-032 amend.
 
 ### F9 / F10 — Live decode translations + preview clarity (S013 / EV-009)
 

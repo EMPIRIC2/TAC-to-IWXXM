@@ -97,11 +97,14 @@ describe('examplesCatalog (TC-F7-008 C1)', () => {
 });
 
 describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
-  it('requires every WMO-scope TAC demo to be wmoPass with a seed id', () => {
+  it('requires every WMO-scope TAC demo to be wmoPass or wmoReference with a seed id', () => {
     for (const example of EXAMPLES) {
       if (example.inputMode !== 'tac' || !example.product) continue;
       if (!WMO_SCOPE.has(example.product)) continue;
-      expect(example.wmoPass).toBe(true);
+      const passer = example.wmoPass === true;
+      const reference = example.wmoReference === true;
+      expect(passer || reference).toBe(true);
+      expect(passer && reference).toBe(false);
       expect(example.wmoSeed?.trim().length).toBeGreaterThan(0);
       expect(example.provenance).toMatch(/annex3_golden\//);
     }
@@ -139,6 +142,17 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
   it('retains SIGMET WMO keepers and AIRMET when F24 green', () => {
     expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(2);
     expect(getTacExamplesForProduct('AIRMET').some((ex) => ex.wmoPass)).toBe(true);
+  });
+
+  it('lists VA SIGMET official stems as WMO reference samples (UJ-039 / EV-024)', () => {
+    const eggx = getExampleById('sigmet_va_eggx');
+    expect(eggx?.wmoReference).toBe(true);
+    expect(eggx?.wmoPass).not.toBe(true);
+    expect(eggx?.wmoSeed).toBe('sigmet-VA-EGGX');
+    const multi = getExampleById('sigmet_multi_location_va');
+    expect(multi?.wmoReference).toBe(true);
+    expect(multi?.wmoSeed).toBe('sigmet-multi-location-VA');
+    expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(4);
   });
 
   it('documents vendor mirror provenance policy', () => {

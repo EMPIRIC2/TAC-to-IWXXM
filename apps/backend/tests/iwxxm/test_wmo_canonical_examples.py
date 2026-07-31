@@ -19,8 +19,8 @@ from src.utilities.wmo_examples_loader import WMOExample, WMOExamplesLoader
 # Project root (4 levels up from test file to repository root, not backend)
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
-# Schemas base path (use config to get consistent path)
-SCHEMAS_BASE = get_corpus_path("wmo_canonical_examples", version="2025-2").parent.parent
+# Vendor / mirror base: …/iwxxm/{version}/IWXXM/examples → parents[2] == …/iwxxm
+SCHEMAS_BASE = get_corpus_path("wmo_canonical_examples", version="2025-2").parents[2]
 
 
 @pytest.fixture(scope="module")
@@ -48,13 +48,12 @@ def collect_wmo_examples(versions: List[str]) -> List[tuple]:
     test_cases = []
 
     for version in versions:
-        examples_dir = SCHEMAS_BASE / version / "examples"
-        if not examples_dir.exists():
-            # Skip versions without mirrored examples
-            print(f"Note: Examples not mirrored for {version}. Run: python3 mirror_wmo_bundles.py")
+        examples = loader.load_examples(version)
+        if not examples:
+            # Skip versions without mirrored / vendor examples
+            print(f"Note: Examples not available for {version}. Check vendor/schemas/iwxxm pin.")
             continue
 
-        examples = loader.load_examples(version)
         for example in examples:
             test_cases.append((version, example))
 
@@ -131,6 +130,31 @@ class TestWMOCanonicalExamplesValidation:
         )
 
 
+# Product-in-scope WMO stems with TAC peers (S031/EV-024 · TC-EV024-007).
+# Roadmap SWX/VONA/WAFS/QVACI and TC SIGMET A6-2 are intentionally excluded.
+EV024_IN_SCOPE_STEMS = (
+    "metar-A3-1",
+    "speci-A3-2",
+    "taf-A5-1",
+    "taf-A5-2",
+    "sigmet-A6-1a-TS",
+    "sigmet-A6-1b-CNL",
+    "sigmet-VA-EGGX",
+    "sigmet-multi-location-VA",
+    "airmet-A6-1a-TS",
+    "va-advisory-A7-2",
+    "tc-advisory-A2-2",
+)
+
+# Convert soft-compare / M-golden deferred — validate XML still required (TC-EV024-007).
+EV024_CONVERT_DEFERRED_STEMS = frozenset(
+    {
+        "sigmet-multi-location-VA",  # child: multi-location VA encode
+        "sigmet-A6-2-TC",  # #738 quality bar
+    }
+)
+
+
 class TestWMOExamplesManifest:
     """
     Tests for example manifests and coverage.
@@ -141,31 +165,28 @@ class TestWMOExamplesManifest:
         missing_versions = []
 
         for version in test_versions:
-            examples_dir = SCHEMAS_BASE / version / "examples"
-            if not examples_dir.exists():
+            if not examples_loader.load_examples(version):
                 missing_versions.append(version)
 
         if missing_versions:
             pytest.skip(
-                f"Examples not mirrored for: {', '.join(missing_versions)}. "
-                f"Run: python -m src.services.schema_mirror_service"
+                f"Examples not available for: {', '.join(missing_versions)}. "
+                f"Check vendor/schemas/iwxxm pin or mirror service."
             )
 
     def test_example_counts_reasonable(self, test_versions, examples_loader):
         """Verify each version has reasonable number of examples (>20)."""
         for version in test_versions:
-            examples_dir = SCHEMAS_BASE / version / "examples"
-            if not examples_dir.exists():
+            examples = examples_loader.load_examples(version)
+            if not examples:
                 continue
 
-            examples = examples_loader.load_examples(version)
             assert len(examples) >= 20, f"Too few examples for {version}: {len(examples)} (expected at least 20)"
 
     def test_tac_xml_pairs_exist(self, test_versions, examples_loader):
         """Verify TAC↔XML pairs exist for conversion testing."""
         for version in test_versions:
-            examples_dir = SCHEMAS_BASE / version / "examples"
-            if not examples_dir.exists():
+            if not examples_loader.load_examples(version):
                 continue
 
             pairs = examples_loader.get_tac_xml_pairs(version)
@@ -176,8 +197,7 @@ class TestWMOExamplesManifest:
         required_types = {"METAR", "TAF", "SIGMET"}
 
         for version in test_versions:
-            examples_dir = SCHEMAS_BASE / version / "examples"
-            if not examples_dir.exists():
+            if not examples_loader.load_examples(version):
                 continue
 
             manifest = examples_loader.get_example_manifest(version)
@@ -191,8 +211,7 @@ class TestWMOExamplesManifest:
         guidance_found = {}
 
         for version in test_versions:
-            examples_dir = SCHEMAS_BASE / version / "examples"
-            if not examples_dir.exists():
+            if not examples_loader.load_examples(version):
                 continue
 
             guidance = examples_loader.load_guidance_document(version)
@@ -201,6 +220,36 @@ class TestWMOExamplesManifest:
         if guidance_found:
             # At least one version should have guidance
             assert any(guidance_found.values()), "TAC-to-XML-Guidance.txt not found in any version"
+
+    def test_ev024_in_scope_stems_loaded_with_tac(self, examples_loader):
+        """TC-EV024-007: in-scope product stems exist as TAC↔XML pairs under the pin."""
+        examples = examples_loader.load_examples("2025-2")
+        if not examples:
+            pytest.skip("Examples not available for 2025-2 under vendor/mirror")
+
+        by_id = {ex.example_id: ex for ex in examples}
+        missing = [stem for stem in EV024_IN_SCOPE_STEMS if stem not in by_id]
+        assert not missing, f"Missing in-scope WMO stems: {missing}"
+
+        no_tac = [stem for stem in EV024_IN_SCOPE_STEMS if by_id[stem].tac_path is None]
+        assert not no_tac, f"In-scope stems missing TAC peers: {no_tac}"
+
+        # Explicit VA reference stems (UJ-039 sample-menu wire)
+        for stem in ("sigmet-VA-EGGX", "sigmet-multi-location-VA"):
+            assert by_id[stem].message_type == "SIGMET"
+            assert by_id[stem].is_translation_failed is False
+
+    def test_ev024_convert_deferred_stems_documented(self, examples_loader):
+        """TC-EV024-007: convert-deferred stems remain on validate inventory when present."""
+        examples = examples_loader.load_examples("2025-2")
+        if not examples:
+            pytest.skip("Examples not available for 2025-2 under vendor/mirror")
+
+        by_id = {ex.example_id: ex for ex in examples}
+        for stem in EV024_CONVERT_DEFERRED_STEMS:
+            if stem not in by_id:
+                continue
+            assert by_id[stem].xml_path.exists()
 
 
 class TestWMOExamplesLoader:
@@ -260,8 +309,9 @@ class TestWMOExamplesIntegration:
         from src.config.test_corpus_sources import get_corpus_path
 
         path = get_corpus_path("wmo_canonical_examples", version="2025-2")
-        expected = SCHEMAS_BASE / "2025-2" / "examples"
-        assert path == expected
+        assert path == SCHEMAS_BASE / "2025-2" / "IWXXM" / "examples"
+        assert "vendor" in path.parts
+        assert path.name == "examples"
 
     def test_corpus_path_requires_version(self):
         """Test corpus path raises error without version."""

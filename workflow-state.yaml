@@ -3,9 +3,140 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 30
-evolve_cycle_counter: 23
-active_session: null
+session_counter: 31
+evolve_cycle_counter: 24
+active_session:
+  id: S031-iwxxm-domain-mine
+  type: feature
+  intent: 'Domain mine strongest bundle — #804 IWXXM/ tree + #807 wmo-im org refresh + #773 IWXXM-US/MDL;
+    discovery-first with full ticket acceptance (notes, matrices, fixture/catalog wiring, durable promotions,
+    child engine issues). Exclude #806 (WIS2).'
+  status: in_progress
+  branch: evolve/EV-024-iwxxm-domain-mine
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-024
+  github_issue: '804'
+  github_issues:
+  - '804'
+  - '807'
+  - '773'
+  artifacts_dir: docs/sessions/S031-iwxxm-domain-mine/
+  current_stage: null
+  active_task: null
+  active_task_status: completed
+  active_milestone: M7
+  tip_sha: 681436a
+  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+  pr_number: 813
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+  pr_status: open
+  feature_ids:
+  - F6
+  - F2
+  - F4
+  - F12
+  - F13
+  - F25
+  feature_note: 'Deepen F6/F2/F4/F12/F13/F25 (+ F6.b US map via #773) — no new Fn; discovery + fixture/catalog
+    wiring; child engine tickets later'
+  preset: Lean+build
+  preset_status: approved
+  note_skipped: Lean+build — skip 03/05/06/09/12 unless re-added; 11 optional; 13 when_ships (catalog/API)
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 12-verify-deploy
+  started_at: '2026-07-30'
+  context_briefs:
+  - docs/context/iwxxm-domain-mine.md
+  note: 'S031/EV-024 Phase C complete; tip 681436a; CI GREEN on PR #813 (required checks pass; Deploy skipped on PR branch); awaiting merge approval for #813; T7.3 deferred D1; #804/#807/#773'
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: Phase 0 locked E24-1..4
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-07-30'
+    note: 'Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: E24-E1=1 COMPLETE; handoff 02
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: PASS — Batch F 1,1,1 (S02.M1/M2/L1); 12 auto; report reports/02-verify-plan-audit.md; D-S031-02-phase-a; Gate A Lean → 04
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: COMPLETE — E24-T1..T5=1,1,2,2,1; execution-plan approved; Gate B Lean → 07 @ T0.1 (D-S031-04-plan-approve)
+  - stage: 07-build
+    required: true
+    mode: full
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: 'COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813'
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: PASS via T7.2 verification-report.md
+  - stage: 10-e2e
+    required: true
+    mode: smoke
+    status: completed
+    started: '2026-07-30'
+    completed: '2026-07-30'
+    note: catalog/validate smoke PASS (T7.2)
+  - stage: 11-verify-impl
+    required: false
+    mode: optional
+    status: pending
+  - stage: 13-deploy-smoke
+    required: false
+    mode: when_ships
+    status: deferred
+    note: 'D1 — after merge #813'
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    note: Lean+build preset
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    note: Lean+build preset
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    note: Lean+build preset
+  - stage: 09-qa
+    required: false
+    status: skipped
+    note: Lean+build preset
+  - stage: 12-verify-deploy
+    required: false
+    status: skipped
+    note: Lean+build preset
 sessions:
 - id: S030-apac-encode-validate
   type: feature
@@ -2614,9 +2745,9 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: apac-encode-validate
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
+    scoped_slug: iwxxm-domain-mine
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
     started_at: '2026-07-30'
     completed_at: '2026-07-30'
     completed: '2026-07-30'
@@ -2628,11 +2759,16 @@ stages:
       phase2: pending
       phase3: pending
       phase4: pending
-    note: 'S030/EV-023 00-context COMPLETE — Phase 0 locked E23-1=A, E23-2=all ticket, E23-3=A, E23-4=B
-      (D-S030-E23-phase0); F6/F2/F12/F13 deepen; Lean+build approved; tip dead991'
-    prior_note: S029/EV-022 OPEN — F9 deepen SIGMET/AIRMET decode residuals; Lean proposed; Phase 0 intake
-      pending
+    note: 'S031/EV-024 00-context COMPLETE — Phase 0 locked E24-1..4; F6/F2/F4/F12/F13/F25 deepen; Lean+build
+      approved; tip deb43cf; #804/#807/#773'
+    prior_note: 'S030/EV-023 00-context COMPLETE — Phase 0 locked E23-1=A, E23-2=all ticket, E23-3=A, E23-4=B
+      (D-S030-E23-phase0); F6/F2/F12/F13 deepen; Lean+build approved; tip dead991' 
     artifacts:
+    - docs/sessions/S031-iwxxm-domain-mine/
+    - docs/sessions/S031-iwxxm-domain-mine/session-brief.md
+    - docs/sessions/S031-iwxxm-domain-mine/routing-plan.md
+    - docs/context/iwxxm-domain-mine.md
+    - docs/decisions/evolve-decisions.md
     - docs/sessions/S025-sigmet-quality/
     - docs/sessions/S025-sigmet-quality/session-brief.md
     - docs/sessions/S025-sigmet-quality/routing-plan.md
@@ -2670,6 +2806,8 @@ stages:
     - docs/sessions/S016-manual-tac-input-modes/routing-plan.md
     - docs/context/manual-tac-input-modes.md
     notes:
+    - '2026-07-30 S031/EV-024 00-context COMPLETE — Phase 0 locked E24-1..4; deepen F6/F2/F4/F12/F13/F25;
+      Lean+build approved; handoff 01-requirements; #804/#807/#773'
     - '2026-07-30 S030/EV-023 00-context COMPLETE — Phase 0 locked E23-1=A, E23-2=all ticket, E23-3=A, E23-4=B
       (D-S030-E23-phase0); deepen F6/F2/F12/F13; Lean+build approved; handoff 01-requirements; #800'
     - '2026-07-29 S025/EV-019 00-context COMPLETE — Phase 0 locked Batch1+2 E19-1..8 (D-S025-E19-batch2);
@@ -2763,76 +2901,87 @@ stages:
     started: '2026-07-30'
     completed_at: '2026-07-30'
     completed: '2026-07-30'
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
-    prior_note: S027/EV-021 01-requirements COMPLETE 2026-07-29 (delta) — E21-E1=1; F26/F27; D-S027-EV021-01-close;
-      report docs/sessions/S027-vaa-quality/reports/01-requirements.md; handoff 02-verify-plan
-    note: 'S030/EV-023 01-requirements COMPLETE 2026-07-30 (delta) — E23-E1=1; deepen F6/F2/F12/F13; D-S030-E23-E1;
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    prior_note: 'S030/EV-023 01-requirements COMPLETE 2026-07-30 (delta) — E23-E1=1; deepen F6/F2/F12/F13; D-S030-E23-E1;
       report docs/sessions/S030-apac-encode-validate/reports/01-requirements.md; handoff 02-verify-plan; #800'
+    note: 'S031/EV-024 01-requirements COMPLETE 2026-07-30 (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25;
+      D-S031-E24-E1; report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan;
+      #804/#807/#773'
     substeps:
       interviews:
         status: completed
-        completed: 1
-        total: 1
-        current_template: complete
+        completed: null
+        total: null
+        current_template: null
         current_section: complete
         planned_docs:
           status:
             feature-list: completed
-            spec: completed
+            spec: pending
             user-journeys: completed
             test-plan: completed
-            api-contract: completed
-            coverage-matrix: skipped
-            ADR: deferred
+            api-contract: pending
+            coverage-matrix: pending
+            ADR: completed
     active_session:
-      session_id: S030-apac-encode-validate
-      evolve_cycle_id: EV-023
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
       status: completed
       mode: delta
       started_at: '2026-07-30'
       started: '2026-07-30'
       completed_at: '2026-07-30'
-      note: S030/EV-023 01-requirements COMPLETE (delta) — E23-E1=1; deepen F6/F2/F12/F13; D-S030-E23-E1;
-        handoff 02-verify-plan; #800
-      proposed_features:
-      - F26
-      - F27
+      note: 'S031/EV-024 01-requirements COMPLETE (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25; handoff 02; #804/#807/#773'
       deepen:
-      - F6.f
+      - F6
+      - F2
+      - F4
       - F12
-      - F7.g
+      - F13
+      - F25
       feature_ids:
-      - F26
-      - F27
-      document_manifest:
-        status: approved
-        approved_at: '2026-07-29'
-        decision_id: E20-E3
-        mode: delta
-        approved_documents:
-        - feature-list
-        - spec
-        - user-journeys
-        - test-plan
-        - api-contract
-        - config-spec
-        - coverage-matrix
-        - evolve-decisions
-        - ADR-032
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      decision_refs:
+      - E24-E1
+      - D-S031-E24-E1
+      - E24-ui
+      - D-S031-E24-ui
+      - D-S031-open
       artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/api-contract.md
-      - docs/config-spec.md
-      - docs/domain/rules/COVERAGE_MATRIX.md
-      - docs/decisions/evolve-decisions.md
-      - docs/adr/ADR-032-wmo-default-golden-glossary.md
-      - docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
-      - docs/sessions/S026-airmet-quality-wmo-examples/reports/acceptance-criteria.md
+      - docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      started_at: '2026-07-30'
+      started: '2026-07-30'
+      completed_at: '2026-07-30'
+      completed: '2026-07-30'
+      note: 'S031/EV-024 01-requirements COMPLETE (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25; D-S031-E24-E1;
+        report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan;
+        #804/#807/#773'
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      artifacts:
+      - docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md
+      decision_refs:
+      - E24-E1
+      - D-S031-E24-E1
+      - E24-ui
+      - D-S031-E24-ui
+      - D-S031-open
     - status: completed
       mode: delta
       session_id: S030-apac-encode-validate
@@ -3292,6 +3441,8 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-07-30 S031/EV-024 01-requirements COMPLETE (E24-E1=1 / D-S031-E24-E1) — deepen F6/F2/F4/F12/F13/F25;
+      report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan; #804/#807/#773'
     - '2026-07-30 S030/EV-023 01-requirements COMPLETE (E23-E1=1 / D-S030-E23-E1) — deepen F6/F2/F12/F13;
       report docs/sessions/S030-apac-encode-validate/reports/01-requirements.md; handoff 02-verify-plan; #800'
     - 2026-07-29 S026/EV-020 01-requirements COMPLETE (E20-E1..E3) — F24/F25; deepen F9/F7.g; glossary=official
@@ -3389,24 +3540,26 @@ stages:
     started: '2026-07-30'
     completed_at: '2026-07-30'
     completed: '2026-07-30'
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
-    prior_note: S027/EV-021 02-verify-plan COMPLETE 2026-07-29 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; spec
-      F24/F25/F26/F27 consistency fix; report docs/sessions/S027-vaa-quality/reports/02-verify-plan-audit.md;
-      Gate A Lean → 04
-    note: 'S030/EV-023 02-verify-plan COMPLETE 2026-07-30 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    prior_note: 'S030/EV-023 02-verify-plan COMPLETE 2026-07-30 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
       Lean → 04; report docs/sessions/S030-apac-encode-validate/reports/02-verify-plan-audit.md; #800'
+    note: 'S031/EV-024 02-verify-plan COMPLETE 2026-07-30 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
+      Lean → 04; report docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md; D-S031-02-phase-a;
+      #804/#807/#773'
     auto_approved: 12
     contradictions_resolved: null
     contradictions_deferred: null
     decision_refs:
+    - E24-E1
+    - D-S031-E24-E1
     - S02.M1
     - S02.M2
     - S02.L1
-    - D-S030-EV023-s02m1-1
-    - D-S030-EV023-s02m2-1
-    - D-S030-EV023-s02l1-1
-    - D-S030-02-phase-a
+    - D-S031-EV024-s02m1-1
+    - D-S031-EV024-s02m2-1
+    - D-S031-EV024-s02l1-1
+    - D-S031-02-phase-a
     substeps:
       inventory:
         status: completed
@@ -3414,7 +3567,7 @@ stages:
         status: completed
       statement_review:
         auto_approved: 12
-        pending: null
+        pending: 0
         reviewed:
         - S02.M1
         - S02.M2
@@ -3422,15 +3575,32 @@ stages:
     current_document: null
     current_statement: null
     active_session:
-      session_id: S030-apac-encode-validate
-      evolve_cycle_id: EV-023
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
       skill_id: 02-verify-plan
       status: completed
       mode: delta
       started_at: '2026-07-30'
+      started: '2026-07-30'
       completed_at: '2026-07-30'
-      note: 'S030/EV-023 02-verify-plan COMPLETE (delta) — PASS Batch F 1,1,1; Gate A → 04; #800'
+      completed: '2026-07-30'
+      note: 'S031/EV-024 02-verify-plan COMPLETE (delta) — PASS; Batch F 1,1,1; Gate A Lean → 04; #804/#807/#773'
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      decision_refs:
+      - D-S031-02-phase-a
+      - D-S031-EV024-s02m1-1
+      - D-S031-EV024-s02m2-1
+      - D-S031-EV024-s02l1-1
+      artifacts:
+      - docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
     artifacts:
+    - docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
     - docs/decisions/product-audit.md
     - docs/decisions/product-decisions.md
     - docs/sessions/S030-apac-encode-validate/reports/02-verify-plan-audit.md
@@ -3442,6 +3612,37 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-07-30'
+      started: '2026-07-30'
+      completed_at: '2026-07-30'
+      completed: '2026-07-30'
+      mode: delta
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      auto_approved: 12
+      note: 'S031/EV-024 02-verify-plan COMPLETE 2026-07-30 (delta) — PASS; 12 auto + S02.M1/M2/L1=1; Gate A
+        Lean → 04; report docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md; #804/#807/#773'
+      decision_refs:
+      - E24-E1
+      - D-S031-E24-E1
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      - D-S031-EV024-s02m1-1
+      - D-S031-EV024-s02m2-1
+      - D-S031-EV024-s02l1-1
+      - D-S031-02-phase-a
+      artifacts:
+      - docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
     - session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
       skill_id: 02-verify-plan
@@ -3698,6 +3899,9 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-07-30 S031/EV-024 02-verify-plan COMPLETE (D-S031-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1;
+      Gate A Lean → 04; report docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md;
+      #804/#807/#773'
     - '2026-07-30 S030/EV-023 02-verify-plan COMPLETE (D-S030-02-phase-a) — PASS; 12 auto + S02.M1/M2/L1=1;
       Gate A Lean → 04; report docs/sessions/S030-apac-encode-validate/reports/02-verify-plan-audit.md;
       #800'
@@ -3841,47 +4045,80 @@ stages:
     started: '2026-07-30'
     completed_at: '2026-07-30'
     completed: '2026-07-30'
-    previous_started_at: '2026-07-29'
-    previous_completed_at: '2026-07-29'
-    previous_session_id: S027-vaa-quality
-    previous_evolve_cycle_id: EV-021
-    previous_note: COMPLETE Batch T all 1; execution-plan approved; Gate B Lean → 07 @ T0.1
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
-    note: 'S030/EV-023 04-tech-plan COMPLETE (delta) — Batch T E23-T1..T6=1,1,2,2,1,1;
+    previous_started_at: '2026-07-30'
+    previous_completed_at: '2026-07-30'
+    previous_session_id: S030-apac-encode-validate
+    previous_evolve_cycle_id: EV-023
+    previous_note: 'S030/EV-023 04-tech-plan COMPLETE (delta) — Batch T E23-T1..T6=1,1,2,2,1,1;
       execution-plan approved (D-S030-04-plan-approve); Gate B Lean → 07 @ T0.1; #800'
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; execution-plan
+      approved (D-S031-04-plan-approve); Gate B Lean → 07 @ T0.1; #804/#807/#773'
     decision_refs:
-    - D-S030-04-plan-approve
-    - D-S030-E23-T-batch
-    - E23-T1
-    - E23-T2
-    - E23-T3
-    - E23-T4
-    - E23-T5
-    - E23-T6
-    - D-S030-02-phase-a
+    - D-S031-04-plan-approve
+    - D-S031-E24-T-batch
+    - E24-T1
+    - E24-T2
+    - E24-T3
+    - E24-T4
+    - E24-T5
+    - D-S031-02-phase-a
+    - D-S031-EV024-s02m1-1
+    - D-S031-EV024-s02m2-1
+    - D-S031-EV024-s02l1-1
     - S02.M1
     - S02.M2
     - S02.L1
-    - D-S030-EV023-s02m1-1
-    - D-S030-EV023-s02m2-1
-    - D-S030-EV023-s02l1-1
     substeps:
       phase_1_toolchain:
         status: completed
         notes: Monorepo toolchain baseline from 2026-06-15 plan; EV-004 delta reuses pins
       phase_2_interview:
         status: completed
-        notes: S030 Batch T E23-T1..T6=1,1,2,2,1,1; prior S027 E21-T1..T6 all 1
+        notes: E24-T1..T5 locked 1,1,2,2,1 (D-S031-E24-T-batch)
       phase_3_execution_plan:
         status: completed
+        notes: docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md approved
       phase_4_user_review:
         status: completed
+        notes: D-S031-04-plan-approve — Gate B → 07 @ T0.1
       phase_5_back_add:
         status: completed
       phase_6_documents:
         status: completed
+    active_session:
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      skill_id: 04-tech-plan
+      status: completed
+      mode: delta
+      started_at: '2026-07-30'
+      started: '2026-07-30'
+      completed_at: '2026-07-30'
+      completed: '2026-07-30'
+      note: 'S031/EV-024 04-tech-plan COMPLETE (delta) — E24-T1..T5=1,1,2,2,1; Gate B Lean → 07 @ T0.1; #804/#807/#773'
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      decision_refs:
+      - D-S031-04-plan-approve
+      - D-S031-E24-T-batch
+      - E24-T1
+      - E24-T2
+      - E24-T3
+      - E24-T4
+      - E24-T5
+      - D-S031-02-phase-a
+      - D-S031-EV024-s02m1-1
+      - D-S031-EV024-s02m2-1
+      - D-S031-EV024-s02l1-1
     artifacts:
+    - docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
     - .cursor/artifacts/execution-plan-monorepo.md
     - docs/ops/staging-secrets-matrix.md
     - docs/adr/ADR-005-runtime-toolchain-pins.md
@@ -3896,6 +4133,40 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-07-30'
+      started: '2026-07-30'
+      completed_at: '2026-07-30'
+      completed: '2026-07-30'
+      mode: delta
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      decision_refs:
+      - D-S031-04-plan-approve
+      - D-S031-E24-T-batch
+      - E24-T1
+      - E24-T2
+      - E24-T3
+      - E24-T4
+      - E24-T5
+      - D-S031-02-phase-a
+      - D-S031-EV024-s02m1-1
+      - D-S031-EV024-s02m2-1
+      - D-S031-EV024-s02l1-1
+      - S02.M1
+      - S02.M2
+      - S02.L1
+      note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; Gate B Lean → 07 @ T0.1; #804/#807/#773'
+      artifacts:
+      - docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
     - session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
       skill_id: 04-tech-plan
@@ -3926,7 +4197,7 @@ stages:
       - D-S030-EV023-s02m1-1
       - D-S030-EV023-s02m2-1
       - D-S030-EV023-s02l1-1
-      note: 'S030/EV-023 04-tech-plan STARTED 2026-07-30 (delta) — after Gate A (D-S030-02-phase-a); #800'
+      note: 'S030/EV-023 04-tech-plan COMPLETE 2026-07-30 (delta) — Batch T E23-T1..T6=1,1,2,2,1,1; Gate B Lean → 07 @ T0.1; #800'
     - session_id: S027-vaa-quality
       evolve_cycle_id: EV-021
       skill_id: 04-tech-plan
@@ -4430,6 +4701,8 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-30 S031/EV-024 04-tech-plan STARTED (D-S031-02-phase-a) — Gate A Lean (Batch F 1,1,1 +
+      consistency PASS); gates.a_to_b passed; mode delta; interview pending; #804/#807/#773'
     - '2026-07-30 S030/EV-023 04 COMPLETE Batch T E23-T1..T6=1,1,2,2,1,1; execution-plan approved (D-S030-04-plan-approve);
       Gate B Lean → 07 @ T0.1; plan docs/sessions/S030-apac-encode-validate/reports/execution-plan.md; #800'
     - '2026-07-29 S027/EV-021 04 COMPLETE Batch T all 1; execution-plan approved (D-S027-04-plan-approve);
@@ -4742,35 +5015,72 @@ stages:
     started: '2026-07-30'
     completed: '2026-07-30'
     completed_at: '2026-07-30'
-    previous_started_at: '2026-07-29'
+    previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
-    previous_session_id: S027-vaa-quality
-    previous_evolve_cycle_id: EV-021
-    previous_tip_sha: b5f5c32
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
-    note: 'COMPLETE — M7 T7.4 done; PR #801 merged af98690; progress 24/24; #800'
-    tip_sha: af98690
-    tip_sha_full: af98690
-    current_stage: 16-evolve
+    previous_session_id: S030-apac-encode-validate
+    previous_evolve_cycle_id: EV-023
+    previous_tip_sha: af98690
+    previous_note: 'COMPLETE — M7 T7.4 done; PR #801 merged af98690; progress 24/24; #800'
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
+    tip_sha: 304df52
+    tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+    current_stage: null
     active_milestone: M7
-    active_task: T7.4
+    active_task: null
     active_task_status: completed
-    progress: 24/24
-    pr_number: 801
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
-    pr_status: merged
-    merge_sha: af98690
+    progress: 22/22
+    pr_number: 813
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+    pr_status: open
+    merge_sha: null
     substeps:
       task_loop:
         status: completed
-        current_task: T7.4
+        current_task: null
         active_task_status: completed
         active_milestone: M7
         phase: C
         milestone: M7
-        notes: T7.4 COMPLETE — PR #801 merged af98690; 13-deploy-smoke PASS; progress 24/24
+        notes: 'T0.1–T7.2 done; T7.3 deferred D1; PR #813 open'
     delta_substages:
+    - id: S031-iwxxm-domain-mine
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      skill_id: 07-build
+      status: completed
+      started_at: '2026-07-30'
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      completed_at: '2026-07-30'
+      mode: full
+      note: 'COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
+      active_milestone: M7
+      active_task: null
+      active_task_status: completed
+      progress: 22/22
+      decision_id: D-S031-04-plan-approve
+      tip_sha: 304df52
+      tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+      branch: evolve/EV-024-iwxxm-domain-mine
+      pr_number: 813
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+      pr_status: open
+      feature_ids:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
@@ -5040,6 +5350,9 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-30 S031/EV-024 07-build COMPLETE (state-drift sync) — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
+    - '2026-07-30 S031/EV-024 07-build STARTED (D-S031-04-plan-approve B→C) — active task T0.1; plan
+      docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md; #804/#807/#773'
     - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
     - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
     - '2026-07-30 T7.2 08-verify-build PASS (verification-report.md); T7.3 next'
@@ -5822,18 +6135,19 @@ stages:
     started: '2026-07-30'
     completed: '2026-07-30'
     completed_at: '2026-07-30'
-    previous_started_at: '2026-07-29'
-    previous_completed_at: '2026-07-29'
-    previous_session_id: S026-airmet-quality-wmo-examples
-    previous_evolve_cycle_id: EV-020
-    previous_tip_sha: 3027305
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
-    tip_sha: f859f31
-    tip_sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
+    previous_started_at: '2026-07-30'
+    previous_completed_at: '2026-07-30'
+    previous_session_id: S030-apac-encode-validate
+    previous_evolve_cycle_id: EV-023
+    previous_tip_sha: f859f31
+    previous_note: 'S030/EV-023 10-e2e COMPLETE (smoke) — PASS; reports/e2e-report.md; browser N/A; T7.3 done; PR #801 open; next T7.4 13; progress 23/24; #800'
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    tip_sha: 304df52
+    tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
     overall: pass
-    report: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
-    note: 'S030/EV-023 10-e2e COMPLETE (smoke) — PASS; reports/e2e-report.md; browser N/A; T7.3 done; PR #801 open; next T7.4 13; progress 23/24; #800'
+    report: docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md
+    note: 'S031/EV-024 10-e2e COMPLETE (smoke) — catalog/validate PASS via T7.2 verification-report.md; tip 304df52; PR #813 open; T7.3 deferred D1; #804/#807/#773'
     substeps:
       extract_journeys:
         status: completed
@@ -5841,14 +6155,48 @@ stages:
         status: completed
       t2_playwright:
         status: skipped
-        note: browser N/A — API/library smoke only
+        note: browser N/A — catalog/validate smoke only
       t2_connectivity:
         status: skipped
         note: browser N/A
       t3_live:
         status: skipped
-        note: deferred to 13 when_ships
+        note: deferred to 13 when_ships (D1 — after merge #813)
     delta_substages:
+    - id: S031-iwxxm-domain-mine
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      skill_id: 10-e2e
+      status: completed
+      mode: smoke
+      started: '2026-07-30'
+      started_at: '2026-07-30'
+      completed: '2026-07-30'
+      completed_at: '2026-07-30'
+      branch: evolve/EV-024-iwxxm-domain-mine
+      tip_sha: 304df52
+      tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+      note: catalog/validate smoke PASS (T7.2); browser N/A; PR #813 open
+      report: docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md
+      overall: pass
+      active_milestone: M7
+      active_task: T7.2
+      active_task_status: completed
+      progress: 22/22
+      feature_ids:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
@@ -6136,19 +6484,19 @@ stages:
     started_at: '2026-07-30'
     completed_at: '2026-07-30'
     completed: '2026-07-30'
-    previous_started_at: '2026-07-29'
-    previous_completed_at: '2026-07-29'
-    previous_session_id: S026-airmet-quality-wmo-examples
-    previous_evolve_cycle_id: EV-020
-    previous_tip_sha: e839a6e
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
-    tip_sha: 495670b
-    tip_sha_full: 495670b515af6caf25579a4b2c461138116d2d4e
+    previous_started_at: '2026-07-30'
+    previous_completed_at: '2026-07-30'
+    previous_session_id: S030-apac-encode-validate
+    previous_evolve_cycle_id: EV-023
+    previous_tip_sha: 495670b
+    previous_note: 'S030/EV-023 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S030-apac-encode-validate/reports/verification-report.md; handoff T7.3 10-e2e smoke; progress 22/24; #800'
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    tip_sha: 304df52
+    tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
     overall: pass
-    note: 'S030/EV-023 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S030-apac-encode-validate/reports/verification-report.md;
-      handoff T7.3 10-e2e smoke; progress 22/24; #800'
-    report: docs/sessions/S030-apac-encode-validate/reports/verification-report.md
+    note: 'S031/EV-024 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md; tip 304df52; PR #813 open; #804/#807/#773'
+    report: docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md
     substeps:
       lint:
         status: completed
@@ -6163,6 +6511,40 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S031-iwxxm-domain-mine
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-07-30'
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      completed_at: '2026-07-30'
+      mode: delta
+      overall: pass
+      note: PASS via T7.2 verification-report.md; tip 304df52; PR #813 open
+      report: docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md
+      branch: evolve/EV-024-iwxxm-domain-mine
+      tip_sha: 304df52
+      tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+      active_milestone: M7
+      active_task: T7.2
+      active_task_status: completed
+      progress: 22/22
+      feature_ids:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
+      deepen:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
@@ -6612,35 +6994,64 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json);
       operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: completed
+    status: deferred
     started_at: '2026-07-30'
     started: '2026-07-30'
-    completed: '2026-07-30'
-    completed_at: '2026-07-30'
+    completed: null
+    completed_at: null
     previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
-    previous_session_id: S027-vaa-quality
-    previous_evolve_cycle_id: EV-021
-    previous_tip_sha: df56d1f
+    previous_session_id: S030-apac-encode-validate
+    previous_evolve_cycle_id: EV-023
+    previous_tip_sha: af98690
     previous_overall: pass
-    previous_decision_id: D-S027-E21-13-merge
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
-    note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; report deploy-smoke.md; #800'
-    tip_sha: af98690
-    tip_sha_full: af98690
-    overall: pass
-    active_task: T7.4
-    active_task_status: completed
-    progress: 24/24
+    previous_note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; report deploy-smoke.md; #800'
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    note: 'S031/EV-024 13-deploy-smoke DEFERRED (D1 — PR first) — after merge #813; tip 304df52; #804/#807/#773'
+    tip_sha: 304df52
+    tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+    overall: deferred
+    active_task: T7.3
+    active_task_status: deferred
+    progress: 22/22
     do_not_auto_merge: true
-    pr_number: 801
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
-    pr_status: merged
-    merge_sha: af98690
-    ci_run: '30586719518'
-    report: docs/sessions/S030-apac-encode-validate/reports/deploy-smoke.md
+    pr_number: 813
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+    pr_status: open
+    merge_sha: null
+    ci_run: null
+    report: null
     delta_substages:
+    - id: S031-iwxxm-domain-mine
+      session_id: S031-iwxxm-domain-mine
+      evolve_cycle_id: EV-024
+      skill_id: 13-deploy-smoke
+      status: deferred
+      mode: when_ships
+      started: '2026-07-30'
+      started_at: '2026-07-30'
+      completed: null
+      completed_at: null
+      branch: evolve/EV-024-iwxxm-domain-mine
+      tip_sha: 304df52
+      tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+      note: 'D1 — after merge #813; T7.3 deferred'
+      active_milestone: M7
+      active_task: T7.3
+      active_task_status: deferred
+      progress: 22/22
+      overall: deferred
+      pr_number: 813
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+      pr_status: open
+      feature_ids:
+      - F6
+      - F2
+      - F4
+      - F12
+      - F13
+      - F25
     - id: S030-apac-encode-validate
       session_id: S030-apac-encode-validate
       evolve_cycle_id: EV-023
@@ -7056,18 +7467,24 @@ stages:
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006;
       RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S030-apac-encode-validate
-    evolve_cycle_id: EV-023
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
     started_at: '2026-07-30'
-    completed_at: '2026-07-30'
-    completed: '2026-07-30'
-    current_stage: null
-    tip_sha: af98690
-    tip_sha_full: af98690
-    note: 'S030/EV-023 COMPLETE — Phase 4 close D-S030-close 2026-07-30 (user chose 1+2+3); session closed; PR #801 af98690 + #802 5c7d3b5; #800'
+    completed_at: null
+    completed: null
+    current_stage: 07-build
+    tip_sha: deb43cf
+    tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
+    note: 'S031/EV-024 in_progress — 04 COMPLETE (D-S031-04-plan-approve); 07-build in_progress @ T0.1; Gate B Lean; tip deb43cf; #804/#807/#773'
     notes:
+    - '2026-07-30 S031/EV-024 04 COMPLETE → 07 @ T0.1 (E24-T1..T5=1,1,2,2,1 / D-S031-04-plan-approve); Gate B; #804/#807/#773'
+    - '2026-07-30 S031/EV-024 02 PASS → 04 (Batch F 1,1,1 / D-S031-02-phase-a) — Gate A Lean; deepen F6/F2/F4/F12/F13/F25; #804/#807/#773'
+    - '2026-07-30 S031/EV-024 01-requirements STARTED (delta) — E24-ui=UIb (docs/repo only); deepen F6/F2/F4/F12/F13/F25;
+      #804/#807/#773'
+    - '2026-07-30 S031/EV-024 OPEN — Phase 0 locked E24-1..4; deepen F6/F2/F4/F12/F13/F25; Lean+build approved;
+      handoff 01-requirements; branch evolve/EV-024-iwxxm-domain-mine; tip deb43cf; #804/#807/#773'
     - '2026-07-30 S030/EV-023 Phase 4 close D-S030-close — session archived; active_session null; user chose 1+2+3; PR #802 merged 5c7d3b5; #800'
     - '2026-07-30 S030/EV-023 13-deploy-smoke COMPLETE — PR #801 merged af98690; CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; report deploy-smoke.md; progress 24/24; Phase 4 close pending; #800'
     - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; T7.4 13 pending merge/deploy; progress 23/24; #800'
@@ -7625,6 +8042,361 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S031-04-plan-approve
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 04 Decision — Approve execution plan / Gate B → 07 @ T0.1
+  summary: S031/EV-024 04 COMPLETE E24-T1..T5=1,1,2,2,1; Gate B → 07 @ T0.1
+  decision: 'Batch T locked (D-S031-E24-T-batch); execution-plan approved (D-S031-04-plan-approve);
+    Gate B Lean B→C → 07-build in_progress @ T0.1. Approved plan:
+    docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md.'
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - D-S031-E24-T-batch
+  - E24-T1
+  - E24-T2
+  - E24-T3
+  - E24-T4
+  - E24-T5
+  - D-S031-02-phase-a
+  tip_sha: deb43cf
+  tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
+- id: D-S031-E24-T-batch
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: Batch T lock — E24-T1..T5
+  summary: E24-T1=1, T2=1, T3=2, T4=2, T5=1
+  decision: 'Batch T locked 2026-07-30 — E24-T1=1, E24-T2=1, E24-T3=2, E24-T4=2, E24-T5=1.
+    Feeds execution-plan approval (D-S031-04-plan-approve) and Gate B → 07 @ T0.1.'
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - D-S031-04-plan-approve
+  - E24-T1
+  - E24-T2
+  - E24-T3
+  - E24-T4
+  - E24-T5
+  answers:
+    E24-T1: '1'
+    E24-T2: '1'
+    E24-T3: '2'
+    E24-T4: '2'
+    E24-T5: '1'
+  tip_sha: deb43cf
+  tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
+- id: E24-T1
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: decision
+  status: confirmed
+  topic: Milestone order
+  summary: E24-T1=1 — M0→#804→#807→#773→promote→catalog→validate→children/smoke
+  decision: Order 1 — M0 → #804 → #807 → #773 → promote → catalog → validate → children/smoke.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: D-S031-E24-T-batch
+  answers:
+    E24-T1: '1'
+- id: E24-T2
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: decision
+  status: confirmed
+  topic: Sample-menu badge labels
+  summary: E24-T2=1 — “WMO passer” vs “WMO reference” (no new route)
+  decision: Badge 1 — “WMO passer” vs “WMO reference” (no new route).
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: D-S031-E24-T-batch
+  answers:
+    E24-T2: '1'
+- id: E24-T3
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: decision
+  status: confirmed
+  topic: New dependencies policy
+  summary: E24-T3=2 — AskQuestion per new dep (prefer none)
+  decision: Deps 2 — AskQuestion per new dependency; prefer none.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: D-S031-E24-T-batch
+  answers:
+    E24-T3: '2'
+- id: E24-T4
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: decision
+  status: confirmed
+  topic: Mine sequencing
+  summary: E24-T4=2 — sequential M1→M2→M3
+  decision: Mine 2 — sequential M1→M2→M3.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: D-S031-E24-T-batch
+  answers:
+    E24-T4: '2'
+- id: E24-T5
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: decision
+  status: confirmed
+  topic: Approve plan / Gate B → 07
+  summary: E24-T5=1 — approve; B→C → 07 @ T0.1
+  decision: Plan 1 — approve execution-plan; Gate B→C → 07-build @ T0.1.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: D-S031-04-plan-approve
+  answers:
+    E24-T5: '1'
+- id: D-S031-02-phase-a
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 16-evolve
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: checkpoint
+  status: confirmed
+  topic: Gate A Lean → 04-tech-plan
+  summary: S031/EV-024 02-verify-plan COMPLETE Batch F 1,1,1 → 04-tech-plan
+  decision: 'Gate A Lean (Batch F S02.M1/M2/L1 all Approve=1). 02-verify-plan PASS — 12 auto-approved;
+    phase_a passed (Lean; routine AskQuestion skipped); advance to 04-tech-plan (in_progress, mode delta).
+    Report: docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md.'
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - D-S031-EV024-s02m1-1
+  - D-S031-EV024-s02m2-1
+  - D-S031-EV024-s02l1-1
+  - S02.M1
+  - S02.M2
+  - S02.L1
+  tip_sha: deb43cf
+  tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
+- id: D-S031-EV024-s02l1-1
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.L1 examplesCatalog WMO-scope demos allow reference
+  summary: S02.L1 = 1 — Approve amend examplesCatalog.test.ts in 07 so WMO-scope demos may be wmoPass or reference
+  decision: S02.L1 option 1 confirmed 2026-07-30 — Amend examplesCatalog.test.ts in 07 so WMO-scope demos
+    may be wmoPass or reference (not require all wmoPass). Batch F / 02-verify-plan.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - S02.L1
+  - D-S031-02-phase-a
+  answers:
+    S02.L1: '1'
+- id: D-S031-EV024-s02m2-1
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.M2 sample-menu stems product-in-scope with TAC peers
+  summary: S02.M2 = 1 — Approve sample-menu stems = product-in-scope with TAC peers; SWX/VONA/WAFS/QVACI deferred
+  decision: S02.M2 option 1 confirmed 2026-07-30 — Sample-menu stems are product-in-scope with TAC peers;
+    SWX/VONA/WAFS/QVACI stay deferred unless 04 opts in. Batch F / 02-verify-plan.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - S02.M2
+  - D-S031-02-phase-a
+  answers:
+    S02.M2: '1'
+- id: D-S031-EV024-s02m1-1
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  status: confirmed
+  topic: S02.M1 defer catalog reference-tier metadata field to 04
+  summary: S02.M1 = 1 — Approve defer catalog metadata field for reference tier to 04 (prefer wmoReference?)
+  decision: S02.M1 option 1 confirmed 2026-07-30 — Catalog metadata field for reference tier deferred to
+    04; prefer additive wmoReference?: boolean (keep wmoPass/wmoSeed). Batch F / 02-verify-plan.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - S02.M1
+  - D-S031-02-phase-a
+  answers:
+    S02.M1: '1'
+- id: E24-E1
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: decision
+  status: confirmed
+  topic: Close 01 → start 02-verify-plan
+  summary: E24-E1=1 — close 01-requirements; start 02-verify-plan
+  decision: E24-E1=1 — Close 01-requirements (completed) and advance to 02-verify-plan (in_progress, mode
+    delta). Handoff S031/EV-024 deepen F6/F2/F4/F12/F13/F25 (#804/#807/#773).
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: D-S031-E24-E1
+  answers:
+    E24-E1: '1'
+- id: D-S031-E24-E1
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: Close 01 → start 02-verify-plan
+  summary: E24-E1=1 — close 01-requirements; start 02-verify-plan
+  decision: E24-E1=1 — Close 01-requirements (completed) and advance to 02-verify-plan (in_progress, mode
+    delta). Handoff S031/EV-024 deepen F6/F2/F4/F12/F13/F25 (#804/#807/#773).
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decisions:
+  - E24-E1
+  - D-S031-E24-ui
+  - D-S031-open
+  answers:
+    E24-E1: '1'
+  tip_sha: deb43cf
+  tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
+- id: E24-ui
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: decision
+  status: confirmed
+  topic: Non-deployed UI preview
+  summary: E24-ui=UIb — docs/repo only
+  decision: UIb — No; proceed from docs/repo only (no non-deployed local UI preview). Locked 2026-07-30
+    (D-S031-E24-ui).
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: D-S031-E24-ui
+- id: D-S031-E24-ui
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: decision
+  status: confirmed
+  topic: E24-ui — non-deployed UI preview
+  summary: E24-ui=UIb — No; proceed from docs/repo only
+  decision: UIb — No non-deployed UI preview; proceed from docs/repo only for S031/EV-024.
+  related_issues:
+  - '804'
+  - '807'
+  - '773'
+  related_decision: E24-ui
 - id: D-S030-E23-M0
   date: '2026-07-30'
   timestamp: '2026-07-30'
@@ -14756,7 +15528,105 @@ decisions_log:
   tip_sha_full: dead9911dfe6d86d8f12c8647c24cbc3ae6fc414
   preset: Lean+build
   preset_status: proposed
+- id: D-S031-open
+  date: '2026-07-30'
+  timestamp: '2026-07-30'
+  resolved_at: '2026-07-30'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 00-context
+  status: confirmed
+  category: session-open
+  topic: 'Open S031 / EV-024 IWXXM domain mine (#804 + #807 + #773)'
+  summary: 'Opened S031-iwxxm-domain-mine (feature) with orchestrator 16-evolve; allocated EV-024;
+    branch evolve/EV-024-iwxxm-domain-mine; Lean+build approved (00→16→01Δ→02Δ→04Δ→07→08Δ→10 smoke;
+    11 optional; 13 when_ships); Phase 0 locked E24-1..4; exclude #806; #804/#807/#773'
+  decision: 'Open S031/EV-024 for domain mine strongest bundle (#804 IWXXM/ tree + #807 wmo-im org refresh
+    + #773 IWXXM-US/MDL). Discovery-first with full ticket AC; deepen F6/F2/F4/F12/F13/F25; no new Fn;
+    child engine tickets later. Exclude #806. Preset Lean+build approved.'
+  related_issues:
+  - 804
+  - 807
+  - 773
+  tip_sha: deb43cf
+  tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
+  preset: Lean+build
+  preset_status: approved
 artifacts:
+- path: docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
+  kind: execution-plan
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: approved
+  note: 'S031/EV-024 04 COMPLETE — E24-T1..T5=1,1,2,2,1; Gate B → 07 @ T0.1 (D-S031-04-plan-approve); #804/#807/#773'
+- path: docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
+  kind: stage-report
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: written
+  note: 'S031/EV-024 02-verify-plan PASS (Batch F 1,1,1); Gate A Lean → 04 (D-S031-02-phase-a); #804/#807/#773'
+- path: docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md
+  kind: stage-report
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: written
+  note: 'S031/EV-024 01-requirements COMPLETE (E24-E1=1); handoff 02-verify-plan; #804/#807/#773'
+- path: docs/sessions/S031-iwxxm-domain-mine/session-brief.md
+  kind: session-brief
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: written
+  note: 'S031/EV-024 Phase 0 locked E24-1..4; feature_ids F6/F2/F4/F12/F13/F25; #804/#807/#773'
+- path: docs/sessions/S031-iwxxm-domain-mine/routing-plan.md
+  kind: routing-plan
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: written
+  note: Lean+build approved — skip 03/05/06/09/12; 11 optional; 13 when_ships
+- path: docs/context/iwxxm-domain-mine.md
+  kind: context-scoped
+  slug: iwxxm-domain-mine
+  topic: 'IWXXM domain mine #804+#807+#773 (S031/EV-024)'
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: written
+  note: 'Scoped context brief; exclude #806'
+- path: docs/decisions/evolve-decisions.md
+  kind: decisions-log
+  session_id: S031-iwxxm-domain-mine
+  evolve_cycle_id: EV-024
+  stage: 16-evolve
+  skill_id: 16-evolve
+  created_at: '2026-07-30'
+  updated_at: '2026-07-30'
+  status: written
+  note: EV-024 section — Phase 0 locked E24-1..4; handoff 01-requirements
 - path: docs/sessions/S030-apac-encode-validate/reports/e2e-report.md
   type: session-report
   kind: e2e-report
@@ -22661,19 +23531,201 @@ evolve_cycles:
     deepen F6/F2/F12/F13; 01 in progress; #800'
   - '2026-07-30 S030/EV-023 OPEN — after D-S029-park; branch evolve/EV-023-apac-encode-validate; Lean+build
     proposed; Phase 0 intake pending; tip dead991; #800'
+- id: EV-024
+  session_id: S031-iwxxm-domain-mine
+  cycle_type: general
+  feature_ids:
+  - F6
+  - F2
+  - F4
+  - F12
+  - F13
+  - F25
+  title: "IWXXM domain mine (#804 + #807 + #773)"
+  status: in_progress
+  started: '2026-07-30'
+  started_at: '2026-07-30'
+  completed: null
+  scope_summary: 'Domain mine #804+#807+#773; full ticket AC; exclude #806; discovery-first; child engine
+    tickets later; Lean+build'
+  github_issue: '804'
+  github_issues:
+  - '804'
+  - '807'
+  - '773'
+  branch: evolve/EV-024-iwxxm-domain-mine
+  preset: Lean+build
+  preset_status: approved
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 10-e2e
+    optional_stages:
+    - 11-verify-impl
+    when_ships_stages:
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 12-verify-deploy
+    note: Lean+build approved — skip 03/05/06/09/12; 11 optional; 13 when_ships (catalog/API)
+  current_stage: null
+  stages:
+    00-context:
+      status: completed
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      note: Phase 0 locked E24-1..4
+    16-evolve:
+      status: in_progress
+      started: '2026-07-30'
+      note: 'Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1'
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      note: E24-E1=1 COMPLETE; deepen F6/F2/F4/F12/F13/F25; handoff 02
+    02-verify-plan:
+      status: completed
+      mode: delta
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      note: PASS — Batch F 1,1,1; 12 auto; D-S031-02-phase-a; Gate A Lean → 04; report reports/02-verify-plan-audit.md
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      note: COMPLETE — E24-T1..T5=1,1,2,2,1; execution-plan approved; Gate B Lean → 07 @ T0.1
+    07-build:
+      status: completed
+      mode: full
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      active_task: null
+      active_task_status: completed
+      active_milestone: M7
+      note: 'COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813'
+    08-verify-build:
+      status: completed
+      mode: delta
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      note: PASS via T7.2 verification-report.md
+    10-e2e:
+      status: completed
+      mode: smoke
+      started: '2026-07-30'
+      completed: '2026-07-30'
+      note: catalog/validate smoke PASS (T7.2)
+    11-verify-impl:
+      status: pending
+      mode: optional
+    13-deploy-smoke:
+      status: deferred
+      mode: when_ships
+      note: 'D1 — after merge #813'
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md
+    status: written
+    note: T7.2 08+10 smoke PASS; tip 304df52
+  - path: docs/sessions/S031-iwxxm-domain-mine/reports/domain-mine-theme-map.md
+    status: written
+    note: T0.1 theme map
+  - path: docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
+    status: approved
+    note: 'COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; PR #813 open'
+  - path: docs/sessions/S031-iwxxm-domain-mine/reports/02-verify-plan-audit.md
+    status: written
+    note: PASS — Batch F 1,1,1; Gate A Lean → 04 (D-S031-02-phase-a)
+  - path: docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md
+    status: written
+    note: 01-requirements COMPLETE (E24-E1=1); handoff 02
+  - path: docs/sessions/S031-iwxxm-domain-mine/session-brief.md
+    status: written
+    note: Phase 0 locked; feature_ids F6/F2/F4/F12/F13/F25
+  - path: docs/sessions/S031-iwxxm-domain-mine/routing-plan.md
+    status: written
+    note: Lean+build + 13 when_ships approved
+  - path: docs/context/iwxxm-domain-mine.md
+    status: written
+    note: Scoped context brief for S031/EV-024
+  - path: docs/decisions/evolve-decisions.md
+    status: written
+    note: EV-024 section — Phase 0 locked E24-1..4
+  issues: []
+  decision_refs:
+  - D-S031-open
+  - E24-ui
+  - D-S031-E24-ui
+  - E24-E1
+  - D-S031-E24-E1
+  - D-S031-EV024-s02m1-1
+  - D-S031-EV024-s02m2-1
+  - D-S031-EV024-s02l1-1
+  - D-S031-02-phase-a
+  - D-S031-E24-T-batch
+  - E24-T1
+  - E24-T2
+  - E24-T3
+  - E24-T4
+  - E24-T5
+  - D-S031-04-plan-approve
+  pr_number: 813
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+  pr_status: open
+  note: 'S031/EV-024 in_progress — Phase C complete; tip 681436a; CI GREEN on PR #813; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
+  tip_sha: 681436a
+  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+  notes:
+  - '2026-07-30 S031/EV-024 tip bump 681436a — chore: sync workflow-state after Phase C; CI GREEN on PR #813 (Deploy skipped); awaiting merge approval; session/cycle remain open; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 state-drift SYNC — tip 304df52; T0.1–T7.2 completed; T7.3 deferred D1; gates.c_to_d + phase_c passed; PR #813 open; CI watching; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 04 COMPLETE → 07 @ T0.1 (E24-T1..T5=1,1,2,2,1 / D-S031-04-plan-approve) — gates.b_to_c + phase_b passed; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 02 PASS → 04 (Batch F 1,1,1 / D-S031-02-phase-a) — gates.a_to_b + phase_a passed; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 01 COMPLETE → 02 (E24-E1=1 / D-S031-E24-E1) — deepen F6/F2/F4/F12/F13/F25; report
+    docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 01-requirements STARTED (delta) — E24-ui=UIb (No — proceed from docs/repo only);
+    deepen F6/F2/F4/F12/F13/F25; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 OPEN — Phase 0 locked E24-1..4; deepen F6/F2/F4/F12/F13/F25; Lean+build approved;
+    handoff 01-requirements; branch evolve/EV-024-iwxxm-domain-mine; tip deb43cf; #804/#807/#773'
 git_history:
-  current_branch: main
+  current_branch: evolve/EV-024-iwxxm-domain-mine
   ahead_of_origin: 0
   pushed: true
   pending_commit: null
-  tip_sha: af98690
-  tip_sha_full: af98690
-  pr_number: 801
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/801
-  pr_status: merged
-  merge_sha: af98690
-  note: 'S030/EV-023 PR #801 merged af98690; 13-deploy-smoke PASS; EV-023 cycle complete; Phase 4 close pending; active_session open; #800'
+  tip_sha: 681436a
+  tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+  pr_number: 813
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+  pr_status: open
+  merge_sha: null
+  note: 'S031/EV-024 tip 681436a; CI GREEN on PR #813; Phase C complete; awaiting merge approval; T7.3 deferred D1; #804/#807/#773'
   notes:
+  - '2026-07-30 S031/EV-024 tip bump 681436a — workflow-state sync commit; CI GREEN on PR #813 (required checks pass; Deploy skipped); awaiting merge approval; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 state-drift SYNC — tip 304df52; PR #813 open; T0.1–T7.2 atomic commits landed; T7.3 deferred D1; branch pushed; #804/#807/#773'
+  - '2026-07-30 S031/EV-024 OPEN — branch evolve/EV-024-iwxxm-domain-mine recorded active (base main @
+    deb43cf); session_counter 31; evolve_cycle_counter 24; Lean+build; Phase 0 locked E24-1..4; #804/#807/#773'
   - '2026-07-30 S030/EV-023 PR #801 merged af98690 — CI 30586719518 SUCCESS (incl. Deploy); API dep-d9lsvabm8hqs739dpqlg LIVE; H1/H0c/H3/H4/H5 + live convert themes PASS; progress 24/24; #800'
   - '2026-07-30 S030/EV-023 pushed + PR #801 open — tip f859f31; T7.4 prep 634cfb6/f859f31 (F7 quarantine align + tac2iwxxm coverage); pre-push gate fixed; #800'
   - '2026-07-30 T7.3 10-e2e smoke PASS; awaiting PR + T7.4/13'
@@ -23971,7 +25023,98 @@ git_history:
     pr_head: evolve/EV-023-apac-encode-validate
     pr_status: merged
     do_not_auto_merge: true
+  - name: evolve/EV-024-iwxxm-domain-mine
+    purpose: 'S031/EV-024 #804+#807+#773 IWXXM domain mine (discovery-first)'
+    base: main
+    status: active
+    created: '2026-07-30'
+    created_at: '2026-07-30'
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    note: 'S031/EV-024 tip 681436a; CI GREEN on PR #813; Phase C complete; awaiting merge approval; #804/#807/#773'
+    tip_sha: 681436a
+    tip_sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+    pushed: true
+    pr_number: 813
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
+    pr_status: open
+    pr_base: main
+    pr_head: evolve/EV-024-iwxxm-domain-mine
+    do_not_auto_merge: true
   commits:
+  - sha: 681436a
+    sha_full: 681436a65ac4bd91850db93b2fb73282fc371c8f
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: 'chore: sync S031/EV-024 workflow-state after Phase C'
+    stage: 16-evolve
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:57:09-04:00'
+    pushed: true
+    note: 'tip bump; CI GREEN on PR #813; session/cycle remain open'
+  - sha: 304df52
+    sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: 'docs: record EV-024 PR #813 in execution plan'
+    stage: 16-evolve
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:47:07-04:00'
+    pushed: true
+    note: PR #813 recorded
+  - sha: f168935
+    sha_full: f168935bae28facfb194d470022d9f5334da5045
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: '[T7.3] docs: defer EV-024 deploy smoke (D1 — PR first)'
+    stage: 13-deploy-smoke
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:27:07-04:00'
+    pushed: true
+  - sha: 06c6cd9
+    sha_full: 06c6cd94c38ef69c1bf7ff8dd9b211c052cd2d53
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: '[T7.2] docs: record EV-024 catalog/validate smoke verification'
+    stage: 08-verify-build
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:23:33-04:00'
+    pushed: true
+  - sha: bc9cd7a
+    sha_full: bc9cd7add221e9b3a0f3ef073f090fc806da5af4
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: '[T7.1] docs: file EV-024 child issues #809–#812 and link parents'
+    stage: 07-build
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:22:59-04:00'
+    pushed: true
+  - sha: e1ddcc8
+    sha_full: e1ddcc884ea146eb91af3782b0686d1fbdbc3cd0
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: '[T5.3] feat: WMO reference tier and VA SIGMET sample menu stems'
+    stage: 07-build
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:16:10-04:00'
+    pushed: true
+  - sha: 2a49aaf
+    sha_full: 2a49aaf72113b6b89fecb2078a931b730408fa92
+    branch: evolve/EV-024-iwxxm-domain-mine
+    message: '[T0.1] docs: S031 theme map and EV-024 session scaffold'
+    stage: 07-build
+    session_id: S031-iwxxm-domain-mine
+    evolve_cycle_id: EV-024
+    files_changed: null
+    timestamp: '2026-07-30T20:14:47-04:00'
+    pushed: true
+    note: 'M0 start; full T0.1–T7.2 series on branch (batched representative list)'
   - sha: f859f31
     sha_full: f859f31c96c85573e4cd3f315885bbec8f07a229
     branch: evolve/EV-023-apac-encode-validate
