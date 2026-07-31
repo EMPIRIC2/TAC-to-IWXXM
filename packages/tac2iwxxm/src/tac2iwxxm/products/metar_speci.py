@@ -102,6 +102,25 @@ _LTG_REMARK = re.compile(
 )
 # FMH-1 snow depth increase: SNINCR ii/dd (inches increase / inches on ground).
 _SNINCR = re.compile(r"\bSNINCR\s+(?P<incr>\d{1,2})/(?P<depth>\d{1,2})\b")
+# FMH-1 cloud types (3-/6-hourly): 8/CLCMCH → CharacterOfTheSky BUFR 0-20-012.
+_SKY_TYPES = re.compile(r"\b8/(?P<cl>[0-9/])(?P<cm>[0-9/])(?P<ch>[0-9/])(?![0-9A-Za-z/])")
+# FMH-1 significant convective clouds / thunderstorm location remarks.
+_CONVECTIVE = re.compile(
+    r"\b(?P<ctype>CBMAM|CB|TCU|TS)"
+    r"(?:\s+(?P<dist>DSNT|VC|OHD|OVHD))?"
+    r"(?:\s+(?P<sector>ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?"
+    r"(?:\s+MOV\s+(?P<mov>N|NE|E|SE|S|SW|W|NW))?"
+    r"\b"
+)
+# FMH-1 hailstone size: GR [LT] [n] n/n or GR n.
+_HAIL_SIZE = re.compile(
+    r"\bGR\s+(?:"
+    r"(?P<below>LT|LESS(?:\s+THAN)?)\s+(?P<bfrac>\d/\d)"
+    r"|(?P<whole>\d+)\s+(?P<frac>\d/\d)"
+    r"|(?P<onlyfrac>\d/\d)"
+    r"|(?P<onlywhole>\d+)"
+    r")\b"
+)
 # FMH-1 sensor status → NWS Sensor codelist (iwxxm-us FailedSensors.parameter).
 _SENSOR_NO_HREF = "https://codes.nws.noaa.gov/FMH-1/Sensor/{code}"
 _SENSOR_NO_CODES = {
@@ -117,7 +136,22 @@ _SENSOR_NO = re.compile(r"\b(?P<tok>" + "|".join(_SENSOR_NO_CODES) + r")\b")
 _SNOW_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/SNOW"
 # GRIB2 Code Table 4.10 entry 1 — accumulation (iwxxm-us PDF SnowIncrease sample).
 _STAT_ACCUM_HREF = "http://codes.wmo.int/grib2/codeflag/4.10/1"
-# Structured tokens removed before free-text retain (AO/SLP/PK/WSHFT/LTG/SNINCR/sensor-NO — T/P stay).
+_BUFR_CLOUD_HREF = "http://codes.wmo.int/bufr4/codeflag/0-20-012/{code}"
+_NIL_NOT_OBSERVABLE = "http://codes.wmo.int/common/nil/notObservable"
+_CONVECTIVE_TYPE_HREF = "https://codes.nws.noaa.gov/FMH-1/ConvectiveCloudType/{code}"
+_CONVECTIVE_TYPE_CODES = {
+    "CB": "CUMULONIMBUS",
+    "CBMAM": "CUMULONIMBUS_MAMMATUS",
+    "TCU": "TOWERING_CUMULUS",
+    "TS": "THUNDERSTORM",
+}
+_CONVECTIVE_DIST_CODES = {
+    "DSNT": "DISTANT",
+    "VC": "VICINITY",
+    "OHD": "OVERHEAD",
+    "OVHD": "OVERHEAD",
+}
+# Structured tokens removed before free-text retain (AO/SLP/PK/WSHFT/LTG/SNINCR/8/conv/hail/sensor — T/P stay).
 _CONSUMED_REMARK = re.compile(
     r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b|"
     r"\bWSHFT\s+\d{4}(?:\s+FROPA)?\b|"
@@ -125,6 +159,13 @@ _CONSUMED_REMARK = re.compile(
     r"(?:\s+(?:DSNT|VC))?"
     r"(?:\s+(?:ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?\b|"
     r"\bSNINCR\s+\d{1,2}/\d{1,2}\b|"
+    r"\b8/[0-9/]{3}(?![0-9A-Za-z/])|"
+    r"\b(?:CBMAM|CB|TCU|TS)"
+    r"(?:\s+(?:DSNT|VC|OHD|OVHD))?"
+    r"(?:\s+(?:ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?"
+    r"(?:\s+MOV\s+(?:N|NE|E|SE|S|SW|W|NW))?\b|"
+    r"\bGR\s+(?:(?:LT|LESS(?:\s+THAN)?)\s+)?(?:\d+\s+)?\d/\d\b|"
+    r"\bGR\s+\d+\b|"
     r"\b(?:" + "|".join(_SENSOR_NO_CODES) + r")\b"
 )
 
@@ -327,6 +368,90 @@ def _parse_lightning_remark(remarks: str) -> dict[str, Any] | None:
     return entry or None
 
 
+def _frac_to_inches(frac: str) -> float:
+    """Parse ``n/d`` fraction to float inches."""
+    num_s, den_s = frac.split("/", 1)
+    return int(num_s) / float(int(den_s))
+
+
+def _sky_level_field(token: str, base: int) -> dict[str, str]:
+    """
+    Map one FMH-1 ``8/`` etage digit to CharacterOfTheSky IR.
+
+    Digit ``0``–``9`` → BUFR ``0-20-012`` code ``base+digit``; ``/`` → notObservable.
+    """
+    if token == "/":
+        return {"nil_reason": _NIL_NOT_OBSERVABLE}
+    code = base + int(token)
+    return {"href": _BUFR_CLOUD_HREF.format(code=code)}
+
+
+def _parse_sky_types_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 ``8/CLCMCH`` into CharacterOfTheSky IR."""
+    m = _SKY_TYPES.search(remarks)
+    if m is None:
+        return None
+    low = _sky_level_field(m.group("cl"), 30)
+    mid = _sky_level_field(m.group("cm"), 20)
+    high = _sky_level_field(m.group("ch"), 10)
+    sky: dict[str, Any] = {}
+    if "href" in low:
+        sky["low_href"] = low["href"]
+    else:
+        sky["low_nil_reason"] = low["nil_reason"]
+    if "href" in mid:
+        sky["middle_href"] = mid["href"]
+    else:
+        sky["middle_nil_reason"] = mid["nil_reason"]
+    if "href" in high:
+        sky["high_href"] = high["href"]
+    else:
+        sky["high_nil_reason"] = high["nil_reason"]
+    return sky
+
+
+def _parse_convective_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse first FMH-1 CB/TS/TCU/CBMAM location remark into ConvectiveCloudLocation IR."""
+    m = _CONVECTIVE.search(remarks)
+    if m is None:
+        return None
+    ctype = m.group("ctype")
+    entry: dict[str, Any] = {
+        "cloud_type_href": _CONVECTIVE_TYPE_HREF.format(code=_CONVECTIVE_TYPE_CODES[ctype]),
+    }
+    dist = m.group("dist")
+    if dist:
+        entry["qualitative_distance_href"] = _DIST_HREF.format(code=_CONVECTIVE_DIST_CODES[dist])
+    sector = _lightning_sector(m.group("sector"))
+    if sector is not None:
+        entry["sector"] = sector
+    mov = m.group("mov")
+    if mov:
+        entry["direction_of_motion_deg"] = _LTG_COMPASS_DEG[mov]
+        # True north as 360 for N (PDF overhead-moving-north sample).
+        if mov == "N":
+            entry["direction_of_motion_deg"] = 360.0
+    return entry
+
+
+def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 ``GR`` hailstone size remark into HailstoneSize IR."""
+    m = _HAIL_SIZE.search(remarks)
+    if m is None:
+        return None
+    if m.group("below"):
+        inches = _frac_to_inches(m.group("bfrac"))
+        return {"maximum_diameter_in": inches, "size_operator": "BELOW"}
+    if m.group("whole") is not None and m.group("frac"):
+        inches = float(int(m.group("whole"))) + _frac_to_inches(m.group("frac"))
+        return {"maximum_diameter_in": inches}
+    if m.group("onlyfrac"):
+        return {"maximum_diameter_in": _frac_to_inches(m.group("onlyfrac"))}
+    if m.group("onlywhole"):
+        return {"maximum_diameter_in": float(int(m.group("onlywhole")))}
+    return None
+
+
 def _remarks_free_text(remarks: str) -> str:
     """
     Return REMARKS remainder after removing structured AO/SLP/PK/LTG/SNINCR/sensor tokens.
@@ -341,7 +466,8 @@ def _remarks_free_text(remarks: str) -> str:
 
 def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
-    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, WSHFT, LTG, SNINCR, sensor-NO, T, P).
+    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, WSHFT, LTG, sky,
+    convective, hail, SNINCR, sensor-NO, T, P).
 
     Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
     TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
@@ -390,6 +516,18 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     lightning = _parse_lightning_remark(remarks)
     if lightning is not None:
         ir["observed_lightning"] = lightning
+
+    sky = _parse_sky_types_remark(remarks)
+    if sky is not None:
+        ir["character_of_the_sky"] = sky
+
+    convective = _parse_convective_remark(remarks)
+    if convective is not None:
+        ir["convective_cloud"] = convective
+
+    hail = _parse_hail_size_remark(remarks)
+    if hail is not None:
+        ir["hailstone_size"] = hail
 
     snincr = _SNINCR.search(remarks)
     if snincr is not None:

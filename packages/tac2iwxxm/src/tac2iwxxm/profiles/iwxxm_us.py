@@ -101,20 +101,135 @@ def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
+def _cloud_character_elem(tag: str, href: str | None, nil_reason: str | None) -> str:
+    """Serialize one CharacterOfTheSky CloudTypes child (xlink or nilReason)."""
+    if href:
+        return f'              <iwxxm-us:{tag} xlink:href="{escape(href)}"/>'
+    if nil_reason:
+        return f'              <iwxxm-us:{tag} nilReason="{escape(nil_reason)}"/>'
+    return ""
+
+
+def _character_of_the_sky_xml(sky: dict[str, Any]) -> str:
+    """Serialize ``iwxxm-us:CharacterOfTheSky`` for VOP."""
+    low = _cloud_character_elem(
+        "lowCloudCharacter",
+        sky.get("low_href") if isinstance(sky.get("low_href"), str) else None,
+        sky.get("low_nil_reason") if isinstance(sky.get("low_nil_reason"), str) else None,
+    )
+    mid = _cloud_character_elem(
+        "middleCloudCharacter",
+        sky.get("middle_href") if isinstance(sky.get("middle_href"), str) else None,
+        sky.get("middle_nil_reason") if isinstance(sky.get("middle_nil_reason"), str) else None,
+    )
+    high = _cloud_character_elem(
+        "highCloudCharacter",
+        sky.get("high_href") if isinstance(sky.get("high_href"), str) else None,
+        sky.get("high_nil_reason") if isinstance(sky.get("high_nil_reason"), str) else None,
+    )
+    return f"""              <iwxxm-us:CharacterOfTheSky>
+{low}
+{mid}
+{high}
+              </iwxxm-us:CharacterOfTheSky>"""
+
+
+def _convective_cloud_xml(conv: dict[str, Any]) -> str:
+    """Serialize one ``iwxxm-us:ConvectiveCloudLocation`` block."""
+    parts: list[str] = ["              <iwxxm-us:ConvectiveCloudLocation>"]
+    ctype = conv.get("cloud_type_href")
+    if ctype:
+        parts.append(f'                <iwxxm-us:cloudType xlink:href="{escape(str(ctype))}"/>')
+    dist = conv.get("qualitative_distance_href")
+    if dist:
+        parts.append(f'                <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
+    sector_raw = conv.get("sector")
+    if isinstance(sector_raw, dict):
+        sector: dict[str, Any] = sector_raw
+        if sector.get("in_all_quadrants"):
+            parts.append("                <iwxxm-us:sector>")
+            parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
+            parts.append("                </iwxxm-us:sector>")
+        elif "ccw_deg" in sector and "cw_deg" in sector:
+            ccw = _fmt_deg(float(str(sector["ccw_deg"])))
+            cw = _fmt_deg(float(str(sector["cw_deg"])))
+            parts.append("                <iwxxm-us:sector>")
+            parts.append("                  <iwxxm-us:Sector>")
+            parts.append(
+                f'                    <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
+            )
+            parts.append(
+                f'                    <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
+            )
+            parts.append("                  </iwxxm-us:Sector>")
+            parts.append("                </iwxxm-us:sector>")
+    motion = conv.get("direction_of_motion_deg")
+    if motion is not None:
+        motion_txt = _fmt_deg(float(str(motion)))
+        parts.append(f'                <iwxxm-us:directionOfMotion uom="deg">{motion_txt}</iwxxm-us:directionOfMotion>')
+    parts.append("              </iwxxm-us:ConvectiveCloudLocation>")
+    return "\n".join(parts)
+
+
 def _vop_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``visuallyObservablePhenomena`` when lightning present."""
+    """Serialize Addendum ``visuallyObservablePhenomena`` (lightning / convection / sky)."""
     lightning_raw = ir.get("observed_lightning")
-    if not isinstance(lightning_raw, dict):
+    has_lightning = isinstance(lightning_raw, dict)
+    convective_raw = ir.get("convective_cloud")
+    has_convective = isinstance(convective_raw, dict)
+    sky_raw = ir.get("character_of_the_sky")
+    has_sky = isinstance(sky_raw, dict)
+    if not has_lightning and not has_convective and not has_sky:
         return ""
-    lightning: dict[str, Any] = lightning_raw
-    ol = _observed_lightning_xml(lightning)
-    return f"""          <iwxxm-us:visuallyObservablePhenomena>
-            <iwxxm-us:VisuallyObservablePhenomena>
-              <iwxxm-us:lightning>
-{ol}
-              </iwxxm-us:lightning>
-            </iwxxm-us:VisuallyObservablePhenomena>
-          </iwxxm-us:visuallyObservablePhenomena>
+
+    inner_parts: list[str] = [
+        "          <iwxxm-us:visuallyObservablePhenomena>",
+        "            <iwxxm-us:VisuallyObservablePhenomena>",
+    ]
+    if has_lightning:
+        lightning: dict[str, Any] = lightning_raw  # type: ignore[assignment]
+        ol = _observed_lightning_xml(lightning)
+        inner_parts.append("              <iwxxm-us:lightning>")
+        inner_parts.append(ol)
+        inner_parts.append("              </iwxxm-us:lightning>")
+    if has_convective:
+        convective: dict[str, Any] = convective_raw  # type: ignore[assignment]
+        conv_xml = _convective_cloud_xml(convective)
+        inner_parts.append("              <iwxxm-us:convection>")
+        inner_parts.append(conv_xml)
+        inner_parts.append("              </iwxxm-us:convection>")
+    if has_sky:
+        sky: dict[str, Any] = sky_raw  # type: ignore[assignment]
+        sky_xml = _character_of_the_sky_xml(sky)
+        inner_parts.append("              <iwxxm-us:characterOfTheSky>")
+        inner_parts.append(sky_xml)
+        inner_parts.append("              </iwxxm-us:characterOfTheSky>")
+    inner_parts.extend(
+        [
+            "            </iwxxm-us:VisuallyObservablePhenomena>",
+            "          </iwxxm-us:visuallyObservablePhenomena>",
+        ]
+    )
+    return "\n".join(inner_parts) + "\n"
+
+
+def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``hailstoneSize`` from FMH-1 GR remark."""
+    hail_raw = ir.get("hailstone_size")
+    if not isinstance(hail_raw, dict):
+        return ""
+    hail: dict[str, Any] = hail_raw
+    diam = hail.get("maximum_diameter_in")
+    if diam is None:
+        return ""
+    diam_txt = _fmt_deg(float(str(diam)))  # reuse compact float formatting
+    op = hail.get("size_operator")
+    op_xml = f"\n                <iwxxm-us:sizeOperator>{escape(str(op))}</iwxxm-us:sizeOperator>" if op else ""
+    return f"""          <iwxxm-us:hailstoneSize>
+            <iwxxm-us:HailstoneSize>
+              <iwxxm-us:maximumDiameter uom="[in_i]">{diam_txt}</iwxxm-us:maximumDiameter>{op_xml}
+            </iwxxm-us:HailstoneSize>
+          </iwxxm-us:hailstoneSize>
 """
 
 
@@ -175,14 +290,20 @@ def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
 def _addendum_extension(ir: dict[str, Any]) -> str:
     """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
     free_text = str(ir.get("remarks_free_text") or "").strip()
-    has_vop = isinstance(ir.get("observed_lightning"), dict)
+    has_vop = (
+        isinstance(ir.get("observed_lightning"), dict)
+        or isinstance(ir.get("convective_cloud"), dict)
+        or isinstance(ir.get("character_of_the_sky"), dict)
+    )
     has_snow = isinstance(ir.get("snow_increase"), dict)
+    has_hail = isinstance(ir.get("hailstone_size"), dict)
     if (
         not ir.get("observing_system_type")
         and ir.get("sea_level_pressure_hpa") is None
         and not free_text
         and not has_vop
         and not has_snow
+        and not has_hail
     ):
         return ""
     parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
@@ -201,6 +322,9 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     vop = _vop_addendum_inner(ir)
     if vop:
         parts.append(vop.rstrip("\n"))
+    hail = _hailstone_size_addendum_inner(ir)
+    if hail:
+        parts.append(hail.rstrip("\n"))
     parts.extend(["        </iwxxm-us:Addendum>", "      </iwxxm:extension>"])
     return "\n".join(parts) + "\n"
 

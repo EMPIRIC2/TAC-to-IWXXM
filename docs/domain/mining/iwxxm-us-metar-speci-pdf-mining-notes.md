@@ -29,10 +29,10 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | AerodromePeakWind | PK WND | ⚠ / ✅ theme | ⚠ | ⚠ | F15 deepen cited AO2/SLP/PK WND |
 | AerodromeVariableRVR | Variable RVR | ✅ | ⚠ | ✅ | S032/#810 — meanRVR withheld; TC-EV025-001 |
 | AerodromeWindShift | WSHFT / FROPA | ✅ | ⚠ | ✅ | S032/M4.1 — TC-EV025-004 |
-| CharacterOfTheSky / CloudTypes | Sky character RMK | ❌ | ⚠ | ❌ | |
-| ConvectiveCloudLocation / Types | CB/TCU location/motion | ❌/⚠ | ⚠ | ❌ | |
+| CharacterOfTheSky / CloudTypes | Sky character RMK | ✅ | ⚠ | ✅ | S032/M4.2 — ``8/CLCMCH``; TC-EV025-004 |
+| ConvectiveCloudLocation / Types | CB/TCU location/motion | ✅ | ⚠ | ✅ | S032/M4.2 — CB/TS/TCU; TC-EV025-004 |
 | FailedSensors / InoperativeSensors / MeteorologicalSensors | Sensor outage | ✅ | ⚠ | ✅ | S032/#812 — CHINO/RVRNO/… → Sensor hrefs; TC-EV025-003 |
-| HailstoneSize | GR size | ❌ | ⚠ | ❌ | |
+| HailstoneSize | GR size | ✅ | ⚠ | ✅ | S032/M4.2 — ``GR`` size; TC-EV025-004 |
 | MaxMinTemperatures | 1/6-hr max/min | ⚠ | ⚠ | ❌ | |
 | Obscurations | Obscuration layers | ❌ | ⚠ | ❌ | |
 | ObservedLightning / Frequency / Type | Lightning RMK | ✅ | ⚠ | ✅ | S032/#811 — TC-EV025-002; PDF sample shapes |
@@ -42,7 +42,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | SnowIncrease | Snow depth increase | ✅ | ⚠ | ✅ | S032/#812 — SNINCR; TC-EV025-003 |
 | ProcessedProperty + statistical codelists | PNO / stats | ❌ | ⚠ | ❌ | |
 | VariableCeilingHeight / Sky / Visibility | Variable CIG/SKY/VIS | ❌ | ⚠ | ❌ | |
-| VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ lightning | ⚠ | ✅ | S032/#811 — lightning via Addendum; convection/sky/obscuration → M4 |
+| VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ L/C/sky | ⚠ | ✅ | S032/#811+#M4.2 — lightning/convection/sky; obscuration → M4.3 |
 | Codelists (ObservingSystemType, Pressure*, QualitativeDistance, Statistical*) | FMH-1 / NWS codes URIs | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov hrefs from PDF |
 
 **Legend:** ✅ encoded/tested · ⚠ partial / unconfirmed · ❌ missing — refine in M4/M7 children after code audit.
