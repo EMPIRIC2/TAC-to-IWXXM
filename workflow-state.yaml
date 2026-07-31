@@ -38,7 +38,7 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 13-deploy-smoke
-  note: 'T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 27/28'
+  note: 'closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 27/28'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -55,7 +55,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: 'T7.2 COMPLETE @ 1e46b38 (08+10 PASS); 07-build complete; T7.3/13 when ships or PR closeout; progress 27/28'
+    note: 'closeout=1; T7.3 deferred; PR opening; EV-025 remains in_progress until merge'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -101,8 +101,8 @@ active_session:
   - stage: 13-deploy-smoke
     required: false
     mode: when_ships
-    status: pending
-    note: 'when_ships — T7.3 deferred pending AskQuestion'
+    status: deferred
+    note: 'deferred D-S032-EV025-closeout=1; when ships after merge'
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -5000,7 +5000,8 @@ stages:
     previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred when_ships; tip 1e46b38; progress 27/28; #810/#811/#812/#809'
+    note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress 27/28;
+      #810/#811/#812/#809'
     tip_sha: 1e46b38
     tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
     current_stage: M7
@@ -5008,7 +5009,7 @@ stages:
     current_task: T7.3
     active_milestone: M7
     active_task: T7.3
-    active_task_status: pending
+    active_task_status: deferred
     progress: 27/28
     pr_number:
     pr_url:
@@ -5031,12 +5032,13 @@ stages:
       started_at: '2026-07-31'
       started: '2026-07-31'
       completed: '2026-07-31'
-      note: 'S032/EV-025 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred when_ships; tip 1e46b38; progress 27/28; #810/#811/#812/#809'
+      note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress
+        27/28; #810/#811/#812/#809'
       active_milestone: M7
       current_milestone: M7
       active_task: T7.3
       current_task: T7.3
-      active_task_status: pending
+      active_task_status: deferred
       deepen:
       - F6
       - F12
@@ -5057,11 +5059,12 @@ stages:
       task_loop:
         status: completed
         current_task: T7.3
-        active_task_status: pending
+        active_task_status: deferred
         active_milestone: M7
         phase: C
         milestone: M7
-        notes: 'S032/EV-025 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred when_ships; tip 1e46b38; progress 27/28; #810/#811/#812/#809'
+        notes: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress
+          27/28; #810/#811/#812/#809'
     delta_substages:
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
@@ -5073,12 +5076,13 @@ stages:
       completed: '2026-07-31'
       completed_at: '2026-07-31'
       mode: full
-      note: 'S032/EV-025 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred when_ships; tip 1e46b38; progress 27/28; #810/#811/#812/#809'
+      note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress
+        27/28; #810/#811/#812/#809'
       active_milestone: M7
       current_milestone: M7
       active_task: T7.3
       current_task: T7.3
-      active_task_status: pending
+      active_task_status: deferred
       progress: 27/28
       decision_id: D-S032-04-plan-approve
       tip_sha: 1e46b38
@@ -5395,6 +5399,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - 2026-07-31 S032/EV-025 closeout=1; T7.3 deferred; PR opening
     - '2026-07-31 S032/EV-025 T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 27/28;
       #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T7.2 COMPLETE 08+10 PASS; Gate C encode PASS; tip 1e46b38; next T7.3/13 when ships or open PR; progress 27/28; #810/#811/#812/#809'
@@ -6932,22 +6937,22 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + 
       redeploy required before 13
   13-deploy-smoke:
-    status: completed
+    status: deferred
     started_at: '2026-07-30'
     started: '2026-07-30'
     completed: '2026-07-30'
     completed_at: '2026-07-30'
     previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
-    previous_session_id: S030-apac-encode-validate
-    previous_evolve_cycle_id: EV-023
-    previous_tip_sha: af98690
+    previous_session_id: S031-iwxxm-domain-mine
+    previous_evolve_cycle_id: EV-024
+    previous_tip_sha: 864783e
     previous_overall: pass
-    previous_note: 'COMPLETE — PASS; PR #801 merged af98690; CI 30586719518; H1/H0c/H3/H4/H5 + live convert themes; report deploy-smoke.md; #800'
-    session_id: S031-iwxxm-domain-mine
-    evolve_cycle_id: EV-024
-    note: 'S031/EV-024 13-deploy-smoke COMPLETE PASS — PR #813 merged 864783e; CI 30595410610; API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0;
+    previous_note: 'S031/EV-024 13-deploy-smoke COMPLETE PASS — PR #813 merged 864783e; CI 30595410610; API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0;
       H0c/H1/H3/H4/H5 + catalog + convert; D-S031-merge-close; report deploy-smoke.md; #804/#807/#773'
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    note: 'S032/EV-025 13-deploy-smoke deferred D-S032-EV025-closeout=1; when ships after merge; #810/#811/#812/#809'
     tip_sha: 864783e
     tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
     overall: pass
@@ -7329,6 +7334,7 @@ stages:
       report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
       hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+    - 2026-07-31 S032/EV-025 deferred D-S032-EV025-closeout=1; when ships after merge
     - '2026-07-30 S027/EV-021 13-deploy-smoke COMPLETE (D-S027-E21-13-merge) — PASS; H1–H5 + live VAA/TCA; PR #794 merged df56d1f; deploys dep-d9lmsdflk1mc739232ug
       / dep-d9lmsefqj5pc739d3it0; #736/#737'
     - '2026-07-29 S026/EV-020 13-deploy-smoke COMPLETE (D-S026-E20-13-merge) — PASS; H1–H5 + live F24/F25; PR #793 merged 0f77194; deploys dep-d9l5ihf10e5c73fs5420
@@ -7431,9 +7437,11 @@ stages:
     completed_at:
     completed:
     current_stage: 13-deploy-smoke
-    note: 'T7.2 COMPLETE @ 1e46b38 (08+10 PASS); 07 complete 27/28; T7.3/13 when ships or PR closeout; EV-025 still in_progress'
+    note: 'closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 27/28'
     prior_note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
     notes:
+    - 2026-07-31 S032/EV-025 closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close 
+      EV-025; progress 27/28
     - 2026-07-31 S032/EV-025 T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 
       27/28
     - '2026-07-31 S032/EV-025 T7.2 COMPLETE 08+10 PASS; Gate C encode PASS; tip 1e46b38; next T7.3/13 when ships or open PR; progress 27/28; #810/#811/#812/#809'
@@ -7766,6 +7774,34 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S032-EV025-closeout
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: closeout
+  status: confirmed
+  topic: EV-025 closeout option 1 — defer T7.3, open PR, close after merge
+  summary: D-S032-EV025-closeout=1 — Defer T7.3/13 until API ships; push+PR to main; close EV-025 only after merge
+  decision: User chose closeout option 1. Defer T7.3 / 13-deploy-smoke until API ships. Push branch and open PR to main. Do NOT mark EV-025 
+    completed until merge. T7.3 remains deferred (when ships after merge).
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - D-S032-EV025-t7-2-reconcile
+  - D-S032-04-plan-approve
+  answers:
+    D-S032-EV025-closeout: '1'
+    E25-closeout: '1'
+  tip_sha: 1e46b38
+  tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
 - id: D-S032-EV025-t7-2-reconcile
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -15385,6 +15421,17 @@ decisions_log:
   preset: Lean+build
   preset_status: approved
 artifacts:
+- path: docs/sessions/S032-iwxxm-us-remarks-va/reports/evolve-summary.md
+  type: session-report
+  kind: evolve-summary
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: in_progress
+  note: closeout=1; PR pending; close EV-025 after merge
 - path: docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
   type: session-report
   kind: e2e-report
@@ -23511,7 +23558,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: 'T7.2 COMPLETE @ 1e46b38 (08+10 PASS); 07 complete 27/28; T7.3/13 when ships or PR closeout; EV-025 still in_progress'
+      note: 'closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 27/28'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -23551,7 +23598,7 @@ evolve_cycles:
       progress: 27/28
       tip_sha: 1e46b38
       tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
-      active_task_status: pending
+      active_task_status: deferred
       note: 'S032/EV-025 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred when_ships; tip 1e46b38; progress 27/28; #810/#811/#812/#809'
     08-verify-build:
       status: completed
@@ -23576,19 +23623,19 @@ evolve_cycles:
       tip_sha: 1e46b38
       note: T7.2 smoke PASS — docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
     13-deploy-smoke:
-      status: pending
-      note: when_ships — T7.3 deferred pending AskQuestion
+      status: deferred
+      note: deferred D-S032-EV025-closeout=1; when ships after merge
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: deferred
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
-    phase_d: pending
-    deploy: pending
+    phase_d: deferred
+    deploy: deferred
   adrs: []
   artifacts:
   - docs/sessions/S032-iwxxm-us-remarks-va/session-brief.md
@@ -23609,14 +23656,17 @@ evolve_cycles:
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/evolve-summary.md
   active_milestone: M7
   current_task: T7.3
   active_task: T7.3
-  active_task_status: pending
+  active_task_status: deferred
   progress: 27/28
   tip_sha: 1e46b38
   tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
   notes:
+  - 2026-07-31 S032/EV-025 closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025;
+    progress 27/28; D-S032-EV025-closeout=1
   - '2026-07-31 S032/EV-025 T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 27/28;
     #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T7.2 COMPLETE 08+10 PASS; Gate C encode PASS; tip 1e46b38; next T7.3/13 when ships or open PR; progress 27/28; #810/#811/#812/#809'
@@ -23659,6 +23709,8 @@ evolve_cycles:
   - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 OPEN — Phase 0 intake E25-1=1, E25-2=1, E25-3=1, E25-4b=2 dual lane + E25-4c=3 all ❌ US types, E25-ui=1 N/A (D-S032-E25-phase0);
     Lean+build; #810/#811/#812/#809'
+  note_closeout: closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 
+    27/28
 git_history:
   current_branch: evolve/EV-025-iwxxm-us-remarks-va
   ahead_of_origin: 38

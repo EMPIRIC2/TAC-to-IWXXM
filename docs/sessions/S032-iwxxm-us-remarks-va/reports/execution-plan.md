@@ -12,11 +12,12 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — Build (closing) |
+| **Active phase** | Phase D — PR closeout (T7.3 deferred) |
 | **Active milestone** | M7 |
-| **Active task** | T7.3 (when ships) |
-| **Tasks** | 27 / 28 |
+| **Active task** | T7.3 **deferred** (13 when ships) |
+| **Tasks** | 27 / 28 (T7.3 deferred) |
 | **Last updated** | 2026-07-31 |
+| **Closeout** | `D-S032-EV025-closeout=1` — defer T7.3, PR → main, close EV-025 after merge |
 
 ## Tech Stack Summary
 
@@ -118,7 +119,7 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 |------|------|-------------|-------------|------------|--------|
 | T7.1 | Docs | Final dig ❌→✅ audit; **any remaining encode ❌ blocks Gate C** (E25-T5=3) | E25-4c; E25-T5 | T4.7; T5.3; T6.4 | **completed** |
 | T7.2 | Test | 08-verify-build + 10-e2e smoke (US convert/validate + VA stem) | routing | T7.1 | **completed** |
-| T7.3 | Deploy | 13-deploy-smoke **when** API convert/validate ships | E25-3 | T7.2 | pending |
+| T7.3 | Deploy | 13-deploy-smoke **when** API convert/validate ships | E25-3 | T7.2 | **deferred** (`D-S032-EV025-closeout=1`) |
 
 ## Data Dependencies
 
@@ -142,13 +143,13 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 
 ## PR checklist (draft)
 
-- [ ] #810 / #811 / #812 goldens green
-- [ ] Adjacent dig ❌ packs green (TC-EV025-004); dig table all encode ✅
-- [ ] US fixtures out of WMO menu
-- [ ] #809 soft→strict / promote path under ADR-032
-- [ ] TC-EV025-001..010 (SCH deferrals documented only for -010)
-- [ ] No new deps without AskQuestion
-- [ ] 13 when behavior ships
+- [x] #810 / #811 / #812 goldens green
+- [x] Adjacent dig ❌ packs green (TC-EV025-004); dig table all encode ✅
+- [x] US fixtures out of WMO menu
+- [x] #809 soft-compare path; `wmoPass` promote deferred under ADR-032 (TC-EV025-009)
+- [x] TC-EV025-001..010 (SCH deferrals documented only for -010)
+- [x] No new deps without AskQuestion
+- [ ] 13 when behavior ships (T7.3 deferred)
 
 ## Gate B → C
 
