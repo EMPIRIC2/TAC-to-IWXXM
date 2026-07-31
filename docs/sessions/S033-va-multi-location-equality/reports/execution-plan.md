@@ -15,7 +15,7 @@
 | Catalog | `sigmet_multi_location_va` = `wmoReference` |
 | Strict equality | In progress — 07-build |
 | Issue | #809 open |
-| Active task | T2.1 |
+| Active task | T2.3 |
 
 ## Locked policy
 
@@ -62,9 +62,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Code | Catalog `wmoReference` → `wmoPass`; label passer | TC-EV025-009; UJ-041 | T1.5 | pending |
-| T2.2 | Docs | FIXTURE_GAPS clear equality-pending / #809 note | TC-EV025-009 | T2.1 | pending |
-| T2.3 | Test | TC-EV025-009 Vitest/catalog `wmoPass: true` | TC-EV025-009 | T2.2 | pending |
+| T2.1 | Code | Catalog `wmoReference` → `wmoPass`; label passer | TC-EV025-009; UJ-041 | T1.5 | completed |
+| T2.2 | Docs | FIXTURE_GAPS clear equality-pending / #809 note | TC-EV025-009 | T2.1 | completed |
+| T2.3 | Test | TC-EV025-009 Vitest/catalog `wmoPass: true` | TC-EV025-009 | T2.2 | completed |
 
 ### M3 — Verify / close
 

@@ -144,15 +144,16 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
     expect(getTacExamplesForProduct('AIRMET').some((ex) => ex.wmoPass)).toBe(true);
   });
 
-  it('lists VA SIGMET official stems as WMO reference samples (UJ-039 / EV-024)', () => {
+  it('lists VA SIGMET official stems (EGGX reference; multi-location passer)', () => {
     const eggx = getExampleById('sigmet_va_eggx');
     expect(eggx?.wmoReference).toBe(true);
     expect(eggx?.wmoPass).not.toBe(true);
     expect(eggx?.wmoSeed).toBe('sigmet-VA-EGGX');
     const multi = getExampleById('sigmet_multi_location_va');
-    expect(multi?.wmoReference).toBe(true);
-    expect(multi?.wmoPass).not.toBe(true);
+    expect(multi?.wmoPass).toBe(true);
+    expect(multi?.wmoReference).not.toBe(true);
     expect(multi?.wmoSeed).toBe('sigmet-multi-location-VA');
+    expect(multi?.label.toLowerCase()).toMatch(/passer/);
     expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(4);
   });
 
