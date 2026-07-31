@@ -37,6 +37,7 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 07-build
+  note: 'S032/EV-025 07-build — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -53,7 +54,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: EV-025 orchestrator in_progress; Gate B approved; 07-build in_progress @ M0
+    note: EV-025 orchestrator in_progress; Gate B approved; 07-build T3.1+T3.2 done @ tip d4a6421; next T3.3 matrix; progress 10/28
   - stage: 01-requirements
     required: true
     mode: delta
@@ -80,7 +81,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-31'
-    note: 'M0+M1 complete (T0.1–T1.3); next T2.1 #811 Lightning/VOP'
+    note: 'S032/EV-025 07-build — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421; progress 10/28'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5134,14 +5135,16 @@ stages:
     previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 07-build in_progress — M0+M1 complete (T0.1–T1.3); next T2.1 #811 Lightning/VOP; tip 9d1e49a; #810/#811/#812/#809'
-    tip_sha: 9d1e49a
-    tip_sha_full: 9d1e49a11aad51d94822a3026351f6b8d0703bd4
-    current_stage: M2
-    active_milestone: M2
-    active_task: T2.1
+    note: 'S032/EV-025 07-build — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421; progress 10/28'
+    tip_sha: d4a6421
+    tip_sha_full: d4a642182eeaf44783818dab02118138b3e52348
+    current_stage: M3
+    current_milestone: M3
+    current_task: T3.3
+    active_milestone: M3
+    active_task: T3.3
     active_task_status: pending
-    progress: 5/28
+    progress: 10/28
     pr_number: null
     pr_url: null
     pr_status: null
@@ -5160,9 +5163,11 @@ stages:
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'M0+M1 complete (T0.1–T1.3); next T2.1 #811 Lightning/VOP; #810/#811/#812/#809'
-      active_milestone: M2
-      active_task: T2.1
+      note: 'S032/EV-025 07-build — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.3
+      current_task: T3.3
       deepen:
       - F6
       - F12
@@ -5177,12 +5182,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T2.1
+        current_task: T3.3
         active_task_status: pending
-        active_milestone: M2
+        active_milestone: M3
         phase: C
-        milestone: M2
-        notes: 'M0+M1 complete (T0.1–T1.3 #810); next T2.1 #811 Lightning/VOP'
+        milestone: M3
+        notes: 'T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421; progress 10/28'
     delta_substages:
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
@@ -5194,14 +5199,16 @@ stages:
       completed: null
       completed_at: null
       mode: full
-      note: 'M0+M1 complete (T0.1–T1.3); next T2.1 #811 Lightning/VOP; tip 9d1e49a; #810/#811/#812/#809'
-      active_milestone: M2
-      active_task: T2.1
+      note: 'S032/EV-025 07-build — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421; progress 10/28'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.3
+      current_task: T3.3
       active_task_status: pending
-      progress: 5/28
+      progress: 10/28
       decision_id: D-S032-04-plan-approve
-      tip_sha: 9d1e49a
-      tip_sha_full: 9d1e49a11aad51d94822a3026351f6b8d0703bd4
+      tip_sha: d4a6421
+      tip_sha_full: d4a642182eeaf44783818dab02118138b3e52348
       branch: evolve/EV-025-iwxxm-us-remarks-va
       deepen:
       - F6
@@ -5517,6 +5524,9 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 T3.1+T3.2 done (#812 encode) — tip d4a6421; next T3.3 matrix green; progress 10/28; commits 2b51859/d4a6421; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 M2 COMPLETE (T2.1–T2.3 #811 Lightning/VOP) — tip 5ebc70b; next T3.1 #812 SnowIncrease/sensors; progress 8/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T2.1 in_progress (#811 Lightning/VOP red goldens TC-EV025-002); M0+M1 done tip 9d1e49a; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M1 COMPLETE (T1.1–T1.3 #810) — tip 9d1e49a; next T2.1 #811 Lightning/VOP; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M0 COMPLETE (T0.1+T0.2) — tip f1e19a9; next T1.1; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 07-build STARTED (D-S032-04-plan-approve B→C) — @ T0.1; M0 theme map + dig audit; plan docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md; #810/#811/#812/#809'
@@ -7583,9 +7593,11 @@ stages:
     completed_at: null
     completed: null
     current_stage: 07-build
-    note: 'S032/EV-025 07-build in_progress — M0+M1 complete; next T2.1 #811; #810/#811/#812/#809'
-    prior_note: 'S032/EV-025 07-build in_progress — M0 T0.1+T0.2 done; next T1.1; #810/#811/#812/#809'
+    note: 'S032/EV-025 07-build — M2 COMPLETE (T2.1–T2.3 #811 Lightning/VOP); next T3.1 #812 SnowIncrease/sensors; tip 5ebc70b; progress 8/28'
+    prior_note: 'S032/EV-025 07-build — T2.1 in_progress #811 Lightning/VOP red goldens (TC-EV025-002); M0+M1 done tip 9d1e49a'
     notes:
+    - '2026-07-31 S032/EV-025 M2 COMPLETE (T2.1–T2.3 #811 Lightning/VOP) — tip 5ebc70b; next T3.1 #812 SnowIncrease/sensors; progress 8/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T2.1 in_progress (#811 Lightning/VOP red goldens TC-EV025-002); M0+M1 done tip 9d1e49a; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M1 COMPLETE (T1.1–T1.3 @ 9d1e49a) — next T2.1 #811 Lightning/VOP; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M0 COMPLETE (T0.1+T0.2 @ f1e19a9/02f8b4d) — next T1.1; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 Gate B=1 (D-S032-04-plan-approve) — 04 COMPLETE → 07 @ T0.1; M0 theme map + dig audit; #810/#811/#812/#809'
@@ -24169,7 +24181,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: Orchestrator in_progress; Gate B approved; 07-build @ M0
+      note: Orchestrator in_progress; Gate B approved; 07-build T3.1+T3.2 done @ tip d4a6421; next T3.3; progress 10/28
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24199,7 +24211,13 @@ evolve_cycles:
       started: '2026-07-31'
       started_at: '2026-07-31'
       mode: full
-      note: 'M0+M1 complete (T0.1–T1.3); next T2.1 #811'
+      current_milestone: M3
+      current_task: T3.3
+      progress: 10/28
+      tip_sha: d4a6421
+      tip_sha_full: d4a642182eeaf44783818dab02118138b3e52348
+      active_task_status: pending
+      note: 'S032/EV-025 07-build — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; tip d4a6421; progress 10/28'
     08-verify-build:
       status: pending
     10-e2e:
@@ -24236,6 +24254,9 @@ evolve_cycles:
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
   notes:
+  - '2026-07-31 S032/EV-025 T3.1+T3.2 done (#812 encode) — tip d4a6421; next T3.3 matrix green; progress 10/28; commits 2b51859/d4a6421; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 M2 COMPLETE (T2.1–T2.3 #811 Lightning/VOP) — tip 5ebc70b; next T3.1 #812 SnowIncrease/sensors; progress 8/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T2.1 in_progress (#811 Lightning/VOP red goldens TC-EV025-002); M0+M1 done tip 9d1e49a; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 04 COMPLETE → 07 @ T0.1 (Gate B=1 / D-S032-04-plan-approve) — gates.b_to_c + phase_b passed; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 04 Batch T locked E25-T1..T6=1,1,2,1,3,1 — draft plan 28 tasks; gates.b_to_c still pending; T5=3 supersedes S02.M2; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 02 PASS → 04 (Batch F 1,1,1 / D-S032-02-phase-a) — gates.a_to_b + phase_a passed; #810/#811/#812/#809'
@@ -24248,14 +24269,16 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: 9d1e49a
-  tip_sha_full: 9d1e49a11aad51d94822a3026351f6b8d0703bd4
+  tip_sha: d4a6421
+  tip_sha_full: d4a642182eeaf44783818dab02118138b3e52348
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'S032/EV-025 tip 9d1e49a — M0+M1 complete (T0.1–T1.3); next T2.1 #811 Lightning/VOP; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
+  note: 'S032/EV-025 tip d4a6421 — T3.1+T3.2 done (#812 encode); next T3.3 matrix green; progress 10/28; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — d4a6421 (d4a642182eeaf44783818dab02118138b3e52348); "[T3.2] feat: encode iwxxm-us SnowIncrease and InoperativeSensors"; T3.1+T3.2 done; next T3.3; progress 10/28; recorded 2b51859/d4a6421; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — 5ebc70b (5ebc70bd19252fc200e121608a1d6632d5b7b80d); "[T2.3] docs: mark #811 Lightning / VOP encode green in matrices"; M2 COMPLETE T2.1–T2.3; next T3.1 #812; progress 8/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 9d1e49a (9d1e49a11aad51d94822a3026351f6b8d0703bd4); "[T1.3] docs: mark #810 Variable RVR encode green in matrices"; M0+M1 done; next T2.1; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — f1e19a9 (f1e19a958edd69d35e620c15287da7eb57d985c6); "[T0.2] docs: dig checklist code-audit and M1–M4 work queue"; M0 done; next T1.1; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 149ed5a (149ed5a8cb2ea6801af8853f81b563885c3fe6f8); "[S032] chore: record 04 draft tip sha in workflow-state"; stage 04→07 Gate B; parent will commit T0.1/T0.2 docs; #810/#811/#812/#809'
@@ -25596,11 +25619,78 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 tip 9d1e49a — M0+M1 complete (T0.1–T1.3); next T2.1 #811; #810/#811/#812/#809'
-    tip_sha: 9d1e49a
-    tip_sha_full: 9d1e49a11aad51d94822a3026351f6b8d0703bd4
+    note: 'S032/EV-025 tip d4a6421 — T3.1+T3.2 done (#812 encode); next T3.3; progress 10/28; #810/#811/#812/#809'
+    tip_sha: d4a6421
+    tip_sha_full: d4a642182eeaf44783818dab02118138b3e52348
     pushed: false
   commits:
+  - sha: d4a6421
+    sha_full: d4a642182eeaf44783818dab02118138b3e52348
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T3.2] feat: encode iwxxm-us SnowIncrease and InoperativeSensors"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T3.2 SnowIncrease / InoperativeSensors encode + green tests'
+  - sha: 2b51859
+    sha_full: 2b5185976d62d3d22f17bfb619f3a0af3f39b974
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T3.1] test: red TC-EV025-003 SnowIncrease / sensor outage goldens"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/tests/test_tc_ev025_003_snow_sensors.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T3.1 red TC-EV025-003'
+  - sha: 5ebc70b
+    sha_full: 5ebc70bd19252fc200e121608a1d6632d5b7b80d
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T2.3] docs: mark #811 Lightning / VOP encode green in matrices"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/domain/IWXXM_CONVERSION.md
+    - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T2.3 #811 Lightning/VOP matrices green'
+  - sha: 0db1748
+    sha_full: 0db1748f4e51f2f9f9a2f130837ce695e39f4030
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T2.2] feat: encode iwxxm-us Lightning / VisuallyObservablePhenomena"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T2.2 Lightning/VOP encode + green tests'
+  - sha: 619114d
+    sha_full: 619114da8cf89b3adf14b7cb1c1ff4693a771cd7
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T2.1] test: red TC-EV025-002 Lightning / VOP goldens"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - packages/tac2iwxxm/tests/test_tc_ev025_002_lightning_vop.py
+    timestamp: '2026-07-31'
+    pushed: false
+    note: 'T2.1 red TC-EV025-002'
   - sha: 9d1e49a
     sha_full: 9d1e49a11aad51d94822a3026351f6b8d0703bd4
     branch: evolve/EV-025-iwxxm-us-remarks-va
