@@ -339,7 +339,14 @@ def _sigmet_root_local(ir: dict[str, Any]) -> str:
     return "SIGMET"
 
 
-def _sigmet_header_units(ir: dict[str, Any], *, ns: str, gml_id: str, issue: str) -> str:
+def _sigmet_header_units(
+    ir: dict[str, Any],
+    *,
+    ns: str,
+    gml_id: str,
+    issue: str,
+    extra_xmlns: str = "",
+) -> str:
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
@@ -348,7 +355,7 @@ def _sigmet_header_units(ir: dict[str, Any], *, ns: str, gml_id: str, issue: str
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"{extra_xmlns}
     gml:id="{gml_id}"
     reportStatus="NORMAL"
     permissibleUsage="OPERATIONAL"{{cancel_attr}}>
@@ -400,13 +407,21 @@ def _sigmet_header_units(ir: dict[str, Any], *, ns: str, gml_id: str, issue: str
 """
 
 
-def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
+def _sigmet_geometry_xml(
+    ir: dict[str, Any],
+    *,
+    fir: str,
+    gid: str | None = None,
+    geometry: dict[str, Any] | None = None,
+    include_limits: bool = True,
+) -> str:
     """Build evolving-condition geometry from IR (G1 exceptional rules / #733/#739)."""
-    if ir.get("no_va_exp"):
+    if ir.get("no_va_exp") and geometry is None:
         return """
               <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>"""
 
-    geom = ir.get("geometry")
+    suffix = gid if gid is not None else fir.lower()
+    geom = geometry if geometry is not None else ir.get("geometry")
     top_fl = ir.get("top_fl")
     lower_fl = ir.get("lower_fl")
     upper_fl = ir.get("upper_fl", top_fl)
@@ -414,28 +429,29 @@ def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
         upper_fl = top_fl
 
     limits = ""
-    if ir.get("lower_surface") in {"SFC", "GND"} and upper_fl is not None:
-        limits = f"""
+    if include_limits:
+        if ir.get("lower_surface") in {"SFC", "GND"} and upper_fl is not None:
+            limits = f"""
               <aixm:lowerLimit>GND</aixm:lowerLimit>
               <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
               <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
-    elif lower_fl is not None and upper_fl is not None:
-        limits = f"""
+        elif lower_fl is not None and upper_fl is not None:
+            limits = f"""
               <aixm:lowerLimit uom="FL">{int(lower_fl)}</aixm:lowerLimit>
               <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>
               <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
-    elif upper_fl is not None:
-        limits = f"""
+        elif upper_fl is not None:
+            limits = f"""
               <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
-        if ir.get("top_qualifier") == "ABV":
-            # WMO Guidance / airmet-A6-1a-TS: TOP ABV → maximumLimit nil unknown.
-            limits += """
+            if ir.get("top_qualifier") == "ABV":
+                # WMO Guidance / airmet-A6-1a-TS: TOP ABV → maximumLimit nil unknown.
+                limits += """
               <aixm:maximumLimit xsi:nil="true" nilReason="unknown"/>"""
-        elif ir.get("top_qualifier") == "BLW":
-            limits += """
+            elif ir.get("top_qualifier") == "BLW":
+                limits += """
               <aixm:minimumLimit xsi:nil="true" nilReason="unknown"/>"""
 
     if isinstance(geom, dict):
@@ -445,15 +461,15 @@ def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
             lon = float(g["lon"])
             return f"""
               <iwxxm:geometry>
-                <aixm:AirspaceVolume gml:id="vol.{fir.lower()}">{limits}
+                <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
                   <aixm:horizontalProjection>
-                    <aixm:Surface gml:id="sfc.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                    <aixm:Surface gml:id="sfc.{suffix}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
                       <gml:patches>
                         <gml:PolygonPatch>
                           <gml:exterior>
                             <gml:Ring>
                               <gml:curveMember>
-                                <gml:Curve gml:id="curve.{fir.lower()}">
+                                <gml:Curve gml:id="curve.{suffix}">
                                   <gml:segments>
                                     <gml:CircleByCenterPoint numArc="1">
                                       <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
@@ -475,9 +491,9 @@ def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
             pos_list = str(g["pos_list"])
             return f"""
               <iwxxm:geometry>
-                <aixm:AirspaceVolume gml:id="vol.{fir.lower()}">{limits}
+                <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
                   <aixm:horizontalProjection>
-                    <aixm:Surface gml:id="sfc.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                    <aixm:Surface gml:id="sfc.{suffix}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
                       <gml:patches>
                         <gml:PolygonPatch>
                           <gml:exterior>
@@ -495,12 +511,111 @@ def _sigmet_geometry_xml(ir: dict[str, Any], *, fir: str) -> str:
     if limits:
         return f"""
               <iwxxm:geometry>
-                <aixm:AirspaceVolume gml:id="vol.{fir.lower()}">{limits}
+                <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
                 </aixm:AirspaceVolume>
               </iwxxm:geometry>"""
 
     return """
               <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/missing"/>"""
+
+
+def _sigmet_location_analysis_xml(
+    loc: dict[str, Any],
+    *,
+    fir: str,
+    index: int,
+    issue: str,
+    begin: str,
+    end: str,
+) -> str:
+    """Emit one analysisCollection for a multi-location VA OBS(+FCST) segment (#809)."""
+    suffix = f"{fir.lower()}.{index}"
+    intensity = str(loc.get("intensity_change", "NO_CHANGE"))
+    obs_ir = {
+        "lower_fl": loc.get("lower_fl"),
+        "upper_fl": loc.get("upper_fl"),
+        "lower_surface": loc.get("lower_surface"),
+    }
+    geometry = _sigmet_geometry_xml(
+        obs_ir,
+        fir=fir,
+        gid=suffix,
+        geometry=cast(dict[str, Any], loc["geometry"]),
+    )
+    obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
+    obs_time = f"{begin[:10]}T{obs_hhmm[0:2]}:{obs_hhmm[2:4]}:00Z"
+    forecast_xml = ""
+    forecast_raw = loc.get("forecast")
+    if isinstance(forecast_raw, dict):
+        forecast = cast(dict[str, Any], forecast_raw)
+        fcst_geometry = forecast.get("geometry")
+        if isinstance(fcst_geometry, dict):
+            hhmm_raw = forecast.get("hhmm")
+            fcst_hhmm = str(hhmm_raw if hhmm_raw is not None else end[11:13] + end[14:16])
+            fcst_time = f"{end[:10]}T{fcst_hhmm[0:2]}:{fcst_hhmm[2:4]}:00Z"
+            fcst_geom = _sigmet_geometry_xml(
+                {},
+                fir=fir,
+                gid=f"{suffix}.fcst",
+                geometry=cast(dict[str, Any], fcst_geometry),
+                include_limits=False,
+            )
+            forecast_xml = f"""
+      <iwxxm:forecastPositionAnalysis>
+        <iwxxm:SIGMETPositionCollection gml:id="fcst.{suffix}">
+          <iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.fcst.{suffix}">
+              <gml:timePosition>{fcst_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>
+          <iwxxm:member>
+            <iwxxm:SIGMETPosition gml:id="pos.{suffix}" approximateLocation="true">{fcst_geom}
+            </iwxxm:SIGMETPosition>
+          </iwxxm:member>
+        </iwxxm:SIGMETPositionCollection>
+      </iwxxm:forecastPositionAnalysis>"""
+
+    return f"""  <iwxxm:analysisCollection>
+    <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{suffix}">
+      <iwxxm:analysis>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{suffix}" timeIndicator="OBSERVATION">
+          <iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.obs.{suffix}">
+              <gml:timePosition>{obs_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>
+          <iwxxm:member>
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{suffix}" intensityChange="{escape(intensity)}">{geometry}
+            </iwxxm:SIGMETEvolvingCondition>
+          </iwxxm:member>
+        </iwxxm:SIGMETEvolvingConditionCollection>
+      </iwxxm:analysis>{forecast_xml}
+    </iwxxm:analysisAndForecastPositionAnalysis>
+  </iwxxm:analysisCollection>
+"""
+
+
+def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
+    volcano_raw = ir.get("volcano")
+    if not isinstance(volcano_raw, dict):
+        return ""
+    volcano = cast(dict[str, Any], volcano_raw)
+    name = str(volcano.get("name", "")).strip()
+    if not name:
+        return ""
+    lat = float(volcano["lat"])
+    lon = float(volcano["lon"])
+    return f"""  <iwxxm:eruptingVolcano>
+    <metce:Volcano gml:id="volcano.1">
+      <metce:name>{escape(name)}</metce:name>
+      <metce:position>
+        <gml:Point gml:id="volcano.pos.1" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+          <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+        </gml:Point>
+      </metce:position>
+    </metce:Volcano>
+  </iwxxm:eruptingVolcano>
+"""
 
 
 def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
@@ -562,9 +677,46 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     phenom = _SIG_PHENOM_HREF.format(code=ir["phenomenon"])
     intensity = str(ir.get("intensity_change", "NO_CHANGE"))
-    geometry = _sigmet_geometry_xml(ir, fir=fir)
+    locations_raw = ir.get("locations")
+    locations: list[dict[str, Any]] = []
+    if isinstance(locations_raw, list):
+        for item in cast(list[Any], locations_raw):
+            if isinstance(item, dict):
+                locations.append(cast(dict[str, Any], item))
+    multi = len(locations) >= 2
+    extra_xmlns = (
+        '\n    xmlns:metce="http://def.wmo.int/metce/2013"' if multi and isinstance(ir.get("volcano"), dict) else ""
+    )
     motion = _sigmet_motion_xml(ir)
-    head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue).format(cancel_attr="")
+    head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue, extra_xmlns=extra_xmlns).format(cancel_attr="")
+
+    if multi:
+        collections = "".join(
+            _sigmet_location_analysis_xml(
+                loc,
+                fir=fir,
+                index=i,
+                issue=issue,
+                begin=begin,
+                end=end,
+            )
+            for i, loc in enumerate(locations)
+        )
+        volcano_xml = _sigmet_volcano_xml(ir)
+        return (
+            head
+            + f"""  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>{begin}</gml:beginPosition>
+      <gml:endPosition>{end}</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
+{collections}{volcano_xml}</iwxxm:{root}>
+"""
+        )
+
+    geometry = _sigmet_geometry_xml(ir, fir=fir)
     return (
         head
         + f"""  <iwxxm:validPeriod>
