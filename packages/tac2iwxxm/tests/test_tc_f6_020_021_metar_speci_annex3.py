@@ -66,14 +66,15 @@ def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
     for case in cases:
         assert (FIXTURES / case["tac"]).is_file()
         soft = case.get("soft_compare") is True
+        golden = case.get("golden")
         if soft:
             # Soft-compare cases omit package golden until ADR-032 equality.
-            assert "golden" not in case or case.get("golden") in (None, "")
-        elif case.get("seed"):
-            # Vendor-stem equality (TC-EV025-008 / #809) — compare to vendor XML, no package golden.
-            assert "golden" not in case or case.get("golden") in (None, "")
+            assert not golden
+        elif golden:
+            assert (FIXTURES / str(golden)).is_file()
         else:
-            assert (FIXTURES / case["golden"]).is_file()
+            # Vendor-stem equality (TC-EV025-008 / #809) — no package golden; seed required.
+            assert case.get("seed"), f"case {case.get('id')!r} needs golden or seed"
         assert case["product"] in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}
 
 
