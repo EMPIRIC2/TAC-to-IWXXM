@@ -74,3 +74,15 @@
 | 2026-07-29 | S02.M2 | approved | D-S027-EV021-s02m2-1 — incremental catalog unlock per product (peer E20-F4) |
 | 2026-07-29 | S02.L1 | approved | D-S027-EV021-s02l1-1 — extend combined wmo-quality.yml; finalize in 04 |
 | 2026-07-29 | D-S027-02-phase-a | approved | Gate A PASS (Lean skip AskQuestion) → 04-tech-plan |
+| 2026-07-31 | EV025-S02.H1–12 | auto-approved | 12 high-confidence F6.b/F12/F2/F13/F23 locks from E25-* (S032 02-verify-plan-audit) |
+| 2026-07-31 | S02.M1 | approved | D-S032-EV025-s02m1-1 — #809 soft-compare first; wmoPass only when ADR-032 equality holds |
+| 2026-07-31 | S02.M2 | approved | D-S032-EV025-s02m2-1 — aim close all dig ❌ in-cycle; residuals → child issues (don’t block Gate C) |
+| 2026-07-31 | S02.L1 | approved | D-S032-EV025-s02l1-1 — TC-EV025-010 may document SCH deferrals without blocking Lane A goldens |
+| 2026-07-31 | D-S032-02-phase-a | approved | Gate A PASS (Lean skip AskQuestion) → 04-tech-plan |
+| 2026-07-31 | E25-T1 | approved | D-S032-EV025-t1-1 — M0→#810→#811→#812→adjacent→#809→validate→Gate C |
+| 2026-07-31 | E25-T2 | approved | D-S032-EV025-t2-1 — per dig type/row encode (+lint) goldens |
+| 2026-07-31 | E25-T3 | approved | D-S032-EV025-t3-2 — AskQuestion per new dep |
+| 2026-07-31 | E25-T4 | approved | D-S032-EV025-t4-1 — Lane A then Lane B |
+| 2026-07-31 | E25-T5 | approved | D-S032-EV025-t5-3 — dig ❌ encode residual blocks Gate C (supersedes S02.M2) |
+| 2026-07-31 | E25-T6 | approved | D-S032-EV025-t6-1 — draft execution plan; Gate B pending |
+| 2026-07-31 | D-S032-04-plan-approve | approved | Gate B=1 — M0–M7 approved; Lean → 07-build @ T0.1 |

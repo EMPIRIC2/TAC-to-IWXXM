@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-30 (S031 / EV-024 — TC-EV024-001..008 #804/#807/#773)
+> **Last updated**: 2026-07-31 (S032 / EV-025 — TC-EV025-001..010 #810–#812/#809)
 
 ## Scope
 
@@ -88,6 +88,8 @@ Unified manual live test harness against Render staging:
 | UJ-037 | F26 | VAA registry + WMO golden (defaults) | H4–H5 if FE | TC-F26-001..006 |
 | UJ-038 | F27 | TCA registry + WMO golden (defaults) | H4–H5 if FE | TC-F27-001..006 |
 | UJ-039 | F25/F7.g deepen | Load official WMO examples from sample menu | H4–H5 if FE | TC-EV024-004..006 |
+| UJ-040 | F6.b deepen | Structured iwxxm-us REMARKS encode pack | — (API T3 optional) | TC-EV025-001..007 |
+| UJ-041 | F23 deepen | sigmet-multi-location-VA soft→strict / wmoPass | — | TC-EV025-008..009 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -1034,6 +1036,87 @@ Before closing S013 / EV-009:
 - [ ] TC-EV024-004..006 sample menu / UJ-039 green
 - [ ] TC-EV024-007 validate/CI wire or deferrals with children
 - [ ] TC-EV024-008 promotions + child issues filed
+
+## EV-025 / S032 — iwxxm-us REMARKS encode + VA multi-location (#810–#812 / #809)
+
+### TC-EV025-001: #810 Variable RVR / meanRVR withheld (UJ-040)
+
+- **Given** METAR/SPECI TAC with variable RVR REMARKS (incl. meanRVR withheld / nilReason patterns from PDF)
+- **When** convert `profile=iwxxm_us`
+- **Then** `AerodromeVariableRVR` (or pin-equivalent) emitted; withheld patterns covered; annex3/`iwxxm_us` golden + validate smoke
+- **Tier**: T0
+
+### TC-EV025-002: #811 Lightning / VisuallyObservablePhenomena (UJ-040)
+
+- **Given** TAC with lightning / VOP REMARKS (PDF sample pack; local `.local/` extract only)
+- **When** lint (as needed) + convert `iwxxm_us`
+- **Then** `ObservedLightning` / `VisuallyObservablePhenomena` (and frequency/type) encoded; fixture pack + combined-catalog expectations
+- **Tier**: T0
+
+### TC-EV025-003: #812 SnowIncrease + sensor outage (UJ-040)
+
+- **Given** TAC with snow-increase and/or sensor-outage REMARKS
+- **When** lint + convert `iwxxm_us`
+- **Then** `SnowIncrease` and Failed/Inoperative/MeteorologicalSensors paths encoded; goldens/negatives as appropriate
+- **Tier**: T0
+
+### TC-EV025-004: Adjacent dig ❌ US types pack (UJ-040)
+
+- **Given** remaining dig-checklist ❌/⚠ types (WindShift, sky/convective, hail, sector/obscuration, second-site/tower, variable CIG/SKY/VIS, max/min, ProcessedProperty, Addendum residuals, codelists, …)
+- **When** convert `iwxxm_us` (parametrized matrix)
+- **Then** each type encodes per pin XSD (dig ❌ encode residuals **block Gate C** — E25-T5=3)
+- **Tier**: T0
+
+### TC-EV025-005: US fixtures stay out of WMO sample menu (UJ-039 deepen)
+
+- **Given** new US REMARKS goldens / fixtures from Lane A
+- **When** examples catalog / sample menu is inspected
+- **Then** no US-only examples appear in the WMO menu (UJ-039 rule)
+- **Tier**: T0
+
+### TC-EV025-006: Malformed US REMARKS diagnostics (UJ-010 deepen)
+
+- **Given** malformed / unknown US REMARKS tokens alongside valid structured remarks
+- **When** convert `iwxxm_us`
+- **Then** diagnostics non-empty; no silent drop of failure path
+- **Tier**: T0
+
+### TC-EV025-007: Unparsed REMARKS retain in humanReadableText (UJ-026 deepen)
+
+- **Given** mix of newly structured + still-unparsed REMARKS
+- **When** convert `iwxxm_us`
+- **Then** structured elements emitted; remainder retained in `iwxxm-us:humanReadableText`
+- **Tier**: T0
+
+### TC-EV025-008: #809 sigmet-multi-location-VA package golden (UJ-041)
+
+- **Given** vendor `sigmet-multi-location-VA.{tac,xml}` under pin
+- **When** convert annex3 (default settings)
+- **Then** root `iwxxm:VolcanicAshSIGMET`; multi-location geometry / forecast collections; soft-compare gate allowed until equality
+- **Tier**: T0
+
+### TC-EV025-009: #809 catalog promote to wmoPass (UJ-041)
+
+- **Given** soft golden from TC-EV025-008
+- **When** `canonicalize_xml` equality holds under ADR-032 defaults
+- **Then** catalog tier may flip `wmoReference` → `wmoPass`; Vitest/catalog assert; else remain reference with FIXTURE_GAPS note
+- **Tier**: T0
+
+### TC-EV025-010: Combined-catalog validate smoke for US extension blocks (F2/F13)
+
+- **Given** Lane A emitted iwxxm-us extension XML
+- **When** `iwxxm-validate` with combined WMO + iwxxm-us catalogs
+- **Then** smoke pass (or documented SCH deferral with child issue)
+- **Tier**: T0
+
+### EV-025 verify/deploy gate
+
+- [ ] TC-EV025-001..003 named tickets green
+- [ ] TC-EV025-004 adjacent ❌ pack green — dig ❌ encode residuals **block Gate C** (E25-T5=3; supersedes soft child-issue deferral)
+- [ ] TC-EV025-005..007 UJ-039/010/026 deepen green
+- [ ] TC-EV025-008..009 #809 soft→strict / promote path green
+- [ ] TC-EV025-010 validate smoke green or deferred with rationale
+- [ ] 13-deploy-smoke if API convert/validate behavior ships
 - [ ] 13-deploy-smoke when catalog/API behavior ships (E24-4)
 
 ## F9 deepen (S026 / EV-020) — glossary registry

@@ -18,6 +18,7 @@ NIL_NOSIG = "http://codes.wmo.int/common/nil/noSignificantChange"
 NIL_NSC = "http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"
 NIL_NCD = "http://codes.wmo.int/common/nil/notDetectedByAutoSystem"
 NIL_NOT_OBS = "http://codes.wmo.int/common/nil/notObservable"
+NIL_WITHHELD = "http://codes.wmo.int/common/nil/withheld"
 
 # WMO Annex 3 / IWXXM examples use fictional YUDO = DONLON/INTERNATIONAL.
 _YUDO_NAME = "DONLON/INTERNATIONAL"
@@ -87,7 +88,7 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
     return f"{root}.basic.{station}"
 
 
-def _visibility_block(ir: dict[str, Any]) -> str:
+def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> str:
     if ir.get("visibility_not_observable"):
         return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     vis_op = ""
@@ -101,15 +102,16 @@ def _visibility_block(ir: dict[str, Any]) -> str:
                 f'\n          <iwxxm:minimumVisibilityDirection uom="deg">'
                 f"{ir['min_visibility_dir_deg']}</iwxxm:minimumVisibilityDirection>"
             )
+    ext = f"\n{visibility_extension}" if visibility_extension else ""
     return f"""      <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}{min_vis}
+          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}{min_vis}{ext}
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
 """
 
 
-def _rvr_block(ir: dict[str, Any]) -> str:
+def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
     rvr_raw = ir.get("rvr")
     if not isinstance(rvr_raw, dict):
         # Guidance / Amd79 CWFD: when vis is missing/notObservable and no RVR group,
@@ -119,10 +121,23 @@ def _rvr_block(ir: dict[str, Any]) -> str:
         return ""
     rvr = cast(dict[str, Any], rvr_raw)
     rwy = escape(str(rvr["runway"]))
-    op = str(rvr.get("operator") or "")
-    op_xml = f"\n          <iwxxm:meanRVROperator>{op}</iwxxm:meanRVROperator>" if op else ""
     tend = str(rvr.get("tendency") or "")
     tend_attr = f' pastTendency="{tend}"' if tend else ""
+    if rvr.get("variable"):
+        if rvr_extension:
+            # iwxxm-us: mean withheld; min/max live in AerodromeVariableRVR extension.
+            mean_xml = f'          <iwxxm:meanRVR uom="m" xsi:nil="true" nilReason="{NIL_WITHHELD}"/>'
+            ext = f"\n{rvr_extension}"
+        else:
+            # annex3 path: no US extension — emit midpoint mean for XSD shape.
+            mid = int(round((int(rvr["min_m"]) + int(rvr["max_m"])) / 2))
+            mean_xml = f'          <iwxxm:meanRVR uom="m">{mid}</iwxxm:meanRVR>'
+            ext = ""
+    else:
+        op = str(rvr.get("operator") or "")
+        op_xml = f"\n          <iwxxm:meanRVROperator>{op}</iwxxm:meanRVROperator>" if op else ""
+        mean_xml = f'          <iwxxm:meanRVR uom="m">{rvr["mean_m"]}</iwxxm:meanRVR>{op_xml}'
+        ext = f"\n{rvr_extension}" if rvr_extension else ""
     return f"""      <iwxxm:rvr>
         <iwxxm:AerodromeRunwayVisualRange{tend_attr}>
           <iwxxm:runway>
@@ -136,7 +151,7 @@ def _rvr_block(ir: dict[str, Any]) -> str:
               </aixm:timeSlice>
             </aixm:RunwayDirection>
           </iwxxm:runway>
-          <iwxxm:meanRVR uom="m">{rvr["mean_m"]}</iwxxm:meanRVR>{op_xml}
+{mean_xml}{ext}
         </iwxxm:AerodromeRunwayVisualRange>
       </iwxxm:rvr>
 """
@@ -156,7 +171,7 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
     return ("\n".join(parts) + "\n") if parts else ""
 
 
-def _cloud_block(ir: dict[str, Any]) -> str:
+def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
     if ir.get("nsc"):
         return f'      <iwxxm:cloud nilReason="{NIL_NSC}"/>\n'
     if ir.get("ncd"):
@@ -179,19 +194,28 @@ def _cloud_block(ir: dict[str, Any]) -> str:
         layers = [{"amount": ir["cloud_amount"], "base_ft": ir["cloud_base_ft"]}]
     if not layers:
         return ""
+    # Attach US variable CIG/SKY extensions to the first BKN/OVC (ceiling) layer.
+    ceil_idx = 0
+    for i, layer in enumerate(layers):
+        if str(layer.get("amount") or "") in {"BKN", "OVC"}:
+            ceil_idx = i
+            break
     layer_xml: list[str] = []
-    for layer in layers:
+    for i, layer in enumerate(layers):
         href = CLOUD_HREF.format(amt=layer["amount"])
         ctype = layer.get("cloud_type")
         ctype_xml = ""
         if ctype:
             thref = escape(CLOUD_TYPE_HREF.format(ctype=str(ctype)))
             ctype_xml = f'\n              <iwxxm:cloudType xlink:href="{thref}"/>'
+        ext = ""
+        if cloud_layer_extension and i == ceil_idx:
+            ext = f"\n{cloud_layer_extension}"
         layer_xml.append(
             f"""          <iwxxm:layer>
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}
+              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}{ext}
             </iwxxm:CloudLayer>
           </iwxxm:layer>"""
         )
@@ -333,6 +357,9 @@ def build_observation_and_trends(
     *,
     addendum_extension: str = "",
     peak_extension: str = "",
+    rvr_extension: str = "",
+    visibility_extension: str = "",
+    cloud_layer_extension: str = "",
 ) -> tuple[str, str]:
     """
     Build IWXXM observation element and trailing trendForecast elements.
@@ -345,6 +372,12 @@ def build_observation_and_trends(
         Optional observation-level extension XML (iwxxm_us Addendum).
     peak_extension :
         Optional surface-wind extension XML (iwxxm_us peak wind).
+    rvr_extension :
+        Optional RVR extension XML (iwxxm_us AerodromeVariableRVR).
+    visibility_extension :
+        Optional horizontal-visibility extension XML (SectorVisibility / TowerVisibility).
+    cloud_layer_extension :
+        Optional CloudLayer extension XML (VariableCeilingHeight / VariableSkyCondition).
 
     Returns
     -------
@@ -361,10 +394,10 @@ def build_observation_and_trends(
     wx_block = ""
     cloud = ""
     if not cavok:
-        vis_block = _visibility_block(ir)
-        rvr_block = _rvr_block(ir)
+        vis_block = _visibility_block(ir, visibility_extension=visibility_extension)
+        rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)
-        cloud = _cloud_block(ir)
+        cloud = _cloud_block(ir, cloud_layer_extension=cloud_layer_extension)
 
     if ir.get("temp_not_observable"):
         temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'

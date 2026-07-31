@@ -323,4 +323,30 @@
 | EV-024/S02.L1 | Vitest | Amend examplesCatalog tests for pass **or** reference in 07 | confirmed |
 | EV-024/E24-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
 
+## EV-025 / #810+#811+#812+#809 — iwxxm-us REMARKS encode + VA multi-location (2026-07-31)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-025/E25-1 | Session | Open S032; #810+#811+#812 one cycle | confirmed |
+| EV-025/E25-2 | Depth | Full ticket AC (lint + encode + goldens + validate smoke) | confirmed |
+| EV-025/E25-3 | Routing | Lean+build; 13 when behavior ships; skip 03/05/06/09/11/12 | confirmed |
+| EV-025/E25-4b | Scope | Dual lane: US pack + #809 VA multi-location | confirmed |
+| EV-025/E25-4c | US breadth | All remaining dig ❌ US types | confirmed |
+| EV-025/E25-ui | UI | N/A — no UI this session | confirmed |
+| EV-025/manifest | Docs | **M2** lean + journeys: feature-list + test-plan + **UJ-040/041** + deepen UJ-010/026/034/039; skip Spec/Config/API/Deploy | confirmed |
+| EV-025/journeys | UJ | **UJ-040** US REMARKS pack; **UJ-041** #809 promote; deepen 010/026/034/039 | confirmed |
+| EV-025/tests | TC | TC-EV025-001..010 | confirmed |
+| EV-025/api | API | No new routes; thin convert/validate smoke if needed | confirmed |
+| EV-025/S02.M1 | #809 golden | Soft-compare first; `wmoPass` only when ADR-032 equality holds | confirmed |
+| EV-025/S02.M2 | Dig residuals | Aim close all ❌ in-cycle; soft Gate C deferral **superseded by E25-T5=3** | amended |
+| EV-025/S02.L1 | SCH smoke | TC-EV025-010 may document SCH deferrals without blocking Lane A goldens | confirmed |
+| EV-025/E25-02 | Gate A | PASS Batch F 1,1,1 → 04-tech-plan | confirmed |
+| EV-025/E25-T1 | Milestone order | M0→#810→#811→#812→adjacent→#809→validate→Gate C | confirmed |
+| EV-025/E25-T2 | Goldens | Per dig type/row encode (+lint) | confirmed |
+| EV-025/E25-T3 | Deps | AskQuestion per new dep | confirmed |
+| EV-025/E25-T4 | Lanes | Finish Lane A then Lane B | confirmed |
+| EV-025/E25-T5 | Gate C residuals | Encode residual **blocks** Gate C (supersedes S02.M2 soft deferral) | confirmed |
+| EV-025/E25-T6 | Draft plan | Draft from T1–T5; Gate B pending | confirmed |
+| EV-025/E25-04 | Gate B | Approve M0–M7 → 07-build @ T0.1 | confirmed |
+
 

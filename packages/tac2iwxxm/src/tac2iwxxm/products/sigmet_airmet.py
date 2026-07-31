@@ -43,6 +43,22 @@ _WI_BLOCK = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 _NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
+_VA_ERUPTION = re.compile(
+    r"\bVA\s+ERUPTION\s+(?P<name>MT\s+\w+)\s+PSN\s+"
+    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
+    re.IGNORECASE,
+)
+# Multi-location VA: OBS [+ FCST] blocks joined by AND (WMO sigmet-multi-location-VA).
+_VA_LOCATION = re.compile(
+    r"(?:VA\s+CLD\s+)?"
+    r"OBS\s+AT\s+(?P<obs_hhmm>\d{4})Z\s+WI\s+(?P<obs_wi>.*?)"
+    r"(?:(?P<sfc_fl>SFC/FL\d{2,3})|(?P<fl_band>FL(?P<lo>\d{2,3})/(?P<hi>\d{2,3})))?"
+    r"\s*(?P<intensity>NC|WKN|INTSF)?"
+    r"(?:\s+FCST\s+AT\s+(?P<fcst_hhmm>\d{4})Z\s+WI\s+(?P<fcst_wi>.*?))?"
+    r"(?=\s+AND\b|\s*=\s*$|$)",
+    re.IGNORECASE | re.DOTALL,
+)
 
 # Common phenomenon tokens → WMO codelist local name.
 _SIG_PHENOMENA = (
@@ -114,6 +130,61 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
     return lat, lon
 
 
+def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
+    """Build a closed polygon geometry from a WI coordinate body, or None."""
+    pts = [_point_lat_lon(m) for m in _POINT.finditer(wi_body)]
+    if len(pts) < 3:
+        return None
+    if pts[0] != pts[-1]:
+        pts.append(pts[0])
+    pos_list = " ".join(f"{lat:.4f} {lon:.4f}" for lat, lon in pts)
+    return {"kind": "polygon", "pos_list": pos_list}
+
+
+def _parse_va_eruption(body: str) -> dict[str, Any] | None:
+    match = _VA_ERUPTION.search(body)
+    if match is None:
+        return None
+    lat, lon = _point_lat_lon(match)
+    return {"name": match.group("name").upper(), "lat": lat, "lon": lon}
+
+
+def _parse_va_locations(body: str) -> list[dict[str, Any]]:
+    """Parse AND-joined OBS/FCST VA cloud locations (#809 multi-location)."""
+    locations: list[dict[str, Any]] = []
+    for match in _VA_LOCATION.finditer(body):
+        obs_geom = _polygon_from_wi_body(match.group("obs_wi"))
+        if obs_geom is None:
+            continue
+        loc: dict[str, Any] = {
+            "time_indicator": "OBSERVATION",
+            "obs_hhmm": match.group("obs_hhmm"),
+            "geometry": obs_geom,
+            "intensity_change": _INTENSITY.get(
+                (match.group("intensity") or "NC").upper(),
+                "NO_CHANGE",
+            ),
+        }
+        if match.group("sfc_fl"):
+            fl_m = re.search(r"(\d{2,3})", match.group("sfc_fl"))
+            if fl_m is not None:
+                loc["lower_surface"] = "SFC"
+                loc["upper_fl"] = int(fl_m.group(1))
+        elif match.group("lo") and match.group("hi"):
+            loc["lower_fl"] = int(match.group("lo"))
+            loc["upper_fl"] = int(match.group("hi"))
+        fcst_wi = match.group("fcst_wi")
+        if fcst_wi:
+            fcst_geom = _polygon_from_wi_body(fcst_wi)
+            if fcst_geom is not None:
+                loc["forecast"] = {
+                    "hhmm": match.group("fcst_hhmm"),
+                    "geometry": fcst_geom,
+                }
+        locations.append(loc)
+    return locations
+
+
 def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
     """Attach exceptional-rule fields from SIGMET/AIRMET body (F23 / F24 / #733/#731)."""
     upper = body.upper()
@@ -140,6 +211,30 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         ir["time_indicator"] = "FORECAST"
     if _NO_VA_EXP.search(body):
         ir["no_va_exp"] = True
+
+    volcano = _parse_va_eruption(body)
+    if volcano is not None:
+        ir["volcano"] = volcano
+
+    # Multi-location VA (AND-joined OBS/FCST clouds) — #809 / TC-EV025-008.
+    locations = _parse_va_locations(body)
+    if len(locations) >= 2:
+        ir["locations"] = locations
+        first = locations[0]
+        ir["geometry"] = first["geometry"]
+        ir["time_indicator"] = "OBSERVATION"
+        ir["intensity_change"] = first["intensity_change"]
+        if "lower_surface" in first:
+            ir["lower_surface"] = first["lower_surface"]
+            ir["upper_fl"] = first["upper_fl"]
+        if "lower_fl" in first:
+            ir["lower_fl"] = first["lower_fl"]
+            ir["upper_fl"] = first["upper_fl"]
+        mov = _MOV.search(body)
+        if mov is not None and not ir["stationary"]:
+            ir["motion_dir_deg"] = _DIR_DEG[mov.group("dir").upper()]
+            ir["motion_speed_kt"] = int(mov.group("spd"))
+        return
 
     mov = _MOV.search(body)
     if mov is not None and not ir["stationary"]:

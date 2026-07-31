@@ -3,6 +3,71 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-025 — iwxxm-us REMARKS encode + VA multi-location (#810–#812 + #809) (S032)
+
+**Session**: S032-iwxxm-us-remarks-va  
+**Features**: Deepen **F6** / **F6.b** / **F12** / **F2** / **F13** + deepen **F23** (#809) — no new Fn  
+**Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810), [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811), [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812), [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
+**Started**: 2026-07-31  
+**Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
+**Status**: **in_progress** — Gate B approved; **07-build** @ M0
+
+### Scope (Phase 0 — locked 2026-07-31)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E25-1 | decision | Session + bundling? | **1** — S032 / EV-025; #810+#811+#812 in one cycle |
+| E25-2 | decision | Depth / AC? | **1** — full ticket AC (lint as needed + encode + goldens + validate smoke; US-only) |
+| E25-3 | decision | Routing? | **1** — Lean+build `00→16→01→02→04→07→08→10` (+13 when ships); skip 03/05/06/09/11/12 |
+| E25-4 | decision | Out-of-scope? | **2+3** clarified → see E25-4b / E25-4c |
+| E25-4b | ambiguity | #809 + adjacent? | **2** — **dual lane**: US pack + #809 VA multi-location same cycle |
+| E25-4c | decision | Adjacent US breadth? | **3** — **all remaining ❌ US types** from dig checklist |
+| E25-ui | decision | UI preview? | **1** — N/A (no UI this session) |
+| E25-M | decision | 01 Document Manifest? | **2** — lean delta + **new UJ-040/041**; deepen UJ-010/026/034/039; skip Spec/Config/API/Deploy |
+| E25-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** (`D-S032-E25-E1`) |
+| S02.M1 | decision | #809 soft→strict? | **1** — soft-compare first; `wmoPass` only when ADR-032 equality holds (`D-S032-EV025-s02m1-1`) |
+| S02.M2 | decision | Dig ❌ residuals? | **1** — aim close all in-cycle; soft child-issue deferral **superseded by E25-T5=3** (encode residual blocks Gate C) (`D-S032-EV025-s02m2-1` → `D-S032-EV025-t5-3`) |
+| S02.L1 | decision | SCH deferrals? | **1** — TC-EV025-010 may document SCH deferrals without blocking Lane A goldens (`D-S032-EV025-s02l1-1`) |
+| E25-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,1,1; Lean → **04-tech-plan** (`D-S032-02-phase-a`) |
+| E25-T1 | decision | Milestone order? | **1** — M0→#810→#811→#812→adjacent→#809 soft→strict→validate→Gate C (`D-S032-EV025-t1-1`) |
+| E25-T2 | decision | Golden grain? | **1** — encode (+lint) per dig type/row where feasible (`D-S032-EV025-t2-1`) |
+| E25-T3 | decision | New deps? | **2** — AskQuestion per new dep (prefer none) (`D-S032-EV025-t3-2`) |
+| E25-T4 | decision | Dual-lane sequencing? | **1** — finish Lane A then Lane B (`D-S032-EV025-t4-1`) |
+| E25-T5 | decision | Dig ❌ residuals / Gate C? | **3** — any encode residual **blocks Gate C**; supersedes S02.M2 soft deferral (`D-S032-EV025-t5-3`) |
+| E25-T6 | decision | Draft plan? | **1** — draft execution plan from T1–T5; Gate B next (`D-S032-EV025-t6-1`) |
+| E25-04 | decision | Gate B / plan approve? | **1** — M0–M7 approved; B→C → **07-build** @ T0.1 (`D-S032-04-plan-approve`) |
+
+**Scope (verbatim)**:
+Dual-lane engine cycle from EV-024 children: (A) encode/lint/golden/validate all ❌
+iwxxm-us METAR/SPECI REMARKS types from the #773 dig (named #810/#811/#812 plus full
+adjacent checklist); (B) #809 WMO `sigmet-multi-location-VA` annex3 golden soft→strict.
+US never enters WMO sample menu. No USWX, no vendor hand-edits, no #808.
+
+**In:**
+- #810 Variable RVR / meanRVR withheld
+- #811 Lightning / VisuallyObservablePhenomena (+ related frequency/type)
+- #812 SnowIncrease + sensor outage remarks
+- All other dig ❌/still-⚠ US extension types (WindShift, sky/convective, hail, sector,
+  obscuration, second-site/tower, variable CIG/SKY/VIS, max/min temps, ProcessedProperty,
+  Addendum residuals, codelist hrefs, …)
+- #809 `sigmet-multi-location-VA` package golden + catalog tier promote only under ADR-032
+
+**Out:**
+- USWX; vendor schema hand-edits; US in WMO menu; #808; #738 TC SIGMET; roadmap products
+
+### Fn allocation (approved)
+
+| Fn | Role |
+|----|------|
+| Deepen **F6** / **F6.b** | RMK → iwxxm-us encode + US goldens |
+| Deepen **F12** | US REMARKS tac-validate / registry as needed |
+| Deepen **F2** / **F13** | Combined catalog / extension-block validate smoke |
+| Deepen **F23** | #809 VA multi-location convert golden |
+
+### Routing (approved)
+
+Lean+build + **13 when ships**: `00→16→01→02→04→07→08→10` (+ `13` if API behavior ships).
+
 ## Cycle EV-024 — IWXXM domain mine (#804 + #807 + #773) (S031)
 
 **Session**: S031-iwxxm-domain-mine  

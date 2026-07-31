@@ -65,7 +65,12 @@ def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
     assert {"metar_basic", "speci_basic", "metar_nil", "metar_cor", "metar_auto", "metar_cavok", "speci_cor"} <= ids
     for case in cases:
         assert (FIXTURES / case["tac"]).is_file()
-        assert (FIXTURES / case["golden"]).is_file()
+        soft = case.get("soft_compare") is True
+        if soft:
+            # TC-EV025-008 / #809 — soft-compare cases omit package golden until ADR-032
+            assert "golden" not in case or case.get("golden") in (None, "")
+        else:
+            assert (FIXTURES / case["golden"]).is_file()
         assert case["product"] in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}
 
 

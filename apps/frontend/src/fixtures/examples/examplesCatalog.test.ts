@@ -151,6 +151,7 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
     expect(eggx?.wmoSeed).toBe('sigmet-VA-EGGX');
     const multi = getExampleById('sigmet_multi_location_va');
     expect(multi?.wmoReference).toBe(true);
+    expect(multi?.wmoPass).not.toBe(true);
     expect(multi?.wmoSeed).toBe('sigmet-multi-location-VA');
     expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(4);
   });
@@ -158,6 +159,36 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
   it('documents vendor mirror provenance policy', () => {
     expect(WMO_PROVENANCE_NOTE).toMatch(/vendor\/schemas\/iwxxm/);
     expect(WMO_PROVENANCE_NOTE.toLowerCase()).toMatch(/mirror/);
+  });
+});
+
+describe('examplesCatalog US out of WMO menu (TC-EV025-005 / UJ-039 deepen)', () => {
+  it('never lists iwxxm_us package goldens in the WMO sample menu', () => {
+    for (const example of EXAMPLES) {
+      expect(example.provenance).not.toMatch(/iwxxm_us_golden/);
+      expect(example.id).not.toMatch(/_us_/);
+      expect(example.label.toLowerCase()).not.toMatch(/\biwxxm-us\b|\bus remarks\b/);
+    }
+    for (const product of WMO_SCOPE_PRODUCTS) {
+      for (const example of getTacExamplesForProduct(product)) {
+        expect(example.wmoPass === true || example.wmoReference === true).toBe(true);
+        expect(example.provenance).toMatch(/annex3_golden\//);
+      }
+    }
+    // Known Lane A / US package stems must remain unregistered.
+    for (const id of [
+      'metar_us_auto_ao2',
+      'metar_us_ao2_slp',
+      'metar_us_pk_wnd',
+      'speci_us_cavok',
+      'speci_us_ao2',
+      'speci_us_auto',
+      'sigmet_us_basic',
+      'airmet_us_basic',
+      'taf_us_altimeter',
+    ]) {
+      expect(getExampleById(id)).toBeUndefined();
+    }
   });
 });
 
