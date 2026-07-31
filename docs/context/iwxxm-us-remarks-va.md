@@ -1,14 +1,17 @@
 # Scoped context — iwxxm-us-remarks-va (S032 / EV-025)
 
 **Mode:** scoped · **Date:** 2026-07-31  
+**Status:** completed (EV-025 closed; #809 residual → [va-multi-location-809](va-multi-location-809.md))  
 **Session:** S032-iwxxm-us-remarks-va · **Cycle:** EV-025  
-**Issues:** #810, #811, #812, #809
+**Issues:** #810, #811, #812 closed; #809 open (soft shipped)
 
 ## Problem
 
 S031 / EV-024 mined IWXXM-US METAR/SPECI model docs (#773) and filed encode children. Most US
 extension types remain ❌ encode / ❌ fixture. Separately, `#804` wired
 `sigmet-multi-location-VA` as **WMO reference** only — convert M-golden equality deferred (#809).
+Soft-compare shipped in #816; residual equality/`wmoPass` tracked in
+[Context: va-multi-location-809](va-multi-location-809.md).
 
 ## Runtime SoT
 

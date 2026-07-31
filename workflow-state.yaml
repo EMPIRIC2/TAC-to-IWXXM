@@ -5,12 +5,13 @@ project:
   output_directory: docs/
 session_counter: 32
 evolve_cycle_counter: 25
-active_session:
-  id: S032-iwxxm-us-remarks-va
+active_session: null
+sessions:
+- id: S032-iwxxm-us-remarks-va
   type: feature
   intent: "Dual-lane F6.b: encode all ❌ iwxxm-us REMARKS types from #773 dig (#810+#811+#812 + adjacent) plus #809 WMO sigmet-multi-location-VA
     annex3 golden"
-  status: in_progress
+  status: completed
   branch: evolve/EV-025-iwxxm-us-remarks-va
   orchestrator: 16-evolve
   evolve_cycle_id: EV-025
@@ -37,8 +38,8 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 13-deploy-smoke
-  note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
+  current_stage:
+  note: 'D-S032-EV025-phase4-close — Phase 4 close 2026-07-31; EV-025/S032 complete; PR #816 2412312; T7.3/13 waived; #809 equality residual → next cycle'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -53,9 +54,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-07-31'
-    note: 'PR #816 open; closeout=1; await merge to close EV-025; tip 50d3d0a'
+    completed: '2026-07-31'
+    note: 'COMPLETE — Phase 4 close D-S032-EV025-phase4-close; EV-025 completed; PR #816 merged 2412312; T7.3/13 waived; #809 residual → next cycle'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -101,8 +103,8 @@ active_session:
   - stage: 13-deploy-smoke
     required: false
     mode: when_ships
-    status: deferred
-    note: 'deferred D-S032-EV025-closeout=1; when ships after merge'
+    status: waived
+    note: 'WAIVED — T7.3 deferred at Phase 4 close (D-S032-EV025-phase4-close); deploy gate waived; when_ships residual optional next cycle'
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -129,8 +131,14 @@ active_session:
     note: Lean+build preset
   pr_number: 816
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-  pr_status: open
-sessions:
+  pr_status: merged
+  completed_at: '2026-07-31'
+  tip_sha: 2412312
+  tip_sha_full: 241231200169b59f12eceac75dae6df9d987678f
+  merge_sha: 2412312
+  close_decision_id: D-S032-EV025-phase4-close
+  close_note: 'Phase 4 close 2026-07-31 (D-S032-EV025-phase4-close option 1) — PR #816 merged 2412312; T7.3/13-deploy-smoke waived; #809 equality residual handed to next cycle (D-S032-EV025-809-handoff); #810/#811/#812 closed on GitHub'
+  next_backlog_issue: 809
 - id: S031-iwxxm-domain-mine
   type: feature
   intent: 'Domain mine strongest bundle — #804 IWXXM/ tree + #807 wmo-im org refresh + #773 IWXXM-US/MDL; discovery-first with full ticket acceptance
@@ -6941,7 +6949,7 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + 
       redeploy required before 13
   13-deploy-smoke:
-    status: deferred
+    status: waived
     started_at: '2026-07-30'
     started: '2026-07-30'
     completed: '2026-07-30'
@@ -6956,19 +6964,19 @@ stages:
       H0c/H1/H3/H4/H5 + catalog + convert; D-S031-merge-close; report deploy-smoke.md; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 deferred D-S032-EV025-closeout=1; when ships after merge; PR #816 open awaiting merge'
+    note: 'WAIVED — T7.3 deferred at Phase 4 close (D-S032-EV025-phase4-close); deploy gate waived for EV-025/S032'
     tip_sha: 864783e
     tip_sha_full: 864783ea8c687fa1e2c08811cf02f3154c2a2b6e
-    overall: pass
+    overall: waived
     active_task: T7.3
-    active_task_status: completed
+    active_task_status: waived
     progress: 22/22
     do_not_auto_merge: false
-    decision_id: D-S031-merge-close
+    decision_id: D-S032-EV025-phase4-close
     pr_number: 816
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-    pr_status: open
-    merge_sha: 864783e
+    pr_status: merged
+    merge_sha: 2412312
     ci_run: '30595410610'
     api_deploy: dep-d9lvcr2jnfac73bbn340
     fe_deploy: dep-d9lvcrrl550s73cuhvf0
@@ -6978,19 +6986,25 @@ stages:
       session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       skill_id: 13-deploy-smoke
-      status: pending
+      status: waived
       mode: when_ships
       started:
       started_at:
-      completed:
-      completed_at:
       branch: evolve/EV-025-iwxxm-us-remarks-va
       tip_sha: 1e46b38
       tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
-      note: 'when_ships — T7.3 pending; tip 1e46b38; open PR or run after ship'
+      note: 'WAIVED — T7.3 deferred at Phase 4 close (D-S032-EV025-phase4-close); deploy gate waived'
+      completed: '2026-07-31'
+      completed_at: '2026-07-31'
+      overall: waived
+      decision_id: D-S032-EV025-phase4-close
+      pr_number: 816
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+      pr_status: merged
+      merge_sha: 2412312
       active_milestone: M7
       active_task: T7.3
-      active_task_status: pending
+      active_task_status: waived
       progress: 27/28
       feature_ids:
       - F6
@@ -7433,17 +7447,18 @@ stages:
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain 
       open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
     started_at: '2026-07-31'
-    completed_at:
-    completed:
-    current_stage: 13-deploy-smoke
-    note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
+    completed_at: '2026-07-31'
+    completed: '2026-07-31'
+    current_stage:
+    note: 'COMPLETE — Phase 4 close D-S032-EV025-phase4-close; EV-025/S032 closed; PR #816 merged 2412312; T7.3/13 waived; active_session=null'
     prior_note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
     notes:
+    - '2026-07-31 S032/EV-025 CLOSED — D-S032-EV025-phase4-close; PR #816 merged 2412312; T7.3/13 waived; #809 equality residual → next cycle'
     - '2026-07-31 S032/EV-025 PR #816 open — https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816; await merge'
     - 2026-07-31 S032/EV-025 closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close 
       EV-025; progress 27/28
@@ -7496,8 +7511,9 @@ stages:
     - '2026-07-30 S031/EV-024 COMPLETE — Phase 4 close D-S031-merge-close; PR #813 864783e; 13 PASS; #804/#807/#773'
     pr_number: 816
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-    pr_status: open
+    pr_status: merged
     tip_sha: 50d3d0a
+    merge_sha: 2412312
     tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
   15-service-health:
     status: completed
@@ -7784,6 +7800,40 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S032-EV025-phase4-close
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: close_session
+  category: session-close
+  status: confirmed
+  topic: 'Phase 4 cycle/session close — merge #816, waive T7.3/13, handoff #809'
+  summary: 'Close EV-025/S032 after #816 merge 2412312; waive T7.3/13; #809 equality residual handed to next cycle (D-S032-EV025-809-handoff); #810/#811/#812 closed on GitHub already'
+  decision: 'Phase 4 close S032/EV-025. D-S032-EV025-phase4-close — user chose option 1: PR #816 merged 2412312; waive T7.3 / 13-deploy-smoke deploy gate; archive session; active_session=null; mark EV-025 completed. #809 equality residual NOT closed — handed to next cycle (D-S032-EV025-809-handoff). #810/#811/#812 closed on GitHub. Artifacts: docs/evolve-report-EV-025.md, docs/sessions/S032-iwxxm-us-remarks-va/reports/evolve-summary.md.'
+  user_option: 1
+  related_prs:
+  - 816
+  related_pr: 816
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - D-S032-EV025-closeout
+  - D-S032-EV025-809-handoff
+  merge_sha: 2412312
+  merge_sha_full: 241231200169b59f12eceac75dae6df9d987678f
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+  pr_status: merged
+  close_note: 'Phase 4 close 2026-07-31 — EV-025/S032 complete; PR #816 2412312; T7.3/13 waived; #809 residual → next cycle'
+  artifact:
+  - docs/evolve-report-EV-025.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/evolve-summary.md
 - id: D-S032-EV025-closeout
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -23516,11 +23566,11 @@ evolve_cycles:
   - F13
   - F23
   title: "iwxxm-us REMARKS encode (full dig ❌) + VA multi-location golden"
-  status: in_progress
+  status: completed
   started: '2026-07-31'
   started_at: '2026-07-31'
-  completed:
-  completed_at:
+  completed: '2026-07-31'
+  completed_at: '2026-07-31'
   scope_summary: |
     Dual lane (E25-4b=2, E25-4c=3): (1) Full AC for #810 Variable RVR/meanRVR,
     #811 Lightning/VOP, #812 SnowIncrease+sensor outage, PLUS all remaining ❌ US
@@ -23560,7 +23610,7 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     notes: "Lean+build + 13 when behavior ships; 11 optional if UI; 09 covered by 08+10"
-  current_stage: 13-deploy-smoke
+  current_stage: 
   stages:
     00-context:
       status: completed
@@ -23568,9 +23618,10 @@ evolve_cycles:
       completed: '2026-07-31'
       note: Phase 0 locked E25-*; artifacts written; handoff 01-requirements
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-07-31'
-      note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
+      note: 'COMPLETE — Phase 4 close D-S032-EV025-phase4-close; PR #816 merged 2412312; T7.3/13 waived; #809 residual → next cycle'
+      completed: '2026-07-31'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -23635,24 +23686,32 @@ evolve_cycles:
       tip_sha: 1e46b38
       note: T7.2 smoke PASS — docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
     13-deploy-smoke:
-      status: deferred
-      note: deferred D-S032-EV025-closeout=1; when ships after merge
+      status: waived
+      note: WAIVED — T7.3 deferred at Phase 4 close (D-S032-EV025-phase4-close); deploy gate waived
       pr_number: 816
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-      pr_status: open
+      pr_status: merged
+      merge_sha: 2412312
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: deferred
+    deploy: waived
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
-    phase_d: deferred
-    deploy: deferred
+    phase_d: waived
+    deploy: waived
   adrs: []
   artifacts:
+  - path: docs/evolve-report-EV-025.md
+    status: completed
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: EV-025 cycle close D-S032-EV025-phase4-close 2026-07-31
   - docs/sessions/S032-iwxxm-us-remarks-va/session-brief.md
   - docs/sessions/S032-iwxxm-us-remarks-va/routing-plan.md
   - docs/context/iwxxm-us-remarks-va.md
@@ -23675,11 +23734,12 @@ evolve_cycles:
   active_milestone: M7
   current_task: T7.3
   active_task: T7.3
-  active_task_status: deferred
+  active_task_status: waived
   progress: 27/28
   tip_sha: 50d3d0a
   tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
   notes:
+  - '2026-07-31 S032/EV-025 CLOSED — Phase 4 close D-S032-EV025-phase4-close; PR #816 merged 2412312; T7.3/13 waived; #809 equality residual → next cycle; #810/#811/#812 closed on GitHub; active_session=null'
   - '2026-07-31 S032/EV-025 PR #816 open — https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816; tip 50d3d0a; close after merge'
   - 2026-07-31 S032/EV-025 closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025;
     progress 27/28; D-S032-EV025-closeout=1
@@ -23729,20 +23789,27 @@ evolve_cycles:
     27/28
   pr_number: 816
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-  pr_status: open
+  pr_status: merged
+  merge_sha: 2412312
+  merge_sha_full: 241231200169b59f12eceac75dae6df9d987678f
+  note: 'Phase 4 close D-S032-EV025-phase4-close — EV-025/S032 complete; PR #816 2412312; T7.3/13 waived; #809 equality residual handed to next cycle; #810/#811/#812 closed on GitHub'
+  decision_refs:
+  - D-S032-EV025-phase4-close
 git_history:
-  current_branch: evolve/EV-025-iwxxm-us-remarks-va
-  ahead_of_origin: 38
-  pushed: false
+  current_branch: main
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: 1e46b38
-  tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
-  pr_number:
-  pr_url:
-  pr_status:
-  merge_sha:
-  note: 'T7.2 COMPLETE 08+10 PASS; Gate C encode PASS; tip 1e46b38; next T7.3/13 when ships or open PR; progress 27/28'
+  tip_sha: 2412312
+  tip_sha_full: 241231200169b59f12eceac75dae6df9d987678f
+  pr_number: 816
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
+  pr_status: merged
+  merge_sha: 2412312
+  merge_sha_full: 241231200169b59f12eceac75dae6df9d987678f
+  note: 'EV-025/S032 CLOSED — PR #816 merged 2412312; D-S032-EV025-phase4-close; active_session=null'
   notes:
+  - '2026-07-31 S032/EV-025 branch merged via PR #816 2412312; D-S032-EV025-phase4-close; active_session=null'
   - '2026-07-31 S032/EV-025 tip synced — 1e46b38 (1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7); "[T7.2] test: 08-verify-build + 10-e2e smoke PASS";
     T7.2 COMPLETE 08+10 PASS; Gate C encode PASS; tip 1e46b38; next T7.3/13 when ships or open PR; progress 27/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 8bfb1b2 (8bfb1b203acc1c4b3ae960cabcc5866627349e8b); "[T7.1] docs: Gate C dig encode closeout PASS"; T7.1
@@ -25052,18 +25119,21 @@ git_history:
   - name: evolve/EV-025-iwxxm-us-remarks-va
     purpose: 'S032/EV-025 iwxxm-us REMARKS encode (full dig ❌) + #809 VA multi-location golden'
     base: main
-    status: active
+    status: merged
     created: '2026-07-31'
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'PR #816 open; T7.3 deferred (D-S032-EV025-closeout=1); awaiting merge to close EV-025; tip 50d3d0a'
+    note: 'MERGED via PR #816 2412312 (D-S032-EV025-phase4-close); EV-025/S032 closed'
     tip_sha: 50d3d0a
     tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
     pushed: true
     pr_number: 816
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-    pr_status: open
+    pr_status: merged
+    merge_sha: 2412312
+    merge_sha_full: 241231200169b59f12eceac75dae6df9d987678f
+    merged_at: '2026-07-31'
   commits:
   - sha: 1e46b38
     sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7

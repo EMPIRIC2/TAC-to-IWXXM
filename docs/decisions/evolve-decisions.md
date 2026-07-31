@@ -7,10 +7,21 @@
 
 **Session**: S032-iwxxm-us-remarks-va  
 **Features**: Deepen **F6** / **F6.b** / **F12** / **F2** / **F13** + deepen **F23** (#809) — no new Fn  
-**Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810), [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811), [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812), [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
+**Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810), [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811), [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) **closed**; [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) **open** (soft done)  
 **Started**: 2026-07-31  
+**Completed**: 2026-07-31  
 **Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
-**Status**: **in_progress** — Gate B approved; **07-build** @ M0
+**PR**: [#816](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816) merged `2412312`  
+**Status**: **completed** — Phase 4 close (`D-S032-EV025-phase4-close`); #809 equality → next cycle
+
+### Phase 4 close (2026-07-31)
+
+| ID | Category | Decision |
+|----|----------|----------|
+| D-S032-EV025-phase4-close | gate | **1** — Close EV-025/S032 after #816 merge; waive T7.3/13; hand #809 equality to new SNNN/EV |
+| D-S032-EV025-809-handoff | decision | Soft path closed in #816; residual ADR-032 equality / `wmoPass` is **new** deepen (not Lane A reopen) |
+
+**Report**: `docs/evolve-report-EV-025.md` · `docs/sessions/S032-iwxxm-us-remarks-va/reports/evolve-summary.md` · [Context: va-multi-location-809](../context/va-multi-location-809.md)
 
 ### Scope (Phase 0 — locked 2026-07-31)
 
