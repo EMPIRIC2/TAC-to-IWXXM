@@ -37,7 +37,7 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 07-build
-  note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+  note: 'T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -54,7 +54,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+    note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -81,11 +81,12 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-31'
-    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+    note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
+    note: 'should start soon — T7.2; 07-build nearly complete @ 8bfb1b2'
   - stage: 10-e2e
     required: true
     mode: smoke
@@ -5135,16 +5136,16 @@ stages:
     previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
-    tip_sha: c1a503f
-    tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
-    current_stage: M5
-    current_milestone: M5
-    current_task: T5.1
-    active_milestone: M5
-    active_task: T5.1
-    active_task_status: pending
-    progress: 18/28
+    note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
+    tip_sha: 8bfb1b2
+    tip_sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
+    current_stage: M7
+    current_milestone: M7
+    current_task: T7.2
+    active_milestone: M7
+    active_task: T7.2
+    active_task_status: in_progress
+    progress: 26/28
     pr_number: null
     pr_url: null
     pr_status: null
@@ -5163,12 +5164,12 @@ stages:
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
-      active_milestone: M5
-      current_milestone: M5
-      active_task: T5.1
-      current_task: T5.1
-      active_task_status: pending
+      note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
+      active_milestone: M7
+      current_milestone: M7
+      active_task: T7.2
+      current_task: T7.2
+      active_task_status: in_progress
       deepen:
       - F6
       - F12
@@ -5183,12 +5184,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T5.1
-        active_task_status: pending
-        active_milestone: M5
+        current_task: T7.2
+        active_task_status: in_progress
+        active_milestone: M7
         phase: C
-        milestone: M5
-        notes: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+        milestone: M7
+        notes: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
     delta_substages:
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
@@ -5200,16 +5201,16 @@ stages:
       completed: null
       completed_at: null
       mode: full
-      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
-      active_milestone: M5
-      current_milestone: M5
-      active_task: T5.1
-      current_task: T5.1
-      active_task_status: pending
-      progress: 18/28
+      note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
+      active_milestone: M7
+      current_milestone: M7
+      active_task: T7.2
+      current_task: T7.2
+      active_task_status: in_progress
+      progress: 26/28
       decision_id: D-S032-04-plan-approve
-      tip_sha: c1a503f
-      tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
+      tip_sha: 8bfb1b2
+      tip_sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
       branch: evolve/EV-025-iwxxm-us-remarks-va
       deepen:
       - F6
@@ -5525,6 +5526,9 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28; 07-build nearly complete — 08-verify-build should start soon; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 M5 COMPLETE (T5.1–T5.3 #809 soft→reference); tip 5f941e7; next T6.1; progress 21/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T5.1 in_progress (#809 soft-compare TC-EV025-008); tip e9330e3; progress 18/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
@@ -7607,9 +7611,12 @@ stages:
     completed_at: null
     completed: null
     current_stage: 07-build
-    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
-    prior_note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
+    prior_note: 'M5 COMPLETE (T5.1–T5.3 #809 soft→reference); tip 5f941e7; next T6.1; progress 21/28'
     notes:
+    - '2026-07-31 S032/EV-025 T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28; 07-build nearly complete — 08-verify-build should start soon; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 M5 COMPLETE (T5.1–T5.3 #809 soft→reference); tip 5f941e7; next T6.1; progress 21/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T5.1 in_progress (#809 soft-compare TC-EV025-008); tip e9330e3; progress 18/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
@@ -24208,7 +24215,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+      note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24238,19 +24245,21 @@ evolve_cycles:
       started: '2026-07-31'
       started_at: '2026-07-31'
       mode: full
-      current_stage: M5
-      current_milestone: M5
-      current_task: T5.1
-      active_task: T5.1
-      progress: 18/28
-      tip_sha: c1a503f
-      tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
-      active_task_status: pending
-      note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+      current_stage: M7
+      current_milestone: M7
+      current_task: T7.2
+      active_task: T7.2
+      progress: 26/28
+      tip_sha: 8bfb1b2
+      tip_sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
+      active_task_status: in_progress
+      note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
     08-verify-build:
       status: pending
+      note: 'should start soon — T7.2 (08+10); 07-build nearly complete @ 8bfb1b2'
     10-e2e:
       status: pending
+      note: 'follows T7.2 with 08-verify-build; pending handoff'
     13-deploy-smoke:
       status: pending
   gates:
@@ -24282,14 +24291,17 @@ evolve_cycles:
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
-  active_milestone: M5
-  current_task: T5.1
-  active_task: T5.1
-  active_task_status: pending
-  progress: 18/28
-  tip_sha: c1a503f
-  tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
+  active_milestone: M7
+  current_task: T7.2
+  active_task: T7.2
+  active_task_status: in_progress
+  progress: 26/28
+  tip_sha: 8bfb1b2
+  tip_sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
   notes:
+  - '2026-07-31 S032/EV-025 T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28; 07-build nearly complete — 08-verify-build should start soon; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 M5 COMPLETE (T5.1–T5.3 #809 soft→reference); tip 5f941e7; next T6.1; progress 21/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T5.1 in_progress (#809 soft-compare TC-EV025-008); tip e9330e3; progress 18/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
@@ -24318,14 +24330,17 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: c1a503f
-  tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
+  tip_sha: 8bfb1b2
+  tip_sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
+  note: 'T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — 8bfb1b2 (8bfb1b203acc1c4b3ae960cabcc5866627349e8b); "[T7.1] docs: Gate C dig encode closeout PASS"; T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28; M5+M6+T7.1 done; next T7.2 08+10; 07 nearly complete → 08 soon; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — 5f941e7 (5f941e78ecf624c25d184fc0fe112b3546c6a06c); "[T5.3] test: keep wmoReference until ADR-032 equality (#809)"; M5 COMPLETE (T5.1–T5.3 #809 soft→reference); next T6.1; progress 21/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — e9330e3 (e9330e332a48d0f8f266568cd68ee0ce8699dbc2); "[S032] chore: record T4.7 tip; advance Current State to M5/T5.1"; T5.1 in_progress (#809 soft-compare TC-EV025-008); progress 18/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — c1a503f (c1a503ffec7c59a2a484265febc13971a598a87a); "[T4.7] docs: Lane A dig checklist encode refresh PASS"; T4.7 COMPLETE (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); progress 18/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 5d80611 (5d806118f11fe2fa4559d9bdbcd98622edc5eb86); "[T4.6] feat: encode PRESFR/RR, Addendum flags, RecentWeather"; T4.6 COMPLETE; T4.7 in_progress (Lane A dig checklist refresh); progress 17/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 4230257 (4230257533982fb2223d04a9a685f65041c644b3); "[S032] chore: record T4.5 tip and advance to T4.6"; T4.6 in_progress (Addendum residuals + RecentWeather); progress 16/28; #810/#811/#812/#809'
@@ -25679,11 +25694,105 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'T4.7 COMPLETE @ c1a503f (Lane A dig encode PASS); M4 done; next T5.1 pending (#809 soft-compare); tip c1a503f; progress 18/28'
-    tip_sha: c1a503f
-    tip_sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
+    note: 'T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28'
+    tip_sha: 8bfb1b2
+    tip_sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
     pushed: false
   commits:
+  - sha: 8bfb1b2
+    sha_full: 8bfb1b203acc1c4b3ae960cabcc5866627349e8b
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T7.1] docs: Gate C dig encode closeout PASS"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/t4-7-lane-a-dig-refresh.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/t7-1-gate-c-dig-close.md
+    timestamp: '2026-07-31T17:04:40Z'
+    pushed: false
+    note: 'T7.1 COMPLETE Gate C dig PASS @ 8bfb1b2; next T7.2 08+10; progress 26/28'
+  - sha: c7f4b80
+    sha_full: c7f4b807b80c92bf0f705c584df953fdbaf290a5
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T6.4] test: combined WMO+US catalog validate smoke"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/tests/test_tc_ev025_010_combined_catalog_smoke.py
+    timestamp: '2026-07-31T17:03:55Z'
+    pushed: false
+    note: 'T6.4 combined WMO+US catalog validate smoke; M6 complete'
+  - sha: abb3a7b
+    sha_full: abb3a7b4bfef7859c817322c6e0bdd9e90df68ed
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T6.2] test: deepen malformed US REMARKS + humanReadableText"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - packages/tac2iwxxm/tests/test_tc_ev025_006_007_remarks_diagnostics.py
+    timestamp: '2026-07-31T17:03:44Z'
+    pushed: false
+    note: 'T6.2 deepen malformed US REMARKS + humanReadableText'
+  - sha: b88d22f
+    sha_full: b88d22fa5e83624170c1c87ec8c0a6c625c46cd0
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T6.1] test: US fixtures stay out of WMO sample menu"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+    timestamp: '2026-07-31T17:03:33Z'
+    pushed: false
+    note: 'T6.1 US fixtures stay out of WMO sample menu'
+  - sha: 5f941e7
+    sha_full: 5f941e78ecf624c25d184fc0fe112b3546c6a06c
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T5.3] test: keep wmoReference until ADR-032 equality (#809)"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - apps/backend/tests/iwxxm/test_wmo_canonical_examples.py
+    - apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md
+    - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    - packages/tac2iwxxm/tests/test_tc_ev025_009_sigmet_multi_location_va_promote.py
+    timestamp: '2026-07-31T16:58:52Z'
+    pushed: false
+    note: 'M5 COMPLETE (T5.1–T5.3 #809 soft→reference); tip 5f941e7; next T6.1; progress 21/28'
+  - sha: ceae93c
+    sha_full: ceae93cf4dcfb79dac93487e37894ad15112cebb
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T5.1] test: soft-compare golden for sigmet-multi-location-VA"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - packages/tac2iwxxm/tests/fixtures/annex3_golden/manifest.json
+    - packages/tac2iwxxm/tests/test_tc_ev025_008_sigmet_multi_location_va.py
+    timestamp: '2026-07-31T16:58:41Z'
+    pushed: false
+    note: 'T5.1 soft-compare golden TC-EV025-008; progress toward M5'
+  - sha: 788633e
+    sha_full: 788633e40ef374c09d816568b6148f195d6c925b
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T5.2] feat: encode multi-location VA OBS/FCST collections"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
+    timestamp: '2026-07-31T16:58:29Z'
+    pushed: false
+    note: 'T5.2 multi-location VA OBS/FCST encode'
   - sha: c1a503f
     sha_full: c1a503ffec7c59a2a484265febc13971a598a87a
     branch: evolve/EV-025-iwxxm-us-remarks-va

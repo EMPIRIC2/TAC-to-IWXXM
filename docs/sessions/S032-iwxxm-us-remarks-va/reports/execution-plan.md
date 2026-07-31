@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — Build |
+| **Active phase** | Phase C — Build (closing) |
 | **Active milestone** | M7 |
-| **Active task** | T7.2 (next) |
-| **Tasks** | 26 / 28 |
+| **Active task** | T7.3 (when ships) |
+| **Tasks** | 27 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -117,7 +117,7 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T7.1 | Docs | Final dig ❌→✅ audit; **any remaining encode ❌ blocks Gate C** (E25-T5=3) | E25-4c; E25-T5 | T4.7; T5.3; T6.4 | **completed** |
-| T7.2 | Test | 08-verify-build + 10-e2e smoke (US convert/validate + VA stem) | routing | T7.1 | pending |
+| T7.2 | Test | 08-verify-build + 10-e2e smoke (US convert/validate + VA stem) | routing | T7.1 | **completed** |
 | T7.3 | Deploy | 13-deploy-smoke **when** API convert/validate ships | E25-3 | T7.2 | pending |
 
 ## Data Dependencies
