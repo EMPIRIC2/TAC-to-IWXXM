@@ -19,6 +19,8 @@ def _us_gml_id(ir: dict[str, Any], product: str) -> str:
     rvr = ir.get("rvr")
     if isinstance(rvr, dict) and rvr.get("variable"):
         return f"{root}.us.var.rvr.{station}"
+    if ir.get("observed_lightning"):
+        return f"{root}.us.ltg.{station}"
     if ir.get("peak_wind_dir_deg") is not None:
         return f"{root}.us.pk.wnd.{station}"
     if ir.get("sea_level_pressure_hpa") is not None:
@@ -42,10 +44,76 @@ def _peak_timestamp(ir: dict[str, Any]) -> str:
     return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
 
 
+def _fmt_deg(value: float) -> str:
+    """Format sector angle for iwxxm-us Sector (PDF uses .5° steps)."""
+    if float(value).is_integer():
+        return str(int(value))
+    return f"{value:g}"
+
+
+def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
+    """Serialize one ``iwxxm-us:ObservedLightning`` block."""
+    parts: list[str] = ["              <iwxxm-us:ObservedLightning>"]
+    dist = lightning.get("qualitative_distance_href")
+    if dist:
+        parts.append(f'                <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
+    freq = lightning.get("frequency_href")
+    if freq:
+        parts.append(f'                <iwxxm-us:frequency xlink:href="{escape(str(freq))}"/>')
+    typ = lightning.get("type_href")
+    if typ:
+        parts.append(f'                <iwxxm-us:type xlink:href="{escape(str(typ))}"/>')
+    sector_raw = lightning.get("sector")
+    if isinstance(sector_raw, dict):
+        sector: dict[str, Any] = sector_raw
+        if sector.get("in_all_quadrants"):
+            parts.append("                <iwxxm-us:sector>")
+            parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
+            parts.append("                </iwxxm-us:sector>")
+        elif "ccw_deg" in sector and "cw_deg" in sector:
+            ccw = _fmt_deg(float(str(sector["ccw_deg"])))
+            cw = _fmt_deg(float(str(sector["cw_deg"])))
+            parts.append("                <iwxxm-us:sector>")
+            parts.append("                  <iwxxm-us:Sector>")
+            parts.append(
+                f'                    <iwxxm-us:extremeCCWDirection uom="deg">{ccw}</iwxxm-us:extremeCCWDirection>'
+            )
+            parts.append(
+                f'                    <iwxxm-us:extremeCWDirection uom="deg">{cw}</iwxxm-us:extremeCWDirection>'
+            )
+            parts.append("                  </iwxxm-us:Sector>")
+            parts.append("                </iwxxm-us:sector>")
+    parts.append("              </iwxxm-us:ObservedLightning>")
+    return "\n".join(parts)
+
+
+def _vop_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``visuallyObservablePhenomena`` when lightning present."""
+    lightning_raw = ir.get("observed_lightning")
+    if not isinstance(lightning_raw, dict):
+        return ""
+    lightning: dict[str, Any] = lightning_raw
+    ol = _observed_lightning_xml(lightning)
+    return f"""          <iwxxm-us:visuallyObservablePhenomena>
+            <iwxxm-us:VisuallyObservablePhenomena>
+              <iwxxm-us:lightning>
+{ol}
+              </iwxxm-us:lightning>
+            </iwxxm-us:VisuallyObservablePhenomena>
+          </iwxxm-us:visuallyObservablePhenomena>
+"""
+
+
 def _addendum_extension(ir: dict[str, Any]) -> str:
     """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
     free_text = str(ir.get("remarks_free_text") or "").strip()
-    if not ir.get("observing_system_type") and ir.get("sea_level_pressure_hpa") is None and not free_text:
+    has_vop = isinstance(ir.get("observed_lightning"), dict)
+    if (
+        not ir.get("observing_system_type")
+        and ir.get("sea_level_pressure_hpa") is None
+        and not free_text
+        and not has_vop
+    ):
         return ""
     parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
     if ir.get("observing_system_href"):
@@ -57,6 +125,9 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         parts.append(
             f'          <iwxxm-us:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-us:seaLevelPressure>'
         )
+    vop = _vop_addendum_inner(ir)
+    if vop:
+        parts.append(vop.rstrip("\n"))
     parts.extend(["        </iwxxm-us:Addendum>", "      </iwxxm:extension>"])
     return "\n".join(parts) + "\n"
 

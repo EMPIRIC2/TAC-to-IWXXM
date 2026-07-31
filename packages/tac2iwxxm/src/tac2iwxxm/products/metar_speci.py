@@ -74,8 +74,37 @@ _RMK_T = re.compile(r"\bT(?P<tsign>[01])(?P<tttt>\d{3})(?P<dsign>[01])(?P<dddd>\
 _RMK_P = re.compile(r"\bP(?P<p>\d{4})\b")
 _COR_AFTER_TIME = re.compile(r"^\s*COR\b\s*")
 _OBS_SYSTEM_HREF = "https://codes.nws.noaa.gov/FMH-1/ObservingSystemType/AO{ao}"
-# Structured tokens removed before free-text retain (AO/SLP/PK only — T/P stay in free-text).
-_CONSUMED_REMARK = re.compile(r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b")
+_FREQ_HREF = "https://codes.nws.noaa.gov/FMH-1/LightningFrequency/{code}"
+_TYPE_HREF = "https://codes.nws.noaa.gov/FMH-1/LightningType/{code}"
+_DIST_HREF = "https://codes.nws.noaa.gov/FMH-1/QualitativeDistance/{code}"
+_LTG_FREQ_CODES = {"OCNL": "OCCASIONAL", "FRQ": "FREQUENT", "CONS": "CONTINUOUS"}
+_LTG_DIST_CODES = {"DSNT": "DISTANT", "VC": "VICINITY"}
+# 8-point compass for lightning sector extremes (true north = 0°).
+_LTG_COMPASS_DEG: dict[str, float] = {
+    "N": 0.0,
+    "NE": 45.0,
+    "E": 90.0,
+    "SE": 135.0,
+    "S": 180.0,
+    "SW": 225.0,
+    "W": 270.0,
+    "NW": 315.0,
+}
+# FMH-1 lightning REMARKS: [OCNL|FRQ|CONS] LTG[IC|CC|CG…] [DSNT|VC] [dirs|ALQDS]
+_LTG_REMARK = re.compile(
+    r"\b(?:(?P<freq>OCNL|FRQ|CONS)\s+)?"
+    r"LTG(?P<type>(?:IC|CC|CG)*)"
+    r"(?:\s+(?P<dist>DSNT|VC))?"
+    r"(?:\s+(?P<sector>ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?"
+    r"\b"
+)
+# Structured tokens removed before free-text retain (AO/SLP/PK/LTG — T/P stay in free-text).
+_CONSUMED_REMARK = re.compile(
+    r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b|"
+    r"(?:\b(?:OCNL|FRQ|CONS)\s+)?LTG(?:IC|CC|CG)*"
+    r"(?:\s+(?:DSNT|VC))?"
+    r"(?:\s+(?:ALQDS|(?:N|NE|E|SE|S|SW|W|NW)(?:-(?:N|NE|E|SE|S|SW|W|NW))*))?\b"
+)
 
 
 def _celsius(token: str) -> int:
@@ -205,9 +234,80 @@ def _parse_trend_group(ir: dict[str, Any], kind: str, body: str) -> dict[str, An
     return trend
 
 
+def _lightning_type_code(raw: str) -> str | None:
+    """Map concatenated FMH-1 LTG type letters to NWS LightningType code."""
+    if not raw:
+        return None
+    parts: list[str] = []
+    i = 0
+    while i < len(raw):
+        if raw.startswith("IC", i):
+            parts.append("IC")
+            i += 2
+        elif raw.startswith("CC", i):
+            parts.append("CC")
+            i += 2
+        elif raw.startswith("CG", i):
+            parts.append("CG")
+            i += 2
+        else:
+            return None
+    uniq = frozenset(parts)
+    if uniq == frozenset({"IC", "CC", "CG"}):
+        return "CCCGIC"
+    if uniq == frozenset({"IC", "CG"}):
+        return "ICCG"
+    if uniq == frozenset({"CC", "CG"}):
+        return "CCCG"
+    if uniq == frozenset({"IC", "CC"}):
+        return "ICCC"
+    if len(uniq) == 1:
+        return next(iter(uniq))
+    return "".join(parts)
+
+
+def _lightning_sector(sector_tok: str | None) -> dict[str, Any] | None:
+    """Build sector IR from ALQDS or hyphenated compass list (PDF ±22.5° padding)."""
+    if not sector_tok:
+        return None
+    if sector_tok == "ALQDS":
+        return {"in_all_quadrants": True}
+    dirs = sector_tok.split("-")
+    if any(d not in _LTG_COMPASS_DEG for d in dirs):
+        return None
+    first = _LTG_COMPASS_DEG[dirs[0]]
+    last = _LTG_COMPASS_DEG[dirs[-1]]
+    return {
+        "in_all_quadrants": False,
+        "ccw_deg": (first - 22.5) % 360.0,
+        "cw_deg": (last + 22.5) % 360.0,
+    }
+
+
+def _parse_lightning_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse first FMH-1 lightning REMARKS group into ObservedLightning IR fields."""
+    m = _LTG_REMARK.search(remarks)
+    if m is None:
+        return None
+    entry: dict[str, Any] = {}
+    freq = m.group("freq")
+    if freq:
+        entry["frequency_href"] = _FREQ_HREF.format(code=_LTG_FREQ_CODES[freq])
+    type_code = _lightning_type_code(m.group("type") or "")
+    if type_code:
+        entry["type_href"] = _TYPE_HREF.format(code=type_code)
+    dist = m.group("dist")
+    if dist:
+        entry["qualitative_distance_href"] = _DIST_HREF.format(code=_LTG_DIST_CODES[dist])
+    sector = _lightning_sector(m.group("sector"))
+    if sector is not None:
+        entry["sector"] = sector
+    return entry or None
+
+
 def _remarks_free_text(remarks: str) -> str:
     """
-    Return REMARKS remainder after removing structured AO/SLP/PK tokens.
+    Return REMARKS remainder after removing structured AO/SLP/PK/LTG tokens.
 
     Additive T/P and plain language stay so ``iwxxm_us`` can retain them in
     ``humanReadableText`` (#667 / UJ-026 never-drop).
@@ -219,7 +319,7 @@ def _remarks_free_text(remarks: str) -> str:
 
 def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
-    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, T, P).
+    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, LTG, T, P).
 
     Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
     TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
@@ -255,6 +355,10 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
         hhmm = pk.group("hhmm")
         ir["peak_wind_hour"] = int(hhmm[0:2])
         ir["peak_wind_minute"] = int(hhmm[2:4])
+
+    lightning = _parse_lightning_remark(remarks)
+    if lightning is not None:
+        ir["observed_lightning"] = lightning
 
     temp_tenths = _RMK_T.search(remarks)
     if temp_tenths is not None:
