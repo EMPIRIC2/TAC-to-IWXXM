@@ -10,7 +10,7 @@
 **Issues**: [#804](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/804), [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807), [#773](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/773) — **exclude** [#806](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/806)  
 **Started**: 2026-07-30  
 **Branch**: `evolve/EV-024-iwxxm-domain-mine`  
-**Status**: **in_progress** (Phase 0–1 locked → **01-requirements**)
+**Status**: **completed** (2026-07-30) — PR #813 `864783e`; 13-deploy-smoke PASS; `D-S031-merge-close`
 
 ### Scope (Phase 0 — locked 2026-07-30)
 

@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — Build (07) |
-| **Active milestone** | M7 complete (T7.3 deferred) |
+| **Active phase** | Phase D — Deploy/close complete |
+| **Active milestone** | M7 complete |
 | **Active task** | — |
-| **Tasks** | 22 / 22 (T7.3 deferred by D1) |
+| **Tasks** | 22 / 22 |
 | **Last updated** | 2026-07-30 |
 
 ## Tech Stack Summary
@@ -104,7 +104,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T7.1 | Docs | File child issues for ❌/⚠ encode/lint/SCH; comment on #804/#807/#773 | TC-EV024-008 | T4.2; T5.4; T6.2 | **completed** (#809–#812) |
 | T7.2 | Test | 08-verify-build + 10-e2e smoke (catalog/validate) | routing | T7.1 | **completed** (see verification-report.md) |
-| T7.3 | Deploy | 13-deploy-smoke **when** catalog ships (E24-4) | connectivity | T7.2 | **deferred** (D1 — PR first; deploy after merge) |
+| T7.3 | Deploy | 13-deploy-smoke **when** catalog ships (E24-4) | connectivity | T7.2 | **completed** (D-S031-merge-close; deploy-smoke.md PASS) |
 
 ## Git Strategy
 
@@ -116,7 +116,8 @@
 
 | PR | URL | Status |
 |----|-----|--------|
-| EV-024 / S031 | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813 | open (T7.3 deploy deferred D1) |
+| EV-024 / S031 | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813 | **merged** `864783e` |
+| EV-024 closeout | (pending) | open — state + deploy-smoke + evolve report |
 
 ## PR checklist (draft)
 
@@ -126,4 +127,4 @@
 - [x] Validate/CI wire or deferrals
 - [x] Child issues filed; durable promotions committed
 - [x] #806 not in scope
-- [x] T7.3 deploy deferred (D1 — after merge)
+- [x] T7.3 deploy smoke PASS after merge (D-S031-merge-close)
