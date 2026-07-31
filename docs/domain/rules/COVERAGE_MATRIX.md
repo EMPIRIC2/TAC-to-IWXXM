@@ -331,6 +331,7 @@ Full type×TAC×encode×validate table lives in the [PDF dig](../mining/iwxxm-us
 | SnowIncrease / sensor outage | ✅ S032/#812 | ⚠ | ✅ TC-EV025-003 | Validate smoke M6 |
 | Sector / obscuration / second-site / tower | ✅ S032/M4.3 | ⚠ | ✅ TC-EV025-004 | Validate smoke M6 |
 | Variable CIG / SKY / VIS | ✅ S032/M4.4 | ⚠ | ✅ TC-EV025-004 | Validate smoke M6 |
-| Codelist hrefs (NWS) | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov |
+| MaxMin / precip ProcessedProperty / AO hrefs | ✅ S032/M4.5 | ⚠ | ✅ TC-EV025-004 | Validate smoke M6 |
+| Codelist hrefs (NWS) | ✅ S032/M4.5 (AO + statistical) | ⚠ | ✅ TC-EV025-004 | Prefer codes.nws.noaa.gov |
 
 Do **not** mix US examples into the WMO sample menu (UJ-039 / E24-C).

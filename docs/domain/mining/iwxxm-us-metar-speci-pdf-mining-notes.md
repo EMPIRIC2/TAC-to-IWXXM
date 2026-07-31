@@ -33,17 +33,17 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | ConvectiveCloudLocation / Types | CB/TCU location/motion | ✅ | ⚠ | ✅ | S032/M4.2 — CB/TS/TCU; TC-EV025-004 |
 | FailedSensors / InoperativeSensors / MeteorologicalSensors | Sensor outage | ✅ | ⚠ | ✅ | S032/#812 — CHINO/RVRNO/… → Sensor hrefs; TC-EV025-003 |
 | HailstoneSize | GR size | ✅ | ⚠ | ✅ | S032/M4.2 — ``GR`` size; TC-EV025-004 |
-| MaxMinTemperatures | 1/6-hr max/min | ⚠ | ⚠ | ❌ | |
+| MaxMinTemperatures | 1/6-hr max/min | ✅ | ⚠ | ✅ | S032/M4.5 — ``1``/``2``/``4``; TC-EV025-004 |
 | Obscurations | Obscuration layers | ✅ | ⚠ | ✅ | S032/M4.3 — FU BKNhhh in VOP; TC-EV025-004 |
 | ObservedLightning / Frequency / Type | Lightning RMK | ✅ | ⚠ | ✅ | S032/#811 — TC-EV025-002; PDF sample shapes |
 | ObservedAtSecondLocation / SensorLocation / TowerVisibility | Second-site / tower | ✅ | ⚠ | ✅ | S032/M4.3 — CIG/VIS RWY + TWR VIS; TC-EV025-004 |
 | RecentWeather | RE… | ⚠ | ⚠ | ❌ | May overlap WMO recent |
 | Sector / SectorVisibility | Sector vis | ✅ | ⚠ | ✅ | S032/M4.3 — VIS n DIR; TC-EV025-004 |
 | SnowIncrease | Snow depth increase | ✅ | ⚠ | ✅ | S032/#812 — SNINCR; TC-EV025-003 |
-| ProcessedProperty + statistical codelists | PNO / stats | ❌ | ⚠ | ❌ | |
+| ProcessedProperty + statistical codelists | P/6/7 precip stats | ✅ | ⚠ | ✅ | S032/M4.5 — ``processedQuantity``; TC-EV025-004 |
 | VariableCeilingHeight / Sky / Visibility | Variable CIG/SKY/VIS | ✅ | ⚠ | ✅ | S032/M4.4 — CIG hhhVhhh / AMT V AMT / VIS nVn; TC-EV025-004 |
 | VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ | ⚠ | ✅ | S032/#811+#M4.2+#M4.3 — L/C/sky/obscuration |
-| Codelists (ObservingSystemType, Pressure*, QualitativeDistance, Statistical*) | FMH-1 / NWS codes URIs | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov hrefs from PDF |
+| Codelists (ObservingSystemType, Pressure*, QualitativeDistance, Statistical*) | FMH-1 / NWS codes URIs | ✅ | ⚠ | ✅ | S032/M4.5 — AO + StatisticalFunction / WeatherElement hrefs |
 
 **Legend:** ✅ encoded/tested · ⚠ partial / unconfirmed · ❌ missing — refine in M4/M7 children after code audit.
 

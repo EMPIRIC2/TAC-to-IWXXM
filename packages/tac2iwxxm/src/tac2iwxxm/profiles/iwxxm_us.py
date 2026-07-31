@@ -419,6 +419,79 @@ def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
     return "\n".join(chunks)
 
 
+def _max_min_temperatures_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``maxMinTemperatures`` from FMH-1 ``1``/``2``/``4`` groups."""
+    rows_raw = ir.get("max_min_temperatures")
+    if not isinstance(rows_raw, list) or not rows_raw:
+        return ""
+    parts: list[str] = []
+    for row_obj in cast(list[object], rows_raw):
+        if not isinstance(row_obj, dict):
+            continue
+        row: dict[str, Any] = row_obj
+        period = escape(str(row.get("preceding_period") or "PT6H"))
+        max_xml = _measure_or_nil("maxTemperature", row.get("max_c"), uom="Cel")
+        min_xml = _measure_or_nil("minTemperature", row.get("min_c"), uom="Cel")
+        parts.append(
+            f"""          <iwxxm-us:maxMinTemperatures>
+            <iwxxm-us:MaxMinTemperatures>
+              <iwxxm-us:precedingPeriod>{period}</iwxxm-us:precedingPeriod>
+              {max_xml}
+              {min_xml}
+            </iwxxm-us:MaxMinTemperatures>
+          </iwxxm-us:maxMinTemperatures>
+"""
+        )
+    return "".join(parts)
+
+
+def _measure_or_nil(tag: str, value: object, *, uom: str) -> str:
+    """Emit a MeasureWithNilReason element (value or missing nil)."""
+    if value is None:
+        return f'<iwxxm-us:{tag} uom="N/A" nilReason="missing" xsi:nil="true"/>'
+    if isinstance(value, float):
+        txt = f"{value:.1f}"
+    else:
+        txt = _fmt_deg(float(str(value)))
+    return f'<iwxxm-us:{tag} uom="{uom}">{txt}</iwxxm-us:{tag}>'
+
+
+def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``processedQuantity`` ProcessedProperty rows (precip P/6/7)."""
+    qty_raw = ir.get("processed_quantities")
+    if not isinstance(qty_raw, list) or not qty_raw:
+        return ""
+    parts: list[str] = []
+    for row_obj in cast(list[object], qty_raw):
+        if not isinstance(row_obj, dict):
+            continue
+        row: dict[str, Any] = row_obj
+        elem = escape(str(row["processed_weather_element_href"]))
+        vtype = escape(str(row["value_type_href"]))
+        period = escape(str(row.get("value_period") or "PT1H"))
+        uom = escape(str(row.get("uom") or "[in_i]"))
+        val = row.get("processed_value")
+        val_txt = _fmt_deg(float(str(val))) if val is not None else "0"
+        qualifier = row.get("qualifier")
+        qual_xml = (
+            f"\n                  <iwxxm-us:qualifier>{escape(str(qualifier))}</iwxxm-us:qualifier>"
+            if qualifier
+            else ""
+        )
+        parts.append(
+            f"""          <iwxxm-us:processedQuantity>
+            <iwxxm-us:ProcessedProperty>
+              <iwxxm-us:processedWeatherElement xlink:href="{elem}"/>
+              <iwxxm-us:valueType xlink:href="{vtype}"/>
+              <iwxxm-us:valuePeriod>{period}</iwxxm-us:valuePeriod>{qual_xml}
+              <iwxxm-us:processedValue uom="{uom}">{val_txt}</iwxxm-us:processedValue>
+            </iwxxm-us:ProcessedProperty>
+          </iwxxm-us:processedQuantity>
+"""
+        )
+    return "".join(parts)
+
+
 def _addendum_extension(ir: dict[str, Any]) -> str:
     """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
     free_text = str(ir.get("remarks_free_text") or "").strip()
@@ -431,6 +504,8 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     has_snow = isinstance(ir.get("snow_increase"), dict)
     has_hail = isinstance(ir.get("hailstone_size"), dict)
     has_second = isinstance(ir.get("observed_at_second_location"), dict)
+    has_max_min = isinstance(ir.get("max_min_temperatures"), list) and bool(ir.get("max_min_temperatures"))
+    has_processed = isinstance(ir.get("processed_quantities"), list) and bool(ir.get("processed_quantities"))
     if (
         not ir.get("observing_system_type")
         and ir.get("sea_level_pressure_hpa") is None
@@ -439,6 +514,8 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         and not has_snow
         and not has_hail
         and not has_second
+        and not has_max_min
+        and not has_processed
     ):
         return ""
     parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
@@ -457,6 +534,12 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     vop = _vop_addendum_inner(ir)
     if vop:
         parts.append(vop.rstrip("\n"))
+    processed = _processed_quantity_addendum_inner(ir)
+    if processed:
+        parts.append(processed.rstrip("\n"))
+    max_min = _max_min_temperatures_addendum_inner(ir)
+    if max_min:
+        parts.append(max_min.rstrip("\n"))
     second = _second_location_addendum_inner(ir)
     if second:
         parts.append(second.rstrip("\n"))

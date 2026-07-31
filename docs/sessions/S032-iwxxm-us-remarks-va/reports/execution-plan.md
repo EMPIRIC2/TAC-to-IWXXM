@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — Build |
 | **Active milestone** | M4 |
-| **Active task** | T4.5 (next) |
-| **Tasks** | 15 / 28 |
+| **Active task** | T4.6 (next) |
+| **Tasks** | 16 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -91,7 +91,7 @@ Per-type/row goldens where feasible (E25-T2). Packs may split further in 07 if a
 | T4.2 | Test+Code | CharacterOfTheSky / CloudTypes / ConvectiveCloud* / HailstoneSize | TC-EV025-004 | T4.1 | **completed** |
 | T4.3 | Test+Code | Sector / Obscurations / SecondLocation / TowerVisibility | TC-EV025-004 | T4.2 | **completed** |
 | T4.4 | Test+Code | VariableCeilingHeight / VariableSky / VariableVisibility | TC-EV025-004 | T4.3 | **completed** |
-| T4.5 | Test+Code | MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists | TC-EV025-004 | T4.4 | pending |
+| T4.5 | Test+Code | MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists | TC-EV025-004 | T4.4 | **completed** |
 | T4.6 | Test+Code | Addendum residuals (AO1/flags/text not yet structured) + RecentWeather deepen if ❌ | TC-EV025-004 | T4.5 | pending |
 | T4.7 | Docs | Dig checklist refresh — all Lane A encode rows ✅ (or blocked AskQuestion) | E25-T5=3 | T4.6 | pending |
 

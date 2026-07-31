@@ -23,9 +23,9 @@
 | Obscurations | ✅ | VOP obscuration; TC-EV025-004 FU BKNhhh | **done** M4.3 |
 | ObservedAtSecondLocation / SensorLocation / TowerVisibility | ✅ | Addendum + vis ext; TC-EV025-004 CIG/VIS RWY / TWR VIS | **done** M4.3 |
 | VariableCeilingHeight / Sky / Visibility | ✅ | CloudLayer + vis ext; TC-EV025-004 CIG/SKY/VIS V | **done** M4.4 |
-| MaxMinTemperatures | ❌/⚠ | not in US profile | **M4.5** |
-| ProcessedProperty + statistical codelists | ❌ | — | **M4.5** |
-| ObservingSystemType (codelist href) | ⚠ | Addendum `observingSystemType` href | **M4.5** deepen |
+| MaxMinTemperatures | ✅ | `_max_min_temperatures_addendum_inner`; TC-EV025-004 `1`/`2`/`4` | **done** M4.5 |
+| ProcessedProperty + statistical codelists | ✅ | `_processed_quantity_addendum_inner`; P/6/7 precip | **done** M4.5 |
+| ObservingSystemType (codelist href) | ✅ | Addendum `observingSystemType` AO1/AO2 href | **done** M4.5 |
 | RecentWeather | ⚠ | annex3 overlap likely | **M4.6** if still ❌ for US |
 | Addendum residuals (PRESFR/RR, CONTRAIL, `$`, …) | ❌/⚠ | free-text only today | **M4.6** |
 
@@ -44,9 +44,9 @@
 5. **M4.2** — Sky / convective / hail — **done**
 6. **M4.3** — Sector / obscuration / second-site / tower — **done**
 7. **M4.4** — Variable CIG/SKY/VIS — **done**
-8. **M4.5** — Max/min + ProcessedProperty / codelists  
+8. **M4.5** — Max/min + ProcessedProperty / codelists — **done**
 9. **M4.6** — Addendum residuals + RecentWeather deepen  
 
 ## Next
 
-`[T4.5]` MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists.
+`[T4.6]` Addendum residuals (AO1/flags/text not yet structured) + RecentWeather deepen if ❌.

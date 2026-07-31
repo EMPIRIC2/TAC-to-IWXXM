@@ -270,7 +270,7 @@ Encode national content in IWXXM **`extension`** blocks per MDL / iwxxm-us — d
 
 | Prefer element | When TAC has |
 |----------------|--------------|
-| `observingSystemType` | AO1 / AO2 |
+| `observingSystemType` | AO1 / AO2 → `codes.nws.noaa.gov/FMH-1/ObservingSystemType` |
 | `AerodromePeakWind` | PK WND |
 | `AerodromeVariableRVR` | Variable RVR body group `R…/minVmax` (FT); meanRVR withheld (`nilReason` withheld) — S032 / #810 |
 | `VisuallyObservablePhenomena` / `ObservedLightning` | FMH-1 lightning REMARKS (`LTG` / `OCNL|FRQ|CONS` + type + `DSNT|VC` + sector) — S032 / #811 |
@@ -279,8 +279,9 @@ Encode national content in IWXXM **`extension`** blocks per MDL / iwxxm-us — d
 | `pressureChangeIndicator` | PRESRR / PRESFR |
 | `seaLevelPressure` | SLPppp / SLPNO |
 | `snowDepth` / `snowIncrease` | snow depth / SNINCR |
-| `maxMinTemperatures` / `pressureTendency*` | additive T / 5appp families |
-| `processedQuantity` | precip additive groups |
+| `maxMinTemperatures` | FMH-1 additive ``1snTTT`` / ``2snTTT`` (6-h) · ``4snTTTsnTTT`` (24-h) — S032/M4.5 |
+| `processedQuantity` | precip additive ``Prrrr`` / ``6RRRR`` / ``7R24…`` (+ statistical codelist hrefs) — S032/M4.5 |
+| `pressureTendency*` | additive ``5appp`` families (residual / deepen) |
 | `maintenanceIndicator` | `$` |
 | `Remarks` / `humanReadableText` | anything else kept verbatim |
 

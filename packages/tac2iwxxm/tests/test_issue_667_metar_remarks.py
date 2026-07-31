@@ -35,7 +35,7 @@ def test_iwxxm_us_retains_unparsed_remarks_as_human_readable_text() -> None:
     assert "REMARKS_EXCLUDED" not in [i.code for i in result.issues]
 
 
-def test_iwxxm_us_keeps_additive_t_and_p_in_free_text() -> None:
+def test_iwxxm_us_keeps_additive_t_and_structures_p() -> None:
     tac = "METAR KJFK 231751Z AUTO 18012KT 10SM CLR 15/07 A3005 RMK AO2 SLP176 T01560070 P0001="
     ir = parse_metar_speci(tac, product="METAR")
     assert ir.get("remark_temp_tenths_c") == 15.6
@@ -45,7 +45,9 @@ def test_iwxxm_us_keeps_additive_t_and_p_in_free_text() -> None:
     assert result.ok and result.xml
     assert "humanReadableText" in result.xml
     assert "T01560070" in result.xml
-    assert "P0001" in result.xml
+    # Hourly precip is structured ProcessedProperty (never-drop via encode).
+    assert "iwxxm-us:ProcessedProperty" in result.xml
+    assert "P0001" not in result.xml
     assert "seaLevelPressure" in result.xml
 
 
@@ -72,7 +74,7 @@ def test_annex3_speci_emits_remarks_excluded_with_rmk_span() -> None:
 
 
 def test_parse_strips_structured_tokens_from_remarks_free_text() -> None:
-    """AO/SLP/PK/WSHFT are consumed; T/P and plain language remain for never-drop emit."""
+    """AO/SLP/PK/WSHFT/P are consumed; hourly T stays for never-drop emit."""
     tac = "METAR KJFK 231751Z 18012KT 10SM CLR 15/07 A3005 RMK AO2 SLP176 PK WND 28045/1745 T01560070 P0001 WSHFT 1715="
     ir = parse_metar_speci(tac, product="METAR")
     assert ir.get("remarks_present") is True
@@ -88,7 +90,8 @@ def test_parse_strips_structured_tokens_from_remarks_free_text() -> None:
     assert "PK WND" not in free
     assert "WSHFT" not in free
     assert "T01560070" in free
-    assert "P0001" in free
+    assert "P0001" not in free
+    assert ir.get("precip_inches") == 0.01
 
 
 def test_iwxxm_us_peak_wind_and_free_text_coexist() -> None:

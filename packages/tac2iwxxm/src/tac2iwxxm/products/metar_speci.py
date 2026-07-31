@@ -74,11 +74,19 @@ _PK_WND = re.compile(r"\bPK\s+WND\s+(?P<dir>\d{3})(?P<spd>\d{2,3})/(?P<hhmm>\d{4
 _WSHFT = re.compile(r"\bWSHFT\s+(?P<hhmm>\d{4})(?P<fropa>\s+FROPA)?\b")
 _RMK_T = re.compile(r"\bT(?P<tsign>[01])(?P<tttt>\d{3})(?P<dsign>[01])(?P<dddd>\d{3})\b")
 _RMK_P = re.compile(r"\bP(?P<p>\d{4})\b")
+# FMH-1 §12.7.2 max/min: 1snTTT (6-h max), 2snTTT (6-h min), 4snTTTsnTTT (24-h max+min).
+_RMK_MAX_6H = re.compile(r"\b1(?P<sign>[01])(?P<ttt>\d{3})\b")
+_RMK_MIN_6H = re.compile(r"\b2(?P<sign>[01])(?P<ttt>\d{3})\b")
+_RMK_MAXMIN_24H = re.compile(r"\b4(?P<msign>[01])(?P<mttt>\d{3})(?P<nsign>[01])(?P<nttt>\d{3})\b")
+# 3-/6-h precip 6RRRR; 24-h precip 7R24R24R24.
+_RMK_PRECIP_6 = re.compile(r"\b6(?P<p>\d{4})\b")
+_RMK_PRECIP_7 = re.compile(r"\b7(?P<p>\d{4})\b")
 _COR_AFTER_TIME = re.compile(r"^\s*COR\b\s*")
 _OBS_SYSTEM_HREF = "https://codes.nws.noaa.gov/FMH-1/ObservingSystemType/AO{ao}"
 _FREQ_HREF = "https://codes.nws.noaa.gov/FMH-1/LightningFrequency/{code}"
 _TYPE_HREF = "https://codes.nws.noaa.gov/FMH-1/LightningType/{code}"
 _DIST_HREF = "https://codes.nws.noaa.gov/FMH-1/QualitativeDistance/{code}"
+_PRECIP_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/PRECIPITATION"
 _LTG_FREQ_CODES = {"OCNL": "OCCASIONAL", "FRQ": "FREQUENT", "CONS": "CONTINUOUS"}
 _LTG_DIST_CODES = {"DSNT": "DISTANT", "VC": "VICINITY"}
 # 8-point compass for lightning sector extremes (true north = 0°).
@@ -159,7 +167,7 @@ _SENSOR_NO_CODES = {
 }
 _SENSOR_NO = re.compile(r"\b(?P<tok>" + "|".join(_SENSOR_NO_CODES) + r")\b")
 _SNOW_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/SNOW"
-# GRIB2 Code Table 4.10 entry 1 — accumulation (iwxxm-us PDF SnowIncrease sample).
+# GRIB2 Code Table 4.10 entry 1 — accumulation (iwxxm-us PDF SnowIncrease / precip samples).
 _STAT_ACCUM_HREF = "http://codes.wmo.int/grib2/codeflag/4.10/1"
 _BUFR_CLOUD_HREF = "http://codes.wmo.int/bufr4/codeflag/0-20-012/{code}"
 _NIL_NOT_OBSERVABLE = "http://codes.wmo.int/common/nil/notObservable"
@@ -176,7 +184,8 @@ _CONVECTIVE_DIST_CODES = {
     "OHD": "OVERHEAD",
     "OVHD": "OVERHEAD",
 }
-# Structured tokens removed before free-text retain (AO/SLP/PK/WSHFT/LTG/SNINCR/8/conv/hail/sensor — T/P stay).
+# Structured tokens removed before free-text retain (AO/SLP/PK/WSHFT/LTG/SNINCR/8/conv/
+# hail/sensor/1·2·4 max-min/P·6·7 precip — hourly T… stays for never-drop).
 _CONSUMED_REMARK = re.compile(
     r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b|"
     r"\bWSHFT\s+\d{4}(?:\s+FROPA)?\b|"
@@ -198,7 +207,9 @@ _CONSUMED_REMARK = re.compile(
     r"\b(?:FEW|SCT|BKN|OVC)(?:\d{3})?\s+V\s+(?:FEW|SCT|BKN|OVC)\b|"
     r"\bVIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)V(?:(?:\d+\s+)?\d/\d|\d+)\b|"
     r"\b(?:FU|HZ|BR|FG|VA|DU|SA|PY)\s+(?:FEW|SCT|BKN|OVC)\d{3}\b|"
-    r"\b(?:" + "|".join(_SENSOR_NO_CODES) + r")\b"
+    r"\b(?:" + "|".join(_SENSOR_NO_CODES) + r")\b|"
+    r"\b4[01]\d{3}[01]\d{3}\b|\b[12][01]\d{3}\b|"
+    r"\bP\d{4}\b|\b[67]\d{4}\b"
 )
 
 
@@ -610,12 +621,76 @@ def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
     return None
 
 
+def _precip_6_period(hour: int) -> str:
+    """Map observation hour to FMH-1 6RRRR accumulation period (PT3H or PT6H)."""
+    if hour % 6 == 0:
+        return "PT6H"
+    return "PT3H"
+
+
+def _parse_max_min_temperatures(remarks: str) -> list[dict[str, Any]]:
+    """Parse FMH-1 ``1``/``2``/``4`` additive groups into MaxMinTemperatures IR rows."""
+    rows: list[dict[str, Any]] = []
+    max_6 = _RMK_MAX_6H.search(remarks)
+    min_6 = _RMK_MIN_6H.search(remarks)
+    if max_6 is not None or min_6 is not None:
+        row: dict[str, Any] = {"preceding_period": "PT6H"}
+        if max_6 is not None:
+            row["max_c"] = _tenths_celsius(max_6.group("sign"), max_6.group("ttt"))
+        if min_6 is not None:
+            row["min_c"] = _tenths_celsius(min_6.group("sign"), min_6.group("ttt"))
+        rows.append(row)
+    mm24 = _RMK_MAXMIN_24H.search(remarks)
+    if mm24 is not None:
+        rows.append(
+            {
+                "preceding_period": "PT24H",
+                "max_c": _tenths_celsius(mm24.group("msign"), mm24.group("mttt")),
+                "min_c": _tenths_celsius(mm24.group("nsign"), mm24.group("nttt")),
+            }
+        )
+    return rows
+
+
+def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
+    """Build one ``ProcessedProperty`` IR row for precipitation additive groups."""
+    row: dict[str, Any] = {
+        "processed_weather_element_href": _PRECIP_ELEMENT_HREF,
+        "value_type_href": _STAT_ACCUM_HREF,
+        "value_period": period,
+        "uom": "[in_i]",
+    }
+    if hundredths == 0:
+        # FMH P0000 / 60000 / 70000 — less than 0.01" (PDF BELOW sample).
+        row["processed_value"] = 0.01
+        row["qualifier"] = "BELOW"
+    else:
+        row["processed_value"] = hundredths / 100.0
+    return row
+
+
+def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
+    """Parse ``P``/``6``/``7`` precip additive groups into processed_quantities."""
+    qty: list[dict[str, Any]] = []
+    precip = _RMK_P.search(remarks)
+    if precip is not None:
+        qty.append(_precip_quantity(int(precip.group("p")), period="PT1H"))
+    p6 = _RMK_PRECIP_6.search(remarks)
+    if p6 is not None:
+        qty.append(_precip_quantity(int(p6.group("p")), period=_precip_6_period(hour)))
+    p7 = _RMK_PRECIP_7.search(remarks)
+    if p7 is not None:
+        qty.append(_precip_quantity(int(p7.group("p")), period="PT24H"))
+    return qty
+
+
 def _remarks_free_text(remarks: str) -> str:
     """
-    Return REMARKS remainder after removing structured AO/SLP/PK/LTG/SNINCR/sensor tokens.
+    Return REMARKS remainder after removing structured tokens.
 
-    Additive T/P and plain language stay so ``iwxxm_us`` can retain them in
-    ``humanReadableText`` (#667 / UJ-026 never-drop).
+    Hourly additive ``T…`` stays so ``iwxxm_us`` can retain it in
+    ``humanReadableText`` (#667 / UJ-026 never-drop). Max/min ``1``/``2``/``4``
+    and precip ``P``/``6``/``7`` are consumed when structured into Addendum.
     """
     leftover = _CONSUMED_REMARK.sub(" ", remarks)
     leftover = re.sub(r"\s+", " ", leftover).strip(" =")
@@ -626,7 +701,7 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
     Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, WSHFT, LTG, sky,
     convective, hail, sector/tower VIS, obscuration, second-site, SNINCR,
-    sensor-NO, T, P).
+    sensor-NO, max/min, precip ``P``/``6``/``7``, T).
 
     Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
     TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
@@ -734,14 +809,22 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
         # Preserve order, drop duplicates.
         ir["inoperative_sensor_hrefs"] = list(dict.fromkeys(sensor_hrefs))
 
+    max_min = _parse_max_min_temperatures(remarks)
+    if max_min:
+        ir["max_min_temperatures"] = max_min
+
     temp_tenths = _RMK_T.search(remarks)
     if temp_tenths is not None:
         ir["remark_temp_tenths_c"] = _tenths_celsius(temp_tenths.group("tsign"), temp_tenths.group("tttt"))
         ir["remark_dewpoint_tenths_c"] = _tenths_celsius(temp_tenths.group("dsign"), temp_tenths.group("dddd"))
 
-    precip = _RMK_P.search(remarks)
-    if precip is not None:
-        ir["precip_inches"] = int(precip.group("p")) / 100.0
+    hour = int(ir.get("hour") or 0)
+    processed = _parse_processed_precip(remarks, hour)
+    if processed:
+        ir["processed_quantities"] = processed
+        precip = _RMK_P.search(remarks)
+        if precip is not None:
+            ir["precip_inches"] = int(precip.group("p")) / 100.0
 
     free = _remarks_free_text(remarks)
     if free:
