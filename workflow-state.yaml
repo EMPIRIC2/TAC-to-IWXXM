@@ -31,7 +31,7 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 07-build
+  current_stage: 16-evolve
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/va-multi-location-809.md
@@ -48,7 +48,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: 'EV-026 Phase 0 locked; handoff 01'
+    note: 'Gate C PASS (D-S033-gate-c); 07/08/10 done; awaiting PR + 13 when_ships (T3.4); tip 7e08051; #809 closed'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -73,21 +73,29 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-07-31'
-    note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
+    completed: '2026-07-31'
+    note: 'COMPLETE — M0–M3 done except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c)'
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS — docs/sessions/S033-va-multi-location-equality/reports/verification-report.md; tip 7e08051'
   - stage: 10-e2e
     required: true
     mode: smoke
-    status: pending
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS smoke — TC-EV025-008/009 + Vitest (via T3.2 verification-report); tip 7e08051'
   - stage: 13-deploy-smoke
     required: false
     mode: when_ships
     status: pending
+    note: 'when_ships / T3.4 — await API/catalog ship + PR'
 sessions:
 - id: S032-iwxxm-us-remarks-va
   type: feature
@@ -5112,9 +5120,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-07-31'
     started: '2026-07-31'
+    completed: '2026-07-31'
+    completed_at: '2026-07-31'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
     previous_session_id: S032-iwxxm-us-remarks-va
@@ -5124,18 +5134,23 @@ stages:
       #810/#811/#812/#809'
     session_id: S033-va-multi-location-equality
     evolve_cycle_id: EV-026
-    note: 'S033/EV-026 07-build — T0.1 COMPLETE (t0-1-canonicalize-diff-themes.md); @ T1.1 flip TC-EV025-008 strict (expect red); progress 1/12; #809'
-    current_stage: M1
-    current_milestone: M1
-    current_task: T1.1
-    active_milestone: M1
-    active_task: T1.1
-    active_task_status: in_progress
-    progress: 1/12
+    note: 'S033/EV-026 07-build COMPLETE — M0–M3 done except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c); progress 11/12'
+    tip_sha: 7e08051
+    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+    current_stage: M3
+    current_milestone: M3
+    current_task: T3.4
+    active_milestone: M3
+    active_task: T3.4
+    active_task_status: deferred
+    progress: 11/12
     decision_refs:
+    - D-S033-gate-c
     - D-S033-04-plan-approve
     - D-S033-E26-T-batch
     artifacts:
+    - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
+    - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
     - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
     - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
     - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
@@ -5143,59 +5158,71 @@ stages:
       session_id: S033-va-multi-location-equality
       evolve_cycle_id: EV-026
       skill_id: 07-build
-      status: in_progress
+      status: completed
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
-      active_milestone: M1
-      current_milestone: M1
-      active_task: T1.1
-      current_task: T1.1
-      active_task_status: in_progress
+      completed: '2026-07-31'
+      completed_at: '2026-07-31'
+      note: 'COMPLETE — M0–M3 except T3.4 when_ships; Gate C PASS; tip 7e08051; #809 closed'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.4
+      current_task: T3.4
+      active_task_status: deferred
       deepen:
       - F23
       - F6
       - F7
       decision_refs:
+      - D-S033-gate-c
       - D-S033-04-plan-approve
       - D-S033-E26-T-batch
       artifacts:
+      - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
+      - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
       - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
       - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
-      progress: 1/12
+      progress: 11/12
+      tip_sha: 7e08051
     substeps:
       task_loop:
-        status: in_progress
-        current_task: T1.1
-        active_task_status: in_progress
-        active_milestone: M1
+        status: completed
+        current_task: T3.4
+        active_task_status: deferred
+        active_milestone: M3
         phase: C
-        milestone: M1
-        notes: 'S033/EV-026 T0.1 COMPLETE; @ T1.1 flip TC-EV025-008 strict (expect red); #809'
+        milestone: M3
+        notes: 'S033/EV-026 07 COMPLETE Gate C PASS; T3.4 deferred when_ships; tip 7e08051; #809'
     delta_substages:
     - id: S033-va-multi-location-equality
       session_id: S033-va-multi-location-equality
       evolve_cycle_id: EV-026
       skill_id: 07-build
-      status: in_progress
+      status: completed
       started_at: '2026-07-31'
       started: '2026-07-31'
+      completed: '2026-07-31'
+      completed_at: '2026-07-31'
       mode: full
-      note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
-      active_milestone: M1
-      current_milestone: M1
-      active_task: T1.1
-      current_task: T1.1
-      active_task_status: in_progress
-      progress: 1/12
-      decision_id: D-S033-04-plan-approve
+      note: 'COMPLETE — M0–M3 except T3.4 when_ships; Gate C PASS (D-S033-gate-c); tip 7e08051; #809 closed; progress 11/12'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.4
+      current_task: T3.4
+      active_task_status: deferred
+      progress: 11/12
+      decision_id: D-S033-gate-c
+      tip_sha: 7e08051
+      tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
       branch: evolve/EV-026-va-multi-location-equality
       deepen:
       - F23
       - F6
       - F7
       artifacts:
+      - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
+      - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
       - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
       - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
     - id: S032-iwxxm-us-remarks-va
@@ -5566,6 +5593,7 @@ stages:
     - '2026-07-31 S032/EV-025 T2.1 in_progress (#811 Lightning/VOP red goldens TC-EV025-002); M0+M1 done tip 9d1e49a; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M1 COMPLETE (T1.1–T1.3 #810) — tip 9d1e49a; next T2.1 #811 Lightning/VOP; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 M0 COMPLETE (T0.1+T0.2) — tip f1e19a9; next T1.1; #810/#811/#812/#809'
+    - '2026-07-31 S033/EV-026 07-build COMPLETE Gate C PASS (D-S033-gate-c) — M0–M3 except T3.4 when_ships; tip 7e08051; #809 closed; progress 11/12'
     - '2026-07-31 S033/EV-026 T0.1 COMPLETE — docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md; @ T1.1 flip TC-EV025-008 strict (expect red); progress 1/12; #809'
     - '2026-07-31 S033/EV-026 07-build STARTED (D-S033-04-plan-approve B→C) — @ T0.1 canonicalize dig themes; plan docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md; #809'
     - '2026-07-31 S032/EV-025 07-build STARTED (D-S032-04-plan-approve B→C) — @ T0.1; M0 theme map + dig audit; plan docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md;
@@ -6230,21 +6258,20 @@ stages:
     started: '2026-07-31'
     completed: '2026-07-31'
     completed_at: '2026-07-31'
-    previous_started_at: '2026-07-30'
-    previous_completed_at: '2026-07-30'
-    previous_session_id: S031-iwxxm-domain-mine
-    previous_evolve_cycle_id: EV-024
-    previous_tip_sha: 304df52
-    previous_note: 'S031/EV-024 10-e2e COMPLETE (smoke) — catalog/validate PASS via T7.2 verification-report.md; tip 304df52; PR #813 open; T7.3
-      deferred D1; #804/#807/#773'
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
-    tip_sha: 1e46b38
-    tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
-    overall: pass
-    report: docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
-    note: 'S032/EV-025 10-e2e smoke COMPLETE PASS — T7.2; report docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md; tip 1e46b38; progress
+    previous_started_at: '2026-07-31'
+    previous_completed_at: '2026-07-31'
+    previous_session_id: S032-iwxxm-us-remarks-va
+    previous_evolve_cycle_id: EV-025
+    previous_tip_sha: 1e46b38
+    previous_note: 'S032/EV-025 10-e2e smoke COMPLETE PASS — T7.2; report docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md; tip 1e46b38; progress
       27/28; #810/#811/#812/#809'
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    tip_sha: 7e08051
+    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+    overall: pass
+    report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+    note: 'S033/EV-026 10-e2e smoke COMPLETE PASS — TC-EV025-008/009 + Vitest (T3.2); tip 7e08051; Gate C PASS; #809'
     substeps:
       extract_journeys:
         status: completed
@@ -6252,14 +6279,26 @@ stages:
         status: completed
       t2_playwright:
         status: skipped
-        note: browser N/A — UI N/A (E25-ui=1); library/catalog smoke only
+        note: browser N/A — smoke via package/Vitest only
       t2_connectivity:
         status: skipped
-        note: browser N/A
+        note: deferred to 13 when_ships (T3.4)
       t3_live:
         status: skipped
-        note: deferred to 13 when_ships (T7.3)
+        note: deferred to 13 when_ships (T3.4)
     delta_substages:
+    - session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
+      skill_id: 10-e2e
+      status: completed
+      started_at: '2026-07-31'
+      completed_at: '2026-07-31'
+      mode: smoke
+      overall: pass
+      report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+      tip_sha: 7e08051
+      tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+      note: smoke PASS — TC-EV025-008/009 + Vitest (verification-report.md)
     - session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       skill_id: 10-e2e
@@ -6561,21 +6600,21 @@ stages:
     started_at: '2026-07-31'
     completed_at: '2026-07-31'
     completed: '2026-07-31'
-    previous_started_at: '2026-07-30'
-    previous_completed_at: '2026-07-30'
-    previous_session_id: S031-iwxxm-domain-mine
-    previous_evolve_cycle_id: EV-024
-    previous_tip_sha: 304df52
-    previous_note: 'S031/EV-024 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S031-iwxxm-domain-mine/reports/verification-report.md;
-      tip 304df52; PR #813 open; #804/#807/#773'
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
-    tip_sha: 1e46b38
-    tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
-    overall: pass
-    note: 'S032/EV-025 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md; tip
+    previous_started_at: '2026-07-31'
+    previous_completed_at: '2026-07-31'
+    previous_session_id: S032-iwxxm-us-remarks-va
+    previous_evolve_cycle_id: EV-025
+    previous_tip_sha: 1e46b38
+    previous_note: 'S032/EV-025 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md; tip
       1e46b38; progress 27/28; #810/#811/#812/#809'
-    report: docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    tip_sha: 7e08051
+    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+    overall: pass
+    note: 'S033/EV-026 08-verify-build COMPLETE PASS — T3.2; report docs/sessions/S033-va-multi-location-equality/reports/verification-report.md; tip
+      7e08051; Gate C PASS; #809'
+    report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
     substeps:
       lint:
         status: completed
@@ -6590,6 +6629,18 @@ stages:
       report:
         status: completed
     delta_substages:
+    - session_id: S033-va-multi-location-equality
+      evolve_cycle_id: EV-026
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-07-31'
+      completed_at: '2026-07-31'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+      tip_sha: 7e08051
+      tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+      note: T3.2 PASS — docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
     - session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       skill_id: 08-verify-build
@@ -7923,6 +7974,31 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S033-gate-c
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: Gate C — equality + wmoPass + #809 closed
+  summary: S033/EV-026 Gate C PASS; 07/08/10 complete; T3.4/13 when_ships
+  decision: 'Gate C PASS (D-S033-gate-c) — ADR-032 canonicalize equality green (TC-EV025-008); catalog wmoPass (TC-EV025-009); #809 closed; 08-verify-build + 10-e2e smoke PASS via verification-report.md; tip 7e08051; T3.4/13-deploy-smoke deferred when_ships; awaiting PR.'
+  tip_sha: 7e08051
+  tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+  related_issues:
+  - '809'
+  related_decisions:
+  - D-S033-04-plan-approve
+  - D-S033-E26-T-batch
+  - E26-T4
+  artifacts:
+  - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
+  - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
 - id: D-S033-04-plan-approve
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -15732,6 +15808,28 @@ decisions_log:
   preset: Lean+build
   preset_status: approved
 artifacts:
+- path: docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
+  kind: stage-report
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 07-build
+  skill_id: 07-build
+  task_id: T3.1
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S033/EV-026 T3.1 Gate C dig PASS; D-S033-gate-c; #809'
+- path: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+  kind: verification-report
+  session_id: S033-va-multi-location-equality
+  evolve_cycle_id: EV-026
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  task_id: T3.2
+  created_at: '2026-07-31'
+  updated_at: '2026-07-31'
+  status: written
+  note: 'S033/EV-026 08+10 smoke PASS (008/009 + Vitest); tip 7e08051; #809'
 - path: docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
   kind: stage-report
   session_id: S033-va-multi-location-equality
@@ -24137,7 +24235,7 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     note: "Lean+build — skip 03/05/06/09/11/12; 13 when_ships"
-  current_stage: 07-build
+  current_stage: 16-evolve
   stages:
     00-context:
       status: completed
@@ -24147,7 +24245,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: 'EV-026 Phase 0 locked; handoff 01-requirements'
+      note: 'Gate C PASS (D-S033-gate-c); awaiting PR + 13 when_ships (T3.4); tip 7e08051; #809 closed'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24167,36 +24265,54 @@ evolve_cycles:
       mode: delta
       note: 'COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
     07-build:
-      status: in_progress
+      status: completed
       started: '2026-07-31'
+      completed: '2026-07-31'
       mode: full
-      current_task: T1.1
-      active_task: T1.1
-      active_milestone: M1
-      progress: 1/12
-      note: '@ T1.1 flip TC-EV025-008 strict (expect red)'
+      current_task: T3.4
+      active_task: T3.4
+      active_milestone: M3
+      active_task_status: deferred
+      progress: 11/12
+      tip_sha: 7e08051
+      note: 'COMPLETE — M0–M3 except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c)'
     08-verify-build:
-      status: pending
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
       mode: delta
+      overall: pass
+      report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+      tip_sha: 7e08051
+      note: 'PASS — verification-report.md; tip 7e08051'
     10-e2e:
-      status: pending
+      status: completed
+      started: '2026-07-31'
+      completed: '2026-07-31'
       mode: smoke
+      overall: pass
+      report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+      tip_sha: 7e08051
+      note: 'PASS smoke — TC-EV025-008/009 + Vitest'
     13-deploy-smoke:
       status: pending
       mode: when_ships
+      note: 'when_ships / T3.4'
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: passed
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
     phase_d: pending
     deploy: pending
   adrs: []
   artifacts:
+  - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
+  - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
   - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
   - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
   - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
@@ -24212,10 +24328,15 @@ evolve_cycles:
   - D-S033-02-phase-a
   - D-S033-E26-T-batch
   - D-S033-04-plan-approve
+  - D-S033-gate-c
   - D-S032-EV025-809-handoff
-  tip_sha: e3733a4
-  tip_sha_full: e3733a479fc62718455a71de397fbea7e7a104b0
+  tip_sha: 7e08051
+  tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+  active_task: T3.4
+  active_task_status: deferred
+  progress: 11/12
   notes:
+  - '2026-07-31 S033/EV-026 Gate C PASS (D-S033-gate-c) — 07/08/10 complete; T3.4/13 when_ships; tip 7e08051; #809 closed; awaiting PR'
   - '2026-07-31 S033/EV-026 T0.1 COMPLETE — t0-1-canonicalize-diff-themes.md; @ T1.1 flip TC-EV025-008 strict (expect red); progress 1/12; #809'
   - '2026-07-31 S033/EV-026 07-build STARTED (D-S033-04-plan-approve B→C) — @ T0.1 canonicalize dig themes; plan docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md; #809'
   - '2026-07-31 S033/EV-026 04 COMPLETE Gate B=1 (D-S033-04-plan-approve) — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); B→C; handoff 07 @ T0.1; #809'
@@ -24227,19 +24348,20 @@ evolve_cycles:
   - '2026-07-31 S033/EV-026 01-requirements STARTED (delta) — #809 ADR-032 equality; F23/F6/F7; D-S033-open; interview pending'
   - '2026-07-31 S033/EV-026 OPEN — Phase 0 locked D-S033-open=1; Lean+build; #809 ADR-032 equality residual from EV-025; handoff 01-requirements; branch evolve/EV-026-va-multi-location-equality @ e3733a4'
 git_history:
-  current_branch: main
+  current_branch: evolve/EV-026-va-multi-location-equality
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit:
-  tip_sha: 2412312
-  tip_sha_full: 241231200169b59f12eceac75dae6df9d987678f
-  pr_number: 816
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-  pr_status: merged
-  merge_sha: 2412312
-  merge_sha_full: 241231200169b59f12eceac75dae6df9d987678f
-  note: 'EV-025/S032 CLOSED — PR #816 merged 2412312; D-S032-EV025-phase4-close; active_session=null'
+  tip_sha: 7e08051
+  tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+  pr_number:
+  pr_url:
+  pr_status:
+  merge_sha:
+  merge_sha_full:
+  note: 'S033/EV-026 Gate C PASS @ 7e08051; 07/08/10 done; T3.4/13 when_ships; awaiting PR; #809 closed'
   notes:
+  - '2026-07-31 S033/EV-026 tip synced — 7e08051; Gate C PASS (D-S033-gate-c); 07/08/10 complete; T3.4/13 when_ships; #809 closed; awaiting PR'
   - '2026-07-31 S032/EV-025 branch merged via PR #816 2412312; D-S032-EV025-phase4-close; active_session=null'
   - '2026-07-31 S032/EV-025 tip synced — 1e46b38 (1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7); "[T7.2] test: 08-verify-build + 10-e2e smoke PASS";
     T7.2 COMPLETE 08+10 PASS; Gate C encode PASS; tip 1e46b38; next T7.3/13 when ships or open PR; progress 27/28; #810/#811/#812/#809'
@@ -25573,11 +25695,106 @@ git_history:
     created_at: '2026-07-31'
     session_id: S033-va-multi-location-equality
     evolve_cycle_id: EV-026
-    note: 'S033/EV-026 OPEN — D-S033-open=1; Lean+build; #809 residual from EV-025; base main @ e3733a4'
-    tip_sha: e3733a4
-    tip_sha_full: e3733a479fc62718455a71de397fbea7e7a104b0
+    note: 'S033/EV-026 Gate C PASS — tip 7e08051; 07/08/10 done; T3.4/13 when_ships; awaiting PR; #809 closed'
+    tip_sha: 7e08051
+    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
     pushed: false
   commits:
+  - sha: 7e08051
+    sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T3.1][T3.2][T3.3] docs: Gate C pass, verify smoke, close #809"
+    stage: 08-verify-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    files_changed:
+    - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
+    - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+    - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
+    timestamp: '2026-07-31T22:31:12Z'
+    pushed: false
+    note: 'Gate C PASS; 08+10 smoke; #809 closed; tip 7e08051; T3.4 when_ships'
+  - sha: 5fb6bc4
+    sha_full: 5fb6bc42e3a6bb7a901a77646bbd016f59f8c00b
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T2.3] test: TC-EV025-009 expects wmoPass and ADR-032 equality"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:26:35Z'
+    pushed: false
+  - sha: 008c9b2
+    sha_full: 008c9b2dfc52d9b4a29307477d9a00e43db785d2
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T2.2] docs: FIXTURE_GAPS record #809 equality passer"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:25:58Z'
+    pushed: false
+  - sha: 9247f26
+    sha_full: 9247f2683f8a06fae3266eac2aceb6404736cee5
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T2.1] feat: promote sigmet_multi_location_va catalog to wmoPass"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:24:44Z'
+    pushed: false
+  - sha: 0022fb1
+    sha_full: 0022fb1aa18a34ecf181f9616e11e876f6c90699
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T1.5] test: TC-EV025-008 canonicalize equality green"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:19:26Z'
+    pushed: false
+  - sha: 9ce9ea2
+    sha_full: 9ce9ea25fc394be54e5df577d31706e9579cd821
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T1.4] fix: xlink phenomenonTime reuse for multi-location VA"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:18:25Z'
+    pushed: false
+  - sha: 57316d1
+    sha_full: 57316d1fe361f5f7ee7c64a99154676a65112290
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T1.3] fix: reverse rings and 2dp coords for multi-location VA"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:12:17Z'
+    pushed: false
+  - sha: 49c829e
+    sha_full: 49c829eebe768a5e349f97e101e8f9bdd77daae5
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T1.2] fix: stem stamps for multi-location VA (2018-07 + ATS/MWO)"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:09:54Z'
+    pushed: false
+  - sha: 4ffd650
+    sha_full: 4ffd650e10692c89b90b95c27566670920ea98ff
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[T1.1] test: flip TC-EV025-008 to strict canonicalize equality (red)"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:05:57Z'
+    pushed: false
+  - sha: d0d3b32
+    sha_full: d0d3b32675cb0c5b7adce49ebdf49ffd70718e7b
+    branch: evolve/EV-026-va-multi-location-equality
+    message: "[S033] docs: open EV-026 through Gate B; complete T0.1 dig"
+    stage: 07-build
+    session_id: S033-va-multi-location-equality
+    evolve_cycle_id: EV-026
+    timestamp: '2026-07-31T22:01:43Z'
+    pushed: false
   - sha: 1e46b38
     sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
     branch: evolve/EV-025-iwxxm-us-remarks-va
