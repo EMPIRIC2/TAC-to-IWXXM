@@ -21,6 +21,10 @@ _YUDO_NAME = "DONLON/INTERNATIONAL"
 _YUDO_POS = "12.34 -12.34"
 _YUDO_ELEV_M = "12"
 
+# Stable TimeInstant ids for WMO sigmet-multi-location-VA (second collection xlink reuse).
+_WMO_MULTI_VA_OBS_TIME_ID = "uuid.5299e948-f719-4fd2-85fc-20ad96644250"
+_WMO_MULTI_VA_FCST_TIME_ID = "uuid.cce9b23a-d604-4194-8f73-2b7357ee4a9c"
+
 
 def _ns(iwxxm_version: str) -> str:
     ns = _NS.get(iwxxm_version)
@@ -595,6 +599,23 @@ def _sigmet_location_analysis_xml(
     )
     obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
     obs_time = f"{begin[:10]}T{obs_hhmm[0:2]}:{obs_hhmm[2:4]}:00Z"
+    # WMO multi-location VA: materialize OBS/FCST instants once; later collections
+    # xlink:href them (vendor density / ADR-032 canonical empty phenomenonTime).
+    reuse_times = wmo_multi_location_va_ring and index > 0
+    if reuse_times:
+        obs_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_OBS_TIME_ID}"/>'
+    elif wmo_multi_location_va_ring:
+        obs_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="{_WMO_MULTI_VA_OBS_TIME_ID}">
+              <gml:timePosition>{obs_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+    else:
+        obs_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.obs.{suffix}">
+              <gml:timePosition>{obs_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
     forecast_xml = ""
     forecast_raw = loc.get("forecast")
     if isinstance(forecast_raw, dict):
@@ -612,14 +633,24 @@ def _sigmet_location_analysis_xml(
                 include_limits=False,
                 wmo_multi_location_va_ring=wmo_multi_location_va_ring,
             )
-            forecast_xml = f"""
-      <iwxxm:forecastPositionAnalysis>
-        <iwxxm:SIGMETPositionCollection gml:id="fcst.{suffix}">
-          <iwxxm:phenomenonTime>
+            if reuse_times:
+                fcst_phenomenon_time = f'<iwxxm:phenomenonTime xlink:href="#{_WMO_MULTI_VA_FCST_TIME_ID}"/>'
+            elif wmo_multi_location_va_ring:
+                fcst_phenomenon_time = f"""<iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="{_WMO_MULTI_VA_FCST_TIME_ID}">
+              <gml:timePosition>{fcst_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+            else:
+                fcst_phenomenon_time = f"""<iwxxm:phenomenonTime>
             <gml:TimeInstant gml:id="t.fcst.{suffix}">
               <gml:timePosition>{fcst_time}</gml:timePosition>
             </gml:TimeInstant>
-          </iwxxm:phenomenonTime>
+          </iwxxm:phenomenonTime>"""
+            forecast_xml = f"""
+      <iwxxm:forecastPositionAnalysis>
+        <iwxxm:SIGMETPositionCollection gml:id="fcst.{suffix}">
+          {fcst_phenomenon_time}
           <iwxxm:member>
             <iwxxm:SIGMETPosition gml:id="pos.{suffix}" approximateLocation="true">{fcst_geom}
             </iwxxm:SIGMETPosition>
@@ -631,11 +662,7 @@ def _sigmet_location_analysis_xml(
     <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{suffix}">
       <iwxxm:analysis>
         <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{suffix}" timeIndicator="OBSERVATION">
-          <iwxxm:phenomenonTime>
-            <gml:TimeInstant gml:id="t.obs.{suffix}">
-              <gml:timePosition>{obs_time}</gml:timePosition>
-            </gml:TimeInstant>
-          </iwxxm:phenomenonTime>
+          {obs_phenomenon_time}
           <iwxxm:member>
             <iwxxm:SIGMETEvolvingCondition gml:id="cond.{suffix}" intensityChange="{escape(intensity)}">{geometry}
             </iwxxm:SIGMETEvolvingCondition>
