@@ -31,7 +31,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | AerodromeWindShift | WSHFT / FROPA | ⚠ | ⚠ | ❌ | |
 | CharacterOfTheSky / CloudTypes | Sky character RMK | ❌ | ⚠ | ❌ | |
 | ConvectiveCloudLocation / Types | CB/TCU location/motion | ❌/⚠ | ⚠ | ❌ | |
-| FailedSensors / InoperativeSensors / MeteorologicalSensors | Sensor outage | ❌ | ⚠ | ❌ | |
+| FailedSensors / InoperativeSensors / MeteorologicalSensors | Sensor outage | ✅ | ⚠ | ✅ | S032/#812 — CHINO/RVRNO/… → Sensor hrefs; TC-EV025-003 |
 | HailstoneSize | GR size | ❌ | ⚠ | ❌ | |
 | MaxMinTemperatures | 1/6-hr max/min | ⚠ | ⚠ | ❌ | |
 | Obscurations | Obscuration layers | ❌ | ⚠ | ❌ | |
@@ -39,7 +39,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | ObservedAtSecondLocation / SensorLocation / TowerVisibility | Second-site / tower | ❌ | ⚠ | ❌ | |
 | RecentWeather | RE… | ⚠ | ⚠ | ❌ | May overlap WMO recent |
 | Sector / SectorVisibility | Sector vis | ❌ | ⚠ | ❌ | |
-| SnowIncrease | Snow depth increase | ❌ | ⚠ | ❌ | |
+| SnowIncrease | Snow depth increase | ✅ | ⚠ | ✅ | S032/#812 — SNINCR; TC-EV025-003 |
 | ProcessedProperty + statistical codelists | PNO / stats | ❌ | ⚠ | ❌ | |
 | VariableCeilingHeight / Sky / Visibility | Variable CIG/SKY/VIS | ❌ | ⚠ | ❌ | |
 | VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ lightning | ⚠ | ✅ | S032/#811 — lightning via Addendum; convection/sky/obscuration → M4 |

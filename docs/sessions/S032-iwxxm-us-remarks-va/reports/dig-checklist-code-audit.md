@@ -17,8 +17,8 @@
 | HailstoneSize | ❌ | — | **M4.2** |
 | ObservedLightning / Frequency / Type | ✅ | `_parse_lightning_remark` + Addendum VOP; TC-EV025-002 | **done** M2 (#811) |
 | VisuallyObservablePhenomena | ✅ lightning | `_vop_addendum_inner`; convection/sky/obscuration still ❌ | **done** M2 lightning (#811); deepen M4 |
-| SnowIncrease | ❌ | — | **M3** (#812) |
-| FailedSensors / Inoperative / MeteorologicalSensors | ❌ | — | **M3** (#812) |
+| SnowIncrease | ✅ | `_snow_increase_addendum_inner`; TC-EV025-003 | **done** M3 (#812) |
+| FailedSensors / Inoperative / MeteorologicalSensors | ✅ | `_inoperative_sensors_extension`; CHINO/… | **done** M3 (#812) |
 | Sector / SectorVisibility | ❌ | — | **M4.3** |
 | Obscurations | ❌ | — | **M4.3** |
 | ObservedAtSecondLocation / SensorLocation / TowerVisibility | ❌ | — | **M4.3** |
@@ -39,7 +39,7 @@
 
 1. **M1** — AerodromeVariableRVR (+ meanRVR withheld) — **done**  
 2. **M2** — ObservedLightning* + VisuallyObservablePhenomena (lightning) — **done**  
-3. **M3** — SnowIncrease + sensor-outage types  
+3. **M3** — SnowIncrease + sensor-outage types — **done**  
 4. **M4.1** — AerodromeWindShift (+ PeakWind deepen if needed)  
 5. **M4.2** — Sky / convective / hail  
 6. **M4.3** — Sector / obscuration / second-site / tower  

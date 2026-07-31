@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — Build |
-| **Active milestone** | M3 |
-| **Active task** | T3.1 (in_progress) |
-| **Tasks** | 8 / 28 |
+| **Active milestone** | M3 complete → next M4 |
+| **Active task** | T4.1 (next) |
+| **Tasks** | 11 / 28 |
 | **Last updated** | 2026-07-31 |
 
 ## Tech Stack Summary
@@ -77,9 +77,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | Red golden(s) for SnowIncrease + Failed/Inoperative/MeteorologicalSensors | TC-EV025-003 | T2.3 | **in_progress** |
-| T3.2 | Code | Encode snow-increase + sensor-outage remarks (+ lint) | #812; F6.b/F12 | T3.1 | pending |
-| T3.3 | Test | Green pack; matrix rows | TC-EV025-003 | T3.2 | pending |
+| T3.1 | Test | Red golden(s) for SnowIncrease + Failed/Inoperative/MeteorologicalSensors | TC-EV025-003 | T2.3 | **completed** |
+| T3.2 | Code | Encode snow-increase + sensor-outage remarks (+ lint) | #812; F6.b/F12 | T3.1 | **completed** |
+| T3.3 | Test | Green pack; matrix rows | TC-EV025-003 | T3.2 | **completed** |
 
 ### M4 — Adjacent dig ❌ US type packs (Lane A remainder)
 
