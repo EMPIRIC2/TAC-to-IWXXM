@@ -326,9 +326,10 @@ Full type×TAC×encode×validate table lives in the [PDF dig](../mining/iwxxm-us
 | Addendum / AO2 / SLP / PK WND | ⚠ partial | ⚠ | ⚠ | F15 deepen continue |
 | Variable RVR | ✅ S032/#810 | ⚠ | ✅ TC-EV025-001 | Validate smoke M6 |
 | Wind shift / FROPA | ✅ S032/M4.1 | ⚠ | ✅ TC-EV025-004 | Validate smoke M6 |
-| Lightning / VisuallyObservablePhenomena | ✅ S032/#811+#M4.2 (L/C/sky) | ⚠ | ✅ TC-EV025-002/004 | Obscuration → M4.3; validate M6 |
+| Lightning / VisuallyObservablePhenomena | ✅ S032/#811+#M4.2+#M4.3 | ⚠ | ✅ TC-EV025-002/004 | Validate smoke M6 |
 | Sky / convective / hail | ✅ S032/M4.2 | ⚠ | ✅ TC-EV025-004 | Validate smoke M6 |
 | SnowIncrease / sensor outage | ✅ S032/#812 | ⚠ | ✅ TC-EV025-003 | Validate smoke M6 |
+| Sector / obscuration / second-site / tower | ✅ S032/M4.3 | ⚠ | ✅ TC-EV025-004 | Validate smoke M6 |
 | Codelist hrefs (NWS) | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov |
 
 Do **not** mix US examples into the WMO sample menu (UJ-039 / E24-C).

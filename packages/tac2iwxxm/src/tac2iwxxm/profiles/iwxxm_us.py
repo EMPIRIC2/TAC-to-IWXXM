@@ -172,14 +172,16 @@ def _convective_cloud_xml(conv: dict[str, Any]) -> str:
 
 
 def _vop_addendum_inner(ir: dict[str, Any]) -> str:
-    """Serialize Addendum ``visuallyObservablePhenomena`` (lightning / convection / sky)."""
+    """Serialize Addendum ``visuallyObservablePhenomena`` (lightning / convection / sky / obscuration)."""
     lightning_raw = ir.get("observed_lightning")
     has_lightning = isinstance(lightning_raw, dict)
     convective_raw = ir.get("convective_cloud")
     has_convective = isinstance(convective_raw, dict)
     sky_raw = ir.get("character_of_the_sky")
     has_sky = isinstance(sky_raw, dict)
-    if not has_lightning and not has_convective and not has_sky:
+    obscuration_raw = ir.get("obscuration")
+    has_obscuration = isinstance(obscuration_raw, dict)
+    if not has_lightning and not has_convective and not has_sky and not has_obscuration:
         return ""
 
     inner_parts: list[str] = [
@@ -204,6 +206,20 @@ def _vop_addendum_inner(ir: dict[str, Any]) -> str:
         inner_parts.append("              <iwxxm-us:characterOfTheSky>")
         inner_parts.append(sky_xml)
         inner_parts.append("              </iwxxm-us:characterOfTheSky>")
+    if has_obscuration:
+        obsc: dict[str, Any] = obscuration_raw  # type: ignore[assignment]
+        height = int(str(obsc["height_ft"]))
+        amt = escape(str(obsc["amount_href"]))
+        wx = escape(str(obsc["weather_href"]))
+        inner_parts.append("              <iwxxm-us:obscuration>")
+        inner_parts.append("                <iwxxm-us:Obscurations>")
+        inner_parts.append(
+            f'                  <iwxxm-us:heightOfWeatherPhenomenon uom="[ft_i]">{height}</iwxxm-us:heightOfWeatherPhenomenon>'
+        )
+        inner_parts.append(f'                  <iwxxm-us:obscurationAmount xlink:href="{amt}"/>')
+        inner_parts.append(f'                  <iwxxm-us:weatherCausingObscuration xlink:href="{wx}"/>')
+        inner_parts.append("                </iwxxm-us:Obscurations>")
+        inner_parts.append("              </iwxxm-us:obscuration>")
     inner_parts.extend(
         [
             "            </iwxxm-us:VisuallyObservablePhenomena>",
@@ -287,6 +303,78 @@ def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
 """
 
 
+def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``observedAtSecondLocation`` from CIG/VIS RWY remarks."""
+    second_raw = ir.get("observed_at_second_location")
+    if not isinstance(second_raw, dict):
+        return ""
+    second: dict[str, Any] = second_raw
+    attrs = ""
+    if second.get("visibility_below_sensor_minimum"):
+        attrs = ' visibilityBelowSensorMinimum="true"'
+    parts: list[str] = [
+        "          <iwxxm-us:observedAtSecondLocation>",
+        f"            <iwxxm-us:ObservedAtSecondLocation{attrs}>",
+    ]
+    if second.get("ceiling_height_ft") is not None:
+        parts.append(
+            f'              <iwxxm-us:ceilingHeight uom="[ft_i]">{int(str(second["ceiling_height_ft"]))}</iwxxm-us:ceilingHeight>'
+        )
+    if second.get("visibility_ft") is not None:
+        parts.append(
+            f'              <iwxxm-us:visibility uom="[ft_i]">{int(str(second["visibility_ft"]))}</iwxxm-us:visibility>'
+        )
+    desc = second.get("location_description")
+    if desc:
+        parts.append("              <iwxxm-us:location>")
+        parts.append("                <iwxxm-us:SensorLocation>")
+        parts.append(f"                  <iwxxm-us:description>{escape(str(desc))}</iwxxm-us:description>")
+        parts.append("                </iwxxm-us:SensorLocation>")
+        parts.append("              </iwxxm-us:location>")
+    parts.extend(
+        [
+            "            </iwxxm-us:ObservedAtSecondLocation>",
+            "          </iwxxm-us:observedAtSecondLocation>",
+        ]
+    )
+    return "\n".join(parts) + "\n"
+
+
+def _visibility_us_extension(ir: dict[str, Any]) -> str:
+    """Serialize SectorVisibility / TowerVisibility on AerodromeHorizontalVisibility."""
+    chunks: list[str] = []
+    sector_raw = ir.get("sector_visibility")
+    if isinstance(sector_raw, dict):
+        sector: dict[str, Any] = sector_raw
+        below = ""
+        if sector.get("below_sensor_minimum"):
+            below = "\n              <iwxxm-us:belowSensorMinimum>true</iwxxm-us:belowSensorMinimum>"
+        chunks.append(
+            f"""          <iwxxm:extension>
+            <iwxxm-us:SectorVisibility>
+              <iwxxm-us:visibility uom="m">{int(str(sector["visibility_m"]))}</iwxxm-us:visibility>
+              <iwxxm-us:direction uom="deg">{_fmt_deg(float(str(sector["direction_deg"])))}</iwxxm-us:direction>{below}
+            </iwxxm-us:SectorVisibility>
+          </iwxxm:extension>"""
+        )
+    tower_raw = ir.get("tower_visibility")
+    if isinstance(tower_raw, dict):
+        tower: dict[str, Any] = tower_raw
+        less = ""
+        if tower.get("less_than"):
+            less = "\n              <iwxxm-us:lessThan>true</iwxxm-us:lessThan>"
+        chunks.append(
+            f"""          <iwxxm:extension>
+            <iwxxm-us:TowerVisibility>
+              <iwxxm-us:towerVisibility uom="m">{int(str(tower["visibility_m"]))}</iwxxm-us:towerVisibility>{less}
+            </iwxxm-us:TowerVisibility>
+          </iwxxm:extension>"""
+        )
+    if not chunks:
+        return ""
+    return "\n".join(chunks)
+
+
 def _addendum_extension(ir: dict[str, Any]) -> str:
     """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
     free_text = str(ir.get("remarks_free_text") or "").strip()
@@ -294,9 +382,11 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         isinstance(ir.get("observed_lightning"), dict)
         or isinstance(ir.get("convective_cloud"), dict)
         or isinstance(ir.get("character_of_the_sky"), dict)
+        or isinstance(ir.get("obscuration"), dict)
     )
     has_snow = isinstance(ir.get("snow_increase"), dict)
     has_hail = isinstance(ir.get("hailstone_size"), dict)
+    has_second = isinstance(ir.get("observed_at_second_location"), dict)
     if (
         not ir.get("observing_system_type")
         and ir.get("sea_level_pressure_hpa") is None
@@ -304,6 +394,7 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         and not has_vop
         and not has_snow
         and not has_hail
+        and not has_second
     ):
         return ""
     parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
@@ -322,6 +413,9 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     vop = _vop_addendum_inner(ir)
     if vop:
         parts.append(vop.rstrip("\n"))
+    second = _second_location_addendum_inner(ir)
+    if second:
+        parts.append(second.rstrip("\n"))
     hail = _hailstone_size_addendum_inner(ir)
     if hail:
         parts.append(hail.rstrip("\n"))
@@ -425,11 +519,13 @@ def emit_metar_speci_iwxxm_us(
     peak = _peak_wind_extension(ir)
     wshft = _wind_shift_extension(ir)
     var_rvr = _variable_rvr_extension(ir)
+    vis_ext = _visibility_us_extension(ir)
     observation, trends = build_observation_and_trends(
         ir,
         addendum_extension=addendum + sensors,
         peak_extension=peak + wshft,
         rvr_extension=var_rvr,
+        visibility_extension=vis_ext,
     )
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>

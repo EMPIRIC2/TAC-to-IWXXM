@@ -88,7 +88,7 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
     return f"{root}.basic.{station}"
 
 
-def _visibility_block(ir: dict[str, Any]) -> str:
+def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> str:
     if ir.get("visibility_not_observable"):
         return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     vis_op = ""
@@ -102,9 +102,10 @@ def _visibility_block(ir: dict[str, Any]) -> str:
                 f'\n          <iwxxm:minimumVisibilityDirection uom="deg">'
                 f"{ir['min_visibility_dir_deg']}</iwxxm:minimumVisibilityDirection>"
             )
+    ext = f"\n{visibility_extension}" if visibility_extension else ""
     return f"""      <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}{min_vis}
+          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}{min_vis}{ext}
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
 """
@@ -348,6 +349,7 @@ def build_observation_and_trends(
     addendum_extension: str = "",
     peak_extension: str = "",
     rvr_extension: str = "",
+    visibility_extension: str = "",
 ) -> tuple[str, str]:
     """
     Build IWXXM observation element and trailing trendForecast elements.
@@ -362,6 +364,8 @@ def build_observation_and_trends(
         Optional surface-wind extension XML (iwxxm_us peak wind).
     rvr_extension :
         Optional RVR extension XML (iwxxm_us AerodromeVariableRVR).
+    visibility_extension :
+        Optional horizontal-visibility extension XML (SectorVisibility / TowerVisibility).
 
     Returns
     -------
@@ -378,7 +382,7 @@ def build_observation_and_trends(
     wx_block = ""
     cloud = ""
     if not cavok:
-        vis_block = _visibility_block(ir)
+        vis_block = _visibility_block(ir, visibility_extension=visibility_extension)
         rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)
         cloud = _cloud_block(ir)

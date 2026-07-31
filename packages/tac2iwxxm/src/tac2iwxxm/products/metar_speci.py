@@ -121,6 +121,25 @@ _HAIL_SIZE = re.compile(
     r"|(?P<onlywhole>\d+)"
     r")\b"
 )
+# FMH-1 SM fraction token used in VIS / TWR VIS remarks (not body ``nSM``).
+_SM_FRAC = r"(?:(?:\d+\s+)?\d/\d|\d+)"
+# Second-site ceiling/visibility (CIG/VIS … RWY…) → ObservedAtSecondLocation.
+_SECOND_LOC = re.compile(
+    r"\b(?:CIG\s+(?P<cig>\d{3})\s+)?"
+    r"(?:VIS\s+(?P<vis_lt>M)?(?P<vis>" + _SM_FRAC + r")\s+)?"
+    r"(?P<loc>RWY\d{2}[LCR]?(?:\s+TDZ)?)\b"
+)
+# Tower visibility: TWR VIS [M]n[/n].
+_TWR_VIS = re.compile(r"\bTWR\s+VIS\s+(?P<lt>M)?(?P<vis>" + _SM_FRAC + r")\b")
+# Sector visibility: VIS [M]n[/n] DIR (not variable VIS nVn, not RWY second-site).
+_SECTOR_VIS = re.compile(
+    r"\bVIS\s+(?P<lt>M)?(?P<vis>" + _SM_FRAC + r")(?!V)(?!\s+RWY)"
+    r"\s*(?P<dir>N|NE|E|SE|S|SW|W|NW)\b"
+)
+# Obscuration layer in REMARKS: wx + amount/height (e.g. FU BKN005).
+_OBSCURATION = re.compile(r"\b(?P<wx>FU|HZ|BR|FG|VA|DU|SA|PY)\s+(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
+_CLOUD_AMOUNT_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
+_WX_4678_HREF = "http://codes.wmo.int/306/4678/{code}"
 # FMH-1 sensor status → NWS Sensor codelist (iwxxm-us FailedSensors.parameter).
 _SENSOR_NO_HREF = "https://codes.nws.noaa.gov/FMH-1/Sensor/{code}"
 _SENSOR_NO_CODES = {
@@ -166,6 +185,10 @@ _CONSUMED_REMARK = re.compile(
     r"(?:\s+MOV\s+(?:N|NE|E|SE|S|SW|W|NW))?\b|"
     r"\bGR\s+(?:(?:LT|LESS(?:\s+THAN)?)\s+)?(?:\d+\s+)?\d/\d\b|"
     r"\bGR\s+\d+\b|"
+    r"\b(?:CIG\s+\d{3}\s+)?(?:VIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)\s+)?RWY\d{2}[LCR]?(?:\s+TDZ)?\b|"
+    r"\bTWR\s+VIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)\b|"
+    r"\bVIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)(?!V)(?!\s+RWY)\s*(?:N|NE|E|SE|S|SW|W|NW)\b|"
+    r"\b(?:FU|HZ|BR|FG|VA|DU|SA|PY)\s+(?:FEW|SCT|BKN|OVC)\d{3}\b|"
     r"\b(?:" + "|".join(_SENSOR_NO_CODES) + r")\b"
 )
 
@@ -374,6 +397,96 @@ def _frac_to_inches(frac: str) -> float:
     return int(num_s) / float(int(den_s))
 
 
+def _parse_sm_fraction(token: str) -> float:
+    """Parse FMH-1 statute-mile token (``2``, ``3/4``, ``1 1/2``) to float SM."""
+    parts = token.split()
+    if len(parts) == 2 and "/" in parts[1]:
+        return float(int(parts[0])) + _frac_to_inches(parts[1])
+    if len(parts) == 1 and "/" in parts[0]:
+        return _frac_to_inches(parts[0])
+    return float(int(parts[0]))
+
+
+def _sm_float_to_m(sm: float) -> int:
+    """Convert fractional statute miles to metres (rounded)."""
+    return int(round(sm * 1609.344))
+
+
+def _sm_float_to_ft(sm: float) -> int:
+    """Convert fractional statute miles to feet (rounded)."""
+    return int(round(sm * 5280.0))
+
+
+def _rwy_location_description(loc: str) -> str:
+    """Map ``RWY11`` / ``RWY15R TDZ`` to PDF-style SensorLocation description."""
+    m = re.match(r"RWY(?P<rwy>\d{2}[LCR]?)(?:\s+(?P<tdz>TDZ))?$", loc.strip())
+    if m is None:
+        return loc.replace("RWY", "RUNWAY ", 1)
+    desc = f"RUNWAY {m.group('rwy')}"
+    if m.group("tdz"):
+        desc = f"{desc} TDZ"
+    return desc
+
+
+def _parse_second_location_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 CIG/VIS … RWY… into ObservedAtSecondLocation IR."""
+    m = _SECOND_LOC.search(remarks)
+    if m is None:
+        return None
+    if m.group("cig") is None and m.group("vis") is None:
+        return None
+    entry: dict[str, Any] = {
+        "location_description": _rwy_location_description(m.group("loc")),
+    }
+    if m.group("cig") is not None:
+        entry["ceiling_height_ft"] = int(m.group("cig")) * 100
+    if m.group("vis") is not None:
+        sm = _parse_sm_fraction(m.group("vis"))
+        entry["visibility_ft"] = _sm_float_to_ft(sm)
+        if m.group("vis_lt"):
+            entry["visibility_below_sensor_minimum"] = True
+    return entry
+
+
+def _parse_tower_visibility_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 ``TWR VIS`` into TowerVisibility IR."""
+    m = _TWR_VIS.search(remarks)
+    if m is None:
+        return None
+    sm = _parse_sm_fraction(m.group("vis"))
+    entry: dict[str, Any] = {"visibility_m": _sm_float_to_m(sm)}
+    if m.group("lt"):
+        entry["less_than"] = True
+    return entry
+
+
+def _parse_sector_visibility_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 sector ``VIS n DIR`` into SectorVisibility IR."""
+    m = _SECTOR_VIS.search(remarks)
+    if m is None:
+        return None
+    sm = _parse_sm_fraction(m.group("vis"))
+    entry: dict[str, Any] = {
+        "visibility_m": _sm_float_to_m(sm),
+        "direction_deg": float(_LTG_COMPASS_DEG[m.group("dir")]),
+    }
+    if m.group("lt"):
+        entry["below_sensor_minimum"] = True
+    return entry
+
+
+def _parse_obscuration_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse first REMARKS obscuration layer (``FU BKN005``) into Obscurations IR."""
+    m = _OBSCURATION.search(remarks)
+    if m is None:
+        return None
+    return {
+        "height_ft": int(m.group("base")) * 100,
+        "amount_href": _CLOUD_AMOUNT_HREF.format(amt=m.group("amt")),
+        "weather_href": _WX_4678_HREF.format(code=m.group("wx")),
+    }
+
+
 def _sky_level_field(token: str, base: int) -> dict[str, str]:
     """
     Map one FMH-1 ``8/`` etage digit to CharacterOfTheSky IR.
@@ -467,7 +580,8 @@ def _remarks_free_text(remarks: str) -> str:
 def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
     Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, WSHFT, LTG, sky,
-    convective, hail, SNINCR, sensor-NO, T, P).
+    convective, hail, sector/tower VIS, obscuration, second-site, SNINCR,
+    sensor-NO, T, P).
 
     Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
     TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
@@ -528,6 +642,22 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     hail = _parse_hail_size_remark(remarks)
     if hail is not None:
         ir["hailstone_size"] = hail
+
+    second = _parse_second_location_remark(remarks)
+    if second is not None:
+        ir["observed_at_second_location"] = second
+
+    tower = _parse_tower_visibility_remark(remarks)
+    if tower is not None:
+        ir["tower_visibility"] = tower
+
+    sector_vis = _parse_sector_visibility_remark(remarks)
+    if sector_vis is not None:
+        ir["sector_visibility"] = sector_vis
+
+    obscuration = _parse_obscuration_remark(remarks)
+    if obscuration is not None:
+        ir["obscuration"] = obscuration
 
     snincr = _SNINCR.search(remarks)
     if snincr is not None:

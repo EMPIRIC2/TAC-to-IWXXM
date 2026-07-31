@@ -34,15 +34,15 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | FailedSensors / InoperativeSensors / MeteorologicalSensors | Sensor outage | ✅ | ⚠ | ✅ | S032/#812 — CHINO/RVRNO/… → Sensor hrefs; TC-EV025-003 |
 | HailstoneSize | GR size | ✅ | ⚠ | ✅ | S032/M4.2 — ``GR`` size; TC-EV025-004 |
 | MaxMinTemperatures | 1/6-hr max/min | ⚠ | ⚠ | ❌ | |
-| Obscurations | Obscuration layers | ❌ | ⚠ | ❌ | |
+| Obscurations | Obscuration layers | ✅ | ⚠ | ✅ | S032/M4.3 — FU BKNhhh in VOP; TC-EV025-004 |
 | ObservedLightning / Frequency / Type | Lightning RMK | ✅ | ⚠ | ✅ | S032/#811 — TC-EV025-002; PDF sample shapes |
-| ObservedAtSecondLocation / SensorLocation / TowerVisibility | Second-site / tower | ❌ | ⚠ | ❌ | |
+| ObservedAtSecondLocation / SensorLocation / TowerVisibility | Second-site / tower | ✅ | ⚠ | ✅ | S032/M4.3 — CIG/VIS RWY + TWR VIS; TC-EV025-004 |
 | RecentWeather | RE… | ⚠ | ⚠ | ❌ | May overlap WMO recent |
-| Sector / SectorVisibility | Sector vis | ❌ | ⚠ | ❌ | |
+| Sector / SectorVisibility | Sector vis | ✅ | ⚠ | ✅ | S032/M4.3 — VIS n DIR; TC-EV025-004 |
 | SnowIncrease | Snow depth increase | ✅ | ⚠ | ✅ | S032/#812 — SNINCR; TC-EV025-003 |
 | ProcessedProperty + statistical codelists | PNO / stats | ❌ | ⚠ | ❌ | |
 | VariableCeilingHeight / Sky / Visibility | Variable CIG/SKY/VIS | ❌ | ⚠ | ❌ | |
-| VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ L/C/sky | ⚠ | ✅ | S032/#811+#M4.2 — lightning/convection/sky; obscuration → M4.3 |
+| VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ | ⚠ | ✅ | S032/#811+#M4.2+#M4.3 — L/C/sky/obscuration |
 | Codelists (ObservingSystemType, Pressure*, QualitativeDistance, Statistical*) | FMH-1 / NWS codes URIs | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov hrefs from PDF |
 
 **Legend:** ✅ encoded/tested · ⚠ partial / unconfirmed · ❌ missing — refine in M4/M7 children after code audit.
