@@ -138,9 +138,9 @@ def test_iwxxm_us_escapes_special_chars_in_human_readable_text() -> None:
 
 def test_speci_iwxxm_us_retains_unparsed_remarks() -> None:
     """SPECI iwxxm_us never-drop path mirrors METAR."""
-    tac = "SPECI KJFK 231815Z 18015KT 2SM BR BKN008 14/13 A2995 RMK AO2 VIS 1V3="
+    tac = "SPECI KJFK 231815Z 18015KT 2SM BR BKN008 14/13 A2995 RMK AO2 VIRGA NE="
     result = convert(tac, product="SPECI", profile="iwxxm_us", iwxxm_version="2025-2")
     assert result.ok and result.xml
     assert "iwxxm-us:humanReadableText" in result.xml
-    assert "VIS 1V3" in result.xml
+    assert "VIRGA NE" in result.xml
     assert all(i.code != "REMARKS_EXCLUDED" for i in result.issues)

@@ -138,6 +138,12 @@ _SECTOR_VIS = re.compile(
 )
 # Obscuration layer in REMARKS: wx + amount/height (e.g. FU BKN005).
 _OBSCURATION = re.compile(r"\b(?P<wx>FU|HZ|BR|FG|VA|DU|SA|PY)\s+(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})\b")
+# Variable ceiling: CIG hhhVhhh → VariableCeilingHeight.
+_CIG_VAR = re.compile(r"\bCIG\s+(?P<min>\d{3})V(?P<max>\d{3})\b")
+# Variable sky cover: AMT [hhh] V AMT → VariableSkyCondition.
+_SKY_VAR = re.compile(r"\b(?P<a>FEW|SCT|BKN|OVC)(?:\d{3})?\s+V\s+(?P<b>FEW|SCT|BKN|OVC)\b")
+# Variable prevailing visibility: VIS [M]nVn → VariableVisibility.
+_VIS_VAR = re.compile(r"\bVIS\s+(?P<lt>M)?(?P<min>" + _SM_FRAC + r")V(?P<max>" + _SM_FRAC + r")\b")
 _CLOUD_AMOUNT_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
 _WX_4678_HREF = "http://codes.wmo.int/306/4678/{code}"
 # FMH-1 sensor status → NWS Sensor codelist (iwxxm-us FailedSensors.parameter).
@@ -188,6 +194,9 @@ _CONSUMED_REMARK = re.compile(
     r"\b(?:CIG\s+\d{3}\s+)?(?:VIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)\s+)?RWY\d{2}[LCR]?(?:\s+TDZ)?\b|"
     r"\bTWR\s+VIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)\b|"
     r"\bVIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)(?!V)(?!\s+RWY)\s*(?:N|NE|E|SE|S|SW|W|NW)\b|"
+    r"\bCIG\s+\d{3}V\d{3}\b|"
+    r"\b(?:FEW|SCT|BKN|OVC)(?:\d{3})?\s+V\s+(?:FEW|SCT|BKN|OVC)\b|"
+    r"\bVIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)V(?:(?:\d+\s+)?\d/\d|\d+)\b|"
     r"\b(?:FU|HZ|BR|FG|VA|DU|SA|PY)\s+(?:FEW|SCT|BKN|OVC)\d{3}\b|"
     r"\b(?:" + "|".join(_SENSOR_NO_CODES) + r")\b"
 )
@@ -487,6 +496,42 @@ def _parse_obscuration_remark(remarks: str) -> dict[str, Any] | None:
     }
 
 
+def _parse_variable_ceiling_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 ``CIG hhhVhhh`` into VariableCeilingHeight IR."""
+    m = _CIG_VAR.search(remarks)
+    if m is None:
+        return None
+    return {
+        "minimum_ft": int(m.group("min")) * 100,
+        "maximum_ft": int(m.group("max")) * 100,
+    }
+
+
+def _parse_variable_sky_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 ``AMT V AMT`` into VariableSkyCondition IR."""
+    m = _SKY_VAR.search(remarks)
+    if m is None:
+        return None
+    return {
+        "first_amount_href": _CLOUD_AMOUNT_HREF.format(amt=m.group("a")),
+        "second_amount_href": _CLOUD_AMOUNT_HREF.format(amt=m.group("b")),
+    }
+
+
+def _parse_variable_visibility_remark(remarks: str) -> dict[str, Any] | None:
+    """Parse FMH-1 ``VIS nVn`` into VariableVisibility IR."""
+    m = _VIS_VAR.search(remarks)
+    if m is None:
+        return None
+    entry: dict[str, Any] = {
+        "minimum_m": _sm_float_to_m(_parse_sm_fraction(m.group("min"))),
+        "maximum_m": _sm_float_to_m(_parse_sm_fraction(m.group("max"))),
+    }
+    if m.group("lt"):
+        entry["below_minimum"] = True
+    return entry
+
+
 def _sky_level_field(token: str, base: int) -> dict[str, str]:
     """
     Map one FMH-1 ``8/`` etage digit to CharacterOfTheSky IR.
@@ -658,6 +703,18 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     obscuration = _parse_obscuration_remark(remarks)
     if obscuration is not None:
         ir["obscuration"] = obscuration
+
+    var_cig = _parse_variable_ceiling_remark(remarks)
+    if var_cig is not None:
+        ir["variable_ceiling"] = var_cig
+
+    var_sky = _parse_variable_sky_remark(remarks)
+    if var_sky is not None:
+        ir["variable_sky"] = var_sky
+
+    var_vis = _parse_variable_visibility_remark(remarks)
+    if var_vis is not None:
+        ir["variable_visibility"] = var_vis
 
     snincr = _SNINCR.search(remarks)
     if snincr is not None:

@@ -22,7 +22,7 @@
 | Sector / SectorVisibility | ✅ | `_visibility_us_extension`; TC-EV025-004 VIS n DIR | **done** M4.3 |
 | Obscurations | ✅ | VOP obscuration; TC-EV025-004 FU BKNhhh | **done** M4.3 |
 | ObservedAtSecondLocation / SensorLocation / TowerVisibility | ✅ | Addendum + vis ext; TC-EV025-004 CIG/VIS RWY / TWR VIS | **done** M4.3 |
-| VariableCeilingHeight / Sky / Visibility | ❌ | — | **M4.4** |
+| VariableCeilingHeight / Sky / Visibility | ✅ | CloudLayer + vis ext; TC-EV025-004 CIG/SKY/VIS V | **done** M4.4 |
 | MaxMinTemperatures | ❌/⚠ | not in US profile | **M4.5** |
 | ProcessedProperty + statistical codelists | ❌ | — | **M4.5** |
 | ObservingSystemType (codelist href) | ⚠ | Addendum `observingSystemType` href | **M4.5** deepen |
@@ -43,10 +43,10 @@
 4. **M4.1** — AerodromeWindShift (+ PeakWind deepen if needed) — **done**
 5. **M4.2** — Sky / convective / hail — **done**
 6. **M4.3** — Sector / obscuration / second-site / tower — **done**
-7. **M4.4** — Variable CIG/SKY/VIS  
+7. **M4.4** — Variable CIG/SKY/VIS — **done**
 8. **M4.5** — Max/min + ProcessedProperty / codelists  
 9. **M4.6** — Addendum residuals + RecentWeather deepen  
 
 ## Next
 
-`[T4.4]` VariableCeilingHeight / VariableSky / VariableVisibility.
+`[T4.5]` MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists.

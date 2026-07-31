@@ -41,7 +41,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | Sector / SectorVisibility | Sector vis | ✅ | ⚠ | ✅ | S032/M4.3 — VIS n DIR; TC-EV025-004 |
 | SnowIncrease | Snow depth increase | ✅ | ⚠ | ✅ | S032/#812 — SNINCR; TC-EV025-003 |
 | ProcessedProperty + statistical codelists | PNO / stats | ❌ | ⚠ | ❌ | |
-| VariableCeilingHeight / Sky / Visibility | Variable CIG/SKY/VIS | ❌ | ⚠ | ❌ | |
+| VariableCeilingHeight / Sky / Visibility | Variable CIG/SKY/VIS | ✅ | ⚠ | ✅ | S032/M4.4 — CIG hhhVhhh / AMT V AMT / VIS nVn; TC-EV025-004 |
 | VisuallyObservablePhenomena | Lightning+convection+sky+obscuration bundle | ✅ | ⚠ | ✅ | S032/#811+#M4.2+#M4.3 — L/C/sky/obscuration |
 | Codelists (ObservingSystemType, Pressure*, QualitativeDistance, Statistical*) | FMH-1 / NWS codes URIs | ⚠ | ⚠ | ❌ | Prefer codes.nws.noaa.gov hrefs from PDF |
 

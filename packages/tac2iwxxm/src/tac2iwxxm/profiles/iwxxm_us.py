@@ -341,7 +341,7 @@ def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
 
 
 def _visibility_us_extension(ir: dict[str, Any]) -> str:
-    """Serialize SectorVisibility / TowerVisibility on AerodromeHorizontalVisibility."""
+    """Serialize SectorVisibility / TowerVisibility / VariableVisibility extensions."""
     chunks: list[str] = []
     sector_raw = ir.get("sector_visibility")
     if isinstance(sector_raw, dict):
@@ -369,6 +369,50 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
               <iwxxm-us:towerVisibility uom="m">{int(str(tower["visibility_m"]))}</iwxxm-us:towerVisibility>{less}
             </iwxxm-us:TowerVisibility>
           </iwxxm:extension>"""
+        )
+    var_vis_raw = ir.get("variable_visibility")
+    if isinstance(var_vis_raw, dict):
+        var_vis: dict[str, Any] = var_vis_raw
+        attrs = ' belowMinimum="true"' if var_vis.get("below_minimum") else ""
+        chunks.append(
+            f"""          <iwxxm:extension>
+            <iwxxm-us:VariableVisibility{attrs}>
+              <iwxxm-us:minimumVisibility uom="m">{int(str(var_vis["minimum_m"]))}</iwxxm-us:minimumVisibility>
+              <iwxxm-us:maximumVisibility uom="m">{int(str(var_vis["maximum_m"]))}</iwxxm-us:maximumVisibility>
+            </iwxxm-us:VariableVisibility>
+          </iwxxm:extension>"""
+        )
+    if not chunks:
+        return ""
+    return "\n".join(chunks)
+
+
+def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
+    """Serialize VariableCeilingHeight / VariableSkyCondition on CloudLayer."""
+    chunks: list[str] = []
+    cig_raw = ir.get("variable_ceiling")
+    if isinstance(cig_raw, dict):
+        cig: dict[str, Any] = cig_raw
+        chunks.append(
+            f"""              <iwxxm:extension>
+                <iwxxm-us:VariableCeilingHeight>
+                  <iwxxm-us:minimumHeight uom="[ft_i]">{int(str(cig["minimum_ft"]))}</iwxxm-us:minimumHeight>
+                  <iwxxm-us:maximumHeight uom="[ft_i]">{int(str(cig["maximum_ft"]))}</iwxxm-us:maximumHeight>
+                </iwxxm-us:VariableCeilingHeight>
+              </iwxxm:extension>"""
+        )
+    sky_raw = ir.get("variable_sky")
+    if isinstance(sky_raw, dict):
+        sky: dict[str, Any] = sky_raw
+        first = escape(str(sky["first_amount_href"]))
+        second = escape(str(sky["second_amount_href"]))
+        chunks.append(
+            f"""              <iwxxm:extension>
+                <iwxxm-us:VariableSkyCondition>
+                  <iwxxm-us:firstSkyCoverValue xlink:href="{first}"/>
+                  <iwxxm-us:secondSkyCoverValue xlink:href="{second}"/>
+                </iwxxm-us:VariableSkyCondition>
+              </iwxxm:extension>"""
         )
     if not chunks:
         return ""
@@ -520,12 +564,14 @@ def emit_metar_speci_iwxxm_us(
     wshft = _wind_shift_extension(ir)
     var_rvr = _variable_rvr_extension(ir)
     vis_ext = _visibility_us_extension(ir)
+    cloud_ext = _cloud_layer_us_extension(ir)
     observation, trends = build_observation_and_trends(
         ir,
         addendum_extension=addendum + sensors,
         peak_extension=peak + wshft,
         rvr_extension=var_rvr,
         visibility_extension=vis_ext,
+        cloud_layer_extension=cloud_ext,
     )
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>

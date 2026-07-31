@@ -171,7 +171,7 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
     return ("\n".join(parts) + "\n") if parts else ""
 
 
-def _cloud_block(ir: dict[str, Any]) -> str:
+def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
     if ir.get("nsc"):
         return f'      <iwxxm:cloud nilReason="{NIL_NSC}"/>\n'
     if ir.get("ncd"):
@@ -194,19 +194,28 @@ def _cloud_block(ir: dict[str, Any]) -> str:
         layers = [{"amount": ir["cloud_amount"], "base_ft": ir["cloud_base_ft"]}]
     if not layers:
         return ""
+    # Attach US variable CIG/SKY extensions to the first BKN/OVC (ceiling) layer.
+    ceil_idx = 0
+    for i, layer in enumerate(layers):
+        if str(layer.get("amount") or "") in {"BKN", "OVC"}:
+            ceil_idx = i
+            break
     layer_xml: list[str] = []
-    for layer in layers:
+    for i, layer in enumerate(layers):
         href = CLOUD_HREF.format(amt=layer["amount"])
         ctype = layer.get("cloud_type")
         ctype_xml = ""
         if ctype:
             thref = escape(CLOUD_TYPE_HREF.format(ctype=str(ctype)))
             ctype_xml = f'\n              <iwxxm:cloudType xlink:href="{thref}"/>'
+        ext = ""
+        if cloud_layer_extension and i == ceil_idx:
+            ext = f"\n{cloud_layer_extension}"
         layer_xml.append(
             f"""          <iwxxm:layer>
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="{escape(href)}"/>
-              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}
+              <iwxxm:base uom="[ft_i]">{layer["base_ft"]}</iwxxm:base>{ctype_xml}{ext}
             </iwxxm:CloudLayer>
           </iwxxm:layer>"""
         )
@@ -350,6 +359,7 @@ def build_observation_and_trends(
     peak_extension: str = "",
     rvr_extension: str = "",
     visibility_extension: str = "",
+    cloud_layer_extension: str = "",
 ) -> tuple[str, str]:
     """
     Build IWXXM observation element and trailing trendForecast elements.
@@ -366,6 +376,8 @@ def build_observation_and_trends(
         Optional RVR extension XML (iwxxm_us AerodromeVariableRVR).
     visibility_extension :
         Optional horizontal-visibility extension XML (SectorVisibility / TowerVisibility).
+    cloud_layer_extension :
+        Optional CloudLayer extension XML (VariableCeilingHeight / VariableSkyCondition).
 
     Returns
     -------
@@ -385,7 +397,7 @@ def build_observation_and_trends(
         vis_block = _visibility_block(ir, visibility_extension=visibility_extension)
         rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)
-        cloud = _cloud_block(ir)
+        cloud = _cloud_block(ir, cloud_layer_extension=cloud_layer_extension)
 
     if ir.get("temp_not_observable"):
         temp_xml = f'      <iwxxm:airTemperature uom="N/A" xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
