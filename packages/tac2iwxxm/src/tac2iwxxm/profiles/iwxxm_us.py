@@ -492,6 +492,50 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
     return "".join(parts)
 
 
+def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``recentWeather`` from FMH-1 begin/end remarks."""
+    rows_raw = ir.get("recent_weather_us")
+    if not isinstance(rows_raw, list) or not rows_raw:
+        return ""
+    day = int(ir["day"])
+    obs_hour = int(ir["hour"])
+    parts: list[str] = ["          <iwxxm-us:recentWeather>"]
+    for idx, row_obj in enumerate(cast(list[object], rows_raw)):
+        if not isinstance(row_obj, dict):
+            continue
+        row: dict[str, Any] = row_obj
+        href = escape(str(row["phenomenon_href"]))
+        b_hour = int(row["begin_hour"]) if row.get("begin_hour") is not None else obs_hour
+        e_hour = int(row["end_hour"]) if row.get("end_hour") is not None else obs_hour
+        begin_xml = ""
+        end_xml = ""
+        if row.get("begin_minute") is not None:
+            stamp = f"2023-06-{day:02d}T{b_hour:02d}:{int(str(row['begin_minute'])):02d}:00Z"
+            begin_xml = f"<gml:beginPosition>{stamp}</gml:beginPosition>"
+        else:
+            begin_xml = '<gml:beginPosition indeterminatePosition="unknown"/>'
+        if row.get("end_minute") is not None:
+            stamp = f"2023-06-{day:02d}T{e_hour:02d}:{int(str(row['end_minute'])):02d}:00Z"
+            end_xml = f"<gml:endPosition>{stamp}</gml:endPosition>"
+        else:
+            end_xml = '<gml:endPosition indeterminatePosition="unknown"/>'
+        gid = f"t.recent.{idx}"
+        parts.append(
+            f"""            <iwxxm-us:RecentWeather>
+              <iwxxm-us:weatherPhenomenon xlink:href="{href}"/>
+              <iwxxm-us:timeOfEvent>
+                <gml:TimePeriod gml:id="{gid}">
+                  {begin_xml}
+                  {end_xml}
+                </gml:TimePeriod>
+              </iwxxm-us:timeOfEvent>
+            </iwxxm-us:RecentWeather>
+"""
+        )
+    parts.append("          </iwxxm-us:recentWeather>")
+    return "\n".join(parts) + "\n"
+
+
 def _addendum_extension(ir: dict[str, Any]) -> str:
     """Serialize observation-level ``iwxxm-us:Addendum`` when REMARKS present."""
     free_text = str(ir.get("remarks_free_text") or "").strip()
@@ -506,6 +550,14 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     has_second = isinstance(ir.get("observed_at_second_location"), dict)
     has_max_min = isinstance(ir.get("max_min_temperatures"), list) and bool(ir.get("max_min_temperatures"))
     has_processed = isinstance(ir.get("processed_quantities"), list) and bool(ir.get("processed_quantities"))
+    has_recent = isinstance(ir.get("recent_weather_us"), list) and bool(ir.get("recent_weather_us"))
+    has_flags = bool(
+        ir.get("pressure_change_href")
+        or ir.get("condensation_trail")
+        or ir.get("aurora")
+        or ir.get("no_specials")
+        or ir.get("maintenance_indicator")
+    )
     if (
         not ir.get("observing_system_type")
         and ir.get("sea_level_pressure_hpa") is None
@@ -516,6 +568,8 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         and not has_second
         and not has_max_min
         and not has_processed
+        and not has_recent
+        and not has_flags
     ):
         return ""
     parts: list[str] = ["      <iwxxm:extension>", "        <iwxxm-us:Addendum>"]
@@ -528,12 +582,18 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         parts.append(
             f'          <iwxxm-us:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-us:seaLevelPressure>'
         )
+    if ir.get("pressure_change_href"):
+        href = escape(str(ir["pressure_change_href"]))
+        parts.append(f'          <iwxxm-us:pressureChangeIndicator xlink:href="{href}"/>')
     snow = _snow_increase_addendum_inner(ir)
     if snow:
         parts.append(snow.rstrip("\n"))
     vop = _vop_addendum_inner(ir)
     if vop:
         parts.append(vop.rstrip("\n"))
+    recent = _recent_weather_addendum_inner(ir)
+    if recent:
+        parts.append(recent.rstrip("\n"))
     processed = _processed_quantity_addendum_inner(ir)
     if processed:
         parts.append(processed.rstrip("\n"))
@@ -543,9 +603,17 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     second = _second_location_addendum_inner(ir)
     if second:
         parts.append(second.rstrip("\n"))
+    if ir.get("condensation_trail"):
+        parts.append("          <iwxxm-us:condensationTrail>true</iwxxm-us:condensationTrail>")
+    if ir.get("aurora"):
+        parts.append("          <iwxxm-us:aurora>true</iwxxm-us:aurora>")
+    if ir.get("no_specials"):
+        parts.append("          <iwxxm-us:noSpecials>true</iwxxm-us:noSpecials>")
     hail = _hailstone_size_addendum_inner(ir)
     if hail:
         parts.append(hail.rstrip("\n"))
+    if ir.get("maintenance_indicator"):
+        parts.append("          <iwxxm-us:maintenanceIndicator>true</iwxxm-us:maintenanceIndicator>")
     parts.extend(["        </iwxxm-us:Addendum>", "      </iwxxm:extension>"])
     return "\n".join(parts) + "\n"
 

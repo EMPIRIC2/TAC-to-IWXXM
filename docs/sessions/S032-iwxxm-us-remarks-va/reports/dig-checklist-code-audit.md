@@ -8,7 +8,7 @@
 
 | Model type | Encode now | Evidence | Work queue |
 |------------|------------|----------|------------|
-| Addendum (AO2/SLP/`humanReadableText`) | ⚠ partial | `_addendum_extension`; goldens `metar_us_ao2_slp`, etc. | M4.6 deepen residuals |
+| Addendum (AO2/SLP/`humanReadableText`) | ✅ | `_addendum_extension`; PRESFR/RR, flags, RecentWeather | **done** M4.5–M4.6 |
 | AerodromePeakWind | ✅ | `_peak_wind_extension`; `metar_us_pk_wnd` | M4.1 only if deepen gaps |
 | AerodromeVariableRVR | ✅ | `_variable_rvr_extension`; TC-EV025-001 | **done** M1 (#810) |
 | AerodromeWindShift | ✅ | `_wind_shift_extension`; TC-EV025-004 WSHFT/FROPA | **done** M4.1 |
@@ -26,8 +26,8 @@
 | MaxMinTemperatures | ✅ | `_max_min_temperatures_addendum_inner`; TC-EV025-004 `1`/`2`/`4` | **done** M4.5 |
 | ProcessedProperty + statistical codelists | ✅ | `_processed_quantity_addendum_inner`; P/6/7 precip | **done** M4.5 |
 | ObservingSystemType (codelist href) | ✅ | Addendum `observingSystemType` AO1/AO2 href | **done** M4.5 |
-| RecentWeather | ⚠ | annex3 overlap likely | **M4.6** if still ❌ for US |
-| Addendum residuals (PRESFR/RR, CONTRAIL, `$`, …) | ❌/⚠ | free-text only today | **M4.6** |
+| RecentWeather | ✅ | `_recent_weather_addendum_inner`; TC-EV025-004 RAB/E | **done** M4.6 |
+| Addendum residuals (PRESFR/RR, CONTRAIL, `$`, NOSPECI) | ✅ | pressureChangeIndicator + boolean flags | **done** M4.6 |
 
 ## Lane B (#809)
 
@@ -45,8 +45,8 @@
 6. **M4.3** — Sector / obscuration / second-site / tower — **done**
 7. **M4.4** — Variable CIG/SKY/VIS — **done**
 8. **M4.5** — Max/min + ProcessedProperty / codelists — **done**
-9. **M4.6** — Addendum residuals + RecentWeather deepen  
+9. **M4.6** — Addendum residuals + RecentWeather deepen — **done**
 
 ## Next
 
-`[T4.6]` Addendum residuals (AO1/flags/text not yet structured) + RecentWeather deepen if ❌.
+`[T4.7]` Dig checklist refresh — all Lane A encode rows ✅ (or blocked AskQuestion).

@@ -276,13 +276,14 @@ Encode national content in IWXXM **`extension`** blocks per MDL / iwxxm-us — d
 | `VisuallyObservablePhenomena` / `ObservedLightning` | FMH-1 lightning REMARKS (`LTG` / `OCNL|FRQ|CONS` + type + `DSNT|VC` + sector) — S032 / #811 |
 | `SnowIncrease` / `InoperativeSensors` / `FailedSensors` | FMH-1 `SNINCR ii/dd` + sensor-NO (`CHINO`/`RVRNO`/…) — S032 / #812 |
 | `AerodromeWindShift` | WSHFT |
-| `pressureChangeIndicator` | PRESRR / PRESFR |
+| `pressureChangeIndicator` | PRESRR / PRESFR — S032/M4.6 |
 | `seaLevelPressure` | SLPppp / SLPNO |
 | `snowDepth` / `snowIncrease` | snow depth / SNINCR |
+| `recentWeather` | FMH-1 begin/end (e.g. ``RAB28E32``) — S032/M4.6 |
 | `maxMinTemperatures` | FMH-1 additive ``1snTTT`` / ``2snTTT`` (6-h) · ``4snTTTsnTTT`` (24-h) — S032/M4.5 |
 | `processedQuantity` | precip additive ``Prrrr`` / ``6RRRR`` / ``7R24…`` (+ statistical codelist hrefs) — S032/M4.5 |
 | `pressureTendency*` | additive ``5appp`` families (residual / deepen) |
-| `maintenanceIndicator` | `$` |
+| `condensationTrail` / `aurora` / `noSpecials` / `maintenanceIndicator` | CONTRAILS / AURORA / NOSPECI / ``$`` — S032/M4.6 |
 | `Remarks` / `humanReadableText` | anything else kept verbatim |
 
 Validate US output with **combined** WMO pin + iwxxm-us catalogs

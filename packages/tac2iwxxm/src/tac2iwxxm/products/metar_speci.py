@@ -87,6 +87,17 @@ _FREQ_HREF = "https://codes.nws.noaa.gov/FMH-1/LightningFrequency/{code}"
 _TYPE_HREF = "https://codes.nws.noaa.gov/FMH-1/LightningType/{code}"
 _DIST_HREF = "https://codes.nws.noaa.gov/FMH-1/QualitativeDistance/{code}"
 _PRECIP_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/PRECIPITATION"
+_PRES_CHANGE_HREF = "https://codes.nws.noaa.gov/FMH-1/PressureChangingRapidly/{code}"
+_PRES_CHANGE = re.compile(r"\bPRES(?P<dir>FR|RR)\b")
+_CONTRAILS = re.compile(r"\bCONTRAILS?\b")
+_AURORA = re.compile(r"\bAURORA\b")
+_NOSPECI = re.compile(r"\bNOSPECI\b")
+_MAINTENANCE = re.compile(r"(?:^|\s)\$(?=\s|$)")
+# FMH-1 precip/TS begin/end remarks (e.g. RAB28E32, TSB13) — require B and/or E.
+_RECENT_WX = re.compile(
+    r"\b(?P<wx>FZRA|FZDZ|SHRA|SHSN|SHGR|SHGS|TS|DZ|RA|SN|SG|IC|PL|GR|GS|UP)"
+    r"(?:B(?P<b>\d{2,4})(?:E(?P<e>\d{2,4}))?|E(?P<e_only>\d{2,4}))\b"
+)
 _LTG_FREQ_CODES = {"OCNL": "OCCASIONAL", "FRQ": "FREQUENT", "CONS": "CONTINUOUS"}
 _LTG_DIST_CODES = {"DSNT": "DISTANT", "VC": "VICINITY"}
 # 8-point compass for lightning sector extremes (true north = 0°).
@@ -209,7 +220,11 @@ _CONSUMED_REMARK = re.compile(
     r"\b(?:FU|HZ|BR|FG|VA|DU|SA|PY)\s+(?:FEW|SCT|BKN|OVC)\d{3}\b|"
     r"\b(?:" + "|".join(_SENSOR_NO_CODES) + r")\b|"
     r"\b4[01]\d{3}[01]\d{3}\b|\b[12][01]\d{3}\b|"
-    r"\bP\d{4}\b|\b[67]\d{4}\b"
+    r"\bP\d{4}\b|\b[67]\d{4}\b|"
+    r"\bPRES(?:FR|RR)\b|\bCONTRAILS?\b|\bAURORA\b|\bNOSPECI\b|"
+    r"(?:^|\s)\$(?=\s|$)|"
+    r"\b(?:FZRA|FZDZ|SHRA|SHSN|SHGR|SHGS|TS|DZ|RA|SN|SG|IC|PL|GR|GS|UP)"
+    r"(?:B\d{2,4}(?:E\d{2,4})?|E\d{2,4})\b"
 )
 
 
@@ -669,6 +684,29 @@ def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
     return row
 
 
+def _parse_recent_weather_remarks(remarks: str) -> list[dict[str, Any]]:
+    """Parse FMH-1 weather begin/end remarks into RecentWeather IR rows."""
+    rows: list[dict[str, Any]] = []
+    for m in _RECENT_WX.finditer(remarks):
+        wx = m.group("wx")
+        row: dict[str, Any] = {
+            "phenomenon_href": _WX_4678_HREF.format(code=wx),
+            "wx": wx,
+        }
+        if m.group("b") is not None:
+            btok = m.group("b")
+            row["begin_minute"] = int(btok[-2:])
+            if len(btok) == 4:
+                row["begin_hour"] = int(btok[0:2])
+        end_tok = m.group("e") or m.group("e_only")
+        if end_tok is not None:
+            row["end_minute"] = int(end_tok[-2:])
+            if len(end_tok) == 4:
+                row["end_hour"] = int(end_tok[0:2])
+        rows.append(row)
+    return rows
+
+
 def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
     """Parse ``P``/``6``/``7`` precip additive groups into processed_quantities."""
     qty: list[dict[str, Any]] = []
@@ -812,6 +850,24 @@ def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     max_min = _parse_max_min_temperatures(remarks)
     if max_min:
         ir["max_min_temperatures"] = max_min
+
+    pres = _PRES_CHANGE.search(remarks)
+    if pres is not None:
+        code = "FALLING" if pres.group("dir") == "FR" else "RISING"
+        ir["pressure_change_href"] = _PRES_CHANGE_HREF.format(code=code)
+
+    if _CONTRAILS.search(remarks):
+        ir["condensation_trail"] = True
+    if _AURORA.search(remarks):
+        ir["aurora"] = True
+    if _NOSPECI.search(remarks):
+        ir["no_specials"] = True
+    if _MAINTENANCE.search(remarks):
+        ir["maintenance_indicator"] = True
+
+    recent = _parse_recent_weather_remarks(remarks)
+    if recent:
+        ir["recent_weather_us"] = recent
 
     temp_tenths = _RMK_T.search(remarks)
     if temp_tenths is not None:

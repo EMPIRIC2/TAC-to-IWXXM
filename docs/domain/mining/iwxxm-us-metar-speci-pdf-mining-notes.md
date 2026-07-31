@@ -25,7 +25,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 
 | Model type | Likely TAC / RMK | Encode (F6.b) | Validate (iwxxm-us) | Fixture | Notes |
 |------------|------------------|---------------|---------------------|---------|-------|
-| Addendum | AO1/AO2, SLP, PRESFR/RR, snow, CONTRAIL, AURORA, FROPA flags, sunshine, `$`, text | ⚠ partial | ⚠ | ⚠ | Container; AO2/SLP often started |
+| Addendum | AO1/AO2, SLP, PRESFR/RR, snow, CONTRAIL, AURORA, FROPA flags, sunshine, `$`, text | ✅ | ⚠ | ✅ | S032/M4.5–M4.6 — flags + PRES + RecentWeather |
 | AerodromePeakWind | PK WND | ⚠ / ✅ theme | ⚠ | ⚠ | F15 deepen cited AO2/SLP/PK WND |
 | AerodromeVariableRVR | Variable RVR | ✅ | ⚠ | ✅ | S032/#810 — meanRVR withheld; TC-EV025-001 |
 | AerodromeWindShift | WSHFT / FROPA | ✅ | ⚠ | ✅ | S032/M4.1 — TC-EV025-004 |
@@ -37,7 +37,7 @@ Status seed from PDF TOC + pin XSD vs known F6.b / F15 work (engine gaps → chi
 | Obscurations | Obscuration layers | ✅ | ⚠ | ✅ | S032/M4.3 — FU BKNhhh in VOP; TC-EV025-004 |
 | ObservedLightning / Frequency / Type | Lightning RMK | ✅ | ⚠ | ✅ | S032/#811 — TC-EV025-002; PDF sample shapes |
 | ObservedAtSecondLocation / SensorLocation / TowerVisibility | Second-site / tower | ✅ | ⚠ | ✅ | S032/M4.3 — CIG/VIS RWY + TWR VIS; TC-EV025-004 |
-| RecentWeather | RE… | ⚠ | ⚠ | ❌ | May overlap WMO recent |
+| RecentWeather | RE… / RAB/E | ✅ | ⚠ | ✅ | S032/M4.6 — begin/end → RecentWeather; TC-EV025-004 |
 | Sector / SectorVisibility | Sector vis | ✅ | ⚠ | ✅ | S032/M4.3 — VIS n DIR; TC-EV025-004 |
 | SnowIncrease | Snow depth increase | ✅ | ⚠ | ✅ | S032/#812 — SNINCR; TC-EV025-003 |
 | ProcessedProperty + statistical codelists | P/6/7 precip stats | ✅ | ⚠ | ✅ | S032/M4.5 — ``processedQuantity``; TC-EV025-004 |
