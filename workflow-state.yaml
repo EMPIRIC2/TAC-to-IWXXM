@@ -37,7 +37,7 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 07-build
-  note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+  note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -54,7 +54,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -81,7 +81,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-07-31'
-    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5135,16 +5135,16 @@ stages:
     previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
-    tip_sha: 07d73e3
-    tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
+    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    tip_sha: 5d80611
+    tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
     current_stage: M4
     current_milestone: M4
-    current_task: T4.6
+    current_task: T4.7
     active_milestone: M4
-    active_task: T4.6
-    active_task_status: pending
-    progress: 16/28
+    active_task: T4.7
+    active_task_status: in_progress
+    progress: 17/28
     pr_number: null
     pr_url: null
     pr_status: null
@@ -5163,12 +5163,12 @@ stages:
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
       active_milestone: M4
       current_milestone: M4
-      active_task: T4.6
-      current_task: T4.6
-      active_task_status: pending
+      active_task: T4.7
+      current_task: T4.7
+      active_task_status: in_progress
       deepen:
       - F6
       - F12
@@ -5183,12 +5183,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T4.6
-        active_task_status: pending
+        current_task: T4.7
+        active_task_status: in_progress
         active_milestone: M4
         phase: C
         milestone: M4
-        notes: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+        notes: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
     delta_substages:
     - id: S032-iwxxm-us-remarks-va
       session_id: S032-iwxxm-us-remarks-va
@@ -5200,16 +5200,16 @@ stages:
       completed: null
       completed_at: null
       mode: full
-      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
       active_milestone: M4
       current_milestone: M4
-      active_task: T4.6
-      current_task: T4.6
-      active_task_status: pending
-      progress: 16/28
+      active_task: T4.7
+      current_task: T4.7
+      active_task_status: in_progress
+      progress: 17/28
       decision_id: D-S032-04-plan-approve
-      tip_sha: 07d73e3
-      tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
+      tip_sha: 5d80611
+      tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
       branch: evolve/EV-025-iwxxm-us-remarks-va
       deepen:
       - F6
@@ -5525,6 +5525,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.5 STARTED — MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem; tip 30d37a1; progress 15/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.4 COMPLETE (VariableCeilingHeight / VariableSky / VariableVisibility) @ 30d37a1 — next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
@@ -7604,9 +7606,11 @@ stages:
     completed_at: null
     completed: null
     current_stage: 07-build
-    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
-    prior_note: 'S032/EV-025 07-build — T4.5 in_progress (MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem); tip 30d37a1; progress 15/28'
+    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    prior_note: 'T4.6 COMPLETE @ 5d80611 (PRESFR/RR, Addendum flags, RecentWeather); next T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
     notes:
+    - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
+    - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.5 STARTED — MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem; tip 30d37a1; progress 15/28; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 T4.4 COMPLETE (VariableCeilingHeight / VariableSky / VariableVisibility) @ 30d37a1 — next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
@@ -24202,7 +24206,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24234,13 +24238,13 @@ evolve_cycles:
       mode: full
       current_stage: M4
       current_milestone: M4
-      current_task: T4.6
-      active_task: T4.6
-      progress: 16/28
-      tip_sha: 07d73e3
-      tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
-      active_task_status: pending
-      note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+      current_task: T4.7
+      active_task: T4.7
+      progress: 17/28
+      tip_sha: 5d80611
+      tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
+      active_task_status: in_progress
+      note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
     08-verify-build:
       status: pending
     10-e2e:
@@ -24277,13 +24281,15 @@ evolve_cycles:
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
   active_milestone: M4
-  current_task: T4.6
-  active_task: T4.6
-  active_task_status: pending
-  progress: 16/28
-  tip_sha: 07d73e3
-  tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
+  current_task: T4.7
+  active_task: T4.7
+  active_task_status: in_progress
+  progress: 17/28
+  tip_sha: 5d80611
+  tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
   notes:
+  - '2026-07-31 S032/EV-025 T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.5 COMPLETE (MaxMinTemperatures + ProcessedProperty + ObservingSystem) @ 07d73e3 — next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.5 STARTED — MaxMinTemperatures + ProcessedProperty/statistical + ObservingSystem; tip 30d37a1; progress 15/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.4 COMPLETE (VariableCeilingHeight / VariableSky / VariableVisibility) @ 30d37a1 — next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
@@ -24309,14 +24315,16 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: 07d73e3
-  tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
+  tip_sha: 5d80611
+  tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
+  note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — 5d80611 (5d806118f11fe2fa4559d9bdbcd98622edc5eb86); "[T4.6] feat: encode PRESFR/RR, Addendum flags, RecentWeather"; T4.6 COMPLETE; T4.7 in_progress (Lane A dig checklist refresh); progress 17/28; #810/#811/#812/#809'
+  - '2026-07-31 S032/EV-025 tip synced — 4230257 (4230257533982fb2223d04a9a685f65041c644b3); "[S032] chore: record T4.5 tip and advance to T4.6"; T4.6 in_progress (Addendum residuals + RecentWeather); progress 16/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 07d73e3 (07d73e3a73b66c7f0f561019f778e9386bb47dec); "[T4.5] feat: encode MaxMinTemperatures, precip ProcessedProperty, AO codelists"; T4.5 COMPLETE; next T4.6 pending (Addendum residuals + RecentWeather); progress 16/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 30d37a1 (30d37a1a3f22a7ee7cef930f1c3bea5ac9c0843a); "[T4.4] feat: encode VariableCeilingHeight, VariableSky, VariableVisibility"; T4.4 COMPLETE; next T4.5 MaxMinTemperatures + ProcessedProperty / statistical + ObservingSystem codelists; progress 15/28; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 T4.4 STARTED — VariableCeilingHeight / VariableSky / VariableVisibility; tip e4a0383 unchanged; progress 14/28; #810/#811/#812/#809'
@@ -25667,11 +25675,34 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'T4.5 COMPLETE @ 07d73e3 (MaxMinTemperatures + ProcessedProperty + ObservingSystem); next T4.6 pending (Addendum residuals + RecentWeather); tip 07d73e3; progress 16/28'
-    tip_sha: 07d73e3
-    tip_sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
+    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+    tip_sha: 5d80611
+    tip_sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
     pushed: false
   commits:
+  - sha: 5d80611
+    sha_full: 5d806118f11fe2fa4559d9bdbcd98622edc5eb86
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[T4.6] feat: encode PRESFR/RR, Addendum flags, RecentWeather"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed: 8
+    timestamp: '2026-07-31T15:49:24Z'
+    pushed: false
+    note: 'T4.6 COMPLETE @ 5d80611; T4.7 in_progress (Lane A dig checklist refresh); tip 5d80611; progress 17/28'
+  - sha: 4230257
+    sha_full: 4230257533982fb2223d04a9a685f65041c644b3
+    branch: evolve/EV-025-iwxxm-us-remarks-va
+    message: "[S032] chore: record T4.5 tip and advance to T4.6"
+    stage: 07-build
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    files_changed:
+    - workflow-state.yaml
+    timestamp: '2026-07-31T15:44:33Z'
+    pushed: false
+    note: 'T4.6 in_progress (Addendum residuals + RecentWeather); tip 4230257; progress 16/28'
   - sha: 07d73e3
     sha_full: 07d73e3a73b66c7f0f561019f778e9386bb47dec
     branch: evolve/EV-025-iwxxm-us-remarks-va

@@ -49,4 +49,4 @@
 
 ## Next
 
-`[T4.7]` Dig checklist refresh — all Lane A encode rows ✅ (or blocked AskQuestion).
+`[T5.1]` Soft-compare package golden for `sigmet-multi-location-VA` (Lane B / #809).
