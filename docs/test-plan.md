@@ -1064,7 +1064,7 @@ Before closing S013 / EV-009:
 
 - **Given** remaining dig-checklist ❌/⚠ types (WindShift, sky/convective, hail, sector/obscuration, second-site/tower, variable CIG/SKY/VIS, max/min, ProcessedProperty, Addendum residuals, codelists, …)
 - **When** convert `iwxxm_us` (parametrized matrix)
-- **Then** each type encodes per pin XSD **or** has explicit deferred child with rationale (prefer all closed in-cycle per E25-4c=3)
+- **Then** each type encodes per pin XSD (dig ❌ encode residuals **block Gate C** — E25-T5=3)
 - **Tier**: T0
 
 ### TC-EV025-005: US fixtures stay out of WMO sample menu (UJ-039 deepen)

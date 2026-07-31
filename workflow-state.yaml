@@ -36,7 +36,7 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/iwxxm-us-remarks-va.md
@@ -53,7 +53,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: EV-025 orchestrator in_progress; 04 Batch T 1,1,2,1,3,1 draft plan; Gate B pending
+    note: EV-025 orchestrator in_progress; Gate B approved; 07-build in_progress @ M0
   - stage: 01-requirements
     required: true
     mode: delta
@@ -71,13 +71,16 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-07-31'
-    note: 'E25-T1..T6=1,1,2,1,3,1; draft execution-plan (28 tasks M0–M7); Gate B pending; T5 supersedes S02.M2'
+    completed: '2026-07-31'
+    note: 'COMPLETE — Gate B=1; execution-plan approved; D-S032-04-plan-approve; handoff 07'
   - stage: 07-build
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: '2026-07-31'
+    note: 'STARTED @ T0.1; M0 theme map + dig audit'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -4104,12 +4107,12 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-07-31'
     started: '2026-07-31'
-    completed_at: null
-    completed: null
+    completed_at: '2026-07-31'
+    completed: '2026-07-31'
     previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
     previous_session_id: S031-iwxxm-domain-mine
@@ -4118,11 +4121,11 @@ stages:
       approved (D-S031-04-plan-approve); Gate B Lean → 07 @ T0.1; #804/#807/#773'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    prior_note: 'S032/EV-025 04-tech-plan STARTED 2026-07-31 (delta) after Gate A PASS (D-S032-02-phase-a); #810/#811/#812/#809'
-    note: 'S032/EV-025 04-tech-plan in_progress 2026-07-31 (delta) — Batch T E25-T1..T6=1,1,2,1,3,1 locked;
-      draft execution-plan 28 tasks M0–M7 + 04-tech-plan.md; Gate B pending (do not start 07); T5=3 supersedes
-      S02.M2 Gate C soft deferral; #810/#811/#812/#809'
+    prior_note: 'S032/EV-025 04-tech-plan in_progress 2026-07-31 (delta) — Batch T E25-T1..T6=1,1,2,1,3,1 locked; draft execution-plan; Gate B pending; #810/#811/#812/#809'
+    note: 'S032/EV-025 04-tech-plan COMPLETE 2026-07-31 (delta) — Gate B=1; execution-plan approved (D-S032-04-plan-approve);
+      E25-T1..T6=1,1,2,1,3,1; handoff 07 @ T0.1; #810/#811/#812/#809'
     decision_refs:
+    - D-S032-04-plan-approve
     - D-S032-02-phase-a
     - D-S032-EV025-s02m1-1
     - D-S032-EV025-s02m2-1
@@ -4150,27 +4153,27 @@ stages:
         status: completed
         notes: E25-T1..T6 locked 1,1,2,1,3,1 (Batch T)
       phase_3_execution_plan:
-        status: in_progress
-        notes: draft docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md (28 tasks) — Gate B pending
+        status: completed
+        notes: docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md approved
       phase_4_user_review:
-        status: pending
-        notes: Gate B AskQuestion pending
+        status: completed
+        notes: D-S032-04-plan-approve — Gate B=1 → 07 @ T0.1
       phase_5_back_add:
-        status: pending
+        status: completed
       phase_6_documents:
-        status: in_progress
-        notes: draft 04-tech-plan.md + execution-plan.md
+        status: completed
+        notes: 04-tech-plan.md + execution-plan.md
     active_session:
       session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-31'
       started: '2026-07-31'
-      completed_at: null
-      completed: null
-      note: 'S032/EV-025 04 Batch T locked 1,1,2,1,3,1; draft plan 28 tasks; Gate B pending; #810/#811/#812/#809'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'S032/EV-025 04 COMPLETE Gate B=1; D-S032-04-plan-approve; handoff 07 @ T0.1; #810/#811/#812/#809'
       deepen:
       - F6
       - F12
@@ -4178,7 +4181,7 @@ stages:
       - F13
       - F23
       decision_refs:
-      - D-S032-02-phase-a
+      - D-S032-04-plan-approve
       - E25-T1
       - E25-T2
       - E25-T3
@@ -4215,11 +4218,11 @@ stages:
     - session_id: S032-iwxxm-us-remarks-va
       evolve_cycle_id: EV-025
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       started_at: '2026-07-31'
       started: '2026-07-31'
-      completed_at: null
-      completed: null
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
       mode: delta
       deepen:
       - F6
@@ -4227,9 +4230,9 @@ stages:
       - F2
       - F13
       - F23
-      note: 'S032/EV-025 04 Batch T E25-T1..T6=1,1,2,1,3,1; draft execution-plan 28 tasks M0–M7; Gate B pending; T5 supersedes S02.M2; #810/#811/#812/#809'
+      note: 'S032/EV-025 04 COMPLETE Gate B=1; D-S032-04-plan-approve; E25-T1..T6=1,1,2,1,3,1; handoff 07 @ T0.1; #810/#811/#812/#809'
       decision_refs:
-      - D-S032-02-phase-a
+      - D-S032-04-plan-approve
       - E25-T1
       - E25-T2
       - E25-T3
@@ -4813,6 +4816,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-31 S032/EV-025 04 COMPLETE Gate B=1 (D-S032-04-plan-approve) — execution-plan approved; B→C; handoff 07 @ T0.1; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 04 Batch T locked E25-T1..T6=1,1,2,1,3,1 — draft execution-plan 28 tasks M0–M7
       + 04-tech-plan.md; Gate B pending (do not start 07); T5=3 supersedes S02.M2 Gate C soft deferral; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 04-tech-plan STARTED (D-S032-02-phase-a) — Gate A Lean (Batch F 1,1,1 +
@@ -5117,41 +5121,97 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
-    started_at: '2026-07-30'
-    started: '2026-07-30'
-    completed: '2026-07-30'
-    completed_at: '2026-07-30'
+    status: in_progress
+    started_at: '2026-07-31'
+    started: '2026-07-31'
+    completed: null
+    completed_at: null
     previous_started_at: '2026-07-30'
     previous_completed_at: '2026-07-30'
-    previous_session_id: S030-apac-encode-validate
-    previous_evolve_cycle_id: EV-023
-    previous_tip_sha: af98690
-    previous_note: 'COMPLETE — M7 T7.4 done; PR #801 merged af98690; progress 24/24; #800'
-    session_id: S031-iwxxm-domain-mine
-    evolve_cycle_id: EV-024
-    note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
-    tip_sha: 304df52
-    tip_sha_full: 304df5244a004be2e0044d4574ea0ea1f67fd6b0
-    current_stage: null
-    active_milestone: M7
-    active_task: null
-    active_task_status: completed
-    progress: 22/22
-    pr_number: 813
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/813
-    pr_status: open
+    previous_session_id: S031-iwxxm-domain-mine
+    previous_evolve_cycle_id: EV-024
+    previous_tip_sha: 304df52
+    previous_note: 'S031/EV-024 07-build COMPLETE — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
+    session_id: S032-iwxxm-us-remarks-va
+    evolve_cycle_id: EV-025
+    note: 'S032/EV-025 07-build STARTED 2026-07-31 @ T0.1 (D-S032-04-plan-approve) — M0 theme map + dig audit; #810/#811/#812/#809'
+    tip_sha: 149ed5a
+    tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
+    current_stage: M0
+    active_milestone: M0
+    active_task: T0.1
+    active_task_status: in_progress
+    progress: 0/28
+    pr_number: null
+    pr_url: null
+    pr_status: null
     merge_sha: null
+    decision_refs:
+    - D-S032-04-plan-approve
+    artifacts:
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
+    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+    active_session:
+      session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
+      skill_id: 07-build
+      status: in_progress
+      mode: full
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      note: 'STARTED @ T0.1; M0 theme map + dig audit; #810/#811/#812/#809'
+      active_milestone: M0
+      active_task: T0.1
+      deepen:
+      - F6
+      - F12
+      - F2
+      - F13
+      - F23
+      decision_refs:
+      - D-S032-04-plan-approve
+      artifacts:
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
     substeps:
       task_loop:
-        status: completed
-        current_task: null
-        active_task_status: completed
-        active_milestone: M7
+        status: in_progress
+        current_task: T0.1
+        active_task_status: in_progress
+        active_milestone: M0
         phase: C
-        milestone: M7
-        notes: 'T0.1–T7.2 done; T7.3 deferred D1; PR #813 open'
+        milestone: M0
+        notes: 'Gate B approved; M0 theme map + dig audit in progress / written'
     delta_substages:
+    - id: S032-iwxxm-us-remarks-va
+      session_id: S032-iwxxm-us-remarks-va
+      evolve_cycle_id: EV-025
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      completed: null
+      completed_at: null
+      mode: full
+      note: 'STARTED @ T0.1 (D-S032-04-plan-approve) — M0 theme map + dig audit; #810/#811/#812/#809'
+      active_milestone: M0
+      active_task: T0.1
+      active_task_status: in_progress
+      progress: 0/28
+      decision_id: D-S032-04-plan-approve
+      tip_sha: 149ed5a
+      tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
+      branch: evolve/EV-025-iwxxm-us-remarks-va
+      deepen:
+      - F6
+      - F12
+      - F2
+      - F13
+      - F23
+      artifacts:
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
+      - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
     - id: S031-iwxxm-domain-mine
       session_id: S031-iwxxm-domain-mine
       evolve_cycle_id: EV-024
@@ -5457,6 +5517,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S032/EV-025 07-build STARTED (D-S032-04-plan-approve B→C) — @ T0.1; M0 theme map + dig audit; plan docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 07-build COMPLETE (state-drift sync) — T0.1–T7.2 done; T7.3 deferred D1; tip 304df52; PR #813 open; progress 22/22; #804/#807/#773'
     - '2026-07-30 S031/EV-024 07-build STARTED (D-S031-04-plan-approve B→C) — active task T0.1; plan
       docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md; #804/#807/#773'
@@ -5804,19 +5865,6 @@ stages:
       SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing
       first); active_task T6.3 in_progress
-    active_session:
-      session_id: S027-vaa-quality
-      evolve_cycle_id: EV-021
-      skill_id: 07-build
-      status: in_progress
-      mode: full
-      started_at: '2026-07-29'
-      note: 'T6.3 e2e PASS; 11-verify-impl AC evidence MET — pending user; tip b5f5c32; #736/#737'
-      active_milestone: M6
-      active_task: T6.1
-      active_task_status: pending
-      decision_id: D-S027-07-T4.1-complete
-      branch: evolve/EV-021-vaa-quality
   09-qa:
     status: completed
     started_at: '2026-07-26'
@@ -5968,24 +6016,6 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
     started: '2026-07-26'
-    active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
-      skill_id: 09-qa
-      status: completed
-      started_at: '2026-07-26'
-      started: '2026-07-26'
-      mode: full
-      note: FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5
-        advisory→13
-      branch: evolve/EV-016-golden-examples-ui
-      tip_sha: 3d1c58b
-      tip_sha_full: 3d1c58b8bab14574e847d8a86e84d1d2d6e89a8a
-      decision_id: E16-18
-      completed: '2026-07-26'
-      completed_at: '2026-07-26'
-      overall: pass_with_advisories
-      report: docs/sessions/S021-golden-examples-ui/reports/qa-report.md
     completed: '2026-07-26'
     note: FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5
       advisory→13
@@ -6220,21 +6250,6 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing
       first)
     skill_id: 11-verify-impl
-    active_session:
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
-      skill_id: 11-verify-impl
-      status: completed
-      started_at: '2026-07-26'
-      started: '2026-07-26'
-      mode: full
-      note: 'COMPLETE 2026-07-26 (E16-19=A) — 11 approved; PR #782 open; next after merge: 13-deploy-smoke;
-        tip be937b4 / branch tip 2c9f643'
-      branch: evolve/EV-016-golden-examples-ui
-      tip_sha: be937b4
-      tip_sha_full: be937b48c6fb17e0ffd3b41c7bc84be42297fbb3
-      completed: '2026-07-26'
-      completed_at: '2026-07-26'
     decision_id: E16-19
   10-e2e:
     status: completed
@@ -6560,31 +6575,6 @@ stages:
     - 2026-07-12 S008 / EV-006 — PASS after COR hotfix re-verify (12/12 Playwright smoke); T0 PASS
     - 2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md
-    active_session:
-      session_id: S026-airmet-quality-wmo-examples
-      evolve_cycle_id: EV-020
-      skill_id: 10-e2e
-      status: completed
-      started_at: '2026-07-29'
-      started: '2026-07-29'
-      completed: '2026-07-29'
-      completed_at: '2026-07-29'
-      mode: full
-      note: T6.3 PASS — e2e-report.md; UJ-035/036 T0; tip after T6.3 commit
-      branch: evolve/EV-020-airmet-quality
-      tip_sha: c963a0a
-      tip_sha_full: c963a0aa16c94de68a59800a07bb7ac063e06c95
-      overall: pass
-      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/e2e-report.md
-      active_milestone: M6
-      active_task: T6.3
-      active_task_status: completed
-      progress: 25/~28
-      feature_ids:
-      - F24
-      - F25
-      deepen:
-      - F9
       - F7.g
   08-verify-build:
     status: completed
@@ -7590,10 +7580,11 @@ stages:
     started_at: '2026-07-31'
     completed_at: null
     completed: null
-    current_stage: 04-tech-plan
-    note: 'S032/EV-025 04-tech-plan in_progress (delta) — Batch T E25-T1..T6=1,1,2,1,3,1; draft plan; Gate B pending; #810/#811/#812/#809'
-    prior_note: 'S032/EV-025 04-tech-plan in_progress (delta) — current_stage 04-tech-plan; 02 COMPLETE Batch F 1,1,1; Gate A PASS; #810/#811/#812/#809'
+    current_stage: 07-build
+    note: 'S032/EV-025 07-build in_progress @ M0 — Gate B approved (D-S032-04-plan-approve); #810/#811/#812/#809'
+    prior_note: 'S032/EV-025 04-tech-plan in_progress (delta) — Batch T E25-T1..T6=1,1,2,1,3,1; draft plan; Gate B pending; #810/#811/#812/#809'
     notes:
+    - '2026-07-31 S032/EV-025 Gate B=1 (D-S032-04-plan-approve) — 04 COMPLETE → 07 @ T0.1; M0 theme map + dig audit; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 04 Batch T locked 1,1,2,1,3,1 — draft execution-plan 28 tasks; Gate B pending (b_to_c still pending); T5 supersedes S02.M2; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 02-verify-plan COMPLETE (D-S032-02-phase-a) — PASS; Batch F 1,1,1; 12 auto; Gate A Lean → 04-tech-plan; report docs/sessions/S032-iwxxm-us-remarks-va/reports/02-verify-plan-audit.md; #810/#811/#812/#809'
     - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809; advance 02-verify-plan in_progress'
@@ -7908,6 +7899,45 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S032-04-plan-approve
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S032-iwxxm-us-remarks-va
+  evolve_cycle_id: EV-025
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 04 Decision — Approve execution plan / Gate B → 07 @ T0.1
+  summary: S032/EV-025 04 COMPLETE Gate B=1; handoff 07-build @ T0.1
+  decision: 'Gate B=1 — approve execution-plan (28 tasks M0–M7); B→C → 07-build in_progress @ T0.1.
+    Batch T E25-T1..T6=1,1,2,1,3,1. Approved plan: docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md.
+    Lean skip 05.'
+  related_issues:
+  - '810'
+  - '811'
+  - '812'
+  - '809'
+  related_decisions:
+  - E25-T1
+  - E25-T2
+  - E25-T3
+  - E25-T4
+  - E25-T5
+  - E25-T6
+  - D-S032-EV025-t1-1
+  - D-S032-EV025-t2-1
+  - D-S032-EV025-t3-2
+  - D-S032-EV025-t4-1
+  - D-S032-EV025-t5-3
+  - D-S032-EV025-t6-1
+  - D-S032-02-phase-a
+  answers:
+    GateB: '1'
+  tip_sha: 149ed5a
+  tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
 - id: D-S032-EV025-t6-1
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -24125,7 +24155,7 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     notes: "Lean+build + 13 when behavior ships; 11 optional if UI; 09 covered by 08+10"
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   stages:
     00-context:
       status: completed
@@ -24135,7 +24165,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: Orchestrator in_progress; 04 Batch T locked; Gate B pending
+      note: Orchestrator in_progress; Gate B approved; 07-build @ M0
     01-requirements:
       status: completed
       started: '2026-07-31'
@@ -24153,13 +24183,19 @@ evolve_cycles:
       mode: delta
       note: 'PASS — Batch F 1,1,1 (S02.M1/M2/L1); 12 auto; report reports/02-verify-plan-audit.md; D-S032-02-phase-a; Gate A Lean → 04; #810/#811/#812/#809'
     04-tech-plan:
+      status: completed
+      started: '2026-07-31'
+      started_at: '2026-07-31'
+      completed: '2026-07-31'
+      completed_at: '2026-07-31'
+      mode: delta
+      note: 'COMPLETE — Gate B=1; execution-plan approved; D-S032-04-plan-approve; handoff 07 @ T0.1'
+    07-build:
       status: in_progress
       started: '2026-07-31'
       started_at: '2026-07-31'
-      mode: delta
-      note: 'Batch T E25-T1..T6=1,1,2,1,3,1; draft execution-plan 28 tasks M0–M7; Gate B pending; T5 supersedes S02.M2'
-    07-build:
-      status: pending
+      mode: full
+      note: 'STARTED @ T0.1; M0 theme map + dig audit'
     08-verify-build:
       status: pending
     10-e2e:
@@ -24168,12 +24204,12 @@ evolve_cycles:
       status: pending
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -24193,7 +24229,10 @@ evolve_cycles:
   - docs/decisions/product-decisions.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
   - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/us-remarks-va-theme-map.md
+  - docs/sessions/S032-iwxxm-us-remarks-va/reports/dig-checklist-code-audit.md
   notes:
+  - '2026-07-31 S032/EV-025 04 COMPLETE → 07 @ T0.1 (Gate B=1 / D-S032-04-plan-approve) — gates.b_to_c + phase_b passed; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 04 Batch T locked E25-T1..T6=1,1,2,1,3,1 — draft plan 28 tasks; gates.b_to_c still pending; T5=3 supersedes S02.M2; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 02 PASS → 04 (Batch F 1,1,1 / D-S032-02-phase-a) — gates.a_to_b + phase_a passed; #810/#811/#812/#809'
   - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809; 02-verify-plan in_progress'
@@ -24205,14 +24244,15 @@ git_history:
   ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  tip_sha: d41e9d4
-  tip_sha_full: d41e9d4a1f4193d5017270d9998306a6e8843aee
+  tip_sha: 149ed5a
+  tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
   pr_number: null
   pr_url: null
   pr_status: null
   merge_sha: null
-  note: 'S032/EV-025 tip d41e9d4 — 04 draft execution-plan (E25-T1..T6); Gate B pending; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
+  note: 'S032/EV-025 tip 149ed5a — Gate B approved; 07-build @ M0; branch evolve/EV-025-iwxxm-us-remarks-va active (local); #810/#811/#812/#809'
   notes:
+  - '2026-07-31 S032/EV-025 tip synced — 149ed5a (149ed5a8cb2ea6801af8853f81b563885c3fe6f8); "[S032] chore: record 04 draft tip sha in workflow-state"; stage 04→07 Gate B; parent will commit T0.1/T0.2 docs; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — d41e9d4 (d41e9d4a1f4193d5017270d9998306a6e8843aee); "[S032] docs: draft EV-025 execution plan (E25-T1..T6)"; stage 04-tech-plan; Gate B pending; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — 0a5c408 (0a5c408efbb46818009d5cf431046560e0e52df6); "[S032] docs: close EV-025 Gate A (02 Batch F 1,1,1)"; stage 02-verify-plan; 04-tech-plan in_progress; #810/#811/#812/#809'
   - '2026-07-31 S032/EV-025 tip synced — f28d159 (f28d159c7cf7dd0a266391b169f78295d0df0976); "[S032] docs: lock EV-025 Phase 0–01 (UJ-040/041, TC-EV025)"; stage 01-requirements; 02-verify-plan in_progress; #810/#811/#812/#809'
@@ -25550,9 +25590,9 @@ git_history:
     created_at: '2026-07-31'
     session_id: S032-iwxxm-us-remarks-va
     evolve_cycle_id: EV-025
-    note: 'S032/EV-025 tip d41e9d4 — 04 draft execution-plan (E25-T1..T6); Gate B pending; #810/#811/#812/#809'
-    tip_sha: d41e9d4
-    tip_sha_full: d41e9d4a1f4193d5017270d9998306a6e8843aee
+    note: 'S032/EV-025 tip 149ed5a — Gate B approved; 07-build @ M0; #810/#811/#812/#809'
+    tip_sha: 149ed5a
+    tip_sha_full: 149ed5a8cb2ea6801af8853f81b563885c3fe6f8
     pushed: false
   commits:
   - sha: d41e9d4

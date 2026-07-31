@@ -8,11 +8,11 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Session open; Phase 0 locked E25-* |
-| 16-evolve | yes | orchestrator | **in_progress** | EV-025 04 draft; Gate B pending |
+| 16-evolve | yes | orchestrator | **in_progress** | EV-025 Gate B approved; 07 @ M0 |
 | 01-requirements | yes | delta | **completed** | E25-E1 — report 01-requirements.md |
 | 02-verify-plan | yes | delta | **completed** | PASS — Batch F 1,1,1; report 02-verify-plan-audit.md |
-| 04-tech-plan | yes | delta | **in_progress** | E25-T1..T6 locked; execution-plan draft; Gate B |
-| 07-build | yes | full | pending | tac2iwxxm / tac-validate / goldens / validate |
+| 04-tech-plan | yes | delta | **completed** | E25-T*; Gate B=`1`; execution-plan approved |
+| 07-build | yes | full | **in_progress** | @ T0.1 theme map |
 | 08-verify-build | yes | delta | pending | — |
 | 09-qa | no | — | skipped | 08+10 cover |
 | 10-e2e | yes | smoke | pending | Library + API convert/validate US + VA stem |
@@ -36,3 +36,4 @@ No new deployable / no new Fn. Dual lane is large but still delta-mode on F6.b +
 | UI | E25-ui=1 N/A | 2026-07-31 |
 | Gate A / 02 | Batch F 1,1,1; `D-S032-02-phase-a` → 04 | 2026-07-31 |
 | 04 Batch T | E25-T1..T6 = 1,1,2,1,3,1; T5 supersedes S02.M2 Gate C soft deferral | 2026-07-31 |
+| Gate B / 04 | `1` — M0–M7 approved → 07 @ T0.1 (`D-S032-04-plan-approve`) | 2026-07-31 |

@@ -10,7 +10,7 @@
 **Issues**: [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810), [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811), [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812), [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809)  
 **Started**: 2026-07-31  
 **Branch**: `evolve/EV-025-iwxxm-us-remarks-va`  
-**Status**: **in_progress** — Gate A PASS; next **04-tech-plan**
+**Status**: **in_progress** — Gate B approved; **07-build** @ M0
 
 ### Scope (Phase 0 — locked 2026-07-31)
 
@@ -35,6 +35,7 @@
 | E25-T4 | decision | Dual-lane sequencing? | **1** — finish Lane A then Lane B (`D-S032-EV025-t4-1`) |
 | E25-T5 | decision | Dig ❌ residuals / Gate C? | **3** — any encode residual **blocks Gate C**; supersedes S02.M2 soft deferral (`D-S032-EV025-t5-3`) |
 | E25-T6 | decision | Draft plan? | **1** — draft execution plan from T1–T5; Gate B next (`D-S032-EV025-t6-1`) |
+| E25-04 | decision | Gate B / plan approve? | **1** — M0–M7 approved; B→C → **07-build** @ T0.1 (`D-S032-04-plan-approve`) |
 
 **Scope (verbatim)**:
 Dual-lane engine cycle from EV-024 children: (A) encode/lint/golden/validate all ❌

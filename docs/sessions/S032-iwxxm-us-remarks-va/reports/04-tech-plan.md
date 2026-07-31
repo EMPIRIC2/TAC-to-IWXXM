@@ -32,3 +32,7 @@ Unchanged: **S02.L1** — TC-EV025-010 may document Schematron deferrals without
 ## Next
 
 Gate B AskQuestion — approve milestones → Lean **07-build** @ T0.1 (05 skipped).
+
+## Close
+
+**Gate B=1** (2026-07-31) — plan approved; handoff **07-build** @ T0.1 (`D-S032-04-plan-approve`).

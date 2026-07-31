@@ -347,5 +347,6 @@
 | EV-025/E25-T4 | Lanes | Finish Lane A then Lane B | confirmed |
 | EV-025/E25-T5 | Gate C residuals | Encode residual **blocks** Gate C (supersedes S02.M2 soft deferral) | confirmed |
 | EV-025/E25-T6 | Draft plan | Draft from T1–T5; Gate B pending | confirmed |
+| EV-025/E25-04 | Gate B | Approve M0–M7 → 07-build @ T0.1 | confirmed |
 
 

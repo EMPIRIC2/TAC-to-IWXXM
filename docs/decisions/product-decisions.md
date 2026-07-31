@@ -85,3 +85,4 @@
 | 2026-07-31 | E25-T4 | approved | D-S032-EV025-t4-1 — Lane A then Lane B |
 | 2026-07-31 | E25-T5 | approved | D-S032-EV025-t5-3 — dig ❌ encode residual blocks Gate C (supersedes S02.M2) |
 | 2026-07-31 | E25-T6 | approved | D-S032-EV025-t6-1 — draft execution plan; Gate B pending |
+| 2026-07-31 | D-S032-04-plan-approve | approved | Gate B=1 — M0–M7 approved; Lean → 07-build @ T0.1 |
