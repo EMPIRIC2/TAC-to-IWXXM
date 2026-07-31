@@ -27,6 +27,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [aerodrome-quality](aerodrome-quality.md) | TAF + SPECI quality bar (#735/#734) | active | 2026-07-22 | F20, S020/EV-015 |
 | [golden-examples-ui](golden-examples-ui.md) | Pre-loaded workbench golden examples (#780) | active | 2026-07-22 | F7, S021/EV-016 |
 | [sigmet-quality](sigmet-quality.md) | General + VA SIGMET quality bars (#733/#739) | active | 2026-07-29 | F23, S025/EV-019 |
+| [iwxxm-domain-mine](iwxxm-domain-mine.md) | WMO IWXXM/ tree + org refresh + IWXXM-US/MDL mine (#804/#807/#773) | active | 2026-07-30 | F6, F2, F4, F12, F13, F25, S031/EV-024 |
 
 **Convention**: One brief per topic at `docs/context/<slug>.md`. Reference downstream as
 `[Context: <slug> R#]`.
