@@ -1,6 +1,6 @@
 """TC-EV025-001 / #810 — Variable RVR + meanRVR withheld (UJ-040).
 
-T1.1: red assertions for ``iwxxm-us:AerodromeVariableRVR`` and withheld meanRVR.
+Asserts ``iwxxm-us:AerodromeVariableRVR`` and withheld meanRVR under ``profile=iwxxm_us``.
 """
 
 from __future__ import annotations

@@ -18,6 +18,7 @@ NIL_NOSIG = "http://codes.wmo.int/common/nil/noSignificantChange"
 NIL_NSC = "http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"
 NIL_NCD = "http://codes.wmo.int/common/nil/notDetectedByAutoSystem"
 NIL_NOT_OBS = "http://codes.wmo.int/common/nil/notObservable"
+NIL_WITHHELD = "http://codes.wmo.int/common/nil/withheld"
 
 # WMO Annex 3 / IWXXM examples use fictional YUDO = DONLON/INTERNATIONAL.
 _YUDO_NAME = "DONLON/INTERNATIONAL"
@@ -109,7 +110,7 @@ def _visibility_block(ir: dict[str, Any]) -> str:
 """
 
 
-def _rvr_block(ir: dict[str, Any]) -> str:
+def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
     rvr_raw = ir.get("rvr")
     if not isinstance(rvr_raw, dict):
         # Guidance / Amd79 CWFD: when vis is missing/notObservable and no RVR group,
@@ -119,10 +120,23 @@ def _rvr_block(ir: dict[str, Any]) -> str:
         return ""
     rvr = cast(dict[str, Any], rvr_raw)
     rwy = escape(str(rvr["runway"]))
-    op = str(rvr.get("operator") or "")
-    op_xml = f"\n          <iwxxm:meanRVROperator>{op}</iwxxm:meanRVROperator>" if op else ""
     tend = str(rvr.get("tendency") or "")
     tend_attr = f' pastTendency="{tend}"' if tend else ""
+    if rvr.get("variable"):
+        if rvr_extension:
+            # iwxxm-us: mean withheld; min/max live in AerodromeVariableRVR extension.
+            mean_xml = f'          <iwxxm:meanRVR uom="m" xsi:nil="true" nilReason="{NIL_WITHHELD}"/>'
+            ext = f"\n{rvr_extension}"
+        else:
+            # annex3 path: no US extension — emit midpoint mean for XSD shape.
+            mid = int(round((int(rvr["min_m"]) + int(rvr["max_m"])) / 2))
+            mean_xml = f'          <iwxxm:meanRVR uom="m">{mid}</iwxxm:meanRVR>'
+            ext = ""
+    else:
+        op = str(rvr.get("operator") or "")
+        op_xml = f"\n          <iwxxm:meanRVROperator>{op}</iwxxm:meanRVROperator>" if op else ""
+        mean_xml = f'          <iwxxm:meanRVR uom="m">{rvr["mean_m"]}</iwxxm:meanRVR>{op_xml}'
+        ext = f"\n{rvr_extension}" if rvr_extension else ""
     return f"""      <iwxxm:rvr>
         <iwxxm:AerodromeRunwayVisualRange{tend_attr}>
           <iwxxm:runway>
@@ -136,7 +150,7 @@ def _rvr_block(ir: dict[str, Any]) -> str:
               </aixm:timeSlice>
             </aixm:RunwayDirection>
           </iwxxm:runway>
-          <iwxxm:meanRVR uom="m">{rvr["mean_m"]}</iwxxm:meanRVR>{op_xml}
+{mean_xml}{ext}
         </iwxxm:AerodromeRunwayVisualRange>
       </iwxxm:rvr>
 """
@@ -333,6 +347,7 @@ def build_observation_and_trends(
     *,
     addendum_extension: str = "",
     peak_extension: str = "",
+    rvr_extension: str = "",
 ) -> tuple[str, str]:
     """
     Build IWXXM observation element and trailing trendForecast elements.
@@ -345,6 +360,8 @@ def build_observation_and_trends(
         Optional observation-level extension XML (iwxxm_us Addendum).
     peak_extension :
         Optional surface-wind extension XML (iwxxm_us peak wind).
+    rvr_extension :
+        Optional RVR extension XML (iwxxm_us AerodromeVariableRVR).
 
     Returns
     -------
@@ -362,7 +379,7 @@ def build_observation_and_trends(
     cloud = ""
     if not cavok:
         vis_block = _visibility_block(ir)
-        rvr_block = _rvr_block(ir)
+        rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)
         cloud = _cloud_block(ir)
 

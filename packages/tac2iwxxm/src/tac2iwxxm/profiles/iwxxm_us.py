@@ -1,7 +1,7 @@
 """IWXXM-US profile XML writer for METAR/SPECI (F6.b).
 
-Emits WMO annex3 body plus ``iwxxm-us`` extension blocks (Addendum, AerodromePeakWind)
-per ADR-013 / docs/context/general-tac-iwxxm-converter.md.
+Emits WMO annex3 body plus ``iwxxm-us`` extension blocks (Addendum, AerodromePeakWind,
+AerodromeVariableRVR) per ADR-013 / docs/context/general-tac-iwxxm-converter.md.
 """
 
 from __future__ import annotations
@@ -16,6 +16,9 @@ def _us_gml_id(ir: dict[str, Any], product: str) -> str:
     """Stable gml:id for US golden fixtures (theme-aware for F20 S3)."""
     root = product.lower()
     station = str(ir["station"]).lower()
+    rvr = ir.get("rvr")
+    if isinstance(rvr, dict) and rvr.get("variable"):
+        return f"{root}.us.var.rvr.{station}"
     if ir.get("peak_wind_dir_deg") is not None:
         return f"{root}.us.pk.wnd.{station}"
     if ir.get("sea_level_pressure_hpa") is not None:
@@ -77,6 +80,26 @@ def _peak_wind_extension(ir: dict[str, Any]) -> str:
 """
 
 
+def _variable_rvr_extension(ir: dict[str, Any]) -> str:
+    """Serialize RVR ``iwxxm-us:AerodromeVariableRVR`` when variable min/max present."""
+    rvr = ir.get("rvr")
+    if not isinstance(rvr, dict) or not rvr.get("variable"):
+        return ""
+    attrs: list[str] = []
+    if rvr.get("below_sensor_minimum"):
+        attrs.append('belowSensorMinimum="true"')
+    if rvr.get("above_sensor_maximum"):
+        attrs.append('aboveSensorMaximum="true"')
+    attr_s = (" " + " ".join(attrs)) if attrs else ""
+    return f"""          <iwxxm:extension>
+            <iwxxm-us:AerodromeVariableRVR{attr_s}>
+              <iwxxm-us:minimumRVR uom="m">{rvr["min_m"]}</iwxxm-us:minimumRVR>
+              <iwxxm-us:maximumRVR uom="m">{rvr["max_m"]}</iwxxm-us:maximumRVR>
+            </iwxxm-us:AerodromeVariableRVR>
+          </iwxxm:extension>
+"""
+
+
 def emit_metar_speci_iwxxm_us(
     ir: dict[str, Any],
     *,
@@ -113,10 +136,12 @@ def emit_metar_speci_iwxxm_us(
 
     addendum = _addendum_extension(ir)
     peak = _peak_wind_extension(ir)
+    var_rvr = _variable_rvr_extension(ir)
     observation, trends = build_observation_and_trends(
         ir,
         addendum_extension=addendum,
         peak_extension=peak,
+        rvr_extension=var_rvr,
     )
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>

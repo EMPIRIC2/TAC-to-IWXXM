@@ -33,6 +33,11 @@ _NSC = re.compile(r"\bNSC\b")
 _NCD = re.compile(r"\bNCD\b")
 _VV_NOT_OBS = re.compile(r"\bVV///(?![A-Z0-9/])")
 _WIND_SECTOR = re.compile(r"\b(?P<ccw>\d{3})V(?P<cw>\d{3})\b")
+# Variable RVR (US / FMH-1): R04L/1100V2300FT — try before simple RVR.
+_RVR_VAR = re.compile(
+    r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<min_op>[PM])?(?P<min>\d{4})V(?P<max_op>[PM])?(?P<max>\d{4})"
+    r"(?P<tend>[UDN])?(?P<ft>FT)?\b"
+)
 _RVR = re.compile(r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<op>[PM])?(?P<val>\d{4})(?P<tend>[UDN])?(?P<ft>FT)?\b")
 # Minimum visibility with compass sector (e.g. 1200NE) — after prevailing metres.
 _VIS_MIN = re.compile(r"\b(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)\b")
@@ -471,20 +476,40 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["wind_dir_ccw_deg"] = int(sector.group("ccw"))
         ir["wind_dir_cw_deg"] = int(sector.group("cw"))
 
-    rvr = _RVR.search(obs_body)
-    if rvr is not None:
-        val = int(rvr.group("val"))
-        # US FT → metres; ICAO metre groups stay as-is.
-        if rvr.group("ft"):
-            metres = int(round(val * 0.3048))
+    rvr_var = _RVR_VAR.search(obs_body)
+    if rvr_var is not None:
+        min_raw = int(rvr_var.group("min"))
+        max_raw = int(rvr_var.group("max"))
+        if rvr_var.group("ft"):
+            min_m = int(round(min_raw * 0.3048))
+            max_m = int(round(max_raw * 0.3048))
         else:
-            metres = val
+            min_m = min_raw
+            max_m = max_raw
         ir["rvr"] = {
-            "runway": rvr.group("rwy"),
-            "mean_m": metres,
-            "operator": {"P": "ABOVE", "M": "BELOW"}.get(rvr.group("op") or ""),
-            "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(rvr.group("tend") or ""),
+            "runway": rvr_var.group("rwy"),
+            "variable": True,
+            "min_m": min_m,
+            "max_m": max_m,
+            "below_sensor_minimum": rvr_var.group("min_op") == "M",
+            "above_sensor_maximum": rvr_var.group("max_op") == "P",
+            "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(rvr_var.group("tend") or ""),
         }
+    else:
+        rvr = _RVR.search(obs_body)
+        if rvr is not None:
+            val = int(rvr.group("val"))
+            # US FT → metres; ICAO metre groups stay as-is.
+            if rvr.group("ft"):
+                metres = int(round(val * 0.3048))
+            else:
+                metres = val
+            ir["rvr"] = {
+                "runway": rvr.group("rwy"),
+                "mean_m": metres,
+                "operator": {"P": "ABOVE", "M": "BELOW"}.get(rvr.group("op") or ""),
+                "tendency": {"U": "UPWARD", "D": "DOWNWARD", "N": "NO_CHANGE"}.get(rvr.group("tend") or ""),
+            }
 
     present: list[str] = []
     wx_not_obs = False
