@@ -37,9 +37,13 @@ _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
 _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
+# Vertical layer — ``SFC/FL550`` or ``FL250/370``.
+_SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
 _SIG_SPEED_KT = re.compile(r"^(?P<spd>\d{1,3})KT$")
 _SIG_LAT = re.compile(r"^(?P<hemi>[NS])(?P<deg>\d{1,2})(?P<min>\d{2})?$")
 _SIG_LON = re.compile(r"^(?P<hemi>[EW])(?P<deg>\d{1,3})(?P<min>\d{2})?$")
+# Observation/forecast clock ``1600Z`` (hhmmZ) — distinct from METAR ``ddhhmmZ``.
+_SIG_HHMMZ = re.compile(r"^(?P<hh>\d{2})(?P<mm>\d{2})Z$")
 _SIG_DIR = frozenset({"N", "NE", "E", "SE", "S", "SW", "W", "NW"})
 _SIG_DIR_NAME = {
     "N": "North",
@@ -62,6 +66,8 @@ _WX = re.compile(
     r"(?P<desc>MI|PR|BC|DR|BL|SH|TS|FZ)?"
     r"(?P<phen>(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+)$"
 )
+# Runway visual range — R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
+_RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<trend>[UDN])?$")
 
 _WX_INTENSITY = {"+": "heavy", "-": "light", "VC": "in the vicinity"}
 _WX_DESCRIPTOR = {
@@ -265,6 +271,14 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"QNH {int(m.group('val'))} hPa"
     if m := _WX.match(upper):
         return _fmt_wx(m, forecast=bool(seen.get("in_trend")))
+    if m := _RVR.match(upper):
+        trend = m.group("trend")
+        trend_txt = {
+            "U": ", upward trend",
+            "D": ", downward trend",
+            "N": ", no distinct trend",
+        }.get(trend or "", "")
+        return f"Runway visual range runway {m.group('rw')}: {m.group('vis')} m{trend_txt}"
     if upper.startswith("PK") or upper == "WND":
         return "Peak wind remarks token"
     _ = product
@@ -278,6 +292,8 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return "Report type (terminal aerodrome forecast)"
     if upper in {"AMD", "COR"}:
         return "Amendment / correction indicator"
+    if upper == "CNL":
+        return "Cancelled forecast"
     if upper == "NIL":
         return "Nil forecast"
     if upper == "=":
@@ -330,13 +346,21 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
     if upper == product and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
         return f"Report type ({product})"
+    if upper == product and seen.get("cnl"):
+        # Cancelled bulletin references the product again (``CNL SIGMET 2 …``).
+        return f"Cancelled {product} reference"
     if upper == "=":
         return "Report terminator"
+    if upper == "CNL":
+        seen["cnl"] = 1
+        return explain_glossary_token(upper, fallback="Cancellation")
     if upper == "VALID":
         return "Validity period marker"
     if upper.isdigit() and seen.get("rtype") and not seen.get("seq"):
         seen["seq"] = 1
         return f"Sequence number ({int(upper)})"
+    if upper.isdigit() and seen.get("cnl"):
+        return f"Cancelled sequence number ({int(upper)})"
     if m := _SIG_VALID.match(upper):
         seen["valid_period"] = 1
         return (
@@ -365,8 +389,27 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
 
     if upper in {"FIR/UIR", "FIR", "UIR"}:
         return explain_glossary_token(upper, fallback="Flight information region")
+    if upper == "OCEANIC":
+        return "Oceanic FIR qualifier"
+    if upper == "ERUPTION":
+        seen["eruption"] = 1
+        return "Volcanic eruption"
+    if upper == "MT":
+        return "Mount"
+    if upper == "AT":
+        return "At (observation / forecast time)"
+    if upper == "WI":
+        return "Within (area polygon)"
+    if upper == "-":
+        return "Polygon vertex separator"
+    if m := _SIG_FL_LAYER.match(upper):
+        if m.group("sfc"):
+            return f"Surface to flight level {int(m.group('sfc'))}"
+        return f"Flight levels {int(m.group('a'))} to {int(m.group('b'))}"
     if m := _SIG_FL.match(upper):
         return f"Flight level {int(m.group('fl'))}"
+    if m := _SIG_HHMMZ.match(upper):
+        return f"Time {m.group('hh')}:{m.group('mm')} UTC"
     if upper == "MOV":
         seen["mov"] = 1
         return explain_glossary_token(upper, fallback="Moving")
@@ -391,6 +434,16 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
         return f"Longitude {int(m.group('deg'))}° {hemi}"
     if upper in {"OF", "AND"}:
         return explain_glossary_token(upper, fallback=upper.capitalize())
+
+    # Volcano name after ``ERUPTION MT …`` (e.g. HEKLA, ASHVAL).
+    if (
+        seen.get("eruption")
+        and icao.isalpha()
+        and len(icao) >= 3
+        and not meaning_for(icao)
+        and icao not in {"FIR", "UIR", "VA", "CLD"}
+    ):
+        return f"Volcano name ({icao})"
 
     # FIR proper name (e.g. SHANLON) when not a known glossary hazard token.
     if icao.isalpha() and len(icao) >= 4 and seen.get("station") and not seen.get("fir_name") and not meaning_for(icao):

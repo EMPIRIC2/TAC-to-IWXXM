@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-31 (S033 / EV-026 — TC-EV025-008..009 strict / wmoPass #809)
+> **Last updated**: 2026-07-31 (S034 / EV-027 — TC-EV027-001..005 #815 decode residual matrix)
 
 ## Scope
 
@@ -90,6 +90,7 @@ Unified manual live test harness against Render staging:
 | UJ-039 | F25/F7.g deepen | Load official WMO examples from sample menu | H4–H5 if FE | TC-EV024-004..006 |
 | UJ-040 | F6.b deepen | Structured iwxxm-us REMARKS encode pack | — (API T3 optional) | TC-EV025-001..007 |
 | UJ-041 | F23 deepen | sigmet-multi-location-VA ADR-032 equality / wmoPass (EV-026) | — | TC-EV025-008..009 |
+| UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -1130,10 +1131,65 @@ Reuses **TC-EV025-008..009** with strict semantics (`E26-TC=1`). No new TC ids.
 
 ### EV-026 verify/deploy gate
 
-- [ ] TC-EV025-008 strict equality green (no soft_compare)
-- [ ] TC-EV025-009 catalog `wmoPass` + FIXTURE_GAPS cleared
-- [ ] #809 GitHub closed
-- [ ] 13-deploy-smoke if API convert/validate / catalog behavior ships
+- [x] TC-EV025-008 strict equality green (no soft_compare) (#817)
+- [x] TC-EV025-009 catalog `wmoPass` + FIXTURE_GAPS cleared (#817)
+- [x] #809 GitHub closed
+- [x] 13-deploy-smoke PASS (S033 / EV-026)
+
+## EV-027 / S034 — #815 official WMO decode residual matrix
+
+New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020.
+
+### TC-EV027-001: Inventory of official WMO TAC peers (UJ-042)
+
+- **Given** current `vendor/schemas` pin (`IWXXM/examples/` + annex3 goldens mirrored)
+- **When** inventory is generated / checked in
+- **Then** every in-scope official WMO stem with a TAC peer appears in catalog **or**
+  `FIXTURE_GAPS` with rationale + child issue (no silent omissions)
+- **Tier**: T0
+- **Source**: #815; E27-1
+
+### TC-EV027-002: Catalog ∪ FIXTURE_GAPS completeness (UJ-042 / UJ-039 deepen)
+
+- **Given** inventory from TC-EV027-001
+- **When** catalog Vitest / `FIXTURE_GAPS.md` assert
+- **Then** set equality holds; US/quarantine/translation-failed stay out of WMO happy-path
+- **Tier**: T0 / T2
+- **Source**: #815; ADR-032; UJ-039
+
+### TC-EV027-003: Decode residual matrix — empty or allowlisted (UJ-042)
+
+- **Given** each registered official happy-path TAC peer (CI-mirrored fixture)
+- **When** `decode_tac` runs
+- **Then** `residuals == []` **or** residual text matches documented expected-residual
+  allowlist (G4 best-effort / deferred token / linked child issue); unexpected leftovers fail
+- **Tier**: T0 / T2
+- **Source**: #815; ADR-025; E27-4 triage
+
+### TC-EV027-004: Load path for registered official stems (UJ-042 / UJ-039)
+
+- **Given** a registered official stem in `examplesCatalog.ts`
+- **When** sample is selected (unit/smoke)
+- **Then** correct TAC body, product, and provenance banner (`wmoPass` vs `wmoReference`)
+- **Tier**: T0 / T2
+- **Source**: #815; ADR-032
+
+### TC-EV027-005: Optional H4–H5 residual chrome smoke (UJ-042)
+
+- **Given** deployed FE + API when catalog/decode chrome ships
+- **When** operator loads one passer per product and opens decode panel
+- **Then** no unexpected residual chrome for happy-path textbook peers
+- **Tier**: H4–H5 / T3 (when_ships)
+- **Source**: #815; connectivity gates
+
+### EV-027 verify/deploy gate
+
+- [x] TC-EV027-001..002 inventory + catalog∪gaps green
+- [x] TC-EV027-003 residual matrix green (allowlist documented; VAA/TCA → #820)
+- [x] TC-EV027-004 load path green (catalog Vitest)
+- [x] TC-EV027-005 **waived** at close (`D-S034-gate-c` — no FE deploy)
+- [ ] #815 GitHub closed on PR merge (deferral child #820)
+- [x] 13-deploy-smoke **waived** (`D-S034-gate-c`)
 
 ## F9 deepen (S026 / EV-020) — glossary registry
 

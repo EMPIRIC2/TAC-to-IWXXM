@@ -3,6 +3,56 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-027 — Official WMO decode residual matrix (#815) (S034)
+
+**Session**: S034-wmo-decode-residual-matrix  
+**Features**: Deepen **F25** / **F9** / **F7.g** — no new Fn  
+**Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815)  
+**Started**: 2026-07-31  
+**Branch**: `evolve/EV-027-wmo-decode-residual-matrix`  
+**Status**: in_progress  
+
+### Scope (Phase 0 — locked 2026-07-31)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E27-1 | decision | Session + scope? | **1** — S034 / EV-027; #815 inventory + residual matrix + CI (`D-S034-open=1`) |
+| E27-2 | decision | Routing? | **1** — Lean+build `00→16→01→02→04→07→08→10` (+13 when ships) |
+| E27-3 | decision | UI preview now? | **2** — no; proceed from docs/repo; re-offer after build |
+| E27-4 | decision | Residual triage? | **1** — fix decode in-cycle when cheap; else allowlist + child issue (no silent leftovers) |
+| E27-M | decision | Document Manifest? | **1** — lean: feature-list + UJ-042 + test-plan TC-EV027 + decisions; skip Spec/Config/API/Deploy (`D-S034-E27-M`) |
+| E27-UJ | decision | Journey id? | **1** — new **UJ-042**; deepen UJ-039 / UJ-020 |
+| E27-TC | decision | TC ids? | **1** — new **TC-EV027-001..005** |
+| E27-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** (`D-S034-E27-E1`) |
+| S02.M1 | decision | Allowlist SoT? | **1** — package test artifact; FIXTURE_GAPS = catalog/load only (`D-S034-EV027-s02m1-1`) |
+| S02.M2 | decision | Gate C residual bar? | **2** — all seven target empty; allowlist only if standing docs say intentional (F9 G4 / ADR-025) + child issue (`D-S034-EV027-s02m2-2`) |
+| S02.L1 | decision | Inventory SoT? | **1** — pytest-discovered vendor/mirrored peers (`D-S034-EV027-s02l1-1`) |
+| E27-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,2,1; Lean → **04-tech-plan** (`D-S034-02-phase-a`) |
+| E27-T1 | decision | Build order? | **2** — catalog completeness first, then residual matrix (`D-S034-E27-T-batch`) |
+| E27-T2 | decision | Decode fix grain? | **1** — one commit per product family / theme |
+| E27-T3 | decision | New deps? | **2** — AskQuestion per new dep (prefer none) |
+| E27-T4 | decision | Gate C? | **1** — matrix + catalog∪gaps + #815/children required (no soft escape) |
+| E27-T5 | decision | Draft plan? | **1** — M0–M3 as written (catalog-first order) |
+| E27-04 | decision | Gate B? | **1** — approve → **07-build** @ T0.1 (`D-S034-04-plan-approve`) |
+| E27-GC | decision | Gate C / PR? | **1** — push + PR to main; close #815 on merge; link #820; waive TC-EV027-005 / 13 (`D-S034-gate-c`) |
+| E27-13 | decision | 13-deploy-smoke? | **waived** — no FE deploy this cycle |
+
+**Scope (verbatim)**: Every in-scope official WMO IWXXM TAC peer from the vendor pin is
+loadable from the workbench sample menu (or explicitly deferred in `FIXTURE_GAPS`) and
+decode leaves no residuals unless on a documented expected-residual allowlist; unexpected
+residuals fail CI.
+
+**In:** inventory SoT; load-path parity; decode residual matrix; parametrized CI; child
+issues for stems that cannot close in-cycle.
+
+**Out:** inventing TAC; `wmoReference`→`wmoPass` encode equality; IWXXM-US in WMO menu;
+new products beyond F6 seven; deferred SWX/VONA/WAFS/QVACI / TC-SIGMET A6-2 unless already
+catalogued.
+
+**Supersedes:** S029 / EV-022 (parked) narrow SIGMET A6-1a residual work — broadened by #815.
+
+---
+
 ## Cycle EV-026 — #809 VA multi-location ADR-032 equality / wmoPass (S033)
 
 **Session**: S033-va-multi-location-equality  

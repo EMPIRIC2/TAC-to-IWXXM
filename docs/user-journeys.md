@@ -6,7 +6,7 @@
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-31 (S033 / EV-026 — UJ-041 #809 ADR-032 equality / wmoPass)
+> **Last updated**: 2026-07-31 (S034 / EV-027 — UJ-042 #815 official WMO decode residual matrix)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -56,6 +56,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-039 | Load official WMO IWXXM examples from sample menu | apps/frontend / CI | F25/F7.g deepen (EV-024) | T0 / T2 / **T3** / H4–H5 |
 | UJ-040 | Convert METAR/SPECI with structured iwxxm-us REMARKS | library / API / CI | F6.b deepen (EV-025) | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-041 | Promote sigmet-multi-location-VA to WMO passer | library / CI / catalog | F23 deepen (EV-025 soft; EV-026 equality) | T0 / T2 |
+| UJ-042 | Official WMO TAC peers decode with empty/allowlisted residuals | library / CI / workbench | F25/F9/F7.g deepen (EV-027) | T0 / T2 / **T3** / H4–H5 |
 | — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -535,6 +536,10 @@ renders live for all seven products; residuals named when present.
 products (e.g. `OBSC` → “Obscured”, `TS` → “Thunderstorm”); optional OpenAIP/F3 **names** when
 available. Tests: TC-F9-003/004; ADR-032.
 
+**S034 / EV-027 deepen**: Official WMO textbook TAC peers must leave **no unexpected
+residuals** after decode — see **UJ-042** / TC-EV027 residual matrix (allowlist + child issue
+when not fixable in-cycle).
+
 ---
 
 ### UJ-021: IWXXM Preview Pane + Terminator Quick Fix (F10)
@@ -1012,7 +1017,11 @@ accurate; ADR-032 amend honored.
 **Deepen (S032 / EV-025)**: New US REMARKS goldens / fixtures (**UJ-040**) remain **out** of
 the WMO sample menu — regression assert in TC-EV025-005.
 
-**Automated tests**: TC-EV024-*; TC-F25-003 deepen; examplesCatalog Vitest; TC-EV025-005.
+**Deepen (S034 / EV-027)**: Inventory completeness for official WMO TAC peers is gated with
+decode residual emptiness (**UJ-042** / TC-EV027-001..003) — listing alone is not enough.
+
+**Automated tests**: TC-EV024-*; TC-F25-003 deepen; examplesCatalog Vitest; TC-EV025-005;
+TC-EV027-001..003.
 
 ---
 
@@ -1073,6 +1082,46 @@ TC-F23-003 adjacency; #809 closable.
 **Automated tests**: TC-EV025-008..009 (reused ids — `E26-TC=1`); FIXTURE_GAPS / catalog row.
 
 **Source**: #809 · [Context: va-multi-location-809](context/va-multi-location-809.md) · ADR-032
+
+---
+
+### UJ-042: Official WMO TAC Peers Decode Cleanly (S034 / EV-027)
+
+**Actor**: Operator / CI maintainer
+
+**Goal**: Every in-scope official WMO IWXXM TAC peer (vendor pin) is either loadable from the
+workbench sample menu or explicitly deferred in `FIXTURE_GAPS`, and after `decode_tac` the
+report has **empty residuals** unless listed on a documented expected-residual allowlist.
+Unexpected leftovers are defects (fix decode or file a child issue — no silent leftovers).
+
+**Feature**: Deepen F25 / F9 / F7.g — S034 / EV-027 · Issue [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815)
+
+**Steps (CI — T0)**:
+
+1. Inventory official WMO stems with TAC peers under the current vendor pin; assert the set
+   equals catalog registrations ∪ `FIXTURE_GAPS` rows (no silent omissions).
+2. For each registered happy-path stem: load fixture TAC → `decode_tac` → `residuals == []`
+   **or** match expected-residual allowlist entry (product G4 best-effort / deferred token /
+   linked child issue).
+3. Parametrized tests fail CI on unexpected residuals.
+4. Catalog Vitest: every in-scope vendor TAC peer is registered or gap-documented.
+
+**Steps (operator — T2 / T3 / H4–H5 when FE ships)**:
+
+1. Open **Examples / sample menu** — select a registered official WMO stem (UJ-039 path).
+2. Confirm TAC loads with correct product + provenance banner (`wmoPass` vs `wmoReference`).
+3. Open decode panel (UJ-020) — no unexpected residual chrome / “Not decoded: …” for
+   happy-path textbook peers (allowlisted stems may show named residuals).
+
+**Acceptance**: TC-EV027-001..005 green; #815 closable; child issues for in-cycle deferrals.
+
+**Automated tests**: TC-EV027-001..005; deepen TC-EV024-004..006; examplesCatalog Vitest;
+`decode_tac` residual matrix pytest.
+
+**Browser wiring**: Same public decode-tac + static catalog as UJ-039 / UJ-020 — no new
+origins (H4–H5 when FE ships).
+
+**Source**: #815 · ADR-025 · ADR-032 · [Context: wmo-decode-residual-matrix](context/wmo-decode-residual-matrix.md)
 
 ---
 
