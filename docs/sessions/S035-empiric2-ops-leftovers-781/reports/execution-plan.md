@@ -20,24 +20,24 @@
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T0.1 | pending | TC-EV028-001; #781 | — | Remove Codecov steps from `.github/workflows/ci-cd.yml` (keep coverage artifacts) |
-| T0.2 | pending | TC-EV028-001 | T0.1 | Remove Codecov badges from root + `apps/backend/README.md`; delete `.codecov.yml` |
-| T0.3 | pending | TC-EV028-001 | T0.2 | Delete GitHub Actions secret `CODECOV_TOKEN` (`gh secret delete`) |
+| T0.1 | **completed** | TC-EV028-001; #781 | — | Remove Codecov steps from `.github/workflows/ci-cd.yml` (keep coverage artifacts) |
+| T0.2 | **completed** | TC-EV028-001 | T0.1 | Remove Codecov badges from root + `apps/backend/README.md`; delete `.codecov.yml` |
+| T0.3 | **completed** | TC-EV028-001 | T0.2 | Delete GitHub Actions secret `CODECOV_TOKEN` (`gh secret delete`) |
 
 ### M1 — Consumer-facing landings (acceptance §4)
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T1.1 | pending | E28-3; F12–F14 AC5 | — | Rewrite `packages/tac-validate/README.md` + `description` (no ADR/Fn/E10) |
-| T1.2 | pending | E28-3; F13 AC5 | — | Rewrite `packages/iwxxm-validate/README.md` + `description` |
-| T1.3 | pending | E28-3; F14 AC3 | — | Rewrite `packages/tac2iwxxm/README.md` + `description` |
-| T1.4 | pending | E28-3 | — | Rewrite `packages/dissemination/README.md` + `description` (library consumers; note not on PyPI yet) |
+| T1.1 | **completed** | E28-3; F12–F14 AC5 | — | Rewrite `packages/tac-validate/README.md` + `description` (no ADR/Fn/E10) |
+| T1.2 | **completed** | E28-3; F13 AC5 | — | Rewrite `packages/iwxxm-validate/README.md` + `description` |
+| T1.3 | **completed** | E28-3; F14 AC3 | — | Rewrite `packages/tac2iwxxm/README.md` + `description` |
+| T1.4 | **completed** | E28-3 | — | Rewrite `packages/dissemination/README.md` + `description` (library consumers; note not on PyPI yet) |
 
 ### M2 — Version bump + Trusted Publisher (TC-EV028-002)
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T2.1 | pending | TC-EV028-003; UJ-023 | T1.1–T1.3 | Bump `tac-validate`, `iwxxm-validate`, `tac2iwxxm` to `0.1.1` in `pyproject.toml` (+ sync lock if needed) |
+| T2.1 | **completed** | TC-EV028-003; UJ-023 | T1.1–T1.3 | Bump `tac-validate`, `iwxxm-validate`, `tac2iwxxm` to `0.1.1` in `pyproject.toml` (+ Cargo.toml) |
 | T2.2 | pending | TC-EV028-002; deploy.md | — | Operator: configure PyPI Trusted Publisher ×3 → EMPIRIC2 / TAC-to-IWXXM / `pypi-publish.yml` / `pypi`; remove stale publishers |
 | T2.3 | pending | TC-EV028-002 | T2.2 | Confirm GitHub Environment `pypi` exists on `EMPIRIC2/TAC-to-IWXXM` |
 

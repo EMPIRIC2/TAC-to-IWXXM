@@ -1,6 +1,6 @@
 [package]
 name = "iwxxm_validate_rust"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "PyO3 native core for iwxxm-validate (F13 / E10-36 / D-S014-T33-crates)"
 license = "MIT"

@@ -1,21 +1,28 @@
 # tac2iwxxm
 
-General TAC → IWXXM converter package (F6 / F14). MIT licensed.
+Convert Traditional Alphanumeric Code (TAC) aviation weather reports to IWXXM XML.
+MIT licensed.
 
-See ADR-013 / ADR-014 / ADR-016 / ADR-017.
+Supports METAR, SPECI, TAF, SIGMET, AIRMET, VAA, and TCA. This library has no FastAPI
+or database dependencies.
 
 ## Install
 
 ```bash
-# Convert only (no validators)
+# Convert only
 pip install tac2iwxxm
 
-# Convert + TAC lint + IWXXM XSD/Schematron (F14)
+# Convert + TAC lint + IWXXM XSD/Schematron
 pip install 'tac2iwxxm[validate]'
 ```
 
-The `[validate]` extra depends on **`tac-validate`** and **`iwxxm-validate`** (E10-20).
-Convert works without the extra.
+The `[validate]` extra installs [`tac-validate`](https://pypi.org/project/tac-validate/)
+and [`iwxxm-validate`](https://pypi.org/project/iwxxm-validate/). Conversion works without
+the extra.
+
+Requires Python ≥ 3.12.
+
+## Convert
 
 ```python
 from tac2iwxxm import convert
@@ -37,13 +44,27 @@ assert lint(tac, product="METAR").ok
 assert validate_iwxxm(result.xml, iwxxm_version="2025-2").ok
 ```
 
-## Native extension (PyO3)
+## Decode and bulletins
 
-Optional Rust hotspots live under `rust/` and import as `tac2iwxxm._rust`
-(ADR-017). Pure Python remains the default `uv sync` path.
+```python
+from tac2iwxxm import decode_tac, split_bulletin
+
+decoded = decode_tac(tac, product="METAR")
+parts = split_bulletin(bulletin_text)
+```
+
+## Optional native extension
+
+Optional Rust helpers live under `rust/` and import as `tac2iwxxm._rust`. Pure Python is
+the default install path.
 
 ```bash
-# requires rustc + maturin
+# from a git checkout (requires rustc + maturin):
 make build-tac2iwxxm-native
 make test-tac2iwxxm-native
 ```
+
+## Links
+
+- Source: [EMPIRIC2/TAC-to-IWXXM](https://github.com/EMPIRIC2/TAC-to-IWXXM)
+- PyPI: [tac2iwxxm](https://pypi.org/project/tac2iwxxm/)

@@ -1,87 +1,75 @@
 # dissemination
 
-MIT package for F16–F19 operator dissemination: multi-DB writer-contract, WIS2/EDIS/AMHS
-sink adapters, and SSRF/allowlist helpers ([ADR-030](../../docs/adr/ADR-030-dissemination-package-architecture.md)).
+Library helpers for publishing IWXXM / bulletin payloads to operator destinations:
+multi-database writer-contract DDL, WIS2 and EDIS sinks, AMHS/SWIM/AFS staging stubs, and
+egress host allowlisting. MIT licensed.
 
-**Boundaries**
+**Not yet on PyPI** — install from this monorepo (a public `iwxxm-dissemination` release is
+planned separately). Import path remains `dissemination`.
 
-- No FastAPI or Supabase imports
-- HTTP routers stay in `apps/backend` (thin)
+This package has **no** FastAPI or Supabase imports. HTTP APIs that call it live in the
+host application.
 
-**COLLECT / multi-version namespaces (EV-023 / TC-EV023-008)**
-
-- `dissemination.collect_namespaces` — AFS COLLECT mandate constant + helpers to
-  detect `collect:MeteorologicalBulletin` and list per-member
-  `http://icao.int/iwxxm/{version}` declarations (APAC FAQ §3.4 / §14.7)
-- Hooks for the F16–F19 / bulletin path only — **not** single-report
-  `tac2iwxxm.convert` SoT (S02.M2)
-
-**Coverage**
-
-- Local/CI: `make test-unit-dissemination` (95% branch gate)
-
-**Multi-DB integration (T2.5–T2.6 / TC-F16-003)**
-
-- `make test-integration-dissemination` (or `pytest packages/dissemination/tests -m integration`)
-- Postgres + MySQL via Testcontainers (requires Docker); SQLite in-process
-- SQL Server via Testcontainers + **aioodbc** (requires Docker **and** a system ODBC
-  SQL Server driver). Without ODBC, SQL Server cases **skip** (E14-06)
-- Without Docker, PG/MySQL/SQL Server cases skip; SQLite still runs
-
-**SQL Server ODBC (T2.7 / E14-06)**
-
-| Item                    | Detail                                                                                                                |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Async driver            | `aioodbc` → SQLAlchemy URL prefix `mssql+aioodbc://`                                                                  |
-| Preferred system driver | Microsoft **ODBC Driver 18** for SQL Server (then 17)                                                                 |
-| Fallback                | FreeTDS / legacy “SQL Server” ODBC names                                                                              |
-| Probe API               | `dissemination.odbc.list_sqlserver_odbc_drivers()`, `odbc_sqlserver_available()`, `preferred_sqlserver_odbc_driver()` |
-
-Install a system driver before live SQL Server tests or BYOC send:
+## Install (from source)
 
 ```bash
-# Debian/Ubuntu — see Microsoft docs for the current repo snippet, then:
-sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 unixodbc-dev
-
-# Verify (from repo root with uv env):
-uv run python -c "from dissemination.odbc import list_sqlserver_odbc_drivers; print(list_sqlserver_odbc_drivers())"
+# from the monorepo root
+uv sync --package dissemination
+# or
+pip install -e packages/dissemination
 ```
 
-Example URI (spaces in the driver name must be URL-encoded as `+` or `%20`):
+Requires Python ≥ 3.12.
 
-```text
-mssql+aioodbc://sa:Your_password123@127.0.0.1:1433/master?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
+## Allowlist / SSRF helpers
+
+Egress is fail-closed when the allowlist is empty. Load from an environment variable or
+parse an explicit host/CIDR list:
+
+```python
+from dissemination import load_allowlist_from_env, parse_allowlist, validate_egress_host
+
+allow = load_allowlist_from_env()  # DISSEMINATION_EGRESS_ALLOWLIST
+# or: allow = parse_allowlist("example.org,10.0.0.0/8")
+validate_egress_host("broker.example.org", allow)
 ```
 
-Deploy / image notes (CI skip policy, stock API Dockerfile without `msodbcsql18`):
-[docs/deploy.md](../../docs/deploy.md) §Local Development → SQL Server ODBC.
+One-shot destination credentials are **caller-owned and memory-only** — do not persist
+them in this library.
 
-**WIS2 sink (T3.1–T3.4 / F17)**
+## Writer contract
 
-- `dissemination.wis2` — `wis2_preflight` / `wis2_publish` with injectable MQTT + HTTP
-  clients (unit-tested with mocks)
-- `dissemination.transports` — `HttpxDatasetClient` + `AiomqttClient` (httpx / aiomqtt)
-- Compose wis2box harness: MQTT + HTTP dataset stand-in under
-  `packages/dissemination/docker/wis2box-harness`
-- Staging publish: `make compose-wis2box-harness` runs TC-F17-001 pytest
-- Live BYOC remains the cycle-close gate (TC-F17-002)
+```python
+from dissemination import writer_contract_ddl, apply_writer_contract, diff_writer_contract
 
-**EDIS sink (T4.1–T4.3 / F18)**
+ddl = writer_contract_ddl()
+# apply_writer_contract / diff_writer_contract against a SQLAlchemy async engine
+```
 
-- `dissemination.edis` — WMO AHL formatting (ASCII-only) + `edis_preflight` /
-  `edis_submit` with injectable SMTP (mocked in unit tests; live BYOC = TC-F18-002)
-- `dissemination.transports.AiosmtpClient` — `aiosmtplib` SMTP client; preflight is
-  connect/login only (never `send_message` in CI)
+Supported database dialects include PostgreSQL, MySQL, SQLite, and SQL Server (via
+`aioodbc`). SQL Server needs a system ODBC driver (prefer Microsoft ODBC Driver 18).
 
-**F19 AMHS / SWIM / AFS (T5.1–T5.2 / S-EV014-M2)**
+## Sinks
 
-- `dissemination.sink.SinkAdapter` — shared preflight/send Protocol (E14-05)
-- `dissemination.f19_stubs` — staging stubs (`get_staging_sink`); allowlist only,
-  no live AMHS/SWIM/AFS libraries this cycle
-- `dissemination.models.DRAWER_SINK_TYPES` — drawer-ready sink enum tuple (F16–F19)
-- Live F19 demo optional at cycle close; staging/test path required
+| Module                     | Role                                           |
+| -------------------------- | ---------------------------------------------- |
+| `dissemination.wis2`       | WIS2 preflight / publish (MQTT + HTTP dataset) |
+| `dissemination.edis`       | EDIS / WMO AHL formatting + SMTP submit        |
+| `dissemination.f19_stubs`  | Staging stubs for AMHS / SWIM / AFS            |
+| `dissemination.transports` | Injectable HTTP, MQTT, and SMTP clients        |
 
-- Env: `DISSEMINATION_EGRESS_ALLOWLIST` (see `.env.example`, ADR-029)
-- Empty ⇒ fail-closed
-- Compose wis2box harness: `make compose-wis2box-up` / `compose-wis2box-harness`
-  (allowlist `wis2box,127.0.0.1,localhost` when calling the sink)
+Preflight and send share a common `SinkAdapter` protocol. Unit tests mock transports;
+integration tests can use the Compose wis2box harness under
+`packages/dissemination/docker/wis2box-harness`.
+
+## COLLECT / multi-version namespaces
+
+`dissemination.collect_namespaces` helps detect `collect:MeteorologicalBulletin` and list
+per-member IWXXM namespace URIs for multi-version bulletins.
+
+## Links
+
+- Source: [EMPIRIC2/TAC-to-IWXXM](https://github.com/EMPIRIC2/TAC-to-IWXXM)
+- Related published packages: [`tac2iwxxm`](https://pypi.org/project/tac2iwxxm/),
+  [`tac-validate`](https://pypi.org/project/tac-validate/),
+  [`iwxxm-validate`](https://pypi.org/project/iwxxm-validate/)
