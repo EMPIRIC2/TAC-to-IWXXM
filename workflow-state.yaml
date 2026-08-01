@@ -15,6 +15,7 @@ active_session:
   evolve_cycle_id: EV-027
   github_issues:
   - '815'
+  - '820'
   feature_ids:
   - F25
   - F9
@@ -31,7 +32,8 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 07-build
+  current_stage: 10-e2e
+  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/wmo-decode-residual-matrix.md
@@ -73,17 +75,24 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-07-31'
-    note: 'S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
+    completed: '2026-07-31'
+    note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS — verification-report.md; tip 245d518; #815'
   - stage: 10-e2e
     required: true
     mode: smoke
-    status: pending
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
   - stage: 13-deploy-smoke
     required: when_ships
     mode: full
@@ -98,6 +107,7 @@ sessions:
   evolve_cycle_id: EV-027
   github_issues:
   - '815'
+  - '820'
   feature_ids:
   - F25
   - F9
@@ -114,7 +124,8 @@ sessions:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 07-build
+  current_stage: 10-e2e
+  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/wmo-decode-residual-matrix.md
@@ -156,17 +167,24 @@ sessions:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-07-31'
-    note: 'S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
+    completed: '2026-07-31'
+    note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS — verification-report.md; tip 245d518; #815'
   - stage: 10-e2e
     required: true
     mode: smoke
-    status: pending
+    status: completed
+    started: '2026-07-31'
+    completed: '2026-07-31'
+    note: 'PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
   - stage: 13-deploy-smoke
     required: when_ships
     mode: full
@@ -5140,9 +5158,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-07-31'
     started: '2026-07-31'
+    completed_at: '2026-07-31'
+    completed: '2026-07-31'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
     previous_session_id: S033-va-multi-location-equality
@@ -5152,14 +5172,16 @@ stages:
     previous_note: 'S033/EV-026 07-build COMPLETE — M0–M3 done except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c); progress 11/12'
     session_id: S034-wmo-decode-residual-matrix
     evolve_cycle_id: EV-027
-    note: 'S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
-    current_stage: M0
-    current_milestone: M0
-    current_task: T0.1
-    active_milestone: M0
-    active_task: T0.1
-    active_task_status: in_progress
-    progress: 0/14
+    tip_sha: 245d518
+    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+    note: 'S034/EV-027 07-build COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
+    current_stage: M2
+    current_milestone: M2
+    current_task: T2.4
+    active_milestone: M2
+    active_task: T2.4
+    active_task_status: completed
+    progress: 10/14
     decision_refs:
     - D-S034-04-plan-approve
     - D-S034-E27-T-batch
@@ -5175,17 +5197,19 @@ stages:
       session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
       skill_id: 07-build
-      status: in_progress
+      status: completed
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; gates.b_to_c pending (plan approved); #815'
-      active_milestone: M0
-      current_milestone: M0
-      active_task: T0.1
-      current_task: T0.1
-      active_task_status: in_progress
-      progress: 0/14
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; handoff 08-verify-build; #815/#820'
+      active_milestone: M2
+      current_milestone: M2
+      active_task: T2.4
+      current_task: T2.4
+      active_task_status: completed
+      progress: 10/14
       deepen:
       - F25
       - F9
@@ -5197,30 +5221,34 @@ stages:
       - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     substeps:
       task_loop:
-        status: in_progress
-        current_task: T0.1
-        active_task_status: in_progress
-        active_milestone: M0
+        status: completed
+        current_task: T2.4
+        active_task_status: completed
+        active_milestone: M2
         phase: C
-        milestone: M0
-        notes: 'S034/EV-027 07-build @ T0.1 inventory dig; D-S034-04-plan-approve; #815'
+        milestone: M2
+        notes: 'S034/EV-027 07-build COMPLETE M0–M2; tip 245d518; #815/#820'
     delta_substages:
     - id: S034-wmo-decode-residual-matrix
       session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
       skill_id: 07-build
-      status: in_progress
+      status: completed
       started_at: '2026-07-31'
       started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
       mode: full
-      note: 'STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
-      active_milestone: M0
-      current_milestone: M0
-      active_task: T0.1
-      current_task: T0.1
-      active_task_status: in_progress
-      progress: 0/14
+      note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
+      active_milestone: M2
+      current_milestone: M2
+      active_task: T2.4
+      current_task: T2.4
+      active_task_status: completed
+      progress: 10/14
       decision_id: D-S034-04-plan-approve
+      tip_sha: 245d518
+      tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
       branch: evolve/EV-027-wmo-decode-residual-matrix
       deepen:
       - F25
@@ -5589,6 +5617,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S034/EV-027 07-build COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; 08/10 PASS; gates.c_to_d pending (awaiting PR); #815/#820'
     - '2026-07-31 S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
     - '2026-07-31 S032/EV-025 PR #816 open; tip 50d3d0a; T7.3 deferred'
     - 2026-07-31 S032/EV-025 closeout=1; T7.3 deferred; PR opening
@@ -6154,17 +6183,17 @@ stages:
     completed_at: '2026-07-31'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
-    previous_session_id: S032-iwxxm-us-remarks-va
-    previous_evolve_cycle_id: EV-025
-    previous_tip_sha: 1e46b38
-    previous_note: 'S032/EV-025 10-e2e smoke COMPLETE PASS — T7.2; report docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md; tip 1e46b38; progress 27/28; #810/#811/#812/#809'
-    session_id: S033-va-multi-location-equality
-    evolve_cycle_id: EV-026
-    tip_sha: .inf
-    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+    previous_session_id: S033-va-multi-location-equality
+    previous_evolve_cycle_id: EV-026
+    previous_tip_sha: 7e08051
+    previous_note: 'S033/EV-026 10-e2e smoke COMPLETE PASS — TC-EV025-008/009 + Vitest (T3.2); tip 7e08051; Gate C PASS; #809'
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    tip_sha: 245d518
+    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
     overall: pass
-    report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
-    note: 'S033/EV-026 10-e2e smoke COMPLETE PASS — TC-EV025-008/009 + Vitest (T3.2); tip 7e08051; Gate C PASS; #809'
+    report: docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
+    note: 'S034/EV-027 10-e2e smoke COMPLETE PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
     substeps:
       extract_journeys:
         status: completed
@@ -6175,11 +6204,23 @@ stages:
         note: browser N/A — smoke via package/Vitest only
       t2_connectivity:
         status: skipped
-        note: deferred to 13 when_ships (T3.4)
+        note: deferred to 13 when_ships
       t3_live:
         status: skipped
-        note: deferred to 13 when_ships (T3.4)
+        note: deferred to 13 when_ships
     delta_substages:
+    - session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
+      skill_id: 10-e2e
+      status: completed
+      started_at: '2026-07-31'
+      completed_at: '2026-07-31'
+      mode: smoke
+      overall: pass
+      report: docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
+      tip_sha: 245d518
+      tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+      note: smoke PASS — docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
     - session_id: S033-va-multi-location-equality
       evolve_cycle_id: EV-026
       skill_id: 10-e2e
@@ -6456,6 +6497,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/e2e-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk
     notes:
+    - '2026-07-31 S034/EV-027 10-e2e smoke COMPLETE PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
     - 2026-07-31 S032/EV-025 10-e2e smoke COMPLETE PASS — T7.2 @ 1e46b38; docs/sessions/S032-iwxxm-us-remarks-va/reports/e2e-report.md
     - '2026-07-30 S030/EV-023 10-e2e COMPLETE (smoke) — PASS; e2e-report.md; browser N/A; T7.3 done; next T7.4 13; progress 23/24; tip 9c040ee; #800'
     - '2026-07-29 S026/EV-020 10-e2e COMPLETE PASS — T6.3 UJ-035/036 T0; e2e-report.md; tip c963a0a (no [T6.3] commit yet); handoff 11-verify-impl T6.4; progress 25/~28; #731'
@@ -6488,17 +6530,17 @@ stages:
     completed: '2026-07-31'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
-    previous_session_id: S032-iwxxm-us-remarks-va
-    previous_evolve_cycle_id: EV-025
-    previous_tip_sha: 1e46b38
-    previous_note: 'S032/EV-025 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md; tip 1e46b38; progress 27/28; #810/#811/#812/#809'
-    session_id: S033-va-multi-location-equality
-    evolve_cycle_id: EV-026
-    tip_sha: .inf
-    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+    previous_session_id: S033-va-multi-location-equality
+    previous_evolve_cycle_id: EV-026
+    previous_tip_sha: 7e08051
+    previous_note: 'S033/EV-026 08-verify-build COMPLETE PASS — T3.2; report docs/sessions/S033-va-multi-location-equality/reports/verification-report.md; tip 7e08051; Gate C PASS; #809'
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    tip_sha: 245d518
+    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
     overall: pass
-    note: 'S033/EV-026 08-verify-build COMPLETE PASS — T3.2; report docs/sessions/S033-va-multi-location-equality/reports/verification-report.md; tip 7e08051; Gate C PASS; #809'
-    report: docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
+    note: 'S034/EV-027 08-verify-build COMPLETE PASS — verification-report.md; tip 245d518; #815'
+    report: docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
     substeps:
       lint:
         status: completed
@@ -6513,6 +6555,18 @@ stages:
       report:
         status: completed
     delta_substages:
+    - session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-07-31'
+      completed_at: '2026-07-31'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
+      tip_sha: 245d518
+      tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+      note: PASS — docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
     - session_id: S033-va-multi-location-equality
       evolve_cycle_id: EV-026
       skill_id: 08-verify-build
@@ -6792,6 +6846,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-07-31 S034/EV-027 08-verify-build COMPLETE PASS — verification-report.md; tip 245d518; #815'
     - 2026-07-31 S032/EV-025 08-verify-build COMPLETE PASS — T7.2 @ 1e46b38; docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
     - '2026-07-30 S030/EV-023 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S030-apac-encode-validate/reports/verification-report.md; handoff T7.3 10-e2e smoke; progress 22/24; #800'
     - '2026-07-29 S026/EV-020 08-verify-build COMPLETE PASS — T6.2 @ e839a6e; report docs/sessions/S026-airmet-quality-wmo-examples/reports/verification-report.md; FileConverter WMO A3-1 label fix; handoff 10-e2e T6.3; #731'
@@ -23503,10 +23558,12 @@ evolve_cycles:
     Phase 0 locked D-S034-open=1,1,2,1 (E27-1..4).
   github_issues:
   - '815'
+  - '820'
   branch: evolve/EV-027-wmo-decode-residual-matrix
   preset: Lean+build
   preset_status: approved
-  current_stage: 07-build
+  current_stage: 10-e2e
+  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
   routing_plan:
     required_stages:
     - 00-context
@@ -23556,35 +23613,57 @@ evolve_cycles:
       completed: '2026-07-31'
       note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B Lean → 07 @ T0.1 (D-S034-04-plan-approve); #815'
     07-build:
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-07-31'
-      current_task: T0.1
-      active_milestone: M0
-      progress: 0/14
-      note: 'STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; gates.b_to_c pending (plan approved); #815'
+      completed: '2026-07-31'
+      current_task: T2.4
+      active_milestone: M2
+      progress: 10/14
+      tip_sha: 245d518
+      note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
     08-verify-build:
-      status: pending
+      status: completed
       mode: delta
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      overall: pass
+      report: docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
+      tip_sha: 245d518
+      note: 'PASS — verification-report.md; tip 245d518; #815'
     10-e2e:
-      status: pending
+      status: completed
       mode: smoke
+      started: '2026-07-31'
+      completed: '2026-07-31'
+      overall: pass
+      report: docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
+      tip_sha: 245d518
+      note: 'PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
     13-deploy-smoke:
       status: pending
       mode: when_ships
   gates:
     a_to_b: passed
-    b_to_c: pending
-    b_to_c_note: plan approved (D-S034-04-plan-approve); Batch T 2,1,2,1,1; Lean skip 05/06; 07-build @ T0.1; formal B→C pending
+    b_to_c: passed
+    b_to_c_note: M0–M2 build complete @ 245d518; 08/10 PASS
     c_to_d: pending
+    c_to_d_note: plan done; 07/08/10 complete; awaiting PR (Gate C)
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
-    phase_b_note: plan approved (D-S034-04-plan-approve); formal Phase B checkpoint pending Lean skip 05/06
-    phase_c: pending
+    phase_b: passed
+    phase_b_note: plan approved (D-S034-04-plan-approve); Lean skip 05/06
+    phase_c: passed
+    phase_c_note: build+verify complete (07/08/10 PASS @ 245d518); formal C→D pending PR
     phase_d: pending
     deploy: pending
+  issues:
+  - id: 820
+    title: 'Child: VAA/TCA G4 residual allowlist (from #815)'
+    parent: 815
+    status: open
+    note: 'Opened during T2.3 allowlist work; tracked in EV-027'
   decision_refs:
   - D-S034-open
   - E27-1
@@ -23639,7 +23718,14 @@ evolve_cycles:
     status: approved
   - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     status: completed
+  - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
+    status: completed
+  - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
+    status: completed
+  tip_sha: 245d518
+  tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
   notes:
+  - '2026-07-31 S034/EV-027 07/08/10 COMPLETE — M0–M2 build; 08 PASS verification-report.md; 10 PASS e2e-report.md; tip 245d518; gates.c_to_d pending (awaiting PR); child #820; #815'
   - '2026-07-31 S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; gates.b_to_c pending (plan approved); #815'
   - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; #815'
   - '2026-07-31 S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
@@ -23652,20 +23738,16 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 8c76421
-  tip_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
-  pr_number: 817
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
-  pr_status: merged
-  merge_sha: 101f555
-  merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+  tip_sha: 245d518
+  tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
   closeout_pr_number: 818
   closeout_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818
   closeout_pr_status: merged
   closeout_merge_sha: 8c76421
   closeout_merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
-  note: 'S034/EV-027 Phase 0 locked D-S034-open=1,1,2,1; 01-requirements STARTED; branch evolve/EV-027-wmo-decode-residual-matrix'
+  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
   notes:
+  - '2026-07-31 S034/EV-027 tip synced — 245d518 (245d518aec33a41a0dd9cd59ae1b39262af50dfc); 07-build M0–M2 + 08/10 PASS; gates.c_to_d pending (awaiting PR); child #820; #815'
   - '2026-07-31 S034/EV-027 OPEN — Phase 0 locked D-S034-open=1,1,2,1; 01-requirements STARTED; branch evolve/EV-027-wmo-decode-residual-matrix; #815'
   - '2026-07-31 S033/EV-026 CLOSED — Phase 4 close D-S033-EV026-phase4-close; PR #817 merged 101f555; 13 PASS approved; docs branch docs/S033-ev026-deploy-smoke / PR #818; active_session=null'
   - '2026-07-31 S033/EV-026 PR #817 MERGED @ 101f555 (D-S033-817-merge) — merge_commit 101f55586efacaee67bcd4260a04aa6758502123; optional 13/T3.4 when_ships pending user'
@@ -23934,6 +24016,9 @@ git_history:
     status: active
     session_id: S034-wmo-decode-residual-matrix
     evolve_cycle_id: EV-027
+    tip_sha: 245d518
+    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+    note: 'S034/EV-027 07/08/10 COMPLETE; tip 245d518; awaiting Gate C / PR; #815/#820'
   - name: docs/S033-ev026-deploy-smoke
     purpose: S033/EV-026 13-deploy-smoke + closeout docs
     base: main
@@ -24835,6 +24920,46 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 245d518
+    sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+    branch: evolve/EV-027-wmo-decode-residual-matrix
+    message: "[S034] docs: 08/10 verify PASS for EV-027 residual matrix"
+    stage: 08-verify-build
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    timestamp: '2026-07-31'
+  - sha: 994c3b1
+    sha_full: 994c3b185cdf5e3db753922962c373fd1e485320
+    branch: evolve/EV-027-wmo-decode-residual-matrix
+    message: "[S034] docs: mark M0–M2 tasks completed for EV-027"
+    stage: 07-build
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    timestamp: '2026-07-31'
+  - sha: 37b552b
+    sha_full: 37b552b66f65d0531c212d8a23c4fd90d953137b
+    branch: evolve/EV-027-wmo-decode-residual-matrix
+    message: "[T2.3] test: allowlist VAA/TCA G4 residuals with #820 (#815)"
+    stage: 07-build
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    timestamp: '2026-07-31'
+  - sha: f6561fe
+    sha_full: f6561fe6d0f2af842c79ba0e79e9414c26b78a8a
+    branch: evolve/EV-027-wmo-decode-residual-matrix
+    message: "[T2.2] fix: decode RVR, TAF/SIGMET CNL, and VA SIGMET geometry (#815)"
+    stage: 07-build
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    timestamp: '2026-07-31'
+  - sha: a043a12
+    sha_full: a043a126d3b3ff6222e18e2c1eb90d6eafbcb123
+    branch: evolve/EV-027-wmo-decode-residual-matrix
+    message: "[T0.1] test: official WMO TAC inventory + catalog∪gaps CI (#815)"
+    stage: 07-build
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    timestamp: '2026-07-31'
   - sha: 3c432b3
     sha_full: 3c432b31a9faaf8c5b7e3689d807331d8433bc1b
     branch: evolve/EV-027-wmo-decode-residual-matrix
