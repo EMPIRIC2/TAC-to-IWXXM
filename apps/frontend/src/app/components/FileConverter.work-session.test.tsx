@@ -102,10 +102,15 @@ vi.mock('./WorkHistorySidebar', () => ({ WorkHistorySidebar: () => null }));
 vi.mock('./ErrorLogPanel', () => ({ ErrorLogPanel: () => null }));
 
 describe('FileConverter F5 workflow', () => {
+  // Coverage runs can exceed the suite default when typing METAR + Convert&Send.
+  vi.setConfig({ testTimeout: 20_000 });
+
   beforeEach(() => {
     mockScheduleAutoSave.mockReset();
     mockPersistSession.mockReset();
     mockPersistSession.mockResolvedValue(null);
+    mockConvert.mockReset();
+    mockUpload.mockReset();
     mockConvert.mockResolvedValue({
       results: [{ iwxxm_xml: '<iwxxm/>', name: 'manual.txt', tac_input: 'METAR' }],
     } as any);

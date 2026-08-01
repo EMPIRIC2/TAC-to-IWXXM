@@ -10,7 +10,7 @@ active_session:
   type: feature
   intent: "#815 — official WMO decode residual matrix; inventory ∪ FIXTURE_GAPS + CI gate; Lean+build"
   status: in_progress
-  branch: evolve/EV-027-wmo-decode-residual-matrix
+  branch: docs/S034-EV027-closeout
   orchestrator: 16-evolve
   evolve_cycle_id: EV-027
   github_issues:
@@ -32,8 +32,22 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 10-e2e
-  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
+  current_stage: 16-evolve
+  active_milestone: M3
+  active_task: T3.4
+  active_task_status: waived
+  progress: "14/14"
+  pr_number: 821
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+  pr_status: merged
+  merge_sha: ad36aa0
+  merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  tip_sha: ad36aa0
+  tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  note: >-
+    S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1);
+    T3.3 COMPLETE; 07 COMPLETE; #815 closed; #820 open;
+    13 waived; Phase 4 closeout docs + AskQuestion pending
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/wmo-decode-residual-matrix.md
@@ -50,7 +64,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: "Phase 0 done; 01 interview"
+    note: 'PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1); Phase 4 closeout pending; #815 closed; #820 open'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -78,31 +92,32 @@ active_session:
     status: completed
     started: '2026-07-31'
     completed: '2026-07-31'
-    note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
+    note: 'COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; tip ad36aa0; PR #821 merged; #815 closed; #820 open'
   - stage: 08-verify-build
     required: true
     mode: delta
     status: completed
     started: '2026-07-31'
     completed: '2026-07-31'
-    note: 'PASS — verification-report.md; tip 245d518; #815'
+    note: 'PASS — verification-report.md; tip ad36aa0; #815 closed on merge'
   - stage: 10-e2e
     required: true
     mode: smoke
     status: completed
     started: '2026-07-31'
     completed: '2026-07-31'
-    note: 'PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
+    note: 'PASS — e2e-report.md; PR #821 merged @ ad36aa0; #815 closed'
   - stage: 13-deploy-smoke
     required: when_ships
     mode: full
-    status: pending
+    status: waived
+    note: 'waived (D-S034-gate-c) — no FE deploy this cycle'
 sessions:
 - id: S034-wmo-decode-residual-matrix
   type: feature
   intent: "#815 — official WMO decode residual matrix; inventory ∪ FIXTURE_GAPS + CI gate; Lean+build"
   status: in_progress
-  branch: evolve/EV-027-wmo-decode-residual-matrix
+  branch: docs/S034-EV027-closeout
   orchestrator: 16-evolve
   evolve_cycle_id: EV-027
   github_issues:
@@ -124,8 +139,22 @@ sessions:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 10-e2e
-  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
+  current_stage: 16-evolve
+  active_milestone: M3
+  active_task: T3.4
+  active_task_status: waived
+  progress: "14/14"
+  pr_number: 821
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+  pr_status: merged
+  merge_sha: ad36aa0
+  merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  tip_sha: ad36aa0
+  tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  note: >-
+    S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1);
+    T3.3 COMPLETE; 07 COMPLETE; #815 closed; #820 open;
+    13 waived; Phase 4 closeout docs + AskQuestion pending
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/wmo-decode-residual-matrix.md
@@ -142,7 +171,7 @@ sessions:
     mode: orchestrator
     status: in_progress
     started: '2026-07-31'
-    note: "Phase 0 done; 01 interview"
+    note: 'PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1); Phase 4 closeout pending; #815 closed; #820 open'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -170,25 +199,26 @@ sessions:
     status: completed
     started: '2026-07-31'
     completed: '2026-07-31'
-    note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
+    note: 'COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; tip ad36aa0; PR #821 merged; #815 closed; #820 open'
   - stage: 08-verify-build
     required: true
     mode: delta
     status: completed
     started: '2026-07-31'
     completed: '2026-07-31'
-    note: 'PASS — verification-report.md; tip 245d518; #815'
+    note: 'PASS — verification-report.md; tip ad36aa0; #815 closed on merge'
   - stage: 10-e2e
     required: true
     mode: smoke
     status: completed
     started: '2026-07-31'
     completed: '2026-07-31'
-    note: 'PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
+    note: 'PASS — e2e-report.md; PR #821 merged @ ad36aa0; #815 closed'
   - stage: 13-deploy-smoke
     required: when_ships
     mode: full
-    status: pending
+    status: waived
+    note: 'waived (D-S034-gate-c) — no FE deploy this cycle'
 - id: S033-va-multi-location-equality
   type: feature
   intent: "#809 residual — ADR-032 canonicalize_xml equality for sigmet-multi-location-VA; promote wmoPass; close issue"
@@ -5172,16 +5202,16 @@ stages:
     previous_note: 'S033/EV-026 07-build COMPLETE — M0–M3 done except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c); progress 11/12'
     session_id: S034-wmo-decode-residual-matrix
     evolve_cycle_id: EV-027
-    tip_sha: 245d518
-    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
-    note: 'S034/EV-027 07-build COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
-    current_stage: M2
-    current_milestone: M2
-    current_task: T2.4
-    active_milestone: M2
-    active_task: T2.4
-    active_task_status: completed
-    progress: 10/14
+    tip_sha: ad36aa0
+    tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+    note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
+    current_stage: M3
+    current_milestone: M3
+    current_task: T3.4
+    active_milestone: M3
+    active_task: T3.4
+    active_task_status: waived
+    progress: 14/14
     decision_refs:
     - D-S034-04-plan-approve
     - D-S034-E27-T-batch
@@ -5203,13 +5233,13 @@ stages:
       started: '2026-07-31'
       completed_at: '2026-07-31'
       completed: '2026-07-31'
-      note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; handoff 08-verify-build; #815/#820'
-      active_milestone: M2
-      current_milestone: M2
-      active_task: T2.4
-      current_task: T2.4
-      active_task_status: completed
-      progress: 10/14
+      note: 'COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; tip ad36aa0; PR #821 merged; gates.b_to_c passed; handoff 08-verify-build; #815 closed; #820 open'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.4
+      current_task: T3.4
+      active_task_status: waived
+      progress: 14/14
       deepen:
       - F25
       - F9
@@ -5222,12 +5252,12 @@ stages:
     substeps:
       task_loop:
         status: completed
-        current_task: T2.4
-        active_task_status: completed
-        active_milestone: M2
+        current_task: T3.4
+        active_task_status: waived
+        active_milestone: M3
         phase: C
-        milestone: M2
-        notes: 'S034/EV-027 07-build COMPLETE M0–M2; tip 245d518; #815/#820'
+        milestone: M3
+        notes: 'S034/EV-027 07-build COMPLETE M0–M3 14/14; PR #821 merged @ ad36aa0; #815/#820'
     delta_substages:
     - id: S034-wmo-decode-residual-matrix
       session_id: S034-wmo-decode-residual-matrix
@@ -5239,17 +5269,17 @@ stages:
       completed_at: '2026-07-31'
       completed: '2026-07-31'
       mode: full
-      note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
-      active_milestone: M2
-      current_milestone: M2
-      active_task: T2.4
-      current_task: T2.4
-      active_task_status: completed
-      progress: 10/14
+      note: 'COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; tip ad36aa0; PR #821 merged; gates.b_to_c passed; #815 closed; #820 open'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.4
+      current_task: T3.4
+      active_task_status: waived
+      progress: 14/14
       decision_id: D-S034-04-plan-approve
-      tip_sha: 245d518
-      tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
-      branch: evolve/EV-027-wmo-decode-residual-matrix
+      tip_sha: ad36aa0
+      tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+      branch: docs/S034-EV027-closeout
       deepen:
       - F25
       - F9
@@ -5617,6 +5647,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — T3.3 COMPLETE; 07 COMPLETE 14/14; #815 closed; #820 open; 13 waived; Phase 4 closeout docs + AskQuestion pending'
     - '2026-07-31 S034/EV-027 07-build COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; 08/10 PASS; gates.c_to_d pending (awaiting PR); #815/#820'
     - '2026-07-31 S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
     - '2026-07-31 S032/EV-025 PR #816 open; tip 50d3d0a; T7.3 deferred'
@@ -7524,17 +7555,23 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S032-iwxxm-us-remarks-va
-    evolve_cycle_id: EV-025
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
     started_at: '2026-07-31'
-    completed_at: '2026-07-31'
-    completed: '2026-07-31'
-    current_stage:
-    note: 'COMPLETE — Phase 4 close D-S032-EV025-phase4-close; EV-025/S032 closed; PR #816 merged 2412312; T7.3/13 waived; active_session=null'
-    prior_note: '07-build nearly complete (26/28; M5+M6+T7.1 done); 08-verify-build should start soon (T7.2); tip 8bfb1b2'
+    current_stage: 16-evolve
+    note: 'PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1); Phase 4 closeout pending; #815 closed; #820 open'
+    prior_note: 'S034/EV-027 07/08/10 COMPLETE — awaiting PR merge'
+    pr_number: 821
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+    pr_status: merged
+    merge_sha: ad36aa0
+    merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+    tip_sha: ad36aa0
+    tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
     notes:
+    - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — T3.3 COMPLETE; 07 COMPLETE 14/14; #815 closed; #820 open; 13 waived; Phase 4 closeout pending'
     - '2026-07-31 S032/EV-025 CLOSED — D-S032-EV025-phase4-close; PR #816 merged 2412312; T7.3/13 waived; #809 equality residual → next cycle'
     - '2026-07-31 S032/EV-025 PR #816 open — https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816; await merge'
     - 2026-07-31 S032/EV-025 closeout=1 (D-S032-EV025-closeout); T7.3/13 deferred until API ships; PR opening; awaiting merge to close EV-025; progress 27/28
@@ -7569,12 +7606,6 @@ stages:
     - '2026-07-31 S032/EV-025 00-context COMPLETE — Phase 0 locked E25-*; artifacts written; handoff 01-requirements; #810/#811/#812/#809'
     - '2026-07-31 S032/EV-025 OPEN — Phase 0 intake E25-1=1, E25-2=1, E25-3=1, E25-4b=2 + E25-4c=3, E25-ui=1 (D-S032-E25-phase0); Lean+build; awaiting 00 exit; #810/#811/#812/#809'
     - '2026-07-30 S031/EV-024 COMPLETE — Phase 4 close D-S031-merge-close; PR #813 864783e; 13 PASS; #804/#807/#773'
-    pr_number: 816
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/816
-    pr_status: merged
-    tip_sha: 50d3d0a
-    merge_sha: 2412312
-    tip_sha_full: 50d3d0a1d0bfd0769234813c2616b14f8e37e093
   15-service-health:
     status: completed
     session_id: S022-rename-cutover
@@ -7824,6 +7855,65 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S034-merge
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S034-wmo-decode-residual-matrix
+  evolve_cycle_id: EV-027
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: merge
+  status: confirmed
+  topic: 'Approve merge of PR #821 (S034 / EV-027)'
+  summary: 'PR #821 merged to main @ ad36aa0; Phase 4 closeout pending'
+  decision: 'User approved merge of #821 (D-S034-merge=1,1) — merge at green tip; leave local tip for closeout; merged @ ad36aa0; #815 closed; #820 open; 13 waived; Phase 4 AskQuestion pending'
+  user_option: '1,1'
+  user_intent: '1,1'
+  tip_sha: ad36aa0
+  tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  merge_sha: ad36aa0
+  merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  pr_number: 821
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+  pr_status: merged
+  related_issues:
+  - '815'
+  - '820'
+  related_decisions:
+  - D-S034-gate-c
+  - D-S034-04-plan-approve
+- id: D-S034-gate-c
+  date: '2026-07-31'
+  timestamp: '2026-07-31'
+  resolved_at: '2026-07-31'
+  session_id: S034-wmo-decode-residual-matrix
+  evolve_cycle_id: EV-027
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: checkpoint
+  status: confirmed
+  topic: Gate C — push+PR; waive 13 / TC-EV027-005
+  summary: 'S034/EV-027 Gate C PASS; 07/08/10 complete 14/14; 13 waived'
+  decision: 'Gate C PASS (D-S034-gate-c=1) — push+PR to main; close #815 on merge; link #820; waive TC-EV027-005 / 13-deploy-smoke (no FE deploy this cycle); merged #821 @ ad36aa0'
+  user_option: '1'
+  user_intent: '1'
+  tip_sha: ad36aa0
+  tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  pr_number: 821
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+  pr_status: merged
+  related_issues:
+  - '815'
+  - '820'
+  related_decisions:
+  - D-S034-04-plan-approve
+  - D-S034-E27-T-batch
+  artifacts:
+  - docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
+  - docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
 - id: D-S033-818-merge
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -23559,11 +23649,26 @@ evolve_cycles:
   github_issues:
   - '815'
   - '820'
-  branch: evolve/EV-027-wmo-decode-residual-matrix
+  branch: docs/S034-EV027-closeout
   preset: Lean+build
   preset_status: approved
-  current_stage: 10-e2e
-  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
+  current_stage: 16-evolve
+  active_milestone: M3
+  active_task: T3.4
+  active_task_status: waived
+  progress: "14/14"
+  pr_number: 821
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+  pr_status: merged
+  merge_sha: ad36aa0
+  merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  merge_commit: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  tip_sha: ad36aa0
+  tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  note: >-
+    S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1);
+    T3.3 COMPLETE; 07 COMPLETE; #815 closed; #820 open;
+    13 waived; Phase 4 closeout docs + AskQuestion pending
   routing_plan:
     required_stages:
     - 00-context
@@ -23593,7 +23698,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-07-31'
-      note: Phase 0 done; 01-requirements delta interview
+      note: 'PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1); Phase 4 closeout pending; #815 closed; #820 open'
     01-requirements:
       status: completed
       mode: delta
@@ -23617,11 +23722,11 @@ evolve_cycles:
       mode: full
       started: '2026-07-31'
       completed: '2026-07-31'
-      current_task: T2.4
-      active_milestone: M2
-      progress: 10/14
-      tip_sha: 245d518
-      note: 'COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; gates.b_to_c passed; #815/#820'
+      current_task: T3.4
+      active_milestone: M3
+      progress: 14/14
+      tip_sha: ad36aa0
+      note: 'COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
     08-verify-build:
       status: completed
       mode: delta
@@ -23629,8 +23734,8 @@ evolve_cycles:
       completed: '2026-07-31'
       overall: pass
       report: docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
-      tip_sha: 245d518
-      note: 'PASS — verification-report.md; tip 245d518; #815'
+      tip_sha: ad36aa0
+      note: 'PASS — verification-report.md; tip ad36aa0; #815 closed on merge'
     10-e2e:
       status: completed
       mode: smoke
@@ -23638,32 +23743,37 @@ evolve_cycles:
       completed: '2026-07-31'
       overall: pass
       report: docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
-      tip_sha: 245d518
-      note: 'PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
+      tip_sha: ad36aa0
+      note: 'PASS — e2e-report.md; PR #821 merged @ ad36aa0; #815 closed'
     13-deploy-smoke:
-      status: pending
+      status: waived
       mode: when_ships
+      note: 'waived (D-S034-gate-c) — no FE deploy this cycle'
   gates:
     a_to_b: passed
     b_to_c: passed
-    b_to_c_note: M0–M2 build complete @ 245d518; 08/10 PASS
-    c_to_d: pending
-    c_to_d_note: plan done; 07/08/10 complete; awaiting PR (Gate C)
-    deploy: pending
+    b_to_c_note: M0–M3 build complete @ ad36aa0; 08/10 PASS
+    c_to_d: passed
+    c_to_d_note: PR #821 merged @ ad36aa0; #815 closed; #820 open
+    deploy: waived
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_b_note: plan approved (D-S034-04-plan-approve); Lean skip 05/06
     phase_c: passed
-    phase_c_note: build+verify complete (07/08/10 PASS @ 245d518); formal C→D pending PR
+    phase_c_note: build+verify+PR merge complete (07/08/10 PASS; #821 @ ad36aa0); Gate C PASS (D-S034-gate-c)
     phase_d: pending
-    deploy: pending
+    deploy: waived
   issues:
   - id: 820
     title: 'Child: VAA/TCA G4 residual allowlist (from #815)'
     parent: 815
     status: open
     note: 'Opened during T2.3 allowlist work; tracked in EV-027'
+  - id: 815
+    title: 'Official WMO decode residual matrix'
+    status: closed
+    note: 'Closed on PR #821 merge @ ad36aa0'
   decision_refs:
   - D-S034-open
   - E27-1
@@ -23685,6 +23795,8 @@ evolve_cycles:
   - E27-T4
   - E27-T5
   - E27-04
+  - D-S034-gate-c
+  - D-S034-merge
   answers:
     E27-1: '1'
     E27-2: '1'
@@ -23722,9 +23834,10 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
     status: completed
-  tip_sha: 245d518
-  tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+  tip_sha: ad36aa0
+  tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
   notes:
+  - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — T3.3 COMPLETE; 07 COMPLETE 14/14; #815 closed; #820 open; 13 waived; Phase 4 closeout docs + AskQuestion pending'
   - '2026-07-31 S034/EV-027 07/08/10 COMPLETE — M0–M2 build; 08 PASS verification-report.md; 10 PASS e2e-report.md; tip 245d518; gates.c_to_d pending (awaiting PR); child #820; #815'
   - '2026-07-31 S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; gates.b_to_c pending (plan approved); #815'
   - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; #815'
@@ -23734,19 +23847,27 @@ evolve_cycles:
   - '2026-07-31 S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
   - '2026-07-31 S034/EV-027 Phase 0 locked D-S034-open=1,1,2,1 — E27-1..4; handoff 01-requirements; branch evolve/EV-027-wmo-decode-residual-matrix; #815'
 git_history:
-  current_branch: evolve/EV-027-wmo-decode-residual-matrix
+  current_branch: docs/S034-EV027-closeout
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 245d518
-  tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+  tip_sha: ad36aa0
+  tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+  pr_number: 821
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+  pr_status: merged
+  merge_sha: ad36aa0
+  merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
   closeout_pr_number: 818
   closeout_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/818
   closeout_pr_status: merged
   closeout_merge_sha: 8c76421
   closeout_merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
-  note: 'S034/EV-027 07/08/10 COMPLETE — M0–M2 build; tip 245d518; gates.c_to_d pending (awaiting PR); #815/#820'
+  closeout_pr_note: 'S033 #818 merged (historical); S034 closeout PR pending'
+  s034_closeout_pr_status: pending
+  note: 'S034/EV-027 PR #821 MERGED @ ad36aa0; closeout branch docs/S034-EV027-closeout; S034 closeout PR pending'
   notes:
+  - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — Gate C done; #815 closed; #820 open; 13 waived; Phase 4 closeout pending; branch docs/S034-EV027-closeout'
   - '2026-07-31 S034/EV-027 tip synced — 245d518 (245d518aec33a41a0dd9cd59ae1b39262af50dfc); 07-build M0–M2 + 08/10 PASS; gates.c_to_d pending (awaiting PR); child #820; #815'
   - '2026-07-31 S034/EV-027 OPEN — Phase 0 locked D-S034-open=1,1,2,1; 01-requirements STARTED; branch evolve/EV-027-wmo-decode-residual-matrix; #815'
   - '2026-07-31 S033/EV-026 CLOSED — Phase 4 close D-S033-EV026-phase4-close; PR #817 merged 101f555; 13 PASS approved; docs branch docs/S033-ev026-deploy-smoke / PR #818; active_session=null'
@@ -24011,14 +24132,32 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
-  - name: evolve/EV-027-wmo-decode-residual-matrix
+  - name: docs/S034-EV027-closeout
+    purpose: S034/EV-027 Phase 4 closeout docs
     base: main
     status: active
+    created: '2026-07-31'
+    created_at: '2026-07-31'
     session_id: S034-wmo-decode-residual-matrix
     evolve_cycle_id: EV-027
-    tip_sha: 245d518
-    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
-    note: 'S034/EV-027 07/08/10 COMPLETE; tip 245d518; awaiting Gate C / PR; #815/#820'
+    tip_sha: ad36aa0
+    tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+    note: 'Closeout docs in progress — evolve-report / evolve-summary / CHANGELOG / feature-list'
+    pushed: false
+  - name: evolve/EV-027-wmo-decode-residual-matrix
+    base: main
+    status: merged
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    tip_sha: ad36aa0
+    tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+    pr_number: 821
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
+    pr_status: merged
+    merge_sha: ad36aa0
+    merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+    merged_at: '2026-07-31'
+    note: 'MERGED via PR #821 @ ad36aa0 (D-S034-merge)'
   - name: docs/S033-ev026-deploy-smoke
     purpose: S033/EV-026 13-deploy-smoke + closeout docs
     base: main

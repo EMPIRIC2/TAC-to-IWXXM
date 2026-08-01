@@ -7,10 +7,12 @@
 
 **Session**: S034-wmo-decode-residual-matrix  
 **Features**: Deepen **F25** / **F9** / **F7.g** — no new Fn  
-**Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815)  
+**Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815) (**closed**); child [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) (**open**)  
 **Started**: 2026-07-31  
+**Completed**: 2026-07-31 (merge `D-S034-merge`; Phase 4 AskQuestion pending)  
 **Branch**: `evolve/EV-027-wmo-decode-residual-matrix`  
-**Status**: in_progress  
+**PR**: [#821](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821) → `ad36aa0`  
+**Status**: merge complete — Phase 4 close pending  
 
 ### Scope (Phase 0 — locked 2026-07-31)
 
@@ -36,6 +38,7 @@
 | E27-04 | decision | Gate B? | **1** — approve → **07-build** @ T0.1 (`D-S034-04-plan-approve`) |
 | E27-GC | decision | Gate C / PR? | **1** — push + PR to main; close #815 on merge; link #820; waive TC-EV027-005 / 13 (`D-S034-gate-c`) |
 | E27-13 | decision | 13-deploy-smoke? | **waived** — no FE deploy this cycle |
+| E27-merge | decision | Merge #821? | **1,1** — merge green tip `eb3ffe3`; leave local tip for closeout (`D-S034-merge`) → merged `ad36aa0` |
 
 **Scope (verbatim)**: Every in-scope official WMO IWXXM TAC peer from the vendor pin is
 loadable from the workbench sample menu (or explicitly deferred in `FIXTURE_GAPS`) and
