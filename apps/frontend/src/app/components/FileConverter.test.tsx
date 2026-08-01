@@ -220,8 +220,17 @@ vi.mock('./ui/sonner', () => ({
 describe('FileConverter Component', () => {
   const defaultProps = {};
 
+  // Coverage + full-suite load routinely exceeds Vitest's default 5s on Branch Path cases.
+  vi.setConfig({ testTimeout: 20_000 });
+
   beforeEach(() => {
+    cleanup();
     vi.clearAllMocks();
+    // Reset queued Once/implementations so coverage runs do not leak mocks across cases.
+    mockConvertMetarToIwxxm.mockReset();
+    mockConvertBulletin.mockReset();
+    mockDecodeTac.mockReset();
+    mockLintTac.mockReset();
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
@@ -229,6 +238,31 @@ describe('FileConverter Component', () => {
       success: true,
       data: '<iwxxm>test</iwxxm>',
     });
+    mockConvertBulletin.mockResolvedValue({
+      bulletin_meta: {
+        ahl: 'SAUS31 KZNY 121200',
+        report_count: 0,
+        tt: 'SA',
+        aa: 'US',
+        cccc: 'KZNY',
+        yygggg: '121200',
+      },
+      results: [],
+    });
+    mockDecodeTac.mockResolvedValue({
+      product: 'METAR',
+      segments: [{ start: 0, end: 5, code: 'METAR', explanation: 'type' }],
+      residuals: [],
+    });
+    mockLintTac.mockResolvedValue({
+      ok: true,
+      issues: [{ severity: 'error', code: 'x', message: 'm', start: 0, end: 5 }],
+      fixes: [],
+    });
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   describe('Rendering', () => {
