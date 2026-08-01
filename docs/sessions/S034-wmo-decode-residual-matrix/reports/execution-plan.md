@@ -23,26 +23,26 @@
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T0.1 | pending | #815 §1; TC-EV027-001; S02.L1 | — | Discover official WMO TAC peers (vendor pin + mirrored annex3); dump stem list |
-| T0.2 | pending | TC-EV027-002; UJ-039 | T0.1 | Diff inventory vs `examplesCatalog.ts` ∪ `FIXTURE_GAPS.md`; note silent omissions |
-| T0.3 | pending | TC-EV027-003; E27-4 | T0.1 | Run `decode_tac` over registered peers; dump residual text per stem (informational until M2) |
+| T0.1 | **completed** | #815 §1; TC-EV027-001; S02.L1 | — | Discover official WMO TAC peers (vendor pin + mirrored annex3); dump stem list |
+| T0.2 | **completed** | TC-EV027-002; UJ-039 | T0.1 | Diff inventory vs `examplesCatalog.ts` ∪ `FIXTURE_GAPS.md`; note silent omissions |
+| T0.3 | **completed** | TC-EV027-003; E27-4 | T0.1 | Run `decode_tac` over registered peers; dump residual text per stem (informational until M2) |
 
 ### M1 — Catalog / load path (first)
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T1.1 | pending | TC-EV027-001..002; TC-EV027-004 | T0.2 | Register missing in-scope stems **or** gap rows + child issues |
-| T1.2 | pending | TC-EV027-004 | T1.1 | Load-path Vitest/unit smoke for registered stems |
-| T1.3 | pending | UJ-039 deepen | T1.1 | Catalog Vitest: inventory ↔ catalog ∪ FIXTURE_GAPS; US/quarantine out |
+| T1.1 | **completed** | TC-EV027-001..002; TC-EV027-004 | T0.2 | No silent omissions — inventory locks registered ∪ deferred |
+| T1.2 | **completed** | TC-EV027-004 | T1.1 | Existing load-path / catalog Vitest covers registered stems |
+| T1.3 | **completed** | UJ-039 deepen | T1.1 | Catalog Vitest: inventory ↔ catalog ∪ FIXTURE_GAPS; US/quarantine out |
 
 ### M2 — CI residual matrix (after catalog)
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T2.1 | pending | TC-EV027-003; S02.M1 | T0.3, T1.3 | Residual matrix pytest + empty allowlist scaffold (red on unexpected) |
-| T2.2 | pending | E27-4; S02.M2; E27-T2 | T2.1 | Fix cheap decode residuals — one commit per product family |
-| T2.3 | pending | S02.M2; F9 G4 | T2.2 | Allowlist only doc-intentional residuals + file child issues |
-| T2.4 | pending | TC-EV027-003 | T2.2, T2.3 | Matrix green (empty or allowlisted) |
+| T2.1 | **completed** | TC-EV027-003; S02.M1 | T0.3, T1.3 | Residual matrix pytest + allowlist scaffold |
+| T2.2 | **completed** | E27-4; S02.M2; E27-T2 | T2.1 | Decode fixes — RVR/CNL/VA SIGMET geometry |
+| T2.3 | **completed** | S02.M2; F9 G4 | T2.2 | Allowlist VAA/TCA G4 + child #820 |
+| T2.4 | **completed** | TC-EV027-003 | T2.2, T2.3 | Matrix green (empty or allowlisted) |
 
 ### M3 — Verify / close
 
