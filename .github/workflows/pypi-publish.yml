@@ -183,10 +183,13 @@ jobs:
         with:
           submodules: false
 
+      # Cache off: tac2iwxxm native jobs never populate UV_CACHE_DIR; setup-uv's
+      # post step then fails the job even when maturin succeeded.
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
+          enable-cache: false
 
       # Host builds (macOS/Windows): pin CPython 3.12 so maturin does not pick
       # the runner default (e.g. 3.14 > PyO3 0.23 max). manylinux Docker ignores
