@@ -157,6 +157,29 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
     expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(4);
   });
 
+  it('registers every EV-027 inventory happy-path official seed (TC-EV027-002)', () => {
+    // Mirrors packages/tac2iwxxm/tests/fixtures/wmo_official_tac_inventory.py registered peers.
+    const expected: ReadonlyArray<{ id: string; seed: string }> = [
+      { id: 'metar_a3_1', seed: 'metar-A3-1' },
+      { id: 'speci_a3_2', seed: 'speci-A3-2' },
+      { id: 'taf_a5_1', seed: 'taf-A5-1' },
+      { id: 'taf_a5_2', seed: 'taf-A5-2' },
+      { id: 'sigmet_a6_1a_ts', seed: 'sigmet-A6-1a-TS' },
+      { id: 'sigmet_a6_1b_cnl', seed: 'sigmet-A6-1b-CNL' },
+      { id: 'sigmet_va_eggx', seed: 'sigmet-VA-EGGX' },
+      { id: 'sigmet_multi_location_va', seed: 'sigmet-multi-location-VA' },
+      { id: 'airmet_a6_1a_ts', seed: 'airmet-A6-1a-TS' },
+      { id: 'vaa_a7_2', seed: 'va-advisory-A7-2' },
+      { id: 'tca_a2_2', seed: 'tc-advisory-A2-2' },
+    ];
+    for (const { id, seed } of expected) {
+      const ex = getExampleById(id);
+      expect(ex, `missing catalog id ${id}`).toBeDefined();
+      expect(ex?.wmoSeed).toBe(seed);
+      expect(ex?.wmoPass === true || ex?.wmoReference === true).toBe(true);
+    }
+  });
+
   it('documents vendor mirror provenance policy', () => {
     expect(WMO_PROVENANCE_NOTE).toMatch(/vendor\/schemas\/iwxxm/);
     expect(WMO_PROVENANCE_NOTE.toLowerCase()).toMatch(/mirror/);
