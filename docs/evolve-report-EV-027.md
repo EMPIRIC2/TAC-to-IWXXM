@@ -4,12 +4,14 @@
 |-------|-------|
 | Cycle | EV-027 |
 | Session | S034-wmo-decode-residual-matrix |
-| Status | **completed** (pending Phase 4 AskQuestion confirm) |
+| Status | **completed** |
 | Started | 2026-07-31 |
 | Completed | 2026-07-31 |
 | Issues | #815 **closed**; child [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **open** (VAA/TCA G4) |
 | PR | [#821](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821) → `ad36aa0` |
+| Closeout | [#822](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/822) → `9ff0157` |
 | Deploy smoke | **waived** — `D-S034-gate-c` / TC-EV027-005 (no FE deploy this cycle) |
+| Close decision | `D-S034-EV027-phase4-close` option **1** |
 
 ## Scope
 

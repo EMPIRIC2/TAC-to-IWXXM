@@ -8,7 +8,7 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Phase 0 locked D-S034-open=1,1,2,1 |
-| 16-evolve | yes | orchestrator | in_progress | Merge recorded; Phase 4 close AskQuestion pending |
+| 16-evolve | yes | orchestrator | **completed** | Phase 4 close `D-S034-EV027-phase4-close` |
 | 01-requirements | yes | delta | **completed** | E27-M/UJ/TC=1,1,1; D-S034-E27-E1 |
 | 02-verify-plan | yes | delta | **completed** | PASS Batch F 1,2,1; Gate A → 04 |
 | 04-tech-plan | yes | delta | **completed** | Batch T 2,1,2,1,1; Gate B → 07 @ T0.1 |
@@ -37,3 +37,4 @@ gate failure.
 | Residual triage | **1** — fix when cheap; else allowlist + child issue | 2026-07-31 |
 | Gate C | `D-S034-gate-c` = **1** — push+PR; waive 13 | 2026-07-31 |
 | Merge #821 | `D-S034-merge` = **1,1** — merge @ green tip; leave tip for closeout → `ad36aa0` | 2026-07-31 |
+| Phase 4 close | `D-S034-EV027-phase4-close` = **1** — merge #822 + close EV-027 / S034 | 2026-07-31 |

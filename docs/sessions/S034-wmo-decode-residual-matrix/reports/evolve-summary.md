@@ -6,8 +6,10 @@
 **Issues**: #815 **closed**; child #820 **open** (VAA/TCA G4)  
 **Branch**: `evolve/EV-027-wmo-decode-residual-matrix`  
 **PR**: [#821](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821) **merged** `ad36aa0`  
+**Closeout**: [#822](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/822) **merged** `9ff0157`  
 **Deploy smoke**: waived (`D-S034-gate-c` / TC-EV027-005)  
-**Merge decision**: `D-S034-merge` — 1,1 (merge at green tip; leave local tip for closeout)
+**Merge decision**: `D-S034-merge` — 1,1 (merge at green tip; leave local tip for closeout)  
+**Close decision**: `D-S034-EV027-phase4-close` — merge #822 + close EV-027 / S034
 
 ## Outcomes
 

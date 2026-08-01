@@ -1,14 +1,18 @@
 ---
 session_id: S034-wmo-decode-residual-matrix
 type: feature
-status: merge_complete_phase4_pending
-branch: docs/S034-EV027-closeout
+status: completed
+branch: main
 started_at: 2026-07-31
+completed_at: 2026-07-31
 intent: "#815 — official WMO IWXXM TAC peers load cleanly with no unexpected decode residuals; inventory ∪ FIXTURE_GAPS + CI residual matrix gate"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-027
 pr: 821
 merge_sha: ad36aa0
+closeout_pr: 822
+closeout_merge_sha: 9ff0157
+close_decision_id: D-S034-EV027-phase4-close
 github_issues:
   - 815
   - 820
