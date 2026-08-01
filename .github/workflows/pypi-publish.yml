@@ -188,8 +188,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Host builds (macOS/Windows): pin CPython 3.12 so maturin does not pick
+      # the runner default (e.g. 3.14 > PyO3 0.23 max). manylinux Docker ignores
+      # this; -i python3.12 below selects /opt/python inside the container.
+      - name: Set up Python 3.12 for maturin
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Sync iwxxm-validate schema subset into package tree
         if: matrix.package == 'iwxxm-validate'
+        env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: utf-8
         run: uv run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
 
       - name: Build maturin wheels
@@ -197,7 +208,7 @@ jobs:
         with:
           working-directory: ${{ matrix.path }}
           manylinux: ${{ matrix.os == 'ubuntu-latest' && 'auto' || 'off' }}
-          args: --release --out dist -m rust/Cargo.toml
+          args: --release --out dist -m rust/Cargo.toml -i python3.12
           sccache: "true"
 
       - name: Upload native distributions
