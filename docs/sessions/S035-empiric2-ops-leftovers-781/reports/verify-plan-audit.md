@@ -37,17 +37,17 @@ Derived from D-S035-open / D-S035-routing / E28-*:
 - [x] F12–F14 acceptance aligned with EMPIRIC2 OIDC + consumer landings
 - [x] deploy.md ↔ config-spec.md publisher fields match
 - [x] TC-EV028 ↔ evolve-decisions acceptance
-- [ ] **UJ-023 ↔ TC-EV028-003** — UJ-023 steps still exemplify `*-v0.1.0` / `==0.1.0` only
+- [x] **UJ-023 ↔ TC-EV028-003** — amended 2026-08-01 (`9a` / E28-S2.1): version-generic + EMPIRIC2 + `0.1.1` example
 - [x] No browser H4–H5 claimed for this cycle
 - [x] #777 publish remains out of scope
 
 ## Medium / low for review
 
-| ID | Conf | Category | Statement | Recommendation |
-|----|------|----------|-----------|----------------|
-| S2.1 | Medium | Contradiction | UJ-023 steps cite only `0.1.0` while TC-EV028-003 / F12–F14 require `0.1.1` EMPIRIC2 proof | Minimal UJ-023 amend: version-generic tag + example `0.1.1` |
-| S2.2 | Low | Advisory | Session archive `pypi-bootstrap-token.md` still lists old owner/repo | Leave archive; standing truth is deploy.md (EV-028) |
+| ID | Conf | Category | Statement | Verdict |
+|----|------|----------|-----------|---------|
+| S2.1 | Medium | Contradiction | UJ-023 vs `0.1.1` proof | **approved 9a** — UJ-023 amended |
+| S2.2 | Low | Advisory | Session archive `pypi-bootstrap-token.md` stale owner | **waive** — archive; standing truth deploy.md |
 
-## Gate A readiness
+## Gate A
 
-Pending user verdict on S2.1; then Pass → 04-tech-plan (Lean skips 03).
+**PASS** 2026-08-01 (`10a`) → 04-tech-plan (Lean skips 03).
