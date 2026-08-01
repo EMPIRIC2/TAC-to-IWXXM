@@ -46,8 +46,8 @@ active_session:
   - 11-verify-impl
   - 12-verify-deploy
   current_stage: 07-build
-  active_milestone: M0
-  active_task: T0.1
+  active_milestone: M3
+  active_task: T3.3
   active_task_status: in_progress
   started_at: '2026-08-01'
   context_briefs: []
@@ -59,6 +59,7 @@ active_session:
   - D-S035-E28-S21
   - D-S035-02-phase-a
   - D-S035-04-plan-approve
+  - D-S035-E28-T22
   routing_plan:
   - stage: 00-context
     required: true
@@ -7941,6 +7942,33 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S035-E28-T22
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: ops
+  status: confirmed
+  topic: Trusted Publisher ×3 + pypi env → tag from evolve tip
+  summary: 13a Trusted Publisher ×3 + pypi env ready; proceed to tag from evolve tip
+  decision: '13a — Trusted Publisher configured for three packages and pypi environment ready; proceed to tag from evolve tip (active_task T3.3).'
+  user_option: 13a
+  related_issues:
+  - '781'
+  related_decisions:
+  - D-S035-04-plan-approve
+  - D-S035-02-phase-a
+  - D-S035-E28-S21
+  - D-S035-E28-E1
+  - D-S035-E28-M
+  - D-S035-routing
+  - D-S035-open
+  tip_sha: ec3347c
+  tip_sha_full: ec3347cffe9aa4faf356990fea876e7727e038cb
 - id: D-S035-04-plan-approve
   date: '2026-08-01'
   timestamp: '2026-08-01'
@@ -25573,6 +25601,22 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: ec3347c
+    sha_full: ec3347cffe9aa4faf356990fea876e7727e038cb
+    branch: evolve/EV-028-empiric2-ops-leftovers-781
+    message: "[EV-028] docs: consumer PyPI landings and bump packages to 0.1.1"
+    stage: 07-build
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    timestamp: '2026-08-01'
+  - sha: ed50797
+    sha_full: ed50797e1637cd22acde36071057f36d0114b46e
+    branch: evolve/EV-028-empiric2-ops-leftovers-781
+    message: "[EV-028] chore: purge Codecov from CI, badges, and secrets"
+    stage: 07-build
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    timestamp: '2026-08-01'
   - sha: b8e37ae
     sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
     branch: evolve/EV-028-empiric2-ops-leftovers-781

@@ -38,8 +38,8 @@
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
 | T2.1 | **completed** | TC-EV028-003; UJ-023 | T1.1–T1.3 | Bump `tac-validate`, `iwxxm-validate`, `tac2iwxxm` to `0.1.1` in `pyproject.toml` (+ Cargo.toml) |
-| T2.2 | pending | TC-EV028-002; deploy.md | — | Operator: configure PyPI Trusted Publisher ×3 → EMPIRIC2 / TAC-to-IWXXM / `pypi-publish.yml` / `pypi`; remove stale publishers |
-| T2.3 | pending | TC-EV028-002 | T2.2 | Confirm GitHub Environment `pypi` exists on `EMPIRIC2/TAC-to-IWXXM` |
+| T2.2 | **completed** | TC-EV028-002; deploy.md | — | Operator: configure PyPI Trusted Publisher ×3 (`D-S035-E28-T22` / 13a) |
+| T2.3 | **completed** | TC-EV028-002 | T2.2 | Operator confirmed `pypi` env (API may auto-create on first publish job) |
 
 ### M3 — Build verify + tag publish (TC-EV028-003 / UJ-023)
 
