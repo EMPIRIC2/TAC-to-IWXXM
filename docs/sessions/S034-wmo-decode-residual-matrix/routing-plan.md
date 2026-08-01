@@ -18,7 +18,7 @@
 | 10-e2e | yes | smoke | **completed** | Catalog Vitest + residual matrix pytest |
 | 11-verify-impl | no | — | skipped | Lean+build |
 | 12-verify-deploy | no | — | skipped | — |
-| 13-deploy-smoke | when ships | full | pending | H4–H5 if FE menu/decode chrome ships |
+| 13-deploy-smoke | when ships | full | **waived** | D-S034-gate-c — no FE deploy this cycle |
 
 ## Skip rationale
 

@@ -1184,12 +1184,12 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 
 ### EV-027 verify/deploy gate
 
-- [ ] TC-EV027-001..002 inventory + catalog∪gaps green
-- [ ] TC-EV027-003 residual matrix green (allowlist documented)
-- [ ] TC-EV027-004 load path green
-- [ ] TC-EV027-005 when FE ships (else waive at close)
-- [ ] #815 GitHub closed (or child issues for in-cycle deferrals)
-- [ ] 13-deploy-smoke if FE/decode chrome ships
+- [x] TC-EV027-001..002 inventory + catalog∪gaps green
+- [x] TC-EV027-003 residual matrix green (allowlist documented; VAA/TCA → #820)
+- [x] TC-EV027-004 load path green (catalog Vitest)
+- [x] TC-EV027-005 **waived** at close (`D-S034-gate-c` — no FE deploy)
+- [ ] #815 GitHub closed on PR merge (deferral child #820)
+- [x] 13-deploy-smoke **waived** (`D-S034-gate-c`)
 
 ## F9 deepen (S026 / EV-020) — glossary registry
 

@@ -34,6 +34,8 @@
 | E27-T4 | decision | Gate C? | **1** — matrix + catalog∪gaps + #815/children required (no soft escape) |
 | E27-T5 | decision | Draft plan? | **1** — M0–M3 as written (catalog-first order) |
 | E27-04 | decision | Gate B? | **1** — approve → **07-build** @ T0.1 (`D-S034-04-plan-approve`) |
+| E27-GC | decision | Gate C / PR? | **1** — push + PR to main; close #815 on merge; link #820; waive TC-EV027-005 / 13 (`D-S034-gate-c`) |
+| E27-13 | decision | 13-deploy-smoke? | **waived** — no FE deploy this cycle |
 
 **Scope (verbatim)**: Every in-scope official WMO IWXXM TAC peer from the vendor pin is
 loadable from the workbench sample menu (or explicitly deferred in `FIXTURE_GAPS`) and

@@ -48,10 +48,10 @@
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T3.1 | pending | 08-verify-build | T2.4, T1.3 | Full suite + lint/typecheck green |
-| T3.2 | pending | 10-e2e | T3.1 | Catalog Vitest + residual matrix smoke report |
-| T3.3 | pending | #815 AC; E27-T4 | T3.2 | PR + close #815 (or link deferral children); Gate C |
-| T3.4 | pending | TC-EV027-005 | T3.3 | 13-deploy-smoke when FE ships (else waive) |
+| T3.1 | **completed** | 08-verify-build | T2.4, T1.3 | Full suite + lint/typecheck green |
+| T3.2 | **completed** | 10-e2e | T3.1 | Catalog Vitest + residual matrix smoke report |
+| T3.3 | in_progress | #815 AC; E27-T4 | T3.2 | PR + close #815; link #820; Gate C (`D-S034-gate-c`) |
+| T3.4 | **waived** | TC-EV027-005 | T3.3 | 13 waived — no FE deploy this cycle |
 
 ## Gate C (close)
 
