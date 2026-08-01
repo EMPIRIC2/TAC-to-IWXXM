@@ -339,6 +339,8 @@
 | EV-027/S02.M2 | Gate C bar | All seven target empty residuals; allowlist only with standing-doc intent (F9 G4 / ADR-025) + child issue | confirmed |
 | EV-027/S02.L1 | Inventory SoT | Pytest-discovered vendor/mirrored TAC peers | confirmed |
 | EV-027/E27-02 | Gate A | PASS Batch F 1,2,1 → 04-tech-plan | confirmed |
+| EV-027/E27-T1..T5 | Batch T | Order/grain/deps/Gate C/draft = **2,1,2,1,1** | confirmed |
+| EV-027/E27-04 | Gate B | Approve M0–M3 (catalog-first) → 07-build @ T0.1 | confirmed |
 
 ## EV-026 / #809 — VA multi-location ADR-032 equality / wmoPass (2026-07-31)
 

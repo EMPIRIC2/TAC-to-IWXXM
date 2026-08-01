@@ -3,7 +3,7 @@
 **Date**: 2026-07-31  
 **Mode**: delta  
 **Issue**: #815  
-**Status**: in_progress — Batch T / Gate B pending
+**Status**: **completed** — Gate B approved (`D-S034-04-plan-approve`)
 
 ## Inputs
 
@@ -28,11 +28,14 @@ ADR-025 / ADR-032 unchanged (apply residual naming + catalog tiers).
 No new CORS / origin map. Same decode-tac + static catalog as UJ-039/UJ-020.
 H4–H5 via TC-EV027-005 only when FE ships (13).
 
-## Draft plan
+## Approved plan
 
-See `execution-plan.md` — M0 dig → M1 matrix red/green → M2 catalog → M3 verify/close.
-14 tasks (T0.1–T3.4).
+See `execution-plan.md` — M0 dig → **M1 catalog first** → M2 residual matrix → M3 verify/close.
+14 tasks (T0.1–T3.4). **E27-T1=2** catalog-before-matrix.
 
 ## Batch T + Gate B
 
-Pending.
+| ID | Lock |
+|----|------|
+| E27-T1..T5 | **2,1,2,1,1** |
+| Gate B | **1** — approve plan → **07-build** @ T0.1 |

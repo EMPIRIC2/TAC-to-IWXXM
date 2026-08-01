@@ -31,7 +31,7 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/wmo-decode-residual-matrix.md
@@ -66,13 +66,16 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-07-31'
-    note: 'S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
+    completed: '2026-07-31'
+    note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B Lean → 07 @ T0.1 (D-S034-04-plan-approve); #815'
   - stage: 07-build
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: '2026-07-31'
+    note: 'S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -111,7 +114,7 @@ sessions:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   started_at: '2026-07-31'
   context_briefs:
   - docs/context/wmo-decode-residual-matrix.md
@@ -146,13 +149,16 @@ sessions:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-07-31'
-    note: 'S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
+    completed: '2026-07-31'
+    note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B Lean → 07 @ T0.1 (D-S034-04-plan-approve); #815'
   - stage: 07-build
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: '2026-07-31'
+    note: 'S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -4151,10 +4157,12 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-07-31'
     started: '2026-07-31'
+    completed_at: '2026-07-31'
+    completed: '2026-07-31'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
     previous_session_id: S033-va-multi-location-equality
@@ -4162,37 +4170,47 @@ stages:
     previous_note: 'S033/EV-026 04-tech-plan COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
     session_id: S034-wmo-decode-residual-matrix
     evolve_cycle_id: EV-027
-    prior_note: 'S034/EV-027 02-verify-plan COMPLETE (D-S034-02-phase-a) — PASS Batch F 1,2,1; Gate A Lean → 04; report reports/02-verify-plan-audit.md; #815'
-    note: 'S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
+    prior_note: 'S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
+    note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B Lean → 07 @ T0.1 (D-S034-04-plan-approve); #815'
     decision_refs:
+    - D-S034-04-plan-approve
+    - D-S034-E27-T-batch
     - D-S034-02-phase-a
     - D-S034-E27-E1
     - S02.M1
     - S02.M2
     - S02.L1
     - E27-02
+    - E27-T1
+    - E27-T2
+    - E27-T3
+    - E27-T4
+    - E27-T5
+    - E27-04
     substeps:
       phase_1_toolchain:
-        status: pending
+        status: completed
       phase_2_interview:
-        status: pending
+        status: completed
       phase_3_execution_plan:
-        status: pending
+        status: completed
       phase_4_user_review:
-        status: pending
+        status: completed
       phase_5_back_add:
-        status: pending
+        status: completed
       phase_6_documents:
-        status: pending
+        status: completed
     active_session:
       session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-07-31'
       started: '2026-07-31'
-      note: 'S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
+      note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved; Gate B → 07 @ T0.1 (D-S034-04-plan-approve); #815'
       feature_ids:
       - F25
       - F9
@@ -4232,9 +4250,11 @@ stages:
     - session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       started_at: '2026-07-31'
       started: '2026-07-31'
+      completed_at: '2026-07-31'
+      completed: '2026-07-31'
       mode: delta
       deepen:
       - F25
@@ -4244,14 +4264,22 @@ stages:
       - F25
       - F9
       - F7
-      note: 'S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
+      note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B → 07 @ T0.1 (D-S034-04-plan-approve); #815'
       decision_refs:
+      - D-S034-04-plan-approve
+      - D-S034-E27-T-batch
       - D-S034-02-phase-a
       - D-S034-E27-E1
       - S02.M1
       - S02.M2
       - S02.L1
       - E27-02
+      - E27-T1
+      - E27-T2
+      - E27-T3
+      - E27-T4
+      - E27-T5
+      - E27-04
       artifacts:
       - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
       - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
@@ -4862,6 +4890,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; gates.b_to_c pending (plan approved); #815'
     - '2026-07-31 S033/EV-026 04 COMPLETE Gate B=1 (D-S033-04-plan-approve) — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); B→C; handoff 07 @ T0.1; #809'
     - '2026-07-31 S033/EV-026 04 Batch T locked E26-T1..T5=1,1,2,1,1 (D-S033-E26-T-batch) — draft execution-plan 12 tasks M0–M3 + 04-tech-plan.md; Gate B approved; #809'
     - '2026-07-31 S033/EV-026 04-tech-plan STARTED (D-S033-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #809'
@@ -5111,80 +5140,95 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-07-31'
     started: '2026-07-31'
-    completed: '2026-07-31'
-    completed_at: '2026-07-31'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
-    previous_session_id: S032-iwxxm-us-remarks-va
-    previous_evolve_cycle_id: EV-025
-    previous_tip_sha: 50d3d0a
-    previous_note: 'S032/EV-025 07-build COMPLETE (T0.1–T7.2); T7.3 deferred D-S032-EV025-closeout=1 (when ships after merge); tip 1e46b38; progress 27/28; #810/#811/#812/#809'
-    session_id: S033-va-multi-location-equality
-    evolve_cycle_id: EV-026
-    note: 'S033/EV-026 07-build COMPLETE — M0–M3 done except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c); progress 11/12'
-    tip_sha: .inf
-    tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
-    current_stage: M3
-    current_milestone: M3
-    current_task: T3.4
-    active_milestone: M3
-    active_task: T3.4
-    active_task_status: deferred
-    progress: 11/12
+    previous_session_id: S033-va-multi-location-equality
+    previous_evolve_cycle_id: EV-026
+    previous_tip_sha: 7e08051
+    previous_tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
+    previous_note: 'S033/EV-026 07-build COMPLETE — M0–M3 done except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c); progress 11/12'
+    session_id: S034-wmo-decode-residual-matrix
+    evolve_cycle_id: EV-027
+    note: 'S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
+    current_stage: M0
+    current_milestone: M0
+    current_task: T0.1
+    active_milestone: M0
+    active_task: T0.1
+    active_task_status: in_progress
+    progress: 0/14
     decision_refs:
-    - D-S033-gate-c
-    - D-S033-04-plan-approve
-    - D-S033-E26-T-batch
+    - D-S034-04-plan-approve
+    - D-S034-E27-T-batch
+    - E27-T1
+    - E27-T2
+    - E27-T3
+    - E27-T4
+    - E27-T5
     artifacts:
-    - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
-    - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
-    - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
-    - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
-    - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
+    - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
+    - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     active_session:
-      session_id: S033-va-multi-location-equality
-      evolve_cycle_id: EV-026
+      session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
       skill_id: 07-build
-      status: completed
+      status: in_progress
       mode: full
       started_at: '2026-07-31'
       started: '2026-07-31'
-      completed: '2026-07-31'
-      completed_at: '2026-07-31'
-      note: 'COMPLETE — M0–M3 except T3.4 when_ships; Gate C PASS; tip 7e08051; #809 closed'
-      active_milestone: M3
-      current_milestone: M3
-      active_task: T3.4
-      current_task: T3.4
-      active_task_status: deferred
+      note: 'STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; gates.b_to_c pending (plan approved); #815'
+      active_milestone: M0
+      current_milestone: M0
+      active_task: T0.1
+      current_task: T0.1
+      active_task_status: in_progress
+      progress: 0/14
       deepen:
-      - F23
-      - F6
+      - F25
+      - F9
       - F7
       decision_refs:
-      - D-S033-gate-c
-      - D-S033-04-plan-approve
-      - D-S033-E26-T-batch
+      - D-S034-04-plan-approve
+      - D-S034-E27-T-batch
       artifacts:
-      - docs/sessions/S033-va-multi-location-equality/reports/t3-1-gate-c-dig.md
-      - docs/sessions/S033-va-multi-location-equality/reports/verification-report.md
-      - docs/sessions/S033-va-multi-location-equality/reports/t0-1-canonicalize-diff-themes.md
-      - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
-      progress: 11/12
-      tip_sha: .inf
+      - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     substeps:
       task_loop:
-        status: completed
-        current_task: T3.4
-        active_task_status: deferred
-        active_milestone: M3
+        status: in_progress
+        current_task: T0.1
+        active_task_status: in_progress
+        active_milestone: M0
         phase: C
-        milestone: M3
-        notes: 'S033/EV-026 07 COMPLETE Gate C PASS; T3.4 deferred when_ships; tip 7e08051; #809'
+        milestone: M0
+        notes: 'S034/EV-027 07-build @ T0.1 inventory dig; D-S034-04-plan-approve; #815'
     delta_substages:
+    - id: S034-wmo-decode-residual-matrix
+      session_id: S034-wmo-decode-residual-matrix
+      evolve_cycle_id: EV-027
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-07-31'
+      started: '2026-07-31'
+      mode: full
+      note: 'STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
+      active_milestone: M0
+      current_milestone: M0
+      active_task: T0.1
+      current_task: T0.1
+      active_task_status: in_progress
+      progress: 0/14
+      decision_id: D-S034-04-plan-approve
+      branch: evolve/EV-027-wmo-decode-residual-matrix
+      deepen:
+      - F25
+      - F9
+      - F7
+      artifacts:
+      - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
+      - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     - id: S033-va-multi-location-equality
       session_id: S033-va-multi-location-equality
       evolve_cycle_id: EV-026
@@ -5545,6 +5589,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-07-31 S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
     - '2026-07-31 S032/EV-025 PR #816 open; tip 50d3d0a; T7.3 deferred'
     - 2026-07-31 S032/EV-025 closeout=1; T7.3 deferred; PR opening
     - '2026-07-31 S032/EV-025 T7.2 COMPLETE @ 1e46b38; 08-verify-build + 10-e2e smoke PASS; next T7.3 when ships / PR closeout; progress 27/28; #810/#811/#812/#809'
@@ -23461,7 +23506,7 @@ evolve_cycles:
   branch: evolve/EV-027-wmo-decode-residual-matrix
   preset: Lean+build
   preset_status: approved
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   routing_plan:
     required_stages:
     - 00-context
@@ -23505,13 +23550,19 @@ evolve_cycles:
       completed: '2026-07-31'
       note: 'PASS — Batch F 1,2,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S034-02-phase-a; #815'
     04-tech-plan:
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-07-31'
-      note: 'S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
+      completed: '2026-07-31'
+      note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B Lean → 07 @ T0.1 (D-S034-04-plan-approve); #815'
     07-build:
-      status: pending
+      status: in_progress
       mode: full
+      started: '2026-07-31'
+      current_task: T0.1
+      active_milestone: M0
+      progress: 0/14
+      note: 'STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; gates.b_to_c pending (plan approved); #815'
     08-verify-build:
       status: pending
       mode: delta
@@ -23524,11 +23575,13 @@ evolve_cycles:
   gates:
     a_to_b: passed
     b_to_c: pending
+    b_to_c_note: plan approved (D-S034-04-plan-approve); Batch T 2,1,2,1,1; Lean skip 05/06; 07-build @ T0.1; formal B→C pending
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: pending
+    phase_b_note: plan approved (D-S034-04-plan-approve); formal Phase B checkpoint pending Lean skip 05/06
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -23545,6 +23598,14 @@ evolve_cycles:
   - S02.M2
   - S02.L1
   - E27-02
+  - D-S034-04-plan-approve
+  - D-S034-E27-T-batch
+  - E27-T1
+  - E27-T2
+  - E27-T3
+  - E27-T4
+  - E27-T5
+  - E27-04
   answers:
     E27-1: '1'
     E27-2: '1'
@@ -23555,6 +23616,12 @@ evolve_cycles:
     S02.M2: '2'
     S02.L1: '1'
     E27-02: PASS
+    E27-T1: '2'
+    E27-T2: '1'
+    E27-T3: '2'
+    E27-T4: '1'
+    E27-T5: '1'
+    E27-04: '1'
   artifacts:
   - path: docs/sessions/S034-wmo-decode-residual-matrix/session-brief.md
     status: approved
@@ -23569,10 +23636,12 @@ evolve_cycles:
   - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/02-verify-plan-audit.md
     status: completed
   - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
-    status: draft
+    status: approved
   - path: docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
-    status: draft
+    status: completed
   notes:
+  - '2026-07-31 S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; gates.b_to_c pending (plan approved); #815'
+  - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; #815'
   - '2026-07-31 S034/EV-027 04-tech-plan STARTED (D-S034-02-phase-a) — Gate A Lean (Batch F 1,2,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #815'
   - '2026-07-31 S034/EV-027 02-verify-plan COMPLETE (D-S034-02-phase-a) — PASS Batch F 1,2,1 (S02.M1/M2/L1); Gate A Lean → 04-tech-plan; report docs/sessions/S034-wmo-decode-residual-matrix/reports/02-verify-plan-audit.md; #815'
   - '2026-07-31 S034/EV-027 01-requirements COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; handoff 02-verify-plan; #815'

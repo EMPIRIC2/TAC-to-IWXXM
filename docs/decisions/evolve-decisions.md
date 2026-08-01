@@ -28,6 +28,12 @@
 | S02.M2 | decision | Gate C residual bar? | **2** — all seven target empty; allowlist only if standing docs say intentional (F9 G4 / ADR-025) + child issue (`D-S034-EV027-s02m2-2`) |
 | S02.L1 | decision | Inventory SoT? | **1** — pytest-discovered vendor/mirrored peers (`D-S034-EV027-s02l1-1`) |
 | E27-02 | decision | Gate A / 02 close? | **PASS** — Batch F 1,2,1; Lean → **04-tech-plan** (`D-S034-02-phase-a`) |
+| E27-T1 | decision | Build order? | **2** — catalog completeness first, then residual matrix (`D-S034-E27-T-batch`) |
+| E27-T2 | decision | Decode fix grain? | **1** — one commit per product family / theme |
+| E27-T3 | decision | New deps? | **2** — AskQuestion per new dep (prefer none) |
+| E27-T4 | decision | Gate C? | **1** — matrix + catalog∪gaps + #815/children required (no soft escape) |
+| E27-T5 | decision | Draft plan? | **1** — M0–M3 as written (catalog-first order) |
+| E27-04 | decision | Gate B? | **1** — approve → **07-build** @ T0.1 (`D-S034-04-plan-approve`) |
 
 **Scope (verbatim)**: Every in-scope official WMO IWXXM TAC peer from the vendor pin is
 loadable from the workbench sample menu (or explicitly deferred in `FIXTURE_GAPS`) and
