@@ -8,6 +8,10 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    // Coverage + FileConverter workflows routinely exceed Vitest's default 5s
+    // (user.type of METAR lines, preference dialogs). Matches FileConverter.test.tsx.
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
     env: {
       VITE_API_BASE_URL: 'http://localhost:18001',
       VITE_APP_URL: 'http://localhost:18000',
