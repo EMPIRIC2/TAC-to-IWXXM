@@ -28,6 +28,12 @@ active_session:
     status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
     status: written
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/verify-plan-audit.md
+    status: written
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
+    status: approved
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+    status: approved
   routing_plan_summary: "00→16→01→02→04→07→08→10→13 (skip 03/05/06/09/11/12); packaging/OIDC smoke"
   preset: Lean+build
   preset_status: approved
@@ -39,7 +45,10 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 04-tech-plan
+  current_stage: 07-build
+  active_milestone: M0
+  active_task: T0.1
+  active_task_status: in_progress
   started_at: '2026-08-01'
   context_briefs: []
   decision_refs:
@@ -49,6 +58,7 @@ active_session:
   - D-S035-E28-E1
   - D-S035-E28-S21
   - D-S035-02-phase-a
+  - D-S035-04-plan-approve
   routing_plan:
   - stage: 00-context
     required: true
@@ -79,13 +89,16 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-01'
-    note: "STARTED (delta) — D-S035-02-phase-a Gate A PASS → 04; #781"
+    completed: '2026-08-01'
+    note: "COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b tag-from-evolve; 12a → 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #781"
   - stage: 07-build
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-01'
+    note: "STARTED (delta) — D-S035-04-plan-approve Gate B → 07 @ T0.1 (M0 Codecov purge); #781"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -4227,12 +4240,12 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-01'
     started: '2026-08-01'
-    completed_at:
-    completed:
+    completed_at: '2026-08-01'
+    completed: '2026-08-01'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
     previous_session_id: S034-wmo-decode-residual-matrix
@@ -4240,9 +4253,10 @@ stages:
     previous_note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B Lean → 07 @ T0.1 (D-S034-04-plan-approve); #815'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    prior_note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B Lean → 07 @ T0.1 (D-S034-04-plan-approve); #815'
-    note: 'STARTED (delta) — D-S035-02-phase-a Gate A PASS → 04; mode delta; #781'
+    prior_note: 'STARTED (delta) — D-S035-02-phase-a Gate A PASS → 04; mode delta; #781'
+    note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b tag-from-evolve; 12a → 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip b8e37ae; #781'
     decision_refs:
+    - D-S035-04-plan-approve
     - D-S035-02-phase-a
     - D-S035-E28-S21
     - D-S034-04-plan-approve
@@ -4261,32 +4275,39 @@ stages:
     - E27-04
     substeps:
       phase_1_toolchain:
-        status: pending
+        status: completed
       phase_2_interview:
-        status: pending
+        status: completed
       phase_3_execution_plan:
-        status: pending
+        status: completed
       phase_4_user_review:
-        status: pending
+        status: completed
       phase_5_back_add:
-        status: pending
+        status: completed
       phase_6_documents:
-        status: pending
+        status: completed
     active_session:
       session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'STARTED (delta) — D-S035-02-phase-a Gate A PASS → 04; #781'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b; 12a → 07 @ T0.1; #781'
       feature_ids: []
       decision_refs:
+      - D-S035-04-plan-approve
       - D-S035-02-phase-a
       - D-S035-E28-S21
-      artifacts: []
+      artifacts:
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     artifacts:
+    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
@@ -4308,6 +4329,28 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
+      mode: delta
+      deepen:
+      - F12
+      - F13
+      - F14
+      feature_ids: []
+      note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b tag-from-evolve; 12a → 07 @ T0.1; #781'
+      decision_refs:
+      - D-S035-04-plan-approve
+      - D-S035-02-phase-a
+      - D-S035-E28-S21
+      artifacts:
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
       skill_id: 04-tech-plan
@@ -4951,6 +4994,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-08-01 S035/EV-028 04 COMPLETE Gate B (D-S035-04-plan-approve) — 11b tag-from-evolve; 12a → 07 @ T0.1; tip b8e37ae; #781'
     - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; gates.b_to_c pending (plan approved); #815'
     - '2026-07-31 S033/EV-026 04 COMPLETE Gate B=1 (D-S033-04-plan-approve) — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); B→C; handoff 07 @ T0.1; #809'
     - '2026-07-31 S033/EV-026 04 Batch T locked E26-T1..T5=1,1,2,1,1 (D-S033-E26-T-batch) — draft execution-plan 12 tasks M0–M3 + 04-tech-plan.md; Gate B approved; #809'
@@ -5202,77 +5246,99 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
-    started_at: '2026-07-31'
-    started: '2026-07-31'
-    completed_at: '2026-07-31'
-    completed: '2026-07-31'
+    status: in_progress
+    started_at: '2026-08-01'
+    started: '2026-08-01'
+    completed_at:
+    completed:
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
-    previous_session_id: S033-va-multi-location-equality
-    previous_evolve_cycle_id: EV-026
-    previous_tip_sha: 7e08051
-    previous_tip_sha_full: 7e08051d0b2bfc8801d4fbeefb5fdcff155d14a3
-    previous_note: 'S033/EV-026 07-build COMPLETE — M0–M3 done except T3.4 when_ships; tip 7e08051; #809 closed; Gate C PASS (D-S033-gate-c); progress 11/12'
-    session_id: S034-wmo-decode-residual-matrix
-    evolve_cycle_id: EV-027
-    tip_sha: ad36aa0
-    tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
-    note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
-    current_stage: M3
-    current_milestone: M3
-    current_task: T3.4
-    active_milestone: M3
-    active_task: T3.4
-    active_task_status: waived
-    progress: 14/14
+    previous_session_id: S034-wmo-decode-residual-matrix
+    previous_evolve_cycle_id: EV-027
+    previous_tip_sha: ad36aa0
+    previous_tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
+    previous_note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    tip_sha: b8e37ae
+    tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
+    note: 'S035/EV-028 07-build STARTED (D-S035-04-plan-approve) — @ T0.1 Codecov purge; plan docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md; gates.b_to_c passed; tip b8e37ae; #781'
+    current_stage: M0
+    current_milestone: M0
+    current_task: T0.1
+    active_milestone: M0
+    active_task: T0.1
+    active_task_status: in_progress
+    progress: 0/15
     decision_refs:
-    - D-S034-04-plan-approve
-    - D-S034-E27-T-batch
-    - E27-T1
-    - E27-T2
-    - E27-T3
-    - E27-T4
-    - E27-T5
+    - D-S035-04-plan-approve
+    - D-S035-02-phase-a
+    - D-S035-E28-S21
     artifacts:
+    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     active_session:
-      session_id: S034-wmo-decode-residual-matrix
-      evolve_cycle_id: EV-027
+      session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
       skill_id: 07-build
-      status: completed
-      mode: full
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; tip ad36aa0; PR #821 merged; gates.b_to_c passed; handoff 08-verify-build; #815 closed; #820 open'
-      active_milestone: M3
-      current_milestone: M3
-      active_task: T3.4
-      current_task: T3.4
-      active_task_status: waived
-      progress: 14/14
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      note: 'STARTED (delta) — D-S035-04-plan-approve Gate B → 07 @ T0.1; #781'
+      active_milestone: M0
+      current_milestone: M0
+      active_task: T0.1
+      current_task: T0.1
+      active_task_status: in_progress
+      progress: 0/15
       deepen:
-      - F25
-      - F9
-      - F7
+      - F12
+      - F13
+      - F14
       decision_refs:
-      - D-S034-04-plan-approve
-      - D-S034-E27-T-batch
+      - D-S035-04-plan-approve
+      - D-S035-02-phase-a
       artifacts:
-      - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     substeps:
       task_loop:
-        status: completed
-        current_task: T3.4
-        active_task_status: waived
-        active_milestone: M3
+        status: in_progress
+        current_task: T0.1
+        active_task_status: in_progress
+        active_milestone: M0
         phase: C
-        milestone: M3
-        notes: 'S034/EV-027 07-build COMPLETE M0–M3 14/14; PR #821 merged @ ad36aa0; #815/#820'
+        milestone: M0
+        notes: 'S035/EV-028 07-build STARTED @ T0.1 Codecov purge; tip b8e37ae; #781'
     delta_substages:
+    - id: S035-empiric2-ops-leftovers-781
+      session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      mode: delta
+      note: 'STARTED (delta) — D-S035-04-plan-approve → 07 @ T0.1; gates.b_to_c passed; #781'
+      active_milestone: M0
+      current_milestone: M0
+      active_task: T0.1
+      current_task: T0.1
+      active_task_status: in_progress
+      progress: 0/15
+      decision_id: D-S035-04-plan-approve
+      tip_sha: b8e37ae
+      tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
+      branch: evolve/EV-028-empiric2-ops-leftovers-781
+      deepen:
+      - F12
+      - F13
+      - F14
+      artifacts:
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - id: S034-wmo-decode-residual-matrix
       session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
@@ -5661,6 +5727,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-01 S035/EV-028 07-build STARTED (D-S035-04-plan-approve) — @ T0.1 Codecov purge; gates.b_to_c passed; tip b8e37ae; #781'
     - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — T3.3 COMPLETE; 07 COMPLETE 14/14; #815 closed; #820 open; 13 waived; Phase 4 closeout docs + AskQuestion pending'
     - '2026-07-31 S034/EV-027 07-build COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; 08/10 PASS; gates.c_to_d pending (awaiting PR); #815/#820'
     - '2026-07-31 S034/EV-027 07-build STARTED (D-S034-04-plan-approve) — @ T0.1 inventory dig; plan docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md; gates.b_to_c pending (plan approved); #815'
@@ -7577,12 +7644,13 @@ stages:
     started: '2026-08-01'
     completed_at:
     completed:
-    current_stage: 04-tech-plan
-    note: 'S035/EV-028 16-evolve in_progress — 02 COMPLETE (D-S035-02-phase-a); current_stage 04-tech-plan; tip 19e547a; #781'
-    prior_note: 'S035/EV-028 16-evolve in_progress — 01 COMPLETE (D-S035-E28-E1); current_stage 02-verify-plan; #781'
-    tip_sha: 19e547a
-    tip_sha_full: 19e547a593e35a9e934ce24283ec769cfbba0845
+    current_stage: 07-build
+    note: 'S035/EV-028 16-evolve in_progress — 04 COMPLETE (D-S035-04-plan-approve); current_stage 07-build @ T0.1; tip b8e37ae; gates.b_to_c passed; #781'
+    prior_note: 'S035/EV-028 16-evolve in_progress — 02 COMPLETE (D-S035-02-phase-a); current_stage 04-tech-plan; tip 19e547a; #781'
+    tip_sha: b8e37ae
+    tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
     notes:
+    - '2026-08-01 S035/EV-028 04 COMPLETE → 07-build STARTED — D-S035-04-plan-approve Gate B (11b/12a); @ T0.1; tip b8e37ae; #781'
     - '2026-08-01 S035/EV-028 02 COMPLETE → 04-tech-plan STARTED — D-S035-02-phase-a Gate A PASS; D-S035-E28-S21 UJ-023; tip 19e547a; #781'
     - '2026-08-01 S035/EV-028 01 COMPLETE → 02-verify-plan STARTED — D-S035-E28-M (7a) + D-S035-E28-E1 (8a); #781'
     - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b bump/publish tac-validate+iwxxm-validate+tac2iwxxm 0.1.1 OIDC; 00 COMPLETE; 16 in_progress → 01-requirements; #781'
@@ -7873,6 +7941,35 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S035-04-plan-approve
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 04 Decision — Approve execution plan / Gate B → 07 @ T0.1
+  summary: 11b tag from evolve branch before merge; 12a Gate B approve → 07-build @ T0.1
+  decision: '12a Gate B PASS — approve execution-plan (M0–M3); 11b push version tags from evolve branch before merge; B→C → 07-build in_progress @ T0.1. Approved plan: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md. Lean skip 05/06.'
+  user_option: 12a
+  related_issues:
+  - '781'
+  related_decisions:
+  - D-S035-02-phase-a
+  - D-S035-E28-S21
+  - D-S035-E28-E1
+  - D-S035-E28-M
+  - D-S035-routing
+  - D-S035-open
+  answers:
+    E28-T2: 11b
+    GateB: 12a
+  tip_sha: b8e37ae
+  tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
 - id: D-S035-02-phase-a
   date: '2026-08-01'
   timestamp: '2026-08-01'
@@ -15591,6 +15688,26 @@ decisions_log:
   preset: Lean+build
   preset_status: approved
 artifacts:
+- path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+  kind: execution-plan
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-08-01'
+  updated_at: '2026-08-01'
+  status: approved
+  note: 'S035/EV-028 04 COMPLETE — D-S035-04-plan-approve Gate B; 11b/12a; handoff 07 @ T0.1'
+- path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
+  kind: tech-plan
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-08-01'
+  updated_at: '2026-08-01'
+  status: approved
+  note: 'S035/EV-028 04-tech-plan COMPLETE — Gate B PASS (D-S035-04-plan-approve)'
 - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
   kind: requirements-delta
   session_id: S035-empiric2-ops-leftovers-781
@@ -24103,7 +24220,7 @@ evolve_cycles:
     — no internal ADR/Fn/E10 refs on consumer-facing pages.
     Out: optional e2e/load Actions secrets; Render hostname rename; Supabase Site URL; #777 iwxxm-dissemination publish.
     Tag publish proof (D-S035-routing 6b): bump + publish tac-validate, iwxxm-validate, and tac2iwxxm to 0.1.1 via OIDC.
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   github_issues:
   - '781'
   branch: evolve/EV-028-empiric2-ops-leftovers-781
@@ -24156,13 +24273,16 @@ evolve_cycles:
       completed: '2026-08-01'
       note: 'COMPLETE (delta) — Gate A PASS (D-S035-02-phase-a); D-S035-E28-S21; reports/verify-plan-audit.md; #781'
     04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-01'
+      completed: '2026-08-01'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b/12a → 07 @ T0.1; #781'
+    07-build:
       status: in_progress
       mode: delta
       started: '2026-08-01'
-      note: 'STARTED (delta) — D-S035-02-phase-a Gate A PASS → 04; #781'
-    07-build:
-      status: pending
-      mode: delta
+      note: 'STARTED (delta) — D-S035-04-plan-approve → 07 @ T0.1; #781'
     08-verify-build:
       status: pending
       mode: delta
@@ -24176,12 +24296,12 @@ evolve_cycles:
       note: PyPI tag publish all three 0.1.1
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -24194,6 +24314,7 @@ evolve_cycles:
   - D-S035-E28-E1
   - D-S035-E28-S21
   - D-S035-02-phase-a
+  - D-S035-04-plan-approve
   - E28-M
   - E28-E1
   answers:
@@ -24205,7 +24326,13 @@ evolve_cycles:
     E28-6: '6b'
     E28-M: 7a
     E28-E1: 8a
+    E28-T2: 11b
+    GateB: 12a
   artifacts:
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+    status: approved
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
+    status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/verify-plan-audit.md
     status: written
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
@@ -24216,26 +24343,28 @@ evolve_cycles:
     status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
     status: approved
-  tip_sha: 19e547a
-  tip_sha_full: 19e547a593e35a9e934ce24283ec769cfbba0845
+  tip_sha: b8e37ae
+  tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
   notes:
+  - '2026-08-01 S035/EV-028 04 COMPLETE → 07-build STARTED — D-S035-04-plan-approve Gate B (11b/12a); @ T0.1; tip b8e37ae; gates.b_to_c passed; #781'
   - '2026-08-01 S035/EV-028 02 COMPLETE → 04-tech-plan STARTED — D-S035-02-phase-a Gate A PASS; D-S035-E28-S21; tip 19e547a; #781'
   - '2026-08-01 S035/EV-028 02-verify-plan STARTED (delta) — D-S035-E28-E1; #781'
   - '2026-08-01 S035/EV-028 01-requirements COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; handoff 02-verify-plan; #781'
   - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b all three packages 0.1.1 OIDC; 00 COMPLETE; 16 in_progress; current_stage 01-requirements; #781'
   - '2026-08-01 S035/EV-028 00-context — branch active; session-brief.md in_progress; routing-plan.md pending_approval (not approved); #781'
   - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b feature+16-evolve, 2a scope, 3b READMEs+dissemination, 4b tag publish); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
-  note: 'in_progress — 02 COMPLETE (D-S035-02-phase-a); current_stage 04-tech-plan; tip 19e547a; gates.a_to_b passed; #781'
+  note: 'in_progress — 04 COMPLETE (D-S035-04-plan-approve); current_stage 07-build @ T0.1; tip b8e37ae; gates.a_to_b/b_to_c passed; #781'
 git_history:
   current_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit:
-  tip_sha: 19e547a
-  tip_sha_full: 19e547a593e35a9e934ce24283ec769cfbba0845
+  tip_sha: b8e37ae
+  tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
   recommended_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  note: 'S035/EV-028 — active_session=S035; current_stage 04-tech-plan; tip @ 19e547a; Gate A passed; #781'
+  note: 'S035/EV-028 — active_session=S035; current_stage 07-build @ T0.1; tip @ b8e37ae; Gate B passed; #781'
   notes:
+  - '2026-08-01 S035/EV-028 tip synced — b8e37ae (b8e37aeee53dfe4691866345b2786081d17199fc); "[EV-028] docs: Gate A pass, UJ-023 amend, draft execution plan"; 04 COMPLETE → 07 STARTED @ T0.1; #781'
   - '2026-08-01 S035/EV-028 tip synced — 19e547a (19e547a593e35a9e934ce24283ec769cfbba0845); "[EV-028] docs: S035 Phase A specs + 02 audit for #781 leftovers"; 02 COMPLETE → 04 STARTED; #781'
   - '2026-08-01 S035/EV-028 branch ACTIVE — evolve/EV-028-empiric2-ops-leftovers-781 created/checked out; session-brief in_progress; routing-plan pending_approval; #781'
   - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b/2a/3b/4b); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
@@ -25444,6 +25573,14 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: b8e37ae
+    sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
+    branch: evolve/EV-028-empiric2-ops-leftovers-781
+    message: "[EV-028] docs: Gate A pass, UJ-023 amend, draft execution plan"
+    stage: 04-tech-plan
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    timestamp: '2026-08-01'
   - sha: 19e547a
     sha_full: 19e547a593e35a9e934ce24283ec769cfbba0845
     branch: evolve/EV-028-empiric2-ops-leftovers-781

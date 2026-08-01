@@ -2,7 +2,7 @@
 
 **Branch**: `evolve/EV-028-empiric2-ops-leftovers-781`  
 **Preset**: Lean+build · **Features**: none (F12–F14 deepen)  
-**Status**: **draft** — pending Gate B
+**Status**: **approved** — Gate B (`D-S035-04-plan-approve`) · **11b** tag from evolve branch · **12a**
 
 ## Policies (locked)
 
@@ -11,6 +11,7 @@
 | E28-2 | Codecov + Trusted Publisher + landings; no e2e/load secrets / Render rename / #777 publish |
 | E28-3 | README polish: three public + dissemination |
 | E28-6 | All three packages → `0.1.1` OIDC proof |
+| E28-T2 | **11b** — Push version tags from evolve branch **before** merge (faster OIDC proof) |
 | E28-T3 | No new dependencies without AskQuestion |
 
 ## Milestones
@@ -46,7 +47,7 @@
 |------|--------|-------------|------------|-------------|
 | T3.1 | pending | 08-verify-build | T0.3, T1.4, T2.1 | Lint/typecheck/tests on changed paths; assert no `codecov` in workflows |
 | T3.2 | pending | 10-e2e; TC-EV028-001 | T3.1 | Packaging smoke report (README grep for ADR-/F\d\d|E10-; Codecov absent) |
-| T3.3 | pending | TC-EV028-003; UJ-023 | T2.2, T2.3, T3.2 | Push tags `tac-validate-v0.1.1`, `iwxxm-validate-v0.1.1`, `tac2iwxxm-v0.1.1` (after merge or from tip per Gate C); watch `pypi-publish.yml` |
+| T3.3 | pending | TC-EV028-003; UJ-023; E28-T2 | T2.2, T2.3, T3.2 | Push tags `tac-validate-v0.1.1`, `iwxxm-validate-v0.1.1`, `tac2iwxxm-v0.1.1` from **evolve branch tip** before merge; watch `pypi-publish.yml` |
 | T3.4 | pending | TC-EV028-003 | T3.3 | Clean-venv `pip install <pkg>==0.1.1` smoke for all three |
 | T3.5 | pending | #781 AC | T3.4 | PR merge; close #781 Codecov+PyPI leftovers (or note remaining optional secrets) |
 

@@ -226,37 +226,12 @@ jobs:
             apps/backend/htmlcov/
             apps/backend/coverage.xml
 
-      # v7+ fetches the Codecov CLI GPG key from codecovsecops (v5/v6.0.1 Keybase
-      # codecovsecurity URL 404s → "Could not verify signature" with fail_ci_if_error).
-      - name: Upload backend coverage to Codecov
-        if: always() && matrix.package == 'backend'
-        uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: EMPIRIC2/TAC-to-IWXXM
-          files: ./apps/backend/coverage.xml
-          flags: backend
-          name: backend-coverage
-          # Codecov project not yet linked for EMPIRIC2/TAC-to-IWXXM rename.
-          fail_ci_if_error: false
-
       - name: Upload frontend coverage artifact
         if: always() && matrix.package == 'frontend'
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-report
           path: apps/frontend/coverage/
-
-      - name: Upload frontend coverage to Codecov
-        if: always() && matrix.package == 'frontend'
-        uses: codecov/codecov-action@v7
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: EMPIRIC2/TAC-to-IWXXM
-          files: ./apps/frontend/coverage/lcov.info
-          flags: frontend
-          name: frontend-coverage
-          fail_ci_if_error: false
 
       - name: Stop service stack after integration tests
         if: always() && matrix.package == 'integration'

@@ -26,6 +26,8 @@
 | E28-E1 | decision | Close 01 → 02? | **8a** — mark 01 completed; start **02-verify-plan** (`D-S035-E28-E1`) |
 | E28-S2.1 | decision | UJ-023 vs 0.1.1? | **9a** — minimal UJ-023 amend |
 | E28-02 | decision | Gate A? | **10a** — PASS → **04-tech-plan** |
+| E28-T2 | decision | Tag timing? | **11b** — tag from evolve branch before merge |
+| E28-04 | decision | Gate B? | **12a** — approve plan → **07-build** @ T0.1 |
 
 **Scope (verbatim)**: Finish #781 leftovers — remove Codecov from product CI/docs/secrets;
 point PyPI Trusted Publishers at `EMPIRIC2/TAC-to-IWXXM` + `pypi-publish.yml`; prove OIDC by
@@ -70,7 +72,8 @@ Skip this cycle: Spec architecture rewrite, API contract, user-journeys (UJ-023 
 | 00-context | 2026-08-01 | S035 open |
 | 01-requirements | 2026-08-01 | E28-M / E28-E1 |
 | 02-verify-plan | 2026-08-01 | Gate A PASS; UJ-023 amend |
-| 04-tech-plan | | draft execution-plan pending Gate B |
+| 04-tech-plan | 2026-08-01 | Gate B PASS; E28-T2=11b |
+| 07-build | | T0.1 in progress |
 
 ---
 
