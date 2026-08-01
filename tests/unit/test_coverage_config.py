@@ -33,6 +33,7 @@ class TestCoverageConfig:
 
     def test_auth_package_absent_from_coverage_gates(self) -> None:
         assert not (ROOT / "packages/auth/pyproject.toml").exists()
-        codecov = (ROOT / ".codecov.yml").read_text(encoding="utf-8")
-        assert "packages/auth" not in codecov
-        assert "flags: [auth]" not in codecov
+        # Codecov removed (EV-028 / #781); coverage gates live in pyproject.toml only.
+        assert not (ROOT / ".codecov.yml").exists()
+        root = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        assert "packages/auth" not in root
