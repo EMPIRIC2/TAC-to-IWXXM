@@ -2,6 +2,21 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-07-31 — S034 EV-027 (#815 official WMO decode residual matrix)
+
+### Added
+- **F25 / F9 / F7.g deepen**: Official WMO TAC peer inventory locked to catalog ∪
+  `FIXTURE_GAPS`; parametrized decode residual matrix CI (happy-path → empty or
+  allowlisted residuals with standing-doc intent + child issue).
+
+### Changed
+- Decode fixes for cheap residuals (RVR / CNL / VA SIGMET geometry); VAA/TCA G4
+  allowlisted with child [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820).
+
+### Deploy
+- PR [#821](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821) merged (`ad36aa0`);
+  #815 closed. 13 / TC-EV027-005 waived (no FE deploy this cycle).
+
 ## 2026-07-31 — S033 EV-026 (#809 VA multi-location equality)
 
 ### Changed

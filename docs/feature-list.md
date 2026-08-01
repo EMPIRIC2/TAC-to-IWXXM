@@ -947,8 +947,8 @@
 
 ### F25 / F9 / F7.g deepen (S034 / EV-027 — #815 official WMO decode residual matrix)
 
-- **Status**: **In progress** (S034 / EV-027) — no new Fn; inventory + residual CI gate
-- **Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815)
+- **Status**: **Done** (S034 / EV-027) — PR [#821](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821) merged `ad36aa0`; #815 closed; child [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) open (VAA/TCA G4)
+- **Issues**: [#815](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/815) (closed); [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) (open)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **v2025-2**
 - **What it does**:
   1. Inventory official WMO TAC peers under the vendor pin; match catalog ∪ `FIXTURE_GAPS`

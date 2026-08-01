@@ -8,11 +8,11 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Phase 0 locked D-S034-open=1,1,2,1 |
-| 16-evolve | yes | orchestrator | in_progress | Phase 0 done; 01 interview |
+| 16-evolve | yes | orchestrator | in_progress | Merge recorded; Phase 4 close AskQuestion pending |
 | 01-requirements | yes | delta | **completed** | E27-M/UJ/TC=1,1,1; D-S034-E27-E1 |
 | 02-verify-plan | yes | delta | **completed** | PASS Batch F 1,2,1; Gate A → 04 |
 | 04-tech-plan | yes | delta | **completed** | Batch T 2,1,2,1,1; Gate B → 07 @ T0.1 |
-| 07-build | yes | full | **completed** | M0–M2 green; #820 filed |
+| 07-build | yes | full | **completed** | M0–M3; T3.3 PR #821 merged; T3.4 waived |
 | 08-verify-build | yes | delta | **completed** | PASS — verification-report.md |
 | 09-qa | no | — | skipped | 08+10 cover |
 | 10-e2e | yes | smoke | **completed** | Catalog Vitest + residual matrix pytest |
@@ -35,3 +35,5 @@ gate failure.
 | Session open / Phase 0 | `D-S034-open` = **1,1,2,1** — scope + Lean+build + UI defer + triage fix/allowlist | 2026-07-31 |
 | UI preview | **2** — defer until after build | 2026-07-31 |
 | Residual triage | **1** — fix when cheap; else allowlist + child issue | 2026-07-31 |
+| Gate C | `D-S034-gate-c` = **1** — push+PR; waive 13 | 2026-07-31 |
+| Merge #821 | `D-S034-merge` = **1,1** — merge @ green tip; leave tip for closeout → `ad36aa0` | 2026-07-31 |
