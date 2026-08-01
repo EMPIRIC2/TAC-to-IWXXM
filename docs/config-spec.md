@@ -190,17 +190,17 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 | ----------------------- | --------------------------------- | -------------------------------------------------------- |
 | msgspec vs pydantic     | Code + ADR-026                    | Response encode msgspec; multipart Form intake unchanged |
 | OpenAPI aliases         | `apps/backend` schemas            | Thin pydantic mirrors for docs only                      |
-| PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; **one** workflow + package matrix; tags `*-v0.1.0` |
+| PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; **one** workflow + package matrix; tags `{pkg}-v*` (e.g. `0.1.0`, `0.1.1`) |
 | PyPI project names      | Package metadata                  | `tac-validate`, `iwxxm-validate`, `tac2iwxxm`            |
 | Schema bundle size      | `iwxxm-validate` wheel build      | From `vendor/schemas/*` pins; not an env var             |
-| Render redeploy         | Existing API/static secrets       | Required this cycle (E10-15); CORS unchanged             |
+| Render redeploy         | Existing API/static secrets       | When API contract changes; CORS unchanged                |
 
 **GitHub Actions (publish)** — configure in GitHub UI (not committed secrets):
 
 | Setting                 | Purpose                                                                             |
 | ----------------------- | ----------------------------------------------------------------------------------- |
 | Environment e.g. `pypi` | Optional protection rules for publish jobs                                          |
-| PyPI Trusted Publisher  | Links each PyPI project to the **same** matrix workflow + that package's tag filter |
+| PyPI Trusted Publisher  | Per project: Owner `EMPIRIC2`, Repository `TAC-to-IWXXM`, Workflow `pypi-publish.yml`, Environment `pypi` (EV-028 / #781) |
 | `id-token: write`       | Workflow permission for OIDC                                                        |
 
 **Runtime API/FE env**: Unchanged for F11–F14. Redeploy **API before** frontend when response

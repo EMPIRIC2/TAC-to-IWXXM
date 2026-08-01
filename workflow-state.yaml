@@ -3,9 +3,98 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 34
-evolve_cycle_counter: 27
-active_session: null
+session_counter: 35
+evolve_cycle_counter: 28
+active_session:
+  id: S035-empiric2-ops-leftovers-781
+  type: feature
+  intent: |
+    #781 alone — Codecov purge + PyPI Trusted Publisher for EMPIRIC2/TAC-to-IWXXM;
+    improve PyPI landing READMEs (tac-validate, iwxxm-validate, tac2iwxxm + dissemination)
+    so public pages do not require internal ADR/Feature/E10 refs; prove OIDC with a small tag publish.
+    Unblocks #777 packaging; warm-up before product cycle.
+  status: in_progress
+  branch: evolve/EV-028-empiric2-ops-leftovers-781
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-028
+  github_issues:
+  - '781'
+  feature_ids: []
+  artifacts_dir: docs/sessions/S035-empiric2-ops-leftovers-781/
+  artifacts:
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
+    status: approved
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
+    status: approved
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
+    status: written
+  routing_plan_summary: "00→16→01→02→04→07→08→10→13 (skip 03/05/06/09/11/12); packaging/OIDC smoke"
+  preset: Lean+build
+  preset_status: approved
+  note_skipped: "Lean+build — skip 03/05/06/09/11/12; 10=packaging smoke; 13=PyPI tag publish"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  current_stage: 02-verify-plan
+  started_at: '2026-08-01'
+  context_briefs: []
+  decision_refs:
+  - D-S035-open
+  - D-S035-routing
+  - D-S035-E28-M
+  - D-S035-E28-E1
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-08-01'
+    completed: '2026-08-01'
+    note: "D-S035-open + D-S035-routing; session-brief + routing-plan locked"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-08-01'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-01'
+    completed: '2026-08-01'
+    note: "COMPLETE (delta) — E28-M=7a lean manifest; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; handoff 02-verify-plan; #781"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: in_progress
+    started: '2026-08-01'
+    note: "STARTED (delta) — D-S035-E28-E1; #781"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 07-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+    note: packaging/OIDC smoke — not browser H4–H5
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+    note: PyPI tag publish all three 0.1.1
 sessions:
 - id: S034-wmo-decode-residual-matrix
   type: feature
@@ -2896,38 +2985,39 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: wmo-decode-residual-matrix
-    session_id: S034-wmo-decode-residual-matrix
-    evolve_cycle_id: EV-027
-    started_at: '2026-07-31'
-    completed_at: '2026-07-31'
+    scoped_slug: empiric2-ops-leftovers-781
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    started_at: '2026-08-01'
+    started: '2026-08-01'
+    completed_at: '2026-08-01'
+    completed: '2026-08-01'
     substeps:
       phase0: completed
-      phase1a: pending
+      phase1a: completed
       phase1b: skipped
       phase1c: skipped
-      phase2: pending
-      phase3: pending
-      phase4: pending
-    note: 'S034/EV-027 00-context COMPLETE — Phase 0 locked D-S034-open=1,1,2,1; artifacts written; handoff 01-requirements; #815'
-    prior_note: 'S034/EV-027 00-context STARTED — Phase 0 lock pending AskQuestion D-S034-open; #815 official WMO decode residual matrix; Lean+build; F25/F9/F7'
+      phase2: completed
+      phase3: completed
+      phase4: completed
+    note: 'S035/EV-028 00-context COMPLETE — D-S035-open + D-S035-routing; Lean+build approved; session-brief + routing-plan locked; handoff 16-evolve → 01-requirements; #781'
+    prior_note: 'S035/EV-028 00-context STARTED — D-S035-open (1b/2a/3b/4b); session-brief in_progress; routing-plan.md pending_approval (not approved); branch active; #781'
     artifacts:
-    - docs/sessions/S034-wmo-decode-residual-matrix/
-    - docs/sessions/S034-wmo-decode-residual-matrix/session-brief.md
-    - docs/sessions/S034-wmo-decode-residual-matrix/routing-plan.md
-    - docs/context/wmo-decode-residual-matrix.md
-    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S035-empiric2-ops-leftovers-781/
+    - docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
+    - docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
+
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-07-31'
-    started: '2026-07-31'
-    completed_at: '2026-07-31'
-    completed: '2026-07-31'
-    session_id: S034-wmo-decode-residual-matrix
-    evolve_cycle_id: EV-027
-    prior_note: 'S034/EV-027 01-requirements STARTED (delta) — deepen F25/F9/F7.g; D-S034-open=1,1,2,1; starting delta interview; #815'
-    note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
+    started_at: '2026-08-01'
+    started: '2026-08-01'
+    completed_at: '2026-08-01'
+    completed: '2026-08-01'
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    prior_note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
+    note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
     substeps:
       interviews:
         status: completed
@@ -2935,31 +3025,50 @@ stages:
         current_template: complete
         current_section: complete
     active_session:
-      session_id: S034-wmo-decode-residual-matrix
-      evolve_cycle_id: EV-027
+      session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
       status: completed
       mode: delta
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; handoff 02-verify-plan; #815'
-      feature_ids:
-      - F25
-      - F9
-      - F7
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
+      note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; handoff 02-verify-plan; #781'
+      feature_ids: []
       decision_refs:
-      - D-S034-open
-      - E27-1
-      - E27-2
-      - E27-3
-      - E27-4
-      - E27-E1
-      - E27-M
-      - E27-UJ
-      - E27-TC
-      - D-S034-E27-E1
+      - D-S035-open
+      - D-S035-routing
+      - E28-M
+      - E28-E1
+      - D-S035-E28-M
+      - D-S035-E28-E1
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
+      note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
+      deepen:
+      - F12
+      - F13
+      - F14
+      feature_ids: []
+      artifacts:
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
+      - docs/decisions/evolve-decisions.md
+      - docs/deploy.md
+      - docs/config-spec.md
+      - docs/test-plan.md
+      - docs/feature-list.md
+      decision_refs:
+      - E28-M
+      - E28-E1
+      - D-S035-E28-M
+      - D-S035-E28-E1
     - status: completed
       mode: delta
       session_id: S034-wmo-decode-residual-matrix
@@ -3513,6 +3622,7 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - 'S035/EV-028 01-requirements COMPLETE 2026-08-01 (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md; handoff 02-verify-plan; #781'
     - 'S034/EV-027 01-requirements COMPLETE 2026-07-31 (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; report docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md; handoff 02-verify-plan; #815'
     - '2026-07-31 S034/EV-027 01-requirements STARTED (delta) — deepen F25/F9/F7.g; D-S034-open=1,1,2,1; starting delta interview; #815'
     - 'S033/EV-026 01-requirements COMPLETE 2026-07-31 (delta) — E26-E1=1; deepen F23/F6/F7.g; D-S033-E26-E1; report docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md; handoff 02-verify-plan; #809'
@@ -3559,66 +3669,47 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-07-31'
-    started: '2026-07-31'
-    completed_at: '2026-07-31'
-    completed: '2026-07-31'
-    session_id: S034-wmo-decode-residual-matrix
-    evolve_cycle_id: EV-027
-    prior_note: 'S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
-    note: 'PASS — Batch F 1,2,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S034-02-phase-a; #815'
+    started_at: '2026-08-01'
+    started: '2026-08-01'
+    completed_at:
+    completed:
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    prior_note: 'PASS — Batch F 1,2,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S034-02-phase-a; #815'
+    note: 'STARTED (delta) — D-S035-E28-E1; #781'
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
-    - D-S034-E27-E1
-    - E27-E1
-    - D-S034-02-phase-a
-    - S02.M1
-    - S02.M2
-    - S02.L1
-    - E27-02
+    - D-S035-E28-E1
+    - E28-E1
+    - D-S035-E28-M
     substeps:
       inventory:
-        status: completed
+        status: pending
       consistency_check:
-        status: completed
+        status: pending
       statement_review:
-        auto_approved: 12
+        auto_approved: 0
         pending: 0
-        reviewed: 3
-        reviewed_ids:
-        - S02.M1
-        - S02.M2
-        - S02.L1
+        reviewed: 0
     current_document:
     current_statement:
     active_session:
-      session_id: S034-wmo-decode-residual-matrix
-      evolve_cycle_id: EV-027
+      session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
       skill_id: 02-verify-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'PASS — Batch F 1,2,1 (S02.M1/M2/L1); Gate A Lean → 04; report reports/02-verify-plan-audit.md; D-S034-02-phase-a; handoff 04-tech-plan; #815'
-      feature_ids:
-      - F25
-      - F9
-      - F7
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      note: 'STARTED (delta) — D-S035-E28-E1; #781'
+      feature_ids: []
       decision_refs:
-      - D-S034-E27-E1
-      - E27-E1
-      - D-S034-02-phase-a
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      - E27-02
-      artifacts:
-      - docs/sessions/S034-wmo-decode-residual-matrix/reports/02-verify-plan-audit.md
+      - D-S035-E28-E1
+      - E28-E1
+      - D-S035-E28-M
     artifacts:
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/02-verify-plan-audit.md
     - docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md
@@ -3990,6 +4081,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-08-01 S035/EV-028 02-verify-plan STARTED (delta) — D-S035-E28-E1; #781'
     - '2026-07-31 S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
     - '2026-07-31 S033/EV-026 02-verify-plan COMPLETE (D-S033-02-phase-a) — PASS; Batch F 1,1,1; Gate A Lean → 04-tech-plan; report docs/sessions/S033-va-multi-location-equality/reports/02-verify-plan-audit.md; #809'
     - '2026-07-31 S033/EV-026 02-verify-plan STARTED (delta) — D-S033-E26-E1; #809'
@@ -7455,30 +7547,24 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S034-wmo-decode-residual-matrix
-    evolve_cycle_id: EV-027
-    started_at: '2026-07-31'
-    completed_at: '2026-07-31'
-    completed: '2026-07-31'
-    current_stage:
-    note: 'Phase 4 close D-S034-EV027-phase4-close; EV-027/S034 complete; PR #821 @ ad36aa0; #822 @ 9ff0157; #815 closed; #820 open'
-    prior_note: 'PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1); Phase 4 closeout pending; #815 closed; #820 open'
-    pr_number: 821
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
-    pr_status: merged
-    merge_sha: ad36aa0
-    merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
-    closeout_pr_number: 822
-    closeout_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/822
-    closeout_pr_status: merged
-    closeout_merge_sha: 9ff0157
-    closeout_merge_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
-    close_decision_id: D-S034-EV027-phase4-close
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    started_at: '2026-08-01'
+    started: '2026-08-01'
+    completed_at:
+    completed:
+    current_stage: 02-verify-plan
+    note: 'S035/EV-028 16-evolve in_progress — 01 COMPLETE (D-S035-E28-E1); current_stage 02-verify-plan; #781'
+    prior_note: 'S035/EV-028 16-evolve in_progress — D-S035-routing Lean+build approved; 00-context COMPLETE; next 01-requirements delta; 6b all three packages 0.1.1 OIDC; #781'
     tip_sha: 9ff0157
     tip_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
     notes:
+    - '2026-08-01 S035/EV-028 01 COMPLETE → 02-verify-plan STARTED — D-S035-E28-M (7a) + D-S035-E28-E1 (8a); #781'
+    - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b bump/publish tac-validate+iwxxm-validate+tac2iwxxm 0.1.1 OIDC; 00 COMPLETE; 16 in_progress → 01-requirements; #781'
+    - '2026-08-01 S035/EV-028 00-context — branch active; session-brief in_progress; routing-plan pending_approval; #781'
+    - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b/2a/3b/4b); current_stage 00-context; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
     - '2026-07-31 S034/EV-027 CLOSED — Phase 4 close D-S034-EV027-phase4-close option 1; PR #821 @ ad36aa0; #822 closeout MERGED @ 9ff0157; #815 closed; #820 open; 13 waived; active_session=null'
     - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — T3.3 COMPLETE; 07 COMPLETE 14/14; #815 closed; #820 open; 13 waived; Phase 4 closeout pending'
     - '2026-07-31 S032/EV-025 CLOSED — D-S032-EV025-phase4-close; PR #816 merged 2412312; T7.3/13 waived; #809 equality residual → next cycle'
@@ -7764,6 +7850,101 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S035-E28-E1
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: Close 01 → start 02-verify-plan
+  summary: 8a close 01 → start 02-verify-plan
+  decision: E28-E1=8a — Close 01-requirements (completed) and advance to 02-verify-plan (in_progress, mode delta). Handoff S035/EV-028 #781.
+  user_option: 8a
+  related_issues:
+  - '781'
+  related_decisions:
+  - E28-E1
+  - E28-M
+  - D-S035-E28-M
+  - D-S035-open
+  - D-S035-routing
+  answers:
+    E28-E1: 8a
+    E28-M: 7a
+- id: D-S035-E28-M
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: Document Manifest (lean)
+  summary: 7a lean Document Manifest approved
+  decision: E28-M=7a — Approve lean Document Manifest for S035/EV-028 01-requirements delta (deploy/config/test-plan/feature-list + evolve-decisions).
+  user_option: 7a
+  related_issues:
+  - '781'
+  related_decisions:
+  - E28-M
+  - D-S035-open
+  - D-S035-routing
+  answers:
+    E28-M: 7a
+- id: D-S035-routing
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 00-context
+  skill_id: 00-context
+  stage: routing
+  category: routing
+  status: confirmed
+  topic: 'S035/EV-028 Lean+build routing + OIDC tag publish scope'
+  summary: '5a Lean+build approved; 6b all three packages bump/publish 0.1.1 for OIDC proof'
+  decision: 'Approve Lean+build preset (5a) for S035/EV-028 — skip 03/05/06/09/11/12; required 00→16→01→02→04→07→08→10→13. Tag publish proof (6b): bump + publish tac-validate, iwxxm-validate, and tac2iwxxm to 0.1.1 via OIDC. session-brief + routing-plan.md locked/approved.'
+  user_option: '5a,6b'
+  user_intent: '5a Lean+build; 6b all three packages 0.1.1 OIDC'
+  related_issues:
+  - '781'
+  related_issues_oob:
+  - '777'
+  preset: Lean+build
+  preset_status: approved
+  branch: evolve/EV-028-empiric2-ops-leftovers-781
+- id: D-S035-open
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session-open
+  status: confirmed
+  topic: 'Open S035 / EV-028 #781 EMPIRIC2 Codecov purge + PyPI Trusted Publisher + landing pages'
+  summary: 'User chose 1b feature+16-evolve, 2a scope, 3b READMEs incl dissemination, 4b tag publish proof'
+  decision: 'Open S035/EV-028 for #781 alone — Codecov purge + PyPI Trusted Publisher (EMPIRIC2/TAC-to-IWXXM) + public PyPI landing READMEs (tac-validate, iwxxm-validate, tac2iwxxm + dissemination polish); prove OIDC with small tag publish (4b). cycle_type general; no new Fn. Routing draft 00→16→01→02→04→07→08→10→13 (skip 03/05/06/09/11/12); preset pending_approval until routing-plan.md written/approved. Unblocks #777 packaging; warm-up before product cycle.'
+  user_option: '1b,2a,3b,4b'
+  user_intent: '1b feature+16-evolve; 2a scope; 3b READMEs incl dissemination; 4b tag publish proof'
+  related_issues:
+  - '781'
+  related_issues_oob:
+  - '777'
+  preset: pending_approval
+  preset_status: pending_approval
+  branch: evolve/EV-028-empiric2-ops-leftovers-781
 - id: D-S034-EV027-phase4-close
   date: '2026-07-31'
   timestamp: '2026-07-31'
@@ -15343,6 +15524,36 @@ decisions_log:
   preset: Lean+build
   preset_status: approved
 artifacts:
+- path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
+  kind: requirements-delta
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-08-01'
+  updated_at: '2026-08-01'
+  status: written
+  note: 'S035/EV-028 01-requirements COMPLETE — D-S035-E28-M/E1; lean manifest + close→02'
+- path: docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
+  kind: session-brief
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-01'
+  updated_at: '2026-08-01'
+  status: approved
+  note: 'S035/EV-028 Phase 0 locked — D-S035-routing; session-brief + routing-plan approved'
+- path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
+  kind: routing-plan
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-01'
+  updated_at: '2026-08-01'
+  status: approved
+  note: 'S035/EV-028 D-S035-routing — Lean+build approved; 6b all three packages 0.1.1 OIDC'
 - path: docs/sessions/S033-va-multi-location-equality/reports/evolve-summary.md
   kind: evolve-summary
   session_id: S033-va-multi-location-equality
@@ -23809,27 +24020,149 @@ evolve_cycles:
   - '2026-07-31 S034/EV-027 01-requirements COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; handoff 02-verify-plan; #815'
   - '2026-07-31 S034/EV-027 02-verify-plan STARTED (delta) — D-S034-E27-E1; #815'
   - '2026-07-31 S034/EV-027 Phase 0 locked D-S034-open=1,1,2,1 — E27-1..4; handoff 01-requirements; branch evolve/EV-027-wmo-decode-residual-matrix; #815'
+- id: EV-028
+  session_id: S035-empiric2-ops-leftovers-781
+  cycle_type: general
+  feature_ids: []
+  title: "#781 EMPIRIC2 Codecov purge + PyPI Trusted Publisher + landing pages"
+  status: in_progress
+  started: '2026-08-01'
+  started_at: '2026-08-01'
+  completed:
+  scope_summary: |
+    In: Codecov purge (README badge, ci-cd.yml codecov steps, .codecov.yml if any, delete CODECOV_TOKEN);
+    PyPI Trusted Publisher → EMPIRIC2/TAC-to-IWXXM + pypi-publish.yml; prove with small tag publish (4b);
+    Public PyPI landing READMEs for tac-validate, iwxxm-validate, tac2iwxxm + packages/dissemination README polish (3b)
+    — no internal ADR/Fn/E10 refs on consumer-facing pages.
+    Out: optional e2e/load Actions secrets; Render hostname rename; Supabase Site URL; #777 iwxxm-dissemination publish.
+    Tag publish proof (D-S035-routing 6b): bump + publish tac-validate, iwxxm-validate, and tac2iwxxm to 0.1.1 via OIDC.
+  current_stage: 02-verify-plan
+  github_issues:
+  - '781'
+  branch: evolve/EV-028-empiric2-ops-leftovers-781
+  preset: Lean+build
+  preset_status: approved
+  routing_plan:
+    required_stages:
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 10-e2e
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 11-verify-impl
+    - 12-verify-deploy
+    note: "Lean+build — 10=packaging/OIDC smoke (not browser H4–H5); 13=PyPI tag publish all three 0.1.1; skip 03/05/06/09/11/12; D-S035-routing approved"
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-01'
+      completed: '2026-08-01'
+      note: "D-S035-open + D-S035-routing; session-brief + routing-plan locked"
+    16-evolve:
+      status: in_progress
+      mode: orchestrator
+      started: '2026-08-01'
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-08-01'
+      completed: '2026-08-01'
+      note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
+      artifacts_updated:
+      - docs/decisions/evolve-decisions.md
+      - docs/deploy.md
+      - docs/config-spec.md
+      - docs/test-plan.md
+      - docs/feature-list.md
+    02-verify-plan:
+      status: in_progress
+      mode: delta
+      started: '2026-08-01'
+      note: 'STARTED (delta) — D-S035-E28-E1; #781'
+    04-tech-plan:
+      status: pending
+      mode: delta
+    07-build:
+      status: pending
+      mode: delta
+    08-verify-build:
+      status: pending
+      mode: delta
+    10-e2e:
+      status: pending
+      mode: delta
+      note: packaging/OIDC smoke — not browser H4–H5
+    13-deploy-smoke:
+      status: pending
+      mode: delta
+      note: PyPI tag publish all three 0.1.1
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  issues:
+  - '781'
+  decision_refs:
+  - D-S035-open
+  - D-S035-routing
+  - D-S035-E28-M
+  - D-S035-E28-E1
+  - E28-M
+  - E28-E1
+  answers:
+    E28-1: '1b'
+    E28-2: '2a'
+    E28-3: '3b'
+    E28-4: '4b'
+    E28-5: '5a'
+    E28-6: '6b'
+    E28-M: 7a
+    E28-E1: 8a
+  artifacts:
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
+    status: written
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/
+    status: in_progress
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
+    status: approved
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
+    status: approved
+  tip_sha: 9ff0157
+  tip_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
+  notes:
+  - '2026-08-01 S035/EV-028 02-verify-plan STARTED (delta) — D-S035-E28-E1; #781'
+  - '2026-08-01 S035/EV-028 01-requirements COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; handoff 02-verify-plan; #781'
+  - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b all three packages 0.1.1 OIDC; 00 COMPLETE; 16 in_progress; current_stage 01-requirements; #781'
+  - '2026-08-01 S035/EV-028 00-context — branch active; session-brief.md in_progress; routing-plan.md pending_approval (not approved); #781'
+  - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b feature+16-evolve, 2a scope, 3b READMEs+dissemination, 4b tag publish); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
+  note: 'in_progress — 01 COMPLETE; 02-verify-plan in_progress; D-S035-E28-M/E1; 6b packages 0.1.1 OIDC; #781'
 git_history:
-  current_branch: main
+  current_branch: evolve/EV-028-empiric2-ops-leftovers-781
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit:
   tip_sha: 9ff0157
   tip_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
-  pr_number: 821
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/821
-  pr_status: merged
-  merge_sha: ad36aa0
-  merge_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
-  closeout_pr_number: 822
-  closeout_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/822
-  closeout_pr_status: merged
-  closeout_merge_sha: 9ff0157
-  closeout_merge_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
-  closeout_pr_note: 'S034 #822 closeout docs merged; EV-027/S034 closed (D-S034-EV027-phase4-close)'
-  s034_closeout_pr_status: merged
-  note: 'S034/EV-027 CLOSED — Phase 4 close D-S034-EV027-phase4-close; PR #821 @ ad36aa0; #822 @ 9ff0157; active_session=null; #815 closed; #820 open'
+  recommended_branch: evolve/EV-028-empiric2-ops-leftovers-781
+  note: 'S035/EV-028 — active_session=S035; current_branch evolve/EV-028-empiric2-ops-leftovers-781 (active); tip @ 9ff0157; routing-plan pending_approval; #781'
   notes:
+  - '2026-08-01 S035/EV-028 branch ACTIVE — evolve/EV-028-empiric2-ops-leftovers-781 created/checked out; session-brief in_progress; routing-plan pending_approval; #781'
+  - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b/2a/3b/4b); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
   - '2026-07-31 S034/EV-027 CLOSED — Phase 4 close D-S034-EV027-phase4-close option 1; PR #821 @ ad36aa0; #822 closeout MERGED @ 9ff0157; #815 closed; #820 open; 13 waived; active_session=null'
   - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — Gate C done; #815 closed; #820 open; 13 waived; Phase 4 closeout pending; branch docs/S034-EV027-closeout'
   - '2026-07-31 S034/EV-027 tip synced — 245d518 (245d518aec33a41a0dd9cd59ae1b39262af50dfc); 07-build M0–M2 + 08/10 PASS; gates.c_to_d pending (awaiting PR); child #820; #815'
@@ -24096,18 +24429,30 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-028-empiric2-ops-leftovers-781
+    purpose: 'S035/EV-028 #781 Codecov purge + PyPI Trusted Publisher + landing READMEs'
+    base: main
+    status: active
+    created: '2026-08-01'
+    created_at: '2026-08-01'
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    tip_sha: 9ff0157
+    tip_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
+    note: 'Active — base main @ 9ff0157; 00-context in_progress; routing-plan pending_approval'
+    pushed: false
   - name: docs/S034-EV027-closeout
     purpose: S034/EV-027 Phase 4 closeout docs
     base: main
-    status: active
+    status: merged
     created: '2026-07-31'
     created_at: '2026-07-31'
     session_id: S034-wmo-decode-residual-matrix
     evolve_cycle_id: EV-027
     tip_sha: ad36aa0
     tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
-    note: 'Closeout docs in progress — evolve-report / evolve-summary / CHANGELOG / feature-list'
-    pushed: false
+    note: 'Closeout docs merged via #822 @ 9ff0157'
+    pushed: true
   - name: evolve/EV-027-wmo-decode-residual-matrix
     base: main
     status: merged

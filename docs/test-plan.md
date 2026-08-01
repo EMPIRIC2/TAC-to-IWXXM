@@ -503,9 +503,10 @@ Before closing S013 / EV-009:
 ### TC-F14-001: Tag → trusted publish (UJ-023)
 
 - **Level**: CI
-- **Objective**: OIDC trusted publishing on `*-v0.1.0` tags
-- **Pass criteria**: Workflow pattern + smoke job for all three packages
-- **Source**: F14; E10-25
+- **Objective**: OIDC trusted publishing on `{pkg}-v*` tags
+- **Pass criteria**: Workflow pattern + smoke job for all three packages; Trusted Publisher
+  points at `EMPIRIC2/TAC-to-IWXXM` + `pypi-publish.yml` (EV-028)
+- **Source**: F14; E10-25; #781
 
 ### TC-F14-002: tac2iwxxm[validate] extras (UJ-DEV-005)
 
@@ -520,6 +521,31 @@ Before closing S013 / EV-009:
 - [ ] Hard perf gates at publish (E10-24)
 - [ ] H4–H5 + H6′ UJ-022 after Render redeploy
 - [ ] PyPI install smokes for three packages
+
+### EV-028 / #781 — EMPIRIC2 Codecov purge + PyPI Trusted Publisher (S035)
+
+#### TC-EV028-001: Codecov removed from product CI
+
+- **Level**: CI / repo hygiene
+- **Objective**: No Codecov badge, workflow steps, config, or `CODECOV_TOKEN` secret
+- **Pass criteria**: `ci-cd.yml` has no `codecov/codecov-action`; README badges gone;
+  `.codecov.yml` absent; `CODECOV_TOKEN` not in repo secrets; CI green without upload
+- **Source**: #781; EV-028
+
+#### TC-EV028-002: Trusted Publisher → EMPIRIC2
+
+- **Level**: Ops
+- **Objective**: All three PyPI projects trust `EMPIRIC2/TAC-to-IWXXM` + `pypi-publish.yml`
+- **Pass criteria**: Publisher settings match deploy.md table; stale pre-transfer publishers removed
+- **Source**: #781; EV-028; UJ-023
+
+#### TC-EV028-003: Tag publish `0.1.1` ×3 (UJ-023)
+
+- **Level**: CI / live PyPI
+- **Objective**: OIDC publish `tac-validate`, `iwxxm-validate`, `tac2iwxxm` at `0.1.1`
+- **Pass criteria**: Tags `*-v0.1.1` → `pypi-publish.yml` green; `pip install <pkg>==0.1.1`
+  in clean venv; landings have no required ADR/Feature/E10 refs
+- **Source**: #781; EV-028; F12–F14
 
 ### TC-F15-001: Issue registry completeness (UJ-024)
 
