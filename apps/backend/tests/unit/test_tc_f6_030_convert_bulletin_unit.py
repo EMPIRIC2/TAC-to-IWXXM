@@ -125,6 +125,40 @@ def test_convert_bulletin_requires_product(client: TestClient) -> None:
     assert response.status_code == 422
 
 
+SPECI_CCA_TEXT = """\
+SPUS31 KZNY 121230 CCA
+SPECI KJFK 121225Z 18008KT 10SM FEW250 22/14 A3012=
+"""
+
+
+def test_convert_bulletin_speci_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T3.2: SPECI AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return f'<iwxxm:SPECI reportStatus="CORRECTION">{tac[:20]}</iwxxm:SPECI>', None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=SPECI_CCA_TEXT,
+        product="SPECI",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "SP"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "SPECI"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:SPECI" in (payload["results"][0]["xml"] or "")
+
+
 def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
 
