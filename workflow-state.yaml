@@ -14,10 +14,12 @@ active_session:
     so public pages do not require internal ADR/Feature/E10 refs; prove OIDC with a small tag publish.
     Unblocks #777 packaging; warm-up before product cycle.
   status: in_progress
-  branch: evolve/EV-028-empiric2-ops-leftovers-781
+  branch: main
   orchestrator: 16-evolve
   evolve_cycle_id: EV-028
   github_issues:
+  - '781'
+  github_issues_closed:
   - '781'
   feature_ids: []
   artifacts_dir: docs/sessions/S035-empiric2-ops-leftovers-781/
@@ -40,6 +42,10 @@ active_session:
     status: written
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
     status: written
+  - path: docs/evolve-report-EV-028.md
+    status: written
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/evolve-summary.md
+    status: written
   routing_plan_summary: "00→16→01→02→04→07→08→10→13 (skip 03/05/06/09/11/12); packaging/OIDC smoke"
   preset: Lean+build
   preset_status: approved
@@ -51,16 +57,21 @@ active_session:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  current_stage: 07-build
+  current_stage:
   active_milestone: M3
   active_task: T3.5
-  active_task_status: in_progress
+  active_task_status: completed
+  progress: 15/15
   started_at: '2026-08-01'
-  note: 'T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; awaiting merge approval to close #781; #781'
+  note: 'EV-028 COMPLETE — PR #824 MERGED @ 70312dd; #781 CLOSED; main CI 30727796614 SUCCESS; T3.5 done; 07/08/10/13 complete; Phase 4 closeout docs pending push; #781'
   pr_number: 824
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824
-  pr_status: open
-  ci_run: '30727406104'
+  pr_status: merged
+  merge_sha: 70312dd
+  merge_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+  tip_sha: 70312dd
+  tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+  ci_run: '30727796614'
   context_briefs: []
   decision_refs:
   - D-S035-open
@@ -86,8 +97,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-08-01'
+    completed: '2026-08-01'
+    note: 'COMPLETE — EV-028 completed; PR #824 @ 70312dd; #781 closed; Phase 4 closeout pending'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -112,9 +125,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-01'
-    note: "in_progress — T3.5 PR #824 OPEN @ a6db427; CI/CD green @ 30727406104; awaiting merge approval to close #781; #781"
+    completed: '2026-08-01'
+    note: "COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -132,8 +146,10 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: pending
-    note: 'PyPI 0.1.1 ×3 + iwxxm-validate 0.1.2 done; T3.4 PASS; remaining T3.5 closeout'
+    status: completed
+    started: '2026-08-01'
+    completed: '2026-08-01'
+    note: 'COMPLETE — PyPI OIDC 0.1.1×3 + iwxxm-validate 0.1.2 + clean-venv install smoke PASS (T3.3/T3.4); #781 closed'
 sessions:
 - id: S034-wmo-decode-residual-matrix
   type: feature
@@ -5267,11 +5283,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-08-01'
     started: '2026-08-01'
-    completed_at:
-    completed:
+    completed_at: '2026-08-01'
+    completed: '2026-08-01'
     previous_started_at: '2026-07-31'
     previous_completed_at: '2026-07-31'
     previous_session_id: S034-wmo-decode-residual-matrix
@@ -5281,16 +5297,16 @@ stages:
     previous_note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: a6db427
-    tip_sha_full: a6db427430fcd7b9cf085ef34bb0bd44b0ad2f70
-    note: 'T3.5 PR #824 OPEN @ a6db427 — CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
-    current_stage: M3
+    tip_sha: 70312dd
+    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    note: 'S035/EV-028 07-build COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
+    current_stage:
     current_milestone: M3
     current_task: T3.5
     active_milestone: M3
     active_task: T3.5
-    active_task_status: in_progress
-    progress: 0/15
+    active_task_status: completed
+    progress: 15/15
     decision_refs:
     - D-S035-04-plan-approve
     - D-S035-02-phase-a
@@ -5312,17 +5328,18 @@ stages:
       session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
       skill_id: 07-build
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'T3.5 PR #824 OPEN @ a6db427 — CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
+      completed_at: '2026-08-01'
+      note: 'S035/EV-028 07-build COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
       active_milestone: M3
       current_milestone: M3
       active_task: T3.5
       current_task: T3.5
-      active_task_status: in_progress
-      progress: 0/15
+      active_task_status: completed
+      progress: 15/15
       deepen:
       - F12
       - F13
@@ -5341,33 +5358,39 @@ stages:
       - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
     substeps:
       task_loop:
-        status: in_progress
+        status: completed
         current_task: T3.5
-        active_task_status: in_progress
+        active_task_status: completed
         active_milestone: M3
         phase: C
         milestone: M3
-        notes: 'S035/EV-028 T3.5 PR #824 OPEN @ a6db427 — CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
+        notes: 'S035/EV-028 07-build COMPLETE — PR #824 merged @ 70312dd; #781 closed'
     delta_substages:
     - id: S035-empiric2-ops-leftovers-781
       session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
       skill_id: 07-build
-      status: in_progress
+      status: completed
       started_at: '2026-08-01'
       started: '2026-08-01'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
       mode: delta
-      note: 'T3.5 PR #824 OPEN @ a6db427 — CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
+      note: 'S035/EV-028 07-build COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
       active_milestone: M3
       current_milestone: M3
       active_task: T3.5
       current_task: T3.5
-      active_task_status: in_progress
-      progress: 0/15
+      active_task_status: completed
+      progress: 15/15
       decision_id: D-S035-14d
-      tip_sha: a6db427
-      tip_sha_full: a6db427430fcd7b9cf085ef34bb0bd44b0ad2f70
-      branch: evolve/EV-028-empiric2-ops-leftovers-781
+      tip_sha: 70312dd
+      tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+      branch: main
+      pr_number: 824
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824
+      pr_status: merged
+      merge_sha: 70312dd
       deepen:
       - F12
       - F13
@@ -5766,6 +5789,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
     - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
     - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
     - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build PASS (lint/typecheck/package+native tests; no codecov); packaging smoke PASS (landings); reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5 PR closeout; branch ahead 2 of origin; #781'
@@ -6346,13 +6370,13 @@ stages:
     previous_evolve_cycle_id: EV-026
     previous_tip_sha: 7e08051
     previous_note: 'S033/EV-026 10-e2e smoke COMPLETE PASS — TC-EV025-008/009 + Vitest (T3.2); tip 7e08051; Gate C PASS; #809'
-    session_id: S034-wmo-decode-residual-matrix
-    evolve_cycle_id: EV-027
-    tip_sha: 245d518
-    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    tip_sha: 70312dd
+    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
     overall: pass
-    report: docs/sessions/S034-wmo-decode-residual-matrix/reports/e2e-report.md
-    note: 'S034/EV-027 10-e2e smoke COMPLETE PASS — e2e-report.md; tip 245d518; awaiting Gate C / PR; #815'
+    report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
+    note: 'S035/EV-028 10-e2e packaging smoke COMPLETE PASS — t32-packaging-smoke.md; tip 70312dd; #781 closed'
     substeps:
       extract_journeys:
         status: completed
@@ -6368,6 +6392,17 @@ stages:
         status: skipped
         note: deferred to 13 when_ships
     delta_substages:
+    - session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
+      skill_id: 10-e2e
+      status: completed
+      started_at: '2026-08-01'
+      completed_at: '2026-08-01'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
+      tip_sha: 305658f
+      note: T3.2 packaging smoke PASS — t32-packaging-smoke.md; #781 closed on merge
     - session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
       skill_id: 10-e2e
@@ -6693,13 +6728,13 @@ stages:
     previous_evolve_cycle_id: EV-026
     previous_tip_sha: 7e08051
     previous_note: 'S033/EV-026 08-verify-build COMPLETE PASS — T3.2; report docs/sessions/S033-va-multi-location-equality/reports/verification-report.md; tip 7e08051; Gate C PASS; #809'
-    session_id: S034-wmo-decode-residual-matrix
-    evolve_cycle_id: EV-027
-    tip_sha: 245d518
-    tip_sha_full: 245d518aec33a41a0dd9cd59ae1b39262af50dfc
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    tip_sha: 70312dd
+    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
     overall: pass
-    note: 'S034/EV-027 08-verify-build COMPLETE PASS — verification-report.md; tip 245d518; #815'
-    report: docs/sessions/S034-wmo-decode-residual-matrix/reports/verification-report.md
+    note: 'S035/EV-028 08-verify-build COMPLETE PASS — t31-verify-build.md; tip 70312dd; #781 closed'
+    report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t31-verify-build.md
     substeps:
       lint:
         status: completed
@@ -6714,6 +6749,17 @@ stages:
       report:
         status: completed
     delta_substages:
+    - session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-08-01'
+      completed_at: '2026-08-01'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t31-verify-build.md
+      tip_sha: 305658f
+      note: T3.1 PASS — t31-verify-build.md; #781 closed on merge
     - session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
       skill_id: 08-verify-build
@@ -7200,26 +7246,42 @@ stages:
     previous_tip_sha: 1e46b38
     previous_overall: waived
     previous_note: 'WAIVED — T7.3 deferred at Phase 4 close (D-S032-EV025-phase4-close); deploy gate waived for EV-025/S032'
-    session_id: S033-va-multi-location-equality
-    evolve_cycle_id: EV-026
-    note: 'PASS; pending user approve D-S033-13 — H0c–H5 + EV-026 catalog/convert; API dep-d9miestbedkc73dr3j9g FE dep-d9mietnqj5pc73d3c8a0 @ 101f555'
-    tip_sha: 101f555
-    tip_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    note: 'S035/EV-028 13-deploy-smoke COMPLETE PASS — PyPI OIDC + install smoke; tip 70312dd; #781 closed'
+    tip_sha: 70312dd
+    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
     overall: pass
     active_task: T3.4
     active_task_status: completed
-    progress: 12/12
-    do_not_auto_merge: false
-    decision_id: D-S033-13-smoke-pass
-    pr_number: 817
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/817
+    progress: 15/15
+    report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
+    pr_number: 824
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824
     pr_status: merged
-    merge_sha: 101f555
-    merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
-    api_deploy: dep-d9miestbedkc73dr3j9g
-    fe_deploy: dep-d9mietnqj5pc73d3c8a0
-    report: docs/sessions/S033-va-multi-location-equality/reports/deploy-smoke.md
+    merge_sha: 70312dd
+    merge_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
     delta_substages:
+    - id: S035-empiric2-ops-leftovers-781
+      session_id: S035-empiric2-ops-leftovers-781
+      evolve_cycle_id: EV-028
+      skill_id: 13-deploy-smoke
+      status: completed
+      mode: delta
+      started: '2026-08-01'
+      started_at: '2026-08-01'
+      completed: '2026-08-01'
+      completed_at: '2026-08-01'
+      branch: main
+      tip_sha: 70312dd
+      tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+      overall: pass
+      report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
+      note: 'PASS — PyPI OIDC 0.1.1×3 + iwxxm-validate 0.1.2 + clean-venv install smoke; #781 closed'
+      pr_number: 824
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824
+      pr_status: merged
+      merge_sha: 70312dd
     - id: S033-va-multi-location-equality
       session_id: S033-va-multi-location-equality
       evolve_cycle_id: EV-026
@@ -7683,21 +7745,21 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
     started_at: '2026-08-01'
     started: '2026-08-01'
-    completed_at:
-    completed:
-    current_stage: 07-build
-    prior_note: 'S035/EV-028 16-evolve in_progress — T3.5 STARTED @ bf9f48c; push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
-    note: 'S035/EV-028 16-evolve in_progress — T3.5 PR #824 OPEN @ a6db427; CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
-    prior_note: 'S035/EV-028 16-evolve in_progress — T3.1+T3.2 COMPLETE @ 305658f; verify-build + packaging smoke PASS; next T3.5 PR closeout; branch ahead 2 of origin; #781'
-    tip_sha: a6db427
-    tip_sha_full: a6db427430fcd7b9cf085ef34bb0bd44b0ad2f70
+    completed_at: '2026-08-01'
+    completed: '2026-08-01'
+    current_stage:
+    prior_note: 'S035/EV-028 16-evolve in_progress — T3.5 PR #824 OPEN @ a6db427; CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
+    note: 'S035/EV-028 16-evolve COMPLETE — EV-028 completed; PR #824 @ 70312dd; #781 closed; Phase 4 closeout pending'
+    tip_sha: 70312dd
+    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
     notes:
+    - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
     - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
     - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
     - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build PASS (lint/typecheck/package+native tests; no codecov); packaging smoke PASS (landings); reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5 PR closeout; branch ahead 2 of origin; #781'
@@ -24396,10 +24458,11 @@ evolve_cycles:
   cycle_type: general
   feature_ids: []
   title: "#781 EMPIRIC2 Codecov purge + PyPI Trusted Publisher + landing pages"
-  status: in_progress
+  status: completed
   started: '2026-08-01'
   started_at: '2026-08-01'
-  completed:
+  completed: '2026-08-01'
+  completed_at: '2026-08-01'
   scope_summary: |
     In: Codecov purge (README badge, ci-cd.yml codecov steps, .codecov.yml if any, delete CODECOV_TOKEN);
     PyPI Trusted Publisher → EMPIRIC2/TAC-to-IWXXM + pypi-publish.yml; prove with small tag publish (4b);
@@ -24407,16 +24470,20 @@ evolve_cycles:
     — no internal ADR/Fn/E10 refs on consumer-facing pages.
     Out: optional e2e/load Actions secrets; Render hostname rename; Supabase Site URL; #777 iwxxm-dissemination publish.
     Tag publish proof (D-S035-routing 6b): bump + publish tac-validate, iwxxm-validate, and tac2iwxxm to 0.1.1 via OIDC.
-  current_stage: 07-build
+  current_stage:
   active_task: T3.5
-  active_task_status: in_progress
+  active_task_status: completed
+  progress: 15/15
   github_issues:
   - '781'
-  branch: evolve/EV-028-empiric2-ops-leftovers-781
+  branch: main
   pr_number: 824
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824
-  pr_status: open
-  ci_run: '30727406104'
+  pr_status: merged
+  merge_sha: 70312dd
+  merge_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+  merge_commit: 70312dd8b2b61464c7c594d136881dd63678db19
+  ci_run: '30727796614'
   preset: Lean+build
   preset_status: approved
   routing_plan:
@@ -24444,9 +24511,11 @@ evolve_cycles:
       completed: '2026-08-01'
       note: "D-S035-open + D-S035-routing; session-brief + routing-plan locked"
     16-evolve:
-      status: in_progress
+      status: completed
       mode: orchestrator
       started: '2026-08-01'
+      completed: '2026-08-01'
+      note: 'COMPLETE — EV-028 completed; PR #824 @ 70312dd; #781 closed; Phase 4 closeout pending'
     01-requirements:
       status: completed
       mode: delta
@@ -24472,12 +24541,15 @@ evolve_cycles:
       completed: '2026-08-01'
       note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b/12a → 07 @ T0.1; #781'
     07-build:
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-01'
+      completed: '2026-08-01'
       active_task: T3.5
-      active_task_status: in_progress
-      note: 'T3.5 PR #824 OPEN @ a6db427 — CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
+      active_task_status: completed
+      progress: 15/15
+      tip_sha: 70312dd
+      note: 'COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
     08-verify-build:
       status: completed
       mode: delta
@@ -24491,20 +24563,28 @@ evolve_cycles:
       completed: '2026-08-01'
       note: 'COMPLETE (catch-up T3.2) — packaging smoke PASS (landings); report t32-packaging-smoke.md @ 305658f; packaging/OIDC smoke — not browser H4–H5; #781'
     13-deploy-smoke:
-      status: pending
+      status: completed
       mode: delta
-      note: 'PyPI 0.1.1 ×3 + iwxxm-validate 0.1.2 done (D-S035-14a/14c); T3.4 PASS; T3.5 remaining'
+      started: '2026-08-01'
+      completed: '2026-08-01'
+      overall: pass
+      report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
+      tip_sha: 70312dd
+      note: 'COMPLETE — PyPI OIDC 0.1.1×3 + iwxxm-validate 0.1.2 + clean-venv install smoke PASS; #781 closed on merge'
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
-    deploy: pending
+    c_to_d: passed
+    c_to_d_note: PR #824 merged @ 70312dd; #781 closed; main CI 30727796614 SUCCESS
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
+    phase_c_note: build+verify+PR merge complete (07/08/10/13 PASS; #824 @ 70312dd); Gate C PASS
     phase_d: pending
-    deploy: pending
+    phase_d_note: Phase 4 closeout docs + AskQuestion pending
+    deploy: passed
   issues:
   - '781'
   decision_refs:
@@ -24552,16 +24632,21 @@ evolve_cycles:
     status: written
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
     status: written
+  - path: docs/evolve-report-EV-028.md
+    status: written
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/evolve-summary.md
+    status: written
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/
-    status: in_progress
+    status: completed
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
     status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
     status: approved
-  tip_sha: a6db427
-  tip_sha_full: a6db427430fcd7b9cf085ef34bb0bd44b0ad2f70
-  tip_note: 'T3.5 PR #824 OPEN @ a6db427 — CI/CD green @ 30727406104; awaiting merge approval to close #781'
+  tip_sha: 70312dd
+  tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+  tip_note: 'EV-028 COMPLETE — PR #824 MERGED @ 70312dd; #781 CLOSED; main CI 30727796614 SUCCESS; Phase 4 closeout pending'
   notes:
+  - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
   - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
   - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
   - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build PASS (lint/typecheck/package+native tests; no codecov); packaging smoke PASS (landings); reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5 PR closeout; branch ahead 2 of origin; #781'
@@ -24577,17 +24662,18 @@ evolve_cycles:
   - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b all three packages 0.1.1 OIDC; 00 COMPLETE; 16 in_progress; current_stage 01-requirements; #781'
   - '2026-08-01 S035/EV-028 00-context — branch active; session-brief.md in_progress; routing-plan.md pending_approval (not approved); #781'
   - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b feature+16-evolve, 2a scope, 3b READMEs+dissemination, 4b tag publish); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
-  note: 'in_progress — T3.5 PR #824 OPEN @ a6db427; CI/CD green @ 30727406104; awaiting merge approval; gates.a_to_b/b_to_c passed; #781'
+  note: 'EV-028 COMPLETE — PR #824 MERGED @ 70312dd; #781 CLOSED; main CI 30727796614 SUCCESS; T3.5 done; Phase 4 closeout docs pending push; #781'
 git_history:
-  current_branch: evolve/EV-028-empiric2-ops-leftovers-781
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: a6db427
-  tip_sha_full: a6db427430fcd7b9cf085ef34bb0bd44b0ad2f70
-  recommended_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  note: 'S035/EV-028 — T3.5 PR #824 OPEN @ a6db427; CI/CD green @ 30727406104; ahead_of_origin=0; pushed; #781'
+  tip_sha: 70312dd
+  tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+  recommended_branch: main
+  note: 'S035/EV-028 — PR #824 MERGED @ 70312dd; main CI 30727796614 SUCCESS; #781 closed; Phase 4 closeout pending'
   notes:
+  - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
   - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
   - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead_of_origin=3; #781'
   - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build + packaging smoke PASS; reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5; ahead_of_origin=2; #781'
@@ -24869,19 +24955,22 @@ git_history:
   - name: evolve/EV-028-empiric2-ops-leftovers-781
     purpose: 'S035/EV-028 #781 Codecov purge + PyPI Trusted Publisher + landing READMEs'
     base: main
-    status: active
+    status: merged
     created: '2026-08-01'
     created_at: '2026-08-01'
+    merged_at: '2026-08-01'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: a6db427
-    tip_sha_full: a6db427430fcd7b9cf085ef34bb0bd44b0ad2f70
-    note: 'Active — tip a6db427; PR #824 OPEN; CI/CD green @ 30727406104; awaiting merge approval; ahead_of_origin=0'
+    tip_sha: 70312dd
+    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    note: 'MERGED via PR #824 @ 70312dd; #781 closed; main CI 30727796614 SUCCESS'
     pushed: true
     pr_number: 824
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824
-    pr_status: open
-    ci_run: '30727406104'
+    pr_status: merged
+    merge_sha: 70312dd
+    merge_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    ci_run: '30727796614'
     tag: iwxxm-validate-v0.1.2
   - name: docs/S034-EV027-closeout
     purpose: S034/EV-027 Phase 4 closeout docs
@@ -25810,6 +25899,15 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 70312dd
+    sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    branch: main
+    message: "Merge pull request #824 from EMPIRIC2/evolve/EV-028-empiric2-ops-leftovers-781"
+    stage: 16-evolve
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    timestamp: '2026-08-01'
+    note: 'PR #824 MERGED — EV-028 complete; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout pending'
   - sha: a6db427
     sha_full: a6db427430fcd7b9cf085ef34bb0bd44b0ad2f70
     branch: evolve/EV-028-empiric2-ops-leftovers-781
