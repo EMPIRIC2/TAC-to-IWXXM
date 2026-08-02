@@ -41,6 +41,7 @@
 | E29-T9 | gate | Plan approve / Gate B? | **1** — approve M0–M12; → **07 @ T0.1** (`D-S036-04-plan`) |
 | E29-semver | decision | Publishable semver after M2? | **1** — `tac2iwxxm` only **0.1.1 → 0.2.0** (pyproject + Cargo); no tags/PyPI (`D-S036-semver-minor`) |
 | E29-semver-patch | decision | Publishable semver after M6 T6.2? | **2** — `tac2iwxxm` only **0.2.0 → 0.2.1** (pyproject + Cargo + `__version__`); no tags/PyPI (`D-S036-semver-patch`) |
+| E29-semver-patch-2 | decision | Publishable semver after M9 T9.2? | **2** — `tac2iwxxm` only **0.2.1 → 0.2.2** (pyproject + Cargo + `__version__`); no tags/PyPI (`D-S036-semver-patch-2`) |
 
 **Scope (verbatim)**: Go 1-by-1 across the eight TAC→IWXXM product families and ensure
 validation, linting, and conversion rules (plus examples for all TAC input shapes) have no
