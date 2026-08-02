@@ -1,6 +1,6 @@
 [project]
 name = "iwxxm-validate"
-version = "0.1.1"
+version = "0.1.2"
 description = "Validate IWXXM XML with XSD and Schematron (schemas bundled)"
 readme = "README.md"
 license = { text = "MIT" }

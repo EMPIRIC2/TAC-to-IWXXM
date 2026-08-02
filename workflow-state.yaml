@@ -47,9 +47,13 @@ active_session:
   - 12-verify-deploy
   current_stage: 07-build
   active_milestone: M3
-  active_task: T3.3
+  active_task: T3.3b
   active_task_status: in_progress
   started_at: '2026-08-01'
+  note: |
+    T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a). User chose option 1: fix native
+    iwxxm-validate AIXM 5.1 vs 5.1.1 VendorResolver then bump/publish 0.1.2.
+    T3.3b in_progress. Local tip includes unpushed docs 465ac4f + WIP AIXM fix.
   context_briefs: []
   decision_refs:
   - D-S035-open
@@ -60,6 +64,8 @@ active_session:
   - D-S035-02-phase-a
   - D-S035-04-plan-approve
   - D-S035-E28-T22
+  - D-S035-14a
+  - D-S035-14b-scope
   routing_plan:
   - stage: 00-context
     required: true
@@ -99,7 +105,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-01'
-    note: "STARTED (delta) — D-S035-04-plan-approve Gate B → 07 @ T0.1 (M0 Codecov purge); #781"
+    note: "T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b in_progress — native AIXM fix → iwxxm-validate 0.1.2; tip 465ac4f (+ WIP AIXM); #781"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -113,7 +119,7 @@ active_session:
     required: true
     mode: delta
     status: pending
-    note: PyPI tag publish all three 0.1.1
+    note: PyPI tag publish — 0.1.1 ×3 done; iwxxm-validate 0.1.2 follow-up (T3.3b)
 sessions:
 - id: S034-wmo-decode-residual-matrix
   type: feature
@@ -5261,20 +5267,23 @@ stages:
     previous_note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: b8e37ae
-    tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
-    note: 'S035/EV-028 07-build STARTED (D-S035-04-plan-approve) — @ T0.1 Codecov purge; plan docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md; gates.b_to_c passed; tip b8e37ae; #781'
-    current_stage: M0
-    current_milestone: M0
-    current_task: T0.1
-    active_milestone: M0
-    active_task: T0.1
+    tip_sha: 465ac4f
+    tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
+    note: 'Native AIXM schema resolve fix + iwxxm-validate 0.1.2 bump (post 0.1.1 OIDC); T3.3b in_progress; tip 465ac4f (T3.3 docs, unpushed) + WIP AIXM (no SHA); #781'
+    current_stage: M3
+    current_milestone: M3
+    current_task: T3.3b
+    active_milestone: M3
+    active_task: T3.3b
     active_task_status: in_progress
     progress: 0/15
     decision_refs:
     - D-S035-04-plan-approve
     - D-S035-02-phase-a
     - D-S035-E28-S21
+    - D-S035-E28-T22
+    - D-S035-14a
+    - D-S035-14b-scope
     artifacts:
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
@@ -5288,11 +5297,11 @@ stages:
       mode: delta
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'STARTED (delta) — D-S035-04-plan-approve Gate B → 07 @ T0.1; #781'
-      active_milestone: M0
-      current_milestone: M0
-      active_task: T0.1
-      current_task: T0.1
+      note: 'T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b in_progress — native AIXM VendorResolver fix → iwxxm-validate 0.1.2 (D-S035-14b-scope); tip 465ac4f + WIP AIXM; #781'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.3b
+      current_task: T3.3b
       active_task_status: in_progress
       progress: 0/15
       deepen:
@@ -5302,17 +5311,19 @@ stages:
       decision_refs:
       - D-S035-04-plan-approve
       - D-S035-02-phase-a
+      - D-S035-14a
+      - D-S035-14b-scope
       artifacts:
       - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     substeps:
       task_loop:
         status: in_progress
-        current_task: T0.1
+        current_task: T3.3b
         active_task_status: in_progress
-        active_milestone: M0
+        active_milestone: M3
         phase: C
-        milestone: M0
-        notes: 'S035/EV-028 07-build STARTED @ T0.1 Codecov purge; tip b8e37ae; #781'
+        milestone: M3
+        notes: 'S035/EV-028 T3.3b in_progress — native AIXM schema resolve + iwxxm-validate 0.1.2; tip 465ac4f; #781'
     delta_substages:
     - id: S035-empiric2-ops-leftovers-781
       session_id: S035-empiric2-ops-leftovers-781
@@ -5322,16 +5333,16 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: delta
-      note: 'STARTED (delta) — D-S035-04-plan-approve → 07 @ T0.1; gates.b_to_c passed; #781'
-      active_milestone: M0
-      current_milestone: M0
-      active_task: T0.1
-      current_task: T0.1
+      note: 'T3.3 OIDC 0.1.1 done (D-S035-14a); T3.3b in_progress — native AIXM fix → 0.1.2; tip 465ac4f + WIP AIXM; #781'
+      active_milestone: M3
+      current_milestone: M3
+      active_task: T3.3b
+      current_task: T3.3b
       active_task_status: in_progress
       progress: 0/15
-      decision_id: D-S035-04-plan-approve
-      tip_sha: b8e37ae
-      tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
+      decision_id: D-S035-14b-scope
+      tip_sha: 465ac4f
+      tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
       branch: evolve/EV-028-empiric2-ops-leftovers-781
       deepen:
       - F12
@@ -5728,6 +5739,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-01 S035/EV-028 T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b STARTED (D-S035-14b-scope) — native AIXM VendorResolver fix → iwxxm-validate 0.1.2; tip 465ac4f (T3.3 docs, unpushed) + WIP AIXM (no SHA); #781'
     - '2026-08-01 S035/EV-028 07-build STARTED (D-S035-04-plan-approve) — @ T0.1 Codecov purge; gates.b_to_c passed; tip b8e37ae; #781'
     - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — T3.3 COMPLETE; 07 COMPLETE 14/14; #815 closed; #820 open; 13 waived; Phase 4 closeout docs + AskQuestion pending'
     - '2026-07-31 S034/EV-027 07-build COMPLETE — M0–M2 (T0.1–T2.4); tip 245d518; 08/10 PASS; gates.c_to_d pending (awaiting PR); #815/#820'
@@ -7646,11 +7658,12 @@ stages:
     completed_at:
     completed:
     current_stage: 07-build
-    note: 'S035/EV-028 16-evolve in_progress — 04 COMPLETE (D-S035-04-plan-approve); current_stage 07-build @ T0.1; tip b8e37ae; gates.b_to_c passed; #781'
-    prior_note: 'S035/EV-028 16-evolve in_progress — 02 COMPLETE (D-S035-02-phase-a); current_stage 04-tech-plan; tip 19e547a; #781'
-    tip_sha: b8e37ae
-    tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
+    note: 'S035/EV-028 16-evolve in_progress — T3.3 OIDC 0.1.1 SUCCESS (D-S035-14a); current_stage 07-build @ T3.3b (native AIXM → 0.1.2); tip 465ac4f + WIP AIXM; #781'
+    prior_note: 'S035/EV-028 16-evolve in_progress — 04 COMPLETE (D-S035-04-plan-approve); current_stage 07-build @ T0.1; tip b8e37ae; gates.b_to_c passed; #781'
+    tip_sha: 465ac4f
+    tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
     notes:
+    - '2026-08-01 S035/EV-028 T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b in_progress (D-S035-14b-scope) — native AIXM fix → iwxxm-validate 0.1.2; tip 465ac4f (unpushed docs) + WIP AIXM; #781'
     - '2026-08-01 S035/EV-028 04 COMPLETE → 07-build STARTED — D-S035-04-plan-approve Gate B (11b/12a); @ T0.1; tip b8e37ae; #781'
     - '2026-08-01 S035/EV-028 02 COMPLETE → 04-tech-plan STARTED — D-S035-02-phase-a Gate A PASS; D-S035-E28-S21 UJ-023; tip 19e547a; #781'
     - '2026-08-01 S035/EV-028 01 COMPLETE → 02-verify-plan STARTED — D-S035-E28-M (7a) + D-S035-E28-E1 (8a); #781'
@@ -7942,6 +7955,53 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S035-14a
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: ops
+  status: confirmed
+  topic: OIDC publish proof 0.1.1 ×3 SUCCESS
+  summary: T3.3 OIDC publish succeeded for all three packages at 0.1.1; follow-up native SCHEMA_PARSE_ERROR
+  decision: 'OIDC publish proof succeeded for tac-validate / iwxxm-validate / tac2iwxxm 0.1.1 (runs 30703582092 / 30703582129 / 30703806187). Follow-up: native iwxxm-validate SCHEMA_PARSE_ERROR (AIXM 5.1 vs 5.1.1) — user chose fix+0.1.2 (option 1).'
+  user_option: '1'
+  related_issues:
+  - '781'
+  related_decisions:
+  - D-S035-E28-T22
+  - D-S035-04-plan-approve
+  - D-S035-routing
+  tip_sha: 465ac4f
+  tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
+  note: 'tip 465ac4f = unpushed T3.3 docs commit; AIXM fix still WIP (no commit SHA)'
+- id: D-S035-14b-scope
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: ops
+  status: confirmed
+  topic: T3.3b native AIXM fix scope + iwxxm-validate-only 0.1.2
+  summary: Fix VendorResolver path/version + nested include dir tracking; bump only iwxxm-validate to 0.1.2
+  decision: 'T3.3b — fix VendorResolver path/version resolution + nested include dir tracking; bump only iwxxm-validate to 0.1.2 (tac-validate/tac2iwxxm remain 0.1.1).'
+  user_option: '1'
+  related_issues:
+  - '781'
+  related_decisions:
+  - D-S035-14a
+  - D-S035-E28-T22
+  tip_sha: 465ac4f
+  tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
+  note: 'AIXM fix WIP uncommitted — no invent SHA'
 - id: D-S035-E28-T22
   date: '2026-08-01'
   timestamp: '2026-08-01'
@@ -24310,7 +24370,9 @@ evolve_cycles:
       status: in_progress
       mode: delta
       started: '2026-08-01'
-      note: 'STARTED (delta) — D-S035-04-plan-approve → 07 @ T0.1; #781'
+      active_task: T3.3b
+      active_task_status: in_progress
+      note: 'T3.3 completed (0.1.1 OIDC); T3.3b in_progress (native AIXM fix → 0.1.2); tip 465ac4f + WIP AIXM; #781'
     08-verify-build:
       status: pending
       mode: delta
@@ -24321,7 +24383,7 @@ evolve_cycles:
     13-deploy-smoke:
       status: pending
       mode: delta
-      note: PyPI tag publish all three 0.1.1
+      note: PyPI 0.1.1 ×3 done (D-S035-14a); iwxxm-validate 0.1.2 pending T3.3b
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -24343,6 +24405,9 @@ evolve_cycles:
   - D-S035-E28-S21
   - D-S035-02-phase-a
   - D-S035-04-plan-approve
+  - D-S035-E28-T22
+  - D-S035-14a
+  - D-S035-14b-scope
   - E28-M
   - E28-E1
   answers:
@@ -24356,6 +24421,8 @@ evolve_cycles:
     E28-E1: 8a
     E28-T2: 11b
     GateB: 12a
+    D-S035-14a: option1_fix_then_0_1_2
+    D-S035-14b-scope: iwxxm-validate_only_0_1_2
   artifacts:
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     status: approved
@@ -24371,9 +24438,11 @@ evolve_cycles:
     status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
     status: approved
-  tip_sha: b8e37ae
-  tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
+  tip_sha: 465ac4f
+  tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
+  tip_note: T3.3 completed (0.1.1 OIDC); T3.3b in_progress (native AIXM fix → 0.1.2)
   notes:
+  - '2026-08-01 S035/EV-028 T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b in_progress (D-S035-14b-scope) — native AIXM VendorResolver → iwxxm-validate 0.1.2; tip 465ac4f (unpushed T3.3 docs) + WIP AIXM (no SHA); #781'
   - '2026-08-01 S035/EV-028 04 COMPLETE → 07-build STARTED — D-S035-04-plan-approve Gate B (11b/12a); @ T0.1; tip b8e37ae; gates.b_to_c passed; #781'
   - '2026-08-01 S035/EV-028 02 COMPLETE → 04-tech-plan STARTED — D-S035-02-phase-a Gate A PASS; D-S035-E28-S21; tip 19e547a; #781'
   - '2026-08-01 S035/EV-028 02-verify-plan STARTED (delta) — D-S035-E28-E1; #781'
@@ -24381,17 +24450,18 @@ evolve_cycles:
   - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b all three packages 0.1.1 OIDC; 00 COMPLETE; 16 in_progress; current_stage 01-requirements; #781'
   - '2026-08-01 S035/EV-028 00-context — branch active; session-brief.md in_progress; routing-plan.md pending_approval (not approved); #781'
   - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b feature+16-evolve, 2a scope, 3b READMEs+dissemination, 4b tag publish); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
-  note: 'in_progress — 04 COMPLETE (D-S035-04-plan-approve); current_stage 07-build @ T0.1; tip b8e37ae; gates.a_to_b/b_to_c passed; #781'
+  note: 'in_progress — T3.3 completed (0.1.1 OIDC); T3.3b in_progress (native AIXM fix → 0.1.2); tip 465ac4f + WIP AIXM; gates.a_to_b/b_to_c passed; #781'
 git_history:
   current_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  ahead_of_origin: 2
+  ahead_of_origin: 1
   pushed: false
-  pending_commit:
-  tip_sha: b8e37ae
-  tip_sha_full: b8e37aeee53dfe4691866345b2786081d17199fc
+  pending_commit: 'WIP T3.3b native AIXM VendorResolver fix (uncommitted — no SHA invented)'
+  tip_sha: 465ac4f
+  tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
   recommended_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  note: 'S035/EV-028 — active_session=S035; current_stage 07-build @ T0.1; tip @ b8e37ae; Gate B passed; #781'
+  note: 'S035/EV-028 — 07-build @ T3.3b; tip 465ac4f (unpushed T3.3 docs after OIDC 0.1.1); WIP AIXM fix uncommitted; #781'
   notes:
+  - '2026-08-01 S035/EV-028 tip synced — 465ac4f (465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf); "[EV-028] docs: mark T3.3 complete after OIDC 0.1.1 publishes"; T3.3 done; T3.3b in_progress; ahead_of_origin=1; AIXM WIP uncommitted; #781'
   - '2026-08-01 S035/EV-028 tip synced — b8e37ae (b8e37aeee53dfe4691866345b2786081d17199fc); "[EV-028] docs: Gate A pass, UJ-023 amend, draft execution plan"; 04 COMPLETE → 07 STARTED @ T0.1; #781'
   - '2026-08-01 S035/EV-028 tip synced — 19e547a (19e547a593e35a9e934ce24283ec769cfbba0845); "[EV-028] docs: S035 Phase A specs + 02 audit for #781 leftovers"; 02 COMPLETE → 04 STARTED; #781'
   - '2026-08-01 S035/EV-028 branch ACTIVE — evolve/EV-028-empiric2-ops-leftovers-781 created/checked out; session-brief in_progress; routing-plan pending_approval; #781'
@@ -24670,9 +24740,9 @@ git_history:
     created_at: '2026-08-01'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: 9ff0157
-    tip_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
-    note: 'Active — base main @ 9ff0157; 00-context in_progress; routing-plan pending_approval'
+    tip_sha: 465ac4f
+    tip_sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
+    note: 'Active — tip 465ac4f (unpushed T3.3 OIDC complete docs); T3.3b WIP AIXM uncommitted; ahead_of_origin=1'
     pushed: false
   - name: docs/S034-EV027-closeout
     purpose: S034/EV-027 Phase 4 closeout docs
@@ -25601,6 +25671,16 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 465ac4f
+    sha_full: 465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf
+    branch: evolve/EV-028-empiric2-ops-leftovers-781
+    message: "[EV-028] docs: mark T3.3 complete after OIDC 0.1.1 publishes"
+    stage: 07-build
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    timestamp: '2026-08-01'
+    pushed: false
+    note: 'T3.3 complete docs — unpushed (ahead_of_origin=1); T3.3b AIXM WIP not committed'
   - sha: ec3347c
     sha_full: ec3347cffe9aa4faf356990fea876e7727e038cb
     branch: evolve/EV-028-empiric2-ops-leftovers-781

@@ -14,11 +14,13 @@ def test_rust_available_is_bool() -> None:
 
 
 def test_rust_module_none_or_extension() -> None:
+    from importlib.metadata import version
+
     mod = rust_module()
     if rust_available():
         assert mod is not None
         assert mod.ping() == "pong"
-        assert mod.extension_version() == "0.1.0"
+        assert mod.extension_version() == version("iwxxm-validate")
     else:
         assert mod is None
 
