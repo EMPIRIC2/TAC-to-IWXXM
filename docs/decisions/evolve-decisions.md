@@ -10,7 +10,7 @@
 **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella); absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820), [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)  
 **Started**: 2026-08-01  
 **Branch**: `evolve/EV-029-eight-family-ahl-rules`  
-**Status**: **in_progress** — **07-build** M0 @ T0.2 (T0.1 done)
+**Status**: **in_progress** — **07-build** M0 @ T0.3 (T0.1–T0.2 done)
 
 ### Scope (Phase 0 — locked 2026-08-01)
 

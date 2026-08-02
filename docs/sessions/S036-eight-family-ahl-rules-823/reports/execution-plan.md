@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M0 — Full eight-family re-mine |
-| **Active task** | T0.2 |
-| **Tasks** | 1 / 48 completed |
+| **Active task** | T0.3 |
+| **Tasks** | 2 / 48 completed |
 | **Last updated** | 2026-08-01 |
 
 ## Tech Stack Summary
@@ -62,7 +62,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T0.1 | Docs | Theme map: TC-EV029 / TC-F28 → families × lint/convert/validate × report states × TAC shapes (`reports/eight-family-theme-map.md`) | TC-EV029-001/006; UJ-043 | — | **completed** |
-| T0.2 | Docs | Full re-mine eight families (AHL/COM + METAR…SWXA) via `mine-domain-sources`; session mining notes under `reports/mining/` | E29-T3; #823 | T0.1 | pending |
+| T0.2 | Docs | Full re-mine eight families (AHL/COM + METAR…SWXA) via `mine-domain-sources`; session mining notes under `reports/mining/` | E29-T3; #823 | T0.1 | **completed** |
 | T0.3 | Docs | Example inventory: TAC shapes + IWXXM peers (or `wmoReference` / child) | TC-EV029-002 | T0.2 | pending |
 | T0.4 | Docs | Promote durable rules → COVERAGE_MATRIX + canonicals; child-issue residuals (S02.M3) | TC-EV029-001; #823 | T0.3 | pending |
 | T0.5 | Docs | AHL/`T1T2`/BBB/`bulletinIdentifier` design note (tac2iwxxm surface for dissemination) | TC-EV029-003; E29-T2 | T0.4 | pending |
