@@ -1,0 +1,60 @@
+# EV-029 / E29-T4=2 — AHL / COM / shared bulletin quality (M1 / TC-EV029-003).
+# Separate per-family workflow; complements root ci.yml.
+name: AHL COM quality
+
+on:
+  push:
+    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/__init__.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py"
+      - "packages/tac2iwxxm/tests/test_tc_f6_030_bulletin_split.py"
+      - "packages/tac2iwxxm/tests/fixtures/ahl/**"
+      - "packages/tac2iwxxm/tests/fixtures/metar_*ahl*"
+      - "packages/dissemination/src/dissemination/edis.py"
+      - "packages/dissemination/tests/test_edis_format.py"
+      - "packages/dissemination/pyproject.toml"
+      - "docs/domain/IWXXM_CONVERSION.md"
+      - "scripts/ci/run_ahl_com_quality.sh"
+      - ".github/workflows/ahl-com-quality.yml"
+  pull_request:
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/__init__.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py"
+      - "packages/tac2iwxxm/tests/test_tc_f6_030_bulletin_split.py"
+      - "packages/tac2iwxxm/tests/fixtures/ahl/**"
+      - "packages/tac2iwxxm/tests/fixtures/metar_*ahl*"
+      - "packages/dissemination/src/dissemination/edis.py"
+      - "packages/dissemination/tests/test_edis_format.py"
+      - "packages/dissemination/pyproject.toml"
+      - "docs/domain/IWXXM_CONVERSION.md"
+      - "scripts/ci/run_ahl_com_quality.sh"
+      - ".github/workflows/ahl-com-quality.yml"
+  workflow_dispatch:
+
+jobs:
+  ahl-com-quality:
+    runs-on: ubuntu-latest
+    name: AHL COM quality pack
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run AHL COM quality pack
+        run: make test-ahl-com-quality

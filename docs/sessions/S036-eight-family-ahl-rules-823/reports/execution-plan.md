@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M1 — AHL / COM / shared bulletin model |
-| **Active task** | T1.3 |
-| **Tasks** | 8 / 48 completed |
+| **Active task** | T1.4 |
+| **Tasks** | 9 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -74,8 +74,8 @@
 |------|------|-------------|-------------|------------|--------|
 | T1.1 | Test | AHL/`T1T2`/BBB/filename fixtures (accept + negative) | TC-EV029-003 | T0.6 | **completed** |
 | T1.2 | Code | Extend `tac2iwxxm` bulletin/AHL API; dissemination-importable | E29-T2; F6.bulletin | T1.1 | **completed** |
-| T1.3 | Config | Add `ahl-com-quality.yml` (path-filtered) | E29-T4 | T1.2 | **in_progress** |
-| T1.4 | Docs | Matrix/COM rows closed or child-issued | #823 B1 | T1.3 | pending |
+| T1.3 | Config | Add `ahl-com-quality.yml` (path-filtered) | E29-T4 | T1.2 | **completed** |
+| T1.4 | Docs | Matrix/COM rows closed or child-issued | #823 B1 | T1.3 | **in_progress** |
 
 ### M2 — METAR (F15 deepen)
 
