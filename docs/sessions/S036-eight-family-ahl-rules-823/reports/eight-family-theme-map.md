@@ -86,7 +86,7 @@ Status codes: `pass` · `gap` · `N/A` · `defer+child` · `mine` (needs T0.2 di
 | SIGMET gen | mine | mine | mine | F23 Done — deepen |
 | VA SIGMET | mine | mine | mine | F23 Done — deepen |
 | TC SIGMET | ok/deepen | **ok** (M7) | ok (A6-2-TC) | #738 **closed**; deepen [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
-| AIRMET | mine | mine | mine | F24 Done — deepen |
+| AIRMET | ok/deepen | **ok** (M8 WA→`reportStatus`/CNL) | ok | F24 deepen; `airmet-quality.yml` |
 | VAA | mine | mine | mine | F26 Done; #820 / #823 B4 |
 | TCA | mine | mine | mine | F27 Done; #820 / #823 B4 |
 | SWXA | gap | gap | gap | **F28** Planned; #740; spacewx examples exist |

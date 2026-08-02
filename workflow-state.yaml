@@ -40,18 +40,18 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T8.2 COMPLETE @ 6f24493; T7.4 #738→#829; next T8.3 airmet-quality.yml; tip 6f24493 ahead 3; #828; #823'
+    note: "T8.3 STARTED — airmet-quality.yml; tip 0f04b6e CI green; #828 retitle M2–M8; #823"
     current_milestone: M8
     active_milestone: M8
     current_task: T8.3
     active_task: T8.3
-    active_task_status: pending
+    active_task_status: in_progress
   started_at: '2026-08-01'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+  pr_title: "[EV-029][M2–M8] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M7
+  pr_milestone: M2-M8
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -145,19 +145,19 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T8.2 COMPLETE @ 6f24493; T7.4 #738→#829; next T8.3 airmet-quality.yml; tip 6f24493 ahead 3; #828; #823'
+    note: "T8.3 STARTED — airmet-quality.yml; tip 0f04b6e CI green; #828 retitle M2–M8; #823"
     current_milestone: M8
     active_milestone: M8
     current_task: T8.3
     active_task: T8.3
-    active_task_status: pending
+    active_task_status: in_progress
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build — tip 6f24493 T7.4+T8.1+T8.2; next T8.3 airmet-quality.yml; ahead 3; #828; #823'
+  note: 'S036/EV-029 — 07-build — T8.3 STARTED airmet-quality.yml; tip 0f04b6e CI green; #828 M2–M8; #823'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+  pr_title: "[EV-029][M2–M8] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M7
+  pr_milestone: M2-M8
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -232,7 +232,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — T8.2 COMPLETE; next T8.3; tip 6f24493; #828; #823'
+    note: '07-build in_progress — T8.3 STARTED airmet-quality.yml; tip 0f04b6e CI green; #828 M2–M8; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5574,12 +5574,12 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: 'T8.2 COMPLETE; next T8.3; tip 6f24493; #828; #823'
+    note: 'T8.3 STARTED — airmet-quality.yml; #828 M2–M8; #823'
     current_milestone: M8
     current_task: T8.3
     active_milestone: M8
     active_task: T8.3
-    active_task_status: pending
+    active_task_status: in_progress
     decision_refs:
     - D-S036-04-plan
     - D-S036-02-phase-a
@@ -5610,12 +5610,12 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'T8.2 COMPLETE @ 6f24493; T7.4 #738→#829; next T8.3 airmet-quality.yml; tip 6f24493 ahead 3; #828; #823'
+      note: "T8.3 STARTED — airmet-quality.yml; tip 0f04b6e CI green; #828 retitle M2–M8; #823"
       active_milestone: M8
       current_milestone: M8
       active_task: T8.3
       current_task: T8.3
-      active_task_status: pending
+      active_task_status: in_progress
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
       pr_status: open
@@ -5652,11 +5652,11 @@ stages:
       task_loop:
         status: in_progress
         current_task: T8.3
-        active_task_status: pending
+        active_task_status: in_progress
         active_milestone: M8
         phase: C
         milestone: M8
-        notes: 'T8.2 COMPLETE @ 6f24493; next T8.3 airmet-quality.yml; tip 6f24493 ahead 3; #828; #823'
+        notes: "T8.3 STARTED — airmet-quality.yml; tip 0f04b6e CI green; #828 M2–M8; #823"
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5666,12 +5666,12 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: 'T8.2 COMPLETE @ 6f24493; T7.4 #738→#829; next T8.3 airmet-quality.yml; tip 6f24493 ahead 3; #828; #823'
+      note: "T8.3 STARTED — airmet-quality.yml; tip 0f04b6e CI green; #828 retitle M2–M8; #823"
       active_milestone: M8
       current_milestone: M8
       active_task: T8.3
       current_task: T8.3
-      active_task_status: pending
+      active_task_status: in_progress
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
       pr_status: open
@@ -8395,6 +8395,25 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: NOTE-S036-EV029-T83-start
+  date: '2026-08-02'
+  timestamp: '2026-08-02T23:00:00Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: note
+  status: recorded
+  topic: "T8.3 START + #828 retitle M2–M8 (option 1)"
+  summary: "T8.3 in_progress; user chose retitle #828 to M2–M8; tip 0f04b6e CI green"
+  decision: "T8.3 in_progress; user chose retitle #828 to M2–M8; tip 0f04b6e CI green"
+  tip_sha: 0f04b6e
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
 - id: NOTE-S036-EV029-T82-complete
   date: '2026-08-02'
   timestamp: '2026-08-02T18:22:17Z'
@@ -25595,12 +25614,12 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: 'T8.2 COMPLETE @ 6f24493; next T8.3; #738 closed #829; #828; #823'
+      note: 'T8.3 STARTED — airmet-quality.yml; tip 0f04b6e; #828 M2–M8; #823'
       current_milestone: M8
       active_milestone: M8
       current_task: T8.3
       active_task: T8.3
-      active_task_status: pending
+      active_task_status: in_progress
     08-verify-build:
       status: pending
       mode: delta
@@ -25674,13 +25693,13 @@ evolve_cycles:
   pull_requests:
   - number: 828
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-    title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+    title: "[EV-029][M2–M8] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
     status: open
-    milestone: M2-M7
-    note: "Retitle to M2–M8 after T8.3 or when user asks; currently still M2–M7 until AIRMET pack lands"
+    milestone: M2-M8
+    note: "Retitled M2–M8 per option 1; T8.3 in_progress"
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: 6f24493
+    tip_sha: 0f04b6e
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25690,9 +25709,9 @@ evolve_cycles:
     merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+  pr_title: "[EV-029][M2–M8] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M7
+  pr_milestone: M2-M8
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -25700,6 +25719,7 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 07-build — T8.3 STARTED (airmet-quality.yml); user option 1 retitle #828 M2–M8; tip 0f04b6e CI green; #823'
   - '2026-08-02 S036/EV-029 07-build — T8.2 COMPLETE @ 6f24493; T8.1+T7.4 done; next T8.3 airmet-quality.yml; ahead 3; not pushed; #828 M2–M7; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.4 COMPLETE (#738 closed → #829); M8 T8.1 STARTED (AIRMET gap fixtures); tip 0ff7a55; #828 M2–M7; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.4 STARTED (option 1 → then M8 @ T8.1); tip 0ff7a55 pushed CI green; #738 residuals; #828; #823'
@@ -26063,15 +26083,15 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: 6f24493
-    tip_sha_full: 6f24493655ca68cf3c2f9b80cdceb425dedacd16
-    note: '07-build in_progress — T8.2 COMPLETE; next T8.3; tip 6f24493; #828 M2–M7; #823'
-    pushed: false
+    tip_sha: 0f04b6e
+    tip_sha_full: 0f04b6e
+    note: '07-build in_progress — T8.3 STARTED airmet-quality.yml; tip 0f04b6e CI green; #828 M2–M8; #823'
+    pushed: true
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     pr_status: open
-    pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
-    pr_milestone: M2-M7
+    pr_title: "[EV-029][M2–M8] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+    pr_milestone: M2-M8
     pr_base: main
     pr_head: evolve/EV-029-eight-family-ahl-rules
     prior_pr_number: 827

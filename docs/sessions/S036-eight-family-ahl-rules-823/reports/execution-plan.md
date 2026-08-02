@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M8 — AIRMET (F24 deepen) |
-| **Active task** | T8.3 — pending; T8.2 COMPLETE |
-| **Tasks** | 33 / 48 completed |
+| **Active milestone** | M9 — VAA (F26 deepen / #820) |
+| **Active task** | T9.1 — pending; T8.3 COMPLETE (M8 complete) |
+| **Tasks** | 34 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -132,7 +132,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T8.1 | Test | AIRMET gap fixtures | F24; TC-EV029-007 | T7.4 | **completed** |
 | T8.2 | Code | AIRMET deltas | F24; F6 | T8.1 | **completed** |
-| T8.3 | Config | `airmet-quality.yml` | E29-T4 | T8.2 | pending |
+| T8.3 | Config | `airmet-quality.yml` | E29-T4 | T8.2 | **completed** |
 
 ### M9 — VAA (F26 deepen / #820)
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M6 (+ `tac2iwxxm` 0.2.1); evolve continues for M7+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M8 (+ `tac2iwxxm` 0.2.1); evolve continues for M9+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log

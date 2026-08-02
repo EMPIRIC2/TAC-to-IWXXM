@@ -366,7 +366,7 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | SIGMET gen | ok/deepen | ok/deepen | ok | partial (quarantine) | **M5** |
 | VA SIGMET | ok/deepen | ok/deepen | ok | gap | **M6** |
 | TC SIGMET | ok/deepen | **ok** (WC→`TropicalCycloneSIGMET`; BBB/`reportStatus`; CNL) | ok (A6-2-TC) | ok (WC pack) | **M7 closed** (#738); deepen [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
-| AIRMET | ok/deepen | ok/deepen | ok | gap | **M8** |
+| AIRMET | ok/deepen | **ok** (WA→`reportStatus`; CNL) | ok | ok (WA pack) | **M8 closed** (`airmet-quality.yml`) |
 | VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9** (#820) |
 | TCA | ok/deepen | ok/deepen | ok | gap | **M10** (#820) |
 | SWXA | gap | gap | gap | gap | **M11** (F28 / #740) |
