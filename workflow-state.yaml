@@ -40,18 +40,18 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1 pending; tip 0632848"
-    current_milestone: M10
-    active_milestone: M10
-    current_task: T10.1
-    active_task: T10.1
+    note: "T11.1 pending — M11 next; T10.3 COMPLETE @ 552986b; M10 COMPLETE; #828 M2–M10; tac2iwxxm 0.2.2"
+    current_milestone: M11
+    active_milestone: M11
+    current_task: T11.1
+    active_task: T11.1
     active_task_status: pending
   started_at: '2026-08-01'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2–M9] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
+  pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
   pr_status: open
-  pr_milestone: M2-M9
+  pr_milestone: M2-M10
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -150,19 +150,19 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1 pending; tip 0632848"
-    current_milestone: M10
-    active_milestone: M10
-    current_task: T10.1
-    active_task: T10.1
+    note: "T11.1 pending — M11 next; T10.3 COMPLETE @ 552986b; M10 COMPLETE; #828 M2–M10; tac2iwxxm 0.2.2"
+    current_milestone: M11
+    active_milestone: M11
+    current_task: T11.1
+    active_task: T11.1
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — tip 0632848 after M9 T9.3; M9 COMPLETE; next T10.1; #828 M2–M9; #823'
+  note: 'S036/EV-029 — T11.1 pending @ M11; T10.3 COMPLETE @ 552986b; M10 COMPLETE; #828 M2–M10; #823'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2–M9] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
+  pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
   pr_status: open
-  pr_milestone: M2-M9
+  pr_milestone: M2-M10
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -238,7 +238,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — M9 COMPLETE @ 0632848 (T9.1–T9.3); next M10 @ T10.1 pending; tip 0632848; #828 M2–M9; #823'
+    note: '07-build in_progress — M11 @ T11.1 pending; T10.3 COMPLETE @ 552986b; M10 COMPLETE; tip 552986b; #828 M2–M10; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5580,11 +5580,11 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1 pending; tip 0632848"
-    current_milestone: M10
-    current_task: T10.1
-    active_milestone: M10
-    active_task: T10.1
+    note: "T11.1 pending — M11 next; T10.3 COMPLETE @ 552986b; M10 COMPLETE; tip 552986b; #828 M2–M10"
+    current_milestone: M11
+    current_task: T11.1
+    active_milestone: M11
+    active_task: T11.1
     active_task_status: pending
     decision_refs:
     - D-S036-04-plan
@@ -5618,11 +5618,11 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1 pending; tip 0632848"
-      active_milestone: M10
-      current_milestone: M10
-      active_task: T10.1
-      current_task: T10.1
+      note: "T11.1 pending — M11 next; T10.3 COMPLETE @ 552986b; M10 COMPLETE; tip 552986b; #828 M2–M10"
+      active_milestone: M11
+      current_milestone: M11
+      active_task: T11.1
+      current_task: T11.1
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -5660,12 +5660,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T10.1
+        current_task: T11.1
         active_task_status: pending
-        active_milestone: M10
+        active_milestone: M11
         phase: C
-        milestone: M10
-        notes: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1 pending; tip 0632848"
+        milestone: M11
+        notes: "T11.1 pending — M11 next; M10 COMPLETE @ 552986b; #828 M2–M10"
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5675,11 +5675,11 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1 pending; tip 0632848"
-      active_milestone: M10
-      current_milestone: M10
-      active_task: T10.1
-      current_task: T10.1
+      note: "T11.1 pending — M11 next; T10.3 COMPLETE @ 552986b; M10 COMPLETE; tip 552986b; #828 M2–M10"
+      active_milestone: M11
+      current_milestone: M11
+      active_task: T11.1
+      current_task: T11.1
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -25647,11 +25647,11 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1 pending; tip 0632848"
-      current_milestone: M10
-      active_milestone: M10
-      current_task: T10.1
-      active_task: T10.1
+      note: "T11.1 pending — M11 next; T10.3 COMPLETE @ 552986b; M10 COMPLETE; tip 552986b; #828 M2–M10"
+      current_milestone: M11
+      active_milestone: M11
+      current_task: T11.1
+      active_task: T11.1
       active_task_status: pending
     08-verify-build:
       status: pending
@@ -25730,13 +25730,13 @@ evolve_cycles:
   pull_requests:
   - number: 828
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-    title: "[EV-029][M2–M9] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
+    title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
     status: open
-    milestone: M2-M9
-    note: "T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1; ahead unpushed"
+    milestone: M2-M10
+    note: "T11.1 pending @ M11; T10.3 COMPLETE @ 552986b; M10 COMPLETE; tip 552986b; ahead unpushed; #828 M2–M10"
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: 0632848
+    tip_sha: 552986b
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25746,9 +25746,9 @@ evolve_cycles:
     merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2–M9] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
+  pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
   pr_status: open
-  pr_milestone: M2-M9
+  pr_milestone: M2-M10
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -25756,7 +25756,8 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
-  - '2026-08-02 S036/EV-029 — T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1; ahead 6 unpushed; #828 M2–M9; #823'
+  - '2026-08-02 S036/EV-029 07-build — T10.1 STARTED (TCA residual fixtures); M10 TCA; tip 0632848; #828 M2–M10; #823'
+  - '2026-08-02 S036/EV-029 — T9.3 COMPLETE @ 0632848; M9 COMPLETE; next T10.1; ahead 6 unpushed; #828 M2–M10; #823'
   - '2026-08-02 S036/EV-029 — T9.2 COMPLETE @ 35edd05; next T9.3 pending; ahead 3 unpushed; #828 M2–M8; #823'
   - '2026-08-02 S036/EV-029 — T9.1 COMPLETE @ 5c2d984; next T9.2; ahead 2 unpushed; #828 M2–M8; #823'
   - '2026-08-02 S036/EV-029 — tip f228b20 after [T8.3] airmet-quality.yml; M8 COMPLETE; ahead 1 unpushed; next T9.1; #828 M2–M8; #823'
@@ -25797,14 +25798,19 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 6
+  ahead_of_origin: 4
   pushed: false
   pending_commit:
-  tip_sha: 0632848
-  tip_sha_full: 063284864f6ad0507fd44b0b8cec847c71b06bc4
+  tip_sha: 552986b
+  tip_sha_full: 552986bc03f19036a502fa3e8aa1ce1a22924df0
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — tip 0632848 after M9 T9.3; M9 COMPLETE; next T10.1; #828 M2–M9; #823'
+  note: 'S036/EV-029 — T11.1 pending @ M11; T10.3 COMPLETE @ 552986b; M10 COMPLETE; #828 M2–M10; #823'
   notes:
+  - '2026-08-02 S036/EV-029 — workflow-state tip @ c7b8c54 after T10.3 @ 552986b; M10 COMPLETE; next T11.1; ahead 4 unpushed; #828 M2–M10; #823'
+  - '2026-08-02 S036/EV-029 — T10.3 COMPLETE @ 552986b; M10 COMPLETE; next T11.1 pending; ahead 3 unpushed; #828 M2–M10; #823'
+  - '2026-08-02 S036/EV-029 07-build — T10.2 COMPLETE @ d0533d3; T10.1 @ 833d89f; M10 TCA; #828 M2–M10; #823'
+  - '2026-08-02 S036/EV-029 07-build — T10.1 COMPLETE @ 833d89f (TCA FK AHL gap fixtures); M10; tip b07b684 on origin; #823'
+  - '2026-08-02 S036/EV-029 07-build — T10.1 STARTED (TCA residual fixtures); M10 TCA; tip 0632848; #828 M2–M10; #823'
   - '2026-08-02 S036/EV-029 — T9.2 COMPLETE @ 35edd05; next T9.3 pending; ahead 3 unpushed; #828 M2–M8; #823'
   - '2026-08-02 S036/EV-029 — T9.1 COMPLETE @ 5c2d984; next T9.2; ahead 2 unpushed; #828 M2–M8; #823'
   - '2026-08-02 S036/EV-029 — tip f228b20 after [T8.3] airmet-quality.yml; M8 COMPLETE; ahead 1 unpushed; next T9.1; #828 M2–M8; #823'
@@ -26119,23 +26125,15 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
-  - name: evolve/EV-029-eight-family-ahl-rules
-    purpose: 'S036/EV-029 #823 eight-family AHL / lint / convert / validate gap sweep'
-    base: main
-    status: active
-    created: '2026-08-01'
-    created_at: '2026-08-01'
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    tip_sha: 0632848
+m2986b
     tip_sha_full: 063284864f6ad0507fd44b0b8cec847c71b06bc4
-    note: 'S036/EV-029 — tip 0632848 after M9 T9.3; M9 COMPLETE; next T10.1; #828 M2–M9; #823'
+    note: 'S036/EV-029 — T11.1 pending @ M11; T10.3 COMPLETE @ 552986b; M10 COMPLETE; #828 M2–M10; #823'
     pushed: false
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     pr_status: open
-    pr_title: "[EV-029][M2–M9] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
-    pr_milestone: M2-M9
+    pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.2)"
+    pr_milestone: M2-M10
     pr_base: main
     pr_head: evolve/EV-029-eight-family-ahl-rules
     prior_pr_number: 827
@@ -27089,6 +27087,82 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: c7b8c54
+    sha_full: c7b8c54e5140c37296a827f8051e05ef092c1b02
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[EV-029] chore: tip workflow-state to 552986b after M10 T10.3"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T15:44:56-04:00'
+    files_changed:
+    - workflow-state.yaml
+    pushed: false
+    note: 'Tip workflow-state sync after T10.3 @ 552986b; M10 COMPLETE; next T11.1; #828 M2–M10; #823'
+  - sha: 552986b
+    sha_full: 552986bc03f19036a502fa3e8aa1ce1a22924df0
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T10.3] ci: add TCA quality pack workflow and make target"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T19:43:13Z'
+    files_changed:
+    - .github/workflows/tca-quality.yml
+    - Makefile
+    - apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m10.md
+    - scripts/ci/run_tca_quality.sh
+    pushed: false
+    note: 'T10.3 COMPLETE — tca-quality.yml + make test-tca-quality; M10 COMPLETE; next T11.1; #828 M2–M10; #823'
+  - sha: d0533d3
+    sha_full: d0533d362025c07f320417674234a78d2bbe9911
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T10.2] feat: TCA FK split_bulletin and reportStatus"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T19:42:18Z'
+    files_changed:
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/bulletin.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
+    - packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py
+    - packages/tac2iwxxm/tests/test_tc_f6_030_bulletin_split.py
+    pushed: false
+    note: 'T10.2 COMPLETE — TCA FK split_bulletin + reportStatus; #828 M2–M10; #823'
+  - sha: 833d89f
+    sha_full: 833d89fa7c9ff57288cc53a6d69852e65f37c2a2
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T10.1] test: TCA FK AHL gap fixtures for bulletin split and encode residuals"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T19:41:32Z'
+    files_changed:
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+    - packages/tac2iwxxm/tests/fixtures/tca/tca_ahl_aaa.txt
+    - packages/tac2iwxxm/tests/fixtures/tca/tca_ahl_cca.txt
+    - packages/tac2iwxxm/tests/fixtures/tca/tca_ahl_normal.txt
+    - packages/tac2iwxxm/tests/fixtures/tca/tca_ahl_rra.txt
+    - packages/tac2iwxxm/tests/fixtures/tca/tca_multi_ahl.txt
+    - packages/tac2iwxxm/tests/fixtures/tca/tca_multi_blank_only.txt
+    - packages/tac2iwxxm/tests/test_tc_ev029_005_tca_gap_fixtures.py
+    pushed: false
+    note: 'T10.1 COMPLETE — TCA FK AHL gap fixtures; #828 M2–M10; #823'
+  - sha: b07b684
+    sha_full: b07b6843ce917d894444e77d51cd62ffb422f0b5
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[EV-029] chore: tip workflow-state to 0632848 after M9 T9.3"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T19:25:29Z'
+    files_changed:
+    - workflow-state.yaml
+    pushed: true
+    note: 'Tip workflow-state sync after T9.3 @ 0632848; M9 COMPLETE; next M10; #828 M2–M10; #823'
   - sha: 0632848
     sha_full: 063284864f6ad0507fd44b0b8cec847c71b06bc4
     branch: evolve/EV-029-eight-family-ahl-rules
@@ -27105,7 +27179,7 @@ git_history:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m9.md
     - scripts/ci/run_vaa_quality.sh
     pushed: false
-    note: 'T9.3 COMPLETE — vaa-quality.yml + make test-vaa-quality; M9 COMPLETE; next M10 @ T10.1; #828 M2–M9; #823'
+    note: 'T9.3 COMPLETE — vaa-quality.yml + make test-vaa-quality; M9 COMPLETE; next M10 @ T10.1; #828 M2–M10; #823'
   - sha: f1f2f8c
     sha_full: f1f2f8c4a479cd1017ec03cd01f76e40b59da0dc
     branch: evolve/EV-029-eight-family-ahl-rules
@@ -27122,7 +27196,7 @@ git_history:
     - packages/tac2iwxxm/src/tac2iwxxm/__init__.py
     - uv.lock
     pushed: false
-    note: 'D-S036-semver-patch-2 tac2iwxxm 0.2.1→0.2.2; no tags/PyPI; #828 M2–M9; #823'
+    note: 'D-S036-semver-patch-2 tac2iwxxm 0.2.1→0.2.2; no tags/PyPI; #828 M2–M10; #823'
   - sha: 0dded91
     sha_full: 0dded912beec00105bc6a21fbc30625cfa6bcad3
     branch: evolve/EV-029-eight-family-ahl-rules
