@@ -154,9 +154,9 @@ def test_format_ahl_round_trip() -> None:
     assert format_ahl(parts) == line
 
 
-def test_unsupported_product_body_raises_clear_error() -> None:
-    """TAF AHL+body: AHL helpers OK; split_bulletin body path fails clearly until M4."""
-    from tac2iwxxm import BulletinSplitError, parse_ahl, split_bulletin
+def test_taf_ahl_body_split_succeeds_m4() -> None:
+    """TAF AHL+body: AHL helpers OK; split_bulletin(product=TAF) lands in M4."""
+    from tac2iwxxm import parse_ahl, split_bulletin
 
     text = _read_ahl("fc_taf_with_body.txt")
     ahl_line = text.splitlines()[0]
@@ -164,8 +164,19 @@ def test_unsupported_product_body_raises_clear_error() -> None:
     assert parts.tt == "FC"
     assert parts.iwxxm_tt == "LC"
 
+    split = split_bulletin(text, product="TAF")
+    assert split.meta.tt == "FC"
+    assert split.meta.report_count == 1
+    assert split.reports[0].startswith("TAF ")
+
+
+def test_unsupported_product_body_raises_clear_error() -> None:
+    """VAA (and later families) still raise a clear split error until their milestone."""
+    from tac2iwxxm import BulletinSplitError, split_bulletin
+
+    text = _read_ahl("fc_taf_with_body.txt")
     with pytest.raises(BulletinSplitError) as exc_info:
-        split_bulletin(text, product="TAF")
+        split_bulletin(text, product="VAA")
     assert exc_info.value.code == "bulletin_split_failed"
     assert exc_info.value.message  # non-empty operator-facing detail
 
