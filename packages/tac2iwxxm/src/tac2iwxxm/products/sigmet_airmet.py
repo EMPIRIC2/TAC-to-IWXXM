@@ -16,7 +16,7 @@ _AIRMET = re.compile(
     re.DOTALL | re.IGNORECASE,
 )
 _CNL = re.compile(
-    r"\bCNL\s+SIGMET\s+(?P<cnl_seq>\d+)\s+(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
+    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?P<cnl_seq>\d+)\s+(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
     re.IGNORECASE,
 )
 # VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
@@ -461,7 +461,15 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     if product.upper() != "AIRMET":
         raise ValueError(f"product mismatch: expected AIRMET, found {product}")
 
-    text = _normalize(tac)
+    raw_in = tac.strip()
+    ahl_tt: str | None = None
+    ahl_match = _AHL_PREFIX.match(raw_in)
+    body_tac = raw_in
+    if ahl_match is not None:
+        ahl_tt = ahl_match.group("tt").upper()
+        body_tac = raw_in[ahl_match.end() :]
+
+    text = _normalize(body_tac)
     match = _AIRMET.match(text)
     if match is None:
         raise ValueError("unable to parse AIRMET header")
@@ -485,6 +493,8 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
         "raw": text,
     }
+    if ahl_tt is not None:
+        ir["ahl_tt"] = ahl_tt
     _enrich_hazard_body(ir, body)
     return ir
 

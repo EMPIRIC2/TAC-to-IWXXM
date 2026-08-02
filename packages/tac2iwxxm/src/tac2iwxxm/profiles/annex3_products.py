@@ -932,22 +932,23 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     issue, begin, end = _hazard_stamp(ir, "airmet")
-    phenom = _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
-    gml_id = f"airmet.basic.{fir.lower()}"
-    intensity = str(ir.get("intensity_change", "NO_CHANGE"))
-    time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
-    geometry = _sigmet_geometry_xml(ir, fir=fir)
-    motion = _sigmet_motion_xml(ir)
+    cancel = bool(ir.get("cancel"))
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        status = str(override)
+    else:
+        status = "NORMAL"
+    gml_id = f"airmet.cnl.{fir.lower()}" if cancel else f"airmet.basic.{fir.lower()}"
 
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
+    units = f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:AIRMET xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="{gml_id}"
-    reportStatus="NORMAL"
-    permissibleUsage="OPERATIONAL">
+    reportStatus="{status}"
+    permissibleUsage="OPERATIONAL"{{cancel_attr}}>
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>{issue}</gml:timePosition>
@@ -999,7 +1000,39 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
       <gml:endPosition>{end}</gml:endPosition>
     </gml:TimePeriod>
   </iwxxm:validPeriod>
-  <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
+"""
+
+    if cancel:
+        c_begin = (
+            f"2012-08-{int(ir['cancelled_from_day']):02d}T"
+            f"{int(ir['cancelled_from_hour']):02d}:{int(ir['cancelled_from_minute']):02d}:00Z"
+        )
+        c_end = (
+            f"2012-08-{int(ir['cancelled_to_day']):02d}T"
+            f"{int(ir['cancelled_to_hour']):02d}:{int(ir['cancelled_to_minute']):02d}:00Z"
+        )
+        return (
+            units.format(cancel_attr='\n    isCancelReport="true"')
+            + f"""  <iwxxm:cancelledReportSequenceNumber>{int(ir["cancelled_sequence"])}</iwxxm:cancelledReportSequenceNumber>
+  <iwxxm:cancelledReportValidPeriod>
+    <gml:TimePeriod gml:id="t.cancelled">
+      <gml:beginPosition>{c_begin}</gml:beginPosition>
+      <gml:endPosition>{c_end}</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:cancelledReportValidPeriod>
+</iwxxm:AIRMET>
+"""
+        )
+
+    phenom = _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
+    intensity = str(ir.get("intensity_change", "NO_CHANGE"))
+    time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
+    geometry = _sigmet_geometry_xml(ir, fir=fir)
+    motion = _sigmet_motion_xml(ir)
+
+    return (
+        units.format(cancel_attr="")
+        + f"""  <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
   <iwxxm:analysis>
     <iwxxm:AIRMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="{escape(time_indicator)}">
       <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
@@ -1011,6 +1044,7 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
   </iwxxm:analysis>
 </iwxxm:AIRMET>
 """
+    )
 
 
 _VAA_FORBIDDEN_ROOTS = frozenset(

@@ -306,6 +306,44 @@ def test_convert_bulletin_tc_sigmet_ahl_bbb_report_status(client: TestClient, mo
     assert "iwxxm:TropicalCycloneSIGMET" in (payload["results"][0]["xml"] or "")
 
 
+AIRMET_CCA_TEXT = """\
+WAUK31 EGRR 121200 CCA
+YUDD AIRMET 1 VALID 151520/151800 YUSO-
+YUDD SHANLON FIR ISOL TS OBS N OF S50 TOP ABV FL100 STNR WKN=
+"""
+
+
+def test_convert_bulletin_airmet_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T8.2: WA AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:AIRMET reportStatus="CORRECTION">{tac[:20]}</iwxxm:AIRMET>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=AIRMET_CCA_TEXT,
+        product="AIRMET",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "WA"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "AIRMET"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:AIRMET" in (payload["results"][0]["xml"] or "")
+
+
 def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
 
