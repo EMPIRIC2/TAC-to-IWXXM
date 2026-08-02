@@ -14,8 +14,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M1 — AHL / COM / shared bulletin model (closing) |
-| **Active task** | T1.4 |
+| **Active milestone** | M2 — METAR (F15 deepen) |
+| **Active task** | T2.1 |
 | **Tasks** | 10 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
