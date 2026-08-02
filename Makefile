@@ -224,10 +224,6 @@ test-unit-tac-validate:
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-fail-under=95 -v
 
-# F23 / EV-019 — focused SIGMET + VA pack (E19-19); superseded by combined WMO pack (E20-F3)
-# Kept as thin alias for older docs / local muscle memory.
-test-sigmet-quality: test-wmo-quality
-
 # F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3): SIGMET keep-green + AIRMET + METAR/SPECI/TAF
 # Extended F26/F27 / EV-021 (S02.L1): + VAA + TCA keyword filters
 test-wmo-quality:
@@ -248,6 +244,11 @@ test-speci-quality:
 # EV-029 / E29-T4=2 — TAF quality pack (M4 / TC-EV029-007 + F20 deepen)
 test-taf-quality:
 	bash scripts/ci/run_taf_quality.sh
+
+# EV-029 / E29-T4=2 — general SIGMET quality pack (M5 / TC-EV029-007 + F23 deepen)
+# Replaces the EV-020 thin alias that redirected to test-wmo-quality.
+test-sigmet-quality:
+	bash scripts/ci/run_sigmet_quality.sh
 
 # EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
 test-iwxxm-translation-informative:

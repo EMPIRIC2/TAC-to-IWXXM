@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M5 — General SIGMET (F23 deepen) |
-| **Active task** | T5.3 — pending; T5.2 gen SIGMET split + reportStatus green |
-| **Tasks** | 21 / 48 completed |
+| **Active milestone** | M6 — VA SIGMET (F23 deepen) |
+| **Active task** | T6.1 — pending; M5 complete (T5.1–T5.3) on #828 |
+| **Tasks** | 22 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -107,7 +107,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Test | Gen SIGMET gap fixtures + CNL as needed | TC-EV029-007; F23 | T4.3 | **completed** |
 | T5.2 | Code | Gen SIGMET deltas; root `iwxxm:SIGMET` | F23; F6.d | T5.1 | **completed** |
-| T5.3 | Config | Extend `sigmet-quality.yml` for gen pack | E29-T4 | T5.2 | pending |
+| T5.3 | Config | Extend `sigmet-quality.yml` for gen pack | E29-T4 | T5.2 | **completed** |
 
 ### M6 — VA SIGMET (F23 deepen)
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M4 METAR/SPECI/TAF (+ `tac2iwxxm` 0.2.0); evolve continues for M5+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M5 METAR/SPECI/TAF/gen SIGMET (+ `tac2iwxxm` 0.2.0); evolve continues for M6+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log
