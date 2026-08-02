@@ -40,11 +40,11 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); #823'
-    current_milestone: M1
-    active_milestone: M1
-    current_task: T1.1
-    active_task: T1.1
+    note: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
+    current_milestone: M2
+    active_milestone: M2
+    current_task: T2.1
+    active_task: T2.1
     active_task_status: pending
   started_at: '2026-08-01'
   context_briefs:
@@ -109,6 +109,10 @@ sessions:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
+    status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
+    status: completed
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
   preset: Standard
   preset_status: approved
@@ -118,14 +122,14 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); #823'
-    current_milestone: M1
-    active_milestone: M1
-    current_task: T1.1
-    active_task: T1.1
+    note: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
+    current_milestone: M2
+    active_milestone: M2
+    current_task: T2.1
+    active_task: T2.1
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending; umbrella #823; F28+deepen; absorb #738/#820/#740'
   context_briefs:
   - docs/context/eight-family-ahl-rules-823.md
   decision_refs:
@@ -192,7 +196,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: 'M1 @ T1.1 (M0 complete; exit PASS)'
+    note: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5534,11 +5538,11 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: '07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); #823'
-    current_milestone: M1
-    current_task: T1.1
-    active_milestone: M1
-    active_task: T1.1
+    note: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
+    current_milestone: M2
+    current_task: T2.1
+    active_milestone: M2
+    active_task: T2.1
     active_task_status: pending
     decision_refs:
     - D-S036-04-plan
@@ -5550,6 +5554,8 @@ stages:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/ahl-design-note.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
@@ -5562,11 +5568,11 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: '07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); #823'
-      active_milestone: M1
-      current_milestone: M1
-      active_task: T1.1
-      current_task: T1.1
+      note: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
+      active_milestone: M2
+      current_milestone: M2
+      active_task: T2.1
+      current_task: T2.1
       active_task_status: pending
       feature_ids:
       - F28
@@ -5590,15 +5596,17 @@ stages:
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/ahl-design-note.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
     substeps:
       task_loop:
         status: in_progress
-        current_task: T1.1
+        current_task: T2.1
         active_task_status: pending
-        active_milestone: M1
+        active_milestone: M2
         phase: C
-        milestone: M1
-        notes: '07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); #823'
+        milestone: M2
+        notes: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5608,11 +5616,11 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: '07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); #823'
-      active_milestone: M1
-      current_milestone: M1
-      active_task: T1.1
-      current_task: T1.1
+      note: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
+      active_milestone: M2
+      current_milestone: M2
+      active_task: T2.1
+      current_task: T2.1
       active_task_status: pending
       decision_refs:
       - D-S036-04-plan
@@ -5621,6 +5629,8 @@ stages:
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/ahl-design-note.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
     - id: S035-empiric2-ops-leftovers-781
       session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
@@ -25227,11 +25237,11 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: '07-build in_progress — M1 @ T1.1 (M0 complete T0.1–T0.6 PASS); #823'
-      current_milestone: M1
-      active_milestone: M1
-      current_task: T1.1
-      active_task: T1.1
+      note: '07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending'
+      current_milestone: M2
+      active_milestone: M2
+      current_task: T2.1
+      active_task: T2.1
       active_task_status: pending
     08-verify-build:
       status: pending
@@ -25288,12 +25298,17 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
+    status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
+    status: completed
   github_issues:
   - '823'
   branch: evolve/EV-029-eight-family-ahl-rules
   preset: Standard
   preset_status: approved
   notes:
+  - '2026-08-02 S036/EV-029 07-build — M1 COMPLETE (08 PASS); advance M2 @ T2.1; tip cef6ebf; #823'
   - '2026-08-02 S036/EV-029 07-build — M0 COMPLETE (T0.1–T0.6 PASS); advance M1 @ T1.1; tip c181ede; #823'
   - '2026-08-01 S036/EV-029 — D-S036-04-plan Gate B PASS (option 1) — approve M0–M12 48 tasks; 04 COMPLETE → 07-build STARTED @ T0.1; gates.b_to_c passed; checkpoints.phase_b passed; #823'
   - '2026-08-01 S036/EV-029 — D-S036-04-batch-2 (1,1,1,1) T5=no deps AQ; T6=API H1-H3 H4-H5 waive; T7=SIGMET 3 Ms; T8=HARD kill-switch; exec plan draft; plan approve pending; #823'
@@ -25303,14 +25318,15 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 15
+  ahead_of_origin: 21
   pushed: false
   pending_commit:
-  tip_sha: c181ede
-  tip_sha_full: c181edea12b435641131817450884106b60ccb91
+  tip_sha: cef6ebf
+  tip_sha_full: cef6ebff09a42aae7104936a0eb0b7a1e87ace6e
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — 07-build M1 @ T1.1 (M0 T0.1–T0.6 PASS); tip c181ede on evolve/EV-029-eight-family-ahl-rules; not pushed; #823'
+  note: 'S036/EV-029 — 07-build M1 complete (08 PASS); M2 @ T2.1 pending; tip cef6ebf on evolve/EV-029-eight-family-ahl-rules; not pushed; #823'
   notes:
+  - '2026-08-02 S036/EV-029 tip synced — cef6ebf (cef6ebff09a42aae7104936a0eb0b7a1e87ace6e); M1 COMPLETE (08 PASS) + T1.1–T1.4 recorded; advance M2/T2.1; not pushed; #823'
   - '2026-08-02 S036/EV-029 tip synced — c181ede (c181edea12b435641131817450884106b60ccb91); M0 COMPLETE T0.3–T0.6 recorded; advance M1/T1.1; not pushed; #823'
   - '2026-08-01 S036/EV-029 Gate A close @ 26513b6 — D-S036-02-phase-a; 02 COMPLETE → 04-tech-plan STARTED; not pushed; #823'
   - '2026-08-01 S036/EV-029 02 COMPLETE → 04 STARTED — Gate A PASS D-S036-02-phase-a; Batch F D-S036-02-batch-f @ 97a9380; local tip; not pushed'
@@ -25603,9 +25619,9 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: c181ede
-    tip_sha_full: c181edea12b435641131817450884106b60ccb91
-    note: '07-build M1 @ T1.1 (M0 T0.1–T0.6 PASS); tip c181ede local; not pushed; #823'
+    tip_sha: cef6ebf
+    tip_sha_full: cef6ebff09a42aae7104936a0eb0b7a1e87ace6e
+    note: '07-build M1 complete (08 PASS); M2 @ T2.1 pending; tip cef6ebf local; not pushed; #823'
     pushed: false
   - name: evolve/EV-028-empiric2-ops-leftovers-781
     purpose: 'S035/EV-028 #781 Codecov purge + PyPI Trusted Publisher + landing READMEs'
@@ -26554,6 +26570,61 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: cef6ebf
+    sha_full: cef6ebff09a42aae7104936a0eb0b7a1e87ace6e
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: '[M1] docs: M1 verify PASS; advance execution plan to M2 T2.1'
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T14:05:00Z'
+    files_changed: 2
+    pushed: false
+    note: 'M1 closeout + 08 verify PASS; advance M2 @ T2.1; #823'
+  - sha: cd96bd2
+    sha_full: cd96bd29b6adbc49a0e86e6e3c2280bca2a88eaf
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: '[T1.4] docs: close M1 AHL/COM matrix rows; residual body split tracked'
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T00:55:00Z'
+    files_changed: 6
+    pushed: false
+    note: 'T1.4 close M1 AHL/COM matrix rows; residual body split tracked; #823'
+  - sha: f1e87c5
+    sha_full: f1e87c5b0a3ec3bf4f0c05aef08c3464ab494e63
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: '[T1.3] config: add path-filtered ahl-com-quality workflow'
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T00:45:00Z'
+    files_changed: 4
+    pushed: false
+    note: 'T1.3 ahl-com-quality workflow; advance M1 @ T1.4; #823'
+  - sha: 4cace9c
+    sha_full: 4cace9cf3bea657ebb112a8d04e1c7c9362b185d
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: '[T1.2] feat: shared AHL/T1T2/BBB/filename API in tac2iwxxm'
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T00:35:00Z'
+    files_changed: 8
+    pushed: false
+    note: 'T1.2 AHL/T1T2/BBB/filename API; advance M1 @ T1.3; #823'
+  - sha: 8214b90
+    sha_full: 8214b903781bc70a23e81b2be3735d4af4474208
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: '[T1.1] test: AHL/T1T2/BBB/filename fixtures for TC-EV029-003 — red'
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T00:20:00Z'
+    files_changed: 21
+    pushed: false
+    note: 'T1.1 red fixtures for TC-EV029-003; advance M1 @ T1.2; #823'
   - sha: c181ede
     sha_full: c181edea12b435641131817450884106b60ccb91
     branch: evolve/EV-029-eight-family-ahl-rules
