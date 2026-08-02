@@ -40,18 +40,18 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
-    current_milestone: M4
-    active_milestone: M4
-    current_task: T4.1
-    active_task: T4.1
+    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    current_milestone: M5
+    active_milestone: M5
+    current_task: T5.1
+    active_task: T5.1
     active_task_status: pending
   started_at: '2026-08-01'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
   pr_status: open
-  pr_milestone: M2+M3
+  pr_milestone: M2-M4
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -125,6 +125,8 @@ sessions:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
+    status: completed
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
   preset: Standard
   preset_status: approved
@@ -134,19 +136,19 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
-    current_milestone: M4
-    active_milestone: M4
-    current_task: T4.1
-    active_task: T4.1
+    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    current_milestone: M5
+    active_milestone: M5
+    current_task: T5.1
+    active_task: T5.1
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; umbrella #823; F28+deepen; absorb #738/#820/#740'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
   pr_status: open
-  pr_milestone: M2+M3
+  pr_milestone: M2-M4
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -220,7 +222,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
+    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5562,11 +5564,11 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
-    current_milestone: M4
-    current_task: T4.1
-    active_milestone: M4
-    active_task: T4.1
+    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    current_milestone: M5
+    current_task: T5.1
+    active_milestone: M5
+    active_task: T5.1
     active_task_status: pending
     decision_refs:
     - D-S036-04-plan
@@ -5581,6 +5583,7 @@ stages:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
@@ -5593,11 +5596,11 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
-      active_milestone: M4
-      current_milestone: M4
-      active_task: T4.1
-      current_task: T4.1
+      note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+      active_milestone: M5
+      current_milestone: M5
+      active_task: T5.1
+      current_task: T5.1
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -5628,15 +5631,16 @@ stages:
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
     substeps:
       task_loop:
         status: in_progress
-        current_task: T4.1
+        current_task: T5.1
         active_task_status: pending
-        active_milestone: M4
+        active_milestone: M5
         phase: C
-        milestone: M4
-        notes: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
+        milestone: M5
+        notes: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5646,11 +5650,11 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
-      active_milestone: M4
-      current_milestone: M4
-      active_task: T4.1
-      current_task: T4.1
+      note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+      active_milestone: M5
+      current_milestone: M5
+      active_task: T5.1
+      current_task: T5.1
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -5661,6 +5665,7 @@ stages:
       - D-S036-04-plan
       artifacts:
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/ahl-design-note.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
@@ -16575,6 +16580,16 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
+  kind: verification-report
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  stage: 07-build
+  skill_id: 07-build
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: completed
+  note: 'S036/EV-029 M4 COMPLETE (T4.1–T4.3) verification-report-m4.md; next M5 @ T5.1'
 - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
   kind: execution-plan
   session_id: S035-empiric2-ops-leftovers-781
@@ -25395,11 +25410,11 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: '07-build in_progress — M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
-      current_milestone: M4
-      active_milestone: M4
-      current_task: T4.1
-      active_task: T4.1
+      note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+      current_milestone: M5
+      active_milestone: M5
+      current_task: T5.1
+      active_task: T5.1
       active_task_status: pending
     08-verify-build:
       status: pending
@@ -25460,6 +25475,8 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
+    status: completed
   github_issues:
   - '823'
   branch: evolve/EV-029-eight-family-ahl-rules
@@ -25470,10 +25487,10 @@ evolve_cycles:
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
     status: open
-    milestone: M2+M3
+    milestone: M2-M4
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: b9a2811
+    tip_sha: 3f26a80
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25485,7 +25502,7 @@ evolve_cycles:
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
   pr_status: open
-  pr_milestone: M2+M3
+  pr_milestone: M2-M4
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -25493,6 +25510,8 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 07-build — M4 COMPLETE (T4.1–T4.3) @ 3f26a80; ahead 3; pending push; next M5 @ T5.1; #823'
+  - '2026-08-02 S036/EV-029 07-build — M4 T4.1 STARTED (TAF gap fixtures); prior M3 complete on #828; #823'
   - '2026-08-02 S036/EV-029 tip synced — b9a2811 (b9a2811c0f00a11066eac79f72fd39555d6bcf0f); workflow-state sync after M3 + tac2iwxxm 0.2.0; PR #828; pushed; ahead_of_origin=0; M4 @ T4.1 pending; #823'
   - '2026-08-02 S036/EV-029 tip synced — 72e93da (72e93da5f51265f84c556417a335681fb56a769a); [EV-029] fix sync tac2iwxxm __version__ 0.2.0; M2+M3 + version sync on PR #828; pushed; ahead_of_origin=0; M4 @ T4.1 pending; #823'
   - '2026-08-02 S036/EV-029 M3 COMPLETE (T3.1–T3.3) @ 9927db2; D-S036-semver-minor tac2iwxxm 0.2.0; M2+M3 on PR #828; M4 @ T4.1 pending; #828 CI to watch after push; #823'
@@ -25513,14 +25532,16 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 0
-  pushed: true
+  ahead_of_origin: 3
+  pushed: false
   pending_commit:
-  tip_sha: b9a2811
-  tip_sha_full: b9a2811c0f00a11066eac79f72fd39555d6bcf0f
+  tip_sha: 3f26a80
+  tip_sha_full: 3f26a80b16360a8d3c0f64eb075f0b19b5ce26aa
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — 07-build M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; ahead 0; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
+  note: 'S036/EV-029 — 07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
   notes:
+  - '2026-08-02 S036/EV-029 07-build — M4 COMPLETE (T4.1–T4.3) @ 3f26a80; ahead 3; pending push; next M5 @ T5.1; #823'
+  - '2026-08-02 S036/EV-029 07-build — M4 T4.1 STARTED (TAF gap fixtures); prior M3 complete on #828; #823'
   - '2026-08-02 S036/EV-029 tip synced — b9a2811 (b9a2811c0f00a11066eac79f72fd39555d6bcf0f); workflow-state sync after M3 + tac2iwxxm 0.2.0; PR #828; pushed; ahead_of_origin=0; M4 @ T4.1 pending; #823'
   - '2026-08-02 S036/EV-029 tip synced — 72e93da (72e93da5f51265f84c556417a335681fb56a769a); [EV-029] fix sync tac2iwxxm __version__ 0.2.0; M2+M3 + version sync on PR #828; pushed; ahead_of_origin=0; M4 @ T4.1 pending; #823'
   - '2026-08-02 S036/EV-029 tip synced — 9927db2 (9927db2e1dbda538f3975c8235b27408432c365d); M3 COMPLETE; M2+M3 on PR #828; tac2iwxxm 0.2.0; M4 @ T4.1 pending; ahead_of_origin=4; #823'
@@ -25828,15 +25849,15 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: b9a2811
-    tip_sha_full: b9a2811c0f00a11066eac79f72fd39555d6bcf0f
-    note: 'M3 COMPLETE (T3.1–T3.3); M2+M3 + version sync on PR #828; tip b9a2811; pushed; tac2iwxxm 0.2.0; M4 @ T4.1 pending; #823'
-    pushed: true
+    tip_sha: 3f26a80
+    tip_sha_full: 3f26a80b16360a8d3c0f64eb075f0b19b5ce26aa
+    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    pushed: false
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     pr_status: open
     pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
-    pr_milestone: M2+M3
+    pr_milestone: M2-M4
     pr_base: main
     pr_head: evolve/EV-029-eight-family-ahl-rules
     prior_pr_number: 827
@@ -26790,6 +26811,39 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 3f26a80
+    sha_full: 3f26a80b16360a8d3c0f64eb075f0b19b5ce26aa
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T4.3] ci: add taf-quality pack workflow and make target"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T16:00:49Z'
+    files_changed: 5
+    pushed: false
+    note: 'T4.3 taf-quality CI; M4 COMPLETE (T4.1–T4.3); next M5 @ T5.1; #823'
+  - sha: d06dcd1
+    sha_full: d06dcd1d00a22ca302aa717e674c5944f8287488
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T4.2] feat: TAF bulletin split + AHL BBB reportStatus"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T15:58:20Z'
+    files_changed: 6
+    pushed: false
+    note: 'T4.2 TAF bulletin split + AHL BBB; #823'
+  - sha: 848a6ae
+    sha_full: 848a6aeed1dd1f583054efb7aaca859fc892b83f
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T4.1] test: TAF gap fixtures for FC/FT AHL BBB + multi-report"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T15:55:04Z'
+    files_changed: 8
+    pushed: false
+    note: 'T4.1 TAF gap fixtures; #823'
   - sha: b9a2811
     sha_full: b9a2811c0f00a11066eac79f72fd39555d6bcf0f
     branch: evolve/EV-029-eight-family-ahl-rules
