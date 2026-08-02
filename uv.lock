@@ -2333,7 +2333,7 @@ requires-dist = [{ name = "msgspec", specifier = ">=0.19" }]
 
 [[package]]
 name = "tac2iwxxm"
-version = "0.1.1"
+version = "0.2.0"
 source = { editable = "packages/tac2iwxxm" }
 dependencies = [
     { name = "msgspec" },
