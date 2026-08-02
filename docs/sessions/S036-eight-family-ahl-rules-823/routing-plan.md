@@ -13,7 +13,7 @@
 | 01-requirements | yes | delta | **completed** | Manifest=2 (API `swxa`); close → 02 (`D-S036-E29-M`) |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S036-02-phase-a`); Batch F `1,1,1,1` |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
-| 04-tech-plan | yes | delta | **in_progress** | Batch 1 locked `3,1,2,2`; Batch 2 pending |
+| 04-tech-plan | yes | delta | **in_progress** | Batches 1–2 locked; exec plan draft (48 tasks); approve pending |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
 | 07-build | yes | full | pending | Mining + engine deltas + fixtures |

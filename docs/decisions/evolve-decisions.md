@@ -10,7 +10,7 @@
 **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella); absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820), [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)  
 **Started**: 2026-08-01  
 **Branch**: `evolve/EV-029-eight-family-ahl-rules`  
-**Status**: **in_progress** — **04-tech-plan** Batch 1 locked (`3,1,2,2`); Batch 2 pending
+**Status**: **in_progress** — **04-tech-plan** Batches 1–2 locked; plan approve pending
 
 ### Scope (Phase 0 — locked 2026-08-01)
 
@@ -34,6 +34,10 @@
 | E29-T2 | decision | AHL model home? | **1** — extend `tac2iwxxm` bulletin/AHL; dissemination imports (`D-S036-04-batch-1`) |
 | E29-T3 | decision | Phase A mining? | **2** — full re-mine all eight families before Phase B (`D-S036-04-batch-1`) |
 | E29-T4 | decision | CI packaging? | **2** — separate workflow per family (`D-S036-04-batch-1`) |
+| E29-T5 | decision | New deps? | **1** — none; AskQuestion per new dep (`D-S036-04-batch-2`) |
+| E29-T6 | decision | Deploy / smoke? | **1** — API redeploy; H1–H3; H4–H5 waive unless FE (`D-S036-04-batch-2`) |
+| E29-T7 | decision | SIGMET milestones? | **1** — gen / VA / TC as three Ms (`D-S036-04-batch-2`) |
+| E29-T8 | decision | Kill-switch? | **1** — HARD; block → AskQuestion (`D-S036-04-batch-2`) |
 
 **Scope (verbatim)**: Go 1-by-1 across the eight TAC→IWXXM product families and ensure
 validation, linting, and conversion rules (plus examples for all TAC input shapes) have no
