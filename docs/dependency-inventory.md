@@ -38,6 +38,7 @@
 | msgspec | Preflight/send models + HTTP encode | Apache-2.0 | PyPI (`>=0.19`) |
 | httpx | WIS2 HTTP dataset client (`HttpxDatasetClient`) | BSD | PyPI (`>=0.28`) |
 | aiomqtt | WIS2 MQTT client (`AiomqttClient`; 2.x / paho) | BSD-3-Clause | PyPI (`>=2.3.0,<3`) |
+| tac2iwxxm | Shared AHL parse/format/`T1T2`/BBB/filename (EV-029 / E29-T2) | MIT | workspace path |
 
 #### packages/dissemination — test / integration (E14-09)
 
@@ -197,3 +198,5 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
   for TC-F17-001 harness publish (D-S019-EV014-T34-transports); reject aiomqtt 3.x alpha
 - S026 / EV-020 (2026-07-29): **PyYAML≥6.0** on `tac2iwxxm` for decode glossary YAML overlays
   (F9 / ADR-032; E20-F5)
+- S036 / EV-029 (2026-08-02): **tac2iwxxm** workspace dep on `dissemination` for shared AHL
+  helpers (E29-T2; `format_wmo_ahl` thin wrapper)

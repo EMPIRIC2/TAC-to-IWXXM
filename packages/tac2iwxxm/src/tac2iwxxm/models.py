@@ -7,6 +7,43 @@ from typing import Any
 import msgspec
 
 
+class AhlParts(msgspec.Struct, frozen=True):
+    """
+    Parsed WMO abbreviated-header (AHL) fields with derived IWXXM helpers.
+
+    Parameters
+    ----------
+    ahl :
+        Full AHL line (e.g. ``SAUS31 KZNY 121200``).
+    tt :
+        TAC ``T1T2`` designator as parsed (e.g. ``SA``, ``FN``).
+    aa :
+        Geographical designator ``A1A2``.
+    ii :
+        Bulletin number ``ii`` (2 digits).
+    cccc :
+        Originating centre CCCC.
+    yygggg :
+        Day-hour-minute group (YYGGgg).
+    bbb :
+        Optional BBB indicator (``AAx`` / ``CCx`` / ``RRx``, x ∈ A…X).
+    iwxxm_tt :
+        Mapped IWXXM ``T1T2`` (L*).
+    report_status :
+        ``NORMAL``, ``AMENDMENT``, or ``CORRECTION`` from BBB rules.
+    """
+
+    ahl: str
+    tt: str
+    aa: str
+    ii: str
+    cccc: str
+    yygggg: str
+    iwxxm_tt: str
+    report_status: str
+    bbb: str | None = None
+
+
 class BulletinMeta(msgspec.Struct, frozen=True):
     """
     Parsed WMO abbreviated-header (AHL) metadata.
@@ -27,6 +64,8 @@ class BulletinMeta(msgspec.Struct, frozen=True):
         Day-hour-minute group (YYGGgg).
     bbb :
         Optional BBB amendment indicator (e.g. ``CCA``).
+    ii :
+        Optional bulletin number ``ii`` (additive; EV-029).
     """
 
     ahl: str
@@ -36,6 +75,7 @@ class BulletinMeta(msgspec.Struct, frozen=True):
     cccc: str
     yygggg: str
     bbb: str | None = None
+    ii: str | None = None
 
 
 class BulletinSplit(msgspec.Struct, frozen=True):
@@ -114,6 +154,7 @@ class ConvertResult(msgspec.Struct, frozen=True):
 
 
 __all__ = [
+    "AhlParts",
     "BulletinMeta",
     "BulletinSplit",
     "ConvertIssue",

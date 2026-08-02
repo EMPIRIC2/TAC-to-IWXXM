@@ -15,6 +15,7 @@ dependencies = [
   "msgspec>=0.19",
   "httpx>=0.28",
   "aiomqtt>=2.3.0,<3",
+  "tac2iwxxm",
 ]
 
 [build-system]
