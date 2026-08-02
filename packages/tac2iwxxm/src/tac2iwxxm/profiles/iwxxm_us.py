@@ -706,7 +706,11 @@ def emit_metar_speci_iwxxm_us(
     stamp = obs_timestamp(ir)
     root = product.upper()
     gml_id = _us_gml_id(ir, root)
-    report_status = "CORRECTION" if ir.get("correction") else "NORMAL"
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "CORRECTION" if ir.get("correction") else "NORMAL"
     automated = "true" if ir.get("auto") else "false"
 
     addendum = _addendum_extension(ir)

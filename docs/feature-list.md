@@ -1066,9 +1066,10 @@
 
 ### F23 deepen (S036 / EV-029 — TC SIGMET #738)
 
-- **Status note**: F23 remains **Done** for general + VA; this cycle **adds TC SIGMET**
-  (`iwxxm:TropicalCycloneSIGMET`, TAC `WC` / IWXXM `LY`) under the same quality bar and
-  absorbs [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738).
+- **Status note**: F23 remains **Done** for general + VA; this cycle **added TC SIGMET**
+  (`iwxxm:TropicalCycloneSIGMET`, TAC `WC` / IWXXM `LY`) under the same quality bar.
+  [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) **closed** (M7 / #828);
+  deepen residuals → [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829).
 
 ### F26 / F27 deepen (S036 / EV-029 — #820 + #823 B4)
 

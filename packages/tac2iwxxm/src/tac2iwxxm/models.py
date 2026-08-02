@@ -66,6 +66,9 @@ class BulletinMeta(msgspec.Struct, frozen=True):
         Optional BBB amendment indicator (e.g. ``CCA``).
     ii :
         Optional bulletin number ``ii`` (additive; EV-029).
+    report_status :
+        Derived IWXXM ``reportStatus`` from BBB (``NORMAL`` / ``AMENDMENT`` /
+        ``CORRECTION``); additive EV-029 M2.
     """
 
     ahl: str
@@ -76,6 +79,7 @@ class BulletinMeta(msgspec.Struct, frozen=True):
     yygggg: str
     bbb: str | None = None
     ii: str | None = None
+    report_status: str = "NORMAL"
 
 
 class BulletinSplit(msgspec.Struct, frozen=True):

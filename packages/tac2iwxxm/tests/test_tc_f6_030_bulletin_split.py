@@ -107,8 +107,19 @@ def test_split_unsupported_product_raises() -> None:
 
     text = _read("metar_multi_ahl.txt")
     with pytest.raises(BulletinSplitError) as exc_info:
-        split_bulletin(text, product="TAF")
+        split_bulletin(text, product="NOTAPRODUCT")
     assert exc_info.value.code == "bulletin_split_failed"
+
+
+def test_split_swxa_fn_bulletin() -> None:
+    """SWXA FN AHL + SWX ADVISORY body (EV-029 M11 / TC-F28-006)."""
+    from tac2iwxxm import split_bulletin
+
+    text = (Path(__file__).resolve().parent / "fixtures" / "swxa" / "swxa_ahl_normal.txt").read_text(encoding="utf-8")
+    result = split_bulletin(text, product="SWXA")
+    assert result.meta.tt == "FN"
+    assert result.meta.report_count == 1
+    assert result.reports[0].startswith("SWX ADVISORY")
 
 
 def test_split_metar_product_ignores_speci_body() -> None:

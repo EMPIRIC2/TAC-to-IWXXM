@@ -16,7 +16,7 @@ def lint(tac_text: str, *, product: str = "METAR") -> LintReport:
     tac_text :
         TAC report or fragment.
     product :
-        One of AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA.
+        One of AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, SWXA.
 
     Returns
     -------

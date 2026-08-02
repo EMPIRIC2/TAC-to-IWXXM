@@ -538,7 +538,7 @@ def _coalesce_residuals(
     return residuals
 
 
-_SPARSE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA"})
+_SPARSE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA"})
 
 
 def _sentence_from_segment(seg: DecodeSegment) -> str | None:
@@ -617,14 +617,14 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     tac :
         Raw TAC report text.
     product :
-        One of the seven F6 product ids (case-insensitive).
+        One of the F6 product ids or ``SWXA`` (case-insensitive).
 
     Returns
     -------
     DecodeResult
         ``segments`` for recognized groups; ``residuals`` for undecoded spans;
         ``summary`` plain-language paragraph (F9 / ADR-025).
-        METAR/SPECI/TAF aim for rich segments; VAA/TCA are best-effort (G4).
+        METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA are best-effort (G4).
     """
     product_u = product.upper()
     if product_u not in _SUPPORTED:

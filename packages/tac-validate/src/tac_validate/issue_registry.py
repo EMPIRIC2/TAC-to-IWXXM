@@ -550,7 +550,7 @@ ISSUES: tuple[IssueSpec, ...] = (
         "MISSING_DTG",
         "error",
         "{product} missing DTG: template field",
-        tags=("dtg", "vaa", "tca"),
+        tags=("dtg", "vaa", "tca", "swxa"),
     ),
     _row(
         "MISSING_VAAC",
@@ -642,6 +642,34 @@ ISSUES: tuple[IssueSpec, ...] = (
         "TCA CB NIL — CB missing (F27 theme T1)",
         product="tca",
         tags=("cb", "nil", "tca", "t1", "f27"),
+    ),
+    _row(
+        "MISSING_SWXC",
+        "error",
+        "SWXA missing SWXC: template field — F28 theme SX1 / A2-3",
+        product="swxa",
+        tags=("swxc", "swxa", "sx1", "f28"),
+    ),
+    _row(
+        "SWXA_RMK_NIL",
+        "info",
+        "SWXA RMK NIL — remarks inapplicable (F28 theme SX1)",
+        product="swxa",
+        tags=("remarks", "nil", "swxa", "sx1", "f28"),
+    ),
+    _row(
+        "SWXA_FCST_NO_SWX_EXP",
+        "info",
+        "SWXA forecast NO SWX EXP — no space weather expected (F28 theme SX1)",
+        product="swxa",
+        tags=("forecast", "no_swx_exp", "swxa", "sx1", "f28"),
+    ),
+    _row(
+        "SWXA_NO_FURTHER_ADVISORIES",
+        "info",
+        "SWXA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F28 theme SX1)",
+        product="swxa",
+        tags=("next_advisory", "swxa", "sx1", "f28"),
     ),
 )
 

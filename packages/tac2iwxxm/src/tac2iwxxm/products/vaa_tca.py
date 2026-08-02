@@ -254,8 +254,7 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
             )
 
     remarks = " ".join(fields.get("RMK", "").split())
-    if remarks.upper() == "NIL":
-        remarks = ""
+    remarks_nil = not remarks or remarks.upper() == "NIL"
 
     next_adv = _parse_dtg(fields.get("NXT ADVISORY", "")) if fields.get("NXT ADVISORY") else None
 
@@ -278,7 +277,8 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
         "observation_time": obs_time,
         "observation_clouds": observation_clouds,
         "forecasts": forecasts,
-        "remarks": remarks,
+        "remarks": "" if remarks_nil else remarks,
+        "remarks_nil": remarks_nil,
         "next_advisory_time": next_adv,
         "raw": text,
     }

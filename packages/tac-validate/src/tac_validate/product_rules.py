@@ -83,6 +83,8 @@ _VOLCANO_LINE = re.compile(r"(?m)^\s*VOLCANO\s*:\s*(.*)$", re.IGNORECASE)
 _RMK_LINE = re.compile(r"(?m)^\s*RMK\s*:\s*(.*)$", re.IGNORECASE)
 _NXT_ADVISORY_LINE = re.compile(r"(?m)^\s*NXT\s+ADVISORY\s*:\s*(.*)$", re.IGNORECASE)
 _NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
+_SWXC_LINE = re.compile(r"(?m)^\s*SWXC\s*:", re.IGNORECASE)
+_NO_SWX_EXP = re.compile(r"\bNO\s+SWX\s+EXP\b", re.IGNORECASE)
 _MAX_WIND_LINE = re.compile(r"(?m)^\s*MAX\s+WIND\s*:", re.IGNORECASE)
 _TC_LINE = re.compile(r"(?m)^\s*TC\s*:\s*(.*)$", re.IGNORECASE)
 _CB_LINE = re.compile(r"(?m)^\s*CB\s*:\s*(.*)$", re.IGNORECASE)
@@ -108,12 +110,14 @@ _SIGMET_FIR_CTA = re.compile(r"\b(?:FIR(?:/UIR)?|CTA|UIR)\b")
 _SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
 _SIGMET_INTENSITY = re.compile(r"\b(?:INTSF|WKN|NC)\b")
 _SIGMET_VA_TOKEN = re.compile(r"\bVA\b")
+_SIGMET_TC_TOKEN = re.compile(r"\bTC\b")
 _SIGMET_VA_VOLCANO = re.compile(r"\bMT\b.+\bPSN\b|\bPSN\b.+\bMT\b")
 _SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
 _SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
 _SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
 _WS_MAX_VALIDITY_HOURS = 4.0
 _WV_MAX_VALIDITY_HOURS = 6.0
+_WC_MAX_VALIDITY_HOURS = 6.0
 
 # Phenomenon family markers (template+gate — not exhaustive Annex vocab).
 _SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -1446,7 +1450,14 @@ def _sigmet_validity_hours(start: str, end: str) -> float | None:
     return (end_m - start_m) / 60.0
 
 
-def _check_sigmet_g2(*, start: int, end: int, upper: str, is_va: bool = False) -> list[Issue]:
+def _check_sigmet_g2(
+    *,
+    start: int,
+    end: int,
+    upper: str,
+    is_va: bool = False,
+    is_tc: bool = False,
+) -> list[Issue]:
     """F23 theme G2 — sequence / validity duration / FIR / OBS·FCST / intensity."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
@@ -1476,9 +1487,16 @@ def _check_sigmet_g2(*, start: int, end: int, upper: str, is_va: bool = False) -
     valid = _SIGMET_VALID_PAIR.search(core)
     if valid is not None:
         hours = _sigmet_validity_hours(valid.group(1), valid.group(2))
-        max_hours = _WV_MAX_VALIDITY_HOURS if is_va else _WS_MAX_VALIDITY_HOURS
+        if is_va:
+            max_hours = _WV_MAX_VALIDITY_HOURS
+            label = "6 hours (WV)"
+        elif is_tc:
+            max_hours = _WC_MAX_VALIDITY_HOURS
+            label = "6 hours (WC)"
+        else:
+            max_hours = _WS_MAX_VALIDITY_HOURS
+            label = "4 hours (WS)"
         if hours is not None and hours > max_hours:
-            label = "6 hours (WV)" if is_va else "4 hours (WS)"
             _emit_token_info(
                 issues,
                 code="INVALID_VALIDITY_DURATION",
@@ -1765,7 +1783,8 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
         if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
             return issues
         is_va = bool(_SIGMET_VA_TOKEN.search(upper))
-        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va))
+        is_tc = bool(_SIGMET_TC_TOKEN.search(upper))
+        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va, is_tc=is_tc))
         if is_va:
             issues.extend(_check_sigmet_v1(start=start, end=end, upper=upper))
     elif product == "AIRMET":
@@ -1996,6 +2015,68 @@ def _check_tca(tac: str) -> list[Issue]:
     return issues
 
 
+def _check_swxa(tac: str) -> list[Issue]:
+    start, end, body = _body_span(tac)
+    issues: list[Issue] = []
+    if not _DTG_LINE.search(body):
+        issues.append(
+            _issue(
+                "MISSING_DTG",
+                "SWXA missing DTG: template field — A2-3",
+                start=start,
+                end=end,
+                location="dtg",
+            )
+        )
+    if not _SWXC_LINE.search(body):
+        issues.append(
+            _issue(
+                "MISSING_SWXC",
+                "SWXA missing SWXC: template field — F28 theme SX1 / A2-3",
+                start=start,
+                end=end,
+                location="swxc",
+            )
+        )
+    # F28 theme SX1 — exceptional remarks / forecast / next-advisory cues (#740).
+    rmk_m = _RMK_LINE.search(body)
+    if rmk_m:
+        rmk_val = rmk_m.group(1).strip().rstrip("=").upper()
+        if rmk_val == "NIL":
+            issues.append(
+                _issue(
+                    "SWXA_RMK_NIL",
+                    "SWXA RMK NIL — remarks inapplicable (F28 theme SX1)",
+                    start=rmk_m.start(1),
+                    end=rmk_m.end(1),
+                    location="remarks",
+                )
+            )
+    no_swx = _NO_SWX_EXP.search(body)
+    if no_swx is not None:
+        issues.append(
+            _issue(
+                "SWXA_FCST_NO_SWX_EXP",
+                "SWXA forecast NO SWX EXP — no space weather expected (F28 theme SX1)",
+                start=no_swx.start(),
+                end=no_swx.end(),
+                location="forecast",
+            )
+        )
+    nxt_m = _NXT_ADVISORY_LINE.search(body)
+    if nxt_m and "NO FURTHER" in nxt_m.group(1).upper():
+        issues.append(
+            _issue(
+                "SWXA_NO_FURTHER_ADVISORIES",
+                "SWXA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F28 theme SX1)",
+                start=nxt_m.start(1),
+                end=nxt_m.end(1),
+                location="next_advisory",
+            )
+        )
+    return issues
+
+
 def check_product_rules(tac_text: str, product: str) -> list[Issue]:
     """
     Run product checklist / template-gate rules after parse-gate success.
@@ -2022,6 +2103,8 @@ def check_product_rules(tac_text: str, product: str) -> list[Issue]:
         return _check_vaa(tac_text)
     if product == "TCA":
         return _check_tca(tac_text)
+    if product == "SWXA":
+        return _check_swxa(tac_text)
     return []
 
 

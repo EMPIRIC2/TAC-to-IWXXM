@@ -1,14 +1,54 @@
-# Deprecated (EV-020 / E20-F3=3): replaced by wmo-quality.yml combined pack.
-# Kept temporarily so open PRs / bookmarks that reference this path still run the pack.
-name: SIGMET quality (deprecated → WMO quality)
+# EV-029 / E29-T4=2 — general SIGMET quality pack (M5 / TC-EV029-007 + F23 deepen).
+# Separate per-family workflow; complements root ci.yml.
+# Supersedes the EV-020 deprecated redirect-to-wmo-quality stub.
+name: SIGMET quality
 
 on:
+  push:
+    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_007_sigmet_gap_fixtures.py"
+      - "packages/tac2iwxxm/tests/fixtures/sigmet/**"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet*"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/tac-validate/tests/**/sigmet*"
+      - "apps/backend/src/utilities/conversion.py"
+      - "apps/backend/src/api.py"
+      - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
+      - "scripts/ci/run_sigmet_quality.sh"
+      - ".github/workflows/sigmet-quality.yml"
+  pull_request:
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_007_sigmet_gap_fixtures.py"
+      - "packages/tac2iwxxm/tests/fixtures/sigmet/**"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet*"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/tac-validate/tests/**/sigmet*"
+      - "apps/backend/src/utilities/conversion.py"
+      - "apps/backend/src/api.py"
+      - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
+      - "scripts/ci/run_sigmet_quality.sh"
+      - ".github/workflows/sigmet-quality.yml"
   workflow_dispatch:
 
 jobs:
-  redirect:
+  sigmet-quality:
     runs-on: ubuntu-latest
-    name: Redirect to WMO quality pack
+    name: SIGMET quality pack
     steps:
       - uses: actions/checkout@v5
         with:
@@ -25,5 +65,5 @@ jobs:
           python -m pip install --upgrade pip uv
           uv sync
 
-      - name: Run WMO quality pack (alias)
-        run: make test-wmo-quality
+      - name: Run SIGMET quality pack
+        run: make test-sigmet-quality

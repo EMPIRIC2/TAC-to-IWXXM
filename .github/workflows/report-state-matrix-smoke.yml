@@ -1,0 +1,44 @@
+# EV-029 / T12.2 — Report-state matrix smoke (TC-EV029-006 / M12).
+# BBB→reportStatus + CNL/NIL product paths; complements per-family packs.
+name: Report-state matrix smoke
+
+on:
+  push:
+    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/**"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_006_report_state_matrix.py"
+      - "packages/tac2iwxxm/tests/fixtures/**"
+      - "scripts/ci/run_report_state_matrix_smoke.sh"
+      - ".github/workflows/report-state-matrix-smoke.yml"
+  pull_request:
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/**"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_006_report_state_matrix.py"
+      - "packages/tac2iwxxm/tests/fixtures/**"
+      - "scripts/ci/run_report_state_matrix_smoke.sh"
+      - ".github/workflows/report-state-matrix-smoke.yml"
+  workflow_dispatch:
+
+jobs:
+  report-state-matrix-smoke:
+    runs-on: ubuntu-latest
+    name: Report-state matrix smoke (TC-EV029-006)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run report-state matrix smoke
+        run: make test-report-state-matrix-smoke

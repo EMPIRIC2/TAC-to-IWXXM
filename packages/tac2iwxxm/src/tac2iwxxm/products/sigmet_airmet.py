@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, cast
 
 _SIGMET = re.compile(
     r"^(?P<fir>[A-Z]{4})\s+SIGMET\s+(?P<seq>\d+)\s+VALID\s+"
@@ -16,7 +16,32 @@ _AIRMET = re.compile(
     re.DOTALL | re.IGNORECASE,
 )
 _CNL = re.compile(
-    r"\bCNL\s+SIGMET\s+(?P<cnl_seq>\d+)\s+(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
+    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?P<cnl_seq>\d+)\s+(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
+    re.IGNORECASE,
+)
+# VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
+_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b", re.IGNORECASE)
+# Optional leading WMO AHL (WC/WV/WS) so convert can family-select CNL roots (EV-029 M7).
+_AHL_PREFIX = re.compile(
+    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>\d{2})\s+"
+    r"(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})"
+    r"(?:\s+(?P<bbb>[A-Z]{1,3}))?\s*\n",
+)
+_TC_NAME = re.compile(r"\bTC\s+(?P<name>[A-Z][A-Z0-9-]*)\b", re.IGNORECASE)
+_TC_CIRCLE = re.compile(
+    r"\bWI\s+(?P<nm>\d+)\s*NM\s+OF\s+TC\s+CENTRE\b",
+    re.IGNORECASE,
+)
+_TC_FCST_PSN = re.compile(
+    r"\bFCST\s+AT\s+(?P<hhmm>\d{4})Z\s+TC\s+CENTRE\s+PSN\s+"
+    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
+    re.IGNORECASE,
+)
+_TC_OBS_PSN = re.compile(
+    r"\bTC\s+[A-Z][A-Z0-9-]*\s+PSN\s+"
+    r"N(?P<lat_deg>\d{2})(?P<lat_min>\d{2})(?:\d{2})?\s+"
+    r"(?P<lon_hemi>[EW])(?P<lon_deg>\d{3})(?P<lon_min>\d{2})(?:\d{2})?\b",
     re.IGNORECASE,
 )
 _MOV = re.compile(
@@ -200,7 +225,12 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         ir["cancelled_to_day"] = c_to[0]
         ir["cancelled_to_hour"] = c_to[1]
         ir["cancelled_to_minute"] = c_to[2]
-        ir.pop("phenomenon", None)
+        # FIR-moved cancel is VA-family (root VolcanicAshSIGMET); other CNL drop phenom.
+        if _CNL_FIR_MOVED.search(body) is not None:
+            ir["phenomenon"] = "VA"
+            ir["va_cnl_fir_moved"] = True
+        else:
+            ir.pop("phenomenon", None)
         return
 
     ir["intensity_change"] = _detect_intensity(body)
@@ -270,6 +300,35 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         # Forecast absence of ash — no geometry ring (V1 / #739).
         return
 
+    # TC SIGMET: name + centre PSN + WI nnNM OF TC CENTRE (+ optional FCST centre).
+    tc_name = _TC_NAME.search(body)
+    if tc_name is not None and ir.get("phenomenon") == "TC":
+        ir["tropical_cyclone_name"] = tc_name.group("name").title()
+        obs = _TC_OBS_PSN.search(body)
+        if obs is not None:
+            ir["tropical_cyclone_position"] = {
+                "lat": _point_lat_lon(obs)[0],
+                "lon": _point_lat_lon(obs)[1],
+            }
+        circle = _TC_CIRCLE.search(body)
+        if circle is not None and "tropical_cyclone_position" in ir:
+            pos = cast(dict[str, float], ir["tropical_cyclone_position"])
+            ir["geometry"] = {
+                "kind": "circle",
+                "lat": pos["lat"],
+                "lon": pos["lon"],
+                "radius_nm": int(circle.group("nm")),
+            }
+        fcst = _TC_FCST_PSN.search(body)
+        if fcst is not None:
+            ir["tropical_cyclone_forecast"] = {
+                "hhmm": fcst.group("hhmm"),
+                "lat": _point_lat_lon(fcst)[0],
+                "lon": _point_lat_lon(fcst)[1],
+            }
+        if "geometry" in ir:
+            return
+
     se_box = _SE_BOX.search(body)
     if se_box is not None:
         lat = float(se_box.group("lat"))
@@ -332,7 +391,15 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     if product.upper() != "SIGMET":
         raise ValueError(f"product mismatch: expected SIGMET, found {product}")
 
-    text = _normalize(tac)
+    raw_in = tac.lstrip("\ufeff").lstrip()
+    ahl_tt: str | None = None
+    ahl_match = _AHL_PREFIX.match(raw_in)
+    body_tac = raw_in
+    if ahl_match is not None:
+        ahl_tt = ahl_match.group("tt").upper()
+        body_tac = raw_in[ahl_match.end() :]
+
+    text = _normalize(body_tac)
     match = _SIGMET.match(text)
     if match is None:
         raise ValueError("unable to parse SIGMET header")
@@ -340,6 +407,13 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     body = match.group("body")
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
+    upper_body = body.upper()
+    if "AMSWELL" in upper_body:
+        fir_name = "AMSWELL FIR"
+    elif "SHANLON" in upper_body:
+        fir_name = "SHANLON FIR/UIR"
+    else:
+        fir_name = match.group("fir").upper()
     ir: dict[str, Any] = {
         "ir_version": 1,
         "product": "SIGMET",
@@ -353,12 +427,17 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         "valid_to_hour": to_h,
         "valid_to_minute": to_m,
         "phenomenon": _detect_phenomenon(body, _SIG_PHENOMENA),
-        "fir_name": "SHANLON FIR/UIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
+        "fir_name": fir_name,
         "raw": text,
     }
+    if ahl_tt is not None:
+        ir["ahl_tt"] = ahl_tt
     _enrich_sigmet_body(ir, body)
-    # Content-selected IWXXM root under product=sigmet (E19-13 / F23 V2 / TC-F23-006).
-    if ir.get("phenomenon") == "VA":
+    # Content-selected IWXXM root under product=sigmet (E19-13 / F23 V2 / TC-EV029-004).
+    # WC/WV AHL select family roots for CNL when the body omits phenomenon.
+    if ir.get("phenomenon") == "TC" or ahl_tt == "WC":
+        ir["iwxxm_root"] = "TropicalCycloneSIGMET"
+    elif ir.get("phenomenon") == "VA" or ir.get("va_cnl_fir_moved") or (ahl_tt == "WV" and ir.get("cancel")):
         ir["iwxxm_root"] = "VolcanicAshSIGMET"
     return ir
 
@@ -382,7 +461,15 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     if product.upper() != "AIRMET":
         raise ValueError(f"product mismatch: expected AIRMET, found {product}")
 
-    text = _normalize(tac)
+    raw_in = tac.strip()
+    ahl_tt: str | None = None
+    ahl_match = _AHL_PREFIX.match(raw_in)
+    body_tac = raw_in
+    if ahl_match is not None:
+        ahl_tt = ahl_match.group("tt").upper()
+        body_tac = raw_in[ahl_match.end() :]
+
+    text = _normalize(body_tac)
     match = _AIRMET.match(text)
     if match is None:
         raise ValueError("unable to parse AIRMET header")
@@ -406,6 +493,8 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
         "raw": text,
     }
+    if ahl_tt is not None:
+        ir["ahl_tt"] = ahl_tt
     _enrich_hazard_body(ir, body)
     return ir
 

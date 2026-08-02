@@ -380,6 +380,7 @@ class BulletinMetaModel(BaseModel):
     cccc: str
     yygggg: str
     bbb: Optional[str] = None
+    report_status: Optional[str] = None
 
 
 class BulletinReportResultModel(BaseModel):

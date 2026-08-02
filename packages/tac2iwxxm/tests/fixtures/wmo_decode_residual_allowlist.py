@@ -20,7 +20,7 @@ class ExpectedResidual:
     allow_any: bool = False  # G4 best-effort — any residual text permitted
 
 
-# Doc-intentional G4 peers (#820) — fuller VAA/TCA decode tracked separately.
+# Doc-intentional G4 peers — fuller advisory decode tracked separately.
 EXPECTED_RESIDUALS: tuple[ExpectedResidual, ...] = (
     ExpectedResidual(
         catalog_id="vaa_a7_2",
@@ -32,6 +32,12 @@ EXPECTED_RESIDUALS: tuple[ExpectedResidual, ...] = (
         catalog_id="tca_a2_2",
         doc_intent="F9 G4 / ADR-025 sparse best-effort",
         issue="#820",
+        allow_any=True,
+    ),
+    ExpectedResidual(
+        catalog_id="swxa_a7_3",
+        doc_intent="F9 G4 / ADR-025 sparse best-effort (F28 SWXA unlock)",
+        issue="#740",
         allow_any=True,
     ),
 )

@@ -207,7 +207,9 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
     "tt": "SA",
     "aa": "US",
     "cccc": "KZNY",
-    "yygggg": "121200"
+    "yygggg": "121200",
+    "bbb": null,
+    "report_status": "NORMAL"
   },
   "results": [
     {

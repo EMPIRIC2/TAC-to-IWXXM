@@ -25,3 +25,12 @@ def test_tac_work_sessions_migration_expand_cutover() -> None:
     assert "purge_stale_tac_work_sessions" in sql
     for product in ("metar", "speci", "taf", "sigmet", "airmet", "vaa", "tca"):
         assert product in sql
+
+
+def test_tac_work_sessions_swxa_product_migration() -> None:
+    """F28 / T11.5 — CHECK constraint expanded for product=swxa."""
+    migration = _REPO_ROOT / "supabase/migrations/20260802000011_tac_work_sessions_swxa.sql"
+    assert migration.is_file(), f"missing SWXA product migration at {migration}"
+    sql = migration.read_text(encoding="utf-8")
+    assert "swxa" in sql
+    assert "tac_work_sessions_product_check" in sql

@@ -45,9 +45,64 @@ _TAC_METAR_SPECI = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 
+# TAF body — optional AMD/COR after TAF; ends at '=' (design-note §3.2)
+_TAC_TAF = re.compile(
+    r"^TAF\s+(?:(?:AMD|COR)\s+)?[A-Z][A-Z0-9]{3}\s.+?=",
+    re.MULTILINE | re.DOTALL,
+)
+
+# SIGMET body — FIR SIGMET seq VALID … MWO- … = (design-note §3.2; WS gen / WV VA)
+_TAC_SIGMET = re.compile(
+    r"^[A-Z]{4}\s+SIGMET\s+\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# AIRMET body — FIR AIRMET seq VALID … MWO- … = (design-note §3.2; WA → LW / EV-029 M8)
+_TAC_AIRMET = re.compile(
+    r"^[A-Z]{4}\s+AIRMET\s+\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# VAA body — VA ADVISORY … = (``=`` preferred for multi; single block may omit — §3.2 / M9)
+_TAC_VAA = re.compile(
+    r"^VA\s+ADVISORY\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# TCA body — TC ADVISORY … = (``=`` preferred for multi; single block may omit — §3.2 / M10)
+_TAC_TCA = re.compile(
+    r"^TC\s+ADVISORY\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
+# SWXA body — SWX ADVISORY … = (``=`` preferred for multi; single block may omit — §3.2 / M11)
+_TAC_SWXA = re.compile(
+    r"^SWX\s+ADVISORY\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
 _PRODUCT_TT: dict[str, frozenset[str]] = {
     "METAR": frozenset({"SA"}),
     "SPECI": frozenset({"SP"}),
+    "TAF": frozenset({"FC", "FT"}),
+    # WS general + WV volcanic ash + WC tropical cyclone (content-selected root;
+    # E19-13 / EV-029 M5–M7).
+    "SIGMET": frozenset({"WS", "WV", "WC"}),
+    "AIRMET": frozenset({"WA"}),
+    "VAA": frozenset({"FV"}),
+    "TCA": frozenset({"FK"}),
+    "SWXA": frozenset({"FN"}),
+}
+
+_PRODUCT_BODY_RE: dict[str, re.Pattern[str]] = {
+    "METAR": _TAC_METAR_SPECI,
+    "SPECI": _TAC_METAR_SPECI,
+    "TAF": _TAC_TAF,
+    "SIGMET": _TAC_SIGMET,
+    "AIRMET": _TAC_AIRMET,
+    "VAA": _TAC_VAA,
+    "TCA": _TAC_TCA,
+    "SWXA": _TAC_SWXA,
 }
 
 
@@ -276,8 +331,9 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     text :
         Full bulletin text including the AHL line and one or more TAC reports.
     product :
-        Product hint selecting the AHL dialect (``METAR`` or ``SPECI`` for body
-        split; other products raise until their splitters land).
+        Product hint selecting the AHL dialect (``METAR``, ``SPECI``, ``TAF``,
+        ``SIGMET`` for WS/WV/WC, ``AIRMET`` for WA, ``VAA`` for FV, ``TCA``
+        for FK, or ``SWXA`` for FN).
 
     Returns
     -------
@@ -292,7 +348,8 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     """
     product_key = product.strip().upper()
     allowed_tt = _PRODUCT_TT.get(product_key)
-    if allowed_tt is None:
+    body_re = _PRODUCT_BODY_RE.get(product_key)
+    if allowed_tt is None or body_re is None:
         raise BulletinSplitError(
             "bulletin_split_failed",
             f"Unsupported product for bulletin split: {product!r}",
@@ -323,7 +380,7 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     # Only scan TAC reports after the AHL so pre-header noise cannot inflate the bulletin
     ahl_pos = text.find(ahl_match)
     body_text = text[ahl_pos + len(ahl_match) :]
-    reports = [m.group(0).strip() for m in _TAC_METAR_SPECI.finditer(body_text)]
+    reports = [m.group(0).strip() for m in body_re.finditer(body_text)]
     if not reports:
         raise BulletinSplitError(
             "empty_bulletin",
@@ -334,6 +391,19 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         reports = [r for r in reports if r.startswith("SPECI")]
     elif product_key == "METAR":
         reports = [r for r in reports if r.startswith("METAR")]
+    elif product_key == "TAF":
+        reports = [r for r in reports if r.startswith("TAF")]
+    elif product_key == "SIGMET":
+        # Keep FIR SIGMET…= only (reject VAA/TCA advisory blocks misrouted under WS/WV/WC).
+        reports = [r for r in reports if re.match(r"^[A-Z]{4}\s+SIGMET\s+", r, re.IGNORECASE)]
+    elif product_key == "AIRMET":
+        reports = [r for r in reports if re.match(r"^[A-Z]{4}\s+AIRMET\s+", r, re.IGNORECASE)]
+    elif product_key == "VAA":
+        reports = [r for r in reports if re.match(r"^VA\s+ADVISORY\b", r, re.IGNORECASE)]
+    elif product_key == "TCA":
+        reports = [r for r in reports if re.match(r"^TC\s+ADVISORY\b", r, re.IGNORECASE)]
+    elif product_key == "SWXA":
+        reports = [r for r in reports if re.match(r"^SWX\s+ADVISORY\b", r, re.IGNORECASE)]
 
     if not reports:
         raise BulletinSplitError(
@@ -350,6 +420,7 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         yygggg=parts.yygggg,
         bbb=parts.bbb,
         ii=parts.ii,
+        report_status=parts.report_status,
     )
     return BulletinSplit(meta=meta, reports=reports)
 

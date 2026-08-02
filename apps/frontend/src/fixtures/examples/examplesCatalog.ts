@@ -21,10 +21,11 @@ import sigmetVaEggx from './bodies/sigmet_va_eggx.tac?raw';
 import speciA32 from './bodies/speci_a3_2.tac?raw';
 import tafA51 from './bodies/taf_a5_1.tac?raw';
 import tafA52 from './bodies/taf_a5_2.tac?raw';
+import swxaA73 from './bodies/swxa_a7_3.tac?raw';
 import tcaA22 from './bodies/tca_a2_2.tac?raw';
 import vaaA72 from './bodies/vaa_a7_2.tac?raw';
 
-/** Seven F6 products covered by the Examples catalog. */
+/** Eight-family products covered by the Examples catalog (F6 + F28 SWXA). */
 export const EXAMPLE_PRODUCTS: readonly TacProduct[] = [
   'METAR',
   'SPECI',
@@ -33,9 +34,10 @@ export const EXAMPLE_PRODUCTS: readonly TacProduct[] = [
   'AIRMET',
   'VAA',
   'TCA',
+  'SWXA',
 ] as const;
 
-/** Products gated to strict WMO default golden parity (F24/F25/F26/F27). */
+/** Products gated to WMO default golden / reference bar (F24–F28). */
 export const WMO_SCOPE_PRODUCTS: readonly TacProduct[] = [
   'METAR',
   'SPECI',
@@ -44,6 +46,7 @@ export const WMO_SCOPE_PRODUCTS: readonly TacProduct[] = [
   'AIRMET',
   'VAA',
   'TCA',
+  'SWXA',
 ] as const;
 
 /**
@@ -219,6 +222,17 @@ export const EXAMPLES: readonly GoldenExample[] = [
     wmoSeed: 'tc-advisory-A2-2',
   },
   {
+    id: 'swxa_a7_3',
+    label: 'SWXA WMO A7-3 (annex3 reference)',
+    product: 'SWXA',
+    inputMode: 'tac',
+    body: swxaA73,
+    nonOperational: true,
+    provenance: `${PKG}/annex3_golden/swxa_a7_3.tac`,
+    wmoReference: true,
+    wmoSeed: 'spacewx-A7-3',
+  },
+  {
     id: 'ahl_metar_multi',
     label: 'AHL METAR multi-report bulletin',
     product: 'METAR',
@@ -266,6 +280,11 @@ export const FIXTURE_GAPS: readonly FixtureGap[] = [
     product: 'TCA',
     reason:
       'WMO-only catalog (F27): single unlocked seed tc-advisory-A2-2; second WMO TCA deferred.',
+  },
+  {
+    product: 'SWXA',
+    reason:
+      'WMO-only catalog (F28): single unlocked seed spacewx-A7-3 (wmoReference); A7-4/A7-5 deferred.',
   },
 ] as const;
 

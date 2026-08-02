@@ -125,6 +125,329 @@ def test_convert_bulletin_requires_product(client: TestClient) -> None:
     assert response.status_code == 422
 
 
+SPECI_CCA_TEXT = """\
+SPUS31 KZNY 121230 CCA
+SPECI KJFK 121225Z 18008KT 10SM FEW250 22/14 A3012=
+"""
+
+
+def test_convert_bulletin_speci_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T3.2: SPECI AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return f'<iwxxm:SPECI reportStatus="CORRECTION">{tac[:20]}</iwxxm:SPECI>', None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=SPECI_CCA_TEXT,
+        product="SPECI",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "SP"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "SPECI"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:SPECI" in (payload["results"][0]["xml"] or "")
+
+
+TAF_CCA_TEXT = """\
+FCUS31 KJFK 121200 CCA
+TAF KJFK 121130Z 1212/1312 18010KT P6SM FEW050=
+"""
+
+
+def test_convert_bulletin_taf_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T4.2: TAF AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return f'<iwxxm:TAF reportStatus="CORRECTION">{tac[:20]}</iwxxm:TAF>', None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=TAF_CCA_TEXT,
+        product="TAF",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "FC"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "TAF"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:TAF" in (payload["results"][0]["xml"] or "")
+
+
+SIGMET_CCA_TEXT = """\
+WSUK31 EGRR 121200 CCA
+YUDD SIGMET 2 VALID 101200/101600 YUSO-
+YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN=
+"""
+
+
+def test_convert_bulletin_sigmet_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T5.2: SIGMET AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return f'<iwxxm:SIGMET reportStatus="CORRECTION">{tac[:20]}</iwxxm:SIGMET>', None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=SIGMET_CCA_TEXT,
+        product="SIGMET",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "WS"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "SIGMET"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:SIGMET" in (payload["results"][0]["xml"] or "")
+
+
+VA_SIGMET_CCA_TEXT = """\
+WVUK31 EGRR 121200 CCA
+EGGX SIGMET 4 VALID 251600/252000 EGRR-
+EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+VA CLD OBS AT 1600Z WI N6000 W01150 - N5900 W01300 - N6000 W01600 - N6000 W01150 SFC/FL550 NC=
+"""
+
+
+def test_convert_bulletin_va_sigmet_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T6.2: WV AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:VolcanicAshSIGMET reportStatus="CORRECTION">{tac[:20]}</iwxxm:VolcanicAshSIGMET>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=VA_SIGMET_CCA_TEXT,
+        product="SIGMET",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "WV"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "SIGMET"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:VolcanicAshSIGMET" in (payload["results"][0]["xml"] or "")
+
+
+TC_SIGMET_CCA_TEXT = """\
+WCUK31 EGRR 121200 CCA
+YUCC SIGMET 3 VALID 251600/252200 YUDO-
+YUCC AMSWELL FIR TC GLORIA PSN N2706 W07306 CB OBS AT 1600Z WI 250NM OF TC CENTRE TOP FL500 NC
+FCST AT 2200Z TC CENTRE PSN N2740 W07345=
+"""
+
+
+def test_convert_bulletin_tc_sigmet_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T7.2: WC AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:TropicalCycloneSIGMET reportStatus="CORRECTION">{tac[:20]}</iwxxm:TropicalCycloneSIGMET>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=TC_SIGMET_CCA_TEXT,
+        product="SIGMET",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "WC"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "SIGMET"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:TropicalCycloneSIGMET" in (payload["results"][0]["xml"] or "")
+
+
+AIRMET_CCA_TEXT = """\
+WAUK31 EGRR 121200 CCA
+YUDD AIRMET 1 VALID 151520/151800 YUSO-
+YUDD SHANLON FIR ISOL TS OBS N OF S50 TOP ABV FL100 STNR WKN=
+"""
+
+
+def test_convert_bulletin_airmet_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T8.2: WA AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:AIRMET reportStatus="CORRECTION">{tac[:20]}</iwxxm:AIRMET>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=AIRMET_CCA_TEXT,
+        product="AIRMET",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "WA"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "AIRMET"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:AIRMET" in (payload["results"][0]["xml"] or "")
+
+
+VAA_CCA_TEXT = """\
+FVFE01 RJTD 121200 CCA
+VA ADVISORY
+DTG:                        20240923/0130Z
+VAAC:                       TOKYO
+VOLCANO:                    KARYMSKY 1000-13
+PSN:                        N5403 E15927
+AREA:                       RUSSIA
+SOURCE ELEV:                1536M AMSL
+ADVISORY NR:                2024/4
+INFO SOURCE:                HIMAWARI-8 KVERT KEMSD
+ERUPTION DETAILS:           ERUPTION AT 20240923/0000Z FL300 REPORTED
+OBS VA DTG:                 23/0100Z
+OBS VA CLD:                 FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 MOV SE 20KT
+FCST VA CLD +6 HR:          23/0700Z NO VA EXP
+RMK:                        NIL
+NXT ADVISORY:               20240923/0730Z
+=
+"""
+
+
+def test_convert_bulletin_vaa_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T9.2: FV AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:VolcanicAshAdvisory reportStatus="CORRECTION">{tac[:20]}</iwxxm:VolcanicAshAdvisory>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=VAA_CCA_TEXT,
+        product="VAA",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "FV"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "VAA"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:VolcanicAshAdvisory" in (payload["results"][0]["xml"] or "")
+
+
+TCA_CCA_TEXT = """\
+FKAU01 ADRM 121200 CCA
+TC ADVISORY
+DTG:                        20040925/1900Z
+TCAC:                       YUFO
+TC:                         GLORIA
+ADVISORY NR:                2004/13
+OBS PSN:                    25/1800Z N2706 W07306
+CB:                         WI 250NM OF TC CENTRE TOP FL500
+MOV:                        NW 20KMH
+INTST CHANGE:               INTSF
+C:                          965HPA
+MAX WIND:                   22MPS
+FCST PSN +6 HR:             25/2200Z N2748 W07350
+FCST MAX WIND +6 HR:        22MPS
+RMK:                        NIL
+NXT MSG:                    20040925/2000Z
+=
+"""
+
+
+def test_convert_bulletin_tca_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T10.2: FK AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:TropicalCycloneAdvisory reportStatus="CORRECTION">{tac[:20]}</iwxxm:TropicalCycloneAdvisory>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=TCA_CCA_TEXT,
+        product="TCA",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "FK"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "TCA"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:TropicalCycloneAdvisory" in (payload["results"][0]["xml"] or "")
+
+
 def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
 

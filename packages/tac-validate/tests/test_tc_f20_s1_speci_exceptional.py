@@ -50,7 +50,8 @@ def _case_ids(cases: list[dict[str, Any]]) -> list[str]:
 
 
 _MANIFEST = _load_manifest()
-_S1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "S1"]
+# Product filter required: F28 also uses theme ids that must not collide (SX1 for SWXA).
+_S1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "S1" and c.get("product") == "SPECI"]
 _S1_INFO = list(_MANIFEST.get("s1_modifier_info", []))
 _S1_ERRORS = list(_MANIFEST.get("s1_errors", []))
 

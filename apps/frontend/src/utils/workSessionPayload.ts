@@ -37,6 +37,7 @@ const SESSION_PRODUCTS = new Set<WorkSessionProduct>([
   'taf',
   'vaa',
   'tca',
+  'swxa',
 ]);
 
 /**

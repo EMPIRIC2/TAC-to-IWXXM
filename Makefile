@@ -18,8 +18,19 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
 	test-sigmet-quality \
+	test-va-sigmet-quality \
+	test-tc-sigmet-quality \
+	test-airmet-quality \
+	test-vaa-quality \
+	test-tca-quality \
+	test-swxa-quality \
+	test-product-order-smoke \
+	test-report-state-matrix-smoke \
 	test-wmo-quality \
 	test-ahl-com-quality \
+	test-metar-quality \
+	test-speci-quality \
+	test-taf-quality \
 	test-integration-dissemination \
 	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
 	compose-mock-byoc-up compose-mock-byoc-down compose-mock-byoc-full-up \
@@ -221,10 +232,6 @@ test-unit-tac-validate:
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-fail-under=95 -v
 
-# F23 / EV-019 — focused SIGMET + VA pack (E19-19); superseded by combined WMO pack (E20-F3)
-# Kept as thin alias for older docs / local muscle memory.
-test-sigmet-quality: test-wmo-quality
-
 # F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3): SIGMET keep-green + AIRMET + METAR/SPECI/TAF
 # Extended F26/F27 / EV-021 (S02.L1): + VAA + TCA keyword filters
 test-wmo-quality:
@@ -233,6 +240,55 @@ test-wmo-quality:
 # EV-029 / E29-T4=2 — AHL / COM / shared bulletin pack (M1 / TC-EV029-003)
 test-ahl-com-quality:
 	bash scripts/ci/run_ahl_com_quality.sh
+
+# EV-029 / E29-T4=2 — METAR quality pack (M2 / TC-EV029-007 + F15 deepen)
+test-metar-quality:
+	bash scripts/ci/run_metar_quality.sh
+
+# EV-029 / E29-T4=2 — SPECI quality pack (M3 / TC-EV029-007 + F20 deepen)
+test-speci-quality:
+	bash scripts/ci/run_speci_quality.sh
+
+# EV-029 / E29-T4=2 — TAF quality pack (M4 / TC-EV029-007 + F20 deepen)
+test-taf-quality:
+	bash scripts/ci/run_taf_quality.sh
+
+# EV-029 / E29-T4=2 — general SIGMET quality pack (M5 / TC-EV029-007 + F23 deepen)
+# Replaces the EV-020 thin alias that redirected to test-wmo-quality.
+test-sigmet-quality:
+	bash scripts/ci/run_sigmet_quality.sh
+
+# EV-029 / E29-T4=2 — VA SIGMET quality pack (M6 / TC-EV029-007 + F23 deepen)
+test-va-sigmet-quality:
+	bash scripts/ci/run_va_sigmet_quality.sh
+
+# EV-029 / E29-T4=2 — TC SIGMET quality pack (M7 / TC-EV029-004 + F23 deepen / #738)
+test-tc-sigmet-quality:
+	bash scripts/ci/run_tc_sigmet_quality.sh
+
+# EV-029 / E29-T4=2 — AIRMET quality pack (M8 / TC-EV029-007 + F24 deepen)
+test-airmet-quality:
+	bash scripts/ci/run_airmet_quality.sh
+
+# EV-029 / E29-T4=2 — VAA quality pack (M9 / TC-EV029-005 + F26 deepen / #820)
+test-vaa-quality:
+	bash scripts/ci/run_vaa_quality.sh
+
+# EV-029 / E29-T4=2 — TCA quality pack (M10 / TC-EV029-005 + F27 deepen / #820)
+test-tca-quality:
+	bash scripts/ci/run_tca_quality.sh
+
+# EV-029 / E29-T4=2 — SWXA quality pack (M11 / TC-F28 + F28 deepen / #740/#823)
+test-swxa-quality:
+	bash scripts/ci/run_swxa_quality.sh
+
+# EV-029 / T12.1 — Product-order regression smoke (TC-EV029-007 / M12)
+test-product-order-smoke:
+	bash scripts/ci/run_product_order_smoke.sh
+
+# EV-029 / T12.2 — Report-state matrix smoke (TC-EV029-006 / M12)
+test-report-state-matrix-smoke:
+	bash scripts/ci/run_report_state_matrix_smoke.sh
 
 # EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
 test-iwxxm-translation-informative:

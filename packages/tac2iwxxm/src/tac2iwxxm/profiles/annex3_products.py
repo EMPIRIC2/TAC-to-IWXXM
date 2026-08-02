@@ -210,7 +210,10 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     elif ir.get("cancel"):
         gml_id = f"taf.cnl.{station.lower()}"
 
-    if ir.get("correction"):
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        status = str(override)
+    elif ir.get("correction"):
         status = "CORRECTION"
     elif ir.get("amendment"):
         status = "AMENDMENT"
@@ -355,8 +358,10 @@ def _sigmet_root_local(ir: dict[str, Any]) -> str:
     """
     Content-select IWXXM SIGMET family root under HTTP ``product=sigmet`` (E19-13 / F23 V2).
 
-    VA phenomenon TAC → ``VolcanicAshSIGMET``; general non-VA/TC → ``SIGMET``.
+    VA → ``VolcanicAshSIGMET``; TC / WC AHL → ``TropicalCycloneSIGMET``; else ``SIGMET``.
     """
+    if ir.get("phenomenon") == "TC" or ir.get("iwxxm_root") == "TropicalCycloneSIGMET":
+        return "TropicalCycloneSIGMET"
     if ir.get("phenomenon") == "VA" or ir.get("iwxxm_root") == "VolcanicAshSIGMET":
         return "VolcanicAshSIGMET"
     return "SIGMET"
@@ -373,6 +378,11 @@ def _sigmet_header_units(
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        status = str(override)
+    else:
+        status = "NORMAL"
     # Default synthetic display names from designators; WMO multi-location VA stem
     # uses long ATS/MWO names from the vendor example (S02.M1 / #809).
     if _is_wmo_sigmet_multi_location_va_yudd(ir):
@@ -390,7 +400,7 @@ def _sigmet_header_units(
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"{extra_xmlns}
     gml:id="{gml_id}"
-    reportStatus="NORMAL"
+    reportStatus="{status}"
     permissibleUsage="OPERATIONAL"{{cancel_attr}}>
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
@@ -507,9 +517,10 @@ def _sigmet_geometry_xml(
 
     if isinstance(geom, dict):
         g = cast(dict[str, Any], geom)
-        if g.get("kind") == "point":
+        if g.get("kind") in {"point", "circle"}:
             lat = float(g["lat"])
             lon = float(g["lon"])
+            radius = int(g["radius_nm"]) if g.get("kind") == "circle" and "radius_nm" in g else 0
             return f"""
               <iwxxm:geometry>
                 <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
@@ -524,7 +535,7 @@ def _sigmet_geometry_xml(
                                   <gml:segments>
                                     <gml:CircleByCenterPoint numArc="1">
                                       <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
-                                      <gml:radius uom="[nmi_i]">0</gml:radius>
+                                      <gml:radius uom="[nmi_i]">{radius}</gml:radius>
                                     </gml:CircleByCenterPoint>
                                   </gml:segments>
                                 </gml:Curve>
@@ -711,8 +722,76 @@ def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
     return ""
 
 
+def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
+    """Emit ``iwxxm:tropicalCyclone`` / metce name for TropicalCycloneSIGMET (#738)."""
+    name = ir.get("tropical_cyclone_name")
+    if not isinstance(name, str) or not name.strip():
+        return ""
+    slug = re.sub(r"[^a-z0-9]+", "", name.lower()) or "tc"
+    return f"""
+  <iwxxm:tropicalCyclone>
+    <metce:TropicalCyclone gml:id="tc.{slug}">
+      <metce:name>{escape(name.strip())}</metce:name>
+    </metce:TropicalCyclone>
+  </iwxxm:tropicalCyclone>
+"""
+
+
+def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
+    """Emit ``tropicalCyclonePosition`` Point when IR has a TC centre."""
+    pos = ir.get("tropical_cyclone_position")
+    if not isinstance(pos, dict) or "lat" not in pos or "lon" not in pos:
+        return ""
+    lat = float(cast(dict[str, Any], pos)["lat"])
+    lon = float(cast(dict[str, Any], pos)["lon"])
+    return f"""
+              <iwxxm:tropicalCyclonePosition>
+                <gml:Point gml:id="{gid}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                </gml:Point>
+              </iwxxm:tropicalCyclonePosition>"""
+
+
+def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
+    """Emit forecastPositionAnalysis for FCST AT … TC CENTRE PSN (A6-2-TC)."""
+    fcst = ir.get("tropical_cyclone_forecast")
+    if not isinstance(fcst, dict) or "lat" not in fcst or "lon" not in fcst:
+        return ""
+    f = cast(dict[str, Any], fcst)
+    lat = float(f["lat"])
+    lon = float(f["lon"])
+    hhmm = str(f.get("hhmm", "0000"))
+    day = int(ir["valid_to_day"])
+    # Prefer VALID end day; vendor A6-2 uses end-of-validity forecast time.
+    hour = int(hhmm[:2]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_hour"])
+    minute = int(hhmm[2:4]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_minute"])
+    fcst_time = f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    if fcst_time > end:
+        fcst_time = end
+    return f"""
+      <iwxxm:forecastPositionAnalysis>
+        <iwxxm:SIGMETPositionCollection gml:id="fcst.pos.{fir.lower()}">
+          <iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.fcst.{fir.lower()}">
+              <gml:timePosition>{fcst_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>
+          <iwxxm:member>
+            <iwxxm:SIGMETPosition gml:id="fcst.cond.{fir.lower()}">
+              <iwxxm:tropicalCyclonePosition>
+                <gml:Point gml:id="fcst.tc.pos.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                </gml:Point>
+              </iwxxm:tropicalCyclonePosition>
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
+            </iwxxm:SIGMETPosition>
+          </iwxxm:member>
+        </iwxxm:SIGMETPositionCollection>
+      </iwxxm:forecastPositionAnalysis>"""
+
+
 def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit an IWXXM SIGMET / VolcanicAshSIGMET document (F6.d / F23 G1–G3 / V2)."""
+    """Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document."""
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     issue, begin, end = _hazard_stamp(ir, "sigmet")
@@ -722,6 +801,8 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         gml_id = f"sigmet.cnl.{fir.lower()}"
     elif root == "VolcanicAshSIGMET":
         gml_id = f"sigmet.va.{fir.lower()}"
+    elif root == "TropicalCycloneSIGMET":
+        gml_id = f"sigmet.tc.{fir.lower()}"
     else:
         gml_id = f"sigmet.basic.{fir.lower()}"
 
@@ -765,9 +846,9 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
             if isinstance(item, dict):
                 locations.append(cast(dict[str, Any], item))
     multi = len(locations) >= 2
-    extra_xmlns = (
-        '\n    xmlns:metce="http://def.wmo.int/metce/2013"' if multi and isinstance(ir.get("volcano"), dict) else ""
-    )
+    is_tc = root == "TropicalCycloneSIGMET"
+    need_metce = is_tc or (multi and isinstance(ir.get("volcano"), dict))
+    extra_xmlns = '\n    xmlns:metce="http://def.wmo.int/metce/2013"' if need_metce else ""
     motion = _sigmet_motion_xml(ir)
     head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue, extra_xmlns=extra_xmlns).format(cancel_attr="")
 
@@ -800,6 +881,26 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         )
 
     geometry = _sigmet_geometry_xml(ir, fir=fir)
+    # Gen/VA single-location keep FORECAST (golden bar); TC uses OBSERVATION when OBS present.
+    if is_tc:
+        time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
+    else:
+        time_indicator = "FORECAST"
+    tc_pos = _sigmet_tc_position_xml(ir, gid=f"tc.pos.{fir.lower()}") if is_tc else ""
+    tc_fcst = _sigmet_tc_forecast_xml(ir, fir=fir, end=end) if is_tc else ""
+    tc_name_xml = _sigmet_tropical_cyclone_xml(ir) if is_tc else ""
+    intensity_attr = f' intensityChange="{escape(intensity)}"'
+    phenom_time = (
+        f"""
+          <iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.obs.{fir.lower()}">
+              <gml:timePosition>{issue}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+        if is_tc
+        else """
+          <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>"""
+    )
     return (
         head
         + f"""  <iwxxm:validPeriod>
@@ -812,17 +913,15 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
   <iwxxm:analysisCollection>
     <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{fir.lower()}">
       <iwxxm:analysis>
-        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
-          <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="{escape(time_indicator)}">{phenom_time}
           <iwxxm:member>
-            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}" intensityChange="{escape(intensity)}">{geometry}{motion}
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}"{intensity_attr}>{tc_pos}{geometry}{motion}
             </iwxxm:SIGMETEvolvingCondition>
           </iwxxm:member>
         </iwxxm:SIGMETEvolvingConditionCollection>
-      </iwxxm:analysis>
+      </iwxxm:analysis>{tc_fcst}
     </iwxxm:analysisAndForecastPositionAnalysis>
-  </iwxxm:analysisCollection>
-</iwxxm:{root}>
+  </iwxxm:analysisCollection>{tc_name_xml}</iwxxm:{root}>
 """
     )
 
@@ -833,22 +932,23 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     issue, begin, end = _hazard_stamp(ir, "airmet")
-    phenom = _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
-    gml_id = f"airmet.basic.{fir.lower()}"
-    intensity = str(ir.get("intensity_change", "NO_CHANGE"))
-    time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
-    geometry = _sigmet_geometry_xml(ir, fir=fir)
-    motion = _sigmet_motion_xml(ir)
+    cancel = bool(ir.get("cancel"))
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        status = str(override)
+    else:
+        status = "NORMAL"
+    gml_id = f"airmet.cnl.{fir.lower()}" if cancel else f"airmet.basic.{fir.lower()}"
 
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
+    units = f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:AIRMET xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="{gml_id}"
-    reportStatus="NORMAL"
-    permissibleUsage="OPERATIONAL">
+    reportStatus="{status}"
+    permissibleUsage="OPERATIONAL"{{cancel_attr}}>
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>{issue}</gml:timePosition>
@@ -900,7 +1000,39 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
       <gml:endPosition>{end}</gml:endPosition>
     </gml:TimePeriod>
   </iwxxm:validPeriod>
-  <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
+"""
+
+    if cancel:
+        c_begin = (
+            f"2012-08-{int(ir['cancelled_from_day']):02d}T"
+            f"{int(ir['cancelled_from_hour']):02d}:{int(ir['cancelled_from_minute']):02d}:00Z"
+        )
+        c_end = (
+            f"2012-08-{int(ir['cancelled_to_day']):02d}T"
+            f"{int(ir['cancelled_to_hour']):02d}:{int(ir['cancelled_to_minute']):02d}:00Z"
+        )
+        return (
+            units.format(cancel_attr='\n    isCancelReport="true"')
+            + f"""  <iwxxm:cancelledReportSequenceNumber>{int(ir["cancelled_sequence"])}</iwxxm:cancelledReportSequenceNumber>
+  <iwxxm:cancelledReportValidPeriod>
+    <gml:TimePeriod gml:id="t.cancelled">
+      <gml:beginPosition>{c_begin}</gml:beginPosition>
+      <gml:endPosition>{c_end}</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:cancelledReportValidPeriod>
+</iwxxm:AIRMET>
+"""
+        )
+
+    phenom = _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
+    intensity = str(ir.get("intensity_change", "NO_CHANGE"))
+    time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
+    geometry = _sigmet_geometry_xml(ir, fir=fir)
+    motion = _sigmet_motion_xml(ir)
+
+    return (
+        units.format(cancel_attr="")
+        + f"""  <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
   <iwxxm:analysis>
     <iwxxm:AIRMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="{escape(time_indicator)}">
       <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
@@ -912,6 +1044,7 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
   </iwxxm:analysis>
 </iwxxm:AIRMET>
 """
+    )
 
 
 _VAA_FORBIDDEN_ROOTS = frozenset(
@@ -1000,6 +1133,11 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     vaac = str(ir["vaac"])
     volcano = str(ir["volcano"])
     issue = str(ir["issue_time"])
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "NORMAL"
     slug = re.sub(r"[^a-z0-9]+", ".", volcano.lower()).strip(".")
     lat = ir.get("lat")
     lon = ir.get("lon")
@@ -1084,8 +1222,10 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         )
 
     remarks_xml = ""
-    if ir.get("remarks"):
+    if ir.get("remarks") and not ir.get("remarks_nil"):
         remarks_xml = f"\n    <iwxxm:remarks>{escape(str(ir['remarks']))}</iwxxm:remarks>"
+    elif ir.get("remarks_nil"):
+        remarks_xml = '\n    <iwxxm:remarks nilReason="http://codes.wmo.int/common/nil/inapplicable"/>'
 
     next_xml = ""
     if ir.get("next_advisory_time"):
@@ -1104,7 +1244,7 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     xmlns:metce="http://def.wmo.int/metce/2013"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="vaa.{slug}"
-    reportStatus="NORMAL"
+    reportStatus="{report_status}"
     permissibleUsage="OPERATIONAL">
     <iwxxm:issueTime>
         <gml:TimeInstant gml:id="t.issue">
@@ -1349,6 +1489,12 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
             )
         fallback = f"{pos}{pressure}{wind}"
 
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "NORMAL"
+
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:TropicalCycloneAdvisory xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -1357,7 +1503,7 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     xmlns:metce="http://def.wmo.int/metce/2013"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="tca.{slug}"
-    reportStatus="NORMAL"
+    reportStatus="{report_status}"
     permissibleUsage="OPERATIONAL">
     <iwxxm:issueTime>
         <gml:TimeInstant gml:id="t.issue">
@@ -1395,9 +1541,278 @@ def _assert_tca_advisory_xml(xml: str) -> str:
     return xml
 
 
+# Approximate lat bands / circles for SpaceWxLocation codes (vendor spacewx-A7-*).
+_SWXA_BANDS: dict[str, str] = {
+    "HNH": "60 180\n                                                                90 180\n                                                                90 -180\n                                                                60 -180\n                                                                60 180",
+    "MNH": "30 180\n                                                                60 180\n                                                                60 -180\n                                                                30 -180\n                                                                30 180",
+    "EQN": "00 180\n                                                                30 180\n                                                                30 -180\n                                                                00 -180\n                                                                00 180",
+    "EQS": "-30 180\n                                                                00 180\n                                                                00 -180\n                                                                -30 -180\n                                                                -30 180",
+    "MSH": "-60 180\n                                                                -30 180\n                                                                -30 -180\n                                                                -60 -180\n                                                                -60 180",
+    "HSH": "-90 180\n                                                                -60 180\n                                                                -60 -180\n                                                                -90 -180\n                                                                -90 180",
+}
+_SWXA_CIRCLES: dict[str, tuple[str, int]] = {
+    "DAYLIGHT_SIDE": ("-16.71 70.94", 10100),
+    "DAYSIDE": ("-16.71 70.94", 10100),
+    "NIGHTSIDE": ("9999 9999", 10100),
+}
+_SWXA_FORBIDDEN_ROOTS = frozenset(
+    {
+        "SIGMET",
+        "VolcanicAshSIGMET",
+        "TropicalCycloneSIGMET",
+        "VolcanicAshAdvisory",
+        "TropicalCycloneAdvisory",
+        "AIRMET",
+    }
+)
+
+
+def _swxa_region_xml(loc: str, *, slug: str, idx: int) -> str:
+    code = loc.upper()
+    href = f"http://codes.wmo.int/49-2/SpaceWxLocation/{code}"
+    rid = f"swxa.reg.{slug}.{idx}"
+    if code in _SWXA_CIRCLES:
+        pos, radius = _SWXA_CIRCLES[code]
+        surface = f"""
+                                        <aixm:Surface gml:id="{rid}.sfc" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                                            <gml:patches>
+                                                <gml:PolygonPatch>
+                                                    <gml:exterior>
+                                                        <gml:Ring>
+                                                            <gml:curveMember>
+                                                                <gml:Curve gml:id="{rid}.curve">
+                                                                    <gml:segments>
+                                                                        <gml:CircleByCenterPoint numArc="1">
+                                                                            <gml:pos>{pos}</gml:pos>
+                                                                            <gml:radius uom="km">{radius}</gml:radius>
+                                                                        </gml:CircleByCenterPoint>
+                                                                    </gml:segments>
+                                                                </gml:Curve>
+                                                            </gml:curveMember>
+                                                        </gml:Ring>
+                                                    </gml:exterior>
+                                                </gml:PolygonPatch>
+                                            </gml:patches>
+                                        </aixm:Surface>"""
+    else:
+        pos_list = _SWXA_BANDS.get(
+            code,
+            "90 180\n                                                                -90 180\n                                                                -90 -180\n                                                                90 -180\n                                                                90 180",
+        )
+        surface = f"""
+                                        <aixm:Surface gml:id="{rid}.sfc" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                                            <gml:patches>
+                                                <gml:PolygonPatch>
+                                                    <gml:exterior>
+                                                        <gml:LinearRing>
+                                                            <gml:posList>
+                                                                {pos_list}
+                                                            </gml:posList>
+                                                        </gml:LinearRing>
+                                                    </gml:exterior>
+                                                </gml:PolygonPatch>
+                                            </gml:patches>
+                                        </aixm:Surface>"""
+    return f"""
+                    <iwxxm:region>
+                        <iwxxm:SpaceWeatherRegion gml:id="{rid}">
+                            <iwxxm:location>
+                                <aixm:AirspaceVolume gml:id="{rid}.vol">
+                                    <aixm:horizontalProjection>{surface}
+                                    </aixm:horizontalProjection>
+                                </aixm:AirspaceVolume>
+                            </iwxxm:location>
+                            <iwxxm:locationIndicator xlink:href="{href}"/>
+                        </iwxxm:SpaceWeatherRegion>
+                    </iwxxm:region>"""
+
+
+def _swxa_analysis_xml(
+    block: dict[str, Any],
+    *,
+    time_indicator: str,
+    slug: str,
+    idx: int,
+) -> str:
+    time_iso = block.get("time") or "9999-01-01T00:00:00Z"
+    aid = f"swxa.an.{slug}.{idx}"
+    if block.get("no_swx_exp"):
+        return f"""
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="{aid}" timeIndicator="{time_indicator}">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="{aid}.t">
+                    <gml:timePosition>{escape(str(time_iso))}</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:intensityAndRegion nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>"""
+
+    groups = list(block.get("groups") or [])
+    if not groups:
+        return f"""
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="{aid}" timeIndicator="{time_indicator}">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="{aid}.t">
+                    <gml:timePosition>{escape(str(time_iso))}</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:intensityAndRegion nilReason="http://codes.wmo.int/common/nil/missing"/>
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>"""
+
+    iar_blocks: list[str] = []
+    loc_i = 0
+    for g_idx, group in enumerate(groups):
+        intensity = str(group.get("intensity", "MOD"))
+        regions_xml = ""
+        for loc in list(group.get("locations") or []):
+            regions_xml += _swxa_region_xml(str(loc), slug=slug, idx=loc_i)
+            loc_i += 1
+        if not regions_xml:
+            continue
+        iar_blocks.append(
+            f"""
+            <iwxxm:intensityAndRegion>
+                <iwxxm:SpaceWeatherIntensityAndRegion gml:id="{aid}.iar.{g_idx}">
+                    <iwxxm:intensity>{escape(intensity)}</iwxxm:intensity>{regions_xml}
+                </iwxxm:SpaceWeatherIntensityAndRegion>
+            </iwxxm:intensityAndRegion>"""
+        )
+    if not iar_blocks:
+        iar_xml = '\n            <iwxxm:intensityAndRegion nilReason="http://codes.wmo.int/common/nil/missing"/>'
+    else:
+        iar_xml = "".join(iar_blocks)
+    return f"""
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="{aid}" timeIndicator="{time_indicator}">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="{aid}.t">
+                    <gml:timePosition>{escape(str(time_iso))}</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>{iar_xml}
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>"""
+
+
+def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit an IWXXM ``SpaceWeatherAdvisory`` document (F28 / EV-029 M11).
+
+    Product/root guard: under ``product=swxa`` always opens
+    ``iwxxm:SpaceWeatherAdvisory`` and never SIGMET/VAA/TCA roots.
+    Geometry for SpaceWxLocation bands is approximate (S02.L1 may use
+    ``wmoReference`` vs vendor golden equality).
+    """
+    product = str(ir.get("product", "SWXA")).upper()
+    if product != "SWXA":
+        raise ValueError(f"SWXA emitter product/root guard: expected product SWXA, found {product!r}")
+    claimed = ir.get("iwxxm_root")
+    if claimed is not None and str(claimed) in _SWXA_FORBIDDEN_ROOTS:
+        raise ValueError(f"SWXA emitter product/root guard: refusing forbidden iwxxm_root={claimed!r}")
+    if claimed is not None and str(claimed) not in {"SpaceWeatherAdvisory", "SWXA"}:
+        raise ValueError(f"SWXA emitter product/root guard: unexpected iwxxm_root={claimed!r}")
+
+    ns = _ns(iwxxm_version)
+    swxc = str(ir["swxc"])
+    issue = str(ir["issue_time"])
+    slug = re.sub(r"[^a-z0-9]+", ".", swxc.lower()).strip(".") or "swxc"
+    effect = str(ir.get("effect") or "")
+    advisory_number = str(ir.get("advisory_number") or "")
+
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "NORMAL"
+
+    replaced_xml = ""
+    for num in list(ir.get("replaced_advisory_numbers") or []):
+        replaced_xml += f"\n    <iwxxm:replacedAdvisoryNumber>{escape(str(num))}</iwxxm:replacedAdvisoryNumber>"
+
+    effect_xml = f"\n    <iwxxm:effect>{escape(effect)}</iwxxm:effect>" if effect else ""
+
+    analyses: list[str] = []
+    obs = ir.get("observation")
+    if isinstance(obs, dict):
+        analyses.append(_swxa_analysis_xml(cast(dict[str, Any], obs), time_indicator="OBSERVATION", slug=slug, idx=0))
+    for f_idx, fcst in enumerate(list(ir.get("forecasts") or []), start=1):
+        if isinstance(fcst, dict):
+            analyses.append(
+                _swxa_analysis_xml(cast(dict[str, Any], fcst), time_indicator="FORECAST", slug=slug, idx=f_idx)
+            )
+
+    if ir.get("remarks") and not ir.get("remarks_nil"):
+        remarks_xml = f"\n    <iwxxm:remarks>{escape(str(ir['remarks']))}</iwxxm:remarks>"
+    elif ir.get("remarks_nil"):
+        remarks_xml = '\n    <iwxxm:remarks nilReason="http://codes.wmo.int/common/nil/inapplicable"/>'
+    else:
+        remarks_xml = ""
+
+    if ir.get("next_advisory_nil"):
+        next_xml = '\n    <iwxxm:nextAdvisoryTime nilReason="http://codes.wmo.int/common/nil/inapplicable"/>'
+    elif ir.get("next_advisory_time"):
+        next_xml = f"""
+    <iwxxm:nextAdvisoryTime>
+        <gml:TimeInstant gml:id="swxa.t.next.{slug}">
+            <gml:timePosition>{escape(str(ir["next_advisory_time"]))}</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:nextAdvisoryTime>"""
+    else:
+        next_xml = ""
+
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:SpaceWeatherAdvisory xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="swxa.{slug}"
+    reportStatus="{report_status}"
+    permissibleUsage="OPERATIONAL">
+    <iwxxm:issueTime>
+        <gml:TimeInstant gml:id="swxa.t.issue.{slug}">
+            <gml:timePosition>{escape(issue)}</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:issueTime>
+    <iwxxm:issuingSpaceWeatherCentre>
+        <aixm:Unit gml:id="unit.swxc.{slug}">
+            <aixm:timeSlice>
+                <aixm:UnitTimeSlice gml:id="unit.swxc.ts.{slug}">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:name>{escape(swxc)}</aixm:name>
+                    <aixm:type>OTHER:SWXC</aixm:type>
+                </aixm:UnitTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Unit>
+    </iwxxm:issuingSpaceWeatherCentre>
+    <iwxxm:advisoryNumber>{escape(advisory_number)}</iwxxm:advisoryNumber>{replaced_xml}{effect_xml}{"".join(analyses)}{remarks_xml}{next_xml}
+</iwxxm:SpaceWeatherAdvisory>
+"""
+    return _assert_swxa_advisory_xml(xml)
+
+
+def _assert_swxa_advisory_xml(xml: str) -> str:
+    if "<iwxxm:SpaceWeatherAdvisory " not in xml:
+        raise ValueError("SWXA emitter product/root guard: missing SpaceWeatherAdvisory root")
+    for forbidden in (
+        "TropicalCycloneSIGMET",
+        "VolcanicAshSIGMET",
+        "VolcanicAshAdvisory",
+        "TropicalCycloneAdvisory",
+    ):
+        if f"iwxxm:{forbidden}" in xml:
+            raise ValueError(f"SWXA emitter product/root guard: {forbidden} must not appear under product=swxa")
+    return xml
+
+
 __all__ = [
     "emit_airmet_annex3",
     "emit_sigmet_annex3",
+    "emit_swxa_annex3",
     "emit_taf_annex3",
     "emit_tca_annex3",
     "emit_vaa_annex3",

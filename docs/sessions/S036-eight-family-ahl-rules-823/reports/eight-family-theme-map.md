@@ -47,8 +47,8 @@ OOS: SIGWX · VONA · QVACI (converter inputs).
 | SPECI | SP | LP | `iwxxm:SPECI` | **M3** | `speci-quality.yml` |
 | TAF | FC/FT | LC/LT | `iwxxm:TAF` | **M4** | `taf-quality.yml` |
 | SIGMET gen | WS | LS | `iwxxm:SIGMET` | **M5** | `sigmet-quality.yml` |
-| VA SIGMET | WV | LV | `iwxxm:VolcanicAshSIGMET` | **M6** | `sigmet-quality.yml` / `va-sigmet-quality.yml` |
-| TC SIGMET | WC | LY | `iwxxm:TropicalCycloneSIGMET` | **M7** | `tc-sigmet-quality.yml` or extend |
+| VA SIGMET | WV | LV | `iwxxm:VolcanicAshSIGMET` | **M6** | `va-sigmet-quality.yml` |
+| TC SIGMET | WC | LY | `iwxxm:TropicalCycloneSIGMET` | **M7** | `tc-sigmet-quality.yml` |
 | AIRMET | WA | LW | `iwxxm:AIRMET` | **M8** | `airmet-quality.yml` |
 | VAA | FV | LU | `iwxxm:VolcanicAshAdvisory` | **M9** | `vaa-quality.yml` |
 | TCA | FK | LK | `iwxxm:TropicalCycloneAdvisory` | **M10** | `tca-quality.yml` |
@@ -85,8 +85,8 @@ Status codes: `pass` · `gap` · `N/A` · `defer+child` · `mine` (needs T0.2 di
 | TAF | mine | mine | mine | F20 Done — deepen |
 | SIGMET gen | mine | mine | mine | F23 Done — deepen |
 | VA SIGMET | mine | mine | mine | F23 Done — deepen |
-| TC SIGMET | gap | gap | gap | #738 open; F23 deepen |
-| AIRMET | mine | mine | mine | F24 Done — deepen |
+| TC SIGMET | ok/deepen | **ok** (M7) | ok (A6-2-TC) | #738 **closed**; deepen [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
+| AIRMET | ok/deepen | **ok** (M8 WA→`reportStatus`/CNL) | ok | F24 deepen; `airmet-quality.yml` |
 | VAA | mine | mine | mine | F26 Done; #820 / #823 B4 |
 | TCA | mine | mine | mine | F27 Done; #820 / #823 B4 |
 | SWXA | gap | gap | gap | **F28** Planned; #740; spacewx examples exist |
@@ -96,7 +96,7 @@ Status codes: `pass` · `gap` · `N/A` · `defer+child` · `mine` (needs T0.2 di
 | Issue | Absorbed into |
 |-------|----------------|
 | #823 | Umbrella — stays open until children linked/closed (S02.M3) |
-| #738 | **M7** TC SIGMET |
+| #738 | **M7** TC SIGMET — **closed**; residual [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
 | #820 | **M9** / **M10** VAA/TCA |
 | #740 | **M11** F28 SWXA |
 

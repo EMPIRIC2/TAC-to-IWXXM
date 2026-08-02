@@ -3,7 +3,7 @@
 Lint Traditional Alphanumeric Code (TAC) aviation weather products before conversion.
 Returns structured issues (code, severity, span) and optional fixes. MIT licensed.
 
-Supported products: METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA.
+Supported products: METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA, SWXA.
 
 This package does **not** parse or validate IWXXM XML. It has no FastAPI or database
 dependencies.
@@ -41,7 +41,7 @@ cannot be read).
 
 ## Rule coverage
 
-METAR, SPECI, and TAF use a full product checklist. SIGMET, AIRMET, VAA, and TCA use
+METAR, SPECI, and TAF use a full product checklist. SIGMET, AIRMET, VAA, TCA, and SWXA use
 structured templates plus coverage gates. The wheel does not ship copyrighted Annex
 prose — rules cite external standards only.
 

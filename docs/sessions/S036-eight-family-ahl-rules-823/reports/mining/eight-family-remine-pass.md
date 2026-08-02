@@ -85,8 +85,8 @@ Status: `ok` = prior Fn bar sufficient pending deepen · `gap` = known open ·
 
 | Role | Status | Sources | Action |
 |------|--------|---------|--------|
-| Lint/Convert/Validate | ok/deepen | F20; `speci-A3-2` | Same as METAR |
-| Bulletin | gap | SP→LP | **M1**/M3 |
+| Lint/Convert/Validate | **closed T3.1/T3.2** | F20; `speci-A3-2` + `fixtures/speci/*` | Shared M2 `report_status`; HTTP convert-bulletin SPECI CCA |
+| Bulletin | **closed T3.1** | SP→LP | M1 AHL + T3.1 body fixtures |
 
 ### B.3 TAF (M4) — F20 deepen
 

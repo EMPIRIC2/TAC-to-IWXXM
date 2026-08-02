@@ -80,4 +80,15 @@ describe('splitManualEntries', () => {
     const tca = 'TC ADVISORY\nDTG: 20040925/1900Z\nMAX WIND: 22MPS\n';
     expect(splitManualEntries(tca, 'TCA')).toEqual([tca.trim()]);
   });
+
+  it('detects SWXA from SWX ADVISORY', () => {
+    expect(detectTacProduct('SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\n')).toBe(
+      'SWXA',
+    );
+  });
+
+  it('keeps SWXA multi-line advisory as a single document', () => {
+    const swxa = 'SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\n';
+    expect(splitManualEntries(swxa, 'SWXA')).toEqual([swxa.trim()]);
+  });
 });

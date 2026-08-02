@@ -1,0 +1,77 @@
+# EV-029 / E29-T4=2 — VAA quality pack (M9 / TC-EV029-005 + F26 deepen / #820).
+# Separate per-family workflow (FV / iwxxm:VolcanicAshAdvisory); complements root ci.yml
+# and VA SIGMET pack (va-sigmet-quality.yml).
+name: VAA quality
+
+on:
+  push:
+    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/decode.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/products/vaa_tca.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_005_vaa_gap_fixtures.py"
+      - "packages/tac2iwxxm/tests/test_tc_f26_*.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py"
+      - "packages/tac2iwxxm/tests/fixtures/vaa/**"
+      - "packages/tac2iwxxm/tests/fixtures/ahl/fv_vaa.txt"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/vaa*"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/tac-validate/tests/**/vaa*"
+      - "packages/tac-validate/tests/test_tc_f26_*.py"
+      - "apps/backend/src/utilities/conversion.py"
+      - "apps/backend/src/api.py"
+      - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
+      - "scripts/ci/run_vaa_quality.sh"
+      - ".github/workflows/vaa-quality.yml"
+  pull_request:
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/decode.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/products/vaa_tca.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_005_vaa_gap_fixtures.py"
+      - "packages/tac2iwxxm/tests/test_tc_f26_*.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py"
+      - "packages/tac2iwxxm/tests/fixtures/vaa/**"
+      - "packages/tac2iwxxm/tests/fixtures/ahl/fv_vaa.txt"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/vaa*"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/tac-validate/tests/**/vaa*"
+      - "packages/tac-validate/tests/test_tc_f26_*.py"
+      - "apps/backend/src/utilities/conversion.py"
+      - "apps/backend/src/api.py"
+      - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
+      - "scripts/ci/run_vaa_quality.sh"
+      - ".github/workflows/vaa-quality.yml"
+  workflow_dispatch:
+
+jobs:
+  vaa-quality:
+    runs-on: ubuntu-latest
+    name: VAA quality pack
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run VAA quality pack
+        run: make test-vaa-quality
