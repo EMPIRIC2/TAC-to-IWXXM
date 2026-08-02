@@ -50,7 +50,7 @@
 | T3.3 | **completed** | TC-EV028-003; UJ-023; E28-T2 | T2.2, T2.3, T3.2 | `0.1.1` OIDC publish ×3 green (`D-S035-14a`); runs 30703582092 / 30703582129 / 30703806187 |
 | T3.3b | **completed** | F13; TC-F14-002; D-S035-14a follow-up | T3.3 | Native AIXM fix + `iwxxm-validate==0.1.2` OIDC (`iwxxm-validate-v0.1.2`; run 30726416585) |
 | T3.4 | **completed** | TC-EV028-003 | T3.3b | Clean-venv `pip install` smoke @ published pins (`iwxxm-validate==0.1.2`); report `t34-pypi-install-smoke.md` (`D-S035-14d`) |
-| T3.5 | pending | #781 AC | T3.4 | PR merge; close #781 Codecov+PyPI leftovers (or note remaining optional secrets) |
+| T3.5 | in_progress | #781 AC | T3.4 | PR [#824](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824) open; merge + close #781 pending approval |
 
 ## Suggested commit grain (07)
 
