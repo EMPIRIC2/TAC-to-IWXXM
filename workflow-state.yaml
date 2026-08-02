@@ -14,7 +14,7 @@ active_session:
     examples for all TAC input shapes. Exclude SIGWX/VONA/QVACI.
   status: in_progress
   branch: evolve/EV-029-eight-family-ahl-rules
-  orchestrator: 16-evolve
+  orchestrator: 13-deploy-smoke
   evolve_cycle_id: EV-029
   github_issues:
   - '823'
@@ -40,15 +40,15 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6; progress 46/48; tip 4f8e9a5; #828; #823"
+    note: "T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823"
     current_milestone: M12
     active_milestone: M12
     current_task: T12.6
     active_task: T12.6
-    active_task_status: pending
+    active_task_status: in_progress
   started_at: '2026-08-01'
-  tip_sha: 4f8e9a5
-  tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+  tip_sha: 84b083c
+  tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
   progress: 46/48
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -87,7 +87,7 @@ sessions:
     examples for all TAC input shapes. Exclude SIGWX/VONA/QVACI.
   status: in_progress
   branch: evolve/EV-029-eight-family-ahl-rules
-  orchestrator: 16-evolve
+  orchestrator: 13-deploy-smoke
   evolve_cycle_id: EV-029
   github_issues:
   - '823'
@@ -174,17 +174,17 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6; progress 46/48; tip 4f8e9a5; #828; #823"
+    note: "T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823"
     current_milestone: M12
     active_milestone: M12
     current_task: T12.6
     active_task: T12.6
-    active_task_status: pending
+    active_task_status: in_progress
   started_at: '2026-08-01'
-  tip_sha: 4f8e9a5
-  tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+  tip_sha: 84b083c
+  tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
   progress: 46/48
-  note: 'S036/EV-029 — T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823'
+  note: 'S036/EV-029 — T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
@@ -268,7 +268,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — T12.5 COMPLETE (11+12 approved D-S036-11/12); next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823'
+    note: '07-build in_progress — T12.6 STARTED (13-deploy-smoke); progress 46/48; tip 84b083c (ahead 2); #828; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -312,9 +312,10 @@ sessions:
     overall: ready
   - stage: 13-deploy-smoke
     required: true
-    mode: full
-    status: pending
-    note: 'T12.6 pending — API redeploy; H1–H3; H4–H5 required (FE Examples unlocked); #828; #823'
+    mode: delta
+    status: in_progress
+    started: '2026-08-02'
+    note: 'T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823'
 - id: S035-empiric2-ops-leftovers-781
   type: feature
   intent: |
@@ -5627,15 +5628,15 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: "T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823"
-    tip_sha: 4f8e9a5
-    tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+    note: "T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823"
+    tip_sha: 84b083c
+    tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
     progress: 46/48
     current_milestone: M12
     current_task: T12.6
     active_milestone: M12
     active_task: T12.6
-    active_task_status: pending
+    active_task_status: in_progress
     decision_refs:
     - D-S036-04-plan
     - D-S036-02-phase-a
@@ -5675,15 +5676,15 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: "T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823"
-      tip_sha: 4f8e9a5
-      tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+      note: "T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823"
+      tip_sha: 84b083c
+      tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
       progress: 46/48
       active_milestone: M12
       current_milestone: M12
       active_task: T12.6
       current_task: T12.6
-      active_task_status: pending
+      active_task_status: in_progress
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
       pr_status: open
@@ -5744,15 +5745,15 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: "T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823"
-      tip_sha: 4f8e9a5
-      tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+      note: "T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823"
+      tip_sha: 84b083c
+      tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
       progress: 46/48
       active_milestone: M12
       current_milestone: M12
       active_task: T12.6
       current_task: T12.6
-      active_task_status: pending
+      active_task_status: in_progress
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
       pr_status: open
@@ -7835,9 +7836,10 @@ stages:
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
   13-deploy-smoke:
-    status: pending
-    started_at:
-    started:
+    status: in_progress
+    mode: delta
+    started_at: '2026-08-02'
+    started: '2026-08-02'
     previous_started_at: '2026-08-01'
     previous_completed_at: '2026-08-01'
     previous_session_id: S035-empiric2-ops-leftovers-781
@@ -7848,12 +7850,12 @@ stages:
     previous_note: 'S035/EV-028 13-deploy-smoke COMPLETE PASS — PyPI OIDC + install smoke; tip 70312dd; #781 closed'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    note: 'T12.6 pending — 13-deploy-smoke API redeploy; H1–H3; H4–H5 required (FE Examples unlocked); tip 4f8e9a5; progress 46/48; #828; #823'
-    tip_sha: 4f8e9a5
-    tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+    note: 'T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823'
+    tip_sha: 84b083c
+    tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
     active_milestone: M12
     active_task: T12.6
-    active_task_status: pending
+    active_task_status: in_progress
     progress: 46/48
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -7863,15 +7865,17 @@ stages:
       session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
       skill_id: 13-deploy-smoke
-      status: pending
-      mode: full
+      status: in_progress
+      mode: delta
+      started: '2026-08-02'
+      started_at: '2026-08-02'
       branch: evolve/EV-029-eight-family-ahl-rules
-      tip_sha: 4f8e9a5
-      tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
-      note: 'T12.6 pending — API redeploy; H1–H3; H4–H5 required (FE Examples unlocked; TC-EV029-008); #828; #823'
+      tip_sha: 84b083c
+      tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
+      note: 'T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823'
       active_milestone: M12
       active_task: T12.6
-      active_task_status: pending
+      active_task_status: in_progress
       progress: 46/48
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -8932,7 +8936,7 @@ decisions_log:
   active_task: T12.3
   active_task_status: pending
   active_milestone: M12
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   verification: "make test-report-state-matrix-smoke → 38 passed"
   related_issues:
@@ -26406,14 +26410,14 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: "T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823"
+      note: "T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823"
       current_milestone: M12
       active_milestone: M12
       current_task: T12.6
       active_task: T12.6
-      active_task_status: pending
-      tip_sha: 4f8e9a5
-      tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+      active_task_status: in_progress
+      tip_sha: 84b083c
+      tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
       progress: 46/48
     08-verify-build:
       status: completed
@@ -26478,14 +26482,15 @@ evolve_cycles:
       decision_ids:
       - D-S036-12
     13-deploy-smoke:
-      status: pending
-      mode: full
-      note: 'T12.6 pending — API redeploy; H1–H3; H4–H5 required (FE Examples unlocked); tip 4f8e9a5; progress 46/48; #828; #823'
+      status: in_progress
+      mode: delta
+      started: '2026-08-02'
+      note: 'T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823'
       active_milestone: M12
       active_task: T12.6
-      active_task_status: pending
-      tip_sha: 4f8e9a5
-      tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+      active_task_status: in_progress
+      tip_sha: 84b083c
+      tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
       progress: 46/48
   gates:
     a_to_b: passed
@@ -26608,6 +26613,7 @@ evolve_cycles:
   - D-S036-11
   - D-S036-12
   notes:
+  - '2026-08-02 S036/EV-029 — T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE @ 4f8e9a5 [T12.5] docs: 11-verify-impl + 12-verify-deploy sign-off; next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; ahead_of_origin=1 not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 STARTED — 11-verify-impl per-AC + 12-verify-deploy; tip 4f8e9a5; progress 45/48; #828; #823'
@@ -26667,14 +26673,15 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit:
-  tip_sha: 4f8e9a5
-  tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
+  tip_sha: 84b083c
+  tip_sha_full: 84b083cd51e55dc1f657afce5ca323319fd13c02
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — tip 4f8e9a5 (4f8e9a5ef88aef18065ed4093b7ecdd163da1901); T12.5 COMPLETE @ 4f8e9a5 — 11+12 sign-off committed; next T12.6 (13-deploy-smoke); progress 46/48; ahead_of_origin=1 not pushed; #828; #823'
+  note: 'S036/EV-029 — tip 84b083c (84b083cd51e55dc1f657afce5ca323319fd13c02); T12.6 STARTED (13-deploy-smoke); push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; ahead_of_origin=2 not pushed; #828; #823'
   notes:
+  - '2026-08-02 S036/EV-029 — T12.6 STARTED — push #828 tip, merge AskQuestion, API+FE redeploy, H1–H5; progress 46/48; tip 84b083c (ahead 2); #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE @ 4f8e9a5 [T12.5] docs: 11-verify-impl + 12-verify-deploy sign-off; next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; ahead_of_origin=1 not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 STARTED — 11-verify-impl per-AC + 12-verify-deploy; tip 4f8e9a5; progress 45/48; #828; #823'

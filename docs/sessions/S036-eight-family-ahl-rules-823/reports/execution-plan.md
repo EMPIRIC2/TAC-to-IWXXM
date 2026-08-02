@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase D — Verify / deploy |
 | **Active milestone** | M12 — Smoke / verify / deploy |
-| **Active task** | T12.6 — pending |
+| **Active task** | T12.6 — **in_progress** |
 | **Tasks** | 46 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
@@ -171,7 +171,7 @@
 | T12.3 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | T12.2 | **completed** |
 | T12.4 | Test | 09-qa delta + 10-e2e smoke (UJ-043) | 09; 10 | T12.3 | **completed** |
 | T12.5 | Docs | 11-verify-impl per–AC; 12-verify-deploy | 11; 12 | T12.4 | **completed** |
-| T12.6 | Test | 13-deploy-smoke — API redeploy; H1–H3; **H4–H5 required** (FE Examples unlocked; TC-EV029-008) | E29-T6; 13 | T12.5 | pending |
+| T12.6 | Test | 13-deploy-smoke — API redeploy; H1–H3; **H4–H5 required** (FE Examples unlocked; TC-EV029-008) | E29-T6; 13 | T12.5 | **in_progress** |
 | T12.7 | Docs | Close #823 / link children; evolve summary | #823; S02.M3 | T12.6 | pending |
 
 ## Data Dependencies
