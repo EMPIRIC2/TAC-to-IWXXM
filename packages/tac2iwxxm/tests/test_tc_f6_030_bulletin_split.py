@@ -107,7 +107,8 @@ def test_split_unsupported_product_raises() -> None:
 
     text = _read("metar_multi_ahl.txt")
     with pytest.raises(BulletinSplitError) as exc_info:
-        split_bulletin(text, product="VAA")
+        # TCA / SWXA splitters land in later EV-029 milestones (M10/M11).
+        split_bulletin(text, product="TCA")
     assert exc_info.value.code == "bulletin_split_failed"
 
 

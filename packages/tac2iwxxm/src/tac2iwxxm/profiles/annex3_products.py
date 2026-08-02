@@ -1133,6 +1133,11 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     vaac = str(ir["vaac"])
     volcano = str(ir["volcano"])
     issue = str(ir["issue_time"])
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "NORMAL"
     slug = re.sub(r"[^a-z0-9]+", ".", volcano.lower()).strip(".")
     lat = ir.get("lat")
     lon = ir.get("lon")
@@ -1217,8 +1222,10 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         )
 
     remarks_xml = ""
-    if ir.get("remarks"):
+    if ir.get("remarks") and not ir.get("remarks_nil"):
         remarks_xml = f"\n    <iwxxm:remarks>{escape(str(ir['remarks']))}</iwxxm:remarks>"
+    elif ir.get("remarks_nil"):
+        remarks_xml = '\n    <iwxxm:remarks nilReason="http://codes.wmo.int/common/nil/inapplicable"/>'
 
     next_xml = ""
     if ir.get("next_advisory_time"):
@@ -1237,7 +1244,7 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     xmlns:metce="http://def.wmo.int/metce/2013"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="vaa.{slug}"
-    reportStatus="NORMAL"
+    reportStatus="{report_status}"
     permissibleUsage="OPERATIONAL">
     <iwxxm:issueTime>
         <gml:TimeInstant gml:id="t.issue">
