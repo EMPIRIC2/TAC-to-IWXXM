@@ -4,7 +4,7 @@
 **Mode**: evolve delta  
 **Features**: **F28** + deepen F6 / F12 / F2 / F13 / F15 / F20 / F23 / F24 / F26 / F27  
 **Branch**: `evolve/EV-029-eight-family-ahl-rules`  
-**Status**: **in_progress** — Batches 1–2 locked; plan approve pending
+**Status**: **completed** — plan approved `D-S036-04-plan`=1; Gate B → 07 @ T0.1
 
 ## Toolchain baseline (detected)
 
@@ -66,9 +66,10 @@
 
 ## Artifacts
 
-- `reports/execution-plan.md` — **draft** (48 tasks) — approve pending
-- This report — Batches 1–2 locked
+- `reports/execution-plan.md` — **approved** (48 tasks)
+- `reports/eight-family-theme-map.md` — T0.1 (07)
+- This report — **completed**
 
 ## Next
 
-Plan approve AskQuestion → Gate B → complete 04 → **07-build @ T0.1**.
+**07-build** — T0.2 full eight-family re-mine.

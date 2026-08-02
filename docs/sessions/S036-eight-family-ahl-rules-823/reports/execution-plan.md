@@ -1,6 +1,7 @@
 # Execution plan — S036 / EV-029 (#823 eight-family AHL / rules)
 
-> **Status**: **draft** — pending plan approve (`D-S036-04-plan`)  
+> **Status**: **approved** (2026-08-01) — `D-S036-04-plan` = 1; Gate B PASS → 07 @ T0.1  
+
 > **Branch**: `evolve/EV-029-eight-family-ahl-rules`  
 > **Evolve cycle**: EV-029  
 > **Features**: F28 (new); deepen F6 / F6.bulletin / F12 / F2 / F13 / F15 / F20 / F23 / F24 / F26 / F27  
@@ -12,10 +13,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — 04-tech-plan (plan approve) |
-| **Active milestone** | — (not started; first task **T0.1** after Gate B) |
-| **Active task** | — |
-| **Tasks** | 0 / 48 pending |
+| **Active phase** | Phase C — 07-build |
+| **Active milestone** | M0 — Full eight-family re-mine |
+| **Active task** | T0.1 |
+| **Tasks** | 0 / 48 completed |
 | **Last updated** | 2026-08-01 |
 
 ## Tech Stack Summary
@@ -48,6 +49,7 @@
 | E29-T6 | **1** — redeploy API; H1–H3; H4–H5 waive unless FE |
 | E29-T7 | **1** — SIGMET gen / VA / TC = three milestones |
 | E29-T8 | **1** — HARD kill-switch + AskQuestion |
+| E29-T9 | **1** — Approve M0–M12 (48 tasks); Gate B → 07 @ T0.1 |
 
 ## Milestones & Tasks (TDD order)
 
@@ -195,7 +197,7 @@
 
 | Gate | Criteria | Status |
 |------|----------|--------|
-| B→C | Plan approved; 05/06 skipped | pending (`D-S036-04-plan`) |
+| B→C | Plan approved; 05/06 skipped | **passed** (`D-S036-04-plan` = 1) |
 | C→D | All M0–M12 tasks done; 08 pass | pending |
 | Deploy | 09+10 pass; 11+12 approved; 13 per E29-T6 | pending |
 

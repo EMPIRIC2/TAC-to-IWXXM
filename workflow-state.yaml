@@ -40,7 +40,7 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '04-tech-plan in_progress — Batches 1-2 locked; plan approve pending'
+    note: '07-build in_progress — Gate B PASS; M0 @ T0.1'
   started_at: '2026-08-01'
   context_briefs:
   - docs/context/eight-family-ahl-rules-823.md
@@ -52,6 +52,7 @@ active_session:
   - D-S036-02-phase-a
   - D-S036-04-batch-1
   - D-S036-04-batch-2
+  - D-S036-04-plan
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -92,9 +93,9 @@ sessions:
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
-    status: written
+    status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
-    status: draft
+    status: approved
   - path: docs/api-contract.md
     status: touched
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
@@ -106,9 +107,9 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '04-tech-plan in_progress — Batches 1-2 locked; plan approve pending'
+    note: '07-build in_progress — Gate B PASS; M0 @ T0.1'
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — umbrella #823; Gate A PASS (D-S036-02-phase-a); 04-tech-plan in_progress (delta Batch 1); F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — Gate B PASS (D-S036-04-plan); 07-build @ T0.1 M0; umbrella #823; F28+deepen; absorb #738/#820/#740'
   context_briefs:
   - docs/context/eight-family-ahl-rules-823.md
   decision_refs:
@@ -119,6 +120,7 @@ sessions:
   - D-S036-02-phase-a
   - D-S036-04-batch-1
   - D-S036-04-batch-2
+  - D-S036-04-plan
   routing_plan:
   - stage: 00-context
     required: true
@@ -132,7 +134,7 @@ sessions:
     mode: orchestrator
     status: in_progress
     started: '2026-08-01'
-    note: 'Gate A PASS; orchestrating 04'
+    note: 'Gate B PASS; orchestrating 07'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -155,9 +157,10 @@ sessions:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-01'
-    note: 'delta interview Batch 1'
+    completed: '2026-08-01'
+    note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); plan approved; handoff 07 @ T0.1; #823'
   - stage: 05-verify-tech
     required: false
     mode:
@@ -171,8 +174,9 @@ sessions:
   - stage: 07-build
     required: true
     mode: full
-    status: pending
-    note: 'Mining + engine deltas + fixtures'
+    status: in_progress
+    started: '2026-08-01'
+    note: 'STARTED @ T0.1 — M0; mining + engine deltas + fixtures; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -4484,10 +4488,12 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-01'
     started: '2026-08-01'
+    completed_at: '2026-08-01'
+    completed: '2026-08-01'
     previous_started_at: '2026-08-01'
     previous_completed_at: '2026-08-01'
     previous_session_id: S035-empiric2-ops-leftovers-781
@@ -4496,8 +4502,13 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     prior_note: 'STARTED (delta) — D-S036-02-phase-a Gate A PASS → 04; delta interview Batch 1; #823'
-    note: 'STARTED (delta) — D-S036-02-phase-a Gate A PASS → 04; delta interview Batch 1; #823'
+    note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #823'
+    completed_at: '2026-08-01'
+    completed: '2026-08-01'
     decision_refs:
+    - D-S036-04-plan
+    - D-S036-04-batch-1
+    - D-S036-04-batch-2
     - D-S036-02-phase-a
     - D-S036-02-batch-f
     substeps:
@@ -4517,16 +4528,23 @@ stages:
       session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'STARTED (delta) — delta interview Batch 1; #823'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; #823'
       feature_ids: []
       decision_refs:
+      - D-S036-04-plan
+      - D-S036-04-batch-1
+      - D-S036-04-batch-2
       - D-S036-02-phase-a
       - D-S036-02-batch-f
     artifacts:
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
@@ -4553,14 +4571,22 @@ stages:
     - session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       started_at: '2026-08-01'
       started: '2026-08-01'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
       mode: delta
-      note: 'STARTED (delta) — delta interview Batch 1; #823'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; #823'
       decision_refs:
+      - D-S036-04-plan
+      - D-S036-04-batch-1
+      - D-S036-04-batch-2
       - D-S036-02-phase-a
       - D-S036-02-batch-f
+      artifacts:
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     - session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
       skill_id: 04-tech-plan
@@ -5226,6 +5252,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-08-01 S036/EV-029 04 COMPLETE Gate B (D-S036-04-plan) — approve M0–M12 48 tasks; handoff 07 @ T0.1; gates.b_to_c passed; #823'
     - '2026-08-01 S035/EV-028 04 COMPLETE Gate B (D-S035-04-plan-approve) — 11b tag-from-evolve; 12a → 07 @ T0.1; tip b8e37ae; #781'
     - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; gates.b_to_c pending (plan approved); #815'
     - '2026-07-31 S033/EV-026 04 COMPLETE Gate B=1 (D-S033-04-plan-approve) — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); B→C; handoff 07 @ T0.1; #809'
@@ -5478,89 +5505,97 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-08-01'
     started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    previous_started_at: '2026-07-31'
-    previous_completed_at: '2026-07-31'
-    previous_session_id: S034-wmo-decode-residual-matrix
-    previous_evolve_cycle_id: EV-027
-    previous_tip_sha: ad36aa0
-    previous_tip_sha_full: ad36aa0f3665a20e3b77a66d7c997018a1862ea9
-    previous_note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    tip_sha: 70312dd
-    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
-    note: 'S035/EV-028 07-build COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
-    current_stage:
-    current_milestone: M3
-    current_task: T3.5
-    active_milestone: M3
-    active_task: T3.5
-    active_task_status: completed
-    progress: 15/15
+    previous_started_at: '2026-08-01'
+    previous_completed_at: '2026-08-01'
+    previous_session_id: S035-empiric2-ops-leftovers-781
+    previous_evolve_cycle_id: EV-028
+    previous_tip_sha: 70312dd
+    previous_tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    previous_note: 'S035/EV-028 07-build COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    mode: full
+    note: 'S036/EV-029 07-build STARTED (D-S036-04-plan) — @ T0.1 M0; gates.b_to_c passed; #823'
+    current_milestone: M0
+    current_task: T0.1
+    active_milestone: M0
+    active_task: T0.1
+    active_task_status: in_progress
     decision_refs:
-    - D-S035-04-plan-approve
-    - D-S035-02-phase-a
-    - D-S035-E28-S21
-    - D-S035-E28-T22
-    - D-S035-14a
-    - D-S035-14b-scope
-    - D-S035-14c
-    - D-S035-14d
+    - D-S036-04-plan
+    - D-S036-02-phase-a
+    - D-S036-02-batch-f
     artifacts:
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
-    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
-    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t31-verify-build.md
-    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     active_session:
-      session_id: S035-empiric2-ops-leftovers-781
-      evolve_cycle_id: EV-028
+      session_id: S036-eight-family-ahl-rules-823
+      evolve_cycle_id: EV-029
       skill_id: 07-build
-      status: completed
-      mode: delta
+      status: in_progress
+      mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      completed_at: '2026-08-01'
-      note: 'S035/EV-028 07-build COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
-      active_milestone: M3
-      current_milestone: M3
-      active_task: T3.5
-      current_task: T3.5
-      active_task_status: completed
-      progress: 15/15
-      deepen:
+      note: 'S036/EV-029 07-build STARTED (D-S036-04-plan) — @ T0.1 M0; #823'
+      active_milestone: M0
+      current_milestone: M0
+      active_task: T0.1
+      current_task: T0.1
+      active_task_status: in_progress
+      feature_ids:
+      - F28
+      - F6
       - F12
+      - F2
       - F13
-      - F14
+      - F15
+      - F20
+      - F23
+      - F24
+      - F26
+      - F27
       decision_refs:
-      - D-S035-04-plan-approve
-      - D-S035-02-phase-a
-      - D-S035-14a
-      - D-S035-14b-scope
-      - D-S035-14c
-      - D-S035-14d
+      - D-S036-04-plan
+      - D-S036-02-phase-a
+      - D-S036-02-batch-f
       artifacts:
-      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
-      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
-      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t31-verify-build.md
-      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     substeps:
       task_loop:
-        status: completed
-        current_task: T3.5
-        active_task_status: completed
-        active_milestone: M3
-        phase: C
-        milestone: M3
-        notes: 'S035/EV-028 07-build COMPLETE — PR #824 merged @ 70312dd; #781 closed'
+        status: in_progress
+        current_task: T0.1
+        active_task_status: in_progress
+        active_milestone: M0
+        phase: B
+        milestone: M0
+        notes: 'S036/EV-029 07-build STARTED @ T0.1 — Gate B PASS (D-S036-04-plan); #823'
     delta_substages:
+    - id: S036-eight-family-ahl-rules-823
+      session_id: S036-eight-family-ahl-rules-823
+      evolve_cycle_id: EV-029
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      mode: full
+      note: 'S036/EV-029 07-build STARTED (D-S036-04-plan) — @ T0.1 M0; #823'
+      active_milestone: M0
+      current_milestone: M0
+      active_task: T0.1
+      current_task: T0.1
+      active_task_status: in_progress
+      decision_refs:
+      - D-S036-04-plan
+      artifacts:
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
     - id: S035-empiric2-ops-leftovers-781
       session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
@@ -5984,6 +6019,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-01 S036/EV-029 07-build STARTED (D-S036-04-plan) — @ T0.1 M0; gates.b_to_c passed; local tip 26513b6; #823'
     - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
     - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
     - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
@@ -16326,6 +16362,24 @@ decisions_log:
     E29-T8: 1
   branch: evolve/EV-029-eight-family-ahl-rules
   related_issues: ['823']
+- id: D-S036-04-plan
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate B — approve execution plan → 07-build'
+  summary: 'User option 1 — approve M0-M12 48 tasks; Gate B PASS; complete 04; start 07 @ T0.1'
+  decision: 'Approve execution plan (48 tasks, M0-M12). Gate B PASS. Complete 04-tech-plan; start 07-build at T0.1. 05/06 remain skipped.'
+  user_option: '1'
+  branch: evolve/EV-029-eight-family-ahl-rules
+  related_issues: ['823']
+  related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
 - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
   kind: execution-plan
@@ -25112,7 +25166,7 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: "Standard — D-S036-open; skip 03/05/06"
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   stages:
     00-context:
       status: completed
@@ -25124,7 +25178,7 @@ evolve_cycles:
       status: in_progress
       mode: orchestrator
       started: '2026-08-01'
-      note: "Gate A PASS; orchestrating 04"
+      note: "Gate B PASS; orchestrating 07"
     01-requirements:
       status: completed
       mode: delta
@@ -25138,13 +25192,16 @@ evolve_cycles:
       completed: '2026-08-01'
       note: Gate A PASS
     04-tech-plan:
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-01'
-      note: 'Batches 1-2 locked; exec plan draft 48 tasks; approve pending'
+      completed: '2026-08-01'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); execution plan approved M0–M12 (48 tasks); handoff 07 @ T0.1; #823'
     07-build:
-      status: pending
+      status: in_progress
       mode: full
+      started: '2026-08-01'
+      note: 'STARTED @ T0.1 — M0; #823'
     08-verify-build:
       status: pending
       mode: delta
@@ -25165,12 +25222,12 @@ evolve_cycles:
       mode: full
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -25189,9 +25246,9 @@ evolve_cycles:
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
-    status: written
+    status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
-    status: draft
+    status: approved
   - path: docs/api-contract.md
     status: touched
   github_issues:
@@ -25200,6 +25257,7 @@ evolve_cycles:
   preset: Standard
   preset_status: approved
   notes:
+  - '2026-08-01 S036/EV-029 — D-S036-04-plan Gate B PASS (option 1) — approve M0–M12 48 tasks; 04 COMPLETE → 07-build STARTED @ T0.1; gates.b_to_c passed; checkpoints.phase_b passed; #823'
   - '2026-08-01 S036/EV-029 — D-S036-04-batch-2 (1,1,1,1) T5=no deps AQ; T6=API H1-H3 H4-H5 waive; T7=SIGMET 3 Ms; T8=HARD kill-switch; exec plan draft; plan approve pending; #823'
   - '2026-08-01 S036/EV-029 — D-S036-04-batch-1 (3,1,2,2) T1=per-product Ms; T2=tac2iwxxm AHL; T3=full re-mine before Phase B; T4=separate per-family CI; Batch 2 pending; #823'
   - '2026-08-01 S036/EV-029 02 COMPLETE → 04-tech-plan STARTED — Gate A PASS (D-S036-02-phase-a); Batch F (D-S036-02-batch-f) @ 97a9380; #823'
