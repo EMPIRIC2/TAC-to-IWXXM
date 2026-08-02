@@ -396,6 +396,58 @@ def test_convert_bulletin_vaa_ahl_bbb_report_status(client: TestClient, monkeypa
     assert "iwxxm:VolcanicAshAdvisory" in (payload["results"][0]["xml"] or "")
 
 
+TCA_CCA_TEXT = """\
+FKAU01 ADRM 121200 CCA
+TC ADVISORY
+DTG:                        20040925/1900Z
+TCAC:                       YUFO
+TC:                         GLORIA
+ADVISORY NR:                2004/13
+OBS PSN:                    25/1800Z N2706 W07306
+CB:                         WI 250NM OF TC CENTRE TOP FL500
+MOV:                        NW 20KMH
+INTST CHANGE:               INTSF
+C:                          965HPA
+MAX WIND:                   22MPS
+FCST PSN +6 HR:             25/2200Z N2748 W07350
+FCST MAX WIND +6 HR:        22MPS
+RMK:                        NIL
+NXT MSG:                    20040925/2000Z
+=
+"""
+
+
+def test_convert_bulletin_tca_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T10.2: FK AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:TropicalCycloneAdvisory reportStatus="CORRECTION">{tac[:20]}</iwxxm:TropicalCycloneAdvisory>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=TCA_CCA_TEXT,
+        product="TCA",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "FK"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "TCA"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:TropicalCycloneAdvisory" in (payload["results"][0]["xml"] or "")
+
+
 def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
 

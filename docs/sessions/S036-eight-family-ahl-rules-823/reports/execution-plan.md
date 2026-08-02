@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M10 — TCA (F27 deepen / #820) |
-| **Active task** | T10.2 — completed; next T10.3 `tca-quality.yml` |
-| **Tasks** | 39 / 48 completed |
+| **Active milestone** | M11 — SWXA / F28 |
+| **Active task** | T10.3 — completed (M10 complete); next T11.1 |
+| **Tasks** | 40 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -148,7 +148,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T10.1 | Test | TCA residual fixtures | TC-EV029-005; #820 | T9.3 | **completed** |
 | T10.2 | Code | TCA deltas | F27; F6.f | T10.1 | **completed** |
-| T10.3 | Config | `tca-quality.yml` | E29-T4 | T10.2 | pending |
+| T10.3 | Config | `tca-quality.yml` | E29-T4 | T10.2 | **completed** |
 
 ### M11 — SWXA / F28 + `product=swxa` runtime
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M9 (+ `tac2iwxxm` 0.2.2); evolve continues for M10+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M10 (+ `tac2iwxxm` 0.2.2); evolve continues for M11+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log

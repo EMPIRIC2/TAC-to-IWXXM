@@ -22,6 +22,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-tc-sigmet-quality \
 	test-airmet-quality \
 	test-vaa-quality \
+	test-tca-quality \
 	test-wmo-quality \
 	test-ahl-com-quality \
 	test-metar-quality \
@@ -269,6 +270,10 @@ test-airmet-quality:
 # EV-029 / E29-T4=2 — VAA quality pack (M9 / TC-EV029-005 + F26 deepen / #820)
 test-vaa-quality:
 	bash scripts/ci/run_vaa_quality.sh
+
+# EV-029 / E29-T4=2 — TCA quality pack (M10 / TC-EV029-005 + F27 deepen / #820)
+test-tca-quality:
+	bash scripts/ci/run_tca_quality.sh
 
 # EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
 test-iwxxm-translation-informative:
