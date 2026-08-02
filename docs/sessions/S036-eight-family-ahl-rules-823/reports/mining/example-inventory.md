@@ -30,7 +30,7 @@ Peer tiers (ADR-032): `wmoPass` · `wmoReference` · `vendor-only` (not in FE ca
 |--------|------------|-----|--------------|--------------------|-----------|
 | AHL/COM (shared) | N/A | covered (METAR pack) | covered (METAR multi) | N/A (framing) | **M1** |
 | METAR | covered | covered | covered | `metar-A3-1.xml` | **M2** |
-| SPECI | covered | **gap** | **gap** | `speci-A3-2.xml` | **M3** |
+| SPECI | covered | covered (T3.1) | covered (T3.1) | `speci-A3-2.xml` | **M3** |
 | TAF | covered | covered (NIL-collect) | **gap** | `taf-A5-1/2.xml` | **M4** |
 | SIGMET gen | covered | covered (quarantine collect) | **gap** | `sigmet-A6-1a-TS.xml` | **M5** |
 | VA SIGMET | covered | **gap** | **gap** | `sigmet-VA-EGGX.xml` / multi-loc | **M6** |
@@ -97,7 +97,7 @@ are **body split + multi-report** per family (M2–M11).
 | TAC `T1T2` | Family | AHL heading fixture | Remaining |
 |-----------:|--------|---------------------|-----------|
 | SA | METAR | package + `ahl/sa_*` + `fixtures/metar/*` + NIL-collect | **M2 closed** (BBB→`reportStatus` + product-order pack) |
-| SP | SPECI | `ahl/sp_speci.txt` | M3 body split |
+| SP | SPECI | package + `ahl/sp_speci.txt` + `fixtures/speci/*` | **T3.1** fixtures (BBB→`reportStatus` + multi + product-order); T3.2/T3.3 close |
 | FC / FT | TAF | `ahl/fc_*` / `ahl/ft_*` | M4 body split |
 | WS | SIGMET gen | `ahl/ws_sigmet.txt` | M5 body split |
 | WV | VA SIGMET | `ahl/wv_va_sigmet.txt` | M6 body split |
@@ -151,7 +151,7 @@ Current FE `FIXTURE_GAPS.md` / catalog (unchanged this task):
 
 | Item | Block M0 exit? |
 |------|----------------|
-| Missing SPECI/… AHL fixtures | **No** — gap-documented; M1+ |
+| Missing SPECI AHL fixtures | **Closed T3.1** — `fixtures/speci/speci_ahl_*` + multi; other families remain M4+ |
 | TC SIGMET / SWXA not in catalog | **No** — #738 / F28 Ms |
 | Multi-report only for METAR | **No** — #820 / M9–M10 |
 | Paywall Annex 3 full text | **No** — cite-only |

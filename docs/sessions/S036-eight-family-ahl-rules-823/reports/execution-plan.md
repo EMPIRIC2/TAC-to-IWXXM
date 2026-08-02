@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — SPECI (F20 deepen) |
-| **Active task** | T3.1 — pending (SPECI gap fixtures); M2 PR #828 open (watching CI) |
-| **Tasks** | 13 / 48 completed |
+| **Active task** | T3.2 — pending (SPECI lint/convert/validate deltas); T3.1 done; M2 PR #828 open; tac2iwxxm 0.2.0 |
+| **Tasks** | 14 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -89,7 +89,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | SPECI gap fixtures | TC-EV029-007; F20 | T2.3 | pending |
+| T3.1 | Test | SPECI gap fixtures | TC-EV029-007; F20 | T2.3 | **completed** |
 | T3.2 | Code | SPECI lint/convert/validate deltas | F20; F6 | T3.1 | pending |
 | T3.3 | Config | `speci-quality.yml` | E29-T4 | T3.2 | pending |
 
