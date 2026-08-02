@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M4 — TAF (F20 deepen) |
-| **Active task** | T4.3 — pending (`taf-quality.yml`); T4.1–T4.2 complete; #828 |
-| **Tasks** | 18 / 48 completed |
+| **Active milestone** | M5 — General SIGMET (F23 deepen) |
+| **Active task** | T5.1 — pending; M4 complete (T4.1–T4.3) on #828 |
+| **Tasks** | 19 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -99,7 +99,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T4.1 | Test | TAF gap fixtures | TC-EV029-007; F20 | T3.3 | **completed** |
 | T4.2 | Code | TAF lint/convert/validate deltas | F20; F6 | T4.1 | **completed** |
-| T4.3 | Config | `taf-quality.yml` | E29-T4 | T4.2 | pending |
+| T4.3 | Config | `taf-quality.yml` | E29-T4 | T4.2 | **completed** |
 
 ### M5 — General SIGMET (F23 deepen)
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2 METAR + M3 SPECI (+ `tac2iwxxm` 0.2.0); evolve continues for M4+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M4 METAR/SPECI/TAF (+ `tac2iwxxm` 0.2.0); evolve continues for M5+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log
