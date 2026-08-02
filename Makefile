@@ -19,6 +19,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-dissemination test-unit-worker test-bugs \
 	test-sigmet-quality \
 	test-wmo-quality \
+	test-ahl-com-quality \
 	test-integration-dissemination \
 	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
 	compose-mock-byoc-up compose-mock-byoc-down compose-mock-byoc-full-up \
@@ -228,6 +229,10 @@ test-sigmet-quality: test-wmo-quality
 # Extended F26/F27 / EV-021 (S02.L1): + VAA + TCA keyword filters
 test-wmo-quality:
 	bash scripts/ci/run_wmo_quality.sh
+
+# EV-029 / E29-T4=2 — AHL / COM / shared bulletin pack (M1 / TC-EV029-003)
+test-ahl-com-quality:
+	bash scripts/ci/run_ahl_com_quality.sh
 
 # EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
 test-iwxxm-translation-informative:

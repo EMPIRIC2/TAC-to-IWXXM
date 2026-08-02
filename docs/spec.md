@@ -440,14 +440,41 @@ metar-to-IWXXM/
 
 - **Purpose**: #737 TCA (`iwxxm:TropicalCycloneAdvisory`) quality peer. WMO
   `tc-advisory-A2-2` golden under defaults. Themes **F27 T1–T3 / C1**. Do not confuse with
-  TC SIGMET (`iwxxm:TropicalCycloneSIGMET` — #738 OOS).
-- **Status**: **Done** (S027 / EV-021; PR #794).
+  TC SIGMET (`iwxxm:TropicalCycloneSIGMET` — quality path absorbed in **S036 / EV-029 / #738**).
+- **Status**: **Done** (S027 / EV-021; PR #794). **Deepen**: S036 / EV-029 (#820 / #823 B4).
 - **API**: `product=tca` already in enum; no new routes.
 - **Journeys / tests**: UJ-038; TC-F27-001..006; deepen UJ-032 / TC-F7-008.
 - **Fixtures**: Same translation-package mine policy as F26 (E21-D4).
-- **Non-goals**: TC SIGMET #738; VAA is F26; SWX/VONA; translation-failed happy-path; PyPI.
+- **Non-goals** (original F27): VAA is F26; VONA; translation-failed happy-path; PyPI.
+  TC SIGMET + SWXA moved to EV-029 / F28.
 - **Source**: feature-list F27; evolve-decisions EV-021; ADR-028/032;
   sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md.
+
+### F28 — SWXA quality bar (S036 / EV-029) — Planned
+
+- **Purpose**: #740 / #823 Space Weather Advisory (`iwxxm:SpaceWeatherAdvisory`) quality peer
+  to F15–F27. Completes the eight-family TAC→IWXXM converter set. TAC AHL `FN` → IWXXM `LN`.
+  Registry-backed lint (ADR-028); golden policy ADR-032.
+- **Status**: **Planned** (S036 / EV-029).
+- **API**: Additive **`product=swxa`** on convert / convert-bulletin / lint-tac / decode-tac
+  (api-contract S036 / EV-029). No new routes or deployable. No `swx` alias.
+- **Components**: `packages/tac-validate`, `tac2iwxxm`, `iwxxm-validate`; domain docs; fixtures.
+- **Journeys / tests**: **UJ-043**; TC-F28-001..006; cycle TC-EV029-*.
+- **Non-goals**: VONA #741; SIGWX / QVACI; dissemination sink UI; GIFTs-as-normative.
+- **Source**: feature-list F28; evolve-decisions EV-029;
+  [Context: eight-family-ahl-rules-823](context/eight-family-ahl-rules-823.md).
+
+### S036 / EV-029 — Eight-family AHL / lint / convert / validate (#823)
+
+- **Purpose**: Mine-then-implement gap sweep across eight TAC families × lint / convert /
+  IWXXM-validate, with bulletin/AHL/COM first, then product-by-product. Shared AHL/`T1T2`/
+  filename model for conversion + F16–F19 consumers. Absorb #738 / #820 / #740 (**F28**).
+- **Status**: **In progress** (S036 / EV-029).
+- **Components**: domain mining + canonicals; `tac-validate` / `tac2iwxxm` / `iwxxm-validate`;
+  thin `packages/dissemination` AHL helpers; fixtures/CI; FE only if Examples unlock.
+- **Journeys / tests**: **UJ-043**; TC-EV029-001..008; TC-F28-001..006; deepen prior product TCs.
+- **Non-goals**: SIGWX / VONA / QVACI as TAC inputs; #806 WIS2 mining; sink UI; vendor hand-edits.
+- **Source**: feature-list EV-029 deepen + F28; evolve-decisions EV-029; #823.
 
 ### S030 / EV-023 — APAC FAQ + codes encode/validate deepen (#800)
 

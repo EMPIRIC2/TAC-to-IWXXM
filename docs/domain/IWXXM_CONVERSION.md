@@ -113,7 +113,7 @@ Full Guidance paraphrase tables: §Conversion highlights below.
 | Codes registry | https://codes.wmo.int/ | normative-vocabulary |
 | FM 205 Manual I.3 | https://library.wmo.int/idurl/4/35769 | normative |
 | FM 205 working AsciiDoc (pin) | `vendor/schemas/iwxxm/documentation/manual/FM205.adoc` (**FM 205-2025-2**) | normative-conversion-notes (package-aligned) |
-| AHL headings | https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs | normative-exchange |
+| AHL headings (v1.0.1, fetched 2026-08-01) | https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs | normative-exchange |
 | WIS2 aviation publish (ops) | https://github.com/wmo-im/wis2-cookbook (`publishing-aviation-data.adoc`) · https://github.com/wmo-im/wis2-guide §2.8.1.1 · WTH https://github.com/wmo-im/wis2-topic-hierarchy | informative / normative-exchange (topics) — [Tier B](mining/wmo-im-tier-b-mining-notes.md) |
 | Community IWXXM + compatibility table | https://community.wmo.int/en/activity-areas/wis/iwxxm (**404** 2026-07-14 — see catalog) | informative index |
 | Extra fixtures | https://github.com/wmo-im/iwxxm-translation | informative — tip Amd79-80-2023 / suite IWXXM **2023-1**; [parity dig](mining/iwxxm-translation-parity-mining-notes.md) |
@@ -141,9 +141,57 @@ Local vendor mirrors: `vendor/schemas/iwxxm`, `iwxxm-modelling` (UML generators 
 | AIRMET | `iwxxm:AIRMET` | `airmet.xsd` | 3.1.2 | `airmet-A6-1a-TS` |
 | TCA | `iwxxm:TropicalCycloneAdvisory` | `tropicalCycloneAdvisory.xsd` | 3.1.1 | `tc-advisory-A2-2` |
 | VAA | `iwxxm:VolcanicAshAdvisory` | `volcanicAshAdvisory.xsd` | 3.2.0 | `va-advisory-A7-2` |
+| SWXA | `iwxxm:SpaceWeatherAdvisory` | `spaceWeatherAdvisory.xsd` | 3.1.0 | `spacewx-A7-3/4/5` (+ alt) — **F28 / EV-029 M11** |
 
 Annex 3 amendment ↔ older package lineage (FM 205-2023-1.2.4) is tabulated in the mining notes; **runtime encode/validate against v2025-2**.  
 ICAO Annex 3 (App 2/3/5/6) requires F6 products **shall** be exchanged in IWXXM GML **in addition to** TAC — it does **not** define nilReason / GML recipes ([mining/icao-annex-3-mining-notes.md](mining/icao-annex-3-mining-notes.md)). Table **A3-2** footnote (pass 2): temporarily missing TAC groups use `/` and must be marked missing in the IWXXM version — still resolve href/`nilReason` from Guidance + pin schemas.
+
+---
+
+## AHL / bulletin canonical (EV-029)
+
+**SoT:** [AHLs for aviation data over ICAO AFS](https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs) **v1.0.1** (2025-08-11; fetched 2026-08-01) · OPMET Guidelines 5th (filename / COLLECT) · #823 B1–B3.  
+Session digs: [eight-family-remine-pass.md](../sessions/S036-eight-family-ahl-rules-823/reports/mining/eight-family-remine-pass.md) · design surface note **T0.5**.  
+Engine: `packages/tac2iwxxm` `bulletin.py` — **M1 closed** shared `parse_ahl` / `map_t1t2` /
+BBB / `iwxxm_filename` (dissemination imports same API); body **`split_bulletin`** still
+METAR/SPECI until per-family milestones.
+
+### Heading form
+
+`T1T2A1A2ii CCCC YYGGgg [BBB]`
+
+### TAC ↔ IWXXM `T1T2` (eight families + SWXA)
+
+| Product | TAC | IWXXM | Root |
+|---------|-----|-------|------|
+| METAR | SA | LA | `iwxxm:METAR` |
+| SPECI | SP | LP | `iwxxm:SPECI` |
+| TAF &lt;12h | FC | LC | `iwxxm:TAF` |
+| TAF ≥12h | FT | LT | `iwxxm:TAF` |
+| TCA | FK | LK | `iwxxm:TropicalCycloneAdvisory` |
+| SWXA | FN | LN | `iwxxm:SpaceWeatherAdvisory` |
+| VAA | FV | LU | `iwxxm:VolcanicAshAdvisory` |
+| AIRMET | WA | LW | `iwxxm:AIRMET` |
+| SIGMET gen | WS | LS | `iwxxm:SIGMET` |
+| TC SIGMET | WC | LY | `iwxxm:TropicalCycloneSIGMET` |
+| VA SIGMET | WV | LV | `iwxxm:VolcanicAshSIGMET` |
+
+OOS converter: VONA (`WM`→`LM`) · QVACI · WAFS · SIGWX.
+
+### BBB → `reportStatus` (prefix families)
+
+| BBB family | `reportStatus` | Notes |
+|------------|----------------|-------|
+| absent / `RRx` (x=A…X) | NORMAL | `RR*` = subsequent bulletin |
+| `AAx` (x=A…X) | AMENDMENT | Reject over-broad `[ACR]{2}[A-Z]` GIFTs-style gates |
+| `CCx` (x=A…X) | CORRECTION | Same |
+| Y / Z | special (AHL page) | Fixture if needed |
+| Product CNL / NIL | **not** reportStatus | Product-specific paths |
+
+### IWXXM AMHS / FTBP filename
+
+`A_T1T2A1A2iiCCCCYYGGgg[BBB]_C_CCCC_yyyyMMddhhmmss[_ffffff].xml[.gz]` — use **IWXXM**
+`T1T2` (L*), not TAC `T1T2`, in the filename segment.
 
 ---
 

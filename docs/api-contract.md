@@ -106,7 +106,7 @@ the same public convert path. Work history is **not** server-persisted (IndexedD
 |-------|----------|---------|-------------|
 | `files` | no* | — | TAC files |
 | `manual_text` | no* | — | TAC string |
-| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` |
+| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
 | `iwxxm_version` | no | app default | Vendored pin (e.g. `2025-2`) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
@@ -126,9 +126,14 @@ the same public convert path. Work history is **not** server-persisted (IndexedD
 - Sessions may **store** `product`/`profile` in `conversion_params` for UI restore; on submit the UI
   **copies** them into multipart fields.
 - No `engine` field; converter is always `tac2iwxxm` after cutover.
-- **Manual entry split**: default is one TAC per non-empty line. For **`product=VAA` or `TCA`**
-  (F26/F27), `manual_text` is kept as a **single multi-line advisory document** (template
-  fields must not be line-split).
+- **Manual entry split**: default is one TAC per non-empty line. For **`product=vaa`**,
+  **`tca`**, or **`swxa`** (F26/F27/F28), `manual_text` is kept as a **single multi-line
+  advisory document** (template fields must not be line-split).
+- **`product=sigmet`**: package selects `iwxxm:SIGMET` vs `iwxxm:VolcanicAshSIGMET` vs
+  `iwxxm:TropicalCycloneSIGMET` from TAC content / designators (WS/WV/WC). **No** separate
+  `va_sigmet` / `tc_sigmet` enum values (E19-13=A; EV-029 / #738).
+- **`product=swxa`**: Space Weather Advisory → `iwxxm:SpaceWeatherAdvisory` (F28 / #740).
+  Canonical wire value is **`swxa`** (not `swx`). Unknown aliases → `unknown_product` **400**.
 - **F7 / ADR-023**: Hard Convert from FileConverter sends `bulletin_id`, `issuing_center`,
   `stop_on_error`, `validate_output`, and `validation_level` from Conversion Parameters.
   Soft-preview forces `validate_output=false`. Operator **Log Level** filters conversion /
@@ -645,3 +650,23 @@ types update only if catalog/issue content requires new documented code enums (p
   (TC-F26-005 / TC-F27-005); FE `splitManualEntries` aligned.
 - S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA quality — **full endpoint review**; no new
   routes; wire shapes unchanged. ADR-028 deepen (codes only); ADR-032 golden bar.
+
+## S036 / EV-029 — Endpoint review (F28 + eight-family / #823)
+
+| Endpoint | Change for EV-029? | Notes |
+|----------|--------------------|-------|
+| `POST /api/v1/convert` | **Additive enum** | Add `product=swxa` → `iwxxm:SpaceWeatherAdvisory`; keep-whole `manual_text` like VAA/TCA. `product=sigmet` also selects **TC SIGMET** root from TAC (#738) |
+| `POST /api/v1/convert-bulletin` | **Additive enum** | Same `product` enum; AHL/`T1T2` deepen package-side (FN→LN for SWXA); splitter rules #823 B2 |
+| `POST /api/v1/lint-tac` | **Additive enum + codes** | `product=swxa` accepted; new SWXA (+ COM/AHL) registry codes in payloads |
+| `GET /api/v1/lint-issue-catalog` | **Additive content** | SWXA/COM codes; response schema unchanged |
+| `POST /api/v1/decode-tac` | **Additive enum** | `product=swxa` best-effort decode (F9 G4); TC SIGMET under `sigmet` |
+| `POST /api/v1/validate` | **None (wire)** | Existing levels; SWXA/TC SIGMET goldens use same validate path |
+| `POST /api/v1/dissemination/*` | **Consume AHL helpers** | No new routes; shared AHL/`T1T2`/filename model for sinks (drawer UI OOS) |
+| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+
+**Breaking changes**: None — additive `swxa` only. FE OpenAPI / product pickers must add
+`swxa` when F28 unlocks Examples. Runtime enum enforcement lands in 07-build (backend +
+packages); until then docs lead.
+
+- S036 / EV-029 (2026-08-01): F28 SWXA `product=swxa` + TC SIGMET under `sigmet`; eight-family
+  AHL/COM deepen — **endpoint review**; additive enum; no new routes (`D-S036-E29-M` Q1=2).

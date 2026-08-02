@@ -3,6 +3,71 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-029 — #823 Eight-family AHL / lint / convert / validate gap sweep (S036)
+
+**Session**: S036-eight-family-ahl-rules-823  
+**Features**: **F28** (new SWXA quality bar) + deepen **F6** / **F6.bulletin** / **F12** / **F2** / **F13** / **F15** / **F20** / **F23** / **F24** / **F26** / **F27**  
+**Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella); absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820), [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)  
+**Started**: 2026-08-01  
+**Branch**: `evolve/EV-029-eight-family-ahl-rules`  
+**Status**: **in_progress** — **07-build** M0 @ T0.3 (T0.1–T0.2 done)
+
+### Scope (Phase 0 — locked 2026-08-01)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E29-1 | decision | Session open? | **1** — S036 / EV-029 feature + 16-evolve (`D-S036-open`) |
+| E29-2 | decision | Work shape? | **1** — Phase A mine/promote first, then Phase B per product family |
+| E29-3 | decision | Product order? | **1** — Bulletin/AHL/COM → METAR → SPECI → TAF → SIGMET (gen/VA/TC/CNL) → AIRMET → VAA → TCA → SWXA |
+| E29-4 | decision | Dissemination AHL? | **1** — shared AHL + filename/`bulletinIdentifier` in-cycle; sink UI later |
+| E29-5 | decision | Routing preset? | **1** — Standard (`00→16→01→02→04→07→08→09→10→11→12→13`; skip 03/05/06) |
+| E29-6 | decision | UI preview? | **1** — N/A (no UI this session) |
+| E29-7 | decision | Fn allocation? | **1** — F28 new + deepen set (`D-S036-fn`) |
+| E29-8 | decision | Related issues? | **1** — absorb #738 / #820 / #740 into Phase B |
+| E29-9 | decision | Proceed? | **1** — lock → start 01-requirements |
+| E29-10 | decision | Commit session open? | **1** — yes (`D-S036-fn` Q4) |
+| E29-M | decision | Document Manifest? | **2** — lean + amend API contract for `product=swxa` (`D-S036-E29-M`) |
+| E29-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** |
+| E29-02F | decision | 02 Batch F? | **1,1,1,1** — M1/M2/M3/L1 approve (`D-S036-02-batch-f`) |
+| E29-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** (`D-S036-02-phase-a`) |
+| E29-T1 | decision | Milestone structure? | **3** — one milestone per product (METAR/SPECI/TAF separate) (`D-S036-04-batch-1`) |
+| E29-T2 | decision | AHL model home? | **1** — extend `tac2iwxxm` bulletin/AHL; dissemination imports (`D-S036-04-batch-1`) |
+| E29-T3 | decision | Phase A mining? | **2** — full re-mine all eight families before Phase B (`D-S036-04-batch-1`) |
+| E29-T4 | decision | CI packaging? | **2** — separate workflow per family (`D-S036-04-batch-1`) |
+| E29-T5 | decision | New deps? | **1** — none; AskQuestion per new dep (`D-S036-04-batch-2`) |
+| E29-T6 | decision | Deploy / smoke? | **1** — API redeploy; H1–H3; H4–H5 waive unless FE (`D-S036-04-batch-2`) |
+| E29-T7 | decision | SIGMET milestones? | **1** — gen / VA / TC as three Ms (`D-S036-04-batch-2`) |
+| E29-T8 | decision | Kill-switch? | **1** — HARD; block → AskQuestion (`D-S036-04-batch-2`) |
+| E29-T9 | gate | Plan approve / Gate B? | **1** — approve M0–M12; → **07 @ T0.1** (`D-S036-04-plan`) |
+
+**Scope (verbatim)**: Go 1-by-1 across the eight TAC→IWXXM product families and ensure
+validation, linting, and conversion rules (plus examples for all TAC input shapes) have no
+silent gaps. Umbrella #823 — mine then implement IWXXM 2025-2 AHL/bulletin, VAA/TCA, and
+three-SIGMET family gaps. Report states: Normal / Amendment / Correction / Cancellation /
+Missing or NIL where permitted. Exclude SIGWX / VONA / QVACI as converter inputs.
+
+**In:** Phase A domain mine + promote + example inventory; Phase B engine deltas product-by-product;
+shared AHL/`T1T2`/filename model for tac2iwxxm + dissemination consumers; child issues for residuals.
+
+**Out:** SIGWX/VONA/QVACI TAC conversion; dissemination drawer/sink UI; #806 WIS2 topic mining;
+hand-edits to `vendor/schemas/*`; GIFTs-as-normative.
+
+### Acceptance (cycle)
+
+1. Coverage matrix + canonicals filled or child-issued for eight families × lint/convert/IWXXM-validate × report states × TAC shapes (**TC-EV029-001/006**).
+2. Example inventory covers TAC shapes + IWXXM peers (**TC-EV029-002**).
+3. Shared AHL/`T1T2`/BBB model enforced; filename/`bulletinIdentifier` ready for F16–F19 (**TC-EV029-003**).
+4. TC SIGMET → `iwxxm:TropicalCycloneSIGMET` (#738) (**TC-EV029-004**).
+5. VAA/TCA #823 B4 / #820 residuals closed or child-issued (**TC-EV029-005**).
+6. **F28** SWXA quality bar green or deferred with child (**TC-F28-***).
+7. Phase B product-order smoke green (**TC-EV029-007**); #823 closable or children linked.
+
+### Journeys / tests
+
+- **UJ-043**; **TC-EV029-001..008**; **TC-F28-001..006**
+
+---
+
 ## Cycle EV-028 — #781 EMPIRIC2 Codecov purge + PyPI Trusted Publisher + landing pages (S035)
 
 **Session**: S035-empiric2-ops-leftovers-781  

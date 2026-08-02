@@ -1,27 +1,43 @@
-"""WMO AHL bulletin splitter (F6.bulletin).
+"""WMO AHL bulletin helpers and splitter (F6.bulletin / TC-EV029-003).
 
-Splits a Traditional Alphanumeric Code bulletin with an abbreviated header
-into per-report TAC strings. Product-specific AHL / TAC patterns follow the
-gifts METAR/SPECI dialect for v1 (TC-F6-030).
+Shared parse / format / ``T1T2`` map / BBB→``reportStatus`` / IWXXM filename
+helpers live here so ``packages/dissemination`` can import them without
+duplicating AHL rules (EV-029 / E29-T2).
 """
 
 from __future__ import annotations
 
 import re
+from datetime import UTC, datetime
+from typing import Literal
 
-from tac2iwxxm.models import BulletinMeta, BulletinSplit
+from tac2iwxxm.models import AhlParts, BulletinMeta, BulletinSplit
 
-# WMO AHL: T1T2 A1A2 ii CCCC YYGGgg [BBB] — METAR=SA*, SPECI=SP*
-_AHL_METAR = re.compile(
-    r"^(?P<tt>SA)(?P<aa>[A-Z]{2})(?P<ii>\d{2})\s+(?P<cccc>[A-Z]{4})\s+"
-    r"(?P<yygggg>\d{6})(?:\s+(?P<bbb>[ACR]{2}[A-Z]))?",
-    re.MULTILINE,
+ReportStatus = Literal["NORMAL", "AMENDMENT", "CORRECTION"]
+
+# TAC → IWXXM T1T2 (docs/domain/IWXXM_CONVERSION.md §AHL / bulletin EV-029)
+_TAC_TO_IWXXM: dict[str, str] = {
+    "SA": "LA",
+    "SP": "LP",
+    "FC": "LC",
+    "FT": "LT",
+    "FK": "LK",
+    "FN": "LN",
+    "FV": "LU",
+    "WA": "LW",
+    "WS": "LS",
+    "WC": "LY",
+    "WV": "LV",
+}
+
+_AHL_LINE = re.compile(
+    r"^(?P<tt>[A-Z]{2})(?P<aa>[A-Z]{2})(?P<ii>\d{2})\s+"
+    r"(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})"
+    r"(?:\s+(?P<bbb>[A-Z]{1,3}))?\s*$"
 )
-_AHL_SPECI = re.compile(
-    r"^(?P<tt>SP)(?P<aa>[A-Z]{2})(?P<ii>\d{2})\s+(?P<cccc>[A-Z]{4})\s+"
-    r"(?P<yygggg>\d{6})(?:\s+(?P<bbb>[ACR]{2}[A-Z]))?",
-    re.MULTILINE,
-)
+
+# AHL page v1.0.1 prefix families: RRx / AAx / CCx with x ∈ A…X (not Y/Z).
+_BBB_VALID = re.compile(r"^(?:AA|CC|RR)[A-X]$")
 
 # gifts METAR.re_TAC — report starts at METAR|SPECI and ends at '='
 _TAC_METAR_SPECI = re.compile(
@@ -29,21 +45,21 @@ _TAC_METAR_SPECI = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 
-_PRODUCT_AHL: dict[str, re.Pattern[str]] = {
-    "METAR": _AHL_METAR,
-    "SPECI": _AHL_SPECI,
+_PRODUCT_TT: dict[str, frozenset[str]] = {
+    "METAR": frozenset({"SA"}),
+    "SPECI": frozenset({"SP"}),
 }
 
 
 class BulletinSplitError(ValueError):
     """
-    Bulletin could not be split into reports.
+    Bulletin or AHL could not be parsed.
 
     Parameters
     ----------
     code :
-        Machine-readable error matching api-contract
-        (``bulletin_split_failed`` or ``empty_bulletin``).
+        Machine-readable error (``bulletin_split_failed``, ``empty_bulletin``,
+        or ``invalid_bbb``).
     message :
         Human-readable description.
     """
@@ -52,6 +68,203 @@ class BulletinSplitError(ValueError):
         self.code = code
         self.message = message
         super().__init__(message)
+
+
+def map_t1t2(tac_tt: str) -> str:
+    """
+    Map a TAC ``T1T2`` designator to the IWXXM (L*) designator.
+
+    Parameters
+    ----------
+    tac_tt :
+        Two-letter TAC data type designator (e.g. ``SA``, ``FN``).
+
+    Returns
+    -------
+    str
+        IWXXM ``T1T2`` (e.g. ``LA``, ``LN``).
+
+    Raises
+    ------
+    ValueError
+        When ``tac_tt`` is not in the EV-029 aviation map.
+    """
+    key = tac_tt.strip().upper()
+    try:
+        return _TAC_TO_IWXXM[key]
+    except KeyError as exc:
+        raise ValueError(f"unsupported TAC T1T2 for IWXXM map: {tac_tt!r}") from exc
+
+
+def bbb_to_report_status(bbb: str | None) -> ReportStatus:
+    """
+    Map optional BBB to IWXXM ``reportStatus``.
+
+    Parameters
+    ----------
+    bbb :
+        BBB indicator (``AAx`` / ``CCx`` / ``RRx`` with x ∈ A…X), or ``None``.
+
+    Returns
+    -------
+    ReportStatus
+        ``NORMAL``, ``AMENDMENT``, or ``CORRECTION``.
+
+    Raises
+    ------
+    BulletinSplitError
+        When ``bbb`` is present but not an accepted prefix family.
+    """
+    if bbb is None or bbb == "":
+        return "NORMAL"
+    token = bbb.strip().upper()
+    if not _BBB_VALID.match(token):
+        raise BulletinSplitError(
+            "invalid_bbb",
+            f"invalid WMO AHL BBB (expected AA/CC/RR + A…X): {bbb!r}",
+        )
+    if token.startswith("AA"):
+        return "AMENDMENT"
+    if token.startswith("CC"):
+        return "CORRECTION"
+    return "NORMAL"
+
+
+def parse_ahl(line_or_text: str) -> AhlParts:
+    """
+    Parse a WMO abbreviated heading line (first matching line).
+
+    Parameters
+    ----------
+    line_or_text :
+        A single AHL line, or text whose first non-empty line is the AHL.
+
+    Returns
+    -------
+    AhlParts
+        Parsed fields plus derived ``iwxxm_tt`` and ``report_status``.
+
+    Raises
+    ------
+    BulletinSplitError
+        When the heading cannot be parsed, ``T1T2`` is unknown, or BBB is invalid.
+    """
+    raw = line_or_text.strip()
+    if not raw:
+        raise BulletinSplitError("bulletin_split_failed", "Empty AHL input")
+    first = raw.splitlines()[0].strip()
+    match = _AHL_LINE.match(first)
+    if match is None:
+        raise BulletinSplitError(
+            "bulletin_split_failed",
+            f"Cannot parse WMO AHL header: {first!r}",
+        )
+    groups = match.groupdict()
+    tt = groups["tt"]
+    if tt not in _TAC_TO_IWXXM:
+        raise BulletinSplitError(
+            "bulletin_split_failed",
+            f"Unsupported TAC T1T2 in AHL: {tt!r}",
+        )
+    bbb_raw = groups.get("bbb")
+    bbb: str | None
+    if bbb_raw:
+        bbb = bbb_raw.upper()
+        # Validate via reportStatus map (rejects Y/Z third letter and non-families)
+        status = bbb_to_report_status(bbb)
+    else:
+        bbb = None
+        status = "NORMAL"
+    iwxxm_tt = _TAC_TO_IWXXM[tt]
+    return AhlParts(
+        ahl=first,
+        tt=tt,
+        aa=groups["aa"],
+        ii=groups["ii"],
+        cccc=groups["cccc"],
+        yygggg=groups["yygggg"],
+        bbb=bbb,
+        iwxxm_tt=iwxxm_tt,
+        report_status=status,
+    )
+
+
+def format_ahl(parts: AhlParts) -> str:
+    """
+    Format ``AhlParts`` as a single WMO AHL line (TAC ``T1T2``).
+
+    Parameters
+    ----------
+    parts :
+        Parsed or constructed AHL parts.
+
+    Returns
+    -------
+    str
+        ``T1T2A1A2ii CCCC YYGGgg [BBB]``.
+
+    Raises
+    ------
+    BulletinSplitError
+        When BBB is present but invalid.
+    """
+    tt = parts.tt.strip().upper()
+    aa = parts.aa.strip().upper()
+    ii = parts.ii.strip()
+    cccc = parts.cccc.strip().upper()
+    yygggg = parts.yygggg.strip()
+    if not re.fullmatch(r"[A-Z]{2}", tt):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL tt: {parts.tt!r}")
+    if not re.fullmatch(r"[A-Z]{2}", aa):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL aa: {parts.aa!r}")
+    if not re.fullmatch(r"\d{2}", ii):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL ii: {parts.ii!r}")
+    if not re.fullmatch(r"[A-Z]{4}", cccc):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL cccc: {parts.cccc!r}")
+    if not re.fullmatch(r"\d{6}", yygggg):
+        raise BulletinSplitError("bulletin_split_failed", f"invalid AHL yygggg: {parts.yygggg!r}")
+    line = f"{tt}{aa}{ii} {cccc} {yygggg}"
+    if parts.bbb:
+        bbb_u = parts.bbb.strip().upper()
+        bbb_to_report_status(bbb_u)  # validate
+        line = f"{line} {bbb_u}"
+    return line
+
+
+def iwxxm_filename(
+    parts: AhlParts,
+    *,
+    issued_at: datetime,
+    gzip: bool = False,
+    fractional: str | None = None,
+) -> str:
+    """
+    Build an IWXXM AMHS / FTBP filename using the **IWXXM** ``T1T2``.
+
+    Parameters
+    ----------
+    parts :
+        AHL parts (must include ``iwxxm_tt``).
+    issued_at :
+        UTC (or aware) issue timestamp for the ``_C_CCCC_yyyyMMddhhmmss`` segment.
+    gzip :
+        When ``True``, append ``.gz``.
+    fractional :
+        Optional fractional-second / sequence suffix ``ffffff``.
+
+    Returns
+    -------
+    str
+        ``A_…xml`` or ``A_…xml.gz``.
+    """
+    ts = issued_at.astimezone(UTC).strftime("%Y%m%d%H%M%S")
+    bbb = (parts.bbb or "").strip().upper()
+    head = f"A_{parts.iwxxm_tt}{parts.aa}{parts.ii}{parts.cccc}{parts.yygggg}{bbb}"
+    mid = f"_C_{parts.cccc}_{ts}"
+    if fractional:
+        mid = f"{mid}_{fractional}"
+    suffix = ".xml.gz" if gzip else ".xml"
+    return f"{head}{mid}{suffix}"
 
 
 def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
@@ -63,7 +276,8 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     text :
         Full bulletin text including the AHL line and one or more TAC reports.
     product :
-        Product hint selecting the AHL dialect (``METAR`` or ``SPECI`` for v1).
+        Product hint selecting the AHL dialect (``METAR`` or ``SPECI`` for body
+        split; other products raise until their splitters land).
 
     Returns
     -------
@@ -73,30 +287,42 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     Raises
     ------
     BulletinSplitError
-        When the AHL cannot be parsed (``bulletin_split_failed``) or no reports
-        are found after a valid AHL (``empty_bulletin``).
+        When the AHL cannot be parsed (``bulletin_split_failed`` / ``invalid_bbb``)
+        or no reports are found after a valid AHL (``empty_bulletin``).
     """
     product_key = product.strip().upper()
-    ahl_re = _PRODUCT_AHL.get(product_key)
-    if ahl_re is None:
+    allowed_tt = _PRODUCT_TT.get(product_key)
+    if allowed_tt is None:
         raise BulletinSplitError(
             "bulletin_split_failed",
             f"Unsupported product for bulletin split: {product!r}",
         )
 
-    ahl_match = ahl_re.search(text)
+    # Locate first AHL-shaped line, then validate via parse_ahl (strict BBB)
+    ahl_match = None
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if _AHL_LINE.match(stripped):
+            ahl_match = stripped
+            break
     if ahl_match is None:
         raise BulletinSplitError(
             "bulletin_split_failed",
             "Cannot parse WMO AHL header for bulletin split",
         )
 
-    groups = ahl_match.groupdict()
-    bbb = groups.get("bbb") or None
-    ahl_line = ahl_match.group(0).strip()
+    parts = parse_ahl(ahl_match)
+    if parts.tt not in allowed_tt:
+        raise BulletinSplitError(
+            "bulletin_split_failed",
+            f"AHL T1T2 {parts.tt!r} does not match product {product_key!r}",
+        )
 
     # Only scan TAC reports after the AHL so pre-header noise cannot inflate the bulletin
-    body_text = text[ahl_match.end() :]
+    ahl_pos = text.find(ahl_match)
+    body_text = text[ahl_pos + len(ahl_match) :]
     reports = [m.group(0).strip() for m in _TAC_METAR_SPECI.finditer(body_text)]
     if not reports:
         raise BulletinSplitError(
@@ -104,7 +330,6 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
             "No TAC reports found after AHL header",
         )
 
-    # Prefer product-matching reports; fail closed when none match the requested product
     if product_key == "SPECI":
         reports = [r for r in reports if r.startswith("SPECI")]
     elif product_key == "METAR":
@@ -117,15 +342,24 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         )
 
     meta = BulletinMeta(
-        ahl=ahl_line,
+        ahl=parts.ahl,
         report_count=len(reports),
-        tt=groups["tt"],
-        aa=groups["aa"],
-        cccc=groups["cccc"],
-        yygggg=groups["yygggg"],
-        bbb=bbb,
+        tt=parts.tt,
+        aa=parts.aa,
+        cccc=parts.cccc,
+        yygggg=parts.yygggg,
+        bbb=parts.bbb,
+        ii=parts.ii,
     )
     return BulletinSplit(meta=meta, reports=reports)
 
 
-__all__ = ["BulletinSplitError", "split_bulletin"]
+__all__ = [
+    "BulletinSplitError",
+    "bbb_to_report_status",
+    "format_ahl",
+    "iwxxm_filename",
+    "map_t1t2",
+    "parse_ahl",
+    "split_bulletin",
+]

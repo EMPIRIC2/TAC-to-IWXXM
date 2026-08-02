@@ -368,12 +368,14 @@ Canonical companions:
 
 - **URL:** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs  
   (short redirects still seen: `/ahls-aviation-data-over-icao-afs`, `/en/activity-areas/wis/iwxxm/ahl-icao-data`)
+- **Edition:** **v1.0.1** (2025-08-11) — confirmed live fetch **2026-08-01** (S036/EV-029 T0.2)
 - **Access:** public
-- **Applies to:** products=[all F6]; role=[bulletin-validation, conversion]
-- **Gap vs GIFTs:** TAC T1T2 (`SA`/`SP`/…) ↔ IWXXM T1T2 (`LA`/`LP`/…) + AMHS filename pattern
-- **Consumer:** `tac-validate`, bulletin encode, F8 worker
+- **Applies to:** products=[all F6 + SWXA]; role=[bulletin-validation, conversion]
+- **Gap vs GIFTs:** TAC T1T2 (`SA`/`SP`/…/`FN`) ↔ IWXXM T1T2 (`LA`/`LP`/…/`LN`) + BBB prefix families (`AAx`/`CCx`/`RRx`) + AMHS filename pattern
+- **Consumer:** `tac-validate`, `tac2iwxxm` bulletin encode, dissemination, F8 worker
 - **Label:** normative-exchange
-- **Mined:** 2026-07-14 (URL redirect refresh)
+- **Canonical prose:** [IWXXM_CONVERSION.md §AHL / bulletin](../IWXXM_CONVERSION.md#ahl--bulletin-canonical-ev-029) · matrix [COVERAGE_MATRIX §EV-029](./COVERAGE_MATRIX.md#eight-family-ahl--rules--s036--ev-029-823)
+- **Mined:** 2026-07-14 (URL redirect refresh) · **re-confirmed 2026-08-01** (v1.0.1)
 
 ### Sibling repos (already vendored)
 
