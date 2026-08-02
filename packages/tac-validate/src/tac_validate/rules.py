@@ -1,4 +1,4 @@
-"""Shared TAC business-rule pack skeleton (seven products)."""
+"""Shared TAC business-rule pack skeleton (F6 products + F28 SWXA)."""
 
 from __future__ import annotations
 

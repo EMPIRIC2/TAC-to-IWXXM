@@ -417,6 +417,52 @@
       "ok": true
     },
     {
+      "id": "accept_swxa_basic",
+      "product": "SWXA",
+      "tac": "accept/swxa_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_swxa_sx1_hf_com",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 HF COM + FCST NO SWX EXP; #740 / spacewx-A7-3",
+      "tac": "accept/swxa_sx1_hf_com.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_swxa_sx1_gnss",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 GNSS + NR RPLC; #740 / spacewx-A7-4",
+      "tac": "accept/swxa_sx1_gnss.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_swxa_sx1_radiation",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 RADIATION; #740 / spacewx-A7-5",
+      "tac": "accept/swxa_sx1_radiation.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_swxa_sx1_rmk_nil",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 RMK NIL; #740",
+      "tac": "accept/swxa_sx1_rmk_nil.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_swxa_sx1_no_further",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 NO FURTHER ADVISORIES; #740",
+      "tac": "accept/swxa_sx1_no_further.tac",
+      "ok": true
+    },
+    {
       "id": "accept_metar_r3_wx_light_rain",
       "product": "METAR",
       "theme": "R3",
@@ -1228,6 +1274,27 @@
       "tac": "negative/tca/missing_max_wind.tac",
       "ok": false,
       "expected_codes": ["MISSING_MAX_WIND"],
+      "require_spans": true
+    },
+    {
+      "id": "swxa_missing_dtg",
+      "product": "SWXA",
+      "depth": "template_gate",
+      "cite": "A2-3 DTG",
+      "tac": "negative/swxa/missing_dtg.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_DTG"],
+      "require_spans": true
+    },
+    {
+      "id": "swxa_missing_swxc",
+      "product": "SWXA",
+      "theme": "SX1",
+      "depth": "template_gate",
+      "cite": "A2-3 SWXC; F28 theme SX1 / #740",
+      "tac": "negative/swxa/missing_swxc.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SWXC"],
       "require_spans": true
     }
   ],
@@ -2729,6 +2796,53 @@
       "tac": "negative/tca/missing_tc.tac",
       "ok": false,
       "expected_codes": ["MISSING_TC"],
+      "require_spans": true
+    }
+  ],
+  "f28_sx1_modifier_info": [
+    {
+      "id": "swxa_sx1_rmk_nil_info",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 RMK NIL \u2192 info",
+      "tac": "accept/swxa_sx1_rmk_nil.tac",
+      "ok": true,
+      "expected_codes": ["SWXA_RMK_NIL"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "swxa_sx1_fcst_no_swx_exp_info",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 FCST NO SWX EXP \u2192 info",
+      "tac": "accept/swxa_sx1_hf_com.tac",
+      "ok": true,
+      "expected_codes": ["SWXA_FCST_NO_SWX_EXP"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "swxa_sx1_no_further_info",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "F28 theme SX1 \u2014 NO FURTHER ADVISORIES \u2192 info",
+      "tac": "accept/swxa_sx1_no_further.tac",
+      "ok": true,
+      "expected_codes": ["SWXA_NO_FURTHER_ADVISORIES"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "f28_sx1_errors": [
+    {
+      "id": "swxa_sx1_missing_swxc",
+      "product": "SWXA",
+      "theme": "SX1",
+      "cite": "A2-3 SWXC; F28 theme SX1 \u2014 missing SWXC \u2192 error",
+      "tac": "negative/swxa/missing_swxc.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SWXC"],
       "require_spans": true
     }
   ]

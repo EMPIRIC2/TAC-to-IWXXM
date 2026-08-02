@@ -31,7 +31,7 @@ def test_template_gate_manifest_cites_a6_or_a2() -> None:
 
 
 def test_product_rules_dispatch_covers_all_seven_products() -> None:
-    """Coverage matrix gate: every F6 product has a product_rules path."""
+    """Coverage matrix gate: every product has a product_rules path (F6 + F28 SWXA)."""
     samples = {
         "METAR": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
         "SPECI": "SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=",
@@ -45,6 +45,7 @@ def test_product_rules_dispatch_covers_all_seven_products() -> None:
         ),
         "VAA": "VA ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\nVOLCANO: KARYMSKY 1000-13\n",
         "TCA": "TC ADVISORY\nDTG: 20040925/1900Z\nTC: GLORIA\nMAX WIND: 22MPS\n",
+        "SWXA": "SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\nSWX EFFECT: HF COM\n",
     }
     assert set(samples) == set(PRODUCTS)
     for product, tac in samples.items():

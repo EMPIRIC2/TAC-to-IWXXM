@@ -83,6 +83,8 @@ _VOLCANO_LINE = re.compile(r"(?m)^\s*VOLCANO\s*:\s*(.*)$", re.IGNORECASE)
 _RMK_LINE = re.compile(r"(?m)^\s*RMK\s*:\s*(.*)$", re.IGNORECASE)
 _NXT_ADVISORY_LINE = re.compile(r"(?m)^\s*NXT\s+ADVISORY\s*:\s*(.*)$", re.IGNORECASE)
 _NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
+_SWXC_LINE = re.compile(r"(?m)^\s*SWXC\s*:", re.IGNORECASE)
+_NO_SWX_EXP = re.compile(r"\bNO\s+SWX\s+EXP\b", re.IGNORECASE)
 _MAX_WIND_LINE = re.compile(r"(?m)^\s*MAX\s+WIND\s*:", re.IGNORECASE)
 _TC_LINE = re.compile(r"(?m)^\s*TC\s*:\s*(.*)$", re.IGNORECASE)
 _CB_LINE = re.compile(r"(?m)^\s*CB\s*:\s*(.*)$", re.IGNORECASE)
@@ -2013,6 +2015,68 @@ def _check_tca(tac: str) -> list[Issue]:
     return issues
 
 
+def _check_swxa(tac: str) -> list[Issue]:
+    start, end, body = _body_span(tac)
+    issues: list[Issue] = []
+    if not _DTG_LINE.search(body):
+        issues.append(
+            _issue(
+                "MISSING_DTG",
+                "SWXA missing DTG: template field — A2-3",
+                start=start,
+                end=end,
+                location="dtg",
+            )
+        )
+    if not _SWXC_LINE.search(body):
+        issues.append(
+            _issue(
+                "MISSING_SWXC",
+                "SWXA missing SWXC: template field — F28 theme SX1 / A2-3",
+                start=start,
+                end=end,
+                location="swxc",
+            )
+        )
+    # F28 theme SX1 — exceptional remarks / forecast / next-advisory cues (#740).
+    rmk_m = _RMK_LINE.search(body)
+    if rmk_m:
+        rmk_val = rmk_m.group(1).strip().rstrip("=").upper()
+        if rmk_val == "NIL":
+            issues.append(
+                _issue(
+                    "SWXA_RMK_NIL",
+                    "SWXA RMK NIL — remarks inapplicable (F28 theme SX1)",
+                    start=rmk_m.start(1),
+                    end=rmk_m.end(1),
+                    location="remarks",
+                )
+            )
+    no_swx = _NO_SWX_EXP.search(body)
+    if no_swx is not None:
+        issues.append(
+            _issue(
+                "SWXA_FCST_NO_SWX_EXP",
+                "SWXA forecast NO SWX EXP — no space weather expected (F28 theme SX1)",
+                start=no_swx.start(),
+                end=no_swx.end(),
+                location="forecast",
+            )
+        )
+    nxt_m = _NXT_ADVISORY_LINE.search(body)
+    if nxt_m and "NO FURTHER" in nxt_m.group(1).upper():
+        issues.append(
+            _issue(
+                "SWXA_NO_FURTHER_ADVISORIES",
+                "SWXA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F28 theme SX1)",
+                start=nxt_m.start(1),
+                end=nxt_m.end(1),
+                location="next_advisory",
+            )
+        )
+    return issues
+
+
 def check_product_rules(tac_text: str, product: str) -> list[Issue]:
     """
     Run product checklist / template-gate rules after parse-gate success.
@@ -2039,6 +2103,8 @@ def check_product_rules(tac_text: str, product: str) -> list[Issue]:
         return _check_vaa(tac_text)
     if product == "TCA":
         return _check_tca(tac_text)
+    if product == "SWXA":
+        return _check_swxa(tac_text)
     return []
 
 

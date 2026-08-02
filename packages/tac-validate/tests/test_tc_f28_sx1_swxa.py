@@ -1,7 +1,7 @@
-"""F20 / S1 — SPECI exceptional-rule deepen (TC-F20-004 / #734).
+"""F28 theme SX1 — SWXA exceptional accept + negatives (TC-F28-001/004 / #740).
 
-HARD theme S1 from taf-speci-research-catalog.md.
-T3.1 fixtures; T3.2 encodes registry + METAR/SPECI S1 diagnostics.
+HARD theme for Space Weather Advisory. T11.1 fixtures; T11.2 registry/rules.
+Theme id **SX1** (not SPECI S1) — D-S036-F28-sx1.
 """
 
 from __future__ import annotations
@@ -19,17 +19,12 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures"
 MANIFEST_PATH = FIXTURES / "manifest.json"
 
 _INFO_CODES = {
-    "NIL_REPORT",
-    "CAVOK_PRESENT",
-    "NSC_PRESENT",
-    "NCD_PRESENT",
-    "NOSIG_PRESENT",
-    "NSW_PRESENT",
-    "VV_NOT_OBSERVABLE",
-    "WX_NOT_OBSERVABLE",
-    "RVR_PRESENT",
-    "WIND_DIR_VARIATION",
-    "COR_PRESENT",
+    "SWXA_RMK_NIL",
+    "SWXA_FCST_NO_SWX_EXP",
+    "SWXA_NO_FURTHER_ADVISORIES",
+}
+_ERROR_CODES = {
+    "MISSING_SWXC",
 }
 
 
@@ -50,34 +45,40 @@ def _case_ids(cases: list[dict[str, Any]]) -> list[str]:
 
 
 _MANIFEST = _load_manifest()
-# Product filter required: F28 also uses theme ids that must not collide (SX1 for SWXA).
-_S1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "S1" and c.get("product") == "SPECI"]
-_S1_INFO = list(_MANIFEST.get("s1_modifier_info", []))
-_S1_ERRORS = list(_MANIFEST.get("s1_errors", []))
+_SX1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "SX1" and c.get("product") == "SWXA"]
+_SX1_INFO = list(_MANIFEST.get("f28_sx1_modifier_info", []))
+_SX1_ERRORS = list(_MANIFEST.get("f28_sx1_errors", []))
 
 
-def test_s1_manifest_sections_present() -> None:
-    assert len(_S1_ACCEPT) >= 11
-    assert {c["product"] for c in _S1_ACCEPT} == {"SPECI"}
-    assert len(_S1_INFO) >= 11
-    assert len(_S1_ERRORS) >= 1
-    for case in _S1_ACCEPT + _S1_INFO + _S1_ERRORS:
+def test_f28_sx1_manifest_sections_present() -> None:
+    assert len(_SX1_ACCEPT) >= 3
+    assert {c["product"] for c in _SX1_ACCEPT} == {"SWXA"}
+    assert {c["id"] for c in _SX1_ACCEPT} >= {
+        "accept_swxa_sx1_hf_com",
+        "accept_swxa_sx1_gnss",
+        "accept_swxa_sx1_radiation",
+        "accept_swxa_sx1_rmk_nil",
+        "accept_swxa_sx1_no_further",
+    }
+    assert len(_SX1_INFO) >= 3
+    assert len(_SX1_ERRORS) >= 1
+    for case in _SX1_ACCEPT + _SX1_INFO + _SX1_ERRORS:
         assert (_read_tac(case["tac"])).strip()
-    codes = {c["expected_codes"][0] for c in _S1_INFO}
+    codes = {c["expected_codes"][0] for c in _SX1_INFO}
     assert codes == _INFO_CODES
-    for case in _S1_ERRORS:
-        assert case["expected_codes"][0] == "INVALID_NIL"
+    for case in _SX1_ERRORS:
+        assert case["expected_codes"][0] in _ERROR_CODES
 
 
-@pytest.mark.parametrize("case", _S1_ACCEPT, ids=_case_ids(_S1_ACCEPT))
-def test_s1_accept_ok(case: dict[str, Any]) -> None:
+@pytest.mark.parametrize("case", _SX1_ACCEPT, ids=_case_ids(_SX1_ACCEPT))
+def test_f28_sx1_accept_ok(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
     assert not any(i.severity == "error" for i in report.issues)
 
 
-@pytest.mark.parametrize("case", _S1_INFO, ids=_case_ids(_S1_INFO))
-def test_s1_modifier_emits_info(case: dict[str, Any]) -> None:
+@pytest.mark.parametrize("case", _SX1_INFO, ids=_case_ids(_SX1_INFO))
+def test_f28_sx1_modifier_emits_info(case: dict[str, Any]) -> None:
     code = case["expected_codes"][0]
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
@@ -89,8 +90,8 @@ def test_s1_modifier_emits_info(case: dict[str, Any]) -> None:
         assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
 
 
-@pytest.mark.parametrize("case", _S1_ERRORS, ids=_case_ids(_S1_ERRORS))
-def test_s1_invalid_emits_error(case: dict[str, Any]) -> None:
+@pytest.mark.parametrize("case", _SX1_ERRORS, ids=_case_ids(_SX1_ERRORS))
+def test_f28_sx1_invalid_emits_error(case: dict[str, Any]) -> None:
     code = case["expected_codes"][0]
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is False
@@ -99,4 +100,4 @@ def test_s1_invalid_emits_error(case: dict[str, Any]) -> None:
     assert by_code(code).severity == "error"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == code]
-        assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
+        assert matched and matched[0].start is not None and matched[0].end is not None

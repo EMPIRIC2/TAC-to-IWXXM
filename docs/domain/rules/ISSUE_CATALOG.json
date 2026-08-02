@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry",
-  "generated": "2026-07-30",
+  "generated": "2026-08-02",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -354,7 +354,8 @@
       "tags": [
         "dtg",
         "vaa",
-        "tca"
+        "tca",
+        "swxa"
       ]
     },
     {
@@ -448,6 +449,18 @@
         "airmet",
         "g2",
         "a1"
+      ]
+    },
+    {
+      "code": "MISSING_SWXC",
+      "severity": "error",
+      "message_template": "SWXA missing SWXC: template field \u2014 F28 theme SX1 / A2-3",
+      "product": "swxa",
+      "tags": [
+        "swxc",
+        "swxa",
+        "sx1",
+        "f28"
       ]
     },
     {
@@ -823,6 +836,44 @@
         "g1",
         "c1",
         "a2"
+      ]
+    },
+    {
+      "code": "SWXA_FCST_NO_SWX_EXP",
+      "severity": "info",
+      "message_template": "SWXA forecast NO SWX EXP \u2014 no space weather expected (F28 theme SX1)",
+      "product": "swxa",
+      "tags": [
+        "forecast",
+        "no_swx_exp",
+        "swxa",
+        "sx1",
+        "f28"
+      ]
+    },
+    {
+      "code": "SWXA_NO_FURTHER_ADVISORIES",
+      "severity": "info",
+      "message_template": "SWXA NXT ADVISORY NO FURTHER ADVISORIES \u2014 next time inapplicable (F28 theme SX1)",
+      "product": "swxa",
+      "tags": [
+        "next_advisory",
+        "swxa",
+        "sx1",
+        "f28"
+      ]
+    },
+    {
+      "code": "SWXA_RMK_NIL",
+      "severity": "info",
+      "message_template": "SWXA RMK NIL \u2014 remarks inapplicable (F28 theme SX1)",
+      "product": "swxa",
+      "tags": [
+        "remarks",
+        "nil",
+        "swxa",
+        "sx1",
+        "f28"
       ]
     },
     {

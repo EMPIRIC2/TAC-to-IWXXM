@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry  
-> **Generated**: 2026-07-30 via `make catalog-regen`  
+> **Generated**: 2026-08-02 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -37,7 +37,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `INVALID_WEATHER` | `error` | {product} invalid present weather token {token!r} — A3-2 #8 | — | weather, metar, speci, r3 |
 | `INVALID_WIND` | `error` | {product} invalid wind token {token!r} — research R8 | — | wind, metar, speci, r8 |
 | `MISSING_CCCC` | `error` | {product} missing ICAO location (CCCC) | — | station, metar, speci, taf |
-| `MISSING_DTG` | `error` | {product} missing DTG: template field | — | dtg, vaa, tca |
+| `MISSING_DTG` | `error` | {product} missing DTG: template field | — | dtg, vaa, tca, swxa |
 | `MISSING_FIR_OR_CTA` | `error` | SIGMET/AIRMET missing FIR/CTA/UIR airspace identity — research G2 / F24 A1 | sigmet | fir, cta, sigmet, airmet, g2, a1 |
 | `MISSING_ISSUE_TIME` | `error` | TAF missing issue time ddhhmmZ — A5-1 #3 | taf | time, taf |
 | `MISSING_MAX_WIND` | `error` | TCA missing MAX WIND: template field — A2-2 | tca | max_wind, tca |
@@ -46,6 +46,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_PRODUCT_KEYWORD` | `error` | {product} TAC must contain one of {keywords} | — | parse_gate, header |
 | `MISSING_QNH` | `error` | {product} missing QNH/altimeter (Qnnnn/Annnn) — A3-2 #11 | — | pressure, metar, speci |
 | `MISSING_SEQUENCE` | `error` | SIGMET/AIRMET missing sequence number — research G2 / F24 A1 | sigmet | sequence, sigmet, airmet, g2, a1 |
+| `MISSING_SWXC` | `error` | SWXA missing SWXC: template field — F28 theme SX1 / A2-3 | swxa | swxc, swxa, sx1, f28 |
 | `MISSING_TC` | `error` | TCA missing TC: template field — F27 theme T1 / A2-2 | tca | tropical_cyclone, tca, t1, f27 |
 | `MISSING_TEMP_DEWPOINT` | `error` | {product} missing temperature/dewpoint tt/td — A3-2 #10 | — | temperature, metar, speci |
 | `MISSING_TERMINATOR` | `info` | Reports in bulletins end with '=' — add it before publishing | — | terminator, metar, speci, taf |
@@ -76,6 +77,9 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `SIGMET_SEQUENCE` | `info` | SIGMET sequence number present — research G2 | sigmet | sequence, sigmet, g2 |
 | `SINGLE_ALTITUDE` | `info` | SIGMET single altitude (same lower/upper) — research G1 | sigmet | altitude, sigmet, g1 |
 | `STNR_MOVEMENT` | `info` | SIGMET/AIRMET STNR stationary movement — research G1 / C1 / F24 A2 | sigmet | stnr, movement, sigmet, airmet, g1, c1, a2 |
+| `SWXA_FCST_NO_SWX_EXP` | `info` | SWXA forecast NO SWX EXP — no space weather expected (F28 theme SX1) | swxa | forecast, no_swx_exp, swxa, sx1, f28 |
+| `SWXA_NO_FURTHER_ADVISORIES` | `info` | SWXA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F28 theme SX1) | swxa | next_advisory, swxa, sx1, f28 |
+| `SWXA_RMK_NIL` | `info` | SWXA RMK NIL — remarks inapplicable (F28 theme SX1) | swxa | remarks, nil, swxa, sx1, f28 |
 | `TCA_CB_NIL` | `info` | TCA CB NIL — CB missing (F27 theme T1) | tca | cb, nil, tca, t1, f27 |
 | `TCA_CYCLONE_UNNAMED` | `info` | TCA TC UNNAMED — exceptional name allowed (F27 theme T1) | tca | tropical_cyclone, unnamed, tca, t1, f27 |
 | `TCA_NO_MSG_EXP` | `info` | TCA NXT MSG NO MSG EXP — next time inapplicable (F27 theme T1) | tca | next_advisory, tca, t1, f27 |

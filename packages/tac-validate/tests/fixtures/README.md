@@ -1,6 +1,6 @@
 # tac-validate fixture pack (F12 / F15 / TC-F12-001 / TC-F15-003)
 
-Synthetic **negative** TAC and thin **accept** copies for the seven F6 products.
+Synthetic **negative** TAC and thin **accept** copies for F6 products plus F28 SWXA.
 S015 / EV-011 deepens **METAR** and **SPECI** under the F15 issue registry.
 
 ## Provenance

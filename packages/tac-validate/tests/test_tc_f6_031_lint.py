@@ -13,7 +13,7 @@ import pytest
 
 PACKAGE_SRC = Path(__file__).resolve().parents[1] / "src" / "tac_validate"
 
-PRODUCTS = ("AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA")
+PRODUCTS = ("AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA")
 
 
 def test_lint_exports_public_entrypoints() -> None:
@@ -92,7 +92,7 @@ def test_lint_unknown_product_fails() -> None:
 
 @pytest.mark.parametrize("product", PRODUCTS)
 def test_lint_accepts_all_seven_products(product: str) -> None:
-    """Rule-pack skeleton must accept each F6 product id (ADR-015)."""
+    """Rule-pack skeleton must accept each product id (F6 + F28 SWXA)."""
     from tac_validate import lint
 
     # Empty input fails parse gate for every product — proves product dispatch exists
