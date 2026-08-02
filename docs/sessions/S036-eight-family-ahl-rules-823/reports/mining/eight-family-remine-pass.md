@@ -193,12 +193,13 @@ Expanded matrix (shapes × families, catalog tiers, AHL `T1T2` gaps):
 
 ---
 
-## E. Promote queue (T0.4)
+## E. Promote queue → **T0.4 complete**
 
-1. COVERAGE_MATRIX — add **S036/EV-029** section; mark TC SIGMET / SWXA / AHL gaps; amend SIGMET row (#738 no longer OOS for this cycle).  
-2. Canonicals — AHL T1T2 + BBB prefix + filename pattern (cite live AHL page).  
-3. RULE_SOURCE_URLS — AHL page v1.0.1 row if missing/stale.  
-4. Child issues — residual cells after promote (S02.M3); keep #823 open.
+1. ~~COVERAGE_MATRIX~~ — §Eight-family AHL / rules S036/EV-029; TC/SWXA/AHL gaps; SIGMET #738 in-cycle.  
+2. ~~Canonicals~~ — `IWXXM_CONVERSION` §AHL / bulletin canonical (EV-029); SWXA root row; TAC_VALIDATION examples.  
+3. ~~RULE_SOURCE_URLS~~ — AHL page v1.0.1 re-confirmed 2026-08-01.  
+4. ~~Child-issue residuals~~ — tracked under #823 / #738 / #820 / #740 (S02.M3); keep #823 open.  
+5. FIXTURE_GAPS — EV-029 stem/shape notes (no invent TAC).
 
 ## F. HARD blockers for Phase B? (E29-T8)
 
@@ -217,6 +218,6 @@ Expanded matrix (shapes × families, catalog tiers, AHL `T1T2` gaps):
 | Task | Deliverable |
 |------|-------------|
 | **T0.3** | ~~Example inventory~~ → [`example-inventory.md`](./example-inventory.md) |
-| **T0.4** | Promote §E into `docs/domain/` |
+| **T0.4** | ~~Promote §E~~ → `docs/domain/` + FIXTURE_GAPS |
 | **T0.5** | AHL design note (tac2iwxxm API surface) |
 | **T0.6** | M0 exit checklist |

@@ -293,14 +293,16 @@ Use WMO official examples as golden TAC for gates — not proprietary corpora:
 | METAR | `metar-A3-1.tac`, NIL collect, `metar-translation-failed` |
 | SPECI | `speci-A3-2.tac` |
 | TAF | `taf-A5-1.tac`, cancel `taf-A5-2.tac` |
-| SIGMET | `sigmet-A6-1a-TS.tac`, CNL, TC, VA |
+| SIGMET | `sigmet-A6-1a-TS.tac`, CNL, TC (`sigmet-A6-2-TC`), VA |
 | AIRMET | `airmet-A6-1a-TS.tac` |
 | VAA | `va-advisory-A7-2.tac` |
 | TCA | `tc-advisory-A2-2.tac` |
+| SWXA | `spacewx-A7-3/4/5.tac` (+ translation-failed) — **F28 / EV-029 M11** |
 
-AHL data type designators (TAC vs IWXXM):  
+AHL data type designators (TAC vs IWXXM) — page **v1.0.1** (2025-08-11):  
 https://community.wmo.int/en/activity-areas/wis/iwxxm/ahl-icao-data  
-(**301 →** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs — live 200 as of 2026-07-14)
+(**301 →** https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs — live 200 as of 2026-07-14; **re-confirmed 2026-08-01**).  
+Canonical `T1T2` / BBB / filename: [IWXXM_CONVERSION.md §AHL / bulletin](IWXXM_CONVERSION.md#ahl--bulletin-canonical-ev-029).
 
 Additional (informative) pairs: https://github.com/wmo-im/iwxxm-translation — Amd79-80-2023 trees cover **METAR / TAF / VAA / TCA** only (no SIGMET/AIRMET dirs). Prefer official `iwxxm` examples for F6 gates. Local Tier A mine: [mining/wmo-im-tier-a-mining-notes.md](mining/wmo-im-tier-a-mining-notes.md).
 

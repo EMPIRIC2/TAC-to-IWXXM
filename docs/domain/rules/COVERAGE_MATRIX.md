@@ -58,12 +58,13 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **METAR** | ✅ Annex 3 (paywall; [dig](../mining/icao-annex-3-mining-notes.md) Table A3-2, CAVOK, AUTO/missing) + codes.wmo.int weather/nils; FMH-1 for US | ✅ TAC-to-XML-Guidance + FM 205 + examples | ✅ schemas.wmo.int/2025-2 + SCH | **S015/EV-011 (#732)**: F15 registry + **R1–R8 themes closed** (lint/fixtures/goldens/adjacency) — [research catalog](../../sessions/S015-metar-lint-quality/reports/metar-research-catalog.md) · [ISSUE_CATALOG](./ISSUE_CATALOG.md) · [context](../../context/metar-lint-quality.md) |
 | **SPECI** | ✅ same as METAR (+ App 3 §2.3.2 shall / §2.3.3 Rec thresholds) | ✅ same package `metarSpeci.xsd` | ✅ same | **F15** R1–R8 + adjacency closed; **F20 / #734** S1–S3 themes closed (lint deepen + misclass guards + annex3/`iwxxm_us` goldens) — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) · S020/EV-015 |
 | **TAF** | ✅ Annex 3 App 5 (§1.3 change/PROB; Table A5-2) / Doc 8896 (paywall); vocab via 49-2 / 306 | ✅ Guidance + examples (CNL/NIL/AMD) | ✅ `taf.xsd` + SCH | **F20 / #735** T1–T4 themes closed (lint + annex3 goldens; residual convert deepen filed below) — [research catalog](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md) · S020/EV-015 |
-| **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) public TAC guide | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members); EUR Doc 014 AHL `WS`/`WV`/`WC`→`LS`/`LV`/`LY` | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **F23 / #733+#739** S025/EV-019 — **G1–G3 / V1–V3 / C1 closed or deferred** (lint + convert + annex3 goldens; residuals below); TC SIGMET #738 OOS |
+| **SIGMET** | ✅ Annex 3 Ch.7 + App 6 phenomena/validity (paywall); SigWxPhenomena registry; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) public TAC guide | ✅ Guidance + examples + FM 205 (+ METCE for TC/VA members); EUR Doc 014 AHL `WS`/`WV`/`WC`→`LS`/`LV`/`LY` | ✅ `sigmet.xsd` + SCH (+ METCE 1.2) | **F23 / #733+#739** S025/EV-019 — **G1–G3 / V1–V3 / C1 closed or deferred**; **TC SIGMET #738** absorbed **S036/EV-029 M7** (no longer cycle-OOS) |
 | **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ✅ Guidance + examples + FM 205; EUR Doc 014 AHL `WA`→`LW` | ✅ `airmet.xsd` + SCH | **F24 / #731** S026/EV-020 — WMO `airmet-A6-1a-TS` default golden + registry (in progress) |
-| **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | **F26 / #736** S027/EV-021 — **V1–V3/C1 closed** (T2.3–T2.4); inventory [wmo-vaa-tca-examples-inventory.md](../../sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md) |
-| **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | **F27 / #737** S027/EV-021 — T1–T3/C1 (in progress); same inventory |
+| **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | **F26 / #736** S027/EV-021 — **V1–V3/C1 closed** (T2.3–T2.4); **#820/#823 B4** deepen **S036/EV-029 M9** |
+| **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | **F27 / #737** S027/EV-021 — T1–T3/C1 closed prior; **#820/#823 B4** deepen **S036/EV-029 M10** |
+| **SWXA** | ✅ Annex 3 App 2 Table **A2-3** (cite); SpaceWx registry TBD F28 | ✅ Guidance + `spacewx-A7-3/4/5` (+ alt); AHL `FN`→`LN` | ✅ `spaceWeatherAdvisory.xsd` + SCH | **F28 Planned — S036/EV-029 M11** · #740 · #823 |
 | **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO base + iwxxm-us 3.0 | GIFTs stripped REMARKS |
-| **Bulletin / AHL** | ✅ WMO AHL page | ✅ AHL T1T2 TAC↔IWXXM + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | Outside GIFTs; WIS2 path ≠ COLLECT (one resource/notification — [Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
+| **Bulletin / AHL** | ✅ WMO AHL page **v1.0.1** (fetched 2026-08-01) | ✅ AHL T1T2 TAC↔IWXXM + BBB prefixes + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | Engine still METAR/SPECI-only (`bulletin.py`) — generalize **S036/EV-029 M1**; WIS2 ≠ COLLECT ([Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
 
 ---
 
@@ -107,14 +108,15 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | TAF | FC/FT → LC/LT | `iwxxm:TAF` | `taf-A5-1`, cancel `taf-A5-2` |
 | SIGMET | WS → LS | `iwxxm:SIGMET` | `sigmet-A6-1a-TS`, CNL `…-1b-CNL` |
 | SIGMET TC | WC → LY | `iwxxm:TropicalCycloneSIGMET` | `sigmet-A6-2-TC` |
-| SIGMET VA | WV → LV | `iwxxm:VolcanicAshSIGMET` | `sigmet-VA-EGGX` · `sigmet-multi-location-VA` (UI **wmoReference**; convert soft) |
+| SIGMET VA | WV → LV | `iwxxm:VolcanicAshSIGMET` | `sigmet-VA-EGGX` (**wmoReference**) · `sigmet-multi-location-VA` (**wmoPass**) |
 | AIRMET | WA → LW | `iwxxm:AIRMET` | `airmet-A6-1a-TS` |
-| VAA | FV → LU | `iwxxm:VolcanicAshAdvisory` | `va-advisory-A7-2` |
+| VAA | FV → LU | `iwxxm:VolcanicAshAdvisory` | `va-advisory-A7-2` (vendor AHL `FVFE01`) |
 | TCA | FK → LK | `iwxxm:TropicalCycloneAdvisory` | `tc-advisory-A2-2` |
+| SWXA | FN → LN | `iwxxm:SpaceWeatherAdvisory` | `spacewx-A7-3/4/5` (+ `_alternate`) — menu unlock **M11** |
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
 
-**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). Roadmap stems (SWX/VONA/WAFS/QVACI) and TC SIGMET `#738` stay out of happy-path menu (S02.M2).
+**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA / QVACI / WAFS / SIGWX** stay OOS. **TC SIGMET `#738`** and **SWXA `#740`** are **in-cycle** for S036/EV-029 (M7 / M11) — keep deferred from happy-path menu until those milestones green. Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
 
 ---
 
@@ -311,9 +313,9 @@ Discovery-first cycle: mine → promote durable rows → wire sample menu / vali
 | US METAR/SPECI.pdf + modelling + VLab URL rows | [RULE_SOURCE_URLS §5](./RULE_SOURCE_URLS.md) · [PDF dig](../mining/iwxxm-us-metar-speci-pdf-mining-notes.md) | ✅ M3 |
 | `wmoReference` catalog tier + VA EGGX / multi-location menu | ADR-032 amend · `examplesCatalog.ts` · FIXTURE_GAPS | ✅ M5 |
 | In-scope stems on validate CI (XML well-formed/XSD/GML) | `test_wmo_canonical_examples` + loader inventory (M6) | ✅ / wire |
-| Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — menu stays **reference** | ⚠ → #809 |
-| TC SIGMET A6-2 menu / encode bar | Existing #738 | ⚠ deferred |
-| SWX / VONA / WAFS / QVACI sample menu | Existing #740 / #741 + S02.M2 | ❌ roadmap |
+| Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — **closed**; catalog **wmoPass** (S033/EV-026) | ✅ |
+| TC SIGMET A6-2 menu / encode bar | [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) → **S036/EV-029 M7** | ⚠ in-cycle |
+| SWXA sample menu / encode bar | [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) → **S036/EV-029 M11** (F28); VONA/WAFS/QVACI remain OOS | ⚠ in-cycle / ❌ OOS |
 | US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | #810/#811/#812 ✅ encode (S032 T1–T3) |
 | Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → #809 + #800 survivors | ⚠ → children |
 
@@ -336,3 +338,66 @@ Full type×TAC×encode×validate table lives in the [PDF dig](../mining/iwxxm-us
 | Codelist hrefs (NWS) | ✅ S032/M4.5 (AO + statistical) | ⚠ | ✅ TC-EV025-004 | Prefer codes.nws.noaa.gov |
 
 Do **not** mix US examples into the WMO sample menu (UJ-039 / E24-C).
+
+---
+
+## Eight-family AHL / rules — S036 / EV-029 (#823)
+
+Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) · cycle **EV-029** · session
+[S036](../../sessions/S036-eight-family-ahl-rules-823/) · theme map
+[eight-family-theme-map.md](../../sessions/S036-eight-family-ahl-rules-823/reports/eight-family-theme-map.md) ·
+re-mine [eight-family-remine-pass.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/eight-family-remine-pass.md) ·
+shapes [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+
+**AHL page pin:** community AHLs for aviation data over ICAO AFS **v1.0.1** (2025-08-11),
+fetched **2026-08-01** — see [RULE_SOURCE_URLS §IWXXM AHL](./RULE_SOURCE_URLS.md) and
+[IWXXM_CONVERSION §AHL / bulletin](../IWXXM_CONVERSION.md#ahl--bulletin-canonical-ev-029).
+
+### Family × role (Phase A statuses)
+
+Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this section)
+
+| Family | Lint | Convert | IWXXM-validate | Bulletin AHL | Milestone |
+|--------|------|---------|----------------|--------------|-----------|
+| AHL/COM | gap | gap | N/A | gap (METAR/SPECI only today) | **M1** |
+| METAR | ok/deepen | ok/deepen | ok | covered (package) | **M2** |
+| SPECI | ok/deepen | ok/deepen | ok | gap | **M3** |
+| TAF | ok/deepen | ok/deepen | ok | partial (NIL-collect) | **M4** |
+| SIGMET gen | ok/deepen | ok/deepen | ok | partial (quarantine) | **M5** |
+| VA SIGMET | ok/deepen | ok/deepen | ok | gap | **M6** |
+| TC SIGMET | gap | gap | gap | gap | **M7** (#738) |
+| AIRMET | ok/deepen | ok/deepen | ok | gap | **M8** |
+| VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9** (#820) |
+| TCA | ok/deepen | ok/deepen | ok | gap | **M10** (#820) |
+| SWXA | gap | gap | gap | gap | **M11** (F28 / #740) |
+
+### Report-state × AHL (COM / #823 B3)
+
+| Cue | IWXXM / product path | Note |
+|-----|----------------------|------|
+| no BBB / `RRx` | `reportStatus` NORMAL (subsequent) | Prefix family `RR` + x=A…X |
+| `AAx` | AMENDMENT | Not bare token `A` |
+| `CCx` | CORRECTION | Not bare token `C` |
+| Y/Z BBB | Special purposes (AHL page) | Document + fixture if needed |
+| Product CNL / NIL | **Not** reportStatus | Per-family CNL/NIL paths (TC-EV029-006) |
+
+### Shape coverage (TC-EV029-002) — summary
+
+Standalone peers exist for all eight families (+ SWXA vendor). **Multi-report** and
+non-METAR **AHL** are mostly `gap` → M1 + per-family packs (detail in example inventory).
+OOS: VONA · QVACI · WAFS · SIGWX.
+
+### Child-issue residuals (S02.M3) — keep #823 open
+
+Do **not** silently blank matrix cells. Open or link children when a cell stays `defer`
+after its milestone; until then track under #823:
+
+| Residual | Track | Target Ms |
+|----------|-------|-----------|
+| Shared AHL/`T1T2`/BBB/filename API | #823 B1–B3 | M1 (+ T0.5 design note) |
+| TC SIGMET quality bar | #738 | M7 |
+| VAA/TCA multi-report / encode residuals | #820 | M9 / M10 |
+| SWXA F28 product path | #740 | M11 |
+| Non-METAR AHL + multi-report fixtures | #823 (+ FIXTURE_GAPS stem rows) | M1–M11 |
+| Second WMO peers (METAR/SPECI/AIRMET/VAA/TCA) | FIXTURE_GAPS (pin has one) | document-only |
+| AIRMET CNL peer absent from pin | FIXTURE_GAPS | document-only |

@@ -7,7 +7,7 @@ Promote durable findings into `docs/domain/` (canonicals + `rules/`) in **T0.4**
 |------|------|
 | [eight-family-remine-pass.md](./eight-family-remine-pass.md) | **T0.2** — full eight-family re-mine pass |
 | [example-inventory.md](./example-inventory.md) | **T0.3** — TAC shapes × families + IWXXM peers |
-| *(T0.5)* AHL design note | tac2iwxxm surface for dissemination |
+| *(T0.5)* AHL design note | tac2iwxxm surface for dissemination (next) |
 
 **Prior art (do not discard):** `docs/domain/mining/*` · theme map
 `../eight-family-theme-map.md`.
