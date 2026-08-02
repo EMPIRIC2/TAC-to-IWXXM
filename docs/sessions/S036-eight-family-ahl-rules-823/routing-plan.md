@@ -16,13 +16,13 @@
 | 04-tech-plan | yes | delta | **completed** | Plan approved (`D-S036-04-plan`); Gate B |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | **in_progress** | M1 @ T1.1 (M0 complete; exit PASS) |
-| 08-verify-build | yes | delta | pending | — |
-| 09-qa | yes | delta | pending | Standard preset |
-| 10-e2e | yes | smoke | pending | Convert/lint/validate + catalog fixtures |
-| 11-verify-impl | yes | delta | pending | Per–acceptance-criterion for each Fn |
-| 12-verify-deploy | yes | delta | pending | Config/env if AHL surface ships |
-| 13-deploy-smoke | yes | full | pending | When behavior ships to prod |
+| 07-build | yes | full | **in_progress** | M12 @ T12.6 pending (45→46/48; tip docs commit) |
+| 08-verify-build | yes | delta | **completed** | T12.3 |
+| 09-qa | yes | delta | **completed** | T12.4 |
+| 10-e2e | yes | smoke | **completed** | T12.4 UJ-043 |
+| 11-verify-impl | yes | delta | **completed** | T12.5 `D-S036-11` = 2,1,1,1 |
+| 12-verify-deploy | yes | delta | **completed** | T12.5 `D-S036-12` = 1,1,1 READY |
+| 13-deploy-smoke | yes | full | pending | T12.6 — API+FE; H1–H5 (Examples unlocked) |
 
 ## Skip rationale
 
