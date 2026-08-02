@@ -1,7 +1,7 @@
 [project]
 name = "dissemination"
 version = "0.1.0"
-description = "Dissemination sinks, writer-contract DDL, and SSRF/allowlist helpers (F16–F19)"
+description = "IWXXM dissemination sinks, writer-contract DDL, and egress allowlist helpers"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"

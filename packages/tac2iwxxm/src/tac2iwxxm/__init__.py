@@ -8,7 +8,7 @@ from tac2iwxxm.decode import DecodeResidual, DecodeResult, DecodeSegment, decode
 from tac2iwxxm.models import BulletinMeta, BulletinSplit, ConvertIssue, ConvertResult
 from tac2iwxxm.native import rust_available, rust_module, scan_metar_tokens
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "BulletinMeta",

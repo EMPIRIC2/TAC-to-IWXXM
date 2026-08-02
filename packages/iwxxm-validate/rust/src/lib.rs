@@ -46,7 +46,7 @@ fn clear_schema_caches() {
 type XsdCacheKey = (String, Vec<String>);
 type XsdCache = Mutex<HashMap<XsdCacheKey, Result<Arc<XsdSchema>, String>>>;
 type SchCache = Mutex<HashMap<String, Result<Arc<SchematronSchema>, String>>>;
-type ResolverIndexCache = Mutex<HashMap<Vec<String>, HashMap<String, PathBuf>>>;
+type ResolverIndexCache = Mutex<HashMap<Vec<String>, HashMap<String, Vec<PathBuf>>>>;
 
 fn xsd_cache() -> &'static XsdCache {
     XSD_CACHE.get_or_init(|| Mutex::new(HashMap::new()))
@@ -64,13 +64,24 @@ static XSD_CACHE: OnceLock<XsdCache> = OnceLock::new();
 static SCH_CACHE: OnceLock<SchCache> = OnceLock::new();
 static RESOLVER_INDEX_CACHE: OnceLock<ResolverIndexCache> = OnceLock::new();
 
-/// Pre-indexed vendor-tree resolver: basename → path (+ relative joins).
+/// Pre-indexed vendor-tree resolver: basename → paths (+ relative / URL-aware joins).
+///
+/// Basename alone is ambiguous under ``externalSchema/aero/aixm`` (``5.1`` vs
+/// ``5.1.1`` share ``AIXM_Features.xsd``). Prefer URL path segments / remaps so
+/// ``http://www.aixm.aero/schema/5.1.1/...`` does not load the ``5.1`` tree.
+///
+/// xmloxide keeps the *original* ``base_uri`` for nested ``xsd:include`` (does not
+/// re-base to the imported file). Track local directories of successfully resolved
+/// schemas so relative includes like ``./AIXM_DataTypes.xsd`` stay in the same
+/// version tree as the preceding absolute import.
 struct VendorResolver {
     roots: Vec<PathBuf>,
-    /// Lowercased basename → first matching file under catalog roots.
-    by_basename: HashMap<String, PathBuf>,
+    /// Lowercased basename → all matching files under catalog roots.
+    by_basename: HashMap<String, Vec<PathBuf>>,
     /// Memoize resolve() results for this parse session.
     hit_cache: Mutex<HashMap<String, Option<String>>>,
+    /// Parent dirs of files resolved in this parse (newest last).
+    resolved_dirs: Mutex<Vec<PathBuf>>,
 }
 
 impl VendorResolver {
@@ -96,6 +107,7 @@ impl VendorResolver {
             roots: roots.into_iter().map(PathBuf::from).collect(),
             by_basename,
             hit_cache: Mutex::new(HashMap::new()),
+            resolved_dirs: Mutex::new(Vec::new()),
         }
     }
 
@@ -105,34 +117,238 @@ impl VendorResolver {
             .strip_prefix("http://")
             .or_else(|| location.strip_prefix("https://"))
             .unwrap_or(location);
+        let relative = is_relative_schema_location(location);
         let mut out: Vec<PathBuf> = Vec::new();
+
+        // Prefer dirs of schemas already resolved in this parse (fixes xmloxide
+        // base_uri not following nested includes/imports).
+        if relative {
+            if let Ok(dirs) = self.resolved_dirs.lock() {
+                for dir in dirs.iter().rev() {
+                    out.push(dir.join(location));
+                    out.push(dir.join(loc));
+                }
+            }
+        }
+
         if let Some(b) = base {
             let parent = Path::new(b).parent().unwrap_or(Path::new("."));
             out.push(parent.join(location));
             out.push(parent.join(stripped));
             out.push(parent.join(loc));
         }
+
+        // Progressive URL-path suffixes (host/…/file → …/file → file).
+        let suffix_paths = url_path_suffixes(stripped);
+        let remapped = aixm_schema_remaps(stripped);
+        let version_hint = version_hint_from_location(stripped)
+            .or_else(|| self.version_hint_from_resolved_dirs());
+
         for root in &self.roots {
             out.push(root.join(location));
             out.push(root.join(stripped));
+            for suffix in &suffix_paths {
+                out.push(root.join(suffix));
+            }
+            for remap in &remapped {
+                out.push(root.join(remap));
+            }
             out.push(root.join(loc));
         }
-        if let Some(p) = self.by_basename.get(loc) {
-            out.push(p.clone());
+
+        // Version-aware basename pick (avoid 5.1 winning over 5.1.1).
+        let hint_location = version_hint
+            .as_deref()
+            .map(|v| format!("schema/{v}/{loc}"))
+            .unwrap_or_else(|| stripped.to_string());
+        if let Some(p) = best_basename_match(&self.by_basename, loc, &hint_location) {
+            out.push(p);
         }
-        // Case-insensitive basename fallback
         let loc_lower = loc.to_ascii_lowercase();
         if loc_lower != loc {
-            if let Some(p) = self.by_basename.get(&loc_lower) {
-                out.push(p.clone());
+            if let Some(p) = best_basename_match(&self.by_basename, &loc_lower, &hint_location) {
+                out.push(p);
             }
         }
         out
     }
+
+    fn version_hint_from_resolved_dirs(&self) -> Option<String> {
+        let Ok(dirs) = self.resolved_dirs.lock() else {
+            return None;
+        };
+        for dir in dirs.iter().rev() {
+            if let Some(name) = dir.file_name().and_then(|s| s.to_str()) {
+                if name == "5.1.1" || name == "5.1" {
+                    return Some(name.to_string());
+                }
+            }
+            let s = dir.to_string_lossy();
+            if s.contains("/5.1.1/") || s.ends_with("/5.1.1") {
+                return Some("5.1.1".to_string());
+            }
+            if s.contains("/5.1/") || s.ends_with("/5.1") {
+                return Some("5.1".to_string());
+            }
+        }
+        None
+    }
+
+    fn remember_resolved_path(&self, path: &Path) {
+        if let Some(parent) = path.parent() {
+            if let Ok(mut dirs) = self.resolved_dirs.lock() {
+                let parent = parent.to_path_buf();
+                if !dirs.iter().any(|d| d == &parent) {
+                    dirs.push(parent);
+                } else {
+                    // Move to newest
+                    dirs.retain(|d| d != &parent);
+                    dirs.push(parent);
+                }
+            }
+        }
+    }
 }
 
-fn build_basename_index(roots: &[String]) -> HashMap<String, PathBuf> {
-    let mut index: HashMap<String, PathBuf> = HashMap::new();
+fn is_relative_schema_location(location: &str) -> bool {
+    if location.starts_with("http://") || location.starts_with("https://") {
+        return false;
+    }
+    location.starts_with("./")
+        || location.starts_with("../")
+        || !location.contains("://")
+            && Path::new(location)
+                .components()
+                .all(|c| matches!(c, std::path::Component::Normal(_)| std::path::Component::CurDir | std::path::Component::ParentDir))
+}
+
+fn version_hint_from_location(stripped: &str) -> Option<String> {
+    let parts: Vec<&str> = stripped.split('/').filter(|p| !p.is_empty()).collect();
+    for (i, part) in parts.iter().enumerate() {
+        if *part == "5.1.1" || *part == "5.1" {
+            // Prefer the segment immediately before the filename when present.
+            if i + 1 < parts.len() {
+                return Some((*part).to_string());
+            }
+        }
+    }
+    None
+}
+
+/// Path suffixes of a scheme-stripped URL / relative location, longest first.
+fn url_path_suffixes(stripped: &str) -> Vec<String> {
+    let parts: Vec<&str> = stripped.split('/').filter(|p| !p.is_empty()).collect();
+    if parts.is_empty() {
+        return Vec::new();
+    }
+    let mut out = Vec::with_capacity(parts.len());
+    for i in 0..parts.len() {
+        out.push(parts[i..].join("/"));
+    }
+    out
+}
+
+/// Map published AIXM schema URLs onto the vendored ``aero/aixm/{ver}/`` tree.
+fn aixm_schema_remaps(stripped: &str) -> Vec<String> {
+    // http://www.aixm.aero/schema/5.1.1/AIXM_Features.xsd
+    //   → aero/aixm/5.1.1/AIXM_Features.xsd
+    const PREFIXES: &[&str] = &[
+        "www.aixm.aero/schema/",
+        "aixm.aero/schema/",
+    ];
+    for prefix in PREFIXES {
+        if let Some(rest) = stripped.strip_prefix(prefix) {
+            return vec![format!("aero/aixm/{rest}"), rest.to_string()];
+        }
+    }
+    Vec::new()
+}
+
+/// Choose among basename collisions using URL path version segments.
+fn best_basename_match(
+    index: &HashMap<String, Vec<PathBuf>>,
+    basename: &str,
+    stripped_location: &str,
+) -> Option<PathBuf> {
+    let paths = index.get(basename)?;
+    if paths.is_empty() {
+        return None;
+    }
+    if paths.len() == 1 {
+        return Some(paths[0].clone());
+    }
+
+    let segments: Vec<&str> = stripped_location
+        .split('/')
+        .filter(|p| !p.is_empty())
+        .collect();
+    // Parent directory in the URL (e.g. ``5.1.1`` for …/5.1.1/AIXM_Features.xsd).
+    let url_parent = if segments.len() >= 2 {
+        Some(segments[segments.len() - 2])
+    } else {
+        None
+    };
+
+    let mut ranked: Vec<(i32, &PathBuf)> = paths
+        .iter()
+        .map(|p| (score_schema_candidate(p, url_parent, &segments), p))
+        .collect();
+    ranked.sort_by(|a, b| b.0.cmp(&a.0));
+    ranked.first().map(|(_, p)| (*p).clone())
+}
+
+fn score_schema_candidate(path: &Path, url_parent: Option<&str>, url_segments: &[&str]) -> i32 {
+    let path_str = path.to_string_lossy();
+    let mut score = 0i32;
+
+    if let Some(parent) = url_parent {
+        // Exact parent dir match beats prefix collisions (5.1 vs 5.1.1).
+        if path
+            .parent()
+            .and_then(|p| p.file_name())
+            .and_then(|s| s.to_str())
+            == Some(parent)
+        {
+            score += 100;
+        } else if path_str.contains(&format!("/{parent}/")) {
+            score += 40;
+        }
+
+        // Penalize sibling version trees when URL names a specific version.
+        // ``5.1`` must not win for ``5.1.1``; profiles are secondary.
+        if parent == "5.1.1" {
+            if path_str.contains("/5.1/") && !path_str.contains("/5.1.1/") {
+                score -= 80;
+            }
+            if path_str.contains("5.1_profiles") {
+                score -= 20;
+            }
+            if path_str.contains("5.1.1_profiles") {
+                score -= 10; // prefer canonical 5.1.1/ over profiles
+            }
+        } else if parent == "5.1" {
+            if path_str.contains("/5.1.1/") {
+                score -= 80;
+            }
+            if path_str.contains("5.1.1_profiles") {
+                score -= 20;
+            }
+            if path_str.contains("5.1_profiles") {
+                score -= 10;
+            }
+        }
+    }
+
+    for seg in url_segments {
+        if path_str.contains(&format!("/{seg}/")) || path_str.ends_with(&format!("/{seg}")) {
+            score += 2;
+        }
+    }
+    score
+}
+
+fn build_basename_index(roots: &[String]) -> HashMap<String, Vec<PathBuf>> {
+    let mut index: HashMap<String, Vec<PathBuf>> = HashMap::new();
     for root in roots {
         let root_path = PathBuf::from(root);
         index_walk(&root_path, &mut index, 6);
@@ -140,7 +356,7 @@ fn build_basename_index(roots: &[String]) -> HashMap<String, PathBuf> {
     index
 }
 
-fn index_walk(dir: &Path, index: &mut HashMap<String, PathBuf>, depth: usize) {
+fn index_walk(dir: &Path, index: &mut HashMap<String, Vec<PathBuf>>, depth: usize) {
     if depth == 0 || !dir.is_dir() {
         return;
     }
@@ -151,10 +367,11 @@ fn index_walk(dir: &Path, index: &mut HashMap<String, PathBuf>, depth: usize) {
         let p = ent.path();
         if p.is_file() {
             if let Some(name) = p.file_name().and_then(|s| s.to_str()) {
-                index.entry(name.to_string()).or_insert_with(|| p.clone());
-                index
-                    .entry(name.to_ascii_lowercase())
-                    .or_insert_with(|| p.clone());
+                index.entry(name.to_string()).or_default().push(p.clone());
+                let lower = name.to_ascii_lowercase();
+                if lower != name {
+                    index.entry(lower).or_default().push(p);
+                }
             }
         } else if p.is_dir() {
             index_walk(&p, index, depth - 1);
@@ -177,6 +394,7 @@ impl SchemaResolver for VendorResolver {
         for c in self.candidates(location, base) {
             if c.is_file() {
                 if let Ok(text) = std::fs::read_to_string(&c) {
+                    self.remember_resolved_path(&c);
                     found = Some(text);
                     break;
                 }

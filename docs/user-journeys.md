@@ -601,12 +601,15 @@ OpenAPI/alias schemas; H4–H5 still green after Render redeploy; **no JWT requi
 
 **Steps**:
 
-1. Tag `tac-validate-v0.1.0` (or `iwxxm-validate-v*` / `tac2iwxxm-v*`).
-2. GitHub Actions OIDC trusted-publishing workflow builds sdist+wheel and publishes to PyPI.
-3. CI (or follow-up job) `pip install <pkg>==0.1.0` in a clean venv and runs a one-liner smoke
+1. Tag `{package}-v{version}` matching `pyproject.toml` (e.g. `tac-validate-v0.1.1`,
+   `iwxxm-validate-v0.1.1`, `tac2iwxxm-v0.1.1`). First public release was `0.1.0`.
+2. GitHub Actions OIDC trusted-publishing workflow (`.github/workflows/pypi-publish.yml` on
+   `EMPIRIC2/TAC-to-IWXXM`, Environment `pypi`) builds sdist+wheel and publishes to PyPI.
+3. CI (or follow-up) `pip install <pkg>=={version}` in a clean venv and runs a one-liner smoke
    (lint / validate_iwxxm / convert).
 
 **Acceptance**: Tag → publish → install smoke green for all three packages. **Tier: CI**.
+   EV-028 / #781 proves the path with `0.1.1` under EMPIRIC2 Trusted Publishers.
 
 ---
 

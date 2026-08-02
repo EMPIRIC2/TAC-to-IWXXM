@@ -3,6 +3,81 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-028 — #781 EMPIRIC2 Codecov purge + PyPI Trusted Publisher + landing pages (S035)
+
+**Session**: S035-empiric2-ops-leftovers-781  
+**Features**: none (general ops cycle; deepens F12–F14 publish path only)  
+**Issues**: [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781)  
+**Started**: 2026-08-01  
+**Branch**: `evolve/EV-028-empiric2-ops-leftovers-781`  
+**Status**: **in_progress**
+
+### Scope (Phase 0 — locked 2026-08-01)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E28-1 | decision | Session type? | **1b** — feature + 16-evolve / EV-028 (`D-S035-open`) |
+| E28-2 | decision | Scope? | **2a** — Codecov purge + Trusted Publisher + landing READMEs; out e2e/load secrets, Render rename, Supabase Site URL, #777 publish |
+| E28-3 | decision | Landing packages? | **3b** — three public + `packages/dissemination/README.md` polish |
+| E28-4 | decision | OIDC proof? | **4b** — configure + tag publish |
+| E28-5 | decision | Routing? | **5a** — Lean+build (`D-S035-routing`) |
+| E28-6 | decision | Which packages to bump? | **6b** — all three → `0.1.1` |
+| E28-M | decision | Document Manifest? | **7a** — lean set (`D-S035-E28-M`) |
+| E28-E1 | decision | Close 01 → 02? | **8a** — mark 01 completed; start **02-verify-plan** (`D-S035-E28-E1`) |
+| E28-S2.1 | decision | UJ-023 vs 0.1.1? | **9a** — minimal UJ-023 amend |
+| E28-02 | decision | Gate A? | **10a** — PASS → **04-tech-plan** |
+| E28-T2 | decision | Tag timing? | **11b** — tag from evolve branch before merge |
+| E28-04 | decision | Gate B? | **12a** — approve plan → **07-build** @ T0.1 |
+| E28-14d | decision | Cosmetic `0.1.3` vs T3.4? | **1** — skip `0.1.3`; T3.4 smoke @ `iwxxm-validate==0.1.2`; defer `__version__` string (`D-S035-14d`) |
+
+**Scope (verbatim)**: Finish #781 leftovers — remove Codecov from product CI/docs/secrets;
+point PyPI Trusted Publishers at `EMPIRIC2/TAC-to-IWXXM` + `pypi-publish.yml`; prove OIDC by
+publishing `tac-validate`, `iwxxm-validate`, and `tac2iwxxm` `0.1.1`; rewrite public package
+landing READMEs (and dissemination README) so PyPI/library consumers do not need internal
+ADR / Feature / E10 identifiers.
+
+**In:** Codecov purge; Trusted Publisher cutover; `0.1.1` tag publishes ×3; consumer-facing
+README + `pyproject.toml` `description` cleanup for the three published packages + dissemination
+README polish (not published this cycle).
+
+**Out:** optional e2e/load Actions secrets; Render hostname rename; Supabase Site URL; publishing
+`iwxxm-dissemination` (#777).
+
+**Unblocks:** #777 packaging work (Trusted Publisher path proven under EMPIRIC2).
+
+### Acceptance (cycle)
+
+1. CI on branch/`main` green without Codecov steps; repo secret `CODECOV_TOKEN` deleted; `.codecov.yml` removed.
+2. PyPI Trusted Publisher for each of `tac-validate`, `iwxxm-validate`, `tac2iwxxm` uses Owner `EMPIRIC2`, Repository `TAC-to-IWXXM`, Workflow `pypi-publish.yml`, Environment `pypi`.
+3. Tags `tac-validate-v0.1.1`, `iwxxm-validate-v0.1.1`, `tac2iwxxm-v0.1.1` → `pypi-publish.yml` green; versions visible on PyPI.
+4. Public READMEs (three packages + dissemination) and published `description` fields have no required ADR / Fn / E10 references for a library consumer.
+5. #781 closable for Codecov + PyPI leftovers.
+
+### Document Manifest (approved — E28-M / 7a)
+
+| Document | Delta |
+|----------|--------|
+| `docs/decisions/evolve-decisions.md` | This cycle section |
+| `docs/deploy.md` | Trusted Publisher owner/repo; note `0.1.1` proof |
+| `docs/config-spec.md` | Tag pattern beyond first `0.1.0`; EMPIRIC2 publisher |
+| `docs/test-plan.md` | TC-EV028-001..003 (Codecov absent; Trusted Publisher; `0.1.1` publish) |
+| `docs/feature-list.md` | F12–F14 note: subsequent tags via EMPIRIC2 OIDC; landing pages consumer-facing |
+| Package READMEs + `description` | Build stage (07) |
+
+Skip this cycle: Spec architecture rewrite, API contract, user-journeys (UJ-023 reused), new ADR (deploy/config delta only).
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-01 | S035 open |
+| 01-requirements | 2026-08-01 | E28-M / E28-E1 |
+| 02-verify-plan | 2026-08-01 | Gate A PASS; UJ-023 amend |
+| 04-tech-plan | 2026-08-01 | Gate B PASS; E28-T2=11b |
+| 07-build | | M0–M3 tasks T0–T3.4 done (T3.1/T3.2 catch-up PASS); T3.5 PR closeout pending |
+
+---
+
 ## Cycle EV-027 — Official WMO decode residual matrix (#815) (S034)
 
 **Session**: S034-wmo-decode-residual-matrix  

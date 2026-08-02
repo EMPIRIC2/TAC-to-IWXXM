@@ -937,7 +937,7 @@ wheels = [
 
 [[package]]
 name = "iwxxm-validate"
-version = "0.1.0"
+version = "0.1.2"
 source = { editable = "packages/iwxxm-validate" }
 dependencies = [
     { name = "lxml" },
@@ -2320,7 +2320,7 @@ wheels = [
 
 [[package]]
 name = "tac-validate"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "packages/tac-validate" }
 dependencies = [
     { name = "msgspec" },
@@ -2331,7 +2331,7 @@ requires-dist = [{ name = "msgspec", specifier = ">=0.19" }]
 
 [[package]]
 name = "tac2iwxxm"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "packages/tac2iwxxm" }
 dependencies = [
     { name = "msgspec" },

@@ -174,8 +174,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 1
     mb = summary["total_bytes"] / (1024 * 1024)
+    # ASCII arrow: Windows cp1252 consoles cannot encode U+2192 (→).
     print(
-        f"synced {summary['total_files']} files ({mb:.1f} MiB) → {summary['destination']} "
+        f"synced {summary['total_files']} files ({mb:.1f} MiB) -> {summary['destination']} "
         f"(versions={','.join(summary['iwxxm_versions'])})"
     )
     for key, count in summary["file_counts"].items():

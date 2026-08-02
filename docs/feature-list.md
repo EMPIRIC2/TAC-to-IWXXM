@@ -376,49 +376,56 @@
 
 ### F12: Publishable TAC Product Validation (`tac-validate`)
 
-- **Status**: **Implemented** — S014 / EV-010 (#698); deepen METAR/SPECI via F15 / EV-011.
-- **What it does**: Design + publish **`tac-validate`** `0.1.0` to PyPI — standalone TAC
+- **Status**: **Implemented** — S014 / EV-010 (#698); deepen METAR/SPECI via F15 / EV-011;
+  EMPIRIC2 OIDC + consumer landing pages EV-028 / #781 (`0.1.1`).
+- **What it does**: Design + publish **`tac-validate`** to PyPI — standalone TAC
   product validation for all seven F6 products with structured issues (code, severity, span).
   Aggressively encode mined rules from `docs/domain/` (cite-only for paywalled Annex text):
   **full depth** METAR/SPECI/TAF; SIGMET/AIRMET/VAA/TCA structured templates + coverage-matrix
   gates. CLI `tac-validate` for CI. No IWXXM/XSD in this package.
 - **Acceptance**:
-  1. `pip install tac-validate==0.1.0` in clean venv; library + CLI smoke
+  1. `pip install tac-validate==<version>` in clean venv; library + CLI smoke (`0.1.0` first;
+     `0.1.1`+ via EMPIRIC2 Trusted Publisher)
   2. METAR/SPECI/TAF full checklist rules; other products template+gate coverage documented
   3. Negative fixtures with useful diagnostics; CI wheel + fixture suite
-  4. Tag `tac-validate-v0.1.0` → trusted-publishing workflow
-- **Source**: #698; E10-4/9/19/21; docs/domain/rules/COVERAGE_MATRIX.md
+  4. Tag `tac-validate-v*` → trusted-publishing workflow (`pypi-publish.yml` on
+     `EMPIRIC2/TAC-to-IWXXM`)
+  5. PyPI landing (`README.md` / `description`) usable without internal ADR/Feature IDs
+- **Source**: #698; E10-4/9/19/21; docs/domain/rules/COVERAGE_MATRIX.md; #781
 
 ### F13: Fast IWXXM Validate (Rust Core + Schematron + PyPI)
 
-- **Status**: **Implemented** — S014 / EV-010 (#699).
-- **What it does**: Publish **`iwxxm-validate`** `0.1.0` with Rust core (PyO3/maturin):
+- **Status**: **Implemented** — S014 / EV-010 (#699); EMPIRIC2 OIDC + consumer landing
+  pages EV-028 / #781 (`0.1.1`).
+- **What it does**: Publish **`iwxxm-validate`** with Rust core (PyO3/maturin):
   well-formed + XSD + **native Rust Schematron/SVRL**; Python SDK
   `validate_iwxxm(...)`; pinned `vendor/schemas/*` **bundled** in the wheel; version/profile
   selection aligned with manifest pins. Parity suite vs current lxml isoschematron.
   Backend F2 wrapper calls the SDK.
 - **Acceptance**:
-  1. `pip install iwxxm-validate==0.1.0`; `validate_iwxxm` returns structured issues for
+  1. `pip install iwxxm-validate==<version>`; `validate_iwxxm` returns structured issues for
      well-formed + XSD + Schematron
   2. Benchmarks show meaningful speedup vs current Python path; hard gate at publish
   3. Parity tests vs golden IWXXM corpus; IWXXM-US profile supported when pin present
-  4. Tag `iwxxm-validate-v0.1.0` → trusted publishing; no TAC parsing in package
-- **Source**: #699; E10-6/7/19/22; ADR-017
+  4. Tag `iwxxm-validate-v*` → trusted publishing; no TAC parsing in package
+  5. PyPI landing usable without internal ADR/Feature IDs
+- **Source**: #699; E10-6/7/19/22; ADR-017; #781
 
 ### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI
 
-- **Status**: **Implemented** — S014 / EV-010 (#693).
-- **What it does**: Publish **`tac2iwxxm`** `0.1.0` to PyPI (conversion library + optional
+- **Status**: **Implemented** — S014 / EV-010 (#693); EMPIRIC2 OIDC + consumer landing
+  pages EV-028 / #781 (`0.1.1`).
+- **What it does**: Publish **`tac2iwxxm`** to PyPI (conversion library + optional
   PyO3). Extra **`tac2iwxxm[validate]`** depends on `tac-validate` + `iwxxm-validate`.
-  Shared GitHub Actions **OIDC trusted publishing** — one workflow per package on version
-  tags (`tac2iwxxm-v*`, `tac-validate-v*`, `iwxxm-validate-v*`). Documented public API +
-  wheel smoke tests.
+  Shared GitHub Actions **OIDC trusted publishing** — one workflow matrix on version
+  tags (`tac2iwxxm-v*`, `tac-validate-v*`, `iwxxm-validate-v*`) against
+  `EMPIRIC2/TAC-to-IWXXM`. Documented public API + wheel smoke tests.
 - **Acceptance**:
-  1. `pip install tac2iwxxm==0.1.0` converts sample METAR → IWXXM
+  1. `pip install tac2iwxxm==<version>` converts sample METAR → IWXXM
   2. `pip install tac2iwxxm[validate]` pulls both validators
-  3. Tag-driven publish CI green; README install/usage
+  3. Tag-driven publish CI green; README install/usage (consumer-facing, no ADR/Fn required)
   4. UJ-DEV-005 / UJ-023 smokes pass
-- **Source**: #693; E10-5/19/20/25
+- **Source**: #693; E10-5/19/20/25; #781
 
 ### F15: Maintainable TAC Lint Issue Registry + METAR/SPECI Quality Bar
 

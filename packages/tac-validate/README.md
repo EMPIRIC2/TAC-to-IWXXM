@@ -1,21 +1,27 @@
 # tac-validate
 
-TAC parse gate and shared business-rule pack for F6 products. MIT licensed.
+Lint Traditional Alphanumeric Code (TAC) aviation weather products before conversion.
+Returns structured issues (code, severity, span) and optional fixes. MIT licensed.
+
+Supported products: METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA.
+
+This package does **not** parse or validate IWXXM XML. It has no FastAPI or database
+dependencies.
 
 ## Install
 
 ```bash
-pip install tac-validate==0.1.0
-# or from the monorepo workspace:
-uv sync --package tac-validate
+pip install tac-validate
 ```
+
+Requires Python ≥ 3.12.
 
 ## Library
 
 ```python
 from tac_validate import lint
 
-report = lint("METAR KJFK ...=", product="METAR")
+report = lint("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=", product="METAR")
 if not report.ok:
     for issue in report.issues:
         print(issue.code, issue.message)
@@ -30,9 +36,17 @@ tac-validate --product METAR path/to/report.tac
 tac-validate --product METAR --json path/to/report.tac
 ```
 
-Exit code `0` when lint `ok`; `1` when error-severity issues are present (or the file cannot be read).
+Exit code `0` when lint is OK; `1` when error-severity issues are present (or the file
+cannot be read).
 
-Rule depth (E10-21): METAR/SPECI/TAF full checklist; SIGMET/AIRMET/VAA/TCA template+gates.
-Citations live in `docs/domain/TAC_VALIDATION.md` — no Annex prose in the wheel.
+## Rule coverage
 
-See ADR-015 / ADR-016. No FastAPI/Supabase imports; HTTP maps msgspec → pydantic.
+METAR, SPECI, and TAF use a full product checklist. SIGMET, AIRMET, VAA, and TCA use
+structured templates plus coverage gates. The wheel does not ship copyrighted Annex
+prose — rules cite external standards only.
+
+## Links
+
+- Source: [EMPIRIC2/TAC-to-IWXXM](https://github.com/EMPIRIC2/TAC-to-IWXXM)
+- Related packages: [`tac2iwxxm`](https://pypi.org/project/tac2iwxxm/),
+  [`iwxxm-validate`](https://pypi.org/project/iwxxm-validate/)

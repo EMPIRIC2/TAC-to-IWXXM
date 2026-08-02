@@ -1,7 +1,7 @@
 [project]
 name = "tac-validate"
-version = "0.1.0"
-description = "TAC parse gate and business-rule pack (F6 lint)"
+version = "0.1.1"
+description = "Lint TAC aviation weather products (METAR/SPECI/TAF and related) with structured issues"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"

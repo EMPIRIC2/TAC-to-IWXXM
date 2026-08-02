@@ -330,7 +330,7 @@ make test-live                # H4–H5 → H3 → H6
 
 See [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) for staging values.
 
-## PyPI package publish (S014 / EV-010 / F12–F14)
+## PyPI package publish (S014 / EV-010 / F12–F14; EMPIRIC2 cutover EV-028 / #781)
 
 Library packages publish **independently** of Render via GitHub Actions **OIDC trusted
 publishing** on version tags:
@@ -341,14 +341,33 @@ publishing** on version tags:
 | `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
 | `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
 
-**First release**: `0.1.0` for each. **One** GitHub Actions workflow with a **package matrix**
-(three packages) builds sdist+wheel (maturin manylinux/macOS/win for native crates), optional
-smoke-install, then publishes on matching version tags. Configure PyPI Trusted Publisher +
-workflow `id-token: write` (see config-spec §F11–F14). Prefer no long-lived `PYPI_API_TOKEN`
-when OIDC is available.
+**First release**: `0.1.0` for each (bootstrap). **Subsequent releases** (e.g. `0.1.1`, EV-028):
+bump `pyproject.toml` version, tag `{name}-v{version}`, workflow publishes via OIDC.
 
-**Render this cycle**: Still required (E10-15) because msgspec **response** shapes may change —
-redeploy API then frontend; run H4–H5 + UJ-022. PyPI publish does not replace Render smokes.
+**One** GitHub Actions workflow (`.github/workflows/pypi-publish.yml`) with a **package matrix**
+builds sdist+wheel (maturin manylinux/macOS/win for native crates), optional smoke-install,
+then publishes on matching version tags. Prefer no long-lived `PYPI_API_TOKEN` when OIDC is
+available.
+
+**Trusted Publisher** (each PyPI project → Publishing settings):
+
+| Field | Value |
+|-------|--------|
+| Owner | `EMPIRIC2` |
+| Repository | `TAC-to-IWXXM` |
+| Workflow | `pypi-publish.yml` |
+| Environment | `pypi` |
+
+Remove any stale publisher pointing at the pre-transfer GitHub owner/repo. Ensure GitHub
+Environment `pypi` exists on `EMPIRIC2/TAC-to-IWXXM`. Workflow needs `id-token: write`
+(see config-spec §F11–F14).
+
+**Public landing pages**: Package `README.md` (and `pyproject.toml` `description`) are the
+PyPI long/short description — write for library consumers; do not require internal ADR /
+feature-id / execution-plan identifiers. Monorepo tracing stays in corpus / session docs.
+
+**Render**: PyPI publish does not replace Render smokes. When msgspec **response** shapes
+change, redeploy API then frontend and run H4–H5 + UJ-022.
 
 ## References
 
