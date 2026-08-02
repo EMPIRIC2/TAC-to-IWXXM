@@ -74,7 +74,7 @@ Skip this cycle: Spec architecture rewrite, API contract, user-journeys (UJ-023 
 | 01-requirements | 2026-08-01 | E28-M / E28-E1 |
 | 02-verify-plan | 2026-08-01 | Gate A PASS; UJ-023 amend |
 | 04-tech-plan | 2026-08-01 | Gate B PASS; E28-T2=11b |
-| 07-build | | M0–M2 done; T3.3/T3.3b/T3.4 done; T3.1/T3.2 catch-up + T3.5 pending |
+| 07-build | | M0–M3 tasks T0–T3.4 done (T3.1/T3.2 catch-up PASS); T3.5 PR closeout pending |
 
 ---
 

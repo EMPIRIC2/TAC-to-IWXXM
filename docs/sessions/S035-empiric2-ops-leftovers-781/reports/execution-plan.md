@@ -45,8 +45,8 @@
 
 | Task | Status | Spec Source | Depends On | Description |
 |------|--------|-------------|------------|-------------|
-| T3.1 | pending | 08-verify-build | T0.3, T1.4, T2.1 | Lint/typecheck/tests on changed paths; assert no `codecov` in workflows |
-| T3.2 | pending | 10-e2e; TC-EV028-001 | T3.1 | Packaging smoke report (README grep for ADR-/F\d\d|E10-; Codecov absent) |
+| T3.1 | **completed** | 08-verify-build | T0.3, T1.4, T2.1 | Lint/typecheck/tests on changed paths; no `codecov`; report `t31-verify-build.md` |
+| T3.2 | **completed** | 10-e2e; TC-EV028-001 | T3.1 | Packaging smoke PASS; report `t32-packaging-smoke.md` |
 | T3.3 | **completed** | TC-EV028-003; UJ-023; E28-T2 | T2.2, T2.3, T3.2 | `0.1.1` OIDC publish ×3 green (`D-S035-14a`); runs 30703582092 / 30703582129 / 30703806187 |
 | T3.3b | **completed** | F13; TC-F14-002; D-S035-14a follow-up | T3.3 | Native AIXM fix + `iwxxm-validate==0.1.2` OIDC (`iwxxm-validate-v0.1.2`; run 30726416585) |
 | T3.4 | **completed** | TC-EV028-003 | T3.3b | Clean-venv `pip install` smoke @ published pins (`iwxxm-validate==0.1.2`); report `t34-pypi-install-smoke.md` (`D-S035-14d`) |
