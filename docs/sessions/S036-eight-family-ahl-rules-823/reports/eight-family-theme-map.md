@@ -122,4 +122,5 @@ HARD gaps → AskQuestion (E29-T8); residuals may be child-issued (S02.M3).
 **T0.2** — ~~Full re-mine~~ → `reports/mining/eight-family-remine-pass.md`  
 **T0.3** — ~~Example inventory~~ → `reports/mining/example-inventory.md`  
 **T0.4** — ~~Promote~~ → `COVERAGE_MATRIX` §EV-029 + `IWXXM_CONVERSION` AHL canonical  
-**T0.5** — AHL/`T1T2`/BBB design note (tac2iwxxm surface for dissemination).
+**T0.5** — ~~AHL design note~~ → `reports/mining/ahl-design-note.md`  
+**T0.6** — ~~M0 exit~~ → `reports/m0-exit-checklist.md` **PASS** → **M1 @ T1.1**

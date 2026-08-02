@@ -219,5 +219,5 @@ Expanded matrix (shapes × families, catalog tiers, AHL `T1T2` gaps):
 |------|-------------|
 | **T0.3** | ~~Example inventory~~ → [`example-inventory.md`](./example-inventory.md) |
 | **T0.4** | ~~Promote §E~~ → `docs/domain/` + FIXTURE_GAPS |
-| **T0.5** | AHL design note (tac2iwxxm API surface) |
-| **T0.6** | M0 exit checklist |
+| **T0.5** | ~~AHL design note~~ → [`ahl-design-note.md`](./ahl-design-note.md) |
+| **T0.6** | ~~M0 exit~~ → [`../m0-exit-checklist.md`](../m0-exit-checklist.md) **PASS** |

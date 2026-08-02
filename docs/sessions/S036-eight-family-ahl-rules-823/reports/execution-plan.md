@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M0 — Full eight-family re-mine |
-| **Active task** | T0.5 |
-| **Tasks** | 4 / 48 completed |
+| **Active milestone** | M1 — AHL / COM / shared bulletin model |
+| **Active task** | T1.1 |
+| **Tasks** | 6 / 48 completed |
 | **Last updated** | 2026-08-01 |
 
 ## Tech Stack Summary
@@ -65,8 +65,8 @@
 | T0.2 | Docs | Full re-mine eight families (AHL/COM + METAR…SWXA) via `mine-domain-sources`; session mining notes under `reports/mining/` | E29-T3; #823 | T0.1 | **completed** |
 | T0.3 | Docs | Example inventory: TAC shapes + IWXXM peers (or `wmoReference` / child) | TC-EV029-002 | T0.2 | **completed** |
 | T0.4 | Docs | Promote durable rules → COVERAGE_MATRIX + canonicals; child-issue residuals (S02.M3) | TC-EV029-001; #823 | T0.3 | **completed** |
-| T0.5 | Docs | AHL/`T1T2`/BBB/`bulletinIdentifier` design note (tac2iwxxm surface for dissemination) | TC-EV029-003; E29-T2 | T0.4 | pending |
-| T0.6 | Docs | M0 exit checklist — AskQuestion only if HARD gap blocks Phase B | E29-T8 | T0.5 | pending |
+| T0.5 | Docs | AHL/`T1T2`/BBB/`bulletinIdentifier` design note (tac2iwxxm surface for dissemination) | TC-EV029-003; E29-T2 | T0.4 | **completed** |
+| T0.6 | Docs | M0 exit checklist — AskQuestion only if HARD gap blocks Phase B | E29-T8 | T0.5 | **completed** |
 
 ### M1 — AHL / COM / shared bulletin model (F6.bulletin)
 
