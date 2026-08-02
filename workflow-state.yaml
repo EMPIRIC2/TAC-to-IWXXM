@@ -40,7 +40,7 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '04-tech-plan in_progress — Gate A PASS; Batch 1 pending'
+    note: '04-tech-plan in_progress — Batch 1 locked 3,1,2,2; Batch 2 pending'
   started_at: '2026-08-01'
   context_briefs:
   - docs/context/eight-family-ahl-rules-823.md
@@ -50,6 +50,7 @@ active_session:
   - D-S036-E29-M
   - D-S036-02-batch-f
   - D-S036-02-phase-a
+  - D-S036-04-batch-1
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -89,6 +90,8 @@ sessions:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
+    status: written
   - path: docs/api-contract.md
     status: touched
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
@@ -100,7 +103,7 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '04-tech-plan in_progress — Gate A PASS; Batch 1 pending'
+    note: '04-tech-plan in_progress — Batch 1 locked 3,1,2,2; Batch 2 pending'
   started_at: '2026-08-01'
   note: 'S036/EV-029 — umbrella #823; Gate A PASS (D-S036-02-phase-a); 04-tech-plan in_progress (delta Batch 1); F28+deepen; absorb #738/#820/#740'
   context_briefs:
@@ -111,6 +114,7 @@ sessions:
   - D-S036-E29-M
   - D-S036-02-batch-f
   - D-S036-02-phase-a
+  - D-S036-04-batch-1
   routing_plan:
   - stage: 00-context
     required: true
@@ -16273,6 +16277,29 @@ decisions_log:
   branch: evolve/EV-029-eight-family-ahl-rules
   related_issues: ['823']
   related_decisions: ['D-S036-02-batch-f']
+
+- id: D-S036-04-batch-1
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: technical-plan
+  status: confirmed
+  topic: '04 Batch 1 — milestone / AHL / mining / CI'
+  summary: '3,1,2,2 — per-product milestones; tac2iwxxm AHL; full re-mine before Phase B; separate workflow per family'
+  decision: 'E29-T1=3 one milestone per product (METAR/SPECI/TAF separate); E29-T2=1 extend tac2iwxxm AHL; E29-T3=2 full eight-family re-mine before Phase B; E29-T4=2 separate CI workflow per family (D-S036-04-batch-1).'
+  user_option: '3,1,2,2'
+  answers:
+    E29-T1: 3
+    E29-T2: 1
+    E29-T3: 2
+    E29-T4: 2
+  branch: evolve/EV-029-eight-family-ahl-rules
+  related_issues: ['823']
 artifacts:
 - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
   kind: execution-plan
@@ -25088,6 +25115,7 @@ evolve_cycles:
       status: in_progress
       mode: delta
       started: '2026-08-01'
+      note: 'Batch 1 locked 3,1,2,2; Batch 2 pending'
     07-build:
       status: pending
       mode: full
@@ -25134,6 +25162,8 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
+    status: written
   - path: docs/api-contract.md
     status: touched
   github_issues:
@@ -25142,6 +25172,7 @@ evolve_cycles:
   preset: Standard
   preset_status: approved
   notes:
+  - '2026-08-01 S036/EV-029 — D-S036-04-batch-1 (3,1,2,2) T1=per-product Ms; T2=tac2iwxxm AHL; T3=full re-mine before Phase B; T4=separate per-family CI; Batch 2 pending; #823'
   - '2026-08-01 S036/EV-029 02 COMPLETE → 04-tech-plan STARTED — Gate A PASS (D-S036-02-phase-a); Batch F (D-S036-02-batch-f) @ 97a9380; #823'
   - '2026-08-01 S036/EV-029 — D-S036-fn (1,1,1,1) F28+deepen; 01-requirements STARTED (delta written); 16-evolve Manifest+close pending; #823'
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
