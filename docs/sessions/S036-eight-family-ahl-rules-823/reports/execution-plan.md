@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M5 METAR/SPECI/TAF/gen SIGMET (+ `tac2iwxxm` 0.2.0); evolve continues for M6+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M6 in progress (+ `tac2iwxxm` 0.2.1); evolve continues for M6+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log
