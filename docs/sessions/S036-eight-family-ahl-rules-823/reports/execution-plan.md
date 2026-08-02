@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M9 — VAA (F26 deepen / #820) |
-| **Active task** | T9.2 — completed; next T9.3 `vaa-quality.yml` |
-| **Tasks** | 36 / 48 completed |
+| **Active milestone** | M10 — TCA (F27 deepen / #820) |
+| **Active task** | T9.3 — completed (M9 complete); next T10.1 |
+| **Tasks** | 37 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -140,7 +140,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T9.1 | Test | VAA bulletin/encode residual fixtures | TC-EV029-005; #820 | T8.3 | **completed** |
 | T9.2 | Code | VAA deltas | F26; F6.f | T9.1 | **completed** |
-| T9.3 | Config | `vaa-quality.yml` (extend existing if present) | E29-T4 | T9.2 | pending |
+| T9.3 | Config | `vaa-quality.yml` (extend existing if present) | E29-T4 | T9.2 | **completed** |
 
 ### M10 — TCA (F27 deepen / #820)
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M8 (+ `tac2iwxxm` 0.2.1); evolve continues for M9+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M9 (+ `tac2iwxxm` 0.2.2); evolve continues for M10+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log

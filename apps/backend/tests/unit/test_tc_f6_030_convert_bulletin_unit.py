@@ -344,6 +344,58 @@ def test_convert_bulletin_airmet_ahl_bbb_report_status(client: TestClient, monke
     assert "iwxxm:AIRMET" in (payload["results"][0]["xml"] or "")
 
 
+VAA_CCA_TEXT = """\
+FVFE01 RJTD 121200 CCA
+VA ADVISORY
+DTG:                        20240923/0130Z
+VAAC:                       TOKYO
+VOLCANO:                    KARYMSKY 1000-13
+PSN:                        N5403 E15927
+AREA:                       RUSSIA
+SOURCE ELEV:                1536M AMSL
+ADVISORY NR:                2024/4
+INFO SOURCE:                HIMAWARI-8 KVERT KEMSD
+ERUPTION DETAILS:           ERUPTION AT 20240923/0000Z FL300 REPORTED
+OBS VA DTG:                 23/0100Z
+OBS VA CLD:                 FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 MOV SE 20KT
+FCST VA CLD +6 HR:          23/0700Z NO VA EXP
+RMK:                        NIL
+NXT ADVISORY:               20240923/0730Z
+=
+"""
+
+
+def test_convert_bulletin_vaa_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T9.2: FV AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:VolcanicAshAdvisory reportStatus="CORRECTION">{tac[:20]}</iwxxm:VolcanicAshAdvisory>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=VAA_CCA_TEXT,
+        product="VAA",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "FV"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "VAA"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:VolcanicAshAdvisory" in (payload["results"][0]["xml"] or "")
+
+
 def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
 
