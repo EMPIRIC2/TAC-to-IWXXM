@@ -1128,6 +1128,48 @@ origins (H4–H5 when FE ships).
 
 ---
 
+### UJ-043: Eight-Family Rules Gap Sweep + SWXA Quality (S036 / EV-029)
+
+**Actor**: Operator / CI maintainer / package consumer
+
+**Goal**: For every TAC→IWXXM product family in scope (METAR, SPECI, TAF, SIGMET general/VA/TC
++ CNL, AIRMET, VAA, TCA, SWXA), rules for **lint**, **conversion**, and **IWXXM validation**
+are documented and exercised — including bulletin/AHL framing and report states — with no
+silent coverage gaps. SWXA reaches the same quality bar as peer products (**F28**).
+
+**Feature**: **F28** + deepen F6/F6.bulletin/F12/F2/F13/F15/F20/F23/F24/F26/F27 — S036 / EV-029 ·
+Issues [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823),
+[#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738),
+[#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820),
+[#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)
+
+**Steps (CI — T0 / T2)**:
+
+1. Phase A: coverage matrix + canonical domain docs have a cell (pass / defer+child) for each
+   family × role × report-state × TAC input shape (standalone / AHL / multi-report).
+2. Shared AHL/`T1T2`/BBB fixtures: parse → `reportStatus` + IWXXM designator map.
+3. Product-by-product (locked order): accept TAC → lint registry → convert → XSD+Schematron;
+   TC SIGMET root `iwxxm:TropicalCycloneSIGMET`; SWXA root `iwxxm:SpaceWeatherAdvisory`.
+4. Example inventory: official IWXXM peers + TAC shapes wired or gap-documented.
+5. Negatives / residual allowlists linked to child issues (no silent leftovers).
+
+**Steps (operator — T2; H4–H5 only if FE Examples unlock)**:
+
+1. Load a fixture per family (API or workbench when catalog ships SWXA / TC SIGMET passers).
+2. Confirm lint codes, convert root, and validate pass (or documented soft-fail).
+
+**Acceptance**: TC-EV029-001..008 + TC-F28-001..006 green (or waived with child issues);
+#823 umbrella AC met or children linked.
+
+**Automated tests**: TC-EV029-*; TC-F28-*; deepen TC-F15/F20/F23/F24/F26/F27 suites.
+
+**Browser wiring**: No new origins. H4–H5 only if FE catalog/Examples change ships.
+
+**Source**: #823 · ADR-014 · ADR-028 · ADR-032 ·
+[Context: eight-family-ahl-rules-823](context/eight-family-ahl-rules-823.md)
+
+---
+
 ### UJ-037: VAA Lint / Convert→Validate WMO Golden (F26 / #736)
 
 **Actor**: Operator / CI maintainer

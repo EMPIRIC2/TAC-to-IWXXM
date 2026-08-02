@@ -9,8 +9,8 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Intake locked `D-S036-open` = 1,1,1,1,1,1 |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase 0 locked; Phase 1 Fn allocation next |
-| 01-requirements | yes | delta | pending | Feature-list + UJ/TC deltas; COM rule IDs |
+| 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1 locked; orchestrating 01 |
+| 01-requirements | yes | delta | **in_progress** | F28 + UJ-043 + TC-EV029/F28 written; Manifest+close pending |
 | 02-verify-plan | yes | delta | pending | Gate A |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
 | 04-tech-plan | yes | delta | pending | Exec plan: Phase A mine → Phase B per family |
@@ -37,4 +37,5 @@ Routine Standard checkpoints after phases A–D and deploy.
 | Session open / Phase 0 | `D-S036-open` = **1,1,1,1,1,1** — S036+EV-029; mine-then-implement; AHL→…→SWXA order; shared AHL in-cycle; Standard; UI N/A | 2026-08-01 |
 | Routing | Standard path above | 2026-08-01 |
 | Exclude | SIGWX / VONA / QVACI; sink UI; #806 WIS2 mining | 2026-08-01 |
+| Fn allocation | `D-S036-fn` = **1,1,1,1** — F28 + deepen; absorb #738/#820/#740; start 01; commit open @ `49e2a62` | 2026-08-01 |
 )

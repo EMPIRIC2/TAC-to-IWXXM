@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-31 (S034 / EV-027 — #815 official WMO decode residual matrix)
+> **Last updated**: 2026-08-01 (S036 / EV-029 — #823 eight-family AHL / lint / convert / validate)
 
 ## Summary
 
@@ -35,6 +35,7 @@
 | F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794 |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
+| F28 | SWXA quality bar (SpaceWeatherAdvisory) | Planned | Product | S036 / EV-029; #823/#740 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -994,6 +995,87 @@
 
 - **Status note**: F7 remains **Planned**; inventory ↔ catalog ∪ `FIXTURE_GAPS` completeness
   for official WMO TAC peers (deepen **UJ-039**).
+
+### F28: SWXA Quality Bar — S036 / EV-029
+
+- **Status**: **Planned** — S036 / EV-029; umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823);
+  absorbs [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740).
+- **What it does**: Raises **Space Weather Advisory** (SWXA / SWX) TAC lint, convert, and
+  IWXXM-validate quality to the F15–F27 product bar. Root `iwxxm:SpaceWeatherAdvisory`.
+  TAC AHL `FN` → IWXXM AHL `LN`. Reuses **ADR-028** registry + **ADR-032** golden policy.
+  Completes the eight-family TAC→IWXXM converter set (METAR/SPECI/TAF/SIGMET×3/AIRMET/VAA/TCA/SWXA).
+- **Issues**: [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740); parent [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823).
+- **Deepens**: **F6** (SWXA encode), **F12** (SWXA checklist), **F2/F13** (XSD+SCH), optional
+  **F7.g** Examples when passers exist.
+- **Acceptance**:
+  1. Registry-backed SWXA lint codes; CI fails on unknown codes (**TC-F28-001**)
+  2. Authoritative exceptional rules (from mining / #823 / Annex 3 + PANS-MET + IWXXM 2025-2
+     package) have accept + negative fixtures or explicit deferrals (**TC-F28-002/004**)
+  3. Common COM rules apply: `reportStatus` / `permissibleUsage`, `translationFailedTAC`,
+     nilReasons, one-IWXXM-per-TAC-report (**TC-F28-006** / COM theme)
+  4. At least one WMO (or pinned official) SWXA TAC → convert (defaults) → XSD+Schematron pass;
+     root `iwxxm:SpaceWeatherAdvisory`; golden equality when a vendor peer exists (**TC-F28-003**)
+  5. Coverage-matrix SWXA / F28 themes updated; guidance gaps filed or closed
+  6. Product-path lint+convert smoke; Examples list only SWXA passers when unlocked
+     (**UJ-043** / **TC-F28-005**); H4–H5 only if FE touched
+- **Journeys / tests**: **UJ-043**; **TC-F28-001..006**; cycle **TC-EV029-***
+- **Out of scope**: VONA #741; SIGWX / QVACI; dissemination sink UI; treating GIFTs as normative
+- **Source**: E29-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-029;
+  [Context: eight-family-ahl-rules-823](context/eight-family-ahl-rules-823.md);
+  ADR-028; ADR-032; `docs/domain/rules/COVERAGE_MATRIX.md`
+
+### F6 / F6.bulletin / F12 / F2 / F13 / F15 / F20 / F23 / F24 / F26 / F27 deepen (S036 / EV-029 — #823)
+
+- **Status**: **Planned** (S036 / EV-029) — Phase A mine/promote then Phase B product-by-product
+- **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella);
+  absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) (TC SIGMET),
+  [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) (VAA/TCA decode residual),
+  [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) (via **F28**)
+- **Runtime SoT**: `vendor/manifest.json` → IWXXM **2025-2**
+- **What it does**:
+  1. **Phase A** — Mine/promote #823 COM/AHL/bulletin + per-product rules into
+     `docs/domain/*` + `RULE_SOURCE_URLS` / `COVERAGE_MATRIX`; inventory TAC input shapes
+     (standalone / AHL / multi-report) and official IWXXM examples per family
+  2. **Phase B order** — Bulletin/AHL/COM → METAR → SPECI → TAF → SIGMET (gen/VA/**TC**/CNL)
+     → AIRMET → VAA → TCA → SWXA (**F28**)
+  3. **Shared AHL model** — TAC↔IWXXM `T1T2`, BBB→`reportStatus`, filename /
+     `bulletinIdentifier` for `tac2iwxxm` + F16–F19 consumers (sink UI deferred)
+  4. Close silent gaps across **lint · convert · IWXXM validate** for report states
+     Normal / Amendment / Correction / Cancellation / NIL
+  5. Child issues for residuals that cannot close in-cycle
+- **Acceptance**:
+  1. Coverage matrix cells for eight families × three roles filled or child-issued (**TC-EV029-001**)
+  2. Example inventory covers TAC shapes + IWXXM peers; wired or gap-documented (**TC-EV029-002**)
+  3. Shared AHL/`T1T2`/BBB rules enforced in convert + lint (**TC-EV029-003**)
+  4. TC SIGMET path emits `iwxxm:TropicalCycloneSIGMET` (#738) (**TC-EV029-004**)
+  5. VAA/TCA encode/decode residuals from #823 B4 / #820 closed or child-issued (**TC-EV029-005**)
+  6. **F28** acceptance green or deferred with child issue
+  7. #823 closable when umbrella AC met (or split children remain open with links)
+- **Journeys / tests**: **UJ-043**; deepen UJ-024/031/034/035/037/038/039/042; **TC-EV029-001..008**;
+  **TC-F28-001..006**
+- **Out of scope**: SIGWX / VONA / QVACI as TAC converter inputs; #806 WIS2 topic mining;
+  dissemination drawer UI; hand-edit `vendor/schemas/*`; GIFTs-as-normative
+- **Packages / apps**: `packages/tac-validate`, `tac2iwxxm`, `iwxxm-validate`,
+  `packages/dissemination` (AHL helpers only); domain docs; fixtures/CI; FE only if Examples unlock
+- **Source**: E29-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-029;
+  [Context: eight-family-ahl-rules-823](context/eight-family-ahl-rules-823.md); #823 body + COM addendum
+
+### F23 deepen (S036 / EV-029 — TC SIGMET #738)
+
+- **Status note**: F23 remains **Done** for general + VA; this cycle **adds TC SIGMET**
+  (`iwxxm:TropicalCycloneSIGMET`, TAC `WC` / IWXXM `LY`) under the same quality bar and
+  absorbs [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738).
+
+### F26 / F27 deepen (S036 / EV-029 — #820 + #823 B4)
+
+- **Status note**: F26/F27 remain **Done**; this cycle closes encode/bulletin/decode residuals
+  called out in #823 B4 and [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820).
+
+### F6.bulletin deepen (S036 / EV-029 — AHL / COM)
+
+- **Status note**: F6 remains **Implemented**; shared AHL parse, `=` splitter (incl. VAA/TCA
+  multiline), BBB→`reportStatus`, COLLECT framing, and IWXXM filename/`T1T2` map deepen under
+  #823 B1–B3.
 
 ## Platform Feature Details (Monorepo Migration)
 

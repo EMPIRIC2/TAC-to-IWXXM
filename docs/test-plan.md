@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-07-31 (S034 / EV-027 — TC-EV027-001..005 #815 decode residual matrix)
+> **Last updated**: 2026-08-01 (S036 / EV-029 — TC-EV029 / TC-F28 #823 eight-family rules)
 
 ## Scope
 
@@ -91,6 +91,7 @@ Unified manual live test harness against Render staging:
 | UJ-040 | F6.b deepen | Structured iwxxm-us REMARKS encode pack | — (API T3 optional) | TC-EV025-001..007 |
 | UJ-041 | F23 deepen | sigmet-multi-location-VA ADR-032 equality / wmoPass (EV-026) | — | TC-EV025-008..009 |
 | UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
+| UJ-043 | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen | Eight-family lint/convert/validate + SWXA bar (#823) | H4–H5 if FE | TC-EV029-001..008; TC-F28-001..006 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -1216,6 +1217,128 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - [x] TC-EV027-005 **waived** at close (`D-S034-gate-c` — no FE deploy)
 - [ ] #815 GitHub closed on PR merge (deferral child #820)
 - [x] 13-deploy-smoke **waived** (`D-S034-gate-c`)
+
+## S036 / EV-029 — Eight-family AHL / lint / convert / validate (#823)
+
+### TC-EV029-001: Coverage matrix eight-family × roles (UJ-043)
+
+- **Given** `docs/domain/rules/COVERAGE_MATRIX.md` + canonicals after Phase A
+- **When** audit runs for METAR/SPECI/TAF/SIGMET×3/AIRMET/VAA/TCA/SWXA × lint/convert/IWXXM-validate
+- **Then** every cell is pass, explicit N/A, or defer+child issue (no silent blanks)
+- **Tier**: T0 / docs CI
+- **Source**: #823; E29-2 Phase A
+
+### TC-EV029-002: TAC input-shape + IWXXM example inventory (UJ-043)
+
+- **Given** inventory of standalone / AHL / multi-report TAC fixtures + official IWXXM peers
+- **When** catalog ∪ FIXTURE_GAPS ∪ test fixtures assert
+- **Then** each family has ≥1 shape covered or gap-documented; SIGWX/VONA/QVACI marked OOS
+- **Tier**: T0
+- **Source**: #823; UJ-043
+
+### TC-EV029-003: Shared AHL / BBB / T1T2 map (UJ-043)
+
+- **Given** AHL fixtures for each TAC `T1T2` in #823 B1 table
+- **When** parse + convert (or lint) runs
+- **Then** IWXXM `T1T2` + root type agree; `AAx`→AMENDMENT, `CCx`→CORRECTION, `RRx`→NORMAL
+  (bulletin subsequent); invalid BBB rejected
+- **Tier**: T0 / T2
+- **Source**: #823 B1–B3; F6.bulletin
+
+### TC-EV029-004: TC SIGMET root + quality path (#738)
+
+- **Given** TC SIGMET accept TAC (`WC` / tropical-cyclone SIGMET form)
+- **When** convert (defaults) + validate
+- **Then** root `iwxxm:TropicalCycloneSIGMET`; XSD+Schematron pass; not `iwxxm:SIGMET` /
+  not TCA advisory root
+- **Tier**: T0 / T2
+- **Source**: #738; F23 deepen; #823 B5
+
+### TC-EV029-005: VAA/TCA bulletin + encode/decode residuals (#820 / #823 B4)
+
+- **Given** multi-report VAA/TCA and #823 B4 / #820 residual cases
+- **When** split + convert + decode
+- **Then** `=`-terminator split (not blank-line-only); encode gaps closed or child-issued;
+  decode residuals empty or allowlisted with child link
+- **Tier**: T0 / T2
+- **Source**: #820; #823 B2/B4; F26/F27 deepen
+
+### TC-EV029-006: Report-state matrix (Normal/AMD/COR/CNL/NIL)
+
+- **Given** fixtures per family where schema/TAC permits each state
+- **When** lint + convert
+- **Then** cancellation/NIL are not `reportStatus`; AMD/COR map correctly; CNL/NIL use
+  product-specific or nilReason paths
+- **Tier**: T0
+- **Source**: #823 B3; COM-010..014
+
+### TC-EV029-007: Product-order regression smoke (UJ-043)
+
+- **Given** one accept fixture per family in Phase B order
+- **When** lint → convert → validate pipeline runs in CI
+- **Then** all green or explicitly skipped with child issue id in skip reason
+- **Tier**: T0 / T2
+- **Source**: #823; E29-3 order
+
+### TC-EV029-008: Optional H4–H5 when FE Examples unlock (UJ-043)
+
+- **Given** FE catalog changes for SWXA / TC SIGMET passers
+- **When** operator loads one new passer
+- **Then** workbench lint+convert smoke passes
+- **Tier**: H4–H5 / T3 (when_ships)
+- **Source**: connectivity gates; F7.g
+
+### TC-F28-001: SWXA registry completeness (UJ-043)
+
+- **Level**: T0 / CI
+- **Objective**: Every SWXA lint emission uses a registered code
+- **Pass criteria**: CI fails on unknown codes; ADR-028 registry row for new rules
+- **Source**: F28; #740
+
+### TC-F28-002: SWXA accept → convert → XSD+Schematron (UJ-043)
+
+- **Level**: T0 / T2
+- **Objective**: Happy-path SWXA TAC converts to `iwxxm:SpaceWeatherAdvisory` and validates
+- **Pass criteria**: root + XSD+SCH pass under defaults
+- **Source**: F28; #740/#823
+
+### TC-F28-003: SWXA golden / official peer (UJ-043)
+
+- **Level**: T0 / T2
+- **Objective**: When a vendor/official peer exists, convert matches policy (ADR-032 equality
+  or documented `wmoReference`)
+- **Pass criteria**: peer fixture green or explicit defer+child
+- **Source**: F28; ADR-032
+
+### TC-F28-004: SWXA negative fixtures → registry diagnostics (UJ-043)
+
+- **Level**: T0
+- **Objective**: Malformed / incomplete SWXA TAC yields registry diagnostics (not crash)
+- **Pass criteria**: negative pack; codes registered
+- **Source**: F28; #740
+
+### TC-F28-005: SWXA product-path smoke (UJ-043)
+
+- **Level**: T2; H4–H5 if FE
+- **Objective**: API (and Examples when unlocked) SWXA lint+convert path works
+- **Pass criteria**: smoke green; catalog only lists passers when unlocked
+- **Source**: F28; F7.g
+
+### TC-F28-006: SWXA / COM adjacency + AHL FN→LN (UJ-043)
+
+- **Level**: T0 / T2
+- **Objective**: SWXA never mis-rooted as SIGMET/VAA/TCA; AHL `FN` maps to IWXXM `LN`
+- **Pass criteria**: adjacency + AHL fixtures
+- **Source**: F28; #823 B1
+
+### EV-029 verify/deploy gate
+
+- [ ] TC-EV029-001..007 green (or deferred with child issues)
+- [ ] TC-F28-001..006 green (or deferred with child issues)
+- [ ] TC-EV029-008 when FE ships / else waive
+- [ ] Coverage matrix + canonicals updated
+- [ ] #823 / #738 / #820 / #740 closed or children linked
+- [ ] 12/13 per Standard when behavior deploys
 
 ## F9 deepen (S026 / EV-020) — glossary registry
 

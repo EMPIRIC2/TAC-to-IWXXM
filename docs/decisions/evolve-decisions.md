@@ -39,11 +39,19 @@ shared AHL/`T1T2`/filename model for tac2iwxxm + dissemination consumers; child 
 **Out:** SIGWX/VONA/QVACI TAC conversion; dissemination drawer/sink UI; #806 WIS2 topic mining;
 hand-edits to `vendor/schemas/*`; GIFTs-as-normative.
 
-### Acceptance (cycle — draft pending Fn lock)
+### Acceptance (cycle)
 
-1. Coverage matrix + canonicals filled or child-issued for eight families × lint/convert/IWXXM-validate × report states × TAC shapes.
-2. Phase B implements promoted rules in locked product order; CI green on evolve branch.
-3. Shared AHL model used by conversion (and ready for F16–F19 filename/`bulletinIdentifier`).
+1. Coverage matrix + canonicals filled or child-issued for eight families × lint/convert/IWXXM-validate × report states × TAC shapes (**TC-EV029-001/006**).
+2. Example inventory covers TAC shapes + IWXXM peers (**TC-EV029-002**).
+3. Shared AHL/`T1T2`/BBB model enforced; filename/`bulletinIdentifier` ready for F16–F19 (**TC-EV029-003**).
+4. TC SIGMET → `iwxxm:TropicalCycloneSIGMET` (#738) (**TC-EV029-004**).
+5. VAA/TCA #823 B4 / #820 residuals closed or child-issued (**TC-EV029-005**).
+6. **F28** SWXA quality bar green or deferred with child (**TC-F28-***).
+7. Phase B product-order smoke green (**TC-EV029-007**); #823 closable or children linked.
+
+### Journeys / tests
+
+- **UJ-043**; **TC-EV029-001..008**; **TC-F28-001..006**
 
 ---
 
