@@ -16,7 +16,7 @@
 | 04-tech-plan | yes | delta | **completed** | Plan approved (`D-S036-04-plan`); Gate B |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | **in_progress** | M0 @ T0.1 |
+| 07-build | yes | full | **in_progress** | M0 @ T0.2 (T0.1 theme map done) |
 | 08-verify-build | yes | delta | pending | — |
 | 09-qa | yes | delta | pending | Standard preset |
 | 10-e2e | yes | smoke | pending | Convert/lint/validate + catalog fixtures |
