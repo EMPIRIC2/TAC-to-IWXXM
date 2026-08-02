@@ -350,6 +350,7 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         yygggg=parts.yygggg,
         bbb=parts.bbb,
         ii=parts.ii,
+        report_status=parts.report_status,
     )
     return BulletinSplit(meta=meta, reports=reports)
 

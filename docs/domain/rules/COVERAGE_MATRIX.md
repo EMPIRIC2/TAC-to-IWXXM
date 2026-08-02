@@ -360,7 +360,7 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | Family | Lint | Convert | IWXXM-validate | Bulletin AHL | Milestone |
 |--------|------|---------|----------------|--------------|-----------|
 | AHL/COM | ok (prefix BBB) | ok (`parse_ahl` / map / filename) | N/A | **ok** shared API (TC-EV029-003); body split METAR/SPECI only | **M1 closed** |
-| METAR | ok/deepen | ok/deepen | ok | covered (package) | **M2** |
+| METAR | ok/deepen | **ok** (AHL BBB→`reportStatus` via `convert(report_status=)`; M2 T2.2) | ok | covered (package + `fixtures/metar/`) | **M2** |
 | SPECI | ok/deepen | ok/deepen | ok | gap | **M3** |
 | TAF | ok/deepen | ok/deepen | ok | partial (NIL-collect) | **M4** |
 | SIGMET gen | ok/deepen | ok/deepen | ok | partial (quarantine) | **M5** |

@@ -160,6 +160,7 @@ def convert_metar_tac_with_metadata(
     emit_translation_centre: bool = False,
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
+    report_status: Optional[str] = None,
 ) -> Tuple[str, Optional[ComprehensiveValidationResult]]:
     """
     Convert TAC to IWXXM via ``tac2iwxxm`` and optionally validate.
@@ -200,6 +201,8 @@ def convert_metar_tac_with_metadata(
         Designator when ``emit_translation_centre`` is true.
     translation_centre_name :
         Centre name when ``emit_translation_centre`` is true.
+    report_status :
+        Optional IWXXM ``reportStatus`` override (AHL BBB → reportStatus; EV-029 M2).
 
     Returns
     -------
@@ -233,6 +236,7 @@ def convert_metar_tac_with_metadata(
         emit_translation_centre=emit_translation_centre,
         translation_centre_designator=translation_centre_designator,
         translation_centre_name=translation_centre_name,
+        report_status=report_status,
     )
     if not result.ok or not result.xml:
         msgs = "; ".join(f"{i.code}: {i.message}" for i in result.issues) or "unknown convert failure"

@@ -29,6 +29,7 @@ from tac2iwxxm.profiles.iwxxm_us import (
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"})
 _SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
+_REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
 # Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
 _REMARK_SPAN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -315,6 +316,7 @@ def convert(
     emit_translation_centre: bool = False,
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
+    report_status: str | None = None,
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
@@ -341,6 +343,11 @@ def convert(
         Designator when ``emit_translation_centre`` is true.
     translation_centre_name :
         Human-readable centre name when ``emit_translation_centre`` is true.
+    report_status :
+        Optional IWXXM ``reportStatus`` override (``NORMAL`` / ``AMENDMENT`` /
+        ``CORRECTION``). Used for AHL BBB→reportStatus when the TAC body has no
+        COR/AMD keyword (EV-029 M2 / #823 B3). When omitted, emitters keep
+        body-derived COR → CORRECTION behavior.
 
     Returns
     -------
@@ -381,10 +388,21 @@ def convert(
             f"profile iwxxm_us not supported yet for product {product_u!r}",
         )
 
+    status_override: str | None = None
+    if report_status is not None:
+        status_override = report_status.strip().upper()
+        if status_override not in _REPORT_STATUSES:
+            return _fail(
+                "INVALID_REPORT_STATUS",
+                f"report_status {report_status!r} must be one of {sorted(_REPORT_STATUSES)}",
+            )
+
     try:
         if _UNRELIABLE_TAC.search(tac):
             raise ValueError("unreliable TAC marked INVALID — quarantine")
         ir = _parse(product_u, tac)
+        if status_override is not None:
+            ir = {**ir, "report_status": status_override}
         xml = _emit(product_u, profile_l, ir, iwxxm_version)
     except ValueError as exc:
         message = str(exc)

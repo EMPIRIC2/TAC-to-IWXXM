@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M2 — METAR (F15 deepen) |
-| **Active task** | T2.2 |
-| **Tasks** | 11 / 48 completed |
+| **Active task** | T2.3 |
+| **Tasks** | 12 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -82,7 +82,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | METAR gap fixtures (lint + convert + validate) from M0 | TC-EV029-007; F15 | T1.4 | **completed** |
-| T2.2 | Code | Registry/encode/validate deltas for METAR gaps | F15; F6 | T2.1 | pending |
+| T2.2 | Code | Registry/encode/validate deltas for METAR gaps | F15; F6 | T2.1 | **in_progress** |
 | T2.3 | Config | `metar-quality.yml` (or extend existing METAR pack) | E29-T4 | T2.2 | pending |
 
 ### M3 — SPECI (F20 deepen)

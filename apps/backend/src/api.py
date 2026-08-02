@@ -1053,6 +1053,7 @@ async def convert_bulletin(
                     validate=False,
                     product=product,
                     profile=profile,
+                    report_status=split.meta.report_status,
                 )
             except ConversionError as exc:
                 ok = False
@@ -1087,6 +1088,7 @@ async def convert_bulletin(
                 cccc=split.meta.cccc,
                 yygggg=split.meta.yygggg,
                 bbb=split.meta.bbb,
+                report_status=split.meta.report_status,
             ),
             results=results,
         )
