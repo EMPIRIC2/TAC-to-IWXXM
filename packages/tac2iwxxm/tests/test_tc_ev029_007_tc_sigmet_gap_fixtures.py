@@ -162,11 +162,13 @@ def test_tc_sigmet_ahl_cnl_split_and_convert() -> None:
     """T7.2: WC AHL + TC CNL splits; cancel under TropicalCycloneSIGMET root."""
     from tac2iwxxm import convert, split_bulletin
 
-    split = split_bulletin(_read_tc_sigmet("tc_sigmet_ahl_cnl.txt"), product="SIGMET")
+    bulletin = _read_tc_sigmet("tc_sigmet_ahl_cnl.txt")
+    split = split_bulletin(bulletin, product="SIGMET")
     assert split.meta.tt == "WC"
     assert split.meta.report_count == 1
+    # Full bulletin keeps WC AHL so convert can family-select CNL (no TC token in body).
     result = convert(
-        split.reports[0],
+        bulletin,
         product="SIGMET",
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,

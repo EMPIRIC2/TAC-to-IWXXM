@@ -358,8 +358,10 @@ def _sigmet_root_local(ir: dict[str, Any]) -> str:
     """
     Content-select IWXXM SIGMET family root under HTTP ``product=sigmet`` (E19-13 / F23 V2).
 
-    VA phenomenon TAC → ``VolcanicAshSIGMET``; general non-VA/TC → ``SIGMET``.
+    VA → ``VolcanicAshSIGMET``; TC / WC AHL → ``TropicalCycloneSIGMET``; else ``SIGMET``.
     """
+    if ir.get("phenomenon") == "TC" or ir.get("iwxxm_root") == "TropicalCycloneSIGMET":
+        return "TropicalCycloneSIGMET"
     if ir.get("phenomenon") == "VA" or ir.get("iwxxm_root") == "VolcanicAshSIGMET":
         return "VolcanicAshSIGMET"
     return "SIGMET"
@@ -515,9 +517,10 @@ def _sigmet_geometry_xml(
 
     if isinstance(geom, dict):
         g = cast(dict[str, Any], geom)
-        if g.get("kind") == "point":
+        if g.get("kind") in {"point", "circle"}:
             lat = float(g["lat"])
             lon = float(g["lon"])
+            radius = int(g["radius_nm"]) if g.get("kind") == "circle" and "radius_nm" in g else 0
             return f"""
               <iwxxm:geometry>
                 <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
@@ -532,7 +535,7 @@ def _sigmet_geometry_xml(
                                   <gml:segments>
                                     <gml:CircleByCenterPoint numArc="1">
                                       <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
-                                      <gml:radius uom="[nmi_i]">0</gml:radius>
+                                      <gml:radius uom="[nmi_i]">{radius}</gml:radius>
                                     </gml:CircleByCenterPoint>
                                   </gml:segments>
                                 </gml:Curve>
@@ -719,8 +722,76 @@ def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
     return ""
 
 
+def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
+    """Emit ``iwxxm:tropicalCyclone`` / metce name for TropicalCycloneSIGMET (#738)."""
+    name = ir.get("tropical_cyclone_name")
+    if not isinstance(name, str) or not name.strip():
+        return ""
+    slug = re.sub(r"[^a-z0-9]+", "", name.lower()) or "tc"
+    return f"""
+  <iwxxm:tropicalCyclone>
+    <metce:TropicalCyclone gml:id="tc.{slug}">
+      <metce:name>{escape(name.strip())}</metce:name>
+    </metce:TropicalCyclone>
+  </iwxxm:tropicalCyclone>
+"""
+
+
+def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
+    """Emit ``tropicalCyclonePosition`` Point when IR has a TC centre."""
+    pos = ir.get("tropical_cyclone_position")
+    if not isinstance(pos, dict) or "lat" not in pos or "lon" not in pos:
+        return ""
+    lat = float(cast(dict[str, Any], pos)["lat"])
+    lon = float(cast(dict[str, Any], pos)["lon"])
+    return f"""
+              <iwxxm:tropicalCyclonePosition>
+                <gml:Point gml:id="{gid}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                </gml:Point>
+              </iwxxm:tropicalCyclonePosition>"""
+
+
+def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
+    """Emit forecastPositionAnalysis for FCST AT … TC CENTRE PSN (A6-2-TC)."""
+    fcst = ir.get("tropical_cyclone_forecast")
+    if not isinstance(fcst, dict) or "lat" not in fcst or "lon" not in fcst:
+        return ""
+    f = cast(dict[str, Any], fcst)
+    lat = float(f["lat"])
+    lon = float(f["lon"])
+    hhmm = str(f.get("hhmm", "0000"))
+    day = int(ir["valid_to_day"])
+    # Prefer VALID end day; vendor A6-2 uses end-of-validity forecast time.
+    hour = int(hhmm[:2]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_hour"])
+    minute = int(hhmm[2:4]) if len(hhmm) == 4 and hhmm.isdigit() else int(ir["valid_to_minute"])
+    fcst_time = f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    if fcst_time > end:
+        fcst_time = end
+    return f"""
+      <iwxxm:forecastPositionAnalysis>
+        <iwxxm:SIGMETPositionCollection gml:id="fcst.pos.{fir.lower()}">
+          <iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.fcst.{fir.lower()}">
+              <gml:timePosition>{fcst_time}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>
+          <iwxxm:member>
+            <iwxxm:SIGMETPosition gml:id="fcst.cond.{fir.lower()}">
+              <iwxxm:tropicalCyclonePosition>
+                <gml:Point gml:id="fcst.tc.pos.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                </gml:Point>
+              </iwxxm:tropicalCyclonePosition>
+              <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
+            </iwxxm:SIGMETPosition>
+          </iwxxm:member>
+        </iwxxm:SIGMETPositionCollection>
+      </iwxxm:forecastPositionAnalysis>"""
+
+
 def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit an IWXXM SIGMET / VolcanicAshSIGMET document (F6.d / F23 G1–G3 / V2)."""
+    """Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document."""
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     issue, begin, end = _hazard_stamp(ir, "sigmet")
@@ -730,6 +801,8 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         gml_id = f"sigmet.cnl.{fir.lower()}"
     elif root == "VolcanicAshSIGMET":
         gml_id = f"sigmet.va.{fir.lower()}"
+    elif root == "TropicalCycloneSIGMET":
+        gml_id = f"sigmet.tc.{fir.lower()}"
     else:
         gml_id = f"sigmet.basic.{fir.lower()}"
 
@@ -773,9 +846,9 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
             if isinstance(item, dict):
                 locations.append(cast(dict[str, Any], item))
     multi = len(locations) >= 2
-    extra_xmlns = (
-        '\n    xmlns:metce="http://def.wmo.int/metce/2013"' if multi and isinstance(ir.get("volcano"), dict) else ""
-    )
+    is_tc = root == "TropicalCycloneSIGMET"
+    need_metce = is_tc or (multi and isinstance(ir.get("volcano"), dict))
+    extra_xmlns = '\n    xmlns:metce="http://def.wmo.int/metce/2013"' if need_metce else ""
     motion = _sigmet_motion_xml(ir)
     head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue, extra_xmlns=extra_xmlns).format(cancel_attr="")
 
@@ -808,6 +881,26 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         )
 
     geometry = _sigmet_geometry_xml(ir, fir=fir)
+    # Gen/VA single-location keep FORECAST (golden bar); TC uses OBSERVATION when OBS present.
+    if is_tc:
+        time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
+    else:
+        time_indicator = "FORECAST"
+    tc_pos = _sigmet_tc_position_xml(ir, gid=f"tc.pos.{fir.lower()}") if is_tc else ""
+    tc_fcst = _sigmet_tc_forecast_xml(ir, fir=fir, end=end) if is_tc else ""
+    tc_name_xml = _sigmet_tropical_cyclone_xml(ir) if is_tc else ""
+    intensity_attr = f' intensityChange="{escape(intensity)}"'
+    phenom_time = (
+        f"""
+          <iwxxm:phenomenonTime>
+            <gml:TimeInstant gml:id="t.obs.{fir.lower()}">
+              <gml:timePosition>{issue}</gml:timePosition>
+            </gml:TimeInstant>
+          </iwxxm:phenomenonTime>"""
+        if is_tc
+        else """
+          <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>"""
+    )
     return (
         head
         + f"""  <iwxxm:validPeriod>
@@ -820,17 +913,15 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
   <iwxxm:analysisCollection>
     <iwxxm:analysisAndForecastPositionAnalysis gml:id="analysis.{fir.lower()}">
       <iwxxm:analysis>
-        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
-          <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+        <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="{escape(time_indicator)}">{phenom_time}
           <iwxxm:member>
-            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}" intensityChange="{escape(intensity)}">{geometry}{motion}
+            <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}"{intensity_attr}>{tc_pos}{geometry}{motion}
             </iwxxm:SIGMETEvolvingCondition>
           </iwxxm:member>
         </iwxxm:SIGMETEvolvingConditionCollection>
-      </iwxxm:analysis>
+      </iwxxm:analysis>{tc_fcst}
     </iwxxm:analysisAndForecastPositionAnalysis>
-  </iwxxm:analysisCollection>
-</iwxxm:{root}>
+  </iwxxm:analysisCollection>{tc_name_xml}</iwxxm:{root}>
 """
     )
 

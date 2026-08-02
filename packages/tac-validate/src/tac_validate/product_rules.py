@@ -108,12 +108,14 @@ _SIGMET_FIR_CTA = re.compile(r"\b(?:FIR(?:/UIR)?|CTA|UIR)\b")
 _SIGMET_OBS_FCST = re.compile(r"\b(?:OBS|FCST)\b")
 _SIGMET_INTENSITY = re.compile(r"\b(?:INTSF|WKN|NC)\b")
 _SIGMET_VA_TOKEN = re.compile(r"\bVA\b")
+_SIGMET_TC_TOKEN = re.compile(r"\bTC\b")
 _SIGMET_VA_VOLCANO = re.compile(r"\bMT\b.+\bPSN\b|\bPSN\b.+\bMT\b")
 _SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
 _SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
 _SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
 _WS_MAX_VALIDITY_HOURS = 4.0
 _WV_MAX_VALIDITY_HOURS = 6.0
+_WC_MAX_VALIDITY_HOURS = 6.0
 
 # Phenomenon family markers (template+gate — not exhaustive Annex vocab).
 _SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -1446,7 +1448,14 @@ def _sigmet_validity_hours(start: str, end: str) -> float | None:
     return (end_m - start_m) / 60.0
 
 
-def _check_sigmet_g2(*, start: int, end: int, upper: str, is_va: bool = False) -> list[Issue]:
+def _check_sigmet_g2(
+    *,
+    start: int,
+    end: int,
+    upper: str,
+    is_va: bool = False,
+    is_tc: bool = False,
+) -> list[Issue]:
     """F23 theme G2 — sequence / validity duration / FIR / OBS·FCST / intensity."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
@@ -1476,9 +1485,16 @@ def _check_sigmet_g2(*, start: int, end: int, upper: str, is_va: bool = False) -
     valid = _SIGMET_VALID_PAIR.search(core)
     if valid is not None:
         hours = _sigmet_validity_hours(valid.group(1), valid.group(2))
-        max_hours = _WV_MAX_VALIDITY_HOURS if is_va else _WS_MAX_VALIDITY_HOURS
+        if is_va:
+            max_hours = _WV_MAX_VALIDITY_HOURS
+            label = "6 hours (WV)"
+        elif is_tc:
+            max_hours = _WC_MAX_VALIDITY_HOURS
+            label = "6 hours (WC)"
+        else:
+            max_hours = _WS_MAX_VALIDITY_HOURS
+            label = "4 hours (WS)"
         if hours is not None and hours > max_hours:
-            label = "6 hours (WV)" if is_va else "4 hours (WS)"
             _emit_token_info(
                 issues,
                 code="INVALID_VALIDITY_DURATION",
@@ -1765,7 +1781,8 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
         if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
             return issues
         is_va = bool(_SIGMET_VA_TOKEN.search(upper))
-        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va))
+        is_tc = bool(_SIGMET_TC_TOKEN.search(upper))
+        issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va, is_tc=is_tc))
         if is_va:
             issues.extend(_check_sigmet_v1(start=start, end=end, upper=upper))
     elif product == "AIRMET":

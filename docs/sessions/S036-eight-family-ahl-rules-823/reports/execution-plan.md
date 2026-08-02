@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M7 — TC SIGMET (F23 deepen / #738) |
-| **Active task** | T7.2 — pending; T7.1 COMPLETE |
-| **Tasks** | 28 / 48 completed |
+| **Active task** | T7.3 — pending; T7.2 COMPLETE |
+| **Tasks** | 29 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -122,7 +122,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T7.1 | Test | TC SIGMET → `TropicalCycloneSIGMET` fixtures | TC-EV029-004; #738 | T6.3 | **completed** |
-| T7.2 | Code | TC SIGMET quality path (lint/convert/validate) | F23; S02.M2 | T7.1 | pending |
+| T7.2 | Code | TC SIGMET quality path (lint/convert/validate) | F23; S02.M2 | T7.1 | **completed** |
 | T7.3 | Config | TC pack workflow (`tc-sigmet-quality.yml` or extend sigmet) | E29-T4 | T7.2 | pending |
 | T7.4 | Docs | Close or child-issue #738 residuals | #738 | T7.3 | pending |
 
