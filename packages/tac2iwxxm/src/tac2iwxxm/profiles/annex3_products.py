@@ -376,6 +376,11 @@ def _sigmet_header_units(
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        status = str(override)
+    else:
+        status = "NORMAL"
     # Default synthetic display names from designators; WMO multi-location VA stem
     # uses long ATS/MWO names from the vendor example (S02.M1 / #809).
     if _is_wmo_sigmet_multi_location_va_yudd(ir):
@@ -393,7 +398,7 @@ def _sigmet_header_units(
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"{extra_xmlns}
     gml:id="{gml_id}"
-    reportStatus="NORMAL"
+    reportStatus="{status}"
     permissibleUsage="OPERATIONAL"{{cancel_attr}}>
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">

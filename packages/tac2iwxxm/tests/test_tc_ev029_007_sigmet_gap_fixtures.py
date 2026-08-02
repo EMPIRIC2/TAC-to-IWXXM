@@ -5,10 +5,9 @@ WS AHL body/BBB matrix and multi-report (example-inventory §A SIGMET gen row; r
 §B.4; WS→LS + BBB→reportStatus). CNL covered via A6-1b seed + AHL CNL fixture.
 
 Product-order smoke (TC-EV029-007 pack seed for gen SIGMET) uses annex3
-``sigmet_a6_1a_ts``. BBB→``reportStatus`` and ``split_bulletin(product=\"SIGMET\")``
-are T5.2 code gaps (AHL parse/filename keep-green from M1; SIGMET emitter hardcodes
-``reportStatus=\"NORMAL\"`` today; bulletin split rejects SIGMET until the WS body
-splitter lands).
+``sigmet_a6_1a_ts``. BBB→``reportStatus`` reuses ``convert(report_status=)`` with
+SIGMET emitter honor (T5.2); ``split_bulletin(product=\"SIGMET\")`` accepts WS AHL
+bodies.
 """
 
 from __future__ import annotations

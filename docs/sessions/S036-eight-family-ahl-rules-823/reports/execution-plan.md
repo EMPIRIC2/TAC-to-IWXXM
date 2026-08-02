@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — General SIGMET (F23 deepen) |
-| **Active task** | T5.2 — pending; T5.1 red fixtures landed |
-| **Tasks** | 20 / 48 completed |
+| **Active task** | T5.3 — pending; T5.2 gen SIGMET split + reportStatus green |
+| **Tasks** | 21 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -106,7 +106,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Test | Gen SIGMET gap fixtures + CNL as needed | TC-EV029-007; F23 | T4.3 | **completed** |
-| T5.2 | Code | Gen SIGMET deltas; root `iwxxm:SIGMET` | F23; F6.d | T5.1 | pending |
+| T5.2 | Code | Gen SIGMET deltas; root `iwxxm:SIGMET` | F23; F6.d | T5.1 | **completed** |
 | T5.3 | Config | Extend `sigmet-quality.yml` for gen pack | E29-T4 | T5.2 | pending |
 
 ### M6 — VA SIGMET (F23 deepen)
