@@ -85,7 +85,7 @@ Status codes: `pass` · `gap` · `N/A` · `defer+child` · `mine` (needs T0.2 di
 | TAF | mine | mine | mine | F20 Done — deepen |
 | SIGMET gen | mine | mine | mine | F23 Done — deepen |
 | VA SIGMET | mine | mine | mine | F23 Done — deepen |
-| TC SIGMET | gap | gap | gap | #738 open; F23 deepen |
+| TC SIGMET | gap | gap (T7.1 fixtures) | gap | #738 open; F23 deepen M7 |
 | AIRMET | mine | mine | mine | F24 Done — deepen |
 | VAA | mine | mine | mine | F26 Done; #820 / #823 B4 |
 | TCA | mine | mine | mine | F27 Done; #820 / #823 B4 |

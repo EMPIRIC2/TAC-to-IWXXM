@@ -40,11 +40,11 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; next M7 @ T7.1; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
+    note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
     current_milestone: M7
     active_milestone: M7
-    current_task: T7.1
-    active_task: T7.1
+    current_task: T7.2
+    active_task: T7.2
     active_task_status: pending
   started_at: '2026-08-01'
   pr_number: 828
@@ -141,11 +141,11 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; next M7 @ T7.1; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
+    note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
     current_milestone: M7
     active_milestone: M7
-    current_task: T7.1
-    active_task: T7.1
+    current_task: T7.2
+    active_task: T7.2
     active_task_status: pending
   started_at: '2026-08-01'
   note: 'S036/EV-029 — 07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; next M7 @ T7.1; tac2iwxxm 0.2.1; #828; umbrella #823; F28+deepen; absorb #738/#820/#740'
@@ -5570,11 +5570,11 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; #828 M2–M6; tac2iwxxm 0.2.1; next M7 @ T7.1; #823'
+    note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
     current_milestone: M7
-    current_task: T7.1
+    current_task: T7.2
     active_milestone: M7
-    active_task: T7.1
+    active_task: T7.2
     active_task_status: pending
     decision_refs:
     - D-S036-04-plan
@@ -5605,11 +5605,11 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; #828 M2–M6; tac2iwxxm 0.2.1; next M7 @ T7.1; #823'
+      note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
       active_milestone: M7
       current_milestone: M7
-      active_task: T7.1
-      current_task: T7.1
+      active_task: T7.2
+      current_task: T7.2
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -5646,12 +5646,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T6.1
+        current_task: T7.2
         active_task_status: pending
-        active_milestone: M6
+        active_milestone: M7
         phase: C
-        milestone: M6
-        notes: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
+        milestone: M7
+        notes: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5661,11 +5661,11 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
-      active_milestone: M6
-      current_milestone: M6
-      active_task: T6.1
-      current_task: T6.1
+      note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+      active_milestone: M7
+      current_milestone: M7
+      active_task: T7.2
+      current_task: T7.2
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -25468,11 +25468,11 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: '07-build in_progress — M6 T6.3 pending (VA quality pack CI); T6.1 @ b6fed4f; T6.2 COMPLETE @ 091f14c; #828; #823'
-      current_milestone: M6
-      active_milestone: M6
-      current_task: T6.3
-      active_task: T6.3
+      note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+      current_milestone: M7
+      active_milestone: M7
+      current_task: T7.2
+      active_task: T7.2
       active_task_status: pending
     08-verify-build:
       status: pending
