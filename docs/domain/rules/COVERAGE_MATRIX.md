@@ -64,7 +64,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | **F27 / #737** S027/EV-021 — T1–T3/C1 closed prior; **#820/#823 B4** deepen **S036/EV-029 M10** |
 | **SWXA** | ✅ Annex 3 App 2 Table **A2-3** (cite); SpaceWx registry TBD F28 | ✅ Guidance + `spacewx-A7-3/4/5` (+ alt); AHL `FN`→`LN` | ✅ `spaceWeatherAdvisory.xsd` + SCH | **F28 Planned — S036/EV-029 M11** · #740 · #823 |
 | **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO base + iwxxm-us 3.0 | GIFTs stripped REMARKS |
-| **Bulletin / AHL** | ✅ WMO AHL page **v1.0.1** (fetched 2026-08-01) | ✅ AHL T1T2 TAC↔IWXXM + BBB prefixes + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | Engine still METAR/SPECI-only (`bulletin.py`) — generalize **S036/EV-029 M1**; WIS2 ≠ COLLECT ([Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
+| **Bulletin / AHL** | ✅ WMO AHL page **v1.0.1** (fetched 2026-08-01) | ✅ AHL T1T2 TAC↔IWXXM + BBB prefixes + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | **S036/EV-029 M1 closed** — shared `parse_ahl` / `map_t1t2` / BBB / `iwxxm_filename` in `tac2iwxxm` (+ dissemination thin wrap); body **split** still METAR/SPECI until per-family Ms; WIS2 ≠ COLLECT ([Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
 
 ---
 
@@ -359,7 +359,7 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 
 | Family | Lint | Convert | IWXXM-validate | Bulletin AHL | Milestone |
 |--------|------|---------|----------------|--------------|-----------|
-| AHL/COM | gap | gap | N/A | gap (METAR/SPECI only today) | **M1** |
+| AHL/COM | ok (prefix BBB) | ok (`parse_ahl` / map / filename) | N/A | **ok** shared API (TC-EV029-003); body split METAR/SPECI only | **M1 closed** |
 | METAR | ok/deepen | ok/deepen | ok | covered (package) | **M2** |
 | SPECI | ok/deepen | ok/deepen | ok | gap | **M3** |
 | TAF | ok/deepen | ok/deepen | ok | partial (NIL-collect) | **M4** |
@@ -378,7 +378,7 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | no BBB / `RRx` | `reportStatus` NORMAL (subsequent) | Prefix family `RR` + x=A…X |
 | `AAx` | AMENDMENT | Not bare token `A` |
 | `CCx` | CORRECTION | Not bare token `C` |
-| Y/Z BBB | Special purposes (AHL page) | Document + fixture if needed |
+| Y/Z BBB | Special purposes (AHL page) | **Rejected** for reportStatus (x ∈ A…X only) — T1.1 fixtures |
 | Product CNL / NIL | **Not** reportStatus | Per-family CNL/NIL paths (TC-EV029-006) |
 
 ### Shape coverage (TC-EV029-002) — summary
@@ -394,10 +394,11 @@ after its milestone; until then track under #823:
 
 | Residual | Track | Target Ms |
 |----------|-------|-----------|
-| Shared AHL/`T1T2`/BBB/filename API | #823 B1–B3 | M1 (+ T0.5 design note) |
+| Shared AHL/`T1T2`/BBB/filename API | #823 B1–B3 | **M1 closed** (`8214b90`/`4cace9c`/`f1e87c5`) |
+| Per-family body `split_bulletin` (non-METAR/SPECI) | #823 | M2–M11 product packs |
 | TC SIGMET quality bar | #738 | M7 |
 | VAA/TCA multi-report / encode residuals | #820 | M9 / M10 |
 | SWXA F28 product path | #740 | M11 |
-| Non-METAR AHL + multi-report fixtures | #823 (+ FIXTURE_GAPS stem rows) | M1–M11 |
+| Non-METAR multi-report body fixtures | #823 (+ FIXTURE_GAPS stem rows) | M2–M11 |
 | Second WMO peers (METAR/SPECI/AIRMET/VAA/TCA) | FIXTURE_GAPS (pin has one) | document-only |
 | AIRMET CNL peer absent from pin | FIXTURE_GAPS | document-only |

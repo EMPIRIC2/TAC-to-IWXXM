@@ -89,22 +89,23 @@ Inventory SoT (F6 seven happy-path):
 | `metar_c1_multi_report.tac` | METAR | Multi-report (lint) | Accept pack | `tac-validate/.../accept/` |
 | `product_matrix/*` | mixed | Standalone (trimmed) | Convert matrix | `tac2iwxxm/.../product_matrix/` |
 
-**AHL `T1T2` fixture coverage today (B1 table):** only **SA** (METAR) has dedicated
-happy-path AHL fixtures. Vendor supplies **FV** (VAA), **SA**/NIL, **FT**/NIL, **WS**
-(quarantine collect). All other `T1T2` → **gap → M1** design + per-family packs.
+**AHL `T1T2` fixture coverage (B1 / TC-EV029-003):** **M1 closed** — heading-only
+accept fixtures for every TAC `T1T2` under `packages/tac2iwxxm/tests/fixtures/ahl/`
+(+ BBB accept/reject). Vendor still supplies **FV** / NIL-collect peers. Remaining gaps
+are **body split + multi-report** per family (M2–M11).
 
-| TAC `T1T2` | Family | AHL fixture today | Fill in |
-|-----------:|--------|-------------------|---------|
-| SA | METAR | package + NIL-collect | M1/M2 deepen BBB matrix |
-| SP | SPECI | **gap** | M1/M3 |
-| FC / FT | TAF | FT via NIL-collect only | M1/M4 (FC + FT happy) |
-| WS | SIGMET gen | quarantine collect only | M1/M5 |
-| WV | VA SIGMET | **gap** | M1/M6 |
-| WC | TC SIGMET | **gap** | M1/M7 |
-| WA | AIRMET | **gap** | M1/M8 |
-| FV | VAA | vendor `va-advisory-A7-2` | M1/M9 multi-report |
-| FK | TCA | **gap** | M1/M10 |
-| FN | SWXA | **gap** | M1/M11 |
+| TAC `T1T2` | Family | AHL heading fixture | Remaining |
+|-----------:|--------|---------------------|-----------|
+| SA | METAR | package + `ahl/sa_*` + NIL-collect | M2 deepen body/BBB matrix |
+| SP | SPECI | `ahl/sp_speci.txt` | M3 body split |
+| FC / FT | TAF | `ahl/fc_*` / `ahl/ft_*` | M4 body split |
+| WS | SIGMET gen | `ahl/ws_sigmet.txt` | M5 body split |
+| WV | VA SIGMET | `ahl/wv_va_sigmet.txt` | M6 body split |
+| WC | TC SIGMET | `ahl/wc_tc_sigmet.txt` | M7 body split |
+| WA | AIRMET | `ahl/wa_airmet.txt` | M8 body split |
+| FV | VAA | `ahl/fv_vaa.txt` + vendor A7-2 | M9 multi-report |
+| FK | TCA | `ahl/fk_tca.txt` | M10 body split |
+| FN | SWXA | `ahl/fn_swxa.txt` | M11 body + encode |
 
 ---
 

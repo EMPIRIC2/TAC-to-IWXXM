@@ -79,7 +79,7 @@ Status codes: `pass` · `gap` · `N/A` · `defer+child` · `mine` (needs T0.2 di
 
 | Family | Lint | Convert | IWXXM-validate | Notes / prior Fn |
 |--------|------|---------|----------------|------------------|
-| AHL/COM | mine | mine | N/A (framing) | F6.bulletin; #823 B1–B3 |
+| AHL/COM | **pass** (BBB) | **pass** (parse/map/filename) | N/A (framing) | F6.bulletin; #823 B1–B3 — **M1 closed** |
 | METAR | mine | mine | mine | F15 Done — deepen gaps only |
 | SPECI | mine | mine | mine | F20 Done — deepen |
 | TAF | mine | mine | mine | F20 Done — deepen |

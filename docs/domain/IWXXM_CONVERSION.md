@@ -152,7 +152,9 @@ ICAO Annex 3 (App 2/3/5/6) requires F6 products **shall** be exchanged in IWXXM 
 
 **SoT:** [AHLs for aviation data over ICAO AFS](https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs) **v1.0.1** (2025-08-11; fetched 2026-08-01) · OPMET Guidelines 5th (filename / COLLECT) · #823 B1–B3.  
 Session digs: [eight-family-remine-pass.md](../sessions/S036-eight-family-ahl-rules-823/reports/mining/eight-family-remine-pass.md) · design surface note **T0.5**.  
-Engine today: `packages/tac2iwxxm` `bulletin.py` — **METAR/SPECI AHL only**; generalize in **M1** (dissemination imports same API).
+Engine: `packages/tac2iwxxm` `bulletin.py` — **M1 closed** shared `parse_ahl` / `map_t1t2` /
+BBB / `iwxxm_filename` (dissemination imports same API); body **`split_bulletin`** still
+METAR/SPECI until per-family milestones.
 
 ### Heading form
 
