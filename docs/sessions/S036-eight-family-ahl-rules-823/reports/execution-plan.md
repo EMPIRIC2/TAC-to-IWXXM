@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M6 — VA SIGMET (F23 deepen) |
-| **Active task** | T6.1 — pending; M5 complete (T5.1–T5.3) on #828 |
-| **Tasks** | 22 / 48 completed |
+| **Active task** | T6.2 — pending; T6.1 complete (VA gap fixtures red TDD) |
+| **Tasks** | 23 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -113,7 +113,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Test | VA SIGMET gap fixtures | F23; TC-EV029-007 | T5.3 | pending |
+| T6.1 | Test | VA SIGMET gap fixtures | F23; TC-EV029-007 | T5.3 | **completed** |
 | T6.2 | Code | VA SIGMET deltas; root `VolcanicAshSIGMET` | F23; F6.d | T6.1 | pending |
 | T6.3 | Config | VA paths in `sigmet-quality.yml` (or `va-sigmet-quality.yml`) | E29-T4 | T6.2 | pending |
 
