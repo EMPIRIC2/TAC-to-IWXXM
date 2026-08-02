@@ -35,4 +35,5 @@ No browser UI — H4–H5 N/A. PyPI OIDC + CI are the deploy surfaces.
 
 ## Status
 
-**Approved** 2026-08-01 — `D-S035-routing`: **5a** Lean+build; **6b** all three packages → `0.1.1`.
+**Approved** 2026-08-01 — `D-S035-routing`: **5a** Lean+build; **6b** all three packages → `0.1.1`.  
+**Completed** 2026-08-01 — PR #824 merged; #781 closed; stages 07/08/10/13 done.

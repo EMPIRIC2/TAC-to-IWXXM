@@ -10,7 +10,7 @@
 **Issues**: [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781)  
 **Started**: 2026-08-01  
 **Branch**: `evolve/EV-028-empiric2-ops-leftovers-781`  
-**Status**: **in_progress**
+**Status**: **completed** (2026-08-01) — PR [#824](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/824) @ `70312dd`; #781 closed
 
 ### Scope (Phase 0 — locked 2026-08-01)
 
@@ -74,7 +74,10 @@ Skip this cycle: Spec architecture rewrite, API contract, user-journeys (UJ-023 
 | 01-requirements | 2026-08-01 | E28-M / E28-E1 |
 | 02-verify-plan | 2026-08-01 | Gate A PASS; UJ-023 amend |
 | 04-tech-plan | 2026-08-01 | Gate B PASS; E28-T2=11b |
-| 07-build | | M0–M3 tasks T0–T3.4 done (T3.1/T3.2 catch-up PASS); T3.5 PR closeout pending |
+| 07-build | 2026-08-01 | M0–M3 complete; PR #824 merged |
+| 08-verify-build | 2026-08-01 | T3.1 PASS |
+| 10-e2e | 2026-08-01 | T3.2 packaging smoke PASS |
+| 13-deploy-smoke | 2026-08-01 | OIDC publishes + T3.4 install smoke PASS |
 
 ---
 
