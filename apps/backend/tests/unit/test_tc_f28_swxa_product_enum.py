@@ -43,10 +43,17 @@ def _multipart(client: TestClient, path: str, fields: dict[str, str]):
 def test_normalize_api_product_accepts_swxa_rejects_swx() -> None:
     assert api_module.normalize_api_product("swxa") == "SWXA"
     assert api_module.normalize_api_product("SWXA") == "SWXA"
+    assert api_module.normalize_api_product("", default="METAR") == "METAR"
+    assert api_module.normalize_api_product(None, default="SPECI") == "SPECI"
     with pytest.raises(api_module.HTTPException) as exc_info:
         api_module.normalize_api_product("swx")
     assert exc_info.value.status_code == 400
     assert exc_info.value.detail["code"] == "unknown_product"
+    with pytest.raises(api_module.HTTPException) as required:
+        api_module.normalize_api_product("", default=None)
+    assert required.value.status_code == 400
+    assert required.value.detail["code"] == "unknown_product"
+    assert "required" in required.value.detail["message"]
 
 
 def test_lint_tac_accepts_product_swxa(client: TestClient) -> None:
@@ -83,6 +90,20 @@ def test_convert_accepts_product_swxa(client: TestClient) -> None:
     assert results, body
     xml = results[0].get("content") or results[0].get("xml") or ""
     assert "SpaceWeatherAdvisory" in xml
+
+
+def test_convert_bulletin_rejects_swx(client: TestClient) -> None:
+    response = _multipart(
+        client,
+        "/api/v1/convert-bulletin",
+        {
+            "manual_text": "FNUS01 KWNP 121200\nSWX ADVISORY\nDTG: 20201108/0100Z\n=",
+            "product": "swx",
+            "lint": "false",
+        },
+    )
+    assert response.status_code == 400, response.text[:400]
+    assert "unknown_product" in response.text
 
 
 @pytest.mark.parametrize("bad", ("swx", "SWX", "notaproduct"))
