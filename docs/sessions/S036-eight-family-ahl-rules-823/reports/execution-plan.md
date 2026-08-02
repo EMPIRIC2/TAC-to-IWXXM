@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M11 — SWXA / F28 |
-| **Active task** | T11.6 — pending (T11.5 ready to commit) |
+| **Active task** | T11.6 — pending |
 | **Tasks** | 40 / 48 completed |
 | **Last updated** | 2026-08-02 |
 

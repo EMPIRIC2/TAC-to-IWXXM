@@ -40,11 +40,11 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T11.1+T11.2 COMPLETE @ 97187db — SWXA SX1 fixtures/registry/lint (theme SX1 not SPECI S1); PRODUCTS includes SWXA; TC-F28-001/004 green; tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; tip 97187db (will push; may still be ahead); M11 active; #828; #823"
+    note: "T11.5 COMPLETE @ 505b081 — product=swxa runtime enum (reject swx); multiline+decode+work-session CHECK; next T11.6 swxa-quality.yml; tip 505b081; M11 active; #828; #823"
     current_milestone: M11
     active_milestone: M11
-    current_task: T11.3
-    active_task: T11.3
+    current_task: T11.6
+    active_task: T11.6
     active_task_status: pending
   started_at: '2026-08-01'
   pr_number: 828
@@ -153,7 +153,7 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T11.1+T11.2 COMPLETE @ 97187db — SWXA SX1 fixtures/registry/lint (theme SX1 not SPECI S1); PRODUCTS includes SWXA; TC-F28-001/004 green; tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; tip 97187db (will push; may still be ahead); M11 active; #828; #823"
+    note: "T11.5 COMPLETE @ 505b081 — product=swxa runtime enum (reject swx); multiline+decode+work-session CHECK; next T11.6 swxa-quality.yml; tip 505b081; M11 active; #828; #823"
     current_milestone: M11
     active_milestone: M11
     current_task: T11.3
@@ -5584,7 +5584,7 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: "T11.1+T11.2 COMPLETE @ 97187db — SWXA SX1 fixtures/registry/lint (theme SX1 not SPECI S1); PRODUCTS includes SWXA; TC-F28-001/004 green; tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; tip 97187db (will push; may still be ahead); M11 active; #828; #823"
+    note: "T11.5 COMPLETE @ 505b081 — product=swxa runtime enum (reject swx); multiline+decode+work-session CHECK; next T11.6 swxa-quality.yml; tip 505b081; M11 active; #828; #823"
     current_milestone: M11
     current_task: T11.3
     active_milestone: M11
@@ -5623,7 +5623,7 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: "T11.1+T11.2 COMPLETE @ 97187db — SWXA SX1 fixtures/registry/lint (theme SX1 not SPECI S1); PRODUCTS includes SWXA; TC-F28-001/004 green; tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; tip 97187db (will push; may still be ahead); M11 active; #828; #823"
+      note: "T11.5 COMPLETE @ 505b081 — product=swxa runtime enum (reject swx); multiline+decode+work-session CHECK; next T11.6 swxa-quality.yml; tip 505b081; M11 active; #828; #823"
       active_milestone: M11
       current_milestone: M11
       active_task: T11.3
@@ -5681,7 +5681,7 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: "T11.1+T11.2 COMPLETE @ 97187db — SWXA SX1 fixtures/registry/lint (theme SX1 not SPECI S1); PRODUCTS includes SWXA; TC-F28-001/004 green; tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; tip 97187db (will push; may still be ahead); M11 active; #828; #823"
+      note: "T11.5 COMPLETE @ 505b081 — product=swxa runtime enum (reject swx); multiline+decode+work-session CHECK; next T11.6 swxa-quality.yml; tip 505b081; M11 active; #828; #823"
       active_milestone: M11
       current_milestone: M11
       active_task: T11.3
@@ -25690,7 +25690,7 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: "T11.1+T11.2 COMPLETE @ 97187db — SWXA SX1 fixtures/registry/lint (theme SX1 not SPECI S1); PRODUCTS includes SWXA; TC-F28-001/004 green; tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; tip 97187db (will push; may still be ahead); M11 active; #828; #823"
+      note: "T11.5 COMPLETE @ 505b081 — product=swxa runtime enum (reject swx); multiline+decode+work-session CHECK; next T11.6 swxa-quality.yml; tip 505b081; M11 active; #828; #823"
       current_milestone: M11
       active_milestone: M11
       current_task: T11.3
@@ -25848,9 +25848,9 @@ git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
   ahead_of_origin: 1
   pushed: false
-  pending_commit: tip-sync workflow-state after 97187db
-  tip_sha: 97187db
-  tip_sha_full: 97187db0d08fe685d16f9a98ac5384a79ea794d3
+  pending_commit: tip-sync workflow-state after 505b081
+  tip_sha: 505b081
+  tip_sha_full: 505b0814dda30848dddbc0bae07c853defd49102
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
   note: 'S036/EV-029 — T11.1+T11.2 COMPLETE @ 97187db; M11 @ T11.3 pending (SWXA SX1 not SPECI S1; PRODUCTS includes SWXA; TC-F28-001/004 green); tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; tip 97187db (will push; ahead≥1); #828; #823'
   notes:
@@ -27146,6 +27146,27 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 505b081
+    sha_full: 505b0814dda30848dddbc0bae07c853defd49102
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T11.5] feat: runtime product=swxa enum (reject swx)"
+    stage: 07-build
+    files_changed: 13
+    timestamp: "2026-08-02T21:12:00Z"
+  - sha: 19915e2
+    sha_full: 19915e292d7de630acf87ce22d7483afce936230
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T11.3] test: SWXA convert XSD+SCH and adjacency (TC-F28-002/003/006)"
+    stage: 07-build
+    files_changed: 12
+    timestamp: "2026-08-02T20:44:48Z"
+  - sha: 37ebc15
+    sha_full: 37ebc15af4a578ea67819f9522529d78df777ea9
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T11.4] feat: SWXA annex3 encode and FN bulletin split"
+    stage: 07-build
+    files_changed: 5
+    timestamp: "2026-08-02T20:43:30Z"
   - sha: 97187db
     sha_full: 97187db0d08fe685d16f9a98ac5384a79ea794d3
     branch: evolve/EV-029-eight-family-ahl-rules
