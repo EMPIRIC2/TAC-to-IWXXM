@@ -17,7 +17,8 @@ MANIFEST_PATH = FIXTURES / "manifest.json"
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
-EXPECTED_PRODUCTS = frozenset(PRODUCTS)
+# F6 convert matrix (7). SWXA is in tac_validate.PRODUCTS (F28) but encode lands T11.3+.
+EXPECTED_PRODUCTS = frozenset(PRODUCTS) - {"SWXA"}
 
 _CASE_IDS = (
     "airmet_basic",
