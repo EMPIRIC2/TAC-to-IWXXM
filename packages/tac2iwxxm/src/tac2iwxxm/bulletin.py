@@ -75,6 +75,12 @@ _TAC_TCA = re.compile(
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
+# SWXA body — SWX ADVISORY … = (``=`` preferred for multi; single block may omit — §3.2 / M11)
+_TAC_SWXA = re.compile(
+    r"^SWX\s+ADVISORY\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
 _PRODUCT_TT: dict[str, frozenset[str]] = {
     "METAR": frozenset({"SA"}),
     "SPECI": frozenset({"SP"}),
@@ -85,6 +91,7 @@ _PRODUCT_TT: dict[str, frozenset[str]] = {
     "AIRMET": frozenset({"WA"}),
     "VAA": frozenset({"FV"}),
     "TCA": frozenset({"FK"}),
+    "SWXA": frozenset({"FN"}),
 }
 
 _PRODUCT_BODY_RE: dict[str, re.Pattern[str]] = {
@@ -95,6 +102,7 @@ _PRODUCT_BODY_RE: dict[str, re.Pattern[str]] = {
     "AIRMET": _TAC_AIRMET,
     "VAA": _TAC_VAA,
     "TCA": _TAC_TCA,
+    "SWXA": _TAC_SWXA,
 }
 
 
@@ -324,8 +332,8 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         Full bulletin text including the AHL line and one or more TAC reports.
     product :
         Product hint selecting the AHL dialect (``METAR``, ``SPECI``, ``TAF``,
-        ``SIGMET`` for WS/WV/WC, ``AIRMET`` for WA, ``VAA`` for FV, or ``TCA``
-        for FK; other products raise until their splitters land).
+        ``SIGMET`` for WS/WV/WC, ``AIRMET`` for WA, ``VAA`` for FV, ``TCA``
+        for FK, or ``SWXA`` for FN).
 
     Returns
     -------
@@ -394,6 +402,8 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         reports = [r for r in reports if re.match(r"^VA\s+ADVISORY\b", r, re.IGNORECASE)]
     elif product_key == "TCA":
         reports = [r for r in reports if re.match(r"^TC\s+ADVISORY\b", r, re.IGNORECASE)]
+    elif product_key == "SWXA":
+        reports = [r for r in reports if re.match(r"^SWX\s+ADVISORY\b", r, re.IGNORECASE)]
 
     if not reports:
         raise BulletinSplitError(
