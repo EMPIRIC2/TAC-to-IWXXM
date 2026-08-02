@@ -54,9 +54,9 @@ active_session:
   current_stage: 07-build
   active_milestone: M3
   active_task: T3.5
-  active_task_status: pending
+  active_task_status: in_progress
   started_at: '2026-08-01'
-  note: 'T3.1+T3.2 COMPLETE — verify-build PASS (lint/typecheck/package+native tests; no codecov); packaging smoke PASS (landings); reports t31-verify-build.md + t32-packaging-smoke.md @ 305658f; next T3.5 PR closeout; branch ahead 2 of origin; #781'
+  note: 'T3.5 STARTED — push evolve branch + open/update PR for #781 closeout; tip bf9f48c; ahead 3; #781'
   context_briefs: []
   decision_refs:
   - D-S035-open
@@ -110,7 +110,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-01'
-    note: "in_progress — T3.1+T3.2 catch-up COMPLETE @ 305658f; active_task T3.5 pending (PR closeout); #781"
+    note: "in_progress — T3.5 STARTED @ bf9f48c; push evolve branch + open/update PR for #781 closeout; ahead 3; #781"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5277,15 +5277,15 @@ stages:
     previous_note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: 305658f
-    tip_sha_full: 305658fba7e877a9cc0625c838aff5ee25a99b15
-    note: 'T3.1+T3.2 COMPLETE @ 305658f — verify-build + packaging smoke PASS; next T3.5 PR closeout; branch ahead 2 of origin; #781'
+    tip_sha: bf9f48c
+    tip_sha_full: bf9f48cffd5c4f412e65c0b8558103e2fa306933
+    note: 'T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
     current_stage: M3
     current_milestone: M3
     current_task: T3.5
     active_milestone: M3
     active_task: T3.5
-    active_task_status: pending
+    active_task_status: in_progress
     progress: 0/15
     decision_refs:
     - D-S035-04-plan-approve
@@ -5312,12 +5312,12 @@ stages:
       mode: delta
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'T3.1+T3.2 COMPLETE @ 305658f — verify-build + packaging smoke PASS; next T3.5 PR closeout; #781'
+      note: 'T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
       active_milestone: M3
       current_milestone: M3
       active_task: T3.5
       current_task: T3.5
-      active_task_status: pending
+      active_task_status: in_progress
       progress: 0/15
       deepen:
       - F12
@@ -5339,11 +5339,11 @@ stages:
       task_loop:
         status: in_progress
         current_task: T3.5
-        active_task_status: pending
+        active_task_status: in_progress
         active_milestone: M3
         phase: C
         milestone: M3
-        notes: 'S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f; next T3.5 PR closeout; #781'
+        notes: 'S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; #781'
     delta_substages:
     - id: S035-empiric2-ops-leftovers-781
       session_id: S035-empiric2-ops-leftovers-781
@@ -5353,16 +5353,16 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: delta
-      note: 'T3.1+T3.2 COMPLETE @ 305658f — verify-build + packaging smoke PASS; next T3.5 PR closeout; #781'
+      note: 'T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
       active_milestone: M3
       current_milestone: M3
       active_task: T3.5
       current_task: T3.5
-      active_task_status: pending
+      active_task_status: in_progress
       progress: 0/15
       decision_id: D-S035-14d
-      tip_sha: 305658f
-      tip_sha_full: 305658fba7e877a9cc0625c838aff5ee25a99b15
+      tip_sha: bf9f48c
+      tip_sha_full: bf9f48cffd5c4f412e65c0b8558103e2fa306933
       branch: evolve/EV-028-empiric2-ops-leftovers-781
       deepen:
       - F12
@@ -5762,6 +5762,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
     - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build PASS (lint/typecheck/package+native tests; no codecov); packaging smoke PASS (landings); reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5 PR closeout; branch ahead 2 of origin; #781'
     - '2026-08-01 S035/EV-028 T3.4 docs committed @ 3efcb8d; T3.1 STARTED — lint/typecheck/tests + no codecov; then T3.2; #781'
     - '2026-08-01 S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report t34-pypi-install-smoke.md; next T3.5 (T3.1/T3.2 plan catch-up pending); tip 84aca02 (+ pending docs commit); #781'
@@ -7686,11 +7687,12 @@ stages:
     completed_at:
     completed:
     current_stage: 07-build
-    note: 'S035/EV-028 16-evolve in_progress — T3.1+T3.2 COMPLETE @ 305658f; verify-build + packaging smoke PASS; next T3.5 PR closeout; branch ahead 2 of origin; #781'
-    prior_note: 'S035/EV-028 16-evolve in_progress — T3.4 docs committed @ 3efcb8d; T3.1 STARTED — lint/typecheck/tests + no codecov; then T3.2 packaging smoke; #781'
-    tip_sha: 305658f
-    tip_sha_full: 305658fba7e877a9cc0625c838aff5ee25a99b15
+    note: 'S035/EV-028 16-evolve in_progress — T3.5 STARTED @ bf9f48c; push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
+    prior_note: 'S035/EV-028 16-evolve in_progress — T3.1+T3.2 COMPLETE @ 305658f; verify-build + packaging smoke PASS; next T3.5 PR closeout; branch ahead 2 of origin; #781'
+    tip_sha: bf9f48c
+    tip_sha_full: bf9f48cffd5c4f412e65c0b8558103e2fa306933
     notes:
+    - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
     - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build PASS (lint/typecheck/package+native tests; no codecov); packaging smoke PASS (landings); reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5 PR closeout; branch ahead 2 of origin; #781'
     - '2026-08-01 S035/EV-028 T3.4 docs committed @ 3efcb8d — smoke report + plan sync; T3.1 STARTED (lint/typecheck/tests + no codecov); then T3.2; #781'
     - '2026-08-01 S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report t34-pypi-install-smoke.md; next T3.5 (T3.1/T3.2 plan catch-up pending); tip 84aca02 (+ pending docs commit); #781'
@@ -24400,7 +24402,7 @@ evolve_cycles:
     Tag publish proof (D-S035-routing 6b): bump + publish tac-validate, iwxxm-validate, and tac2iwxxm to 0.1.1 via OIDC.
   current_stage: 07-build
   active_task: T3.5
-  active_task_status: pending
+  active_task_status: in_progress
   github_issues:
   - '781'
   branch: evolve/EV-028-empiric2-ops-leftovers-781
@@ -24463,8 +24465,8 @@ evolve_cycles:
       mode: delta
       started: '2026-08-01'
       active_task: T3.5
-      active_task_status: pending
-      note: 'T3.1+T3.2 catch-up COMPLETE @ 305658f; next T3.5 PR closeout; #781'
+      active_task_status: in_progress
+      note: 'T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
     08-verify-build:
       status: completed
       mode: delta
@@ -24545,10 +24547,11 @@ evolve_cycles:
     status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
     status: approved
-  tip_sha: 305658f
-  tip_sha_full: 305658fba7e877a9cc0625c838aff5ee25a99b15
-  tip_note: 'T3.1+T3.2 COMPLETE @ 305658f; next T3.5 PR closeout'
+  tip_sha: bf9f48c
+  tip_sha_full: bf9f48cffd5c4f412e65c0b8558103e2fa306933
+  tip_note: 'T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3'
   notes:
+  - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead 3; #781'
   - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build PASS (lint/typecheck/package+native tests; no codecov); packaging smoke PASS (landings); reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5 PR closeout; branch ahead 2 of origin; #781'
   - '2026-08-01 S035/EV-028 T3.4 docs committed @ 3efcb8d — smoke report + plan sync; T3.1 STARTED (lint/typecheck/tests + no codecov); then T3.2; #781'
   - '2026-08-01 S035/EV-028 T3.4 docs committed @ 3efcb8d; T3.1 STARTED — lint/typecheck/tests + no codecov; then T3.2 packaging smoke; #781'
@@ -24562,17 +24565,18 @@ evolve_cycles:
   - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b all three packages 0.1.1 OIDC; 00 COMPLETE; 16 in_progress; current_stage 01-requirements; #781'
   - '2026-08-01 S035/EV-028 00-context — branch active; session-brief.md in_progress; routing-plan.md pending_approval (not approved); #781'
   - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b feature+16-evolve, 2a scope, 3b READMEs+dissemination, 4b tag publish); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
-  note: 'in_progress — T3.1+T3.2 catch-up COMPLETE @ 305658f; active_task T3.5 pending (PR closeout); gates.a_to_b/b_to_c passed; #781'
+  note: 'in_progress — T3.5 STARTED @ bf9f48c; push evolve branch + open/update PR for #781 closeout; ahead 3; gates.a_to_b/b_to_c passed; #781'
 git_history:
   current_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  ahead_of_origin: 2
+  ahead_of_origin: 3
   pushed: false
   pending_commit:
-  tip_sha: 305658f
-  tip_sha_full: 305658fba7e877a9cc0625c838aff5ee25a99b15
+  tip_sha: bf9f48c
+  tip_sha_full: bf9f48cffd5c4f412e65c0b8558103e2fa306933
   recommended_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  note: 'S035/EV-028 — T3.1+T3.2 COMPLETE @ 305658f; next T3.5 PR closeout; ahead_of_origin=2; #781'
+  note: 'S035/EV-028 — T3.5 STARTED @ bf9f48c; push evolve branch + open/update PR for #781 closeout; ahead_of_origin=3; #781'
   notes:
+  - '2026-08-01 S035/EV-028 T3.5 STARTED @ bf9f48c — push evolve branch + open/update PR for #781 closeout; ahead_of_origin=3; #781'
   - '2026-08-01 S035/EV-028 T3.1+T3.2 COMPLETE @ 305658f — verify-build + packaging smoke PASS; reports t31-verify-build.md + t32-packaging-smoke.md; next T3.5; ahead_of_origin=2; #781'
   - '2026-08-01 S035/EV-028 T3.4 docs committed @ 3efcb8d — t34-pypi-install-smoke.md + execution-plan sync; T3.1 STARTED; ahead_of_origin=1; #781'
   - '2026-08-01 S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS; report t34-pypi-install-smoke.md; next T3.5; tip 84aca02 (+ pending docs commit); #781'
@@ -24857,9 +24861,9 @@ git_history:
     created_at: '2026-08-01'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: 305658f
-    tip_sha_full: 305658fba7e877a9cc0625c838aff5ee25a99b15
-    note: 'Active — tip 305658f; T3.1+T3.2 COMPLETE; next T3.5 PR closeout; ahead_of_origin=2'
+    tip_sha: bf9f48c
+    tip_sha_full: bf9f48cffd5c4f412e65c0b8558103e2fa306933
+    note: 'Active — tip bf9f48c; T3.5 STARTED; push evolve branch + open/update PR for #781 closeout; ahead_of_origin=3'
     pushed: true
     tag: iwxxm-validate-v0.1.2
   - name: docs/S034-EV027-closeout
@@ -25789,6 +25793,17 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: bf9f48c
+    sha_full: bf9f48cffd5c4f412e65c0b8558103e2fa306933
+    branch: evolve/EV-028-empiric2-ops-leftovers-781
+    message: "[EV-028] chore: record T3.1/T3.2 complete; advance to T3.5"
+    stage: 07-build
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    timestamp: '2026-08-01T21:26:38-04:00'
+    files_changed: 1
+    pushed: false
+    note: 'T3.5 STARTED — push evolve branch + open/update PR for #781 closeout'
   - sha: 305658f
     sha_full: 305658fba7e877a9cc0625c838aff5ee25a99b15
     branch: evolve/EV-028-empiric2-ops-leftovers-781
