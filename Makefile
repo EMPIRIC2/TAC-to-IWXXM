@@ -18,6 +18,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
 	test-sigmet-quality \
+	test-va-sigmet-quality \
 	test-wmo-quality \
 	test-ahl-com-quality \
 	test-metar-quality \
@@ -249,6 +250,10 @@ test-taf-quality:
 # Replaces the EV-020 thin alias that redirected to test-wmo-quality.
 test-sigmet-quality:
 	bash scripts/ci/run_sigmet_quality.sh
+
+# EV-029 / E29-T4=2 — VA SIGMET quality pack (M6 / TC-EV029-007 + F23 deepen)
+test-va-sigmet-quality:
+	bash scripts/ci/run_va_sigmet_quality.sh
 
 # EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
 test-iwxxm-translation-informative:

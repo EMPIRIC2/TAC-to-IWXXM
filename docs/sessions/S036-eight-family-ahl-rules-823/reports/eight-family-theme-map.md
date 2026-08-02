@@ -47,7 +47,7 @@ OOS: SIGWX · VONA · QVACI (converter inputs).
 | SPECI | SP | LP | `iwxxm:SPECI` | **M3** | `speci-quality.yml` |
 | TAF | FC/FT | LC/LT | `iwxxm:TAF` | **M4** | `taf-quality.yml` |
 | SIGMET gen | WS | LS | `iwxxm:SIGMET` | **M5** | `sigmet-quality.yml` |
-| VA SIGMET | WV | LV | `iwxxm:VolcanicAshSIGMET` | **M6** | `sigmet-quality.yml` / `va-sigmet-quality.yml` |
+| VA SIGMET | WV | LV | `iwxxm:VolcanicAshSIGMET` | **M6** | `va-sigmet-quality.yml` |
 | TC SIGMET | WC | LY | `iwxxm:TropicalCycloneSIGMET` | **M7** | `tc-sigmet-quality.yml` or extend |
 | AIRMET | WA | LW | `iwxxm:AIRMET` | **M8** | `airmet-quality.yml` |
 | VAA | FV | LU | `iwxxm:VolcanicAshAdvisory` | **M9** | `vaa-quality.yml` |

@@ -40,18 +40,18 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
-    current_milestone: M6
-    active_milestone: M6
-    current_task: T6.1
-    active_task: T6.1
+    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3); next M7 @ T7.1; tip pending push; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
+    current_milestone: M7
+    active_milestone: M7
+    current_task: T7.1
+    active_task: T7.1
     active_task_status: pending
   started_at: '2026-08-01'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2+M3+M4+M5] METAR/SPECI/TAF/gen SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
+  pr_title: "[EV-029][M2+M3+M4+M5+M6] METAR/SPECI/TAF/SIGMET/VA SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M5
+  pr_milestone: M2-M6
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -70,6 +70,7 @@ active_session:
   - D-S036-04-batch-2
   - D-S036-04-plan
   - D-S036-semver-minor
+  - D-S036-semver-patch
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -127,6 +128,10 @@ sessions:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m5.md
+    status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m6.md
+    status: completed
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
   preset: Standard
   preset_status: approved
@@ -136,19 +141,19 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
-    current_milestone: M6
-    active_milestone: M6
-    current_task: T6.1
-    active_task: T6.1
+    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3); next M7 @ T7.1; tip pending push; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
+    current_milestone: M7
+    active_milestone: M7
+    current_task: T7.1
+    active_task: T7.1
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M6 COMPLETE (T6.1–T6.3); next M7 @ T7.1; tac2iwxxm 0.2.1; #828; umbrella #823; F28+deepen; absorb #738/#820/#740'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2+M3+M4+M5] METAR/SPECI/TAF/gen SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
+  pr_title: "[EV-029][M2+M3+M4+M5+M6] METAR/SPECI/TAF/SIGMET/VA SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M5
+  pr_milestone: M2-M6
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -167,6 +172,7 @@ sessions:
   - D-S036-04-batch-2
   - D-S036-04-plan
   - D-S036-semver-minor
+  - D-S036-semver-patch
   routing_plan:
   - stage: 00-context
     required: true
@@ -222,7 +228,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
+    note: '07-build in_progress — M6 T6.1 in_progress (VA SIGMET gap fixtures WV→LV); M5 COMPLETE @ 57c27f7; #828; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -8378,6 +8384,51 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S036-semver-patch
+  date: '2026-08-02'
+  timestamp: '2026-08-02T17:20:26Z'
+  resolved_at: '2026-08-02'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: semver
+  status: confirmed
+  topic: 'Bump tac2iwxxm patch 0.2.0 → 0.2.1 (no tags/PyPI)'
+  summary: 'tac2iwxxm 0.2.0 → 0.2.1 patch; no tags/PyPI; leave validators unchanged; tip d6bb4b5'
+  decision: 'tac2iwxxm 0.2.0 → 0.2.1 patch; no tags/PyPI; leave validators unchanged'
+  package: tac2iwxxm
+  version_from: 0.2.0
+  version_to: 0.2.1
+  publish: false
+  tag: false
+  commit_sha: d6bb4b5
+  tip_sha: d6bb4b5
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
+- id: NOTE-S036-EV029-M6-T61-start
+  date: '2026-08-02'
+  timestamp: '2026-08-02T17:05:39Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: note
+  status: recorded
+  topic: 'Continue into M6 T6.1 after M5 green'
+  summary: 'User continued after M5 green on tip 49f2563 into M6 T6.1 (VA SIGMET gap fixtures WV→LV); M5 COMPLETE @ 57c27f7; #828; #823'
+  decision: 'Recorded: user continued after M5 green on tip 49f2563 into M6 T6.1 in_progress (VA SIGMET gap fixtures WV→LV). Active remains M6/T6.1.'
+  tip_sha: 49f2563
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
 - id: D-S036-semver-minor
   date: '2026-08-02'
   timestamp: '2026-08-02T15:29:21Z'
@@ -25412,11 +25463,11 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
+      note: '07-build in_progress — M6 T6.3 pending (VA quality pack CI); T6.1 @ b6fed4f; T6.2 COMPLETE @ 091f14c; #828; #823'
       current_milestone: M6
       active_milestone: M6
-      current_task: T6.1
-      active_task: T6.1
+      current_task: T6.3
+      active_task: T6.3
       active_task_status: pending
     08-verify-build:
       status: pending
@@ -25512,6 +25563,7 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 07-build — user continued after M5 green on tip 49f2563 into M6 T6.1 in_progress (VA SIGMET gap fixtures WV→LV); M5 COMPLETE @ 57c27f7; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
   - '2026-08-02 S036/EV-029 07-build — M5 T5.1 in_progress (gen SIGMET gap fixtures); #828 green @ 7073c4a; #823'
   - '2026-08-02 S036/EV-029 tip synced — c23070d; M4 COMPLETE pushed; #828 M2–M4 retitled; ahead_of_origin=0; next M5 @ T5.1; #823'
@@ -26819,6 +26871,39 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: d6bb4b5
+    sha_full: d6bb4b535a56c742fc77709c73c1baad39dc6d38
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[EV-029] chore: bump tac2iwxxm to 0.2.1 (patch; no PyPI tag)"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T17:20:26Z'
+    files_changed: 7
+    pushed: false
+    note: 'D-S036-semver-patch tac2iwxxm 0.2.0→0.2.1; no tags/PyPI; validators unchanged; M6 T6.3 still pending; #828; #823'
+  - sha: 091f14c
+    sha_full: 091f14c47b34f3cd7ed678f9f6726af266085bd1
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T6.2] feat: VA SIGMET bulletin split + VolcanicAshSIGMET CNL root"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T17:16:02Z'
+    files_changed: 4
+    pushed: false
+    note: 'T6.2 COMPLETE — VA SIGMET bulletin split + VolcanicAshSIGMET CNL root; next T6.3 (VA quality pack CI); #828; #823'
+  - sha: b6fed4f
+    sha_full: b6fed4f799ecef213d00d69db8e10abf9800867d
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T6.1] test: VA SIGMET gap fixtures for WV AHL BBB + CNL"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T17:13:01Z'
+    files_changed: 8
+    pushed: false
+    note: 'T6.1 VA SIGMET gap fixtures (fixtures/va_sigmet/*, test_tc_ev029_007_va_sigmet_gap_fixtures.py, execution-plan.md); next T6.2; #828; #823'
   - sha: 57c27f7
     sha_full: 57c27f7f8c71066bdbf4123d7004458f549b0cf0
     branch: evolve/EV-029-eight-family-ahl-rules
