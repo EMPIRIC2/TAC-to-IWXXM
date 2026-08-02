@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — SPECI (F20 deepen) |
-| **Active task** | T3.2 — in_progress (SPECI lint/convert/validate deltas); T3.1 done; M2 PR #828 open; tac2iwxxm 0.2.0 |
-| **Tasks** | 14 / 48 completed |
+| **Active milestone** | M4 — TAF (F20 deepen) |
+| **Active task** | T4.1 — pending (TAF gap fixtures); M3 complete; M2/M3 on #828; tac2iwxxm 0.2.0 |
+| **Tasks** | 16 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -90,8 +90,8 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T3.1 | Test | SPECI gap fixtures | TC-EV029-007; F20 | T2.3 | **completed** |
-| T3.2 | Code | SPECI lint/convert/validate deltas | F20; F6 | T3.1 | in_progress |
-| T3.3 | Config | `speci-quality.yml` | E29-T4 | T3.2 | pending |
+| T3.2 | Code | SPECI lint/convert/validate deltas | F20; F6 | T3.1 | **completed** |
+| T3.3 | Config | `speci-quality.yml` | E29-T4 | T3.2 | **completed** |
 
 ### M4 — TAF (F20 deepen)
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2 METAR; evolve continues for M3+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2 METAR + M3 SPECI (+ `tac2iwxxm` 0.2.0); evolve continues for M4+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log

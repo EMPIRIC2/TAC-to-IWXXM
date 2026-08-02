@@ -97,7 +97,7 @@ are **body split + multi-report** per family (M2–M11).
 | TAC `T1T2` | Family | AHL heading fixture | Remaining |
 |-----------:|--------|---------------------|-----------|
 | SA | METAR | package + `ahl/sa_*` + `fixtures/metar/*` + NIL-collect | **M2 closed** (BBB→`reportStatus` + product-order pack) |
-| SP | SPECI | package + `ahl/sp_speci.txt` + `fixtures/speci/*` | **T3.1** fixtures (BBB→`reportStatus` + multi + product-order); T3.2/T3.3 close |
+| SP | SPECI | package + `ahl/sp_speci.txt` + `fixtures/speci/*` + `speci-quality` pack | **M3 closed** (BBB→`reportStatus` + multi + product-order + CI) |
 | FC / FT | TAF | `ahl/fc_*` / `ahl/ft_*` | M4 body split |
 | WS | SIGMET gen | `ahl/ws_sigmet.txt` | M5 body split |
 | WV | VA SIGMET | `ahl/wv_va_sigmet.txt` | M6 body split |

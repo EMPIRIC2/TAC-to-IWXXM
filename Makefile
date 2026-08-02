@@ -21,6 +21,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-wmo-quality \
 	test-ahl-com-quality \
 	test-metar-quality \
+	test-speci-quality \
 	test-integration-dissemination \
 	compose-wis2box-up compose-wis2box-down compose-wis2box-harness \
 	compose-mock-byoc-up compose-mock-byoc-down compose-mock-byoc-full-up \
@@ -238,6 +239,10 @@ test-ahl-com-quality:
 # EV-029 / E29-T4=2 — METAR quality pack (M2 / TC-EV029-007 + F15 deepen)
 test-metar-quality:
 	bash scripts/ci/run_metar_quality.sh
+
+# EV-029 / E29-T4=2 — SPECI quality pack (M3 / TC-EV029-007 + F20 deepen)
+test-speci-quality:
+	bash scripts/ci/run_speci_quality.sh
 
 # EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
 test-iwxxm-translation-informative:
