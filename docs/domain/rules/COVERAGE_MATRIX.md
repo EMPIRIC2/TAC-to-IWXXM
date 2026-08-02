@@ -379,7 +379,7 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | `AAx` | AMENDMENT | Not bare token `A` |
 | `CCx` | CORRECTION | Not bare token `C` |
 | Y/Z BBB | Special purposes (AHL page) | **Rejected** for reportStatus (x ∈ A…X only) — T1.1 fixtures |
-| Product CNL / NIL | **Not** reportStatus | Per-family CNL/NIL paths (TC-EV029-006) |
+| Product CNL / NIL | **Not** reportStatus | Per-family CNL/NIL paths (TC-EV029-006); consolidating CI smoke `test_tc_ev029_006_report_state_matrix.py` / `make test-report-state-matrix-smoke` (T12.2) |
 
 ### Shape coverage (TC-EV029-002) — summary
 
