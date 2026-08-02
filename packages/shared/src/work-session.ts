@@ -9,7 +9,8 @@ export type WorkSessionProduct =
   | 'speci'
   | 'taf'
   | 'vaa'
-  | 'tca';
+  | 'tca'
+  | 'swxa';
 
 export interface PendingFilePayload {
   name: string;

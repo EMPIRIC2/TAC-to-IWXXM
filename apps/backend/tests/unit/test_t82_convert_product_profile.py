@@ -53,11 +53,12 @@ def test_convert_forwards_product_and_profile(client: TestClient, monkeypatch: p
 
 
 def test_convert_rejects_unknown_product(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    """UJ-008: unknown product must not silently succeed as METAR."""
-    from src.utilities.conversion import ConversionError
+    """UJ-008 / F28: unknown product must not silently succeed as METAR (api-contract unknown_product)."""
+    seen: list[dict] = []
 
     def fake_convert(tac: str, **kwargs):
-        raise ConversionError("Conversion failed: UNSUPPORTED_PRODUCT: product 'NOTAPRODUCT' not supported yet")
+        seen.append({"tac": tac, **kwargs})
+        return "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2025-2'/>", None
 
     monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
 
@@ -73,5 +74,6 @@ def test_convert_rejects_unknown_product(client: TestClient, monkeypatch: pytest
             "lint": (None, "false"),
         },
     )
-    assert response.status_code in {400, 422}, response.text[:400]
-    assert "UNSUPPORTED_PRODUCT" in response.text or "Conversion failed" in response.text
+    assert response.status_code == 400, response.text[:400]
+    assert "unknown_product" in response.text
+    assert seen == []  # must fail before convert

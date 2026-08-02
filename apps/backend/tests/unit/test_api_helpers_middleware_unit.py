@@ -32,11 +32,13 @@ def test_split_manual_entries_cases(manual_text: str, expected: list[str]) -> No
     assert api_module.split_manual_entries(manual_text) == expected
 
 
-def test_split_manual_entries_vaa_tca_keep_multiline() -> None:
+def test_split_manual_entries_vaa_tca_swxa_keep_multiline() -> None:
     vaa = "VA ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\n"
     assert api_module.split_manual_entries(vaa, product="VAA") == [vaa.strip()]
     tca = "TC ADVISORY\nDTG: 20040925/1900Z\nMAX WIND: 22MPS\n"
     assert api_module.split_manual_entries(tca, product="tca") == [tca.strip()]
+    swxa = "SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\n"
+    assert api_module.split_manual_entries(swxa, product="swxa") == [swxa.strip()]
 
 
 def test_split_manual_entries_sigmet_airmet_keep_multiline() -> None:

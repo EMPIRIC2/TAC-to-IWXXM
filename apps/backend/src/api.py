@@ -376,8 +376,41 @@ async def parse_files(request: Request) -> List[UploadFile]:
 
 # Multi-line TAC products — keep the whole buffer as one entry (do not line-split).
 # SIGMET/AIRMET: WMO examples are header- + body= across lines (BUG-2026-07-30 / F23 UI).
-# VAA/TCA: advisory templates with labeled fields (F26/F27).
-_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA"})
+# VAA/TCA/SWXA: advisory templates with labeled fields (F26/F27/F28).
+_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA"})
+
+# Wire product enum (api-contract EV-029 / F28). Canonical ``swxa``; reject ``swx``.
+_API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA"})
+
+
+def normalize_api_product(
+    product: Optional[str],
+    *,
+    default: Optional[str] = "METAR",
+) -> str:
+    """Normalize multipart/JSON ``product`` to uppercase enum or raise ``unknown_product`` 400."""
+    raw = (product or "").strip()
+    if not raw:
+        if default is None:
+            raise HTTPException(
+                status_code=400,
+                detail={"code": "unknown_product", "message": "product is required"},
+            )
+        raw = default
+    product_u = raw.upper()
+    if product_u not in _API_PRODUCTS:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "code": "unknown_product",
+                "message": (
+                    f"Unknown product {raw!r}; expected one of "
+                    f"{', '.join(sorted(p.lower() for p in _API_PRODUCTS))} "
+                    "(canonical SWXA wire value is swxa, not swx)"
+                ),
+            },
+        )
+    return product_u
 
 
 def _is_multiline_template_product(product: Optional[str]) -> bool:
@@ -389,9 +422,9 @@ def split_manual_entries(manual_text: str, product: Optional[str] = None) -> Lis
     """Split manual text into TAC entries.
 
     Default (METAR/SPECI/TAF): one entry per non-empty line.
-    SIGMET/AIRMET/VAA/TCA: entire buffer is one multi-line document —
+    SIGMET/AIRMET/VAA/TCA/SWXA: entire buffer is one multi-line document —
     line-splitting would shred the header/body (SIGMET/AIRMET) or template
-    fields (``VA ADVISORY`` / ``DTG:`` / …).
+    fields (``VA ADVISORY`` / ``SWX ADVISORY`` / ``DTG:`` / …).
     """
     if not manual_text:
         return []
@@ -406,7 +439,7 @@ def manual_entries_with_offsets(manual_text: str, product: Optional[str] = None)
 
     Offsets point at the first non-whitespace character of each kept entry so
     soft-preview ``failed_spans`` can be remapped onto the full editor document.
-    For SIGMET/AIRMET/VAA/TCA the single entry offset is the first non-whitespace
+    For SIGMET/AIRMET/VAA/TCA/SWXA the single entry offset is the first non-whitespace
     character of the buffer (document preserved with internal newlines).
     """
     if not manual_text:
@@ -888,7 +921,8 @@ async def lint_tac(
         if joined:
             tac_text = joined
 
-    report = tac_lint_fn(tac_text, product=product or "METAR")
+    product_u = normalize_api_product(product, default="METAR")
+    report = tac_lint_fn(tac_text, product=product_u)
     return msgspec_json_response(
         LintTacResponse(
             ok=report.ok,
@@ -940,7 +974,8 @@ async def decode_tac_endpoint(
         if joined:
             tac_text = joined
 
-    result = tac2iwxxm_decode_tac(tac_text, product=product)
+    product_u = normalize_api_product(product, default=None)
+    result = tac2iwxxm_decode_tac(tac_text, product=product_u)
     return msgspec_json_response(
         DecodeTacResponse(
             product=result.product,
@@ -1003,6 +1038,8 @@ async def convert_bulletin(
             status_code=400,
             detail={"code": "empty_bulletin", "message": "At least one of files or manual_text is required"},
         )
+
+    product = normalize_api_product(product, default=None)
 
     try:
         split = tac2iwxxm_split_bulletin(bulletin_text, product=product)
@@ -1590,13 +1627,15 @@ async def convert(
         # Map validation_level to validate_output
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
 
+    product = normalize_api_product(product, default="METAR")
+
     # Q14=C: lint default on — soft-wire tac-validate (hard fails use POST /lint-tac)
     if lint:
         sample = manual_text.strip() if manual_text else ""
         if request_body is not None and getattr(request_body, "metars", None):
             sample = (request_body.metars[0] or "").strip() if request_body.metars else sample
         if sample:
-            lint_report = tac_lint_fn(sample, product=product or "METAR")
+            lint_report = tac_lint_fn(sample, product=product)
             if not lint_report.ok:
                 logger.info(
                     "[CONVERT] tac-validate issues (non-blocking soft path): %s",

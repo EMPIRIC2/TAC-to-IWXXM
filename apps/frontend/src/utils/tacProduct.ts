@@ -1,8 +1,8 @@
 /**
  * Detect TAC product keyword for F6.e auto product selection (UJ-005).
  *
- * Mirrors backend `_detect_product` for METAR/SPECI and extends to the seven
- * F6 products when an explicit keyword appears in the TAC body.
+ * Mirrors backend `_detect_product` for METAR/SPECI and extends to F6 + F28
+ * products when an explicit keyword appears in the TAC body.
  */
 
 export const TAC_PRODUCTS = [
@@ -13,6 +13,7 @@ export const TAC_PRODUCTS = [
   'TAF',
   'VAA',
   'TCA',
+  'SWXA',
 ] as const;
 
 export type TacProduct = (typeof TAC_PRODUCTS)[number];
@@ -22,7 +23,7 @@ export type TacProductSelection = TacProduct | 'auto';
 export type IwxxmProfile = 'annex3' | 'iwxxm_us';
 
 const PRODUCT_RE =
-  /\b(AIRMET|SIGMET|SPECI|METAR|TAF|VAA|TCA|VOLCANIC\s+ASH|TROPICAL\s+CYCLONE)\b/i;
+  /\b(AIRMET|SIGMET|SPECI|METAR|TAF|VAA|TCA|SWXA|SWX\s+ADVISORY|VOLCANIC\s+ASH|TROPICAL\s+CYCLONE)\b/i;
 
 /**
  * Detect a TAC product from text. Defaults to METAR when no keyword is found.
@@ -45,6 +46,9 @@ export function detectTacProduct(
   }
   if (token.startsWith('TROPICAL')) {
     return 'TCA';
+  }
+  if (token.startsWith('SWX')) {
+    return 'SWXA';
   }
   if ((TAC_PRODUCTS as readonly string[]).includes(token)) {
     return token as TacProduct;
@@ -74,6 +78,7 @@ const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>([
   'AIRMET',
   'VAA',
   'TCA',
+  'SWXA',
 ]);
 
 /**
@@ -81,7 +86,7 @@ const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>([
  * ``split_manual_entries``).
  *
  * METAR/SPECI/TAF: one entry per non-empty line.
- * SIGMET/AIRMET/VAA/TCA: entire buffer is one document (header/body or advisory).
+ * SIGMET/AIRMET/VAA/TCA/SWXA: entire buffer is one document (header/body or advisory).
  *
  * @param manualText - Editor buffer
  * @param product - Resolved convert product
