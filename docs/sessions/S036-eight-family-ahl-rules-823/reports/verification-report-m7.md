@@ -27,4 +27,4 @@ No FE change; H4–H5 remain waived (E29-T6).
 
 ## Next
 
-**T7.4** — close or child-issue #738 residuals; then M8 AIRMET @ T8.1.
+**T7.4** — #738 closed; residual [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829); then M8 AIRMET @ T8.1.

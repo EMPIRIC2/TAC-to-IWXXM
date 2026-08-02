@@ -85,7 +85,7 @@ Status codes: `pass` · `gap` · `N/A` · `defer+child` · `mine` (needs T0.2 di
 | TAF | mine | mine | mine | F20 Done — deepen |
 | SIGMET gen | mine | mine | mine | F23 Done — deepen |
 | VA SIGMET | mine | mine | mine | F23 Done — deepen |
-| TC SIGMET | gap | gap (T7.1 fixtures) | gap | #738 open; F23 deepen M7 |
+| TC SIGMET | ok/deepen | **ok** (M7) | ok (A6-2-TC) | #738 **closed**; deepen [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
 | AIRMET | mine | mine | mine | F24 Done — deepen |
 | VAA | mine | mine | mine | F26 Done; #820 / #823 B4 |
 | TCA | mine | mine | mine | F27 Done; #820 / #823 B4 |
@@ -96,7 +96,7 @@ Status codes: `pass` · `gap` · `N/A` · `defer+child` · `mine` (needs T0.2 di
 | Issue | Absorbed into |
 |-------|----------------|
 | #823 | Umbrella — stays open until children linked/closed (S02.M3) |
-| #738 | **M7** TC SIGMET |
+| #738 | **M7** TC SIGMET — **closed**; residual [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
 | #820 | **M9** / **M10** VAA/TCA |
 | #740 | **M11** F28 SWXA |
 
