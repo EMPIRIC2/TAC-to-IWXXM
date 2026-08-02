@@ -47,6 +47,11 @@ active_session:
     active_task: T2.1
     active_task_status: pending
   started_at: '2026-08-01'
+  pr_number: 827
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
+  pr_title: "[EV-029][M1] AHL / COM / shared bulletin model"
+  pr_status: open
+  pr_milestone: M1
   context_briefs:
   - docs/context/eight-family-ahl-rules-823.md
   decision_refs:
@@ -129,7 +134,12 @@ sessions:
     active_task: T2.1
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M1 complete (08 PASS); M2 @ T2.1 pending; M1 PR #827 open; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  pr_number: 827
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
+  pr_title: "[EV-029][M1] AHL / COM / shared bulletin model"
+  pr_status: open
+  pr_milestone: M1
   context_briefs:
   - docs/context/eight-family-ahl-rules-823.md
   decision_refs:
@@ -25307,7 +25317,19 @@ evolve_cycles:
   branch: evolve/EV-029-eight-family-ahl-rules
   preset: Standard
   preset_status: approved
+  pull_requests:
+  - number: 827
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
+    title: "[EV-029][M1] AHL / COM / shared bulletin model"
+    status: open
+    milestone: M1
+  pr_number: 827
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
+  pr_title: "[EV-029][M1] AHL / COM / shared bulletin model"
+  pr_status: open
+  pr_milestone: M1
   notes:
+  - '2026-08-02 S036/EV-029 07-build — M1 PR #827 OPEN (AHL/COM/bulletin); tip 2f08b45; ahead 0; M2 @ T2.1 pending; #823'
   - '2026-08-02 S036/EV-029 07-build — M1 COMPLETE (08 PASS); advance M2 @ T2.1; tip cef6ebf; #823'
   - '2026-08-02 S036/EV-029 07-build — M0 COMPLETE (T0.1–T0.6 PASS); advance M1 @ T1.1; tip c181ede; #823'
   - '2026-08-01 S036/EV-029 — D-S036-04-plan Gate B PASS (option 1) — approve M0–M12 48 tasks; 04 COMPLETE → 07-build STARTED @ T0.1; gates.b_to_c passed; checkpoints.phase_b passed; #823'
@@ -25318,14 +25340,15 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 21
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: cef6ebf
-  tip_sha_full: cef6ebff09a42aae7104936a0eb0b7a1e87ace6e
+  tip_sha: 2f08b45
+  tip_sha_full: 2f08b45f2303b0483a5a9b243b80632bcb2cd7f6
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — 07-build M1 complete (08 PASS); M2 @ T2.1 pending; tip cef6ebf on evolve/EV-029-eight-family-ahl-rules; not pushed; #823'
+  note: 'S036/EV-029 — 07-build M1 PR #827 open; M2 @ T2.1 pending; tip 2f08b45 on evolve/EV-029-eight-family-ahl-rules; pushed; ahead 0; #823'
   notes:
+  - '2026-08-02 S036/EV-029 tip synced — 2f08b45 (2f08b45f2303b0483a5a9b243b80632bcb2cd7f6); M1 PR #827 OPEN; workflow-state sync commit; M2 @ T2.1 pending; pushed; ahead_of_origin=0; #823'
   - '2026-08-02 S036/EV-029 tip synced — cef6ebf (cef6ebff09a42aae7104936a0eb0b7a1e87ace6e); M1 COMPLETE (08 PASS) + T1.1–T1.4 recorded; advance M2/T2.1; not pushed; #823'
   - '2026-08-02 S036/EV-029 tip synced — c181ede (c181edea12b435641131817450884106b60ccb91); M0 COMPLETE T0.3–T0.6 recorded; advance M1/T1.1; not pushed; #823'
   - '2026-08-01 S036/EV-029 Gate A close @ 26513b6 — D-S036-02-phase-a; 02 COMPLETE → 04-tech-plan STARTED; not pushed; #823'
@@ -25619,10 +25642,15 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: cef6ebf
-    tip_sha_full: cef6ebff09a42aae7104936a0eb0b7a1e87ace6e
-    note: '07-build M1 complete (08 PASS); M2 @ T2.1 pending; tip cef6ebf local; not pushed; #823'
-    pushed: false
+    tip_sha: 2f08b45
+    tip_sha_full: 2f08b45f2303b0483a5a9b243b80632bcb2cd7f6
+    note: '07-build M1 PR #827 open; M2 @ T2.1 pending; tip 2f08b45; pushed; ahead 0; #823'
+    pushed: true
+    pr_number: 827
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
+    pr_status: open
+    pr_title: "[EV-029][M1] AHL / COM / shared bulletin model"
+    pr_milestone: M1
   - name: evolve/EV-028-empiric2-ops-leftovers-781
     purpose: 'S035/EV-028 #781 Codecov purge + PyPI Trusted Publisher + landing READMEs'
     base: main
@@ -26570,6 +26598,17 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 2f08b45
+    sha_full: 2f08b45f2303b0483a5a9b243b80632bcb2cd7f6
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[EV-029] chore: sync workflow-state after M1 complete → M2 T2.1"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T01:05:00Z'
+    files_changed: 1
+    pushed: true
+    note: 'workflow-state sync after M1 complete → M2 T2.1; tip after push; #823'
   - sha: cef6ebf
     sha_full: cef6ebff09a42aae7104936a0eb0b7a1e87ace6e
     branch: evolve/EV-029-eight-family-ahl-rules

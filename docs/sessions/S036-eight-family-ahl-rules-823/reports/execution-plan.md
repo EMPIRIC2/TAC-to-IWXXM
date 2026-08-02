@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | Evolve PR to `main` after Phase C/D (or earlier if user requests) |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **open** — M1 AHL/COM/bulletin; evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log
