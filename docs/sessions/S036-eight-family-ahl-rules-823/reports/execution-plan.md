@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M10 — TCA (F27 deepen / #820) |
-| **Active task** | T9.3 — completed (M9 complete); next T10.1 |
-| **Tasks** | 37 / 48 completed |
+| **Active task** | T10.1 — completed; next T10.2 TCA deltas |
+| **Tasks** | 38 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -146,7 +146,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T10.1 | Test | TCA residual fixtures | TC-EV029-005; #820 | T9.3 | pending |
+| T10.1 | Test | TCA residual fixtures | TC-EV029-005; #820 | T9.3 | **completed** |
 | T10.2 | Code | TCA deltas | F27; F6.f | T10.1 | pending |
 | T10.3 | Config | `tca-quality.yml` | E29-T4 | T10.2 | pending |
 
