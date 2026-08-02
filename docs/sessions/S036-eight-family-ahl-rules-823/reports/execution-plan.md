@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M4 — TAF (F20 deepen) |
-| **Active task** | T4.1 — pending (TAF gap fixtures); M3 complete; M2/M3 on #828; tac2iwxxm 0.2.0 |
-| **Tasks** | 16 / 48 completed |
+| **Active task** | T4.2 — pending (TAF lint/convert/validate deltas); T4.1 red TDD committed; #828 |
+| **Tasks** | 17 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -97,7 +97,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test | TAF gap fixtures | TC-EV029-007; F20 | T3.3 | pending |
+| T4.1 | Test | TAF gap fixtures | TC-EV029-007; F20 | T3.3 | **completed** |
 | T4.2 | Code | TAF lint/convert/validate deltas | F20; F6 | T4.1 | pending |
 | T4.3 | Config | `taf-quality.yml` | E29-T4 | T4.2 | pending |
 
