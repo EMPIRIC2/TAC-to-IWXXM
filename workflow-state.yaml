@@ -34,6 +34,8 @@ active_session:
     status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     status: approved
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
+    status: written
   routing_plan_summary: "00→16→01→02→04→07→08→10→13 (skip 03/05/06/09/11/12); packaging/OIDC smoke"
   preset: Lean+build
   preset_status: approved
@@ -47,13 +49,10 @@ active_session:
   - 12-verify-deploy
   current_stage: 07-build
   active_milestone: M3
-  active_task: T3.4
+  active_task: T3.5
   active_task_status: pending
   started_at: '2026-08-01'
-  note: |
-    T3.3b COMPLETE (D-S035-14c) — AIXM 5.1.1 native fix @ 57c8dad; tag iwxxm-validate-v0.1.2;
-    PyPI Publish 30726416585 SUCCESS; clean-venv rust_available + XSD ok. Next T3.4 install smoke
-    (T3.1/T3.2 still pending if not done). Leftover: iwxxm_validate.__version__ hardcoded "0.1.1".
+  note: 'T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md; next T3.1/T3.2 catch-up or T3.5 PR closeout; tip 84aca02 (+ pending docs commit); #781'
   context_briefs: []
   decision_refs:
   - D-S035-open
@@ -67,6 +66,7 @@ active_session:
   - D-S035-14a
   - D-S035-14b-scope
   - D-S035-14c
+  - D-S035-14d
   routing_plan:
   - stage: 00-context
     required: true
@@ -106,7 +106,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-01'
-    note: "T3.3b COMPLETE (D-S035-14c) — iwxxm-validate 0.1.2 OIDC green @ 57c8dad; next T3.4 install smoke; tip 57c8dad; #781"
+    note: "T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS; next T3.5 PR closeout (T3.1/T3.2 plan catch-up pending); tip 84aca02 (+ pending docs commit); #781"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -120,7 +120,7 @@ active_session:
     required: true
     mode: delta
     status: pending
-    note: 'PyPI 0.1.1 ×3 + iwxxm-validate 0.1.2 done; remaining T3.4/T3.5 closeout'
+    note: 'PyPI 0.1.1 ×3 + iwxxm-validate 0.1.2 done; T3.4 PASS; remaining T3.5 closeout; plan catch-up T3.1/T3.2 pending'
 sessions:
 - id: S034-wmo-decode-residual-matrix
   type: feature
@@ -5268,14 +5268,14 @@ stages:
     previous_note: 'S034/EV-027 07-build COMPLETE — M0–M3 (14/14); T3.3 done; T3.4 waived; PR #821 merged @ ad36aa0; #815 closed; #820 open'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: 57c8dad
-    tip_sha_full: 57c8dad5756014d592f9b14f728c7ce8bafa59c2
-    note: 'T3.3b COMPLETE (D-S035-14c) — AIXM 5.1.1 @ 57c8dad; iwxxm-validate-v0.1.2 PyPI 30726416585 SUCCESS; next T3.4; leftover __version__ 0.1.1 cosmetic; #781'
+    tip_sha: 84aca02
+    tip_sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
+    note: 'T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md; next T3.1/T3.2 catch-up or T3.5 PR closeout; tip 84aca02 (+ pending docs commit); #781'
     current_stage: M3
     current_milestone: M3
-    current_task: T3.4
+    current_task: T3.5
     active_milestone: M3
-    active_task: T3.4
+    active_task: T3.5
     active_task_status: pending
     progress: 0/15
     decision_refs:
@@ -5286,9 +5286,11 @@ stages:
     - D-S035-14a
     - D-S035-14b-scope
     - D-S035-14c
+    - D-S035-14d
     artifacts:
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
+    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     active_session:
@@ -5299,11 +5301,11 @@ stages:
       mode: delta
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'T3.3b COMPLETE (D-S035-14c) — 0.1.2 OIDC green; next T3.4 install smoke; tip 57c8dad; #781'
+      note: 'T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS; next T3.5 PR closeout (T3.1/T3.2 plan catch-up pending); tip 84aca02 (+ pending docs commit); #781'
       active_milestone: M3
       current_milestone: M3
-      active_task: T3.4
-      current_task: T3.4
+      active_task: T3.5
+      current_task: T3.5
       active_task_status: pending
       progress: 0/15
       deepen:
@@ -5316,17 +5318,19 @@ stages:
       - D-S035-14a
       - D-S035-14b-scope
       - D-S035-14c
+      - D-S035-14d
       artifacts:
       - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
     substeps:
       task_loop:
         status: in_progress
-        current_task: T3.4
+        current_task: T3.5
         active_task_status: pending
         active_milestone: M3
         phase: C
         milestone: M3
-        notes: 'S035/EV-028 T3.3b COMPLETE @ 57c8dad (D-S035-14c); next T3.4; #781'
+        notes: 'S035/EV-028 T3.4 COMPLETE (D-S035-14d) @ 84aca02; PyPI smoke PASS; next T3.5 (T3.1/T3.2 plan catch-up pending); #781'
     delta_substages:
     - id: S035-empiric2-ops-leftovers-781
       session_id: S035-empiric2-ops-leftovers-781
@@ -5336,16 +5340,16 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: delta
-      note: 'T3.3b COMPLETE (D-S035-14c) — iwxxm-validate 0.1.2 published; next T3.4; tip 57c8dad; #781'
+      note: 'T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS; next T3.5 PR closeout (T3.1/T3.2 plan catch-up pending); tip 84aca02 (+ pending docs commit); #781'
       active_milestone: M3
       current_milestone: M3
-      active_task: T3.4
-      current_task: T3.4
+      active_task: T3.5
+      current_task: T3.5
       active_task_status: pending
       progress: 0/15
-      decision_id: D-S035-14c
-      tip_sha: 57c8dad
-      tip_sha_full: 57c8dad5756014d592f9b14f728c7ce8bafa59c2
+      decision_id: D-S035-14d
+      tip_sha: 84aca02
+      tip_sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
       branch: evolve/EV-028-empiric2-ops-leftovers-781
       deepen:
       - F12
@@ -5354,6 +5358,7 @@ stages:
       artifacts:
       - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
       - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
+      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
     - id: S034-wmo-decode-residual-matrix
       session_id: S034-wmo-decode-residual-matrix
       evolve_cycle_id: EV-027
@@ -5742,6 +5747,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-01 S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report t34-pypi-install-smoke.md; next T3.5 (T3.1/T3.2 plan catch-up pending); tip 84aca02 (+ pending docs commit); #781'
+    - '2026-08-01 S035/EV-028 T3.4 STARTED (D-S035-14d) — skip cosmetic 0.1.3; clean-venv pip install smoke @ iwxxm-validate==0.1.2; tip 84aca02; #781'
     - '2026-08-01 S035/EV-028 T3.3b COMPLETE (D-S035-14c) — 57c8dad AIXM 5.1.1; tag iwxxm-validate-v0.1.2; PyPI 30726416585 SUCCESS; clean-venv rust+XSD ok; next T3.4; leftover __version__ 0.1.1 cosmetic; #781'
     - '2026-08-01 S035/EV-028 T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b STARTED (D-S035-14b-scope) — native AIXM VendorResolver fix → iwxxm-validate 0.1.2; tip 465ac4f (T3.3 docs, unpushed) + WIP AIXM (no SHA); #781'
     - '2026-08-01 S035/EV-028 07-build STARTED (D-S035-04-plan-approve) — @ T0.1 Codecov purge; gates.b_to_c passed; tip b8e37ae; #781'
@@ -7662,11 +7669,13 @@ stages:
     completed_at:
     completed:
     current_stage: 07-build
-    note: 'S035/EV-028 16-evolve in_progress — T3.3b COMPLETE (D-S035-14c) iwxxm-validate 0.1.2 OIDC green; current_stage 07-build @ T3.4; tip 57c8dad; #781'
-    prior_note: 'S035/EV-028 16-evolve in_progress — T3.3 OIDC 0.1.1 SUCCESS (D-S035-14a); current_stage 07-build @ T3.3b (native AIXM → 0.1.2); tip 465ac4f + WIP AIXM; #781'
-    tip_sha: 57c8dad
-    tip_sha_full: 57c8dad5756014d592f9b14f728c7ce8bafa59c2
+    note: 'S035/EV-028 16-evolve in_progress — T3.4 COMPLETE (D-S035-14d) PyPI smoke PASS; active_task T3.5 pending; T3.1/T3.2 plan catch-up pending; tip 84aca02 (+ pending docs commit); #781'
+    prior_note: 'S035/EV-028 16-evolve in_progress — T3.4 STARTED (D-S035-14d) clean-venv pip install smoke @ 0.1.2; tip 84aca02; #781'
+    tip_sha: 84aca02
+    tip_sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
     notes:
+    - '2026-08-01 S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report t34-pypi-install-smoke.md; next T3.5 (T3.1/T3.2 plan catch-up pending); tip 84aca02 (+ pending docs commit); #781'
+    - '2026-08-01 S035/EV-028 T3.4 STARTED (D-S035-14d) — skip cosmetic 0.1.3; clean-venv pip install smoke @ iwxxm-validate==0.1.2; tip 84aca02; #781'
     - '2026-08-01 S035/EV-028 T3.3b COMPLETE (D-S035-14c) — 57c8dad; tag iwxxm-validate-v0.1.2; PyPI 30726416585 SUCCESS; next T3.4; #781'
     - '2026-08-01 S035/EV-028 T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b in_progress (D-S035-14b-scope) — native AIXM fix → iwxxm-validate 0.1.2; tip 465ac4f (unpushed docs) + WIP AIXM; #781'
     - '2026-08-01 S035/EV-028 04 COMPLETE → 07-build STARTED — D-S035-04-plan-approve Gate B (11b/12a); @ T0.1; tip b8e37ae; #781'
@@ -7960,6 +7969,28 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S035-14d
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: ops
+  status: confirmed
+  topic: Skip cosmetic 0.1.3; proceed T3.4 install smoke @ 0.1.2
+  summary: User chose option 1 — skip cosmetic 0.1.3 wheel; proceed T3.4 clean-venv pip install smoke @ iwxxm-validate==0.1.2
+  decision: 'User chose option 1 — skip cosmetic 0.1.3; proceed T3.4 install smoke @ iwxxm-validate==0.1.2 (defer __version__ string to next wheel).'
+  user_option: '1'
+  related_issues:
+  - '781'
+  related_decisions:
+  - D-S035-14c
+  tip_sha: 84aca02
+  tip_sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
+  note: 'T3.4 STARTED — clean-venv pip install smoke @ published pins; tip 84aca02'
 - id: D-S035-14c
   date: '2026-08-01'
   timestamp: '2026-08-01'
@@ -15855,6 +15886,17 @@ artifacts:
   updated_at: '2026-08-01'
   status: approved
   note: 'S035/EV-028 D-S035-routing — Lean+build approved; 6b all three packages 0.1.1 OIDC'
+- path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
+  kind: deploy-smoke
+  session_id: S035-empiric2-ops-leftovers-781
+  evolve_cycle_id: EV-028
+  stage: 07-build
+  skill_id: 07-build
+  task_id: T3.4
+  created_at: '2026-08-01'
+  updated_at: '2026-08-01'
+  status: written
+  note: 'S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS @ published pins'
 - path: docs/sessions/S033-va-multi-location-equality/reports/evolve-summary.md
   kind: evolve-summary
   session_id: S033-va-multi-location-equality
@@ -24338,6 +24380,8 @@ evolve_cycles:
     Out: optional e2e/load Actions secrets; Render hostname rename; Supabase Site URL; #777 iwxxm-dissemination publish.
     Tag publish proof (D-S035-routing 6b): bump + publish tac-validate, iwxxm-validate, and tac2iwxxm to 0.1.1 via OIDC.
   current_stage: 07-build
+  active_task: T3.5
+  active_task_status: pending
   github_issues:
   - '781'
   branch: evolve/EV-028-empiric2-ops-leftovers-781
@@ -24399,9 +24443,9 @@ evolve_cycles:
       status: in_progress
       mode: delta
       started: '2026-08-01'
-      active_task: T3.4
+      active_task: T3.5
       active_task_status: pending
-      note: 'T3.3b COMPLETE (D-S035-14c) — 0.1.2 OIDC green @ 57c8dad; next T3.4; leftover __version__ 0.1.1 cosmetic; #781'
+      note: 'T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md; next T3.1/T3.2 catch-up or T3.5 PR closeout; tip 84aca02 (+ pending docs commit); #781'
     08-verify-build:
       status: pending
       mode: delta
@@ -24412,7 +24456,7 @@ evolve_cycles:
     13-deploy-smoke:
       status: pending
       mode: delta
-      note: 'PyPI 0.1.1 ×3 + iwxxm-validate 0.1.2 done (D-S035-14a/14c); T3.4/T3.5 remaining'
+      note: 'PyPI 0.1.1 ×3 + iwxxm-validate 0.1.2 done (D-S035-14a/14c); T3.4 PASS; T3.5 remaining; plan catch-up T3.1/T3.2 pending'
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -24438,6 +24482,7 @@ evolve_cycles:
   - D-S035-14a
   - D-S035-14b-scope
   - D-S035-14c
+  - D-S035-14d
   - E28-M
   - E28-E1
   answers:
@@ -24454,6 +24499,7 @@ evolve_cycles:
     D-S035-14a: option1_fix_then_0_1_2
     D-S035-14b-scope: iwxxm-validate_only_0_1_2
     D-S035-14c: t33b_0_1_2_oidc_green
+    D-S035-14d: skip_0_1_3_proceed_t34
   artifacts:
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     status: approved
@@ -24463,16 +24509,20 @@ evolve_cycles:
     status: written
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
     status: written
+  - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md
+    status: written
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/
     status: in_progress
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
     status: approved
   - path: docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
     status: approved
-  tip_sha: 57c8dad
-  tip_sha_full: 57c8dad5756014d592f9b14f728c7ce8bafa59c2
-  tip_note: 'T3.3b COMPLETE (0.1.2 OIDC green @ 57c8dad); next T3.4 install smoke'
+  tip_sha: 84aca02
+  tip_sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
+  tip_note: 'T3.4 COMPLETE (D-S035-14d) — PyPI smoke PASS; next T3.5; tip 84aca02 (+ pending docs commit)'
   notes:
+  - '2026-08-01 S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS: tac-validate==0.1.1, iwxxm-validate==0.1.2 (rust_available+XSD ok), tac2iwxxm==0.1.1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/t34-pypi-install-smoke.md; next T3.1/T3.2 catch-up or T3.5 PR closeout; tip 84aca02 (+ pending docs commit); #781'
+  - '2026-08-01 S035/EV-028 T3.4 STARTED (D-S035-14d) — skip cosmetic 0.1.3; clean-venv pip install smoke @ iwxxm-validate==0.1.2; tip 84aca02; #781'
   - '2026-08-01 S035/EV-028 T3.3b COMPLETE (D-S035-14c) — 57c8dad AIXM 5.1.1; tag iwxxm-validate-v0.1.2; PyPI 30726416585 SUCCESS; clean-venv rust+XSD ok; next T3.4; leftover __version__ 0.1.1 cosmetic; #781'
   - '2026-08-01 S035/EV-028 T3.3 OIDC 0.1.1 ×3 SUCCESS (D-S035-14a); T3.3b in_progress (D-S035-14b-scope) — native AIXM VendorResolver → iwxxm-validate 0.1.2; tip 465ac4f (unpushed T3.3 docs) + WIP AIXM (no SHA); #781'
   - '2026-08-01 S035/EV-028 04 COMPLETE → 07-build STARTED — D-S035-04-plan-approve Gate B (11b/12a); @ T0.1; tip b8e37ae; gates.b_to_c passed; #781'
@@ -24482,17 +24532,19 @@ evolve_cycles:
   - '2026-08-01 S035/EV-028 D-S035-routing — Lean+build approved (5a); 6b all three packages 0.1.1 OIDC; 00 COMPLETE; 16 in_progress; current_stage 01-requirements; #781'
   - '2026-08-01 S035/EV-028 00-context — branch active; session-brief.md in_progress; routing-plan.md pending_approval (not approved); #781'
   - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b feature+16-evolve, 2a scope, 3b READMEs+dissemination, 4b tag publish); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
-  note: 'in_progress — T3.3b COMPLETE (D-S035-14c) 0.1.2 OIDC green; next T3.4; tip 57c8dad; gates.a_to_b/b_to_c passed; #781'
+  note: 'in_progress — T3.4 COMPLETE (D-S035-14d) PyPI smoke PASS; active_task T3.5 pending; T3.1/T3.2 plan catch-up pending; tip 84aca02 (+ pending docs commit); gates.a_to_b/b_to_c passed; #781'
 git_history:
   current_branch: evolve/EV-028-empiric2-ops-leftovers-781
   ahead_of_origin: 0
   pushed: true
-  pending_commit:
-  tip_sha: 57c8dad
-  tip_sha_full: 57c8dad5756014d592f9b14f728c7ce8bafa59c2
+  pending_commit: 'T3.4 smoke report + plan catch-up (uncommitted docs @ tip 84aca02)'
+  tip_sha: 84aca02
+  tip_sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
   recommended_branch: evolve/EV-028-empiric2-ops-leftovers-781
-  note: 'S035/EV-028 — T3.3b COMPLETE @ 57c8dad; branch+tag iwxxm-validate-v0.1.2 pushed; PyPI 0.1.2 green; next T3.4; #781'
+  note: 'S035/EV-028 — T3.4 COMPLETE (D-S035-14d) @ 84aca02; PyPI smoke PASS; next T3.5 (+ pending docs commit); #781'
   notes:
+  - '2026-08-01 S035/EV-028 T3.4 COMPLETE (D-S035-14d) — clean-venv PyPI smoke PASS; report t34-pypi-install-smoke.md; next T3.5; tip 84aca02 (+ pending docs commit); #781'
+  - '2026-08-01 S035/EV-028 tip synced — 84aca02 (84aca023741db6b5a79b8276a97032ec2b8188d4); "[EV-028] docs: mark T3.3b complete; sync iwxxm-validate __version__"; T3.4 STARTED (D-S035-14d); pushed; ahead_of_origin=0; #781'
   - '2026-08-01 S035/EV-028 tip synced — 57c8dad (57c8dad5756014d592f9b14f728c7ce8bafa59c2); "[EV-028] fix: resolve AIXM 5.1.1 in native iwxxm-validate XSD"; T3.3b COMPLETE; tag iwxxm-validate-v0.1.2; PyPI 30726416585 SUCCESS; pushed; ahead_of_origin=0; #781'
   - '2026-08-01 S035/EV-028 tip synced — 465ac4f (465ac4f7d5bd93e04baf79584cfdbe7cbcb603bf); "[EV-028] docs: mark T3.3 complete after OIDC 0.1.1 publishes"; T3.3 done; T3.3b in_progress; ahead_of_origin=1; AIXM WIP uncommitted; #781'
   - '2026-08-01 S035/EV-028 tip synced — b8e37ae (b8e37aeee53dfe4691866345b2786081d17199fc); "[EV-028] docs: Gate A pass, UJ-023 amend, draft execution plan"; 04 COMPLETE → 07 STARTED @ T0.1; #781'
@@ -24773,9 +24825,9 @@ git_history:
     created_at: '2026-08-01'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
-    tip_sha: 57c8dad
-    tip_sha_full: 57c8dad5756014d592f9b14f728c7ce8bafa59c2
-    note: 'Active — tip 57c8dad (T3.3b AIXM 0.1.2); branch+tag iwxxm-validate-v0.1.2 pushed; next T3.4'
+    tip_sha: 84aca02
+    tip_sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
+    note: 'Active — tip 84aca02 (T3.4 STARTED D-S035-14d); clean-venv pip install smoke @ 0.1.2'
     pushed: true
     tag: iwxxm-validate-v0.1.2
   - name: docs/S034-EV027-closeout
@@ -25705,6 +25757,16 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 84aca02
+    sha_full: 84aca023741db6b5a79b8276a97032ec2b8188d4
+    branch: evolve/EV-028-empiric2-ops-leftovers-781
+    message: "[EV-028] docs: mark T3.3b complete; sync iwxxm-validate __version__"
+    stage: 07-build
+    session_id: S035-empiric2-ops-leftovers-781
+    evolve_cycle_id: EV-028
+    timestamp: '2026-08-01'
+    pushed: true
+    note: 'T3.4 STARTED (D-S035-14d) — skip cosmetic 0.1.3; proceed install smoke @ 0.1.2'
   - sha: 57c8dad
     sha_full: 57c8dad5756014d592f9b14f728c7ce8bafa59c2
     branch: evolve/EV-028-empiric2-ops-leftovers-781
