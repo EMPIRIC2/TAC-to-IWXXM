@@ -210,7 +210,10 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     elif ir.get("cancel"):
         gml_id = f"taf.cnl.{station.lower()}"
 
-    if ir.get("correction"):
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        status = str(override)
+    elif ir.get("correction"):
         status = "CORRECTION"
     elif ir.get("amendment"):
         status = "AMENDMENT"

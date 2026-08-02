@@ -159,6 +159,40 @@ def test_convert_bulletin_speci_ahl_bbb_report_status(client: TestClient, monkey
     assert "iwxxm:SPECI" in (payload["results"][0]["xml"] or "")
 
 
+TAF_CCA_TEXT = """\
+FCUS31 KJFK 121200 CCA
+TAF KJFK 121130Z 1212/1312 18010KT P6SM FEW050=
+"""
+
+
+def test_convert_bulletin_taf_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T4.2: TAF AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return f'<iwxxm:TAF reportStatus="CORRECTION">{tac[:20]}</iwxxm:TAF>', None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=TAF_CCA_TEXT,
+        product="TAF",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "FC"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "TAF"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:TAF" in (payload["results"][0]["xml"] or "")
+
+
 def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
 

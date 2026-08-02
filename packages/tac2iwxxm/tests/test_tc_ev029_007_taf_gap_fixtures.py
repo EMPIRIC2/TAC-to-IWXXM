@@ -5,9 +5,8 @@ matrix and multi-report (example-inventory §A TAF row; remine §B.3; FC/FT→LC
 + BBB→reportStatus).
 
 Product-order smoke (TC-EV029-007 pack seed for TAF) uses annex3 ``taf_a5_1``.
-BBB→``reportStatus`` and ``split_bulletin(product=\"TAF\")`` are T4.2 code gaps
-(AHL parse/filename keep-green from M1; TAF emitter ignores ``report_status`` IR
-today; bulletin split rejects TAF until the FC/FT body splitter lands).
+BBB→``reportStatus`` reuses ``convert(report_status=)`` with TAF emitter honor
+(T4.2); ``split_bulletin(product=\"TAF\")`` accepts FC/FT AHL bodies.
 """
 
 from __future__ import annotations

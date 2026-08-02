@@ -107,7 +107,7 @@ def test_split_unsupported_product_raises() -> None:
 
     text = _read("metar_multi_ahl.txt")
     with pytest.raises(BulletinSplitError) as exc_info:
-        split_bulletin(text, product="TAF")
+        split_bulletin(text, product="VAA")
     assert exc_info.value.code == "bulletin_split_failed"
 
 
