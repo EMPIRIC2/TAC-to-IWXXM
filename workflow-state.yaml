@@ -40,18 +40,18 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T7.2 COMPLETE @ b32d741 — TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; tip b32d741; ahead of origin'
+    note: 'T7.3 COMPLETE — tc-sigmet-quality.yml + make test-tc-sigmet-quality PASS; M7 pack done; next T7.4 #738 residuals; tip a2d39f1 pending T7.3 commit; #828 M2–M7; #823'
     current_milestone: M7
     active_milestone: M7
-    current_task: T7.3
-    active_task: T7.3
+    current_task: T7.4
+    active_task: T7.4
     active_task_status: pending
   started_at: '2026-08-01'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2+M3+M4+M5+M6] METAR/SPECI/TAF/SIGMET/VA SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+  pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M6
+  pr_milestone: M2-M7
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -132,6 +132,8 @@ sessions:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m6.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m7.md
+    status: completed
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
   preset: Standard
   preset_status: approved
@@ -141,19 +143,19 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T7.2 COMPLETE @ b32d741 — TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; tip b32d741; ahead of origin'
+    note: 'T7.3 COMPLETE — tc-sigmet-quality.yml + make test-tc-sigmet-quality PASS; M7 pack done; next T7.4 #738 residuals; tip a2d39f1 pending T7.3 commit; #828 M2–M7; #823'
     current_milestone: M7
     active_milestone: M7
-    current_task: T7.3
-    active_task: T7.3
+    current_task: T7.4
+    active_task: T7.4
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M7 T7.2 COMPLETE @ b32d741; next T7.3 tc-sigmet-quality.yml pending; tac2iwxxm 0.2.1; #828; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M7 T7.3 COMPLETE; next T7.4 #738; tip a2d39f1 pending commit; #828 M2–M7; tac2iwxxm 0.2.1; #823'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2+M3+M4+M5+M6] METAR/SPECI/TAF/SIGMET/VA SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+  pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M6
+  pr_milestone: M2-M7
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -228,7 +230,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — M6 T6.1 in_progress (VA SIGMET gap fixtures WV→LV); M5 COMPLETE @ 57c27f7; #828; #823'
+    note: '07-build in_progress — M7 T7.3 COMPLETE; next T7.4 #738 residuals; tip a2d39f1 pending commit; #828; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5570,11 +5572,11 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: 'T7.2 COMPLETE @ b32d741 — TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; tip b32d741; ahead of origin'
+    note: 'T7.3 COMPLETE — tc-sigmet-quality.yml; next T7.4; #828; #823'
     current_milestone: M7
-    current_task: T7.3
+    current_task: T7.4
     active_milestone: M7
-    active_task: T7.3
+    active_task: T7.4
     active_task_status: pending
     decision_refs:
     - D-S036-04-plan
@@ -5593,6 +5595,7 @@ stages:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m5.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m6.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m7.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
@@ -5605,11 +5608,11 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'T7.2 COMPLETE @ b32d741 — TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; tip b32d741; ahead of origin'
+      note: 'T7.3 COMPLETE — tc-sigmet-quality.yml; next T7.4; #828; #823'
       active_milestone: M7
       current_milestone: M7
-      active_task: T7.3
-      current_task: T7.3
+      active_task: T7.4
+      current_task: T7.4
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -5646,12 +5649,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T7.3
+        current_task: T7.4
         active_task_status: pending
         active_milestone: M7
         phase: C
         milestone: M7
-        notes: 'T7.2 COMPLETE @ b32d741 — TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; tip b32d741; ahead of origin'
+        notes: 'T7.3 COMPLETE — tc-sigmet-quality.yml; next T7.4; #828; #823'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5661,11 +5664,11 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: 'T7.2 COMPLETE @ b32d741 — TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; tip b32d741; ahead of origin'
+      note: 'T7.3 COMPLETE — tc-sigmet-quality.yml; next T7.4; #828; #823'
       active_milestone: M7
       current_milestone: M7
-      active_task: T7.3
-      current_task: T7.3
+      active_task: T7.4
+      current_task: T7.4
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -8389,6 +8392,45 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: NOTE-S036-EV029-T73-complete
+  date: '2026-08-02'
+  timestamp: '2026-08-02T18:30:00Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: note
+  status: recorded
+  topic: "T7.3 COMPLETE tc-sigmet-quality pack"
+  summary: "Added tc-sigmet-quality.yml + run_tc_sigmet_quality.sh + make test-tc-sigmet-quality; local PASS; #828 retitled M2–M7; next T7.4"
+  decision: "Added tc-sigmet-quality.yml + run_tc_sigmet_quality.sh + make test-tc-sigmet-quality; local PASS; #828 retitled M2–M7; next T7.4"
+  tip_sha: a2d39f1
+  related_issues:
+  - '823'
+  - '738'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
+- id: NOTE-S036-EV029-T73-start
+  date: '2026-08-02'
+  timestamp: '2026-08-02T18:00:00Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: note
+  status: recorded
+  topic: "T7.3 START + #828 retitle M2–M7 (option 1)"
+  summary: "T7.3 in_progress; user chose start T7.3 + retitle #828 to M2–M7; tip a2d39f1 CI green"
+  decision: "T7.3 in_progress; user chose start T7.3 + retitle #828 to M2–M7; tip a2d39f1 CI green"
+  tip_sha: a2d39f1
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
 - id: D-S036-semver-patch
   date: '2026-08-02'
   timestamp: '2026-08-02T17:20:26Z'
@@ -25468,11 +25510,11 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: 'T7.2 COMPLETE @ b32d741 — TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; tip b32d741; ahead of origin'
+      note: 'T7.3 COMPLETE — tc-sigmet-quality.yml + make test-tc-sigmet-quality; next T7.4 #738; #828; #823'
       current_milestone: M7
       active_milestone: M7
-      current_task: T7.3
-      active_task: T7.3
+      current_task: T7.4
+      active_task: T7.4
       active_task_status: pending
     08-verify-build:
       status: pending
@@ -25535,6 +25577,8 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m7.md
+    status: completed
   github_issues:
   - '823'
   branch: evolve/EV-029-eight-family-ahl-rules
@@ -25543,12 +25587,12 @@ evolve_cycles:
   pull_requests:
   - number: 828
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-    title: "[EV-029][M2+M3+M4+M5] METAR/SPECI/TAF/gen SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
+    title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
     status: open
-    milestone: M2-M5
+    milestone: M2-M7
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: b32d741
+    tip_sha: a2d39f1
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25558,9 +25602,9 @@ evolve_cycles:
     merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2+M3+M4+M5] METAR/SPECI/TAF/gen SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
+  pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
   pr_status: open
-  pr_milestone: M2-M5
+  pr_milestone: M2-M7
   pr_base: main
   pr_head: evolve/EV-029-eight-family-ahl-rules
   prior_pr_number: 827
@@ -25568,6 +25612,8 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 07-build — T7.3 COMPLETE (tc-sigmet-quality.yml + make test-tc-sigmet-quality PASS); next T7.4 #738; tip a2d39f1 pending commit; #828 M2–M7; #823'
+  - '2026-08-02 S036/EV-029 07-build — T7.3 STARTED (tc-sigmet-quality.yml); T7.2 COMPLETE @ b32d741; tip a2d39f1 pushed CI green; #828 retitle M2–M7; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.2 COMPLETE @ b32d741 (b32d741dd609347e4d0287fc4616484c5377d86e); [T7.2] TC SIGMET TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; M7; ahead_of_origin=3; not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.1 COMPLETE @ 42b2a73; [T7.1] TC SIGMET gap fixtures; next T7.2 pending; M7; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — user continued after M5 green on tip 49f2563 into M6 T6.1 in_progress (VA SIGMET gap fixtures WV→LV); M5 COMPLETE @ 57c27f7; #828; #823'
@@ -25596,14 +25642,16 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 3
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: b32d741
-  tip_sha_full: b32d741dd609347e4d0287fc4616484c5377d86e
+  tip_sha: a2d39f1
+  tip_sha_full: a2d39f1a8cb55a0860b33d0db9c5d7dfd54c22c2
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — 07-build in_progress — M7 T7.2 COMPLETE @ b32d741; next T7.3 tc-sigmet-quality.yml; #828; #823'
+  note: 'S036/EV-029 — 07-build — T7.3 COMPLETE; next T7.4; tip a2d39f1 pending commit; #828; #823'
   notes:
+  - '2026-08-02 S036/EV-029 07-build — T7.3 COMPLETE (tc-sigmet-quality.yml + make test-tc-sigmet-quality PASS); next T7.4 #738; tip a2d39f1 pending commit; #828 M2–M7; #823'
+  - '2026-08-02 S036/EV-029 07-build — T7.3 STARTED; tip a2d39f1 pushed CI green; #828 retitle M2–M7; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.2 COMPLETE @ b32d741 (b32d741dd609347e4d0287fc4616484c5377d86e); [T7.2] TC SIGMET TropicalCycloneSIGMET quality path; next T7.3 tc-sigmet-quality.yml; M7; ahead_of_origin=3; not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.1 COMPLETE @ 42b2a73 (42b2a73e3bbe185611c67d9d8fe1719a3aa63aba); [T7.1] TC SIGMET gap fixtures; next T7.2 pending; M7; ahead_of_origin=1; not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — M5 COMPLETE (T5.1–T5.3) @ 57c27f7 (57c27f7f8c71066bdbf4123d7004458f549b0cf0); #828 M2–M5; next M6 @ T6.1; ahead_of_origin=3; #823'
@@ -25918,15 +25966,15 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: b32d741
-    tip_sha_full: b32d741dd609347e4d0287fc4616484c5377d86e
-    note: '07-build in_progress — M7 T7.2 COMPLETE @ b32d741; next T7.3 tc-sigmet-quality.yml; #828; #823'
-    pushed: false
+    tip_sha: a2d39f1
+    tip_sha_full: a2d39f1a8cb55a0860b33d0db9c5d7dfd54c22c2
+    note: '07-build in_progress — M7 T7.3 COMPLETE; next T7.4 #738; tip a2d39f1 pending commit; #828 M2–M7; #823'
+    pushed: true
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     pr_status: open
-    pr_title: "[EV-029][M2+M3+M4+M5] METAR/SPECI/TAF/gen SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
-    pr_milestone: M2-M5
+    pr_title: "[EV-029][M2–M7] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
+    pr_milestone: M2-M7
     pr_base: main
     pr_head: evolve/EV-029-eight-family-ahl-rules
     prior_pr_number: 827
