@@ -1327,9 +1327,10 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 ### TC-F28-006: SWXA / COM adjacency + AHL FN→LN (UJ-043)
 
 - **Level**: T0 / T2
-- **Objective**: SWXA never mis-rooted as SIGMET/VAA/TCA; AHL `FN` maps to IWXXM `LN`
-- **Pass criteria**: adjacency + AHL fixtures
-- **Source**: F28; #823 B1
+- **Objective**: SWXA never mis-rooted as SIGMET/VAA/TCA; AHL `FN` maps to IWXXM `LN`;
+  API accepts `product=swxa` (reject `swx` / unknown)
+- **Pass criteria**: adjacency + AHL fixtures; convert/lint/decode accept `swxa`
+- **Source**: F28; #823 B1; api-contract EV-029
 
 ### EV-029 verify/deploy gate
 

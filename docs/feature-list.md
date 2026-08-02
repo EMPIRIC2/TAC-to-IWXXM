@@ -1007,6 +1007,9 @@
 - **Issues**: [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740); parent [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823).
 - **Deepens**: **F6** (SWXA encode), **F12** (SWXA checklist), **F2/F13** (XSD+SCH), optional
   **F7.g** Examples when passers exist.
+- **API**: Additive wire value **`product=swxa`** on convert / convert-bulletin / lint-tac /
+  decode-tac ([api-contract.md](api-contract.md) §S036 / EV-029). Alias `swx` is **not**
+  accepted. Keep-whole multiline `manual_text` (peer VAA/TCA).
 - **Acceptance**:
   1. Registry-backed SWXA lint codes; CI fails on unknown codes (**TC-F28-001**)
   2. Authoritative exceptional rules (from mining / #823 / Annex 3 + PANS-MET + IWXXM 2025-2
@@ -1018,6 +1021,7 @@
   5. Coverage-matrix SWXA / F28 themes updated; guidance gaps filed or closed
   6. Product-path lint+convert smoke; Examples list only SWXA passers when unlocked
      (**UJ-043** / **TC-F28-005**); H4–H5 only if FE touched
+  7. API/runtime accept `product=swxa` (unknown → `unknown_product` 400)
 - **Journeys / tests**: **UJ-043**; **TC-F28-001..006**; cycle **TC-EV029-***
 - **Out of scope**: VONA #741; SIGWX / QVACI; dissemination sink UI; treating GIFTs as normative
 - **Source**: E29-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-029;

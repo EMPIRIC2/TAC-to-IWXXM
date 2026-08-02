@@ -456,8 +456,8 @@ metar-to-IWXXM/
   to F15–F27. Completes the eight-family TAC→IWXXM converter set. TAC AHL `FN` → IWXXM `LN`.
   Registry-backed lint (ADR-028); golden policy ADR-032.
 - **Status**: **Planned** (S036 / EV-029).
-- **API**: Prefer existing product enum / convert path; no new deployable. Add `swxa` (or
-  documented alias) only if missing — confirm in 04-tech-plan.
+- **API**: Additive **`product=swxa`** on convert / convert-bulletin / lint-tac / decode-tac
+  (api-contract S036 / EV-029). No new routes or deployable. No `swx` alias.
 - **Components**: `packages/tac-validate`, `tac2iwxxm`, `iwxxm-validate`; domain docs; fixtures.
 - **Journeys / tests**: **UJ-043**; TC-F28-001..006; cycle TC-EV029-*.
 - **Non-goals**: VONA #741; SIGWX / QVACI; dissemination sink UI; GIFTs-as-normative.

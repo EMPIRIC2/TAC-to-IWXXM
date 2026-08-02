@@ -96,7 +96,7 @@ See [routing-plan.md](./routing-plan.md). **Standard** — approved via intake `
 
 ## Current stage
 
-**00-context** completed · Phase 1 Fn locked (`D-S036-fn` = 1,1,1,1) → **01-requirements** delta.
+**01-requirements** completed (`D-S036-E29-M` = 2,1 — API `swxa`) → **02-verify-plan**.
 
 ## Links
 

@@ -10,8 +10,8 @@
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Intake locked `D-S036-open` = 1,1,1,1,1,1 |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1 locked; orchestrating 01 |
-| 01-requirements | yes | delta | **in_progress** | F28 + UJ-043 + TC-EV029/F28 written; Manifest+close pending |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 01-requirements | yes | delta | **completed** | Manifest=2 (API `swxa`); close → 02 (`D-S036-E29-M`) |
+| 02-verify-plan | yes | delta | **in_progress** | Consistency PASS; Batch F pending |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
 | 04-tech-plan | yes | delta | pending | Exec plan: Phase A mine → Phase B per family |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
@@ -38,4 +38,5 @@ Routine Standard checkpoints after phases A–D and deploy.
 | Routing | Standard path above | 2026-08-01 |
 | Exclude | SIGWX / VONA / QVACI; sink UI; #806 WIS2 mining | 2026-08-01 |
 | Fn allocation | `D-S036-fn` = **1,1,1,1** — F28 + deepen; absorb #738/#820/#740; start 01; commit open @ `49e2a62` | 2026-08-01 |
+| Manifest + 01 close | `D-S036-E29-M` = **2,1** — lean + API `swxa`; → 02-verify-plan | 2026-08-01 |
 )

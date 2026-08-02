@@ -40,13 +40,14 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '01-requirements in_progress — delta written; Manifest+close pending'
+    note: '02-verify-plan in_progress — consistency PASS; Batch F pending'
   started_at: '2026-08-01'
   context_briefs:
   - docs/context/eight-family-ahl-rules-823.md
   decision_refs:
   - D-S036-open
   - D-S036-fn
+  - D-S036-E29-M
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -83,7 +84,11 @@ sessions:
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/requirements-delta.md
+    status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     status: written
+  - path: docs/api-contract.md
+    status: touched
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
   preset: Standard
   preset_status: approved
@@ -93,7 +98,7 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '01-requirements in_progress — delta written; Manifest+close pending'
+    note: '02-verify-plan in_progress — consistency PASS; Batch F pending'
   started_at: '2026-08-01'
   note: 'S036/EV-029 — umbrella #823; D-S036-fn (1,1,1,1) F28+deepen; absorb #738/#820/#740; 01-requirements in_progress (delta written); 16-evolve Manifest+close pending'
   context_briefs:
@@ -101,6 +106,7 @@ sessions:
   decision_refs:
   - D-S036-open
   - D-S036-fn
+  - D-S036-E29-M
   routing_plan:
   - stage: 00-context
     required: true
@@ -118,17 +124,19 @@ sessions:
   - stage: 01-requirements
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-01'
-    note: 'Delta written — requirements-delta.md; Manifest+close pending'
+    note: 'COMPLETE (delta) — E29-M=2 API swxa; D-S036-E29-M; requirements-delta.md; handoff 02-verify-plan; #823'
+    completed: '2026-08-01'
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: pending
-    note: Gate A
+    status: in_progress
+    note: Consistency PASS — verify-plan-audit.md; Batch F pending; Gate A
+    started: '2026-08-01'
   - stage: 03-plan-tooling
     required: false
-    mode: null
+    mode:
     status: skipped
     note: Re-add if new rules/hooks needed
   - stage: 04-tech-plan
@@ -138,12 +146,12 @@ sessions:
     note: 'Exec plan: Phase A mine → Phase B per family'
   - stage: 05-verify-tech
     required: false
-    mode: null
+    mode:
     status: skipped
     note: Re-add if new deps
   - stage: 06-tech-tooling
     required: false
-    mode: null
+    mode:
     status: skipped
     note: —
   - stage: 07-build
@@ -6552,7 +6560,7 @@ stages:
     previous_completed_at: '2026-07-31'
     previous_session_id: S033-va-multi-location-equality
     previous_evolve_cycle_id: EV-026
-    previous_tip_sha: 7e08051
+    previous_tip_sha: .inf
     previous_note: 'S033/EV-026 10-e2e smoke COMPLETE PASS — TC-EV025-008/009 + Vitest (T3.2); tip 7e08051; Gate C PASS; #809'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
@@ -6910,7 +6918,7 @@ stages:
     previous_completed_at: '2026-07-31'
     previous_session_id: S033-va-multi-location-equality
     previous_evolve_cycle_id: EV-026
-    previous_tip_sha: 7e08051
+    previous_tip_sha: .inf
     previous_note: 'S033/EV-026 08-verify-build COMPLETE PASS — T3.2; report docs/sessions/S033-va-multi-location-equality/reports/verification-report.md; tip 7e08051; Gate C PASS; #809'
     session_id: S035-empiric2-ops-leftovers-781
     evolve_cycle_id: EV-028
@@ -16208,6 +16216,30 @@ decisions_log:
   - '740'
   branch: evolve/EV-029-eight-family-ahl-rules
 
+- id: D-S036-E29-M
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  status: confirmed
+  category: requirements
+  topic: Document Manifest + API contract close (01 → 02)
+  summary: 2,1 — lean Manifest + API product=swxa; close 01 → 02
+  decision: E29-M=2 — lean Document Manifest + amend API contract for product=swxa; Q2=1 close 01-requirements → start 02-verify-plan (D-S036-E29-M).
+  user_option: 2,1
+  related_issues:
+  - '823'
+  related_decisions:
+  - E29-M
+  - D-S036-fn
+  answers:
+    E29-M: 2
+    E29-close: 1
+  branch: evolve/EV-029-eight-family-ahl-rules
 artifacts:
 - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
   kind: execution-plan
@@ -24506,7 +24538,6 @@ evolve_cycles:
   closeout_merge_sha_full: 8c7642110dbef1b9897154a20fcc76981a641062
   close_decision_id: D-S033-EV026-phase4-close
   close_note: 'Phase 4 close 2026-07-31 (D-S033-EV026-phase4-close option 1) — approve 13 results; PR #817 merged 101f555; #818 MERGED @ 8c76421; #809 closed; EV-026/S033 complete'
-  note: 'D-S033-EV026-phase4-close — Phase 4 close 2026-07-31; EV-026/S033 complete; PR #817 101f555; 13 PASS; #818 MERGED @ 8c76421 (D-S033-818-merge); #809 closed'
 - id: EV-027
   session_id: S034-wmo-decode-residual-matrix
   cycle_type: feature
@@ -24723,8 +24754,6 @@ evolve_cycles:
   closeout_merge_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
   close_decision_id: D-S034-EV027-phase4-close
   close_note: 'Phase 4 close 2026-07-31 (D-S034-EV027-phase4-close option 1) — merge #822 + close EV-027 / S034; PR #821 merged @ ad36aa0; #815 closed; #820 open; 13 waived (D-S034-gate-c)'
-  tip_sha: 9ff0157
-  tip_sha_full: 9ff0157be56b53f6ed8f7103239651818ee8fb49
   notes:
   - '2026-07-31 S034/EV-027 CLOSED — Phase 4 close D-S034-EV027-phase4-close option 1; PR #821 @ ad36aa0; #822 closeout MERGED @ 9ff0157; #815 closed; #820 open; 13 waived; active_session=null'
   - '2026-07-31 S034/EV-027 PR #821 MERGED @ ad36aa0 (D-S034-merge=1,1) — T3.3 COMPLETE; 07 COMPLETE 14/14; #815 closed; #820 open; 13 waived; Phase 4 closeout docs + AskQuestion pending'
@@ -24973,7 +25002,7 @@ evolve_cycles:
   title: "#823 Eight-family AHL / lint / convert / validate gap sweep"
   status: in_progress
   started: '2026-08-01'
-  completed: null
+  completed:
   scope_summary: |
     Phase A mine/promote rules + example inventory; Phase B implement product-by-product
     (AHL/COM → METAR → SPECI → TAF → SIGMET gen/VA/TC/CNL → AIRMET → VAA → TCA → SWXA).
@@ -24997,7 +25026,7 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: "Standard — D-S036-open; skip 03/05/06"
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
   stages:
     00-context:
       status: completed
@@ -25011,13 +25040,15 @@ evolve_cycles:
       started: '2026-08-01'
       note: "Phase 0–1 locked; orchestrating 01"
     01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-08-01'
+      note: "Manifest=2 API swxa + close"
+      completed: '2026-08-01'
+    02-verify-plan:
       status: in_progress
       mode: delta
       started: '2026-08-01'
-      note: "Delta written — requirements-delta.md; Manifest+close pending"
-    02-verify-plan:
-      status: pending
-      mode: delta
     04-tech-plan:
       status: pending
       mode: delta
@@ -25064,7 +25095,11 @@ evolve_cycles:
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/requirements-delta.md
+    status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     status: written
+  - path: docs/api-contract.md
+    status: touched
   github_issues:
   - '823'
   branch: evolve/EV-029-eight-family-ahl-rules
@@ -26330,6 +26365,15 @@ git_history:
     evolve_cycle_id: EV-029
     timestamp: '2026-08-01'
     note: 'S036/EV-029 OPEN — D-S036-open commit on evolve branch; umbrella #823'
+  - sha: bfa1867
+    sha_full: bfa186768921c85bfdc692a0c4b76726d6ceef4f
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: '[EV-029] docs: 01-requirements delta for F28 and eight-family deepen'
+    stage: 01-requirements
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-01'
+    note: 'S036/EV-029 — E29-M=2 API swxa; D-S036-E29-M; requirements-delta; handoff 02-verify-plan; #823'
   - sha: 8086664
     sha_full: 8086664df0e04fe60da43baf7cd16a396910210d
     branch: main

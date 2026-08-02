@@ -26,6 +26,8 @@
 | E29-8 | decision | Related issues? | **1** — absorb #738 / #820 / #740 into Phase B |
 | E29-9 | decision | Proceed? | **1** — lock → start 01-requirements |
 | E29-10 | decision | Commit session open? | **1** — yes (`D-S036-fn` Q4) |
+| E29-M | decision | Document Manifest? | **2** — lean + amend API contract for `product=swxa` (`D-S036-E29-M`) |
+| E29-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** |
 
 **Scope (verbatim)**: Go 1-by-1 across the eight TAC→IWXXM product families and ensure
 validation, linting, and conversion rules (plus examples for all TAC input shapes) have no

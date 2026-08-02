@@ -22,12 +22,12 @@
 | 3 | User Journeys | **UJ-043** |
 | 4 | Test Plan | UJ-043 map; **TC-EV029-001..008**; **TC-F28-001..006** |
 
-### Recommended
+### Recommended (locked `D-S036-E29-M` = 2)
 
-| # | Document | Relevance | Proposal |
+| # | Document | Relevance | Decision |
 |---|----------|-----------|----------|
-| 5 | evolve-decisions.md | High | Already has Phase 0–1; refresh acceptance |
-| 6 | API Contract | Low | Skip unless 04 finds missing `swxa` product enum |
+| 5 | evolve-decisions.md | High | Included |
+| 6 | API Contract | High | **Amend** — additive `product=swxa`; TC SIGMET under `sigmet` |
 | 7 | Config Spec | Low | Skip (no new env) |
 | 8 | Deploy | Low | Skip until behavior ships (12/13) |
 | 9 | Dependency Inventory | Low | Skip unless new deps in 04 |
@@ -48,12 +48,13 @@
 | `docs/test-plan.md` | TC-EV029 + TC-F28 + UJ map |
 | `docs/decisions/evolve-decisions.md` | E29-7..10 + acceptance draft |
 
-## Session-open commit
+## Commits
 
-- `49e2a62` — `[EV-029] docs: open S036 eight-family AHL rules cycle (#823)`
+- `49e2a62` — session open
+- `bfa1867` — 01 delta (pre–API amend)
+- *(pending)* — API amend + 01 close → 02
 
-## Open for AskQuestion
+## Gate
 
-1. Approve lean Document Manifest (as above)
-2. Close 01 → **02-verify-plan**
+- Manifest **2** + close 01 **1** → **02-verify-plan** (`D-S036-E29-M`)
 )
