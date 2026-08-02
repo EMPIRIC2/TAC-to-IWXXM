@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — SPECI (F20 deepen) |
-| **Active task** | T3.1 |
+| **Active task** | T3.1 — pending (SPECI gap fixtures); M2 PR opening |
 | **Tasks** | 13 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
