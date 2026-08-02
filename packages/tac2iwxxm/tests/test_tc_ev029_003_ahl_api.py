@@ -171,12 +171,12 @@ def test_taf_ahl_body_split_succeeds_m4() -> None:
 
 
 def test_unsupported_product_body_raises_clear_error() -> None:
-    """TCA/SWXA still raise a clear split error until their milestones (M10/M11)."""
+    """SWXA still raises a clear split error until M11."""
     from tac2iwxxm import BulletinSplitError, split_bulletin
 
     text = _read_ahl("fc_taf_with_body.txt")
     with pytest.raises(BulletinSplitError) as exc_info:
-        split_bulletin(text, product="TCA")
+        split_bulletin(text, product="SWXA")
     assert exc_info.value.code == "bulletin_split_failed"
     assert exc_info.value.message  # non-empty operator-facing detail
 

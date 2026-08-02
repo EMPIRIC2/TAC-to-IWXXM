@@ -1489,6 +1489,12 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
             )
         fallback = f"{pos}{pressure}{wind}"
 
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "NORMAL"
+
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:TropicalCycloneAdvisory xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -1497,7 +1503,7 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     xmlns:metce="http://def.wmo.int/metce/2013"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     gml:id="tca.{slug}"
-    reportStatus="NORMAL"
+    reportStatus="{report_status}"
     permissibleUsage="OPERATIONAL">
     <iwxxm:issueTime>
         <gml:TimeInstant gml:id="t.issue">
