@@ -40,7 +40,7 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+    note: 'T7.1 COMPLETE @ 42b2a73 — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path pending; M7; 4 keep-green / 9 red TDD'
     current_milestone: M7
     active_milestone: M7
     current_task: T7.2
@@ -141,14 +141,14 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+    note: 'T7.1 COMPLETE @ 42b2a73 — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path pending; M7; 4 keep-green / 9 red TDD'
     current_milestone: M7
     active_milestone: M7
     current_task: T7.2
     active_task: T7.2
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; next M7 @ T7.1; tac2iwxxm 0.2.1; #828; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M7 T7.1 COMPLETE @ 42b2a73; next T7.2 pending; tac2iwxxm 0.2.1; #828; umbrella #823; F28+deepen; absorb #738/#820/#740'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2+M3+M4+M5+M6] METAR/SPECI/TAF/SIGMET/VA SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
@@ -5570,7 +5570,7 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+    note: 'T7.1 COMPLETE @ 42b2a73 — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path pending; M7; 4 keep-green / 9 red TDD'
     current_milestone: M7
     current_task: T7.2
     active_milestone: M7
@@ -5605,7 +5605,7 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+      note: 'T7.1 COMPLETE @ 42b2a73 — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path pending; M7; 4 keep-green / 9 red TDD'
       active_milestone: M7
       current_milestone: M7
       active_task: T7.2
@@ -5651,7 +5651,7 @@ stages:
         active_milestone: M7
         phase: C
         milestone: M7
-        notes: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+        notes: 'T7.1 COMPLETE @ 42b2a73 — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path pending; M7; 4 keep-green / 9 red TDD'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5661,7 +5661,7 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+      note: 'T7.1 COMPLETE @ 42b2a73 — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path pending; M7; 4 keep-green / 9 red TDD'
       active_milestone: M7
       current_milestone: M7
       active_task: T7.2
@@ -25468,7 +25468,7 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; 4 keep-green / 9 red TDD; tip pending commit'
+      note: 'T7.1 COMPLETE @ 42b2a73 — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path pending; M7; 4 keep-green / 9 red TDD'
       current_milestone: M7
       active_milestone: M7
       current_task: T7.2
@@ -25548,7 +25548,7 @@ evolve_cycles:
     milestone: M2-M5
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: 57c27f7
+    tip_sha: 42b2a73
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25568,6 +25568,7 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 07-build — T7.1 COMPLETE @ 42b2a73; [T7.1] TC SIGMET gap fixtures; next T7.2 pending; M7; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — user continued after M5 green on tip 49f2563 into M6 T6.1 in_progress (VA SIGMET gap fixtures WV→LV); M5 COMPLETE @ 57c27f7; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
   - '2026-08-02 S036/EV-029 07-build — M5 T5.1 in_progress (gen SIGMET gap fixtures); #828 green @ 7073c4a; #823'
@@ -25594,14 +25595,15 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 3
+  ahead_of_origin: 1
   pushed: false
   pending_commit:
-  tip_sha: 57c27f7
-  tip_sha_full: 57c27f7f8c71066bdbf4123d7004458f549b0cf0
+  tip_sha: 42b2a73
+  tip_sha_full: 42b2a73e3bbe185611c67d9d8fe1719a3aa63aba
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — 07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
+  note: 'S036/EV-029 — 07-build in_progress — M7 T7.1 COMPLETE @ 42b2a73; next T7.2 pending; #828; #823'
   notes:
+  - '2026-08-02 S036/EV-029 07-build — T7.1 COMPLETE @ 42b2a73 (42b2a73e3bbe185611c67d9d8fe1719a3aa63aba); [T7.1] TC SIGMET gap fixtures; next T7.2 pending; M7; ahead_of_origin=1; not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — M5 COMPLETE (T5.1–T5.3) @ 57c27f7 (57c27f7f8c71066bdbf4123d7004458f549b0cf0); #828 M2–M5; next M6 @ T6.1; ahead_of_origin=3; #823'
   - '2026-08-02 S036/EV-029 07-build — M5 T5.1 in_progress (gen SIGMET gap fixtures); #828 green @ 7073c4a (7073c4aa6a7118532ffb77d6bbaf76a5664e0e78); #823'
   - '2026-08-02 S036/EV-029 tip synced — c23070d (c23070d820fcecfdcef4efd591e37fd0b06d6bf8); M4 COMPLETE pushed; #828 M2–M4; ahead_of_origin=0; next M5 @ T5.1; #823'
@@ -25914,9 +25916,9 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: 57c27f7
-    tip_sha_full: 57c27f7f8c71066bdbf4123d7004458f549b0cf0
-    note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
+    tip_sha: 42b2a73
+    tip_sha_full: 42b2a73e3bbe185611c67d9d8fe1719a3aa63aba
+    note: '07-build in_progress — M7 T7.1 COMPLETE @ 42b2a73; next T7.2 pending; #828; #823'
     pushed: false
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -26876,6 +26878,17 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 42b2a73
+    sha_full: 42b2a73e3bbe185611c67d9d8fe1719a3aa63aba
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T7.1] test: TC SIGMET TropicalCycloneSIGMET gap fixtures"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T17:38:58Z'
+    files_changed: 11
+    pushed: false
+    note: 'T7.1 COMPLETE — TC SIGMET TropicalCycloneSIGMET gap fixtures (TC-EV029-004 / #738); next T7.2 quality path; M7; #828; #823'
   - sha: 9e83be7
     sha_full: 9e83be72122eaa37ca4ee7d0c27e91b5c7d087a5
     branch: evolve/EV-029-eight-family-ahl-rules
