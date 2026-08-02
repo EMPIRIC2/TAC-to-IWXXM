@@ -40,7 +40,7 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
     current_milestone: M5
     active_milestone: M5
     current_task: T5.1
@@ -49,7 +49,7 @@ active_session:
   started_at: '2026-08-01'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
+  pr_title: "[EV-029][M2+M3+M4] METAR/SPECI/TAF AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
   pr_status: open
   pr_milestone: M2-M4
   pr_base: main
@@ -136,17 +136,17 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
     current_milestone: M5
     active_milestone: M5
     current_task: T5.1
     active_task: T5.1
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; umbrella #823; F28+deepen; absorb #738/#820/#740'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
+  pr_title: "[EV-029][M2+M3+M4] METAR/SPECI/TAF AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
   pr_status: open
   pr_milestone: M2-M4
   pr_base: main
@@ -222,7 +222,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5564,7 +5564,7 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+    note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
     current_milestone: M5
     current_task: T5.1
     active_milestone: M5
@@ -5596,7 +5596,7 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+      note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
       active_milestone: M5
       current_milestone: M5
       active_task: T5.1
@@ -5640,7 +5640,7 @@ stages:
         active_milestone: M5
         phase: C
         milestone: M5
-        notes: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+        notes: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5650,7 +5650,7 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+      note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
       active_milestone: M5
       current_milestone: M5
       active_task: T5.1
@@ -25410,7 +25410,7 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+      note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
       current_milestone: M5
       active_milestone: M5
       current_task: T5.1
@@ -25485,12 +25485,12 @@ evolve_cycles:
   pull_requests:
   - number: 828
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-    title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
+    title: "[EV-029][M2+M3+M4] METAR/SPECI/TAF AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
     status: open
     milestone: M2-M4
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: 3f26a80
+    tip_sha: c23070d
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25500,7 +25500,7 @@ evolve_cycles:
     merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
+  pr_title: "[EV-029][M2+M3+M4] METAR/SPECI/TAF AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
   pr_status: open
   pr_milestone: M2-M4
   pr_base: main
@@ -25510,6 +25510,7 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 tip synced — c23070d; M4 COMPLETE pushed; #828 M2–M4 retitled; ahead_of_origin=0; next M5 @ T5.1; #823'
   - '2026-08-02 S036/EV-029 07-build — M4 COMPLETE (T4.1–T4.3) @ 3f26a80; ahead 3; pending push; next M5 @ T5.1; #823'
   - '2026-08-02 S036/EV-029 07-build — M4 T4.1 STARTED (TAF gap fixtures); prior M3 complete on #828; #823'
   - '2026-08-02 S036/EV-029 tip synced — b9a2811 (b9a2811c0f00a11066eac79f72fd39555d6bcf0f); workflow-state sync after M3 + tac2iwxxm 0.2.0; PR #828; pushed; ahead_of_origin=0; M4 @ T4.1 pending; #823'
@@ -25532,14 +25533,15 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 3
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: 3f26a80
-  tip_sha_full: 3f26a80b16360a8d3c0f64eb075f0b19b5ce26aa
+  tip_sha: c23070d
+  tip_sha_full: c23070d820fcecfdcef4efd591e37fd0b06d6bf8
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — 07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
+  note: 'S036/EV-029 — 07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
   notes:
+  - '2026-08-02 S036/EV-029 tip synced — c23070d (c23070d820fcecfdcef4efd591e37fd0b06d6bf8); M4 COMPLETE pushed; #828 M2–M4; ahead_of_origin=0; next M5 @ T5.1; #823'
   - '2026-08-02 S036/EV-029 07-build — M4 COMPLETE (T4.1–T4.3) @ 3f26a80; ahead 3; pending push; next M5 @ T5.1; #823'
   - '2026-08-02 S036/EV-029 07-build — M4 T4.1 STARTED (TAF gap fixtures); prior M3 complete on #828; #823'
   - '2026-08-02 S036/EV-029 tip synced — b9a2811 (b9a2811c0f00a11066eac79f72fd39555d6bcf0f); workflow-state sync after M3 + tac2iwxxm 0.2.0; PR #828; pushed; ahead_of_origin=0; M4 @ T4.1 pending; #823'
@@ -25849,14 +25851,14 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: 3f26a80
-    tip_sha_full: 3f26a80b16360a8d3c0f64eb075f0b19b5ce26aa
-    note: '07-build in_progress — M4 COMPLETE (T4.1–T4.3); M2–M4 on #828; tip 3f26a80 pending push; next M5 @ T5.1; #823'
-    pushed: false
+    tip_sha: c23070d
+    tip_sha_full: c23070d820fcecfdcef4efd591e37fd0b06d6bf8
+    note: '07-build in_progress — M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
+    pushed: true
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     pr_status: open
-    pr_title: "[EV-029][M2] METAR AHL BBB reportStatus + quality pack"
+    pr_title: "[EV-029][M2+M3+M4] METAR/SPECI/TAF AHL reportStatus + quality packs (tac2iwxxm 0.2.0)"
     pr_milestone: M2-M4
     pr_base: main
     pr_head: evolve/EV-029-eight-family-ahl-rules
@@ -26811,6 +26813,28 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: c23070d
+    sha_full: c23070d820fcecfdcef4efd591e37fd0b06d6bf8
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T4.2] test: expect TAF bulletin split success; keep VAA unsupported"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T16:13:43Z'
+    files_changed: 1
+    pushed: true
+    note: 'T4.2 follow-up test expect; M4 COMPLETE pushed @ c23070d; #828 M2–M4; next M5 @ T5.1; #823'
+  - sha: '5478771'
+    sha_full: 5478771be83e92df33a947e7f1a89ce22fbb5e9c
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[EV-029] chore: sync workflow-state after M4 TAF quality pack"
+    stage: 16-evolve
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T16:06:32Z'
+    files_changed: 1
+    pushed: true
+    note: 'workflow-state sync after M4; #823'
   - sha: 3f26a80
     sha_full: 3f26a80b16360a8d3c0f64eb075f0b19b5ce26aa
     branch: evolve/EV-029-eight-family-ahl-rules
@@ -26820,7 +26844,7 @@ git_history:
     evolve_cycle_id: EV-029
     timestamp: '2026-08-02T16:00:49Z'
     files_changed: 5
-    pushed: false
+    pushed: true
     note: 'T4.3 taf-quality CI; M4 COMPLETE (T4.1–T4.3); next M5 @ T5.1; #823'
   - sha: d06dcd1
     sha_full: d06dcd1d00a22ca302aa717e674c5944f8287488
@@ -26831,7 +26855,7 @@ git_history:
     evolve_cycle_id: EV-029
     timestamp: '2026-08-02T15:58:20Z'
     files_changed: 6
-    pushed: false
+    pushed: true
     note: 'T4.2 TAF bulletin split + AHL BBB; #823'
   - sha: 848a6ae
     sha_full: 848a6aeed1dd1f583054efb7aaca859fc892b83f
@@ -26842,7 +26866,7 @@ git_history:
     evolve_cycle_id: EV-029
     timestamp: '2026-08-02T15:55:04Z'
     files_changed: 8
-    pushed: false
+    pushed: true
     note: 'T4.1 TAF gap fixtures; #823'
   - sha: b9a2811
     sha_full: b9a2811c0f00a11066eac79f72fd39555d6bcf0f
