@@ -10,7 +10,7 @@
 **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella); absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820), [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)  
 **Started**: 2026-08-01  
 **Branch**: `evolve/EV-029-eight-family-ahl-rules`  
-**Status**: **in_progress** — Phase 0–1 locked; 01-requirements
+**Status**: **in_progress** — Gate A PASS; **04-tech-plan**
 
 ### Scope (Phase 0 — locked 2026-08-01)
 
@@ -29,6 +29,7 @@
 | E29-M | decision | Document Manifest? | **2** — lean + amend API contract for `product=swxa` (`D-S036-E29-M`) |
 | E29-E1 | decision | Close 01 → 02? | **1** — mark 01 completed; start **02-verify-plan** |
 | E29-02F | decision | 02 Batch F? | **1,1,1,1** — M1/M2/M3/L1 approve (`D-S036-02-batch-f`) |
+| E29-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** (`D-S036-02-phase-a`) |
 
 **Scope (verbatim)**: Go 1-by-1 across the eight TAC→IWXXM product families and ensure
 validation, linting, and conversion rules (plus examples for all TAC input shapes) have no

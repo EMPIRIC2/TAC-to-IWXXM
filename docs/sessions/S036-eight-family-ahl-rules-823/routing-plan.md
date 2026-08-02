@@ -9,11 +9,11 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Intake locked `D-S036-open` = 1,1,1,1,1,1 |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1 locked; orchestrating 01 |
+| 16-evolve | yes | orchestrator | **in_progress** | Gate A PASS; orchestrating 04 |
 | 01-requirements | yes | delta | **completed** | Manifest=2 (API `swxa`); close → 02 (`D-S036-E29-M`) |
-| 02-verify-plan | yes | delta | **in_progress** | Consistency PASS; Batch F pending |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S036-02-phase-a`); Batch F `1,1,1,1` |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
-| 04-tech-plan | yes | delta | pending | Exec plan: Phase A mine → Phase B per family |
+| 04-tech-plan | yes | delta | **in_progress** | Delta interview → exec plan |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
 | 07-build | yes | full | pending | Mining + engine deltas + fixtures |
@@ -39,4 +39,6 @@ Routine Standard checkpoints after phases A–D and deploy.
 | Exclude | SIGWX / VONA / QVACI; sink UI; #806 WIS2 mining | 2026-08-01 |
 | Fn allocation | `D-S036-fn` = **1,1,1,1** — F28 + deepen; absorb #738/#820/#740; start 01; commit open @ `49e2a62` | 2026-08-01 |
 | Manifest + 01 close | `D-S036-E29-M` = **2,1** — lean + API `swxa`; → 02-verify-plan | 2026-08-01 |
+| Batch F (02) | `D-S036-02-batch-f` = **1,1,1,1** — M1/M2/M3/L1 @ `97a9380` | 2026-08-01 |
+| Gate A | `D-S036-02-phase-a` = **1** — PASS → **04-tech-plan** | 2026-08-01 |
 )

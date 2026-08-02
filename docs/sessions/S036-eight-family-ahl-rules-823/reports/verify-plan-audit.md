@@ -55,5 +55,6 @@ Derived from `D-S036-open` / `D-S036-fn` / `D-S036-E29-M`:
 
 ## Gate A
 
-Pending AskQuestion (Batch F complete).
+**PASS** (`D-S036-02-phase-a` = 1) — 2026-08-01.  
+Consistency PASS + Batch F locked → complete **02-verify-plan** → start **04-tech-plan**.
 )
