@@ -40,7 +40,7 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T7.3 COMPLETE @ 1119b88 — tc-sigmet-quality.yml; next T7.4; tip 1119b88 ahead 1; #828 M2–M7; #823'
+    note: 'T7.3 COMPLETE @ 1119b88; tip 4263826 pushed CI green (incl. tc-sigmet-quality); next T7.4 #738 residuals; #828 M2–M7; #823'
     current_milestone: M7
     active_milestone: M7
     current_task: T7.4
@@ -143,7 +143,7 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: 'T7.3 COMPLETE @ 1119b88 — tc-sigmet-quality.yml; next T7.4; tip 1119b88 ahead 1; #828 M2–M7; #823'
+    note: 'T7.3 COMPLETE @ 1119b88; tip 4263826 pushed CI green (incl. tc-sigmet-quality); next T7.4 #738 residuals; #828 M2–M7; #823'
     current_milestone: M7
     active_milestone: M7
     current_task: T7.4
@@ -5572,7 +5572,7 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: 'T7.3 COMPLETE @ 1119b88; next T7.4 #738; tip 1119b88; #828; #823'
+    note: 'T7.3 COMPLETE @ 1119b88; tip 4263826 CI green; next T7.4; #828; #823'
     current_milestone: M7
     current_task: T7.4
     active_milestone: M7
@@ -8392,6 +8392,26 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: NOTE-S036-EV029-T73-ci-green
+  date: '2026-08-02'
+  timestamp: '2026-08-02T19:00:00Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: note
+  status: recorded
+  topic: "T7.3 CI green after push"
+  summary: "tip 4263826; CI/CD + TC SIGMET quality + family packs success; next T7.4"
+  decision: "tip 4263826; CI/CD + TC SIGMET quality + family packs success; next T7.4"
+  tip_sha: 4263826
+  related_issues:
+  - '823'
+  - '738'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
 - id: NOTE-S036-EV029-T73-complete
   date: '2026-08-02'
   timestamp: '2026-08-02T18:30:00Z'
@@ -25510,7 +25530,7 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: 'T7.3 COMPLETE @ 1119b88; next T7.4 #738; tip 1119b88; #828; #823'
+      note: 'T7.3 COMPLETE @ 1119b88; tip 4263826 CI green; next T7.4; #828; #823'
       current_milestone: M7
       active_milestone: M7
       current_task: T7.4
@@ -25592,7 +25612,7 @@ evolve_cycles:
     milestone: M2-M7
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: 1119b88
+    tip_sha: 4263826
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25612,6 +25632,7 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 — tip 4263826 pushed; CI/CD + tc-sigmet-quality green; T7.3 COMPLETE; next T7.4 #738; #828; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.3 COMPLETE @ 1119b88 ([T7.3] tc-sigmet-quality.yml); next T7.4 #738; ahead 1 unpushed; #828 M2–M7; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.3 COMPLETE (tc-sigmet-quality.yml + make test-tc-sigmet-quality PASS); next T7.4 #738; tip a2d39f1 pending commit; #828 M2–M7; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.3 STARTED (tc-sigmet-quality.yml); T7.2 COMPLETE @ b32d741; tip a2d39f1 pushed CI green; #828 retitle M2–M7; #823'
@@ -25643,13 +25664,13 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 1
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: 1119b88
-  tip_sha_full: 1119b88fa9988ae765af85a37996035243338d78
+  tip_sha: 4263826
+  tip_sha_full: 426382623d5f89c5d47cc57c71d3e86c672e46f1
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — 07-build — tip 1119b88 after M7 T7.3; next T7.4 #738 residuals; #828 M2–M7; #823'
+  note: 'S036/EV-029 — 07-build — tip 4263826 pushed; T7.3 COMPLETE; CI+TC SIGMET quality green; next T7.4 #738; #828 M2–M7; #823'
   notes:
   - '2026-08-02 S036/EV-029 07-build — T7.3 COMPLETE @ 1119b88 ([T7.3] tc-sigmet-quality.yml); next T7.4 #738; ahead 1 unpushed; #828 M2–M7; #823'
   - '2026-08-02 S036/EV-029 07-build — T7.3 COMPLETE (tc-sigmet-quality.yml + make test-tc-sigmet-quality PASS); next T7.4 #738; tip a2d39f1 pending commit; #828 M2–M7; #823'
@@ -25968,10 +25989,10 @@ git_history:
     created_at: '2026-08-01'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    tip_sha: 1119b88
-    tip_sha_full: 1119b88fa9988ae765af85a37996035243338d78
-    note: '07-build in_progress — M7 T7.3 COMPLETE @ 1119b88; next T7.4 #738; tip 1119b88 ahead 1 unpushed; #828 M2–M7; #823'
-    pushed: false
+    tip_sha: 4263826
+    tip_sha_full: 426382623d5f89c5d47cc57c71d3e86c672e46f1
+    note: '07-build in_progress — T7.3 COMPLETE @ 1119b88; tip 4263826 pushed CI green; next T7.4 #738; #828 M2–M7; #823'
+    pushed: true
     pr_number: 828
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     pr_status: open
@@ -26930,6 +26951,17 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 4263826
+    sha_full: 426382623d5f89c5d47cc57c71d3e86c672e46f1
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[EV-029] chore: tip workflow-state to 1119b88 after M7 T7.3"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02'
+    files_changed: 1
+    pushed: true
+    note: 'Tip workflow-state sync after T7.3 @ 1119b88; CI green; next T7.4 #738; #828; #823'
   - sha: 1119b88
     sha_full: 1119b88fa9988ae765af85a37996035243338d78
     branch: evolve/EV-029-eight-family-ahl-rules
