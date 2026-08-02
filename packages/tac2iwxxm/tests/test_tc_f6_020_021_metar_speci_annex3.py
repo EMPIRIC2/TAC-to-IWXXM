@@ -75,7 +75,7 @@ def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
         else:
             # Vendor-stem equality (TC-EV025-008 / #809) — no package golden; seed required.
             assert case.get("seed"), f"case {case.get('id')!r} needs golden or seed"
-        assert case["product"] in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}
+        assert case["product"] in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA"}
 
 
 ANNEX3_CASE_IDS = (

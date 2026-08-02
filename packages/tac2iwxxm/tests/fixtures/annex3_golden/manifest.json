@@ -258,7 +258,7 @@
       "tac": "vaa_a7_2.tac",
       "golden": "vaa_a7_2.golden.xml",
       "seed": "va-advisory-A7-2",
-      "note": "F26 theme V3 — WMO Karymsky/TOKYO vendor golden (TC-F26-002/003)"
+      "note": "F26 theme V3 \u2014 WMO Karymsky/TOKYO vendor golden (TC-F26-002/003)"
     },
     {
       "id": "tca_a2_2",
@@ -267,7 +267,17 @@
       "tac": "tca_a2_2.tac",
       "golden": "tca_a2_2.golden.xml",
       "seed": "tc-advisory-A2-2",
-      "note": "F27 theme T3 — WMO GLORIA/YUFO vendor golden (TC-F27-002/003); equality fidelity T4.2"
+      "note": "F27 theme T3 \u2014 WMO GLORIA/YUFO vendor golden (TC-F27-002/003); equality fidelity T4.2"
+    },
+    {
+      "id": "swxa_a7_3",
+      "product": "SWXA",
+      "theme": "SX3",
+      "tac": "swxa_a7_3.tac",
+      "golden": "swxa_a7_3.golden.xml",
+      "seed": "spacewx-A7-3",
+      "wmoReference": true,
+      "note": "F28 theme SX3 \u2014 WMO DONLON/HF COM vendor peer (TC-F28-002/003); S02.L1 wmoReference (geometry approx)"
     }
   ]
 }

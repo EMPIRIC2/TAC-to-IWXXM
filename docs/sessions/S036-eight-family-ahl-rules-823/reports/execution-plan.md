@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M11 — SWXA / F28 |
-| **Active task** | T11.3 — pending (T11.1–T11.2 complete) |
+| **Active task** | T11.5 — pending (T11.3–T11.4 ready to commit) |
 | **Tasks** | 40 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
@@ -156,8 +156,8 @@
 |------|------|-------------|-------------|------------|--------|
 | T11.1 | Test | SWXA registry + accept/negative fixtures | TC-F28-001/004 | T10.3 | **completed** |
 | T11.2 | Code | SWXA lint registry + rules | F28; F12 | T11.1 | **completed** |
-| T11.3 | Test | SWXA convert → XSD+SCH (+ golden / `wmoReference`) | TC-F28-002/003; S02.L1 | T11.2 | pending |
-| T11.4 | Code | SWXA encode path + AHL FN→LN adjacency | TC-F28-006; F6 | T11.3 | pending |
+| T11.3 | Test | SWXA convert → XSD+SCH (+ golden / `wmoReference`) | TC-F28-002/003; S02.L1 | T11.2 | **completed** (uncommitted) |
+| T11.4 | Code | SWXA encode path + AHL FN→LN adjacency | TC-F28-006; F6 | T11.3 | **completed** (uncommitted) |
 | T11.5 | Code | Backend/runtime enum `product=swxa` (docs already) | S02.M1; api-contract | T11.4 | pending |
 | T11.6 | Config | `swxa-quality.yml` | E29-T4 | T11.5 | pending |
 | T11.7 | Test | SWXA product-path smoke | TC-F28-005 | T11.6 | pending |

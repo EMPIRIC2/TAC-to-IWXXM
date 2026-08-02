@@ -17,7 +17,7 @@ MANIFEST_PATH = FIXTURES / "manifest.json"
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
-# F6 convert matrix (7). SWXA is in tac_validate.PRODUCTS (F28) but encode lands T11.3+.
+# F6 convert matrix stays at 7; SWXA encode is covered by TC-F28-002/003 (F28 / M11).
 EXPECTED_PRODUCTS = frozenset(PRODUCTS) - {"SWXA"}
 
 _CASE_IDS = (
