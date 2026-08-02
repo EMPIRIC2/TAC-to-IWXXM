@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M11 — SWXA / F28 |
-| **Active task** | T11.7 — pending |
-| **Tasks** | 40 / 48 completed |
+| **Active milestone** | M12 — Smoke / verify / deploy |
+| **Active task** | T12.1 — pending |
+| **Tasks** | 41 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -160,7 +160,7 @@
 | T11.4 | Code | SWXA encode path + AHL FN→LN adjacency | TC-F28-006; F6 | T11.3 | **completed** |
 | T11.5 | Code | Backend/runtime enum `product=swxa` (docs already) | S02.M1; api-contract | T11.4 | **completed** |
 | T11.6 | Config | `swxa-quality.yml` | E29-T4 | T11.5 | **completed** |
-| T11.7 | Test | SWXA product-path smoke | TC-F28-005 | T11.6 | pending |
+| T11.7 | Test | SWXA product-path smoke | TC-F28-005 | T11.6 | **completed** |
 
 ### M12 — Smoke / verify / deploy
 

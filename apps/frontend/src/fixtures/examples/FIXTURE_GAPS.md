@@ -1,18 +1,19 @@
-# Golden examples — fixture gaps (F7.g / #780 / F25–F27 / EV-024)
+# Golden examples — fixture gaps (F7.g / #780 / F25–F28 / EV-024 / EV-029)
 
-Per E16-8 / E16-13 / S02.M2 / **UJ-039**: use in-repo WMO official package goldens only;
-do **not** invent TAC. Catalog may list **strict passers** (`wmoPass`) and **WMO reference**
-samples (`wmoReference`) per ADR-032 amend.
+Per E16-8 / E16-13 / S02.M2 / **UJ-039** / **UJ-043**: use in-repo WMO official package
+goldens only; do **not** invent TAC. Catalog may list **strict passers** (`wmoPass`) and
+**WMO reference** samples (`wmoReference`) per ADR-032 amend.
 
-| Product | TAC examples in catalog                                           | Gap                                                                                                                                                       |
-| ------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| METAR   | 1 (`annex3_golden/metar_a3_1.tac`)                                | Second WMO METAR — none in vendor pin                                                                                                                     |
-| SPECI   | 1 (`annex3_golden/speci_a3_2.tac`)                                | Second WMO SPECI — none in vendor pin                                                                                                                     |
-| TAF     | 2 (`taf_a5_1` + `taf_a5_2`)                                       | none                                                                                                                                                      |
-| SIGMET  | 4 (A6-1a-TS + A6-1b-CNL + VA-EGGX ref + multi-location-VA passer) | TC SIGMET A6-2 deferred (#738 / S02.M2); **#809** `sigmet-multi-location-VA` ADR-032 equality **green** (TC-EV025-008) → catalog `wmoPass` (TC-EV025-009) |
-| AIRMET  | 1 (`airmet_a6_1a_ts`)                                             | CNL peer — none in vendor pin                                                                                                                             |
-| **VAA** | **1** (`annex3_golden/vaa_a7_2.tac`)                              | Second WMO VAA — none in vendor pin                                                                                                                       |
-| **TCA** | **1** (`annex3_golden/tca_a2_2.tac`)                              | Second WMO TCA — none in vendor pin                                                                                                                       |
+| Product  | TAC examples in catalog                                           | Gap                                                                                                                                                       |
+| -------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| METAR    | 1 (`annex3_golden/metar_a3_1.tac`)                                | Second WMO METAR — none in vendor pin                                                                                                                     |
+| SPECI    | 1 (`annex3_golden/speci_a3_2.tac`)                                | Second WMO SPECI — none in vendor pin                                                                                                                     |
+| TAF      | 2 (`taf_a5_1` + `taf_a5_2`)                                       | none                                                                                                                                                      |
+| SIGMET   | 4 (A6-1a-TS + A6-1b-CNL + VA-EGGX ref + multi-location-VA passer) | TC SIGMET A6-2 deferred (#738 / S02.M2); **#809** `sigmet-multi-location-VA` ADR-032 equality **green** (TC-EV025-008) → catalog `wmoPass` (TC-EV025-009) |
+| AIRMET   | 1 (`airmet_a6_1a_ts`)                                             | CNL peer — none in vendor pin                                                                                                                             |
+| **VAA**  | **1** (`annex3_golden/vaa_a7_2.tac`)                              | Second WMO VAA — none in vendor pin                                                                                                                       |
+| **TCA**  | **1** (`annex3_golden/tca_a2_2.tac`)                              | Second WMO TCA — none in vendor pin                                                                                                                       |
+| **SWXA** | **1** (`annex3_golden/swxa_a7_3.tac`, `wmoReference`)             | A7-4 / A7-5 deferred (single-seed F28 / TC-F28-005)                                                                                                       |
 
 ### Stem-level deferrals (EV-027 / #815 inventory · EV-029 shape note)
 
@@ -20,13 +21,13 @@ Happy-path sample menu covers all in-scope single-report official peers under pi
 `2025-2`. Explicit non-menu stems (package inventory SoT
 `packages/tac2iwxxm/tests/fixtures/wmo_official_tac_inventory.py`):
 
-| Stem                                    | Reason                                                           |
-| --------------------------------------- | ---------------------------------------------------------------- |
-| `sigmet-A6-2-TC`                        | TC SIGMET deferred (#738) — unlock **EV-029 M7** when green      |
-| `metar-NIL-collect` / `taf-NIL-collect` | COLLECT / validate shape — not sample-menu happy-path (EV-024)   |
-| `*-translation-failed*`                 | quarantine                                                       |
-| `spacewx-*`                             | SWXA / F28 — unlock **EV-029 M11** (`wmoPass` or `wmoReference`) |
-| `vona-*`                                | OOS converter                                                    |
+| Stem                                    | Reason                                                              |
+| --------------------------------------- | ------------------------------------------------------------------- |
+| `sigmet-A6-2-TC`                        | TC SIGMET deferred (#738) — unlock **EV-029 M7** when green         |
+| `metar-NIL-collect` / `taf-NIL-collect` | COLLECT / validate shape — not sample-menu happy-path (EV-024)      |
+| `*-translation-failed*`                 | quarantine                                                          |
+| `spacewx-A7-4` / `spacewx-A7-5`         | SWXA second/third peers — deferred (A7-3 unlocked M11 / TC-F28-005) |
+| `vona-*`                                | OOS converter                                                       |
 
 **AHL / multi-report shapes (EV-029 / TC-EV029-002):** FE catalogs METAR multi-AHL only
 (`ahl_metar_multi`). Non-METAR AHL + multi-report gaps are documented in

@@ -20,8 +20,8 @@ const GAP_PRODUCTS = new Set(FIXTURE_GAPS.map((gap) => gap.product));
 const WMO_SCOPE = new Set(WMO_SCOPE_PRODUCTS);
 
 describe('examplesCatalog (TC-F7-008 C1)', () => {
-  it('exports seven products and non-empty EXAMPLES', () => {
-    expect(EXAMPLE_PRODUCTS).toHaveLength(7);
+  it('exports eight products and non-empty EXAMPLES', () => {
+    expect(EXAMPLE_PRODUCTS).toHaveLength(8);
     expect(EXAMPLES.length).toBeGreaterThan(0);
   });
 
@@ -54,11 +54,12 @@ describe('examplesCatalog (TC-F7-008 C1)', () => {
     }
   });
 
-  it('documents WMO single-seed gaps for METAR/SPECI/AIRMET/VAA/TCA', () => {
+  it('documents WMO single-seed gaps for METAR/SPECI/AIRMET/VAA/TCA/SWXA', () => {
     expect(FIXTURE_GAPS.map((gap) => gap.product).sort()).toEqual([
       'AIRMET',
       'METAR',
       'SPECI',
+      'SWXA',
       'TCA',
       'VAA',
     ]);
@@ -171,6 +172,7 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
       { id: 'airmet_a6_1a_ts', seed: 'airmet-A6-1a-TS' },
       { id: 'vaa_a7_2', seed: 'va-advisory-A7-2' },
       { id: 'tca_a2_2', seed: 'tc-advisory-A2-2' },
+      { id: 'swxa_a7_3', seed: 'spacewx-A7-3' },
     ];
     for (const { id, seed } of expected) {
       const ex = getExampleById(id);
@@ -243,5 +245,25 @@ describe('examplesCatalog VAA/TCA unlock (TC-F26-005 / TC-F27-005 / S02.M2)', ()
     expect(getTacExamplesForProduct('TCA').every((ex) => ex.wmoPass)).toBe(true);
     expect(getTacExamplesForProduct('VAA')).toHaveLength(1);
     expect(getTacExamplesForProduct('TCA')).toHaveLength(1);
+  });
+});
+
+describe('examplesCatalog SWXA unlock (TC-F28-005 / S036 M11)', () => {
+  it('unlocks WMO spacewx-A7-3 as wmoReference with annex3 provenance', () => {
+    const swxa = getExampleById('swxa_a7_3');
+    expect(swxa?.product).toBe('SWXA');
+    expect(swxa?.wmoReference).toBe(true);
+    expect(swxa?.wmoPass).not.toBe(true);
+    expect(swxa?.wmoSeed).toBe('spacewx-A7-3');
+    expect(swxa?.provenance).toMatch(/annex3_golden\/swxa_a7_3\.tac/);
+    expect(swxa?.body).toMatch(/SWX ADVISORY/);
+  });
+
+  it('treats SWXA as WMO-scope with a single-seed gap (A7-4/A7-5 deferred)', () => {
+    expect(WMO_SCOPE_PRODUCTS).toContain('SWXA');
+    expect(EXAMPLE_PRODUCTS).toContain('SWXA');
+    const examples = getTacExamplesForProduct('SWXA');
+    expect(examples).toHaveLength(1);
+    expect(examples.every((ex) => ex.wmoReference === true)).toBe(true);
   });
 });

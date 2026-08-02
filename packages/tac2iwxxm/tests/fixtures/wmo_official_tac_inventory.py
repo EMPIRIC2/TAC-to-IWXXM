@@ -13,7 +13,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 _PIN_EXAMPLES = _REPO_ROOT / "vendor" / "schemas" / "iwxxm" / "2025-2" / "IWXXM" / "examples"
 _ANNEX3 = Path(__file__).resolve().parent / "annex3_golden"
 
-# F6 seven — product prefixes / stems that belong on the WMO happy-path inventory.
+# F6 + F28 — product prefixes / stems that belong on the WMO happy-path inventory.
 _IN_SCOPE_PREFIXES = (
     "metar-",
     "speci-",
@@ -22,11 +22,11 @@ _IN_SCOPE_PREFIXES = (
     "airmet-",
     "va-advisory-",
     "tc-advisory-",
+    "spacewx-",
 )
 
 _OUT_OF_HAPPY_PATH_SUBSTRINGS = (
     "translation-failed",
-    "spacewx-",
     "vona-",
 )
 
@@ -130,6 +130,25 @@ OFFICIAL_TAC_PEERS: tuple[OfficialTacPeer, ...] = (
         product="TCA",
     ),
     OfficialTacPeer(
+        "spacewx-A7-3",
+        "registered",
+        catalog_id="swxa_a7_3",
+        annex3_tac="swxa_a7_3.tac",
+        product="SWXA",
+    ),
+    OfficialTacPeer(
+        "spacewx-A7-4",
+        "deferred",
+        deferral_reason="Second/third WMO SWXA — single-seed catalog (F28 / TC-F28-005)",
+        issue="#740",
+    ),
+    OfficialTacPeer(
+        "spacewx-A7-5",
+        "deferred",
+        deferral_reason="Second/third WMO SWXA — single-seed catalog (F28 / TC-F28-005)",
+        issue="#740",
+    ),
+    OfficialTacPeer(
         "metar-NIL-collect",
         "deferred",
         deferral_reason="COLLECT / validate shape — not sample-menu happy-path (EV-024)",
@@ -152,7 +171,7 @@ def discover_pin_tac_stems() -> set[str]:
 
 
 def in_scope_pin_stems(pin_stems: set[str] | None = None) -> set[str]:
-    """Filter pin stems to F6-seven happy-path candidates (excludes quarantine/deferred products)."""
+    """Filter pin stems to F6+F28 happy-path candidates (excludes quarantine products)."""
     stems = pin_stems if pin_stems is not None else discover_pin_tac_stems()
     out: set[str] = set()
     for stem in stems:
