@@ -40,7 +40,7 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3); next M7 @ T7.1; tip pending push; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
+    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; next M7 @ T7.1; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
     current_milestone: M7
     active_milestone: M7
     current_task: T7.1
@@ -141,14 +141,14 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3); next M7 @ T7.1; tip pending push; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
+    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; next M7 @ T7.1; tac2iwxxm 0.2.1; T6.3 va-sigmet-quality.yml; D-S036-semver-patch; #828; #823'
     current_milestone: M7
     active_milestone: M7
     current_task: T7.1
     active_task: T7.1
     active_task_status: pending
   started_at: '2026-08-01'
-  note: 'S036/EV-029 — 07-build in_progress — M6 COMPLETE (T6.1–T6.3); next M7 @ T7.1; tac2iwxxm 0.2.1; #828; umbrella #823; F28+deepen; absorb #738/#820/#740'
+  note: 'S036/EV-029 — 07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; next M7 @ T7.1; tac2iwxxm 0.2.1; #828; umbrella #823; F28+deepen; absorb #738/#820/#740'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2+M3+M4+M5+M6] METAR/SPECI/TAF/SIGMET/VA SIGMET AHL reportStatus + quality packs (tac2iwxxm 0.2.1)"
@@ -5570,17 +5570,18 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
-    current_milestone: M6
-    current_task: T6.1
-    active_milestone: M6
-    active_task: T6.1
+    note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; #828 M2–M6; tac2iwxxm 0.2.1; next M7 @ T7.1; #823'
+    current_milestone: M7
+    current_task: T7.1
+    active_milestone: M7
+    active_task: T7.1
     active_task_status: pending
     decision_refs:
     - D-S036-04-plan
     - D-S036-02-phase-a
     - D-S036-02-batch-f
     - D-S036-semver-minor
+    - D-S036-semver-patch
     artifacts:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
@@ -5590,6 +5591,8 @@ stages:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m5.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m6.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
@@ -5602,11 +5605,11 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: '07-build in_progress — M5 COMPLETE (T5.1–T5.3) @ 57c27f7; #828 M2–M5; next M6 @ T6.1; #823'
-      active_milestone: M6
-      current_milestone: M6
-      active_task: T6.1
-      current_task: T6.1
+      note: '07-build in_progress — M6 COMPLETE (T6.1–T6.3) @ 9e83be7; #828 M2–M6; tac2iwxxm 0.2.1; next M7 @ T7.1; #823'
+      active_milestone: M7
+      current_milestone: M7
+      active_task: T7.1
+      current_task: T7.1
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -5629,6 +5632,7 @@ stages:
       - D-S036-04-plan
       - D-S036-02-phase-a
       - D-S036-02-batch-f
+      - D-S036-semver-patch
       artifacts:
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
@@ -5637,6 +5641,7 @@ stages:
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m6.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
     substeps:
       task_loop:
@@ -26871,6 +26876,17 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 9e83be7
+    sha_full: 9e83be72122eaa37ca4ee7d0c27e91b5c7d087a5
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T6.3] ci: add VA SIGMET quality pack workflow and make target"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T17:23:43Z'
+    files_changed: 7
+    pushed: false
+    note: 'T6.3 COMPLETE — va-sigmet-quality.yml + make test-va-sigmet-quality; M6 COMPLETE (T6.1–T6.3); next M7 @ T7.1; #828; #823'
   - sha: d6bb4b5
     sha_full: d6bb4b535a56c742fc77709c73c1baad39dc6d38
     branch: evolve/EV-029-eight-family-ahl-rules
