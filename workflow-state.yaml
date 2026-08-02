@@ -40,16 +40,16 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T12.1 COMPLETE @ 53d26ad (product-order regression smoke TC-EV029-007); tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 SUCCESS; Product-order smoke 30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12 (report-state matrix TC-EV029-006); progress 42/48; #828; #823"
+    note: "T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823"
     current_milestone: M12
     active_milestone: M12
-    current_task: T12.2
-    active_task: T12.2
+    current_task: T12.4
+    active_task: T12.4
     active_task_status: pending
   started_at: '2026-08-01'
-  tip_sha: 67f9d91
-  tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
-  progress: 42/48
+  tip_sha: b43cbb3
+  tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+  progress: 44/48
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
@@ -151,6 +151,10 @@ sessions:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.1.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.2.md
+    status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
+    status: completed
   routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
   preset: Standard
   preset_status: approved
@@ -160,17 +164,17 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T12.1 COMPLETE @ 53d26ad (product-order regression smoke TC-EV029-007); tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 SUCCESS; Product-order smoke 30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12 (report-state matrix TC-EV029-006); progress 42/48; #828; #823"
+    note: "T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823"
     current_milestone: M12
     active_milestone: M12
-    current_task: T12.2
-    active_task: T12.2
+    current_task: T12.4
+    active_task: T12.4
     active_task_status: pending
   started_at: '2026-08-01'
-  tip_sha: 67f9d91
-  tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
-  progress: 42/48
-  note: 'S036/EV-029 — T12.1 COMPLETE @ 53d26ad; tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 + Product-order smoke 30770547655 SUCCESS; T12.2 pending @ M12 (TC-EV029-006); progress 42/48; #828; #823'
+  tip_sha: b43cbb3
+  tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+  progress: 44/48
+  note: 'S036/EV-029 — T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
@@ -252,11 +256,15 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — T12.1 COMPLETE @ 53d26ad; tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 + Product-order smoke 30770547655 SUCCESS; T12.2 pending @ M12 (TC-EV029-006); progress 42/48; #828; #823'
+    note: '07-build in_progress — T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-02'
+    completed: '2026-08-02'
+    note: 'COMPLETE (M12 T12.3) — PASS; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); next T12.4 09+10; #828; #823'
+    report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
   - stage: 09-qa
     required: true
     mode: delta
@@ -5594,14 +5602,14 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: "T12.1 COMPLETE @ 53d26ad (product-order regression smoke TC-EV029-007); tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 SUCCESS; Product-order smoke 30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12 (report-state matrix TC-EV029-006); progress 42/48; #828; #823"
-    tip_sha: 67f9d91
-    tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
-    progress: 42/48
+    note: "T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823"
+    tip_sha: b43cbb3
+    tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+    progress: 44/48
     current_milestone: M12
-    current_task: T12.2
+    current_task: T12.4
     active_milestone: M12
-    active_task: T12.2
+    active_task: T12.4
     active_task_status: pending
     decision_refs:
     - D-S036-04-plan
@@ -5626,6 +5634,8 @@ stages:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m8.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m11-t11.7.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.1.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.2.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
@@ -5638,14 +5648,14 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: "T12.1 COMPLETE @ 53d26ad (product-order regression smoke TC-EV029-007); tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 SUCCESS; Product-order smoke 30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12 (report-state matrix TC-EV029-006); progress 42/48; #828; #823"
-      tip_sha: 67f9d91
-      tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
-      progress: 41/48
+      note: "T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823"
+      tip_sha: b43cbb3
+      tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+      progress: 44/48
       active_milestone: M12
       current_milestone: M12
-      active_task: T12.2
-      current_task: T12.2
+      active_task: T12.4
+      current_task: T12.4
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -5683,15 +5693,17 @@ stages:
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m11-t11.7.md
       - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.1.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.2.md
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
     substeps:
       task_loop:
         status: in_progress
-        current_task: T12.2
+        current_task: T12.4
         active_task_status: pending
         active_milestone: M12
         phase: C
         milestone: M12
-        notes: "T12.1 COMPLETE @ 53d26ad; tip 67f9d91 pushed; CI green; T12.2 pending @ M12 (TC-EV029-006); progress 42/48; #828; #823"
+        notes: "T12.3 COMPLETE — tip b43cbb3 (pending tip chore); next T12.4 pending (09+10); progress 44/48; #828; #823"
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5701,14 +5713,14 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: "T12.1 COMPLETE @ 53d26ad (product-order regression smoke TC-EV029-007); tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 SUCCESS; Product-order smoke 30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12 (report-state matrix TC-EV029-006); progress 42/48; #828; #823"
-      tip_sha: 67f9d91
-      tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
-      progress: 42/48
+      note: "T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823"
+      tip_sha: b43cbb3
+      tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+      progress: 44/48
       active_milestone: M12
       current_milestone: M12
-      active_task: T12.2
-      current_task: T12.2
+      active_task: T12.4
+      current_task: T12.4
       active_task_status: pending
       pr_number: 828
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -6149,6 +6161,10 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-02 S036/EV-029 — T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823'
+    - '2026-08-02 S036/EV-029 — tip b43cbb3 (b43cbb3187e4f2aeaf972b66966062a8f8170623) pushed ahead_of_origin=0; T12.2 COMPLETE; T12.3 STARTED — 08-verify-build lint/typecheck/format/full suites; progress 43/48; #828; #823'
+    - '2026-08-02 S036/EV-029 — T12.2 COMPLETE @ b43cbb3 (b43cbb3187e4f2aeaf972b66966062a8f8170623) [T12.2] test: report-state matrix smoke TC-EV029-006; make test-report-state-matrix-smoke 38 passed; next T12.3 pending @ M12; progress 43/48; tip b43cbb3 ahead_of_origin=1 not pushed; #828; #823'
+    - '2026-08-02 S036/EV-029 — T12.2 STARTED (report-state matrix TC-EV029-006, consolidating smoke like T12.1) @ M12; tip 67f9d91 kept; progress 42/48; #828; #823'
     - '2026-08-02 S036/EV-029 — tip 67f9d91 (67f9d9175f7f274a9ca0c8dc6052d8131887f0ee) pushed ahead_of_origin=0; T12.1 COMPLETE @ 53d26ad; CI/CD https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30770547700 SUCCESS; Product-order smoke https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12; progress 42/48; #828; #823'
     - '2026-08-02 S036/EV-029 — T12.1 COMPLETE @ 53d26ad (53d26ad1b03aaa32a0e03369dacf7fdb0790cfdd) [T12.1] test: product-order regression smoke TC-EV029-007; make test-product-order-smoke 11 passed; next T12.2 pending @ M12 (TC-EV029-006); progress 42/48; tip 53d26ad ahead_of_origin=1 not pushed; #828; #823'
     - '2026-08-02 S036/EV-029 — T12.1 STARTED (product-order regression smoke TC-EV029-007) @ M12; tip 3b7c560 (3b7c560e5802d364285cbe8493893654ce66477d) synced ahead_of_origin=0; progress 41/48; #828; #823'
@@ -7102,22 +7118,26 @@ stages:
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md - F7.g
   08-verify-build:
     status: completed
-    started_at: '2026-07-31'
-    completed_at: '2026-07-31'
-    completed: '2026-07-31'
-    previous_started_at: '2026-07-31'
-    previous_completed_at: '2026-07-31'
-    previous_session_id: S033-va-multi-location-equality
-    previous_evolve_cycle_id: EV-026
-    previous_tip_sha: .inf
-    previous_note: 'S033/EV-026 08-verify-build COMPLETE PASS — T3.2; report docs/sessions/S033-va-multi-location-equality/reports/verification-report.md; tip 7e08051; Gate C PASS; #809'
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    tip_sha: 70312dd
-    tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    started_at: '2026-08-02'
+    completed_at: '2026-08-02'
+    completed: '2026-08-02'
+    previous_started_at: '2026-08-01'
+    previous_completed_at: '2026-08-01'
+    previous_session_id: S035-empiric2-ops-leftovers-781
+    previous_evolve_cycle_id: EV-028
+    previous_tip_sha: 70312dd
+    previous_note: 'S035/EV-028 08-verify-build COMPLETE PASS — t31-verify-build.md; tip 70312dd; #781 closed'
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    tip_sha: b43cbb3
+    tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
     overall: pass
-    note: 'S035/EV-028 08-verify-build COMPLETE PASS — t31-verify-build.md; tip 70312dd; #781 closed'
-    report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t31-verify-build.md
+    note: 'S036/EV-029 08-verify-build COMPLETE PASS — T12.3 M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); next T12.4 09+10; #828; #823'
+    report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
+    active_milestone: M12
+    active_task: T12.3
+    active_task_status: completed
+    progress: 44/48
     substeps:
       lint:
         status: completed
@@ -7132,6 +7152,26 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S036-eight-family-ahl-rules-823-M12-T12.3
+      session_id: S036-eight-family-ahl-rules-823
+      evolve_cycle_id: EV-029
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-08-02'
+      completed_at: '2026-08-02'
+      started: '2026-08-02'
+      completed: '2026-08-02'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
+      tip_sha: b43cbb3
+      tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+      active_milestone: M12
+      active_task: T12.3
+      active_task_status: completed
+      progress: 44/48
+      note: 'T12.3 PASS — M12 full suites; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); CI/CD 30771391289 SUCCESS; next T12.4 pending; #828; #823'
+      branch: evolve/EV-029-eight-family-ahl-rules
     - session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
       skill_id: 08-verify-build
@@ -7434,6 +7474,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-08-02 S036/EV-029 08-verify-build COMPLETE PASS — T12.3 M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); CI/CD 30771391289 SUCCESS; next T12.4 pending; progress 44/48; #828; #823'
     - '2026-07-31 S034/EV-027 08-verify-build COMPLETE PASS — verification-report.md; tip 245d518; #815'
     - 2026-07-31 S032/EV-025 08-verify-build COMPLETE PASS — T7.2 @ 1e46b38; docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
     - '2026-07-30 S030/EV-023 08-verify-build COMPLETE PASS — T7.2; report docs/sessions/S030-apac-encode-validate/reports/verification-report.md; handoff T7.3 10-e2e smoke; progress 22/24; #800'
@@ -7462,25 +7503,25 @@ stages:
     - 2026-07-12 S008 / EV-006 — Phase C full verify PASS (format/lint/typecheck; backend 98.13%; tac2iwxxm 97.41%; H0c); Overall PASS; awaiting C→D AskQuestion; c_to_d/phase_c remain pending
     - 2026-07-14 S011/EV-008 08-verify-build completed (T6.1 PASS; verification-report.md); C→D passed D-S011-EV008-c-to-d-pass
     active_session:
-      session_id: S032-iwxxm-us-remarks-va
-      evolve_cycle_id: EV-025
+      session_id: S036-eight-family-ahl-rules-823
+      evolve_cycle_id: EV-029
       skill_id: 08-verify-build
       status: completed
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed: '2026-07-31'
-      completed_at: '2026-07-31'
+      started_at: '2026-08-02'
+      started: '2026-08-02'
+      completed: '2026-08-02'
+      completed_at: '2026-08-02'
       mode: delta
       overall: pass
-      note: 'T7.2 PASS — docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md; handoff 10-e2e smoke; progress 27/28; #810/#811/#812/#809'
-      report: docs/sessions/S032-iwxxm-us-remarks-va/reports/verification-report.md
-      branch: evolve/EV-025-iwxxm-us-remarks-va
-      tip_sha: 1e46b38
-      tip_sha_full: 1e46b38c48cfb1a61a697af34f7f51c6e2cfccf7
-      active_milestone: M7
-      active_task: T7.2
+      note: 'T12.3 PASS — M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); next T12.4 pending; progress 44/48; #828; #823'
+      report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
+      branch: evolve/EV-029-eight-family-ahl-rules
+      tip_sha: b43cbb3
+      tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+      active_milestone: M12
+      active_task: T12.3
       active_task_status: completed
-      progress: 27/28
+      progress: 44/48
       feature_ids:
       - F6
       - F12
@@ -8443,6 +8484,124 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: NOTE-S036-EV029-T123-complete
+  date: '2026-08-02'
+  timestamp: '2026-08-02T23:09:20Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  mirrored_stage: 08-verify-build
+  orchestrator: 16-evolve
+  category: note
+  status: recorded
+  topic: "T12.3 COMPLETE — 08-verify-build M12 full suites"
+  summary: "T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823"
+  decision: "Mark T12.3 COMPLETE. tip_sha remains b43cbb3 (pending tip chore). Progress 44/48. active_task T12.4 pending (do not start). Mirror stages.08-verify-build M12 run completed with report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md. CI/CD 30771391289 SUCCESS."
+  tip_sha: b43cbb3
+  tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+  tip_chore: pending
+  progress: 44/48
+  active_task: T12.4
+  active_task_status: pending
+  active_milestone: M12
+  completed_task: T12.3
+  completed_task_status: completed
+  report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
+  ci_cd_run: '30771391289'
+  verification: "local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3"
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
+  commit: b43cbb3
+  commit_message: "[T12.2] test: report-state matrix smoke TC-EV029-006"
+- id: NOTE-S036-EV029-T122-pushed
+  date: '2026-08-02'
+  timestamp: '2026-08-02T23:03:41Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  orchestrator: 16-evolve
+  category: note
+  status: recorded
+  topic: "T12.2 tip pushed + T12.3 STARTED @ b43cbb3"
+  summary: "Pushed tip b43cbb3 (T12.2 report-state matrix). ahead_of_origin=0 pushed=true. T12.3 STARTED — 08-verify-build lint/typecheck/format/full suites. Active M12; progress 43/48. #828; #823."
+  decision: "Record tip b43cbb3 pushed (ahead_of_origin=0). Set T12.3 active_task_status in_progress @ M12. Progress remains 43/48. Proceed with 08-verify-build suites under T12.3."
+  tip_sha: b43cbb3
+  tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+  progress: 43/48
+  active_task: T12.3
+  active_task_status: in_progress
+  active_milestone: M12
+  ahead_of_origin: 0
+  pushed: true
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
+  commit: b43cbb3
+  commit_message: "[T12.2] test: report-state matrix smoke TC-EV029-006"
+- id: NOTE-S036-EV029-T122-complete
+  date: '2026-08-02'
+  timestamp: '2026-08-02T23:00:59Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  orchestrator: 16-evolve
+  category: note
+  status: recorded
+  topic: "T12.2 COMPLETE — report-state matrix smoke TC-EV029-006"
+  summary: "T12.2 done @ b43cbb3. make test-report-state-matrix-smoke → 38 passed. Deliverables: test_tc_ev029_006_report_state_matrix.py, run_report_state_matrix_smoke.sh, report-state-matrix-smoke.yml, make test-report-state-matrix-smoke, verification-report-m12-t12.2.md, execution-plan.md, COVERAGE_MATRIX.md. Next T12.3 pending @ M12 (08-verify-build). progress 43/48. tip b43cbb3 ahead_of_origin=1 not pushed."
+  decision: "T12.2 COMPLETE @ b43cbb3 (b43cbb3187e4f2aeaf972b66966062a8f8170623). Advance active_task to T12.3 pending @ M12 (do not mark T12.3 in_progress). Progress 43/48. Commit recorded in git_history; do not push in this update."
+  tip_sha: b43cbb3
+  tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+  progress: 43/48
+  active_task: T12.3
+  active_task_status: pending
+  active_milestone: M12
+  ahead_of_origin: 1
+  pushed: false
+  verification: "make test-report-state-matrix-smoke → 38 passed"
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
+  commit: b43cbb3
+  commit_message: "[T12.2] test: report-state matrix smoke TC-EV029-006"
+- id: NOTE-S036-EV029-T122-started
+  date: '2026-08-02'
+  timestamp: '2026-08-02T22:56:18Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  orchestrator: 16-evolve
+  category: note
+  status: recorded
+  topic: "T12.2 STARTED — report-state matrix TC-EV029-006"
+  summary: "T12.2 STARTED @ M12 — Report-state matrix TC-EV029-006 (consolidating smoke like T12.1). tip_sha kept at 67f9d91. progress 42/48. Do not mark T12.2 completed."
+  decision: "Start T12.2 in_progress (report-state matrix TC-EV029-006). tip_sha remains 67f9d91. Active milestone M12; progress 42/48. T12.2 not completed."
+  tip_sha: 67f9d91
+  tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
+  progress: 42/48
+  active_task: T12.2
+  active_task_status: in_progress
+  active_milestone: M12
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
 - id: NOTE-S036-EV029-T121-push-ci
   date: '2026-08-02'
   timestamp: '2026-08-02T22:44:20Z'
@@ -8461,7 +8620,7 @@ decisions_log:
   tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
   progress: 42/48
   active_task: T12.2
-  active_task_status: pending
+  active_task_status: in_progress
   active_milestone: M12
   ahead_of_origin: 0
   pushed: true
@@ -8501,7 +8660,7 @@ decisions_log:
   tip_sha_full: 53d26ad1b03aaa32a0e03369dacf7fdb0790cfdd
   progress: 42/48
   active_task: T12.2
-  active_task_status: pending
+  active_task_status: in_progress
   active_milestone: M12
   ahead_of_origin: 1
   pushed: false
@@ -25882,18 +26041,29 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: "T12.1 COMPLETE @ 53d26ad (product-order regression smoke TC-EV029-007); tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 SUCCESS; Product-order smoke 30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12 (report-state matrix TC-EV029-006); progress 42/48; #828; #823"
+      note: "T12.3 COMPLETE — 08-verify-build local format/lint/typecheck + husky ci-prepush PASS; CI/CD 30771391289 SUCCESS; Report-state matrix + Product-order + family packs SUCCESS @ b43cbb3; next T12.4 pending (09+10); progress 44/48; tip b43cbb3 (pending tip chore); #828; #823"
       current_milestone: M12
       active_milestone: M12
-      current_task: T12.2
-      active_task: T12.2
+      current_task: T12.4
+      active_task: T12.4
       active_task_status: pending
-      tip_sha: 67f9d91
-      tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
-      progress: 42/48
+      tip_sha: b43cbb3
+      tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+      progress: 44/48
     08-verify-build:
-      status: pending
+      status: completed
       mode: delta
+      started: '2026-08-02'
+      completed: '2026-08-02'
+      overall: pass
+      report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
+      tip_sha: b43cbb3
+      tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+      active_milestone: M12
+      active_task: T12.3
+      active_task_status: completed
+      note: 'COMPLETE (M12 T12.3) — PASS; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); next T12.4 09+10; #828; #823'
+      progress: 44/48
     09-qa:
       status: pending
       mode: delta
@@ -25964,24 +26134,28 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m11-t11.7.md
     status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.1.md
+    status: completed
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.2.md
+    status: completed
   github_issues:
   - '823'
   branch: evolve/EV-029-eight-family-ahl-rules
   preset: Standard
   preset_status: approved
-  tip_sha: 67f9d91
-  tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
-  progress: 42/48
+  tip_sha: b43cbb3
+  tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+  progress: 43/48
   pull_requests:
   - number: 828
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
     title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
     status: open
     milestone: M2-M10
-    note: "T12.1 COMPLETE @ 53d26ad; tip 67f9d91 pushed ahead_of_origin=0; CI/CD 30770547700 + Product-order smoke 30770547655 SUCCESS; T12.2 pending @ M12; progress 42/48; #828 M2–M10"
+    note: "T12.2 COMPLETE @ b43cbb3 pushed; T12.3 STARTED — 08-verify-build; tip b43cbb3; progress 43/48; #828 M2–M10"
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: 67f9d91
+    tip_sha: b43cbb3
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -26001,6 +26175,9 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 — tip b43cbb3 (b43cbb3187e4f2aeaf972b66966062a8f8170623) pushed ahead_of_origin=0; T12.2 COMPLETE; T12.3 STARTED — 08-verify-build lint/typecheck/format/full suites; progress 43/48; #828; #823'
+  - '2026-08-02 S036/EV-029 — T12.2 COMPLETE @ b43cbb3 (b43cbb3187e4f2aeaf972b66966062a8f8170623) [T12.2] test: report-state matrix smoke TC-EV029-006; make test-report-state-matrix-smoke 38 passed; next T12.3 pending @ M12; progress 43/48; tip b43cbb3 ahead_of_origin=1 not pushed; #828; #823'
+  - '2026-08-02 S036/EV-029 — T12.2 STARTED (report-state matrix TC-EV029-006, consolidating smoke like T12.1) @ M12; tip 67f9d91 kept; progress 42/48; #828; #823'
   - '2026-08-02 S036/EV-029 — tip 67f9d91 (67f9d9175f7f274a9ca0c8dc6052d8131887f0ee) pushed ahead_of_origin=0; T12.1 COMPLETE @ 53d26ad; CI/CD https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30770547700 SUCCESS; Product-order smoke https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12; progress 42/48; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.1 COMPLETE @ 53d26ad (53d26ad1b03aaa32a0e03369dacf7fdb0790cfdd) [T12.1] test: product-order regression smoke TC-EV029-007; make test-product-order-smoke 11 passed; next T12.2 pending @ M12 (TC-EV029-006); progress 42/48; tip 53d26ad ahead_of_origin=1 not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.1 STARTED (product-order regression smoke TC-EV029-007) @ M12; tip 3b7c560 (3b7c560e5802d364285cbe8493893654ce66477d) synced ahead_of_origin=0; progress 41/48; #828; #823'
@@ -26055,11 +26232,14 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit:
-  tip_sha: 67f9d91
-  tip_sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
+  tip_sha: b43cbb3
+  tip_sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — tip 67f9d91 pushed ahead_of_origin=0; T12.1 COMPLETE @ 53d26ad; CI/CD 30770547700 SUCCESS; Product-order smoke 30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12; progress 42/48; #828; #823'
+  note: 'S036/EV-029 — tip b43cbb3 pushed; T12.2 COMPLETE; T12.3 STARTED @ M12 (08-verify-build); progress 43/48; ahead_of_origin=0 pushed; #828; #823'
   notes:
+  - '2026-08-02 S036/EV-029 — tip b43cbb3 (b43cbb3187e4f2aeaf972b66966062a8f8170623) pushed ahead_of_origin=0; T12.2 COMPLETE; T12.3 STARTED — 08-verify-build lint/typecheck/format/full suites; progress 43/48; #828; #823'
+  - '2026-08-02 S036/EV-029 — T12.2 COMPLETE @ b43cbb3 (b43cbb3187e4f2aeaf972b66966062a8f8170623) [T12.2] test: report-state matrix smoke TC-EV029-006; make test-report-state-matrix-smoke 38 passed; next T12.3 pending @ M12; progress 43/48; tip b43cbb3 ahead_of_origin=1 not pushed; #828; #823'
+  - '2026-08-02 S036/EV-029 — T12.2 STARTED (report-state matrix TC-EV029-006, consolidating smoke like T12.1) @ M12; tip 67f9d91 kept; progress 42/48; #828; #823'
   - '2026-08-02 S036/EV-029 — tip 67f9d91 (67f9d9175f7f274a9ca0c8dc6052d8131887f0ee) pushed ahead_of_origin=0; T12.1 COMPLETE @ 53d26ad; CI/CD https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30770547700 SUCCESS; Product-order smoke https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30770547655 (+ 30770546121) SUCCESS; T12.2 pending @ M12; progress 42/48; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.1 COMPLETE @ 53d26ad (53d26ad1b03aaa32a0e03369dacf7fdb0790cfdd) [T12.1] test: product-order regression smoke TC-EV029-007; make test-product-order-smoke 11 passed; next T12.2 pending @ M12 (TC-EV029-006); progress 42/48; tip 53d26ad ahead_of_origin=1 not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.1 STARTED (product-order regression smoke TC-EV029-007) @ M12; tip 3b7c560 (3b7c560e5802d364285cbe8493893654ce66477d) synced ahead_of_origin=0; progress 41/48; #828; #823'
@@ -27357,6 +27537,23 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: b43cbb3
+    sha_full: b43cbb3187e4f2aeaf972b66966062a8f8170623
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T12.2] test: report-state matrix smoke TC-EV029-006"
+    stage: 07-build
+    skill_id: 16-evolve
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T23:00:59Z'
+    files_changed:
+    - packages/tac2iwxxm/tests/test_tc_ev029_006_report_state_matrix.py
+    - scripts/ci/run_report_state_matrix_smoke.sh
+    - .github/workflows/report-state-matrix-smoke.yml
+    - Makefile
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.2.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
   - sha: 67f9d91
     sha_full: 67f9d9175f7f274a9ca0c8dc6052d8131887f0ee
     branch: evolve/EV-029-eight-family-ahl-rules
