@@ -1,0 +1,64 @@
+# EV-029 / E29-T4=2 — METAR quality pack (M2 / TC-EV029-007 + F15 deepen).
+# Separate per-family workflow; complements root ci.yml.
+name: METAR quality
+
+on:
+  push:
+    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_007_metar_gap_fixtures.py"
+      - "packages/tac2iwxxm/tests/fixtures/metar/**"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/metar*"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/tac-validate/tests/**/metar*"
+      - "apps/backend/src/utilities/conversion.py"
+      - "apps/backend/src/api.py"
+      - "scripts/ci/run_metar_quality.sh"
+      - ".github/workflows/metar-quality.yml"
+  pull_request:
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/models.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_007_metar_gap_fixtures.py"
+      - "packages/tac2iwxxm/tests/fixtures/metar/**"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/metar*"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/tac-validate/tests/**/metar*"
+      - "apps/backend/src/utilities/conversion.py"
+      - "apps/backend/src/api.py"
+      - "scripts/ci/run_metar_quality.sh"
+      - ".github/workflows/metar-quality.yml"
+  workflow_dispatch:
+
+jobs:
+  metar-quality:
+    runs-on: ubuntu-latest
+    name: METAR quality pack
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run METAR quality pack
+        run: make test-metar-quality
