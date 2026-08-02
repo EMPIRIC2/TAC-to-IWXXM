@@ -40,15 +40,15 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T11.7 COMPLETE @ e4f62b9 — SWXA product-path smoke + Examples unlock (TC-F28-005); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823"
+    note: "T11.7 COMPLETE @ e4f62b9 (+ tip 43f6148 + fix allowlist 0538e35); M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA quality 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823"
     current_milestone: M12
     active_milestone: M12
     current_task: T12.1
     active_task: T12.1
     active_task_status: pending
   started_at: '2026-08-01'
-  tip_sha: e4f62b9
-  tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+  tip_sha: 0538e35
+  tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
   progress: 41/48
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -158,17 +158,17 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T11.7 COMPLETE @ e4f62b9 — SWXA product-path smoke + Examples unlock (TC-F28-005); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823"
+    note: "T11.7 COMPLETE @ e4f62b9 (+ tip 43f6148 + fix allowlist 0538e35); M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA quality 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823"
     current_milestone: M12
     active_milestone: M12
     current_task: T12.1
     active_task: T12.1
     active_task_status: pending
   started_at: '2026-08-01'
-  tip_sha: e4f62b9
-  tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+  tip_sha: 0538e35
+  tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
   progress: 41/48
-  note: 'S036/EV-029 — T11.7 COMPLETE @ e4f62b9; M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823'
+  note: 'S036/EV-029 — T11.7 COMPLETE @ e4f62b9 (+ 43f6148 tip + 0538e35 allowlist fix); M11 SWXA COMPLETE; T12.1 pending @ M12; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
@@ -250,7 +250,7 @@ sessions:
     mode: full
     status: in_progress
     started: '2026-08-01'
-    note: '07-build in_progress — M11 SWXA COMPLETE (T11.7 @ e4f62b9); M12 @ T12.1 pending (product-order smoke TC-EV029-007); FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823'
+    note: '07-build in_progress — M11 SWXA COMPLETE (T11.7 @ e4f62b9; tip 0538e35); M12 @ T12.1 pending (product-order smoke TC-EV029-007); FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -5592,9 +5592,9 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: "T11.7 COMPLETE @ e4f62b9 — SWXA product-path smoke + Examples unlock (TC-F28-005); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823"
-    tip_sha: e4f62b9
-    tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+    note: "T11.7 COMPLETE @ e4f62b9 (+ tip 43f6148 + fix allowlist 0538e35); M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA quality 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823"
+    tip_sha: 0538e35
+    tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
     progress: 41/48
     current_milestone: M12
     current_task: T12.1
@@ -5635,9 +5635,9 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: "T11.7 COMPLETE @ e4f62b9 — SWXA product-path smoke + Examples unlock (TC-F28-005); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823"
-      tip_sha: e4f62b9
-      tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+      note: "T11.7 COMPLETE @ e4f62b9 (+ tip 43f6148 + fix allowlist 0538e35); M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA quality 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823"
+      tip_sha: 0538e35
+      tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
       progress: 41/48
       active_milestone: M12
       current_milestone: M12
@@ -5687,7 +5687,7 @@ stages:
         active_milestone: M12
         phase: C
         milestone: M12
-        notes: "T11.7 COMPLETE @ e4f62b9; M11 SWXA COMPLETE; T12.1 pending; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; #828; #823"
+        notes: "T11.7 COMPLETE @ e4f62b9; tip 0538e35 pushed; T12.1 pending @ M12; progress 41/48; CI green; #828; #823"
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -5697,9 +5697,9 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: "T11.7 COMPLETE @ e4f62b9 — SWXA product-path smoke + Examples unlock (TC-F28-005); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823"
-      tip_sha: e4f62b9
-      tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+      note: "T11.7 COMPLETE @ e4f62b9 (+ tip 43f6148 + fix allowlist 0538e35); M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA quality 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823"
+      tip_sha: 0538e35
+      tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
       progress: 41/48
       active_milestone: M12
       current_milestone: M12
@@ -6145,6 +6145,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-02 S036/EV-029 — tip 0538e35 (0538e35e20cf855e05a7d7fd6082c5e37f4ddc80) pushed ahead_of_origin=0; history e4f62b9→43f6148→0538e35; CI SWXA quality https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943934 SUCCESS + CI/CD https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943922 SUCCESS; T12.1 pending @ M12; progress 41/48; #828; #823'
     - '2026-08-02 S036/EV-029 — T11.7 COMPLETE @ e4f62b9 (e4f62b91c5091731beab45fd519fec0d4b9b9264); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823'
     - '2026-08-02 S036/EV-029 — T11.6 COMPLETE @ 42e0d42 (42e0d42c5612a80b1c0c30026b162a9005f17123); user continue → T11.7 in_progress (SWXA product-path smoke TC-F28-005); progress 40/48; M11; tip 42e0d42; #828; #823'
     - '2026-08-02 S036/EV-029 — tip 97187db (97187db0d08fe685d16f9a98ac5384a79ea794d3); T11.1+T11.2 COMPLETE (SWXA SX1 fixtures/registry/lint; PRODUCTS includes SWXA; TC-F28-001/004 green); tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; will push soon (may still be ahead); M11 active; #828; #823'
@@ -8435,6 +8436,40 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: NOTE-S036-EV029-T117-push-ci
+  date: '2026-08-02'
+  timestamp: '2026-08-02T22:27:12Z'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: note
+  status: recorded
+  topic: "T11.7 push + CI green @ 0538e35"
+  summary: "Pushed tip 0538e35 (allowlist fix; history e4f62b9 + 43f6148). ahead_of_origin=0. SWXA quality run 30769943934 SUCCESS; CI/CD run 30769943922 SUCCESS. Active remains T12.1 pending / M12 / 41/48."
+  decision: "After T11.7 push: tip_sha 0538e35; recorded commits 43f6148 (workflow tip) and 0538e35 (allowlist fix). CI confirmed green (SWXA quality + CI/CD). Active task unchanged: T12.1 pending @ M12; progress 41/48."
+  tip_sha: 0538e35
+  tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
+  progress: 41/48
+  active_task: T12.1
+  active_task_status: pending
+  active_milestone: M12
+  ahead_of_origin: 0
+  ci_runs:
+  - name: SWXA quality
+    run_id: '30769943934'
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943934
+    conclusion: success
+  - name: CI/CD Pipeline
+    run_id: '30769943922'
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943922
+    conclusion: success
+  related_issues:
+  - '823'
+  related_prs:
+  - '828'
+  branch: evolve/EV-029-eight-family-ahl-rules
 - id: NOTE-S036-EV029-T117-complete
   date: '2026-08-02'
   timestamp: '2026-08-02T22:14:00Z'
@@ -25770,14 +25805,14 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-01'
-      note: "T11.7 COMPLETE @ e4f62b9 — SWXA product-path smoke + Examples unlock (TC-F28-005); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823"
+      note: "T11.7 COMPLETE @ e4f62b9 (+ tip 43f6148 + fix allowlist 0538e35); M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA quality 30769943934 + CI/CD 30769943922 SUCCESS; #828; #823"
       current_milestone: M12
       active_milestone: M12
       current_task: T12.1
       active_task: T12.1
       active_task_status: pending
-      tip_sha: e4f62b9
-      tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+      tip_sha: 0538e35
+      tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
       progress: 41/48
     08-verify-build:
       status: pending
@@ -25857,8 +25892,8 @@ evolve_cycles:
   branch: evolve/EV-029-eight-family-ahl-rules
   preset: Standard
   preset_status: approved
-  tip_sha: e4f62b9
-  tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+  tip_sha: 0538e35
+  tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
   progress: 41/48
   pull_requests:
   - number: 828
@@ -25866,10 +25901,10 @@ evolve_cycles:
     title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
     status: open
     milestone: M2-M10
-    note: "T11.7 COMPLETE @ e4f62b9; M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828 M2–M10"
+    note: "T11.7 COMPLETE @ e4f62b9 (+ 43f6148 tip + 0538e35 allowlist); M11 SWXA COMPLETE; T12.1 pending @ M12; progress 41/48; tip 0538e35 pushed ahead_of_origin=0; CI SWXA 30769943934 + CI/CD 30769943922 SUCCESS; #828 M2–M10"
     head: evolve/EV-029-eight-family-ahl-rules
     base: main
-    tip_sha: e4f62b9
+    tip_sha: 0538e35
   - number: 827
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827
     title: "[EV-029][M1] AHL / COM / shared bulletin model"
@@ -25889,6 +25924,7 @@ evolve_cycles:
   prior_pr_merged_at: '2026-08-02T14:18:36Z'
   prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
   notes:
+  - '2026-08-02 S036/EV-029 — tip 0538e35 (0538e35e20cf855e05a7d7fd6082c5e37f4ddc80) pushed ahead_of_origin=0; parents/history e4f62b9 T11.7 + 43f6148 tip + 0538e35 allowlist fix; CI SWXA quality https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943934 SUCCESS + CI/CD https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943922 SUCCESS; T12.1 pending @ M12; progress 41/48; #828; #823'
   - '2026-08-02 S036/EV-029 — T11.7 COMPLETE @ e4f62b9 (e4f62b91c5091731beab45fd519fec0d4b9b9264); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823'
   - '2026-08-02 S036/EV-029 — T11.6 COMPLETE @ 42e0d42 (42e0d42c5612a80b1c0c30026b162a9005f17123); user continue → T11.7 in_progress (SWXA product-path smoke TC-F28-005); progress 40/48; M11; tip 42e0d42; #828; #823'
   - '2026-08-02 S036/EV-029 — tip 97187db (97187db0d08fe685d16f9a98ac5384a79ea794d3); T11.1+T11.2 COMPLETE (SWXA SX1 fixtures/registry/lint; PRODUCTS includes SWXA; TC-F28-001/004 green); tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; will push soon (may still be ahead); M11 active; #828; #823'
@@ -25936,14 +25972,15 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: evolve/EV-029-eight-family-ahl-rules
-  ahead_of_origin: 1
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  tip_sha: e4f62b9
-  tip_sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
+  tip_sha: 0538e35
+  tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
   recommended_branch: evolve/EV-029-eight-family-ahl-rules
-  note: 'S036/EV-029 — T11.7 COMPLETE @ e4f62b9; M11 SWXA COMPLETE; T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; ahead 1; #828; #823'
+  note: 'S036/EV-029 — tip 0538e35 pushed ahead_of_origin=0; T11.7 @ e4f62b9 + tip 43f6148 + allowlist fix 0538e35; CI SWXA 30769943934 + CI/CD 30769943922 SUCCESS; T12.1 pending @ M12; progress 41/48; #828; #823'
   notes:
+  - '2026-08-02 S036/EV-029 — tip 0538e35 (0538e35e20cf855e05a7d7fd6082c5e37f4ddc80) pushed ahead_of_origin=0; history e4f62b9→43f6148→0538e35; CI SWXA quality https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943934 SUCCESS + CI/CD https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30769943922 SUCCESS; T12.1 pending @ M12; progress 41/48; #828; #823'
   - '2026-08-02 S036/EV-029 — T11.7 COMPLETE @ e4f62b9 (e4f62b91c5091731beab45fd519fec0d4b9b9264); M11 SWXA COMPLETE; next T12.1 pending @ M12; FE Examples unlocked → H4–H5 no longer waived at 13; progress 41/48; tip e4f62b9; #828; #823'
   - '2026-08-02 S036/EV-029 — tip 97187db (97187db0d08fe685d16f9a98ac5384a79ea794d3); T11.1+T11.2 COMPLETE (SWXA SX1 fixtures/registry/lint; PRODUCTS includes SWXA; TC-F28-001/004 green); tac2iwxxm still 0.2.3; next T11.3 convert→XSD+SCH; will push soon (may still be ahead); M11 active; #828; #823'
   - '2026-08-02 S036/EV-029 — tip adff1b9 (adff1b96a8387f0b2232feffc632389c70b8edd9) pushed; ahead_of_origin=0; T11.1 in_progress @ M11 (SWXA registry + fixtures); D-S036-semver-patch-3 done; local maturin rebuild required after 0.2.3 when rust_available; #828 title has 0.2.3; #823'
@@ -27237,6 +27274,26 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 0538e35
+    sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[T11.7] fix: allowlist SWXA decode residuals for spacewx-A7-3"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T22:27:12Z'
+    files_changed:
+    - packages/tac2iwxxm/tests/fixtures/wmo_decode_residual_allowlist.py
+  - sha: 43f6148
+    sha_full: 43f61481f4511c02206550f019a9a8117afaf6a7
+    branch: evolve/EV-029-eight-family-ahl-rules
+    message: "[EV-029] chore: tip workflow-state after T11.7 SWXA smoke"
+    stage: 07-build
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    timestamp: '2026-08-02T22:20:00Z'
+    files_changed:
+    - workflow-state.yaml
   - sha: e4f62b9
     sha_full: e4f62b91c5091731beab45fd519fec0d4b9b9264
     branch: evolve/EV-029-eight-family-ahl-rules
