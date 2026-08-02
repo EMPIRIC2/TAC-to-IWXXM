@@ -3,6 +3,50 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-029 — #823 Eight-family AHL / lint / convert / validate gap sweep (S036)
+
+**Session**: S036-eight-family-ahl-rules-823  
+**Features**: **F28** (new SWXA quality bar) + deepen **F6** / **F6.bulletin** / **F12** / **F2** / **F13** / **F15** / **F20** / **F23** / **F24** / **F26** / **F27**  
+**Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella); absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820), [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)  
+**Started**: 2026-08-01  
+**Branch**: `evolve/EV-029-eight-family-ahl-rules`  
+**Status**: **in_progress** — Phase 0–1 locked; 01-requirements
+
+### Scope (Phase 0 — locked 2026-08-01)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E29-1 | decision | Session open? | **1** — S036 / EV-029 feature + 16-evolve (`D-S036-open`) |
+| E29-2 | decision | Work shape? | **1** — Phase A mine/promote first, then Phase B per product family |
+| E29-3 | decision | Product order? | **1** — Bulletin/AHL/COM → METAR → SPECI → TAF → SIGMET (gen/VA/TC/CNL) → AIRMET → VAA → TCA → SWXA |
+| E29-4 | decision | Dissemination AHL? | **1** — shared AHL + filename/`bulletinIdentifier` in-cycle; sink UI later |
+| E29-5 | decision | Routing preset? | **1** — Standard (`00→16→01→02→04→07→08→09→10→11→12→13`; skip 03/05/06) |
+| E29-6 | decision | UI preview? | **1** — N/A (no UI this session) |
+| E29-7 | decision | Fn allocation? | **1** — F28 new + deepen set (`D-S036-fn`) |
+| E29-8 | decision | Related issues? | **1** — absorb #738 / #820 / #740 into Phase B |
+| E29-9 | decision | Proceed? | **1** — lock → start 01-requirements |
+| E29-10 | decision | Commit session open? | **1** — yes (`D-S036-fn` Q4) |
+
+**Scope (verbatim)**: Go 1-by-1 across the eight TAC→IWXXM product families and ensure
+validation, linting, and conversion rules (plus examples for all TAC input shapes) have no
+silent gaps. Umbrella #823 — mine then implement IWXXM 2025-2 AHL/bulletin, VAA/TCA, and
+three-SIGMET family gaps. Report states: Normal / Amendment / Correction / Cancellation /
+Missing or NIL where permitted. Exclude SIGWX / VONA / QVACI as converter inputs.
+
+**In:** Phase A domain mine + promote + example inventory; Phase B engine deltas product-by-product;
+shared AHL/`T1T2`/filename model for tac2iwxxm + dissemination consumers; child issues for residuals.
+
+**Out:** SIGWX/VONA/QVACI TAC conversion; dissemination drawer/sink UI; #806 WIS2 topic mining;
+hand-edits to `vendor/schemas/*`; GIFTs-as-normative.
+
+### Acceptance (cycle — draft pending Fn lock)
+
+1. Coverage matrix + canonicals filled or child-issued for eight families × lint/convert/IWXXM-validate × report states × TAC shapes.
+2. Phase B implements promoted rules in locked product order; CI green on evolve branch.
+3. Shared AHL model used by conversion (and ready for F16–F19 filename/`bulletinIdentifier`).
+
+---
+
 ## Cycle EV-028 — #781 EMPIRIC2 Codecov purge + PyPI Trusted Publisher + landing pages (S035)
 
 **Session**: S035-empiric2-ops-leftovers-781  

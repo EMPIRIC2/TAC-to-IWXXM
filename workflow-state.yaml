@@ -3,10 +3,156 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 35
-evolve_cycle_counter: 28
-active_session: null
+session_counter: 36
+evolve_cycle_counter: 29
+active_session:
+  id: S036-eight-family-ahl-rules-823
+  type: feature
+  intent: |
+    Umbrella #823 — mine + close lint/conversion/IWXXM-validation gaps for eight TAC→IWXXM
+    families (AHL/bulletin first, then product-by-product); shared AHL/filename rules;
+    examples for all TAC input shapes. Exclude SIGWX/VONA/QVACI.
+  status: in_progress
+  branch: evolve/EV-029-eight-family-ahl-rules
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-029
+  github_issues:
+  - '823'
+  feature_ids: []
+  artifacts_dir: docs/sessions/S036-eight-family-ahl-rules-823/
+  routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
+  preset: Standard
+  preset_status: approved
+  note_skipped: "Standard — skip 03/05/06 unless 04 re-adds; D-S036-open Q5=1"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  current_stage:
+    note: '00-context completed; 16-evolve Phase 1 Fn allocation pending'
+  started_at: '2026-08-01'
+  context_briefs:
+  - docs/context/eight-family-ahl-rules-823.md
+  decision_refs:
+  - D-S036-open
 sessions:
+- id: S036-eight-family-ahl-rules-823
+  type: feature
+  intent: |
+    Umbrella #823 — mine + close lint/conversion/IWXXM-validation gaps for eight TAC→IWXXM
+    families (AHL/bulletin first, then product-by-product); shared AHL/filename rules;
+    examples for all TAC input shapes. Exclude SIGWX/VONA/QVACI.
+  status: in_progress
+  branch: evolve/EV-029-eight-family-ahl-rules
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-029
+  github_issues:
+  - '823'
+  feature_ids: []
+  artifacts_dir: docs/sessions/S036-eight-family-ahl-rules-823/
+  artifacts:
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/session-brief.md
+    status: approved
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/routing-plan.md
+    status: approved
+  - path: docs/context/eight-family-ahl-rules-823.md
+    status: written
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
+  preset: Standard
+  preset_status: approved
+  note_skipped: "Standard — skip 03/05/06 unless 04 re-adds; D-S036-open Q5=1"
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  current_stage:
+    note: '00-context completed; 16-evolve Phase 1 Fn allocation pending'
+  started_at: '2026-08-01'
+  note: 'S036/EV-029 OPEN — umbrella #823; related #738 (AHL), #820 (residual matrix), #740; Phase 0 locked D-S036-open=1,1,1,1,1,1; 16-evolve Phase 1 Fn allocation pending'
+  context_briefs:
+  - docs/context/eight-family-ahl-rules-823.md
+  decision_refs:
+  - D-S036-open
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-08-01'
+    completed: '2026-08-01'
+    note: "Intake locked D-S036-open = 1,1,1,1,1,1"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-08-01'
+    note: 'Phase 0 locked; Phase 1 Fn allocation next'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: pending
+    note: 'Feature-list + UJ/TC deltas; COM rule IDs'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+    note: Gate A
+  - stage: 03-plan-tooling
+    required: false
+    mode: null
+    status: skipped
+    note: Re-add if new rules/hooks needed
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+    note: 'Exec plan: Phase A mine → Phase B per family'
+  - stage: 05-verify-tech
+    required: false
+    mode: null
+    status: skipped
+    note: Re-add if new deps
+  - stage: 06-tech-tooling
+    required: false
+    mode: null
+    status: skipped
+    note: —
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+    note: 'Mining + engine deltas + fixtures'
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+    note: Standard preset
+  - stage: 10-e2e
+    required: true
+    mode: smoke
+    status: pending
+    note: Convert/lint/validate + catalog fixtures
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+    note: Per–acceptance-criterion for each Fn
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+    note: Config/env if AHL surface ships
+  - stage: 13-deploy-smoke
+    required: true
+    mode: full
+    status: pending
+    note: When behavior ships to prod
 - id: S035-empiric2-ops-leftovers-781
   type: feature
   intent: |
@@ -15974,6 +16120,32 @@ decisions_log:
   tip_sha_full: deb43cf3ac51026a6207f42c2411ae1e5e03f868
   preset: Lean+build
   preset_status: approved
+- id: D-S036-open
+  date: '2026-08-01'
+  timestamp: '2026-08-01'
+  resolved_at: '2026-08-01'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session-open
+  status: confirmed
+  topic: 'Open S036 / EV-029 #823 eight-family AHL / lint / convert / validate gap sweep'
+  summary: 'User chose E29-1..6 all option 1 — mine-then-implement; AHL→…→SWXA order; shared AHL in-cycle; Standard routing; UI N/A'
+  decision: 'Open S036/EV-029 for umbrella #823 — Phase A mine/promote + example inventory then Phase B product-by-product across eight TAC→IWXXM families (exclude SIGWX/VONA/QVACI). Shared AHL+filename model in-cycle; sink UI out. cycle_type feature; Fn allocation pending (D-S036-fn). Routing Standard 00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06). Related #738, #820, #740.'
+  user_option: '1,1,1,1,1,1'
+  user_intent: 'E29-1 session open; E29-2 mine then implement; E29-3 product order; E29-4 shared AHL in-cycle; E29-5 Standard; E29-6 UI N/A'
+  related_issues:
+  - '823'
+  related_issues_oob:
+  - '738'
+  - '820'
+  - '740'
+  preset: Standard
+  preset_status: approved
+  branch: evolve/EV-029-eight-family-ahl-rules
+
 artifacts:
 - path: docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
   kind: execution-plan
@@ -24721,6 +24893,108 @@ evolve_cycles:
   - '2026-08-01 S035/EV-028 00-context — branch active; session-brief.md in_progress; routing-plan.md pending_approval (not approved); #781'
   - '2026-08-01 S035/EV-028 OPEN — create_evolve_cycle; D-S035-open (1b feature+16-evolve, 2a scope, 3b READMEs+dissemination, 4b tag publish); session_counter 35; evolve_cycle_counter 28; branch evolve/EV-028-empiric2-ops-leftovers-781; #781'
   note: 'D-S035-EV028-phase4-close — Phase 4 close 2026-08-02; EV-028/S035 complete; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed'
+- id: EV-029
+  session_id: S036-eight-family-ahl-rules-823
+  cycle_type: feature
+  feature_ids: []
+  title: "#823 Eight-family AHL / lint / convert / validate gap sweep"
+  status: in_progress
+  started: '2026-08-01'
+  completed: null
+  scope_summary: |
+    Phase A mine/promote rules + example inventory; Phase B implement product-by-product
+    (AHL/COM → METAR → SPECI → TAF → SIGMET gen/VA/TC/CNL → AIRMET → VAA → TCA → SWXA).
+    Shared AHL+filename model in-cycle; sink UI out. Exclude SIGWX/VONA/QVACI. #823.
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    note: "Standard — D-S036-open; skip 03/05/06"
+  current_stage: 16-evolve
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-01'
+      completed: '2026-08-01'
+      note: "D-S036-open = 1,1,1,1,1,1"
+    16-evolve:
+      status: in_progress
+      mode: orchestrator
+      started: '2026-08-01'
+      note: "Phase 0 locked; Phase 1 Fn allocation pending"
+    01-requirements:
+      status: pending
+      mode: delta
+    02-verify-plan:
+      status: pending
+      mode: delta
+    04-tech-plan:
+      status: pending
+      mode: delta
+    07-build:
+      status: pending
+      mode: full
+    08-verify-build:
+      status: pending
+      mode: delta
+    09-qa:
+      status: pending
+      mode: delta
+    10-e2e:
+      status: pending
+      mode: smoke
+    11-verify-impl:
+      status: pending
+      mode: delta
+    12-verify-deploy:
+      status: pending
+      mode: delta
+    13-deploy-smoke:
+      status: pending
+      mode: full
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/session-brief.md
+    status: approved
+  - path: docs/sessions/S036-eight-family-ahl-rules-823/routing-plan.md
+    status: approved
+  - path: docs/context/eight-family-ahl-rules-823.md
+    status: written
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  github_issues:
+  - '823'
+  branch: evolve/EV-029-eight-family-ahl-rules
+  preset: Standard
+  preset_status: approved
+  notes:
+  - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
 git_history:
   current_branch: main
   ahead_of_origin: 0
@@ -24731,6 +25005,7 @@ git_history:
   recommended_branch: main
   note: 'D-S035-EV028-phase4-close — Phase 4 close 2026-08-02; EV-028/S035 complete; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed'
   notes:
+  - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve in_progress'
   - '2026-08-02 S035/EV-028 CLOSED — Phase 4 close D-S035-EV028-phase4-close option 1; PR #824 @ 70312dd; #825 closeout MERGED @ 8086664; #781 closed; active_session=null'
   - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
   - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
@@ -25011,6 +25286,16 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-029-eight-family-ahl-rules
+    purpose: 'S036/EV-029 #823 eight-family AHL / lint / convert / validate gap sweep'
+    base: main
+    status: active
+    created: '2026-08-01'
+    created_at: '2026-08-01'
+    session_id: S036-eight-family-ahl-rules-823
+    evolve_cycle_id: EV-029
+    note: 'Session opened; Phase 0 locked; 16-evolve Phase 1 Fn allocation pending; not pushed'
+    pushed: false
   - name: evolve/EV-028-empiric2-ops-leftovers-781
     purpose: 'S035/EV-028 #781 Codecov purge + PyPI Trusted Publisher + landing READMEs'
     base: main
