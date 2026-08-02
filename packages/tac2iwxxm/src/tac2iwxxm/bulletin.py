@@ -51,7 +51,7 @@ _TAC_TAF = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 
-# General SIGMET body — FIR SIGMET seq VALID … MWO- … = (design-note §3.2; WS)
+# SIGMET body — FIR SIGMET seq VALID … MWO- … = (design-note §3.2; WS gen / WV VA)
 _TAC_SIGMET = re.compile(
     r"^[A-Z]{4}\s+SIGMET\s+\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
@@ -61,7 +61,9 @@ _PRODUCT_TT: dict[str, frozenset[str]] = {
     "METAR": frozenset({"SA"}),
     "SPECI": frozenset({"SP"}),
     "TAF": frozenset({"FC", "FT"}),
-    "SIGMET": frozenset({"WS"}),
+    # WS general + WV volcanic ash (content-selected root; E19-13 / EV-029 M5–M6).
+    # WC tropical cyclone lands in M7.
+    "SIGMET": frozenset({"WS", "WV"}),
 }
 
 _PRODUCT_BODY_RE: dict[str, re.Pattern[str]] = {
@@ -298,8 +300,8 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         Full bulletin text including the AHL line and one or more TAC reports.
     product :
         Product hint selecting the AHL dialect (``METAR``, ``SPECI``, ``TAF``,
-        or ``SIGMET`` for body split; other products raise until their splitters
-        land).
+        or ``SIGMET`` for WS/WV body split; other products raise until their
+        splitters land).
 
     Returns
     -------
@@ -360,7 +362,7 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     elif product_key == "TAF":
         reports = [r for r in reports if r.startswith("TAF")]
     elif product_key == "SIGMET":
-        # Keep FIR SIGMET…= only (reject VA/TC advisory blocks misrouted under WS).
+        # Keep FIR SIGMET…= only (reject VAA/TCA advisory blocks misrouted under WS/WV).
         reports = [r for r in reports if re.match(r"^[A-Z]{4}\s+SIGMET\s+", r, re.IGNORECASE)]
 
     if not reports:

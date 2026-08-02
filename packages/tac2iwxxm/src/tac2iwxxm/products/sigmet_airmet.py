@@ -19,6 +19,8 @@ _CNL = re.compile(
     r"\bCNL\s+SIGMET\s+(?P<cnl_seq>\d+)\s+(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
     re.IGNORECASE,
 )
+# VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
+_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b", re.IGNORECASE)
 _MOV = re.compile(
     r"\bMOV\s+(?P<dir>N|NE|E|SE|S|SW|W|NW)\s+(?P<spd>\d+)\s*KT\b",
     re.IGNORECASE,
@@ -200,7 +202,12 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         ir["cancelled_to_day"] = c_to[0]
         ir["cancelled_to_hour"] = c_to[1]
         ir["cancelled_to_minute"] = c_to[2]
-        ir.pop("phenomenon", None)
+        # FIR-moved cancel is VA-family (root VolcanicAshSIGMET); other CNL drop phenom.
+        if _CNL_FIR_MOVED.search(body) is not None:
+            ir["phenomenon"] = "VA"
+            ir["va_cnl_fir_moved"] = True
+        else:
+            ir.pop("phenomenon", None)
         return
 
     ir["intensity_change"] = _detect_intensity(body)

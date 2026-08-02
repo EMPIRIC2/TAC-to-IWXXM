@@ -228,6 +228,45 @@ def test_convert_bulletin_sigmet_ahl_bbb_report_status(client: TestClient, monke
     assert "iwxxm:SIGMET" in (payload["results"][0]["xml"] or "")
 
 
+VA_SIGMET_CCA_TEXT = """\
+WVUK31 EGRR 121200 CCA
+EGGX SIGMET 4 VALID 251600/252000 EGRR-
+EGGX SHANWICK OCEANIC FIR VA ERUPTION MT HEKLA PSN N6359 W01940
+VA CLD OBS AT 1600Z WI N6000 W01150 - N5900 W01300 - N6000 W01600 - N6000 W01150 SFC/FL550 NC=
+"""
+
+
+def test_convert_bulletin_va_sigmet_ahl_bbb_report_status(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """EV-029 T6.2: WV AHL CCA → bulletin_meta.report_status + convert kwarg."""
+    seen: dict[str, object] = {}
+
+    def fake_convert(tac: str, **kwargs):
+        seen.update(kwargs)
+        return (
+            f'<iwxxm:VolcanicAshSIGMET reportStatus="CORRECTION">{tac[:20]}</iwxxm:VolcanicAshSIGMET>',
+            None,
+        )
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = _multipart_bulletin(
+        client,
+        manual_text=VA_SIGMET_CCA_TEXT,
+        product="SIGMET",
+        lint="false",
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    meta = payload["bulletin_meta"]
+    assert meta["tt"] == "WV"
+    assert meta["bbb"] == "CCA"
+    assert meta["report_status"] == "CORRECTION"
+    assert seen.get("product") == "SIGMET"
+    assert seen.get("report_status") == "CORRECTION"
+    assert payload["results"][0]["ok"] is True
+    assert "iwxxm:VolcanicAshSIGMET" in (payload["results"][0]["xml"] or "")
+
+
 def test_convert_bulletin_ignores_empty_upload_files(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     """UploadFile path: empty files skipped; non-empty joined (PR #704)."""
 
