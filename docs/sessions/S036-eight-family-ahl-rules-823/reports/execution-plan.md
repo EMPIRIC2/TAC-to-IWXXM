@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M3 — SPECI (F20 deepen) |
-| **Active task** | T3.1 — pending (SPECI gap fixtures); M2 PR opening |
+| **Active task** | T3.1 — pending (SPECI gap fixtures); M2 PR #828 open (watching CI) |
 | **Tasks** | 13 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; M2 PR pending open (this boundary); evolve continues for M3+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2 METAR; evolve continues for M3+; final evolve PR to `main` after Phase C/D |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log
