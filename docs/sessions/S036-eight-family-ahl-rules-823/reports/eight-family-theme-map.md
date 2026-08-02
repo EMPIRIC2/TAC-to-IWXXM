@@ -119,4 +119,6 @@ HARD gaps → AskQuestion (E29-T8); residuals may be child-issued (S02.M3).
 
 ## Next
 
-**T0.2** — Full re-mine eight families → `reports/mining/`.
+**T0.2** — ~~Full re-mine~~ → `reports/mining/eight-family-remine-pass.md`  
+**T0.3** — ~~Example inventory~~ → `reports/mining/example-inventory.md`  
+**T0.4** — Promote durable rules → COVERAGE_MATRIX + canonicals.

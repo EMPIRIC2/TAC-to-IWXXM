@@ -169,7 +169,10 @@ Status: `ok` = prior Fn bar sufficient pending deepen · `gap` = known open ·
 
 ---
 
-## D. Official examples inventory seed (feeds T0.3)
+## D. Official examples inventory seed → **T0.3 complete**
+
+Expanded matrix (shapes × families, catalog tiers, AHL `T1T2` gaps):
+[`example-inventory.md`](./example-inventory.md).
 
 | Stem | Family | Happy-path encode? | Notes |
 |------|--------|--------------------|-------|
@@ -179,13 +182,13 @@ Status: `ok` = prior Fn bar sufficient pending deepen · `gap` = known open ·
 | sigmet-A6-1a-TS / 1b-CNL | SIGMET gen | yes | |
 | sigmet-A6-2-TC | TC SIGMET | **#738** | Quality bar M7 |
 | sigmet-VA-EGGX | VA SIGMET | soft/pass | |
-| sigmet-multi-location-VA | VA SIGMET | soft / wmoReference | |
+| sigmet-multi-location-VA | VA SIGMET | soft / wmoPass | |
 | airmet-A6-1a-TS | AIRMET | yes | |
-| va-advisory-A7-2 | VAA | yes | B4 residuals |
+| va-advisory-A7-2 | VAA | yes | B4 residuals; vendor AHL FV |
 | tc-advisory-A2-2 | TCA | yes | B4 residuals |
 | spacewx-A7-3/4/5 (+ alt) | SWXA | **F28** | May wmoReference |
 | *-translation-failed* | quarantine | no | Not happy path |
-| *-NIL-collect* | COLLECT | validate only | |
+| *-NIL-collect* | COLLECT | validate only | AHL SA/FT present |
 | vona / WAFS / qvaci | OOS | — | |
 
 ---
@@ -213,7 +216,7 @@ Status: `ok` = prior Fn bar sufficient pending deepen · `gap` = known open ·
 
 | Task | Deliverable |
 |------|-------------|
-| **T0.3** | Example inventory (shapes × families) → expand §D |
+| **T0.3** | ~~Example inventory~~ → [`example-inventory.md`](./example-inventory.md) |
 | **T0.4** | Promote §E into `docs/domain/` |
 | **T0.5** | AHL design note (tac2iwxxm API surface) |
 | **T0.6** | M0 exit checklist |
