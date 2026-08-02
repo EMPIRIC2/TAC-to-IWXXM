@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M9 — VAA (F26 deepen / #820) |
-| **Active task** | T9.1 — completed; next T9.2 VAA deltas |
+| **Active task** | T9.2 — VAA deltas (FV split + reportStatus + RMK NIL nilReason) |
 | **Tasks** | 35 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
