@@ -44,16 +44,16 @@ Derived from `D-S036-open` / `D-S036-fn` / `D-S036-E29-M`:
 13. No `swx` wire alias
 14. Close 01 → start 02 (`D-S036-E29-M` Q2=1)
 
-## Medium / low confidence — pending user Batch F
+## Medium / low confidence — Batch F locked (`D-S036-02-batch-f` = 1,1,1,1)
 
-| ID | Conf | Statement | Recommendation |
-|----|------|-----------|----------------|
-| S02.M1 | Med | Runtime enum enforcement for `swxa` lands in **07-build** (backend + packages); docs lead until then — 02 does not require code green yet | **1** Approve |
-| S02.M2 | Med | TC SIGMET quality (#738) is **F23 deepen** (not a new Fn); acceptance tracked under TC-EV029-004 + F23 suite deepen | **1** Approve |
-| S02.M3 | Med | Phase A mining may open **child issues** for residual encode gaps; umbrella #823 stays open until children linked or closed | **1** Approve |
-| S02.L1 | Low | Official SWXA golden peer may be `wmoReference` (not ADR-032 equality) in v1 if vendor TAC↔XML parity is incomplete — defer equality via child | **1** Approve (prefer equality when peer exists) |
+| ID | Conf | Statement | Decision |
+|----|------|-----------|----------|
+| S02.M1 | Med | Runtime enum enforcement for `swxa` lands in **07-build** (backend + packages); docs lead until then | **1** Approve |
+| S02.M2 | Med | TC SIGMET quality (#738) is **F23 deepen** (not a new Fn); TC-EV029-004 + F23 suite deepen | **1** Approve |
+| S02.M3 | Med | Phase A may leave **child issues**; #823 stays open until linked/closed | **1** Approve |
+| S02.L1 | Low | SWXA golden may be `wmoReference` in v1 if equality incomplete; prefer ADR-032 equality when peer exists | **1** Approve |
 
 ## Gate A
 
-Pending Batch F + AskQuestion.
+Pending AskQuestion (Batch F complete).
 )
