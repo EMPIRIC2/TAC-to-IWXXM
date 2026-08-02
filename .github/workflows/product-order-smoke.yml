@@ -1,0 +1,48 @@
+# EV-029 / T12.1 — Product-order regression smoke (TC-EV029-007 / M12).
+# One accept fixture per family in Phase B CI order; complements per-family packs.
+name: Product-order smoke
+
+on:
+  push:
+    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/**"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_007_product_order_smoke.py"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/**"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/iwxxm-validate/src/iwxxm_validate/**"
+      - "scripts/ci/run_product_order_smoke.sh"
+      - ".github/workflows/product-order-smoke.yml"
+  pull_request:
+    paths:
+      - "packages/tac2iwxxm/src/tac2iwxxm/**"
+      - "packages/tac2iwxxm/tests/test_tc_ev029_007_product_order_smoke.py"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/**"
+      - "packages/tac-validate/src/tac_validate/**"
+      - "packages/iwxxm-validate/src/iwxxm_validate/**"
+      - "scripts/ci/run_product_order_smoke.sh"
+      - ".github/workflows/product-order-smoke.yml"
+  workflow_dispatch:
+
+jobs:
+  product-order-smoke:
+    runs-on: ubuntu-latest
+    name: Product-order smoke (TC-EV029-007)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run product-order smoke
+        run: make test-product-order-smoke

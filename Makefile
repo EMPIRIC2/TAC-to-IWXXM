@@ -24,6 +24,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-vaa-quality \
 	test-tca-quality \
 	test-swxa-quality \
+	test-product-order-smoke \
 	test-wmo-quality \
 	test-ahl-com-quality \
 	test-metar-quality \
@@ -279,6 +280,10 @@ test-tca-quality:
 # EV-029 / E29-T4=2 — SWXA quality pack (M11 / TC-F28 + F28 deepen / #740/#823)
 test-swxa-quality:
 	bash scripts/ci/run_swxa_quality.sh
+
+# EV-029 / T12.1 — Product-order regression smoke (TC-EV029-007 / M12)
+test-product-order-smoke:
+	bash scripts/ci/run_product_order_smoke.sh
 
 # EV-023 / TC-EV023-005 — Amd79 informative suite (T5.1+T5.2; soft xfail strict=False / E23-T4=2)
 test-iwxxm-translation-informative:

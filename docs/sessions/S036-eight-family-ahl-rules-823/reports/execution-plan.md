@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M12 — Smoke / verify / deploy |
-| **Active task** | T12.1 — pending |
-| **Tasks** | 41 / 48 completed |
+| **Active task** | T12.2 — pending |
+| **Tasks** | 42 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -166,7 +166,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T12.1 | Test | Product-order regression smoke TC-EV029-007 | TC-EV029-007 | T11.7 | pending |
+| T12.1 | Test | Product-order regression smoke TC-EV029-007 | TC-EV029-007 | T11.7 | **completed** |
 | T12.2 | Test | Report-state matrix TC-EV029-006 (or child-issue gaps) | TC-EV029-006 | T12.1 | pending |
 | T12.3 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | T12.2 | pending |
 | T12.4 | Test | 09-qa delta + 10-e2e smoke (UJ-043) | 09; 10 | T12.3 | pending |
