@@ -1,0 +1,32 @@
+FVFE01 RJTD 121200
+VA ADVISORY
+DTG:                        20240923/0130Z
+VAAC:                       TOKYO
+VOLCANO:                    KARYMSKY 1000-13
+PSN:                        N5403 E15927
+AREA:                       RUSSIA
+SOURCE ELEV:                1536M AMSL
+ADVISORY NR:                2024/4
+INFO SOURCE:                HIMAWARI-8 KVERT KEMSD
+ERUPTION DETAILS:           ERUPTION AT 20240923/0000Z FL300 REPORTED
+OBS VA DTG:                 23/0100Z
+OBS VA CLD:                 FL250/300 N5400 E15930 - N5400 E16100 - N5300 E15945 MOV SE 20KT
+FCST VA CLD +6 HR:          23/0700Z NO VA EXP
+RMK:                        NIL
+NXT ADVISORY:               20240923/0730Z
+
+VA ADVISORY
+DTG:                        20240923/0730Z
+VAAC:                       TOKYO
+VOLCANO:                    BEZYMIANNY 1000-25
+PSN:                        N5558 E16035
+AREA:                       RUSSIA
+SOURCE ELEV:                2882M AMSL
+ADVISORY NR:                2024/5
+INFO SOURCE:                HIMAWARI-8 KVERT
+ERUPTION DETAILS:           ERUPTION AT 20240923/0600Z FL240 REPORTED
+OBS VA DTG:                 23/0700Z
+OBS VA CLD:                 SFC/FL240 N5600 E16030 - N5600 E16200 - N5500 E16045 MOV SE 15KT
+FCST VA CLD +6 HR:          23/1300Z NO VA EXP
+RMK:                        NIL
+NXT ADVISORY:               20240923/1330Z

@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M9 — VAA (F26 deepen / #820) |
-| **Active task** | T9.1 — pending; T8.3 COMPLETE (M8 complete) |
-| **Tasks** | 34 / 48 completed |
+| **Active task** | T9.1 — completed; next T9.2 VAA deltas |
+| **Tasks** | 35 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -138,7 +138,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T9.1 | Test | VAA bulletin/encode residual fixtures | TC-EV029-005; #820 | T8.3 | pending |
+| T9.1 | Test | VAA bulletin/encode residual fixtures | TC-EV029-005; #820 | T8.3 | **completed** |
 | T9.2 | Code | VAA deltas | F26; F6.f | T9.1 | pending |
 | T9.3 | Config | `vaa-quality.yml` (extend existing if present) | E29-T4 | T9.2 | pending |
 
