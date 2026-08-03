@@ -25,6 +25,7 @@
 | E30-7 | decision | Fn allocation? | **1** — F29 + deepen F23/F12/F2/F13/F9/F26/F27 (`D-S037-fn`) |
 | E30-8 | decision | Start 01? | **1** — start 01-requirements |
 | E30-9 | decision | Commit open? | **1** — yes (`D-S037-fn` Q3) |
+| E30-M | decision | Document Manifest? | **2,1** — lean + API/catalog note for #829; close 01 → 02 (`D-S037-E30-M`) |
 
 **Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
 matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET
@@ -37,12 +38,16 @@ VAA/TCA structured decode residual shrink; CI/docs for matrix authoring.
 **Out:** New deployables; #830 Supabase strip; #806 WIS2 mining; SIGWX/VONA/QVACI;
 non-deployed UI preview this session (H4–H5 only if FE menu unlock ships).
 
-### Acceptance (cycle — draft pending 01)
+### Acceptance (cycle)
 
-1. #831 harness recommendation + runners + pilot or explicit `needs-fixture` inventory (**TC-EV030-831-***).
-2. #829 acceptance checkboxes met or OOS with cite (**TC-EV030-829-***).
-3. #820 residual spans shrink / allowlist updated (**TC-EV030-820-***).
-4. Deploy smoke green or waived if no contract/FE change.
+1. **F29** / #831: harness recommendation + runners + pilot or explicit `needs-fixture` (**TC-F29-001..007**; **TC-EV030-001..003**).
+2. #829: TC lint pack + STNR/geometry (or OOS) + A6-2-TC catalog tier (**TC-EV030-004/005**).
+3. #820: VAA/TCA decode residual deepen (**TC-EV030-006**).
+4. **UJ-044**; deploy smoke green or waived if no contract/FE change.
+
+### Journeys / tests
+
+- **UJ-044**; **TC-EV030-001..006**; **TC-F29-001..007**
 
 ---
 

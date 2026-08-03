@@ -672,3 +672,22 @@ packages); until then docs lead.
 
 - S036 / EV-029 (2026-08-01): F28 SWXA `product=swxa` + TC SIGMET under `sigmet`; eight-family
   AHL/COM deepen — **endpoint review**; additive enum; no new routes (`D-S036-E29-M` Q1=2).
+
+## S037 / EV-030 — Endpoint review (F29 + #829/#820 residuals)
+
+| Endpoint | Change for EV-030? | Notes |
+|----------|--------------------|-------|
+| `POST /api/v1/convert` | **None (wire)** | No new `product` enum. TC SIGMET remains under `product=sigmet` (EV-029). F29 is CI harness only. |
+| `POST /api/v1/convert-bulletin` | **None (wire)** | Unchanged |
+| `POST /api/v1/lint-tac` | **Additive content** | New TC SIGMET registry codes (#829) appear in issue payloads when pack lands; schema unchanged |
+| `GET /api/v1/lint-issue-catalog` | **Additive content** | TC SIGMET codes; response schema unchanged |
+| `POST /api/v1/decode-tac` | **Behavior deepen** | #820 VAA/TCA structured field/forecast decode; response shape unchanged (residuals shrink) |
+| `POST /api/v1/validate` | **None (wire)** | Same validate path; matrix harness exercises offline |
+| FE Examples / sample menu | **Catalog tier** | #829 may unlock `sigmet-A6-2-TC` (`wmoPass` / `wmoReference` per ADR-032) — **static FE catalog**, no new API route. H4–H5 if FE ships. |
+| Dissemination / auth / sessions | **None** | Unchanged |
+
+**Breaking changes**: None. No new product enum. Catalog/menu unlock is FE static data + ADR-032
+tier decision (TC-EV030-005); document deferral if unlock does not ship this cycle.
+
+- S037 / EV-030 (2026-08-02): F29 matrices + #829 TC deepen + #820 decode — **endpoint review**;
+  lean + API/catalog note (`D-S037-E30-M` Q1=2).

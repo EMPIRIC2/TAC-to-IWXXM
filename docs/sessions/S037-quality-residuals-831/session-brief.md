@@ -60,6 +60,7 @@ Close the three open residuals left by **S036 / EV-029** (#828 merged), in this 
 **Skip:** `03, 05, 06` unless 04 surfaces new deps/tooling  
 See [routing-plan.md](routing-plan.md).
 
-## Next
+## Progress
 
-Approve routing plan → **16-evolve** Phase 0/1 (Fn allocation + impact + cycle create).
+- **00-context** completed · **Fn** `D-S037-fn` · open commit `f88e9cb`
+- **01-requirements** completed (`D-S037-E30-M` = 2,1 — API/#829 catalog) → **02-verify-plan**

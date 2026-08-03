@@ -17784,6 +17784,10 @@ artifacts:
   updated_at: '2026-08-02'
   status: written
   note: 'S037/EV-030 scoped context written — quality residuals #831/#829/#820'
+- path: docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
+  kind: requirements-delta
+  session_id: S037-quality-residuals-831
+  status: draft
 - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
   kind: verification-report
   session_id: S036-eight-family-ahl-rules-823
@@ -28329,6 +28333,14 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: f88e9cb29514cc286efc444b4a48a593c48c3d13
+    short: f88e9cb
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: open S037 — quality residuals #831/#829/#820"
+    stage: 00-context
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-02T20:33:00Z"
   - sha: 7e276a7
     sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
     branch: main

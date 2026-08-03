@@ -450,12 +450,12 @@ metar-to-IWXXM/
 - **Source**: feature-list F27; evolve-decisions EV-021; ADR-028/032;
   sessions/S027-vaa-quality/reports/wmo-vaa-tca-examples-inventory.md.
 
-### F28 — SWXA quality bar (S036 / EV-029) — Planned
+### F28 — SWXA quality bar (S036 / EV-029) — Done
 
 - **Purpose**: #740 / #823 Space Weather Advisory (`iwxxm:SpaceWeatherAdvisory`) quality peer
   to F15–F27. Completes the eight-family TAC→IWXXM converter set. TAC AHL `FN` → IWXXM `LN`.
   Registry-backed lint (ADR-028); golden policy ADR-032.
-- **Status**: **Planned** (S036 / EV-029).
+- **Status**: **Done** (S036 / EV-029; PR #828).
 - **API**: Additive **`product=swxa`** on convert / convert-bulletin / lint-tac / decode-tac
   (api-contract S036 / EV-029). No new routes or deployable. No `swx` alias.
 - **Components**: `packages/tac-validate`, `tac2iwxxm`, `iwxxm-validate`; domain docs; fixtures.
@@ -469,12 +469,36 @@ metar-to-IWXXM/
 - **Purpose**: Mine-then-implement gap sweep across eight TAC families × lint / convert /
   IWXXM-validate, with bulletin/AHL/COM first, then product-by-product. Shared AHL/`T1T2`/
   filename model for conversion + F16–F19 consumers. Absorb #738 / #820 / #740 (**F28**).
-- **Status**: **In progress** (S036 / EV-029).
+- **Status**: **Done** (S036 / EV-029; PR #828). Residuals → S037 / EV-030 (#831/#829/#820).
 - **Components**: domain mining + canonicals; `tac-validate` / `tac2iwxxm` / `iwxxm-validate`;
   thin `packages/dissemination` AHL helpers; fixtures/CI; FE only if Examples unlock.
 - **Journeys / tests**: **UJ-043**; TC-EV029-001..008; TC-F28-001..006; deepen prior product TCs.
 - **Non-goals**: SIGWX / VONA / QVACI as TAC inputs; #806 WIS2 mining; sink UI; vendor hand-edits.
 - **Source**: feature-list EV-029 deepen + F28; evolve-decisions EV-029; #823.
+
+### F29 — Parameterized rule quality matrices (S037 / EV-030) — Planned
+
+- **Purpose**: #831 maintainable 5×4 (happy/sad/edge-pass/edge-fail) parameterized matrices
+  covering lint · convert · IWXXM-validate rules with inventory gate and design-before-bulk.
+- **Status**: **Planned** (S037 / EV-030).
+- **API**: No new public routes for v1 (CI/pytest harness). No new deployable.
+- **Components**: test runners under `packages/*` and/or `tests/`; issue-registry / Schematron /
+  encode rule indexes; CI smoke + optional full matrix job.
+- **Journeys / tests**: **UJ-044**; TC-F29-001..007; cycle TC-EV030-*.
+- **Non-goals**: 100% Annex-3 coverage in first PR; live network/Supabase coupling.
+- **Source**: feature-list F29; evolve-decisions EV-030;
+  [Context: quality-residuals-831](context/quality-residuals-831.md); #831.
+
+### S037 / EV-030 — Quality residuals #831 / #829 / #820
+
+- **Purpose**: Close EV-029 residuals in order: F29 rule matrices (#831) → TC SIGMET deepen
+  (#829) → VAA/TCA decode deepen (#820).
+- **Status**: **In progress** (S037 / EV-030).
+- **Components**: F29 harness; `tac-validate` TC pack; catalog/menu tier for A6-2-TC; decode
+  engine for VAA/TCA labels; matrix/allowlist updates.
+- **Journeys / tests**: **UJ-044**; TC-EV030-*; TC-F29-*; deepen TC-F23/F9/F26/F27; H4–H5 iff FE.
+- **Non-goals**: #830 Supabase strip; #806 WIS2 mining; SIGWX/VONA/QVACI.
+- **Source**: feature-list F29 + EV-030 deepen; evolve-decisions EV-030; #831/#829/#820.
 
 ### S030 / EV-023 — APAC FAQ + codes encode/validate deepen (#800)
 

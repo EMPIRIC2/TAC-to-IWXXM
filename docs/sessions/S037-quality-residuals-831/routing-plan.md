@@ -10,8 +10,8 @@
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Intake + routing approved `D-S037-route` = 1 |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase A → 01 after Fn lock |
-| 01-requirements | yes | delta | **in_progress** | `D-S037-fn` = 1,1,1 — F29 + deepen |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 01-requirements | yes | delta | **completed** | Manifest=2 (API/#829 catalog); close → 02 (`D-S037-E30-M`) |
+| 02-verify-plan | yes | delta | **in_progress** | Gate A |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
 | 04-tech-plan | yes | delta | pending | Execution plan; harness spike answers #831 eval Qs |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
@@ -37,3 +37,4 @@ route H4–H5 only if frontend changes land.
 | Session open / Phase 0 | `D-S037-open` = **1,1,2,1** — all three residuals; Standard; UI docs-only; type=feature | 2026-08-02 |
 | Routing | `D-S037-route` = **1** — approve Standard → 16-evolve Phase 1 | 2026-08-02 |
 | Fn allocation | `D-S037-fn` = **1,1,1** — F29 + deepen; start 01; commit open | 2026-08-02 |
+| Manifest + 01 close | `D-S037-E30-M` = **2,1** — lean + API/catalog #829; → 02-verify-plan | 2026-08-02 |
