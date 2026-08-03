@@ -13,7 +13,23 @@
 | metar-worker | Deployment (Background) | `apps/worker` image | No public HTTP; `DATABASE_URL` |
 
 **Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
-**Auth**: Supabase Auth only (JWT). No Supabase product DB on default path (ADR-033).
+**Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
+
+### Placeholder DOKS hostnames (`D-S038-04-b2` Q1=1)
+
+Until **T6.3** pins real DNS / Ingress, use these **non-live** placeholders in IaC drafts,
+CORS sketches, and cutover docs. Do **not** point `LIVE_*` or `config/prod.json` at them
+while Render remains primary (transitional).
+
+| Role | Placeholder URL |
+|------|-----------------|
+| API | `https://api.doks.placeholder.metar-iwxxm.local` |
+| Frontend | `https://app.doks.placeholder.metar-iwxxm.local` |
+| Worker | (no public URL — in-cluster only) |
+
+**Pin at M6:** replace placeholders + update `config/prod.json` `api.*` / `liveE2e.*`,
+`LIVE_API_URL` / `LIVE_FRONTEND_URL`, and CORS origins. Soak checklist:
+[ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md) (**7 days**).
 
 ### Transitional (Render — until TC-F30-005)
 
@@ -47,7 +63,7 @@ Blueprint (ADR-006) unless a later evolve adds them.
 |----------|----------|-------------|
 | `DATABASE_URL` | Yes | DigitalOcean Postgres — sessions + shared product DB |
 | `SUPABASE_URL` | Yes (Auth) | Supabase Auth project URL |
-| `SUPABASE_JWT_SECRET` (or JWKS) | Yes (Auth) | Server JWT verify — never FE |
+| `SUPABASE_JWKS_URL` | No (default from `SUPABASE_URL`) | JWKS-only server verify — never FE; **not** `SUPABASE_JWT_SECRET` |
 | `RATE_LIMIT_PUBLIC_PER_MIN` | No (default 60) | Public convert/validate rate limit |
 | `RATE_LIMIT_DISSEMINATION_PER_MIN` | No (default 10) | Dissemination preflight/send rate limit |
 | `MAX_REQUEST_BODY_BYTES` | No (default 2 MiB) | Request body cap |
@@ -111,7 +127,7 @@ Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env
 3. Rebuild **metar-frontend** with `/config.json` + publishable Auth key.
 4. Deploy **metar-worker** with `DATABASE_URL` + poller env.
 5. Run **H0–H5** (H4–H5 required) + H6 public + Auth session smoke + F8 store smoke.
-6. Soak; decommission Render (TC-F30-005).
+6. **7-day soak** per [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md); then decommission Render (TC-F30-005).
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 

@@ -47,8 +47,9 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | API / `.env` (ADR-029) |
 | F8 poller feed URL | `INGEST_POLLER_URL` | Worker / local `.env` |
 | F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker (default `30`) |
-| Live API URL | `LIVE_API_URL` | Local/CI live harness (DOKS after cutover) |
+| Live API URL | `LIVE_API_URL` | Local/CI live harness (DOKS after cutover; Render until then) |
 | Live frontend URL | `LIVE_FRONTEND_URL` | Local/CI live harness |
+| DOKS placeholders (docs/IaC only) | `https://api.doks.placeholder.metar-iwxxm.local` / `https://app.doks.placeholder.metar-iwxxm.local` | Not for `LIVE_*` until T6.3 pins DNS (`D-S038-04-b2`) |
 | E2E Auth fixture | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Live/local Auth session tests only |
 
 ### Retired / do not use for product data plane
