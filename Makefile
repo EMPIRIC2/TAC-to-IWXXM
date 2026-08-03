@@ -18,6 +18,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
+	db-migrate test-alembic \
 	test-sigmet-quality \
 	test-va-sigmet-quality \
 	test-tc-sigmet-quality \
@@ -189,6 +190,14 @@ test-unit-backend:
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
 		--cov-fail-under=98 -v
+
+# F30 / ADR-033 / TC-EV031-002 — Alembic against DATABASE_URL (idempotent upgrade head).
+db-migrate:
+	bash scripts/ci/alembic_upgrade.sh
+
+test-alembic:
+	$(UV) run pytest tests/unit/test_alembic_layout_tc_ev031_002.py \
+		tests/integration/test_alembic_upgrade_idempotent.py -v --no-cov
 
 test-unit-frontend:
 	$(PNPM) --filter @metar/frontend run test:coverage
