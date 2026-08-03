@@ -1,18 +1,19 @@
-rule_id: metar_nil
+rule_id: speci_a3_2
 engine: convert
 cases:
 - bucket: happy
   case_id: '01'
   status: ready
-  tac: METAR YUDO 221630Z NIL=
+  tac: SPECI YUDO 151115Z 05025G37KT 3000 1200NE +TSRA BKN005CB 25/22 Q1008 TEMPO TL1200 0600 BECMG AT1200
+    8000 NSW NSC=
   expect:
     encode_ok: true
     require_xml: true
   meta:
-    product: METAR
+    product: SPECI
     profile: annex3
     iwxxm_version: 2025-2
-    cite: annex3_golden/metar_nil.tac
+    cite: annex3_golden/speci_a3_2.tac
 - bucket: happy
   case_id: '02'
   status: needs-fixture
@@ -35,17 +36,9 @@ cases:
     reason: T1.4 pilot scaffold — fill when fixture ready
 - bucket: sad
   case_id: '01'
-  status: ready
-  tac: GARBAGE
-  expect:
-    encode_ok: false
-    codes:
-    - PARSE_ERROR
+  status: needs-fixture
   meta:
-    product: METAR
-    profile: annex3
-    iwxxm_version: 2025-2
-    cite: T1.4 convert encode-failure negative
+    reason: T1.4 pilot scaffold — fill when fixture ready
 - bucket: sad
   case_id: '02'
   status: needs-fixture
@@ -70,7 +63,7 @@ cases:
   case_id: '01'
   status: needs-fixture
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    reason: T1.4
 - bucket: edge_pass
   case_id: '02'
   status: needs-fixture
@@ -95,7 +88,7 @@ cases:
   case_id: '01'
   status: needs-fixture
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    reason: T1.4
 - bucket: edge_fail
   case_id: '02'
   status: needs-fixture

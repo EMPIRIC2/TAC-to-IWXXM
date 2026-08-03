@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M1 — F29 harness |
-| **Active task** | T1.4 — METAR/SPECI pilot — convert engine |
-| **Tasks** | 7 / 27 completed |
+| **Active task** | T1.5 — METAR/SPECI pilot — validate engine |
+| **Tasks** | 8 / 27 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -72,7 +72,7 @@
 | T1.1 | Test | Shared YAML/JSON loader + case schema tests under `tests/quality_matrices/` | TC-F29-002; E30-T8 | T0.4 | **completed** |
 | T1.2 | Code | Lint / convert / validate runners + `needs-fixture` skip/xfail policy | TC-F29-002; TC-EV030-002 | T1.1 | **completed** |
 | T1.3 | Test | METAR/SPECI pilot matrices (fill or explicit `needs-fixture`) — lint engine | TC-F29-003; S02.M1 | T1.2 | **completed** |
-| T1.4 | Test | METAR/SPECI pilot — convert engine | TC-F29-003 | T1.2 | pending |
+| T1.4 | Test | METAR/SPECI pilot — convert engine | TC-F29-003 | T1.2 | **completed** |
 | T1.5 | Test | METAR/SPECI pilot — validate engine | TC-F29-003 | T1.2 | pending |
 | T1.6 | Code | Inventory gate: in-scope pilot rules have 20 slots or tracked TODO | TC-F29-004; TC-EV030-003 | T1.3–T1.5 | pending |
 | T1.7 | Config | PR smoke subset + optional full-matrix marker/`make` target (E30-T7) | TC-F29-006 | T1.6 | pending |
