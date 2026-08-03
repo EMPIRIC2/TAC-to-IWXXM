@@ -17,12 +17,14 @@ spec:
         app.kubernetes.io/component: migrate
     spec:
       restartPolicy: Never
+      imagePullSecrets:
+        - name: ghcr-pull
       containers:
         - name: alembic-upgrade
           image: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
           imagePullPolicy: Always
           workingDir: /app/apps/backend
-          command: ["alembic", "-c", "alembic.ini", "upgrade", "head"]
+          command: ["python", "-m", "alembic", "-c", "alembic.ini", "upgrade", "head"]
           envFrom:
             - configMapRef:
                 name: metar-api-config

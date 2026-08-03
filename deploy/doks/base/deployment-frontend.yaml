@@ -16,6 +16,8 @@ spec:
         app.kubernetes.io/name: metar-frontend
         app.kubernetes.io/component: frontend
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull
       containers:
         - name: frontend
           image: ghcr.io/empiric2/tac-to-iwxxm/frontend:main-latest

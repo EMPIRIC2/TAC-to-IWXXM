@@ -16,6 +16,8 @@ spec:
         app.kubernetes.io/name: metar-worker
         app.kubernetes.io/component: worker
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull
       containers:
         - name: worker
           image: ghcr.io/empiric2/tac-to-iwxxm/worker:main-latest
