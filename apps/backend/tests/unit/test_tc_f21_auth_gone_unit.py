@@ -83,3 +83,38 @@ def test_convert_succeeds_without_authorization() -> None:
     assert response.status_code != 401
     assert response.status_code != 403
     assert response.status_code == 200, response.text
+
+
+@pytest.mark.unit
+def test_lint_and_validate_succeed_without_authorization() -> None:
+    """TC-EV031-003 deepen — lint-tac / validate stay JWT-free (F21 Amended)."""
+    from src import api as api_module
+
+    api_module.app.dependency_overrides.clear()
+    client = TestClient(api_module.app)
+    metar = "METAR KJFK 121851Z 09014KT 10SM FEW250 22/14 A3015="
+
+    lint = client.post(
+        "/api/v1/lint-tac",
+        files={
+            "manual_text": (None, metar),
+            "product": (None, "METAR"),
+        },
+    )
+    assert lint.status_code not in {401, 403}
+    assert lint.status_code == 200, lint.text
+
+    validate = client.post(
+        "/api/v1/validate",
+        files={
+            "iwxxm_xml": (
+                None,
+                (
+                    '<?xml version="1.0"?><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0" '
+                    'xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="x"/>'
+                ),
+            ),
+            "version": (None, "2025-2"),
+        },
+    )
+    assert validate.status_code not in {401, 403}

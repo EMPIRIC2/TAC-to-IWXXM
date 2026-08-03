@@ -1,7 +1,8 @@
 """H0i connectivity gate — in-process cross-package integration (test-plan.md §H0i).
 
-Verifies apps/backend wires packages/tac2iwxxm and CORS on one host without a
-separate auth microservice (F21 / ADR-031). No docker-compose required.
+Verifies apps/backend wires packages/tac2iwxxm and CORS on one host with
+merged Auth (F31 / ADR-033) and public convert (F21 Amended). No docker-compose
+required.
 """
 
 from __future__ import annotations
@@ -47,8 +48,8 @@ class TestH0iCorsPreflight:
         allow_methods = response.headers.get("access-control-allow-methods", "")
         assert "POST" in allow_methods.upper()
 
-    def test_options_auth_login_gone(self, h0i_client: TestClient) -> None:
-        """F21: /auth/login is not mounted — CORS may still answer OPTIONS with 200."""
+    def test_options_auth_login_present(self, h0i_client: TestClient) -> None:
+        """F31: /auth/login is mounted on the API host (no separate auth service)."""
         response = h0i_client.options(
             "/auth/login",
             headers={
@@ -56,13 +57,13 @@ class TestH0iCorsPreflight:
                 "Access-Control-Request-Method": "POST",
             },
         )
-        assert response.status_code in {200, 404, 405}
-        # Actual route must be gone (POST).
+        assert response.status_code in {200, 405}
         post = h0i_client.post(
             "/auth/login",
             json={"email": "h0i@example.test", "password": "x"},
         )
-        assert post.status_code == 404
+        # Mounted but may 503 without SUPABASE_URL / publishable key in unit env.
+        assert post.status_code != 404
 
     def test_options_work_sessions_gone(self, h0i_client: TestClient) -> None:
         """F21 / F7.h: work-sessions HTTP removed — OPTIONS may be CORS-only."""
@@ -108,12 +109,12 @@ class TestH0iPublicConversionWiring:
         assert payload["successful"] >= 1
         assert "<iwxxm" in payload["results"][0]["content"].lower()
 
-    def test_auth_login_route_gone(self, h0i_client: TestClient) -> None:
+    def test_auth_login_route_mounted(self, h0i_client: TestClient) -> None:
         response = h0i_client.post(
             "/auth/login",
             json={"email": "h0i@example.test", "password": "SecretPass1!"},
         )
-        assert response.status_code == 404
+        assert response.status_code != 404
 
 
 class TestH0iPublicEndpoints:
