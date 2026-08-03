@@ -5,6 +5,8 @@ from __future__ import annotations
 import pytest
 from scripts.ops.run_supabase_to_do_migrate import (
     COPY_COLUMNS,
+    JSONB_COLUMNS,
+    adapt_row_values,
     build_insert_sql,
     urls_are_same_database,
 )
@@ -44,3 +46,23 @@ def test_build_insert_sql_is_idempotent_on_conflict() -> None:
 def test_build_insert_sql_requires_id() -> None:
     with pytest.raises(ValueError, match="must include id"):
         build_insert_sql("tac_work_sessions", ("user_id", "product"))
+
+
+@pytest.mark.unit
+def test_adapt_row_values_wraps_jsonb_dict_and_list() -> None:
+    from psycopg.types.json import Jsonb
+
+    assert set(JSONB_COLUMNS) == set(COPY_COLUMNS)
+    adapted = adapt_row_values(
+        "tac_work_sessions",
+        {
+            "id": "x",
+            "pending_files": [],
+            "conversion_params": {"a": 1},
+            "title": "t",
+        },
+    )
+    assert isinstance(adapted["pending_files"], Jsonb)
+    assert isinstance(adapted["conversion_params"], Jsonb)
+    assert adapted["title"] == "t"
+    assert adapted["id"] == "x"

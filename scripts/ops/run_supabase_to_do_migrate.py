@@ -99,7 +99,50 @@ COPY_COLUMNS: Mapping[str, tuple[str, ...]] = {
     ),
 }
 
+# JSONB columns (psycopg3 cannot adapt bare dict/list — wrap with Jsonb).
+JSONB_COLUMNS: Mapping[str, frozenset[str]] = {
+    "tac_work_sessions": frozenset(
+        {
+            "pending_files",
+            "converted_results",
+            "errors",
+            "issues",
+            "conversion_params",
+        }
+    ),
+    "iwxxm_ingest_results": frozenset({"issues"}),
+    "iwxxm_ingest_quarantine": frozenset({"issues"}),
+}
+
 DEFAULT_BATCH_SIZE = 500
+
+
+def adapt_row_values(table: str, row: Mapping[str, Any]) -> dict[str, Any]:
+    """
+    Adapt a source row for INSERT on target (JSONB dict/list → Jsonb).
+
+    Parameters
+    ----------
+    table : str
+        Product table name.
+    row : Mapping[str, Any]
+        Column → value from source SELECT.
+
+    Returns
+    -------
+    dict[str, Any]
+        Bind parameters safe for psycopg3 + PostgreSQL JSONB.
+    """
+    from psycopg.types.json import Jsonb
+
+    jsonb_cols = JSONB_COLUMNS.get(table, frozenset())
+    out: dict[str, Any] = {}
+    for key, value in row.items():
+        if key in jsonb_cols and value is not None:
+            out[key] = Jsonb(value)
+        else:
+            out[key] = value
+    return out
 
 
 @dataclass(frozen=True)
@@ -291,7 +334,8 @@ def copy_table_rows(
     inserted = 0
     batch: list[dict[str, Any]] = []
     for row in result:
-        batch.append(dict(zip(columns, tuple(row), strict=True)))
+        raw = dict(zip(columns, tuple(row), strict=True))
+        batch.append(adapt_row_values(table, raw))
         if len(batch) >= batch_size:
             target.execute(insert_sql, batch)
             inserted += len(batch)
