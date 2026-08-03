@@ -143,7 +143,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Infra | DOKS manifests/Helm/Blueprint: API + FE static + worker; secrets (`DATABASE_URL`, Auth JWKS/url) | #712; F30 | T3.3, T4.5 | in_progress |
+| T6.1 | Infra | DOKS manifests/Helm/Blueprint: API + FE static + worker; secrets (`DATABASE_URL`, Auth JWKS/url) | #712; F30 | T3.3, T4.5 | completed |
 | T6.2 | Config | Release job: **idempotent** `alembic upgrade head` before/with API deploy | CI migration contract | T2.3, T6.1 | pending |
 | T6.3 | Ops | Pin real DNS / `LIVE_*` / `config/prod.json`; CORS for DOKS FE | `D-S038-04-b2` Q1 | T6.1 | pending |
 | T6.4 | Ops | Cutover smoke UJ-048 / TC-F30-004..005; start **7-day** soak | UJ-048; soak=7d | T6.2, T6.3 | pending |
