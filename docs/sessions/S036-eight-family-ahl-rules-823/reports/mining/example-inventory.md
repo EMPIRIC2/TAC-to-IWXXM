@@ -34,7 +34,7 @@ Peer tiers (ADR-032): `wmoPass` · `wmoReference` · `vendor-only` (not in FE ca
 | TAF | covered | covered (NIL-collect) | **gap** | `taf-A5-1/2.xml` | **M4** |
 | SIGMET gen | covered | covered (quarantine collect) | **gap** | `sigmet-A6-1a-TS.xml` | **M5** |
 | VA SIGMET | covered | **gap** | **gap** | `sigmet-VA-EGGX.xml` / multi-loc | **M6** |
-| TC SIGMET | covered (vendor) | **gap** | **gap** | `sigmet-A6-2-TC.xml` | **M7** (#738) |
+| TC SIGMET | covered (vendor) | **ok** (lint pack) | **ok** (`wmoReference`) | `sigmet-A6-2-TC.xml` | **#829 closed** (EV-030 M2); equality residual |
 | AIRMET | covered | **gap** | **gap** | `airmet-A6-1a-TS.xml` | **M8** |
 | VAA | covered | covered (vendor FVFE01) | **gap** (#820) | `va-advisory-A7-2.xml` | **M9** |
 | TCA | covered | **gap** | **gap** (#820) | `tc-advisory-A2-2.xml` | **M10** |
@@ -57,7 +57,7 @@ Paths under `vendor/schemas/iwxxm/2025-2/IWXXM/examples/` unless noted.
 | `taf-A5-2` | TAF | Standalone (AMD/CNL) | `taf_a5_2` **wmoPass** | yes | Cancel / CNL |
 | `sigmet-A6-1a-TS` | SIGMET gen | Standalone | `sigmet_a6_1a_ts` **wmoPass** | yes | Happy path |
 | `sigmet-A6-1b-CNL` | SIGMET gen | Standalone (CNL) | `sigmet_a6_1b_cnl` **wmoPass** | yes | CNL product path |
-| `sigmet-A6-2-TC` | TC SIGMET | Standalone | **gap** FIXTURE_GAPS | yes | **#738** · M7 · not catalog |
+| `sigmet-A6-2-TC` | TC SIGMET | Standalone | `sigmet_a6_2_tc` **wmoReference** | yes | **#829 closed** · equality/`wmoPass` residual |
 | `sigmet-VA-EGGX` | VA SIGMET | Standalone (`=` end) | `sigmet_va_eggx` **wmoReference** | yes | Soft / deepen M6 |
 | `sigmet-multi-location-VA` | VA SIGMET | Standalone (AND locs) | `sigmet_multi_location_va` **wmoPass** | yes | Multi-location ≠ multi-report |
 | `airmet-A6-1a-TS` | AIRMET | Standalone | `airmet_a6_1a_ts` **wmoPass** | yes | Happy path |
