@@ -277,17 +277,17 @@ def test_convert_zip_returns_application_zip(client: TestClient, monkeypatch: py
         assert zf.namelist(), "ZIP must contain at least one member"
 
 
-# --- Auth routes gone (F21) ---------------------------------------------------------
+# --- Auth routes restored (F31) — pydantic, not msgspec -----------------------------
 
 
-def test_auth_login_route_absent() -> None:
-    """F21 / ADR-031: /auth/login is not mounted (msgspec/pydantic auth path retired)."""
-    with pytest.raises(AssertionError, match="/auth/login"):
-        _route_for("/auth/login")
+def test_auth_login_route_present() -> None:
+    """F31 / ADR-033: /auth/login is mounted (pydantic Auth path)."""
+    route = _route_for("/auth/login")
+    assert route is not None
 
 
-def test_auth_login_http_404_without_msgspec(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
-    """POST /auth/login returns 404; msgspec helper must not be involved."""
+def test_auth_login_does_not_use_msgspec(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """POST /auth/login stays pydantic; msgspec helper must not encode the response."""
     from src import msgspec_http
 
     calls: list[Any] = []
@@ -305,8 +305,8 @@ def test_auth_login_http_404_without_msgspec(client: TestClient, monkeypatch: py
         "/auth/login",
         json={"email": "nobody@example.com", "password": "not-a-real-password"},
     )
-    assert response.status_code == 404
-    assert calls == [], f"404 auth path must not use msgspec_json_response, got {len(calls)} calls"
+    assert response.status_code != 404
+    assert calls == [], f"auth path must not use msgspec_json_response, got {len(calls)} calls"
 
 
 # --- Contract shape smoke (parity for FE) -------------------------------------------

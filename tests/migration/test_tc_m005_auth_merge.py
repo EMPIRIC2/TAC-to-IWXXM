@@ -1,7 +1,6 @@
-"""TC-M005 superseded by F21 — Auth merge → Auth gone (ADR-031 / TC-F21-auth-gone).
+"""TC-M005 amended by F31 — Auth restored on backend host (ADR-033); convert stays public.
 
-Historical TC-M005 verified auth on the backend host. Public app privacy removes
-operator Auth entirely; this module asserts the post-F21 topology.
+Historical F21 asserted Auth gone. EV-031 restores JWKS `/auth/*` without `/admin`.
 """
 
 from __future__ import annotations
@@ -49,7 +48,7 @@ def _load_backend_api_module() -> ModuleType:
 
 @pytest.fixture
 def backend_client() -> Iterator[TestClient]:
-    """TestClient for apps/backend (public convert; no Auth)."""
+    """TestClient for apps/backend (public convert + Auth routes)."""
     api_module = _load_backend_api_module()
     api_module.app.dependency_overrides.clear()
     client = TestClient(api_module.app)
@@ -58,26 +57,26 @@ def backend_client() -> Iterator[TestClient]:
 
 
 @pytest.mark.migration
-class TestTcM005AuthGoneStructure:
-    """Structural checks for public API topology after Auth delete."""
+class TestTcM005AuthRestoredStructure:
+    """Structural checks for Auth-on-API topology after EV-031 restore."""
 
     def test_security_module_does_not_use_auth_service_url(self) -> None:
         security_py = APPS_BACKEND / "src" / "utilities" / "security.py"
         content = security_py.read_text(encoding="utf-8")
         assert "AUTH_SERVICE_URL" not in content
 
-    def test_backend_does_not_mount_auth_routes(self) -> None:
+    def test_backend_mounts_auth_login_and_me(self) -> None:
         api_module = _load_backend_api_module()
         paths = set(_iter_route_paths(api_module.app.routes))
-        assert "/auth/login" not in paths
-        assert "/auth/verify" not in paths
-        assert not any(p.startswith("/auth/") for p in paths)
+        assert "/auth/login" in paths
+        assert "/auth/me" in paths
+        assert not any("/admin" in p for p in paths)
 
-    def test_packages_auth_absent(self) -> None:
-        assert not (ROOT / "packages" / "auth").exists()
+    def test_packages_auth_present(self) -> None:
+        assert (ROOT / "packages" / "auth").is_dir()
 
-    def test_compose_has_two_app_services_without_auth(self) -> None:
-        """Compose is backend + frontend only (ADR-002 / F21)."""
+    def test_compose_has_two_app_services_without_auth_deployable(self) -> None:
+        """Compose is backend + frontend only (ADR-002); Auth is a library."""
         compose = (ROOT / "docker-compose.yml").read_text(encoding="utf-8")
         assert "backend:" in compose
         assert "frontend:" in compose
@@ -87,14 +86,15 @@ class TestTcM005AuthGoneStructure:
 
 @pytest.mark.migration
 class TestTcM005PublicConvertIntegration:
-    """In-process: Auth gone + public convert without JWT."""
+    """In-process: Auth routes exist; convert still works without JWT."""
 
-    def test_auth_login_returns_404(self, backend_client: TestClient) -> None:
+    def test_auth_login_not_404(self, backend_client: TestClient) -> None:
         response = backend_client.post(
             "/auth/login",
             json={"email": "merge@example.test", "password": "SecretPass1!"},
         )
-        assert response.status_code == 404
+        # Missing Auth env → 401/503 from proxy, never route-missing 404.
+        assert response.status_code != 404
 
     def test_convert_succeeds_without_authorization(
         self, backend_client: TestClient
