@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M1 — F29 harness |
-| **Active task** | T1.8 — Authoring guide: add case when adding/changing a rule |
-| **Tasks** | 11 / 27 completed |
+| **Active task** | T1.8 COMPLETE — next M2 @ T2.1 (after 08 / minor PR) |
+| **Tasks** | 12 / 27 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -76,7 +76,7 @@
 | T1.5 | Test | METAR/SPECI pilot — validate engine | TC-F29-003 | T1.2 | **completed** |
 | T1.6 | Code | Inventory gate: in-scope pilot rules have 20 slots or tracked TODO | TC-F29-004; TC-EV030-003 | T1.3–T1.5 | **completed** |
 | T1.7 | Config | PR smoke subset + optional full-matrix marker/`make` target (E30-T7) | TC-F29-006 | T1.6 | **completed** |
-| T1.8 | Docs | Authoring guide: add case when adding/changing a rule | TC-F29-007 | T1.7 | pending |
+| T1.8 | Docs | Authoring guide: add case when adding/changing a rule | TC-F29-007 | T1.7 | **completed** |
 
 ### M2 — #829 TC SIGMET deepen + catalog unlock
 
