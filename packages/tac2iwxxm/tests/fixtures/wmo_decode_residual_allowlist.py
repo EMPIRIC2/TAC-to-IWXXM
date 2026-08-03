@@ -21,19 +21,9 @@ class ExpectedResidual:
 
 
 # Doc-intentional G4 peers — fuller advisory decode tracked separately.
+# EV-030 T3.2–T3.3: official ``vaa_a7_2`` / ``tca_a2_2`` reach residuals == []
+# under structured field (+ AHL) decode; allow_any entries removed.
 EXPECTED_RESIDUALS: tuple[ExpectedResidual, ...] = (
-    ExpectedResidual(
-        catalog_id="vaa_a7_2",
-        doc_intent="F9 G4 / ADR-025 sparse best-effort",
-        issue="#820",
-        allow_any=True,
-    ),
-    ExpectedResidual(
-        catalog_id="tca_a2_2",
-        doc_intent="F9 G4 / ADR-025 sparse best-effort",
-        issue="#820",
-        allow_any=True,
-    ),
     ExpectedResidual(
         catalog_id="swxa_a7_3",
         doc_intent="F9 G4 / ADR-025 sparse best-effort (F28 SWXA unlock)",

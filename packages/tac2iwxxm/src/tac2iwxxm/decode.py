@@ -548,6 +548,33 @@ def _advisory_field_title(label: str, title_template: str, match: re.Match[str])
     return title_template
 
 
+_AHL_LINE = re.compile(
+    r"^(?P<ahl>[A-Z]{4}\d{2})\s+(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})\b",
+    re.MULTILINE,
+)
+
+
+def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
+    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on VAA/TCA peers."""
+    if product not in {"VAA", "TCA"}:
+        return []
+    m = _AHL_LINE.match(tac.lstrip("\ufeff"))
+    if m is None:
+        # Allow optional leading blank lines before AHL.
+        stripped = tac.lstrip()
+        offset = len(tac) - len(stripped)
+        m = _AHL_LINE.match(stripped)
+        if m is None:
+            return []
+        start = offset + m.start()
+        end = offset + m.end()
+    else:
+        start, end = m.start(), m.end()
+    code = tac[start:end]
+    explanation = f"WMO abbreviated heading — {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
+    return [(start, end, code, explanation)]
+
+
 def _iter_advisory_fields(
     tac: str,
     *,
@@ -772,7 +799,8 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     # VAA/TCA: structured LABEL: value fields first (EV-030 / #820 / TC-EV030-006).
     if product_u in {"VAA", "TCA"}:
         field_spans: list[tuple[int, int]] = []
-        for start, end, code, explanation in _iter_advisory_fields(tac, product=product_u):
+        advisory_parts = _iter_advisory_ahl(tac, product=product_u) + _iter_advisory_fields(tac, product=product_u)
+        for start, end, code, explanation in advisory_parts:
             segments.append(DecodeSegment(start=start, end=end, code=code, explanation=explanation))
             field_spans.append((start, end))
         explained |= _token_indices_covering(tokens, field_spans)

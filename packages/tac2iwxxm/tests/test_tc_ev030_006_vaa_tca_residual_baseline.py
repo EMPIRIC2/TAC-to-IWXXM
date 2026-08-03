@@ -14,9 +14,9 @@ from tac2iwxxm.decode import decode_tac
 
 ANNEX3 = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 
-# Post–T3.2 counts (structured LABEL: fields). VAA keeps AHL bulletin residual.
+# Post–T3.3 counts — structured fields + VAA AHL; both official peers empty.
 _BASELINE: tuple[tuple[str, str, int], ...] = (
-    ("vaa_a7_2", "VAA", 1),
+    ("vaa_a7_2", "VAA", 0),
     ("tca_a2_2", "TCA", 0),
 )
 

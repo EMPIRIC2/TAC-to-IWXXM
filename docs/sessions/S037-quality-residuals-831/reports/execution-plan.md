@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M3 — #820 VAA/TCA decode |
-| **Active task** | T3.2 COMPLETE — next T3.3 (allowlist / child residual) |
-| **Tasks** | 20 / 27 completed (M0+M1+M2+T3.1–T3.2) |
+| **Active task** | T3.3 COMPLETE — next T3.4 (#820 closeout) |
+| **Tasks** | 21 / 27 completed (M0+M1+M2+T3.1–T3.3) |
 | **Tasks** | 20 / 27 completed (M0+M1+M2+T3.1–T3.2) |
 | **Last updated** | 2026-08-03 |
 
@@ -96,7 +96,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T3.1 | Test | Baseline residual matrix / allowlist for `vaa_a7_2` / `tca_a2_2` | TC-EV030-006; #820 | T2.6 | **completed** |
 | T3.2 | Code | Structured decode for major VAA/TCA field labels + forecast hours | F9/F26/F27; #820 | T3.1 | **completed** |
-| T3.3 | Test | Shrink residuals toward `[]` or update allowlist + **child residual** (S02.M3) | TC-EV030-006; S02.M3 | T3.2 | pending |
+| T3.3 | Test | Shrink residuals toward `[]` or update allowlist + **child residual** (S02.M3) | TC-EV030-006; S02.M3 | T3.2 | **completed** |
 | T3.4 | Docs | #820 closeout or child-issue link | #820 | T3.3 | pending |
 
 ### M4 — Smoke / verify / deploy

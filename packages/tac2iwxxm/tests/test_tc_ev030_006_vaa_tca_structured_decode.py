@@ -75,3 +75,18 @@ def test_tc_ev030_006_forecast_hour_explanations_name_horizon() -> None:
     fcst = [s for s in result.segments if "+6 hr" in s.code.lower() or "+6 hr" in s.explanation.lower()]
     assert fcst, "expected +6 HR forecast segments"
     assert any("6" in s.explanation and "hour" in s.explanation.lower() for s in fcst)
+
+
+def test_tc_ev030_006_vaa_ahl_decoded_when_present() -> None:
+    tac = (ANNEX3 / "vaa_a7_2.tac").read_text(encoding="utf-8")
+    result = decode_tac(tac, product="VAA")
+    assert result.residuals == []
+    assert any("abbreviated heading" in s.explanation.lower() for s in result.segments)
+    assert any(s.code.startswith("FVFE01") for s in result.segments)
+
+
+def test_tc_ev030_006_official_peers_empty_residuals() -> None:
+    for stem, product in (("vaa_a7_2", "VAA"), ("tca_a2_2", "TCA")):
+        tac = (ANNEX3 / f"{stem}.tac").read_text(encoding="utf-8")
+        result = decode_tac(tac, product=product)
+        assert result.residuals == [], f"{stem}: {result.residuals!r}"
