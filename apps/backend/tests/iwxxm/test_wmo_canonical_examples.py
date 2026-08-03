@@ -146,12 +146,14 @@ EV024_IN_SCOPE_STEMS = (
     "tc-advisory-A2-2",
 )
 
-# Convert soft-compare done for multi-location VA (TC-EV025-008); ADR-032 M-golden
-# equality / wmoPass still pending (TC-EV025-009 / #809). Validate XML still required.
+# Convert soft-compare / equality residuals (catalog may still unlock as wmoReference).
+# multi-location-VA: ADR-032 equality green → catalog wmoPass (TC-EV025-009); kept for
+# validate-inventory coverage until set is pruned.
+# A6-2-TC: quality path green / catalog wmoReference (TC-EV030-005); equality pending.
 EV024_CONVERT_DEFERRED_STEMS = frozenset(
     {
-        "sigmet-multi-location-VA",  # soft-compare green; equality/wmoPass pending
-        "sigmet-A6-2-TC",  # #738 quality bar
+        "sigmet-multi-location-VA",  # equality green; prune candidate
+        "sigmet-A6-2-TC",  # wmoReference unlock; ADR-032 equality residual
     }
 )
 

@@ -145,17 +145,23 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
     expect(getTacExamplesForProduct('AIRMET').some((ex) => ex.wmoPass)).toBe(true);
   });
 
-  it('lists VA SIGMET official stems (EGGX reference; multi-location passer)', () => {
+  it('lists VA/TC SIGMET official stems (EGGX + A6-2-TC reference; multi-location passer)', () => {
     const eggx = getExampleById('sigmet_va_eggx');
     expect(eggx?.wmoReference).toBe(true);
     expect(eggx?.wmoPass).not.toBe(true);
     expect(eggx?.wmoSeed).toBe('sigmet-VA-EGGX');
+    const tc = getExampleById('sigmet_a6_2_tc');
+    expect(tc?.wmoReference).toBe(true);
+    expect(tc?.wmoPass).not.toBe(true);
+    expect(tc?.wmoSeed).toBe('sigmet-A6-2-TC');
+    expect(tc?.label.toLowerCase()).toMatch(/reference/);
+    expect(tc?.body).toMatch(/TC GLORIA/);
     const multi = getExampleById('sigmet_multi_location_va');
     expect(multi?.wmoPass).toBe(true);
     expect(multi?.wmoReference).not.toBe(true);
     expect(multi?.wmoSeed).toBe('sigmet-multi-location-VA');
     expect(multi?.label.toLowerCase()).toMatch(/passer/);
-    expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(4);
+    expect(getTacExamplesForProduct('SIGMET').length).toBeGreaterThanOrEqual(5);
   });
 
   it('registers every EV-027 inventory happy-path official seed (TC-EV027-002)', () => {
@@ -168,6 +174,7 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
       { id: 'sigmet_a6_1a_ts', seed: 'sigmet-A6-1a-TS' },
       { id: 'sigmet_a6_1b_cnl', seed: 'sigmet-A6-1b-CNL' },
       { id: 'sigmet_va_eggx', seed: 'sigmet-VA-EGGX' },
+      { id: 'sigmet_a6_2_tc', seed: 'sigmet-A6-2-TC' },
       { id: 'sigmet_multi_location_va', seed: 'sigmet-multi-location-VA' },
       { id: 'airmet_a6_1a_ts', seed: 'airmet-A6-1a-TS' },
       { id: 'vaa_a7_2', seed: 'va-advisory-A7-2' },

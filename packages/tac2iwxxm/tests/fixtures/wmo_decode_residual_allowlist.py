@@ -40,6 +40,26 @@ EXPECTED_RESIDUALS: tuple[ExpectedResidual, ...] = (
         issue="#740",
         allow_any=True,
     ),
+    # TC SIGMET A6-2-TC unlocked as wmoReference (TC-EV030-005); decode still leaves
+    # cyclone name / radius / CENTRE tokens until F9 TC deepen.
+    ExpectedResidual(
+        catalog_id="sigmet_a6_2_tc",
+        doc_intent="F9 G4 / TC SIGMET decode deepen (EV-030 catalog unlock)",
+        issue="#829",
+        residual_text="GLORIA",
+    ),
+    ExpectedResidual(
+        catalog_id="sigmet_a6_2_tc",
+        doc_intent="F9 G4 / TC SIGMET decode deepen (EV-030 catalog unlock)",
+        issue="#829",
+        residual_text="250NM",
+    ),
+    ExpectedResidual(
+        catalog_id="sigmet_a6_2_tc",
+        doc_intent="F9 G4 / TC SIGMET decode deepen (EV-030 catalog unlock)",
+        issue="#829",
+        residual_text="CENTRE",
+    ),
 )
 
 

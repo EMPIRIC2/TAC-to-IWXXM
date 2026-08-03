@@ -104,9 +104,10 @@ OFFICIAL_TAC_PEERS: tuple[OfficialTacPeer, ...] = (
     ),
     OfficialTacPeer(
         "sigmet-A6-2-TC",
-        "deferred",
-        deferral_reason="TC SIGMET A6-2 out of F6 sample-menu happy-path",
-        issue="#738",
+        "registered",
+        catalog_id="sigmet_a6_2_tc",
+        annex3_tac="sigmet_a6_2_tc.tac",
+        product="SIGMET",
     ),
     OfficialTacPeer(
         "airmet-A6-1a-TS",

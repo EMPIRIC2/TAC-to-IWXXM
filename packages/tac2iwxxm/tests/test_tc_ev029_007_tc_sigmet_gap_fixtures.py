@@ -1,7 +1,8 @@
 """TC-EV029-004 / F23 deepen T7.1: TC SIGMET gap fixtures (lint + convert + validate).
 
-M0 inventory: vendor ``sigmet-A6-2-TC`` is covered as XML peer but convert/catalog
-are gap (example-inventory §A TC SIGMET row; remine §B.6; WC→LY + BBB→reportStatus).
+Vendor ``sigmet-A6-2-TC`` quality path is green; FE catalog unlock is ``wmoReference``
+(TC-EV030-005 / EV-030 T2.4). ADR-032 equality remains a residual (coord/FIR/intensity).
+BBB→``reportStatus`` and WC→LY AHL mapping covered below.
 Root must be ``iwxxm:TropicalCycloneSIGMET`` — not general ``SIGMET``, not TCA
 ``TropicalCycloneAdvisory``, not ``VolcanicAshSIGMET`` (#738).
 
