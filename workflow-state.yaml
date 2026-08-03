@@ -44,15 +44,15 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip 2c42f53; #828; #823"
+    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
     current_milestone: M12
     active_milestone: M12
     current_task: T12.7
     active_task: T12.7
     active_task_status: completed
   started_at: '2026-08-01'
-  tip_sha: 2c42f53
-  tip_sha_full: 2c42f532355b7789f1feb1d60771cf203055d5fb
+  tip_sha: e53e9a2
+  tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
   progress: 48/48
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
@@ -192,17 +192,17 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip 2c42f53; #828; #823"
+    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
     current_milestone: M12
     active_milestone: M12
     current_task: T12.7
     active_task: T12.7
     active_task_status: completed
   started_at: '2026-08-01'
-  tip_sha: 2c42f53
-  tip_sha_full: 2c42f532355b7789f1feb1d60771cf203055d5fb
+  tip_sha: e53e9a2
+  tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
   progress: 48/48
-  note: 'S036/EV-029 — T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip 2c42f53; #828; #823'
+  note: 'S036/EV-029 — T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
@@ -292,7 +292,7 @@ sessions:
     status: completed
     started: '2026-08-01'
     completed: '2026-08-02'
-    note: '07-build COMPLETE — T12.7 closeout; D-S036-13=1; #823/#740 closed; progress 48/48; tip 2c42f53; #828'
+    note: '07-build COMPLETE — T12.7 closeout; D-S036-13=1; #823/#740 closed; progress 48/48; tip e53e9a2; #828'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -340,7 +340,7 @@ sessions:
     status: completed
     started: '2026-08-02'
     completed: '2026-08-02'
-    note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip 2c42f53; #828; #823'
+    note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip e53e9a2; #828; #823'
     overall: pass
     report: docs/sessions/S036-eight-family-ahl-rules-823/reports/deploy-smoke.md
     decision_ids:
@@ -5659,9 +5659,9 @@ stages:
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
     mode: full
-    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip 2c42f53; #828; #823"
-    tip_sha: 2c42f53
-    tip_sha_full: 2c42f532355b7789f1feb1d60771cf203055d5fb
+    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
+    tip_sha: e53e9a2
+    tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
     progress: 48/48
     current_milestone: M12
     current_task: T12.6
@@ -5707,9 +5707,9 @@ stages:
       mode: full
       started_at: '2026-08-01'
       started: '2026-08-01'
-      note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip 2c42f53; #828; #823"
-      tip_sha: 2c42f53
-      tip_sha_full: 2c42f532355b7789f1feb1d60771cf203055d5fb
+      note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
+      tip_sha: e53e9a2
+      tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
       progress: 48/48
       active_milestone: M12
       current_milestone: M12
@@ -5776,9 +5776,9 @@ stages:
       started_at: '2026-08-01'
       started: '2026-08-01'
       mode: full
-      note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip 2c42f53; #828; #823"
-      tip_sha: 2c42f53
-      tip_sha_full: 2c42f532355b7789f1feb1d60771cf203055d5fb
+      note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
+      tip_sha: e53e9a2
+      tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
       progress: 48/48
       active_milestone: M12
       current_milestone: M12
@@ -6224,7 +6224,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
-    - '2026-08-02 S036/EV-029 — T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; F28 Done; evolve-report-EV-029; progress 48/48; tip 2c42f53; #828'
+    - '2026-08-02 S036/EV-029 — T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; F28 Done; evolve-report-EV-029; progress 48/48; tip e53e9a2; #828'
     - '2026-08-02 S036/EV-029 — T12.6 smoke PASS (technical) — PR #828 merged 4e6577a; main tip 7e276a7; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA catalog/convert PASS; awaiting user approve D-S036-13; progress 46/48; #828; #823'
     - '2026-08-02 S036/EV-029 — T12.4 COMPLETE @ 0e34866; tip ahead pending push or just pushed; next T12.5 pending (11-verify-impl + 12-verify-deploy); progress 45/48; #828; #823'
     - '2026-08-02 S036/EV-029 — T12.3 COMPLETE @ 620fa9b; T12.4 STARTED — 09-qa delta + 10-e2e smoke UJ-043; progress 44/48; tip 620fa9b; #828; #823'
@@ -7883,7 +7883,7 @@ stages:
     previous_note: 'S035/EV-028 13-deploy-smoke COMPLETE PASS — PyPI OIDC + install smoke; tip 70312dd; #781 closed'
     session_id: S036-eight-family-ahl-rules-823
     evolve_cycle_id: EV-029
-    note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip 2c42f53; #828; #823'
+    note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip e53e9a2; #828; #823'
     tip_sha: 7e276a7
     tip_sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
     active_milestone: M12
@@ -7905,7 +7905,7 @@ stages:
       branch: evolve/EV-029-eight-family-ahl-rules
       tip_sha: 7e276a7
       tip_sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
-      note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip 2c42f53; #828; #823'
+      note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip e53e9a2; #828; #823'
       active_milestone: M12
       active_task: T12.6
       active_task_status: in_progress
@@ -26455,14 +26455,14 @@ evolve_cycles:
       mode: full
       started: '2026-08-01'
       completed: '2026-08-02'
-      note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip 2c42f53; #828; #823"
+      note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
       current_milestone: M12
       active_milestone: M12
       current_task: T12.7
       active_task: T12.7
       active_task_status: completed
-      tip_sha: 2c42f53
-      tip_sha_full: 2c42f532355b7789f1feb1d60771cf203055d5fb
+      tip_sha: e53e9a2
+      tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
       progress: 48/48
     08-verify-build:
       status: completed
@@ -26531,7 +26531,7 @@ evolve_cycles:
       mode: delta
       started: '2026-08-02'
       completed: '2026-08-02'
-      note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip 2c42f53; #828; #823'
+      note: 'COMPLETE — D-S036-13=1; PR #828 merged 4e6577a; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA PASS; report deploy-smoke.md; progress 48/48; tip e53e9a2; #828; #823'
       overall: pass
       report: docs/sessions/S036-eight-family-ahl-rules-823/reports/deploy-smoke.md
       decision_ids:
@@ -26539,8 +26539,8 @@ evolve_cycles:
       active_milestone: M12
       active_task: T12.7
       active_task_status: completed
-      tip_sha: 2c42f53
-      tip_sha_full: 2c42f532355b7789f1feb1d60771cf203055d5fb
+      tip_sha: e53e9a2
+      tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
       progress: 48/48
       api_deploy: dep-d9ntlclbedkc73fvcuvg
       fe_deploy: dep-d9ntlde1egvs738ph9h0
