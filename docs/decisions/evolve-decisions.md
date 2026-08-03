@@ -32,6 +32,10 @@
 | E30-T2 | decision | #831 case storage? | **1** — YAML/JSON under testdata + pytest load |
 | E30-T3 | decision | Rule inventory SoT? | **1** — unified index → matrix slots |
 | E30-T4 | decision | #829 catalog unlock? | **1** — unlock when quality path green (ADR-032) |
+| E30-T5 | decision | New deps? | **2** — PyYAML OK if needed → **reuse** `tac2iwxxm` pyyaml; no new dep (`D-S037-04-batch-2`) |
+| E30-T6 | decision | Deploy / connectivity? | **1** — API redeploy; H1–H3; H4–H5 for FE catalog unlock |
+| E30-T7 | decision | F29 CI? | **1** — PR smoke subset + optional full-matrix marker/job |
+| E30-T8 | decision | Harness doc + home? | **1** — session design note + `tests/quality_matrices/` |
 
 **Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
 matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET

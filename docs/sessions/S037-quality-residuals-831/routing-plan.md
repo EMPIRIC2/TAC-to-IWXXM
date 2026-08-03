@@ -13,7 +13,7 @@
 | 01-requirements | yes | delta | **completed** | Manifest=2 (API/#829 catalog); close → 02 (`D-S037-E30-M`) |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S037-02-phase-a`); Batch F `1,1,1,1` |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
-| 04-tech-plan | yes | delta | **in_progress** | Execution plan; #831 harness spike |
+| 04-tech-plan | yes | delta | **in_progress** | Batches 1–2 locked; execution-plan draft (27 tasks); Gate B pending |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
 | 07-build | yes | full | pending | Matrix harness → TC deepen → VAA/TCA decode |
