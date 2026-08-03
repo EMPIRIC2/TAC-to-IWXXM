@@ -65,8 +65,8 @@ class TestH0iCorsPreflight:
         # Mounted but may 503 without SUPABASE_URL / publishable key in unit env.
         assert post.status_code != 404
 
-    def test_options_work_sessions_gone(self, h0i_client: TestClient) -> None:
-        """F21 / F7.h: work-sessions HTTP removed — OPTIONS may be CORS-only."""
+    def test_options_work_sessions_jwt_gated(self, h0i_client: TestClient) -> None:
+        """F31: work-sessions mounted; unauthenticated GET is 401/403 (not public 200)."""
         for method in ("PATCH", "DELETE"):
             response = h0i_client.options(
                 "/api/v1/work-sessions",
@@ -76,7 +76,7 @@ class TestH0iCorsPreflight:
                 },
             )
             assert response.status_code in {200, 404, 405}
-        assert h0i_client.get("/api/v1/work-sessions").status_code == 404
+        assert h0i_client.get("/api/v1/work-sessions").status_code in {401, 403}
 
     @pytest.mark.parametrize(
         "path",

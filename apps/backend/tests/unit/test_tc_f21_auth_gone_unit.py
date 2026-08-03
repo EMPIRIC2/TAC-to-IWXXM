@@ -1,4 +1,4 @@
-"""TC-F21 amended by F31 — Auth restored; convert stays public; sessions still pending M2."""
+"""TC-F21 amended by F31 — Auth restored; convert stays public; sessions JWT-gated."""
 
 from __future__ import annotations
 
@@ -33,12 +33,12 @@ def test_auth_routes_present_without_admin() -> None:
 
 
 @pytest.mark.unit
-def test_work_sessions_routes_absent_from_app() -> None:
-    """Work-sessions restore is M2 — still absent after T1.2 Auth mount."""
+def test_work_sessions_routes_present() -> None:
+    """F31 / M2 — work-sessions mounted under /api/v1 (JWT-gated)."""
     from src.api import app
 
     paths = set(_iter_route_paths(app.routes))
-    assert not any("/work-sessions" in p for p in paths)
+    assert any("/work-sessions" in p for p in paths)
 
 
 @pytest.mark.unit
@@ -54,12 +54,13 @@ def test_auth_login_not_route_missing() -> None:
 
 
 @pytest.mark.unit
-def test_work_sessions_list_http_404() -> None:
+def test_work_sessions_list_requires_jwt() -> None:
+    """TC-F31-003 — session list is 401/403 without Bearer (not a silent public 200)."""
     from src.api import app
 
     client = TestClient(app)
     response = client.get("/api/v1/work-sessions")
-    assert response.status_code == 404
+    assert response.status_code in (401, 403)
 
 
 @pytest.mark.unit
