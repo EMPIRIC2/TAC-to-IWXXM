@@ -70,7 +70,7 @@ active_session:
     status: in_progress
     started: '2026-08-03'
     skip_rationale: null
-    note: 'IN PROGRESS — T3.1 COMPLETE @ 00bb58f (VAA/TCA residual baseline #820); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 CI run 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task T3.2 pending @ M3; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
+    note: 'IN PROGRESS — T3.2 in_progress @ M3 (structured VAA/TCA decode #820); D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; T3.1 COMPLETE @ 00bb58f; tip may include 0c46df2 FIXTURE_GAPS; M2 CI 30818578657 SUCCESS; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -116,6 +116,7 @@ active_session:
   - D-S037-08-m2-pass
   - D-S037-semver-none
   - D-S037-T2.3-oos
+  - D-S037-ui-preview
   artifacts:
   - path: docs/sessions/S037-quality-residuals-831/session-brief.md
     status: approved
@@ -131,7 +132,7 @@ active_session:
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     status: approved
-    note: 'T3.1 COMPLETE @ 00bb58f; next T3.2 pending @ M3; progress 19/27; tip 00bb58f; 0c46df2 FIXTURE_GAPS after M2; M2 CI 30818578657 SUCCESS; dirty pending chore sync'
+    note: 'T3.2 in_progress @ M3; D-S037-ui-preview=2 UI preview declined; H4–H5 still required at M4/13; progress 19/27; tip 00bb58f; dirty pending chore sync'
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
@@ -156,7 +157,7 @@ active_session:
     status: touched
   preset: Standard
   preset_status: approved
-  note: 'S037/EV-030 — T3.1 COMPLETE @ 00bb58f; active_task T3.2 pending @ M3; progress 19/27; tip 00bb58f (+0c46df2 FIXTURE_GAPS); M2 CI 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written; AskQuestion tool unavailable); dirty pending chore sync; PR #832 open; #831→#820'
+  note: 'S037/EV-030 — T3.2 in_progress @ M3; D-S037-ui-preview=2 UI preview declined (written; AskQuestion unavailable); H4–H5 still required at M4/13; progress 19/27; tip 00bb58f (+0c46df2 FIXTURE_GAPS); M2 CI 30818578657 SUCCESS; dirty pending chore sync; PR #832 open; #831→#820'
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -5840,7 +5841,7 @@ stages:
     session_id: S037-quality-residuals-831
     evolve_cycle_id: EV-030
     mode: full
-    note: 'IN PROGRESS — T3.1 COMPLETE @ 00bb58f (VAA/TCA residual baseline #820); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 CI run 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task T3.2 pending @ M3; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
+    note: 'IN PROGRESS — T3.2 in_progress @ M3 (structured VAA/TCA decode #820); D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; T3.1 COMPLETE @ 00bb58f; tip may include 0c46df2 FIXTURE_GAPS; M2 CI 30818578657 SUCCESS; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
     tip_sha: 00bb58f
     tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
     progress: 19/27
@@ -5848,7 +5849,7 @@ stages:
     current_task: T3.2
     active_milestone: M3
     active_task: T3.2
-    active_task_status: pending
+    active_task_status: in_progress
     pr_m1_number: 832
     pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
     pr_m1_status: open
@@ -5859,7 +5860,7 @@ stages:
     ci_run: '30818578657'
     ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657
     ci_status: success
-    ci_note: 'M2 push CI SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable)'
+    ci_note: 'M2 push CI SUCCESS; D-S037-ui-preview=2 UI preview declined; H4–H5 still required at M4/13'
     decision_refs:
     - D-S037-04-plan
     - D-S037-04-batch-2
@@ -5871,6 +5872,7 @@ stages:
     - D-S037-08-m2-pass
     - D-S037-semver-none
     - D-S037-T2.3-oos
+    - D-S037-ui-preview
     artifacts:
     - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
@@ -5913,7 +5915,7 @@ stages:
       mode: full
       started_at: '2026-08-03'
       started: '2026-08-03'
-      note: 'IN PROGRESS — T3.1 COMPLETE @ 00bb58f (VAA/TCA residual baseline #820); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 CI run 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task T3.2 pending @ M3; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
+      note: 'IN PROGRESS — T3.2 in_progress @ M3 (structured VAA/TCA decode #820); D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; T3.1 COMPLETE @ 00bb58f; tip may include 0c46df2 FIXTURE_GAPS; M2 CI 30818578657 SUCCESS; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
       tip_sha: 00bb58f
       tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
       progress: 19/27
@@ -5921,7 +5923,7 @@ stages:
       current_milestone: M3
       active_task: T3.2
       current_task: T3.2
-      active_task_status: pending
+      active_task_status: in_progress
       pr_m1_number: 832
       pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
       pr_m1_status: open
@@ -5949,6 +5951,7 @@ stages:
       - D-S037-08-m2-pass
       - D-S037-semver-none
       - D-S037-T2.3-oos
+      - D-S037-ui-preview
       artifacts:
       - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
       - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
@@ -5966,11 +5969,11 @@ stages:
       task_loop:
         status: in_progress
         current_task: T3.2
-        active_task_status: pending
+        active_task_status: in_progress
         active_milestone: M3
         phase: C
         milestone: M3
-        notes: 'IN PROGRESS — T3.1 COMPLETE @ 00bb58f (VAA/TCA residual baseline #820); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 CI run 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task T3.2 pending @ M3; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
+        notes: 'IN PROGRESS — T3.2 in_progress @ M3 (structured VAA/TCA decode #820); D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; T3.1 COMPLETE @ 00bb58f; tip may include 0c46df2 FIXTURE_GAPS; M2 CI 30818578657 SUCCESS; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -6459,7 +6462,8 @@ stages:
     - '2026-08-02 S036/EV-029 07-build — M2 T2.1 STARTED (METAR gap fixtures); tip c4b2b5d; #823'
     - '2026-08-02 S036/EV-029 M1 PR #827 MERGED to main @ c338108 (2026-08-02T14:18:36Z); M2 @ T2.1 pending; branch evolve/EV-029-eight-family-ahl-rules remains active for M2+; #823'
     - '2026-08-02 S036/EV-029 07-build — M0 COMPLETE (T0.1–T0.6 PASS); advance M1 @ T1.1 pending; tip c181ede; #823'
-    - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; active_task T3.2 → in_progress @ M3; progress 19/27; tip 00bb58f; dirty pending chore sync; #831→#820'
+  - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
     - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
     - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
@@ -7921,7 +7925,8 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
-    - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; active_task T3.2 → in_progress @ M3; progress 19/27; tip 00bb58f; dirty pending chore sync; #831→#820'
+  - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
     - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
     - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
     - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
@@ -8692,11 +8697,12 @@ stages:
     prior_evolve_cycle_id: EV-028
     prior_completed: '2026-08-01'
     prior_note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
-    note: 'S037/EV-030 16-evolve — T3.1 COMPLETE @ 00bb58f; T3.2 pending @ M3; progress 19/27; M2 CI 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written); dirty pending chore sync; PR #832 open; #831→#820'
+    note: 'S037/EV-030 16-evolve — T3.2 in_progress @ M3; D-S037-ui-preview=2 UI preview declined; H4–H5 still required at M4/13; progress 19/27; M2 CI 30818578657 SUCCESS; dirty pending chore sync; PR #832 open; #831→#820'
     tip_sha: 00bb58f
     tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
     notes:
-    - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; active_task T3.2 → in_progress @ M3; progress 19/27; tip 00bb58f; dirty pending chore sync; #831→#820'
+  - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
     - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
     - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
@@ -9020,6 +9026,32 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S037-ui-preview
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: connectivity
+  status: confirmed
+  topic: 'Decline non-deployed UI preview after FE catalog unlock'
+  summary: 'Option 2 — decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 remain required at M4/13'
+  decision: 'D-S037-ui-preview=2 — do not run non-deployed UI preview now. FE catalog unlock already shipped; H4–H5 still required at M4/13 deploy-smoke. Proceed T3.2 in_progress.'
+  user_option: '2'
+  interview_mode: written
+  askquestion_available: false
+  tip_sha: 00bb58f
+  tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '820', '835']
+  related_issues_closed: ['829']
+  related_prs: ['832']
+  related_decisions: ['D-S037-08-m2-pass', 'D-S037-04-plan']
+  note: 'H4–H5 still required at M4/13; non-deployed preview declined; T3.2 set in_progress.'
+
 - id: D-S037-08-m2-pass
   date: '2026-08-03'
   timestamp: '2026-08-03'
@@ -27512,7 +27544,7 @@ evolve_cycles:
     note: 'Standard — D-S037-route; skip 03/05/06'
   current_stage: 07-build
   active_task: T3.2
-  note: 'S037/EV-030 — T3.1 COMPLETE @ 00bb58f; active_task T3.2 pending @ M3; progress 19/27; tip 00bb58f (+0c46df2 FIXTURE_GAPS); M2 CI 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written; AskQuestion tool unavailable); dirty pending chore sync; PR #832 open; #831→#820'
+  note: 'S037/EV-030 — T3.2 in_progress @ M3; D-S037-ui-preview=2 UI preview declined (written; AskQuestion unavailable); H4–H5 still required at M4/13; progress 19/27; tip 00bb58f (+0c46df2 FIXTURE_GAPS); M2 CI 30818578657 SUCCESS; dirty pending chore sync; PR #832 open; #831→#820'
   pr_m1_number: 832
   pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
   pr_m1_status: open
@@ -27531,7 +27563,7 @@ evolve_cycles:
       status: in_progress
       mode: orchestrator
       started: '2026-08-02'
-      note: 'Orchestrating 07-build T3.1 COMPLETE @ 00bb58f; T3.2 pending @ M3; progress 19/27; M2 CI 30818578657 SUCCESS; dirty pending chore sync'
+      note: 'Orchestrating 07-build T3.2 in_progress @ M3; D-S037-ui-preview=2 UI preview declined; H4–H5 still required at M4/13; progress 19/27; M2 CI 30818578657 SUCCESS; dirty pending chore sync'
     01-requirements:
       status: completed
       started: '2026-08-02'
@@ -27550,9 +27582,9 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-03'
-      note: 'IN PROGRESS — T3.1 COMPLETE @ 00bb58f (VAA/TCA residual baseline #820); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 CI run 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task T3.2 pending @ M3; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
+      note: 'IN PROGRESS — T3.2 in_progress @ M3 (structured VAA/TCA decode #820); D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; T3.1 COMPLETE @ 00bb58f; tip may include 0c46df2 FIXTURE_GAPS; M2 CI 30818578657 SUCCESS; progress 19/27; workflow-state dirty pending chore sync; PR #832 open; #831→#820'
       active_task: T3.2
-      active_task_status: pending
+      active_task_status: in_progress
       tip_sha: 00bb58f
       tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
       progress: 19/27
@@ -27586,6 +27618,9 @@ evolve_cycles:
     phase_c: pending
     phase_d: pending
     deploy: pending
+    note: '2026-08-03 S037/EV-030 — D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; active_task T3.2 → in_progress'
+    ui_preview: declined
+    h4_h5_at_m4_13: required
   adrs: []
   artifacts:
   - path: docs/decisions/evolve-decisions.md
@@ -27604,7 +27639,7 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     status: approved
-    note: 'T3.1 COMPLETE @ 00bb58f; next T3.2 pending @ M3; progress 19/27; tip 00bb58f; 0c46df2 FIXTURE_GAPS after M2; M2 CI 30818578657 SUCCESS; dirty pending chore sync'
+    note: 'T3.2 in_progress @ M3; D-S037-ui-preview=2 UI preview declined; H4–H5 still required at M4/13; progress 19/27; tip 00bb58f; dirty pending chore sync'
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
@@ -27652,7 +27687,9 @@ evolve_cycles:
   - D-S037-08-m2-pass
   - D-S037-semver-none
   - D-S037-T2.3-oos
+  - D-S037-ui-preview
   notes:
+  - '2026-08-03 S037/EV-030 — D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; active_task T3.2 → in_progress @ M3; progress 19/27; tip 00bb58f; dirty pending chore sync; #831→#820'
   - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
   - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
   - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
@@ -27684,8 +27721,9 @@ git_history:
   tip_sha: 00bb58f
   tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
   recommended_branch: evolve/EV-030-quality-residuals-831
-  note: 'S037/EV-030 — T3.1 COMPLETE @ 00bb58f; T3.2 pending @ M3; progress 19/27; tip 00bb58f (+0c46df2 FIXTURE_GAPS; fbec04f chore); M2 CI 30818578657 SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written); dirty workflow-state pending chore sync; PR #832 open; #831/#820'
+  note: 'S037/EV-030 — T3.2 in_progress @ M3; D-S037-ui-preview=2 UI preview declined; H4–H5 still required at M4/13; progress 19/27; tip 00bb58f (+0c46df2 FIXTURE_GAPS; fbec04f chore); M2 CI 30818578657 SUCCESS; dirty workflow-state pending chore sync; PR #832 open; #831/#820'
   notes:
+  - '2026-08-03 S037/EV-030 — D-S037-ui-preview=2 decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 still required at M4/13; active_task T3.2 → in_progress @ M3; progress 19/27; tip 00bb58f; dirty pending chore sync; #831→#820'
   - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
   - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
   - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
