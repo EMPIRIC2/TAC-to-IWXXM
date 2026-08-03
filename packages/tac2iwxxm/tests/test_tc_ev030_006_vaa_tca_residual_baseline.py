@@ -1,7 +1,7 @@
-"""TC-EV030-006 / T3.1 — VAA/TCA decode residual baseline (#820).
+"""TC-EV030-006 / T3.1+T3.2 — VAA/TCA decode residual pin (#820).
 
-Pins residual counts for official peers before T3.2 structured decode.
-``allow_any`` remains in ``wmo_decode_residual_allowlist`` until T3.3 shrink.
+T3.1 snapped pre-deepen counts (VAA=13, TCA=14). T3.2 structured field decode
+shrunk official peers to the counts below; keep this pin current.
 """
 
 from __future__ import annotations
@@ -14,10 +14,10 @@ from tac2iwxxm.decode import decode_tac
 
 ANNEX3 = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 
-# Exact counts from S037 T3.1 snapshot (2026-08-03) — update when T3.2 shrinks.
+# Post–T3.2 counts (structured LABEL: fields). VAA keeps AHL bulletin residual.
 _BASELINE: tuple[tuple[str, str, int], ...] = (
-    ("vaa_a7_2", "VAA", 13),
-    ("tca_a2_2", "TCA", 14),
+    ("vaa_a7_2", "VAA", 1),
+    ("tca_a2_2", "TCA", 0),
 )
 
 
@@ -31,12 +31,12 @@ def test_tc_ev030_006_baseline_residual_count(
     product: str,
     expected_residuals: int,
 ) -> None:
-    """Baseline inventory — residual count must match T3.1 snapshot until T3.2."""
+    """Residual count pin after structured field decode (T3.2)."""
     tac = (ANNEX3 / f"{stem}.tac").read_text(encoding="utf-8")
     result = decode_tac(tac, product=product)
     texts = [r.text.strip() for r in result.residuals if r.text and r.text.strip()]
     assert len(texts) == expected_residuals, (
-        f"{stem}: residual count {len(texts)} != baseline {expected_residuals}; "
-        "update t3.1-vaa-tca-residual-baseline.md + this pin when intentional"
+        f"{stem}: residual count {len(texts)} != pin {expected_residuals}; "
+        "update t3.1/t3.2 reports + this pin when intentional"
     )
     assert all(t for t in texts)
