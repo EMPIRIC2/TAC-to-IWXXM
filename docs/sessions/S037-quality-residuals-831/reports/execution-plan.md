@@ -14,9 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M4 — smoke / verify / deploy |
-| **Active task** | T3.4 COMPLETE — M3 done; next T4.1 (08-verify-build) |
-| **Tasks** | 22 / 27 completed (M0–M3) |
-| **Tasks** | 20 / 27 completed (M0+M1+M2+T3.1–T3.2) |
+| **Active task** | T4.3 COMPLETE — T4.4 in_progress (13-deploy-smoke) |
+| **Tasks** | 25 / 27 completed; T4.4–T4.5 pending |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -103,10 +102,10 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Config | 08-verify-build — lint / typecheck / format / suites | 08 | T3.4 | pending |
-| T4.2 | Test | 09-qa delta + 10-e2e smoke (UJ-044; H4–H5 for catalog unlock) | 09; 10; E30-T6 | T4.1 | pending |
-| T4.3 | Docs | 11-verify-impl per–AC (F29 + deepen); 12-verify-deploy | 11; 12 | T4.2 | pending |
-| T4.4 | Test | 13-deploy-smoke — API redeploy if needed; **H1–H3**; **H4–H5 required** (FE unlock) | 13; E30-T6; TC-EV030-005 | T4.3 | pending |
+| T4.1 | Config | 08-verify-build — lint / typecheck / format / suites | 08 | T3.4 | **completed** |
+| T4.2 | Test | 09-qa delta + 10-e2e smoke (UJ-044; H4–H5 for catalog unlock) | 09; 10; E30-T6 | T4.1 | **completed** |
+| T4.3 | Docs | 11-verify-impl per–AC (F29 + deepen); 12-verify-deploy | 11; 12 | T4.2 | **completed** |
+| T4.4 | Test | 13-deploy-smoke — API redeploy if needed; **H1–H3**; **H4–H5 required** (FE unlock) | 13; E30-T6; TC-EV030-005 | T4.3 | in_progress |
 | T4.5 | Docs | Close #831/#829/#820 (or children); evolve summary; F29 → Done | #831/#829/#820 | T4.4 | pending |
 
 ## Data Dependencies
