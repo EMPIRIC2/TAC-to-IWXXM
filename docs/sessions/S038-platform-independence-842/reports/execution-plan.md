@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M2 — DO Postgres + Alembic + work-sessions (**COMPLETE**) |
-| **Active task** | T3.1 — Worker store/quarantine Postgres tests (next / M3) |
-| **Tasks** | 14 / 38 completed |
+| **Active milestone** | M3 — F8 → DATABASE_URL (**COMPLETE**) |
+| **Active task** | T4.1 — FE hybrid guest/login tests (next / M4) |
+| **Tasks** | 17 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -116,9 +116,9 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Test | Worker store/quarantine against Postgres URL (no service-role PostgREST) | TC-F30-003; UJ-014 | T2.2 | pending |
-| T3.2 | Code | Retarget F8 writers to SQLAlchemy/`DATABASE_URL`; drop Supabase DB client path | F30; ADR-018 amend | T3.1 | pending |
-| T3.3 | Config | Worker env + deploy docs: `DATABASE_URL` required; remove product Supabase DB secrets from worker | env-contract | T3.2 | pending |
+| T3.1 | Test | Worker store/quarantine against Postgres URL (no service-role PostgREST) | TC-F30-003; UJ-014 | T2.2 | completed |
+| T3.2 | Code | Retarget F8 writers to SQLAlchemy/`DATABASE_URL`; drop Supabase DB client path | F30; ADR-018 amend | T3.1 | completed |
+| T3.3 | Config | Worker env + deploy docs: `DATABASE_URL` required; remove product Supabase DB secrets from worker | env-contract | T3.2 | completed |
 
 ### M4 — FE hybrid + F22 deepen
 

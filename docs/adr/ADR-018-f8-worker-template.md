@@ -1,10 +1,11 @@
 # ADR-018: F8 Render Worker + Template `static+api+worker` (Amends ADR-015)
 
-> **Status**: Accepted  
+> **Status**: Accepted (amended)  
 > **Date**: 2026-07-12  
 > **Deciders**: User (S008 04-tech-plan Q15–Q20)  
 > **Stage**: 04-tech-plan  
 > **Amends**: [ADR-015](ADR-015-validate-packages-bulletin-api-f7-f8.md) §Decision (7) “F8 not built this cycle”  
+> **Amended by**: [ADR-033](ADR-033-platform-independence-auth-do-doks.md) (S038 / EV-031 / F30) — store/quarantine via `DATABASE_URL` (DO Postgres); drop Supabase service-role PostgREST as F8 DB writer  
 > **Related**: realtime-tac-ingest.md R7–R15; template-conformance  
 > **Session**: S008-general-tac-iwxxm-converter
 
@@ -20,10 +21,12 @@ remain on the existing API (thin wrappers); no dedicated converter microservice.
 2. **New deployable**: `apps/worker/` — Render **Background Worker** (Q19=A).
 3. **Template**: `static+api` → **`static+api+worker`** (document in workflow-state + rules).
 4. **Ingest v1**: HTTPS / object-prefix **poller** (Q16=A). AMHS/SWIM still out of scope.
-5. **Store**: On Schematron pass, persist IWXXM + metadata to **Supabase** (Q17=A).
+5. **Store**: On Schematron pass, persist IWXXM + metadata to product Postgres
+   (**DigitalOcean via `DATABASE_URL`** — ADR-033 / F30; originally Supabase Q17=A).
 6. **Quarantine**: **Separate** quarantine table/bucket on lint/convert/Schematron fail (Q18=B);
    no publish.
-7. **Auth for writers**: Worker uses Supabase **service role JWT** (Q20=C). Machine-ingest
+7. **Auth for writers**: Worker uses **machine/`DATABASE_URL` credentials** (ADR-033).
+   Supabase **service-role PostgREST** is **retired** as the F8 DB writer. Machine-ingest
    public auth and push sinks remain postponed.
 8. **Non-goals unchanged**: F7 UI; push sinks; AMHS/SWIM; dedicated converter API (Q15b=B).
 

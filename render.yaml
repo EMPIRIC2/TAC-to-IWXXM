@@ -54,9 +54,7 @@ services:
         value: annex3
       - key: IWXXM_VERSION
         value: "2025-2"
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_SERVICE_ROLE_KEY
+      - key: DATABASE_URL
         sync: false
       - key: INGEST_POLLER_URL
         sync: false
