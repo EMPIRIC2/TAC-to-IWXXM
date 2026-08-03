@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M3 — F8 → DATABASE_URL (**COMPLETE**) |
-| **Active task** | T4.1 — FE hybrid guest/login tests (next / M4) |
-| **Tasks** | 17 / 38 completed |
+| **Active milestone** | M4 — FE hybrid + F22 deepen |
+| **Active task** | T4.2 — Restore optional Auth FE client (next) |
+| **Tasks** | 18 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -124,7 +124,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Test | Vitest/Playwright: guest IndexedDB + persistent loss notice; login → auto-upload; privacy gates | TC-F31-005; UJ-045..047 | T2.5 | pending |
+| T4.1 | Test | Vitest/Playwright: guest IndexedDB + persistent loss notice; login → auto-upload; privacy gates | TC-F31-005; UJ-045..047 | T2.5 | completed |
 | T4.2 | Code | Restore optional Auth FE client (publishable); wire login UX; keep public convert | F31; F21 amended | T4.1 | pending |
 | T4.3 | Code | Auto-upload eligible local drafts on login; server session list for logged-in | `D-S038-guest-merge`=2 | T4.2 | pending |
 | T4.4 | Code | F22 deepen: gate guest IndexedDB; disclose Auth cookies | F22; UJ-047 | T4.2 | pending |

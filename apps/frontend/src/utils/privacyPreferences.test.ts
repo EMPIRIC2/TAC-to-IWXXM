@@ -59,9 +59,15 @@ describe('privacyPreferences (TC-F22)', () => {
       const idb = STORAGE_INVENTORY.find((item) => item.kind === 'indexedDB');
       expect(idb).toBeDefined();
       expect(idb?.purpose).toMatch(/work history|session/i);
-      expect(idb?.necessary).toBe(true);
+      // F31 / TC-F31-005: guest work-history IndexedDB is gateable (not forced necessary).
+      expect(idb?.necessary).toBe(false);
 
-      // Solution A: inventory covers only tech in use — no analytics CDN/cookie rows.
+      const authCookie = STORAGE_INVENTORY.find(
+        (item) => item.kind === 'cookie' && /auth/i.test(item.purpose),
+      );
+      expect(authCookie).toBeDefined();
+
+      // Solution A: inventory covers only tech in use — no analytics CDN rows.
       expect(STORAGE_INVENTORY.every((item) => item.kind !== 'cdn')).toBe(true);
     });
   });
