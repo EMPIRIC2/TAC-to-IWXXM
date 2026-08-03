@@ -64,6 +64,10 @@ make build-tac2iwxxm-native
 make test-tac2iwxxm-native
 ```
 
+When adding or changing a METAR/SPECI encode theme in this monorepo, also update the F29
+quality matrices — see [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
+(TC-F29-007).
+
 ## Links
 
 - Source: [EMPIRIC2/TAC-to-IWXXM](https://github.com/EMPIRIC2/TAC-to-IWXXM)

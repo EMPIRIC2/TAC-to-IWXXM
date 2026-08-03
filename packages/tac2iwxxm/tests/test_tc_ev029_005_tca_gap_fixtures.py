@@ -232,11 +232,11 @@ def test_tca_a2_2_forecast_cardinality() -> None:
     assert result.xml.count("<iwxxm:forecast>") == 4
 
 
-def test_tca_a2_2_decode_residuals_allowlisted_under_820() -> None:
-    """TC-EV029-005 decode: tca_a2_2 residuals empty or #820 allowlisted (F9 G4)."""
+def test_tca_a2_2_decode_residuals_empty_after_820() -> None:
+    """TC-EV029-005 / EV-030: tca_a2_2 reaches residuals == [] (#820 closed)."""
     from tac2iwxxm.decode import decode_tac
 
-    assert allows_any_residual("tca_a2_2")
+    assert not allows_any_residual("tca_a2_2")
     tac = (ANNEX3 / "tca_a2_2.tac").read_text(encoding="utf-8")
     result = decode_tac(tac, product="TCA")
-    assert result.residuals is not None
+    assert result.residuals == []

@@ -2095,6 +2095,20 @@ describe('FileConverter Component', () => {
       expect(editor.value).toMatch(/<\?xml|iwxxm|METAR/i);
     });
 
+    it('loads TC SIGMET A6-2-TC reference into editor (TC-EV030-005 / UJ-039)', async () => {
+      render(<FileConverter {...defaultProps} />);
+
+      await selectGoldenExample(/TC SIGMET WMO A6-2-TC/i);
+
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      expect(editor.value).toMatch(/TC GLORIA/);
+      expect(editor.value).toMatch(/WI 250NM OF TC CENTRE/);
+      expect(screen.getByTestId('product-type-select')).toHaveValue('SIGMET');
+      expect(screen.getByTestId('demo-example-banner')).toHaveTextContent(
+        /Demo \/ non-operational example: TC SIGMET WMO A6-2-TC/i,
+      );
+    });
+
     it('clears prior conversion results when loading an example', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({

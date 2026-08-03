@@ -1,6 +1,6 @@
 [package]
 name = "tac2iwxxm_rust"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2021"
 description = "PyO3 native hotspots for tac2iwxxm (ADR-017)"
 license = "MIT"

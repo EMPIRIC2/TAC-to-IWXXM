@@ -1,0 +1,103 @@
+rule_id: NOSIG_PRESENT
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: happy
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: happy
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: happy
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: happy
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: sad
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: sad
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: sad
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: sad
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: sad
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_pass
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_pass
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_pass
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_pass
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_pass
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_fail
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_fail
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_fail
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_fail
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+- bucket: edge_fail
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"

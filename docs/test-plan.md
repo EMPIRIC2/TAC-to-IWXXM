@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-01 (S036 / EV-029 — TC-EV029 / TC-F28 #823 eight-family rules)
+> **Last updated**: 2026-08-02 (S037 / EV-030 — TC-EV030 / TC-F29 #831/#829/#820)
 
 ## Scope
 
@@ -92,6 +92,7 @@ Unified manual live test harness against Render staging:
 | UJ-041 | F23 deepen | sigmet-multi-location-VA ADR-032 equality / wmoPass (EV-026) | — | TC-EV025-008..009 |
 | UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
 | UJ-043 | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen | Eight-family lint/convert/validate + SWXA bar (#823) | H4–H5 if FE | TC-EV029-001..008; TC-F28-001..006 |
+| UJ-044 | F29 + F23/F12/F2/F13/F9/F26/F27 deepen | Rule matrices (#831) + TC SIGMET deepen (#829) + VAA/TCA decode (#820) | H4–H5 if FE | TC-EV030-001..006; TC-F29-001..007 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -1339,6 +1340,108 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - [ ] TC-EV029-008 when FE ships / else waive
 - [ ] Coverage matrix + canonicals updated
 - [ ] #823 / #738 / #820 / #740 closed or children linked
+- [ ] 12/13 per Standard when behavior deploys
+
+## S037 / EV-030 — Quality residuals (#831 / #829 / #820)
+
+### TC-EV030-001: Harness design note answers #831 eval questions (UJ-044)
+
+- **Level**: T0 (doc gate)
+- **Objective**: Case storage, rule SoT, granularity, assertions, product scope, CI cost,
+  fixture-fill policy documented with recommendation
+- **Pass criteria**: Session design note (or ADR-lite) exists and is cited from F29
+- **Source**: #831; F29
+
+### TC-EV030-002: Lint + convert + validate runners land (UJ-044)
+
+- **Level**: T0 / T2
+- **Objective**: Shared runners execute RuleCase fixtures for three engines
+- **Pass criteria**: Pilot rules run; `needs-fixture` skip/xfail policy documented
+- **Source**: F29; TC-F29-002
+
+### TC-EV030-003: Inventory gate for in-scope rules (UJ-044)
+
+- **Level**: T0 / T2
+- **Objective**: Every registered in-scope rule has 20 slots or explicit TODO
+- **Pass criteria**: Gate test fails on silent gaps
+- **Source**: F29; TC-F29-004
+
+### TC-EV030-004: TC SIGMET tac-validate pack + STNR/geometry (#829)
+
+- **Level**: T0 / T2
+- **Objective**: Dedicated TC lint accept/negatives; STNR/exceptional shapes or OOS cite
+- **Pass criteria**: #829 AC1–AC2 met
+- **Source**: #829; F23 deepen
+
+### TC-EV030-005: A6-2-TC catalog / menu tier decision (#829)
+
+- **Level**: T0; H4–H5 if FE unlock
+- **Objective**: Unlock `wmoPass`/`wmoReference` or defer with recorded reason (ADR-032)
+- **Pass criteria**: #829 AC3 met; H4–H5 only if FE ships
+- **Source**: #829; UJ-039; ADR-032
+
+### TC-EV030-006: VAA/TCA decode residual deepen (#820)
+
+- **Level**: T0 / T2
+- **Objective**: Structured decode for major labels/forecast hours; shrink allowlist/matrix
+- **Pass criteria**: #820 AC met or child-issued with cite
+- **Source**: #820; F9/F26/F27 deepen
+
+### TC-F29-001: Harness recommendation written (UJ-044)
+
+- **Level**: T0
+- **Objective**: #831 evaluation questions answered with recommendation
+- **Pass criteria**: Design note approved in 04/07 spike
+- **Source**: F29; #831
+
+### TC-F29-002: Three-engine runners (UJ-044)
+
+- **Level**: T2
+- **Objective**: Lint + convert + validate parameterized runners
+- **Pass criteria**: At least pilot rules execute via runners
+- **Source**: F29
+
+### TC-F29-003: Pilot METAR/SPECI matrices (UJ-044)
+
+- **Level**: T2
+- **Objective**: Pilot product set filled or explicit `needs-fixture`
+- **Pass criteria**: Inventory shows no silent empty slots for pilot rules
+- **Source**: F29
+
+### TC-F29-004: Inventory gate CI (UJ-044)
+
+- **Level**: T0 / T2
+- **Objective**: New rule without matrix slots fails gate
+- **Pass criteria**: Gate test/docs checklist in CI
+- **Source**: F29
+
+### TC-F29-005: Node ids encode rule/bucket/case (UJ-044)
+
+- **Level**: T0 / T2
+- **Objective**: Failures name `RULE_ID/bucket/NN`
+- **Pass criteria**: Pytest node ids match convention
+- **Source**: F29
+
+### TC-F29-006: CI smoke + optional full matrix (UJ-044)
+
+- **Level**: T2 / CI
+- **Objective**: PR-smoke subset; full matrix optional/nightly; no network
+- **Pass criteria**: CI wiring documented and green for smoke
+- **Source**: F29
+
+### TC-F29-007: Authoring docs for new rules (UJ-044)
+
+- **Level**: T0
+- **Objective**: Definition of done for rule PRs includes matrix slots
+- **Pass criteria**: Docs path cited from package README or CONTRIBUTING
+- **Source**: F29
+
+### EV-030 verify/deploy gate
+
+- [ ] TC-EV030-001..006 green (or deferred with child issues)
+- [ ] TC-F29-001..007 green (or deferred with child issues)
+- [ ] #831 / #829 / #820 closed or children linked
+- [ ] H4–H5 when FE menu unlock ships / else waive
 - [ ] 12/13 per Standard when behavior deploys
 
 ## F9 deepen (S026 / EV-020) — glossary registry

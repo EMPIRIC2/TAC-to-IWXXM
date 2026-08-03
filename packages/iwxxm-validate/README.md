@@ -61,6 +61,11 @@ report = validate_iwxxm(xml, iwxxm_version="2023-1", levels=("schematron",))
 On the pure-Python path, some Schematron dialects may be reported as skipped; the native
 path evaluates Schematron in-process and does not emit that skip.
 
+When adding or changing METAR/SPECI Schematron-facing coverage in this monorepo, also
+update the F29 quality matrices — see
+[`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
+(TC-F29-007).
+
 ## Links
 
 - Source: [EMPIRIC2/TAC-to-IWXXM](https://github.com/EMPIRIC2/TAC-to-IWXXM)

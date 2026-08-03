@@ -1,0 +1,58 @@
+# EV-030 / E30-T7 / TC-F29-006 — F29 quality matrices PR smoke (#831).
+# Path-filtered companion to per-family workflows; does not replace ci-cd.yml.
+# Full matrix: make test-quality-matrices-full (optional / workflow_dispatch).
+name: Quality matrices smoke
+
+on:
+  push:
+    branches: [main, evolve/EV-030-quality-residuals-831]
+    paths:
+      - "tests/quality_matrices/**"
+      - "scripts/ci/run_quality_matrices_smoke.sh"
+      - "scripts/ci/run_quality_matrices_full.sh"
+      - ".github/workflows/quality-matrices.yml"
+      - "pyproject.toml"
+  pull_request:
+    paths:
+      - "tests/quality_matrices/**"
+      - "scripts/ci/run_quality_matrices_smoke.sh"
+      - "scripts/ci/run_quality_matrices_full.sh"
+      - ".github/workflows/quality-matrices.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+    inputs:
+      full_matrix:
+        description: "Run full quality matrices (including @quality_matrix slots)"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+jobs:
+  quality-matrices-smoke:
+    runs-on: ubuntu-latest
+    name: F29 quality matrices smoke
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run quality matrices smoke
+        run: make test-quality-matrices-smoke
+
+      - name: Run full quality matrices (optional)
+        if: github.event_name == 'workflow_dispatch' && inputs.full_matrix == 'true'
+        run: make test-quality-matrices-full

@@ -16,6 +16,7 @@ import metarBasicGolden from './bodies/metar_basic.golden.xml?raw';
 import metarMultiAhl from './bodies/metar_multi_ahl.txt?raw';
 import sigmetA61aTs from './bodies/sigmet_a6_1a_ts.tac?raw';
 import sigmetA61bCnl from './bodies/sigmet_a6_1b_cnl.tac?raw';
+import sigmetA62Tc from './bodies/sigmet_a6_2_tc.tac?raw';
 import sigmetMultiLocationVa from './bodies/sigmet_multi_location_va.tac?raw';
 import sigmetVaEggx from './bodies/sigmet_va_eggx.tac?raw';
 import speciA32 from './bodies/speci_a3_2.tac?raw';
@@ -176,6 +177,17 @@ export const EXAMPLES: readonly GoldenExample[] = [
     provenance: `${PKG}/annex3_golden/sigmet_va_eggx.tac`,
     wmoReference: true,
     wmoSeed: 'sigmet-VA-EGGX',
+  },
+  {
+    id: 'sigmet_a6_2_tc',
+    label: 'TC SIGMET WMO A6-2-TC (reference)',
+    product: 'SIGMET',
+    inputMode: 'tac',
+    body: sigmetA62Tc,
+    nonOperational: true,
+    provenance: `${PKG}/annex3_golden/sigmet_a6_2_tc.tac`,
+    wmoReference: true,
+    wmoSeed: 'sigmet-A6-2-TC',
   },
   {
     id: 'sigmet_multi_location_va',

@@ -1,0 +1,111 @@
+rule_id: metar_a3_1
+engine: convert
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: METAR YUDO 221630Z 24004MPS 0600 R12/1000U DZ FG SCT010 OVC020 17/16 Q1018 BECMG TL1700 0800 FG
+    BECMG AT1800 9999 NSW=
+  expect:
+    encode_ok: true
+    require_xml: true
+  meta:
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/metar_a3_1.tac
+- bucket: happy
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: happy
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: happy
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: happy
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: sad
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: sad
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: sad
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: sad
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: sad
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_pass
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: T1.4
+- bucket: edge_pass
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_pass
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_pass
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_pass
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_fail
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: T1.4
+- bucket: edge_fail
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_fail
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_fail
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready
+- bucket: edge_fail
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: T1.4 pilot scaffold — fill when fixture ready

@@ -24,6 +24,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-vaa-quality \
 	test-tca-quality \
 	test-swxa-quality \
+	test-quality-matrices-smoke \
+	test-quality-matrices-full \
 	test-product-order-smoke \
 	test-report-state-matrix-smoke \
 	test-wmo-quality \
@@ -281,6 +283,14 @@ test-tca-quality:
 # EV-029 / E29-T4=2 — SWXA quality pack (M11 / TC-F28 + F28 deepen / #740/#823)
 test-swxa-quality:
 	bash scripts/ci/run_swxa_quality.sh
+
+# EV-030 / E30-T7 — F29 quality matrices PR smoke (inventory + ready; excludes full ×20)
+test-quality-matrices-smoke:
+	bash scripts/ci/run_quality_matrices_smoke.sh
+
+# EV-030 / E30-T7 — F29 full pilot matrices (optional / nightly; includes needs-fixture skips)
+test-quality-matrices-full:
+	bash scripts/ci/run_quality_matrices_full.sh
 
 # EV-029 / T12.1 — Product-order regression smoke (TC-EV029-007 / M12)
 test-product-order-smoke:

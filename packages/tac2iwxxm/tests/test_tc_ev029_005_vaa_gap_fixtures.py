@@ -232,12 +232,11 @@ def test_vaa_a7_2_forecast_cardinality() -> None:
     assert 'status="NO_VOLCANIC_ASH_EXPECTED"' in result.xml
 
 
-def test_vaa_a7_2_decode_residuals_allowlisted_under_820() -> None:
-    """TC-EV029-005 decode: vaa_a7_2 residuals empty or #820 allowlisted (F9 G4)."""
+def test_vaa_a7_2_decode_residuals_empty_after_820() -> None:
+    """TC-EV029-005 / EV-030: vaa_a7_2 reaches residuals == [] (#820 closed)."""
     from tac2iwxxm.decode import decode_tac
 
-    assert allows_any_residual("vaa_a7_2")
+    assert not allows_any_residual("vaa_a7_2")
     tac = (ANNEX3 / "vaa_a7_2.tac").read_text(encoding="utf-8")
     result = decode_tac(tac, product="VAA")
-    # G4 / #820 — any residual text permitted while allow_any is set.
-    assert result.residuals is not None
+    assert result.residuals == []

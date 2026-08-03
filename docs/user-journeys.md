@@ -1170,6 +1170,44 @@ Issues [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823),
 
 ---
 
+### UJ-044: Rule Matrix Harness + TC / VAA–TCA Residuals (S037 / EV-030)
+
+**Actor**: CI maintainer / package consumer (operator-invisible for F29; operator for #829 menu)
+
+**Goal**: Every in-scope lint/convert/validate rule has a discoverable 5×4 case budget (or
+explicit `needs-fixture` slot); TC SIGMET lint pack + STNR/geometry (or OOS) and A6-2-TC
+catalog tier are decided; VAA/TCA decode residuals shrink beyond F9 G4 best-effort.
+
+**Feature**: **F29** + deepen F23/F12/F2/F13/F9/F26/F27 — S037 / EV-030 ·
+Issues [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831),
+[#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829),
+[#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)
+
+**Steps (CI — T0 / T2)**:
+
+1. Design note answers #831 evaluation questions; runners load `RuleCase`-style fixtures.
+2. Pilot METAR/SPECI (lint+encode+validate) matrices green or inventory-gated TODOs.
+3. TC SIGMET `tac-validate` accept/negative pack + STNR/geometry cases (or OOS cite).
+4. Official VAA/TCA peers: decode residual spans shrink; allowlist/matrix updated.
+5. Pytest node ids include `rule_id` / bucket / case; PR-smoke subset in CI.
+
+**Steps (operator — T2; H4–H5 only if FE menu unlock)**:
+
+1. If catalog unlocks `sigmet-A6-2-TC`: load from Examples → lint/convert/validate pass per ADR-032.
+2. Otherwise: catalog decision recorded; no FE change this cycle.
+
+**Acceptance**: TC-EV030-* + TC-F29-001..007 green (or child-issued); #831/#829/#820 closable
+or split with links.
+
+**Automated tests**: TC-EV030-*; TC-F29-*; deepen TC-F23 / TC-F9 / TC-F26 / TC-F27.
+
+**Browser wiring**: No new origins. H4–H5 only if FE catalog/Examples change ships.
+
+**Source**: #831 · #829 · #820 · ADR-028 · ADR-032 ·
+[Context: quality-residuals-831](context/quality-residuals-831.md)
+
+---
+
 ### UJ-037: VAA Lint / Convert→Validate WMO Golden (F26 / #736)
 
 **Actor**: Operator / CI maintainer

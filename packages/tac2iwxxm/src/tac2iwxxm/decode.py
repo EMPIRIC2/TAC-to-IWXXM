@@ -455,8 +455,8 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
 
 
 def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str | None:
-    """Best-effort VAA/TCA keyword spans; most body stays residual (G4)."""
-    upper = token.upper()
+    """Best-effort VAA/TCA keyword spans; labeled fields use ``_iter_advisory_fields``."""
+    upper = token.upper().rstrip(":")
     if product == "VAA":
         if upper == "VA" and seen.get("va", 0) == 0:
             seen["va"] = 1
@@ -475,9 +475,146 @@ def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str 
             return explain_glossary_token(upper, fallback="Advisory product header")
         if upper == "TCA":
             return explain_glossary_token(upper, fallback="Tropical cyclone advisory abbreviation")
-    if upper in {"DTG", "VOLCANO", "PSN", "AREA", "SUMMIT", "ADVISORY", "NR", "INFO"}:
-        return explain_glossary_token(upper, fallback=f"{product} field label")
-    return explain_glossary_token(upper)
+    return explain_glossary_token(upper, fallback=f"{product} token")
+
+
+# Longest-first advisory field labels (WMO VAA/TCA TAC layout). Title templates use
+# ``{hours}`` when the label includes ``+N HR``.
+_VAA_FIELD_SPECS: tuple[tuple[str, str], ...] = (
+    (r"FCST\s+VA\s+CLD\s+\+(?P<hours>\d+)\s+HR", "Forecast volcanic ash cloud at +{hours} hours"),
+    (r"OBS\s+VA\s+CLD", "Observed volcanic ash cloud"),
+    (r"OBS\s+VA\s+DTG", "Observed volcanic ash date-time"),
+    (r"ERUPTION\s+DETAILS", "Eruption details"),
+    (r"INFO\s+SOURCE", "Information source"),
+    (r"SOURCE\s+ELEV", "Source elevation"),
+    (r"ADVISORY\s+NR", "Advisory number"),
+    (r"NXT\s+ADVISORY", "Next advisory time"),
+    (r"VAAC", "Volcanic ash advisory centre"),
+    (r"VOLCANO", "Volcano"),
+    (r"AREA", "Area"),
+    (r"PSN", "Position"),
+    (r"DTG", "Date-time group"),
+    (r"RMK", "Remarks"),
+)
+
+_TCA_FIELD_SPECS: tuple[tuple[str, str], ...] = (
+    (r"FCST\s+MAX\s+WIND\s+\+(?P<hours>\d+)\s+HR", "Forecast maximum wind at +{hours} hours"),
+    (r"FCST\s+PSN\s+\+(?P<hours>\d+)\s+HR", "Forecast position at +{hours} hours"),
+    (r"ADVISORY\s+NR", "Advisory number"),
+    (r"OBS\s+PSN", "Observed position"),
+    (r"INTST\s+CHANGE", "Intensity change"),
+    (r"MAX\s+WIND", "Maximum wind"),
+    (r"NXT\s+MSG", "Next message time"),
+    (r"TCAC", "Tropical cyclone advisory centre"),
+    (r"DTG", "Date-time group"),
+    (r"MOV", "Movement"),
+    (r"CB", "Cumulonimbus extent"),
+    (r"TC", "Tropical cyclone name"),
+    (r"RMK", "Remarks"),
+    (r"C", "Central pressure"),
+)
+
+
+def _advisory_field_finder(product: str) -> list[tuple[re.Pattern[str], str]]:
+    """Return ``(compiled_label_pattern, title_template)`` pairs longest-first."""
+    specs = _VAA_FIELD_SPECS if product == "VAA" else _TCA_FIELD_SPECS
+    return [(re.compile(rf"(?P<label>{pat})\s*:", re.IGNORECASE), title) for pat, title in specs]
+
+
+def _advisory_field_title(label: str, title_template: str, match: re.Match[str]) -> str:
+    """Format a field title, substituting ``{hours}`` when present."""
+    hours = match.groupdict().get("hours")
+    if hours is not None and "{hours}" in title_template:
+        return title_template.format(hours=hours)
+    return title_template
+
+
+_AHL_LINE = re.compile(
+    r"^(?P<ahl>[A-Z]{4}\d{2})\s+(?P<cccc>[A-Z]{4})\s+(?P<yygggg>\d{6})\b",
+    re.MULTILINE,
+)
+
+
+def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
+    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on VAA/TCA peers."""
+    if product not in {"VAA", "TCA"}:
+        return []
+    m = _AHL_LINE.match(tac.lstrip("\ufeff"))
+    if m is None:
+        # Allow optional leading blank lines before AHL.
+        stripped = tac.lstrip()
+        offset = len(tac) - len(stripped)
+        m = _AHL_LINE.match(stripped)
+        if m is None:
+            return []
+        start = offset + m.start()
+        end = offset + m.end()
+    else:
+        start, end = m.start(), m.end()
+    code = tac[start:end]
+    explanation = f"WMO abbreviated heading — {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
+    return [(start, end, code, explanation)]
+
+
+def _iter_advisory_fields(
+    tac: str,
+    *,
+    product: str,
+) -> list[tuple[int, int, str, str]]:
+    """
+    Yield structured ``(start, end, code, explanation)`` for VAA/TCA labeled fields.
+
+    Each field spans from its ``LABEL:`` through the value text until the next
+    labeled field (or end of bulletin). Continuations on following indented lines
+    are included in the same span (WMO A7-2 / A2-2 layout).
+    """
+    if product not in {"VAA", "TCA"}:
+        return []
+    # Collect all label hits; when spans overlap prefer the longer (earlier-spec) label.
+    hits: list[tuple[int, int, str, str, re.Match[str]]] = []
+    for pattern, title_template in _advisory_field_finder(product):
+        for m in pattern.finditer(tac):
+            label = m.group("label")
+            code = re.sub(r"\s+", " ", label.strip())
+            hits.append((m.start(), m.end(), code, title_template, m))
+    if not hits:
+        return []
+    hits.sort(key=lambda h: (h[0], -(h[1] - h[0])))
+    # Drop overlapping shorter matches (same start or nested under a longer label).
+    selected: list[tuple[int, int, str, str, re.Match[str]]] = []
+    for hit in hits:
+        start, end, _code, _title, _m = hit
+        if any(start < prev_end and end > prev_start for prev_start, prev_end, *_ in selected):
+            continue
+        selected.append(hit)
+    selected.sort(key=lambda h: h[0])
+
+    out: list[tuple[int, int, str, str]] = []
+    for i, (start, label_end, code, title_template, match) in enumerate(selected):
+        value_start = label_end
+        value_end = selected[i + 1][0] if i + 1 < len(selected) else len(tac)
+        value = tac[value_start:value_end]
+        trim = len(value.rstrip())
+        end = value_start + trim
+        value_text = " ".join(tac[value_start:end].split())
+        title = _advisory_field_title(code, title_template, match)
+        explanation = f"{title} — {value_text}" if value_text else title
+        out.append((start, end, code, explanation))
+    return out
+
+
+def _token_indices_covering(
+    tokens: list[tuple[int, int, str]],
+    spans: list[tuple[int, int]],
+) -> set[int]:
+    """Return token indices that overlap any ``[start, end)`` character span."""
+    covered: set[int] = set()
+    for idx, (tstart, tend, _) in enumerate(tokens):
+        for start, end in spans:
+            if tstart < end and tend > start:
+                covered.add(idx)
+                break
+    return covered
 
 
 def _classify(
@@ -640,7 +777,18 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     segments: list[DecodeSegment] = []
     explained: set[int] = set()
 
+    # VAA/TCA: structured LABEL: value fields first (EV-030 / #820 / TC-EV030-006).
+    if product_u in {"VAA", "TCA"}:
+        field_spans: list[tuple[int, int]] = []
+        advisory_parts = _iter_advisory_ahl(tac, product=product_u) + _iter_advisory_fields(tac, product=product_u)
+        for start, end, code, explanation in advisory_parts:
+            segments.append(DecodeSegment(start=start, end=end, code=code, explanation=explanation))
+            field_spans.append((start, end))
+        explained |= _token_indices_covering(tokens, field_spans)
+
     for idx, (start, end, token) in enumerate(tokens):
+        if idx in explained:
+            continue
         explanation = classify(token, seen)
         if explanation is None:
             continue
@@ -654,6 +802,7 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         )
         explained.add(idx)
 
+    segments.sort(key=lambda s: (s.start, s.end))
     residuals = _coalesce_residuals(tokens, explained, tac)
     summary = _build_summary(product_u, segments, residuals)
     return DecodeResult(product=product_u, segments=segments, residuals=residuals, summary=summary)

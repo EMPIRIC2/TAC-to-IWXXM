@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-01 (S036 / EV-029 — #823 eight-family AHL / lint / convert / validate)
+> **Last updated**: 2026-08-02 (S037 / EV-030 — #831/#829/#820 quality residuals; F29)
 
 ## Summary
 
@@ -36,6 +36,7 @@
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794 |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828 |
+| F29 | Parameterized lint/convert/validate rule matrices | Planned | Product | S037 / EV-030; #831 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1084,6 +1085,52 @@
   multiline), BBB→`reportStatus`, COLLECT framing, and IWXXM filename/`T1T2` map deepen under
   #823 B1–B3.
 
+### F29: Parameterized Rule Quality Matrices — S037 / EV-030
+
+- **Status**: **Planned** (S037 / EV-030)
+- **What it does**: Adds a maintainable, **parameterized** regression harness so lint
+  (`tac-validate`), convert (`tac2iwxxm`), and IWXXM-validate (`iwxxm-validate`) rules each
+  have a fixed case budget: **5 happy · 5 sad · 5 edge-pass · 5 edge-fail** (or explicit
+  `needs-fixture` inventory slots). Stable IDs (`RULE_ID/happy/03`). Design-before-bulk:
+  evaluation answers (#831) land in a session design note before flooding fixtures.
+- **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831) (priority-high)
+- **Deepens**: **F12** / **F2** / **F13** / **F15** (and product bars) via shared runners —
+  does not replace family quality packs; complements them.
+- **API**: No new public routes required for v1 (offline pytest/CI). Optional later CLI.
+- **Acceptance**:
+  1. Written harness recommendation answering #831 evaluation questions (**TC-F29-001**)
+  2. Runner(s) for lint + convert + validate with skip/`needs-fixture` policy (**TC-F29-002**)
+  3. Pilot product set (recommend METAR/SPECI) has filled slots or explicit gaps (**TC-F29-003**)
+  4. Inventory gate: in-scope rules have 20 slots or tracked TODO (**TC-F29-004**)
+  5. Failures identify `rule_id` + bucket + case id in pytest node ids (**TC-F29-005**)
+  6. CI: PR-smoke subset + optional full matrix; no network/Supabase (**TC-F29-006**)
+  7. Authoring docs: how to add a case when adding/changing a rule (**TC-F29-007**)
+- **Journeys / tests**: **UJ-044** (operator-invisible CI quality); **TC-F29-001..007**;
+  cycle **TC-EV030-***
+- **Out of scope**: Claiming 100% Annex-3 coverage in first PR; duplicating entire WMO trees
+  ×20; coupling matrix to live network
+- **Source**: E30-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-030;
+  [Context: quality-residuals-831](context/quality-residuals-831.md); #831
+
+### F23 / F12 / F2 / F13 deepen (S037 / EV-030 — #829 TC SIGMET)
+
+- **Status**: **Planned** deepen (F23 remains **Done** for gen/VA/TC quality path from EV-029)
+- **Issues**: [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829)
+- **What it does**:
+  1. Dedicated `tac-validate` TC SIGMET accept/negative pack (peer VA pack)
+  2. STNR / exceptional geometry negatives beyond A6-2-TC happy path — or explicit OOS with cite
+  3. Sample-menu / catalog tier decision for `sigmet-A6-2-TC` (UJ-039 / ADR-032)
+- **Acceptance**: #829 checkboxes; **TC-EV030-829-***; H4–H5 only if FE menu unlock ships
+
+### F9 / F26 / F27 deepen (S037 / EV-030 — #820 VAA/TCA decode)
+
+- **Status**: **Planned** deepen (F9/F26/F27 remain **Done** for prior bars)
+- **Issues**: [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)
+- **What it does**: Structured decode for major VAA/TCA field labels and forecast hours;
+  shrink residual allowlist / update matrix tests toward `residuals == []` on official peers
+  where feasible (F9 G4 best-effort intent preserved until closed).
+- **Acceptance**: #820 checkboxes; **TC-EV030-820-***; deepen UJ-042
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -1173,6 +1220,7 @@
 | F21 | Yes (no login) | Yes (public + rate limits) | Yes (abuse tests) | Yes (API + static; Auth secrets optional) |
 | F22 | Yes (privacy settings) | — | Yes | Yes (static) |
 | F23 | Yes (SIGMET/VA SIGMET workbench smoke) | Yes (`lint-tac` / convert sigmet + VA) | Yes (goldens + matrix) | Yes if API/FE contract changes |
+| F29 | — (CI harness; FE only if #829 menu) | — | Yes (rule matrices) | Yes if FE unlock |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |

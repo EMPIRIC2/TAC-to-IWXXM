@@ -3,6 +3,71 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)
+
+**Session**: S037-quality-residuals-831  
+**Features**: **F29** (new — rule matrices) + deepen **F23** / **F12** / **F2** / **F13** / **F9** / **F26** / **F27**  
+**Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
+**Started**: 2026-08-02  
+**Branch**: `evolve/EV-030-quality-residuals-831`  
+**Status**: **in_progress** — M4 @ T4.3 (11+12); tip `3889e4c`; PR #832; `tac2iwxxm` **0.2.4**
+
+### Scope (Phase 0 — locked 2026-08-02 via 00-context)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E30-1 | decision | Session open? | **1** — S037 / EV-030 feature + 16-evolve (`D-S037-open`) |
+| E30-2 | decision | Residuals? | **1** — all three; order #831 → #829 → #820 |
+| E30-3 | decision | Routing preset? | **1** — Standard (`00→16→01→02→04→07→08→09→10→11→12→13`; skip 03/05/06) |
+| E30-4 | decision | UI preview? | **2** — docs/repo only (no non-deployed UI) |
+| E30-5 | decision | Session type? | **1** — feature → 16-evolve |
+| E30-6 | decision | Routing approve? | **1** — Standard path (`D-S037-route`) |
+| E30-7 | decision | Fn allocation? | **1** — F29 + deepen F23/F12/F2/F13/F9/F26/F27 (`D-S037-fn`) |
+| E30-8 | decision | Start 01? | **1** — start 01-requirements |
+| E30-9 | decision | Commit open? | **1** — yes (`D-S037-fn` Q3) |
+| E30-M | decision | Document Manifest? | **2,1** — lean + API/catalog note for #829; close 01 → 02 (`D-S037-E30-M`) |
+| E30-02F | decision | 02 Batch F? | **1,1,1,1** — M1/M2/M3/L1 approve (`D-S037-02-batch-f`) |
+| E30-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** (`D-S037-02-phase-a`) |
+| E30-T1 | decision | Milestone structure? | **1** — M0–M4 (`D-S037-04-batch-1`) |
+| E30-T2 | decision | #831 case storage? | **1** — YAML/JSON under testdata + pytest load |
+| E30-T3 | decision | Rule inventory SoT? | **1** — unified index → matrix slots |
+| E30-T4 | decision | #829 catalog unlock? | **1** — unlock when quality path green (ADR-032) |
+| E30-T5 | decision | New deps? | **2** — PyYAML OK if needed → **reuse** `tac2iwxxm` pyyaml; no new dep (`D-S037-04-batch-2`) |
+| E30-T6 | decision | Deploy / connectivity? | **1** — API redeploy; H1–H3; H4–H5 for FE catalog unlock |
+| E30-T7 | decision | F29 CI? | **1** — PR smoke subset + optional full-matrix marker/job |
+| E30-T8 | decision | Harness doc + home? | **1** — session design note + `tests/quality_matrices/` |
+| E30-T9 | gate | Gate B / plan approve? | **PASS** — approve M0–M4 (27 tasks) → **07 @ T0.1** (`D-S037-04-plan`) |
+| E30-semver | decision | Bump `tac-validate` after T2.2 codes? | **1** — **no bump** (remain `0.1.1`); defer to M2/M4 close (`D-S037-semver-none`) |
+| E30-semver-tac2iwxxm | decision | Bump `tac2iwxxm` after #820 decode deepen? | **2** — **patch** `0.2.3 → 0.2.4` (pyproject + Cargo + `__version__` + locks); no tags/PyPI (`D-S037-semver-tac2iwxxm`) |
+| E30-ui-preview | decision | Non-deployed UI preview (FE unlock)? | **2** — decline; H4–H5 at 13 (`D-S037-ui-preview`) |
+| E30-11 | decision | 11+12 signoff? | **1** — approve UJ-044 + F29 + deepen + start 13 (`D-S037-11` / `D-S037-12`) |
+| E30-T2.3 | decision | #829 STNR / exceptional geometry? | **OOS cite** for geometry beyond `WI … OF TC CENTRE`; **STNR in-cycle** via pack (`D-S037-T2.3-oos`; S02.M2) |
+| E30-ui-preview | decision | Non-deployed UI preview after FE catalog unlock? | **2** — **decline** (written interview; AskQuestion unavailable); **H4–H5 still required at M4/13** (`D-S037-ui-preview`) |
+
+**Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
+matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET
+tac-validate pack, STNR/geometry negatives or explicit OOS, A6-2-TC catalog/menu tier;
+(3) #820 deepen VAA/TCA decode beyond F9 G4 best-effort. Work order #831 → #829 → #820.
+
+**In:** Harness evaluation + pilot runners; TC SIGMET lint deepen + menu tier decision;
+VAA/TCA structured decode residual shrink; CI/docs for matrix authoring.
+
+**Out:** New deployables; #830 Supabase strip; #806 WIS2 mining; SIGWX/VONA/QVACI;
+non-deployed UI preview this session (H4–H5 only if FE menu unlock ships).
+
+### Acceptance (cycle)
+
+1. **F29** / #831: harness recommendation + runners + pilot or explicit `needs-fixture` (**TC-F29-001..007**; **TC-EV030-001..003**).
+2. #829: TC lint pack + STNR/geometry (or OOS) + A6-2-TC catalog tier (**TC-EV030-004/005**).
+3. #820: VAA/TCA decode residual deepen (**TC-EV030-006**).
+4. **UJ-044**; deploy smoke green or waived if no contract/FE change.
+
+### Journeys / tests
+
+- **UJ-044**; **TC-EV030-001..006**; **TC-F29-001..007**
+
+---
+
 ## Cycle EV-029 — #823 Eight-family AHL / lint / convert / validate gap sweep (S036)
 
 **Session**: S036-eight-family-ahl-rules-823  

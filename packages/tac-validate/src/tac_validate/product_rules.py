@@ -115,6 +115,10 @@ _SIGMET_VA_VOLCANO = re.compile(r"\bMT\b.+\bPSN\b|\bPSN\b.+\bMT\b")
 _SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
 _SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
 _SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
+# TC SIGMET — name/PSN identity vs OF TC CENTRE geometry (#829).
+_SIGMET_TC_IDENTITY = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\s+PSN\b")
+_SIGMET_OF_TC_CENTRE = re.compile(r"\bOF\s+TC\s+CENTRE\b")
+_SIGMET_TC_NAME = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\b")
 _WS_MAX_VALIDITY_HOURS = 4.0
 _WV_MAX_VALIDITY_HOURS = 6.0
 _WC_MAX_VALIDITY_HOURS = 6.0
@@ -1759,6 +1763,53 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
     return issues
 
 
+def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
+    """EV-030 theme TC — cyclone identity / OF TC CENTRE geometry (#829)."""
+    issues: list[Issue] = []
+    core = upper[:-1] if upper.endswith("=") else upper
+
+    has_identity = _SIGMET_TC_IDENTITY.search(core) is not None
+    has_of_centre = _SIGMET_OF_TC_CENTRE.search(core) is not None
+    has_tc_name = _SIGMET_TC_NAME.search(core) is not None
+    # TC family cue: named TC, OF TC CENTRE, or bare TC token (shared with G2 is_tc).
+    if not (has_identity or has_of_centre or has_tc_name or _SIGMET_TC_TOKEN.search(core)):
+        return issues
+
+    if has_identity:
+        _emit_token_info(
+            issues,
+            code="TC_CYCLONE_IDENTITY",
+            message="TC SIGMET tropical cyclone identity (TC … PSN) — #829 / TC-EV030-004",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="TC",
+        )
+    elif has_of_centre or has_tc_name:
+        _emit_token_info(
+            issues,
+            code="MISSING_TC_IDENTITY",
+            message="TC SIGMET missing cyclone identity (TC … PSN) — #829 / TC-EV030-004",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="TC",
+        )
+
+    if has_of_centre and _SIGMET_WI.search(core):
+        _emit_token_info(
+            issues,
+            code="TC_CB_GEOMETRY",
+            message="TC SIGMET CB geometry WI … OF TC CENTRE — #829 / TC-EV030-004",
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="TC",
+        )
+
+    return issues
+
+
 def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -1787,6 +1838,8 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
         issues.extend(_check_sigmet_g2(start=start, end=end, upper=upper, is_va=is_va, is_tc=is_tc))
         if is_va:
             issues.extend(_check_sigmet_v1(start=start, end=end, upper=upper))
+        if is_tc and not is_va:
+            issues.extend(_check_sigmet_tc(start=start, end=end, upper=upper))
     elif product == "AIRMET":
         # F24 theme A1 — sequence + FIR (CNL still needs identity; skip multi-family below).
         issues.extend(_check_airmet_a1(start=start, end=end, upper=upper))

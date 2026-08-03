@@ -546,6 +546,28 @@ ISSUES: tuple[IssueSpec, ...] = (
         product="sigmet",
         tags=("va", "no_va_exp", "sigmet", "v1"),
     ),
+    # F23 deepen / EV-030 theme TC — TC SIGMET (#829 / TC-EV030-004)
+    _row(
+        "TC_CYCLONE_IDENTITY",
+        "info",
+        "TC SIGMET tropical cyclone identity (TC … PSN) — #829 / TC-EV030-004",
+        product="sigmet",
+        tags=("tc", "cyclone", "sigmet", "ev030"),
+    ),
+    _row(
+        "TC_CB_GEOMETRY",
+        "info",
+        "TC SIGMET CB geometry WI … OF TC CENTRE — #829 / TC-EV030-004",
+        product="sigmet",
+        tags=("tc", "geometry", "sigmet", "ev030"),
+    ),
+    _row(
+        "MISSING_TC_IDENTITY",
+        "error",
+        "TC SIGMET missing cyclone identity (TC … PSN) — #829 / TC-EV030-004",
+        product="sigmet",
+        tags=("tc", "cyclone", "sigmet", "ev030"),
+    ),
     _row(
         "MISSING_DTG",
         "error",

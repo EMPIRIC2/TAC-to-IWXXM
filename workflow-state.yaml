@@ -1,11 +1,191 @@
-overall_status: idle
+overall_status: in_progress
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 36
-evolve_cycle_counter: 29
-active_session: null
+session_counter: 37
+evolve_cycle_counter: 30
+active_session:
+  id: S037-quality-residuals-831
+  type: feature
+  intent: |
+    EV-029 residuals — #831 parameterized rule matrices, #829 TC SIGMET deepen,
+    #820 VAA/TCA decode residual deepen. Work order #831 → #829 → #820.
+  status: in_progress
+  branch: evolve/EV-030-quality-residuals-831
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-030
+  github_issues:
+  - '831'
+  - '835'
+  github_issues_closed:
+  - '829'
+  - '820'
+  feature_ids:
+  - F29
+  - F23
+  - F12
+  - F2
+  - F13
+  - F9
+  - F26
+  - F27
+  artifacts_dir: docs/sessions/S037-quality-residuals-831/
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    skip_rationale: null
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    skip_rationale: null
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-02'
+    completed: '2026-08-02'
+    skip_rationale: null
+    note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-02'
+    completed: '2026-08-03'
+    skip_rationale: null
+    note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1 (D-S037-02-batch-f); verify-plan-audit.md; handoff 04-tech-plan; #831→#829→#820'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-03'
+    completed: '2026-08-03'
+    skip_rationale: null
+    note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; #831→#829→#820'
+  - stage: 07-build
+    required: true
+    status: in_progress
+    started: '2026-08-03'
+    skip_rationale: null
+    note: 'IN PROGRESS — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); active_task → T4.3 in_progress @ M4 (11-verify-impl + 12-verify-deploy; PENDING user signoff); D-S037-semver-tac2iwxxm=2 resolved; tac2iwxxm 0.2.4; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+  - stage: 08-verify-build
+    required: true
+    status: completed
+    completed: '2026-08-03'
+    started: '2026-08-03'
+    skip_rationale: null
+    note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
+  - stage: 09-qa
+    required: true
+    status: completed
+    started: '2026-08-03'
+    completed: '2026-08-03'
+    skip_rationale: null
+    note: 'COMPLETE (delta) — T4.2; qa-report.md pass_with_advisories; H4–H5 → T4.4'
+  - stage: 10-e2e
+    required: true
+    status: completed
+    started: '2026-08-03'
+    completed: '2026-08-03'
+    skip_rationale: null
+    note: 'COMPLETE (delta) — T4.2; e2e-report.md T0 PASS; H4–H5 → T4.4'
+  - stage: 11-verify-impl
+    required: true
+    status: in_progress
+    started: '2026-08-03'
+    skip_rationale: null
+    note: 'IN PROGRESS — T4.3; verify-impl.md written; PENDING user signoff'
+  - stage: 12-verify-deploy
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 13-deploy-smoke
+    required: true
+    status: pending
+    skip_rationale: null
+  current_stage: 11-verify-impl
+  started_at: '2026-08-02'
+  context_briefs:
+  - docs/context/quality-residuals-831.md
+  decision_refs:
+  - D-S037-open
+  - D-S037-route
+  - D-S037-fn
+  - D-S037-E30-M
+  - D-S037-02-batch-f
+  - D-S037-02-phase-a
+  - D-S037-04-batch-1
+  - D-S037-04-batch-2
+  - D-S037-04-plan
+  - D-S037-08-m1-pass
+  - D-S037-08-m2-pass
+  - D-S037-08-m3-pass
+  - D-S037-semver-none
+  - D-S037-T2.3-oos
+  - D-S037-ui-preview
+  - D-S037-semver-tac2iwxxm
+  artifacts:
+  - path: docs/sessions/S037-quality-residuals-831/session-brief.md
+    status: approved
+  - path: docs/sessions/S037-quality-residuals-831/routing-plan.md
+    status: approved
+  - path: docs/context/quality-residuals-831.md
+    status: written
+  - path: docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    status: approved
+    note: 'T4.2 COMPLETE; T4.3 in_progress (11+12 pending signoff); progress 24/27; active_task → T4.3 @ M4'
+  - path: docs/sessions/S037-quality-residuals-831/reports/qa-report.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/e2e-report.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verify-impl.md
+    status: written
+    note: 'PENDING user signoff (stage 11)'
+  - path: docs/sessions/S037-quality-residuals-831/reports/deploy-checklist.md
+    status: written
+    note: 'PENDING user signoff (stage 12)'
+  - path: docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t2.6-829-closeout.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t3.1-vaa-tca-residual-baseline.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t3.2-vaa-tca-structured-decode.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t3.3-vaa-tca-residual-shrink.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t3.4-820-closeout.md
+    status: completed
+  - path: tests/quality_matrices/
+    status: staged
+  - path: docs/api-contract.md
+    status: touched
+  preset: Standard
+  preset_status: approved
+  note: 'S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); T4.3 in_progress (11+12 reports written; PENDING user signoff); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -3307,64 +3487,101 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: empiric2-ops-leftovers-781
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    substeps:
-      phase0: completed
-      phase1a: completed
-      phase1b: skipped
-      phase1c: skipped
-      phase2: completed
-      phase3: completed
-      phase4: completed
-    note: 'S035/EV-028 00-context COMPLETE — D-S035-open + D-S035-routing; Lean+build approved; session-brief + routing-plan locked; handoff 16-evolve → 01-requirements; #781'
-    prior_note: 'S035/EV-028 00-context STARTED — D-S035-open (1b/2a/3b/4b); session-brief in_progress; routing-plan.md pending_approval (not approved); branch active; #781'
+    scoped_slug: quality-residuals-831
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    started: '2026-08-02'
+    started_at: '2026-08-02'
+    completed: '2026-08-02'
+    completed_at: '2026-08-02'
+    note: 'S037/EV-030 00-context COMPLETE — D-S037-route (1) Standard approved; session-brief + routing-plan approved; context written; handoff 16-evolve Phase 1 Fn allocation; #831→#829→#820'
+    prior_note: 'S035/EV-028 00-context COMPLETE — D-S035-open + D-S035-routing; Lean+build approved; session-brief + routing-plan locked; handoff 16-evolve → 01-requirements; #781'
+    prior_session_id: S035-empiric2-ops-leftovers-781
+    prior_evolve_cycle_id: EV-028
+    prior_scoped_slug: empiric2-ops-leftovers-781
+    prior_completed: '2026-08-01'
     artifacts:
-    - docs/sessions/S035-empiric2-ops-leftovers-781/
-    - docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
-    - docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
+    - docs/sessions/S037-quality-residuals-831/
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    - docs/sessions/S037-quality-residuals-831/routing-plan.md
+    - docs/context/quality-residuals-831.md
 
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    prior_note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
-    note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
+    started_at: '2026-08-02'
+    started: '2026-08-02'
+    completed_at: '2026-08-02'
+    completed: '2026-08-02'
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    prior_session_id: S035-empiric2-ops-leftovers-781
+    prior_evolve_cycle_id: EV-028
+    prior_started: '2026-08-01'
+    prior_completed: '2026-08-01'
+    prior_note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
+    note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
     substeps:
       interviews:
         status: completed
         completed: 1
-        current_template: complete
-        current_section: complete
+        current_template:
+        current_section:
     active_session:
-      session_id: S035-empiric2-ops-leftovers-781
-      evolve_cycle_id: EV-028
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
       status: completed
       mode: delta
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; handoff 02-verify-plan; #781'
-      feature_ids: []
+      started_at: '2026-08-02'
+      started: '2026-08-02'
+      completed_at: '2026-08-02'
+      completed: '2026-08-02'
+      note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; handoff 02-verify-plan; #831→#829→#820'
+      feature_ids:
+      - F29
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
       decision_refs:
-      - D-S035-open
-      - D-S035-routing
-      - E28-M
-      - E28-E1
-      - D-S035-E28-M
-      - D-S035-E28-E1
+      - D-S037-open
+      - D-S037-route
+      - D-S037-fn
+      - D-S037-E30-M
     delta_substages:
+    - status: completed
+      mode: delta
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      started_at: '2026-08-02'
+      started: '2026-08-02'
+      completed_at: '2026-08-02'
+      completed: '2026-08-02'
+      note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
+      deepen:
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
+      feature_ids:
+      - F29
+      artifacts:
+      - docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/decisions/evolve-decisions.md
+      - docs/api-contract.md
+      decision_refs:
+      - D-S037-fn
+      - D-S037-E30-M
     - status: completed
       mode: delta
       session_id: S035-empiric2-ops-leftovers-781
@@ -3944,6 +4161,8 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-08-02 S037/EV-030 01-requirements COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; report docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md; handoff 02-verify-plan; sha pending parent commit; #831→#829→#820'
+    - '2026-08-02 S037/EV-030 01-requirements STARTED (delta) — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; #831→#829→#820'
     - 'S035/EV-028 01-requirements COMPLETE 2026-08-01 (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md; handoff 02-verify-plan; #781'
     - 'S034/EV-027 01-requirements COMPLETE 2026-07-31 (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; report docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md; handoff 02-verify-plan; #815'
     - '2026-07-31 S034/EV-027 01-requirements STARTED (delta) — deepen F25/F9/F7.g; D-S034-open=1,1,2,1; starting delta interview; #815'
@@ -3993,52 +4212,67 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    prior_note: 'COMPLETE (delta) — Gate A PASS (D-S035-02-phase-a); D-S035-E28-S21 UJ-023 amend; report reports/verify-plan-audit.md; handoff 04-tech-plan; #781'
-    note: 'COMPLETE (delta) — Gate A PASS (D-S036-02-phase-a); Batch F 1,1,1,1 (D-S036-02-batch-f); reports/verify-plan-audit.md; handoff 04-tech-plan; #823'
+    started_at: '2026-08-02'
+    started: '2026-08-02'
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    prior_session_id: S036-eight-family-ahl-rules-823
+    prior_evolve_cycle_id: EV-029
+    prior_started: '2026-08-01'
+    prior_completed: '2026-08-01'
+    prior_note: 'COMPLETE (delta) — Gate A PASS (D-S036-02-phase-a); Batch F 1,1,1,1 (D-S036-02-batch-f); reports/verify-plan-audit.md; handoff 04-tech-plan; #823'
+    note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1 (D-S037-02-batch-f); reports/verify-plan-audit.md; handoff 04-tech-plan; #831→#829→#820'
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
-    - D-S036-02-phase-a
-    - D-S036-02-batch-f
-    - D-S036-E29-M
-    - D-S036-fn
-    - D-S036-open
+    - D-S037-02-phase-a
+    - D-S037-02-batch-f
+    - D-S037-E30-M
+    - D-S037-fn
+    - D-S037-route
+    - D-S037-open
     substeps:
       inventory:
         status: completed
       consistency_check:
         status: completed
       statement_review:
-        auto_approved: 9
+        auto_approved: 0
         pending: 0
-        reviewed: 9
+        reviewed: 0
     current_document:
     current_statement:
     active_session:
-      session_id: S036-eight-family-ahl-rules-823
-      evolve_cycle_id: EV-029
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      note: 'COMPLETE (delta) — Gate A PASS (D-S036-02-phase-a); D-S036-02-batch-f; #823'
-      feature_ids: []
+      started_at: '2026-08-02'
+      started: '2026-08-02'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1; reports/verify-plan-audit.md; #831→#829→#820'
+      feature_ids:
+      - F29
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
       decision_refs:
-      - D-S036-02-phase-a
-      - D-S036-02-batch-f
-      - D-S036-E29-M
-      - D-S036-fn
-      - D-S036-open
+      - D-S037-02-phase-a
+      - D-S037-02-batch-f
+      - D-S037-E30-M
+      - D-S037-fn
+      - D-S037-route
+      - D-S037-open
     artifacts:
+    - docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/verify-plan-audit.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/02-verify-plan-audit.md
@@ -4056,6 +4290,53 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-08-02'
+      started: '2026-08-02'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      mode: delta
+      feature_ids:
+      - F29
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
+      decision_refs:
+      - D-S037-02-phase-a
+      - D-S037-02-batch-f
+      - D-S037-E30-M
+      - D-S037-fn
+      - D-S037-route
+      - D-S037-open
+      note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1; reports/verify-plan-audit.md; #831→#829→#820'
+      artifacts:
+      - docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
+    - session_id: S036-eight-family-ahl-rules-823
+      evolve_cycle_id: EV-029
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-08-01'
+      started: '2026-08-01'
+      completed_at: '2026-08-01'
+      completed: '2026-08-01'
+      mode: delta
+      feature_ids: []
+      decision_refs:
+      - D-S036-02-phase-a
+      - D-S036-02-batch-f
+      - D-S036-E29-M
+      - D-S036-fn
+      - D-S036-open
+      note: 'COMPLETE (delta) — Gate A PASS (D-S036-02-phase-a); Batch F 1,1,1,1; reports/verify-plan-audit.md; #823'
+      artifacts:
+      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-plan-audit.md
     - session_id: S035-empiric2-ops-leftovers-781
       evolve_cycle_id: EV-028
       skill_id: 02-verify-plan
@@ -4547,27 +4828,26 @@ stages:
   04-tech-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    completed_at: '2026-08-03T12:13:10Z'
+    completed: '2026-08-03'
     previous_started_at: '2026-08-01'
     previous_completed_at: '2026-08-01'
-    previous_session_id: S035-empiric2-ops-leftovers-781
-    previous_evolve_cycle_id: EV-028
-    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b tag-from-evolve; 12a → 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip b8e37ae; #781'
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    prior_note: 'STARTED (delta) — D-S036-02-phase-a Gate A PASS → 04; delta interview Batch 1; #823'
-    note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #823'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
+    previous_session_id: S036-eight-family-ahl-rules-823
+    previous_evolve_cycle_id: EV-029
+    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #823'
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    prior_note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #823'
+    note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip d721de6; #831→#829→#820'
     decision_refs:
-    - D-S036-04-plan
-    - D-S036-04-batch-1
-    - D-S036-04-batch-2
-    - D-S036-02-phase-a
-    - D-S036-02-batch-f
+    - D-S037-04-plan
+    - D-S037-04-batch-2
+    - D-S037-04-batch-1
+    - D-S037-02-phase-a
+    - D-S037-02-batch-f
+    - D-S037-E30-M
     substeps:
       phase_1_toolchain:
         status: completed
@@ -4582,24 +4862,35 @@ stages:
       phase_6_documents:
         status: completed
     active_session:
-      session_id: S036-eight-family-ahl-rules-823
-      evolve_cycle_id: EV-029
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
       skill_id: 04-tech-plan
       status: completed
       mode: delta
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; #823'
-      feature_ids: []
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: '2026-08-03T12:13:10Z'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; #831→#829→#820'
+      feature_ids:
+      - F29
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
       decision_refs:
-      - D-S036-04-plan
-      - D-S036-04-batch-1
-      - D-S036-04-batch-2
-      - D-S036-02-phase-a
-      - D-S036-02-batch-f
+      - D-S037-04-plan
+      - D-S037-04-batch-2
+      - D-S037-04-batch-1
+      - D-S037-02-phase-a
+      - D-S037-02-batch-f
+      - D-S037-E30-M
     artifacts:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
@@ -5309,6 +5600,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-08-03 S037/EV-030 04 COMPLETE Gate B (D-S037-04-plan=1) — approve M0–M4 27 tasks; handoff 07 @ T0.1; gates.b_to_c passed; tip d721de6; #831→#829→#820'
     - '2026-08-01 S036/EV-029 04 COMPLETE Gate B (D-S036-04-plan) — approve M0–M12 48 tasks; handoff 07 @ T0.1; gates.b_to_c passed; #823'
     - '2026-08-01 S035/EV-028 04 COMPLETE Gate B (D-S035-04-plan-approve) — 11b tag-from-evolve; 12a → 07 @ T0.1; tip b8e37ae; #781'
     - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; gates.b_to_c pending (plan approved); #815'
@@ -5562,39 +5854,88 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-02'
-    completed: '2026-08-02'
+    status: in_progress
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    completed_at:
+    completed:
     previous_started_at: '2026-08-01'
-    previous_completed_at: '2026-08-01'
-    previous_session_id: S035-empiric2-ops-leftovers-781
-    previous_evolve_cycle_id: EV-028
-    previous_tip_sha: 70312dd
-    previous_tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
-    previous_note: 'S035/EV-028 07-build COMPLETE — M0–M3 (15/15); T3.5 done; PR #824 merged @ 70312dd; #781 closed'
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
+    previous_completed_at: '2026-08-02'
+    previous_session_id: S036-eight-family-ahl-rules-823
+    previous_evolve_cycle_id: EV-029
+    previous_tip_sha: e53e9a2
+    previous_tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
+    previous_note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
     mode: full
-    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
-    tip_sha: e53e9a2
-    tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
-    progress: 48/48
-    current_milestone: M12
-    current_task: T12.6
-    active_milestone: M12
-    active_task: T12.6
+    note: 'IN PROGRESS — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); active_task → T4.3 in_progress @ M4 (11-verify-impl + 12-verify-deploy; PENDING user signoff); D-S037-semver-tac2iwxxm=2 resolved; tac2iwxxm 0.2.4; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+    tip_sha: 3889e4c
+    tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+    progress: 24/27
+    current_milestone: M4
+    current_task: T4.3
+    active_milestone: M4
+    active_task: T4.3
     active_task_status: in_progress
+    m3_complete: true
+    m3_tip_sha: 1f47eb5
+    m3_commits:
+    - T3.2: 8ed4b78
+    - T3.3: e8d0358
+    - T3.4: cd95b12
+    - chore: 8f6e4da
+    - T3.3-fix: 1f47eb5
+    issue_820_closed: true
+    semver_tac2iwxxm: 0.2.4
+    semver_decision_id: D-S037-semver-tac2iwxxm
+    semver_decision: '2 — patch 0.2.3 → 0.2.4 @ 3889e4c'
+    ci_run: '30823368642'
+    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30823368642
+    ci_status: success
+    ci_note: 'T3.3 fix push CI SUCCESS @ 1f47eb5'
+    t4_1_complete: true
+    t4_2_complete: true
+    pr_m1_number: 832
+    pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+    pr_m1_status: open
+    pr_m2_number: 832
+    pr_m2_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+    pr_m2_status: open
+    pr_m2_note: 'PR-M2 updates same PR #832; 08 M2 PASS'
+    ci_run: '30818578657'
+    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657
+    ci_status: success
+    ci_note: 'M2 push CI SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable)'
     decision_refs:
-    - D-S036-04-plan
-    - D-S036-02-phase-a
-    - D-S036-02-batch-f
-    - D-S036-semver-minor
-    - D-S036-semver-patch
-    - D-S036-semver-patch-2
-    - D-S036-semver-patch-3
+    - D-S037-04-plan
+    - D-S037-04-batch-2
+    - D-S037-04-batch-1
+    - D-S037-02-phase-a
+    - D-S037-02-batch-f
+    - D-S037-E30-M
+    - D-S037-08-m1-pass
+    - D-S037-08-m2-pass
+    - D-S037-08-m3-pass
+    - D-S037-semver-none
+    - D-S037-T2.3-oos
+    - D-S037-ui-preview
     artifacts:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
+    - docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
+    - docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
+    - docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
+    - docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+    - docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.1-vaa-tca-residual-baseline.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.2-vaa-tca-structured-decode.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.3-vaa-tca-residual-shrink.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.4-820-closeout.md
+    - docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
+    - docs/sessions/S037-quality-residuals-831/reports/t2.6-829-closeout.md
+    - tests/quality_matrices/
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
@@ -5618,73 +5959,76 @@ stages:
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     active_session:
-      session_id: S036-eight-family-ahl-rules-823
-      evolve_cycle_id: EV-029
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
       skill_id: 07-build
       status: in_progress
       mode: full
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
-      tip_sha: e53e9a2
-      tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
-      progress: 48/48
-      active_milestone: M12
-      current_milestone: M12
-      active_task: T12.7
-      current_task: T12.7
-      active_task_status: completed
-      pr_number: 828
-      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-      pr_status: merged
-      merged_at: '2026-08-02T14:18:36Z'
-      pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      note: 'IN PROGRESS — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); active_task → T4.3 in_progress @ M4 (11-verify-impl + 12-verify-deploy; PENDING user signoff); D-S037-semver-tac2iwxxm=2 resolved; tac2iwxxm 0.2.4; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+      tip_sha: 1f47eb5
+      tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
+      progress: 24/27
+      active_milestone: M4
+      current_milestone: M4
+      active_task: T4.2
+      current_task: T4.2
+      active_task_status: pending
+      pr_m1_number: 832
+      pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+      pr_m1_status: open
+      pr_m2_number: 832
+      pr_m2_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+      pr_m2_status: open
+      pr_m2_note: 'PR-M2 updates same PR #832; 08 M2 PASS'
       feature_ids:
-      - F28
-      - F6
+      - F29
+      - F23
       - F12
       - F2
       - F13
-      - F15
-      - F20
-      - F23
-      - F24
+      - F9
       - F26
       - F27
       decision_refs:
-      - D-S036-04-plan
-      - D-S036-02-phase-a
-      - D-S036-02-batch-f
-      - D-S036-semver-patch
-      - D-S036-semver-patch-2
-      - D-S036-semver-patch-3
-      - D-S036-11
-      - D-S036-12
+      - D-S037-04-plan
+      - D-S037-04-batch-2
+      - D-S037-04-batch-1
+      - D-S037-02-phase-a
+      - D-S037-02-batch-f
+      - D-S037-E30-M
+      - D-S037-08-m1-pass
+      - D-S037-08-m2-pass
+      - D-S037-08-m3-pass
+      - D-S037-semver-none
+      - D-S037-T2.3-oos
+      - D-S037-ui-preview
       artifacts:
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/ahl-design-note.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/m0-exit-checklist.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/m1-closeout.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m6.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m11-t11.7.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.1.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.2.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md
+      - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+      - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+      - docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
+      - docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
+      - docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
+      - docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
+      - docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+      - docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
+      - docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
+      - docs/sessions/S037-quality-residuals-831/reports/t2.6-829-closeout.md
+      - docs/sessions/S037-quality-residuals-831/reports/t3.1-vaa-tca-residual-baseline.md
+      - docs/sessions/S037-quality-residuals-831/reports/t3.2-vaa-tca-structured-decode.md
+      - docs/sessions/S037-quality-residuals-831/reports/t3.3-vaa-tca-residual-shrink.md
+      - docs/sessions/S037-quality-residuals-831/reports/t3.4-820-closeout.md
+      - tests/quality_matrices/
     substeps:
       task_loop:
         status: in_progress
-        current_task: T12.5
-        active_task_status: pending
-        active_milestone: M12
+        current_task: T4.3
+        active_task_status: in_progress
+        active_milestone: M4
         phase: C
-        milestone: M12
-        notes: "T12.4 COMPLETE @ 0e34866; tip ahead pending push or just pushed; next T12.5 pending (11-verify-impl + 12-verify-deploy); progress 45/48; #828; #823"
+        milestone: M4
+        notes: 'IN PROGRESS — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); active_task → T4.3 in_progress @ M4 (11-verify-impl + 12-verify-deploy; PENDING user signoff); D-S037-semver-tac2iwxxm=2 resolved; tac2iwxxm 0.2.4; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -6173,6 +6517,22 @@ stages:
     - '2026-08-02 S036/EV-029 07-build — M2 T2.1 STARTED (METAR gap fixtures); tip c4b2b5d; #823'
     - '2026-08-02 S036/EV-029 M1 PR #827 MERGED to main @ c338108 (2026-08-02T14:18:36Z); M2 @ T2.1 pending; branch evolve/EV-029-eight-family-ahl-rules remains active for M2+; #823'
     - '2026-08-02 S036/EV-029 07-build — M0 COMPLETE (T0.1–T0.6 PASS); advance M1 @ T1.1 pending; tip c181ede; #823'
+    - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; D-S037-ui-preview=2 confirmed; H4–H5 still required at M4/13; progress 23/27; active_task → T4.2 pending @ M4; semver AskQuestion pending D-S037-semver-tac2iwxxm (tac2iwxxm 0.2.3 decode deepen); workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+    - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+    - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
+    - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 07-build — M1 COMPLETE T1.1–T1.8 @ 0151e11 (convert/validate pilots + inventory gate + smoke CI; 50 smoke pass); next 08-verify-build / M1 PR then T2.1; progress 12/27; tip 0151e11; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 07-build — T1.3 COMPLETE @ ce27667 (36×20 lint pilot; 39 pass/718 skip); next T1.4 pending @ M1; progress 7/27; tip ce27667; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 07-build — T1.2 COMPLETE @ cab174d (runners + skip policy; 34 passed); next T1.3 pending @ M1; progress 6/27; tip cab174d; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 07-build — T1.1 COMPLETE @ 6294557 (YAML/JSON loader + schema; 25 passed); next T1.2 pending @ M1; progress 5/27; tip 6294557; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 07-build — M0 COMPLETE (T0.1–T0.4); next T1.1 @ M1; progress 4/27; tip 80b1b49; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 07-build STARTED (D-S037-04-plan=1) — @ T0.1 M0; gates.b_to_c passed; tip d721de6; #831→#829→#820'
     - '2026-08-01 S036/EV-029 07-build STARTED (D-S036-04-plan) — @ T0.1 M0; gates.b_to_c passed; local tip 26513b6; #823'
     - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
     - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
@@ -6420,6 +6780,26 @@ stages:
     active_task_status: completed
     progress: 45/48
     delta_substages:
+    - id: S037-quality-residuals-831
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      branch: evolve/EV-030-quality-residuals-831
+      tip_sha: 3889e4c
+      tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+      overall: pass_with_advisories
+      report: docs/sessions/S037-quality-residuals-831/reports/qa-report.md
+      note: 'COMPLETE (delta) — T4.2; pass_with_advisories; H4–H5 → T4.4'
+      active_milestone: M4
+      active_task: T4.2
+      active_task_status: completed
+      progress: 24/27
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
@@ -6575,8 +6955,34 @@ stages:
     started: '2026-08-02'
     note: 'COMPLETE (delta) — T12.4; report docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md; 100-pass smoke batch; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
   11-verify-impl:
-    status: completed
-    started_at: '2026-08-02'
+    status: in_progress
+    started_at: '2026-08-03'
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    mode: delta
+    note: 'IN PROGRESS — T4.3; PENDING user signoff'
+    delta_substages:
+    - id: S037-quality-residuals-831
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 11-verify-impl
+      status: in_progress
+      mode: delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      branch: evolve/EV-030-quality-residuals-831
+      tip_sha: 3889e4c
+      tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+      report: docs/sessions/S037-quality-residuals-831/reports/verify-impl.md
+      deploy_checklist: docs/sessions/S037-quality-residuals-831/reports/deploy-checklist.md
+      note: 'IN PROGRESS — T4.3; verify-impl.md + deploy-checklist.md written; PENDING user signoff (11 then 12)'
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: in_progress
+      progress: 24/27
+      decision_id: D-S037-semver-tac2iwxxm
+      pending_signoff: true
+    started_at_prev: '2026-08-02'
     started: '2026-08-02'
     completed_at: '2026-08-02'
     completed: '2026-08-02'
@@ -6863,6 +7269,26 @@ stages:
         status: deferred
         note: deferred to T12.6/13
     delta_substages:
+    - id: S037-quality-residuals-831
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 10-e2e
+      status: completed
+      mode: smoke
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      branch: evolve/EV-030-quality-residuals-831
+      tip_sha: 3889e4c
+      tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+      overall: pass
+      report: docs/sessions/S037-quality-residuals-831/reports/e2e-report.md
+      note: 'COMPLETE (smoke) — T4.2 UJ-044 T0 PASS; H4–H5 → T4.4'
+      active_milestone: M4
+      active_task: T4.2
+      active_task_status: completed
+      progress: 24/27
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
@@ -7212,40 +7638,119 @@ stages:
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md - F7.g
   08-verify-build:
     status: completed
-    started_at: '2026-08-02'
-    completed_at: '2026-08-02'
-    completed: '2026-08-02'
-    previous_started_at: '2026-08-01'
-    previous_completed_at: '2026-08-01'
-    previous_session_id: S035-empiric2-ops-leftovers-781
-    previous_evolve_cycle_id: EV-028
-    previous_tip_sha: 70312dd
-    previous_note: 'S035/EV-028 08-verify-build COMPLETE PASS — t31-verify-build.md; tip 70312dd; #781 closed'
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    tip_sha: 0e34866
-    tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
+    previous_started_at: '2026-08-02'
+    previous_completed_at: '2026-08-02'
+    previous_session_id: S036-eight-family-ahl-rules-823
+    previous_evolve_cycle_id: EV-029
+    previous_tip_sha: 0e34866
+    previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
+    previous_note: 'S036/EV-029 08-verify-build COMPLETE PASS — T12.3 M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip 620fa9b; next T12.4 09+10 STARTED; #828; #823'
+    previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    tip_sha: 1f47eb5
+    tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
     overall: pass
-    note: 'S036/EV-029 08-verify-build COMPLETE PASS — T12.3 M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip 620fa9b; next T12.4 09+10 STARTED; #828; #823'
-    report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
-    active_milestone: M12
-    active_task: T12.3
+    note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
+    report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md
+    prior_m1_report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+    prior_m1_tip_sha: 0151e11
+    active_milestone: M3
+    active_task: T4.1
     active_task_status: completed
-    progress: 44/48
+    progress: 24/27
+    decision_refs:
+    - D-S037-08-m3-pass
+    - D-S037-08-m2-pass
+    - D-S037-08-m1-pass
     substeps:
       lint:
-        status: completed
+        status: pass
       format:
-        status: completed
+        status: pass
       typecheck:
-        status: completed
+        status: pass
       tests:
-        status: completed
+        status: pass
       security:
-        status: completed
+        status: pass
       report:
         status: completed
     delta_substages:
+    - id: S037-quality-residuals-831-M3
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md
+      tip_sha: 1f47eb5
+      tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
+      active_milestone: M3
+      active_task: T4.1
+      active_task_status: completed
+      progress: 24/27
+      note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report verification-report-m3.md; CI 30823368642 SUCCESS; active_task → T4.2 pending; reopen 08 for final M4'
+      branch: evolve/EV-030-quality-residuals-831
+      decision_id: D-S037-08-m3-pass
+      ci_run: '30823368642'
+      ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30823368642
+      ci_status: success
+      pr_number: 832
+      pr_note: 'PR #832 updated'
+    - id: S037-quality-residuals-831-M2
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+      tip_sha: aa8dc89
+      tip_sha_full: aa8dc89b0d1ed1173d4e0801bfa0d49ea6577fe7
+      active_milestone: M2
+      active_task_status: completed
+      progress: 18/27
+      note: 'COMPLETE (M2 gate) — PASS @ tip aa8dc89; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md; reopen for final M4 08; PR #832 open (PR-M2 update); M3 T3.1 pending; #831→#820 (#829 closed)'
+      branch: evolve/EV-030-quality-residuals-831
+      decision_id: D-S037-08-m2-pass
+      related_issues_closed: ['829']
+      related_issues_opened: ['835']
+      pr_number: 832
+      pr_note: 'PR-M2 updates same PR #832'
+    - id: S037-quality-residuals-831-M1
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      mode: delta
+      overall: pass
+      report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
+      tip_sha: 0151e11
+      tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
+      active_milestone: M1
+      active_task_status: completed
+      progress: 12/27
+      note: 'M1 PASS — report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; tip 0151e11; PR-M1 #832 open; M2 T2.1 in_progress; #831→#829→#820'
+      branch: evolve/EV-030-quality-residuals-831
+      decision_id: D-S037-08-m1-pass
     - id: S036-eight-family-ahl-rules-823-M12-T12.3
       session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
@@ -7568,6 +8073,10 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+    - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
+    - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
     - '2026-08-02 S036/EV-029 — T12.3 COMPLETE @ 620fa9b; T12.4 STARTED — 09-qa delta + 10-e2e smoke UJ-043; progress 44/48; tip 620fa9b; #828; #823 (08 tip synced @ 620fa9b; T12.4 STARTED)'
     - '2026-08-02 S036/EV-029 08-verify-build COMPLETE PASS — T12.3 M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); CI/CD 30771391289 SUCCESS; next T12.4 pending; progress 44/48; #828; #823'
     - '2026-07-31 S034/EV-027 08-verify-build COMPLETE PASS — verification-report.md; tip 245d518; #815'
@@ -8322,20 +8831,45 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    current_stage:
-    prior_note: 'S035/EV-028 16-evolve in_progress — T3.5 PR #824 OPEN @ a6db427; CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
-    note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
-    tip_sha: 8086664
-    tip_sha_full: 8086664df0e04fe60da43baf7cd16a396910210d
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    started_at: '2026-08-02'
+    started: '2026-08-02'
+    completed_at:
+    completed:
+    current_stage: 11-verify-impl
+    prior_session_id: S035-empiric2-ops-leftovers-781
+    prior_evolve_cycle_id: EV-028
+    prior_completed: '2026-08-01'
+    prior_note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
+    note: 'S037/EV-030 16-evolve — T4.2 COMPLETE; T4.3 in_progress (11+12 pending signoff); D-S037-semver-tac2iwxxm=2 tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; H4–H5 at T4.4/13; dirty pending chore sync; PR #832 open; #831→#835'
+    tip_sha: 1f47eb5
+    tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
     notes:
+    - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; report verification-report-m3.md; active_task → T4.2 pending; progress 23/27; #831→#835'
+    - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; D-S037-ui-preview=2 confirmed; H4–H5 still required at M4/13; progress 23/27; active_task → T4.2 pending @ M4; semver AskQuestion pending D-S037-semver-tac2iwxxm (tac2iwxxm 0.2.3 decode deepen); workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+    - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+    - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
+    - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — 08-verify-build STARTED at M1 boundary; M1 T1.1–T1.8 complete @ tip 0151e11; before minor PR then M2; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T1.3 COMPLETE @ ce27667 (36×20 lint pilot; 39 pass/718 skip); next T1.4 convert pilot; progress 7/27; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T1.2 COMPLETE @ cab174d (runners + skip policy; 34 passed); next T1.3 lint pilot; progress 6/27; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T1.1 COMPLETE @ 6294557 (YAML/JSON loader + schema; 25 passed); next T1.2 runners; progress 5/27; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — 07-build M1 T1.1 in_progress (shared YAML/JSON loader + case schema tests); tip bdb87ad; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-04-plan=1 Gate B PASS; 04 COMPLETE → 07-build; M0 COMPLETE (T0.1–T0.4); next T1.1; tip 80b1b49; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-04-batch-2 (2,1,1,1) Batch 2 locked; execution-plan.md draft (27 tasks); Gate B pending; 04 remains in_progress; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — D-S037-04-batch-1 (1,1,1,1) Batch 1 locked; Batch 2 next; 04 remains in_progress; #831→#829→#820'
+    - '2026-08-02 S037/EV-030 D-S037-E30-M (2,1) — lean + API/catalog #829; 01 COMPLETE → 02-verify-plan in_progress; sha pending parent commit; #831→#829→#820'
+    - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; start 01-requirements (delta); commit open; #831→#829→#820'
+    - '2026-08-02 S037/EV-030 16-evolve STARTED — D-S037-route (1) Standard; 00 COMPLETE; Phase 1 Fn allocation; EV-030 created; #831→#829→#820'
     - '2026-08-02 S035/EV-028 CLOSED — Phase 4 close D-S035-EV028-phase4-close option 1; PR #824 @ 70312dd; #825 closeout MERGED @ 8086664; #781 closed; active_session=null'
     - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
     - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
@@ -8640,6 +9174,376 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S037-semver-tac2iwxxm
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: semver
+  status: confirmed
+  topic: 'Bump tac2iwxxm after #820 decode deepen'
+  summary: 'Option 2 — patch 0.2.3 → 0.2.4 (pyproject + Cargo + __version__ + locks); no tags/PyPI'
+  decision: 'D-S037-semver-tac2iwxxm=2 — patch bump tac2iwxxm 0.2.3 → 0.2.4 committed @ 3889e4c'
+  user_option: '2'
+  semver_bump: patch
+  package: tac2iwxxm
+  version_from: 0.2.3
+  version_to: 0.2.4
+  tip_sha: 3889e4c
+  tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '820', '835']
+  related_issues_closed: ['829', '820']
+  related_prs: ['832']
+  related_decisions: ['D-S037-semver-none', 'D-S037-08-m3-pass']
+  note: 'Committed @ 3889e4c; ahead_of_origin=1; no PyPI tag this cycle unless asked'
+
+- id: D-S037-08-m3-pass
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: verification
+  status: confirmed
+  topic: 'S037/EV-030 08-verify-build M3 boundary + T4.1 PASS'
+  summary: 'M3 PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; CI 30823368642 SUCCESS; T4.1 complete; active_task → T4.2 pending'
+  decision: 'Record M3 08-verify-build PASS (D-S037-08-m3-pass). T4.1 complete. Resume 07-build at T4.2 (09-qa + 10-e2e). Keep 08 required for final M4.'
+  tip_sha: 1f47eb5
+  tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
+  report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md
+  branch: evolve/EV-030-quality-residuals-831
+  ci_run: '30823368642'
+  ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30823368642
+  ci_status: success
+  related_issues: ['831', '835']
+  related_issues_closed: ['829', '820']
+  related_prs: ['832']
+  related_decisions: ['D-S037-08-m2-pass', 'D-S037-ui-preview']
+  note: 'T3.3 fix 1f47eb5 pushed; workflow-state dirty pending chore sync commit.'
+
+- id: D-S037-ui-preview
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: connectivity
+  status: confirmed
+  topic: 'Decline non-deployed UI preview after FE catalog unlock'
+  summary: 'Option 2 — decline non-deployed UI preview (written interview; AskQuestion unavailable); H4–H5 remain required at M4/13'
+  decision: 'D-S037-ui-preview=2 — confirmed: decline non-deployed UI preview. FE catalog unlock already shipped; H4–H5 still required at M4/13 deploy-smoke.'
+  user_option: '2'
+  interview_mode: written
+  askquestion_available: false
+  tip_sha: 00bb58f
+  tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '820', '835']
+  related_issues_closed: ['829']
+  related_prs: ['832']
+  related_decisions: ['D-S037-08-m2-pass', 'D-S037-04-plan']
+  note: 'User confirmed option 2; H4–H5 still required at M4/13; non-deployed preview declined.'
+
+- id: D-S037-08-m2-pass
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: verification
+  status: confirmed
+  topic: 'S037/EV-030 08-verify-build M2 boundary PASS'
+  summary: 'M2 PASS @ tip aa8dc89; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md; #829 closed; child #835 opened; PR #832 updated (PR-M2); current_stage → 07-build for M3 T3.1; reopen 08 for final M4'
+  decision: 'Record M2 08-verify-build PASS (D-S037-08-m2-pass). Keep 08 required for final M4. Resume 07-build at M3 T3.1 after PR #832 update.'
+  tip_sha: aa8dc89
+  tip_sha_full: aa8dc89b0d1ed1173d4e0801bfa0d49ea6577fe7
+  report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '820', '835']
+  related_issues_closed: ['829']
+  related_prs: ['832']
+  related_decisions: ['D-S037-08-m1-pass', 'D-S037-04-plan']
+  note: 'PR-M2 updates same PR #832; workflow-state dirty pending chore sync commit.'
+
+- id: D-S037-T2.3-oos
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: scope
+  status: confirmed
+  topic: 'T2.3 STNR in-cycle; exceptional TC geometry OOS cite'
+  summary: 'STNR covered in-cycle for TC SIGMET; exceptional TC geometry beyond WI…OF TC CENTRE (A6-2-TC) OOS with cite S02.M2 / D-S037-T2.3-oos'
+  decision: 'Close T2.3 — STNR in-cycle; exceptional TC geometry OOS with cite (S02.M2). Report docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md. Advance to T2.4 (A6-2-TC catalog unlock).'
+  report: docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
+  tip_sha: 22d4ac1
+  tip_sha_full: 22d4ac12a5d2316abfc5c99ffd156e43ea255fee
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+  related_prs: ['832']
+  related_decisions: ['D-S037-semver-none', 'D-S037-08-m1-pass']
+  cite: S02.M2
+  note: 'Exceptional TC geometry beyond A6-2-TC WI…OF TC CENTRE deferred; STNR accept/negative covered in pack.'
+
+- id: D-S037-semver-none
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: semver
+  status: confirmed
+  topic: 'No tac-validate semver bump (remain 0.1.1)'
+  summary: 'User option 1 — no tac-validate semver bump; remain 0.1.1; bump deferred to M2/M4 close if needed'
+  decision: 'Do not bump tac-validate semver (remain 0.1.1). Defer any bump to M2/M4 close if needed. Recorded as D-S037-semver-none.'
+  user_option: '1'
+  package: tac-validate
+  version_from: 0.1.1
+  version_to: 0.1.1
+  publish: false
+  tag: false
+  tip_sha: e322dde
+  tip_sha_full: e322ddeaea89fee1b4f265fe637c200745af4e96
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+  related_prs: ['832']
+  related_decisions: ['D-S037-08-m1-pass']
+  note: 'Bump deferred to M2/M4 close if needed; tip e322dde may still be pushing.'
+
+- id: D-S037-08-m1-pass
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: verification
+  status: confirmed
+  topic: 'S037/EV-030 08-verify-build M1 boundary PASS'
+  summary: 'M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build for M2; about to push + open PR-M1 then continue M2 T2.1; reopen 08 for final M4'
+  decision: 'Record M1 08-verify-build PASS (D-S037-08-m1-pass). Keep 08 required for final M4. Resume 07-build at M2 T2.1 after PR-M1.'
+  tip_sha: 0151e11
+  tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
+  report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+  related_decisions: ['D-S037-04-plan']
+  note: 'About to push + open PR-M1 then continue M2.'
+
+- id: D-S037-04-plan
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate B — approve execution plan → 07-build'
+  summary: 'User option 1 — approve M0–M4 27 tasks; Gate B PASS; complete 04; start 07 @ T0.1'
+  decision: 'Approve execution plan (27 tasks, M0–M4). Gate B PASS. Complete 04-tech-plan; start 07-build at T0.1. 05/06 remain skipped.'
+  user_option: '1'
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+  related_decisions: ['D-S037-04-batch-1', 'D-S037-04-batch-2']
+
+- id: D-S037-04-batch-2
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: technical-plan
+  status: confirmed
+  topic: '04 Batch 2 — PyYAML / connectivity / smoke / design note'
+  summary: '2,1,1,1 — E30-T5 reuse tac2iwxxm pyyaml; E30-T6 H1-H3 + H4-H5 FE unlock; E30-T7 PR smoke + optional full matrix; E30-T8 session design note + tests/quality_matrices/'
+  decision: 'E30-T5=2 PyYAML allowed → reuse tac2iwxxm pyyaml (no new dep); E30-T6=1 H1-H3 + H4-H5 for FE unlock; E30-T7=1 PR smoke + optional full matrix; E30-T8=1 session design note + tests/quality_matrices/ (D-S037-04-batch-2).'
+  user_option: '2,1,1,1'
+  answers:
+    E30-T5: 2
+    E30-T6: 1
+    E30-T7: 1
+    E30-T8: 1
+  note: 'E30-T5=2 PyYAML allowed → reuse tac2iwxxm pyyaml (no new dep); E30-T6=1 H1-H3 + H4-H5 for FE unlock; E30-T7=1 PR smoke + optional full matrix; E30-T8=1 session design note + tests/quality_matrices/'
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+
+- id: D-S037-04-batch-1
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: technical-plan
+  status: confirmed
+  topic: '04 Batch 1 — milestones / testdata / rule inventory / A6-2-TC unlock'
+  summary: '1,1,1,1 — E30-T1 M0–M4; E30-T2 YAML/JSON testdata+pytest; E30-T3 unified rule inventory index; E30-T4 unlock A6-2-TC catalog when quality path green (ADR-032 wmoPass/wmoReference)'
+  decision: 'E30-T1=1 M0–M4; E30-T2=1 YAML/JSON testdata+pytest; E30-T3=1 unified rule inventory index; E30-T4=1 unlock A6-2-TC catalog when quality path green (ADR-032 wmoPass/wmoReference) (D-S037-04-batch-1).'
+  user_option: '1,1,1,1'
+  answers:
+    E30-T1: 1
+    E30-T2: 1
+    E30-T3: 1
+    E30-T4: 1
+  note: 'E30-T1 M0–M4; E30-T2 YAML/JSON testdata+pytest; E30-T3 unified rule inventory index; E30-T4 unlock A6-2-TC catalog when quality path green (ADR-032 wmoPass/wmoReference)'
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+
+- id: D-S037-02-phase-a
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate A PASS → 04-tech-plan'
+  summary: 'User option 1 — PASS Gate A; complete 02; start 04-tech-plan'
+  decision: '1 — Gate A PASS → 04-tech-plan'
+  user_option: '1'
+  tip_sha: 876ffda
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+  related_decisions: ['D-S037-02-batch-f']
+
+- id: D-S037-02-batch-f
+  decision: '1,1,1,1 — approve S02.M1 METAR/SPECI pilot; M2 STNR OOS ok; M3 #820 child residual ok; L1 design note not ADR'
+  date: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+
+- id: D-S037-E30-M
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: document-manifest
+  status: confirmed
+  topic: 'S037/EV-030 document manifest — lean + API/catalog #829; close 01 → 02'
+  summary: '2,1 — lean + API/catalog #829; close 01 → 02'
+  decision: '2,1 — lean + API/catalog #829; close 01 → 02'
+  user_option: '2,1'
+  related_issues:
+  - '831'
+  - '829'
+  - '820'
+  branch: evolve/EV-030-quality-residuals-831
+  note: 'sha pending parent commit'
+
+- id: D-S037-fn
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: feature-allocation
+  status: confirmed
+  topic: 'S037/EV-030 Fn allocation — F29 + deepen; start 01'
+  summary: '1,1,1 — F29 + deepen F23/F12/F2/F13/F9/F26/F27; start 01; commit open'
+  decision: '1,1,1 — F29 + deepen F23/F12/F2/F13/F9/F26/F27; start 01; commit open'
+  user_option: '1,1,1'
+  feature_ids:
+  - F29
+  - F23
+  - F12
+  - F2
+  - F13
+  - F9
+  - F26
+  - F27
+  related_issues:
+  - '831'
+  - '829'
+  - '820'
+  branch: evolve/EV-030-quality-residuals-831
+
+- id: D-S037-route
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 00-context
+  skill_id: 00-context
+  stage: routing-approval
+  category: routing
+  status: confirmed
+  topic: 'Approve Standard routing → 16-evolve Phase 1'
+  summary: 'Approve Standard routing → 16-evolve Phase 1 Fn allocation'
+  decision: 'Approve Standard routing → 16-evolve Phase 1'
+  user_option: '1'
+  related_issues:
+  - '831'
+  - '829'
+  - '820'
+  preset: Standard
+  preset_status: approved
+  branch: evolve/EV-030-quality-residuals-831
+
+- id: D-S037-open
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session-open
+  status: confirmed
+  topic: 'Open S037 / EV-030 quality residuals #831→#829→#820'
+  summary: 'Intake 1,1,2,1 — all three residuals #831→#829→#820; Standard; UI docs-only; type=feature'
+  decision: 'Intake 1,1,2,1 — all three residuals #831→#829→#820; Standard; UI docs-only; type=feature'
+  user_option: '1,1,2,1'
+  related_issues:
+  - '831'
+  - '829'
+  - '820'
+  preset: Standard
+  preset_status: approved
+  branch: evolve/EV-030-quality-residuals-831
+
 - id: D-S036-EV029-phase4-close
   date: '2026-08-02'
   timestamp: '2026-08-02'
@@ -17574,6 +18478,131 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S037-quality-residuals-831/session-brief.md
+  kind: session-brief
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: approved
+  note: 'S037/EV-030 session-brief approved — D-S037-route'
+- path: docs/sessions/S037-quality-residuals-831/routing-plan.md
+  kind: routing-plan
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: approved
+  note: 'S037/EV-030 routing-plan approved — Standard 00→16→01→02→04→07→08→09→10→11→12→13; D-S037-route'
+- path: docs/context/quality-residuals-831.md
+  kind: context-scoped
+  slug: quality-residuals-831
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: written
+  note: 'S037/EV-030 scoped context written — quality residuals #831/#829/#820'
+- path: docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
+  kind: requirements-delta
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: completed
+  note: 'S037/EV-030 01 COMPLETE — D-S037-E30-M (2,1); sha pending parent commit'
+- path: docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
+  kind: verify-plan-audit
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  created_at: '2026-08-02'
+  updated_at: '2026-08-03'
+  status: completed
+  note: 'S037/EV-030 02 COMPLETE — Gate A PASS (D-S037-02-phase-a); Batch F D-S037-02-batch-f'
+- path: docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+  kind: tech-plan
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: completed
+  note: 'S037/EV-030 04 COMPLETE — Gate B PASS (D-S037-04-plan=1); handoff 07 @ T0.1'
+- path: docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+  kind: execution-plan
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: approved
+  note: 'S037/EV-030 execution-plan approved — D-S037-04-plan=1; M0–M4 27 tasks'
+- path: docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
+  kind: task-report
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 07-build
+  skill_id: 07-build
+  task_id: T0.1
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: completed
+  note: 'S037/EV-030 T0.1 COMPLETE — #831 F29 harness design note @ 01dd7f1'
+- path: docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
+  kind: task-report
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 07-build
+  skill_id: 07-build
+  task_id: T0.2
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: completed
+  note: 'S037/EV-030 T0.2 COMPLETE — unified inventory sketch METAR/SPECI pilot @ e90b8e0'
+- path: docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
+  kind: task-report
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 07-build
+  skill_id: 07-build
+  task_id: T0.4
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: completed
+  note: 'S037/EV-030 T0.4 COMPLETE — M0 exit checklist; proceed M1 @ T1.1 @ 80b1b49'
+- path: tests/quality_matrices/
+  kind: test-harness
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 07-build
+  skill_id: 07-build
+  task_id: T0.3
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: staged
+  note: 'S037/EV-030 T0.3 — YAML RuleCase spike + node-id contract @ ea3c8eb'
+- path: docs/api-contract.md
+  kind: standing-doc
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 01-requirements
+  skill_id: 01-requirements
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: touched
+  note: 'S037/EV-030 — API/catalog #829 amend (D-S037-E30-M); sha pending parent commit'
 - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
   kind: verification-report
   session_id: S036-eight-family-ahl-rules-823
@@ -26680,16 +27709,266 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 02 COMPLETE → 04-tech-plan STARTED — Gate A PASS (D-S036-02-phase-a); Batch F (D-S036-02-batch-f) @ 97a9380; #823'
   - '2026-08-01 S036/EV-029 — D-S036-fn (1,1,1,1) F28+deepen; 01-requirements STARTED (delta written); 16-evolve Manifest+close pending; #823'
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
-git_history:
-  current_branch: main
-  ahead_of_origin: 0
-  pushed: true
-  pending_commit:
-  tip_sha: 7e276a7
-  tip_sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
-  recommended_branch: main
-  note: 'S036/EV-029 — main tip 7e276a7; PR #828 MERGED @ 4e6577a; T12.6 smoke PASS awaiting user approve D-S036-13; progress 46/48; #828; #823'
+- id: EV-030
+  session_id: S037-quality-residuals-831
+  cycle_type: feature
+  feature_ids:
+  - F29
+  - F23
+  - F12
+  - F2
+  - F13
+  - F9
+  - F26
+  - F27
+  title: 'Quality residuals #831 / #829 / #820'
+  status: in_progress
+  started: '2026-08-02'
+  completed:
+  scope_summary: |
+    Close EV-029 residuals: #831 rule matrices → #829 TC SIGMET deepen →
+    #820 VAA/TCA decode deepen. Standard routing; UI docs-only.
+  routing_plan:
+    required_stages:
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    note: 'Standard — D-S037-route; skip 03/05/06'
+  current_stage: 11-verify-impl
+  active_task: T4.3
+  active_milestone: M4
+  active_task_status: in_progress
+  progress: 24/27
+  tip_sha: 3889e4c
+  tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
+  note: 'S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); T4.3 in_progress (11+12 reports written; PENDING user signoff); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+  pr_m1_number: 832
+  pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+  pr_m1_status: open
+  pr_m2_number: 832
+  pr_m2_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+  pr_m2_status: open
+  pr_m2_note: 'PR-M2 updates same PR #832; 08 M2 PASS'
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-02'
+      completed: '2026-08-02'
+      note: 'D-S037-route (1) Standard approved'
+    16-evolve:
+      status: in_progress
+      mode: orchestrator
+      started: '2026-08-02'
+      note: 'Orchestrating T4.2 COMPLETE; T4.3 in_progress @ M4 (11+12 pending signoff); progress 24/27; D-S037-semver-tac2iwxxm=2 resolved; dirty pending chore sync'
+    01-requirements:
+      status: completed
+      started: '2026-08-02'
+      completed: '2026-08-02'
+      note: 'COMPLETE (delta) — D-S037-E30-M (2,1)'
+    02-verify-plan:
+      status: completed
+      started: '2026-08-02'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a)'
+    04-tech-plan:
+      status: completed
+      started: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); handoff 07 @ T0.1'
+    07-build:
+      status: in_progress
+      started: '2026-08-03'
+      note: 'IN PROGRESS — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); active_task → T4.3 in_progress @ M4 (11-verify-impl + 12-verify-deploy; PENDING user signoff); D-S037-semver-tac2iwxxm=2 resolved; tac2iwxxm 0.2.4; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+      active_task: T4.3
+      active_task_status: in_progress
+      active_milestone: M4
+      tip_sha: 1f47eb5
+      tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
+      progress: 24/27
+      m3_complete: true
+    08-verify-build:
+      status: completed
+      started: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
+      report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md
+      prior_m1_report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+      tip_sha: 1f47eb5
+      overall: pass
+    09-qa:
+      status: completed
+      started: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — T4.2; qa-report.md pass_with_advisories'
+      report: docs/sessions/S037-quality-residuals-831/reports/qa-report.md
+      overall: pass_with_advisories
+    10-e2e:
+      status: completed
+      started: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — T4.2; e2e-report.md T0 PASS'
+      report: docs/sessions/S037-quality-residuals-831/reports/e2e-report.md
+      overall: pass
+    11-verify-impl:
+      status: in_progress
+      started: '2026-08-03'
+      note: 'IN PROGRESS — T4.3; verify-impl.md written; PENDING user signoff'
+      report: docs/sessions/S037-quality-residuals-831/reports/verify-impl.md
+    12-verify-deploy:
+      status: pending
+    13-deploy-smoke:
+      status: pending
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/context/quality-residuals-831.md
+    status: written
+  - path: docs/sessions/S037-quality-residuals-831/session-brief.md
+    status: approved
+  - path: docs/sessions/S037-quality-residuals-831/routing-plan.md
+    status: approved
+  - path: docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    status: approved
+    note: 'T4.2 COMPLETE (09-qa + 10-e2e); T4.3 in_progress (11+12 pending signoff); progress 24/27; semver 0.2.4 @ 3889e4c; dirty pending chore sync'
+  - path: docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t2.6-829-closeout.md
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+    status: completed
+  - path: tests/quality_matrices/
+    status: staged
+  - path: docs/api-contract.md
+    status: touched
+  issues:
+  - '831'
+  - '835'
+  github_issues:
+  - '831'
+  - '835'
+  github_issues_closed:
+  - '829'
+  - '820'
+  branch: evolve/EV-030-quality-residuals-831
+  preset: Standard
+  preset_status: approved
+  decision_refs:
+  - D-S037-open
+  - D-S037-route
+  - D-S037-fn
+  - D-S037-E30-M
+  - D-S037-02-batch-f
+  - D-S037-02-phase-a
+  - D-S037-04-batch-1
+  - D-S037-04-batch-2
+  - D-S037-04-plan
+  - D-S037-08-m1-pass
+  - D-S037-08-m2-pass
+  - D-S037-08-m3-pass
+  - D-S037-semver-none
+  - D-S037-T2.3-oos
+  - D-S037-semver-tac2iwxxm
   notes:
+  - '2026-08-03 S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e); T4.3 in_progress (verify-impl.md + deploy-checklist.md; PENDING user signoff 11 then 12); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+  - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix [1f47eb5] pushed; CI 30823368642 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30823368642); report verification-report-m3.md; D-S037-ui-preview=2 confirmed; active_task → T4.2 pending @ M4; progress 23/27; semver AskQuestion pending D-S037-semver-tac2iwxxm; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+  - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; D-S037-ui-preview=2 confirmed; H4–H5 still required at M4/13; progress 23/27; active_task → T4.2 pending @ M4; semver AskQuestion pending D-S037-semver-tac2iwxxm (tac2iwxxm 0.2.3 decode deepen); workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+  - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+  - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
+  - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — 08-verify-build STARTED at M1 boundary; M1 T1.1–T1.8 complete @ tip 0151e11; before minor PR then M2; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T1.3 COMPLETE @ ce27667 (36×20 lint pilot; 39 pass/718 skip); next T1.4 convert pilot; progress 7/27; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T1.2 COMPLETE @ cab174d (runners + skip policy; 34 passed); next T1.3 lint pilot; progress 6/27; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T1.1 COMPLETE @ 6294557 (YAML/JSON loader + schema; 25 passed); next T1.2 runners; progress 5/27; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — 07-build M1 T1.1 in_progress (shared YAML/JSON loader + case schema tests); tip bdb87ad; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-04-plan=1 Gate B PASS; 04 COMPLETE → 07-build; M0 COMPLETE (T0.1–T0.4); next T1.1; tip 80b1b49; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-04-batch-2 (2,1,1,1) Batch 2 locked; execution-plan.md draft (27 tasks); Gate B pending; 04 remains in_progress; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — commit 0cd1a4c [EV-030] docs: 04 Batch 1 locks — M0–M4, YAML cases, unified inventory, catalog unlock; 04 remains in_progress; Batch 2 next; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-04-batch-1 (1,1,1,1) Batch 1 locked; Batch 2 next; 04 remains in_progress; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 02 COMPLETE → 04-tech-plan STARTED — Gate A PASS (D-S037-02-phase-a); Batch F (D-S037-02-batch-f) @ 876ffda; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 D-S037-E30-M (2,1) — lean + API/catalog #829; 01 COMPLETE → 02-verify-plan in_progress; sha pending parent commit; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; 01-requirements in_progress (delta); commit open; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 OPEN — D-S037-route (1); 00 COMPLETE; 16-evolve Phase 1 Fn allocation; feature_ids pending D-S037-fn; work order #831→#829→#820'
+git_history:
+  current_branch: evolve/EV-030-quality-residuals-831
+  ahead_of_origin: 1
+  pushed: false
+  pending_commit: '[EV-030] chore: sync workflow-state + reports after T4.2/T4.3 (11-verify-impl)'
+  dirty: true
+  tip_sha: 3889e4c
+  tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+  recommended_branch: evolve/EV-030-quality-residuals-831
+  note: 'S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); T4.3 in_progress (11+12 reports written; PENDING user signoff); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+
+  notes:
+  - '2026-08-03 S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e); T4.3 in_progress (verify-impl.md + deploy-checklist.md; PENDING user signoff 11 then 12); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+  - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; D-S037-ui-preview=2 confirmed; H4–H5 still required at M4/13; progress 23/27; active_task → T4.2 pending @ M4; semver AskQuestion pending D-S037-semver-tac2iwxxm (tac2iwxxm 0.2.3 decode deepen); workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+  - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
+  - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
+  - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T1.3 COMPLETE @ ce27667; next T1.4; ahead_of_origin=14 not pushed; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T1.2 COMPLETE @ cab174d; next T1.3; ahead_of_origin=13 not pushed; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T1.1 COMPLETE @ 6294557; next T1.2; ahead_of_origin=12 not pushed; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — 07-build M1 T1.1 started; tip bdb87ad; ahead_of_origin=11 not pushed; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-04-plan=1 Gate B PASS; 04 COMPLETE → 07; M0 COMPLETE (T0.1–T0.4); next T1.1; tip 80b1b49; ahead_of_origin=10 not pushed; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-04-batch-2 (2,1,1,1) Batch 2 locked; execution-plan.md draft (27 tasks); Gate B pending; 04 remains in_progress; tip 0cd1a4c; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — commit 0cd1a4c [EV-030] docs: 04 Batch 1 locks — M0–M4, YAML cases, unified inventory, catalog unlock; 04 remains in_progress; ahead_of_origin=4 not pushed; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — D-S037-04-batch-1 (1,1,1,1) Batch 1 locked; Batch 2 next; 04 remains in_progress; tip 876ffda; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 Gate A close @ 876ffda — D-S037-02-phase-a; 02 COMPLETE → 04-tech-plan STARTED; ahead_of_origin=3 not pushed; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 D-S037-E30-M (2,1) — 01 COMPLETE → 02-verify-plan in_progress; sha pending parent commit; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 — D-S037-route (1) Standard approved; 00-context COMPLETE; EV-030 created; 16-evolve Phase 1 Fn allocation; current_branch evolve/EV-030-quality-residuals-831; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 OPEN — open_session; D-S037-open (1,1,2,1); session_counter 37; evolve_cycle_counter 30; branch evolve/EV-030-quality-residuals-831; work order #831→#829→#820; 00-context in_progress; evolve_cycles entry deferred to 16-evolve'
   - '2026-08-02 S036/EV-029 — T12.6 smoke PASS (technical) — PR #828 merged 4e6577a; main tip 7e276a7; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA catalog/convert PASS; awaiting user approve D-S036-13; progress 46/48; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE @ 4f8e9a5 [T12.5] docs: 11-verify-impl + 12-verify-deploy sign-off; next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; ahead_of_origin=1 not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823'
@@ -27026,6 +28305,21 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-030-quality-residuals-831
+    purpose: 'S037/EV-030 quality residuals #831→#829→#820'
+    base: main
+    status: active
+    created: '2026-08-02'
+    created_at: '2026-08-02'
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    tip_sha: 00bb58f
+    tip_sha_full: 00bb58f6fe55eeb409a060399d525afc2a129dcd
+    pushed: true
+    pr_number: 832
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+    pr_status: open
+    note: 'S037/EV-030 — T3.1 COMPLETE @ 00bb58f; T3.2 pending; progress 19/27; PR #832 open; dirty pending chore sync'
   - name: evolve/EV-029-eight-family-ahl-rules
     purpose: 'S036/EV-029 #823 eight-family AHL / lint / convert / validate gap sweep'
     base: main
@@ -27999,6 +29293,412 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+    short: 3889e4c
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] chore: bump tac2iwxxm 0.2.3 → 0.2.4 (D-S037-semver-tac2iwxxm)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T4.3
+    timestamp: "2026-08-03T14:44:39-04:00"
+    files_changed:
+    - packages/tac2iwxxm/pyproject.toml
+    - packages/tac2iwxxm/rust/Cargo.lock
+    - packages/tac2iwxxm/rust/Cargo.toml
+    - packages/tac2iwxxm/src/tac2iwxxm/__init__.py
+    - uv.lock
+    pushed: false
+    note: 'D-S037-semver-tac2iwxxm=2 patch; ahead_of_origin=1; CI pending push'
+  - sha: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
+    short: 1f47eb5
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T3.3] fix: update #820 gap fixtures + restore tac2iwxxm coverage ≥95%"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T3.3
+    timestamp: "2026-08-03T14:31:34Z"
+    files_changed:
+    - packages/tac2iwxxm/src/tac2iwxxm/decode.py
+    - packages/tac2iwxxm/tests/test_tc_ev029_005_tca_gap_fixtures.py
+    - packages/tac2iwxxm/tests/test_tc_ev029_005_vaa_gap_fixtures.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_006_advisory_decode_coverage.py
+    ci_run: '30823368642'
+    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30823368642
+    ci_status: success
+    pushed: true
+    note: 'T3.3 fix; T4.1 08-verify-build M3 PASS tip'
+  - sha: 8f6e4da2ab74d895b83ce8c293b7f7d3095fae2e
+    short: 8f6e4da
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] chore: sync workflow-state after M3 (#820 close)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T14:19:56Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - workflow-state.yaml
+    note: 'M3 chore sync before T3.3 fix'
+  - sha: cd95b122bece6bdcf5a4f504a44e4e32a8cac63a
+    short: cd95b12
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T3.4] docs: close #820; VAA/TCA decode residuals empty on official peers"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T3.4
+    timestamp: "2026-08-03T14:19:27Z"
+    files_changed:
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.4-820-closeout.md
+    note: 'M3 COMPLETE tip; #820 closed'
+  - sha: e8d03581019db010d626547a2bca7c2faf98badd
+    short: e8d0358
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T3.3] feat: VAA AHL decode + empty residual pin for official peers (#820)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T3.3
+    timestamp: "2026-08-03T14:18:43Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.3-vaa-tca-residual-shrink.md
+    - packages/tac2iwxxm/src/tac2iwxxm/decode.py
+    - packages/tac2iwxxm/tests/fixtures/wmo_decode_residual_allowlist.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_006_vaa_tca_residual_baseline.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_006_vaa_tca_structured_decode.py
+  - sha: 8ed4b78bfc57792b1cc5a14a8d6d7d98c2c47898
+    short: 8ed4b78
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T3.2] feat: structured VAA/TCA LABEL: field + forecast-hour decode (#820)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T3.2
+    timestamp: "2026-08-03T14:17:15Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.1-vaa-tca-residual-baseline.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.2-vaa-tca-structured-decode.md
+    - packages/tac2iwxxm/src/tac2iwxxm/decode.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_006_vaa_tca_residual_baseline.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_006_vaa_tca_structured_decode.py
+  - sha: 00bb58f6fe55eeb409a060399d525afc2a129dcd
+    short: 00bb58f
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T3.1] test: VAA/TCA decode residual baseline inventory (#820)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T3.1
+    timestamp: "2026-08-03T13:40:02Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t3.1-vaa-tca-residual-baseline.md
+    - packages/tac2iwxxm/tests/test_tc_ev030_006_vaa_tca_residual_baseline.py
+    ci_run: '30818578657'
+    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657
+    ci_status: success
+    note: 'M2 push CI recorded here; T3.1 tip after 0c46df2 FIXTURE_GAPS fix'
+  - sha: 0c46df2cad5979bdc0f991153276a6aacda5b255
+    short: 0c46df2
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.4] fix: avoid 'equality pending' phrasing in FIXTURE_GAPS (#835 cite)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.4
+    timestamp: "2026-08-03T13:30:53Z"
+    files_changed:
+    - apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md
+    note: 'Post-M2 FIXTURE_GAPS phrasing fix; tip may include this after aa8dc89'
+  - sha: fbec04f1262c900743fbf8e2852bfaac893520f8
+    short: fbec04f
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] chore: sync workflow-state after M2 (#829 close / #835 / 08 PASS)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T13:28:20Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
+    - workflow-state.yaml
+  - sha: aa8dc89b0d1ed1173d4e0801bfa0d49ea6577fe7
+    short: aa8dc89
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.6] docs: close #829; child #835 for A6-2-TC equality; COVERAGE_MATRIX"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.6
+    timestamp: "2026-08-03T13:22:22Z"
+    files_changed:
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t2.6-829-closeout.md
+  - sha: 239403c1f14fd62c43dedccfd33b601932b41db7
+    short: 239403c
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.5] test: A6-2-TC Examples select + FileConverter path smoke (UJ-039)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.5
+    timestamp: "2026-08-03T13:21:13Z"
+    files_changed:
+    - apps/frontend/src/app/components/FileConverter.test.tsx
+    - apps/frontend/src/app/components/GoldenExamplesSelect.test.tsx
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+  - sha: 9f7c087c5682b0193ed9aae74c3cc49ee330cf35
+    short: 9f7c087
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.4
+    timestamp: "2026-08-03T13:20:21Z"
+    files_changed:
+    - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+    - apps/frontend/src/fixtures/examples/bodies/sigmet_a6_2_tc.tac
+    - apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md
+    - packages/tac2iwxxm/tests/fixtures/wmo_official_tac_inventory.py
+    - packages/tac2iwxxm/tests/fixtures/wmo_decode_residual_allowlist.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py
+    - packages/tac2iwxxm/tests/test_tc_ev029_007_tc_sigmet_gap_fixtures.py
+    - apps/backend/tests/iwxxm/test_wmo_canonical_examples.py
+    - docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+  - sha: 22d4ac12a5d2316abfc5c99ffd156e43ea255fee
+    short: 22d4ac1
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite (S02.M2)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.3
+    timestamp: "2026-08-03T13:07:11Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
+    - packages/tac-validate/tests/test_tc_ev030_004_tc_sigmet.py
+    - workflow-state.yaml
+  - sha: e322ddeaea89fee1b4f265fe637c200745af4e96
+    short: e322dde
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] chore: sync workflow-state after T2.2 + PR #832"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T13:03:24Z"
+    files_changed:
+    - workflow-state.yaml
+  - sha: 72c4be61b199746942fa9273023d863ade8a2a26
+    short: 72c4be6
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.2
+    timestamp: "2026-08-03T13:00:26Z"
+    files_changed:
+    - docs/domain/rules/ISSUE_CATALOG.json
+    - docs/domain/rules/ISSUE_CATALOG.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - packages/tac-validate/src/tac_validate/issue_registry.py
+    - packages/tac-validate/src/tac_validate/product_rules.py
+    - packages/tac-validate/tests/fixtures/manifest.json
+    - packages/tac-validate/tests/fixtures/negative/sigmet/tc_missing_identity.tac
+    - packages/tac-validate/tests/test_tc_ev030_004_tc_sigmet.py
+  - sha: b7130565628fcd0732193df742bc48b48af8249c
+    short: b713056
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.1] test: TC SIGMET tac-validate accept/negative pack (#829)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.1
+    timestamp: "2026-08-03T12:55:52Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - packages/tac-validate/tests/fixtures/accept/sigmet_tc_a6_2.tac
+    - packages/tac-validate/tests/fixtures/accept/sigmet_tc_cnl.tac
+    - packages/tac-validate/tests/fixtures/accept/sigmet_tc_stnr.tac
+    - packages/tac-validate/tests/fixtures/manifest.json
+    - packages/tac-validate/tests/fixtures/negative/sigmet/tc_stnr_with_mov.tac
+    - packages/tac-validate/tests/test_tc_ev030_004_tc_sigmet.py
+  - sha: ce27667549d12c0a0031f5ea2e024e46335ca85b
+    short: ce27667
+    branch: evolve/EV-030-quality-residuals-831
+    message: '[T1.3] test: METAR/SPECI lint pilot matrices (36×20 slots)'
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T1.3
+    timestamp: "2026-08-03T12:35:00Z"
+    files_changed:
+    - tests/quality_matrices/testdata/lint/metar_speci/
+    - tests/quality_matrices/test_tc_f29_003_lint_pilot.py
+  - sha: cab174d55686429d605688c3185fab9565893857
+    short: cab174d
+    branch: evolve/EV-030-quality-residuals-831
+    message: '[T1.2] feat: lint/convert/validate RuleCase runners + skip policy'
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T1.2
+    timestamp: "2026-08-03T12:25:00Z"
+    files_changed:
+    - tests/quality_matrices/runners.py
+    - tests/quality_matrices/test_tc_f29_002_runners.py
+    - tests/quality_matrices/testdata/lint/metar_speci/INVALID_VISIBILITY.yml
+    - tests/quality_matrices/testdata/convert/metar_speci/metar_nil.yml
+    - tests/quality_matrices/testdata/validate/metar_speci/metar_happy_path.yml
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+  - sha: 62945574923191f6c580b3241cdb288cdbbe7107
+    short: 6294557
+    branch: evolve/EV-030-quality-residuals-831
+    message: '[T1.1] test: expand YAML/JSON RuleCase loader + schema tests'
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T1.1
+    timestamp: "2026-08-03T12:20:00Z"
+    files_changed:
+    - tests/quality_matrices/loaders.py
+    - tests/quality_matrices/test_tc_f29_002_loaders_schema.py
+    - tests/quality_matrices/test_tc_f29_spike_rulecase.py
+    - tests/quality_matrices/testdata/lint/metar_speci/INVALID_VISIBILITY.yml
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+  - sha: 80b1b4926355d842638f27131835199bb1477d48
+    short: 80b1b49
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T0.4] docs: M0 exit checklist — proceed M1 @ T1.1"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T0.4
+    timestamp: "2026-08-03T12:12:49Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
+  - sha: ea3c8eb00df038dd15ff17df45ce369b85b13835
+    short: ea3c8eb
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T0.3] test: YAML RuleCase spike + node-id contract"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T0.3
+    timestamp: "2026-08-03T12:12:38Z"
+    files_changed:
+    - tests/quality_matrices/__init__.py
+    - tests/quality_matrices/loaders.py
+    - tests/quality_matrices/test_tc_f29_spike_rulecase.py
+    - tests/quality_matrices/testdata/spike_invalid_visibility.yml
+  - sha: e90b8e05de57bd965eff404681cfb34ad3379b34
+    short: e90b8e0
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T0.2] docs: unified inventory sketch — METAR/SPECI pilot"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T0.2
+    timestamp: "2026-08-03T12:12:26Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
+  - sha: 01dd7f116cd891f0c48ea9635f83c7c4193882d0
+    short: 01dd7f1
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T0.1] docs: #831 F29 harness design note (eval Qs)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T0.1
+    timestamp: "2026-08-03T12:12:14Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
+  - sha: d721de6b3f342e3548254674a93873c0088342ed
+    short: d721de6
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: Gate B PASS — approve M0–M4 plan, start 07 @ T0.1"
+    stage: 04-tech-plan
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T12:12:03Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    - docs/sessions/S037-quality-residuals-831/routing-plan.md
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    - workflow-state.yaml
+  - sha: 317447a394e1e38fe6ac766af55d606f03374119
+    short: 317447a
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: 04 Batch 2 + draft execution plan (M0–M4, 27 tasks)"
+    stage: 04-tech-plan
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T12:07:54Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/routing-plan.md
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    - workflow-state.yaml
+  - sha: 0cd1a4c67454b4a4e21cfe579561864c4534ccd4
+    short: 0cd1a4c
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: 04 Batch 1 locks — M0–M4, YAML cases, unified inventory, catalog unlock"
+    stage: 04-tech-plan
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T12:01:32Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    - workflow-state.yaml
+  - sha: 876ffdab229cb3697d9c18b0b0a2abf4de71af3b
+    short: 876ffda
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: Gate A PASS — close 02, start 04-tech-plan"
+    stage: 02-verify-plan
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T11:49:37Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
+    - docs/sessions/S037-quality-residuals-831/routing-plan.md
+    - workflow-state.yaml
+  - sha: e2f6eccd9d13132af08138d1ba3fd95df3f6c437
+    short: e2f6ecc
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: 01 delta — F29 matrices + #829/#820 deepen"
+    stage: 01-requirements
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-02T20:38:00Z"
+  - sha: f88e9cb29514cc286efc444b4a48a593c48c3d13
+    short: f88e9cb
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: open S037 — quality residuals #831/#829/#820"
+    stage: 00-context
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-02T20:33:00Z"
   - sha: 7e276a7
     sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
     branch: main

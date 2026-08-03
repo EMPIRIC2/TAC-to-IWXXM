@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry",
-  "generated": "2026-08-02",
+  "generated": "2026-08-03",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -476,6 +476,18 @@
       ]
     },
     {
+      "code": "MISSING_TC_IDENTITY",
+      "severity": "error",
+      "message_template": "TC SIGMET missing cyclone identity (TC \u2026 PSN) \u2014 #829 / TC-EV030-004",
+      "product": "sigmet",
+      "tags": [
+        "tc",
+        "cyclone",
+        "sigmet",
+        "ev030"
+      ]
+    },
+    {
       "code": "MISSING_TEMP_DEWPOINT",
       "severity": "error",
       "message_template": "{product} missing temperature/dewpoint tt/td \u2014 A3-2 #10",
@@ -925,6 +937,30 @@
         "tca",
         "t1",
         "f27"
+      ]
+    },
+    {
+      "code": "TC_CB_GEOMETRY",
+      "severity": "info",
+      "message_template": "TC SIGMET CB geometry WI \u2026 OF TC CENTRE \u2014 #829 / TC-EV030-004",
+      "product": "sigmet",
+      "tags": [
+        "tc",
+        "geometry",
+        "sigmet",
+        "ev030"
+      ]
+    },
+    {
+      "code": "TC_CYCLONE_IDENTITY",
+      "severity": "info",
+      "message_template": "TC SIGMET tropical cyclone identity (TC \u2026 PSN) \u2014 #829 / TC-EV030-004",
+      "product": "sigmet",
+      "tags": [
+        "tc",
+        "cyclone",
+        "sigmet",
+        "ev030"
       ]
     },
     {
