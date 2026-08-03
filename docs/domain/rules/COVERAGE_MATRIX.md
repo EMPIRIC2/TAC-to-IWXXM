@@ -367,8 +367,8 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | VA SIGMET | ok/deepen | ok/deepen | ok | gap | **M6** |
 | TC SIGMET | ok/deepen | **ok** (WC→`TropicalCycloneSIGMET`; BBB/`reportStatus`; CNL) | ok (A6-2-TC) | ok (WC pack) | **M7 closed** (#738); deepen [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
 | AIRMET | ok/deepen | **ok** (WA→`reportStatus`; CNL) | ok | ok (WA pack) | **M8 closed** (`airmet-quality.yml`) |
-| VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9 closed**; decode residual [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) |
-| TCA | ok/deepen | ok/deepen | ok | gap | **M10 closed**; decode residual [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) |
+| VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
+| TCA | ok/deepen | ok/deepen | ok | gap | **M10 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
 | SWXA | **ok** (F28) | **ok** (FN→LN; `SpaceWeatherAdvisory`) | ok | ok (A7-3) | **M11 closed** (#740); A7-4/5 deferred |
 
 ### Report-state × AHL (COM / #823 B3)
@@ -398,7 +398,7 @@ Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** 
 | Per-family body `split_bulletin` (non-METAR/SPECI) | product packs M2–M11 | in-cycle packs landed |
 | TC SIGMET quality bar | #738 **closed** | M7 |
 | TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **closed** (EV-030 M2) — lint pack + STNR in-cycle; exceptional geometry **OOS** (T2.3); catalog **`wmoReference`** (T2.4–T2.5); equality/`wmoPass` + TC decode residual children |
-| VAA/TCA decode residual deepen | [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) | **open** (encode M9/M10 closed) |
+| VAA/TCA decode residual deepen | [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) | **closed** (EV-030 M3) — structured `LABEL:` + AHL decode; official peers `residuals == []` |
 | SWXA F28 product path | #740 **closed** | M11 / F28 Done |
 | Non-METAR multi-report body fixtures | FIXTURE_GAPS stem rows | document / deepen |
 | Second WMO peers (METAR/SPECI/AIRMET/VAA/TCA) | FIXTURE_GAPS (pin has one) | document-only |
