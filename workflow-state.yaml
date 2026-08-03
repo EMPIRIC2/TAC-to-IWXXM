@@ -28628,6 +28628,21 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 317447a394e1e38fe6ac766af55d606f03374119
+    short: 317447a
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: 04 Batch 2 + draft execution plan (M0–M4, 27 tasks)"
+    stage: 04-tech-plan
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T12:07:54Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - docs/sessions/S037-quality-residuals-831/routing-plan.md
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    - workflow-state.yaml
   - sha: 0cd1a4c67454b4a4e21cfe579561864c4534ccd4
     short: 0cd1a4c
     branch: evolve/EV-030-quality-residuals-831

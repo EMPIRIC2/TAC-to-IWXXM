@@ -10,7 +10,7 @@
 **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
 **Started**: 2026-08-02  
 **Branch**: `evolve/EV-030-quality-residuals-831`  
-**Status**: **in_progress** — 04-tech-plan (Batch 1 locked)
+**Status**: **in_progress** — 07-build @ T0.1 (Gate B PASS)
 
 ### Scope (Phase 0 — locked 2026-08-02 via 00-context)
 
@@ -36,6 +36,7 @@
 | E30-T6 | decision | Deploy / connectivity? | **1** — API redeploy; H1–H3; H4–H5 for FE catalog unlock |
 | E30-T7 | decision | F29 CI? | **1** — PR smoke subset + optional full-matrix marker/job |
 | E30-T8 | decision | Harness doc + home? | **1** — session design note + `tests/quality_matrices/` |
+| E30-T9 | gate | Gate B / plan approve? | **PASS** — approve M0–M4 (27 tasks) → **07 @ T0.1** (`D-S037-04-plan`) |
 
 **Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
 matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET

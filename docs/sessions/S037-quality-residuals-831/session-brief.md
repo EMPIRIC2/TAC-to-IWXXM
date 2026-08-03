@@ -65,4 +65,5 @@ See [routing-plan.md](routing-plan.md).
 - **00-context** completed · **Fn** `D-S037-fn` · open commit `f88e9cb`
 - **01-requirements** completed (`D-S037-E30-M` = 2,1 — API/#829 catalog)
 - **02-verify-plan** Gate A PASS (`D-S037-02-phase-a`) @ `876ffda`
-- **04-tech-plan** Batch 1 `1,1,1,1` · Batch 2 `2,1,1,1` — execution-plan draft (27 tasks M0–M4); **Gate B** pending
+- **04-tech-plan** Gate B PASS (`D-S037-04-plan`=1) @ `317447a`+ — 27 tasks approved
+- **07-build** @ **T0.1** — #831 design note
