@@ -1,11 +1,132 @@
-overall_status: completed
+overall_status: in_progress
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 37
-evolve_cycle_counter: 30
-active_session: null
+session_counter: 38
+evolve_cycle_counter: 31
+active_session:
+  id: S038-platform-independence-842
+  type: feature
+  intent: |
+    Full epic #842 platform-independence — include #830 strip Supabase AND
+    #712 DOKS cutover planning + IaC (user expanded beyond soft deferral).
+    Cycle type: general (may allocate new Fn). Standard routing; UI preview Yes
+    (non-deployed local UI).
+  status: in_progress
+  branch: evolve/EV-031-platform-independence-842
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-031
+  github_issues:
+  - '842'
+  - '830'
+  - '712'
+  artifacts_dir: docs/sessions/S038-platform-independence-842/
+  feature_ids:
+  - F30
+  - F31
+  current_stage: 01-requirements
+  started_at: '2026-08-03'
+  started: '2026-08-03'
+  context_briefs:
+  - docs/context/platform-independence-842.md
+  ui_preview: yes
+  ui_preview_note: non-deployed local UI
+  preset: Standard
+  preset_status: approved
+  phase0_choices:
+    scope: 'option 3 — full epic #842 including #830 strip Supabase AND #712 DOKS cutover planning + IaC'
+    cycle_type: general
+    routing_preset: Standard
+    ui_preview: yes
+    D-S038-open: '3,1,1,1'
+    D-S038-doks-depth: '3'
+    D-S038-f8: '1'
+    D-S038-route: '1'
+    D-S038-auth-model: '1'
+    D-S038-session-store: '1'
+    D-S038-830-amend: '1'
+    D-S038-fn: '1,1,1'
+    locked_at: '2026-08-03'
+    note: 'Phase 0 locked — DOKS prod cutover; F8→DO Postgres; Supabase Auth long-term (amend F21); sessions DO Postgres logged-in / guest local+notice+F22; #830 amend Auth-kept; D-S038-fn=1,1,1 F30+F31 (deepen F5,F7,F8,F21,F22,M4)'
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-03'
+    completed: '2026-08-03'
+    skip_rationale: null
+    note: 'COMPLETE — Phase 0+Fn done 2026-08-03 (D-S038-fn=1,1,1); scoped brief + routing-plan + context; handoff 01-requirements'
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    started: '2026-08-03'
+    started_at: '2026-08-03'
+    skip_rationale: null
+    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 01-requirements'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: in_progress
+    started: '2026-08-03'
+    skip_rationale: null
+    note: 'STARTED (delta) — D-S038-fn=1,1,1; F30+F31; commit open artifacts yes'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: null
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: null
+  - stage: 07-build
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 08-verify-build
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: null
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: null
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: null
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: null
+  - stage: 13-deploy-smoke
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
+  note: 'S038/EV-031 — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; 00-context completed; 16-evolve in_progress; current_stage 01-requirements (delta)'
 sessions:
 - id: S037-quality-residuals-831
   type: feature
@@ -3516,40 +3637,41 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: quality-residuals-831
-    session_id: S037-quality-residuals-831
-    evolve_cycle_id: EV-030
-    started: '2026-08-02'
-    started_at: '2026-08-02'
-    completed: '2026-08-02'
-    completed_at: '2026-08-02'
-    note: 'S037/EV-030 00-context COMPLETE — D-S037-route (1) Standard approved; session-brief + routing-plan approved; context written; handoff 16-evolve Phase 1 Fn allocation; #831→#829→#820'
-    prior_note: 'S035/EV-028 00-context COMPLETE — D-S035-open + D-S035-routing; Lean+build approved; session-brief + routing-plan locked; handoff 16-evolve → 01-requirements; #781'
-    prior_session_id: S035-empiric2-ops-leftovers-781
-    prior_evolve_cycle_id: EV-028
-    prior_scoped_slug: empiric2-ops-leftovers-781
-    prior_completed: '2026-08-01'
+    scoped_slug: platform-independence-842
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    started: '2026-08-03'
+    started_at: '2026-08-03'
+    completed: '2026-08-03'
+    completed_at: '2026-08-03'
+    note: 'S038/EV-031 00-context COMPLETE — Phase 0+Fn done (D-S038-fn=1,1,1 F30+F31); brief+routing+context; handoff 01-requirements'
+    prior_note: 'S037/EV-030 00-context COMPLETE — D-S037-route (1) Standard approved; session-brief + routing-plan approved; context written; handoff 16-evolve Phase 1 Fn allocation; #831→#829→#820'
+    prior_session_id: S037-quality-residuals-831
+    prior_evolve_cycle_id: EV-030
+    prior_scoped_slug: quality-residuals-831
+    prior_completed: '2026-08-02'
     artifacts:
-    - docs/sessions/S037-quality-residuals-831/
-    - docs/sessions/S037-quality-residuals-831/session-brief.md
-    - docs/sessions/S037-quality-residuals-831/routing-plan.md
-    - docs/context/quality-residuals-831.md
+    - docs/sessions/S038-platform-independence-842/
+    - docs/sessions/S038-platform-independence-842/session-brief.md
+    - docs/sessions/S038-platform-independence-842/routing-plan.md
+    - docs/context/platform-independence-842.md
+    - docs/decisions/evolve-decisions.md
 
   01-requirements:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-08-02'
-    started: '2026-08-02'
-    completed_at: '2026-08-02'
-    completed: '2026-08-02'
-    session_id: S037-quality-residuals-831
-    evolve_cycle_id: EV-030
-    prior_session_id: S035-empiric2-ops-leftovers-781
-    prior_evolve_cycle_id: EV-028
-    prior_started: '2026-08-01'
-    prior_completed: '2026-08-01'
-    prior_note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
-    note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    completed_at: null
+    completed: null
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    prior_session_id: S037-quality-residuals-831
+    prior_evolve_cycle_id: EV-030
+    prior_started: '2026-08-02'
+    prior_completed: '2026-08-02'
+    prior_note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
+    note: 'S038/EV-031 01-requirements in_progress (delta) — D-S038-fn=1,1,1; F30+F31; deepen F5,F7,F8,F21,F22,M4; commit open artifacts yes'
     substeps:
       interviews:
         status: completed
@@ -8964,20 +9086,21 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S037-quality-residuals-831
-    evolve_cycle_id: EV-030
-    started_at: '2026-08-02'
-    started: '2026-08-02'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    current_stage: null
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    completed_at: null
+    completed: null
+    current_stage: 01-requirements
+    phase: 1
     prior_session_id: S037-quality-residuals-831
     prior_evolve_cycle_id: EV-030
     prior_completed: '2026-08-03'
     prior_note: 'S037/EV-030 16-evolve CLOSED — D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; active_session=null'
-    note: 'S037/EV-030 16-evolve COMPLETE — D-S037-13=1 close; PR #832 @ 8bd111c; progress 27/27; #835 open residual'
+    note: 'S038/EV-031 16-evolve in_progress — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; child 01-requirements in_progress; #842/#830/#712'
     tip_sha: 8bd111c
     tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
     notes:
@@ -9309,6 +9432,181 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S038-fn
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: feature-allocation
+  status: confirmed
+  topic: 'S038/EV-031 Fn allocation — F30+F31; start 01'
+  summary: '1,1,1 — F30+F31; deepen F5,F7,F8,F21,F22,M4; start 01; commit open'
+  decision: '1,1,1 — Allocate F30+F31; deepen F5,F7,F8,F21,F22,M4; start 01-requirements now; commit open artifacts yes'
+  user_option: '1,1,1'
+  feature_ids:
+  - F30
+  - F31
+  deepen_feature_ids:
+  - F5
+  - F7
+  - F8
+  - F21
+  - F22
+  - M4
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  branch: evolve/EV-031-platform-independence-842
+
+- id: D-S038-830-amend
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase-0
+  category: scope
+  status: confirmed
+  topic: '#830 amend — Auth-kept / strip data plane'
+  summary: 'D-S038-830-amend=1 — amend #830 in-place: keep Supabase Auth; strip product data plane'
+  decision: 'Amend ticket #830: Auth-kept / strip data plane (option 1).'
+  user_option: '1'
+  related_issues: ['830', '842']
+  branch: evolve/EV-031-platform-independence-842
+
+- id: D-S038-session-store
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase-0
+  category: architecture
+  status: confirmed
+  topic: 'Work session store — logged-in vs guest'
+  summary: 'D-S038-session-store=1 — logged-in → DO Postgres; guest local + loss notice + F22 privacy'
+  decision: 'Logged-in sessions on DO Postgres; guests local storage + loss-of-progress notice; honor F22 privacy preference center (option 1).'
+  user_option: '1'
+  related_issues: ['842', '830']
+  related_features: ['F5', 'F22']
+  branch: evolve/EV-031-platform-independence-842
+
+- id: D-S038-auth-model
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase-0
+  category: architecture
+  status: confirmed
+  topic: 'Auth model — Supabase Auth for long-term storage'
+  summary: 'D-S038-auth-model=1 — reintroduce Supabase Auth for long-term storage; amend F21'
+  decision: 'Supabase Auth for long-term storage / login; amend F21 (public unauthenticated remains for guests) (option 1).'
+  user_option: '1'
+  related_issues: ['842', '830']
+  related_features: ['F21']
+  branch: evolve/EV-031-platform-independence-842
+
+- id: D-S038-route
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 00-context
+  skill_id: 00-context
+  stage: routing-approval
+  category: routing
+  status: confirmed
+  topic: 'Approve Standard routing → 16-evolve Phase 1'
+  summary: 'D-S038-route=1 — Standard routing approved; Phase 1 Fn pending'
+  decision: 'Approve Standard routing → 16-evolve Phase 1 Fn allocation (option 1).'
+  user_option: '1'
+  preset: Standard
+  preset_status: approved
+  related_issues: ['842', '830', '712']
+  branch: evolve/EV-031-platform-independence-842
+
+- id: D-S038-f8
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase-0
+  category: architecture
+  status: confirmed
+  topic: 'F8 persistence — DigitalOcean Postgres'
+  summary: 'D-S038-f8=1 — keep F8; persist on DigitalOcean Postgres'
+  decision: 'Keep F8 near-RT worker; persistence on DigitalOcean Postgres (option 1).'
+  user_option: '1'
+  related_issues: ['842']
+  related_features: ['F8']
+  branch: evolve/EV-031-platform-independence-842
+
+- id: D-S038-doks-depth
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase-0
+  category: scope
+  status: confirmed
+  topic: 'DOKS cutover depth'
+  summary: 'D-S038-doks-depth=3 — production cutover; Render decommission after soak'
+  decision: 'Full production DOKS cutover this cycle; Render decommission after soak (option 3).'
+  user_option: '3'
+  related_issues: ['712', '842']
+  branch: evolve/EV-031-platform-independence-842
+
+- id: D-S038-open
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: session_open
+  status: confirmed
+  topic: 'Open S038/EV-031 platform-independence Phase 0 choices'
+  summary: 'Approved Phase 0 — scope opt3 full epic #842+#830+#712; cycle_type general; Standard routing; UI preview Yes (non-deployed local UI)'
+  decision: |
+    Open session S038-platform-independence-842 / EV-031. Scope option 3: full epic #842
+    including #830 strip Supabase AND #712 DOKS cutover planning + IaC. Cycle type: general
+    platform-independence (may allocate new Fn). Routing preset Standard
+    00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06). UI preview: Yes — non-deployed local UI.
+  user_options:
+    scope: '3'
+    cycle_type: general
+    routing_preset: Standard
+    ui_preview: 'Yes'
+  user_option: '3,1,1,1'
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  branch: evolve/EV-031-platform-independence-842
+  note: 'Counters session 38 / evolve 31; Phase 0 fully locked 2026-08-03; D-S038-fn=1,1,1 F30+F31; current_stage 01-requirements'
+
 - id: D-S037-13
   date: '2026-08-03'
   timestamp: '2026-08-03'
@@ -18686,6 +18984,57 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/decisions/evolve-decisions.md
+  kind: evolve-decisions
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 16-evolve
+  skill_id: 16-evolve
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: in_progress
+  note: 'EV-031 Phase 0 section locked — D-S038-open/doks-depth/f8/route/auth-model/session-store/830-amend; Fn pending D-S038-fn'
+- path: docs/context/platform-independence-842.md
+  kind: context-scoped
+  slug: platform-independence-842
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: present
+  note: 'S038/EV-031 scoped context — Phase 0 topology + decisions locked'
+- path: docs/sessions/S038-platform-independence-842/routing-plan.md
+  kind: routing-plan
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: present
+  note: 'S038/EV-031 Standard routing — Phase 0 locked; D-S038-route=1'
+- path: docs/sessions/S038-platform-independence-842/session-brief.md
+  kind: session-brief
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: present
+  note: 'S038/EV-031 session-brief — Phase 0 locked'
+- path: docs/sessions/S038-platform-independence-842/
+  kind: session-dir
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: present
+  note: 'S038/EV-031 artifacts_dir'
 - path: docs/evolve-report-EV-030.md
   kind: evolve-report
   session_id: S037-quality-residuals-831
@@ -28185,22 +28534,187 @@ evolve_cycles:
   - '2026-08-02 S037/EV-030 D-S037-E30-M (2,1) — lean + API/catalog #829; 01 COMPLETE → 02-verify-plan in_progress; sha pending parent commit; #831→#829→#820'
   - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; 01-requirements in_progress (delta); commit open; #831→#829→#820'
   - '2026-08-02 S037/EV-030 OPEN — D-S037-route (1); 00 COMPLETE; 16-evolve Phase 1 Fn allocation; feature_ids pending D-S037-fn; work order #831→#829→#820'
+- id: EV-031
+  session_id: S038-platform-independence-842
+  cycle_type: general
+  feature_ids:
+  - F30
+  - F31
+  deepen_feature_ids:
+  - F5
+  - F7
+  - F8
+  - F21
+  - F22
+  - M4
+  title: 'Platform independence #842 / #830 / #712'
+  status: in_progress
+  phase: 1
+  started: '2026-08-03'
+  started_at: '2026-08-03'
+  completed: null
+  scope_summary: |
+    Full epic #842 including #830 strip Supabase AND #712 DOKS cutover planning + IaC
+    (user expanded beyond soft deferral). Cycle type: general platform-independence
+    (may allocate new Fn after Phase 0/1). Standard routing preset
+    00→16→01→02→04→07→08→09→10→11→12→13; skip 03/05/06 unless later amended.
+    UI preview: Yes — non-deployed local UI.
+  github_issues:
+  - '842'
+  - '830'
+  - '712'
+  branch: evolve/EV-031-platform-independence-842
+  preset: Standard
+  preset_status: approved
+  ui_preview: yes
+  ui_preview_note: non-deployed local UI
+  phase0_choices:
+    D-S038-open: '3,1,1,1'
+    D-S038-doks-depth: '3'
+    D-S038-f8: '1'
+    D-S038-route: '1'
+    D-S038-auth-model: '1'
+    D-S038-session-store: '1'
+    D-S038-830-amend: '1'
+    D-S038-fn: '1,1,1'
+    locked_at: '2026-08-03'
+    summary: |
+      Scope full epic+#712 IaC; general; Standard; local UI.
+      DOKS depth=3 production cutover + Render decommission after soak.
+      F8→DigitalOcean Postgres. Supabase Auth for long-term storage (amend F21).
+      Sessions: logged-in DO Postgres; guest local + loss notice + F22.
+      #830 amend Auth-kept / strip data plane.
+      Fn: F30+F31; deepen F5,F7,F8,F21,F22,M4 (D-S038-fn=1,1,1).
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
+    note: 'Standard — Phase 0+Fn done 2026-08-03 (D-S038-fn); 00 completed; 01-requirements in_progress'
+  current_stage: 01-requirements
+  current_stage_note: 'Phase 1 — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; 01-requirements (delta) started'
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE — Phase 0+Fn done; brief+routing+context; handoff 01'
+    16-evolve:
+      status: in_progress
+      mode: orchestrator
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      note: 'Fn allocated (D-S038-fn=1,1,1); orchestrator remains in_progress; child 01-requirements'
+    01-requirements:
+      status: in_progress
+      mode: delta
+      started: '2026-08-03'
+      note: 'STARTED (delta) — D-S038-fn=1,1,1; F30+F31; commit open artifacts yes'
+    02-verify-plan:
+      status: pending
+      mode: delta
+    04-tech-plan:
+      status: pending
+      mode: delta
+    07-build:
+      status: pending
+    08-verify-build:
+      status: pending
+    09-qa:
+      status: pending
+      mode: delta
+    10-e2e:
+      status: pending
+      mode: delta
+    11-verify-impl:
+      status: pending
+      mode: delta
+    12-verify-deploy:
+      status: pending
+      mode: delta
+    13-deploy-smoke:
+      status: pending
+    03-plan-tooling:
+      status: skipped
+      skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
+    05-verify-tech:
+      status: skipped
+      skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
+    06-tech-tooling:
+      status: skipped
+      skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S038-platform-independence-842/
+    status: present
+  - path: docs/sessions/S038-platform-independence-842/session-brief.md
+    status: present
+  - path: docs/sessions/S038-platform-independence-842/routing-plan.md
+    status: present
+  - path: docs/context/platform-independence-842.md
+    status: present
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+    note: 'EV-031 Phase 0 section locked'
+  issues: []
+  decision_refs:
+  - D-S038-open
+  - D-S038-doks-depth
+  - D-S038-f8
+  - D-S038-route
+  - D-S038-auth-model
+  - D-S038-session-store
+  - D-S038-830-amend
+  - D-S038-fn
+  note: 'S038/EV-031 Phase 1 — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; current_stage 01-requirements; #842/#830/#712'
+  notes:
+  - '2026-08-03 S038/EV-031 D-S038-fn (1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; 00 COMPLETE; 01-requirements in_progress (delta); commit open; #842/#830/#712'
+  - '2026-08-03 S038/EV-031 Phase 0 LOCKED → Phase 1 — decisions D-S038-open=3,1,1,1; doks-depth=3; f8=1 (DO Postgres); route=1; auth-model=1 (Supabase Auth / amend F21); session-store=1 (DO Postgres logged-in; guest local+notice+F22); 830-amend=1; feature_ids [] pending D-S038-fn; branch exists locally; 16-evolve in_progress'
+  - '2026-08-03 S038/EV-031 OPEN — open_session; Phase 0 choices (scope opt3 #842+#830+#712, general, Standard, UI preview Yes); session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress'
 git_history:
-  current_branch: main
-  ahead_of_origin: 1
+  current_branch: evolve/EV-031-platform-independence-842
+  ahead_of_origin: 0
   pushed: false
   pending_commit: null
-  dirty: false
+  dirty: true
   tip_sha: 7c4522a
   tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
-  recommended_branch: main
-  note: 'S037/EV-030 COMPLETE — closeout @ 7c4522a on main; D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual'
+  recommended_branch: evolve/EV-031-platform-independence-842
+  note: 'S038/EV-031 — branch evolve/EV-031-platform-independence-842 exists locally (exists: true); Phase 0 locked; Phase 1 Fn pending D-S038-fn; #842/#830/#712'
 
   notes:
+  - '2026-08-03 S038/EV-031 Phase 0 LOCKED — branch exists: true locally; D-S038-open/doks-depth/f8/route/auth-model/session-store/830-amend recorded; 16-evolve in_progress Phase 1 Fn pending; feature_ids []'
+  - '2026-08-03 S038/EV-031 OPEN — open_session; D-S038-open; session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress; Phase 0 choices locked (scope opt3, general, Standard, UI preview Yes); #842/#830/#712'
   - '2026-08-03 closeout commit 7c4522a [EV-030] docs: close S037 — D-S037-13 cycle complete; main ahead 1; active_session=null'
   - '2026-08-03 D-S037-13=1 Yes — mark cycle + session complete (2026-08-03); EV-030/S037 closed; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; 13-deploy-smoke PASS'
   - '2026-08-03 S037/EV-030 — PR #832 MERGED @ 8bd111c (main); CI 30826197508 tests PASS deploy hook FAIL 500; Render REST deploy workaround LIVE; T4.4/T4.5 COMPLETE; progress 27/27; tip evolve branch dirty closeout files; #835'
@@ -28563,6 +29077,17 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-031-platform-independence-842
+    purpose: 'S038/EV-031 platform independence #842 / #830 strip Supabase / #712 DOKS cutover+IaC'
+    base: main
+    status: active
+    created: '2026-08-03'
+    created_at: '2026-08-03'
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    pushed: false
+    exists: true
+    note: 'Branch created locally 2026-08-03 — exists: true; Phase 0 locked; Phase 1 Fn pending D-S038-fn'
   - name: evolve/EV-030-quality-residuals-831
     purpose: 'S037/EV-030 quality residuals #831→#829→#820'
     base: main

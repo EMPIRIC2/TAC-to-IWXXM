@@ -8,6 +8,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 
 | Slug | Topic | Status | Created | Linked features |
 |------|-------|--------|---------|-----------------|
+| [platform-independence-842](platform-independence-842.md) | #842/#830/#712 Supabase strip + Render→DOKS | active | 2026-08-03 | F30?, F8, F21, S038/EV-031 |
 | [quality-residuals-831](quality-residuals-831.md) | #831/#829/#820 rule matrices + TC deepen + VAA/TCA decode | active | 2026-08-02 | F29?, F23, F9, F26/F27, S037/EV-030 |
 | [eight-family-ahl-rules-823](eight-family-ahl-rules-823.md) | #823 eight-family AHL/lint/convert/validate gap sweep | active | 2026-08-01 | F6+, F28?, S036/EV-029 |
 | [public-app-privacy](public-app-privacy.md) | Public app + IndexedDB history + privacy (#783) | active | 2026-07-27 | F5, F7, M4, S023/EV-017 |

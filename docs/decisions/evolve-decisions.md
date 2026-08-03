@@ -3,6 +3,43 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-031 — Platform independence #842 / #830 / #712 (S038)
+
+**Session**: S038-platform-independence-842  
+**Features**: pending `D-S038-fn` (proposed **F30** + **F31**; deepen F5/F7/F8/F21/F22)  
+**Issues**: [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842), [#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830), [#712](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/712)  
+**Started**: 2026-08-03  
+**Branch**: `evolve/EV-031-platform-independence-842`  
+**Status**: **in_progress** — Phase 0 locked; Phase 1 Fn allocation
+
+### Scope (Phase 0 — locked 2026-08-03)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E31-1 | decision | Session open? | **3,1,1,1** — full epic+#712 IaC/cutover; general; Standard; local UI (`D-S038-open`) |
+| E31-2 | decision | DOKS depth? | **3** — production cutover; Render decommission after soak (`D-S038-doks-depth`) |
+| E31-3 | decision | F8 persistence? | **1** — keep F8 on **DigitalOcean Postgres** (`D-S038-f8`) |
+| E31-4 | decision | Routing? | **1** — Standard (`D-S038-route`) |
+| E31-5 | decision | Auth model? | **1** — Reintroduce **Supabase Auth** for **long-term storage**; amend F21 (`D-S038-auth-model`) |
+| E31-6 | decision | Session store? | **1** — Logged-in → DO Postgres; guests → local + **loss notice** + **F22 privacy** (`D-S038-session-store`) |
+| E31-7 | decision | #830? | **1** — Amend ticket: Auth-kept / strip data plane (`D-S038-830-amend`) |
+
+**Topology**: Supabase = Auth/JWT verify only. DigitalOcean = all product DB + DOKS compute.  
+**Guest UX**: transient local storage; UI notice that progress is lost without login; honor privacy preference center.
+
+**In:** #830 amend; hybrid sessions; F8→DO Postgres; DOKS prod cutover; ADR/corpus/deploy.  
+**Out:** Engine rewrites; Supabase product PostgREST/DB; long-lived dual hosts after soak.
+
+### Acceptance (cycle — draft until 01)
+
+1. App boots and smoke **without** Supabase **database** credentials; Auth credentials still required for login path.
+2. Logged-in work sessions persist on DO Postgres; guests local-only with notice; privacy prefs respected.
+3. F8 writes to DO Postgres.
+4. Production on DOKS; Render decommissioned after soak (or tracked cutover checklist complete).
+5. #830/#712/#842 acceptance updated and met (or residual issues filed).
+
+---
+
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)
 
 **Session**: S037-quality-residuals-831  
