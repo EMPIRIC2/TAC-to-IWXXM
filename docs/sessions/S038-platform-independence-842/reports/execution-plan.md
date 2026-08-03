@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M5 — One-time Supabase → DO migrate (COMPLETE) |
-| **Active task** | T5.4 completed; next 08-verify-build @ M5 then M6 |
-| **Tasks** | 26 / 38 completed |
+| **Active milestone** | M6 — DOKS IaC + cutover + soak (#712) |
+| **Active task** | T6.2 — Idempotent alembic in release job (next) |
+| **Tasks** | 27 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -143,7 +143,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T6.1 | Infra | DOKS manifests/Helm/Blueprint: API + FE static + worker; secrets (`DATABASE_URL`, Auth JWKS/url) | #712; F30 | T3.3, T4.5 | pending |
+| T6.1 | Infra | DOKS manifests/Helm/Blueprint: API + FE static + worker; secrets (`DATABASE_URL`, Auth JWKS/url) | #712; F30 | T3.3, T4.5 | in_progress |
 | T6.2 | Config | Release job: **idempotent** `alembic upgrade head` before/with API deploy | CI migration contract | T2.3, T6.1 | pending |
 | T6.3 | Ops | Pin real DNS / `LIVE_*` / `config/prod.json`; CORS for DOKS FE | `D-S038-04-b2` Q1 | T6.1 | pending |
 | T6.4 | Ops | Cutover smoke UJ-048 / TC-F30-004..005; start **7-day** soak | UJ-048; soak=7d | T6.2, T6.3 | pending |

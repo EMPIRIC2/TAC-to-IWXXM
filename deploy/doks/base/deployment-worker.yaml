@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metar-worker
+  labels:
+    app.kubernetes.io/name: metar-worker
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metar-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metar-worker
+        app.kubernetes.io/component: worker
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/empiric2/tac-to-iwxxm/worker:main-latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: metar-worker-config
+            - secretRef:
+                name: metar-worker-secrets
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi

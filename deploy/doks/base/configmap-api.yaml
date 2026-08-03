@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metar-api-config
+  labels:
+    app.kubernetes.io/name: metar-api
+    app.kubernetes.io/component: api
+data:
+  METAR_CONFIG_ENV: "prod"
+  RELOAD: "false"
+  SCHEMATRON_USE_DOCKER: "false"
+  WMO_ONLINE_VALIDATION: "true"
+  LOG_LEVEL: "INFO"
+  ENABLE_STATISTICS: "true"
+  ENABLE_WEBHOOKS: "false"
+  # Placeholder FE origin until T6.3 pins real DNS (D-S038-04-b2 Q1).
+  METAR_CORS_ORIGINS: "https://app.doks.placeholder.metar-iwxxm.local"
+  PORT: "8000"
