@@ -616,7 +616,7 @@ content requires new documented code enums (prefer additive).
 | `POST /api/v1/decode-tac` | **None (wire)** | SIGMET/VA best-effort decode already F9 sparse-product scope; fixtures may expand |
 | `POST /api/v1/validate` | **None (wire)** | Round-trip goldens use existing validate levels |
 | `POST /api/v1/dissemination/*` | **OOS** | No F16–F19 changes this cycle (E19-6) |
-| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+| `/auth/*`, work-sessions | **None** | Historical (F21 public era — pre–EV-031); restored F31 |
 
 **Breaking changes**: None expected. Root selection is package-side behavior under existing
 `product=sigmet`; FE OpenAPI types update only if catalog/issue content requires new
@@ -650,7 +650,7 @@ documented code enums (prefer additive).
 | `POST /api/v1/decode-tac` | **None (wire)** | VAA/TCA best-effort decode already F9 sparse-product scope (G4); fixtures may expand |
 | `POST /api/v1/validate` | **None (wire)** | Round-trip goldens use existing validate levels |
 | `POST /api/v1/dissemination/*` | **OOS** | No F16–F19 changes this cycle |
-| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+| `/auth/*`, work-sessions | **None** | Historical (F21 public era — pre–EV-031); restored F31 |
 
 **Breaking changes**: None expected. FE Examples catalog is static (no new API). FE OpenAPI
 types update only if catalog/issue content requires new documented code enums (prefer additive).
@@ -671,7 +671,7 @@ types update only if catalog/issue content requires new documented code enums (p
 | `POST /api/v1/decode-tac` | **Additive enum** | `product=swxa` best-effort decode (F9 G4); TC SIGMET under `sigmet` |
 | `POST /api/v1/validate` | **None (wire)** | Existing levels; SWXA/TC SIGMET goldens use same validate path |
 | `POST /api/v1/dissemination/*` | **Consume AHL helpers** | No new routes; shared AHL/`T1T2`/filename model for sinks (drawer UI OOS) |
-| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+| `/auth/*`, work-sessions | **None** | Historical (F21 public era — pre–EV-031); restored F31 |
 
 **Breaking changes**: None — additive `swxa` only. FE OpenAPI / product pickers must add
 `swxa` when F28 unlocks Examples. Runtime enum enforcement lands in 07-build (backend +

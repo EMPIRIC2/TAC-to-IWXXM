@@ -153,9 +153,10 @@ No new CLI flags.
 
 - Rate-limit / body knobs must be positive integers when set (`RATE_LIMIT_*`, `MAX_REQUEST_BODY_BYTES`)
 - `config/*.json` must parse as valid JSON; `api.corsOrigins` must be a non-empty array in prod
-- `api.baseUrl` must be `/api/v1` only (no `/auth`) under F21
-- `make env-check` fails if deprecated Auth-only names are required without F21 replacements
+- `api.baseUrl` is the single API origin for `/api/v1/*` **and** `/auth/*` (F31 / ADR-033) — **no** `/admin`
+- `make env-check` fails if Auth bootstrap is required without `supabase.url` / publishable key when Auth is enabled
 - Secret / service-role keys must never appear in frontend build env or committed files
+- Product DB writers use `DATABASE_URL` (DO Postgres) — not Supabase PostgREST service-role (F30)
 - `DISSEMINATION_EGRESS_ALLOWLIST` empty ⇒ fail-closed (ADR-029)
 
 ## F6 — tac2iwxxm conversion (S008)

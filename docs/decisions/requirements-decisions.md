@@ -399,5 +399,6 @@
 | EV-031/uj | User Journeys | UJ-045..048; persistent guest banner | confirmed |
 | EV-031/tp | Test Plan | TC-F30/F31/EV031; H4–H5 required; lean remaining docs | confirmed |
 | EV-031/docs-lean | Standing deltas | test-plan, config, env-contract, api, deploy, deps, ADR-033, migration note | drafted |
+| EV-031/02-batch-c | Stale F21 + Gate A | Fix C1–C5; ADR-033 Proposed; Gate A PASS → 04 | confirmed |
 
 

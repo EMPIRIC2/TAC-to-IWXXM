@@ -85,8 +85,12 @@ Run live E2E: `make test-live` (after F21: public convert path needs **no** `E2E
 
 | Role | Env var | URL |
 |------|---------|-----|
-| API | `LIVE_API_URL` | `https://metar-to-iwxxm-api.onrender.com` |
-| Frontend | `LIVE_FRONTEND_URL` / `PLAYWRIGHT_BASE_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
+| API (transitional Render) | `LIVE_API_URL` | `https://metar-to-iwxxm-api.onrender.com` |
+| Frontend (transitional Render) | `LIVE_FRONTEND_URL` / `PLAYWRIGHT_BASE_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
+| API / FE (post–F30 cutover) | same env vars | **DOKS** hostnames — pin in 04-tech-plan / deploy |
+
+Until DOKS soak completes, live harness may still target Render. After cutover (UJ-048),
+`LIVE_*` must point at DOKS; Render URLs become historical.
 
 **F6 T3 requirement**: All **seven** products (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA)
 must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US profile
@@ -394,12 +398,15 @@ no `/admin` or `/auth` dependency; sessions persist locally without JWT.
 
 ### UJ-014: Near-Realtime Ingest + Quarantine (F8)
 
-**Status**: **Implemented** (S008 / ADR-018/019). Worker ingest → pipeline → Supabase store or
-separate quarantine on Schematron/convert fail. No push sinks in v1.
+**Status**: **Implemented** (S008 / ADR-018/019); **amended S038 / EV-031 / F30** — store/
+quarantine on **DigitalOcean Postgres** via `DATABASE_URL` (not Supabase PostgREST).
+Worker ingest → pipeline → DO store or separate quarantine on Schematron/convert fail.
+No push sinks in v1. Deployable moves Render → **DOKS** with F30.
 
 **Acceptance**: Worker processes HTTPS/object-prefix fixture feed; pass rows in
-`iwxxm_ingest_results`; fail rows in `iwxxm_ingest_quarantine`; service-role JWT for writers.
-Live: T7.4 / Phase 6 gate (may remain deferred).
+`iwxxm_ingest_results`; fail rows in `iwxxm_ingest_quarantine`; writers use private
+`DATABASE_URL` / machine credentials (not operator JWT; not Supabase service-role DB).
+Live: T7.4 / Phase 6 gate (may remain deferred); TC-F30-003 covers DO write path.
 
 ---
 

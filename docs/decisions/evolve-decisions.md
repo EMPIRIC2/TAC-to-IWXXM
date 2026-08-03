@@ -32,6 +32,8 @@
 | E31-spec-data | decision | Spec data/cutover? | **1,1,2,1** — single DO DB; Alembic; **one-time migrate** legacy Supabase→DO; write Spec then UJ (`D-S038-spec-data`) |
 | E31-uj | decision | User Journeys? | **1,1,1** — UJ-045..048; persistent guest banner; write then Test Plan (`D-S038-uj`) |
 | E31-tp | decision | Test Plan? | **1,1,1** — TC-F30/F31/EV031; H4–H5 required; lean remaining docs (`D-S038-tp`) |
+| E31-gate-a | decision | 01 Gate A? | **1,1,1** — accept lean docs; defer tech gaps to 04; commit `fc3bbe5` (`D-S038-01-gate-a`) |
+| E31-02 | decision | 02 batch C + Gate A? | **1,1,1** — fix C1–C5; keep ADR-033 Proposed; Gate A PASS → 04 (`D-S038-02-batch-c` / `D-S038-02-phase-a`) |
 
 **Topology**: Supabase = Auth/JWT verify only. DigitalOcean = all product DB + DOKS compute.  
 **Guest UX**: transient local storage; UI notice that progress is lost without login; honor privacy preference center.

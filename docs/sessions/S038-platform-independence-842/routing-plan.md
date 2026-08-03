@@ -9,26 +9,26 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Phase 0 + Fn lock; open `d286bfb` |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase 1 → 01 |
-| 01-requirements | yes | delta | **in_progress** | Document Manifest pending |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 16-evolve | yes | orchestrator | **in_progress** | Gate A PASS → 04 |
+| 01-requirements | yes | delta | **completed** | Gate A lean docs `fc3bbe5`; gaps→04 |
+| 02-verify-plan | yes | delta | **completed** | C1–C5 fixed; `D-S038-02-batch-c`/`phase-a`; Gate A PASS |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
-| 04-tech-plan | yes | delta | pending | Execution plan + ADR(s); Gate B |
+| 04-tech-plan | yes | delta | **in_progress** | Execution plan + ADR(s); Gate B |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
 | 07-build | yes | full | pending | #830 cutover then #712 IaC (per depth) |
 | 08-verify-build | yes | delta | pending | — |
 | 09-qa | yes | delta | pending | — |
-| 10-e2e | yes | smoke | pending | H4–H5 if FE supabase client removal ships |
+| 10-e2e | yes | smoke | pending | H4–H5 if FE Auth client restore ships |
 | 11-verify-impl | yes | delta | pending | Per-Fn acceptance |
-| 12-verify-deploy | yes | delta | pending | Render and/or DOKS per depth Decision |
-| 13-deploy-smoke | yes | full | pending | Smoke with Supabase env unset; DOKS only if cutover approved |
+| 12-verify-deploy | yes | delta | pending | DOKS cutover per `D-S038-doks-depth=3` |
+| 13-deploy-smoke | yes | full | pending | Smoke Auth+DO; DOKS primary after cutover |
 
 ## Skip rationale
 
 Standard on an existing app with architectural + deploy-path change. No new product engines.
-UI preview accepted (local only). Connectivity H4–H5 when frontend supabase removal ships.
-DOKS live cutover is gated by `D-S038-doks-depth` (may keep 12/13 Render-primary).
+UI preview accepted (local only). Connectivity H4–H5 when frontend Auth restore ships.
+DOKS live cutover locked by `D-S038-doks-depth=3`.
 
 ## Approved
 
@@ -36,10 +36,12 @@ DOKS live cutover is gated by `D-S038-doks-depth` (may keep 12/13 Render-primary
 |------|----------|------|
 | Session open / Phase 0 batch | `D-S038-open` = **3,1,1,1** — full epic + IaC; general; Standard; local UI yes | 2026-08-03 |
 | DOKS depth | `D-S038-doks-depth` = **3** — full prod cutover + Render decommission after soak | 2026-08-03 |
-| F8 + data plane | `D-S038-f8` = **1** + amend: F8 on DO Postgres; Supabase Auth-only (pending auth-model) | 2026-08-03 |
+| F8 + data plane | `D-S038-f8` = **1** + amend: F8 on DO Postgres; Supabase Auth-only | 2026-08-03 |
 | Routing confirm | `D-S038-route` = **1** — Standard approved | 2026-08-03 |
 | Auth model | `D-S038-auth-model` = **1** — reintroduce Supabase Auth for **long-term storage** (amend F21) | 2026-08-03 |
 | Session store | `D-S038-session-store` = **1** — DO Postgres when logged in; guest local + loss notice + F22 privacy | 2026-08-03 |
 | #830 amend | `D-S038-830-amend` = **1** — rewrite ticket: Auth-kept / data-plane strip | 2026-08-03 |
 | Fn allocation | `D-S038-fn` = **1,1,1** — F30+F31; start 01; commit open `d286bfb` | 2026-08-03 |
 | Document Manifest | `D-S038-E31-M` = **1,1** — full 1–10; Feature List first | 2026-08-03 |
+| Test Plan + lean docs | `D-S038-tp` = **1,1,1**; `D-S038-01-gate-a` = **1** | 2026-08-03 |
+| 02 Gate A | `D-S038-02-batch-c` / `D-S038-02-phase-a` = **1,1,1** — C1–C5 fixed; ADR-033 Proposed; → 04 | 2026-08-03 |

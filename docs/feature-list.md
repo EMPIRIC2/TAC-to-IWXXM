@@ -622,8 +622,9 @@
   flows remain **usable without login** (public APIs + abuse controls). **Optional Supabase Auth**
   login exists solely so operators can **keep long-term work history** on DO Postgres (F30/F31).
   Guests are warned in-UI that progress may be lost without login.
-- **What it did (EV-017)**: Fully public — no login/signup UX; no Bearer JWT for operator flows;
-  `/auth/*` retired; IndexedDB-only work history.
+- **What it did (EV-017 — historical)**: Fully public — no login/signup UX; no Bearer JWT for
+  operator flows; `/auth/*` retired; IndexedDB-only work history. **Superseded for Auth/sessions
+  by EV-031 / F31** (optional Auth restored; convert remains public).
 - **Acceptance (amended)**:
   1. Unauthenticated user completes convert → validate → download/send without login
   2. Optional `/auth/*` (or equivalent) for login/logout; JWT required only for **server session** APIs
@@ -1301,7 +1302,8 @@
   operator dissemination (F16–F19)** — WIS2 / EDIS / AMHS / SWIM / AFS / multi-DB upload are
   **in scope** under EV-014. F8 worker v1 still does **not** auto-push ingest results unless
   wired later.
-- Public machine-ingest auth UX (worker uses service-role JWT internally — ADR-018).
+- Public machine-ingest auth UX (worker uses private `DATABASE_URL` / machine credentials —
+  ADR-018 amended by ADR-033 / F30; not operator JWT).
 - Schematron applied to TAC (Schematron stays on IWXXM; TAC uses `tac-validate`).
 - Dedicated converter API service (rejected; F8 worker is the new deployable).
 
@@ -1330,10 +1332,14 @@
 ## Non-Goals (S023 / EV-017 — public app + privacy)
 
 - Formal legal advice / DPIA (engineering supports counsel review).
-- Removing F8 worker **service-role** credentials or Render↔Supabase machine auth.
+- ~~Removing F8 worker **service-role** credentials or Render↔Supabase machine auth.~~
+  **Amended S038 / EV-031**: F8 writers move to DO `DATABASE_URL` (not Supabase PostgREST);
+  machine credentials remain private — not operator JWT.
 - Reintroducing admin role UX (#697).
-- Optional user accounts or anonymous server sessions in v1.
-- Cross-device work-history sync.
+- ~~Optional user accounts or anonymous server sessions in v1.~~
+  **Amended S038 / EV-031 / F31**: Optional Supabase Auth accounts for **long-term** server
+  sessions only; convert remains public; guests keep IndexedDB.
+- Cross-device sync **without** login (logged-in DO sessions are in scope via F31).
 - Full CMP / analytics / marketing tags (Solution B/C) unless a later evolve cycle adds them.
 - Per-US-state separate privacy UI variants (one global strict preference center).
 

@@ -561,12 +561,13 @@ metar-to-IWXXM/
 |-------|-------|----------------|--------|
 | U1. Edit | TAC text/files + product/profile/version | CodeMirror workbench | Live editor state |
 | U1b. Live assist | Editor text (debounced) | Public POST lint / decode (/ preview) | Spans + decode rows + Failed-TAC cue |
-| U2. Auth | — | **Removed (F21)** — public `/api/v1/*` + abuse controls | No JWT for operator UI |
+| U2. Auth | Optional login (F31) | Supabase Auth → JWT via `/auth/*`; convert stays public | JWT only for session APIs |
 | U3–U4 | Convert / validate | Unified pipeline stages 0–4 | IWXXM + validation |
 | U5. Display | JSON response | Frontend render | Copy/download + Source TAC + console |
-| U6. Persist | Any of 7 products + results | **IndexedDB** upsert (F7.h) | Draft/WIP/Finished/Failed |
-| U6b. My METARs | Filter view | `product IN (metar, speci)` local | F5 UX preserved |
-| U7. Send link | Dissemination success | Store `kv_upload_key` locally | Finished status |
+| U6. Persist (guest) | Any of 7 products + results | **IndexedDB** upsert (F7.h / F31) + loss-of-progress notice | Draft/WIP/Finished/Failed |
+| U6c. Persist (logged-in) | Eligible drafts + server CRUD | JWT → `work-sessions*` on DO Postgres (F30/F31) | Long-term history |
+| U6b. My METARs | Filter view | `product IN (metar, speci)` (local or server) | F5 UX preserved |
+| U7. Send link | Dissemination success | Store `kv_upload_key` locally (guest) or on server session | Finished status |
 
 ## Monorepo Migration
 

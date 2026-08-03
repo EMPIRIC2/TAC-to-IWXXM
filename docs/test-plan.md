@@ -1791,17 +1791,20 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 
 ### TC-LIVE-004: Live Playwright UJ-001–007
 
-- **Objective**: H6 — product journeys against Render frontend (includes F6 matrix)
-- **Preconditions**: `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; **no** Auth login fixture
-  (F21 public); IndexedDB available in browser context
+- **Objective**: H6 — product journeys against live frontend (includes F6 matrix; Render
+  transitional, then DOKS per F30 / UJ-048)
+- **Preconditions**: `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; public convert needs **no**
+  login; IndexedDB available for guest path; optional Auth fixtures only for UJ-046 / F31 cases
 - **Steps**:
   1. Run `00-preflight.e2e.spec.ts` first (wake + health)
   2. `make test-live-e2e` — public METAR convert, F6 product/profile matrix (UJ-005),
-     validation (UJ-002/007), UJ-008 smoke; **skip** retired Auth bootstrap
+     validation (UJ-002/007), UJ-008 smoke; Auth login covered by TC-F31 / UJ-046 (not
+     “Auth-gone”)
   3. Playwright config disables local `webServer` when base URL is remote
-- **Pass criteria**: UJ-001–007 specs green against live URLs (UJ-003 = Auth-gone negative only)
+- **Pass criteria**: UJ-001–007 specs green against live URLs; UJ-003 amended — convert stays
+  public (no JWT), while `/auth/*` may exist for long-term sessions (F31)
 - **Resilience**: Cold-start retry in preflight; serial execution (no parallel live requests)
-- **Source**: UJ-001–007, H6; F21
+- **Source**: UJ-001–007, H6; F21 amended F31; F30 DOKS URLs when cut over
 
 ### TC-LIVE-F6-001 / TC-LIVE-F6-002 / TC-LIVE-F6-003
 
