@@ -8,6 +8,7 @@ resources:
   - secret-api.yaml
   - secret-worker.yaml
   - deployment-api.yaml
+  - job-alembic-upgrade.yaml
   - service-api.yaml
   - ingress-api.yaml
   - deployment-frontend.yaml

@@ -15,6 +15,7 @@ REQUIRED_RESOURCES = (
     "secret-api.yaml",
     "secret-worker.yaml",
     "deployment-api.yaml",
+    "job-alembic-upgrade.yaml",
     "service-api.yaml",
     "ingress-api.yaml",
     "deployment-frontend.yaml",
@@ -90,3 +91,31 @@ def test_worker_has_no_service_or_ingress() -> None:
     names = {p.name for p in DOKS_BASE.glob("*.yaml")}
     assert "service-worker.yaml" not in names
     assert "ingress-worker.yaml" not in names
+
+
+@pytest.mark.unit
+def test_t62_api_init_container_runs_idempotent_alembic() -> None:
+    """T6.2 — release path runs ``alembic upgrade head`` before API serves."""
+    doc = yaml.safe_load(
+        (DOKS_BASE / "deployment-api.yaml").read_text(encoding="utf-8")
+    )
+    inits = doc["spec"]["template"]["spec"]["initContainers"]
+    assert len(inits) == 1
+    init = inits[0]
+    assert init["name"] == "alembic-upgrade"
+    assert init["command"] == ["alembic", "-c", "alembic.ini", "upgrade", "head"]
+    assert init["workingDir"] == "/app/apps/backend"
+    assert any(
+        ref.get("secretRef", {}).get("name") == "metar-api-secrets"
+        for ref in init["envFrom"]
+    )
+
+
+@pytest.mark.unit
+def test_t62_alembic_job_matches_init_command() -> None:
+    job = yaml.safe_load(
+        (DOKS_BASE / "job-alembic-upgrade.yaml").read_text(encoding="utf-8")
+    )
+    container = job["spec"]["template"]["spec"]["containers"][0]
+    assert container["command"] == ["alembic", "-c", "alembic.ini", "upgrade", "head"]
+    assert job["kind"] == "Job"

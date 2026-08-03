@@ -14,8 +14,11 @@
 
 **IaC (T6.1 / #712):** Kustomize base at [`deploy/doks/`](../deploy/doks/) —
 `kubectl apply -k deploy/doks/base`. Secrets stubbed as `REPLACE_ME_*` (create
-out-of-band). Placeholder Ingress hosts until **T6.3**. Idempotent Alembic release
-hook is **T6.2**.
+out-of-band). Placeholder Ingress hosts until **T6.3**.
+
+**Release migrate (T6.2):** API Deployment **initContainer** runs idempotent
+`alembic upgrade head` (same as `make db-migrate` / CI). Optional Job:
+`deploy/doks/base/job-alembic-upgrade.yaml`.
 
 **Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
 **Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).

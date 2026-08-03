@@ -39,8 +39,12 @@ kubectl kustomize deploy/doks/base
 
 ## Release migrate (T6.2)
 
-API rollout must run idempotent `alembic upgrade head` against `DATABASE_URL`
-(init container or release Job — see T6.2). Same command as `make db-migrate` / CI.
+API Deployment includes an **initContainer** `alembic-upgrade` that runs
+`alembic -c alembic.ini upgrade head` against `DATABASE_URL` before the API
+container starts (idempotent — same as `make db-migrate` / CI `test-alembic`).
+
+Optional ad-hoc Job: `deploy/doks/base/job-alembic-upgrade.yaml`
+(`kubectl apply -f …` or included in `kubectl apply -k`).
 
 ## Related
 

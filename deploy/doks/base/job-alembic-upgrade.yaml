@@ -1,0 +1,30 @@
+# Optional one-shot release Job (same command as API initContainer / make db-migrate).
+# Prefer the Deployment initContainer for normal rollouts; use this Job for ad-hoc ops.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: metar-alembic-upgrade
+  labels:
+    app.kubernetes.io/name: metar-alembic-upgrade
+    app.kubernetes.io/component: migrate
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metar-alembic-upgrade
+        app.kubernetes.io/component: migrate
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: alembic-upgrade
+          image: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
+          imagePullPolicy: Always
+          workingDir: /app/apps/backend
+          command: ["alembic", "-c", "alembic.ini", "upgrade", "head"]
+          envFrom:
+            - configMapRef:
+                name: metar-api-config
+            - secretRef:
+                name: metar-api-secrets
