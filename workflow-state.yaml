@@ -28156,6 +28156,7 @@ evolve_cycles:
   - D-S037-12
   - D-S037-13
   notes:
+  - '2026-08-03 closeout commit 7c4522a [EV-030] docs: close S037 — D-S037-13 cycle complete; files: workflow-state + evolve-report + evolve-decisions + sessions README/brief/summary'
   - '2026-08-03 Phase 4 closeout docs — evolve-report-EV-030.md written; D-S037-13=1'
   - 'S037/EV-030 COMPLETE — D-S037-13=1 close; PR #832 MERGED @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; progress 27/27; H1/H0c/H3/H4/H5 PASS; Render REST deploy workaround'
   - '2026-08-03 D-S037-13=1 Yes — mark cycle + session complete (2026-08-03); EV-030/S037 closed; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; 13-deploy-smoke PASS'
@@ -28185,19 +28186,22 @@ evolve_cycles:
   - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; 01-requirements in_progress (delta); commit open; #831→#829→#820'
   - '2026-08-02 S037/EV-030 OPEN — D-S037-route (1); 00 COMPLETE; 16-evolve Phase 1 Fn allocation; feature_ids pending D-S037-fn; work order #831→#829→#820'
 git_history:
-  current_branch: evolve/EV-030-quality-residuals-831
+  current_branch: main
   ahead_of_origin: 1
   pushed: false
-  pending_commit: '[EV-030] chore: sync workflow-state + closeout reports after T4.4/T4.5 (13-deploy-smoke)'
-  dirty: true
-  tip_sha: 3889e4c
-  tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+  pending_commit: null
+  dirty: false
+  tip_sha: 7c4522a
+  tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-  recommended_branch: evolve/EV-030-quality-residuals-831
-  note: 'S037/EV-030 COMPLETE — D-S037-13=1 close; PR #832 MERGED @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; progress 27/27; H1/H0c/H3/H4/H5 PASS; Render REST deploy workaround'
+  main_tip_sha: 7c4522a
+  main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
+  recommended_branch: main
+  note: 'S037/EV-030 COMPLETE — closeout @ 7c4522a on main; D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual'
 
   notes:
+  - '2026-08-03 closeout commit 7c4522a [EV-030] docs: close S037 — D-S037-13 cycle complete; main ahead 1; active_session=null'
   - '2026-08-03 D-S037-13=1 Yes — mark cycle + session complete (2026-08-03); EV-030/S037 closed; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; 13-deploy-smoke PASS'
   - '2026-08-03 S037/EV-030 — PR #832 MERGED @ 8bd111c (main); CI 30826197508 tests PASS deploy hook FAIL 500; Render REST deploy workaround LIVE; T4.4/T4.5 COMPLETE; progress 27/27; tip evolve branch dirty closeout files; #835'
   - '2026-08-03 S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e); T4.3 in_progress (verify-impl.md + deploy-checklist.md; PENDING user signoff 11 then 12); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
@@ -29547,6 +29551,23 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
+    short: 7c4522a
+    branch: main
+    message: "[EV-030] docs: close S037 — D-S037-13 cycle complete"
+    stage: 16-evolve
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03"
+    files_changed:
+    - workflow-state.yaml
+    - docs/evolve-report-EV-030.md
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/README.md
+    - docs/sessions/S037-quality-residuals-831/reports/evolve-summary.md
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    pushed: false
+    note: 'Phase 4 closeout docs on main; EV-030/S037 closed; D-S037-13=1'
   - sha: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
     short: 8bd111c
     branch: main
