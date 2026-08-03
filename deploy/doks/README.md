@@ -26,22 +26,29 @@ kubectl -n metar-iwxxm create secret generic metar-worker-secrets \
   --from-literal=INGEST_POLLER_URL='https://…'
 ```
 
-Or apply the templated stubs in `base/secret-*.yaml` after filling values
-(never commit real credentials).
+Templated stubs live in `base/secret-*.yaml` for reference only — they are
+**not** listed in `kustomization.yaml` (applying stubs would overwrite live secrets).
+
+API `DATABASE_URL` must be `postgresql+asyncpg://…?ssl=require` (not `sslmode=`).
 
 ## Apply
 
 ```bash
+# Secrets first (out-of-band), then:
 kubectl apply -k deploy/doks/base
 # preview:
 kubectl kustomize deploy/doks/base
 ```
 
+Until EV-031 merges, DOKS API image is pinned to
+`ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks` (alembic-capable; does not
+overwrite Render `main-latest`).
+
 ## Release migrate (T6.2)
 
 API Deployment includes an **initContainer** `alembic-upgrade` that runs
-`alembic -c alembic.ini upgrade head` against `DATABASE_URL` before the API
-container starts (idempotent — same as `make db-migrate` / CI `test-alembic`).
+`python -m alembic -c alembic.ini upgrade head` against `DATABASE_URL` before the
+API container starts (idempotent — same as `make db-migrate` / CI `test-alembic`).
 
 Optional ad-hoc Job: `deploy/doks/base/job-alembic-upgrade.yaml`
 (`kubectl apply -f …` or included in `kubectl apply -k`).

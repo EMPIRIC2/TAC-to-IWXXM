@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M6 — DOKS IaC + cutover + soak (#712) |
-| **Active task** | T6.3 — Pin real DNS / LIVE_* / config/prod.json (next) |
+| **Active task** | T6.3 — Pin real DNS / LIVE_* / config/prod.json (blocked on real hostnames) |
 | **Tasks** | 28 / 38 completed |
 | **Last updated** | 2026-08-03 |
 

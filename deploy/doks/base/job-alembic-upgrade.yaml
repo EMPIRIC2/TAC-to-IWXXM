@@ -21,7 +21,7 @@ spec:
         - name: ghcr-pull
       containers:
         - name: alembic-upgrade
-          image: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
+          image: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
           imagePullPolicy: Always
           workingDir: /app/apps/backend
           command: ["python", "-m", "alembic", "-c", "alembic.ini", "upgrade", "head"]

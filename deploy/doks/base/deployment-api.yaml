@@ -17,25 +17,23 @@ spec:
         app.kubernetes.io/component: api
     spec:
       # T6.2 / TC-EV031-002 — idempotent schema migrate before API serves traffic.
+      # Image pin: ev031-doks (alembic-capable) until EV-031 merges and CI republishes main-latest.
       imagePullSecrets:
         - name: ghcr-pull
-      # T6.2 initContainer: re-enable after CI publishes a backend image that
-      # includes the alembic dep (current ghcr main-latest: No module named alembic).
-      # Schema for this DO cluster was applied out-of-band via `make db-migrate`.
-      # initContainers:
-      #   - name: alembic-upgrade
-      #     image: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
-      #     imagePullPolicy: Always
-      #     workingDir: /app/apps/backend
-      #     command: ["python", "-m", "alembic", "-c", "alembic.ini", "upgrade", "head"]
-      #     envFrom:
-      #       - configMapRef:
-      #           name: metar-api-config
-      #       - secretRef:
-      #           name: metar-api-secrets
+      initContainers:
+        - name: alembic-upgrade
+          image: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
+          imagePullPolicy: Always
+          workingDir: /app/apps/backend
+          command: ["python", "-m", "alembic", "-c", "alembic.ini", "upgrade", "head"]
+          envFrom:
+            - configMapRef:
+                name: metar-api-config
+            - secretRef:
+                name: metar-api-secrets
       containers:
         - name: api
-          image: ghcr.io/empiric2/tac-to-iwxxm/backend:main-latest
+          image: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
           imagePullPolicy: Always
           ports:
             - name: http

@@ -26,8 +26,10 @@
   `postgresql+asyncpg://…?ssl=require` (plain `sslmode=` breaks asyncpg).
 - `imagePullSecrets: ghcr-pull` from `.env` `GHCR_TOKEN` (classic PAT + `read:packages`).
 - API / FE / worker **Running**; external smoke via LB + Host header **200**.
-- Alembic **initContainer temporarily commented** — published `main-latest` backend image
-  has no `alembic` module yet. Schema already applied via laptop `make db-migrate`.
+- Backend image pin for DOKS: `ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks`
+  (also immutable `20260804-b83b6e54`; includes `alembic==1.18.5`). Does **not** overwrite
+  Render `main-latest`.
+- Alembic **initContainer re-enabled** on API Deployment (`python -m alembic upgrade head`).
 - Ingress nginx: disabled `use-proxy-protocol` (DO LB annotation removed) so plain HTTP works.
 
 ## T6.3 / DNS
@@ -46,6 +48,5 @@ curl -H "Host: app.doks.placeholder.metar-iwxxm.local" http://168.144.12.70/
 
 ## Next
 
-1. Rebuild/push backend image with alembic → re-enable Deployment initContainer.
-2. T6.3 pin real DNS + `config/prod.json` / CORS when hostnames ready.
-3. Commit local fixes (JSONB migrate adapt, `imagePullSecrets`, initContainer note).
+1. T6.3 pin real DNS + `config/prod.json` / CORS when hostnames ready.
+2. After EV-031 merges to `main`, switch DOKS image pin back to `main-latest`.
