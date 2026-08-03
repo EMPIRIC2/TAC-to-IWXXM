@@ -2,7 +2,10 @@
   "environment": "prod",
   "api": {
     "baseUrl": "https://metar-to-iwxxm-api.onrender.com",
-    "corsOrigins": ["https://metar-to-iwxxm-frontend-v4-web.onrender.com"],
+    "corsOrigins": [
+      "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
+      "https://app.doks.placeholder.metar-iwxxm.local"
+    ],
     "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
   },
   "supabase": {

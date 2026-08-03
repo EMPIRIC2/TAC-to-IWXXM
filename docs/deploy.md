@@ -31,6 +31,9 @@ while Render remains primary (transitional).
 `LIVE_API_URL` / `LIVE_FRONTEND_URL`, and CORS origins. Soak checklist:
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md) (**7 days**).
 
+Until then, `config/prod.json` may list the DOKS FE placeholder in `api.corsOrigins` while
+keeping Render `api.baseUrl` / `frontendUrl` / `liveE2e.*` (T4.5 Auth bootstrap + CORS prep).
+
 ### Transitional (Render — until TC-F30-005)
 
 | Service | Type | Source | Port |

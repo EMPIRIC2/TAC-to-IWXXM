@@ -61,7 +61,7 @@ export function getRuntimeConfig(): MetarRuntimeConfig {
   return cachedConfig;
 }
 
-/** API base URL for merged backend (/api/v1, /auth, /admin). */
+/** API base URL for merged backend (/api/v1/* and /auth/*). */
 export function getApiBaseUrl(): string {
   return getRuntimeConfig().api.baseUrl.replace(/\/$/, '');
 }

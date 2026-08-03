@@ -72,16 +72,30 @@ Same schema as `prod.json` with local values:
 - **Location**: Served from static host at `/config.json` (copied from `config/prod.json` at build)
 - **Purpose**: Replace build-time `VITE_*` for URLs; fetch at app bootstrap (S003-R2)
 
-Injected at deploy time (not committed):
+Injected at deploy time (`scripts/frontend/prepare-config.sh` — publishable key not committed):
 
 ```json
 {
+  "environment": "prod",
+  "api": {
+    "baseUrl": "https://metar-to-iwxxm-api.onrender.com",
+    "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
+    "corsOrigins": [
+      "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
+      "https://app.doks.placeholder.metar-iwxxm.local"
+    ]
+  },
   "supabase": {
     "url": "https://ktvxijislbtgqapllmuk.supabase.co",
     "publishableKey": "<from SUPABASE_PUBLISHABLE_KEY env>"
   }
 }
 ```
+
+**Auth bootstrap (F31):** `supabase.url` + `supabase.publishableKey` drive the optional FE Auth
+client. **`api.baseUrl`** is the single origin for `/api/v1/*` and `/auth/*`. DOKS FE placeholder
+may appear in `corsOrigins` before T6.3 pins DNS; do **not** retarget `api.baseUrl` /
+`liveE2e.*` to placeholders while Render remains primary (`D-S038-04-b2`).
 
 ## Environment Variables (secrets + abuse controls)
 
