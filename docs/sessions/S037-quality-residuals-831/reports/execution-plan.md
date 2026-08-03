@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build |
-| **Active milestone** | M1 — F29 harness |
-| **Active task** | T1.8 COMPLETE — next M2 @ T2.1 (after 08 / minor PR) |
-| **Tasks** | 12 / 27 completed |
+| **Active milestone** | M2 — #829 TC SIGMET (after M1 08 PASS + minor PR) |
+| **Active task** | T2.1 pending — after M1 PR opened |
+| **Tasks** | 12 / 27 completed (M0+M1) |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -125,8 +125,16 @@
 |------|-------|
 | Branch | `evolve/EV-030-quality-residuals-831` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-030] …` |
-| PR | One evolve PR to `main` after M4 (or mid-cycle if preferred) |
+| PR | Mid-cycle minor PRs per milestone + final evolve PR after M4 |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping · no new deps without AskQuestion |
+
+## PR Plan
+
+| PR | Scope | Base ← Head | Status | URL |
+|----|-------|-------------|--------|-----|
+| PR-M1 | M0–M1 F29 harness (T0.1–T1.8) | `main` ← `evolve/EV-030-quality-residuals-831` | opening | — |
+| PR-M2 | #829 TC SIGMET deepen | same branch (updates PR or follow-on) | pending | — |
+| PR-final | M0–M4 evolve close | `main` ← evolve | pending | — |
 
 ## Phase Gate Log
 
