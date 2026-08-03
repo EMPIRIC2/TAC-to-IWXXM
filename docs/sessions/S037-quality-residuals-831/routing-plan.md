@@ -11,9 +11,9 @@
 | 00-context | yes | scoped | **completed** | Intake + routing approved `D-S037-route` = 1 |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase A → 01 after Fn lock |
 | 01-requirements | yes | delta | **completed** | Manifest=2 (API/#829 catalog); close → 02 (`D-S037-E30-M`) |
-| 02-verify-plan | yes | delta | **in_progress** | Gate A |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S037-02-phase-a`); Batch F `1,1,1,1` |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
-| 04-tech-plan | yes | delta | pending | Execution plan; harness spike answers #831 eval Qs |
+| 04-tech-plan | yes | delta | **in_progress** | Execution plan; #831 harness spike |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
 | 07-build | yes | full | pending | Matrix harness → TC deepen → VAA/TCA decode |
@@ -38,3 +38,5 @@ route H4–H5 only if frontend changes land.
 | Routing | `D-S037-route` = **1** — approve Standard → 16-evolve Phase 1 | 2026-08-02 |
 | Fn allocation | `D-S037-fn` = **1,1,1** — F29 + deepen; start 01; commit open | 2026-08-02 |
 | Manifest + 01 close | `D-S037-E30-M` = **2,1** — lean + API/catalog #829; → 02-verify-plan | 2026-08-02 |
+| Batch F (02) | `D-S037-02-batch-f` = **1,1,1,1** — M1/M2/M3/L1 | 2026-08-03 |
+| Gate A | `D-S037-02-phase-a` = **1** — PASS → **04-tech-plan** | 2026-08-03 |

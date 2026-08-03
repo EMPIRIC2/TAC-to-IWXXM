@@ -26,6 +26,8 @@
 | E30-8 | decision | Start 01? | **1** — start 01-requirements |
 | E30-9 | decision | Commit open? | **1** — yes (`D-S037-fn` Q3) |
 | E30-M | decision | Document Manifest? | **2,1** — lean + API/catalog note for #829; close 01 → 02 (`D-S037-E30-M`) |
+| E30-02F | decision | 02 Batch F? | **1,1,1,1** — M1/M2/M3/L1 approve (`D-S037-02-batch-f`) |
+| E30-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** (`D-S037-02-phase-a`) |
 
 **Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
 matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET

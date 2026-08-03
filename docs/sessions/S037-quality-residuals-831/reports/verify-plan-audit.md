@@ -40,15 +40,16 @@ Derived from `D-S037-open` / `D-S037-fn` / `D-S037-E30-M`:
 9. Exclude #830 Supabase strip, #806 WIS2, SIGWX/VONA/QVACI
 10. Close 01 → start 02 (`D-S037-E30-M` Q2=1)
 
-## Medium / low confidence — Batch F (*pending AskQuestion*)
+## Medium / low confidence — Batch F locked (`D-S037-02-batch-f` = 1,1,1,1)
 
-| ID | Conf | Statement | Options |
-|----|------|-----------|---------|
-| S02.M1 | Med | #831 pilot product set is **METAR/SPECI** lint+encode+validate first; other products inventory-gated | 1 Approve / 2 Expand pilot / 3 Explain |
-| S02.M2 | Med | #829 STNR/geometry may be **explicit OOS with cite** if encode engine work is out of cycle | 1 Approve / 2 Require STNR fixtures / 3 Explain |
-| S02.M3 | Med | #820 may leave a **child residual** if official peers cannot reach `residuals == []` this cycle | 1 Approve / 2 Require empty residuals / 3 Explain |
-| S02.L1 | Low | #831 harness shape may be **session design note** (not full ADR) unless 04 needs standing ADR | 1 Approve / 2 Require ADR / 3 Explain |
+| ID | Conf | Statement | Decision |
+|----|------|-----------|----------|
+| S02.M1 | Med | #831 pilot product set is **METAR/SPECI** lint+encode+validate first; other products inventory-gated | **1** Approve |
+| S02.M2 | Med | #829 STNR/geometry may be **explicit OOS with cite** if encode engine work is out of cycle | **1** Approve |
+| S02.M3 | Med | #820 may leave a **child residual** if official peers cannot reach `residuals == []` this cycle | **1** Approve |
+| S02.L1 | Low | #831 harness shape may be **session design note** (not full ADR) unless 04 needs standing ADR | **1** Approve |
 
 ## Gate A
 
-*Pending Batch F + Gate A AskQuestion.*
+**PASS** (`D-S037-02-phase-a` = 1) — 2026-08-03.  
+Consistency PASS + Batch F locked → complete **02-verify-plan** → start **04-tech-plan**.
