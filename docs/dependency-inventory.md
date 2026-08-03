@@ -1,8 +1,8 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-03 (S038 / EV-031 — restore packages/auth; Alembic; DO Postgres)
-> **Status**: **Draft** for F30/F31 deps (01) — accept with 04-tech-plan / Gate B
+> **Last updated**: 2026-08-03 (S038 / EV-031 T0.3 — JWKS-only Auth; Alembic pins)
+> **Status**: **Accepted** for F30/F31 planned deps (Gate B / T0.3; install in M1–M2)
 
 ## Runtime Dependencies
 
@@ -18,8 +18,9 @@
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | slowapi | Public API rate limits (F21 / ADR-031) | MIT | PyPI (E17-15) |
-| alembic | Schema migrations against `DATABASE_URL` (F30) | MIT | PyPI (EV-031) |
-| sqlalchemy | DO Postgres access for sessions / F8 (shared) | MIT | PyPI |
+| alembic | Schema migrations against `DATABASE_URL` (F30); CI/deploy `upgrade head` | MIT | PyPI (`>=1.13,<2`) |
+| sqlalchemy | DO Postgres access for sessions / F8 (shared) | MIT | PyPI (`>=2.0,<3`) |
+| asyncpg / psycopg | Postgres drivers for `DATABASE_URL` | Apache-2.0 / LGPL | PyPI (existing + Alembic) |
 | tac2iwxxm | Conversion (F6) | MIT | workspace path |
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
@@ -95,11 +96,15 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| supabase / PyJWT (as implemented) | Operator JWT verify + `/auth/*` | Apache-2.0 / MIT | PyPI — pin in 04 |
+| PyJWT[crypto] | JWKS JWT verify (RS256/ES256); **no HS256 secret path** for product | MIT | PyPI (`>=2.8`) |
+| httpx | Fetch Supabase Auth JWKS (`…/auth/v1/.well-known/jwks.json`) | BSD | PyPI (`>=0.28`) |
+| fastapi | `/auth/*` router types (library mounted in backend) | MIT | PyPI |
+| supabase (optional FE-adjacent) | Prefer FE `@supabase/supabase-js`; Python client **not required** for JWKS verify | Apache-2.0 | avoid for server verify |
 | (workspace) | Auth library mounted in `apps/backend` | MIT | `packages/auth` |
 
 Was **Deleted** under F21 / ADR-031 (E17-22=B). EV-031 restores Auth-only path (no product DB
-via Supabase).
+via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SECRET` /
+`python-jose` HS256 as product verify. Strip admin routes on restore from `c9cebfa^`.
 
 ### apps/frontend
 

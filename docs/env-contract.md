@@ -3,8 +3,8 @@
 > **Project**: METAR to IWXXM Converter  
 > **Session**: S038-platform-independence-842 / EV-031 (F30/F31)  
 > **Supersedes**: F21-only public-app contract (S023) for Auth + data-plane topology  
-> **Last updated**: 2026-08-03  
-> **Status**: **Draft** (01-requirements) — finalize names in 04/06 as needed
+> **Last updated**: 2026-08-03 (T0.3 — JWKS-only verify names)  
+> **Status**: **Accepted** for Auth/DB names (Gate B / T0.3); DOKS host placeholders → T0.4/M6
 
 Single source of truth for **what** each layer owns and **which name** to use everywhere.
 
@@ -39,7 +39,8 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Product Postgres | `DATABASE_URL` | API + worker env (**required** for sessions + F8) |
 | Supabase Auth URL | `SUPABASE_URL` / `config.*.supabase.url` | API + FE bootstrap |
 | FE Auth publishable key | `SUPABASE_PUBLISHABLE_KEY` → `/config.json` | Static deploy inject |
-| Auth JWT verify (server) | **JWKS-only** via Supabase Auth JWKS URL (`D-S038-04-b1`) | API only — never FE; `SUPABASE_JWT_SECRET` not used for product verify |
+| Auth JWKS URL (server) | `SUPABASE_JWKS_URL` **or** default `{SUPABASE_URL}/auth/v1/.well-known/jwks.json` | API only — never FE (`D-S038-04-b1` Q2=2) |
+| Auth JWT verify (server) | **JWKS-only** (PyJWT + fetched JWKS); cache keys with TTL | API only; **`SUPABASE_JWT_SECRET` retired** for product verify |
 | Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
 | Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
 | Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) |
@@ -57,6 +58,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Supabase Postgres pooler as app SoT | `DATABASE_URL` → DigitalOcean Postgres |
 | `SUPABASE_SERVICE_ROLE_KEY` as F8 **DB** writer | SQL via `DATABASE_URL` (ADR-018 amend) |
 | Operator product tables on Supabase | Migrated once — [ops note](ops/supabase-to-do-postgres-migration.md) |
+| `SUPABASE_JWT_SECRET` / HS256 verify | JWKS-only (`SUPABASE_JWKS_URL` or derived) |
 
 ### Still retired (F21 keep)
 
@@ -73,7 +75,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Setting | API | Static | Worker |
 |---------|-----|--------|--------|
 | `DATABASE_URL` | required | — | required |
-| `SUPABASE_URL` + JWT verify | required for Auth | — | — |
+| `SUPABASE_URL` + JWKS verify | required for Auth (`SUPABASE_JWKS_URL` optional override) | — | — |
 | Publishable key inject | — | `/config.json` | — |
 | Rate limits / body / allowlist | env | — | — |
 | `METAR_CONFIG_ENV=prod` | yes | copy → `public/config.json` | — |
@@ -97,7 +99,8 @@ Same names; hosts remain onrender.com until TC-F30-005 decommission.
 | Setting | Notes |
 |---------|-------|
 | Public convert | No Auth required |
-| Session / Auth tests | Fixture user or mocked JWT as designed in 04 |
+| Session / Auth tests | Fixture user or mocked JWKS/JWT (M1/M2) |
+| Postgres + Alembic | Service container `DATABASE_URL`; **`alembic upgrade head`** before schema tests (idempotent) |
 | F8 / dissemination | `DATABASE_URL` + allowlist fixtures |
 
 ## Verification
