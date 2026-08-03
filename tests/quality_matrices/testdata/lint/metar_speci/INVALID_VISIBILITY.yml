@@ -11,9 +11,12 @@ cases:
   - bucket: sad
     case_id: "01"
     status: ready
-    tac: "METAR KJFK 121251Z 18008KT BADVIS FEW250 22/12 A3012="
+    tac: "METAR KJFK 121251Z 18008KT 10KM FEW250 22/12 A3012="
     expect:
       codes: [INVALID_VISIBILITY]
+    meta:
+      product: METAR
+      cite: "tac-validate R2 invalid_vis_km"
   - bucket: edge_pass
     case_id: "01"
     status: needs-fixture

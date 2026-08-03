@@ -1,0 +1,30 @@
+# Pilot convert case — NIL METAR encode (T1.2 runner smoke; T1.4 expands).
+rule_id: metar_nil
+engine: convert
+cases:
+  - bucket: happy
+    case_id: "01"
+    status: ready
+    tac: "METAR KJFK 121251Z NIL="
+    expect:
+      encode_ok: true
+      require_xml: true
+    meta:
+      product: METAR
+      profile: annex3
+      iwxxm_version: "2025-2"
+  - bucket: sad
+    case_id: "01"
+    status: needs-fixture
+    meta:
+      reason: "T1.4 — encode failure negative"
+  - bucket: edge_pass
+    case_id: "01"
+    status: needs-fixture
+    meta:
+      reason: "T1.4"
+  - bucket: edge_fail
+    case_id: "01"
+    status: needs-fixture
+    meta:
+      reason: "T1.4"
