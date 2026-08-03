@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M4 — FE hybrid + F22 deepen |
-| **Active task** | M4 complete — next M5 T5.1 (or 08-verify-build) |
-| **Tasks** | 22 / 38 completed |
+| **Active milestone** | M5 — One-time Supabase → DO migrate |
+| **Active task** | T5.2 — Verify script row counts / checksum (next) |
+| **Tasks** | 23 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -134,7 +134,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Docs | Finalize table/column map in `ops/supabase-to-do-postgres-migration.md` | TC-EV031-001 | T2.5, T3.2 | pending |
+| T5.1 | Docs | Finalize table/column map in `ops/supabase-to-do-postgres-migration.md` | TC-EV031-001 | T2.5, T3.2 | completed |
 | T5.2 | Code | Verify script: row counts / sample checksum after restore | TC-EV031-001 | T5.1 | pending |
 | T5.3 | Ops | Run `pg_dump`/`pg_restore` (or SQL export) into DO; dry-run then cut | F30; ops note | T5.2 | pending |
 | T5.4 | Test | Post-migrate login session CRUD against DO; zero product Supabase DB traffic | TC-EV031-004; TC-F30-002 | T5.3 | pending |
