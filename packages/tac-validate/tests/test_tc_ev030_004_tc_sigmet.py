@@ -109,3 +109,33 @@ def test_tc_a6_2_allows_six_hour_validity() -> None:
     report = lint(_read_tac("accept/sigmet_tc_a6_2.tac"), product="SIGMET")
     assert report.ok is True
     assert not any(i.code == "INVALID_VALIDITY_DURATION" for i in report.issues)
+
+
+def test_tc_stnr_in_scope_and_geometry_oos_documented() -> None:
+    """T2.3 / S02.M2 — STNR covered on TC bodies; exceptional geometry OOS with cite."""
+    oos_note = (
+        Path(__file__).resolve().parents[3]
+        / "docs"
+        / "sessions"
+        / "S037-quality-residuals-831"
+        / "reports"
+        / "t2.3-tc-geometry-oos.md"
+    )
+    assert oos_note.is_file(), f"missing OOS cite note: {oos_note}"
+    text = oos_note.read_text(encoding="utf-8")
+    assert "D-S037-T2.3-oos" in text
+    assert "#797" in text
+    assert "WI … OF TC CENTRE" in text or "WI ... OF TC CENTRE" in text or "OF TC CENTRE" in text
+
+    # STNR accept + STNR+MOV negative remain in the TC pack (not deferred).
+    stnr_ids = {c["id"] for c in _TC_INFO + _TC_ERRORS}
+    assert "sigmet_tc_stnr_info" in stnr_ids
+    assert "sigmet_tc_stnr_with_mov" in {c["id"] for c in _TC_ERRORS}
+
+    stnr = lint(_read_tac("accept/sigmet_tc_stnr.tac"), product="SIGMET")
+    assert stnr.ok is True
+    assert any(i.code == "STNR_MOVEMENT" for i in stnr.issues)
+
+    bad = lint(_read_tac("negative/sigmet/tc_stnr_with_mov.tac"), product="SIGMET")
+    assert bad.ok is False
+    assert any(i.code == "INVALID_STNR_MOVEMENT" for i in bad.issues)

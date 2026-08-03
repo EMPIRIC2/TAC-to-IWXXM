@@ -10,7 +10,7 @@
 **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
 **Started**: 2026-08-02  
 **Branch**: `evolve/EV-030-quality-residuals-831`  
-**Status**: **in_progress** — 07-build @ T0.1 (Gate B PASS)
+**Status**: **in_progress** — 07-build M2 @ T2.3 (T2.1–T2.2 done; PR #832 open)
 
 ### Scope (Phase 0 — locked 2026-08-02 via 00-context)
 
@@ -37,6 +37,8 @@
 | E30-T7 | decision | F29 CI? | **1** — PR smoke subset + optional full-matrix marker/job |
 | E30-T8 | decision | Harness doc + home? | **1** — session design note + `tests/quality_matrices/` |
 | E30-T9 | gate | Gate B / plan approve? | **PASS** — approve M0–M4 (27 tasks) → **07 @ T0.1** (`D-S037-04-plan`) |
+| E30-semver | decision | Bump `tac-validate` after T2.2 codes? | **1** — **no bump** (remain `0.1.1`); defer to M2/M4 close (`D-S037-semver-none`) |
+| E30-T2.3 | decision | #829 STNR / exceptional geometry? | **OOS cite** for geometry beyond `WI … OF TC CENTRE`; **STNR in-cycle** via pack (`D-S037-T2.3-oos`; S02.M2) |
 
 **Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
 matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET

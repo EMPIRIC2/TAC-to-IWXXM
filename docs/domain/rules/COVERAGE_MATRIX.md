@@ -397,7 +397,7 @@ Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** 
 | Shared AHL/`T1T2`/BBB/filename API | #823 B1–B3 | **M1 closed** |
 | Per-family body `split_bulletin` (non-METAR/SPECI) | product packs M2–M11 | in-cycle packs landed |
 | TC SIGMET quality bar | #738 **closed** | M7 |
-| TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **open** residual |
+| TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **open** — lint pack + STNR in-cycle (EV-030 T2.1–T2.2); exceptional geometry beyond A6-2-TC **OOS with cite** (T2.3 / #797); menu unlock → T2.4 |
 | VAA/TCA decode residual deepen | [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) | **open** (encode M9/M10 closed) |
 | SWXA F28 product path | #740 **closed** | M11 / F28 Done |
 | Non-METAR multi-report body fixtures | FIXTURE_GAPS stem rows | document / deepen |
