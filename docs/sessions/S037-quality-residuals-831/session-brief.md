@@ -63,4 +63,6 @@ See [routing-plan.md](routing-plan.md).
 ## Progress
 
 - **00-context** completed · **Fn** `D-S037-fn` · open commit `f88e9cb`
-- **01-requirements** completed (`D-S037-E30-M` = 2,1 — API/#829 catalog) → **02-verify-plan**
+- **01-requirements** completed (`D-S037-E30-M` = 2,1 — API/#829 catalog)
+- **02-verify-plan** Gate A PASS (`D-S037-02-phase-a`) @ `876ffda`
+- **04-tech-plan** Batch 1 locked (`D-S037-04-batch-1` = 1,1,1,1) — M0–M4; YAML cases; unified inventory; catalog unlock on green → **Batch 2**

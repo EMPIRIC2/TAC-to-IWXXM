@@ -50,13 +50,18 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-02'
+    completed: '2026-08-03'
     skip_rationale: null
+    note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1 (D-S037-02-batch-f); verify-plan-audit.md; handoff 04-tech-plan; #831→#829→#820'
   - stage: 04-tech-plan
     required: true
-    status: pending
+    mode: delta
+    status: in_progress
+    started: '2026-08-03'
     skip_rationale: null
+    note: 'IN PROGRESS (delta) — Batch 1 locked D-S037-04-batch-1 (1,1,1,1); Batch 2 next; #831→#829→#820'
   - stage: 07-build
     required: true
     status: pending
@@ -85,7 +90,7 @@ active_session:
     required: true
     status: pending
     skip_rationale: null
-  current_stage: 02-verify-plan
+  current_stage: 04-tech-plan
   started_at: '2026-08-02'
   context_briefs:
   - docs/context/quality-residuals-831.md
@@ -94,6 +99,9 @@ active_session:
   - D-S037-route
   - D-S037-fn
   - D-S037-E30-M
+  - D-S037-02-batch-f
+  - D-S037-02-phase-a
+  - D-S037-04-batch-1
   artifacts:
   - path: docs/sessions/S037-quality-residuals-831/session-brief.md
     status: approved
@@ -104,12 +112,14 @@ active_session:
   - path: docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
-    status: draft
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    status: in_progress
   - path: docs/api-contract.md
     status: touched
   preset: Standard
   preset_status: approved
-  note: 'S037/EV-030 — D-S037-E30-M (2,1); 01 completed; 02-verify-plan in_progress (delta); #831→#829→#820'
+  note: 'S037/EV-030 — 04-tech-plan in_progress (delta); Batch 1 locked D-S037-04-batch-1 (1,1,1,1); Batch 2 next; #831→#829→#820'
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -4134,12 +4144,12 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-02'
     started: '2026-08-02'
-    completed_at:
-    completed:
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
     session_id: S037-quality-residuals-831
     evolve_cycle_id: EV-030
     prior_session_id: S036-eight-family-ahl-rules-823
@@ -4147,19 +4157,21 @@ stages:
     prior_started: '2026-08-01'
     prior_completed: '2026-08-01'
     prior_note: 'COMPLETE (delta) — Gate A PASS (D-S036-02-phase-a); Batch F 1,1,1,1 (D-S036-02-batch-f); reports/verify-plan-audit.md; handoff 04-tech-plan; #823'
-    note: 'STARTED (delta) — D-S037-E30-M (2,1); audit draft; sha pending parent commit; #831→#829→#820'
+    note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1 (D-S037-02-batch-f); reports/verify-plan-audit.md; handoff 04-tech-plan; #831→#829→#820'
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
+    - D-S037-02-phase-a
+    - D-S037-02-batch-f
     - D-S037-E30-M
     - D-S037-fn
     - D-S037-route
     - D-S037-open
     substeps:
       inventory:
-        status: pending
+        status: completed
       consistency_check:
-        status: pending
+        status: completed
       statement_review:
         auto_approved: 0
         pending: 0
@@ -4170,13 +4182,13 @@ stages:
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
       skill_id: 02-verify-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-02'
       started: '2026-08-02'
-      completed_at:
-      completed:
-      note: 'STARTED (delta) — D-S037-E30-M (2,1); audit draft; #831→#829→#820'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1; reports/verify-plan-audit.md; #831→#829→#820'
       feature_ids:
       - F29
       - F23
@@ -4187,6 +4199,8 @@ stages:
       - F26
       - F27
       decision_refs:
+      - D-S037-02-phase-a
+      - D-S037-02-batch-f
       - D-S037-E30-M
       - D-S037-fn
       - D-S037-route
@@ -4210,6 +4224,34 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-08-02'
+      started: '2026-08-02'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      mode: delta
+      feature_ids:
+      - F29
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
+      decision_refs:
+      - D-S037-02-phase-a
+      - D-S037-02-batch-f
+      - D-S037-E30-M
+      - D-S037-fn
+      - D-S037-route
+      - D-S037-open
+      note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1; reports/verify-plan-audit.md; #831→#829→#820'
+      artifacts:
+      - docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
     - session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
       skill_id: 02-verify-plan
@@ -4718,61 +4760,66 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    completed_at:
+    completed:
     previous_started_at: '2026-08-01'
     previous_completed_at: '2026-08-01'
-    previous_session_id: S035-empiric2-ops-leftovers-781
-    previous_evolve_cycle_id: EV-028
-    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b tag-from-evolve; 12a → 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip b8e37ae; #781'
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    prior_note: 'STARTED (delta) — D-S036-02-phase-a Gate A PASS → 04; delta interview Batch 1; #823'
-    note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #823'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
+    previous_session_id: S036-eight-family-ahl-rules-823
+    previous_evolve_cycle_id: EV-029
+    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #823'
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    prior_note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; #823'
+    note: 'IN PROGRESS (delta) — Batch 1 locked D-S037-04-batch-1 (1,1,1,1); Batch 2 next; #831→#829→#820'
     decision_refs:
-    - D-S036-04-plan
-    - D-S036-04-batch-1
-    - D-S036-04-batch-2
-    - D-S036-02-phase-a
-    - D-S036-02-batch-f
+    - D-S037-04-batch-1
+    - D-S037-02-phase-a
+    - D-S037-02-batch-f
+    - D-S037-E30-M
     substeps:
       phase_1_toolchain:
-        status: completed
+        status: pending
       phase_2_interview:
-        status: completed
+        status: in_progress
       phase_3_execution_plan:
-        status: completed
+        status: pending
       phase_4_user_review:
-        status: completed
+        status: pending
       phase_5_back_add:
-        status: completed
+        status: pending
       phase_6_documents:
-        status: completed
+        status: pending
     active_session:
-      session_id: S036-eight-family-ahl-rules-823
-      evolve_cycle_id: EV-029
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
       skill_id: 04-tech-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; #823'
-      feature_ids: []
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at:
+      completed:
+      note: 'IN PROGRESS (delta) — Batch 1 locked D-S037-04-batch-1 (1,1,1,1); Batch 2 next; #831→#829→#820'
+      feature_ids:
+      - F29
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
       decision_refs:
-      - D-S036-04-plan
-      - D-S036-04-batch-1
-      - D-S036-04-batch-2
-      - D-S036-02-phase-a
-      - D-S036-02-batch-f
+      - D-S037-04-batch-1
+      - D-S037-02-phase-a
+      - D-S037-02-batch-f
+      - D-S037-E30-M
     artifacts:
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
@@ -8503,15 +8550,16 @@ stages:
     started: '2026-08-02'
     completed_at:
     completed:
-    current_stage: 02-verify-plan
+    current_stage: 04-tech-plan
     prior_session_id: S035-empiric2-ops-leftovers-781
     prior_evolve_cycle_id: EV-028
     prior_completed: '2026-08-01'
     prior_note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
-    note: 'S037/EV-030 16-evolve — D-S037-E30-M (2,1); 01 COMPLETE → 02-verify-plan; #831→#829→#820'
+    note: 'S037/EV-030 16-evolve — 04-tech-plan in_progress; Batch 1 locked D-S037-04-batch-1 (1,1,1,1); Batch 2 next; #831→#829→#820'
     tip_sha: 7e276a7
     tip_sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
     notes:
+    - '2026-08-03 S037/EV-030 — D-S037-04-batch-1 (1,1,1,1) Batch 1 locked; Batch 2 next; 04 remains in_progress; #831→#829→#820'
     - '2026-08-02 S037/EV-030 D-S037-E30-M (2,1) — lean + API/catalog #829; 01 COMPLETE → 02-verify-plan in_progress; sha pending parent commit; #831→#829→#820'
     - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; start 01-requirements (delta); commit open; #831→#829→#820'
     - '2026-08-02 S037/EV-030 16-evolve STARTED — D-S037-route (1) Standard; 00 COMPLETE; Phase 1 Fn allocation; EV-030 created; #831→#829→#820'
@@ -8819,6 +8867,50 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S037-04-batch-1
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: technical-plan
+  status: confirmed
+  topic: '04 Batch 1 — milestones / testdata / rule inventory / A6-2-TC unlock'
+  summary: '1,1,1,1 — E30-T1 M0–M4; E30-T2 YAML/JSON testdata+pytest; E30-T3 unified rule inventory index; E30-T4 unlock A6-2-TC catalog when quality path green (ADR-032 wmoPass/wmoReference)'
+  decision: 'E30-T1=1 M0–M4; E30-T2=1 YAML/JSON testdata+pytest; E30-T3=1 unified rule inventory index; E30-T4=1 unlock A6-2-TC catalog when quality path green (ADR-032 wmoPass/wmoReference) (D-S037-04-batch-1).'
+  user_option: '1,1,1,1'
+  answers:
+    E30-T1: 1
+    E30-T2: 1
+    E30-T3: 1
+    E30-T4: 1
+  note: 'E30-T1 M0–M4; E30-T2 YAML/JSON testdata+pytest; E30-T3 unified rule inventory index; E30-T4 unlock A6-2-TC catalog when quality path green (ADR-032 wmoPass/wmoReference)'
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+
+- id: D-S037-02-phase-a
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate A PASS → 04-tech-plan'
+  summary: 'User option 1 — PASS Gate A; complete 02; start 04-tech-plan'
+  decision: '1 — Gate A PASS → 04-tech-plan'
+  user_option: '1'
+  tip_sha: 876ffda
+  branch: evolve/EV-030-quality-residuals-831
+  related_issues: ['831', '829', '820']
+  related_decisions: ['D-S037-02-batch-f']
+
 - id: D-S037-02-batch-f
   decision: '1,1,1,1 — approve S02.M1 METAR/SPECI pilot; M2 STNR OOS ok; M3 #820 child residual ok; L1 design note not ADR'
   date: '2026-08-03'
@@ -17905,9 +17997,19 @@ artifacts:
   stage: 02-verify-plan
   skill_id: 02-verify-plan
   created_at: '2026-08-02'
-  updated_at: '2026-08-02'
-  status: draft
-  note: 'S037/EV-030 02-verify-plan STARTED — audit draft'
+  updated_at: '2026-08-03'
+  status: completed
+  note: 'S037/EV-030 02 COMPLETE — Gate A PASS (D-S037-02-phase-a); Batch F D-S037-02-batch-f'
+- path: docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+  kind: tech-plan
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: in_progress
+  note: 'S037/EV-030 04-tech-plan STARTED — Gate A PASS → 04'
 - path: docs/api-contract.md
   kind: standing-doc
   session_id: S037-quality-residuals-831
@@ -27060,7 +27162,7 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: 'Standard — D-S037-route; skip 03/05/06'
-  current_stage: 02-verify-plan
+  current_stage: 04-tech-plan
   stages:
     00-context:
       status: completed
@@ -27072,17 +27174,21 @@ evolve_cycles:
       status: in_progress
       mode: orchestrator
       started: '2026-08-02'
-      note: 'Phase 1 Fn done (D-S037-fn); orchestrating 02-verify-plan'
+      note: 'Phase 1 Fn done (D-S037-fn); orchestrating 04-tech-plan; Batch 1 locked; Batch 2 next'
     01-requirements:
       status: completed
       started: '2026-08-02'
       completed: '2026-08-02'
       note: 'COMPLETE (delta) — D-S037-E30-M (2,1)'
     02-verify-plan:
-      status: in_progress
+      status: completed
       started: '2026-08-02'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a)'
     04-tech-plan:
-      status: pending
+      status: in_progress
+      started: '2026-08-03'
+      note: 'IN PROGRESS (delta) — Batch 1 locked D-S037-04-batch-1 (1,1,1,1); Batch 2 next'
     07-build:
       status: pending
     08-verify-build:
@@ -27098,12 +27204,12 @@ evolve_cycles:
     13-deploy-smoke:
       status: pending
   gates:
-    a_to_b: pending
+    a_to_b: passed
     b_to_c: pending
     c_to_d: pending
     deploy: pending
   checkpoints:
-    phase_a: pending
+    phase_a: passed
     phase_b: pending
     phase_c: pending
     phase_d: pending
@@ -27121,7 +27227,9 @@ evolve_cycles:
   - path: docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
-    status: draft
+    status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    status: in_progress
   - path: docs/api-contract.md
     status: touched
   issues:
@@ -27140,20 +27248,27 @@ evolve_cycles:
   - D-S037-route
   - D-S037-fn
   - D-S037-E30-M
+  - D-S037-02-batch-f
+  - D-S037-02-phase-a
+  - D-S037-04-batch-1
   notes:
+  - '2026-08-03 S037/EV-030 — D-S037-04-batch-1 (1,1,1,1) Batch 1 locked; Batch 2 next; 04 remains in_progress; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 02 COMPLETE → 04-tech-plan STARTED — Gate A PASS (D-S037-02-phase-a); Batch F (D-S037-02-batch-f) @ 876ffda; #831→#829→#820'
   - '2026-08-02 S037/EV-030 D-S037-E30-M (2,1) — lean + API/catalog #829; 01 COMPLETE → 02-verify-plan in_progress; sha pending parent commit; #831→#829→#820'
   - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; 01-requirements in_progress (delta); commit open; #831→#829→#820'
   - '2026-08-02 S037/EV-030 OPEN — D-S037-route (1); 00 COMPLETE; 16-evolve Phase 1 Fn allocation; feature_ids pending D-S037-fn; work order #831→#829→#820'
 git_history:
   current_branch: evolve/EV-030-quality-residuals-831
-  ahead_of_origin: 0
+  ahead_of_origin: 3
   pushed: false
-  pending_commit: 'S037/EV-030 01→02 handoff — D-S037-E30-M; sha pending parent commit'
-  tip_sha: 7e276a7
-  tip_sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
+  pending_commit:
+  tip_sha: 876ffda
+  tip_sha_full: 876ffdab229cb3697d9c18b0b0a2abf4de71af3b
   recommended_branch: evolve/EV-030-quality-residuals-831
-  note: 'S037/EV-030 — 01 completed; 02-verify-plan in_progress; sha pending parent commit; current_branch evolve/EV-030-quality-residuals-831; #831/#829/#820'
+  note: 'S037/EV-030 — 04-tech-plan in_progress; Batch 1 locked D-S037-04-batch-1 (1,1,1,1); Batch 2 next; tip 876ffda; current_branch evolve/EV-030-quality-residuals-831; #831/#829/#820'
   notes:
+  - '2026-08-03 S037/EV-030 — D-S037-04-batch-1 (1,1,1,1) Batch 1 locked; Batch 2 next; 04 remains in_progress; tip 876ffda; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 Gate A close @ 876ffda — D-S037-02-phase-a; 02 COMPLETE → 04-tech-plan STARTED; ahead_of_origin=3 not pushed; #831→#829→#820'
   - '2026-08-02 S037/EV-030 D-S037-E30-M (2,1) — 01 COMPLETE → 02-verify-plan in_progress; sha pending parent commit; #831→#829→#820'
   - '2026-08-02 S037/EV-030 — D-S037-route (1) Standard approved; 00-context COMPLETE; EV-030 created; 16-evolve Phase 1 Fn allocation; current_branch evolve/EV-030-quality-residuals-831; #831→#829→#820'
   - '2026-08-02 S037/EV-030 OPEN — open_session; D-S037-open (1,1,2,1); session_counter 37; evolve_cycle_counter 30; branch evolve/EV-030-quality-residuals-831; work order #831→#829→#820; 00-context in_progress; evolve_cycles entry deferred to 16-evolve'
@@ -28475,6 +28590,20 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 876ffdab229cb3697d9c18b0b0a2abf4de71af3b
+    short: 876ffda
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[EV-030] docs: Gate A PASS — close 02, start 04-tech-plan"
+    stage: 02-verify-plan
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03T11:49:37Z"
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
+    - docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
+    - docs/sessions/S037-quality-residuals-831/routing-plan.md
+    - workflow-state.yaml
   - sha: e2f6eccd9d13132af08138d1ba3fd95df3f6c437
     short: e2f6ecc
     branch: evolve/EV-030-quality-residuals-831

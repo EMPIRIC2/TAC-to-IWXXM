@@ -10,7 +10,7 @@
 **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
 **Started**: 2026-08-02  
 **Branch**: `evolve/EV-030-quality-residuals-831`  
-**Status**: **in_progress** — 01-requirements
+**Status**: **in_progress** — 04-tech-plan (Batch 1 locked)
 
 ### Scope (Phase 0 — locked 2026-08-02 via 00-context)
 
@@ -28,6 +28,10 @@
 | E30-M | decision | Document Manifest? | **2,1** — lean + API/catalog note for #829; close 01 → 02 (`D-S037-E30-M`) |
 | E30-02F | decision | 02 Batch F? | **1,1,1,1** — M1/M2/M3/L1 approve (`D-S037-02-batch-f`) |
 | E30-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** (`D-S037-02-phase-a`) |
+| E30-T1 | decision | Milestone structure? | **1** — M0–M4 (`D-S037-04-batch-1`) |
+| E30-T2 | decision | #831 case storage? | **1** — YAML/JSON under testdata + pytest load |
+| E30-T3 | decision | Rule inventory SoT? | **1** — unified index → matrix slots |
+| E30-T4 | decision | #829 catalog unlock? | **1** — unlock when quality path green (ADR-032) |
 
 **Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
 matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET
