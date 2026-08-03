@@ -15,6 +15,33 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 
+def _normalize_sync_url(raw: str) -> str:
+    """
+    Rewrite async/driver URL to sync ``postgresql+psycopg`` and SSL query params.
+
+    Parameters
+    ----------
+    raw : str
+        Runtime ``DATABASE_URL`` (often ``postgresql+asyncpg://…?ssl=require``).
+
+    Returns
+    -------
+    str
+        Sync SQLAlchemy URL safe for Alembic / psycopg.
+    """
+    url = raw
+    if url.startswith("postgresql+asyncpg://"):
+        url = "postgresql+psycopg://" + url.removeprefix("postgresql+asyncpg://")
+    elif url.startswith("postgresql+psycopg2://"):
+        url = "postgresql+psycopg://" + url.removeprefix("postgresql+psycopg2://")
+    elif url.startswith("postgresql://"):
+        url = "postgresql+psycopg://" + url.removeprefix("postgresql://")
+    # asyncpg uses ``ssl=require``; psycopg expects ``sslmode=require``.
+    if "ssl=require" in url and "sslmode=" not in url:
+        url = url.replace("ssl=require", "sslmode=require")
+    return url
+
+
 def _database_url() -> str:
     """
     Resolve sync SQLAlchemy URL for migrations.
@@ -27,16 +54,10 @@ def _database_url() -> str:
         or config.get_main_option("sqlalchemy.url")
         or ""
     )
-    if not raw or raw.startswith("driver://"):
+    if not raw or raw.startswith("driver://") or raw.startswith("REPLACE_ME"):
         msg = "DATABASE_URL (or ALEMBIC_DATABASE_URL) must be set for alembic"
         raise RuntimeError(msg)
-    if raw.startswith("postgresql+asyncpg://"):
-        return "postgresql+psycopg://" + raw.removeprefix("postgresql+asyncpg://")
-    if raw.startswith("postgresql+psycopg2://"):
-        return "postgresql+psycopg://" + raw.removeprefix("postgresql+psycopg2://")
-    if raw.startswith("postgresql://"):
-        return "postgresql+psycopg://" + raw.removeprefix("postgresql://")
-    return raw
+    return _normalize_sync_url(raw)
 
 
 def run_migrations_offline() -> None:
