@@ -1,11 +1,102 @@
-overall_status: idle
+overall_status: in_progress
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 36
-evolve_cycle_counter: 29
-active_session: null
+session_counter: 37
+evolve_cycle_counter: 30
+active_session:
+  id: S037-quality-residuals-831
+  type: feature
+  intent: |
+    EV-029 residuals — #831 parameterized rule matrices, #829 TC SIGMET deepen,
+    #820 VAA/TCA decode residual deepen. Work order #831 → #829 → #820.
+  status: in_progress
+  branch: evolve/EV-030-quality-residuals-831
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-030
+  github_issues:
+  - '831'
+  - '829'
+  - '820'
+  feature_ids:
+  - F29
+  - F23
+  - F12
+  - F2
+  - F13
+  - F9
+  - F26
+  - F27
+  artifacts_dir: docs/sessions/S037-quality-residuals-831/
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    skip_rationale: null
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    skip_rationale: null
+  - stage: 01-requirements
+    required: true
+    status: in_progress
+    skip_rationale: null
+  - stage: 02-verify-plan
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 04-tech-plan
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 07-build
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 08-verify-build
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 09-qa
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 10-e2e
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 11-verify-impl
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 12-verify-deploy
+    required: true
+    status: pending
+    skip_rationale: null
+  - stage: 13-deploy-smoke
+    required: true
+    status: pending
+    skip_rationale: null
+  current_stage: 01-requirements
+  started_at: '2026-08-02'
+  context_briefs:
+  - docs/context/quality-residuals-831.md
+  decision_refs:
+  - D-S037-open
+  - D-S037-route
+  - D-S037-fn
+  artifacts:
+  - path: docs/sessions/S037-quality-residuals-831/session-brief.md
+    status: approved
+  - path: docs/sessions/S037-quality-residuals-831/routing-plan.md
+    status: approved
+  - path: docs/context/quality-residuals-831.md
+    status: written
+  preset: Standard
+  preset_status: approved
+  note: 'S037/EV-030 — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; 01-requirements in_progress (delta); #831→#829→#820'
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -3307,63 +3398,69 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: empiric2-ops-leftovers-781
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    substeps:
-      phase0: completed
-      phase1a: completed
-      phase1b: skipped
-      phase1c: skipped
-      phase2: completed
-      phase3: completed
-      phase4: completed
-    note: 'S035/EV-028 00-context COMPLETE — D-S035-open + D-S035-routing; Lean+build approved; session-brief + routing-plan locked; handoff 16-evolve → 01-requirements; #781'
-    prior_note: 'S035/EV-028 00-context STARTED — D-S035-open (1b/2a/3b/4b); session-brief in_progress; routing-plan.md pending_approval (not approved); branch active; #781'
+    scoped_slug: quality-residuals-831
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    started: '2026-08-02'
+    started_at: '2026-08-02'
+    completed: '2026-08-02'
+    completed_at: '2026-08-02'
+    note: 'S037/EV-030 00-context COMPLETE — D-S037-route (1) Standard approved; session-brief + routing-plan approved; context written; handoff 16-evolve Phase 1 Fn allocation; #831→#829→#820'
+    prior_note: 'S035/EV-028 00-context COMPLETE — D-S035-open + D-S035-routing; Lean+build approved; session-brief + routing-plan locked; handoff 16-evolve → 01-requirements; #781'
+    prior_session_id: S035-empiric2-ops-leftovers-781
+    prior_evolve_cycle_id: EV-028
+    prior_scoped_slug: empiric2-ops-leftovers-781
+    prior_completed: '2026-08-01'
     artifacts:
-    - docs/sessions/S035-empiric2-ops-leftovers-781/
-    - docs/sessions/S035-empiric2-ops-leftovers-781/session-brief.md
-    - docs/sessions/S035-empiric2-ops-leftovers-781/routing-plan.md
+    - docs/sessions/S037-quality-residuals-831/
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    - docs/sessions/S037-quality-residuals-831/routing-plan.md
+    - docs/context/quality-residuals-831.md
 
   01-requirements:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    prior_note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
-    note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
+    started_at: '2026-08-02'
+    started: '2026-08-02'
+    completed_at:
+    completed:
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    prior_session_id: S035-empiric2-ops-leftovers-781
+    prior_evolve_cycle_id: EV-028
+    prior_started: '2026-08-01'
+    prior_completed: '2026-08-01'
+    prior_note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
+    note: 'STARTED (delta) — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; #831→#829→#820'
     substeps:
       interviews:
-        status: completed
-        completed: 1
-        current_template: complete
-        current_section: complete
+        status: pending
+        completed: 0
+        current_template:
+        current_section:
     active_session:
-      session_id: S035-empiric2-ops-leftovers-781
-      evolve_cycle_id: EV-028
-      status: completed
+      session_id: S037-quality-residuals-831
+      evolve_cycle_id: EV-030
+      status: in_progress
       mode: delta
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; handoff 02-verify-plan; #781'
-      feature_ids: []
+      started_at: '2026-08-02'
+      started: '2026-08-02'
+      completed_at:
+      completed:
+      note: 'STARTED (delta) — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; #831→#829→#820'
+      feature_ids:
+      - F29
+      - F23
+      - F12
+      - F2
+      - F13
+      - F9
+      - F26
+      - F27
       decision_refs:
-      - D-S035-open
-      - D-S035-routing
-      - E28-M
-      - E28-E1
-      - D-S035-E28-M
-      - D-S035-E28-E1
+      - D-S037-open
+      - D-S037-route
+      - D-S037-fn
     delta_substages:
     - status: completed
       mode: delta
@@ -3944,6 +4041,7 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-08-02 S037/EV-030 01-requirements STARTED (delta) — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; #831→#829→#820'
     - 'S035/EV-028 01-requirements COMPLETE 2026-08-01 (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md; handoff 02-verify-plan; #781'
     - 'S034/EV-027 01-requirements COMPLETE 2026-07-31 (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; report docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md; handoff 02-verify-plan; #815'
     - '2026-07-31 S034/EV-027 01-requirements STARTED (delta) — deepen F25/F9/F7.g; D-S034-open=1,1,2,1; starting delta interview; #815'
@@ -8322,20 +8420,25 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S035-empiric2-ops-leftovers-781
-    evolve_cycle_id: EV-028
-    started_at: '2026-08-01'
-    started: '2026-08-01'
-    completed_at: '2026-08-01'
-    completed: '2026-08-01'
-    current_stage:
-    prior_note: 'S035/EV-028 16-evolve in_progress — T3.5 PR #824 OPEN @ a6db427; CI/CD green @ 30727406104; awaiting merge approval to close #781; #781'
-    note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
-    tip_sha: 8086664
-    tip_sha_full: 8086664df0e04fe60da43baf7cd16a396910210d
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    started_at: '2026-08-02'
+    started: '2026-08-02'
+    completed_at:
+    completed:
+    current_stage: 01-requirements
+    prior_session_id: S035-empiric2-ops-leftovers-781
+    prior_evolve_cycle_id: EV-028
+    prior_completed: '2026-08-01'
+    prior_note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
+    note: 'S037/EV-030 16-evolve — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; Phase 1 done → 01-requirements; #831→#829→#820'
+    tip_sha: 7e276a7
+    tip_sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
     notes:
+    - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; start 01-requirements (delta); commit open; #831→#829→#820'
+    - '2026-08-02 S037/EV-030 16-evolve STARTED — D-S037-route (1) Standard; 00 COMPLETE; Phase 1 Fn allocation; EV-030 created; #831→#829→#820'
     - '2026-08-02 S035/EV-028 CLOSED — Phase 4 close D-S035-EV028-phase4-close option 1; PR #824 @ 70312dd; #825 closeout MERGED @ 8086664; #781 closed; active_session=null'
     - '2026-08-01 S035/EV-028 PR #824 MERGED @ 70312dd — T3.5 COMPLETE; 07/08/10/13 COMPLETE; #781 closed; main CI 30727796614 SUCCESS; Phase 4 closeout docs + AskQuestion pending; #781'
     - '2026-08-01 S035/EV-028 T3.5 PR #824 OPEN — CI/CD green @ 30727406104; tip a6db427; pushed; ahead_of_origin=0; awaiting merge approval to close #781; #781'
@@ -8640,6 +8743,82 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S037-fn
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: feature-allocation
+  status: confirmed
+  topic: 'S037/EV-030 Fn allocation — F29 + deepen; start 01'
+  summary: '1,1,1 — F29 + deepen F23/F12/F2/F13/F9/F26/F27; start 01; commit open'
+  decision: '1,1,1 — F29 + deepen F23/F12/F2/F13/F9/F26/F27; start 01; commit open'
+  user_option: '1,1,1'
+  feature_ids:
+  - F29
+  - F23
+  - F12
+  - F2
+  - F13
+  - F9
+  - F26
+  - F27
+  related_issues:
+  - '831'
+  - '829'
+  - '820'
+  branch: evolve/EV-030-quality-residuals-831
+
+- id: D-S037-route
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 00-context
+  skill_id: 00-context
+  stage: routing-approval
+  category: routing
+  status: confirmed
+  topic: 'Approve Standard routing → 16-evolve Phase 1'
+  summary: 'Approve Standard routing → 16-evolve Phase 1 Fn allocation'
+  decision: 'Approve Standard routing → 16-evolve Phase 1'
+  user_option: '1'
+  related_issues:
+  - '831'
+  - '829'
+  - '820'
+  preset: Standard
+  preset_status: approved
+  branch: evolve/EV-030-quality-residuals-831
+
+- id: D-S037-open
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session-open
+  status: confirmed
+  topic: 'Open S037 / EV-030 quality residuals #831→#829→#820'
+  summary: 'Intake 1,1,2,1 — all three residuals #831→#829→#820; Standard; UI docs-only; type=feature'
+  decision: 'Intake 1,1,2,1 — all three residuals #831→#829→#820; Standard; UI docs-only; type=feature'
+  user_option: '1,1,2,1'
+  related_issues:
+  - '831'
+  - '829'
+  - '820'
+  preset: Standard
+  preset_status: approved
+  branch: evolve/EV-030-quality-residuals-831
+
 - id: D-S036-EV029-phase4-close
   date: '2026-08-02'
   timestamp: '2026-08-02'
@@ -17574,6 +17753,37 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S037-quality-residuals-831/session-brief.md
+  kind: session-brief
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: approved
+  note: 'S037/EV-030 session-brief approved — D-S037-route'
+- path: docs/sessions/S037-quality-residuals-831/routing-plan.md
+  kind: routing-plan
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: approved
+  note: 'S037/EV-030 routing-plan approved — Standard 00→16→01→02→04→07→08→09→10→11→12→13; D-S037-route'
+- path: docs/context/quality-residuals-831.md
+  kind: context-scoped
+  slug: quality-residuals-831
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 00-context
+  skill_id: 00-context
+  created_at: '2026-08-02'
+  updated_at: '2026-08-02'
+  status: written
+  note: 'S037/EV-030 scoped context written — quality residuals #831/#829/#820'
 - path: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m4.md
   kind: verification-report
   session_id: S036-eight-family-ahl-rules-823
@@ -26680,16 +26890,127 @@ evolve_cycles:
   - '2026-08-01 S036/EV-029 02 COMPLETE → 04-tech-plan STARTED — Gate A PASS (D-S036-02-phase-a); Batch F (D-S036-02-batch-f) @ 97a9380; #823'
   - '2026-08-01 S036/EV-029 — D-S036-fn (1,1,1,1) F28+deepen; 01-requirements STARTED (delta written); 16-evolve Manifest+close pending; #823'
   - '2026-08-01 S036/EV-029 OPEN — create_evolve_cycle; D-S036-open (1,1,1,1,1,1); session_counter 36; evolve_cycle_counter 29; branch evolve/EV-029-eight-family-ahl-rules; umbrella #823; related #738/#820/#740; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation pending'
+- id: EV-030
+  session_id: S037-quality-residuals-831
+  cycle_type: feature
+  feature_ids:
+  - F29
+  - F23
+  - F12
+  - F2
+  - F13
+  - F9
+  - F26
+  - F27
+  title: 'Quality residuals #831 / #829 / #820'
+  status: in_progress
+  started: '2026-08-02'
+  completed:
+  scope_summary: |
+    Close EV-029 residuals: #831 rule matrices → #829 TC SIGMET deepen →
+    #820 VAA/TCA decode deepen. Standard routing; UI docs-only.
+  routing_plan:
+    required_stages:
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    note: 'Standard — D-S037-route; skip 03/05/06'
+  current_stage: 01-requirements
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-02'
+      completed: '2026-08-02'
+      note: 'D-S037-route (1) Standard approved'
+    16-evolve:
+      status: in_progress
+      mode: orchestrator
+      started: '2026-08-02'
+      note: 'Phase 1 Fn done (D-S037-fn); orchestrating 01-requirements'
+    01-requirements:
+      status: in_progress
+      started: '2026-08-02'
+    02-verify-plan:
+      status: pending
+    04-tech-plan:
+      status: pending
+    07-build:
+      status: pending
+    08-verify-build:
+      status: pending
+    09-qa:
+      status: pending
+    10-e2e:
+      status: pending
+    11-verify-impl:
+      status: pending
+    12-verify-deploy:
+      status: pending
+    13-deploy-smoke:
+      status: pending
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/context/quality-residuals-831.md
+    status: written
+  - path: docs/sessions/S037-quality-residuals-831/session-brief.md
+    status: approved
+  - path: docs/sessions/S037-quality-residuals-831/routing-plan.md
+    status: approved
+  issues:
+  - '831'
+  - '829'
+  - '820'
+  github_issues:
+  - '831'
+  - '829'
+  - '820'
+  branch: evolve/EV-030-quality-residuals-831
+  preset: Standard
+  preset_status: approved
+  decision_refs:
+  - D-S037-open
+  - D-S037-route
+  - D-S037-fn
+  notes:
+  - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; 01-requirements in_progress (delta); commit open; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 OPEN — D-S037-route (1); 00 COMPLETE; 16-evolve Phase 1 Fn allocation; feature_ids pending D-S037-fn; work order #831→#829→#820'
 git_history:
-  current_branch: main
+  current_branch: evolve/EV-030-quality-residuals-831
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit:
   tip_sha: 7e276a7
   tip_sha_full: 7e276a7011b08d3d47df05975d27d2daa0327a01
-  recommended_branch: main
-  note: 'S036/EV-029 — main tip 7e276a7; PR #828 MERGED @ 4e6577a; T12.6 smoke PASS awaiting user approve D-S036-13; progress 46/48; #828; #823'
+  recommended_branch: evolve/EV-030-quality-residuals-831
+  note: 'S037/EV-030 — D-S037-route; 00-context COMPLETE; 16-evolve Phase 1 Fn allocation; current_branch evolve/EV-030-quality-residuals-831; #831/#829/#820'
   notes:
+  - '2026-08-02 S037/EV-030 — D-S037-route (1) Standard approved; 00-context COMPLETE; EV-030 created; 16-evolve Phase 1 Fn allocation; current_branch evolve/EV-030-quality-residuals-831; #831→#829→#820'
+  - '2026-08-02 S037/EV-030 OPEN — open_session; D-S037-open (1,1,2,1); session_counter 37; evolve_cycle_counter 30; branch evolve/EV-030-quality-residuals-831; work order #831→#829→#820; 00-context in_progress; evolve_cycles entry deferred to 16-evolve'
   - '2026-08-02 S036/EV-029 — T12.6 smoke PASS (technical) — PR #828 merged 4e6577a; main tip 7e276a7; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA catalog/convert PASS; awaiting user approve D-S036-13; progress 46/48; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE @ 4f8e9a5 [T12.5] docs: 11-verify-impl + 12-verify-deploy sign-off; next T12.6 pending (13-deploy-smoke); progress 46/48; tip 4f8e9a5; ahead_of_origin=1 not pushed; #828; #823'
   - '2026-08-02 S036/EV-029 — T12.5 COMPLETE — 11+12 approved (D-S036-11/12); next T12.6 (13-deploy-smoke); progress 46/48; tip 4f8e9a5; #828; #823'
@@ -27026,6 +27347,15 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-030-quality-residuals-831
+    purpose: 'S037/EV-030 quality residuals #831→#829→#820'
+    base: main
+    status: active
+    created: '2026-08-02'
+    created_at: '2026-08-02'
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    note: 'S037/EV-030 — D-S037-route; EV-030 created; 16-evolve Phase 1 Fn allocation; current_branch'
   - name: evolve/EV-029-eight-family-ahl-rules
     purpose: 'S036/EV-029 #823 eight-family AHL / lint / convert / validate gap sweep'
     base: main

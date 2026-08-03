@@ -3,6 +3,49 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)
+
+**Session**: S037-quality-residuals-831  
+**Features**: **F29** (new — rule matrices) + deepen **F23** / **F12** / **F2** / **F13** / **F9** / **F26** / **F27**  
+**Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
+**Started**: 2026-08-02  
+**Branch**: `evolve/EV-030-quality-residuals-831`  
+**Status**: **in_progress** — 01-requirements
+
+### Scope (Phase 0 — locked 2026-08-02 via 00-context)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E30-1 | decision | Session open? | **1** — S037 / EV-030 feature + 16-evolve (`D-S037-open`) |
+| E30-2 | decision | Residuals? | **1** — all three; order #831 → #829 → #820 |
+| E30-3 | decision | Routing preset? | **1** — Standard (`00→16→01→02→04→07→08→09→10→11→12→13`; skip 03/05/06) |
+| E30-4 | decision | UI preview? | **2** — docs/repo only (no non-deployed UI) |
+| E30-5 | decision | Session type? | **1** — feature → 16-evolve |
+| E30-6 | decision | Routing approve? | **1** — Standard path (`D-S037-route`) |
+| E30-7 | decision | Fn allocation? | **1** — F29 + deepen F23/F12/F2/F13/F9/F26/F27 (`D-S037-fn`) |
+| E30-8 | decision | Start 01? | **1** — start 01-requirements |
+| E30-9 | decision | Commit open? | **1** — yes (`D-S037-fn` Q3) |
+
+**Scope (verbatim)**: Close EV-029 residuals — (1) #831 parameterized happy/sad/edge
+matrices for lint/convert/validate with design-before-bulk-fixtures; (2) #829 TC SIGMET
+tac-validate pack, STNR/geometry negatives or explicit OOS, A6-2-TC catalog/menu tier;
+(3) #820 deepen VAA/TCA decode beyond F9 G4 best-effort. Work order #831 → #829 → #820.
+
+**In:** Harness evaluation + pilot runners; TC SIGMET lint deepen + menu tier decision;
+VAA/TCA structured decode residual shrink; CI/docs for matrix authoring.
+
+**Out:** New deployables; #830 Supabase strip; #806 WIS2 mining; SIGWX/VONA/QVACI;
+non-deployed UI preview this session (H4–H5 only if FE menu unlock ships).
+
+### Acceptance (cycle — draft pending 01)
+
+1. #831 harness recommendation + runners + pilot or explicit `needs-fixture` inventory (**TC-EV030-831-***).
+2. #829 acceptance checkboxes met or OOS with cite (**TC-EV030-829-***).
+3. #820 residual spans shrink / allowlist updated (**TC-EV030-820-***).
+4. Deploy smoke green or waived if no contract/FE change.
+
+---
+
 ## Cycle EV-029 — #823 Eight-family AHL / lint / convert / validate gap sweep (S036)
 
 **Session**: S036-eight-family-ahl-rules-823  
