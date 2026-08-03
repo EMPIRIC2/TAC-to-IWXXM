@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M2 — #829 TC SIGMET |
-| **Active task** | T2.1 COMPLETE — next T2.2 (TC lint registry codes) |
-| **Tasks** | 13 / 27 completed (M0+M1+T2.1) |
+| **Active task** | T2.2 COMPLETE — next T2.3 (STNR/geometry OOS or deepen) |
+| **Tasks** | 14 / 27 completed (M0+M1+T2.1–T2.2) |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -83,7 +83,7 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | Dedicated `tac-validate` TC SIGMET accept/negative pack (peer VA) | TC-EV030-004; #829 | T1.8 | **completed** |
-| T2.2 | Code | Registry + fixtures for TC lint codes (ADR-028) | F12/F23; #829 | T2.1 | pending |
+| T2.2 | Code | Registry + fixtures for TC lint codes (ADR-028) | F12/F23; #829 | T2.1 | **completed** |
 | T2.3 | Test | STNR / exceptional geometry negatives — or **OOS with cite** (S02.M2) | TC-EV030-004; S02.M2 | T2.2 | pending |
 | T2.4 | Code | Unlock `sigmet-A6-2-TC` catalog tier (`wmoPass`/`wmoReference` per ADR-032) when M7 quality path still green | TC-EV030-005; E30-T4 | T2.2 | pending |
 | T2.5 | Test | FE catalog / Examples Vitest + path smoke for unlocked stem | TC-EV030-005; UJ-039 | T2.4 | pending |

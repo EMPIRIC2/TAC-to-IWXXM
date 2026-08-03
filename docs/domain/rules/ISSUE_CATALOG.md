@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry  
-> **Generated**: 2026-08-02 via `make catalog-regen`  
+> **Generated**: 2026-08-03 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -48,6 +48,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_SEQUENCE` | `error` | SIGMET/AIRMET missing sequence number — research G2 / F24 A1 | sigmet | sequence, sigmet, airmet, g2, a1 |
 | `MISSING_SWXC` | `error` | SWXA missing SWXC: template field — F28 theme SX1 / A2-3 | swxa | swxc, swxa, sx1, f28 |
 | `MISSING_TC` | `error` | TCA missing TC: template field — F27 theme T1 / A2-2 | tca | tropical_cyclone, tca, t1, f27 |
+| `MISSING_TC_IDENTITY` | `error` | TC SIGMET missing cyclone identity (TC … PSN) — #829 / TC-EV030-004 | sigmet | tc, cyclone, sigmet, ev030 |
 | `MISSING_TEMP_DEWPOINT` | `error` | {product} missing temperature/dewpoint tt/td — A3-2 #10 | — | temperature, metar, speci |
 | `MISSING_TERMINATOR` | `info` | Reports in bulletins end with '=' — add it before publishing | — | terminator, metar, speci, taf |
 | `MISSING_VAAC` | `error` | VAA missing VAAC: template field — A2-1 | vaa | vaac, vaa |
@@ -84,6 +85,8 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `TCA_CYCLONE_UNNAMED` | `info` | TCA TC UNNAMED — exceptional name allowed (F27 theme T1) | tca | tropical_cyclone, unnamed, tca, t1, f27 |
 | `TCA_NO_MSG_EXP` | `info` | TCA NXT MSG NO MSG EXP — next time inapplicable (F27 theme T1) | tca | next_advisory, tca, t1, f27 |
 | `TCA_RMK_NIL` | `info` | TCA RMK NIL — remarks inapplicable (F27 theme T1) | tca | remarks, nil, tca, t1, f27 |
+| `TC_CB_GEOMETRY` | `info` | TC SIGMET CB geometry WI … OF TC CENTRE — #829 / TC-EV030-004 | sigmet | tc, geometry, sigmet, ev030 |
+| `TC_CYCLONE_IDENTITY` | `info` | TC SIGMET tropical cyclone identity (TC … PSN) — #829 / TC-EV030-004 | sigmet | tc, cyclone, sigmet, ev030 |
 | `TEMPO_PRESENT` | `info` | {product} TEMPO trend present — research R8 / T2 | — | trend, change, metar, speci, taf, r8, t2 |
 | `TL_PRESENT` | `info` | {product} TL time group present — research T2 | taf | change, taf, t2, tl |
 | `TOP_ABV_OR_BLW` | `info` | SIGMET/AIRMET TOP ABV/BLW level grammar — research G1 / F24 A2 | sigmet | altitude, top, sigmet, airmet, g1, a2 |

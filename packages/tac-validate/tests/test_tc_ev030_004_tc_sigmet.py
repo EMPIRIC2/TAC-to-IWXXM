@@ -1,7 +1,7 @@
 """EV-030 / #829 — TC SIGMET accept + negatives (TC-EV030-004).
 
-Peer to ``test_tc_f23_v1_va_sigmet.py`` (VA theme V1). T2.1 establishes the dedicated
-pack using shared G1/G2 codes on TC bodies; T2.2 adds TC-specific registry codes.
+Peer to ``test_tc_f23_v1_va_sigmet.py`` (VA theme V1). T2.1 pack + T2.2 registry
+codes ``TC_CYCLONE_IDENTITY`` / ``TC_CB_GEOMETRY`` / ``MISSING_TC_IDENTITY``.
 """
 
 from __future__ import annotations
@@ -19,12 +19,15 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures"
 MANIFEST_PATH = FIXTURES / "manifest.json"
 
 _INFO_CODES = {
+    "TC_CYCLONE_IDENTITY",
+    "TC_CB_GEOMETRY",
     "STNR_MOVEMENT",
     "POLYGON_LOCATION",
     "SIGMET_CNL",
 }
 _ERROR_CODES = {
     "INVALID_STNR_MOVEMENT",
+    "MISSING_TC_IDENTITY",
 }
 
 
@@ -58,8 +61,8 @@ def test_tc_manifest_sections_present() -> None:
         "accept_sigmet_tc_cnl",
         "accept_sigmet_tc_stnr",
     }
-    assert len(_TC_INFO) >= 3
-    assert len(_TC_ERRORS) >= 1
+    assert len(_TC_INFO) >= 5
+    assert len(_TC_ERRORS) >= 2
     for case in _TC_ACCEPT + _TC_INFO + _TC_ERRORS:
         assert (_read_tac(case["tac"])).strip()
     codes = {c["expected_codes"][0] for c in _TC_INFO}

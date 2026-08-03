@@ -2873,6 +2873,28 @@
   ],
   "tc_modifier_info": [
     {
+      "id": "sigmet_tc_identity_info",
+      "product": "SIGMET",
+      "theme": "TC",
+      "cite": "TC \u2026 PSN \u2192 TC_CYCLONE_IDENTITY; #829 / TC-EV030-004",
+      "tac": "accept/sigmet_tc_a6_2.tac",
+      "ok": true,
+      "expected_codes": ["TC_CYCLONE_IDENTITY"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_tc_cb_geometry_info",
+      "product": "SIGMET",
+      "theme": "TC",
+      "cite": "WI \u2026 OF TC CENTRE \u2192 TC_CB_GEOMETRY; #829",
+      "tac": "accept/sigmet_tc_a6_2.tac",
+      "ok": true,
+      "expected_codes": ["TC_CB_GEOMETRY"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
       "id": "sigmet_tc_stnr_info",
       "product": "SIGMET",
       "theme": "TC",
@@ -2887,7 +2909,7 @@
       "id": "sigmet_tc_wi_geometry_info",
       "product": "SIGMET",
       "theme": "TC",
-      "cite": "WI \u2026 OF TC CENTRE \u2192 POLYGON_LOCATION; #829",
+      "cite": "WI \u2026 OF TC CENTRE also emits POLYGON_LOCATION; #829",
       "tac": "accept/sigmet_tc_a6_2.tac",
       "ok": true,
       "expected_codes": ["POLYGON_LOCATION"],
@@ -2915,6 +2937,16 @@
       "tac": "negative/sigmet/tc_stnr_with_mov.tac",
       "ok": false,
       "expected_codes": ["INVALID_STNR_MOVEMENT"],
+      "require_spans": true
+    },
+    {
+      "id": "sigmet_tc_missing_identity",
+      "product": "SIGMET",
+      "theme": "TC",
+      "cite": "OF TC CENTRE without TC \u2026 PSN \u2192 MISSING_TC_IDENTITY; #829",
+      "tac": "negative/sigmet/tc_missing_identity.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_TC_IDENTITY"],
       "require_spans": true
     }
   ]
