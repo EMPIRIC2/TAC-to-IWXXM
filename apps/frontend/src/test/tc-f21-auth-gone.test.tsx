@@ -1,13 +1,11 @@
 /**
- * TC-F21-auth-gone (frontend slice) — S023 / EV-017 / T4.1
+ * TC-F21-auth-gone (frontend slice) — F21 Amended / EV-031 / F31
  *
- * Public app: no login chrome, no JWT bootstrap on convert/lint/decode,
- * Auth route components absent from the FE surface.
+ * Public convert remains JWT-free. Optional Auth login UX may exist for
+ * long-term storage; App boots to the converter without forcing login.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { convertMetarToIwxxm, decodeTac, lintTac } from '@/utils/api';
 
 global.fetch = vi.fn();
@@ -26,17 +24,63 @@ vi.mock('@/utils/guestConverterState', () => ({
   clearGuestConverterState: vi.fn(),
 }));
 
+vi.mock('@/utils/authService', () => ({
+  getAccessToken: vi.fn(() => null),
+  isLoggedIn: vi.fn(() => false),
+  logout: vi.fn(),
+}));
+
 vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() },
   Toaster: () => null,
 }));
 
 vi.mock('@/app/components/FileConverter', () => ({
-  FileConverter: () => <div data-testid="file-converter" />,
+  FileConverter: ({
+    isGuest,
+    onRequestLogin,
+  }: {
+    isGuest?: boolean;
+    onRequestLogin?: () => void;
+  }) => (
+    <div data-testid="file-converter">
+      {isGuest ? (
+        <button type="button" data-testid="sign-in-button" onClick={onRequestLogin}>
+          Sign in
+        </button>
+      ) : null}
+    </div>
+  ),
 }));
 
 vi.mock('@/app/components/MyMetarsPage', () => ({
   MyMetarsPage: () => <div data-testid="my-metars" />,
+}));
+
+vi.mock('@/app/components/auth/Login', () => ({
+  Login: ({ onContinueAsGuest }: { onContinueAsGuest?: () => void }) => (
+    <div data-testid="login-view">
+      <button type="button" onClick={onContinueAsGuest}>
+        Continue without signing in
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock('@/app/components/auth/Register', () => ({
+  Register: () => <div data-testid="register-view" />,
+}));
+
+vi.mock('@/app/components/auth/EmailVerification', () => ({
+  EmailVerification: () => <div data-testid="verify-view" />,
+}));
+
+vi.mock('@/app/components/auth/AuthCallback', () => ({
+  AuthCallback: () => <div data-testid="callback-view" />,
+}));
+
+vi.mock('@/app/components/auth/PasswordReset', () => ({
+  PasswordReset: () => <div data-testid="reset-view" />,
 }));
 
 vi.mock('@/app/components/ThemeProvider', () => ({
@@ -48,6 +92,7 @@ vi.mock('@/app/components/ui/sonner', () => ({
 }));
 
 import App from '@/app/App';
+import userEvent from '@testing-library/user-event';
 
 function authHeaderFromFetchCall(): string | undefined {
   const call = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
@@ -56,7 +101,7 @@ function authHeaderFromFetchCall(): string | undefined {
   return headers?.Authorization;
 }
 
-describe('TC-F21-auth-gone (frontend)', () => {
+describe('TC-F21-auth-gone (frontend, F31 amended)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
@@ -81,22 +126,26 @@ describe('TC-F21-auth-gone (frontend)', () => {
     vi.unstubAllEnvs();
   });
 
-  it('boots directly to converter with no login/register chrome', () => {
+  it('boots directly to converter with optional Sign in (no forced login gate)', () => {
     render(<App />);
 
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
     expect(screen.queryByTestId('login-view')).not.toBeInTheDocument();
-    expect(screen.queryByText(/sign in/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/log in/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/create account/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/register/i)).not.toBeInTheDocument();
+    expect(screen.getByTestId('sign-in-button')).toBeInTheDocument();
   });
 
-  it('App.tsx does not import Auth route components', () => {
-    const appSource = readFileSync(resolve(__dirname, '../app/App.tsx'), 'utf8');
-    expect(appSource).not.toMatch(/from ['"]\.\/components\/auth\//);
-    expect(appSource).not.toMatch(/authService/);
-    expect(appSource).not.toMatch(/isLoggedIn|getAccessToken|logout/);
+  it('opens optional login UX from Sign in and returns via continue-as-guest', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByTestId('sign-in-button'));
+    expect(screen.getByTestId('login-view')).toBeInTheDocument();
+    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole('button', { name: /continue without signing in/i }),
+    );
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
 
   it('convertMetarToIwxxm omits Authorization even when a token is in storage', async () => {

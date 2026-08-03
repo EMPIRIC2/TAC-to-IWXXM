@@ -71,7 +71,7 @@ export function getSupabaseUrl(): string {
   return getRuntimeConfig().supabase.url;
 }
 
-/** Supabase publishable key for browser client (edge helpers only — F21 has no Auth). */
+/** Supabase publishable key for optional Auth FE client (F31 / F21 Amended). */
 export function getSupabasePublishableKey(): string {
   return getRuntimeConfig().supabase.publishableKey || '';
 }

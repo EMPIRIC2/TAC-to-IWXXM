@@ -28,6 +28,7 @@ import {
   ChevronUp,
   AlertCircle,
   XCircle,
+  LogOut,
 } from 'lucide-react';
 import JSZip from 'jszip';
 import { toast } from 'sonner';
@@ -42,6 +43,11 @@ import {
   acknowledgePrivacyNotice,
   shouldShowPrivacyNotice,
 } from '@/utils/privacyPreferences';
+import {
+  GUEST_LOSS_OF_PROGRESS_MESSAGE,
+  shouldShowGuestLossOfProgressNotice,
+} from '@/utils/guestLossNotice';
+import { signOutWithScope } from '/utils/supabase/logout';
 import { getExampleById } from '@/fixtures/examples/examplesCatalog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
 import { AirportDetailsCard } from './AirportDetailsCard';
@@ -120,8 +126,16 @@ interface PendingFile {
 }
 
 interface FileConverterProps {
-  /** @deprecated F21 public — ignored */
+  /** JWT for server session APIs when logged in (F31). Convert stays public. */
   accessToken?: string;
+  /** Display name in preferences / header context. */
+  userEmail?: string;
+  /** True when operating without Auth (guest IndexedDB path). */
+  isGuest?: boolean;
+  /** Logout / return to guest after scoped sign-out. */
+  onLogout?: () => void;
+  /** Open optional login UX (F31 / F21 Amended). */
+  onRequestLogin?: () => void;
   onOpenHistory?: () => void;
   onLoadWorkSession?: (session: WorkSession) => void;
   onNewMetar?: () => void;
@@ -148,6 +162,11 @@ interface ConversionParams {
 }
 
 export function FileConverter({
+  accessToken,
+  userEmail = 'Guest',
+  isGuest = true,
+  onLogout,
+  onRequestLogin,
   onOpenHistory,
   onLoadWorkSession,
   onNewMetar,
@@ -190,6 +209,7 @@ export function FileConverter({
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
+  const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(() =>
     shouldShowPrivacyNotice(),
   );
@@ -238,11 +258,33 @@ export function FileConverter({
 
   const { isReadOnly, saveIndicator, scheduleAutoSave, persistSession } =
     useWorkSessionSync({
+      accessToken,
       sessionId: activeWorkSessionId ?? null,
       sessionStatus: loadedWorkSession?.status ?? null,
       onSessionSaved: (session) => onSessionUpdated?.(session),
       onSessionIdAssigned: (id) => onActiveSessionIdChange?.(id),
     });
+
+  const handleLogoutWithScope = async (scope: 'global' | 'local' | 'others') => {
+    const success = await signOutWithScope(scope);
+    if (success) {
+      setIsLogoutMenuOpen(false);
+      setTimeout(() => {
+        onLogout?.();
+      }, 500);
+    }
+  };
+
+  const hasLocalUnsavedWork =
+    pendingFiles.length > 0 ||
+    Boolean(manualInput.trim()) ||
+    convertedFiles.length > 0 ||
+    Boolean(activeWorkSessionId);
+
+  const showGuestLossNotice = shouldShowGuestLossOfProgressNotice({
+    isLoggedIn: !isGuest,
+    hasLocalUnsavedWork,
+  });
 
   // Load user preferences on mount from localStorage
   useEffect(() => {
@@ -1173,6 +1215,70 @@ export function FileConverter({
                 <span className="text-sm text-gray-600 dark:text-gray-400">Theme</span>
                 <ThemeToggle />
               </div>
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  className="bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border-0"
+                  aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
+                  data-testid={isGuest ? 'sign-in-button' : 'logout-button'}
+                  onClick={() => {
+                    if (isGuest) {
+                      onRequestLogin?.();
+                      return;
+                    }
+                    setIsLogoutMenuOpen(!isLogoutMenuOpen);
+                  }}
+                >
+                  <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
+                  {isGuest ? 'Sign in' : 'Logout'}
+                  {!isGuest && (
+                    <ChevronDown className="w-4 h-4 ml-1" aria-hidden="true" />
+                  )}
+                </Button>
+
+                {isLogoutMenuOpen && !isGuest && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
+                    <div className="p-3 space-y-2">
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
+                        Sign out scope:
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => void handleLogoutWithScope('local')}
+                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        aria-label="Sign out from this device only"
+                      >
+                        <div className="font-medium">This Device</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Only this session
+                        </div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleLogoutWithScope('global')}
+                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        aria-label="Sign out from all devices"
+                      >
+                        <div className="font-medium">All Devices</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Every signed-in session
+                        </div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleLogoutWithScope('others')}
+                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        aria-label="Sign out other devices"
+                      >
+                        <div className="font-medium">Other Devices</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Keep this device signed in
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <p className="text-base text-gray-600 dark:text-gray-300">
@@ -1180,6 +1286,22 @@ export function FileConverter({
             Convert. Upload files from the compact drop zone under the console when
             preferred.
           </p>
+          {showGuestLossNotice && (
+            <p
+              className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+              role="status"
+              data-testid="guest-loss-notice"
+            >
+              {GUEST_LOSS_OF_PROGRESS_MESSAGE}{' '}
+              <button
+                type="button"
+                className="underline underline-offset-2 font-medium"
+                onClick={() => onRequestLogin?.()}
+              >
+                Sign in
+              </button>
+            </p>
+          )}
           <PrivacyNotice
             open={showPrivacyNotice}
             onDismiss={() => {
@@ -2075,7 +2197,7 @@ export function FileConverter({
       <UserPreferencesDialog
         isOpen={isPreferencesDialogOpen}
         onClose={() => setIsPreferencesDialogOpen(false)}
-        userEmail="Operator"
+        userEmail={userEmail}
         onPreferencesSaved={handlePreferencesSaved}
       />
 

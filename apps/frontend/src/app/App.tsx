@@ -1,9 +1,15 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
+import { Login } from './components/auth/Login';
+import { Register } from './components/auth/Register';
+import { EmailVerification } from './components/auth/EmailVerification';
+import { AuthCallback } from './components/auth/AuthCallback';
+import { PasswordReset } from './components/auth/PasswordReset';
 import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner';
 import { ThemeProvider } from './components/ThemeProvider';
+import { getAccessToken, isLoggedIn, logout } from '@/utils/authService';
 
 import { requireApiBaseUrl } from '@/utils/apiBase';
 import type { WorkSession } from '@metar/shared';
@@ -12,7 +18,10 @@ import {
   migrateGuestSessionStorageToIndexedDb,
 } from '@/utils/localWorkSessionStore';
 
-/** Validate required environment variables on app load (F21 — no Auth env). */
+/**
+ * Validate required environment variables on app load.
+ * F31 — public convert + optional Auth; API base still required.
+ */
 function validateApiEnv() {
   try {
     requireApiBaseUrl();
@@ -26,10 +35,27 @@ function validateApiEnv() {
   }
 }
 
-type AppView = 'converter' | 'history';
+type AppView =
+  | 'converter'
+  | 'history'
+  | 'login'
+  | 'register'
+  | 'verify'
+  | 'callback'
+  | 'reset';
 
+/**
+ * Operator shell — boots to the public converter (guest). Optional Supabase Auth
+ * login is available for long-term server sessions (F31 / F21 Amended).
+ */
 function App() {
+  const initiallyLoggedIn = isLoggedIn();
   const [currentView, setCurrentView] = useState<AppView>('converter');
+  const [userEmail, setUserEmail] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(initiallyLoggedIn);
+  const [accessToken, setAccessToken] = useState(() =>
+    initiallyLoggedIn ? getAccessToken() || '' : '',
+  );
   const [activeWorkSessionId, setActiveWorkSessionId] = useState<string | null>(null);
   const [loadedWorkSession, setLoadedWorkSession] = useState<WorkSession | null>(null);
   const sessionInitRef = useRef<string | null>(null);
@@ -68,12 +94,76 @@ function App() {
   }, [initializeWorkSessions]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  useLayoutEffect(() => {
+    if (window.location.pathname.includes('/auth/callback')) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCurrentView('callback');
+    }
+  }, []);
+
+  const handleLogin = (
+    email: string,
+    needsVerification: boolean,
+    token?: string,
+    _adminStatus?: boolean,
+  ) => {
+    setUserEmail(email);
+    setAccessToken(token || getAccessToken() || '');
+
+    if (needsVerification) {
+      setCurrentView('verify');
+    } else {
+      setIsAuthenticated(true);
+      sessionInitRef.current = null;
+      setCurrentView('converter');
+      void initializeWorkSessions();
+    }
+  };
+
+  const handleRegister = (email: string) => {
+    setUserEmail(email);
+    setCurrentView('verify');
+  };
+
+  const handleVerified = (token?: string, _adminStatus?: boolean) => {
+    setIsAuthenticated(true);
+    setAccessToken(token || getAccessToken() || '');
+    sessionInitRef.current = null;
+    setCurrentView('converter');
+    void initializeWorkSessions();
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+
+    setIsAuthenticated(false);
+    setUserEmail('');
+    setAccessToken('');
+    setActiveWorkSessionId(null);
+    setLoadedWorkSession(null);
+    sessionInitRef.current = null;
+    setCurrentView('converter');
+    void initializeWorkSessions();
+  };
+
   const handleSwitchToConverter = () => {
     setCurrentView('converter');
   };
 
   const handleOpenHistory = () => {
     setCurrentView('history');
+  };
+
+  const handleRequestLogin = () => {
+    setCurrentView('login');
+  };
+
+  const handleContinueAsGuest = () => {
+    setCurrentView('converter');
   };
 
   const handleLoadWorkSession = (session: WorkSession) => {
@@ -92,10 +182,45 @@ function App() {
     setActiveWorkSessionId(session.id);
   };
 
+  const isGuest = !isAuthenticated;
+
   return (
     <ThemeProvider>
+      {currentView === 'login' && (
+        <Login
+          onLogin={handleLogin}
+          onSwitchToRegister={() => setCurrentView('register')}
+          onForgotPassword={() => setCurrentView('reset')}
+          onContinueAsGuest={handleContinueAsGuest}
+        />
+      )}
+
+      {currentView === 'register' && (
+        <Register
+          onRegister={handleRegister}
+          onSwitchToLogin={() => setCurrentView('login')}
+        />
+      )}
+
+      {currentView === 'reset' && (
+        <PasswordReset onBackToLogin={() => setCurrentView('login')} />
+      )}
+
+      {currentView === 'verify' && (
+        <EmailVerification
+          email={userEmail}
+          onVerified={handleVerified}
+          onBackToLogin={() => setCurrentView('login')}
+        />
+      )}
+
       {currentView === 'converter' && (
         <FileConverter
+          onLogout={handleLogout}
+          userEmail={isGuest ? 'Guest' : userEmail || 'Operator'}
+          accessToken={isAuthenticated ? accessToken : undefined}
+          isGuest={isGuest}
+          onRequestLogin={handleRequestLogin}
           onOpenHistory={handleOpenHistory}
           onLoadWorkSession={handleLoadWorkSession}
           onNewMetar={handleNewMetar}
@@ -108,9 +233,17 @@ function App() {
 
       {currentView === 'history' && (
         <MyMetarsPage
-          userEmail="Local history"
+          userEmail={isAuthenticated ? userEmail || 'Operator' : 'Local history'}
           onBack={handleSwitchToConverter}
           onOpenSession={handleLoadWorkSession}
+        />
+      )}
+
+      {currentView === 'callback' && (
+        <AuthCallback
+          onLogin={handleLogin}
+          onRegister={handleRegister}
+          onVerified={handleVerified}
         />
       )}
 

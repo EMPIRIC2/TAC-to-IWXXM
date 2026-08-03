@@ -271,6 +271,25 @@ describe('FileConverter Component', () => {
       expect(container).toBeTruthy();
     });
 
+    it('shows Sign in for guests and guest loss notice when local work exists', async () => {
+      const user = userEvent.setup();
+      const onRequestLogin = vi.fn();
+      const { container } = render(
+        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
+      );
+
+      expect(screen.getByTestId('sign-in-button')).toBeInTheDocument();
+      expect(screen.queryByTestId('guest-loss-notice')).not.toBeInTheDocument();
+
+      const textarea = container.querySelector('textarea');
+      expect(textarea).toBeTruthy();
+      await user.type(textarea as HTMLTextAreaElement, 'METAR KJFK');
+      expect(screen.getByTestId('guest-loss-notice')).toBeInTheDocument();
+
+      await user.click(screen.getByTestId('sign-in-button'));
+      expect(onRequestLogin).toHaveBeenCalled();
+    });
+
     it('shows first-visit privacy notice and opens settings from footer', async () => {
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
