@@ -7,7 +7,13 @@ from pathlib import Path
 import pytest
 from tests.quality_matrices.loaders import BUCKETS, RuleCase, load_rule_cases
 
-_SPIKE = Path(__file__).resolve().parent / "testdata" / "spike_invalid_visibility.yml"
+_SPIKE = (
+    Path(__file__).resolve().parent
+    / "testdata"
+    / "lint"
+    / "metar_speci"
+    / "INVALID_VISIBILITY.yml"
+)
 
 
 def test_tc_f29_spike_load_yaml_rule_cases() -> None:

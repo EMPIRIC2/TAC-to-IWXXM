@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M1 — F29 harness |
-| **Active task** | T1.1 — Shared YAML/JSON loader + case schema tests |
-| **Tasks** | 4 / 27 completed |
+| **Active task** | T1.2 — Lint / convert / validate runners + needs-fixture policy |
+| **Tasks** | 5 / 27 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -69,7 +69,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Shared YAML/JSON loader + case schema tests under `tests/quality_matrices/` | TC-F29-002; E30-T8 | T0.4 | pending |
+| T1.1 | Test | Shared YAML/JSON loader + case schema tests under `tests/quality_matrices/` | TC-F29-002; E30-T8 | T0.4 | **completed** |
 | T1.2 | Code | Lint / convert / validate runners + `needs-fixture` skip/xfail policy | TC-F29-002; TC-EV030-002 | T1.1 | pending |
 | T1.3 | Test | METAR/SPECI pilot matrices (fill or explicit `needs-fixture`) — lint engine | TC-F29-003; S02.M1 | T1.2 | pending |
 | T1.4 | Test | METAR/SPECI pilot — convert engine | TC-F29-003 | T1.2 | pending |
