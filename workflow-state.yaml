@@ -68,14 +68,14 @@ active_session:
     status: in_progress
     started: '2026-08-03'
     skip_rationale: null
-    note: 'IN PROGRESS — M1 done + 08 M1 PASS @ 0151e11; next M2 T2.1 after PR-M1 (push+open pending); report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; #831→#829→#820'
+    note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
   - stage: 08-verify-build
     required: true
     status: completed
     completed: '2026-08-03'
     started: '2026-08-03'
     skip_rationale: null
-    note: 'COMPLETE (M1 gate) — PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; reopen for final M4 08; next push + PR-M1 then M2 T2.1; #831→#829→#820'
+    note: 'COMPLETE (M1 gate) — PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; reopen for final M4 08; PR-M1 #832 open; M2 T2.1 started; #831→#829→#820'
   - stage: 09-qa
     required: true
     status: pending
@@ -140,7 +140,7 @@ active_session:
     status: touched
   preset: Standard
   preset_status: approved
-  note: 'S037/EV-030 — 08 M1 PASS @ 0151e11; current_stage 07-build for M2; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; about to push + open PR-M1 then continue M2 T2.1; #831→#829→#820'
+  note: 'S037/EV-030 — M1 08 PASS; PR #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -5824,15 +5824,18 @@ stages:
     session_id: S037-quality-residuals-831
     evolve_cycle_id: EV-030
     mode: full
-    note: 'IN PROGRESS — M1 done + 08 M1 PASS @ 0151e11 (D-S037-08-m1-pass); next M2 T2.1 after PR-M1; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; #831→#829→#820'
-    tip_sha: 0151e11
-    tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
-    progress: 12/27
+    note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
+    tip_sha: 72c4be6
+    tip_sha_full: 72c4be61b199746942fa9273023d863ade8a2a26
+    progress: 14/27
     current_milestone: M2
-    current_task: T2.1
+    current_task: T2.3
     active_milestone: M2
-    active_task: T2.1
+    active_task: T2.3
     active_task_status: pending
+    pr_m1_number: 832
+    pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+    pr_m1_status: open
     decision_refs:
     - D-S037-04-plan
     - D-S037-04-batch-2
@@ -5879,15 +5882,18 @@ stages:
       mode: full
       started_at: '2026-08-03'
       started: '2026-08-03'
-      note: 'IN PROGRESS — M1 done + 08 M1 PASS @ 0151e11 (D-S037-08-m1-pass); next M2 T2.1 after PR-M1; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; #831→#829→#820'
-      tip_sha: 0151e11
-      tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
-      progress: 12/27
+      note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
+      tip_sha: 72c4be6
+      tip_sha_full: 72c4be61b199746942fa9273023d863ade8a2a26
+      progress: 14/27
       active_milestone: M2
       current_milestone: M2
-      active_task: T2.1
-      current_task: T2.1
+      active_task: T2.3
+      current_task: T2.3
       active_task_status: pending
+      pr_m1_number: 832
+      pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+      pr_m1_status: open
       feature_ids:
       - F29
       - F23
@@ -5916,12 +5922,12 @@ stages:
     substeps:
       task_loop:
         status: in_progress
-        current_task: T2.1
+        current_task: T2.3
         active_task_status: pending
         active_milestone: M2
         phase: C
         milestone: M2
-        notes: 'IN PROGRESS — M1 done + 08 M1 PASS @ 0151e11; next T2.1 after PR-M1; #831→#829→#820'
+        notes: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -6410,6 +6416,9 @@ stages:
     - '2026-08-02 S036/EV-029 07-build — M2 T2.1 STARTED (METAR gap fixtures); tip c4b2b5d; #823'
     - '2026-08-02 S036/EV-029 M1 PR #827 MERGED to main @ c338108 (2026-08-02T14:18:36Z); M2 @ T2.1 pending; branch evolve/EV-029-eight-family-ahl-rules remains active for M2+; #823'
     - '2026-08-02 S036/EV-029 07-build — M0 COMPLETE (T0.1–T0.6 PASS); advance M1 @ T1.1 pending; tip c181ede; #823'
+    - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
     - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
     - '2026-08-03 S037/EV-030 07-build — M1 COMPLETE T1.1–T1.8 @ 0151e11 (convert/validate pilots + inventory gate + smoke CI; 50 smoke pass); next 08-verify-build / M1 PR then T2.1; progress 12/27; tip 0151e11; #831→#829→#820'
     - '2026-08-03 S037/EV-030 07-build — T1.3 COMPLETE @ ce27667 (36×20 lint pilot; 39 pass/718 skip); next T1.4 pending @ M1; progress 7/27; tip ce27667; #831→#829→#820'
@@ -7473,7 +7482,7 @@ stages:
     tip_sha: 0151e11
     tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
     overall: pass
-    note: 'M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; reopen for final M4 08; next push + PR-M1 then M2; #831→#829→#820'
+    note: 'M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; reopen for final M4 08; PR-M1 #832 open; M2 T2.1 in_progress; #831→#829→#820'
     report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
     active_milestone: M1
     active_task: M1-08
@@ -7512,7 +7521,7 @@ stages:
       active_milestone: M1
       active_task_status: completed
       progress: 12/27
-      note: 'M1 PASS — report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; tip 0151e11; next push + PR-M1 then M2 T2.1; #831→#829→#820'
+      note: 'M1 PASS — report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; tip 0151e11; PR-M1 #832 open; M2 T2.1 in_progress; #831→#829→#820'
       branch: evolve/EV-030-quality-residuals-831
       decision_id: D-S037-08-m1-pass
     - id: S036-eight-family-ahl-rules-823-M12-T12.3
@@ -7837,6 +7846,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
     - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
     - '2026-08-02 S036/EV-029 — T12.3 COMPLETE @ 620fa9b; T12.4 STARTED — 09-qa delta + 10-e2e smoke UJ-043; progress 44/48; tip 620fa9b; #828; #823 (08 tip synced @ 620fa9b; T12.4 STARTED)'
     - '2026-08-02 S036/EV-029 08-verify-build COMPLETE PASS — T12.3 M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip b43cbb3 (pending tip chore); CI/CD 30771391289 SUCCESS; next T12.4 pending; progress 44/48; #828; #823'
@@ -8605,10 +8615,13 @@ stages:
     prior_evolve_cycle_id: EV-028
     prior_completed: '2026-08-01'
     prior_note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
-    note: 'S037/EV-030 16-evolve — 08 M1 PASS @ 0151e11 (D-S037-08-m1-pass); back to 07-build for M2; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
-    tip_sha: 0151e11
-    tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
+    note: 'S037/EV-030 16-evolve — M1 08 PASS; PR #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
+    tip_sha: 72c4be6
+    tip_sha_full: 72c4be61b199746942fa9273023d863ade8a2a26
     notes:
+    - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+    - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
     - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — 08-verify-build STARTED at M1 boundary; M1 T1.1–T1.8 complete @ tip 0151e11; before minor PR then M2; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — T1.3 COMPLETE @ ce27667 (36×20 lint pilot; 39 pass/718 skip); next T1.4 convert pilot; progress 7/27; #831→#829→#820'
@@ -27340,7 +27353,10 @@ evolve_cycles:
     - 06-tech-tooling
     note: 'Standard — D-S037-route; skip 03/05/06'
   current_stage: 07-build
-  note: 'M1 done + 08 M1 PASS @ tip 0151e11; current_stage 07-build; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
+  note: 'S037/EV-030 — M1 08 PASS; PR #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
+  pr_m1_number: 832
+  pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+  pr_m1_status: open
   stages:
     00-context:
       status: completed
@@ -27352,7 +27368,7 @@ evolve_cycles:
       status: in_progress
       mode: orchestrator
       started: '2026-08-02'
-      note: 'Orchestrating 07-build M2 after 08 M1 PASS @ 0151e11; about to push + open PR-M1; Gate B PASS'
+      note: 'Orchestrating 07-build M2 T2.3 pending (STNR / exceptional geometry or OOS cite); T2.2 COMPLETE @ 72c4be6; PR-M1 #832 open (will update on push; M1 CI green @ b713056); M1 08 PASS; Gate B PASS'
     01-requirements:
       status: completed
       started: '2026-08-02'
@@ -27371,12 +27387,15 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-03'
-      note: 'IN PROGRESS — M1 done + 08 M1 PASS @ 0151e11; next M2 T2.1 after PR-M1; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; #831→#829→#820'
+      note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6 (TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); active_task T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead to push; progress 14/27; #831→#829→#820'
+      active_task: T2.3
+      active_task_status: pending
+      tip_sha: 72c4be6
     08-verify-build:
       status: completed
       started: '2026-08-03'
       completed: '2026-08-03'
-      note: 'COMPLETE (M1 gate) — PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; reopen for final M4 08; #831→#829→#820'
+      note: 'COMPLETE (M1 gate) — PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; reopen for final M4 08; PR-M1 #832 open; M2 T2.1 started; #831→#829→#820'
       report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
       tip_sha: 0151e11
       overall: pass
@@ -27454,6 +27473,9 @@ evolve_cycles:
   - D-S037-04-plan
   - D-S037-08-m1-pass
   notes:
+  - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
   - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — 08-verify-build STARTED at M1 boundary; M1 T1.1–T1.8 complete @ tip 0151e11; before minor PR then M2; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — T1.3 COMPLETE @ ce27667 (36×20 lint pilot; 39 pass/718 skip); next T1.4 convert pilot; progress 7/27; #831→#829→#820'
@@ -27470,14 +27492,17 @@ evolve_cycles:
   - '2026-08-02 S037/EV-030 OPEN — D-S037-route (1); 00 COMPLETE; 16-evolve Phase 1 Fn allocation; feature_ids pending D-S037-fn; work order #831→#829→#820'
 git_history:
   current_branch: evolve/EV-030-quality-residuals-831
-  ahead_of_origin: 14
+  ahead_of_origin: 1
   pushed: false
   pending_commit:
-  tip_sha: 0151e11
-  tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
+  tip_sha: 72c4be6
+  tip_sha_full: 72c4be61b199746942fa9273023d863ade8a2a26
   recommended_branch: evolve/EV-030-quality-residuals-831
-  note: 'S037/EV-030 — 08 M1 PASS @ 0151e11; about to push + open PR-M1 then M2 T2.1; tip 0151e11; current_branch evolve/EV-030-quality-residuals-831; #831/#829/#820'
+  note: 'S037/EV-030 — PR-M1 #832 open (will update on push; M1 CI green @ b713056); T2.2 COMPLETE @ 72c4be6; T2.3 pending (STNR / exceptional geometry or OOS cite); tip 72c4be6 ahead_of_origin=1 not pushed; current_branch evolve/EV-030-quality-residuals-831; #831/#829/#820'
   notes:
+  - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — T2.1 COMPLETE @ b713056 ([T2.1] test: TC SIGMET tac-validate accept/negative pack (#829) / TC-EV030-004); PR #832 CI green (ci-cd run 30815192608 SUCCESS) at tip before T2.1 push; T2.1 ahead to push; active_task → T2.2 in_progress (Registry + fixtures for TC lint codes); progress 13/27; tip b713056; #831→#829→#820'
+  - '2026-08-03 S037/EV-030 — PR-M1 #832 OPEN (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832); M1 08 PASS; starting M2 T2.1 in_progress (#829 TC SIGMET pack); tip 1e22416 (will move); #831→#829→#820'
   - '2026-08-03 S037/EV-030 — D-S037-08-m1-pass — 08-verify-build M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build; about to push + open PR-M1 then M2 T2.1; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — T1.3 COMPLETE @ ce27667; next T1.4; ahead_of_origin=14 not pushed; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — T1.2 COMPLETE @ cab174d; next T1.3; ahead_of_origin=13 not pushed; #831→#829→#820'
@@ -28809,6 +28834,41 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 72c4be61b199746942fa9273023d863ade8a2a26
+    short: 72c4be6
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.2
+    timestamp: "2026-08-03T13:00:26Z"
+    files_changed:
+    - docs/domain/rules/ISSUE_CATALOG.json
+    - docs/domain/rules/ISSUE_CATALOG.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - packages/tac-validate/src/tac_validate/issue_registry.py
+    - packages/tac-validate/src/tac_validate/product_rules.py
+    - packages/tac-validate/tests/fixtures/manifest.json
+    - packages/tac-validate/tests/fixtures/negative/sigmet/tc_missing_identity.tac
+    - packages/tac-validate/tests/test_tc_ev030_004_tc_sigmet.py
+  - sha: b7130565628fcd0732193df742bc48b48af8249c
+    short: b713056
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.1] test: TC SIGMET tac-validate accept/negative pack (#829)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.1
+    timestamp: "2026-08-03T12:55:52Z"
+    files_changed:
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
+    - packages/tac-validate/tests/fixtures/accept/sigmet_tc_a6_2.tac
+    - packages/tac-validate/tests/fixtures/accept/sigmet_tc_cnl.tac
+    - packages/tac-validate/tests/fixtures/accept/sigmet_tc_stnr.tac
+    - packages/tac-validate/tests/fixtures/manifest.json
+    - packages/tac-validate/tests/fixtures/negative/sigmet/tc_stnr_with_mov.tac
+    - packages/tac-validate/tests/test_tc_ev030_004_tc_sigmet.py
   - sha: ce27667549d12c0a0031f5ea2e024e46335ca85b
     short: ce27667
     branch: evolve/EV-030-quality-residuals-831
