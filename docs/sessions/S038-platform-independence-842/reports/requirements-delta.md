@@ -48,10 +48,12 @@
 - `docs/decisions/evolve-decisions.md` §EV-031
 - `docs/decisions/requirements-decisions.md` §EV-031
 
-## Deferred to 04-tech-plan (not blocking Gate A if accepted)
+## Deferred to 04-tech-plan — **resolved in 04 Batches 1–2**
 
-- Exact DOKS hostnames / DNS
-- Alembic revision layout + SQLAlchemy session repository design
-- JWT verify concrete mechanism (shared secret vs JWKS) pin
-- Soak duration before Render decommission
-- Work-session wire JSON field-by-field (start from ADR-020 shapes)
+| Gap | Resolution |
+|-----|------------|
+| DOKS hostnames / DNS | Placeholder until M6 (`D-S038-04-b2` Q1=1) |
+| Alembic + session repo | `apps/backend/` Alembic + SQLAlchemy; CI auto idempotent `upgrade head` |
+| JWT verify | **JWKS-only** (`D-S038-04-b1` Q2=2) |
+| Soak | **7 days** after DOKS primary |
+| Work-session wire | Restore ADR-020 shapes; ADR-033 accept at Gate B |

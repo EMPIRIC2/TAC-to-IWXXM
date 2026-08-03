@@ -1,9 +1,10 @@
 # ADR-033: Platform independence — Auth-only Supabase, DO Postgres, DOKS (F30 / F31)
 
-> **Status**: **Proposed** (01-requirements; accept at 04-tech-plan / Gate B)  
+> **Status**: **Accepted** (`D-S038-04-plan`=1 / Gate B 2026-08-03)  
 > **Date**: 2026-08-03  
-> **Deciders**: User (E31-*; `D-S038-*` Phase 0 locks)  
-> **Stage**: 01-requirements (draft)  
+> **Deciders**: User (E31-*; `D-S038-*` Phase 0 locks; Gate B)  
+> **Stage**: 04-tech-plan (Accepted) → 07-build  
+
 > **Related**: Partially supersedes **ADR-031** (Auth deletion + server sessions gone);
 > amends **ADR-006** (Render-only topology), **ADR-018** (F8 store credentials),
 > **ADR-010** (keys still Auth-scoped); restores **ADR-002** / **M4** Auth-in-API pattern;
@@ -21,12 +22,13 @@ Supabase must not own product data; compute must move Render → DOKS; operators
 
 ## Decision
 
-1. **Supabase = Auth only** — JWT issue/verify for optional operator login. No product
-   PostgREST / hosted Postgres app tables on the default path. Amend #830 acceptance
-   accordingly (Auth-kept; data-plane stripped).
+1. **Supabase = Auth only** — JWT issue/verify for optional operator login via **JWKS-only**
+   (`D-S038-04-b1` Q2=2). No product PostgREST / hosted Postgres app tables on the default
+   path. Amend #830 acceptance accordingly (Auth-kept; data-plane stripped).
 2. **DigitalOcean Postgres = product DB** — Single `DATABASE_URL` for logged-in
-   `tac_work_sessions` and F8 store/quarantine. Alembic (or backend migration path) targets
-   `DATABASE_URL` — not Supabase CLI as product SoT.
+   `tac_work_sessions` and F8 store/quarantine. Alembic under `apps/backend/` targets
+   `DATABASE_URL`; **CI and deploy run `alembic upgrade head` automatically and idempotently**
+   (`D-S038-04-b2`). Not Supabase CLI as product SoT.
 3. **Hybrid sessions (F31)** — Guests: IndexedDB + **persistent** loss-of-progress notice +
    F22 privacy gates. Logged-in: JWT → `/api/v1/work-sessions*` on DO Postgres. On login:
    **auto-upload** all eligible local drafts (no merge prompt).

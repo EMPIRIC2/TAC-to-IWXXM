@@ -10,7 +10,7 @@
 **Issues**: [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842), [#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830), [#712](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/712)  
 **Started**: 2026-08-03  
 **Branch**: `evolve/EV-031-platform-independence-842`  
-**Status**: **in_progress** — **01-requirements** (delta); open commit `d286bfb`
+**Status**: **in_progress** — Gate B PASS; **07-build** @ T0.1 (M0)
 
 ### Scope (Phase 0 — locked 2026-08-03)
 
@@ -34,6 +34,9 @@
 | E31-tp | decision | Test Plan? | **1,1,1** — TC-F30/F31/EV031; H4–H5 required; lean remaining docs (`D-S038-tp`) |
 | E31-gate-a | decision | 01 Gate A? | **1,1,1** — accept lean docs; defer tech gaps to 04; commit `fc3bbe5` (`D-S038-01-gate-a`) |
 | E31-02 | decision | 02 batch C + Gate A? | **1,1,1** — fix C1–C5; keep ADR-033 Proposed; Gate A PASS → 04 (`D-S038-02-batch-c` / `D-S038-02-phase-a`) |
+| E31-04-b1 | decision | 04 Batch 1? | **1,2,1,1** — M0–M7 shape; **JWKS-only**; Alembic in backend; restore `packages/auth` from git + strip admin (`D-S038-04-b1`) |
+| E31-04-b2 | decision | 04 Batch 2? | **1,1,1(+CI),1** — placeholder DOKS DNS; **7d soak**; pg_dump + verify; **CI auto idempotent Alembic**; ADR-020 wire; ADR-033 @ Gate B (`D-S038-04-b2`) |
+| E31-04 | gate | Gate B / plan approve? | **1** — approve M0–M7 (38 tasks) + **ADR-033 Accepted** → **07 @ T0.1** (`D-S038-04-plan`) |
 
 **Topology**: Supabase = Auth/JWT verify only. DigitalOcean = all product DB + DOKS compute.  
 **Guest UX**: transient local storage; UI notice that progress is lost without login; honor privacy preference center.

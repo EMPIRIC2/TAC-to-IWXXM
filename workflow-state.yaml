@@ -25,7 +25,7 @@ active_session:
   feature_ids:
   - F30
   - F31
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   started_at: '2026-08-03'
   started: '2026-08-03'
   context_briefs:
@@ -51,8 +51,11 @@ active_session:
     D-S038-01-gate-a: '1'
     D-S038-02-batch-c: '1,1,1'
     D-S038-02-phase-a: '1'
+    D-S038-04-b1: '1,2,1,1'
+    D-S038-04-b2: '1,1,1(+CI),1'
+    D-S038-04-plan: '1'
     locked_at: '2026-08-03'
-    note: 'Phase 0 locked — DOKS prod cutover; F8→DO Postgres; Supabase Auth long-term (amend F21); sessions DO Postgres logged-in / guest local+notice+F22; #830 amend Auth-kept; D-S038-fn=1,1,1 F30+F31 (deepen F5,F7,F8,F21,F22,M4); D-S038-tp=1,1,1 Test Plan + lean remaining standing docs; D-S038-01-gate-a=1 lean docs accepted Gate A (gaps→04); D-S038-02-batch-c=1,1,1 C1–C5 fixed; D-S038-02-phase-a=1 Gate A PASS → 04 (03 skipped)'
+    note: 'Phase 0 locked — DOKS prod cutover; F8→DO Postgres; Supabase Auth long-term (amend F21); sessions DO Postgres logged-in / guest local+notice+F22; #830 amend Auth-kept; D-S038-fn=1,1,1 F30+F31 (deepen F5,F7,F8,F21,F22,M4); D-S038-tp=1,1,1 Test Plan + lean remaining standing docs; D-S038-01-gate-a=1 lean docs accepted Gate A (gaps→04); D-S038-02-batch-c=1,1,1 C1–C5 fixed; D-S038-02-phase-a=1 Gate A PASS → 04 (03 skipped); D-S038-04-b1=1,2,1,1 M0–M7; JWT=JWKS-only; Alembic under apps/backend; restore packages/auth from c9cebfa^ strip admin; D-S038-04-b2=1,1,1(+CI),1 placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 Accepted at Gate B (D-S038-04-plan=1); 04 COMPLETE → 07 @ T0.1'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -68,7 +71,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 04-tech-plan (02 Gate A PASS)'
+    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 07-build @ T0.1 (D-S038-04-plan=1 Gate B PASS)'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -88,15 +91,20 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-03'
     started_at: '2026-08-03T18:31:51Z'
+    completed: '2026-08-03'
+    completed_at: '2026-08-03'
     skip_rationale: null
-    note: 'IN_PROGRESS (delta) — started after 02 Gate A PASS; gaps from 01 (hostnames, JWT pin, soak, Alembic) in scope; ADR-033 accept here'
+    note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
   - stage: 07-build
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-03'
+    started_at: '2026-08-03'
     skip_rationale: null
+    note: 'STARTED (D-S038-04-plan=1) — @ T0.1 M0; gates.b_to_c passed; 38 tasks M0–M7; ADR-033 Accepted; #842/#830/#712'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -137,7 +145,7 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: 'S038/EV-031 — D-S038-fn=1,1,1; D-S038-tp=1,1,1; D-S038-01-gate-a=1; D-S038-02-batch-c=1,1,1; D-S038-02-phase-a=1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; 00-context completed; 16-evolve in_progress; current_stage 04-tech-plan (delta) — 02 COMPLETE Gate A PASS; 03 skipped; sha pending parent commit; #842/#830/#712'
+  note: 'S038/EV-031 — D-S038-fn=1,1,1; D-S038-tp=1,1,1; D-S038-01-gate-a=1; D-S038-02-batch-c=1,1,1; D-S038-02-phase-a=1; D-S038-04-b1=1,2,1,1; D-S038-04-b2=1,1,1(+CI),1; D-S038-04-plan=1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; 04 COMPLETE Gate B PASS; 07-build in_progress @ T0.1; 05/06 skipped; tip 6b7fd0e; #842/#830/#712'
 sessions:
 - id: S037-quality-residuals-831
   type: feature
@@ -5094,12 +5102,12 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-03T18:31:51Z'
     started: '2026-08-03'
-    completed_at: null
-    completed: null
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
     previous_started_at: '2026-08-03'
     previous_completed_at: '2026-08-03T12:13:10Z'
     previous_session_id: S037-quality-residuals-831
@@ -5112,8 +5120,11 @@ stages:
     prior_note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip d721de6; #831→#829→#820'
     session_id: S038-platform-independence-842
     evolve_cycle_id: EV-031
-    note: 'IN_PROGRESS (delta) — started after 02 Gate A PASS; gaps from 01 (hostnames, JWT pin, soak, Alembic) in scope; ADR-033 accept here; #842/#830/#712'
+    note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
     decision_refs:
+    - D-S038-04-plan
+    - D-S038-04-b1
+    - D-S038-04-b2
     - D-S038-02-phase-a
     - D-S038-02-batch-c
     - D-S038-01-gate-a
@@ -5136,13 +5147,13 @@ stages:
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-03T18:31:51Z'
       started: '2026-08-03'
-      completed_at: null
-      completed: null
-      note: 'IN_PROGRESS (delta) — started after 02 Gate A PASS; gaps from 01 (hostnames, JWT pin, soak, Alembic) in scope; ADR-033 accept here'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1'
       feature_ids:
       - F30
       - F31
@@ -5154,12 +5165,16 @@ stages:
       - F22
       - M4
       decision_refs:
+      - D-S038-04-b1
+      - D-S038-04-b2
       - D-S038-02-phase-a
       - D-S038-02-batch-c
       - D-S038-01-gate-a
       - D-S038-tp
       - D-S038-fn
     artifacts:
+    - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
+    - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
     - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
@@ -5190,11 +5205,11 @@ stages:
     - session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       started_at: '2026-08-03T18:31:51Z'
       started: '2026-08-03'
-      completed_at: null
-      completed: null
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
       mode: delta
       feature_ids:
       - F30
@@ -5207,13 +5222,18 @@ stages:
       - F22
       - M4
       decision_refs:
+      - D-S038-04-plan
+      - D-S038-04-b1
+      - D-S038-04-b2
       - D-S038-02-phase-a
       - D-S038-02-batch-c
       - D-S038-01-gate-a
       - D-S038-tp
       - D-S038-fn
-      note: 'IN_PROGRESS (delta) — started after 02 Gate A PASS; gaps from 01 (hostnames, JWT pin, soak, Alembic) in scope; ADR-033 accept here; #842/#830/#712'
-      artifacts: []
+      note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
+      artifacts:
+      - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
+      - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
     - session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
       skill_id: 04-tech-plan
@@ -5927,6 +5947,9 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-08-03 S038/EV-031 04 COMPLETE Gate B (D-S038-04-plan=1) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; gates.b_to_c passed; sha pending parent commit; #842/#830/#712'
+    - '2026-08-03 S038/EV-031 — D-S038-04-b2=1,1,1(+CI),1 Batches 1–2 locked (placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B); execution-plan.md drafted (38 tasks M0–M7); Gate B pending (D-S038-04-plan); 04 remains in_progress; tip 6b7fd0e; #842/#830/#712'
+    - '2026-08-03 S038/EV-031 04 Batch 1 locked (D-S038-04-b1=1,2,1,1) — M0–M7; JWT=JWKS-only; Alembic under apps/backend (+ SQLAlchemy session repo); restore packages/auth from c9cebfa^ strip admin; reports/04-tech-plan.md started; Batch 2 pending; tip 6b7fd0e; #842/#830/#712'
     - '2026-08-03 S037/EV-030 04 COMPLETE Gate B (D-S037-04-plan=1) — approve M0–M4 27 tasks; handoff 07 @ T0.1; gates.b_to_c passed; tip d721de6; #831→#829→#820'
     - '2026-08-01 S036/EV-029 04 COMPLETE Gate B (D-S036-04-plan) — approve M0–M12 48 tasks; handoff 07 @ T0.1; gates.b_to_c passed; #823'
     - '2026-08-01 S035/EV-028 04 COMPLETE Gate B (D-S035-04-plan-approve) — 11b tag-from-evolve; 12a → 07 @ T0.1; tip b8e37ae; #781'
@@ -6181,33 +6204,42 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-08-03'
     started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    previous_started_at: '2026-08-01'
-    previous_completed_at: '2026-08-02'
-    previous_session_id: S036-eight-family-ahl-rules-823
-    previous_evolve_cycle_id: EV-029
-    previous_tip_sha: e53e9a2
-    previous_tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
-    previous_note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
-    session_id: S037-quality-residuals-831
-    evolve_cycle_id: EV-030
-    mode: full
-    note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
-    tip_sha: 8bd111c
-    tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-    progress: 27/27
-    current_milestone: M4
-    current_task: T4.5
-    active_milestone: M4
-    active_task: T4.5
-    active_task_status: completed
-    merge_sha: 8bd111c
-    pr_number: 832
-    pr_status: merged
+    completed_at: null
+    completed: null
+    previous_started_at: '2026-08-03'
+    previous_completed_at: '2026-08-03'
+    previous_session_id: S037-quality-residuals-831
+    previous_evolve_cycle_id: EV-030
+    previous_tip_sha: 8bd111c
+    previous_tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
+    previous_note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
+    prior_session_id: S037-quality-residuals-831
+    prior_evolve_cycle_id: EV-030
+    prior_started: '2026-08-03'
+    prior_completed: '2026-08-03'
+    prior_note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    mode: delta
+    note: 'IN_PROGRESS — @ T0.1 M0; D-S038-04-plan=1 Gate B PASS; 38 tasks M0–M7; gates.b_to_c passed; #842/#830/#712'
+    tip_sha: 6b7fd0e
+    tip_sha_full: 6b7fd0ecfea43db1aa5891d14b07fb2ada1cb29c
+    progress: 0/38
+    current_milestone: M0
+    current_task: T0.1
+    active_milestone: M0
+    active_task: T0.1
+    active_task_status: in_progress
+    decision_refs:
+    - D-S038-04-plan
+    - D-S038-04-b1
+    - D-S038-04-b2
+    previous_merge_sha: 8bd111c
+    previous_pr_number: 832
+    previous_pr_status: merged
     m3_complete: true
     m3_tip_sha: 1f47eb5
     m3_commits:
@@ -6237,7 +6269,7 @@ stages:
     ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657
     ci_status: success
     ci_note: 'M2 push CI SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable)'
-    decision_refs:
+    previous_decision_refs:
     - D-S037-04-plan
     - D-S037-04-batch-2
     - D-S037-04-batch-1
@@ -6250,7 +6282,7 @@ stages:
     - D-S037-semver-none
     - D-S037-T2.3-oos
     - D-S037-ui-preview
-    artifacts:
+    previous_artifacts:
     - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
     - docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
@@ -6266,6 +6298,9 @@ stages:
     - docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
     - docs/sessions/S037-quality-residuals-831/reports/t2.6-829-closeout.md
     - tests/quality_matrices/
+    artifacts:
+    - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
+    - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md
@@ -6289,14 +6324,31 @@ stages:
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
     - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
     active_session:
-      session_id: S037-quality-residuals-831
-      evolve_cycle_id: EV-030
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
       skill_id: 07-build
       status: in_progress
-      mode: full
+      mode: delta
       started_at: '2026-08-03'
       started: '2026-08-03'
-      note: 'IN PROGRESS — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); active_task → T4.3 in_progress @ M4 (11-verify-impl + 12-verify-deploy; PENDING user signoff); D-S037-semver-tac2iwxxm=2 resolved; tac2iwxxm 0.2.4; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
+      note: 'IN_PROGRESS — @ T0.1 M0; D-S038-04-plan=1 Gate B PASS; 38 tasks M0–M7; gates.b_to_c passed; sha pending parent commit; #842/#830/#712'
+      feature_ids:
+      - F30
+      - F31
+      deepen_feature_ids:
+      - F5
+      - F7
+      - F8
+      - F21
+      - F22
+      - M4
+      decision_refs:
+      - D-S038-04-plan
+      - D-S038-04-b1
+      - D-S038-04-b2
+      artifacts:
+      - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
+      - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
       tip_sha: 1f47eb5
       tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
       progress: 24/27
@@ -6360,6 +6412,33 @@ stages:
         milestone: M4
         notes: 'IN PROGRESS — T4.2 COMPLETE (09-qa + 10-e2e @ 3889e4c); active_task → T4.3 in_progress @ M4 (11-verify-impl + 12-verify-deploy; PENDING user signoff); D-S037-semver-tac2iwxxm=2 resolved; tac2iwxxm 0.2.4; progress 24/27; H4–H5 at T4.4/13; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
     delta_substages:
+    - session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      skill_id: 07-build
+      status: in_progress
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: null
+      completed: null
+      mode: delta
+      feature_ids:
+      - F30
+      - F31
+      deepen:
+      - F5
+      - F7
+      - F8
+      - F21
+      - F22
+      - M4
+      decision_refs:
+      - D-S038-04-plan
+      - D-S038-04-b1
+      - D-S038-04-b2
+      note: 'IN_PROGRESS — @ T0.1 M0; D-S038-04-plan=1 Gate B PASS; 38 tasks M0–M7; #842/#830/#712'
+      artifacts:
+      - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
+      - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
@@ -6860,6 +6939,7 @@ stages:
     - '2026-08-03 S037/EV-030 07-build — M1 COMPLETE T1.1–T1.8 @ 0151e11 (convert/validate pilots + inventory gate + smoke CI; 50 smoke pass); next 08-verify-build / M1 PR then T2.1; progress 12/27; tip 0151e11; #831→#829→#820'
     - '2026-08-03 S037/EV-030 07-build — T1.3 COMPLETE @ ce27667 (36×20 lint pilot; 39 pass/718 skip); next T1.4 pending @ M1; progress 7/27; tip ce27667; #831→#829→#820'
     - '2026-08-03 S037/EV-030 07-build — T1.2 COMPLETE @ cab174d (runners + skip policy; 34 passed); next T1.3 pending @ M1; progress 6/27; tip cab174d; #831→#829→#820'
+    - '2026-08-03 S038/EV-031 07-build STARTED (D-S038-04-plan=1) — @ T0.1 M0; gates.b_to_c passed; 38 tasks M0–M7; ADR-033 Accepted; #842/#830/#712; sha pending parent commit'
     - '2026-08-03 S037/EV-030 07-build — T1.1 COMPLETE @ 6294557 (YAML/JSON loader + schema; 25 passed); next T1.2 pending @ M1; progress 5/27; tip 6294557; #831→#829→#820'
     - '2026-08-03 S037/EV-030 07-build — M0 COMPLETE (T0.1–T0.4); next T1.1 @ M1; progress 4/27; tip 80b1b49; #831→#829→#820'
     - '2026-08-03 S037/EV-030 07-build STARTED (D-S037-04-plan=1) — @ T0.1 M0; gates.b_to_c passed; tip d721de6; #831→#829→#820'
@@ -9270,16 +9350,18 @@ stages:
     started: '2026-08-03'
     completed_at: null
     completed: null
-    current_stage: 02-verify-plan
+    current_stage: 07-build
     phase: 1
     prior_session_id: S037-quality-residuals-831
     prior_evolve_cycle_id: EV-030
     prior_completed: '2026-08-03'
     prior_note: 'S037/EV-030 16-evolve CLOSED — D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; active_session=null'
-    note: 'S038/EV-031 16-evolve in_progress — D-S038-fn=1,1,1; D-S038-tp=1,1,1; D-S038-01-gate-a=1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; child 02-verify-plan in_progress (01 COMPLETE @ fc3bbe5; Gate A lean docs accepted; gaps→04); #842/#830/#712'
-    tip_sha: 8bd111c
-    tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
+    note: 'S038/EV-031 16-evolve in_progress — D-S038-04-plan=1 Gate B PASS; 04 COMPLETE → 07-build @ T0.1; feature_ids [F30,F31]; tip 6b7fd0e; #842/#830/#712'
+    tip_sha: 6b7fd0e
+    tip_sha_full: 6b7fd0ecfea43db1aa5891d14b07fb2ada1cb29c
     notes:
+    - '2026-08-03 S038/EV-031 — D-S038-04-b2=1,1,1(+CI),1 Batches 1–2 locked (placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B); execution-plan.md drafted (38 tasks M0–M7); Gate B pending (D-S038-04-plan); 04 remains in_progress; tip 6b7fd0e; #842/#830/#712'
+    - '2026-08-03 S038/EV-031 — D-S038-04-b1=1,2,1,1 Batch 1 locked (M0–M7; JWKS-only; Alembic apps/backend; restore packages/auth c9cebfa^ strip admin); 04 remains in_progress; Batch 2 pending; tip 6b7fd0e; #842/#830/#712'
     - '2026-08-03 S038/EV-031 — D-S038-01-gate-a=1; 01 COMPLETE @ fc3bbe5 → 02-verify-plan in_progress; lean docs accepted Gate A; gaps deferred to 04; #842/#830/#712'
     - '2026-08-03 S038/EV-031 — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031 + lean standing docs drafted; 01 remains in_progress pending Gate A / lean-doc acceptance → 02-verify-plan; #842/#830/#712'
     - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; report verification-report-m3.md; active_task → T4.2 pending; progress 23/27; #831→#835'
@@ -9610,6 +9692,94 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S038-04-plan
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate B — approve execution plan + accept ADR-033 → 07-build'
+  summary: 'User option 1 — approve 38 tasks M0–M7; ADR-033 Accepted; Gate B PASS; complete 04; start 07 @ T0.1'
+  decision: 'Approve execution plan (38 tasks, M0–M7). ADR-033 Accepted. Gate B PASS. Complete 04-tech-plan; start 07-build at T0.1. 05/06 remain skipped (Standard preset). CI auto idempotent alembic upgrade head.'
+  user_option: '1'
+  branch: evolve/EV-031-platform-independence-842
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  related_decisions:
+  - D-S038-04-b1
+  - D-S038-04-b2
+  - ADR-033
+
+- id: D-S038-04-b2
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: technical-plan
+  status: confirmed
+  topic: '04 Batch 2 — hostnames / soak / migrate / wire'
+  summary: '1,1,1(+CI),1 — placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B'
+  decision: '1,1,1(+CI),1 — placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B (D-S038-04-b2). Gate B PASS (D-S038-04-plan=1).'
+  user_option: '1,1,1(+CI),1'
+  answers:
+    Q1_hostnames: 1
+    Q2_soak: 1
+    Q3_migrate: '1(+CI)'
+    Q4_wire: 1
+  note: 'placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B'
+  branch: evolve/EV-031-platform-independence-842
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  related_decisions:
+  - D-S038-04-b1
+  - D-S038-02-phase-a
+  - D-S038-doks-depth
+
+- id: D-S038-04-b1
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: technical-plan
+  status: confirmed
+  topic: '04 Batch 1 — milestones / JWT verify / Alembic / auth restore'
+  summary: '1,2,1,1 — M0–M7; JWT=JWKS-only from day one; Alembic under apps/backend (+ SQLAlchemy session repo); restore packages/auth from c9cebfa^ strip admin'
+  decision: '1,2,1,1 — M0–M7 milestones; JWT=JWKS-only from day one; Alembic under apps/backend (+ SQLAlchemy session repo); restore packages/auth from c9cebfa^ strip admin (D-S038-04-b1). Batch 2 pending (hostnames/soak/migrate/wire).'
+  user_option: '1,2,1,1'
+  answers:
+    Q1_milestones: 1
+    Q2_jwt: 2
+    Q3_alembic: 1
+    Q4_auth_restore: 1
+  note: 'M0–M7 milestones; JWT=JWKS-only from day one; Alembic under apps/backend (+ SQLAlchemy session repo); restore packages/auth from c9cebfa^ strip admin'
+  branch: evolve/EV-031-platform-independence-842
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  related_decisions:
+  - D-S038-02-phase-a
+  - D-S038-auth-model
+  - D-S038-830-amend
+
 - id: D-S038-02-phase-a
   date: '2026-08-03'
   timestamp: '2026-08-03'
@@ -9632,8 +9802,8 @@ decisions_log:
   related_decisions:
   - D-S038-02-batch-c
   branch: evolve/EV-031-platform-independence-842
-  commit_sha: null
-  note: 'sha pending parent commit; Gate A PASS; handoff 04-tech-plan'
+  commit_sha: 6b7fd0ecfea43db1aa5891d14b07fb2ada1cb29c
+  note: 'Gate A PASS; handoff 04-tech-plan; @ 6b7fd0e'
 
 - id: D-S038-02-batch-c
   date: '2026-08-03'
@@ -9657,8 +9827,8 @@ decisions_log:
   related_decisions:
   - D-S038-02-phase-a
   branch: evolve/EV-031-platform-independence-842
-  commit_sha: null
-  note: 'sha pending parent commit; C1–C5 fixed; report verify-plan-audit.md'
+  commit_sha: 6b7fd0ecfea43db1aa5891d14b07fb2ada1cb29c
+  note: 'C1–C5 fixed; report verify-plan-audit.md; @ 6b7fd0e'
 
 - id: D-S038-01-gate-a
   date: '2026-08-03'
@@ -19257,6 +19427,26 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
+  kind: tech-plan-report
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: approved
+  note: 'S038/EV-031 04 COMPLETE — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted'
+- path: docs/sessions/S038-platform-independence-842/reports/execution-plan.md
+  kind: execution-plan
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: approved
+  note: 'S038/EV-031 04 COMPLETE — 38 tasks M0–M7 approved; handoff 07 @ T0.1'
 - path: docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
   kind: verify-plan-audit
   session_id: S038-platform-independence-842
@@ -28864,6 +29054,9 @@ evolve_cycles:
     D-S038-01-gate-a: '1'
     D-S038-02-batch-c: '1,1,1'
     D-S038-02-phase-a: '1'
+    D-S038-04-b1: '1,2,1,1'
+    D-S038-04-b2: '1,1,1(+CI),1'
+    D-S038-04-plan: '1'
     locked_at: '2026-08-03'
     summary: |
       Scope full epic+#712 IaC; general; Standard; local UI.
@@ -28876,6 +29069,8 @@ evolve_cycles:
       Gate A lean pass: D-S038-01-gate-a=1 (gaps deferred to 04).
       02 Batch C: D-S038-02-batch-c=1,1,1 (C1–C5 fixed; ADR-033 Proposed).
       02 Gate A: D-S038-02-phase-a=1 PASS → 04 (03 skipped).
+      04 Batch 1: D-S038-04-b1=1,2,1,1 M0–M7; JWT=JWKS-only; Alembic apps/backend; restore packages/auth c9cebfa^ strip admin.
+      04 Batch 2: D-S038-04-b2=1,1,1(+CI),1 placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B.
   routing_plan:
     required_stages:
     - 00-context
@@ -28895,9 +29090,9 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-    note: 'Standard — Phase 0+Fn done; D-S038-tp=1,1,1; D-S038-01-gate-a=1; D-S038-02-batch-c=1,1,1; D-S038-02-phase-a=1; 02 COMPLETE Gate A PASS; 03 skipped; 04-tech-plan in_progress'
-  current_stage: 04-tech-plan
-  current_stage_note: 'Gate A PASS; starting 04-tech-plan'
+    note: 'Standard — Phase 0+Fn done; D-S038-04-plan=1 Gate B PASS; 04 COMPLETE; 07-build in_progress @ T0.1; 03/05/06 skipped'
+  current_stage: 07-build
+  current_stage_note: 'IN_PROGRESS — @ T0.1 M0; D-S038-04-plan=1 Gate B PASS; 38 tasks M0–M7; ADR-033 Accepted'
   stages:
     00-context:
       status: completed
@@ -28910,7 +29105,7 @@ evolve_cycles:
       mode: orchestrator
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'Fn allocated (D-S038-fn=1,1,1); D-S038-02-phase-a=1; orchestrator remains in_progress; child 04-tech-plan'
+      note: 'Fn allocated (D-S038-fn=1,1,1); D-S038-04-plan=1 Gate B PASS; orchestrator remains in_progress; child 07-build @ T0.1'
     01-requirements:
       status: completed
       mode: delta
@@ -28924,13 +29119,18 @@ evolve_cycles:
       completed: '2026-08-03'
       note: 'COMPLETE (delta) — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; handoff 04; #842/#830/#712'
     04-tech-plan:
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-03'
       started_at: '2026-08-03T18:31:51Z'
-      note: 'IN_PROGRESS (delta) — started after 02 Gate A PASS; gaps from 01 (hostnames, JWT pin, soak, Alembic) in scope; ADR-033 accept here'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1'
     07-build:
-      status: pending
+      status: in_progress
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      note: 'STARTED (D-S038-04-plan=1) — @ T0.1 M0; gates.b_to_c passed; 38 tasks M0–M7; ADR-033 Accepted; #842/#830/#712'
     08-verify-build:
       status: pending
     09-qa:
@@ -28958,17 +29158,24 @@ evolve_cycles:
       skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
     phase_c: pending
     phase_d: pending
     deploy: pending
-  adrs: []
+  adrs:
+  - ADR-033
   artifacts:
+  - path: docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
+    status: approved
+    note: '04 COMPLETE — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted'
+  - path: docs/sessions/S038-platform-independence-842/reports/execution-plan.md
+    status: approved
+    note: '04 COMPLETE — 38 tasks M0–M7 approved (D-S038-04-plan=1); handoff 07 @ T0.1'
   - path: docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
     status: present
     note: '02 Gate A PASS; Batch C 1,1,1; C1–C5 fixed'
@@ -28984,7 +29191,7 @@ evolve_cycles:
     status: present
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
-    note: 'EV-031 Phase 0 + E31-tp locked'
+    note: 'EV-031 Phase 0 + E31-tp locked; D-S038-04-b1 + D-S038-04-b2 recorded; Gate B pending'
   - path: docs/decisions/requirements-decisions.md
     status: present
   - path: docs/test-plan.md
@@ -29024,10 +29231,16 @@ evolve_cycles:
   - D-S038-01-gate-a
   - D-S038-02-batch-c
   - D-S038-02-phase-a
-  tip_sha: fc3bbe5
-  tip_sha_full: fc3bbe5789bae627b91971894c048d74f11a5752
-  note: 'Gate A PASS; starting 04-tech-plan — D-S038-02-batch-c=1,1,1; D-S038-02-phase-a=1; current_stage 04-tech-plan; sha pending parent commit; #842/#830/#712'
+  - D-S038-04-b1
+  - D-S038-04-b2
+  - D-S038-04-plan
+  tip_sha: 6b7fd0e
+  tip_sha_full: 6b7fd0ecfea43db1aa5891d14b07fb2ada1cb29c
+  note: 'current_stage 07-build — D-S038-04-plan=1 Gate B PASS; ADR-033 Accepted; 38 tasks M0–M7; 04 COMPLETE; 07 @ T0.1; tip 6b7fd0e; #842/#830/#712'
   notes:
+  - '2026-08-03 S038/EV-031 — D-S038-04-plan=1 Gate B PASS; ADR-033 Accepted; 04 COMPLETE → 07-build @ T0.1; gates.b_to_c + checkpoints.phase_b passed; sha pending parent commit; tip 6b7fd0e; #842/#830/#712'
+  - '2026-08-03 S038/EV-031 — D-S038-04-b2=1,1,1(+CI),1 Batches 1–2 locked (placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B); execution-plan.md drafted (38 tasks M0–M7); Gate B pending (D-S038-04-plan); 04 remains in_progress; tip 6b7fd0e; #842/#830/#712'
+  - '2026-08-03 S038/EV-031 — D-S038-04-b1=1,2,1,1 Batch 1 locked (M0–M7; JWKS-only; Alembic apps/backend; restore packages/auth c9cebfa^ strip admin); reports/04-tech-plan.md started; Batch 2 pending; tip 6b7fd0e; #842/#830/#712'
   - '2026-08-03 S038/EV-031 02 COMPLETE → 04-tech-plan STARTED — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; ADR-033 stays Proposed; Alembic+JWT draft until 04; 03 skipped; sha pending parent commit; #842/#830/#712'
   - '2026-08-03 S038/EV-031 D-S038-01-gate-a (1) — lean docs accepted Gate A; gaps deferred to 04; 01 COMPLETE @ fc3bbe5 → 02-verify-plan in_progress; #842/#830/#712'
   - '2026-08-03 S038/EV-031 D-S038-tp (1,1,1) — Test Plan TC-F30/F31/EV031 written; H4–H5 required; lean pass drafted (config-spec, env-contract, api-contract, deploy, dependency-inventory, ADR-033, ops/supabase-to-do-postgres-migration.md); 01 remains in_progress pending Gate A / lean-doc acceptance → 02-verify-plan; #842/#830/#712'
@@ -29036,20 +29249,22 @@ evolve_cycles:
   - '2026-08-03 S038/EV-031 OPEN — open_session; Phase 0 choices (scope opt3 #842+#830+#712, general, Standard, UI preview Yes); session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress'
 git_history:
   current_branch: evolve/EV-031-platform-independence-842
-  ahead_of_origin: 2
+  ahead_of_origin: 3
   pushed: false
-  pending_commit: 'parent to append — 02-verify-plan COMPLETE / 04-tech-plan STARTED (D-S038-02-batch-c, D-S038-02-phase-a); no commit row until sha provided'
-  dirty: true
-  tip_sha: fc3bbe5
-  tip_sha_full: fc3bbe5789bae627b91971894c048d74f11a5752
+  pending_commit: null
+  dirty: false
+  tip_sha: 6b7fd0e
+  tip_sha_full: 6b7fd0ecfea43db1aa5891d14b07fb2ada1cb29c
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-031-platform-independence-842
-  note: 'S038/EV-031 — tip still fc3bbe5 until parent commit; 02 COMPLETE Gate A PASS; 04-tech-plan in_progress; ahead 2 + dirty working tree; D-S038-02-batch-c / D-S038-02-phase-a; #842/#830/#712'
+  note: 'S038/EV-031 — tip 6b7fd0e; 04 COMPLETE Gate B PASS (D-S038-04-plan=1); 07-build in_progress @ T0.1; ahead 3 not pushed; #842/#830/#712'
 
   notes:
+  - '2026-08-03 S038/EV-031 — D-S038-04-plan=1 Gate B PASS; 04 COMPLETE → 07-build @ T0.1; commit row deferred (sha pending parent); ahead=3 not pushed; #842/#830/#712'
+  - '2026-08-03 S038/EV-031 commit 6b7fd0e [EV-031] docs: S038/02 Gate A PASS — fix C1–C5 F21 leftovers; stage 02-verify-plan COMPLETE; D-S038-02-batch-c / D-S038-02-phase-a; 04-tech-plan in_progress; ahead_of_origin=3 not pushed'
   - '2026-08-03 S038/EV-031 02 COMPLETE → 04 STARTED — Gate A PASS (D-S038-02-phase-a); Batch C (D-S038-02-batch-c); commit row deferred (sha pending parent); dirty=true; #842/#830/#712'
   - '2026-08-03 S038/EV-031 commit fc3bbe5 [EV-031] docs: S038/01 requirements delta — F30/F31 Gate A corpus; stage 01-requirements COMPLETE; D-S038-01-gate-a; handoff 02-verify-plan; ahead_of_origin=2 not pushed'
   - '2026-08-03 S038/EV-031 commit d286bfb [EV-031] docs: open S038 platform independence — F30/F31 Phase 0; stage 16-evolve; feature_ids [F30,F31]; 01-requirements in_progress; ahead_of_origin=1 not pushed'
@@ -30418,6 +30633,17 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 6b7fd0ecfea43db1aa5891d14b07fb2ada1cb29c
+    short: 6b7fd0e
+    branch: evolve/EV-031-platform-independence-842
+    message: "[EV-031] docs: S038/02 Gate A PASS — fix C1–C5 F21 leftovers"
+    stage: 02-verify-plan
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    timestamp: "2026-08-03T18:34:19Z"
+    files_changed: 12
+    pushed: false
+    note: 'Gate A corpus + audit + workflow-state; D-S038-02-batch-c / D-S038-02-phase-a; handoff 04-tech-plan'
   - sha: fc3bbe5789bae627b91971894c048d74f11a5752
     short: fc3bbe5
     branch: evolve/EV-031-platform-independence-842

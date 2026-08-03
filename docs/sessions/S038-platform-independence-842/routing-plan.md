@@ -9,14 +9,14 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Phase 0 + Fn lock; open `d286bfb` |
-| 16-evolve | yes | orchestrator | **in_progress** | Gate A PASS → 04 |
+| 16-evolve | yes | orchestrator | **in_progress** | Gate B PASS → 07 @ T0.1 |
 | 01-requirements | yes | delta | **completed** | Gate A lean docs `fc3bbe5`; gaps→04 |
 | 02-verify-plan | yes | delta | **completed** | C1–C5 fixed; `D-S038-02-batch-c`/`phase-a`; Gate A PASS |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
-| 04-tech-plan | yes | delta | **in_progress** | Execution plan + ADR(s); Gate B |
+| 04-tech-plan | yes | delta | **completed** | Gate B PASS; ADR-033 Accepted; 38 tasks M0–M7 |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | pending | #830 cutover then #712 IaC (per depth) |
+| 07-build | yes | full | **in_progress** | @ T0.1 M0 — #830 then #712 |
 | 08-verify-build | yes | delta | pending | — |
 | 09-qa | yes | delta | pending | — |
 | 10-e2e | yes | smoke | pending | H4–H5 if FE Auth client restore ships |
@@ -45,3 +45,5 @@ DOKS live cutover locked by `D-S038-doks-depth=3`.
 | Document Manifest | `D-S038-E31-M` = **1,1** — full 1–10; Feature List first | 2026-08-03 |
 | Test Plan + lean docs | `D-S038-tp` = **1,1,1**; `D-S038-01-gate-a` = **1** | 2026-08-03 |
 | 02 Gate A | `D-S038-02-batch-c` / `D-S038-02-phase-a` = **1,1,1** — C1–C5 fixed; ADR-033 Proposed; → 04 | 2026-08-03 |
+| 04 Batches 1–2 | `D-S038-04-b1`/`b2` = **1,2,1,1** + **1,1,1(+CI),1** | 2026-08-03 |
+| 04 Gate B | `D-S038-04-plan` = **1** — plan approved; ADR-033 Accepted → 07 @ T0.1 | 2026-08-03 |

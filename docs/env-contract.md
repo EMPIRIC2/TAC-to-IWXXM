@@ -39,7 +39,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Product Postgres | `DATABASE_URL` | API + worker env (**required** for sessions + F8) |
 | Supabase Auth URL | `SUPABASE_URL` / `config.*.supabase.url` | API + FE bootstrap |
 | FE Auth publishable key | `SUPABASE_PUBLISHABLE_KEY` → `/config.json` | Static deploy inject |
-| Auth JWT verify (server) | `SUPABASE_JWT_SECRET` and/or JWKS via project URL | API only — never FE |
+| Auth JWT verify (server) | **JWKS-only** via Supabase Auth JWKS URL (`D-S038-04-b1`) | API only — never FE; `SUPABASE_JWT_SECRET` not used for product verify |
 | Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
 | Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
 | Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) |
