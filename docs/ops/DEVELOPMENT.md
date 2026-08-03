@@ -6,14 +6,23 @@ Complete setup, local development, and testing for the METAR to IWXXM monorepo.
 
 | Tool | Version | Notes |
 |------|---------|-------|
-| Python | 3.12 | Pinned in root `pyproject.toml` |
+| Python | 3.12 | Pinned in root `pyproject.toml` / `.python-version` |
 | Node.js | 22 | Pinned in `.nvmrc` / CI |
 | [uv](https://docs.astral.sh/uv/) | latest | Python workspace install |
-| [pnpm](https://pnpm.io/) | via corepack | JavaScript workspace |
+| [pnpm](https://pnpm.io/) | `pnpm@9.15.4` via corepack | From root `package.json` `packageManager` — do not brew-install pnpm |
+| Rust (cargo/rustc) | ≥1.74 | Native maturin builds (ADR-017); Homebrew `rust` in Brewfile |
 | Docker (optional) | Compose v2 | Local stack: db + backend + frontend |
 | Supabase project | — | Auth and optional Postgres |
 
-Vendor schemas ship in-repo — a plain `git clone` is all you need.
+**macOS:** install system deps from the root [`Brewfile`](../../Brewfile) (exact formulae +
+verified bottle versions in comments):
+
+```bash
+brew bundle --file=Brewfile
+```
+
+Then `make install` (uv + corepack pnpm). Vendor schemas ship in-repo — a plain `git clone`
+is all you need for schema assets.
 
 ## Quick start (local)
 

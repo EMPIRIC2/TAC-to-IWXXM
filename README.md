@@ -42,6 +42,9 @@ apps/backend           :8001 (dev)  ·  :18001 (Docker)
 git clone https://github.com/EMPIRIC2/TAC-to-IWXXM.git
 cd TAC-to-IWXXM
 
+# macOS system deps (python@3.12, node@22, uv, rust, …) — see Brewfile
+brew bundle --file=Brewfile
+
 cp .env.example .env   # add Supabase credentials
 make install           # uv sync + pnpm install
 make dev               # API on :8001, frontend on :5173

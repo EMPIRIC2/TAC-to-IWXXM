@@ -124,7 +124,8 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | Python | **3.12** (pinned) | Runtime for all uv workspace members (ADR-005) |
 | Node | **22** (pinned) | Frontend/e2e workspace (ADR-005) |
 | uv | pin in pyproject | Python workspace, lockfile |
-| pnpm | pin in package.json engines | JS workspace (monorepo) |
+| pnpm | **9.15.4** via `packageManager` + corepack | JS workspace (monorepo); not Homebrew |
+| macOS Homebrew | root [`Brewfile`](../Brewfile) | System toolchain: `python@3.12`, `node@22`, `uv`, `rust`, Docker Desktop, `libpq`, `unixodbc`, `gh` |
 | basedpyright | strict | Python typechecking including tac2iwxxm, tac-validate, iwxxm-validate (ADR-005) |
 | ruff | all Python packages | Lint + format including new validate packages (ADR-005) |
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
