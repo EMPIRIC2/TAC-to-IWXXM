@@ -1,17 +1,18 @@
-overall_status: in_progress
+overall_status: completed
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 37
 evolve_cycle_counter: 30
-active_session:
-  id: S037-quality-residuals-831
+active_session: null
+sessions:
+- id: S037-quality-residuals-831
   type: feature
   intent: |
     EV-029 residuals — #831 parameterized rule matrices, #829 TC SIGMET deepen,
     #820 VAA/TCA decode residual deepen. Work order #831 → #829 → #820.
-  status: in_progress
+  status: completed
   branch: evolve/EV-030-quality-residuals-831
   orchestrator: 16-evolve
   evolve_cycle_id: EV-030
@@ -39,9 +40,11 @@ active_session:
     skip_rationale: null
   - stage: 16-evolve
     required: true
-    status: in_progress
+    status: completed
     skip_rationale: null
-    note: 'IN PROGRESS — EV-030 complete pending D-S037-13 close AskQuestion; T4.5 done; progress 27/27'
+    started: '2026-08-02'
+    completed: '2026-08-03'
+    note: 'COMPLETE — D-S037-13=1 close; EV-030 Phase 4 complete; progress 27/27'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -114,8 +117,8 @@ active_session:
     started: '2026-08-03'
     completed: '2026-08-03'
     skip_rationale: null
-    note: 'COMPLETE — T4.4 PASS @ 8bd111c; D-S037-13 pending user close; report deploy-smoke.md; H1/H0c/H3/H4/H5 PASS'
-  current_stage: 13-deploy-smoke
+    note: 'COMPLETE — T4.4 PASS @ 8bd111c; D-S037-13=1 close approved; report deploy-smoke.md; H1/H0c/H3/H4/H5 PASS'
+  current_stage: null
   started_at: '2026-08-02'
   context_briefs:
   - docs/context/quality-residuals-831.md
@@ -195,14 +198,24 @@ active_session:
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/evolve-summary.md
     status: completed
+  - path: docs/evolve-report-EV-030.md
+    status: completed
   - path: tests/quality_matrices/
     status: staged
   - path: docs/api-contract.md
     status: touched
   preset: Standard
   preset_status: approved
-  note: 'S037/EV-030 — T4.4 COMPLETE (13-deploy-smoke PASS @ 8bd111c); T4.5 COMPLETE (#831 closed; F29 Done; evolve-summary.md); D-S037-11/12=1; PR #832 MERGED @ 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500 — Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g; H1/H0c/H3/H4/H5 PASS; TC-EV030-005 FE App-Bhd6UU87.js A6-2-TC; progress 27/27; awaiting D-S037-13 user close; #835 open residual; workflow-state dirty pending parent chore commit'
-sessions:
+  note: 'S037/EV-030 COMPLETE — D-S037-13=1 close; PR #832 MERGED @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; progress 27/27; H1/H0c/H3/H4/H5 PASS; Render REST deploy workaround; Phase 4 closeout docs — evolve-report-EV-030.md written; D-S037-13=1'
+  close_decision_id: D-S037-13
+  close_note: 'D-S037-13=1 Yes — mark cycle + session complete (2026-08-03); EV-030/S037 closed; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; 13-deploy-smoke PASS'
+  completed_at: '2026-08-03'
+  pr_number: 832
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
+  pr_status: merged
+  pr_merge_commit_short: 8bd111c
+  tip_sha: 8bd111c
+  progress: 27/27
 - id: S036-eight-family-ahl-rules-823
   type: feature
   intent: |
@@ -8395,7 +8408,7 @@ stages:
     previous_evolve_cycle_id: EV-029
     session_id: S037-quality-residuals-831
     evolve_cycle_id: EV-030
-    note: 'COMPLETE — T4.4 PASS @ 8bd111c; PR #832 merged; Render REST deploy workaround; H1/H0c/H3/H4/H5 PASS; report deploy-smoke.md; pending D-S037-13; progress 27/27; #835'
+    note: 'COMPLETE — T4.4 PASS @ 8bd111c; PR #832 merged; Render REST deploy workaround; H1/H0c/H3/H4/H5 PASS; report deploy-smoke.md; D-S037-13=1 close; progress 27/27; #835'
     tip_sha: 8bd111c
     tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
     active_milestone: M4
@@ -8419,7 +8432,7 @@ stages:
       branch: main
       tip_sha: 8bd111c
       tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-      note: 'COMPLETE — T4.4 PASS; PR #832 merged 8bd111c; Render REST deploy workaround; H1/H0c/H3/H4/H5 PASS; TC-EV030-005 A6-2-TC; pending user approve D-S037-13'
+      note: 'COMPLETE — T4.4 PASS; PR #832 merged 8bd111c; Render REST deploy workaround; H1/H0c/H3/H4/H5 PASS; TC-EV030-005 A6-2-TC; D-S037-13=1 close'
       active_milestone: M4
       active_task: T4.4
       active_task_status: completed
@@ -8437,7 +8450,9 @@ stages:
       ci_tests: pass
       ci_deploy: fail
       ci_deploy_note: 'Deploy hook 500; Render REST deploy workaround applied'
-      pending_decision: D-S037-13
+      pending_decision: null
+      decision_ids:
+      - D-S037-13
       fe_app_chunk: App-Bhd6UU87.js
       tc_ev030_005: pass
     - id: S036-eight-family-ahl-rules-823
@@ -8949,20 +8964,20 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S037-quality-residuals-831
     evolve_cycle_id: EV-030
     started_at: '2026-08-02'
     started: '2026-08-02'
-    completed_at:
-    completed:
-    current_stage: 13-deploy-smoke
-    prior_session_id: S035-empiric2-ops-leftovers-781
-    prior_evolve_cycle_id: EV-028
-    prior_completed: '2026-08-01'
-    prior_note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
-    note: 'S037/EV-030 16-evolve — EV-030 complete pending D-S037-13 close AskQuestion; T4.5 done @ 8bd111c; progress 27/27; #835 open; dirty pending parent chore commit'
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
+    current_stage: null
+    prior_session_id: S037-quality-residuals-831
+    prior_evolve_cycle_id: EV-030
+    prior_completed: '2026-08-03'
+    prior_note: 'S037/EV-030 16-evolve CLOSED — D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; active_session=null'
+    note: 'S037/EV-030 16-evolve COMPLETE — D-S037-13=1 close; PR #832 @ 8bd111c; progress 27/27; #835 open residual'
     tip_sha: 8bd111c
     tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
     notes:
@@ -9079,7 +9094,7 @@ deployment:
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260803151459-8bd111c
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260803151459-8bd111c
-      note: 'S037/EV-030 13 PASS after #832 @ 8bd111c — Render REST deploy workaround (CI deploy hook 500); API dep-d9ob293l550s73a65rfg FE dep-d9ob2brm8hqs73fu8k2g; FE App chunk App-Bhd6UU87.js; pending user approve D-S037-13'
+      note: 'S037/EV-030 13 PASS after #832 @ 8bd111c — Render REST deploy workaround (CI deploy hook 500); API dep-d9ob293l550s73a65rfg FE dep-d9ob2brm8hqs73fu8k2g; FE App chunk App-Bhd6UU87.js; D-S037-13=1 close'
     health_tiers:
       H0ci: pass
       H0c: pass
@@ -9107,7 +9122,7 @@ deployment:
       SWXA_catalog_convert: pass
       FE_app_chunk_swxa: swxa_a7_3
     notes:
-    - '2026-08-03 S037/EV-030 13-deploy-smoke PASS — PR #832 merged 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500; Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g LIVE; H1/H0c/H3/H4/H5 PASS; FE App-Bhd6UU87.js A6-2-TC; report deploy-smoke.md; pending D-S037-13; #835'
+    - '2026-08-03 S037/EV-030 13-deploy-smoke PASS — PR #832 merged 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500; Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g LIVE; H1/H0c/H3/H4/H5 PASS; FE App-Bhd6UU87.js A6-2-TC; report deploy-smoke.md; D-S037-13=1 close; #835'
     - '2026-08-02 S036/EV-029 13-deploy-smoke PASS (technical) — PR #828 merged 4e6577a; docs tip 7e276a7; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA catalog/convert PASS; FE App chunk swxa_a7_3; report deploy-smoke.md; awaiting user approve D-S036-13; progress 46/48; #828; #823'
     - '2026-07-31 S033/EV-026 13-deploy-smoke PASS (D-S033-13-smoke-pass) — PR #817 @ 101f555; API dep-d9miestbedkc73dr3j9g + FE dep-d9mietnqj5pc73d3c8a0; H0ci/H0c/H1–H5 pass (H2 pass-or-skipped via live_api); EV-026 catalog/convert PASS; report deploy-smoke.md; pending user approve + cycle close'
     - '2026-07-30 S031/EV-024 13-deploy-smoke COMPLETE — PR #813 merged 864783e; CI 30595410610 SUCCESS (incl. Deploy); API dep-d9lvcr2jnfac73bbn340 + FE dep-d9lvcrrl550s73cuhvf0 LIVE; H0c/H1/H3/H4/H5 + EV-024 catalog + live convert PASS; D-S031-merge-close; #804/#807/#773'
@@ -9297,17 +9312,18 @@ decisions_log:
 - id: D-S037-13
   date: '2026-08-03'
   timestamp: '2026-08-03'
-  resolved_at:
+  resolved_at: '2026-08-03'
   session_id: S037-quality-residuals-831
   evolve_cycle_id: EV-030
   skill: 13-deploy-smoke
   skill_id: 13-deploy-smoke
   stage: 13-deploy-smoke
   category: deploy
-  status: pending
+  status: confirmed
   topic: 'T4.4 deploy smoke approval + EV-030 Phase 4 close'
-  summary: '13-deploy-smoke PASS (technical) @ 8bd111c; pending user approve D-S037-13 for cycle close'
-  decision: 'Await user D-S037-13=1 to close EV-030/S037 Phase 4'
+  summary: 'User D-S037-13=1 Yes — mark cycle + session complete; 13 PASS @ 8bd111c; EV-030/S037 closed'
+  decision: 'Yes — mark cycle + session complete (D-S037-13=1). Close EV-030/S037 Phase 4.'
+  user_option: '1'
   tip_sha: 8bd111c
   tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   branch: main
@@ -18670,6 +18686,16 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/evolve-report-EV-030.md
+  kind: evolve-report
+  session_id: S037-quality-residuals-831
+  evolve_cycle_id: EV-030
+  stage: 16-evolve
+  skill_id: 16-evolve
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: completed
+  note: 'Phase 4 closeout docs — evolve-report-EV-030.md written; D-S037-13=1'
 - path: docs/sessions/S037-quality-residuals-831/session-brief.md
   kind: session-brief
   session_id: S037-quality-residuals-831
@@ -27914,7 +27940,7 @@ evolve_cycles:
   - F26
   - F27
   title: 'Quality residuals #831 / #829 / #820'
-  status: complete_pending_close
+  status: completed
   started: '2026-08-02'
   completed: '2026-08-03'
   scope_summary: |
@@ -27937,14 +27963,16 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: 'Standard — D-S037-route; skip 03/05/06'
-  current_stage: 13-deploy-smoke
+  current_stage: null
   active_task: T4.5
   active_milestone: M4
   active_task_status: completed
   progress: 27/27
   tip_sha: 8bd111c
   tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
-  note: 'S037/EV-030 — T4.4 COMPLETE (13-deploy-smoke PASS @ 8bd111c); T4.5 COMPLETE (#831 closed; F29 Done; evolve-summary.md); D-S037-11/12=1; PR #832 MERGED @ 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500 — Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g; H1/H0c/H3/H4/H5 PASS; TC-EV030-005 FE App-Bhd6UU87.js A6-2-TC; progress 27/27; awaiting D-S037-13 user close; #835 open residual; workflow-state dirty pending parent chore commit'
+  note: 'S037/EV-030 COMPLETE — D-S037-13=1 close; PR #832 MERGED @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; progress 27/27; H1/H0c/H3/H4/H5 PASS; Render REST deploy workaround; Phase 4 closeout docs — evolve-report-EV-030.md written; D-S037-13=1'
+  close_decision_id: D-S037-13
+  close_note: 'D-S037-13=1 Yes — mark cycle + session complete (2026-08-03); EV-030/S037 closed; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; 13-deploy-smoke PASS'
   pr_m1_number: 832
   pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
   pr_m1_status: merged
@@ -27962,10 +27990,11 @@ evolve_cycles:
       completed: '2026-08-02'
       note: 'D-S037-route (1) Standard approved'
     16-evolve:
-      status: in_progress
+      status: completed
       mode: orchestrator
       started: '2026-08-02'
-      note: 'Orchestrating T4.2 COMPLETE; T4.3 in_progress @ M4 (11+12 pending signoff); progress 24/27; D-S037-semver-tac2iwxxm=2 resolved; dirty pending chore sync'
+      completed: '2026-08-03'
+      note: 'COMPLETE — D-S037-13=1 close; EV-030 Phase 4; progress 27/27'
     01-requirements:
       status: completed
       started: '2026-08-02'
@@ -28034,13 +28063,16 @@ evolve_cycles:
       status: completed
       started: '2026-08-03'
       completed: '2026-08-03'
-      note: 'COMPLETE — T4.4 PASS @ 8bd111c; pending D-S037-13 user close'
+      note: 'COMPLETE — T4.4 PASS @ 8bd111c; D-S037-13=1 close'
       report: docs/sessions/S037-quality-residuals-831/reports/deploy-smoke.md
       overall: pass
-      pending_decision: D-S037-13
+      pending_decision: null
+      decision_ids:
+      - D-S037-13
     16-evolve:
-      status: in_progress
-      note: 'EV-030 complete pending D-S037-13 close AskQuestion'
+      status: completed
+      completed: '2026-08-03'
+      note: 'COMPLETE — D-S037-13=1 close; EV-030/S037 archived'
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -28055,7 +28087,7 @@ evolve_cycles:
   adrs: []
   artifacts:
   - path: docs/decisions/evolve-decisions.md
-    status: in_progress
+    status: completed
   - path: docs/context/quality-residuals-831.md
     status: written
   - path: docs/sessions/S037-quality-residuals-831/session-brief.md
@@ -28091,6 +28123,8 @@ evolve_cycles:
     status: staged
   - path: docs/api-contract.md
     status: touched
+  - path: docs/evolve-report-EV-030.md
+    status: completed
   issues:
   - '835'
   github_issues:
@@ -28122,7 +28156,10 @@ evolve_cycles:
   - D-S037-12
   - D-S037-13
   notes:
-  - 'S037/EV-030 — T4.4 COMPLETE (13-deploy-smoke PASS @ 8bd111c); T4.5 COMPLETE (#831 closed; F29 Done; evolve-summary.md); D-S037-11/12=1; PR #832 MERGED @ 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500 — Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g; H1/H0c/H3/H4/H5 PASS; TC-EV030-005 FE App-Bhd6UU87.js A6-2-TC; progress 27/27; awaiting D-S037-13 user close; #835 open residual; workflow-state dirty pending parent chore commit'
+  - '2026-08-03 closeout commit 7c4522a [EV-030] docs: close S037 — D-S037-13 cycle complete; files: workflow-state + evolve-report + evolve-decisions + sessions README/brief/summary'
+  - '2026-08-03 Phase 4 closeout docs — evolve-report-EV-030.md written; D-S037-13=1'
+  - 'S037/EV-030 COMPLETE — D-S037-13=1 close; PR #832 MERGED @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; progress 27/27; H1/H0c/H3/H4/H5 PASS; Render REST deploy workaround'
+  - '2026-08-03 D-S037-13=1 Yes — mark cycle + session complete (2026-08-03); EV-030/S037 closed; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; 13-deploy-smoke PASS'
   - '2026-08-03 S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e); T4.3 in_progress (verify-impl.md + deploy-checklist.md; PENDING user signoff 11 then 12); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
   - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix [1f47eb5] pushed; CI 30823368642 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30823368642); report verification-report-m3.md; D-S037-ui-preview=2 confirmed; active_task → T4.2 pending @ M4; progress 23/27; semver AskQuestion pending D-S037-semver-tac2iwxxm; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
   - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; D-S037-ui-preview=2 confirmed; H4–H5 still required at M4/13; progress 23/27; active_task → T4.2 pending @ M4; semver AskQuestion pending D-S037-semver-tac2iwxxm (tac2iwxxm 0.2.3 decode deepen); workflow-state dirty pending chore sync; PR #832 open; #831→#835'
@@ -28149,19 +28186,23 @@ evolve_cycles:
   - '2026-08-02 S037/EV-030 D-S037-fn (1,1,1) — F29 + deepen F23/F12/F2/F13/F9/F26/F27; 01-requirements in_progress (delta); commit open; #831→#829→#820'
   - '2026-08-02 S037/EV-030 OPEN — D-S037-route (1); 00 COMPLETE; 16-evolve Phase 1 Fn allocation; feature_ids pending D-S037-fn; work order #831→#829→#820'
 git_history:
-  current_branch: evolve/EV-030-quality-residuals-831
+  current_branch: main
   ahead_of_origin: 1
   pushed: false
-  pending_commit: '[EV-030] chore: sync workflow-state + closeout reports after T4.4/T4.5 (13-deploy-smoke)'
-  dirty: true
-  tip_sha: 3889e4c
-  tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
+  pending_commit: null
+  dirty: false
+  tip_sha: 7c4522a
+  tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-  recommended_branch: evolve/EV-030-quality-residuals-831
-  note: 'S037/EV-030 — T4.4 COMPLETE (13-deploy-smoke PASS @ 8bd111c); T4.5 COMPLETE (#831 closed; F29 Done; evolve-summary.md); D-S037-11/12=1; PR #832 MERGED @ 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500 — Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g; H1/H0c/H3/H4/H5 PASS; TC-EV030-005 FE App-Bhd6UU87.js A6-2-TC; progress 27/27; awaiting D-S037-13 user close; #835 open residual; workflow-state dirty pending parent chore commit'
+  main_tip_sha: 7c4522a
+  main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
+  recommended_branch: main
+  note: 'S037/EV-030 COMPLETE — closeout @ 7c4522a on main; D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual'
 
   notes:
+  - '2026-08-03 closeout commit 7c4522a [EV-030] docs: close S037 — D-S037-13 cycle complete; main ahead 1; active_session=null'
+  - '2026-08-03 D-S037-13=1 Yes — mark cycle + session complete (2026-08-03); EV-030/S037 closed; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; 13-deploy-smoke PASS'
   - '2026-08-03 S037/EV-030 — PR #832 MERGED @ 8bd111c (main); CI 30826197508 tests PASS deploy hook FAIL 500; Render REST deploy workaround LIVE; T4.4/T4.5 COMPLETE; progress 27/27; tip evolve branch dirty closeout files; #835'
   - '2026-08-03 S037/EV-030 — T4.2 COMPLETE (09-qa + 10-e2e); T4.3 in_progress (verify-impl.md + deploy-checklist.md; PENDING user signoff 11 then 12); D-S037-semver-tac2iwxxm=2 patch tac2iwxxm 0.2.4 @ 3889e4c; progress 24/27; workflow-state dirty pending chore sync; PR #832 open; #831→#835'
   - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; D-S037-ui-preview=2 confirmed; H4–H5 still required at M4/13; progress 23/27; active_task → T4.2 pending @ M4; semver AskQuestion pending D-S037-semver-tac2iwxxm (tac2iwxxm 0.2.3 decode deepen); workflow-state dirty pending chore sync; PR #832 open; #831→#835'
@@ -29510,6 +29551,23 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
+    short: 7c4522a
+    branch: main
+    message: "[EV-030] docs: close S037 — D-S037-13 cycle complete"
+    stage: 16-evolve
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    timestamp: "2026-08-03"
+    files_changed:
+    - workflow-state.yaml
+    - docs/evolve-report-EV-030.md
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/README.md
+    - docs/sessions/S037-quality-residuals-831/reports/evolve-summary.md
+    - docs/sessions/S037-quality-residuals-831/session-brief.md
+    pushed: false
+    note: 'Phase 4 closeout docs on main; EV-030/S037 closed; D-S037-13=1'
   - sha: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
     short: 8bd111c
     branch: main

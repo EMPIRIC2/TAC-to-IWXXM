@@ -68,6 +68,20 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: render-deploy-hook-guard
+        name: Render deploy hook fallback (BUG-2026-08-03)
+        entry: uv run pytest tests/bugs/test_bug_2026_08_03_render_deploy_hook_500.py -q
+        language: system
+        pass_filenames: false
+        always_run: true
+        files: ^(scripts/deploy/trigger_render_image_deploy\.py|\.github/workflows/ci-cd\.yml|tests/bugs/test_bug_2026_08_03_render_deploy_hook_500\.py)$
+      - id: render-deploy-no-bare-curl-imgurl
+        name: forbid brittle curl imgURL in ci-cd.yml
+        entry: bash scripts/deploy/check_no_bare_curl_imgurl.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        files: ^(\.github/workflows/ci-cd\.yml|scripts/deploy/check_no_bare_curl_imgurl\.sh)$
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.7

@@ -207,7 +207,10 @@ Primary workflow: `.github/workflows/ci-cd.yml`.
 Remote CI runs **validate** then the **test** matrix, **tac2iwxxm-native**, and
 **e2e-smoke**. Husky **pre-push** mirrors validate + unit/matrix locally.
 **Deploy** on `main` requires `test` + `tac2iwxxm-native`, and skips cleanly when
-GHCR login or Render deploy-hook secrets are missing.
+GHCR login or Render deploy-hook secrets are missing. Image deploys use
+`scripts/deploy/trigger_render_image_deploy.py` (hook + `imgURL`, with REST
+`imageUrl` fallback when `RENDER_API_KEY` is set — BUG-2026-08-03). Husky
+pre-commit runs regression guards for that path.
 
 | Job | Checks |
 |-----|--------|

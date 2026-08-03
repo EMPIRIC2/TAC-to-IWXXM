@@ -1,9 +1,11 @@
 ---
 session_id: S037-quality-residuals-831
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-030-quality-residuals-831
 started_at: 2026-08-02
+completed_at: 2026-08-03
+close_decision_id: D-S037-13
 intent: "EV-029 residuals — #831 parameterized rule matrices (happy/sad/edge), #829 TC SIGMET deepen (lint pack / STNR / A6-2-TC menu), #820 VAA/TCA decode residual deepen beyond F9 G4."
 orchestrator: 16-evolve
 evolve_cycle_id: EV-030

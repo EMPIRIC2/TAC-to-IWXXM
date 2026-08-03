@@ -352,6 +352,8 @@ jobs:
       RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
       RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
       RENDER_WORKER_DEPLOY_HOOK: ${{ secrets.RENDER_WORKER_DEPLOY_HOOK }}
+      # Optional: REST fallback when deploy-hook+imgURL returns 5xx (BUG-2026-08-03).
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
     steps:
       - uses: actions/checkout@v5
@@ -500,8 +502,10 @@ jobs:
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
-            ENCODED_URL=$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
-            curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+            python3 scripts/deploy/trigger_render_image_deploy.py \
+              --deploy-hook "${DEPLOY_HOOK}" \
+              --image-url "${IMAGE_URL}" \
+              --service-name metar-to-iwxxm-api
           else
             curl -fsSL "${DEPLOY_HOOK}"
           fi
@@ -513,8 +517,10 @@ jobs:
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
-            ENCODED_URL=$(python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['IMAGE_URL'], safe=''))")
-            curl -fsSL "${DEPLOY_HOOK}&imgURL=${ENCODED_URL}"
+            python3 scripts/deploy/trigger_render_image_deploy.py \
+              --deploy-hook "${DEPLOY_HOOK}" \
+              --image-url "${IMAGE_URL}" \
+              --service-name metar-to-iwxxm-frontend-v4-web
           else
             curl -fsSL "${DEPLOY_HOOK}"
           fi
