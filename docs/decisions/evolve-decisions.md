@@ -10,7 +10,7 @@
 **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
 **Started**: 2026-08-02  
 **Branch**: `evolve/EV-030-quality-residuals-831`  
-**Status**: **in_progress** — M4 @ T4.3 (11+12); tip `3889e4c`; PR #832; `tac2iwxxm` **0.2.4**
+**Status**: **complete pending close** — M4 T4.5 done; #831/#829/#820 closed; #835 residual; live H1–H5 PASS (`8bd111c`)
 
 ### Scope (Phase 0 — locked 2026-08-02 via 00-context)
 

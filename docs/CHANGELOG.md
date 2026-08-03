@@ -2,6 +2,24 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-03 — S037 EV-030 (#831 / #829 / #820 quality residuals)
+
+### Added
+- **F29**: Parameterized lint/convert/validate rule matrices under `tests/quality_matrices/`
+  (METAR/SPECI pilot + inventory gate + PR smoke).
+
+### Changed
+- #829 TC SIGMET lint deepen; Examples unlock `sigmet-A6-2-TC` as **`wmoReference`**
+  (equality residual → [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835)).
+- #820 VAA/TCA structured `LABEL:` + AHL decode; official peers empty residuals.
+- `tac2iwxxm` **0.2.4**.
+
+### Deploy
+- PR [#832](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832) merged (`8bd111c`).
+- Live smoke PASS (H0c–H5 + FE A6-2-TC seed). CI deploy hook 500 → Render REST redeploy.
+  API `dep-d9ob293l550s73a65rfg` · FE `dep-d9ob2brm8hqs73fu8k2g` (`…:20260803151459-8bd111c`).
+  Report: [deploy-smoke.md](sessions/S037-quality-residuals-831/reports/deploy-smoke.md).
+
 ## 2026-08-02 — S036 EV-029 (#823 eight-family AHL + F28 SWXA)
 
 ### Added

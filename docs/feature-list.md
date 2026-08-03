@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-02 (S037 / EV-030 — #831/#829/#820 quality residuals; F29)
+> **Last updated**: 2026-08-03 (S037 / EV-030 — F29 Done; #831/#829/#820 closed; #832)
 
 ## Summary
 
@@ -36,7 +36,7 @@
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794 |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828 |
-| F29 | Parameterized lint/convert/validate rule matrices | Planned | Product | S037 / EV-030; #831 |
+| F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1087,7 +1087,7 @@
 
 ### F29: Parameterized Rule Quality Matrices — S037 / EV-030
 
-- **Status**: **Planned** (S037 / EV-030)
+- **Status**: **Done** — shipped S037 / EV-030 (2026-08-03, PR #832).
 - **What it does**: Adds a maintainable, **parameterized** regression harness so lint
   (`tac-validate`), convert (`tac2iwxxm`), and IWXXM-validate (`iwxxm-validate`) rules each
   have a fixed case budget: **5 happy · 5 sad · 5 edge-pass · 5 edge-fail** (or explicit
