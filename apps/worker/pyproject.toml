@@ -11,6 +11,8 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.14.2",
+    "sqlalchemy>=2.0.0",
+    "psycopg[binary]>=3.0.0",
 ]
 
 [build-system]
@@ -34,3 +36,7 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+  "unit: fast unit tests",
+  "integration: Postgres / container integration",
+]

@@ -1,4 +1,4 @@
-"""Worker settings from environment (ADR-018 / deploy.md)."""
+"""Worker settings from environment (ADR-018 amend / ADR-033 / F30)."""
 
 from __future__ import annotations
 
@@ -11,11 +11,7 @@ class WorkerSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    supabase_url: str = Field(default="", validation_alias="SUPABASE_URL")
-    supabase_service_role_key: str = Field(
-        default="",
-        validation_alias="SUPABASE_SERVICE_ROLE_KEY",
-    )
+    database_url: str = Field(default="", validation_alias="DATABASE_URL")
     ingest_poller_url: str = Field(default="", validation_alias="INGEST_POLLER_URL")
     ingest_poll_interval_sec: float = Field(
         default=30.0,

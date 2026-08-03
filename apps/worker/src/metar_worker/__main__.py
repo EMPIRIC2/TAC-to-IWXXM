@@ -9,7 +9,7 @@ import time
 from metar_worker.pipeline import process_job
 from metar_worker.poller import fetch_jobs, safe_url_for_log
 from metar_worker.settings import WorkerSettings
-from metar_worker.store import SupabaseRestStore, write_result
+from metar_worker.store import PostgresStore, StoreClient, write_result
 
 logger = logging.getLogger("metar_worker")
 
@@ -23,7 +23,7 @@ def _handle_sigterm(_signum: int, _frame: object) -> None:
     logger.info("SIGTERM received — finishing current poll then exiting")
 
 
-def run_once(settings: WorkerSettings, store: SupabaseRestStore | None = None) -> int:
+def run_once(settings: WorkerSettings, store: StoreClient | None = None) -> int:
     """
     Fetch feed once and process all jobs.
 
@@ -37,14 +37,9 @@ def run_once(settings: WorkerSettings, store: SupabaseRestStore | None = None) -
 
     writer = store
     if writer is None:
-        if not settings.supabase_url or not settings.supabase_service_role_key:
-            raise RuntimeError(
-                "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required"
-            )
-        writer = SupabaseRestStore(
-            base_url=settings.supabase_url,
-            service_role_key=settings.supabase_service_role_key,
-        )
+        if not settings.database_url:
+            raise RuntimeError("DATABASE_URL is required")
+        writer = PostgresStore(database_url=settings.database_url)
 
     jobs = fetch_jobs(settings.ingest_poller_url)
     logger.info(

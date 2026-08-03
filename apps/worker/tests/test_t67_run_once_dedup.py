@@ -35,8 +35,7 @@ def test_run_once_skips_already_seen_job_ids(
     url = "https://ingest.example.test/dedup.json"
     respx.get(url).mock(return_value=httpx.Response(200, json=feed))
     monkeypatch.setenv("INGEST_POLLER_URL", url)
-    monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")
-    monkeypatch.setenv("SUPABASE_SERVICE_ROLE_KEY", "test-key")
+    monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@localhost:5432/db")
 
     def fake_process(job, **kwargs):
         from metar_worker.pipeline import PipelineResult
