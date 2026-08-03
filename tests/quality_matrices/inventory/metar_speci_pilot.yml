@@ -1,0 +1,488 @@
+version: 1
+product_scope:
+- metar
+- speci
+cite: T0.2 unified inventory sketch / TC-F29-004
+engines:
+  lint:
+  - id: UNKNOWN_PRODUCT
+    native:
+      kind: registry_code
+      code: UNKNOWN_PRODUCT
+    slots: &id001
+      happy: 5
+      sad: 5
+      edge_pass: 5
+      edge_fail: 5
+  - id: EMPTY_TAC
+    native:
+      kind: registry_code
+      code: EMPTY_TAC
+    slots: *id001
+  - id: MISSING_PRODUCT_KEYWORD
+    native:
+      kind: registry_code
+      code: MISSING_PRODUCT_KEYWORD
+    slots: *id001
+  - id: MISSING_TERMINATOR
+    native:
+      kind: registry_code
+      code: MISSING_TERMINATOR
+    slots: *id001
+  - id: MISSING_CCCC
+    native:
+      kind: registry_code
+      code: MISSING_CCCC
+    slots: *id001
+  - id: MISSING_OBS_TIME
+    native:
+      kind: registry_code
+      code: MISSING_OBS_TIME
+    slots: *id001
+  - id: ODD_FIELD_ORDER
+    native:
+      kind: registry_code
+      code: ODD_FIELD_ORDER
+    slots: *id001
+  - id: MISSING_WIND
+    native:
+      kind: registry_code
+      code: MISSING_WIND
+    slots: *id001
+  - id: MISSING_VISIBILITY
+    native:
+      kind: registry_code
+      code: MISSING_VISIBILITY
+    slots: *id001
+  - id: INVALID_VISIBILITY
+    native:
+      kind: registry_code
+      code: INVALID_VISIBILITY
+    slots: *id001
+  - id: INVALID_WEATHER
+    native:
+      kind: registry_code
+      code: INVALID_WEATHER
+    slots: *id001
+  - id: MISSING_TEMP_DEWPOINT
+    native:
+      kind: registry_code
+      code: MISSING_TEMP_DEWPOINT
+    slots: *id001
+  - id: MISSING_QNH
+    native:
+      kind: registry_code
+      code: MISSING_QNH
+    slots: *id001
+  - id: INVALID_CLOUD_TOKEN
+    native:
+      kind: registry_code
+      code: INVALID_CLOUD_TOKEN
+    slots: *id001
+  - id: CLOUD_CB_OR_TCU
+    native:
+      kind: registry_code
+      code: CLOUD_CB_OR_TCU
+    slots: *id001
+  - id: REMARK_US_EXTENSION
+    native:
+      kind: registry_code
+      code: REMARK_US_EXTENSION
+    slots: *id001
+  - id: INVALID_REMARK
+    native:
+      kind: registry_code
+      code: INVALID_REMARK
+    slots: *id001
+  - id: AUTO_PRESENT
+    native:
+      kind: registry_code
+      code: AUTO_PRESENT
+    slots: *id001
+  - id: COR_PRESENT
+    native:
+      kind: registry_code
+      code: COR_PRESENT
+    slots: *id001
+  - id: NIL_REPORT
+    native:
+      kind: registry_code
+      code: NIL_REPORT
+    slots: *id001
+  - id: INVALID_NIL
+    native:
+      kind: registry_code
+      code: INVALID_NIL
+    slots: *id001
+  - id: MULTI_REPORT_BULLETIN
+    native:
+      kind: registry_code
+      code: MULTI_REPORT_BULLETIN
+    slots: *id001
+  - id: NOSIG_PRESENT
+    native:
+      kind: registry_code
+      code: NOSIG_PRESENT
+    slots: *id001
+  - id: TEMPO_PRESENT
+    native:
+      kind: registry_code
+      code: TEMPO_PRESENT
+    slots: *id001
+  - id: RVR_PRESENT
+    native:
+      kind: registry_code
+      code: RVR_PRESENT
+    slots: *id001
+  - id: INVALID_RVR
+    native:
+      kind: registry_code
+      code: INVALID_RVR
+    slots: *id001
+  - id: WIND_VRB_OR_GUST
+    native:
+      kind: registry_code
+      code: WIND_VRB_OR_GUST
+    slots: *id001
+  - id: INVALID_WIND
+    native:
+      kind: registry_code
+      code: INVALID_WIND
+    slots: *id001
+  - id: CAVOK_PRESENT
+    native:
+      kind: registry_code
+      code: CAVOK_PRESENT
+    slots: *id001
+  - id: NSC_PRESENT
+    native:
+      kind: registry_code
+      code: NSC_PRESENT
+    slots: *id001
+  - id: NSC_WITH_CLOUD_LAYERS
+    native:
+      kind: registry_code
+      code: NSC_WITH_CLOUD_LAYERS
+    slots: *id001
+  - id: NCD_PRESENT
+    native:
+      kind: registry_code
+      code: NCD_PRESENT
+    slots: *id001
+  - id: NSW_PRESENT
+    native:
+      kind: registry_code
+      code: NSW_PRESENT
+    slots: *id001
+  - id: VV_NOT_OBSERVABLE
+    native:
+      kind: registry_code
+      code: VV_NOT_OBSERVABLE
+    slots: *id001
+  - id: WX_NOT_OBSERVABLE
+    native:
+      kind: registry_code
+      code: WX_NOT_OBSERVABLE
+    slots: *id001
+  - id: WIND_DIR_VARIATION
+    native:
+      kind: registry_code
+      code: WIND_DIR_VARIATION
+    slots: *id001
+  convert:
+  - id: metar_a3_1
+    native:
+      kind: encode_theme
+      stem: metar_a3_1
+    slots: *id001
+  - id: metar_auto
+    native:
+      kind: encode_theme
+      stem: metar_auto
+    slots: *id001
+  - id: metar_basic
+    native:
+      kind: encode_theme
+      stem: metar_basic
+    slots: *id001
+  - id: metar_cavok
+    native:
+      kind: encode_theme
+      stem: metar_cavok
+    slots: *id001
+  - id: metar_cor
+    native:
+      kind: encode_theme
+      stem: metar_cor
+    slots: *id001
+  - id: metar_nil
+    native:
+      kind: encode_theme
+      stem: metar_nil
+    slots: *id001
+  - id: speci_a3_2
+    native:
+      kind: encode_theme
+      stem: speci_a3_2
+    slots: *id001
+  - id: speci_basic
+    native:
+      kind: encode_theme
+      stem: speci_basic
+    slots: *id001
+  - id: speci_cavok
+    native:
+      kind: encode_theme
+      stem: speci_cavok
+    slots: *id001
+  - id: speci_cor
+    native:
+      kind: encode_theme
+      stem: speci_cor
+    slots: *id001
+  - id: speci_ncd
+    native:
+      kind: encode_theme
+      stem: speci_ncd
+    slots: *id001
+  - id: speci_nil
+    native:
+      kind: encode_theme
+      stem: speci_nil
+    slots: *id001
+  - id: speci_nosig
+    native:
+      kind: encode_theme
+      stem: speci_nosig
+    slots: *id001
+  - id: speci_nsc
+    native:
+      kind: encode_theme
+      stem: speci_nsc
+    slots: *id001
+  - id: speci_nsw_trend
+    native:
+      kind: encode_theme
+      stem: speci_nsw_trend
+    slots: *id001
+  - id: speci_rvr
+    native:
+      kind: encode_theme
+      stem: speci_rvr
+    slots: *id001
+  validate:
+  - id: METAR_SPECI.AerodromeCloud-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeCloud-1
+    slots: *id001
+  - id: METAR_SPECI.AerodromeCloud-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeCloud-2
+    slots: *id001
+  - id: METAR_SPECI.AerodromeCloud-3
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeCloud-3
+    slots: *id001
+  - id: METAR_SPECI.AerodromeHorizontalVisibility-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeHorizontalVisibility-1
+    slots: *id001
+  - id: METAR_SPECI.AerodromeHorizontalVisibility-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeHorizontalVisibility-2
+    slots: *id001
+  - id: METAR_SPECI.AerodromeHorizontalVisibility-3
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeHorizontalVisibility-3
+    slots: *id001
+  - id: METAR_SPECI.AerodromePresentWeather
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromePresentWeather
+    slots: *id001
+  - id: METAR_SPECI.AerodromeRecentWeather
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeRecentWeather
+    slots: *id001
+  - id: METAR_SPECI.AerodromeRunwayVisualRange-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeRunwayVisualRange-1
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSeaCondition.seaState
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSeaCondition.seaState
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSeaState-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSeaState-1
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSeaState-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSeaState-2
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSeaState-3
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSeaState-3
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSeaState-4
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSeaState-4
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSurfaceWind-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSurfaceWind-1
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSurfaceWind-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSurfaceWind-2
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSurfaceWind-3
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSurfaceWind-3
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSurfaceWind-4
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSurfaceWind-4
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSurfaceWind-5
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSurfaceWind-5
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSurfaceWind-6
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSurfaceWind-6
+    slots: *id001
+  - id: METAR_SPECI.AerodromeSurfaceWind-7
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeSurfaceWind-7
+    slots: *id001
+  - id: METAR_SPECI.AerodromeWindShear-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeWindShear-1
+    slots: *id001
+  - id: METAR_SPECI.AerodromeWindShear-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.AerodromeWindShear-2
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservation-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-1
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservation-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-2
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservation-3
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-3
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservation-4
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-4
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservation-5
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-5
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservation.presentWeather
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation.presentWeather
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservation.recentWeather
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation.recentWeather
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-1
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-2
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-3
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-3
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-4
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-4
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-5
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-5
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-6
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-6
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-7
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-7
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-8
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-8
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeObservationReport-9
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-9
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-1
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-1
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-2
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-2
+    slots: *id001
+  - id: METAR_SPECI.MeteorologicalAerodromeTrendForecast.weather
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.MeteorologicalAerodromeTrendForecast.weather
+    slots: *id001
+  - id: METAR_SPECI.SeaSurfaceState
+    native:
+      kind: schematron_pattern
+      pattern_id: METAR_SPECI.SeaSurfaceState
+    slots: *id001
