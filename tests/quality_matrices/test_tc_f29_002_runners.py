@@ -17,7 +17,12 @@ from tests.quality_matrices.runners import (
 _TESTDATA = Path(__file__).resolve().parent / "testdata"
 _LINT_VIS = _TESTDATA / "lint" / "metar_speci" / "INVALID_VISIBILITY.yml"
 _CONVERT_NIL = _TESTDATA / "convert" / "metar_speci" / "metar_nil.yml"
-_VALIDATE_HAPPY = _TESTDATA / "validate" / "metar_speci" / "metar_happy_path.yml"
+_VALIDATE_HAPPY = (
+    _TESTDATA
+    / "validate"
+    / "metar_speci"
+    / "METAR_SPECI.MeteorologicalAerodromeObservationReport-1.yml"
+)
 
 
 def _case(path: Path, bucket: str, case_id: str = "01") -> RuleCase:
