@@ -19,6 +19,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
 	db-migrate test-alembic \
+	verify-supabase-to-do-migrate migrate-supabase-to-do \
 	test-sigmet-quality \
 	test-va-sigmet-quality \
 	test-tc-sigmet-quality \
@@ -201,6 +202,16 @@ verify-supabase-to-do-migrate:
 	$(UV) run python scripts/ops/verify_supabase_to_do_migrate.py \
 		--source-url "$${MIGRATE_SOURCE_DATABASE_URL:-$${SUPABASE_DB_URL}}" \
 		--target-url "$${MIGRATE_TARGET_DATABASE_URL:-$${DATABASE_URL}}"
+
+# F30 / TC-EV031-001 / T5.3 — SQL export dry-run (default) or apply cut.
+# MODE=dry-run|apply  VERIFY=1 to run T5.2 verify after apply.
+# Target MUST be DO Postgres (script refuses same-DB source/target).
+migrate-supabase-to-do:
+	$(UV) run python scripts/ops/run_supabase_to_do_migrate.py \
+		--source-url "$${MIGRATE_SOURCE_DATABASE_URL:-$${SUPABASE_DB_URL}}" \
+		--target-url "$${MIGRATE_TARGET_DATABASE_URL:-$${DATABASE_URL}}" \
+		--mode "$${MODE:-dry-run}" \
+		$$( [ "$${VERIFY:-0}" = "1" ] && echo --verify || true )
 
 test-alembic:
 	$(UV) run pytest tests/unit/test_alembic_layout_tc_ev031_002.py \

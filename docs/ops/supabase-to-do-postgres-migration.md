@@ -1,9 +1,10 @@
 # Ops: Supabase product DB → DigitalOcean Postgres (S038 / EV-031)
 
-> **Status**: **T5.2 verify script landed** (2026-08-03); T5.1 map finalized  
+> **Status**: **T5.3 migrate runner landed** (2026-08-03); T5.2 verify + T5.1 map  
 > **Features**: F30 / F31  
 > **Related**: ADR-033; TC-EV031-001/002; `D-S038-spec-data` Q3=2; Alembic
 > `apps/backend/alembic/versions/20260803_0001_initial_product_schema.py`  
+> **Migrate**: `scripts/ops/run_supabase_to_do_migrate.py`  
 > **Verify**: `scripts/ops/verify_supabase_to_do_migrate.py`
 
 ## Goal
@@ -87,23 +88,54 @@ INSERT…SELECT product inference as that migration, then load into DO `tac_work
 
 | Step | Tool |
 |------|------|
-| Schema | `alembic upgrade head` against `DATABASE_URL` |
-| Export | `pg_dump --data-only --table=…` from Supabase DB URI (ops secret) **or** SQL `COPY` |
-| Load | `pg_restore` / `psql` into DO after schema; prefer `INSERT … ON CONFLICT (id) DO NOTHING` for idempotent dry-runs |
-| Verify | `uv run python scripts/ops/verify_supabase_to_do_migrate.py` — row counts + sample checksum (**TC-EV031-001** / T5.2) |
+| Schema | `alembic upgrade head` against DO `DATABASE_URL` |
+| Export / load | `scripts/ops/run_supabase_to_do_migrate.py` — SQLAlchemy `SELECT` + idempotent `INSERT … ON CONFLICT (id) DO NOTHING` (**T5.3** default). Optional `--use-pg-dump` when `pg_dump`/`pg_restore` are on `PATH`. |
+| Verify | `scripts/ops/verify_supabase_to_do_migrate.py` — row counts + sample checksum (**TC-EV031-001** / T5.2) |
 
-Recommended dump order: `tac_work_sessions` → `iwxxm_ingest_results` → `iwxxm_ingest_quarantine`.
+Recommended order: `tac_work_sessions` → `iwxxm_ingest_results` → `iwxxm_ingest_quarantine`.
+
+**Safety:** the migrate script **refuses** when source and target resolve to the same
+host/db/user (guards against a still-Supabase `DATABASE_URL`).
+
+### Migrate commands (T5.3)
+
+```bash
+# Source = legacy Supabase Postgres; target = DO Postgres (not Supabase)
+export MIGRATE_SOURCE_DATABASE_URL="postgresql://…"   # or SUPABASE_DB_URL
+export MIGRATE_TARGET_DATABASE_URL="postgresql://…"   # DO — prefer over DATABASE_URL
+
+# 1) Dry-run (default) — plan only; no writes
+make migrate-supabase-to-do MODE=dry-run
+# or:
+uv run python scripts/ops/run_supabase_to_do_migrate.py \
+  --source-url "$MIGRATE_SOURCE_DATABASE_URL" \
+  --target-url "$MIGRATE_TARGET_DATABASE_URL" \
+  --mode dry-run --json
+
+# 2) Apply cut (idempotent) + T5.2 verify
+make migrate-supabase-to-do MODE=apply VERIFY=1
+# or:
+uv run python scripts/ops/run_supabase_to_do_migrate.py \
+  --source-url "$MIGRATE_SOURCE_DATABASE_URL" \
+  --target-url "$MIGRATE_TARGET_DATABASE_URL" \
+  --mode apply --verify --json
+```
+
+Optional dump path (requires Homebrew `libpq` / `pg_dump` on `PATH`):
+
+```bash
+uv run python scripts/ops/run_supabase_to_do_migrate.py \
+  --source-url "$MIGRATE_SOURCE_DATABASE_URL" \
+  --target-url "$MIGRATE_TARGET_DATABASE_URL" \
+  --mode apply --use-pg-dump --verify
+```
 
 ### Verify command (T5.2)
 
 ```bash
-# Source = legacy Supabase Postgres; target = DO DATABASE_URL
-export MIGRATE_SOURCE_DATABASE_URL="postgresql://…"   # or SUPABASE_DB_URL
-export DATABASE_URL="postgresql://…"                   # DO target
-
 uv run python scripts/ops/verify_supabase_to_do_migrate.py \
   --source-url "$MIGRATE_SOURCE_DATABASE_URL" \
-  --target-url "$DATABASE_URL" \
+  --target-url "$MIGRATE_TARGET_DATABASE_URL" \
   --json
 ```
 
@@ -113,11 +145,14 @@ N=100) over the T5.1 fingerprint columns. Exit `0` = match; `1` = mismatch; `2` 
 
 ## High-level steps
 
-1. Provision DO Postgres; set `DATABASE_URL` on API + worker.
-2. Apply Alembic migrations to empty (or baseline) DO schema (**TC-EV031-002**).
-3. Export legacy Supabase product tables (DB dump — ops only; not service-role as product SoT).
-4. Transform/load into DO per column map above (strip `auth.users` FK / RLS).
-5. Dry-run checksum / row-count sample (**TC-EV031-001** / T5.2).
+1. Provision DO Postgres; set `MIGRATE_TARGET_DATABASE_URL` / `DATABASE_URL` on API + worker
+   (must **not** still point at Supabase).
+2. Apply Alembic migrations to empty (or baseline) DO schema (**TC-EV031-002** /
+   `make db-migrate`).
+3. Dry-run migrate plan (**T5.3**): `make migrate-supabase-to-do MODE=dry-run`.
+4. Apply idempotent load (**T5.3**): `make migrate-supabase-to-do MODE=apply VERIFY=1`
+   (column map above; no `auth.users` FK / RLS on DO).
+5. Confirm T5.2 verify PASS (row counts + sample checksum) (**TC-EV031-001**).
 6. Cut API/worker to DO-only; confirm zero Supabase DB product traffic (**TC-F30-001/002**).
 7. Archive or delete Supabase product tables per #830 amend (retain Auth project).
 

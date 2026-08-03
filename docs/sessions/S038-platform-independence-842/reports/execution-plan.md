@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M5 — One-time Supabase → DO migrate |
-| **Active task** | T5.3 — Run pg_dump/pg_restore into DO (next) |
-| **Tasks** | 24 / 38 completed |
+| **Active task** | T5.4 — Post-migrate session CRUD against DO (next) |
+| **Tasks** | 25 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -136,7 +136,7 @@
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Docs | Finalize table/column map in `ops/supabase-to-do-postgres-migration.md` | TC-EV031-001 | T2.5, T3.2 | completed |
 | T5.2 | Code | Verify script: row counts / sample checksum after restore | TC-EV031-001 | T5.1 | completed |
-| T5.3 | Ops | Run `pg_dump`/`pg_restore` (or SQL export) into DO; dry-run then cut | F30; ops note | T5.2 | pending |
+| T5.3 | Ops | Run `pg_dump`/`pg_restore` (or SQL export) into DO; dry-run then cut | F30; ops note | T5.2 | completed |
 | T5.4 | Test | Post-migrate login session CRUD against DO; zero product Supabase DB traffic | TC-EV031-004; TC-F30-002 | T5.3 | pending |
 
 ### M6 — DOKS IaC + cutover + soak (#712)
