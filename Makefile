@@ -195,6 +195,13 @@ test-unit-backend:
 db-migrate:
 	bash scripts/ci/alembic_upgrade.sh
 
+# F30 / TC-EV031-001 / T5.2 — row counts + sample checksum (Supabase → DO).
+# Requires MIGRATE_SOURCE_DATABASE_URL (or SUPABASE_DB_URL) and DATABASE_URL.
+verify-supabase-to-do-migrate:
+	$(UV) run python scripts/ops/verify_supabase_to_do_migrate.py \
+		--source-url "$${MIGRATE_SOURCE_DATABASE_URL:-$${SUPABASE_DB_URL}}" \
+		--target-url "$${MIGRATE_TARGET_DATABASE_URL:-$${DATABASE_URL}}"
+
 test-alembic:
 	$(UV) run pytest tests/unit/test_alembic_layout_tc_ev031_002.py \
 		tests/integration/test_alembic_upgrade_idempotent.py -v --no-cov

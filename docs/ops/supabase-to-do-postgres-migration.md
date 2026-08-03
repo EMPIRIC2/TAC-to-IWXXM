@@ -1,9 +1,10 @@
 # Ops: Supabase product DB → DigitalOcean Postgres (S038 / EV-031)
 
-> **Status**: **T5.1 table/column map finalized** (2026-08-03)  
+> **Status**: **T5.2 verify script landed** (2026-08-03); T5.1 map finalized  
 > **Features**: F30 / F31  
 > **Related**: ADR-033; TC-EV031-001/002; `D-S038-spec-data` Q3=2; Alembic
-> `apps/backend/alembic/versions/20260803_0001_initial_product_schema.py`
+> `apps/backend/alembic/versions/20260803_0001_initial_product_schema.py`  
+> **Verify**: `scripts/ops/verify_supabase_to_do_migrate.py`
 
 ## Goal
 
@@ -89,9 +90,26 @@ INSERT…SELECT product inference as that migration, then load into DO `tac_work
 | Schema | `alembic upgrade head` against `DATABASE_URL` |
 | Export | `pg_dump --data-only --table=…` from Supabase DB URI (ops secret) **or** SQL `COPY` |
 | Load | `pg_restore` / `psql` into DO after schema; prefer `INSERT … ON CONFLICT (id) DO NOTHING` for idempotent dry-runs |
-| Verify | T5.2 script — row counts + sample checksum (**TC-EV031-001**) |
+| Verify | `uv run python scripts/ops/verify_supabase_to_do_migrate.py` — row counts + sample checksum (**TC-EV031-001** / T5.2) |
 
 Recommended dump order: `tac_work_sessions` → `iwxxm_ingest_results` → `iwxxm_ingest_quarantine`.
+
+### Verify command (T5.2)
+
+```bash
+# Source = legacy Supabase Postgres; target = DO DATABASE_URL
+export MIGRATE_SOURCE_DATABASE_URL="postgresql://…"   # or SUPABASE_DB_URL
+export DATABASE_URL="postgresql://…"                   # DO target
+
+uv run python scripts/ops/verify_supabase_to_do_migrate.py \
+  --source-url "$MIGRATE_SOURCE_DATABASE_URL" \
+  --target-url "$DATABASE_URL" \
+  --json
+```
+
+Compares `tac_work_sessions`, `iwxxm_ingest_results`, and `iwxxm_ingest_quarantine`:
+full **row counts** plus a SHA-256 **sample checksum** (first N rows by `id`, default
+N=100) over the T5.1 fingerprint columns. Exit `0` = match; `1` = mismatch; `2` = DB error.
 
 ## High-level steps
 
