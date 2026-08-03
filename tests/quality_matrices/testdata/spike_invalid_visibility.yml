@@ -1,0 +1,26 @@
+# Spike fixture for T0.3 — YAML RuleCase load + node ids (TC-F29-005).
+rule_id: INVALID_VISIBILITY
+engine: lint
+cases:
+  - bucket: happy
+    case_id: "01"
+    status: ready
+    tac: "METAR KJFK 121251Z 18008KT 10SM FEW250 22/12 A3012="
+    expect:
+      accept: true
+  - bucket: sad
+    case_id: "01"
+    status: ready
+    tac: "METAR KJFK 121251Z 18008KT BADVIS FEW250 22/12 A3012="
+    expect:
+      codes: [INVALID_VISIBILITY]
+  - bucket: edge_pass
+    case_id: "01"
+    status: needs-fixture
+    meta:
+      reason: "pilot spike — fill in M1"
+  - bucket: edge_fail
+    case_id: "01"
+    status: needs-fixture
+    meta:
+      reason: "pilot spike — fill in M1"
