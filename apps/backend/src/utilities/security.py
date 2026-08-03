@@ -1,61 +1,83 @@
-"""Operator JWT gate retired (F21 / ADR-031 / T5.2).
-
-Public convert / validate / lint / decode / dissemination no longer depend on this
-module. ``verify_supabase_token`` remains as a transitional no-op for any leftover
-call sites that still declare the dependency.
-
-The ``DISABLE_AUTH`` dual path is removed — there is no JWT enforcement path left
-for the operator API.
-"""
+"""JWT gate for logged-in work-sessions (F31 / ADR-033) — JWKS-only verify."""
 
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Optional
+import os
+from typing import Any
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from metar_auth.jwks import JwtVerificationError, verify_access_token
 
 logger = logging.getLogger(__name__)
 
-security = HTTPBearer(auto_error=False)
+security = HTTPBearer(auto_error=True)
 
-# Retired — kept as a constant so leftover tests/config greps fail closed.
+# Product convert/lint/validate remain public — this flag is not used to bypass JWT
+# on work-sessions (Auth-kept for long-term storage).
 DISABLE_AUTH = False
 
 
 async def verify_supabase_token(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
-) -> Dict[str, Any]:
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> dict[str, Any]:
     """
-    Transitional no-op auth dependency (F21).
-
-    Ignores credentials and returns an anonymous principal. Callers that still
-    inject this dependency must not treat the result as a verified end-user.
+    Verify Bearer JWT via Supabase Auth JWKS (no HS256 secret path).
 
     Parameters
     ----------
-    credentials : HTTPAuthorizationCredentials or None
-        Optional Bearer credentials (ignored).
+    credentials : HTTPAuthorizationCredentials
+        Authorization Bearer token from the request.
 
     Returns
     -------
     dict[str, Any]
-        Anonymous principal marker.
+        Decoded claims (must include ``sub``).
+
+    Raises
+    ------
+    HTTPException
+        401 when the token is missing/invalid; 503 when Auth URL env is missing.
     """
-    _ = credentials
-    return {
-        "sub": "anonymous",
-        "user_id": "anonymous",
-        "email": None,
-        "authenticated": False,
-        "environment": "public",
-    }
+    supabase_url = (os.environ.get("SUPABASE_URL") or "").strip()
+    jwks_url = (os.environ.get("SUPABASE_JWKS_URL") or "").strip() or None
+    if not supabase_url and not jwks_url:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Auth verify unavailable — set SUPABASE_URL or SUPABASE_JWKS_URL",
+        )
+    try:
+        claims = verify_access_token(
+            credentials.credentials,
+            jwks_url=jwks_url,
+            supabase_url=supabase_url or None,
+        )
+    except JwtVerificationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(exc),
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from exc
+    if not claims.get("sub"):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token missing sub claim",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return claims
 
 
-async def fetch_jwks() -> Dict[str, Any]:
-    """Removed with operator Auth (F21) — JWKS is no longer used by the API."""
-    raise NotImplementedError("JWKS fetching removed with operator Auth (F21 / ADR-031)")
+async def fetch_jwks() -> dict[str, Any]:
+    """
+    Compatibility stub — product verify uses ``verify_access_token`` (JWKS URL).
+
+    Raises
+    ------
+    NotImplementedError
+        Always; callers should use ``metar_auth.jwks.verify_access_token``.
+    """
+    raise NotImplementedError("Use metar_auth.jwks.verify_access_token (ADR-033 JWKS-only)")
 
 
-__all__ = ["verify_supabase_token", "fetch_jwks", "DISABLE_AUTH"]
+__all__ = ["verify_supabase_token", "fetch_jwks", "DISABLE_AUTH", "security"]

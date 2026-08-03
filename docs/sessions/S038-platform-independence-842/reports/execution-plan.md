@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M2 — DO Postgres + Alembic + work-sessions |
-| **Active task** | T2.4 — Work-sessions API CRUD + JWT gate tests (next) |
-| **Tasks** | 11 / 38 completed |
+| **Active task** | T2.6 — No Supabase PostgREST product writes from API (next) |
+| **Tasks** | 13 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -108,8 +108,8 @@
 | T2.1 | Test | Alembic: empty DB → head; **second `upgrade head` no-op** (idempotent); schema matches `tac_work_sessions` | TC-EV031-002 | T0.3 | completed |
 | T2.2 | Code | Alembic tree under `apps/backend/` (or `apps/database/`); initial revision for sessions (+ F8 tables if co-located) | F30; ADR-033 | T2.1 | completed |
 | T2.3 | Config | CI: Postgres service + auto `alembic upgrade head` before schema-touching tests; document make target | `D-S038-04-b2` CI amend | T2.2 | completed |
-| T2.4 | Test | Work-sessions API CRUD + JWT gate (ADR-020 wire); guest path untouched | TC-F31-002..004; UJ-046 | T1.2, T2.2 | pending |
-| T2.5 | Code | SQLAlchemy session repository + restore `/api/v1/work-sessions*` (pydantic) | api-contract; ADR-020 | T2.4 | pending |
+| T2.4 | Test | Work-sessions API CRUD + JWT gate (ADR-020 wire); guest path untouched | TC-F31-002..004; UJ-046 | T1.2, T2.2 | completed |
+| T2.5 | Code | SQLAlchemy session repository + restore `/api/v1/work-sessions*` (pydantic) | api-contract; ADR-020 | T2.4 | completed |
 | T2.6 | Test | No Supabase PostgREST product writes from API (TC-F30-001) | TC-F30-001 | T2.5 | pending |
 
 ### M3 — F8 → DATABASE_URL

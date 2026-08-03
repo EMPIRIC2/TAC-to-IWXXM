@@ -1,5 +1,11 @@
 """API routers."""
 
-from . import evaluation, validation
+from . import dissemination, evaluation, icao_opmet, validation, work_sessions
 
-__all__ = ["evaluation", "validation"]
+__all__ = [
+    "dissemination",
+    "evaluation",
+    "icao_opmet",
+    "validation",
+    "work_sessions",
+]
