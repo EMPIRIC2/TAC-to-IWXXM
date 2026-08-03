@@ -62,7 +62,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **AIRMET** | ✅ Annex 3 Ch.7 + App 6; AirWxPhenomena + VIS-cause lists; **+** [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) | ✅ Guidance + examples + FM 205; EUR Doc 014 AHL `WA`→`LW` | ✅ `airmet.xsd` + SCH | **F24 / #731** S026/EV-020 — WMO `airmet-A6-1a-TS` default golden + registry (in progress) |
 | **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | **F26 / #736** S027/EV-021 — **V1–V3/C1 closed** (T2.3–T2.4); **#820/#823 B4** deepen **S036/EV-029 M9** |
 | **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | **F27 / #737** S027/EV-021 — T1–T3/C1 closed prior; **#820/#823 B4** deepen **S036/EV-029 M10** |
-| **SWXA** | ✅ Annex 3 App 2 Table **A2-3** (cite); SpaceWx registry TBD F28 | ✅ Guidance + `spacewx-A7-3/4/5` (+ alt); AHL `FN`→`LN` | ✅ `spaceWeatherAdvisory.xsd` + SCH | **F28 Planned — S036/EV-029 M11** · #740 · #823 |
+| **SWXA** | ✅ Annex 3 App 2 Table **A2-3** (cite); SpaceWx registry (F28) | ✅ Guidance + `spacewx-A7-3` (+ A7-4/5 deferred); AHL `FN`→`LN` | ✅ `spaceWeatherAdvisory.xsd` + SCH | **F28 Done — S036/EV-029 M11** · #740/#823 **closed**; PR #828 |
 | **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO base + iwxxm-us 3.0 | GIFTs stripped REMARKS |
 | **Bulletin / AHL** | ✅ WMO AHL page **v1.0.1** (fetched 2026-08-01) | ✅ AHL T1T2 TAC↔IWXXM + BBB prefixes + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | **S036/EV-029 M1 closed** — shared `parse_ahl` / `map_t1t2` / BBB / `iwxxm_filename` in `tac2iwxxm` (+ dissemination thin wrap); body **split** still METAR/SPECI until per-family Ms; WIS2 ≠ COLLECT ([Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
 
@@ -315,7 +315,7 @@ Discovery-first cycle: mine → promote durable rows → wire sample menu / vali
 | In-scope stems on validate CI (XML well-formed/XSD/GML) | `test_wmo_canonical_examples` + loader inventory (M6) | ✅ / wire |
 | Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — **closed**; catalog **wmoPass** (S033/EV-026) | ✅ |
 | TC SIGMET A6-2 menu / encode bar | [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) **closed** (M7 encode bar); menu unlock + lint deepen → [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | ⚠ residual #829 |
-| SWXA sample menu / encode bar | [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) → **S036/EV-029 M11** (F28); VONA/WAFS/QVACI remain OOS | ⚠ in-cycle / ❌ OOS |
+| SWXA sample menu / encode bar | [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** (F28 / M11); A7-3 unlocked; A7-4/5 deferred; VONA/WAFS/QVACI OOS | ✅ / ❌ OOS |
 | US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | #810/#811/#812 ✅ encode (S032 T1–T3) |
 | Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → #809 + #800 survivors | ⚠ → children |
 
@@ -367,9 +367,9 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | VA SIGMET | ok/deepen | ok/deepen | ok | gap | **M6** |
 | TC SIGMET | ok/deepen | **ok** (WC→`TropicalCycloneSIGMET`; BBB/`reportStatus`; CNL) | ok (A6-2-TC) | ok (WC pack) | **M7 closed** (#738); deepen [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
 | AIRMET | ok/deepen | **ok** (WA→`reportStatus`; CNL) | ok | ok (WA pack) | **M8 closed** (`airmet-quality.yml`) |
-| VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9** (#820) |
-| TCA | ok/deepen | ok/deepen | ok | gap | **M10** (#820) |
-| SWXA | gap | gap | gap | gap | **M11** (F28 / #740) |
+| VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9 closed**; decode residual [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) |
+| TCA | ok/deepen | ok/deepen | ok | gap | **M10 closed**; decode residual [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) |
+| SWXA | **ok** (F28) | **ok** (FN→LN; `SpaceWeatherAdvisory`) | ok | ok (A7-3) | **M11 closed** (#740); A7-4/5 deferred |
 
 ### Report-state × AHL (COM / #823 B3)
 
@@ -387,19 +387,19 @@ Standalone peers exist for all eight families (+ SWXA vendor). **Multi-report** 
 non-METAR **AHL** are mostly `gap` → M1 + per-family packs (detail in example inventory).
 OOS: VONA · QVACI · WAFS · SIGWX.
 
-### Child-issue residuals (S02.M3) — keep #823 open
+### Child-issue residuals (S02.M3) — #823 closed (T12.7)
 
-Do **not** silently blank matrix cells. Open or link children when a cell stays `defer`
-after its milestone; until then track under #823:
+Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** 2026-08-02
+(S036/EV-029 T12.7). Do **not** silently blank matrix cells — residuals stay on children:
 
-| Residual | Track | Target Ms |
-|----------|-------|-----------|
-| Shared AHL/`T1T2`/BBB/filename API | #823 B1–B3 | **M1 closed** (`8214b90`/`4cace9c`/`f1e87c5`) |
-| Per-family body `split_bulletin` (non-METAR/SPECI) | #823 | M2–M11 product packs |
+| Residual | Track | Status |
+|----------|-------|--------|
+| Shared AHL/`T1T2`/BBB/filename API | #823 B1–B3 | **M1 closed** |
+| Per-family body `split_bulletin` (non-METAR/SPECI) | product packs M2–M11 | in-cycle packs landed |
 | TC SIGMET quality bar | #738 **closed** | M7 |
-| TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | post-M7 residual |
-| VAA/TCA multi-report / encode residuals | #820 | M9 / M10 |
-| SWXA F28 product path | #740 | M11 |
-| Non-METAR multi-report body fixtures | #823 (+ FIXTURE_GAPS stem rows) | M2–M11 |
+| TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **open** residual |
+| VAA/TCA decode residual deepen | [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) | **open** (encode M9/M10 closed) |
+| SWXA F28 product path | #740 **closed** | M11 / F28 Done |
+| Non-METAR multi-report body fixtures | FIXTURE_GAPS stem rows | document / deepen |
 | Second WMO peers (METAR/SPECI/AIRMET/VAA/TCA) | FIXTURE_GAPS (pin has one) | document-only |
 | AIRMET CNL peer absent from pin | FIXTURE_GAPS | document-only |

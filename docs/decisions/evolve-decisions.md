@@ -10,7 +10,7 @@
 **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella); absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820), [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740)  
 **Started**: 2026-08-01  
 **Branch**: `evolve/EV-029-eight-family-ahl-rules`  
-**Status**: **in_progress** — T12.5 COMPLETE (11+12); next **T12.6** / 13-deploy-smoke (46/48)
+**Status**: **completed** (2026-08-02) — T12.7 closeout; #823/#740 closed; PR #828 @ `4e6577a`; smoke PASS
 
 ### Scope (Phase 0 — locked 2026-08-01)
 
@@ -45,6 +45,8 @@
 | E29-semver-patch-3 | decision | Publishable semver after M10? | **2** — `tac2iwxxm` only **0.2.2 → 0.2.3** (pyproject + Cargo + `__version__`); no tags/PyPI (`D-S036-semver-patch-3`) |
 | E29-11 | gate | 11-verify-impl? | **2,1,1,1** — no UI preview; approve UJ-043 + F28 + deepen (`D-S036-11`) |
 | E29-12 | gate | 12-verify-deploy? | **1,1,1** — mitigations + rollback + READY for T12.6 (`D-S036-12`); H4–H5 **required** (FE Examples unlocked; amends E29-T6 waive) |
+| E29-13 | gate | 13-deploy-smoke / T12.6? | **1** — approve smoke → T12.7 (`D-S036-13`); close #823/#740; residuals #829/#820/#831 |
+| E29-close | decision | T12.7 closeout? | **1** — evolve summary + `docs/evolve-report-EV-029.md`; F28 Done |
 
 **Scope (verbatim)**: Go 1-by-1 across the eight TAC→IWXXM product families and ensure
 validation, linting, and conversion rules (plus examples for all TAC input shapes) have no

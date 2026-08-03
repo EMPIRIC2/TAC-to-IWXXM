@@ -57,7 +57,7 @@
 | 7 | #823 closable or children linked | #738 closed; #829 open; #820/#740 via cycle | **MET** (children linked) |
 | — | Report-state matrix (**TC-EV029-006**) | T12.2 — 38 tests | **MET** |
 | — | Product-order smoke (**TC-EV029-007**) | T12.1 — 11 tests | **MET** |
-| — | FE Examples / H4–H5 (**TC-EV029-008**) | SWXA Examples unlocked; live H4–H5 → **T12.6/13** | **DEFERRED** (planned) |
+| — | FE Examples / H4–H5 (**TC-EV029-008**) | SWXA Examples unlocked; live H4–H5 @ T12.6 | **MET** (`D-S036-13`) |
 
 ### Journey — UJ-043
 

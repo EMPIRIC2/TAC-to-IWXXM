@@ -1,8 +1,9 @@
 # Deploy smoke — S036 / EV-029 (T12.6 / 13)
 
-> Status: **PASS** (awaiting user close approval)  
+> Status: **PASS** (approved)  
 > Date: 2026-08-02  
-> Decision: **D-S036-13-merge** = 1 (merge #828 + live smoke)  
+> Decision: **D-S036-13-merge** = 1 (merge #828 + live smoke); **D-S036-13** = 1 (approve close → T12.7)  
+ 
 > PR: [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **merged**  
 > Merge commit: `4e6577a`  
 > Main CI: [30773122547](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30773122547) **success** (Deploy included)  
@@ -62,5 +63,6 @@ make test-live-api            # H3
 
 ## Verdict
 
-**T12.6 / 13-deploy-smoke complete (technical).** F28 SWXA + eight-family AHL deepen live on
-Render with H1–H5 green. Remaining: user approve smoke → T12.7 close (#823 / evolve summary).
+**T12.6 / 13-deploy-smoke complete and approved** (`D-S036-13` = 1). F28 SWXA + eight-family
+AHL deepen live on Render with H1–H5 green. T12.7 closeout: #823 / #740 closed; evolve summary
+written.

@@ -9,20 +9,20 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Intake locked `D-S036-open` = 1,1,1,1,1,1 |
-| 16-evolve | yes | orchestrator | **in_progress** | Gate B PASS; orchestrating 07 |
+| 16-evolve | yes | orchestrator | **completed** | Phase 4 closeout T12.7; await session close |
 | 01-requirements | yes | delta | **completed** | Manifest=2 (API `swxa`); close → 02 (`D-S036-E29-M`) |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S036-02-phase-a`); Batch F `1,1,1,1` |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
 | 04-tech-plan | yes | delta | **completed** | Plan approved (`D-S036-04-plan`); Gate B |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | **in_progress** | M12 @ T12.6 pending (45→46/48; tip docs commit) |
+| 07-build | yes | full | **completed** | M0–M12 (48/48); #828 merged |
 | 08-verify-build | yes | delta | **completed** | T12.3 |
 | 09-qa | yes | delta | **completed** | T12.4 |
 | 10-e2e | yes | smoke | **completed** | T12.4 UJ-043 |
 | 11-verify-impl | yes | delta | **completed** | T12.5 `D-S036-11` = 2,1,1,1 |
 | 12-verify-deploy | yes | delta | **completed** | T12.5 `D-S036-12` = 1,1,1 READY |
-| 13-deploy-smoke | yes | full | pending | T12.6 — API+FE; H1–H5 (Examples unlocked) |
+| 13-deploy-smoke | yes | full | **completed** | T12.6 `D-S036-13` = 1; H1–H5 + SWXA live |
 
 ## Skip rationale
 
@@ -43,4 +43,7 @@ Routine Standard checkpoints after phases A–D and deploy.
 | Gate A | `D-S036-02-phase-a` = **1** — PASS → **04-tech-plan** | 2026-08-01 |
 | 04 Batches 1–2 | `D-S036-04-batch-1` = **3,1,2,2**; `D-S036-04-batch-2` = **1,1,1,1** | 2026-08-01 |
 | Gate B | `D-S036-04-plan` = **1** — approve 48-task plan → **07 @ T0.1** | 2026-08-01 |
+| 11-verify-impl | `D-S036-11` = **2,1,1,1** | 2026-08-02 |
+| 12-verify-deploy | `D-S036-12` = **1,1,1** READY | 2026-08-02 |
+| 13-deploy-smoke | `D-S036-13` = **1** — approve T12.6 → T12.7 | 2026-08-02 |
 )

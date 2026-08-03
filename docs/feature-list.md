@@ -35,7 +35,7 @@
 | F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794 |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
-| F28 | SWXA quality bar (SpaceWeatherAdvisory) | Planned | Product | S036 / EV-029; #823/#740 |
+| F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -998,13 +998,14 @@
 
 ### F28: SWXA Quality Bar — S036 / EV-029
 
-- **Status**: **Planned** — S036 / EV-029; umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823);
-  absorbs [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740).
+- **Status**: **Done** — S036 / EV-029; PR [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828);
+  umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed**;
+  [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** (absorbed).
 - **What it does**: Raises **Space Weather Advisory** (SWXA / SWX) TAC lint, convert, and
   IWXXM-validate quality to the F15–F27 product bar. Root `iwxxm:SpaceWeatherAdvisory`.
   TAC AHL `FN` → IWXXM AHL `LN`. Reuses **ADR-028** registry + **ADR-032** golden policy.
   Completes the eight-family TAC→IWXXM converter set (METAR/SPECI/TAF/SIGMET×3/AIRMET/VAA/TCA/SWXA).
-- **Issues**: [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740); parent [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823).
+- **Issues**: [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) closed; parent [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) closed.
 - **Deepens**: **F6** (SWXA encode), **F12** (SWXA checklist), **F2/F13** (XSD+SCH), optional
   **F7.g** Examples when passers exist.
 - **API**: Additive wire value **`product=swxa`** on convert / convert-bulletin / lint-tac /
@@ -1030,11 +1031,12 @@
 
 ### F6 / F6.bulletin / F12 / F2 / F13 / F15 / F20 / F23 / F24 / F26 / F27 deepen (S036 / EV-029 — #823)
 
-- **Status**: **Planned** (S036 / EV-029) — Phase A mine/promote then Phase B product-by-product
-- **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) (umbrella);
-  absorb [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) (TC SIGMET),
-  [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) (VAA/TCA decode residual),
-  [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) (via **F28**)
+- **Status**: **Done** (S036 / EV-029) — Phase A + Phase B complete; PR #828; residuals on children
+- **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed**;
+  [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) closed (TC SIGMET);
+  [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) closed (via **F28**);
+  residuals [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) (TC deepen),
+  [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) (VAA/TCA decode)
 - **Runtime SoT**: `vendor/manifest.json` → IWXXM **2025-2**
 - **What it does**:
   1. **Phase A** — Mine/promote #823 COM/AHL/bulletin + per-product rules into

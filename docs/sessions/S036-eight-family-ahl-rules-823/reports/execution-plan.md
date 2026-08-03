@@ -13,10 +13,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D — Verify / deploy |
+| **Active phase** | Phase D — complete (T12.7 closeout) |
 | **Active milestone** | M12 — Smoke / verify / deploy |
-| **Active task** | T12.6 — smoke PASS (awaiting user approve → T12.7) |
-| **Tasks** | 46 / 48 completed (T12.6 technical done) |
+| **Active task** | T12.7 — #823 close + evolve summary |
+| **Tasks** | 48 / 48 completed |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary
@@ -171,8 +171,8 @@
 | T12.3 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | T12.2 | **completed** |
 | T12.4 | Test | 09-qa delta + 10-e2e smoke (UJ-043) | 09; 10 | T12.3 | **completed** |
 | T12.5 | Docs | 11-verify-impl per–AC; 12-verify-deploy | 11; 12 | T12.4 | **completed** |
-| T12.6 | Test | 13-deploy-smoke — API redeploy; H1–H3; **H4–H5 required** (FE Examples unlocked; TC-EV029-008) | E29-T6; 13 | T12.5 | **in_progress** |
-| T12.7 | Docs | Close #823 / link children; evolve summary | #823; S02.M3 | T12.6 | pending |
+| T12.6 | Test | 13-deploy-smoke — API redeploy; H1–H3; **H4–H5 required** (FE Examples unlocked; TC-EV029-008) | E29-T6; 13 | T12.5 | **completed** (`D-S036-13`=1) |
+| T12.7 | Docs | Close #823 / link children; evolve summary | #823; S02.M3 | T12.6 | **completed** |
 
 ## Data Dependencies
 
@@ -190,7 +190,7 @@
 |------|-------|
 | Branch | `evolve/EV-029-eight-family-ahl-rules` |
 | Commits | Atomic per task `[T{m}.{n}] …` / `[EV-029] …` |
-| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **open** — M2–M10 (+ `tac2iwxxm` 0.2.3); evolve continues for M11+; final evolve PR to `main` after Phase C/D |
+| PR | [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) **merged** — M1; [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) **merged** `4e6577a` — M2–M11 (+ `tac2iwxxm` 0.2.3); smoke + T12.7 closeout on `main` |
 | Checklist | Lint · typecheck · tests · no secrets · TC mapping |
 
 ## Phase Gate Log
@@ -198,8 +198,8 @@
 | Gate | Criteria | Status |
 |------|----------|--------|
 | B→C | Plan approved; 05/06 skipped | **passed** (`D-S036-04-plan` = 1) |
-| C→D | All M0–M12 tasks done; 08 pass | pending |
-| Deploy | 09+10 pass; 11+12 approved; 13 per E29-T6 | pending |
+| C→D | All M0–M12 tasks done; 08 pass | **passed** |
+| Deploy | 09+10 pass; 11+12 approved; 13 per E29-T6 (+ H4–H5) | **passed** (`D-S036-13`=1) |
 
 ## Task count
 
