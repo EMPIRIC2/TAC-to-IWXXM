@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M2 — DO Postgres + Alembic + work-sessions |
-| **Active task** | T2.1 — Alembic idempotent upgrade tests (next) |
-| **Tasks** | 8 / 38 completed |
+| **Active task** | T2.3 — CI Postgres + alembic upgrade head (next) |
+| **Tasks** | 10 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -105,8 +105,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Alembic: empty DB → head; **second `upgrade head` no-op** (idempotent); schema matches `tac_work_sessions` | TC-EV031-002 | T0.3 | pending |
-| T2.2 | Code | Alembic tree under `apps/backend/` (or `apps/database/`); initial revision for sessions (+ F8 tables if co-located) | F30; ADR-033 | T2.1 | pending |
+| T2.1 | Test | Alembic: empty DB → head; **second `upgrade head` no-op** (idempotent); schema matches `tac_work_sessions` | TC-EV031-002 | T0.3 | completed |
+| T2.2 | Code | Alembic tree under `apps/backend/` (or `apps/database/`); initial revision for sessions (+ F8 tables if co-located) | F30; ADR-033 | T2.1 | completed |
 | T2.3 | Config | CI: Postgres service + auto `alembic upgrade head` before schema-touching tests; document make target | `D-S038-04-b2` CI amend | T2.2 | pending |
 | T2.4 | Test | Work-sessions API CRUD + JWT gate (ADR-020 wire); guest path untouched | TC-F31-002..004; UJ-046 | T1.2, T2.2 | pending |
 | T2.5 | Code | SQLAlchemy session repository + restore `/api/v1/work-sessions*` (pydantic) | api-contract; ADR-020 | T2.4 | pending |
