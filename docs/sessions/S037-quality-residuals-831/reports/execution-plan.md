@@ -1,6 +1,6 @@
 # Execution plan — S037 / EV-030 (#831 / #829 / #820)
 
-> **Status**: **pending approval** — Gate B (`D-S037-04-plan`)  
+> **Status**: **approved** (2026-08-03) — `D-S037-04-plan` = 1; Gate B PASS → 07 @ T0.1  
 > **Branch**: `evolve/EV-030-quality-residuals-831`  
 > **Evolve cycle**: EV-030  
 > **Features**: **F29** (new); deepen F23 / F12 / F2 / F13 / F9 / F26 / F27  
@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — tech plan (awaiting Gate B) |
-| **Active milestone** | — (start M0 @ T0.1 after approve) |
-| **Active task** | — |
-| **Tasks** | 0 / 27 completed |
+| **Active phase** | Phase C — build |
+| **Active milestone** | M1 — F29 harness |
+| **Active task** | T1.1 — Shared YAML/JSON loader + case schema tests |
+| **Tasks** | 4 / 27 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -60,10 +60,10 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T0.1 | Docs | Design note: answer #831 eval Qs (storage, inventory SoT, runners, skip/`needs-fixture`, CI) under `reports/` | TC-F29-001; TC-EV030-001; E30-T2/T3/T8 | — | pending |
-| T0.2 | Docs | Unified inventory sketch — map METAR/SPECI pilot rules (registry + SCH + encode) → 20 slots | TC-F29-004; E30-T3 | T0.1 | pending |
-| T0.3 | Test | Spike: YAML RuleCase load + node-id shape (`rule/bucket/case`) — red then minimal green scaffold | TC-F29-005; E30-T2 | T0.1 | pending |
-| T0.4 | Docs | M0 exit checklist — proceed M1 only when design note + spike API agreed | E30-T1 | T0.2, T0.3 | pending |
+| T0.1 | Docs | Design note: answer #831 eval Qs (storage, inventory SoT, runners, skip/`needs-fixture`, CI) under `reports/` | TC-F29-001; TC-EV030-001; E30-T2/T3/T8 | — | **completed** |
+| T0.2 | Docs | Unified inventory sketch — map METAR/SPECI pilot rules (registry + SCH + encode) → 20 slots | TC-F29-004; E30-T3 | T0.1 | **completed** |
+| T0.3 | Test | Spike: YAML RuleCase load + node-id shape (`rule/bucket/case`) — red then minimal green scaffold | TC-F29-005; E30-T2 | T0.1 | **completed** |
+| T0.4 | Docs | M0 exit checklist — proceed M1 only when design note + spike API agreed | E30-T1 | T0.2, T0.3 | **completed** |
 
 ### M1 — F29 harness (runners + METAR/SPECI pilot)
 
@@ -133,7 +133,7 @@
 | Gate | Criteria | Status |
 |------|----------|--------|
 | A→B | Specs + 02 PASS | **passed** (`D-S037-02-phase-a`) |
-| B→C | Plan approved; 05/06 skipped (no new deps/tooling) | **pending** (`D-S037-04-plan`) |
+| B→C | Plan approved; 05/06 skipped (no new deps/tooling) | **passed** (`D-S037-04-plan` = 1) |
 | C→D | All Fn tasks done; 08 pass | pending |
 | Deploy | 09+10; 11+12; 13 H1–H5 | pending |
 
