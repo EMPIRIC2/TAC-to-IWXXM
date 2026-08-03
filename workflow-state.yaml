@@ -68,7 +68,7 @@ active_session:
     status: in_progress
     started: '2026-08-03'
     skip_rationale: null
-    note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+    note: 'IN PROGRESS — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -128,6 +128,7 @@ active_session:
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     status: approved
+    note: 'T2.5 in_progress (FE catalog / Examples Vitest path smoke); T2.4 COMPLETE @ 9f7c087 (wmoReference); tip 9f7c087'
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
@@ -138,13 +139,15 @@ active_session:
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
     status: completed
+  - path: docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
+    status: completed
   - path: tests/quality_matrices/
     status: staged
   - path: docs/api-contract.md
     status: touched
   preset: Standard
   preset_status: approved
-  note: 'S037/EV-030 — M1 08 PASS; PR #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+  note: 'S037/EV-030 — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -5828,15 +5831,15 @@ stages:
     session_id: S037-quality-residuals-831
     evolve_cycle_id: EV-030
     mode: full
-    note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
-    tip_sha: 22d4ac1
-    tip_sha_full: 22d4ac12a5d2316abfc5c99ffd156e43ea255fee
-    progress: 15/27
+    note: 'IN PROGRESS — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
+    tip_sha: 9f7c087
+    tip_sha_full: 9f7c087c5682b0193ed9aae74c3cc49ee330cf35
+    progress: 16/27
     current_milestone: M2
-    current_task: T2.4
+    current_task: T2.5
     active_milestone: M2
-    active_task: T2.4
-    active_task_status: pending
+    active_task: T2.5
+    active_task_status: in_progress
     pr_m1_number: 832
     pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
     pr_m1_status: open
@@ -5889,15 +5892,15 @@ stages:
       mode: full
       started_at: '2026-08-03'
       started: '2026-08-03'
-      note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
-      tip_sha: 22d4ac1
-      tip_sha_full: 22d4ac12a5d2316abfc5c99ffd156e43ea255fee
-      progress: 15/27
+      note: 'IN PROGRESS — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
+      tip_sha: 9f7c087
+      tip_sha_full: 9f7c087c5682b0193ed9aae74c3cc49ee330cf35
+      progress: 16/27
       active_milestone: M2
       current_milestone: M2
-      active_task: T2.4
-      current_task: T2.4
-      active_task_status: pending
+      active_task: T2.5
+      current_task: T2.5
+      active_task_status: in_progress
       pr_m1_number: 832
       pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
       pr_m1_status: open
@@ -5928,16 +5931,17 @@ stages:
       - docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
       - docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
       - docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
+      - docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
       - tests/quality_matrices/
     substeps:
       task_loop:
         status: in_progress
-        current_task: T2.4
-        active_task_status: pending
+        current_task: T2.5
+        active_task_status: in_progress
         active_milestone: M2
         phase: C
         milestone: M2
-        notes: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+        notes: 'IN PROGRESS — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
     delta_substages:
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
@@ -6426,6 +6430,7 @@ stages:
     - '2026-08-02 S036/EV-029 07-build — M2 T2.1 STARTED (METAR gap fixtures); tip c4b2b5d; #823'
     - '2026-08-02 S036/EV-029 M1 PR #827 MERGED to main @ c338108 (2026-08-02T14:18:36Z); M2 @ T2.1 pending; branch evolve/EV-029-eight-family-ahl-rules remains active for M2+; #823'
     - '2026-08-02 S036/EV-029 07-build — M0 COMPLETE (T0.1–T0.6 PASS); advance M1 @ T1.1 pending; tip c181ede; #823'
+    - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
@@ -8627,10 +8632,11 @@ stages:
     prior_evolve_cycle_id: EV-028
     prior_completed: '2026-08-01'
     prior_note: 'S035/EV-028 16-evolve CLOSED — Phase 4 close D-S035-EV028-phase4-close; PR #824 @ 70312dd; #825 closeout @ 8086664; #781 closed; active_session=null'
-    note: 'S037/EV-030 16-evolve — M1 08 PASS; PR #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
-    tip_sha: 22d4ac1
-    tip_sha_full: 22d4ac12a5d2316abfc5c99ffd156e43ea255fee
+    note: 'S037/EV-030 16-evolve — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
+    tip_sha: 9f7c087
+    tip_sha_full: 9f7c087c5682b0193ed9aae74c3cc49ee330cf35
     notes:
+    - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
     - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
@@ -27419,7 +27425,8 @@ evolve_cycles:
     - 06-tech-tooling
     note: 'Standard — D-S037-route; skip 03/05/06'
   current_stage: 07-build
-  note: 'S037/EV-030 — M1 08 PASS; PR #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
+  active_task: T2.5
+  note: 'S037/EV-030 — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
   pr_m1_number: 832
   pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
   pr_m1_status: open
@@ -27434,7 +27441,7 @@ evolve_cycles:
       status: in_progress
       mode: orchestrator
       started: '2026-08-02'
-      note: 'Orchestrating 07-build M2 T2.4 pending (A6-2-TC catalog unlock); T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2); D-S037-semver-none; PR-M1 #832 open; M1 08 PASS; Gate B PASS; tip 22d4ac1'
+      note: 'Orchestrating 07-build M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; M1 08 PASS; Gate B PASS; progress 16/27'
     01-requirements:
       status: completed
       started: '2026-08-02'
@@ -27453,10 +27460,10 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-03'
-      note: 'IN PROGRESS — M1 08 PASS; PR-M1 #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
-      active_task: T2.4
-      active_task_status: pending
-      tip_sha: 22d4ac1
+      note: 'IN PROGRESS — M2 T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; PR-M1 #832 open; progress 16/27; #831→#829→#820'
+      active_task: T2.5
+      active_task_status: in_progress
+      tip_sha: 9f7c087
     08-verify-build:
       status: completed
       started: '2026-08-03'
@@ -27504,6 +27511,7 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     status: approved
+    note: 'T2.5 in_progress (FE catalog / Examples Vitest path smoke); T2.4 COMPLETE @ 9f7c087 (wmoReference); tip 9f7c087'
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
     status: completed
   - path: docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
@@ -27543,6 +27551,7 @@ evolve_cycles:
   - D-S037-semver-none
   - D-S037-T2.3-oos
   notes:
+  - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
@@ -27567,11 +27576,12 @@ git_history:
   ahead_of_origin: 1
   pushed: false
   pending_commit:
-  tip_sha: 22d4ac1
-  tip_sha_full: 22d4ac12a5d2316abfc5c99ffd156e43ea255fee
+  tip_sha: 9f7c087
+  tip_sha_full: 9f7c087c5682b0193ed9aae74c3cc49ee330cf35
   recommended_branch: evolve/EV-030-quality-residuals-831
-  note: 'S037/EV-030 — PR-M1 #832 open; T2.3 COMPLETE @ 22d4ac1 (STNR in-cycle; exceptional TC geometry OOS cite D-S037-T2.3-oos / S02.M2); D-S037-semver-none; active_task → T2.4 pending; tip 22d4ac1 (ahead_of_origin=1); current_branch evolve/EV-030-quality-residuals-831; #831/#829/#820'
+  note: 'S037/EV-030 — PR-M1 #832 open; T2.4 COMPLETE (wmoReference); T2.5 in_progress; tip 9f7c087; progress 16/27; current_branch evolve/EV-030-quality-residuals-831; #831/#829/#820'
   notes:
+  - '2026-08-03 S037/EV-030 — T2.4 COMPLETE @ 9f7c087 ([T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)); active_task → T2.5 in_progress (FE catalog / Examples Vitest path smoke); progress 16/27; tip 9f7c087; PR-M1 #832 open; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — T2.3 COMPLETE @ 22d4ac1 ([T2.3] docs: TC SIGMET STNR in-cycle; exceptional geometry OOS cite D-S037-T2.3-oos / S02.M2; report t2.3-tc-geometry-oos.md); D-S037-semver-none confirmed; active_task → T2.4 pending (A6-2-TC catalog unlock); progress 15/27; tip 22d4ac1; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — D-S037-semver-none (option 1) — no tac-validate semver bump (remain 0.1.1); bump deferred M2/M4 if needed; T2.3 in_progress (STNR covered in pack; exceptional TC geometry beyond WI…OF TC CENTRE → OOS cite S02.M2); tip e322dde may still be pushing; progress 14/27; #831→#829→#820'
   - '2026-08-03 S037/EV-030 — T2.2 COMPLETE @ 72c4be6 ([T2.2] feat: TC SIGMET lint codes TC_CYCLONE_IDENTITY / TC_CB_GEOMETRY / MISSING_TC_IDENTITY + catalog); PR #832 will update on push; M1 CI was green at b713056; active_task → T2.3 pending (STNR / exceptional geometry or OOS cite); progress 14/27; tip 72c4be6 ahead to push; #831→#829→#820'
@@ -28908,6 +28918,27 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 9f7c087c5682b0193ed9aae74c3cc49ee330cf35
+    short: 9f7c087
+    branch: evolve/EV-030-quality-residuals-831
+    message: "[T2.4] feat: unlock sigmet-A6-2-TC catalog as wmoReference (#829)"
+    stage: 07-build
+    session_id: S037-quality-residuals-831
+    evolve_cycle_id: EV-030
+    task_id: T2.4
+    timestamp: "2026-08-03T13:20:21Z"
+    files_changed:
+    - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+    - apps/frontend/src/fixtures/examples/bodies/sigmet_a6_2_tc.tac
+    - apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md
+    - packages/tac2iwxxm/tests/fixtures/wmo_official_tac_inventory.py
+    - packages/tac2iwxxm/tests/fixtures/wmo_decode_residual_allowlist.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py
+    - packages/tac2iwxxm/tests/test_tc_ev029_007_tc_sigmet_gap_fixtures.py
+    - apps/backend/tests/iwxxm/test_wmo_canonical_examples.py
+    - docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
+    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
   - sha: 22d4ac12a5d2316abfc5c99ffd156e43ea255fee
     short: 22d4ac1
     branch: evolve/EV-030-quality-residuals-831
