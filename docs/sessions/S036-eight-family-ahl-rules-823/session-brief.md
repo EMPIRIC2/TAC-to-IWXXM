@@ -1,9 +1,10 @@
 ---
 session_id: S036-eight-family-ahl-rules-823
 type: feature
-status: in_progress
-branch: evolve/EV-029-eight-family-ahl-rules
+status: completed
+branch: main
 started_at: 2026-08-01
+completed_at: 2026-08-02
 intent: "Umbrella #823 — mine + close lint/conversion/IWXXM-validation gaps for eight TAC→IWXXM families (AHL/bulletin first, then product-by-product); shared AHL/filename rules; seek examples for all TAC input shapes. Exclude SIGWX/VONA/QVACI."
 orchestrator: 16-evolve
 evolve_cycle_id: EV-029

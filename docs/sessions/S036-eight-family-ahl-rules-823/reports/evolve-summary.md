@@ -1,6 +1,6 @@
 # Evolve summary — S036 / EV-029
 
-**Status**: completed (pending session close AskQuestion)  
+**Status**: completed (session closed `D-S036-EV029-phase4-close` = 1)  
 **PRs**: [#827](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/827) (M1) · [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) merged @ `4e6577a`  
 **Issues**: [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** · [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** · [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) closed (M7)  
 **Report**: `docs/evolve-report-EV-029.md`  

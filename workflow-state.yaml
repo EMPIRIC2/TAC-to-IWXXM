@@ -1,91 +1,11 @@
-overall_status: in_progress
+overall_status: idle
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 36
 evolve_cycle_counter: 29
-active_session:
-  id: S036-eight-family-ahl-rules-823
-  type: feature
-  intent: |
-    Umbrella #823 — mine + close lint/conversion/IWXXM-validation gaps for eight TAC→IWXXM
-    families (AHL/bulletin first, then product-by-product); shared AHL/filename rules;
-    examples for all TAC input shapes. Exclude SIGWX/VONA/QVACI.
-  status: in_progress
-  branch: evolve/EV-029-eight-family-ahl-rules
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-029
-  github_issues:
-  - '823'
-  github_issues_closed:
-  - '823'
-  - '740'
-  - '738'
-  feature_ids:
-  - F28
-  - F6
-  - F12
-  - F2
-  - F13
-  - F15
-  - F20
-  - F23
-  - F24
-  - F26
-  - F27
-  artifacts_dir: docs/sessions/S036-eight-family-ahl-rules-823/
-  routing_plan_summary: "00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06); Standard"
-  preset: Standard
-  preset_status: approved
-  note_skipped: "Standard — skip 03/05/06 unless 04 re-adds; D-S036-open Q5=1"
-  skipped:
-  - 03-plan-tooling
-  - 05-verify-tech
-  - 06-tech-tooling
-  current_stage:
-    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
-    current_milestone: M12
-    active_milestone: M12
-    current_task: T12.7
-    active_task: T12.7
-    active_task_status: completed
-  started_at: '2026-08-01'
-  tip_sha: e53e9a2
-  tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
-  progress: 48/48
-  pr_number: 828
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
-  pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
-  pr_status: merged
-  pr_merged_at: '2026-08-02T23:51:12Z'
-  pr_merge_commit: 4e6577a10dd233d7f931ea8ecbfd52e6bf63b401
-  pr_merge_commit_short: 4e6577a
-  pr_milestone: M2-M10
-  pr_base: main
-  pr_head: evolve/EV-029-eight-family-ahl-rules
-  prior_pr_number: 827
-  prior_pr_status: merged
-  prior_pr_merged_at: '2026-08-02T14:18:36Z'
-  prior_pr_merge_commit: c338108efe96206f023a78cf486bf0f3196293c7
-  context_briefs:
-  - docs/context/eight-family-ahl-rules-823.md
-  decision_refs:
-  - D-S036-open
-  - D-S036-fn
-  - D-S036-E29-M
-  - D-S036-02-batch-f
-  - D-S036-02-phase-a
-  - D-S036-04-batch-1
-  - D-S036-04-batch-2
-  - D-S036-04-plan
-  - D-S036-semver-minor
-  - D-S036-semver-patch
-  - D-S036-semver-patch-2
-  - D-S036-semver-patch-3
-  - D-S036-11
-  - D-S036-12
-  - D-S036-13
+active_session: null
 sessions:
 - id: S036-eight-family-ahl-rules-823
   type: feature
@@ -93,7 +13,7 @@ sessions:
     Umbrella #823 — mine + close lint/conversion/IWXXM-validation gaps for eight TAC→IWXXM
     families (AHL/bulletin first, then product-by-product); shared AHL/filename rules;
     examples for all TAC input shapes. Exclude SIGWX/VONA/QVACI.
-  status: in_progress
+  status: completed
   branch: evolve/EV-029-eight-family-ahl-rules
   orchestrator: 16-evolve
   evolve_cycle_id: EV-029
@@ -192,17 +112,15 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   current_stage:
-    note: "T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823"
-    current_milestone: M12
-    active_milestone: M12
-    current_task: T12.7
-    active_task: T12.7
-    active_task_status: completed
+    note: 'D-S036-EV029-phase4-close — Phase 4 close 2026-08-02 (D-S036-EV029-phase4-close option 1) — push main + close EV-029 / S036; PR #828 @ 4e6577a; #823/#740 closed; F28 Done; residuals #829/#820/#831; tip 60655d2'
+    completed_at: '2026-08-02'
+  close_decision_id: D-S036-EV029-phase4-close
+  close_note: 'Phase 4 close 2026-08-02 (D-S036-EV029-phase4-close option 1) — push main + close EV-029 / S036; PR #828 @ 4e6577a; #823/#740 closed; F28 Done; residuals #829/#820/#831; tip 60655d2'
   started_at: '2026-08-01'
   tip_sha: e53e9a2
   tip_sha_full: e53e9a22abeb733905cb1d4e45a329c6e18255fd
   progress: 48/48
-  note: 'S036/EV-029 — T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; residuals #829/#820/#831; evolve-summary + evolve-report-EV-029; F28 Done; progress 48/48; tip e53e9a2; #828; #823'
+  note: 'D-S036-EV029-phase4-close — Phase 4 close 2026-08-02 (D-S036-EV029-phase4-close option 1) — push main + close EV-029 / S036; PR #828 @ 4e6577a; #823/#740 closed; F28 Done; residuals #829/#820/#831; tip 60655d2'
   pr_number: 828
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828
   pr_title: "[EV-029][M2–M10] METAR/SPECI/TAF/SIGMET/VA/TC SIGMET/AIRMET/VAA/TCA AHL reportStatus + quality packs (tac2iwxxm 0.2.3)"
@@ -6224,6 +6142,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-02 S036/EV-029 CLOSED — Phase 4 close 2026-08-02 (D-S036-EV029-phase4-close option 1) — push main + close EV-029 / S036; PR #828 @ 4e6577a; #823/#740 closed; F28 Done; residuals #829/#820/#831; tip 60655d2; active_session=null'
     - '2026-08-02 S036/EV-029 — T12.7 COMPLETE — D-S036-13=1; #823/#740 closed; F28 Done; evolve-report-EV-029; progress 48/48; tip e53e9a2; #828'
     - '2026-08-02 S036/EV-029 — T12.6 smoke PASS (technical) — PR #828 merged 4e6577a; main tip 7e276a7; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA catalog/convert PASS; awaiting user approve D-S036-13; progress 46/48; #828; #823'
     - '2026-08-02 S036/EV-029 — T12.4 COMPLETE @ 0e34866; tip ahead pending push or just pushed; next T12.5 pending (11-verify-impl + 12-verify-deploy); progress 45/48; #828; #823'
@@ -8721,6 +8640,38 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S036-EV029-phase4-close
+  date: '2026-08-02'
+  timestamp: '2026-08-02'
+  resolved_at: '2026-08-02'
+  session_id: S036-eight-family-ahl-rules-823
+  evolve_cycle_id: EV-029
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: close_session
+  category: session-close
+  status: confirmed
+  topic: Phase 4 cycle/session close — push main + close S036/EV-029
+  summary: 'Push main + close EV-029/S036 (choice 1); #828 @ 4e6577a; #823/#740 closed; F28 Done'
+  decision: 'Phase 4 close S036/EV-029. D-S036-EV029-phase4-close — user chose option 1: push main, archive session, active_session=null; EV-029 completed; checkpoints deploy/phase_d passed. PR #828 merged @ 4e6577a; #823/#740/#738 closed; residuals #829/#820/#831. Artifacts: docs/evolve-report-EV-029.md, docs/sessions/S036-eight-family-ahl-rules-823/reports/evolve-summary.md.'
+  user_option: 1
+  user_intent: '1'
+  related_prs:
+  - 828
+  - 827
+  related_pr: 828
+  related_issues:
+  - '823'
+  - '740'
+  - '738'
+  merge_sha: 4e6577a
+  merge_sha_full: 4e6577a10dd233d7f931ea8ecbfd52e6bf63b401
+  tip_sha: 60655d2
+  tip_sha_full: 60655d2bf2035030e24c326f2b8b60aad278c140
+  close_note: 'Phase 4 close 2026-08-02 (D-S036-EV029-phase4-close option 1) — push main + close EV-029 / S036; PR #828 @ 4e6577a; #823/#740 closed; F28 Done; residuals #829/#820/#831; tip 60655d2'
+  artifact:
+  - docs/evolve-report-EV-029.md
+  - docs/sessions/S036-eight-family-ahl-rules-823/reports/evolve-summary.md
 - id: D-S036-12
   date: '2026-08-02'
   timestamp: '2026-08-02'

@@ -25,7 +25,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S036-eight-family-ahl-rules-823](S036-eight-family-ahl-rules-823/session-brief.md) | feature | in_progress | #823 eight-family AHL/lint/convert/validate; EV-029 | evolve/EV-029-eight-family-ahl-rules | 2026-08-01 | — |
+| [S036-eight-family-ahl-rules-823](S036-eight-family-ahl-rules-823/session-brief.md) | feature | completed | #823 eight-family AHL/lint/convert/validate; EV-029; F28 Done; PR #828 | main (#828) | 2026-08-01 | 2026-08-02 |
 | [S034-wmo-decode-residual-matrix](S034-wmo-decode-residual-matrix/session-brief.md) | feature | in_progress | #815 official WMO decode residual matrix; EV-027 | evolve/EV-027-wmo-decode-residual-matrix | 2026-07-31 | — |
 | [S033-va-multi-location-equality](S033-va-multi-location-equality/session-brief.md) | feature | completed | #809 ADR-032 equality → wmoPass; EV-026; PR #817/#818 | evolve/EV-026-va-multi-location-equality | 2026-07-31 | 2026-07-31 |
 | [S032-iwxxm-us-remarks-va](S032-iwxxm-us-remarks-va/session-brief.md) | feature | completed | iwxxm-us REMARKS + #809 soft; EV-025; PR #816 | evolve/EV-025-iwxxm-us-remarks-va | 2026-07-31 | 2026-07-31 |
