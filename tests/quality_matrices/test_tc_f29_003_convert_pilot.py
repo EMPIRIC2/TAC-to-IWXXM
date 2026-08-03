@@ -71,6 +71,15 @@ def test_pilot_convert_no_silent_gaps() -> None:
         assert case.status in {"ready", "needs-fixture", "oos"}
 
 
+def test_pilot_convert_ready_smoke() -> None:
+    """PR smoke: execute only ready convert slots (not the full 16x20 matrix)."""
+    ready = [c for c in _convert_cases() if c.status == "ready"]
+    assert ready, "pilot convert expects at least one ready slot"
+    for case in ready:
+        run_rule_case(case)
+
+
+@pytest.mark.quality_matrix
 @pytest.mark.parametrize("case", _convert_cases(), ids=_case_ids(_convert_cases()))
 def test_pilot_convert_matrix_runners(case: RuleCase) -> None:
     """Run all convert pilot slots; needs-fixture/oos skip via runner policy."""

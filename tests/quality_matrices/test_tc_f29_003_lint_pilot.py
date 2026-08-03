@@ -91,6 +91,15 @@ def test_pilot_lint_no_silent_gaps() -> None:
         assert case.status in {"ready", "needs-fixture", "oos"}
 
 
+def test_pilot_lint_ready_smoke() -> None:
+    """PR smoke: execute only ready lint slots (not the full 36x20 matrix)."""
+    ready = [c for c in _lint_cases() if c.status == "ready"]
+    assert ready, "pilot lint expects at least one ready slot"
+    for case in ready:
+        run_rule_case(case)
+
+
+@pytest.mark.quality_matrix
 @pytest.mark.parametrize("case", _lint_cases(), ids=_case_ids(_lint_cases()))
 def test_pilot_lint_matrix_runners(case: RuleCase) -> None:
     """Run all lint pilot slots; needs-fixture/oos skip via runner policy."""

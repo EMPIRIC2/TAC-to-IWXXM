@@ -100,6 +100,15 @@ def test_pilot_validate_no_silent_gaps() -> None:
         assert case.status in {"ready", "needs-fixture", "oos"}
 
 
+def test_pilot_validate_ready_smoke() -> None:
+    """PR smoke: execute only ready validate slots (not the full 43x20 matrix)."""
+    ready = [c for c in _validate_cases() if c.status == "ready"]
+    assert ready, "pilot validate expects at least one ready slot"
+    for case in ready:
+        run_rule_case(case)
+
+
+@pytest.mark.quality_matrix
 @pytest.mark.parametrize("case", _validate_cases(), ids=_case_ids(_validate_cases()))
 def test_pilot_validate_matrix_runners(case: RuleCase) -> None:
     """Run all validate pilot slots; needs-fixture/oos skip via runner policy."""
