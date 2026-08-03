@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M2 — DO Postgres + Alembic + work-sessions |
-| **Active task** | T2.6 — No Supabase PostgREST product writes from API (next) |
-| **Tasks** | 13 / 38 completed |
+| **Active milestone** | M2 — DO Postgres + Alembic + work-sessions (**COMPLETE**) |
+| **Active task** | T3.1 — Worker store/quarantine Postgres tests (next / M3) |
+| **Tasks** | 14 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -110,7 +110,7 @@
 | T2.3 | Config | CI: Postgres service + auto `alembic upgrade head` before schema-touching tests; document make target | `D-S038-04-b2` CI amend | T2.2 | completed |
 | T2.4 | Test | Work-sessions API CRUD + JWT gate (ADR-020 wire); guest path untouched | TC-F31-002..004; UJ-046 | T1.2, T2.2 | completed |
 | T2.5 | Code | SQLAlchemy session repository + restore `/api/v1/work-sessions*` (pydantic) | api-contract; ADR-020 | T2.4 | completed |
-| T2.6 | Test | No Supabase PostgREST product writes from API (TC-F30-001) | TC-F30-001 | T2.5 | pending |
+| T2.6 | Test | No Supabase PostgREST product writes from API (TC-F30-001) | TC-F30-001 | T2.5 | completed |
 
 ### M3 — F8 → DATABASE_URL
 
