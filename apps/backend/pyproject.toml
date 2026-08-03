@@ -9,6 +9,7 @@ dependencies = [
     "tac-validate",
     "iwxxm-validate",
     "dissemination",
+    "metar-auth",
     "fastapi>=0.110",
     "uvicorn>=0.23",
     "python-multipart>=0.0.20",
@@ -122,6 +123,7 @@ ignore = ["E501", "E741"]
 [tool.uv.sources]
 tac2iwxxm = { workspace = true }
 metar-shared = { workspace = true }
+metar-auth = { workspace = true }
 tac-validate = { workspace = true }
 iwxxm-validate = { workspace = true }
 dissemination = { workspace = true }

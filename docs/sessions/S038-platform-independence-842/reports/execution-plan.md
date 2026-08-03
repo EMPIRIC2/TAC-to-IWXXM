@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M0 — Baseline / ADR / #830 amend |
-| **Active task** | T0.4 completing → T1.1 next |
-| **Tasks** | 4 / 38 completed |
+| **Active milestone** | M1 — Auth restore (JWKS) |
+| **Active task** | T1.3 — Workspace/Docker/CI wire (next) |
+| **Tasks** | 6 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -96,8 +96,8 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Auth unit: JWKS fetch/verify happy + reject bad/expired; `/auth/login|me` contract (no admin) | TC-F31-001; TC-EV031-004 | T0.3 | pending |
-| T1.2 | Code | Restore `packages/auth` from `c9cebfa^`; strip admin; JWKS-only verify; mount `/auth/*` on backend | F31; ADR-033 | T1.1 | pending |
+| T1.1 | Test | Auth unit: JWKS fetch/verify happy + reject bad/expired; `/auth/login|me` contract (no admin) | TC-F31-001; TC-EV031-004 | T0.3 | completed |
+| T1.2 | Code | Restore `packages/auth` from `c9cebfa^`; strip admin; JWKS-only verify; mount `/auth/*` on backend | F31; ADR-033 | T1.1 | completed |
 | T1.3 | Config | Workspace/uv/Makefile/Docker/CI wire `packages/auth`; Auth env for JWKS URL | env-contract | T1.2 | pending |
 | T1.4 | Test | Convert/lint/validate remain JWT-free (TC-EV031-003 / amend TC-F21) | TC-EV031-003 | T1.2 | pending |
 

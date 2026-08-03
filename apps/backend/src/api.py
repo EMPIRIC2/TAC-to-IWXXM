@@ -686,7 +686,14 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
 
-# Auth routers removed (F21 / ADR-031 / T5.2) — /auth/* returns 404.
+# Auth routers restored (F31 / ADR-033) — JWKS-only Supabase Auth; no /admin.
+try:
+    from metar_auth import create_auth_router
+
+    app.include_router(create_auth_router())
+    logger.info("DEBUG: included metar_auth /auth router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include auth router: {e}", exc_info=True)
 
 logger.info(f"DEBUG: total routes = {len(app.routes)}")
 
