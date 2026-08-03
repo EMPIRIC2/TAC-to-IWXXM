@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase D — Verify / deploy |
 | **Active milestone** | M12 — Smoke / verify / deploy |
-| **Active task** | T12.6 — **in_progress** |
-| **Tasks** | 46 / 48 completed |
+| **Active task** | T12.6 — smoke PASS (awaiting user approve → T12.7) |
+| **Tasks** | 46 / 48 completed (T12.6 technical done) |
 | **Last updated** | 2026-08-02 |
 
 ## Tech Stack Summary

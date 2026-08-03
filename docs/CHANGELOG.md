@@ -2,6 +2,24 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-02 — S036 EV-029 (#823 eight-family AHL + F28 SWXA)
+
+### Added
+- **F28**: SWXA quality bar — registry lint, `product=swxa` API, convert →
+  `iwxxm:SpaceWeatherAdvisory`, XSD+SCH, Examples unlock `spacewx-A7-3` (`wmoReference`).
+- Eight-family AHL / `reportStatus` / product-order / report-state matrix smokes
+  (TC-EV029-001..008).
+
+### Changed
+- Deepen F6 / F12 / F15 / F20 / F23 (incl. TC SIGMET #738) / F24 / F26 / F27 AHL and
+  quality packs; `tac2iwxxm` **0.2.3**.
+
+### Deploy
+- PR [#828](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/828) merged (`4e6577a`).
+- Live smoke PASS (H0c–H5 + SWXA catalog/convert + FE Examples seed).
+  API `dep-d9ntlclbedkc73fvcuvg` · FE `dep-d9ntlde1egvs738ph9h0`.
+  Report: [deploy-smoke.md](sessions/S036-eight-family-ahl-rules-823/reports/deploy-smoke.md).
+
 ## 2026-07-31 — S034 EV-027 (#815 official WMO decode residual matrix)
 
 ### Added
