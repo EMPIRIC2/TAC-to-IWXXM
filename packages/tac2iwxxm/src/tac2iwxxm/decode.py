@@ -475,26 +475,7 @@ def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str 
             return explain_glossary_token(upper, fallback="Advisory product header")
         if upper == "TCA":
             return explain_glossary_token(upper, fallback="Tropical cyclone advisory abbreviation")
-    if upper in {
-        "DTG",
-        "VOLCANO",
-        "PSN",
-        "AREA",
-        "SUMMIT",
-        "ADVISORY",
-        "NR",
-        "INFO",
-        "VAAC",
-        "TCAC",
-        "MOV",
-        "CB",
-        "RMK",
-        "CLD",
-        "FCST",
-        "OBS",
-    }:
-        return explain_glossary_token(upper, fallback=f"{product} field label")
-    return explain_glossary_token(upper)
+    return explain_glossary_token(upper, fallback=f"{product} token")
 
 
 # Longest-first advisory field labels (WMO VAA/TCA TAC layout). Title templates use
