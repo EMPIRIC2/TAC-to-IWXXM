@@ -1,10 +1,21 @@
 # Deployment
 
 > **Project**: METAR to IWXXM Converter
-> **Platform**: Render (Docker web service + static site + Background Worker)
-> **Last updated**: 2026-07-28 (S023 / EV-017 — F21 public app + F22 privacy)
+> **Platform**: **DOKS** (target — F30) · Render transitional until soak + decommission
+> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 platform independence)
 
-## Topology (post-monorepo + F8 + F21)
+## Topology (F30 target — DOKS)
+
+| Workload | Type | Source | Notes |
+|----------|------|--------|-------|
+| metar-api | Deployment / Service | `apps/backend` image | `$PORT` on `0.0.0.0`; `/api/v1/*` + `/auth/*` |
+| metar-frontend | Static / CDN or nginx | `apps/frontend` Vite build | `/config.json` inject |
+| metar-worker | Deployment (Background) | `apps/worker` image | No public HTTP; `DATABASE_URL` |
+
+**Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
+**Auth**: Supabase Auth only (JWT). No Supabase product DB on default path (ADR-033).
+
+### Transitional (Render — until TC-F30-005)
 
 | Service | Type | Source | Port |
 |---------|------|--------|------|
@@ -12,44 +23,45 @@
 | metar-frontend | **Static site** (CDN) | `apps/frontend` Vite build | CDN |
 | metar-worker | **Background Worker** | `apps/worker` (ADR-018) | N/A (no HTTP) |
 
-**Staging worker (T7.1)**: `metar-to-iwxxm-worker` —
-`srv-d99u0i8k1i2s73eq5oqg` (docker-from-git, branch `feat/S008-M6-worker` until cutover
-merges to `main`). Dashboard:
+**Staging worker (historical)**: `metar-to-iwxxm-worker` —
+`srv-d99u0i8k1i2s73eq5oqg`. Dashboard:
 https://dashboard.render.com/worker/srv-d99u0i8k1i2s73eq5oqg
 
-**F21**: Operator Auth is **removed** — no `packages/auth`, no `/auth/*`, no browser JWT.
-`packages/auth` is deleted from the monorepo (EV-017 / ADR-031). The API remains a single
-deployable for convert/validate/dissemination; F8 worker stays a **separate** Render service.
+**F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
+F8 worker is a **separate** workload (Render today → DOKS Deployment).
 
-**Observability**: Render built-in logs only — Loki/Prometheus/Grafana removed from Blueprint (ADR-006).
+**Observability**: Platform logs (DOKS / Render built-in). Loki/Prometheus/Grafana remain out of
+Blueprint (ADR-006) unless a later evolve adds them.
 
 ## Integration
 
 > **S003 delta:** Secrets-only `.env`; non-secrets in `config/{local,prod}.json`. See
 > [config-spec.md](config-spec.md), [env-contract.md](env-contract.md), ADR-010.
-> **F21**: Canonical env contract rewritten for public app — [env-contract.md](env-contract.md).
+> **F30/F31**: Canonical env contract — Auth-only Supabase + DO Postgres + DOKS —
+> [env-contract.md](env-contract.md). Data migrate:
+> [ops/supabase-to-do-postgres-migration.md](ops/supabase-to-do-postgres-migration.md).
 
-### Secrets (API runtime — Render dashboard)
+### Secrets (API runtime — DOKS / transitional Render)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
+| `DATABASE_URL` | Yes | DigitalOcean Postgres — sessions + shared product DB |
+| `SUPABASE_URL` | Yes (Auth) | Supabase Auth project URL |
+| `SUPABASE_JWT_SECRET` (or JWKS) | Yes (Auth) | Server JWT verify — never FE |
 | `RATE_LIMIT_PUBLIC_PER_MIN` | No (default 60) | Public convert/validate rate limit |
 | `RATE_LIMIT_DISSEMINATION_PER_MIN` | No (default 10) | Dissemination preflight/send rate limit |
 | `MAX_REQUEST_BODY_BYTES` | No (default 2 MiB) | Request body cap |
 | `DISSEMINATION_EGRESS_ALLOWLIST` | Yes for F16–F19 | Host/CIDR allowlist (empty ⇒ deny) |
-| `DATABASE_URL` | Optional | Legacy ops / F8-adjacent Postgres only — **not** operator Auth |
-| `METAR_CONFIG_ENV` | Yes (prod) | `prod` on Render; selects `config/prod.json` |
+| `METAR_CONFIG_ENV` | Yes (prod) | `prod`; selects `config/prod.json` |
 
-**Retired for operator API (F21 — remove from Render if still set):**
-`SUPABASE_PUBLISHABLE_KEY` (browser Auth), `DISABLE_AUTH`, operator Auth JWTs.
-`SUPABASE_SECRET_KEY` remains optional for **server ops / archive scripts only**.
+**Static inject:** `SUPABASE_PUBLISHABLE_KEY` into `/config.json` for optional login.
+**Do not** use `SUPABASE_SERVICE_ROLE_KEY` as product DB writer after F30.
 
-### Secrets (Worker runtime — F8, ADR-018)
+### Secrets (Worker runtime — F8, ADR-018 amended)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `SUPABASE_URL` | Yes | Supabase project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Service-role JWT for store/quarantine writers |
+| `DATABASE_URL` | Yes | DO Postgres store/quarantine |
 | `INGEST_POLLER_URL` | Yes | HTTPS / object-prefix fixture or feed URL |
 | `INGEST_POLL_INTERVAL_SEC` | Yes | Poll interval (seconds) |
 
@@ -57,19 +69,19 @@ deployable for convert/validate/dissemination; F8 worker stays a **separate** Re
 
 | Field | Description |
 |-------|-------------|
-| `api.baseUrl` | HTTPS URL of metar-api (`/api/v1` only — **no** `/auth`) |
+| `api.baseUrl` | HTTPS URL of metar-api (`/api/v1` **and** `/auth` — **no** `/admin`) |
 | `api.frontendUrl` | Public static site URL |
-| `api.corsOrigins` | Allowed browser origins |
+| `api.corsOrigins` | Allowed browser origins (DOKS FE after cutover) |
+| `supabase.url` | Auth project URL (public) |
 | `validation.*`, `observability.*` | WMO validation and logging flags |
-| `liveE2e.*` | Canonical URLs for `make test-live*` |
-
-**Removed (F21):** `api.disableAuth`, frontend Auth / Supabase publishable key injection for login.
+| `liveE2e.*` | Canonical URLs for `make test-live*` (DOKS after cutover) |
 
 ### Frontend static deploy
 
 1. Copy `config/prod.json` → `public/config.json` at build.
-2. App fetches `/config.json` at bootstrap (replaces `VITE_*` build-time embed per ADR-010).
-3. No Auth key injection — work history is IndexedDB (F7.h / ADR-031); privacy prefs are localStorage (F22).
+2. Inject `SUPABASE_PUBLISHABLE_KEY` for Auth bootstrap.
+3. App fetches `/config.json` at bootstrap (ADR-010).
+4. Guest history remains IndexedDB; logged-in uses work-sessions APIs; F22 prefs localStorage.
 
 ### Local development
 
@@ -79,28 +91,27 @@ deployable for convert/validate/dissemination; F8 worker stays a **separate** Re
 | URLs / CORS / flags | `config/local.json` via `METAR_CONFIG_ENV=local` |
 | Ports | Frontend **18000**, API **18001** (standardized S003-R4) |
 
-### Live test (manual T3 — public app, F21)
+### Live test (manual T3 — F30/F31)
 
 | Variable | Source |
 |----------|--------|
-| `LIVE_API_URL` | `config/prod.json` → `liveE2e.apiUrl` (override via env optional) |
+| `LIVE_API_URL` | `config/prod.json` → `liveE2e.apiUrl` (DOKS after cutover) |
 | `LIVE_FRONTEND_URL` | `config/prod.json` → `liveE2e.frontendUrl` |
 | `PLAYWRIGHT_BASE_URL` | Same as `LIVE_FRONTEND_URL` for H6 |
+| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Optional — UJ-046 / session CRUD only |
 
-**No** `E2E_USER_*` / Auth login fixture — public convert; Auth-gone coverage is `TC-F21-auth-gone`.
-
-**Deprecated** (do not set for operator product): `VITE_*` Auth embeds, `SUPABASE_ANON_KEY` (frontend),
-`METAR_CORS_ORIGINS`, `FRONTEND_URL`, `ADMIN_*`, `E2E_USER_*`, `DISABLE_AUTH`.
-(`SUPABASE_SERVICE_ROLE_KEY` remains canonical for **F8 worker** writers per env-contract.)
+Convert remains public (no JWT). **H4–H5 required** this cycle (`D-S038-tp`).
 
 Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env-check`.
 
-### Redeploy order
+### Redeploy order / cutover
 
-1. Deploy **metar-api** with rate-limit / allowlist env + `METAR_CONFIG_ENV=prod` (CORS from `config/prod.json`).
-2. Rebuild **metar-frontend** with `/config.json` (no Auth key injection).
-3. Deploy **metar-worker** with poller + service-role secrets (unchanged F8 path).
-4. Run H4 CORS preflight + H5 bundle verification + H6 (public Playwright) + `make env-check`.
+1. Apply Alembic to DO Postgres; one-time migrate legacy Supabase product rows.
+2. Deploy **metar-api** with `DATABASE_URL` + Auth verify + CORS for DOKS FE.
+3. Rebuild **metar-frontend** with `/config.json` + publishable Auth key.
+4. Deploy **metar-worker** with `DATABASE_URL` + poller env.
+5. Run **H0–H5** (H4–H5 required) + H6 public + Auth session smoke + F8 store smoke.
+6. Soak; decommission Render (TC-F30-005).
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 

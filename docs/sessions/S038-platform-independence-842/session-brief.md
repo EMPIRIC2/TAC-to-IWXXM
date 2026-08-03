@@ -15,9 +15,11 @@ prior_session: S037-quality-residuals-831
 context_briefs:
   - docs/context/platform-independence-842.md
 standing_docs_touched: []  # filled after 01/04
-feature_ids: []  # allocated in Phase 1
-ask_question: written interview — D-S038-open=3,1,1,1; doks=3; f8=1; route=1; auth=1+long-term; sessions=1+guest-notice+privacy; 830=1
+feature_ids: [F30, F31]
+feature_note: "D-S038-fn — F30 platform Auth/DB/DOKS + F31 hybrid sessions; deepen F5/F7/F8/F21/F22/M4"
+ask_question: written interview — D-S038-open=3,1,1,1; doks=3; f8=1; route=1; auth=1+long-term; sessions=1+guest-notice+privacy; 830=1; fn=1,1,1
 ui_preview: accepted — non-deployed local Vite http://127.0.0.1:5173/ (not staging/production)
+open_commit: d286bfb
 ---
 
 # Session S038 — platform-independence-842
@@ -84,5 +86,8 @@ Supabase          → Auth + JWT verification ONLY (no app tables / PostgREST pr
 
 ## Progress
 
-- **00-context** completing — Phase 0 scope locked; Fn allocation next
-- **16-evolve** Phase 1 — propose F30/F31 (+ deepen F5/F7/F8/F21/F22)
+- **00-context** completed · **Fn** `D-S038-fn` = 1,1,1 · open commit `d286bfb`
+- **16-evolve** Phase 1 → **01-requirements** (delta)
+- **01-requirements**: Feature List, Spec, UJ-045..048, Test Plan, config/env, API, deploy,
+  deps, ADR-033, migration note drafted (`D-S038-tp` = 1,1,1)
+- **Next**: Confirm lean doc pass / gaps → Gate A → **02-verify-plan**

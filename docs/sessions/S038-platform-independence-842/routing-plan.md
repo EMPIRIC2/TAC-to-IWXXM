@@ -8,9 +8,9 @@
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 00-context | yes | scoped | **in_progress** | Phase 0 locked; completing → Fn alloc AskQuestion |
-| 16-evolve | yes | orchestrator | pending | Phase 1 Fn + start 01 after approve |
-| 01-requirements | yes | delta | pending | Feature-list + decisions for F30(+) / F8 fate |
+| 00-context | yes | scoped | **completed** | Phase 0 + Fn lock; open `d286bfb` |
+| 16-evolve | yes | orchestrator | **in_progress** | Phase 1 → 01 |
+| 01-requirements | yes | delta | **in_progress** | Document Manifest pending |
 | 02-verify-plan | yes | delta | pending | Gate A |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks needed |
 | 04-tech-plan | yes | delta | pending | Execution plan + ADR(s); Gate B |
@@ -41,4 +41,5 @@ DOKS live cutover is gated by `D-S038-doks-depth` (may keep 12/13 Render-primary
 | Auth model | `D-S038-auth-model` = **1** — reintroduce Supabase Auth for **long-term storage** (amend F21) | 2026-08-03 |
 | Session store | `D-S038-session-store` = **1** — DO Postgres when logged in; guest local + loss notice + F22 privacy | 2026-08-03 |
 | #830 amend | `D-S038-830-amend` = **1** — rewrite ticket: Auth-kept / data-plane strip | 2026-08-03 |
-| Fn allocation | pending `D-S038-fn` | — |
+| Fn allocation | `D-S038-fn` = **1,1,1** — F30+F31; start 01; commit open `d286bfb` | 2026-08-03 |
+| Document Manifest | `D-S038-E31-M` = **1,1** — full 1–10; Feature List first | 2026-08-03 |

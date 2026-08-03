@@ -34,6 +34,9 @@
 | [ADR-028](ADR-028-tac-validate-issue-registry.md) | Maintainable `tac-validate` issue registry (codes + severities) | Accepted |
 | [ADR-029](ADR-029-dissemination-ssrf-allowlist.md) | Dissemination SSRF controls + required egress allowlist | Accepted |
 | [ADR-030](ADR-030-dissemination-package-architecture.md) | `packages/dissemination` + sink/API/wis2box/EDIS architecture (F16–F19) | Accepted |
+| [ADR-031](ADR-031-public-app-indexeddb-history.md) | Public unauthenticated app + IndexedDB local history (F21/F22) | **Partially superseded by ADR-033** |
+| [ADR-032](ADR-032-wmo-default-golden-glossary.md) | WMO default golden parity + extensible decode glossary | Accepted |
+| [ADR-033](ADR-033-platform-independence-auth-do-doks.md) | Platform independence — Auth-only Supabase, DO Postgres, DOKS (F30/F31) | **Proposed** |
 
 ## Process
 

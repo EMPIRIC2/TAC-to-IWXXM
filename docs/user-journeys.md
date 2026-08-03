@@ -5,8 +5,8 @@
 > S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
-> S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-31 (S034 / EV-027 — UJ-042 #815 official WMO decode residual matrix)
+> S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31
+> **Last updated**: 2026-08-03 (S038 / EV-031 — UJ-045..048 hybrid Auth + DOKS)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -15,10 +15,10 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 
 | ID | Journey | Entry point | Feature | E2E tier |
 |----|---------|-------------|---------|----------|
-| UJ-001 | Convert METAR via UI (shorthand) | apps/frontend | F6+F21 (was F1) | T2 / **T3** |
+| UJ-001 | Convert METAR via UI (shorthand) | apps/frontend | F6+F21 Amended | T2 / **T3** |
 | UJ-002 | Validate IWXXM output (`iwxxm-validate`) | apps/frontend / API | F2+F6+F21 | T2 / **T3** |
-| UJ-003 | Register and login | apps/frontend | Auth | **Superseded** (F21 / S023) |
-| UJ-004 | Resume & browse METAR work history (local IndexedDB) | apps/frontend | F5+F7+F21 | T2 / **T3** |
+| UJ-003 | Register and login | apps/frontend | Auth | **Restored (F31)** — see UJ-046; was Superseded F21 |
+| UJ-004 | Resume & browse METAR work history (hybrid) | apps/frontend | F5+F7+F31 | T2 / **T3** |
 | UJ-005 | Convert with product + profile via UI | apps/frontend | F6 | T2 / **T3** (all 7 products) |
 | UJ-006 | Convert non-METAR product via API | HTTP API | F6 | T2 / **T3** |
 | UJ-007 | Validate IWXXM-US profile document | apps/frontend / API | F2+F6 | T2 / **T3** |
@@ -32,7 +32,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-015 | TAC decode panel (Code \| Explanation) | apps/frontend | F7 | T2 / **T3** |
 | UJ-016 | Failed-TAC cue + soft-preview / partial | apps/frontend | F7 | T2 / **T3** |
 | UJ-017 | Live workbench (debounce, spans, console, live IWXXM) | apps/frontend | F7 | T2 / **T3** |
-| UJ-018 | Unified local sessions persist/resume (IndexedDB) | apps/frontend | F5+F7+F21 | T2 / **T3** |
+| UJ-018 | Unified sessions persist/resume (hybrid local + server) | apps/frontend | F5+F7+F31 | T2 / **T3** |
 | UJ-019 | Admin routes removed / BYO operator surface | apps/frontend | F7 / M4 | T2 / **T3** |
 | UJ-020 | Value-aware decode + plain-language summary | apps/frontend | F9 | T0 / T2 / **T3** |
 | UJ-021 | IWXXM preview pane + terminator quick fix | apps/frontend | F10 | T2 / **T3** |
@@ -58,6 +58,12 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-041 | Promote sigmet-multi-location-VA to WMO passer | library / CI / catalog | F23 deepen (EV-025 soft; EV-026 equality) | T0 / T2 |
 | UJ-042 | Official WMO TAC peers decode with empty/allowlisted residuals | library / CI / workbench | F25/F9/F7.g deepen (EV-027) | T0 / T2 / **T3** / H4–H5 |
 | — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
+| UJ-043 | Eight-family rules gap sweep + SWXA quality | library / CI / workbench | F28 (EV-029) | T0 / T2 / H4–H5 if FE |
+| UJ-044 | Rule matrix harness + TC / VAA–TCA residuals | library / CI / workbench | F29 (EV-030) | T0 / T2 / H4–H5 if FE |
+| UJ-045 | Guest convert + loss-of-progress notice + local history | apps/frontend | F31+F21 | T2 / **T3** / H4–H5 |
+| UJ-046 | Login → auto-upload drafts → server sessions | apps/frontend | F31+F30 | T2 / **T3** / H4–H5 |
+| UJ-047 | Privacy prefs ↔ IndexedDB / Auth cookies (deepen UJ-033) | apps/frontend | F22+F31 | T0 / T2 / H4–H5 |
+| UJ-048 | Ops: DOKS cutover smoke (API + FE + worker) | DOKS / ops | F30 | T3 / H0–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -92,15 +98,16 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
 
 ### UJ-001: Convert METAR via UI (shorthand)
 
-**Actor**: Anyone (public app — F21; no login)
+**Actor**: Anyone (public convert — F21 Amended; login optional for long-term storage only)
 
 **Goal**: Upload or paste METAR TAC and receive IWXXM XML (default product/profile).
 
-**Feature**: F6 (+ F21). Full product/profile matrix is **UJ-005**. History optional via **UJ-004**.
+**Feature**: F6 (+ F21 Amended). Full product/profile matrix is **UJ-005**. History via **UJ-004** /
+**UJ-045** (guest) or **UJ-046** (logged-in).
 
 **Steps**:
 
-1. Open frontend in browser (no login).
+1. Open frontend in browser (no login required for convert).
 2. Drag-drop `.tac` file or paste manual text (METAR/SPECI).
 3. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
 4. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
@@ -109,10 +116,11 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
    multi-line manual input, prominent **Source TAC** panel, and download filename when it
    differs (#655 / EV-007). #555 replace-on-success and error log panel behavior unchanged.
 7. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
-8. Work may auto-save to IndexedDB (UJ-004) — not to server session APIs.
+8. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
+   If logged in: may sync to DO Postgres sessions (UJ-046).
 
-**Acceptance**: METAR converts without error via tac2iwxxm; **no JWT required**; schema/Schematron
-pass for selected version; UX behaviors from #555/#664 preserved.
+**Acceptance**: METAR converts without error via tac2iwxxm; **no JWT required for convert**;
+schema/Schematron pass for selected version; UX behaviors from #555/#664 preserved.
 
 **Automated tests**: `apps/e2e/tac-file-conversion.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
 
@@ -145,25 +153,28 @@ mapping (ADR-023) + E2E where exposed (T2); H3 + H6 (T3)
 
 ---
 
-### UJ-003: Register and Login — Superseded
+### UJ-003: Register and Login — Restored (F31)
 
-**Status**: **Superseded** by F21 (S023 / EV-017 / #783). Operator Auth UX and JWT gates removed.
+**Status**: **Restored** under S038 / EV-031 / F31 for **long-term storage** only. Was
+**Superseded** by F21 (S023 / EV-017 / #783) public-only path.
 
-**Historical**: Supabase JWT via merged `/auth/*`; protected `/api/v1/*` returned 401 without token.
+**Goal**: Optional Supabase Auth login/logout so work sessions can persist on DO Postgres.
 
-**Replacement**: Public convert/validate (UJ-001/002); local history (UJ-004); privacy (UJ-033).
+**Canonical flow**: **UJ-046** (login + auto-upload). Convert remains public (**UJ-001**).
 
-**Automated tests**: Retire or rewrite `apps/e2e/auth.e2e.spec.ts` to assert Auth routes absent /
-gone (negative). Live H6 must not require `E2E_USER_*` for primary journeys.
+**Automated tests**: Restore/adapt `apps/e2e/auth.e2e.spec.ts` for login happy path; convert
+still works without JWT.
 
 ---
 
 ### UJ-004: Resume & Browse METAR Work History
 
-**Actor**: Anyone (same browser / origin)
+**Actor**: Guest (same browser) or logged-in operator
 
-**Goal**: Resume Draft/WIP and browse Finished/Failed METAR/SPECI work from **IndexedDB**
-(F5 deepen / F7.h — S023).
+**Goal**: Resume Draft/WIP and browse Finished/Failed METAR/SPECI work from **hybrid** storage
+(F5 / F7.i / F31 — S038): IndexedDB when guest; DO Postgres when logged in.
+
+**Deepen**: Guest path + notice = **UJ-045**; login + auto-upload = **UJ-046**.
 
 **Steps**:
 
@@ -1208,6 +1219,113 @@ or split with links.
 
 ---
 
+### UJ-045: Guest Convert + Loss-of-Progress Notice (S038 / EV-031 / F31)
+
+**Actor**: Transient / guest operator (not logged in)
+
+**Goal**: Convert and keep **local** work history while clearly warned that progress may be lost
+without login.
+
+**Feature**: F31 + F21 Amended (+ F5/F7 guest path)
+
+**Steps**:
+
+1. Open workbench without logging in (privacy prefs allow local storage if required — UJ-047).
+2. See a **persistent banner/callout** while guest and local/unsaved work exists: progress may be
+   lost unless logged in (`D-S038-uj` Q2=1).
+3. Paste/convert TAC (UJ-001); history saves to IndexedDB only.
+4. Refresh / resume from local sidebar / My METARs (UJ-004 guest path).
+5. Clearing site data or declining storage prefs loses local history (documented).
+
+**Acceptance**: Convert works without JWT; notice visible for guest+local work; no server
+session writes; TC-F31-001/002.
+
+**Automated tests**: Playwright T2/T3; TC-F31-001/002; H4–H5.
+
+**Browser wiring**: Same API origin rules as UJ-001; no Auth required.
+
+**Source**: E31-*; [Context: platform-independence-842](context/platform-independence-842.md)
+
+---
+
+### UJ-046: Login → Auto-Upload Drafts → Server Sessions (S038 / EV-031 / F31)
+
+**Actor**: Operator who wants long-term storage
+
+**Goal**: Log in via Supabase Auth; local drafts **auto-upload** to DO Postgres; resume from server.
+
+**Feature**: F31 + F30 (+ restore UJ-003)
+
+**Steps**:
+
+1. As guest, create one or more local drafts (UJ-045).
+2. Open login (`/auth` UI or equivalent); authenticate with Supabase Auth.
+3. Client receives JWT; **auto-uploads** all eligible local drafts to
+   `POST /api/v1/work-sessions*` (no merge prompt — `D-S038-guest-merge`=2).
+4. Sidebar / My METARs shows server sessions; further edits sync to DO Postgres.
+5. Logout returns to guest mode; notice returns; new work is local-only unless login again.
+
+**Acceptance**: JWT required only for session APIs; convert still public; auto-upload completes
+or surfaces structured errors; TC-F31-003/004.
+
+**Automated tests**: Playwright auth + session; API integration with DO Postgres; H4–H5.
+
+**Browser wiring**: Auth against Supabase; session APIs against API on DOKS; CORS for FE origin.
+
+**Source**: E31-*; F30/F31
+
+---
+
+### UJ-047: Privacy Prefs ↔ Storage / Auth Cookies (S038 / EV-031)
+
+**Actor**: Anyone
+
+**Goal**: Privacy settings (UJ-033) correctly gate guest IndexedDB work history and disclose
+Auth session cookies when login is used.
+
+**Feature**: F22 deepen + F31
+
+**Steps**:
+
+1. Open Privacy settings; review categories for local work history and Auth cookies.
+2. If guest history is non-necessary and declined: do not persist IndexedDB work history;
+   notice still explains login for long-term storage.
+3. After login: Auth cookies/disclosures visible; GPC still honored.
+4. Withdraw preferences; confirm storage/cookie behavior updates.
+
+**Acceptance**: TC-F31-005; deepen TC-F22-*; no silent storage against declined prefs.
+
+**Automated tests**: T0 unit + T2/H4–H5 privacy flows.
+
+**Source**: F22; F31; UJ-033 deepen
+
+---
+
+### UJ-048: DOKS Cutover Smoke (S038 / EV-031 / F30)
+
+**Actor**: Operator / deployer
+
+**Goal**: After Render→DOKS cutover, API + static + worker are healthy; public convert and
+(optional) Auth/session paths work against new endpoints.
+
+**Feature**: F30 (#712)
+
+**Steps**:
+
+1. Deploy API, frontend, worker to DOKS; apply Alembic migrations to DO Postgres.
+2. Point DNS / `LIVE_*` URLs to DOKS endpoints (soak then primary).
+3. Run H0–H5: health, convert, CORS, FE→API; F8 store write smoke; Auth login + session CRUD.
+4. Confirm product path works **without** Supabase DB credentials; Auth keys present for login.
+5. Decommission Render after soak checklist.
+
+**Acceptance**: TC-F30-004/005; H0–H5 green on DOKS; UJ-001 + UJ-045/046 smoke.
+
+**Automated tests**: `make test-live*` against DOKS URLs; deploy-smoke report.
+
+**Source**: #712; F30; UJ-OPS-001 supersession notes
+
+---
+
 ### UJ-037: VAA Lint / Convert→Validate WMO Golden (F26 / #736)
 
 **Actor**: Operator / CI maintainer
@@ -1343,14 +1461,13 @@ preflight → send (SSRF/allowlist; N sequential when multi-selected).
 
 ## Operations Journeys
 
-### UJ-OPS-001: Deploy Render stack (API + static + F8 worker)
+### UJ-OPS-001: Deploy stack (API + static + F8 worker)
 
-Topology: API + static frontend + **Background Worker** (ADR-018). After F6: API image includes
-tac2iwxxm + validate packages (not gifts); frontend build includes product/profile controls
-(M8). After F7: frontend includes CodeMirror workbench; API includes decode/spans/preview;
-**no** admin static routes; BYO env. Redeploy API before frontend when CORS/API contract changes.
-Deploy worker after F8 migrations. Signoff includes UJ-005/013/015–019 live coverage plus F8
-live smoke (T7.4) when scheduled.
+**Historical**: Render Blueprint (`render.yaml`) — API + static + Background Worker (ADR-018).
+
+**S038 / EV-031**: Primary topology becomes **DOKS** (F30 / UJ-048). Render remains until soak
+completes, then decommissioned. Redeploy API before frontend when CORS/API contract changes.
+Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/045/046 + H0–H5.
 
 ---
 
@@ -1378,3 +1495,5 @@ live smoke (T7.4) when scheduled.
   Examples + METAR/SPECI/TAF parity (F25); deepen UJ-020/032
 - S027 / EV-021 (2026-07-29): UJ-037 VAA WMO golden (F26/#736); UJ-038 TCA WMO golden
   (F27/#737); deepen UJ-032 / TC-F7-008
+- S038 / EV-031 (2026-08-03): UJ-045..048 hybrid Auth sessions + DOKS; UJ-003 restored via
+  UJ-046; deepen UJ-001/004/033; UJ-OPS-001 → DOKS primary (F30/F31; #842/#830/#712)

@@ -3,7 +3,7 @@
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
 > **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-07-30 (S030 / EV-023 — #800 encode deepen; F26/F27 Done)
+> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 platform independence; Auth/DO/DOKS)
 
 ## Overview
 
@@ -13,39 +13,42 @@ validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authori
 and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
 **single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
 (read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **Planned**
-(S011). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019).
-**App auth** credentials are **BYO** (operator-owned Supabase via deploy env — ADR-021).
+(S011). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019; **F30** moves
+store to DigitalOcean Postgres). **F21** is **Amended** (S038 / EV-031): public convert APIs
+remain unauthenticated; **optional Supabase Auth** gates long-term work sessions only (**F31**).
+**Supabase** is **Auth/JWT verify only**; product DB is **DigitalOcean Postgres** (`DATABASE_URL`).
+Hosting target this cycle: **DOKS** (Render retired after soak) — **F30** / #712.
 **Dissemination destinations** (F16–F19) use **one-shot user-pasted BYOC** credentials
 (memory-only; never saved profiles) under SSRF + required egress allowlist (ADR-029).
 
 ## System Architecture
 
-### Runtime (post–F6 cutover; F7 operator UI this cycle)
+### Runtime (S038 / EV-031 target — F30/F31)
 
 ```
-Browser (CodeMirror 6 workbench + IndexedDB history + privacy prefs)
-   │  debounce + AbortController (public /api/v1 — no JWT)
+Browser
+  guest: IndexedDB (F22-gated) + loss-of-progress notice
+  login: Supabase Auth → JWT
+   │  public /api/v1 convert/lint/validate/disseminate — no JWT
+   │  /api/v1/work-sessions* — Bearer JWT (logged-in only)
    ▼
-apps/frontend (static — Render static site or Vite dev)
-   │  convert UI + decode panel + local F7.h sessions — no /admin, no /auth
+apps/frontend (static — DOKS/CDN or Vite dev)
    │  runtime /config.json → API base URL
    ▼
-apps/backend (FastAPI — Render web service)
-   ├── public /api/v1/* (convert/validate/lint/decode/preview/dissemination)
-   │     + abuse controls (rate limits, body/batch size — F21)
-   ├── packages/tac-validate (TAC lint; optional start/end spans)
-   ├── packages/tac2iwxxm (convert; decode segments; soft-preview)
-   ├── packages/iwxxm-validate (XSD + Schematron; F2 engine)
-   └── vendor/schemas/{iwxxm*, iwxxm-us} (read-only)
+apps/backend (FastAPI — DOKS)
+   ├── packages/auth — Supabase Auth JWT verify + /auth/*
+   ├── public /api/v1/* (convert/validate/lint/decode/preview/dissemination) + abuse controls
+   ├── /api/v1/work-sessions* → DigitalOcean Postgres (owner = Supabase user id)
+   ├── packages/tac-validate | tac2iwxxm | iwxxm-validate | dissemination
+   └── vendor/schemas/* (read-only)
 
-apps/worker (Render Background Worker — F8)
-   └── same packages (poller → lint → convert → Schematron → store/quarantine;
-       service-role JWT — machine path only, not operator Auth)
+apps/worker (DOKS — F8)
+   └── DATABASE_URL → DigitalOcean Postgres (store/quarantine; no Supabase DB)
 ```
 
-`packages/gifts` is **absent** after the first PR that wires tac2iwxxm to `/api/v1/convert`
-(ADR-014). F8 worker still uses server-side Supabase service-role credentials (ADR-018).
-Operator Auth / `packages/auth` on the public router is **removed** (F21 / S023 / EV-017).
+`packages/gifts` remains absent (ADR-014). Supabase product PostgREST/DB is **out**; Auth only.
+One-time migrate of legacy Supabase `tac_work_sessions` (and related) into DO Postgres this cycle
+(`D-S038-spec-data` Q3=2). Alembic (or backend migration path) targets `DATABASE_URL`.
 
 ### Repository (target tree)
 
@@ -83,50 +86,31 @@ metar-to-IWXXM/
 | Backend API | Conversion, validation, auth; **Done** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
 | Frontend | Operator UI (workbench, decode, F7 sessions; **Done** F16–F19 drawer; **EV-018** multi-select deepen) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
-| Auth library | Supabase middleware | `packages/auth/` | supabase-py |
+| Auth library | Supabase Auth JWT middleware (Auth-only) | `packages/auth/` | supabase-py / JWT verify |
 | tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
 | Dissemination | Sink adapters, writer-contract DDL, SSRF helpers (F16–F19) | `packages/dissemination/` | SQLAlchemy async + dialect drivers; aiosmtplib (ADR-030) |
 | Shared | Cross-cutting utils/types | `packages/shared/` | — |
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
-| Work history (F5) | Local METAR/SPECI session persistence | Browser IndexedDB (`apps/frontend`) | F7.h / F21 |
-| Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | same packages as backend; Supabase service role |
+| Work history (F5/F31) | Guest IndexedDB + logged-in DO Postgres sessions | FE IndexedDB + `tac_work_sessions` on DO | F7.i / F31; Auth JWT |
+| Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | `DATABASE_URL` → DO Postgres (F30) |
 
 ## Component Details
 
 ### apps/backend
 
-- **Purpose**: Single **public** HTTP API for health, conversion, validation, lint, decode,
-  soft-preview, and dissemination — **no** operator Auth / JWT gates (F21 / S023 / EV-017).
-  **Done (F16–F19)**: backend-mediated dissemination preflight/send for one-shot BYOC
-  destinations (memory-only; ADR-029 allowlist). **No** `/admin/*` (F7.a / #697); **no**
-  `/auth/*` or server work-session CRUD (F21 / F7.h — history is IndexedDB on the client).
-- **Inputs**: HTTP multipart/JSON (TAC + `product` + `profile` + version; decode/lint bodies);
-  env config (`DISSEMINATION_EGRESS_ALLOWLIST`; abuse-control knobs finalized in 04). F8
-  worker credentials are **not** on the public operator path.
-- **Outputs**: JSON responses, IWXXM XML, span-aware issue lists, decode segments,
-  soft-preview payloads; structured preflight/send results (no destination secrets persisted).
-- **Algorithm**:
-  1. Public routes apply **abuse controls** (per-IP + global rate limits, body/batch size,
-     timeouts/concurrency — numeric defaults in 04). `DISABLE_AUTH` dual path **retired**.
-  2. Conversion router may run **`tac-validate`**, then **`tac2iwxxm`** (bulletin split when
-     needed); soft-preview path returns best-effort IWXXM + failed-span markers (exact route
-     shape in api-contract / 04).
-  3. Validation / lint routers are **thin wrappers** over **`iwxxm-validate`** /
-     **`tac-validate`**; issue objects may include optional integer `start`/`end`.
-  4. Decode router (`POST /api/v1/decode-tac`) wraps tac2iwxxm decode/annotate segments.
-  5. **Done (F16–F19)**: Dissemination routers are thin wrappers over
-     **`packages/dissemination`** (`/api/v1/dissemination/preflight` + `/send`; ADR-030).
-- **S014 / EV-010 delta (F11, ADR-026)**: High-churn route **responses**
-  (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`)
-  encode with **msgspec**; multipart **request** intake stays FastAPI `Form`/`File`. OpenAPI
-  kept via thin pydantic aliases/export (no dual runtime validation). FE types updated same
-  cycle. (Pre-F21 auth/work-sessions pydantic paths removed with those routes.)
-- **Error handling**: HTTP 4xx for validation / abuse limits; 5xx for conversion failures with
-  structured errors; soft-preview is not a hard 5xx for parse failures when preview mode is
-  selected.
-- **Source**: F6 / ADR-014; S011 / EV-008; S014 / ADR-026; **S023 / EV-017 / F21**.
+- **Purpose**: Single HTTP API for health, conversion, validation, lint, decode, soft-preview,
+  dissemination, **optional Auth** (`/auth/*` via `packages/auth`), and **JWT-gated**
+  `/api/v1/work-sessions*` (F31). Convert/lint/validate/disseminate remain **public** (no JWT)
+  with abuse controls (F21 Amended). **No** `/admin/*` (F7.a / #697).
+- **Data**: Product DB = **DigitalOcean Postgres** (`DATABASE_URL`). Supabase used only to
+  **verify** Auth JWTs — no product PostgREST writes.
+- **Migrations**: Alembic (or backend migration path) against `DATABASE_URL` — not Supabase CLI
+  as SoT (`D-S038-spec-data`).
+- **S038 / EV-031**: Restore Auth library + session APIs; F8/store co-located on same DO DB;
+  one-time migrate legacy Supabase session rows into DO.
+- **Source**: F6 / ADR-014; S011; S023 / EV-017; **S038 / EV-031 / F30/F31**.
 
 ### packages/tac2iwxxm
 
@@ -295,51 +279,52 @@ metar-to-IWXXM/
   required `DISSEMINATION_EGRESS_ALLOWLIST` (ADR-029).
 - **Source**: [config-spec.md](config-spec.md), S003 session; S011 / EV-008.
 
-### F5 — User METAR work history (S004 / EV-004; unified under F7; **IndexedDB — S023**)
+### F5 — User METAR work history (S004; **hybrid — S038 / EV-031 / F31**)
 
-- **Purpose**: Durable converter **work history** (current session state) for METAR/SPECI —
-  **browser IndexedDB** after S023 / EV-017 / #783 (no login, no server ownership).
-- **Historical (pre-EV-017)**: Supabase `tac_work_sessions` + JWT RLS (ADR-020 / R2′). That HTTP
-  + table model is **retired** from the public product path; legacy rows archived/deleted after
-  ~30 days with no public API access.
-- **Client store**: UUID per work item; fields mirror prior session shape (product, status,
-  title, TAC, results, errors, params, timestamps, soft-delete). Export/import JSON workspace.
-- **Frontend**: Debounced draft sync (~3s) to IndexedDB; sidebar (**5 recent**); **My METARs**
-  = filter `product IN (metar, speci)`; **no** `/api/v1/work-sessions`.
-- **Source**: F5 requirements 2026-06-23; S011 R2′; **S023 / EV-017** (R2″ IndexedDB).
+- **Purpose**: Durable converter work history for METAR/SPECI (and F7 all-product sessions).
+- **Guest**: Browser IndexedDB; loss-of-progress notice; F22 may gate non-necessary local store.
+- **Logged-in**: `/api/v1/work-sessions*` → **DO Postgres** `tac_work_sessions` (owner =
+  Supabase Auth user id). On login: **auto-upload** eligible local drafts (`D-S038-guest-merge`=2).
+- **Legacy**: One-time migrate prior Supabase rows into DO this cycle; no ongoing Supabase DB reads.
+- **Source**: F5; S023 R2″; **S038 R2‴ / F31**.
 
-### F7 — Multi-product operator UI / sessions (S011 / EV-008; **F7.h IndexedDB — S023**)
+### F7 — Multi-product operator UI / sessions (S011; **F7.i hybrid — S038**)
 
-- **Purpose**: Operator UI for all seven F6 products — workbench, decode, soft-preview,
-  Failed-TAC cue — plus **local unified work sessions** in IndexedDB (F7.h).
-- **Status**: **Planned (build-ready)** — flips Implemented after verify/deploy gate.
-- **Slices**: F7.a–F7.g as before; **F7.h #783** IndexedDB local sessions + drop JWT session APIs.
-- **Sessions (R2″)**: Client IndexedDB for all seven products; My METARs remains METAR/SPECI filter.
-- **API companions**: decode/lint/validate/convert remain public (F21); session CRUD **removed**.
-- **Editor**: CodeMirror 6.
-- **Golden examples (F7.g)**: Unchanged static FE catalog.
-- **BYO / admin**: AdminDashboard deleted (#697); operator Auth removed (F21).
-- **Source**: S011; S021 F7.g; **S023 / EV-017** F7.h + F21.
+- **Purpose**: Operator UI for seven F6 products + hybrid sessions (**F7.i** / F31).
+- **Slices**: F7.a–F7.h as before; **F7.i** restores JWT session APIs to DO Postgres for logged-in users.
+- **API**: Public convert companions unchanged; session CRUD requires Auth JWT.
+- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**.
 
-### F21 — Public unauthenticated operator app (S023 / EV-017)
+### F21 — Public convert + optional Auth (Amended S038 / EV-031)
 
-- **Purpose**: Remove operator Auth; public convert/validate/lint/decode/preview/dissemination
-  with abuse controls; retire `DISABLE_AUTH` dual path; keep F8 machine auth private.
-- **Source**: #783; [feature-list.md](feature-list.md) F21.
+- **Purpose**: Keep convert/validate/lint/decode/preview/dissemination public; optional Supabase
+  Auth only for long-term server sessions (F31). Abuse controls remain.
+- **Source**: #783; **F21 Amended** / F31; [feature-list.md](feature-list.md).
 
-### F22 — Privacy preference center (S023 / EV-017)
+### F22 — Privacy preference center (S023; deepen F31)
 
-- **Purpose**: Solution A privacy notice + settings + GPC; disclose IndexedDB; no CMP/analytics.
-- **Source**: #783; [feature-list.md](feature-list.md) F22.
+- **Purpose**: Solution A + GPC; disclose IndexedDB; deepen to gate guest local history and
+  disclose Auth cookies when login is used.
+- **Source**: #783; F31 deepen.
 
-### F8 — Near-realtime ingest (Implemented)
+### F8 — Near-realtime ingest (Implemented; F30 data-plane amend)
 
-- **Purpose**: Continuous ingest → unified pipeline → store; quarantine on fail;
-  &lt;5–15s target; scale workers via Render Background Worker (`apps/worker/`).
-- **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Live staging smoke may be deferred.
+- **Purpose**: Continuous ingest → pipeline → store; quarantine on fail; scale via worker replicas.
+- **Deploy**: DOKS Background/Deployment worker (`apps/worker/`); **DO Postgres** via
+  `DATABASE_URL` (co-located with work sessions). No Supabase service-role DB writers.
 - **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
-  results. Operator **dissemination push sinks** are **F16–F19** (separate UI/API path), not F8 v1.
-- **Source**: [feature-list.md](feature-list.md) F8; ADR-018.
+  results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
+- **Source**: ADR-018; **F30**; [feature-list.md](feature-list.md) F8.
+
+### F30 — Platform independence (S038 / EV-031)
+
+- **Purpose**: Supabase Auth-only; DO Postgres product DB; DOKS production cutover; amend #830.
+- **Source**: [feature-list.md](feature-list.md) F30; #842/#830/#712.
+
+### F31 — Hybrid operator sessions (S038 / EV-031)
+
+- **Purpose**: Guest local + notice; logged-in DO sessions; auto-upload; F22 interplay.
+- **Source**: [feature-list.md](feature-list.md) F31.
 
 ### F16–F19 — Dissemination epic (S019 / EV-014) — Done
 
@@ -614,38 +599,36 @@ Separate GitHub repos (Metartoiwxxmfrontend, GIFTs fork, iwxxm forks) will be **
 
 - iwxxm / iwxxm-* (and iwxxm-us) content is authoritative from upstream — read-only in vendor/.
 - Single git clone must be sufficient for local dev (`git clone` — no `--recurse-submodules`).
-- Render deploys **three** services: API (backend+auth) + static frontend + F8 Background
-  Worker (ADR-018; amends REQ-009 two-service baseline).
-- No FastAPI/Supabase imports inside `packages/tac2iwxxm`, `packages/tac-validate`, or
-  `packages/iwxxm-validate`.
+- Render / DOKS: deploy **three** workloads — API + static frontend + F8 worker (ADR-018;
+  **F30** moves primary hosting to DOKS; Render retired after soak).
+- No FastAPI/Supabase **product-DB** imports inside `packages/tac2iwxxm`, `packages/tac-validate`,
+  or `packages/iwxxm-validate`. Auth/JWT verify may live only in `packages/auth` + backend.
 - After F6 cutover PR: no `packages/gifts` in the tree; API must not import gifts.
 - Schematron applies to **IWXXM only**; TAC quality uses `tac-validate`.
-- F7 is **in scope** this cycle (S011 / EV-008); F8 worker remains in tree (ADR-018).
+- F7 is **in scope**; F8 worker remains in tree (ADR-018); **F30/F31** amend data/auth/host.
 - PyO3 native extension + ADR-016 benches hard-pass before F6 cutover (ADR-017).
+- Product Postgres is **DigitalOcean**; Supabase is **Auth-only** (no product PostgREST).
 
 ### Assumptions
 
 - wmo-im continues publishing tagged releases on GitHub.
 - NOAA/MDL continues to publish IWXXM-US schemas suitable for vendor pinning.
-- Operator Auth removed (F21). Public convert/validate/lint/decode/preview/dissemination share
-  one unauthenticated path with abuse controls (defaults in 04).
-- F8 worker retains machine auth (service-role JWT) off the public router (ADR-018).
-- `DISABLE_AUTH` dual path is **retired** with F21 — no local/CI JWT bypass for operator UX.
+- Convert/lint/validate/disseminate stay public; JWT only for work-session APIs (F21 Amended).
+- F8 worker uses `DATABASE_URL` (DO), not Supabase service-role DB writers (F30).
+- `DISABLE_AUTH` dual path remains **retired** — no local/CI JWT bypass that weakens abuse controls.
 
 ## Security & Privacy
 
-- **Public operator API** (F21): no browser JWT; abuse controls on `/api/v1/*`. Privacy notice
-  + preference center (F22 / Solution A + GPC) disclose IndexedDB work history.
-- **Admin API / `is_admin()` product surface removed** (F7.a / #697). Operator `/auth/*` and
-  server session RLS paths removed (F21 / F7.h).
+- **Public convert API** (F21 Amended): no JWT on convert/lint/validate/disseminate; abuse controls.
+- **Optional Auth** (F31): Supabase Auth JWT for `/auth/*` + `/api/v1/work-sessions*`; disclose
+  Auth cookies in F22; guest IndexedDB gated by privacy prefs where classified non-necessary.
+- **Admin API / `is_admin()` product surface removed** (F7.a / #697).
 - CORS from `config.*.api.corsOrigins` on backend.
-- Minimal `.env` — F8 / dissemination egress secrets only on server; `make env-check` validates
-  sync (env-contract full rewrite deferred to 04/12 — stale-until-F21 banner).
-- Vendor trees (WMO + IWXXM-US) are public schema data — **no new secrets** for F6 packages.
-- F8 worker adds secrets: poller HTTPS URL + Supabase **service role** JWT (ADR-018).
-- Dissemination destination credentials remain **memory-only** (ADR-021/029) — never in
-  IndexedDB or logs.
-- Legacy Supabase `tac_work_sessions` rows: no public API; ~30-day archive post-cutover (E17-5).
+- Secrets: Supabase Auth keys; DO `DATABASE_URL` + DOKS secrets; dissemination allowlist;
+  F8 poller URL. **No** Supabase service-role for product data plane.
+- Dissemination destination credentials remain **memory-only** (ADR-021/029).
+- Legacy Supabase product rows: **one-time migrate** into DO Postgres this cycle; then no runtime
+  Supabase DB dependency.
 
 ## Performance Characteristics
 

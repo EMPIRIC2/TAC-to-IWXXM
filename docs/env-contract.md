@@ -1,28 +1,31 @@
-# Environment Contract — Render ↔ Local (F21 public app)
+# Environment Contract — DOKS / Auth-only Supabase / DO Postgres (F30 / F31)
 
 > **Project**: METAR to IWXXM Converter  
-> **Session**: S023-public-app-privacy / EV-017 (F21/F22)  
-> **Example deploy project** (historical ref only): `ktvxijislbtgqapllmuk`  
-> **Last updated**: 2026-07-28 (S023 / EV-017 — **F21 rewrite**; closes C-EV017.5)
-> **Status**: **Accepted** for build (07-build T1.3 / D-S023-04-plan-approve-A)
+> **Session**: S038-platform-independence-842 / EV-031 (F30/F31)  
+> **Supersedes**: F21-only public-app contract (S023) for Auth + data-plane topology  
+> **Last updated**: 2026-08-03  
+> **Status**: **Draft** (01-requirements) — finalize names in 04/06 as needed
 
 Single source of truth for **what** each layer owns and **which name** to use everywhere.
 
-## Model (F21)
+## Model (EV-031)
 
-- **Operator product** is **public and unauthenticated** — no browser JWT, no `/auth/*`,
-  no `E2E_USER_*` login harness for convert paths.
-- **Work history** lives in the browser (IndexedDB) — not in server session tables.
-- **F8 worker** remains a private machine path with service-role credentials (ADR-018).
-- **Dissemination** BYOC credentials are **memory-only** (ADR-021/029); egress allowlist required.
+- **Convert / lint / validate / disseminate** remain **public** (no JWT).
+- **Optional Supabase Auth** for long-term work sessions only (JWT → `/api/v1/work-sessions*`).
+- **Guests**: IndexedDB + persistent loss-of-progress notice; F22 privacy gates.
+- **Product DB**: DigitalOcean Postgres via `DATABASE_URL` (sessions + F8).
+- **Supabase**: Auth URL + keys only — **not** product PostgREST / hosted app tables.
+- **Compute**: DOKS after F30 cutover (Render transitional until soak + decommission).
+- **Dissemination** BYOC credentials remain **memory-only** (ADR-021/029).
 
 ## Source of truth by layer
 
 | Layer | Owns | Does not own |
 |-------|------|--------------|
-| **Render API** | Deploy URL, `PORT`, rate-limit/body env, dissemination allowlist, F8-unrelated API secrets if any remain for legacy ops | Browser Auth keys |
-| **Render static** | Frontend URL; `/config.json` with **`api.baseUrl`** (+ cors-related non-secrets) | Supabase publishable key for Auth (removed) |
-| **Render worker (F8)** | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, poller URL/interval | Operator JWT |
+| **DOKS API** | Deploy URL, `PORT`, `DATABASE_URL`, rate-limit/body env, dissemination allowlist, Supabase Auth verify secrets | Supabase DB / service-role PostgREST product writes |
+| **DOKS static** | Frontend URL; `/config.json` with `api.baseUrl` + Auth publishable bootstrap | Service-role / `DATABASE_URL` |
+| **DOKS worker (F8)** | `DATABASE_URL`, poller URL/interval, machine credentials | Operator JWT; Supabase DB writers |
+| **Supabase project** | Auth users / JWT issuance | App tables for sessions or F8 |
 | **Repo** | `config/*.json`, `.env.example`, this contract | Live secret values |
 | **Local** | `.env` (gitignored), `METAR_CONFIG_ENV=local` | Production URLs unless live testing |
 
@@ -30,56 +33,55 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 
 | Concern | Canonical | Where set |
 |---------|-----------|-----------|
-| API public URL | `config.*.api.baseUrl` | `config/*.json` (`/api/v1` **only** — no `/auth`) |
+| API public URL | `config.*.api.baseUrl` | `config/*.json` (`/api/v1` **and** `/auth`) |
 | Frontend public URL | `config.*.api.frontendUrl` | `config/*.json` |
-| CORS | `config.*.api.corsOrigins` | `config/*.json` |
-| Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | Render API / `.env` (default **60**) |
-| Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | Render API / `.env` (default **10**) |
-| Max request body | `MAX_REQUEST_BODY_BYTES` | Render API / `.env` (default **2097152** = 2 MiB) |
-| Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | Render API / `.env` (ADR-029) |
-| Converter engine (F6) | *(code — `packages/tac2iwxxm`)* | Not an env var |
-| F8 worker Supabase URL | `SUPABASE_URL` | Render worker / local `.env` |
-| F8 worker service role | `SUPABASE_SERVICE_ROLE_KEY` | Render worker / local `.env` |
-| F8 poller feed URL | `INGEST_POLLER_URL` | Render worker / local `.env` |
-| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Render worker (default `30`) |
+| CORS | `config.*.api.corsOrigins` | `config/*.json` (include DOKS FE origin) |
+| Product Postgres | `DATABASE_URL` | API + worker env (**required** for sessions + F8) |
+| Supabase Auth URL | `SUPABASE_URL` / `config.*.supabase.url` | API + FE bootstrap |
+| FE Auth publishable key | `SUPABASE_PUBLISHABLE_KEY` → `/config.json` | Static deploy inject |
+| Auth JWT verify (server) | `SUPABASE_JWT_SECRET` and/or JWKS via project URL | API only — never FE |
+| Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
+| Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
+| Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) |
+| Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | API / `.env` (ADR-029) |
+| F8 poller feed URL | `INGEST_POLLER_URL` | Worker / local `.env` |
+| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker (default `30`) |
+| Live API URL | `LIVE_API_URL` | Local/CI live harness (DOKS after cutover) |
+| Live frontend URL | `LIVE_FRONTEND_URL` | Local/CI live harness |
+| E2E Auth fixture | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Live/local Auth session tests only |
 
-### Optional / legacy ops (not required for public FE)
+### Retired / do not use for product data plane
 
-| Concern | Canonical | Notes |
-|---------|-----------|-------|
-| Postgres | `DATABASE_URL` | F8 ingest store / legacy archive ops only — **not** operator Auth |
-| Supabase secret | `SUPABASE_SECRET_KEY` | Server ops / archive scripts only — **never** frontend |
+| Retired for product DB | Replacement |
+|------------------------|-------------|
+| Supabase Postgres pooler as app SoT | `DATABASE_URL` → DigitalOcean Postgres |
+| `SUPABASE_SERVICE_ROLE_KEY` as F8 **DB** writer | SQL via `DATABASE_URL` (ADR-018 amend) |
+| Operator product tables on Supabase | Migrated once — [ops note](ops/supabase-to-do-postgres-migration.md) |
 
-### Dissemination egress (F16–F19)
+### Still retired (F21 keep)
 
-| Setting | Rules |
+| Retired | Notes |
 |---------|-------|
-| `DISSEMINATION_EGRESS_ALLOWLIST` | Comma-separated hostnames and/or CIDRs. **Empty ⇒ fail-closed**. Local/CI: `wis2box,127.0.0.1,127.0.0.0/8,localhost`. |
-| User-pasted dest creds | **Not** env vars — memory-only on preflight/send |
-
-## Retired (F21 — do not set for operator product)
-
-| Retired | Replacement |
-|---------|-------------|
-| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | None — public convert; use `TC-F21-auth-gone` |
+| `DISABLE_AUTH` dual path | Public convert is default; Auth is additive for sessions only |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Already retired (S011) |
-| `DISABLE_AUTH` / `config.*.api.disableAuth` | Public by default — dual path removed |
-| Browser `SUPABASE_PUBLISHABLE_KEY` in `/config.json` for Auth | Removed from FE Auth path |
-| `config.*.api.baseUrl` including `/auth` | `/api/v1` only |
-| Operator `/auth/*` | 404 |
+| In-app paste of Supabase **auth** keys | Dest BYOC paste remains F16–F19 only |
 
 ## Per-environment matrix
 
-### Production (Render)
+### Production (DOKS — target)
 
-| Setting | Render API | Render static | Render worker |
-|---------|------------|---------------|---------------|
-| `RATE_LIMIT_PUBLIC_PER_MIN` | env (default 60) | — | — |
-| `RATE_LIMIT_DISSEMINATION_PER_MIN` | env (default 10) | — | — |
-| `MAX_REQUEST_BODY_BYTES` | env (default 2097152) | — | — |
-| `DISSEMINATION_EGRESS_ALLOWLIST` | env | — | — |
-| `config/prod.json` | `METAR_CONFIG_ENV=prod` | copy → `public/config.json` (`api.baseUrl` only) | — |
-| F8 secrets | — | — | `SUPABASE_*`, poller |
+| Setting | API | Static | Worker |
+|---------|-----|--------|--------|
+| `DATABASE_URL` | required | — | required |
+| `SUPABASE_URL` + JWT verify | required for Auth | — | — |
+| Publishable key inject | — | `/config.json` | — |
+| Rate limits / body / allowlist | env | — | — |
+| `METAR_CONFIG_ENV=prod` | yes | copy → `public/config.json` | — |
+| F8 poller | — | — | env |
+
+### Transitional (Render — until soak)
+
+Same names; hosts remain onrender.com until TC-F30-005 decommission.
 
 ### Local (`METAR_CONFIG_ENV=local`)
 
@@ -87,27 +89,30 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 |---------|-------|
 | Ports | **18000** frontend / **18001** API |
 | CORS | `["http://localhost:18000"]` |
-| Rate limits | Defaults OK; may raise for local soak |
-| Auth bypass | **N/A** (no Auth) |
+| `DATABASE_URL` | Local/DO Postgres for session + F8 integration tests |
+| Auth | Optional; use project Auth + publishable key for UJ-046 |
 
 ### CI (GitHub Actions)
 
 | Setting | Notes |
 |---------|-------|
-| Live login secrets | **Not required** for public path |
-| F8 / dissemination integration | Use allowlist + worker fixtures as today |
+| Public convert | No Auth required |
+| Session / Auth tests | Fixture user or mocked JWT as designed in 04 |
+| F8 / dissemination | `DATABASE_URL` + allowlist fixtures |
 
 ## Verification
 
 ```bash
 make env-check              # local: .env + config JSON valid
-make env-check LIVE=1       # optional: probe Render /health (no Auth health)
+make env-check LIVE=1       # optional: probe LIVE_API_URL /health
+make test-live-connectivity # H4–H5 — required this cycle (D-S038-tp)
 ```
 
 ## References
 
-- [ADR-031](adr/ADR-031-public-app-indexeddb-history.md)
-- [ADR-018](adr/ADR-018-f8-worker-template.md)
-- [ADR-029](adr/ADR-029-dissemination-ssrf-allowlist.md)
+- [ADR-033](adr/ADR-033-platform-independence-auth-do-doks.md)
+- [ADR-031](adr/ADR-031-public-app-indexeddb-history.md) (partially superseded)
+- [ADR-018](adr/ADR-018-f8-worker-template.md) (amended)
 - [config-spec.md](config-spec.md)
 - [deploy.md](deploy.md)
+- [ops/supabase-to-do-postgres-migration.md](ops/supabase-to-do-postgres-migration.md)

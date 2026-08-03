@@ -1,8 +1,8 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-29 (S026 / EV-020 — PyYAML on tac2iwxxm for F9 glossary)
-> **Status**: **Accepted** for build (07-build T1.2 / D-S023-04-plan-approve-A) — drafted in bf4eaf1
+> **Last updated**: 2026-08-03 (S038 / EV-031 — restore packages/auth; Alembic; DO Postgres)
+> **Status**: **Draft** for F30/F31 deps (01) — accept with 04-tech-plan / Gate B
 
 ## Runtime Dependencies
 
@@ -18,12 +18,14 @@
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | slowapi | Public API rate limits (F21 / ADR-031) | MIT | PyPI (E17-15) |
+| alembic | Schema migrations against `DATABASE_URL` (F30) | MIT | PyPI (EV-031) |
+| sqlalchemy | DO Postgres access for sessions / F8 (shared) | MIT | PyPI |
 | tac2iwxxm | Conversion (F6) | MIT | workspace path |
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 | dissemination | F16–F19 sinks | MIT | workspace path (ADR-030) |
-| ~~supabase~~ (operator Auth) | ~~via packages/auth~~ | — | **Removed F21** (ADR-031); F8 uses service-role env only |
+| auth | Supabase Auth JWT verify + `/auth/*` (F31 restore) | MIT | workspace `packages/auth` (ADR-033) |
 
 ### packages/dissemination (S019 / EV-014 — M1)
 
@@ -89,11 +91,15 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 |---------|---------|---------|--------|
 | (historical GIFTs deps) | METAR parsing, XML | Per former pyproject | Removed per ADR-014; REQ-014 deprecated |
 
-### packages/auth — **Deleted (F21 / ADR-031)**
+### packages/auth — **Restored (F31 / ADR-033)**
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| (historical) | Operator JWT / `/auth/*` via Supabase | — | **Removed** S023 / EV-017 (E17-22=B); M4 deprecated |
+| supabase / PyJWT (as implemented) | Operator JWT verify + `/auth/*` | Apache-2.0 / MIT | PyPI — pin in 04 |
+| (workspace) | Auth library mounted in `apps/backend` | MIT | `packages/auth` |
+
+Was **Deleted** under F21 / ADR-031 (E17-22=B). EV-031 restores Auth-only path (no product DB
+via Supabase).
 
 ### apps/frontend
 
@@ -101,9 +107,9 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 |---------|---------|---------|--------|
 | react | UI | MIT | npm |
 | vite | Bundler | MIT | npm |
-| **idb** | IndexedDB wrapper for local work sessions (F7.h) | ISC | npm (E17-12 / ADR-031) |
+| **idb** | IndexedDB wrapper for guest work sessions (F7.h / F31) | ISC | npm (E17-12 / ADR-031) |
 | fake-indexeddb | Vitest IndexedDB polyfill for TC-004 | Unlicense | npm (dev; T2.3) |
-| ~~@supabase/supabase-js~~ | ~~Client auth~~ | — | **Removed** from operator Auth path (F21); drop dep when Auth code deleted |
+| **@supabase/supabase-js** | Optional client Auth bootstrap (F31 login) | Apache-2.0 | npm — restore in 04 |
 | CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
 
 ## Workspace Tooling
@@ -131,9 +137,9 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 | xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin — `>=24.5` in workspace `dev`; also `metar-shared[xsd]` for importing committed models |
 | maturin | **dev** (F13/F14) | PyO3 wheel build — `>=1.7` in workspace `dev`; also CI |
 
-**Deployables**: API + static frontend + **F8 Background Worker** (`apps/worker`, ADR-018).
-API image depends on tac2iwxxm + validate packages; worker image uses the same packages plus
-poller/store writers. Rust toolchain in API (and worker if linked) image for PyO3.
+**Deployables**: API + static frontend + **F8 worker** on **DOKS** (ADR-033; Render transitional).
+API image depends on tac2iwxxm + validate + **auth** packages; worker image uses packages plus
+poller/store writers via `DATABASE_URL`. Rust toolchain in API (and worker if linked) image for PyO3.
 
 ## Vendored / External Data (not PyPI)
 

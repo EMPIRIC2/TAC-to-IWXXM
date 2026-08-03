@@ -6,11 +6,11 @@
 ## Cycle EV-031 — Platform independence #842 / #830 / #712 (S038)
 
 **Session**: S038-platform-independence-842  
-**Features**: pending `D-S038-fn` (proposed **F30** + **F31**; deepen F5/F7/F8/F21/F22)  
+**Features**: **F30** + **F31** (deepen F5/F7/F8/F21/F22/M4)  
 **Issues**: [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842), [#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830), [#712](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/712)  
 **Started**: 2026-08-03  
 **Branch**: `evolve/EV-031-platform-independence-842`  
-**Status**: **in_progress** — Phase 0 locked; Phase 1 Fn allocation
+**Status**: **in_progress** — **01-requirements** (delta); open commit `d286bfb`
 
 ### Scope (Phase 0 — locked 2026-08-03)
 
@@ -23,6 +23,15 @@
 | E31-5 | decision | Auth model? | **1** — Reintroduce **Supabase Auth** for **long-term storage**; amend F21 (`D-S038-auth-model`) |
 | E31-6 | decision | Session store? | **1** — Logged-in → DO Postgres; guests → local + **loss notice** + **F22 privacy** (`D-S038-session-store`) |
 | E31-7 | decision | #830? | **1** — Amend ticket: Auth-kept / strip data plane (`D-S038-830-amend`) |
+| E31-8 | decision | Fn allocation? | **1,1,1** — **F30** + **F31**; start 01; commit open (`D-S038-fn`) |
+| E31-M | decision | Document Manifest? | **1,1** — full 1–10; Feature List first (`D-S038-E31-M`) |
+| E31-F30 | decision | F30 Feature List? | **1,1,1,1** — accept draft; F30 owns #830+#712; public convert APIs; continue F31 (`D-S038-F30`) |
+| E31-F31 | decision | F31 Feature List? | **1,2,1,1** — accept draft; **auto-upload** local drafts on login; F21 **Amended**; write Feature List (`D-S038-F31`) |
+| E31-guest-merge | decision | Guest→login drafts? | **2** — auto-upload all eligible local drafts (`D-S038-guest-merge`) |
+| E31-spec-topo | decision | Spec topology? | **1,1,1,1** — accept topo; restore `packages/auth`; restore `/api/v1/work-sessions*`; data/cutover next (`D-S038-spec-topo`) |
+| E31-spec-data | decision | Spec data/cutover? | **1,1,2,1** — single DO DB; Alembic; **one-time migrate** legacy Supabase→DO; write Spec then UJ (`D-S038-spec-data`) |
+| E31-uj | decision | User Journeys? | **1,1,1** — UJ-045..048; persistent guest banner; write then Test Plan (`D-S038-uj`) |
+| E31-tp | decision | Test Plan? | **1,1,1** — TC-F30/F31/EV031; H4–H5 required; lean remaining docs (`D-S038-tp`) |
 
 **Topology**: Supabase = Auth/JWT verify only. DigitalOcean = all product DB + DOKS compute.  
 **Guest UX**: transient local storage; UI notice that progress is lost without login; honor privacy preference center.
@@ -30,13 +39,12 @@
 **In:** #830 amend; hybrid sessions; F8→DO Postgres; DOKS prod cutover; ADR/corpus/deploy.  
 **Out:** Engine rewrites; Supabase product PostgREST/DB; long-lived dual hosts after soak.
 
-### Acceptance (cycle — draft until 01)
+### Acceptance (cycle)
 
-1. App boots and smoke **without** Supabase **database** credentials; Auth credentials still required for login path.
-2. Logged-in work sessions persist on DO Postgres; guests local-only with notice; privacy prefs respected.
-3. F8 writes to DO Postgres.
-4. Production on DOKS; Render decommissioned after soak (or tracked cutover checklist complete).
-5. #830/#712/#842 acceptance updated and met (or residual issues filed).
+1. **F30**: Auth-only Supabase; DO Postgres data; DOKS cutover; #830 amended acceptance (**TC-F30-001..006**).
+2. **F31**: Hybrid sessions; guest notice; auto-upload on login; F22 deepen; F21 Amended (**TC-F31-001..006**).
+3. Public convert without login remains; JWT only for server session APIs.
+4. Deploy smoke / H0–H5 against DOKS (and Auth) per routing.
 
 ---
 

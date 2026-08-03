@@ -47,8 +47,9 @@ active_session:
     D-S038-session-store: '1'
     D-S038-830-amend: '1'
     D-S038-fn: '1,1,1'
+    D-S038-tp: '1,1,1'
     locked_at: '2026-08-03'
-    note: 'Phase 0 locked — DOKS prod cutover; F8→DO Postgres; Supabase Auth long-term (amend F21); sessions DO Postgres logged-in / guest local+notice+F22; #830 amend Auth-kept; D-S038-fn=1,1,1 F30+F31 (deepen F5,F7,F8,F21,F22,M4)'
+    note: 'Phase 0 locked — DOKS prod cutover; F8→DO Postgres; Supabase Auth long-term (amend F21); sessions DO Postgres logged-in / guest local+notice+F22; #830 amend Auth-kept; D-S038-fn=1,1,1 F30+F31 (deepen F5,F7,F8,F21,F22,M4); D-S038-tp=1,1,1 Test Plan + lean remaining standing docs drafted'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -71,7 +72,8 @@ active_session:
     status: in_progress
     started: '2026-08-03'
     skip_rationale: null
-    note: 'STARTED (delta) — D-S038-fn=1,1,1; F30+F31; commit open artifacts yes'
+    note: 'IN_PROGRESS (delta) — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031 written; H4–H5 required; lean pass drafted (config-spec, env-contract, api-contract, deploy, dependency-inventory, ADR-033, ops/supabase-to-do-postgres-migration.md); awaiting Gate A / lean-doc acceptance → 02-verify-plan'
+    current_template: 'lean docs complete; awaiting acceptance → 02-verify-plan'
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -126,7 +128,7 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: 'S038/EV-031 — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; 00-context completed; 16-evolve in_progress; current_stage 01-requirements (delta)'
+  note: 'S038/EV-031 — D-S038-fn=1,1,1; D-S038-tp=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; 00-context completed; 16-evolve in_progress; current_stage 01-requirements (delta) — Test Plan + lean docs drafted; awaiting Gate A / lean-doc acceptance'
 sessions:
 - id: S037-quality-residuals-831
   type: feature
@@ -3671,38 +3673,102 @@ stages:
     prior_started: '2026-08-02'
     prior_completed: '2026-08-02'
     prior_note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
-    note: 'S038/EV-031 01-requirements in_progress (delta) — D-S038-fn=1,1,1; F30+F31; deepen F5,F7,F8,F21,F22,M4; commit open artifacts yes'
+    note: 'S038/EV-031 01-requirements in_progress (delta) — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031 written; H4–H5 required; lean pass drafted (config-spec, env-contract, api-contract, deploy, dependency-inventory, ADR-033, ops/supabase-to-do-postgres-migration.md); awaiting Gate A / lean-doc acceptance → 02-verify-plan'
     substeps:
       interviews:
         status: completed
         completed: 1
-        current_template:
-        current_section:
+        current_template: 'lean docs complete; awaiting acceptance → 02-verify-plan'
+        current_section: awaiting-acceptance
     active_session:
-      session_id: S037-quality-residuals-831
-      evolve_cycle_id: EV-030
-      status: completed
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      status: in_progress
       mode: delta
-      started_at: '2026-08-02'
-      started: '2026-08-02'
-      completed_at: '2026-08-02'
-      completed: '2026-08-02'
-      note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; handoff 02-verify-plan; #831→#829→#820'
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: null
+      completed: null
+      note: 'IN_PROGRESS (delta) — D-S038-tp=1,1,1; Test Plan + lean remaining standing docs drafted; awaiting Gate A / lean-doc acceptance → 02-verify-plan'
       feature_ids:
-      - F29
-      - F23
-      - F12
-      - F2
-      - F13
-      - F9
-      - F26
-      - F27
+      - F30
+      - F31
+      deepen_feature_ids:
+      - F5
+      - F7
+      - F8
+      - F21
+      - F22
+      - M4
       decision_refs:
-      - D-S037-open
-      - D-S037-route
-      - D-S037-fn
-      - D-S037-E30-M
+      - D-S038-open
+      - D-S038-doks-depth
+      - D-S038-f8
+      - D-S038-route
+      - D-S038-auth-model
+      - D-S038-session-store
+      - D-S038-830-amend
+      - D-S038-fn
+      - D-S038-tp
+      artifacts:
+      - docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
+      - docs/test-plan.md
+      - docs/config-spec.md
+      - docs/env-contract.md
+      - docs/api-contract.md
+      - docs/deploy.md
+      - docs/dependency-inventory.md
+      - docs/adr/ADR-033-platform-independence-auth-do-doks.md
+      - docs/ops/supabase-to-do-postgres-migration.md
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/user-journeys.md
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
     delta_substages:
+    - status: in_progress
+      mode: delta
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: null
+      completed: null
+      note: 'IN_PROGRESS (delta) — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031; H4–H5 required; lean docs drafted; awaiting Gate A / lean-doc acceptance'
+      deepen:
+      - F5
+      - F7
+      - F8
+      - F21
+      - F22
+      - M4
+      feature_ids:
+      - F30
+      - F31
+      artifacts:
+      - docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
+      - docs/test-plan.md
+      - docs/config-spec.md
+      - docs/env-contract.md
+      - docs/api-contract.md
+      - docs/deploy.md
+      - docs/dependency-inventory.md
+      - docs/adr/ADR-033-platform-independence-auth-do-doks.md
+      - docs/ops/supabase-to-do-postgres-migration.md
+      - docs/feature-list.md
+      - docs/spec.md
+      - docs/user-journeys.md
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
+      decision_refs:
+      - D-S038-fn
+      - D-S038-tp
+      substeps:
+        interviews:
+          status: completed
+          completed: 1
+          current_template: 'lean docs complete; awaiting acceptance → 02-verify-plan'
+          current_section: awaiting-acceptance
     - status: completed
       mode: delta
       session_id: S037-quality-residuals-831
@@ -4312,6 +4378,7 @@ stages:
               domain-research-catalog: completed
               ADR: completed
     notes:
+    - '2026-08-03 S038/EV-031 01-requirements IN_PROGRESS (delta) — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031 written; H4–H5 required; lean pass drafted (config-spec, env-contract, api-contract, deploy, dependency-inventory, ADR-033, ops/supabase-to-do-postgres-migration.md); current_template=lean docs complete awaiting acceptance → 02-verify-plan; status remains in_progress; #842/#830/#712'
     - '2026-08-02 S037/EV-030 01-requirements COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; report docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md; handoff 02-verify-plan; sha pending parent commit; #831→#829→#820'
     - '2026-08-02 S037/EV-030 01-requirements STARTED (delta) — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; #831→#829→#820'
     - 'S035/EV-028 01-requirements COMPLETE 2026-08-01 (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md; handoff 02-verify-plan; #781'
@@ -9100,10 +9167,11 @@ stages:
     prior_evolve_cycle_id: EV-030
     prior_completed: '2026-08-03'
     prior_note: 'S037/EV-030 16-evolve CLOSED — D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; active_session=null'
-    note: 'S038/EV-031 16-evolve in_progress — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; child 01-requirements in_progress; #842/#830/#712'
+    note: 'S038/EV-031 16-evolve in_progress — D-S038-fn=1,1,1; D-S038-tp=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; child 01-requirements in_progress (Test Plan + lean docs drafted; awaiting Gate A); #842/#830/#712'
     tip_sha: 8bd111c
     tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
     notes:
+    - '2026-08-03 S038/EV-031 — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031 + lean standing docs drafted; 01 remains in_progress pending Gate A / lean-doc acceptance → 02-verify-plan; #842/#830/#712'
     - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; report verification-report-m3.md; active_task → T4.2 pending; progress 23/27; #831→#835'
     - '2026-08-03 S037/EV-030 — T4.1 COMPLETE (08-verify-build M3 PASS @ 1f47eb5); T3.3 fix pushed; CI 30823368642 SUCCESS; D-S037-ui-preview=2 confirmed; H4–H5 still required at M4/13; progress 23/27; active_task → T4.2 pending @ M4; semver AskQuestion pending D-S037-semver-tac2iwxxm (tac2iwxxm 0.2.3 decode deepen); workflow-state dirty pending chore sync; PR #832 open; #831→#835'
     - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
@@ -9432,6 +9500,28 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S038-tp
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: document-manifest
+  status: confirmed
+  topic: 'S038/EV-031 Test Plan + lean remaining standing docs'
+  summary: '1,1,1 — TC-F30/F31/EV031; H4–H5 required; lean remaining docs drafted'
+  decision: '1,1,1 — Write Test Plan TC-F30/F31/EV031 with H4–H5 required; draft lean remaining standing docs (config-spec, env-contract, api-contract, deploy, dependency-inventory, ADR-033, ops/supabase-to-do-postgres-migration.md). Stage 01 remains in_progress pending Gate A / lean-doc acceptance → 02-verify-plan.'
+  user_option: '1,1,1'
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  branch: evolve/EV-031-platform-independence-842
+  note: 'evolve-decisions E31-tp already recorded; 01 not completed yet'
+
 - id: D-S038-fn
   date: '2026-08-03'
   timestamp: '2026-08-03'
@@ -28577,6 +28667,7 @@ evolve_cycles:
     D-S038-session-store: '1'
     D-S038-830-amend: '1'
     D-S038-fn: '1,1,1'
+    D-S038-tp: '1,1,1'
     locked_at: '2026-08-03'
     summary: |
       Scope full epic+#712 IaC; general; Standard; local UI.
@@ -28585,6 +28676,7 @@ evolve_cycles:
       Sessions: logged-in DO Postgres; guest local + loss notice + F22.
       #830 amend Auth-kept / strip data plane.
       Fn: F30+F31; deepen F5,F7,F8,F21,F22,M4 (D-S038-fn=1,1,1).
+      Test Plan + lean docs: D-S038-tp=1,1,1 (TC-F30/F31/EV031; H4–H5 required).
   routing_plan:
     required_stages:
     - 00-context
@@ -28604,9 +28696,9 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-    note: 'Standard — Phase 0+Fn done 2026-08-03 (D-S038-fn); 00 completed; 01-requirements in_progress'
+    note: 'Standard — Phase 0+Fn done; D-S038-tp=1,1,1; 01-requirements in_progress (Test Plan + lean docs drafted; awaiting Gate A)'
   current_stage: 01-requirements
-  current_stage_note: 'Phase 1 — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; 01-requirements (delta) started'
+  current_stage_note: 'Phase 1 — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031 written; H4–H5 required; lean pass drafted; awaiting Gate A / lean-doc acceptance → 02-verify-plan'
   stages:
     00-context:
       status: completed
@@ -28619,12 +28711,13 @@ evolve_cycles:
       mode: orchestrator
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'Fn allocated (D-S038-fn=1,1,1); orchestrator remains in_progress; child 01-requirements'
+      note: 'Fn allocated (D-S038-fn=1,1,1); D-S038-tp=1,1,1; orchestrator remains in_progress; child 01-requirements awaiting Gate A'
     01-requirements:
       status: in_progress
       mode: delta
       started: '2026-08-03'
-      note: 'STARTED (delta) — D-S038-fn=1,1,1; F30+F31; commit open artifacts yes'
+      note: 'IN_PROGRESS (delta) — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031; H4–H5 required; lean docs drafted; awaiting Gate A / lean-doc acceptance'
+      current_template: 'lean docs complete; awaiting acceptance → 02-verify-plan'
     02-verify-plan:
       status: pending
       mode: delta
@@ -28677,11 +28770,38 @@ evolve_cycles:
     status: present
   - path: docs/sessions/S038-platform-independence-842/routing-plan.md
     status: present
+  - path: docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
+    status: present
   - path: docs/context/platform-independence-842.md
     status: present
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
-    note: 'EV-031 Phase 0 section locked'
+    note: 'EV-031 Phase 0 + E31-tp locked'
+  - path: docs/decisions/requirements-decisions.md
+    status: present
+  - path: docs/test-plan.md
+    status: present
+    note: 'TC-F30/F31/EV031; H4–H5 required (D-S038-tp)'
+  - path: docs/config-spec.md
+    status: present
+  - path: docs/env-contract.md
+    status: present
+  - path: docs/api-contract.md
+    status: present
+  - path: docs/deploy.md
+    status: present
+  - path: docs/dependency-inventory.md
+    status: present
+  - path: docs/adr/ADR-033-platform-independence-auth-do-doks.md
+    status: present
+  - path: docs/ops/supabase-to-do-postgres-migration.md
+    status: present
+  - path: docs/feature-list.md
+    status: present
+  - path: docs/spec.md
+    status: present
+  - path: docs/user-journeys.md
+    status: present
   issues: []
   decision_refs:
   - D-S038-open
@@ -28692,27 +28812,30 @@ evolve_cycles:
   - D-S038-session-store
   - D-S038-830-amend
   - D-S038-fn
-  note: 'S038/EV-031 Phase 1 — D-S038-fn=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; current_stage 01-requirements; #842/#830/#712'
+  - D-S038-tp
+  note: 'S038/EV-031 Phase 1 — D-S038-fn=1,1,1; D-S038-tp=1,1,1; feature_ids [F30,F31]; deepen F5,F7,F8,F21,F22,M4; current_stage 01-requirements (Test Plan + lean docs drafted; awaiting Gate A); #842/#830/#712'
   notes:
+  - '2026-08-03 S038/EV-031 D-S038-tp (1,1,1) — Test Plan TC-F30/F31/EV031 written; H4–H5 required; lean pass drafted (config-spec, env-contract, api-contract, deploy, dependency-inventory, ADR-033, ops/supabase-to-do-postgres-migration.md); 01 remains in_progress pending Gate A / lean-doc acceptance → 02-verify-plan; #842/#830/#712'
   - '2026-08-03 S038/EV-031 D-S038-fn (1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; 00 COMPLETE; 01-requirements in_progress (delta); commit open; #842/#830/#712'
   - '2026-08-03 S038/EV-031 Phase 0 LOCKED → Phase 1 — decisions D-S038-open=3,1,1,1; doks-depth=3; f8=1 (DO Postgres); route=1; auth-model=1 (Supabase Auth / amend F21); session-store=1 (DO Postgres logged-in; guest local+notice+F22); 830-amend=1; feature_ids [] pending D-S038-fn; branch exists locally; 16-evolve in_progress'
   - '2026-08-03 S038/EV-031 OPEN — open_session; Phase 0 choices (scope opt3 #842+#830+#712, general, Standard, UI preview Yes); session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress'
 git_history:
   current_branch: evolve/EV-031-platform-independence-842
-  ahead_of_origin: 0
+  ahead_of_origin: 1
   pushed: false
   pending_commit: null
   dirty: true
-  tip_sha: 7c4522a
-  tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
+  tip_sha: d286bfb
+  tip_sha_full: d286bfb33f4ccf3ed4e61d708e38de97d459fcb5
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-031-platform-independence-842
-  note: 'S038/EV-031 — branch evolve/EV-031-platform-independence-842 exists locally (exists: true); Phase 0 locked; Phase 1 Fn pending D-S038-fn; #842/#830/#712'
+  note: 'S038/EV-031 — tip d286bfb open artifacts; feature_ids [F30,F31]; 00-context completed; 16-evolve in_progress; current_stage 01-requirements (delta); ahead 1 unpushed; dirty (post-commit deltas); #842/#830/#712'
 
   notes:
+  - '2026-08-03 S038/EV-031 commit d286bfb [EV-031] docs: open S038 platform independence — F30/F31 Phase 0; stage 16-evolve; feature_ids [F30,F31]; 01-requirements in_progress; ahead_of_origin=1 not pushed'
   - '2026-08-03 S038/EV-031 Phase 0 LOCKED — branch exists: true locally; D-S038-open/doks-depth/f8/route/auth-model/session-store/830-amend recorded; 16-evolve in_progress Phase 1 Fn pending; feature_ids []'
   - '2026-08-03 S038/EV-031 OPEN — open_session; D-S038-open; session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress; Phase 0 choices locked (scope opt3, general, Standard, UI preview Yes); #842/#830/#712'
   - '2026-08-03 closeout commit 7c4522a [EV-030] docs: close S037 — D-S037-13 cycle complete; main ahead 1; active_session=null'
@@ -29085,9 +29208,11 @@ git_history:
     created_at: '2026-08-03'
     session_id: S038-platform-independence-842
     evolve_cycle_id: EV-031
+    tip_sha: d286bfb
+    tip_sha_full: d286bfb33f4ccf3ed4e61d708e38de97d459fcb5
     pushed: false
     exists: true
-    note: 'Branch created locally 2026-08-03 — exists: true; Phase 0 locked; Phase 1 Fn pending D-S038-fn'
+    note: 'Tip d286bfb — open S038 F30/F31 Phase 0 artifacts; 01-requirements in_progress; ahead 1 unpushed'
   - name: evolve/EV-030-quality-residuals-831
     purpose: 'S037/EV-030 quality residuals #831→#829→#820'
     base: main
@@ -30076,6 +30201,23 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: d286bfb33f4ccf3ed4e61d708e38de97d459fcb5
+    short: d286bfb
+    branch: evolve/EV-031-platform-independence-842
+    message: "[EV-031] docs: open S038 platform independence — F30/F31 Phase 0"
+    stage: 16-evolve
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    timestamp: "2026-08-03"
+    files_changed:
+    - docs/sessions/S038-platform-independence-842/session-brief.md
+    - docs/sessions/S038-platform-independence-842/routing-plan.md
+    - docs/context/platform-independence-842.md
+    - docs/context/README.md
+    - docs/decisions/evolve-decisions.md
+    - workflow-state.yaml
+    pushed: false
+    note: 'Open S038/EV-031 artifacts — F30/F31 Phase 0; handoff 01-requirements'
   - sha: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
     short: 7c4522a
     branch: main
