@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build |
-| **Active milestone** | M2 — #829 TC SIGMET (after M1 08 PASS + minor PR) |
-| **Active task** | T2.1 pending — after M1 PR opened |
-| **Tasks** | 12 / 27 completed (M0+M1) |
+| **Active milestone** | M2 — #829 TC SIGMET |
+| **Active task** | T2.1 COMPLETE — next T2.2 (TC lint registry codes) |
+| **Tasks** | 13 / 27 completed (M0+M1+T2.1) |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -82,7 +82,7 @@
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Dedicated `tac-validate` TC SIGMET accept/negative pack (peer VA) | TC-EV030-004; #829 | T1.8 | pending |
+| T2.1 | Test | Dedicated `tac-validate` TC SIGMET accept/negative pack (peer VA) | TC-EV030-004; #829 | T1.8 | **completed** |
 | T2.2 | Code | Registry + fixtures for TC lint codes (ADR-028) | F12/F23; #829 | T2.1 | pending |
 | T2.3 | Test | STNR / exceptional geometry negatives — or **OOS with cite** (S02.M2) | TC-EV030-004; S02.M2 | T2.2 | pending |
 | T2.4 | Code | Unlock `sigmet-A6-2-TC` catalog tier (`wmoPass`/`wmoReference` per ADR-032) when M7 quality path still green | TC-EV030-005; E30-T4 | T2.2 | pending |
@@ -132,7 +132,7 @@
 
 | PR | Scope | Base ← Head | Status | URL |
 |----|-------|-------------|--------|-----|
-| PR-M1 | M0–M1 F29 harness (T0.1–T1.8) | `main` ← `evolve/EV-030-quality-residuals-831` | opening | — |
+| PR-M1 | M0–M1 F29 harness (T0.1–T1.8) | `main` ← `evolve/EV-030-quality-residuals-831` | open | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832 |
 | PR-M2 | #829 TC SIGMET deepen | same branch (updates PR or follow-on) | pending | — |
 | PR-final | M0–M4 evolve close | `main` ← evolve | pending | — |
 
