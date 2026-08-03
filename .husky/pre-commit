@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 # Fast gates (ruff/prettier/eslint/types/gitleaks/actionlint) via pre-commit framework.
+# Includes Render deploy-hook fallback regression (BUG-2026-08-03) when related files change.
 set -e
 uv run pre-commit run
