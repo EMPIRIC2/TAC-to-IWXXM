@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M0 — Baseline / ADR / #830 amend |
-| **Active task** | T0.2 — Amend #830 acceptance |
-| **Tasks** | 1 / 38 completed |
+| **Active task** | T0.3 — Pin deps + env-contract JWKS |
+| **Tasks** | 2 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -88,8 +88,8 @@
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
 | T0.1 | Docs | Accept ADR-033; note ADR-031 partial supersession; ADR-020 shapes restored for server sessions | ADR-033; `D-S038-04-b2` | — | completed |
-| T0.2 | Docs | Amend #830 acceptance (Auth-kept; strip data plane); link F30/F31 | `D-S038-830-amend` | T0.1 | in_progress |
-| T0.3 | Docs | Pin deps: `alembic`, SQLAlchemy, JWKS client stack; update dependency-inventory + env-contract (JWKS-only; drop secret-as-primary) | `D-S038-04-b1` Q2=2 | T0.1 | pending |
+| T0.2 | Docs | Amend #830 acceptance (Auth-kept; strip data plane); link F30/F31 | `D-S038-830-amend` | T0.1 | completed |
+| T0.3 | Docs | Pin deps: `alembic`, SQLAlchemy, JWKS client stack; update dependency-inventory + env-contract (JWKS-only; drop secret-as-primary) | `D-S038-04-b1` Q2=2 | T0.1 | in_progress |
 | T0.4 | Docs | Placeholder DOKS hostnames in deploy/env; soak=7d checklist stub | `D-S038-04-b2` Q1/Q2 | T0.1 | pending |
 
 ### M1 — Auth restore (JWKS)
