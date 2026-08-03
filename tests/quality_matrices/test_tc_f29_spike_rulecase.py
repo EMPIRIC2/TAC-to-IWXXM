@@ -18,11 +18,14 @@ _SPIKE = (
 
 def test_tc_f29_spike_load_yaml_rule_cases() -> None:
     cases = load_rule_cases(_SPIKE)
-    assert len(cases) == 4
+    assert len(cases) == 20
     assert all(isinstance(c, RuleCase) for c in cases)
     assert {c.bucket for c in cases} == set(BUCKETS)
     assert all(c.rule_id == "INVALID_VISIBILITY" for c in cases)
     assert all(c.engine == "lint" for c in cases)
+    ready = [c for c in cases if c.status == "ready"]
+    assert len(ready) == 2
+    assert {c.bucket for c in ready} == {"happy", "sad"}
 
 
 @pytest.mark.parametrize(
@@ -37,15 +40,14 @@ def test_tc_f29_spike_load_yaml_rule_cases() -> None:
 def test_tc_f29_spike_node_id_shape(
     bucket: str, case_id: str, expected_node: str
 ) -> None:
-    cases = {c.bucket: c for c in load_rule_cases(_SPIKE)}
-    assert cases[bucket].case_id == case_id
-    assert cases[bucket].node_id == expected_node
+    cases = {(c.bucket, c.case_id): c for c in load_rule_cases(_SPIKE)}
+    assert cases[(bucket, case_id)].node_id == expected_node
 
 
 def test_tc_f29_spike_needs_fixture_status() -> None:
     cases = load_rule_cases(_SPIKE)
     pending = [c for c in cases if c.status == "needs-fixture"]
-    assert len(pending) == 2
+    assert len(pending) == 18
     assert all(c.tac is None for c in pending)
 
 

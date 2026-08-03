@@ -1,12 +1,11 @@
-rule_id: INVALID_VISIBILITY
+rule_id: UNKNOWN_PRODUCT
 engine: lint
 cases:
 - bucket: happy
   case_id: '01'
-  status: ready
-  tac: METAR KJFK 121251Z 18008KT 10SM FEW250 22/12 A3012=
-  expect:
-    accept: true
+  status: needs-fixture
+  meta:
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
 - bucket: happy
   case_id: '02'
   status: needs-fixture
@@ -29,14 +28,9 @@ cases:
     reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
 - bucket: sad
   case_id: '01'
-  status: ready
-  tac: METAR KJFK 121251Z 18008KT 10KM FEW250 22/12 A3012=
-  expect:
-    codes:
-    - INVALID_VISIBILITY
+  status: needs-fixture
   meta:
-    product: METAR
-    cite: tac-validate R2 invalid_vis_km
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
 - bucket: sad
   case_id: '02'
   status: needs-fixture
@@ -61,7 +55,7 @@ cases:
   case_id: '01'
   status: needs-fixture
   meta:
-    reason: "pilot spike \u2014 fill in M1"
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
 - bucket: edge_pass
   case_id: '02'
   status: needs-fixture
@@ -86,7 +80,7 @@ cases:
   case_id: '01'
   status: needs-fixture
   meta:
-    reason: "pilot spike \u2014 fill in M1"
+    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
 - bucket: edge_fail
   case_id: '02'
   status: needs-fixture

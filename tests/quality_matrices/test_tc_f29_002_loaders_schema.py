@@ -39,7 +39,7 @@ def test_load_rule_cases_json_parity_with_yaml(tmp_path: Path) -> None:
     payload = cast(dict[str, Any], raw)
     json_path = _write_json(tmp_path / "INVALID_VISIBILITY.json", payload)
     json_cases = load_rule_cases(json_path)
-    assert len(yml_cases) == len(json_cases) == 4
+    assert len(yml_cases) == len(json_cases) == 20
     assert [c.node_id for c in yml_cases] == [c.node_id for c in json_cases]
     assert [c.status for c in yml_cases] == [c.status for c in json_cases]
     assert [c.tac for c in yml_cases] == [c.tac for c in json_cases]
