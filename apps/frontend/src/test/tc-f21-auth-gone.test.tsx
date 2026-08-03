@@ -30,6 +30,16 @@ vi.mock('@/utils/authService', () => ({
   logout: vi.fn(),
 }));
 
+vi.mock('@/utils/autoUploadLocalDrafts', () => ({
+  autoUploadEligibleLocalDrafts: vi.fn().mockResolvedValue({ uploaded: 0, errors: [] }),
+}));
+
+vi.mock('@/utils/workSessionApi', () => ({
+  listWorkSessions: vi
+    .fn()
+    .mockResolvedValue({ items: [], total: 0, page: 1, limit: 20 }),
+}));
+
 vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() },
   Toaster: () => null,

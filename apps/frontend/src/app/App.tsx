@@ -10,6 +10,7 @@ import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner';
 import { ThemeProvider } from './components/ThemeProvider';
 import { getAccessToken, isLoggedIn, logout } from '@/utils/authService';
+import { autoUploadEligibleLocalDrafts } from '@/utils/autoUploadLocalDrafts';
 
 import { requireApiBaseUrl } from '@/utils/apiBase';
 import type { WorkSession } from '@metar/shared';
@@ -17,6 +18,7 @@ import {
   listLocalWorkSessions,
   migrateGuestSessionStorageToIndexedDb,
 } from '@/utils/localWorkSessionStore';
+import { listWorkSessions } from '@/utils/workSessionApi';
 
 /**
  * Validate required environment variables on app load.
@@ -64,7 +66,7 @@ function App() {
     validateApiEnv();
   }, []);
 
-  const initializeWorkSessions = useCallback(async () => {
+  const initializeWorkSessions = useCallback(async (token?: string | null) => {
     if (sessionInitRef.current === 'done') {
       return;
     }
@@ -72,6 +74,19 @@ function App() {
 
     try {
       await migrateGuestSessionStorageToIndexedDb();
+      if (token) {
+        const response = await listWorkSessions(token, { limit: 20 });
+        const activeSession =
+          response.items.find(
+            (session) => session.status !== 'finished' && session.deleted_at == null,
+          ) ?? null;
+        if (activeSession) {
+          setActiveWorkSessionId(activeSession.id);
+          setLoadedWorkSession(activeSession);
+        }
+        return;
+      }
+
       const response = await listLocalWorkSessions({ limit: 20 });
       const activeSession =
         response.items.find(
@@ -90,8 +105,9 @@ function App() {
 
   /* eslint-disable react-hooks/set-state-in-effect -- F7.h resume IndexedDB on load */
   useEffect(() => {
-    void initializeWorkSessions();
-  }, [initializeWorkSessions]);
+    const token = initiallyLoggedIn ? getAccessToken() : null;
+    void initializeWorkSessions(token);
+  }, [initializeWorkSessions, initiallyLoggedIn]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useLayoutEffect(() => {
@@ -101,6 +117,32 @@ function App() {
     }
   }, []);
 
+  const runPostLoginHydration = useCallback(
+    async (token: string) => {
+      try {
+        const result = await autoUploadEligibleLocalDrafts(token);
+        if (result.uploaded > 0) {
+          toast.success(
+            `Uploaded ${result.uploaded} local draft${result.uploaded === 1 ? '' : 's'} to your account`,
+          );
+        }
+        if (result.errors.length > 0) {
+          toast.error(
+            `Could not upload ${result.errors.length} local draft${result.errors.length === 1 ? '' : 's'}`,
+          );
+        }
+      } catch (error) {
+        console.error('[App] auto-upload on login failed:', error);
+        toast.error('Failed to upload local drafts after sign-in');
+      }
+      sessionInitRef.current = null;
+      setActiveWorkSessionId(null);
+      setLoadedWorkSession(null);
+      await initializeWorkSessions(token);
+    },
+    [initializeWorkSessions],
+  );
+
   const handleLogin = (
     email: string,
     needsVerification: boolean,
@@ -108,15 +150,17 @@ function App() {
     _adminStatus?: boolean,
   ) => {
     setUserEmail(email);
-    setAccessToken(token || getAccessToken() || '');
+    const jwt = token || getAccessToken() || '';
+    setAccessToken(jwt);
 
     if (needsVerification) {
       setCurrentView('verify');
     } else {
       setIsAuthenticated(true);
-      sessionInitRef.current = null;
       setCurrentView('converter');
-      void initializeWorkSessions();
+      if (jwt) {
+        void runPostLoginHydration(jwt);
+      }
     }
   };
 
@@ -126,11 +170,13 @@ function App() {
   };
 
   const handleVerified = (token?: string, _adminStatus?: boolean) => {
+    const jwt = token || getAccessToken() || '';
     setIsAuthenticated(true);
-    setAccessToken(token || getAccessToken() || '');
-    sessionInitRef.current = null;
+    setAccessToken(jwt);
     setCurrentView('converter');
-    void initializeWorkSessions();
+    if (jwt) {
+      void runPostLoginHydration(jwt);
+    }
   };
 
   const handleLogout = async () => {
@@ -147,7 +193,7 @@ function App() {
     setLoadedWorkSession(null);
     sessionInitRef.current = null;
     setCurrentView('converter');
-    void initializeWorkSessions();
+    void initializeWorkSessions(null);
   };
 
   const handleSwitchToConverter = () => {
@@ -233,6 +279,7 @@ function App() {
 
       {currentView === 'history' && (
         <MyMetarsPage
+          accessToken={isAuthenticated ? accessToken : undefined}
           userEmail={isAuthenticated ? userEmail || 'Operator' : 'Local history'}
           onBack={handleSwitchToConverter}
           onOpenSession={handleLoadWorkSession}

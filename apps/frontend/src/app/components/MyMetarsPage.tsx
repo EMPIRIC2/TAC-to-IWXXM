@@ -10,10 +10,18 @@ import {
   restoreLocalWorkSession,
   type LocalWorkSessionExportV1,
 } from '/utils/localWorkSessionStore';
+import {
+  MY_METARS_PRODUCTS,
+  deleteWorkSession,
+  listWorkSessions,
+  restoreWorkSession,
+} from '/utils/workSessionApi';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
 interface MyMetarsPageProps {
+  /** JWT — when set, list/mutate DO Postgres sessions (F31). */
+  accessToken?: string;
   /** Optional subtitle (local history — no account required). */
   userEmail?: string;
   onBack: () => void;
@@ -29,6 +37,7 @@ const STATUS_OPTIONS: Array<WorkSessionStatus | 'all'> = [
 ];
 
 export function MyMetarsPage({
+  accessToken,
   userEmail = 'Local history',
   onBack,
   onOpenSession,
@@ -40,23 +49,34 @@ export function MyMetarsPage({
   const [error, setError] = useState<string | null>(null);
   const [importMessage, setImportMessage] = useState<string | null>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
+  const isServerBacked = Boolean(accessToken);
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await listMyMetars({
-        status: statusFilter === 'all' ? undefined : statusFilter,
-        include_deleted: includeDeleted,
-        limit: 50,
-      });
-      setSessions(response.items);
+      if (accessToken) {
+        const response = await listWorkSessions(accessToken, {
+          status: statusFilter === 'all' ? undefined : statusFilter,
+          product: MY_METARS_PRODUCTS,
+          include_deleted: includeDeleted,
+          limit: 50,
+        });
+        setSessions(response.items);
+      } else {
+        const response = await listMyMetars({
+          status: statusFilter === 'all' ? undefined : statusFilter,
+          include_deleted: includeDeleted,
+          limit: 50,
+        });
+        setSessions(response.items);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load sessions');
     } finally {
       setLoading(false);
     }
-  }, [includeDeleted, statusFilter]);
+  }, [accessToken, includeDeleted, statusFilter]);
 
   /* eslint-disable react-hooks/set-state-in-effect -- refetch list when filters change */
   useEffect(() => {
@@ -65,12 +85,20 @@ export function MyMetarsPage({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleDelete = async (sessionId: string) => {
-    await deleteLocalWorkSession(sessionId);
+    if (accessToken) {
+      await deleteWorkSession(accessToken, sessionId);
+    } else {
+      await deleteLocalWorkSession(sessionId);
+    }
     await loadSessions();
   };
 
   const handleRestore = async (sessionId: string) => {
-    await restoreLocalWorkSession(sessionId);
+    if (accessToken) {
+      await restoreWorkSession(accessToken, sessionId);
+    } else {
+      await restoreLocalWorkSession(sessionId);
+    }
     await loadSessions();
   };
 
@@ -155,40 +183,42 @@ export function MyMetarsPage({
               />
               Show trash
             </label>
-            <div className="ml-auto flex flex-wrap gap-2">
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => void handleExport()}
-                data-testid="export-sessions"
-              >
-                <Download className="mr-1 h-4 w-4" aria-hidden="true" />
-                Export
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => importInputRef.current?.click()}
-                data-testid="import-sessions"
-              >
-                <Upload className="mr-1 h-4 w-4" aria-hidden="true" />
-                Import
-              </Button>
-              <input
-                ref={importInputRef}
-                type="file"
-                accept="application/json,.json"
-                className="hidden"
-                data-testid="import-sessions-input"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  void handleImportFile(file);
-                  e.target.value = '';
-                }}
-              />
-            </div>
+            {!isServerBacked && (
+              <div className="ml-auto flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => void handleExport()}
+                  data-testid="export-sessions"
+                >
+                  <Download className="mr-1 h-4 w-4" aria-hidden="true" />
+                  Export
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => importInputRef.current?.click()}
+                  data-testid="import-sessions"
+                >
+                  <Upload className="mr-1 h-4 w-4" aria-hidden="true" />
+                  Import
+                </Button>
+                <input
+                  ref={importInputRef}
+                  type="file"
+                  accept="application/json,.json"
+                  className="hidden"
+                  data-testid="import-sessions-input"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    void handleImportFile(file);
+                    e.target.value = '';
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {importMessage && (

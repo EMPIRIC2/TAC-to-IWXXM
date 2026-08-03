@@ -2169,6 +2169,7 @@ export function FileConverter({
           {onLoadWorkSession && (
             <aside className="lg:sticky lg:top-8 lg:mt-8 lg:self-start">
               <WorkHistorySidebar
+                accessToken={accessToken}
                 activeSessionId={activeWorkSessionId}
                 onSelectSession={onLoadWorkSession}
                 onOpenHistory={onOpenHistory}
