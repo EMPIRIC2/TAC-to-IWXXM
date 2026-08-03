@@ -14,8 +14,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M1 — Auth restore (JWKS) |
-| **Active task** | T1.4 — JWT-free convert/lint/validate (completed) |
+| **Active milestone** | M2 — DO Postgres + Alembic + work-sessions |
+| **Active task** | T2.1 — Alembic idempotent upgrade tests (next) |
 | **Tasks** | 8 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
