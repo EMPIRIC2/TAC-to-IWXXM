@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M4 — FE hybrid + F22 deepen |
-| **Active task** | T4.4 — F22 deepen privacy gates (next) |
-| **Tasks** | 20 / 38 completed |
+| **Active task** | T4.5 — `/config.json` Auth bootstrap + CORS (next) |
+| **Tasks** | 21 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -127,7 +127,7 @@
 | T4.1 | Test | Vitest/Playwright: guest IndexedDB + persistent loss notice; login → auto-upload; privacy gates | TC-F31-005; UJ-045..047 | T2.5 | completed |
 | T4.2 | Code | Restore optional Auth FE client (publishable); wire login UX; keep public convert | F31; F21 amended | T4.1 | completed |
 | T4.3 | Code | Auto-upload eligible local drafts on login; server session list for logged-in | `D-S038-guest-merge`=2 | T4.2 | completed |
-| T4.4 | Code | F22 deepen: gate guest IndexedDB; disclose Auth cookies | F22; UJ-047 | T4.2 | pending |
+| T4.4 | Code | F22 deepen: gate guest IndexedDB; disclose Auth cookies | F22; UJ-047 | T4.2 | completed |
 | T4.5 | Config | `/config.json`: `api.baseUrl` + Auth bootstrap; CORS origins for DOKS FE (placeholder OK) | config-spec | T4.2 | pending |
 
 ### M5 — One-time Supabase → DO migrate

@@ -26,9 +26,9 @@ export function PrivacyNotice({ open, onDismiss, onOpenSettings }: PrivacyNotice
       className="mb-6 rounded-lg border border-gray-200 bg-white p-4 text-left shadow-sm dark:border-gray-700 dark:bg-gray-800"
     >
       <p className="text-sm text-gray-700 dark:text-gray-200">
-        This app stores work history in your browser (IndexedDB) and privacy / converter
-        preferences in local storage. Nothing is sold or shared for advertising. You can
-        review details anytime in Privacy settings.
+        Guest work history may be stored in this browser (IndexedDB) when enabled in
+        Privacy settings; preferences use local storage. Signing in may set Auth session
+        cookies for long-term server storage. Nothing is sold or shared for advertising.
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         <Button

@@ -1,11 +1,13 @@
 /**
  * TC-004 — Local IndexedDB work session lifecycle (F7.h / F21 / ADR-031).
+ * TC-F31-005 — privacy gate on IndexedDB writes (T4.4).
  */
 
 import { beforeEach, describe, expect, it } from 'vitest';
 import type { WorkSessionUpsertPayload } from '@metar/shared';
 import {
   EXPORT_SCHEMA_ID,
+  LocalWorkHistoryDisabledError,
   MY_METARS_PRODUCTS,
   clearLocalWorkSessions,
   createLocalWorkSession,
@@ -19,6 +21,7 @@ import {
   restoreLocalWorkSession,
   updateLocalWorkSession,
 } from './localWorkSessionStore';
+import { clearPrivacyPreferences, savePrivacyPreferences } from './privacyPreferences';
 
 function draftPayload(
   overrides: Partial<WorkSessionUpsertPayload> = {},
@@ -39,8 +42,23 @@ function draftPayload(
 
 describe('localWorkSessionStore (TC-004)', () => {
   beforeEach(async () => {
+    clearPrivacyPreferences();
     resetLocalWorkSessionDbCache();
     await clearLocalWorkSessions();
+  });
+
+  it('refuses create/update when workHistoryLocal is declined (TC-F31-005)', async () => {
+    savePrivacyPreferences({ workHistoryLocal: false });
+    await expect(createLocalWorkSession(draftPayload())).rejects.toBeInstanceOf(
+      LocalWorkHistoryDisabledError,
+    );
+
+    clearPrivacyPreferences();
+    const created = await createLocalWorkSession(draftPayload());
+    savePrivacyPreferences({ workHistoryLocal: false });
+    await expect(
+      updateLocalWorkSession(created.id, { title: 'blocked' }),
+    ).rejects.toBeInstanceOf(LocalWorkHistoryDisabledError);
   });
 
   it('creates and reads a draft session without JWT', async () => {

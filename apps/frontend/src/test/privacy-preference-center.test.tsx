@@ -57,8 +57,15 @@ describe('PrivacySettingsDialog', () => {
     expect(
       screen.getByText(/Work history and converter sessions/i),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('privacy-inventory-auth-cookie')).toBeInTheDocument();
     expect(screen.getByLabelText(/necessary storage always enabled/i)).toBeDisabled();
+    expect(
+      screen.getByLabelText(/store guest work history in this browser/i),
+    ).toBeChecked();
 
+    await user.click(
+      screen.getByLabelText(/store guest work history in this browser/i),
+    );
     await user.click(
       screen.getByLabelText(/opt out of sale or sharing of personal information/i),
     );
@@ -71,9 +78,11 @@ describe('PrivacySettingsDialog', () => {
     const stored = JSON.parse(raw!) as {
       saleOrSharingOptOut: boolean;
       targetedAdvertisingOptOut: boolean;
+      workHistoryLocal: boolean;
     };
     expect(stored.saleOrSharingOptOut).toBe(true);
     expect(stored.targetedAdvertisingOptOut).toBe(true);
+    expect(stored.workHistoryLocal).toBe(false);
   });
 
   it('shows GPC status when navigator.globalPrivacyControl is on', () => {

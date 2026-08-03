@@ -1,7 +1,8 @@
 /**
- * Privacy settings preference center (F22 / UJ-033 / Solution A).
+ * Privacy settings preference center (F22 / UJ-033 / Solution A; F31 deepen).
  *
- * Discloses client storage in use; necessary categories always on; no CMP.
+ * Discloses client storage in use; gates guest IndexedDB work history;
+ * discloses Auth cookies; necessary categories always on; no CMP.
  */
 
 import { useState } from 'react';
@@ -14,17 +15,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
+import { clearLocalWorkSessions } from '@/utils/localWorkSessionStore';
 import {
   STORAGE_INVENTORY,
   detectGlobalPrivacyControl,
   loadPrivacyPreferences,
   savePrivacyPreferences,
   type PrivacyPreferences,
+  type StorageInventoryItem,
 } from '@/utils/privacyPreferences';
 
 export interface PrivacySettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+function inventoryTestId(item: StorageInventoryItem): string | undefined {
+  if (item.kind === 'cookie' && /auth/i.test(item.purpose)) {
+    return 'privacy-inventory-auth-cookie';
+  }
+  if (item.kind === 'indexedDB') {
+    return 'privacy-inventory-work-history';
+  }
+  return undefined;
 }
 
 function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
@@ -35,12 +48,16 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
 
   const handleSave = () => {
     const saved = savePrivacyPreferences({
+      workHistoryLocal: prefs.workHistoryLocal,
       saleOrSharingOptOut: prefs.saleOrSharingOptOut,
       targetedAdvertisingOptOut: prefs.targetedAdvertisingOptOut,
       analytics: false,
       marketing: false,
     });
     setPrefs(saved);
+    if (!saved.workHistoryLocal) {
+      void clearLocalWorkSessions();
+    }
     onClose();
   };
 
@@ -77,6 +94,7 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
             {STORAGE_INVENTORY.map((item) => (
               <li
                 key={`${item.kind}-${item.purpose}`}
+                data-testid={inventoryTestId(item)}
                 className="rounded border border-gray-200 p-3 dark:border-gray-700"
               >
                 <div className="font-medium capitalize">{item.kind}</div>
@@ -107,8 +125,30 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
             <span>
               <span className="font-medium">Necessary</span>
               <span className="mt-1 block text-gray-600 dark:text-gray-300">
-                Required for conversion, local work history, and these privacy
-                preferences.
+                Required for conversion and these privacy preferences.
+              </span>
+            </span>
+          </label>
+
+          <label className="mt-2 flex items-start gap-2 rounded border border-gray-200 p-3 dark:border-gray-700">
+            <input
+              type="checkbox"
+              checked={prefs.workHistoryLocal}
+              onChange={(event) =>
+                setPrefs((current) => ({
+                  ...current,
+                  workHistoryLocal: event.target.checked,
+                }))
+              }
+              aria-label="Store guest work history in this browser"
+              data-testid="privacy-work-history-local"
+              className="mt-1"
+            />
+            <span>
+              <span className="font-medium">Guest work history (IndexedDB)</span>
+              <span className="mt-1 block text-gray-600 dark:text-gray-300">
+                When off, this browser will not save guest converter sessions. Sign in
+                for long-term server storage. Turning off clears local work history.
               </span>
             </span>
           </label>
