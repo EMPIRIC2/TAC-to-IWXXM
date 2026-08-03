@@ -10,7 +10,7 @@
 **Issues**: [#831](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/831), [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829), [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820)  
 **Started**: 2026-08-02  
 **Branch**: `evolve/EV-030-quality-residuals-831`  
-**Status**: **complete pending close** — M4 T4.5 done; #831/#829/#820 closed; #835 residual; live H1–H5 PASS (`8bd111c`)
+**Status**: **completed** — closed 2026-08-03 (`D-S037-13=1`); M4 done; #831/#829/#820 closed; #835 residual; live H1–H5 PASS (`8bd111c`)
 
 ### Scope (Phase 0 — locked 2026-08-02 via 00-context)
 
@@ -41,6 +41,7 @@
 | E30-semver-tac2iwxxm | decision | Bump `tac2iwxxm` after #820 decode deepen? | **2** — **patch** `0.2.3 → 0.2.4` (pyproject + Cargo + `__version__` + locks); no tags/PyPI (`D-S037-semver-tac2iwxxm`) |
 | E30-ui-preview | decision | Non-deployed UI preview (FE unlock)? | **2** — decline; H4–H5 at 13 (`D-S037-ui-preview`) |
 | E30-11 | decision | 11+12 signoff? | **1** — approve UJ-044 + F29 + deepen + start 13 (`D-S037-11` / `D-S037-12`) |
+| E30-13 | decision | Close EV-030 / S037? | **1** — mark cycle + session complete (`D-S037-13`); leave #835 open |
 | E30-T2.3 | decision | #829 STNR / exceptional geometry? | **OOS cite** for geometry beyond `WI … OF TC CENTRE`; **STNR in-cycle** via pack (`D-S037-T2.3-oos`; S02.M2) |
 | E30-ui-preview | decision | Non-deployed UI preview after FE catalog unlock? | **2** — **decline** (written interview; AskQuestion unavailable); **H4–H5 still required at M4/13** (`D-S037-ui-preview`) |
 

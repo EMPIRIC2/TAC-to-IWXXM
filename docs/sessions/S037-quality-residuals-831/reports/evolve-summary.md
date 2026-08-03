@@ -1,6 +1,7 @@
 # Evolve summary — EV-030 / S037 (quality residuals #831 / #829 / #820)
 
 > Date: 2026-08-03  
+> Status: **completed** (`D-S037-13=1`)  
 > Branch: `evolve/EV-030-quality-residuals-831` → **merged** [#832](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832) (`8bd111c`)  
 > Features: **F29** (new) + deepen F23 / F12 / F2 / F13 / F9 / F26 / F27
 
