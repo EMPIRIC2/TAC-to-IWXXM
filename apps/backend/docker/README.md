@@ -26,10 +26,14 @@ docker run -p 8000:8000 metar-backend:latest
 ```bash
 docker run -p 8000:8000 \
   -e DATABASE_URL=postgresql://... \
-  -e SUPABASE_URL=... \
-  -e SUPABASE_KEY=... \
+  -e SUPABASE_URL=https://YOUR_PROJECT.supabase.co \
+  -e SUPABASE_PUBLISHABLE_KEY=... \
+  -e SUPABASE_JWKS_URL= \
   metar-backend:latest
 ```
+
+`SUPABASE_JWKS_URL` is optional — defaults to
+`{SUPABASE_URL}/auth/v1/.well-known/jwks.json` (JWKS-only verify; ADR-033).
 
 ### Dockerfile.schematron
 

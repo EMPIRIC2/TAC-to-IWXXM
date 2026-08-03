@@ -5,6 +5,7 @@ PNPM := pnpm
 
 PY_TREES := apps packages tests
 PY_LINT := apps/backend/src apps/backend/tests \
+	packages/auth/src \
 	packages/shared packages/shared/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
@@ -39,9 +40,9 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	compose-mock-byoc-all-up compose-mock-byoc-all-down \
 	test-mock-byoc-smoke test-mock-byoc-compose test-mock-byoc-all-sinks \
 	format format-check typecheck typecheck-py typecheck-js \
-	lint lint-py lint-js lint-backend lint-frontend lint-shared \
+	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
 	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate lint-dissemination \
-	lint-fix lint-fix-py lint-fix-backend lint-fix-frontend \
+	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-bulletin test-live \
@@ -108,6 +109,7 @@ typecheck: typecheck-py typecheck-js
 
 typecheck-py:
 	$(UV) run basedpyright packages/shared/src
+	$(UV) run basedpyright packages/auth/src
 	$(UV) run basedpyright packages/tac2iwxxm/src
 	$(UV) run basedpyright packages/iwxxm-validate/src
 	$(UV) run basedpyright packages/tac-validate/src
@@ -128,6 +130,9 @@ lint-js:
 
 lint-backend:
 	$(UV) run ruff check --force-exclude apps/backend/src apps/backend/tests
+
+lint-auth:
+	$(UV) run ruff check --force-exclude packages/auth/src
 
 lint-shared:
 	$(UV) run ruff check --force-exclude packages/shared packages/shared/tests
@@ -155,6 +160,9 @@ lint-fix-py:
 
 lint-fix-backend:
 	$(UV) run ruff check --fix --force-exclude apps/backend/src apps/backend/tests
+
+lint-fix-auth:
+	$(UV) run ruff check --fix --force-exclude packages/auth/src
 
 lint-fix-frontend:
 	$(PNPM) --filter @metar/frontend exec eslint src --fix

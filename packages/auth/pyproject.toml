@@ -31,3 +31,12 @@ packages = ["src/metar_auth"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
+
+[tool.coverage.run]
+branch = true
+source = ["src/metar_auth"]
+
+[tool.coverage.report]
+# Soft report floor — CI auth matrix reports coverage without --cov-fail-under
+# until proxy/router surface has fuller unit coverage (EV-031 M1).
+show_missing = true
