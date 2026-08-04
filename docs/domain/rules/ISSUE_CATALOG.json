@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry",
-  "generated": "2026-08-03",
+  "generated": "2026-08-04",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -355,7 +355,8 @@
         "dtg",
         "vaa",
         "tca",
-        "swxa"
+        "swxa",
+        "vona"
       ]
     },
     {
@@ -449,6 +450,18 @@
         "airmet",
         "g2",
         "a1"
+      ]
+    },
+    {
+      "code": "MISSING_SVO",
+      "severity": "error",
+      "message_template": "VONA missing SVO: template field \u2014 F32 theme V1 / A7-1",
+      "product": "vona",
+      "tags": [
+        "svo",
+        "vona",
+        "v1",
+        "f32"
       ]
     },
     {
@@ -574,6 +587,18 @@
         "vaa",
         "v1",
         "f26"
+      ]
+    },
+    {
+      "code": "MISSING_VONA_VOLCANO",
+      "severity": "error",
+      "message_template": "VONA missing VOLCANO: template field \u2014 F32 theme V1 / A7-1",
+      "product": "vona",
+      "tags": [
+        "volcano",
+        "vona",
+        "v1",
+        "f32"
       ]
     },
     {
@@ -1124,6 +1149,32 @@
         "volcano",
         "sigmet",
         "v1"
+      ]
+    },
+    {
+      "code": "VONA_DUR_NIL",
+      "severity": "info",
+      "message_template": "VONA DUR NIL \u2014 duration omitted (F32 theme V1)",
+      "product": "vona",
+      "tags": [
+        "duration",
+        "nil",
+        "vona",
+        "v1",
+        "f32"
+      ]
+    },
+    {
+      "code": "VONA_ONSET_NIL",
+      "severity": "info",
+      "message_template": "VONA ONSET NIL \u2014 onsetTime omitted (F32 theme V1)",
+      "product": "vona",
+      "tags": [
+        "onset",
+        "nil",
+        "vona",
+        "v1",
+        "f32"
       ]
     },
     {

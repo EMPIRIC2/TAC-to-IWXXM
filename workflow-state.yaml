@@ -63,7 +63,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 in_progress (M2 F32 VONA cookbook); #846/#741'
+    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); #846/#741'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -93,7 +93,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
+    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip dacd72b5; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); progress 10/28; 07-build in_progress; #846/#741'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -159,6 +159,10 @@ active_session:
     status: written
     stage: 08-verify-build
     note: 'M1 boundary PASS; mid-cycle; 08 remains pending for final'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    status: written
+    stage: 07-build
+    note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -173,7 +177,7 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
+  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip dacd72b5; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); progress 10/28; 07-build in_progress; #846/#741'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -233,7 +237,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 in_progress (M2 F32 VONA cookbook); #846/#741'
+    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); #846/#741'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -263,7 +267,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
+    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip dacd72b5; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); progress 10/28; 07-build in_progress; #846/#741'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -329,6 +333,10 @@ sessions:
     status: written
     stage: 08-verify-build
     note: 'M1 boundary PASS; mid-cycle; 08 remains pending for final'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    status: written
+    stage: 07-build
+    note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -343,7 +351,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
+  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip dacd72b5; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); progress 10/28; 07-build in_progress; #846/#741'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -6876,18 +6884,23 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
-    tip_sha: 9c9103e4
-    tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
-    tip_note: 'S040/EV-032 tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open'
-    progress: 9/28
+    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip dacd72b5; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); progress 10/28; 07-build in_progress; #846/#741'
+    tip_sha: dacd72b5
+    tip_sha_full: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
+    tip_note: 'S040/EV-032 tip dacd72b5; T2.1 COMPLETE; active_task T2.2 in_progress; progress 10/28; PR-M1 #848 open; ahead_of_origin=1 pushed=false'
+    progress: 10/28
     current_milestone: M2
-    current_task: T2.1
+    current_task: T2.2
     active_milestone: M2
-    active_task: T2.1
+    active_task: T2.2
     active_task_status: in_progress
     next_stage: 08-verify-build
-    next_task: T2.1
+    next_task: T2.3
+    t2_1_complete: true
+    t2_1_sha: dacd72b5
+    t2_1_sha_full: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
+    t2_1_artifact: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    t2_1_commit_pending: false
     next_milestone: M2
     m1_closed: true
     m1_complete: true
@@ -6912,6 +6925,8 @@ stages:
     - T1.4-fix: 7274e803
     - PR-M1: 0c7305e8
     - M1-ws-sync: 9c9103e4
+    m2_commits_s040:
+    - T2.1: dacd72b5
     blocked_task:
     blocked_task_reason:
     t7_1_complete: true
@@ -7714,6 +7729,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-04 S040/EV-032 — T2.1 COMPLETE @ dacd72b5 (dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00) [T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD; pending_commit cleared; active_task T2.2 in_progress @ M2; progress 10/28; tip dacd72b5; ahead_of_origin=1 pushed=false dirty=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.1 COMPLETED (commit pending); cookbook t2.1-vona-encode-cookbook.md (TC-F32-002); active_task T2.2 pending @ M2; progress 10/28; tip 9c9103e4; #846/#741'
     - '2026-08-04 S040/EV-032 — tip synced 9c9103e4; T2.1 STARTED in_progress @ M2 F32 VONA cookbook; progress 9/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
     - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8; verification-report-M1.md; T2.1 pending (M2 F32 VONA); 07-build in_progress; cycle not complete; #846/#835'
     - '2026-08-03 S038/EV-031 07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
@@ -20925,6 +20942,17 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+  kind: task-report
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  stage: 07-build
+  skill_id: 07-build
+  task: T2.1
+  created_at: '2026-08-04'
+  updated_at: '2026-08-04'
+  status: written
+  note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
 - path: docs/sessions/S039-doks-dns-cutover/reports/service-health.md
   kind: service-health-report
   session_id: S039-doks-dns-cutover
@@ -31094,12 +31122,15 @@ evolve_cycles:
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06'
   current_stage: 07-build
-  tip_sha: 9c9103e4
-  tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
+  tip_sha: dacd72b5
+  tip_sha_full: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
   active_milestone: M2
-  active_task: T2.1
+  active_task: T2.2
   active_task_status: in_progress
-  progress: 9/28
+  progress: 10/28
+  t2_1_complete: true
+  t2_1_sha: dacd72b5
+  t2_1_commit_pending: false
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
   pr_number: 848
   pr_status: open
@@ -31116,7 +31147,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 in_progress (M2 F32 VONA cookbook); #846/#741'
+      note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); #846/#741'
     01-requirements:
       status: completed
       mode: delta
@@ -31138,7 +31169,7 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-04'
-      note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
+      note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip dacd72b5; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); progress 10/28; 07-build in_progress; #846/#741'
     08-verify-build:
       status: pending
     09-qa:
@@ -31196,6 +31227,10 @@ evolve_cycles:
     status: written
     stage: 08-verify-build
     note: 'M1 boundary PASS; mid-cycle; 08 remains pending for final'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    status: written
+    stage: 07-build
+    note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
   issues: []
   decision_refs:
   - D-S040-open
@@ -31207,8 +31242,10 @@ evolve_cycles:
   - D-S040-04-batch-1
   - D-S040-04-batch-2
   - D-S040-04-plan
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
+  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip dacd72b5; T2.1 COMPLETE @ dacd72b5; active_task T2.2 in_progress (M2); progress 10/28; 07-build in_progress; #846/#741'
   notes:
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETE @ dacd72b5 (dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00) [T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD; pending_commit cleared; active_task T2.2 in_progress @ M2; progress 10/28; tip dacd72b5; ahead_of_origin=1 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETED (commit pending); VONA encode cookbook t2.1-vona-encode-cookbook.md (TC-F32-002); active_task T2.2 pending @ M2; progress 10/28; tip remains 9c9103e4; #846/#741'
   - '2026-08-04 S040/EV-032 — tip synced 9c9103e4 ([M1] chore: sync workflow-state after PR #848); ahead_of_origin=0 pushed=true dirty=false; T2.1 STARTED in_progress @ M2 F32 VONA cookbook; progress 9/28; current_stage 07-build; #846/#741'
   - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8; verification-report-M1.md; T2.1 pending (M2 F32 VONA); 07-build in_progress; cycle not complete; #846/#835'
   - '2026-08-04 S040/EV-032 — M1 closed (#835); T1.5=29e9e57c T1.6=09cc1834; next M2 F32 @ T2.1 pending; progress 9/28; 07-build remains in_progress; 08 not started; #846'
@@ -31222,13 +31259,13 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
   current_branch: evolve/EV-032-iwxxm-corpus-quality
-  ahead_of_origin: 0
-  pushed: true
+  ahead_of_origin: 1
+  pushed: false
   pending_commit:
   dirty: false
-  tip_sha: 9c9103e4
-  tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
-  tip_note: 'S040/EV-032 tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open'
+  tip_sha: dacd72b5
+  tip_sha_full: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
+  tip_note: 'S040/EV-032 tip dacd72b5; T2.1 COMPLETE; active_task T2.2 in_progress; progress 10/28; PR-M1 #848 open; ahead_of_origin=1 pushed=false'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -31240,8 +31277,10 @@ git_history:
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open; current_stage 07-build; #846/#741'
+  note: 'S040/EV-032 — tip dacd72b5; T2.1 COMPLETE; active_task T2.2 in_progress; progress 10/28; PR-M1 #848 open; ahead_of_origin=1 pushed=false; current_stage 07-build; #846/#741'
   notes:
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETE @ dacd72b5 (dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00) [T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD; pending_commit cleared; active_task T2.2 in_progress; progress 10/28; ahead_of_origin=1 pushed=false dirty=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETED (commit pending); cookbook t2.1-vona-encode-cookbook.md (TC-F32-002); tip remains 9c9103e4; active_task T2.2 pending; progress 10/28; #846/#741'
   - '2026-08-04 S040/EV-032 — tip synced 9c9103e4 (9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e); [M1] chore: sync workflow-state after PR #848; ahead_of_origin=0 pushed=true dirty=false; T2.1 STARTED in_progress @ M2; progress 9/28; #846/#741'
   - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8 (0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5); verification-report-M1.md; T2.1 pending; 07-build in_progress; cycle not complete; #846/#835'
   - '2026-08-04 S040/EV-032 tip synced — 09cc1834 (09cc18341bb9512b220bdb303a07627fa9aeb534); M1 closed (#835); T1.5=29e9e57c T1.6=09cc1834; next M2 F32 @ T2.1 pending; 07-build in_progress; 08 not started; #846'
@@ -31664,15 +31703,15 @@ git_history:
     created_at: '2026-08-04'
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    tip_sha: 9c9103e4
-    tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
-    pushed: true
+    tip_sha: dacd72b5
+    tip_sha_full: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
+    pushed: false
     exists: true
-    ahead_of_origin: 0
+    ahead_of_origin: 1
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
     pr_number: 848
     pr_status: open
-    note: 'tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open; EV-031 WIP stashed S039-EV031-WIP'
+    note: 'tip dacd72b5; T2.1 COMPLETE; active_task T2.2 in_progress; progress 10/28; ahead_of_origin=1 pushed=false; PR-M1 #848 open; EV-031 WIP stashed S039-EV031-WIP'
   - name: infra/doks-dns-cutover
     purpose: 'S039 ops — DOKS DNS cutover; pin api/app.tac-to-iwxxm.com → 168.144.12.70; lift D-S038-t63-waive'
     base: main
@@ -32686,6 +32725,24 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
+    short: dacd72b5
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD'
+    stage: 07-build
+    milestone: M2
+    task: T2.1
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.2-gap-index.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    - workflow-state.yaml
+    files_changed_count: 4
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T18:27:10Z'
+    pushed: false
   - sha: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
     short: 9c9103e4
     branch: evolve/EV-032-iwxxm-corpus-quality
