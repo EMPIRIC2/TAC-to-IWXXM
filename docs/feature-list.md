@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-04 (S040 / EV-032 — F32 Planned VONA; #846/#835/#741/#808)
+> **Last updated**: 2026-08-04 (S040 / EV-032 — #835 Done; F32 Planned VONA; #846/#741/#808)
 
 ## Summary
 
@@ -1170,15 +1170,15 @@
 
 ### F23 deepen (S040 / EV-032 — #835 A6-2-TC → wmoPass)
 
-- **Status**: **Planned** deepen (F23 remains **Done** for gen/VA/TC quality path)
-- **Issues**: [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) (S037 residual);
-  parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
-- **What it does**: Close ADR-032 `canonicalize_xml` equality vs vendor `sigmet-A6-2-TC.xml`
-  under default pin; promote catalog `sigmet_a6_2_tc` → **`wmoPass`**; update FIXTURE_GAPS /
-  inventory notes. Observed deltas: coordinate formatting, airspace type, `intensityChange`,
-  forecast-centre trailing zeros.
-- **Acceptance**: #835 checkboxes; **TC-EV032-002** / **TC-EV032-003**; deepen UJ-039 / UJ-034; H4–H5 if FE
-  catalog tier changes
+- **Status**: **Done** (M1 closed 2026-08-04; F23 remains **Done** for gen/VA/TC quality path)
+- **Issues**: [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+- **What it does**: Closed ADR-032 `canonicalize_xml` equality vs vendor `sigmet-A6-2-TC.xml`
+  under default pin; promoted catalog `sigmet_a6_2_tc` → **`wmoPass`**; FIXTURE_GAPS /
+  inventory notes updated. Encode deltas: coordinate formatting, airspace type `FIR`,
+  omit `intensityChange` on `NO_CHANGE`, forecast-centre trailing zeros.
+- **Acceptance**: #835 checkboxes; **TC-EV032-002** / **TC-EV032-003**; deepen UJ-039;
+  path-filtered canary + `make test-tc-sigmet-quality` (E32-T7 / T1.5)
+- **Closeout**: [t1.6-835-closeout.md](sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md)
 
 ### F4 / F6 / F2 / F13 deepen (S040 / EV-032 — #808 release-line adoptability)
 

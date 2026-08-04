@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build |
-| **Active milestone** | M1 — #835 A6-2-TC → `wmoPass` |
-| **Active task** | T1.6 — pending (next) |
-| **Tasks** | 8 / 28 completed |
+| **Active milestone** | M2 — #741 / F32 VONA (next) |
+| **Active task** | T2.1 — pending (next) |
+| **Tasks** | 9 / 28 completed |
 | **Last updated** | 2026-08-04 |
 
 ## Tech Stack Summary
@@ -87,7 +87,7 @@ Repo already splits fast vs long:
 | T1.3 | Test | Green equality + quality path lint→convert→XSD+SCH still green | TC-EV032-002/003 | T1.2 | **completed** |
 | T1.4 | Code | Catalog promote `sigmet_a6_2_tc` → `wmoPass`; Vitest + FIXTURE_GAPS notes | TC-EV032-003; UJ-039 | T1.3 | **completed** |
 | T1.5 | Config | Path-filtered pre-commit canary + ensure long pack on `make test-tc-sigmet-quality` / pre-push | E32-T7 | T1.4 | **completed** |
-| T1.6 | Docs | #835 closeout | #835 | T1.5 | pending |
+| T1.6 | Docs | #835 closeout | #835 | T1.5 | **completed** |
 
 ### M2 — #741 / F32 VONA quality bar
 
@@ -141,4 +141,4 @@ Repo already splits fast vs long:
 
 ## Next
 
-**07-build** in progress — M0 inventory → M1 #835.
+**07-build** in progress — M1 #835 **closed**; next M2 F32 VONA @ T2.1.

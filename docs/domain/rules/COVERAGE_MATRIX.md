@@ -116,7 +116,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
 
-**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA / QVACI / WAFS / SIGWX** stay OOS. **TC SIGMET** `sigmet-A6-2-TC` unlocked as **`wmoReference`** (EV-030 T2.4 / #829 closed); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA / QVACI / WAFS / SIGWX** stay OOS until F32 (EV-032). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
 
 ---
 
@@ -314,7 +314,7 @@ Discovery-first cycle: mine → promote durable rows → wire sample menu / vali
 | `wmoReference` catalog tier + VA EGGX / multi-location menu | ADR-032 amend · `examplesCatalog.ts` · FIXTURE_GAPS | ✅ M5 |
 | In-scope stems on validate CI (XML well-formed/XSD/GML) | `test_wmo_canonical_examples` + loader inventory (M6) | ✅ / wire |
 | Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — **closed**; catalog **wmoPass** (S033/EV-026) | ✅ |
-| TC SIGMET A6-2 menu / encode bar | [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) **closed** (M7 encode bar); [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) **closed** (EV-030 M2 lint/STNR/`wmoReference`) | ✅ menu `wmoReference`; equality/`wmoPass` residual child |
+| TC SIGMET A6-2 menu / encode bar | [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) **closed**; [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) **closed**; [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) **closed** (EV-032 M1 ADR-032 → `wmoPass`) | ✅ menu **`wmoPass`** |
 | SWXA sample menu / encode bar | [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** (F28 / M11); A7-3 unlocked; A7-4/5 deferred; VONA/WAFS/QVACI OOS | ✅ / ❌ OOS |
 | US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | #810/#811/#812 ✅ encode (S032 T1–T3) |
 | Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → #809 + #800 survivors | ⚠ → children |
@@ -365,7 +365,7 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | TAF | ok/deepen | ok/deepen | ok | partial (NIL-collect) | **M4** |
 | SIGMET gen | ok/deepen | ok/deepen | ok | partial (quarantine) | **M5** |
 | VA SIGMET | ok/deepen | ok/deepen | ok | gap | **M6** |
-| TC SIGMET | ok/deepen | **ok** (WC→`TropicalCycloneSIGMET`; BBB/`reportStatus`; CNL) | ok (A6-2-TC) | ok (WC pack) | **M7 closed** (#738); deepen [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) |
+| TC SIGMET | ok/deepen | **ok** (WC→`TropicalCycloneSIGMET`; BBB/`reportStatus`; CNL) | ok (A6-2-TC) | ok (WC pack) | **M7 closed** (#738); #829 closed; [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) ADR-032 → `wmoPass` **closed** (EV-032 M1) |
 | AIRMET | ok/deepen | **ok** (WA→`reportStatus`; CNL) | ok | ok (WA pack) | **M8 closed** (`airmet-quality.yml`) |
 | VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
 | TCA | ok/deepen | ok/deepen | ok | gap | **M10 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
@@ -397,7 +397,8 @@ Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** 
 | Shared AHL/`T1T2`/BBB/filename API | #823 B1–B3 | **M1 closed** |
 | Per-family body `split_bulletin` (non-METAR/SPECI) | product packs M2–M11 | in-cycle packs landed |
 | TC SIGMET quality bar | #738 **closed** | M7 |
-| TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **closed** (EV-030 M2) — lint pack + STNR in-cycle; exceptional geometry **OOS** (T2.3); catalog **`wmoReference`** (T2.4–T2.5); equality/`wmoPass` + TC decode residual children |
+| TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **closed** (EV-030 M2) — lint pack + STNR; exceptional geometry **OOS**; catalog was `wmoReference` until [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) **closed** (EV-032 M1) → **`wmoPass`**; F9 TC decode residual allowlisted |
+| TC SIGMET A6-2 ADR-032 equality → `wmoPass` | [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) | **closed** (EV-032 M1) — see [t1.6-835-closeout.md](../../sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md) |
 | VAA/TCA decode residual deepen | [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) | **closed** (EV-030 M3) — structured `LABEL:` + AHL decode; official peers `residuals == []` |
 | SWXA F28 product path | #740 **closed** | M11 / F28 Done |
 | Non-METAR multi-report body fixtures | FIXTURE_GAPS stem rows | document / deepen |

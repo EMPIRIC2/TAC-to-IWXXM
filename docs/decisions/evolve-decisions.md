@@ -85,7 +85,7 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 |----|----------|----------|----------|
 | E32-T9 | gate | Approve execution plan? | **PASS** — M0–M4 (28 tasks) → **07 @ T0.1** (`D-S040-04-plan`=1) |
 
-**Status**: **in_progress** — Phase C build (`07-build`)
+**Status**: **in_progress** — Phase C build (`07-build`); M1 #835 **closed**; next M2 F32 @ T2.1
 
 ---
 
