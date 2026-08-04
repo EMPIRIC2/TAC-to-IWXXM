@@ -72,7 +72,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    note: 'ORCHESTRATING — T4.5 PASS technical; merge dfecba46; progress 28/28; awaiting D-S040-13-close; session/EV-032 remain open; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -99,10 +99,11 @@ active_session:
     note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
   - stage: 07-build
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-04'
+    completed: '2026-08-04'
     skip_rationale:
-    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    note: 'Phase D COMPLETE — T4.5 PASS; merge dfecba46; progress 28/28; awaiting D-S040-13-close; #846'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -152,10 +153,13 @@ active_session:
     decision_id: D-S040-12
   - stage: 13-deploy-smoke
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-04T21:35:00Z'
+    completed: '2026-08-04T22:00:00Z'
     skip_rationale:
-    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+    note: 'T4.5 PASS — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; Render Deploy FAIL expected (suspended); alembic init pinned ev031-doks; awaiting D-S040-13-close; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    overall: pass
   current_stage: 13-deploy-smoke
   started_at: '2026-08-04'
   started: '2026-08-04'
@@ -225,6 +229,10 @@ active_session:
     status: written
     stage: 10-e2e
     note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    status: written
+    stage: 13-deploy-smoke
+    note: 'T4.5 PASS — #848 merged dfecba46; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; awaiting D-S040-13-close'
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -244,7 +252,7 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  note: 'T4.5 PASS (technical) — #848 merged dfecba46; DOKS live; H0c/H1/H3/H4/H5 + VONA convert PASS; progress 28/28; awaiting D-S040-13-close; session/EV-032 remain open; #846'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -313,7 +321,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    note: 'ORCHESTRATING — T4.5 PASS technical; merge dfecba46; progress 28/28; awaiting D-S040-13-close; session/EV-032 remain open; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -340,10 +348,11 @@ sessions:
     note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
   - stage: 07-build
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-04'
+    completed: '2026-08-04'
     skip_rationale:
-    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    note: 'Phase D COMPLETE — T4.5 PASS; merge dfecba46; progress 28/28; awaiting D-S040-13-close; #846'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -393,10 +402,13 @@ sessions:
     decision_id: D-S040-12
   - stage: 13-deploy-smoke
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-04T21:35:00Z'
+    completed: '2026-08-04T22:00:00Z'
     skip_rationale:
-    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+    note: 'T4.5 PASS — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; Render Deploy FAIL expected (suspended); alembic init pinned ev031-doks; awaiting D-S040-13-close; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    overall: pass
   current_stage: 13-deploy-smoke
   started_at: '2026-08-04'
   started: '2026-08-04'
@@ -458,6 +470,10 @@ sessions:
     status: written
     stage: 10-e2e
     note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    status: written
+    stage: 13-deploy-smoke
+    note: 'T4.5 PASS — #848 merged dfecba46; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; awaiting D-S040-13-close'
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -477,7 +493,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  note: 'T4.5 PASS (technical) — #848 merged dfecba46; DOKS live; H0c/H1/H3/H4/H5 + VONA convert PASS; progress 28/28; awaiting D-S040-13-close; session/EV-032 remain open; #846'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -6990,11 +7006,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-08-04'
     started: '2026-08-04'
-    completed_at:
-    completed:
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
     previous_started_at: '2026-08-03'
     previous_completed_at: '2026-08-03'
     previous_session_id: S038-platform-independence-842
@@ -7010,19 +7026,24 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    note: 'Phase D COMPLETE — T4.5 PASS; merge dfecba46; progress 28/28; awaiting D-S040-13-close; #846'
     tip_sha: 22b4251b
     tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
-    progress: 25/28
+    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 PASS technical; merge dfecba46; report deploy-smoke.md; awaiting D-S040-13-close; progress 28/28; #846'
+    progress: 28/28
     current_milestone: M4
     current_task: T4.5
     active_milestone: M4
     active_task: T4.5
-    active_task_status: in_progress
+    active_task_status: completed
     next_stage: 13-deploy-smoke
-    next_task: T4.5
-    completed_through: T4.4
+    next_task:
+    completed_through: T4.5
+    t4_5_complete: true
+    merge_sha: dfecba46
+    merge_sha_full: dfecba46ca9a3aa4a2ba8e43217908f0262e8381
+    awaiting_user_decision: true
+    close_decision_id: D-S040-13-close
     t4_4_complete: true
     t4_4_pending_commit: false
     t4_4_sha: fe024aac
@@ -7088,10 +7109,10 @@ stages:
     m1_08_tip_sha: 0c7305e8
     pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
     pr_m1_number: 848
-    pr_m1_status: open
+    pr_m1_status: merged
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
     pr_number: 848
-    pr_status: open
+    pr_status: merged
     pr_title: '[M1] #835 A6-2-TC ADR-032 equality → wmoPass (EV-032)'
     pr_milestone: M1
     m1_commits_s040:
@@ -9885,12 +9906,12 @@ stages:
     tip_note: '12 signed off awaiting 13 smoke'
     decision_id: D-S038-12
   13-deploy-smoke:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-04T21:35:00Z'
     started: '2026-08-04T21:35:00Z'
-    completed:
-    completed_at:
+    completed: '2026-08-04T22:00:00Z'
+    completed_at: '2026-08-04T22:00:00Z'
     previous_started_at: '2026-08-03'
     previous_completed_at: '2026-08-03'
     previous_session_id: S038-platform-independence-842
@@ -9904,39 +9925,54 @@ stages:
     prior_s037_tip_sha: 8bd111c
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+    note: 'T4.5 PASS — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; Render Deploy FAIL expected (suspended); alembic init pinned ev031-doks; awaiting D-S040-13-close'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    overall: pass
     tip_sha: 22b4251b
     tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-    tip_note: 'T4.5 START — D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5'
+    tip_note: 'T4.5 PASS technical — report deploy-smoke.md committed separately; merge dfecba46 on main'
     active_milestone: M4
     active_task: T4.5
-    active_task_status: in_progress
-    progress: 25/28
-    completed_through: T4.4
+    active_task_status: completed
+    progress: 28/28
+    completed_through: T4.5
     awaiting_deploy_approval: false
+    awaiting_user_decision: true
+    close_decision_id: D-S040-13-close
     decision_id: D-S040-13
+    merge_sha: dfecba46
+    merge_sha_full: dfecba46ca9a3aa4a2ba8e43217908f0262e8381
     pr_number: 848
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
-    pr_status: open
+    pr_status: merged
+    ci_tests_run: 30953419422
     delta_substages:
     - id: S040-iwxxm-corpus-quality-T4.5
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
       skill_id: 13-deploy-smoke
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-04T21:35:00Z'
       started_at: '2026-08-04T21:35:00Z'
+      completed: '2026-08-04T22:00:00Z'
+      completed_at: '2026-08-04T22:00:00Z'
       branch: evolve/EV-032-iwxxm-corpus-quality
       tip_sha: 22b4251b
       tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
       active_milestone: M4
       active_task: T4.5
-      active_task_status: in_progress
-      progress: 25/28
-      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+      active_task_status: completed
+      progress: 28/28
+      note: 'T4.5 PASS — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; Render Deploy FAIL expected (suspended); alembic init pinned ev031-doks; awaiting D-S040-13-close'
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+      overall: pass
       decision_id: D-S040-13
       awaiting_deploy_approval: false
+      awaiting_user_decision: true
+      close_decision_id: D-S040-13-close
+      merge_sha: dfecba46
+      merge_sha_full: dfecba46ca9a3aa4a2ba8e43217908f0262e8381
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -10532,15 +10568,18 @@ stages:
     prior_evolve_cycle_id: EV-031
     prior_completed: '2026-08-03'
     prior_note: 'S038/EV-031 16-evolve CLOSED — D-S038-13=1; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; active_session=null'
-    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    note: 'ORCHESTRATING — T4.5 PASS technical; merge dfecba46; progress 28/28; awaiting D-S040-13-close; session/EV-032 remain open; #846'
     tip_sha: 22b4251b
     tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
-    progress: 25/28
-    completed_through: T4.4
+    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 PASS technical; merge dfecba46; report deploy-smoke.md; awaiting D-S040-13-close; progress 28/28; #846'
+    progress: 28/28
+    completed_through: T4.5
     active_task: T4.5
-    active_task_status: in_progress
+    active_task_status: completed
+    awaiting_user_decision: true
+    close_decision_id: D-S040-13-close
     notes:
+    - '2026-08-04 S040/EV-032 — T4.5 PASS technical — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; CI 30953419422; Render Deploy FAIL expected; report deploy-smoke.md; awaiting D-S040-13-close; #846'
     - '2026-08-04 S040/EV-032 — T4.5 START D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5; tip 22b4251b; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
     - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
     - '2026-08-04 S040/EV-032 — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; pending_commit; PR #848; #846'
@@ -10680,10 +10719,10 @@ deployment:
   staging:
     status: 'deployed (public DNS + TLS)'
     last_verified: '2026-08-04'
-    commit_deployed: b4feac02
-    commit_deployed_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    commit_head: b4feac02
-    commit_head_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    commit_deployed: dfecba46
+    commit_deployed_full: dfecba46ca9a3aa4a2ba8e43217908f0262e8381
+    commit_head: dfecba46
+    commit_head_full: dfecba46ca9a3aa4a2ba8e43217908f0262e8381
     drift: false
     platform: doks
     namespace: metar-iwxxm
@@ -10695,13 +10734,13 @@ deployment:
     deploy_ids:
       api:
       frontend:
-    report: docs/sessions/S039-doks-dns-cutover/reports/deploy-smoke.md
-    session_id: S039-doks-dns-cutover
-    evolve_cycle_id: EV-031
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
     images:
-      api: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
-      frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:ev031-doks
-      note: 'S039 CLOSED D-S039-15=1; DOKS public HTTPS api|app; tip b4feac02; 15-service-health completed'
+      api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260804214648-dfecba4
+      frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260804214648-dfecba4
+      note: 'alembic initContainer still backend:ev031-doks (main image missing alembic module)'
     health_tiers:
       H0ci: pass
       H0c: pass
@@ -10718,10 +10757,11 @@ deployment:
       h3: pass
       h4: pass
       h5: pass
-      Render_suspended: expected_503
+      Render_suspended: expected
       topology: pass_3_of_3
       host_header: pass_5_of_5
     notes:
+    - '2026-08-04 S040/EV-032 T4.5 PASS — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; CI tests 30953419422 PASS; Render Deploy FAIL expected (suspended); alembic init pinned ev031-doks; report deploy-smoke.md; awaiting D-S040-13-close; #846'
     - '2026-08-04 S039 CLOSED D-S039-15=1 — 15-service-health COMPLETE; H0ci+H1–H5+Auth login PASS; D-S038-t63-waive lifted; public HTTPS; report service-health.md; active_session=null; #842/#712'
     - '2026-08-04 S039 15-service-health formal PASS pending D-S039-15 — H0ci main CI green https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30828890624; H1/H3/H4/H5 + Auth site_url + login 200; report service-health.md; #842/#712'
     - '2026-08-04 S039 D-S039-13=1 approved — 13-deploy-smoke COMPLETE; health_tiers H0c/H1/H3/H4/H5 stay pass; handoff 15-service-health; #842/#712'
@@ -10749,9 +10789,10 @@ deployment:
     - CI/CD run 29766213356 SUCCESS including Deploy; images 20260720180925-37be5f8
     - H0c PASS; H3 21/21; H4 2/2; H5 PASS; AHL convert-bulletin 200; COLLECT ingest-collect 501; live Playwright workbench PASS
     - Phase D / Phase 4 close still pending user deploy approval (session open)
-    ci_tests: pending
-    ci_deploy: n/a
-    ci_deploy_note: 'DOKS provisional primary; Render suspended (D-S038-t65-waive)'
+    ci_tests: pass
+    ci_tests_run: 30953419422
+    ci_deploy: fail_expected_render_suspended
+    ci_deploy_note: 'DOKS primary; Render suspended (D-S038-t65-waive); Deploy hook FAIL expected'
     images_attempted:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260727004311-c49f22b
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260727004311-c49f22b
@@ -31655,12 +31696,17 @@ evolve_cycles:
   current_stage: 13-deploy-smoke
   tip_sha: 22b4251b
   tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-  tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
+  tip_note: 'S040/EV-032 tip 22b4251b — T4.5 PASS technical; merge dfecba46; report deploy-smoke.md; awaiting D-S040-13-close; progress 28/28; #846'
   active_milestone: M4
   active_task: T4.5
-  active_task_status: in_progress
-  progress: 25/28
-  completed_through: T4.4
+  active_task_status: completed
+  progress: 28/28
+  completed_through: T4.5
+  t4_5_complete: true
+  merge_sha: dfecba46
+  merge_sha_full: dfecba46ca9a3aa4a2ba8e43217908f0262e8381
+  awaiting_user_decision: true
+  close_decision_id: D-S040-13-close
   t4_4_complete: true
   t4_4_pending_commit: false
   t4_4_sha: fe024aac
@@ -31717,9 +31763,11 @@ evolve_cycles:
   t2_4_t2_5_note: 'bundled same commit like T2.2-T2.3; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; #846/#741'
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
   pr_number: 848
-  pr_status: open
+  pr_status: merged
   pr_title: '[M1] #835 A6-2-TC ADR-032 equality → wmoPass (EV-032)'
   pr_milestone: M1
+  merge_sha: dfecba46
+  merge_sha_full: dfecba46ca9a3aa4a2ba8e43217908f0262e8381
   stages:
     00-context:
       status: completed
@@ -31731,7 +31779,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+      note: 'ORCHESTRATING — T4.5 PASS technical; merge dfecba46; progress 28/28; awaiting D-S040-13-close; session/EV-032 remain open; #846'
     01-requirements:
       status: completed
       mode: delta
@@ -31751,9 +31799,10 @@ evolve_cycles:
       completed: '2026-08-04'
       note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
     07-build:
-      status: in_progress
+      status: completed
       started: '2026-08-04'
-      note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+      completed: '2026-08-04'
+      note: 'Phase D COMPLETE — T4.5 PASS; merge dfecba46; progress 28/28; awaiting D-S040-13-close; #846'
     08-verify-build:
       status: completed
       started: '2026-08-04'
@@ -31799,11 +31848,17 @@ evolve_cycles:
       overall: ready
       decision_id: D-S040-12
     13-deploy-smoke:
-      status: in_progress
+      status: completed
       started: '2026-08-04T21:35:00Z'
       started_at: '2026-08-04T21:35:00Z'
-      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+      completed: '2026-08-04T22:00:00Z'
+      completed_at: '2026-08-04T22:00:00Z'
+      note: 'T4.5 PASS — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; Render Deploy FAIL expected (suspended); alembic init pinned ev031-doks; awaiting D-S040-13-close'
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+      overall: pass
       decision_id: D-S040-13
+      awaiting_user_decision: true
+      close_decision_id: D-S040-13-close
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -31811,8 +31866,8 @@ evolve_cycles:
     c_to_d_note: 'D-S040-phase-c=1 Continue → T4.3; C→D passed 2026-08-04; tip at pass was e0e595e3 (08 PASS); Phase D tip now 09e60184 (T4.3)'
     c_to_d_decision: D-S040-phase-c
     c_to_d_passed_at: '2026-08-04'
-    deploy: in_progress
-    deploy_note: 'T4.5 START — D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5'
+    deploy: pass_pending_close
+    deploy_note: 'T4.5 PASS technical — formal close pending D-S040-13-close'
   checkpoints:
     phase_a: passed
     phase_b: passed
@@ -31820,9 +31875,9 @@ evolve_cycles:
     phase_c_note: 'D-S040-phase-c=1 Continue → T4.3; user option 1; Phase D started (09+10 parallel)'
     phase_c_decision: D-S040-phase-c
     phase_c_passed_at: '2026-08-04'
-    phase_d: pending
-    phase_d_note: 'T4.5/13 in progress per D-S040-13=1'
-    deploy: in_progress
+    phase_d: pass_pending_close
+    phase_d_note: 'T4.5 PASS technical; awaiting D-S040-13-close'
+    deploy: pass_pending_close
   adrs: []
   artifacts:
   - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
@@ -31877,6 +31932,10 @@ evolve_cycles:
     status: written
     stage: 10-e2e
     note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    status: written
+    stage: 13-deploy-smoke
+    note: 'T4.5 PASS — #848 merged dfecba46; DOKS API+FE live; awaiting D-S040-13-close'
   issues: []
   decision_refs:
   - D-S040-open
@@ -31893,8 +31952,9 @@ evolve_cycles:
   - D-S040-11
   - D-S040-12
   - D-S040-13
-  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  note: 'T4.5 PASS (technical) — #848 merged dfecba46; DOKS live; progress 28/28; awaiting D-S040-13-close; session/EV-032 remain open; #846'
   notes:
+  - '2026-08-04 S040/EV-032 — T4.5 PASS technical — #848 merged dfecba46; GHCR 20260804214648-dfecba4; DOKS API+FE live; H0c/H1/H3/H4/H5 + VONA convert PASS; CI 30953419422; Render Deploy FAIL expected; report deploy-smoke.md; awaiting D-S040-13-close; #846'
   - '2026-08-04 S040/EV-032 — T4.5 START D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5; tip 22b4251b; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved verify-impl.md; 12 ready deploy-checklist.md; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; tip fe024aac; pending_commit later cleared @ fe024aac; gates.deploy pending; PR #848; #846'
