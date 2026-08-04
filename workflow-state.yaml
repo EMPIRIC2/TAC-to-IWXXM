@@ -25,7 +25,7 @@ active_session:
   feature_ids:
   - F30
   - F31
-  current_stage: 11-verify-impl
+  current_stage: 12-verify-deploy
   started_at: '2026-08-03'
   started: '2026-08-03'
   context_briefs:
@@ -58,6 +58,7 @@ active_session:
     D-S038-t63-path: '1'
     D-S038-t63-waive: '1'
     D-S038-phase-c: '1'
+    D-S038-11: '1'
     locked_at: '2026-08-03'
     note: 'Phase 0 locked — DOKS prod cutover; F8→DO Postgres; Supabase Auth long-term (amend F21); sessions DO Postgres logged-in / guest local+notice+F22; #830 amend Auth-kept; D-S038-fn=1,1,1 F30+F31 (deepen F5,F7,F8,F21,F22,M4); D-S038-tp=1,1,1 Test Plan + lean remaining standing docs; D-S038-01-gate-a=1 lean docs accepted Gate A (gaps→04); D-S038-02-batch-c=1,1,1 C1–C5 fixed; D-S038-02-phase-a=1 Gate A PASS → 04 (03 skipped); D-S038-04-b1=1,2,1,1 M0–M7; JWT=JWKS-only; Alembic under apps/backend; restore packages/auth from c9cebfa^ strip admin; D-S038-04-b2=1,1,1(+CI),1 placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 Accepted at Gate B (D-S038-04-plan=1); 04 COMPLETE → 07 @ T0.1'
   routing_plan:
@@ -75,7 +76,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'Phase D — 09+10 COMPLETE; 11-verify-impl in_progress (delta); tip 06d57043; #842/#830/#712'
+    note: 'Phase D — 11 COMPLETE; 12 in_progress'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -150,17 +151,24 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-03'
     started_at: '2026-08-03'
+    completed: '2026-08-03'
+    completed_at: '2026-08-03'
+    overall: pass
     report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
     skip_rationale: null
-    note: 'IN_PROGRESS (delta) — Awaiting UI preview + F30/F31 user approval; tip 06d57043; #842/#830/#712'
+    note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
   - stage: 12-verify-deploy
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-03'
+    started_at: '2026-08-03'
+    report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
     skip_rationale: null
+    note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
   - stage: 13-deploy-smoke
     required: true
     status: pending
@@ -177,7 +185,7 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: '09+10 COMPLETE; 11-verify-impl awaiting UI preview + Fn approval; tip 06d57043'
+  note: '11 COMPLETE (D-S038-11=1); 12-verify-deploy in_progress (delta); tip 4caaae1b'
   routing_plan_07_build: completed
   current_task: null
   active_task: null
@@ -187,9 +195,9 @@ active_session:
   blocked_task: null
   blocked_task_reason: null
   progress: 35/35
-  tip_sha: 06d57043
-  tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-  tip_note: '[09/10] COMPLETE → 11-verify-impl'
+  tip_sha: 4caaae1b
+  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+  tip_note: '[11] COMPLETE → 12-verify-deploy'
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -206,6 +214,7 @@ active_session:
   - docs/sessions/S038-platform-independence-842/reports/qa-report.md
   - docs/sessions/S038-platform-independence-842/reports/e2e-report.md
   - docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+  - docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
   active_milestone: M7
   next_milestone: M7
   t6_4_complete: true
@@ -7663,11 +7672,11 @@ stages:
     started: '2026-08-02'
     note: 'COMPLETE (delta) — T12.4; report docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md; 100-pass smoke batch; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
   11-verify-impl:
-    status: in_progress
+    status: completed
     started_at: '2026-08-03'
     started: '2026-08-03'
-    completed_at: null
-    completed: null
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
     previous_started_at: '2026-08-03'
     previous_started: '2026-08-03'
     previous_completed_at: '2026-08-03'
@@ -7682,15 +7691,17 @@ stages:
     session_id: S038-platform-independence-842
     evolve_cycle_id: EV-031
     mode: delta
-    note: 'IN_PROGRESS (delta) — Awaiting UI preview + F30/F31 user approval; tip 06d57043; #842/#830/#712'
+    overall: pass
+    note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
     report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-    tip_sha: 06d57043
-    tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
+    tip_sha: 4caaae1b
+    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
     active_milestone: M7
     active_task: null
-    active_task_status: null
+    active_task_status: completed
     progress: 35/35
-    awaiting_user_decision: UI preview + F30/F31 approval
+    awaiting_user_decision: null
+    decision_id: D-S038-11
     substeps:
       collect_results:
         status: pending
@@ -7711,19 +7722,23 @@ stages:
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 11-verify-impl
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-03'
       started_at: '2026-08-03'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
       branch: evolve/EV-031-platform-independence-842
-      tip_sha: 06d57043
-      tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
+      tip_sha: 4caaae1b
+      tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
       report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-      note: 'IN_PROGRESS (delta) — Awaiting UI preview + F30/F31 user approval; tip 06d57043; #842/#830/#712'
+      note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
+      overall: pass
+      decision_id: D-S038-11
       feature_ids:
       - F30
       - F31
-      awaiting_user_decision: UI preview + F30/F31 approval
+      awaiting_user_decision: null
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
@@ -7795,6 +7810,27 @@ stages:
       summary:
         status: pending
     delta_substages:
+    - id: S038-platform-independence-842
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      skill_id: 11-verify-impl
+      status: completed
+      mode: delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      branch: evolve/EV-031-platform-independence-842
+      tip_sha: 4caaae1b
+      tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+      report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+      note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
+      overall: pass
+      decision_id: D-S038-11
+      feature_ids:
+      - F30
+      - F31
+      awaiting_user_decision: null
     - id: S036-eight-family-ahl-rules-823
       session_id: S036-eight-family-ahl-rules-823
       evolve_cycle_id: EV-029
@@ -7999,6 +8035,27 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)
     skill_id: 11-verify-impl
     decision_id: E16-19
+    # S038 active override (duplicate-key last-wins trailer)
+    status: completed
+    started: '2026-08-03'
+    started_at: '2026-08-03'
+    completed: '2026-08-03'
+    completed_at: '2026-08-03'
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    mode: delta
+    overall: pass
+    note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
+    report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+    tip_sha: 4caaae1b
+    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+    tip_note: '[11] COMPLETE → 12-verify-deploy'
+    active_milestone: M7
+    active_task: null
+    active_task_status: completed
+    progress: 35/35
+    awaiting_user_decision: null
+    decision_id: D-S038-11
   10-e2e:
     status: completed
     started_at: '2026-08-03'
@@ -8996,23 +9053,33 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: completed
+    status: in_progress
     started_at: '2026-08-03'
     started: '2026-08-03'
-    completed: '2026-08-03'
-    completed_at: '2026-08-03'
-    session_id: S037-quality-residuals-831
-    evolve_cycle_id: EV-030
-    note: 'COMPLETE (delta) — T4.3; D-S037-12=1; report deploy-checklist.md; progress 27/27'
-    report: docs/sessions/S037-quality-residuals-831/reports/deploy-checklist.md
-    overall: ready
-    tip_sha: 3889e4c
-    active_milestone: M4
-    active_task: T4.3
-    active_task_status: completed
-    progress: 27/27
-    decision_ids:
-    - D-S037-12
+    completed: null
+    completed_at: null
+    previous_started_at: '2026-08-03'
+    previous_started: '2026-08-03'
+    previous_completed: '2026-08-03'
+    previous_completed_at: '2026-08-03'
+    previous_session_id: S037-quality-residuals-831
+    previous_evolve_cycle_id: EV-030
+    previous_note: 'COMPLETE (delta) — T4.3; D-S037-12=1; report deploy-checklist.md; progress 27/27'
+    previous_report: docs/sessions/S037-quality-residuals-831/reports/deploy-checklist.md
+    previous_overall: ready
+    previous_tip_sha: 3889e4c
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    mode: delta
+    note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
+    report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+    tip_sha: 4caaae1b
+    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+    active_milestone: M7
+    active_task: null
+    active_task_status: null
+    progress: 35/35
+    awaiting_user_decision: mitigations+rollback+13 gate
     previous_started_at: '2026-08-02'
     started: '2026-08-02'
     completed: '2026-08-02'
@@ -9037,6 +9104,23 @@ stages:
     decision_ids:
     - D-S036-12
     delta_substages:
+    - id: S038-platform-independence-842
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      skill_id: 12-verify-deploy
+      status: in_progress
+      mode: delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      branch: evolve/EV-031-platform-independence-842
+      tip_sha: 4caaae1b
+      tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+      report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+      note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
+      feature_ids:
+      - F30
+      - F31
+      awaiting_user_decision: mitigations+rollback+13 gate
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
@@ -9165,6 +9249,25 @@ stages:
     - S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
+    # S038 active override (duplicate-key last-wins trailer)
+    status: in_progress
+    started: '2026-08-03'
+    started_at: '2026-08-03'
+    completed: null
+    completed_at: null
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    mode: delta
+    note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
+    report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+    tip_sha: 4caaae1b
+    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+    tip_note: '[11] COMPLETE → 12-verify-deploy'
+    active_milestone: M7
+    active_task: null
+    active_task_status: null
+    progress: 35/35
+    awaiting_user_decision: mitigations+rollback+13 gate
   13-deploy-smoke:
     status: completed
     mode: delta
@@ -10124,6 +10227,32 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S038-11
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: 'Approve F30+F31; skip UI preview (reports only) → 12-verify-deploy'
+  summary: 'D-S038-11=1 — approve F30+F31; UI preview declined (reports only); complete 11-verify-impl; start 12-verify-deploy'
+  decision: 'Approve F30+F31 implementation verification; decline UI preview (reports only). Complete 11-verify-impl (delta); hand off to 12-verify-deploy.'
+  user_option: '1'
+  branch: evolve/EV-031-platform-independence-842
+  tip_sha: 4caaae1b
+  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+  report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  related_decisions:
+  - D-S038-fn
+  - D-S038-phase-c
 - id: D-S038-phase-c
   date: '2026-08-03'
   decision: 'Phase C checkpoint PASS — continue Phase D (09→13) on provisional DOKS; user selected recommended option 1'
@@ -29633,6 +29762,7 @@ evolve_cycles:
     D-S038-04-b1: '1,2,1,1'
     D-S038-04-b2: '1,1,1(+CI),1'
     D-S038-04-plan: '1'
+    D-S038-11: '1'
     locked_at: '2026-08-03'
     summary: |
       Scope full epic+#712 IaC; general; Standard; local UI.
@@ -29666,16 +29796,16 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-    note: 'Standard — 09+10 COMPLETE; 11-verify-impl in_progress (delta); tip 06d57043; 03/05/06 skipped'
-  current_stage: 11-verify-impl
-  current_stage_note: '09+10 COMPLETE; 11-verify-impl awaiting UI preview + Fn approval; tip 06d57043'
+    note: 'Standard — 11 COMPLETE; 12-verify-deploy in_progress (delta); tip 4caaae1b; 03/05/06 skipped'
+  current_stage: 12-verify-deploy
+  current_stage_note: '11 COMPLETE; 12-verify-deploy in_progress (delta); tip 4caaae1b'
   active_task: null
   active_task_status: completed
-  awaiting_user_decision: UI preview + F30/F31 approval
+  awaiting_user_decision: mitigations+rollback+13 gate
   progress: 35/35
-  tip_sha: 06d57043
-  tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-  tip_note: '[09/10] COMPLETE → 11-verify-impl'
+  tip_sha: 4caaae1b
+  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+  tip_note: '[11] COMPLETE → 12-verify-deploy'
   active_milestone: M7
   next_milestone: M7
   blocked_task: null
@@ -29849,15 +29979,22 @@ evolve_cycles:
       report: docs/sessions/S038-platform-independence-842/reports/e2e-report.md
       note: 'COMPLETE (evolve_delta) — pass; report e2e-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
     11-verify-impl:
+      status: completed
+      mode: delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      overall: pass
+      report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+      note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
+    12-verify-deploy:
       status: in_progress
       mode: delta
       started: '2026-08-03'
       started_at: '2026-08-03'
-      report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-      note: 'IN_PROGRESS (delta) — Awaiting UI preview + F30/F31 user approval; tip 06d57043; #842/#830/#712'
-    12-verify-deploy:
-      status: pending
-      mode: delta
+      report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+      note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
     13-deploy-smoke:
       status: pending
     03-plan-tooling:
@@ -29883,6 +30020,12 @@ evolve_cycles:
   adrs:
   - ADR-033
   artifacts:
+  - path: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+    status: present
+    note: '12 IN_PROGRESS — deploy checklist drafted; awaiting mitigations+rollback+13 gate'
+  - path: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+    status: approved
+    note: '11 COMPLETE — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b'
   - path: docs/sessions/S038-platform-independence-842/reports/verification-report.md
     status: present
     note: '08 COMPLETE — C→D PASS @ 67a482a1; format/lint/typecheck/H0c/workspace/backend unit green'
@@ -29972,11 +30115,13 @@ evolve_cycles:
   - D-S038-t63-path
   - D-S038-t65-waive
   - D-S038-phase-c
-  tip_sha: 06d57043
-  tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-  tip_note: '[09/10] COMPLETE → 11-verify-impl'
-  note: 'Phase D — 11-verify-impl in_progress'
+  - D-S038-11
+  tip_sha: 4caaae1b
+  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+  tip_note: '[11] COMPLETE → 12-verify-deploy'
+  note: '11 complete awaiting 12 signoff'
   notes:
+  - '2026-08-03 S038/EV-031 11-verify-impl COMPLETE (D-S038-11=1 approve F30+F31; UI preview declined); 12-verify-deploy in_progress; tip 4caaae1b; #842/#830/#712'
   - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 — D-S038-phase-c=1 Phase C checkpoint PASS; 08-verify-build STARTED (C→D gate, post-T6.5/M7); gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
@@ -30024,9 +30169,9 @@ git_history:
   pushed: false
   pending_commit: null
   dirty: true
-  tip_sha: 06d57043
-  tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-  tip_note: '[09/10] COMPLETE → 11-verify-impl'
+  tip_sha: 4caaae1b
+  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+  tip_note: '[11] COMPLETE → 12-verify-deploy'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
