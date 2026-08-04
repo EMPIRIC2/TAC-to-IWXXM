@@ -14,9 +14,9 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M3 — #808 + #847 release-line |
-| **Active task** | T3.1 — pending (next) |
-| **Tasks** | 18 / 28 completed |
-| **Last updated** | 2026-08-04 (T2.9 complete — #741 closed; M2 done → T3.1) |
+| **Active task** | T3.2 — pending (next) |
+| **Tasks** | 19 / 28 completed |
+| **Last updated** | 2026-08-04 (T3.1 complete — RELEASE_LINE_ADOPTABILITY.md; next T3.2 #847) |
 
 ## Tech Stack Summary
 
@@ -107,7 +107,7 @@ Repo already splits fast vs long:
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Docs | Engineering blast-radius + adopt/deprecate checklists → `docs/domain/iwxxm/` (align VERSION_SUPPORT_POLICY) | TC-EV032-004; #808; E32-T8 | T2.9 | pending |
+| T3.1 | Docs | Engineering blast-radius + adopt/deprecate checklists → `docs/domain/iwxxm/` (align VERSION_SUPPORT_POLICY) | TC-EV032-004; #808; E32-T8 | T2.9 | **completed** |
 | T3.2 | Docs | Non-technical staff review narrative / checklist (#847) — same durable tree or linked section | #847 | T3.1 | pending |
 | T3.3 | Docs | Child issues for automation gaps; #808/#847 closeout or remaining AC | S02.M3 | T3.2 | pending |
 
@@ -159,4 +159,4 @@ Repo already splits fast vs long:
 
 ## Next
 
-**07-build** — M2 **done** (#741 closed; F32 Done) → **T3.1** engineering blast-radius / adopt-deprecate (#808).
+**07-build** — T3.1 **done** → **T3.2** #847 non-technical release-line review.

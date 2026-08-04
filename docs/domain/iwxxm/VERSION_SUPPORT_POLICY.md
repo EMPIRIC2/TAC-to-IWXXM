@@ -162,6 +162,7 @@ For questions about version support policy:
 - [PPT-02 IWXXM Framework mining notes](../mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md) - informative workshop capture (2025-10-22)
 - [VERSION_MANIFEST.json](../schemas/VERSION_MANIFEST.json) - Technical version registry
 - Runtime pin: `vendor/manifest.json` → `iwxxm` **v2025-2**
+- **Engineering adopt / deprecate runbooks + blast radius:** [RELEASE_LINE_ADOPTABILITY.md](./RELEASE_LINE_ADOPTABILITY.md) (#808 / S040 / EV-032)
 
 ---
 
