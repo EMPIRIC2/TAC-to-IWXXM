@@ -1,11 +1,12 @@
 # EV-029 / E29-T4=2 — TC SIGMET quality pack (M7 / TC-EV029-004 + F23 deepen / #738).
+# EV-032 / E32-T7 — also covers #835 A6-2-TC ADR-032 equality + catalog wmoPass.
 # Separate per-family workflow (WC / TropicalCycloneSIGMET); complements root ci.yml
 # and gen/VA SIGMET packs (sigmet-quality.yml, va-sigmet-quality.yml).
 name: TC SIGMET quality
 
 on:
   push:
-    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    branches: [main, evolve/EV-029-eight-family-ahl-rules, evolve/EV-032-iwxxm-corpus-quality]
     paths:
       - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
       - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"
@@ -16,13 +17,18 @@ on:
       - "packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py"
       - "packages/tac2iwxxm/tests/test_tc_ev029_007_tc_sigmet_gap_fixtures.py"
       - "packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev032_003_a6_2_tc_catalog_wmo_pass.py"
       - "packages/tac2iwxxm/tests/fixtures/tc_sigmet/**"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_a6_2_tc.tac"
       - "packages/tac2iwxxm/tests/fixtures/ahl/wc_tc_sigmet.txt"
       - "packages/tac-validate/src/tac_validate/**"
       - "apps/backend/src/utilities/conversion.py"
       - "apps/backend/src/api.py"
       - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
       - "scripts/ci/run_tc_sigmet_quality.sh"
+      - "scripts/ci/run_ev032_a6_2_tc_canary.sh"
       - ".github/workflows/tc-sigmet-quality.yml"
   pull_request:
     paths:
@@ -35,13 +41,18 @@ on:
       - "packages/tac2iwxxm/src/tac2iwxxm/products/sigmet_airmet.py"
       - "packages/tac2iwxxm/tests/test_tc_ev029_007_tc_sigmet_gap_fixtures.py"
       - "packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py"
+      - "packages/tac2iwxxm/tests/test_tc_ev032_003_a6_2_tc_catalog_wmo_pass.py"
       - "packages/tac2iwxxm/tests/fixtures/tc_sigmet/**"
+      - "packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_a6_2_tc.tac"
       - "packages/tac2iwxxm/tests/fixtures/ahl/wc_tc_sigmet.txt"
       - "packages/tac-validate/src/tac_validate/**"
       - "apps/backend/src/utilities/conversion.py"
       - "apps/backend/src/api.py"
       - "apps/backend/tests/unit/test_tc_f6_030_convert_bulletin_unit.py"
       - "scripts/ci/run_tc_sigmet_quality.sh"
+      - "scripts/ci/run_ev032_a6_2_tc_canary.sh"
       - ".github/workflows/tc-sigmet-quality.yml"
   workflow_dispatch:
 

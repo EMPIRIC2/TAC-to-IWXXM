@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M1 — #835 A6-2-TC → `wmoPass` |
-| **Active task** | T1.5 — pending (next) |
-| **Tasks** | 7 / 28 completed |
+| **Active task** | T1.6 — pending (next) |
+| **Tasks** | 8 / 28 completed |
 | **Last updated** | 2026-08-04 |
 
 ## Tech Stack Summary
@@ -86,7 +86,7 @@ Repo already splits fast vs long:
 | T1.2 | Code | Encode/canonicalize deltas (coords, airspace type, intensityChange, trailing zeros) | F23; ADR-032; #835 | T1.1 | **completed** |
 | T1.3 | Test | Green equality + quality path lint→convert→XSD+SCH still green | TC-EV032-002/003 | T1.2 | **completed** |
 | T1.4 | Code | Catalog promote `sigmet_a6_2_tc` → `wmoPass`; Vitest + FIXTURE_GAPS notes | TC-EV032-003; UJ-039 | T1.3 | **completed** |
-| T1.5 | Config | Path-filtered pre-commit canary + ensure long pack on `make test-tc-sigmet-quality` / pre-push | E32-T7 | T1.4 | **pending** |
+| T1.5 | Config | Path-filtered pre-commit canary + ensure long pack on `make test-tc-sigmet-quality` / pre-push | E32-T7 | T1.4 | **completed** |
 | T1.6 | Docs | #835 closeout | #835 | T1.5 | pending |
 
 ### M2 — #741 / F32 VONA quality bar

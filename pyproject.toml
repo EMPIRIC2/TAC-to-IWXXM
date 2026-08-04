@@ -95,6 +95,7 @@ markers = [
   "slow: longer local/CI smokes (clean-venv wheel installs)",
   "iwxxm_translation_informative: Amd79-80-2023 TAC→2025-2 informative suite (EV-023; soft/xfail in CI)",
   "quality_matrix: F29 full pilot matrix slots (optional / make test-quality-matrices-full)",
+  "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 equality + catalog; E32-T7)",
 ]
 filterwarnings = [
   "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",

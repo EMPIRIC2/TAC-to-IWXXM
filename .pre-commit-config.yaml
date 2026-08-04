@@ -82,6 +82,13 @@ repos:
         pass_filenames: false
         always_run: true
         files: ^(\.github/workflows/ci-cd\.yml|scripts/deploy/check_no_bare_curl_imgurl\.sh)$
+      # EV-032 / E32-T7 — path-filtered (no always_run): A6-2 equality + catalog canary
+      - id: ev032-a6-2-tc-canary
+        name: EV-032 A6-2-TC ADR-032 + catalog canary (#835)
+        entry: bash scripts/ci/run_ev032_a6_2_tc_canary.sh
+        language: system
+        pass_filenames: false
+        files: ^(packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products\.py|packages/tac2iwxxm/src/tac2iwxxm/convert\.py|packages/tac2iwxxm/tests/test_tc_ev032_00[23]_.*\.py|packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_a6_2_tc\.tac|packages/shared/src/metar_shared/xml_canonical\.py|apps/frontend/src/fixtures/examples/examplesCatalog\.ts|apps/frontend/src/fixtures/examples/FIXTURE_GAPS\.md|scripts/ci/run_ev032_a6_2_tc_canary\.sh)$
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.7

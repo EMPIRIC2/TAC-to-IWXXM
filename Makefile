@@ -20,6 +20,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-sigmet-quality \
 	test-va-sigmet-quality \
 	test-tc-sigmet-quality \
+	test-ev032-a6-2-canary \
 	test-airmet-quality \
 	test-vaa-quality \
 	test-tca-quality \
@@ -265,8 +266,14 @@ test-va-sigmet-quality:
 	bash scripts/ci/run_va_sigmet_quality.sh
 
 # EV-029 / E29-T4=2 — TC SIGMET quality pack (M7 / TC-EV029-004 + F23 deepen / #738)
+# EV-032 / E32-T7 — includes #835 A6-2-TC ADR-032 equality + catalog wmoPass (long pack).
+# Fast canary: scripts/ci/run_ev032_a6_2_tc_canary.sh (path-filtered pre-commit).
 test-tc-sigmet-quality:
 	bash scripts/ci/run_tc_sigmet_quality.sh
+
+# EV-032 / E32-T7 / T1.5 — path-filtered pre-commit canary (A6-2 equality + catalog)
+test-ev032-a6-2-canary:
+	bash scripts/ci/run_ev032_a6_2_tc_canary.sh
 
 # EV-029 / E29-T4=2 — AIRMET quality pack (M8 / TC-EV029-007 + F24 deepen)
 test-airmet-quality:

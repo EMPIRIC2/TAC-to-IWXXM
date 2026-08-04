@@ -93,7 +93,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'IN PROGRESS — M0 done; M1 T1.1–T1.2 green equality; next T1.3/T1.4 catalog wmoPass; #835'
+    note: 'T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7)'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -166,7 +166,7 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — IN PROGRESS — M0 done; M1 T1.1–T1.2 green equality; next T1.3/T1.4 catalog wmoPass; #835'
+  note: 'T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7)'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -256,7 +256,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'STARTED @ T0.1 corpus inventory; #846'
+    note: 'T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7)'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -329,7 +329,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — Gate B PASS (D-S040-04-plan=1); current_stage 07-build @ T0.1; F32+UJ-045; #846/#835/#741/#808/#847'
+  note: 'T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7)'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -6862,19 +6862,19 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'STARTED @ T0.1 corpus inventory; #846'
+    note: 'T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7)'
     tip_sha: 0f3769af
     tip_sha_full: 0f3769af50c5426e89bba1e219e9124a408ab9ec
     tip_note: 'S040/EV-032 Gate B PASS → 07 @ T0.1'
     progress: 0/28
-    current_milestone: M0
-    current_task: T0.1
-    active_milestone: M0
-    active_task: T0.1
+    current_milestone: M1
+    current_task: T1.5
+    active_milestone: M1
+    active_task: T1.5
     active_task_status: in_progress
     next_stage: 08-verify-build
     next_task:
-    next_milestone: M0
+    next_milestone: M1
     blocked_task:
     blocked_task_reason:
     t7_1_complete: true
@@ -31090,7 +31090,7 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-04'
-      note: 'STARTED @ T0.1 corpus inventory; #846'
+      note: 'T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7)'
     08-verify-build:
       status: pending
     09-qa:
@@ -31152,11 +31152,9 @@ evolve_cycles:
   - D-S040-04-batch-1
   - D-S040-04-batch-2
   - D-S040-04-plan
-  note: >-
-    S040/EV-032 — Gate B PASS (D-S040-04-plan=1); current_stage 07-build;
-    deepen F23 (#835), F4/F6/F2/F13 (#808+corpus); F32 VONA; exclude #836;
-    #846/#835/#741/#808/#847
+  note: 'T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7)'
   notes:
+  - '2026-08-04 S040/EV-032 — resume T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7); current_stage 07-build; #835'
   - '2026-08-04 S040/EV-032 — D-S040-04-plan=1 Gate B PASS; 04 COMPLETE → 07-build STARTED @ T0.1 corpus inventory; gates.b_to_c + checkpoints.phase_b passed; M0-M4 28 tasks; #846'
   - '2026-08-04 S040/EV-032 — Gate A PASS (D-S040-02-batch-f=1,1,1,1; D-S040-02-phase-a=1); 02 COMPLETE; 04-tech-plan STARTED; gates.a_to_b passed; #846/#847'
   - '2026-08-04 S040/EV-032 — tip confirmed 0f3769af (01 delta); current_stage remains 02-verify-plan; #846'
