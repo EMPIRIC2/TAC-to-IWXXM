@@ -74,7 +74,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; D-S038-04-plan=1 Gate B PASS; D-S038-continue'
+    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-04-plan=1 Gate B PASS; D-S038-continue'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -107,7 +107,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
+    note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -153,7 +153,7 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: 'S038/EV-031 — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; 07-build in_progress @ M7; D-S038-continue; #842/#830/#712'
+  note: 'S038/EV-031 — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; 07-build in_progress @ M7; D-S038-continue; #842/#830/#712'
   current_task: T6.5
   active_task: T6.5
   active_task_status: blocked
@@ -162,9 +162,9 @@ active_session:
   blocked_task: T6.5
   blocked_task_reason: 7-day soak calendar
   progress: 34/38
-  tip_sha: 0cc0fb39
-  tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-  tip_note: 'T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38'
+  tip_sha: f1e2389d
+  tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+  tip_note: 'T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38'
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -187,6 +187,8 @@ active_session:
   m5_08_pass: true
   m5_08_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
   m5_08_tip_sha: 7a2cb7d0
+  m7_complete: true
+  m7_tip_sha: f1e2389d
 sessions:
 - id: S037-quality-residuals-831
   type: feature
@@ -6265,10 +6267,10 @@ stages:
     session_id: S038-platform-independence-842
     evolve_cycle_id: EV-031
     mode: delta
-    note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
-    tip_sha: 0cc0fb39
-    tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-    tip_note: 'T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38'
+    note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
+    tip_sha: f1e2389d
+    tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+    tip_note: 'T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38'
     progress: 34/38
     current_milestone: M7
     current_task: T6.5
@@ -6294,6 +6296,8 @@ stages:
     m5_08_pass: true
     m5_08_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
     m5_08_tip_sha: 7a2cb7d0
+    m7_complete: true
+    m7_tip_sha: f1e2389d
     m2_complete: true
     m2_tip_sha: eaba4fb3
     m2_commits:
@@ -6445,7 +6449,7 @@ stages:
       mode: delta
       started_at: '2026-08-03'
       started: '2026-08-03'
-      note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
+      note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
       feature_ids:
       - F30
       - F31
@@ -6473,9 +6477,9 @@ stages:
       - docs/sessions/S038-platform-independence-842/reports/verification-report-M4.md
       - docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
       - docs/sessions/S038-platform-independence-842/reports/doks-provision-cheapest-2026-08-03.md
-      tip_sha: 0cc0fb39
-      tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-      tip_note: "T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38"
+      tip_sha: f1e2389d
+      tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+      tip_note: "T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38"
       progress: 34/38
       active_milestone: M7
       current_milestone: M7
@@ -6490,6 +6494,8 @@ stages:
       m5_08_pass: true
       m5_08_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
       m5_08_tip_sha: 7a2cb7d0
+      m7_complete: true
+      m7_tip_sha: f1e2389d
       m2_complete: true
       m2_tip_sha: eaba4fb3
       m3_complete: true
@@ -6605,9 +6611,9 @@ stages:
       - D-S038-04-b2
       - D-S038-continue
       note: 'IN_PROGRESS — DOKS LB 168.144.12.70 serving; API/FE/worker Running; Alembic initContainer re-enabled and verified (migration logs OK; API /health 200; FE 200); GHCR backend:ev031-doks + backend:20260804-b83b6e54-sslfix pushed (alembic==1.18.5; main-latest NOT overwritten); Supabase→DO migrate APPLY+VERIFY PASS (sessions 39, ingest 77, quarantine 2); secrets restored from .env after stub apply; kustomization.yaml excludes secret-*.yaml; D-S038-t63-path=1 ops-first COMPLETE; T6.3 still pending (real DNS not available); progress 28/38; tip 6fd5518d; D-S038-continue; #842/#830/#712'
-      tip_sha: 0cc0fb39
-      tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-      tip_note: "T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38"
+      tip_sha: f1e2389d
+      tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+      tip_note: "T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38"
       progress: 34/38
       active_milestone: M7
       current_milestone: M7
@@ -6622,6 +6628,8 @@ stages:
       m5_08_pass: true
       m5_08_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
       m5_08_tip_sha: 7a2cb7d0
+      m7_complete: true
+      m7_tip_sha: f1e2389d
       m2_complete: true
       m2_tip_sha: eaba4fb3
       m3_complete: true
@@ -7116,7 +7124,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
-    - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; D-S038-continue; #842/#830/#712'
+    - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-continue; #842/#830/#712'
     - '2026-08-03 S038/EV-031 07-build — T7.2 COMPLETE — H0c 6/6, H4 2/2, H5 PASS via make test-live-connectivity-doks-provisional; report docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md; T6.5 still soak-calendar blocked; next T7.3; progress 32/38; tip f23d104c; D-S038-continue; #842/#830/#712'
     - '2026-08-04 S038/EV-031 07-build — D-S038-t63-path=1 ops-first COMPLETE @ 6fd5518d (Alembic initContainer re-enabled+verified; GHCR backend:ev031-doks + backend:20260804-b83b6e54-sslfix; main-latest NOT overwritten; secrets restored; kustomization excludes secret-*.yaml); commits 909da43e→eb30ed0d→b83b6e54→72e93204→6fd5518d; T6.3 still pending (real DNS not available); progress 28/38; tip 6fd5518d; D-S038-continue; #842/#830/#712'
     - '2026-08-03 S038/EV-031 07-build — DOKS cluster smoke PASS (LB 168.144.12.70; API/FE/worker Running; Host-header 200); Supabase→DO migrate APPLY+VERIFY PASS (sessions 39, ingest 77, quarantine 2); Alembic initContainer temporarily disabled (main-latest lacks alembic; schema applied via laptop migrate @ 20260803_0001); T6.3 pending awaiting_user_decision (real DNS pin vs alembic image rebuild vs both); progress 28/38; tip 1826938c; report docs/sessions/S038-platform-independence-842/reports/doks-provision-cheapest-2026-08-03.md; D-S038-continue; #842/#830/#712'
@@ -9634,12 +9642,12 @@ stages:
     prior_evolve_cycle_id: EV-030
     prior_completed: '2026-08-03'
     prior_note: 'S037/EV-030 16-evolve CLOSED — D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; active_session=null'
-    note: 'S038/EV-031 16-evolve in_progress — 07-build @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; feature_ids [F30,F31]; D-S038-continue; #842/#830/#712'
-    tip_sha: 0cc0fb39
-    tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-    tip_note: 'T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38'
+    note: 'S038/EV-031 16-evolve in_progress — 07-build @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; feature_ids [F30,F31]; D-S038-continue; #842/#830/#712'
+    tip_sha: f1e2389d
+    tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+    tip_note: 'T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38'
     notes:
-    - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; D-S038-continue; #842/#830/#712'
+    - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-continue; #842/#830/#712'
     - '2026-08-03 S038/EV-031 07-build — T7.2 COMPLETE — H0c 6/6, H4 2/2, H5 PASS via make test-live-connectivity-doks-provisional; report docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md; T6.5 still soak-calendar blocked; next T7.3; progress 32/38; tip f23d104c; D-S038-continue; #842/#830/#712'
     - '2026-08-04 S038/EV-031 07-build — D-S038-t63-path=1 ops-first COMPLETE @ 6fd5518d (Alembic initContainer re-enabled+verified; GHCR backend:ev031-doks + backend:20260804-b83b6e54-sslfix; main-latest NOT overwritten; secrets restored; kustomization excludes secret-*.yaml); commits 909da43e→eb30ed0d→b83b6e54→72e93204→6fd5518d; T6.3 still pending (real DNS not available); progress 28/38; tip 6fd5518d; D-S038-continue; #842/#830/#712'
     - '2026-08-03 S038/EV-031 07-build — DOKS cluster smoke PASS (LB 168.144.12.70; API/FE/worker Running; Host-header 200); Supabase→DO migrate APPLY+VERIFY PASS (sessions 39, ingest 77, quarantine 2); Alembic initContainer temporarily disabled (main-latest lacks alembic; schema applied via laptop migrate @ 20260803_0001); T6.3 pending awaiting_user_decision (real DNS pin vs alembic image rebuild vs both); progress 28/38; tip 1826938c; report docs/sessions/S038-platform-independence-842/reports/doks-provision-cheapest-2026-08-03.md; D-S038-continue; #842/#830/#712'
@@ -29506,16 +29514,16 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-    note: 'Standard — Phase 0+Fn done; D-S038-04-plan=1 Gate B PASS; 04 COMPLETE; 07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; D-S038-continue; 03/05/06 skipped'
+    note: 'Standard — Phase 0+Fn done; D-S038-04-plan=1 Gate B PASS; 04 COMPLETE; 07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-continue; 03/05/06 skipped'
   current_stage: 07-build
-  current_stage_note: '07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39'
+  current_stage_note: '07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d'
   active_task: T6.5
   active_task_status: blocked
   awaiting_user_decision: null
   progress: 34/38
-  tip_sha: 0cc0fb39
-  tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-  tip_note: 'T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38'
+  tip_sha: f1e2389d
+  tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+  tip_note: 'T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38'
   active_milestone: M7
   next_milestone: M7
   blocked_task: T6.5
@@ -29534,6 +29542,8 @@ evolve_cycles:
   m5_08_pass: true
   m5_08_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
   m5_08_tip_sha: 7a2cb7d0
+  m7_complete: true
+  m7_tip_sha: f1e2389d
   stages:
     00-context:
       status: completed
@@ -29546,7 +29556,7 @@ evolve_cycles:
       mode: orchestrator
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; D-S038-04-plan=1 Gate B PASS; D-S038-continue'
+      note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 07-build in_progress @ M7; T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-04-plan=1 Gate B PASS; D-S038-continue'
     01-requirements:
       status: completed
       mode: delta
@@ -29571,7 +29581,7 @@ evolve_cycles:
       status: in_progress
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
+      note: 'IN_PROGRESS — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
       progress: 34/38
       current_milestone: M7
       current_task: T6.5
@@ -29597,6 +29607,8 @@ evolve_cycles:
       m5_08_pass: true
       m5_08_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
       m5_08_tip_sha: 7a2cb7d0
+      m7_complete: true
+      m7_tip_sha: f1e2389d
       m2_complete: true
       m2_tip_sha: eaba4fb3
       m3_complete: true
@@ -29634,9 +29646,9 @@ evolve_cycles:
       t5_4_complete: true
       m5_complete: true
       m5_tip_sha: e2e43a83
-      tip_sha: 0cc0fb39
-      tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-      tip_note: 'T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38'
+      tip_sha: f1e2389d
+      tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+      tip_note: 'T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38'
     08-verify-build:
       status: completed
       started: '2026-08-03'
@@ -29656,8 +29668,8 @@ evolve_cycles:
       active_milestone: M6
       active_task: T6.5
       active_task_status: blocked
-      tip_sha: 0cc0fb39
-      tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
+      tip_sha: f1e2389d
+      tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
       progress: 34/38
       note: 'COMPLETE (M5 boundary) — PASS @ tip 7a2cb7d0; report docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md; handoff 07 @ T6.1 in_progress; progress 26/38; prior M4 08 PASS @ 04fb4a98; #842/#830/#712'
     09-qa:
@@ -29781,12 +29793,12 @@ evolve_cycles:
   - D-S038-04-plan
   - D-S038-continue
   - D-S038-t63-path
-  tip_sha: 0cc0fb39
-  tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-  tip_note: 'T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38'
-  note: 'S038/EV-031 — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; 07-build in_progress @ M7; D-S038-continue; #842/#830/#712'
+  tip_sha: f1e2389d
+  tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+  tip_note: 'T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38'
+  note: 'S038/EV-031 — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; 07-build in_progress @ M7; D-S038-continue; #842/#830/#712'
   notes:
-  - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 T7.1–T7.4 all completed; only T6.5 remains open (blocked soak calendar); progress 34/38; tip pending parent commit @ 0cc0fb39; D-S038-continue; #842/#830/#712'
+  - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-continue; #842/#830/#712'
   - '2026-08-03 S038/EV-031 07-build — T7.2 COMPLETE — H0c 6/6, H4 2/2, H5 PASS via make test-live-connectivity-doks-provisional; report docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md; T6.5 still soak-calendar blocked; next T7.3; progress 32/38; tip f23d104c; D-S038-continue; #842/#830/#712'
   - '2026-08-04 S038/EV-031 07-build — D-S038-t63-path=1 ops-first COMPLETE @ 6fd5518d (Alembic initContainer re-enabled+verified; GHCR backend:ev031-doks + backend:20260804-b83b6e54-sslfix; main-latest NOT overwritten; secrets restored; kustomization excludes secret-*.yaml); commits 909da43e→eb30ed0d→b83b6e54→72e93204→6fd5518d; T6.3 still pending (real DNS not available); progress 28/38; tip 6fd5518d; D-S038-continue; #842/#830/#712; ahead=43 not pushed'
   - '2026-08-03 S038/EV-031 07-build — DOKS cluster smoke PASS (LB 168.144.12.70; API/FE/worker Running; Host-header 200); Supabase→DO migrate APPLY+VERIFY PASS (sessions 39, ingest 77, quarantine 2); Alembic initContainer temporarily disabled (main-latest lacks alembic; schema applied via laptop migrate @ 20260803_0001); T6.3 pending awaiting_user_decision (real DNS pin vs alembic image rebuild vs both); progress 28/38; tip 1826938c; report docs/sessions/S038-platform-independence-842/reports/doks-provision-cheapest-2026-08-03.md; D-S038-continue; #842/#830/#712'
@@ -29824,13 +29836,13 @@ evolve_cycles:
   - '2026-08-03 S038/EV-031 OPEN — open_session; Phase 0 choices (scope opt3 #842+#830+#712, general, Standard, UI preview Yes); session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress'
 git_history:
   current_branch: evolve/EV-031-platform-independence-842
-  ahead_of_origin: 50
+  ahead_of_origin: 52
   pushed: false
   pending_commit: null
   dirty: true
-  tip_sha: 0cc0fb39
-  tip_sha_full: 0cc0fb398025d2c983249477ce2d380dc76e11c0
-  tip_note: 'T7.4 COMPLETE (docs stubs); tip pending parent commit @ 0cc0fb39; M7 T7.1–T7.4 done; only T6.5 remains (soak-calendar blocked); progress 34/38'
+  tip_sha: f1e2389d
+  tip_sha_full: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+  tip_note: 'T7.4 COMPLETE (docs stubs); tip f1e2389d; M7 COMPLETE (T7.1–T7.4); only T6.5 remains (soak-calendar blocked); progress 34/38'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
@@ -29838,6 +29850,8 @@ git_history:
   recommended_branch: evolve/EV-031-platform-independence-842
   note: 'S038/EV-031 — DOKS cluster serving traffic (LB 168.144.12.70); API/FE/worker Running; Alembic initContainer re-enabled and verified (migration logs OK; API /health 200; FE 200); GHCR backend:ev031-doks + backend:20260804-b83b6e54-sslfix pushed (alembic==1.18.5; main-latest NOT overwritten); Supabase→DO migrate APPLY+VERIFY PASS (sessions 39, ingest 77, quarantine 2); secrets restored from .env after stub apply; kustomization.yaml excludes secret-*.yaml; 07-build in_progress @ M6; active_task T6.3 pending (real DNS not available); D-S038-t63-path=1 ops-first COMPLETE; progress 28/38; tip 6fd5518d; D-S038-continue; #842/#830/#712; ahead 43 not pushed'
   notes:
+  - '2026-08-04 S038/EV-031 tip @ f1e2389d (f1e2389d8da04a00bf07c1dc5f815f345a5b970b); [T7.4] docs: CHANGELOG and evolve/deploy stubs for EV-031; T7.4 COMPLETE; M7 COMPLETE; only T6.5 soak-calendar blocked; progress 34/38; tip f1e2389d; dirty pending tip-sync'
+  - '2026-08-04 S038/EV-031 tip synced — 0cc0fb39 (0cc0fb398025d2c983249477ce2d380dc76e11c0); [T7.3] chore: sync workflow-state tip after T7.3; T7.3 COMPLETE; next T7.4; T6.5 soak-calendar blocked; progress 33/38; tip 0cc0fb39'
   - '2026-08-04 S038/EV-031 tip @ 649b9dc9 (649b9dc900eff343d94584451ddab4b6a909ae39); [T7.3] test: TC-F30-006 and TC-EV031 topology on provisional DOKS; T7.3 COMPLETE; next T7.4; T6.5 soak-calendar blocked; progress 33/38; tip 649b9dc9'
   - '2026-08-03 S038/EV-031 tip synced — f23d104c (f23d104ce1e05a1d534f3981336fcf881bfaacf1); [T7.2] chore: sync workflow-state tip after T7.2; T7.2 COMPLETE; next T7.3; progress 32/38; tip f23d104c'
   - '2026-08-03 S038/EV-031 tip synced — f7088759 (f7088759e3cea1e505ad366676e403a838b6e247); [T7.2] test: H4–H5 connectivity on provisional DOKS URLs; T7.2 COMPLETE; next T7.3; progress 32/38; tip f7088759'
@@ -31235,6 +31249,37 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: f1e2389d8da04a00bf07c1dc5f815f345a5b970b
+    short: f1e2389d
+    branch: evolve/EV-031-platform-independence-842
+    message: "[T7.4] docs: CHANGELOG and evolve/deploy stubs for EV-031"
+    stage: 07-build
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    task_id: T7.4
+    timestamp: "2026-08-04T00:37:06Z"
+    files_changed:
+    - docs/CHANGELOG.md
+    - docs/sessions/S038-platform-independence-842/reports/corpus-parity-note.md
+    - docs/sessions/S038-platform-independence-842/reports/deploy-report.md
+    - docs/sessions/S038-platform-independence-842/reports/evolve-summary.md
+    - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
+    - workflow-state.yaml
+    pushed: false
+    note: 'T7.4 COMPLETE — CHANGELOG + evolve/deploy/corpus stubs; M7 COMPLETE (T7.1–T7.4); tip f1e2389d; only T6.5 soak-calendar blocked; progress 34/38'
+  - sha: 0cc0fb398025d2c983249477ce2d380dc76e11c0
+    short: 0cc0fb39
+    branch: evolve/EV-031-platform-independence-842
+    message: "[T7.3] chore: sync workflow-state tip after T7.3"
+    stage: 07-build
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    task_id: T7.3
+    timestamp: "2026-08-04T00:33:32Z"
+    files_changed:
+    - workflow-state.yaml
+    pushed: false
+    note: 'tip-sync after T7.3; tip 0cc0fb39; T7.4 was next; progress 33/38'
   - sha: 649b9dc900eff343d94584451ddab4b6a909ae39
     short: 649b9dc9
     branch: evolve/EV-031-platform-independence-842
