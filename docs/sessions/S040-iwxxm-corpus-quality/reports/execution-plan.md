@@ -13,9 +13,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build |
-| **Active milestone** | M2 — #741 / F32 VONA (next) |
-| **Active task** | T2.1 — pending (next) |
-| **Tasks** | 9 / 28 completed |
+| **Active milestone** | M2 — #741 / F32 VONA |
+| **Active task** | T2.2 — pending (next) |
+| **Tasks** | 10 / 28 completed |
 | **Last updated** | 2026-08-04 |
 
 ## Tech Stack Summary
@@ -93,7 +93,7 @@ Repo already splits fast vs long:
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Docs | VONA cookbook: TAC shapes from `vona-A7-1` + PANS-MET; AHL/T1T2 “when known”; guidance-silent gaps | TC-F32-*; E32-T3/T4; #741 | T1.6 | pending |
+| T2.1 | Docs | VONA cookbook: TAC shapes from `vona-A7-1` + PANS-MET; AHL/T1T2 “when known”; guidance-silent gaps | TC-F32-*; E32-T3/T4; #741 | T1.6 | **completed** |
 | T2.2 | Test | Registry + lint accept/negative fixtures (unknown codes fail CI) | TC-F32-001; ADR-028 | T2.1 | pending |
 | T2.3 | Code | `tac-validate` VONA codes + rules | F12/F32 | T2.2 | pending |
 | T2.4 | Test | Convert fixtures → `VolcanoObservatoryNoticeForAviation` (+ golden / soft→strict) | TC-F32-002/003 | T2.3 | pending |
@@ -158,4 +158,4 @@ Repo already splits fast vs long:
 
 ## Next
 
-**07-build** in progress — M1 #835 **closed**; next M2 F32 VONA @ T2.1.
+**07-build** in progress — M2 F32 VONA; T2.1 cookbook **done** → T2.2 registry fixtures.

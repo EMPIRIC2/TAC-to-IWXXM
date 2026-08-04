@@ -63,7 +63,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; continue M2 @ T2.1 when resumed; #846'
+    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 in_progress (M2 F32 VONA cookbook); #846/#741'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -93,7 +93,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 0c7305e8; active_task T2.1 pending (M2 F32 VONA); progress 9/28; 07-build in_progress; continue M2 when resumed; cycle not complete; #846/#835'
+    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -173,7 +173,7 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 0c7305e8; active_task T2.1 pending (M2 F32 VONA); progress 9/28; 07-build in_progress; continue M2 when resumed; cycle not complete; #846/#835'
+  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -233,7 +233,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; continue M2 @ T2.1 when resumed; #846'
+    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 in_progress (M2 F32 VONA cookbook); #846/#741'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -263,7 +263,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 0c7305e8; active_task T2.1 pending (M2 F32 VONA); progress 9/28; 07-build in_progress; continue M2 when resumed; cycle not complete; #846/#835'
+    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -343,7 +343,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 0c7305e8; active_task T2.1 pending (M2 F32 VONA); progress 9/28; 07-build in_progress; continue M2 when resumed; cycle not complete; #846/#835'
+  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -6876,16 +6876,16 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 0c7305e8; active_task T2.1 pending (M2 F32 VONA); progress 9/28; 07-build in_progress; continue M2 when resumed; cycle not complete; #846/#835'
-    tip_sha: 0c7305e8
-    tip_sha_full: 0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5
-    tip_note: 'S040/EV-032 M1 complete; M1 08 PASS; PR-M1 #848 @ 0c7305e8; next M2 F32 @ T2.1'
+    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
+    tip_sha: 9c9103e4
+    tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
+    tip_note: 'S040/EV-032 tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open'
     progress: 9/28
     current_milestone: M2
     current_task: T2.1
     active_milestone: M2
     active_task: T2.1
-    active_task_status: pending
+    active_task_status: in_progress
     next_stage: 08-verify-build
     next_task: T2.1
     next_milestone: M2
@@ -6911,6 +6911,7 @@ stages:
     - M1-audit: f2409cd7
     - T1.4-fix: 7274e803
     - PR-M1: 0c7305e8
+    - M1-ws-sync: 9c9103e4
     blocked_task:
     blocked_task_reason:
     t7_1_complete: true
@@ -7713,6 +7714,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-04 S040/EV-032 — tip synced 9c9103e4; T2.1 STARTED in_progress @ M2 F32 VONA cookbook; progress 9/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
     - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8; verification-report-M1.md; T2.1 pending (M2 F32 VONA); 07-build in_progress; cycle not complete; #846/#835'
     - '2026-08-03 S038/EV-031 07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
     - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-continue; #842/#830/#712'
@@ -31092,8 +31094,12 @@ evolve_cycles:
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06'
   current_stage: 07-build
-  tip_sha: 0c7305e8
-  tip_sha_full: 0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5
+  tip_sha: 9c9103e4
+  tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
+  active_milestone: M2
+  active_task: T2.1
+  active_task_status: in_progress
+  progress: 9/28
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
   pr_number: 848
   pr_status: open
@@ -31110,7 +31116,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; continue M2 @ T2.1 when resumed; #846'
+      note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1 in_progress (M2 F32 VONA cookbook); #846/#741'
     01-requirements:
       status: completed
       mode: delta
@@ -31132,7 +31138,7 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-04'
-      note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 0c7305e8; active_task T2.1 pending (M2 F32 VONA); progress 9/28; 07-build in_progress; continue M2 when resumed; cycle not complete; #846/#835'
+      note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
     08-verify-build:
       status: pending
     09-qa:
@@ -31201,8 +31207,9 @@ evolve_cycles:
   - D-S040-04-batch-1
   - D-S040-04-batch-2
   - D-S040-04-plan
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 0c7305e8; active_task T2.1 pending (M2 F32 VONA); progress 9/28; 07-build in_progress; continue M2 when resumed; cycle not complete; #846/#835'
+  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 9c9103e4; active_task T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; 07-build in_progress; #846/#741'
   notes:
+  - '2026-08-04 S040/EV-032 — tip synced 9c9103e4 ([M1] chore: sync workflow-state after PR #848); ahead_of_origin=0 pushed=true dirty=false; T2.1 STARTED in_progress @ M2 F32 VONA cookbook; progress 9/28; current_stage 07-build; #846/#741'
   - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8; verification-report-M1.md; T2.1 pending (M2 F32 VONA); 07-build in_progress; cycle not complete; #846/#835'
   - '2026-08-04 S040/EV-032 — M1 closed (#835); T1.5=29e9e57c T1.6=09cc1834; next M2 F32 @ T2.1 pending; progress 9/28; 07-build remains in_progress; 08 not started; #846'
   - '2026-08-04 S040/EV-032 — resume T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7); current_stage 07-build; #835'
@@ -31215,13 +31222,13 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
   current_branch: evolve/EV-032-iwxxm-corpus-quality
-  ahead_of_origin: 1
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
-  dirty: true
-  tip_sha: 0c7305e8
-  tip_sha_full: 0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5
-  tip_note: 'S040/EV-032 M1 complete; M1 08 PASS; PR-M1 #848 @ 0c7305e8; T2.1 pending; 07-build in_progress'
+  dirty: false
+  tip_sha: 9c9103e4
+  tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
+  tip_note: 'S040/EV-032 tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -31233,8 +31240,9 @@ git_history:
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — tip 0c7305e8; M1 complete; M1 08 PASS; mid-cycle PR #848; T2.1 pending; current_stage 07-build; cycle not complete; #846'
+  note: 'S040/EV-032 — tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open; current_stage 07-build; #846/#741'
   notes:
+  - '2026-08-04 S040/EV-032 — tip synced 9c9103e4 (9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e); [M1] chore: sync workflow-state after PR #848; ahead_of_origin=0 pushed=true dirty=false; T2.1 STARTED in_progress @ M2; progress 9/28; #846/#741'
   - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8 (0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5); verification-report-M1.md; T2.1 pending; 07-build in_progress; cycle not complete; #846/#835'
   - '2026-08-04 S040/EV-032 tip synced — 09cc1834 (09cc18341bb9512b220bdb303a07627fa9aeb534); M1 closed (#835); T1.5=29e9e57c T1.6=09cc1834; next M2 F32 @ T2.1 pending; 07-build in_progress; 08 not started; #846'
   - '2026-08-04 S040/EV-032 — tip confirmed 0f3769af ([EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)); current_stage remains 02-verify-plan; #846'
@@ -31656,15 +31664,15 @@ git_history:
     created_at: '2026-08-04'
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    tip_sha: 0c7305e8
-    tip_sha_full: 0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5
-    pushed: false
+    tip_sha: 9c9103e4
+    tip_sha_full: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
+    pushed: true
     exists: true
-    ahead_of_origin: 1
+    ahead_of_origin: 0
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
     pr_number: 848
     pr_status: open
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open @ 0c7305e8; next M2 F32 @ T2.1; EV-031 WIP stashed S039-EV031-WIP'
+    note: 'tip 9c9103e4; T2.1 in_progress (M2 F32 VONA cookbook); progress 9/28; PR-M1 #848 open; EV-031 WIP stashed S039-EV031-WIP'
   - name: infra/doks-dns-cutover
     purpose: 'S039 ops — DOKS DNS cutover; pin api/app.tac-to-iwxxm.com → 168.144.12.70; lift D-S038-t63-waive'
     base: main
@@ -32678,6 +32686,18 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
+    short: 9c9103e4
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[M1] chore: sync workflow-state after PR #848'
+    stage: 07-build
+    milestone: M1
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: true
   - sha: 0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5
     short: 0c7305e8
     branch: evolve/EV-032-iwxxm-corpus-quality
@@ -32688,7 +32708,7 @@ git_history:
     files_changed:
     - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
     timestamp: '2026-08-04'
-    pushed: false
+    pushed: true
   - sha: 7274e8038126ab8f9be8fcc73ba1137a9311b90a
     short: 7274e803
     branch: evolve/EV-032-iwxxm-corpus-quality
