@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
 | **Active milestone** | M7 — H4–H5 / live verify / close |
-| **Active task** | T7.4 — CHANGELOG / deploy-report / evolve-summary stubs (T7.3 COMPLETE; T6.5 soak calendar blocked) |
-| **Tasks** | 33 / 38 completed |
+| **Active task** | T6.5 — Render decommission after soak (**blocked** calendar; T7.1–T7.4 COMPLETE) |
+| **Tasks** | 34 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -156,7 +156,7 @@
 | T7.1 | Test | Playwright + live: public convert + Auth session + guest notice | TC-F31-*; H6 | M4, M6 | completed |
 | T7.2 | Test | H4–H5 connectivity on DOKS URLs | connectivity-gates; `D-S038-tp` | T6.3 | completed |
 | T7.3 | Test | TC-F30-006 / TC-EV031-* green on target topology | test-plan | T5.4, T6.4 | completed |
-| T7.4 | Docs | CHANGELOG / deploy-report / evolve-summary stubs; CORPUS parity note | docs corpus | T7.1–T7.3 | pending |
+| T7.4 | Docs | CHANGELOG / deploy-report / evolve-summary stubs; CORPUS parity note | docs corpus | T7.1–T7.3 | completed |
 
 ## Phase Gate Check (B → C)
 
