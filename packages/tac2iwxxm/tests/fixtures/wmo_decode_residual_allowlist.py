@@ -30,6 +30,12 @@ EXPECTED_RESIDUALS: tuple[ExpectedResidual, ...] = (
         issue="#740",
         allow_any=True,
     ),
+    ExpectedResidual(
+        catalog_id="vona_a7_1",
+        doc_intent="F9 G4 / ADR-025 sparse best-effort (F32 VONA unlock)",
+        issue="#741",
+        allow_any=True,
+    ),
     # TC SIGMET A6-2-TC catalog wmoPass (EV-032 / #835); decode still leaves
     # cyclone name / radius / CENTRE tokens until F9 TC deepen.
     ExpectedResidual(

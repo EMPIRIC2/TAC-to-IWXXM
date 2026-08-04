@@ -34,3 +34,13 @@ def test_tac_work_sessions_swxa_product_migration() -> None:
     sql = migration.read_text(encoding="utf-8")
     assert "swxa" in sql
     assert "tac_work_sessions_product_check" in sql
+
+
+def test_tac_work_sessions_vona_product_migration() -> None:
+    """F32 / T2.7 — CHECK constraint expanded for product=vona."""
+    migration = _REPO_ROOT / "supabase/migrations/20260804000012_tac_work_sessions_vona.sql"
+    assert migration.is_file(), f"missing VONA product migration at {migration}"
+    sql = migration.read_text(encoding="utf-8")
+    assert "vona" in sql
+    assert "swxa" in sql
+    assert "tac_work_sessions_product_check" in sql

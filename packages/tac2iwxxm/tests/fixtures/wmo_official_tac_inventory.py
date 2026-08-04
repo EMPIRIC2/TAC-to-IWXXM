@@ -13,7 +13,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 _PIN_EXAMPLES = _REPO_ROOT / "vendor" / "schemas" / "iwxxm" / "2025-2" / "IWXXM" / "examples"
 _ANNEX3 = Path(__file__).resolve().parent / "annex3_golden"
 
-# F6 + F28 — product prefixes / stems that belong on the WMO happy-path inventory.
+# F6 + F28 + F32 — product prefixes / stems that belong on the WMO happy-path inventory.
 _IN_SCOPE_PREFIXES = (
     "metar-",
     "speci-",
@@ -23,12 +23,10 @@ _IN_SCOPE_PREFIXES = (
     "va-advisory-",
     "tc-advisory-",
     "spacewx-",
-)
-
-_OUT_OF_HAPPY_PATH_SUBSTRINGS = (
-    "translation-failed",
     "vona-",
 )
+
+_OUT_OF_HAPPY_PATH_SUBSTRINGS = ("translation-failed",)
 
 
 @dataclass(frozen=True, slots=True)
@@ -136,6 +134,13 @@ OFFICIAL_TAC_PEERS: tuple[OfficialTacPeer, ...] = (
         catalog_id="swxa_a7_3",
         annex3_tac="swxa_a7_3.tac",
         product="SWXA",
+    ),
+    OfficialTacPeer(
+        "vona-A7-1",
+        "registered",
+        catalog_id="vona_a7_1",
+        annex3_tac="vona_a7_1.tac",
+        product="VONA",
     ),
     OfficialTacPeer(
         "spacewx-A7-4",

@@ -103,6 +103,8 @@ const PRODUCTS = [
   'TAF',
   'VAA',
   'TCA',
+  'SWXA',
+  'VONA',
 ] as const;
 
 const PROFILES = ['annex3', 'iwxxm_us'] as const;
