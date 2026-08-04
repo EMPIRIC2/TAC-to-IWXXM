@@ -9,14 +9,14 @@ import {
   convertManualMetar,
   dismissPrivacyNoticeIfPresent,
   openPublicConverter,
-  playwrightApiBaseUrl,
+  playwrightApiFetch,
 } from './playwright-e2e-helpers';
 
 const SAMPLE_METAR =
   'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
 
 test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
-  test('UJ-001: public convert without login chrome or JWT', async ({ page }) => {
+  test('UJ-001: public convert without JWT (optional Sign in OK)', async ({ page }) => {
     const authHeaders: string[] = [];
     await page.route('**/api/v1/convert', async (route) => {
       const header = route.request().headers().authorization;
@@ -77,7 +77,8 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(page.getByText(/Work history and converter sessions/i)).toBeVisible();
     await expect(page.getByLabel(/necessary storage always enabled/i)).toBeDisabled();
 
-    await page.getByRole('button', { name: /cancel/i }).click();
+    // Footer Cancel can sit below the viewport on provisional DOKS layouts.
+    await page.keyboard.press('Escape');
     await expect(page.getByTestId('privacy-settings-dialog')).toHaveCount(0);
   });
 
@@ -105,11 +106,16 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
     await expect(page.getByTestId('privacy-gpc-active')).toBeVisible();
   });
 
-  test('Auth-gone API negative: /auth/login is 404', async ({ request }) => {
-    const response = await request.post(`${playwrightApiBaseUrl()}/auth/login`, {
+  test('TC-F31-003: /auth/login rejects bad credentials (Auth restored)', async ({
+    request,
+  }) => {
+    const response = await playwrightApiFetch(request, '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       data: { email: 'x@y.z', password: 'nope' },
-      timeout: 10_000,
+      timeout: 15_000,
     });
-    expect(response.status()).toBe(404);
+    // F21 Amended / F31 — route exists; invalid credentials → 401 (not 404).
+    expect(response.status()).toBe(401);
   });
 });

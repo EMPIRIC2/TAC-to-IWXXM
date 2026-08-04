@@ -20,6 +20,8 @@ spec:
         - name: ghcr-pull
       containers:
         - name: frontend
+          # T7.1: F31 UI required for provisional Playwright. Until frontend:ev031-doks
+          # is pushed to GHCR, operators hot-copy dist into the running pod (see T7.1 report).
           image: ghcr.io/empiric2/tac-to-iwxxm/frontend:main-latest
           imagePullPolicy: Always
           ports:
@@ -32,6 +34,12 @@ spec:
                 secretKeyRef:
                   name: metar-api-secrets
                   key: SUPABASE_URL
+          volumeMounts:
+            # Provisional DOKS /config.json (D-S038-t63-waive) — points FE at placeholder API host.
+            - name: runtime-config
+              mountPath: /usr/share/nginx/html/config.json
+              subPath: config.json
+              readOnly: true
           readinessProbe:
             httpGet:
               path: /
@@ -51,3 +59,7 @@ spec:
             limits:
               cpu: 250m
               memory: 256Mi
+      volumes:
+        - name: runtime-config
+          configMap:
+            name: metar-frontend-runtime-config

@@ -94,8 +94,9 @@ Injected at deploy time (`scripts/frontend/prepare-config.sh` — publishable ke
 
 **Auth bootstrap (F31):** `supabase.url` + `supabase.publishableKey` drive the optional FE Auth
 client. **`api.baseUrl`** is the single origin for `/api/v1/*` and `/auth/*`. DOKS FE placeholder
-may appear in `corsOrigins` before T6.3 pins DNS; do **not** retarget `api.baseUrl` /
-`liveE2e.*` to placeholders while Render remains primary (`D-S038-04-b2`).
+may appear in `corsOrigins` before real DNS. **`D-S038-t63-waive`**: `liveE2e.*` may point at
+provisional DOKS placeholders (LB + `/etc/hosts` / Host-header) while public `api.baseUrl` /
+`frontendUrl` remain Render until real DNS is pinned.
 
 ## Environment Variables (secrets + abuse controls)
 

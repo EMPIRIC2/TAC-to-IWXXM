@@ -1,20 +1,20 @@
-import { expect, Page } from '@playwright/test';
+import { APIRequestContext, expect, Page } from '@playwright/test';
 
 /**
- * E2E helpers for the public app (F21 / F22 / ADR-031).
+ * E2E helpers for the public app (F21 Amended / F22 / F31 / ADR-031).
  *
- * Operator login fixtures are retired — prefer {@link openPublicConverter}.
- * Legacy E2E_USER_* / ADMIN_* exports remain only so skipped Auth-era specs compile.
+ * Guest convert remains public ({@link openPublicConverter}). Optional Auth login
+ * fixtures are restored for UJ-046 / TC-F31-003..004 (E2E_USER_* or ADMIN_*).
  */
 
-/** @deprecated F21 — operator Auth removed; no login fixture. */
+/** Optional Auth fixture email (UJ-046). */
 export const E2E_USER_EMAIL =
   process.env.E2E_USER_EMAIL ??
   process.env.PLAYWRIGHT_ADMIN_EMAIL ??
   process.env.ADMIN_EMAIL ??
   '';
 
-/** @deprecated F21 — operator Auth removed; no login fixture. */
+/** Optional Auth fixture password (UJ-046). */
 export const E2E_USER_PASSWORD =
   process.env.E2E_USER_PASSWORD ??
   process.env.PLAYWRIGHT_ADMIN_PASSWORD ??
@@ -26,6 +26,30 @@ export const ADMIN_EMAIL = E2E_USER_EMAIL;
 /** @deprecated Use E2E_USER_PASSWORD */
 export const ADMIN_PASSWORD = E2E_USER_PASSWORD;
 
+/** True when targeting provisional DOKS (Host-header / resolver-rules). */
+export function isDoksProvisionalPlaywright(): boolean {
+  return (
+    process.env.PLAYWRIGHT_DOKS_PROVISIONAL === '1' ||
+    /doks\.placeholder\.metar-iwxxm\.local/i.test(
+      process.env.PLAYWRIGHT_BASE_URL ?? process.env.LIVE_FRONTEND_URL ?? '',
+    )
+  );
+}
+
+/**
+ * Extra headers for API request fixture against provisional DOKS LB IP.
+ *
+ * Chromium resolves placeholder FE/API hosts via `--host-resolver-rules`; Node's
+ * request context does not — callers hit `LIVE_API_URL` (LB IP) with Host.
+ */
+export function playwrightApiExtraHeaders(): Record<string, string> {
+  if (!isDoksProvisionalPlaywright()) {
+    return {};
+  }
+  const host = process.env.DOKS_API_HOST ?? 'api.doks.placeholder.metar-iwxxm.local';
+  return { Host: host };
+}
+
 /** API base for Playwright request fixtures (local default 18001). */
 export function playwrightApiBaseUrl(): string {
   return (
@@ -34,6 +58,23 @@ export function playwrightApiBaseUrl(): string {
     process.env.VITE_API_BASE_URL?.replace(/\/$/, '') ??
     'http://localhost:18001'
   );
+}
+
+/** POST/GET helper that applies provisional DOKS Host header when needed. */
+export async function playwrightApiFetch(
+  request: APIRequestContext,
+  path: string,
+  options: Parameters<APIRequestContext['fetch']>[1] = {},
+): Promise<Awaited<ReturnType<APIRequestContext['fetch']>>> {
+  const base = playwrightApiBaseUrl();
+  const url = path.startsWith('http')
+    ? path
+    : `${base}${path.startsWith('/') ? '' : '/'}${path}`;
+  const headers = {
+    ...playwrightApiExtraHeaders(),
+    ...(options.headers ?? {}),
+  };
+  return request.fetch(url, { ...options, headers });
 }
 
 /** Dismiss the F22 first-visit privacy notice when present. */
@@ -55,19 +96,36 @@ export async function openPublicConverter(page: Page): Promise<void> {
   await dismissPrivacyNoticeIfPresent(page);
 }
 
-/** @deprecated F21 — use {@link openPublicConverter}. */
+/** Open the optional login view from the public converter (F31). */
 export async function gotoLogin(page: Page): Promise<void> {
   await openPublicConverter(page);
+  await page.getByTestId('sign-in-button').click();
+  await expect(page.getByTestId('login-view')).toBeVisible({ timeout: 10_000 });
 }
 
-/** @deprecated F21 — operator Auth removed. */
-export async function loginAsE2EUser(_page: Page): Promise<void> {
-  throw new Error(
-    'loginAsE2EUser is retired (F21). Use openPublicConverter — no Auth login fixture.',
-  );
+/**
+ * Sign in with E2E_USER_* / ADMIN_* and return to the converter (UJ-046).
+ *
+ * Requires credentials in the environment; used for TC-F31-003/004 live paths.
+ */
+export async function loginAsE2EUser(page: Page): Promise<void> {
+  if (!E2E_USER_EMAIL || !E2E_USER_PASSWORD) {
+    throw new Error(
+      'loginAsE2EUser requires E2E_USER_EMAIL/E2E_USER_PASSWORD (or ADMIN_*).',
+    );
+  }
+  await gotoLogin(page);
+  await page.locator('#email').fill(E2E_USER_EMAIL);
+  await page.locator('#password').fill(E2E_USER_PASSWORD);
+  await page.getByRole('button', { name: /sign in to account/i }).click();
+  await expect(
+    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
+  ).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId('logout-button')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('guest-loss-notice')).toHaveCount(0);
 }
 
-/** @deprecated F21 — use {@link openPublicConverter}. */
+/** Alias for {@link loginAsE2EUser}. */
 export async function loginAsAdmin(page: Page): Promise<void> {
   await loginAsE2EUser(page);
 }

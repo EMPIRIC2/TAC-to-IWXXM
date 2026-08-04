@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — 07-build |
-| **Active milestone** | M6 — DOKS IaC + cutover + soak (#712) |
-| **Active task** | T6.3 — Pin real DNS / LIVE_* / config/prod.json (blocked on real hostnames) |
-| **Tasks** | 28 / 38 completed |
+| **Active milestone** | M7 — H4–H5 / live verify / close |
+| **Active task** | T7.2 — H4–H5 connectivity on DOKS URLs (T7.1 COMPLETE; T6.5 soak calendar blocked) |
+| **Tasks** | 30 / 38 completed |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -145,15 +145,15 @@
 |------|------|-------------|-------------|------------|--------|
 | T6.1 | Infra | DOKS manifests/Helm/Blueprint: API + FE static + worker; secrets (`DATABASE_URL`, Auth JWKS/url) | #712; F30 | T3.3, T4.5 | completed |
 | T6.2 | Config | Release job: **idempotent** `alembic upgrade head` before/with API deploy | CI migration contract | T2.3, T6.1 | completed |
-| T6.3 | Ops | Pin real DNS / `LIVE_*` / `config/prod.json`; CORS for DOKS FE | `D-S038-04-b2` Q1 | T6.1 | pending |
-| T6.4 | Ops | Cutover smoke UJ-048 / TC-F30-004..005; start **7-day** soak | UJ-048; soak=7d | T6.2, T6.3 | pending |
+| T6.3 | Ops | Pin real DNS / `LIVE_*` / `config/prod.json`; CORS for DOKS FE | `D-S038-04-b2` Q1; **`D-S038-t63-waive`** | T6.1 | completed |
+| T6.4 | Ops | Cutover smoke UJ-048 / TC-F30-004..005; start **7-day** soak | UJ-048; soak=7d; `D-S038-t63-waive` | T6.2, T6.3 | completed |
 | T6.5 | Ops | After soak: Render decommission checklist; archive Render `LIVE_*` as historical | doks-depth=3 | T6.4 | pending |
 
 ### M7 — H4–H5 / live verify / close
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T7.1 | Test | Playwright + live: public convert + Auth session + guest notice | TC-F31-*; H6 | M4, M6 | pending |
+| T7.1 | Test | Playwright + live: public convert + Auth session + guest notice | TC-F31-*; H6 | M4, M6 | completed |
 | T7.2 | Test | H4–H5 connectivity on DOKS URLs | connectivity-gates; `D-S038-tp` | T6.3 | pending |
 | T7.3 | Test | TC-F30-006 / TC-EV031-* green on target topology | test-plan | T5.4, T6.4 | pending |
 | T7.4 | Docs | CHANGELOG / deploy-report / evolve-summary stubs; CORPUS parity note | docs corpus | T7.1–T7.3 | pending |

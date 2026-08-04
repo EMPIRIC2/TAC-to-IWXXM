@@ -4,7 +4,9 @@
     "baseUrl": "https://metar-to-iwxxm-api.onrender.com",
     "corsOrigins": [
       "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
-      "https://app.doks.placeholder.metar-iwxxm.local"
+      "http://app.doks.placeholder.metar-iwxxm.local",
+      "https://app.doks.placeholder.metar-iwxxm.local",
+      "http://168.144.12.70"
     ],
     "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
   },
@@ -21,7 +23,7 @@
     "enableStatistics": true
   },
   "liveE2e": {
-    "apiUrl": "https://metar-to-iwxxm-api.onrender.com",
-    "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+    "apiUrl": "http://api.doks.placeholder.metar-iwxxm.local",
+    "frontendUrl": "http://app.doks.placeholder.metar-iwxxm.local"
   }
 }

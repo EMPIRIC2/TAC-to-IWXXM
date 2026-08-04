@@ -69,12 +69,23 @@ function isRemoteBaseUrl(url: string): boolean {
 const remotePlaywright = isRemoteBaseUrl(configuredBaseUrl);
 const localConfigEnv = process.env.METAR_CONFIG_ENV || 'local';
 
+/** Provisional DOKS (D-S038-t63-waive): map placeholder Hosts → LB IP in Chromium. */
+const doksProvisional =
+  process.env.PLAYWRIGHT_DOKS_PROVISIONAL === '1' ||
+  /doks\.placeholder\.metar-iwxxm\.local/i.test(configuredBaseUrl);
+const doksLbIp = process.env.DOKS_LB_IP || '168.144.12.70';
+const doksApiHost =
+  process.env.DOKS_API_HOST || 'api.doks.placeholder.metar-iwxxm.local';
+const doksFeHost = process.env.DOKS_FE_HOST || 'app.doks.placeholder.metar-iwxxm.local';
+const doksResolverRules = `MAP ${doksFeHost} ${doksLbIp}, MAP ${doksApiHost} ${doksLbIp}, EXCLUDE localhost`;
+
 /**
  * Playwright configuration for cross-app E2E tests (apps/e2e workspace).
  *
  * Local: starts monorepo dev stack via webServer (config/local.json by default).
  * Auth UI specs: set METAR_CONFIG_ENV=e2e (see make test-e2e-t2-product).
- * Live: set PLAYWRIGHT_BASE_URL to Render frontend URL — webServer is skipped.
+ * Live: set PLAYWRIGHT_BASE_URL to frontend URL — webServer is skipped.
+ * Provisional DOKS: PLAYWRIGHT_DOKS_PROVISIONAL=1 + placeholder FE host.
  */
 export default defineConfig({
   testDir: '.',
@@ -103,6 +114,9 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         launchOptions: {
           slowMo: process.env.DEBUG ? 500 : 0,
+          ...(doksProvisional
+            ? { args: [`--host-resolver-rules=${doksResolverRules}`] }
+            : {}),
         },
       },
     },

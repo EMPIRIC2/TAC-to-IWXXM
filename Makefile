@@ -47,7 +47,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
-	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-bulletin test-live \
+	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
 	test-integration coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
@@ -472,6 +472,24 @@ test-live-e2e:
 	cd apps/e2e && DISABLE_AUTH=false PLAYWRIGHT_BASE_URL="$$PLAYWRIGHT_BASE_URL" \
 		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
 		$(PNPM) exec playwright test
+
+# T7.1 / EV-031 — F31 UJ-045..047 against provisional DOKS (Host-header / resolver-rules)
+test-live-e2e-doks-provisional:
+	@$(load_dotenv); \
+	set -a; source scripts/deploy/doks_provisional_live_env.sh; set +a; \
+	cd apps/e2e && DISABLE_AUTH=false \
+		PLAYWRIGHT_DOKS_PROVISIONAL=1 \
+		PLAYWRIGHT_BASE_URL="$$PLAYWRIGHT_BASE_URL" \
+		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
+		DOKS_LB_IP="$$DOKS_LB_IP" \
+		DOKS_API_HOST="$$DOKS_API_HOST" \
+		DOKS_FE_HOST="$$DOKS_FE_HOST" \
+		E2E_USER_EMAIL="$$E2E_USER_EMAIL" \
+		E2E_USER_PASSWORD="$$E2E_USER_PASSWORD" \
+		$(PNPM) exec playwright test \
+			uj045-047-f31-hybrid-sessions.e2e.spec.ts \
+			auth.e2e.spec.ts \
+			public-app-f21-f22.e2e.spec.ts
 
 # H7 — live bulletin gate (TC-LIVE-F6-030 / Q10=A)
 test-live-bulletin:

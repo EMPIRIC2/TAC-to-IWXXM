@@ -32,6 +32,12 @@ _sessions_table: Table | None = None
 
 
 def _sync_database_url() -> str:
+    """
+    Normalize ``DATABASE_URL`` for sync SQLAlchemy + psycopg.
+
+    Runtime DOKS pins often use ``postgresql+asyncpg://…?ssl=require`` (async API
+    pool). Sync work-sessions must use psycopg, which expects ``sslmode=require``.
+    """
     raw = (os.environ.get("DATABASE_URL") or "").strip()
     if not raw:
         raise HTTPException(
@@ -39,12 +45,17 @@ def _sync_database_url() -> str:
             detail="Work session service unavailable — missing DATABASE_URL",
         )
     if raw.startswith("postgresql+asyncpg://"):
-        return "postgresql+psycopg://" + raw.removeprefix("postgresql+asyncpg://")
-    if raw.startswith("postgresql+psycopg2://"):
-        return "postgresql+psycopg://" + raw.removeprefix("postgresql+psycopg2://")
-    if raw.startswith("postgresql://"):
-        return "postgresql+psycopg://" + raw.removeprefix("postgresql://")
-    return raw
+        url = "postgresql+psycopg://" + raw.removeprefix("postgresql+asyncpg://")
+    elif raw.startswith("postgresql+psycopg2://"):
+        url = "postgresql+psycopg://" + raw.removeprefix("postgresql+psycopg2://")
+    elif raw.startswith("postgresql://"):
+        url = "postgresql+psycopg://" + raw.removeprefix("postgresql://")
+    else:
+        url = raw
+    # asyncpg query param ``ssl=`` is invalid for psycopg (use sslmode=).
+    if "ssl=require" in url and "sslmode=" not in url:
+        url = url.replace("ssl=require", "sslmode=require")
+    return url
 
 
 def _get_engine() -> Engine:

@@ -32,21 +32,28 @@
 - Alembic **initContainer re-enabled** on API Deployment (`python -m alembic upgrade head`).
 - Ingress nginx: disabled `use-proxy-protocol` (DO LB annotation removed) so plain HTTP works.
 
-## T6.3 / DNS
+## T6.3 / DNS (`D-S038-t63-waive`)
 
-Placeholder hosts still in Ingress:
+Real DNS **waived**. Provisional pin:
 
-- `api.doks.placeholder.metar-iwxxm.local`
-- `app.doks.placeholder.metar-iwxxm.local`
-
-Provisional LB: `168.144.12.70` (Host-header smoke only; do not pin `LIVE_*` until real DNS).
+| Item | Value |
+|------|-------|
+| LB | `168.144.12.70` |
+| API Host | `api.doks.placeholder.metar-iwxxm.local` |
+| FE Host | `app.doks.placeholder.metar-iwxxm.local` |
+| `liveE2e` | Provisional DOKS placeholders in `config/prod.json` |
+| Public `api.baseUrl` | Render (until real DNS) |
+| CORS | ConfigMap includes `http://app…` + LB IP |
+| FE runtime | ConfigMap `metar-frontend-runtime-config` mounts `/config.json` |
 
 ```bash
-curl -H "Host: api.doks.placeholder.metar-iwxxm.local" http://168.144.12.70/health
-curl -H "Host: app.doks.placeholder.metar-iwxxm.local" http://168.144.12.70/
+bash scripts/deploy/doks_host_header_smoke.sh
+# or with /etc/hosts → 168.144.12.70 for the two placeholder hosts:
+# export LIVE_API_URL=http://api.doks.placeholder.metar-iwxxm.local
+# export LIVE_FRONTEND_URL=http://app.doks.placeholder.metar-iwxxm.local
 ```
 
 ## Next
 
-1. T6.3 pin real DNS + `config/prod.json` / CORS when hostnames ready.
+1. T6.4 soak days 1–7; residual real DNS pin before public cutover complete.
 2. After EV-031 merges to `main`, switch DOKS image pin back to `main-latest`.

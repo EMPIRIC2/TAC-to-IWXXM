@@ -8,8 +8,11 @@ Kustomize base for DigitalOcean Kubernetes — API, static FE (nginx), and F8 wo
 | `metar-frontend` | Deployment + Service + Ingress | `ghcr.io/EMPIRIC2/TAC-to-IWXXM/frontend:main-latest` | `app.doks.placeholder.metar-iwxxm.local` |
 | `metar-worker` | Deployment | `ghcr.io/EMPIRIC2/TAC-to-IWXXM/worker:main-latest` | no |
 
-Placeholder hostnames are locked by `D-S038-04-b2` Q1 until **T6.3** pins real DNS.
-Do **not** point live `LIVE_*` / `config/prod.json` primary URLs here while Render is primary.
+Placeholder hostnames remain until real DNS. **`D-S038-t63-waive`** pins provisional
+`LIVE_*` / `liveE2e` to these hosts + LB `168.144.12.70` (Host-header or `/etc/hosts`).
+Public `config/prod.json` `api.baseUrl` stays on Render until real DNS.
+FE runtime `/config.json` is overridden by ConfigMap `metar-frontend-runtime-config`.
+Smoke: `bash scripts/deploy/doks_host_header_smoke.sh`.
 
 ## Secrets (create out-of-band)
 
@@ -30,6 +33,11 @@ Templated stubs live in `base/secret-*.yaml` for reference only — they are
 **not** listed in `kustomization.yaml` (applying stubs would overwrite live secrets).
 
 API `DATABASE_URL` must be `postgresql+asyncpg://…?ssl=require` (not `sslmode=`).
+Sync work-sessions rewrite `ssl=` → `sslmode=` in code; until `backend:ev031-doks` is
+republished, apply `bash scripts/ops/apply_doks_work_session_ssl_fix.sh`.
+
+Provisional live Playwright (T7.1): `make test-live-e2e-doks-provisional`
+(Host-header / Chromium resolver-rules; see `scripts/deploy/doks_provisional_live_env.sh`).
 
 ## Apply
 

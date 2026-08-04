@@ -7,6 +7,7 @@ resources:
   - namespace.yaml
   - configmap-api.yaml
   - configmap-worker.yaml
+  - configmap-frontend-runtime.yaml
   - deployment-api.yaml
   - job-alembic-upgrade.yaml
   - service-api.yaml

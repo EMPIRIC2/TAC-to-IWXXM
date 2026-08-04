@@ -26,6 +26,20 @@ def test_sync_database_url_rewrites_asyncpg(monkeypatch: pytest.MonkeyPatch) -> 
     assert svc._sync_database_url().startswith("postgresql+psycopg://")
 
 
+def test_sync_database_url_rewrites_asyncpg_ssl_to_sslmode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """DOKS ``?ssl=require`` must become ``sslmode=require`` for psycopg (T7.1)."""
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://u:p@host:25060/db?ssl=require",
+    )
+    out = svc._sync_database_url()
+    assert out.startswith("postgresql+psycopg://")
+    assert "sslmode=require" in out
+    assert "ssl=require" not in out
+
+
 def test_sync_database_url_plain_and_psycopg2(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@localhost/db")
     assert svc._sync_database_url().startswith("postgresql+psycopg://")
