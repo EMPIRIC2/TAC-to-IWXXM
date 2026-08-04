@@ -153,7 +153,7 @@ Repo already splits fast vs long:
 
 | PR | Scope | Base ← Head | Status | URL |
 |----|-------|-------------|--------|-----|
-| PR-M1 | M0–M1 #835 A6-2 `wmoPass` | `main` ← `evolve/EV-032-iwxxm-corpus-quality` | pending | — |
+| PR-M1 | M0–M1 #835 A6-2 `wmoPass` | `main` ← `evolve/EV-032-iwxxm-corpus-quality` | open | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848 |
 | PR-final | M0–M4 evolve close | `main` ← evolve | pending | — |
 
 ## Next
