@@ -46,3 +46,7 @@ Product quality bars F15–F28 / F29 closed most Annex-3 family gaps, but:
 ## Next
 
 Approve `D-S040-route` (Standard routing) → cut `evolve/EV-032-iwxxm-corpus-quality` from `main` → 16-evolve Phase 1 (Fn confirm + 01-requirements).
+
+## 01 Manifest (locked)
+
+`D-S040-E32-M` = **2,3,1,1** — full product pack; full F7 VONA surface; interview UI N/A; close 01 → 02.

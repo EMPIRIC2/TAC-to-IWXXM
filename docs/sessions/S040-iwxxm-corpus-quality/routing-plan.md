@@ -11,9 +11,9 @@
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Intake + route + branch approved |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase 1 → 01-requirements |
-| 01-requirements | yes | delta | pending | F32 + deepen deltas; corpus acceptance |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 16-evolve | yes | orchestrator | **in_progress** | Phase A → 02 after 01 |
+| 01-requirements | yes | delta | **completed** | Full pack + F7 VONA (`D-S040-E32-M`=2,3,1,1) |
+| 02-verify-plan | yes | delta | **pending** | Gate A — next |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks |
 | 04-tech-plan | yes | delta | pending | Gate B → execution plan |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
@@ -40,3 +40,4 @@ Lean would skip 04/07/08/09/11/12 — insufficient for F32 encode + ADR-032 equa
 | Session open / Phase 0 | `D-S040-open` = **1,1,1,1** — Epic #846; full scope; F32; order #835→#741→#808→corpus | 2026-08-04 |
 | Routing | `D-S040-route` = **1** — Standard approved | 2026-08-04 |
 | Branch | `D-S040-branch` = **1** — cut from `main` | 2026-08-04 |
+| Document Manifest | `D-S040-E32-M` = **2,3,1,1** — full pack; full F7 VONA; no interview UI preview; → 02 | 2026-08-04 |

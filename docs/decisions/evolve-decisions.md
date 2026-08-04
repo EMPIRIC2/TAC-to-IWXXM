@@ -35,6 +35,20 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 
 **Parked**: `stash@{0}` — S039/EV-031 WIP (`S039-EV031-WIP park for S040/EV-032`).
 
+### Document Manifest (01 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-M1 | decision | Spec delta breadth? | **2** — Full product pack: `feature-list` + `spec` + `user-journeys` + `api-contract` + `test-plan` (+ domain/#808 notes) (`D-S040-E32-M`) |
+| E32-M2 | decision | VONA operator exposure? | **3** — **Full F7 product surface** this cycle (picker + Examples/catalog when quality path green) |
+| E32-M3 | decision | UI preview (interview)? | **1** — N/A for interview (implement UI in-cycle; H4–H5 at verify/deploy) |
+| E32-M4 | decision | After manifest? | **1** — write deltas; close 01 → **02-verify-plan** |
+
+**Affected artifacts (01)**: `docs/feature-list.md`, `docs/spec.md`, `docs/user-journeys.md`,
+`docs/api-contract.md`, `docs/test-plan.md`, `docs/decisions/evolve-decisions.md`,
+`docs/context/iwxxm-corpus-quality-846.md` (pointer); #808 deliverables remain docs under
+`docs/domain/iwxxm/` in later milestones.
+
 ---
 
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)
