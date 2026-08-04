@@ -1,38 +1,37 @@
-# 04-tech-plan — S040 / EV-032 (draft)
+# 04-tech-plan — S040 / EV-032
 
 **Started**: 2026-08-04  
+**Completed**: 2026-08-04 (pending Gate B)  
 **Mode**: evolve delta  
 **Features**: **F32** + deepen F23 (#835) / F4 / F6 / F2 / F13 (#808 + corpus)  
 **Branch**: `evolve/EV-032-iwxxm-corpus-quality`  
-**Status**: **in_progress** — Batch 1 locked; awaiting Batch 2 (`D-S040-04-batch-2`)
+**Status**: **awaiting Gate B** (`D-S040-04-plan`)
 
-## Prior locks (from Gate A)
+## Toolchain baseline
 
-| Lock | Value |
-|------|-------|
-| VONA AHL / T1T2 | Defer to this stage (“when known”) — S02.M1 |
-| Examples unlock | Incremental when F32 golden greens — S02.M2 |
-| #808 depth | Docs + child issues only; #847 non-technical review — S02.M3 |
-| Work order | #835 → #741 → #808 → corpus |
-| Operator UI | Full F7 VONA (picker + Examples when unlocked) — E32-M2 |
+| Area | Choice |
+|------|--------|
+| Template | `static+api+worker` |
+| #835 | Strict ADR-032 → `wmoPass` |
+| F32 | Cookbook + fixtures; `annex3_products` peer VAA/SWXA; AHL in M2 |
+| New deps | None |
+| Deploy | API + static; H1–H3; **H4–H5 required** |
+| Local CI | Path-filtered **pre-commit** smokes; long packs **pre-push** / `make test-*-quality` |
+| Docs | Session inventory + `docs/domain/iwxxm/` for #808/#847 |
 
-## Interview locks — Batch 1 (`D-S040-04-batch-1` = 1,1,1,1)
+## Interview locks
 
-| ID | Decision |
-|----|----------|
-| E32-T1 | Milestone structure **1** — M0–M4 (inventory → #835 → F32 → #808+#847 → corpus/closeout) |
-| E32-T2 | #835 bar **1** — strict ADR-032 `canonicalize_xml` equality required for `wmoPass` |
-| E32-T3 | F32 encode **1** — cookbook + fixtures first; plugin patterned on VAA/SWXA peers; guidance gaps → children |
-| E32-T4 | VONA AHL **1** — discover in M2 from vendor/`vona-A7-1` + PANS-MET; no provisional T1T2 lock |
+| Batch | Decision |
+|-------|----------|
+| Batch 1 `1,1,1,1` | M0–M4; strict ADR-032; cookbook+fixtures; AHL discover M2 |
+| Batch 2 `1,1,custom,1` | No new deps; H4–H5 required; tiered local CI (E32-T7); session+domain docs |
+| Gate B | awaiting |
 
-## Milestone shape (approved)
+## Artifacts
 
-| M | Focus | Issues |
-|---|--------|--------|
-| M0 | Inventory / fixtures / gap index under #846 | corpus |
-| M1 | #835 A6-2-TC ADR-032 equality → `wmoPass` + catalog | #835 |
-| M2 | #741 / F32 VONA lint → convert → validate (+ FE) | #741 |
-| M3 | #808 + #847 adoptability docs / checklists | #808, #847 |
-| M4 | Corpus children + verify/deploy closeout | #846 |
+- `reports/execution-plan.md` — **draft** (28 tasks, M0–M4)
+- This report — pending Gate B
 
-## Interview Batch 2 — see chat (`D-S040-04-batch-2`)
+## Next
+
+Approve Gate B → **07-build @ T0.1**.

@@ -70,6 +70,17 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 | E32-T3 | decision | F32 encode approach? | **1** — cookbook + fixtures; VAA/SWXA-peer plugin; gaps → children |
 | E32-T4 | decision | VONA AHL / T1T2? | **1** — discover in M2; no provisional lock |
 
+### Tech plan Batch 2 (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T5 | decision | New deps? | **1** — none (`D-S040-04-batch-2`) |
+| E32-T6 | decision | Deploy / connectivity? | **1** — API+static; H1–H3; **H4–H5 required** |
+| E32-T7 | decision | CI packaging? | **custom** — path-filtered **pre-commit** smokes; long packs on **pre-push**/`make`; document improvements (not dump full matrices into default pre-commit) |
+| E32-T8 | decision | Corpus / #847 home? | **1** — M0 session inventory + durable `docs/domain/iwxxm/` |
+
+**Plan artifact**: `docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md` (28 tasks)
+
 ---
 
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)

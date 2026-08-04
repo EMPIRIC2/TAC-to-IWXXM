@@ -43,3 +43,6 @@ Lean would skip 04/07/08/09/11/12 — insufficient for F32 encode + ADR-032 equa
 | Document Manifest | `D-S040-E32-M` = **2,3,1,1** — full pack; full F7 VONA; no interview UI preview; → 02 | 2026-08-04 |
 | Batch F (02) | `D-S040-02-batch-f` = **1,1,1,1** — AHL→04; incremental Examples; #808 docs+#847 | 2026-08-04 |
 | Gate A | `D-S040-02-phase-a` = **1** — PASS → **04-tech-plan** | 2026-08-04 |
+| 04 Batch 1 | `D-S040-04-batch-1` = **1,1,1,1** — M0–M4; strict ADR-032; cookbook; AHL M2 | 2026-08-04 |
+| 04 Batch 2 | `D-S040-04-batch-2` = **1,1,custom,1** — no deps; H4–H5; tiered pre-commit; domain docs | 2026-08-04 |
+| Gate B | `D-S040-04-plan` — **awaiting user** | — |
