@@ -45,11 +45,13 @@ active_session:
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
     D-S040-resume: Continue → T4.2
+    D-S040-phase-c: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
       #835→#741→#808→corpus; exclude #836 metrics UI.
       Standard approved (D-S040-route=1); branch from main (D-S040-branch=1).
+      D-S040-phase-c=1 Continue → T4.3 (C→D / Phase D).
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -64,7 +66,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C 08 PASS; T4.2 COMPLETE; progress 23/28; next T4.3 after Phase C checkpoint; PR #848'
+    note: 'ORCHESTRATING — Phase D started; T4.3 in_progress; C→D passed (D-S040-phase-c=1 Continue → T4.3); 09-qa+10-e2e in_progress parallel; tip 7b3c329b; progress 23/28; PR #848; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -94,24 +96,28 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'T4.2 COMPLETE (08 PASS) — tip e0e595e3 [T4.2]; completed through T4.2; active_task T4.3 pending; progress 23/28; awaiting Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply) then T4.3 (Phase D starts at 09); PR #848 open; #846'
+    note: 'Phase D — T4.3 in_progress @ M4 (09-qa+10-e2e parallel); tip 7b3c329b; completed through T4.2; progress 23/28; C→D passed; PR #848 open; ahead_of_origin=9; #846'
   - stage: 08-verify-build
     required: true
     status: completed
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'T4.2 PASS — Overall PASS; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md (+ verification-report-M4.md); tip e0e595e3 [T4.2]; progress 23/28; next T4.3 after Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply); PR #848; #846'
+    note: 'T4.2 PASS — Overall PASS; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md (+ verification-report-M4.md); tip e0e595e3 [T4.2]; C→D passed (D-S040-phase-c=1); Phase D → 09+10; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
     report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
   - stage: 09-qa
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED — T4.3 Phase D; parallel with sibling; tip 7b3c329b; C→D passed (D-S040-phase-c=1); progress 23/28; PR #848; #846'
   - stage: 10-e2e
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED — T4.3 Phase D; parallel with sibling; tip 7b3c329b; C→D passed (D-S040-phase-c=1); progress 23/28; PR #848; #846'
   - stage: 11-verify-impl
     required: true
     status: pending
@@ -124,7 +130,7 @@ active_session:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 07-build
+  current_stage: 09-qa
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
@@ -196,11 +202,12 @@ active_session:
   - D-S040-04-batch-2
   - D-S040-04-plan
   - D-S040-resume
+  - D-S040-phase-c
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.2 COMPLETE (08 PASS) — tip e0e595e3 [T4.2]; completed through T4.2; active_task T4.3 pending; progress 23/28; awaiting Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply); PR #848 open; #846'
+  note: 'Phase D started; C→D passed (D-S040-phase-c=1 Continue → T4.3); T4.3 in_progress @ M4; current_stage 09-qa (09+10 parallel); tip 7b3c329b; ahead_of_origin=9; progress 23/28; PR #848; #846'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -242,11 +249,13 @@ sessions:
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
     D-S040-resume: Continue → T4.2
+    D-S040-phase-c: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
       #835→#741→#808→corpus; exclude #836 metrics UI.
       Standard approved (D-S040-route=1); branch from main (D-S040-branch=1).
+      D-S040-phase-c=1 Continue → T4.3 (C→D / Phase D).
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -261,7 +270,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C 08 PASS; T4.2 COMPLETE; progress 23/28; next T4.3 after Phase C checkpoint; PR #848'
+    note: 'ORCHESTRATING — Phase D started; T4.3 in_progress; C→D passed (D-S040-phase-c=1 Continue → T4.3); 09-qa+10-e2e in_progress parallel; tip 7b3c329b; progress 23/28; PR #848; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -291,24 +300,28 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'T4.2 COMPLETE (08 PASS) — tip e0e595e3 [T4.2]; completed through T4.2; active_task T4.3 pending; progress 23/28; awaiting Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply) then T4.3 (Phase D starts at 09); PR #848 open; #846'
+    note: 'Phase D — T4.3 in_progress @ M4 (09-qa+10-e2e parallel); tip 7b3c329b; completed through T4.2; progress 23/28; C→D passed; PR #848 open; ahead_of_origin=9; #846'
   - stage: 08-verify-build
     required: true
     status: completed
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'T4.2 PASS — Overall PASS; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md (+ verification-report-M4.md); tip e0e595e3 [T4.2]; progress 23/28; next T4.3 after Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply); PR #848; #846'
+    note: 'T4.2 PASS — Overall PASS; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md (+ verification-report-M4.md); tip e0e595e3 [T4.2]; C→D passed (D-S040-phase-c=1); Phase D → 09+10; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
     report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
   - stage: 09-qa
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED — T4.3 Phase D; parallel with sibling; tip 7b3c329b; C→D passed (D-S040-phase-c=1); progress 23/28; PR #848; #846'
   - stage: 10-e2e
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED — T4.3 Phase D; parallel with sibling; tip 7b3c329b; C→D passed (D-S040-phase-c=1); progress 23/28; PR #848; #846'
   - stage: 11-verify-impl
     required: true
     status: pending
@@ -321,7 +334,7 @@ sessions:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 07-build
+  current_stage: 09-qa
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
@@ -385,11 +398,12 @@ sessions:
   - D-S040-04-batch-2
   - D-S040-04-plan
   - D-S040-resume
+  - D-S040-phase-c
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.2 COMPLETE (08 PASS) — tip e0e595e3 [T4.2]; completed through T4.2; active_task T4.3 pending; progress 23/28; awaiting Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply); PR #848 open; #846'
+  note: 'Phase D started; C→D passed (D-S040-phase-c=1 Continue → T4.3); T4.3 in_progress @ M4; current_stage 09-qa (09+10 parallel); tip 7b3c329b; ahead_of_origin=9; progress 23/28; PR #848; #846'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -6922,16 +6936,16 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'T4.2 COMPLETE (08 PASS) — tip e0e595e3 [T4.2]; completed through T4.2; active_task T4.3 pending; progress 23/28; awaiting Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply) then T4.3 (Phase D starts at 09); PR #848 open; ahead_of_origin=8; #846'
-    tip_sha: e0e595e3
-    tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
-    tip_note: 'S040/EV-032 T4.2 COMPLETE (08 PASS) @ tip e0e595e3; active_task T4.3 pending; progress 23/28; Phase C checkpoint AskQuestion pending (tool unavailable — awaiting chat reply); PR #848; #846'
+    note: 'Phase D — T4.3 in_progress @ M4 (09-qa+10-e2e parallel); tip 7b3c329b; completed through T4.2; progress 23/28; C→D passed; PR #848 open; ahead_of_origin=9; #846'
+    tip_sha: 7b3c329b
+    tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+    tip_note: 'S040/EV-032 Phase D — T4.3 in_progress; C→D passed (D-S040-phase-c=1); tip 7b3c329b; 09+10 parallel; progress 23/28; PR #848; #846'
     progress: 23/28
     current_milestone: M4
     current_task: T4.3
     active_milestone: M4
     active_task: T4.3
-    active_task_status: pending
+    active_task_status: in_progress
     next_stage: 09-qa
     next_task: T4.3
     completed_through: T4.2
@@ -8111,30 +8125,53 @@ stages:
     - 2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
-    status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    previous_started_at: '2026-08-02'
-    previous_started: '2026-08-02'
-    previous_completed_at: '2026-08-02'
-    previous_completed: '2026-08-02'
-    previous_session_id: S036-eight-family-ahl-rules-823
-    previous_evolve_cycle_id: EV-029
-    previous_tip_sha: 0e00000
-    previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
+    status: in_progress
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at:
+    completed:
+    previous_started_at: '2026-08-03'
+    previous_started: '2026-08-03'
+    previous_completed_at: '2026-08-03'
+    previous_completed: '2026-08-03'
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: 06d57043
+    previous_tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
     previous_overall: pass
-    previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    tip_sha: 06d57043
-    tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-    mode: evolve_delta
-    overall: pass_with_advisories
-    report: docs/sessions/S038-platform-independence-842/reports/qa-report.md
-    note: 'COMPLETE (evolve_delta) — pass_with_advisories; report qa-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
+    previous_report: docs/sessions/S038-platform-independence-842/reports/qa-report.md
+    prior_s036_session_id: S036-eight-family-ahl-rules-823
+    prior_s036_evolve_cycle_id: EV-029
+    prior_s036_tip_sha: 0e34866
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    tip_sha: 7b3c329b
+    tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+    mode: delta
+    overall:
+    report:
+    note: 'STARTED (T4.3) — Phase D 09-qa in_progress parallel with 10-e2e; C→D passed (D-S040-phase-c=1 Continue → T4.3); tip 7b3c329b; progress 23/28; PR #848; #846'
+    active_milestone: M4
+    active_task: T4.3
+    active_task_status: in_progress
+    progress: 23/28
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.3
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 09-qa
+      status: in_progress
+      mode: delta
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      branch: evolve/EV-032-iwxxm-corpus-quality
+      tip_sha: 7b3c329b
+      tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: in_progress
+      progress: 23/28
+      note: 'STARTED — T4.3 Phase D; parallel 10-e2e; C→D passed (D-S040-phase-c=1); tip 7b3c329b; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -8447,31 +8484,54 @@ stages:
     skill_id: 11-verify-impl
     tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
   10-e2e:
-    status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    previous_started_at: '2026-08-02'
-    previous_started: '2026-08-02'
-    previous_completed_at: '2026-08-02'
-    previous_completed: '2026-08-02'
-    previous_session_id: S036-eight-family-ahl-rules-823
-    previous_evolve_cycle_id: EV-029
-    previous_tip_sha: 0e00000
-    previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
+    status: in_progress
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at:
+    completed:
+    previous_started_at: '2026-08-03'
+    previous_started: '2026-08-03'
+    previous_completed_at: '2026-08-03'
+    previous_completed: '2026-08-03'
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: 06d57043
+    previous_tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
     previous_overall: pass
-    previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md
-    previous_note: 'COMPLETE (smoke) — T12.4 UJ-043; report docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md; 100-pass; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    tip_sha: 06d57043
-    tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-    mode: evolve_delta
-    overall: pass
-    report: docs/sessions/S038-platform-independence-842/reports/e2e-report.md
-    note: 'COMPLETE (evolve_delta) — pass; report e2e-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
+    previous_report: docs/sessions/S038-platform-independence-842/reports/e2e-report.md
+    previous_note: 'COMPLETE (evolve_delta) — pass; report e2e-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
+    prior_s036_session_id: S036-eight-family-ahl-rules-823
+    prior_s036_evolve_cycle_id: EV-029
+    prior_s036_tip_sha: 0e34866
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    tip_sha: 7b3c329b
+    tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+    mode: delta
+    overall:
+    report:
+    note: 'STARTED (T4.3) — Phase D 10-e2e in_progress parallel with 09-qa; C→D passed (D-S040-phase-c=1 Continue → T4.3); tip 7b3c329b; progress 23/28; PR #848; #846'
+    active_milestone: M4
+    active_task: T4.3
+    active_task_status: in_progress
+    progress: 23/28
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.3
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 10-e2e
+      status: in_progress
+      mode: delta
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      branch: evolve/EV-032-iwxxm-corpus-quality
+      tip_sha: 7b3c329b
+      tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: in_progress
+      progress: 23/28
+      note: 'STARTED — T4.3 Phase D; parallel 09-qa; C→D passed (D-S040-phase-c=1); tip 7b3c329b; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -8892,7 +8952,7 @@ stages:
     evolve_cycle_id: EV-032
     tip_sha: e0e595e3
     tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
-    note: 'COMPLETE (T4.2) — PASS @ tip e0e595e3; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md; also verification-report-M4.md; progress 23/28; gates.c_to_d/phase_c pending (AskQuestion tool unavailable in parent — awaiting chat reply); next T4.3 after Phase C checkpoint; PR #848; #846'
+    note: 'COMPLETE (T4.2) — PASS @ tip e0e595e3; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md; also verification-report-M4.md; progress 23/28; gates.c_to_d/phase_c PASSED (D-S040-phase-c=1 Continue → T4.3); Phase D → 09+10; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
     report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
     overall: pass
@@ -8906,7 +8966,7 @@ stages:
     m5_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
     active_milestone: M4
     active_task: T4.3
-    active_task_status: pending
+    active_task_status: in_progress
     progress: 23/28
     completed_through: T4.2
     m5_boundary: true
@@ -8953,7 +9013,7 @@ stages:
       active_task_status: pending
       progress: 23/28
       completed_through: T4.2
-      note: 'COMPLETE (T4.2) — PASS; verification-report.md + verification-report-M4.md; tip e0e595e3 recorded; gates.c_to_d/phase_c pending (AskQuestion tool unavailable in parent — awaiting chat reply); next T4.3 after Phase C checkpoint; PR #848; #846'
+      note: 'COMPLETE (T4.2) — PASS; verification-report.md + verification-report-M4.md; tip e0e595e3 recorded; gates.c_to_d/phase_c PASSED (D-S040-phase-c=1); Phase D → T4.3 / 09+10; PR #848; #846'
       branch: evolve/EV-032-iwxxm-corpus-quality
     - id: S038-platform-independence-842-C2D
       session_id: S038-platform-independence-842
@@ -10665,6 +10725,32 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S040-phase-c
+  date: '2026-08-04'
+  timestamp: '2026-08-04T21:00:46Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: phase_gate
+  status: confirmed
+  topic: 'Phase C checkpoint / C→D'
+  summary: 'User chose option 1 — Continue; pass C→D and start T4.3'
+  decision: 'D-S040-phase-c=1 Continue → T4.3; gates.c_to_d + checkpoints.phase_c passed; Phase D starts at 09-qa+10-e2e parallel; active_task T4.3 in_progress'
+  user_option: '1 — Continue; pass C→D and start T4.3'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  tip_sha: 7b3c329b
+  tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+  active_task: T4.3
+  active_task_status: in_progress
+  progress: 23/28
+  current_stage: 09-qa
+  gates_c_to_d: passed
+  checkpoints_phase_c: passed
 - id: D-S040-resume
   date: '2026-08-04'
   timestamp: '2026-08-04T19:46:05Z'
@@ -31242,6 +31328,7 @@ evolve_cycles:
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
     D-S040-resume: Continue → T4.2
+    D-S040-phase-c: '1'
     locked_at: '2026-08-04'
   routing_plan:
     required_stages:
@@ -31261,14 +31348,14 @@ evolve_cycles:
     - 03-plan-tooling
     - 05-verify-tech
     - 06-tech-tooling
-    note: 'Standard approved — D-S040-route=1; skip 03/05/06'
-  current_stage: 07-build
-  tip_sha: e0e595e3
-  tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
-  tip_note: 'tip e0e595e3 [T4.2] recorded; Phase C checkpoint AskQuestion pending (tool unavailable — awaiting chat reply)'
+    note: 'Standard approved — D-S040-route=1; skip 03/05/06; Phase D via D-S040-phase-c=1'
+  current_stage: 09-qa
+  tip_sha: 7b3c329b
+  tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+  tip_note: 'tip 7b3c329b recorded (existing); Phase D — T4.3 in_progress; C→D passed (D-S040-phase-c=1); 09+10 parallel; ahead_of_origin=9'
   active_milestone: M4
   active_task: T4.3
-  active_task_status: pending
+  active_task_status: in_progress
   progress: 23/28
   completed_through: T4.2
   t4_2_complete: true
@@ -31316,7 +31403,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — Phase C 08 PASS; T4.2 COMPLETE; progress 23/28; next T4.3 after Phase C checkpoint; PR #848'
+      note: 'ORCHESTRATING — Phase D started; T4.3 in_progress; C→D passed (D-S040-phase-c=1 Continue → T4.3); 09-qa+10-e2e in_progress parallel; tip 7b3c329b; progress 23/28; PR #848; #846'
     01-requirements:
       status: completed
       mode: delta
@@ -31338,21 +31425,25 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-04'
-      note: 'T4.2 COMPLETE (08 PASS) — tip e0e595e3 [T4.2]; completed through T4.2; active_task T4.3 pending; progress 23/28; awaiting Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply) then T4.3 (Phase D starts at 09); PR #848 open; #846'
+      note: 'Phase D — T4.3 in_progress @ M4 (09-qa+10-e2e parallel); tip 7b3c329b; completed through T4.2; progress 23/28; C→D passed; PR #848 open; ahead_of_origin=9; #846'
     08-verify-build:
       status: completed
       started: '2026-08-04'
       completed: '2026-08-04'
-      note: 'T4.2 PASS — Overall PASS; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md (+ verification-report-M4.md); tip e0e595e3 [T4.2]; progress 23/28; next T4.3 after Phase C checkpoint AskQuestion (tool unavailable — awaiting chat reply); PR #848; #846'
+      note: 'T4.2 PASS — Overall PASS; tip e0e595e3 [T4.2]; C→D passed (D-S040-phase-c=1); Phase D → 09+10; PR #848; #846'
       report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
       report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
       overall: pass
       tip_sha: e0e595e3
       tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
     09-qa:
-      status: pending
+      status: in_progress
+      started: '2026-08-04'
+      note: 'STARTED — T4.3 Phase D; parallel with 10-e2e; tip 7b3c329b; C→D passed (D-S040-phase-c=1); PR #848; #846'
     10-e2e:
-      status: pending
+      status: in_progress
+      started: '2026-08-04'
+      note: 'STARTED — T4.3 Phase D; parallel with 09-qa; tip 7b3c329b; C→D passed (D-S040-phase-c=1); PR #848; #846'
     11-verify-impl:
       status: pending
     12-verify-deploy:
@@ -31362,14 +31453,18 @@ evolve_cycles:
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
-    c_to_d_note: awaiting Phase C checkpoint AskQuestion (08 PASS; T4.2 COMPLETE @ e0e595e3; AskQuestion tool unavailable in parent session — awaiting user reply in chat)
+    c_to_d: passed
+    c_to_d_note: 'D-S040-phase-c=1 Continue → T4.3; C→D passed 2026-08-04; tip at pass was e0e595e3 (08 PASS); Phase D tip now 7b3c329b'
+    c_to_d_decision: D-S040-phase-c
+    c_to_d_passed_at: '2026-08-04'
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
-    phase_c_note: awaiting AskQuestion (08 PASS @ e0e595e3; AskQuestion tool unavailable in parent session — awaiting user reply in chat; do not advance to Phase D/09 until checkpoint)
+    phase_c: passed
+    phase_c_note: 'D-S040-phase-c=1 Continue → T4.3; user option 1; Phase D started (09+10 parallel)'
+    phase_c_decision: D-S040-phase-c
+    phase_c_passed_at: '2026-08-04'
     phase_d: pending
     deploy: pending
   adrs: []
@@ -31430,8 +31525,10 @@ evolve_cycles:
   - D-S040-04-batch-2
   - D-S040-04-plan
   - D-S040-resume
-  note: 'T4.2 COMPLETE (08 PASS) — tip e0e595e3 [T4.2]; completed through T4.2; active_task T4.3 pending; progress 23/28; gates.c_to_d/phase_c pending (awaiting AskQuestion); PR #848 open; #846'
+  - D-S040-phase-c
+  note: 'Phase D started; C→D passed (D-S040-phase-c=1 Continue → T4.3); T4.3 in_progress @ M4; current_stage 09-qa (09+10 parallel); tip 7b3c329b; ahead_of_origin=9; progress 23/28; PR #848; #846'
   notes:
+  - '2026-08-04 S040/EV-032 — D-S040-phase-c=1 Continue → T4.3; gates.c_to_d + checkpoints.phase_c PASSED; Phase D started; active_task T4.3 in_progress; current_stage 09-qa (09+10 parallel); tip synced 7b3c329b (existing chore sync after 08); ahead_of_origin=9; progress 23/28; PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.2 COMPLETE (08-verify-build PASS); reports verification-report.md + verification-report-M4.md; tip was 1beb712a [T4.1] pending report commit (superseded — tip now e0e595e3 [T4.2]); active_task T4.3 pending; progress 23/28; gates.c_to_d + checkpoints.phase_c pending awaiting AskQuestion; next T4.3 after Phase C checkpoint (Phase D starts at 09); PR #848; #846'
   - '2026-08-04 S040/EV-032 — D-S040-resume Continue → T4.2; T4.1 COMPLETE @ 1beb712a (#846 corpus children); active_task T4.2 in_progress @ M4; progress 22/28; current_stage 07-build (08-verify-build in_progress for T4.2); PR #848 open; ahead_of_origin=7 pushed=false; no new git_history.commits invented this sync; #846'
   - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
@@ -31456,13 +31553,13 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
   current_branch: evolve/EV-032-iwxxm-corpus-quality
-  ahead_of_origin: 8
+  ahead_of_origin: 9
   pushed: false
-  pending_commit: tip-sync-after-T4.2-record
+  pending_commit:
   dirty: true
-  tip_sha: e0e595e3
-  tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
-  tip_note: 'S040/EV-032 tip e0e595e3 [T4.2] 08-verify-build M4 PASS recorded; active_task T4.3 pending; progress 23/28; Phase C checkpoint AskQuestion pending (tool unavailable in parent — awaiting chat reply); gates.c_to_d/phase_c pending; PR #848 open; ahead_of_origin=8'
+  tip_sha: 7b3c329b
+  tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+  tip_note: 'S040/EV-032 tip 7b3c329b [T4.2] chore sync after 08; Phase D — T4.3 in_progress; C→D passed (D-S040-phase-c=1); 09+10 parallel; ahead_of_origin=9; PR #848 open'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -31474,8 +31571,9 @@ git_history:
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — T4.2 COMPLETE @ e0e595e3; active_task T4.3 pending (M4); progress 23/28; current_stage 07-build; 08-verify-build completed; Phase C checkpoint AskQuestion pending (tool unavailable — awaiting chat reply); PR #848; #846'
+  note: 'S040/EV-032 — Phase D; tip 7b3c329b; T4.3 in_progress (M4); progress 23/28; current_stage 09-qa (09+10 parallel); C→D passed (D-S040-phase-c=1); PR #848; #846'
   notes:
+  - '2026-08-04 S040/EV-032 — recorded existing tip 7b3c329b (7b3c329b89c66b848f76d903a23792938df3be64) [T4.2] chore: sync workflow-state after 08-verify-build; ahead_of_origin=9 pushed=false; D-S040-phase-c=1 C→D passed; Phase D T4.3 in_progress; 09+10 parallel; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.2 @ e0e595e3 (e0e595e323729ab3b25dca9e9db2410480724272) [T4.2] test: 08-verify-build M4 verification PASS; tip e0e595e3; ahead_of_origin=8 pushed=false; Phase C checkpoint AskQuestion pending (tool unavailable in parent session — awaiting user reply in chat); next T4.3; PR #848; #846'
   - '2026-08-04 S040/EV-032 — D-S040-resume Continue → T4.2; tip reconciled 1beb712a [T4.1]; active_task T4.2 in_progress @ M4; progress 22/28; ahead_of_origin=7 pushed=false; git_history.commits not invented this sync; #846'
   - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
@@ -31908,15 +32006,15 @@ git_history:
     created_at: '2026-08-04'
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    tip_sha: e0e595e3
-    tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
+    tip_sha: 7b3c329b
+    tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
     pushed: false
     exists: true
-    ahead_of_origin: 8
+    ahead_of_origin: 9
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
     pr_number: 848
     pr_status: open
-    note: 'tip e0e595e3 [T4.2]; active_task T4.3 pending (M4); progress 23/28; ahead_of_origin=8 pushed=false; Phase C checkpoint AskQuestion pending; PR #848 open; #846'
+    note: 'tip 7b3c329b; active_task T4.3 in_progress (M4); progress 23/28; ahead_of_origin=9 pushed=false; C→D passed; Phase D 09+10; PR #848 open; #846'
   - name: infra/doks-dns-cutover
     purpose: 'S039 ops — DOKS DNS cutover; pin api/app.tac-to-iwxxm.com → 168.144.12.70; lift D-S038-t63-waive'
     base: main
@@ -32930,6 +33028,25 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 7b3c329b89c66b848f76d903a23792938df3be64
+    short: 7b3c329b
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T4.2] chore: sync workflow-state after 08-verify-build'
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    milestone: M4
+    task: T4.2
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - workflow-state.yaml
+    files_changed_count: 1
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:57:33Z'
+    pushed: false
+    tip_sha: 7b3c329b
+    ahead_of_origin: 9
+    note: 'Existing tip recorded (not invented) — workflow-state sync after T4.2 08 PASS; Phase D / D-S040-phase-c follows in working tree'
   - sha: e0e595e323729ab3b25dca9e9db2410480724272
     short: e0e595e3
     branch: evolve/EV-032-iwxxm-corpus-quality
