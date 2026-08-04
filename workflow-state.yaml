@@ -69,7 +69,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit awaiting [T4.4] docs approve; ahead_of_origin=11; PR #848; #846'
+    note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -99,7 +99,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'Phase D — T4.4 COMPLETE; tip pending approve commit (HEAD d086f694 draft); progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=11; #846'
+    note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -133,7 +133,7 @@ active_session:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; pending_commit (HEAD d086f694 draft); next 12/13; PR #848; #846'
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
     overall: approved
     decision_id: D-S040-11
@@ -143,7 +143,7 @@ active_session:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; 13 awaiting deploy approval; pending_commit; PR #848; #846'
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
     overall: ready
     decision_id: D-S040-12
@@ -151,7 +151,7 @@ active_session:
     required: true
     status: pending
     skip_rationale:
-    note: 'PENDING — T4.5 next; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+    note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
   current_stage: 13-deploy-smoke
   started_at: '2026-08-04'
   started: '2026-08-04'
@@ -239,7 +239,7 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); pending_commit (HEAD d086f694 draft ≠ approve); ahead_of_origin=11; PR #848; #846'
+  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); ahead_of_origin=12; PR #848; #846'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -305,7 +305,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit awaiting [T4.4] docs approve; ahead_of_origin=11; PR #848; #846'
+    note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -335,7 +335,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'Phase D — T4.4 COMPLETE; tip pending approve commit (HEAD d086f694 draft); progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=11; #846'
+    note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -369,7 +369,7 @@ sessions:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; pending_commit (HEAD d086f694 draft); next 12/13; PR #848; #846'
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
     overall: approved
     decision_id: D-S040-11
@@ -379,7 +379,7 @@ sessions:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; 13 awaiting deploy approval; pending_commit; PR #848; #846'
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
     overall: ready
     decision_id: D-S040-12
@@ -387,7 +387,7 @@ sessions:
     required: true
     status: pending
     skip_rationale:
-    note: 'PENDING — T4.5 next; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+    note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
   current_stage: 13-deploy-smoke
   started_at: '2026-08-04'
   started: '2026-08-04'
@@ -467,7 +467,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); pending_commit (HEAD d086f694 draft ≠ approve); ahead_of_origin=11; PR #848; #846'
+  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); ahead_of_origin=12; PR #848; #846'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -7000,10 +7000,10 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'Phase D — T4.4 COMPLETE; tip pending approve commit (HEAD d086f694 draft); progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=11; #846'
-    tip_sha: 09e60184
-    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-    tip_note: 'S040/EV-032 pending_commit — HEAD d086f694 draft; tip kept 09e60184 until [T4.4] docs approve; progress 25/28; active_task T4.5 pending / 13-deploy-smoke; PR #848; #846'
+    note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
+    tip_sha: fe024aac
+    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
     progress: 25/28
     current_milestone: M4
     current_task: T4.5
@@ -7014,7 +7014,11 @@ stages:
     next_task: T4.5
     completed_through: T4.4
     t4_4_complete: true
-    t4_4_pending_commit: true
+    t4_4_pending_commit: false
+    t4_4_sha: fe024aac
+    t4_4_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    t4_4_tip_sha: fe024aac
+    t4_4_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
     t4_3_complete: true
     t4_3_09_overall: pass_with_advisories
     t4_3_10_overall: pass
@@ -8469,11 +8473,11 @@ stages:
     evolve_cycle_id: EV-032
     mode: delta
     overall: approved
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; pending_commit (HEAD d086f694 draft); next 12/13; PR #848; #846'
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
-    tip_sha: 09e60184
-    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-    tip_note: 'pending_commit — HEAD d086f694 draft; tip kept 09e60184 until [T4.4] docs approve'
+    tip_sha: fe024aac
+    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
     active_milestone: M4
     active_task: T4.4
     active_task_status: completed
@@ -8507,8 +8511,8 @@ stages:
       completed: '2026-08-04'
       completed_at: '2026-08-04'
       branch: evolve/EV-032-iwxxm-corpus-quality
-      tip_sha: 09e60184
-      tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+      tip_sha: fe024aac
+      tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
       report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
       overall: approved
       decision_id: D-S040-11
@@ -8516,7 +8520,7 @@ stages:
       active_task: T4.4
       active_task_status: completed
       progress: 25/28
-      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; pending_commit (HEAD d086f694 draft); next 12/13; PR #848; #846'
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -9682,11 +9686,11 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; 13 awaiting deploy approval; pending_commit; PR #848; #846'
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
     report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
-    tip_sha: 09e60184
-    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-    tip_note: 'pending_commit — HEAD d086f694 draft; tip kept 09e60184 until [T4.4] docs approve'
+    tip_sha: fe024aac
+    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
     active_milestone: M4
     active_task: T4.4
     active_task_status: completed
@@ -9708,8 +9712,8 @@ stages:
       completed: '2026-08-04'
       completed_at: '2026-08-04'
       branch: evolve/EV-032-iwxxm-corpus-quality
-      tip_sha: 09e60184
-      tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+      tip_sha: fe024aac
+      tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
       report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
       overall: ready
       decision_id: D-S040-12
@@ -9717,7 +9721,7 @@ stages:
       active_task: T4.4
       active_task_status: completed
       progress: 25/28
-      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; 13 awaiting deploy approval; pending_commit; PR #848; #846'
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -9890,10 +9894,10 @@ stages:
     prior_s037_tip_sha: 8bd111c
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    note: 'PENDING — T4.5 next; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
-    tip_sha: 09e60184
-    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-    tip_note: 'pending_commit — HEAD d086f694 draft; tip kept 09e60184 until [T4.4] docs approve'
+    note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+    tip_sha: fe024aac
+    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    tip_note: 'tip fe024aac — pending_commit cleared; awaiting deploy approval for T4.5'
     active_milestone: M4
     active_task: T4.5
     active_task_status: pending
@@ -9911,13 +9915,13 @@ stages:
       status: pending
       mode: delta
       branch: evolve/EV-032-iwxxm-corpus-quality
-      tip_sha: 09e60184
-      tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+      tip_sha: fe024aac
+      tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
       active_milestone: M4
       active_task: T4.5
       active_task_status: pending
       progress: 25/28
-      note: 'PENDING — T4.5 next; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+      note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
       awaiting_deploy_approval: true
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
@@ -10514,15 +10518,16 @@ stages:
     prior_evolve_cycle_id: EV-031
     prior_completed: '2026-08-03'
     prior_note: 'S038/EV-031 16-evolve CLOSED — D-S038-13=1; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; active_session=null'
-    note: 'ORCHESTRATING — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit awaiting [T4.4] docs approve; ahead_of_origin=11; PR #848; #846'
-    tip_sha: 09e60184
-    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-    tip_note: 'pending_commit — HEAD d086f694 draft; tip kept 09e60184 until [T4.4] docs approve; progress 25/28; T4.5 pending'
+    note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
+    tip_sha: fe024aac
+    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
     progress: 25/28
     completed_through: T4.4
     active_task: T4.5
     active_task_status: pending
     notes:
+    - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
     - '2026-08-04 S040/EV-032 — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; pending_commit; PR #848; #846'
     - '2026-08-03 S038/EV-031 12-verify-deploy COMPLETE (D-S038-12=1) — mitigations+rollback approved; overall pass; handoff 13-deploy-smoke; tip b4feac02; #842/#830/#712'
     - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
@@ -10920,7 +10925,9 @@ decisions_log:
   active_task_status: completed
   progress: 25/28
   current_stage: 12-verify-deploy
-  tip_note: 'pending_commit — HEAD d086f694 is [T4.4] docs draft, not approve'
+  tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
+  tip_sha: fe024aac
+  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
 - id: D-S040-12
   date: '2026-08-04'
   timestamp: '2026-08-04T21:25:08Z'
@@ -10948,7 +10955,9 @@ decisions_log:
   active_task_status: completed
   progress: 25/28
   current_stage: 13-deploy-smoke
-  tip_note: 'pending_commit — HEAD d086f694 is [T4.4] docs draft, not approve'
+  tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
+  tip_sha: fe024aac
+  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
 - id: D-S040-phase-c
   date: '2026-08-04'
   timestamp: '2026-08-04T21:00:46Z'
@@ -31598,23 +31607,29 @@ evolve_cycles:
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06; Phase D via D-S040-phase-c=1'
   current_stage: 13-deploy-smoke
-  tip_sha: 09e60184
-  tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-  tip_note: 'pending_commit — HEAD d086f694 [T4.4] docs draft (not approve); tip kept 09e60184 until [T4.4] docs approve; progress 25/28; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=11'
+  tip_sha: fe024aac
+  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+  tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
   active_milestone: M4
   active_task: T4.5
   active_task_status: pending
   progress: 25/28
   completed_through: T4.4
   t4_4_complete: true
-  t4_4_pending_commit: true
+  t4_4_pending_commit: false
+  t4_4_sha: fe024aac
+  t4_4_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+  t4_4_tip_sha: fe024aac
+  t4_4_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
   t4_4_11_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
   t4_4_12_report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
   t4_4_decision_11: D-S040-11
   t4_4_decision_12: D-S040-12
-  head_draft_sha: d086f694
-  head_draft_sha_full: d086f694e49d70195617451c20941f429ab645a4
-  head_draft_message: '[T4.4] docs: draft 11-verify-impl for EV-032 sign-off'
+  head_draft_sha: null
+  head_draft_sha_full: null
+  head_draft_message: null
+  head_draft_superseded_by: fe024aac
+  head_draft_superseded_by_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
   t4_3_complete: true
   t4_3_09_overall: pass_with_advisories
   t4_3_10_overall: pass
@@ -31670,7 +31685,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit awaiting [T4.4] docs approve; ahead_of_origin=11; PR #848; #846'
+      note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
     01-requirements:
       status: completed
       mode: delta
@@ -31692,7 +31707,7 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-04'
-      note: 'Phase D — T4.4 COMPLETE; tip pending approve commit (HEAD d086f694 draft); progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=11; #846'
+      note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
     08-verify-build:
       status: completed
       started: '2026-08-04'
@@ -31723,7 +31738,7 @@ evolve_cycles:
       started_at: '2026-08-04'
       completed: '2026-08-04'
       completed_at: '2026-08-04'
-      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; pending_commit (HEAD d086f694 draft); next 12/13; PR #848; #846'
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
       report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
       overall: approved
       decision_id: D-S040-11
@@ -31733,13 +31748,13 @@ evolve_cycles:
       started_at: '2026-08-04'
       completed: '2026-08-04'
       completed_at: '2026-08-04'
-      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; 13 awaiting deploy approval; pending_commit; PR #848; #846'
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
       report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
       overall: ready
       decision_id: D-S040-12
     13-deploy-smoke:
       status: pending
-      note: 'PENDING — T4.5 next; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+      note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -31828,9 +31843,10 @@ evolve_cycles:
   - D-S040-phase-c
   - D-S040-11
   - D-S040-12
-  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); pending_commit (HEAD d086f694 draft ≠ approve); ahead_of_origin=11; PR #848; #846'
+  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); ahead_of_origin=12; PR #848; #846'
   notes:
-  - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved verify-impl.md; 12 ready deploy-checklist.md; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit (HEAD d086f694 draft ≠ [T4.4] docs approve); gates.deploy pending; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved verify-impl.md; 12 ready deploy-checklist.md; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; tip fe024aac; pending_commit later cleared @ fe024aac; gates.deploy pending; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.3 @ 09e60184 (09e601847eae404f997e107b42952bfcc51db12f) [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; tip 09e60184; pending_commit cleared; active_task T4.4 in_progress @ M4 / 11-verify-impl; progress 24/28; ahead_of_origin=10 pushed=false; PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.3 COMPLETE (09-qa pass_with_advisories + 10-e2e T0 pass); reports qa-report.md + e2e-report.md; progress 24/28; completed_through T4.3; active_task T4.4 pending; current_stage 11-verify-impl; tip remains 7b3c329b pending_commit (no S040 [T4.3] commit on HEAD yet; old T4.3 shas from prior cycles ignored); PR #848; #846'
   - '2026-08-04 S040/EV-032 — D-S040-phase-c=1 Continue → T4.3; gates.c_to_d + checkpoints.phase_c PASSED; Phase D started; active_task T4.3 in_progress; current_stage 09-qa (09+10 parallel); tip synced 7b3c329b (existing chore sync after 08); ahead_of_origin=9; progress 23/28; PR #848; #846'
@@ -31858,14 +31874,14 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
   current_branch: evolve/EV-032-iwxxm-corpus-quality
-  ahead_of_origin: 11
+  ahead_of_origin: 12
   pushed: false
-  pending_commit: true
-  pending_commit_note: 'T4.4 COMPLETE (D-S040-11/12); HEAD d086f694e49d70195617451c20941f429ab645a4 is [T4.4] docs: draft — awaiting [T4.4] docs approve commit; tip_sha kept 09e60184 until approve lands'
-  dirty: true
-  tip_sha: 09e60184
-  tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-  tip_note: 'S040/EV-032 pending_commit — HEAD d086f694 draft; tip kept 09e60184 until [T4.4] docs approve; progress 25/28; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=11; PR #848 open'
+  pending_commit: false
+  pending_commit_note: null
+  dirty: false
+  tip_sha: fe024aac
+  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+  tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -31877,9 +31893,10 @@ git_history:
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); pending_commit (HEAD d086f694 draft ≠ approve); ahead_of_origin=11; PR #848; #846'
+  note: 'S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); tip fe024aac; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
 
   notes:
+  - 'S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; active_task T4.5 pending @ M4 / 13-deploy-smoke; progress 25/28; ahead_of_origin=12 pushed=false dirty=false; PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11/12); pending_commit left (HEAD d086f694 draft ≠ approve); tip kept 09e60184; progress 25/28; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=11; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.3 @ 09e60184 (09e601847eae404f997e107b42952bfcc51db12f) [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; tip 09e60184; pending_commit cleared; active_task T4.4 in_progress @ M4 / 11-verify-impl; progress 24/28; ahead_of_origin=10 pushed=false dirty=true (workflow-state tip sync); PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.3 COMPLETE (09+10); tip remains 7b3c329b pending_commit (qa-report.md + e2e-report.md uncommitted); no S040 [T4.3] commit on HEAD; progress 24/28; next T4.4 / 11-verify-impl; PR #848; #846'
@@ -33338,6 +33355,31 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    short: fe024aac
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist'
+    stage: 11-verify-impl
+    skill_id: 16-evolve
+    stages:
+    - 11-verify-impl
+    - 12-verify-deploy
+    milestone: M4
+    task: T4.4
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+    - workflow-state.yaml
+    files_changed_count: 4
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T21:27:51Z'
+    pushed: false
+    tip_sha: fe024aac
+    ahead_of_origin: 12
+    note: 'T4.4 COMPLETE — 11 approved + 12 ready; pending_commit cleared; next T4.5 / 13-deploy-smoke; PR #848; #846'
   - sha: 09e601847eae404f997e107b42952bfcc51db12f
     short: 09e60184
     branch: evolve/EV-032-iwxxm-corpus-quality
