@@ -1,9 +1,11 @@
 ---
 session_id: S040-iwxxm-corpus-quality
 type: feature
-status: in_progress
+status: suspended
 branch: evolve/EV-032-iwxxm-corpus-quality
 started_at: 2026-08-04
+suspended_at: 2026-08-04
+suspended_for: S041-worker-poller-hardening
 intent: "Official IWXXM corpus quality / WMO source parity — #846 epic; #835 A6-2 wmoPass; F32 VONA (#741); #808 release-line adoptability; corpus children."
 orchestrator: 16-evolve
 evolve_cycle_id: EV-032
@@ -23,6 +25,9 @@ ui_preview: pending — AskQuestion at routing gate (engine-heavy; default docs/
 ---
 
 # Session S040 — iwxxm-corpus-quality
+
+> **Suspended 2026-08-04** for [S041-worker-poller-hardening](../S041-worker-poller-hardening/session-brief.md) / EV-033.
+> Not completed or cancelled. Resume at `13-deploy-smoke` / T4.5 after S041. EV-032 remains `in_progress`.
 
 ## Intent
 
