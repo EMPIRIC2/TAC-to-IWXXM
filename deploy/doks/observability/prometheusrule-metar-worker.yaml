@@ -1,0 +1,38 @@
+# Optional — apply only when the cluster has prometheus-operator CRDs
+# (PrometheusRule). Current DOKS cutover cluster may not; until then use:
+#   bash scripts/deploy/check_worker_crashloop.sh
+#
+# EV-033 / F8 — alert when metar-worker CrashLoopBackOff (often bad INGEST_POLLER_URL).
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: metar-worker-crashloop
+  namespace: metar-iwxxm
+  labels:
+    app.kubernetes.io/name: metar-worker
+    app.kubernetes.io/component: worker
+    app.kubernetes.io/part-of: metar-iwxxm
+spec:
+  groups:
+    - name: metar-worker
+      rules:
+        - alert: MetarWorkerCrashLooping
+          expr: |
+            max by (namespace, pod) (
+              kube_pod_container_status_waiting_reason{
+                namespace="metar-iwxxm",
+                container="worker",
+                reason="CrashLoopBackOff"
+              }
+            ) > 0
+          for: 5m
+          labels:
+            severity: warning
+            service: metar-worker
+          annotations:
+            summary: "metar-worker CrashLoopBackOff"
+            description: >-
+              Worker pod {{ $labels.pod }} is crash-looping. Check INGEST_POLLER_URL
+              on secret metar-worker-secrets (must be https://, not REPLACE_ME_*).
+              Fail-closed: kubectl -n metar-iwxxm scale deploy/metar-worker --replicas=0
+              then bash scripts/deploy/doks_worker_poller_preflight.sh --probe --scale-up

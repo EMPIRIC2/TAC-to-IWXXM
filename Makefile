@@ -559,9 +559,19 @@ validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-c
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
+	$(UV) run python scripts/deploy/validate_ingest_poller_url.py --print-fixture >/dev/null
+	$(UV) run pytest apps/worker/tests/test_validate_ingest_poller_url.py \
+		tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py -q --no-cov
 
 env-check:
 	bash scripts/env/verify-sync.sh
+
+# EV-033 / F8 — DOKS worker poller preflight (requires kubectl + cluster context)
+doks-worker-poller-preflight:
+	bash scripts/deploy/doks_worker_poller_preflight.sh --probe
+
+doks-worker-crashloop-check:
+	bash scripts/deploy/check_worker_crashloop.sh
 
 # --- Supabase local stack (repo root supabase/) ---
 

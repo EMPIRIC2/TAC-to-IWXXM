@@ -278,17 +278,21 @@
 ### F8: Near-Realtime TAC Ingest → IWXXM Gate
 
 - **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Worker unit/pipeline approved;
-  live T7.4 staging smoke deferred (12/13 skipped this cycle).
+  live T7.4 staging smoke deferred (12/13 skipped this cycle). **Deepened EV-033 / S041** —
+  DOKS poller URL fail-closed (code + preflight + docs fixture pin + CrashLoop check).
 - **What it does**: Continuous/near-realtime ingest of TAC (and bulletins) → `tac-validate` →
   `tac2iwxxm` → `iwxxm-validate` (Schematron/XSD) → **store**; **quarantine** on convert
   or Schematron failure (no publish). Latency target **&lt;5–15s** E2E; scale via **worker
   replicas** (drop nothing). Product scope = F6 seven.
-- **Deployable**: Render Background Worker at `apps/worker/`; HTTPS/object poller; Supabase
-  store + separate quarantine; service-role JWT for writers. Template → `static+api+worker`.
+- **Deployable**: Background Worker at `apps/worker/` (DOKS `metar-worker` / Render);
+  HTTPS/object poller; Supabase store + separate quarantine; service-role JWT for writers.
+  Template → `static+api+worker`. `INGEST_POLLER_URL` must be real `https://` before
+  replicas &gt; 0 (`scripts/deploy/doks_worker_poller_preflight.sh`).
 - **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
-  [execution-plan](sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md)
+  [execution-plan](sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md);
+  [deploy/doks/README-worker-hardening.md](../deploy/doks/README-worker-hardening.md)
 
 ### F9: Value-Aware Live Decode + Plain-Language Summary
 

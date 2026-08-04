@@ -186,3 +186,6 @@ packages/iwxxm-validate/src/iwxxm_validate/schemas/LAST_SYNC.json
 # ADR-027 — xsdata pydantic trees are committed (T3.7); ignore only bytecode
 packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 
+
+# Local DOKS kube/access secrets (never commit)
+deploy/doks/.env.access

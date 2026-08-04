@@ -3,6 +3,44 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-033 — F8 worker INGEST_POLLER_URL hardening (S041)
+
+**Session**: S041-worker-poller-hardening  
+**Features**: deepen **F8**  
+**Started**: 2026-08-04  
+**Branch**: `evolve/EV-033-worker-poller-hardening` (from `main`)  
+**Status**: **in_progress**  
+**Prior**: S040 / EV-032 **suspended** (not cancelled) during this cycle
+
+### Scope (Phase 0 — locked 2026-08-04; AskQuestion unavailable — user “proceed 1–5”)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E33-1 | decision | Session vs S040? | New session S041; suspend S040 |
+| E33-2 | decision | Scope? | All prevention items **1–5** + worker code refuse placeholder/non-https |
+| E33-3 | decision | Preset? | **Standard** |
+
+**Scope (verbatim)**: Harden F8 `metar-worker` so `INGEST_POLLER_URL` cutover cannot
+leave `REPLACE_ME_*` or non-HTTPS values running at replicas &gt; 0: (1) fail-closed
+scale default/preflight; (2) CI/ops validate script; (3) pin non-prod fixture URL in
+docs/env; (4) runbook — do not copy unverified Render poller URLs; (5) CrashLoop check
++ optional PrometheusRule; plus code `validate_ingest_poller_url` / exit 2 on bad URL.
+
+**Out of scope**: Completing S040/EV-032 deploy smoke; new operational ingest source
+beyond the fixture URL; Prometheus operator install on DOKS.
+
+### Intake decisions
+| ID | Category | Question | Decision | ADR |
+|----|----------|----------|----------|-----|
+| E33-1 | decision | Proceed hardening 1–5? | Yes (+ code guard) | ADR-018 deepen |
+
+### Stage log
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-04 | S041 open; S040 suspended |
+| 16-evolve | | orchestrating |
+| 01–13 | | Standard path — docs+code+scripts this cycle |
+
 ## Cycle EV-032 — Official IWXXM corpus quality / WMO source parity (S040)
 
 **Session**: S040-iwxxm-corpus-quality  

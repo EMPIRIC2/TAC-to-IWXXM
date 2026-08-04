@@ -40,8 +40,13 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Converter engine (F6) | *(code — `packages/tac2iwxxm`)* | Not an env var |
 | F8 worker Supabase URL | `SUPABASE_URL` | Render worker / local `.env` |
 | F8 worker service role | `SUPABASE_SERVICE_ROLE_KEY` | Render worker / local `.env` |
-| F8 poller feed URL | `INGEST_POLLER_URL` | Render worker / local `.env` |
-| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Render worker (default `30`) |
+| F8 poller feed URL | `INGEST_POLLER_URL` | DOKS `metar-worker-secrets` / Render worker / local `.env` — **https:// only**; reject `REPLACE_ME_*` |
+| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker ConfigMap / Render (default `30`) |
+
+**F8 non-prod fixture (EV-033):**  
+`https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json`  
+Validate: `python3 scripts/deploy/validate_ingest_poller_url.py --probe "$INGEST_POLLER_URL"`.  
+After DOKS cutover, do not reuse unverified Render poller URLs.
 
 ### Optional / legacy ops (not required for public FE)
 

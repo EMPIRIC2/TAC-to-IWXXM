@@ -50,8 +50,21 @@ deployable for convert/validate/dissemination; F8 worker stays a **separate** Re
 |----------|----------|-------------|
 | `SUPABASE_URL` | Yes | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Service-role JWT for store/quarantine writers |
-| `INGEST_POLLER_URL` | Yes | HTTPS / object-prefix fixture or feed URL |
+| `INGEST_POLLER_URL` | Yes | HTTPS JSON feed (or object-prefix listing). **Must** be `https://` — never `REPLACE_ME_*` |
 | `INGEST_POLL_INTERVAL_SEC` | Yes | Poll interval (seconds) |
+
+**Non-prod fixture URL (EV-033 — pin this when no operational feed):**
+
+```
+https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json
+```
+
+**DOKS fail-closed (EV-033):** keep `metar-worker` at **0 replicas** until
+`bash scripts/deploy/doks_worker_poller_preflight.sh --probe` passes, then
+`--scale-up`. Do **not** copy `INGEST_POLLER_URL` from suspended Render worker env
+without probing (legacy fork/branch raw URLs often 404). CrashLoop check:
+`bash scripts/deploy/check_worker_crashloop.sh`. Details:
+[deploy/doks/README-worker-hardening.md](../deploy/doks/README-worker-hardening.md).
 
 ### Non-secrets (`config/prod.json` — committed)
 

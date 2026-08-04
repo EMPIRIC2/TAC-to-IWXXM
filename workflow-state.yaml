@@ -3,61 +3,37 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 40
-evolve_cycle_counter: 32
+session_counter: 41
+evolve_cycle_counter: 33
 active_session:
-  id: S040-iwxxm-corpus-quality
+  id: S041-worker-poller-hardening
   type: feature
   intent: |
-    Official IWXXM corpus quality / WMO source parity — epic #846; #835 A6-2 wmoPass;
-    F32 VONA (#741); #808 release-line adoptability; corpus children
+    Harden F8 worker INGEST_POLLER_URL cutover (prevention 1-5 + code guard)
   status: in_progress
-  branch: evolve/EV-032-iwxxm-corpus-quality
-  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
+  branch: evolve/EV-033-worker-poller-hardening
+  branch_note: created from origin/main @ 769d3f83; active; dirty worktree (docs+code+scripts) awaiting commit/PR
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-032
-  artifacts_dir: docs/sessions/S040-iwxxm-corpus-quality/
-  prior_session: S039-doks-dns-cutover
-  github_issues:
-  - '846'
-  - '835'
-  - '741'
-  - '808'
-  feature_ids:
-  - F32
+  evolve_cycle_id: EV-033
+  artifacts_dir: docs/sessions/S041-worker-poller-hardening/
+  prior_session: S040-iwxxm-corpus-quality
+  prior_session_note: 'S040/EV-032 SUSPENDED (not completed/cancelled) for S041 poller hardening; resume after S041 — was at 13-deploy-smoke / T4.5'
+  feature_ids: []
   deepen_feature_ids:
-  - F23
-  - F4
-  - F6
-  - F2
-  - F13
+  - F8
   preset: Standard
   preset_status: approved
-  route_status: approved_D-S040-route
+  route_status: approved_D-S041-open
   phase0_choices:
-    D-S040-open: '1,1,1,1'
-    D-S040-route: '1'
-    D-S040-branch: '1'
-    D-S040-E32-M: '2,3,1,1'
-    D-S040-02-batch-f: '1,1,1,1'
-    D-S040-02-phase-a: '1'
-    D-S040-04-batch-1: '1,1,1,1'
-    D-S040-04-batch-2: '1,1,custom,1'
-    D-S040-04-plan: '1'
-    D-S040-resume: Continue → T4.2
-    D-S040-phase-c: '1'
-    D-S040-11: A1,B1,C1,D1
-    D-S040-12: ready
-    D-S040-13: '1'
+    D-S041-open: proceed_1-5_plus_code
     locked_at: '2026-08-04'
     summary: |
-      Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
-      #835→#741→#808→corpus; exclude #836 metrics UI.
-      Standard approved (D-S040-route=1); branch from main (D-S040-branch=1).
-      D-S040-phase-c=1 Continue → T4.3 (C→D / Phase D).
-      D-S040-11=A1,B1,C1,D1 (11 approved); D-S040-12=ready (12 checklist); D-S040-13=1 (deploy gate).
+      User approved separate poller hardening via /16-evolve while S040 paused.
+      Scope: prevention items 1–5 + code guard (fail-closed scale, CI preflight,
+      docs default fixture URL, no stale Render copy, CrashLoop alert,
+      code rejects REPLACE_ME/non-https). AskQuestion unavailable — chat proceed.
   decisions:
-    D-S040-13: '1'
+    D-S041-open: proceed_1-5_plus_code
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -66,13 +42,13 @@ active_session:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETE — brief+routing+scoped context; D-S040-route/branch locked; branch evolve/EV-032 cut from main @ 2ed85da1; handoff 01-requirements; #846/#835/#741/#808'
+    note: 'COMPLETE — open_session after S040 suspend; D-S041-open proceed 1-5 + code; Standard; handoff 16-evolve'
   - stage: 16-evolve
     required: true
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    note: 'ORCHESTRATING — 07-build in_progress (docs+code+scripts); 01/02/04 delta lean complete; awaiting commit/PR/user verify'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -80,7 +56,7 @@ active_session:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETE (delta) — D-S040-E32-M=2,3,1,1 full pack; full F7 VONA; interview UI N/A; F32+UJ-045; handoff 02; #846'
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -88,7 +64,7 @@ active_session:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'PASS — Batch F 1,1,1,1 (S02.M1/M2/M3); Gate A → 04; report reports/02-verify-plan-audit.md; D-S040-02-phase-a; #846'
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
   - stage: 04-tech-plan
     required: true
     mode: delta
@@ -96,162 +72,237 @@ active_session:
     started: '2026-08-04'
     completed: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
   - stage: 07-build
     required: true
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    note: 'IN_PROGRESS — docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
   - stage: 08-verify-build
     required: true
-    status: completed
-    started: '2026-08-04'
-    completed: '2026-08-04'
+    status: pending
     skip_rationale:
-    note: 'T4.2 PASS — Overall PASS; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md (+ verification-report-M4.md); tip e0e595e3 [T4.2]; C→D passed (D-S040-phase-c=1); Phase D → 09+10; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
-    report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
   - stage: 09-qa
     required: true
-    status: completed
-    started: '2026-08-04'
-    completed: '2026-08-04'
+    status: pending
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.3; overall pass_with_advisories; report docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md; tip 09e60184 [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; H4–H5→T4.5/13; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
-    overall: pass_with_advisories
   - stage: 10-e2e
     required: true
-    status: completed
-    started: '2026-08-04'
-    completed: '2026-08-04'
+    status: pending
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.3; overall T0 pass; report docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md; tip 09e60184 [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; H4–H5→T4.5/13; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
-    overall: pass
   - stage: 11-verify-impl
     required: true
-    status: completed
-    started: '2026-08-04'
-    completed: '2026-08-04'
+    status: pending
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
-    overall: approved
-    decision_id: D-S040-11
   - stage: 12-verify-deploy
     required: true
-    status: completed
-    started: '2026-08-04'
-    completed: '2026-08-04'
+    status: pending
     skip_rationale:
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
-    overall: ready
-    decision_id: D-S040-12
   - stage: 13-deploy-smoke
     required: true
-    status: in_progress
-    started: '2026-08-04T21:35:00Z'
+    status: pending
     skip_rationale:
-    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
-  current_stage: 13-deploy-smoke
+  current_stage: 07-build
   started_at: '2026-08-04'
   started: '2026-08-04'
-  context_briefs:
-  - docs/context/iwxxm-corpus-quality-846.md
+  context_briefs: []
   artifacts:
-  - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
+  - path: docs/sessions/S041-worker-poller-hardening/session-brief.md
     status: written
     stage: 00-context
-  - path: docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+  - path: docs/sessions/S041-worker-poller-hardening/routing-plan.md
     status: written
     stage: 00-context
-  - path: docs/context/iwxxm-corpus-quality-846.md
-    status: written
-    stage: 00-context
-  - path: docs/sessions/S040-iwxxm-corpus-quality/README.md
-    status: written
-    stage: 00-context
-  - path: docs/decisions/evolve-decisions.md
-    status: written
-    stage: 16-evolve
-    note: EV-032 section recorded
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
-    status: written
-    stage: 01-requirements
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
-    status: written
-    stage: 02-verify-plan
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
-    status: draft
-    stage: 04-tech-plan
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
-    status: draft
-    stage: 04-tech-plan
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md
+  - path: docs/sessions/S041-worker-poller-hardening/reports/evolve-progress.md
     status: written
     stage: 07-build
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M1.md
-    status: written
-    stage: 08-verify-build
-    note: 'M1 boundary PASS; mid-cycle; 08 remains pending for final'
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+  - path: deploy/doks/README-worker-hardening.md
     status: written
     stage: 07-build
-    note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.9-741-closeout.md
+  - path: apps/worker/src/metar_worker/poller_url.py
     status: written
     stage: 07-build
-    note: 'T2.9 #741 closeout; F32 Done; children #849/#850'
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.9-741-closeout.md
+  - path: scripts/deploy/validate_ingest_poller_url.py
     status: written
     stage: 07-build
-    note: 'T2.9 #741 closeout; F32 Done; children #849/#850'
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+  - path: scripts/deploy/doks_worker_poller_preflight.sh
     status: written
-    stage: 08-verify-build
-    note: 'T4.2 PASS; tip e0e595e3 [T4.2] recorded'
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+    stage: 07-build
+  - path: scripts/deploy/check_worker_crashloop.sh
     status: written
-    stage: 08-verify-build
-    note: 'T4.2 M4 boundary companion report'
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    stage: 07-build
+  - path: deploy/doks/observability/prometheusrule-metar-worker.yaml
     status: written
-    stage: 09-qa
-    note: 'T4.3 COMPLETE; overall pass_with_advisories; tip 09e60184 committed'
-  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+    stage: 07-build
+  - path: apps/worker/tests/test_validate_ingest_poller_url.py
     status: written
-    stage: 10-e2e
-    note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+    stage: 07-build
+  - path: tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py
+    status: written
+    stage: 07-build
   decision_refs:
-  - D-S040-open
-  - D-S040-route
-  - D-S040-branch
-  - D-S040-E32-M
-  - D-S040-02-batch-f
-  - D-S040-02-phase-a
-  - D-S040-04-batch-1
-  - D-S040-04-batch-2
-  - D-S040-04-plan
-  - D-S040-resume
-  - D-S040-phase-c
-  - D-S040-11
-  - D-S040-12
-  - D-S040-13
+  - D-S041-open
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  note: 'IN_PROGRESS — S041/EV-033 at 07-build; branch active from origin/main @ 769d3f83; 01/02/04 delta lean complete; docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
 sessions:
+- id: S041-worker-poller-hardening
+  type: feature
+  intent: |
+    Harden F8 worker INGEST_POLLER_URL cutover (prevention 1-5 + code guard)
+  status: in_progress
+  branch: evolve/EV-033-worker-poller-hardening
+  branch_note: created from origin/main @ 769d3f83; active; dirty worktree awaiting commit/PR
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-033
+  feature_ids: []
+  deepen_feature_ids:
+  - F8
+  artifacts_dir: docs/sessions/S041-worker-poller-hardening/
+  prior_session: S040-iwxxm-corpus-quality
+  prior_session_note: 'S040/EV-032 SUSPENDED (not completed/cancelled) for S041; resume after S041 at 13-deploy-smoke / T4.5'
+  preset: Standard
+  preset_status: approved
+  route_status: approved_D-S041-open
+  phase0_choices:
+    D-S041-open: proceed_1-5_plus_code
+    locked_at: '2026-08-04'
+    summary: |
+      User approved separate poller hardening via /16-evolve while S040 paused.
+      Scope: prevention items 1–5 + code guard. AskQuestion unavailable — chat proceed.
+  decisions:
+    D-S041-open: proceed_1-5_plus_code
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — open_session after S040 suspend; D-S041-open; handoff 16-evolve'
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'ORCHESTRATING — 07-build in_progress; 01/02/04 delta lean complete; awaiting commit/PR/user verify'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 07-build
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'IN_PROGRESS — docs+code+scripts implemented; awaiting commit/PR/user verify'
+  - stage: 08-verify-build
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 09-qa
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 10-e2e
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 11-verify-impl
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 12-verify-deploy
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 13-deploy-smoke
+    required: true
+    status: pending
+    skip_rationale:
+  current_stage: 07-build
+  started_at: '2026-08-04'
+  started: '2026-08-04'
+  artifacts:
+  - path: docs/sessions/S041-worker-poller-hardening/session-brief.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S041-worker-poller-hardening/routing-plan.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S041-worker-poller-hardening/reports/evolve-progress.md
+    status: written
+    stage: 07-build
+  - path: deploy/doks/README-worker-hardening.md
+    status: written
+    stage: 07-build
+  - path: apps/worker/src/metar_worker/poller_url.py
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/validate_ingest_poller_url.py
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/doks_worker_poller_preflight.sh
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/check_worker_crashloop.sh
+    status: written
+    stage: 07-build
+  - path: deploy/doks/observability/prometheusrule-metar-worker.yaml
+    status: written
+    stage: 07-build
+  - path: apps/worker/tests/test_validate_ingest_poller_url.py
+    status: written
+    stage: 07-build
+  - path: tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py
+    status: written
+    stage: 07-build
+  decision_refs:
+  - D-S041-open
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  note: 'IN_PROGRESS — 07-build; branch active @ 769d3f83; 01/02/04 delta lean; awaiting commit/PR/user verify; cycle not complete'
 - id: S040-iwxxm-corpus-quality
   type: feature
   intent: |
     Official IWXXM corpus quality / WMO source parity — epic #846; #835 A6-2 wmoPass;
     F32 VONA (#741); #808 release-line adoptability; corpus children
-  status: in_progress
+  status: suspended
+  suspended_at: '2026-08-04'
+  paused_at: '2026-08-04'
+  pause_reason: |
+    User approved proceeding with separate F8 poller hardening via /16-evolve (S041/EV-033).
+    S040/EV-032 NOT completed or cancelled — resume at 13-deploy-smoke / T4.5 after S041.
+  suspended_for: S041-worker-poller-hardening
+  resume_after: S041-worker-poller-hardening
+  resume_at_stage: 13-deploy-smoke
+  resume_at_task: T4.5
   branch: evolve/EV-032-iwxxm-corpus-quality
   branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
   orchestrator: 16-evolve
@@ -477,7 +528,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  note: 'SUSPENDED for S041/EV-033 worker-poller-hardening — was T4.5/13-deploy-smoke in_progress (D-S040-13=1); EV-032 remains in_progress (not cancelled); tip 22b4251b; PR #848; #846'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -10914,6 +10965,34 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S041-open
+  date: '2026-08-04'
+  timestamp: '2026-08-04T23:31:10Z'
+  resolved_at: '2026-08-04'
+  session_id: S041-worker-poller-hardening
+  evolve_cycle_id: EV-033
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: session_open
+  status: confirmed
+  topic: Open S041 worker-poller-hardening; suspend S040 for separate /16-evolve
+  summary: |
+    User proceed items 1–5 + code guard; AskQuestion unavailable; recommended new
+    session + Standard + all five prevention items + code reject REPLACE_ME/non-https.
+    S040/EV-032 suspended (not completed/cancelled); EV-033 opened.
+  decision: |
+    D-S041-open=proceed_1-5_plus_code — Suspend S040 (status=suspended) for S041;
+    open feature session S041-worker-poller-hardening / EV-033 with Standard routing
+    (skip 03/05/06 unless needed); scope fail-closed scale, CI preflight, docs default
+    fixture URL, no stale Render copy, CrashLoop alert, code rejects REPLACE_ME/non-https.
+  user_option: proceed_1-5_plus_code
+  branch: evolve/EV-033-worker-poller-hardening
+  related_decisions:
+  - D-S040-13
+  prior_session: S040-iwxxm-corpus-quality
+  prior_evolve_cycle_id: EV-032
+  note: 'AskQuestion tool unavailable — recorded from chat approval to proceed via /16-evolve'
 - id: D-S040-13
   date: '2026-08-04'
   timestamp: '2026-08-04T21:35:00Z'
@@ -31584,6 +31663,135 @@ evolve_cycles:
   pr_number: 845
   pr_status: open
   pr_head: evolve/EV-031-platform-independence-842
+- id: EV-033
+  session_id: S041-worker-poller-hardening
+  cycle_type: feature
+  feature_ids: []
+  deepen_feature_ids:
+  - F8
+  feature_id: F8
+  feature_note: F8 deepen — INGEST_POLLER_URL cutover hardening (prevention 1–5 + code guard)
+  title: F8 worker INGEST_POLLER_URL poller hardening
+  slug: worker-poller-hardening
+  status: in_progress
+  phase: 0
+  started: '2026-08-04'
+  started_at: '2026-08-04'
+  scope_summary: |
+    Harden F8 metar-worker INGEST_POLLER_URL cutover:
+    (1) fail-closed scale when poller URL unset/placeholder;
+    (2) CI preflight for worker poller URL;
+    (3) docs default fixture URL (no REPLACE_ME as runnable default);
+    (4) no stale Render copy of poller URL guidance;
+    (5) CrashLoop alert when worker dies on bad poller URL;
+    plus code guard rejecting REPLACE_ME / non-https poller URLs.
+    Separate from S040/EV-032 (suspended, not cancelled). Standard routing.
+  branch: evolve/EV-033-worker-poller-hardening
+  branch_note: created from origin/main @ 769d3f83; active; dirty worktree awaiting commit/PR
+  tip_sha: 769d3f83
+  tip_sha_full: 769d3f8360b2bd826360f3107ada1a6ae268db0d
+  tip_note: 'branch base tip = origin/main @ 769d3f83; implementation uncommitted'
+  preset: Standard
+  preset_status: approved
+  phase0_choices:
+    D-S041-open: proceed_1-5_plus_code
+    locked_at: '2026-08-04'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    note: Standard — skip 03/05/06 unless 04 surfaces new deps/tooling
+  current_stage: 07-build
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE — open_session; D-S041-open; handoff 16-evolve'
+    16-evolve:
+      status: in_progress
+      started: '2026-08-04'
+      note: 'ORCHESTRATING — 07-build in_progress; docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+    02-verify-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+    07-build:
+      status: in_progress
+      started: '2026-08-04'
+      note: 'IN_PROGRESS — docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S041-worker-poller-hardening/session-brief.md
+    status: written
+  - path: docs/sessions/S041-worker-poller-hardening/routing-plan.md
+    status: written
+  - path: docs/sessions/S041-worker-poller-hardening/reports/evolve-progress.md
+    status: written
+  - path: deploy/doks/README-worker-hardening.md
+    status: written
+  - path: apps/worker/src/metar_worker/poller_url.py
+    status: written
+  - path: scripts/deploy/validate_ingest_poller_url.py
+    status: written
+  - path: scripts/deploy/doks_worker_poller_preflight.sh
+    status: written
+  - path: scripts/deploy/check_worker_crashloop.sh
+    status: written
+  - path: deploy/doks/observability/prometheusrule-metar-worker.yaml
+    status: written
+  - path: apps/worker/tests/test_validate_ingest_poller_url.py
+    status: written
+  - path: tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py
+    status: written
+  issues: []
+  decision_refs:
+  - D-S041-open
+  notes:
+  - '2026-08-04 S041/EV-033 — 07-build IN_PROGRESS; branch active from origin/main @ 769d3f83; 01/02/04 completed (delta lean — scope in evolve-decisions; AskQuestion unavailable); docs+code+scripts + poller_url/scripts/prometheusrule/tests; awaiting commit/PR/user verify; cycle NOT completed'
+  - '2026-08-04 S041/EV-033 OPEN — D-S041-open proceed 1-5 + code; S040/EV-032 suspended (not cancelled); branch pending create; tip n/a'
+  prior_session: S040-iwxxm-corpus-quality
+  prior_evolve_cycle_id: EV-032
 - id: EV-032
   session_id: S040-iwxxm-corpus-quality
   cycle_type: feature
@@ -31598,6 +31806,11 @@ evolve_cycles:
   title: IWXXM corpus quality / WMO source parity
   slug: iwxxm-corpus-quality
   status: in_progress
+  session_status: suspended
+  session_suspended_for: S041-worker-poller-hardening
+  session_suspend_note: |
+    S040 active_session cleared for S041; EV-032 cycle NOT cancelled —
+    resume S040 at 13-deploy-smoke / T4.5 after S041 closes.
   phase: 0
   started: '2026-08-04'
   started_at: '2026-08-04'
@@ -31943,10 +32156,12 @@ git_history:
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
-  recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); tip fe024aac; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
+  recommended_branch: evolve/EV-033-worker-poller-hardening
+  note: 'S041/EV-033 at 07-build — recommended_branch evolve/EV-033-worker-poller-hardening active from origin/main @ 769d3f83; dirty awaiting commit/PR; S040 tip remains on evolve/EV-032-iwxxm-corpus-quality; #846 parked'
 
   notes:
+  - '2026-08-04 S041/EV-033 — branch active from origin/main @ 769d3f83 (769d3f8360b2bd826360f3107ada1a6ae268db0d); current_stage 07-build; 01/02/04 completed (delta lean — scope in evolve-decisions; AskQuestion unavailable); artifacts poller_url.py + scripts/deploy/*poller* + prometheusrule + tests + README-worker-hardening; awaiting commit/PR/user verify; cycle NOT completed'
+  - '2026-08-04 S041/EV-033 OPEN — open_session; D-S041-open proceed_1-5_plus_code; session_counter 41; evolve_cycle_counter 33; S040/EV-032 SUSPENDED (not completed/cancelled) for S041; branch evolve/EV-033-worker-poller-hardening pending create; 00-context completed → 16-evolve in_progress; F8 deepen; no git branch/commit by workflow-state-manager'
   - 'S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; active_task T4.5 pending @ M4 / 13-deploy-smoke; progress 25/28; ahead_of_origin=12 pushed=false dirty=false; PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11/12); pending_commit left (HEAD d086f694 draft ≠ approve); tip kept 09e60184; progress 25/28; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=11; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.3 @ 09e60184 (09e601847eae404f997e107b42952bfcc51db12f) [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; tip 09e60184; pending_commit cleared; active_task T4.4 in_progress @ M4 / 11-verify-impl; progress 24/28; ahead_of_origin=10 pushed=false dirty=true (workflow-state tip sync); PR #848; #846'
@@ -32376,6 +32591,22 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-033-worker-poller-hardening
+    purpose: 'S041/EV-033 F8 deepen — INGEST_POLLER_URL hardening (prevention 1–5 + code guard)'
+    base: main
+    base_sha: 769d3f83
+    base_sha_full: 769d3f8360b2bd826360f3107ada1a6ae268db0d
+    status: active
+    created: '2026-08-04'
+    created_at: '2026-08-04'
+    session_id: S041-worker-poller-hardening
+    evolve_cycle_id: EV-033
+    tip_sha: 769d3f83
+    tip_sha_full: 769d3f8360b2bd826360f3107ada1a6ae268db0d
+    exists: true
+    pushed: false
+    ahead_of_origin: 0
+    note: 'ACTIVE — created from origin/main @ 769d3f83; tip still base (implementation uncommitted); 07-build in_progress; awaiting commit/PR/user verify'
   - name: evolve/EV-032-iwxxm-corpus-quality
     purpose: 'S040/EV-032 IWXXM corpus quality / WMO source parity #846; #835/#741/#808; F32 VONA'
     base: main
