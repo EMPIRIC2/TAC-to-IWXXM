@@ -201,7 +201,7 @@ sessions:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; progress 35/35; Phase 4 closeout docs — evolve-report-EV-031.md written; pr_url null until PR created
+  note: 'S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; progress 35/35; Phase 4 closeout docs — evolve-report-EV-031.md written; PR #845 open'
   routing_plan_07_build: completed
   current_task:
   active_task:
@@ -211,9 +211,9 @@ sessions:
   blocked_task:
   blocked_task_reason:
   progress: 35/35
-  tip_sha: b4feac02
-  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: Phase 4 close D-S038-13=1
+  tip_sha: df79d1fd
+  tip_sha_full: df79d1fd6a95e55c183955c20d5eed920ee84963
+  tip_note: 'Phase 4 close D-S038-13=1; PR #845 open'
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -264,9 +264,10 @@ sessions:
   close_decision_id: D-S038-13
   close_note: D-S038-13=1 — approve 13 PASS; close Phase D / cycle; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; EV-031/S038 closed 2026-08-03
   completed_at: '2026-08-03'
-  pr_url:
-  pr_number:
-  pr_status:
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/845
+  pr_number: 845
+  pr_status: open
+  pr_head: evolve/EV-031-platform-independence-842
   decision_refs:
   - D-S038-open
   - D-S038-doks-depth
@@ -29618,9 +29619,9 @@ evolve_cycles:
   active_task_status: completed
   awaiting_user_decision:
   progress: 35/35
-  tip_sha: b4feac02
-  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: 'Phase 4 close D-S038-13=1'
+  tip_sha: df79d1fd
+  tip_sha_full: df79d1fd6a95e55c183955c20d5eed920ee84963
+  tip_note: 'Phase 4 close D-S038-13=1; PR #845 open'
   active_milestone: M7
   next_milestone: M7
   blocked_task:
@@ -29954,8 +29955,9 @@ evolve_cycles:
   - D-S038-11
   - D-S038-12
   - D-S038-13
-  note: 'S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; progress 35/35; evolve-report-EV-031.md; pr_url null until PR created'
+  note: 'S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; progress 35/35; evolve-report-EV-031.md; PR #845 open'
   notes:
+  - '2026-08-04 S038/EV-031 PR #845 open — tip df79d1fd; pr_head evolve/EV-031-platform-independence-842; active_session=null'
   - 2026-08-03 S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; evolve-report-EV-031.md; pr_url null until PR created
   - '2026-08-03 S038/EV-031 11-verify-impl COMPLETE (D-S038-11=1 approve F30+F31; UI preview declined); 12-verify-deploy in_progress; tip 4caaae1b; #842/#830/#712'
   - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
@@ -30001,25 +30003,27 @@ evolve_cycles:
   - '2026-08-03 S038/EV-031 OPEN — open_session; Phase 0 choices (scope opt3 #842+#830+#712, general, Standard, UI preview Yes); session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress'
   close_decision_id: D-S038-13
   close_note: D-S038-13=1 — approve 13 PASS; close Phase D / cycle; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; EV-031/S038 closed 2026-08-03
-  pr_url:
-  pr_number:
-  pr_status:
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/845
+  pr_number: 845
+  pr_status: open
+  pr_head: evolve/EV-031-platform-independence-842
 git_history:
   current_branch: evolve/EV-031-platform-independence-842
-  ahead_of_origin: 52
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit:
   dirty: true
-  tip_sha: b4feac02
-  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: 'Phase 4 close D-S038-13=1'
+  tip_sha: df79d1fd
+  tip_sha_full: df79d1fd6a95e55c183955c20d5eed920ee84963
+  tip_note: 'Phase 4 close D-S038-13=1; PR #845 open'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-031-platform-independence-842
-  note: 'S038/EV-031 closed D-S038-13=1; tip pending closeout commit; active_session=null'
+  note: 'S038/EV-031 closed D-S038-13=1; tip df79d1fd; PR #845 open; active_session=null'
   notes:
+  - '2026-08-04 S038/EV-031 PR #845 open — tip df79d1fd (df79d1fd6a95e55c183955c20d5eed920ee84963); pr_head evolve/EV-031-platform-independence-842; active_session=null'
   - 2026-08-03 S038/EV-031 Phase 4 close D-S038-13=1 — tip_sha will update after closeout commit; active_session=null
   - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
@@ -31423,6 +31427,18 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: df79d1fd6a95e55c183955c20d5eed920ee84963
+    short: df79d1fd
+    branch: evolve/EV-031-platform-independence-842
+    message: '[EV-031] test: skip supabase-py work-session bug repro after SQLAlchemy migrate'
+    stage: 13-deploy-smoke
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    files_changed:
+    - tests/bugs/test_bug_2026_06_24_work_session_persist_select_chain.py
+    timestamp: '2026-08-03T22:01:36-04:00'
+    pushed: true
+    note: 'Phase 4 closeout tip — D-S038-13=1; PR #845 open'
   - sha: b4feac0221b6f77a3156582ac53ca45c4f75527a
     short: b4feac02
     branch: evolve/EV-031-platform-independence-842
