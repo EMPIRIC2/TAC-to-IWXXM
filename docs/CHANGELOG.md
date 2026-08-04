@@ -22,6 +22,8 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 ### Deploy
 - Provisional cutover under `D-S038-t63-waive` (LB `168.144.12.70` + placeholder Hosts).
 - H4–H5 + Playwright F31 + TC-EV031 topology PASS on provisional DOKS (T7.1–T7.3).
+- **13-deploy-smoke** re-verify: Host-header 5/5, H0c/H4/H5, topology 3/3, pods Running,
+  Render `/health` **503** — [deploy-smoke.md](sessions/S038-platform-independence-842/reports/deploy-smoke.md).
 - **T6.5 / TC-F30-005**: Render API + FE + worker **suspended** (`D-S038-t65-waive` —
   soak waived day 0/7); historical URLs in
   [ops/render-decommission-archive.md](ops/render-decommission-archive.md);

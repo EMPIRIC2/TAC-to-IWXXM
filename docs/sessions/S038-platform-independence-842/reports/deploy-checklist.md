@@ -1,10 +1,10 @@
 # Deploy Checklist — S038 / EV-031 (Stage 12)
 
 > Generated: 2026-08-03  
-> Status: **awaiting sign-off**  
+> Status: **APPROVED** — `D-S038-12` = 1 (mitigations + rollback + start 13)  
 > Deployment plan: [docs/deploy.md](../../../deploy.md) · [deploy-report.md](deploy-report.md)  
 > Session: S038-platform-independence-842 · Evolve: EV-031  
-> Branch: `evolve/EV-031-platform-independence-842` · tip `4caaae1b`  
+> Branch: `evolve/EV-031-platform-independence-842` · tip `4834c463`  
 > Lock: DOKS primary (`D-S038-doks-depth=3`); provisional DNS (`D-S038-t63-waive`); Render suspended (`D-S038-t65-waive`)
 
 ## Scope (delta)
@@ -24,7 +24,7 @@
 - [x] Secrets documented — `DATABASE_URL` + Auth JWKS; no product Supabase DB
 - [x] Data assets — vendor schemas in image; N/A weights
 - [x] Resource allocation — cheapest DOKS profile (provision report)
-- [x] Rollback plan — reviewed below (awaiting user approve)
+- [x] Rollback plan — user approved 2026-08-03 (`D-S038-12` = 1)
 - [x] H0c CORS — `pytest tests/unit/test_cors_policy.py` **6/6 PASS** (2026-08-03)
 - [x] Frontend runtime ↔ API matrix — provisional Host + `config.json` `api.baseUrl` (T7.2 H5)
 - [x] `METAR_CORS_ORIGINS` / ConfigMap CORS — DOKS FE placeholder + LB IP
@@ -47,12 +47,12 @@
 
 | # | Risk | Mitigation | Status |
 |---|------|-----------|--------|
-| 1 | Image / GHCR publish blocked | Interim ConfigMap + FE hot-copy; republish when `write:packages` available | proposed |
-| 2 | Placeholder DNS / HTTP only | Host-header smoke + `D-S038-t63-waive`; lift when real DNS lands | proposed |
-| 3 | CORS dual-host confusion | Document DOKS primary; Render FE/API suspended | proposed |
-| 4 | Alembic miss on rollout | Release job / init: `python -m alembic upgrade head` (idempotent) | proposed |
-| 5 | Session / sslmode drift | ConfigMap `sslmode=require` until `backend:ev031-doks` republish | proposed |
-| 6 | Accidental Render revive | T6.5 archive + keep suspended until DNS cutover complete | proposed |
+| 1 | Image / GHCR publish blocked | Interim ConfigMap + FE hot-copy; republish when `write:packages` available | **approved** |
+| 2 | Placeholder DNS / HTTP only | Host-header smoke + `D-S038-t63-waive`; lift when real DNS lands | **approved** |
+| 3 | CORS dual-host confusion | Document DOKS primary; Render FE/API suspended | **approved** |
+| 4 | Alembic miss on rollout | Release job / init: `python -m alembic upgrade head` (idempotent) | **approved** |
+| 5 | Session / sslmode drift | ConfigMap `sslmode=require` until `backend:ev031-doks` republish | **approved** |
+| 6 | Accidental Render revive | T6.5 archive + keep suspended until DNS cutover complete | **approved** |
 
 ## Rollback
 
@@ -75,6 +75,6 @@ Last known good provisional cutover evidence: T6.4 **5/5**, T7.1 **13/13**, T7.2
 ## Sign-Off (gate)
 
 - [x] User approved implementation (11-verify-impl / `D-S038-11`)
-- [ ] User approved failure mitigations
-- [ ] User approved rollback plan
-- [ ] Ready for **13-deploy-smoke**
+- [x] User approved failure mitigations (`D-S038-12` = 1)
+- [x] User approved rollback plan (`D-S038-12` = 1)
+- [x] Ready for **13-deploy-smoke**

@@ -1,8 +1,9 @@
 # Deploy report — S038 / EV-031
 
-> **Status**: DOKS primary; Render **suspended** (T6.5) — **not** final production DNS  
-> **Decisions**: `D-S038-t63-waive` (DNS) · `D-S038-t65-waive` (soak / decommission)  
-> **Date**: 2026-08-03
+> **Status**: DOKS primary **validated** (13-deploy-smoke); Render **suspended** — **not** final production DNS  
+> **Decisions**: `D-S038-t63-waive` (DNS) · `D-S038-t65-waive` (soak / decommission) · `D-S038-12` = 1  
+> **Date**: 2026-08-03  
+> **13 report**: [deploy-smoke.md](deploy-smoke.md)
 
 ## Topology
 
@@ -22,12 +23,12 @@
 
 | Check | Command | Result |
 |-------|---------|--------|
-| Host-header cutover | `bash scripts/deploy/doks_host_header_smoke.sh` | PASS (T6.4) |
-| H4–H5 | `make test-live-connectivity-doks-provisional` | PASS (T7.2) |
+| Host-header cutover | `bash scripts/deploy/doks_host_header_smoke.sh` | **5/5 PASS** (T6.4 + 13 re-verify) |
+| H4–H5 | `make test-live-connectivity-doks-provisional` | **PASS** (T7.2 + 13 re-verify) |
 | Playwright F31 | `make test-live-e2e-doks-provisional` | 13/13 (T7.1) |
-| TC-EV031 topology | `make test-live-topology-doks-provisional` | 3/3 (T7.3) |
-| Render suspend | API `/health` after T6.5 | **503** (expected) |
-| DOKS still primary | Host-header `/health` | **200** |
+| TC-EV031 topology | `make test-live-topology-doks-provisional` | **3/3 PASS** (T7.3 + 13 re-verify) |
+| Render suspend | API `/health` after T6.5 / 13 | **503** (expected) |
+| DOKS pods | `kubectl -n metar-iwxxm get pods` | API+FE+worker Running |
 
 ## Interim ops
 
@@ -38,4 +39,5 @@
 ## Follow-up
 
 - Pin real DNS; update Ingress / public HTTPS URLs; lift `D-S038-t63-waive`
-- Finalize at cycle close / 13-deploy-smoke
+- Republish GHCR images; remove interim ConfigMap / hot-copy
+- Evolve PR → `main` after user approves 13 + Phase D close
