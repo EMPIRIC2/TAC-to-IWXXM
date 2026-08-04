@@ -2,8 +2,8 @@
 
 Asserts WMO ``vona-A7-1`` is in the annex3 pack, root
 ``iwxxm:VolcanoObservatoryNoticeForAviation``, MetFeature volcano/ash +
-``iwxxm/AviationColourCode`` vocabulary (TC-F32-003). Soft content signals under
-``wmoReference``; ADR-032 canonicalize equality waits for T2.6 / TC-F32-004.
+``iwxxm/AviationColourCode`` vocabulary (TC-F32-003). ADR-032 golden / XSD+SCH
+are in ``test_tc_f32_004_vona_validate_golden.py`` (T2.6).
 
 Always write “F32 theme V3” (not F23 VA-SIGMET / F26 VAA V3) — #741.
 """
@@ -43,7 +43,7 @@ def test_tc_f32_002_annex3_vona_theme_present() -> None:
             assert case["product"] == "VONA"
             assert case.get("theme") == "V3"
             assert case.get("seed") == "vona-A7-1"
-            assert case.get("wmoReference") is True
+            assert case.get("wmoReference") is not True
             assert case.get("soft_compare") is not True
             assert (FIXTURES / case["tac"]).is_file()
             assert (FIXTURES / case["golden"]).is_file()
@@ -116,29 +116,6 @@ def test_tc_f32_003_vona_metfeature_and_colour_codes(case_id: str) -> None:
     assert "ElevatedEnvelope" in xml
     assert "iwxxm/nil/inapplicable" in xml
     assert "UHPP" in xml  # G-VONA-2 fixture/registry constant
-
-
-@pytest.mark.parametrize("case_id", VONA_CASE_IDS)
-def test_tc_f32_002_vona_wmo_reference_peer_soft(case_id: str) -> None:
-    """Vendor peer staged; canonicalize equality deferred (wmoReference / soft→strict)."""
-    from tac2iwxxm import convert
-
-    case = next(c for c in _load_manifest()["cases"] if c["id"] == case_id)
-    assert case.get("wmoReference") is True
-    tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
-    golden = (FIXTURES / case["golden"]).read_text(encoding="utf-8")
-    result = convert(
-        tac,
-        product="VONA",
-        profile=PROFILE,
-        iwxxm_version=IWXXM_VERSION,
-    )
-    assert result.ok is True
-    assert _has_root(result.xml, "VolcanoObservatoryNoticeForAviation")
-    assert _has_root(golden, "VolcanoObservatoryNoticeForAviation")
-    assert "KARYMSKY" in result.xml.upper()
-    assert "YELLOW" in result.xml
-    assert "ORANGE" in result.xml
 
 
 def test_tc_f32_002_vona_a7_1_content_signals() -> None:

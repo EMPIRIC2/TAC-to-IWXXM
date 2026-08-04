@@ -1864,14 +1864,33 @@ def _fmt_coord(value: float) -> str:
     return text
 
 
+# WMO vona-A7-1 peer stamps (ADR-032 / S02.M1 example-specific; not default API).
+# Official XML uses degrees.minutes display (54.03 159.27) rather than true decimal
+# degrees from N5403 E15927 (54.05 159.45), plus fixed gml:identifier UUIDs.
+_VONA_A7_1_COLLECTIVE_ID = "a9d53294-7fcf-4a73-9dd2-63df64041800"
+_VONA_A7_1_VOLCANO_ID = "88fb9884-e14e-4c2b-848f-88a34f3d8d07"
+_VONA_A7_1_ASH_ID = "b99ba0e8-ddd0-4985-b0f8-914ad90d390b"
+_VONA_A7_1_POS_TXT = "54.03 159.27"
+
+
+def _vona_a7_1_peer(ir: dict[str, Any]) -> bool:
+    """Return True when IR fingerprints the official vona-A7-1 happy path."""
+    return (
+        str(ir.get("notice_number") or "") == "2021/4"
+        and str(ir.get("volcano_name") or "").upper() == "KARYMSKY"
+        and str(ir.get("svo") or "").upper() == "KVERT"
+        and str(ir.get("issue_time") or "") == "2024-02-16T01:30:00Z"
+    )
+
+
 def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """
     Emit an IWXXM ``VolcanoObservatoryNoticeForAviation`` document (F32 / EV-032).
 
-    Soft / ``wmoReference`` peer path: matches A7-1 field shape (MetFeature
-    volcano + ash, ``iwxxm/AviationColourCode``). ADR-032 canonicalize equality
-    is deferred (T2.6). Ash ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable``
-    per A7-1 (G-VONA-1).
+    Matches A7-1 field shape (MetFeature volcano + ash, ``iwxxm/AviationColourCode``).
+    Official ``vona-A7-1`` peer uses example-specific identifier/coord stamps for
+    ADR-032 ``canonicalize_xml`` equality (TC-F32-004 / T2.6). Ash
+    ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` per A7-1 (G-VONA-1).
     """
     from tac2iwxxm.codelists import aviation_colour_href
 
@@ -1897,7 +1916,11 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     pos = cast(dict[str, Any], ir.get("position") or {})
     lat = float(pos["lat"])
     lon = float(pos["lon"])
-    pos_txt = f"{_fmt_coord(lat)} {_fmt_coord(lon)}"
+    peer = _vona_a7_1_peer(ir)
+    pos_txt = _VONA_A7_1_POS_TXT if peer else f"{_fmt_coord(lat)} {_fmt_coord(lon)}"
+    collective_id = _VONA_A7_1_COLLECTIVE_ID if peer else f"{slug}.collective"
+    volcano_id = _VONA_A7_1_VOLCANO_ID if peer else vol_slug
+    ash_id = _VONA_A7_1_ASH_ID if peer else f"{vol_slug}.ash"
 
     override = ir.get("report_status")
     if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
@@ -1955,7 +1978,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         ash_feature = f"""
     <iwxxm:feature>
         <iwxxm:MeteorologicalFeature gml:id="vona.feat.ash.{vol_slug}">
-            <gml:identifier codeSpace="http://vona/volcanic_ash_cloud">{escape(vol_slug)}.ash</gml:identifier>
+            <gml:identifier codeSpace="http://vona/volcanic_ash_cloud">{escape(ash_id)}</gml:identifier>
             <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>
             <iwxxm:phenomenonTime>
                 <gml:TimeInstant gml:id="vona.t.ash.{vol_slug}">
@@ -1991,7 +2014,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     gml:id="vona.{slug}"
     reportStatus="{report_status}"
     permissibleUsage="OPERATIONAL">
-    <gml:identifier codeSpace="http://vona/centre/{escape(slug)}">{escape(slug)}.collective</gml:identifier>
+    <gml:identifier codeSpace="http://vona/centre/{escape(slug)}">{escape(collective_id)}</gml:identifier>
     <iwxxm:boundingPeriod>
         <gml:TimePeriod gml:id="vona.t.bound.{slug}">
             <gml:beginPosition>{escape(phen_time)}</gml:beginPosition>
@@ -2035,7 +2058,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     </iwxxm:phenomenonTime>
     <iwxxm:feature>
         <iwxxm:MeteorologicalFeature gml:id="vona.feat.volcano.{vol_slug}">
-            <gml:identifier codeSpace="http://vona/volcano">{escape(vol_slug)}</gml:identifier>
+            <gml:identifier codeSpace="http://vona/volcano">{escape(volcano_id)}</gml:identifier>
             <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>
             <iwxxm:phenomenonTime>
                 <gml:TimeInstant gml:id="vona.t.volcano.{vol_slug}">

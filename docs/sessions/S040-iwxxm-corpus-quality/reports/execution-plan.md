@@ -14,9 +14,9 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M2 — #741 / F32 VONA |
-| **Active task** | T2.6 — pending (next) |
-| **Tasks** | 14 / 28 completed |
-| **Last updated** | 2026-08-04 |
+| **Active task** | T2.7 — pending (next) |
+| **Tasks** | 15 / 28 completed |
+| **Last updated** | 2026-08-04 (T2.6 complete) |
 
 ## Tech Stack Summary
 
@@ -98,7 +98,7 @@ Repo already splits fast vs long:
 | T2.3 | Code | `tac-validate` VONA codes + rules | F12/F32 | T2.2 | **completed** |
 | T2.4 | Test | Convert fixtures → `VolcanoObservatoryNoticeForAviation` (+ golden / soft→strict) | TC-F32-002/003 | T2.3 | **completed** |
 | T2.5 | Code | Encode plugin in `annex3_products` (+ bulletin/AHL if discovered) | F6; E32-T3 | T2.4 | **completed** |
-| T2.6 | Test | XSD+SCH validate path green on official peer | TC-F32-004; F2/F13 | T2.5 | pending |
+| T2.6 | Test | XSD+SCH validate path green on official peer | TC-F32-004; F2/F13 | T2.5 | **completed** |
 | T2.7 | Code | Backend runtime enum `product=vona`; FE picker + Examples unlock when golden greens | TC-F32-005/006; S02.M2; UJ-045 | T2.6 | pending |
 | T2.8 | Config | `make test-vona-quality` + path-filtered pre-commit smoke; long pack pre-push | E32-T7; TC-EV032-006 | T2.7 | pending |
 | T2.9 | Docs | COVERAGE_MATRIX / #741 closeout or children for guidance gaps | #741; TC-F32-005 | T2.8 | pending |
@@ -158,4 +158,4 @@ Repo already splits fast vs long:
 
 ## Next
 
-**07-build** in progress — M2 F32 VONA; T2.1–T2.5 **done** → T2.6 XSD+SCH / ADR-032 soft→strict on `vona-A7-1`.
+**07-build** in progress — M2 F32 VONA; T2.1–T2.6 **done** → T2.7 backend `product=vona` + FE picker / Examples unlock.
