@@ -495,17 +495,21 @@ jobs:
             exit 1
           fi
 
+      # Live traffic is on DOKS (app/api.tac-to-iwxxm.com). Render services may be
+      # suspended; still push GHCR, but do not fail Deploy when Render is suspended.
       - name: Deploy backend image to Render
         if: steps.guard.outputs.skip != 'true' && env.RENDER_BACKEND_DEPLOY_HOOK != ''
         env:
           DEPLOY_HOOK: ${{ env.RENDER_BACKEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+          RENDER_SKIP_IF_SUSPENDED: "1"
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
             python3 scripts/deploy/trigger_render_image_deploy.py \
               --deploy-hook "${DEPLOY_HOOK}" \
               --image-url "${IMAGE_URL}" \
-              --service-name metar-to-iwxxm-api
+              --service-name metar-to-iwxxm-api \
+              --skip-if-suspended
           else
             curl -fsSL "${DEPLOY_HOOK}"
           fi
@@ -515,15 +519,24 @@ jobs:
         env:
           DEPLOY_HOOK: ${{ env.RENDER_FRONTEND_DEPLOY_HOOK }}
           IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+          RENDER_SKIP_IF_SUSPENDED: "1"
         run: |
           if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
             python3 scripts/deploy/trigger_render_image_deploy.py \
               --deploy-hook "${DEPLOY_HOOK}" \
               --image-url "${IMAGE_URL}" \
-              --service-name metar-to-iwxxm-frontend-v4-web
+              --service-name metar-to-iwxxm-frontend-v4-web \
+              --skip-if-suspended
           else
             curl -fsSL "${DEPLOY_HOOK}"
           fi
+
+      - name: Note DOKS rollout
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          echo "::notice::GHCR tags pushed. Live deploy target is DOKS (metar-iwxxm)."
+          echo "Roll out with: kubectl -n metar-iwxxm set image deploy/metar-frontend frontend=ghcr.io/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}"
+          echo "               kubectl -n metar-iwxxm set image deploy/metar-api api=ghcr.io/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}"
 
       - name: CD skipped (credentials)
         if: steps.guard.outputs.skip == 'true'
