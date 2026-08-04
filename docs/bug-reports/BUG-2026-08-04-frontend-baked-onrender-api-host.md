@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | fixing (PR open; awaiting merge + DOKS FE deploy approval) |
+| **Status** | fixed (deployed) |
 | **Feature** | F15 / F21 connectivity (H5 API host) |
 | **Severity** | critical (production operator UI blocked) |
 | **Classification** | connectivity / config / deploy |
@@ -115,6 +115,19 @@ This service has been suspended by its owner.
 - Checks: frontend vitest + bug pytest + H5 live smoke after DOKS FE rollout
 - Follow-up: user re-checks UI in browser after deploy
 
+## Deploy (2026-08-04)
+
+| Step | Result |
+|------|--------|
+| PR #862 merged | `134e924` |
+| Main CI Validate/Tests | **PASS** |
+| Main CI Deploy (Render) | **FAIL expected** — service suspended |
+| GHCR FE image | `frontend:20260804230100-134e924` |
+| DOKS FE rollout | **PASS** |
+| DOKS ConfigMap `metar-frontend-runtime-config` | added `supabase.publishableKey` (was overriding image `config.json`) |
+| Live bundles | `api.tac-to-iwxxm.com` only — no `metar-to-iwxxm-api.onrender.com` |
+| Live `/config.json` | DOKS API host + publishableKey present |
+
 ## Prevention
 
-*(pending Phase 5 after deploy)*
+*(pending Phase 5 — recommend: keep ConfigMap publishableKey in sync / document DOKS override)*
