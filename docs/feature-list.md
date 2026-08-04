@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-04 (S040 / EV-032 — #835+#741 Done; F32 Done; #846/#808)
+> **Last updated**: 2026-08-04 (S040 / EV-032 — #835+#741+#808+#847 Done; F32 Done; #846 corpus)
 
 ## Summary
 
@@ -1184,13 +1184,16 @@
 
 ### F4 / F6 / F2 / F13 deepen (S040 / EV-032 — #808 release-line adoptability)
 
-- **Status**: **Planned** deepen (investigation — **no re-pin** in this ticket)
-- **Issues**: [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808); parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+- **Status**: **Done** (M3 closed 2026-08-04; [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed).
+- **Issues**: [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed; companion [#847](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/847) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
+  Automation/UX children: #851–#855.
 - **What it does**: Written maintainability assessment + adopt/deprecate checklists aligned with
   `docs/domain/iwxxm/VERSION_SUPPORT_POLICY.md`; blast-radius map across convert / validate /
-  vendor / UI / PyPI; child issues for automation gaps; recommendation on latest+1 window.
-- **Acceptance**: #808 deliverables; **TC-EV032-004** (docs/CI gates as defined in 04);
-  no engine rewrite required to close #808
+  vendor / UI / PyPI; **keep latest+1** recommendation; staff guide for non-engineers.
+- **Acceptance**: #808 AC1–5; **TC-EV032-004**; no engine rewrite / no re-pin
+- **Durable docs**: [RELEASE_LINE_ADOPTABILITY.md](domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md) ·
+  [RELEASE_LINE_STAFF_GUIDE.md](domain/iwxxm/RELEASE_LINE_STAFF_GUIDE.md)
+- **Closeout**: [t3.3-808-847-closeout.md](sessions/S040-iwxxm-corpus-quality/reports/t3.3-808-847-closeout.md)
 
 ### Corpus / WMO-source parity (S040 / EV-032 — #846)
 

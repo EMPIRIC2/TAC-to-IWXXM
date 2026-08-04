@@ -141,16 +141,17 @@ When policy moves a line from **previous** → **warning** → **unsupported**:
 
 ---
 
-## Automation gaps → children (file in T3.3)
+## Automation gaps → children (filed T3.3)
 
-Concrete gaps suitable for GitHub children (no engine rewrite required to close #808):
+| Gap | Issue |
+|-----|-------|
+| Supported-versions single source (FE/OpenAPI) | [#851](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/851) |
+| Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) |
+| iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) |
+| UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) |
+| Deprecation calendar / reminder template | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) |
 
-1. **Supported-versions single source** — generate FE picker + OpenAPI enum from `iwxxm_versions.py` (or shared JSON).
-2. **Sync PR tip-diff summary** — CI job summarizing XSD/SCH/example stem deltas vs previous pin.
-3. **Golden rebaseline playbook automation** — checklist → script listing stems that fail `canonicalize_xml` after sync.
-4. **iwxxm-us compatibility gate** — document/check that US 3.0 still validates against new WMO default.
-5. **Codelist URI drift watch** — periodic compare vendor CSV vs live codes.wmo.int (G6).
-6. **Deprecation calendar reminder** — ops issue template when previous→warning clock starts.
+Related corpus residuals (G6 codelist drift, G8 modelling watch) may fold into #852 or stay under #846 (T4.1).
 
 ---
 
