@@ -1,8 +1,8 @@
-"""Live stack integration tests — cross-service H3 + H4 against Render.
+"""Live stack integration tests — cross-service H3 + H4 (DOKS primary after T6.5).
 
-Targets:
-  API:      https://metar-to-iwxxm-api.onrender.com
-  Frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
+Targets (defaults / prod.json liveE2e):
+  API:      http://api.doks.placeholder.metar-iwxxm.local
+  Frontend: http://app.doks.placeholder.metar-iwxxm.local
 
 Run:
   make test-live-integration
@@ -16,7 +16,7 @@ import pytest
 from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
 from tests.live_fixtures import DEFAULT_LIVE_API, live_api_base, wake_live_api
 
-DEFAULT_LIVE_FRONTEND = "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+DEFAULT_LIVE_FRONTEND = "http://app.doks.placeholder.metar-iwxxm.local"
 
 SAMPLE_METAR = "METAR KJFK 161200Z 12012KT 10SM FEW250 22/14 A3015 RMK AO2 SLP210"
 

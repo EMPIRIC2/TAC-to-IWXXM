@@ -15,7 +15,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 - **Guests**: IndexedDB + persistent loss-of-progress notice; F22 privacy gates.
 - **Product DB**: DigitalOcean Postgres via `DATABASE_URL` (sessions + F8).
 - **Supabase**: Auth URL + keys only — **not** product PostgREST / hosted app tables.
-- **Compute**: DOKS after F30 cutover (Render transitional until soak + decommission).
+- **Compute**: DOKS primary after F30 cutover; Render **suspended** (T6.5 / `D-S038-t65-waive`).
 - **Dissemination** BYOC credentials remain **memory-only** (ADR-021/029).
 
 ## Source of truth by layer
@@ -47,9 +47,9 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | API / `.env` (ADR-029) |
 | F8 poller feed URL | `INGEST_POLLER_URL` | Worker / local `.env` |
 | F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker (default `30`) |
-| Live API URL | `LIVE_API_URL` | Local/CI live harness (DOKS after cutover; Render until then) |
+| Live API URL | `LIVE_API_URL` | Local/CI live harness (provisional DOKS Host-header placeholders) |
 | Live frontend URL | `LIVE_FRONTEND_URL` | Local/CI live harness |
-| DOKS placeholders (docs/IaC only) | `https://api.doks.placeholder.metar-iwxxm.local` / `https://app.doks.placeholder.metar-iwxxm.local` | Not for `LIVE_*` until T6.3 pins DNS (`D-S038-04-b2`) |
+| DOKS placeholders (prod + live) | `http://api.doks.placeholder.metar-iwxxm.local` / `http://app.doks.placeholder.metar-iwxxm.local` | `config/prod.json` + `LIVE_*` under `D-S038-t63-waive` until real DNS |
 | E2E Auth fixture | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Live/local Auth session tests only |
 
 ### Retired / do not use for product data plane
@@ -82,9 +82,10 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | `METAR_CONFIG_ENV=prod` | yes | copy → `public/config.json` | — |
 | F8 poller | — | — | env |
 
-### Transitional (Render — until soak)
+### Render (historical — TC-F30-005 complete)
 
-Same names; hosts remain onrender.com until TC-F30-005 decommission.
+Suspended 2026-08-03. Archive: [ops/render-decommission-archive.md](ops/render-decommission-archive.md).
+Do not point `LIVE_*` or `config/prod.json` at onrender.com.
 
 ### Local (`METAR_CONFIG_ENV=local`)
 

@@ -1,14 +1,13 @@
 {
   "environment": "prod",
   "api": {
-    "baseUrl": "https://metar-to-iwxxm-api.onrender.com",
+    "baseUrl": "http://api.doks.placeholder.metar-iwxxm.local",
     "corsOrigins": [
-      "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
       "http://app.doks.placeholder.metar-iwxxm.local",
       "https://app.doks.placeholder.metar-iwxxm.local",
       "http://168.144.12.70"
     ],
-    "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+    "frontendUrl": "http://app.doks.placeholder.metar-iwxxm.local"
   },
   "supabase": {
     "url": "https://ktvxijislbtgqapllmuk.supabase.co"

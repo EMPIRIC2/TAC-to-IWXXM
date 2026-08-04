@@ -431,8 +431,8 @@ define load_dotenv
 		fi; \
 	done; \
 	set +a; \
-	export LIVE_API_URL="$${LIVE_API_URL:-https://metar-to-iwxxm-api.onrender.com}"; \
-	export LIVE_FRONTEND_URL="$${LIVE_FRONTEND_URL:-https://metar-to-iwxxm-frontend-v4-web.onrender.com}"; \
+	export LIVE_API_URL="$${LIVE_API_URL:-http://api.doks.placeholder.metar-iwxxm.local}"; \
+	export LIVE_FRONTEND_URL="$${LIVE_FRONTEND_URL:-http://app.doks.placeholder.metar-iwxxm.local}"; \
 	export RUN_LIVE_TESTS=1; \
 	export PLAYWRIGHT_BASE_URL="$${PLAYWRIGHT_BASE_URL:-$$LIVE_FRONTEND_URL}"; \
 	export VITE_API_BASE_URL="$$LIVE_API_URL"; \

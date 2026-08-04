@@ -62,9 +62,10 @@ class TestRuntimeConfigProfiles:
         origins = api.get("corsOrigins")
         assert isinstance(origins, list)
         assert "https://app.doks.placeholder.metar-iwxxm.local" in origins
-        # Primary remain Render until T6.3 retargets baseUrl / liveE2e.
-        assert str(api.get("baseUrl")).endswith("onrender.com")
-        assert "doks.placeholder" not in str(api.get("baseUrl"))
+        # T6.5 / D-S038-t65-waive — Render suspended; prod primary is provisional DOKS.
+        assert "doks.placeholder" in str(api.get("baseUrl"))
+        assert "onrender.com" not in str(api.get("baseUrl"))
+        assert "onrender.com" not in str(api.get("frontendUrl"))
 
 
 class TestFrontendEnvExamples:

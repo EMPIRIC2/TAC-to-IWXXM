@@ -16,8 +16,8 @@
 | 04-tech-plan | yes | delta | **completed** | Gate B PASS; ADR-033 Accepted; 38 tasks M0–M7 |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | **in_progress** | @ T1.1 M1 — Auth JWKS tests; #830 then #712 |
-| 08-verify-build | yes | delta | pending | — |
+| 07-build | yes | full | **completed** | M0–M7 done; T6.5 under `D-S038-t65-waive` |
+| 08-verify-build | yes | delta | pending | Phase D — residual M7 pack / full suite |
 | 09-qa | yes | delta | pending | — |
 | 10-e2e | yes | smoke | pending | H4–H5 if FE Auth client restore ships |
 | 11-verify-impl | yes | delta | pending | Per-Fn acceptance |

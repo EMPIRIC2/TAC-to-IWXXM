@@ -1,4 +1,4 @@
-"""Shared helpers for live Render API tests (H3 integration)."""
+"""Shared helpers for live API tests (H3 integration — DOKS primary after T6.5)."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import httpx
 import pytest
 from tests.live_env import live_api_url
 
-DEFAULT_LIVE_API = "https://metar-to-iwxxm-api.onrender.com"
+DEFAULT_LIVE_API = "http://api.doks.placeholder.metar-iwxxm.local"
 WAKE_ATTEMPTS = 3
 WAKE_WAIT_SECONDS = 30
 
@@ -20,7 +20,7 @@ def live_api_base() -> str:
 
 
 def wake_live_api(base_url: str | None = None) -> str:
-    """Retry health check to handle Render cold-start spin-up."""
+    """Retry health check (cold-start / LB wake)."""
     url = (base_url or live_api_base()).rstrip("/")
     last_error: Exception | None = None
     for attempt in range(1, WAKE_ATTEMPTS + 1):

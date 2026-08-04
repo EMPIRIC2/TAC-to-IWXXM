@@ -39,6 +39,7 @@
 | E31-04 | gate | Gate B / plan approve? | **1** — approve M0–M7 (38 tasks) + **ADR-033 Accepted** → **07 @ T0.1** (`D-S038-04-plan`) |
 | E31-T0.2 | docs | Amend #830? | **Done** — title/body Auth-kept + data-plane strip; link F30/F31/ADR-033 ([#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830)) |
 | E31-t63-waive | decision | T6.3 DNS? | **3 / waive_ip** — waive real DNS; pin `LIVE_*`/`liveE2e` to LB `168.144.12.70` + Host-header placeholders; public `api.baseUrl` stays Render; proceed T6.4 (`D-S038-t63-waive`) |
+| E31-t65-waive | decision | T6.5 soak? | **1 / waive** — waive 7-day soak (day 0/7); suspend Render API+FE+worker now; archive LIVE_*; retarget `prod.json` + CI to DOKS (`D-S038-t65-waive`); DNS residual stays `D-S038-t63-waive` |
 
 **Topology**: Supabase = Auth/JWT verify only. DigitalOcean = all product DB + DOKS compute.  
 **Guest UX**: transient local storage; UI notice that progress is lost without login; honor privacy preference center.

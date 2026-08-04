@@ -13,10 +13,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — 07-build |
-| **Active milestone** | M7 — H4–H5 / live verify / close |
-| **Active task** | T6.5 — Render decommission after soak (**blocked** calendar; T7.1–T7.4 COMPLETE) |
-| **Tasks** | 34 / 38 completed |
+| **Active phase** | Phase C — 07-build (**closing**) |
+| **Active milestone** | M6 residual + M7 — all build tasks done |
+| **Active task** | — (T6.5 COMPLETE under `D-S038-t65-waive`) |
+| **Tasks** | 35 / 35 completed (all M0–M7 build tasks) |
 | **Last updated** | 2026-08-03 |
 
 ## Tech Stack Summary
@@ -147,7 +147,7 @@
 | T6.2 | Config | Release job: **idempotent** `alembic upgrade head` before/with API deploy | CI migration contract | T2.3, T6.1 | completed |
 | T6.3 | Ops | Pin real DNS / `LIVE_*` / `config/prod.json`; CORS for DOKS FE | `D-S038-04-b2` Q1; **`D-S038-t63-waive`** | T6.1 | completed |
 | T6.4 | Ops | Cutover smoke UJ-048 / TC-F30-004..005; start **7-day** soak | UJ-048; soak=7d; `D-S038-t63-waive` | T6.2, T6.3 | completed |
-| T6.5 | Ops | After soak: Render decommission checklist; archive Render `LIVE_*` as historical | doks-depth=3 | T6.4 | pending |
+| T6.5 | Ops | After soak: Render decommission checklist; archive Render `LIVE_*` as historical | doks-depth=3; **`D-S038-t65-waive`** | T6.4 | completed |
 
 ### M7 — H4–H5 / live verify / close
 

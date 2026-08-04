@@ -116,16 +116,22 @@ def test_bug_2026_08_03_hook_500_falls_back_to_default_hook() -> None:
 
 
 def test_bug_2026_08_03_ci_uses_resilient_script_not_bare_curl() -> None:
+    """T6.5 — Render CD retired; CI must not reintroduce brittle hook+imgURL curl.
+
+    Historical fix kept ``trigger_render_image_deploy.py`` as emergency tooling.
+    After ``D-S038-t65-waive``, Deploy is GHCR-only (no Render hooks).
+    """
     raw = CI_CD.read_text(encoding="utf-8")
-    assert "trigger_render_image_deploy.py" in raw
     # Guard against regressing to the brittle one-liner that failed on 8bd111c.
     assert 'curl -fsSL "${DEPLOY_HOOK}&imgURL=' not in raw
     assert "&imgURL=${ENCODED_URL}" not in raw
+    assert "trigger_render_image_deploy.py" not in raw
+    assert "RENDER_BACKEND_DEPLOY_HOOK" not in raw
+    assert "RENDER_FRONTEND_DEPLOY_HOOK" not in raw
 
     doc = yaml.safe_load(raw)
     assert isinstance(doc, dict)
     deploy = (doc.get("jobs") or {}).get("deploy") or {}
     assert isinstance(deploy, dict)
-    # Optional REST fallback secret must be wired when present.
-    assert "RENDER_API_KEY" in raw
-    assert "secrets.RENDER_API_KEY" in raw
+    # Script retained on disk for emergency resume; not wired in CI.
+    assert SCRIPT.is_file()

@@ -13,15 +13,15 @@ env:
   BACKEND_IMAGE: empiric2/tac-to-iwxxm/backend
   FRONTEND_IMAGE: empiric2/tac-to-iwxxm/frontend
   WORKER_IMAGE: empiric2/tac-to-iwxxm/worker
-  RENDER_DEPLOY_MODE: image
   # Canonical Supabase secrets (preferred). Deprecated FRONTEND_VITE_* kept for one-release shim.
   SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
   SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
-  FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
-  FRONTEND_VITE_API_BASE_URL: https://metar-to-iwxxm-api.onrender.com
+  # T6.5 / D-S038-t65-waive — Render retired; provisional DOKS placeholders (D-S038-t63-waive).
+  FRONTEND_VITE_APP_URL: http://app.doks.placeholder.metar-iwxxm.local
+  FRONTEND_VITE_API_BASE_URL: http://api.doks.placeholder.metar-iwxxm.local
 
 jobs:
   # ============================================================================
@@ -392,9 +392,8 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # DEPLOY — build/push images and trigger Render (main push only)
-  # TEMPORARY: skip cleanly when GHCR login or Render deploy hooks are missing
-  # (e.g. post-org-transfer secret/package setup incomplete).
+  # DEPLOY — build/push GHCR images (main push only). Render triggers retired (T6.5 /
+  # D-S038-t65-waive). DOKS pulls from GHCR; skip cleanly when GHCR login fails.
   # ============================================================================
   deploy:
     runs-on: ubuntu-latest
@@ -404,49 +403,29 @@ jobs:
     permissions:
       contents: read
       packages: write
-    env:
-      RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
-      RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
-      RENDER_WORKER_DEPLOY_HOOK: ${{ secrets.RENDER_WORKER_DEPLOY_HOOK }}
-      # Optional: REST fallback when deploy-hook+imgURL returns 5xx (BUG-2026-08-03).
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
 
-      - name: Guard CD credentials (skip if unset)
+      - name: Guard CD credentials (skip if GHCR unavailable)
         id: guard
         env:
           REGISTRY_USERNAME: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          missing=0
 
-          if [ -z "${RENDER_BACKEND_DEPLOY_HOOK:-}" ]; then
-            echo "::notice::RENDER_BACKEND_DEPLOY_HOOK unset"
-            missing=1
-          fi
-          if [ -z "${RENDER_FRONTEND_DEPLOY_HOOK:-}" ]; then
-            echo "::notice::RENDER_FRONTEND_DEPLOY_HOOK unset"
-            missing=1
-          fi
           if [ -z "${REGISTRY_PASSWORD:-}" ]; then
-            echo "::notice::GITHUB_TOKEN unavailable for GHCR"
-            missing=1
-          fi
-
-          if [ "${missing}" -ne 0 ]; then
-            echo "::notice::CD credentials incomplete — skipping Deploy (temporary)"
+            echo "::notice::GITHUB_TOKEN unavailable for GHCR — skipping Deploy"
             echo "skip=true" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
 
           # Probe GHCR write access under the current org (EMPIRIC2).
           if ! printf '%s' "${REGISTRY_PASSWORD}" | docker login "${REGISTRY}" -u "${REGISTRY_USERNAME}" --password-stdin; then
-            echo "::notice::GHCR login failed — skipping Deploy (temporary)"
+            echo "::notice::GHCR login failed — skipping Deploy"
             echo "skip=true" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
@@ -536,51 +515,12 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:main-latest
 
-      - name: Report deploy hook configuration
+      - name: Note Render decommission (T6.5)
         if: steps.guard.outputs.skip != 'true'
         run: |
-          [ -n "${RENDER_BACKEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
-          [ -n "${RENDER_FRONTEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
-          [ -n "${RENDER_WORKER_DEPLOY_HOOK}" ] && echo "✅ RENDER_WORKER_DEPLOY_HOOK is set" || echo "⚠️  RENDER_WORKER_DEPLOY_HOOK is missing (docker-from-git worker OK)"
-
-      - name: Enforce backend deploy hook presence
-        if: steps.guard.outputs.skip != 'true'
-        run: |
-          if [ -z "${RENDER_BACKEND_DEPLOY_HOOK}" ]; then
-            echo "❌ Missing required secret: RENDER_BACKEND_DEPLOY_HOOK"
-            exit 1
-          fi
-
-      - name: Deploy backend image to Render
-        if: steps.guard.outputs.skip != 'true' && env.RENDER_BACKEND_DEPLOY_HOOK != ''
-        env:
-          DEPLOY_HOOK: ${{ env.RENDER_BACKEND_DEPLOY_HOOK }}
-          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
-        run: |
-          if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
-            python3 scripts/deploy/trigger_render_image_deploy.py \
-              --deploy-hook "${DEPLOY_HOOK}" \
-              --image-url "${IMAGE_URL}" \
-              --service-name metar-to-iwxxm-api
-          else
-            curl -fsSL "${DEPLOY_HOOK}"
-          fi
-
-      - name: Deploy frontend image to Render
-        if: steps.guard.outputs.skip != 'true' && env.RENDER_FRONTEND_DEPLOY_HOOK != ''
-        env:
-          DEPLOY_HOOK: ${{ env.RENDER_FRONTEND_DEPLOY_HOOK }}
-          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
-        run: |
-          if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
-            python3 scripts/deploy/trigger_render_image_deploy.py \
-              --deploy-hook "${DEPLOY_HOOK}" \
-              --image-url "${IMAGE_URL}" \
-              --service-name metar-to-iwxxm-frontend-v4-web
-          else
-            curl -fsSL "${DEPLOY_HOOK}"
-          fi
+          echo "GHCR images pushed. Render deploy hooks retired (D-S038-t65-waive)."
+          echo "DOKS is primary — rollout via kubectl / image tag, not Render hooks."
 
       - name: CD skipped (credentials)
         if: steps.guard.outputs.skip == 'true'
-        run: echo "Deploy skipped — configure RENDER_*_DEPLOY_HOOK secrets and GHCR package write for EMPIRIC2, then re-enable."
+        run: echo "Deploy skipped — GHCR package write unavailable for EMPIRIC2."

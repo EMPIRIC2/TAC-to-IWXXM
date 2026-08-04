@@ -1,8 +1,8 @@
 # Deployment
 
 > **Project**: METAR to IWXXM Converter
-> **Platform**: **DOKS** (target — F30) · Render transitional until soak + decommission
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 platform independence)
+> **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
+> **Last updated**: 2026-08-03 (S038 / EV-031 — T6.5 Render decommission)
 
 ## Topology (F30 target — DOKS)
 
@@ -25,40 +25,33 @@ out-of-band). Placeholder Ingress hosts until **T6.3**.
 
 ### Placeholder DOKS hostnames (`D-S038-04-b2` Q1=1)
 
-Until **T6.3** pins real DNS / Ingress, use these **non-live** placeholders in IaC drafts,
-CORS sketches, and cutover docs. Do **not** point `LIVE_*` or `config/prod.json` at them
-while Render remains primary (transitional).
+Until real DNS / Ingress (`D-S038-t63-waive` residual), provisional **HTTP** placeholders are
+canonical in `config/prod.json` and live harness (T6.5).
 
 | Role | Placeholder URL |
 |------|-----------------|
-| API | `https://api.doks.placeholder.metar-iwxxm.local` |
-| Frontend | `https://app.doks.placeholder.metar-iwxxm.local` |
+| API | `http://api.doks.placeholder.metar-iwxxm.local` |
+| Frontend | `http://app.doks.placeholder.metar-iwxxm.local` |
 | Worker | (no public URL — in-cluster only) |
+| LB | `168.144.12.70` (Host-header smoke) |
 
-**Pin at M6:** replace placeholders + update `config/prod.json` `api.*` / `liveE2e.*`,
-`LIVE_API_URL` / `LIVE_FRONTEND_URL`, and CORS origins. Soak checklist:
-[ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md) (**7 days**).
+Soak checklist (closed early under `D-S038-t65-waive`):
+[ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).
+Render archive: [ops/render-decommission-archive.md](ops/render-decommission-archive.md).
 
-Until then, `config/prod.json` may list the DOKS FE placeholder in `api.corsOrigins` while
-keeping Render `api.baseUrl` / `frontendUrl` / `liveE2e.*` (T4.5 Auth bootstrap + CORS prep).
+### Render (historical — TC-F30-005 / T6.5)
 
-### Transitional (Render — until TC-F30-005)
-
-| Service | Type | Source | Port |
-|---------|------|--------|------|
-| metar-api | Web (Docker) | `apps/backend` Dockerfile | `$PORT` (0.0.0.0) |
-| metar-frontend | **Static site** (CDN) | `apps/frontend` Vite build | CDN |
-| metar-worker | **Background Worker** | `apps/worker` (ADR-018) | N/A (no HTTP) |
-
-**Staging worker (historical)**: `metar-to-iwxxm-worker` —
-`srv-d99u0i8k1i2s73eq5oqg`. Dashboard:
-https://dashboard.render.com/worker/srv-d99u0i8k1i2s73eq5oqg
+| Service | Service ID | Status |
+|---------|------------|--------|
+| `metar-to-iwxxm-api` | `srv-d69v688gjchc73cn9kg0` | **suspended** 2026-08-03 |
+| `metar-to-iwxxm-frontend-v4-web` | `srv-d6cvj2i4d50c73aelapg` | **suspended** 2026-08-03 |
+| `metar-to-iwxxm-worker` | `srv-d99u0i8k1i2s73eq5oqg` | **suspended** 2026-08-03 |
 
 **F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
-F8 worker is a **separate** workload (Render today → DOKS Deployment).
+F8 worker runs on DOKS.
 
-**Observability**: Platform logs (DOKS / Render built-in). Loki/Prometheus/Grafana remain out of
-Blueprint (ADR-006) unless a later evolve adds them.
+**Observability**: Platform logs (DOKS). Loki/Prometheus/Grafana remain out of Blueprint
+(ADR-006) unless a later evolve adds them.
 
 ## Integration
 
@@ -68,7 +61,7 @@ Blueprint (ADR-006) unless a later evolve adds them.
 > [env-contract.md](env-contract.md). Data migrate:
 > [ops/supabase-to-do-postgres-migration.md](ops/supabase-to-do-postgres-migration.md).
 
-### Secrets (API runtime — DOKS / transitional Render)
+### Secrets (API runtime — DOKS)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -138,7 +131,7 @@ Operator sync: [env-sync-runbook.md](ops/env-sync-runbook.md). Verify: `make env
 3. Rebuild **metar-frontend** with `/config.json` + publishable Auth key.
 4. Deploy **metar-worker** with `DATABASE_URL` + poller env.
 5. Run **H0–H5** (H4–H5 required) + H6 public + Auth session smoke + F8 store smoke.
-6. **7-day soak** per [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md); then decommission Render (TC-F30-005).
+6. Soak + Render decommission (TC-F30-005) — **done** under `D-S038-t65-waive` (see archive).
 
 See `.cursor/skills/connectivity-gates.md` for H-tier definitions.
 

@@ -22,9 +22,14 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 ### Deploy
 - Provisional cutover under `D-S038-t63-waive` (LB `168.144.12.70` + placeholder Hosts).
 - H4–H5 + Playwright F31 + TC-EV031 topology PASS on provisional DOKS (T7.1–T7.3).
-- Render decommission + real DNS deferred (T6.5 / soak).
+- **T6.5 / TC-F30-005**: Render API + FE + worker **suspended** (`D-S038-t65-waive` —
+  soak waived day 0/7); historical URLs in
+  [ops/render-decommission-archive.md](ops/render-decommission-archive.md);
+  `config/prod.json` + CI Deploy retargeted to DOKS / GHCR-only (no Render hooks).
+- Real public DNS + HTTPS still residual (`D-S038-t63-waive`).
 - Reports: [evolve-summary.md](sessions/S038-platform-independence-842/reports/evolve-summary.md),
-  [deploy-report.md](sessions/S038-platform-independence-842/reports/deploy-report.md).
+  [deploy-report.md](sessions/S038-platform-independence-842/reports/deploy-report.md),
+  [t6.5-render-decommission.md](sessions/S038-platform-independence-842/reports/t6.5-render-decommission.md).
 
 ## 2026-08-03 — S037 EV-030 (#831 / #829 / #820 quality residuals)
 
