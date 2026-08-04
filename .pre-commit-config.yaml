@@ -89,6 +89,13 @@ repos:
         language: system
         pass_filenames: false
         files: ^(packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products\.py|packages/tac2iwxxm/src/tac2iwxxm/convert\.py|packages/tac2iwxxm/tests/test_tc_ev032_00[23]_.*\.py|packages/tac2iwxxm/tests/fixtures/annex3_golden/sigmet_a6_2_tc\.tac|packages/shared/src/metar_shared/xml_canonical\.py|apps/frontend/src/fixtures/examples/examplesCatalog\.ts|apps/frontend/src/fixtures/examples/FIXTURE_GAPS\.md|scripts/ci/run_ev032_a6_2_tc_canary\.sh)$
+      # EV-032 / E32-T7 / T2.8 — path-filtered VONA ADR-032 + product=vona canary
+      - id: ev032-vona-canary
+        name: EV-032 VONA ADR-032 + product=vona canary (#741)
+        entry: bash scripts/ci/run_ev032_vona_canary.sh
+        language: system
+        pass_filenames: false
+        files: ^(packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products\.py|packages/tac2iwxxm/src/tac2iwxxm/products/vona\.py|packages/tac2iwxxm/src/tac2iwxxm/convert\.py|packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden\.py|packages/tac2iwxxm/tests/fixtures/annex3_golden/vona_a7_1\.(tac|golden\.xml)|packages/tac2iwxxm/tests/fixtures/annex3_golden/manifest\.json|apps/backend/src/api\.py|apps/backend/tests/unit/test_tc_f32_vona_product_enum\.py|apps/frontend/src/fixtures/examples/examplesCatalog\.ts|apps/frontend/src/fixtures/examples/bodies/vona_a7_1\.tac|scripts/ci/run_ev032_vona_canary\.sh|scripts/ci/run_vona_quality\.sh)$
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.7

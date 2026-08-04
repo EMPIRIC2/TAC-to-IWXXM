@@ -3,6 +3,8 @@
 Accept path: annex3 convert of ``vona-A7-1`` is M-xsd/M-sch clean and
 ``canonicalize_xml`` equals the official peer / package golden (soft→strict).
 Negatives remain under ``tac-validate`` TC-F32-001 (T2.2/T2.3).
+
+Marked ``ev032_smoke`` for path-filtered pre-commit canary (E32-T7 / T2.8).
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ def _has_root(xml: str, local: str) -> bool:
     return f"<iwxxm:{local} " in xml or f"<iwxxm:{local}\n" in xml or f"<iwxxm:{local}>" in xml
 
 
+@pytest.mark.ev032_smoke
 @pytest.mark.parametrize("case_id", VONA_CASE_IDS)
 def test_tc_f32_004_vona_m_xsd_sch(case_id: str) -> None:
     from iwxxm_validate import validate
@@ -54,6 +57,7 @@ def test_tc_f32_004_vona_m_xsd_sch(case_id: str) -> None:
     assert not blocking, f"M-xsd/M-sch blocking for {case_id}: {[(i.code, i.message) for i in blocking]}"
 
 
+@pytest.mark.ev032_smoke
 @pytest.mark.parametrize("case_id", VONA_CASE_IDS)
 def test_tc_f32_004_vona_m_golden_adr032(case_id: str) -> None:
     """ADR-032: convert equals package golden and vendor peer under canonicalize_xml."""
@@ -77,6 +81,7 @@ def test_tc_f32_004_vona_m_golden_adr032(case_id: str) -> None:
     assert canonicalize_xml(golden) == canonicalize_xml(vendor)
 
 
+@pytest.mark.ev032_smoke
 def test_tc_f32_004_manifest_strict_peer() -> None:
     case = next(c for c in _load_manifest()["cases"] if c["id"] == "vona_a7_1")
     assert case["product"] == "VONA"

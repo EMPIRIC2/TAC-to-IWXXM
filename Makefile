@@ -21,10 +21,12 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-va-sigmet-quality \
 	test-tc-sigmet-quality \
 	test-ev032-a6-2-canary \
+	test-ev032-vona-canary \
 	test-airmet-quality \
 	test-vaa-quality \
 	test-tca-quality \
 	test-swxa-quality \
+	test-vona-quality \
 	test-quality-matrices-smoke \
 	test-quality-matrices-full \
 	test-product-order-smoke \
@@ -275,6 +277,10 @@ test-tc-sigmet-quality:
 test-ev032-a6-2-canary:
 	bash scripts/ci/run_ev032_a6_2_tc_canary.sh
 
+# EV-032 / E32-T7 / T2.8 — path-filtered pre-commit canary (VONA ADR-032 + product enum)
+test-ev032-vona-canary:
+	bash scripts/ci/run_ev032_vona_canary.sh
+
 # EV-029 / E29-T4=2 — AIRMET quality pack (M8 / TC-EV029-007 + F24 deepen)
 test-airmet-quality:
 	bash scripts/ci/run_airmet_quality.sh
@@ -290,6 +296,10 @@ test-tca-quality:
 # EV-029 / E29-T4=2 — SWXA quality pack (M11 / TC-F28 + F28 deepen / #740/#823)
 test-swxa-quality:
 	bash scripts/ci/run_swxa_quality.sh
+
+# EV-032 / E32-T7 / T2.8 — VONA quality pack (M2 / TC-F32 + F32 deepen / #741)
+test-vona-quality:
+	bash scripts/ci/run_vona_quality.sh
 
 # EV-030 / E30-T7 — F29 quality matrices PR smoke (inventory + ready; excludes full ×20)
 test-quality-matrices-smoke:

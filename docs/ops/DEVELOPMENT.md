@@ -231,14 +231,16 @@ make validate-ci                    # CI validate job locally
 make ci-prepush                     # unit/matrix suite (no Compose) — husky pre-push
 make ci                             # ci-prepush + test-integration (needs ports 18000/18001)
 make test-ev032-a6-2-canary         # EV-032 #835 A6-2 equality + catalog (pre-commit canary)
+make test-ev032-vona-canary         # EV-032 #741 VONA ADR-032 + product=vona (pre-commit canary)
 make test-tc-sigmet-quality         # TC SIGMET long pack (includes #835 A6-2 deepen)
+make test-vona-quality              # VONA long pack (lint → convert → validate + API enum)
 ```
 
 Hooks (after `make install-hooks`; husky sets `core.hooksPath=.husky`):
 
 | Git hook | Runs |
 |----------|------|
-| **pre-commit** (husky → pre-commit) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint; **path-filtered** EV-032 A6-2 canary (`ev032-a6-2-tc-canary`) when encode/catalog paths change |
+| **pre-commit** (husky → pre-commit) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint; **path-filtered** EV-032 canaries (`ev032-a6-2-tc-canary`, `ev032-vona-canary`) when encode/catalog/API paths change |
 | **pre-push** (husky) | `make validate-ci` then `make ci-prepush` (local parity with remote test matrix). Family long packs (`make test-*-quality`) stay opt-in / path-filtered CI — not dumped into every push |
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.

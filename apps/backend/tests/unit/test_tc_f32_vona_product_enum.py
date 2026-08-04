@@ -2,6 +2,8 @@
 
 Accepts ``vona`` (case-insensitive) on lint/decode/convert; rejects unknown
 aliases with ``unknown_product`` 400 per api-contract.
+
+Normalize smoke marked ``ev032_smoke`` for path-filtered pre-commit canary (T2.8).
 """
 
 from __future__ import annotations
@@ -40,6 +42,7 @@ def _multipart(client: TestClient, path: str, fields: dict[str, str]):
     return client.post(path, files={k: (None, v) for k, v in fields.items()})
 
 
+@pytest.mark.ev032_smoke
 def test_normalize_api_product_accepts_vona() -> None:
     assert api_module.normalize_api_product("vona") == "VONA"
     assert api_module.normalize_api_product("VONA") == "VONA"
