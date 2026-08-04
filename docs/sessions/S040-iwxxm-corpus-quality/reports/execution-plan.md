@@ -139,6 +139,23 @@ Repo already splits fast vs long:
 | C→D | All Fn tasks done; 08 PASS | pending |
 | Deploy | 09+10; 11+12; smoke | pending |
 
+
+## Git Strategy
+
+| Field | Value |
+|-------|-------|
+| Branch | `evolve/EV-032-iwxxm-corpus-quality` |
+| Commits | Atomic per task `[T{m}.{n}] …` / `[EV-032] …` |
+| PR | Mid-cycle minor PRs per milestone + final evolve PR after M4 |
+| Checklist | Lint · typecheck · tests · no secrets · TC mapping · no new deps |
+
+## PR Plan
+
+| PR | Scope | Base ← Head | Status | URL |
+|----|-------|-------------|--------|-----|
+| PR-M1 | M0–M1 #835 A6-2 `wmoPass` | `main` ← `evolve/EV-032-iwxxm-corpus-quality` | pending | — |
+| PR-final | M0–M4 evolve close | `main` ← evolve | pending | — |
+
 ## Next
 
 **07-build** in progress — M1 #835 **closed**; next M2 F32 VONA @ T2.1.
