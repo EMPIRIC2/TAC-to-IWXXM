@@ -1,8 +1,9 @@
 """TC-EV030-005 — #829 A6-2-TC catalog unlock as wmoReference (S037 / EV-030 T2.4).
 
 Quality path (lint → convert → validate) is green for annex3 ``sigmet_a6_2_tc``.
-ADR-032 ``canonicalize_xml`` equality does **not** hold yet (coord formatting,
-FIR type, intensityChange) → catalog tier is ``wmoReference``, not ``wmoPass``.
+ADR-032 ``canonicalize_xml`` equality vs vendor is green as of EV-032 / #835
+(``test_tc_ev032_002_a6_2_tc_adr032_equality``). Catalog promote to ``wmoPass`` is
+TC-EV032-003 / T1.4 — this module still expects ``wmoReference`` until then.
 """
 
 from __future__ import annotations
@@ -46,8 +47,8 @@ def test_tc_ev030_005_quality_path_green() -> None:
     assert not blocking, [(i.code, i.message) for i in blocking]
 
 
-def test_tc_ev030_005_adr032_equality_not_yet() -> None:
-    """Document residual — unlock as reference until equality lands."""
+def test_tc_ev030_005_adr032_equality_holds() -> None:
+    """#835 residual closed in EV-032 — keep a peer assert here for M2 unlock gate."""
     from tac2iwxxm import convert
 
     tac = (FIXTURES / "sigmet_a6_2_tc.tac").read_text(encoding="utf-8")
@@ -55,7 +56,7 @@ def test_tc_ev030_005_adr032_equality_not_yet() -> None:
     result = convert(tac, product="SIGMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
     assert result.ok is True
     assert result.xml is not None
-    assert canonicalize_xml(result.xml) != canonicalize_xml(vendor)
+    assert canonicalize_xml(result.xml) == canonicalize_xml(vendor)
 
 
 def test_tc_ev030_005_catalog_is_wmo_reference() -> None:

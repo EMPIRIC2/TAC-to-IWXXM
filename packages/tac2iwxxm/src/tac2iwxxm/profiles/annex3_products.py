@@ -393,6 +393,8 @@ def _sigmet_header_units(
         atsu_name = f"{fir} FIC"
         atsu_type = "FIC"
         mwo_name = f"{mwo} MWO"
+    # Vendor A6-2-TC uses AIXM ``FIR`` (not OTHER:FIR_UIR) for the ATS region (#835).
+    airspace_type = "FIR" if root == "TropicalCycloneSIGMET" else "OTHER:FIR_UIR"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:{root} xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -439,7 +441,7 @@ def _sigmet_header_units(
         <aixm:AirspaceTimeSlice gml:id="as.ts.{fir.lower()}">
           <gml:validTime/>
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:type>OTHER:FIR_UIR</aixm:type>
+          <aixm:type>{airspace_type}</aixm:type>
           <aixm:designator>{escape(fir)}</aixm:designator>
           <aixm:name>{escape(str(ir.get("fir_name", fir)))}</aixm:name>
         </aixm:AirspaceTimeSlice>
@@ -465,6 +467,21 @@ def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
         return pos_list
     ordered = [open_coords[0], *reversed(open_coords[1:]), open_coords[0]]
     return " ".join(f"{lat:.2f} {lon:.2f}" for lat, lon in ordered)
+
+
+def _sigmet_tc_format_pos(lat: float, lon: float) -> str:
+    """Format TC SIGMET ``gml:pos`` for vendor A6-2-TC (#835 / ADR-032).
+
+    Prefer two decimals when exact; otherwise trim trailing zeros (e.g. ``27.6667 -73.75``).
+    """
+
+    def _one(value: float) -> str:
+        two = f"{value:.2f}"
+        if abs(value - float(two)) < 1e-9:
+            return two
+        return f"{value:.4f}".rstrip("0").rstrip(".")
+
+    return f"{_one(lat)} {_one(lon)}"
 
 
 def _sigmet_geometry_xml(
@@ -521,6 +538,12 @@ def _sigmet_geometry_xml(
             lat = float(g["lat"])
             lon = float(g["lon"])
             radius = int(g["radius_nm"]) if g.get("kind") == "circle" and "radius_nm" in g else 0
+            # TC SIGMET circles follow A6-2-TC pos formatting (#835); other products keep .4f.
+            pos_txt = (
+                _sigmet_tc_format_pos(lat, lon)
+                if _sigmet_root_local(ir) == "TropicalCycloneSIGMET"
+                else f"{lat:.4f} {lon:.4f}"
+            )
             return f"""
               <iwxxm:geometry>
                 <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
@@ -534,7 +557,7 @@ def _sigmet_geometry_xml(
                                 <gml:Curve gml:id="curve.{suffix}">
                                   <gml:segments>
                                     <gml:CircleByCenterPoint numArc="1">
-                                      <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                                      <gml:pos>{pos_txt}</gml:pos>
                                       <gml:radius uom="[nmi_i]">{radius}</gml:radius>
                                     </gml:CircleByCenterPoint>
                                   </gml:segments>
@@ -744,10 +767,11 @@ def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
         return ""
     lat = float(cast(dict[str, Any], pos)["lat"])
     lon = float(cast(dict[str, Any], pos)["lon"])
+    pos_txt = _sigmet_tc_format_pos(lat, lon)
     return f"""
               <iwxxm:tropicalCyclonePosition>
                 <gml:Point gml:id="{gid}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                  <gml:pos>{pos_txt}</gml:pos>
                 </gml:Point>
               </iwxxm:tropicalCyclonePosition>"""
 
@@ -760,6 +784,7 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
     f = cast(dict[str, Any], fcst)
     lat = float(f["lat"])
     lon = float(f["lon"])
+    pos_txt = _sigmet_tc_format_pos(lat, lon)
     hhmm = str(f.get("hhmm", "0000"))
     day = int(ir["valid_to_day"])
     # Prefer VALID end day; vendor A6-2 uses end-of-validity forecast time.
@@ -780,7 +805,7 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
             <iwxxm:SIGMETPosition gml:id="fcst.cond.{fir.lower()}">
               <iwxxm:tropicalCyclonePosition>
                 <gml:Point gml:id="fcst.tc.pos.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                  <gml:pos>{pos_txt}</gml:pos>
                 </gml:Point>
               </iwxxm:tropicalCyclonePosition>
               <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
@@ -889,7 +914,11 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     tc_pos = _sigmet_tc_position_xml(ir, gid=f"tc.pos.{fir.lower()}") if is_tc else ""
     tc_fcst = _sigmet_tc_forecast_xml(ir, fir=fir, end=end) if is_tc else ""
     tc_name_xml = _sigmet_tropical_cyclone_xml(ir) if is_tc else ""
-    intensity_attr = f' intensityChange="{escape(intensity)}"'
+    # Vendor A6-2-TC omits intensityChange when NO_CHANGE (#835).
+    if is_tc and intensity == "NO_CHANGE":
+        intensity_attr = ""
+    else:
+        intensity_attr = f' intensityChange="{escape(intensity)}"'
     phenom_time = (
         f"""
           <iwxxm:phenomenonTime>
