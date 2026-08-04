@@ -1,7 +1,7 @@
 # Deploy State
 
 > Last updated: 2026-08-03  
-> Status: deployed (S038 / EV-031 platform independence — provisional DOKS; awaiting 13 user approval)
+> Status: deployed (S038 / EV-031 platform independence — provisional DOKS; `D-S038-13` = 1)
 
 ## Deployment Log
 

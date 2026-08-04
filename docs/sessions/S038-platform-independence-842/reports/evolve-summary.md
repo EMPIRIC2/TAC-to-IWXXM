@@ -1,7 +1,7 @@
 # Evolve summary — EV-031 / S038 (platform independence #842 / #830 / #712)
 
 > Date: 2026-08-03  
-> Status: **Phase D deploy smoke green** — awaiting 13 result approval / cycle close  
+> Status: **completed** — `D-S038-13` = 1; see [evolve-report-EV-031.md](../../../evolve-report-EV-031.md)  
 > Branch: `evolve/EV-031-platform-independence-842`  
 > Features: **F30**, **F31**; deepen F5 / F7 / F8 / F21 / F22 / M4  
 > ADR: [ADR-033](../../../adr/ADR-033-platform-independence-auth-do-doks.md) (Accepted)

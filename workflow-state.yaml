@@ -6,14 +6,15 @@ project:
 session_counter: 38
 evolve_cycle_counter: 31
 active_session:
-  id: S038-platform-independence-842
+sessions:
+- id: S038-platform-independence-842
   type: feature
   intent: |
     Full epic #842 platform-independence — include #830 strip Supabase AND
     #712 DOKS cutover planning + IaC (user expanded beyond soft deferral).
     Cycle type: general (may allocate new Fn). Standard routing; UI preview Yes
     (non-deployed local UI).
-  status: in_progress
+  status: completed
   branch: evolve/EV-031-platform-independence-842
   orchestrator: 16-evolve
   evolve_cycle_id: EV-031
@@ -25,7 +26,7 @@ active_session:
   feature_ids:
   - F30
   - F31
-  current_stage: 13-deploy-smoke
+  current_stage:
   started_at: '2026-08-03'
   started: '2026-08-03'
   context_briefs:
@@ -62,6 +63,7 @@ active_session:
     D-S038-12: '1'
     locked_at: '2026-08-03'
     note: 'Phase 0 locked — DOKS prod cutover; F8→DO Postgres; Supabase Auth long-term (amend F21); sessions DO Postgres logged-in / guest local+notice+F22; #830 amend Auth-kept; D-S038-fn=1,1,1 F30+F31 (deepen F5,F7,F8,F21,F22,M4); D-S038-tp=1,1,1 Test Plan + lean remaining standing docs; D-S038-01-gate-a=1 lean docs accepted Gate A (gaps→04); D-S038-02-batch-c=1,1,1 C1–C5 fixed; D-S038-02-phase-a=1 Gate A PASS → 04 (03 skipped); D-S038-04-b1=1,2,1,1 M0–M7; JWT=JWKS-only; Alembic under apps/backend; restore packages/auth from c9cebfa^ strip admin; D-S038-04-b2=1,1,1(+CI),1 placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 Accepted at Gate B (D-S038-04-plan=1); 04 COMPLETE → 07 @ T0.1'
+    D-S038-13: '1'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -69,22 +71,24 @@ active_session:
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE — Phase 0+Fn done 2026-08-03 (D-S038-fn=1,1,1); scoped brief + routing-plan + context; handoff 01-requirements'
   - stage: 16-evolve
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-03'
     started_at: '2026-08-03'
-    skip_rationale: null
-    note: 'Phase D — 13-deploy-smoke in_progress (smoke green; awaiting D-S038-13)'
+    skip_rationale:
+    note: 'COMPLETE — D-S038-13=1 close; EV-031 Phase 4; F30/F31 Done; provisional DOKS; residuals DNS/GHCR'
+    completed: '2026-08-03'
+    completed_at: '2026-08-03'
   - stage: 01-requirements
     required: true
     mode: delta
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — D-S038-tp=1,1,1 lean docs accepted Gate A (D-S038-01-gate-a); commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan'
   - stage: 02-verify-plan
     required: true
@@ -92,7 +96,7 @@ active_session:
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; M1–M3 keep Proposed/draft; reports/verify-plan-audit.md; handoff 04-tech-plan; #842/#830/#712'
   - stage: 04-tech-plan
     required: true
@@ -102,7 +106,7 @@ active_session:
     started_at: '2026-08-03T18:31:51Z'
     completed: '2026-08-03'
     completed_at: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
   - stage: 07-build
     required: true
@@ -111,7 +115,7 @@ active_session:
     started_at: '2026-08-03'
     completed: '2026-08-03'
     completed_at: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0; #842/#830/#712'
   - stage: 08-verify-build
     required: true
@@ -123,7 +127,7 @@ active_session:
     completed_at: '2026-08-03'
     overall: pass
     report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; handoff 09+10 parallel; #842/#830/#712'
   - stage: 09-qa
     required: true
@@ -135,7 +139,7 @@ active_session:
     completed_at: '2026-08-03'
     overall: pass_with_advisories
     report: docs/sessions/S038-platform-independence-842/reports/qa-report.md
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (evolve_delta) — pass_with_advisories; report qa-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
   - stage: 10-e2e
     required: true
@@ -147,7 +151,7 @@ active_session:
     completed_at: '2026-08-03'
     overall: pass
     report: docs/sessions/S038-platform-independence-842/reports/e2e-report.md
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (evolve_delta) — pass; report e2e-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
   - stage: 11-verify-impl
     required: true
@@ -159,7 +163,7 @@ active_session:
     completed_at: '2026-08-03'
     overall: pass
     report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
   - stage: 12-verify-deploy
     required: true
@@ -171,17 +175,20 @@ active_session:
     completed_at: '2026-08-03'
     overall: pass
     report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — D-S038-12=1 approve mitigations+rollback; overall pass; tip b4feac02; handoff 13-deploy-smoke; #842/#830/#712'
   - stage: 13-deploy-smoke
     required: true
-    status: in_progress
+    status: completed
     mode: delta
     started: '2026-08-03'
     started_at: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
-    note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13 approval; tip pending commit'
+    note: 'COMPLETE D-S038-13=1'
+    completed: '2026-08-03'
+    completed_at: '2026-08-03'
+    overall: pass
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -194,19 +201,19 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: '13-deploy-smoke in_progress — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13; tip pending commit'
+  note: S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; progress 35/35; Phase 4 closeout docs — evolve-report-EV-031.md written; pr_url null until PR created
   routing_plan_07_build: completed
-  current_task: null
-  active_task: null
+  current_task:
+  active_task:
   active_task_status: completed
-  awaiting_user_decision: D-S038-13
-  next_task: null
-  blocked_task: null
-  blocked_task_reason: null
+  awaiting_user_decision:
+  next_task:
+  blocked_task:
+  blocked_task_reason:
   progress: 35/35
   tip_sha: b4feac02
   tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: 'tip pending commit — smoke report written; awaiting D-S038-13'
+  tip_note: Phase 4 close D-S038-13=1
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -217,14 +224,32 @@ active_session:
   t7_4_deploy_report: docs/sessions/S038-platform-independence-842/reports/deploy-report.md
   t7_4_corpus_parity_note: docs/sessions/S038-platform-independence-842/reports/corpus-parity-note.md
   artifacts:
-  - docs/sessions/S038-platform-independence-842/reports/evolve-summary.md
-  - docs/sessions/S038-platform-independence-842/reports/deploy-report.md
-  - docs/sessions/S038-platform-independence-842/reports/corpus-parity-note.md
-  - docs/sessions/S038-platform-independence-842/reports/qa-report.md
-  - docs/sessions/S038-platform-independence-842/reports/e2e-report.md
-  - docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-  - docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
-  - docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+  - path: docs/sessions/S038-platform-independence-842/reports/evolve-summary.md
+    status: completed
+  - path: docs/sessions/S038-platform-independence-842/reports/deploy-report.md
+    status: completed
+  - path: docs/sessions/S038-platform-independence-842/reports/corpus-parity-note.md
+    status: completed
+  - path: docs/sessions/S038-platform-independence-842/reports/qa-report.md
+    status: completed
+  - path: docs/sessions/S038-platform-independence-842/reports/e2e-report.md
+    status: completed
+  - path: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+    status: completed
+  - path: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+    status: completed
+  - path: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+    status: completed
+    note: COMPLETE D-S038-13=1
+  - path: docs/sessions/S038-platform-independence-842/session-brief.md
+    status: approved
+  - path: docs/sessions/S038-platform-independence-842/routing-plan.md
+    status: approved
+  - path: docs/context/platform-independence-842.md
+    status: written
+  - path: docs/evolve-report-EV-031.md
+    status: completed
+    note: Phase 4 closeout — D-S038-13=1
   active_milestone: M7
   next_milestone: M7
   t6_4_complete: true
@@ -236,7 +261,36 @@ active_session:
   m5_08_tip_sha: 7a2cb7d0
   m7_complete: true
   m7_tip_sha: f1e2389d
-sessions:
+  close_decision_id: D-S038-13
+  close_note: D-S038-13=1 — approve 13 PASS; close Phase D / cycle; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; EV-031/S038 closed 2026-08-03
+  completed_at: '2026-08-03'
+  pr_url:
+  pr_number:
+  pr_status:
+  decision_refs:
+  - D-S038-open
+  - D-S038-doks-depth
+  - D-S038-f8
+  - D-S038-route
+  - D-S038-auth-model
+  - D-S038-session-store
+  - D-S038-830-amend
+  - D-S038-fn
+  - D-S038-tp
+  - D-S038-01-gate-a
+  - D-S038-02-batch-c
+  - D-S038-02-phase-a
+  - D-S038-04-b1
+  - D-S038-04-b2
+  - D-S038-04-plan
+  - D-S038-continue
+  - D-S038-t63-path
+  - D-S038-t63-waive
+  - D-S038-t65-waive
+  - D-S038-phase-c
+  - D-S038-11
+  - D-S038-12
+  - D-S038-13
 - id: S037-quality-residuals-831
   type: feature
   intent: |
@@ -267,11 +321,11 @@ sessions:
     mode: scoped
     required: true
     status: completed
-    skip_rationale: null
+    skip_rationale:
   - stage: 16-evolve
     required: true
     status: completed
-    skip_rationale: null
+    skip_rationale:
     started: '2026-08-02'
     completed: '2026-08-03'
     note: 'COMPLETE — D-S037-13=1 close; EV-030 Phase 4 complete; progress 27/27'
@@ -281,7 +335,7 @@ sessions:
     status: completed
     started: '2026-08-02'
     completed: '2026-08-02'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
   - stage: 02-verify-plan
     required: true
@@ -289,7 +343,7 @@ sessions:
     status: completed
     started: '2026-08-02'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1 (D-S037-02-batch-f); verify-plan-audit.md; handoff 04-tech-plan; #831→#829→#820'
   - stage: 04-tech-plan
     required: true
@@ -297,58 +351,58 @@ sessions:
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; #831→#829→#820'
   - stage: 07-build
     required: true
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
   - stage: 08-verify-build
     required: true
     status: completed
     completed: '2026-08-03'
     started: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
   - stage: 09-qa
     required: true
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — T4.2; qa-report.md pass_with_advisories; H4–H5 → T4.4'
   - stage: 10-e2e
     required: true
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — T4.2; e2e-report.md T0 PASS; H4–H5 → T4.4'
   - stage: 11-verify-impl
     required: true
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — T4.3; D-S037-11=1; verify-impl.md approved; tip 3889e4c'
   - stage: 12-verify-deploy
     required: true
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE (delta) — T4.3; D-S037-12=1; deploy-checklist.md READY'
   - stage: 13-deploy-smoke
     required: true
     status: completed
     started: '2026-08-03'
     completed: '2026-08-03'
-    skip_rationale: null
+    skip_rationale:
     note: 'COMPLETE — T4.4 PASS @ 8bd111c; D-S037-13=1 close approved; report deploy-smoke.md; H1/H0c/H3/H4/H5 PASS'
-  current_stage: null
+  current_stage:
   started_at: '2026-08-02'
   context_briefs:
   - docs/context/quality-residuals-831.md
@@ -6320,15 +6374,15 @@ stages:
     tip_note: '[T6.5] Render suspended; 07-build COMPLETE'
     progress: 35/35
     current_milestone: M7
-    current_task: null
+    current_task:
     active_milestone: M7
-    active_task: null
+    active_task:
     active_task_status: completed
     next_stage: 09-qa
-    next_task: null
+    next_task:
     next_milestone: M7
-    blocked_task: null
-    blocked_task_reason: null
+    blocked_task:
+    blocked_task_reason:
     t7_1_complete: true
     t7_2_complete: true
     t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -6404,8 +6458,6 @@ stages:
     t5_2_complete_s038: true
     t5_3_complete_s038: true
     t5_4_complete_s038: true
-    m5_complete: true
-    m5_tip_sha: e2e43a83
     issue_820_closed: true
     semver_tac2iwxxm: 0.2.4
     semver_decision_id: D-S037-semver-tac2iwxxm
@@ -6423,10 +6475,6 @@ stages:
     pr_m2_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
     pr_m2_status: open
     pr_m2_note: 'PR-M2 updates same PR #832; 08 M2 PASS'
-    ci_run: '30818578657'
-    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657
-    ci_status: success
-    ci_note: 'M2 push CI SUCCESS; FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable)'
     previous_decision_refs:
     - D-S037-04-plan
     - D-S037-04-batch-2
@@ -6534,11 +6582,11 @@ stages:
       progress: 35/35
       active_milestone: M7
       current_milestone: M7
-      active_task: null
-      current_task: null
+      active_task:
+      current_task:
       active_task_status: completed
       next_stage: 09-qa
-      next_task: null
+      next_task:
       next_milestone: M7
       m5_complete: true
       m5_tip_sha: e2e43a83
@@ -6577,8 +6625,6 @@ stages:
       t5_2_complete: true
       t5_3_complete: true
       t5_4_complete: true
-      m5_complete: true
-      m5_tip_sha: e2e43a83
       pr_m1_number: 832
       pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
       pr_m1_status: open
@@ -6586,55 +6632,17 @@ stages:
       pr_m2_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
       pr_m2_status: open
       pr_m2_note: 'PR-M2 updates same PR #832; 08 M2 PASS'
-      feature_ids:
-      - F29
-      - F23
-      - F12
-      - F2
-      - F13
-      - F9
-      - F26
-      - F27
-      decision_refs:
-      - D-S037-04-plan
-      - D-S037-04-batch-2
-      - D-S037-04-batch-1
-      - D-S037-02-phase-a
-      - D-S037-02-batch-f
-      - D-S037-E30-M
-      - D-S037-08-m1-pass
-      - D-S037-08-m2-pass
-      - D-S037-08-m3-pass
-      - D-S037-semver-none
-      - D-S037-T2.3-oos
-      - D-S037-ui-preview
-      artifacts:
-      - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
-      - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
-      - docs/sessions/S037-quality-residuals-831/reports/t0.1-harness-design-note.md
-      - docs/sessions/S037-quality-residuals-831/reports/t0.2-unified-inventory-sketch.md
-      - docs/sessions/S037-quality-residuals-831/reports/t0.4-m0-exit-checklist.md
-      - docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
-      - docs/sessions/S037-quality-residuals-831/reports/verification-report-m2.md
-      - docs/sessions/S037-quality-residuals-831/reports/t2.3-tc-geometry-oos.md
-      - docs/sessions/S037-quality-residuals-831/reports/t2.4-a6-2-tc-catalog-unlock.md
-      - docs/sessions/S037-quality-residuals-831/reports/t2.6-829-closeout.md
-      - docs/sessions/S037-quality-residuals-831/reports/t3.1-vaa-tca-residual-baseline.md
-      - docs/sessions/S037-quality-residuals-831/reports/t3.2-vaa-tca-structured-decode.md
-      - docs/sessions/S037-quality-residuals-831/reports/t3.3-vaa-tca-residual-shrink.md
-      - docs/sessions/S037-quality-residuals-831/reports/t3.4-820-closeout.md
-      - tests/quality_matrices/
     substeps:
       task_loop:
         status: completed
-        current_task: null
-        active_task: null
+        current_task:
+        active_task:
         active_task_status: completed
         active_milestone: M7
         phase: C
         milestone: M7
         next_stage: 09-qa
-        next_task: null
+        next_task:
         notes: '07-build COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0; Phase C → Phase D'
     delta_substages:
     - session_id: S038-platform-independence-842
@@ -6669,11 +6677,11 @@ stages:
       progress: 35/35
       active_milestone: M7
       current_milestone: M7
-      active_task: null
-      current_task: null
+      active_task:
+      current_task:
       active_task_status: completed
       next_stage: 09-qa
-      next_task: null
+      next_task:
       next_milestone: M7
       m5_complete: true
       m5_tip_sha: e2e43a83
@@ -6712,8 +6720,6 @@ stages:
       t5_2_complete: true
       t5_3_complete: true
       t5_4_complete: true
-      m5_complete: true
-      m5_tip_sha: e2e43a83
       artifacts:
       - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
       - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
@@ -7478,7 +7484,7 @@ stages:
     previous_completed: '2026-08-02'
     previous_session_id: S036-eight-family-ahl-rules-823
     previous_evolve_cycle_id: EV-029
-    previous_tip_sha: 0e34866
+    previous_tip_sha: 0e00000
     previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
     previous_overall: pass
     previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md
@@ -7538,7 +7544,7 @@ stages:
       completed: '2026-08-02'
       completed_at: '2026-08-02'
       branch: evolve/EV-029-eight-family-ahl-rules
-      tip_sha: 0e34866
+      tip_sha: 0e00000
       tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
       overall: pass
       report: docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md
@@ -7679,8 +7685,6 @@ stages:
     - 2026-07-12 S008 / EV-006 — pass_with_advisories; see qa-report.md
     - 2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
-    started: '2026-08-02'
-    note: 'COMPLETE (delta) — T12.4; report docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md; 100-pass smoke batch; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
   11-verify-impl:
     status: completed
     started_at: '2026-08-03'
@@ -7707,10 +7711,10 @@ stages:
     tip_sha: b4feac02
     tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     active_milestone: M7
-    active_task: null
+    active_task:
     active_task_status: completed
     progress: 35/35
-    awaiting_user_decision: null
+    awaiting_user_decision:
     decision_id: D-S038-11
     substeps:
       collect_results:
@@ -7748,7 +7752,7 @@ stages:
       feature_ids:
       - F30
       - F31
-      awaiting_user_decision: null
+      awaiting_user_decision:
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
@@ -7781,249 +7785,8 @@ stages:
       - F26
       - F27
     started_at_prev: '2026-08-02'
-    started: '2026-08-02'
-    completed_at: '2026-08-02'
-    completed: '2026-08-02'
-    previous_started_at: '2026-07-29'
-    previous_completed_at: '2026-07-29'
-    previous_session_id: S026-airmet-quality-wmo-examples
-    previous_evolve_cycle_id: EV-020
-    previous_tip_sha: 3027305
-    previous_tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    tip_sha: 4f8e9a5
-    tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
-    mode: delta
-    note: 'COMPLETE (delta) — T12.5; D-S036-11 approved (2,1,1,1); report docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-impl.md; tip 4f8e9a5; progress 46/48; next T12.6; #828; #823'
-    report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-impl.md
-    overall: approved
-    active_milestone: M12
-    active_task: T12.5
-    active_task_status: completed
-    progress: 48/48
     decision_ids:
     - D-S036-11
-    substeps:
-      collect_results:
-        status: pending
-      feature_completeness:
-        status: pending
-      journey_signoff:
-        status: pending
-      feature_approval:
-        status: pending
-      fixes_applied:
-        status: pending
-      scope_analysis:
-        status: pending
-      summary:
-        status: pending
-    delta_substages:
-    - id: S038-platform-independence-842
-      session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
-      skill_id: 11-verify-impl
-      status: completed
-      mode: delta
-      started: '2026-08-03'
-      started_at: '2026-08-03'
-      completed: '2026-08-03'
-      completed_at: '2026-08-03'
-      branch: evolve/EV-031-platform-independence-842
-      tip_sha: b4feac02
-      tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-      report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-      note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
-      overall: pass
-      decision_id: D-S038-11
-      feature_ids:
-      - F30
-      - F31
-      awaiting_user_decision: null
-    - id: S036-eight-family-ahl-rules-823
-      session_id: S036-eight-family-ahl-rules-823
-      evolve_cycle_id: EV-029
-      skill_id: 11-verify-impl
-      status: completed
-      mode: delta
-      started: '2026-08-02'
-      started_at: '2026-08-02'
-      completed: '2026-08-02'
-      completed_at: '2026-08-02'
-      branch: evolve/EV-029-eight-family-ahl-rules
-      tip_sha: 4f8e9a5
-      tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
-      note: 'COMPLETE (delta) — T12.5; D-S036-11 approved (2,1,1,1); report docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-impl.md; tip 4f8e9a5; progress 46/48; next T12.6; #828; #823'
-      report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verify-impl.md
-      overall: approved
-      active_milestone: M12
-      active_task: T12.5
-      active_task_status: completed
-      progress: 48/48
-      decision_id: D-S036-11
-      feature_ids:
-      - F28
-      - F6
-      - F12
-      - F2
-      - F13
-      - F15
-      - F20
-      - F23
-      - F24
-      - F26
-      - F27
-    - id: S026-airmet-quality-wmo-examples
-      session_id: S026-airmet-quality-wmo-examples
-      evolve_cycle_id: EV-020
-      skill_id: 11-verify-impl
-      status: completed
-      started: '2026-07-29'
-      started_at: '2026-07-29'
-      completed: '2026-07-29'
-      completed_at: '2026-07-29'
-      mode: full
-      branch: evolve/EV-020-airmet-quality
-      tip_sha: 3027305
-      tip_sha_full: 30273051d36823ffc621a095c6bc5c326609f2aa
-      note: T6.4 PASS — AC all approved; preview declined; verify-impl.md
-      active_milestone: M6
-      active_task: T6.4
-      active_task_status: completed
-      progress: 26/~28
-      overall: pass
-      decision_ids:
-      - D-S026-E20-11-ac-all
-      - D-S026-E20-11-preview-no
-      feature_ids:
-      - F24
-      - F25
-      deepen:
-      - F9
-      - F7.g
-      report: docs/sessions/S026-airmet-quality-wmo-examples/reports/verify-impl.md
-    - id: S023-public-app-privacy
-      session_id: S023-public-app-privacy
-      evolve_cycle_id: EV-017
-      skill_id: 11-verify-impl
-      status: completed
-      started: '2026-07-28'
-      started_at: '2026-07-28'
-      completed: '2026-07-28'
-      completed_at: '2026-07-28'
-      mode: full
-      branch: evolve/EV-017-public-app-privacy
-      tip_sha: 17ad563
-      tip_sha_full: 17ad5630c6a11e721a4a0871718d43cd9d5d36d2
-      note: 'COMPLETE 2026-07-28 — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; artifacts verify-impl.md + implementation-verification.md; tip 17ad563; next 12-verify-deploy; #783'
-      report: docs/sessions/S023-public-app-privacy/reports/verify-impl.md
-      overall: approved
-      feature_ids:
-      - F21
-      - F22
-    - id: S021-golden-examples-ui
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
-      skill_id: 11-verify-impl
-      status: completed
-      started: '2026-07-26'
-      started_at: '2026-07-26'
-      mode: full
-      branch: evolve/EV-016-golden-examples-ui
-      tip_sha: 8af2eca
-      tip_sha_full: 8af2eca6e403524df9a8a92b21c811d8b119da05
-      note: 'COMPLETE 2026-07-26 (E16-19=A) — Approve UJ-032 + F7.g (T0 + local preview; H4–H5 waived to 13; QA-001–004 accepted); overall approved; artifact docs/sessions/S021-golden-examples-ui/reports/verify-impl.md; gates.c_to_d + phase_c passed; phase_d/deploy remain pending; next: open minor PR then 13-deploy-smoke'
-      completed: '2026-07-26'
-      completed_at: '2026-07-26'
-      report: docs/sessions/S021-golden-examples-ui/reports/verify-impl.md
-      overall: approved
-      decision_id: E16-19
-    - id: S020-aerodrome-quality
-      session_id: S020-aerodrome-quality
-      evolve_cycle_id: EV-015
-      skill_id: 11-verify-impl
-      status: completed
-      started_at: '2026-07-22'
-      started: '2026-07-22'
-      completed_at: '2026-07-22'
-      completed: '2026-07-22'
-      mode: full
-      overall: pass
-      note: T5.6 COMPLETE — verify-impl.md PASS D-S020-EV015-11-A; F20+F6/F12 deepen approved_live_deferred (H4–H5 deferred to T5.7); progress 27/28; tip dc64b77 (T5.6 tip recorded)
-      active_milestone: M5
-      active_task: T5.6
-      active_task_status: completed
-      decision_id: D-S020-EV015-11-A
-      branch: evolve/EV-015-aerodrome-quality
-      progress: 27/28
-      tip_sha: dc64b77
-      tip_sha_full: dc64b77d07913c582668239c537832be381efad1
-      report: docs/sessions/S020-aerodrome-quality/reports/verify-impl.md
-      feature_signoffs:
-        F20: approved_live_deferred
-        F6: approved_live_deferred
-        F12: approved_live_deferred
-    - id: S019-dissemination-upload
-      session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
-      skill_id: 11-verify-impl
-      status: completed
-      started_at: '2026-07-21'
-      started: '2026-07-21'
-      completed_at: '2026-07-21'
-      completed: '2026-07-21'
-      mode: full
-      note: verify-impl.md PASS D-S019-EV014-Q40A-11
-    - id: S015-metar-lint-quality
-      session_id: S015-metar-lint-quality
-      evolve_cycle_id: EV-011
-      status: completed
-      started_at: '2026-07-19'
-      completed_at: '2026-07-20'
-      mode: full
-      note: F15 approved — verify-impl.md; phase_d work complete pending close
-      active_milestone: M5
-      active_task: T5.9
-      active_task_status: completed
-    - id: S014-package-publish-validation
-      session_id: S014-package-publish-validation
-      evolve_cycle_id: EV-010
-      status: completed
-      started_at: '2026-07-19'
-      completed_at: '2026-07-19'
-      mode: full
-      overall: approved
-      note: verify-impl.md F11–F14 + journeys approved (D-S014-EV010-t63-features / D-S014-EV010-t63-journeys); hard publish/live tag/Render deferred to T6.4–T6.6
-      report: docs/sessions/S014-package-publish-validation/reports/verify-impl.md
-      active_milestone: M6
-      active_task: T6.3
-      active_task_status: completed
-    - status: completed
-      session_id: S004-issue-555-feedback
-      evolve_cycle_id: EV-004
-      completed_at: '2026-06-24'
-      overall: pass
-      report: docs/sessions/S004-issue-555-feedback/reports/verify-impl.md
-      note: UJ-001/UJ-004 approved; F1+F5 approve-fix; lint+Vitest green; T3 deferred to 12
-    - status: completed
-      session_id: S008-general-tac-iwxxm-converter
-      evolve_cycle_id: EV-006
-      started_at: '2026-07-12'
-      completed_at: '2026-07-12'
-      overall: approved
-      report: docs/sessions/S008-general-tac-iwxxm-converter/reports/verify-impl.md
-      note: F6/F2/F8 approved; F6/F8 corpus Implemented (ADR-019); live gates deferred; 12/13 not in S008 routing
-    - id: S011-f7-operator-ui
-      session_id: S011-f7-operator-ui
-      evolve_cycle_id: EV-008
-      status: completed
-      started_at: '2026-07-14'
-      completed_at: '2026-07-14'
-      mode: full
-      overall: approved_with_waivers
-      report: docs/sessions/S011-f7-operator-ui/reports/verify-impl.md
-      note: D-S011-EV008-f7-approve — F7 criteria 1–6 T0; H4–H5 waived to T6.4/CI; AdminDashboard advisory; issue closeout T6.5
     notes:
     - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 17ad563; next 12-verify-deploy; #783'
     - S021/EV-016 11-verify-impl STARTED 2026-07-26 — user approved non-deployed UI preview ("Looks good proceed"); committing 09/10 reports then running 11; tip 3d1c58b; gates.c_to_d / phase_c / phase_d remain pending (do NOT mark yet)
@@ -8044,28 +7807,7 @@ stages:
     - 2026-07-12 S008 / EV-006 — overall approved; see verify-impl.md
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first)
     skill_id: 11-verify-impl
-    decision_id: E16-19
-    # S038 active override (duplicate-key last-wins trailer)
-    status: completed
-    started: '2026-08-03'
-    started_at: '2026-08-03'
-    completed: '2026-08-03'
-    completed_at: '2026-08-03'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    mode: delta
-    overall: pass
-    note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
-    report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-    tip_sha: b4feac02
-    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
-    active_milestone: M7
-    active_task: null
-    active_task_status: completed
-    progress: 35/35
-    awaiting_user_decision: null
-    decision_id: D-S038-11
   10-e2e:
     status: completed
     started_at: '2026-08-03'
@@ -8078,7 +7820,7 @@ stages:
     previous_completed: '2026-08-02'
     previous_session_id: S036-eight-family-ahl-rules-823
     previous_evolve_cycle_id: EV-029
-    previous_tip_sha: 0e34866
+    previous_tip_sha: 0e00000
     previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
     previous_overall: pass
     previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md
@@ -8140,7 +7882,7 @@ stages:
       mode: smoke
       overall: pass
       report: docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md
-      tip_sha: 0e34866
+      tip_sha: 0e00000
       tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
       note: 'COMPLETE (smoke) — T12.4 UJ-043; report docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md; 100-pass; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
       active_milestone: M12
@@ -8508,8 +8250,8 @@ stages:
     m5_tip_sha: 7a2cb7d0
     m5_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
     active_milestone: M7
-    active_task: null
-    active_task_status: null
+    active_task:
+    active_task_status:
     progress: 35/35
     m5_boundary: true
     m5_boundary_complete: true
@@ -8641,7 +8383,7 @@ stages:
       mode: delta
       overall: pass
       report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
-      tip_sha: 0151e11
+      tip_sha: 1510e10
       tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
       active_milestone: M1
       active_task_status: completed
@@ -8661,7 +8403,7 @@ stages:
       mode: delta
       overall: pass
       report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
-      tip_sha: 0e34866
+      tip_sha: 0e00000
       tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
       active_milestone: M12
       active_task: T12.3
@@ -9019,7 +8761,7 @@ stages:
       note: 'T12.3 PASS — M12; report docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md; tip 620fa9b; next T12.4 STARTED; progress 44/48; #828; #823'
       report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
       branch: evolve/EV-029-eight-family-ahl-rules
-      tip_sha: 0e34866
+      tip_sha: 0e00000
       tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
       active_milestone: M12
       active_task: T12.3
@@ -9037,7 +8779,6 @@ stages:
       - F2
       - F13
       - F23
-    started: '2026-07-31'
   18-pr-review:
     status: completed
     started: '2026-07-12'
@@ -9087,31 +8828,11 @@ stages:
     tip_sha: b4feac02
     tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     active_milestone: M7
-    active_task: null
-    active_task_status: null
+    active_task:
+    active_task_status:
     progress: 35/35
-    awaiting_user_decision: null
-    previous_started_at: '2026-08-02'
-    started: '2026-08-02'
-    completed: '2026-08-02'
-    completed_at: '2026-08-02'
-    previous_started_at: '2026-07-28'
-    previous_completed_at: '2026-07-28'
-    previous_session_id: S023-public-app-privacy
-    previous_evolve_cycle_id: EV-017
-    previous_tip_sha: 62af980
+    awaiting_user_decision:
     previous_tip_sha_full: 62af9806b5c76711cebb8fa74b59923f8f9e9637
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    note: 'COMPLETE (delta) — T12.5; D-S036-12 READY (1,1,1); report docs/sessions/S036-eight-family-ahl-rules-823/reports/deploy-checklist.md; tip 4f8e9a5; next T12.6; #828; #823'
-    report: docs/sessions/S036-eight-family-ahl-rules-823/reports/deploy-checklist.md
-    overall: ready
-    tip_sha: 4f8e9a5
-    tip_sha_full: 4f8e9a5ef88aef18065ed4093b7ecdd163da1901
-    active_milestone: M12
-    active_task: T12.5
-    active_task_status: completed
-    progress: 48/48
     decision_ids:
     - D-S036-12
     delta_substages:
@@ -9134,7 +8855,7 @@ stages:
       feature_ids:
       - F30
       - F31
-      awaiting_user_decision: null
+      awaiting_user_decision:
       decision_id: D-S038-12
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
@@ -9265,25 +8986,7 @@ stages:
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
     # S038 active override (duplicate-key last-wins trailer)
-    status: completed
-    started: '2026-08-03'
-    started_at: '2026-08-03'
-    completed: '2026-08-03'
-    completed_at: '2026-08-03'
-    overall: pass
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    mode: delta
-    note: 'COMPLETE (delta) — D-S038-12=1 approve mitigations+rollback; overall pass; tip b4feac02; handoff 13-deploy-smoke; #842/#830/#712'
-    report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
-    tip_sha: b4feac02
-    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     tip_note: '12 signed off awaiting 13 smoke'
-    active_milestone: M7
-    active_task: null
-    active_task_status: null
-    progress: 35/35
-    awaiting_user_decision: null
     decision_id: D-S038-12
   13-deploy-smoke:
     status: completed
@@ -9293,35 +8996,31 @@ stages:
     completed: '2026-08-03'
     completed_at: '2026-08-03'
     previous_started_at: '2026-08-02'
-    started: '2026-08-02'
-    previous_started_at: '2026-08-01'
     previous_completed_at: '2026-08-01'
-    previous_session_id: S035-empiric2-ops-leftovers-781
-    previous_evolve_cycle_id: EV-028
-    previous_tip_sha: 70312dd
-    previous_tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    previous_session_id: S037-quality-residuals-831
+    previous_evolve_cycle_id: EV-030
+    previous_tip_sha: 8bd111c
+    previous_tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
     previous_overall: pass
-    previous_note: 'S035/EV-028 13-deploy-smoke COMPLETE PASS — PyPI OIDC + install smoke; tip 70312dd; #781 closed'
-    previous_session_id: S036-eight-family-ahl-rules-823
-    previous_evolve_cycle_id: EV-029
-    session_id: S037-quality-residuals-831
-    evolve_cycle_id: EV-030
-    note: 'COMPLETE — T4.4 PASS @ 8bd111c; PR #832 merged; Render REST deploy workaround; H1/H0c/H3/H4/H5 PASS; report deploy-smoke.md; D-S037-13=1 close; progress 27/27; #835'
-    tip_sha: 8bd111c
-    tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-    active_milestone: M4
+    previous_note: 'COMPLETE — T4.4 PASS @ 8bd111c; PR #832 merged; Render REST deploy workaround; H1/H0c/H3/H4/H5 PASS; report deploy-smoke.md; D-S037-13=1 close; progress 27/27; #835'
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    note: 'COMPLETE D-S038-13=1 — provisional DOKS host 5/5, H0c/H4/H5, topology 3/3, Render 503; F30/F31 Done; residuals DNS/GHCR; tip pending closeout commit'
+    tip_sha: b4feac02
+    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    active_milestone: M7
     active_task: T4.4
     active_task_status: completed
-    progress: 27/27
-    pr_number: 832
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/832
-    pr_status: merged
+    progress: 35/35
+    pr_number:
+    pr_url:
+    pr_status:
     delta_substages:
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 13-deploy-smoke
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-03'
       started_at: '2026-08-03'
@@ -9329,14 +9028,19 @@ stages:
       tip_sha: b4feac02
       tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
       report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
-      note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13 approval; tip pending commit'
+      note: 'COMPLETE D-S038-13=1'
       feature_ids:
       - F30
       - F31
       active_milestone: M7
       progress: 35/35
-      decision_id: D-S038-12
-      awaiting_user_decision: D-S038-13
+      decision_id: D-S038-13
+      awaiting_user_decision:
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      overall: pass
+      tip_note: Phase 4 close D-S038-13=1
+      pr_url:
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
@@ -9368,7 +9072,7 @@ stages:
       ci_tests: pass
       ci_deploy: fail
       ci_deploy_note: 'Deploy hook 500; Render REST deploy workaround applied'
-      pending_decision: null
+      pending_decision:
       decision_ids:
       - D-S037-13
       fe_app_chunk: App-Bhd6UU87.js
@@ -9842,25 +9546,11 @@ stages:
     - '2026-07-19 S014/EV-010 T6.5 started — D-S014-EV010-t64-merge-A; PR #726 MERGED (c73e0ad); Render redeploy + H0c/H1–H5 + H6′; PyPI Trusted Publisher BLOCKED for live tags'
     blocked: false
     blocker_issue:
-    # S038 active override (duplicate-key last-wins trailer)
-    status: in_progress
-    mode: delta
-    started: '2026-08-03'
-    started_at: '2026-08-03'
-    completed: null
-    completed_at: null
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    note: 'IN_PROGRESS (delta) — started after D-S038-12=1; tip b4feac02 awaiting smoke commits; #842/#830/#712'
-    tip_sha: b4feac02
-    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    tip_note: '12 signed off awaiting 13 smoke'
-    active_milestone: M7
-    active_task: null
-    active_task_status: null
-    progress: 35/35
-    awaiting_user_decision: null
-    decision_id: D-S038-12
+    tip_note: 'Phase 4 close D-S038-13=1'
+    awaiting_user_decision:
+    decision_id: D-S038-13
+    overall: pass
+    report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
   14-hotfix:
     status: completed
     session_id: S028-sigmet-multiline-split
@@ -9901,24 +9591,24 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
+    session_id:
+    evolve_cycle_id:
     started_at: '2026-08-03'
     started: '2026-08-03'
-    completed_at: null
-    completed: null
-    current_stage: 13-deploy-smoke
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
+    current_stage:
     phase: 1
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
     prior_completed: '2026-08-03'
-    prior_note: 'S037/EV-030 16-evolve CLOSED — D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; active_session=null'
-    note: 'Phase D — 12 COMPLETE; 13 in_progress'
+    prior_note: 'S038/EV-031 16-evolve CLOSED — D-S038-13=1; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; active_session=null'
+    note: 'COMPLETE — D-S038-13=1 close EV-031/S038; awaiting next open_session'
     tip_sha: b4feac02
     tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    tip_note: '12 signed off awaiting 13 smoke'
+    tip_note: 'Phase 4 close D-S038-13=1'
     notes:
     - '2026-08-03 S038/EV-031 12-verify-deploy COMPLETE (D-S038-12=1) — mitigations+rollback approved; overall pass; handoff 13-deploy-smoke; tip b4feac02; #842/#830/#712'
     - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
@@ -10065,8 +9755,8 @@ deployment:
       frontend: 'http://app.doks.placeholder.metar-iwxxm.local'
       note: 'Host-header via LB 168.144.12.70 (placeholder DNS); Render suspended (503 expected)'
     deploy_ids:
-      api: null
-      frontend: null
+      api:
+      frontend:
     report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
     session_id: S038-platform-independence-842
     evolve_cycle_id: EV-031
@@ -10279,6 +9969,36 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S038-13
+  date: '2026-08-03'
+  timestamp: '2026-08-03'
+  resolved_at: '2026-08-03'
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: deploy
+  status: confirmed
+  topic: 13-deploy-smoke approval + EV-031 Phase 4 / cycle close
+  summary: User D-S038-13=1 — approve 13 PASS; close Phase D / cycle; F30/F31 Done; provisional DOKS; residuals DNS/GHCR
+  decision: D-S038-13=1 — approve 13-deploy-smoke PASS and close EV-031 / S038 Phase 4.
+  user_option: '1'
+  branch: evolve/EV-031-platform-independence-842
+  tip_sha: b4feac02
+  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+  tip_note: Phase 4 close D-S038-13=1
+  report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+  related_issues:
+  - '842'
+  - '830'
+  - '712'
+  related_decisions:
+  - D-S038-11
+  - D-S038-12
+  - D-S038-t63-waive
+  - D-S038-t65-waive
+  pr_url:
 - id: D-S038-12
   date: '2026-08-03'
   timestamp: '2026-08-03'
@@ -11066,7 +10786,7 @@ decisions_log:
   topic: 'S037/EV-030 08-verify-build M1 boundary PASS'
   summary: 'M1 PASS @ tip 0151e11; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md; current_stage → 07-build for M2; about to push + open PR-M1 then continue M2 T2.1; reopen 08 for final M4'
   decision: 'Record M1 08-verify-build PASS (D-S037-08-m1-pass). Keep 08 required for final M4. Resume 07-build at M2 T2.1 after PR-M1.'
-  tip_sha: 0151e11
+  tip_sha: 1510e10
   tip_sha_full: 0151e112c1256795a98bb3582b3b33b4bf0607ea
   report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m1.md
   branch: evolve/EV-030-quality-residuals-831
@@ -11387,7 +11107,7 @@ decisions_log:
   topic: "T12.4 tip sync @ 0e34866"
   summary: "T12.4 COMPLETE @ 0e34866; tip ahead pending push or just pushed; next T12.5 pending (11-verify-impl + 12-verify-deploy); progress 45/48; #828; #823"
   decision: "Record tip_sha/tip_sha_full @ 0e34866 / 0e34866fa2ec4056535cfdcc06c7bb259067db9e. Append git_history.commits for [T12.4] docs. Keep T12.5 pending (do not start). Progress 45/48. #828; #823."
-  tip_sha: 0e34866
+  tip_sha: 0e00000
   tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
   tip_chore: done
   progress: 45/48
@@ -11401,7 +11121,7 @@ decisions_log:
   related_prs:
   - '828'
   branch: evolve/EV-029-eight-family-ahl-rules
-  commit: 0e34866
+  commit: 0e00000
   commit_message: "[T12.4] docs: 09-qa delta + 10-e2e smoke UJ-043"
 - id: NOTE-S036-EV029-T124-complete
   date: '2026-08-02'
@@ -11420,7 +11140,7 @@ decisions_log:
   topic: "T12.4 COMPLETE — 09-qa delta + 10-e2e smoke UJ-043"
   summary: "T12.4 COMPLETE @ 0e34866; tip ahead pending push or just pushed; next T12.5 pending (11-verify-impl + 12-verify-deploy); progress 45/48; #828; #823"
   decision: "Mark T12.4 COMPLETE. Progress 45/48. active_task T12.5 pending (do not start). Mirror stages.09-qa completed (delta) with report docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md. Mirror stages.10-e2e completed (smoke) with report docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md. tip synced to 0e34866 ([T12.4] docs commit). tip ahead pending push or just pushed. T12.5 remains pending (do not start). H4–H5 deferred T12.6/13. #828; #823."
-  tip_sha: 0e34866
+  tip_sha: 0e00000
   tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
   tip_chore: done
   progress: 45/48
@@ -11437,7 +11157,7 @@ decisions_log:
   related_prs:
   - '828'
   branch: evolve/EV-029-eight-family-ahl-rules
-  commit: 0e34866
+  commit: 0e00000
   commit_message: "[T12.4] docs: 09-qa delta + 10-e2e smoke UJ-043"
 - id: NOTE-S036-EV029-T124-started
   date: '2026-08-02'
@@ -11456,7 +11176,7 @@ decisions_log:
   topic: "T12.4 STARTED — 09-qa delta + 10-e2e smoke UJ-043"
   summary: "T12.3 COMPLETE @ 620fa9b; T12.4 STARTED — 09-qa delta + 10-e2e smoke UJ-043; progress 44/48; tip 620fa9b; #828; #823"
   decision: "T12.3 COMPLETE @ 620fa9b (tip chore landed). Set T12.4 active_task_status in_progress. Mark stages.09-qa (delta) and stages.10-e2e (smoke) in_progress for EV-029. Progress remains 44/48. #828; #823."
-  tip_sha: 0e34866
+  tip_sha: 0e00000
   tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
   tip_chore: done
   progress: 44/48
@@ -11673,7 +11393,7 @@ decisions_log:
   topic: "T11.7 push + CI green @ 0538e35"
   summary: "Pushed tip 0538e35 (allowlist fix; history e4f62b9 + 43f6148). ahead_of_origin=0. SWXA quality run 30769943934 SUCCESS; CI/CD run 30769943922 SUCCESS. Active remains T12.1 pending / M12 / 41/48."
   decision: "After T11.7 push: tip_sha 0538e35; recorded commits 43f6148 (workflow tip) and 0538e35 (allowlist fix). CI confirmed green (SWXA quality + CI/CD). Active task unchanged: T12.1 pending @ M12; progress 41/48."
-  tip_sha: 0538e35
+  tip_sha: 5380e34
   tip_sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
   progress: 42/48
   active_task: T12.1
@@ -20199,6 +19919,16 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/evolve-report-EV-031.md
+  kind: evolve-report
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 16-evolve
+  skill_id: 16-evolve
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: completed
+  note: Phase 4 closeout docs — evolve-report-EV-031.md written; D-S038-13=1
 - path: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
   kind: deploy-smoke-report
   session_id: S038-platform-independence-842
@@ -29283,7 +29013,7 @@ evolve_cycles:
       completed: '2026-08-02'
       overall: pass
       report: docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.3.md
-      tip_sha: 0e34866
+      tip_sha: 0e00000
       tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
       active_milestone: M12
       active_task: T12.3
@@ -29577,7 +29307,7 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: 'Standard — D-S037-route; skip 03/05/06'
-  current_stage: null
+  current_stage:
   active_task: T4.5
   active_milestone: M4
   active_task_status: completed
@@ -29680,13 +29410,9 @@ evolve_cycles:
       note: 'COMPLETE — T4.4 PASS @ 8bd111c; D-S037-13=1 close'
       report: docs/sessions/S037-quality-residuals-831/reports/deploy-smoke.md
       overall: pass
-      pending_decision: null
+      pending_decision:
       decision_ids:
       - D-S037-13
-    16-evolve:
-      status: completed
-      completed: '2026-08-03'
-      note: 'COMPLETE — D-S037-13=1 close; EV-030/S037 archived'
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -29813,11 +29539,11 @@ evolve_cycles:
   - F22
   - M4
   title: 'Platform independence #842 / #830 / #712'
-  status: in_progress
+  status: completed
   phase: 1
   started: '2026-08-03'
   started_at: '2026-08-03'
-  completed: null
+  completed: '2026-08-03'
   scope_summary: |
     Full epic #842 including #830 strip Supabase AND #712 DOKS cutover planning + IaC
     (user expanded beyond soft deferral). Cycle type: general platform-independence
@@ -29865,6 +29591,7 @@ evolve_cycles:
       02 Gate A: D-S038-02-phase-a=1 PASS → 04 (03 skipped).
       04 Batch 1: D-S038-04-b1=1,2,1,1 M0–M7; JWT=JWKS-only; Alembic apps/backend; restore packages/auth c9cebfa^ strip admin.
       04 Batch 2: D-S038-04-b2=1,1,1(+CI),1 placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B.
+    D-S038-13: '1'
   routing_plan:
     required_stages:
     - 00-context
@@ -29884,20 +29611,20 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-    note: 'Standard — 13-deploy-smoke in_progress (smoke green; awaiting D-S038-13; tip pending commit); 03/05/06 skipped'
-  current_stage: 13-deploy-smoke
-  current_stage_note: '13-deploy-smoke in_progress — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13; tip pending commit'
-  active_task: null
+    note: 'Standard — COMPLETE D-S038-13=1; 03/05/06 skipped'
+  current_stage:
+  current_stage_note: 'COMPLETE — D-S038-13=1; Phase D closed'
+  active_task:
   active_task_status: completed
-  awaiting_user_decision: D-S038-13
+  awaiting_user_decision:
   progress: 35/35
   tip_sha: b4feac02
   tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: 'tip pending commit — smoke report written; awaiting D-S038-13'
+  tip_note: 'Phase 4 close D-S038-13=1'
   active_milestone: M7
   next_milestone: M7
-  blocked_task: null
-  blocked_task_reason: null
+  blocked_task:
+  blocked_task_reason:
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -29922,11 +29649,13 @@ evolve_cycles:
       completed: '2026-08-03'
       note: 'COMPLETE — Phase 0+Fn done; brief+routing+context; handoff 01'
     16-evolve:
-      status: in_progress
+      status: completed
       mode: orchestrator
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'Phase D — 13-deploy-smoke in_progress (smoke green; awaiting D-S038-13)'
+      note: 'COMPLETE — D-S038-13=1 close; EV-031 Phase 4; F30/F31 Done'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
     01-requirements:
       status: completed
       mode: delta
@@ -29956,15 +29685,15 @@ evolve_cycles:
       note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0; #842/#830/#712'
       progress: 35/35
       current_milestone: M7
-      current_task: null
+      current_task:
       active_milestone: M7
-      active_task: null
+      active_task:
       active_task_status: completed
       next_stage: 09-qa
-      next_task: null
+      next_task:
       next_milestone: M7
-      blocked_task: null
-      blocked_task_reason: null
+      blocked_task:
+      blocked_task_reason:
       t7_1_complete: true
       t7_2_complete: true
       t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -30016,8 +29745,6 @@ evolve_cycles:
       t5_2_complete: true
       t5_3_complete: true
       t5_4_complete: true
-      m5_complete: true
-      m5_tip_sha: e2e43a83
       tip_sha: 14661de0
       tip_sha_full: 14661de0a69a7e6deb243224c138a7575b97be22
       tip_note: '[T6.5] Render suspended; 07-build COMPLETE'
@@ -30040,8 +29767,8 @@ evolve_cycles:
       m5_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
       m7_pack: true
       active_milestone: M7
-      active_task: null
-      active_task_status: null
+      active_task:
+      active_task_status:
       tip_sha: 67a482a1
       tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
       progress: 35/35
@@ -30088,13 +29815,18 @@ evolve_cycles:
       note: 'COMPLETE (delta) — D-S038-12=1 approve mitigations+rollback; overall pass; tip b4feac02; handoff 13-deploy-smoke; #842/#830/#712'
       decision_id: D-S038-12
     13-deploy-smoke:
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-03'
       started_at: '2026-08-03'
       report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
-      note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13 approval; tip pending commit'
-      awaiting_user_decision: D-S038-13
+      note: 'COMPLETE D-S038-13=1'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      overall: pass
+      pending_decision:
+      decision_ids:
+      - D-S038-13
     03-plan-tooling:
       status: skipped
       skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
@@ -30108,16 +29840,19 @@ evolve_cycles:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
-    phase_d: pending
-    deploy: pending
+    phase_d: passed
+    deploy: passed
   adrs:
   - ADR-033
   artifacts:
+  - path: docs/evolve-report-EV-031.md
+    status: completed
+    note: Phase 4 closeout docs — evolve-report-EV-031.md written; D-S038-13=1
   - path: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
     status: approved
     note: '12 COMPLETE — D-S038-12=1 mitigations+rollback approved; overall pass; handoff 13'
@@ -30152,8 +29887,8 @@ evolve_cycles:
     status: present
     note: 'DOKS cluster smoke PASS (LB 168.144.12.70); migrate APPLY+VERIFY PASS; Alembic initContainer disabled'
   - path: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
-    status: present
-    note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13; tip pending commit'
+    status: completed
+    note: 'COMPLETE D-S038-13=1 — provisional DOKS smoke PASS'
   - path: docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
     status: present
     note: '02 Gate A PASS; Batch C 1,1,1; C1–C5 fixed'
@@ -30168,8 +29903,8 @@ evolve_cycles:
   - path: docs/context/platform-independence-842.md
     status: present
   - path: docs/decisions/evolve-decisions.md
-    status: in_progress
-    note: 'EV-031 Phase 0 + E31-tp locked; D-S038-04-b1 + D-S038-04-b2 recorded; Gate B pending'
+    status: completed
+    note: 'EV-031 Phase 4 close — D-S038-13=1'
   - path: docs/decisions/requirements-decisions.md
     status: present
   - path: docs/test-plan.md
@@ -30217,11 +29952,11 @@ evolve_cycles:
   - D-S038-t65-waive
   - D-S038-phase-c
   - D-S038-11
-  tip_sha: b4feac02
-  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
-  note: '11 complete awaiting 12 signoff'
+  - D-S038-12
+  - D-S038-13
+  note: 'S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; progress 35/35; evolve-report-EV-031.md; pr_url null until PR created'
   notes:
+  - 2026-08-03 S038/EV-031 COMPLETE — D-S038-13=1 close; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; evolve-report-EV-031.md; pr_url null until PR created
   - '2026-08-03 S038/EV-031 11-verify-impl COMPLETE (D-S038-11=1 approve F30+F31; UI preview declined); 12-verify-deploy in_progress; tip 4caaae1b; #842/#830/#712'
   - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
@@ -30264,22 +29999,28 @@ evolve_cycles:
   - '2026-08-03 S038/EV-031 D-S038-fn (1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; 00 COMPLETE; 01-requirements in_progress (delta); commit open; #842/#830/#712'
   - '2026-08-03 S038/EV-031 Phase 0 LOCKED → Phase 1 — decisions D-S038-open=3,1,1,1; doks-depth=3; f8=1 (DO Postgres); route=1; auth-model=1 (Supabase Auth / amend F21); session-store=1 (DO Postgres logged-in; guest local+notice+F22); 830-amend=1; feature_ids [] pending D-S038-fn; branch exists locally; 16-evolve in_progress'
   - '2026-08-03 S038/EV-031 OPEN — open_session; Phase 0 choices (scope opt3 #842+#830+#712, general, Standard, UI preview Yes); session_counter 38; evolve_cycle_counter 31; branch evolve/EV-031-platform-independence-842 (pending create); 00-context in_progress'
+  close_decision_id: D-S038-13
+  close_note: D-S038-13=1 — approve 13 PASS; close Phase D / cycle; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; EV-031/S038 closed 2026-08-03
+  pr_url:
+  pr_number:
+  pr_status:
 git_history:
   current_branch: evolve/EV-031-platform-independence-842
   ahead_of_origin: 52
   pushed: false
-  pending_commit: null
+  pending_commit:
   dirty: true
   tip_sha: b4feac02
   tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
+  tip_note: 'Phase 4 close D-S038-13=1'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-031-platform-independence-842
-  note: '09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED; awaiting UI preview + F30/F31 approval; #842/#830/#712'
+  note: 'S038/EV-031 closed D-S038-13=1; tip pending closeout commit; active_session=null'
   notes:
+  - 2026-08-03 S038/EV-031 Phase 4 close D-S038-13=1 — tip_sha will update after closeout commit; active_session=null
   - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
@@ -31845,7 +31586,7 @@ git_history:
     note: 'T6.2 ops-first — re-enable Alembic initContainer on ev031-doks image; kustomization excludes secret-*.yaml; D-S038-t63-path=1; tip'
 
   - sha: 72e9320491ce72ba4a6be169acf817fa578a87e9
-    short: 72e93204
+    short: .inf
     branch: evolve/EV-031-platform-independence-842
     message: "[T6.2] fix: rewrite asyncpg ssl=require for Alembic/psycopg"
     stage: 07-build
@@ -32904,7 +32645,7 @@ git_history:
     - docs/sessions/S036-eight-family-ahl-rules-823/routing-plan.md
     - docs/decisions/evolve-decisions.md
     - workflow-state.yaml
-  - sha: 0e34866
+  - sha: 0e00000
     sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
     branch: evolve/EV-029-eight-family-ahl-rules
     message: "[T12.4] docs: 09-qa delta + 10-e2e smoke UJ-043"
@@ -32975,7 +32716,7 @@ git_history:
     - docs/sessions/S036-eight-family-ahl-rules-823/reports/verification-report-m12-t12.1.md
     - packages/tac2iwxxm/tests/test_tc_ev029_007_product_order_smoke.py
     - scripts/ci/run_product_order_smoke.sh
-  - sha: 0538e35
+  - sha: 5380e34
     sha_full: 0538e35e20cf855e05a7d7fd6082c5e37f4ddc80
     branch: evolve/EV-029-eight-family-ahl-rules
     message: "[T11.7] fix: allowlist SWXA decode residuals for spacewx-A7-3"

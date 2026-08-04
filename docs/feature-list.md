@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 Planned; #842/#830/#712; amend F21)
+> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 Done; #842/#830/#712; provisional DNS residual)
 
 ## Summary
 
@@ -12,7 +12,7 @@
 | F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate` |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
-| F5 | User METAR work history | Planned | Product | S038 / EV-031 hybrid: guest IndexedDB + logged-in DO Postgres (was IndexedDB-only #783) |
+| F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
 | F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid sessions |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
@@ -37,12 +37,12 @@
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828 |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Planned | Platform | S038 / EV-031; #842/#830/#712 |
-| F31 | Hybrid operator sessions (guest local + Auth long-term) | Planned | Product | S038 / EV-031; amends F5/F7/F21/F22 |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; #842/#830/#712; provisional DNS residual |
+| F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
-| M4 | Auth library in backend API | Planned (restore) | Platform | S038 / EV-031 — Supabase Auth-only; was Deprecated operator #783 |
+| M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
 | M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005 |
 | M6 | Vendor upstream sync (wmo-im iwxxm-*) | Planned | Platform | REQ-009 |
 
@@ -1114,7 +1114,8 @@
 
 ### F30: Platform Independence (Auth / DO DB / DOKS) — S038 / EV-031
 
-- **Status**: **Planned** (S038 / EV-031).
+- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — provisional DOKS + Render suspended;
+  real public DNS/HTTPS residual under `D-S038-t63-waive`.
 - **What it does**: Splits platform lock-in under epic [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842):
   1. **Supabase Auth only** — JWT issue/verify for optional operator login (no product PostgREST / hosted Postgres app tables).
   2. **DigitalOcean Postgres** — all product DB including F8 store/quarantine and logged-in work sessions (`DATABASE_URL`).
@@ -1133,7 +1134,7 @@
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 
-- **Status**: **Planned** (S038 / EV-031).
+- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — T7.1 Playwright + 11/13 approved.
 - **What it does**: Optional Supabase Auth for **long-term** work storage; guests stay on local/IndexedDB with a persistent **loss-of-progress** notice; privacy preference center (F22) gates local storage and discloses Auth cookies.
   - Logged-in: session CRUD on **DO Postgres** keyed by Supabase user id.
   - Guest→login: **auto-upload** all eligible local drafts (no prompt) (`D-S038-guest-merge`=2).

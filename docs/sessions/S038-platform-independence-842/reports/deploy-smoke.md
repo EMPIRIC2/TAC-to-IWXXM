@@ -1,7 +1,7 @@
 # Deploy & smoke — 13-deploy-smoke (EV-031 / S038)
 
 > **Date**: 2026-08-03  
-> **Status**: **awaiting user approval** of results  
+> **Status**: **APPROVED** — `D-S038-13` = 1 (13 PASS; Phase D / cycle closeout)  
 > **Decisions**: `D-S038-12` = 1 · `D-S038-t63-waive` · `D-S038-t65-waive`  
 > **Branch**: `evolve/EV-031-platform-independence-842`  
 > **Checklist**: [deploy-checklist.md](deploy-checklist.md) (approved)
