@@ -10,7 +10,7 @@
 **Issues**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) (epic), [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835), [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741), [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808)  
 **Started**: 2026-08-04  
 **Branch**: `evolve/EV-032-iwxxm-corpus-quality` (from `main`)  
-**Status**: **in_progress** — 00 complete; Standard approved; entering 01-requirements
+**Status**: **in_progress** — Gate A PASS; entering 04-tech-plan
 
 ### Scope (Phase 0 — locked 2026-08-04 via 00-context)
 
@@ -48,6 +48,18 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 `docs/api-contract.md`, `docs/test-plan.md`, `docs/decisions/evolve-decisions.md`,
 `docs/context/iwxxm-corpus-quality-846.md` (pointer); #808 deliverables remain docs under
 `docs/domain/iwxxm/` in later milestones.
+
+### Gate A / 02 (locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-02F | decision | 02 Batch F? | **1,1,1,1** — VONA AHL→04; incremental Examples unlock; #808 docs+children only (+#847); Gate A (`D-S040-02-batch-f` / `D-S040-02-phase-a`) |
+| E32-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** |
+| E32-02-M1 | decision | VONA AHL / T1T2? | **1** — defer detail to 04 (“when known”) (`S02.M1`) |
+| E32-02-M2 | decision | Examples unlock? | **1** — incremental when F32 golden greens (`S02.M2`) |
+| E32-02-M3 | decision | #808 depth? | **1** — docs + child issues only; link #847 for non-technical review (`S02.M3`) |
+
+**Audit**: `docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md`
 
 ---
 

@@ -39,6 +39,8 @@ active_session:
     D-S040-route: '1'
     D-S040-branch: '1'
     D-S040-E32-M: '2,3,1,1'
+    D-S040-02-batch-f: '1,1,1,1'
+    D-S040-02-phase-a: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -58,7 +60,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — 01 COMPLETE (D-S040-E32-M); 02-verify-plan in_progress; #846'
+    note: 'ORCHESTRATING — Gate A PASS; 04-tech-plan in_progress; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -70,15 +72,18 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-04'
+    completed: '2026-08-04'
     skip_rationale:
-    note: 'STARTED (delta) — Gate A pending; #846'
+    note: 'PASS — Batch F 1,1,1,1 (S02.M1/M2/M3); Gate A → 04; report reports/02-verify-plan-audit.md; D-S040-02-phase-a; #846'
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED (delta) — Gate B pending; #846'
   - stage: 07-build
     required: true
     status: pending
@@ -107,7 +112,7 @@ active_session:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 02-verify-plan
+  current_stage: 04-tech-plan
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
@@ -132,16 +137,21 @@ active_session:
   - path: docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
     status: written
     stage: 01-requirements
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+    status: written
+    stage: 02-verify-plan
   decision_refs:
   - D-S040-open
   - D-S040-route
   - D-S040-branch
   - D-S040-E32-M
+  - D-S040-02-batch-f
+  - D-S040-02-phase-a
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — 01 COMPLETE (D-S040-E32-M=2,3,1,1); current_stage 02-verify-plan; F32+UJ-045; pending 01 commit sha follow-up; #846/#835/#741/#808; exclude #836'
+  note: 'S040/EV-032 — Gate A PASS (D-S040-02=1,1,1,1); current_stage 04-tech-plan; F32+UJ-045; #846/#835/#741/#808/#847'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -177,6 +187,8 @@ sessions:
     D-S040-route: '1'
     D-S040-branch: '1'
     D-S040-E32-M: '2,3,1,1'
+    D-S040-02-batch-f: '1,1,1,1'
+    D-S040-02-phase-a: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -196,7 +208,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — 01 COMPLETE (D-S040-E32-M); 02-verify-plan in_progress; #846'
+    note: 'ORCHESTRATING — Gate A PASS; 04-tech-plan in_progress; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -208,15 +220,18 @@ sessions:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-04'
+    completed: '2026-08-04'
     skip_rationale:
-    note: 'STARTED (delta) — Gate A pending; #846'
+    note: 'PASS — Batch F 1,1,1,1 (S02.M1/M2/M3); Gate A → 04; report reports/02-verify-plan-audit.md; D-S040-02-phase-a; #846'
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED (delta) — Gate B pending; #846'
   - stage: 07-build
     required: true
     status: pending
@@ -245,7 +260,7 @@ sessions:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 02-verify-plan
+  current_stage: 04-tech-plan
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
@@ -270,16 +285,21 @@ sessions:
   - path: docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
     status: written
     stage: 01-requirements
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+    status: written
+    stage: 02-verify-plan
   decision_refs:
   - D-S040-open
   - D-S040-route
   - D-S040-branch
   - D-S040-E32-M
+  - D-S040-02-batch-f
+  - D-S040-02-phase-a
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — 01 COMPLETE (D-S040-E32-M=2,3,1,1); current_stage 02-verify-plan; F32+UJ-045; pending 01 commit sha follow-up; #846/#835/#741/#808; exclude #836'
+  note: 'S040/EV-032 — Gate A PASS (D-S040-02=1,1,1,1); current_stage 04-tech-plan; F32+UJ-045; #846/#835/#741/#808/#847'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -4226,7 +4246,7 @@ stages:
     prior_started: '2026-08-03'
     prior_completed: '2026-08-03'
     prior_note: 'S038/EV-031 01-requirements COMPLETE (delta) — D-S038-tp=1,1,1 lean docs accepted Gate A (D-S038-01-gate-a); commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan; #842/#830/#712'
-    note: 'S040/EV-032 01-requirements COMPLETE (delta) — D-S040-E32-M=2,3,1,1; F32 VONA + UJ-045 + product=vona; handoff 02; commit sha pending parent; #846'
+    note: 'S040/EV-032 01-requirements COMPLETE (delta) — D-S040-E32-M=2,3,1,1; F32 VONA + UJ-045 + product=vona; handoff 02; committed @ 0f3769af; #846'
     substeps:
       interviews:
         status: completed
@@ -4984,12 +5004,12 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-04'
     started: '2026-08-04'
-    completed_at:
-    completed:
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     prior_session_id: S038-platform-independence-842
@@ -4997,10 +5017,15 @@ stages:
     prior_started: '2026-08-03'
     prior_completed: '2026-08-03'
     prior_note: 'COMPLETE (delta) — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; M1–M3 keep Proposed/draft; reports/verify-plan-audit.md; handoff 04-tech-plan; #842/#830/#712'
-    note: 'S040/EV-032 02-verify-plan STARTED (delta) — after D-S040-E32-M; Gate A pending; #846'
+    note: 'S040/EV-032 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); reports/02-verify-plan-audit.md; handoff 04-tech-plan; #846/#847'
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
+    - D-S040-02-phase-a
+    - D-S040-02-batch-f
+    - D-S040-E32-M
+    - D-S040-route
+    - D-S040-open
     - D-S038-02-phase-a
     - D-S038-02-batch-c
     - D-S038-01-gate-a
@@ -5021,37 +5046,32 @@ stages:
     current_document:
     current_statement:
     active_session:
-      session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-08-03'
-      started: '2026-08-03'
-      completed_at: '2026-08-03T18:31:51Z'
-      completed: '2026-08-03'
-      note: 'COMPLETE (delta) — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; M1–M3 keep Proposed/draft; handoff 04-tech-plan; sha pending parent commit'
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); handoff 04-tech-plan; #846/#847'
       feature_ids:
-      - F30
-      - F31
+      - F32
       deepen_feature_ids:
-      - F5
-      - F7
-      - F8
-      - F21
-      - F22
-      - M4
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
       decision_refs:
-      - D-S038-02-phase-a
-      - D-S038-02-batch-c
-      - D-S038-01-gate-a
-      - D-S038-tp
-      - D-S038-fn
-      - D-S038-route
-      - D-S038-open
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
       artifacts:
-      - docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
+      - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     artifacts:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
     - docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
     - docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
@@ -5072,6 +5092,30 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      mode: delta
+      feature_ids:
+      - F32
+      deepen:
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
+      decision_refs:
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
+      note: 'COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); reports/02-verify-plan-audit.md; handoff 04-tech-plan; #846/#847'
+      artifacts:
+      - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     - session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 02-verify-plan
@@ -5638,26 +5682,29 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-08-03T18:31:51Z'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    previous_started_at: '2026-08-03'
-    previous_completed_at: '2026-08-03T12:13:10Z'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip d721de6; #831→#829→#820'
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at:
+    completed:
+    previous_started_at: '2026-08-03T18:31:51Z'
+    previous_completed_at: '2026-08-03'
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
     prior_started: '2026-08-03'
     prior_completed: '2026-08-03'
-    prior_note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip d721de6; #831→#829→#820'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
+    prior_note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    note: 'S040/EV-032 04-tech-plan STARTED (delta) — Gate A PASS; Gate B pending; #846'
     decision_refs:
+    - D-S040-02-phase-a
+    - D-S040-02-batch-f
+    - D-S040-E32-M
     - D-S038-04-plan
     - D-S038-04-b1
     - D-S038-04-b2
@@ -5680,34 +5727,26 @@ stages:
       phase_6_documents:
         status: pending
     active_session:
-      session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
       skill_id: 04-tech-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-08-03T18:31:51Z'
-      started: '2026-08-03'
-      completed_at: '2026-08-03'
-      completed: '2026-08-03'
-      note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1'
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      note: 'STARTED (delta) — Gate B pending; #846'
       feature_ids:
-      - F30
-      - F31
+      - F32
       deepen_feature_ids:
-      - F5
-      - F7
-      - F8
-      - F21
-      - F22
-      - M4
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
       decision_refs:
-      - D-S038-04-b1
-      - D-S038-04-b2
-      - D-S038-02-phase-a
-      - D-S038-02-batch-c
-      - D-S038-01-gate-a
-      - D-S038-tp
-      - D-S038-fn
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
     artifacts:
     - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
     - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
@@ -5738,6 +5777,26 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 04-tech-plan
+      status: in_progress
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      mode: delta
+      feature_ids:
+      - F32
+      deepen:
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
+      decision_refs:
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
+      note: 'STARTED (delta) — Gate B pending; #846'
     - session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 04-tech-plan
@@ -10389,6 +10448,69 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S040-02-phase-a
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate A — Phase A checkpoint after 02-verify-plan'
+  summary: 'PASS → 04-tech-plan'
+  decision: |
+    D-S040-02-phase-a=1 — Gate A PASS for S040/EV-032.
+    Advance to 04-tech-plan (delta). Gate B pending.
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  - '847'
+  related_decisions:
+  - D-S040-02-batch-f
+  - D-S040-E32-M
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+  feature_ids:
+  - F32
+- id: D-S040-02-batch-f
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: verify-plan
+  status: confirmed
+  topic: 'Batch F — S02.M1/M2/M3 consistency + Gate A inputs'
+  summary: '1,1,1,1 — VONA AHL defer to 04; incremental Examples unlock; #808 docs+children (+#847); Gate A PASS'
+  decision: |
+    D-S040-02-batch-f=1,1,1,1 — Batch F verdicts for S040/EV-032 Gate A.
+    VONA AHL deferred to 04-tech-plan; incremental Examples unlock;
+    #808 docs+children (+#847). Gate A PASS with D-S040-02-phase-a.
+  user_option: '1,1,1,1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  - '847'
+  related_decisions:
+  - D-S040-02-phase-a
+  - D-S040-E32-M
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+  feature_ids:
+  - F32
 - id: D-S040-E32-M
   date: '2026-08-04'
   timestamp: '2026-08-04'
@@ -30772,6 +30894,8 @@ evolve_cycles:
     D-S040-route: '1'
     D-S040-branch: '1'
     D-S040-E32-M: '2,3,1,1'
+    D-S040-02-batch-f: '1,1,1,1'
+    D-S040-02-phase-a: '1'
     locked_at: '2026-08-04'
   routing_plan:
     required_stages:
@@ -30792,9 +30916,9 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06'
-  current_stage: 02-verify-plan
-  tip_sha: bd48bc61
-  tip_sha_full: bd48bc617e46beec6a9d57171f71182a6227ac2c
+  current_stage: 04-tech-plan
+  tip_sha: 0f3769af
+  tip_sha_full: 0f3769af50c5426e89bba1e219e9124a408ab9ec
   stages:
     00-context:
       status: completed
@@ -30806,21 +30930,24 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — 01 COMPLETE (D-S040-E32-M); 02 in_progress'
+      note: 'ORCHESTRATING — Gate A PASS; 04-tech-plan in_progress; #846'
     01-requirements:
       status: completed
       mode: delta
       started: '2026-08-04'
       completed: '2026-08-04'
-      note: 'COMPLETE (delta) — D-S040-E32-M=2,3,1,1; F32+UJ-045; commit sha pending parent; #846'
+      note: 'COMPLETE (delta) — D-S040-E32-M=2,3,1,1; F32+UJ-045; committed @ 0f3769af; #846'
     02-verify-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'PASS — Batch F 1,1,1,1; Gate A → 04; D-S040-02-phase-a; #846'
+    04-tech-plan:
       status: in_progress
       mode: delta
       started: '2026-08-04'
-      note: 'STARTED (delta) — Gate A pending; #846'
-    04-tech-plan:
-      status: pending
-      mode: delta
+      note: 'STARTED (delta) — Gate B pending; #846'
     07-build:
       status: pending
     08-verify-build:
@@ -30836,12 +30963,12 @@ evolve_cycles:
     13-deploy-smoke:
       status: pending
   gates:
-    a_to_b: pending
+    a_to_b: passed
     b_to_c: pending
     c_to_d: pending
     deploy: pending
   checkpoints:
-    phase_a: pending
+    phase_a: passed
     phase_b: pending
     phase_c: pending
     phase_d: pending
@@ -30864,17 +30991,24 @@ evolve_cycles:
   - path: docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
     status: written
     stage: 01-requirements
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+    status: written
+    stage: 02-verify-plan
   issues: []
   decision_refs:
   - D-S040-open
   - D-S040-route
   - D-S040-branch
   - D-S040-E32-M
+  - D-S040-02-batch-f
+  - D-S040-02-phase-a
   note: >-
-    S040/EV-032 — 01 COMPLETE (D-S040-E32-M=2,3,1,1); current_stage 02-verify-plan;
+    S040/EV-032 — Gate A PASS (D-S040-02=1,1,1,1); current_stage 04-tech-plan;
     deepen F23 (#835), F4/F6/F2/F13 (#808+corpus); F32 VONA; exclude #836;
-    01 commit sha pending parent follow-up
+    #846/#835/#741/#808/#847
   notes:
+  - '2026-08-04 S040/EV-032 — Gate A PASS (D-S040-02-batch-f=1,1,1,1; D-S040-02-phase-a=1); 02 COMPLETE; 04-tech-plan STARTED; gates.a_to_b passed; #846/#847'
+  - '2026-08-04 S040/EV-032 — tip confirmed 0f3769af (01 delta); current_stage remains 02-verify-plan; #846'
   - '2026-08-04 S040/EV-032 — 01-requirements COMPLETE D-S040-E32-M=2,3,1,1 (full pack; full F7 VONA; interview UI N/A → 02); artifact 01-requirements-summary.md; commit message pending parent ([EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)); tip still bd48bc61; #846'
   - '2026-08-04 S040/EV-032 — 00-context COMPLETE; branch evolve/EV-032 @ 2ed85da1; handoff 01-requirements; stash S039-EV031-WIP; evolve-decisions.md EV-032 section in progress by parent; #846/#835/#741/#808'
   - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (do not carry EV-031 dirty worktree); 00-context completing; scoped brief docs/context/iwxxm-corpus-quality-846.md; #846/#835/#741/#808; exclude #836'
@@ -30883,11 +31017,11 @@ git_history:
   current_branch: evolve/EV-032-iwxxm-corpus-quality
   ahead_of_origin: 0
   pushed: false
-  pending_commit: '[EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)'
+  pending_commit:
   dirty: true
-  tip_sha: bd48bc61
-  tip_sha_full: bd48bc617e46beec6a9d57171f71182a6227ac2c
-  tip_note: 'S040/EV-032 @ bd48bc61 — 01 COMPLETE pending commit sha follow-up; 02-verify-plan in_progress'
+  tip_sha: 0f3769af
+  tip_sha_full: 0f3769af50c5426e89bba1e219e9124a408ab9ec
+  tip_note: 'S040/EV-032 @ 0f3769af — 01 delta committed; current_stage 02-verify-plan'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -30899,8 +31033,9 @@ git_history:
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — 01 COMPLETE D-S040-E32-M; 02-verify-plan; tip bd48bc61; pending 01-delta commit sha follow-up; #846'
+  note: 'S040/EV-032 — tip 0f3769af; current_stage 02-verify-plan; 01 delta recorded; #846'
   notes:
+  - '2026-08-04 S040/EV-032 — tip confirmed 0f3769af ([EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)); current_stage remains 02-verify-plan; #846'
   - '2026-08-04 S040/EV-032 — 01-requirements COMPLETE (D-S040-E32-M=2,3,1,1); handoff 02-verify-plan; commit sha SKIPPED (HEAD still bd48bc61; parent to follow up with "[EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)"); artifact 01-requirements-summary.md; #846'
   - '2026-08-04 S040/EV-032 — 00-context COMPLETE; commit 2ed85da1 open session docs; current_stage 01-requirements; stash S039-EV031-WIP parked prior EV-031 dirty tree; evolve-decisions.md EV-032 section in progress by parent; #846/#835/#741/#808'
   - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (not EV-031 dirty tree); scoped brief path fixed to docs/context/iwxxm-corpus-quality-846.md; no git branch/commit by workflow-state-manager; #846/#835/#741/#808'
@@ -31319,8 +31454,8 @@ git_history:
     created_at: '2026-08-04'
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    tip_sha: bd48bc61
-    tip_sha_full: bd48bc617e46beec6a9d57171f71182a6227ac2c
+    tip_sha: 0f3769af
+    tip_sha_full: 0f3769af50c5426e89bba1e219e9124a408ab9ec
     pushed: false
     exists: true
     note: 'Cut from main (D-S040-branch=1); open session commit 2ed85da1; EV-031 WIP stashed S039-EV031-WIP'
@@ -32337,6 +32472,26 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 0f3769af50c5426e89bba1e219e9124a408ab9ec
+    short: 0f3769af
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)'
+    stage: 01-requirements
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/api-contract.md
+    - docs/context/iwxxm-corpus-quality-846.md
+    - docs/decisions/evolve-decisions.md
+    - docs/feature-list.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - docs/spec.md
+    - docs/test-plan.md
+    - docs/user-journeys.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
   - sha: bd48bc617e46beec6a9d57171f71182a6227ac2c
     short: bd48bc61
     branch: evolve/EV-032-iwxxm-corpus-quality
