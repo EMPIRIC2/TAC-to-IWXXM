@@ -13,10 +13,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build |
-| **Active milestone** | M2 — #741 / F32 VONA |
-| **Active task** | T2.9 — pending (next) |
-| **Tasks** | 17 / 28 completed |
-| **Last updated** | 2026-08-04 (T2.7 complete; T2.8 started) |
+| **Active milestone** | M3 — #808 + #847 release-line |
+| **Active task** | T3.1 — pending (next) |
+| **Tasks** | 18 / 28 completed |
+| **Last updated** | 2026-08-04 (T2.9 complete — #741 closed; M2 done → T3.1) |
 
 ## Tech Stack Summary
 
@@ -101,7 +101,7 @@ Repo already splits fast vs long:
 | T2.6 | Test | XSD+SCH validate path green on official peer | TC-F32-004; F2/F13 | T2.5 | **completed** |
 | T2.7 | Code | Backend runtime enum `product=vona`; FE picker + Examples unlock when golden greens | TC-F32-005/006; S02.M2; UJ-045 | T2.6 | **completed** |
 | T2.8 | Config | `make test-vona-quality` + path-filtered pre-commit smoke; long pack pre-push | E32-T7; TC-EV032-006 | T2.7 | **completed** |
-| T2.9 | Docs | COVERAGE_MATRIX / #741 closeout or children for guidance gaps | #741; TC-F32-005 | T2.8 | pending |
+| T2.9 | Docs | COVERAGE_MATRIX / #741 closeout or children for guidance gaps | #741; TC-F32-005 | T2.8 | **completed** |
 
 ### M3 — #808 + #847 release-line maintainability
 
@@ -154,8 +154,9 @@ Repo already splits fast vs long:
 | PR | Scope | Base ← Head | Status | URL |
 |----|-------|-------------|--------|-----|
 | PR-M1 | M0–M1 #835 A6-2 `wmoPass` | `main` ← `evolve/EV-032-iwxxm-corpus-quality` | open | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848 |
+| PR-M2 | M2 #741 / F32 VONA (same evolve branch) | `main` ← evolve | open (lands on #848) | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848 |
 | PR-final | M0–M4 evolve close | `main` ← evolve | pending | — |
 
 ## Next
 
-**07-build** in progress — M2 F32 VONA; T2.1–T2.8 **done** → T2.9 COVERAGE_MATRIX / #741 closeout.
+**07-build** — M2 **done** (#741 closed; F32 Done) → **T3.1** engineering blast-radius / adopt-deprecate (#808).

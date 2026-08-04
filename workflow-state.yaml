@@ -44,6 +44,7 @@ active_session:
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
+    D-S040-resume: Continue
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -63,7 +64,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); tip 44cfbe27; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; #846/#741'
+    note: 'ORCHESTRATING — Phase C build; T2.9 COMPLETE — #741 closed / F32 Done / COVERAGE_MATRIX; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808; M2 done + PR #848; #846/#808'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -93,7 +94,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 44cfbe27; T2.4–T2.5 pushed; tip 44cfbe27; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+    note: 'T2.9 COMPLETE — COVERAGE_MATRIX / #741 closeout / F32 Done; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808 blast-radius; ahead_of_origin=4 after T2.9 commit; PR-M1/M2 #848 open; #846/#808'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -163,6 +164,14 @@ active_session:
     status: written
     stage: 07-build
     note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.9-741-closeout.md
+    status: written
+    stage: 07-build
+    note: 'T2.9 #741 closeout; F32 Done; children #849/#850'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.9-741-closeout.md
+    status: written
+    stage: 07-build
+    note: 'T2.9 #741 closeout; F32 Done; children #849/#850'
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -173,11 +182,12 @@ active_session:
   - D-S040-04-batch-1
   - D-S040-04-batch-2
   - D-S040-04-plan
+  - D-S040-resume
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 44cfbe27; T2.4–T2.5 pushed; tip 44cfbe27; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+  note: 'T2.9 COMPLETE — COVERAGE_MATRIX / #741 closeout / F32 Done; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808 blast-radius; ahead_of_origin=4 after T2.9 commit; PR-M1/M2 #848 open; #846/#808'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -218,6 +228,7 @@ sessions:
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
+    D-S040-resume: Continue
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -237,7 +248,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); tip 44cfbe27; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; #846/#741'
+    note: 'ORCHESTRATING — Phase C build; T2.9 COMPLETE — #741 closed / F32 Done / COVERAGE_MATRIX; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808; M2 done + PR #848; #846/#808'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -267,7 +278,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 44cfbe27; T2.4–T2.5 pushed; tip 44cfbe27; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+    note: 'T2.9 COMPLETE — COVERAGE_MATRIX / #741 closeout / F32 Done; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808 blast-radius; ahead_of_origin=4 after T2.9 commit; PR-M1/M2 #848 open; #846/#808'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -347,11 +358,12 @@ sessions:
   - D-S040-04-batch-1
   - D-S040-04-batch-2
   - D-S040-04-plan
+  - D-S040-resume
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 44cfbe27; T2.4–T2.5 pushed; tip 44cfbe27; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+  note: 'T2.9 COMPLETE — COVERAGE_MATRIX / #741 closeout / F32 Done; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808 blast-radius; ahead_of_origin=4 after T2.9 commit; PR-M1/M2 #848 open; #846/#808'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -6884,18 +6896,18 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 44cfbe27; T2.4–T2.5 pushed; tip 44cfbe27; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
-    tip_sha: 44cfbe27
-    tip_sha_full: 44cfbe27629eefa9bff34d9e572e176f8e1ab79a
-    tip_note: 'S040/EV-032 tip 44cfbe27; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.4–T2.5 COMPLETE @ ee1138ca (+coverage fix 44cfbe27); active_task T2.6 pending; progress 14/28; PR-M1 #848 open; ahead_of_origin=0 pushed=true dirty=false'
-    progress: 14/28
+    note: 'T2.9 COMPLETE — COVERAGE_MATRIX / #741 closeout / F32 Done; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808 blast-radius; ahead_of_origin=4 after T2.9 commit; PR-M1/M2 #848 open; #846/#808'
+    tip_sha: d13f25e8
+    tip_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
+    tip_note: 'S040/EV-032 T2.9 COMPLETE — #741 closed / F32 Done; active_task T3.1 pending; progress 18/28; PR #848 open; children #849/#850'
+    progress: 17/28
     current_milestone: M2
-    current_task: T2.6
+    current_task: T2.9
     active_milestone: M2
-    active_task: T2.6
+    active_task: T2.9
     active_task_status: pending
     next_stage: 08-verify-build
-    next_task: T2.6
+    next_task: T2.9
     t2_1_complete: true
     t2_1_sha: dacd72b5
     t2_1_sha_full: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
@@ -6914,6 +6926,18 @@ stages:
     t2_5_complete: true
     t2_5_sha: ee1138ca
     t2_5_sha_full: ee1138cac396bb9af94ac27f54b50ad533a3edff
+    t2_6_complete: true
+    t2_6_sha: 6f53dcb7
+    t2_6_sha_full: 6f53dcb784d4f2045dcc2dd9bd87d587dafa2538
+    t2_6_note: 'TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; golden equality; #846/#741'
+    t2_7_complete: true
+    t2_7_sha: 682919cb
+    t2_7_sha_full: 682919cb658a1afe952774aaefcedba788554b18
+    t2_7_note: 'product=vona API + FE picker + Examples wmoPass vona-A7-1; TC-F32-005/006; #846/#741'
+    t2_8_complete: true
+    t2_8_sha: d13f25e8
+    t2_8_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
+    t2_8_note: 'make test-vona-quality + path-filtered pre-commit canary; #846/#741'
     t2_4_t2_5_note: 'bundled same commit like T2.2-T2.3; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; #846/#741'
     next_milestone: M2
     m1_closed: true
@@ -6945,6 +6969,9 @@ stages:
     - T2.3: e7964742
     - T2.4-T2.5: ee1138ca
     - T2.5-coverage: 44cfbe27
+    - T2.6: 6f53dcb7
+    - T2.7: 682919cb
+    - T2.8: d13f25e8
     blocked_task:
     blocked_task_reason:
     t7_1_complete: true
@@ -7747,6 +7774,10 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.7 COMPLETE @ 682919cb (682919cb658a1afe952774aaefcedba788554b18) [T2.7] feat: runtime product=vona and FE Examples unlock; product=vona API + FE picker + Examples wmoPass vona-A7-1; active_task T2.8 in_progress @ M2; progress 16/28; ahead_of_origin=2 pushed=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.6 COMPLETE @ 6f53dcb7 (6f53dcb784d4f2045dcc2dd9bd87d587dafa2538) [T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality; TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; active_task T2.7 in_progress @ M2; progress 15/28; ahead_of_origin=1 pushed=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — D-S040-resume; user Continue resumes T2.6 in_progress @ M2; progress still 14/28 until T2.6 completes; tip synced d8a3060d (d8a3060d34b79187e1e171bd54eaddc2cdd78fc8); T2.6 not completed; #846/#741'
     - '2026-08-04 S040/EV-032 — tip synced 44cfbe27 (44cfbe27629eefa9bff34d9e572e176f8e1ab79a) [T2.5] fix: raise VONA unit coverage for pre-push gate; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
     - '2026-08-04 S040/EV-032 — T2.4–T2.5 COMPLETE @ ee1138ca (ee1138cac396bb9af94ac27f54b50ad533a3edff) [T2.4-T2.5] feat: VONA convert fixtures and annex3 encode plugin; vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=1 pushed=false; ahead_of_origin note: will push shortly; #846/#741'
     - '2026-08-04 S040/EV-032 — T2.4 STARTED in_progress @ M2; convert fixtures → VolcanoObservatoryNoticeForAviation (TC-F32-002/003 soft→strict); encode deferred to T2.5; tip synced 13126051 (13126051a4244bf6163f79f1841461942464d2f6); progress 12/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
@@ -10570,6 +10601,29 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S040-resume
+  date: '2026-08-04'
+  timestamp: '2026-08-04T19:46:05Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: resume
+  status: confirmed
+  topic: 'Resume EV-032 at T2.6'
+  summary: 'user Continue resumes T2.6 in_progress (M2); progress still 14/28 until T2.6 completes'
+  decision: 'D-S040-resume — user Continue resumes T2.6. Do not mark T2.6 completed. tip_sha=d8a3060d.'
+  user_option: Continue
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '741'
+  tip_sha: d8a3060d
+  active_task: T2.6
+  active_task_status: in_progress
+  progress: 14/28
 - id: D-S040-04-plan
   date: '2026-08-04'
   timestamp: '2026-08-04'
@@ -31123,6 +31177,7 @@ evolve_cycles:
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
+    D-S040-resume: Continue
     locked_at: '2026-08-04'
   routing_plan:
     required_stages:
@@ -31144,12 +31199,12 @@ evolve_cycles:
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06'
   current_stage: 07-build
-  tip_sha: 44cfbe27
-  tip_sha_full: 44cfbe27629eefa9bff34d9e572e176f8e1ab79a
+  tip_sha: d13f25e8
+  tip_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
   active_milestone: M2
-  active_task: T2.6
+  active_task: T2.9
   active_task_status: pending
-  progress: 14/28
+  progress: 17/28
   t2_1_complete: true
   t2_1_sha: dacd72b5
   t2_1_commit_pending: false
@@ -31162,6 +31217,18 @@ evolve_cycles:
   t2_4_sha: ee1138ca
   t2_5_complete: true
   t2_5_sha: ee1138ca
+  t2_6_complete: true
+  t2_6_sha: 6f53dcb7
+  t2_6_sha_full: 6f53dcb784d4f2045dcc2dd9bd87d587dafa2538
+  t2_6_note: 'TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; golden equality; #846/#741'
+  t2_7_complete: true
+  t2_7_sha: 682919cb
+  t2_7_sha_full: 682919cb658a1afe952774aaefcedba788554b18
+  t2_7_note: 'product=vona API + FE picker + Examples wmoPass vona-A7-1; TC-F32-005/006; #846/#741'
+  t2_8_complete: true
+  t2_8_sha: d13f25e8
+  t2_8_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
+  t2_8_note: 'make test-vona-quality + path-filtered pre-commit canary; #846/#741'
   t2_4_t2_5_note: 'bundled same commit like T2.2-T2.3; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; #846/#741'
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
   pr_number: 848
@@ -31179,7 +31246,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — Phase C build; M1 complete + mid-cycle PR #848; M1 08 PASS; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); tip 44cfbe27; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; #846/#741'
+      note: 'ORCHESTRATING — Phase C build; T2.9 COMPLETE — #741 closed / F32 Done / COVERAGE_MATRIX; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808; M2 done + PR #848; #846/#808'
     01-requirements:
       status: completed
       mode: delta
@@ -31201,7 +31268,7 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-04'
-      note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 44cfbe27; T2.4–T2.5 pushed; tip 44cfbe27; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+      note: 'T2.9 COMPLETE — COVERAGE_MATRIX / #741 closeout / F32 Done; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808 blast-radius; ahead_of_origin=4 after T2.9 commit; PR-M1/M2 #848 open; #846/#808'
     08-verify-build:
       status: pending
     09-qa:
@@ -31274,8 +31341,13 @@ evolve_cycles:
   - D-S040-04-batch-1
   - D-S040-04-batch-2
   - D-S040-04-plan
-  note: 'M1 complete; M1 08 PASS; PR-M1 #848 open; tip 44cfbe27; T2.4–T2.5 pushed; tip 44cfbe27; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.1–T2.5 COMPLETE @ dacd72b5/f3b3246c/e7964742/ee1138ca (+coverage fix 44cfbe27); T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending (M2); progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+  - D-S040-resume
+  note: 'T2.9 COMPLETE — COVERAGE_MATRIX / #741 closeout / F32 Done; children #849/#850; active_task T3.1 pending (M3); progress 18/28; next T3.1 #808 blast-radius; ahead_of_origin=4 after T2.9 commit; PR-M1/M2 #848 open; #846/#808'
   notes:
+  - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.7 COMPLETE @ 682919cb (682919cb658a1afe952774aaefcedba788554b18) [T2.7] feat: runtime product=vona and FE Examples unlock; product=vona API + FE picker + Examples wmoPass vona-A7-1; active_task T2.8 in_progress @ M2; progress 16/28; ahead_of_origin=2 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.6 COMPLETE @ 6f53dcb7 (6f53dcb784d4f2045dcc2dd9bd87d587dafa2538) [T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality; TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; active_task T2.7 in_progress @ M2; progress 15/28; ahead_of_origin=1 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — D-S040-resume; user Continue resumes T2.6 in_progress @ M2; progress still 14/28 until T2.6 completes; tip synced d8a3060d (d8a3060d34b79187e1e171bd54eaddc2cdd78fc8); T2.6 not completed; #846/#741'
   - '2026-08-04 S040/EV-032 — tip synced 44cfbe27 (44cfbe27629eefa9bff34d9e572e176f8e1ab79a) [T2.5] fix: raise VONA unit coverage for pre-push gate; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
   - '2026-08-04 S040/EV-032 — T2.4 STARTED in_progress @ M2; convert fixtures → VolcanoObservatoryNoticeForAviation (TC-F32-002/003 soft→strict); encode deferred to T2.5; tip synced 13126051 (13126051a4244bf6163f79f1841461942464d2f6); progress 12/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
   - '2026-08-04 S040/EV-032 — tip synced e7964742 (e796474292d19434a61868f46924004c5030578d) [T2.3] fix: exclude VONA from F6 product-matrix until encode; T2.1–T2.3 COMPLETE (dacd72b5/f3b3246c/e7964742); active_task T2.4 pending @ M2; progress 12/28; ahead_of_origin=0 pushed=true dirty=false; pre-push: product-matrix EXPECTED_PRODUCTS exclude VONA until encode; #846/#741'
@@ -31294,13 +31366,13 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
   current_branch: evolve/EV-032-iwxxm-corpus-quality
-  ahead_of_origin: 0
-  pushed: true
+  ahead_of_origin: 3
+  pushed: false
   pending_commit:
-  dirty: false
-  tip_sha: 44cfbe27
-  tip_sha_full: 44cfbe27629eefa9bff34d9e572e176f8e1ab79a
-  tip_note: 'S040/EV-032 tip 44cfbe27; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending; progress 14/28; PR-M1 #848 open; ahead_of_origin=0 pushed=true dirty=false'
+  dirty: true
+  tip_sha: d13f25e8
+  tip_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
+  tip_note: 'S040/EV-032 T2.9 COMPLETE — #741 closed / F32 Done; active_task T3.1 pending; progress 18/28; PR #848 open; children #849/#850'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -31312,8 +31384,11 @@ git_history:
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — tip 44cfbe27; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; current_stage 07-build; #846/#741'
+  note: 'S040/EV-032 — T2.9 COMPLETE — #741 closed / F32 Done; active_task T3.1 pending; progress 18/28; current_stage 07-build; #846/#808'
   notes:
+  - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.7 COMPLETE @ 682919cb (682919cb658a1afe952774aaefcedba788554b18) [T2.7] feat: runtime product=vona and FE Examples unlock; product=vona API + FE picker + Examples wmoPass vona-A7-1; active_task T2.8 in_progress @ M2; progress 16/28; ahead_of_origin=2 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.6 COMPLETE @ 6f53dcb7 (6f53dcb784d4f2045dcc2dd9bd87d587dafa2538) [T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality; TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; active_task T2.7 in_progress @ M2; progress 15/28; ahead_of_origin=1 pushed=false; #846/#741'
   - '2026-08-04 S040/EV-032 — tip synced 44cfbe27 (44cfbe27629eefa9bff34d9e572e176f8e1ab79a) [T2.5] fix: raise VONA unit coverage for pre-push gate; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
   - '2026-08-04 S040/EV-032 — T2.4 STARTED in_progress @ M2; convert fixtures → VolcanoObservatoryNoticeForAviation (TC-F32-002/003 soft→strict); encode deferred to T2.5; tip synced 13126051 (13126051a4244bf6163f79f1841461942464d2f6); progress 12/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
   - '2026-08-04 S040/EV-032 — tip synced e7964742 (e796474292d19434a61868f46924004c5030578d) [T2.3] fix: exclude VONA from F6 product-matrix until encode; T2.1–T2.3 COMPLETE (dacd72b5/f3b3246c/e7964742); active_task T2.4 pending @ M2; progress 12/28; ahead_of_origin=0 pushed=true dirty=false; pre-push: product-matrix EXPECTED_PRODUCTS exclude VONA until encode; #846/#741'
@@ -31741,15 +31816,15 @@ git_history:
     created_at: '2026-08-04'
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    tip_sha: 44cfbe27
-    tip_sha_full: 44cfbe27629eefa9bff34d9e572e176f8e1ab79a
-    pushed: true
+    tip_sha: d13f25e8
+    tip_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
+    pushed: false
     exists: true
-    ahead_of_origin: 0
+    ahead_of_origin: 3
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
     pr_number: 848
     pr_status: open
-    note: 'tip 44cfbe27; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; T2.4–T2.5 COMPLETE @ ee1138ca (+coverage fix 44cfbe27); active_task T2.6 pending; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; PR-M1 #848 open; F6 EXPECTED_PRODUCTS still excludes VONA; EV-031 WIP stashed S039-EV031-WIP'
+    note: 'tip d13f25e8; T2.8 COMPLETE — VONA quality pack + path-filtered canary; active_task T2.9 pending; progress 17/28; ahead_of_origin=3 pushed=false; PR-M1 #848 open; #846/#741'
   - name: infra/doks-dns-cutover
     purpose: 'S039 ops — DOKS DNS cutover; pin api/app.tac-to-iwxxm.com → 168.144.12.70; lift D-S038-t63-waive'
     base: main
@@ -32763,6 +32838,86 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: d13f25e85e3b42e9fbfef136d5ce117b17924533
+    short: d13f25e8
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.8] chore: add VONA quality pack and path-filtered canary'
+    stage: 07-build
+    milestone: M2
+    task: T2.8
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - .pre-commit-config.yaml
+    - Makefile
+    - apps/backend/pyproject.toml
+    - apps/backend/tests/unit/test_tc_f32_vona_product_enum.py
+    - docs/ops/DEVELOPMENT.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/pyproject.toml
+    - packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py
+    - pyproject.toml
+    - scripts/ci/run_ev032_vona_canary.sh
+    - scripts/ci/run_vona_quality.sh
+    files_changed_count: 11
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:30:40Z'
+    pushed: false
+    note: 'T2.8 COMPLETE — VONA quality pack + path-filtered canary; next T2.9; #846/#741'
+  - sha: 682919cb658a1afe952774aaefcedba788554b18
+    short: 682919cb
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.7] feat: runtime product=vona and FE Examples unlock'
+    stage: 07-build
+    milestone: M2
+    task: T2.7
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - apps/backend/src/api.py
+    - apps/backend/tests/integration/test_tc_f32_005_vona_smoke.py
+    - apps/backend/tests/unit/test_api_helpers_middleware_unit.py
+    - apps/backend/tests/unit/test_tac_work_sessions_migration_sql.py
+    - apps/backend/tests/unit/test_tc_f32_vona_product_enum.py
+    - apps/frontend/src/app/components/FileConverter.tsx
+    - apps/frontend/src/fixtures/examples/bodies/vona_a7_1.tac
+    - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+    - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    - apps/frontend/src/test/f6e-product-profile-pickers.workflow.test.tsx
+    - apps/frontend/src/utils/tacProduct.test.ts
+    - apps/frontend/src/utils/tacProduct.ts
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/shared/src/work-session.ts
+    - packages/tac2iwxxm/tests/fixtures/wmo_decode_residual_allowlist.py
+    - packages/tac2iwxxm/tests/fixtures/wmo_official_tac_inventory.py
+    - packages/tac2iwxxm/tests/test_tc_ev027_001_002_inventory_catalog.py
+    - supabase/migrations/20260804000012_tac_work_sessions_vona.sql
+    files_changed_count: 18
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:26:25Z'
+    pushed: false
+    note: 'T2.7 COMPLETE — product=vona API + FE picker + Examples wmoPass vona-A7-1; next T2.8; #846/#741'
+  - sha: 6f53dcb784d4f2045dcc2dd9bd87d587dafa2538
+    short: 6f53dcb7
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality'
+    stage: 07-build
+    milestone: M2
+    task: T2.6
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
+    - packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py
+    - packages/tac2iwxxm/tests/test_tc_f32_002_003_vona_annex3.py
+    - packages/tac2iwxxm/tests/fixtures/annex3_golden/manifest.json
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    files_changed_count: 6
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:20:54Z'
+    pushed: false
+    note: 'T2.6 COMPLETE — TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; next T2.7; #846/#741'
   - sha: 44cfbe27629eefa9bff34d9e572e176f8e1ab79a
     short: 44cfbe27
     branch: evolve/EV-032-iwxxm-corpus-quality

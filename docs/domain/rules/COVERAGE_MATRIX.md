@@ -45,6 +45,7 @@ Profiles: **`annex3`** (ICAO/WMO core) · **`iwxxm_us`** (US national extensions
 | SIGMET / AIRMET | **A6 one-phenomenon** · Ch.7 · SigWx/AirWx · [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) (public TAC shape) | Guidance volumes + hrefs · EUR Doc 014 T1T2 map | `sigmet.xsd` / `airmet.xsd` |
 | VAA | App 2 §3.1.2 · **A2-1 checklist** | Colour registry · METCE Volcano | `volcanicAshAdvisory.xsd` · `va-advisory-A7-2` |
 | TCA | App 2 §5.1.1/§5.1.3 · **A2-2 checklist** | METCE TropicalCyclone | `tropicalCycloneAdvisory.xsd` · `tc-advisory-A2-2` |
+| VONA | PANS-MET / Doc 10157 cite · vendor `vona-A7-1` labels · AviationColourCode | **Guidance silent** — [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md) + XSD/SCH/A7-1 | `vona.xsd` · `vona-A7-1` |
 | METAR US | FMH-1 §12 + **§2.5.2.a** + **RMK→iwxxm-us map** | Structured Addendum elements | WMO pin + iwxxm-us 3.0 |
 
 Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CONVERSION.md) · [IWXXM_VALIDATION](../IWXXM_VALIDATION.md).
@@ -63,6 +64,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | **F26 / #736** S027/EV-021 — **V1–V3/C1 closed** (T2.3–T2.4); **#820/#823 B4** deepen **S036/EV-029 M9** |
 | **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | **F27 / #737** S027/EV-021 — T1–T3/C1 closed prior; **#820/#823 B4** deepen **S036/EV-029 M10** |
 | **SWXA** | ✅ Annex 3 App 2 Table **A2-3** (cite); SpaceWx registry (F28) | ✅ Guidance + `spacewx-A7-3` (+ A7-4/5 deferred); AHL `FN`→`LN` | ✅ `spaceWeatherAdvisory.xsd` + SCH | **F28 Done — S036/EV-029 M11** · #740/#823 **closed**; PR #828 |
+| **VONA** | ✅ Vendor `vona-A7-1` + PANS-MET cite (Doc 10157 paywall); AviationColourCode registry (F32) | ⚠ Guidance **silent** — encode cookbook + XSD/SCH/`vona-A7-1`; AHL `WM`→`LM` | ✅ `vona.xsd` + SCH | **F32 Done — S040/EV-032 M2** · [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) **closed**; deepen children under #846 |
 | **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO base + iwxxm-us 3.0 | GIFTs stripped REMARKS |
 | **Bulletin / AHL** | ✅ WMO AHL page **v1.0.1** (fetched 2026-08-01) | ✅ AHL T1T2 TAC↔IWXXM + BBB prefixes + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | **S036/EV-029 M1 closed** — shared `parse_ahl` / `map_t1t2` / BBB / `iwxxm_filename` in `tac2iwxxm` (+ dissemination thin wrap); body **split** still METAR/SPECI until per-family Ms; WIS2 ≠ COLLECT ([Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
 
@@ -95,6 +97,7 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | AIRMET | AirWxPhenomena; WeatherCausingVisibilityReduction | ✅ | Prefer 2023-1.4 for D-10 vs AirWx split |
 | VAA | `iwxxm/AviationColourCode` + MetFeature VOLCANO/**VOLCANIC_ASH** | ✅ | Prefer `iwxxm/` colour (GREEN/YELLOW/ORANGE/RED/**UNASSIGNED**); **`VOLCANIC_ASH` only on `iwxxm/MeteorologicalFeature`** (not `49-2/`) — [codes dig](../mining/codes-wmo-int-aviation-mining-notes.md) |
 | TCA | MetFeature `TROPICAL_CYCLONE` + nils | Partial | `TROPICAL_CYCLONE` shared on both MetFeature registers; TAC geometry/template elsewhere |
+| VONA | `iwxxm/AviationColourCode` + MetFeature VOLCANO/**VOLCANIC_ASH** (+ optional `RESUSPENDED_VOLCANIC_ASH`) | ✅ colour / volcano; ⚠ resuspended deepen | Prefer `iwxxm/` colour (not legacy `49-2/`); A7-1 ash often `phenomenonProperty` inapplicable — [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md) |
 | All (nil) | `common/nil` **and** `iwxxm/nil` | ✅ | Dual SCH RDF; classic F6 examples prefer `common/nil` — [codes dig](../mining/codes-wmo-int-aviation-mining-notes.md) |
 
 ---
@@ -113,10 +116,11 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | VAA | FV → LU | `iwxxm:VolcanicAshAdvisory` | `va-advisory-A7-2` (vendor AHL `FVFE01`) |
 | TCA | FK → LK | `iwxxm:TropicalCycloneAdvisory` | `tc-advisory-A2-2` |
 | SWXA | FN → LN | `iwxxm:SpaceWeatherAdvisory` | `spacewx-A7-3/4/5` (+ `_alternate`) — menu unlock **M11** |
+| VONA | WM → LM | `iwxxm:VolcanoObservatoryNoticeForAviation` | `vona-A7-1` (**wmoPass** — EV-032 / #741) |
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
 
-**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA / QVACI / WAFS / SIGWX** stay OOS until F32 (EV-032). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS. **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
 
 ---
 
@@ -231,8 +235,9 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] F23 acc — SIGMET + VA SIGMET themes G1–G3 / V1–V3 / C1 closed or deferred (S025 / EV-019)
 - [x] F24 acc — AIRMET WMO default golden + registry (S026 / EV-020; #731)
 - [x] F25 acc — METAR/SPECI/TAF WMO default goldens + Examples catalog gate (S026 / EV-020)
-- [ ] F26 acc — VAA WMO default golden + registry themes V1–V3/C1 (S027 / EV-021; #736)
+- [x] F26 acc — VAA WMO default golden + registry themes V1–V3/C1 (S027 / EV-021; #736)
 - [x] F27 acc — TCA WMO default golden + registry themes T1–T3/C1 (S027 / EV-021; #737)
+- [x] F32 acc — VONA themes N1–N4 / C1 closed or deferred to children (S040 / EV-032; #741)
 
 ---
 
@@ -300,6 +305,33 @@ Hard themes from #737 + guidance §Tropical Cyclone Advisory + vendor `tc-adviso
 | **T3** TCA golden convert + SCH | — | `tc-advisory-A2-2` defaults `canonicalize_xml` (T4.1–T4.2) | M-xsd / M-sch / M-golden (TC-F27-002/003) | ✅ Closed (S027 T4.1–T4.2; T4.3) |
 | **C1** Common rules | ✅ where TAC | Shared pattern | translation-failed not happy-path (TC-F27-004) | ✅ Closed (S027 T4.4) |
 
+## VONA — F32 quality themes (S040 / EV-032)
+
+Hard themes from [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) + 2025-2 `vona.xsd` /
+SCH + vendor `vona-A7-1` (defaults). **WMO `TAC-to-XML-Guidance.txt` has no VONA section** —
+encode SoT is the [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md)
+(G-VONA-0 closed in T2.9).
+
+| Theme | Lint (F12/F32) | Convert (F6) | Validate / goldens | Status |
+|-------|----------------|--------------|--------------------|--------|
+| **N1** Labels / colour / activity registry | Registry + accept/negatives (T2.2–T2.3; TC-F32-001) | Parse IR | — | ✅ Closed |
+| **N2** MetFeature volcano/ash + bounding + AviationColourCode | — | Encode plugin (T2.4–T2.5; TC-F32-002/003) | — | ✅ Closed |
+| **N3** Golden convert + XSD+SCH | — | `vona-A7-1` ADR-032 equality (T2.6; TC-F32-004) | M-xsd / M-sch / M-golden | ✅ Closed |
+| **N4** F7 surface + `product=vona` | — | API enum + FE picker / Examples `wmoPass` (T2.7; TC-F32-005/006; UJ-045) | — | ✅ Closed |
+| **C1** Common / guidance-silent gaps | ✅ where TAC | Cookbook + AHL `WM`→`LM`; residuals → children | translation-failed not happy-path | ✅ Closed (T2.9); deepen filed |
+
+**Guidance-silent gap dispositions (T2.9):**
+
+| ID | Disposition |
+|----|-------------|
+| G-VONA-0 | Closed — cookbook + this matrix row (G2) |
+| G-VONA-1 | Deepen child — optional `VolcanicAshCloudVerticalExtent` when TAC has HGT SOURCE/MOV beyond A7-1 inapplicable ash — [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849) |
+| G-VONA-2 | Closed — `KVERT`→`UHPP` registry/fixture constant |
+| G-VONA-3 | Closed cite-only — Doc 10157 paywall; field labels from vendor TAC + XSD |
+| G-VONA-4 | Closed — `WM`→`LM` in `map_t1t2` |
+| G-VONA-5 | Deepen child — `RESUSPENDED_VOLCANIC_ASH` (XSD present; no A7-1 peer) — [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850) |
+| G-VONA-6 | Closed — `vona-` in-scope + `vona-A7-1` registered; catalog `wmoPass` |
+
 ---
 
 ## Domain mine durable promotions — S031 / EV-024 (#804 / #807 / #773)
@@ -315,7 +347,8 @@ Discovery-first cycle: mine → promote durable rows → wire sample menu / vali
 | In-scope stems on validate CI (XML well-formed/XSD/GML) | `test_wmo_canonical_examples` + loader inventory (M6) | ✅ / wire |
 | Multi-location VA **convert** equality | [#809](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/809) — **closed**; catalog **wmoPass** (S033/EV-026) | ✅ |
 | TC SIGMET A6-2 menu / encode bar | [#738](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/738) **closed**; [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) **closed**; [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) **closed** (EV-032 M1 ADR-032 → `wmoPass`) | ✅ menu **`wmoPass`** |
-| SWXA sample menu / encode bar | [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** (F28 / M11); A7-3 unlocked; A7-4/5 deferred; VONA/WAFS/QVACI OOS | ✅ / ❌ OOS |
+| SWXA sample menu / encode bar | [#740](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/740) **closed** (F28 / M11); A7-3 unlocked; A7-4/5 deferred; WAFS/QVACI OOS | ✅ / ❌ OOS |
+| VONA sample menu / encode bar | [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) **closed** (F32 / EV-032 M2); `vona-A7-1` **`wmoPass`**; guidance-silent cookbook SoT | ✅ menu **`wmoPass`** |
 | US Variable RVR / Lightning / SnowIncrease+sensors | [#810](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/810) · [#811](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/811) · [#812](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/812) | #810/#811/#812 ✅ encode (S032 T1–T3) |
 | Guidance topic ↔ SCH assert ↔ lint map residuals | Gap list → #809 + #800 survivors | ⚠ → children |
 
@@ -370,6 +403,7 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 | VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
 | TCA | ok/deepen | ok/deepen | ok | gap | **M10 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
 | SWXA | **ok** (F28) | **ok** (FN→LN; `SpaceWeatherAdvisory`) | ok | ok (A7-3) | **M11 closed** (#740); A7-4/5 deferred |
+| VONA | **ok** (F32) | **ok** (WM→LM; `VolcanoObservatoryNoticeForAviation`; A7-1 golden) | ok (A7-1 XSD+SCH) | ok (WM map; multi-VONA peer absent) | **F32 closed** (#741 / EV-032 M2) |
 
 ### Report-state × AHL (COM / #823 B3)
 
@@ -383,9 +417,9 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 
 ### Shape coverage (TC-EV029-002) — summary
 
-Standalone peers exist for all eight families (+ SWXA vendor). **Multi-report** and
+Standalone peers exist for all eight families (+ SWXA + VONA vendor). **Multi-report** and
 non-METAR **AHL** are mostly `gap` → M1 + per-family packs (detail in example inventory).
-OOS: VONA · QVACI · WAFS · SIGWX.
+OOS: QVACI · WAFS · SIGWX.
 
 ### Child-issue residuals (S02.M3) — #823 closed (T12.7)
 
@@ -399,6 +433,7 @@ Umbrella [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823) **closed** 
 | TC SIGMET quality bar | #738 **closed** | M7 |
 | TC SIGMET lint pack / STNR / menu unlock | [#829](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/829) | **closed** (EV-030 M2) — lint pack + STNR; exceptional geometry **OOS**; catalog was `wmoReference` until [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) **closed** (EV-032 M1) → **`wmoPass`**; F9 TC decode residual allowlisted |
 | TC SIGMET A6-2 ADR-032 equality → `wmoPass` | [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) | **closed** (EV-032 M1) — see [t1.6-835-closeout.md](../../sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md) |
+| VONA F32 quality bar / A7-1 `wmoPass` | [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) | **closed** (EV-032 M2) — see [t2.9-741-closeout.md](../../sessions/S040-iwxxm-corpus-quality/reports/t2.9-741-closeout.md) |
 | VAA/TCA decode residual deepen | [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) | **closed** (EV-030 M3) — structured `LABEL:` + AHL decode; official peers `residuals == []` |
 | SWXA F28 product path | #740 **closed** | M11 / F28 Done |
 | Non-METAR multi-report body fixtures | FIXTURE_GAPS stem rows | document / deepen |
