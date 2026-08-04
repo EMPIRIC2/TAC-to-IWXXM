@@ -68,7 +68,9 @@ def test_get_frontend_url_from_config_prod() -> None:
     from metar_shared.config_loader import get_frontend_url_from_config
 
     url = get_frontend_url_from_config("prod")
-    assert url.startswith("https://")
+    # T6.5 / D-S038-t63-waive — provisional DOKS uses http:// placeholders until real DNS.
+    assert url.startswith(("http://", "https://"))
+    assert "doks.placeholder" in url or url.startswith("https://")
 
 
 def test_load_config_file_not_found(

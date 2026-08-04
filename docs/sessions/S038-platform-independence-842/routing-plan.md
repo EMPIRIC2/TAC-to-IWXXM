@@ -17,9 +17,9 @@
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
 | 07-build | yes | full | **completed** | M0–M7 done; T6.5 under `D-S038-t65-waive` |
-| 08-verify-build | yes | delta | pending | Phase D — residual M7 pack / full suite |
-| 09-qa | yes | delta | pending | — |
-| 10-e2e | yes | smoke | pending | H4–H5 if FE Auth client restore ships |
+| 08-verify-build | yes | delta | **completed** | C→D PASS — `verification-report.md` |
+| 09-qa | yes | delta | pending | Phase D |
+| 10-e2e | yes | smoke | pending | T0 local + provisional DOKS evidence from T7 |
 | 11-verify-impl | yes | delta | pending | Per-Fn acceptance |
 | 12-verify-deploy | yes | delta | pending | DOKS cutover per `D-S038-doks-depth=3` |
 | 13-deploy-smoke | yes | full | pending | Smoke Auth+DO; DOKS primary after cutover |

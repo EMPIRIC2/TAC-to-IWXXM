@@ -103,7 +103,16 @@ def test_t62_api_init_container_runs_idempotent_alembic() -> None:
     assert len(inits) == 1
     init = inits[0]
     assert init["name"] == "alembic-upgrade"
-    assert init["command"] == ["alembic", "-c", "alembic.ini", "upgrade", "head"]
+    # Image entrypoint may lack console_scripts; use ``python -m alembic`` (D-S038-t63-path).
+    assert init["command"] == [
+        "python",
+        "-m",
+        "alembic",
+        "-c",
+        "alembic.ini",
+        "upgrade",
+        "head",
+    ]
     assert init["workingDir"] == "/app/apps/backend"
     assert any(
         ref.get("secretRef", {}).get("name") == "metar-api-secrets"
@@ -117,5 +126,13 @@ def test_t62_alembic_job_matches_init_command() -> None:
         (DOKS_BASE / "job-alembic-upgrade.yaml").read_text(encoding="utf-8")
     )
     container = job["spec"]["template"]["spec"]["containers"][0]
-    assert container["command"] == ["alembic", "-c", "alembic.ini", "upgrade", "head"]
+    assert container["command"] == [
+        "python",
+        "-m",
+        "alembic",
+        "-c",
+        "alembic.ini",
+        "upgrade",
+        "head",
+    ]
     assert job["kind"] == "Job"
