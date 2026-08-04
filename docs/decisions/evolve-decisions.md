@@ -3,6 +3,40 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-032 — Official IWXXM corpus quality / WMO source parity (S040)
+
+**Session**: S040-iwxxm-corpus-quality  
+**Features**: **F32** (new — VONA quality bar) + deepen **F23** (#835) + **F4** / **F6** / **F2** / **F13** (#808 + corpus)  
+**Issues**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) (epic), [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835), [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741), [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808)  
+**Started**: 2026-08-04  
+**Branch**: `evolve/EV-032-iwxxm-corpus-quality` (from `main`)  
+**Status**: **in_progress** — 00 complete; Standard approved; entering 01-requirements
+
+### Scope (Phase 0 — locked 2026-08-04 via 00-context)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-1 | decision | Umbrella ticket? | **1** — new Epic **#846** (`D-S040-open` Q1) |
+| E32-2 | decision | Cycle scope? | **1** — #835 + #741 + #808 + corpus/WMO-source track |
+| E32-3 | decision | VONA Fn? | **1** — allocate **F32** VONA quality bar |
+| E32-4 | decision | Order? | **1** — #835 → #741 → #808 → corpus |
+| E32-5 | decision | Routing preset? | **1** — Standard (`D-S040-route`) |
+| E32-6 | decision | Branch base? | **1** — cut from `main`; park EV-031 dirt in stash (`D-S040-branch`) |
+
+**Scope (verbatim)**: Under epic #846, raise and prove quality against the official WMO IWXXM
+corpus and related WMO sources (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists,
+codes.wmo.int, iwxxm-modelling). Execute (1) #835 TC SIGMET A6-2-TC ADR-032 equality →
+`wmoPass`; (2) #741 / **F32** VONA lint→convert→validate quality bar; (3) #808 adopt-new-line
+maintainability assessment + checklists (no re-pin in-ticket); (4) file corpus parity
+children under #846 as discovered. Exclude #836 metrics UI / #840 workbench epic.
+
+**Out of scope**: Metrics UI #836; hand-edit `vendor/schemas/*` outside sync PRs; ship a new
+IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
+
+**Parked**: `stash@{0}` — S039/EV-031 WIP (`S039-EV031-WIP park for S040/EV-032`).
+
+---
+
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)
 
 **Session**: S037-quality-residuals-831  

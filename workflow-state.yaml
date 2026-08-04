@@ -13,7 +13,7 @@ active_session:
     F32 VONA (#741); #808 release-line adoptability; corpus children
   status: in_progress
   branch: evolve/EV-032-iwxxm-corpus-quality
-  branch_note: approved D-S040-branch=1 — cut from main (not created yet by workflow-state-manager)
+  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
   orchestrator: 16-evolve
   evolve_cycle_id: EV-032
   artifacts_dir: docs/sessions/S040-iwxxm-corpus-quality/
@@ -47,19 +47,24 @@ active_session:
   - stage: 00-context
     mode: scoped
     required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — brief+routing+scoped context; D-S040-route/branch locked; branch evolve/EV-032 cut from main @ 2ed85da1; handoff 01-requirements; #846/#835/#741/#808'
+  - stage: 16-evolve
+    required: true
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETING — D-S040-route=1 Standard approved; D-S040-branch=1 from main; brief/routing/context pending write + branch cut; handoff 16-evolve after; #846/#835/#741/#808'
-  - stage: 16-evolve
-    required: true
-    status: pending
-    skip_rationale:
+    note: 'ORCHESTRATING — Phase 0 done; 01-requirements in_progress; #846'
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED (delta) — F32 VONA + deepen F23/#835/#808/corpus; #846'
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -98,21 +103,28 @@ active_session:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 00-context
+  current_stage: 01-requirements
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
   - docs/context/iwxxm-corpus-quality-846.md
   artifacts:
   - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
-    status: pending
+    status: written
     stage: 00-context
   - path: docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
-    status: pending
+    status: written
     stage: 00-context
   - path: docs/context/iwxxm-corpus-quality-846.md
-    status: pending
+    status: written
     stage: 00-context
+  - path: docs/sessions/S040-iwxxm-corpus-quality/README.md
+    status: written
+    stage: 00-context
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+    stage: 16-evolve
+    note: EV-032 section being added by parent
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -121,7 +133,7 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 from main; 00-context completing (branch cut + handoff pending); F32; #846/#835/#741/#808; exclude #836'
+  note: 'S040/EV-032 — 00-context COMPLETE @ 2ed85da1; current_stage 01-requirements; stash S039-EV031-WIP on prior branch; F32; #846/#835/#741/#808; exclude #836'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -130,7 +142,7 @@ sessions:
     F32 VONA (#741); #808 release-line adoptability; corpus children
   status: in_progress
   branch: evolve/EV-032-iwxxm-corpus-quality
-  branch_note: approved D-S040-branch=1 — cut from main (not created yet by workflow-state-manager)
+  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
   orchestrator: 16-evolve
   evolve_cycle_id: EV-032
   github_issues:
@@ -165,19 +177,24 @@ sessions:
   - stage: 00-context
     mode: scoped
     required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — brief+routing+scoped context; D-S040-route/branch locked; branch evolve/EV-032 cut from main @ 2ed85da1; handoff 01-requirements; #846/#835/#741/#808'
+  - stage: 16-evolve
+    required: true
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'COMPLETING — D-S040-route=1 Standard approved; D-S040-branch=1 from main; brief/routing/context pending write + branch cut; handoff 16-evolve after; #846/#835/#741/#808'
-  - stage: 16-evolve
-    required: true
-    status: pending
-    skip_rationale:
+    note: 'ORCHESTRATING — Phase 0 done; 01-requirements in_progress; #846'
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-04'
     skip_rationale:
+    note: 'STARTED (delta) — F32 VONA + deepen F23/#835/#808/corpus; #846'
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -216,21 +233,28 @@ sessions:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 00-context
+  current_stage: 01-requirements
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
   - docs/context/iwxxm-corpus-quality-846.md
   artifacts:
   - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
-    status: pending
+    status: written
     stage: 00-context
   - path: docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
-    status: pending
+    status: written
     stage: 00-context
   - path: docs/context/iwxxm-corpus-quality-846.md
-    status: pending
+    status: written
     stage: 00-context
+  - path: docs/sessions/S040-iwxxm-corpus-quality/README.md
+    status: written
+    stage: 00-context
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+    stage: 16-evolve
+    note: EV-032 section being added by parent
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -239,7 +263,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 from main; 00-context completing (branch cut + handoff pending); F32; #846/#835/#741/#808; exclude #836'
+  note: 'S040/EV-032 — 00-context COMPLETE @ 2ed85da1; current_stage 01-requirements; stash S039-EV031-WIP on prior branch; F32; #846/#835/#741/#808; exclude #836'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -4141,16 +4165,18 @@ template:
   confirmed_at: '2026-06-14'
 stages:
   00-context:
-    status: in_progress
+    status: completed
     mode: scoped
     scoped_slug: iwxxm-corpus-quality
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     started: '2026-08-04'
     started_at: '2026-08-04'
-    completed:
-    completed_at:
-    note: 'S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 from main; 00-context completing (branch cut + artifact write + handoff 16-evolve pending); #846/#835/#741/#808'
+    completed: '2026-08-04'
+    completed_at: '2026-08-04'
+    tip_sha: 2ed85da1
+    tip_sha_full: 2ed85da14c99400a23dd2777f8da1f305e2423c0
+    note: 'S040/EV-032 COMPLETE — brief+routing+context; branch cut from main @ 2ed85da1; stash S039-EV031-WIP; handoff 01-requirements; #846/#835/#741/#808'
     prior_note: 'S039 COMPLETE — brief+routing-plan; D-S039-route/branch/dns-hosts locked; handoff 07-build; #842/#712'
     prior_session_id: S039-doks-dns-cutover
     prior_evolve_cycle_id:
@@ -4171,20 +4197,20 @@ stages:
     - docs/decisions/evolve-decisions.md
 
   01-requirements:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
-    prior_started: '2026-08-02'
-    prior_completed: '2026-08-02'
-    prior_note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
-    note: 'S038/EV-031 01-requirements COMPLETE (delta) — D-S038-tp=1,1,1 lean docs accepted Gate A (D-S038-01-gate-a); commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan; #842/#830/#712'
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at:
+    completed:
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
+    prior_started: '2026-08-03'
+    prior_completed: '2026-08-03'
+    prior_note: 'S038/EV-031 01-requirements COMPLETE (delta) — D-S038-tp=1,1,1 lean docs accepted Gate A (D-S038-01-gate-a); commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan; #842/#830/#712'
+    note: 'S040/EV-032 01-requirements STARTED (delta) — F32 VONA + #835/#808/corpus deepen; tip 2ed85da1; #846'
     substeps:
       interviews:
         status: completed
@@ -30686,7 +30712,7 @@ evolve_cycles:
   - '741'
   - '808'
   branch: evolve/EV-032-iwxxm-corpus-quality
-  branch_note: approved D-S040-branch=1 — cut from main (not created yet by workflow-state-manager)
+  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
   preset: Standard
   preset_status: approved
   phase0_choices:
@@ -30713,18 +30739,26 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06'
-  current_stage: 00-context
+  current_stage: 01-requirements
+  tip_sha: 2ed85da1
+  tip_sha_full: 2ed85da14c99400a23dd2777f8da1f305e2423c0
   stages:
     00-context:
-      status: in_progress
+      status: completed
       mode: scoped
       started: '2026-08-04'
-      note: 'COMPLETING — D-S040-route=1; D-S040-branch=1; brief/routing/context + branch cut pending'
+      completed: '2026-08-04'
+      tip_sha: 2ed85da1
+      note: 'COMPLETE — brief+routing+context; branch cut @ 2ed85da1; handoff 01'
     16-evolve:
-      status: pending
+      status: in_progress
+      started: '2026-08-04'
+      note: 'ORCHESTRATING — 01-requirements in_progress'
     01-requirements:
-      status: pending
+      status: in_progress
       mode: delta
+      started: '2026-08-04'
+      note: 'STARTED (delta) — F32 + deepen; #846'
     02-verify-plan:
       status: pending
       mode: delta
@@ -30759,42 +30793,54 @@ evolve_cycles:
   adrs: []
   artifacts:
   - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
-    status: pending
+    status: written
     stage: 00-context
   - path: docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
-    status: pending
+    status: written
     stage: 00-context
   - path: docs/context/iwxxm-corpus-quality-846.md
-    status: pending
+    status: written
     stage: 00-context
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+    stage: 16-evolve
+    note: EV-032 section being added by parent
   issues: []
   decision_refs:
   - D-S040-open
   - D-S040-route
   - D-S040-branch
   note: >-
-    S040/EV-032 — D-S040-route=1 Standard; D-S040-branch=1 from main;
+    S040/EV-032 — 00 COMPLETE @ 2ed85da1; current_stage 01-requirements;
     deepen F23 (#835), F4/F6/F2/F13 (#808+corpus); F32 VONA; exclude #836;
-    branch cut pending (not by workflow-state-manager)
+    stash S039-EV031-WIP parked prior branch WIP
   notes:
+  - '2026-08-04 S040/EV-032 — 00-context COMPLETE; branch evolve/EV-032 @ 2ed85da1; handoff 01-requirements; stash S039-EV031-WIP; evolve-decisions.md EV-032 section in progress by parent; #846/#835/#741/#808'
   - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (do not carry EV-031 dirty worktree); 00-context completing; scoped brief docs/context/iwxxm-corpus-quality-846.md; #846/#835/#741/#808; exclude #836'
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
-  current_branch: evolve/EV-031-platform-independence-842
+  current_branch: evolve/EV-032-iwxxm-corpus-quality
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit:
   dirty: true
-  tip_sha: df79d1fd
-  tip_sha_full: df79d1fd6a95e55c183955c20d5eed920ee84963
-  tip_note: 'S040/EV-032 — D-S040-route=1; D-S040-branch=1 from main; branch cut pending (not by WSM)'
+  tip_sha: 2ed85da1
+  tip_sha_full: 2ed85da14c99400a23dd2777f8da1f305e2423c0
+  tip_note: 'S040/EV-032 00 COMPLETE @ 2ed85da1; 01-requirements in_progress; dirty evolve-decisions.md'
+  stash:
+  - name: S039-EV031-WIP
+    note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
+    prior_branch: evolve/EV-031-platform-independence-842
+    session_id: S040-iwxxm-corpus-quality
+    date: '2026-08-04'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-032-iwxxm-corpus-quality
-  note: 'S040/EV-032 — D-S040-route=1 Standard; D-S040-branch=1 from main; 00-context completing; branch cut pending; no WSM git ops; #846/#835/#741/#808'
+  note: 'S040/EV-032 — on evolve/EV-032 @ 2ed85da1; 01-requirements; stash S039-EV031-WIP; #846'
   notes:
+  - '2026-08-04 S040/EV-032 — 00-context COMPLETE; commit 2ed85da1 open session docs; current_stage 01-requirements; stash S039-EV031-WIP parked prior EV-031 dirty tree; evolve-decisions.md EV-032 section in progress by parent; #846/#835/#741/#808'
   - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (not EV-031 dirty tree); scoped brief path fixed to docs/context/iwxxm-corpus-quality-846.md; no git branch/commit by workflow-state-manager; #846/#835/#741/#808'
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; F32; #846/#835/#741/#808; exclude #836; no git branch/commit by workflow-state-manager'
   - '2026-08-04 S039 07-build largely COMPLETE — HTTP+TLS pin https://api|app.tac-to-iwxxm.com; D-S039-tls=1 cert-manager+LE+hostAliases; D-S038-t63-waive LIFTED; report dns-tls-cutover.md; next 13-deploy-smoke then 15-service-health; branch evolve/EV-031-platform-independence-842; #842/#712'
@@ -31203,6 +31249,19 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-032-iwxxm-corpus-quality
+    purpose: 'S040/EV-032 IWXXM corpus quality / WMO source parity #846; #835/#741/#808; F32 VONA'
+    base: main
+    status: active
+    created: '2026-08-04'
+    created_at: '2026-08-04'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    tip_sha: 2ed85da1
+    tip_sha_full: 2ed85da14c99400a23dd2777f8da1f305e2423c0
+    pushed: false
+    exists: true
+    note: 'Cut from main (D-S040-branch=1); open session commit 2ed85da1; EV-031 WIP stashed S039-EV031-WIP'
   - name: infra/doks-dns-cutover
     purpose: 'S039 ops — DOKS DNS cutover; pin api/app.tac-to-iwxxm.com → 168.144.12.70; lift D-S038-t63-waive'
     base: main
@@ -32216,6 +32275,24 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 2ed85da14c99400a23dd2777f8da1f305e2423c0
+    short: 2ed85da1
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: open S040 iwxxm corpus quality session (#846)'
+    stage: 00-context
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/context/README.md
+    - docs/context/iwxxm-corpus-quality-846.md
+    - docs/sessions/README.md
+    - docs/sessions/S040-iwxxm-corpus-quality/README.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
+    note: 'Open S040/EV-032 session docs + state; handoff 01-requirements; evolve-decisions.md EV-032 section follows (dirty)'
   - sha: df79d1fd6a95e55c183955c20d5eed920ee84963
     short: df79d1fd
     branch: evolve/EV-031-platform-independence-842
