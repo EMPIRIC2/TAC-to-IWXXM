@@ -1177,7 +1177,7 @@
   under default pin; promote catalog `sigmet_a6_2_tc` → **`wmoPass`**; update FIXTURE_GAPS /
   inventory notes. Observed deltas: coordinate formatting, airspace type, `intensityChange`,
   forecast-centre trailing zeros.
-- **Acceptance**: #835 checkboxes; **TC-EV032-835-***; deepen UJ-039 / UJ-034; H4–H5 if FE
+- **Acceptance**: #835 checkboxes; **TC-EV032-002** / **TC-EV032-003**; deepen UJ-039 / UJ-034; H4–H5 if FE
   catalog tier changes
 
 ### F4 / F6 / F2 / F13 deepen (S040 / EV-032 — #808 release-line adoptability)
@@ -1187,7 +1187,7 @@
 - **What it does**: Written maintainability assessment + adopt/deprecate checklists aligned with
   `docs/domain/iwxxm/VERSION_SUPPORT_POLICY.md`; blast-radius map across convert / validate /
   vendor / UI / PyPI; child issues for automation gaps; recommendation on latest+1 window.
-- **Acceptance**: #808 deliverables; **TC-EV032-808-*** (docs/CI gates as defined in 04);
+- **Acceptance**: #808 deliverables; **TC-EV032-004** (docs/CI gates as defined in 04);
   no engine rewrite required to close #808
 
 ### Corpus / WMO-source parity (S040 / EV-032 — #846)
@@ -1196,7 +1196,7 @@
 - **What it does**: Continuous good results vs official IWXXM corpus and related WMO sources
   (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists, codes.wmo.int, iwxxm-modelling). File
   child issues for concrete gaps; index durable stance in domain/session docs.
-- **Acceptance**: **TC-EV032-CORPUS-***; children linked from #846; deepen UJ-039 / UJ-042 /
+- **Acceptance**: **TC-EV032-005**; children linked from #846; deepen UJ-039 / UJ-042 /
   UJ-045 as applicable
 - **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable
 
