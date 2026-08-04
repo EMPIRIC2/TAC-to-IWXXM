@@ -93,7 +93,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'STARTED @ T0.1 corpus inventory; #846'
+    note: 'IN PROGRESS — M0 done; M1 T1.1–T1.2 green equality; next T1.3/T1.4 catalog wmoPass; #835'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -166,7 +166,7 @@ active_session:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — Gate B PASS (D-S040-04-plan=1); current_stage 07-build @ T0.1; F32+UJ-045; #846/#835/#741/#808/#847'
+  note: 'S040/EV-032 — IN PROGRESS — M0 done; M1 T1.1–T1.2 green equality; next T1.3/T1.4 catalog wmoPass; #835'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -32623,6 +32623,49 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 97ab3f760b118b25cc6c9fcf7628b3f4631edd12
+    short: 97ab3f76
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T1.2] fix: A6-2-TC ADR-032 equality (coords, FIR, intensity)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 26fc6ccd063b2c716722756f656f5dafe0431085
+    short: 26fc6ccd
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T1.1] test: red ADR-032 equality for A6-2-TC (#835)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 0c6ab99e8fae9622bdb0df480ca7e783754e23a9
+    short: 0c6ab99e
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T0.1] docs: Gate B PASS + M0 corpus inventory (#846)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.1-corpus-inventory.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.2-gap-index.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.3-m0-exit-checklist.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
   - sha: 82ad0ae9ef6a0b22aeab7f5cefc8990411f69edb
     short: 82ad0ae9
     branch: evolve/EV-032-iwxxm-corpus-quality

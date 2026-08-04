@@ -1,9 +1,7 @@
-"""TC-EV030-005 — #829 A6-2-TC catalog unlock as wmoReference (S037 / EV-030 T2.4).
+"""TC-EV030-005 — #829 A6-2-TC catalog unlock (S037) → EV-032 `wmoPass` (#835).
 
-Quality path (lint → convert → validate) is green for annex3 ``sigmet_a6_2_tc``.
-ADR-032 ``canonicalize_xml`` equality vs vendor is green as of EV-032 / #835
-(``test_tc_ev032_002_a6_2_tc_adr032_equality``). Catalog promote to ``wmoPass`` is
-TC-EV032-003 / T1.4 — this module still expects ``wmoReference`` until then.
+Quality path + ADR-032 equality are green. Catalog tier is ``wmoPass`` after
+TC-EV032-003 / T1.4 (was ``wmoReference`` at EV-030 T2.4).
 """
 
 from __future__ import annotations
@@ -48,7 +46,7 @@ def test_tc_ev030_005_quality_path_green() -> None:
 
 
 def test_tc_ev030_005_adr032_equality_holds() -> None:
-    """#835 residual closed in EV-032 — keep a peer assert here for M2 unlock gate."""
+    """#835 residual closed in EV-032 — keep a peer assert here for unlock gate."""
     from tac2iwxxm import convert
 
     tac = (FIXTURES / "sigmet_a6_2_tc.tac").read_text(encoding="utf-8")
@@ -59,15 +57,15 @@ def test_tc_ev030_005_adr032_equality_holds() -> None:
     assert canonicalize_xml(result.xml) == canonicalize_xml(vendor)
 
 
-def test_tc_ev030_005_catalog_is_wmo_reference() -> None:
+def test_tc_ev030_005_catalog_is_wmo_pass() -> None:
     text = CATALOG.read_text(encoding="utf-8")
     start = text.index("id: 'sigmet_a6_2_tc'")
     end = text.index("},", start)
     block = text[start:end]
-    assert "wmoReference: true" in block
-    assert "wmoPass: true" not in block
+    assert "wmoPass: true" in block
+    assert "wmoReference: true" not in block
     assert "wmoSeed: 'sigmet-A6-2-TC'" in block
-    assert "reference" in block.lower()
+    assert "passer" in block.lower()
     assert FE_BODY.is_file()
     assert FE_BODY.read_text(encoding="utf-8") == (FIXTURES / "sigmet_a6_2_tc.tac").read_text(encoding="utf-8")
 
@@ -75,6 +73,5 @@ def test_tc_ev030_005_catalog_is_wmo_reference() -> None:
 def test_tc_ev030_005_fixture_gaps_documents_unlock() -> None:
     text = FIXTURE_GAPS.read_text(encoding="utf-8")
     assert "sigmet-A6-2-TC" in text
-    assert "wmoReference" in text
-    assert "deferred (#738)" not in text.lower() or "Unlocked" in text
+    assert "wmoPass" in text
     assert "Unlocked" in text or "unlocked" in text

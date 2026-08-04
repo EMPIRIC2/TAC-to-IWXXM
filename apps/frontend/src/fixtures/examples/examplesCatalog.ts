@@ -180,13 +180,13 @@ export const EXAMPLES: readonly GoldenExample[] = [
   },
   {
     id: 'sigmet_a6_2_tc',
-    label: 'TC SIGMET WMO A6-2-TC (reference)',
+    label: 'TC SIGMET WMO A6-2-TC (passer)',
     product: 'SIGMET',
     inputMode: 'tac',
     body: sigmetA62Tc,
     nonOperational: true,
     provenance: `${PKG}/annex3_golden/sigmet_a6_2_tc.tac`,
-    wmoReference: true,
+    wmoPass: true,
     wmoSeed: 'sigmet-A6-2-TC',
   },
   {
