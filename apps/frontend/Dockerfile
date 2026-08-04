@@ -55,6 +55,7 @@ WORKDIR /workspace/apps/frontend
 # prepare-config.sh; Docker build uses repo root context).
 RUN node -e "\
 const fs = require('fs'); \
+const publishable = process.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || ''; \
 const cfg = { \
   environment: 'prod', \
   api: { \
@@ -64,6 +65,7 @@ const cfg = { \
   }, \
   supabase: { \
     url: process.env.VITE_SUPABASE_URL || '', \
+    ...(publishable ? { publishableKey: publishable } : {}), \
   }, \
 }; \
 fs.mkdirSync('public', { recursive: true }); \

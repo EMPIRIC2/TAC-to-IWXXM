@@ -4,13 +4,7 @@
  * RED until T6.3 implements ../utils/apiBase and migrates api.ts / authService.ts.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import {
-  getApiBaseUrl,
-  apiUrl,
-  authUrl,
-  adminUrl,
-  requireApiBaseUrl,
-} from '../utils/apiBase';
+import { getApiBaseUrl, apiUrl, authUrl, adminUrl } from '../utils/apiBase';
 
 const DEFAULT_DEV_API = 'http://localhost:18001';
 
@@ -113,15 +107,19 @@ describe('VITE_API_BASE_URL client', () => {
   });
 
   describe('requireApiBaseUrl', () => {
-    it('throws when VITE_API_BASE_URL is missing in production mode', () => {
+    it('throws when API host is unresolved in production mode', async () => {
+      vi.resetModules();
       vi.stubEnv('VITE_API_BASE_URL', '');
       vi.stubEnv('MODE', 'production');
-      expect(() => requireApiBaseUrl()).toThrow(/VITE_API_BASE_URL/);
+      const { requireApiBaseUrl: requireBase } = await import('../utils/apiBase');
+      expect(() => requireBase()).toThrow(/config\.json|VITE_API_BASE_URL/);
     });
 
-    it('returns trimmed URL when configured', () => {
+    it('returns trimmed URL when configured', async () => {
+      vi.resetModules();
       vi.stubEnv('VITE_API_BASE_URL', '  https://api.example.onrender.com  ');
-      expect(requireApiBaseUrl()).toBe('https://api.example.onrender.com');
+      const { requireApiBaseUrl: requireBase } = await import('../utils/apiBase');
+      expect(requireBase()).toBe('https://api.example.onrender.com');
     });
   });
 });

@@ -71,4 +71,4 @@ class TestMetarCorsOriginsPolicy:
         from src.api import get_cors_origins
 
         origins = get_cors_origins()
-        assert "https://metar-to-iwxxm-frontend-v4-web.onrender.com" in origins
+        assert "https://app.tac-to-iwxxm.com" in origins
