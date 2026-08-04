@@ -82,7 +82,7 @@ Repo already splits fast vs long:
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Test | Red: ADR-032 equality convert(annex3 A6-2-TC) vs vendor `sigmet-A6-2-TC.xml` | TC-EV032-002; E32-T2; #835 | T0.3 | pending |
+| T1.1 | Test | Red: ADR-032 equality convert(annex3 A6-2-TC) vs vendor `sigmet-A6-2-TC.xml` | TC-EV032-002; E32-T2; #835 | T0.3 | **in_progress** |
 | T1.2 | Code | Encode/canonicalize deltas (coords, airspace type, intensityChange, trailing zeros) | F23; ADR-032; #835 | T1.1 | pending |
 | T1.3 | Test | Green equality + quality path lint→convert→XSD+SCH still green | TC-EV032-002/003 | T1.2 | pending |
 | T1.4 | Code | Catalog promote `sigmet_a6_2_tc` → `wmoPass`; Vitest + FIXTURE_GAPS notes | TC-EV032-003; UJ-039 | T1.3 | pending |
