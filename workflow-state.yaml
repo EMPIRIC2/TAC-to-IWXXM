@@ -74,7 +74,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 07-build in_progress @ M7; T7.1 COMPLETE (Playwright 13/13 provisional DOKS); T6.4 COMPLETE; T6.5 blocked soak calendar; T7.2 next; D-S038-t63-waive implemented; progress 31/38; tip be0e87c9; D-S038-04-plan=1 Gate B PASS; D-S038-continue'
+    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; deepen F5,F7,F8,F21,F22,M4; orchestrator remains in_progress; child 07-build in_progress @ M7; T7.1 COMPLETE (Playwright 13/13 provisional DOKS); T6.4 COMPLETE; T6.5 blocked soak calendar; T7.2 next; D-S038-t63-waive implemented; progress 31/38; tip 3963d57a; D-S038-04-plan=1 Gate B PASS; D-S038-continue'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -107,7 +107,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'IN_PROGRESS — T7.1 COMPLETE (Playwright 13/13 provisional DOKS; report t7.1-playwright-live-provisional.md); T6.4 COMPLETE + soak day 0 under D-S038-t63-waive; T6.5 blocked on 7-day soak calendar; active_task T7.2 pending @ M7; progress 31/38; tip be0e87c9; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
+    note: 'IN_PROGRESS — T7.1 COMPLETE (Playwright 13/13 provisional DOKS; report t7.1-playwright-live-provisional.md); T6.4 COMPLETE + soak day 0 under D-S038-t63-waive; T6.5 blocked on 7-day soak calendar; active_task T7.2 pending @ M7; progress 31/38; tip 3963d57a; DOKS LB 168.144.12.70; D-S038-continue; #842/#830/#712'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -153,7 +153,7 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: 'S038/EV-031 — T7.1 COMPLETE (Playwright 13/13 provisional DOKS); T6.4 COMPLETE + soak day 0 under D-S038-t63-waive; T6.5 blocked on 7-day soak calendar; 07-build in_progress @ M7; active_task T7.2 pending; progress 31/38; tip be0e87c9; D-S038-continue; #842/#830/#712'
+  note: 'S038/EV-031 — T7.1 COMPLETE (Playwright 13/13 provisional DOKS); T6.4 COMPLETE + soak day 0 under D-S038-t63-waive; T6.5 blocked on 7-day soak calendar; 07-build in_progress @ M7; active_task T7.2 pending; progress 31/38; tip 3963d57a; D-S038-continue; #842/#830/#712'
   current_task: T7.2
   active_task: T7.2
   active_task_status: pending
@@ -162,8 +162,8 @@ active_session:
   blocked_task: T6.5
   blocked_task_reason: 7-day soak calendar
   progress: 31/38
-  tip_sha: be0e87c9
-  tip_sha_full: be0e87c93dbcdfd0d9ac093aa04db4a3bc0df3f2
+  tip_sha: 3963d57a
+  tip_sha_full: 3963d57a8b001244ad62eefe2bf8952e0622fead
   active_milestone: M7
   next_milestone: M7
   t6_4_complete: true
