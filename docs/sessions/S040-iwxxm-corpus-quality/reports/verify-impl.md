@@ -1,17 +1,19 @@
 # Verify Implementation — S040 / EV-032 (T4.4 / 11)
 
 > Generated: 2026-08-04  
-> Branch: `evolve/EV-032-iwxxm-corpus-quality` @ `09e60184`  
+> Branch: `evolve/EV-032-iwxxm-corpus-quality` @ `d086f694` (+ sign-off commit)  
 > Inputs: `qa-report.md` (pass_with_advisories), `e2e-report.md` (T0 PASS)  
-> Status: **AWAITING USER SIGN-OFF**
+> Status: **APPROVED** — `D-S040-11` = A1,B1,C1,D1
 
 ## UI preview (non-deployed)
 
 | Field | Value |
 |-------|-------|
-| Offered | **Yes** (AskQuestion tool unavailable — chat options below) |
-| Choice | pending |
-| Note | Not staging/production — local `make dev` only if accepted |
+| Offered | Yes |
+| Choice | **Accepted** (A=1) — local `make dev` |
+| URL | **http://localhost:18000/** (frontend) · API **http://localhost:18001** |
+| Label | **Non-deployed / local only** — not staging or production |
+| Probe | FE HTTP 200 · API `/docs` HTTP 200 (2026-08-04) |
 
 ## Evidence summary
 
@@ -25,43 +27,42 @@
 
 | # | Criterion | Evidence | Status |
 |---|-----------|----------|--------|
-| 1 | Registry-backed VONA lint; unknown codes fail CI | TC-F32-001; issue-registry-guard; vona-quality | **MET** |
-| 2 | Encode cookbook from XSD+SCH+example (+ PANS-MET) | TC-F32-002; T2.1 cookbook | **MET** |
-| 3 | MeteorologicalFeature + AviationColourCode | TC-F32-003 | **MET** |
-| 4 | Accept/negative + ADR-032 golden when peer exists | TC-F32-004; vona-A7-1 | **MET** |
-| 5 | Coverage matrix / guidance gaps filed | T2.9; #849/#850 | **MET** |
-| 6 | Full F7 surface: picker + Examples unlock | TC-F32-005; Vitest 44; FE shipped | **MET** (H4–H5 pending deploy) |
-| 7 | API `product=vona`; unknown → 400 | TC-F32-006 | **MET** |
+| 1 | Registry-backed VONA lint; unknown codes fail CI | TC-F32-001; issue-registry-guard; vona-quality | **MET** ✓ |
+| 2 | Encode cookbook from XSD+SCH+example (+ PANS-MET) | TC-F32-002; T2.1 cookbook | **MET** ✓ |
+| 3 | MeteorologicalFeature + AviationColourCode | TC-F32-003 | **MET** ✓ |
+| 4 | Accept/negative + ADR-032 golden when peer exists | TC-F32-004; vona-A7-1 | **MET** ✓ |
+| 5 | Coverage matrix / guidance gaps filed | T2.9; #849/#850 | **MET** ✓ |
+| 6 | Full F7 surface: picker + Examples unlock | TC-F32-005; Vitest; FE + local preview | **MET** ✓ (H4–H5 @ 13) |
+| 7 | API `product=vona`; unknown → 400 | TC-F32-006 | **MET** ✓ |
 
-**F32 feature status in feature-list:** Done (#741 closed). User confirm for cycle closeout.
+**User:** B=1 — approve all MET criteria.
 
 ## Deepen features
 
-| Feature / issue | Acceptance | Status |
-|-----------------|------------|--------|
-| F23 deepen #835 A6-2-TC → wmoPass | TC-EV032-002/003; canary + quality pack | **MET** (#835 closed) |
-| F4/F6/F2/F13 deepen #808/#847 | Docs checklists; TC-EV032-004 | **MET** (closed) |
-| #846 corpus children | T4.1 filed #856–#861; epic updated | **MET** (children open by design) |
+| Feature / issue | Status | User |
+|-----------------|--------|------|
+| F23 deepen #835 A6-2-TC → wmoPass | **MET** | approved (B=1) |
+| F4/F6/F2/F13 deepen #808/#847 | **MET** | approved (B=1) |
+| #846 corpus children filed | **MET** | approved (B=1) |
 
 ## Journey sign-off (UJ-045)
 
 | Tier | Result | User |
 |------|--------|------|
-| T0 (CI / Vitest / API smoke) | PASS | pending |
-| T2/T3 + H4–H5 browser | deferred to T4.5 / 13 | waiver for 11? pending |
-
-Per connectivity gates: T0 ≠ production browser. Recommend **waive browser proof to T4.5** (same pattern as S037).
+| T0 (CI / Vitest / API smoke) | PASS | **approved** (B=1) |
+| T2/T3 + H4–H5 browser | deferred to T4.5 / 13 | **waived for 11** (C=1) |
 
 ## Blocking issues
 
-None for T0 / library / FE unit surface.
+None.
 
 ## Sign-off log
 
 | Decision | Value | When |
 |----------|-------|------|
-| UI preview | pending | — |
-| F32 ACs | pending | — |
-| UJ-045 T0 | pending | — |
-| H4–H5 defer to 13 | pending | — |
-| Proceed to 12-verify-deploy | pending | — |
+| UI preview | A=1 accepted — http://localhost:18000/ | 2026-08-04 |
+| F32 + deepen ACs | B=1 approve all MET | 2026-08-04 |
+| UJ-045 H4–H5 | C=1 waive to T4.5 / 13 | 2026-08-04 |
+| Next | D=1 complete 11 → 12-verify-deploy | 2026-08-04 |
+
+**11-verify-impl: completed / approved**
