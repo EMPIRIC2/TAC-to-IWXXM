@@ -48,13 +48,16 @@ active_session:
     D-S040-phase-c: '1'
     D-S040-11: A1,B1,C1,D1
     D-S040-12: ready
+    D-S040-13: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
       #835→#741→#808→corpus; exclude #836 metrics UI.
       Standard approved (D-S040-route=1); branch from main (D-S040-branch=1).
       D-S040-phase-c=1 Continue → T4.3 (C→D / Phase D).
-      D-S040-11=A1,B1,C1,D1 (11 approved); D-S040-12=ready (12 checklist); next T4.5/13.
+      D-S040-11=A1,B1,C1,D1 (11 approved); D-S040-12=ready (12 checklist); D-S040-13=1 (deploy gate).
+  decisions:
+    D-S040-13: '1'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -69,7 +72,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
+    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -99,7 +102,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
+    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -149,9 +152,10 @@ active_session:
     decision_id: D-S040-12
   - stage: 13-deploy-smoke
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-04T21:35:00Z'
     skip_rationale:
-    note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
   current_stage: 13-deploy-smoke
   started_at: '2026-08-04'
   started: '2026-08-04'
@@ -235,11 +239,12 @@ active_session:
   - D-S040-phase-c
   - D-S040-11
   - D-S040-12
+  - D-S040-13
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); ahead_of_origin=12; PR #848; #846'
+  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -284,13 +289,16 @@ sessions:
     D-S040-phase-c: '1'
     D-S040-11: A1,B1,C1,D1
     D-S040-12: ready
+    D-S040-13: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
       #835→#741→#808→corpus; exclude #836 metrics UI.
       Standard approved (D-S040-route=1); branch from main (D-S040-branch=1).
       D-S040-phase-c=1 Continue → T4.3 (C→D / Phase D).
-      D-S040-11=A1,B1,C1,D1 (11 approved); D-S040-12=ready (12 checklist); next T4.5/13.
+      D-S040-11=A1,B1,C1,D1 (11 approved); D-S040-12=ready (12 checklist); D-S040-13=1 (deploy gate).
+  decisions:
+    D-S040-13: '1'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -305,7 +313,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
+    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -335,7 +343,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
+    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -385,9 +393,10 @@ sessions:
     decision_id: D-S040-12
   - stage: 13-deploy-smoke
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-04T21:35:00Z'
     skip_rationale:
-    note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
   current_stage: 13-deploy-smoke
   started_at: '2026-08-04'
   started: '2026-08-04'
@@ -463,11 +472,12 @@ sessions:
   - D-S040-phase-c
   - D-S040-11
   - D-S040-12
+  - D-S040-13
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); ahead_of_origin=12; PR #848; #846'
+  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -7000,16 +7010,16 @@ stages:
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
     mode: delta
-    note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
-    tip_sha: fe024aac
-    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
-    tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
+    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    tip_sha: 22b4251b
+    tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
     progress: 25/28
     current_milestone: M4
     current_task: T4.5
     active_milestone: M4
     active_task: T4.5
-    active_task_status: pending
+    active_task_status: in_progress
     next_stage: 13-deploy-smoke
     next_task: T4.5
     completed_through: T4.4
@@ -9875,10 +9885,10 @@ stages:
     tip_note: '12 signed off awaiting 13 smoke'
     decision_id: D-S038-12
   13-deploy-smoke:
-    status: pending
+    status: in_progress
     mode: delta
-    started_at:
-    started:
+    started_at: '2026-08-04T21:35:00Z'
+    started: '2026-08-04T21:35:00Z'
     completed:
     completed_at:
     previous_started_at: '2026-08-03'
@@ -9894,16 +9904,17 @@ stages:
     prior_s037_tip_sha: 8bd111c
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
-    tip_sha: fe024aac
-    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
-    tip_note: 'tip fe024aac — pending_commit cleared; awaiting deploy approval for T4.5'
+    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+    tip_sha: 22b4251b
+    tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    tip_note: 'T4.5 START — D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5'
     active_milestone: M4
     active_task: T4.5
-    active_task_status: pending
+    active_task_status: in_progress
     progress: 25/28
     completed_through: T4.4
-    awaiting_deploy_approval: true
+    awaiting_deploy_approval: false
+    decision_id: D-S040-13
     pr_number: 848
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
     pr_status: open
@@ -9912,17 +9923,20 @@ stages:
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
       skill_id: 13-deploy-smoke
-      status: pending
+      status: in_progress
       mode: delta
+      started: '2026-08-04T21:35:00Z'
+      started_at: '2026-08-04T21:35:00Z'
       branch: evolve/EV-032-iwxxm-corpus-quality
-      tip_sha: fe024aac
-      tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+      tip_sha: 22b4251b
+      tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
       active_milestone: M4
       active_task: T4.5
-      active_task_status: pending
+      active_task_status: in_progress
       progress: 25/28
-      note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
-      awaiting_deploy_approval: true
+      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+      decision_id: D-S040-13
+      awaiting_deploy_approval: false
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -10518,15 +10532,16 @@ stages:
     prior_evolve_cycle_id: EV-031
     prior_completed: '2026-08-03'
     prior_note: 'S038/EV-031 16-evolve CLOSED — D-S038-13=1; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; active_session=null'
-    note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
-    tip_sha: fe024aac
-    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
-    tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
+    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    tip_sha: 22b4251b
+    tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
     progress: 25/28
     completed_through: T4.4
     active_task: T4.5
-    active_task_status: pending
+    active_task_status: in_progress
     notes:
+    - '2026-08-04 S040/EV-032 — T4.5 START D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5; tip 22b4251b; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
     - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
     - '2026-08-04 S040/EV-032 — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; pending_commit; PR #848; #846'
     - '2026-08-03 S038/EV-031 12-verify-deploy COMPLETE (D-S038-12=1) — mitigations+rollback approved; overall pass; handoff 13-deploy-smoke; tip b4feac02; #842/#830/#712'
@@ -10899,6 +10914,36 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S040-13
+  date: '2026-08-04'
+  timestamp: '2026-08-04T21:35:00Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: deploy
+  status: confirmed
+  topic: 'T4.5 deploy gate — push+merge #848, redeploy API+FE, H1–H5'
+  summary: 'D-S040-13=1 — push+merge #848 to main; redeploy API+FE; run H1–H5 live smokes'
+  decision: 'D-S040-13=1 — Approve deploy gate; push+merge PR #848 to main; redeploy API+FE on DOKS; run H1–H5; start 13-deploy-smoke T4.5.'
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  related_prs:
+  - '848'
+  related_decisions:
+  - D-S040-11
+  - D-S040-12
+  active_task: T4.5
+  active_task_status: in_progress
+  progress: 25/28
+  current_stage: 13-deploy-smoke
+  tip_sha: 22b4251b
+  tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+  tip_note: 'T4.5 START — D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5'
 - id: D-S040-11
   date: '2026-08-04'
   timestamp: '2026-08-04T21:25:08Z'
@@ -31586,6 +31631,7 @@ evolve_cycles:
     D-S040-phase-c: '1'
     D-S040-11: A1,B1,C1,D1
     D-S040-12: ready
+    D-S040-13: '1'
     locked_at: '2026-08-04'
   routing_plan:
     required_stages:
@@ -31607,12 +31653,12 @@ evolve_cycles:
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06; Phase D via D-S040-phase-c=1'
   current_stage: 13-deploy-smoke
-  tip_sha: fe024aac
-  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
-  tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
+  tip_sha: 22b4251b
+  tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+  tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
   active_milestone: M4
   active_task: T4.5
-  active_task_status: pending
+  active_task_status: in_progress
   progress: 25/28
   completed_through: T4.4
   t4_4_complete: true
@@ -31685,7 +31731,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — T4.4 COMPLETE; tip fe024aac; 11 approved; 12 ready; next T4.5; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; pending_commit cleared; ahead_of_origin=12; PR #848; #846'
+      note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
     01-requirements:
       status: completed
       mode: delta
@@ -31707,7 +31753,7 @@ evolve_cycles:
     07-build:
       status: in_progress
       started: '2026-08-04'
-      note: 'Phase D — T4.4 COMPLETE; tip fe024aac [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; progress 25/28; completed_through T4.4; active_task T4.5 pending → 13-deploy-smoke; gates.deploy pending; PR #848 open; ahead_of_origin=12; #846'
+      note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
     08-verify-build:
       status: completed
       started: '2026-08-04'
@@ -31753,8 +31799,11 @@ evolve_cycles:
       overall: ready
       decision_id: D-S040-12
     13-deploy-smoke:
-      status: pending
-      note: 'PENDING — T4.5 next; tip fe024aac; awaiting deploy approval (D-S040-12 ready); progress 25/28; completed_through T4.4; H4–H5 at 13; PR #848; #846'
+      status: in_progress
+      started: '2026-08-04T21:35:00Z'
+      started_at: '2026-08-04T21:35:00Z'
+      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+      decision_id: D-S040-13
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -31762,8 +31811,8 @@ evolve_cycles:
     c_to_d_note: 'D-S040-phase-c=1 Continue → T4.3; C→D passed 2026-08-04; tip at pass was e0e595e3 (08 PASS); Phase D tip now 09e60184 (T4.3)'
     c_to_d_decision: D-S040-phase-c
     c_to_d_passed_at: '2026-08-04'
-    deploy: pending
-    deploy_note: 'T4.4 complete; 12 ready; deploy gate awaits T4.5/13 approval'
+    deploy: in_progress
+    deploy_note: 'T4.5 START — D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5'
   checkpoints:
     phase_a: passed
     phase_b: passed
@@ -31772,8 +31821,8 @@ evolve_cycles:
     phase_c_decision: D-S040-phase-c
     phase_c_passed_at: '2026-08-04'
     phase_d: pending
-    phase_d_note: 'T4.4 done; T4.5/13 pending deploy approval'
-    deploy: pending
+    phase_d_note: 'T4.5/13 in progress per D-S040-13=1'
+    deploy: in_progress
   adrs: []
   artifacts:
   - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
@@ -31843,8 +31892,10 @@ evolve_cycles:
   - D-S040-phase-c
   - D-S040-11
   - D-S040-12
-  note: 'T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved (verify-impl.md); 12 ready (deploy-checklist.md); tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke (awaiting deploy approval); ahead_of_origin=12; PR #848; #846'
+  - D-S040-13
+  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
   notes:
+  - '2026-08-04 S040/EV-032 — T4.5 START D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5; tip 22b4251b; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved verify-impl.md; 12 ready deploy-checklist.md; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; tip fe024aac; pending_commit later cleared @ fe024aac; gates.deploy pending; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.3 @ 09e60184 (09e601847eae404f997e107b42952bfcc51db12f) [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; tip 09e60184; pending_commit cleared; active_task T4.4 in_progress @ M4 / 11-verify-impl; progress 24/28; ahead_of_origin=10 pushed=false; PR #848; #846'
