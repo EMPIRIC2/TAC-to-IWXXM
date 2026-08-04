@@ -2,12 +2,13 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | fixing (local green; awaiting commit / PR / DOKS FE deploy approval) |
+| **Status** | fixing (PR open; awaiting merge + DOKS FE deploy approval) |
 | **Feature** | F15 / F21 connectivity (H5 API host) |
 | **Severity** | critical (production operator UI blocked) |
 | **Classification** | connectivity / config / deploy |
 | **Remediation path** | local-first — wire `apiBase` → `/config.json` + inject publishable key; deploy after approval |
 | **Branch** | `fix/frontend-runtime-api-host` |
+| **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/862 |
 
 ## Error description
 
