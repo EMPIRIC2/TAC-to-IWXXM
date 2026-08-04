@@ -1197,12 +1197,13 @@
 
 ### Corpus / WMO-source parity (S040 / EV-032 — #846)
 
-- **Status**: **Planned** deepen under epic #846 (not a new Fn id)
+- **Status**: **In progress** — in-cycle tickets closed; children filed (T4.1); verify/deploy pending
 - **What it does**: Continuous good results vs official IWXXM corpus and related WMO sources
   (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists, codes.wmo.int, iwxxm-modelling). File
   child issues for concrete gaps; index durable stance in domain/session docs.
 - **Acceptance**: **TC-EV032-005**; children linked from #846; deepen UJ-039 / UJ-042 /
   UJ-045 as applicable
+- **Children (T4.1)**: #849–#861 (see [t4.1-846-children.md](sessions/S040-iwxxm-corpus-quality/reports/t4.1-846-children.md))
 - **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable
 
 ## Platform Feature Details (Monorepo Migration)

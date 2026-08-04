@@ -14,9 +14,9 @@
 |-------|-------|
 | **Active phase** | Phase C — build |
 | **Active milestone** | M4 — Corpus closeout + verify / deploy |
-| **Active task** | T4.1 — pending (next) |
-| **Tasks** | 21 / 28 completed |
-| **Last updated** | 2026-08-04 (T3.2–T3.3 complete — #808/#847 closed; M3 done → T4.1) |
+| **Active task** | T4.2 — pending (next) |
+| **Tasks** | 22 / 28 completed |
+| **Last updated** | 2026-08-04 (T4.1 complete — #846 children #856–#861; next T4.2) |
 
 ## Tech Stack Summary
 
@@ -115,7 +115,7 @@ Repo already splits fast vs long:
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T4.1 | Docs | File remaining #846 children from M0 gap index; update epic | TC-EV032-005; #846 | T3.3 | pending |
+| T4.1 | Docs | File remaining #846 children from M0 gap index; update epic | TC-EV032-005; #846 | T3.3 | **completed** |
 | T4.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | T4.1 | pending |
 | T4.3 | Test | 09-qa + 10-e2e (UJ-045); H4–H5 prep | 09; 10; E32-T6 | T4.2 | pending |
 | T4.4 | Docs | 11-verify-impl per-AC (F32 + deepen); 12-verify-deploy | 11; 12 | T4.3 | pending |
@@ -155,8 +155,9 @@ Repo already splits fast vs long:
 |----|-------|-------------|--------|-----|
 | PR-M1 | M0–M1 #835 A6-2 `wmoPass` | `main` ← `evolve/EV-032-iwxxm-corpus-quality` | open | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848 |
 | PR-M2 | M2 #741 / F32 VONA (same evolve branch) | `main` ← evolve | open (lands on #848) | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848 |
+| PR-M3 | M3 #808/#847 release-line docs (same evolve branch) | `main` ← evolve | open (lands on #848) | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848 |
 | PR-final | M0–M4 evolve close | `main` ← evolve | pending | — |
 
 ## Next
 
-**07-build** — T3.1 **done** → **T3.2** #847 non-technical release-line review.
+**07-build** — T4.1 corpus children filed (#856–#861); next **T4.2** 08-verify-build.
