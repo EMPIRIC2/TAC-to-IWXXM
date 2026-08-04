@@ -61,6 +61,15 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 
 **Audit**: `docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md`
 
+### Tech plan Batch 1 (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T1 | decision | Milestone structure? | **1** — M0–M4 (`D-S040-04-batch-1`) |
+| E32-T2 | decision | #835 equality bar? | **1** — strict ADR-032 required for `wmoPass` |
+| E32-T3 | decision | F32 encode approach? | **1** — cookbook + fixtures; VAA/SWXA-peer plugin; gaps → children |
+| E32-T4 | decision | VONA AHL / T1T2? | **1** — discover in M2; no provisional lock |
+
 ---
 
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)

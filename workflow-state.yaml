@@ -41,6 +41,7 @@ active_session:
     D-S040-E32-M: '2,3,1,1'
     D-S040-02-batch-f: '1,1,1,1'
     D-S040-02-phase-a: '1'
+    D-S040-04-batch-1: '1,1,1,1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -60,7 +61,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Gate A PASS; 04-tech-plan in_progress; #846'
+    note: 'ORCHESTRATING — Batch 1 locked; 04-tech-plan in_progress; Batch 2 pending; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -83,7 +84,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'STARTED (delta) — Gate B pending; #846'
+    note: 'IN PROGRESS — Batch 1 locked; Batch 2 pending; #846'
   - stage: 07-build
     required: true
     status: pending
@@ -150,6 +151,7 @@ active_session:
   - D-S040-E32-M
   - D-S040-02-batch-f
   - D-S040-02-phase-a
+  - D-S040-04-batch-1
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -192,6 +194,7 @@ sessions:
     D-S040-E32-M: '2,3,1,1'
     D-S040-02-batch-f: '1,1,1,1'
     D-S040-02-phase-a: '1'
+    D-S040-04-batch-1: '1,1,1,1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -211,7 +214,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Gate A PASS; 04-tech-plan in_progress; #846'
+    note: 'ORCHESTRATING — Batch 1 locked; 04-tech-plan in_progress; Batch 2 pending; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -234,7 +237,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'STARTED (delta) — Gate B pending; #846'
+    note: 'IN PROGRESS — Batch 1 locked; Batch 2 pending; #846'
   - stage: 07-build
     required: true
     status: pending
@@ -301,6 +304,7 @@ sessions:
   - D-S040-E32-M
   - D-S040-02-batch-f
   - D-S040-02-phase-a
+  - D-S040-04-batch-1
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -5740,7 +5744,7 @@ stages:
       mode: delta
       started_at: '2026-08-04'
       started: '2026-08-04'
-      note: 'STARTED (delta) — Gate B pending; #846'
+      note: 'IN PROGRESS — Batch 1 locked; Batch 2 pending; #846'
       feature_ids:
       - F32
       deepen_feature_ids:
@@ -5802,7 +5806,7 @@ stages:
       - D-S040-02-phase-a
       - D-S040-02-batch-f
       - D-S040-E32-M
-      note: 'STARTED (delta) — Gate B pending; #846'
+      note: 'IN PROGRESS — Batch 1 locked; Batch 2 pending; #846'
     - session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 04-tech-plan
@@ -10454,6 +10458,35 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S040-04-batch-1
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 'Batch 1 — 04-tech-plan milestone choices (M0–M4)'
+  summary: '1,1,1,1 — M0-M4; strict ADR-032 for #835; F32 cookbook+fixtures; VONA AHL discover in M2'
+  decision: |
+    D-S040-04-batch-1=1,1,1,1 — Batch 1 locked for S040/EV-032 04-tech-plan.
+    M0–M4; strict ADR-032 for #835; F32 cookbook+fixtures; VONA AHL discover in M2.
+    Batch 2 pending.
+  user_option: '1,1,1,1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  related_decisions:
+  - D-S040-02-phase-a
+  - D-S040-E32-M
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
 - id: D-S040-02-phase-a
   date: '2026-08-04'
   timestamp: '2026-08-04'
@@ -30902,6 +30935,7 @@ evolve_cycles:
     D-S040-E32-M: '2,3,1,1'
     D-S040-02-batch-f: '1,1,1,1'
     D-S040-02-phase-a: '1'
+    D-S040-04-batch-1: '1,1,1,1'
     locked_at: '2026-08-04'
   routing_plan:
     required_stages:
@@ -30936,7 +30970,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — Gate A PASS; 04-tech-plan in_progress; #846'
+      note: 'ORCHESTRATING — Batch 1 locked; 04-tech-plan in_progress; Batch 2 pending; #846'
     01-requirements:
       status: completed
       mode: delta
@@ -30953,7 +30987,7 @@ evolve_cycles:
       status: in_progress
       mode: delta
       started: '2026-08-04'
-      note: 'STARTED (delta) — Gate B pending; #846'
+      note: 'IN PROGRESS — Batch 1 locked; Batch 2 pending; #846'
     07-build:
       status: pending
     08-verify-build:
@@ -31011,6 +31045,7 @@ evolve_cycles:
   - D-S040-E32-M
   - D-S040-02-batch-f
   - D-S040-02-phase-a
+  - D-S040-04-batch-1
   note: >-
     S040/EV-032 — Gate A PASS (D-S040-02=1,1,1,1); current_stage 04-tech-plan;
     deepen F23 (#835), F4/F6/F2/F13 (#808+corpus); F32 VONA; exclude #836;
