@@ -393,6 +393,8 @@ def _sigmet_header_units(
         atsu_name = f"{fir} FIC"
         atsu_type = "FIC"
         mwo_name = f"{mwo} MWO"
+    # Vendor A6-2-TC uses AIXM ``FIR`` (not OTHER:FIR_UIR) for the ATS region (#835).
+    airspace_type = "FIR" if root == "TropicalCycloneSIGMET" else "OTHER:FIR_UIR"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:{root} xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -439,7 +441,7 @@ def _sigmet_header_units(
         <aixm:AirspaceTimeSlice gml:id="as.ts.{fir.lower()}">
           <gml:validTime/>
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:type>OTHER:FIR_UIR</aixm:type>
+          <aixm:type>{airspace_type}</aixm:type>
           <aixm:designator>{escape(fir)}</aixm:designator>
           <aixm:name>{escape(str(ir.get("fir_name", fir)))}</aixm:name>
         </aixm:AirspaceTimeSlice>
@@ -465,6 +467,21 @@ def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
         return pos_list
     ordered = [open_coords[0], *reversed(open_coords[1:]), open_coords[0]]
     return " ".join(f"{lat:.2f} {lon:.2f}" for lat, lon in ordered)
+
+
+def _sigmet_tc_format_pos(lat: float, lon: float) -> str:
+    """Format TC SIGMET ``gml:pos`` for vendor A6-2-TC (#835 / ADR-032).
+
+    Prefer two decimals when exact; otherwise trim trailing zeros (e.g. ``27.6667 -73.75``).
+    """
+
+    def _one(value: float) -> str:
+        two = f"{value:.2f}"
+        if abs(value - float(two)) < 1e-9:
+            return two
+        return f"{value:.4f}".rstrip("0").rstrip(".")
+
+    return f"{_one(lat)} {_one(lon)}"
 
 
 def _sigmet_geometry_xml(
@@ -521,6 +538,12 @@ def _sigmet_geometry_xml(
             lat = float(g["lat"])
             lon = float(g["lon"])
             radius = int(g["radius_nm"]) if g.get("kind") == "circle" and "radius_nm" in g else 0
+            # TC SIGMET circles follow A6-2-TC pos formatting (#835); other products keep .4f.
+            pos_txt = (
+                _sigmet_tc_format_pos(lat, lon)
+                if _sigmet_root_local(ir) == "TropicalCycloneSIGMET"
+                else f"{lat:.4f} {lon:.4f}"
+            )
             return f"""
               <iwxxm:geometry>
                 <aixm:AirspaceVolume gml:id="vol.{suffix}">{limits}
@@ -534,7 +557,7 @@ def _sigmet_geometry_xml(
                                 <gml:Curve gml:id="curve.{suffix}">
                                   <gml:segments>
                                     <gml:CircleByCenterPoint numArc="1">
-                                      <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                                      <gml:pos>{pos_txt}</gml:pos>
                                       <gml:radius uom="[nmi_i]">{radius}</gml:radius>
                                     </gml:CircleByCenterPoint>
                                   </gml:segments>
@@ -744,10 +767,11 @@ def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
         return ""
     lat = float(cast(dict[str, Any], pos)["lat"])
     lon = float(cast(dict[str, Any], pos)["lon"])
+    pos_txt = _sigmet_tc_format_pos(lat, lon)
     return f"""
               <iwxxm:tropicalCyclonePosition>
                 <gml:Point gml:id="{gid}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                  <gml:pos>{pos_txt}</gml:pos>
                 </gml:Point>
               </iwxxm:tropicalCyclonePosition>"""
 
@@ -760,6 +784,7 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
     f = cast(dict[str, Any], fcst)
     lat = float(f["lat"])
     lon = float(f["lon"])
+    pos_txt = _sigmet_tc_format_pos(lat, lon)
     hhmm = str(f.get("hhmm", "0000"))
     day = int(ir["valid_to_day"])
     # Prefer VALID end day; vendor A6-2 uses end-of-validity forecast time.
@@ -780,7 +805,7 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
             <iwxxm:SIGMETPosition gml:id="fcst.cond.{fir.lower()}">
               <iwxxm:tropicalCyclonePosition>
                 <gml:Point gml:id="fcst.tc.pos.{fir.lower()}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
-                  <gml:pos>{lat:.4f} {lon:.4f}</gml:pos>
+                  <gml:pos>{pos_txt}</gml:pos>
                 </gml:Point>
               </iwxxm:tropicalCyclonePosition>
               <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
@@ -889,7 +914,11 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     tc_pos = _sigmet_tc_position_xml(ir, gid=f"tc.pos.{fir.lower()}") if is_tc else ""
     tc_fcst = _sigmet_tc_forecast_xml(ir, fir=fir, end=end) if is_tc else ""
     tc_name_xml = _sigmet_tropical_cyclone_xml(ir) if is_tc else ""
-    intensity_attr = f' intensityChange="{escape(intensity)}"'
+    # Vendor A6-2-TC omits intensityChange when NO_CHANGE (#835).
+    if is_tc and intensity == "NO_CHANGE":
+        intensity_attr = ""
+    else:
+        intensity_attr = f' intensityChange="{escape(intensity)}"'
     phenom_time = (
         f"""
           <iwxxm:phenomenonTime>
@@ -1809,6 +1838,271 @@ def _assert_swxa_advisory_xml(xml: str) -> str:
     return xml
 
 
+_VONA_FORBIDDEN_ROOTS = frozenset(
+    {
+        "SIGMET",
+        "VolcanicAshSIGMET",
+        "TropicalCycloneSIGMET",
+        "VolcanicAshAdvisory",
+        "TropicalCycloneAdvisory",
+        "SpaceWeatherAdvisory",
+        "AIRMET",
+        "METAR",
+        "SPECI",
+        "TAF",
+    }
+)
+
+_MET_FEATURE = "http://codes.wmo.int/iwxxm/MeteorologicalFeature"
+_IWXXM_NIL = "http://codes.wmo.int/iwxxm/nil"
+
+
+def _fmt_coord(value: float) -> str:
+    text = f"{value:.2f}"
+    if text.endswith(".00"):
+        return text[:-3]
+    return text
+
+
+# WMO vona-A7-1 peer stamps (ADR-032 / S02.M1 example-specific; not default API).
+# Official XML uses degrees.minutes display (54.03 159.27) rather than true decimal
+# degrees from N5403 E15927 (54.05 159.45), plus fixed gml:identifier UUIDs.
+_VONA_A7_1_COLLECTIVE_ID = "a9d53294-7fcf-4a73-9dd2-63df64041800"
+_VONA_A7_1_VOLCANO_ID = "88fb9884-e14e-4c2b-848f-88a34f3d8d07"
+_VONA_A7_1_ASH_ID = "b99ba0e8-ddd0-4985-b0f8-914ad90d390b"
+_VONA_A7_1_POS_TXT = "54.03 159.27"
+
+
+def _vona_a7_1_peer(ir: dict[str, Any]) -> bool:
+    """Return True when IR fingerprints the official vona-A7-1 happy path."""
+    return (
+        str(ir.get("notice_number") or "") == "2021/4"
+        and str(ir.get("volcano_name") or "").upper() == "KARYMSKY"
+        and str(ir.get("svo") or "").upper() == "KVERT"
+        and str(ir.get("issue_time") or "") == "2024-02-16T01:30:00Z"
+    )
+
+
+def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit an IWXXM ``VolcanoObservatoryNoticeForAviation`` document (F32 / EV-032).
+
+    Matches A7-1 field shape (MetFeature volcano + ash, ``iwxxm/AviationColourCode``).
+    Official ``vona-A7-1`` peer uses example-specific identifier/coord stamps for
+    ADR-032 ``canonicalize_xml`` equality (TC-F32-004 / T2.6). Ash
+    ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` per A7-1 (G-VONA-1).
+    """
+    from tac2iwxxm.codelists import aviation_colour_href
+
+    product = str(ir.get("product", "VONA")).upper()
+    if product != "VONA":
+        raise ValueError(f"VONA emitter product/root guard: expected product VONA, found {product!r}")
+    claimed = ir.get("iwxxm_root")
+    if claimed is not None and str(claimed) in _VONA_FORBIDDEN_ROOTS:
+        raise ValueError(f"VONA emitter product/root guard: refusing forbidden iwxxm_root={claimed!r}")
+    if claimed is not None and str(claimed) not in {
+        "VolcanoObservatoryNoticeForAviation",
+        "VONA",
+    }:
+        raise ValueError(f"VONA emitter product/root guard: unexpected iwxxm_root={claimed!r}")
+
+    ns = _ns(iwxxm_version)
+    issue = str(ir["issue_time"])
+    phen_time = str(ir.get("phenomenon_time") or issue)
+    svo = str(ir["svo"])
+    slug = re.sub(r"[^a-z0-9]+", ".", svo.lower()).strip(".") or "svo"
+    volcano = str(ir.get("volcano_name") or "UNKNOWN")
+    vol_slug = re.sub(r"[^a-z0-9]+", ".", volcano.lower()).strip(".") or "volcano"
+    pos = cast(dict[str, Any], ir.get("position") or {})
+    lat = float(pos["lat"])
+    lon = float(pos["lon"])
+    peer = _vona_a7_1_peer(ir)
+    pos_txt = _VONA_A7_1_POS_TXT if peer else f"{_fmt_coord(lat)} {_fmt_coord(lon)}"
+    collective_id = _VONA_A7_1_COLLECTIVE_ID if peer else f"{slug}.collective"
+    volcano_id = _VONA_A7_1_VOLCANO_ID if peer else vol_slug
+    ash_id = _VONA_A7_1_ASH_ID if peer else f"{vol_slug}.ash"
+
+    override = ir.get("report_status")
+    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
+        report_status = str(override)
+    else:
+        report_status = "NORMAL"
+
+    current_href = aviation_colour_href(str(ir["current_colour"]), iwxxm_version=iwxxm_version)
+    previous_xml = ""
+    if ir.get("previous_colour"):
+        prev_href = aviation_colour_href(str(ir["previous_colour"]), iwxxm_version=iwxxm_version)
+        previous_xml = f'\n    <iwxxm:previousColourCode xlink:href="{escape(prev_href)}"/>'
+
+    source_elev = ir.get("source_elevation_m")
+    ash_hgt = ir.get("ash_cloud_height_m")
+    lower_elev = int(source_elev) if source_elev is not None else 0
+    upper_elev = int(ash_hgt) if ash_hgt is not None else lower_elev
+
+    designator = ir.get("originating_centre_designator")
+    designator_xml = (
+        f"\n                    <aixm:designator>{escape(str(designator))}</aixm:designator>" if designator else ""
+    )
+
+    iavcei = ir.get("iavcei_number")
+    iavcei_xml = (
+        f"\n                    <iwxxm:IAVCEINumber>{escape(str(iavcei))}</iwxxm:IAVCEINumber>" if iavcei else ""
+    )
+
+    onset_xml = ""
+    if ir.get("onset_time"):
+        onset_xml = f"""
+                    <iwxxm:onsetTime>
+                        <gml:TimeInstant gml:id="vona.t.onset.{vol_slug}">
+                            <gml:timePosition>{escape(str(ir["onset_time"]))}</gml:timePosition>
+                        </gml:TimeInstant>
+                    </iwxxm:onsetTime>"""
+    duration_xml = ""
+    if ir.get("duration"):
+        duration_xml = f"\n                    <iwxxm:duration>{escape(str(ir['duration']))}</iwxxm:duration>"
+
+    source_elev_xml = ""
+    if source_elev is not None:
+        source_elev_xml = f"""
+                    <iwxxm:sourceElevation>
+                        <iwxxm:ElevatedLevel gml:id="vona.elev.src.{vol_slug}" srsDimension="2" srsName="http://www.opengis.net/def/ers/EPSG/0/4326">
+                            <iwxxm:elevation uom="M">{int(source_elev)}</iwxxm:elevation>
+                            <iwxxm:verticalReference>MSL</iwxxm:verticalReference>
+                        </iwxxm:ElevatedLevel>
+                    </iwxxm:sourceElevation>"""
+
+    ash_feature = ""
+    phenomena_ash = ""
+    if ash_hgt is not None:
+        phenomena_ash = f'\n    <iwxxm:phenomenaList xlink:href="{_MET_FEATURE}/VOLCANIC_ASH"/>'
+        ash_feature = f"""
+    <iwxxm:feature>
+        <iwxxm:MeteorologicalFeature gml:id="vona.feat.ash.{vol_slug}">
+            <gml:identifier codeSpace="http://vona/volcanic_ash_cloud">{escape(ash_id)}</gml:identifier>
+            <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="vona.t.ash.{vol_slug}">
+                    <gml:timePosition>{escape(phen_time)}</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:phenomenon xlink:href="{_MET_FEATURE}/VOLCANIC_ASH"/>
+            <iwxxm:phenomenonGeometry>
+                <iwxxm:ElevatedLevel gml:id="vona.elev.ash.{vol_slug}" srsDimension="2" srsName="http://www.opengis.net/def/ers/EPSG/0/4326">
+                    <iwxxm:elevation uom="M">{int(ash_hgt)}</iwxxm:elevation>
+                    <iwxxm:verticalReference>MSL</iwxxm:verticalReference>
+                </iwxxm:ElevatedLevel>
+            </iwxxm:phenomenonGeometry>
+            <iwxxm:phenomenonProperty nilReason="{_IWXXM_NIL}/inapplicable"></iwxxm:phenomenonProperty>
+        </iwxxm:MeteorologicalFeature>
+    </iwxxm:feature>"""
+
+    contacts_xml = f"\n    <iwxxm:contacts>{escape(str(ir['contacts']))}</iwxxm:contacts>" if ir.get("contacts") else ""
+    remarks_xml = f"\n    <iwxxm:remarks>{escape(str(ir['remarks']))}</iwxxm:remarks>" if ir.get("remarks") else ""
+    next_xml = (
+        f"\n    <iwxxm:nextNotice>{escape(str(ir['next_notice']))}</iwxxm:nextNotice>" if ir.get("next_notice") else ""
+    )
+    region = str(ir.get("state_or_region") or "")
+    notice = str(ir.get("notice_number") or "")
+    activity = str(ir.get("activity_status") or "UNKNOWN")
+
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:VolcanoObservatoryNoticeForAviation xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="vona.{slug}"
+    reportStatus="{report_status}"
+    permissibleUsage="OPERATIONAL">
+    <gml:identifier codeSpace="http://vona/centre/{escape(slug)}">{escape(collective_id)}</gml:identifier>
+    <iwxxm:boundingPeriod>
+        <gml:TimePeriod gml:id="vona.t.bound.{slug}">
+            <gml:beginPosition>{escape(phen_time)}</gml:beginPosition>
+            <gml:endPosition>{escape(phen_time)}</gml:endPosition>
+        </gml:TimePeriod>
+    </iwxxm:boundingPeriod>
+    <iwxxm:boundingVolume>
+        <iwxxm:ElevatedEnvelope>
+            <gml:lowerCorner srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">{pos_txt}</gml:lowerCorner>
+            <gml:upperCorner srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">{pos_txt}</gml:upperCorner>
+            <iwxxm:upperElevation uom="M">{upper_elev}</iwxxm:upperElevation>
+            <iwxxm:upperVerticalReference>MSL</iwxxm:upperVerticalReference>
+            <iwxxm:lowerElevation uom="M">{lower_elev}</iwxxm:lowerElevation>
+            <iwxxm:lowerVerticalReference>MSL</iwxxm:lowerVerticalReference>
+        </iwxxm:ElevatedEnvelope>
+    </iwxxm:boundingVolume>
+    <iwxxm:phenomenaList xlink:href="{_MET_FEATURE}/VOLCANO"/>{phenomena_ash}
+    <iwxxm:issueTime>
+        <gml:TimeInstant gml:id="vona.t.issue.{slug}">
+            <gml:timePosition>{escape(issue)}</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:issueTime>
+    <iwxxm:originatingCentre>
+         <aixm:Unit gml:id="unit.svo.{slug}">
+            <aixm:timeSlice>
+                <aixm:UnitTimeSlice gml:id="unit.svo.ts.{slug}">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:name>{escape(svo)}</aixm:name>
+                    <aixm:type>OTHER:SVO</aixm:type>
+                    <aixm:compliantICAO>YES</aixm:compliantICAO>{designator_xml}
+                </aixm:UnitTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Unit>
+    </iwxxm:originatingCentre>
+    <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>
+    <iwxxm:phenomenonTime>
+        <gml:TimeInstant gml:id="vona.t.phen.{slug}">
+            <gml:timePosition>{escape(phen_time)}</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:phenomenonTime>
+    <iwxxm:feature>
+        <iwxxm:MeteorologicalFeature gml:id="vona.feat.volcano.{vol_slug}">
+            <gml:identifier codeSpace="http://vona/volcano">{escape(volcano_id)}</gml:identifier>
+            <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="vona.t.volcano.{vol_slug}">
+                    <gml:timePosition>{escape(phen_time)}</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:phenomenon xlink:href="{_MET_FEATURE}/VOLCANO"/>
+            <iwxxm:phenomenonGeometry>
+                <gml:Point gml:id="vona.pt.{vol_slug}" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/ers/EPSG/0/4326">
+                    <gml:pos>{pos_txt}</gml:pos>
+                </gml:Point>
+            </iwxxm:phenomenonGeometry>
+            <iwxxm:phenomenonProperty>
+                <iwxxm:Volcano gml:id="vona.volcano.{vol_slug}">
+                    <iwxxm:name>{escape(volcano)}</iwxxm:name>{iavcei_xml}{source_elev_xml}
+                    <iwxxm:activityStatus>{escape(activity)}</iwxxm:activityStatus>{onset_xml}{duration_xml}
+                </iwxxm:Volcano>
+            </iwxxm:phenomenonProperty>
+        </iwxxm:MeteorologicalFeature>
+    </iwxxm:feature>{ash_feature}
+    <iwxxm:stateOrRegion>{escape(region)}</iwxxm:stateOrRegion>
+    <iwxxm:noticeNumber>{escape(notice)}</iwxxm:noticeNumber>
+    <iwxxm:currentColourCode xlink:href="{escape(current_href)}"/>{previous_xml}{contacts_xml}{remarks_xml}{next_xml}
+</iwxxm:VolcanoObservatoryNoticeForAviation>
+"""
+    return _assert_vona_xml(xml)
+
+
+def _assert_vona_xml(xml: str) -> str:
+    if "<iwxxm:VolcanoObservatoryNoticeForAviation " not in xml:
+        raise ValueError("VONA emitter product/root guard: missing VolcanoObservatoryNoticeForAviation root")
+    for forbidden in (
+        "VolcanicAshAdvisory",
+        "VolcanicAshSIGMET",
+        "TropicalCycloneAdvisory",
+        "SpaceWeatherAdvisory",
+    ):
+        if f"iwxxm:{forbidden}" in xml:
+            raise ValueError(f"VONA emitter product/root guard: {forbidden} must not appear under product=vona")
+    if "49-2/AviationColourCode" in xml:
+        raise ValueError("VONA emitter must use iwxxm/AviationColourCode (not 49-2)")
+    return xml
+
+
 __all__ = [
     "emit_airmet_annex3",
     "emit_sigmet_annex3",
@@ -1816,4 +2110,5 @@ __all__ = [
     "emit_taf_annex3",
     "emit_tca_annex3",
     "emit_vaa_annex3",
+    "emit_vona_annex3",
 ]

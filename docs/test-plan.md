@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-02 (S037 / EV-030 — TC-EV030 / TC-F29 #831/#829/#820)
+> **Last updated**: 2026-08-04 (S040 / EV-032 — TC-EV032 / TC-F32 #846/#835/#741/#808)
 
 ## Scope
 
@@ -93,6 +93,7 @@ Unified manual live test harness against Render staging:
 | UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
 | UJ-043 | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen | Eight-family lint/convert/validate + SWXA bar (#823) | H4–H5 if FE | TC-EV029-001..008; TC-F28-001..006 |
 | UJ-044 | F29 + F23/F12/F2/F13/F9/F26/F27 deepen | Rule matrices (#831) + TC SIGMET deepen (#829) + VAA/TCA decode (#820) | H4–H5 if FE | TC-EV030-001..006; TC-F29-001..007 |
+| UJ-045 | F32 + F6/F7/F12/F2/F13 deepen | VONA quality bar + full F7 surface (#741); cycle also #835/#808/corpus | H4–H5 when FE | TC-EV032-001..008; TC-F32-001..006 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -1442,6 +1443,116 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - [ ] TC-F29-001..007 green (or deferred with child issues)
 - [ ] #831 / #829 / #820 closed or children linked
 - [ ] H4–H5 when FE menu unlock ships / else waive
+- [ ] 12/13 per Standard when behavior deploys
+
+## S040 / EV-032 — Official IWXXM corpus quality (#846 / #835 / #741 / #808)
+
+New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-034/039/042.
+
+### TC-EV032-001: Epic #846 children linked + scope locked (UJ-045)
+
+- **Level**: T0 (docs)
+- **Objective**: Epic lists #835/#741/#808 + corpus track; evolve-decisions EV-032 scope matches
+- **Pass criteria**: #846 body + `evolve-decisions.md` §EV-032 + session-brief agree
+- **Source**: #846; E32-*
+
+### TC-EV032-002: #835 A6-2-TC canonicalize_xml equality (UJ-034/039 deepen)
+
+- **Level**: T0 / T2
+- **Objective**: `canonicalize_xml(convert(annex3 A6-2-TC)) == canonicalize_xml(vendor)` under default pin
+- **Pass criteria**: ADR-032 equality green; deltas (coords / airspace / intensityChange / trailing zeros) resolved or waived with cite
+- **Source**: #835; ADR-032
+
+### TC-EV032-003: #835 catalog promote → wmoPass (UJ-039 deepen)
+
+- **Level**: T0 / T2 (+ H4–H5 if FE)
+- **Objective**: Catalog tier `sigmet_a6_2_tc` → `wmoPass`; FIXTURE_GAPS / inventory updated
+- **Pass criteria**: Catalog metadata + gap notes match; FE badge if unlock ships
+- **Source**: #835; ADR-032
+
+### TC-EV032-004: #808 adopt/deprecate assessment written (docs)
+
+- **Level**: T0 (docs)
+- **Objective**: Maintainability report + adopt + deprecate checklists; blast-radius map; child issues
+- **Pass criteria**: #808 AC1–5; no re-pin required to close
+- **Source**: #808; VERSION_SUPPORT_POLICY
+
+### TC-EV032-005: Corpus / WMO-source stance indexed (#846)
+
+- **Level**: T0 (docs) / T2 as children land
+- **Objective**: Durable notes for parity vs iwxxm / translation / codelists / codes.wmo.int / modelling
+- **Pass criteria**: Session or domain index + #846 children for actionable gaps
+- **Source**: #846; prior #804/#807/#815
+
+### TC-EV032-006: F32 VONA encode + validate path (UJ-045)
+
+- **Level**: T0 / T2
+- **Objective**: VONA lint→convert→XSD+SCH; root `VolcanoObservatoryNoticeForAviation`
+- **Pass criteria**: TC-F32-001..004 green (or child-issued)
+- **Source**: F32; #741
+
+### TC-EV032-007: F7 VONA picker + Examples unlock (UJ-045)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Product picker includes VONA; Examples list passers when golden greens
+- **Pass criteria**: TC-F32-005; H4–H5 when FE ships (`D-S040-E32-M` Q2=3)
+- **Source**: F32; F7
+
+### TC-EV032-008: Optional live smoke order #835→#741→#808 (deploy)
+
+- **Level**: T3 / H1–H5
+- **Objective**: Deployed API accepts `product=vona`; A6-2-TC path still healthy; docs #808 linked
+- **Pass criteria**: Live convert/lint smoke; FE when shipped
+- **Source**: EV-032 Standard 12/13
+
+### TC-F32-001: VONA registry completeness (UJ-045)
+
+- **Level**: T0
+- **Objective**: Registry-backed VONA lint codes; CI fails on unknown codes
+- **Pass criteria**: Catalog drift check includes VONA codes
+- **Source**: F32; ADR-028; #741
+
+### TC-F32-002: VONA encode cookbook from XSD+SCH+example (UJ-045)
+
+- **Level**: T0 / T2
+- **Objective**: Encode path not guidance-file-only; gaps vs silent guidance documented
+- **Pass criteria**: Session/domain cookbook note + fixtures cite `vona-A7-1` / PANS-MET / XSD
+- **Source**: F32; #741
+
+### TC-F32-003: MeteorologicalFeature + colour codes (UJ-045)
+
+- **Level**: T0 / T2
+- **Objective**: Volcano/ash features + bounding period/volume/phenomena; AviationColourCode list
+- **Pass criteria**: Convert XML asserts feature shape + vocabulary URIs
+- **Source**: F32; #741; 2025-2 vona.xsd
+
+### TC-F32-004: VONA accept/negative + golden (UJ-045)
+
+- **Level**: T0 / T2
+- **Objective**: Accept → convert → XSD+SCH; negatives → registry diagnostics; golden equality when peer exists
+- **Pass criteria**: Fixture pack green; ADR-032 when vendor peer present
+- **Source**: F32; ADR-032
+
+### TC-F32-005: Workbench product-path + Examples (UJ-045)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Full F7 surface for VONA
+- **Pass criteria**: Picker + convert smoke; Examples unlock when passers exist
+- **Source**: F32; F7; `D-S040-E32-M` Q2=3
+
+### TC-F32-006: API product=vona enum (UJ-045)
+
+- **Level**: T0 / T2
+- **Objective**: Runtime accepts `vona`; rejects unknown aliases with `unknown_product` 400
+- **Pass criteria**: Backend + package enum tests; OpenAPI/FE types updated same cycle
+- **Source**: F32; api-contract S040 / EV-032
+
+### EV-032 verify/deploy gate
+
+- [ ] TC-EV032-001..008 green (or deferred with child issues)
+- [ ] TC-F32-001..006 green (or deferred with child issues)
+- [ ] #835 / #741 / #808 closed or children linked under #846
+- [ ] H4–H5 when FE VONA surface / A6-2 catalog ships
 - [ ] 12/13 per Standard when behavior deploys
 
 ## F9 deepen (S026 / EV-020) — glossary registry

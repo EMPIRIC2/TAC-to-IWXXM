@@ -572,7 +572,7 @@ ISSUES: tuple[IssueSpec, ...] = (
         "MISSING_DTG",
         "error",
         "{product} missing DTG: template field",
-        tags=("dtg", "vaa", "tca", "swxa"),
+        tags=("dtg", "vaa", "tca", "swxa", "vona"),
     ),
     _row(
         "MISSING_VAAC",
@@ -692,6 +692,34 @@ ISSUES: tuple[IssueSpec, ...] = (
         "SWXA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F28 theme SX1)",
         product="swxa",
         tags=("next_advisory", "swxa", "sx1", "f28"),
+    ),
+    _row(
+        "MISSING_SVO",
+        "error",
+        "VONA missing SVO: template field — F32 theme V1 / A7-1",
+        product="vona",
+        tags=("svo", "vona", "v1", "f32"),
+    ),
+    _row(
+        "MISSING_VONA_VOLCANO",
+        "error",
+        "VONA missing VOLCANO: template field — F32 theme V1 / A7-1",
+        product="vona",
+        tags=("volcano", "vona", "v1", "f32"),
+    ),
+    _row(
+        "VONA_ONSET_NIL",
+        "info",
+        "VONA ONSET NIL — onsetTime omitted (F32 theme V1)",
+        product="vona",
+        tags=("onset", "nil", "vona", "v1", "f32"),
+    ),
+    _row(
+        "VONA_DUR_NIL",
+        "info",
+        "VONA DUR NIL — duration omitted (F32 theme V1)",
+        product="vona",
+        tags=("duration", "nil", "vona", "v1", "f32"),
     ),
 )
 

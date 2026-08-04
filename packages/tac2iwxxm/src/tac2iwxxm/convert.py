@@ -12,6 +12,7 @@ from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
 from tac2iwxxm.products.swxa import parse_swxa
 from tac2iwxxm.products.taf import parse_taf
 from tac2iwxxm.products.vaa_tca import parse_tca, parse_vaa
+from tac2iwxxm.products.vona import parse_vona
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
 from tac2iwxxm.profiles.annex3_products import (
     emit_airmet_annex3,
@@ -20,6 +21,7 @@ from tac2iwxxm.profiles.annex3_products import (
     emit_taf_annex3,
     emit_tca_annex3,
     emit_vaa_annex3,
+    emit_vona_annex3,
 )
 from tac2iwxxm.profiles.iwxxm_us import (
     emit_airmet_iwxxm_us,
@@ -28,7 +30,7 @@ from tac2iwxxm.profiles.iwxxm_us import (
     emit_taf_iwxxm_us,
 )
 
-_SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA"})
+_SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 _SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
@@ -42,7 +44,7 @@ _REMARK_SPAN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
 _RMK_TOKEN = re.compile(r"\bRMK\b")
 
 
-_PREVIEW_ROOTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA"})
+_PREVIEW_ROOTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 _PREVIEW_NS = {
     "2025-2": "http://icao.int/iwxxm/2025-2",
     "2023-1": "http://icao.int/iwxxm/2023-1",
@@ -59,6 +61,7 @@ _PRODUCT_LEAD = {
     "VAA": re.compile(r"VA\s+ADVISORY\b", re.IGNORECASE),
     "TCA": re.compile(r"TC\s+ADVISORY\b", re.IGNORECASE),
     "SWXA": re.compile(r"SWX\s+ADVISORY\b", re.IGNORECASE),
+    "VONA": re.compile(r"(?m)^\s*VONA\b", re.IGNORECASE),
 }
 _QUARANTINE_ROOT = {
     "METAR": "METAR",
@@ -69,6 +72,7 @@ _QUARANTINE_ROOT = {
     "VAA": "VolcanicAshAdvisory",
     "TCA": "TropicalCycloneAdvisory",
     "SWXA": "SpaceWeatherAdvisory",
+    "VONA": "VolcanoObservatoryNoticeForAviation",
 }
 _STATION_AFTER_PRODUCT = re.compile(
     r"^\s*(?:METAR|SPECI|TAF)\s+(?:COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\b",
@@ -251,6 +255,7 @@ def _parse(product: str, tac: str) -> dict[str, Any]:
         "VAA": parse_vaa,
         "TCA": parse_tca,
         "SWXA": parse_swxa,
+        "VONA": parse_vona,
     }
     return parsers[product](tac, product=product)
 
@@ -278,6 +283,8 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
         return emit_tca_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SWXA":
         return emit_swxa_annex3(ir, iwxxm_version=iwxxm_version)
+    if product == "VONA":
+        return emit_vona_annex3(ir, iwxxm_version=iwxxm_version)
     raise ValueError(f"no emitter for product {product!r}")
 
 

@@ -3,6 +3,92 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-032 — Official IWXXM corpus quality / WMO source parity (S040)
+
+**Session**: S040-iwxxm-corpus-quality  
+**Features**: **F32** (new — VONA quality bar) + deepen **F23** (#835) + **F4** / **F6** / **F2** / **F13** (#808 + corpus)  
+**Issues**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) (epic), [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835), [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741), [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808)  
+**Started**: 2026-08-04  
+**Branch**: `evolve/EV-032-iwxxm-corpus-quality` (from `main`)  
+**Status**: **in_progress** — Gate A PASS; entering 04-tech-plan
+
+### Scope (Phase 0 — locked 2026-08-04 via 00-context)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-1 | decision | Umbrella ticket? | **1** — new Epic **#846** (`D-S040-open` Q1) |
+| E32-2 | decision | Cycle scope? | **1** — #835 + #741 + #808 + corpus/WMO-source track |
+| E32-3 | decision | VONA Fn? | **1** — allocate **F32** VONA quality bar |
+| E32-4 | decision | Order? | **1** — #835 → #741 → #808 → corpus |
+| E32-5 | decision | Routing preset? | **1** — Standard (`D-S040-route`) |
+| E32-6 | decision | Branch base? | **1** — cut from `main`; park EV-031 dirt in stash (`D-S040-branch`) |
+
+**Scope (verbatim)**: Under epic #846, raise and prove quality against the official WMO IWXXM
+corpus and related WMO sources (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists,
+codes.wmo.int, iwxxm-modelling). Execute (1) #835 TC SIGMET A6-2-TC ADR-032 equality →
+`wmoPass`; (2) #741 / **F32** VONA lint→convert→validate quality bar; (3) #808 adopt-new-line
+maintainability assessment + checklists (no re-pin in-ticket); (4) file corpus parity
+children under #846 as discovered. Exclude #836 metrics UI / #840 workbench epic.
+
+**Out of scope**: Metrics UI #836; hand-edit `vendor/schemas/*` outside sync PRs; ship a new
+IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
+
+**Parked**: `stash@{0}` — S039/EV-031 WIP (`S039-EV031-WIP park for S040/EV-032`).
+
+### Document Manifest (01 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-M1 | decision | Spec delta breadth? | **2** — Full product pack: `feature-list` + `spec` + `user-journeys` + `api-contract` + `test-plan` (+ domain/#808 notes) (`D-S040-E32-M`) |
+| E32-M2 | decision | VONA operator exposure? | **3** — **Full F7 product surface** this cycle (picker + Examples/catalog when quality path green) |
+| E32-M3 | decision | UI preview (interview)? | **1** — N/A for interview (implement UI in-cycle; H4–H5 at verify/deploy) |
+| E32-M4 | decision | After manifest? | **1** — write deltas; close 01 → **02-verify-plan** |
+
+**Affected artifacts (01)**: `docs/feature-list.md`, `docs/spec.md`, `docs/user-journeys.md`,
+`docs/api-contract.md`, `docs/test-plan.md`, `docs/decisions/evolve-decisions.md`,
+`docs/context/iwxxm-corpus-quality-846.md` (pointer); #808 deliverables remain docs under
+`docs/domain/iwxxm/` in later milestones.
+
+### Gate A / 02 (locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-02F | decision | 02 Batch F? | **1,1,1,1** — VONA AHL→04; incremental Examples unlock; #808 docs+children only (+#847); Gate A (`D-S040-02-batch-f` / `D-S040-02-phase-a`) |
+| E32-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** |
+| E32-02-M1 | decision | VONA AHL / T1T2? | **1** — defer detail to 04 (“when known”) (`S02.M1`) |
+| E32-02-M2 | decision | Examples unlock? | **1** — incremental when F32 golden greens (`S02.M2`) |
+| E32-02-M3 | decision | #808 depth? | **1** — docs + child issues only; link #847 for non-technical review (`S02.M3`) |
+
+**Audit**: `docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md`
+
+### Tech plan Batch 1 (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T1 | decision | Milestone structure? | **1** — M0–M4 (`D-S040-04-batch-1`) |
+| E32-T2 | decision | #835 equality bar? | **1** — strict ADR-032 required for `wmoPass` |
+| E32-T3 | decision | F32 encode approach? | **1** — cookbook + fixtures; VAA/SWXA-peer plugin; gaps → children |
+| E32-T4 | decision | VONA AHL / T1T2? | **1** — discover in M2; no provisional lock |
+
+### Tech plan Batch 2 (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T5 | decision | New deps? | **1** — none (`D-S040-04-batch-2`) |
+| E32-T6 | decision | Deploy / connectivity? | **1** — API+static; H1–H3; **H4–H5 required** |
+| E32-T7 | decision | CI packaging? | **custom** — path-filtered **pre-commit** smokes; long packs on **pre-push**/`make`; document improvements (not dump full matrices into default pre-commit) |
+| E32-T8 | decision | Corpus / #847 home? | **1** — M0 session inventory + durable `docs/domain/iwxxm/` |
+
+### Gate B (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T9 | gate | Approve execution plan? | **PASS** — M0–M4 (28 tasks) → **07 @ T0.1** (`D-S040-04-plan`=1) |
+
+**Status**: **in_progress** — Phase C build (`07-build`); M1 #835 **closed**; next M2 F32 @ T2.1
+
+---
+
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)
 
 **Session**: S037-quality-residuals-831  

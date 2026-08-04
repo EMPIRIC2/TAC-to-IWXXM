@@ -20,14 +20,14 @@ describe('GoldenExamplesSelect', () => {
     expect(labels.some((label) => /soft.?fail|file.?queue/i.test(label))).toBe(false);
   });
 
-  it('lists TC SIGMET A6-2-TC as WMO reference and loads on select (TC-EV030-005 / UJ-039)', async () => {
+  it('lists TC SIGMET A6-2-TC as WMO passer and loads on select (TC-EV032-003 / #835 / UJ-039)', async () => {
     const user = userEvent.setup();
     const onSelectExample = vi.fn();
     render(<GoldenExamplesSelect onSelectExample={onSelectExample} />);
 
     await user.click(screen.getByTestId('examples-select'));
     const option = await screen.findByRole('option', {
-      name: /TC SIGMET WMO A6-2-TC.*WMO reference.*sigmet-A6-2-TC/i,
+      name: /TC SIGMET WMO A6-2-TC.*WMO passer.*sigmet-A6-2-TC/i,
     });
     expect(option).toBeInTheDocument();
     await user.click(option);

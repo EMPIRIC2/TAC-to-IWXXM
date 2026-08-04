@@ -6,7 +6,7 @@
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783)
-> **Last updated**: 2026-07-31 (S034 / EV-027 — UJ-042 #815 official WMO decode residual matrix)
+> **Last updated**: 2026-08-04 (S040 / EV-032 — UJ-045 F32 VONA + #846 corpus)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -57,6 +57,9 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-040 | Convert METAR/SPECI with structured iwxxm-us REMARKS | library / API / CI | F6.b deepen (EV-025) | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-041 | Promote sigmet-multi-location-VA to WMO passer | library / CI / catalog | F23 deepen (EV-025 soft; EV-026 equality) | T0 / T2 |
 | UJ-042 | Official WMO TAC peers decode with empty/allowlisted residuals | library / CI / workbench | F25/F9/F7.g deepen (EV-027) | T0 / T2 / **T3** / H4–H5 |
+| UJ-043 | Eight-family rules gap sweep + SWXA quality | UI / API / CI | F28 + deepen (EV-029) | T0 / T2 / **T3** / H4–H5 if FE |
+| UJ-044 | Rule matrix harness + TC / VAA–TCA residuals | CI / workbench | F29 + deepen (EV-030) | T0 / T2 / H4–H5 if FE |
+| UJ-045 | VONA lint / convert→validate + F7 product surface | apps/frontend / API / CI | F32 (+F6/F7/F12) | T0 / T2 / **T3** / H4–H5 |
 | — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -1205,6 +1208,55 @@ or split with links.
 
 **Source**: #831 · #829 · #820 · ADR-028 · ADR-032 ·
 [Context: quality-residuals-831](context/quality-residuals-831.md)
+
+---
+
+### UJ-045: VONA Lint / Convert→Validate + F7 Product Surface (S040 / EV-032)
+
+**Actor**: Operator / CI maintainer / package consumer
+
+**Goal**: Lint VONA TAC with registry codes; convert accept fixtures (esp. official
+`vona-A7-1` peer when available) to `iwxxm:VolcanoObservatoryNoticeForAviation` that
+passes XSD+Schematron under default convert settings; ADR-032 golden equality when a
+vendor peer exists; full F7 workbench surface — product picker includes **VONA**, Examples
+lists VONA passers when unlocked. Encode authority is XSD+SCH+example+PANS-MET (guidance
+file silent).
+
+**Feature**: **F32** (+ deepen F6 / F7 / F12 / F2 / F13 / F9) — S040 / EV-032 ·
+Issues [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741),
+[#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+
+**Related cycle work (same session, not this UJ alone)**:
+
+- [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) — A6-2-TC ADR-032 → `wmoPass` (deepen UJ-034/039)
+- [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) — release-line adoptability docs (no operator UJ)
+- Corpus children under #846 — deepen UJ-039/042 as filed
+
+**Steps (operator — T2/T3; H4–H5 when FE ships)**:
+
+1. Open workbench; Product = **VONA** (picker present — full F7 surface).
+2. Load / paste VONA accept TAC; lint — registry codes only.
+3. Convert → Strict Validation — pass; root `iwxxm:VolcanoObservatoryNoticeForAviation`.
+4. Paste a known-bad VONA negative — lint returns registry codes (no silent success).
+5. Examples control lists VONA **strict passers** when they pass the golden bar; official
+   WMO VONA stems may also load as **reference** per UJ-039 / ADR-032.
+
+**Steps (CI — T0 / T2)**:
+
+1. Registry completeness + accept/negative packs (**TC-F32-001..004**).
+2. API accepts `product=vona`; unknown aliases → `unknown_product` 400 (**TC-F32-006**).
+3. Product-path smoke + catalog unlock when green (**TC-F32-005**).
+
+**Acceptance**: TC-F32-001..006 + TC-EV032-* green (or child-issued); #741 closable or split
+with links; H4–H5 when FE picker/Examples ship.
+
+**Automated tests**: TC-F32-*; TC-EV032-*; deepen TC-F7-008 / UJ-032 / UJ-039.
+
+**Browser wiring**: No new origins. Same API host; `product=vona` multipart field. H4–H5
+required when FE ships (`D-S040-E32-M` Q2=3).
+
+**Source**: #741 · #846 · ADR-028 · ADR-032 ·
+[Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md)
 
 ---
 

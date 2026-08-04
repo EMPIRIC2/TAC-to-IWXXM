@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry  
-> **Generated**: 2026-08-03 via `make catalog-regen`  
+> **Generated**: 2026-08-04 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -37,7 +37,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `INVALID_WEATHER` | `error` | {product} invalid present weather token {token!r} — A3-2 #8 | — | weather, metar, speci, r3 |
 | `INVALID_WIND` | `error` | {product} invalid wind token {token!r} — research R8 | — | wind, metar, speci, r8 |
 | `MISSING_CCCC` | `error` | {product} missing ICAO location (CCCC) | — | station, metar, speci, taf |
-| `MISSING_DTG` | `error` | {product} missing DTG: template field | — | dtg, vaa, tca, swxa |
+| `MISSING_DTG` | `error` | {product} missing DTG: template field | — | dtg, vaa, tca, swxa, vona |
 | `MISSING_FIR_OR_CTA` | `error` | SIGMET/AIRMET missing FIR/CTA/UIR airspace identity — research G2 / F24 A1 | sigmet | fir, cta, sigmet, airmet, g2, a1 |
 | `MISSING_ISSUE_TIME` | `error` | TAF missing issue time ddhhmmZ — A5-1 #3 | taf | time, taf |
 | `MISSING_MAX_WIND` | `error` | TCA missing MAX WIND: template field — A2-2 | tca | max_wind, tca |
@@ -46,6 +46,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_PRODUCT_KEYWORD` | `error` | {product} TAC must contain one of {keywords} | — | parse_gate, header |
 | `MISSING_QNH` | `error` | {product} missing QNH/altimeter (Qnnnn/Annnn) — A3-2 #11 | — | pressure, metar, speci |
 | `MISSING_SEQUENCE` | `error` | SIGMET/AIRMET missing sequence number — research G2 / F24 A1 | sigmet | sequence, sigmet, airmet, g2, a1 |
+| `MISSING_SVO` | `error` | VONA missing SVO: template field — F32 theme V1 / A7-1 | vona | svo, vona, v1, f32 |
 | `MISSING_SWXC` | `error` | SWXA missing SWXC: template field — F28 theme SX1 / A2-3 | swxa | swxc, swxa, sx1, f28 |
 | `MISSING_TC` | `error` | TCA missing TC: template field — F27 theme T1 / A2-2 | tca | tropical_cyclone, tca, t1, f27 |
 | `MISSING_TC_IDENTITY` | `error` | TC SIGMET missing cyclone identity (TC … PSN) — #829 / TC-EV030-004 | sigmet | tc, cyclone, sigmet, ev030 |
@@ -57,6 +58,7 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `MISSING_VA_VOLCANO` | `error` | VA SIGMET missing volcano identity (MT … PSN) — research V1 | sigmet | va, volcano, sigmet, v1 |
 | `MISSING_VISIBILITY` | `error` | {product} missing visibility or CAVOK — A3-2 #6 | — | visibility, metar, speci |
 | `MISSING_VOLCANO` | `error` | VAA missing VOLCANO: template field — F26 theme V1 / A2-1 | vaa | volcano, vaa, v1, f26 |
+| `MISSING_VONA_VOLCANO` | `error` | VONA missing VOLCANO: template field — F32 theme V1 / A7-1 | vona | volcano, vona, v1, f32 |
 | `MISSING_WIND` | `error` | {product} missing surface wind group — A3-2 #5 | — | wind, metar, speci |
 | `MULTIPLE_PHENOMENA` | `error` | {product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate | — | phenomenon, sigmet, airmet |
 | `MULTI_REPORT_BULLETIN` | `info` | {product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1) | — | bulletin, metar, speci, taf, sigmet, airmet, c1, one_report |
@@ -100,6 +102,8 @@ Do not invent ad-hoc `severity=` literals in rule bodies — import from the reg
 | `VA_ASH_GEOMETRY` | `info` | VA SIGMET ash cloud geometry / forecast position — research V1 | sigmet | va, geometry, sigmet, v1 |
 | `VA_CNL_FIR_MOVED` | `info` | VA SIGMET CNL identifies FIR to which ash has moved — research V1 / C1 | sigmet | va, cnl, fir, sigmet, v1, c1 |
 | `VA_VOLCANO_IDENTITY` | `info` | VA SIGMET erupting volcano identity (MT/PSN) — research V1 | sigmet | va, volcano, sigmet, v1 |
+| `VONA_DUR_NIL` | `info` | VONA DUR NIL — duration omitted (F32 theme V1) | vona | duration, nil, vona, v1, f32 |
+| `VONA_ONSET_NIL` | `info` | VONA ONSET NIL — onsetTime omitted (F32 theme V1) | vona | onset, nil, vona, v1, f32 |
 | `VV_NOT_OBSERVABLE` | `info` | {product} VV/// — verticalVisibility nil notObservable — research S1 | — | cloud, metar, speci, s1, vv |
 | `VV_OMIT` | `info` | {product} VV/// — omit verticalVisibility without nilReason — research T3 | taf | cloud, taf, t3, vv |
 | `WIND_DIR_VARIATION` | `info` | {product} wind direction variation dddVddd — research S1 | — | wind, metar, speci, s1 |

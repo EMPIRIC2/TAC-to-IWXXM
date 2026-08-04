@@ -278,6 +278,15 @@
       "seed": "spacewx-A7-3",
       "wmoReference": true,
       "note": "F28 theme SX3 \u2014 WMO DONLON/HF COM vendor peer (TC-F28-002/003); S02.L1 wmoReference (geometry approx)"
+    },
+    {
+      "id": "vona_a7_1",
+      "product": "VONA",
+      "theme": "V3",
+      "tac": "vona_a7_1.tac",
+      "golden": "vona_a7_1.golden.xml",
+      "seed": "vona-A7-1",
+      "note": "F32 theme V3 \u2014 WMO vona-A7-1 peer (TC-F32-002/003/004); ADR-032 canonicalize equality (T2.6); G-VONA-2 UHPP designator fixture constant for KVERT"
     }
   ]
 }

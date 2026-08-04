@@ -25,8 +25,9 @@ import tafA52 from './bodies/taf_a5_2.tac?raw';
 import swxaA73 from './bodies/swxa_a7_3.tac?raw';
 import tcaA22 from './bodies/tca_a2_2.tac?raw';
 import vaaA72 from './bodies/vaa_a7_2.tac?raw';
+import vonaA71 from './bodies/vona_a7_1.tac?raw';
 
-/** Eight-family products covered by the Examples catalog (F6 + F28 SWXA). */
+/** Nine-family products covered by the Examples catalog (F6 + F28 SWXA + F32 VONA). */
 export const EXAMPLE_PRODUCTS: readonly TacProduct[] = [
   'METAR',
   'SPECI',
@@ -36,9 +37,10 @@ export const EXAMPLE_PRODUCTS: readonly TacProduct[] = [
   'VAA',
   'TCA',
   'SWXA',
+  'VONA',
 ] as const;
 
-/** Products gated to WMO default golden / reference bar (F24–F28). */
+/** Products gated to WMO default golden / reference bar (F24–F28 / F32). */
 export const WMO_SCOPE_PRODUCTS: readonly TacProduct[] = [
   'METAR',
   'SPECI',
@@ -48,6 +50,7 @@ export const WMO_SCOPE_PRODUCTS: readonly TacProduct[] = [
   'VAA',
   'TCA',
   'SWXA',
+  'VONA',
 ] as const;
 
 /**
@@ -180,13 +183,13 @@ export const EXAMPLES: readonly GoldenExample[] = [
   },
   {
     id: 'sigmet_a6_2_tc',
-    label: 'TC SIGMET WMO A6-2-TC (reference)',
+    label: 'TC SIGMET WMO A6-2-TC (passer)',
     product: 'SIGMET',
     inputMode: 'tac',
     body: sigmetA62Tc,
     nonOperational: true,
     provenance: `${PKG}/annex3_golden/sigmet_a6_2_tc.tac`,
-    wmoReference: true,
+    wmoPass: true,
     wmoSeed: 'sigmet-A6-2-TC',
   },
   {
@@ -245,6 +248,17 @@ export const EXAMPLES: readonly GoldenExample[] = [
     wmoSeed: 'spacewx-A7-3',
   },
   {
+    id: 'vona_a7_1',
+    label: 'VONA WMO A7-1 (annex3)',
+    product: 'VONA',
+    inputMode: 'tac',
+    body: vonaA71,
+    nonOperational: true,
+    provenance: `${PKG}/annex3_golden/vona_a7_1.tac`,
+    wmoPass: true,
+    wmoSeed: 'vona-A7-1',
+  },
+  {
     id: 'ahl_metar_multi',
     label: 'AHL METAR multi-report bulletin',
     product: 'METAR',
@@ -297,6 +311,11 @@ export const FIXTURE_GAPS: readonly FixtureGap[] = [
     product: 'SWXA',
     reason:
       'WMO-only catalog (F28): single unlocked seed spacewx-A7-3 (wmoReference); A7-4/A7-5 deferred.',
+  },
+  {
+    product: 'VONA',
+    reason:
+      'WMO-only catalog (F32): single unlocked seed vona-A7-1 (wmoPass); additional VONA peers deferred.',
   },
 ] as const;
 

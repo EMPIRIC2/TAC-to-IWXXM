@@ -13,7 +13,7 @@ import pytest
 
 PACKAGE_SRC = Path(__file__).resolve().parents[1] / "src" / "tac_validate"
 
-PRODUCTS = ("AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA")
+PRODUCTS = ("AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA")
 
 
 def test_lint_exports_public_entrypoints() -> None:
