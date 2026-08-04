@@ -36,8 +36,12 @@ API `DATABASE_URL` must be `postgresql+asyncpg://…?ssl=require` (not `sslmode=
 Sync work-sessions rewrite `ssl=` → `sslmode=` in code; until `backend:ev031-doks` is
 republished, apply `bash scripts/ops/apply_doks_work_session_ssl_fix.sh`.
 
-Provisional live Playwright (T7.1): `make test-live-e2e-doks-provisional`
-(Host-header / Chromium resolver-rules; see `scripts/deploy/doks_provisional_live_env.sh`).
+Provisional live harness (Host-header / Chromium resolver-rules; see
+`scripts/deploy/doks_provisional_live_env.sh`):
+
+- Playwright F31 (T7.1): `make test-live-e2e-doks-provisional`
+- H4–H5 (T7.2): `make test-live-connectivity-doks-provisional`
+- TC-EV031 topology (T7.3): `make test-live-topology-doks-provisional`
 
 ## Apply
 
