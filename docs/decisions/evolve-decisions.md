@@ -79,7 +79,13 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 | E32-T7 | decision | CI packaging? | **custom** — path-filtered **pre-commit** smokes; long packs on **pre-push**/`make`; document improvements (not dump full matrices into default pre-commit) |
 | E32-T8 | decision | Corpus / #847 home? | **1** — M0 session inventory + durable `docs/domain/iwxxm/` |
 
-**Plan artifact**: `docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md` (28 tasks)
+### Gate B (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T9 | gate | Approve execution plan? | **PASS** — M0–M4 (28 tasks) → **07 @ T0.1** (`D-S040-04-plan`=1) |
+
+**Status**: **in_progress** — Phase C build (`07-build`)
 
 ---
 

@@ -1,6 +1,6 @@
 # Execution plan — S040 / EV-032 (#846 / #835 / #741 / #808 / #847)
 
-> **Status**: **draft** — awaiting Gate B (`D-S040-04-plan`)  
+> **Status**: **approved** (2026-08-04) — `D-S040-04-plan` = 1; Gate B PASS → 07 @ T0.1  
 > **Branch**: `evolve/EV-032-iwxxm-corpus-quality`  
 > **Evolve cycle**: EV-032  
 > **Features**: **F32** (new); deepen F23 (#835) / F4 / F6 / F2 / F13 (#808 + corpus)  
@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — tech plan |
-| **Active milestone** | — (awaiting Gate B) |
-| **Active task** | — |
-| **Tasks** | 0 / 28 completed |
+| **Active phase** | Phase C — build |
+| **Active milestone** | M1 — #835 A6-2-TC → `wmoPass` |
+| **Active task** | T1.1 — pending (next) |
+| **Tasks** | 3 / 28 completed |
 | **Last updated** | 2026-08-04 |
 
 ## Tech Stack Summary
@@ -62,6 +62,7 @@ Repo already splits fast vs long:
 | E32-T6 | **1** — redeploy API+static; H1–H3; H4–H5 required |
 | E32-T7 | **custom** — pre-commit fast smokes (path-filtered); long suites pre-push/`make` + improvements above |
 | E32-T8 | **1** — M0 session inventory + durable `docs/domain/iwxxm/` for #808/#847 |
+| E32-T9 | **1** — Gate B PASS → 07 @ T0.1 |
 
 ## Milestones & Tasks (TDD order)
 
@@ -73,9 +74,9 @@ Repo already splits fast vs long:
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T0.1 | Docs | Session inventory: vendor official peers + WMO-source map (iwxxm / translation / codelists / codes.wmo.int / modelling) under `reports/` | TC-EV032-001/005; E32-T8 | — | pending |
-| T0.2 | Docs | Gap index → proposed #846 children (encode / golden / catalog / docs) | TC-EV032-005; #846 | T0.1 | pending |
-| T0.3 | Docs | M0 exit checklist — proceed M1 when inventory + gaps filed or explicitly deferred | E32-T1 | T0.2 | pending |
+| T0.1 | Docs | Session inventory: vendor official peers + WMO-source map (iwxxm / translation / codelists / codes.wmo.int / modelling) under `reports/` | TC-EV032-001/005; E32-T8 | — | **completed** |
+| T0.2 | Docs | Gap index → proposed #846 children (encode / golden / catalog / docs) | TC-EV032-005; #846 | T0.1 | **completed** |
+| T0.3 | Docs | M0 exit checklist — proceed M1 when inventory + gaps filed or explicitly deferred | E32-T1 | T0.2 | **completed** |
 
 ### M1 — #835 A6-2-TC → `wmoPass`
 
@@ -134,10 +135,10 @@ Repo already splits fast vs long:
 | Gate | Criteria | Status |
 |------|----------|--------|
 | A→B | Specs + 02 PASS | **passed** (`D-S040-02-phase-a`) |
-| B→C | This plan approved | **pending** (`D-S040-04-plan`) |
+| B→C | This plan approved | **passed** (`D-S040-04-plan`) |
 | C→D | All Fn tasks done; 08 PASS | pending |
 | Deploy | 09+10; 11+12; smoke | pending |
 
 ## Next
 
-**Gate B** — approve 28 tasks → **07-build @ T0.1**.
+**07-build** in progress — M0 inventory → M1 #835.

@@ -1,11 +1,11 @@
 # 04-tech-plan — S040 / EV-032
 
 **Started**: 2026-08-04  
-**Completed**: 2026-08-04 (pending Gate B)  
+**Completed**: 2026-08-04  
 **Mode**: evolve delta  
 **Features**: **F32** + deepen F23 (#835) / F4 / F6 / F2 / F13 (#808 + corpus)  
 **Branch**: `evolve/EV-032-iwxxm-corpus-quality`  
-**Status**: **awaiting Gate B** (`D-S040-04-plan`)
+**Status**: **completed** — Gate B PASS (`D-S040-04-plan`=1) → 07 @ T0.1
 
 ## Toolchain baseline
 
@@ -25,13 +25,13 @@
 |-------|----------|
 | Batch 1 `1,1,1,1` | M0–M4; strict ADR-032; cookbook+fixtures; AHL discover M2 |
 | Batch 2 `1,1,custom,1` | No new deps; H4–H5 required; tiered local CI (E32-T7); session+domain docs |
-| Gate B | awaiting |
+| Gate B `1` | Approve 28 tasks → 07 @ T0.1 |
 
 ## Artifacts
 
-- `reports/execution-plan.md` — **draft** (28 tasks, M0–M4)
-- This report — pending Gate B
+- `reports/execution-plan.md` — **approved** (28 tasks, M0–M4)
+- This report — **completed**
 
 ## Next
 
-Approve Gate B → **07-build @ T0.1**.
+**07-build** — T0.1 corpus / WMO-source inventory.

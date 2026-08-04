@@ -43,6 +43,7 @@ active_session:
     D-S040-02-phase-a: '1'
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
+    D-S040-04-plan: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -62,7 +63,7 @@ active_session:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Batch 1+2 locked; 04-tech-plan in_progress; execution-plan draft 28 tasks; awaiting Gate B; #846'
+    note: 'ORCHESTRATING — Phase C build; Gate B PASS; 07-build STARTED @ T0.1; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -82,14 +83,17 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
+  - stage: 07-build
+    required: true
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'IN PROGRESS — Batch 1+2 locked; execution-plan draft 28 tasks; awaiting Gate B; #846'
-  - stage: 07-build
-    required: true
-    status: pending
-    skip_rationale:
+    note: 'STARTED @ T0.1 corpus inventory; #846'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -114,7 +118,7 @@ active_session:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
@@ -157,11 +161,12 @@ active_session:
   - D-S040-02-phase-a
   - D-S040-04-batch-1
   - D-S040-04-batch-2
+  - D-S040-04-plan
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — Gate A PASS (D-S040-02=1,1,1,1); current_stage 04-tech-plan; F32+UJ-045; #846/#835/#741/#808/#847'
+  note: 'S040/EV-032 — Gate B PASS (D-S040-04-plan=1); current_stage 07-build @ T0.1; F32+UJ-045; #846/#835/#741/#808/#847'
 sessions:
 - id: S040-iwxxm-corpus-quality
   type: feature
@@ -201,6 +206,7 @@ sessions:
     D-S040-02-phase-a: '1'
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
+    D-S040-04-plan: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -220,7 +226,7 @@ sessions:
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'ORCHESTRATING — Batch 1+2 locked; 04-tech-plan in_progress; execution-plan draft 28 tasks; awaiting Gate B; #846'
+    note: 'ORCHESTRATING — Phase C build; Gate B PASS; 07-build STARTED @ T0.1; #846'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -240,14 +246,17 @@ sessions:
   - stage: 04-tech-plan
     required: true
     mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
+  - stage: 07-build
+    required: true
     status: in_progress
     started: '2026-08-04'
     skip_rationale:
-    note: 'IN PROGRESS — Batch 1+2 locked; execution-plan draft 28 tasks; awaiting Gate B; #846'
-  - stage: 07-build
-    required: true
-    status: pending
-    skip_rationale:
+    note: 'STARTED @ T0.1 corpus inventory; #846'
   - stage: 08-verify-build
     required: true
     status: pending
@@ -272,7 +281,7 @@ sessions:
     required: true
     status: pending
     skip_rationale:
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
@@ -315,11 +324,12 @@ sessions:
   - D-S040-02-phase-a
   - D-S040-04-batch-1
   - D-S040-04-batch-2
+  - D-S040-04-plan
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'S040/EV-032 — Gate A PASS (D-S040-02=1,1,1,1); current_stage 04-tech-plan; F32+UJ-045; #846/#835/#741/#808/#847'
+  note: 'S040/EV-032 — Gate B PASS (D-S040-04-plan=1); current_stage 07-build @ T0.1; F32+UJ-045; #846/#835/#741/#808/#847'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -5702,12 +5712,12 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-04'
     started: '2026-08-04'
-    completed_at:
-    completed:
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
     previous_started_at: '2026-08-03T18:31:51Z'
     previous_completed_at: '2026-08-03'
     previous_session_id: S038-platform-independence-842
@@ -5720,8 +5730,9 @@ stages:
     prior_note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
     session_id: S040-iwxxm-corpus-quality
     evolve_cycle_id: EV-032
-    note: 'S040/EV-032 04-tech-plan STARTED (delta) — Gate A PASS; Gate B pending; #846'
+    note: 'S040/EV-032 04-tech-plan COMPLETE (delta) — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
     decision_refs:
+    - D-S040-04-plan
     - D-S040-04-batch-2
     - D-S040-04-batch-1
     - D-S040-02-phase-a
@@ -5752,11 +5763,13 @@ stages:
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-04'
       started: '2026-08-04'
-      note: 'IN PROGRESS — Batch 1+2 locked; execution-plan draft 28 tasks; awaiting Gate B; #846'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
       feature_ids:
       - F32
       deepen_feature_ids:
@@ -5766,6 +5779,7 @@ stages:
       - F2
       - F13
       decision_refs:
+      - D-S040-04-plan
       - D-S040-02-phase-a
       - D-S040-02-batch-f
       - D-S040-E32-M
@@ -5804,9 +5818,11 @@ stages:
     - session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       started_at: '2026-08-04'
       started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
       mode: delta
       feature_ids:
       - F32
@@ -5817,12 +5833,13 @@ stages:
       - F2
       - F13
       decision_refs:
+      - D-S040-04-plan
       - D-S040-02-phase-a
       - D-S040-02-batch-f
       - D-S040-E32-M
       - D-S040-04-batch-1
       - D-S040-04-batch-2
-      note: 'IN PROGRESS — Batch 1+2 locked; execution-plan draft 28 tasks; awaiting Gate B; #846'
+      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
     - session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 04-tech-plan
@@ -6825,39 +6842,39 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
+    status: in_progress
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at:
+    completed:
     previous_started_at: '2026-08-03'
     previous_completed_at: '2026-08-03'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_tip_sha: 8bd111c
-    previous_tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-    previous_note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: 14661de0
+    previous_tip_sha_full: 14661de0a69a7e6deb243224c138a7575b97be22
+    previous_note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0'
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
     prior_started: '2026-08-03'
     prior_completed: '2026-08-03'
-    prior_note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
+    prior_note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
     mode: delta
-    note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0'
-    tip_sha: 14661de0
-    tip_sha_full: 14661de0a69a7e6deb243224c138a7575b97be22
-    tip_note: '[T6.5] Render suspended; 07-build COMPLETE'
-    progress: 35/35
-    current_milestone: M7
-    current_task:
-    active_milestone: M7
-    active_task:
-    active_task_status: completed
-    next_stage: 09-qa
+    note: 'STARTED @ T0.1 corpus inventory; #846'
+    tip_sha: 0f3769af
+    tip_sha_full: 0f3769af50c5426e89bba1e219e9124a408ab9ec
+    tip_note: 'S040/EV-032 Gate B PASS → 07 @ T0.1'
+    progress: 0/28
+    current_milestone: M0
+    current_task: T0.1
+    active_milestone: M0
+    active_task: T0.1
+    active_task_status: in_progress
+    next_stage: 08-verify-build
     next_task:
-    next_milestone: M7
+    next_milestone: M0
     blocked_task:
     blocked_task_reason:
     t7_1_complete: true
@@ -6887,6 +6904,7 @@ stages:
     - T2.6: c7c567a
     - M2: eaba4fb3
     decision_refs:
+    - D-S040-04-plan
     - D-S038-04-plan
     - D-S038-04-b1
     - D-S038-04-b2
@@ -10474,6 +10492,35 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S040-04-plan
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate B — approve execution plan → 07-build'
+  summary: 'PASS — approve M0-M4 (28 tasks) → 07 @ T0.1'
+  decision: 'Approve execution plan (28 tasks, M0–M4). Gate B PASS. Complete 04-tech-plan; start 07-build at T0.1. 05/06 remain skipped (Standard preset).'
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  - '847'
+  related_decisions:
+  - D-S040-04-batch-1
+  - D-S040-04-batch-2
+  - D-S040-02-phase-a
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
 - id: D-S040-04-batch-2
   date: '2026-08-04'
   timestamp: '2026-08-04'
@@ -30986,6 +31033,7 @@ evolve_cycles:
     D-S040-02-phase-a: '1'
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
+    D-S040-04-plan: '1'
     locked_at: '2026-08-04'
   routing_plan:
     required_stages:
@@ -31006,7 +31054,7 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     note: 'Standard approved — D-S040-route=1; skip 03/05/06'
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   tip_sha: 0f3769af
   tip_sha_full: 0f3769af50c5426e89bba1e219e9124a408ab9ec
   stages:
@@ -31020,7 +31068,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-04'
-      note: 'ORCHESTRATING — Batch 1+2 locked; 04-tech-plan in_progress; execution-plan draft 28 tasks; awaiting Gate B; #846'
+      note: 'ORCHESTRATING — Phase C build; Gate B PASS; 07-build STARTED @ T0.1; #846'
     01-requirements:
       status: completed
       mode: delta
@@ -31034,12 +31082,15 @@ evolve_cycles:
       completed: '2026-08-04'
       note: 'PASS — Batch F 1,1,1,1; Gate A → 04; D-S040-02-phase-a; #846'
     04-tech-plan:
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-04'
-      note: 'IN PROGRESS — Batch 1+2 locked; execution-plan draft 28 tasks; awaiting Gate B; #846'
+      completed: '2026-08-04'
+      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
     07-build:
-      status: pending
+      status: in_progress
+      started: '2026-08-04'
+      note: 'STARTED @ T0.1 corpus inventory; #846'
     08-verify-build:
       status: pending
     09-qa:
@@ -31054,12 +31105,12 @@ evolve_cycles:
       status: pending
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -31100,11 +31151,13 @@ evolve_cycles:
   - D-S040-02-phase-a
   - D-S040-04-batch-1
   - D-S040-04-batch-2
+  - D-S040-04-plan
   note: >-
-    S040/EV-032 — Gate A PASS (D-S040-02=1,1,1,1); current_stage 04-tech-plan;
+    S040/EV-032 — Gate B PASS (D-S040-04-plan=1); current_stage 07-build;
     deepen F23 (#835), F4/F6/F2/F13 (#808+corpus); F32 VONA; exclude #836;
     #846/#835/#741/#808/#847
   notes:
+  - '2026-08-04 S040/EV-032 — D-S040-04-plan=1 Gate B PASS; 04 COMPLETE → 07-build STARTED @ T0.1 corpus inventory; gates.b_to_c + checkpoints.phase_b passed; M0-M4 28 tasks; #846'
   - '2026-08-04 S040/EV-032 — Gate A PASS (D-S040-02-batch-f=1,1,1,1; D-S040-02-phase-a=1); 02 COMPLETE; 04-tech-plan STARTED; gates.a_to_b passed; #846/#847'
   - '2026-08-04 S040/EV-032 — tip confirmed 0f3769af (01 delta); current_stage remains 02-verify-plan; #846'
   - '2026-08-04 S040/EV-032 — 01-requirements COMPLETE D-S040-E32-M=2,3,1,1 (full pack; full F7 VONA; interview UI N/A → 02); artifact 01-requirements-summary.md; commit message pending parent ([EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)); tip still bd48bc61; #846'

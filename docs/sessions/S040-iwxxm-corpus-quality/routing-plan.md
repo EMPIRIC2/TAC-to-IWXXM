@@ -15,10 +15,10 @@
 | 01-requirements | yes | delta | **completed** | Full pack + F7 VONA (`D-S040-E32-M`=2,3,1,1) |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S040-02-phase-a`=1); Batch F `1,1,1,1` |
 | 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks |
-| 04-tech-plan | yes | delta | **in_progress** | Gate B → execution plan |
+| 04-tech-plan | yes | delta | **completed** | Gate B PASS (`D-S040-04-plan`=1); 28 tasks |
 | 05-verify-tech | no | — | skipped | Re-add if new deps |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | pending | Order: #835 → #741 → #808 → corpus |
+| 07-build | yes | full | **in_progress** | @ T0.1 corpus inventory |
 | 08-verify-build | yes | delta | pending | — |
 | 09-qa | yes | delta | pending | — |
 | 10-e2e | yes | smoke | pending | H4–H5 only if FE/catalog ships |
@@ -45,4 +45,4 @@ Lean would skip 04/07/08/09/11/12 — insufficient for F32 encode + ADR-032 equa
 | Gate A | `D-S040-02-phase-a` = **1** — PASS → **04-tech-plan** | 2026-08-04 |
 | 04 Batch 1 | `D-S040-04-batch-1` = **1,1,1,1** — M0–M4; strict ADR-032; cookbook; AHL M2 | 2026-08-04 |
 | 04 Batch 2 | `D-S040-04-batch-2` = **1,1,custom,1** — no deps; H4–H5; tiered pre-commit; domain docs | 2026-08-04 |
-| Gate B | `D-S040-04-plan` — **awaiting user** | — |
+| Gate B | `D-S040-04-plan` = **1** — PASS → **07 @ T0.1** | 2026-08-04 |
