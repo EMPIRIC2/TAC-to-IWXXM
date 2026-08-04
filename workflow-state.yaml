@@ -25,7 +25,7 @@ active_session:
   feature_ids:
   - F30
   - F31
-  current_stage: 08-verify-build
+  current_stage: 09-qa
   started_at: '2026-08-03'
   started: '2026-08-03'
   context_briefs:
@@ -75,7 +75,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; Phase C checkpoint PASS (D-S038-phase-c); 08-verify-build in_progress (C→D gate); gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
+    note: 'Phase D — 08 COMPLETE C→D PASS; 09-qa + 10-e2e in_progress (delta); gates.c_to_d passed; tip 67a482a1; #842/#830/#712'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -113,22 +113,32 @@ active_session:
     note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0; #842/#830/#712'
   - stage: 08-verify-build
     required: true
-    status: in_progress
+    status: completed
     mode: evolve_delta
     started: '2026-08-03'
     started_at: '2026-08-03'
+    completed: '2026-08-03'
+    completed_at: '2026-08-03'
+    overall: pass
+    report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
     skip_rationale: null
-    note: 'IN_PROGRESS — post-T6.5 / M7 pack; C→D gate; gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
+    note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; handoff 09+10 parallel; #842/#830/#712'
   - stage: 09-qa
     required: true
-    mode: delta
-    status: pending
+    mode: evolve_delta
+    status: in_progress
+    started: '2026-08-03'
+    started_at: '2026-08-03'
     skip_rationale: null
+    note: 'IN_PROGRESS (evolve_delta) — parallel with 10-e2e; tip 67a482a1; #842/#830/#712'
   - stage: 10-e2e
     required: true
-    mode: delta
-    status: pending
+    mode: evolve_delta
+    status: in_progress
+    started: '2026-08-03'
+    started_at: '2026-08-03'
     skip_rationale: null
+    note: 'IN_PROGRESS (evolve_delta) — parallel with 09-qa; tip 67a482a1; #842/#830/#712'
   - stage: 11-verify-impl
     required: true
     mode: delta
@@ -155,7 +165,7 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: 'Phase C checkpoint PASS (D-S038-phase-c); starting 08-verify-build delta for C→D gate; tip 2cb0e562; #842/#830/#712'
+  note: '08 COMPLETE C→D PASS; starting 09-qa + 10-e2e parallel (delta); D-S038-phase-c'
   routing_plan_07_build: completed
   current_task: null
   active_task: null
@@ -165,9 +175,9 @@ active_session:
   blocked_task: null
   blocked_task_reason: null
   progress: 35/35
-  tip_sha: 2cb0e562
-  tip_sha_full: 2cb0e562c76702748d6588f1296672b962cc5ffc
-  tip_note: '[D-S038-phase-c] Phase C PASS → 08-verify-build C→D gate'
+  tip_sha: 67a482a1
+  tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+  tip_note: '[08] C→D PASS → 09-qa + 10-e2e parallel'
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -7423,32 +7433,38 @@ stages:
     - 2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
-    status: completed
-    started_at: '2026-08-02'
-    started: '2026-08-02'
-    completed_at: '2026-08-02'
-    completed: '2026-08-02'
-    previous_started_at: '2026-07-26'
-    previous_completed_at: '2026-07-28'
-    previous_session_id: S023-public-app-privacy
-    previous_evolve_cycle_id: EV-017
-    previous_tip_sha: 657d440
-    previous_tip_sha_full: 657d4408b5b92aacd2dd465a9d7382bfea7144ba
-    previous_overall: pass_with_advisories
-    previous_report: docs/sessions/S023-public-app-privacy/reports/qa-report.md
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    tip_sha: 0e34866
-    tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
-    mode: delta
-    overall: pass
-    report: docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md
-    note: 'COMPLETE (delta) — T12.4; report docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md; 100-pass smoke batch; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
-    active_milestone: M12
-    active_task: T12.4
-    active_task_status: completed
-    progress: 45/48
+    status: in_progress
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    previous_started_at: '2026-08-02'
+    previous_started: '2026-08-02'
+    previous_completed_at: '2026-08-02'
+    previous_completed: '2026-08-02'
+    previous_session_id: S036-eight-family-ahl-rules-823
+    previous_evolve_cycle_id: EV-029
+    previous_tip_sha: 0e34866
+    previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
+    previous_overall: pass
+    previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    tip_sha: 67a482a1
+    tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+    mode: evolve_delta
+    note: 'IN_PROGRESS (evolve_delta) — parallel with 10-e2e; tip 67a482a1; #842/#830/#712'
     delta_substages:
+    - id: S038-platform-independence-842
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      skill_id: 09-qa
+      status: in_progress
+      mode: evolve_delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      branch: evolve/EV-031-platform-independence-842
+      tip_sha: 67a482a1
+      tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+      note: 'IN_PROGRESS (evolve_delta) — parallel with 10-e2e; tip 67a482a1; #842/#830/#712'
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
@@ -7918,48 +7934,39 @@ stages:
     skill_id: 11-verify-impl
     decision_id: E16-19
   10-e2e:
-    status: completed
-    started_at: '2026-08-02'
-    started: '2026-08-02'
-    completed_at: '2026-08-02'
-    completed: '2026-08-02'
-    previous_started_at: '2026-07-31'
-    previous_completed_at: '2026-08-01'
-    previous_session_id: S035-empiric2-ops-leftovers-781
-    previous_evolve_cycle_id: EV-028
-    previous_tip_sha: 70312dd
-    previous_tip_sha_full: 70312dd8b2b61464c7c594d136881dd63678db19
+    status: in_progress
+    started_at: '2026-08-03'
+    started: '2026-08-03'
+    previous_started_at: '2026-08-02'
+    previous_started: '2026-08-02'
+    previous_completed_at: '2026-08-02'
+    previous_completed: '2026-08-02'
+    previous_session_id: S036-eight-family-ahl-rules-823
+    previous_evolve_cycle_id: EV-029
+    previous_tip_sha: 0e34866
+    previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
     previous_overall: pass
-    previous_report: docs/sessions/S035-empiric2-ops-leftovers-781/reports/t32-packaging-smoke.md
-    previous_note: 'S035/EV-028 10-e2e packaging smoke COMPLETE PASS — t32-packaging-smoke.md; tip 70312dd; #781 closed'
-    session_id: S036-eight-family-ahl-rules-823
-    evolve_cycle_id: EV-029
-    tip_sha: 0e34866
-    tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
-    mode: smoke
-    overall: pass
-    report: docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md
-    note: 'COMPLETE (smoke) — T12.4 UJ-043; report docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md; 100-pass; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
-    active_milestone: M12
-    active_task: T12.4
-    active_task_status: completed
-    progress: 45/48
-    substeps:
-      extract_journeys:
-        status: completed
-      t0_t1:
-        status: completed
-        note: UJ-043 T0/T1 100-pass smoke batch
-      t2_playwright:
-        status: deferred
-        note: H4–H5 deferred T12.6/13 (FE Examples unlock)
-      t2_connectivity:
-        status: deferred
-        note: deferred to T12.6/13
-      t3_live:
-        status: deferred
-        note: deferred to T12.6/13
+    previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md
+    previous_note: 'COMPLETE (smoke) — T12.4 UJ-043; report docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md; 100-pass; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    tip_sha: 67a482a1
+    tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+    mode: evolve_delta
+    note: 'IN_PROGRESS (evolve_delta) — parallel with 09-qa; tip 67a482a1; #842/#830/#712'
     delta_substages:
+    - id: S038-platform-independence-842
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      skill_id: 10-e2e
+      status: in_progress
+      mode: evolve_delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      branch: evolve/EV-031-platform-independence-842
+      tip_sha: 67a482a1
+      tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+      note: 'IN_PROGRESS (evolve_delta) — parallel with 09-qa; tip 67a482a1; #842/#830/#712'
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
@@ -8328,10 +8335,12 @@ stages:
     - 2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md - F7.g
   08-verify-build:
-    status: in_progress
+    status: completed
     mode: evolve_delta
     started_at: '2026-08-03'
     started: '2026-08-03'
+    completed_at: '2026-08-03'
+    completed: '2026-08-03'
     previous_started_at: '2026-08-03'
     previous_completed_at: '2026-08-03'
     previous_session_id: S037-quality-residuals-831
@@ -8345,10 +8354,11 @@ stages:
     previous_m5_tip_sha: 7a2cb7d0
     session_id: S038-platform-independence-842
     evolve_cycle_id: EV-031
-    tip_sha: 2cb0e562
-    tip_sha_full: 2cb0e562c76702748d6588f1296672b962cc5ffc
-    note: 'IN_PROGRESS (evolve_delta) — post-T6.5 / M7 pack C→D gate; D-S038-phase-c; gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
-    report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
+    tip_sha: 67a482a1
+    tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+    note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; handoff 09+10 parallel; #842/#830/#712'
+    report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
+    overall: pass
     expected_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M7.md
     m4_overall: pass
     m4_tip_sha: 04fb4a98
@@ -8383,6 +8393,24 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S038-platform-independence-842-C2D
+      session_id: S038-platform-independence-842
+      evolve_cycle_id: EV-031
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-08-03'
+      started: '2026-08-03'
+      completed_at: '2026-08-03'
+      completed: '2026-08-03'
+      mode: evolve_delta
+      overall: pass
+      report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
+      tip_sha: 67a482a1
+      tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+      note: 'COMPLETE (C→D gate) — PASS; C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; handoff 09-qa + 10-e2e parallel; D-S038-phase-c; #842/#830/#712'
+      branch: evolve/EV-031-platform-independence-842
+      decision_refs:
+      - D-S038-phase-c
     - id: S038-platform-independence-842-M5
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -9648,17 +9676,18 @@ stages:
     started: '2026-08-03'
     completed_at: null
     completed: null
-    current_stage: 08-verify-build
+    current_stage: 09-qa
     phase: 1
     prior_session_id: S037-quality-residuals-831
     prior_evolve_cycle_id: EV-030
     prior_completed: '2026-08-03'
     prior_note: 'S037/EV-030 16-evolve CLOSED — D-S037-13=1; PR #832 @ 8bd111c; F29 Done; #831/#829/#820 closed; #835 open residual; active_session=null'
-    note: 'S038/EV-031 16-evolve in_progress — Phase C checkpoint PASS (D-S038-phase-c); 08-verify-build in_progress (C→D gate, post-T6.5/M7); gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
-    tip_sha: 2cb0e562
-    tip_sha_full: 2cb0e562c76702748d6588f1296672b962cc5ffc
-    tip_note: '[D-S038-phase-c] Phase C PASS → 08-verify-build C→D gate'
+    note: 'S038/EV-031 16-evolve in_progress — 08 COMPLETE C→D PASS; 09-qa + 10-e2e in_progress (delta); gates.c_to_d passed; tip 67a482a1; #842/#830/#712'
+    tip_sha: 67a482a1
+    tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+    tip_note: '[08] C→D PASS → 09-qa + 10-e2e parallel'
     notes:
+    - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
     - '2026-08-03 S038/EV-031 — D-S038-phase-c=1 Phase C checkpoint PASS; 08-verify-build STARTED (C→D gate, post-T6.5/M7); gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
     - '2026-08-03 S038/EV-031 07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
     - '2026-08-03 S038/EV-031 07-build — D-S038-t65-waive confirmed; executing T6.5 Render decommission (soak waived day 0/7); progress 34/38; tip 93f960b4; #842/#830/#712'
@@ -29562,16 +29591,16 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-    note: 'Standard — Phase C checkpoint PASS (D-S038-phase-c); 08-verify-build in_progress (C→D gate); tip 2cb0e562; gates.c_to_d pending until 08 PASS; 03/05/06 skipped'
-  current_stage: 08-verify-build
-  current_stage_note: 'Phase C PASS (D-S038-phase-c); 08-verify-build in_progress (C→D gate); gates.c_to_d pending until 08 PASS'
+    note: 'Standard — 08 COMPLETE C→D PASS; 09+10 in_progress (delta); gates.c_to_d passed; tip 67a482a1; 03/05/06 skipped'
+  current_stage: 09-qa
+  current_stage_note: '08 COMPLETE C→D PASS; starting 09-qa + 10-e2e parallel (delta); D-S038-phase-c'
   active_task: null
   active_task_status: completed
   awaiting_user_decision: null
   progress: 35/35
-  tip_sha: 2cb0e562
-  tip_sha_full: 2cb0e562c76702748d6588f1296672b962cc5ffc
-  tip_note: '[D-S038-phase-c] Phase C PASS → 08-verify-build C→D gate'
+  tip_sha: 67a482a1
+  tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+  tip_note: '[08] C→D PASS → 09-qa + 10-e2e parallel'
   active_milestone: M7
   next_milestone: M7
   blocked_task: null
@@ -29604,7 +29633,7 @@ evolve_cycles:
       mode: orchestrator
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'Phase 1 Fn allocated (D-S038-fn=1,1,1) — F30+F31; Phase C checkpoint PASS (D-S038-phase-c); 08-verify-build in_progress (C→D gate); gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
+      note: 'Phase D — 08 COMPLETE C→D PASS; 09-qa + 10-e2e in_progress (delta); gates.c_to_d passed; tip 67a482a1; #842/#830/#712'
     01-requirements:
       status: completed
       mode: delta
@@ -29700,10 +29729,14 @@ evolve_cycles:
       tip_sha_full: 14661de0a69a7e6deb243224c138a7575b97be22
       tip_note: '[T6.5] Render suspended; 07-build COMPLETE'
     08-verify-build:
-      status: in_progress
+      status: completed
       mode: evolve_delta
       started: '2026-08-03'
       started_at: '2026-08-03'
+      completed: '2026-08-03'
+      completed_at: '2026-08-03'
+      overall: pass
+      report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
       m4_overall: pass
       m4_tip_sha: 04fb4a98
       m4_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M4.md
@@ -29716,16 +29749,22 @@ evolve_cycles:
       active_milestone: M7
       active_task: null
       active_task_status: null
-      tip_sha: 2cb0e562
-      tip_sha_full: 2cb0e562c76702748d6588f1296672b962cc5ffc
+      tip_sha: 67a482a1
+      tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
       progress: 35/35
-      note: 'IN_PROGRESS — post-T6.5 / M7 pack; C→D gate; gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
+      note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; #842/#830/#712'
     09-qa:
-      status: pending
-      mode: delta
+      status: in_progress
+      mode: evolve_delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      note: 'IN_PROGRESS (evolve_delta) — parallel with 10-e2e; tip 67a482a1; #842/#830/#712'
     10-e2e:
-      status: pending
-      mode: delta
+      status: in_progress
+      mode: evolve_delta
+      started: '2026-08-03'
+      started_at: '2026-08-03'
+      note: 'IN_PROGRESS (evolve_delta) — parallel with 09-qa; tip 67a482a1; #842/#830/#712'
     11-verify-impl:
       status: pending
       mode: delta
@@ -29746,7 +29785,7 @@ evolve_cycles:
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: passed
     deploy: pending
   checkpoints:
     phase_a: passed
@@ -29757,6 +29796,9 @@ evolve_cycles:
   adrs:
   - ADR-033
   artifacts:
+  - path: docs/sessions/S038-platform-independence-842/reports/verification-report.md
+    status: present
+    note: '08 COMPLETE — C→D PASS @ 67a482a1; format/lint/typecheck/H0c/workspace/backend unit green'
   - path: docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
     status: approved
     note: '04 COMPLETE — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted'
@@ -29843,11 +29885,12 @@ evolve_cycles:
   - D-S038-t63-path
   - D-S038-t65-waive
   - D-S038-phase-c
-  tip_sha: 2cb0e562
-  tip_sha_full: 2cb0e562c76702748d6588f1296672b962cc5ffc
-  tip_note: '[D-S038-phase-c] Phase C PASS → 08-verify-build C→D gate'
-  note: 'Phase C PASS (D-S038-phase-c); 08-verify-build in_progress → then 09+10; gates.c_to_d pending until 08 PASS'
+  tip_sha: 67a482a1
+  tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+  tip_note: '[08] C→D PASS → 09-qa + 10-e2e parallel'
+  note: 'Phase D — 09+10 in_progress'
   notes:
+  - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 — D-S038-phase-c=1 Phase C checkpoint PASS; 08-verify-build STARTED (C→D gate, post-T6.5/M7); gates.c_to_d pending until 08 PASS; tip 2cb0e562; #842/#830/#712'
   - '2026-08-03 S038/EV-031 07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
   - '2026-08-03 S038/EV-031 07-build — D-S038-t65-waive confirmed; executing T6.5 Render decommission (soak waived day 0/7); progress 34/38; tip 93f960b4; #842/#830/#712'
@@ -29893,16 +29936,17 @@ git_history:
   pushed: false
   pending_commit: null
   dirty: true
-  tip_sha: 14661de0
-  tip_sha_full: 14661de0a69a7e6deb243224c138a7575b97be22
-  tip_note: '[T6.5] Render suspended under D-S038-t65-waive; 07-build COMPLETE (35/35)'
+  tip_sha: 67a482a1
+  tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+  tip_note: '[08] C→D PASS → 09-qa + 10-e2e parallel'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
   recommended_branch: evolve/EV-031-platform-independence-842
-  note: '07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
+  note: '08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e in_progress (delta); #842/#830/#712'
   notes:
+  - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
   - '2026-08-03 S038/EV-031 07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
   - '2026-08-04 S038/EV-031 tip @ f1e2389d (f1e2389d8da04a00bf07c1dc5f815f345a5b970b); [T7.4] docs: CHANGELOG and evolve/deploy stubs for EV-031; T7.4 COMPLETE; M7 COMPLETE; only T6.5 soak-calendar blocked; progress 34/38; tip f1e2389d; dirty pending tip-sync'
   - '2026-08-04 S038/EV-031 tip synced — 0cc0fb39 (0cc0fb398025d2c983249477ce2d380dc76e11c0); [T7.3] chore: sync workflow-state tip after T7.3; T7.3 COMPLETE; next T7.4; T6.5 soak-calendar blocked; progress 33/38; tip 0cc0fb39'
@@ -30310,11 +30354,11 @@ git_history:
     created_at: '2026-08-03'
     session_id: S038-platform-independence-842
     evolve_cycle_id: EV-031
-    tip_sha: 7a2cb7d0
-    tip_sha_full: 7a2cb7d0592730f52ce64122630901ddd1192ef9
+    tip_sha: 67a482a1
+    tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
     pushed: false
     exists: true
-    note: 'Tip 7a2cb7d0 — M5 08 PASS (verification-report-M5); 07-build T6.1 in_progress @ M6; progress 26/38 until complete; next T6.2; ahead 35 unpushed'
+    note: 'Tip 67a482a1 — 08-verify-build COMPLETE C→D PASS; 09-qa + 10-e2e in_progress (delta); gates.c_to_d passed'
   - name: evolve/EV-030-quality-residuals-831
     purpose: 'S037/EV-030 quality residuals #831→#829→#820'
     base: main
@@ -31303,6 +31347,22 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 67a482a1568fde921b77484fcd27be800e5be9ef
+    short: 67a482a1
+    branch: evolve/EV-031-platform-independence-842
+    message: '[08] test: align prod URL and Alembic guards after T6.5; C→D verify PASS'
+    stage: 08-verify-build
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    timestamp: '2026-08-03T21:16:08-04:00'
+    files_changed:
+    - docs/sessions/S038-platform-independence-842/reports/verification-report.md
+    - docs/sessions/S038-platform-independence-842/routing-plan.md
+    - packages/shared/tests/test_config_loader.py
+    - tests/unit/test_doks_kustomize_t61.py
+    - workflow-state.yaml
+    pushed: false
+    note: '08-verify-build COMPLETE — C→D PASS; gates.c_to_d passed; handoff 09-qa + 10-e2e parallel; tip 67a482a1; #842/#830/#712'
   - sha: 14661de0a69a7e6deb243224c138a7575b97be22
     short: 14661de0
     branch: evolve/EV-031-platform-independence-842

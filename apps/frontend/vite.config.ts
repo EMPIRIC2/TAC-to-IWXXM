@@ -29,6 +29,7 @@ export default defineConfig({
         '**/supabase/.temp/**',
         '**/test-results/**',
         '**/playwright-report/**',
+        '**/coverage/**',
       ],
     },
   },
