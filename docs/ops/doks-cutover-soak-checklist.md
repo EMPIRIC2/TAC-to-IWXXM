@@ -38,7 +38,7 @@ bash scripts/deploy/doks_host_header_smoke.sh
 - [ ] Auth login + work-sessions smoke (UJ-046) — optional during provisional HTTP
 - [x] `LIVE_*` / `liveE2e` point at provisional DOKS; public `api.baseUrl` remains Render
 - [ ] Render marked **drain / non-primary** — deferred until real DNS or explicit soak exit
-- [ ] Full H4–H5 via `make test-live-connectivity` — deferred (HTTPS + real DNS); H4-lite CORS preflight PASS on Host-header path
+- [x] Full H4–H5 via `make test-live-connectivity-doks-provisional` (T7.2) — H0c 6/6, H4 2/2, H5 PASS on Host-header path; HTTPS + real DNS still deferred (`D-S038-t63-waive`)
 
 ## Daily checks (days 1–7)
 

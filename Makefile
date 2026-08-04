@@ -47,7 +47,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
-	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
+	test-live-connectivity test-live-connectivity-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
 	test-integration coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
@@ -455,6 +455,12 @@ test-mock-byoc-all-sinks:
 
 test-live-connectivity:
 	@$(load_dotenv); \
+	bash scripts/deploy/verify_connectivity.sh
+
+# T7.2 / EV-031 — H0c + H4 + H5 against provisional DOKS (Host-header; no /etc/hosts)
+test-live-connectivity-doks-provisional:
+	@$(load_dotenv); \
+	set -a; source scripts/deploy/doks_provisional_live_env.sh; set +a; \
 	bash scripts/deploy/verify_connectivity.sh
 
 test-live-api:

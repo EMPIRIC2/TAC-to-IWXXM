@@ -9,6 +9,7 @@
 # Usage:
 #   source scripts/deploy/doks_provisional_live_env.sh
 #   make test-live-e2e-doks-provisional
+#   make test-live-connectivity-doks-provisional
 set -euo pipefail
 
 LB_IP="${DOKS_LB_IP:-168.144.12.70}"

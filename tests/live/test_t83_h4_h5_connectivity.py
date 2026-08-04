@@ -11,7 +11,15 @@ import os
 
 import httpx
 import pytest
-from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
+from tests.live_env import (
+    expected_api_base_url,
+    live_api_host_headers,
+    live_api_url,
+    live_frontend_fetch_base,
+    live_frontend_host_headers,
+    live_frontend_url,
+    warn_deprecated_env,
+)
 
 pytestmark = [pytest.mark.live, pytest.mark.live_api]
 
@@ -30,15 +38,17 @@ def _urls() -> tuple[str, str]:
 def test_t83_h4_cors_preflight_convert() -> None:
     """H4 — OPTIONS preflight for /api/v1/convert from frontend origin."""
     api, origin = _urls()
+    api_headers = live_api_host_headers()
     with httpx.Client(timeout=45.0) as client:
         # Wake free-tier API if needed
-        client.get(f"{api}/health")
+        client.get(f"{api}/health", headers=api_headers)
         response = client.options(
             f"{api}/api/v1/convert",
             headers={
                 "Origin": origin,
                 "Access-Control-Request-Method": "POST",
                 "Access-Control-Request-Headers": "Authorization, Content-Type",
+                **api_headers,
             },
         )
     assert response.status_code in (200, 204), response.text
@@ -51,11 +61,15 @@ def test_t83_h4_cors_preflight_convert() -> None:
 
 
 def test_t83_h5_frontend_config_json_api_base() -> None:
-    """H5 — staging /config.json api.baseUrl matches LIVE_API_URL."""
-    api, frontend = _urls()
-    expected = api.rstrip("/")
+    """H5 — staging /config.json api.baseUrl matches expected API base."""
+    _api, _frontend = _urls()
+    expected = expected_api_base_url()
+    fetch_base = live_frontend_fetch_base()
     with httpx.Client(timeout=45.0, follow_redirects=True) as client:
-        response = client.get(f"{frontend}/config.json")
+        response = client.get(
+            f"{fetch_base}/config.json",
+            headers=live_frontend_host_headers(),
+        )
     assert response.status_code == 200, response.text[:300]
     cfg = response.json()
     actual = str(cfg.get("api", {}).get("baseUrl", "")).rstrip("/")
@@ -69,7 +83,11 @@ def test_t83_h5_frontend_config_json_api_base() -> None:
 
 def test_t83_h5_frontend_index_reachable() -> None:
     """H5 companion — frontend index responds (static site up)."""
-    _, frontend = _urls()
+    _urls()
+    fetch_base = live_frontend_fetch_base()
     with httpx.Client(timeout=45.0, follow_redirects=True) as client:
-        response = client.get(frontend)
+        response = client.get(
+            fetch_base,
+            headers=live_frontend_host_headers(),
+        )
     assert response.status_code == 200, response.text[:200]

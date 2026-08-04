@@ -5,12 +5,21 @@ Run against deployed Render stack when URLs are configured:
     pytest tests/smoke/test_staging_connectivity.py -m live
 
 Requires: LIVE_API_URL, LIVE_FRONTEND_URL (STAGING_* fallbacks supported).
+
+Provisional DOKS (D-S038-t63-waive): set PLAYWRIGHT_DOKS_PROVISIONAL=1 (or
+DOKS_PROVISIONAL=1) plus DOKS_* hosts — requests hit the LB IP with Ingress Host
+headers (see scripts/deploy/doks_provisional_live_env.sh).
 """
 
 from __future__ import annotations
 
 import pytest
-from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
+from tests.live_env import (
+    live_api_host_headers,
+    live_api_url,
+    live_frontend_url,
+    warn_deprecated_env,
+)
 
 pytestmark = pytest.mark.live
 
@@ -28,14 +37,17 @@ async def test_staging_cors_preflight_allows_frontend_origin() -> None:
 
     import httpx
 
+    headers = {
+        "Origin": origin,
+        "Access-Control-Request-Method": "GET",
+        "Access-Control-Request-Headers": "Authorization, Content-Type",
+        **live_api_host_headers(),
+    }
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.options(
             f"{api_url}/health",
-            headers={
-                "Origin": origin,
-                "Access-Control-Request-Method": "GET",
-                "Access-Control-Request-Headers": "Authorization, Content-Type",
-            },
+            headers=headers,
         )
 
     assert response.status_code in (200, 204), response.text
@@ -58,14 +70,17 @@ async def test_staging_cors_preflight_work_sessions_patch() -> None:
 
     import httpx
 
+    headers = {
+        "Origin": origin,
+        "Access-Control-Request-Method": "PATCH",
+        "Access-Control-Request-Headers": "Authorization, Content-Type",
+        **live_api_host_headers(),
+    }
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.options(
             f"{api_url}/api/v1/work-sessions",
-            headers={
-                "Origin": origin,
-                "Access-Control-Request-Method": "PATCH",
-                "Access-Control-Request-Headers": "Authorization, Content-Type",
-            },
+            headers=headers,
         )
 
     assert response.status_code in (200, 204), response.text
