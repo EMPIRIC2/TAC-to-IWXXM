@@ -675,7 +675,7 @@ def _coalesce_residuals(
     return residuals
 
 
-_SPARSE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA"})
+_SPARSE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 
 
 def _sentence_from_segment(seg: DecodeSegment) -> str | None:

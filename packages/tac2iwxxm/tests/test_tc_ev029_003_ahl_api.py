@@ -29,6 +29,7 @@ _TAC_TO_IWXXM: tuple[tuple[str, str, str], ...] = (
     ("fv_vaa.txt", "FV", "LU"),
     ("fk_tca.txt", "FK", "LK"),
     ("fn_swxa.txt", "FN", "LN"),
+    ("wm_vona.txt", "WM", "LM"),
 )
 
 
