@@ -21,12 +21,14 @@ function configFromViteEnv(): MetarRuntimeConfig {
   return {
     environment: import.meta.env.MODE || 'development',
     api: {
-      baseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:18001',
-      frontendUrl: import.meta.env.VITE_APP_URL || 'http://localhost:18000',
+      baseUrl: (import.meta.env.VITE_API_BASE_URL || 'http://localhost:18001').trim(),
+      frontendUrl: (import.meta.env.VITE_APP_URL || 'http://localhost:18000').trim(),
     },
     supabase: {
-      url: import.meta.env.VITE_SUPABASE_URL || '',
-      publishableKey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || '',
+      url: (import.meta.env.VITE_SUPABASE_URL || '').trim(),
+      publishableKey: (
+        import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || ''
+      ).trim(),
     },
   };
 }
@@ -53,17 +55,22 @@ export async function initRuntimeConfig(): Promise<MetarRuntimeConfig> {
   return cachedConfig;
 }
 
-/** Return loaded config; throws if ``initRuntimeConfig`` was not called. */
+/**
+ * Return loaded config.
+ * After ``initRuntimeConfig``, returns the cached ``/config.json`` (or Vite
+ * fallback from init). Before init, reads Vite env fresh (not cached) so
+ * bake-time stubs and tests stay consistent.
+ */
 export function getRuntimeConfig(): MetarRuntimeConfig {
-  if (!cachedConfig) {
-    cachedConfig = configFromViteEnv();
+  if (cachedConfig) {
+    return cachedConfig;
   }
-  return cachedConfig;
+  return configFromViteEnv();
 }
 
 /** API base URL for merged backend (/api/v1, /auth, /admin). */
 export function getApiBaseUrl(): string {
-  return getRuntimeConfig().api.baseUrl.replace(/\/$/, '');
+  return getRuntimeConfig().api.baseUrl.trim().replace(/\/+$/, '');
 }
 
 /** Supabase project URL. */

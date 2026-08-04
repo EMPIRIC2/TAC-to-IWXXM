@@ -2,14 +2,12 @@
  * Auth Service API Client
  *
  * Handles all authentication requests through the merged API host.
- * Auth routes are served at /auth/* on VITE_API_BASE_URL.
+ * Auth routes are served at /auth/* on the runtime API base (config.json / VITE).
  */
 
 import { authUrl, getApiBaseUrl } from './apiBase';
 
-const API_BASE_URL = getApiBaseUrl();
-
-console.log('[Auth Service] Initialized with URL:', API_BASE_URL);
+console.log('[Auth Service] Initialized with URL:', getApiBaseUrl());
 
 export interface AuthUser {
   id: string;

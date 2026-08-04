@@ -20,8 +20,8 @@ env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
-  FRONTEND_VITE_APP_URL: https://metar-to-iwxxm-frontend-v4-web.onrender.com
-  FRONTEND_VITE_API_BASE_URL: https://metar-to-iwxxm-api.onrender.com
+  FRONTEND_VITE_APP_URL: https://app.tac-to-iwxxm.com
+  FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
   # ============================================================================

@@ -1,7 +1,14 @@
 /**
- * Unified API base URL helpers (VITE_API_BASE_URL).
- * Single host for /api/v1/* and /auth/* per ADR-002 and deploy.md.
+ * Unified API base URL helpers.
+ * Prefers runtime `/config.json` (via runtime-config) over bake-time
+ * VITE_API_BASE_URL so DOKS/custom-domain deploys are not stuck on a stale
+ * Render hostname (BUG-2026-08-04).
  */
+
+import {
+  getApiBaseUrl as getRuntimeApiBaseUrl,
+  getRuntimeConfig,
+} from './runtime-config';
 
 const DEFAULT_DEV_API = 'http://localhost:18001';
 
@@ -9,20 +16,27 @@ function trimBaseUrl(url: string): string {
   return url.trim().replace(/\/+$/, '');
 }
 
+/** API base URL: runtime config after init, else Vite / local default. */
 export function getApiBaseUrl(): string {
-  const raw = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
-  if (!raw) {
-    return DEFAULT_DEV_API;
-  }
-  return trimBaseUrl(raw);
+  return getRuntimeApiBaseUrl();
 }
 
+/**
+ * Ensure a production build has a configured API host (config.json or VITE).
+ * Rejects the silent localhost fallback when MODE is production.
+ */
 export function requireApiBaseUrl(): string {
-  const raw = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
-  if (!raw && import.meta.env.MODE === 'production') {
-    throw new Error('VITE_API_BASE_URL must be set in production builds');
+  const base = getApiBaseUrl();
+  if (import.meta.env.MODE === 'production') {
+    const vite = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
+    const runtime = getRuntimeConfig().api.baseUrl?.trim() ?? '';
+    if (!vite && (!runtime || trimBaseUrl(runtime) === DEFAULT_DEV_API)) {
+      throw new Error(
+        'API base URL must be set via /config.json or VITE_API_BASE_URL in production builds',
+      );
+    }
   }
-  return trimBaseUrl(raw || DEFAULT_DEV_API);
+  return base;
 }
 
 export function apiUrl(path: string): string {
