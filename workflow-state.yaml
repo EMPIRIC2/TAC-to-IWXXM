@@ -77,7 +77,7 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'Phase D — 12 COMPLETE; 13 in_progress'
+    note: 'Phase D — 13-deploy-smoke in_progress (smoke green; awaiting D-S038-13)'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -180,7 +180,8 @@ active_session:
     started: '2026-08-03'
     started_at: '2026-08-03'
     skip_rationale: null
-    note: 'IN_PROGRESS (delta) — started after D-S038-12=1; tip b4feac02 awaiting smoke commits; #842/#830/#712'
+    report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+    note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13 approval; tip pending commit'
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -193,19 +194,19 @@ active_session:
     required: false
     status: skipped
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-  note: '12 COMPLETE (D-S038-12=1); 13-deploy-smoke in_progress (delta); tip b4feac02 (12 signed off awaiting 13 smoke)'
+  note: '13-deploy-smoke in_progress — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13; tip pending commit'
   routing_plan_07_build: completed
   current_task: null
   active_task: null
   active_task_status: completed
-  awaiting_user_decision: null
+  awaiting_user_decision: D-S038-13
   next_task: null
   blocked_task: null
   blocked_task_reason: null
   progress: 35/35
   tip_sha: b4feac02
   tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: '12 signed off awaiting 13 smoke'
+  tip_note: 'tip pending commit — smoke report written; awaiting D-S038-13'
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -223,6 +224,7 @@ active_session:
   - docs/sessions/S038-platform-independence-842/reports/e2e-report.md
   - docs/sessions/S038-platform-independence-842/reports/verify-impl.md
   - docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+  - docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
   active_milestone: M7
   next_milestone: M7
   t6_4_complete: true
@@ -9326,13 +9328,15 @@ stages:
       branch: evolve/EV-031-platform-independence-842
       tip_sha: b4feac02
       tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-      note: 'IN_PROGRESS (delta) — started after D-S038-12=1; tip b4feac02 awaiting smoke commits; #842/#830/#712'
+      report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+      note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13 approval; tip pending commit'
       feature_ids:
       - F30
       - F31
       active_milestone: M7
       progress: 35/35
       decision_id: D-S038-12
+      awaiting_user_decision: D-S038-13
     - id: S037-quality-residuals-831
       session_id: S037-quality-residuals-831
       evolve_cycle_id: EV-030
@@ -10046,53 +10050,48 @@ deployment:
     t0_result: pass
     t0_journeys_passed: 4
   staging:
-    status: deployed
+    status: 'deployed (provisional)'
     last_verified: '2026-08-03'
-    commit_deployed: 8bd111c
-    commit_deployed_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-    commit_head: 8bd111c
-    commit_head_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
+    commit_deployed: b4feac02
+    commit_deployed_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    commit_head: b4feac02
+    commit_head_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     drift: false
+    platform: doks
+    namespace: metar-iwxxm
     urls:
-      api: https://metar-to-iwxxm-api.onrender.com
-      frontend: https://metar-to-iwxxm-frontend-v4-web.onrender.com
+      lb: 'http://168.144.12.70'
+      api: 'http://api.doks.placeholder.metar-iwxxm.local'
+      frontend: 'http://app.doks.placeholder.metar-iwxxm.local'
+      note: 'Host-header via LB 168.144.12.70 (placeholder DNS); Render suspended (503 expected)'
     deploy_ids:
-      api: dep-d9ob293l550s73a65rfg
-      frontend: dep-d9ob2brm8hqs73fu8k2g
-    report: docs/sessions/S037-quality-residuals-831/reports/deploy-smoke.md
-    session_id: S037-quality-residuals-831
-    evolve_cycle_id: EV-030
+      api: null
+      frontend: null
+    report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
     images:
-      api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260803151459-8bd111c
-      frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260803151459-8bd111c
-      note: 'S037/EV-030 13 PASS after #832 @ 8bd111c — Render REST deploy workaround (CI deploy hook 500); API dep-d9ob293l550s73a65rfg FE dep-d9ob2brm8hqs73fu8k2g; FE App chunk App-Bhd6UU87.js; D-S037-13=1 close'
+      api: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
+      frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:ev031-doks
+      note: 'S038/EV-031 13 IN_PROGRESS — provisional DOKS primary; smoke green; awaiting D-S038-13; tip pending commit'
     health_tiers:
-      H0ci: pass
+      H0ci: pending
       H0c: pass
       H1: pass
-      H2: pass
+      H2: pending
       H3: pass
       H4: pass
       H5: pass
-      UJ026_annex3: pending
-      AHL_convert_bulletin: pass
-      COLLECT_ingest_collect: expected_501
-      Playwright_workbench: pass
-      Playwright_F21_F22: pass_5_of_5
-      goldens_ui: pass
       h0c: pass
       h1: pass
-      h2: pass
       h3: pass
       h4: pass
       h5: pass
-      h0ci: pass
-      uj032: pass
-      h2_note: pass-or-skipped — live_api covers DB-ish; not separately run
-      EV026_catalog_convert: pass
-      SWXA_catalog_convert: pass
-      FE_app_chunk_swxa: swxa_a7_3
+      Render_suspended: expected_503
+      topology: pass_3_of_3
+      host_header: pass_5_of_5
     notes:
+    - '2026-08-03 S038/EV-031 13-deploy-smoke IN_PROGRESS — provisional DOKS LB 168.144.12.70 Host placeholders; host 5/5, H0c/H4/H5, topology 3/3 PASS; Render 503; awaiting D-S038-13; tip pending commit; report deploy-smoke.md; #842/#830/#712'
     - '2026-08-03 S037/EV-030 13-deploy-smoke PASS — PR #832 merged 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500; Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g LIVE; H1/H0c/H3/H4/H5 PASS; FE App-Bhd6UU87.js A6-2-TC; report deploy-smoke.md; D-S037-13=1 close; #835'
     - '2026-08-02 S036/EV-029 13-deploy-smoke PASS (technical) — PR #828 merged 4e6577a; docs tip 7e276a7; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA catalog/convert PASS; FE App chunk swxa_a7_3; report deploy-smoke.md; awaiting user approve D-S036-13; progress 46/48; #828; #823'
     - '2026-07-31 S033/EV-026 13-deploy-smoke PASS (D-S033-13-smoke-pass) — PR #817 @ 101f555; API dep-d9miestbedkc73dr3j9g + FE dep-d9mietnqj5pc73d3c8a0; H0ci/H0c/H1–H5 pass (H2 pass-or-skipped via live_api); EV-026 catalog/convert PASS; report deploy-smoke.md; pending user approve + cycle close'
@@ -10115,9 +10114,9 @@ deployment:
     - CI/CD run 29766213356 SUCCESS including Deploy; images 20260720180925-37be5f8
     - H0c PASS; H3 21/21; H4 2/2; H5 PASS; AHL convert-bulletin 200; COLLECT ingest-collect 501; live Playwright workbench PASS
     - Phase D / Phase 4 close still pending user deploy approval (session open)
-    ci_tests: green
-    ci_deploy: fail
-    ci_deploy_note: 'CI 30826197508 Deploy hook 500; Render REST deploy workaround applied'
+    ci_tests: pending
+    ci_deploy: n/a
+    ci_deploy_note: 'DOKS provisional primary; Render suspended (D-S038-t65-waive)'
     images_attempted:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260727004311-c49f22b
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260727004311-c49f22b
@@ -20200,6 +20199,16 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+  kind: deploy-smoke-report
+  session_id: S038-platform-independence-842
+  evolve_cycle_id: EV-031
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  created_at: '2026-08-03'
+  updated_at: '2026-08-03'
+  status: present
+  note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13; tip pending commit'
 - path: docs/sessions/S038-platform-independence-842/reports/doks-provision-cheapest-2026-08-03.md
   kind: doks-provision-report
   session_id: S038-platform-independence-842
@@ -29875,16 +29884,16 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
-    note: 'Standard — 12 COMPLETE (D-S038-12=1); 13-deploy-smoke in_progress (delta); tip b4feac02; 03/05/06 skipped'
+    note: 'Standard — 13-deploy-smoke in_progress (smoke green; awaiting D-S038-13; tip pending commit); 03/05/06 skipped'
   current_stage: 13-deploy-smoke
-  current_stage_note: '12 COMPLETE (D-S038-12=1); 13-deploy-smoke in_progress; tip b4feac02 (12 signed off awaiting 13 smoke)'
+  current_stage_note: '13-deploy-smoke in_progress — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13; tip pending commit'
   active_task: null
   active_task_status: completed
-  awaiting_user_decision: null
+  awaiting_user_decision: D-S038-13
   progress: 35/35
   tip_sha: b4feac02
   tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-  tip_note: '12 signed off awaiting 13 smoke'
+  tip_note: 'tip pending commit — smoke report written; awaiting D-S038-13'
   active_milestone: M7
   next_milestone: M7
   blocked_task: null
@@ -29917,7 +29926,7 @@ evolve_cycles:
       mode: orchestrator
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'Phase D — 12 COMPLETE; 13 in_progress'
+      note: 'Phase D — 13-deploy-smoke in_progress (smoke green; awaiting D-S038-13)'
     01-requirements:
       status: completed
       mode: delta
@@ -30083,7 +30092,9 @@ evolve_cycles:
       mode: delta
       started: '2026-08-03'
       started_at: '2026-08-03'
-      note: 'IN_PROGRESS (delta) — started after D-S038-12=1; tip b4feac02 awaiting smoke commits; #842/#830/#712'
+      report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+      note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13 approval; tip pending commit'
+      awaiting_user_decision: D-S038-13
     03-plan-tooling:
       status: skipped
       skip_rationale: 'Standard preset — tooling/guardrail stages deferred unless gate fails'
@@ -30140,6 +30151,9 @@ evolve_cycles:
   - path: docs/sessions/S038-platform-independence-842/reports/doks-provision-cheapest-2026-08-03.md
     status: present
     note: 'DOKS cluster smoke PASS (LB 168.144.12.70); migrate APPLY+VERIFY PASS; Alembic initContainer disabled'
+  - path: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+    status: present
+    note: 'IN_PROGRESS — smoke green (host 5/5, H0c/H4/H5, topology 3/3, Render 503); awaiting D-S038-13; tip pending commit'
   - path: docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
     status: present
     note: '02 Gate A PASS; Batch C 1,1,1; C1–C5 fixed'
