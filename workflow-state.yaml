@@ -195,9 +195,9 @@ active_session:
   blocked_task: null
   blocked_task_reason: null
   progress: 35/35
-  tip_sha: 4caaae1b
-  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
-  tip_note: '[11] COMPLETE → 12-verify-deploy'
+  tip_sha: b4feac02
+  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+  tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
   t7_1_complete: true
   t7_2_complete: true
   t7_2_report: docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md
@@ -7694,8 +7694,8 @@ stages:
     overall: pass
     note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
     report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-    tip_sha: 4caaae1b
-    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+    tip_sha: b4feac02
+    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     active_milestone: M7
     active_task: null
     active_task_status: completed
@@ -7729,8 +7729,8 @@ stages:
       completed: '2026-08-03'
       completed_at: '2026-08-03'
       branch: evolve/EV-031-platform-independence-842
-      tip_sha: 4caaae1b
-      tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+      tip_sha: b4feac02
+      tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
       report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
       note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
       overall: pass
@@ -7821,8 +7821,8 @@ stages:
       completed: '2026-08-03'
       completed_at: '2026-08-03'
       branch: evolve/EV-031-platform-independence-842
-      tip_sha: 4caaae1b
-      tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+      tip_sha: b4feac02
+      tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
       report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
       note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
       overall: pass
@@ -8047,9 +8047,9 @@ stages:
     overall: pass
     note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
     report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-    tip_sha: 4caaae1b
-    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
-    tip_note: '[11] COMPLETE → 12-verify-deploy'
+    tip_sha: b4feac02
+    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
     active_milestone: M7
     active_task: null
     active_task_status: completed
@@ -9073,8 +9073,8 @@ stages:
     mode: delta
     note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
     report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
-    tip_sha: 4caaae1b
-    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+    tip_sha: b4feac02
+    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     active_milestone: M7
     active_task: null
     active_task_status: null
@@ -9113,8 +9113,8 @@ stages:
       started: '2026-08-03'
       started_at: '2026-08-03'
       branch: evolve/EV-031-platform-independence-842
-      tip_sha: 4caaae1b
-      tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
+      tip_sha: b4feac02
+      tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
       report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
       note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
       feature_ids:
@@ -9260,9 +9260,9 @@ stages:
     mode: delta
     note: 'IN_PROGRESS (delta) — checklist drafted; awaiting mitigations+rollback+13 gate; tip 4caaae1b; #842/#830/#712'
     report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
-    tip_sha: 4caaae1b
-    tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
-    tip_note: '[11] COMPLETE → 12-verify-deploy'
+    tip_sha: b4feac02
+    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
     active_milestone: M7
     active_task: null
     active_task_status: null
@@ -29803,9 +29803,9 @@ evolve_cycles:
   active_task_status: completed
   awaiting_user_decision: mitigations+rollback+13 gate
   progress: 35/35
-  tip_sha: 4caaae1b
-  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
-  tip_note: '[11] COMPLETE → 12-verify-deploy'
+  tip_sha: b4feac02
+  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+  tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
   active_milestone: M7
   next_milestone: M7
   blocked_task: null
@@ -30116,9 +30116,9 @@ evolve_cycles:
   - D-S038-t65-waive
   - D-S038-phase-c
   - D-S038-11
-  tip_sha: 4caaae1b
-  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
-  tip_note: '[11] COMPLETE → 12-verify-deploy'
+  tip_sha: b4feac02
+  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+  tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
   note: '11 complete awaiting 12 signoff'
   notes:
   - '2026-08-03 S038/EV-031 11-verify-impl COMPLETE (D-S038-11=1 approve F30+F31; UI preview declined); 12-verify-deploy in_progress; tip 4caaae1b; #842/#830/#712'
@@ -30169,9 +30169,9 @@ git_history:
   pushed: false
   pending_commit: null
   dirty: true
-  tip_sha: 4caaae1b
-  tip_sha_full: 4caaae1bd69550a3781443977a5859481357d326
-  tip_note: '[11] COMPLETE → 12-verify-deploy'
+  tip_sha: b4feac02
+  tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+  tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
@@ -31581,6 +31581,19 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    short: b4feac02
+    branch: evolve/EV-031-platform-independence-842
+    message: '[11/12] docs: approve F30/F31 verify-impl; draft DOKS deploy checklist'
+    stage: 12-verify-deploy
+    session_id: S038-platform-independence-842
+    evolve_cycle_id: EV-031
+    files_changed:
+    - docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+    - docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+    - workflow-state.yaml
+    timestamp: '2026-08-03'
+    pushed: false
   - sha: 06d57043611116f3b247695d7c519142a1023377
     short: 06d57043
     branch: evolve/EV-031-platform-independence-842
