@@ -140,6 +140,9 @@ active_session:
   - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     status: written
     stage: 02-verify-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    status: draft
+    stage: 04-tech-plan
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -288,6 +291,9 @@ sessions:
   - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     status: written
     stage: 02-verify-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    status: draft
+    stage: 04-tech-plan
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -30994,6 +31000,9 @@ evolve_cycles:
   - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     status: written
     stage: 02-verify-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    status: draft
+    stage: 04-tech-plan
   issues: []
   decision_refs:
   - D-S040-open
@@ -32472,6 +32481,33 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 82ad0ae9ef6a0b22aeab7f5cefc8990411f69edb
+    short: 82ad0ae9
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: remove superseded 02 Gate A draft'
+    stage: 02-verify-plan
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-draft.md
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 035f7b8dbfeba7d0d4467ea3d240db826a10adee
+    short: 035f7b8d
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: Gate A PASS — close 02-verify-plan; start 04'
+    stage: 02-verify-plan
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/product-audit.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
   - sha: 0f3769af50c5426e89bba1e219e9124a408ab9ec
     short: 0f3769af
     branch: evolve/EV-032-iwxxm-corpus-quality
