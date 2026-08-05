@@ -9,7 +9,7 @@
 **Features**: deepen **F2 / F6 / F32** only (no new Fn — Q2/Q3)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-037-matrix-disposition-residuals`  
-**Status**: **in_progress** — 11 **APPROVED** (`D-S045-11`); 12/13 **WAIVED** (`D-S045-12-13-waive`); push+PR pending (`D-S045-next`)
+**Status**: **in_progress** — 11 **APPROVED** (`D-S045-11`); 12/13 **WAIVED** (`D-S045-12-13-waive`); PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) open (`D-S045-next`) — awaiting merge approval
 **Prior**: S044 / EV-036 completed
 **Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) — **all closed** 2026-08-05 @ `c51e6e9b`
 

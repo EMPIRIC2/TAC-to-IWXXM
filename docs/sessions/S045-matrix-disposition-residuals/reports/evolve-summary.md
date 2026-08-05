@@ -2,7 +2,7 @@
 
 **Title:** Matrix dispositions #869 / #870 / #872  
 **Branch:** `evolve/EV-037-matrix-disposition-residuals`  
-**Status:** **11 approved** 2026-08-05 — push+PR pending (`D-S045-next`)  
+**Status:** **11 approved** 2026-08-05 — PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) open @ `7ddcc164`  
 **Features:** deepen **F2 / F6 / F32** only (no new Fn)  
 **Preset:** Lean+07/08 · **Deploy:** waived (`D-S045-12-13-waive`)  
 **Verify:** 08 PASS @ `90c2e8a3` · provenance quality **188** passed
