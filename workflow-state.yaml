@@ -5,204 +5,7 @@ project:
   output_directory: docs/
 session_counter: 43
 evolve_cycle_counter: 35
-active_session:
-  id: S043-rule-source-traceability
-  type: feature
-  intent: |
-    Re-analyze reviewed domain docs + extracted rules; link each rule to sources;
-    standing provenance registry (F33); raise unfindable rules; dense asserts for
-    cited/revisited rules (full stack: lint + encode/SCH + bulletin).
-  status: in_progress
-  branch: evolve/EV-035-rule-source-traceability
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-035
-  feature_ids: []
-  deepen_feature_ids:
-  - F6
-  - F12
-  - F15
-  - F2
-  artifacts_dir: docs/sessions/S043-rule-source-traceability/
-  prior_session: S042-doks-cd-rollout
-  preset: Standard
-  preset_status: approved
-  phase0_choices:
-    Q1: '3'
-    Q2: '4'
-    Q3: '1'
-    Q4: '2'
-    E35-5: dense_asserts
-    locked_at: '2026-08-05'
-  decisions:
-    E35-1: both_audit_and_registry
-    E35-2: full_stack
-    E35-3: open_S043
-    E35-4: Standard
-    E35-5: dense_asserts_all_cited_rules
-    G1: deepen_only_no_F33
-    G2: Standard_approved
-    G3: path_cite_only
-    G4: proceed_01
-    D-S043-02-batch-a: '1,1,1,1'
-    D-S043-02-phase-a: gate_a_pass
-    S02.M1: vona_guidance_warn_ahl_fm205_ok
-    S02.M2: issue_871_umbrella_tc002
-    S02.M3: bulletin_matrix_refresh_may_close_872
-    S02.L1: deploy_12_13_may_waive_ask_later
-    D-S043-04-batch-b: '1,1,1,1'
-    D-S043-04-plan: gate_b_pass
-    E35-T1: m0_m3
-    E35-T2: md_json_twin
-    E35-T3: all_catalog_codes
-    E35-T4: no_deps_tiered_ci
-    E35-T5: plan_deploy_waive_12_13
-    E35-T6: gate_b_to_07
-  routing_plan:
-  - stage: 00-context
-    mode: scoped
-    required: true
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-  - stage: 16-evolve
-    required: true
-    status: in_progress
-    started: '2026-08-05'
-    skip_rationale:
-  - stage: 01-requirements
-    required: true
-    mode: delta
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: deepen F6/F12/F15/F2; TC-EV035; no F33
-  - stage: 02-verify-plan
-    required: true
-    mode: delta
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: 'PASS — Gate A Batch A 1,1,1,1 (S02.M1/M2/M3/L1 Approve); report reports/02-verify-plan-audit.md; D-S043-02-batch-a / D-S043-02-phase-a'
-  - stage: 03-plan-tooling
-    required: false
-    status: skipped
-    skip_rationale: existing mine-domain-sources / catalog-regen
-  - stage: 04-tech-plan
-    required: true
-    mode: delta
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: 'Gate B PASS Batch B 1,1,1,1; execution-plan approved; D-S043-04-batch-b / D-S043-04-plan'
-  - stage: 05-verify-tech
-    required: false
-    status: skipped
-    skip_rationale: no new tooling deps expected
-  - stage: 06-tech-tooling
-    required: false
-    status: skipped
-    skip_rationale: no new tooling deps expected
-  - stage: 07-build
-    required: true
-    mode: full
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930'
-  - stage: 08-verify-build
-    required: true
-    mode: delta
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: '08 PASS tip 5a03b930; next 09-qa'
-    report: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
-    overall: pass
-  - stage: 09-qa
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale:
-  - stage: 10-e2e
-    required: false
-    status: skipped
-    skip_rationale: no UI in scope
-  - stage: 11-verify-impl
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale:
-  - stage: 12-verify-deploy
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale:
-  - stage: 13-deploy-smoke
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale: may waive if no runtime surface — AskQuestion at gate
-  current_stage: 09-qa
-  current_stage_status: pending
-  current_stage_note: '08 PASS tip 5a03b930; next 09-qa'
-  gates:
-    a_to_b: passed
-    b_to_c: passed
-    c_to_d: passed
-    deploy: pending
-  checkpoints:
-    phase_a: passed
-    phase_b: passed
-    phase_c: passed
-    phase_d: pending
-    deploy: pending
-  started: '2026-08-05'
-  started_at: '2026-08-05'
-  artifacts:
-  - path: docs/sessions/S043-rule-source-traceability/session-brief.md
-    status: written
-    stage: 00-context
-  - path: docs/sessions/S043-rule-source-traceability/routing-plan.md
-    status: pending_approval
-    stage: 00-context
-  - path: docs/context/rule-source-traceability.md
-    status: written
-    stage: 00-context
-  - path: docs/decisions/evolve-decisions.md
-    status: in_progress
-    stage: 16-evolve
-    note: EV-035 Phase 0 scope drafted
-  - path: docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
-    status: completed
-    stage: 02-verify-plan
-  - path: docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
-    status: written
-    stage: 02-verify-plan
-  - path: docs/sessions/S043-rule-source-traceability/reports/04-tech-plan.md
-    status: completed
-    stage: 04-tech-plan
-  - path: docs/sessions/S043-rule-source-traceability/reports/execution-plan.md
-    status: approved
-    stage: 04-tech-plan
-  - path: docs/domain/rules/PROVENANCE_MAP.md
-    status: written
-    stage: 07-build
-  - path: docs/domain/rules/PROVENANCE_MAP.json
-    status: written
-    stage: 07-build
-  - path: tests/provenance/
-    status: written
-    stage: 07-build
-    note: TC-EV035 182 green
-  - path: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
-    status: completed
-    stage: 08-verify-build
+active_session: null
 sessions:
 - id: S043-rule-source-traceability
   type: feature
@@ -210,8 +13,11 @@ sessions:
     Re-analyze reviewed domain docs + extracted rules; link each rule to sources;
     standing provenance under docs/domain/rules/; raise unfindable rules; dense
     asserts (full stack: lint + encode/SCH + bulletin). Deepen F6/F12/F15/F2 — no new Fn.
-  status: in_progress
+  status: completed
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
   branch: evolve/EV-035-rule-source-traceability
+  branch_note: 'CLOSED — EV-035 completed; deploy 12/13 waived (D-S043-12-13-waive); tip 1a1911b9; S040 not auto-resumed'
   orchestrator: 16-evolve
   evolve_cycle_id: EV-035
   feature_ids: []
@@ -226,7 +32,8 @@ sessions:
   preset_status: approved
   started: '2026-08-05'
   started_at: '2026-08-05'
-  note: '08 PASS tip 5a03b930; next 09-qa'
+  route_status: completed
+  note: 'COMPLETED — EV-035 closed; D-S043-11 approve_all_met; D-S043-12-13-waive waived_no_runtime; deploy waived; tip 1a1911b9; S040 not auto-resumed'
   decisions:
     E35-1: both_audit_and_registry
     E35-2: full_stack
@@ -251,6 +58,8 @@ sessions:
     E35-T4: no_deps_tiered_ci
     E35-T5: plan_deploy_waive_12_13
     E35-T6: gate_b_to_07
+    D-S043-11: approve_all_met
+    D-S043-12-13-waive: waived_no_runtime
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -261,9 +70,12 @@ sessions:
     skip_rationale:
   - stage: 16-evolve
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
+    note: 'COMPLETE — EV-035 closed; D-S043-11 + D-S043-12-13-waive; evolve-summary docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -307,7 +119,7 @@ sessions:
     started: '2026-08-05'
     completed: '2026-08-05'
     skip_rationale:
-    note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930'
+    note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930 → close tip 1a1911b9'
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -315,14 +127,20 @@ sessions:
     started: '2026-08-05'
     completed: '2026-08-05'
     skip_rationale:
-    note: '08 PASS tip 5a03b930; next 09-qa'
+    note: '08 PASS tip 5a03b930'
     report: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
     overall: pass
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
+    overall: pass
+    report: docs/sessions/S043-rule-source-traceability/reports/qa-report.md
+    note: 'COMPLETE — overall pass; report docs/sessions/S043-rule-source-traceability/reports/qa-report.md; TC-EV035 182; tip 1a1911b9'
   - stage: 10-e2e
     required: false
     status: skipped
@@ -330,46 +148,67 @@ sessions:
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    overall: approved
+    decision_id: D-S043-11
     skip_rationale:
+    report: docs/sessions/S043-rule-source-traceability/reports/verify-impl.md
+    report_status: approved
+    note: 'COMPLETE — approve_all_met (D-S043-11); report docs/sessions/S043-rule-source-traceability/reports/verify-impl.md'
   - stage: 12-verify-deploy
     required: true
     mode: delta
-    status: pending
-    skip_rationale:
+    status: waived
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    decision_id: D-S043-12-13-waive
+    skip_rationale: waived_no_runtime — docs/tests only; no API/FE/worker runtime delta (S02.L1)
+    note: 'WAIVED — D-S043-12-13-waive waived_no_runtime'
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: pending
-    skip_rationale: may waive if no runtime surface — AskQuestion at gate
-  current_stage: 09-qa
-  current_stage_status: pending
-  current_stage_note: '08 PASS tip 5a03b930; next 09-qa'
+    status: waived
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    decision_id: D-S043-12-13-waive
+    skip_rationale: waived_no_runtime — docs/tests only; no API/FE/worker runtime delta (S02.L1)
+    note: 'WAIVED — D-S043-12-13-waive waived_no_runtime'
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: 'COMPLETED — EV-035 closed; D-S043-11 approve_all_met; D-S043-12-13-waive waived_no_runtime; deploy waived; tip 1a1911b9; S040 not auto-resumed'
+  next_stage: null
+  next_stage_status: null
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: waived
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
-    phase_d: pending
-    deploy: pending
+    phase_d: passed
+    deploy: waived
+  tip_sha: 1a1911b9
   artifacts:
   - path: docs/sessions/S043-rule-source-traceability/session-brief.md
     status: written
     stage: 00-context
   - path: docs/sessions/S043-rule-source-traceability/routing-plan.md
-    status: pending_approval
+    status: approved
     stage: 00-context
   - path: docs/context/rule-source-traceability.md
     status: written
     stage: 00-context
   - path: docs/decisions/evolve-decisions.md
-    status: in_progress
+    status: completed
     stage: 16-evolve
-    note: EV-035 Phase 0 scope drafted
+    note: EV-035 closed
   - path: docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
     status: completed
     stage: 02-verify-plan
@@ -395,6 +234,35 @@ sessions:
   - path: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
     status: completed
     stage: 08-verify-build
+  - path: docs/sessions/S043-rule-source-traceability/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    overall: pass
+    note: 'PASS 2026-08-05'
+  - path: docs/sessions/S043-rule-source-traceability/reports/verify-impl.md
+    status: approved
+    stage: 11-verify-impl
+    note: 'PASS — D-S043-11 approve_all_met 2026-08-05'
+    overall: approved
+  - path: docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md
+    status: completed
+    stage: 16-evolve
+    note: EV-035 closed; deploy waived
+  - path: docs/evolve-report-EV-035.md
+    status: completed
+    stage: 16-evolve
+  decision_refs:
+  - D-S043-02-batch-a
+  - D-S043-02-phase-a
+  - D-S043-04-batch-b
+  - D-S043-04-plan
+  - D-S043-11
+  - D-S043-12-13-waive
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 10-e2e
 - id: S042-doks-cd-rollout
   type: feature
   intent: |
@@ -11616,6 +11484,69 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S043-11
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S043-rule-source-traceability
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: gate
+  status: confirmed
+  topic: '11-verify-impl — approve all EV-035 acceptance criteria'
+  summary: 'approve_all_met — all deepen ACs MET; continue → close path with deploy waive'
+  decision: |
+    D-S043-11=approve_all_met — User approved all EV-035 acceptance criteria as MET
+    (continue). 11-verify-impl completed / approved. Report:
+    docs/sessions/S043-rule-source-traceability/reports/verify-impl.md.
+  user_option: continue
+  branch: evolve/EV-035-rule-source-traceability
+  evolve_cycle_id: EV-035
+  related_decisions:
+  - D-S043-12-13-waive
+  - D-S043-04-plan
+  artifacts:
+  - docs/sessions/S043-rule-source-traceability/reports/verify-impl.md
+  - docs/sessions/S043-rule-source-traceability/reports/qa-report.md
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
+- id: D-S043-12-13-waive
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S043-rule-source-traceability
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: gate
+  status: confirmed
+  topic: 'Waive 12-verify-deploy + 13-deploy-smoke (no runtime surface)'
+  summary: 'waived_no_runtime — docs/tests only; no API/FE/worker runtime delta (S02.L1)'
+  decision: |
+    D-S043-12-13-waive=waived_no_runtime — User waived 12-verify-deploy and
+    13-deploy-smoke. Cycle is docs + CI provenance tests only; no runtime surface
+    (S02.L1 / E35-T5). gates.deploy + checkpoints.deploy = waived. Close EV-035 / S043.
+    Do not auto-resume S040.
+  user_option: waive
+  branch: evolve/EV-035-rule-source-traceability
+  evolve_cycle_id: EV-035
+  related_decisions:
+  - D-S043-11
+  - S02.L1
+  - E35-T5
+  artifacts:
+  - docs/sessions/S043-rule-source-traceability/reports/verify-impl.md
+  - docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md
+  - docs/evolve-report-EV-035.md
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
 - id: D-S043-04-plan
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -32693,17 +32624,21 @@ evolve_cycles:
   feature_note: deepen F6/F12/F15/F2 cite/test provenance — no new Fn (G1=2)
   title: Rule-source traceability / provenance registry
   slug: rule-source-traceability
-  status: in_progress
-  phase: 2
+  status: completed
+  phase: 4
   started: '2026-08-05'
   started_at: '2026-08-05'
-  completed: null
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
   scope_summary: |
     Re-analyze reviewed docs + extracted rules; link rule→source; deepen-only
     F6/F12/F15/F2 provenance (no F33; G1=2); raise unfindable sources; full stack
     (ISSUE_CATALOG + encode/SCH + bulletin); Standard path; dense asserts for every
     cited/revisited rule. Phase 0 locked Q1=3 Q2=4 Q3=1 Q4=2 (+ E35-5 dense asserts).
   branch: evolve/EV-035-rule-source-traceability
+  branch_note: 'CLOSED — EV-035 completed 2026-08-05; deploy 12/13 waived (D-S043-12-13-waive); tip 1a1911b9'
+  tip_sha: 1a1911b9
+  tip_note: 'COMPLETED — tip 1a1911b9; D-S043-11 approve_all_met; D-S043-12-13-waive waived_no_runtime'
   preset: Standard
   preset_status: approved
   phase0_choices:
@@ -32735,28 +32670,33 @@ evolve_cycles:
     - 05-verify-tech
     - 06-tech-tooling
     - 10-e2e
-    note: Standard approved G2=1; deepen-only G1=2
-  current_stage: 09-qa
-  current_stage_status: pending
-  current_stage_note: '08 PASS tip 5a03b930; next 09-qa'
+    note: 'Standard complete — 09/11 completed; 12/13 waived (D-S043-12-13-waive); evolve-summary docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md'
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: 'COMPLETED — EV-035 closed; D-S043-11 + D-S043-12-13-waive; deploy waived; tip 1a1911b9; S040 not auto-resumed'
+  next_stage: null
+  next_stage_status: null
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: waived
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
-    phase_d: pending
-    deploy: pending
+    phase_d: passed
+    deploy: waived
+  summary_path: docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md
+  evolve_summary: docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md
+  evolve_report: docs/evolve-report-EV-035.md
   artifacts:
   - path: docs/decisions/evolve-decisions.md
-    status: in_progress
+    status: completed
   - path: docs/sessions/S043-rule-source-traceability/session-brief.md
     status: written
   - path: docs/sessions/S043-rule-source-traceability/routing-plan.md
-    status: pending_approval
+    status: approved
   - path: docs/context/rule-source-traceability.md
     status: written
   - path: docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
@@ -32784,6 +32724,20 @@ evolve_cycles:
   - path: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
     status: completed
     stage: 08-verify-build
+  - path: docs/sessions/S043-rule-source-traceability/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    overall: pass
+  - path: docs/sessions/S043-rule-source-traceability/reports/verify-impl.md
+    status: approved
+    stage: 11-verify-impl
+    overall: approved
+  - path: docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md
+    status: completed
+    stage: 16-evolve
+  - path: docs/evolve-report-EV-035.md
+    status: completed
+    stage: 16-evolve
   stages:
     00-context:
       status: completed
@@ -32792,9 +32746,11 @@ evolve_cycles:
       completed: '2026-08-05'
       note: S043 open; G1=2 G2=1 G3=1 G4=1 locked
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-08-05'
-      note: 'Phase C PASS — C→D; tip 5a03b930; next 09-qa'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      note: 'COMPLETE — EV-035 closed; D-S043-11 + D-S043-12-13-waive; evolve-summary docs/sessions/S043-rule-source-traceability/reports/evolve-summary.md'
     01-requirements:
       status: completed
       mode: delta
@@ -32818,29 +32774,52 @@ evolve_cycles:
       mode: full
       started: '2026-08-05'
       completed: '2026-08-05'
-      note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930'
+      note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930 → close tip 1a1911b9'
     08-verify-build:
       status: completed
       mode: delta
       started: '2026-08-05'
       completed: '2026-08-05'
-      note: '08 PASS tip 5a03b930; next 09-qa'
+      note: '08 PASS tip 5a03b930'
       report: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
     09-qa:
-      status: pending
+      status: completed
       mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      overall: pass
+      report: docs/sessions/S043-rule-source-traceability/reports/qa-report.md
+      note: 'COMPLETE — overall pass; TC-EV035 182; tip 1a1911b9'
     10-e2e:
       status: skipped
       skip_rationale: no UI in scope
     11-verify-impl:
-      status: pending
+      status: completed
       mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      overall: approved
+      decision_id: D-S043-11
+      report: docs/sessions/S043-rule-source-traceability/reports/verify-impl.md
+      note: 'COMPLETE — approve_all_met (D-S043-11)'
     12-verify-deploy:
-      status: pending
+      status: waived
       mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      decision_id: D-S043-12-13-waive
+      note: 'WAIVED — D-S043-12-13-waive waived_no_runtime'
     13-deploy-smoke:
-      status: pending
+      status: waived
       mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      decision_id: D-S043-12-13-waive
+      note: 'WAIVED — D-S043-12-13-waive waived_no_runtime'
   issues: []
 - id: EV-034
   session_id: S042-doks-cd-rollout

@@ -9,7 +9,7 @@
 **Features**: deepen **F6 / F12 / F15 / F2** (no new Fn — G1=2)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-035-rule-source-traceability`  
-**Status**: in_progress (Gate B PASS; 07-build M0–M3; → 08)  
+**Status**: **completed** 2026-08-05 — deploy 12/13 waived (`D-S043-12-13-waive`)  
 **Prior**: S042 / EV-034 completed
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=3,Q2=4,Q3=1,Q4=2` + `G1=2,G2=1,G3=1,G4=1`)
@@ -73,6 +73,10 @@ Dig: `docs/domain/mining/vona-encode-remine-ev035-mining-notes.md` · report: `r
 | 04-tech-plan | 2026-08-05 | Gate B **PASS**; Batch B `1,1,1,1`; execution-plan approved |
 | 07-build | 2026-08-05 | M0–M3 complete; tip 5a03b930; TC-EV035 182 green |
 | 08-verify-build | 2026-08-05 | PASS — verification-report.md; C→D passed |
+| 09-qa | 2026-08-05 | PASS — qa-report.md; 182 + format + H0c |
+| 11-verify-impl | 2026-08-05 | APPROVED — `continue` / D-S043-11 |
+| 12-verify-deploy | 2026-08-05 | **WAIVED** — no runtime surface (S02.L1) |
+| 13-deploy-smoke | 2026-08-05 | **WAIVED** — with 12 |
 
 ### Gate A / 02 (locked 2026-08-05)
 
@@ -93,6 +97,8 @@ Dig: `docs/domain/mining/vona-encode-remine-ev035-mining-notes.md` · report: `r
 | E35-T3 | decision | Catalog scope? | **1** — all ISSUE_CATALOG codes |
 | E35-T4 | decision | Deps/CI/deploy? | **1** — no new deps; tiered CI; plan 12/13 waive |
 | E35-04 | gate | Gate B / 04 close? | **PASS** — start **07-build** @ T0.1 (`D-S043-04-plan`) |
+| E35-11 | decision | 11 ACs? | **approve all MET** (`continue` / `D-S043-11`) |
+| E35-12-13 | gate | Deploy 12/13? | **WAIVE** — docs/tests-only (`D-S043-12-13-waive`; S02.L1) |
 
 ## Cycle EV-034 — Automate DOKS image rollout in CD (S042)
 

@@ -6,12 +6,13 @@
 **Skip:** `03, 05, 06` · **Optional:** `10-e2e` (no UI)  
 **Branch:** `evolve/EV-035-rule-source-traceability`  
 **Features:** deepen **F6 / F12 / F15 / F2** (no new Fn — `G1=2`)  
-**Skills in build:** `mine-domain-sources` (re-link / promote); F29-style dense asserts
+**Skills in build:** `mine-domain-sources` (re-link / promote); F29-style dense asserts  
+**Status:** **completed** — deploy 12/13 waived
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | open S043; G1–G4 locked |
-| 16-evolve | yes | orchestrator | in_progress | Phase A PASS → 04 |
+| 16-evolve | yes | orchestrator | **completed** | cycle closed |
 | 01-requirements | yes | delta | **completed** | deepen ACs + TC-EV035 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`1,1,1,1`) |
 | 03-plan-tooling | no | — | skipped | existing mine-domain-sources / catalog-regen |
@@ -20,16 +21,16 @@
 | 06-tech-tooling | no | — | skipped | — |
 | 07-build | yes | full | **completed** | M0–M3; tip 5a03b930 |
 | 08-verify-build | yes | delta | **completed** | verification-report.md; 182 green |
-| 09-qa | yes | delta | pending | TC-EV035 matrix |
+| 09-qa | yes | delta | **completed** | qa-report.md |
 | 10-e2e | no | — | skipped | no UI |
-| 11-verify-impl | yes | delta | pending | — |
-| 12-verify-deploy | yes | delta | pending | may waive if docs/tests only |
-| 13-deploy-smoke | yes | delta | pending | AskQuestion at gate if no runtime |
+| 11-verify-impl | yes | delta | **completed** | verify-impl.md approved |
+| 12-verify-deploy | yes | delta | **waived** | S02.L1 / D-S043-12-13-waive |
+| 13-deploy-smoke | yes | delta | **waived** | with 12 |
 
 ## Skip rationale
 
 Docs + domain provenance + engine cite/tests. No new Cursor rules (03), no new deps
-(05/06). No browser UJ (10). Deploy (12/13) AskQuestion if no runtime surface.
+(05/06). No browser UJ (10). Deploy (12/13) waived — no runtime surface.
 
 ## Test bar (locked)
 
@@ -43,3 +44,4 @@ Every rule cited or revisited → **many asserts** (TC-EV035-001..006). Gaps rai
 | Fn / routing / CORPUS / proceed | G1=2, G2=1, G3=1, G4=1 | 2026-08-05 |
 | Gate A / 02 | Batch A `1,1,1,1` → PASS → 04 | 2026-08-05 |
 | Gate B / 04 | Batch B `1,1,1,1` → PASS → 07 | 2026-08-05 |
+| 11 + deploy | continue → approve ACs; waive 12/13 | 2026-08-05 |
