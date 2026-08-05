@@ -4,6 +4,9 @@ FROM node:22-alpine AS dev
 
 WORKDIR /workspace
 
+# Compose `command` runs prepare-config.sh (bash); Alpine node image has no bash.
+RUN apk add --no-cache bash
+
 RUN corepack enable
 
 # Workspace metadata (layer cache)

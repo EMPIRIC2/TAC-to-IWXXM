@@ -598,8 +598,8 @@ test-integration:
 	$(COMPOSE) up -d backend frontend
 	@echo "Waiting for services to become ready..."
 	@for i in $$(seq 1 45); do \
-		if wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18001/health \
-			&& wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18000/; then \
+		if curl -fsS --max-time 2 -o /dev/null http://localhost:18001/health \
+			&& curl -fsS --max-time 2 -o /dev/null http://localhost:18000/; then \
 			echo "All services are reachable."; \
 			break; \
 		fi; \
