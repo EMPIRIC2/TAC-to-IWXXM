@@ -5,12 +5,12 @@
 **Skip:** `03, 04, 05, 06, 09, 10, 12, 13`  
 **Branch:** `evolve/EV-037-matrix-disposition-residuals`  
 **Features:** deepen **F2 / F6 / F32** only (no new Fn)  
-**Status:** Phase D — **11 APPROVED** (`D-S045-11`); 12/13 **WAIVED**; push+PR pending (`D-S045-next`)
+**Status:** **completed** — PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) MERGED @ `b7302fe4`; EV-037 / S045 closed
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | S045 open; Q1–Q4 locked |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1 intake done (G2=1); 11 approved; push+PR pending |
+| 16-evolve | yes | orchestrator | **completed** | Phase 4 close; `D-S045-merge=1` |
 | 01-requirements | yes | delta | **completed** | AC=1 approve AC1–AC4 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS; S02.M1–M3 accepted as 07 work |
 | 03-plan-tooling | no | — | skipped | no new Cursor rules expected |
@@ -34,4 +34,5 @@
 | B→C (Lean) | **waived_lean** — 04/05 skipped; 07 COMPLETE @ `c51e6e9b` → start 08 | 2026-08-05 |
 | C→D / 11 | **PASS** (`D-S045-11`) AC1–AC4 MET → waive 12/13 → push+PR | 2026-08-05 |
 | Deploy 12/13 | **WAIVED** (`D-S045-12-13-waive`) | 2026-08-05 |
+| Merge | **MERGED** PR #887 @ `b7302fe4` (`D-S045-merge=1`) — close EV-037/S045 | 2026-08-05 |
 | Issues | #869 / #870 / #872 **closed** (AC4) | 2026-08-05 |

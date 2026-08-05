@@ -5,191 +5,19 @@ project:
   output_directory: docs/
 session_counter: 45
 evolve_cycle_counter: 37
-active_session:
-  id: S045-matrix-disposition-residuals
-  type: feature
-  intent: |
-    Dispose EV-035 residual tickets #869/#870/#872 — VONA SoT wording,
-    IWXXM-US Schematron N/A, Bulletin AHL source vs impl matrix.
-  status: in_progress
-  started: "2026-08-05"
-  started_at: "2026-08-05"
-  branch: evolve/EV-037-matrix-disposition-residuals
-  branch_base: main@485fa8cb
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-037
-  feature_ids: []
-  deepen_feature_ids:
-  - F2
-  - F6
-  - F32
-  feature_note: deepen F2/F6/F32 matrix+provenance dispositions — no new Fn; no UI
-  artifacts_dir: docs/sessions/S045-matrix-disposition-residuals/
-  prior_session: S044-local-precommit-long-jobs
-  prior_evolve_cycle_id: EV-036
-  preset: Lean+07/08
-  preset_status: approved
-  preset_note: "Q3=1 Lean+07/08 — 00→16→01→02→07→08→11; skip 03–06,09,10,12,13"
-  github_issues:
-  - 869
-  - 870
-  - 872
-  github_issues_closed:
-  - 869
-  - 870
-  - 872
-  github_issues_closed_at: "2026-08-05"
-  github_issues_closed_note: "Closed on 07-build @ c51e6e9b — AC4 dispositions landed"
-  parent_epic: 846
-  ui_preview: n_a
-  decisions:
-    Q1: "1"
-    Q1_note: open_S045
-    Q2: "1"
-    Q2_note: approve_all_three_dispositions
-    Q3: "1"
-    Q3_note: lean_plus_0708
-    Q4: "1"
-    Q4_note: no_UI
-    G2: "1"
-    G2_note: approve_commit_start_01
-    AC: "1"
-    AC_note: approve_AC1-4_close_01
-    GateA: "1"
-    GateA_note: pass_S02.M1-M3_as_07
-    D-S045-11: approve_all_met
-    D-S045-11_note: '1 — approve all ACs; close 11-verify-impl'
-    D-S045-12-13-waive: waived_no_runtime
-    D-S045-12-13-waive_note: 'waive 12/13 — docs/matrix only; no product runtime'
-    D-S045-next: push_and_pr
-    D-S045-next_note: 'push branch + open PR to main; PR URL pending push+PR'
-  routing_plan:
-  - stage: 00-context
-    mode: scoped
-    required: true
-    status: completed
-    started: "2026-08-05"
-    completed: "2026-08-05"
-  - stage: 16-evolve
-    mode: orchestrator
-    required: true
-    status: in_progress
-    started: "2026-08-05"
-    note: 'Phase D verify approved (D-S045-11); 12/13 waived; PR #887 OPEN; CI green; awaiting user merge approval'
-  - stage: 01-requirements
-    mode: delta
-    required: true
-    status: completed
-    started: "2026-08-05"
-    completed: "2026-08-05"
-  - stage: 02-verify-plan
-    mode: delta
-    required: true
-    status: completed
-    started: "2026-08-05"
-    completed: "2026-08-05"
-    note: Gate A PASS (D-S045-02-gate-a); S02.M1–M3 accepted as 07 work
-  - stage: 07-build
-    mode: full
-    required: true
-    status: completed
-    started: "2026-08-05"
-    completed: "2026-08-05"
-    tip_sha: c51e6e9b
-    note: "COMPLETE @ c51e6e9b — matrix/provenance + #869/#870/#872 closed; handoff 08"
-  - stage: 08-verify-build
-    mode: delta
-    required: true
-    status: completed
-    started: "2026-08-05"
-    completed: "2026-08-05"
-    tip_sha: 90c2e8a3
-    tip_sha_full: 90c2e8a3f090d49341fccb1f397b6ff4033d32df
-    report: docs/sessions/S045-matrix-disposition-residuals/reports/verification-report.md
-    overall: pass
-    note: "PASS @ 90c2e8a3 — verification-report.md; provenance quality 188 green; handoff 11; c_to_d pending Gate"
-  - stage: 11-verify-impl
-    mode: delta
-    required: true
-    status: completed
-    started: "2026-08-05"
-    completed: "2026-08-05"
-    tip_sha: 90c2e8a3
-    tip_sha_full: 90c2e8a3f090d49341fccb1f397b6ff4033d32df
-    overall: approved
-    report: docs/sessions/S045-matrix-disposition-residuals/reports/verify-impl.md
-    report_status: approved
-    decision_id: D-S045-11
-    note: "COMPLETE @ 90c2e8a3 — D-S045-11 approve_all_met; report verify-impl.md; provenance 188 green; handoff push+PR"
-  - stage: 12-verify-deploy
-    required: false
-    status: waived
-    skip_rationale: Lean — docs/matrix only; waived D-S045-12-13-waive
-    note: 'WAIVED — D-S045-12-13-waive waived_no_runtime'
-  - stage: 13-deploy-smoke
-    required: false
-    status: waived
-    skip_rationale: Lean — with 12; waived D-S045-12-13-waive
-    note: 'WAIVED — D-S045-12-13-waive waived_no_runtime'
-  note: 'D-S045-11 approved; 12/13 waived; PR #887 open; CI green; awaiting user merge approval'
-  current_stage: 11-verify-impl
-  current_stage_status: completed
-  current_stage_note: '11 COMPLETE — D-S045-11 approve_all_met; 12/13 waived; PR #887 OPEN @ 7ddcc164; CI green; awaiting user merge approval'
-  tip_sha: 7ddcc164
-  tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
-  pr_number: 887
-  pr_status: open
-  pr_title: '[EV-037] Matrix dispositions #869/#870/#872'
-  pr_base: main
-  pr_head: evolve/EV-037-matrix-disposition-residuals
-  pr_ci_run: '31047263982'
-  pr_ci_status: SUCCESS
-  pr_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263982
-  pr_wmo_quality_ci_run: '31047263704'
-  pr_wmo_quality_ci_status: SUCCESS
-  pr_wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263704
-  pull_requests:
-  - id: PR-EV-037
-    number: 887
-    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
-    title: '[EV-037] Matrix dispositions #869/#870/#872'
-    status: open
-    head: evolve/EV-037-matrix-disposition-residuals
-    base: main
-    tip_sha: 7ddcc164
-    tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
-    ci_run: '31047263982'
-    ci_status: SUCCESS
-    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263982
-    wmo_quality_ci_run: '31047263704'
-    wmo_quality_ci_status: SUCCESS
-    wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263704
-    note: 'OPEN — CI/CD 31047263982 SUCCESS + WMO quality 31047263704 SUCCESS; awaiting user merge approval; deploy 12/13 waived'
-  expected_closeout_commit_message: '[EV-037] docs: 11 approve ACs; waive 12/13; closeout for PR'
-  gates:
-    a_to_b: passed
-    b_to_c: waived_lean
-    c_to_d: passed
-    c_to_d_note: 'D-S045-11 approve_all_met — Phase D verify approved after 08 PASS @ 90c2e8a3'
-    deploy: waived
-    deploy_note: 'D-S045-12-13-waive waived_no_runtime — docs/matrix only; no product runtime'
-  checkpoints:
-    phase_a: passed
-    phase_b: waived_lean
-    phase_c: passed
-    phase_d: approved
-    deploy: waived
+active_session: null
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
   intent: |
     Dispose EV-035 residual tickets #869/#870/#872 — VONA SoT wording,
     IWXXM-US Schematron N/A, Bulletin AHL source vs impl matrix.
-  status: in_progress
-  started: "2026-08-05"
-  started_at: "2026-08-05"
+  status: completed
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
   branch: evolve/EV-037-matrix-disposition-residuals
+  branch_note: 'CLOSED — EV-037 completed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived (D-S045-12-13-waive)'
+  route_status: completed
   branch_base: main@485fa8cb
   orchestrator: 16-evolve
   evolve_cycle_id: EV-037
@@ -238,6 +66,8 @@ sessions:
     D-S045-12-13-waive_note: 'waive 12/13 — docs/matrix only; no product runtime'
     D-S045-next: push_and_pr
     D-S045-next_note: 'push branch + open PR to main; PR URL pending push+PR'
+    D-S045-merge: pr_887_merged
+    D-S045-merge_note: 'PR #887 MERGED to main @ b7302fe4; tip 2d8202f3; CI 31049365217 SUCCESS'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -248,9 +78,12 @@ sessions:
   - stage: 16-evolve
     mode: orchestrator
     required: true
-    status: in_progress
+    status: completed
     started: "2026-08-05"
-    note: 'Phase D verify approved (D-S045-11); 12/13 waived; PR #887 OPEN; CI green; awaiting user merge approval'
+    started_at: "2026-08-05"
+    completed: "2026-08-05"
+    completed_at: "2026-08-05"
+    note: 'COMPLETE — EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI 31049365217 SUCCESS'
   - stage: 01-requirements
     mode: delta
     required: true
@@ -306,42 +139,60 @@ sessions:
     status: waived
     skip_rationale: Lean — with 12; waived D-S045-12-13-waive
     note: 'WAIVED — D-S045-12-13-waive waived_no_runtime'
-  note: 'D-S045-11 approved; 12/13 waived; PR #887 open; CI green; awaiting user merge approval'
-  current_stage: 11-verify-impl
+  note: 'COMPLETED — EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI green'
+  current_stage: completed
   current_stage_status: completed
-  current_stage_note: '11 COMPLETE — D-S045-11 approve_all_met; 12/13 waived; PR #887 OPEN @ 7ddcc164; CI green; awaiting user merge approval'
-  tip_sha: 7ddcc164
-  tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
+  current_stage_note: 'COMPLETED — EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI green'
+  next_stage: null
+  next_stage_status: null
+  tip_sha: 2d8202f3
+  tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
+  tip_note: 'PR #887 head tip before merge; merge commit b7302fe4 on main'
+  merge_commit_sha: b7302fe4
+  merge_commit_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+  merged_at: '2026-08-05T21:41:10Z'
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
   pr_number: 887
-  pr_status: open
+  pr_status: merged
   pr_title: '[EV-037] Matrix dispositions #869/#870/#872'
   pr_base: main
   pr_head: evolve/EV-037-matrix-disposition-residuals
-  pr_ci_run: '31047263982'
+  pr_ci_run: '31049365217'
   pr_ci_status: SUCCESS
-  pr_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263982
-  pr_wmo_quality_ci_run: '31047263704'
+  pr_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049365217
+  pr_wmo_quality_ci_run: '31049364982'
   pr_wmo_quality_ci_status: SUCCESS
-  pr_wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263704
+  pr_wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049364982
+  close_decision_id: D-S045-merge
   pull_requests:
   - id: PR-EV-037
     number: 887
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
     title: '[EV-037] Matrix dispositions #869/#870/#872'
-    status: open
+    status: merged
     head: evolve/EV-037-matrix-disposition-residuals
     base: main
-    tip_sha: 7ddcc164
-    tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
-    ci_run: '31047263982'
+    tip_sha: 2d8202f3
+    tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
+    merge_commit_sha: b7302fe4
+    merge_commit_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+    merged_at: '2026-08-05T21:41:10Z'
+    ci_run: '31049365217'
     ci_status: SUCCESS
-    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263982
-    wmo_quality_ci_run: '31047263704'
+    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049365217
+    wmo_quality_ci_run: '31049364982'
     wmo_quality_ci_status: SUCCESS
-    wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263704
-    note: 'OPEN — CI/CD 31047263982 SUCCESS + WMO quality 31047263704 SUCCESS; awaiting user merge approval; deploy 12/13 waived'
-  expected_closeout_commit_message: '[EV-037] docs: 11 approve ACs; waive 12/13; closeout for PR'
+    wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049364982
+    note: 'MERGED to main — CI/CD 31049365217 SUCCESS + WMO quality 31049364982 SUCCESS; deploy 12/13 waived'
+  decision_refs:
+  - D-S045-open
+  - D-S045-g2
+  - D-S045-ac
+  - D-S045-02-gate-a
+  - D-S045-11
+  - D-S045-12-13-waive
+  - D-S045-next
+  - D-S045-merge
   gates:
     a_to_b: passed
     b_to_c: waived_lean
@@ -353,7 +204,7 @@ sessions:
     phase_a: passed
     phase_b: waived_lean
     phase_c: passed
-    phase_d: approved
+    phase_d: passed
     deploy: waived
 - id: S044-local-precommit-long-jobs
   type: feature
@@ -12159,24 +12010,24 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S045-matrix-disposition-residuals
     evolve_cycle_id: EV-037
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: null
-    completed: null
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     previous_session_id: S044-local-precommit-long-jobs
     previous_evolve_cycle_id: EV-036
     previous_completed_at: '2026-08-05'
     previous_note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage: push_and_pr
-    tip_sha: 7ddcc164
-    tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
-    note: 'IN_PROGRESS — S045/EV-037 PR #887 OPEN @ 7ddcc164; CI green; awaiting user merge approval; #869/#870/#872 closed'
+    current_child_stage: completed
+    tip_sha: 2d8202f3
+    tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
+    note: 'COMPLETE — S045/EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI 31049365217 SUCCESS'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -12552,6 +12403,54 @@ decisions_log:
   feature_ids: []
   preset: Lean+07/08
   note: 'route proceed; superseded current_stage by D-S045-ac → 02-verify-plan'
+- id: D-S045-merge
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S045-matrix-disposition-residuals
+  evolve_cycle_id: EV-037
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase4_close
+  category: merge_close
+  status: confirmed
+  topic: 'PR #887 merged to main — close S045/EV-037'
+  summary: 'pr_887_merged — MERGED @ b7302fe4; head tip 2d8202f3; tip-sync CI 31049365217 SUCCESS; close_session'
+  decision: |
+    D-S045-merge=1 — PR #887 MERGED to main (merge commit b7302fe4;
+    head tip 2d8202f3). Tip-sync CI run 31049365217 SUCCESS (CI/CD) +
+    WMO quality 31049364982 SUCCESS. D-S045-11 approve_all_met;
+    D-S045-12-13-waive waived_no_runtime (deploy waived).
+    Mark EV-037 completed (phase 4 done); archive S045; active_session=null.
+    Parent may commit workflow-state after merge checkout — workflow-state-manager
+    does not git commit.
+  user_option: '1'
+  branch: evolve/EV-037-matrix-disposition-residuals
+  related_decisions:
+  - D-S045-next
+  - D-S045-11
+  - D-S045-12-13-waive
+  deepen_feature_ids:
+  - F2
+  - F6
+  - F32
+  feature_ids: []
+  pr_number: 887
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
+  pr_status: merged
+  merge_commit_sha: b7302fe4
+  merge_commit_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+  tip_sha: 2d8202f3
+  tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
+  ci_run: '31049365217'
+  ci_status: SUCCESS
+  wmo_quality_ci_run: '31049364982'
+  wmo_quality_ci_status: SUCCESS
+  artifacts:
+  - docs/sessions/S045-matrix-disposition-residuals/reports/verify-impl.md
+  - docs/sessions/S045-matrix-disposition-residuals/reports/evolve-summary.md
+  - docs/evolve-report-EV-037.md
+  note: 'close_session applied; active_session=null; EV-037 completed'
 - id: D-S044-merge
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -34061,9 +33960,13 @@ evolve_cycles:
   - F6
   - F32
   title: "Matrix dispositions #869/#870/#872"
-  status: in_progress
+  status: completed
+  phase: 4
+  phase_note: 'Phase 4 done — PR #887 MERGED; deploy waived (D-S045-12-13-waive); close_session applied'
   started: "2026-08-05"
-  completed: null
+  started_at: "2026-08-05"
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
   scope_summary: |
     #869 VONA: non-blocking upstream Guidance gap; SoT = ICAO+FM205+AHL+XSD/SCH+code lists; cookbook derived.
     #870 IWXXM-US: official US Schematron N/A/not published; split validation columns.
@@ -34087,25 +33990,33 @@ evolve_cycles:
     - 10-e2e
     - 12-verify-deploy
     - 13-deploy-smoke
-  current_stage: 11-verify-impl
+  current_stage: completed
   current_stage_status: completed
-  current_stage_note: '11 approved; PR #887 OPEN @ 7ddcc164; CI green; awaiting user merge approval'
-  note: 'D-S045-11 approved; 12/13 waived; PR #887 open; CI green; awaiting user merge approval'
+  current_stage_note: 'COMPLETED — EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI green'
+  next_stage: null
+  next_stage_status: null
+  note: 'COMPLETED — EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI green'
   branch: evolve/EV-037-matrix-disposition-residuals
-  tip_sha: 7ddcc164
-  tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
+  branch_note: 'CLOSED — EV-037 completed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived (D-S045-12-13-waive)'
+  tip_sha: 2d8202f3
+  tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
+  tip_note: 'PR #887 head tip before merge; merge commit b7302fe4 on main'
+  close_decision_id: D-S045-merge
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
   pr_number: 887
-  pr_status: open
+  pr_status: merged
   pr_title: '[EV-037] Matrix dispositions #869/#870/#872'
   pr_base: main
   pr_head: evolve/EV-037-matrix-disposition-residuals
-  pr_ci_run: '31047263982'
+  merge_commit_sha: b7302fe4
+  merge_commit_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+  merged_at: '2026-08-05T21:41:10Z'
+  pr_ci_run: '31049365217'
   pr_ci_status: SUCCESS
-  pr_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263982
-  pr_wmo_quality_ci_run: '31047263704'
+  pr_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049365217
+  pr_wmo_quality_ci_run: '31049364982'
   pr_wmo_quality_ci_status: SUCCESS
-  pr_wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263704
+  pr_wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049364982
   expected_closeout_commit_message: '[EV-037] docs: 11 approve ACs; waive 12/13; closeout for PR'
   decision_refs:
   - D-S045-open
@@ -34115,16 +34026,17 @@ evolve_cycles:
   - D-S045-11
   - D-S045-12-13-waive
   - D-S045-next
+  - D-S045-merge
   stages:
     00-context:
       status: completed
       started: "2026-08-05"
       completed: "2026-08-05"
     16-evolve:
-      status: in_progress
+      status: completed
       started: "2026-08-05"
-      completed: null
-      note: 'Phase D verify approved (D-S045-11); 12/13 waived; PR #887 OPEN; CI green; awaiting user merge approval'
+      completed: "2026-08-05"
+      note: 'COMPLETE — EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI 31049365217 SUCCESS'
     01-requirements:
       status: completed
       started: "2026-08-05"
@@ -34185,7 +34097,7 @@ evolve_cycles:
     phase_a: passed
     phase_b: waived_lean
     phase_c: passed
-    phase_d: approved
+    phase_d: passed
     deploy: waived
   artifacts:
   - path: docs/sessions/S045-matrix-disposition-residuals/session-brief.md
@@ -34195,7 +34107,7 @@ evolve_cycles:
   - path: docs/context/matrix-disposition-residuals.md
     status: completed
   - path: docs/decisions/evolve-decisions.md
-    status: in_progress
+    status: completed
   - path: docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     status: completed
   - path: docs/sessions/S045-matrix-disposition-residuals/reports/02-verify-plan-audit.md
@@ -34215,19 +34127,19 @@ evolve_cycles:
     status: completed
     stage: 07-build
   - path: docs/sessions/S045-matrix-disposition-residuals/reports/verify-impl.md
-    status: pending
+    status: completed
     stage: 11-verify-impl
     tip_sha: 90c2e8a3
     overall: approved
-    note: pending closeout commit — D-S045-11 approve_all_met
+    note: COMPLETE — D-S045-11 approve_all_met; closeout merged
   - path: docs/sessions/S045-matrix-disposition-residuals/reports/evolve-summary.md
-    status: pending
+    status: completed
     stage: 16-evolve
-    note: pending closeout commit
+    note: COMPLETE — EV-037 closed; PR #887 MERGED
   - path: docs/evolve-report-EV-037.md
-    status: pending
+    status: completed
     stage: 16-evolve
-    note: pending closeout commit
+    note: COMPLETE — EV-037 closed; PR #887 MERGED
   issues:
   - 869
   - 870
@@ -34243,19 +34155,23 @@ evolve_cycles:
     number: 887
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
     title: '[EV-037] Matrix dispositions #869/#870/#872'
-    status: open
+    status: merged
     head: evolve/EV-037-matrix-disposition-residuals
     base: main
-    tip_sha: 7ddcc164
-    tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
-    ci_run: '31047263982'
+    tip_sha: 2d8202f3
+    tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
+    merge_commit_sha: b7302fe4
+    merge_commit_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+    merged_at: '2026-08-05T21:41:10Z'
+    ci_run: '31049365217'
     ci_status: SUCCESS
-    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263982
-    wmo_quality_ci_run: '31047263704'
+    ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049365217
+    wmo_quality_ci_run: '31049364982'
     wmo_quality_ci_status: SUCCESS
-    wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31047263704
-    note: 'OPEN — CI/CD 31047263982 SUCCESS + WMO quality 31047263704 SUCCESS; awaiting user merge approval; deploy 12/13 waived'
+    wmo_quality_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049364982
+    note: 'MERGED to main — CI/CD 31049365217 SUCCESS + WMO quality 31049364982 SUCCESS; deploy 12/13 waived'
   notes:
+  - '2026-08-05 S045/EV-037 CLOSED — PR #887 MERGED @ b7302fe4 (head tip 2d8202f3); D-S045-11 approve_all_met; D-S045-12-13-waive; deploy waived; tip-sync CI 31049365217 SUCCESS; active_session=null; Phase 4 done'
   - '2026-08-05 PR #887 CI green @ 7ddcc164 — CI/CD 31047263982 SUCCESS + WMO quality 31047263704 SUCCESS; PR still open; awaiting user merge approval; cycle NOT completed'
   - '2026-08-05 PR #887 OPEN @ 7ddcc164 — [EV-037] Matrix dispositions #869/#870/#872; CI/CD 31047263982 + WMO quality 31047263704 in progress; D-S045-11 approved; 12/13 waived; awaiting merge approval'
   - '2026-08-05 Phase D NEAR-COMPLETE — D-S045-11 approve_all_met; D-S045-12-13-waive waived_no_runtime; D-S045-next push_and_pr; tip 90c2e8a3; close pending PR URL (parent follow-up); expected commit [EV-037] docs: 11 approve ACs; waive 12/13; closeout for PR'
@@ -35629,29 +35545,30 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-037-matrix-disposition-residuals
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
   pending_commit: true
-  pending_commit_note: 'dirty — PR #887 open @ 7ddcc164; workflow-state tip-sync pending parent commit'
+  pending_commit_note: 'dirty — S045/EV-037 close_session applied; workflow-state tip-sync pending parent commit'
   dirty: true
-  tip_sha: 7ddcc164
-  tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
-  tip_note: 'S045/EV-037 tip 7ddcc164 — PR #887 OPEN; CI 31047263982 + WMO 31047263704 SUCCESS; awaiting user merge approval'
+  tip_sha: b7302fe4
+  tip_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+  tip_note: 'S045/EV-037 CLOSED — PR #887 MERGED @ b7302fe4; head tip 2d8202f3; tip-sync CI 31049365217 SUCCESS; active_session=null'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
     prior_branch: evolve/EV-031-platform-independence-842
     session_id: S040-iwxxm-corpus-quality
     date: '2026-08-04'
-  main_merge_sha: d17b8be3
-  main_merge_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
-  main_tip_sha: d17b8be3
-  main_tip_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+  main_merge_sha: b7302fe4
+  main_merge_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+  main_tip_sha: b7302fe4
+  main_tip_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
   recommended_branch: main
-  note: 'S044/EV-036 CLOSED — PR #875 MERGED @ d17b8be3; tip bf020c2c on evolve head; CI 31028291943 SUCCESS; active_session=null; pending_commit false'
+  note: 'S045/EV-037 CLOSED — PR #887 MERGED @ b7302fe4; tip 2d8202f3 on evolve head; CI 31049365217 SUCCESS; active_session=null; pending_commit true (closeout dirty)'
 
   notes:
+  - '2026-08-05 S045/EV-037 CLOSE — PR #887 MERGED @ b7302fe4 (head tip 2d8202f3); D-S045-11/D-S045-12-13-waive/D-S045-merge recorded; EV-037 completed; active_session=null; no git commit by workflow-state-manager'
   - '2026-08-05 S045/EV-037 PR #887 CI green @ 7ddcc164 — CI/CD 31047263982 SUCCESS + WMO 31047263704 SUCCESS; awaiting user merge approval; no git commit by workflow-state-manager'
   - '2026-08-05 S045/EV-037 PR #887 OPEN @ 7ddcc164 — CI/CD 31047263982 + WMO quality 31047263704 in progress; D-S045-11 approved; 12/13 waived; awaiting merge approval; no git commit by workflow-state-manager'
   - '2026-08-05 S044/EV-036 CLOSE — PR #875 MERGED @ d17b8be3 (head tip bf020c2c); Cloud CI 31028291943 SUCCESS; local make ci PASS; D-S044-11/D-S044-12-13-waive/D-S044-merge recorded; EV-036 completed; active_session=null; no git commit by workflow-state-manager'
@@ -36096,26 +36013,30 @@ git_history:
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
   - name: evolve/EV-037-matrix-disposition-residuals
-    status: active
+    status: merged
     base: main
     base_sha: 485fa8cb
     created: "2026-08-05"
     session_id: S045-matrix-disposition-residuals
     evolve_cycle_id: EV-037
-    tip_sha: 7ddcc164
-    tip_sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275
+    tip_sha: 2d8202f3
+    tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
     exists: true
     pushed: true
     pr_number: 887
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887
-    pr_status: open
+    pr_status: merged
     pr_title: '[EV-037] Matrix dispositions #869/#870/#872'
     pr_head: evolve/EV-037-matrix-disposition-residuals
-    pr_ci_run: '31047263982'
+    merge_commit_sha: b7302fe4
+    merge_commit_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
+    merged_at: '2026-08-05T21:41:10Z'
+    merged_into: main
+    pr_ci_run: '31049365217'
     pr_ci_status: SUCCESS
-    pr_wmo_quality_ci_run: '31047263704'
+    pr_wmo_quality_ci_run: '31049364982'
     pr_wmo_quality_ci_status: SUCCESS
-    note: "ACTIVE — tip 7ddcc164; PR #887 OPEN; CI 31047263982 + WMO 31047263704 SUCCESS; awaiting user merge approval"
+    note: "MERGED via PR #887 @ b7302fe4 — tip 2d8202f3; CI 31049365217 SUCCESS; EV-037/S045 closed"
   - name: evolve/EV-036-local-precommit-long-jobs
     status: merged
     base: main

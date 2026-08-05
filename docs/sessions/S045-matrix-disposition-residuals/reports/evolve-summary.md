@@ -2,10 +2,10 @@
 
 **Title:** Matrix dispositions #869 / #870 / #872  
 **Branch:** `evolve/EV-037-matrix-disposition-residuals`  
-**Status:** **11 approved** 2026-08-05 — PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) open @ `7ddcc164`  
+**Status:** **completed** 2026-08-05 — PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) MERGED @ `b7302fe4`  
 **Features:** deepen **F2 / F6 / F32** only (no new Fn)  
 **Preset:** Lean+07/08 · **Deploy:** waived (`D-S045-12-13-waive`)  
-**Verify:** 08 PASS @ `90c2e8a3` · provenance quality **188** passed
+**Verify:** 08 PASS @ `90c2e8a3` · provenance quality **188** passed · CI [31049365217](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31049365217) SUCCESS
 
 ## What shipped
 
