@@ -32866,14 +32866,14 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
   current_branch: main
-  ahead_of_origin: 0
-  pushed: true
+  ahead_of_origin: 2
+  pushed: false
   pending_commit: true
-  pending_commit_note: 'close docs may follow on main — workflow-state.yaml + routing-plan.md (+ evolve-summary already present); workflow-state-manager did not commit'
+  pending_commit_note: 'DIRTY after close — git_history.commits append for f6105b8f not in that commit; prefer NOT amend; parent follow-up commit of workflow-state.yaml only'
   dirty: true
-  tip_sha: d3f4bb95
-  tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
-  tip_note: 'S042 closed; main tip after #868 @ d3f4bb95; close docs commit may follow on main'
+  tip_sha: f6105b8f
+  tip_sha_full: f6105b8f3475aee793b1d86229e876a7694a0f10
+  tip_note: 'S042 close commit on main @ f6105b8f; EV-034 completed; active_session null; yaml dirty (commit log append post-close)'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -34389,6 +34389,35 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: f6105b8f3475aee793b1d86229e876a7694a0f10
+    short: f6105b8f
+    branch: main
+    message: '[EV-034] docs: close S042 — TC-F30-007 live; D-S042-13 approve'
+    stage: 16-evolve
+    skill_id: 16-evolve
+    stages:
+    - 16-evolve
+    session_id: S042-doks-cd-rollout (archived)
+    evolve_cycle_id: EV-034
+    files_changed:
+    - docs/CHANGELOG.md
+    - docs/decisions/evolve-decisions.md
+    - docs/feature-list.md
+    - docs/sessions/README.md
+    - docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+    - docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+    - docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md
+    - docs/sessions/S042-doks-cd-rollout/reports/qa-report.md
+    - docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+    - docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+    - docs/sessions/S042-doks-cd-rollout/routing-plan.md
+    - workflow-state.yaml
+    files_changed_count: 12
+    timestamp: '2026-08-05'
+    timestamp_utc: '2026-08-05T12:15:11Z'
+    pushed: false
+    tip_sha: f6105b8f
+    note: 'S042 close commit on main; session archived; EV-034 remains completed; active_session null; do not reopen'
   - sha: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
     short: 9ae9c323
     branch: evolve/EV-034-doks-cd-rollout
