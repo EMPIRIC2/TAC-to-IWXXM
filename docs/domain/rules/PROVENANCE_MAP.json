@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "cycle": "EV-035",
-  "session": "S043-rule-source-traceability",
+  "cycle": "EV-037",
+  "session": "S045-matrix-disposition-residuals",
   "generated": "2026-08-05",
-  "gap_report": "docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md",
+  "gap_report": "docs/sessions/S045-matrix-disposition-residuals/reports/provenance-gaps.md",
   "digs": [
     {
       "path": "docs/domain/mining/ICAO-Doc-10003-draft-2014-mining-notes.md",
@@ -44,7 +44,7 @@
       "source_url": "https://www.icao.int/safety/meteorology/Pages/IWXXM.aspx",
       "source_id": "opmet-guidelines-5th",
       "ticket": null,
-      "note": "Landing/cite \u2014 see RULE_SOURCE_URLS for exact PDF"
+      "note": "Landing/cite — see RULE_SOURCE_URLS for exact PDF"
     },
     {
       "path": "docs/domain/mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md",
@@ -84,7 +84,7 @@
       "source_url": "https://library.wmo.int/",
       "source_id": "wmo-306-i3-2019",
       "ticket": null,
-      "note": "historical dig 1\u2013272 complete \u00b7 #798"
+      "note": "historical dig 1–272 complete · #798"
     },
     {
       "path": "docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md",
@@ -183,7 +183,7 @@
       "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
       "source_id": "fmh-1",
       "ticket": null,
-      "note": "FMH-1 US national; URL may redirect \u2014 cite RULE_SOURCE_URLS"
+      "note": "FMH-1 US national; URL may redirect — cite RULE_SOURCE_URLS"
     },
     {
       "path": "docs/domain/mining/icao-annex-3-mining-notes.md",
@@ -328,7 +328,7 @@
       "source_url": "https://github.com/wmo-im/iwxxm-us",
       "source_id": "iwxxm-us",
       "ticket": null,
-      "note": "validate column \u26a0 \u2014 no US SCH in pin \u00b7 #870"
+      "note": "validate column ⚠ — no US SCH in pin · #870"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-metce-mining-notes.md",
@@ -386,7 +386,7 @@
       "source_url": "https://schemas.wmo.int/rule/",
       "source_id": "schemas-rule-index",
       "ticket": null,
-      "note": "index only \u2014 pin uses vendor rule/iwxxm.sch"
+      "note": "index only — pin uses vendor rule/iwxxm.sch"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-saf-mining-notes.md",
@@ -433,7 +433,7 @@
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "source_id": "vona-ahl-fm205",
       "ticket": null,
-      "note": "Guidance silent \u00b7 #869; AHL WM/LM + FM205 promote"
+      "note": "Guidance silent · #869; AHL WM/LM + FM205 promote"
     },
     {
       "path": "docs/domain/mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md",
@@ -1549,7 +1549,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "SPECI",
@@ -1583,7 +1583,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "TAF",
@@ -1617,7 +1617,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "SIGMET",
@@ -1651,7 +1651,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "AIRMET",
@@ -1685,7 +1685,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "VAA",
@@ -1719,7 +1719,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "TCA",
@@ -1753,7 +1753,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "SWXA",
@@ -1787,7 +1787,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "VONA",
@@ -1804,7 +1804,7 @@
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "ticket": "#869",
-      "note": "\u26a0 Guidance silent; \u2705 AHL WM/LM + FM205 + XSD/SCH/peer"
+      "note": "Guidance silence non-blocking (EV-037); SoT=ICAO+FM205+AHL+XSD/SCH+A7-1; cookbook derived"
     },
     {
       "product": "VONA",
@@ -1822,7 +1822,7 @@
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
       "ticket": null,
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "METAR_US",
@@ -1843,11 +1843,11 @@
     {
       "product": "METAR_US",
       "role": "iwxxm-validation",
-      "disposition": "warn",
+      "disposition": "ok",
       "source_id": "iwxxm-us",
       "source_url": "https://github.com/wmo-im/iwxxm-us",
       "ticket": "#870",
-      "note": "WMO base SCH + US XSD only \u2014 no US Schematron in pin"
+      "note": "WMO XSD/SCH + US XSD OK; official US Schematron N/A not published (EV-037)"
     },
     {
       "product": "METAR_US",
@@ -1855,8 +1855,8 @@
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
       "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
-      "ticket": "#872",
-      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+      "ticket": null,
+      "note": "AHL T1T2 source OK (EV-037 / #872 closed as source-availability)"
     }
   ],
   "full_stack_rules": [
@@ -1868,7 +1868,8 @@
       "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
       "status": "ok",
       "pin_version": "2025-2",
-      "ticket": "#869"
+      "ticket": null,
+      "note": "WM→LM ok; #869 is Guidance silence tracker only"
     },
     {
       "rule_id": "VONA_FM205_PACKAGE",
@@ -1886,10 +1887,10 @@
       "source_id": null,
       "source_url": null,
       "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
-      "status": "gap",
+      "status": "N/A",
       "pin_version": "2025-2",
       "ticket": "#869",
-      "note": "TAC-to-XML-Guidance has no VONA section"
+      "note": "Upstream Guidance silence — non-blocking encode; SoT hierarchy documented EV-037"
     },
     {
       "rule_id": "IWXXM_SCH_PIN",
@@ -1907,10 +1908,10 @@
       "source_id": "iwxxm-us",
       "source_url": "https://github.com/wmo-im/iwxxm-us",
       "dig": "docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md",
-      "status": "gap",
+      "status": "N/A",
       "pin_version": "3.0",
       "ticket": "#870",
-      "note": "No US Schematron package in pin"
+      "note": "Official US Schematron not published — N/A artifact (EV-037)"
     },
     {
       "rule_id": "AHL_SPECI_SP_LP",
@@ -1921,7 +1922,7 @@
       "status": "ok",
       "pin_version": "2025-2",
       "ticket": null,
-      "note": "fixtures/ahl/sp_speci \u2014 matrix refresh may close #872"
+      "note": "fixtures/ahl/sp_speci — matrix refresh may close #872"
     }
   ],
   "revisited_executable": [
@@ -1953,26 +1954,11 @@
       ]
     }
   ],
-  "gaps": [
-    {
-      "kind": "fullstack",
-      "id": "VONA_GUIDANCE_SILENT",
-      "ticket": "#869"
-    },
-    {
-      "kind": "fullstack",
-      "id": "US_SCH_ABSENT",
-      "ticket": "#870"
-    },
-    {
-      "kind": "matrix",
-      "id": "VONA/conversion",
-      "ticket": "#869"
-    },
-    {
-      "kind": "matrix",
-      "id": "METAR_US/iwxxm-validation",
-      "ticket": "#870"
-    }
-  ]
+  "gaps": [],
+  "prior_cycle": "EV-035",
+  "ev037_dispositions": {
+    "869": "VONA Guidance silence non-blocking; SoT hierarchy; cookbook derived",
+    "870": "Official US Schematron N/A not published; validate classes split",
+    "872": "AHL source OK all families; source vs impl matrix columns"
+  }
 }

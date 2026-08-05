@@ -338,11 +338,11 @@ test-swxa-quality:
 test-vona-quality:
 	bash scripts/ci/run_vona_quality.sh
 
-# EV-035 / S043 — rule-source provenance (TC-EV035-001..006)
+# EV-035 / EV-037 — rule-source provenance (TC-EV035-001..006 + TC-EV037)
 test-provenance-quality:
 	bash scripts/ci/run_provenance_quality.sh
 
-# EV-035 — path-filtered pre-commit canary (dig inventory + gap gate)
+# EV-035/037 — path-filtered pre-commit canary (dig inventory + gap gate)
 test-provenance-canary:
 	bash scripts/ci/run_provenance_canary.sh
 

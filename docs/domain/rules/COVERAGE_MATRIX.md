@@ -45,8 +45,8 @@ Profiles: **`annex3`** (ICAO/WMO core) · **`iwxxm_us`** (US national extensions
 | SIGMET / AIRMET | **A6 one-phenomenon** · Ch.7 · SigWx/AirWx · [EUR Doc 014](../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) (public TAC shape) | Guidance volumes + hrefs · EUR Doc 014 T1T2 map | `sigmet.xsd` / `airmet.xsd` |
 | VAA | App 2 §3.1.2 · **A2-1 checklist** | Colour registry · METCE Volcano | `volcanicAshAdvisory.xsd` · `va-advisory-A7-2` |
 | TCA | App 2 §5.1.1/§5.1.3 · **A2-2 checklist** | METCE TropicalCyclone | `tropicalCycloneAdvisory.xsd` · `tc-advisory-A2-2` |
-| VONA | PANS-MET / Doc 10157 cite · vendor `vona-A7-1` labels · AviationColourCode | **Guidance silent** — [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md) + XSD/SCH/A7-1 | `vona.xsd` · `vona-A7-1` |
-| METAR US | FMH-1 §12 + **§2.5.2.a** + **RMK→iwxxm-us map** | Structured Addendum elements | WMO pin + iwxxm-us 3.0 |
+| VONA | PANS-MET / Doc 10157 cite · vendor `vona-A7-1` labels · AviationColourCode | **SoT** (S045/EV-037): ICAO → FM205 → `vona.xsd`/`iwxxm.sch` → AHL `WM`→`LM` → `vona-A7-1` → [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md) **derived**; Guidance silence ⚠ non-blocking ([#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869)) | `vona.xsd` · `vona-A7-1` |
+| METAR US | FMH-1 §12 + **§2.5.2.a** + **RMK→iwxxm-us map** | Structured Addendum elements | WMO XSD+SCH ✅ · US XSD ✅ · **US SCH N/A** ([#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870)) |
 
 Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CONVERSION.md) · [IWXXM_VALIDATION](../IWXXM_VALIDATION.md).
 
@@ -64,8 +64,8 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **VAA** | ✅ Annex 3 App 2 §3.1.2 **shall** IWXXM + Table **A2-1** ([dig](../mining/icao-annex-3-mining-notes.md)); Doc 9766 paywall for colour **meanings**; colour machine IDs via registry ✅ | ✅ Guidance + examples + AviationColourCode + [METCE 1.2](https://schemas.wmo.int/metce/1.2/) `Volcano` | ✅ `volcanicAshAdvisory.xsd` (+ METCE embed) | **F26 / #736** S027/EV-021 — **V1–V3/C1 closed** (T2.3–T2.4); **#820/#823 B4** deepen **S036/EV-029 M9** |
 | **TCA** | ✅ Annex 3 App 2 §5.1.1 (≥34 kt) · §5.1.3 **shall** IWXXM + Table **A2-2** | ✅ Guidance + examples + FM 205 + METCE `TropicalCyclone` | ✅ `tropicalCycloneAdvisory.xsd` (+ METCE embed) | **F27 / #737** S027/EV-021 — T1–T3/C1 closed prior; **#820/#823 B4** deepen **S036/EV-029 M10** |
 | **SWXA** | ✅ Annex 3 App 2 Table **A2-3** (cite); SpaceWx registry (F28) | ✅ Guidance + `spacewx-A7-3` (+ A7-4/5 deferred); AHL `FN`→`LN` | ✅ `spaceWeatherAdvisory.xsd` + SCH | **F28 Done — S036/EV-029 M11** · #740/#823 **closed**; PR #828 |
-| **VONA** | ✅ Vendor `vona-A7-1` + PANS-MET cite (Doc 10157 paywall); AviationColourCode registry (F32) | ⚠ Guidance **silent** ([#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869)) — ✅ AHL `WM`→`LM` + FM205 package + cookbook + XSD/SCH/`vona-A7-1` ([remine dig](../mining/vona-encode-remine-ev035-mining-notes.md); [PROVENANCE_MAP](./PROVENANCE_MAP.md)) | ✅ `vona.xsd` + SCH | **F32 Done — S040/EV-032 M2** · [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) **closed**; S043/EV-035 provenance deepen · children under #846 |
-| **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ⚠ WMO base SCH + iwxxm-us 3.0 XSD only — **no US Schematron in pin** ([#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870); [PROVENANCE_MAP](./PROVENANCE_MAP.md)) | GIFTs stripped REMARKS |
+| **VONA** | ✅ Vendor `vona-A7-1` + PANS-MET cite (Doc 10157 paywall); AviationColourCode registry (F32) | ⚠ Guidance **silent** (non-blocking [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869)) — SoT = ICAO + FM205 + AHL `WM`→`LM` + XSD/SCH/`vona-A7-1`; cookbook **derived** ([remine dig](../mining/vona-encode-remine-ev035-mining-notes.md); [PROVENANCE_MAP](./PROVENANCE_MAP.md); S045/EV-037) | ✅ `vona.xsd` + SCH | **F32 Done — S040/EV-032 M2** · [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) **closed**; S045/EV-037 SoT disposition · children under #846 |
+| **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO XSD · ✅ US XSD · ✅ WMO SCH · **N/A** official US Schematron (not published [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870)); semantic/fixtures separate ([PROVENANCE_MAP](./PROVENANCE_MAP.md); S045/EV-037) | GIFTs stripped REMARKS |
 | **Bulletin / AHL** | ✅ WMO AHL page **v1.0.1** (fetched 2026-08-01) | ✅ AHL T1T2 TAC↔IWXXM + BBB prefixes + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | **S036/EV-029 M1 closed** — shared `parse_ahl` / `map_t1t2` / BBB / `iwxxm_filename` in `tac2iwxxm` (+ dissemination thin wrap); body **split** still METAR/SPECI until per-family Ms; WIS2 ≠ COLLECT ([Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
 
 ---
@@ -309,8 +309,10 @@ Hard themes from #737 + guidance §Tropical Cyclone Advisory + vendor `tc-adviso
 
 Hard themes from [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) + 2025-2 `vona.xsd` /
 SCH + vendor `vona-A7-1` (defaults). **WMO `TAC-to-XML-Guidance.txt` has no VONA section** —
-encode SoT is the [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md)
-(G-VONA-0 closed in T2.9).
+**non-blocking** upstream gap ([#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869) /
+S045/EV-037). Encode **SoT** = ICAO → FM205 → XSD/SCH → AHL → A7-1 →
+[cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md)
+(**derived**; G-VONA-0 closed in T2.9).
 
 | Theme | Lint (F12/F32) | Convert (F6) | Validate / goldens | Status |
 |-------|----------------|--------------|--------------------|--------|
@@ -386,24 +388,32 @@ shapes [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/rep
 fetched **2026-08-01** — see [RULE_SOURCE_URLS §IWXXM AHL](./RULE_SOURCE_URLS.md) and
 [IWXXM_CONVERSION §AHL / bulletin](../IWXXM_CONVERSION.md#ahl--bulletin-canonical-ev-029).
 
-### Family × role (Phase A statuses)
+### Family × role (Phase A statuses) — S045 / EV-037 AHL redesign
 
-Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this section)
+Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote`  
+**AHL source** = WMO aviation AHL publication + vendor `AHL.asciidoc` `T1T2` mapping available
+(S045/EV-037 / [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872)). Impl columns are
+independent of source availability.
 
-| Family | Lint | Convert | IWXXM-validate | Bulletin AHL | Milestone |
-|--------|------|---------|----------------|--------------|-----------|
-| AHL/COM | ok (prefix BBB) | ok (`parse_ahl` / map / filename) | N/A | **ok** shared API (TC-EV029-003); body split METAR/SPECI only | **M1 closed** |
-| METAR | ok/deepen | **ok** (AHL BBB→`reportStatus` via `convert(report_status=)`; M2 T2.2) | ok | covered (package + `fixtures/metar/`) | **M2** |
-| SPECI | ok/deepen | ok/deepen | ok | gap | **M3** |
-| TAF | ok/deepen | ok/deepen | ok | partial (NIL-collect) | **M4** |
-| SIGMET gen | ok/deepen | ok/deepen | ok | partial (quarantine) | **M5** |
-| VA SIGMET | ok/deepen | ok/deepen | ok | gap | **M6** |
-| TC SIGMET | ok/deepen | **ok** (WC→`TropicalCycloneSIGMET`; BBB/`reportStatus`; CNL) | ok (A6-2-TC) | ok (WC pack) | **M7 closed** (#738); #829 closed; [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) ADR-032 → `wmoPass` **closed** (EV-032 M1) |
-| AIRMET | ok/deepen | **ok** (WA→`reportStatus`; CNL) | ok | ok (WA pack) | **M8 closed** (`airmet-quality.yml`) |
-| VAA | ok/deepen | ok/deepen | ok | covered (vendor FV) / multi gap | **M9 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
-| TCA | ok/deepen | ok/deepen | ok | gap | **M10 closed**; decode [#820](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/820) **closed** (EV-030) |
-| SWXA | **ok** (F28) | **ok** (FN→LN; `SpaceWeatherAdvisory`) | ok | ok (A7-3) | **M11 closed** (#740); A7-4/5 deferred |
-| VONA | **ok** (F32) | **ok** (WM→LM; `VolcanoObservatoryNoticeForAviation`; A7-1 golden) | ok (A7-1 XSD+SCH) | ok (WM map; multi-VONA peer absent) | **F32 closed** (#741 / EV-032 M2) |
+| Family | Lint | Convert | IWXXM-validate | AHL source | T1T2 map | parser | BBB | body splitter | filename | COLLECT | fixtures | CI | Milestone |
+|--------|------|---------|----------------|------------|----------|--------|-----|---------------|----------|---------|----------|-----|-----------|
+| AHL/COM | ok (prefix BBB) | ok (`parse_ahl` / map / filename) | N/A | ✅ | ✅ | ✅ | ✅ | METAR/SPECI only | ✅ | partial | ok | ok | **M1 closed** |
+| METAR | ok/deepen | **ok** (AHL BBB→`reportStatus`) | ok | ✅ | ✅ SA→LA | ✅ | ✅ | ok | ✅ | ok | ok | ok | **M2** |
+| SPECI | ok/deepen | ok/deepen | ok | ✅ | ✅ SP→LP | ✅ | ✅ | ok | ✅ | partial | ok (`sp_speci`) | ok | **M3** |
+| TAF | ok/deepen | ok/deepen | ok | ✅ | ✅ FC/FT→LC/LT | ✅ | ✅ | deepen | ✅ | NIL-collect | partial | ok | **M4** |
+| SIGMET gen | ok/deepen | ok/deepen | ok | ✅ | ✅ WS→LS | ✅ | ✅ | deepen | ✅ | quarantine | partial | ok | **M5** |
+| VA SIGMET | ok/deepen | ok/deepen | ok | ✅ | ✅ WV→LV | ✅ | ✅ | deepen | ✅ | partial | pack M6 | ok | **M6** |
+| TC SIGMET | ok/deepen | **ok** (WC→`TropicalCycloneSIGMET`) | ok (A6-2-TC) | ✅ | ✅ WC→LY | ✅ | ✅ | ok | ✅ | ok | ok (WC pack) | ok | **M7 closed** |
+| AIRMET | ok/deepen | **ok** (WA→`reportStatus`; CNL) | ok | ✅ | ✅ WA→LW | ✅ | ✅ | ok | ✅ | ok | ok (WA pack) | ok | **M8 closed** |
+| VAA | ok/deepen | ok/deepen | ok | ✅ | ✅ FV→LU | ✅ | ✅ | deepen | ✅ | ok | vendor FV / multi gap | ok | **M9 closed** |
+| TCA | ok/deepen | ok/deepen | ok | ✅ | ✅ FK→LK | ✅ | ✅ | deepen | ✅ | deepen | deepen | ok | **M10 closed** |
+| SWXA | **ok** (F28) | **ok** (FN→LN) | ok | ✅ | ✅ FN→LN | ✅ | ✅ | ok | ✅ | ok | ok (A7-3) | ok | **M11 closed** |
+| VONA | **ok** (F32) | **ok** (WM→LM; A7-1 golden) | ok (A7-1 XSD+SCH) | ✅ | ✅ WM→LM | ✅ | ✅ | multi-peer absent | ✅ | N/A | ok (WM map) | ok | **F32 closed** |
+
+**#872 disposition (EV-037):** every family above has **AHL source = ✅**. Residual `deepen` /
+`partial` / `gap` cells are **implementation** concerns (splitter / fixtures / COLLECT), not
+missing WMO source documents. Open child issues only for true impl gaps; do not reopen
+source-availability trackers.
 
 ### Report-state × AHL (COM / #823 B3)
 
@@ -418,8 +428,8 @@ Status: `ok` · `gap` · `N/A` · `defer+Ms` · `mine→promote` (promoted this 
 ### Shape coverage (TC-EV029-002) — summary
 
 Standalone peers exist for all eight families (+ SWXA + VONA vendor). **Multi-report** and
-non-METAR **AHL** are mostly `gap` → M1 + per-family packs (detail in example inventory).
-OOS: QVACI · WAFS · SIGWX.
+non-METAR **body splitter** residual deepen may remain — see impl columns above (not AHL
+**source** gaps). OOS: QVACI · WAFS · SIGWX.
 
 ### Child-issue residuals (S02.M3) — #823 closed (T12.7)
 

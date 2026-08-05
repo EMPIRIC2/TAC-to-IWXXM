@@ -1,6 +1,6 @@
 # PROVENANCE_MAP — dig ↔ rule ↔ source
 
-**Cycle:** EV-035 / S043 · **Generated:** 2026-08-05 · **Twin:** [`PROVENANCE_MAP.json`](./PROVENANCE_MAP.json)
+**Cycle:** EV-037 / S045 (prior EV-035 / S043) · **Generated:** 2026-08-05 · **Twin:** [`PROVENANCE_MAP.json`](./PROVENANCE_MAP.json)
 
 Machine SoT is the JSON twin. This MD is the human index.
 
@@ -39,7 +39,7 @@ Machine SoT is the JSON twin. This MD is the human index.
 
 See JSON `catalog_codes[]`. Status ∈ {ok, gap, paywall, N/A}. Umbrella for residual gaps: [#871](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/871).
 
-## Matrix cells (TC-EV035-003)
+## Matrix cells (TC-EV035-003) — EV-037 dispositions
 
 | Product | Role | Disposition | Source | Ticket |
 |---------|------|-------------|--------|--------|
@@ -52,35 +52,30 @@ See JSON `catalog_codes[]`. Status ∈ {ok, gap, paywall, N/A}. Umbrella for res
 | TCA | bulletin | ok | opmet-guidelines-5th | — |
 | SWXA | bulletin | ok | opmet-guidelines-5th | — |
 | VONA | validation | paywall | icao-annex-3 | — |
-| VONA | conversion | warn | vona-ahl-fm205 | #869 |
+| VONA | conversion | warn | vona-ahl-fm205 | #869 (non-blocking Guidance silence) |
 | VONA | iwxxm-validation | ok | iwxxm-2025-2-schemas | — |
 | VONA | bulletin | ok | opmet-guidelines-5th | — |
 | METAR_US | validation | ok | fmh-1 | — |
 | METAR_US | conversion | ok | iwxxm-2025-2-schemas | — |
-| METAR_US | iwxxm-validation | warn | iwxxm-us | #870 |
-| METAR_US | bulletin | ok | opmet-guidelines-5th | #872 |
+| METAR_US | iwxxm-validation | ok | iwxxm-us | #870 (US SCH N/A; WMO+US XSD OK) |
+| METAR_US | bulletin | ok | opmet-guidelines-5th | — |
 
 _Full grid in JSON `matrix_cells[]`._
 
-## Full-stack revisited (TC-EV035-004)
+## Full-stack revisited (TC-EV035-004 / TC-EV037)
 
 | Rule id | Role | Status | Ticket |
 |---------|------|--------|--------|
-| `VONA_AHL_WM_LM` | bulletin | ok | #869 |
+| `VONA_AHL_WM_LM` | bulletin | ok | — |
 | `VONA_FM205_PACKAGE` | conversion | ok | — |
-| `VONA_GUIDANCE_SILENT` | conversion | gap | #869 |
+| `VONA_GUIDANCE_SILENT` | conversion | **N/A** | #869 (upstream silence; non-blocking) |
 | `IWXXM_SCH_PIN` | iwxxm-validation | ok | — |
-| `US_SCH_ABSENT` | iwxxm-validation | gap | #870 |
+| `US_SCH_ABSENT` | iwxxm-validation | **N/A** | #870 (official US SCH not published) |
 | `AHL_SPECI_SP_LP` | bulletin | ok | — |
 
 ## Gaps raised (TC-EV035-006)
 
-Count: **4**. Report: [`provenance-gaps.md`](../../sessions/S043-rule-source-traceability/reports/provenance-gaps.md).
+Count: **0** (EV-037 disposed #869/#870 source/validation artifact trackers).  
+Report: [`provenance-gaps.md`](../../sessions/S045-matrix-disposition-residuals/reports/provenance-gaps.md).
 
-| Kind | Id | Ticket |
-|------|-----|--------|
-| fullstack | `VONA_GUIDANCE_SILENT` | #869 |
-| fullstack | `US_SCH_ABSENT` | #870 |
-| matrix | `VONA/conversion` | #869 |
-| matrix | `METAR_US/iwxxm-validation` | #870 |
-
+Prior remine log (historical): [`S043 provenance-gaps.md`](../../sessions/S043-rule-source-traceability/reports/provenance-gaps.md).
