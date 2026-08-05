@@ -1,6 +1,7 @@
-# Local gates mirroring .github/workflows/ci-cd.yml validate job
-# - default (pre-commit): fast checks ≈ make validate-fast pieces
-# - husky pre-push: make validate-ci + make ci-prepush (long unit/matrix)
+# Local gates (EV-036 / M5):
+# - husky pre-commit: this file (fast) + make validate-ci-medium
+# - husky pre-push: make ci (ci-prepush + Compose integration)
+# - remote CI: unit matrix + coverage (no validate job; no Compose integration)
 # Install: make install-hooks  (husky + pre-commit)
 #
 # pre-commit 4.x default_stages includes every hook type; pin to pre-commit so

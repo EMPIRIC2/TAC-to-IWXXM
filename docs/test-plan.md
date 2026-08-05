@@ -2159,37 +2159,40 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 
 ## CI/CD (Monorepo)
 
-**Policy (EV-002)**: Single workflow file for PR/push; dual-run locally via husky + pre-commit.
-Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
-
-GitHub `ci-cd.yml` runs **validate**, then **test** / **tac2iwxxm-native** / **e2e-smoke**.
-Husky **pre-push** mirrors validate + unit/matrix locally. **Deploy** on `main` needs
-`test` + `tac2iwxxm-native`, and skips when GHCR or Render hook credentials are missing.
+**Policy (EV-002 → EV-036 amend)**: Single workflow file for PR/push. **Local-first** for
+long/Compose work: medium validate on **commit**, units+Compose on **push**. Remote CI
+**drops** redundant validate + Compose integration but **keeps** the package **unit matrix**,
+**coverage** gates, and a sticky **PR coverage comment**. Strict lint/format is enforced
+locally (pre-commit). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
-| PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
-| PR / push `main`, `dev` | `ci-cd.yml` | **test**, **tac2iwxxm-native**, **e2e-smoke** | package unit/integration matrix, PyO3 smoke, Playwright smoke |
-| push `main` only | `ci-cd.yml` | **deploy** | needs test + native; Docker build/push GHCR; **DOKS kubectl rollout** (requires `KUBE_CONFIG`); Render hooks optional/non-blocking |
-| Local (husky pre-push) | `.husky/pre-push` | — | `make validate-ci` + `make ci-prepush` (unit/matrix @ package coverage gates) |
+| Local commit | husky → pre-commit | fast + medium | existing fast hooks + `validate-ci` medium extras (de-duped) |
+| Local push | husky pre-push | long | `make ci` = `ci-prepush` + Compose **integration** (ports 18000/18001; wis2box harness via local target) |
+| PR / push `main`, `dev` | `ci-cd.yml` | **remote** | **no** validate job, **no** Compose integration; **keep** unit matrix + coverage + PR coverage comment; keep `tac2iwxxm-native`, `e2e-smoke`, `test-alembic` |
+| push `main` only | `ci-cd.yml` | **deploy** | needs `test` + alembic + native (+ e2e if required); GHCR + **DOKS**; Render optional |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
-| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |
+| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 / EV-036 scope |
 
-### Pre-commit / husky (local gates)
+### Pre-commit / husky (local gates) — EV-036
 
-| Hook | Tool | CI equivalent |
-|------|------|---------------|
-| Python format | `ruff format --check` | validate job |
-| Python lint | `ruff check` | validate job |
-| Python types | `basedpyright` | validate job |
-| JS format | `prettier --check` | validate job |
-| JS lint | `eslint` | validate job |
-| JS types | `tsc --noEmit` | validate job |
-| Secrets | `gitleaks` | validate job (replaces `secret-scan.yml`) |
-| Workflow YAML | `actionlint`, `yamllint` | validate job (replaces `github-yaml-lint.yml`) |
-| husky pre-push | `make validate-ci` + `make ci-prepush` | local parity with CI **test** matrix |
+| Hook | Tool | Role |
+|------|------|------|
+| pre-commit (fast) | ruff / prettier / eslint / tsc / basedpyright / gitleaks / actionlint / yamllint / catalog | always-on cheap gates (strict lint/format) |
+| pre-commit (medium) | `make validate-ci-medium` | config-guard, env-check, audit-frontend (de-duped vs fast) |
+| husky pre-push (long) | `make ci` | `ci-prepush` + Compose integration — local Compose source of truth |
+| Remote PR coverage | `coverage-pr-comment` | sticky PR comment from unit coverage artifacts |
 
-Slow Compose integration (`make ci`) stays local/manual — needs free ports 18000/18001.
+Family `test-*-quality` packs stay path-filtered / opt-in — **not** on every commit/push.
+Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not every local push).
+
+### TC-EV036 (M5 / S044) — local-first CI
+
+| ID | Level | Assert |
+|----|-------|--------|
+| TC-EV036-001 | T0 | husky pre-commit runs fast pre-commit + medium validate (`validate-ci-medium` / config-guard+env-check+audit) |
+| TC-EV036-002 | T0 | `.husky/pre-push` runs `make ci` (or `ci-prepush` + `test-integration`) and does **not** re-run `validate-ci`; remote Compose `integration` matrix entry absent |
+| TC-EV036-003 | T0 | `ci-cd.yml` — no `validate:` job; unit matrix present with coverage; coverage PR comment job present; no Compose integration job; deploy `needs` includes `test` |
 
 ### Removed workflows (EV-002)
 

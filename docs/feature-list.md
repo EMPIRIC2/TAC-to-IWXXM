@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S043 / EV-035 — rule-source provenance deepen F6/F12/F15/F2)
+> **Last updated**: 2026-08-05 (S044 / EV-036 — M5 local long hooks + slim CI; prior S043 / EV-035)
 
 ## Summary
 
@@ -44,7 +44,7 @@
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
-| M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005 |
+| M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005; **deepen** S044 / EV-036 local-first hooks + slim CI |
 | M6 | Vendor upstream sync (wmo-im iwxxm-*) | Planned | Platform | REQ-009 |
 
 **Status key**: Implemented = production-ready, Planned = approved in requirements interview, Experimental = works but not validated, Superseded / Deprecated = replaced by a later decision
@@ -1345,7 +1345,23 @@
 - **F6 delta**: Workspace member `tac2iwxxm`; drop gifts from test matrix at cutover; **PyO3 /
   maturin required** in CI before cutover (ADR-017).
 - **S008 package amend**: Workspace members `tac-validate`, `iwxxm-validate` in test matrix.
-- **Source**: REQ-005; EV-002; ADR-014; S008 realtime amend
+- **S044 / EV-036 deepen (local-first gates)**: Tiered local hooks save CI runner time:
+  - **Commit (pre-commit)**: existing fast gates + **medium** `validate-ci` extras (de-duped).
+  - **Push (husky pre-push)**: `make ci` = `ci-prepush` + Compose **integration** (ports
+    18000/18001; includes wis2box harness if wired into local integration target) — no second
+    `validate-ci`.
+  - **Remote (ci-cd.yml)**: drop **validate** + Compose **integration**; **keep** package
+    **unit matrix + coverage** and post a sticky **PR coverage comment**; keep
+    `tac2iwxxm-native`, `e2e-smoke`, `test-alembic`, deploy (needs graph updated). Strict
+    lint/format stays on local hooks. Family quality packs stay path-filtered / opt-in.
+- **Acceptance (EV-036)** — **approved** (`AC=1`, `R1=local`, Gate A amend `D-S044-02-gate-a`):
+  1. `make install-hooks` → commit runs fast + medium validate; push runs `make ci` (units + Compose).
+  2. `docs/ops/DEVELOPMENT.md` + `docs/test-plan.md` CI tables match the tier model.
+  3. PR CI has no validate job and no Compose integration job; **unit matrix + coverage + PR
+     coverage comment** remain.
+  4. Deploy on `main` gated by remaining remote jobs (test + alembic + native [+ e2e per graph]).
+  5. TC-EV036-001..003 green (hook wiring + workflow contract tests; dense asserts).
+- **Source**: REQ-005; EV-002; ADR-014; S008 realtime amend; **S044 / EV-036**
 
 ### M6: Upstream Vendor Sync
 

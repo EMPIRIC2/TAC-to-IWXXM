@@ -70,7 +70,7 @@ install:
 
 install-hooks:
 	# husky owns core.hooksPath (.husky/*); pre-commit framework runs from .husky/pre-commit.
-	# Long unit/matrix suites: .husky/pre-push → make validate-ci + make ci-prepush.
+	# EV-036: commit = fast + validate-ci-medium; push = make ci (units + Compose).
 	corepack enable
 	$(PNPM) install
 	$(PNPM) exec husky
@@ -79,11 +79,11 @@ install-hooks:
 
 pre-commit-run:
 	$(UV) run pre-commit run --all-files
+	$(MAKE) validate-ci-medium
 
 pre-push-run:
-	# Same as husky pre-push (CI unit/matrix parity; not in GitHub Actions temporarily).
-	make validate-ci
-	make ci-prepush
+	# Same as husky pre-push (EV-036): units + Compose; no second validate-ci.
+	$(MAKE) ci
 
 # --- F15 issue catalog (ADR-028 / EV-011) ---
 
@@ -668,14 +668,18 @@ supabase-push:
 supabase-pull:
 	bash scripts/supabase/db-pull.sh $(NAME)
 
-validate-ci: validate-fast config-guard env-check audit-frontend
+# Medium extras after husky/pre-commit fast hooks (validate-ci without validate-fast).
+validate-ci-medium: config-guard env-check audit-frontend
 
-# Unit/matrix parity for pre-push (CI test job packages without local Compose).
+validate-ci: validate-fast validate-ci-medium
+
+# Unit/matrix suite without Compose (also run on remote CI test matrix).
 # Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
 ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
 	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs badge-audit
 
+# EV-036 long local gate (husky pre-push): units + Compose integration.
 ci: ci-prepush test-integration
 
 acci: ci test-e2e-playwright-smoke audit-frontend

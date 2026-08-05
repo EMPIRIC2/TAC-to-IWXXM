@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 # Fast gates (ruff/prettier/eslint/types/gitleaks/actionlint) via pre-commit framework.
-# Includes Render deploy-hook fallback regression (BUG-2026-08-03) when related files change.
+# Medium validate extras (config-guard / env-check / audit-frontend) — de-duped vs validate-fast.
+# EV-036 / M5 — long suites moved to husky pre-push (full local CI target).
 set -e
 uv run pre-commit run
+echo "husky pre-commit: make validate-ci-medium"
+make validate-ci-medium
