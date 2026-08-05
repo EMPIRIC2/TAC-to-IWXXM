@@ -9,7 +9,7 @@
 **Features**: deepen **F2 / F6 / F32** only (no new Fn — Q2/Q3)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-037-matrix-disposition-residuals`  
-**Status**: **in_progress** — Phase C / **08-verify-build** in_progress (07 COMPLETE @ `c51e6e9b`; Gate A **PASS**; `b_to_c` **waived_lean**)
+**Status**: **in_progress** — 11 **APPROVED** (`D-S045-11`); 12/13 **WAIVED** (`D-S045-12-13-waive`); push+PR pending (`D-S045-next`)
 **Prior**: S044 / EV-036 completed
 **Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) — **all closed** 2026-08-05 @ `c51e6e9b`
 
@@ -24,6 +24,9 @@
 | G2 | decision | Proceed? | Approve → commit session-open → **01-requirements** |
 | AC | decision | AC1–AC4? | **Approved** (AC=1) — close 01 → start **02-verify-plan** |
 | Gate A | decision | S02.M1–M3 / Phase A? | **PASS** (`D-S045-02-gate-a`) GateA=1 — accept S02.M1–M3 as **07** work; close 02 → start **07-build** |
+| D-S045-11 | decision | 11-verify-impl? | **Approve all ACs met** — close 11 |
+| D-S045-12-13-waive | decision | Deploy 12/13? | **Waive** — no runtime product change |
+| D-S045-next | decision | After 11? | **Push branch + open PR** to `main` |
 
 ### Locked dispositions
 
@@ -81,7 +84,18 @@ Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 
 | 01-requirements | 2026-08-05 | AC=1 approve AC1–AC4; `reports/01-requirements-summary.md` |
 | 02-verify-plan | 2026-08-05 | Gate A **PASS**; S02.M1–M3 → 07; `reports/02-verify-plan-audit.md` |
 | 07-build | 2026-08-05 | COMPLETE @ `c51e6e9b`; #869/#870/#872 closed; `reports/07-build-report.md` |
-| 08-verify-build | in_progress | Phase C verify; `b_to_c` waived_lean |
+| 08-verify-build | 2026-08-05 | PASS @ `90c2e8a3`; provenance 188 green; `reports/verification-report.md` |
+| 11-verify-impl | 2026-08-05 | **APPROVED** (`D-S045-11`); AC1–AC4 MET; `reports/verify-impl.md` |
+| 12 / 13 | waived | `D-S045-12-13-waive` — docs/matrix only |
+
+### Implementation AC status (11 — locked)
+
+| ID | Status |
+|----|--------|
+| AC1 | **MET** |
+| AC2 | **MET** |
+| AC3 | **MET** |
+| AC4 | **MET** — issues closed |
 
 ---
 

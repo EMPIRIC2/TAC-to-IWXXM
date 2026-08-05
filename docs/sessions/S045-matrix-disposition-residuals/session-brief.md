@@ -30,13 +30,18 @@ deepen_feature_ids:
   - F32
 feature_note: "Deepen F2/F6/F32 matrix+provenance dispositions — no new Fn; no product UI"
 route_status: approved_lean_plus_0708
-current_stage: 08-verify-build
+current_stage: push_and_pr
+tip_sha_08: 90c2e8a3
 github_issues_closed:
   - 869
   - 870
   - 872
 tip_sha_07: c51e6e9b
 ui_preview: n_a
+decisions:
+  D-S045-11: approve_all_met
+  D-S045-12-13-waive: waived_no_runtime
+  D-S045-next: push_and_pr
 ---
 
 # Session S045 — matrix-disposition-residuals
@@ -81,14 +86,18 @@ provenance matrices (and related cites), without blocking product encode/validat
 
 See [routing-plan.md](./routing-plan.md).
 
-## Phase C (in progress)
+## Phase C→D (complete — push+PR pending)
 
 | Item | Status |
 |------|--------|
 | 07-build | **completed** @ `c51e6e9b` — matrix/provenance + AC4 |
 | Issues #869 / #870 / #872 | **closed** |
 | `gates.b_to_c` | **waived_lean** (04/05 skipped) |
-| 08-verify-build | **in_progress** |
+| 08-verify-build | **completed** PASS @ `90c2e8a3` — `reports/verification-report.md` |
+| `gates.c_to_d` | **passed** (`D-S045-11` AC1–AC4 MET) |
+| 11-verify-impl | **completed** — `reports/verify-impl.md` |
+| Deploy 12/13 | **waived** (`D-S045-12-13-waive`) |
+| Next | **push + open PR** (`D-S045-next`) |
 
 ## Links
 
