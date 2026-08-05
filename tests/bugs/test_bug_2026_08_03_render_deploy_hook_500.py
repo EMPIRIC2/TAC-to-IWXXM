@@ -155,6 +155,7 @@ def test_bug_2026_08_03_ci_uses_resilient_script_not_bare_curl() -> None:
     assert "&imgURL=${ENCODED_URL}" not in raw
     assert "--skip-if-suspended" in raw
     assert "RENDER_SKIP_IF_SUSPENDED" in raw
+    assert "RENDER_DEPLOY_MODE: image" in raw
 
     doc = yaml.safe_load(raw)
     assert isinstance(doc, dict)
