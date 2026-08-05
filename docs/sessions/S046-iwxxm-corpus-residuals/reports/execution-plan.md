@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build (B→C PASS) |
 | **Active milestone** | M2 — Release-line |
-| **Active task** | T2.3 — FE import JSON labels |
-| **Tasks** | 6 / 28 completed (T2.1–T2.2 done) |
+| **Active task** | T2.6 — tip-diff script (#852) |
+| **Tasks** | 9 / 28 completed (T2.1–T2.5 done) |
 | **Last updated** | 2026-08-05 |
 
 ## Tech Stack Summary
@@ -78,9 +78,9 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 |------|------|-------------|-------------|------------|--------|
 | T2.1 | Test | Red: CI/drift test fails when FE/OpenAPI diverge from Python SoT | AC4; TC-EV038-004; `D-S046-sot` | T1.4 | **completed** |
 | T2.2 | Code | Export script: Python → committed JSON (+ roles); wire Makefile/`make` target | AC4; `D-S046-sot` | T2.1 | **completed** |
-| T2.3 | Code | FE import JSON for picker options + Latest/Previous labels; drop hardcodes | AC7; UJ-050; TC-EV038-007; #854 | T2.2 | pending |
-| T2.4 | Code | OpenAPI / schema enum docs align with export; CI assert | AC4; TC-EV038-004 | T2.2 | pending |
-| T2.5 | Test | Green drift CI + FE Vitest for labels | TC-EV038-004/007 | T2.3, T2.4 | pending |
+| T2.3 | Code | FE import JSON for picker options + Latest/Previous labels; drop hardcodes | AC7; UJ-050; TC-EV038-007; #854 | T2.2 | **completed** |
+| T2.4 | Code | OpenAPI / schema enum docs align with export; CI assert | AC4; TC-EV038-004 | T2.2 | **completed** |
+| T2.5 | Test | Green drift CI + FE Vitest for labels | TC-EV038-004/007 | T2.3, T2.4 | **completed** |
 | T2.6 | Code | Sync-PR tip-diff script (XSD/SCH/example stems); link adopt checklist | AC5; TC-EV038-005; #852 | T2.5 | pending |
 | T2.7 | Docs | iwxxm-us compatibility checklist + optional CI smoke; lag decision | AC6; TC-EV038-006; #853 | T2.6 | pending |
 | T2.8 | Docs | Close #851–#854; local UI preview note | AC14; UJ-050 | T2.7 | pending |

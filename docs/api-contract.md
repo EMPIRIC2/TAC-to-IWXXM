@@ -111,7 +111,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `manual_text` | no* | — | TAC string |
 | `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
-| `iwxxm_version` | no | app default | Vendored pin (e.g. `2025-2`) |
+| `iwxxm_version` | no | SoT default (`2025-2`) | Enum = Python `SUPPORTED_VERSIONS` via generated JSON (`apps/frontend/src/generated/iwxxm_versions.json`; `make export-iwxxm-versions`; #851 / D-S046-sot) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
 | `preview` | no | `false` | Soft-preview mode (S011) — see below |
 | `validate_output` | no | `false` | Run post-convert IWXXM validation when true |
@@ -198,7 +198,7 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | `manual_text` | no* | — | Bulletin string |
 | `product` | **yes** | — | Same enum as convert |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
-| `iwxxm_version` | no | app default | Vendored pin |
+| `iwxxm_version` | no | SoT default | Same enum as convert (`iwxxm_versions.json` / #851) |
 | `lint` | no | `true` | When true, run `tac-validate` before each report convert |
 
 * At least one of `files` or `manual_text` required.

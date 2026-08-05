@@ -6,6 +6,7 @@
  */
 
 import { apiUrl, getApiBaseUrl } from './apiBase';
+import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
 
 /**
  * Timeout wrapper for fetch requests
@@ -178,7 +179,7 @@ export async function convertMetarToIwxxm(params: {
   formData.append('profile', params.profile || 'annex3');
 
   // Add IWXXM version (default to 2025-2)
-  formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
+  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
 
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
@@ -284,7 +285,7 @@ export async function convertBulletin(params: {
   }
   formData.append('product', params.product.toUpperCase());
   formData.append('profile', params.profile || 'annex3');
-  formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
+  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
   formData.append('lint', params.lint === false ? 'false' : 'true');
 
   const response = await withTimeout(
@@ -345,7 +346,7 @@ export async function ingestCollect(params: {
     params.files.forEach((file) => formData.append('files', file));
   }
   formData.append('profile', params.profile || 'annex3');
-  formData.append('iwxxm_version', params.iwxxmVersion || '2025-2');
+  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
 
   const response = await withTimeout(
     fetch(apiUrl('/ingest-collect'), {
