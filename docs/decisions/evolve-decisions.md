@@ -3,6 +3,102 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-037 — Matrix dispositions #869 / #870 / #872 (S045)
+
+**Session**: S045-matrix-disposition-residuals  
+**Features**: deepen **F2 / F6 / F32** only (no new Fn — Q2/Q3)  
+**Started**: 2026-08-05  
+**Branch**: `evolve/EV-037-matrix-disposition-residuals`  
+**Status**: **in_progress** — 11 **APPROVED** (`D-S045-11`); 12/13 **WAIVED** (`D-S045-12-13-waive`); PR [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) open (`D-S045-next`) — awaiting merge approval
+**Prior**: S044 / EV-036 completed
+**Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) — **all closed** 2026-08-05 @ `c51e6e9b`
+
+### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=1,Q3=1,Q4=1` + `G2=1`)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Session? | Open **S045** → **EV-037** |
+| Q2 | decision | Dispositions? | **Approve all three** research dispositions as cycle scope |
+| Q3 | decision | Preset? | **Lean + 07/08** — `00→16→01→02→07→08→11` (skip 03–06, 09, 10, 12/13) |
+| Q4 | decision | UI preview? | **N/A** — no product UI |
+| G2 | decision | Proceed? | Approve → commit session-open → **01-requirements** |
+| AC | decision | AC1–AC4? | **Approved** (AC=1) — close 01 → start **02-verify-plan** |
+| Gate A | decision | S02.M1–M3 / Phase A? | **PASS** (`D-S045-02-gate-a`) GateA=1 — accept S02.M1–M3 as **07** work; close 02 → start **07-build** |
+| D-S045-11 | decision | 11-verify-impl? | **Approve all ACs met** — close 11 |
+| D-S045-12-13-waive | decision | Deploy 12/13? | **Waive** — no runtime product change |
+| D-S045-next | decision | After 11? | **Push branch + open PR** to `main` |
+
+### Locked dispositions
+
+| Ticket | Disposition |
+|--------|-------------|
+| **#869** | Non-blocking upstream Guidance gap; VONA SoT = ICAO + FM205 + AHL + XSD/SCH + code lists; cookbook = derived implementation guide |
+| **#870** | Official US Schematron = **N/A / not published**; retain WMO XSD/SCH + US XSD + semantic/fixtures columns (do not N/A all US validation) |
+| **#872** | AHL **source** ✅ for all mapped families; redesign Bulletin AHL cell into source \| T1T2 map \| parser \| BBB \| splitter \| filename \| COLLECT \| fixtures \| CI; children only for true impl gaps |
+
+### Acceptance criteria (01 — **approved** AC=1)
+
+| ID | Criterion | TC | Status |
+|----|-----------|-----|--------|
+| AC1 | VONA SoT hierarchy + non-blocking Guidance silence; cookbook derived | TC-EV037-001 | **approved** |
+| AC2 | US Schematron N/A; validate class split | TC-EV037-002 | **approved** |
+| AC3 | AHL source ✅ + source vs impl matrix columns | TC-EV037-003 | **approved** |
+| AC4 | Close/reword #869/#870/#872; link #846 | TC-EV037-004 | **approved** — issues **closed** 2026-08-05 |
+
+### Out of scope
+
+New Fn; browser UI; deploy runtime; inventing US Schematron; editing upstream
+`TAC-to-XML-Guidance.txt`; full AHL parser/fixture implementation beyond matrix redesign
+and residual child tickets.
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product]` | cite | F2 / F6 / F32 deepen | no new Fn |
+| `[Corpus: tests]` | cite | provenance / matrix TCs | TC-EV037-* as needed |
+| `[Corpus: decisions]` | cite | this cycle | — |
+| `[docs/domain/rules/COVERAGE_MATRIX.md]` | cite | matrix cells | domain opt-in |
+| `[docs/domain/rules/PROVENANCE_MAP.md]` | cite | VONA / US / AHL cites | + `.json` |
+
+### Proposed Lean+07/08 routing (Q3=1)
+
+`00 → 16 → 01 → 02 → 07 → 08 → 11`  
+Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 12/13 at gate)
+
+### Gate A / 02 (locked 2026-08-05)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| S02.M1 | decision | PROVENANCE status lag? | **1** — accept as **07** work (`US_SCH_ABSENT`→N/A; VONA silence non-blocking) |
+| S02.M2 | decision | Bulletin AHL gaps? | **1** — accept as **07** — split source vs impl columns |
+| S02.M3 | decision | TC-EV037 tests missing? | **1** — accept as **07** — add `tests/provenance/test_tc_ev037_*.py` |
+| Gate A | gate | Phase A / 02 close? | **PASS** (`D-S045-02-gate-a`) GateA=1 — start **07-build** (Lean; no 04) |
+| B→C | gate | Phase B skipped (Lean)? | **waived_lean** — 04/05 skipped; 07 COMPLETE → **08-verify-build** |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-05 | S045 open; Lean+07/08 Q1–Q4 |
+| 01-requirements | 2026-08-05 | AC=1 approve AC1–AC4; `reports/01-requirements-summary.md` |
+| 02-verify-plan | 2026-08-05 | Gate A **PASS**; S02.M1–M3 → 07; `reports/02-verify-plan-audit.md` |
+| 07-build | 2026-08-05 | COMPLETE @ `c51e6e9b`; #869/#870/#872 closed; `reports/07-build-report.md` |
+| 08-verify-build | 2026-08-05 | PASS @ `90c2e8a3`; provenance 188 green; `reports/verification-report.md` |
+| 11-verify-impl | 2026-08-05 | **APPROVED** (`D-S045-11`); AC1–AC4 MET; `reports/verify-impl.md` |
+| 12 / 13 | waived | `D-S045-12-13-waive` — docs/matrix only |
+
+### Implementation AC status (11 — locked)
+
+| ID | Status |
+|----|--------|
+| AC1 | **MET** |
+| AC2 | **MET** |
+| AC3 | **MET** |
+| AC4 | **MET** — issues closed |
+
+---
+
 ## Cycle EV-036 — Local long jobs on pre-commit / slim CI (S044)
 
 **Session**: S044-local-precommit-long-jobs  
