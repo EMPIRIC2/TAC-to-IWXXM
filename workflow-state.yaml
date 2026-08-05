@@ -32,7 +32,7 @@ active_session:
   started: '2026-08-05'
   started_at: '2026-08-05'
   route_status: approved_lean
-  note: 'OPEN — 08-verify-build COMPLETE PASS @ d4fd6955; 09-qa in_progress; Lean 00→16→01→02→07→08→09→11; deepen M5; no product UI/deploy'
+  note: 'OPEN — 09-qa COMPLETE PASS @ 95fac992; 11-verify-impl in_progress; Lean 00→16→01→02→07→08→09→11; deepen M5; no product UI/deploy'
   decisions:
     Q1: '1'
     Q1_note: open_S044
@@ -77,7 +77,7 @@ active_session:
     started: '2026-08-05'
     started_at: '2026-08-05'
     skip_rationale:
-    note: 'Phase 0/1 routing approved; 02 COMPLETE (D-S044-02-gate-a); child 07-build COMPLETE @ d4fd6955; child 08-verify-build COMPLETE PASS; child 09-qa in_progress'
+    note: 'Phase 0/1 routing approved; 02 COMPLETE (D-S044-02-gate-a); child 07–08 COMPLETE; child 09-qa COMPLETE PASS @ 95fac992; child 11-verify-impl in_progress'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -144,13 +144,17 @@ active_session:
   - stage: 09-qa
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-05'
     started_at: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
-    tip_sha: d4fd6955
-    tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
-    note: 'STARTED — local hook smoke after 08 PASS; tip d4fd6955'
+    tip_sha: 95fac992
+    tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+    overall: pass
+    report: docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+    note: 'PASS — tip 95fac992; artifact reports/09-qa.md; handoff 11-verify-impl'
   - stage: 10-e2e
     required: false
     status: skipped
@@ -158,8 +162,14 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-05'
+    started_at: '2026-08-05'
     skip_rationale:
+    tip_sha: 95fac992
+    tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+    report: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+    note: 'STARTED — after 09 PASS @ 95fac992; report verify-impl.md'
   - stage: 12-verify-deploy
     required: false
     status: skipped
@@ -168,8 +178,8 @@ active_session:
     required: false
     status: skipped
     skip_rationale: Lean — with 12; no deploy surface
-  current_stage: 09-qa
-  current_stage_note: '09-qa in_progress — 08-verify-build PASS @ d4fd6955; report verification-report.md; Lean local hook smoke'
+  current_stage: 11-verify-impl
+  current_stage_note: '11-verify-impl in_progress — 09-qa PASS @ 95fac992; reports/09-qa.md + reports/verify-impl.md'
 sessions:
 - id: S043-rule-source-traceability
   type: feature
@@ -9019,11 +9029,11 @@ stages:
     - 2026-07-14 S011/EV-008 T6.2 completed pass_with_advisories (qa-report.md + e2e-report.md); Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted; active_task T6.3 pending
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
-    status: in_progress
+    status: completed
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at:
-    completed:
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     previous_started_at: '2026-08-05'
     previous_started: '2026-08-05'
     previous_completed_at: '2026-08-05'
@@ -9054,12 +9064,12 @@ stages:
     prior_s036_tip_sha: 0e34866
     session_id: S044-local-precommit-long-jobs
     evolve_cycle_id: EV-036
-    tip_sha: d4fd6955
-    tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
+    tip_sha: 95fac992
+    tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
     mode: delta
-    overall:
-    report:
-    note: 'IN PROGRESS — S044/EV-036 local hook smoke after 08 PASS; tip d4fd6955; expected report docs/sessions/S044-local-precommit-long-jobs/reports/qa-report.md'
+    overall: pass
+    report: docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+    note: 'PASS — S044/EV-036 COMPLETE @ tip 95fac992; artifact docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md; handoff 11-verify-impl'
     pending_commit: false
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: in_progress
@@ -9068,13 +9078,17 @@ stages:
       session_id: S044-local-precommit-long-jobs
       evolve_cycle_id: EV-036
       skill_id: 09-qa
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-05'
       started_at: '2026-08-05'
-      tip_sha: d4fd6955
-      tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
-      note: 'STARTED — local hook smoke after 08 PASS'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      tip_sha: 95fac992
+      tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+      overall: pass
+      report: docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+      note: 'PASS — handoff 11-verify-impl'
     - id: S042-doks-cd-rollout
       session_id: S042-doks-cd-rollout
       evolve_cycle_id: EV-034
@@ -9302,22 +9316,33 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
-    status: completed
+    status: in_progress
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
-    previous_started_at: '2026-08-04'
-    previous_started: '2026-08-04'
-    previous_completed_at: '2026-08-04'
-    previous_completed: '2026-08-04'
-    previous_session_id: S040-iwxxm-corpus-quality
-    previous_evolve_cycle_id: EV-032
-    previous_tip_sha: fe024aac
-    previous_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
-    previous_overall: approved
-    previous_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
-    previous_note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
+    completed_at:
+    completed:
+    previous_started_at: '2026-08-05'
+    previous_started: '2026-08-05'
+    previous_completed_at: '2026-08-05'
+    previous_completed: '2026-08-05'
+    previous_session_id: S042-doks-cd-rollout
+    previous_evolve_cycle_id: EV-034
+    previous_tip_sha: d3f4bb95
+    previous_tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    previous_overall: pass
+    previous_report: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+    previous_note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9; tip d3f4bb95'
+    previous_s040_started_at: '2026-08-04'
+    previous_s040_started: '2026-08-04'
+    previous_s040_completed_at: '2026-08-04'
+    previous_s040_completed: '2026-08-04'
+    previous_s040_session_id: S040-iwxxm-corpus-quality
+    previous_s040_evolve_cycle_id: EV-032
+    previous_s040_tip_sha: fe024aac
+    previous_s040_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    previous_s040_overall: approved
+    previous_s040_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+    previous_s040_note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; tip fe024aac; PR #848; #846'
     prior_s038_session_id: S038-platform-independence-842
     prior_s038_evolve_cycle_id: EV-031
     prior_s038_tip_sha: b4feac02
@@ -9328,41 +9353,57 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S042-doks-cd-rollout
-    evolve_cycle_id: EV-034
+    session_id: S044-local-precommit-long-jobs
+    evolve_cycle_id: EV-036
     mode: delta
-    overall: pass
-    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9; tip d3f4bb95'
-    report: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
-    report_status: approved
-    tip_sha: d3f4bb95
-    tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
-    tip_note: 'main tip after #868 MERGED @ d3f4bb95; DOKS auto-rollout 20260805115809-d3f4bb9'
+    overall:
+    note: 'IN PROGRESS — S044/EV-036 after 09 PASS @ 95fac992; report docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md'
+    report: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+    report_status: in_progress
+    tip_sha: 95fac992
+    tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+    tip_note: 'S044/EV-036 tip 95fac992 — [EV-036] docs: 08 verification + 09 hook smoke reports'
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
     awaiting_user_decision: false
-    decision_id: D-S042-13
+    decision_id:
+    deepen_feature_ids:
+    - M5
     active_milestone:
     active_task:
     active_task_status:
     progress:
     substeps:
       collect_results:
-        status: completed
+        status: in_progress
       feature_completeness:
-        status: completed
+        status: pending
       journey_signoff:
-        status: completed
+        status: pending
       feature_approval:
-        status: completed
+        status: pending
       fixes_applied:
         status: n/a
       scope_analysis:
-        status: completed
+        status: pending
       summary:
-        status: completed
+        status: pending
     delta_substages:
+    - id: S044-local-precommit-long-jobs-11
+      session_id: S044-local-precommit-long-jobs
+      evolve_cycle_id: EV-036
+      skill_id: 11-verify-impl
+      status: in_progress
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      tip_sha: 95fac992
+      tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+      report: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+      note: 'STARTED — after 09 PASS'
+      deepen_feature_ids:
+      - M5
     - id: S042-doks-cd-rollout
       session_id: S042-doks-cd-rollout
       evolve_cycle_id: EV-034
@@ -11544,8 +11585,8 @@ stages:
     previous_completed_at: '2026-08-05'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage: 08-verify-build
-    note: 'IN PROGRESS — S044/EV-036 07-build COMPLETE @ d4fd6955 (T1–T5; pending_commit false); 08-verify-build in_progress; Lean deepen M5; path 00→16→01→02→07→08→09→11; tooling/hooks/docs only'
+    current_child_stage: 11-verify-impl
+    note: 'IN PROGRESS — S044/EV-036 09-qa COMPLETE PASS @ 95fac992; 11-verify-impl in_progress; Lean deepen M5; path 00→16→01→02→07→08→09→11; tooling/hooks/docs only'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -22953,6 +22994,31 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+  type: session-report
+  kind: verify-impl
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S044-local-precommit-long-jobs
+  evolve_cycle_id: EV-036
+  created_at: '2026-08-05'
+  updated_at: '2026-08-05'
+  status: in_progress
+  tip_sha: 95fac992
+  note: 'STARTED — 11-verify-impl after 09 PASS'
+- path: docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+  type: session-report
+  kind: qa-report
+  stage: 09-qa
+  skill_id: 09-qa
+  session_id: S044-local-precommit-long-jobs
+  evolve_cycle_id: EV-036
+  created_at: '2026-08-05'
+  updated_at: '2026-08-05'
+  status: completed
+  overall: pass
+  tip_sha: 95fac992
+  note: 'PASS — handoff 11-verify-impl'
 - path: docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
   type: session-report
   kind: verification-report
@@ -33193,7 +33259,7 @@ evolve_cycles:
   slug: local-precommit-long-jobs
   status: in_progress
   phase: 2
-  phase_note: 'Phase 2 / verify+qa — 08-verify-build COMPLETE PASS @ d4fd6955; 09-qa in_progress'
+  phase_note: 'Phase 2 / verify — 09-qa COMPLETE PASS @ 95fac992; 11-verify-impl in_progress'
   started: '2026-08-05'
   started_at: '2026-08-05'
   scope_summary: |
@@ -33204,10 +33270,10 @@ evolve_cycles:
     TC-EV036-001..003 approved. Gate A amend (D-S044-02-gate-a): keep remote
     units+coverage+PR comment; drop validate+Compose; local lint only.
   branch: evolve/EV-036-local-precommit-long-jobs
-  branch_note: active — tip d4fd6955; workflow-state-manager did not git checkout/create
-  tip_sha: d4fd6955
-  tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
-  tip_note: '07-build COMPLETE @ d4fd6955 — [EV-036] feat: local Compose on pre-push; remote units + coverage PR comment'
+  branch_note: active — tip 95fac992; workflow-state-manager did not git checkout/create
+  tip_sha: 95fac992
+  tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+  tip_note: '09-qa PASS @ 95fac992 — [EV-036] docs: 08 verification + 09 hook smoke reports; 11-verify-impl in_progress'
   preset: Lean
   preset_status: approved
   preset_note: 'G1=1 Lean approved; route_status=approved_lean'
@@ -33248,12 +33314,12 @@ evolve_cycles:
     - 12-verify-deploy
     - 13-deploy-smoke
     path: 00→16→01→02→07→08→09→11
-    note: 'Lean — approved D-S044-g1-g2; skip tooling/tech-plan/e2e/deploy (no UI/runtime); 07–08 completed; 09 in_progress'
-  current_stage: 09-qa
+    note: 'Lean — approved D-S044-g1-g2; skip tooling/tech-plan/e2e/deploy (no UI/runtime); 07–09 completed; 11 in_progress'
+  current_stage: 11-verify-impl
   current_stage_status: in_progress
-  current_stage_note: '09-qa in_progress — 08 PASS @ d4fd6955; report verification-report.md'
-  next_stage: 11-verify-impl
-  next_stage_status: pending
+  current_stage_note: '11-verify-impl in_progress — 09 PASS @ 95fac992; reports/09-qa.md + reports/verify-impl.md'
+  next_stage: null
+  next_stage_status: null
   gates:
     a_to_b: passed
     a_to_b_note: 'D-S044-02-gate-a Lean → 07 (no 04); S02.M2 modified'
@@ -34478,14 +34544,14 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-036-local-precommit-long-jobs
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit: false
-  pending_commit_note: 'cleared — d4fd6955 recorded; workflow-state tip sync may leave dirty tree for follow-up commit'
+  pending_commit_note: 'cleared — 95fac992 recorded; workflow-state tip sync may leave dirty tree for follow-up commit'
   dirty: true
-  tip_sha: d4fd6955
-  tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
-  tip_note: 'S044/EV-036 — 07-build COMPLETE @ d4fd6955; 08-verify-build in_progress; branch evolve/EV-036-local-precommit-long-jobs'
+  tip_sha: 95fac992
+  tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+  tip_note: 'S044/EV-036 — 09-qa PASS @ 95fac992; 11-verify-impl in_progress; branch evolve/EV-036-local-precommit-long-jobs'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -34497,9 +34563,10 @@ git_history:
   main_tip_sha: 5245f8de
   main_tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
   recommended_branch: evolve/EV-036-local-precommit-long-jobs
-  note: 'S044/EV-036 07 COMPLETE @ d4fd6955; current_stage 08-verify-build in_progress; pending_commit false; tip d4fd6955'
+  note: 'S044/EV-036 09 PASS @ 95fac992; current_stage 11-verify-impl in_progress; pending_commit false; tip 95fac992; ahead_of_origin=2 pushed=false'
 
   notes:
+  - '2026-08-05 S044/EV-036 — recorded git commit 95fac992 (95fac99236ef53c4d099dfa7bab72b1936127b1e) [EV-036] docs: 08 verification + 09 hook smoke reports; 09-qa COMPLETE PASS; 11-verify-impl in_progress; tip 95fac992; ahead_of_origin=2 pushed=false'
   - '2026-08-05 S044/EV-036 — recorded git commit d4fd6955 (d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b) [EV-036] feat: local Compose on pre-push; remote units + coverage PR comment; 07-build COMPLETE (T1–T5; pending_commit false); 08-verify-build in_progress; tip d4fd6955; ahead_of_origin=1 pushed=false'
   - '2026-08-05 S044/EV-036 D-S044-02-gate-a — Gate A PASS S02.M2 modified; 02 completed; 07-build T1–T5 impl pending commit → 08; no git commit/SHA invented by workflow-state-manager; tip main @ 97a5c131'
   - '2026-08-05 S044/EV-036 D-S044-g1-g2 — G1=1 Lean + G2=1 proceed; preset_status=approved; route_status=approved_lean; current_stage 01-requirements in_progress; branch evolve/EV-036-local-precommit-long-jobs exists:true (parent creating); no git branch/commit by workflow-state-manager; tip main @ 97a5c131'
@@ -34949,12 +35016,12 @@ git_history:
     evolve_cycle_id: EV-036
     created: '2026-08-05'
     created_at: '2026-08-05'
-    tip_sha: d4fd6955
-    tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
+    tip_sha: 95fac992
+    tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
     exists: true
     pushed: false
-    ahead_of_origin: 1
-    note: 'active — tip d4fd6955; 07 COMPLETE; 08 in_progress; not pushed'
+    ahead_of_origin: 2
+    note: 'active — tip 95fac992; 09 PASS; 11 in_progress; not pushed'
   - name: evolve/EV-034-doks-cd-rollout
     status: active
     base: main
@@ -36021,6 +36088,27 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+    short: 95fac992
+    branch: evolve/EV-036-local-precommit-long-jobs
+    message: '[EV-036] docs: 08 verification + 09 hook smoke reports'
+    stage: 08-verify-build/09-qa
+    skill_id: 09-qa
+    stages:
+    - 08-verify-build
+    - 09-qa
+    session_id: S044-local-precommit-long-jobs
+    evolve_cycle_id: EV-036
+    files_changed:
+    - docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+    - docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
+    - workflow-state.yaml
+    files_changed_count: 3
+    timestamp: '2026-08-05'
+    timestamp_utc: '2026-08-05T15:26:13Z'
+    pushed: false
+    tip_sha: 95fac992
+    note: 'S044/EV-036 08 docs + 09-qa PASS — tip 95fac992; handoff 11-verify-impl'
   - sha: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
     short: d4fd6955
     branch: evolve/EV-036-local-precommit-long-jobs
