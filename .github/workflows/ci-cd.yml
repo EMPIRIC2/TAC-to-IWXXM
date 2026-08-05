@@ -578,11 +578,16 @@ jobs:
           fi
           mkdir -p "${HOME}/.kube"
           # Secret is base64-encoded kubeconfig (docs/deploy.md §CD — DOKS image rollout).
+          # Must be static SA/token auth — doctl exec plugins fail on GHA runners.
           if ! printf '%s' "${KUBE_CONFIG}" | base64 --decode > "${HOME}/.kube/config" 2>/dev/null; then
             echo "::error::KUBE_CONFIG is not valid base64"
             exit 1
           fi
           chmod 600 "${HOME}/.kube/config"
+          if grep -qE 'command:[[:space:]]*doctl' "${HOME}/.kube/config"; then
+            echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig (docs/deploy.md)"
+            exit 1
+          fi
           bash scripts/deploy/doks_rollout_images.sh "${IMAGE_TAG}"
 
       - name: CD skipped (credentials)
