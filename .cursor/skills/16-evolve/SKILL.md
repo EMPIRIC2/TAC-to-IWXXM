@@ -3,9 +3,11 @@ name: 16-evolve
 description: >
   Orchestrator for feature and new_service sessions: adds product capabilities, scope/API/arch
   changes, breaking refactors, new dependencies, and multi-doc spec updates. Requires active_session
-  (opened by 00-context) with type feature or new_service. Interviews the user, routes selectively
-  through stages 00–15 in delta mode per routing-plan.md. Use after 00-context for structured
-  change on an existing app — not for surgical bugs (14-hotfix) or greenfield (pipeline).
+  (opened by 00-context) with type feature or new_service. Mandates [Corpus:] citations for every
+  change/reference; interviews via AskQuestion when CORPUS docs are missing before implementing.
+  Interviews the user, routes selectively through stages 00–15 in delta mode per routing-plan.md.
+  Use after 00-context for structured change on an existing app — not for surgical bugs (14-hotfix)
+  or greenfield (pipeline).
 ---
 
 # 16 — Evolve (Features & Large Changes)
@@ -21,7 +23,14 @@ cycle**) through updated specs, verified plans, implementation, and redeploy —
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 **Corpus:** Open [docs/CORPUS.md](../../docs/CORPUS.md) rows for **touched features only** — not the
-entire minimal corpus on every cycle. Domain/guides opt-in.
+entire minimal corpus on every cycle. Domain/guides opt-in. Enforced by
+[docs-corpus.mdc](../../rules/core/docs-corpus.mdc).
+
+**Corpus citations (mandatory):** Every change, claim, scope decision, routing rationale, and
+cross-doc reference in the cycle must carry `[Corpus: <id>]` or `[Corpus: <id> §section]`.
+Ephemeral session/bug/ARCHIVE docs are not substitutes. If no CORPUS row covers the work →
+**block** and interview (AskQuestion) about adding documentation — do not invent standing
+docs or implement from chat. See §Corpus citation gate.
 
 **Connectivity:** Browser-facing changes → applicable [connectivity-gates.md](../connectivity-gates.md)
 rows (at minimum 01/04 delta, 07, 12–13 with H4–H5 when UI ships).
@@ -79,6 +88,7 @@ or proceed with a reduced doc set (record waiver via workflow-state-manager).
 | Phase gate failure | List unmet criteria; **block** until resolved (no silent proceed) |
 | Phase checkpoint (A–D, deploy) | Progress digest + AskQuestion before next phase |
 | **UI in scope** | AskQuestion: offer a **non-deployed** (local) UI preview — see §UI preview |
+| **Missing CORPUS coverage** | AskQuestion `[Decision]`: add/update corpus docs before continuing — see §Corpus citation gate |
 
 Do not post interview prompts as markdown lists expecting inline replies.
 
@@ -172,6 +182,45 @@ Evolve summary + optional 14-hotfix / 15-service-health / 17-retrospective
 **Checkpoints:** mandatory digest + AskQuestion after phases A, B, C, D, and deploy
 ```
 
+## Corpus citation gate
+
+Before editing specs or code (and again at each phase gate), map every in-scope change to
+CORPUS rows. Cite in intake notes, routing plan, evolve-decisions, ADRs, commits/PRs, and
+child-stage deltas.
+
+| Change kind | Required citation |
+|-------------|-------------------|
+| New/changed Fn or acceptance | `[Corpus: product]` (+ `[Corpus: journeys]` if UI/E2E) |
+| Components / arch / constraints | `[Corpus: system-spec]` (+ `[Corpus: adr/…]` if decided) |
+| Config / env / deploy / deps | `[Corpus: tech-spec]` (+ satellite path) |
+| HTTP contract | `[Corpus: api]` |
+| Tests / smoke / CI gates | `[Corpus: tests]` |
+| Interview / evolve “why” | `[Corpus: decisions]` or `[Corpus: adr/…]` |
+
+**Missing doc procedure** (block until resolved):
+
+1. Name the gap: change + which CORPUS id/section is absent or insufficient.
+2. AskQuestion `[Decision]` — recommend the CORPUS path to add or extend.
+3. On approval: write the doc (update `docs/CORPUS.md` if membership changes; ADR/`decisions/`
+   when the choice is non-obvious), then continue with citations.
+4. On waiver: record in `docs/decisions/evolve-decisions.md` §Cycle {id}; do not implement
+   the uncovered slice.
+
+```
+prompt: "[Decision] No CORPUS coverage for <change>. Add documentation?
+
+  Needed: <product|system-spec|tech-spec|api|tests|adr|decisions> — <gap>"
+
+options:
+  1. "Add to <recommended path> — then continue"
+  2. "Add ADR / decisions entry only — then continue"
+  3. "New CORPUS member (update docs/CORPUS.md) — then continue"
+  4. "Waive for this change — document waiver"
+  5. "Let me explain / provide more context"
+```
+
+Detail checklist: [reference.md](reference.md) §Corpus citation checklist.
+
 ## Phase 0 — Change / feature intake
 
 Interview until the change is concrete enough for Fn allocation and impact analysis.
@@ -184,19 +233,25 @@ Interview until the change is concrete enough for Fn allocation and impact analy
 |-------|--------|
 | **Intent** | What to change, why now, success criteria |
 | **Scope** | In/out of scope, breaking vs compatible, features affected |
+| **Corpus map** | CORPUS ids/sections that cover each change; gaps → §Corpus citation gate |
 | **Constraints** | Cost, latency, data, deploy target |
 
-Surface **immediately** via AskQuestion anything ambiguous, uncertain, or contradictory.
+Surface **immediately** via AskQuestion anything ambiguous, uncertain, or contradictory —
+including missing CORPUS coverage.
 
 **Approval gate:** AskQuestion — "Proceed to allocate Fn(s) and impact analysis on this scope?"
+Include confirmed `[Corpus: …]` citations (or approved doc-add / waiver) in the prompt.
 
 Record approved scope in `docs/decisions/evolve-decisions.md` §Cycle {id} — Scope (via committed doc;
-agent records cycle metadata).
+agent records cycle metadata). Each scope bullet must cite CORPUS.
 
 ## Phase 1 — Fn allocation, impact analysis, routing
 
-1. **Multi-feature default:** one cycle, multiple Fn — assign next Fn ids from `feature-list.md`.
-2. List **docs to update** and **routing_plan** — [reference.md](reference.md) (Stage routing matrix).
+1. **Multi-feature default:** one cycle, multiple Fn — assign next Fn ids from `feature-list.md`
+   (`[Corpus: product]`).
+2. List **docs to update** (CORPUS paths only for design gates) and **routing_plan** —
+   [reference.md](reference.md) (Stage routing matrix). Every listed doc change cites
+   `[Corpus: …]`; gaps → §Corpus citation gate before routing approval.
 3. **Presets** (AskQuestion; default **Lean** on existing apps — see protocol-card):
 
    | Preset | Required stages (typical) |
@@ -239,9 +294,9 @@ For **11-verify-impl** (when routed), include **per–acceptance-criterion** sta
 
 | Gate | Criteria |
 |------|----------|
-| **A→B** | Fn in feature-list; delta specs; 02 pass; 03 if routed |
-| **B→C** | Execution-plan tasks approved; 05 pass; 06 if routed |
-| **C→D** | All Fn tasks done; latest 08 pass |
+| **A→B** | Fn in feature-list; delta specs; 02 pass; 03 if routed; every delta cites CORPUS |
+| **B→C** | Execution-plan tasks approved; 05 pass; 06 if routed; tech deltas cite CORPUS |
+| **C→D** | All Fn tasks done; latest 08 pass; commits/PRs cite CORPUS for scope |
 | **Deploy** | 09+10 pass; 11+12 user-approved; deploy approved |
 
 On failure: list unmet criteria → AskQuestion → fix in place per considerations §2.
@@ -280,6 +335,8 @@ Same as pipeline — never re-run entire phases for verification failures.
 7. **Do not `@`-attach** full skill bodies — name + routing-plan is enough.
 8. **UI preview** — when UI is in scope, AskQuestion for a **non-deployed** preview; never
    present staging/production as that preview unless the user explicitly requests it.
+9. **Corpus citations** — every change/reference includes `[Corpus: …]`; missing coverage →
+   AskQuestion doc-add interview before continuing (never invent standing docs).
 
 ## Additional resources
 

@@ -128,6 +128,20 @@ When invoking child skills during evolve:
 - Implement only pending tasks tagged with `evolve_cycle_id` or listed in cycle scope.
 - Branch per execution-plan git strategy; PR references evolve cycle in title/body.
 
+## Corpus citation checklist
+
+Run at Phase 0 approval, Phase 1 routing approval, and each phase gate (with consistency).
+
+- [ ] Every in-scope change maps to ≥1 CORPUS id (`docs/CORPUS.md`)
+- [ ] Scope bullets, routing rationales, and evolve-decisions rows cite `[Corpus: …]`
+- [ ] Child-stage deltas cite the CORPUS row that authorizes the edit
+- [ ] Commits / PR body for the cycle cite CORPUS for the change set
+- [ ] No design/scope claim relies only on session reports, bug reports, ARCHIVE, or guides
+- [ ] Gaps resolved via AskQuestion doc-add (or recorded waiver) before implementation
+
+Missing coverage → block and interview per SKILL.md §Corpus citation gate (do not invent
+standing docs).
+
 ## Consistency checklist
 
 Run after 02-verify-plan and 05-verify-tech (and before deploy gate):
@@ -142,6 +156,7 @@ Run after 02-verify-plan and 05-verify-tech (and before deploy gate):
 - [ ] New ADRs referenced inline in updated spec sections (`<!-- ADR-NNN -->`)
 - [ ] `workflow-state.yaml` §template not contradicted without ADR
 - [ ] No orphaned statements in audit reports marked `denied` still present in specs
+- [ ] Corpus citation checklist above is green (or waivers logged)
 
 On any failure: AskQuestion with category, evidence (file + section), and recommended fix.
 

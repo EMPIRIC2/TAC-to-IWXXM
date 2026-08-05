@@ -65,8 +65,8 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 | 12–13 (deploy) | tech-spec, deploy, env-contract |
 | 14-hotfix | product + system-spec; then tech-spec / api / tests as symptom requires |
 | 15-service-health | tech-spec, deploy, env-contract |
-| 16-evolve | CORPUS rows for **touched features only** (not always full minimal set) |
-| plan-adherence / spec-adherence rules | this file + rows above |
+| 16-evolve | CORPUS rows for **touched features only**; every change/reference cites `[Corpus: …]`; missing coverage → AskQuestion doc-add |
+| plan-adherence / spec-adherence / docs-corpus rules | this file + rows above; mandatory citations; interview if docs missing |
 
 Do **not** preload `docs/domain/**` or guides unless the session scope is domain mining.
 
