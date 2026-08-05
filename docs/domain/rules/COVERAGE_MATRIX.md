@@ -120,7 +120,23 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
 
-**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS. **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS (durable table below). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+
+### XML-only products — permanent OOS for F6 convert (corpus G5)
+
+Durable stance so these are **not** silently reopened as TAC→IWXXM convert / sample-menu
+work under F6. Epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) · child
+[#858](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/858) · S046 / EV-038 · **TC-EV038-001**.
+Vendor XSD/examples may exist for validate/smoke; **no encode** in this issue.
+
+| Product | Vendor / package presence (informative) | TAC→IWXXM convert | Sample menu | Stance |
+|---------|------------------------------------------|-------------------|-------------|--------|
+| **WAFS** (Significant Weather Forecast) | `WAFSSigWxFC.xsd` · `WAFS-Example` | ❌ none | ❌ | **OOS** — IWXXM-only; future Fn only via evolve |
+| **QVACI** (Quantitative Volcanic Ash) | `qvaci.xsd` · `qvaci-Example` | ❌ none | ❌ | **OOS** — IWXXM-only; future Fn only via evolve |
+| **SIGWX** (significant weather / WAFS SIGWX family) | Package/roadmap cites; no F6 TAC path | ❌ none | ❌ | **OOS** — do not treat as F6 product convert |
+
+**Do not:** add workbench catalog stems, lint packs, or ADR-032 equality work for these
+without a new approved Fn. Cite this table from epic #846 roll-ups.
 
 ---
 

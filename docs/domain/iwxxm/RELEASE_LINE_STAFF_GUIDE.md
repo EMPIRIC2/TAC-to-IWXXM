@@ -72,7 +72,7 @@ When engineering finishes a sync/adopt PR (checklist in
 | Policy doc is engineer-dense | **This one-pager** is the staff entry; keep VERSION_SUPPORT_POLICY for numbers | Closed by this doc |
 | No in-app “Latest / Previous” labels on picker | UX copy child — optional badges | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) |
 | CHANGELOG not always linked from UI | Ops runbook: paste CHANGELOG URL in release mail | Process only |
-| Deprecation calendar easy to miss | Issue template / reminder when warning window starts | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) |
+| Deprecation calendar easy to miss | Issue template when warning window starts | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) — [`.github/ISSUE_TEMPLATE/iwxxm_deprecation_warning.md`](../../../.github/ISSUE_TEMPLATE/iwxxm_deprecation_warning.md) (S046; dry-run doc only until a real warning) |
 | Training | 5-minute read of this page + one convert smoke | No new product work |
 
 ## Checklist — non-technical adopt / retire

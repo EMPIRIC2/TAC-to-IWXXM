@@ -1,6 +1,6 @@
 # Execution plan — S046 / EV-038 (#846 residuals #849–#861)
 
-> **Status**: **draft** — awaiting `D-S046-04-plan` approval → Gate B / 05  
+> **Status**: **approved** (`D-S046-04-plan`=1) — Gate B PASS; **07-build**  
 > **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
 > **Evolve cycle**: EV-038  
 > **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn)  
@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase B — technical (A→B PASS) |
-| **Active milestone** | — (plan approval) |
-| **Active task** | — |
-| **Tasks** | 0 / ~28 pending |
+| **Active phase** | Phase C — build (B→C PASS) |
+| **Active milestone** | M2 — Release-line (next) |
+| **Active task** | T2.1 — SoT drift red test |
+| **Tasks** | 4 / 28 completed (M1 done) |
 | **Last updated** | 2026-08-05 |
 
 ## Tech Stack Summary
@@ -53,7 +53,8 @@ Path TBD in T2.1 (prefer `packages/shared` or `apps/frontend/src/generated/`).
 | D-S046-ac | AC1–AC14 approved |
 | D-S046-02-gate-a | PASS after SoT |
 | D-S046-sot | Python → generated JSON → FE + OpenAPI/CI |
-| D-S046-04-plan | pending |
+| D-S046-04-plan | **1** — approved as written |
+| D-S046-05-gate-b | **1** — PASS → 07 M1 |
 
 ## Milestones & Tasks (TDD order)
 
@@ -65,10 +66,10 @@ Path TBD in T2.1 (prefer `packages/shared` or `apps/frontend/src/generated/`).
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T1.1 | Docs | COVERAGE_MATRIX + epic note: WAFS/QVACI/SIGWX XML-only OOS (G5) | AC1; TC-EV038-001; #858 | — | pending |
-| T1.2 | Docs | iwxxm-modelling delta-watch checklist step on sync PRs (G8) | AC2; TC-EV038-002; #861 | T1.1 | pending |
-| T1.3 | Docs | Deprecation-calendar GitHub issue template + dry-run note | AC3; TC-EV038-003; #855 | T1.2 | pending |
-| T1.4 | Docs | Close #858/#861/#855; link #846 | AC14 | T1.3 | pending |
+| T1.1 | Docs | COVERAGE_MATRIX + epic note: WAFS/QVACI/SIGWX XML-only OOS (G5) | AC1; TC-EV038-001; #858 | — | **completed** |
+| T1.2 | Docs | iwxxm-modelling delta-watch checklist step on sync PRs (G8) | AC2; TC-EV038-002; #861 | T1.1 | **completed** |
+| T1.3 | Docs | Deprecation-calendar GitHub issue template + dry-run note | AC3; TC-EV038-003; #855 | T1.2 | **completed** |
+| T1.4 | Docs | Close #858/#861/#855; link #846 | AC14 | T1.3 | **completed** |
 
 ### M2 — Release-line automation + UX (#851–#854)
 
@@ -125,7 +126,7 @@ Path TBD in T2.1 (prefer `packages/shared` or `apps/frontend/src/generated/`).
 
 ## Phase Gate Check (B→C)
 
-- [ ] Execution plan approved (`D-S046-04-plan`)
-- [ ] 05-verify-tech PASS
-- [ ] No new deps without inventory back-add
-- [ ] SoT path + OpenAPI drift tasks present (T2.1–T2.5)
+- [x] Execution plan approved (`D-S046-04-plan`=1)
+- [x] 05-verify-tech PASS (`D-S046-05-gate-b`=1)
+- [x] No new deps without inventory back-add
+- [x] SoT path + OpenAPI drift tasks present (T2.1–T2.5)

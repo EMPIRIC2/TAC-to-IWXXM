@@ -9,7 +9,7 @@
 **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected — Q2 whole residual set)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
-**Status**: **in_progress** — Phase 0/1 locked; handoff **01-requirements**  
+**Status**: **in_progress** — Phase C **07-build**; Gate B PASS (`D-S046-05-gate-b`=1)  
 **Prior**: S045 / EV-037 completed  
 **Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)  
 **Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
@@ -32,6 +32,8 @@
 | D-S046-ac | decision | ACs? | **AC=1** approve AC1–AC14 |
 | D-S046-02-gate-a | decision | Gate A? | **2** — PASS after OpenAPI/SoT decision in 02 |
 | D-S046-sot | decision | #851 SoT shape? | **1** — Python SoT → generated committed JSON → FE + OpenAPI/CI |
+| D-S046-04-plan | decision | Execution plan? | **1** — approve as written; close 04 → start 05 |
+| D-S046-05-gate-b | decision | Gate B? | **1** — PASS; S05.M*/L1 as 07; close 05 → 07 M1 T1.1 |
 
 | Milestone | Issues | Theme | Notes |
 |-----------|--------|-------|-------|
@@ -87,7 +89,9 @@ See [01-requirements-summary.md](../sessions/S046-iwxxm-corpus-residuals/reports
 | 16-evolve | in_progress | Phase A done; orchestrating 04+ |
 | 01-requirements | completed | **D-S046-ac** AC=1; tip `e9df8f84` |
 | 02-verify-plan | completed | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1); handoff **04-tech-plan** |
-| 04-tech-plan | in_progress | Execution-plan M1–M4 |
+| 04-tech-plan | completed | **D-S046-04-plan**=1; execution-plan approved @ `f03ed255`; handoff **05** |
+| 05-verify-tech | completed | Gate B PASS (`D-S046-05-gate-b`=1); handoff **07-build** |
+| 07-build | in_progress | M1 T1.1+ — #858/#861/#855 docs |
 
 ---
 

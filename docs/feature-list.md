@@ -1371,7 +1371,10 @@
 - **Acceptance**: **TC-EV032-005**; children linked from #846; deepen UJ-039 / UJ-042 /
   UJ-045 as applicable; **TC-EV038-001..014** for residual closeout
 - **Children (T4.1)**: #849–#861 (see [t4.1-846-children.md](sessions/S040-iwxxm-corpus-quality/reports/t4.1-846-children.md))
-- **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable
+- **XML-only OOS (corpus G5 / #858)**: **WAFS / QVACI / SIGWX** — durable row in
+  [COVERAGE_MATRIX.md](domain/rules/COVERAGE_MATRIX.md) §XML-only products; not F6 convert
+- **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable;
+  WAFS/QVACI/SIGWX TAC→IWXXM encode (see G5 table)
 
 ### F2 / F4 / F6 / F7 / F32 deepen (S046 / EV-038 — #846 residuals #849–#861)
 

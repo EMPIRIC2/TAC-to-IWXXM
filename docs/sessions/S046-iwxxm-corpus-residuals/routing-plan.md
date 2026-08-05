@@ -5,20 +5,20 @@
 **Skip:** `03-plan-tooling`, `06-tech-tooling`  
 **Branch:** `evolve/EV-038-iwxxm-corpus-residuals`  
 **Features:** deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected)  
-**Status:** in_progress — D-S046-mplan locked; **01-requirements**  
+**Status:** in_progress — Phase C **07-build** M1  
 **Milestones:** M1 docs (#858/#861/#855) → M2 release-line (#851–#854) → M3 soft (#859/#860/#857) → M4 encode (#849/#850/#856)
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | S046 open; D-S046-mplan Q1=1 Q2=1 Q3=1 |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase 0/1 locked |
+| 16-evolve | yes | orchestrator | **in_progress** | Phase C |
 | 01-requirements | yes | delta | **completed** | **D-S046-ac** AC=1 approve AC1–AC14 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1) |
 | 03-plan-tooling | no | — | skipped | no new Cursor rules expected |
-| 04-tech-plan | yes | delta | **in_progress** | execution-plan milestones |
-| 05-verify-tech | yes | delta | pending | B→C with 04 |
+| 04-tech-plan | yes | delta | **completed** | **D-S046-04-plan**=1; 28-task plan approved |
+| 05-verify-tech | yes | delta | **completed** | Gate B PASS (`D-S046-05-gate-b`=1) |
 | 06-tech-tooling | no | — | skipped | no new dep tooling expected |
-| 07-build | yes | full | pending | per milestone |
+| 07-build | yes | full | **in_progress** | M1 T1.1+ |
 | 08-verify-build | yes | delta | pending | — |
 | 09-qa | yes | delta | pending | Standard |
 | 10-e2e | yes | delta | pending | #854 UI / picker |
@@ -40,6 +40,7 @@
 | Phase 0 open | **PASS** (`D-S046-open`) | 2026-08-05 |
 | Milestone plan | **PASS** (`D-S046-mplan`) M1→M2→M3→M4; UI yes@M2 | 2026-08-05 |
 | A→B / 02 | **PASS** (`D-S046-02-gate-a`=2 + `D-S046-sot`=1) | 2026-08-05 |
-| B→C / 05 | pending | — |
+| Plan / 04 | **PASS** (`D-S046-04-plan`=1) | 2026-08-05 |
+| B→C / 05 | **PASS** (`D-S046-05-gate-b`=1) | 2026-08-05 |
 | C→D / 11 | pending | — |
 | Deploy 12/13 | pending | may waive per-milestone if docs-only |
