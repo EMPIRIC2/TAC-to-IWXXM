@@ -50,6 +50,24 @@ Render archive: [ops/render-decommission-archive.md](ops/render-decommission-arc
 `--skip-if-suspended` / `RENDER_SKIP_IF_SUSPENDED` so main CI Deploy skips suspended Render
 services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the prod target.
 
+### CD — DOKS image rollout (S042 / EV-034 / F30 deepen)
+
+On push to `main`, the **Deploy** job in `.github/workflows/ci-cd.yml`:
+
+1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `main-latest`.
+2. **Rolls DOKS** (required): `scripts/deploy/doks_rollout_images.sh <tag>` sets
+   `metar-api` / `metar-frontend` / `metar-worker` in namespace `metar-iwxxm` to
+   `ghcr.io/empiric2/tac-to-iwxxm/{backend,frontend,worker}:<tag>` and waits for
+   `kubectl rollout status`.
+3. **Render hooks** (optional): if present, may fire with `--skip-if-suspended`; missing
+   or suspended Render must **not** fail Deploy (`E34-4`).
+
+| Actions secret | Required | Description |
+|----------------|----------|-------------|
+| `KUBE_CONFIG` | **Yes** (main Deploy) | Base64-encoded kubeconfig with rights to mutate Deployments in `metar-iwxxm`. Missing ⇒ Deploy fails (fail-closed). |
+
+Encode: `base64 -w0 <kubeconfig.yaml>` (macOS: `base64 -i kubeconfig.yaml | tr -d '\n'`).
+
 **F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
 F8 worker runs on DOKS.
 

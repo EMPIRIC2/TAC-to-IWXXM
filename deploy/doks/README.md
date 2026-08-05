@@ -65,8 +65,20 @@ API container starts (idempotent — same as `make db-migrate` / CI `test-alembi
 Optional ad-hoc Job: `deploy/doks/base/job-alembic-upgrade.yaml`
 (`kubectl apply -f …` or included in `kubectl apply -k`).
 
+## CD image rollout (EV-034 / TC-F30-007)
+
+On push to `main`, `.github/workflows/ci-cd.yml` **Deploy** runs
+`scripts/deploy/doks_rollout_images.sh <TIMESTAMP-SHA>` after GHCR push (requires
+Actions secret `KUBE_CONFIG` — base64 kubeconfig). Manual equivalent:
+
+```bash
+bash scripts/deploy/doks_rollout_images.sh 20260805003332-5245f8d
+```
+
+See [docs/deploy.md](../../docs/deploy.md) §CD — DOKS image rollout.
+
 ## Related
 
-- [docs/deploy.md](../../docs/deploy.md) — topology + secrets
+- [docs/deploy.md](../../docs/deploy.md) — topology + secrets + CD
 - [docs/ops/doks-cutover-soak-checklist.md](../../docs/ops/doks-cutover-soak-checklist.md)
 - ADR-033

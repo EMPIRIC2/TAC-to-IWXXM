@@ -3,13 +3,45 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-034 — Automate DOKS image rollout in CD (S042)
+
+**Session**: S042-doks-cd-rollout  
+**Features**: deepen **F30** (infra/CD — no new product Fn)  
+**Started**: 2026-08-05  
+**Branch**: `evolve/EV-034-doks-cd-rollout`  
+**Status**: **in_progress** — Phase 0 locked; Standard routing approved  
+**Prior**: S041 / EV-033 lean-closed (`D-S041-1+3`); S040 / EV-032 remains suspended (`resume_after` S042)
+
+### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `A,A,A,B,A`)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E34-1 | decision | Rollout targets? | **API + frontend + worker** |
+| E34-2 | decision | Image pin? | **Immutable `TIMESTAMP-SHA` tag** + `rollout status` |
+| E34-3 | decision | Cluster auth? | GitHub Actions secret **`KUBE_CONFIG`** (base64 kubeconfig) |
+| E34-4 | decision | Render steps? | **Remove / optional no-fail** — DOKS-only CD |
+| E34-5 | decision | Preset? | **Standard** `00→16→01→02→04→07→08→09→11→12→13` (skip 03/05/06; 10 optional) |
+
+**Scope (verbatim)**: After successful GHCR push on `main`, CD must `kubectl set image` +
+`rollout status` for `metar-api`, `metar-frontend`, and `metar-worker` in namespace
+`metar-iwxxm`, pinning each container to the immutable push tag
+(`ghcr.io/empiric2/tac-to-iwxxm/{backend,frontend,worker}:TIMESTAMP-SHA`). Auth via
+Actions secret `KUBE_CONFIG` (base64 kubeconfig). Render deploy-hook steps become
+optional/non-blocking (or removed); missing Render hooks must not fail Deploy.
+Missing `KUBE_CONFIG` on `main` Deploy **fails** (fail-closed). Baseline one-shot
+already live: `20260805003332-5245f8d`.
+
+**Out of scope**: New product Fn; S040 resume; changing DOKS topology/IaC beyond image
+roll; Alembic redesign (initContainer remains).
+
 ## Cycle EV-033 — F8 worker INGEST_POLLER_URL hardening (S041)
 
 **Session**: S041-worker-poller-hardening  
 **Features**: deepen **F8**  
 **Started**: 2026-08-04  
-**Branch**: `evolve/EV-033-worker-poller-hardening` (from `main`)  
-**Status**: **in_progress**  
+**Completed**: 2026-08-05  
+**Branch**: `main` @ `5245f8de` (PR #865)  
+**Status**: **completed** (lean-close `D-S041-1+3`)  
 **Prior**: S040 / EV-032 **suspended** (not cancelled) during this cycle
 
 ### Scope (Phase 0 — locked 2026-08-04; AskQuestion unavailable — user “proceed 1–5”)
@@ -19,6 +51,7 @@
 | E33-1 | decision | Session vs S040? | New session S041; suspend S040 |
 | E33-2 | decision | Scope? | All prevention items **1–5** + worker code refuse placeholder/non-https |
 | E33-3 | decision | Preset? | **Standard** |
+| E33-4 | decision | Close path? | **D-S041-1+3** lean-close (waive 09–13) + DOKS one-shot + open S042 |
 
 **Scope (verbatim)**: Harden F8 `metar-worker` so `INGEST_POLLER_URL` cutover cannot
 leave `REPLACE_ME_*` or non-HTTPS values running at replicas &gt; 0: (1) fail-closed
@@ -33,13 +66,15 @@ beyond the fixture URL; Prometheus operator install on DOKS.
 | ID | Category | Question | Decision | ADR |
 |----|----------|----------|----------|-----|
 | E33-1 | decision | Proceed hardening 1–5? | Yes (+ code guard) | ADR-018 deepen |
+| E33-4 | decision | Lean-close + DOKS one-shot? | Yes (`D-S041-1+3`) — waive 09–13; tag `20260805003332-5245f8d` | — |
 
 ### Stage log
 | Stage | Completed | Notes |
 |-------|-----------|-------|
 | 00-context | 2026-08-04 | S041 open; S040 suspended |
-| 16-evolve | | orchestrating |
-| 01–13 | | Standard path — docs+code+scripts this cycle |
+| 01–04 / 07–08 | 2026-08-04 | Standard path; #865 merged; 08 PASS |
+| 09–13 | waived 2026-08-05 | `D-S041-1+3`; deploy passed_via_ops |
+| 16-evolve | 2026-08-05 | cycle closed; see evolve-summary.md |
 
 ## Cycle EV-032 — Official IWXXM corpus quality / WMO source parity (S040)
 
@@ -48,7 +83,7 @@ beyond the fixture URL; Prometheus operator install on DOKS.
 **Issues**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) (epic), [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835), [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741), [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808)  
 **Started**: 2026-08-04  
 **Branch**: `evolve/EV-032-iwxxm-corpus-quality` (from `main`)  
-**Status**: **in_progress** — Gate A PASS; entering 04-tech-plan
+**Status**: **in_progress** — **suspended** (resume_after S042; do not auto-resume)
 
 ### Scope (Phase 0 — locked 2026-08-04 via 00-context)
 
