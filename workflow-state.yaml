@@ -3,9 +3,57 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 45
-evolve_cycle_counter: 37
-active_session: null
+session_counter: 46
+evolve_cycle_counter: 38
+active_session:
+  id: S046-iwxxm-corpus-residuals
+  type: feature
+  status: in_progress
+  intent: "Close epic #846 residual children #849–#861 (VONA deepen, release-line automation, corpus G3–G8) under Standard evolve"
+  orchestrator: 16-evolve
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  branch_note: 'OPEN — S046/EV-038; Standard routing; M1→M2→M3→M4 locked (D-S046-mplan); UI yes@M2/#854'
+  started_at: '2026-08-05'
+  evolve_cycle_id: EV-038
+  artifacts_dir: docs/sessions/S046-iwxxm-corpus-residuals/
+  prior_session: S045-matrix-disposition-residuals
+  prior_evolve_cycle_id: EV-037
+  github_issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
+  parent_epic: 846
+  feature_ids: []
+  deepen_feature_ids: [F2, F4, F6, F7, F32]
+  feature_note: 'Deepen F2/F4/F6/F7/F32 — no new Fn expected unless encode unlock requires one; #854 UI'
+  ui_preview: yes_at_m2_854
+  current_stage: 01-requirements
+  milestones:
+    M1: [858, 861, 855]
+    M2: [851, 852, 853, 854]
+    M3: [859, 860, 857]
+    M4: [849, 850, 856]
+  routing_plan:
+    required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 04-tech-plan, 05-verify-tech, 07-build, 08-verify-build, 09-qa, 10-e2e, 11-verify-impl, 12-verify-deploy, 13-deploy-smoke]
+    skipped_stages: [03-plan-tooling, 06-tech-tooling]
+  decisions:
+    D-S046-open: 'Q1=1 Q2=5 Q3=2'
+    D-S046-open_note: 'Open S046→EV-038; whole residuals #849–#861; Standard (+05 for B→C)'
+    D-S046-mplan: 'Q1=1 Q2=1 Q3=1'
+    D-S046-mplan_note: 'M1 docs→M2 release-line→M3 soft→M4 encode; local UI at #854; proceed 01'
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE — S046 open; D-S046-mplan locked M1→M2→M3→M4'
+    16-evolve:
+      status: in_progress
+      started: '2026-08-05'
+      completed: null
+      note: 'Phase 0/1 — D-S046-mplan locked; orchestrator active'
+    01-requirements:
+      status: in_progress
+      started: '2026-08-05'
+      completed: null
+      note: 'ACs per milestone / ticket (#849–#861)'
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
@@ -5321,29 +5369,29 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: matrix-disposition-residuals
-    session_id: S045-matrix-disposition-residuals
-    evolve_cycle_id: EV-037
+    scoped_slug: iwxxm-corpus-residuals
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
     started: '2026-08-05'
     started_at: '2026-08-05'
     completed: '2026-08-05'
     completed_at: '2026-08-05'
-    tip_sha: 485fa8cb
-    note: 'S045/EV-037 OPEN — 00-context completed; Lean+07/08; handoff 16-evolve; tickets #869/#870/#872; deepen F2/F6/F32; branch evolve/EV-037-matrix-disposition-residuals'
-    prior_note: 'S044/EV-036 COMPLETE — 00-context done; Phase 0 Batch B locked (D-S044-batch-b); D-S044-g1-g2 approved Lean; handoff 16-evolve → 01-requirements; branch evolve/EV-036-local-precommit-long-jobs exists:true (parent creating)'
-    prior_session_id: S044-local-precommit-long-jobs
-    prior_evolve_cycle_id: EV-036
-    prior_scoped_slug: local-precommit-long-jobs
+    note: 'S046/EV-038 COMPLETE — 00-context done; D-S046-mplan M1→M2→M3→M4; handoff 01-requirements'
+    prior_note: 'S045/EV-037 COMPLETE — PR #887 MERGED @ b7302fe4; matrix dispositions #869/#870/#872 closed; deploy waived; active_session=null before S046 open'
+    prior_session_id: S045-matrix-disposition-residuals
+    prior_evolve_cycle_id: EV-037
+    prior_scoped_slug: matrix-disposition-residuals
     prior_completed: '2026-08-05'
     prior_started: '2026-08-05'
-    prior_tip_sha: 97a5c131
-    prior_tip_sha_full: 97a5c1310699bf1ed11e622af8c19fa85c03dd6d
+    prior_tip_sha: 2d8202f3
+    prior_tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
     prior_prior_note: 'S040/EV-032 COMPLETE — brief+routing+context; branch cut from main @ 2ed85da1; stash S039-EV031-WIP; handoff 01-requirements; #846/#835/#741/#808 (stages mirror was stale through S041–S043; logical prior_session S043/EV-035 completed)'
     prior_prior_session_id: S043-rule-source-traceability
     prior_prior_evolve_cycle_id: EV-035
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
     artifacts:
+    - docs/sessions/S046-iwxxm-corpus-residuals/
     - docs/sessions/S045-matrix-disposition-residuals/
     - docs/sessions/S044-local-precommit-long-jobs/
     - docs/sessions/S043-rule-source-traceability/
@@ -5360,27 +5408,26 @@ stages:
     - docs/decisions/evolve-decisions.md
 
   01-requirements:
-    status: completed
+    status: in_progress
     mode: delta
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
-    session_id: S045-matrix-disposition-residuals
-    evolve_cycle_id: EV-037
-    prior_session_id: S044-local-precommit-long-jobs
-    prior_evolve_cycle_id: EV-036
+    completed_at: null
+    completed: null
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    prior_session_id: S045-matrix-disposition-residuals
+    prior_evolve_cycle_id: EV-037
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
-    prior_note: 'S044/EV-036 01-requirements COMPLETE (delta) — D-S044-r1-ac R1=local_compose AC=1; M5 ACs + TC-EV036-001..003; remove remote Compose/integration → local pre-push make ci; handoff 02-verify-plan'
-    prior_prior_session_id: S042-doks-cd-rollout
-    prior_prior_evolve_cycle_id: EV-034
-    prior_prior_note: 'S042/EV-034 01-requirements COMPLETE (delta) — F30 deepen; feature-list/deploy/test-plan/evolve-decisions; no new Fn; handoff 02'
-    note: 'S045/EV-037 01-requirements COMPLETE (delta) — AC=1 approve AC1–AC4; deepen F2/F6/F32; tickets #869/#870/#872; handoff 02-verify-plan'
+    prior_note: 'S045/EV-037 01-requirements COMPLETE (delta) — AC=1 approve AC1–AC4; deepen F2/F6/F32; tickets #869/#870/#872; handoff 02-verify-plan'
+    prior_prior_session_id: S044-local-precommit-long-jobs
+    prior_prior_evolve_cycle_id: EV-036
+    prior_prior_note: 'S044/EV-036 01-requirements COMPLETE (delta) — D-S044-r1-ac R1=local_compose AC=1; M5 ACs + TC-EV036-001..003; remove remote Compose/integration → local pre-push make ci; handoff 02-verify-plan'
+    note: 'S046/EV-038 01-requirements IN_PROGRESS (delta) — D-S046-mplan M1→M2→M3→M4; ACs per milestone/ticket #849–#861'
     decision_refs:
-    - D-S045-ac
-    - D-S045-g2
-    - D-S045-open
+    - D-S046-mplan
+    - D-S046-open
     artifacts:
     - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     - docs/feature-list.md
@@ -12293,6 +12340,83 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S046-mplan
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S046-iwxxm-corpus-residuals
+  evolve_cycle_id: EV-038
+  skill: 00-context
+  skill_id: 00-context
+  stage: milestone_plan
+  category: routing
+  status: confirmed
+  topic: Milestone plan M1→M2→M3→M4 + UI + proceed to 01-requirements
+  summary: 'Q1=1 Q2=1 Q3=1 — M1 docs→M2 release-line→M3 soft→M4 encode; UI yes@M2/#854; proceed 01'
+  decision: |
+    D-S046-mplan=Q1=1 Q2=1 Q3=1 — Milestone plan locked for S046/EV-038.
+    Q1=1: M1→M2→M3→M4 order — M1 docs (#858/#861/#855) → M2 release-line (#851–#854)
+    → M3 soft (#859/#860/#857) → M4 encode (#849/#850/#856).
+    Q2=1: UI yes at M2 — local UI work tied to #854.
+    Q3=1: proceed to 01-requirements (delta).
+    Close 00-context (completed 2026-08-05); start 16-evolve in_progress (orchestrator);
+    start 01-requirements in_progress. ui_preview=yes_at_m2_854.
+    No git commit by workflow-state-manager.
+  user_option: 'Q1=1 Q2=1 Q3=1'
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  related_decisions:
+  - D-S046-open
+  deepen_feature_ids:
+  - F2
+  - F4
+  - F6
+  - F7
+  - F32
+  feature_ids: []
+  parent_epic: 846
+  github_issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
+  milestones:
+    M1: [858, 861, 855]
+    M2: [851, 852, 853, 854]
+    M3: [859, 860, 857]
+    M4: [849, 850, 856]
+  ui_preview: yes_at_m2_854
+  note: 'D-S046-mplan locked; current_stage=01-requirements; EV-038 phase 1'
+- id: D-S046-open
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S046-iwxxm-corpus-residuals
+  evolve_cycle_id: EV-038
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: Open S046-iwxxm-corpus-residuals → EV-038 (epic #846 residuals)
+  summary: 'Q1=1 Q2=5 Q3=2 — open S046; whole residuals #849–#861; Standard evolve'
+  decision: |
+    D-S046-open=Q1=1 Q2=5 Q3=2 — Open feature session S046-iwxxm-corpus-residuals with
+    orchestrator 16-evolve / evolve_cycle_id EV-038. session_counter 46;
+    evolve_cycle_counter 38. prior_session S045-matrix-disposition-residuals
+    (EV-037 completed). Scope: epic #846 residual children #849–#861; deepen F2/F4/F6/F7/F32;
+    Standard routing (+05 for B→C). Branch evolve/EV-038-iwxxm-corpus-residuals pending_create.
+    Milestone order pending D-S046-mplan. No git commit by workflow-state-manager.
+  user_option: 'Q1=1 Q2=5 Q3=2'
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  related_decisions: []
+  prior_session: S045-matrix-disposition-residuals
+  prior_evolve_cycle_id: EV-037
+  deepen_feature_ids:
+  - F2
+  - F4
+  - F6
+  - F7
+  - F32
+  feature_ids: []
+  parent_epic: 846
+  github_issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
+  note: 'active_session set; EV-038 created; stages.00-context mirror updated'
 - id: D-S045-02-gate-a
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -33951,6 +34075,88 @@ evolve_cycles:
   pr_number: 845
   pr_status: open
   pr_head: evolve/EV-031-platform-independence-842
+- id: EV-038
+  session_id: S046-iwxxm-corpus-residuals
+  cycle_type: general
+  feature_ids: []
+  deepen_feature_ids:
+  - F2
+  - F4
+  - F6
+  - F7
+  - F32
+  title: "Epic #846 corpus residuals #849–#861"
+  status: in_progress
+  phase: 1
+  phase_note: 'Phase 1 — D-S046-mplan locked M1→M2→M3→M4; UI yes@M2/#854; 01-requirements in_progress'
+  started: '2026-08-05'
+  started_at: '2026-08-05'
+  completed: null
+  scope_summary: |
+    Close all open epic #846 residual children #849–#861 in one Standard evolve cycle,
+    split M1 docs (#858/#861/#855) → M2 release-line (#851–#854) → M3 soft (#859/#860/#857)
+    → M4 encode (#849/#850/#856). Deepen F2/F4/F6/F7/F32; no new Fn unless unlock requires.
+    #854 local UI at M2. Standard: 00→16→01→02→04→05→07→08→09→10→11→12→13.
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 05-verify-tech
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 06-tech-tooling
+  current_stage: 01-requirements
+  current_stage_status: in_progress
+  ui_preview: yes_at_m2_854
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
+  parent_epic: 846
+  milestones:
+    M1: [858, 861, 855]
+    M2: [851, 852, 853, 854]
+    M3: [859, 860, 857]
+    M4: [849, 850, 856]
+  decision_refs: [D-S046-mplan, D-S046-open]
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE — S046 open; D-S046-mplan locked'
+    16-evolve:
+      status: in_progress
+      started: '2026-08-05'
+      completed: null
+      note: 'Phase 0/1 orchestrator — D-S046-mplan locked'
+    01-requirements:
+      status: in_progress
+      started: '2026-08-05'
+      completed: null
+      note: 'ACs per milestone / ticket'
+  notes:
+  - '2026-08-05 D-S046-mplan locked — M1→M2→M3→M4; Q1=1 Q2=1 Q3=1; UI yes@M2/#854; 00-context complete; 01-requirements in_progress'
+  - '2026-08-05 S046/EV-038 OPEN — open_session; Standard routing; epic #846 residuals #849–#861; session_counter 46; evolve_cycle_counter 38; branch evolve/EV-038-iwxxm-corpus-residuals (pending create); 00-context in_progress; milestone split pending D-S046-mplan'
 - id: EV-037
   session_id: S045-matrix-disposition-residuals
   cycle_type: general
