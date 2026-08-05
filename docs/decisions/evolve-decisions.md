@@ -54,13 +54,26 @@ Metrics UI (#836); workbench epic (#840) unless tiny catalog-tier; hand-edit
 | `[docs/domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md]` | cite | adopt gaps | #851–#855, #861 |
 | `[docs/domain/rules/COVERAGE_MATRIX.md]` | cite | G3–G8 / F32 residuals | #849–#850, #856–#861 |
 
+### Acceptance criteria (01 — **approved** AC=1 / **D-S046-ac**)
+
+See [01-requirements-summary.md](../sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md).
+
+| ID | Milestone | Ticket | Summary | Status |
+|----|-----------|--------|---------|--------|
+| AC1–AC3 | M1 | #858/#861/#855 | OOS docs, modelling watch, deprecation template | **approved** |
+| AC4–AC7 | M2 | #851–#854 | SoT, tip-diff, US gate, picker Latest/Previous | **approved** |
+| AC8–AC10 | M3 | #859/#860/#857 | Codes drift, translation-failed, SWXA unlock | **approved** |
+| AC11–AC13 | M4 | #849/#850/#856 | VONA deepen + VA-EGGX `wmoPass` | **approved** |
+| AC14 | Roll-up | #846 | Close/defer all residuals | **approved** |
+
 ### Stage log
 
 | Stage | Status | Note |
 |-------|--------|------|
-| 00-context | completed | Session + branch; D-S046-mplan locked |
+| 00-context | completed | Session-open commit `c56ec359`; D-S046-mplan locked |
 | 16-evolve | in_progress | Phase 0/1 done; orchestrating 01+ |
-| 01-requirements | in_progress | Draft ACs per milestone |
+| 01-requirements | completed | **D-S046-ac** AC=1 approve AC1–AC14; handoff 02-verify-plan |
+| 02-verify-plan | in_progress | Gate A consistency pass |
 
 ---
 

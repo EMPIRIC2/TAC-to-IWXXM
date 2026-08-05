@@ -14,11 +14,11 @@
 |-----|--------|
 | Feature List | Deepen F2/F4/F6/F7/F32 + corpus #846 status — draft below |
 | Test Plan | TC-EV038-001..013 (one per ticket) — draft below |
-| User journeys | Delta for #854 picker labels (UJ deepen) — in 01 standing edit |
+| User journeys | **UJ-050** added in 02 for #854 picker Latest/Previous |
 | Spec / Deploy / Deps / ADR | Skip unless M2 SoT forces API enum doc; ADR only if encode invents packing |
 | COVERAGE_MATRIX / RELEASE_LINE_* | Spec targets for **07-build** (edited in build, not 01) |
 
-## Acceptance criteria (EV-038) — pending approval
+## Acceptance criteria (EV-038) — **approved** (`D-S046-ac` = 1)
 
 ### M1 — Docs / process (#858, #861, #855)
 

@@ -12,8 +12,8 @@
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | S046 open; D-S046-mplan Q1=1 Q2=1 Q3=1 |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase 0/1 locked |
-| 01-requirements | yes | delta | **in_progress** | ACs per milestone / ticket |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 01-requirements | yes | delta | **completed** | **D-S046-ac** AC=1 approve AC1–AC14 |
+| 02-verify-plan | yes | delta | **in_progress** | Gate A |
 | 03-plan-tooling | no | — | skipped | no new Cursor rules expected |
 | 04-tech-plan | yes | delta | pending | execution-plan milestones |
 | 05-verify-tech | yes | delta | pending | B→C with 04 |

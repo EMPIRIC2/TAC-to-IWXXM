@@ -35751,15 +35751,15 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: main
-  ahead_of_origin: 0
-  pushed: true
+  current_branch: evolve/EV-038-iwxxm-corpus-residuals
+  ahead_of_origin: 1
+  pushed: false
   pending_commit: true
-  pending_commit_note: 'dirty — S045/EV-037 close_session applied; workflow-state tip-sync pending parent commit'
+  pending_commit_note: 'dirty — 01-requirements delta in progress (.cursor/rules/core/tdd.mdc, docs/feature-list.md, docs/test-plan.md uncommitted)'
   dirty: true
-  tip_sha: b7302fe4
-  tip_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
-  tip_note: 'S045/EV-037 CLOSED — PR #887 MERGED @ b7302fe4; head tip 2d8202f3; tip-sync CI 31049365217 SUCCESS; active_session=null'
+  tip_sha: c56ec359
+  tip_sha_full: c56ec3593e91c5fffa234c5d858205549b17285e
+  tip_note: 'S046/EV-038 OPEN — commit c56ec359 session-open; 00-context complete; 01-requirements in_progress'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -35770,10 +35770,11 @@ git_history:
   main_merge_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
   main_tip_sha: b7302fe4
   main_tip_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
-  recommended_branch: main
-  note: 'S045/EV-037 CLOSED — PR #887 MERGED @ b7302fe4; tip 2d8202f3 on evolve head; CI 31049365217 SUCCESS; active_session=null; pending_commit true (closeout dirty)'
+  recommended_branch: evolve/EV-038-iwxxm-corpus-residuals
+  note: 'S046/EV-038 OPEN — commit c56ec359 session-open; 00-context complete; 01-requirements in_progress; branch unpushed; dirty pending 01 delta'
 
   notes:
+  - '2026-08-05 S046/EV-038 — recorded git commit c56ec359 (c56ec3593e91c5fffa234c5d858205549b17285e) [EV-038] docs: open S046 for #846 residuals #849–#861; branch evolve/EV-038-iwxxm-corpus-residuals ACTIVE; 00-context complete; 01-requirements in_progress; pushed=false; dirty=true; no git commit by workflow-state-manager'
   - '2026-08-05 S045/EV-037 CLOSE — PR #887 MERGED @ b7302fe4 (head tip 2d8202f3); D-S045-11/D-S045-12-13-waive/D-S045-merge recorded; EV-037 completed; active_session=null; no git commit by workflow-state-manager'
   - '2026-08-05 S045/EV-037 PR #887 CI green @ 7ddcc164 — CI/CD 31047263982 SUCCESS + WMO 31047263704 SUCCESS; awaiting user merge approval; no git commit by workflow-state-manager'
   - '2026-08-05 S045/EV-037 PR #887 OPEN @ 7ddcc164 — CI/CD 31047263982 + WMO quality 31047263704 in progress; D-S045-11 approved; 12/13 waived; awaiting merge approval; no git commit by workflow-state-manager'
@@ -36218,6 +36219,18 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-038-iwxxm-corpus-residuals
+    status: active
+    base: main
+    base_sha: b7302fe4
+    created: "2026-08-05"
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    tip_sha: c56ec359
+    tip_sha_full: c56ec3593e91c5fffa234c5d858205549b17285e
+    exists: true
+    pushed: false
+    note: "S046/EV-038 OPEN — first commit c56ec359 session-open; 01-requirements in_progress"
   - name: evolve/EV-037-matrix-disposition-residuals
     status: merged
     base: main
@@ -37334,6 +37347,33 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: c56ec359
+    short: c56ec359
+    sha_full: c56ec3593e91c5fffa234c5d858205549b17285e
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[EV-038] docs: open S046 for #846 residuals #849–#861"
+    stage: 00-context
+    skill_id: 00-context
+    stages:
+    - 00-context
+    - 01-requirements
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - docs/context/README.md
+    - docs/context/iwxxm-corpus-residuals-846.md
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/README.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/routing-plan.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/session-brief.md
+    - workflow-state.yaml
+    files_changed_count: 8
+    timestamp: "2026-08-05"
+    pushed: false
+    tip_sha: c56ec359
+    tip_sha_full: c56ec3593e91c5fffa234c5d858205549b17285e
+    note: "S046/EV-038 OPEN — session-open commit; 00-context complete; 01-requirements in_progress; epic #846 residuals #849–#861"
   - sha: 7ddcc164
     short: 7ddcc164
     sha_full: 7ddcc16475d4f94fafae6157fcaeb985b8a05275

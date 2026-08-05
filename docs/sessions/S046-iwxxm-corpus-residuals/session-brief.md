@@ -42,11 +42,12 @@ deepen_feature_ids:
   - F32
 feature_note: "Deepen F2/F4/F6/F7/F32 — no new Fn expected unless encode unlock requires; #854 UI"
 route_status: in_progress
-current_stage: 01-requirements
+current_stage: 02-verify-plan
 ui_preview: yes_at_m2_854
 decisions:
   D-S046-open: "Q1=1 Q2=5 Q3=2"
   D-S046-mplan: "Q1=1 Q2=1 Q3=1"
+  D-S046-ac: "1"
 ---
 
 # Session S046 — iwxxm-corpus-residuals
