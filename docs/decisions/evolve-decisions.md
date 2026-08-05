@@ -29,6 +29,9 @@
 | D-S046-mplan Q1 | decision | Order? | **M1 docs → M2 release-line → M3 corpus soft → M4 encode** |
 | D-S046-mplan Q2 | decision | UI preview? | **Yes** — open local non-deployed UI when M2/#854 |
 | D-S046-mplan Q3 | decision | Proceed? | Lock → commit session-open → **01-requirements** |
+| D-S046-ac | decision | ACs? | **AC=1** approve AC1–AC14 |
+| D-S046-02-gate-a | decision | Gate A? | **2** — PASS after OpenAPI/SoT decision in 02 |
+| D-S046-sot | decision | #851 SoT shape? | **1** — Python SoT → generated committed JSON → FE + OpenAPI/CI |
 
 | Milestone | Issues | Theme | Notes |
 |-----------|--------|-------|-------|
@@ -66,14 +69,25 @@ See [01-requirements-summary.md](../sessions/S046-iwxxm-corpus-residuals/reports
 | AC11–AC13 | M4 | #849/#850/#856 | VONA deepen + VA-EGGX `wmoPass` | **approved** |
 | AC14 | Roll-up | #846 | Close/defer all residuals | **approved** |
 
+### SoT decision (02 — locked **D-S046-sot**=1)
+
+| Layer | Choice |
+|-------|--------|
+| Runtime SoT | `apps/backend/src/config/iwxxm_versions.py` |
+| Shared artifact | Generated committed JSON (roles: `latest` / `previous` + `default` + version ids) |
+| FE | Import JSON for picker options/labels (#854) |
+| OpenAPI | Enum/docs from same export; CI asserts match |
+| CI | Regen + drift fail (`git diff --exit-code` or equivalent) |
+
 ### Stage log
 
 | Stage | Status | Note |
 |-------|--------|------|
 | 00-context | completed | Session-open commit `c56ec359`; D-S046-mplan locked |
-| 16-evolve | in_progress | Phase 0/1 done; orchestrating 01+ |
-| 01-requirements | completed | **D-S046-ac** AC=1 approve AC1–AC14; handoff 02-verify-plan |
-| 02-verify-plan | in_progress | Gate A consistency pass |
+| 16-evolve | in_progress | Phase A done; orchestrating 04+ |
+| 01-requirements | completed | **D-S046-ac** AC=1; tip `e9df8f84` |
+| 02-verify-plan | completed | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1); handoff **04-tech-plan** |
+| 04-tech-plan | in_progress | Execution-plan M1–M4 |
 
 ---
 

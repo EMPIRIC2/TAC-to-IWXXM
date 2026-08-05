@@ -13,9 +13,9 @@
 | 00-context | yes | scoped | **completed** | S046 open; D-S046-mplan Q1=1 Q2=1 Q3=1 |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase 0/1 locked |
 | 01-requirements | yes | delta | **completed** | **D-S046-ac** AC=1 approve AC1–AC14 |
-| 02-verify-plan | yes | delta | **in_progress** | Gate A |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1) |
 | 03-plan-tooling | no | — | skipped | no new Cursor rules expected |
-| 04-tech-plan | yes | delta | pending | execution-plan milestones |
+| 04-tech-plan | yes | delta | **in_progress** | execution-plan milestones |
 | 05-verify-tech | yes | delta | pending | B→C with 04 |
 | 06-tech-tooling | no | — | skipped | no new dep tooling expected |
 | 07-build | yes | full | pending | per milestone |
@@ -39,7 +39,7 @@
 |------|--------|------|
 | Phase 0 open | **PASS** (`D-S046-open`) | 2026-08-05 |
 | Milestone plan | **PASS** (`D-S046-mplan`) M1→M2→M3→M4; UI yes@M2 | 2026-08-05 |
-| A→B / 02 | pending | — |
+| A→B / 02 | **PASS** (`D-S046-02-gate-a`=2 + `D-S046-sot`=1) | 2026-08-05 |
 | B→C / 05 | pending | — |
 | C→D / 11 | pending | — |
 | Deploy 12/13 | pending | may waive per-milestone if docs-only |

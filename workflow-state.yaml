@@ -24,7 +24,11 @@ active_session:
   deepen_feature_ids: [F2, F4, F6, F7, F32]
   feature_note: 'Deepen F2/F4/F6/F7/F32 — no new Fn expected unless encode unlock requires one; #854 UI'
   ui_preview: yes_at_m2_854
-  current_stage: 01-requirements
+  current_stage: 04-tech-plan
+  current_stage_note: 'IN_PROGRESS — Gate A PASS (D-S046-02-gate-a); D-S046-sot locked; 04-tech-plan M1–M4 execution plan'
+  tip_sha: e9df8f84
+  tip_sha_full: e9df8f8493803d69cef032327a0d8a899cf476d7
+  tip_sha_note: 'Gate A PASS commit pending — HEAD e9df8f84 still pre-Gate-A; dirty working tree'
   milestones:
     M1: [858, 861, 855]
     M2: [851, 852, 853, 854]
@@ -38,6 +42,12 @@ active_session:
     D-S046-open_note: 'Open S046→EV-038; whole residuals #849–#861; Standard (+05 for B→C)'
     D-S046-mplan: 'Q1=1 Q2=1 Q3=1'
     D-S046-mplan_note: 'M1 docs→M2 release-line→M3 soft→M4 encode; local UI at #854; proceed 01'
+    D-S046-ac: '1'
+    D-S046-ac_note: 'AC=1 approve AC1–AC14; close 01; start 02 awaiting Gate A'
+    D-S046-02-gate-a: '2'
+    D-S046-02-gate-a_note: 'Gate A PASS — S02.M1–M5 as 04/07 work; close 02 → start 04-tech-plan'
+    D-S046-sot: '1'
+    D-S046-sot_note: 'Python SoT → generated committed JSON → FE + OpenAPI/CI (#851/#854)'
   stages:
     00-context:
       status: completed
@@ -48,12 +58,22 @@ active_session:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase 0/1 — D-S046-mplan locked; orchestrator active'
+      note: 'Phase 2 (Phase B) — Gate A PASS; orchestrating 04-tech-plan M1–M4'
     01-requirements:
+      status: completed
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE — D-S046-ac AC1–AC14 approved; handoff 02-verify-plan'
+    02-verify-plan:
+      status: completed
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE — Gate A PASS (D-S046-02-gate-a + D-S046-sot); handoff 04-tech-plan'
+    04-tech-plan:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'ACs per milestone / ticket (#849–#861)'
+      note: 'IN_PROGRESS — execution plan M1–M4; SoT python_to_generated_json_fe_openapi_ci'
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
@@ -5408,12 +5428,12 @@ stages:
     - docs/decisions/evolve-decisions.md
 
   01-requirements:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: null
-    completed: null
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     session_id: S046-iwxxm-corpus-residuals
     evolve_cycle_id: EV-038
     prior_session_id: S045-matrix-disposition-residuals
@@ -5424,8 +5444,9 @@ stages:
     prior_prior_session_id: S044-local-precommit-long-jobs
     prior_prior_evolve_cycle_id: EV-036
     prior_prior_note: 'S044/EV-036 01-requirements COMPLETE (delta) — D-S044-r1-ac R1=local_compose AC=1; M5 ACs + TC-EV036-001..003; remove remote Compose/integration → local pre-push make ci; handoff 02-verify-plan'
-    note: 'S046/EV-038 01-requirements IN_PROGRESS (delta) — D-S046-mplan M1→M2→M3→M4; ACs per milestone/ticket #849–#861'
+    note: 'S046/EV-038 01-requirements COMPLETE (delta) — D-S046-ac AC=1 approve AC1–AC14; handoff 02-verify-plan'
     decision_refs:
+    - D-S046-ac
     - D-S046-mplan
     - D-S046-open
     artifacts:
@@ -6150,24 +6171,25 @@ stages:
     started: '2026-08-05'
     completed_at: '2026-08-05'
     completed: '2026-08-05'
-    session_id: S045-matrix-disposition-residuals
-    evolve_cycle_id: EV-037
-    prior_session_id: S044-local-precommit-long-jobs
-    prior_evolve_cycle_id: EV-036
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    prior_session_id: S045-matrix-disposition-residuals
+    prior_evolve_cycle_id: EV-037
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
-    prior_note: 'S044/EV-036 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S044-02-gate-a); contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; S02.M2 keep remote units+coverage+PR comment; drop validate+Compose; local lint only; report reports/02-verify-plan-audit.md; handoff 07-build'
-    prior_prior_session_id: S043-rule-source-traceability
-    prior_prior_evolve_cycle_id: EV-035
-    prior_prior_note: 'S043/EV-035 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S043-02-phase-a); Batch A 1,1,1,1 (D-S043-02-batch-a); reports/02-verify-plan-audit.md + provenance-gaps.md; handoff 04-tech-plan'
-    note: 'S045/EV-037 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S045-02-gate-a); GateA=1 pass_S02.M1-M3_as_07; report reports/02-verify-plan-audit.md; handoff 07-build'
+    prior_note: 'S045/EV-037 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S045-02-gate-a); GateA=1 pass_S02.M1-M3_as_07; report reports/02-verify-plan-audit.md; handoff 07-build'
+    prior_prior_session_id: S044-local-precommit-long-jobs
+    prior_prior_evolve_cycle_id: EV-036
+    prior_prior_note: 'S044/EV-036 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S044-02-gate-a); contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; S02.M2 keep remote units+coverage+PR comment; drop validate+Compose; local lint only; report reports/02-verify-plan-audit.md; handoff 07-build'
+    note: 'S046/EV-038 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S046-02-gate-a=2 + D-S046-sot=1); S02.M1–M5 as 04/07; handoff 04-tech-plan'
     contradictions_resolved: []
     contradictions_deferred:
     decision_refs:
-    - D-S045-02-gate-a
-    - D-S045-ac
-    - D-S045-g2
-    - D-S045-open
+    - D-S046-02-gate-a
+    - D-S046-sot
+    - D-S046-ac
+    - D-S046-mplan
+    - D-S046-open
     substeps:
       inventory:
         status: completed
@@ -6178,10 +6200,62 @@ stages:
         pending: 0
         reviewed: 3
         status: completed
-        note: 'Gate A PASS — S02.M1–M3 accepted as 07 work'
+        note: 'Gate A PASS — S02.M1–M5 as 04/07 work'
     current_document:
     current_statement:
     active_session:
+      session_id: S046-iwxxm-corpus-residuals
+      evolve_cycle_id: EV-038
+      skill_id: 02-verify-plan
+      status: completed
+      mode: delta
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S046-02-gate-a + D-S046-sot); handoff 04-tech-plan'
+      feature_ids: []
+      deepen_feature_ids:
+      - F2
+      - F4
+      - F6
+      - F7
+      - F32
+      decision_refs:
+      - D-S046-02-gate-a
+      - D-S046-sot
+      - D-S046-ac
+      - D-S046-mplan
+      - D-S046-open
+      artifacts:
+      - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+      - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
+    prior_active_session:
+      session_id: S046-iwxxm-corpus-residuals
+      evolve_cycle_id: EV-038
+      skill_id: 02-verify-plan
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: null
+      completed: null
+      note: 'IN_PROGRESS (delta) — D-S046-ac AC1–AC14 approved; awaiting Gate A; report 02-verify-plan-audit.md + UJ-050'
+      feature_ids: []
+      deepen_feature_ids:
+      - F2
+      - F4
+      - F6
+      - F7
+      - F32
+      decision_refs:
+      - D-S046-ac
+      - D-S046-mplan
+      - D-S046-open
+      artifacts:
+      - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+      - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
+    prior_prior_active_session:
       session_id: S045-matrix-disposition-residuals
       evolve_cycle_id: EV-037
       skill_id: 02-verify-plan
@@ -6205,28 +6279,9 @@ stages:
       artifacts:
       - docs/sessions/S045-matrix-disposition-residuals/reports/02-verify-plan-audit.md
       - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
-    prior_active_session:
-      session_id: S044-local-precommit-long-jobs
-      evolve_cycle_id: EV-036
-      skill_id: 02-verify-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      completed_at: '2026-08-05'
-      completed: '2026-08-05'
-      note: 'COMPLETE (delta) — Gate A PASS (D-S044-02-gate-a); S02.M2 modified; handoff 07-build'
-      feature_ids: []
-      deepen_feature_ids:
-      - M5
-      decision_refs:
-      - D-S044-02-gate-a
-      - D-S044-r1-ac
-      - D-S044-g1-g2
-      artifacts:
-      - docs/sessions/S044-local-precommit-long-jobs/reports/02-verify-plan-audit.md
-      - docs/sessions/S044-local-precommit-long-jobs/reports/01-requirements-summary.md
     artifacts:
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
     - docs/sessions/S045-matrix-disposition-residuals/reports/02-verify-plan-audit.md
     - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     - docs/sessions/S044-local-precommit-long-jobs/reports/02-verify-plan-audit.md
@@ -6254,6 +6309,32 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S046-iwxxm-corpus-residuals
+      evolve_cycle_id: EV-038
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: '2026-08-05'
+      completed: '2026-08-05'
+      mode: delta
+      feature_ids: []
+      deepen:
+      - F2
+      - F4
+      - F6
+      - F7
+      - F32
+      decision_refs:
+      - D-S046-02-gate-a
+      - D-S046-sot
+      - D-S046-ac
+      - D-S046-mplan
+      - D-S046-open
+      note: 'COMPLETE (delta) — Gate A PASS (D-S046-02-gate-a + D-S046-sot); S02.M1–M5 as 04/07; handoff 04-tech-plan'
+      artifacts:
+      - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+      - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
     - session_id: S043-rule-source-traceability
       evolve_cycle_id: EV-035
       skill_id: 02-verify-plan
@@ -6748,6 +6829,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-08-05 S046/EV-038 02-verify-plan COMPLETE (D-S046-02-gate-a + D-S046-sot) — Gate A PASS; S02.M1–M5 as 04/07; handoff 04-tech-plan; commit sha pending (HEAD e9df8f84 pre-Gate-A); no git commit by workflow-state-manager'
     - '2026-08-05 S045/EV-037 02-verify-plan COMPLETE (D-S045-02-gate-a) — Gate A PASS; GateA=1 pass_S02.M1-M3_as_07; report docs/sessions/S045-matrix-disposition-residuals/reports/02-verify-plan-audit.md; handoff 07-build; no git commit by workflow-state-manager'
     - '2026-08-05 S044/EV-036 02-verify-plan COMPLETE (D-S044-02-gate-a) — Gate A PASS; contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; S02.M2 keep remote units+coverage+PR comment; drop validate+Compose; local lint only; report docs/sessions/S044-local-precommit-long-jobs/reports/02-verify-plan-audit.md; handoff 07-build; no commit SHA invented'
     - '2026-08-03 S038/EV-031 02-verify-plan STARTED (delta) — D-S038-01-gate-a lean docs accepted at 01 exit; commit fc3bbe5; gaps deferred to 04; #842/#830/#712'
@@ -6879,31 +6961,20 @@ stages:
     previous_session_id: S042-doks-cd-rollout
     previous_evolve_cycle_id: EV-034
     previous_note: 'S042/EV-034 04-tech-plan COMPLETE (delta) — Gate B; execution-plan T1.1–T1.5; handoff 07-build'
-    prior_session_id: S042-doks-cd-rollout
-    prior_evolve_cycle_id: EV-034
+    prior_session_id: S046-iwxxm-corpus-residuals
+    prior_evolve_cycle_id: EV-038
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
-    prior_note: 'S042/EV-034 04-tech-plan COMPLETE (delta) — Gate B; execution-plan T1.1–T1.5; handoff 07-build'
-    session_id: S043-rule-source-traceability
-    evolve_cycle_id: EV-035
-    note: 'S043/EV-035 04-tech-plan STARTED (delta) — Gate A PASS; D-S043-02-phase-a / D-S043-02-batch-a 1,1,1,1; after 02-verify-plan'
+    prior_note: 'S046/EV-038 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S046-02-gate-a + D-S046-sot); handoff 04-tech-plan'
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    note: 'S046/EV-038 04-tech-plan STARTED (delta) — Gate A PASS; D-S046-02-gate-a / D-S046-sot; execution plan M1–M4; SoT python_to_generated_json_fe_openapi_ci'
     decision_refs:
-    - D-S043-02-phase-a
-    - D-S043-02-batch-a
-    - D-S040-04-plan
-    - D-S040-04-batch-2
-    - D-S040-04-batch-1
-    - D-S040-02-phase-a
-    - D-S040-02-batch-f
-    - D-S040-E32-M
-    - D-S038-04-plan
-    - D-S038-04-b1
-    - D-S038-04-b2
-    - D-S038-02-phase-a
-    - D-S038-02-batch-c
-    - D-S038-01-gate-a
-    - D-S038-tp
-    - D-S038-fn
+    - D-S046-02-gate-a
+    - D-S046-sot
+    - D-S046-ac
+    - D-S046-mplan
+    - D-S046-open
     substeps:
       phase_1_toolchain:
         status: pending
@@ -6918,6 +6989,29 @@ stages:
       phase_6_documents:
         status: pending
     active_session:
+      session_id: S046-iwxxm-corpus-residuals
+      evolve_cycle_id: EV-038
+      skill_id: 04-tech-plan
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: null
+      completed: null
+      note: 'STARTED (delta) — Gate A PASS; SoT python_to_generated_json_fe_openapi_ci; execution plan M1–M4'
+      feature_ids: []
+      deepen_feature_ids:
+      - F2
+      - F4
+      - F6
+      - F7
+      - F32
+      decision_refs:
+      - D-S046-02-gate-a
+      - D-S046-sot
+      - D-S046-ac
+      - D-S046-mplan
+    prior_active_session:
       session_id: S043-rule-source-traceability
       evolve_cycle_id: EV-035
       skill_id: 04-tech-plan
@@ -6938,7 +7032,7 @@ stages:
       - D-S043-02-phase-a
       - D-S043-02-batch-a
     artifacts:
-    - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
     - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
     - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
     - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
@@ -6967,6 +7061,28 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S046-iwxxm-corpus-residuals
+      evolve_cycle_id: EV-038
+      skill_id: 04-tech-plan
+      status: in_progress
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      mode: delta
+      feature_ids: []
+      deepen:
+      - F2
+      - F4
+      - F6
+      - F7
+      - F32
+      decision_refs:
+      - D-S046-02-gate-a
+      - D-S046-sot
+      - D-S046-ac
+      - D-S046-mplan
+      note: 'STARTED (delta) — Gate A PASS; SoT python_to_generated_json_fe_openapi_ci; execution plan M1–M4'
+      artifacts:
+      - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
     - session_id: S043-rule-source-traceability
       evolve_cycle_id: EV-035
       skill_id: 04-tech-plan
@@ -7754,6 +7870,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-08-05 S046/EV-038 04-tech-plan STARTED (D-S046-02-gate-a + D-S046-sot) — Gate A PASS; gates.a_to_b passed; SoT python_to_generated_json_fe_openapi_ci; execution plan M1–M4; commit sha pending; no git commit by workflow-state-manager'
     - '2026-08-03 S038/EV-031 04 COMPLETE Gate B (D-S038-04-plan=1) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; gates.b_to_c passed; sha pending parent commit; #842/#830/#712'
     - '2026-08-03 S038/EV-031 — D-S038-04-b2=1,1,1(+CI),1 Batches 1–2 locked (placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B); execution-plan.md drafted (38 tasks M0–M7); Gate B pending (D-S038-04-plan); 04 remains in_progress; tip 6b7fd0e; #842/#830/#712'
     - '2026-08-03 S038/EV-031 04 Batch 1 locked (D-S038-04-b1=1,2,1,1) — M0–M7; JWT=JWKS-only; Alembic under apps/backend (+ SQLAlchemy session repo); restore packages/auth from c9cebfa^ strip admin; reports/04-tech-plan.md started; Batch 2 pending; tip 6b7fd0e; #842/#830/#712'
@@ -12340,6 +12457,143 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S046-02-gate-a
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S046-iwxxm-corpus-residuals
+  evolve_cycle_id: EV-038
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate A PASS → 04-tech-plan (03 skipped)'
+  summary: '2 — Gate A PASS after SoT decision; S02.M1–M5 as 04/07 work; close 02 → start 04-tech-plan'
+  decision: |
+    D-S046-02-gate-a=2 — Gate A PASS for S046/EV-038 after OpenAPI/SoT decision in 02.
+    User intent: Gate A = 2 PASS with S02.M1–M5 accepted as 04/07 work (not 01 doc bugs).
+    S02.M1: execution-plan task tables → 04-tech-plan.
+    S02.M2: COVERAGE_MATRIX / RELEASE_LINE_* domain edits → 07-build per milestone.
+    S02.M3: SoT resolved by D-S046-sot=1 — Python → generated JSON → FE + OpenAPI/CI.
+    S02.M4: encode ACs may stay cite-only if no WMO peer → 07 implement or defer per AC.
+    S02.M5: deploy 12/13 per-milestone waive possible for docs-only M1.
+    Close 02-verify-plan (completed 2026-08-05); start 04-tech-plan (delta).
+    gates.a_to_b=passed; Phase 2 (Phase B); Standard routing (03 skipped).
+    deepen_feature_ids=[F2,F4,F6,F7,F32]; tickets #849–#861.
+    Gate A PASS commit pending — HEAD e9df8f84 still pre-Gate-A; no git commit by workflow-state-manager.
+  user_option: '2'
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  related_decisions:
+  - D-S046-sot
+  - D-S046-ac
+  - D-S046-mplan
+  - D-S046-open
+  deepen_feature_ids:
+  - F2
+  - F4
+  - F6
+  - F7
+  - F32
+  feature_ids: []
+  parent_epic: 846
+  github_issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
+  artifacts:
+  - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+  - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
+  - docs/decisions/evolve-decisions.md
+  note: '02-verify-plan COMPLETE; current_stage=04-tech-plan; Gate A commit sha pending'
+- id: D-S046-sot
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S046-iwxxm-corpus-residuals
+  evolve_cycle_id: EV-038
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: architecture
+  status: confirmed
+  topic: '#851 SoT shape — Python → generated JSON → FE + OpenAPI/CI'
+  summary: '1 — Python SoT (iwxxm_versions.py) → generated committed JSON → FE picker + OpenAPI enum + CI drift'
+  decision: |
+    D-S046-sot=1 — SoT shape locked for #851/#854 in S046/EV-038.
+    Runtime SoT: apps/backend/src/config/iwxxm_versions.py.
+    Shared artifact: generated committed JSON (roles latest/previous + default + version ids).
+    FE: import JSON for picker options/labels (#854 / UJ-050).
+    OpenAPI: enum/docs from same export; CI asserts match.
+    CI: regen + drift fail (git diff --exit-code or equivalent).
+    sot_decision=python_to_generated_json_fe_openapi_ci.
+    Implement in 04-tech-plan design + 07-build (M2).
+    Gate A PASS commit pending — no git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  related_decisions:
+  - D-S046-02-gate-a
+  - D-S046-ac
+  - D-S046-mplan
+  deepen_feature_ids:
+  - F2
+  - F4
+  - F6
+  - F7
+  - F32
+  feature_ids: []
+  parent_epic: 846
+  github_issues: [851, 852, 853, 854]
+  artifacts:
+  - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+  - docs/decisions/evolve-decisions.md
+  note: 'SoT locked; handoff 04-tech-plan; commit sha pending'
+- id: D-S046-ac
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S046-iwxxm-corpus-residuals
+  evolve_cycle_id: EV-038
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: requirements
+  status: confirmed
+  topic: Approve AC1–AC14 → close 01-requirements → start 02-verify-plan
+  summary: 'AC=1 approve_AC1-14_close_01 — AC1–AC14 approved; close 01; start 02-verify-plan awaiting Gate A'
+  decision: |
+    D-S046-ac=AC=1 — 01-requirements delta for S046/EV-038.
+    AC=1: approve AC1–AC14 (TC-EV038-001..014) — M1 docs (#858/#861/#855),
+    M2 release-line (#851–#854 incl. UJ-050), M3 soft (#859/#860/#857),
+    M4 encode (#849/#850/#856), AC14 epic roll-up.
+    Close 01-requirements (completed 2026-08-05); start 02-verify-plan (delta)
+    awaiting Gate A. deepen_feature_ids=[F2,F4,F6,F7,F32]; feature_ids=[]; tickets #849–#861.
+    Standard routing: next Gate A then 04-tech-plan.
+    Commit e9df8f84 records 01 delta + 02 audit draft + UJ-050.
+  user_option: 'AC=1'
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  related_decisions:
+  - D-S046-mplan
+  - D-S046-open
+  deepen_feature_ids:
+  - F2
+  - F4
+  - F6
+  - F7
+  - F32
+  feature_ids: []
+  parent_epic: 846
+  github_issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
+  milestones:
+    M1: [858, 861, 855]
+    M2: [851, 852, 853, 854]
+    M3: [859, 860, 857]
+    M4: [849, 850, 856]
+  artifacts:
+  - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
+  - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+  - docs/feature-list.md
+  - docs/test-plan.md
+  - docs/user-journeys.md
+  - docs/decisions/evolve-decisions.md
+  note: '01-requirements COMPLETE; current_stage=02-verify-plan awaiting Gate A; commit e9df8f84'
 - id: D-S046-mplan
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -34087,8 +34341,8 @@ evolve_cycles:
   - F32
   title: "Epic #846 corpus residuals #849–#861"
   status: in_progress
-  phase: 1
-  phase_note: 'Phase 1 — D-S046-mplan locked M1→M2→M3→M4; UI yes@M2/#854; 01-requirements in_progress'
+  phase: 2
+  phase_note: 'Phase 2 (Phase B) — Gate A PASS; 04-tech-plan in_progress; SoT python_to_generated_json_fe_openapi_ci; UI yes@M2/#854'
   started: '2026-08-05'
   started_at: '2026-08-05'
   completed: null
@@ -34115,17 +34369,18 @@ evolve_cycles:
     skipped_stages:
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 01-requirements
+  current_stage: 04-tech-plan
   current_stage_status: in_progress
   ui_preview: yes_at_m2_854
   branch: evolve/EV-038-iwxxm-corpus-residuals
+  sot_decision: python_to_generated_json_fe_openapi_ci
   gates:
-    a_to_b: pending
+    a_to_b: passed
     b_to_c: pending
     c_to_d: pending
     deploy: pending
   checkpoints:
-    phase_a: pending
+    phase_a: passed
     phase_b: pending
     phase_c: pending
     phase_d: pending
@@ -34137,7 +34392,7 @@ evolve_cycles:
     M2: [851, 852, 853, 854]
     M3: [859, 860, 857]
     M4: [849, 850, 856]
-  decision_refs: [D-S046-mplan, D-S046-open]
+  decision_refs: [D-S046-ac, D-S046-mplan, D-S046-open, D-S046-02-gate-a, D-S046-sot]
   stages:
     00-context:
       status: completed
@@ -34148,13 +34403,25 @@ evolve_cycles:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase 0/1 orchestrator — D-S046-mplan locked'
+      note: 'Phase 2 orchestrator — Gate A PASS; 04-tech-plan active'
     01-requirements:
+      status: completed
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE — D-S046-ac AC1–AC14 approved; handoff 02-verify-plan'
+    02-verify-plan:
+      status: completed
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE — Gate A PASS (D-S046-02-gate-a + D-S046-sot); handoff 04-tech-plan'
+    04-tech-plan:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'ACs per milestone / ticket'
+      note: 'IN_PROGRESS — execution plan M1–M4; SoT export + drift CI design'
   notes:
+  - '2026-08-05 D-S046-02-gate-a=2 + D-S046-sot=1 — Gate A PASS; close 02-verify-plan; start 04-tech-plan; gates.a_to_b=passed; commit sha pending (HEAD e9df8f84 pre-Gate-A)'
+  - '2026-08-05 D-S046-ac AC=1 — approve AC1–AC14; close 01-requirements; start 02-verify-plan awaiting Gate A; commit e9df8f84'
   - '2026-08-05 D-S046-mplan locked — M1→M2→M3→M4; Q1=1 Q2=1 Q3=1; UI yes@M2/#854; 00-context complete; 01-requirements in_progress'
   - '2026-08-05 S046/EV-038 OPEN — open_session; Standard routing; epic #846 residuals #849–#861; session_counter 46; evolve_cycle_counter 38; branch evolve/EV-038-iwxxm-corpus-residuals (pending create); 00-context in_progress; milestone split pending D-S046-mplan'
 - id: EV-037
@@ -35752,14 +36019,16 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-038-iwxxm-corpus-residuals
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit: true
-  pending_commit_note: 'dirty — 01-requirements delta in progress (.cursor/rules/core/tdd.mdc, docs/feature-list.md, docs/test-plan.md uncommitted)'
+  pending_commit_note: 'dirty — Gate A PASS docs uncommitted; HEAD e9df8f84 pre-Gate-A; .cursor/rules/core/tdd.mdc + evolve-decisions + S046 reports + execution-plan.md'
   dirty: true
-  tip_sha: c56ec359
-  tip_sha_full: c56ec3593e91c5fffa234c5d858205549b17285e
-  tip_note: 'S046/EV-038 OPEN — commit c56ec359 session-open; 00-context complete; 01-requirements in_progress'
+  tip_sha: e9df8f84
+  tip_sha_full: e9df8f8493803d69cef032327a0d8a899cf476d7
+  tip_note: 'S046/EV-038 — Gate A PASS recorded; 02 complete; 04-tech-plan in_progress; Gate A commit sha PENDING (HEAD e9df8f84 still pre-Gate-A)'
+  gate_a_commit_pending: true
+  gate_a_commit_note: 'Awaiting parent commit with "Gate A PASS" in message; do not record sha until landed'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -35771,9 +36040,11 @@ git_history:
   main_tip_sha: b7302fe4
   main_tip_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
   recommended_branch: evolve/EV-038-iwxxm-corpus-residuals
-  note: 'S046/EV-038 OPEN — commit c56ec359 session-open; 00-context complete; 01-requirements in_progress; branch unpushed; dirty pending 01 delta'
+  note: 'S046/EV-038 — Gate A PASS (D-S046-02-gate-a + D-S046-sot); 02 complete; 04-tech-plan in_progress; Gate A commit pending; branch unpushed; dirty working tree'
 
   notes:
+  - '2026-08-05 S046/EV-038 Gate A PASS — D-S046-02-gate-a=2 + D-S046-sot=1; close 02-verify-plan; start 04-tech-plan; gates.a_to_b=passed; commit sha PENDING (HEAD e9df8f84 pre-Gate-A message); no git commit by workflow-state-manager'
+  - '2026-08-05 S046/EV-038 — recorded git commit e9df8f84 (e9df8f8493803d69cef032327a0d8a899cf476d7) [EV-038] docs: approve AC1–AC14; 02 audit + UJ-050; D-S046-ac AC=1; 01-requirements COMPLETE; 02-verify-plan in_progress awaiting Gate A; pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit c56ec359 (c56ec3593e91c5fffa234c5d858205549b17285e) [EV-038] docs: open S046 for #846 residuals #849–#861; branch evolve/EV-038-iwxxm-corpus-residuals ACTIVE; 00-context complete; 01-requirements in_progress; pushed=false; dirty=true; no git commit by workflow-state-manager'
   - '2026-08-05 S045/EV-037 CLOSE — PR #887 MERGED @ b7302fe4 (head tip 2d8202f3); D-S045-11/D-S045-12-13-waive/D-S045-merge recorded; EV-037 completed; active_session=null; no git commit by workflow-state-manager'
   - '2026-08-05 S045/EV-037 PR #887 CI green @ 7ddcc164 — CI/CD 31047263982 SUCCESS + WMO 31047263704 SUCCESS; awaiting user merge approval; no git commit by workflow-state-manager'
@@ -36226,11 +36497,11 @@ git_history:
     created: "2026-08-05"
     session_id: S046-iwxxm-corpus-residuals
     evolve_cycle_id: EV-038
-    tip_sha: c56ec359
-    tip_sha_full: c56ec3593e91c5fffa234c5d858205549b17285e
+    tip_sha: e9df8f84
+    tip_sha_full: e9df8f8493803d69cef032327a0d8a899cf476d7
     exists: true
     pushed: false
-    note: "S046/EV-038 OPEN — first commit c56ec359 session-open; 01-requirements in_progress"
+    note: "S046/EV-038 — commit e9df8f84 AC1–AC14 approved; 01 complete; 02-verify-plan in_progress awaiting Gate A"
   - name: evolve/EV-037-matrix-disposition-residuals
     status: merged
     base: main
@@ -37347,6 +37618,34 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: e9df8f84
+    short: e9df8f84
+    sha_full: e9df8f8493803d69cef032327a0d8a899cf476d7
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[EV-038] docs: approve AC1–AC14; 02 audit + UJ-050"
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    stages:
+    - 01-requirements
+    - 02-verify-plan
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/feature-list.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/02-verify-plan-audit.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/routing-plan.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/session-brief.md
+    - docs/test-plan.md
+    - docs/user-journeys.md
+    - workflow-state.yaml
+    files_changed_count: 9
+    timestamp: "2026-08-05"
+    pushed: false
+    tip_sha: e9df8f84
+    tip_sha_full: e9df8f8493803d69cef032327a0d8a899cf476d7
+    note: "S046/EV-038 — D-S046-ac AC1–AC14 approved; 01 complete; 02-verify-plan in_progress awaiting Gate A; UJ-050 added"
   - sha: c56ec359
     short: c56ec359
     sha_full: c56ec3593e91c5fffa234c5d858205549b17285e

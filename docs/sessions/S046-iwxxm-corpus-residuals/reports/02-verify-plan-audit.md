@@ -50,7 +50,7 @@ deploy.md, dependency-inventory (04 if new deps).
 |----|-----------|-------|-----------|
 | S02.M1 | Execution-plan tasks for M1–M4 do not exist yet | Expected — Standard uses **04-tech-plan** | **04:** write milestone task tables |
 | S02.M2 | COVERAGE_MATRIX / RELEASE_LINE_* not yet updated for AC1–AC3/AC8–AC13 | 01 text ahead of domain edits | **07:** per-milestone domain edits |
-| S02.M3 | OpenAPI / FE SoT artifact (#851) not designed | AC4 needs tech choice (JSON export vs shared module) | **04:** decide SoT shape |
+| S02.M3 | OpenAPI / FE SoT artifact (#851) not designed | **RESOLVED** `D-S046-sot`=1 — Python → generated JSON → FE + OpenAPI/CI | **04/07:** implement export + drift CI |
 | S02.M4 | Encode ACs (#849/#850/#856) may stay cite-only if no WMO peer | Already in AC text | **07:** implement or document deferral per AC |
 | S02.M5 | Deploy 12/13 required by Standard; M1 is docs-only | Per-milestone waive possible | Gate: waive 12/13 for docs-only ship; keep for M2+/runtime |
 
@@ -69,3 +69,12 @@ in this audit by adding **UJ-050**.
 
 **PASS** with S02.M1–M5 accepted as **04/07** work (not 01 doc bugs). Close 02 → start
 **04-tech-plan** (Standard; 03 skipped).
+
+## Gate A result (locked)
+
+| ID | Decision |
+|----|----------|
+| D-S046-02-gate-a | **2** — PASS after SoT decision in 02 |
+| D-S046-sot | **1** — Python SoT → generated committed JSON → FE + OpenAPI/CI |
+
+**Status:** Gate A **PASS** 2026-08-05 — close 02 → **04-tech-plan**.

@@ -32,7 +32,7 @@
 
 | ID | Criterion | Ticket | TC |
 |----|-----------|--------|-----|
-| AC4 | Single SoT drives FE picker options + documented API enum; CI fails on drift | #851 | TC-EV038-004 |
+| AC4 | Single SoT drives FE picker options + documented API enum; CI fails on drift — **locked** `D-S046-sot`=1: Python → generated JSON → FE + OpenAPI/CI | #851 | TC-EV038-004 |
 | AC5 | Sync-PR tip-diff script/job lists XSD/SCH/example stem deltas; linked from adopt checklist; no hand-edit vendor | #852 | TC-EV038-005 |
 | AC6 | iwxxm-us compatibility checklist (+ optional CI smoke) when WMO default moves; lag decision documented | #853 | TC-EV038-006 |
 | AC7 | Version picker (or help) shows Latest / Previous roles; stays in sync with SoT; no convert-semantics change | #854 | TC-EV038-007 |

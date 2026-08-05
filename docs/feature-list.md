@@ -1388,8 +1388,11 @@
   [01-requirements-summary.md](sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md);
   **TC-EV038-001..014**
 - **UI**: #854 — local non-deployed preview at M2 (`D-S046-mplan` Q2=1); H4–H5 at deploy
+- **SoT (#851)**: Python `iwxxm_versions.py` → generated committed JSON (roles
+  `latest`/`previous`) → FE + OpenAPI/CI (`D-S046-sot`=1)
 - **Journeys / tests**: **UJ-050** (version picker Latest/Previous); **TC-EV038-001..014**;
   prior **TC-EV032-*** / **TC-F32-***
+- **Execution plan**: [execution-plan.md](sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md)
 - **Out of scope**: Metrics UI #836; workbench epic #840 unless tiny catalog-tier;
   hand-edit `vendor/schemas/*`; re-pin as primary goal
 - **Corpus**: `[Corpus: product]` · `[Corpus: tech-spec]` · `[Corpus: api]` ·
