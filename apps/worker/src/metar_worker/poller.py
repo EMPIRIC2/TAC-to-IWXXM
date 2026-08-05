@@ -8,6 +8,11 @@ from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 
+from metar_worker.poller_url import (
+    DEFAULT_FIXTURE_INGEST_POLLER_URL,
+    validate_ingest_poller_url,
+)
+
 
 @dataclass(frozen=True, slots=True)
 class IngestJob:
@@ -98,8 +103,7 @@ def fetch_jobs(
     list[IngestJob]
         Zero or more jobs from the feed.
     """
-    if not url.lower().startswith("https://"):
-        raise ValueError("INGEST_POLLER_URL must be an https:// URL (ADR-018 Q16=A)")
+    url = validate_ingest_poller_url(url)
 
     own_client = client is None
     http = client or httpx.Client(timeout=timeout)
@@ -113,4 +117,10 @@ def fetch_jobs(
             http.close()
 
 
-__all__ = ["IngestJob", "fetch_jobs", "safe_url_for_log"]
+__all__ = [
+    "DEFAULT_FIXTURE_INGEST_POLLER_URL",
+    "IngestJob",
+    "fetch_jobs",
+    "safe_url_for_log",
+    "validate_ingest_poller_url",
+]

@@ -3,10 +3,641 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 38
-evolve_cycle_counter: 31
+session_counter: 41
+evolve_cycle_counter: 33
 active_session:
+  id: S041-worker-poller-hardening
+  type: feature
+  intent: |
+    Harden F8 worker INGEST_POLLER_URL cutover (prevention 1-5 + code guard)
+  status: in_progress
+  branch: evolve/EV-033-worker-poller-hardening
+  branch_note: created from origin/main @ 769d3f83; active; dirty worktree (docs+code+scripts) awaiting commit/PR
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-033
+  artifacts_dir: docs/sessions/S041-worker-poller-hardening/
+  prior_session: S040-iwxxm-corpus-quality
+  prior_session_note: 'S040/EV-032 SUSPENDED (not completed/cancelled) for S041 poller hardening; resume after S041 — was at 13-deploy-smoke / T4.5'
+  feature_ids: []
+  deepen_feature_ids:
+  - F8
+  preset: Standard
+  preset_status: approved
+  route_status: approved_D-S041-open
+  phase0_choices:
+    D-S041-open: proceed_1-5_plus_code
+    locked_at: '2026-08-04'
+    summary: |
+      User approved separate poller hardening via /16-evolve while S040 paused.
+      Scope: prevention items 1–5 + code guard (fail-closed scale, CI preflight,
+      docs default fixture URL, no stale Render copy, CrashLoop alert,
+      code rejects REPLACE_ME/non-https). AskQuestion unavailable — chat proceed.
+  decisions:
+    D-S041-open: proceed_1-5_plus_code
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — open_session after S040 suspend; D-S041-open proceed 1-5 + code; Standard; handoff 16-evolve'
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'ORCHESTRATING — 07-build in_progress (docs+code+scripts); 01/02/04 delta lean complete; awaiting commit/PR/user verify'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 07-build
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'IN_PROGRESS — docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
+  - stage: 08-verify-build
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 09-qa
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 10-e2e
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 11-verify-impl
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 12-verify-deploy
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 13-deploy-smoke
+    required: true
+    status: pending
+    skip_rationale:
+  current_stage: 07-build
+  started_at: '2026-08-04'
+  started: '2026-08-04'
+  context_briefs: []
+  artifacts:
+  - path: docs/sessions/S041-worker-poller-hardening/session-brief.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S041-worker-poller-hardening/routing-plan.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S041-worker-poller-hardening/reports/evolve-progress.md
+    status: written
+    stage: 07-build
+  - path: deploy/doks/README-worker-hardening.md
+    status: written
+    stage: 07-build
+  - path: apps/worker/src/metar_worker/poller_url.py
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/validate_ingest_poller_url.py
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/doks_worker_poller_preflight.sh
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/check_worker_crashloop.sh
+    status: written
+    stage: 07-build
+  - path: deploy/doks/observability/prometheusrule-metar-worker.yaml
+    status: written
+    stage: 07-build
+  - path: apps/worker/tests/test_validate_ingest_poller_url.py
+    status: written
+    stage: 07-build
+  - path: tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py
+    status: written
+    stage: 07-build
+  decision_refs:
+  - D-S041-open
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  note: 'IN_PROGRESS — S041/EV-033 at 07-build; branch active from origin/main @ 769d3f83; 01/02/04 delta lean complete; docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
 sessions:
+- id: S041-worker-poller-hardening
+  type: feature
+  intent: |
+    Harden F8 worker INGEST_POLLER_URL cutover (prevention 1-5 + code guard)
+  status: in_progress
+  branch: evolve/EV-033-worker-poller-hardening
+  branch_note: created from origin/main @ 769d3f83; active; dirty worktree awaiting commit/PR
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-033
+  feature_ids: []
+  deepen_feature_ids:
+  - F8
+  artifacts_dir: docs/sessions/S041-worker-poller-hardening/
+  prior_session: S040-iwxxm-corpus-quality
+  prior_session_note: 'S040/EV-032 SUSPENDED (not completed/cancelled) for S041; resume after S041 at 13-deploy-smoke / T4.5'
+  preset: Standard
+  preset_status: approved
+  route_status: approved_D-S041-open
+  phase0_choices:
+    D-S041-open: proceed_1-5_plus_code
+    locked_at: '2026-08-04'
+    summary: |
+      User approved separate poller hardening via /16-evolve while S040 paused.
+      Scope: prevention items 1–5 + code guard. AskQuestion unavailable — chat proceed.
+  decisions:
+    D-S041-open: proceed_1-5_plus_code
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — open_session after S040 suspend; D-S041-open; handoff 16-evolve'
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'ORCHESTRATING — 07-build in_progress; 01/02/04 delta lean complete; awaiting commit/PR/user verify'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+  - stage: 07-build
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'IN_PROGRESS — docs+code+scripts implemented; awaiting commit/PR/user verify'
+  - stage: 08-verify-build
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 09-qa
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 10-e2e
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 11-verify-impl
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 12-verify-deploy
+    required: true
+    status: pending
+    skip_rationale:
+  - stage: 13-deploy-smoke
+    required: true
+    status: pending
+    skip_rationale:
+  current_stage: 07-build
+  started_at: '2026-08-04'
+  started: '2026-08-04'
+  artifacts:
+  - path: docs/sessions/S041-worker-poller-hardening/session-brief.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S041-worker-poller-hardening/routing-plan.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S041-worker-poller-hardening/reports/evolve-progress.md
+    status: written
+    stage: 07-build
+  - path: deploy/doks/README-worker-hardening.md
+    status: written
+    stage: 07-build
+  - path: apps/worker/src/metar_worker/poller_url.py
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/validate_ingest_poller_url.py
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/doks_worker_poller_preflight.sh
+    status: written
+    stage: 07-build
+  - path: scripts/deploy/check_worker_crashloop.sh
+    status: written
+    stage: 07-build
+  - path: deploy/doks/observability/prometheusrule-metar-worker.yaml
+    status: written
+    stage: 07-build
+  - path: apps/worker/tests/test_validate_ingest_poller_url.py
+    status: written
+    stage: 07-build
+  - path: tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py
+    status: written
+    stage: 07-build
+  decision_refs:
+  - D-S041-open
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  note: 'IN_PROGRESS — 07-build; branch active @ 769d3f83; 01/02/04 delta lean; awaiting commit/PR/user verify; cycle not complete'
+- id: S040-iwxxm-corpus-quality
+  type: feature
+  intent: |
+    Official IWXXM corpus quality / WMO source parity — epic #846; #835 A6-2 wmoPass;
+    F32 VONA (#741); #808 release-line adoptability; corpus children
+  status: suspended
+  suspended_at: '2026-08-04'
+  paused_at: '2026-08-04'
+  pause_reason: |
+    User approved proceeding with separate F8 poller hardening via /16-evolve (S041/EV-033).
+    S040/EV-032 NOT completed or cancelled — resume at 13-deploy-smoke / T4.5 after S041.
+  suspended_for: S041-worker-poller-hardening
+  resume_after: S041-worker-poller-hardening
+  resume_at_stage: 13-deploy-smoke
+  resume_at_task: T4.5
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-032
+  github_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  feature_ids:
+  - F32
+  deepen_feature_ids:
+  - F23
+  - F4
+  - F6
+  - F2
+  - F13
+  artifacts_dir: docs/sessions/S040-iwxxm-corpus-quality/
+  prior_session: S039-doks-dns-cutover
+  prior_session_note: 'S039 COMPLETE — DNS+TLS cutover PASS; D-S038-t63-waive lifted; public HTTPS api|app.tac-to-iwxxm.com'
+  preset: Standard
+  preset_status: approved
+  route_status: approved_D-S040-route
+  phase0_choices:
+    D-S040-open: '1,1,1,1'
+    D-S040-route: '1'
+    D-S040-branch: '1'
+    D-S040-E32-M: '2,3,1,1'
+    D-S040-02-batch-f: '1,1,1,1'
+    D-S040-02-phase-a: '1'
+    D-S040-04-batch-1: '1,1,1,1'
+    D-S040-04-batch-2: '1,1,custom,1'
+    D-S040-04-plan: '1'
+    D-S040-resume: Continue → T4.2
+    D-S040-phase-c: '1'
+    D-S040-11: A1,B1,C1,D1
+    D-S040-12: ready
+    D-S040-13: '1'
+    locked_at: '2026-08-04'
+    summary: |
+      Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
+      #835→#741→#808→corpus; exclude #836 metrics UI.
+      Standard approved (D-S040-route=1); branch from main (D-S040-branch=1).
+      D-S040-phase-c=1 Continue → T4.3 (C→D / Phase D).
+      D-S040-11=A1,B1,C1,D1 (11 approved); D-S040-12=ready (12 checklist); D-S040-13=1 (deploy gate).
+  decisions:
+    D-S040-13: '1'
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — brief+routing+scoped context; D-S040-route/branch locked; branch evolve/EV-032 cut from main @ 2ed85da1; handoff 01-requirements; #846/#835/#741/#808'
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE (delta) — D-S040-E32-M=2,3,1,1 full pack; full F7 VONA; interview UI N/A; F32+UJ-045; handoff 02; #846'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'PASS — Batch F 1,1,1,1 (S02.M1/M2/M3); Gate A → 04; report reports/02-verify-plan-audit.md; D-S040-02-phase-a; #846'
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
+  - stage: 07-build
+    required: true
+    status: in_progress
+    started: '2026-08-04'
+    skip_rationale:
+    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+  - stage: 08-verify-build
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'T4.2 PASS — Overall PASS; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md (+ verification-report-M4.md); tip e0e595e3 [T4.2]; C→D passed (D-S040-phase-c=1); Phase D → 09+10; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+  - stage: 09-qa
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE 2026-08-04 — T4.3; overall pass_with_advisories; report docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md; tip 09e60184 [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; H4–H5→T4.5/13; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    overall: pass_with_advisories
+  - stage: 10-e2e
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE 2026-08-04 — T4.3; overall T0 pass; report docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md; tip 09e60184 [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; H4–H5→T4.5/13; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+    overall: pass
+  - stage: 11-verify-impl
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+    overall: approved
+    decision_id: D-S040-11
+  - stage: 12-verify-deploy
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+    overall: ready
+    decision_id: D-S040-12
+  - stage: 13-deploy-smoke
+    required: true
+    status: in_progress
+    started: '2026-08-04T21:35:00Z'
+    skip_rationale:
+    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+  current_stage: 13-deploy-smoke
+  started_at: '2026-08-04'
+  started: '2026-08-04'
+  context_briefs:
+  - docs/context/iwxxm-corpus-quality-846.md
+  artifacts:
+  - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    status: written
+    stage: 00-context
+  - path: docs/context/iwxxm-corpus-quality-846.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S040-iwxxm-corpus-quality/README.md
+    status: written
+    stage: 00-context
+  - path: docs/decisions/evolve-decisions.md
+    status: written
+    stage: 16-evolve
+    note: EV-032 section recorded
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
+    status: written
+    stage: 01-requirements
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+    status: written
+    stage: 02-verify-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    status: draft
+    stage: 04-tech-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    status: draft
+    stage: 04-tech-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md
+    status: written
+    stage: 07-build
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M1.md
+    status: written
+    stage: 08-verify-build
+    note: 'M1 boundary PASS; mid-cycle; 08 remains pending for final'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    status: written
+    stage: 07-build
+    note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    status: written
+    stage: 08-verify-build
+    note: 'T4.2 PASS; tip e0e595e3 [T4.2] recorded'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+    status: written
+    stage: 08-verify-build
+    note: 'T4.2 M4 boundary companion report'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    note: 'T4.3 COMPLETE; overall pass_with_advisories; tip 09e60184 committed'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+    status: written
+    stage: 10-e2e
+    note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+  decision_refs:
+  - D-S040-open
+  - D-S040-route
+  - D-S040-branch
+  - D-S040-E32-M
+  - D-S040-02-batch-f
+  - D-S040-02-phase-a
+  - D-S040-04-batch-1
+  - D-S040-04-batch-2
+  - D-S040-04-plan
+  - D-S040-resume
+  - D-S040-phase-c
+  - D-S040-11
+  - D-S040-12
+  - D-S040-13
+  skipped:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  note: 'SUSPENDED for S041/EV-033 worker-poller-hardening — was T4.5/13-deploy-smoke in_progress (D-S040-13=1); EV-032 remains in_progress (not cancelled); tip 22b4251b; PR #848; #846'
+- id: S039-doks-dns-cutover
+  type: ops
+  intent: |
+    Lift D-S038-t63-waive: pin real DNS tac-to-iwxxm.com (PorkBun) to DOKS LB
+    168.144.12.70. Hostnames locked: api.tac-to-iwxxm.com (API),
+    app.tac-to-iwxxm.com (frontend). Residual from S038/EV-031 / #842 / #712.
+  status: completed
+  branch: evolve/EV-031-platform-independence-842
+  orchestrator: 15-service-health
+  evolve_cycle_id:
+  github_issues:
+  - '842'
+  - '712'
+  artifacts_dir: docs/sessions/S039-doks-dns-cutover/
+  prior_session: S038-platform-independence-842
+  prior_session_note: 'S038/EV-031 closed D-S038-13=1; D-S038-t63-waive LIFTED in S039 — public HTTPS api|app.tac-to-iwxxm.com'
+  skip_rationale: |
+    Lean ops residual — not a new Fn. Skip 01–06/08–12/16: standing specs already cover
+    DOKS cutover; only hostname pin + TLS + LIVE_* remaining from D-S038-t63-waive.
+  phase0_choices:
+    hostnames: api.tac-to-iwxxm.com + app.tac-to-iwxxm.com
+    dns_registrar: PorkBun
+    lb: 168.144.12.70
+    dns_verified: true
+    D-S039-dns-hosts: locked
+    locked_at: '2026-08-04'
+    D-S039-route: '1'
+    D-S039-branch: '1'
+    D-S039-tls: '1'
+    D-S039-13: '1'
+    D-S039-15: '1'
+    D-S038-t63-waive: lifted
+    cert_manager:
+      version: v1.17.2
+      installed_live: true
+      clusterissuer_manifest: deploy/doks/base/clusterissuer-letsencrypt.yaml
+      clusterissuer_apply: 'kubectl apply -f (not kustomize namespace)'
+      acme_email: joseph.c.mcg@gmail.com
+      hostaliases_workaround: true
+      do_loadbalancer_hostname: false
+  routing_plan:
+  - stage: 00-context
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — brief+routing-plan; D-S039-route/branch/dns-hosts locked; handoff 07-build; #842/#712'
+  - stage: 07-build
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'Largely COMPLETE — HTTP+TLS pin on api|app.tac-to-iwxxm.com; D-S039-tls=1; D-S038-t63-waive LIFTED; branch evolve/EV-031-platform-independence-842'
+  - stage: 13-deploy-smoke
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — formal H0c/H1/H3/H4/H5 PASS; D-S039-13=1; report deploy-smoke.md; handoff 15'
+  - stage: 15-service-health
+    required: true
+    status: completed
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    skip_rationale:
+    note: 'COMPLETE — H0ci+H1–H5+Auth login PASS; D-S039-15=1; report service-health.md; S039 closed'
+  current_stage:
+  started_at: '2026-08-04'
+  started: '2026-08-04'
+  context_briefs: []
+  artifacts:
+  - path: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
+    status: completed
+    stage: 07-build
+  - path: docs/sessions/S039-doks-dns-cutover/reports/deploy-smoke.md
+    status: completed
+    stage: 13-deploy-smoke
+  - path: docs/sessions/S039-doks-dns-cutover/reports/service-health.md
+    status: completed
+    stage: 15-service-health
+  decision_refs:
+  - D-S039-dns-hosts
+  - D-S039-route
+  - D-S039-branch
+  - D-S039-tls
+  - D-S039-13
+  - D-S039-15
+  skipped:
+  - 01-requirements
+  - 02-verify-plan
+  - 03-plan-tooling
+  - 04-tech-plan
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 08-verify-build
+  - 09-qa
+  - 10-e2e
+  - 11-verify-impl
+  - 12-verify-deploy
+  - 14-hotfix
+  - 16-evolve
+  note: 'S039 COMPLETE — D-S039-15=1; DNS+TLS+smoke+health PASS; D-S038-t63-waive lifted; public HTTPS api|app.tac-to-iwxxm.com; #842/#712'
+  close_decision_id: D-S039-15
+  close_note: 'D-S039-15=1 — mark 15-service-health COMPLETE; close S039; DNS+TLS+smoke+health PASS; D-S038-t63-waive lifted; public HTTPS api|app.tac-to-iwxxm.com; #842/#712'
+  completed: '2026-08-04'
+  completed_at: '2026-08-04'
 - id: S038-platform-independence-842
   type: feature
   intent: |
@@ -3801,20 +4432,29 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: platform-independence-842
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    started: '2026-08-03'
-    started_at: '2026-08-03'
-    completed: '2026-08-03'
-    completed_at: '2026-08-03'
-    note: 'S038/EV-031 00-context COMPLETE — Phase 0+Fn done (D-S038-fn=1,1,1 F30+F31); brief+routing+context; handoff 01-requirements'
-    prior_note: 'S037/EV-030 00-context COMPLETE — D-S037-route (1) Standard approved; session-brief + routing-plan approved; context written; handoff 16-evolve Phase 1 Fn allocation; #831→#829→#820'
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
-    prior_scoped_slug: quality-residuals-831
-    prior_completed: '2026-08-02'
+    scoped_slug: iwxxm-corpus-quality
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    started: '2026-08-04'
+    started_at: '2026-08-04'
+    completed: '2026-08-04'
+    completed_at: '2026-08-04'
+    tip_sha: 2ed85da1
+    tip_sha_full: 2ed85da14c99400a23dd2777f8da1f305e2423c0
+    note: 'S040/EV-032 COMPLETE — brief+routing+context; branch cut from main @ 2ed85da1; stash S039-EV031-WIP; handoff 01-requirements; #846/#835/#741/#808'
+    prior_note: 'S039 COMPLETE — brief+routing-plan; D-S039-route/branch/dns-hosts locked; handoff 07-build; #842/#712'
+    prior_session_id: S039-doks-dns-cutover
+    prior_evolve_cycle_id:
+    prior_scoped_slug: doks-dns-cutover
+    prior_completed: '2026-08-04'
+    prior_started: '2026-08-04'
     artifacts:
+    - docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - docs/context/iwxxm-corpus-quality-846.md
+    - docs/sessions/S039-doks-dns-cutover/session-brief.md
+    - docs/sessions/S039-doks-dns-cutover/routing-plan.md
+    - docs/sessions/S039-doks-dns-cutover/README.md
     - docs/sessions/S038-platform-independence-842/
     - docs/sessions/S038-platform-independence-842/session-brief.md
     - docs/sessions/S038-platform-independence-842/routing-plan.md
@@ -3824,18 +4464,18 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
-    prior_started: '2026-08-02'
-    prior_completed: '2026-08-02'
-    prior_note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
-    note: 'S038/EV-031 01-requirements COMPLETE (delta) — D-S038-tp=1,1,1 lean docs accepted Gate A (D-S038-01-gate-a); commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan; #842/#830/#712'
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
+    prior_started: '2026-08-03'
+    prior_completed: '2026-08-03'
+    prior_note: 'S038/EV-031 01-requirements COMPLETE (delta) — D-S038-tp=1,1,1 lean docs accepted Gate A (D-S038-01-gate-a); commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan; #842/#830/#712'
+    note: 'S040/EV-032 01-requirements COMPLETE (delta) — D-S040-E32-M=2,3,1,1; F32 VONA + UJ-045 + product=vona; handoff 02; committed @ 0f3769af; #846'
     substeps:
       interviews:
         status: completed
@@ -4595,21 +5235,26 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03T18:31:51Z'
-    completed: '2026-08-03'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
-    prior_started: '2026-08-02'
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
+    prior_started: '2026-08-03'
     prior_completed: '2026-08-03'
-    prior_note: 'COMPLETE (delta) — Gate A PASS (D-S037-02-phase-a); Batch F 1,1,1,1 (D-S037-02-batch-f); reports/verify-plan-audit.md; handoff 04-tech-plan; #831→#829→#820'
-    note: 'COMPLETE (delta) — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; M1–M3 keep Proposed/draft; reports/verify-plan-audit.md; handoff 04-tech-plan; #842/#830/#712'
+    prior_note: 'COMPLETE (delta) — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; M1–M3 keep Proposed/draft; reports/verify-plan-audit.md; handoff 04-tech-plan; #842/#830/#712'
+    note: 'S040/EV-032 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); reports/02-verify-plan-audit.md; handoff 04-tech-plan; #846/#847'
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
+    - D-S040-02-phase-a
+    - D-S040-02-batch-f
+    - D-S040-E32-M
+    - D-S040-route
+    - D-S040-open
     - D-S038-02-phase-a
     - D-S038-02-batch-c
     - D-S038-01-gate-a
@@ -4630,37 +5275,32 @@ stages:
     current_document:
     current_statement:
     active_session:
-      session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-08-03'
-      started: '2026-08-03'
-      completed_at: '2026-08-03T18:31:51Z'
-      completed: '2026-08-03'
-      note: 'COMPLETE (delta) — Gate A PASS (D-S038-02-phase-a); Batch C 1,1,1 (D-S038-02-batch-c); C1–C5 fixed; M1–M3 keep Proposed/draft; handoff 04-tech-plan; sha pending parent commit'
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); handoff 04-tech-plan; #846/#847'
       feature_ids:
-      - F30
-      - F31
+      - F32
       deepen_feature_ids:
-      - F5
-      - F7
-      - F8
-      - F21
-      - F22
-      - M4
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
       decision_refs:
-      - D-S038-02-phase-a
-      - D-S038-02-batch-c
-      - D-S038-01-gate-a
-      - D-S038-tp
-      - D-S038-fn
-      - D-S038-route
-      - D-S038-open
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
       artifacts:
-      - docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
+      - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     artifacts:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
     - docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
     - docs/sessions/S037-quality-residuals-831/reports/verify-plan-audit.md
@@ -4681,6 +5321,30 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      mode: delta
+      feature_ids:
+      - F32
+      deepen:
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
+      decision_refs:
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
+      note: 'COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); reports/02-verify-plan-audit.md; handoff 04-tech-plan; #846/#847'
+      artifacts:
+      - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     - session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 02-verify-plan
@@ -5249,24 +5913,30 @@ stages:
   04-tech-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-03T18:31:51Z'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    previous_started_at: '2026-08-03'
-    previous_completed_at: '2026-08-03T12:13:10Z'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip d721de6; #831→#829→#820'
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
+    previous_started_at: '2026-08-03T18:31:51Z'
+    previous_completed_at: '2026-08-03'
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
     prior_started: '2026-08-03'
     prior_completed: '2026-08-03'
-    prior_note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; reports/04-tech-plan.md + execution-plan.md; tip d721de6; #831→#829→#820'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
+    prior_note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    note: 'S040/EV-032 04-tech-plan COMPLETE (delta) — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
     decision_refs:
+    - D-S040-04-plan
+    - D-S040-04-batch-2
+    - D-S040-04-batch-1
+    - D-S040-02-phase-a
+    - D-S040-02-batch-f
+    - D-S040-E32-M
     - D-S038-04-plan
     - D-S038-04-b1
     - D-S038-04-b2
@@ -5289,34 +5959,31 @@ stages:
       phase_6_documents:
         status: pending
     active_session:
-      session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
       skill_id: 04-tech-plan
       status: completed
       mode: delta
-      started_at: '2026-08-03T18:31:51Z'
-      started: '2026-08-03'
-      completed_at: '2026-08-03'
-      completed: '2026-08-03'
-      note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1'
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
       feature_ids:
-      - F30
-      - F31
+      - F32
       deepen_feature_ids:
-      - F5
-      - F7
-      - F8
-      - F21
-      - F22
-      - M4
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
       decision_refs:
-      - D-S038-04-b1
-      - D-S038-04-b2
-      - D-S038-02-phase-a
-      - D-S038-02-batch-c
-      - D-S038-01-gate-a
-      - D-S038-tp
-      - D-S038-fn
+      - D-S040-04-plan
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
+      - D-S040-04-batch-1
+      - D-S040-04-batch-2
     artifacts:
     - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
     - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
@@ -5347,6 +6014,31 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 04-tech-plan
+      status: completed
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      mode: delta
+      feature_ids:
+      - F32
+      deepen:
+      - F23
+      - F4
+      - F6
+      - F2
+      - F13
+      decision_refs:
+      - D-S040-04-plan
+      - D-S040-02-phase-a
+      - D-S040-02-batch-f
+      - D-S040-E32-M
+      - D-S040-04-batch-1
+      - D-S040-04-batch-2
+      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
     - session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
       skill_id: 04-tech-plan
@@ -6349,39 +7041,127 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
+    status: in_progress
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at:
+    completed:
     previous_started_at: '2026-08-03'
     previous_completed_at: '2026-08-03'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_tip_sha: 8bd111c
-    previous_tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-    previous_note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
-    prior_session_id: S037-quality-residuals-831
-    prior_evolve_cycle_id: EV-030
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: 14661de0
+    previous_tip_sha_full: 14661de0a69a7e6deb243224c138a7575b97be22
+    previous_note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0'
+    prior_session_id: S038-platform-independence-842
+    prior_evolve_cycle_id: EV-031
     prior_started: '2026-08-03'
     prior_completed: '2026-08-03'
-    prior_note: 'COMPLETE — T4.5 closeout @ 8bd111c; #831 closed; F29 Done; evolve-summary.md; progress 27/27; #835 open residual'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
+    prior_note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
     mode: delta
-    note: 'COMPLETE — T6.5 under D-S038-t65-waive; tip 14661de0'
-    tip_sha: 14661de0
-    tip_sha_full: 14661de0a69a7e6deb243224c138a7575b97be22
-    tip_note: '[T6.5] Render suspended; 07-build COMPLETE'
-    progress: 35/35
-    current_milestone: M7
-    current_task:
-    active_milestone: M7
-    active_task:
-    active_task_status: completed
-    next_stage: 09-qa
-    next_task:
-    next_milestone: M7
+    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    tip_sha: 22b4251b
+    tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
+    progress: 25/28
+    current_milestone: M4
+    current_task: T4.5
+    active_milestone: M4
+    active_task: T4.5
+    active_task_status: in_progress
+    next_stage: 13-deploy-smoke
+    next_task: T4.5
+    completed_through: T4.4
+    t4_4_complete: true
+    t4_4_pending_commit: false
+    t4_4_sha: fe024aac
+    t4_4_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    t4_4_tip_sha: fe024aac
+    t4_4_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    t4_3_complete: true
+    t4_3_09_overall: pass_with_advisories
+    t4_3_10_overall: pass
+    t4_3_09_report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    t4_3_10_report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+    t4_3_tip_sha: 09e60184
+    t4_3_tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+    t4_3_pending_commit: false
+    t4_3_sha: 09e60184
+    t4_3_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+    t4_3_note: '09-qa pass_with_advisories + 10-e2e T0 pass; committed @ 09e60184 [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; H4–H5→T4.5/13'
+    t4_2_complete: true
+    t4_2_08_pass: true
+    t4_2_08_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    t4_2_08_report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+    t4_2_tip_sha: e0e595e3
+    t4_2_tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
+    t4_2_note: '08 PASS; report commit recorded @ e0e595e3; Phase C checkpoint AskQuestion pending (tool unavailable — awaiting chat reply)'
+    t2_1_complete: true
+    t2_1_sha: dacd72b5
+    t2_1_sha_full: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
+    t2_1_artifact: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    t2_1_commit_pending: false
+    t2_2_complete: true
+    t2_2_sha: f3b3246c
+    t2_2_sha_full: f3b3246c8ee0b3585d138cba79e258ebad452f7e
+    t2_3_complete: true
+    t2_3_sha: e7964742
+    t2_3_sha_full: e796474292d19434a61868f46924004c5030578d
+    t2_3_note: 'pre-push required: product-matrix EXPECTED_PRODUCTS exclude VONA until encode'
+    t2_4_complete: true
+    t2_4_sha: ee1138ca
+    t2_4_sha_full: ee1138cac396bb9af94ac27f54b50ad533a3edff
+    t2_5_complete: true
+    t2_5_sha: ee1138ca
+    t2_5_sha_full: ee1138cac396bb9af94ac27f54b50ad533a3edff
+    t2_6_complete: true
+    t2_6_sha: 6f53dcb7
+    t2_6_sha_full: 6f53dcb784d4f2045dcc2dd9bd87d587dafa2538
+    t2_6_note: 'TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; golden equality; #846/#741'
+    t2_7_complete: true
+    t2_7_sha: 682919cb
+    t2_7_sha_full: 682919cb658a1afe952774aaefcedba788554b18
+    t2_7_note: 'product=vona API + FE picker + Examples wmoPass vona-A7-1; TC-F32-005/006; #846/#741'
+    t2_8_complete: true
+    t2_8_sha: d13f25e8
+    t2_8_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
+    t2_8_note: 'make test-vona-quality + path-filtered pre-commit canary; #846/#741'
+    t2_4_t2_5_note: 'bundled same commit like T2.2-T2.3; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; #846/#741'
+    next_milestone: M2
+    m1_closed: true
+    m1_complete: true
+    m1_issue: '835'
+    m1_tip_sha: 0c7305e8
+    m1_08_pass: true
+    m1_08_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M1.md
+    m1_08_tip_sha: 0c7305e8
+    pr_m1_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
+    pr_m1_number: 848
+    pr_m1_status: open
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
+    pr_number: 848
+    pr_status: open
+    pr_title: '[M1] #835 A6-2-TC ADR-032 equality → wmoPass (EV-032)'
+    pr_milestone: M1
+    m1_commits_s040:
+    - T1.5: 29e9e57c
+    - T1.6: 09cc1834
+    - M1-08: cbd256c8
+    - M1-audit: f2409cd7
+    - T1.4-fix: 7274e803
+    - PR-M1: 0c7305e8
+    - M1-ws-sync: 9c9103e4
+    m2_commits_s040:
+    - T2.1: dacd72b5
+    - T2.2-T2.3: f3b3246c
+    - T2.3: e7964742
+    - T2.4-T2.5: ee1138ca
+    - T2.5-coverage: 44cfbe27
+    - T2.6: 6f53dcb7
+    - T2.7: 682919cb
+    - T2.8: d13f25e8
     blocked_task:
     blocked_task_reason:
     t7_1_complete: true
@@ -6411,6 +7191,7 @@ stages:
     - T2.6: c7c567a
     - M2: eaba4fb3
     decision_refs:
+    - D-S040-04-plan
     - D-S038-04-plan
     - D-S038-04-b1
     - D-S038-04-b2
@@ -7183,6 +7964,19 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-04 S040/EV-032 — T4.3 COMPLETE (09-qa pass_with_advisories + 10-e2e T0 pass); reports qa-report.md + e2e-report.md; progress 24/28; completed_through T4.3; active_task T4.4 pending; current_stage 11-verify-impl; tip 7b3c329b pending_commit; PR #848; #846'
+    - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.7 COMPLETE @ 682919cb (682919cb658a1afe952774aaefcedba788554b18) [T2.7] feat: runtime product=vona and FE Examples unlock; product=vona API + FE picker + Examples wmoPass vona-A7-1; active_task T2.8 in_progress @ M2; progress 16/28; ahead_of_origin=2 pushed=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.6 COMPLETE @ 6f53dcb7 (6f53dcb784d4f2045dcc2dd9bd87d587dafa2538) [T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality; TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; active_task T2.7 in_progress @ M2; progress 15/28; ahead_of_origin=1 pushed=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — D-S040-resume; user Continue resumes T2.6 in_progress @ M2; progress still 14/28 until T2.6 completes; tip synced d8a3060d (d8a3060d34b79187e1e171bd54eaddc2cdd78fc8); T2.6 not completed; #846/#741'
+    - '2026-08-04 S040/EV-032 — tip synced 44cfbe27 (44cfbe27629eefa9bff34d9e572e176f8e1ab79a) [T2.5] fix: raise VONA unit coverage for pre-push gate; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.4–T2.5 COMPLETE @ ee1138ca (ee1138cac396bb9af94ac27f54b50ad533a3edff) [T2.4-T2.5] feat: VONA convert fixtures and annex3 encode plugin; vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=1 pushed=false; ahead_of_origin note: will push shortly; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.4 STARTED in_progress @ M2; convert fixtures → VolcanoObservatoryNoticeForAviation (TC-F32-002/003 soft→strict); encode deferred to T2.5; tip synced 13126051 (13126051a4244bf6163f79f1841461942464d2f6); progress 12/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — tip synced e7964742 (e796474292d19434a61868f46924004c5030578d) [T2.3] fix: exclude VONA from F6 product-matrix until encode; T2.1–T2.3 COMPLETE (dacd72b5/f3b3246c/e7964742); active_task T2.4 pending @ M2; progress 12/28; ahead_of_origin=0 pushed=true dirty=false; pre-push: product-matrix EXPECTED_PRODUCTS exclude VONA until encode; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.1 COMPLETE @ dacd72b5 (dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00) [T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD; pending_commit cleared; active_task T2.2 in_progress @ M2; progress 10/28; tip dacd72b5; ahead_of_origin=1 pushed=false dirty=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — T2.1 COMPLETED (commit pending); cookbook t2.1-vona-encode-cookbook.md (TC-F32-002); active_task T2.2 pending @ M2; progress 10/28; tip 9c9103e4; #846/#741'
+    - '2026-08-04 S040/EV-032 — tip synced 9c9103e4; T2.1 STARTED in_progress @ M2 F32 VONA cookbook; progress 9/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+    - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8; verification-report-M1.md; T2.1 pending (M2 F32 VONA); 07-build in_progress; cycle not complete; #846/#835'
     - '2026-08-03 S038/EV-031 07-build COMPLETE — T6.5 PASS under D-S038-t65-waive (Render API/FE/worker suspended; LIVE_* archived; prod.json+CI DOKS/GHCR-only); all M0–M7 tasks done 35/35; tip 14661de0; Phase C complete → Phase D (09→13); #842/#830/#712'
     - '2026-08-04 S038/EV-031 07-build — T7.4 COMPLETE (docs stubs) — evolve-summary.md, deploy-report.md, corpus-parity-note.md; M7 COMPLETE (T7.1–T7.4); only T6.5 remains open (blocked soak calendar); progress 34/38; tip f1e2389d; D-S038-continue; #842/#830/#712'
     - '2026-08-03 S038/EV-031 07-build — T7.2 COMPLETE — H0c 6/6, H4 2/2, H5 PASS via make test-live-connectivity-doks-provisional; report docs/sessions/S038-platform-independence-842/reports/t7.2-h4-h5-connectivity-provisional.md; T6.5 still soak-calendar blocked; next T7.3; progress 32/38; tip f23d104c; D-S038-continue; #842/#830/#712'
@@ -7475,29 +8269,58 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
     status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    previous_started_at: '2026-08-02'
-    previous_started: '2026-08-02'
-    previous_completed_at: '2026-08-02'
-    previous_completed: '2026-08-02'
-    previous_session_id: S036-eight-family-ahl-rules-823
-    previous_evolve_cycle_id: EV-029
-    previous_tip_sha: 0e00000
-    previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
+    previous_started_at: '2026-08-03'
+    previous_started: '2026-08-03'
+    previous_completed_at: '2026-08-03'
+    previous_completed: '2026-08-03'
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: 06d57043
+    previous_tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
     previous_overall: pass
-    previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    tip_sha: 06d57043
-    tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-    mode: evolve_delta
+    previous_report: docs/sessions/S038-platform-independence-842/reports/qa-report.md
+    prior_s036_session_id: S036-eight-family-ahl-rules-823
+    prior_s036_evolve_cycle_id: EV-029
+    prior_s036_tip_sha: 0e34866
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    tip_sha: 09e60184
+    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+    mode: delta
     overall: pass_with_advisories
-    report: docs/sessions/S038-platform-independence-842/reports/qa-report.md
-    note: 'COMPLETE (evolve_delta) — pass_with_advisories; report qa-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    note: 'COMPLETE 2026-08-04 (T4.3) — pass_with_advisories; report qa-report.md; tip 09e60184 committed; H4–H5→T4.5/13; progress 24/28; next 11-verify-impl T4.4; PR #848; #846'
+    active_milestone: M4
+    active_task: T4.3
+    active_task_status: completed
+    progress: 24/28
+    pending_commit: false
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.3
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      completed: '2026-08-04'
+      completed_at: '2026-08-04'
+      branch: evolve/EV-032-iwxxm-corpus-quality
+      tip_sha: 09e60184
+      tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+      overall: pass_with_advisories
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: completed
+      progress: 24/28
+      pending_commit: false
+      note: 'COMPLETE 2026-08-04 — T4.3; pass_with_advisories; report qa-report.md; tip 09e60184 committed; H4–H5→T4.5/13; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -7670,6 +8493,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/qa-report.md
       note: T6.2 pass_with_advisories; Playwright/compose SKIPPED host ports/disk; QA-001 api.py type narrow uncommitted
     notes:
+    - '2026-08-04 S040/EV-032 09-qa COMPLETE — T4.3; overall pass_with_advisories; report docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md; tip 7b3c329b pending_commit; H4–H5→T4.5/13; progress 24/28; next 11-verify-impl T4.4; PR #848; #846'
     - '2026-08-02 S036/EV-029 — COMPLETE (delta) — T12.4; report docs/sessions/S036-eight-family-ahl-rules-823/reports/qa-report.md; 100-pass smoke batch; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
     - '2026-08-02 S036/EV-029 — T12.3 COMPLETE @ 620fa9b; T12.4 STARTED — 09-qa delta + 10-e2e smoke UJ-043; progress 44/48; tip 620fa9b; #828; #823 (09-qa STARTED delta)'
     - COMPLETE 2026-07-26 — S021/EV-016 09-qa FE delta; format/lint/typecheck PASS; FE Vitest 688/688; H0c 6/6; gitleaks tree clean; H4–H5 advisory→13; tip 3d1c58b; report qa-report.md; overall pass_with_advisories; C→D / phase_c / phase_d remain pending until 11-verify-impl; current_stage→11-verify-impl (pending, not started)
@@ -7688,51 +8512,76 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
     status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
     previous_started_at: '2026-08-03'
     previous_started: '2026-08-03'
     previous_completed_at: '2026-08-03'
     previous_completed: '2026-08-03'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_tip_sha: 3889e4c
-    previous_tip_sha_full: 3889e4c2bdeb17fcbb75f0964f4f7cec1d0e1b25
-    previous_overall: approved
-    previous_report: docs/sessions/S037-quality-residuals-831/reports/verify-impl.md
-    previous_note: 'COMPLETE (delta) — T4.3; D-S037-11=1; report verify-impl.md; progress 27/27'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: b4feac02
+    previous_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    previous_overall: pass
+    previous_report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+    previous_note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
+    prior_s037_session_id: S037-quality-residuals-831
+    prior_s037_evolve_cycle_id: EV-030
+    prior_s037_tip_sha: 3889e4c
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
     mode: delta
-    overall: pass
-    note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
-    report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-    tip_sha: b4feac02
-    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    active_milestone: M7
-    active_task:
+    overall: approved
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+    tip_sha: fe024aac
+    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
+    active_milestone: M4
+    active_task: T4.4
     active_task_status: completed
-    progress: 35/35
+    progress: 25/28
     awaiting_user_decision:
-    decision_id: D-S038-11
+    decision_id: D-S040-11
     substeps:
       collect_results:
-        status: pending
+        status: completed
       feature_completeness:
-        status: pending
+        status: completed
       journey_signoff:
-        status: pending
+        status: completed
       feature_approval:
-        status: pending
+        status: completed
       fixes_applied:
-        status: pending
+        status: completed
       scope_analysis:
-        status: pending
+        status: completed
       summary:
-        status: pending
+        status: completed
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.4
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 11-verify-impl
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      completed: '2026-08-04'
+      completed_at: '2026-08-04'
+      branch: evolve/EV-032-iwxxm-corpus-quality
+      tip_sha: fe024aac
+      tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+      overall: approved
+      decision_id: D-S040-11
+      active_milestone: M4
+      active_task: T4.4
+      active_task_status: completed
+      progress: 25/28
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -7811,30 +8660,59 @@ stages:
     tip_note: '[11/12] F30/F31 approved; deploy-checklist awaiting signoff'
   10-e2e:
     status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    previous_started_at: '2026-08-02'
-    previous_started: '2026-08-02'
-    previous_completed_at: '2026-08-02'
-    previous_completed: '2026-08-02'
-    previous_session_id: S036-eight-family-ahl-rules-823
-    previous_evolve_cycle_id: EV-029
-    previous_tip_sha: 0e00000
-    previous_tip_sha_full: 0e34866fa2ec4056535cfdcc06c7bb259067db9e
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
+    previous_started_at: '2026-08-03'
+    previous_started: '2026-08-03'
+    previous_completed_at: '2026-08-03'
+    previous_completed: '2026-08-03'
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: 06d57043
+    previous_tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
     previous_overall: pass
-    previous_report: docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md
-    previous_note: 'COMPLETE (smoke) — T12.4 UJ-043; report docs/sessions/S036-eight-family-ahl-rules-823/reports/e2e-report.md; 100-pass; H4–H5 deferred T12.6/13; tip 0e34866; progress 45/48; #828; #823'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    tip_sha: 06d57043
-    tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-    mode: evolve_delta
+    previous_report: docs/sessions/S038-platform-independence-842/reports/e2e-report.md
+    previous_note: 'COMPLETE (evolve_delta) — pass; report e2e-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
+    prior_s036_session_id: S036-eight-family-ahl-rules-823
+    prior_s036_evolve_cycle_id: EV-029
+    prior_s036_tip_sha: 0e34866
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    tip_sha: 09e60184
+    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+    mode: delta
     overall: pass
-    report: docs/sessions/S038-platform-independence-842/reports/e2e-report.md
-    note: 'COMPLETE (evolve_delta) — pass; report e2e-report.md; handoff 11-verify-impl; tip 06d57043; #842/#830/#712'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+    note: 'COMPLETE 2026-08-04 (T4.3) — overall T0 pass; report e2e-report.md; tip 09e60184 committed; H4–H5→T4.5/13; progress 24/28; next 11-verify-impl T4.4; PR #848; #846'
+    active_milestone: M4
+    active_task: T4.3
+    active_task_status: completed
+    progress: 24/28
+    pending_commit: false
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.3
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 10-e2e
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      completed: '2026-08-04'
+      completed_at: '2026-08-04'
+      branch: evolve/EV-032-iwxxm-corpus-quality
+      tip_sha: 09e60184
+      tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+      overall: pass
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: completed
+      progress: 24/28
+      pending_commit: false
+      note: 'COMPLETE 2026-08-04 — T4.3; overall T0 pass; report e2e-report.md; tip 09e60184 committed; H4–H5→T4.5/13; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -8218,42 +9096,60 @@ stages:
     - 2026-07-12 S008 / EV-006 — PASS after COR hotfix re-verify (12/12 Playwright smoke); T0 PASS
     - 2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md - F7.g
+    # S039 active override (duplicate-key last-wins trailer)
+    session_id: S039-doks-dns-cutover
+    status: completed
+    mode: ops
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    note: 'S039 07-build largely COMPLETE — HTTP+TLS pin https://api|app.tac-to-iwxxm.com; D-S039-tls=1; D-S038-t63-waive LIFTED; handoff 13-deploy-smoke; branch evolve/EV-031-platform-independence-842; #842/#712'
+    decision_refs:
+    - D-S039-tls
+    - D-S039-route
+    report: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
   08-verify-build:
     status: completed
     mode: evolve_delta
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at: '2026-08-04'
+    completed: '2026-08-04'
     previous_started_at: '2026-08-03'
     previous_completed_at: '2026-08-03'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_tip_sha: 1f47eb5
-    previous_tip_sha_full: 1f47eb56fbd0dea7e4f2a59212d30a35b4e6d076
-    previous_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    previous_report: docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: 67a482a1
+    previous_tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+    previous_note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; handoff 09+10 parallel; #842/#830/#712'
+    previous_report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
     previous_overall: pass
     previous_m5_boundary_note: 'COMPLETE (M5 boundary) — PASS @ tip 7a2cb7d0; report docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md; handoff 07 @ T6.1 in_progress; progress 26/38; prior M4 08 PASS @ 04fb4a98; #842/#830/#712'
     previous_m5_tip_sha: 7a2cb7d0
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    tip_sha: 67a482a1
-    tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
-    note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; handoff 09+10 parallel; #842/#830/#712'
-    report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
+    prior_s037_session_id: S037-quality-residuals-831
+    prior_s037_evolve_cycle_id: EV-030
+    prior_s037_tip_sha: 1f47eb5
+    prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    tip_sha: e0e595e3
+    tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
+    note: 'COMPLETE (T4.2) — PASS @ tip e0e595e3; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md; also verification-report-M4.md; progress 23/28; gates.c_to_d/phase_c PASSED (D-S040-phase-c=1 Continue → T4.3); Phase D → 09+10; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
     overall: pass
-    expected_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M7.md
+    expected_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
     m4_overall: pass
     m4_tip_sha: 04fb4a98
     m4_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M4.md
+    s040_m4_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
     m5_overall: pass
     m5_tip_sha: 7a2cb7d0
     m5_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
-    active_milestone: M7
-    active_task:
-    active_task_status:
-    progress: 35/35
+    active_milestone: M4
+    active_task: T4.3
+    active_task_status: in_progress
+    progress: 23/28
+    completed_through: T4.2
     m5_boundary: true
     m5_boundary_complete: true
     m7_pack: true
@@ -8277,6 +9173,29 @@ stages:
       report:
         status: completed
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.2
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 08-verify-build
+      status: completed
+      started_at: '2026-08-04'
+      started: '2026-08-04'
+      completed_at: '2026-08-04'
+      completed: '2026-08-04'
+      mode: evolve_delta
+      overall: pass
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+      report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+      tip_sha: e0e595e3
+      tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
+      tip_note: tip e0e595e3 [T4.2] recorded; Phase C checkpoint AskQuestion pending
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: pending
+      progress: 23/28
+      completed_through: T4.2
+      note: 'COMPLETE (T4.2) — PASS; verification-report.md + verification-report-M4.md; tip e0e595e3 recorded; gates.c_to_d/phase_c PASSED (D-S040-phase-c=1); Phase D → T4.3 / 09+10; PR #848; #846'
+      branch: evolve/EV-032-iwxxm-corpus-quality
     - id: S038-platform-independence-842-C2D
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -8806,37 +9725,64 @@ stages:
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
     status: completed
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed: '2026-08-03'
-    completed_at: '2026-08-03'
-    overall: pass
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    completed_at: '2026-08-04'
+    overall: ready
     previous_started_at: '2026-08-03'
     previous_started: '2026-08-03'
     previous_completed: '2026-08-03'
     previous_completed_at: '2026-08-03'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_note: 'COMPLETE (delta) — T4.3; D-S037-12=1; report deploy-checklist.md; progress 27/27'
-    previous_report: docs/sessions/S037-quality-residuals-831/reports/deploy-checklist.md
-    previous_overall: ready
-    previous_tip_sha: 3889e4c
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_note: 'COMPLETE (delta) — D-S038-12=1 approve mitigations+rollback; overall pass; tip b4feac02; handoff 13-deploy-smoke; #842/#830/#712'
+    previous_report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+    previous_overall: pass
+    previous_tip_sha: b4feac02
+    previous_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    prior_s037_session_id: S037-quality-residuals-831
+    prior_s037_evolve_cycle_id: EV-030
+    prior_s037_tip_sha: 3889e4c
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
     mode: delta
-    note: 'COMPLETE (delta) — D-S038-12=1 approve mitigations+rollback; overall pass; tip b4feac02; handoff 13-deploy-smoke; #842/#830/#712'
-    report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
-    tip_sha: b4feac02
-    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    active_milestone: M7
-    active_task:
-    active_task_status:
-    progress: 35/35
+    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+    tip_sha: fe024aac
+    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
+    active_milestone: M4
+    active_task: T4.4
+    active_task_status: completed
+    progress: 25/28
     awaiting_user_decision:
-    previous_tip_sha_full: 62af9806b5c76711cebb8fa74b59923f8f9e9637
+    decision_id: D-S040-12
     decision_ids:
+    - D-S040-12
     - D-S036-12
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.4
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 12-verify-deploy
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      completed: '2026-08-04'
+      completed_at: '2026-08-04'
+      branch: evolve/EV-032-iwxxm-corpus-quality
+      tip_sha: fe024aac
+      tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+      overall: ready
+      decision_id: D-S040-12
+      active_milestone: M4
+      active_task: T4.4
+      active_task_status: completed
+      progress: 25/28
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -8990,33 +9936,58 @@ stages:
     tip_note: '12 signed off awaiting 13 smoke'
     decision_id: D-S038-12
   13-deploy-smoke:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed: '2026-08-03'
-    completed_at: '2026-08-03'
-    previous_started_at: '2026-08-02'
-    previous_completed_at: '2026-08-01'
-    previous_session_id: S037-quality-residuals-831
-    previous_evolve_cycle_id: EV-030
-    previous_tip_sha: 8bd111c
-    previous_tip_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
+    started_at: '2026-08-04T21:35:00Z'
+    started: '2026-08-04T21:35:00Z'
+    completed:
+    completed_at:
+    previous_started_at: '2026-08-03'
+    previous_completed_at: '2026-08-03'
+    previous_session_id: S038-platform-independence-842
+    previous_evolve_cycle_id: EV-031
+    previous_tip_sha: b4feac02
+    previous_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     previous_overall: pass
-    previous_note: 'COMPLETE — T4.4 PASS @ 8bd111c; PR #832 merged; Render REST deploy workaround; H1/H0c/H3/H4/H5 PASS; report deploy-smoke.md; D-S037-13=1 close; progress 27/27; #835'
-    session_id: S038-platform-independence-842
-    evolve_cycle_id: EV-031
-    note: 'COMPLETE D-S038-13=1 — provisional DOKS host 5/5, H0c/H4/H5, topology 3/3, Render 503; F30/F31 Done; residuals DNS/GHCR; tip pending closeout commit'
-    tip_sha: b4feac02
-    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    active_milestone: M7
-    active_task: T4.4
-    active_task_status: completed
-    progress: 35/35
-    pr_number:
-    pr_url:
-    pr_status:
+    previous_note: 'COMPLETE D-S038-13=1 — provisional DOKS host 5/5, H0c/H4/H5, topology 3/3, Render 503; F30/F31 Done; residuals DNS/GHCR; tip pending closeout commit'
+    prior_s037_session_id: S037-quality-residuals-831
+    prior_s037_evolve_cycle_id: EV-030
+    prior_s037_tip_sha: 8bd111c
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+    tip_sha: 22b4251b
+    tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    tip_note: 'T4.5 START — D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5'
+    active_milestone: M4
+    active_task: T4.5
+    active_task_status: in_progress
+    progress: 25/28
+    completed_through: T4.4
+    awaiting_deploy_approval: false
+    decision_id: D-S040-13
+    pr_number: 848
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
+    pr_status: open
     delta_substages:
+    - id: S040-iwxxm-corpus-quality-T4.5
+      session_id: S040-iwxxm-corpus-quality
+      evolve_cycle_id: EV-032
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      mode: delta
+      started: '2026-08-04T21:35:00Z'
+      started_at: '2026-08-04T21:35:00Z'
+      branch: evolve/EV-032-iwxxm-corpus-quality
+      tip_sha: 22b4251b
+      tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+      active_milestone: M4
+      active_task: T4.5
+      active_task_status: in_progress
+      progress: 25/28
+      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+      decision_id: D-S040-13
+      awaiting_deploy_approval: false
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
       evolve_cycle_id: EV-031
@@ -9552,6 +10523,12 @@ stages:
     decision_id: D-S038-13
     overall: pass
     report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
+    # S039 active override (duplicate-key last-wins trailer)
+    session_id: S039-doks-dns-cutover
+    status: pending
+    mode: ops
+    note: 'S039 NEXT — formal H4–H5 smoke on https://api|app.tac-to-iwxxm.com (user may still want formal smoke); then 15-service-health; #842/#712'
+    report: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
   14-hotfix:
     status: completed
     session_id: S028-sigmet-multiline-split
@@ -9592,25 +10569,32 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id:
-    evolve_cycle_id:
-    started_at: '2026-08-03'
-    started: '2026-08-03'
-    completed_at: '2026-08-03'
-    completed: '2026-08-03'
-    current_stage:
-    phase: 1
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed_at:
+    completed:
+    current_stage: 13-deploy-smoke
+    phase: 0
     prior_session_id: S038-platform-independence-842
     prior_evolve_cycle_id: EV-031
     prior_completed: '2026-08-03'
     prior_note: 'S038/EV-031 16-evolve CLOSED — D-S038-13=1; F30/F31 Done; provisional DOKS; residuals DNS/GHCR; active_session=null'
-    note: 'COMPLETE — D-S038-13=1 close EV-031/S038; awaiting next open_session'
-    tip_sha: b4feac02
-    tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    tip_note: 'Phase 4 close D-S038-13=1'
+    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    tip_sha: 22b4251b
+    tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
+    progress: 25/28
+    completed_through: T4.4
+    active_task: T4.5
+    active_task_status: in_progress
     notes:
+    - '2026-08-04 S040/EV-032 — T4.5 START D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5; tip 22b4251b; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
+    - '2026-08-04 S040/EV-032 — T4.4 COMPLETE; 11 approved; 12 ready; next T4.5; pending_commit; PR #848; #846'
     - '2026-08-03 S038/EV-031 12-verify-deploy COMPLETE (D-S038-12=1) — mitigations+rollback approved; overall pass; handoff 13-deploy-smoke; tip b4feac02; #842/#830/#712'
     - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
     - '2026-08-03 S038/EV-031 08-verify-build COMPLETE — C→D PASS @ 67a482a1; gates.c_to_d passed; 09-qa + 10-e2e STARTED parallel (delta); D-S038-phase-c; #842/#830/#712'
@@ -9723,13 +10707,17 @@ stages:
     - '2026-07-30 S031/EV-024 COMPLETE — Phase 4 close D-S031-merge-close; PR #813 864783e; 13 PASS; #804/#807/#773'
   15-service-health:
     status: completed
-    session_id: S022-rename-cutover
-    note: Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining
-    started_at: '2026-07-27'
-    notes: Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining
-    completed: '2026-07-27'
-    completed_at: '2026-07-27'
+    session_id: S039-doks-dns-cutover
+    prior_session_id: S022-rename-cutover
+    note: 'S039 COMPLETE — D-S039-15=1; H0ci+H1–H5+Auth login PASS; D-S038-t63-waive lifted; public HTTPS api|app.tac-to-iwxxm.com; report service-health.md; #842/#712'
+    started_at: '2026-08-04'
+    started: '2026-08-04'
+    completed: '2026-08-04'
+    completed_at: '2026-08-04'
     skill_id: 15-service-health
+    prior_note: Render imagePath cutover to empiric2 + GHCR classic read:packages cred; API/FE/worker live; H0c/H1/H4/H5 PASS; goldens in FE bundle; UJ-032 browser → 13; PyPI/secrets remaining
+    prior_completed: '2026-07-27'
+    report: docs/sessions/S039-doks-dns-cutover/reports/service-health.md
 stages_pending: []
 deployment:
   local_build:
@@ -9741,8 +10729,8 @@ deployment:
     t0_result: pass
     t0_journeys_passed: 4
   staging:
-    status: 'deployed (provisional)'
-    last_verified: '2026-08-03'
+    status: 'deployed (public DNS + TLS)'
+    last_verified: '2026-08-04'
     commit_deployed: b4feac02
     commit_deployed_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     commit_head: b4feac02
@@ -9752,29 +10740,32 @@ deployment:
     namespace: metar-iwxxm
     urls:
       lb: 'http://168.144.12.70'
-      api: 'http://api.doks.placeholder.metar-iwxxm.local'
-      frontend: 'http://app.doks.placeholder.metar-iwxxm.local'
-      note: 'Host-header via LB 168.144.12.70 (placeholder DNS); Render suspended (503 expected)'
+      api: 'https://api.tac-to-iwxxm.com'
+      frontend: 'https://app.tac-to-iwxxm.com'
+      note: 'Public PorkBun DNS + Let''s Encrypt TLS (S039); D-S038-t63-waive lifted; HTTP still served for ACME renewals'
     deploy_ids:
       api:
       frontend:
-    report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
-    session_id: S038-platform-independence-842
+    report: docs/sessions/S039-doks-dns-cutover/reports/deploy-smoke.md
+    session_id: S039-doks-dns-cutover
     evolve_cycle_id: EV-031
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:ev031-doks
-      note: 'S038/EV-031 13 IN_PROGRESS — provisional DOKS primary; smoke green; awaiting D-S038-13; tip pending commit'
+      note: 'S039 CLOSED D-S039-15=1; DOKS public HTTPS api|app; tip b4feac02; 15-service-health completed'
     health_tiers:
-      H0ci: pending
+      H0ci: pass
       H0c: pass
       H1: pass
-      H2: pending
+      H2: pass_prior (S038 alembic)
       H3: pass
       H4: pass
       H5: pass
+      h0ci: pass
+      h0ci_github_main: pass
       h0c: pass
       h1: pass
+      h2: pass_prior (S038 alembic)
       h3: pass
       h4: pass
       h5: pass
@@ -9782,6 +10773,10 @@ deployment:
       topology: pass_3_of_3
       host_header: pass_5_of_5
     notes:
+    - '2026-08-04 S039 CLOSED D-S039-15=1 — 15-service-health COMPLETE; H0ci+H1–H5+Auth login PASS; D-S038-t63-waive lifted; public HTTPS; report service-health.md; active_session=null; #842/#712'
+    - '2026-08-04 S039 15-service-health formal PASS pending D-S039-15 — H0ci main CI green https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30828890624; H1/H3/H4/H5 + Auth site_url + login 200; report service-health.md; #842/#712'
+    - '2026-08-04 S039 D-S039-13=1 approved — 13-deploy-smoke COMPLETE; health_tiers H0c/H1/H3/H4/H5 stay pass; handoff 15-service-health; #842/#712'
+    - '2026-08-04 S039 13-deploy-smoke formal PASS pending D-S039-13 — H0c 6/6, H1 13p/8s, H2 pass_prior (S038 alembic), H3 convert+host-header 5/5, H4 2/2, H5 PASS on https://api|app.tac-to-iwxxm.com; report deploy-smoke.md; #842/#712'
     - '2026-08-03 S038/EV-031 13-deploy-smoke IN_PROGRESS — provisional DOKS LB 168.144.12.70 Host placeholders; host 5/5, H0c/H4/H5, topology 3/3 PASS; Render 503; awaiting D-S038-13; tip pending commit; report deploy-smoke.md; #842/#830/#712'
     - '2026-08-03 S037/EV-030 13-deploy-smoke PASS — PR #832 merged 8bd111c; CI 30826197508 tests PASS deploy hook FAIL 500; Render REST deploy workaround; API dep-d9ob293l550s73a65rfg + FE dep-d9ob2brm8hqs73fu8k2g LIVE; H1/H0c/H3/H4/H5 PASS; FE App-Bhd6UU87.js A6-2-TC; report deploy-smoke.md; D-S037-13=1 close; #835'
     - '2026-08-02 S036/EV-029 13-deploy-smoke PASS (technical) — PR #828 merged 4e6577a; docs tip 7e276a7; API dep-d9ntlclbedkc73fvcuvg + FE dep-d9ntlde1egvs738ph9h0 LIVE; H0c/H1/H3/H4/H5 + SWXA catalog/convert PASS; FE App chunk swxa_a7_3; report deploy-smoke.md; awaiting user approve D-S036-13; progress 46/48; #828; #823'
@@ -9970,6 +10965,616 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S041-open
+  date: '2026-08-04'
+  timestamp: '2026-08-04T23:31:10Z'
+  resolved_at: '2026-08-04'
+  session_id: S041-worker-poller-hardening
+  evolve_cycle_id: EV-033
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: session_open
+  status: confirmed
+  topic: Open S041 worker-poller-hardening; suspend S040 for separate /16-evolve
+  summary: |
+    User proceed items 1–5 + code guard; AskQuestion unavailable; recommended new
+    session + Standard + all five prevention items + code reject REPLACE_ME/non-https.
+    S040/EV-032 suspended (not completed/cancelled); EV-033 opened.
+  decision: |
+    D-S041-open=proceed_1-5_plus_code — Suspend S040 (status=suspended) for S041;
+    open feature session S041-worker-poller-hardening / EV-033 with Standard routing
+    (skip 03/05/06 unless needed); scope fail-closed scale, CI preflight, docs default
+    fixture URL, no stale Render copy, CrashLoop alert, code rejects REPLACE_ME/non-https.
+  user_option: proceed_1-5_plus_code
+  branch: evolve/EV-033-worker-poller-hardening
+  related_decisions:
+  - D-S040-13
+  prior_session: S040-iwxxm-corpus-quality
+  prior_evolve_cycle_id: EV-032
+  note: 'AskQuestion tool unavailable — recorded from chat approval to proceed via /16-evolve'
+- id: D-S040-13
+  date: '2026-08-04'
+  timestamp: '2026-08-04T21:35:00Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: deploy
+  status: confirmed
+  topic: 'T4.5 deploy gate — push+merge #848, redeploy API+FE, H1–H5'
+  summary: 'D-S040-13=1 — push+merge #848 to main; redeploy API+FE; run H1–H5 live smokes'
+  decision: 'D-S040-13=1 — Approve deploy gate; push+merge PR #848 to main; redeploy API+FE on DOKS; run H1–H5; start 13-deploy-smoke T4.5.'
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  related_prs:
+  - '848'
+  related_decisions:
+  - D-S040-11
+  - D-S040-12
+  active_task: T4.5
+  active_task_status: in_progress
+  progress: 25/28
+  current_stage: 13-deploy-smoke
+  tip_sha: 22b4251b
+  tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+  tip_note: 'T4.5 START — D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5'
+- id: D-S040-11
+  date: '2026-08-04'
+  timestamp: '2026-08-04T21:25:08Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: verification
+  status: confirmed
+  topic: 'T4.4 implementation verification — UI preview + F32 ACs + proceed'
+  summary: 'D-S040-11 = A1,B1,C1,D1 — UI preview accepted localhost:18000; F32 ACs approved; H4–H5 waive to 13; proceed to 12'
+  decision: 'D-S040-11=A1,B1,C1,D1 — Accept UI preview at localhost:18000; approve F32 ACs; waive live H4–H5 to T4.5/13; complete 11-verify-impl; proceed to 12-verify-deploy.'
+  user_option: 'A1,B1,C1,D1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '741'
+  related_prs:
+  - '848'
+  report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+  active_task: T4.4
+  active_task_status: completed
+  progress: 25/28
+  current_stage: 12-verify-deploy
+  tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
+  tip_sha: fe024aac
+  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+- id: D-S040-12
+  date: '2026-08-04'
+  timestamp: '2026-08-04T21:25:08Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: deploy_checklist
+  status: confirmed
+  topic: 'T4.4 deploy checklist — mitigations/rollback defaults'
+  summary: 'D-S040-12 = ready — mitigations/rollback defaults approved; checklist ready; 13 awaiting deploy approval'
+  decision: 'D-S040-12=ready — Approve mitigations/rollback defaults; deploy-checklist.md READY; complete 12-verify-deploy; handoff 13-deploy-smoke awaiting deploy approval.'
+  user_option: ready
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  related_prs:
+  - '848'
+  report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+  related_decisions:
+  - D-S040-11
+  active_task: T4.4
+  active_task_status: completed
+  progress: 25/28
+  current_stage: 13-deploy-smoke
+  tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
+  tip_sha: fe024aac
+  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+- id: D-S040-phase-c
+  date: '2026-08-04'
+  timestamp: '2026-08-04T21:00:46Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: phase_gate
+  status: confirmed
+  topic: 'Phase C checkpoint / C→D'
+  summary: 'User chose option 1 — Continue; pass C→D and start T4.3'
+  decision: 'D-S040-phase-c=1 Continue → T4.3; gates.c_to_d + checkpoints.phase_c passed; Phase D starts at 09-qa+10-e2e parallel; active_task T4.3 in_progress'
+  user_option: '1 — Continue; pass C→D and start T4.3'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  tip_sha: 7b3c329b
+  tip_sha_full: 7b3c329b89c66b848f76d903a23792938df3be64
+  active_task: T4.3
+  active_task_status: in_progress
+  progress: 23/28
+  current_stage: 09-qa
+  gates_c_to_d: passed
+  checkpoints_phase_c: passed
+- id: D-S040-resume
+  date: '2026-08-04'
+  timestamp: '2026-08-04T19:46:05Z'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: resume
+  status: confirmed
+  topic: 'Resume EV-032 at T2.6'
+  summary: 'user Continue resumes T2.6 in_progress (M2); progress still 14/28 until T2.6 completes'
+  decision: 'D-S040-resume — user Continue resumes T2.6. Do not mark T2.6 completed. tip_sha=d8a3060d.'
+  user_option: Continue
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '741'
+  tip_sha: d8a3060d
+  active_task: T2.6
+  active_task_status: in_progress
+  progress: 14/28
+- id: D-S040-04-plan
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate B — approve execution plan → 07-build'
+  summary: 'PASS — approve M0-M4 (28 tasks) → 07 @ T0.1'
+  decision: 'Approve execution plan (28 tasks, M0–M4). Gate B PASS. Complete 04-tech-plan; start 07-build at T0.1. 05/06 remain skipped (Standard preset).'
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  - '847'
+  related_decisions:
+  - D-S040-04-batch-1
+  - D-S040-04-batch-2
+  - D-S040-02-phase-a
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+- id: D-S040-04-batch-2
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 'Batch 2 — 04-tech-plan toolchain / connectivity / CI / domain docs'
+  summary: '1,1,custom,1 — no new deps; H4-H5 required; tiered local CI (pre-commit fast path-filtered smokes, long on pre-push/make + improvements); session inventory + docs/domain/iwxxm for #808/#847'
+  decision: |
+    D-S040-04-batch-2=1,1,custom,1 — Batch 2 locked for S040/EV-032 04-tech-plan.
+    No new deps; H4-H5 required; tiered local CI (pre-commit fast path-filtered smokes,
+    long on pre-push/make + improvements); session inventory + docs/domain/iwxxm for #808/#847.
+    Execution-plan draft 28 tasks; awaiting Gate B.
+  user_option: '1,1,custom,1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  - '847'
+  related_decisions:
+  - D-S040-04-batch-1
+  - D-S040-02-phase-a
+  - D-S040-E32-M
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+- id: D-S040-04-batch-1
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech-plan
+  status: confirmed
+  topic: 'Batch 1 — 04-tech-plan milestone choices (M0–M4)'
+  summary: '1,1,1,1 — M0-M4; strict ADR-032 for #835; F32 cookbook+fixtures; VONA AHL discover in M2'
+  decision: |
+    D-S040-04-batch-1=1,1,1,1 — Batch 1 locked for S040/EV-032 04-tech-plan.
+    M0–M4; strict ADR-032 for #835; F32 cookbook+fixtures; VONA AHL discover in M2.
+    Batch 2 pending.
+  user_option: '1,1,1,1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  related_decisions:
+  - D-S040-02-phase-a
+  - D-S040-E32-M
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+- id: D-S040-02-phase-a
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate A — Phase A checkpoint after 02-verify-plan'
+  summary: 'PASS → 04-tech-plan'
+  decision: |
+    D-S040-02-phase-a=1 — Gate A PASS for S040/EV-032.
+    Advance to 04-tech-plan (delta). Gate B pending.
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  - '847'
+  related_decisions:
+  - D-S040-02-batch-f
+  - D-S040-E32-M
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+  feature_ids:
+  - F32
+- id: D-S040-02-batch-f
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: verify-plan
+  status: confirmed
+  topic: 'Batch F — S02.M1/M2/M3 consistency + Gate A inputs'
+  summary: '1,1,1,1 — VONA AHL defer to 04; incremental Examples unlock; #808 docs+children (+#847); Gate A PASS'
+  decision: |
+    D-S040-02-batch-f=1,1,1,1 — Batch F verdicts for S040/EV-032 Gate A.
+    VONA AHL deferred to 04-tech-plan; incremental Examples unlock;
+    #808 docs+children (+#847). Gate A PASS with D-S040-02-phase-a.
+  user_option: '1,1,1,1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  - '847'
+  related_decisions:
+  - D-S040-02-phase-a
+  - D-S040-E32-M
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+  feature_ids:
+  - F32
+- id: D-S040-E32-M
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: requirements
+  status: confirmed
+  topic: 'EV-032 01 Manifest — corpus pack / F7 VONA / interview UI / next stage'
+  summary: '2,3,1,1 — full pack; full F7 VONA; interview UI N/A; → 02'
+  decision: |
+    D-S040-E32-M=2,3,1,1 — 01-requirements delta Manifest for S040/EV-032 / #846.
+    (2) full standing-doc pack for F32 + deepen (#835/#808/corpus).
+    (3) full F7 VONA operator surface (not menu-only).
+    (1) interview UI N/A this cycle.
+    (1) hand off → 02-verify-plan (Gate A).
+    Artifacts: docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md;
+    F32 + UJ-045 + product=vona corpus deltas.
+  user_option: '2,3,1,1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  related_decisions:
+  - D-S040-open
+  - D-S040-route
+  - D-S040-branch
+  artifacts:
+  - docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
+  feature_ids:
+  - F32
+- id: D-S040-branch
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: git
+  status: confirmed
+  topic: 'Cut evolve/EV-032-iwxxm-corpus-quality from main'
+  summary: '1 — Cut evolve/EV-032-iwxxm-corpus-quality from main (do not carry EV-031 dirty worktree)'
+  decision: |
+    D-S040-branch=1 — create branch evolve/EV-032-iwxxm-corpus-quality from main.
+    Do not carry EV-031 dirty worktree / evolve/EV-031-platform-independence-842 tip.
+    Workflow-state-manager does not create the branch; parent/00-context or shell does.
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  related_decisions:
+  - D-S040-open
+  - D-S040-route
+  prior_session: S039-doks-dns-cutover
+  evolve_cycle_id: EV-032
+- id: D-S040-route
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: routing
+  status: confirmed
+  topic: 'Approve Standard routing for S040/EV-032'
+  summary: '1 — Approve Standard routing 00→16→01→02→04→07→08→09→10→11→12→13 (skip 03/05/06)'
+  decision: |
+    D-S040-route=1 — Approve Standard routing for S040-iwxxm-corpus-quality / EV-032.
+    Required: 00-context → 16-evolve → 01-requirements → 02-verify-plan → 04-tech-plan →
+    07-build → 08-verify-build → 09-qa → 10-e2e → 11-verify-impl → 12-verify-deploy →
+    13-deploy-smoke.
+    Skip: 03-plan-tooling, 05-verify-tech, 06-tech-tooling.
+    preset_status=approved.
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  related_decisions:
+  - D-S040-open
+  prior_session: S039-doks-dns-cutover
+  evolve_cycle_id: EV-032
+  preset: Standard
+- id: D-S040-open
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S040-iwxxm-corpus-quality
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session
+  status: confirmed
+  topic: 'S040/EV-032 open — epic #846 IWXXM corpus quality scope'
+  summary: '1,1,1,1 — Epic #846; scope #835+#741+#808+corpus; F32 VONA; order #835→#741→#808→corpus; exclude #836'
+  decision: |
+    D-S040-open=1,1,1,1 — open feature session S040-iwxxm-corpus-quality / EV-032.
+    Epic #846 Official IWXXM corpus quality / WMO source parity.
+    In scope: #835 TC SIGMET A6-2 wmoPass; F32 VONA (#741); #808 release-line
+    adoptability; broader official IWXXM corpus children (wmo-im/iwxxm,
+    iwxxm-translation, iwxxm-codelists, codes.wmo.int, iwxxm-modelling).
+    Work order: #835 → #741 → #808 → corpus.
+    Allocate F32 for VONA quality bar; deepen F23 (#835), F4/F6/F2/F13 (#808+corpus).
+    Explicitly exclude #836 metrics UI.
+    Routing: Standard proposed (00→16→01→02→04→07→08→09→10→11→12→13; skip 03/05/06);
+    D-S040-route not yet approved; branch evolve/EV-032-iwxxm-corpus-quality pending create.
+  user_option: '1,1,1,1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  related_decisions: []
+  prior_session: S039-doks-dns-cutover
+  feature_ids:
+  - F32
+- id: D-S039-15
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S039-doks-dns-cutover
+  skill: 15-service-health
+  skill_id: 15-service-health
+  stage: 15-service-health
+  category: session
+  status: confirmed
+  topic: '15-service-health approval + S039 session close'
+  summary: 'D-S039-15=1 — mark 15 COMPLETE; close S039; H0ci+H1–H5+Auth login PASS; D-S038-t63-waive lifted; public HTTPS'
+  decision: |
+    D-S039-15=1 — approve 15-service-health PASS and close S039-doks-dns-cutover.
+    H0ci + H1–H5 + Auth site_url + login PASS; report service-health.md.
+    DNS+TLS cutover complete; D-S038-t63-waive lifted; public HTTPS api|app.tac-to-iwxxm.com.
+    Archive session; active_session=null; overall_status=completed (pipeline idle after ops residual).
+  user_option: '1'
+  branch: evolve/EV-031-platform-independence-842
+  report: docs/sessions/S039-doks-dns-cutover/reports/service-health.md
+  related_issues:
+  - '842'
+  - '712'
+  related_decisions:
+  - D-S039-13
+  - D-S039-tls
+  - D-S038-t63-waive
+  prior_session: S038-platform-independence-842
+- id: D-S039-tls
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S039-doks-dns-cutover
+  skill_id: 07-build
+  skill: 07-build
+  stage: 07-build
+  category: infra
+  status: confirmed
+  topic: 'TLS — cert-manager + Let''s Encrypt; hostAliases workaround'
+  summary: 'D-S039-tls=1 — cert-manager v1.17.2 + LE ClusterIssuer; hostAliases hairpin workaround; no do-loadbalancer-hostname'
+  decision: |
+    D-S039-tls=1 — TLS via cert-manager + Let's Encrypt.
+    cert-manager v1.17.2 installed live on cluster.
+    ClusterIssuer letsencrypt-prod/staging in deploy/doks/base/clusterissuer-letsencrypt.yaml — apply -f (not kustomize namespace).
+    ACME email: joseph.c.mcg@gmail.com (git author).
+    cert-manager hostAliases → ingress ClusterIP (DO hairpin workaround).
+    Do NOT use do-loadbalancer-hostname on this LB (external HTTP timeouts).
+    Certificates metar-api-tls, metar-frontend-tls Ready.
+    D-S038-t63-waive residual LIFTED for public DNS/HTTPS pin (S039).
+  user_option: '1'
+  branch: evolve/EV-031-platform-independence-842
+  related_issues:
+  - '842'
+  - '712'
+  related_decisions:
+  - D-S039-route
+  - D-S039-dns-hosts
+  - D-S038-t63-waive
+  artifacts:
+  - docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
+  - deploy/doks/base/clusterissuer-letsencrypt.yaml
+  prior_session: S038-platform-independence-842
+- id: D-S039-route
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S039-doks-dns-cutover
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: infra
+  status: confirmed
+  topic: 'DNS cutover rollout order — HTTP pin first, then TLS'
+  summary: 'D-S039-route=1 — HTTP pin first (Ingress hosts, CORS, prod.json), then TLS/cert-manager in same S039 session'
+  decision: |
+    D-S039-route=1 — HTTP pin first, then TLS in same session.
+    Phase A: pin api/app.tac-to-iwxxm.com on DOKS Ingress (HTTP), update CORS/FE runtime/prod.json.
+    Phase B: add cert-manager/TLS and HTTPS smoke in same S039 session before 13-deploy-smoke.
+  user_option: '1'
+  branch: evolve/EV-031-platform-independence-842
+  related_issues:
+  - '842'
+  - '712'
+  related_decisions:
+  - D-S039-dns-hosts
+  - D-S038-t63-waive
+  prior_session: S038-platform-independence-842
+- id: D-S039-branch
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S039-doks-dns-cutover
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: git
+  status: confirmed
+  topic: 'Stay on EV-031 branch — do not create infra/doks-dns-cutover'
+  summary: 'D-S039-branch=1 — continue S039 on evolve/EV-031-platform-independence-842; infra/doks-dns-cutover cancelled/superseded'
+  decision: |
+    D-S039-branch=1 — keep working on SAME branch evolve/EV-031-platform-independence-842 and same S039 session.
+    Do NOT create infra/doks-dns-cutover. DNS/TLS cutover commits land on EV-031 branch (PR #845).
+  user_option: '1'
+  branch: evolve/EV-031-platform-independence-842
+  superseded_branch: infra/doks-dns-cutover
+  related_issues:
+  - '842'
+  - '712'
+  related_decisions:
+  - D-S039-open
+  - D-S039-dns-hosts
+  prior_session: S038-platform-independence-842
+- id: D-S039-open
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S039-doks-dns-cutover
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session-open
+  status: confirmed
+  topic: 'Open S039 lean ops — DOKS DNS cutover residual from EV-031'
+  summary: 'Lean ops session to lift D-S038-t63-waive; pin api/app.tac-to-iwxxm.com → 168.144.12.70; routing 00→07→13→15'
+  decision: |
+    Open session S039-doks-dns-cutover (type ops). Residual from S038/EV-031 / #842 / #712.
+    Routing: 00-context → 07-build → 13-deploy-smoke → 15-service-health.
+    Skip 01–06/08–12/16. Branch infra/doks-dns-cutover (pending create).
+  branch: infra/doks-dns-cutover
+  related_issues:
+  - '842'
+  - '712'
+  related_decisions:
+  - D-S038-t63-waive
+  - D-S039-dns-hosts
+  prior_session: S038-platform-independence-842
+- id: D-S039-dns-hosts
+  date: '2026-08-04'
+  timestamp: '2026-08-04'
+  resolved_at: '2026-08-04'
+  session_id: S039-doks-dns-cutover
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: infra
+  status: confirmed
+  topic: 'Lock production hostnames for DOKS DNS cutover'
+  summary: 'Locked api.tac-to-iwxxm.com + app.tac-to-iwxxm.com → 168.144.12.70 (PorkBun A records verified 2026-08-04)'
+  decision: |
+    D-S039-dns-hosts: Locked api.tac-to-iwxxm.com + app.tac-to-iwxxm.com → 168.144.12.70 (PorkBun A records verified 2026-08-04)
+  related_issues:
+  - '842'
+  - '712'
+  related_decisions:
+  - D-S038-t63-waive
+  prior_session: S038-platform-independence-842
+  phase0_choices:
+    hostnames: api.tac-to-iwxxm.com + app.tac-to-iwxxm.com
+    dns_registrar: PorkBun
+    lb: 168.144.12.70
+    dns_verified: true
 - id: D-S038-13
   date: '2026-08-03'
   timestamp: '2026-08-03'
@@ -19920,6 +21525,57 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+  kind: deploy-checklist
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  stage: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  task: T4.4
+  created_at: '2026-08-04'
+  updated_at: '2026-08-04'
+  status: ready
+  note: 'D-S040-12=ready; mitigations/rollback defaults approved; 13 awaiting deploy approval'
+- path: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+  kind: verify-impl-report
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  task: T4.4
+  created_at: '2026-08-04'
+  updated_at: '2026-08-04'
+  status: approved
+  note: 'D-S040-11=A1,B1,C1,D1; UI preview localhost:18000; F32 ACs approved; H4–H5→13'
+- path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+  kind: task-report
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  stage: 07-build
+  skill_id: 07-build
+  task: T2.1
+  created_at: '2026-08-04'
+  updated_at: '2026-08-04'
+  status: written
+  note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
+- path: docs/sessions/S039-doks-dns-cutover/reports/service-health.md
+  kind: service-health-report
+  session_id: S039-doks-dns-cutover
+  stage: 15-service-health
+  skill_id: 15-service-health
+  created_at: '2026-08-04'
+  updated_at: '2026-08-04'
+  status: completed
+  note: 'S039 15 COMPLETE D-S039-15=1 — H0ci main CI 30828890624; H1/H3/H4/H5 + Auth site_url + login 200; S039 closed'
+- path: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
+  kind: dns-tls-cutover-report
+  session_id: S039-doks-dns-cutover
+  stage: 07-build
+  skill_id: 07-build
+  created_at: '2026-08-04'
+  updated_at: '2026-08-04'
+  status: completed
+  note: 'S039 07-build — public HTTPS api|app.tac-to-iwxxm.com; D-S039-tls=1; D-S038-t63-waive LIFTED'
 - path: docs/evolve-report-EV-031.md
   kind: evolve-report
   session_id: S038-platform-independence-842
@@ -30007,22 +31663,531 @@ evolve_cycles:
   pr_number: 845
   pr_status: open
   pr_head: evolve/EV-031-platform-independence-842
+- id: EV-033
+  session_id: S041-worker-poller-hardening
+  cycle_type: feature
+  feature_ids: []
+  deepen_feature_ids:
+  - F8
+  feature_id: F8
+  feature_note: F8 deepen — INGEST_POLLER_URL cutover hardening (prevention 1–5 + code guard)
+  title: F8 worker INGEST_POLLER_URL poller hardening
+  slug: worker-poller-hardening
+  status: in_progress
+  phase: 0
+  started: '2026-08-04'
+  started_at: '2026-08-04'
+  scope_summary: |
+    Harden F8 metar-worker INGEST_POLLER_URL cutover:
+    (1) fail-closed scale when poller URL unset/placeholder;
+    (2) CI preflight for worker poller URL;
+    (3) docs default fixture URL (no REPLACE_ME as runnable default);
+    (4) no stale Render copy of poller URL guidance;
+    (5) CrashLoop alert when worker dies on bad poller URL;
+    plus code guard rejecting REPLACE_ME / non-https poller URLs.
+    Separate from S040/EV-032 (suspended, not cancelled). Standard routing.
+  branch: evolve/EV-033-worker-poller-hardening
+  branch_note: created from origin/main @ 769d3f83; active; dirty worktree awaiting commit/PR
+  tip_sha: 769d3f83
+  tip_sha_full: 769d3f8360b2bd826360f3107ada1a6ae268db0d
+  tip_note: 'branch base tip = origin/main @ 769d3f83; implementation uncommitted'
+  preset: Standard
+  preset_status: approved
+  phase0_choices:
+    D-S041-open: proceed_1-5_plus_code
+    locked_at: '2026-08-04'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    note: Standard — skip 03/05/06 unless 04 surfaces new deps/tooling
+  current_stage: 07-build
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE — open_session; D-S041-open; handoff 16-evolve'
+    16-evolve:
+      status: in_progress
+      started: '2026-08-04'
+      note: 'ORCHESTRATING — 07-build in_progress; docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+    02-verify-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'delta lean — scope in evolve-decisions; AskQuestion unavailable'
+    07-build:
+      status: in_progress
+      started: '2026-08-04'
+      note: 'IN_PROGRESS — docs+code+scripts implemented; awaiting commit/PR/user verify; cycle not complete'
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S041-worker-poller-hardening/session-brief.md
+    status: written
+  - path: docs/sessions/S041-worker-poller-hardening/routing-plan.md
+    status: written
+  - path: docs/sessions/S041-worker-poller-hardening/reports/evolve-progress.md
+    status: written
+  - path: deploy/doks/README-worker-hardening.md
+    status: written
+  - path: apps/worker/src/metar_worker/poller_url.py
+    status: written
+  - path: scripts/deploy/validate_ingest_poller_url.py
+    status: written
+  - path: scripts/deploy/doks_worker_poller_preflight.sh
+    status: written
+  - path: scripts/deploy/check_worker_crashloop.sh
+    status: written
+  - path: deploy/doks/observability/prometheusrule-metar-worker.yaml
+    status: written
+  - path: apps/worker/tests/test_validate_ingest_poller_url.py
+    status: written
+  - path: tests/bugs/test_bug_2026_08_04_worker_placeholder_poller_url.py
+    status: written
+  issues: []
+  decision_refs:
+  - D-S041-open
+  notes:
+  - '2026-08-04 S041/EV-033 — 07-build IN_PROGRESS; branch active from origin/main @ 769d3f83; 01/02/04 completed (delta lean — scope in evolve-decisions; AskQuestion unavailable); docs+code+scripts + poller_url/scripts/prometheusrule/tests; awaiting commit/PR/user verify; cycle NOT completed'
+  - '2026-08-04 S041/EV-033 OPEN — D-S041-open proceed 1-5 + code; S040/EV-032 suspended (not cancelled); branch pending create; tip n/a'
+  prior_session: S040-iwxxm-corpus-quality
+  prior_evolve_cycle_id: EV-032
+- id: EV-032
+  session_id: S040-iwxxm-corpus-quality
+  cycle_type: feature
+  feature_ids:
+  - F32
+  deepen_feature_ids:
+  - F23
+  - F4
+  - F6
+  - F2
+  - F13
+  title: IWXXM corpus quality / WMO source parity
+  slug: iwxxm-corpus-quality
+  status: in_progress
+  session_status: suspended
+  session_suspended_for: S041-worker-poller-hardening
+  session_suspend_note: |
+    S040 active_session cleared for S041; EV-032 cycle NOT cancelled —
+    resume S040 at 13-deploy-smoke / T4.5 after S041 closes.
+  phase: 0
+  started: '2026-08-04'
+  started_at: '2026-08-04'
+  scope_summary: |
+    Epic #846 — Official IWXXM corpus quality / WMO source parity.
+    #835 TC SIGMET A6-2 wmoPass; F32 VONA (#741); #808 release-line adoptability;
+    corpus children across wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists,
+    codes.wmo.int, iwxxm-modelling. Work order #835→#741→#808→corpus.
+    Deepen F23 (#835), F4/F6/F2/F13 (#808+corpus). Exclude #836 metrics UI.
+    Standard routing approved (D-S040-route=1); branch from main (D-S040-branch=1).
+  github_issues:
+  - '846'
+  - '835'
+  - '741'
+  - '808'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
+  preset: Standard
+  preset_status: approved
+  phase0_choices:
+    D-S040-open: '1,1,1,1'
+    D-S040-route: '1'
+    D-S040-branch: '1'
+    D-S040-E32-M: '2,3,1,1'
+    D-S040-02-batch-f: '1,1,1,1'
+    D-S040-02-phase-a: '1'
+    D-S040-04-batch-1: '1,1,1,1'
+    D-S040-04-batch-2: '1,1,custom,1'
+    D-S040-04-plan: '1'
+    D-S040-resume: Continue → T4.2
+    D-S040-phase-c: '1'
+    D-S040-11: A1,B1,C1,D1
+    D-S040-12: ready
+    D-S040-13: '1'
+    locked_at: '2026-08-04'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    note: 'Standard approved — D-S040-route=1; skip 03/05/06; Phase D via D-S040-phase-c=1'
+  current_stage: 13-deploy-smoke
+  tip_sha: 22b4251b
+  tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+  tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
+  active_milestone: M4
+  active_task: T4.5
+  active_task_status: in_progress
+  progress: 25/28
+  completed_through: T4.4
+  t4_4_complete: true
+  t4_4_pending_commit: false
+  t4_4_sha: fe024aac
+  t4_4_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+  t4_4_tip_sha: fe024aac
+  t4_4_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+  t4_4_11_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+  t4_4_12_report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+  t4_4_decision_11: D-S040-11
+  t4_4_decision_12: D-S040-12
+  head_draft_sha: null
+  head_draft_sha_full: null
+  head_draft_message: null
+  head_draft_superseded_by: fe024aac
+  head_draft_superseded_by_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+  t4_3_complete: true
+  t4_3_09_overall: pass_with_advisories
+  t4_3_10_overall: pass
+  t4_3_09_report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+  t4_3_10_report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+  t4_3_tip_sha: 09e60184
+  t4_3_tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+  t4_3_sha: 09e60184
+  t4_3_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+  t4_3_pending_commit: false
+  t4_2_complete: true
+  t4_2_08_pass: true
+  t4_2_08_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+  t4_2_08_report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+  t2_1_complete: true
+  t2_1_sha: dacd72b5
+  t2_1_commit_pending: false
+  t2_2_complete: true
+  t2_2_sha: f3b3246c
+  t2_3_complete: true
+  t2_3_sha: e7964742
+  t2_3_note: 'pre-push required: product-matrix EXPECTED_PRODUCTS exclude VONA until encode'
+  t2_4_complete: true
+  t2_4_sha: ee1138ca
+  t2_5_complete: true
+  t2_5_sha: ee1138ca
+  t2_6_complete: true
+  t2_6_sha: 6f53dcb7
+  t2_6_sha_full: 6f53dcb784d4f2045dcc2dd9bd87d587dafa2538
+  t2_6_note: 'TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; golden equality; #846/#741'
+  t2_7_complete: true
+  t2_7_sha: 682919cb
+  t2_7_sha_full: 682919cb658a1afe952774aaefcedba788554b18
+  t2_7_note: 'product=vona API + FE picker + Examples wmoPass vona-A7-1; TC-F32-005/006; #846/#741'
+  t2_8_complete: true
+  t2_8_sha: d13f25e8
+  t2_8_sha_full: d13f25e85e3b42e9fbfef136d5ce117b17924533
+  t2_8_note: 'make test-vona-quality + path-filtered pre-commit canary; #846/#741'
+  t2_4_t2_5_note: 'bundled same commit like T2.2-T2.3; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; #846/#741'
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
+  pr_number: 848
+  pr_status: open
+  pr_title: '[M1] #835 A6-2-TC ADR-032 equality → wmoPass (EV-032)'
+  pr_milestone: M1
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      tip_sha: 2ed85da1
+      note: 'COMPLETE — brief+routing+context; branch cut @ 2ed85da1; handoff 01'
+    16-evolve:
+      status: in_progress
+      started: '2026-08-04'
+      note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE (delta) — D-S040-E32-M=2,3,1,1; F32+UJ-045; committed @ 0f3769af; #846'
+    02-verify-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'PASS — Batch F 1,1,1,1; Gate A → 04; D-S040-02-phase-a; #846'
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
+    07-build:
+      status: in_progress
+      started: '2026-08-04'
+      note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    08-verify-build:
+      status: completed
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      note: 'T4.2 PASS — Overall PASS; tip e0e595e3 [T4.2]; C→D passed (D-S040-phase-c=1); Phase D → 09+10; PR #848; #846'
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+      report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+      overall: pass
+      tip_sha: e0e595e3
+      tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
+    09-qa:
+      status: completed
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      overall: pass_with_advisories
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+      note: 'COMPLETE 2026-08-04 — T4.3; pass_with_advisories; tip 09e60184 committed; H4–H5→T4.5/13; PR #848; #846'
+    10-e2e:
+      status: completed
+      started: '2026-08-04'
+      completed: '2026-08-04'
+      overall: pass
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+      note: 'COMPLETE 2026-08-04 — T4.3; overall T0 pass; tip 09e60184 committed; H4–H5→T4.5/13; PR #848; #846'
+    11-verify-impl:
+      status: completed
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      completed: '2026-08-04'
+      completed_at: '2026-08-04'
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+      overall: approved
+      decision_id: D-S040-11
+    12-verify-deploy:
+      status: completed
+      started: '2026-08-04'
+      started_at: '2026-08-04'
+      completed: '2026-08-04'
+      completed_at: '2026-08-04'
+      note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+      overall: ready
+      decision_id: D-S040-12
+    13-deploy-smoke:
+      status: in_progress
+      started: '2026-08-04T21:35:00Z'
+      started_at: '2026-08-04T21:35:00Z'
+      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+      decision_id: D-S040-13
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    c_to_d_note: 'D-S040-phase-c=1 Continue → T4.3; C→D passed 2026-08-04; tip at pass was e0e595e3 (08 PASS); Phase D tip now 09e60184 (T4.3)'
+    c_to_d_decision: D-S040-phase-c
+    c_to_d_passed_at: '2026-08-04'
+    deploy: in_progress
+    deploy_note: 'T4.5 START — D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5'
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_c_note: 'D-S040-phase-c=1 Continue → T4.3; user option 1; Phase D started (09+10 parallel)'
+    phase_c_decision: D-S040-phase-c
+    phase_c_passed_at: '2026-08-04'
+    phase_d: pending
+    phase_d_note: 'T4.5/13 in progress per D-S040-13=1'
+    deploy: in_progress
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    status: written
+    stage: 00-context
+  - path: docs/context/iwxxm-corpus-quality-846.md
+    status: written
+    stage: 00-context
+  - path: docs/decisions/evolve-decisions.md
+    status: written
+    stage: 16-evolve
+    note: EV-032 section recorded
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
+    status: written
+    stage: 01-requirements
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+    status: written
+    stage: 02-verify-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    status: draft
+    stage: 04-tech-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    status: draft
+    stage: 04-tech-plan
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md
+    status: written
+    stage: 07-build
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M1.md
+    status: written
+    stage: 08-verify-build
+    note: 'M1 boundary PASS; mid-cycle; 08 remains pending for final'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    status: written
+    stage: 07-build
+    note: 'T2.1 VONA encode cookbook; TC-F32-002; sha dacd72b5'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    status: written
+    stage: 08-verify-build
+    note: 'T4.2 PASS; tip e0e595e3 [T4.2] recorded'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+    status: written
+    stage: 08-verify-build
+    note: 'T4.2 M4 boundary companion report'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    note: 'T4.3 COMPLETE; overall pass_with_advisories; tip 09e60184 committed'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+    status: written
+    stage: 10-e2e
+    note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+  issues: []
+  decision_refs:
+  - D-S040-open
+  - D-S040-route
+  - D-S040-branch
+  - D-S040-E32-M
+  - D-S040-02-batch-f
+  - D-S040-02-phase-a
+  - D-S040-04-batch-1
+  - D-S040-04-batch-2
+  - D-S040-04-plan
+  - D-S040-resume
+  - D-S040-phase-c
+  - D-S040-11
+  - D-S040-12
+  - D-S040-13
+  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  notes:
+  - '2026-08-04 S040/EV-032 — T4.5 START D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5; tip 22b4251b; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved verify-impl.md; 12 ready deploy-checklist.md; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; tip fe024aac; pending_commit later cleared @ fe024aac; gates.deploy pending; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — recorded git commit T4.3 @ 09e60184 (09e601847eae404f997e107b42952bfcc51db12f) [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; tip 09e60184; pending_commit cleared; active_task T4.4 in_progress @ M4 / 11-verify-impl; progress 24/28; ahead_of_origin=10 pushed=false; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — T4.3 COMPLETE (09-qa pass_with_advisories + 10-e2e T0 pass); reports qa-report.md + e2e-report.md; progress 24/28; completed_through T4.3; active_task T4.4 pending; current_stage 11-verify-impl; tip remains 7b3c329b pending_commit (no S040 [T4.3] commit on HEAD yet; old T4.3 shas from prior cycles ignored); PR #848; #846'
+  - '2026-08-04 S040/EV-032 — D-S040-phase-c=1 Continue → T4.3; gates.c_to_d + checkpoints.phase_c PASSED; Phase D started; active_task T4.3 in_progress; current_stage 09-qa (09+10 parallel); tip synced 7b3c329b (existing chore sync after 08); ahead_of_origin=9; progress 23/28; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — T4.2 COMPLETE (08-verify-build PASS); reports verification-report.md + verification-report-M4.md; tip was 1beb712a [T4.1] pending report commit (superseded — tip now e0e595e3 [T4.2]); active_task T4.3 pending; progress 23/28; gates.c_to_d + checkpoints.phase_c pending awaiting AskQuestion; next T4.3 after Phase C checkpoint (Phase D starts at 09); PR #848; #846'
+  - '2026-08-04 S040/EV-032 — D-S040-resume Continue → T4.2; T4.1 COMPLETE @ 1beb712a (#846 corpus children); active_task T4.2 in_progress @ M4; progress 22/28; current_stage 07-build (08-verify-build in_progress for T4.2); PR #848 open; ahead_of_origin=7 pushed=false; no new git_history.commits invented this sync; #846'
+  - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.7 COMPLETE @ 682919cb (682919cb658a1afe952774aaefcedba788554b18) [T2.7] feat: runtime product=vona and FE Examples unlock; product=vona API + FE picker + Examples wmoPass vona-A7-1; active_task T2.8 in_progress @ M2; progress 16/28; ahead_of_origin=2 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.6 COMPLETE @ 6f53dcb7 (6f53dcb784d4f2045dcc2dd9bd87d587dafa2538) [T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality; TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; active_task T2.7 in_progress @ M2; progress 15/28; ahead_of_origin=1 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — D-S040-resume; user Continue resumes T2.6 in_progress @ M2; progress still 14/28 until T2.6 completes; tip synced d8a3060d (d8a3060d34b79187e1e171bd54eaddc2cdd78fc8); T2.6 not completed; #846/#741'
+  - '2026-08-04 S040/EV-032 — tip synced 44cfbe27 (44cfbe27629eefa9bff34d9e572e176f8e1ab79a) [T2.5] fix: raise VONA unit coverage for pre-push gate; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.4 STARTED in_progress @ M2; convert fixtures → VolcanoObservatoryNoticeForAviation (TC-F32-002/003 soft→strict); encode deferred to T2.5; tip synced 13126051 (13126051a4244bf6163f79f1841461942464d2f6); progress 12/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — tip synced e7964742 (e796474292d19434a61868f46924004c5030578d) [T2.3] fix: exclude VONA from F6 product-matrix until encode; T2.1–T2.3 COMPLETE (dacd72b5/f3b3246c/e7964742); active_task T2.4 pending @ M2; progress 12/28; ahead_of_origin=0 pushed=true dirty=false; pre-push: product-matrix EXPECTED_PRODUCTS exclude VONA until encode; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETE @ dacd72b5 (dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00) [T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD; pending_commit cleared; active_task T2.2 in_progress @ M2; progress 10/28; tip dacd72b5; ahead_of_origin=1 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETED (commit pending); VONA encode cookbook t2.1-vona-encode-cookbook.md (TC-F32-002); active_task T2.2 pending @ M2; progress 10/28; tip remains 9c9103e4; #846/#741'
+  - '2026-08-04 S040/EV-032 — tip synced 9c9103e4 ([M1] chore: sync workflow-state after PR #848); ahead_of_origin=0 pushed=true dirty=false; T2.1 STARTED in_progress @ M2 F32 VONA cookbook; progress 9/28; current_stage 07-build; #846/#741'
+  - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8; verification-report-M1.md; T2.1 pending (M2 F32 VONA); 07-build in_progress; cycle not complete; #846/#835'
+  - '2026-08-04 S040/EV-032 — M1 closed (#835); T1.5=29e9e57c T1.6=09cc1834; next M2 F32 @ T2.1 pending; progress 9/28; 07-build remains in_progress; 08 not started; #846'
+  - '2026-08-04 S040/EV-032 — resume T1.5 in_progress — path-filtered A6-2 canary + wire long pack into test-tc-sigmet-quality (E32-T7); current_stage 07-build; #835'
+  - '2026-08-04 S040/EV-032 — D-S040-04-plan=1 Gate B PASS; 04 COMPLETE → 07-build STARTED @ T0.1 corpus inventory; gates.b_to_c + checkpoints.phase_b passed; M0-M4 28 tasks; #846'
+  - '2026-08-04 S040/EV-032 — Gate A PASS (D-S040-02-batch-f=1,1,1,1; D-S040-02-phase-a=1); 02 COMPLETE; 04-tech-plan STARTED; gates.a_to_b passed; #846/#847'
+  - '2026-08-04 S040/EV-032 — tip confirmed 0f3769af (01 delta); current_stage remains 02-verify-plan; #846'
+  - '2026-08-04 S040/EV-032 — 01-requirements COMPLETE D-S040-E32-M=2,3,1,1 (full pack; full F7 VONA; interview UI N/A → 02); artifact 01-requirements-summary.md; commit message pending parent ([EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)); tip still bd48bc61; #846'
+  - '2026-08-04 S040/EV-032 — 00-context COMPLETE; branch evolve/EV-032 @ 2ed85da1; handoff 01-requirements; stash S039-EV031-WIP; evolve-decisions.md EV-032 section in progress by parent; #846/#835/#741/#808'
+  - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (do not carry EV-031 dirty worktree); 00-context completing; scoped brief docs/context/iwxxm-corpus-quality-846.md; #846/#835/#741/#808; exclude #836'
+  - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
-  current_branch: evolve/EV-031-platform-independence-842
-  ahead_of_origin: 0
-  pushed: true
-  pending_commit:
-  dirty: true
-  tip_sha: df79d1fd
-  tip_sha_full: df79d1fd6a95e55c183955c20d5eed920ee84963
-  tip_note: 'Phase 4 close D-S038-13=1; PR #845 open'
+  current_branch: evolve/EV-032-iwxxm-corpus-quality
+  ahead_of_origin: 12
+  pushed: false
+  pending_commit: false
+  pending_commit_note: null
+  dirty: false
+  tip_sha: fe024aac
+  tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+  tip_note: 'S040/EV-032 tip fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending / 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
+  stash:
+  - name: S039-EV031-WIP
+    note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
+    prior_branch: evolve/EV-031-platform-independence-842
+    session_id: S040-iwxxm-corpus-quality
+    date: '2026-08-04'
   main_merge_sha: 8bd111c
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 7c4522a
   main_tip_sha_full: 7c4522aecdc8a6bd195c3e7517894be876f5c63b
-  recommended_branch: evolve/EV-031-platform-independence-842
-  note: 'S038/EV-031 closed D-S038-13=1; tip df79d1fd; PR #845 open; active_session=null'
+  recommended_branch: evolve/EV-033-worker-poller-hardening
+  note: 'S041/EV-033 at 07-build — recommended_branch evolve/EV-033-worker-poller-hardening active from origin/main @ 769d3f83; dirty awaiting commit/PR; S040 tip remains on evolve/EV-032-iwxxm-corpus-quality; #846 parked'
+
   notes:
+  - '2026-08-04 S041/EV-033 — branch active from origin/main @ 769d3f83 (769d3f8360b2bd826360f3107ada1a6ae268db0d); current_stage 07-build; 01/02/04 completed (delta lean — scope in evolve-decisions; AskQuestion unavailable); artifacts poller_url.py + scripts/deploy/*poller* + prometheusrule + tests + README-worker-hardening; awaiting commit/PR/user verify; cycle NOT completed'
+  - '2026-08-04 S041/EV-033 OPEN — open_session; D-S041-open proceed_1-5_plus_code; session_counter 41; evolve_cycle_counter 33; S040/EV-032 SUSPENDED (not completed/cancelled) for S041; branch evolve/EV-033-worker-poller-hardening pending create; 00-context completed → 16-evolve in_progress; F8 deepen; no git branch/commit by workflow-state-manager'
+  - 'S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; active_task T4.5 pending @ M4 / 13-deploy-smoke; progress 25/28; ahead_of_origin=12 pushed=false dirty=false; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11/12); pending_commit left (HEAD d086f694 draft ≠ approve); tip kept 09e60184; progress 25/28; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=11; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — recorded git commit T4.3 @ 09e60184 (09e601847eae404f997e107b42952bfcc51db12f) [T4.3] test: 09-qa and 10-e2e for UJ-045 VONA; tip 09e60184; pending_commit cleared; active_task T4.4 in_progress @ M4 / 11-verify-impl; progress 24/28; ahead_of_origin=10 pushed=false dirty=true (workflow-state tip sync); PR #848; #846'
+  - '2026-08-04 S040/EV-032 — T4.3 COMPLETE (09+10); tip remains 7b3c329b pending_commit (qa-report.md + e2e-report.md uncommitted); no S040 [T4.3] commit on HEAD; progress 24/28; next T4.4 / 11-verify-impl; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — recorded existing tip 7b3c329b (7b3c329b89c66b848f76d903a23792938df3be64) [T4.2] chore: sync workflow-state after 08-verify-build; ahead_of_origin=9 pushed=false; D-S040-phase-c=1 C→D passed; Phase D T4.3 in_progress; 09+10 parallel; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — recorded git commit T4.2 @ e0e595e3 (e0e595e323729ab3b25dca9e9db2410480724272) [T4.2] test: 08-verify-build M4 verification PASS; tip e0e595e3; ahead_of_origin=8 pushed=false; Phase C checkpoint AskQuestion pending (tool unavailable in parent session — awaiting user reply in chat); next T4.3; PR #848; #846'
+  - '2026-08-04 S040/EV-032 — D-S040-resume Continue → T4.2; tip reconciled 1beb712a [T4.1]; active_task T4.2 in_progress @ M4; progress 22/28; ahead_of_origin=7 pushed=false; git_history.commits not invented this sync; #846'
+  - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.7 COMPLETE @ 682919cb (682919cb658a1afe952774aaefcedba788554b18) [T2.7] feat: runtime product=vona and FE Examples unlock; product=vona API + FE picker + Examples wmoPass vona-A7-1; active_task T2.8 in_progress @ M2; progress 16/28; ahead_of_origin=2 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.6 COMPLETE @ 6f53dcb7 (6f53dcb784d4f2045dcc2dd9bd87d587dafa2538) [T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality; TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; active_task T2.7 in_progress @ M2; progress 15/28; ahead_of_origin=1 pushed=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — tip synced 44cfbe27 (44cfbe27629eefa9bff34d9e572e176f8e1ab79a) [T2.5] fix: raise VONA unit coverage for pre-push gate; T2.4–T2.5 pushed; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict; active_task T2.6 pending @ M2; progress 14/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.4 STARTED in_progress @ M2; convert fixtures → VolcanoObservatoryNoticeForAviation (TC-F32-002/003 soft→strict); encode deferred to T2.5; tip synced 13126051 (13126051a4244bf6163f79f1841461942464d2f6); progress 12/28; ahead_of_origin=0 pushed=true dirty=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — tip synced e7964742 (e796474292d19434a61868f46924004c5030578d) [T2.3] fix: exclude VONA from F6 product-matrix until encode; T2.1–T2.3 COMPLETE (dacd72b5/f3b3246c/e7964742); active_task T2.4 pending @ M2; progress 12/28; ahead_of_origin=0 pushed=true dirty=false; pre-push: product-matrix EXPECTED_PRODUCTS exclude VONA until encode; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETE @ dacd72b5 (dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00) [T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD; pending_commit cleared; active_task T2.2 in_progress; progress 10/28; ahead_of_origin=1 pushed=false dirty=false; #846/#741'
+  - '2026-08-04 S040/EV-032 — T2.1 COMPLETED (commit pending); cookbook t2.1-vona-encode-cookbook.md (TC-F32-002); tip remains 9c9103e4; active_task T2.2 pending; progress 10/28; #846/#741'
+  - '2026-08-04 S040/EV-032 — tip synced 9c9103e4 (9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e); [M1] chore: sync workflow-state after PR #848; ahead_of_origin=0 pushed=true dirty=false; T2.1 STARTED in_progress @ M2; progress 9/28; #846/#741'
+  - '2026-08-04 S040/EV-032 — M1 08 PASS; mid-cycle PR #848; continue M2 when resumed; tip 0c7305e8 (0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5); verification-report-M1.md; T2.1 pending; 07-build in_progress; cycle not complete; #846/#835'
+  - '2026-08-04 S040/EV-032 tip synced — 09cc1834 (09cc18341bb9512b220bdb303a07627fa9aeb534); M1 closed (#835); T1.5=29e9e57c T1.6=09cc1834; next M2 F32 @ T2.1 pending; 07-build in_progress; 08 not started; #846'
+  - '2026-08-04 S040/EV-032 — tip confirmed 0f3769af ([EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)); current_stage remains 02-verify-plan; #846'
+  - '2026-08-04 S040/EV-032 — 01-requirements COMPLETE (D-S040-E32-M=2,3,1,1); handoff 02-verify-plan; commit sha SKIPPED (HEAD still bd48bc61; parent to follow up with "[EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)"); artifact 01-requirements-summary.md; #846'
+  - '2026-08-04 S040/EV-032 — 00-context COMPLETE; commit 2ed85da1 open session docs; current_stage 01-requirements; stash S039-EV031-WIP parked prior EV-031 dirty tree; evolve-decisions.md EV-032 section in progress by parent; #846/#835/#741/#808'
+  - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (not EV-031 dirty tree); scoped brief path fixed to docs/context/iwxxm-corpus-quality-846.md; no git branch/commit by workflow-state-manager; #846/#835/#741/#808'
+  - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; F32; #846/#835/#741/#808; exclude #836; no git branch/commit by workflow-state-manager'
+  - '2026-08-04 S039 07-build largely COMPLETE — HTTP+TLS pin https://api|app.tac-to-iwxxm.com; D-S039-tls=1 cert-manager+LE+hostAliases; D-S038-t63-waive LIFTED; report dns-tls-cutover.md; next 13-deploy-smoke then 15-service-health; branch evolve/EV-031-platform-independence-842; #842/#712'
+  - '2026-08-04 S039 — D-S039-route=1 HTTP then TLS; D-S039-branch=1 same EV-031 branch; infra/doks-dns-cutover superseded; 00-context approaching completed → handoff 07-build; #842/#712'
+  - '2026-08-04 S039 OPEN — open_session; D-S039-dns-hosts locked; session_counter 39; branch infra/doks-dns-cutover (pending create); 00-context in_progress; residual D-S038-t63-waive; #842/#712'
   - '2026-08-04 S038/EV-031 PR #845 open — tip df79d1fd (df79d1fd6a95e55c183955c20d5eed920ee84963); pr_head evolve/EV-031-platform-independence-842; active_session=null'
   - 2026-08-03 S038/EV-031 Phase 4 close D-S038-13=1 — tip_sha will update after closeout commit; active_session=null
   - '2026-08-03 S038/EV-031 09-qa + 10-e2e COMPLETE @ 06d57043; 11-verify-impl STARTED (delta); awaiting UI preview + F30/F31 approval; D-S038-phase-c; #842/#830/#712'
@@ -30426,6 +32591,51 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-033-worker-poller-hardening
+    purpose: 'S041/EV-033 F8 deepen — INGEST_POLLER_URL hardening (prevention 1–5 + code guard)'
+    base: main
+    base_sha: 769d3f83
+    base_sha_full: 769d3f8360b2bd826360f3107ada1a6ae268db0d
+    status: active
+    created: '2026-08-04'
+    created_at: '2026-08-04'
+    session_id: S041-worker-poller-hardening
+    evolve_cycle_id: EV-033
+    tip_sha: 769d3f83
+    tip_sha_full: 769d3f8360b2bd826360f3107ada1a6ae268db0d
+    exists: true
+    pushed: false
+    ahead_of_origin: 0
+    note: 'ACTIVE — created from origin/main @ 769d3f83; tip still base (implementation uncommitted); 07-build in_progress; awaiting commit/PR/user verify'
+  - name: evolve/EV-032-iwxxm-corpus-quality
+    purpose: 'S040/EV-032 IWXXM corpus quality / WMO source parity #846; #835/#741/#808; F32 VONA'
+    base: main
+    status: active
+    created: '2026-08-04'
+    created_at: '2026-08-04'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    tip_sha: 09e60184
+    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+    pushed: false
+    exists: true
+    ahead_of_origin: 10
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
+    pr_number: 848
+    pr_status: open
+    note: 'tip 09e60184; active_task T4.4 in_progress (M4); progress 24/28; ahead_of_origin=10 pushed=false; T4.3 committed; 11-verify-impl; PR #848 open; #846'
+  - name: infra/doks-dns-cutover
+    purpose: 'S039 ops — DOKS DNS cutover; pin api/app.tac-to-iwxxm.com → 168.144.12.70; lift D-S038-t63-waive'
+    base: main
+    status: superseded
+    created: '2026-08-04'
+    created_at: '2026-08-04'
+    cancelled_at: '2026-08-04'
+    session_id: S039-doks-dns-cutover
+    exists: false
+    superseded_by: evolve/EV-031-platform-independence-842
+    superseded_decision: D-S039-branch
+    note: 'Cancelled/superseded by D-S039-branch=1 — S039 continues on evolve/EV-031-platform-independence-842; branch never created'
   - name: evolve/EV-031-platform-independence-842
     purpose: 'S038/EV-031 platform independence #842 / #830 strip Supabase / #712 DOKS cutover+IaC'
     base: main
@@ -31427,6 +33637,514 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    short: fe024aac
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist'
+    stage: 11-verify-impl
+    skill_id: 16-evolve
+    stages:
+    - 11-verify-impl
+    - 12-verify-deploy
+    milestone: M4
+    task: T4.4
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+    - workflow-state.yaml
+    files_changed_count: 4
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T21:27:51Z'
+    pushed: false
+    tip_sha: fe024aac
+    ahead_of_origin: 12
+    note: 'T4.4 COMPLETE — 11 approved + 12 ready; pending_commit cleared; next T4.5 / 13-deploy-smoke; PR #848; #846'
+  - sha: 09e601847eae404f997e107b42952bfcc51db12f
+    short: 09e60184
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T4.3] test: 09-qa and 10-e2e for UJ-045 VONA'
+    stage: 09-qa
+    skill_id: 09-qa
+    stages:
+    - 09-qa
+    - 10-e2e
+    milestone: M4
+    task: T4.3
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    - workflow-state.yaml
+    files_changed_count: 4
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T21:02:20Z'
+    pushed: false
+    tip_sha: 09e60184
+    ahead_of_origin: 10
+    note: 'T4.3 COMPLETE — 09-qa pass_with_advisories + 10-e2e T0 pass for UJ-045 VONA; pending_commit cleared; next T4.4 / 11-verify-impl; PR #848; #846'
+  - sha: 7b3c329b89c66b848f76d903a23792938df3be64
+    short: 7b3c329b
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T4.2] chore: sync workflow-state after 08-verify-build'
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    milestone: M4
+    task: T4.2
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - workflow-state.yaml
+    files_changed_count: 1
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:57:33Z'
+    pushed: false
+    tip_sha: 7b3c329b
+    ahead_of_origin: 9
+    note: 'Existing tip recorded (not invented) — workflow-state sync after T4.2 08 PASS; Phase D / D-S040-phase-c follows in working tree'
+  - sha: e0e595e323729ab3b25dca9e9db2410480724272
+    short: e0e595e3
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T4.2] test: 08-verify-build M4 verification PASS'
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    milestone: M4
+    task: T4.2
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - workflow-state.yaml
+    files_changed_count: 4
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:55:10Z'
+    pushed: false
+    tip_sha: e0e595e3
+    ahead_of_origin: 8
+    note: 'T4.2 COMPLETE — 08-verify-build M4 verification PASS; Phase C checkpoint AskQuestion pending (tool unavailable in parent session — awaiting user reply in chat); next T4.3; PR #848; #846'
+  - sha: d13f25e85e3b42e9fbfef136d5ce117b17924533
+    short: d13f25e8
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.8] chore: add VONA quality pack and path-filtered canary'
+    stage: 07-build
+    milestone: M2
+    task: T2.8
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - .pre-commit-config.yaml
+    - Makefile
+    - apps/backend/pyproject.toml
+    - apps/backend/tests/unit/test_tc_f32_vona_product_enum.py
+    - docs/ops/DEVELOPMENT.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/pyproject.toml
+    - packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py
+    - pyproject.toml
+    - scripts/ci/run_ev032_vona_canary.sh
+    - scripts/ci/run_vona_quality.sh
+    files_changed_count: 11
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:30:40Z'
+    pushed: false
+    note: 'T2.8 COMPLETE — VONA quality pack + path-filtered canary; next T2.9; #846/#741'
+  - sha: 682919cb658a1afe952774aaefcedba788554b18
+    short: 682919cb
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.7] feat: runtime product=vona and FE Examples unlock'
+    stage: 07-build
+    milestone: M2
+    task: T2.7
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - apps/backend/src/api.py
+    - apps/backend/tests/integration/test_tc_f32_005_vona_smoke.py
+    - apps/backend/tests/unit/test_api_helpers_middleware_unit.py
+    - apps/backend/tests/unit/test_tac_work_sessions_migration_sql.py
+    - apps/backend/tests/unit/test_tc_f32_vona_product_enum.py
+    - apps/frontend/src/app/components/FileConverter.tsx
+    - apps/frontend/src/fixtures/examples/bodies/vona_a7_1.tac
+    - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+    - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    - apps/frontend/src/test/f6e-product-profile-pickers.workflow.test.tsx
+    - apps/frontend/src/utils/tacProduct.test.ts
+    - apps/frontend/src/utils/tacProduct.ts
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/shared/src/work-session.ts
+    - packages/tac2iwxxm/tests/fixtures/wmo_decode_residual_allowlist.py
+    - packages/tac2iwxxm/tests/fixtures/wmo_official_tac_inventory.py
+    - packages/tac2iwxxm/tests/test_tc_ev027_001_002_inventory_catalog.py
+    - supabase/migrations/20260804000012_tac_work_sessions_vona.sql
+    files_changed_count: 18
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:26:25Z'
+    pushed: false
+    note: 'T2.7 COMPLETE — product=vona API + FE picker + Examples wmoPass vona-A7-1; next T2.8; #846/#741'
+  - sha: 6f53dcb784d4f2045dcc2dd9bd87d587dafa2538
+    short: 6f53dcb7
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.6] test: VONA A7-1 XSD+SCH and ADR-032 golden equality'
+    stage: 07-build
+    milestone: M2
+    task: T2.6
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
+    - packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py
+    - packages/tac2iwxxm/tests/test_tc_f32_002_003_vona_annex3.py
+    - packages/tac2iwxxm/tests/fixtures/annex3_golden/manifest.json
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    files_changed_count: 6
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T20:20:54Z'
+    pushed: false
+    note: 'T2.6 COMPLETE — TC-F32-004 XSD+SCH + ADR-032 soft→strict via A7-1 peer stamps; next T2.7; #846/#741'
+  - sha: 44cfbe27629eefa9bff34d9e572e176f8e1ab79a
+    short: 44cfbe27
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.5] fix: raise VONA unit coverage for pre-push gate'
+    stage: 07-build
+    milestone: M2
+    task: T2.5
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - packages/tac2iwxxm/tests/test_vona_coverage_helpers.py
+    files_changed_count: 1
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T19:27:15Z'
+    pushed: true
+    note: 'coverage fix for pre-push gate after T2.4–T2.5; tip after push; CI/CD green on PR #848; next T2.6 XSD+SCH / ADR-032 soft→strict'
+  - sha: ee1138cac396bb9af94ac27f54b50ad533a3edff
+    short: ee1138ca
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.4-T2.5] feat: VONA convert fixtures and annex3 encode plugin'
+    stage: 07-build
+    milestone: M2
+    task: T2.4-T2.5
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/bulletin.py
+    - packages/tac2iwxxm/src/tac2iwxxm/convert.py
+    - packages/tac2iwxxm/src/tac2iwxxm/decode.py
+    - packages/tac2iwxxm/src/tac2iwxxm/products/vona.py
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
+    - packages/tac2iwxxm/tests/fixtures/ahl/README.md
+    - packages/tac2iwxxm/tests/fixtures/ahl/wm_vona.txt
+    - packages/tac2iwxxm/tests/fixtures/annex3_golden/manifest.json
+    - packages/tac2iwxxm/tests/fixtures/annex3_golden/vona_a7_1.golden.xml
+    - packages/tac2iwxxm/tests/fixtures/annex3_golden/vona_a7_1.tac
+    - packages/tac2iwxxm/tests/fixtures/vona/vona_ahl_wm.txt
+    - packages/tac2iwxxm/tests/test_tc_ev029_003_ahl_api.py
+    - packages/tac2iwxxm/tests/test_tc_f32_002_003_vona_annex3.py
+    - packages/tac2iwxxm/tests/test_tc_f6_001_002_product_matrix.py
+    - packages/tac2iwxxm/tests/test_tc_f6_020_021_metar_speci_annex3.py
+    files_changed_count: 16
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T19:22:46Z'
+    pushed: true
+    note: 'bundled T2.4+T2.5 like T2.2-T2.3; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; #846/#741; pushed with coverage fix tip 44cfbe27'
+  - sha: e796474292d19434a61868f46924004c5030578d
+    short: e7964742
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.3] fix: exclude VONA from F6 product-matrix until encode'
+    stage: 07-build
+    milestone: M2
+    task: T2.3
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - packages/tac2iwxxm/tests/test_tc_f6_001_002_product_matrix.py
+    files_changed_count: 1
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T18:35:46Z'
+    pushed: true
+    note: 'pre-push required: product-matrix EXPECTED_PRODUCTS exclude VONA until encode'
+  - sha: f3b3246c8ee0b3585d138cba79e258ebad452f7e
+    short: f3b3246c
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.2-T2.3] feat: VONA lint fixtures, registry, and product rules'
+    stage: 07-build
+    milestone: M2
+    task: T2.2-T2.3
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/domain/rules/ISSUE_CATALOG.json
+    - docs/domain/rules/ISSUE_CATALOG.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac-validate/src/tac_validate/issue_registry.py
+    - packages/tac-validate/src/tac_validate/product_rules.py
+    - packages/tac-validate/src/tac_validate/products.py
+    - packages/tac-validate/tests/fixtures/accept/vona_basic.tac
+    - packages/tac-validate/tests/fixtures/accept/vona_v1_onset_dur_nil.tac
+    - packages/tac-validate/tests/fixtures/manifest.json
+    - packages/tac-validate/tests/fixtures/negative/vona/missing_dtg.tac
+    - packages/tac-validate/tests/fixtures/negative/vona/missing_svo.tac
+    - packages/tac-validate/tests/fixtures/negative/vona/missing_volcano.tac
+    - packages/tac-validate/tests/test_tc_f12_001_negative_fixtures.py
+    - packages/tac-validate/tests/test_tc_f12_001_template_gates.py
+    - packages/tac-validate/tests/test_tc_f32_001_registry_completeness.py
+    - packages/tac-validate/tests/test_tc_f32_v1_vona.py
+    - packages/tac-validate/tests/test_tc_f6_031_lint.py
+    - workflow-state.yaml
+    files_changed_count: 18
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T18:33:34Z'
+    pushed: true
+  - sha: dacd72b507fbc92fd95ceb4eb6e3b1f254f23b00
+    short: dacd72b5
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T2.1] docs: VONA encode cookbook from vona-A7-1 + XSD'
+    stage: 07-build
+    milestone: M2
+    task: T2.1
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.2-gap-index.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md
+    - workflow-state.yaml
+    files_changed_count: 4
+    timestamp: '2026-08-04'
+    timestamp_utc: '2026-08-04T18:27:10Z'
+    pushed: true
+  - sha: 9c9103e44dd2cf2b91bdd4f3afc66c7a5b62b55e
+    short: 9c9103e4
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[M1] chore: sync workflow-state after PR #848'
+    stage: 07-build
+    milestone: M1
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: true
+  - sha: 0c7305e84de5f91b7cb440dd0ad16f83ddd4d5f5
+    short: 0c7305e8
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[M1] docs: record PR #848 in execution plan'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    timestamp: '2026-08-04'
+    pushed: true
+  - sha: 7274e8038126ab8f9be8fcc73ba1137a9311b90a
+    short: 7274e803
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T1.4] fix: GoldenExamplesSelect expects A6-2-TC WMO passer'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - apps/frontend/src/app/components/GoldenExamplesSelect.test.tsx
+    timestamp: '2026-08-04'
+    pushed: true
+  - sha: f2409cd77cae52b4dcc556f9e47698eb6d8ac80c
+    short: f2409cd7
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[M1] fix: keep undici at jsdom-compatible 7.28; waive audit GHSAs'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - package.json
+    - pnpm-lock.yaml
+    - scripts/frontend/audit-ci.sh
+    timestamp: '2026-08-04'
+    pushed: true
+  - sha: cbd256c8da8b0a18290162365b42ea7d21941482
+    short: cbd256c8
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[M1] chore: bump audit overrides + M1 verification report'
+    stage: 08-verify-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M1.md
+    - package.json
+    - pnpm-lock.yaml
+    - scripts/frontend/audit-ci.sh
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: true
+  - sha: 09cc18341bb9512b220bdb303a07627fa9aeb534
+    short: 09cc1834
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T1.6] docs: close #835 A6-2-TC wmoPass (EV-032 M1)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - apps/backend/tests/iwxxm/test_wmo_canonical_examples.py
+    - docs/decisions/evolve-decisions.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/feature-list.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.1-corpus-inventory.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.2-gap-index.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md
+    - packages/tac2iwxxm/tests/fixtures/wmo_decode_residual_allowlist.py
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 29e9e57caf591fb52dbe5daad74ad52ab4844f65
+    short: 29e9e57c
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T1.5] chore: path-filtered A6-2 canary + TC SIGMET long pack (#835)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - .github/workflows/tc-sigmet-quality.yml
+    - .pre-commit-config.yaml
+    - Makefile
+    - docs/ops/DEVELOPMENT.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/pyproject.toml
+    - packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py
+    - packages/tac2iwxxm/tests/test_tc_ev032_003_a6_2_tc_catalog_wmo_pass.py
+    - pyproject.toml
+    - scripts/ci/run_ev032_a6_2_tc_canary.sh
+    - scripts/ci/run_tc_sigmet_quality.sh
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 97ab3f760b118b25cc6c9fcf7628b3f4631edd12
+    short: 97ab3f76
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T1.2] fix: A6-2-TC ADR-032 equality (coords, FIR, intensity)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/src/tac2iwxxm/profiles/annex3_products.py
+    - packages/tac2iwxxm/tests/test_tc_ev030_005_sigmet_a6_2_tc_catalog.py
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 26fc6ccd063b2c716722756f656f5dafe0431085
+    short: 26fc6ccd
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T1.1] test: red ADR-032 equality for A6-2-TC (#835)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - packages/tac2iwxxm/tests/test_tc_ev032_002_a6_2_tc_adr032_equality.py
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 0c6ab99e8fae9622bdb0df480ca7e783754e23a9
+    short: 0c6ab99e
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[T0.1] docs: Gate B PASS + M0 corpus inventory (#846)'
+    stage: 07-build
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/execution-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.1-corpus-inventory.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.2-gap-index.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/t0.3-m0-exit-checklist.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 82ad0ae9ef6a0b22aeab7f5cefc8990411f69edb
+    short: 82ad0ae9
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: remove superseded 02 Gate A draft'
+    stage: 02-verify-plan
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-draft.md
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 035f7b8dbfeba7d0d4467ea3d240db826a10adee
+    short: 035f7b8d
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: Gate A PASS — close 02-verify-plan; start 04'
+    stage: 02-verify-plan
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/product-audit.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/04-tech-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 0f3769af50c5426e89bba1e219e9124a408ab9ec
+    short: 0f3769af
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: 01 delta — F32 VONA + UJ-045 + product=vona (#846)'
+    stage: 01-requirements
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/api-contract.md
+    - docs/context/iwxxm-corpus-quality-846.md
+    - docs/decisions/evolve-decisions.md
+    - docs/feature-list.md
+    - docs/sessions/S040-iwxxm-corpus-quality/reports/01-requirements-summary.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - docs/spec.md
+    - docs/test-plan.md
+    - docs/user-journeys.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: bd48bc617e46beec6a9d57171f71182a6227ac2c
+    short: bd48bc61
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: record EV-032 scope in evolve-decisions; handoff 01'
+    stage: 01-requirements
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
+  - sha: 2ed85da14c99400a23dd2777f8da1f305e2423c0
+    short: 2ed85da1
+    branch: evolve/EV-032-iwxxm-corpus-quality
+    message: '[EV-032] docs: open S040 iwxxm corpus quality session (#846)'
+    stage: 00-context
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    files_changed:
+    - docs/context/README.md
+    - docs/context/iwxxm-corpus-quality-846.md
+    - docs/sessions/README.md
+    - docs/sessions/S040-iwxxm-corpus-quality/README.md
+    - docs/sessions/S040-iwxxm-corpus-quality/routing-plan.md
+    - docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
+    - workflow-state.yaml
+    timestamp: '2026-08-04'
+    pushed: false
+    note: 'Open S040/EV-032 session docs + state; handoff 01-requirements; evolve-decisions.md EV-032 section follows (dirty)'
   - sha: df79d1fd6a95e55c183955c20d5eed920ee84963
     short: df79d1fd
     branch: evolve/EV-031-platform-independence-842

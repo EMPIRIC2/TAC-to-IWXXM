@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 / TC-F23-004 / TC-F24 / TC-F26 / TC-EV030-004 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 TAF/SPECI + F23 SIGMET + F24 AIRMET + F26 VAA + EV-030 TC SIGMET theme).",
+  "description": "TC-F12-001 / E10-21 / TC-F15-003 / TC-F20-004 / TC-F23-004 / TC-F24 / TC-F26 / TC-EV030-004 / TC-F32-001 fixture pack for tac-validate (F12 + F15 R1\u2013R8 + F20 TAF/SPECI + F23 SIGMET + F24 AIRMET + F26 VAA + EV-030 TC SIGMET + F32 VONA theme).",
   "cite": [
     "docs/domain/TAC_VALIDATION.md (A3-2, A5-1, A6, A2-1, A2-2 paraphrase)",
     "docs/domain/rules/COVERAGE_MATRIX.md",
@@ -8,7 +8,8 @@
     "docs/sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md (T1\u2013T4 / S1\u2013S3 / C1)",
     "docs/sessions/S025-sigmet-quality/reports/sigmet-research-catalog.md (G1\u2013G3 / V1\u2013V3 / C1)",
     "docs/sessions/S027-vaa-quality/reports/vaa-tca-theme-fixture-map.md (F26 V1\u2013V3 / F27 T1\u2013T3)",
-    "GitHub #829 / TC-EV030-004 \u2014 TC SIGMET tac-validate pack (peer VA V1)"
+    "GitHub #829 / TC-EV030-004 \u2014 TC SIGMET tac-validate pack (peer VA V1)",
+    "docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md (F32 V1 / #741)"
   ],
   "accept": [
     {
@@ -485,6 +486,22 @@
       "theme": "SX1",
       "cite": "F28 theme SX1 \u2014 NO FURTHER ADVISORIES; #740",
       "tac": "accept/swxa_sx1_no_further.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_vona_basic",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "F32 theme V1 \u2014 vendor vona-A7-1 peer; #741 / TC-F32-001",
+      "tac": "accept/vona_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_vona_v1_onset_dur_nil",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "F32 theme V1 \u2014 ONSET/DUR NIL A7-1; #741",
+      "tac": "accept/vona_v1_onset_dur_nil.tac",
       "ok": true
     },
     {
@@ -1320,6 +1337,39 @@
       "tac": "negative/swxa/missing_swxc.tac",
       "ok": false,
       "expected_codes": ["MISSING_SWXC"],
+      "require_spans": true
+    },
+    {
+      "id": "vona_missing_dtg",
+      "product": "VONA",
+      "theme": "V1",
+      "depth": "template_gate",
+      "cite": "A7-1 DTG; F32 theme V1 / #741",
+      "tac": "negative/vona/missing_dtg.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_DTG"],
+      "require_spans": true
+    },
+    {
+      "id": "vona_missing_svo",
+      "product": "VONA",
+      "theme": "V1",
+      "depth": "template_gate",
+      "cite": "A7-1 SVO; F32 theme V1 / #741",
+      "tac": "negative/vona/missing_svo.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SVO"],
+      "require_spans": true
+    },
+    {
+      "id": "vona_missing_volcano",
+      "product": "VONA",
+      "theme": "V1",
+      "depth": "template_gate",
+      "cite": "A7-1 VOLCANO; F32 theme V1 / #741",
+      "tac": "negative/vona/missing_volcano.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VONA_VOLCANO"],
       "require_spans": true
     }
   ],
@@ -2947,6 +2997,80 @@
       "tac": "negative/sigmet/tc_missing_identity.tac",
       "ok": false,
       "expected_codes": ["MISSING_TC_IDENTITY"],
+      "require_spans": true
+    }
+  ],
+  "f32_v1_accept": [
+    {
+      "id": "accept_vona_basic",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "F32 theme V1 \u2014 vendor vona-A7-1 peer; #741 / TC-F32-001",
+      "tac": "accept/vona_basic.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_vona_v1_onset_dur_nil",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "F32 theme V1 \u2014 ONSET/DUR NIL; cookbook G-VONA; #741",
+      "tac": "accept/vona_v1_onset_dur_nil.tac",
+      "ok": true
+    }
+  ],
+  "f32_v1_modifier_info": [
+    {
+      "id": "vona_v1_onset_nil_info",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "F32 theme V1 \u2014 ONSET NIL \u2192 info; #741",
+      "tac": "accept/vona_v1_onset_dur_nil.tac",
+      "ok": true,
+      "expected_codes": ["VONA_ONSET_NIL"],
+      "expected_severity": "info",
+      "require_spans": true
+    },
+    {
+      "id": "vona_v1_dur_nil_info",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "F32 theme V1 \u2014 DUR NIL \u2192 info; #741",
+      "tac": "accept/vona_v1_onset_dur_nil.tac",
+      "ok": true,
+      "expected_codes": ["VONA_DUR_NIL"],
+      "expected_severity": "info",
+      "require_spans": true
+    }
+  ],
+  "f32_v1_errors": [
+    {
+      "id": "vona_v1_missing_dtg",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "VONA missing DTG \u2192 MISSING_DTG; #741 / TC-F32-001",
+      "tac": "negative/vona/missing_dtg.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_DTG"],
+      "require_spans": true
+    },
+    {
+      "id": "vona_v1_missing_svo",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "VONA missing SVO \u2192 MISSING_SVO; #741 / TC-F32-001",
+      "tac": "negative/vona/missing_svo.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_SVO"],
+      "require_spans": true
+    },
+    {
+      "id": "vona_v1_missing_volcano",
+      "product": "VONA",
+      "theme": "V1",
+      "cite": "VONA missing VOLCANO \u2192 MISSING_VONA_VOLCANO; #741 / TC-F32-001",
+      "tac": "negative/vona/missing_volcano.tac",
+      "ok": false,
+      "expected_codes": ["MISSING_VONA_VOLCANO"],
       "require_spans": true
     }
   ]

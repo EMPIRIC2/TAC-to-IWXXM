@@ -87,6 +87,17 @@ describe('splitManualEntries', () => {
     );
   });
 
+  it('detects VONA from VONA header', () => {
+    expect(
+      detectTacProduct('VONA\nDTG: 20240216/0130Z\nVOLCANO: KARYMSKY 300130\n'),
+    ).toBe('VONA');
+  });
+
+  it('keeps VONA multi-line notice as a single document', () => {
+    const vona = 'VONA\nDTG: 20240216/0130Z\nVOLCANO: KARYMSKY 300130\n';
+    expect(splitManualEntries(vona, 'VONA')).toEqual([vona.trim()]);
+  });
+
   it('keeps SWXA multi-line advisory as a single document', () => {
     const swxa = 'SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\n';
     expect(splitManualEntries(swxa, 'SWXA')).toEqual([swxa.trim()]);

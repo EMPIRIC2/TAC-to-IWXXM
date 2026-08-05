@@ -17,8 +17,8 @@ MANIFEST_PATH = FIXTURES / "manifest.json"
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
-# F6 convert matrix stays at 7; SWXA encode is covered by TC-F28-002/003 (F28 / M11).
-EXPECTED_PRODUCTS = frozenset(PRODUCTS) - {"SWXA"}
+# F6 convert matrix stays at 7; SWXA encode is TC-F28; VONA encode is TC-F32 (M2 T2.5+ soft path).
+EXPECTED_PRODUCTS = frozenset(PRODUCTS) - {"SWXA", "VONA"}
 
 _CASE_IDS = (
     "airmet_basic",

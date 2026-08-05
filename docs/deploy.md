@@ -23,17 +23,16 @@ out-of-band). Placeholder Ingress hosts until **T6.3**.
 **Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
 **Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
 
-### Placeholder DOKS hostnames (`D-S038-04-b2` Q1=1)
+### DOKS public hostnames (T6.3 — prod DNS)
 
-Until real DNS / Ingress (`D-S038-t63-waive` residual), provisional **HTTP** placeholders are
-canonical in `config/prod.json` and live harness (T6.5).
+Canonical in `config/prod.json` and live harness (T6.5):
 
-| Role | Placeholder URL |
-|------|-----------------|
-| API | `http://api.doks.placeholder.metar-iwxxm.local` |
-| Frontend | `http://app.doks.placeholder.metar-iwxxm.local` |
+| Role | URL |
+|------|-----|
+| API | `https://api.tac-to-iwxxm.com` |
+| Frontend | `https://app.tac-to-iwxxm.com` |
 | Worker | (no public URL — in-cluster only) |
-| LB | `168.144.12.70` (Host-header smoke) |
+| LB | `168.144.12.70` (legacy Host-header smoke only) |
 
 Soak checklist (closed early under `D-S038-t65-waive`):
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).
@@ -46,6 +45,10 @@ Render archive: [ops/render-decommission-archive.md](ops/render-decommission-arc
 | `metar-to-iwxxm-api` | `srv-d69v688gjchc73cn9kg0` | **suspended** 2026-08-03 |
 | `metar-to-iwxxm-frontend-v4-web` | `srv-d6cvj2i4d50c73aelapg` | **suspended** 2026-08-03 |
 | `metar-to-iwxxm-worker` | `srv-d99u0i8k1i2s73eq5oqg` | **suspended** 2026-08-03 |
+
+**CI hotfix (2026-08-03):** `scripts/deploy/trigger_render_image_deploy.py` supports
+`--skip-if-suspended` / `RENDER_SKIP_IF_SUSPENDED` so main CI Deploy skips suspended Render
+services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the prod target.
 
 **F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
 F8 worker runs on DOKS.
@@ -82,8 +85,21 @@ F8 worker runs on DOKS.
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `DATABASE_URL` | Yes | DO Postgres store/quarantine |
-| `INGEST_POLLER_URL` | Yes | HTTPS / object-prefix fixture or feed URL |
+| `INGEST_POLLER_URL` | Yes | HTTPS JSON feed (or object-prefix listing). **Must** be `https://` — never `REPLACE_ME_*` |
 | `INGEST_POLL_INTERVAL_SEC` | Yes | Poll interval (seconds) |
+
+**Non-prod fixture URL (EV-033 — pin this when no operational feed):**
+
+```
+https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json
+```
+
+**DOKS fail-closed (EV-033):** keep `metar-worker` at **0 replicas** until
+`bash scripts/deploy/doks_worker_poller_preflight.sh --probe` passes, then
+`--scale-up`. Do **not** copy `INGEST_POLLER_URL` from suspended Render worker env
+without probing (legacy fork/branch raw URLs often 404). CrashLoop check:
+`bash scripts/deploy/check_worker_crashloop.sh`. Details:
+[deploy/doks/README-worker-hardening.md](../deploy/doks/README-worker-hardening.md).
 
 ### Non-secrets (`config/prod.json` — committed)
 

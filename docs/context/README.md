@@ -8,6 +8,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 
 | Slug | Topic | Status | Created | Linked features |
 |------|-------|--------|---------|-----------------|
+| [iwxxm-corpus-quality-846](iwxxm-corpus-quality-846.md) | #846/#835/#741/#808 official IWXXM corpus + WMO sources | active | 2026-08-04 | F32, F23, F4, F6, F2, S040/EV-032 |
 | [platform-independence-842](platform-independence-842.md) | #842/#830/#712 Supabase strip + Render→DOKS | active | 2026-08-03 | F30?, F8, F21, S038/EV-031 |
 | [quality-residuals-831](quality-residuals-831.md) | #831/#829/#820 rule matrices + TC deepen + VAA/TCA decode | active | 2026-08-02 | F29?, F23, F9, F26/F27, S037/EV-030 |
 | [eight-family-ahl-rules-823](eight-family-ahl-rules-823.md) | #823 eight-family AHL/lint/convert/validate gap sweep | active | 2026-08-01 | F6+, F28?, S036/EV-029 |

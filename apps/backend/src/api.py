@@ -376,11 +376,11 @@ async def parse_files(request: Request) -> List[UploadFile]:
 
 # Multi-line TAC products — keep the whole buffer as one entry (do not line-split).
 # SIGMET/AIRMET: WMO examples are header- + body= across lines (BUG-2026-07-30 / F23 UI).
-# VAA/TCA/SWXA: advisory templates with labeled fields (F26/F27/F28).
-_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA"})
+# VAA/TCA/SWXA/VONA: advisory / notice templates with labeled fields (F26/F27/F28/F32).
+_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 
-# Wire product enum (api-contract EV-029 / F28). Canonical ``swxa``; reject ``swx``.
-_API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA"})
+# Wire product enum (api-contract EV-029 / F28 / EV-032 F32). Canonical ``swxa`` / ``vona``.
+_API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA"})
 
 
 def normalize_api_product(
@@ -406,7 +406,8 @@ def normalize_api_product(
                 "message": (
                     f"Unknown product {raw!r}; expected one of "
                     f"{', '.join(sorted(p.lower() for p in _API_PRODUCTS))} "
-                    "(canonical SWXA wire value is swxa, not swx)"
+                    "(canonical SWXA wire value is swxa, not swx; "
+                    "canonical VONA wire value is vona)"
                 ),
             },
         )
@@ -422,9 +423,9 @@ def split_manual_entries(manual_text: str, product: Optional[str] = None) -> Lis
     """Split manual text into TAC entries.
 
     Default (METAR/SPECI/TAF): one entry per non-empty line.
-    SIGMET/AIRMET/VAA/TCA/SWXA: entire buffer is one multi-line document —
+    SIGMET/AIRMET/VAA/TCA/SWXA/VONA: entire buffer is one multi-line document —
     line-splitting would shred the header/body (SIGMET/AIRMET) or template
-    fields (``VA ADVISORY`` / ``SWX ADVISORY`` / ``DTG:`` / …).
+    fields (``VA ADVISORY`` / ``SWX ADVISORY`` / ``VONA`` / ``DTG:`` / …).
     """
     if not manual_text:
         return []
@@ -439,8 +440,8 @@ def manual_entries_with_offsets(manual_text: str, product: Optional[str] = None)
 
     Offsets point at the first non-whitespace character of each kept entry so
     soft-preview ``failed_spans`` can be remapped onto the full editor document.
-    For SIGMET/AIRMET/VAA/TCA/SWXA the single entry offset is the first non-whitespace
-    character of the buffer (document preserved with internal newlines).
+    For SIGMET/AIRMET/VAA/TCA/SWXA/VONA the single entry offset is the first
+    non-whitespace character of the buffer (document preserved with internal newlines).
     """
     if not manual_text:
         return []

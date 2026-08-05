@@ -28,6 +28,7 @@ _TAC_TO_IWXXM: dict[str, str] = {
     "WS": "LS",
     "WC": "LY",
     "WV": "LV",
+    "WM": "LM",  # VONA (F32 / G-VONA-4)
 }
 
 _AHL_LINE = re.compile(
@@ -81,6 +82,12 @@ _TAC_SWXA = re.compile(
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
+# VONA body — VONA … labeled report (keep-whole; optional ``=`` — F32 / G-VONA-4)
+_TAC_VONA = re.compile(
+    r"^VONA\b.+?(?:=\s*$|\Z)",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
+)
+
 _PRODUCT_TT: dict[str, frozenset[str]] = {
     "METAR": frozenset({"SA"}),
     "SPECI": frozenset({"SP"}),
@@ -92,6 +99,7 @@ _PRODUCT_TT: dict[str, frozenset[str]] = {
     "VAA": frozenset({"FV"}),
     "TCA": frozenset({"FK"}),
     "SWXA": frozenset({"FN"}),
+    "VONA": frozenset({"WM"}),
 }
 
 _PRODUCT_BODY_RE: dict[str, re.Pattern[str]] = {
@@ -103,6 +111,7 @@ _PRODUCT_BODY_RE: dict[str, re.Pattern[str]] = {
     "VAA": _TAC_VAA,
     "TCA": _TAC_TCA,
     "SWXA": _TAC_SWXA,
+    "VONA": _TAC_VONA,
 }
 
 
@@ -404,6 +413,8 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
         reports = [r for r in reports if re.match(r"^TC\s+ADVISORY\b", r, re.IGNORECASE)]
     elif product_key == "SWXA":
         reports = [r for r in reports if re.match(r"^SWX\s+ADVISORY\b", r, re.IGNORECASE)]
+    elif product_key == "VONA":
+        reports = [r for r in reports if re.match(r"^VONA\b", r, re.IGNORECASE)]
 
     if not reports:
         raise BulletinSplitError(

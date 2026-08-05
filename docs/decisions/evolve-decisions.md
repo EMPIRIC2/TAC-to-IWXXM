@@ -3,6 +3,128 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-033 — F8 worker INGEST_POLLER_URL hardening (S041)
+
+**Session**: S041-worker-poller-hardening  
+**Features**: deepen **F8**  
+**Started**: 2026-08-04  
+**Branch**: `evolve/EV-033-worker-poller-hardening` (from `main`)  
+**Status**: **in_progress**  
+**Prior**: S040 / EV-032 **suspended** (not cancelled) during this cycle
+
+### Scope (Phase 0 — locked 2026-08-04; AskQuestion unavailable — user “proceed 1–5”)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E33-1 | decision | Session vs S040? | New session S041; suspend S040 |
+| E33-2 | decision | Scope? | All prevention items **1–5** + worker code refuse placeholder/non-https |
+| E33-3 | decision | Preset? | **Standard** |
+
+**Scope (verbatim)**: Harden F8 `metar-worker` so `INGEST_POLLER_URL` cutover cannot
+leave `REPLACE_ME_*` or non-HTTPS values running at replicas &gt; 0: (1) fail-closed
+scale default/preflight; (2) CI/ops validate script; (3) pin non-prod fixture URL in
+docs/env; (4) runbook — do not copy unverified Render poller URLs; (5) CrashLoop check
++ optional PrometheusRule; plus code `validate_ingest_poller_url` / exit 2 on bad URL.
+
+**Out of scope**: Completing S040/EV-032 deploy smoke; new operational ingest source
+beyond the fixture URL; Prometheus operator install on DOKS.
+
+### Intake decisions
+| ID | Category | Question | Decision | ADR |
+|----|----------|----------|----------|-----|
+| E33-1 | decision | Proceed hardening 1–5? | Yes (+ code guard) | ADR-018 deepen |
+
+### Stage log
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-04 | S041 open; S040 suspended |
+| 16-evolve | | orchestrating |
+| 01–13 | | Standard path — docs+code+scripts this cycle |
+
+## Cycle EV-032 — Official IWXXM corpus quality / WMO source parity (S040)
+
+**Session**: S040-iwxxm-corpus-quality  
+**Features**: **F32** (new — VONA quality bar) + deepen **F23** (#835) + **F4** / **F6** / **F2** / **F13** (#808 + corpus)  
+**Issues**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) (epic), [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835), [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741), [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808)  
+**Started**: 2026-08-04  
+**Branch**: `evolve/EV-032-iwxxm-corpus-quality` (from `main`)  
+**Status**: **in_progress** — Gate A PASS; entering 04-tech-plan
+
+### Scope (Phase 0 — locked 2026-08-04 via 00-context)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-1 | decision | Umbrella ticket? | **1** — new Epic **#846** (`D-S040-open` Q1) |
+| E32-2 | decision | Cycle scope? | **1** — #835 + #741 + #808 + corpus/WMO-source track |
+| E32-3 | decision | VONA Fn? | **1** — allocate **F32** VONA quality bar |
+| E32-4 | decision | Order? | **1** — #835 → #741 → #808 → corpus |
+| E32-5 | decision | Routing preset? | **1** — Standard (`D-S040-route`) |
+| E32-6 | decision | Branch base? | **1** — cut from `main`; park EV-031 dirt in stash (`D-S040-branch`) |
+
+**Scope (verbatim)**: Under epic #846, raise and prove quality against the official WMO IWXXM
+corpus and related WMO sources (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists,
+codes.wmo.int, iwxxm-modelling). Execute (1) #835 TC SIGMET A6-2-TC ADR-032 equality →
+`wmoPass`; (2) #741 / **F32** VONA lint→convert→validate quality bar; (3) #808 adopt-new-line
+maintainability assessment + checklists (no re-pin in-ticket); (4) file corpus parity
+children under #846 as discovered. Exclude #836 metrics UI / #840 workbench epic.
+
+**Out of scope**: Metrics UI #836; hand-edit `vendor/schemas/*` outside sync PRs; ship a new
+IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
+
+**Parked**: `stash@{0}` — S039/EV-031 WIP (`S039-EV031-WIP park for S040/EV-032`).
+
+### Document Manifest (01 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-M1 | decision | Spec delta breadth? | **2** — Full product pack: `feature-list` + `spec` + `user-journeys` + `api-contract` + `test-plan` (+ domain/#808 notes) (`D-S040-E32-M`) |
+| E32-M2 | decision | VONA operator exposure? | **3** — **Full F7 product surface** this cycle (picker + Examples/catalog when quality path green) |
+| E32-M3 | decision | UI preview (interview)? | **1** — N/A for interview (implement UI in-cycle; H4–H5 at verify/deploy) |
+| E32-M4 | decision | After manifest? | **1** — write deltas; close 01 → **02-verify-plan** |
+
+**Affected artifacts (01)**: `docs/feature-list.md`, `docs/spec.md`, `docs/user-journeys.md`,
+`docs/api-contract.md`, `docs/test-plan.md`, `docs/decisions/evolve-decisions.md`,
+`docs/context/iwxxm-corpus-quality-846.md` (pointer); #808 deliverables remain docs under
+`docs/domain/iwxxm/` in later milestones.
+
+### Gate A / 02 (locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-02F | decision | 02 Batch F? | **1,1,1,1** — VONA AHL→04; incremental Examples unlock; #808 docs+children only (+#847); Gate A (`D-S040-02-batch-f` / `D-S040-02-phase-a`) |
+| E32-02A | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** |
+| E32-02-M1 | decision | VONA AHL / T1T2? | **1** — defer detail to 04 (“when known”) (`S02.M1`) |
+| E32-02-M2 | decision | Examples unlock? | **1** — incremental when F32 golden greens (`S02.M2`) |
+| E32-02-M3 | decision | #808 depth? | **1** — docs + child issues only; link #847 for non-technical review (`S02.M3`) |
+
+**Audit**: `docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md`
+
+### Tech plan Batch 1 (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T1 | decision | Milestone structure? | **1** — M0–M4 (`D-S040-04-batch-1`) |
+| E32-T2 | decision | #835 equality bar? | **1** — strict ADR-032 required for `wmoPass` |
+| E32-T3 | decision | F32 encode approach? | **1** — cookbook + fixtures; VAA/SWXA-peer plugin; gaps → children |
+| E32-T4 | decision | VONA AHL / T1T2? | **1** — discover in M2; no provisional lock |
+
+### Tech plan Batch 2 (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T5 | decision | New deps? | **1** — none (`D-S040-04-batch-2`) |
+| E32-T6 | decision | Deploy / connectivity? | **1** — API+static; H1–H3; **H4–H5 required** |
+| E32-T7 | decision | CI packaging? | **custom** — path-filtered **pre-commit** smokes; long packs on **pre-push**/`make`; document improvements (not dump full matrices into default pre-commit) |
+| E32-T8 | decision | Corpus / #847 home? | **1** — M0 session inventory + durable `docs/domain/iwxxm/` |
+
+### Gate B (04 — locked 2026-08-04)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E32-T9 | gate | Approve execution plan? | **PASS** — M0–M4 (28 tasks) → **07 @ T0.1** (`D-S040-04-plan`=1) |
+
+**Status**: **in_progress** — Phase C build (`07-build`); M1 #835 **closed**; next M2 F32 @ T2.1
+
 ## Cycle EV-031 — Platform independence #842 / #830 / #712 (S038)
 
 **Session**: S038-platform-independence-842  
@@ -10,7 +132,7 @@
 **Issues**: [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842), [#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830), [#712](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/712)  
 **Started**: 2026-08-03  
 **Branch**: `evolve/EV-031-platform-independence-842`  
-**Status**: **completed** — `D-S038-13` = 1 (2026-08-03); F30/F31 Done; provisional DOKS
+**Status**: **completed** — `D-S038-13` = 1 (2026-08-03); F30/F31 Done; public DNS live
 
 ### Scope (Phase 0 — locked 2026-08-03)
 
@@ -39,7 +161,7 @@
 | E31-04 | gate | Gate B / plan approve? | **1** — approve M0–M7 (38 tasks) + **ADR-033 Accepted** → **07 @ T0.1** (`D-S038-04-plan`) |
 | E31-T0.2 | docs | Amend #830? | **Done** — title/body Auth-kept + data-plane strip; link F30/F31/ADR-033 ([#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830)) |
 | E31-t63-waive | decision | T6.3 DNS? | **3 / waive_ip** — waive real DNS; pin `LIVE_*`/`liveE2e` to LB `168.144.12.70` + Host-header placeholders; public `api.baseUrl` stays Render; proceed T6.4 (`D-S038-t63-waive`) |
-| E31-t65-waive | decision | T6.5 soak? | **1 / waive** — waive 7-day soak (day 0/7); suspend Render API+FE+worker now; archive LIVE_*; retarget `prod.json` + CI to DOKS (`D-S038-t65-waive`); DNS residual stays `D-S038-t63-waive` |
+| E31-t65-waive | decision | T6.5 soak? | **1 / waive** — waive 7-day soak (day 0/7); suspend Render API+FE+worker now; archive LIVE_*; retarget `prod.json` + CI to DOKS (`D-S038-t65-waive`); DNS residual superseded by `api.tac-to-iwxxm.com` / `app.tac-to-iwxxm.com` |
 | E31-11 | decision | 11 verify-impl? | **1** — approve F30+F31; skip local UI preview (`D-S038-11`) |
 | E31-12 | decision | 12 deploy strategy? | **1** — approve mitigations + rollback; start 13 (`D-S038-12`) |
 | E31-13 | gate | 13 smoke + Phase D? | **1** — approve 13 PASS; close Phase D / cycle closeout (`D-S038-13`) |
@@ -56,6 +178,7 @@
 2. **F31**: Hybrid sessions; guest notice; auto-upload on login; F22 deepen; F21 Amended (**TC-F31-001..006**).
 3. Public convert without login remains; JWT only for server session APIs.
 4. Deploy smoke / H0–H5 against DOKS (and Auth) per routing.
+
 
 ---
 

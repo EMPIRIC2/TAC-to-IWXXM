@@ -92,8 +92,8 @@ def test_full_checklist_products_have_multiple_negatives() -> None:
 def test_template_gate_products_covered() -> None:
     data = _load_manifest()
     gates = {c["product"] for c in data["negative"] if c["depth"] == "template_gate"}
-    assert gates >= {"SIGMET", "AIRMET", "VAA", "TCA", "SWXA"}
-    assert gates == {"SIGMET", "AIRMET", "VAA", "TCA", "SWXA"}
+    assert gates >= {"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"}
+    assert gates == {"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"}
 
 
 @pytest.mark.parametrize("case", _accept_cases(), ids=_case_ids(_accept_cases()))

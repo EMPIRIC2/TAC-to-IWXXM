@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import logging
 import signal
+import sys
 import time
 
 from metar_worker.pipeline import process_job
 from metar_worker.poller import fetch_jobs, safe_url_for_log
+from metar_worker.poller_url import validate_ingest_poller_url
 from metar_worker.settings import WorkerSettings
 from metar_worker.store import PostgresStore, StoreClient, write_result
 
@@ -32,8 +34,7 @@ def run_once(settings: WorkerSettings, store: StoreClient | None = None) -> int:
     int
         Number of jobs processed (skips already-seen ``job_id`` values in-process).
     """
-    if not settings.ingest_poller_url:
-        raise RuntimeError("INGEST_POLLER_URL is required")
+    poller_url = validate_ingest_poller_url(settings.ingest_poller_url)
 
     writer = store
     if writer is None:
@@ -41,11 +42,11 @@ def run_once(settings: WorkerSettings, store: StoreClient | None = None) -> int:
             raise RuntimeError("DATABASE_URL is required")
         writer = PostgresStore(database_url=settings.database_url)
 
-    jobs = fetch_jobs(settings.ingest_poller_url)
+    jobs = fetch_jobs(poller_url)
     logger.info(
         "fetched %s job(s) from %s",
         len(jobs),
-        safe_url_for_log(settings.ingest_poller_url),
+        safe_url_for_log(poller_url),
     )
     processed = 0
     for job in jobs:
@@ -79,6 +80,14 @@ def main() -> None:
     signal.signal(signal.SIGINT, _handle_sigterm)
 
     settings = WorkerSettings()
+    try:
+        validate_ingest_poller_url(settings.ingest_poller_url)
+    except ValueError as exc:
+        # Fail closed with a clear exit so CrashLoopBackOff is diagnosable;
+        # ops must keep replicas at 0 until the secret is a real https URL.
+        logger.critical("INGEST_POLLER_URL invalid — refusing to start: %s", exc)
+        sys.exit(2)
+
     if settings.once:
         run_once(settings)
         return

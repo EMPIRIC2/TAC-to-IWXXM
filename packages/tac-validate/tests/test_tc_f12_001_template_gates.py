@@ -27,11 +27,11 @@ def _ids(cases: list[dict[str, Any]]) -> list[str]:
 def test_template_gate_manifest_cites_a6_or_a2() -> None:
     for case in _template_cases():
         cite = str(case.get("cite", ""))
-        assert "A6" in cite or "A2" in cite, case["id"]
+        assert "A6" in cite or "A2" in cite or "A7" in cite, case["id"]
 
 
 def test_product_rules_dispatch_covers_all_seven_products() -> None:
-    """Coverage matrix gate: every product has a product_rules path (F6 + F28 SWXA)."""
+    """Coverage matrix gate: every product has a product_rules path (F6 + F28/F32)."""
     samples = {
         "METAR": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
         "SPECI": "SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=",
@@ -46,6 +46,10 @@ def test_product_rules_dispatch_covers_all_seven_products() -> None:
         "VAA": "VA ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\nVOLCANO: KARYMSKY 1000-13\n",
         "TCA": "TC ADVISORY\nDTG: 20040925/1900Z\nTC: GLORIA\nMAX WIND: 22MPS\n",
         "SWXA": "SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\nSWX EFFECT: HF COM\n",
+        "VONA": (
+            "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\n"
+            "SVO:\t\t\tKVERT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\n"
+        ),
     }
     assert set(samples) == set(PRODUCTS)
     for product, tac in samples.items():

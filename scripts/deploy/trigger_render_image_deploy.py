@@ -173,6 +173,20 @@ def trigger_via_rest(
     )
 
 
+def is_suspended_deploy_block(status_code: int, detail: str) -> bool:
+    """True when Render refuses deploy because the service is suspended.
+
+    After DOKS cutover, production traffic is on Kubernetes while Render services
+    may remain suspended. CI still pushes GHCR images; treating suspended as a
+    hard Deploy failure keeps ``main`` red without changing the live site.
+    """
+    text = (detail or "").lower()
+    if "suspended" not in text:
+        return False
+    # Hook conflict / REST reject shapes seen in production CI.
+    return status_code in (0, 400, 409, 500) or "cannot deploy" in text or "conflict" in text
+
+
 def trigger_via_hook(
     *,
     deploy_hook: str,
@@ -213,6 +227,7 @@ def trigger_image_deploy(
     http: HttpCaller | None = None,
     hook_retries: int = 3,
     allow_hook_without_imgurl: bool = True,
+    skip_if_suspended: bool = False,
 ) -> TriggerResult:
     """Try hook+imgURL, then REST imageUrl, then hook without imgURL."""
     caller = http or _default_http
@@ -252,6 +267,19 @@ def trigger_image_deploy(
                 f"rest={rest.status_code}:{rest.detail}"
             )[:800],
         )
+        if skip_if_suspended and is_suspended_deploy_block(
+            hook_result.status_code, hook_result.detail
+        ):
+            return TriggerResult(
+                ok=True,
+                method="skipped_suspended",
+                status_code=hook_result.status_code,
+                detail=(
+                    "Render service is suspended — GHCR image push succeeded; "
+                    "skipping Render deploy (DOKS is the live target). "
+                    f"{hook_result.detail}"
+                )[:800],
+            )
 
     if allow_hook_without_imgurl:
         fallback = trigger_via_hook(
@@ -271,6 +299,33 @@ def trigger_image_deploy(
                     f"{fallback.detail}"
                 )[:800],
             )
+        if skip_if_suspended and is_suspended_deploy_block(
+            fallback.status_code, fallback.detail
+        ):
+            return TriggerResult(
+                ok=True,
+                method="skipped_suspended",
+                status_code=fallback.status_code,
+                detail=(
+                    "Render service is suspended — GHCR image push succeeded; "
+                    "skipping Render deploy (DOKS is the live target). "
+                    f"{fallback.detail}"
+                )[:800],
+            )
+
+    if skip_if_suspended and is_suspended_deploy_block(
+        hook_result.status_code, hook_result.detail
+    ):
+        return TriggerResult(
+            ok=True,
+            method="skipped_suspended",
+            status_code=hook_result.status_code,
+            detail=(
+                "Render service is suspended — GHCR image push succeeded; "
+                "skipping Render deploy (DOKS is the live target). "
+                f"{hook_result.detail}"
+            )[:800],
+        )
 
     return hook_result
 
@@ -296,8 +351,21 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Do not fall back to hook without imgURL",
     )
+    parser.add_argument(
+        "--skip-if-suspended",
+        action="store_true",
+        help=(
+            "Exit 0 when Render reports the service is suspended "
+            "(DOKS cutover; GHCR push is enough)"
+        ),
+    )
     args = parser.parse_args(argv)
 
+    skip_env = os.environ.get("RENDER_SKIP_IF_SUSPENDED", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
     result = trigger_image_deploy(
         deploy_hook=args.deploy_hook,
         image_url=args.image_url,
@@ -305,6 +373,7 @@ def main(argv: list[str] | None = None) -> int:
         service_id=args.service_id or os.environ.get("RENDER_SERVICE_ID"),
         service_name=args.service_name,
         allow_hook_without_imgurl=not args.no_hook_without_imgurl,
+        skip_if_suspended=args.skip_if_suspended or skip_env,
     )
     print(
         json.dumps(

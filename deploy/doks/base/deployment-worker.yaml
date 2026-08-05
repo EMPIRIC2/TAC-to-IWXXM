@@ -1,3 +1,6 @@
+# EV-033 — default replicas: 0 (fail-closed) until INGEST_POLLER_URL preflight passes.
+# Scale up only via:
+#   bash scripts/deploy/doks_worker_poller_preflight.sh --probe --scale-up
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +9,7 @@ metadata:
     app.kubernetes.io/name: metar-worker
     app.kubernetes.io/component: worker
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app.kubernetes.io/name: metar-worker

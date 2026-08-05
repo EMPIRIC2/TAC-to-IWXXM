@@ -270,3 +270,32 @@ Gate A PASS (Lean) → **04-tech-plan** (`D-S027-02-phase-a`).
 
 Gate A PASS (Lean) → **04-tech-plan** (`D-S032-02-phase-a`).
 
+---
+
+## S040 / EV-032 — Official IWXXM corpus quality (#846)
+
+**Date**: 2026-08-04  
+**Mode**: delta  
+**Status**: **PASS** — Batch F S02.M1/M2/M3 all option **1**; Gate A → 04
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 6 (feature-list, spec, journeys, test-plan, api-contract, evolve-decisions) |
+| Auto-approved (high) | 8 |
+| Fix-in-place | 1 (TC-EV032 alias IDs → 002..005) |
+| User-approved (medium/low) | 3 (all option 1) |
+
+### Consistency
+
+| Check | Result |
+|-------|--------|
+| Feature ↔ Spec / Journey / Test / API | Pass |
+| F32 / UJ-045 / `product=vona` | Pass |
+| H4–H5 when FE VONA / catalog | Pass |
+| #836 OOS | Pass |
+
+### Next
+
+Gate A PASS (Standard) → **04-tech-plan** (`D-S040-02-phase-a`).
+Session audit: `docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md`
+

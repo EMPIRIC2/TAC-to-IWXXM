@@ -1394,6 +1394,8 @@ export function FileConverter({
                     <option value="TAF">TAF</option>
                     <option value="VAA">VAA</option>
                     <option value="TCA">TCA</option>
+                    <option value="SWXA">SWXA</option>
+                    <option value="VONA">VONA</option>
                   </select>
                   <GoldenExamplesSelect
                     disabled={isReadOnly}

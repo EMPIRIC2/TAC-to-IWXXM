@@ -19,9 +19,8 @@ env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
-  # T6.5 / D-S038-t65-waive — Render retired; provisional DOKS placeholders (D-S038-t63-waive).
-  FRONTEND_VITE_APP_URL: http://app.doks.placeholder.metar-iwxxm.local
-  FRONTEND_VITE_API_BASE_URL: http://api.doks.placeholder.metar-iwxxm.local
+  FRONTEND_VITE_APP_URL: https://app.tac-to-iwxxm.com
+  FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
   # ============================================================================
@@ -403,6 +402,12 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+      RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+      RENDER_WORKER_DEPLOY_HOOK: ${{ secrets.RENDER_WORKER_DEPLOY_HOOK }}
+      # Optional: REST fallback when deploy-hook+imgURL returns 5xx (BUG-2026-08-03).
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
     steps:
       - uses: actions/checkout@v5
@@ -515,11 +520,64 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:main-latest
 
-      - name: Note Render decommission (T6.5)
+      - name: Note Render deploy hooks (suspended OK)
         if: steps.guard.outputs.skip != 'true'
         run: |
-          echo "GHCR images pushed. Render deploy hooks retired (D-S038-t65-waive)."
-          echo "DOKS is primary — rollout via kubectl / image tag, not Render hooks."
+          echo "Live traffic is DOKS (api|app.tac-to-iwxxm.com). Render hooks may skip_if_suspended."
+          [ -n "${RENDER_BACKEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
+          [ -n "${RENDER_FRONTEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
+          [ -n "${RENDER_WORKER_DEPLOY_HOOK}" ] && echo "✅ RENDER_WORKER_DEPLOY_HOOK is set" || echo "⚠️  RENDER_WORKER_DEPLOY_HOOK is missing (docker-from-git worker OK)"
+
+      - name: Enforce backend deploy hook presence
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          if [ -z "${RENDER_BACKEND_DEPLOY_HOOK}" ]; then
+            echo "❌ Missing required secret: RENDER_BACKEND_DEPLOY_HOOK"
+            exit 1
+          fi
+
+      # Live traffic is on DOKS (app/api.tac-to-iwxxm.com). Render services may be
+      # suspended; still push GHCR, but do not fail Deploy when Render is suspended.
+      - name: Deploy backend image to Render
+        if: steps.guard.outputs.skip != 'true' && env.RENDER_BACKEND_DEPLOY_HOOK != ''
+        env:
+          DEPLOY_HOOK: ${{ env.RENDER_BACKEND_DEPLOY_HOOK }}
+          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+          RENDER_SKIP_IF_SUSPENDED: "1"
+        run: |
+          if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
+            python3 scripts/deploy/trigger_render_image_deploy.py \
+              --deploy-hook "${DEPLOY_HOOK}" \
+              --image-url "${IMAGE_URL}" \
+              --service-name metar-to-iwxxm-api \
+              --skip-if-suspended
+          else
+            curl -fsSL "${DEPLOY_HOOK}"
+          fi
+
+      - name: Deploy frontend image to Render
+        if: steps.guard.outputs.skip != 'true' && env.RENDER_FRONTEND_DEPLOY_HOOK != ''
+        env:
+          DEPLOY_HOOK: ${{ env.RENDER_FRONTEND_DEPLOY_HOOK }}
+          IMAGE_URL: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
+          RENDER_SKIP_IF_SUSPENDED: "1"
+        run: |
+          if [ "${RENDER_DEPLOY_MODE}" = "image" ]; then
+            python3 scripts/deploy/trigger_render_image_deploy.py \
+              --deploy-hook "${DEPLOY_HOOK}" \
+              --image-url "${IMAGE_URL}" \
+              --service-name metar-to-iwxxm-frontend-v4-web \
+              --skip-if-suspended
+          else
+            curl -fsSL "${DEPLOY_HOOK}"
+          fi
+
+      - name: Note DOKS rollout
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          echo "::notice::GHCR tags pushed. Live deploy target is DOKS (metar-iwxxm)."
+          echo "Roll out with: kubectl -n metar-iwxxm set image deploy/metar-frontend frontend=ghcr.io/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}"
+          echo "               kubectl -n metar-iwxxm set image deploy/metar-api api=ghcr.io/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}"
 
       - name: CD skipped (credentials)
         if: steps.guard.outputs.skip == 'true'

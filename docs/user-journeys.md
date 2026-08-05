@@ -5,8 +5,9 @@
 > S013 / EV-009 F9/F10 decode + preview UX; S014 / EV-010 package publish + msgspec HTTP;
 > S015 / EV-011 F15 METAR lint registry + #732 quality; S016 / EV-012 Manual TAC Input modes (#730);
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
-> S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31
-> **Last updated**: 2026-08-03 (S038 / EV-031 — UJ-045..048 hybrid Auth + DOKS)
+> S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
+> S040 / EV-032 F32 VONA + #846 corpus
+> **Last updated**: 2026-08-04 (S038 / EV-031 UJ-045..048 + S040 / EV-032 UJ-049 F32 VONA)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -57,13 +58,14 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-040 | Convert METAR/SPECI with structured iwxxm-us REMARKS | library / API / CI | F6.b deepen (EV-025) | T0 / T2 (+ T3 smoke if API ships) |
 | UJ-041 | Promote sigmet-multi-location-VA to WMO passer | library / CI / catalog | F23 deepen (EV-025 soft; EV-026 equality) | T0 / T2 |
 | UJ-042 | Official WMO TAC peers decode with empty/allowlisted residuals | library / CI / workbench | F25/F9/F7.g deepen (EV-027) | T0 / T2 / **T3** / H4–H5 |
+| UJ-043 | Eight-family rules gap sweep + SWXA quality | UI / API / CI | F28 + deepen (EV-029) | T0 / T2 / **T3** / H4–H5 if FE |
+| UJ-044 | Rule matrix harness + TC / VAA–TCA residuals | CI / workbench | F29 + deepen (EV-030) | T0 / T2 / H4–H5 if FE |
 | — | **EV-023 #800** — no new UJ; deepen UJ-001/005/006/016 + TC-EV023-001..009 | library / API / CI | F6/F2/F12/F13 | T0 / T2 (+ T3 smoke if API ships) |
-| UJ-043 | Eight-family rules gap sweep + SWXA quality | library / CI / workbench | F28 (EV-029) | T0 / T2 / H4–H5 if FE |
-| UJ-044 | Rule matrix harness + TC / VAA–TCA residuals | library / CI / workbench | F29 (EV-030) | T0 / T2 / H4–H5 if FE |
 | UJ-045 | Guest convert + loss-of-progress notice + local history | apps/frontend | F31+F21 | T2 / **T3** / H4–H5 |
 | UJ-046 | Login → auto-upload drafts → server sessions | apps/frontend | F31+F30 | T2 / **T3** / H4–H5 |
 | UJ-047 | Privacy prefs ↔ IndexedDB / Auth cookies (deepen UJ-033) | apps/frontend | F22+F31 | T0 / T2 / H4–H5 |
 | UJ-048 | Ops: DOKS cutover smoke (API + FE + worker) | DOKS / ops | F30 | T3 / H0–H5 |
+| UJ-049 | VONA lint / convert→validate + F7 product surface | apps/frontend / API / CI | F32 (+F6/F7/F12) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -85,12 +87,12 @@ Run live E2E: `make test-live` (after F21: public convert path needs **no** `E2E
 
 | Role | Env var | URL |
 |------|---------|-----|
-| API (transitional Render) | `LIVE_API_URL` | `https://metar-to-iwxxm-api.onrender.com` |
-| Frontend (transitional Render) | `LIVE_FRONTEND_URL` / `PLAYWRIGHT_BASE_URL` | `https://metar-to-iwxxm-frontend-v4-web.onrender.com` |
-| API / FE (post–F30 cutover) | same env vars | **DOKS** hostnames — pin in 04-tech-plan / deploy |
+| API (DOKS prod) | `LIVE_API_URL` | `https://api.tac-to-iwxxm.com` |
+| Frontend (DOKS prod) | `LIVE_FRONTEND_URL` / `PLAYWRIGHT_BASE_URL` | `https://app.tac-to-iwxxm.com` |
 
-Until DOKS soak completes, live harness may still target Render. After cutover (UJ-048),
-`LIVE_*` must point at DOKS; Render URLs become historical.
+Until Render decommission (TC-F30-005), historical onrender.com URLs remain in
+[ops/render-decommission-archive.md](ops/render-decommission-archive.md). After cutover (UJ-048),
+`LIVE_*` must point at DOKS public DNS.
 
 **F6 T3 requirement**: All **seven** products (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA)
 must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US profile
@@ -1320,7 +1322,7 @@ Auth session cookies when login is used.
 **Steps**:
 
 1. Deploy API, frontend, worker to DOKS; apply Alembic migrations to DO Postgres.
-2. Point DNS / `LIVE_*` URLs to DOKS endpoints (soak then primary).
+2. Point DNS / `LIVE_*` URLs to `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com`.
 3. Run H0–H5: health, convert, CORS, FE→API; F8 store write smoke; Auth login + session CRUD.
 4. Confirm product path works **without** Supabase DB credentials; Auth keys present for login.
 5. Decommission Render after soak checklist.
@@ -1330,6 +1332,55 @@ Auth session cookies when login is used.
 **Automated tests**: `make test-live*` against DOKS URLs; deploy-smoke report.
 
 **Source**: #712; F30; UJ-OPS-001 supersession notes
+
+---
+
+### UJ-049: VONA Lint / Convert→Validate + F7 Product Surface (S040 / EV-032)
+
+**Actor**: Operator / CI maintainer / package consumer
+
+**Goal**: Lint VONA TAC with registry codes; convert accept fixtures (esp. official
+`vona-A7-1` peer when available) to `iwxxm:VolcanoObservatoryNoticeForAviation` that
+passes XSD+Schematron under default convert settings; ADR-032 golden equality when a
+vendor peer exists; full F7 workbench surface — product picker includes **VONA**, Examples
+lists VONA passers when unlocked. Encode authority is XSD+SCH+example+PANS-MET (guidance
+file silent).
+
+**Feature**: **F32** (+ deepen F6 / F7 / F12 / F2 / F13 / F9) — S040 / EV-032 ·
+Issues [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741),
+[#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+
+**Related cycle work (same session, not this UJ alone)**:
+
+- [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) — A6-2-TC ADR-032 → `wmoPass` (deepen UJ-034/039)
+- [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) — release-line adoptability docs (no operator UJ)
+- Corpus children under #846 — deepen UJ-039/042 as filed
+
+**Steps (operator — T2/T3; H4–H5 when FE ships)**:
+
+1. Open workbench; Product = **VONA** (picker present — full F7 surface).
+2. Load / paste VONA accept TAC; lint — registry codes only.
+3. Convert → Strict Validation — pass; root `iwxxm:VolcanoObservatoryNoticeForAviation`.
+4. Paste a known-bad VONA negative — lint returns registry codes (no silent success).
+5. Examples control lists VONA **strict passers** when they pass the golden bar; official
+   WMO VONA stems may also load as **reference** per UJ-039 / ADR-032.
+
+**Steps (CI — T0 / T2)**:
+
+1. Registry completeness + accept/negative packs (**TC-F32-001..004**).
+2. API accepts `product=vona`; unknown aliases → `unknown_product` 400 (**TC-F32-006**).
+3. Product-path smoke + catalog unlock when green (**TC-F32-005**).
+
+**Acceptance**: TC-F32-001..006 + TC-EV032-* green (or child-issued); #741 closable or split
+with links; H4–H5 when FE picker/Examples ship.
+
+**Automated tests**: TC-F32-*; TC-EV032-*; deepen TC-F7-008 / UJ-032 / UJ-039.
+
+**Browser wiring**: No new origins. Same API host; `product=vona` multipart field. H4–H5
+required when FE ships (`D-S040-E32-M` Q2=3).
+
+**Source**: #741 · #846 · ADR-028 · ADR-032 ·
+[Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md)
 
 ---
 

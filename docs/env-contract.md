@@ -45,12 +45,17 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
 | Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) |
 | Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | API / `.env` (ADR-029) |
-| F8 poller feed URL | `INGEST_POLLER_URL` | Worker / local `.env` |
-| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker (default `30`) |
-| Live API URL | `LIVE_API_URL` | Local/CI live harness (provisional DOKS Host-header placeholders) |
+| F8 poller feed URL | `INGEST_POLLER_URL` | DOKS `metar-worker-secrets` / local `.env` — **https:// only**; reject `REPLACE_ME_*` |
+| F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker ConfigMap (default `30`) |
+| Live API URL | `LIVE_API_URL` | Local/CI live harness |
 | Live frontend URL | `LIVE_FRONTEND_URL` | Local/CI live harness |
-| DOKS placeholders (prod + live) | `http://api.doks.placeholder.metar-iwxxm.local` / `http://app.doks.placeholder.metar-iwxxm.local` | `config/prod.json` + `LIVE_*` under `D-S038-t63-waive` until real DNS |
+| DOKS prod DNS (prod + live) | `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com` | `config/prod.json` + `LIVE_*` |
 | E2E Auth fixture | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Live/local Auth session tests only |
+
+**F8 non-prod fixture (EV-033):**  
+`https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json`  
+Validate: `python3 scripts/deploy/validate_ingest_poller_url.py --probe "$INGEST_POLLER_URL"`.  
+After DOKS cutover, do not reuse unverified Render poller URLs.
 
 ### Retired / do not use for product data plane
 

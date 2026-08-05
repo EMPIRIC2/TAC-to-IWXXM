@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 Done; #842/#830/#712; provisional DNS residual)
+> **Last updated**: 2026-08-04 (S038 / EV-031 F30/F31 Done; S040 / EV-032 F32 Done; #842/#846)
 
 ## Summary
 
@@ -37,8 +37,9 @@
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828 |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; #842/#830/#712; provisional DNS residual |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; #842/#830/#712; public DNS live |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
+| F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; epic #846 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -137,7 +138,7 @@
 - **Key parameters**:
 | Parameter | Default | Range | Description |
 |-----------|---------|-------|-------------|
-| `product` | *(required on API)* | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` | UI may auto-detect then send; API rejects omit |
+| `product` | *(required on API)* | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` | UI may auto-detect then send; API rejects omit |
 | `profile` | `annex3` | `annex3` \| `iwxxm_us` | International vs US extensions |
 | `iwxxm_version` | app default (e.g. `2025-2`) | Vendored pins only | Schema line |
 - **API**: Extend `POST /api/v1/convert` with `product` + `profile` (no per-product path prefix).
@@ -274,18 +275,21 @@
 ### F8: Near-Realtime TAC Ingest → IWXXM Gate
 
 - **Status**: **Implemented** (S008 / EV-006 — ADR-018/019). Worker unit/pipeline approved;
-  live T7.4 staging smoke deferred (12/13 skipped this cycle).
+  live T7.4 staging smoke deferred (12/13 skipped this cycle). **Deepened EV-033 / S041** —
+  DOKS poller URL fail-closed (code + preflight + docs fixture pin + CrashLoop check).
 - **What it does**: Continuous/near-realtime ingest of TAC (and bulletins) → `tac-validate` →
   `tac2iwxxm` → `iwxxm-validate` (Schematron/XSD) → **store**; **quarantine** on convert
   or Schematron failure (no publish). Latency target **&lt;5–15s** E2E; scale via **worker
   replicas** (drop nothing). Product scope = F6 seven.
-- **Deployable**: Background Worker at `apps/worker/` (today Render; **F30** → DOKS); HTTPS/object
-  poller; store + quarantine on **DigitalOcean Postgres** via `DATABASE_URL` (not Supabase DB /
-  service-role PostgREST). Machine credentials remain private (not public operator Auth).
+- **Deployable**: Background Worker at `apps/worker/` (DOKS `metar-worker` / Render suspended);
+  HTTPS/object poller; store + quarantine on **DigitalOcean Postgres** via `DATABASE_URL` (not
+  Supabase DB / service-role PostgREST). `INGEST_POLLER_URL` must be real `https://` before
+  replicas &gt; 0 (`scripts/deploy/doks_worker_poller_preflight.sh`).
 - **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
-  **S038 / EV-031 / F30** DO Postgres amend; [Context: platform-independence-842](context/platform-independence-842.md)
+  **S038 / EV-031 / F30** DO Postgres amend; [Context: platform-independence-842](context/platform-independence-842.md);
+  [deploy/doks/README-worker-hardening.md](../deploy/doks/README-worker-hardening.md)
 
 ### F9: Value-Aware Live Decode + Plain-Language Summary
 
@@ -1169,6 +1173,80 @@
   where feasible (F9 G4 best-effort intent preserved until closed).
 - **Acceptance**: #820 checkboxes; **TC-EV030-820-***; deepen UJ-042
 
+### F32: VONA Quality Bar — S040 / EV-032
+
+- **Status**: **Done** (M2 closed 2026-08-04; [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed).
+- **What it does**: Raises **VONA** (Volcano Observatory Notice for Aviation) TAC lint,
+  convert, and IWXXM-validate quality to the F15–F28 product bar. Root
+  `iwxxm:VolcanoObservatoryNoticeForAviation`. **WMO `TAC-to-XML-Guidance.txt` has no VONA
+  section** — encode cookbook from **2025-2 XSD + Schematron + official `vona-A7-1.xml` +
+  PANS-MET VONA template**. Model volcano/ash as `MeteorologicalFeature` objects; colour
+  codes via `AviationColourCode` vocabulary; bounding period/volume/phenomena per XSD.
+  Reuses **ADR-028** registry + **ADR-032** golden policy. Catalog `vona_a7_1` → **`wmoPass`**.
+- **Issues**: [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed; parent epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
+- Deepen children: G-VONA-1 (vertical extent) [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849),
+  G-VONA-5 (resuspended ash) [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850) — under #846.
+- **Deepens**: **F6** (VONA encode plugin), **F12** (VONA checklist), **F2/F13** (XSD+SCH),
+  **F7** full product surface (picker + Examples unlocked), **F9** best-effort decode.
+- **API**: Additive wire value **`product=vona`** on convert / convert-bulletin / lint-tac /
+  decode-tac ([api-contract.md](api-contract.md) §S040 / EV-032). Keep-whole multiline
+  `manual_text` (peer VAA/TCA/SWXA).
+- **Acceptance**:
+  1. ✅ Registry-backed VONA lint codes; CI fails on unknown codes (**TC-F32-001**)
+  2. ✅ Encode path from XSD+SCH+`vona-A7-1` (+ PANS-MET); guidance-silent gaps documented
+     (**TC-F32-002**)
+  3. ✅ `MeteorologicalFeature` volcano/ash + bounding period/volume/phenomena; colour codes via
+     correct `AviationColourCode` list (**TC-F32-003**)
+  4. ✅ Accept + negative fixtures; convert → XSD+Schematron; golden equality when vendor peer
+     exists under defaults (**TC-F32-004** / ADR-032)
+  5. ✅ Coverage-matrix VONA / F32 themes updated; guidance gaps filed or closed (**T2.9**)
+  6. ✅ **Full F7 surface**: product picker + workbench path; Examples list VONA passers
+     unlocked (**UJ-049** / **TC-F32-005**); H4–H5 at deploy
+  7. ✅ API/runtime accept `product=vona` (unknown → `unknown_product` 400) (**TC-F32-006**)
+- **Journeys / tests**: **UJ-049**; **TC-F32-001..006**; cycle **TC-EV032-***;
+  closeout [t2.9-741-closeout.md](sessions/S040-iwxxm-corpus-quality/reports/t2.9-741-closeout.md)
+- **Out of scope**: Metrics UI #836; SIGWX / QVACI; hand-edit `vendor/schemas/*`; treating
+  guidance-file runway-state rules as normative for other products
+- **Source**: E32-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-032;
+  [Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md); #741; ADR-028;
+  ADR-032; `docs/domain/rules/COVERAGE_MATRIX.md`
+
+### F23 deepen (S040 / EV-032 — #835 A6-2-TC → wmoPass)
+
+- **Status**: **Done** (M1 closed 2026-08-04; F23 remains **Done** for gen/VA/TC quality path)
+- **Issues**: [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+- **What it does**: Closed ADR-032 `canonicalize_xml` equality vs vendor `sigmet-A6-2-TC.xml`
+  under default pin; promoted catalog `sigmet_a6_2_tc` → **`wmoPass`**; FIXTURE_GAPS /
+  inventory notes updated. Encode deltas: coordinate formatting, airspace type `FIR`,
+  omit `intensityChange` on `NO_CHANGE`, forecast-centre trailing zeros.
+- **Acceptance**: #835 checkboxes; **TC-EV032-002** / **TC-EV032-003**; deepen UJ-039;
+  path-filtered canary + `make test-tc-sigmet-quality` (E32-T7 / T1.5)
+- **Closeout**: [t1.6-835-closeout.md](sessions/S040-iwxxm-corpus-quality/reports/t1.6-835-closeout.md)
+
+### F4 / F6 / F2 / F13 deepen (S040 / EV-032 — #808 release-line adoptability)
+
+- **Status**: **Done** (M3 closed 2026-08-04; [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed).
+- **Issues**: [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed; companion [#847](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/847) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
+  Automation/UX children: #851–#855.
+- **What it does**: Written maintainability assessment + adopt/deprecate checklists aligned with
+  `docs/domain/iwxxm/VERSION_SUPPORT_POLICY.md`; blast-radius map across convert / validate /
+  vendor / UI / PyPI; **keep latest+1** recommendation; staff guide for non-engineers.
+- **Acceptance**: #808 AC1–5; **TC-EV032-004**; no engine rewrite / no re-pin
+- **Durable docs**: [RELEASE_LINE_ADOPTABILITY.md](domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md) ·
+  [RELEASE_LINE_STAFF_GUIDE.md](domain/iwxxm/RELEASE_LINE_STAFF_GUIDE.md)
+- **Closeout**: [t3.3-808-847-closeout.md](sessions/S040-iwxxm-corpus-quality/reports/t3.3-808-847-closeout.md)
+
+### Corpus / WMO-source parity (S040 / EV-032 — #846)
+
+- **Status**: **In progress** — in-cycle tickets closed; children filed (T4.1); verify/deploy pending
+- **What it does**: Continuous good results vs official IWXXM corpus and related WMO sources
+  (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists, codes.wmo.int, iwxxm-modelling). File
+  child issues for concrete gaps; index durable stance in domain/session docs.
+- **Acceptance**: **TC-EV032-005**; children linked from #846; deepen UJ-039 / UJ-042 /
+  UJ-045 as applicable
+- **Children (T4.1)**: #849–#861 (see [t4.1-846-children.md](sessions/S040-iwxxm-corpus-quality/reports/t4.1-846-children.md))
+- **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout
@@ -1258,6 +1336,7 @@
 | F29 | — (CI harness; FE only if #829 menu) | — | Yes (rule matrices) | Yes if FE unlock |
 | F30 | — | Yes (Auth verify + DO DB + DOKS) | Yes | **DOKS** cutover |
 | F31 | Yes (notice, login, hybrid sessions) | Yes (session CRUD) | Yes | Yes (static + API) |
+| F32 | Yes (picker + Examples when unlocked) | Yes (`product=vona`) | Yes (lint/convert/validate) | Yes (API + static) |
 | M1–M6 | — | — | Yes | Yes |
 
 | F6 capability | Library | HTTP API | Web UI | CI metrics |

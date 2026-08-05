@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 Auth restore + DO sessions; public convert kept)
+> **Last updated**: 2026-08-04 (S038 / EV-031 F30/F31 Auth + DO sessions; S040 / EV-032 F32 VONA `product=vona`; #846)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -11,7 +11,7 @@
 | Environment | Frontend | API |
 |-------------|----------|-----|
 | Local dev | `http://localhost:18000` | `http://localhost:18001` |
-| DOKS (target) | `https://<frontend-host>` | `https://<api-host>` |
+| DOKS (prod) | `https://app.tac-to-iwxxm.com` | `https://api.tac-to-iwxxm.com` |
 | Render (transitional) | `https://<frontend-host>.onrender.com` | `https://<api-host>.onrender.com` |
 
 **EV-031 / F21 Amended**: Frontend uses single API base for `/api/v1/*` **and** `/auth/*`.
@@ -109,7 +109,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 |-------|----------|---------|-------------|
 | `files` | no* | — | TAC files |
 | `manual_text` | no* | — | TAC string |
-| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` |
+| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
 | `iwxxm_version` | no | app default | Vendored pin (e.g. `2025-2`) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
@@ -130,13 +130,16 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
   **copies** them into multipart fields.
 - No `engine` field; converter is always `tac2iwxxm` after cutover.
 - **Manual entry split**: default is one TAC per non-empty line. For **`product=vaa`**,
-  **`tca`**, or **`swxa`** (F26/F27/F28), `manual_text` is kept as a **single multi-line
-  advisory document** (template fields must not be line-split).
+  **`tca`**, **`swxa`**, or **`vona`** (F26/F27/F28/F32), `manual_text` is kept as a **single multi-line
+  advisory/notice document** (template fields must not be line-split).
 - **`product=sigmet`**: package selects `iwxxm:SIGMET` vs `iwxxm:VolcanicAshSIGMET` vs
   `iwxxm:TropicalCycloneSIGMET` from TAC content / designators (WS/WV/WC). **No** separate
   `va_sigmet` / `tc_sigmet` enum values (E19-13=A; EV-029 / #738).
 - **`product=swxa`**: Space Weather Advisory → `iwxxm:SpaceWeatherAdvisory` (F28 / #740).
   Canonical wire value is **`swxa`** (not `swx`). Unknown aliases → `unknown_product` **400**.
+- **`product=vona`**: Volcano Observatory Notice for Aviation →
+  `iwxxm:VolcanoObservatoryNoticeForAviation` (F32 / #741). Canonical wire value is **`vona`**.
+  Unknown aliases → `unknown_product` **400**.
 - **F7 / ADR-023**: Hard Convert from FileConverter sends `bulletin_id`, `issuing_center`,
   `stop_on_error`, `validate_output`, and `validation_level` from Conversion Parameters.
   Soft-preview forces `validate_output=false`. Operator **Log Level** filters conversion /
@@ -698,3 +701,23 @@ tier decision (TC-EV030-005); document deferral if unlock does not ship this cyc
 
 - S037 / EV-030 (2026-08-02): F29 matrices + #829 TC deepen + #820 decode — **endpoint review**;
   lean + API/catalog note (`D-S037-E30-M` Q1=2).
+
+## S040 / EV-032 — Endpoint review (F32 VONA + #835/#808/corpus)
+
+| Endpoint | Change for EV-032? | Notes |
+|----------|--------------------|-------|
+| `POST /api/v1/convert` | **Additive enum** | Add `product=vona` → `iwxxm:VolcanoObservatoryNoticeForAviation`; keep-whole `manual_text` like VAA/TCA/SWXA. #835 remains under `product=sigmet` (TC path) |
+| `POST /api/v1/convert-bulletin` | **Additive enum** | Same `product` enum; AHL/`T1T2` for VONA when known |
+| `POST /api/v1/lint-tac` | **Additive enum + codes** | `product=vona` accepted; new VONA registry codes in payloads |
+| `GET /api/v1/lint-issue-catalog` | **Additive content** | VONA codes; response schema unchanged |
+| `POST /api/v1/decode-tac` | **Additive enum** | `product=vona` best-effort decode (F9 G4) |
+| `POST /api/v1/validate` | **None (wire)** | Existing levels; VONA / A6-2-TC goldens use same validate path |
+| FE product picker / Examples | **Full F7 surface** | Add **VONA** to picker; unlock Examples when F32 golden greens (`D-S040-E32-M` Q2=3). #835 may promote A6-2-TC → `wmoPass` (static catalog). H4–H5 when FE ships |
+| Dissemination / auth / sessions | **None** | Unchanged |
+
+**Breaking changes**: None — additive `vona` only. FE OpenAPI / product pickers must add
+`vona` when F32 ships. Runtime enum enforcement lands in 07-build (backend + packages);
+until then docs lead. #808 is docs/checklist only (no wire change).
+
+- S040 / EV-032 (2026-08-04): F32 VONA `product=vona` + full F7 surface; #835 catalog tier;
+  #808 docs — **endpoint review**; full pack (`D-S040-E32-M` Q1=2).

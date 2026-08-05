@@ -115,23 +115,51 @@ def test_bug_2026_08_03_hook_500_falls_back_to_default_hook() -> None:
     assert result.method == "hook_default_after_imgURL_fail"
 
 
-def test_bug_2026_08_03_ci_uses_resilient_script_not_bare_curl() -> None:
-    """T6.5 — Render CD retired; CI must not reintroduce brittle hook+imgURL curl.
+def test_bug_2026_08_04_suspended_render_skipped_when_enabled() -> None:
+    """DOKS cutover: suspended Render must not fail Deploy after GHCR push."""
+    mod = _load_mod()
+    calls: list[tuple[str, str]] = []
 
-    Historical fix kept ``trigger_render_image_deploy.py`` as emergency tooling.
-    After ``D-S038-t65-waive``, Deploy is GHCR-only (no Render hooks).
-    """
+    def fake_http(
+        url: str,
+        method: str,
+        headers: dict[str, str] | None,
+        body: bytes | None,
+    ) -> tuple[int, str]:
+        calls.append((method, url))
+        if "imgURL=" in url:
+            return 409, '{"conflict":"service is suspended"}'
+        if method == "POST" and "/deploys" in url:
+            return 400, '{"message":"cannot deploy suspended service"}'
+        return 404, "unexpected"
+
+    result = mod.trigger_image_deploy(
+        deploy_hook="https://api.render.com/deploy/srv-abc?key=k",
+        image_url="ghcr.io/empiric2/tac-to-iwxxm/backend:tag",
+        api_key="rnd_test",
+        http=fake_http,
+        hook_retries=1,
+        allow_hook_without_imgurl=False,
+        skip_if_suspended=True,
+    )
+    assert result.ok is True
+    assert result.method == "skipped_suspended"
+    assert "suspended" in result.detail.lower()
+
+
+def test_bug_2026_08_03_ci_uses_resilient_script_not_bare_curl() -> None:
     raw = CI_CD.read_text(encoding="utf-8")
+    assert "trigger_render_image_deploy.py" in raw
     # Guard against regressing to the brittle one-liner that failed on 8bd111c.
     assert 'curl -fsSL "${DEPLOY_HOOK}&imgURL=' not in raw
     assert "&imgURL=${ENCODED_URL}" not in raw
-    assert "trigger_render_image_deploy.py" not in raw
-    assert "RENDER_BACKEND_DEPLOY_HOOK" not in raw
-    assert "RENDER_FRONTEND_DEPLOY_HOOK" not in raw
+    assert "--skip-if-suspended" in raw
+    assert "RENDER_SKIP_IF_SUSPENDED" in raw
 
     doc = yaml.safe_load(raw)
     assert isinstance(doc, dict)
     deploy = (doc.get("jobs") or {}).get("deploy") or {}
     assert isinstance(deploy, dict)
-    # Script retained on disk for emergency resume; not wired in CI.
-    assert SCRIPT.is_file()
+    # Optional REST fallback secret must be wired when present.
+    assert "RENDER_API_KEY" in raw
+    assert "secrets.RENDER_API_KEY" in raw

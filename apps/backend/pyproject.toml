@@ -76,6 +76,7 @@ markers = [
     "live_api: tests that make real HTTP requests to external APIs",
     "iwxxm_2023_1: tests specific to IWXXM 2023-1 version",
     "iwxxm_2025_2: tests specific to IWXXM 2025-2 version",
+    "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA; E32-T7)",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",

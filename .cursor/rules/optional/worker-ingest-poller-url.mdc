@@ -1,0 +1,22 @@
+---
+description: F8 INGEST_POLLER_URL must be real https before metar-worker replicas > 0
+globs:
+  - apps/worker/**/*
+  - deploy/doks/**/*
+  - scripts/deploy/*poller*
+  - scripts/deploy/check_worker_crashloop.sh
+alwaysApply: false
+---
+
+# F8 worker INGEST_POLLER_URL (EV-033)
+
+Evidence: DOKS cutover left `REPLACE_ME_INGEST_POLLER_URL` → worker unusable / noisy failures.
+
+1. **Never** scale `metar-worker` above 0 with `REPLACE_ME_*` or non-`https://` poller URL.
+2. Validate before scale-up: `bash scripts/deploy/doks_worker_poller_preflight.sh --probe --scale-up`.
+3. Non-prod fixture pin:
+   `https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json`
+4. Do **not** copy Render worker env poller URLs without `--probe` (suspended services / stale forks 404).
+5. CrashLoop: `bash scripts/deploy/check_worker_crashloop.sh`; optional PrometheusRule under
+   `deploy/doks/observability/`.
+6. Code: `metar_worker.poller.validate_ingest_poller_url` — keep tests green in `config-guard`.

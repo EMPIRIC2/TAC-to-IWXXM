@@ -30,7 +30,7 @@ function validateApiEnv() {
     return true;
   } catch {
     const errorMsg =
-      '❌ Missing VITE_API_BASE_URL environment variable. Please check .env.local file.';
+      '❌ Missing API base URL (/config.json or VITE_API_BASE_URL). Check runtime config.';
     console.error(errorMsg);
     toast.error(errorMsg);
     return false;

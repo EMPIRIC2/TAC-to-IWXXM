@@ -50,6 +50,7 @@ def test_tc_ev027_002_registered_peers_have_annex3_mirrors() -> None:
             "VAA",
             "TCA",
             "SWXA",
+            "VONA",
         }
 
 

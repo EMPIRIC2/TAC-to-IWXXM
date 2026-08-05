@@ -1,13 +1,13 @@
 {
   "environment": "prod",
   "api": {
-    "baseUrl": "http://api.doks.placeholder.metar-iwxxm.local",
+    "baseUrl": "https://api.tac-to-iwxxm.com",
     "corsOrigins": [
-      "http://app.doks.placeholder.metar-iwxxm.local",
-      "https://app.doks.placeholder.metar-iwxxm.local",
+      "https://app.tac-to-iwxxm.com",
+      "http://app.tac-to-iwxxm.com",
       "http://168.144.12.70"
     ],
-    "frontendUrl": "http://app.doks.placeholder.metar-iwxxm.local"
+    "frontendUrl": "https://app.tac-to-iwxxm.com"
   },
   "supabase": {
     "url": "https://ktvxijislbtgqapllmuk.supabase.co"
@@ -22,7 +22,7 @@
     "enableStatistics": true
   },
   "liveE2e": {
-    "apiUrl": "http://api.doks.placeholder.metar-iwxxm.local",
-    "frontendUrl": "http://app.doks.placeholder.metar-iwxxm.local"
+    "apiUrl": "https://api.tac-to-iwxxm.com",
+    "frontendUrl": "https://app.tac-to-iwxxm.com"
   }
 }

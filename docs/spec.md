@@ -461,11 +461,11 @@ metar-to-IWXXM/
 - **Non-goals**: SIGWX / VONA / QVACI as TAC inputs; #806 WIS2 mining; sink UI; vendor hand-edits.
 - **Source**: feature-list EV-029 deepen + F28; evolve-decisions EV-029; #823.
 
-### F29 — Parameterized rule quality matrices (S037 / EV-030) — Planned
+### F29 — Parameterized rule quality matrices (S037 / EV-030) — Done
 
 - **Purpose**: #831 maintainable 5×4 (happy/sad/edge-pass/edge-fail) parameterized matrices
   covering lint · convert · IWXXM-validate rules with inventory gate and design-before-bulk.
-- **Status**: **Planned** (S037 / EV-030).
+- **Status**: **Done** (S037 / EV-030; PR #832).
 - **API**: No new public routes for v1 (CI/pytest harness). No new deployable.
 - **Components**: test runners under `packages/*` and/or `tests/`; issue-registry / Schematron /
   encode rule indexes; CI smoke + optional full matrix job.
@@ -478,12 +478,42 @@ metar-to-IWXXM/
 
 - **Purpose**: Close EV-029 residuals in order: F29 rule matrices (#831) → TC SIGMET deepen
   (#829) → VAA/TCA decode deepen (#820).
-- **Status**: **In progress** (S037 / EV-030).
+- **Status**: **Done** (S037 / EV-030; PR #832). Residual → [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) (A6-2-TC equality).
 - **Components**: F29 harness; `tac-validate` TC pack; catalog/menu tier for A6-2-TC; decode
   engine for VAA/TCA labels; matrix/allowlist updates.
 - **Journeys / tests**: **UJ-044**; TC-EV030-*; TC-F29-*; deepen TC-F23/F9/F26/F27; H4–H5 iff FE.
-- **Non-goals**: #830 Supabase strip; #806 WIS2 mining; SIGWX/VONA/QVACI.
+- **Non-goals**: #830 Supabase strip; #806 WIS2 mining; SIGWX/VONA/QVACI (VONA → EV-032 / F32).
 - **Source**: feature-list F29 + EV-030 deepen; evolve-decisions EV-030; #831/#829/#820.
+
+### F32 — VONA quality bar (S040 / EV-032) — Planned
+
+- **Purpose**: #741 Volcano Observatory Notice for Aviation
+  (`iwxxm:VolcanoObservatoryNoticeForAviation`) quality peer to F15–F28. Guidance file silent —
+  XSD + SCH + `vona-A7-1` + PANS-MET. Full F7 product surface this cycle (`D-S040-E32-M` Q2=3).
+- **Status**: **Planned** (S040 / EV-032; epic #846).
+- **API**: Additive **`product=vona`** on convert / convert-bulletin / lint-tac / decode-tac
+  (api-contract S040 / EV-032). No new routes or deployable. Keep-whole multiline TAC.
+- **Components**: `packages/tac-validate`, `tac2iwxxm`, `iwxxm-validate`; FE product picker +
+  Examples catalog; domain docs; fixtures.
+- **Journeys / tests**: **UJ-045**; TC-F32-001..006; cycle TC-EV032-*.
+- **Non-goals**: Metrics UI #836; SIGWX / QVACI; vendor hand-edits.
+- **Source**: feature-list F32; evolve-decisions EV-032;
+  [Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md); #741.
+
+### S040 / EV-032 — Official IWXXM corpus quality / WMO source parity (#846)
+
+- **Purpose**: Under epic #846, in order: #835 A6-2-TC → `wmoPass`; #741 / **F32** VONA bar +
+  full F7 surface; #808 release-line adoptability (docs/checklists, no re-pin); corpus /
+  WMO-source parity children (iwxxm, iwxxm-translation, iwxxm-codelists, codes.wmo.int,
+  iwxxm-modelling).
+- **Status**: **In progress** (S040 / EV-032).
+- **Components**: encode/lint/validate packages; FE picker/catalog; domain version-policy docs;
+  fixture/CI gates; no new deployable.
+- **Journeys / tests**: **UJ-045**; TC-EV032-*; TC-F32-*; deepen UJ-034/039/042/043/044; H4–H5
+  when FE ships.
+- **Non-goals**: #836 metrics UI; #840 workbench epic (except VONA surface required here);
+  re-pin new IWXXM line inside #808; vendor hand-edits.
+- **Source**: feature-list F32 + EV-032 deepen; evolve-decisions EV-032; #846/#835/#741/#808.
 
 ### S030 / EV-023 — APAC FAQ + codes encode/validate deepen (#800)
 
