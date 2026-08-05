@@ -30,6 +30,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-tca-quality \
 	test-swxa-quality \
 	test-vona-quality \
+	test-provenance-quality \
+	test-provenance-canary \
 	test-quality-matrices-smoke \
 	test-quality-matrices-full \
 	test-product-order-smoke \
@@ -335,6 +337,14 @@ test-swxa-quality:
 # EV-032 / E32-T7 / T2.8 — VONA quality pack (M2 / TC-F32 + F32 deepen / #741)
 test-vona-quality:
 	bash scripts/ci/run_vona_quality.sh
+
+# EV-035 / S043 — rule-source provenance (TC-EV035-001..006)
+test-provenance-quality:
+	bash scripts/ci/run_provenance_quality.sh
+
+# EV-035 — path-filtered pre-commit canary (dig inventory + gap gate)
+test-provenance-canary:
+	bash scripts/ci/run_provenance_canary.sh
 
 # EV-030 / E30-T7 — F29 quality matrices PR smoke (inventory + ready; excludes full ×20)
 test-quality-matrices-smoke:

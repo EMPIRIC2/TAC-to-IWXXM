@@ -3,10 +3,358 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 42
-evolve_cycle_counter: 34
-active_session: null
+session_counter: 43
+evolve_cycle_counter: 35
+active_session:
+  id: S043-rule-source-traceability
+  type: feature
+  intent: |
+    Re-analyze reviewed domain docs + extracted rules; link each rule to sources;
+    standing provenance registry (F33); raise unfindable rules; dense asserts for
+    cited/revisited rules (full stack: lint + encode/SCH + bulletin).
+  status: in_progress
+  branch: evolve/EV-035-rule-source-traceability
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-035
+  feature_ids: []
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
+  artifacts_dir: docs/sessions/S043-rule-source-traceability/
+  prior_session: S042-doks-cd-rollout
+  preset: Standard
+  preset_status: approved
+  phase0_choices:
+    Q1: '3'
+    Q2: '4'
+    Q3: '1'
+    Q4: '2'
+    E35-5: dense_asserts
+    locked_at: '2026-08-05'
+  decisions:
+    E35-1: both_audit_and_registry
+    E35-2: full_stack
+    E35-3: open_S043
+    E35-4: Standard
+    E35-5: dense_asserts_all_cited_rules
+    G1: deepen_only_no_F33
+    G2: Standard_approved
+    G3: path_cite_only
+    G4: proceed_01
+    D-S043-02-batch-a: '1,1,1,1'
+    D-S043-02-phase-a: gate_a_pass
+    S02.M1: vona_guidance_warn_ahl_fm205_ok
+    S02.M2: issue_871_umbrella_tc002
+    S02.M3: bulletin_matrix_refresh_may_close_872
+    S02.L1: deploy_12_13_may_waive_ask_later
+    D-S043-04-batch-b: '1,1,1,1'
+    D-S043-04-plan: gate_b_pass
+    E35-T1: m0_m3
+    E35-T2: md_json_twin
+    E35-T3: all_catalog_codes
+    E35-T4: no_deps_tiered_ci
+    E35-T5: plan_deploy_waive_12_13
+    E35-T6: gate_b_to_07
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    started: '2026-08-05'
+    skip_rationale:
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+    note: deepen F6/F12/F15/F2; TC-EV035; no F33
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+    note: 'PASS — Gate A Batch A 1,1,1,1 (S02.M1/M2/M3/L1 Approve); report reports/02-verify-plan-audit.md; D-S043-02-batch-a / D-S043-02-phase-a'
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    skip_rationale: existing mine-domain-sources / catalog-regen
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+    note: 'Gate B PASS Batch B 1,1,1,1; execution-plan approved; D-S043-04-batch-b / D-S043-04-plan'
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    skip_rationale: no new tooling deps expected
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    skip_rationale: no new tooling deps expected
+  - stage: 07-build
+    required: true
+    mode: full
+    status: in_progress
+    started: '2026-08-05'
+    skip_rationale:
+    note: 'M0–M3 DONE — TC-EV035 182 green; T3.6 is 08 handoff; approaching 08-verify-build'
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 10-e2e
+    required: false
+    status: skipped
+    skip_rationale: no UI in scope
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: may waive if no runtime surface — AskQuestion at gate
+  current_stage: 07-build
+  current_stage_status: in_progress
+  current_stage_note: approaching 08-verify-build (T3.6 handoff)
+  started: '2026-08-05'
+  started_at: '2026-08-05'
+  artifacts:
+  - path: docs/sessions/S043-rule-source-traceability/session-brief.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S043-rule-source-traceability/routing-plan.md
+    status: pending_approval
+    stage: 00-context
+  - path: docs/context/rule-source-traceability.md
+    status: written
+    stage: 00-context
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+    stage: 16-evolve
+    note: EV-035 Phase 0 scope drafted
+  - path: docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+    status: completed
+    stage: 02-verify-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
+    status: written
+    stage: 02-verify-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/04-tech-plan.md
+    status: completed
+    stage: 04-tech-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+  - path: docs/domain/rules/PROVENANCE_MAP.md
+    status: written
+    stage: 07-build
+  - path: docs/domain/rules/PROVENANCE_MAP.json
+    status: written
+    stage: 07-build
+  - path: tests/provenance/
+    status: written
+    stage: 07-build
+    note: TC-EV035 182 green
 sessions:
+- id: S043-rule-source-traceability
+  type: feature
+  intent: |
+    Re-analyze reviewed domain docs + extracted rules; link each rule to sources;
+    standing provenance under docs/domain/rules/; raise unfindable rules; dense
+    asserts (full stack: lint + encode/SCH + bulletin). Deepen F6/F12/F15/F2 — no new Fn.
+  status: in_progress
+  branch: evolve/EV-035-rule-source-traceability
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-035
+  feature_ids: []
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
+  artifacts_dir: docs/sessions/S043-rule-source-traceability/
+  prior_session: S042-doks-cd-rollout
+  preset: Standard
+  preset_status: approved
+  started: '2026-08-05'
+  started_at: '2026-08-05'
+  note: '07 M0-M3 DONE — TC-EV035 182 green; next 08-verify-build'
+  decisions:
+    E35-1: both_audit_and_registry
+    E35-2: full_stack
+    E35-3: open_S043
+    E35-4: Standard
+    E35-5: dense_asserts_all_cited_rules
+    G1: deepen_only_no_F33
+    G2: Standard_approved
+    G3: path_cite_only
+    G4: proceed_01
+    D-S043-02-batch-a: '1,1,1,1'
+    D-S043-02-phase-a: gate_a_pass
+    S02.M1: vona_guidance_warn_ahl_fm205_ok
+    S02.M2: issue_871_umbrella_tc002
+    S02.M3: bulletin_matrix_refresh_may_close_872
+    S02.L1: deploy_12_13_may_waive_ask_later
+    D-S043-04-batch-b: '1,1,1,1'
+    D-S043-04-plan: gate_b_pass
+    E35-T1: m0_m3
+    E35-T2: md_json_twin
+    E35-T3: all_catalog_codes
+    E35-T4: no_deps_tiered_ci
+    E35-T5: plan_deploy_waive_12_13
+    E35-T6: gate_b_to_07
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+  - stage: 16-evolve
+    required: true
+    status: in_progress
+    started: '2026-08-05'
+    skip_rationale:
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+    note: deepen F6/F12/F15/F2; TC-EV035; no F33
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+    note: 'PASS — Gate A Batch A 1,1,1,1 (S02.M1/M2/M3/L1 Approve); report reports/02-verify-plan-audit.md; D-S043-02-batch-a / D-S043-02-phase-a'
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    skip_rationale: existing mine-domain-sources / catalog-regen
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    skip_rationale:
+    note: 'Gate B PASS Batch B 1,1,1,1; execution-plan approved; D-S043-04-batch-b / D-S043-04-plan'
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    skip_rationale: no new tooling deps expected
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    skip_rationale: no new tooling deps expected
+  - stage: 07-build
+    required: true
+    mode: full
+    status: in_progress
+    started: '2026-08-05'
+    skip_rationale:
+    note: 'M0–M3 DONE — TC-EV035 182 green; T3.6 is 08 handoff; approaching 08-verify-build'
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 10-e2e
+    required: false
+    status: skipped
+    skip_rationale: no UI in scope
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale:
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+    skip_rationale: may waive if no runtime surface — AskQuestion at gate
+  current_stage: 07-build
+  current_stage_status: in_progress
+  current_stage_note: approaching 08-verify-build (T3.6 handoff)
+  artifacts:
+  - path: docs/sessions/S043-rule-source-traceability/session-brief.md
+    status: written
+    stage: 00-context
+  - path: docs/sessions/S043-rule-source-traceability/routing-plan.md
+    status: pending_approval
+    stage: 00-context
+  - path: docs/context/rule-source-traceability.md
+    status: written
+    stage: 00-context
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+    stage: 16-evolve
+    note: EV-035 Phase 0 scope drafted
+  - path: docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+    status: completed
+    stage: 02-verify-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
+    status: written
+    stage: 02-verify-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/04-tech-plan.md
+    status: completed
+    stage: 04-tech-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+  - path: docs/domain/rules/PROVENANCE_MAP.md
+    status: written
+    stage: 07-build
+  - path: docs/domain/rules/PROVENANCE_MAP.json
+    status: written
+    stage: 07-build
+  - path: tests/provenance/
+    status: written
+    stage: 07-build
+    note: TC-EV035 182 green
 - id: S042-doks-cd-rollout
   type: feature
   intent: |
@@ -5422,17 +5770,19 @@ stages:
     started: '2026-08-05'
     completed_at: '2026-08-05'
     completed: '2026-08-05'
-    session_id: S042-doks-cd-rollout
-    evolve_cycle_id: EV-034
-    prior_session_id: S040-iwxxm-corpus-quality
-    prior_evolve_cycle_id: EV-032
-    prior_started: '2026-08-04'
-    prior_completed: '2026-08-04'
-    prior_note: 'S040/EV-032 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); reports/02-verify-plan-audit.md; handoff 04-tech-plan; #846/#847'
-    note: 'S042/EV-034 02-verify-plan COMPLETE (delta) — Gate A PASS; Standard path confirmed; handoff 04-tech-plan'
+    session_id: S043-rule-source-traceability
+    evolve_cycle_id: EV-035
+    prior_session_id: S042-doks-cd-rollout
+    prior_evolve_cycle_id: EV-034
+    prior_started: '2026-08-05'
+    prior_completed: '2026-08-05'
+    prior_note: 'S042/EV-034 02-verify-plan COMPLETE (delta) — Gate A PASS; Standard path confirmed; handoff 04-tech-plan'
+    note: 'S043/EV-035 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S043-02-phase-a); Batch A 1,1,1,1 (D-S043-02-batch-a); reports/02-verify-plan-audit.md + provenance-gaps.md; handoff 04-tech-plan'
     contradictions_resolved:
     contradictions_deferred:
     decision_refs:
+    - D-S043-02-phase-a
+    - D-S043-02-batch-a
     - D-S040-02-phase-a
     - D-S040-02-batch-f
     - D-S040-E32-M
@@ -5458,31 +5808,31 @@ stages:
     current_document:
     current_statement:
     active_session:
-      session_id: S040-iwxxm-corpus-quality
-      evolve_cycle_id: EV-032
+      session_id: S043-rule-source-traceability
+      evolve_cycle_id: EV-035
       skill_id: 02-verify-plan
       status: completed
       mode: delta
-      started_at: '2026-08-04'
-      started: '2026-08-04'
-      completed_at: '2026-08-04'
-      completed: '2026-08-04'
-      note: 'COMPLETE (delta) — Gate A PASS (D-S040-02-phase-a); Batch F 1,1,1,1 (D-S040-02-batch-f); handoff 04-tech-plan; #846/#847'
-      feature_ids:
-      - F32
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE (delta) — Gate A PASS (D-S043-02-phase-a); Batch A 1,1,1,1 (D-S043-02-batch-a); handoff 04-tech-plan'
+      feature_ids: []
       deepen_feature_ids:
-      - F23
-      - F4
       - F6
+      - F12
+      - F15
       - F2
-      - F13
       decision_refs:
-      - D-S040-02-phase-a
-      - D-S040-02-batch-f
-      - D-S040-E32-M
+      - D-S043-02-phase-a
+      - D-S043-02-batch-a
       artifacts:
-      - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
+      - docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+      - docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
     artifacts:
+    - docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+    - docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
     - docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S038-platform-independence-842/reports/verify-plan-audit.md
     - docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
@@ -5504,6 +5854,28 @@ stages:
     - docs/sessions/S020-aerodrome-quality/reports/02-verify-plan-audit.md
     - docs/sessions/S019-dissemination-upload/reports/02-verify-plan-audit.md
     delta_substages:
+    - session_id: S043-rule-source-traceability
+      evolve_cycle_id: EV-035
+      skill_id: 02-verify-plan
+      status: completed
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: '2026-08-05'
+      completed: '2026-08-05'
+      mode: delta
+      feature_ids: []
+      deepen:
+      - F6
+      - F12
+      - F15
+      - F2
+      decision_refs:
+      - D-S043-02-phase-a
+      - D-S043-02-batch-a
+      note: 'COMPLETE (delta) — Gate A PASS (D-S043-02-phase-a); Batch A 1,1,1,1 (D-S043-02-batch-a); reports/02-verify-plan-audit.md; handoff 04-tech-plan'
+      artifacts:
+      - docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+      - docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
     - session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
       skill_id: 02-verify-plan
@@ -6094,26 +6466,28 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: completed
+    status: in_progress
     mode: delta
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
-    previous_started_at: '2026-08-04'
-    previous_completed_at: '2026-08-04'
-    previous_session_id: S040-iwxxm-corpus-quality
-    previous_evolve_cycle_id: EV-032
-    previous_note: 'S040/EV-032 04-tech-plan COMPLETE (delta) — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
-    prior_session_id: S040-iwxxm-corpus-quality
-    prior_evolve_cycle_id: EV-032
-    prior_started: '2026-08-04'
-    prior_completed: '2026-08-04'
-    prior_note: 'S040/EV-032 04-tech-plan COMPLETE (delta) — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
-    session_id: S042-doks-cd-rollout
-    evolve_cycle_id: EV-034
-    note: 'S042/EV-034 04-tech-plan COMPLETE (delta) — Gate B; execution-plan T1.1–T1.5; handoff 07-build'
+    completed_at: null
+    completed: null
+    previous_started_at: '2026-08-05'
+    previous_completed_at: '2026-08-05'
+    previous_session_id: S042-doks-cd-rollout
+    previous_evolve_cycle_id: EV-034
+    previous_note: 'S042/EV-034 04-tech-plan COMPLETE (delta) — Gate B; execution-plan T1.1–T1.5; handoff 07-build'
+    prior_session_id: S042-doks-cd-rollout
+    prior_evolve_cycle_id: EV-034
+    prior_started: '2026-08-05'
+    prior_completed: '2026-08-05'
+    prior_note: 'S042/EV-034 04-tech-plan COMPLETE (delta) — Gate B; execution-plan T1.1–T1.5; handoff 07-build'
+    session_id: S043-rule-source-traceability
+    evolve_cycle_id: EV-035
+    note: 'S043/EV-035 04-tech-plan STARTED (delta) — Gate A PASS; D-S043-02-phase-a / D-S043-02-batch-a 1,1,1,1; after 02-verify-plan'
     decision_refs:
+    - D-S043-02-phase-a
+    - D-S043-02-batch-a
     - D-S040-04-plan
     - D-S040-04-batch-2
     - D-S040-04-batch-1
@@ -6142,31 +6516,25 @@ stages:
       phase_6_documents:
         status: pending
     active_session:
-      session_id: S040-iwxxm-corpus-quality
-      evolve_cycle_id: EV-032
+      session_id: S043-rule-source-traceability
+      evolve_cycle_id: EV-035
       skill_id: 04-tech-plan
-      status: completed
+      status: in_progress
       mode: delta
-      started_at: '2026-08-04'
-      started: '2026-08-04'
-      completed_at: '2026-08-04'
-      completed: '2026-08-04'
-      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
-      feature_ids:
-      - F32
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: null
+      completed: null
+      note: 'STARTED (delta) — Gate A PASS; Batch A 1,1,1,1; handoff from 02-verify-plan'
+      feature_ids: []
       deepen_feature_ids:
-      - F23
-      - F4
       - F6
+      - F12
+      - F15
       - F2
-      - F13
       decision_refs:
-      - D-S040-04-plan
-      - D-S040-02-phase-a
-      - D-S040-02-batch-f
-      - D-S040-E32-M
-      - D-S040-04-batch-1
-      - D-S040-04-batch-2
+      - D-S043-02-phase-a
+      - D-S043-02-batch-a
     artifacts:
     - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
     - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
@@ -6197,6 +6565,23 @@ stages:
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
     - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
     delta_substages:
+    - session_id: S043-rule-source-traceability
+      evolve_cycle_id: EV-035
+      skill_id: 04-tech-plan
+      status: in_progress
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      mode: delta
+      feature_ids: []
+      deepen:
+      - F6
+      - F12
+      - F15
+      - F2
+      decision_refs:
+      - D-S043-02-phase-a
+      - D-S043-02-batch-a
+      note: 'STARTED (delta) — Gate A PASS; Batch A 1,1,1,1; after 02-verify-plan'
     - session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
       skill_id: 04-tech-plan
@@ -11191,6 +11576,134 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S043-04-plan
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S043-rule-source-traceability
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate B — approve execution plan → 07-build @ T0.1'
+  summary: 'gate_b_pass — Approve plan (M0–M3); Batch B 1,1,1,1; complete 04; start 07 @ T0.1'
+  decision: |
+    D-S043-04-plan=gate_b_pass — Gate B PASS for S043/EV-035.
+    Approve execution-plan (M0–M3, 16 tasks). E35-T1..T6 approved (M0–M3; MD+JSON twin;
+    all catalog codes; no deps/tiered CI/waive deploy; Gate B→07). Complete 04-tech-plan;
+    start 07-build @ T0.1. 05/06 remain skipped (Standard).
+  user_option: gate_b_pass
+  branch: evolve/EV-035-rule-source-traceability
+  evolve_cycle_id: EV-035
+  related_decisions:
+  - D-S043-04-batch-b
+  - D-S043-02-phase-a
+  - D-S043-02-batch-a
+  artifacts:
+  - docs/sessions/S043-rule-source-traceability/reports/04-tech-plan.md
+  - docs/sessions/S043-rule-source-traceability/reports/execution-plan.md
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
+- id: D-S043-04-batch-b
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S043-rule-source-traceability
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: technical-plan
+  status: confirmed
+  topic: 'Batch B — E35-T1..T4 (+ T5/T6) tech-plan locks'
+  summary: '1,1,1,1 — M0–M3; MD+JSON twin; all catalog codes; no deps/tiered CI/waive deploy; Gate B→07'
+  decision: |
+    D-S043-04-batch-b=1,1,1,1 — Batch B verdicts for S043/EV-035 Gate B.
+    E35-T1 m0_m3; E35-T2 md_json_twin; E35-T3 all_catalog_codes;
+    E35-T4 no_deps_tiered_ci; E35-T5 plan_deploy_waive_12_13; E35-T6 gate_b_to_07.
+    Gate B PASS with D-S043-04-plan.
+  user_option: '1,1,1,1'
+  answers:
+    E35-T1: '1'
+    E35-T2: '1'
+    E35-T3: '1'
+    E35-T4: '1'
+    E35-T5: '1'
+    E35-T6: '1'
+  branch: evolve/EV-035-rule-source-traceability
+  evolve_cycle_id: EV-035
+  related_decisions:
+  - D-S043-04-plan
+  - D-S043-02-phase-a
+  artifacts:
+  - docs/sessions/S043-rule-source-traceability/reports/04-tech-plan.md
+  - docs/sessions/S043-rule-source-traceability/reports/execution-plan.md
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
+- id: D-S043-02-phase-a
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S043-rule-source-traceability
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate A — Phase A checkpoint after 02-verify-plan'
+  summary: 'PASS → 04-tech-plan'
+  decision: |
+    D-S043-02-phase-a=gate_a_pass — Gate A PASS for S043/EV-035.
+    Advance to 04-tech-plan (delta). Gate B pending.
+  user_option: '1'
+  branch: evolve/EV-035-rule-source-traceability
+  evolve_cycle_id: EV-035
+  related_decisions:
+  - D-S043-02-batch-a
+  artifacts:
+  - docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+  - docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
+- id: D-S043-02-batch-a
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S043-rule-source-traceability
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: verify-plan
+  status: confirmed
+  topic: 'Batch A — S02.M1/M2/M3/L1 consistency + Gate A inputs'
+  summary: '1,1,1,1 — VONA guidance warn AHL FM205 ok; #871 umbrella TC002; bulletin matrix may close #872; deploy 12/13 may waive ask later; Gate A PASS'
+  decision: |
+    D-S043-02-batch-a=1,1,1,1 — Batch A verdicts for S043/EV-035 Gate A.
+    S02.M1 vona_guidance_warn_ahl_fm205_ok; S02.M2 issue_871_umbrella_tc002;
+    S02.M3 bulletin_matrix_refresh_may_close_872; S02.L1 deploy_12_13_may_waive_ask_later.
+    Gate A PASS with D-S043-02-phase-a.
+  user_option: '1,1,1,1'
+  branch: evolve/EV-035-rule-source-traceability
+  evolve_cycle_id: EV-035
+  related_decisions:
+  - D-S043-02-phase-a
+  artifacts:
+  - docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+  - docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
 - id: D-S040-close
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -32128,6 +32641,158 @@ evolve_cycles:
   pr_number: 845
   pr_status: open
   pr_head: evolve/EV-031-platform-independence-842
+- id: EV-035
+  session_id: S043-rule-source-traceability
+  cycle_type: feature
+  feature_ids: []
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F2
+  feature_note: deepen F6/F12/F15/F2 cite/test provenance — no new Fn (G1=2)
+  title: Rule-source traceability / provenance registry
+  slug: rule-source-traceability
+  status: in_progress
+  phase: 2
+  started: '2026-08-05'
+  started_at: '2026-08-05'
+  completed: null
+  scope_summary: |
+    Re-analyze reviewed docs + extracted rules; link rule→source; deepen-only
+    F6/F12/F15/F2 provenance (no F33; G1=2); raise unfindable sources; full stack
+    (ISSUE_CATALOG + encode/SCH + bulletin); Standard path; dense asserts for every
+    cited/revisited rule. Phase 0 locked Q1=3 Q2=4 Q3=1 Q4=2 (+ E35-5 dense asserts).
+  branch: evolve/EV-035-rule-source-traceability
+  preset: Standard
+  preset_status: approved
+  phase0_choices:
+    Q1: '3'
+    Q2: '4'
+    Q3: '1'
+    Q4: '2'
+    E35-5: dense_asserts
+    locked_at: '2026-08-05'
+    G1: '2'
+    G2: '1'
+    G3: '1'
+    G4: '1'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 10-e2e
+    note: Standard approved G2=1; deepen-only G1=2
+  current_stage: 07-build
+  current_stage_status: in_progress
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/sessions/S043-rule-source-traceability/session-brief.md
+    status: written
+  - path: docs/sessions/S043-rule-source-traceability/routing-plan.md
+    status: pending_approval
+  - path: docs/context/rule-source-traceability.md
+    status: written
+  - path: docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
+    status: completed
+    stage: 02-verify-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
+    status: written
+    stage: 02-verify-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/04-tech-plan.md
+    status: completed
+    stage: 04-tech-plan
+  - path: docs/sessions/S043-rule-source-traceability/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+  - path: docs/domain/rules/PROVENANCE_MAP.md
+    status: written
+    stage: 07-build
+  - path: docs/domain/rules/PROVENANCE_MAP.json
+    status: written
+    stage: 07-build
+  - path: tests/provenance/
+    status: written
+    stage: 07-build
+    note: TC-EV035 182 green
+  stages:
+    00-context:
+      status: completed
+      mode: scoped
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: S043 open; G1=2 G2=1 G3=1 G4=1 locked
+    16-evolve:
+      status: in_progress
+      started: '2026-08-05'
+      note: Phase B PASS → 07 M0–M3 done; pending T3.6/08
+    01-requirements:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: deepen ACs + TC-EV035; no F33
+    02-verify-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: Gate A PASS — Batch A 1,1,1,1 (D-S043-02-batch-a / D-S043-02-phase-a)
+    04-tech-plan:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: Gate B PASS Batch B 1,1,1,1; execution-plan approved (D-S043-04-batch-b / D-S043-04-plan)
+    07-build:
+      status: in_progress
+      mode: full
+      started: '2026-08-05'
+      note: 'M0–M3 complete — TC-EV035 182 green; pending T3.6/08-verify-build'
+    08-verify-build:
+      status: pending
+      mode: delta
+    09-qa:
+      status: pending
+      mode: delta
+    10-e2e:
+      status: skipped
+      skip_rationale: no UI in scope
+    11-verify-impl:
+      status: pending
+      mode: delta
+    12-verify-deploy:
+      status: pending
+      mode: delta
+    13-deploy-smoke:
+      status: pending
+      mode: delta
+  issues: []
 - id: EV-034
   session_id: S042-doks-cd-rollout
   cycle_type: feature

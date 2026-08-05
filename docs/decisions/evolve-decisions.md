@@ -3,6 +3,96 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-035 — Rule-source traceability / provenance registry (S043)
+
+**Session**: S043-rule-source-traceability  
+**Features**: deepen **F6 / F12 / F15 / F2** (no new Fn — G1=2)  
+**Started**: 2026-08-05  
+**Branch**: `evolve/EV-035-rule-source-traceability`  
+**Status**: in_progress (Gate B PASS; 07-build M0–M3; → 08)  
+**Prior**: S042 / EV-034 completed
+
+### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=3,Q2=4,Q3=1,Q4=2` + `G1=2,G2=1,G3=1,G4=1`)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E35-1 | decision | Deliverable? | **Both** — re-analyze/link **and** standing provenance under `docs/domain/rules/` |
+| E35-2 | decision | Rule stack? | **Full** — ISSUE_CATALOG + encode/SCH + bulletin AHL/ops |
+| E35-3 | decision | Session? | Open **S043** → **EV-035** |
+| E35-4 | decision | Preset? | **Standard** `00→16→01→02→04→07→08→09→11→12→13` |
+| E35-5 | decision | Tests? | **Dense asserts** for every rule cited or revisited |
+| G1 | decision | Fn? | **Deepen only** F6/F12/F15/F2 — **no F33** |
+| G2 | decision | Routing? | Approve Standard as drafted |
+| G3 | decision | CORPUS? | **Path-cite only** `[docs/domain/…]` |
+| G4 | decision | Proceed? | Start **01-requirements** |
+
+**Scope (verbatim)**: Re-analyze documents already reviewed and rules already extracted;
+link each rule back to its authoritative source (canonicals + `RULE_SOURCE_URLS` + mining
+digs); establish ongoing tracking via a standing provenance artifact under
+`docs/domain/rules/` (**no new product Fn**); raise to the user any rule without a findable
+source. Cover full stack: lint `ISSUE_CATALOG`, encode / Schematron asserts, and bulletin
+AHL/ops cites. Ship parametric/matrix tests with **many asserts** per cited or revisited
+rule (reuse F29 harness patterns). Standard evolve path; no UI.
+
+**Out of scope**: New Fn (F33); browser provenance UX; hand-editing `vendor/schemas/*`;
+re-pin IWXXM line; auto-closing all #846 residual children (may file provenance gap tickets
+only).
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[docs/domain/README.md]` | cite | hub | Domain opt-in (not minimal CORPUS) |
+| `[docs/domain/rules/RULE_SOURCE_URLS.md]` | cite | URL catalog | |
+| `[docs/domain/rules/COVERAGE_MATRIX.md]` | cite | coverage | |
+| `[docs/domain/rules/ISSUE_CATALOG.md]` | cite | lint codes | F15/F12 |
+| `[Corpus: product]` | cite | deepen F6/F12/F15/F2 | no new Fn |
+| `[Corpus: tests]` | cite | TC-EV035-001..006 | |
+| `[Corpus: WAIVED — domain CORPUS membership; reason: G3=1 path-cite; decided: EV-035]` | waiver | CORPUS row | path-cite sufficient |
+
+### Gap disposition (`D-S043-gaps` — 2026-08-05)
+
+**Policy**: re-mine first; open ticket on fail.
+
+| Gap | Remine | Ticket |
+|-----|--------|--------|
+| VONA Guidance silent | Partial — AHL/FM205 found; Guidance still empty | [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869) |
+| iwxxm_us validate ⚠ | Confirmed — no US SCH in pin | [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870) |
+| ISSUE_CATALOG thin cites | Needs PROVENANCE_MAP | [#871](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/871) |
+| Bulletin AHL matrix gaps | AHL sources OK; matrix may be stale | [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) |
+
+Dig: `docs/domain/mining/vona-encode-remine-ev035-mining-notes.md` · report: `reports/provenance-gaps.md`
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-05 | S043 open; Standard approved G2=1 |
+| 01-requirements | 2026-08-05 | Deepen ACs + TC-EV035; `reports/01-requirements-summary.md` |
+| 02-verify-plan | 2026-08-05 | Gate A **PASS**; Batch A `1,1,1,1`; remine→#869–#872; `reports/02-verify-plan-audit.md` |
+| 04-tech-plan | 2026-08-05 | Gate B **PASS**; Batch B `1,1,1,1`; execution-plan approved |
+| 07-build | — | M0–M3 implemented; TC-EV035 182 green; T3.6 → 08 |
+
+### Gate A / 02 (locked 2026-08-05)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| S02.M1 | decision | VONA cell? | **1** — ⚠ Guidance silence; ✅ AHL/FM205/XSD/peer in PROVENANCE_MAP (`D-S043-02-batch-a`) |
+| S02.M2 | decision | #871 scope? | **1** — umbrella catalog↔URL; closes when TC-EV035-002 greens |
+| S02.M3 | decision | #872 close path? | **1** — 07 matrix refresh may close some cells without new code |
+| S02.L1 | decision | Deploy 12/13? | **1** — may waive if no runtime surface (AskQuestion later) |
+| E35-02 | gate | Gate A / 02 close? | **PASS** — start **04-tech-plan** (`D-S043-02-phase-a`) |
+
+### Gate B / 04 (locked 2026-08-05)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E35-T1 | decision | Milestones? | **1** — M0–M3 |
+| E35-T2 | decision | Map format? | **1** — MD + JSON twin |
+| E35-T3 | decision | Catalog scope? | **1** — all ISSUE_CATALOG codes |
+| E35-T4 | decision | Deps/CI/deploy? | **1** — no new deps; tiered CI; plan 12/13 waive |
+| E35-04 | gate | Gate B / 04 close? | **PASS** — start **07-build** @ T0.1 (`D-S043-04-plan`) |
+
 ## Cycle EV-034 — Automate DOKS image rollout in CD (S042)
 
 **Session**: S042-doks-cd-rollout  

@@ -2,27 +2,27 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S042 / EV-034 F30 CD deepen — DOKS auto-rollout)
+> **Last updated**: 2026-08-05 (S043 / EV-035 — rule-source provenance deepen F6/F12/F15/F2)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate` |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S043 / EV-035 SCH/XSD cite provenance |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S043 / EV-035 encode/AHL cite provenance |
 | F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid sessions |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698 |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; shipped 2026-07-20 (#742) |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S043 / EV-035 ISSUE_CATALOG↔source |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785) |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
@@ -79,11 +79,16 @@
 - **S014 / EV-010 delta (F13)**: Engine gains a **Rust core** (well-formed + XSD + native
   Schematron/SVRL) with Python SDK; pinned schemas **bundled** in the wheel; published to
   PyPI as `iwxxm-validate` `0.1.0`. Backend `/validate` remains a thin wrapper. See F13.
+- **S043 / EV-035 deepen (rule-source provenance)**: Revisited IWXXM-validation rules
+  (XSD / Schematron / guidance) must map to standing domain provenance rows under
+  `docs/domain/rules/` (path-cite; no new Fn) with **dense CI asserts**; unfindable
+  sources raised to the operator. Complements F29 matrix harness.
 - **Acceptance (this amend)**: Library API + CI tests; backend thin wrappers for validate
   endpoints call `iwxxm-validate` (no behavior regression vs current F2).
 - **Limitations**: Schema bundles must match vendored snapshot version.
 - **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md);
-  [Context: package-publish-validation](context/package-publish-validation.md)
+  [Context: package-publish-validation](context/package-publish-validation.md);
+  **S043 / EV-035** · [Context: rule-source-traceability](context/rule-source-traceability.md)
 
 ### F3: Airport Data Services
 
@@ -183,7 +188,22 @@
   - Soft-fail **preview** convert path returning best-effort IWXXM + failed-span markers
     (exact shape in api-contract / 04-tech-plan).
 - **Source**: S008 01-requirements; ADR-013; ADR-014; `docs/context/general-tac-iwxxm-converter.md`;
-  `docs/context/realtime-tac-ingest.md`; S011 / EV-008
+  `docs/context/realtime-tac-ingest.md`; S011 / EV-008; **S043 / EV-035** encode/AHL
+  provenance deepen (see deepen section below)
+
+### F6 deepen (S043 / EV-035 — rule-source provenance)
+
+- **Status note**: F6 remains **Implemented**; this cycle **re-links** encode + bulletin/AHL
+  rules already extracted to authoritative sources (canonicals + `RULE_SOURCE_URLS` + mining
+  digs) via a standing provenance map under `docs/domain/rules/` (**no new Fn** — G1=2).
+- **Acceptance (EV-035)**:
+  1. Every encode / AHL / bulletin rule cited or revisited has ≥1 provenance row
+     (`ok` | `gap` | `paywall` | `N/A`) with source URL or explicit raise
+  2. Dense CI asserts (many per rule / matrix cell) — reuse F29 harness patterns where useful
+  3. Unfindable sources raised to operator; no silent invent
+- **Out of scope**: New product encode; UI provenance UX; vendor hand-edits
+- **Source**: [Context: rule-source-traceability](context/rule-source-traceability.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-035
 
 ### F7: Multi-Product TAC Operator UI / Sessions
 
@@ -395,7 +415,17 @@
   4. Tag `tac-validate-v*` → trusted-publishing workflow (`pypi-publish.yml` on
      `EMPIRIC2/TAC-to-IWXXM`)
   5. PyPI landing (`README.md` / `description`) usable without internal ADR/Feature IDs
-- **Source**: #698; E10-4/9/19/21; docs/domain/rules/COVERAGE_MATRIX.md; #781
+- **Source**: #698; E10-4/9/19/21; docs/domain/rules/COVERAGE_MATRIX.md; #781;
+  **S043 / EV-035** lint↔source provenance deepen
+
+### F12 deepen (S043 / EV-035 — rule-source provenance)
+
+- **Status note**: F12 remains **Implemented**; this cycle links every revisited
+  `tac-validate` / `ISSUE_CATALOG` code to normative (or paywall/gap) cites in the domain
+  provenance map with dense CI asserts (completeness, URL shape, behavioral fixture where
+  executable). Complements F15 catalog drift + F29 matrices.
+- **Acceptance**: See EV-035 ACs under F15 deepen / test-plan **TC-EV035-***.
+- **Source**: [Context: rule-source-traceability](context/rule-source-traceability.md)
 
 ### F13: Fast IWXXM Validate (Rust Core + Schematron + PyPI)
 
@@ -467,7 +497,21 @@
 - **Out of scope**: New products beyond the seven F6 set; COLLECT/dissemination; FlightPlanDatabase
   FMS as METAR authority; closing sibling product-quality tickets unless registry sharing requires it.
 - **Source**: #732; E11-1..E11-10; [context/metar-lint-quality.md](context/metar-lint-quality.md);
-  ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`
+  ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; **S043 / EV-035** ISSUE_CATALOG↔source
+
+### F15 deepen (S043 / EV-035 — rule-source provenance)
+
+- **Status note**: F15 remains **Done**; this cycle does **not** add a new Fn. Standing
+  provenance map under `docs/domain/rules/` links registry codes ↔ sources; CI fails on
+  cite drift for in-scope codes; gaps raised to operator.
+- **Acceptance (EV-035 shared with F6/F12/F2 deepen)**:
+  1. Provenance artifact lists digs reviewed + rules extracted + source links
+  2. Every in-scope `ISSUE_CATALOG` code has provenance status (`ok`/`gap`/`paywall`/`N/A`)
+  3. Coverage-matrix cells for revisited products/roles cite URL or explicit gap
+  4. Dense asserts: many per cited/revisited rule (not single smoke) — TC-EV035-*
+  5. Encode/SCH/bulletin cites included when those rules are revisited (full stack)
+- **Source**: [Context: rule-source-traceability](context/rule-source-traceability.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-035
 
 ### F6 deepen (S015 / EV-011 — METAR)
 
