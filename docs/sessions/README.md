@@ -25,7 +25,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md) | feature | in_progress | Automate DOKS image rollout in CD; EV-034 — routing pending approval | evolve/EV-034-doks-cd-rollout | 2026-08-05 | — |
+| [S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md) | feature | completed | Automate DOKS CD rollout; EV-034; TC-F30-007 @ 20260805115809-d3f4bb9 | main @ d3f4bb95 | 2026-08-05 | 2026-08-05 |
 | [S041-worker-poller-hardening](S041-worker-poller-hardening/session-brief.md) | feature | completed | F8 deepen INGEST_POLLER_URL hardening; EV-033 lean-close D-S041-1+3 | main (#865) | 2026-08-04 | 2026-08-05 |
 | [S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md) | feature | suspended | #846 epic; #835/#741(F32)/#808 + corpus; EV-032 — resume after S042 | evolve/EV-032-iwxxm-corpus-quality | 2026-08-04 | — (resume after S042) |
 | [S037-quality-residuals-831](S037-quality-residuals-831/session-brief.md) | feature | completed | #831/#829/#820 closed; F29 Done; residual #835; EV-030 | evolve/EV-030-quality-residuals-831 | 2026-08-02 | 2026-08-03 |
@@ -65,7 +65,8 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 ## Active session
 
-**[S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md)** — Automate DOKS CD image
+**[S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md)** — **completed** (`D-S042-13`=1).
+Automate DOKS CD image
 rollout (EV-034). Standard routing **proposed** (pending approval). Branch
 `evolve/EV-034-doks-cd-rollout` (`pending_create`).
 

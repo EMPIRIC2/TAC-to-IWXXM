@@ -2,6 +2,22 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-05 — S042 EV-034 (F30 CD deepen — DOKS auto-rollout)
+
+### Added
+- **F30 AC7 / TC-F30-007**: `main` Deploy rolls DOKS `metar-api` / `metar-frontend` /
+  `metar-worker` to the immutable `TIMESTAMP-SHA` GHCR tag via
+  `scripts/deploy/doks_rollout_images.sh` and Actions secret `KUBE_CONFIG`.
+
+### Fixed
+- Deploy reject DigitalOcean `doctl` exec-auth kubeconfigs (runners lack `doctl`) — PR #868.
+
+### Deploy
+- Live proof: CI [31003268652](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31003268652);
+  tag `20260805115809-d3f4bb9`; `/health` 200.
+- Reports: [evolve-summary.md](sessions/S042-doks-cd-rollout/reports/evolve-summary.md),
+  [deploy-smoke.md](sessions/S042-doks-cd-rollout/reports/deploy-smoke.md).
+
 ## Unreleased — S038 EV-031 (#842 / #830 / #712 platform independence)
 
 ### Added

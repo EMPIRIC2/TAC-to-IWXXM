@@ -1118,7 +1118,8 @@
 
 ### F30: Platform Independence (Auth / DO DB / DOKS) — S038 / EV-031
 
-- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — **deepen** S042 / EV-034 (CD DOKS image rollout).
+- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — **deepen** S042 / EV-034 **completed**
+  (`D-S042-13` = 1; TC-F30-007 live @ `20260805115809-d3f4bb9`).
 - **What it does**: Splits platform lock-in under epic [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842):
   1. **Supabase Auth only** — JWT issue/verify for optional operator login (no product PostgREST / hosted Postgres app tables).
   2. **DigitalOcean Postgres** — all product DB including F8 store/quarantine and logged-in work sessions (`DATABASE_URL`).

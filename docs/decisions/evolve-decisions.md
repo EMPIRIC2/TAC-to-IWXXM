@@ -9,8 +9,8 @@
 **Features**: deepen **F30** (infra/CD — no new product Fn)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-034-doks-cd-rollout`  
-**Status**: **in_progress** — Phase 0 locked; Standard routing approved  
-**Prior**: S041 / EV-033 lean-closed (`D-S041-1+3`); S040 / EV-032 remains suspended (`resume_after` S042)
+**Status**: **completed** 2026-08-05 (`D-S042-13` = 1) — TC-F30-007 live @ `20260805115809-d3f4bb9`  
+**Prior**: S041 / EV-033 lean-closed (`D-S041-1+3`); S040 / EV-032 remains suspended (`resume_after` S042 — eligible to resume)
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `A,A,A,B,A`)
 

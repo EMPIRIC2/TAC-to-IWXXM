@@ -5,172 +5,7 @@ project:
   output_directory: docs/
 session_counter: 42
 evolve_cycle_counter: 34
-active_session:
-  id: S042-doks-cd-rollout
-  type: feature
-  intent: |
-    Automate DOKS image rollout in CD pipeline after main merge/GHCR push
-    (close gap where ci-cd.yml only Notes kubectl commands). Triggered after
-    #845/#866 and manual rollout of 20260805003332-5245f8d.
-  status: in_progress
-  branch: evolve/EV-034-doks-cd-rollout
-  branch_note: 'ACTIVE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-034
-  artifacts_dir: docs/sessions/S042-doks-cd-rollout/
-  prior_session: S041-worker-poller-hardening
-  prior_session_note: 'S041/EV-033 lean-closed D-S041-1+3; S040/EV-032 remains suspended — resume after S042 (CD session), not auto-resume now'
-  feature_ids: []
-  deepen_feature_ids:
-  - F30
-  feature_note: 'Deepen F30 — automate DOKS set-image/rollout after GHCR push; no new Fn'
-  preset: Standard
-  preset_status: approved
-  route_status: approved_E34-1-5
-  phase0_choices:
-    E34-1: A
-    E34-2: A
-    E34-3: A
-    E34-4: B
-    E34-5: A
-    locked_at: '2026-08-05'
-    summary: |
-      Phase 0 locked E34-1..5 = A,A,A,B,A — Standard; API+FE+worker;
-      TIMESTAMP-SHA tags; KUBE_CONFIG secret; Render optional/non-blocking.
-      Path 00→16→01→02→04→07→08→09→11→12→13; skip 03/05/06; 10 optional.
-  decisions:
-    E34-1: A
-    E34-2: A
-    E34-3: A
-    E34-4: B
-    E34-5: A
-    D-S042-phase0: locked_E34-1-5
-  routing_plan:
-  - stage: 00-context
-    mode: scoped
-    required: true
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: 'COMPLETE — open_session after S041 lean-close'
-  - stage: 16-evolve
-    required: true
-    status: in_progress
-    started: '2026-08-05'
-    skip_rationale:
-    note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge'
-  - stage: 01-requirements
-    required: true
-    mode: delta
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: 'COMPLETE (delta) — F30 deepen; feature-list/deploy/test-plan/evolve-decisions'
-  - stage: 02-verify-plan
-    required: true
-    mode: delta
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: 'COMPLETE (delta) — Gate A; Standard path confirmed'
-  - stage: 04-tech-plan
-    required: true
-    mode: delta
-    status: completed
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    skip_rationale:
-    note: 'COMPLETE (delta) — Gate B; execution-plan T1.1–T1.5'
-  - stage: 07-build
-    required: true
-    mode: full
-    status: in_progress
-    started: '2026-08-05'
-    skip_rationale:
-    note: 'ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
-    pending_commit: false
-    tip_sha: 9ae9c323
-    tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-    pr_number: 867
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-    pr_status: open
-  - stage: 08-verify-build
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale:
-    note: 'Next after CI green + merge / user verify on #867'
-  - stage: 09-qa
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale:
-  - stage: 10-e2e
-    required: false
-    mode: smoke
-    status: skipped
-    skip_rationale: 'optional smoke — primary AC is pipeline→cluster image pin, not browser UJ'
-  - stage: 11-verify-impl
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale:
-  - stage: 12-verify-deploy
-    required: true
-    mode: delta
-    status: pending
-    skip_rationale:
-  - stage: 13-deploy-smoke
-    required: true
-    mode: full
-    status: pending
-    skip_rationale:
-  current_stage: 07-build
-  started_at: '2026-08-05'
-  started: '2026-08-05'
-  context_briefs: []
-  artifacts:
-  - path: docs/sessions/S042-doks-cd-rollout/session-brief.md
-    status: written
-    stage: 00-context
-  - path: docs/sessions/S042-doks-cd-rollout/routing-plan.md
-    status: approved
-    stage: 00-context
-  - path: docs/sessions/S042-doks-cd-rollout/reports/execution-plan.md
-    status: written
-    stage: 04-tech-plan
-  - path: scripts/deploy/doks_rollout_images.sh
-    status: committed
-    stage: 07-build
-    tip_sha: 9ae9c323
-  - path: tests/test_doks_cd_rollout_guard.py
-    status: committed
-    stage: 07-build
-    tip_sha: 9ae9c323
-  decision_refs:
-  - E34-1
-  - E34-2
-  - E34-3
-  - E34-4
-  - E34-5
-  - D-S042-phase0
-  skipped:
-  - 03-plan-tooling
-  - 05-verify-tech
-  - 06-tech-tooling
-  - 10-e2e
-  pr_number: 867
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-  pr_status: open
-  pr_title: '[EV-034] Automate DOKS image rollout in CD'
-  pr_base: main
-  pr_head: evolve/EV-034-doks-cd-rollout
-  tip_sha: 9ae9c323
-  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-  note: 'IN_PROGRESS — S042/EV-034 Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07-build essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; branch evolve/EV-034-doks-cd-rollout ACTIVE pushed; 08 next after CI/merge; S040 remains suspended (resume_after S042)'
+active_session: null
 sessions:
 - id: S042-doks-cd-rollout
   type: feature
@@ -178,9 +13,11 @@ sessions:
     Automate DOKS image rollout in CD pipeline after main merge/GHCR push
     (close gap where ci-cd.yml only Notes kubectl commands). Triggered after
     #845/#866 and manual rollout of 20260805003332-5245f8d.
-  status: in_progress
+  status: completed
+  completed_at: '2026-08-05'
+  completed: '2026-08-05'
   branch: evolve/EV-034-doks-cd-rollout
-  branch_note: 'ACTIVE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
+  branch_note: 'CLOSED — PR #867/#868 MERGED @ d3f4bb95; EV-034 completed; DOKS 20260805115809-d3f4bb9; S040 remains suspended eligible to resume (do not auto-resume)'
   orchestrator: 16-evolve
   evolve_cycle_id: EV-034
   feature_ids: []
@@ -191,7 +28,7 @@ sessions:
   prior_session_note: 'S041 lean-closed; S040 suspended resume_after S042'
   preset: Standard
   preset_status: approved
-  route_status: approved_E34-1-5
+  route_status: completed_D-S042-13
   phase0_choices:
     E34-1: A
     E34-2: A
@@ -206,6 +43,8 @@ sessions:
     E34-4: B
     E34-5: A
     D-S042-phase0: locked_E34-1-5
+    D-S042-868-hold: resolved_merge_approved_choice_1
+    D-S042-13: approve_11_12_13_close_EV-034
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -216,10 +55,12 @@ sessions:
     skip_rationale:
   - stage: 16-evolve
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge'
+    note: 'COMPLETE — D-S042-13=1; 11/12/13 PASS; EV-034 completed; evolve-summary docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -244,24 +85,40 @@ sessions:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-08-05'
+    completed: '2026-08-05'
     skip_rationale:
-    note: 'ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
+    note: 'COMPLETE — PR #867 MERGED; hotfix #868 MERGED @ d3f4bb95 (static KUBE_CONFIG / no doctl); D-S042-868-hold resolved'
     pending_commit: false
     tip_sha: 9ae9c323
     tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+    pr_number: 867
+    pr_status: merged
+    hotfix_pr_number: 868
+    hotfix_pr_status: merged
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
     skip_rationale:
-    note: 'Next after CI green + merge / user verify on #867'
+    note: 'COMPLETE — PASS scoped 2026-08-05; report docs/sessions/S042-doks-cd-rollout/reports/verification-report.md; phase_c passed; C→D accepted (choice 1); #868 MERGED @ d3f4bb95'
+    report: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+    overall: pass
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    started_at: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
+    overall: pass
+    report: docs/sessions/S042-doks-cd-rollout/reports/qa-report.md
+    note: 'COMPLETE — overall pass; report docs/sessions/S042-doks-cd-rollout/reports/qa-report.md; #868 MERGED @ d3f4bb95; main CI/CD Pipeline run 31003268652 SUCCESS; 11/12/13 completed via D-S042-13=1; 10 remains skipped'
   - stage: 10-e2e
     required: false
     mode: smoke
@@ -270,19 +127,50 @@ sessions:
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    started_at: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    overall: pass
+    decision_id: D-S042-13
     skip_rationale:
+    report: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+    report_status: approved
+    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
   - stage: 12-verify-deploy
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    started_at: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    overall: pass
+    decision_id: D-S042-13
     skip_rationale:
+    report: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+    report_status: approved
+    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
   - stage: 13-deploy-smoke
     required: true
     mode: full
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    started_at: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    overall: pass
+    decision_id: D-S042-13
     skip_rationale:
-  current_stage: 07-build
+    report: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+    report_status: approved
+    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: 'COMPLETED — D-S042-13=1 approve 11+12+13 close EV-034/S042; PR #867/#868 MERGED @ d3f4bb95; TC-F30-007 live MET; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9; evolve-summary.md; S040 remains suspended (eligible to resume; do not auto-resume)'
+  next_stage: null
+  next_stage_status: null
   started_at: '2026-08-05'
   started: '2026-08-05'
   artifacts:
@@ -295,6 +183,31 @@ sessions:
   - path: docs/sessions/S042-doks-cd-rollout/reports/execution-plan.md
     status: written
     stage: 04-tech-plan
+  - path: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+    status: written
+    stage: 08-verify-build
+    overall: pass
+    note: 'PASS scoped 2026-08-05'
+  - path: docs/sessions/S042-doks-cd-rollout/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    overall: pass
+    note: 'PASS 2026-08-05'
+  - path: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+    status: approved
+    stage: 11-verify-impl
+    note: 'PASS — D-S042-13=1 approved 2026-08-05'
+    overall: pass
+  - path: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+    status: approved
+    stage: 12-verify-deploy
+    note: 'PASS — D-S042-13=1 approved 2026-08-05'
+    overall: pass
+  - path: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+    status: approved
+    stage: 13-deploy-smoke
+    note: 'PASS — D-S042-13=1 approved 2026-08-05'
+    overall: pass
   decision_refs:
   - E34-1
   - E34-2
@@ -302,6 +215,8 @@ sessions:
   - E34-4
   - E34-5
   - D-S042-phase0
+  - D-S042-868-hold
+  - D-S042-13
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
@@ -309,23 +224,45 @@ sessions:
   - 10-e2e
   pr_number: 867
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-  pr_status: open
+  pr_status: merged
   pr_title: '[EV-034] Automate DOKS image rollout in CD'
   pr_base: main
   pr_head: evolve/EV-034-doks-cd-rollout
-  tip_sha: 9ae9c323
-  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+  hotfix_pr_number: 868
+  hotfix_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
+  hotfix_pr_status: merged
+  hotfix_pr_title: '[EV-034] fix: static KUBE_CONFIG (no doctl)'
+  hotfix_merge_commit_sha: d3f4bb95
+  hotfix_merge_commit_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  tip_sha: d3f4bb95
+  tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  tip_note: 'main tip after #868 MERGED; prior evolve tip 9ae9c323 (#867); hotfix head 8e6e2659; DOKS auto-rollout 20260805115809-d3f4bb9'
+  main_ci_cd_pipeline_run: '31003268652'
+  main_ci_cd_pipeline_status: SUCCESS
+  doks_tag: 20260805115809-d3f4bb9
   pull_requests:
   - id: PR-EV-034
     number: 867
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
     title: '[EV-034] Automate DOKS image rollout in CD'
-    status: open
+    status: merged
     head: evolve/EV-034-doks-cd-rollout
     base: main
     tip_sha: 9ae9c323
-    note: '07-build essentially complete; pending CI green + merge; EV-034 NOT completed'
-  note: 'IN_PROGRESS — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed'
+    note: '07-build COMPLETE — MERGED; CI green; Deploy skipped on PR as expected'
+  - id: PR-EV-034-hotfix-kubeconfig
+    number: 868
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
+    title: '[EV-034] fix: static KUBE_CONFIG (no doctl)'
+    status: merged
+    merge_hold: false
+    merge_hold_decision: D-S042-868-hold
+    merge_hold_resolved: true
+    merge_commit_sha: d3f4bb95
+    merge_commit_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    merged_at: '2026-08-05T11:53:13Z'
+    note: 'MERGED @ d3f4bb95 — D-S042-868-hold resolved (phase_c_checkpoint choice 1); static KUBE_CONFIG (no doctl); Deploy SUCCESS run 31003268652'
+  note: 'COMPLETED — D-S042-13=1 approve 11+12+13 close EV-034/S042; PR #867/#868 MERGED @ d3f4bb95; TC-F30-007 live MET; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9; evolve-summary.md; S040 remains suspended (eligible to resume; do not auto-resume)'
 - id: S041-worker-poller-hardening
   type: feature
   intent: |
@@ -514,11 +451,11 @@ sessions:
   suspended_at: '2026-08-04'
   paused_at: '2026-08-04'
   pause_reason: |
-    User approved proceeding with separate F8 poller hardening via /16-evolve (S041/EV-033).
-    S040/EV-032 NOT completed or cancelled — resume at 13-deploy-smoke / T4.5 after S042 (CD session); do not auto-resume now.
+    Paused for S041 then S042 CD session. S042/EV-034 now CLOSED.
+    S040/EV-032 NOT completed or cancelled — eligible to resume at 13-deploy-smoke / T4.5 on explicit user request (do not auto-resume).
   suspended_for: S041-worker-poller-hardening
   resume_after: S042-doks-cd-rollout
-  resume_after_note: 'Do not auto-resume S040 now — resume after S042/EV-034 CD session (or explicit user request)'
+  resume_after_note: 'S042/EV-034 CLOSED — S040 remains suspended; eligible to resume (do not auto-resume); resume at 13-deploy-smoke / T4.5 on explicit user request'
   resume_at_stage: 13-deploy-smoke
   resume_at_task: T4.5
   branch: evolve/EV-032-iwxxm-corpus-quality
@@ -746,7 +683,7 @@ sessions:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'SUSPENDED — remains paused during S042/EV-034 CD DOKS automation; was T4.5/13-deploy-smoke in_progress (D-S040-13=1); EV-032 in_progress (not cancelled); resume_after S042-doks-cd-rollout (not auto-resume); tip 22b4251b; PR #848; #846'
+  note: 'SUSPENDED — S042/EV-034 closed; eligible to resume at 13-deploy-smoke / T4.5 (do not auto-resume); tip 22b4251b; PR #848; #846'
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -7259,11 +7196,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at:
-    completed:
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     previous_started_at: '2026-08-04'
     previous_completed_at:
     previous_session_id: S040-iwxxm-corpus-quality
@@ -7279,24 +7216,29 @@ stages:
     session_id: S042-doks-cd-rollout
     evolve_cycle_id: EV-034
     mode: full
-    note: 'S042/EV-034 07-build ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
+    note: 'S042/EV-034 07-build COMPLETE — PR #867 MERGED (CI green; Deploy skipped on PR as expected); deepen F30; hotfix #868 OPEN hold merge (static KUBE_CONFIG / no doctl); handoff 08-verify-build'
     tip_sha: 9ae9c323
     tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-    tip_note: 'S042/EV-034 tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
+    tip_note: 'S042/EV-034 tip 9ae9c323; PR #867 MERGED; #868 OPEN hold merge; EV-034 NOT completed'
     pending_commit: false
     next_stage: 08-verify-build
     current_milestone: M1
     current_task: T1.5
     active_milestone: M1
     active_task: T1.5
-    active_task_status: completed_awaiting_ci_merge
+    active_task_status: completed
     completed_through: T1.5
     progress: 5/5
     next_task: null
     pr_number: 867
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-    pr_status: open
+    pr_status: merged
     pr_title: '[EV-034] Automate DOKS image rollout in CD'
+    hotfix_pr_number: 868
+    hotfix_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
+    hotfix_pr_status: merged
+    hotfix_merge_commit_sha: d3f4bb95
+    hotfix_merge_commit_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
     commit_sha: 9ae9c323
     commit_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
     suspended_s040_progress: 25/28
@@ -8498,37 +8440,55 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
     status: completed
-    started_at: '2026-08-04'
-    started: '2026-08-04'
-    completed_at: '2026-08-04'
-    completed: '2026-08-04'
-    previous_started_at: '2026-08-03'
-    previous_started: '2026-08-03'
-    previous_completed_at: '2026-08-03'
-    previous_completed: '2026-08-03'
-    previous_session_id: S038-platform-independence-842
-    previous_evolve_cycle_id: EV-031
-    previous_tip_sha: 06d57043
-    previous_tip_sha_full: 06d57043611116f3b247695d7c519142a1023377
-    previous_overall: pass
-    previous_report: docs/sessions/S038-platform-independence-842/reports/qa-report.md
+    started_at: '2026-08-05'
+    started: '2026-08-05'
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
+    previous_started_at: '2026-08-04'
+    previous_started: '2026-08-04'
+    previous_completed_at: '2026-08-04'
+    previous_completed: '2026-08-04'
+    previous_session_id: S040-iwxxm-corpus-quality
+    previous_evolve_cycle_id: EV-032
+    previous_tip_sha: 09e60184
+    previous_tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+    previous_overall: pass_with_advisories
+    previous_report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
+    previous_note: 'COMPLETE 2026-08-04 (T4.3) — pass_with_advisories; report qa-report.md; tip 09e60184 committed; H4–H5→T4.5/13; progress 24/28; next 11-verify-impl T4.4; PR #848; #846'
+    prior_s038_session_id: S038-platform-independence-842
+    prior_s038_evolve_cycle_id: EV-031
+    prior_s038_tip_sha: 06d57043
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e34866
-    session_id: S040-iwxxm-corpus-quality
-    evolve_cycle_id: EV-032
-    tip_sha: 09e60184
-    tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
+    session_id: S042-doks-cd-rollout
+    evolve_cycle_id: EV-034
+    tip_sha: d3f4bb95
+    tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
     mode: delta
-    overall: pass_with_advisories
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
-    note: 'COMPLETE 2026-08-04 (T4.3) — pass_with_advisories; report qa-report.md; tip 09e60184 committed; H4–H5→T4.5/13; progress 24/28; next 11-verify-impl T4.4; PR #848; #846'
-    active_milestone: M4
-    active_task: T4.3
-    active_task_status: completed
-    progress: 24/28
+    overall: pass
+    report: docs/sessions/S042-doks-cd-rollout/reports/qa-report.md
+    note: 'COMPLETE — S042/EV-034 overall pass; report docs/sessions/S042-doks-cd-rollout/reports/qa-report.md; #868 MERGED @ d3f4bb95; main CI/CD Pipeline run 31003268652 SUCCESS; 11/12/13 completed via D-S042-13=1; 10 remains skipped'
     pending_commit: false
+    main_ci_cd_pipeline_run: '31003268652'
+    main_ci_cd_pipeline_status: in_progress
     delta_substages:
+    - id: S042-doks-cd-rollout
+      session_id: S042-doks-cd-rollout
+      evolve_cycle_id: EV-034
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      branch: evolve/EV-034-doks-cd-rollout
+      tip_sha: d3f4bb95
+      tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+      overall: pass
+      report: docs/sessions/S042-doks-cd-rollout/reports/qa-report.md
+      note: 'COMPLETE — overall pass; handoff 11/12/13 pending_user_approval; main CI/CD Pipeline run 31003268652 SUCCESS'
     - id: S040-iwxxm-corpus-quality-T4.3
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
@@ -8741,39 +8701,50 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
     status: completed
-    started_at: '2026-08-04'
-    started: '2026-08-04'
-    completed_at: '2026-08-04'
-    completed: '2026-08-04'
-    previous_started_at: '2026-08-03'
-    previous_started: '2026-08-03'
-    previous_completed_at: '2026-08-03'
-    previous_completed: '2026-08-03'
-    previous_session_id: S038-platform-independence-842
-    previous_evolve_cycle_id: EV-031
-    previous_tip_sha: b4feac02
-    previous_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    previous_overall: pass
-    previous_report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
-    previous_note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
+    started_at: '2026-08-05'
+    started: '2026-08-05'
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
+    previous_started_at: '2026-08-04'
+    previous_started: '2026-08-04'
+    previous_completed_at: '2026-08-04'
+    previous_completed: '2026-08-04'
+    previous_session_id: S040-iwxxm-corpus-quality
+    previous_evolve_cycle_id: EV-032
+    previous_tip_sha: fe024aac
+    previous_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    previous_overall: approved
+    previous_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
+    previous_note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
+    prior_s038_session_id: S038-platform-independence-842
+    prior_s038_evolve_cycle_id: EV-031
+    prior_s038_tip_sha: b4feac02
+    prior_s038_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    prior_s038_overall: pass
+    prior_s038_report: docs/sessions/S038-platform-independence-842/reports/verify-impl.md
+    prior_s038_note: 'COMPLETE (delta) — D-S038-11=1 approve F30+F31; UI preview declined (reports only); tip 4caaae1b; handoff 12-verify-deploy; #842/#830/#712'
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S040-iwxxm-corpus-quality
-    evolve_cycle_id: EV-032
+    session_id: S042-doks-cd-rollout
+    evolve_cycle_id: EV-034
     mode: delta
-    overall: approved
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-11=A1,B1,C1,D1 approved; report docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md; UI preview localhost:18000 accepted; F32 ACs approved; H4–H5 waive to 13; tip fe024aac approve committed; next 12/13; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verify-impl.md
-    tip_sha: fe024aac
-    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
-    tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
-    active_milestone: M4
-    active_task: T4.4
-    active_task_status: completed
-    progress: 25/28
-    awaiting_user_decision:
-    decision_id: D-S040-11
+    overall: pass
+    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9; tip d3f4bb95'
+    report: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+    report_status: approved
+    tip_sha: d3f4bb95
+    tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    tip_note: 'main tip after #868 MERGED @ d3f4bb95; DOKS auto-rollout 20260805115809-d3f4bb9'
+    main_ci_cd_pipeline_run: '31003268652'
+    main_ci_cd_pipeline_status: SUCCESS
+    doks_tag: 20260805115809-d3f4bb9
+    awaiting_user_decision: false
+    decision_id: D-S042-13
+    active_milestone:
+    active_task:
+    active_task_status:
+    progress:
     substeps:
       collect_results:
         status: completed
@@ -8784,12 +8755,33 @@ stages:
       feature_approval:
         status: completed
       fixes_applied:
-        status: completed
+        status: n/a
       scope_analysis:
         status: completed
       summary:
         status: completed
     delta_substages:
+    - id: S042-doks-cd-rollout
+      session_id: S042-doks-cd-rollout
+      evolve_cycle_id: EV-034
+      skill_id: 11-verify-impl
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      branch: evolve/EV-034-doks-cd-rollout
+      tip_sha: d3f4bb95
+      tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+      report: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+      report_status: approved
+      overall: pass
+      note: 'COMPLETE — overall pass; D-S042-13=1; verify-impl.md; CI 31003268652; DOKS 20260805115809-d3f4bb9'
+      deepen_feature_ids:
+      - F30
+      awaiting_user_decision: false
+      decision_id: D-S042-13
     - id: S040-iwxxm-corpus-quality-T4.4
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
@@ -9338,35 +9330,51 @@ stages:
     report: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
   08-verify-build:
     status: completed
-    mode: evolve_delta
-    started_at: '2026-08-04'
-    started: '2026-08-04'
-    completed_at: '2026-08-04'
-    completed: '2026-08-04'
-    previous_started_at: '2026-08-03'
-    previous_completed_at: '2026-08-03'
-    previous_session_id: S038-platform-independence-842
-    previous_evolve_cycle_id: EV-031
-    previous_tip_sha: 67a482a1
-    previous_tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
-    previous_note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; handoff 09+10 parallel; #842/#830/#712'
-    previous_report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
+    mode: delta
+    started_at: '2026-08-05'
+    started: '2026-08-05'
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
+    previous_started_at: '2026-08-04'
+    previous_completed_at: '2026-08-04'
+    previous_session_id: S040-iwxxm-corpus-quality
+    previous_evolve_cycle_id: EV-032
+    previous_tip_sha: e0e595e3
+    previous_tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
+    previous_note: 'COMPLETE (T4.2) — PASS @ tip e0e595e3; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md; also verification-report-M4.md; progress 23/28; gates.c_to_d/phase_c PASSED (D-S040-phase-c=1 Continue → T4.3); Phase D → 09+10; PR #848; #846'
+    previous_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
     previous_overall: pass
+    prior_s038_started_at: '2026-08-03'
+    prior_s038_completed_at: '2026-08-03'
+    prior_s038_session_id: S038-platform-independence-842
+    prior_s038_evolve_cycle_id: EV-031
+    prior_s038_tip_sha: 67a482a1
+    prior_s038_tip_sha_full: 67a482a1568fde921b77484fcd27be800e5be9ef
+    prior_s038_note: 'COMPLETE (evolve_delta) — C→D PASS — format/lint/typecheck/H0c/workspace/backend unit green; tip after [08] commit; report docs/sessions/S038-platform-independence-842/reports/verification-report.md; gates.c_to_d passed; tip 67a482a1; handoff 09+10 parallel; #842/#830/#712'
+    prior_s038_report: docs/sessions/S038-platform-independence-842/reports/verification-report.md
+    prior_s038_overall: pass
     previous_m5_boundary_note: 'COMPLETE (M5 boundary) — PASS @ tip 7a2cb7d0; report docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md; handoff 07 @ T6.1 in_progress; progress 26/38; prior M4 08 PASS @ 04fb4a98; #842/#830/#712'
     previous_m5_tip_sha: 7a2cb7d0
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S040-iwxxm-corpus-quality
-    evolve_cycle_id: EV-032
-    tip_sha: e0e595e3
-    tip_sha_full: e0e595e323729ab3b25dca9e9db2410480724272
-    note: 'COMPLETE (T4.2) — PASS @ tip e0e595e3; report docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md; also verification-report-M4.md; progress 23/28; gates.c_to_d/phase_c PASSED (D-S040-phase-c=1 Continue → T4.3); Phase D → 09+10; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
-    report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+    session_id: S042-doks-cd-rollout
+    evolve_cycle_id: EV-034
+    tip_sha: 9ae9c323
+    tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+    note: 'COMPLETE — PASS scoped 2026-08-05; report docs/sessions/S042-doks-cd-rollout/reports/verification-report.md; PR #867 MERGED; #868 MERGED @ d3f4bb95 (D-S042-868-hold resolved; phase_c_checkpoint choice 1); gates.c_to_d passed; Phase D → 09-qa'
+    prior_s040_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    prior_s040_report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
+    prior_s040_overall: pass
+    expected_report: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+    report: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
     overall: pass
-    expected_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
+    pr_number: 867
+    pr_status: merged
+    hotfix_pr_number: 868
+    hotfix_pr_status: merged
+    hotfix_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
     m4_overall: pass
     m4_tip_sha: 04fb4a98
     m4_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M4.md
@@ -9862,6 +9870,7 @@ stages:
       report: docs/sessions/S011-f7-operator-ui/reports/verification-report.md
       note: T6.1 PASS; integration SKIPPED host ports/disk; C→D passed D-S011-EV008-c-to-d-pass
     notes:
+    - '2026-08-05 S042/EV-034 08-verify-build STARTED — after PR #867 MERGED; #868 OPEN hold merge; phase_c pending until 08 PASS; catch-up doctl missing then rerun OK …318ad30; tip 9ae9c323'
     - '2026-08-03 S038/EV-031 08-verify-build COMPLETE (M5 boundary) PASS @ tip 7a2cb7d0; report docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md; handoff 07-build @ T6.1 in_progress; progress 26/38 until T6.1 completes; next T6.2; #842/#830/#712'
     - '2026-08-03 S037/EV-030 — T3.1 COMPLETE @ 00bb58f ([T3.1] test: VAA/TCA decode residual baseline inventory (#820)); tip may include 0c46df2 FIXTURE_GAPS fix after M2; M2 push CI run 30818578657 SUCCESS (https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30818578657); FE catalog unlock shipped — UI preview AskQuestion pending (written interview; AskQuestion tool unavailable); active_task → T3.2 pending @ M3; progress 19/27; tip 00bb58f; workflow-state dirty pending chore sync; #831→#820'
     - '2026-08-03 S037/EV-030 — M2 COMPLETE (T2.1–T2.6) @ aa8dc89; 08-verify-build M2 PASS (verification-report-m2.md); #829 closed; child #835 opened (A6-2-TC equality); PR #832 updated (PR-M2); active_task → T3.1 pending @ M3; progress 18/27; tip aa8dc89; #831→#820'
@@ -9954,43 +9963,76 @@ stages:
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
     status: completed
-    started_at: '2026-08-04'
-    started: '2026-08-04'
-    completed: '2026-08-04'
-    completed_at: '2026-08-04'
-    overall: ready
-    previous_started_at: '2026-08-03'
-    previous_started: '2026-08-03'
-    previous_completed: '2026-08-03'
-    previous_completed_at: '2026-08-03'
-    previous_session_id: S038-platform-independence-842
-    previous_evolve_cycle_id: EV-031
-    previous_note: 'COMPLETE (delta) — D-S038-12=1 approve mitigations+rollback; overall pass; tip b4feac02; handoff 13-deploy-smoke; #842/#830/#712'
-    previous_report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
-    previous_overall: pass
-    previous_tip_sha: b4feac02
-    previous_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    started_at: '2026-08-05'
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    overall: pass
+    previous_started_at: '2026-08-04'
+    previous_started: '2026-08-04'
+    previous_completed: '2026-08-04'
+    previous_completed_at: '2026-08-04'
+    previous_session_id: S040-iwxxm-corpus-quality
+    previous_evolve_cycle_id: EV-032
+    previous_note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
+    previous_report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
+    previous_overall: ready
+    previous_tip_sha: fe024aac
+    previous_tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
+    prior_s038_session_id: S038-platform-independence-842
+    prior_s038_evolve_cycle_id: EV-031
+    prior_s038_note: 'COMPLETE (delta) — D-S038-12=1 approve mitigations+rollback; overall pass; tip b4feac02; handoff 13-deploy-smoke; #842/#830/#712'
+    prior_s038_report: docs/sessions/S038-platform-independence-842/reports/deploy-checklist.md
+    prior_s038_overall: pass
+    prior_s038_tip_sha: b4feac02
+    prior_s038_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S040-iwxxm-corpus-quality
-    evolve_cycle_id: EV-032
+    session_id: S042-doks-cd-rollout
+    evolve_cycle_id: EV-034
     mode: delta
-    note: 'COMPLETE 2026-08-04 — T4.4; D-S040-12=ready; report docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md; mitigations/rollback defaults approved; checklist ready; tip fe024aac; 13 awaiting deploy approval; pending_commit cleared; PR #848; #846'
-    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
-    tip_sha: fe024aac
-    tip_sha_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
-    tip_note: 'tip fe024aac — [T4.4] docs approve committed; pending_commit cleared'
-    active_milestone: M4
-    active_task: T4.4
-    active_task_status: completed
-    progress: 25/28
-    awaiting_user_decision:
-    decision_id: D-S040-12
+    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
+    report: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+    report_status: approved
+    tip_sha: d3f4bb95
+    tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    tip_note: 'main tip d3f4bb95; DOKS tag 20260805115809-d3f4bb9'
+    main_ci_cd_pipeline_run: '31003268652'
+    main_ci_cd_pipeline_status: SUCCESS
+    doks_tag: 20260805115809-d3f4bb9
+    active_milestone:
+    active_task:
+    active_task_status:
+    progress:
+    awaiting_user_decision: false
+    decision_id: D-S042-13
     decision_ids:
+    - D-S042-13
     - D-S040-12
     - D-S036-12
     delta_substages:
+    - id: S042-doks-cd-rollout
+      session_id: S042-doks-cd-rollout
+      evolve_cycle_id: EV-034
+      skill_id: 12-verify-deploy
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      branch: evolve/EV-034-doks-cd-rollout
+      tip_sha: d3f4bb95
+      tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+      report: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+      report_status: approved
+      overall: pass
+      note: 'COMPLETE — overall pass; D-S042-13=1; deploy-checklist.md'
+      deepen_feature_ids:
+      - F30
+      awaiting_user_decision: false
+      decision_id: D-S042-13
     - id: S040-iwxxm-corpus-quality-T4.4
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
@@ -10165,40 +10207,77 @@ stages:
     tip_note: '12 signed off awaiting 13 smoke'
     decision_id: D-S038-12
   13-deploy-smoke:
-    status: in_progress
-    mode: delta
-    started_at: '2026-08-04T21:35:00Z'
-    started: '2026-08-04T21:35:00Z'
-    completed:
-    completed_at:
-    previous_started_at: '2026-08-03'
-    previous_completed_at: '2026-08-03'
-    previous_session_id: S038-platform-independence-842
-    previous_evolve_cycle_id: EV-031
-    previous_tip_sha: b4feac02
-    previous_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
-    previous_overall: pass
-    previous_note: 'COMPLETE D-S038-13=1 — provisional DOKS host 5/5, H0c/H4/H5, topology 3/3, Render 503; F30/F31 Done; residuals DNS/GHCR; tip pending closeout commit'
+    status: completed
+    mode: full
+    started_at: '2026-08-05'
+    started: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    previous_started_at: '2026-08-04T21:35:00Z'
+    previous_started: '2026-08-04T21:35:00Z'
+    previous_completed:
+    previous_completed_at:
+    previous_session_id: S040-iwxxm-corpus-quality
+    previous_evolve_cycle_id: EV-032
+    previous_tip_sha: 22b4251b
+    previous_tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    previous_overall:
+    previous_note: 'SUSPENDED during S042 — T4.5 was in_progress (D-S040-13=1); tip 22b4251b; PR #848; resume_after S042'
+    prior_s038_session_id: S038-platform-independence-842
+    prior_s038_evolve_cycle_id: EV-031
+    prior_s038_tip_sha: b4feac02
+    prior_s038_tip_sha_full: b4feac0221b6f77a3156582ac53ca45c4f75527a
+    prior_s038_overall: pass
+    prior_s038_note: 'COMPLETE D-S038-13=1 — provisional DOKS host 5/5, H0c/H4/H5, topology 3/3, Render 503; F30/F31 Done; residuals DNS/GHCR; tip pending closeout commit'
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 8bd111c
-    session_id: S040-iwxxm-corpus-quality
-    evolve_cycle_id: EV-032
-    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
-    tip_sha: 22b4251b
-    tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-    tip_note: 'T4.5 START — D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5'
-    active_milestone: M4
-    active_task: T4.5
-    active_task_status: in_progress
-    progress: 25/28
-    completed_through: T4.4
+    session_id: S042-doks-cd-rollout
+    evolve_cycle_id: EV-034
+    overall: pass
+    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md; TC-F30-007 live MET; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
+    report: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+    report_status: approved
+    tip_sha: d3f4bb95
+    tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    tip_note: 'main tip d3f4bb95; DOKS auto-rollout 20260805115809-d3f4bb9'
+    main_ci_cd_pipeline_run: '31003268652'
+    main_ci_cd_pipeline_status: SUCCESS
+    doks_tag: 20260805115809-d3f4bb9
+    active_milestone:
+    active_task:
+    active_task_status:
+    progress:
+    completed_through:
     awaiting_deploy_approval: false
-    decision_id: D-S040-13
-    pr_number: 848
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
-    pr_status: open
+    awaiting_user_decision: false
+    decision_id: D-S042-13
+    pr_number: 868
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
+    pr_status: merged
     delta_substages:
+    - id: S042-doks-cd-rollout
+      session_id: S042-doks-cd-rollout
+      evolve_cycle_id: EV-034
+      skill_id: 13-deploy-smoke
+      status: completed
+      mode: full
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      branch: evolve/EV-034-doks-cd-rollout
+      tip_sha: d3f4bb95
+      tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+      report: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+      report_status: approved
+      overall: pass
+      note: 'COMPLETE — overall pass; D-S042-13=1; deploy-smoke.md; TC-F30-007'
+      deepen_feature_ids:
+      - F30
+      awaiting_user_decision: false
+      awaiting_deploy_approval: false
+      decision_id: D-S042-13
     - id: S040-iwxxm-corpus-quality-T4.5
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
@@ -10214,7 +10293,7 @@ stages:
       active_task: T4.5
       active_task_status: in_progress
       progress: 25/28
-      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
+      note: 'SUSPENDED — S042 closed; eligible to resume T4.5 (do not auto-resume); tip 22b4251b; PR #848'
       decision_id: D-S040-13
       awaiting_deploy_approval: false
     - id: S038-platform-independence-842
@@ -10798,19 +10877,19 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S042-doks-cd-rollout
     evolve_cycle_id: EV-034
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at:
-    completed:
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     previous_session_id: S041-worker-poller-hardening
     previous_evolve_cycle_id: EV-033
     previous_completed_at: '2026-08-05'
-    current_child_stage: 07-build
-    note: 'S042/EV-034 Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge; S040 remains suspended (resume_after S042)'
+    current_child_stage: completed
+    note: 'COMPLETE — S042/EV-034 closed D-S042-13=1; 11/12/13 PASS; evolve-summary docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md; idle until next evolve; S040 remains suspended (eligible to resume; do not auto-resume)'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -10837,11 +10916,11 @@ deployment:
   staging:
     status: 'deployed (public DNS + TLS)'
     last_verified: '2026-08-05'
-    commit_deployed: 5245f8de
-    commit_deployed_full: 5245f8de547c966a20ee5f81734248dba50a440d
-    commit_head: 5245f8de
-    commit_head_full: 5245f8de547c966a20ee5f81734248dba50a440d
-    doks_tag: 20260805003332-5245f8d
+    commit_deployed: d3f4bb95
+    commit_deployed_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    commit_head: d3f4bb95
+    commit_head_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    doks_tag: 20260805115809-d3f4bb9
     drift: false
     platform: doks
     namespace: metar-iwxxm
@@ -10853,14 +10932,14 @@ deployment:
     deploy_ids:
       api:
       frontend:
-    report: docs/sessions/S039-doks-dns-cutover/reports/deploy-smoke.md
-    session_id: S039-doks-dns-cutover
-    evolve_cycle_id: EV-031
+    report: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+    session_id: S042-doks-cd-rollout
+    evolve_cycle_id: EV-034
     images:
-      api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260805003332-5245f8d
-      frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260805003332-5245f8d
-      worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260805003332-5245f8d
-      note: 'DOKS one-shot 2026-08-05 ~00:49Z tag 20260805003332-5245f8d (Deploy run 30963357296); set-image api/frontend/worker ns metar-iwxxm; S041 lean-close'
+      api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260805115809-d3f4bb9
+      frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260805115809-d3f4bb9
+      worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260805115809-d3f4bb9
+      note: 'EV-034 automated CD SUCCESS — CI/CD Pipeline run 31003268652 (incl. Deploy); tag 20260805115809-d3f4bb9; metar-api/frontend/worker rollouts success; H0ci pass; drift false'
     health_tiers:
       H0ci: pass
       H0c: pass
@@ -10881,6 +10960,8 @@ deployment:
       topology: pass_3_of_3
       host_header: pass_5_of_5
     notes:
+    - '2026-08-05 S042/EV-034 CLOSED D-S042-13=1 — 11/12/13 PASS; CI 31003268652; DOKS 20260805115809-d3f4bb9; active_session=null; S040 remains suspended (eligible to resume; do not auto-resume)'
+    - '2026-08-05 EV-034 automated CD SUCCESS — CI/CD Pipeline run 31003268652 SUCCESS including Deploy; DOKS tag `20260805115809-d3f4bb9` (main tip d3f4bb95 / #868); set-image metar-api, metar-frontend, metar-worker ns metar-iwxxm; all rollout status success; live: api /health 200; OpenAPI /auth/login+/auth/me; app 200; H0ci pass; drift false; reports verify-impl.md + deploy-checklist.md + deploy-smoke.md; APPROVED D-S042-13=1 — cycle closed'
     - '2026-08-05 DOKS one-shot rollout COMPLETE ~00:49Z — tag `20260805003332-5245f8d` (CI Deploy run 30963357296 / #866 merge tip 5245f8de); set image metar-api, metar-frontend, metar-worker in ns metar-iwxxm; rollouts successful; live verify: /health 200; OpenAPI has /auth/login+/auth/me; POST /auth/login→422; GET /auth/me→401; logs show metar_auth /auth router successfully; S041 lean-close D-S041-1+3; CD automation → S042/EV-034'
     - '2026-08-04 S039 CLOSED D-S039-15=1 — 15-service-health COMPLETE; H0ci+H1–H5+Auth login PASS; D-S038-t63-waive lifted; public HTTPS; report service-health.md; active_session=null; #842/#712'
     - '2026-08-04 S039 15-service-health formal PASS pending D-S039-15 — H0ci main CI green https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/30828890624; H1/H3/H4/H5 + Auth site_url + login 200; report service-health.md; #842/#712'
@@ -11074,6 +11155,85 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S042-13
+  date: '2026-08-05'
+  timestamp: '2026-08-05T12:10:00Z'
+  resolved_at: '2026-08-05'
+  session_id: S042-doks-cd-rollout
+  evolve_cycle_id: EV-034
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: close_session
+  category: phase_d_close
+  status: confirmed
+  topic: 'Approve 11+12+13 and close EV-034 / S042'
+  summary: |
+    User approved D-S042-13 option 1: approve 11-verify-impl + 12-verify-deploy +
+    13-deploy-smoke (overall pass) and close EV-034 / S042. Reports already written.
+    Live proof: CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9.
+  decision: |
+    D-S042-13=1 — approve 11+12+13 and close EV-034 / S042. Stages 11/12/13 completed
+    (overall pass). EV-034 completed_at 2026-08-05. active_session=null.
+    S040 remains suspended; eligible to resume (do not auto-resume).
+  user_option: '1 — approve 11+12+13 and close EV-034 / S042'
+  branch: evolve/EV-034-doks-cd-rollout
+  tip_sha: d3f4bb95
+  tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  related_prs:
+  - '867'
+  - '868'
+  related_decisions:
+  - D-S042-phase0
+  - D-S042-868-hold
+  - E34-1
+  - E34-2
+  - E34-3
+  - E34-4
+  - E34-5
+  artifacts:
+  - docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+  - docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+  - docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+  - docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md
+  note: 'CLOSED by workflow-state-manager — EV-034 completed; S042 archived; active_session=null'
+- id: D-S042-868-hold
+  date: '2026-08-05'
+  timestamp: '2026-08-05T11:44:00Z'
+  resolved_at: '2026-08-05'
+  resolved_timestamp: '2026-08-05T11:53:32Z'
+  session_id: S042-doks-cd-rollout
+  evolve_cycle_id: EV-034
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: merge_hold
+  status: resolved
+  topic: 'Hold merge of hotfix PR #868 until explicit user approval'
+  summary: |
+    RESOLVED — User approved Phase C checkpoint option 1: merge #868 now, then
+    continue 09→11→12→13. PR #868 MERGED @ d3f4bb95 (2026-08-05T11:53:13Z).
+    Hold lifted; C→D passed; Phase D started at 09-qa.
+  decision: |
+    D-S042-868-hold RESOLVED (phase_c_checkpoint choice 1) — User approved merge of
+    https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868; MERGED @ d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    (mergedAt 2026-08-05T11:53:13Z). Continue Phase D: 09-qa → 11-verify-impl →
+    12-verify-deploy → 13-deploy-smoke. gates.c_to_d passed; current_stage 09-qa in_progress.
+  user_option: '1 — merge #868 now, then continue 09→11→12→13'
+  user_option_at_open: hold_merge_until_approval
+  branch: evolve/EV-034-doks-cd-rollout
+  related_prs:
+  - '867'
+  - '868'
+  merge_commit_sha: d3f4bb95
+  merge_commit_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  merge_verified: true
+  gates_c_to_d: passed
+  checkpoints_phase_c: passed
+  current_stage: 09-qa
+  related_decisions:
+  - D-S042-phase0
+  - E34-4
+  note: 'CLOSED by workflow-state-manager — hold lifted; #868 MERGED verified; Phase D → 09-qa'
 - id: D-S042-phase0
   date: '2026-08-05'
   timestamp: '2026-08-05T01:00:00Z'
@@ -21720,7 +21880,7 @@ artifacts:
   tip_sha: 9ae9c323
   pr_number: 867
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-  note: 'T1.1–T1.5 committed @ 9ae9c323; PR #867 OPEN; pending CI green + merge'
+  note: 'T1.1–T1.5 committed @ 9ae9c323; PR #867 MERGED; #868 OPEN hold merge; 08-verify-build in_progress'
 - path: docs/sessions/S042-doks-cd-rollout/session-brief.md
   type: session-brief
   stage: 00-context
@@ -21740,7 +21900,7 @@ artifacts:
   created_at: '2026-08-05'
   updated_at: '2026-08-05'
   status: approved
-  note: 'E34-1..5=A,A,A,B,A; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN'
+  note: 'E34-1..5=A,A,A,B,A; 01/02/04/07 completed; PR #867 MERGED; #868 OPEN hold merge; 08 in_progress'
 - path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
   kind: deploy-checklist
   session_id: S040-iwxxm-corpus-quality
@@ -31888,8 +32048,10 @@ evolve_cycles:
   feature_note: F30 deepen — DOKS CD image rollout automation; no new Fn
   title: Automate DOKS image rollout in CD
   slug: doks-cd-rollout
-  status: in_progress
-  phase: 2
+  status: completed
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
+  phase: 3
   started: '2026-08-05'
   started_at: '2026-08-05'
   scope_summary: |
@@ -31898,26 +32060,47 @@ evolve_cycles:
     Triggered after #845/#866 and manual one-shot rollout of 20260805003332-5245f8d.
     Deepen F30 — no new product Fn. Phase 0 locked E34-1..5 = A,A,A,B,A.
   branch: evolve/EV-034-doks-cd-rollout
-  branch_note: 'ACTIVE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
-  tip_sha: 9ae9c323
-  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-  tip_note: 'tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
+  branch_note: 'CLOSED — PR #867/#868 MERGED @ d3f4bb95; EV-034 completed 2026-08-05; DOKS 20260805115809-d3f4bb9'
+  tip_sha: d3f4bb95
+  tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  tip_note: 'COMPLETED — tip d3f4bb95; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9; D-S042-13=1'
   pr_number: 867
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-  pr_status: open
+  pr_status: merged
   pr_title: '[EV-034] Automate DOKS image rollout in CD'
   pr_base: main
   pr_head: evolve/EV-034-doks-cd-rollout
+  hotfix_pr_number: 868
+  hotfix_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
+  hotfix_pr_status: merged
+  hotfix_pr_title: '[EV-034] fix: static KUBE_CONFIG (no doctl)'
+  hotfix_merge_commit_sha: d3f4bb95
+  hotfix_merge_commit_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  main_ci_cd_pipeline_run: '31003268652'
+  main_ci_cd_pipeline_status: SUCCESS
+  doks_tag: 20260805115809-d3f4bb9
   pull_requests:
   - id: PR-EV-034
     number: 867
     url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
     title: '[EV-034] Automate DOKS image rollout in CD'
-    status: open
+    status: merged
     head: evolve/EV-034-doks-cd-rollout
     base: main
     tip_sha: 9ae9c323
-    note: '07 essentially complete; pending CI green + merge; EV-034 NOT completed'
+    note: '07-build COMPLETE — MERGED; CI green; Deploy skipped on PR as expected'
+  - id: PR-EV-034-hotfix-kubeconfig
+    number: 868
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
+    title: '[EV-034] fix: static KUBE_CONFIG (no doctl)'
+    status: merged
+    merge_hold: false
+    merge_hold_decision: D-S042-868-hold
+    merge_hold_resolved: true
+    merge_commit_sha: d3f4bb95
+    merge_commit_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    merged_at: '2026-08-05T11:53:13Z'
+    note: 'MERGED @ d3f4bb95 — D-S042-868-hold resolved; Deploy SUCCESS run 31003268652; DOKS tag 20260805115809-d3f4bb9'
   doks_baseline_tag: 20260805003332-5245f8d
   preset: Standard
   preset_status: approved
@@ -31948,19 +32131,31 @@ evolve_cycles:
     - 06-tech-tooling
     - 10-e2e
     optional_stages: []
-    note: 'Standard approved E34-1..5 — skip 03/05/06/10; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN'
-  current_stage: 07-build
+    note: 'Standard complete — all required stages done; D-S042-13=1; evolve-summary docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md'
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: 'COMPLETED — D-S042-13=1 approve 11+12+13 close EV-034/S042; PR #867/#868 MERGED @ d3f4bb95; TC-F30-007 live MET; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9; evolve-summary.md; S040 remains suspended (eligible to resume; do not auto-resume)'
+  next_stage: null
+  next_stage_status: null
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
-    deploy: pending
+    c_to_d: passed
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
-    phase_d: pending
-    deploy: pending
+    phase_c: passed
+    phase_d: passed
+    deploy: passed
+  summary_path: docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md
+  evolve_summary: docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md
+  phase_c_checkpoint:
+    status: accepted
+    choice: 1
+    decision_id: D-S042-868-hold
+    accepted_at: '2026-08-05T11:53:32Z'
+    summary: 'merge #868 now, then continue 09→11→12→13'
   stages:
     00-context:
       status: completed
@@ -31969,9 +32164,11 @@ evolve_cycles:
       completed: '2026-08-05'
       note: 'COMPLETE — open_session; Phase 0 later locked E34-1..5'
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-08-05'
-      note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      note: 'COMPLETE — D-S042-13=1; EV-034 completed; evolve-summary docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md'
     01-requirements:
       status: completed
       mode: delta
@@ -31991,10 +32188,11 @@ evolve_cycles:
       completed: '2026-08-05'
       note: 'COMPLETE (delta) — Gate B; execution-plan T1.1–T1.5'
     07-build:
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-08-05'
-      note: 'ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
+      completed: '2026-08-05'
+      note: 'COMPLETE — PR #867 MERGED; hotfix #868 MERGED @ d3f4bb95 (static KUBE_CONFIG / no doctl); D-S042-868-hold resolved; deepen F30'
       pending_commit: false
       tip_sha: 9ae9c323
       tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
@@ -32002,7 +32200,9 @@ evolve_cycles:
       commit_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
       pr_number: 867
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-      pr_status: open
+      pr_status: merged
+      hotfix_pr_number: 868
+      hotfix_pr_status: merged
       artifacts:
       - scripts/deploy/doks_rollout_images.sh
       - .github/workflows/ci-cd.yml
@@ -32013,6 +32213,64 @@ evolve_cycles:
       - deploy/doks/README.md
       - docs/decisions/evolve-decisions.md
       - docs/sessions/S042-doks-cd-rollout/reports/execution-plan.md
+    08-verify-build:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: 'COMPLETE — PASS scoped 2026-08-05; report docs/sessions/S042-doks-cd-rollout/reports/verification-report.md; phase_c passed; C→D accepted (choice 1); #868 MERGED @ d3f4bb95'
+      report: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+      overall: pass
+    09-qa:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      overall: pass
+      report: docs/sessions/S042-doks-cd-rollout/reports/qa-report.md
+      note: 'COMPLETE — overall pass; report docs/sessions/S042-doks-cd-rollout/reports/qa-report.md; #868 MERGED @ d3f4bb95; main CI/CD Pipeline run 31003268652 SUCCESS; 11/12/13 completed via D-S042-13=1; 10 remains skipped'
+    10-e2e:
+      status: skipped
+      mode: smoke
+      skip_rationale: 'optional smoke — primary AC is pipeline→cluster image pin, not browser UJ'
+    11-verify-impl:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      overall: pass
+      decision_id: D-S042-13
+      report: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+      report_status: approved
+      note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md'
+    12-verify-deploy:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      overall: pass
+      decision_id: D-S042-13
+      report: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+      report_status: approved
+      note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md'
+    13-deploy-smoke:
+      status: completed
+      mode: full
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      overall: pass
+      decision_id: D-S042-13
+      report: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+      report_status: approved
+      note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md'
   adrs: []
   artifacts:
   - path: docs/sessions/S042-doks-cd-rollout/session-brief.md
@@ -32022,6 +32280,31 @@ evolve_cycles:
   - path: docs/sessions/S042-doks-cd-rollout/reports/execution-plan.md
     status: written
     stage: 04-tech-plan
+  - path: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+    status: written
+    stage: 08-verify-build
+    overall: pass
+    note: 'PASS scoped 2026-08-05'
+  - path: docs/sessions/S042-doks-cd-rollout/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    overall: pass
+    note: 'PASS 2026-08-05'
+  - path: docs/sessions/S042-doks-cd-rollout/reports/verify-impl.md
+    status: approved
+    stage: 11-verify-impl
+    note: 'PASS — D-S042-13=1 approved 2026-08-05'
+    overall: pass
+  - path: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+    status: approved
+    stage: 12-verify-deploy
+    note: 'PASS — D-S042-13=1 approved 2026-08-05'
+    overall: pass
+  - path: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+    status: approved
+    stage: 13-deploy-smoke
+    note: 'PASS — D-S042-13=1 approved 2026-08-05'
+    overall: pass
   issues: []
   decision_refs:
   - E34-1
@@ -32030,7 +32313,15 @@ evolve_cycles:
   - E34-4
   - E34-5
   - D-S042-phase0
+  - D-S042-868-hold
+  - D-S042-13
   notes:
+  - '2026-08-05 S042/EV-034 CLOSED D-S042-13=1 — 11/12/13 PASS; evolve-summary docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md; active_session=null; S040 remains suspended (eligible to resume; do not auto-resume)'
+  - '2026-08-05 S042/EV-034 TC-F30-007 live MET — CI/CD Pipeline run 31003268652 SUCCESS (incl. Deploy); DOKS tag 20260805115809-d3f4bb9; metar-api/frontend/worker rollouts success; api /health 200; OpenAPI /auth/login+/auth/me; app 200; H0ci pass; drift false; reports verify-impl.md + deploy-checklist.md + deploy-smoke.md written; current_stage awaiting_user_approve_11_12_13; checkpoints.phase_d pending_user; EV-034 NOT completed; session NOT closed'
+  - '2026-08-05 S042/EV-034 09-qa COMPLETE — overall pass; report docs/sessions/S042-doks-cd-rollout/reports/qa-report.md; #868 MERGED @ d3f4bb95; main CI/CD Pipeline run 31003268652 SUCCESS; handoff 11/12/13 pending_user_approval; 10 remains skipped; EV-034 NOT completed'
+  - '2026-08-05 S042/EV-034 phase_c_checkpoint choice 1 ACCEPTED — D-S042-868-hold resolved; PR #868 MERGED @ d3f4bb95 (mergedAt 2026-08-05T11:53:13Z); gates.c_to_d passed; Phase D started; current_stage 09-qa in_progress → 11→12→13; EV-034 NOT completed'
+  - '2026-08-05 S042/EV-034 08-verify-build COMPLETE — PASS scoped; report docs/sessions/S042-doks-cd-rollout/reports/verification-report.md; checkpoints.phase_c passed (08 green, #867 merged); #868 CI fully green but still open_hold_merge (D-S042-868-hold); Phase C checkpoint awaiting user — do NOT auto-start 09; next 09-qa'
+  - '2026-08-05 S042/EV-034 catch-up — PR #867 MERGED; Deploy initially failed (doctl missing / KUBE_CONFIG exec auth); rerun succeeded on cluster …318ad30; hotfix PR #868 OPEN MERGEABLE — HOLD merge until explicit user approval (D-S042-868-hold); 07-build completed; 08-verify-build started; checkpoints.phase_c still pending until 08 PASS; EV-034 NOT completed'
   - '2026-08-05 S042/EV-034 — recorded git commit 9ae9c323 (9ae9c3235d9380f493290ab318c0e0ecf5de2efa) [EV-034] feat: automate DOKS image rollout in CD after GHCR push; pushed; PR #867 OPEN; 07 essentially complete pending CI green + merge; EV-034 NOT completed; tip 9ae9c323; ahead_of_origin=0'
   - '2026-08-05 EV-034/S042 — Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07-build largely done awaiting commit+PR+user verify; branch evolve/EV-034-doks-cd-rollout ACTIVE; tip base 5245f8de; no commit SHA invented; 08 next after commit'
   - '2026-08-05 EV-034/S042-doks-cd-rollout OPEN — Phase 0 intake after S041 lean-close + DOKS one-shot 20260805003332-5245f8d; Standard routing proposed pending approval; branch evolve/EV-034-doks-cd-rollout pending_create; S040 remains suspended (resume_after S042)'
@@ -32574,15 +32865,15 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (do not carry EV-031 dirty worktree); 00-context completing; scoped brief docs/context/iwxxm-corpus-quality-846.md; #846/#835/#741/#808; exclude #836'
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
 git_history:
-  current_branch: evolve/EV-034-doks-cd-rollout
+  current_branch: main
   ahead_of_origin: 0
   pushed: true
-  pending_commit: false
-  pending_commit_note: 'cleared — 9ae9c323 pushed; this workflow-state sync may leave uncommitted dirty tree (parent may amend/follow-up)'
+  pending_commit: true
+  pending_commit_note: 'close docs may follow on main — workflow-state.yaml + routing-plan.md (+ evolve-summary already present); workflow-state-manager did not commit'
   dirty: true
-  tip_sha: 9ae9c323
-  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-  tip_note: 'S042/EV-034 tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed; workflow-state sync dirty after this update'
+  tip_sha: d3f4bb95
+  tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  tip_note: 'S042 closed; main tip after #868 @ d3f4bb95; close docs commit may follow on main'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -32593,10 +32884,11 @@ git_history:
   main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
   main_tip_sha: 5245f8de
   main_tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
-  recommended_branch: evolve/EV-034-doks-cd-rollout
-  note: 'S042/EV-034 07-build essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; S040 suspended resume_after S042; #846 parked'
+  recommended_branch: main
+  note: 'S042/EV-034 CLOSED D-S042-13=1; tip main @ d3f4bb95; close docs commit may follow on main; no commit by workflow-state-manager this update; S040 remains suspended eligible to resume'
 
   notes:
+  - '2026-08-05 S042/EV-034 CLOSE D-S042-13=1 — 11/12/13 completed overall pass; EV-034 completed; active_session=null; evolve-summary docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md; close docs commit may follow on main (workflow-state + routing-plan); S040 remains suspended (eligible to resume; do not auto-resume); no git commit by workflow-state-manager'
   - '2026-08-05 S042/EV-034 — recorded git commit 9ae9c323 (9ae9c3235d9380f493290ab318c0e0ecf5de2efa) [EV-034] feat: automate DOKS image rollout in CD after GHCR push; pushed; PR #867 OPEN; 07 essentially complete pending CI green + merge; EV-034 NOT completed; tip 9ae9c323; ahead_of_origin=0'
   - '2026-08-05 S042/EV-034 — Phase 0 locked E34-1..5=A,A,A,B,A; branch evolve/EV-034-doks-cd-rollout ACTIVE; 01/02/04 completed; 07-build largely done awaiting commit+PR+user verify; deepen F30; tip base 5245f8de; no commit SHA invented; 08 next after commit'
   - '2026-08-05 S041/EV-033 LEAN-CLOSE D-S041-1+3 + open S042/EV-034 — 09–13 waived; DOKS one-shot 20260805003332-5245f8d recorded; EV-033 completed; branch evolve/EV-034-doks-cd-rollout pending_create; S040 resume_after S042; no CD workflow code this update'
