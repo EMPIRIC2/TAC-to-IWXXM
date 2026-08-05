@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
-# Local parity with GitHub Actions validate + unit/matrix (make ci-prepush).
-# Remote CI also runs test / tac2iwxxm-native / e2e-smoke; deploy needs test + native.
+# EV-036 / M5 — long local gate: units + Compose integration (ports 18000/18001).
+# Medium validate already ran on commit; do not re-run validate-ci here.
+# Remote CI keeps unit matrix + coverage; Compose stays local-only.
 set -e
-echo "husky pre-push: make validate-ci"
-make validate-ci
-echo "husky pre-push: make ci-prepush"
-make ci-prepush
+echo "husky pre-push: make ci (ci-prepush + test-integration)"
+echo "Requires Docker and free ports 18000/18001. Bypass only with --no-verify (not for main)."
+make ci

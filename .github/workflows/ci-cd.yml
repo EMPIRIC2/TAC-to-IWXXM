@@ -24,48 +24,11 @@ env:
   FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
-  # ============================================================================
-  # VALIDATE — format, lint, typecheck, secrets, yaml, config-guard, npm audit
-  # ============================================================================
-  validate:
-    runs-on: ubuntu-latest
-    name: Validate
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: pip
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip uv
-          uv sync
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          cache: pnpm
-
-      - name: Install JavaScript dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run validate gates
-        run: make validate-ci
-
+  # EV-036: remote validate job removed — lint/format/config on local pre-commit.
+  # Unit matrix + coverage remain; Compose integration is local pre-push only.
   test:
     runs-on: ubuntu-latest
     name: Test (${{ matrix.package }})
-    needs: [validate]
     strategy:
       fail-fast: false
       matrix:
@@ -79,7 +42,6 @@ jobs:
             iwxxm-validate,
             tac-validate,
             dissemination,
-            integration,
             bugs,
           ]
 
@@ -125,6 +87,7 @@ jobs:
         run: |
           uv run pytest packages/shared/tests --cov=metar_shared \
             --cov-config=packages/shared/pyproject.toml --cov-branch \
+            --cov-report=xml:packages/shared/coverage.xml \
             --cov-report=term-missing --cov-fail-under=98 -v
           pnpm --filter @metar/shared run test:coverage
 
@@ -152,6 +115,7 @@ jobs:
         run: |
           uv run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
             --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
+            --cov-report=xml:packages/tac2iwxxm/coverage.xml \
             --cov-report=term-missing --cov-fail-under=95 -v
 
       - name: Install Rust toolchain (iwxxm-validate native)
@@ -173,6 +137,7 @@ jobs:
         run: |
           uv run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
             --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
+            --cov-report=xml:packages/iwxxm-validate/coverage.xml \
             --cov-report=term-missing --cov-fail-under=95 -v
 
       - name: Run tac-validate unit tests with coverage
@@ -180,6 +145,7 @@ jobs:
         run: |
           uv run pytest packages/tac-validate/tests --cov=tac_validate \
             --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
+            --cov-report=xml:packages/tac-validate/coverage.xml \
             --cov-report=term-missing --cov-fail-under=95 -v
 
       # F16–F19 / T0.1 — skips until packages/dissemination is scaffolded (T1.1/T1.2).
@@ -200,41 +166,19 @@ jobs:
         if: matrix.package == 'bugs'
         run: uv run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
-      - name: Set integration stack environment
-        if: matrix.package == 'integration'
-        run: |
-          PUBLISHABLE="${SUPABASE_PUBLISHABLE_KEY:-${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}}"
-          {
-            echo "METAR_CONFIG_ENV=local"
-            echo "SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE}"
-            echo "SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-}"
-            echo "DATABASE_URL=${DATABASE_URL:-}"
-          } >> "$GITHUB_ENV"
-          bash scripts/frontend/prepare-config.sh
-
-      - name: Run integration tests
-        if: matrix.package == 'integration'
-        run: |
-          docker compose up -d backend frontend
-          sleep 30
-          uv run pytest tests/test_backend_frontend_integration.py tests/test_integration.py -v
-          cd apps/backend && uv run pytest tests/integration/test_h0i_connectivity.py tests/unit/test_tc_f21_auth_gone_unit.py -v --no-cov
-          cd apps/backend && uv run pytest tests/infrastructure/test_smoke.py -k "cor or conversion or workflow" -q --no-cov
-          docker compose down
-
-      # F17 / E14-04 / T3.3 — wis2box Compose harness (MQTT + HTTP dataset smoke).
-      - name: Run wis2box Compose harness hook
-        if: matrix.package == 'integration'
-        run: bash scripts/ci/run_wis2box_harness.sh
-
-      - name: Upload backend coverage artifact
-        if: always() && matrix.package == 'backend'
+      - name: Upload package coverage XML artifact
+        if: always() && contains(fromJSON('["shared","auth","backend","tac2iwxxm","iwxxm-validate","tac-validate"]'), matrix.package)
         uses: actions/upload-artifact@v4
         with:
-          name: backend-coverage-report
+          name: coverage-xml-${{ matrix.package }}
           path: |
-            apps/backend/htmlcov/
             apps/backend/coverage.xml
+            packages/shared/coverage.xml
+            packages/auth/coverage.xml
+            packages/tac2iwxxm/coverage.xml
+            packages/iwxxm-validate/coverage.xml
+            packages/tac-validate/coverage.xml
+          if-no-files-found: ignore
 
       - name: Upload frontend coverage artifact
         if: always() && matrix.package == 'frontend'
@@ -242,16 +186,90 @@ jobs:
         with:
           name: frontend-coverage-report
           path: apps/frontend/coverage/
+          if-no-files-found: ignore
 
-      - name: Stop service stack after integration tests
-        if: always() && matrix.package == 'integration'
-        run: docker compose down
+  # EV-036 — sticky PR comment with coverage summary (no Codecov; local artifacts only).
+  coverage-pr-comment:
+    runs-on: ubuntu-latest
+    name: Coverage PR comment
+    needs: [test]
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-xml-*
+          path: coverage-artifacts
+          merge-multiple: true
+
+      - name: Download frontend coverage artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: coverage-artifacts/frontend
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Format coverage markdown
+        id: cov
+        run: |
+          python3 scripts/ci/format_coverage_pr_comment.py coverage-artifacts \
+            > coverage-pr-comment.md
+          {
+            echo "body<<EOF"
+            cat coverage-pr-comment.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Post or update sticky PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- EV-036-coverage-comment -->';
+            const body = fs.readFileSync('coverage-pr-comment.md', 'utf8');
+            if (!body.includes(marker)) {
+              core.setFailed('coverage comment missing sticky marker');
+              return;
+            }
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
   # F30 / EV-031 T2.3 — Postgres service + idempotent alembic upgrade head (TC-EV031-002).
   test-alembic:
     runs-on: ubuntu-latest
     name: Test (alembic / TC-EV031-002)
-    needs: [validate]
     services:
       postgres:
         image: postgres:16
@@ -299,7 +317,6 @@ jobs:
   tac2iwxxm-native:
     runs-on: ubuntu-latest
     name: tac2iwxxm PyO3 (maturin)
-    needs: [validate]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -343,7 +360,6 @@ jobs:
   e2e-smoke:
     runs-on: ubuntu-latest
     name: E2E Smoke (Playwright)
-    needs: [validate]
     env:
       METAR_CONFIG_ENV: local
 

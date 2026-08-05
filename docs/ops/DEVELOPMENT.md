@@ -211,34 +211,38 @@ Playwright env vars:
 
 ## CI/CD
 
-Primary workflow: `.github/workflows/ci-cd.yml`.
+Primary workflow: `.github/workflows/ci-cd.yml` (**EV-036** local-first amend).
 
-Remote CI runs **validate** then the **test** matrix, **tac2iwxxm-native**, and
-**e2e-smoke**. Husky **pre-push** mirrors validate + unit/matrix locally.
-**Deploy** on `main` requires `test` + `tac2iwxxm-native`, and skips cleanly when
-GHCR login or Render deploy-hook secrets are missing. Image deploys use
-`scripts/deploy/trigger_render_image_deploy.py` (hook + `imgURL`, with REST
-`imageUrl` fallback when `RENDER_API_KEY` is set — BUG-2026-08-03). Husky
-pre-commit runs regression guards for that path.
+| Tier | Where | What |
+|------|-------|------|
+| Fast + medium | husky **pre-commit** | Fast pre-commit hooks + `make validate-ci-medium` (config-guard, env-check, audit-frontend). Strict lint/format stay here. |
+| Long local | husky **pre-push** | `make ci` = `ci-prepush` + Compose **integration** (ports **18000/18001**). Needs Docker. |
+| Remote PR/push | GitHub Actions | **No** `validate` job; **no** Compose integration. **Keeps** package **unit matrix** + coverage + sticky **PR coverage comment**. Also `tac2iwxxm-native`, `e2e-smoke`, `test-alembic`. |
+| Deploy | `main` push only | needs `test` + `test-alembic` + `tac2iwxxm-native`; GHCR + DOKS; Render optional |
+
+Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgURL`, with REST
+`imageUrl` fallback when `RENDER_API_KEY` is set — BUG-2026-08-03).
 
 | Job | Checks |
 |-----|--------|
-| **validate** | `make validate-ci` — format, lint, typecheck, gitleaks, actionlint/yamllint, config-guard, frontend npm audit |
-| **test** | Package unit/integration matrix (backend, auth, frontend, packages, bugs, …) |
+| **test** (matrix) | Package unit tests with coverage (`--cov-fail-under` / Vitest) |
+| **coverage-pr-comment** | Sticky PR comment from coverage XML / Vitest summary (PRs only) |
 | **tac2iwxxm-native** | PyO3 / maturin smoke |
 | **e2e-smoke** | Playwright smoke |
-| **deploy** | Docker build/push + Render hooks (`main` push only; needs test + native; skipped if CD credentials incomplete) |
+| **test-alembic** | Alembic upgrade head (TC-EV031-002) |
+| **deploy** | Docker build/push + DOKS/Render (`main` push only; skipped if CD credentials incomplete) |
 
 Local gates:
 
 ```bash
 make install-hooks    # husky (.husky/*) + pre-commit hook environments
-pre-commit run --all-files          # fast commit gates
-make pre-push-run                   # make validate-ci + make ci-prepush (same as git push)
-make validate-fast                  # format/lint/typecheck/secrets/yaml/catalog
-make validate-ci                    # CI validate job locally
-make ci-prepush                     # unit/matrix suite (no Compose) — husky pre-push
-make ci                             # ci-prepush + test-integration (needs ports 18000/18001)
+make pre-commit-run   # fast pre-commit + validate-ci-medium (same as git commit)
+make pre-push-run     # make ci (units + Compose; same as git push)
+make validate-fast    # format/lint/typecheck/secrets/yaml/catalog
+make validate-ci-medium  # config-guard + env-check + audit-frontend
+make validate-ci      # validate-fast + validate-ci-medium (manual full local validate)
+make ci-prepush       # unit/matrix suite (no Compose)
+make ci               # ci-prepush + test-integration (needs ports 18000/18001)
 make test-ev032-a6-2-canary         # EV-032 #835 A6-2 equality + catalog (pre-commit canary)
 make test-ev032-vona-canary         # EV-032 #741 VONA ADR-032 + product=vona (pre-commit canary)
 make test-tc-sigmet-quality         # TC SIGMET long pack (includes #835 A6-2 deepen)
@@ -249,19 +253,21 @@ Hooks (after `make install-hooks`; husky sets `core.hooksPath=.husky`):
 
 | Git hook | Runs |
 |----------|------|
-| **pre-commit** (husky → pre-commit) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint; **path-filtered** EV-032 canaries (`ev032-a6-2-tc-canary`, `ev032-vona-canary`) when encode/catalog/API paths change |
-| **pre-push** (husky) | `make validate-ci` then `make ci-prepush` (local parity with remote test matrix). Family long packs (`make test-*-quality`) stay opt-in / path-filtered CI — not dumped into every push |
+| **pre-commit** (husky → pre-commit + medium) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint; path-filtered canaries; then `make validate-ci-medium` |
+| **pre-push** (husky) | `make ci` (units + Compose). Family long packs (`make test-*-quality`) stay opt-in / path-filtered — not on every push |
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
-Do **not** use `--no-verify` as a merge path for `main` — remote CI must stay green.
+Skipping pre-push skips **local Compose/integration** — remote CI will **not** catch that gap.
+Do **not** use `--no-verify` as a merge path for `main` — remote unit/coverage CI must stay green.
 
 - Python 3.12 + Node 22
 - Unit coverage gates enforced in CI (`test` job) and locally via husky / `make ci-prepush`
 - Builds API Docker image from repo root context (when CD credentials present)
 - Builds frontend static assets from `apps/frontend`
 
-Removed standalone PR workflows (merged into `ci-cd.yml` validate): `secret-scan.yml`,
-`github-yaml-lint.yml`, `frontend-audit.yml`.
+Removed from remote CI (EV-036): standalone **validate** job and Compose **integration**
+matrix entry (moved to local hooks). Historical merges into validate (EV-002): `secret-scan.yml`,
+`github-yaml-lint.yml`, `frontend-audit.yml` — still covered by local `validate-fast` / medium.
 
 Vendor schemas: weekly GitHub Action syncs wmo-im repos into `vendor/schemas/` (see
 `scripts/vendor/sync-iwxxm.sh`).

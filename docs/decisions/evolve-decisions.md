@@ -3,6 +3,64 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-036 — Local long jobs on pre-commit / slim CI (S044)
+
+**Session**: S044-local-precommit-long-jobs  
+**Features**: deepen **M5** only (no new Fn — B4=1)  
+**Started**: 2026-08-05  
+**Branch**: `evolve/EV-036-local-precommit-long-jobs`  
+**Status**: **completed** 2026-08-05 — 11 approved (`D-S044-11`); deploy 12/13 waived (`D-S044-12-13-waive`); push+PR (`D-S044-next`)  
+**Prior**: S043 / EV-035 completed
+
+### Scope (Phase 0–02 — locked 2026-08-05; AskQuestion unavailable — chat)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Session? | Open **S044** → **EV-036** |
+| Q2 | decision | Intent? | Local-capable long jobs on developer hooks to **save CI runner time** (4+1) |
+| Q3 | decision | UI/deploy? | **N/A tooling only** — “frontend” = Vitest/`audit-frontend` gates, not product UI |
+| B1 | decision | Local timing? | **Both** — fast+**medium on commit**; long suite on **push** |
+| B2 | decision | Remote CI? | **Amended (D-S044-02-gate-a)** — drop remote **validate** + **Compose integration**; **keep** unit matrix + coverage + **PR coverage comment**; lint/format = local only |
+| B3 | decision | Job set? | `validate-ci` + `ci-prepush` (+ **R1** Compose integration on push) |
+| B4 | decision | Fn + preset? | Deepen **M5**; **Lean** |
+| G1 | decision | Routing? | **Lean** `00→16→01→02→07→08→09→11` (skip 03–06, 10, 12/13) |
+| G2 | decision | Proceed? | Approve → branch → **01-requirements** |
+| R1 | decision | Compose integration? | **Local only** — remove remote `integration`/Compose from `ci-cd.yml`; pre-push runs `make ci` (= `ci-prepush` + `test-integration` [+ wis2box harness if part of local target]) |
+| AC | decision | M5 / TC-EV036? | **Approved** (AC3 amended with B2: remote keeps units/coverage) |
+| Gate A | decision | S02.M1/M2/M3/L1 | **1,1,1,1** with **S02.M2 modified** — units+coverage stay remote |
+| D-S044-11 | decision | 11-verify-impl? | **Approve all ACs met** — close 11 |
+| D-S044-next | decision | After 11? | **Push branch + open PR** to `main` |
+| D-S044-12-13-waive | decision | Deploy 12/13? | **Waive** — no runtime product change |
+
+**Branch created**: `evolve/EV-036-local-precommit-long-jobs` (from `main` @ 97a5c131)
+
+### Resource model (canonical — Gate A amend)
+
+| Tier | When | Contents | Rationale |
+|------|------|----------|-----------|
+| **Fast** | every `git commit` | format/lint/types/secrets/yaml/catalog/canaries | cheap always-on |
+| **Medium** | every `git commit` | `validate-ci` medium extras (de-duped vs fast) | config/audit before push |
+| **Long (local)** | every `git push` | `make ci` = `ci-prepush` + Compose **integration** (ports 18000/18001); no second `validate-ci` | units (local) + integration local |
+| **Remote** | PR / push CI | **No** validate job, **no** Compose integration; **keep** package **unit matrix + coverage** + sticky **PR coverage comment**; keep `tac2iwxxm-native`, `e2e-smoke`, `test-alembic`, deploy | save Compose/validate minutes; retain coverage signal |
+
+**Out of scope**: Product Fn; browser UX; family `test-*-quality` on every hook; Playwright smoke on every push (stays remote e2e-smoke); live prod E2E; GHCR/PyPI publish changes.
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product]` | cite | M5 deepen | workspace tooling / hooks |
+| `[Corpus: tech-spec]` | cite | Makefile + hook layout | + `dependency-inventory.md` |
+| `[Corpus: tests]` | cite | `test-plan.md` Quality Gates / EV-002 dual-run amend |
+| `[docs/ops/DEVELOPMENT.md]` | cite | ops satellite | install-hooks runbook |
+
+### Proposed Lean routing (B4=1)
+
+`00 → 16 → 01 → 02 → 07 → 08 → 09 → 11`  
+Skip: `03`, `04`, `05`, `06`, `10`, `12`, `13` (no UI; no runtime deploy; tooling-only — waive 12/13 at gate)
+
+---
+
 ## Cycle EV-035 — Rule-source traceability / provenance registry (S043)
 
 **Session**: S043-rule-source-traceability  

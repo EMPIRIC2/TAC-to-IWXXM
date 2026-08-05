@@ -70,7 +70,7 @@ install:
 
 install-hooks:
 	# husky owns core.hooksPath (.husky/*); pre-commit framework runs from .husky/pre-commit.
-	# Long unit/matrix suites: .husky/pre-push → make validate-ci + make ci-prepush.
+	# EV-036: commit = fast + validate-ci-medium; push = make ci (units + Compose).
 	corepack enable
 	$(PNPM) install
 	$(PNPM) exec husky
@@ -79,11 +79,11 @@ install-hooks:
 
 pre-commit-run:
 	$(UV) run pre-commit run --all-files
+	$(MAKE) validate-ci-medium
 
 pre-push-run:
-	# Same as husky pre-push (CI unit/matrix parity; not in GitHub Actions temporarily).
-	make validate-ci
-	make ci-prepush
+	# Same as husky pre-push (EV-036): units + Compose; no second validate-ci.
+	$(MAKE) ci
 
 # --- F15 issue catalog (ADR-028 / EV-011) ---
 
@@ -595,15 +595,15 @@ test-integration:
 		exit 1; \
 	fi
 	-$(COMPOSE) down --remove-orphans
-	$(COMPOSE) up -d backend frontend
+	$(COMPOSE) up -d --build backend frontend
 	@echo "Waiting for services to become ready..."
-	@for i in $$(seq 1 45); do \
-		if wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18001/health \
-			&& wget --quiet --tries=1 --timeout=2 -O /dev/null http://localhost:18000/; then \
+	@for i in $$(seq 1 60); do \
+		if curl -fsS --max-time 2 -o /dev/null http://localhost:18001/health \
+			&& curl -fsS --max-time 2 -o /dev/null http://localhost:18000/; then \
 			echo "All services are reachable."; \
 			break; \
 		fi; \
-		if [ "$$i" -eq 45 ]; then \
+		if [ "$$i" -eq 60 ]; then \
 			echo "Services did not become ready in time."; \
 			$(COMPOSE) ps; \
 			$(COMPOSE) logs --tail=120 backend frontend; \
@@ -668,14 +668,18 @@ supabase-push:
 supabase-pull:
 	bash scripts/supabase/db-pull.sh $(NAME)
 
-validate-ci: validate-fast config-guard env-check audit-frontend
+# Medium extras after husky/pre-commit fast hooks (validate-ci without validate-fast).
+validate-ci-medium: config-guard env-check audit-frontend
 
-# Unit/matrix parity for pre-push (CI test job packages without local Compose).
+validate-ci: validate-fast validate-ci-medium
+
+# Unit/matrix suite without Compose (also run on remote CI test matrix).
 # Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
 ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
 	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs badge-audit
 
+# EV-036 long local gate (husky pre-push): units + Compose integration.
 ci: ci-prepush test-integration
 
 acci: ci test-e2e-playwright-smoke audit-frontend

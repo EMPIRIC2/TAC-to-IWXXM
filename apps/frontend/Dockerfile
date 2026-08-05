@@ -4,6 +4,9 @@ FROM node:22-alpine AS dev
 
 WORKDIR /workspace
 
+# Compose prepare-config.sh needs bash|sh + python3 (Alpine node image has neither by default).
+RUN apk add --no-cache bash python3
+
 RUN corepack enable
 
 # Workspace metadata (layer cache)
@@ -20,7 +23,7 @@ WORKDIR /workspace/apps/frontend
 
 EXPOSE 8000
 
-CMD ["pnpm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["pnpm", "exec", "vite", "--host", "0.0.0.0", "--port", "8000"]
 
 # Build stage
 FROM node:22-alpine AS builder
