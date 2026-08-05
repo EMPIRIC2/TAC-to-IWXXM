@@ -1,15 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # Copy environment config into the static frontend build and inject publishable key.
 # Ensures api.baseUrl + Auth bootstrap (supabase.url + publishableKey) for F31.
-set -euo pipefail
+# POSIX sh — Alpine Compose frontend has no bash unless explicitly installed.
+set -eu
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 CONFIG_ENV="${METAR_CONFIG_ENV:-prod}"
 SRC="${CONFIG_SRC:-$ROOT/config/${CONFIG_ENV}.json}"
 DEST_DIR="${DEST_DIR:-$ROOT/apps/frontend/public}"
 DEST="$DEST_DIR/config.json"
 
-[[ -f "$SRC" ]] || { echo "Missing $SRC" >&2; exit 1; }
+[ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
 mkdir -p "$DEST_DIR"
 
 python3 - <<'PY' "$SRC" "$DEST" "${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}"

@@ -70,8 +70,8 @@ services:
       - /workspace/apps/frontend/node_modules
     command: >
       sh -c "METAR_CONFIG_ENV=$${METAR_CONFIG_ENV:-local}
-      DEST_DIR=/workspace/apps/frontend/public bash /workspace/scripts/frontend/prepare-config.sh
-      && pnpm run dev -- --host 0.0.0.0 --port 8000"
+      DEST_DIR=/workspace/apps/frontend/public sh /workspace/scripts/frontend/prepare-config.sh
+      && pnpm exec vite --host 0.0.0.0 --port 8000"
     depends_on:
       backend:
         condition: service_healthy

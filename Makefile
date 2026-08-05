@@ -595,15 +595,15 @@ test-integration:
 		exit 1; \
 	fi
 	-$(COMPOSE) down --remove-orphans
-	$(COMPOSE) up -d backend frontend
+	$(COMPOSE) up -d --build backend frontend
 	@echo "Waiting for services to become ready..."
-	@for i in $$(seq 1 45); do \
+	@for i in $$(seq 1 60); do \
 		if curl -fsS --max-time 2 -o /dev/null http://localhost:18001/health \
 			&& curl -fsS --max-time 2 -o /dev/null http://localhost:18000/; then \
 			echo "All services are reachable."; \
 			break; \
 		fi; \
-		if [ "$$i" -eq 45 ]; then \
+		if [ "$$i" -eq 60 ]; then \
 			echo "Services did not become ready in time."; \
 			$(COMPOSE) ps; \
 			$(COMPOSE) logs --tail=120 backend frontend; \
