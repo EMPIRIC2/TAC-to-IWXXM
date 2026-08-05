@@ -9,6 +9,7 @@ Working notes from `mine-domain-sources` / `extract-pdf-to-repo` passes.
 - [`../IWXXM_VALIDATION.md`](../IWXXM_VALIDATION.md)
 - [`../rules/RULE_SOURCE_URLS.md`](../rules/RULE_SOURCE_URLS.md)
 - [`../rules/COVERAGE_MATRIX.md`](../rules/COVERAGE_MATRIX.md)
+- [`../rules/PROVENANCE_MAP.md`](../rules/PROVENANCE_MAP.md) (+ JSON twin) — dig index CI (S043 / EV-035)
 
 Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 
@@ -38,4 +39,4 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [schemas-wmo-int-rule-mining-notes.md](./schemas-wmo-int-rule-mining-notes.md) | Centralized Schematron index at schemas.wmo.int/rule (1.0–1.2; not IWXXM pin path) |
 | [icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](./icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) | ICAO APAC IWXXM FAQs 3rd Ed. (Mar 2025) — translation/NSC/COLLECT gotchas · #797 |
 | [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md) | codes.wmo.int aviation registers (colour/nil/MetFeature 28 vs 27; 4678 CSV=402 vs HTML≈101; SCH RDF match) · #797 |
-| [iwxxm-translation-parity-mining-notes.md](./iwxxm-translation-parity-mining-notes.md) | iwxxm-translation Amd79-80-2023 vs 2025-2 (NSC/SPECI seeds; TestCases; translation-failed attrs) · #797 |
+| [vona-encode-remine-ev035-mining-notes.md](./vona-encode-remine-ev035-mining-notes.md) | S043/EV-035 remine — VONA Guidance silent; AHL WM/LM + FM205 promotes · #869 |

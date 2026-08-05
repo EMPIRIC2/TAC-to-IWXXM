@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S042 / EV-034 TC-F30-007 DOKS CD auto-rollout)
+> **Last updated**: 2026-08-05 (S043 / EV-035 rule-source provenance deepen)
 
 ## Scope
 
@@ -1661,6 +1661,79 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   3. Live smoke: `/health` 200; OpenAPI includes `/auth/*` when that tag includes Auth
   4. Missing `KUBE_CONFIG` fails Deploy; missing Render hooks do **not** fail Deploy
 - **Source**: F30 AC7; S042 / EV-034; `E34-1..4`
+
+## S043 / EV-035 — Rule-source provenance (deepen F6 / F12 / F15 / F2)
+
+**No new Fn** (G1=2). Standing provenance map under `docs/domain/rules/` (path-cite; G3=1).
+Full stack: ISSUE_CATALOG + encode/SCH + bulletin AHL. **Dense asserts** for every rule
+cited or revisited. Raise unfindable sources — do not invent.
+
+### TC-EV035-001: Dig inventory completeness
+
+- **Level**: T0 / CI
+- **Objective**: Every `docs/domain/mining/*-mining-notes.md` is indexed and linked from the
+  provenance map (or explicitly retired with rationale)
+- **Pass criteria**: Parametric assert — one case per dig file; map lists dig path + date mined
+  + products/roles touched; orphan digs fail CI
+- **Many asserts**: file exists · indexed · non-empty source URL or paywall landing · products
+  non-empty · role label valid
+- **Source**: S043; [docs/domain/mining/README.md](domain/mining/README.md)
+
+### TC-EV035-002: ISSUE_CATALOG code ↔ provenance
+
+- **Level**: T0 / CI (`tac-validate`)
+- **Objective**: Every registry / ISSUE_CATALOG code in scope has a provenance row
+- **Pass criteria**: Parametric over all catalog codes — status ∈ {ok, gap, paywall, N/A};
+  `ok`/`paywall` rows have cite (RULE_SOURCE_URLS id or URL); `gap` rows have raise ticket /
+  session note id; unknown status fails
+- **Many asserts**: code present · status valid · cite shape · dig link when mined ·
+  consumer ∈ {tac-validate, tac2iwxxm, iwxxm-validate, bulletin, UI-decode}
+- **Source**: F15/F12 deepen; ADR-028; ISSUE_CATALOG
+
+### TC-EV035-003: Coverage matrix cell ↔ source URL
+
+- **Level**: T0 / docs CI
+- **Objective**: Revisited COVERAGE_MATRIX product×role cells cite a catalog URL or
+  explicit ⚠/❌ disposition
+- **Pass criteria**: Parametric over F6 products × {validation, conversion, iwxxm-validation,
+  bulletin} — no silent blanks; ✅ implies RULE_SOURCE_URLS hit; ⚠/❌ implies gap note
+- **Many asserts**: cell parsed · disposition · URL or gap id · gate G1–G7 consistency
+- **Source**: F6 deepen; COVERAGE_MATRIX; RULE_SOURCE_URLS
+
+### TC-EV035-004: Encode / SCH / bulletin cite parity (full stack)
+
+- **Level**: T0 / CI
+- **Objective**: Encode playbook rules, Schematron assert themes, and AHL/bulletin rules
+  revisited this cycle appear in the provenance map with sources
+- **Pass criteria**: Inventory of in-scope encode/SCH/AHL rule ids each has provenance;
+  SCH asserts cite vendored `rule/iwxxm.sch` pin path; AHL cites WMO AHL + OPMET Guidelines
+  or gap
+- **Many asserts**: per rule id — role · source · dig · status · pin version when schema
+- **Source**: F6/F2 deepen; IWXXM_CONVERSION; IWXXM_VALIDATION; OPMET dig
+
+### TC-EV035-005: Behavioral dense asserts for revisited executable rules
+
+- **Level**: T0 / CI
+- **Objective**: Every executable rule cited/revisited has **many** behavioral asserts
+  (happy + sad + edge), not a single smoke — prefer F29 matrix slots when available
+- **Pass criteria**: For each revisited executable rule_id: ≥3 distinct assert sites
+  (or filled F29 happy/sad/edge slots); failures name rule_id in node id
+- **Source**: F12/F15/F2/F6; F29 harness patterns; E35-5
+
+### TC-EV035-006: Gap raise gate (no silent invent)
+
+- **Level**: T0 / process CI
+- **Objective**: Provenance rows with `gap` are listed in session gap report and raised
+- **Pass criteria**: `docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md`
+  exists when any `gap` row present; CI fails if `gap` count > 0 and report missing/stale
+- **Source**: Phase 0 — raise unfindable rules to user
+
+### EV-035 verify gate
+
+- [ ] TC-EV035-001..006 green (or gaps explicitly raised + user disposition recorded)
+- [ ] No new Fn in feature-list (deepen-only)
+- [ ] Domain path-cites only (no CORPUS membership required this cycle)
+- [ ] H4–H5 **N/A** (no UI)
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 

@@ -1,0 +1,1978 @@
+{
+  "schema_version": 1,
+  "cycle": "EV-035",
+  "session": "S043-rule-source-traceability",
+  "generated": "2026-08-05",
+  "gap_report": "docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md",
+  "digs": [
+    {
+      "path": "docs/domain/mining/ICAO-Doc-10003-draft-2014-mining-notes.md",
+      "date_mined": "2026-07-12",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF"
+      ],
+      "roles": [
+        "conversion"
+      ],
+      "status": "ok",
+      "source_url": "https://www.icao.int/",
+      "source_id": "icao-doc-10003-2014",
+      "ticket": null,
+      "note": "historical Advance 2014"
+    },
+    {
+      "path": "docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md",
+      "date_mined": "2026-07-15",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA",
+        "VONA"
+      ],
+      "roles": [
+        "bulletin",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://www.icao.int/safety/meteorology/Pages/IWXXM.aspx",
+      "source_id": "opmet-guidelines-5th",
+      "ticket": null,
+      "note": "Landing/cite \u2014 see RULE_SOURCE_URLS for exact PDF"
+    },
+    {
+      "path": "docs/domain/mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md",
+      "date_mined": "2026-07-12",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET"
+      ],
+      "roles": [
+        "conversion",
+        "bulletin"
+      ],
+      "status": "ok",
+      "source_url": "https://community.wmo.int/",
+      "source_id": "ppt-02-framework",
+      "ticket": null,
+      "note": "informative workshop deck"
+    },
+    {
+      "path": "docs/domain/mining/WMO-306-vI-3-2019-upd-2021-mining-notes.md",
+      "date_mined": "2026-07-28",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA"
+      ],
+      "roles": [
+        "conversion"
+      ],
+      "status": "ok",
+      "source_url": "https://library.wmo.int/",
+      "source_id": "wmo-306-i3-2019",
+      "ticket": null,
+      "note": "historical dig 1\u2013272 complete \u00b7 #798"
+    },
+    {
+      "path": "docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md",
+      "date_mined": "2026-07-16",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA",
+        "VONA"
+      ],
+      "roles": [
+        "conversion",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://library.wmo.int/",
+      "source_id": "wmo-306-i3-2023",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/awc-data-api-mining-notes.md",
+      "date_mined": "2026-07-10",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF"
+      ],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": "https://aviationweather.gov/data/api/",
+      "source_id": "awc-data-api",
+      "ticket": null,
+      "note": "informative fixtures"
+    },
+    {
+      "path": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "date_mined": "2026-07-25",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "VONA"
+      ],
+      "roles": [
+        "validation",
+        "conversion",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://codes.wmo.int/",
+      "source_id": "codes-wmo-int",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/community-wmo-iwxxm-wayback-mining-notes.md",
+      "date_mined": "2026-07-10",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF"
+      ],
+      "roles": [
+        "conversion"
+      ],
+      "status": "ok",
+      "source_url": "https://web.archive.org/",
+      "source_id": "wayback-iwxxm",
+      "ticket": null,
+      "note": "informative / historical"
+    },
+    {
+      "path": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "date_mined": "2026-07-14",
+      "products": [
+        "METAR",
+        "SPECI"
+      ],
+      "roles": [
+        "validation",
+        "conversion"
+      ],
+      "status": "ok",
+      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
+      "source_id": "fmh-1",
+      "ticket": null,
+      "note": "FMH-1 US national; URL may redirect \u2014 cite RULE_SOURCE_URLS"
+    },
+    {
+      "path": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "date_mined": "2026-07-14",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA"
+      ],
+      "roles": [
+        "validation",
+        "conversion"
+      ],
+      "status": "paywall",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "source_id": "icao-annex-3",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md",
+      "date_mined": "2026-07-25",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA"
+      ],
+      "roles": [
+        "conversion",
+        "bulletin"
+      ],
+      "status": "ok",
+      "source_url": "https://www.icao.int/APAC/Pages/default.aspx",
+      "source_id": "icao-apac-faqs",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "date_mined": "2026-07-20",
+      "products": [
+        "SIGMET",
+        "AIRMET"
+      ],
+      "roles": [
+        "validation",
+        "conversion",
+        "bulletin"
+      ],
+      "status": "ok",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "source_id": "icao-eur-doc-014",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/iwxxm-2025-2-reference-set-mining-notes.md",
+      "date_mined": "2026-07-12",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA",
+        "VONA"
+      ],
+      "roles": [
+        "conversion",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "source_id": "iwxxm-2025-2-schemas",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/iwxxm-modelling-v2025-2-mining-notes.md",
+      "date_mined": "2026-07-18",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA"
+      ],
+      "roles": [
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://github.com/wmo-im/iwxxm-modelling",
+      "source_id": "iwxxm-modelling",
+      "ticket": null,
+      "note": "informative provenance only"
+    },
+    {
+      "path": "docs/domain/mining/iwxxm-translation-parity-mining-notes.md",
+      "date_mined": "2026-07-25",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "VAA",
+        "TCA"
+      ],
+      "roles": [
+        "conversion"
+      ],
+      "status": "ok",
+      "source_url": "https://github.com/wmo-im/iwxxm-translation",
+      "source_id": "iwxxm-translation",
+      "ticket": null,
+      "note": "informative fixtures; suite 2023-1"
+    },
+    {
+      "path": "docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md",
+      "date_mined": "2026-07-22",
+      "products": [
+        "METAR",
+        "SPECI"
+      ],
+      "roles": [
+        "validation",
+        "conversion",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://github.com/wmo-im/iwxxm-us",
+      "source_id": "iwxxm-us",
+      "ticket": null,
+      "note": "validate column \u26a0 \u2014 no US SCH in pin \u00b7 #870"
+    },
+    {
+      "path": "docs/domain/mining/schemas-wmo-int-metce-mining-notes.md",
+      "date_mined": "2026-07-18",
+      "products": [
+        "VAA",
+        "TCA",
+        "SIGMET"
+      ],
+      "roles": [
+        "iwxxm-validation",
+        "conversion"
+      ],
+      "status": "ok",
+      "source_url": "https://schemas.wmo.int/metce/",
+      "source_id": "schemas-metce",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/schemas-wmo-int-opm-mining-notes.md",
+      "date_mined": "2026-07-18",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF"
+      ],
+      "roles": [
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://schemas.wmo.int/opm/",
+      "source_id": "schemas-opm",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/schemas-wmo-int-rule-mining-notes.md",
+      "date_mined": "2026-07-18",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA",
+        "VONA"
+      ],
+      "roles": [
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://schemas.wmo.int/rule/",
+      "source_id": "schemas-rule-index",
+      "ticket": null,
+      "note": "index only \u2014 pin uses vendor rule/iwxxm.sch"
+    },
+    {
+      "path": "docs/domain/mining/schemas-wmo-int-saf-mining-notes.md",
+      "date_mined": "2026-07-18",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF"
+      ],
+      "roles": [
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://schemas.wmo.int/saf/",
+      "source_id": "schemas-saf",
+      "ticket": null,
+      "note": "deprecated foundation"
+    },
+    {
+      "path": "docs/domain/mining/schemas-wmo-int-tsml-mining-notes.md",
+      "date_mined": "2026-07-18",
+      "products": [],
+      "roles": [
+        "iwxxm-validation"
+      ],
+      "status": "N/A",
+      "source_url": "https://schemas.wmo.int/tsml/",
+      "source_id": "schemas-tsml",
+      "ticket": null,
+      "note": "not on IWXXM F6 path"
+    },
+    {
+      "path": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "date_mined": "2026-08-05",
+      "products": [
+        "VONA"
+      ],
+      "roles": [
+        "conversion",
+        "bulletin",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "source_id": "vona-ahl-fm205",
+      "ticket": null,
+      "note": "Guidance silent \u00b7 #869; AHL WM/LM + FM205 promote"
+    },
+    {
+      "path": "docs/domain/mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md",
+      "date_mined": "2026-07-22",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA",
+        "VONA"
+      ],
+      "roles": [
+        "conversion",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://github.com/wmo-im/iwxxm",
+      "source_id": "wmo-im-iwxxm",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/wmo-im-org-mining-notes.md",
+      "date_mined": "2026-07-11",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA",
+        "VONA"
+      ],
+      "roles": [
+        "conversion",
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://github.com/wmo-im",
+      "source_id": "wmo-im-org",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/wmo-im-tier-a-mining-notes.md",
+      "date_mined": "2026-07-11",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "VAA",
+        "TCA",
+        "SWXA",
+        "VONA"
+      ],
+      "roles": [
+        "iwxxm-validation"
+      ],
+      "status": "ok",
+      "source_url": "https://github.com/wmo-im/iwxxm",
+      "source_id": "wmo-im-tier-a",
+      "ticket": null,
+      "note": null
+    },
+    {
+      "path": "docs/domain/mining/wmo-im-tier-b-mining-notes.md",
+      "date_mined": "2026-07-11",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET"
+      ],
+      "roles": [
+        "bulletin"
+      ],
+      "status": "ok",
+      "source_url": "https://github.com/wmo-im/collect",
+      "source_id": "wmo-im-tier-b",
+      "ticket": null,
+      "note": null
+    }
+  ],
+  "catalog_codes": [
+    {
+      "code": "AMD_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "AT_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "AUTO_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "BECMG_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "CAVOK_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "CLOUD_CB_OR_TCU",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "CNL_REPORT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "COR_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "EMPTY_TAC",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "FIR_OR_CTA",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "FM_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "INTENSITY_CHANGE",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "INVALID_CLOUD_TOKEN",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "INVALID_CNL_SHAPE",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "INVALID_NIL",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "INVALID_NO_VA_EXP",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "INVALID_PROB",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "INVALID_REMARK",
+      "status": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "INVALID_RVR",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "INVALID_SIGMET_CNL",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "INVALID_SIGMET_COR",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "INVALID_STNR_MOVEMENT",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "INVALID_TX_TN",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "INVALID_VALIDITY_DURATION",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "INVALID_VISIBILITY",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "INVALID_WEATHER",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "INVALID_WIND",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "MISSING_CCCC",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "MISSING_DTG",
+      "status": "ok",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "ticket": "#869",
+      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+    },
+    {
+      "code": "MISSING_FIR_OR_CTA",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "MISSING_ISSUE_TIME",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "MISSING_MAX_WIND",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "MISSING_OBS_OR_FCST",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "MISSING_OBS_TIME",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "MISSING_PRODUCT_KEYWORD",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "MISSING_QNH",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "MISSING_SEQUENCE",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "MISSING_SVO",
+      "status": "ok",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "ticket": "#869",
+      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+    },
+    {
+      "code": "MISSING_SWXC",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 Table A2-3"
+    },
+    {
+      "code": "MISSING_TC",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "MISSING_TC_IDENTITY",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "MISSING_TEMP_DEWPOINT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "MISSING_TERMINATOR",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "MISSING_VAAC",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "MISSING_VALID",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "MISSING_VALIDITY",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "MISSING_VA_VOLCANO",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "MISSING_VISIBILITY",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "MISSING_VOLCANO",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "MISSING_VONA_VOLCANO",
+      "status": "ok",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "ticket": "#869",
+      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+    },
+    {
+      "code": "MISSING_WIND",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "MULTIPLE_PHENOMENA",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "MULTI_REPORT_BULLETIN",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "NCD_PRESENT",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "NIL_REPORT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "NOSIG_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "NO_VA_EXP",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "NSC_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "NSC_WITH_CLOUD_LAYERS",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "NSW_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "OBS_OR_FCST",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "ODD_FIELD_ORDER",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "POINT_LOCATION",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "POLYGON_LOCATION",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "PROB_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "REMARK_US_EXTENSION",
+      "status": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "RVR_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "SIGMET_CNL",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "SIGMET_SEQUENCE",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "SINGLE_ALTITUDE",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "STNR_MOVEMENT",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "SWXA_FCST_NO_SWX_EXP",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 Table A2-3"
+    },
+    {
+      "code": "SWXA_NO_FURTHER_ADVISORIES",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 Table A2-3"
+    },
+    {
+      "code": "SWXA_RMK_NIL",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 Table A2-3"
+    },
+    {
+      "code": "TCA_CB_NIL",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "TCA_CYCLONE_UNNAMED",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "TCA_NO_MSG_EXP",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "TCA_RMK_NIL",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "TC_CB_GEOMETRY",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "TC_CYCLONE_IDENTITY",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "TEMPO_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "TL_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "TOP_ABV_OR_BLW",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "TX_TN_PRESENT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "UNKNOWN_PRODUCT",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "VAA_FCST_NO_VA_EXP",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "VAA_NO_FURTHER_ADVISORIES",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "VAA_RMK_NIL",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "VAA_VOLCANO_UNKNOWN",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "VAA_VOLCANO_UNNAMED",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 2 A2-1/A2-2"
+    },
+    {
+      "code": "VA_ASH_GEOMETRY",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "VA_CNL_FIR_MOVED",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "VA_VOLCANO_IDENTITY",
+      "status": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md",
+      "ticket": null,
+      "note": "EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    {
+      "code": "VONA_DUR_NIL",
+      "status": "ok",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "ticket": "#869",
+      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+    },
+    {
+      "code": "VONA_ONSET_NIL",
+      "status": "ok",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "ticket": "#869",
+      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+    },
+    {
+      "code": "VV_NOT_OBSERVABLE",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    },
+    {
+      "code": "VV_OMIT",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "App 5 / Table A5-1"
+    },
+    {
+      "code": "WIND_DIR_VARIATION",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "WIND_VRB_OR_GUST",
+      "status": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/icao-annex-3-mining-notes.md",
+      "ticket": null,
+      "note": "Table A3-2 / App 3"
+    },
+    {
+      "code": "WX_NOT_OBSERVABLE",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null
+    }
+  ],
+  "matrix_cells": [
+    {
+      "product": "METAR",
+      "role": "validation",
+      "disposition": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "ticket": null
+    },
+    {
+      "product": "METAR",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "METAR",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "METAR",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "SPECI",
+      "role": "validation",
+      "disposition": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "ticket": null
+    },
+    {
+      "product": "SPECI",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "SPECI",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "SPECI",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "TAF",
+      "role": "validation",
+      "disposition": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "ticket": null
+    },
+    {
+      "product": "TAF",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "TAF",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "TAF",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "SIGMET",
+      "role": "validation",
+      "disposition": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "ticket": null
+    },
+    {
+      "product": "SIGMET",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "SIGMET",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "SIGMET",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "AIRMET",
+      "role": "validation",
+      "disposition": "ok",
+      "source_id": "icao-eur-doc-014",
+      "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
+      "ticket": null
+    },
+    {
+      "product": "AIRMET",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "AIRMET",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "AIRMET",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "VAA",
+      "role": "validation",
+      "disposition": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "ticket": null
+    },
+    {
+      "product": "VAA",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "VAA",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "VAA",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "TCA",
+      "role": "validation",
+      "disposition": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "ticket": null
+    },
+    {
+      "product": "TCA",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "TCA",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "TCA",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "SWXA",
+      "role": "validation",
+      "disposition": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "ticket": null
+    },
+    {
+      "product": "SWXA",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "SWXA",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "SWXA",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "VONA",
+      "role": "validation",
+      "disposition": "paywall",
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
+      "ticket": null
+    },
+    {
+      "product": "VONA",
+      "role": "conversion",
+      "disposition": "warn",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "ticket": "#869",
+      "note": "\u26a0 Guidance silent; \u2705 AHL WM/LM + FM205 + XSD/SCH/peer"
+    },
+    {
+      "product": "VONA",
+      "role": "iwxxm-validation",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/",
+      "ticket": null,
+      "note": "vendor pin rule/iwxxm.sch"
+    },
+    {
+      "product": "VONA",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": null,
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    },
+    {
+      "product": "METAR_US",
+      "role": "validation",
+      "disposition": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://www.weather.gov/",
+      "ticket": null
+    },
+    {
+      "product": "METAR_US",
+      "role": "conversion",
+      "disposition": "ok",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt",
+      "ticket": null
+    },
+    {
+      "product": "METAR_US",
+      "role": "iwxxm-validation",
+      "disposition": "warn",
+      "source_id": "iwxxm-us",
+      "source_url": "https://github.com/wmo-im/iwxxm-us",
+      "ticket": "#870",
+      "note": "WMO base SCH + US XSD only \u2014 no US Schematron in pin"
+    },
+    {
+      "product": "METAR_US",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "ticket": "#872",
+      "note": "AHL T1T2 + OPMET; matrix refresh EV-035 \u00b7 residual body-split #872 if any"
+    }
+  ],
+  "full_stack_rules": [
+    {
+      "rule_id": "VONA_AHL_WM_LM",
+      "role": "bulletin",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "status": "ok",
+      "pin_version": "2025-2",
+      "ticket": "#869"
+    },
+    {
+      "rule_id": "VONA_FM205_PACKAGE",
+      "role": "conversion",
+      "source_id": "vona-ahl-fm205",
+      "source_url": "vendor:documentation/manual/FM205.adoc",
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "status": "ok",
+      "pin_version": "2025-2",
+      "ticket": null
+    },
+    {
+      "rule_id": "VONA_GUIDANCE_SILENT",
+      "role": "conversion",
+      "source_id": null,
+      "source_url": null,
+      "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+      "status": "gap",
+      "pin_version": "2025-2",
+      "ticket": "#869",
+      "note": "TAC-to-XML-Guidance has no VONA section"
+    },
+    {
+      "rule_id": "IWXXM_SCH_PIN",
+      "role": "iwxxm-validation",
+      "source_id": "iwxxm-2025-2-schemas",
+      "source_url": "vendor:schemas/iwxxm/2025-2/rule/iwxxm.sch",
+      "dig": "docs/domain/mining/iwxxm-2025-2-reference-set-mining-notes.md",
+      "status": "ok",
+      "pin_version": "2025-2",
+      "ticket": null
+    },
+    {
+      "rule_id": "US_SCH_ABSENT",
+      "role": "iwxxm-validation",
+      "source_id": "iwxxm-us",
+      "source_url": "https://github.com/wmo-im/iwxxm-us",
+      "dig": "docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md",
+      "status": "gap",
+      "pin_version": "3.0",
+      "ticket": "#870",
+      "note": "No US Schematron package in pin"
+    },
+    {
+      "rule_id": "AHL_SPECI_SP_LP",
+      "role": "bulletin",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "dig": "docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md",
+      "status": "ok",
+      "pin_version": "2025-2",
+      "ticket": null,
+      "note": "fixtures/ahl/sp_speci \u2014 matrix refresh may close #872"
+    }
+  ],
+  "revisited_executable": [
+    {
+      "rule_id": "VONA_AHL_WM_LM",
+      "engine": "bulletin",
+      "assert_sites": [
+        "packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py",
+        "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
+        "docs/domain/rules/COVERAGE_MATRIX.md#VONA"
+      ]
+    },
+    {
+      "rule_id": "VONA_FM205_PACKAGE",
+      "engine": "convert",
+      "assert_sites": [
+        "packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py",
+        "docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md",
+        "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md"
+      ]
+    },
+    {
+      "rule_id": "IWXXM_SCH_PIN",
+      "engine": "validate",
+      "assert_sites": [
+        "packages/iwxxm-validate/tests",
+        "vendor/schemas/iwxxm",
+        "docs/domain/rules/COVERAGE_MATRIX.md#G5"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "kind": "fullstack",
+      "id": "VONA_GUIDANCE_SILENT",
+      "ticket": "#869"
+    },
+    {
+      "kind": "fullstack",
+      "id": "US_SCH_ABSENT",
+      "ticket": "#870"
+    },
+    {
+      "kind": "matrix",
+      "id": "VONA/conversion",
+      "ticket": "#869"
+    },
+    {
+      "kind": "matrix",
+      "id": "METAR_US/iwxxm-validation",
+      "ticket": "#870"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ Index for URL inventory and coverage. **Functional SoT** lives at domain root:
 | [RULE_SOURCE_URLS.md](./RULE_SOURCE_URLS.md) | Master URL catalog |
 | [COVERAGE_MATRIX.md](./COVERAGE_MATRIX.md) | F6 product × profile × role · **pipeline gates** |
 | [ACCESS_AND_CITATION.md](./ACCESS_AND_CITATION.md) | Paywall / citation policy |
+| [PROVENANCE_MAP.md](./PROVENANCE_MAP.md) (+ [JSON twin](./PROVENANCE_MAP.json)) | **S043 / EV-035** dig ↔ rule ↔ source (path-cite; TC-EV035-*) |
 
 **How to use:** pick product × role from [COVERAGE_MATRIX.md](./COVERAGE_MATRIX.md) → open
 the matching canonical strategy section → cite URLs from [RULE_SOURCE_URLS.md](./RULE_SOURCE_URLS.md).
