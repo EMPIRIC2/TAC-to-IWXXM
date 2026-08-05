@@ -14,7 +14,7 @@ active_session:
     #845/#866 and manual rollout of 20260805003332-5245f8d.
   status: in_progress
   branch: evolve/EV-034-doks-cd-rollout
-  branch_note: 'ACTIVE — created and checked out; tip base 5245f8de; worktree dirty (07 impl uncommitted); no commit SHA invented'
+  branch_note: 'ACTIVE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
   orchestrator: 16-evolve
   evolve_cycle_id: EV-034
   artifacts_dir: docs/sessions/S042-doks-cd-rollout/
@@ -59,7 +59,7 @@ active_session:
     status: in_progress
     started: '2026-08-05'
     skip_rationale:
-    note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 in_progress awaiting commit+PR+user verify; 08 next after commit'
+    note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -90,14 +90,19 @@ active_session:
     status: in_progress
     started: '2026-08-05'
     skip_rationale:
-    note: 'IN_PROGRESS — impl largely done (doks_rollout_images.sh, ci-cd.yml DOKS+optional Render, test_doks_cd_rollout_guard.py 3 passed, docs); awaiting commit+PR+user verify; no commit SHA recorded; 08 next after commit'
-    pending_commit: true
+    note: 'ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
+    pending_commit: false
+    tip_sha: 9ae9c323
+    tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+    pr_number: 867
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+    pr_status: open
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
     skip_rationale:
-    note: 'Next after 07 commit'
+    note: 'Next after CI green + merge / user verify on #867'
   - stage: 09-qa
     required: true
     mode: delta
@@ -138,11 +143,13 @@ active_session:
     status: written
     stage: 04-tech-plan
   - path: scripts/deploy/doks_rollout_images.sh
-    status: written_uncommitted
+    status: committed
     stage: 07-build
+    tip_sha: 9ae9c323
   - path: tests/test_doks_cd_rollout_guard.py
-    status: written_uncommitted
+    status: committed
     stage: 07-build
+    tip_sha: 9ae9c323
   decision_refs:
   - E34-1
   - E34-2
@@ -155,7 +162,15 @@ active_session:
   - 05-verify-tech
   - 06-tech-tooling
   - 10-e2e
-  note: 'IN_PROGRESS — S042/EV-034 Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07-build largely done awaiting commit+PR+user verify; branch evolve/EV-034-doks-cd-rollout ACTIVE (checked out); base tip 5245f8de; no commit SHA invented; 08 next after commit; S040 remains suspended (resume_after S042)'
+  pr_number: 867
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+  pr_status: open
+  pr_title: '[EV-034] Automate DOKS image rollout in CD'
+  pr_base: main
+  pr_head: evolve/EV-034-doks-cd-rollout
+  tip_sha: 9ae9c323
+  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+  note: 'IN_PROGRESS — S042/EV-034 Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07-build essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; branch evolve/EV-034-doks-cd-rollout ACTIVE pushed; 08 next after CI/merge; S040 remains suspended (resume_after S042)'
 sessions:
 - id: S042-doks-cd-rollout
   type: feature
@@ -165,7 +180,7 @@ sessions:
     #845/#866 and manual rollout of 20260805003332-5245f8d.
   status: in_progress
   branch: evolve/EV-034-doks-cd-rollout
-  branch_note: 'ACTIVE — created and checked out; tip base 5245f8de; 07 impl uncommitted'
+  branch_note: 'ACTIVE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
   orchestrator: 16-evolve
   evolve_cycle_id: EV-034
   feature_ids: []
@@ -204,7 +219,7 @@ sessions:
     status: in_progress
     started: '2026-08-05'
     skip_rationale:
-    note: 'ORCHESTRATING — 01/02/04 done; 07 awaiting commit+PR'
+    note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -232,13 +247,16 @@ sessions:
     status: in_progress
     started: '2026-08-05'
     skip_rationale:
-    note: 'Impl largely done; awaiting commit+PR+user verify; pending_commit'
-    pending_commit: true
+    note: 'ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
+    pending_commit: false
+    tip_sha: 9ae9c323
+    tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
     skip_rationale:
+    note: 'Next after CI green + merge / user verify on #867'
   - stage: 09-qa
     required: true
     mode: delta
@@ -289,7 +307,25 @@ sessions:
   - 05-verify-tech
   - 06-tech-tooling
   - 10-e2e
-  note: 'IN_PROGRESS — Phase 0 locked; 01/02/04 completed; 07 awaiting commit+PR; branch ACTIVE'
+  pr_number: 867
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+  pr_status: open
+  pr_title: '[EV-034] Automate DOKS image rollout in CD'
+  pr_base: main
+  pr_head: evolve/EV-034-doks-cd-rollout
+  tip_sha: 9ae9c323
+  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+  pull_requests:
+  - id: PR-EV-034
+    number: 867
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+    title: '[EV-034] Automate DOKS image rollout in CD'
+    status: open
+    head: evolve/EV-034-doks-cd-rollout
+    base: main
+    tip_sha: 9ae9c323
+    note: '07-build essentially complete; pending CI green + merge; EV-034 NOT completed'
+  note: 'IN_PROGRESS — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed'
 - id: S041-worker-poller-hardening
   type: feature
   intent: |
@@ -7243,20 +7279,26 @@ stages:
     session_id: S042-doks-cd-rollout
     evolve_cycle_id: EV-034
     mode: full
-    note: 'S042/EV-034 07-build IN_PROGRESS — impl largely done (doks_rollout_images.sh, ci-cd.yml DOKS+optional Render, test_doks_cd_rollout_guard.py 3 passed, docs); awaiting commit+PR+user verify; pending_commit; no commit SHA invented; 08 next after commit; deepen F30'
-    tip_sha: 5245f8de
-    tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
-    tip_note: 'S042/EV-034 branch HEAD @ 5245f8de (base); worktree dirty — 07 pending_commit; no new commit SHA'
-    pending_commit: true
+    note: 'S042/EV-034 07-build ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
+    tip_sha: 9ae9c323
+    tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+    tip_note: 'S042/EV-034 tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
+    pending_commit: false
     next_stage: 08-verify-build
     current_milestone: M1
     current_task: T1.5
     active_milestone: M1
     active_task: T1.5
-    active_task_status: completed_pending_commit
+    active_task_status: completed_awaiting_ci_merge
     completed_through: T1.5
     progress: 5/5
     next_task: null
+    pr_number: 867
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+    pr_status: open
+    pr_title: '[EV-034] Automate DOKS image rollout in CD'
+    commit_sha: 9ae9c323
+    commit_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
     suspended_s040_progress: 25/28
     suspended_s040_completed_through: T4.4
     suspended_s040_active_task: T4.5
@@ -10768,7 +10810,7 @@ stages:
     previous_evolve_cycle_id: EV-033
     previous_completed_at: '2026-08-05'
     current_child_stage: 07-build
-    note: 'S042/EV-034 Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07-build in_progress awaiting commit+PR+user verify; branch ACTIVE; 08 next after commit; S040 remains suspended (resume_after S042)'
+    note: 'S042/EV-034 Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge; S040 remains suspended (resume_after S042)'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -21675,7 +21717,10 @@ artifacts:
   created_at: '2026-08-05'
   updated_at: '2026-08-05'
   status: written
-  note: 'T1.1–T1.5 completed in working tree; awaiting commit'
+  tip_sha: 9ae9c323
+  pr_number: 867
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+  note: 'T1.1–T1.5 committed @ 9ae9c323; PR #867 OPEN; pending CI green + merge'
 - path: docs/sessions/S042-doks-cd-rollout/session-brief.md
   type: session-brief
   stage: 00-context
@@ -21695,7 +21740,7 @@ artifacts:
   created_at: '2026-08-05'
   updated_at: '2026-08-05'
   status: approved
-  note: 'E34-1..5=A,A,A,B,A; 01/02/04 completed; 07 in_progress awaiting commit'
+  note: 'E34-1..5=A,A,A,B,A; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN'
 - path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
   kind: deploy-checklist
   session_id: S040-iwxxm-corpus-quality
@@ -31853,10 +31898,26 @@ evolve_cycles:
     Triggered after #845/#866 and manual one-shot rollout of 20260805003332-5245f8d.
     Deepen F30 — no new product Fn. Phase 0 locked E34-1..5 = A,A,A,B,A.
   branch: evolve/EV-034-doks-cd-rollout
-  branch_note: 'ACTIVE — created and checked out; tip base 5245f8de; 07 impl uncommitted; no commit SHA invented'
-  tip_sha: 5245f8de
-  tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
-  tip_note: 'branch HEAD @ 5245f8de (main tip / branch base); worktree dirty — 07 artifacts uncommitted; no new commit SHA'
+  branch_note: 'ACTIVE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
+  tip_sha: 9ae9c323
+  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+  tip_note: 'tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
+  pr_number: 867
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+  pr_status: open
+  pr_title: '[EV-034] Automate DOKS image rollout in CD'
+  pr_base: main
+  pr_head: evolve/EV-034-doks-cd-rollout
+  pull_requests:
+  - id: PR-EV-034
+    number: 867
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+    title: '[EV-034] Automate DOKS image rollout in CD'
+    status: open
+    head: evolve/EV-034-doks-cd-rollout
+    base: main
+    tip_sha: 9ae9c323
+    note: '07 essentially complete; pending CI green + merge; EV-034 NOT completed'
   doks_baseline_tag: 20260805003332-5245f8d
   preset: Standard
   preset_status: approved
@@ -31887,7 +31948,7 @@ evolve_cycles:
     - 06-tech-tooling
     - 10-e2e
     optional_stages: []
-    note: 'Standard approved E34-1..5 — skip 03/05/06/10; 01/02/04 completed; 07 awaiting commit'
+    note: 'Standard approved E34-1..5 — skip 03/05/06/10; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN'
   current_stage: 07-build
   gates:
     a_to_b: passed
@@ -31910,7 +31971,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-05'
-      note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 in_progress awaiting commit+PR+user verify; 08 next after commit'
+      note: 'ORCHESTRATING — Phase 0 locked; 01/02/04 completed; 07 essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; 08 next after CI/merge'
     01-requirements:
       status: completed
       mode: delta
@@ -31933,8 +31994,15 @@ evolve_cycles:
       status: in_progress
       mode: full
       started: '2026-08-05'
-      note: 'IN_PROGRESS — impl largely done (doks_rollout_images.sh, ci-cd.yml DOKS+optional Render, test_doks_cd_rollout_guard.py 3 passed, docs); awaiting commit+PR+user verify; pending_commit; no commit SHA; 08 next after commit'
-      pending_commit: true
+      note: 'ESSENTIALLY COMPLETE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge/user verify; EV-034 NOT completed; 08 next after CI/merge; deepen F30'
+      pending_commit: false
+      tip_sha: 9ae9c323
+      tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+      commit_sha: 9ae9c323
+      commit_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+      pr_number: 867
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+      pr_status: open
       artifacts:
       - scripts/deploy/doks_rollout_images.sh
       - .github/workflows/ci-cd.yml
@@ -31963,6 +32031,7 @@ evolve_cycles:
   - E34-5
   - D-S042-phase0
   notes:
+  - '2026-08-05 S042/EV-034 — recorded git commit 9ae9c323 (9ae9c3235d9380f493290ab318c0e0ecf5de2efa) [EV-034] feat: automate DOKS image rollout in CD after GHCR push; pushed; PR #867 OPEN; 07 essentially complete pending CI green + merge; EV-034 NOT completed; tip 9ae9c323; ahead_of_origin=0'
   - '2026-08-05 EV-034/S042 — Phase 0 locked E34-1..5=A,A,A,B,A; deepen F30; 01/02/04 completed; 07-build largely done awaiting commit+PR+user verify; branch evolve/EV-034-doks-cd-rollout ACTIVE; tip base 5245f8de; no commit SHA invented; 08 next after commit'
   - '2026-08-05 EV-034/S042-doks-cd-rollout OPEN — Phase 0 intake after S041 lean-close + DOKS one-shot 20260805003332-5245f8d; Standard routing proposed pending approval; branch evolve/EV-034-doks-cd-rollout pending_create; S040 remains suspended (resume_after S042)'
   prior_session: S041-worker-poller-hardening
@@ -32507,13 +32576,13 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-034-doks-cd-rollout
   ahead_of_origin: 0
-  pushed: false
-  pending_commit: true
-  pending_commit_note: 'S042/EV-034 07-build impl uncommitted (doks_rollout_images.sh, ci-cd.yml, tests, docs); no commit SHA invented; 08 after commit+PR'
+  pushed: true
+  pending_commit: false
+  pending_commit_note: 'cleared — 9ae9c323 pushed; this workflow-state sync may leave uncommitted dirty tree (parent may amend/follow-up)'
   dirty: true
-  tip_sha: 5245f8de
-  tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
-  tip_note: 'S042/EV-034 branch HEAD @ 5245f8de (base / main tip post #866); worktree dirty — 07 artifacts pending_commit; no new commit SHA'
+  tip_sha: 9ae9c323
+  tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+  tip_note: 'S042/EV-034 tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed; workflow-state sync dirty after this update'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -32525,9 +32594,10 @@ git_history:
   main_tip_sha: 5245f8de
   main_tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
   recommended_branch: evolve/EV-034-doks-cd-rollout
-  note: 'S042/EV-034 07-build — branch ACTIVE checked out; tip base 5245f8de; pending_commit (no SHA); S040 suspended resume_after S042; #846 parked'
+  note: 'S042/EV-034 07-build essentially complete @ 9ae9c323; PR #867 OPEN pending CI green + merge; EV-034 NOT completed; S040 suspended resume_after S042; #846 parked'
 
   notes:
+  - '2026-08-05 S042/EV-034 — recorded git commit 9ae9c323 (9ae9c3235d9380f493290ab318c0e0ecf5de2efa) [EV-034] feat: automate DOKS image rollout in CD after GHCR push; pushed; PR #867 OPEN; 07 essentially complete pending CI green + merge; EV-034 NOT completed; tip 9ae9c323; ahead_of_origin=0'
   - '2026-08-05 S042/EV-034 — Phase 0 locked E34-1..5=A,A,A,B,A; branch evolve/EV-034-doks-cd-rollout ACTIVE; 01/02/04 completed; 07-build largely done awaiting commit+PR+user verify; deepen F30; tip base 5245f8de; no commit SHA invented; 08 next after commit'
   - '2026-08-05 S041/EV-033 LEAN-CLOSE D-S041-1+3 + open S042/EV-034 — 09–13 waived; DOKS one-shot 20260805003332-5245f8d recorded; EV-033 completed; branch evolve/EV-034-doks-cd-rollout pending_create; S040 resume_after S042; no CD workflow code this update'
   - '2026-08-04 S041/EV-033 — branch active from origin/main @ 769d3f83 (769d3f8360b2bd826360f3107ada1a6ae268db0d); current_stage 07-build; 01/02/04 completed (delta lean — scope in evolve-decisions; AskQuestion unavailable); artifacts poller_url.py + scripts/deploy/*poller* + prometheusrule + tests + README-worker-hardening; awaiting commit/PR/user verify; cycle NOT completed'
@@ -32971,12 +33041,16 @@ git_history:
     evolve_cycle_id: EV-034
     created: '2026-08-05'
     created_at: '2026-08-05'
-    tip_sha: 5245f8de
-    tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
+    tip_sha: 9ae9c323
+    tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
     exists: true
-    pushed: false
+    pushed: true
     ahead_of_origin: 0
-    note: 'ACTIVE — created and checked out from main @ 5245f8de; tip still base (07 impl uncommitted); awaiting commit/PR/user verify'
+    pr_number: 867
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+    pr_status: open
+    pr_title: '[EV-034] Automate DOKS image rollout in CD'
+    note: 'ACTIVE — tip 9ae9c323 pushed; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
   - name: evolve/EV-033-worker-poller-hardening
     purpose: 'S041/EV-033 F8 deepen — INGEST_POLLER_URL hardening (prevention 1–5 + code guard)'
     base: main
@@ -34023,6 +34097,47 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+    short: 9ae9c323
+    branch: evolve/EV-034-doks-cd-rollout
+    message: '[EV-034] feat: automate DOKS image rollout in CD after GHCR push'
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    milestone: M1
+    task: T1.1-T1.5
+    session_id: S042-doks-cd-rollout
+    evolve_cycle_id: EV-034
+    files_changed:
+    - .github/workflows/ci-cd.yml
+    - deploy/doks/README.md
+    - docs/decisions/evolve-decisions.md
+    - docs/deploy.md
+    - docs/feature-list.md
+    - docs/sessions/README.md
+    - docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
+    - docs/sessions/S041-worker-poller-hardening/reports/evolve-progress.md
+    - docs/sessions/S041-worker-poller-hardening/reports/evolve-summary.md
+    - docs/sessions/S041-worker-poller-hardening/reports/verification-report.md
+    - docs/sessions/S041-worker-poller-hardening/routing-plan.md
+    - docs/sessions/S041-worker-poller-hardening/session-brief.md
+    - docs/sessions/S042-doks-cd-rollout/reports/execution-plan.md
+    - docs/sessions/S042-doks-cd-rollout/routing-plan.md
+    - docs/sessions/S042-doks-cd-rollout/session-brief.md
+    - docs/test-plan.md
+    - scripts/deploy/doks_rollout_images.sh
+    - tests/test_doks_cd_rollout_guard.py
+    - workflow-state.yaml
+    files_changed_count: 19
+    timestamp: '2026-08-05'
+    timestamp_utc: '2026-08-05T01:06:09Z'
+    pushed: true
+    tip_sha: 9ae9c323
+    ahead_of_origin: 0
+    pr_number: 867
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
+    note: '07-build essentially complete; PR #867 OPEN; pending CI green + merge; EV-034 NOT completed'
   - sha: fe024aac10077e365d65d0eccf12d8fb6288c9ec
     short: fe024aac
     branch: evolve/EV-032-iwxxm-corpus-quality
