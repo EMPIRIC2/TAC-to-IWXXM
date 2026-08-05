@@ -29,7 +29,15 @@ vi.mock('sonner', () => ({
 }));
 
 vi.mock('./components/FileConverter', () => ({
-  FileConverter: ({ onOpenHistory }: { onOpenHistory?: () => void }) => (
+  FileConverter: ({
+    onOpenHistory,
+    onRequestLogin,
+    isGuest,
+  }: {
+    onOpenHistory?: () => void;
+    onRequestLogin?: () => void;
+    isGuest?: boolean;
+  }) => (
     <div data-testid="file-converter">
       <button
         type="button"
@@ -38,8 +46,55 @@ vi.mock('./components/FileConverter', () => ({
       >
         History
       </button>
+      {isGuest ? (
+        <button type="button" data-testid="sign-in-button" onClick={onRequestLogin}>
+          Sign in
+        </button>
+      ) : null}
     </div>
   ),
+}));
+
+vi.mock('./components/auth/Login', () => ({
+  Login: ({ onContinueAsGuest }: { onContinueAsGuest?: () => void }) => (
+    <div data-testid="login-view">
+      <button type="button" onClick={onContinueAsGuest}>
+        Continue without signing in
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock('./components/auth/Register', () => ({
+  Register: () => <div data-testid="register-view" />,
+}));
+
+vi.mock('./components/auth/EmailVerification', () => ({
+  EmailVerification: () => <div data-testid="verify-view" />,
+}));
+
+vi.mock('./components/auth/AuthCallback', () => ({
+  AuthCallback: () => <div data-testid="callback-view" />,
+}));
+
+vi.mock('./components/auth/PasswordReset', () => ({
+  PasswordReset: () => <div data-testid="reset-view" />,
+}));
+
+vi.mock('@/utils/authService', () => ({
+  getAccessToken: vi.fn(() => null),
+  isLoggedIn: vi.fn(() => false),
+  logout: vi.fn(),
+}));
+
+vi.mock('@/utils/autoUploadLocalDrafts', () => ({
+  autoUploadEligibleLocalDrafts: vi.fn().mockResolvedValue({ uploaded: 0, errors: [] }),
+}));
+
+vi.mock('@/utils/workSessionApi', () => ({
+  listWorkSessions: vi
+    .fn()
+    .mockResolvedValue({ items: [], total: 0, page: 1, limit: 20 }),
 }));
 
 vi.mock('./components/MyMetarsPage', () => ({
@@ -79,7 +134,7 @@ vi.mock('./components/ui/sonner', () => ({
 
 import App from './App';
 
-describe('App Component (F21 public)', () => {
+describe('App Component (F31 optional Auth)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
@@ -97,10 +152,22 @@ describe('App Component (F21 public)', () => {
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
   });
 
-  it('boots to converter with no login chrome', () => {
+  it('boots to converter as guest with optional Sign in', () => {
     render(<App />);
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
     expect(screen.queryByTestId('login-view')).not.toBeInTheDocument();
+    expect(screen.getByTestId('sign-in-button')).toBeInTheDocument();
+  });
+
+  it('opens login UX from Sign in without blocking convert return path', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByTestId('sign-in-button'));
+    expect(screen.getByTestId('login-view')).toBeInTheDocument();
+    await user.click(
+      screen.getByRole('button', { name: /continue without signing in/i }),
+    );
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
 
   it('shows toaster and reports missing API base env in production', () => {

@@ -1,5 +1,6 @@
 /**
  * F5/F7.h debounced auto-save for the converter — browser IndexedDB (ADR-031).
+ * Honors F22 / TC-F31-005 guest work-history privacy gate.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -12,6 +13,7 @@ import {
   buildWorkSessionPayload,
   type ConverterSnapshot,
 } from '/utils/workSessionPayload';
+import { canPersistWorkHistoryLocal } from '/utils/privacyPreferences';
 
 export const AUTOSAVE_DEBOUNCE_MS = 3000;
 
@@ -58,6 +60,10 @@ export function useWorkSessionSync({
       if (isReadOnly) {
         return null;
       }
+      if (!canPersistWorkHistoryLocal()) {
+        setSaveIndicator('idle');
+        return null;
+      }
 
       setSaveIndicator('saving');
       const payload = buildWorkSessionPayload(snapshot, {
@@ -88,7 +94,7 @@ export function useWorkSessionSync({
 
   const scheduleAutoSave = useCallback(
     (snapshot: ConverterSnapshot) => {
-      if (isReadOnly) {
+      if (isReadOnly || !canPersistWorkHistoryLocal()) {
         return;
       }
       setSaveIndicator('pending');

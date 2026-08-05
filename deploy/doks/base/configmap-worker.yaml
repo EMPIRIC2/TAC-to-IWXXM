@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metar-worker-config
+  labels:
+    app.kubernetes.io/name: metar-worker
+    app.kubernetes.io/component: worker
+data:
+  LOG_LEVEL: "INFO"
+  INGEST_POLL_INTERVAL_SEC: "30"
+  INGEST_PROFILE: "annex3"
+  IWXXM_VERSION: "2025-2"

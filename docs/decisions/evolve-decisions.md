@@ -125,6 +125,61 @@ IWXXM pin inside #808; unrelated platform/dissemination/DOKS work.
 
 **Status**: **in_progress** — Phase C build (`07-build`); M1 #835 **closed**; next M2 F32 @ T2.1
 
+## Cycle EV-031 — Platform independence #842 / #830 / #712 (S038)
+
+**Session**: S038-platform-independence-842  
+**Features**: **F30** + **F31** (deepen F5/F7/F8/F21/F22/M4)  
+**Issues**: [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842), [#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830), [#712](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/712)  
+**Started**: 2026-08-03  
+**Branch**: `evolve/EV-031-platform-independence-842`  
+**Status**: **completed** — `D-S038-13` = 1 (2026-08-03); F30/F31 Done; public DNS live
+
+### Scope (Phase 0 — locked 2026-08-03)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| E31-1 | decision | Session open? | **3,1,1,1** — full epic+#712 IaC/cutover; general; Standard; local UI (`D-S038-open`) |
+| E31-2 | decision | DOKS depth? | **3** — production cutover; Render decommission after soak (`D-S038-doks-depth`) |
+| E31-3 | decision | F8 persistence? | **1** — keep F8 on **DigitalOcean Postgres** (`D-S038-f8`) |
+| E31-4 | decision | Routing? | **1** — Standard (`D-S038-route`) |
+| E31-5 | decision | Auth model? | **1** — Reintroduce **Supabase Auth** for **long-term storage**; amend F21 (`D-S038-auth-model`) |
+| E31-6 | decision | Session store? | **1** — Logged-in → DO Postgres; guests → local + **loss notice** + **F22 privacy** (`D-S038-session-store`) |
+| E31-7 | decision | #830? | **1** — Amend ticket: Auth-kept / strip data plane (`D-S038-830-amend`) |
+| E31-8 | decision | Fn allocation? | **1,1,1** — **F30** + **F31**; start 01; commit open (`D-S038-fn`) |
+| E31-M | decision | Document Manifest? | **1,1** — full 1–10; Feature List first (`D-S038-E31-M`) |
+| E31-F30 | decision | F30 Feature List? | **1,1,1,1** — accept draft; F30 owns #830+#712; public convert APIs; continue F31 (`D-S038-F30`) |
+| E31-F31 | decision | F31 Feature List? | **1,2,1,1** — accept draft; **auto-upload** local drafts on login; F21 **Amended**; write Feature List (`D-S038-F31`) |
+| E31-guest-merge | decision | Guest→login drafts? | **2** — auto-upload all eligible local drafts (`D-S038-guest-merge`) |
+| E31-spec-topo | decision | Spec topology? | **1,1,1,1** — accept topo; restore `packages/auth`; restore `/api/v1/work-sessions*`; data/cutover next (`D-S038-spec-topo`) |
+| E31-spec-data | decision | Spec data/cutover? | **1,1,2,1** — single DO DB; Alembic; **one-time migrate** legacy Supabase→DO; write Spec then UJ (`D-S038-spec-data`) |
+| E31-uj | decision | User Journeys? | **1,1,1** — UJ-045..048; persistent guest banner; write then Test Plan (`D-S038-uj`) |
+| E31-tp | decision | Test Plan? | **1,1,1** — TC-F30/F31/EV031; H4–H5 required; lean remaining docs (`D-S038-tp`) |
+| E31-gate-a | decision | 01 Gate A? | **1,1,1** — accept lean docs; defer tech gaps to 04; commit `fc3bbe5` (`D-S038-01-gate-a`) |
+| E31-02 | decision | 02 batch C + Gate A? | **1,1,1** — fix C1–C5; keep ADR-033 Proposed; Gate A PASS → 04 (`D-S038-02-batch-c` / `D-S038-02-phase-a`) |
+| E31-04-b1 | decision | 04 Batch 1? | **1,2,1,1** — M0–M7 shape; **JWKS-only**; Alembic in backend; restore `packages/auth` from git + strip admin (`D-S038-04-b1`) |
+| E31-04-b2 | decision | 04 Batch 2? | **1,1,1(+CI),1** — placeholder DOKS DNS; **7d soak**; pg_dump + verify; **CI auto idempotent Alembic**; ADR-020 wire; ADR-033 @ Gate B (`D-S038-04-b2`) |
+| E31-04 | gate | Gate B / plan approve? | **1** — approve M0–M7 (38 tasks) + **ADR-033 Accepted** → **07 @ T0.1** (`D-S038-04-plan`) |
+| E31-T0.2 | docs | Amend #830? | **Done** — title/body Auth-kept + data-plane strip; link F30/F31/ADR-033 ([#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830)) |
+| E31-t63-waive | decision | T6.3 DNS? | **3 / waive_ip** — waive real DNS; pin `LIVE_*`/`liveE2e` to LB `168.144.12.70` + Host-header placeholders; public `api.baseUrl` stays Render; proceed T6.4 (`D-S038-t63-waive`) |
+| E31-t65-waive | decision | T6.5 soak? | **1 / waive** — waive 7-day soak (day 0/7); suspend Render API+FE+worker now; archive LIVE_*; retarget `prod.json` + CI to DOKS (`D-S038-t65-waive`); DNS residual superseded by `api.tac-to-iwxxm.com` / `app.tac-to-iwxxm.com` |
+| E31-11 | decision | 11 verify-impl? | **1** — approve F30+F31; skip local UI preview (`D-S038-11`) |
+| E31-12 | decision | 12 deploy strategy? | **1** — approve mitigations + rollback; start 13 (`D-S038-12`) |
+| E31-13 | gate | 13 smoke + Phase D? | **1** — approve 13 PASS; close Phase D / cycle closeout (`D-S038-13`) |
+
+**Topology**: Supabase = Auth/JWT verify only. DigitalOcean = all product DB + DOKS compute.  
+**Guest UX**: transient local storage; UI notice that progress is lost without login; honor privacy preference center.
+
+**In:** #830 amend; hybrid sessions; F8→DO Postgres; DOKS prod cutover; ADR/corpus/deploy.  
+**Out:** Engine rewrites; Supabase product PostgREST/DB; long-lived dual hosts after soak.
+
+### Acceptance (cycle)
+
+1. **F30**: Auth-only Supabase; DO Postgres data; DOKS cutover; #830 amended acceptance (**TC-F30-001..006**).
+2. **F31**: Hybrid sessions; guest notice; auto-upload on login; F22 deepen; F21 Amended (**TC-F31-001..006**).
+3. Public convert without login remains; JWT only for server session APIs.
+4. Deploy smoke / H0–H5 against DOKS (and Auth) per routing.
+
+
 ---
 
 ## Cycle EV-030 — Quality residuals #831 / #829 / #820 (S037)

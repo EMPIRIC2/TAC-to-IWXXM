@@ -5,9 +5,14 @@ import type { WorkSession } from '@metar/shared';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
 
 const mockList = vi.fn();
+const mockListServer = vi.fn();
 
 vi.mock('/utils/localWorkSessionStore', () => ({
   listLocalWorkSessions: (...args: unknown[]) => mockList(...args),
+}));
+
+vi.mock('/utils/workSessionApi', () => ({
+  listWorkSessions: (...args: unknown[]) => mockListServer(...args),
 }));
 
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
@@ -37,6 +42,12 @@ describe('WorkHistorySidebar', () => {
     vi.clearAllMocks();
     mockList.mockResolvedValue({
       items: [sampleSession()],
+      total: 1,
+      page: 1,
+      limit: 5,
+    });
+    mockListServer.mockResolvedValue({
+      items: [sampleSession({ id: 'server-1', title: 'Server WIP', user_id: 'auth' })],
       total: 1,
       page: 1,
       limit: 5,
@@ -138,5 +149,21 @@ describe('WorkHistorySidebar', () => {
     const otherBtn = screen.getByText('Active session').closest('button');
     expect(activeBtn?.className).toMatch(/border-blue-500/);
     expect(otherBtn?.className).not.toMatch(/border-blue-500/);
+  });
+
+  it('loads recent sessions from server when accessToken is set (F31)', async () => {
+    render(
+      <WorkHistorySidebar
+        accessToken="jwt-token"
+        onSelectSession={onSelectSession}
+        onOpenHistory={onOpenHistory}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Server WIP')).toBeInTheDocument();
+    });
+    expect(mockListServer).toHaveBeenCalledWith('jwt-token', { limit: 5 });
+    expect(mockList).not.toHaveBeenCalled();
   });
 });

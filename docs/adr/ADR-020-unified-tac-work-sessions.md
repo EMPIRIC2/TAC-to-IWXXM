@@ -1,6 +1,8 @@
 # ADR-020: Unified `tac_work_sessions` (override R2 separate F7 table)
 
-> **Status**: **Superseded** by [ADR-031](ADR-031-public-app-indexeddb-history.md) (S023 / EV-017 / F21 / F7.h)  
+> **Status**: **Superseded** by [ADR-031](ADR-031-public-app-indexeddb-history.md) (S023 / EV-017 / F21 / F7.h);
+> **wire shapes restored** under [ADR-033](ADR-033-platform-independence-auth-do-doks.md) (S038 / EV-031 / F31)
+> for logged-in `/api/v1/work-sessions*` on DigitalOcean Postgres (host/storage changed; JSON contract retained)  
 > **Date**: 2026-07-13 (superseded 2026-07-28)  
 > **Deciders**: User (S011 Spec Batch 2 contradiction resolution option A)  
 > **Stage**: 01-requirements  

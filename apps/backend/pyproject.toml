@@ -9,6 +9,7 @@ dependencies = [
     "tac-validate",
     "iwxxm-validate",
     "dissemination",
+    "metar-auth",
     "fastapi>=0.110",
     "uvicorn>=0.23",
     "python-multipart>=0.0.20",
@@ -23,6 +24,7 @@ dependencies = [
     "lxml>=4.9.0",
     "skyfield>=1.45",
     "sqlalchemy>=2.0.0",
+    "alembic>=1.13,<2",
     "asyncpg>=0.29.0",
     "psycopg[binary]>=3.0.0",
     "slowapi>=0.1.10",
@@ -123,6 +125,7 @@ ignore = ["E501", "E741"]
 [tool.uv.sources]
 tac2iwxxm = { workspace = true }
 metar-shared = { workspace = true }
+metar-auth = { workspace = true }
 tac-validate = { workspace = true }
 iwxxm-validate = { workspace = true }
 dissemination = { workspace = true }

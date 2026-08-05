@@ -30,6 +30,7 @@ dev = [
   "iwxxm-validate",
   "tac-validate",
   "dissemination",
+  "metar-auth",
   "testcontainers[mysql,postgres]>=4.8",
 ]
 
@@ -37,6 +38,7 @@ dev = [
 metar-shared = { workspace = true }
 metar-backend = { workspace = true }
 metar-worker = { workspace = true }
+metar-auth = { workspace = true }
 tac2iwxxm = { workspace = true }
 iwxxm-validate = { workspace = true }
 tac-validate = { workspace = true }
@@ -45,6 +47,7 @@ dissemination = { workspace = true }
 [tool.uv.workspace]
 members = [
   "packages/shared",
+  "packages/auth",
   "packages/tac2iwxxm",
   "packages/iwxxm-validate",
   "packages/tac-validate",

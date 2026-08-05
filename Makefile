@@ -5,6 +5,7 @@ PNPM := pnpm
 
 PY_TREES := apps packages tests
 PY_LINT := apps/backend/src apps/backend/tests \
+	packages/auth/src \
 	packages/shared packages/shared/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
@@ -17,6 +18,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
+	db-migrate test-alembic \
+	verify-supabase-to-do-migrate migrate-supabase-to-do \
 	test-sigmet-quality \
 	test-va-sigmet-quality \
 	test-tc-sigmet-quality \
@@ -42,12 +45,12 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	compose-mock-byoc-all-up compose-mock-byoc-all-down \
 	test-mock-byoc-smoke test-mock-byoc-compose test-mock-byoc-all-sinks \
 	format format-check typecheck typecheck-py typecheck-js \
-	lint lint-py lint-js lint-backend lint-frontend lint-shared \
+	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
 	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate lint-dissemination \
-	lint-fix lint-fix-py lint-fix-backend lint-fix-frontend \
+	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
-	test-live-connectivity test-live-api test-live-integration test-live-e2e test-live-bulletin test-live \
+	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
 	test-integration coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
@@ -111,6 +114,7 @@ typecheck: typecheck-py typecheck-js
 
 typecheck-py:
 	$(UV) run basedpyright packages/shared/src
+	$(UV) run basedpyright packages/auth/src
 	$(UV) run basedpyright packages/tac2iwxxm/src
 	$(UV) run basedpyright packages/iwxxm-validate/src
 	$(UV) run basedpyright packages/tac-validate/src
@@ -131,6 +135,9 @@ lint-js:
 
 lint-backend:
 	$(UV) run ruff check --force-exclude apps/backend/src apps/backend/tests
+
+lint-auth:
+	$(UV) run ruff check --force-exclude packages/auth/src
 
 lint-shared:
 	$(UV) run ruff check --force-exclude packages/shared packages/shared/tests
@@ -159,6 +166,9 @@ lint-fix-py:
 lint-fix-backend:
 	$(UV) run ruff check --fix --force-exclude apps/backend/src apps/backend/tests
 
+lint-fix-auth:
+	$(UV) run ruff check --fix --force-exclude packages/auth/src
+
 lint-fix-frontend:
 	$(PNPM) --filter @metar/frontend exec eslint src --fix
 
@@ -184,6 +194,31 @@ test-unit-backend:
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=term-missing \
 		--cov-fail-under=98 -v
+
+# F30 / ADR-033 / TC-EV031-002 — Alembic against DATABASE_URL (idempotent upgrade head).
+db-migrate:
+	bash scripts/ci/alembic_upgrade.sh
+
+# F30 / TC-EV031-001 / T5.2 — row counts + sample checksum (Supabase → DO).
+# Requires MIGRATE_SOURCE_DATABASE_URL (or SUPABASE_DB_URL) and DATABASE_URL.
+verify-supabase-to-do-migrate:
+	$(UV) run python scripts/ops/verify_supabase_to_do_migrate.py \
+		--source-url "$${MIGRATE_SOURCE_DATABASE_URL:-$${SUPABASE_DB_URL}}" \
+		--target-url "$${MIGRATE_TARGET_DATABASE_URL:-$${DATABASE_URL}}"
+
+# F30 / TC-EV031-001 / T5.3 — SQL export dry-run (default) or apply cut.
+# MODE=dry-run|apply  VERIFY=1 to run T5.2 verify after apply.
+# Target MUST be DO Postgres (script refuses same-DB source/target).
+migrate-supabase-to-do:
+	$(UV) run python scripts/ops/run_supabase_to_do_migrate.py \
+		--source-url "$${MIGRATE_SOURCE_DATABASE_URL:-$${SUPABASE_DB_URL}}" \
+		--target-url "$${MIGRATE_TARGET_DATABASE_URL:-$${DATABASE_URL}}" \
+		--mode "$${MODE:-dry-run}" \
+		$$( [ "$${VERIFY:-0}" = "1" ] && echo --verify || true )
+
+test-alembic:
+	$(UV) run pytest tests/unit/test_alembic_layout_tc_ev031_002.py \
+		tests/integration/test_alembic_upgrade_idempotent.py -v --no-cov
 
 test-unit-frontend:
 	$(PNPM) --filter @metar/frontend run test:coverage
@@ -413,8 +448,8 @@ define load_dotenv
 		fi; \
 	done; \
 	set +a; \
-	export LIVE_API_URL="$${LIVE_API_URL:-https://metar-to-iwxxm-api.onrender.com}"; \
-	export LIVE_FRONTEND_URL="$${LIVE_FRONTEND_URL:-https://metar-to-iwxxm-frontend-v4-web.onrender.com}"; \
+	export LIVE_API_URL="$${LIVE_API_URL:-http://api.doks.placeholder.metar-iwxxm.local}"; \
+	export LIVE_FRONTEND_URL="$${LIVE_FRONTEND_URL:-http://app.doks.placeholder.metar-iwxxm.local}"; \
 	export RUN_LIVE_TESTS=1; \
 	export PLAYWRIGHT_BASE_URL="$${PLAYWRIGHT_BASE_URL:-$$LIVE_FRONTEND_URL}"; \
 	export VITE_API_BASE_URL="$$LIVE_API_URL"; \
@@ -439,6 +474,18 @@ test-live-connectivity:
 	@$(load_dotenv); \
 	bash scripts/deploy/verify_connectivity.sh
 
+# T7.2 / EV-031 — H0c + H4 + H5 against provisional DOKS (Host-header; no /etc/hosts)
+test-live-connectivity-doks-provisional:
+	@$(load_dotenv); \
+	set -a; source scripts/deploy/doks_provisional_live_env.sh; set +a; \
+	bash scripts/deploy/verify_connectivity.sh
+
+# T7.3 / EV-031 — TC-EV031-003/004 live probes on provisional DOKS topology
+test-live-topology-doks-provisional:
+	@$(load_dotenv); \
+	set -a; source scripts/deploy/doks_provisional_live_env.sh; set +a; \
+	$(UV) run pytest tests/live/test_tc_ev031_doks_topology.py -m live -v --tb=short --no-cov
+
 test-live-api:
 	@$(load_dotenv); \
 	$(UV) run pytest apps/backend/tests/infrastructure/test_live_api_health.py -m live_api -v --tb=short --no-cov
@@ -454,6 +501,24 @@ test-live-e2e:
 	cd apps/e2e && DISABLE_AUTH=false PLAYWRIGHT_BASE_URL="$$PLAYWRIGHT_BASE_URL" \
 		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
 		$(PNPM) exec playwright test
+
+# T7.1 / EV-031 — F31 UJ-045..047 against provisional DOKS (Host-header / resolver-rules)
+test-live-e2e-doks-provisional:
+	@$(load_dotenv); \
+	set -a; source scripts/deploy/doks_provisional_live_env.sh; set +a; \
+	cd apps/e2e && DISABLE_AUTH=false \
+		PLAYWRIGHT_DOKS_PROVISIONAL=1 \
+		PLAYWRIGHT_BASE_URL="$$PLAYWRIGHT_BASE_URL" \
+		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
+		DOKS_LB_IP="$$DOKS_LB_IP" \
+		DOKS_API_HOST="$$DOKS_API_HOST" \
+		DOKS_FE_HOST="$$DOKS_FE_HOST" \
+		E2E_USER_EMAIL="$$E2E_USER_EMAIL" \
+		E2E_USER_PASSWORD="$$E2E_USER_PASSWORD" \
+		$(PNPM) exec playwright test \
+			uj045-047-f31-hybrid-sessions.e2e.spec.ts \
+			auth.e2e.spec.ts \
+			public-app-f21-f22.e2e.spec.ts
 
 # H7 — live bulletin gate (TC-LIVE-F6-030 / Q10=A)
 test-live-bulletin:

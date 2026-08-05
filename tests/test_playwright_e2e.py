@@ -26,10 +26,8 @@ def _load_env_file() -> None:
 _load_env_file()
 warn_deprecated_env()
 
-FRONTEND_URL = (
-    live_frontend_url() or "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
-)
-BACKEND_URL = live_api_url() or "https://metar-to-iwxxm-api.onrender.com"
+FRONTEND_URL = live_frontend_url() or "http://app.doks.placeholder.metar-iwxxm.local"
+BACKEND_URL = live_api_url() or "http://api.doks.placeholder.metar-iwxxm.local"
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 VALID_METAR = os.getenv(

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # CI frontend audit gate. Treats retired npm audit API (HTTP 410) as skip, not fail.
-# brace-expansion: pin via pnpm.overrides (1.1.18 / 2.1.2 / 5.0.9); ignore listed GHSAs
+# brace-expansion: pin via pnpm.overrides (1.1.18 / 2.1.4 / 5.0.9); ignore listed GHSAs
 # if audit still flags transitive minimatch@3 lines.
 # undici: jsdom@28 pins undici 7.28.x; bumping to 7.29.0 breaks wrap-handler path — ignore
 # undici GHSAs until jsdom ships a compatible peer (dev/test-only surface).

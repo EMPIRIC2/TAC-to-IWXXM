@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: metar-api
+  labels:
+    app.kubernetes.io/name: metar-api
+    app.kubernetes.io/component: api
+  annotations:
+    # DOKS nginx ingress controller (adjust class if cluster uses another).
+    kubernetes.io/ingress.class: nginx
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: api.doks.placeholder.metar-iwxxm.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: metar-api
+                port:
+                  name: http

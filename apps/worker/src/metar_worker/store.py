@@ -1,63 +1,136 @@
-"""Supabase store / quarantine writers (service-role JWT — Q20=C)."""
+"""Postgres store / quarantine writers via DATABASE_URL (F30 / ADR-033)."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import json
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 
-import httpx
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import Engine
 
 from metar_worker.pipeline import PipelineResult
 from metar_worker.poller import IngestJob, safe_url_for_log
 
 RESULTS_TABLE = "iwxxm_ingest_results"
 QUARANTINE_TABLE = "iwxxm_ingest_quarantine"
+_ALLOWED_TABLES = frozenset({RESULTS_TABLE, QUARANTINE_TABLE})
 
 
 class StoreClient(Protocol):
-    """Minimal PostgREST insert protocol for tests."""
+    """Minimal insert protocol for tests and Postgres writers."""
 
     def insert(self, table: str, row: dict[str, Any]) -> None: ...
 
 
+def _to_psycopg_url(url: str) -> str:
+    """Normalize DATABASE_URL to SQLAlchemy psycopg v3 dialect."""
+    if url.startswith("postgresql+asyncpg://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql+asyncpg://")
+    if url.startswith("postgresql+psycopg2://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql+psycopg2://")
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url.removeprefix("postgresql://")
+    return url
+
+
 @dataclass(slots=True)
-class SupabaseRestStore:
+class PostgresStore:
     """
-    PostgREST writer using the service-role key.
+    SQLAlchemy writer targeting DigitalOcean Postgres (``DATABASE_URL``).
 
     Parameters
     ----------
-    base_url :
-        Supabase project URL (``SUPABASE_URL``).
-    service_role_key :
-        Service-role JWT (``SUPABASE_SERVICE_ROLE_KEY``).
-    client :
-        Optional shared httpx client.
+    database_url :
+        Postgres URL (``DATABASE_URL``). Asyncpg / psycopg2 schemes are rewritten.
     """
 
-    base_url: str
-    service_role_key: str
-    client: httpx.Client | None = None
+    database_url: str
+    _engine: Engine | None = field(default=None, init=False, repr=False)
+
+    def _get_engine(self) -> Engine:
+        if self._engine is None:
+            self._engine = create_engine(
+                _to_psycopg_url(self.database_url),
+                pool_pre_ping=True,
+            )
+        return self._engine
 
     def insert(self, table: str, row: dict[str, Any]) -> None:
-        own = self.client is None
-        http = self.client or httpx.Client(timeout=30.0)
-        try:
-            url = f"{self.base_url.rstrip('/')}/rest/v1/{table}"
-            response = http.post(
-                url,
-                headers={
-                    "apikey": self.service_role_key,
-                    "Authorization": f"Bearer {self.service_role_key}",
-                    "Content-Type": "application/json",
-                    "Prefer": "return=minimal",
-                },
-                json=row,
+        """
+        Insert one ingest row into ``iwxxm_ingest_results`` or quarantine.
+
+        Parameters
+        ----------
+        table :
+            Target table name (must be an F8 ingest table).
+        row :
+            Column map produced by :func:`write_result`.
+
+        Raises
+        ------
+        ValueError
+            If ``table`` is not an allowed F8 ingest table.
+        """
+        if table not in _ALLOWED_TABLES:
+            msg = f"refusing insert into unexpected table: {table}"
+            raise ValueError(msg)
+
+        payload = {
+            "job_id": row["job_id"],
+            "product": row["product"],
+            "profile": row.get("profile", "annex3"),
+            "source_url": row.get("source_url", ""),
+            "tac_input": row.get("tac_input", ""),
+            "iwxxm_xml": row.get("iwxxm_xml"),
+            "issues": json.dumps(row.get("issues") or []),
+            "stage_failed": row.get("stage_failed"),
+        }
+        stmt = text(
+            f"""
+            INSERT INTO {table} (
+                job_id, product, profile, source_url, tac_input,
+                iwxxm_xml, issues, stage_failed
+            ) VALUES (
+                :job_id, :product, :profile, :source_url, :tac_input,
+                :iwxxm_xml, CAST(:issues AS jsonb), :stage_failed
             )
-            response.raise_for_status()
-        finally:
-            if own:
-                http.close()
+            """
+        )
+        with self._get_engine().begin() as conn:
+            conn.execute(stmt, payload)
+
+    def fetch_by_job_id(self, table: str, job_id: str) -> list[dict[str, Any]]:
+        """
+        Read rows for a job id (tests / smoke).
+
+        Parameters
+        ----------
+        table :
+            Target table name.
+        job_id :
+            Ingest job identifier.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            Matching rows as plain dicts.
+        """
+        if table not in _ALLOWED_TABLES:
+            msg = f"refusing select from unexpected table: {table}"
+            raise ValueError(msg)
+        stmt = text(
+            f"""
+            SELECT job_id, product, profile, source_url, tac_input,
+                   iwxxm_xml, issues, stage_failed
+            FROM {table}
+            WHERE job_id = :job_id
+            ORDER BY created_at DESC
+            """
+        )
+        with self._get_engine().connect() as conn:
+            result = conn.execute(stmt, {"job_id": job_id})
+            return [dict(row._mapping) for row in result]
 
 
 def _base_row(job: IngestJob, result: PipelineResult) -> dict[str, Any]:
@@ -95,7 +168,7 @@ def write_result(store: StoreClient, job: IngestJob, result: PipelineResult) -> 
 __all__ = [
     "QUARANTINE_TABLE",
     "RESULTS_TABLE",
+    "PostgresStore",
     "StoreClient",
-    "SupabaseRestStore",
     "write_result",
 ]

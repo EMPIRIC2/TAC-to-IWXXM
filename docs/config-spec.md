@@ -1,8 +1,8 @@
 # Configuration Specification
 
 > **Project**: METAR to IWXXM Converter  
-> **Last updated**: 2026-07-28 (S023 / EV-017 — F21 public app rate-limit env + Auth retirement)  
-> **Session**: S003-supabase-keys-config (base); S008; S011; S023-public-app-privacy
+> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 Auth-only Supabase + DO Postgres + DOKS)  
+> **Session**: S003-supabase-keys-config (base); S008; S011; S023-public-app-privacy; **S038**
 
 ## Precedence Order
 
@@ -12,15 +12,15 @@ Configuration values resolve in this order (highest priority first):
 2. `config/{env}.json` selected by `METAR_CONFIG_ENV`
 3. Built-in defaults in `packages/shared`
 
-**Secrets never belong in `config/*.json`.** Publishable keys for **operator Auth** are
-**retired (F21)** — FE no longer bootstraps Supabase Auth. F8 worker still uses service-role
-env on the Render Background Worker only (ADR-018).
+**Secrets never belong in `config/*.json`.** FE may receive **publishable** Auth bootstrap via
+deploy-time `/config.json` inject. Product DB secrets are **`DATABASE_URL` only** (DigitalOcean).
+Supabase **service-role must not** be used as the product data plane (ADR-033).
 
-## BYO credentials (S011 / R6 / #697) — **historical; F21 supersedes operator Auth**
+## BYO credentials (S011 / R6 / #697) — amended EV-031
 
-Pre-F21 operators configured **their** Supabase project for JWT Auth. **F21 / ADR-031** removes
-operator Auth and browser publishable-key injection. Retain this section only for archive/
-F8 worker context: worker still needs service-role + poller URL (see [env-contract.md](env-contract.md)).
+Operators may still BYO **their** Supabase **Auth** project (URL + publishable + JWT verify).
+Product Postgres is **DigitalOcean** (`DATABASE_URL`) — not Supabase hosted DB. F8 worker uses
+`DATABASE_URL` + poller env (ADR-018 amend).
 
 ## Configuration Files
 
@@ -34,10 +34,10 @@ F8 worker context: worker still needs service-role + poller URL (see [env-contra
 | Field                            | Type         | Required | Description                                              |
 | -------------------------------- | ------------ | -------- | -------------------------------------------------------- |
 | `environment`                    | string       | Yes      | `"prod"`                                                 |
-| `api.baseUrl`                    | string (URL) | Yes      | Public API origin (`/api/v1`, `/auth`) — **no** `/admin` |
-| `api.frontendUrl`                | string (URL) | Yes      | Public static site URL (auth redirects)                  |
-| `api.corsOrigins`                | string[]     | Yes      | Allowed browser origins for API CORS                     |
-| `supabase.url`                   | string (URL) | Yes      | Supabase project URL (public; edge helpers)              |
+| `api.baseUrl`                    | string (URL) | Yes      | Public API origin (`/api/v1` **and** `/auth`) — **no** `/admin` |
+| `api.frontendUrl`                | string (URL) | Yes      | Public static site URL (Auth redirects / CORS peer)      |
+| `api.corsOrigins`                | string[]     | Yes      | Allowed browser origins for API CORS (DOKS FE after cutover) |
+| `supabase.url`                   | string (URL) | Yes*     | Supabase **Auth** project URL (*required when Auth enabled) |
 | `validation.wmoOnline`           | boolean      | No       | WMO online validation toggle                             |
 | `validation.wmoTimeoutSeconds`   | number       | No       | WMO request timeout                                      |
 | `validation.schematronUseDocker` | boolean      | No       | Docker-backed Schematron                                 |
@@ -72,16 +72,31 @@ Same schema as `prod.json` with local values:
 - **Location**: Served from static host at `/config.json` (copied from `config/prod.json` at build)
 - **Purpose**: Replace build-time `VITE_*` for URLs; fetch at app bootstrap (S003-R2)
 
-Injected at deploy time (not committed):
+Injected at deploy time (`scripts/frontend/prepare-config.sh` — publishable key not committed):
 
 ```json
 {
+  "environment": "prod",
+  "api": {
+    "baseUrl": "https://metar-to-iwxxm-api.onrender.com",
+    "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
+    "corsOrigins": [
+      "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
+      "https://app.doks.placeholder.metar-iwxxm.local"
+    ]
+  },
   "supabase": {
     "url": "https://ktvxijislbtgqapllmuk.supabase.co",
     "publishableKey": "<from SUPABASE_PUBLISHABLE_KEY env>"
   }
 }
 ```
+
+**Auth bootstrap (F31):** `supabase.url` + `supabase.publishableKey` drive the optional FE Auth
+client. **`api.baseUrl`** is the single origin for `/api/v1/*` and `/auth/*`. DOKS FE placeholder
+may appear in `corsOrigins` before real DNS. **`D-S038-t63-waive`**: `liveE2e.*` may point at
+provisional DOKS placeholders (LB + `/etc/hosts` / Host-header) while public `api.baseUrl` /
+`frontendUrl` remain Render until real DNS is pinned.
 
 ## Environment Variables (secrets + abuse controls)
 
@@ -94,37 +109,50 @@ Minimal `.env.example` — copy to repo-root `.env`. **Canonical names:** [env-c
 | `MAX_REQUEST_BODY_BYTES`                            | No            | Max request body — default **2097152** (2 MiB)               | ADR-031 / E17-19          |
 | `DISSEMINATION_EGRESS_ALLOWLIST`                    | Yes (F16–F19) | Host/CIDR allowlist; empty = fail-closed                     | ADR-029                   |
 | `METAR_CONFIG_ENV`                                  | No            | `local` \| `prod` — selects `config/*.json`                  | Default `local`           |
-| `DATABASE_URL`                                      | Ops/F8 only   | Postgres pooler / SQL URI                                    | Legacy archive / F8 store |
-| `SUPABASE_SECRET_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | F8 worker     | Service-role for ingest — **never** FE                       | ADR-018                   |
+| `DATABASE_URL`                                      | Yes (F30/F31) | DigitalOcean Postgres — sessions + F8 store/quarantine       | ADR-033                   |
+| `SUPABASE_URL`                                      | Yes (Auth)    | Supabase Auth project URL                                    | ADR-010 / ADR-033         |
+| `SUPABASE_PUBLISHABLE_KEY`                          | Yes (FE Auth) | Injected into `/config.json` for login bootstrap             | ADR-033                   |
+| `SUPABASE_JWT_SECRET` (or JWKS via project)         | Yes (API Auth)| Server JWT verify — **never** FE                             | ADR-010 / ADR-033         |
 
-### Retired (F21 — do not set for operator product)
+### Do not use for product data plane (F30)
 
-| Name                                        | Status             | Replacement                        |
-| ------------------------------------------- | ------------------ | ---------------------------------- |
-| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`      | **Retired F21**    | Public convert; `TC-F21-auth-gone` |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD`            | **Removed** (S011) | —                                  |
-| `DISABLE_AUTH` / `config.*.api.disableAuth` | **Retired F21**    | Public by default (ADR-031)        |
-| `SUPABASE_PUBLISHABLE_KEY` (browser Auth)   | **Retired F21**    | No FE Auth bootstrap               |
-| Product `/admin/*` APIs                     | **Removed** (S011) | —                                  |
+| Variable | Notes |
+|----------|-------|
+| `SUPABASE_SERVICE_ROLE_KEY` as DB writer | **Retired** for F8/product tables — use `DATABASE_URL` |
+| Supabase Postgres pooler URI as app SoT | Migrate to DO — [ops note](ops/supabase-to-do-postgres-migration.md) |
+
+### Optional live / E2E
+
+| Variable | Notes |
+|----------|-------|
+| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | **Restored** for UJ-046 / session live tests only |
+| `LIVE_API_URL` / `LIVE_FRONTEND_URL` | DOKS after cutover; Render until soak |
+
+### Still retired / removed
+
+| Name                                        | Status             | Notes                                  |
+| ------------------------------------------- | ------------------ | -------------------------------------- |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD`            | **Removed** (S011) | —                                      |
+| `DISABLE_AUTH` / `config.*.api.disableAuth` | **Retired**        | Public convert default; Auth additive  |
+| Product `/admin/*` APIs                     | **Removed** (S011) | —                                      |
 
 `create_admin_user.py` / bootstrap scripts (if retained) must not imply a shared multi-tenant
-admin dashboard; prefer documenting operator Supabase dashboard invite policy for **F8/ops only**.
+admin dashboard; prefer documenting operator Supabase Auth invite policy.
 
 ### Deprecated aliases (read with warning; remove after one release)
 
 | Deprecated                              | Canonical                                      |
 | --------------------------------------- | ---------------------------------------------- |
-| `SUPABASE_ANON_KEY`                     | Retired for FE Auth; ops-only if still present |
-| `SUPABASE_SERVICE_ROLE_KEY`             | F8 worker env (see env-contract)               |
-| `VITE_SUPABASE_URL`                     | Retired for Auth path (F21)                    |
-| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | Retired for Auth path (F21)                    |
+| `SUPABASE_ANON_KEY`                     | `SUPABASE_PUBLISHABLE_KEY`                     |
+| `SUPABASE_SERVICE_ROLE_KEY` (as DB writer) | `DATABASE_URL` (ADR-033)                    |
+| `VITE_SUPABASE_URL`                     | `config.*.supabase.url` / `/config.json`       |
+| `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | `SUPABASE_PUBLISHABLE_KEY` inject              |
 | `VITE_API_BASE_URL`                     | `config.*.api.baseUrl`                         |
 | `VITE_APP_URL`                          | `config.*.api.frontendUrl`                     |
 | `METAR_CORS_ORIGINS`                    | `config.*.api.corsOrigins`                     |
-| `DISABLE_AUTH`                          | **Retired F21** — do not set                   |
-| `FRONTEND_VITE_*` (GitHub secrets)      | Retired for Auth path                          |
+| `DISABLE_AUTH`                          | Do not set — public convert + optional Auth    |
+| `FRONTEND_VITE_*` (GitHub secrets)      | Prefer `/config.json` inject                   |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD`        | Already retired (S011)                         |
-| `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`  | **Retired F21**                                |
 
 ## CLI / Makefile
 
@@ -140,9 +168,10 @@ No new CLI flags.
 
 - Rate-limit / body knobs must be positive integers when set (`RATE_LIMIT_*`, `MAX_REQUEST_BODY_BYTES`)
 - `config/*.json` must parse as valid JSON; `api.corsOrigins` must be a non-empty array in prod
-- `api.baseUrl` must be `/api/v1` only (no `/auth`) under F21
-- `make env-check` fails if deprecated Auth-only names are required without F21 replacements
+- `api.baseUrl` is the single API origin for `/api/v1/*` **and** `/auth/*` (F31 / ADR-033) — **no** `/admin`
+- `make env-check` fails if Auth bootstrap is required without `supabase.url` / publishable key when Auth is enabled
 - Secret / service-role keys must never appear in frontend build env or committed files
+- Product DB writers use `DATABASE_URL` (DO Postgres) — not Supabase PostgREST service-role (F30)
 - `DISSEMINATION_EGRESS_ALLOWLIST` empty ⇒ fail-closed (ADR-029)
 
 ## F6 — tac2iwxxm conversion (S008)
@@ -220,22 +249,30 @@ No new `config/*.json` keys for sink credentials (memory-only paste). **One new 
 
 **`.env.example`**: Local/CI recommended allowlist set; Render/prod guidance in comments.
 
-## F21 / F22 — Public app + privacy (S023 / EV-017)
+## F21 / F22 — Public convert + privacy (S023; **amended S038 / EV-031**)
 
-No new `config/*.json` keys for IndexedDB or privacy prefs (client-only). **New API env knobs**
-(non-secret; defaults in ADR-031):
+IndexedDB + privacy prefs remain client-side. **EV-031** restores optional Auth + server sessions
+on DO Postgres while keeping public convert and abuse-control env knobs:
 
 | Concern                        | Where it lives                     | Notes                                     |
 | ------------------------------ | ---------------------------------- | ----------------------------------------- |
 | Public rate limit              | `RATE_LIMIT_PUBLIC_PER_MIN`        | Default 60/min/IP (slowapi; E17-19)       |
 | Dissemination rate limit       | `RATE_LIMIT_DISSEMINATION_PER_MIN` | Default 10/min/IP                         |
 | Max body                       | `MAX_REQUEST_BODY_BYTES`           | Default 2 MiB                             |
-| Operator Auth / `DISABLE_AUTH` | **Removed**                        | ADR-031; `/auth/*` → 404                  |
-| Work sessions API              | **Removed**                        | IndexedDB FE (ADR-031 supersedes ADR-020) |
-| Privacy prefs / GPC            | FE `localStorage` + headers        | F22 — not server env                      |
+| Optional Auth                  | `SUPABASE_*` + `packages/auth`     | JWT for work-sessions only (ADR-033)      |
+| Work sessions API              | `DATABASE_URL` + JWT               | Guest path remains IndexedDB              |
+| Privacy prefs / GPC            | FE `localStorage` + headers        | F22 — deepen storage/Auth disclosure      |
 
-**Connectivity**: Public convert increases anonymous API traffic — keep CORS + H4–H5; rate limits
-apply. Single-deploy cutover with Auth strip (E17-18).
+**Connectivity**: H4–H5 **required** this cycle for FE Auth + guest notice + DOKS URLs.
+
+## F30 / F31 — Platform independence (S038 / EV-031)
+
+| Concern | Where it lives | Notes |
+|---------|----------------|-------|
+| Product DB | `DATABASE_URL` | DO Postgres — sessions + F8 |
+| Hosting | DOKS | Render transitional until soak (TC-F30-005) |
+| Legacy migrate | Ops runbook | [supabase-to-do-postgres-migration.md](ops/supabase-to-do-postgres-migration.md) |
+| Live URLs | `LIVE_*` / `config.prod.liveE2e` | Point at DOKS after cutover |
 
 ### Session changelog
 
@@ -249,6 +286,8 @@ apply. Single-deploy cutover with Auth strip (E17-18).
 - S026 / EV-020 (2026-07-29): F9 glossary package data + optional override; F3/OpenAIP reuse for
   decode names (ADR-032) — see §F24/F25/F9 below
 - S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens — **no new env vars**; see §F26/F27
+- S038 / EV-031 (2026-08-03): F30/F31 — `DATABASE_URL` required; Auth keys restored; DOKS live URLs;
+  F8 off Supabase DB (ADR-033)
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
 
@@ -294,17 +333,18 @@ No new Render secrets required for P0/P1 library fixtures. Redeploy API before c
 
 ## References
 
-- [env-contract.md](env-contract.md) — per-environment matrix (**canonical F21**)
+- [env-contract.md](env-contract.md) — per-environment matrix (**canonical F30/F31**)
 - [env-sync-runbook.md](ops/env-sync-runbook.md) — operator rotation steps
 - [ADR-010](adr/ADR-010-supabase-keys-config-split.md)
+- [ADR-033](adr/ADR-033-platform-independence-auth-do-doks.md)
+- [ADR-031](adr/ADR-031-public-app-indexeddb-history.md) — partially superseded (guest IndexedDB + public convert kept)
+- [ADR-020](adr/ADR-020-unified-tac-work-sessions.md) — session shape; host = DO Postgres under ADR-033
 - [ADR-014](adr/ADR-014-tac2iwxxm-rust-gifts-removal.md)
 - [ADR-026](adr/ADR-026-msgspec-http-openapi.md)
-- [ADR-020](adr/ADR-020-unified-tac-work-sessions.md) — **Superseded by ADR-031**
-- [ADR-031](adr/ADR-031-public-app-indexeddb-history.md) — public app + IndexedDB
 - [ADR-021](adr/ADR-021-byo-credentials-admin-removal.md)
 - [ADR-029](adr/ADR-029-dissemination-ssrf-allowlist.md)
 - [ADR-030](adr/ADR-030-dissemination-package-architecture.md)
 - [ADR-032](adr/ADR-032-wmo-default-golden-glossary.md) — WMO default goldens + glossary
 - [deploy.md](deploy.md) §Integration
 - [api-contract.md](api-contract.md)
-- Supabase: [API keys](https://supabase.com/docs/guides/api/api-keys)
+- Supabase Auth: [API keys](https://supabase.com/docs/guides/api/api-keys)

@@ -94,14 +94,14 @@ export function Login({
           </div>
         </div>
 
-        <Card className="p-8 bg-card border-border">
+        <Card className="p-8 bg-card border-border" data-testid="login-view">
           {/* Header */}
           <div className="mb-8 border-b border-border pb-6">
             <h1 className="text-xl font-semibold text-foreground mb-1 tracking-tight uppercase">
               METAR Converter
             </h1>
             <p className="text-sm text-muted-foreground font-mono">
-              Authentication System v1.0
+              Optional sign-in for long-term work history
             </p>
           </div>
 
@@ -259,10 +259,9 @@ export function Login({
             </p>
           </div>
 
-          {/* Admin Access Link */}
           <div className="mt-2 text-center">
             <p className="text-xs text-muted-foreground font-mono">
-              <span className="text-secondary">ADMIN:</span> Login to access dashboard
+              Convert stays available without signing in
             </p>
           </div>
         </Card>

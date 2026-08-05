@@ -31,9 +31,10 @@ class TestCoverageConfig:
         )
         assert "fail_under = 95" in content
 
-    def test_auth_package_absent_from_coverage_gates(self) -> None:
-        assert not (ROOT / "packages/auth/pyproject.toml").exists()
+    def test_auth_package_listed_in_workspace_without_codecov(self) -> None:
+        assert (ROOT / "packages/auth/pyproject.toml").exists()
         # Codecov removed (EV-028 / #781); coverage gates live in pyproject.toml only.
         assert not (ROOT / ".codecov.yml").exists()
         root = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        assert "packages/auth" not in root
+        assert "packages/auth" in root
+        assert "metar-auth" in root

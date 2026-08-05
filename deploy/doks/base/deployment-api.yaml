@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metar-api
+  labels:
+    app.kubernetes.io/name: metar-api
+    app.kubernetes.io/component: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metar-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metar-api
+        app.kubernetes.io/component: api
+    spec:
+      # T6.2 / TC-EV031-002 — idempotent schema migrate before API serves traffic.
+      # Image pin: ev031-doks (alembic-capable) until EV-031 merges and CI republishes main-latest.
+      imagePullSecrets:
+        - name: ghcr-pull
+      initContainers:
+        - name: alembic-upgrade
+          image: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
+          imagePullPolicy: Always
+          workingDir: /app/apps/backend
+          command: ["python", "-m", "alembic", "-c", "alembic.ini", "upgrade", "head"]
+          envFrom:
+            - configMapRef:
+                name: metar-api-config
+            - secretRef:
+                name: metar-api-secrets
+      containers:
+        - name: api
+          image: ghcr.io/empiric2/tac-to-iwxxm/backend:ev031-doks
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: metar-api-config
+            - secretRef:
+                name: metar-api-secrets
+          # T7.1 interim: mount sslmode rewrite until GHCR push republishes ev031-doks
+          # with work_session_service._sync_database_url fix (remove after image bump).
+          volumeMounts:
+            - name: work-session-ssl-fix
+              mountPath: /app/apps/backend/src/services/work_session_service.py
+              subPath: work_session_service.py
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+      volumes:
+        - name: work-session-ssl-fix
+          configMap:
+            name: work-session-ssl-fix

@@ -68,7 +68,7 @@ export function getRuntimeConfig(): MetarRuntimeConfig {
   return configFromViteEnv();
 }
 
-/** API base URL for merged backend (/api/v1, /auth, /admin). */
+/** API base URL for merged backend (/api/v1/* and /auth/*). */
 export function getApiBaseUrl(): string {
   return getRuntimeConfig().api.baseUrl.trim().replace(/\/+$/, '');
 }
@@ -78,7 +78,7 @@ export function getSupabaseUrl(): string {
   return getRuntimeConfig().supabase.url;
 }
 
-/** Supabase publishable key for browser client (edge helpers only — F21 has no Auth). */
+/** Supabase publishable key for optional Auth FE client (F31 / F21 Amended). */
 export function getSupabasePublishableKey(): string {
   return getRuntimeConfig().supabase.publishableKey || '';
 }

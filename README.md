@@ -2,7 +2,7 @@
 
 [![CI/CD](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml)
 [![E2E](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml)
-[![E2E tests](https://img.shields.io/badge/E2E_tests-64-blue)](apps/e2e)
+[![E2E tests](https://img.shields.io/badge/E2E_tests-69-blue)](apps/e2e)
 [![Unit coverage gate](https://img.shields.io/badge/unit_coverage-%E2%89%A598%25-success)](docs/test-plan.md)
 
 Convert aviation METAR/SPECI TAC messages to WMO IWXXM XML. React frontend, FastAPI backend,
@@ -41,6 +41,9 @@ apps/backend           :8001 (dev)  ·  :18001 (Docker)
 ```bash
 git clone https://github.com/EMPIRIC2/TAC-to-IWXXM.git
 cd TAC-to-IWXXM
+
+# macOS system deps (python@3.12, node@22, uv, rust, …) — see Brewfile
+brew bundle --file=Brewfile
 
 cp .env.example .env   # add Supabase credentials
 make install           # uv sync + pnpm install

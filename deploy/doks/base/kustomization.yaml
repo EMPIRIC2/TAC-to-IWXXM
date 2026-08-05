@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: metar-iwxxm
+# Secrets (secret-api.yaml / secret-worker.yaml) are stubs only — apply
+# out-of-band; never include them here or `kubectl apply -k` overwrites live values.
+resources:
+  - namespace.yaml
+  - configmap-api.yaml
+  - configmap-worker.yaml
+  - configmap-frontend-runtime.yaml
+  - deployment-api.yaml
+  - job-alembic-upgrade.yaml
+  - service-api.yaml
+  - ingress-api.yaml
+  - deployment-frontend.yaml
+  - service-frontend.yaml
+  - ingress-frontend.yaml
+  - deployment-worker.yaml
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: metar-iwxxm
+      app.kubernetes.io/managed-by: kustomize
+    includeSelectors: false

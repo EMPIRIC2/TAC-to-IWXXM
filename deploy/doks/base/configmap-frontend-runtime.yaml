@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metar-frontend-runtime-config
+  labels:
+    app.kubernetes.io/name: metar-frontend
+    app.kubernetes.io/component: frontend
+data:
+  # Provisional cutover config (D-S038-t63-waive): placeholder hosts + LB via /etc/hosts.
+  # Public Render URLs remain in committed config/prod.json until real DNS (T6.3 residual).
+  config.json: |
+    {
+      "environment": "prod",
+      "api": {
+        "baseUrl": "http://api.doks.placeholder.metar-iwxxm.local",
+        "frontendUrl": "http://app.doks.placeholder.metar-iwxxm.local",
+        "corsOrigins": [
+          "http://app.doks.placeholder.metar-iwxxm.local",
+          "http://168.144.12.70",
+          "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+        ]
+      },
+      "supabase": {
+        "url": "https://ktvxijislbtgqapllmuk.supabase.co"
+      }
+    }

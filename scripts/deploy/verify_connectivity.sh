@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # H0c + H4 + H5 connectivity verification (staging / post-deploy).
 # See docs/deploy.md §Runbook and .cursor/skills/connectivity-gates.md
+#
+# Provisional DOKS (D-S038-t63-waive): source doks_provisional_live_env.sh first
+# (or make test-live-connectivity-doks-provisional). API/FE fetches use LB IP +
+# Ingress Host headers; H5 expects VITE_API_BASE_URL (placeholder API host).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -14,6 +18,26 @@ export STAGING_FRONTEND_ORIGIN="${STAGING_FRONTEND_ORIGIN:-${LIVE_FRONTEND_URL}}
 export STAGING_FRONTEND_URL="${STAGING_FRONTEND_URL:-${LIVE_FRONTEND_URL}}"
 export VITE_API_BASE_URL="${VITE_API_BASE_URL:-${LIVE_API_URL}}"
 
+DOKS_PROVISIONAL=0
+if [[ "${PLAYWRIGHT_DOKS_PROVISIONAL:-}" == "1" || "${DOKS_PROVISIONAL:-}" == "1" ]]; then
+  DOKS_PROVISIONAL=1
+fi
+DOKS_LB_IP="${DOKS_LB_IP:-168.144.12.70}"
+DOKS_API_HOST="${DOKS_API_HOST:-api.doks.placeholder.metar-iwxxm.local}"
+DOKS_FE_HOST="${DOKS_FE_HOST:-app.doks.placeholder.metar-iwxxm.local}"
+
+api_curl_headers=()
+fe_curl_headers=()
+if [[ "$DOKS_PROVISIONAL" == "1" ]]; then
+  api_curl_headers=(-H "Host: ${DOKS_API_HOST}")
+  fe_curl_headers=(-H "Host: ${DOKS_FE_HOST}")
+  # FE hostname may not resolve; fetch via LB IP + Host.
+  FE_FETCH_BASE="http://${DOKS_LB_IP}"
+  echo "DOKS provisional mode: LB=${DOKS_LB_IP} API_HOST=${DOKS_API_HOST} FE_HOST=${DOKS_FE_HOST}"
+else
+  FE_FETCH_BASE="${STAGING_FRONTEND_URL}"
+fi
+
 wake_live_api() {
   local base_url="${1:-}"
   if [[ -z "$base_url" ]]; then
@@ -22,7 +46,7 @@ wake_live_api() {
   base_url="${base_url%/}"
   local attempt
   for attempt in 1 2 3; do
-    if curl -sf --max-time 30 "${base_url}/health" >/dev/null; then
+    if curl -sf --max-time 30 "${api_curl_headers[@]}" "${base_url}/health" >/dev/null; then
       echo "Live API awake: ${base_url}"
       return 0
     fi
@@ -63,9 +87,15 @@ if [[ -n "${STAGING_FRONTEND_URL:-}" && -n "${VITE_API_BASE_URL:-}" ]]; then
   echo "== H5: Frontend runtime config check =="
   frontend_base="${STAGING_FRONTEND_URL%/}"
   expected_api_url="${VITE_API_BASE_URL%/}"
+  fetch_base="${FE_FETCH_BASE%/}"
 
-  if ! config_json="$(curl -sfL "${frontend_base}/config.json")"; then
-    echo "ERROR: could not fetch ${frontend_base}/config.json"
+  if ! config_json="$(curl -sfL "${fe_curl_headers[@]}" "${fetch_base}/config.json")"; then
+    echo "ERROR: could not fetch ${fetch_base}/config.json"
+    if [[ "$DOKS_PROVISIONAL" == "1" ]]; then
+      echo "  (Host: ${DOKS_FE_HOST}; origin label ${frontend_base})"
+    else
+      echo "  (URL: ${frontend_base}/config.json)"
+    fi
     exit 1
   fi
 

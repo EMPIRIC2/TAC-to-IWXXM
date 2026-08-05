@@ -1,30 +1,32 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-04 (S040 / EV-032 — F32 VONA `product=vona`; #846)
+> **Last updated**: 2026-08-04 (S038 / EV-031 F30/F31 Auth + DO sessions; S040 / EV-032 F32 VONA `product=vona`; #846)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
-> F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 remove operator Auth / public APIs**;
-> **F22 privacy preferences (client-only)**
+> F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
+> Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
 
 ## Base URLs
 
 | Environment | Frontend | API |
 |-------------|----------|-----|
 | Local dev | `http://localhost:18000` | `http://localhost:18001` |
-| Render | `https://<frontend-host>` | `https://<api-host>` |
+| DOKS (prod) | `https://app.tac-to-iwxxm.com` | `https://api.tac-to-iwxxm.com` |
+| Render (transitional) | `https://<frontend-host>.onrender.com` | `https://<api-host>.onrender.com` |
 
-**EV-017 / F21**: Operator Auth removed. Frontend uses single API base for `/api/v1/*` only.
-Legacy `/auth/*` and `/admin/*` are **gone** (404). Work history is **client IndexedDB** — not
-HTTP session CRUD.
+**EV-031 / F21 Amended**: Frontend uses single API base for `/api/v1/*` **and** `/auth/*`.
+Convert/lint/validate/disseminate remain **public** (no JWT). JWT required only for
+`/api/v1/work-sessions*`. Guests use IndexedDB; logged-in users use DO Postgres sessions.
+`/admin/*` remains **gone** (404).
 
 ## Services
 
-| Service | Pre-migration | Post-migration | EV-017 |
+| Service | Pre-migration | Post-migration | EV-031 |
 |---------|---------------|----------------|--------|
 | Conversion API | backend:8001 | apps/backend | Public + abuse controls |
-| Auth | auth:8003 | apps/backend (packages/auth) | **Removed** (operator) |
-| Frontend | frontend:5173/8000 | apps/frontend | No login UX |
-| Worker | — | apps/worker | Unchanged (service-role) |
+| Auth | auth:8003 | apps/backend (`packages/auth`) | **Restored** (Auth-only Supabase) |
+| Frontend | frontend:5173/8000 | apps/frontend | Optional login + guest notice |
+| Worker | — | apps/worker | `DATABASE_URL` → DO Postgres |
 
 ## Endpoints
 
@@ -34,7 +36,7 @@ HTTP session CRUD.
 |---------|---------|---------|
 | High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
 | High-churn **requests** (same routes) | **multipart/form-data** via FastAPI `Form`/`File` (unchanged intake) | Form fields documented as today |
-| `/auth/*`, work-sessions | **Removed (F21)** | — |
+| `/auth/*`, work-sessions | **pydantic** (restored F31) | pydantic |
 | airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
 
 Breaking JSON **response** field changes on high-churn routes are allowed in EV-010; frontend
@@ -57,7 +59,8 @@ GET /health
 ```
 
 **Breaking (F6 cutover)**: `gifts_available` removed; clients must use `tac2iwxxm_available`.
-### Authentication — Removed (S023 / EV-017 / F21)
+
+### Authentication — Restored (S038 / EV-031 / F31; was Removed F21)
 
 ```
 POST /auth/register
@@ -67,11 +70,11 @@ GET  /auth/me
 GET  /auth/health
 ```
 
-**Status**: **Removed** from product surface (prefer HTTP **404**). Operator JWT and
-`DISABLE_AUTH` dual path retired. F8 worker retains service-role credentials **off** the
-public operator router (ADR-018).
+**Status**: **Restored** for optional long-term storage. Supabase Auth issues JWTs; API verifies
+via `packages/auth`. Convert/lint/validate/disseminate **do not** require JWT.
 
-**Historical**: Supabase JWT via `packages/auth` on same host as API (M4 / REQ-017).
+**F8**: Worker uses machine/`DATABASE_URL` credentials **off** the operator Auth path (ADR-018
+amend / ADR-033).
 
 ### Admin — Removed (S011 / #697)
 
@@ -96,9 +99,9 @@ Auth Admin / bootstrap scripts only (ADR-010). Operator credentials are **BYO** 
 POST /api/v1/convert
 ```
 
-**Auth**: **None** (F21 public). Abuse controls: per-IP + global rate limits, body/batch size,
-timeouts/concurrency (finalize numeric defaults in 04-tech-plan). Guests and operators share
-the same public convert path. Work history is **not** server-persisted (IndexedDB — F5/F7.h).
+**Auth**: **None** (F21 Amended — public). Abuse controls: per-IP + global rate limits, body/batch
+size, timeouts/concurrency (finalize numeric defaults in 04-tech-plan). Guests and operators share
+the same public convert path. Work history: guest → IndexedDB; logged-in → separate session APIs.
 
 **Request** (multipart/form-data **only** for product/profile — not read from JSON body):
 
@@ -418,10 +421,12 @@ POST /api/v1/validate
 **Response**: Pass/fail + messages; each issue may include optional integer `start` / `end`
 (S011) when the validator can map to TAC or XML offsets — otherwise omit.
 
-### Work sessions (F5+F7 — **retired HTTP**; IndexedDB client — S023 / EV-017)
+### Work sessions (F5+F7+F31 — **restored HTTP**; hybrid storage — S038 / EV-031)
 
-**Status**: Server CRUD on `tac_work_sessions` is **removed from the public API** (F21 / F7.h).
-Prefer HTTP **404** / gone for:
+**Status**: Server CRUD on `tac_work_sessions` is **restored** for **logged-in** operators
+(JWT required). Storage host = **DigitalOcean Postgres** (`DATABASE_URL`). Guests continue to
+use IndexedDB only (no server calls while logged out). On login, client **auto-uploads** eligible
+local drafts (`D-S038-guest-merge`=2).
 
 ```
 GET    /api/v1/work-sessions
@@ -432,32 +437,26 @@ DELETE /api/v1/work-sessions/{id}
 POST   /api/v1/work-sessions/{id}/restore
 ```
 
-**Client**: IndexedDB workspace (UUID per item; export/import JSON). Legacy Supabase rows are
-**not** publicly readable; archive/delete after ~30 days post-cutover.
+**Auth**: Bearer JWT (Supabase Auth). Owner isolation by Auth `user_id`. Exact list/query/body
+shapes finalize in 04 (historical ADR-020 shapes are the starting point).
 
-**Historical (pre-EV-017)**: Bearer JWT + RLS (`auth.uid() = user_id`) on unified
-`tac_work_sessions` (ADR-020).
+**Admin work-sessions list**: Remains removed (`GET /admin/work-sessions`).
 
-**Admin work-sessions list**: Already removed (`GET /admin/work-sessions`).
-
-**Guest users**: Convert/validate/lint/decode/preview/dissemination without login; history local.
-
-**Historical HTTP shapes** (pre-EV-017 — removed): list query params, POST/PATCH bodies, and
-`WorkSession` responses documented in git history / ADR-020; not part of the public contract.
+**Guest users**: Convert/validate/lint/decode/preview/dissemination without login; history local
++ persistent loss-of-progress notice (UJ-045).
 
 ## CORS
 
 | Header | Value |
 |--------|-------|
 | `Access-Control-Allow-Origin` | Origins from `config.*.api.corsOrigins` |
-| `Access-Control-Allow-Methods` | GET, POST, OPTIONS |
-| `Access-Control-Allow-Headers` | Content-Type (Authorization optional/legacy) |
+| `Access-Control-Allow-Methods` | GET, POST, PATCH, DELETE, OPTIONS |
+| `Access-Control-Allow-Headers` | Content-Type, Authorization |
 
-Preflight: `OPTIONS` on `/api/v1/*` (legacy `/auth/*` gone — F21).
+Preflight: `OPTIONS` on `/api/v1/*` and `/auth/*`.
 
-F6/F7 fields do **not** change CORS headers. Frontend and API remain different origins on Render;
-configure `config.*.api.corsOrigins` accordingly. Live workbench increases request volume
-(debounce/Abort on client — H4–H5 still required).
+Frontend and API may be different origins on DOKS; configure `corsOrigins` accordingly. H4–H5
+**required** this cycle after Auth + URL changes.
 
 ## Dissemination (F16–F19) — Done (EV-014); multi-select deepen EV-018
 
@@ -514,17 +513,18 @@ uses **200** with structured partial failure when `preview=true`.
 ## Frontend Integration
 
 Runtime config via `GET /config.json` (copied from `config/prod.json` at deploy; publishable
-key injected from `SUPABASE_PUBLISHABLE_KEY`).
+Auth key injected from `SUPABASE_PUBLISHABLE_KEY`).
 
 | Config field | Purpose |
 |--------------|---------|
-| `api.baseUrl` | API base (`/api/v1` only — **no** `/auth`, **no** `/admin`) |
+| `api.baseUrl` | API base (`/api/v1` **and** `/auth` — **no** `/admin`) |
+| `supabase.url` / `publishableKey` | Optional Auth bootstrap for login UX |
 
-**F21**: Operator frontend no longer needs `supabase.url` / `supabase.publishableKey` for Auth.
-F8 worker and legacy ops may still use server-side Supabase credentials off the public router.
+**F21 Amended / F31**: FE may show login for long-term storage; convert works without Auth.
+Guest history remains IndexedDB; logged-in history uses work-sessions APIs.
 
 **Deprecated**: `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY`,
-`VITE_APP_URL` — one-release shim during S003 migration.
+`VITE_APP_URL` — prefer runtime `/config.json`.
 
 **Breaking changes (F6 cutover)**:
 - Health: `gifts_available` → `tac2iwxxm_available`
@@ -535,11 +535,16 @@ F8 worker and legacy ops may still use server-side Supabase credentials off the 
 - `/admin/*` removed
 - `POST /api/v1/decode-tac` added
 - `preview` on `/convert`; optional `start`/`end` on lint/validate issues
-- Work sessions: top-level `product`; storage was `tac_work_sessions` (pre-EV-017)
+- Work sessions: top-level `product`; storage shape from ADR-020
 
-**Breaking (F21 / S023 / EV-017)**:
-- Operator Auth / `/auth/*` / JWT gates removed from public API
-- Server work-session CRUD removed; history → browser IndexedDB (F7.h)
+**Breaking (F21 / S023 / EV-017)** — historical:
+- Operator Auth / `/auth/*` / JWT gates removed; server sessions → IndexedDB
+
+**Breaking / additive (F30/F31 / S038 / EV-031)**:
+- `/auth/*` restored (Supabase Auth-only)
+- `/api/v1/work-sessions*` restored (JWT; DO Postgres)
+- Convert remains public; TC-F21-auth-gone amended
+- Product data plane leaves Supabase DB (ADR-033)
 
 OpenAPI / shared TS codegen remains planned (P1); this contract is the requirements SoT until then.
 
@@ -547,10 +552,12 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 - docs/guides/API.md (detailed examples — update paths during implementation)
 - docs/deploy.md §Integration
-- ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md); [ADR-020](adr/ADR-020-unified-tac-work-sessions.md)
+- ADR-014; [ADR-015](adr/ADR-015-validate-packages-bulletin-api-f7-f8.md); [ADR-020](adr/ADR-020-unified-tac-work-sessions.md); [ADR-033](adr/ADR-033-platform-independence-auth-do-doks.md)
 
 ### Session changelog
 
+- S038 / EV-031 (2026-08-03): F30/F31 — `/auth/*` + work-sessions restored; convert public;
+  DO Postgres; ADR-033; amend TC-F21-auth-gone semantics
 - S008 (2026-07-12): product required; profile; tac2iwxxm_available; validate profile; error codes
 - S008 amend (2026-07-12): validate → iwxxm-validate; `POST /api/v1/lint-tac`;
   `POST /api/v1/convert-bulletin` (multi-result TBD 04); `/convert` single-report only
@@ -612,7 +619,7 @@ content requires new documented code enums (prefer additive).
 | `POST /api/v1/decode-tac` | **None (wire)** | SIGMET/VA best-effort decode already F9 sparse-product scope; fixtures may expand |
 | `POST /api/v1/validate` | **None (wire)** | Round-trip goldens use existing validate levels |
 | `POST /api/v1/dissemination/*` | **OOS** | No F16–F19 changes this cycle (E19-6) |
-| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+| `/auth/*`, work-sessions | **None** | Historical (F21 public era — pre–EV-031); restored F31 |
 
 **Breaking changes**: None expected. Root selection is package-side behavior under existing
 `product=sigmet`; FE OpenAPI types update only if catalog/issue content requires new
@@ -646,7 +653,7 @@ documented code enums (prefer additive).
 | `POST /api/v1/decode-tac` | **None (wire)** | VAA/TCA best-effort decode already F9 sparse-product scope (G4); fixtures may expand |
 | `POST /api/v1/validate` | **None (wire)** | Round-trip goldens use existing validate levels |
 | `POST /api/v1/dissemination/*` | **OOS** | No F16–F19 changes this cycle |
-| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+| `/auth/*`, work-sessions | **None** | Historical (F21 public era — pre–EV-031); restored F31 |
 
 **Breaking changes**: None expected. FE Examples catalog is static (no new API). FE OpenAPI
 types update only if catalog/issue content requires new documented code enums (prefer additive).
@@ -667,7 +674,7 @@ types update only if catalog/issue content requires new documented code enums (p
 | `POST /api/v1/decode-tac` | **Additive enum** | `product=swxa` best-effort decode (F9 G4); TC SIGMET under `sigmet` |
 | `POST /api/v1/validate` | **None (wire)** | Existing levels; SWXA/TC SIGMET goldens use same validate path |
 | `POST /api/v1/dissemination/*` | **Consume AHL helpers** | No new routes; shared AHL/`T1T2`/filename model for sinks (drawer UI OOS) |
-| `/auth/*`, work-sessions | **None** | Unchanged (F21 public) |
+| `/auth/*`, work-sessions | **None** | Historical (F21 public era — pre–EV-031); restored F31 |
 
 **Breaking changes**: None — additive `swxa` only. FE OpenAPI / product pickers must add
 `swxa` when F28 unlocks Examples. Runtime enum enforcement lands in 07-build (backend +

@@ -13,7 +13,6 @@ env:
   BACKEND_IMAGE: empiric2/tac-to-iwxxm/backend
   FRONTEND_IMAGE: empiric2/tac-to-iwxxm/frontend
   WORKER_IMAGE: empiric2/tac-to-iwxxm/worker
-  RENDER_DEPLOY_MODE: image
   # Canonical Supabase secrets (preferred). Deprecated FRONTEND_VITE_* kept for one-release shim.
   SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
   SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -72,6 +71,7 @@ jobs:
         package:
           [
             shared,
+            auth,
             backend,
             frontend,
             tac2iwxxm,
@@ -134,6 +134,15 @@ jobs:
             --cov=src --cov-config=pyproject.toml --cov-branch \
             --cov-report=xml:coverage.xml --cov-report=term-missing \
             --cov-fail-under=98 -v
+
+      # F31 / EV-031 T1.3 — JWKS Auth unit tests (tests/unit/auth). Coverage report only;
+      # fail_under deferred until proxy/router surface is fully exercised.
+      - name: Run auth unit tests with coverage
+        if: matrix.package == 'auth'
+        run: |
+          uv run pytest tests/unit/auth --cov=metar_auth \
+            --cov-config=packages/auth/pyproject.toml --cov-branch \
+            --cov-report=xml:packages/auth/coverage.xml --cov-report=term-missing -v
 
       # EV-023 / E23-T4=2: TC-EV023-005 Amd79 informative cases use xfail(strict=False);
       # xfail_strict=false in packages/tac2iwxxm/pyproject.toml — soft failures must not hard-fail.
@@ -237,6 +246,52 @@ jobs:
         if: always() && matrix.package == 'integration'
         run: docker compose down
 
+  # F30 / EV-031 T2.3 — Postgres service + idempotent alembic upgrade head (TC-EV031-002).
+  test-alembic:
+    runs-on: ubuntu-latest
+    name: Test (alembic / TC-EV031-002)
+    needs: [validate]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: tac_alembic_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/tac_alembic_test
+      ALEMBIC_TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/tac_alembic_test
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Alembic upgrade head (twice — must be idempotent)
+        run: |
+          make db-migrate
+          make db-migrate
+
+      - name: TC-EV031-002 layout + live upgrade tests
+        run: make test-alembic
+
   # ============================================================================
   # NATIVE — tac2iwxxm PyO3 / maturin scaffold (ADR-017 / T4.3)
   # ============================================================================
@@ -336,14 +391,13 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # DEPLOY — build/push images and trigger Render (main push only)
-  # TEMPORARY: skip cleanly when GHCR login or Render deploy hooks are missing
-  # (e.g. post-org-transfer secret/package setup incomplete).
+  # DEPLOY — build/push GHCR images (main push only). Render triggers retired (T6.5 /
+  # D-S038-t65-waive). DOKS pulls from GHCR; skip cleanly when GHCR login fails.
   # ============================================================================
   deploy:
     runs-on: ubuntu-latest
     name: Deploy
-    needs: [test, tac2iwxxm-native]
+    needs: [test, test-alembic, tac2iwxxm-native]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -360,37 +414,23 @@ jobs:
         with:
           submodules: false
 
-      - name: Guard CD credentials (skip if unset)
+      - name: Guard CD credentials (skip if GHCR unavailable)
         id: guard
         env:
           REGISTRY_USERNAME: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          missing=0
 
-          if [ -z "${RENDER_BACKEND_DEPLOY_HOOK:-}" ]; then
-            echo "::notice::RENDER_BACKEND_DEPLOY_HOOK unset"
-            missing=1
-          fi
-          if [ -z "${RENDER_FRONTEND_DEPLOY_HOOK:-}" ]; then
-            echo "::notice::RENDER_FRONTEND_DEPLOY_HOOK unset"
-            missing=1
-          fi
           if [ -z "${REGISTRY_PASSWORD:-}" ]; then
-            echo "::notice::GITHUB_TOKEN unavailable for GHCR"
-            missing=1
-          fi
-
-          if [ "${missing}" -ne 0 ]; then
-            echo "::notice::CD credentials incomplete — skipping Deploy (temporary)"
+            echo "::notice::GITHUB_TOKEN unavailable for GHCR — skipping Deploy"
             echo "skip=true" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
 
           # Probe GHCR write access under the current org (EMPIRIC2).
           if ! printf '%s' "${REGISTRY_PASSWORD}" | docker login "${REGISTRY}" -u "${REGISTRY_USERNAME}" --password-stdin; then
-            echo "::notice::GHCR login failed — skipping Deploy (temporary)"
+            echo "::notice::GHCR login failed — skipping Deploy"
             echo "skip=true" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
@@ -480,9 +520,10 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:main-latest
 
-      - name: Report deploy hook configuration
+      - name: Note Render deploy hooks (suspended OK)
         if: steps.guard.outputs.skip != 'true'
         run: |
+          echo "Live traffic is DOKS (api|app.tac-to-iwxxm.com). Render hooks may skip_if_suspended."
           [ -n "${RENDER_BACKEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_BACKEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_BACKEND_DEPLOY_HOOK is missing"
           [ -n "${RENDER_FRONTEND_DEPLOY_HOOK}" ] && echo "✅ RENDER_FRONTEND_DEPLOY_HOOK is set" || echo "⚠️  RENDER_FRONTEND_DEPLOY_HOOK is missing"
           [ -n "${RENDER_WORKER_DEPLOY_HOOK}" ] && echo "✅ RENDER_WORKER_DEPLOY_HOOK is set" || echo "⚠️  RENDER_WORKER_DEPLOY_HOOK is missing (docker-from-git worker OK)"
@@ -540,4 +581,4 @@ jobs:
 
       - name: CD skipped (credentials)
         if: steps.guard.outputs.skip == 'true'
-        run: echo "Deploy skipped — configure RENDER_*_DEPLOY_HOOK secrets and GHCR package write for EMPIRIC2, then re-enable."
+        run: echo "Deploy skipped — GHCR package write unavailable for EMPIRIC2."

@@ -1,55 +1,48 @@
 /**
- * TC-F21-auth-gone — Auth UX and routes removed (UJ-003 superseded).
+ * F31 / F21 Amended — optional Auth surface (UJ-003 restored via UJ-046).
  *
- * Spec: docs/test-plan.md TC-F21-auth-gone; S023 / EV-017 / T7.1.
+ * Spec: docs/test-plan.md TC-F31-003; TC-EV031-003; S038 / EV-031.
+ * Supersedes S023 TC-F21-auth-gone negatives (Auth routes restored).
  */
 import { expect, test } from '@playwright/test';
-import { openPublicConverter, playwrightApiBaseUrl } from './playwright-e2e-helpers';
+import { openPublicConverter, playwrightApiFetch } from './playwright-e2e-helpers';
 
-test.describe('TC-F21-auth-gone — Auth surface removed', () => {
-  test('converter has no login chrome', async ({ page }) => {
+test.describe('F31 — optional Auth + public convert', () => {
+  test('converter boots as guest with optional Sign in chrome', async ({ page }) => {
     await openPublicConverter(page);
 
+    await expect(page.getByTestId('sign-in-button')).toBeVisible();
     await expect(page.locator('#email')).toHaveCount(0);
-    await expect(page.locator('#password')).toHaveCount(0);
-    await expect(page.getByRole('button', { name: /sign in to account/i })).toHaveCount(
-      0,
-    );
-    await expect(
-      page.getByRole('link', { name: /sign up|register|log in/i }),
-    ).toHaveCount(0);
+    await expect(page.getByTestId('login-view')).toHaveCount(0);
   });
 
-  test('Auth and work-sessions API routes return 404', async ({ request }) => {
-    const base = playwrightApiBaseUrl();
-
-    const login = await request.post(`${base}/auth/login`, {
+  test('Auth login rejects bad credentials; work-sessions require JWT', async ({
+    request,
+  }) => {
+    const login = await playwrightApiFetch(request, '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       data: { email: 'nobody@example.com', password: 'invalid' },
-      timeout: 10_000,
+      timeout: 15_000,
     });
-    expect(login.status()).toBe(404);
+    expect(login.status()).toBe(401);
 
-    const register = await request.post(`${base}/auth/register`, {
-      data: { email: 'nobody@example.com', password: 'invalid' },
-      timeout: 10_000,
+    const sessions = await playwrightApiFetch(request, '/api/v1/work-sessions', {
+      method: 'GET',
+      timeout: 15_000,
     });
-    expect(register.status()).toBe(404);
-
-    const sessions = await request.get(`${base}/api/v1/work-sessions`, {
-      timeout: 10_000,
-    });
-    expect(sessions.status()).toBe(404);
+    expect(sessions.status()).toBe(401);
   });
 
   test('convert succeeds without Authorization header', async ({ request }) => {
-    const base = playwrightApiBaseUrl();
-    const response = await request.post(`${base}/api/v1/convert`, {
+    const response = await playwrightApiFetch(request, '/api/v1/convert', {
+      method: 'POST',
       multipart: {
         manual_text:
           'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990',
         product: 'METAR',
       },
-      timeout: 30_000,
+      timeout: 45_000,
     });
 
     expect(response.status()).toBeLessThan(500);

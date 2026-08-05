@@ -28,7 +28,7 @@ repos:
       - id: ruff-check
         name: ruff check
         # Keep paths in sync with Makefile PY_LINT
-        entry: uv run ruff check --force-exclude apps/backend/src apps/backend/tests packages/shared packages/shared/tests packages/tac2iwxxm/src packages/tac2iwxxm/tests packages/iwxxm-validate/src packages/iwxxm-validate/tests packages/tac-validate/src packages/tac-validate/tests packages/dissemination/src packages/dissemination/tests tests
+        entry: uv run ruff check --force-exclude apps/backend/src apps/backend/tests packages/auth/src packages/shared packages/shared/tests packages/tac2iwxxm/src packages/tac2iwxxm/tests packages/iwxxm-validate/src packages/iwxxm-validate/tests packages/tac-validate/src packages/tac-validate/tests packages/dissemination/src packages/dissemination/tests tests
         language: system
         pass_filenames: false
         always_run: true
@@ -52,7 +52,7 @@ repos:
         always_run: true
       - id: basedpyright
         name: basedpyright (Python)
-        entry: bash -c 'uv run basedpyright packages/shared/src && cd apps/backend && uv run basedpyright'
+        entry: bash -c 'uv run basedpyright packages/shared/src && uv run basedpyright packages/auth/src && cd apps/backend && uv run basedpyright'
         language: system
         pass_filenames: false
         always_run: true

@@ -383,4 +383,22 @@
 | EV-025/E25-T6 | Draft plan | Draft from T1–T5; Gate B pending | confirmed |
 | EV-025/E25-04 | Gate B | Approve M0–M7 → 07-build @ T0.1 | confirmed |
 
+## EV-031 / #842+#830+#712 — Platform independence (2026-08-03)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-031/E31-M | Document Manifest | Full 1–10; Feature List first | confirmed |
+| EV-031/F30 | Feature List F30 | Accept; owns #830+#712; public convert APIs | confirmed |
+| EV-031/F31 | Feature List F31 | Accept; hybrid sessions; F21 Amended | confirmed |
+| EV-031/guest-merge | Guest→login | **Auto-upload** all eligible local drafts (no prompt) | confirmed |
+| EV-031/auth | Auth model | Supabase Auth for long-term storage only | confirmed |
+| EV-031/data | Data plane | DigitalOcean Postgres for product DB + F8 | confirmed |
+| EV-031/host | Hosting | DOKS production cutover; Render retire after soak | confirmed |
+| EV-031/spec-topo | Spec topology | packages/auth + work-sessions* restored | confirmed |
+| EV-031/spec-data | Data/cutover | Single DO DB; Alembic; one-time migrate Supabase→DO | confirmed |
+| EV-031/uj | User Journeys | UJ-045..048; persistent guest banner | confirmed |
+| EV-031/tp | Test Plan | TC-F30/F31/EV031; H4–H5 required; lean remaining docs | confirmed |
+| EV-031/docs-lean | Standing deltas | test-plan, config, env-contract, api, deploy, deps, ADR-033, migration note | drafted |
+| EV-031/02-batch-c | Stale F21 + Gate A | Fix C1–C5; ADR-033 Proposed; Gate A PASS → 04 | confirmed |
+
 

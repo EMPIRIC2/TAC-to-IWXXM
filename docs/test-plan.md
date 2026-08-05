@@ -2,49 +2,54 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-04 (S040 / EV-032 — TC-EV032 / TC-F32 #846/#835/#741/#808)
+> **Last updated**: 2026-08-04 (S038 / EV-031 TC-F30/F31 + S040 / EV-032 TC-F32 #846/#835/#741/#808)
 
 ## Scope
 
-**In scope**: Product features F1–F27 (F1 superseded by F6 engine; F7 Planned — workbench
-smoke under F15/F20/F23–F27; **F7.g** golden examples #780 / UJ-032; **F7.h** IndexedDB sessions;
+**In scope**: Product features F1–F32 (F1 superseded by F6 engine; F7 Planned — workbench
+smoke under F15/F20/F23–F27; **F7.g** golden examples #780 / UJ-032; **F7.h/i** hybrid sessions;
 F8–F15 as prior cycles; **F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality;
-**F21** public unauthenticated app; **F22** privacy preference center; **F23** SIGMET family
-quality bar; **F24** AIRMET; **F25** WMO METAR/SPECI/TAF parity; **F26** VAA; **F27** TCA);
-monorepo migration validation M1–M6 (M3 deprecated at F6 cutover); connectivity tiers
-**H0c–H7** (local + live Render); tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics
-(library/CI); backend thin wrappers; F7 decode/spans/soft-preview/workbench/unified sessions;
-admin-route negative tests; **F15** issue registry + METAR golden/negative packs (UJ-024);
-**F16–F19** dissemination drawer, multi-DB upload, WIS2, EDIS, AMHS/SWIM/AFS (UJ-027–030);
-**F20** TAF + SPECI quality bar (UJ-031; #735/#734); **F23** SIGMET + VA SIGMET quality bar
-(UJ-034; #733/#739); **F26/F27** VAA + TCA quality (UJ-037/038; #736/#737).
+**F21 Amended** public convert + optional Auth for long-term storage; **F22** privacy preference
+center (deepen F31); **F23** SIGMET family quality bar; **F24** AIRMET; **F25** WMO
+METAR/SPECI/TAF parity; **F26** VAA; **F27** TCA; **F30** platform independence; **F31** hybrid
+sessions; **F32** VONA quality bar); monorepo migration validation M1–M6 (M3 deprecated at F6 cutover; **M4 restore**);
+connectivity tiers **H0c–H7** (local + live **DOKS** target; Render until cutover soak);
+tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics (library/CI); backend thin wrappers;
+F7 decode/spans/soft-preview/workbench/unified sessions; admin-route negative tests; **F15**
+issue registry + METAR golden/negative packs (UJ-024); **F16–F19** dissemination drawer,
+multi-DB upload, WIS2, EDIS, AMHS/SWIM/AFS (UJ-027–030); **F20** TAF + SPECI quality bar
+(UJ-031; #735/#734); **F23** SIGMET + VA SIGMET quality bar (UJ-034; #733/#739); **F26/F27**
+VAA + TCA quality (UJ-037/038; #736/#737); **UJ-045–048** guest notice / login auto-upload /
+privacy / DOKS cutover.
 
 **Out of scope**: Performance/load testing; wmo-im / IWXXM-US schema correctness beyond our fixtures;
 scheduled CI live jobs (manual/Makefile only); **convert-response metrics fields** (F6-R11);
 teaching CMS; saved/encrypted destination profiles; in-app paste of **Supabase auth** keys
-(destination BYOC paste is **in scope** for F16–F19); sibling product-quality tickets beyond
-#736/#737 this cycle (TC SIGMET #738, SWX #740, VONA #741).
+(destination BYOC paste is **in scope** for F16–F19); long-lived dual production hosts after
+DOKS soak; Supabase hosted Postgres / PostgREST as product data plane.
 
-### Live harness (delta 2026-06-22; H7 2026-07-12)
+### Live harness (delta 2026-06-22; H7 2026-07-12; **DOKS target S038 / EV-031**)
 
-Unified manual live test harness against Render staging:
+Unified manual live test harness against **DOKS** production endpoints after F30 cutover
+(Render URLs remain valid only until soak + decommission — TC-F30-005):
 
 | Tier | Scope | Makefile target |
 |------|-------|-----------------|
-| H3 | Live API pytest (health, convert, validate; **no auth login**) | `make test-live-api` |
-| H4–H5 | CORS preflight + frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Playwright UJ-001–007 (+ UJ-008 smoke) + F7 smokes UJ-013/015–019 + **UJ-027–030** (H6′ when F16–F19 ships) | `make test-live-e2e` |
+| H3 | Live API pytest (health, convert, validate; convert **no JWT**) | `make test-live-api` |
+| H4–H5 | CORS preflight + frontend bundle URLs — **required this cycle** (FE Auth + notice + DOKS) | `make test-live-connectivity` |
+| H6 | Playwright UJ-001–007 (+ UJ-008) + F7 smokes + **UJ-045–047** + dissemination H6′ | `make test-live-e2e` |
 | **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron | `make test-live-bulletin` (planned) |
 | All | Sequential H4–H5 → H3 → H6 → H7 | `make test-live` (extend when H7 lands) |
 
 **Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](reports/e2e-report.md)).
 
-**CI policy**: Manual/local only — no GitHub Actions live job (Render cold-start + secrets).
+**CI policy**: Manual/local only — no GitHub Actions live job (cold-start + secrets).
 
-**Canonical URLs** (see [staging-secrets-matrix.md](ops/staging-secrets-matrix.md)):
+**Canonical URLs** (see [staging-secrets-matrix.md](ops/staging-secrets-matrix.md); update at F30 cutover):
 
-- `LIVE_API_URL` — `https://metar-to-iwxxm-api.onrender.com`
-- `LIVE_FRONTEND_URL` — `https://metar-to-iwxxm-frontend-v4-web.onrender.com`
+- `LIVE_API_URL` — DOKS API origin: `https://api.tac-to-iwxxm.com`
+- `LIVE_FRONTEND_URL` — DOKS static origin: `https://app.tac-to-iwxxm.com`
+- Optional login fixtures for UJ-046 / H6 Auth path: `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` (restored for session tests only — convert remains public)
 
 ## User Journeys (E2E)
 
@@ -52,8 +57,8 @@ Unified manual live test harness against Render staging:
 |---------|---------|------------------|----------|--------------|
 | UJ-001 | F6 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
 | UJ-002 | F2+F6 | backend validation tests + UI Strict Validation → `validate_output` (ADR-023) | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
-| UJ-003 | Auth | **Superseded F21** — negative Auth-gone tests | H6 optional negative | TC-003 retired / TC-F21-auth-gone |
-| UJ-004 | F5+F7+F21 | IndexedDB history Playwright | H6 UJ-004 | TC-004 (local store) |
+| UJ-003 | Auth / F31 | **Restored** — see UJ-046; convert still public | H6 login path | TC-F31-003/004; TC-F21-auth-gone amended |
+| UJ-004 | F5+F7+F31 | Hybrid history (guest IDB + logged-in server) | H6 UJ-004/045/046 | TC-004 + TC-F31-001..004 |
 | UJ-005 | F6 | F6 product-matrix Playwright (planned) | H6 | TC-F6-001, TC-LIVE-F6-001 |
 | UJ-006 | F6 | API product-matrix pytest | H3 live | TC-F6-002, TC-LIVE-F6-002 |
 | UJ-007 | F2+F6 | US-profile validate | H3 / H6 | TC-F6-003, TC-LIVE-F6-003 |
@@ -93,7 +98,11 @@ Unified manual live test harness against Render staging:
 | UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
 | UJ-043 | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen | Eight-family lint/convert/validate + SWXA bar (#823) | H4–H5 if FE | TC-EV029-001..008; TC-F28-001..006 |
 | UJ-044 | F29 + F23/F12/F2/F13/F9/F26/F27 deepen | Rule matrices (#831) + TC SIGMET deepen (#829) + VAA/TCA decode (#820) | H4–H5 if FE | TC-EV030-001..006; TC-F29-001..007 |
-| UJ-045 | F32 + F6/F7/F12/F2/F13 deepen | VONA quality bar + full F7 surface (#741); cycle also #835/#808/corpus | H4–H5 when FE | TC-EV032-001..008; TC-F32-001..006 |
+| UJ-045 | F31+F21 | Guest convert + persistent loss-of-progress notice + local history | **H4–H5 required** | TC-F31-001/002/006 |
+| UJ-046 | F31+F30 | Login → auto-upload drafts → DO Postgres sessions | **H4–H5 required** | TC-F31-003/004/006 |
+| UJ-047 | F22+F31 | Privacy prefs ↔ IndexedDB / Auth cookies | **H4–H5 required** | TC-F31-005; TC-F22-* deepen |
+| UJ-048 | F30 | DOKS cutover smoke (API + FE + worker) | **H0–H5 required** | TC-F30-004/005; TC-EV031-* |
+| UJ-049 | F32 + F6/F7/F12/F2/F13 deepen | VONA quality bar + full F7 surface (#741); cycle also #835/#808/corpus | H4–H5 when FE | TC-EV032-001..008; TC-F32-001..006 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -103,7 +112,7 @@ admin suite modules.
 | UJ-DEV-002 | M2,F6 | vendor manifest integrity tests | — | TC-M002 |
 | UJ-DEV-003 | M3 | ~~gifts + conversion regression~~ | — | **TC-M003 deprecated** → TC-F6-020–022 |
 | UJ-DEV-003b | F6 | tac2iwxxm + iwxxm-us pin | — | TC-F6-M001 |
-| UJ-OPS-001 | M4 | deploy smoke H1–H5 | Render staging | TC-OPS-001 |
+| UJ-OPS-001 | F30 / M4 | deploy smoke H0–H5 | **DOKS** (Render until cutover) | TC-OPS-001; TC-F30-004 |
 
 ## Connectivity & Wiring
 
@@ -118,20 +127,22 @@ admin suite modules.
 | H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** + **UJ-027–030** (H6′ when F16–F19 ships) | `make test-live-e2e` |
 | **H7** | Live bulletin → split → convert → Schematron (UJ-011) | `make test-live-bulletin` (planned) |
 
-**Post-migration / F21**: Single API origin for `/api/v1/*` only — operator `/auth/*` removed.
-**H7** is a dedicated connectivity gate for bulletin ingest path (not F8 worker); see
+**Post-migration / F21 Amended (EV-031)**: Single API origin serves `/api/v1/*` **and**
+`/auth/*` (Supabase Auth verify only). Convert/lint/validate/disseminate stay **public** (no JWT).
+JWT required only for `/api/v1/work-sessions*`. **H4–H5 required this cycle** (FE Auth + guest
+notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8 worker); see
 [connectivity-gates.md](../.cursor/skills/connectivity-gates.md).
 
-**Env wiring** (see [config-spec.md](config-spec.md); env-contract **stale-until-F21** banner):
+**Env wiring** (see [config-spec.md](config-spec.md); [env-contract.md](env-contract.md)):
 
-- `config.*.api.baseUrl` — API URL (replaces `VITE_API_BASE_URL`)
-- `config.*.api.corsOrigins` — backend allowed origins (replaces `METAR_CORS_ORIGINS`)
-- `LIVE_API_URL` / `LIVE_FRONTEND_URL` — from `config.prod.liveE2e` or env override
-- ~~`E2E_USER_EMAIL` / `E2E_USER_PASSWORD`~~ — **retired for operator path (F21)**; negative
-  Auth-gone coverage uses `TC-F21-auth-gone` (no login fixture)
-- F8 worker secrets remain server-only (`SUPABASE_SERVICE_ROLE_KEY`, poller URL)
+- `config.*.api.baseUrl` — API URL (includes `/api/v1` + `/auth`)
+- `config.*.api.corsOrigins` — backend allowed origins (DOKS FE origin after cutover)
+- `LIVE_API_URL` / `LIVE_FRONTEND_URL` — from `config.prod.liveE2e` or env override (DOKS after F30)
+- `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` — **restored** for UJ-046 / session CRUD live tests only
+- `DATABASE_URL` — DigitalOcean Postgres (sessions + F8); required for F30/F31 server path
+- Supabase: Auth URL + keys for JWT verify / FE Auth bootstrap — **not** product DB credentials
+- F8 worker: `DATABASE_URL` + poller secrets (no Supabase DB / PostgREST product writes)
 - `make env-check` — validates canonical names and config JSON before integration/live runs
-  (full rewrite in 04/12)
 
 ## Test Strategy
 
@@ -243,32 +254,38 @@ admin suite modules.
 - **Historical pass criteria**: 401 without token; 200 with valid JWT
 - **Source**: UJ-003 (superseded); S023 / EV-017
 
-### TC-004: Local work session lifecycle (F5 / UJ-004) — IndexedDB
+### TC-004: Local work session lifecycle (F5 / UJ-004) — guest IndexedDB (F31 deepen)
 
-- **Objective**: Draft auto-save → convert → WIP → send → Finished in **browser IndexedDB**;
-  resume after reload **without login**; My METARs filters METAR/SPECI locally (F7.h / F21)
+- **Objective**: Guest Draft auto-save → convert → WIP → send → Finished in **browser IndexedDB**;
+  resume after reload **without login**; My METARs filters METAR/SPECI locally. Logged-in path
+  covered by **TC-F31-003/004** (DO Postgres).
 - **Steps**:
-  1. Public user creates draft via local upsert (`product` = metar|speci) — **no**
-     `/api/v1/work-sessions`
+  1. Guest creates draft via local upsert (`product` = metar|speci) — **no**
+     `/api/v1/work-sessions` while logged out
   2. Convert success moves to WIP (reject second WIP — one WIP per browser profile total)
   3. Partial convert failure sets Failed; edit + re-convert transitions appropriately
   4. Dissemination success sets Finished with `kv_upload_key` (local only; no dest secrets)
   5. Soft-delete + restore within local trash policy
   6. My METARs does **not** list non-METAR products; workbench history may (TC-F7-005)
-  7. Clearing site data loses history (disclosed in F22)
-- **Pass criteria**: Status rules enforced locally; **no** JWT / RLS / server session calls
-- **Source**: UJ-004; F7.h / F21; ADR-020 historical; FE IndexedDB unit + Playwright T2
+  7. Clearing site data loses history (disclosed in F22); guest notice visible (TC-F31-002)
+- **Pass criteria**: Status rules enforced locally for guests; **no** server session calls while
+  logged out
+- **Source**: UJ-004/045; F7.h / F31; ADR-031 guest path retained; ADR-033
 
-### TC-F21-auth-gone: Operator Auth removed (UJ-003 superseded)
+### TC-F21-auth-gone: Public convert without JWT (UJ-003 / F21 Amended — EV-031)
 
-- **Level**: T2 / T3 (optional negative)
-- **Objective**: `/auth/*` and JWT gates are gone from the public product surface
+- **Level**: T2 / T3
+- **Objective**: Convert/lint/validate/disseminate remain **public** after Auth restore. Historical
+  name retained; pass criteria **amended** — `/auth/*` may exist for long-term storage, but must
+  not gate convert.
 - **Pass criteria**:
-  - `POST /auth/login` (and sibling Auth routes) → **404** (or equivalent not-found)
-  - `POST /api/v1/convert` (and lint/decode/validate/preview) succeed **without** Authorization
-  - Frontend has no login/register UX; no JWT bootstrap for convert path
-  - `DISABLE_AUTH` dual path absent from runtime config contract (after 04 rewrite)
-- **Source**: UJ-003 superseded; F21 / S023 / EV-017 / #783
+  - `POST /api/v1/convert` (and lint/decode/validate/preview/dissemination) succeed **without**
+    Authorization
+  - `/auth/*` may return 200 for login/register/me when Auth is enabled (F31) — **not** required
+    to be 404
+  - Frontend may show optional login for long-term storage; convert path works logged-out
+  - Abuse controls (rate limit / body) still apply
+- **Source**: UJ-001/003; F21 Amended; TC-EV031-003; S038 / EV-031
 
 ## F7 Test Cases (S011 / EV-008)
 
@@ -1576,10 +1593,155 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: unit tests for merge order (official → YAML override); no LLM
 - **Source**: F9 deepen; E20-E2; ADR-032
 
-## F21 / F22 Test Cases (S023 / EV-017) — stubs
+## F30 / F31 / EV-031 Test Cases (S038) — platform independence
+
+> Objectives and pass criteria locked at 01 (`D-S038-tp` = 1,1,1). Detailed steps / fixtures
+> finalize in **04-tech-plan**. **Live H4–H5 required** this cycle (not waivable behind a flag).
+
+### TC-F30-001: Boot without Supabase database credentials (UJ-048)
+
+- **Level**: T0 / T2
+- **Objective**: API + worker product path starts and smokes with **no** Supabase Postgres /
+  PostgREST product credentials; only Auth JWT verify config when Auth is enabled
+- **Pass criteria**: Health + public convert green; no runtime dependency on Supabase DB URL /
+  service-role for default convert path; env-check fails closed if product DB is still pointed
+  at Supabase when F30 cutover flag is on
+- **Source**: F30 AC1; #830 amend; UJ-048
+
+### TC-F30-002: Auth-only Supabase verify (UJ-046)
+
+- **Level**: T0 / T2
+- **Objective**: JWT verification uses Supabase Auth only; no Supabase DB writes on default
+  session/convert path
+- **Pass criteria**: Valid JWT accepted for work-sessions; invalid JWT rejected; instrumented
+  tests assert zero Supabase PostgREST product writes on convert + session CRUD against DO
+- **Source**: F30 AC2; M4 restore
+
+### TC-F30-003: F8 store → DigitalOcean Postgres (UJ-014 deepen)
+
+- **Level**: T0 / T2 (+ staging smoke)
+- **Objective**: F8 worker persists store/quarantine via `DATABASE_URL` → DO Postgres
+- **Pass criteria**: Unit/integration insert+read against DO schema; no Supabase service-role
+  DB writer on default path; worker image/docs list `DATABASE_URL` as required
+- **Source**: F30 AC3; F8 deepen; ADR-018 amend
+
+### TC-F30-004: DOKS hosts API + worker + static; H0–H5 (UJ-048)
+
+- **Level**: T3 / H0–H5
+- **Objective**: After cutover, DOKS serves API, static FE, and worker; live harness points at
+  DOKS URLs
+- **Pass criteria**: `make test-live-connectivity` (H4–H5) + H0/H3 health/convert green against
+  DOKS; worker store smoke recorded; cutover runbook steps checked
+- **Source**: F30 AC4; #712; UJ-048
+
+### TC-F30-005: Render decommission after soak (UJ-048)
+
+- **Level**: Ops / checklist
+- **Objective**: Render services retired after soak, or residual ticket with explicit checklist
+- **Pass criteria**: Decommission checklist complete **or** open residual issue linking soak
+  criteria + owners; dual-prod hosts not left long-lived without ticket
+- **Source**: F30 AC5; `D-S038-doks-depth`=3
+
+### TC-F30-006: Docs / env-contract Auth-only Supabase (corpus)
+
+- **Level**: T0 (doc/contract)
+- **Objective**: CORPUS + env-contract + deploy no longer require Supabase as **data** plane
+- **Pass criteria**: env-check + doc grep gate: product DB = `DATABASE_URL` (DO); Supabase =
+  Auth keys only; ADR-033 / deploy cutover referenced
+- **Source**: F30 AC6; #830
+
+### TC-F31-001: Guest convert + local-only history (UJ-045)
+
+- **Level**: T2 / T3
+- **Objective**: Guest converts without login; work history stays in IndexedDB only
+- **Pass criteria**: Convert 200 without Authorization; no `work-sessions` POST; local resume
+  works after refresh
+- **Source**: F31 AC1; UJ-045
+
+### TC-F31-002: Persistent guest loss-of-progress notice (UJ-045)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: While guest **and** local/unsaved work exists, UI shows a **persistent**
+  banner/callout that progress may be lost without login (`D-S038-uj`)
+- **Pass criteria**: Notice visible across navigation while guest+local work; dismiss does not
+  permanently hide while condition holds (or documented re-show rules); no notice required when
+  logged in
+- **Source**: F31 AC2; UJ-045
+
+### TC-F31-003: Login enables DO session APIs; convert stays public (UJ-046)
+
+- **Level**: T0 / T2 / T3
+- **Objective**: After Supabase Auth login, JWT gates `/api/v1/work-sessions*`; convert/lint/
+  validate remain JWT-free
+- **Pass criteria**: Session CRUD 401 without JWT / 200 with JWT; convert without JWT still 200
+- **Source**: F31 AC3; UJ-003 restore / UJ-046
+
+### TC-F31-004: Auto-upload local drafts on login (UJ-046)
+
+- **Level**: T2 / T3
+- **Objective**: On login, all eligible local drafts auto-upload to DO Postgres (no merge prompt)
+- **Pass criteria**: N local drafts → N server sessions (or structured per-item errors); local
+  eligible drafts cleared/marked uploaded per 04 design; `D-S038-guest-merge`=2
+- **Source**: F31 AC4; UJ-046
+
+### TC-F31-005: Privacy prefs gate IndexedDB / disclose Auth cookies (UJ-047)
+
+- **Level**: T0 / T2 / H4–H5
+- **Objective**: F22 preference center gates guest work-history persistence and discloses Auth
+  session cookies when login is used; GPC still honored
+- **Pass criteria**: Declined non-essential storage ⇒ no IndexedDB work-history writes; Auth
+  cookie category disclosed post-login; deepen TC-F22-001..003
+- **Source**: F31 AC5; UJ-047; F22
+
+### TC-F31-006: Live H4–H5 for Auth + notice + DOKS FE (UJ-045–047)
+
+- **Level**: H4–H5 / T3
+- **Objective**: Live connectivity proves FE Auth bootstrap URLs, guest notice surface, and
+  DOKS (or pre-cutover staging) API/FE origins
+- **Pass criteria**: `make test-live-connectivity` green; Playwright smokes for notice + login
+  entry; **not waived** behind a feature flag this cycle (`D-S038-tp` Q2=1)
+- **Source**: F31 AC6; UJ-045–047
+
+### TC-EV031-001: One-time migrate legacy Supabase → DO Postgres
+
+- **Level**: T0 / T2 (ops script + integration)
+- **Objective**: Legacy product rows (e.g. `tac_work_sessions`) migrate once from Supabase DB
+  into DO Postgres
+- **Pass criteria**: Dry-run + apply documented; row counts / checksum sample; no dual-write
+  requirement after cutover; idempotent or clearly one-shot
+- **Source**: EV-031; `D-S038-spec-data` Q3=2
+
+### TC-EV031-002: Alembic (or migration path) against DATABASE_URL
+
+- **Level**: T0 / T2
+- **Objective**: Schema migrations apply to DO Postgres via `DATABASE_URL` (not Supabase CLI
+  as product SoT)
+- **Pass criteria**: Upgrade/downgrade (or documented forward-only) green in CI/local against
+  disposable DO-compatible Postgres
+- **Source**: EV-031; F30 schema
+
+### TC-EV031-003: Public convert without JWT after Auth restore
+
+- **Level**: T0 / T2 / H3
+- **Objective**: Restoring `/auth/*` does not re-gate convert APIs
+- **Pass criteria**: Matrix of public routes succeed with no Authorization header; rate limits
+  still apply (ADR-031 keep)
+- **Source**: EV-031; F21 Amended; F30 convert public lock
+
+### TC-EV031-004: Login session CRUD happy path
+
+- **Level**: T2 / T3 / H6
+- **Objective**: Register/login (or existing fixture user) → create/list/patch/delete (or soft-
+  delete) work session on DO Postgres
+- **Pass criteria**: Full CRUD green with JWT; owner isolation (user A cannot read user B);
+  aligns UJ-046
+- **Source**: EV-031; F31; M4
+
+## F21 / F22 Test Cases (S023 / EV-017) — stubs (**amended EV-031**)
 
 > Detailed steps finalize in **04-tech-plan**. Objectives and pass criteria locked at 02
-> (`D-S023-02-C-EV017-A`).
+> (`D-S023-02-C-EV017-A`). **EV-031**: Auth returns for long-term sessions; convert stays public;
+> deepen privacy ↔ storage (TC-F31-005).
 
 ### TC-F22-001: First-visit privacy notice (UJ-033)
 
@@ -1740,17 +1902,20 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 
 ### TC-LIVE-004: Live Playwright UJ-001–007
 
-- **Objective**: H6 — product journeys against Render frontend (includes F6 matrix)
-- **Preconditions**: `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; **no** Auth login fixture
-  (F21 public); IndexedDB available in browser context
+- **Objective**: H6 — product journeys against live frontend (includes F6 matrix; Render
+  transitional, then DOKS per F30 / UJ-048)
+- **Preconditions**: `PLAYWRIGHT_BASE_URL=${LIVE_FRONTEND_URL}`; public convert needs **no**
+  login; IndexedDB available for guest path; optional Auth fixtures only for UJ-046 / F31 cases
 - **Steps**:
   1. Run `00-preflight.e2e.spec.ts` first (wake + health)
   2. `make test-live-e2e` — public METAR convert, F6 product/profile matrix (UJ-005),
-     validation (UJ-002/007), UJ-008 smoke; **skip** retired Auth bootstrap
+     validation (UJ-002/007), UJ-008 smoke; Auth login covered by TC-F31 / UJ-046 (not
+     “Auth-gone”)
   3. Playwright config disables local `webServer` when base URL is remote
-- **Pass criteria**: UJ-001–007 specs green against live URLs (UJ-003 = Auth-gone negative only)
+- **Pass criteria**: UJ-001–007 specs green against live URLs; UJ-003 amended — convert stays
+  public (no JWT), while `/auth/*` may exist for long-term sessions (F31)
 - **Resilience**: Cold-start retry in preflight; serial execution (no parallel live requests)
-- **Source**: UJ-001–007, H6; F21
+- **Source**: UJ-001–007, H6; F21 amended F31; F30 DOKS URLs when cut over
 
 ### TC-LIVE-F6-001 / TC-LIVE-F6-002 / TC-LIVE-F6-003
 

@@ -1,21 +1,20 @@
 /**
- * Privacy preference store (F22 / ADR-031 / E17-7/16/17).
+ * Privacy preference store (F22 / ADR-031 / E17-7/16/17; deepened F31 / TC-F31-005).
  *
- * Preferences live in `localStorage`. Work sessions stay in IndexedDB.
+ * Preferences live in `localStorage`. Guest work-history IndexedDB is **gateable**.
  * GPC detect/apply (E17-16) is completed in T6.3.
  */
 
 /** localStorage key for versioned privacy preferences (E17-17). */
 export const PRIVACY_PREFS_STORAGE_KEY = 'tac_privacy_preferences' as const;
 
-/** Bump when preference schema changes — re-shows first-visit notice (UJ-033). */
-export const PRIVACY_SCHEMA_VERSION = 1 as const;
+/** Bump when preference schema changes — re-shows first-visit notice (UJ-033 / F31). */
+export const PRIVACY_SCHEMA_VERSION = 2 as const;
 
 /**
- * Solution A preference schema (F22).
+ * Solution A preference schema (F22) + F31 guest work-history gate.
  *
- * `necessary` is always on. Non-essential categories default false and are only
- * shown in UI when the product actually uses them (v1: none).
+ * `necessary` is always on. Non-essential categories default false.
  */
 export interface PrivacyPreferences {
   schemaVersion: number;
@@ -25,6 +24,11 @@ export interface PrivacyPreferences {
   analytics: boolean;
   /** Non-essential marketing; default false; unused in Solution A v1. */
   marketing: boolean;
+  /**
+   * Guest work-history IndexedDB persistence (F31 / TC-F31-005).
+   * When false, callers must not write work-session rows to IndexedDB.
+   */
+  workHistoryLocal: boolean;
   /** Sale/sharing opt-out — forced when GPC is detected (E17-16). */
   saleOrSharingOptOut: boolean;
   /** Targeted-advertising opt-out — forced when GPC is detected (E17-16). */
@@ -35,7 +39,7 @@ export interface PrivacyPreferences {
   noticeSchemaVersion: number | null;
 }
 
-/** Client storage inventory disclosed in Privacy settings (F22 / UJ-033). */
+/** Client storage inventory disclosed in Privacy settings (F22 / UJ-033 / UJ-047). */
 export interface StorageInventoryItem {
   kind: 'indexedDB' | 'localStorage' | 'sessionStorage' | 'cookie' | 'cdn';
   purpose: string;
@@ -46,13 +50,18 @@ export interface StorageInventoryItem {
 export const STORAGE_INVENTORY: readonly StorageInventoryItem[] = [
   {
     kind: 'indexedDB',
-    purpose: 'Work history and converter sessions (F5 / F7.h)',
-    necessary: true,
+    purpose: 'Guest work history and converter sessions (F5 / F7.h / F31)',
+    necessary: false,
   },
   {
     kind: 'localStorage',
     purpose: 'Privacy preferences and converter UI preferences',
     necessary: true,
+  },
+  {
+    kind: 'cookie',
+    purpose: 'Supabase Auth session cookies when signed in (F31 / UJ-047)',
+    necessary: false,
   },
 ] as const;
 
@@ -66,13 +75,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-/** Default Solution A preferences (non-essential off; notice not acknowledged). */
+/** Default Solution A preferences (non-essential off; work history on for guests). */
 export function defaultPrivacyPreferences(): PrivacyPreferences {
   return {
     schemaVersion: PRIVACY_SCHEMA_VERSION,
     necessary: true,
     analytics: false,
     marketing: false,
+    workHistoryLocal: true,
     saleOrSharingOptOut: false,
     targetedAdvertisingOptOut: false,
     noticeAcknowledgedAt: null,
@@ -93,6 +103,10 @@ function normalizePrivacyPreferences(input: unknown): PrivacyPreferences {
     necessary: true,
     analytics: Boolean(input.analytics),
     marketing: Boolean(input.marketing),
+    workHistoryLocal:
+      typeof input.workHistoryLocal === 'boolean'
+        ? input.workHistoryLocal
+        : base.workHistoryLocal,
     saleOrSharingOptOut: Boolean(input.saleOrSharingOptOut),
     targetedAdvertisingOptOut: Boolean(input.targetedAdvertisingOptOut),
     noticeAcknowledgedAt:
@@ -209,7 +223,7 @@ function readNavigatorGlobalPrivacyControl(): boolean | undefined {
 
 /**
  * Force sale/sharing and targeted-advertising opt-outs when GPC is on.
- * Does not disable disclosed necessary IndexedDB work history.
+ * Does not force-enable guest work-history IndexedDB (TC-F31-005).
  */
 export function applyGpcToPreferences(
   prefs: PrivacyPreferences,
@@ -229,6 +243,24 @@ export function applyGpcToPreferences(
     saleOrSharingOptOut: true,
     targetedAdvertisingOptOut: true,
   };
+}
+
+/**
+ * Whether guest work-history may be written to IndexedDB (TC-F31-005 / UJ-047).
+ *
+ * Parameters
+ * ----------
+ * prefs :
+ *     Loaded privacy preferences (optional — loads from storage when omitted).
+ *
+ * Returns
+ * -------
+ * boolean
+ *     ``false`` when the user declined local work-history persistence.
+ */
+export function canPersistWorkHistoryLocal(prefs?: PrivacyPreferences): boolean {
+  const resolved = prefs ?? loadPrivacyPreferences();
+  return resolved.workHistoryLocal === true;
 }
 
 /** Clear privacy preferences from localStorage (site-data wipe / tests). */

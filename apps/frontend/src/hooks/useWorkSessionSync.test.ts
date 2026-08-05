@@ -2,6 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useWorkSessionSync, AUTOSAVE_DEBOUNCE_MS } from './useWorkSessionSync';
 import type { ConverterSnapshot } from '@/utils/workSessionPayload';
+import {
+  clearPrivacyPreferences,
+  savePrivacyPreferences,
+} from '@/utils/privacyPreferences';
 
 const mockCreate = vi.fn();
 const mockUpdate = vi.fn();
@@ -21,6 +25,7 @@ const snapshot: ConverterSnapshot = {
 
 describe('useWorkSessionSync', () => {
   beforeEach(() => {
+    clearPrivacyPreferences();
     vi.useFakeTimers();
     mockCreate.mockReset();
     mockUpdate.mockReset();
@@ -189,6 +194,31 @@ describe('useWorkSessionSync', () => {
     });
 
     expect(result.current.saveIndicator).toBe('error');
+  });
+
+  it('skips IndexedDB persist when workHistoryLocal is declined (TC-F31-005)', async () => {
+    savePrivacyPreferences({ workHistoryLocal: false });
+    const onSessionSaved = vi.fn();
+    const onSessionIdAssigned = vi.fn();
+    const { result } = renderHook(() =>
+      useWorkSessionSync({
+        sessionId: null,
+        sessionStatus: null,
+        onSessionSaved,
+        onSessionIdAssigned,
+      }),
+    );
+
+    await act(async () => {
+      const saved = await result.current.persistSession(snapshot);
+      expect(saved).toBeNull();
+    });
+
+    expect(mockCreate).not.toHaveBeenCalled();
+    expect(mockUpdate).not.toHaveBeenCalled();
+    expect(onSessionSaved).not.toHaveBeenCalled();
+    expect(onSessionIdAssigned).not.toHaveBeenCalled();
+    expect(result.current.saveIndicator).toBe('idle');
   });
 
   it('resets debounce timer when scheduleAutoSave is called again', async () => {

@@ -17,11 +17,28 @@ import {
   clearGuestConverterState,
   readGuestConverterState,
 } from './guestConverterState';
+import { canPersistWorkHistoryLocal } from './privacyPreferences';
 
 /** My METARs filter — METAR/SPECI only (UJ-004 / TC-004). */
 export const MY_METARS_PRODUCTS: WorkSessionProduct[] = ['metar', 'speci'];
 
 export const EXPORT_SCHEMA_ID = 'tac-work-sessions-export-v1' as const;
+
+/** Thrown when F22 prefs decline guest IndexedDB work-history writes (TC-F31-005). */
+export class LocalWorkHistoryDisabledError extends Error {
+  constructor(
+    message = 'Local work-history persistence is disabled by privacy preferences',
+  ) {
+    super(message);
+    this.name = 'LocalWorkHistoryDisabledError';
+  }
+}
+
+function assertWorkHistoryPersistAllowed(): void {
+  if (!canPersistWorkHistoryLocal()) {
+    throw new LocalWorkHistoryDisabledError();
+  }
+}
 
 const DB_NAME = 'tac-work-sessions';
 const DB_VERSION = 1;
@@ -166,6 +183,7 @@ export async function clearLocalWorkSessions(): Promise<void> {
 export async function createLocalWorkSession(
   payload: WorkSessionUpsertPayload,
 ): Promise<WorkSession> {
+  assertWorkHistoryPersistAllowed();
   await assertSingleWip(payload.status);
   const row = mergePayload(null, payload);
   const db = await getDb();
@@ -186,6 +204,7 @@ export async function updateLocalWorkSession(
   sessionId: string,
   payload: WorkSessionUpsertPayload,
 ): Promise<WorkSession> {
+  assertWorkHistoryPersistAllowed();
   const existing = await getLocalWorkSession(sessionId);
   await assertSingleWip(payload.status, sessionId);
   const row = mergePayload(existing, payload);
@@ -207,6 +226,7 @@ export async function deleteLocalWorkSession(sessionId: string): Promise<WorkSes
 }
 
 export async function restoreLocalWorkSession(sessionId: string): Promise<WorkSession> {
+  assertWorkHistoryPersistAllowed();
   const existing = await getLocalWorkSession(sessionId);
   const row: WorkSession = {
     ...existing,
@@ -269,6 +289,7 @@ export async function exportLocalWorkSessions(): Promise<LocalWorkSessionExportV
 export async function importLocalWorkSessions(
   doc: LocalWorkSessionExportV1,
 ): Promise<{ imported: number }> {
+  assertWorkHistoryPersistAllowed();
   if (doc.schema !== EXPORT_SCHEMA_ID) {
     throw new Error(`Unsupported export schema: ${String(doc.schema)}`);
   }

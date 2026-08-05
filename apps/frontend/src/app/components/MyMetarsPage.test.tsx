@@ -9,6 +9,9 @@ const mockDelete = vi.fn();
 const mockRestore = vi.fn();
 const mockExport = vi.fn();
 const mockImport = vi.fn();
+const mockListServer = vi.fn();
+const mockDeleteServer = vi.fn();
+const mockRestoreServer = vi.fn();
 
 vi.mock('/utils/localWorkSessionStore', () => ({
   EXPORT_SCHEMA_ID: 'tac-work-sessions-export-v1',
@@ -17,6 +20,13 @@ vi.mock('/utils/localWorkSessionStore', () => ({
   restoreLocalWorkSession: (...args: unknown[]) => mockRestore(...args),
   exportLocalWorkSessions: (...args: unknown[]) => mockExport(...args),
   importLocalWorkSessions: (...args: unknown[]) => mockImport(...args),
+}));
+
+vi.mock('/utils/workSessionApi', () => ({
+  MY_METARS_PRODUCTS: ['metar', 'speci'],
+  listWorkSessions: (...args: unknown[]) => mockListServer(...args),
+  deleteWorkSession: (...args: unknown[]) => mockDeleteServer(...args),
+  restoreWorkSession: (...args: unknown[]) => mockRestoreServer(...args),
 }));
 
 const sampleSession = (overrides: Partial<WorkSession> = {}): WorkSession => ({
@@ -58,6 +68,16 @@ describe('MyMetarsPage', () => {
       sessions: [sampleSession()],
     });
     mockImport.mockResolvedValue({ imported: 1 });
+    mockListServer.mockResolvedValue({
+      items: [sampleSession({ id: 'srv-1', title: 'Server draft', user_id: 'auth' })],
+      total: 1,
+      page: 1,
+      limit: 50,
+    });
+    mockDeleteServer.mockResolvedValue(
+      sampleSession({ id: 'srv-1', deleted_at: '2026-08-03T00:00:00Z' }),
+    );
+    mockRestoreServer.mockResolvedValue(sampleSession({ id: 'srv-1' }));
   });
 
   it('loads and displays work sessions from IndexedDB', async () => {
@@ -233,5 +253,28 @@ describe('MyMetarsPage', () => {
       expect(mockImport).toHaveBeenCalled();
       expect(screen.getByText(/imported 1 session/i)).toBeInTheDocument();
     });
+  });
+
+  it('lists server sessions when accessToken is set (F31)', async () => {
+    render(
+      <MyMetarsPage
+        accessToken="jwt-token"
+        userEmail="op@example.com"
+        onBack={onBack}
+        onOpenSession={onOpenSession}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Server draft')).toBeInTheDocument();
+    });
+    expect(mockListServer).toHaveBeenCalledWith('jwt-token', {
+      status: undefined,
+      product: ['metar', 'speci'],
+      include_deleted: false,
+      limit: 50,
+    });
+    expect(mockList).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('export-sessions')).not.toBeInTheDocument();
   });
 });

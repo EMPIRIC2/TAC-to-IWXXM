@@ -35,25 +35,24 @@ class TestHealthEndpoint:
 class TestConvertEndpointErrorHandling:
     """Test /api/v1/convert endpoint error scenarios."""
 
-    def test_convert_without_auth_fails(self):
-        """Test that convert endpoint requires authentication."""
+    def test_convert_without_auth_succeeds(self):
+        """F21 Amended / TC-EV031-003 — convert stays public (no JWT required)."""
         response = client.post(
             "/api/v1/convert", data={"manual_text": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"}
         )
-        # Should fail without authentication
-        assert response.status_code in [401, 403]
+        assert response.status_code not in [401, 403]
+        assert response.status_code == 200
 
 
 class TestConvertZipEndpointErrorHandling:
     """Test /api/v1/convert-zip endpoint error scenarios."""
 
-    def test_convert_zip_without_auth_fails(self):
-        """Test that convert-zip endpoint requires authentication."""
+    def test_convert_zip_without_auth_is_not_auth_gated(self):
+        """Convert-zip must not require Authorization (may 4xx on bad body)."""
         response = client.post(
             "/api/v1/convert-zip", data={"manual_text": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"}
         )
-        # Should fail without authentication
-        assert response.status_code in [401, 403]
+        assert response.status_code not in [401, 403]
 
 
 class TestCORSConfiguration:

@@ -1,0 +1,42 @@
+[project]
+name = "metar-auth"
+version = "0.2.0"
+description = "Supabase Auth JWKS verify + /auth/* routers (F31 / ADR-033)"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.110",
+  "httpx>=0.28",
+  "PyJWT[crypto]>=2.8",
+  "pydantic>=2.0",
+  "email-validator>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4",
+  "pytest-asyncio>=0.24",
+  "httpx2>=2.0",
+  "respx>=0.21",
+  "cryptography>=42",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/metar_auth"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+branch = true
+source = ["src/metar_auth"]
+
+[tool.coverage.report]
+# Soft report floor — CI auth matrix reports coverage without --cov-fail-under
+# until proxy/router surface has fuller unit coverage (EV-031 M1).
+show_missing = true

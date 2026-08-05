@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import type { WorkSession } from '@metar/shared';
 import { Loader2, History } from 'lucide-react';
 import { listLocalWorkSessions } from '/utils/localWorkSessionStore';
+import { listWorkSessions } from '/utils/workSessionApi';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
 interface WorkHistorySidebarProps {
+  /** When set, list DO Postgres sessions via JWT (F31 logged-in path). */
+  accessToken?: string;
   activeSessionId?: string | null;
   onSelectSession: (session: WorkSession) => void;
   onOpenHistory?: () => void;
@@ -18,7 +21,11 @@ const STATUS_LABEL: Record<string, string> = {
   failed: 'Failed',
 };
 
+/**
+ * Recent work list — IndexedDB for guests; `/work-sessions` when authenticated.
+ */
 export function WorkHistorySidebar({
+  accessToken,
   activeSessionId,
   onSelectSession,
   onOpenHistory,
@@ -33,7 +40,9 @@ export function WorkHistorySidebar({
       setLoading(true);
       setError(null);
       try {
-        const response = await listLocalWorkSessions({ limit: 5 });
+        const response = accessToken
+          ? await listWorkSessions(accessToken, { limit: 5 })
+          : await listLocalWorkSessions({ limit: 5 });
         if (!cancelled) {
           setSessions(response.items);
         }
@@ -50,7 +59,7 @@ export function WorkHistorySidebar({
     return () => {
       cancelled = true;
     };
-  }, [activeSessionId]);
+  }, [accessToken, activeSessionId]);
 
   return (
     <Card className="p-4" aria-label="Recent work sessions">
@@ -100,9 +109,7 @@ export function WorkHistorySidebar({
                   {session.title}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {(STATUS_LABEL[session.status] ?? session.status) +
-                    ` · ${session.product.toUpperCase()} · ` +
-                    new Date(session.updated_at).toLocaleString()}
+                  {STATUS_LABEL[session.status] ?? session.status}
                 </div>
               </button>
             </li>

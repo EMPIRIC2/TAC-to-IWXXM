@@ -54,6 +54,19 @@ class TestRuntimeConfigProfiles:
         assert isinstance(api, dict)
         assert "disableAuth" not in api
 
+    def test_prod_cors_includes_doks_fe_placeholder(self) -> None:
+        """T4.5 / D-S038-04-b2 — DOKS FE placeholder allowed before DNS pin (T6.3)."""
+        cfg = _load_json(CONFIG_DIR / "prod.json")
+        api = cfg["api"]
+        assert isinstance(api, dict)
+        origins = api.get("corsOrigins")
+        assert isinstance(origins, list)
+        assert "https://app.doks.placeholder.metar-iwxxm.local" in origins
+        # T6.5 / D-S038-t65-waive — Render suspended; prod primary is provisional DOKS.
+        assert "doks.placeholder" in str(api.get("baseUrl"))
+        assert "onrender.com" not in str(api.get("baseUrl"))
+        assert "onrender.com" not in str(api.get("frontendUrl"))
+
 
 class TestFrontendEnvExamples:
     """Minimal frontend secrets — runtime config carries non-secrets."""
@@ -98,7 +111,39 @@ class TestPrepareConfigScript:
         supabase = written.get("supabase")
         assert isinstance(supabase, dict)
         assert supabase.get("publishableKey") == "sb_publishable_test_key"
+        assert supabase.get("url")
 
         api = written.get("api")
         assert isinstance(api, dict)
+        assert api.get("baseUrl")
         assert "disableAuth" not in api
+
+    def test_prepare_config_requires_api_base_url(self, tmp_path: Path) -> None:
+        bad = tmp_path / "bad.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "environment": "test",
+                    "api": {"frontendUrl": "http://localhost:18000", "corsOrigins": []},
+                    "supabase": {"url": "https://demo.supabase.co"},
+                }
+            ),
+            encoding="utf-8",
+        )
+        dest_dir = tmp_path / "public"
+        env = {
+            **dict(__import__("os").environ),
+            "CONFIG_SRC": str(bad),
+            "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_test_key",
+            "DEST_DIR": str(dest_dir),
+        }
+        result = subprocess.run(
+            ["bash", str(ROOT / "scripts/frontend/prepare-config.sh")],
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode != 0
+        assert "api.baseUrl" in (result.stderr + result.stdout)

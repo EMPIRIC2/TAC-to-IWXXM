@@ -21,6 +21,7 @@ RUN apt-get update \
 # Workspace metadata (layer cache)
 COPY pyproject.toml uv.lock ./
 COPY packages/shared/pyproject.toml packages/shared/pyproject.toml
+COPY packages/auth/pyproject.toml packages/auth/pyproject.toml
 COPY packages/tac2iwxxm/pyproject.toml packages/tac2iwxxm/pyproject.toml
 COPY packages/iwxxm-validate/pyproject.toml packages/iwxxm-validate/pyproject.toml
 COPY packages/tac-validate/pyproject.toml packages/tac-validate/pyproject.toml
@@ -29,6 +30,7 @@ COPY apps/backend/pyproject.toml apps/backend/pyproject.toml
 
 # Workspace sources required at runtime
 COPY packages/shared packages/shared
+COPY packages/auth packages/auth
 COPY packages/tac2iwxxm packages/tac2iwxxm
 COPY packages/iwxxm-validate packages/iwxxm-validate
 COPY packages/tac-validate packages/tac-validate

@@ -1,12 +1,15 @@
 # ADR-031: Public unauthenticated app + IndexedDB local history (F21 / F7.h)
 
-> **Status**: **Accepted** (D-S023-04-plan-approve-A / 07-build T1.1)  
+> **Status**: **Partially superseded by ADR-033** (S038 / EV-031) — Auth deletion and
+> “no server sessions” reversed; **public convert**, guest IndexedDB, F22 privacy, and abuse
+> controls **retained**.  
 > **Date**: 2026-07-28  
 > **Deciders**: User (E17-12..25 / D-S023-04-batch3; plan approve D-S023-04-plan-approve-A)  
-> **Stage**: 07-build (Accepted); drafted in 04-tech-plan  
-> **Related**: Supersedes **ADR-020** for operator persistence; ADR-002/M4 operator Auth
-> deprecated; ADR-011/012 historical for server RLS/retention; ADR-018 (F8 machine auth
-> unchanged); ADR-021/029 (dissemination memory-only); feature-list F21/F22/F5/F7.h; #783  
+> **Stage**: 07-build (Accepted); drafted in 04-tech-plan; amend noted EV-031  
+> **Related**: Supersedes **ADR-020** for operator persistence (pre-EV-031); ADR-002/M4 operator
+> Auth restored under ADR-033; ADR-011/012 historical for server RLS/retention; ADR-018 (F8
+> machine auth amended by ADR-033); ADR-021/029 (dissemination memory-only); feature-list
+> F21/F22/F5/F7.h; #783; **ADR-033**  
 > **Session**: S023-public-app-privacy / EV-017  
 > **Decision ids**: E17-4..E17-25; D-S023-04-batch1-arch; D-S023-04-batch2-privacy-ops;
 > D-S023-04-batch3; D-S023-04-plan-approve-A

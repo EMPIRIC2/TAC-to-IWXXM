@@ -1,8 +1,8 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-07-29 (S026 / EV-020 — PyYAML on tac2iwxxm for F9 glossary)
-> **Status**: **Accepted** for build (07-build T1.2 / D-S023-04-plan-approve-A) — drafted in bf4eaf1
+> **Last updated**: 2026-08-03 (S038 / EV-031 T0.3 — JWKS-only Auth; Alembic pins)
+> **Status**: **Accepted** for F30/F31 planned deps (Gate B / T0.3; install in M1–M2)
 
 ## Runtime Dependencies
 
@@ -18,12 +18,15 @@
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | slowapi | Public API rate limits (F21 / ADR-031) | MIT | PyPI (E17-15) |
+| alembic | Schema migrations against `DATABASE_URL` (F30); CI/deploy `upgrade head` | MIT | PyPI (`>=1.13,<2`) |
+| sqlalchemy | DO Postgres access for sessions / F8 (shared) | MIT | PyPI (`>=2.0,<3`) |
+| asyncpg / psycopg | Postgres drivers for `DATABASE_URL` | Apache-2.0 / LGPL | PyPI (existing + Alembic) |
 | tac2iwxxm | Conversion (F6) | MIT | workspace path |
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 | dissemination | F16–F19 sinks | MIT | workspace path (ADR-030) |
-| ~~supabase~~ (operator Auth) | ~~via packages/auth~~ | — | **Removed F21** (ADR-031); F8 uses service-role env only |
+| auth | Supabase Auth JWT verify + `/auth/*` (F31 restore) | MIT | workspace `packages/auth` (ADR-033) |
 
 ### packages/dissemination (S019 / EV-014 — M1)
 
@@ -89,11 +92,19 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 |---------|---------|---------|--------|
 | (historical GIFTs deps) | METAR parsing, XML | Per former pyproject | Removed per ADR-014; REQ-014 deprecated |
 
-### packages/auth — **Deleted (F21 / ADR-031)**
+### packages/auth — **Restored (F31 / ADR-033)**
 
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
-| (historical) | Operator JWT / `/auth/*` via Supabase | — | **Removed** S023 / EV-017 (E17-22=B); M4 deprecated |
+| PyJWT[crypto] | JWKS JWT verify (RS256/ES256); **no HS256 secret path** for product | MIT | PyPI (`>=2.8`) |
+| httpx | Fetch Supabase Auth JWKS (`…/auth/v1/.well-known/jwks.json`) | BSD | PyPI (`>=0.28`) |
+| fastapi | `/auth/*` router types (library mounted in backend) | MIT | PyPI |
+| supabase (optional FE-adjacent) | Prefer FE `@supabase/supabase-js`; Python client **not required** for JWKS verify | Apache-2.0 | avoid for server verify |
+| (workspace) | Auth library mounted in `apps/backend` | MIT | `packages/auth` |
+
+Was **Deleted** under F21 / ADR-031 (E17-22=B). EV-031 restores Auth-only path (no product DB
+via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SECRET` /
+`python-jose` HS256 as product verify. Strip admin routes on restore from `c9cebfa^`.
 
 ### apps/frontend
 
@@ -101,9 +112,9 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 |---------|---------|---------|--------|
 | react | UI | MIT | npm |
 | vite | Bundler | MIT | npm |
-| **idb** | IndexedDB wrapper for local work sessions (F7.h) | ISC | npm (E17-12 / ADR-031) |
+| **idb** | IndexedDB wrapper for guest work sessions (F7.h / F31) | ISC | npm (E17-12 / ADR-031) |
 | fake-indexeddb | Vitest IndexedDB polyfill for TC-004 | Unlicense | npm (dev; T2.3) |
-| ~~@supabase/supabase-js~~ | ~~Client auth~~ | — | **Removed** from operator Auth path (F21); drop dep when Auth code deleted |
+| **@supabase/supabase-js** | Optional client Auth bootstrap (F31 login) | Apache-2.0 | npm — restore in 04 |
 | CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
 
 ## Workspace Tooling
@@ -113,7 +124,8 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 | Python | **3.12** (pinned) | Runtime for all uv workspace members (ADR-005) |
 | Node | **22** (pinned) | Frontend/e2e workspace (ADR-005) |
 | uv | pin in pyproject | Python workspace, lockfile |
-| pnpm | pin in package.json engines | JS workspace (monorepo) |
+| pnpm | **9.15.4** via `packageManager` + corepack | JS workspace (monorepo); not Homebrew |
+| macOS Homebrew | root [`Brewfile`](../Brewfile) | System toolchain: `python@3.12`, `node@22`, `uv`, `rust`, Docker Desktop, `libpq`, `unixodbc`, `gh` |
 | basedpyright | strict | Python typechecking including tac2iwxxm, tac-validate, iwxxm-validate (ADR-005) |
 | ruff | all Python packages | Lint + format including new validate packages (ADR-005) |
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
@@ -131,9 +143,9 @@ Rejected for T3.3: `quick-xml`+`xsd-schema` (no Schematron), `libxml` (system de
 | xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin — `>=24.5` in workspace `dev`; also `metar-shared[xsd]` for importing committed models |
 | maturin | **dev** (F13/F14) | PyO3 wheel build — `>=1.7` in workspace `dev`; also CI |
 
-**Deployables**: API + static frontend + **F8 Background Worker** (`apps/worker`, ADR-018).
-API image depends on tac2iwxxm + validate packages; worker image uses the same packages plus
-poller/store writers. Rust toolchain in API (and worker if linked) image for PyO3.
+**Deployables**: API + static frontend + **F8 worker** on **DOKS** (ADR-033; Render transitional).
+API image depends on tac2iwxxm + validate + **auth** packages; worker image uses packages plus
+poller/store writers via `DATABASE_URL`. Rust toolchain in API (and worker if linked) image for PyO3.
 
 ## Vendored / External Data (not PyPI)
 

@@ -86,3 +86,7 @@
 | 2026-07-31 | E25-T5 | approved | D-S032-EV025-t5-3 — dig ❌ encode residual blocks Gate C (supersedes S02.M2) |
 | 2026-07-31 | E25-T6 | approved | D-S032-EV025-t6-1 — draft execution plan; Gate B pending |
 | 2026-07-31 | D-S032-04-plan-approve | approved | Gate B=1 — M0–M7 approved; Lean → 07-build @ T0.1 |
+| 2026-08-03 | EV031-H1–10 | auto-approved | 10 high-confidence F30/F31 locks (S038 verify-plan-audit) |
+| 2026-08-03 | C1–C5 | modified | D-S038-02-batch-c=1 — fix stale F21 leftovers (config/spec/feature-list/api/UJ/TC-LIVE) |
+| 2026-08-03 | M1–M3 | approved | D-S038-02-batch-c=1 — ADR-033 Proposed; Alembic+JWT draft until 04 |
+| 2026-08-03 | D-S038-02-phase-a | approved | Gate A PASS → 04-tech-plan (03 skipped Standard) |

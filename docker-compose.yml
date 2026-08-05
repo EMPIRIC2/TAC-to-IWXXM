@@ -30,6 +30,9 @@ services:
       - METAR_CONFIG_ENV=${METAR_CONFIG_ENV:-local}
       - SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}
       - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY:-${SUPABASE_SERVICE_ROLE_KEY:-}}
+      # F31 Auth — password grant + JWKS-only verify (ADR-033 / env-contract)
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_JWKS_URL=${SUPABASE_JWKS_URL:-}
       # Default to the bundled `db` service so `docker compose up` is self-contained.
       # Override by setting DATABASE_URL in `.env` (e.g. a Supabase pooler URL).
       - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}}
