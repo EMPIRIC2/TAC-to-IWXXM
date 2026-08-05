@@ -1,0 +1,13 @@
+{
+  "default": "2025-2",
+  "versions": [
+    {
+      "id": "2025-2",
+      "role": "latest"
+    },
+    {
+      "id": "2023-1",
+      "role": "previous"
+    }
+  ]
+}

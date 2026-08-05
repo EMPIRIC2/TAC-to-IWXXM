@@ -13,7 +13,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/dissemination/src packages/dissemination/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync \
+.PHONY: install test test-unit vendor-sync export-iwxxm-versions \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
@@ -263,6 +263,10 @@ bench-validation-stack:
 # F11 / ADR-027 — xsdata codegen from pinned XSD (T3.6).
 codegen-iwxxm-xsd:
 	$(UV) run python scripts/codegen/iwxxm_xsd.py
+
+# S046 / EV-038 / #851 — Python SoT → FE generated JSON (D-S046-sot)
+export-iwxxm-versions:
+	$(UV) run python scripts/iwxxm/export_iwxxm_versions.py
 
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \

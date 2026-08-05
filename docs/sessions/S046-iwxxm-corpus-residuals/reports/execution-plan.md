@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build (B→C PASS) |
-| **Active milestone** | M2 — Release-line (next) |
-| **Active task** | T2.1 — SoT drift red test |
-| **Tasks** | 4 / 28 completed (M1 done) |
+| **Active milestone** | M2 — Release-line |
+| **Active task** | T2.3 — FE import JSON labels |
+| **Tasks** | 6 / 28 completed (T2.1–T2.2 done) |
 | **Last updated** | 2026-08-05 |
 
 ## Tech Stack Summary
@@ -43,7 +43,8 @@
 }
 ```
 
-Path TBD in T2.1 (prefer `packages/shared` or `apps/frontend/src/generated/`).
+**Path locked (T2.1):** `apps/frontend/src/generated/iwxxm_versions.json`  
+Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py`
 
 ## Interview locks
 
@@ -75,8 +76,8 @@ Path TBD in T2.1 (prefer `packages/shared` or `apps/frontend/src/generated/`).
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T2.1 | Test | Red: CI/drift test fails when FE/OpenAPI diverge from Python SoT | AC4; TC-EV038-004; `D-S046-sot` | T1.4 | pending |
-| T2.2 | Code | Export script: Python → committed JSON (+ roles); wire Makefile/`make` target | AC4; `D-S046-sot` | T2.1 | pending |
+| T2.1 | Test | Red: CI/drift test fails when FE/OpenAPI diverge from Python SoT | AC4; TC-EV038-004; `D-S046-sot` | T1.4 | **completed** |
+| T2.2 | Code | Export script: Python → committed JSON (+ roles); wire Makefile/`make` target | AC4; `D-S046-sot` | T2.1 | **completed** |
 | T2.3 | Code | FE import JSON for picker options + Latest/Previous labels; drop hardcodes | AC7; UJ-050; TC-EV038-007; #854 | T2.2 | pending |
 | T2.4 | Code | OpenAPI / schema enum docs align with export; CI assert | AC4; TC-EV038-004 | T2.2 | pending |
 | T2.5 | Test | Green drift CI + FE Vitest for labels | TC-EV038-004/007 | T2.3, T2.4 | pending |
