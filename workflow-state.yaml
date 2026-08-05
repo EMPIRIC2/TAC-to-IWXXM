@@ -109,15 +109,21 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-08-05'
+    completed: '2026-08-05'
     skip_rationale:
-    note: 'M0–M3 DONE — TC-EV035 182 green; T3.6 is 08 handoff; approaching 08-verify-build'
+    note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930'
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
     skip_rationale:
+    note: '08 PASS tip 5a03b930; next 09-qa'
+    report: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
+    overall: pass
   - stage: 09-qa
     required: true
     mode: delta
@@ -142,9 +148,20 @@ active_session:
     mode: delta
     status: pending
     skip_rationale: may waive if no runtime surface — AskQuestion at gate
-  current_stage: 07-build
-  current_stage_status: in_progress
-  current_stage_note: approaching 08-verify-build (T3.6 handoff)
+  current_stage: 09-qa
+  current_stage_status: pending
+  current_stage_note: '08 PASS tip 5a03b930; next 09-qa'
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: pending
+    deploy: pending
   started: '2026-08-05'
   started_at: '2026-08-05'
   artifacts:
@@ -183,6 +200,9 @@ active_session:
     status: written
     stage: 07-build
     note: TC-EV035 182 green
+  - path: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
+    status: completed
+    stage: 08-verify-build
 sessions:
 - id: S043-rule-source-traceability
   type: feature
@@ -206,7 +226,7 @@ sessions:
   preset_status: approved
   started: '2026-08-05'
   started_at: '2026-08-05'
-  note: '07 M0-M3 DONE — TC-EV035 182 green; next 08-verify-build'
+  note: '08 PASS tip 5a03b930; next 09-qa'
   decisions:
     E35-1: both_audit_and_registry
     E35-2: full_stack
@@ -283,15 +303,21 @@ sessions:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-08-05'
+    completed: '2026-08-05'
     skip_rationale:
-    note: 'M0–M3 DONE — TC-EV035 182 green; T3.6 is 08 handoff; approaching 08-verify-build'
+    note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930'
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-05'
+    completed: '2026-08-05'
     skip_rationale:
+    note: '08 PASS tip 5a03b930; next 09-qa'
+    report: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
+    overall: pass
   - stage: 09-qa
     required: true
     mode: delta
@@ -316,9 +342,20 @@ sessions:
     mode: delta
     status: pending
     skip_rationale: may waive if no runtime surface — AskQuestion at gate
-  current_stage: 07-build
-  current_stage_status: in_progress
-  current_stage_note: approaching 08-verify-build (T3.6 handoff)
+  current_stage: 09-qa
+  current_stage_status: pending
+  current_stage_note: '08 PASS tip 5a03b930; next 09-qa'
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: pending
+    deploy: pending
   artifacts:
   - path: docs/sessions/S043-rule-source-traceability/session-brief.md
     status: written
@@ -355,6 +392,9 @@ sessions:
     status: written
     stage: 07-build
     note: TC-EV035 182 green
+  - path: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
+    status: completed
+    stage: 08-verify-build
 - id: S042-doks-cd-rollout
   type: feature
   intent: |
@@ -32696,17 +32736,18 @@ evolve_cycles:
     - 06-tech-tooling
     - 10-e2e
     note: Standard approved G2=1; deepen-only G1=2
-  current_stage: 07-build
-  current_stage_status: in_progress
+  current_stage: 09-qa
+  current_stage_status: pending
+  current_stage_note: '08 PASS tip 5a03b930; next 09-qa'
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: passed
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
     phase_d: pending
     deploy: pending
   artifacts:
@@ -32740,6 +32781,9 @@ evolve_cycles:
     status: written
     stage: 07-build
     note: TC-EV035 182 green
+  - path: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
+    status: completed
+    stage: 08-verify-build
   stages:
     00-context:
       status: completed
@@ -32750,7 +32794,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-05'
-      note: Phase B PASS → 07 M0–M3 done; pending T3.6/08
+      note: 'Phase C PASS — C→D; tip 5a03b930; next 09-qa'
     01-requirements:
       status: completed
       mode: delta
@@ -32770,13 +32814,18 @@ evolve_cycles:
       completed: '2026-08-05'
       note: Gate B PASS Batch B 1,1,1,1; execution-plan approved (D-S043-04-batch-b / D-S043-04-plan)
     07-build:
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-08-05'
-      note: 'M0–M3 complete — TC-EV035 182 green; pending T3.6/08-verify-build'
+      completed: '2026-08-05'
+      note: 'COMPLETE — M0–M3; TC-EV035 182 green; tip 5a03b930'
     08-verify-build:
-      status: pending
+      status: completed
       mode: delta
+      started: '2026-08-05'
+      completed: '2026-08-05'
+      note: '08 PASS tip 5a03b930; next 09-qa'
+      report: docs/sessions/S043-rule-source-traceability/reports/verification-report.md
     09-qa:
       status: pending
       mode: delta

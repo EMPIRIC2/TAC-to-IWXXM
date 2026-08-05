@@ -71,7 +71,8 @@ Dig: `docs/domain/mining/vona-encode-remine-ev035-mining-notes.md` · report: `r
 | 01-requirements | 2026-08-05 | Deepen ACs + TC-EV035; `reports/01-requirements-summary.md` |
 | 02-verify-plan | 2026-08-05 | Gate A **PASS**; Batch A `1,1,1,1`; remine→#869–#872; `reports/02-verify-plan-audit.md` |
 | 04-tech-plan | 2026-08-05 | Gate B **PASS**; Batch B `1,1,1,1`; execution-plan approved |
-| 07-build | — | M0–M3 implemented; TC-EV035 182 green; T3.6 → 08 |
+| 07-build | 2026-08-05 | M0–M3 complete; tip 5a03b930; TC-EV035 182 green |
+| 08-verify-build | 2026-08-05 | PASS — verification-report.md; C→D passed |
 
 ### Gate A / 02 (locked 2026-08-05)
 

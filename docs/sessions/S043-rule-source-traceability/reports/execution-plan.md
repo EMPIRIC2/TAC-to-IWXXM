@@ -12,10 +12,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — build |
-| **Active milestone** | M3 — matrix + dense + closeout |
-| **Active task** | T3.6 (handoff 08) |
-| **Tasks** | 15 / 16 completed (T3.6 = 08 handoff) |
+| **Active phase** | Phase D — verify |
+| **Active milestone** | M3 complete |
+| **Active task** | — (07/08 done; next 09-qa) |
+| **Tasks** | 16 / 16 completed |
 | **Last updated** | 2026-08-05 |
 
 ## Tech Stack Summary
@@ -82,7 +82,7 @@
 | T3.3 | Test | TC-EV035-005 dense asserts | TC-EV035-005 | T3.2 | **completed** |
 | T3.4 | Test | TC-EV035-006 gap-raise gate | TC-EV035-006 | T3.3 | **completed** |
 | T3.5 | Docs | Ticket/session gap closeout notes | S02.*; #846 | T3.4 | **completed** |
-| T3.6 | Config | 08-verify-build handoff | 08 | T3.5 | **in_progress** |
+| T3.6 | Config | 08-verify-build handoff | 08 | T3.5 | **completed** |
 
 ## Git Strategy
 
@@ -95,7 +95,7 @@
 | Gate | Criteria | Status |
 |------|----------|--------|
 | B→C | Execution plan approved; no new deps | **passed** |
-| C→D | All M0–M3 tasks completed; 08 pass | pending |
+| C→D | All M0–M3 tasks completed; 08 pass | **passed** |
 | Deploy | AskQuestion — waive 12/13 if no runtime (S02.L1) | pending |
 
 ## Out of scope

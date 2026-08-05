@@ -18,8 +18,8 @@
 | 04-tech-plan | yes | delta | **completed** | Gate B PASS (`1,1,1,1`) |
 | 05-verify-tech | no | — | skipped | — |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | **in_progress** | M0–M3 done; → 08 |
-| 08-verify-build | yes | delta | pending | — |
+| 07-build | yes | full | **completed** | M0–M3; tip 5a03b930 |
+| 08-verify-build | yes | delta | **completed** | verification-report.md; 182 green |
 | 09-qa | yes | delta | pending | TC-EV035 matrix |
 | 10-e2e | no | — | skipped | no UI |
 | 11-verify-impl | yes | delta | pending | — |
