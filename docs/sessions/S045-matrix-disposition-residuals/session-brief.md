@@ -30,7 +30,7 @@ deepen_feature_ids:
   - F32
 feature_note: "Deepen F2/F6/F32 matrix+provenance dispositions — no new Fn; no product UI"
 route_status: approved_lean_plus_0708
-current_stage: 02-verify-plan
+current_stage: 07-build
 ui_preview: n_a
 ---
 

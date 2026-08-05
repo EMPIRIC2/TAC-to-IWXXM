@@ -9,8 +9,8 @@
 **Features**: deepen **F2 / F6 / F32** only (no new Fn — Q2/Q3)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-037-matrix-disposition-residuals`  
-**Status**: **in_progress** — Phase A 02-verify-plan in_progress  
-**Prior**: S044 / EV-036 completed  
+**Status**: **in_progress** — Phase C / 07-build in_progress (Gate A **PASS**)
+**Prior**: S044 / EV-036 completed
 **Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=1,Q3=1,Q4=1` + `G2=1`)
@@ -23,6 +23,7 @@
 | Q4 | decision | UI preview? | **N/A** — no product UI |
 | G2 | decision | Proceed? | Approve → commit session-open → **01-requirements** |
 | AC | decision | AC1–AC4? | **Approved** (AC=1) — close 01 → start **02-verify-plan** |
+| Gate A | decision | S02.M1–M3 / Phase A? | **PASS** (`D-S045-02-gate-a`) GateA=1 — accept S02.M1–M3 as **07** work; close 02 → start **07-build** |
 
 ### Locked dispositions
 
@@ -61,6 +62,24 @@ and residual child tickets.
 
 `00 → 16 → 01 → 02 → 07 → 08 → 11`  
 Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 12/13 at gate)
+
+### Gate A / 02 (locked 2026-08-05)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| S02.M1 | decision | PROVENANCE status lag? | **1** — accept as **07** work (`US_SCH_ABSENT`→N/A; VONA silence non-blocking) |
+| S02.M2 | decision | Bulletin AHL gaps? | **1** — accept as **07** — split source vs impl columns |
+| S02.M3 | decision | TC-EV037 tests missing? | **1** — accept as **07** — add `tests/provenance/test_tc_ev037_*.py` |
+| Gate A | gate | Phase A / 02 close? | **PASS** (`D-S045-02-gate-a`) GateA=1 — start **07-build** (Lean; no 04) |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-05 | S045 open; Lean+07/08 Q1–Q4 |
+| 01-requirements | 2026-08-05 | AC=1 approve AC1–AC4; `reports/01-requirements-summary.md` |
+| 02-verify-plan | 2026-08-05 | Gate A **PASS**; S02.M1–M3 → 07; `reports/02-verify-plan-audit.md` |
+| 07-build | in_progress | matrix/provenance + ticket dispositions |
 
 ---
 
