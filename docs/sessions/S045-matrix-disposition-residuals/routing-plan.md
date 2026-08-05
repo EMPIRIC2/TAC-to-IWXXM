@@ -6,14 +6,14 @@
 **Skip:** `03, 04, 05, 06, 09, 10, 12, 13`  
 **Branch:** `evolve/EV-037-matrix-disposition-residuals`  
 **Features:** deepen **F2 / F6 / F32** only (no new Fn)  
-**Status:** Phase A / 01-requirements in_progress
+**Status:** Phase A / 02-verify-plan in_progress
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | S045 open; Q1–Q4 locked |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1 intake done (G2=1); orchestrator remains |
-| 01-requirements | yes | delta | **in_progress** | ACs + matrix disposition specs |
-| 02-verify-plan | yes | delta | pending | consistency vs COVERAGE/PROVENANCE |
+| 01-requirements | yes | delta | **completed** | AC=1 approve AC1–AC4 |
+| 02-verify-plan | yes | delta | **in_progress** | consistency vs COVERAGE/PROVENANCE |
 | 03-plan-tooling | no | — | skipped | no new Cursor rules expected |
 | 04-tech-plan | no | — | skipped | Lean — tasks fit 01→07 |
 | 05-verify-tech | no | — | skipped | — |
@@ -38,3 +38,4 @@ sufficient for Lean matrix work (same pattern as tooling-only lean variants).
 |------|----------|------|
 | Phase 0 | Q1=1, Q2=1, Q3=1, Q4=1 | 2026-08-05 |
 | Proceed / routing | G2=1 proceed → 01 | 2026-08-05 |
+| AC gate (01) | AC=1 approve AC1–AC4 → close 01 → start 02 | 2026-08-05 |

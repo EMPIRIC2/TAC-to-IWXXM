@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S043 / EV-035 rule-source provenance deepen)
+> **Last updated**: 2026-08-05 (S045 / EV-037 matrix dispositions #869/#870/#872)
 
 ## Scope
 
@@ -1734,6 +1734,65 @@ cited or revisited. Raise unfindable sources — do not invent.
 - [ ] No new Fn in feature-list (deepen-only)
 - [ ] Domain path-cites only (no CORPUS membership required this cycle)
 - [ ] H4–H5 **N/A** (no UI)
+
+## S045 / EV-037 — Matrix dispositions #869 / #870 / #872 (deepen F2 / F6 / F32)
+
+**No new Fn.** Docs + `COVERAGE_MATRIX` / `PROVENANCE_MAP` dispositions for EV-035 remine
+residuals. No UI — H4–H5 **N/A**. Corpus: `[Corpus: product]` · `[Corpus: tests]` ·
+`[docs/domain/rules/COVERAGE_MATRIX.md]` · `[docs/domain/rules/PROVENANCE_MAP.md]`.
+
+### TC-EV037-001: VONA SoT / Guidance silence (#869)
+
+- **Level**: T0 / docs CI
+- **Objective**: VONA conversion is defined without a Guidance section; cookbook is derived
+- **Pass criteria**:
+  - `COVERAGE_MATRIX` VONA convert cell documents SoT hierarchy (ICAO → FM205 → XSD/SCH →
+    AHL → A7-1 → cookbook derived)
+  - Guidance silence marked **non-blocking** ⚠ (not “undefined”)
+  - Provenance `VONA_GUIDANCE_SILENT` disposition is upstream-gap / non-blocking (not
+    encode-blocked); ticket #869 linked
+- **Source**: F32 deepen; #869; vona remine dig
+
+### TC-EV037-002: IWXXM-US Schematron N/A (#870)
+
+- **Level**: T0 / docs CI
+- **Objective**: Official US Schematron artifact documented **N/A / not published** without
+  N/A-ing all US validation
+- **Pass criteria**:
+  - Validate classes split: WMO XSD ✅ · US XSD ✅ · WMO SCH ✅ · US SCH **N/A** ·
+    semantic/fixtures tracked separately
+  - Provenance `US_SCH_ABSENT` status ∈ {`N/A`} (not invent-as-gap for a missing official
+    artifact the project must author)
+  - METAR_US / iwxxm-us validate cell does not imply “entire US validation N/A”
+- **Source**: F2 deepen; #870; iwxxm-us pin + NOAA publication
+
+### TC-EV037-003: Bulletin AHL source vs impl columns (#872)
+
+- **Level**: T0 / docs CI
+- **Objective**: AHL **source** coverage is ✅ for all WMO-mapped families; impl gaps are
+  separate columns / children
+- **Pass criteria**:
+  - Every family in the eight-family (+ SWXA/VONA) AHL map has `AHL source = ✅`
+  - Former single **Bulletin AHL** cell redesigned into:
+    `AHL source | T1T2 map | parser | BBB | body splitter | filename | COLLECT | fixtures | CI`
+  - Stale `gap` cells that only meant “source missing” are cleared; residual `gap` rows
+    name an implementation concern + child issue when still open
+- **Source**: F6 deepen; #872; WMO AHL publication; `AHL.asciidoc`
+
+### TC-EV037-004: GitHub ticket disposition closeout
+
+- **Level**: T0 / process
+- **Objective**: #869 / #870 / #872 closed or reworded to match locked dispositions; #846 linked
+- **Pass criteria**: Issue bodies/comments cite EV-037 ACs; close when matrix+provenance+TCs
+  green; children opened only for true #872 impl gaps
+- **Source**: Phase 0 Q2; epic #846
+
+### EV-037 verify gate
+
+- [ ] TC-EV037-001..004 green (or disposition recorded)
+- [ ] No new Fn in feature-list (deepen F2/F6/F32 only)
+- [ ] H4–H5 **N/A** (no UI); deploy 12/13 waive expected
+- [ ] Domain path-cites for matrix/provenance updates
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 

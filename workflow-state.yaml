@@ -47,6 +47,8 @@ active_session:
     Q4_note: no_UI
     G2: "1"
     G2_note: approve_commit_start_01
+    AC: "1"
+    AC_note: approve_AC1-4_close_01
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -59,16 +61,18 @@ active_session:
     required: true
     status: in_progress
     started: "2026-08-05"
-    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 01-requirements
+    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 02-verify-plan
   - stage: 01-requirements
+    mode: delta
+    required: true
+    status: completed
+    started: "2026-08-05"
+    completed: "2026-08-05"
+  - stage: 02-verify-plan
     mode: delta
     required: true
     status: in_progress
     started: "2026-08-05"
-  - stage: 02-verify-plan
-    mode: delta
-    required: true
-    status: pending
   - stage: 07-build
     mode: full
     required: true
@@ -81,7 +85,7 @@ active_session:
     mode: delta
     required: true
     status: pending
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
@@ -124,6 +128,8 @@ sessions:
     Q4_note: no_UI
     G2: "1"
     G2_note: approve_commit_start_01
+    AC: "1"
+    AC_note: approve_AC1-4_close_01
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -136,16 +142,18 @@ sessions:
     required: true
     status: in_progress
     started: "2026-08-05"
-    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 01-requirements
+    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 02-verify-plan
   - stage: 01-requirements
+    mode: delta
+    required: true
+    status: completed
+    started: "2026-08-05"
+    completed: "2026-08-05"
+  - stage: 02-verify-plan
     mode: delta
     required: true
     status: in_progress
     started: "2026-08-05"
-  - stage: 02-verify-plan
-    mode: delta
-    required: true
-    status: pending
   - stage: 07-build
     mode: full
     required: true
@@ -158,7 +166,7 @@ sessions:
     mode: delta
     required: true
     status: pending
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
 - id: S044-local-precommit-long-jobs
   type: feature
   intent: |
@@ -5319,25 +5327,23 @@ stages:
     started: '2026-08-05'
     completed_at: '2026-08-05'
     completed: '2026-08-05'
-    session_id: S044-local-precommit-long-jobs
-    evolve_cycle_id: EV-036
-    prior_session_id: S042-doks-cd-rollout
-    prior_evolve_cycle_id: EV-034
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
+    prior_session_id: S044-local-precommit-long-jobs
+    prior_evolve_cycle_id: EV-036
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
-    prior_note: 'S042/EV-034 01-requirements COMPLETE (delta) — F30 deepen; feature-list/deploy/test-plan/evolve-decisions; no new Fn; handoff 02'
-    prior_prior_session_id: S040-iwxxm-corpus-quality
-    prior_prior_evolve_cycle_id: EV-032
-    prior_prior_note: 'S040/EV-032 01-requirements COMPLETE (delta) — D-S040-E32-M=2,3,1,1; F32 VONA + UJ-045 + product=vona; handoff 02; committed @ 0f3769af; #846'
-    note: 'S044/EV-036 01-requirements COMPLETE (delta) — D-S044-r1-ac R1=local_compose AC=1; M5 ACs + TC-EV036-001..003; remove remote Compose/integration → local pre-push make ci; handoff 02-verify-plan'
+    prior_note: 'S044/EV-036 01-requirements COMPLETE (delta) — D-S044-r1-ac R1=local_compose AC=1; M5 ACs + TC-EV036-001..003; remove remote Compose/integration → local pre-push make ci; handoff 02-verify-plan'
+    prior_prior_session_id: S042-doks-cd-rollout
+    prior_prior_evolve_cycle_id: EV-034
+    prior_prior_note: 'S042/EV-034 01-requirements COMPLETE (delta) — F30 deepen; feature-list/deploy/test-plan/evolve-decisions; no new Fn; handoff 02'
+    note: 'S045/EV-037 01-requirements COMPLETE (delta) — AC=1 approve AC1–AC4; deepen F2/F6/F32; tickets #869/#870/#872; handoff 02-verify-plan'
     decision_refs:
-    - D-S044-r1-ac
-    - D-S044-g1-g2
-    - D-S044-batch-b
-    - D-S044-open
-    - D-S044-intent
+    - D-S045-ac
+    - D-S045-g2
+    - D-S045-open
     artifacts:
-    - docs/sessions/S044-local-precommit-long-jobs/reports/01-requirements-summary.md
+    - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     - docs/feature-list.md
     - docs/test-plan.md
     - docs/decisions/evolve-decisions.md
@@ -5345,54 +5351,8 @@ stages:
       interviews:
         status: completed
         completed: 1
-        current_template: complete
-        current_section: complete
-    active_session:
-      session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
-      status: completed
-      mode: delta
-      started_at: '2026-08-03'
-      started: '2026-08-03'
-      completed_at: '2026-08-03'
-      completed: '2026-08-03'
-      note: 'COMPLETE (delta) — D-S038-tp=1,1,1; D-S038-01-gate-a lean docs accepted Gate A; commit fc3bbe5; gaps→04; handoff 02-verify-plan'
-      feature_ids:
-      - F30
-      - F31
-      deepen_feature_ids:
-      - F5
-      - F7
-      - F8
-      - F21
-      - F22
-      - M4
-      decision_refs:
-      - D-S038-open
-      - D-S038-doks-depth
-      - D-S038-f8
-      - D-S038-route
-      - D-S038-auth-model
-      - D-S038-session-store
-      - D-S038-830-amend
-      - D-S038-fn
-      - D-S038-tp
-      - D-S038-01-gate-a
-      artifacts:
-      - docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
-      - docs/test-plan.md
-      - docs/config-spec.md
-      - docs/env-contract.md
-      - docs/api-contract.md
-      - docs/deploy.md
-      - docs/dependency-inventory.md
-      - docs/adr/ADR-033-platform-independence-auth-do-doks.md
-      - docs/ops/supabase-to-do-postgres-migration.md
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/decisions/evolve-decisions.md
-      - docs/decisions/requirements-decisions.md
+        current_template: completed
+        current_section: completed
     delta_substages:
     - status: completed
       mode: delta
@@ -6098,46 +6058,65 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: completed
+    status: in_progress
     mode: delta
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
-    session_id: S044-local-precommit-long-jobs
-    evolve_cycle_id: EV-036
-    prior_session_id: S043-rule-source-traceability
-    prior_evolve_cycle_id: EV-035
+    completed_at: null
+    completed: null
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
+    prior_session_id: S044-local-precommit-long-jobs
+    prior_evolve_cycle_id: EV-036
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
-    prior_note: 'S043/EV-035 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S043-02-phase-a); Batch A 1,1,1,1 (D-S043-02-batch-a); reports/02-verify-plan-audit.md + provenance-gaps.md; handoff 04-tech-plan'
-    prior_prior_session_id: S042-doks-cd-rollout
-    prior_prior_evolve_cycle_id: EV-034
-    note: 'S044/EV-036 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S044-02-gate-a); contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; S02.M2 keep remote units+coverage+PR comment; drop validate+Compose; local lint only; report reports/02-verify-plan-audit.md; handoff 07-build'
-    contradictions_resolved:
-    - 'S02.M2 B2 slim-no-units superseded — keep remote units+coverage+PR comment'
+    prior_note: 'S044/EV-036 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S044-02-gate-a); contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; S02.M2 keep remote units+coverage+PR comment; drop validate+Compose; local lint only; report reports/02-verify-plan-audit.md; handoff 07-build'
+    prior_prior_session_id: S043-rule-source-traceability
+    prior_prior_evolve_cycle_id: EV-035
+    prior_prior_note: 'S043/EV-035 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S043-02-phase-a); Batch A 1,1,1,1 (D-S043-02-batch-a); reports/02-verify-plan-audit.md + provenance-gaps.md; handoff 04-tech-plan'
+    note: 'S045/EV-037 02-verify-plan IN_PROGRESS (delta) — AC=1 closed 01; consistency vs COVERAGE/PROVENANCE; Lean+07/08 → Gate A then 07-build'
+    contradictions_resolved: []
     contradictions_deferred:
     decision_refs:
-    - D-S044-02-gate-a
-    - D-S044-r1-ac
-    - D-S044-g1-g2
-    - D-S044-batch-b
-    - D-S043-02-phase-a
-    - D-S043-02-batch-a
+    - D-S045-ac
+    - D-S045-g2
+    - D-S045-open
     substeps:
       inventory:
-        status: completed
+        status: pending
       consistency_check:
-        status: completed
+        status: pending
       statement_review:
-        auto_approved: 3
+        auto_approved: 0
         pending: 0
-        reviewed: 4
-        status: completed
-        note: 'S02.H1–H3 auto; S02.M1/M2/M3/L1 Gate A 1,1,1,1 amended (M2 modified)'
+        reviewed: 0
+        status: pending
+        note: pending Gate A
     current_document:
     current_statement:
     active_session:
+      session_id: S045-matrix-disposition-residuals
+      evolve_cycle_id: EV-037
+      skill_id: 02-verify-plan
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: null
+      completed: null
+      note: 'IN_PROGRESS (delta) — AC=1 approve AC1–AC4; handoff from 01-requirements; deepen F2/F6/F32'
+      feature_ids: []
+      deepen_feature_ids:
+      - F2
+      - F6
+      - F32
+      decision_refs:
+      - D-S045-ac
+      - D-S045-g2
+      - D-S045-open
+      artifacts:
+      - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
+    prior_active_session:
       session_id: S044-local-precommit-long-jobs
       evolve_cycle_id: EV-036
       skill_id: 02-verify-plan
@@ -6158,30 +6137,8 @@ stages:
       artifacts:
       - docs/sessions/S044-local-precommit-long-jobs/reports/02-verify-plan-audit.md
       - docs/sessions/S044-local-precommit-long-jobs/reports/01-requirements-summary.md
-    prior_active_session:
-      session_id: S043-rule-source-traceability
-      evolve_cycle_id: EV-035
-      skill_id: 02-verify-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      completed_at: '2026-08-05'
-      completed: '2026-08-05'
-      note: 'COMPLETE (delta) — Gate A PASS (D-S043-02-phase-a); Batch A 1,1,1,1 (D-S043-02-batch-a); handoff 04-tech-plan'
-      feature_ids: []
-      deepen_feature_ids:
-      - F6
-      - F12
-      - F15
-      - F2
-      decision_refs:
-      - D-S043-02-phase-a
-      - D-S043-02-batch-a
-      artifacts:
-      - docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
-      - docs/sessions/S043-rule-source-traceability/reports/provenance-gaps.md
     artifacts:
+    - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     - docs/sessions/S044-local-precommit-long-jobs/reports/02-verify-plan-audit.md
     - docs/sessions/S044-local-precommit-long-jobs/reports/01-requirements-summary.md
     - docs/sessions/S043-rule-source-traceability/reports/02-verify-plan-audit.md
@@ -12091,6 +12048,44 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S045-ac
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S045-matrix-disposition-residuals
+  evolve_cycle_id: EV-037
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: requirements
+  status: confirmed
+  topic: Approve AC1–AC4 → close 01-requirements → start 02-verify-plan
+  summary: 'AC=1 approve_AC1-4_close_01 — AC1–AC4 approved; close 01; start 02-verify-plan'
+  decision: |
+    D-S045-ac=AC=1 — 01-requirements delta for S045/EV-037.
+    AC=1: approve AC1–AC4 (TC-EV037-001..004) — VONA SoT, US Schematron N/A,
+    AHL source vs impl matrix, ticket close/reword under #846.
+    Close 01-requirements (completed 2026-08-05); start 02-verify-plan (delta)
+    for consistency vs COVERAGE_MATRIX / PROVENANCE_MAP.
+    deepen_feature_ids=[F2,F6,F32]; feature_ids=[]; tickets #869/#870/#872.
+    Preset Lean+07/08: next Gate A then 07-build (no 04).
+    No git commit by workflow-state-manager.
+  user_option: 'AC=1'
+  branch: evolve/EV-037-matrix-disposition-residuals
+  related_decisions:
+  - D-S045-g2
+  - D-S045-open
+  deepen_feature_ids:
+  - F2
+  - F6
+  - F32
+  feature_ids: []
+  artifacts:
+  - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
+  - docs/feature-list.md
+  - docs/test-plan.md
+  - docs/decisions/evolve-decisions.md
+  note: '01-requirements COMPLETE; current_stage=02-verify-plan; no git commit by workflow-state-manager'
 - id: D-S045-g2
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -12122,7 +12117,7 @@ decisions_log:
   - F32
   feature_ids: []
   preset: Lean+07/08
-  note: 'route proceed; current_stage=01-requirements; no git commit by workflow-state-manager'
+  note: 'route proceed; superseded current_stage by D-S045-ac → 02-verify-plan'
 - id: D-S044-merge
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -33658,7 +33653,7 @@ evolve_cycles:
     - 10-e2e
     - 12-verify-deploy
     - 13-deploy-smoke
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
   stages:
     00-context:
       status: completed
@@ -33668,12 +33663,15 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-05"
       completed: null
-      note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 01-requirements
+      note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 02-verify-plan
     01-requirements:
+      status: completed
+      started: "2026-08-05"
+      completed: "2026-08-05"
+      note: AC=1 approve AC1–AC4; handoff 02-verify-plan
+    02-verify-plan:
       status: in_progress
       started: "2026-08-05"
-    02-verify-plan:
-      status: pending
     07-build:
       status: pending
     08-verify-build:
@@ -33700,11 +33698,14 @@ evolve_cycles:
     status: completed
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
+  - path: docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
+    status: completed
   issues:
   - 869
   - 870
   - 872
   notes:
+  - '2026-08-05 01-requirements COMPLETE — AC=1 approve_AC1-4_close_01; AC1–AC4 approved; current_stage=02-verify-plan in_progress; no git commit by workflow-state-manager'
   - '2026-08-05 Phase 0/1 ROUTING APPROVED — G2=1 approve_commit_start_01; Phase 0–1 intake done; 16-evolve orchestrator remains in_progress; current_stage=01-requirements in_progress; no git commit by workflow-state-manager'
 - id: EV-036
   session_id: S044-local-precommit-long-jobs
@@ -36633,6 +36634,20 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: d9e49c5d
+    branch: evolve/EV-037-matrix-disposition-residuals
+    message: "[EV-037] docs: open S045 matrix dispositions #869/#870/#872"
+    stage: 16-evolve
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
+    files_changed:
+      - docs/context/matrix-disposition-residuals.md
+      - docs/decisions/evolve-decisions.md
+      - docs/sessions/README.md
+      - docs/sessions/S045-matrix-disposition-residuals/routing-plan.md
+      - docs/sessions/S045-matrix-disposition-residuals/session-brief.md
+      - workflow-state.yaml
+    timestamp: "2026-08-05"
   - sha: d17b8be320d2009355da5fb8e74071e2f0227a35
     short: d17b8be3
     branch: main

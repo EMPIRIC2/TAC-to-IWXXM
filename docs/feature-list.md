@@ -2,18 +2,18 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S044 / EV-036 — M5 local long hooks + slim CI; prior S043 / EV-035)
+> **Last updated**: 2026-08-05 (S045 / EV-037 — matrix dispositions #869/#870/#872; prior S044 / EV-036)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S043 / EV-035 SCH/XSD cite provenance |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S045 / EV-037 US Schematron N/A (#870); prior S043 / EV-035 |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S043 / EV-035 encode/AHL cite provenance |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S045 / EV-037 AHL source vs impl matrix (#872); prior S043 / EV-035 |
 | F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid sessions |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
@@ -39,7 +39,7 @@
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; **deepen** S042 / EV-034 CD auto-rollout |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
-| F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; epic #846 |
+| F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S045 / EV-037 VONA SoT / Guidance silence (#869); epic #846 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -72,7 +72,9 @@
 - **Inputs**: IWXXM XML, target IWXXM version.
 - **Outputs**: Validation report (pass/fail + messages).
 - **F6 delta**: Validation consumes WMO vendor pins and, when `profile=iwxxm_us`, combined
-  IWXXM-US XSD (and US Schematron if published).
+  IWXXM-US XSD. **Official US Schematron is not published** (S045 / EV-037 / #870) — do not
+  treat the whole US validate column as N/A; pipeline = WMO XSD + US XSD + WMO `iwxxm.sch` +
+  project semantic rules + fixtures.
 - **S008 package amend**: Core logic moves to **`packages/iwxxm-validate`** (XSD + Schematron
   against `vendor/schemas/*`). `apps/backend` validation routes become a **thin HTTP wrapper**.
   Schematron remains on **IWXXM only** — TAC quality is **F6/`packages/tac-validate`**, not F2.
@@ -83,12 +85,16 @@
   (XSD / Schematron / guidance) must map to standing domain provenance rows under
   `docs/domain/rules/` (path-cite; no new Fn) with **dense CI asserts**; unfindable
   sources raised to the operator. Complements F29 matrix harness.
+- **S045 / EV-037 deepen (matrix dispositions)**: Document official IWXXM-US Schematron as
+  **N/A / not published**; split validate classes in `COVERAGE_MATRIX` / `PROVENANCE_MAP`
+  (`US_SCH_ABSENT`); optional 2025-2 + iwxxm-us 3.0 combined-catalog note. See deepen below.
 - **Acceptance (this amend)**: Library API + CI tests; backend thin wrappers for validate
   endpoints call `iwxxm-validate` (no behavior regression vs current F2).
-- **Limitations**: Schema bundles must match vendored snapshot version.
+- **Limitations**: Schema bundles must match vendored snapshot version; no official US `.sch`.
 - **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md);
   [Context: package-publish-validation](context/package-publish-validation.md);
-  **S043 / EV-035** · [Context: rule-source-traceability](context/rule-source-traceability.md)
+  **S043 / EV-035** · [Context: rule-source-traceability](context/rule-source-traceability.md);
+  **S045 / EV-037** · [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md)
 
 ### F3: Airport Data Services
 
@@ -204,6 +210,47 @@
 - **Out of scope**: New product encode; UI provenance UX; vendor hand-edits
 - **Source**: [Context: rule-source-traceability](context/rule-source-traceability.md);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-035
+
+### F6 deepen (S045 / EV-037 — Bulletin AHL source vs impl matrix)
+
+- **Status note**: F6 remains **Implemented**; this cycle **reclassifies** eight-family
+  **Bulletin AHL** coverage so **source availability** is not conflated with parser /
+  splitter / fixture / CI gaps ([#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872)).
+- **What changes**:
+  1. Mark `AHL T1T2 source available = ✅` for all WMO-mapped families (METAR…VONA) from
+     current WMO aviation AHL publication + vendor `AHL.asciidoc`
+  2. Redesign the single **Bulletin AHL** cell into columns:
+     `AHL source | T1T2 map | parser | BBB | body splitter | filename | COLLECT | fixtures | CI`
+  3. Close #872 when sources are ✅ and residual **implementation** gaps have child issues
+     (or are already tracked); do **not** leave stale `gap` that only meant “source missing”
+- **Acceptance (EV-037 / #872)**: See shared EV-037 ACs under F32 deepen / test-plan
+  **TC-EV037-***.
+- **Out of scope**: Full per-family body-split / fixture pack implementation beyond matrix
+  redesign and residual child tickets
+- **Source**: [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-037; [COVERAGE_MATRIX](domain/rules/COVERAGE_MATRIX.md)
+
+### F2 deepen (S045 / EV-037 — IWXXM-US Schematron N/A)
+
+- **Status note**: F2 remains **Implemented**; document official US Schematron artifact as
+  **N/A / not published** ([#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870)).
+- **Validation class split** (matrix / provenance):
+
+  | Class | Status |
+  |-------|--------|
+  | WMO core XSD | ✅ |
+  | IWXXM-US 3.0 XSD | ✅ |
+  | WMO core Schematron | ✅ |
+  | Official IWXXM-US Schematron | **N/A — not published** |
+  | U.S. profile semantic checks | ✅/⚠ per project rule coverage |
+  | U.S. examples/goldens | ✅/⚠ per fixture coverage |
+
+- **Acceptance (EV-037 / #870)**: `US_SCH_ABSENT` disposition = `N/A` (not `gap` invent);
+  METAR_US validate cell no longer implies “all US validation ⚠”; TC-EV037-002 green.
+- **Out of scope**: Authoring a project Schematron to replace NOAA; claiming 2025-2
+  certification of IWXXM-US 3.0 without a combined-catalog check note
+- **Source**: [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md);
+  NOAA iwxxm-us 3.0 publication; [PROVENANCE_MAP](domain/rules/PROVENANCE_MAP.md)
 
 ### F7: Multi-Product TAC Operator UI / Sessions
 
@@ -1227,11 +1274,19 @@
 - **What it does**: Raises **VONA** (Volcano Observatory Notice for Aviation) TAC lint,
   convert, and IWXXM-validate quality to the F15–F28 product bar. Root
   `iwxxm:VolcanoObservatoryNoticeForAviation`. **WMO `TAC-to-XML-Guidance.txt` has no VONA
-  section** — encode cookbook from **2025-2 XSD + Schematron + official `vona-A7-1.xml` +
-  PANS-MET VONA template**. Model volcano/ash as `MeteorologicalFeature` objects; colour
-  codes via `AviationColourCode` vocabulary; bounding period/volume/phenomena per XSD.
+  section** — this is a **non-blocking upstream documentation gap** (S045 / EV-037 / #869),
+  not an undefined conversion. Encode SoT hierarchy:
+  1. ICAO PANS-MET / applicable ICAO provisions
+  2. WMO FM 205 + IWXXM 2025-2 model (package `1.0.0`, `vona.xsd`)
+  3. WMO `vona.xsd`, `iwxxm.sch`, code lists
+  4. WMO aviation AHL (`WM`→`LM`)
+  5. Official `vona-A7-1.xml` example (fixture, not sole SoT)
+  6. Project cookbook — **derived** implementation guide only
+  Model volcano/ash as `MeteorologicalFeature` objects; colour codes via
+  `AviationColourCode` vocabulary; bounding period/volume/phenomena per XSD.
   Reuses **ADR-028** registry + **ADR-032** golden policy. Catalog `vona_a7_1` → **`wmoPass`**.
-- **Issues**: [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed; parent epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
+- **Issues**: [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed; parent epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
+  Guidance silence tracker [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869) (S045 disposition).
 - Deepen children: G-VONA-1 (vertical extent) [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849),
   G-VONA-5 (resuspended ash) [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850) — under #846.
 - **Deepens**: **F6** (VONA encode plugin), **F12** (VONA checklist), **F2/F13** (XSD+SCH),
@@ -1258,6 +1313,28 @@
 - **Source**: E32-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-032;
   [Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md); #741; ADR-028;
   ADR-032; `docs/domain/rules/COVERAGE_MATRIX.md`
+
+### F32 deepen (S045 / EV-037 — VONA SoT / Guidance silence)
+
+- **Status note**: F32 remains **Done**; dispose [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869)
+  as non-blocking upstream Guidance silence with explicit SoT hierarchy (cookbook = derived).
+- **Acceptance (EV-037 shared — #869 / #870 / #872)**:
+  1. VONA conversion cell + provenance: Guidance silence ⚠ non-blocking; SoT hierarchy
+     documented; cookbook labeled derived; `VONA_GUIDANCE_SILENT` disposition updated
+     (**TC-EV037-001**)
+  2. IWXXM-US validate classes split; official US Schematron = **N/A**; `US_SCH_ABSENT`
+     (**TC-EV037-002**)
+  3. Eight-family Bulletin AHL: every mapped family `AHL source = ✅`; impl columns separate;
+     #872 closeable when children exist only for true parser/splitter/fixture/CI gaps
+     (**TC-EV037-003**)
+  4. GitHub #869/#870/#872 closed or reworded per dispositions; epic #846 linked
+     (**TC-EV037-004**)
+- **Journeys / tests**: No new UJ (no UI); **TC-EV037-001..004**; prior **TC-F32-*** /
+  **TC-EV035-*** remain
+- **Out of scope**: Editing upstream `TAC-to-XML-Guidance.txt`; inventing US Schematron;
+  full AHL impl packs beyond matrix redesign
+- **Source**: E37-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-037;
+  [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md); #869/#870/#872
 
 ### F23 deepen (S040 / EV-032 — #835 A6-2-TC → wmoPass)
 
