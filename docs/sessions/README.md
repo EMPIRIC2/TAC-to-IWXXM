@@ -25,8 +25,9 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S041-worker-poller-hardening](S041-worker-poller-hardening/session-brief.md) | feature | in_progress | F8 deepen INGEST_POLLER_URL hardening (1–5 + code); EV-033 | evolve/EV-033-worker-poller-hardening | 2026-08-04 | — |
-| [S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md) | feature | suspended | #846 epic; #835/#741(F32)/#808 + corpus; EV-032 — paused for S041 | evolve/EV-032-iwxxm-corpus-quality | 2026-08-04 | — (resume after S041) |
+| [S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md) | feature | in_progress | Automate DOKS image rollout in CD; EV-034 — routing pending approval | evolve/EV-034-doks-cd-rollout | 2026-08-05 | — |
+| [S041-worker-poller-hardening](S041-worker-poller-hardening/session-brief.md) | feature | completed | F8 deepen INGEST_POLLER_URL hardening; EV-033 lean-close D-S041-1+3 | main (#865) | 2026-08-04 | 2026-08-05 |
+| [S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md) | feature | suspended | #846 epic; #835/#741(F32)/#808 + corpus; EV-032 — resume after S042 | evolve/EV-032-iwxxm-corpus-quality | 2026-08-04 | — (resume after S042) |
 | [S037-quality-residuals-831](S037-quality-residuals-831/session-brief.md) | feature | completed | #831/#829/#820 closed; F29 Done; residual #835; EV-030 | evolve/EV-030-quality-residuals-831 | 2026-08-02 | 2026-08-03 |
 | [S036-eight-family-ahl-rules-823](S036-eight-family-ahl-rules-823/session-brief.md) | feature | completed | #823 eight-family AHL/lint/convert/validate; EV-029; F28 Done; PR #828 | main (#828) | 2026-08-01 | 2026-08-02 |
 | [S034-wmo-decode-residual-matrix](S034-wmo-decode-residual-matrix/session-brief.md) | feature | in_progress | #815 official WMO decode residual matrix; EV-027 | evolve/EV-027-wmo-decode-residual-matrix | 2026-07-31 | — |
@@ -64,13 +65,15 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 ## Active session
 
-**[S027-vaa-quality](S027-vaa-quality/session-brief.md)** — VAA quality bar (#736); F26. Branch
-`evolve/EV-021-vaa-quality`. Lean+build+11 **proposed** (intake + routing pending).
+**[S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md)** — Automate DOKS CD image
+rollout (EV-034). Standard routing **proposed** (pending approval). Branch
+`evolve/EV-034-doks-cd-rollout` (`pending_create`).
 
-Parked/other: see rows above (S016 paused; S017 process).
+Parked: **[S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md)** suspended
+(`resume_after` S042 — do not auto-resume).
 
-Last closed: **[S026-airmet-quality-wmo-examples](S026-airmet-quality-wmo-examples/session-brief.md)** —
-F24 AIRMET + F25 WMO METAR/SPECI/TAF parity; PR #793 merged (`0f77194`); #731 closed.
+Last closed: **[S041-worker-poller-hardening](S041-worker-poller-hardening/session-brief.md)** —
+F8 poller hardening; lean-close `D-S041-1+3`; DOKS tag `20260805003332-5245f8d`.
 
 ## Folder layout
 

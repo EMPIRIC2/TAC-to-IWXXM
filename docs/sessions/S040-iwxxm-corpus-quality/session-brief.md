@@ -27,7 +27,8 @@ ui_preview: pending — AskQuestion at routing gate (engine-heavy; default docs/
 # Session S040 — iwxxm-corpus-quality
 
 > **Suspended 2026-08-04** for [S041-worker-poller-hardening](../S041-worker-poller-hardening/session-brief.md) / EV-033.
-> Not completed or cancelled. Resume at `13-deploy-smoke` / T4.5 after S041. EV-032 remains `in_progress`.
+> Not completed or cancelled. Resume at `13-deploy-smoke` / T4.5 after S042 (CD session);
+> do not auto-resume now. EV-032 remains `in_progress`.
 
 ## Intent
 

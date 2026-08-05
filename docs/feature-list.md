@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-04 (S038 / EV-031 F30/F31 Done; S040 / EV-032 F32 Done; #842/#846)
+> **Last updated**: 2026-08-05 (S042 / EV-034 F30 CD deepen — DOKS auto-rollout)
 
 ## Summary
 
@@ -37,7 +37,7 @@
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828 |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; #842/#830/#712; public DNS live |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; **deepen** S042 / EV-034 CD auto-rollout |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; epic #846 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
@@ -1118,13 +1118,15 @@
 
 ### F30: Platform Independence (Auth / DO DB / DOKS) — S038 / EV-031
 
-- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — provisional DOKS + Render suspended;
-  real public DNS/HTTPS residual under `D-S038-t63-waive`.
+- **Status**: **Done** (S038 / EV-031; `D-S038-13` = 1) — **deepen** S042 / EV-034 (CD DOKS image rollout).
 - **What it does**: Splits platform lock-in under epic [#842](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/842):
   1. **Supabase Auth only** — JWT issue/verify for optional operator login (no product PostgREST / hosted Postgres app tables).
   2. **DigitalOcean Postgres** — all product DB including F8 store/quarantine and logged-in work sessions (`DATABASE_URL`).
   3. **DOKS production cutover** — API + worker + static from Render → DigitalOcean Kubernetes; decommission Render after soak ([#712](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/712)).
   4. Amend [#830](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/830): strip Supabase **data** plane; keep Auth.
+  5. **CD auto-rollout (EV-034)**: On `main` Deploy after GHCR push, pin `metar-api` /
+     `metar-frontend` / `metar-worker` to the immutable `TIMESTAMP-SHA` tag via kubectl
+     (`KUBE_CONFIG` Actions secret). Render hooks optional/non-blocking.
 - **Convert APIs**: Remain public (no JWT) for convert/lint/validate/disseminate (`D-S038-F30`).
 - **Acceptance**:
   1. Product path boots/smokes without Supabase **database** credentials (**TC-F30-001**)
@@ -1133,8 +1135,9 @@
   4. DOKS hosts API + worker + static; cutover runbook + H0–H5 against new endpoints (**TC-F30-004**)
   5. Render decommissioned after soak or residual ticket with checklist (**TC-F30-005**)
   6. Docs/CORPUS/env-contract no longer require Supabase as data plane (**TC-F30-006**)
+  7. `main` CD rolls DOKS images to the pushed immutable tag without manual kubectl (**TC-F30-007**)
 - **Out of scope**: Convert/validate engine rewrites; long-lived dual production hosts after soak
-- **Source**: E31-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712
+- **Source**: E31-*; E34-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712; S042 / EV-034
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 

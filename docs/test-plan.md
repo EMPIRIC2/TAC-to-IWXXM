@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-04 (S038 / EV-031 TC-F30/F31 + S040 / EV-032 TC-F32 #846/#835/#741/#808)
+> **Last updated**: 2026-08-05 (S042 / EV-034 TC-F30-007 DOKS CD auto-rollout)
 
 ## Scope
 
@@ -1650,6 +1650,18 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   Auth keys only; ADR-033 / deploy cutover referenced
 - **Source**: F30 AC6; #830
 
+### TC-F30-007: CD auto-rolls DOKS images (EV-034)
+
+- **Level**: Ops / T3 (CD)
+- **Objective**: After `main` GHCR push, Deploy pins DOKS `metar-api` / `metar-frontend` /
+  `metar-worker` to the immutable `TIMESTAMP-SHA` tag without manual kubectl
+- **Pass criteria**:
+  1. Deploy job runs `scripts/deploy/doks_rollout_images.sh` (or equivalent) with `KUBE_CONFIG`
+  2. Cluster Deployments show the pushed tag; `rollout status` succeeds
+  3. Live smoke: `/health` 200; OpenAPI includes `/auth/*` when that tag includes Auth
+  4. Missing `KUBE_CONFIG` fails Deploy; missing Render hooks do **not** fail Deploy
+- **Source**: F30 AC7; S042 / EV-034; `E34-1..4`
+
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 
 - **Level**: T2 / T3
@@ -2085,7 +2097,7 @@ Husky **pre-push** mirrors validate + unit/matrix locally. **Deploy** on `main` 
 |---------|----------|------|--------|
 | PR / push `main`, `dev` | `ci-cd.yml` | **validate** | ruff format/check, prettier, eslint, basedpyright, tsc, gitleaks, actionlint/yamllint, config-guard (`tests/test_config_placeholders.py`), frontend npm audit |
 | PR / push `main`, `dev` | `ci-cd.yml` | **test**, **tac2iwxxm-native**, **e2e-smoke** | package unit/integration matrix, PyO3 smoke, Playwright smoke |
-| push `main` only | `ci-cd.yml` | **deploy** | needs test + native; Docker build/push GHCR, Render deploy hooks — **skip** if credentials incomplete |
+| push `main` only | `ci-cd.yml` | **deploy** | needs test + native; Docker build/push GHCR; **DOKS kubectl rollout** (requires `KUBE_CONFIG`); Render hooks optional/non-blocking |
 | Local (husky pre-push) | `.husky/pre-push` | — | `make validate-ci` + `make ci-prepush` (unit/matrix @ package coverage gates) |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
 | Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 scope |
