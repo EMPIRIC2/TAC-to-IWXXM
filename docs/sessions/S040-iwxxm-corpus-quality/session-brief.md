@@ -1,34 +1,18 @@
 ---
 session_id: S040-iwxxm-corpus-quality
 type: feature
-status: suspended
-branch: evolve/EV-032-iwxxm-corpus-quality
-started_at: 2026-08-04
-suspended_at: 2026-08-04
-suspended_for: S041-worker-poller-hardening
-intent: "Official IWXXM corpus quality / WMO source parity — #846 epic; #835 A6-2 wmoPass; F32 VONA (#741); #808 release-line adoptability; corpus children."
-orchestrator: 16-evolve
-evolve_cycle_id: EV-032
-github_issues:
-  - 846
-  - 835
-  - 741
-  - 808
-prior_session: S039-doks-dns-cutover
-context_briefs:
-  - docs/context/iwxxm-corpus-quality-846.md
-standing_docs_touched: []  # filled after 01/04
-feature_ids: [F32, F23, F6, F2, F4, F13]
-feature_note: "D-S040-open — F32 VONA (#741) + deepen F23 (#835) + F4/F6/F2/F13 (#808 + corpus)"
-ask_question: written interview — D-S040-open = 1,1,1,1
-ui_preview: pending — AskQuestion at routing gate (engine-heavy; default docs/repo)
+status: completed
+completed_at: 2026-08-05
+current_stage: completed
+decisions:
+  D-S040-resume: "1"  # 2026-08-05 resume after S042 close
+  D-S040-close: "1"   # 2026-08-05 T4.5 re-verify + T4.6 close
 ---
 
 # Session S040 — iwxxm-corpus-quality
 
-> **Suspended 2026-08-04** for [S041-worker-poller-hardening](../S041-worker-poller-hardening/session-brief.md) / EV-033.
-> Not completed or cancelled. Resume at `13-deploy-smoke` / T4.5 after S042 (CD session);
-> do not auto-resume now. EV-032 remains `in_progress`.
+> **Completed 2026-08-05** (`D-S040-close` = 1). Resumed after S042; T4.5 re-verified on
+> live tag `20260805115809-d3f4bb9`; T4.6 evolve-summary written. Epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) remains **open** for residual children.
 
 ## Intent
 

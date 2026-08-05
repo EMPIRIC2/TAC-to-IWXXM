@@ -2,6 +2,20 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-05 — S040 EV-032 close (IWXXM corpus / F32 VONA)
+
+### Added
+- **F32**: VONA TAC lint → convert → XSD+SCH; FE Examples `vona_a7_1` (`wmoPass`); API
+  `product=vona` (PR #848).
+- **#835**: TC SIGMET A6-2-TC ADR-032 equality promoted to `wmoPass`.
+
+### Docs
+- Release-line adoptability / staff guide (#808/#847); #846 corpus children filed (epic remains open).
+
+### Deploy
+- Initial DOKS smoke @ `20260804214648-dfecba4`; re-verified on `20260805115809-d3f4bb9`.
+- Report: [evolve-summary.md](sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md).
+
 ## 2026-08-05 — S042 EV-034 (F30 CD deepen — DOKS auto-rollout)
 
 ### Added

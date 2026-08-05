@@ -447,19 +447,11 @@ sessions:
   intent: |
     Official IWXXM corpus quality / WMO source parity — epic #846; #835 A6-2 wmoPass;
     F32 VONA (#741); #808 release-line adoptability; corpus children
-  status: suspended
-  suspended_at: '2026-08-04'
-  paused_at: '2026-08-04'
-  pause_reason: |
-    Paused for S041 then S042 CD session. S042/EV-034 now CLOSED.
-    S040/EV-032 NOT completed or cancelled — eligible to resume at 13-deploy-smoke / T4.5 on explicit user request (do not auto-resume).
-  suspended_for: S041-worker-poller-hardening
-  resume_after: S042-doks-cd-rollout
-  resume_after_note: 'S042/EV-034 CLOSED — S040 remains suspended; eligible to resume (do not auto-resume); resume at 13-deploy-smoke / T4.5 on explicit user request'
-  resume_at_stage: 13-deploy-smoke
-  resume_at_task: T4.5
+  status: completed
+  completed_at: '2026-08-05'
+  completed: '2026-08-05'
   branch: evolve/EV-032-iwxxm-corpus-quality
-  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
+  branch_note: 'CLOSED — PR #848 MERGED @ dfecba46; EV-032 completed; live DOKS 20260805115809-d3f4bb9; #846 epic remains OPEN'
   orchestrator: 16-evolve
   evolve_cycle_id: EV-032
   github_issues:
@@ -480,7 +472,7 @@ sessions:
   prior_session_note: 'S039 COMPLETE — DNS+TLS cutover PASS; D-S038-t63-waive lifted; public HTTPS api|app.tac-to-iwxxm.com'
   preset: Standard
   preset_status: approved
-  route_status: approved_D-S040-route
+  route_status: completed_D-S040-close
   phase0_choices:
     D-S040-open: '1,1,1,1'
     D-S040-route: '1'
@@ -491,11 +483,12 @@ sessions:
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
-    D-S040-resume: Continue → T4.2
+    D-S040-resume: '1'
     D-S040-phase-c: '1'
     D-S040-11: A1,B1,C1,D1
     D-S040-12: ready
     D-S040-13: '1'
+    D-S040-close: '1'
     locked_at: '2026-08-04'
     summary: |
       Epic #846; scope #835+#741+#808+corpus; F32 VONA; work order
@@ -505,6 +498,8 @@ sessions:
       D-S040-11=A1,B1,C1,D1 (11 approved); D-S040-12=ready (12 checklist); D-S040-13=1 (deploy gate).
   decisions:
     D-S040-13: '1'
+    D-S040-resume: '1'
+    D-S040-close: '1'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -516,10 +511,12 @@ sessions:
     note: 'COMPLETE — brief+routing+scoped context; D-S040-route/branch locked; branch evolve/EV-032 cut from main @ 2ed85da1; handoff 01-requirements; #846/#835/#741/#808'
   - stage: 16-evolve
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-04'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
-    note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+    note: 'COMPLETE — D-S040-close=1; T4.5 re-verify + T4.6; EV-032 completed; evolve-summary docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md; #846 epic remains OPEN'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -546,10 +543,12 @@ sessions:
     note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
   - stage: 07-build
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-04'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
-    note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+    note: 'COMPLETE — M0–M4 + Phase D closeout; PR #848 MERGED @ dfecba46; T4.5–T4.6 done; #846'
   - stage: 08-verify-build
     required: true
     status: completed
@@ -599,11 +598,21 @@ sessions:
     decision_id: D-S040-12
   - stage: 13-deploy-smoke
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-04T21:35:00Z'
+    started_at: '2026-08-04T21:35:00Z'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
+    overall: pass
+    decision_id: D-S040-close
     skip_rationale:
-    note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
-  current_stage: 13-deploy-smoke
+    report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    report_status: approved
+    note: 'COMPLETE — T4.5 PASS 2026-08-04; re-verified 2026-08-05 on DOKS 20260805115809-d3f4bb9; D-S040-close=1; #846 epic remains OPEN'
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: 'COMPLETED 2026-08-05 — D-S040-close=1; T4.5 re-verify PASS on DOKS 20260805115809-d3f4bb9; T4.6 evolve-summary; EV-032 completed; PR #848 MERGED @ dfecba46; #846 epic remains OPEN for residual children'
+  next_stage: null
   started_at: '2026-08-04'
   started: '2026-08-04'
   context_briefs:
@@ -664,6 +673,15 @@ sessions:
     status: written
     stage: 10-e2e
     note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    status: approved
+    stage: 13-deploy-smoke
+    overall: pass
+    note: 'T4.5 PASS + 2026-08-05 re-verify on 20260805115809-d3f4bb9'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md
+    status: written
+    stage: 16-evolve
+    note: 'T4.6 COMPLETE — EV-032 close; D-S040-close=1'
   decision_refs:
   - D-S040-open
   - D-S040-route
@@ -679,11 +697,21 @@ sessions:
   - D-S040-11
   - D-S040-12
   - D-S040-13
+  - D-S040-close
   skipped:
   - 03-plan-tooling
   - 05-verify-tech
   - 06-tech-tooling
-  note: 'SUSPENDED — S042/EV-034 closed; eligible to resume at 13-deploy-smoke / T4.5 (do not auto-resume); tip 22b4251b; PR #848; #846'
+  note: 'COMPLETED 2026-08-05 — D-S040-close=1; T4.5 re-verify PASS on DOKS 20260805115809-d3f4bb9; T4.6 evolve-summary; EV-032 completed; PR #848 MERGED @ dfecba46; #846 epic remains OPEN for residual children'
+  resumed_at: '2026-08-05'
+  resume_note: 'Resumed after S042; closed same day via D-S040-close=1'
+  pr_number: 848
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
+  pr_status: merged
+  tip_sha: d3f4bb95
+  tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  doks_tag: 20260805115809-d3f4bb9
+  epic_846_status: open
 - id: S039-doks-dns-cutover
   type: ops
   intent: |
@@ -7207,12 +7235,12 @@ stages:
     previous_evolve_cycle_id: EV-032
     previous_tip_sha: 22b4251b
     previous_tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-    previous_note: 'S040/EV-032 Phase D — T4.5 IN_PROGRESS (suspended resume_after S042); tip 22b4251b; PR #848; #846'
+    previous_note: 'S040/EV-032 07-build COMPLETED after resume — D-S040-close=1; M0–M4 + Phase D; tip lineage d3f4bb95; #846'
     prior_session_id: S040-iwxxm-corpus-quality
     prior_evolve_cycle_id: EV-032
     prior_started: '2026-08-04'
-    prior_completed:
-    prior_note: 'S040/EV-032 Phase D — T4.5 IN_PROGRESS (suspended resume_after S042); tip 22b4251b; PR #848; #846'
+    prior_completed: '2026-08-05'
+    prior_note: 'S040/EV-032 07-build COMPLETED — D-S040-close=1; progress 28/28; #846 epic remains OPEN'
     session_id: S042-doks-cd-rollout
     evolve_cycle_id: EV-034
     mode: full
@@ -7241,10 +7269,10 @@ stages:
     hotfix_merge_commit_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
     commit_sha: 9ae9c323
     commit_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-    suspended_s040_progress: 25/28
-    suspended_s040_completed_through: T4.4
-    suspended_s040_active_task: T4.5
-    suspended_s040_note: 'S040/EV-032 T4.5 was in_progress at tip 22b4251b / PR #848 — resume_after S042'
+    suspended_s040_progress: 28/28
+    suspended_s040_completed_through: T4.6
+    suspended_s040_active_task: T4.6
+    suspended_s040_note: 'S040/EV-032 CLOSED D-S040-close=1 — no longer suspended; EV-032 completed 2026-08-05'
     t4_4_complete: true
     t4_4_pending_commit: false
     t4_4_sha: fe024aac
@@ -10222,7 +10250,10 @@ stages:
     previous_tip_sha: 22b4251b
     previous_tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
     previous_overall:
-    previous_note: 'SUSPENDED during S042 — T4.5 was in_progress (D-S040-13=1); tip 22b4251b; PR #848; resume_after S042'
+    previous_note: 'S040/EV-032 T4.5 COMPLETED after resume — D-S040-close=1; re-verify 20260805115809-d3f4bb9; prior tip during suspend was 22b4251b'
+    previous_completed: '2026-08-05'
+    previous_completed_at: '2026-08-05'
+    previous_overall: pass
     prior_s038_session_id: S038-platform-independence-842
     prior_s038_evolve_cycle_id: EV-031
     prior_s038_tip_sha: b4feac02
@@ -10282,19 +10313,24 @@ stages:
       session_id: S040-iwxxm-corpus-quality
       evolve_cycle_id: EV-032
       skill_id: 13-deploy-smoke
-      status: in_progress
-      mode: delta
+      status: completed
+      mode: full
       started: '2026-08-04T21:35:00Z'
       started_at: '2026-08-04T21:35:00Z'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
       branch: evolve/EV-032-iwxxm-corpus-quality
-      tip_sha: 22b4251b
-      tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+      tip_sha: d3f4bb95
+      tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+      report_status: approved
+      overall: pass
       active_milestone: M4
-      active_task: T4.5
-      active_task_status: in_progress
-      progress: 25/28
-      note: 'SUSPENDED — S042 closed; eligible to resume T4.5 (do not auto-resume); tip 22b4251b; PR #848'
-      decision_id: D-S040-13
+      active_task: T4.6
+      active_task_status: completed
+      progress: 28/28
+      note: 'COMPLETE — T4.5 PASS + 2026-08-05 re-verify on 20260805115809-d3f4bb9; D-S040-close=1; #846 epic remains OPEN'
+      decision_id: D-S040-close
       awaiting_deploy_approval: false
     - id: S038-platform-independence-842
       session_id: S038-platform-independence-842
@@ -10879,17 +10915,17 @@ stages:
   16-evolve:
     status: completed
     mode: orchestrator
-    session_id: S042-doks-cd-rollout
-    evolve_cycle_id: EV-034
-    started_at: '2026-08-05'
-    started: '2026-08-05'
+    session_id: S040-iwxxm-corpus-quality
+    evolve_cycle_id: EV-032
+    started_at: '2026-08-04'
+    started: '2026-08-04'
     completed_at: '2026-08-05'
     completed: '2026-08-05'
-    previous_session_id: S041-worker-poller-hardening
-    previous_evolve_cycle_id: EV-033
+    previous_session_id: S042-doks-cd-rollout
+    previous_evolve_cycle_id: EV-034
     previous_completed_at: '2026-08-05'
     current_child_stage: completed
-    note: 'COMPLETE — S042/EV-034 closed D-S042-13=1; 11/12/13 PASS; evolve-summary docs/sessions/S042-doks-cd-rollout/reports/evolve-summary.md; idle until next evolve; S040 remains suspended (eligible to resume; do not auto-resume)'
+    note: 'COMPLETE — S040/EV-032 closed D-S040-close=1; T4.5 re-verify PASS; T4.6 evolve-summary docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md; #846 epic remains OPEN; idle until next evolve'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -11155,6 +11191,59 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S040-close
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: close_session
+  category: phase_d_close
+  status: confirmed
+  topic: 'Approve T4.5 re-verify + T4.6 and close EV-032 / S040'
+  summary: |
+    User approved D-S040-close=1 after resume (D-S040-resume=1). T4.5 re-verified
+    live on DOKS tag 20260805115809-d3f4bb9; T4.6 evolve-summary written.
+    Stages 13-deploy-smoke (pass), 07-build, and 16-evolve completed for cycle.
+  decision: |
+    D-S040-close=1 — close S040 / EV-032. Checkpoints deploy + phase_d passed.
+    evolve-summary docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md.
+    active_session=null. Epic #846 remains OPEN for residual children.
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '848'
+  tip_sha: d3f4bb95
+  doks_tag: 20260805115809-d3f4bb9
+  progress: 28/28
+  note: 'PR #848 MERGED @ dfecba46; live re-verify 20260805115809-d3f4bb9; #846 OPEN'
+- id: D-S040-resume
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S040-iwxxm-corpus-quality
+  evolve_cycle_id: EV-032
+  skill: 00-context
+  skill_id: 00-context
+  stage: 13-deploy-smoke
+  category: resume
+  status: confirmed
+  topic: 'Resume S040/EV-032 after S042 close'
+  summary: 'User choice 2 — resume S040 at 13-deploy-smoke / T4.5 after S042 closed'
+  decision: 'D-S040-resume=1 — resume S040-iwxxm-corpus-quality; clear suspended; continue T4.5 promote + T4.6 close'
+  user_option: '1'
+  branch: evolve/EV-032-iwxxm-corpus-quality
+  related_issues:
+  - '846'
+  - '848'
+  tip_sha: 6b349779
+  active_task: T4.5
+  active_task_status: in_progress
+  progress: 25/28
+  note: 'PR #848 MERGED @ dfecba46; live DOKS 20260805115809-d3f4bb9 includes #848 lineage'
 - id: D-S042-13
   date: '2026-08-05'
   timestamp: '2026-08-05T12:10:00Z'
@@ -32531,14 +32620,10 @@ evolve_cycles:
   - F13
   title: IWXXM corpus quality / WMO source parity
   slug: iwxxm-corpus-quality
-  status: in_progress
-  session_status: suspended
-  session_suspended_for: S042-doks-cd-rollout
-  resume_after: S042-doks-cd-rollout
-  session_suspend_note: |
-    S040 remains suspended during S042/EV-034 CD DOKS automation; EV-032 cycle
-    NOT cancelled — resume at 13-deploy-smoke / T4.5 after S042 (or explicit user
-    request). Do not auto-resume now. Prior suspend was for S041 (lean-closed).
+  status: completed
+  session_status: completed
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
   phase: 0
   started: '2026-08-04'
   started_at: '2026-08-04'
@@ -32555,7 +32640,7 @@ evolve_cycles:
   - '741'
   - '808'
   branch: evolve/EV-032-iwxxm-corpus-quality
-  branch_note: created from main @ 2ed85da1 (D-S040-branch=1); EV-031 WIP stashed as S039-EV031-WIP
+  branch_note: 'CLOSED — PR #848 MERGED @ dfecba46; EV-032 completed 2026-08-05; live DOKS 20260805115809-d3f4bb9; #846 epic remains OPEN'
   preset: Standard
   preset_status: approved
   phase0_choices:
@@ -32568,11 +32653,12 @@ evolve_cycles:
     D-S040-04-batch-1: '1,1,1,1'
     D-S040-04-batch-2: '1,1,custom,1'
     D-S040-04-plan: '1'
-    D-S040-resume: Continue → T4.2
+    D-S040-resume: '1'
     D-S040-phase-c: '1'
     D-S040-11: A1,B1,C1,D1
     D-S040-12: ready
     D-S040-13: '1'
+    D-S040-close: '1'
     locked_at: '2026-08-04'
   routing_plan:
     required_stages:
@@ -32592,16 +32678,23 @@ evolve_cycles:
     - 03-plan-tooling
     - 05-verify-tech
     - 06-tech-tooling
-    note: 'Standard approved — D-S040-route=1; skip 03/05/06; Phase D via D-S040-phase-c=1'
-  current_stage: 13-deploy-smoke
-  tip_sha: 22b4251b
-  tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-  tip_note: 'S040/EV-032 tip 22b4251b — T4.5 START D-S040-13=1; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; ahead_of_origin=13; PR #848; #846'
+    note: 'Standard complete — D-S040-close=1; all required stages done; evolve-summary docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md; #846 epic remains OPEN'
+  current_stage: completed
+  current_stage_status: completed
+  tip_sha: d3f4bb95
+  tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+  tip_note: 'COMPLETED — live DOKS 20260805115809-d3f4bb9; PR #848 @ dfecba46; D-S040-close=1'
+  doks_tag: 20260805115809-d3f4bb9
   active_milestone: M4
-  active_task: T4.5
-  active_task_status: in_progress
-  progress: 25/28
-  completed_through: T4.4
+  active_task: T4.6
+  active_task_status: completed
+  progress: 28/28
+  completed_through: T4.6
+  t4_5_complete: true
+  t4_5_overall: pass
+  t4_5_report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+  t4_6_complete: true
+  t4_6_report: docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md
   t4_4_complete: true
   t4_4_pending_commit: false
   t4_4_sha: fe024aac
@@ -32612,9 +32705,9 @@ evolve_cycles:
   t4_4_12_report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-checklist.md
   t4_4_decision_11: D-S040-11
   t4_4_decision_12: D-S040-12
-  head_draft_sha: null
-  head_draft_sha_full: null
-  head_draft_message: null
+  head_draft_sha:
+  head_draft_sha_full:
+  head_draft_message:
   head_draft_superseded_by: fe024aac
   head_draft_superseded_by_full: fe024aac10077e365d65d0eccf12d8fb6288c9ec
   t4_3_complete: true
@@ -32622,9 +32715,9 @@ evolve_cycles:
   t4_3_10_overall: pass
   t4_3_09_report: docs/sessions/S040-iwxxm-corpus-quality/reports/qa-report.md
   t4_3_10_report: docs/sessions/S040-iwxxm-corpus-quality/reports/e2e-report.md
-  t4_3_tip_sha: 09e60184
+  t4_3_tip_sha: .inf
   t4_3_tip_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
-  t4_3_sha: 09e60184
+  t4_3_sha: .inf
   t4_3_sha_full: 09e601847eae404f997e107b42952bfcc51db12f
   t4_3_pending_commit: false
   t4_2_complete: true
@@ -32658,7 +32751,7 @@ evolve_cycles:
   t2_4_t2_5_note: 'bundled same commit like T2.2-T2.3; T2.4–T2.5 COMPLETE — vona-A7-1 annex3 fixtures + TC-F32-002/003; parse_vona + emit_vona_annex3; WM→LM AHL; wmoReference soft path (ADR-032 strict → T2.6); F6 EXPECTED_PRODUCTS still excludes VONA; XSD+SCH soft smoke already clean; #846/#741'
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/848
   pr_number: 848
-  pr_status: open
+  pr_status: merged
   pr_title: '[M1] #835 A6-2-TC ADR-032 equality → wmoPass (EV-032)'
   pr_milestone: M1
   stages:
@@ -32670,9 +32763,11 @@ evolve_cycles:
       tip_sha: 2ed85da1
       note: 'COMPLETE — brief+routing+context; branch cut @ 2ed85da1; handoff 01'
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-08-04'
-      note: 'ORCHESTRATING — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      note: 'COMPLETE — D-S040-close=1; EV-032 completed; evolve-summary docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md; #846 epic remains OPEN'
     01-requirements:
       status: completed
       mode: delta
@@ -32692,9 +32787,11 @@ evolve_cycles:
       completed: '2026-08-04'
       note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
     07-build:
-      status: in_progress
+      status: completed
       started: '2026-08-04'
-      note: 'Phase D — T4.5 IN_PROGRESS; D-S040-13=1; tip 22b4251b; push+merge #848 → redeploy API+FE → H1–H5; gates.deploy in_progress; PR #848; ahead_of_origin=13; #846'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      note: 'COMPLETE — M0–M4 + Phase D closeout; PR #848 MERGED @ dfecba46; T4.5–T4.6 done; #846'
     08-verify-build:
       status: completed
       started: '2026-08-04'
@@ -32740,11 +32837,16 @@ evolve_cycles:
       overall: ready
       decision_id: D-S040-12
     13-deploy-smoke:
-      status: in_progress
+      status: completed
       started: '2026-08-04T21:35:00Z'
       started_at: '2026-08-04T21:35:00Z'
-      note: 'T4.5 START — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; ahead_of_origin=13; PR #848; #846'
-      decision_id: D-S040-13
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      overall: pass
+      report: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+      report_status: approved
+      note: 'COMPLETE — T4.5 PASS + 2026-08-05 re-verify on DOKS 20260805115809-d3f4bb9; D-S040-close=1'
+      decision_id: D-S040-close
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -32752,8 +32854,8 @@ evolve_cycles:
     c_to_d_note: 'D-S040-phase-c=1 Continue → T4.3; C→D passed 2026-08-04; tip at pass was e0e595e3 (08 PASS); Phase D tip now 09e60184 (T4.3)'
     c_to_d_decision: D-S040-phase-c
     c_to_d_passed_at: '2026-08-04'
-    deploy: in_progress
-    deploy_note: 'T4.5 START — D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5'
+    deploy: passed
+    deploy_note: 'T4.5 PASS + 2026-08-05 re-verify on DOKS 20260805115809-d3f4bb9; D-S040-close=1'
   checkpoints:
     phase_a: passed
     phase_b: passed
@@ -32761,9 +32863,11 @@ evolve_cycles:
     phase_c_note: 'D-S040-phase-c=1 Continue → T4.3; user option 1; Phase D started (09+10 parallel)'
     phase_c_decision: D-S040-phase-c
     phase_c_passed_at: '2026-08-04'
-    phase_d: pending
-    phase_d_note: 'T4.5/13 in progress per D-S040-13=1'
-    deploy: in_progress
+    phase_d: passed
+    phase_d_note: 'D-S040-close=1 — T4.5 re-verify + T4.6 evolve-summary; Phase D complete 2026-08-05'
+    phase_d_passed_at: '2026-08-05'
+    deploy: passed
+    deploy_note: 'T4.5 PASS + re-verify on 20260805115809-d3f4bb9'
   adrs: []
   artifacts:
   - path: docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
@@ -32818,6 +32922,15 @@ evolve_cycles:
     status: written
     stage: 10-e2e
     note: 'T4.3 COMPLETE; overall T0 pass; tip 09e60184 committed'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/deploy-smoke.md
+    status: approved
+    stage: 13-deploy-smoke
+    overall: pass
+    note: 'T4.5 PASS + 2026-08-05 re-verify'
+  - path: docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md
+    status: written
+    stage: 16-evolve
+    note: 'T4.6 COMPLETE — EV-032 close'
   issues: []
   decision_refs:
   - D-S040-open
@@ -32834,8 +32947,13 @@ evolve_cycles:
   - D-S040-11
   - D-S040-12
   - D-S040-13
-  note: 'T4.5 IN_PROGRESS — D-S040-13=1 (push+merge #848 → main → redeploy API+FE → H1–H5); tip 22b4251b; progress 25/28; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
+  - D-S040-close
+  summary_path: docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md
+  evolve_summary: docs/sessions/S040-iwxxm-corpus-quality/reports/evolve-summary.md
+  note: 'COMPLETED 2026-08-05 — D-S040-close=1; T4.5 re-verify PASS on DOKS 20260805115809-d3f4bb9; T4.6 evolve-summary; EV-032 completed; PR #848 MERGED @ dfecba46; #846 epic remains OPEN for residual children'
   notes:
+  - '2026-08-05 S040/EV-032 — CLOSE D-S040-close=1; T4.5 re-verify PASS on 20260805115809-d3f4bb9; T4.6 evolve-summary; EV-032 completed; active_session=null; #846 epic remains OPEN'
+  - '2026-08-05 S040/EV-032 — RESUMED — session_status in_progress; current_stage 13-deploy-smoke; T4.5 PASS draft on evolve branch tip 6b349779 needs promote to main + T4.6 close; PR #848 MERGED @ dfecba46; live DOKS 20260805115809-d3f4bb9 includes #848 lineage'
   - '2026-08-04 S040/EV-032 — T4.5 START D-S040-13=1; push+merge #848 → main → redeploy API+FE → H1–H5; tip 22b4251b; current_stage 13-deploy-smoke; ahead_of_origin=13; PR #848; #846'
   - '2026-08-04 S040/EV-032 — recorded git commit T4.4 @ fe024aac (fe024aac10077e365d65d0eccf12d8fb6288c9ec) [T4.4] docs: approve 11-verify-impl and ready 12 deploy checklist; tip fe024aac; pending_commit cleared; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; ahead_of_origin=12 pushed=false; PR #848; #846'
   - '2026-08-04 S040/EV-032 — T4.4 COMPLETE (D-S040-11=A1,B1,C1,D1; D-S040-12=ready); 11 approved verify-impl.md; 12 ready deploy-checklist.md; progress 25/28; completed_through T4.4; active_task T4.5 pending; current_stage 13-deploy-smoke; tip fe024aac; pending_commit later cleared @ fe024aac; gates.deploy pending; PR #848; #846'
@@ -32864,6 +32982,10 @@ evolve_cycles:
   - '2026-08-04 S040/EV-032 — 00-context COMPLETE; branch evolve/EV-032 @ 2ed85da1; handoff 01-requirements; stash S039-EV031-WIP; evolve-decisions.md EV-032 section in progress by parent; #846/#835/#741/#808'
   - '2026-08-04 S040/EV-032 — D-S040-route=1 Standard approved; D-S040-branch=1 cut from main (do not carry EV-031 dirty worktree); 00-context completing; scoped brief docs/context/iwxxm-corpus-quality-846.md; #846/#835/#741/#808; exclude #836'
   - '2026-08-04 S040/EV-032 OPEN — open_session; D-S040-open=1,1,1,1; session_counter 40; evolve_cycle_counter 32; branch evolve/EV-032-iwxxm-corpus-quality (pending create); 00-context in_progress; #846/#835/#741/#808; exclude #836'
+  resumed_at: '2026-08-05'
+  resume_note: 'Resumed after S042; closed same day via D-S040-close=1'
+  epic_846_status: open
+  pr_merged_sha: dfecba46
 git_history:
   current_branch: main
   ahead_of_origin: 2

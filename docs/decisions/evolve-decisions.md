@@ -83,7 +83,7 @@ beyond the fixture URL; Prometheus operator install on DOKS.
 **Issues**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) (epic), [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835), [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741), [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808)  
 **Started**: 2026-08-04  
 **Branch**: `evolve/EV-032-iwxxm-corpus-quality` (from `main`)  
-**Status**: **in_progress** — **suspended** (resume_after S042; do not auto-resume)
+**Status**: **completed** 2026-08-05 (`D-S040-close` = 1) — T4.5 re-verified on `20260805115809-d3f4bb9`; #846 epic remains open for residual children
 
 ### Scope (Phase 0 — locked 2026-08-04 via 00-context)
 

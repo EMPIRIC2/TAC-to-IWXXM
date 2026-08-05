@@ -3,46 +3,31 @@
 **Preset:** Standard — approved `D-S040-route` = 1  
 **Orchestrator:** 16-evolve · **Cycle:** EV-032  
 **Path:** `00→16→01→02→04→07→08→09→10→11→12→13`  
-**Skip:** `03, 05, 06` (re-add if 04 introduces new deps/ADR tooling/guardrails)  
-**Work order:** #835 → #741 (F32) → #808 → corpus children under #846  
-**Exclude:** #836 metrics UI  
-**Branch:** `evolve/EV-032-iwxxm-corpus-quality` from `main` (`D-S040-branch` = 1)
+**Skip:** `03, 05, 06`  
+**Branch:** `evolve/EV-032-iwxxm-corpus-quality` → **merged** PR #848  
+**Status:** **completed** (`D-S040-close` = 1) — 2026-08-05
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | Intake + route + branch approved |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase A done; Phase B → 04 |
-| 01-requirements | yes | delta | **completed** | Full pack + F7 VONA (`D-S040-E32-M`=2,3,1,1) |
-| 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S040-02-phase-a`=1); Batch F `1,1,1,1` |
-| 03-plan-tooling | no | — | skipped | Re-add if new rules/hooks |
-| 04-tech-plan | yes | delta | **completed** | Gate B PASS (`D-S040-04-plan`=1); 28 tasks |
-| 05-verify-tech | no | — | skipped | Re-add if new deps |
+| 16-evolve | yes | orchestrator | **completed** | Closed after T4.6 |
+| 01-requirements | yes | delta | **completed** | Full pack + F7 VONA |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS |
+| 03-plan-tooling | no | — | skipped | — |
+| 04-tech-plan | yes | delta | **completed** | Gate B PASS; 28 tasks |
+| 05-verify-tech | no | — | skipped | — |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | **in_progress** | @ T0.1 corpus inventory |
-| 08-verify-build | yes | delta | pending | — |
-| 09-qa | yes | delta | pending | — |
-| 10-e2e | yes | smoke | pending | H4–H5 only if FE/catalog ships |
-| 11-verify-impl | yes | delta | pending | Per-Fn (F32 + deepen) |
-| 12-verify-deploy | yes | delta | pending | — |
-| 13-deploy-smoke | yes | full | pending | — |
-
-## Skip rationale
-
-Existing app; engine + docs quality. Standard matches S037 quality residual pattern.
-No new deployable. UI preview default **docs/repo** unless VONA/catalog forces FE.
-
-Lean would skip 04/07/08/09/11/12 — insufficient for F32 encode + ADR-032 equality.
+| 07-build | yes | full | **completed** | M0–M4 + Phase D closeout |
+| 08-verify-build | yes | delta | **completed** | T4.2 PASS |
+| 09-qa | yes | delta | **completed** | T4.3 |
+| 10-e2e | yes | smoke | **completed** | T4.3 T0 |
+| 11-verify-impl | yes | delta | **completed** | `D-S040-11` |
+| 12-verify-deploy | yes | delta | **completed** | `D-S040-12` |
+| 13-deploy-smoke | yes | full | **completed** | T4.5 PASS + 2026-08-05 re-verify |
 
 ## Approved
 
 | Gate | Decision | Date |
 |------|----------|------|
-| Session open / Phase 0 | `D-S040-open` = **1,1,1,1** — Epic #846; full scope; F32; order #835→#741→#808→corpus | 2026-08-04 |
-| Routing | `D-S040-route` = **1** — Standard approved | 2026-08-04 |
-| Branch | `D-S040-branch` = **1** — cut from `main` | 2026-08-04 |
-| Document Manifest | `D-S040-E32-M` = **2,3,1,1** — full pack; full F7 VONA; no interview UI preview; → 02 | 2026-08-04 |
-| Batch F (02) | `D-S040-02-batch-f` = **1,1,1,1** — AHL→04; incremental Examples; #808 docs+#847 | 2026-08-04 |
-| Gate A | `D-S040-02-phase-a` = **1** — PASS → **04-tech-plan** | 2026-08-04 |
-| 04 Batch 1 | `D-S040-04-batch-1` = **1,1,1,1** — M0–M4; strict ADR-032; cookbook; AHL M2 | 2026-08-04 |
-| 04 Batch 2 | `D-S040-04-batch-2` = **1,1,custom,1** — no deps; H4–H5; tiered pre-commit; domain docs | 2026-08-04 |
-| Gate B | `D-S040-04-plan` = **1** — PASS → **07 @ T0.1** | 2026-08-04 |
+| Resume after S042 | `D-S040-resume` = **1** | 2026-08-05 |
+| Close | `D-S040-close` = **1** — T4.5 re-verify + T4.6 | 2026-08-05 |

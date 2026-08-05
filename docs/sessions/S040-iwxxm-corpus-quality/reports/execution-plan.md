@@ -14,8 +14,8 @@
 |-------|-------|
 | **Active phase** | Phase D — verify (C→D passed) |
 | **Active milestone** | M4 — Corpus closeout + verify / deploy |
-| **Active task** | T4.5 — pending (next; awaiting deploy approval) |
-| **Tasks** | 25 / 28 completed |
+| **Active task** | — (session closed) |
+| **Tasks** | 28 / 28 completed |
 | **Last updated** | 2026-08-04 (T4.4 complete — 11 approved; 12 ready) |
 
 ## Tech Stack Summary
@@ -119,8 +119,8 @@ Repo already splits fast vs long:
 | T4.2 | Config | 08-verify-build — lint/typecheck/format/full suites | 08 | T4.1 | **completed** |
 | T4.3 | Test | 09-qa + 10-e2e (UJ-045); H4–H5 prep | 09; 10; E32-T6 | T4.2 | **completed** |
 | T4.4 | Docs | 11-verify-impl per-AC (F32 + deepen); 12-verify-deploy | 11; 12 | T4.3 | **completed** |
-| T4.5 | Test | 13-deploy-smoke — API+static; H1–H5 | 13; E32-T6; TC-EV032-007/008 | T4.4 | pending |
-| T4.6 | Docs | Evolve summary + CHANGELOG notes; close session | 16-evolve | T4.5 | pending |
+| T4.5 | Test | 13-deploy-smoke — API+static; H1–H5 | 13; E32-T6; TC-EV032-007/008 | T4.4 | **completed** |
+| T4.6 | Docs | Evolve summary + CHANGELOG notes; close session | 16-evolve | T4.5 | **completed** |
 
 ## Data Dependencies
 
@@ -136,8 +136,8 @@ Repo already splits fast vs long:
 |------|----------|--------|
 | A→B | Specs + 02 PASS | **passed** (`D-S040-02-phase-a`) |
 | B→C | This plan approved | **passed** (`D-S040-04-plan`) |
-| C→D | All Fn tasks done; 08 PASS | pending |
-| Deploy | 09+10; 11+12; smoke | pending |
+| C→D | All Fn tasks done; 08 PASS | **passed** |
+| Deploy | 09+10; 11+12; smoke | **passed** |
 
 
 ## Git Strategy

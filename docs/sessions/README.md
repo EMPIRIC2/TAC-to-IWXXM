@@ -27,7 +27,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 |------------|------|--------|--------|--------|---------|-----------|
 | [S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md) | feature | completed | Automate DOKS CD rollout; EV-034; TC-F30-007 @ 20260805115809-d3f4bb9 | main @ d3f4bb95 | 2026-08-05 | 2026-08-05 |
 | [S041-worker-poller-hardening](S041-worker-poller-hardening/session-brief.md) | feature | completed | F8 deepen INGEST_POLLER_URL hardening; EV-033 lean-close D-S041-1+3 | main (#865) | 2026-08-04 | 2026-08-05 |
-| [S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md) | feature | suspended | #846 epic; #835/#741(F32)/#808 + corpus; EV-032 — resume after S042 | evolve/EV-032-iwxxm-corpus-quality | 2026-08-04 | — (resume after S042) |
+| [S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md) | feature | completed | #846 epic children shipped; F32 VONA; EV-032 closed (`D-S040-close`) | main @ #848 / live d3f4bb9 | 2026-08-04 | 2026-08-05 |
 | [S037-quality-residuals-831](S037-quality-residuals-831/session-brief.md) | feature | completed | #831/#829/#820 closed; F29 Done; residual #835; EV-030 | evolve/EV-030-quality-residuals-831 | 2026-08-02 | 2026-08-03 |
 | [S036-eight-family-ahl-rules-823](S036-eight-family-ahl-rules-823/session-brief.md) | feature | completed | #823 eight-family AHL/lint/convert/validate; EV-029; F28 Done; PR #828 | main (#828) | 2026-08-01 | 2026-08-02 |
 | [S034-wmo-decode-residual-matrix](S034-wmo-decode-residual-matrix/session-brief.md) | feature | in_progress | #815 official WMO decode residual matrix; EV-027 | evolve/EV-027-wmo-decode-residual-matrix | 2026-07-31 | — |
@@ -65,16 +65,11 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 ## Active session
 
-**[S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md)** — **completed** (`D-S042-13`=1).
-Automate DOKS CD image
-rollout (EV-034). Standard routing **proposed** (pending approval). Branch
-`evolve/EV-034-doks-cd-rollout` (`pending_create`).
+_None_ (`active_session: null`).
 
-Parked: **[S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md)** suspended
-(`resume_after` S042 — do not auto-resume).
-
-Last closed: **[S041-worker-poller-hardening](S041-worker-poller-hardening/session-brief.md)** —
-F8 poller hardening; lean-close `D-S041-1+3`; DOKS tag `20260805003332-5245f8d`.
+Last closed: **[S040-iwxxm-corpus-quality](S040-iwxxm-corpus-quality/session-brief.md)** —
+IWXXM corpus quality EV-032; `D-S040-close`=1; live re-verify `20260805115809-d3f4bb9`;
+epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) remains **OPEN** for residual children.
 
 ## Folder layout
 
