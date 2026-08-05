@@ -6,25 +6,25 @@
 **Skip:** `03, 04, 05, 06, 10, 12, 13`  
 **Branch:** `evolve/EV-036-local-precommit-long-jobs`  
 **Features:** deepen **M5** only (no new Fn)  
-**Status:** 02 COMPLETE → **07-build**
+**Status:** Phase 4 close — 11 approved; 12/13 waived; PR pending merge
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | S044 open; Batch B locked |
-| 16-evolve | yes | orchestrator | in_progress | Phase 0→1 |
+| 16-evolve | yes | orchestrator | **completed** | Phase 4 close |
 | 01-requirements | yes | delta | **completed** | R1=local Compose; AC=1 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS; S02.M2 modified (keep units+coverage) |
 | 03-plan-tooling | no | — | skipped | existing hooks; no new Cursor rules expected |
 | 04-tech-plan | no | — | skipped | Lean — execution tasks in 01/07 |
 | 05-verify-tech | no | — | skipped | — |
 | 06-tech-tooling | no | — | skipped | — |
-| 07-build | yes | full | **in_progress** | T1–T5 impl done pending commit → 08; hooks/ci-cd/TC-EV036/DEVELOPMENT |
-| 08-verify-build | yes | delta | pending | |
-| 09-qa | yes | delta | pending | local hook smoke |
+| 07-build | yes | full | **completed** | T1–T5 @ d4fd6955 |
+| 08-verify-build | yes | delta | **completed** | PASS |
+| 09-qa | yes | delta | **completed** | PASS |
 | 10-e2e | no | — | skipped | no UI |
-| 11-verify-impl | yes | delta | pending | |
-| 12-verify-deploy | no | — | skipped | no runtime; confirm waive at gate |
-| 13-deploy-smoke | no | — | skipped | with 12 |
+| 11-verify-impl | yes | delta | **completed** | APPROVED `D-S044-11` |
+| 12-verify-deploy | no | — | skipped | waived `D-S044-12-13-waive` |
+| 13-deploy-smoke | no | — | skipped | waived with 12 |
 
 ## Skip rationale
 
@@ -48,3 +48,6 @@ Tooling/hooks/CI policy only. Lean: no new deps (05/06), no formal 04 plan (task
 | Proceed / routing | G1=1, G2=1 Lean → 01 | 2026-08-05 |
 | 01 R1 + ACs | R1=local Compose; AC=1 | 2026-08-05 |
 | Gate A / 02 | `1,1,1,1` + contradiction `1,1,1,1` — S02.M2 modified | 2026-08-05 |
+| 11 approve | `D-S044-11=1` all ACs met | 2026-08-05 |
+| Deploy waive | `D-S044-12-13-waive=1` | 2026-08-05 |
+| Next | `D-S044-next=1` push + PR | 2026-08-05 |

@@ -9,7 +9,7 @@
 **Features**: deepen **M5** only (no new Fn — B4=1)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-036-local-precommit-long-jobs`  
-**Status**: Gate A PASS (amended) → **07-build**  
+**Status**: **completed** 2026-08-05 — 11 approved (`D-S044-11`); deploy 12/13 waived (`D-S044-12-13-waive`); push+PR (`D-S044-next`)  
 **Prior**: S043 / EV-035 completed
 
 ### Scope (Phase 0–02 — locked 2026-08-05; AskQuestion unavailable — chat)
@@ -28,6 +28,9 @@
 | R1 | decision | Compose integration? | **Local only** — remove remote `integration`/Compose from `ci-cd.yml`; pre-push runs `make ci` (= `ci-prepush` + `test-integration` [+ wis2box harness if part of local target]) |
 | AC | decision | M5 / TC-EV036? | **Approved** (AC3 amended with B2: remote keeps units/coverage) |
 | Gate A | decision | S02.M1/M2/M3/L1 | **1,1,1,1** with **S02.M2 modified** — units+coverage stay remote |
+| D-S044-11 | decision | 11-verify-impl? | **Approve all ACs met** — close 11 |
+| D-S044-next | decision | After 11? | **Push branch + open PR** to `main` |
+| D-S044-12-13-waive | decision | Deploy 12/13? | **Waive** — no runtime product change |
 
 **Branch created**: `evolve/EV-036-local-precommit-long-jobs` (from `main` @ 97a5c131)
 

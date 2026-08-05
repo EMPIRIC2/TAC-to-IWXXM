@@ -32,7 +32,7 @@ active_session:
   started: '2026-08-05'
   started_at: '2026-08-05'
   route_status: approved_lean
-  note: 'OPEN — 09-qa COMPLETE PASS @ 95fac992; 11-verify-impl in_progress; Lean 00→16→01→02→07→08→09→11; deepen M5; no product UI/deploy'
+  note: 'NEAR-COMPLETE — D-S044-11 approve_all_met (11 closed); D-S044-12-13-waive waived_no_runtime; D-S044-next push_and_pr in progress; close_session pending PR URL + docs commit; tip 95fac992; Lean deepen M5; tooling only'
   decisions:
     Q1: '1'
     Q1_note: open_S044
@@ -59,6 +59,12 @@ active_session:
     D-S044-02-gate-a: gate_a_pass_s02_m2_modified
     D-S044-02-gate-a_note: 'contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; keep remote units+coverage+PR comment; drop validate+Compose; local lint only'
     S02.M2: keep_remote_units_coverage_pr_comment
+    D-S044-11: approve_all_met
+    D-S044-11_note: '1,1,1 — approve all M5 ACs; close 11'
+    D-S044-12-13-waive: waived_no_runtime
+    D-S044-12-13-waive_note: 'waive 12/13 — no runtime product change'
+    D-S044-next: push_and_pr
+    D-S044-next_note: 'push branch + open PR to main'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -77,7 +83,7 @@ active_session:
     started: '2026-08-05'
     started_at: '2026-08-05'
     skip_rationale:
-    note: 'Phase 0/1 routing approved; 02 COMPLETE (D-S044-02-gate-a); child 07–08 COMPLETE; child 09-qa COMPLETE PASS @ 95fac992; child 11-verify-impl in_progress'
+    note: 'Phase 4 closing / PR pending — D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr; tip 95fac992; close pending PR URL'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -162,24 +168,31 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-05'
     started_at: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
     tip_sha: 95fac992
     tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+    overall: approved
     report: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
-    note: 'STARTED — after 09 PASS @ 95fac992; report verify-impl.md'
+    report_status: approved
+    decision_id: D-S044-11
+    note: 'COMPLETE — D-S044-11 approve_all_met (all 5 M5 ACs); tip 95fac992; report verify-impl.md'
   - stage: 12-verify-deploy
     required: false
     status: skipped
-    skip_rationale: Lean — no runtime deploy surface; confirm waive at gate
+    skip_rationale: Lean — no runtime deploy surface; waived D-S044-12-13-waive
+    note: 'WAIVED — D-S044-12-13-waive waived_no_runtime'
   - stage: 13-deploy-smoke
     required: false
     status: skipped
-    skip_rationale: Lean — with 12; no deploy surface
-  current_stage: 11-verify-impl
-  current_stage_note: '11-verify-impl in_progress — 09-qa PASS @ 95fac992; reports/09-qa.md + reports/verify-impl.md'
+    skip_rationale: Lean — with 12; waived D-S044-12-13-waive
+    note: 'WAIVED — D-S044-12-13-waive waived_no_runtime'
+  current_stage: completed
+  current_stage_note: 'NEAR-COMPLETE — 11 approved (D-S044-11); 12/13 waived (D-S044-12-13-waive); push_and_pr in progress (D-S044-next); close_session pending PR URL'
 sessions:
 - id: S043-rule-source-traceability
   type: feature
@@ -9316,11 +9329,11 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
-    status: in_progress
+    status: completed
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at:
-    completed:
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     previous_started_at: '2026-08-05'
     previous_started: '2026-08-05'
     previous_completed_at: '2026-08-05'
@@ -9356,10 +9369,10 @@ stages:
     session_id: S044-local-precommit-long-jobs
     evolve_cycle_id: EV-036
     mode: delta
-    overall:
-    note: 'IN PROGRESS — S044/EV-036 after 09 PASS @ 95fac992; report docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md'
+    overall: approved
+    note: 'COMPLETE — S044/EV-036 D-S044-11 approve_all_met (all 5 M5 ACs); report docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md; tip 95fac992; 12/13 waived; push_and_pr pending'
     report: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
-    report_status: in_progress
+    report_status: approved
     tip_sha: 95fac992
     tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
     tip_note: 'S044/EV-036 tip 95fac992 — [EV-036] docs: 08 verification + 09 hook smoke reports'
@@ -9367,7 +9380,7 @@ stages:
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
     awaiting_user_decision: false
-    decision_id:
+    decision_id: D-S044-11
     deepen_feature_ids:
     - M5
     active_milestone:
@@ -9376,32 +9389,37 @@ stages:
     progress:
     substeps:
       collect_results:
-        status: in_progress
+        status: completed
       feature_completeness:
-        status: pending
+        status: completed
       journey_signoff:
-        status: pending
+        status: n/a
       feature_approval:
-        status: pending
+        status: completed
       fixes_applied:
         status: n/a
       scope_analysis:
-        status: pending
+        status: completed
       summary:
-        status: pending
+        status: completed
     delta_substages:
     - id: S044-local-precommit-long-jobs-11
       session_id: S044-local-precommit-long-jobs
       evolve_cycle_id: EV-036
       skill_id: 11-verify-impl
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-05'
       started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
       tip_sha: 95fac992
       tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
       report: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
-      note: 'STARTED — after 09 PASS'
+      report_status: approved
+      overall: approved
+      decision_id: D-S044-11
+      note: 'COMPLETE — D-S044-11 approve_all_met (all 5 M5 ACs)'
       deepen_feature_ids:
       - M5
     - id: S042-doks-cd-rollout
@@ -11585,8 +11603,8 @@ stages:
     previous_completed_at: '2026-08-05'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage: 11-verify-impl
-    note: 'IN PROGRESS — S044/EV-036 09-qa COMPLETE PASS @ 95fac992; 11-verify-impl in_progress; Lean deepen M5; path 00→16→01→02→07→08→09→11; tooling/hooks/docs only'
+    current_child_stage: completed
+    note: 'Phase 4 closing / PR pending — S044/EV-036 D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr; tip 95fac992; close pending PR URL'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -33258,8 +33276,8 @@ evolve_cycles:
   title: Local pre-commit long jobs (save CI minutes)
   slug: local-precommit-long-jobs
   status: in_progress
-  phase: 2
-  phase_note: 'Phase 2 / verify — 09-qa COMPLETE PASS @ 95fac992; 11-verify-impl in_progress'
+  phase: 4
+  phase_note: 'Phase 4 closing / PR pending — D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr; close pending PR URL'
   started: '2026-08-05'
   started_at: '2026-08-05'
   scope_summary: |
@@ -33270,10 +33288,10 @@ evolve_cycles:
     TC-EV036-001..003 approved. Gate A amend (D-S044-02-gate-a): keep remote
     units+coverage+PR comment; drop validate+Compose; local lint only.
   branch: evolve/EV-036-local-precommit-long-jobs
-  branch_note: active — tip 95fac992; workflow-state-manager did not git checkout/create
+  branch_note: 'active — tip 95fac992; push_and_pr in progress (D-S044-next); close pending PR URL'
   tip_sha: 95fac992
   tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
-  tip_note: '09-qa PASS @ 95fac992 — [EV-036] docs: 08 verification + 09 hook smoke reports; 11-verify-impl in_progress'
+  tip_note: 'NEAR-COMPLETE — tip 95fac992; D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr'
   preset: Lean
   preset_status: approved
   preset_note: 'G1=1 Lean approved; route_status=approved_lean'
@@ -33314,25 +33332,26 @@ evolve_cycles:
     - 12-verify-deploy
     - 13-deploy-smoke
     path: 00→16→01→02→07→08→09→11
-    note: 'Lean — approved D-S044-g1-g2; skip tooling/tech-plan/e2e/deploy (no UI/runtime); 07–09 completed; 11 in_progress'
-  current_stage: 11-verify-impl
-  current_stage_status: in_progress
-  current_stage_note: '11-verify-impl in_progress — 09 PASS @ 95fac992; reports/09-qa.md + reports/verify-impl.md'
+    note: 'Lean — approved D-S044-g1-g2; skip tooling/tech-plan/e2e/deploy; 07–11 completed; 12/13 waived D-S044-12-13-waive; Phase 4 closing / PR pending'
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: 'NEAR-COMPLETE — 11 approved (D-S044-11); 12/13 waived; push_and_pr in progress; close pending PR URL'
   next_stage: null
   next_stage_status: null
   gates:
     a_to_b: passed
     a_to_b_note: 'D-S044-02-gate-a Lean → 07 (no 04); S02.M2 modified'
-    b_to_c: pending
-    c_to_d: pending
-    deploy: waived_expected
+    b_to_c: passed
+    c_to_d: passed
+    deploy: waived
+    deploy_note: 'D-S044-12-13-waive waived_no_runtime — tooling only; no product runtime'
   checkpoints:
     phase_a: passed
-    phase_b: pending
-    phase_c: pending
-    phase_d: pending
-    deploy: waived_expected
-    note: 'Lean tooling cycle — Gate A passed; 07 done; deploy waive expected (no runtime)'
+    phase_b: passed
+    phase_c: passed
+    phase_d: passed
+    deploy: waived
+    note: 'Lean tooling cycle — Phase 4 closing; deploy waived (D-S044-12-13-waive); PR pending'
   adrs: []
   artifacts:
   - path: docs/sessions/S044-local-precommit-long-jobs/
@@ -33358,6 +33377,14 @@ evolve_cycles:
     status: completed
     stage: 08-verify-build
     note: PASS
+  - path: docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+    status: completed
+    stage: 09-qa
+    note: PASS
+  - path: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+    note: 'D-S044-11 approve_all_met'
   - path: docs/feature-list.md
     status: written
     stage: 01-requirements
@@ -33405,6 +33432,9 @@ evolve_cycles:
   - D-S044-g1-g2
   - D-S044-r1-ac
   - D-S044-02-gate-a
+  - D-S044-11
+  - D-S044-12-13-waive
+  - D-S044-next
   stages:
     00-context:
       status: completed
@@ -33418,7 +33448,7 @@ evolve_cycles:
       status: in_progress
       started: '2026-08-05'
       started_at: '2026-08-05'
-      note: 'Phase 0–2; child 07-build COMPLETE @ d4fd6955; child 08-verify-build COMPLETE PASS; child 09-qa in_progress'
+      note: 'Phase 4 closing / PR pending — D-S044-11; D-S044-12-13-waive; D-S044-next push_and_pr; tip 95fac992'
     01-requirements:
       status: completed
       mode: delta
@@ -33459,13 +33489,37 @@ evolve_cycles:
       report: docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
       note: 'PASS — artifact docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md; handoff 09-qa'
     09-qa:
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-05'
       started_at: '2026-08-05'
-      tip_sha: d4fd6955
-      tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
-      note: 'STARTED — local hook smoke after 08 PASS'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      tip_sha: 95fac992
+      tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+      overall: pass
+      report: docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+      note: 'PASS — tip 95fac992; handoff 11-verify-impl'
+    11-verify-impl:
+      status: completed
+      mode: delta
+      started: '2026-08-05'
+      started_at: '2026-08-05'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      tip_sha: 95fac992
+      tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+      overall: approved
+      report: docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+      report_status: approved
+      decision_id: D-S044-11
+      note: 'COMPLETE — D-S044-11 approve_all_met (all 5 M5 ACs)'
+    12-verify-deploy:
+      status: skipped
+      note: 'WAIVED — D-S044-12-13-waive waived_no_runtime'
+    13-deploy-smoke:
+      status: skipped
+      note: 'WAIVED — D-S044-12-13-waive waived_no_runtime'
   notes:
   - '2026-08-05 S044/EV-036 OPEN — open_session; D-S044-open=1; D-S044-intent=4+1/N/A; session_counter 44; evolve_cycle_counter 36; branch evolve/EV-036-local-precommit-long-jobs pending_create; deepen M5 likely; no git branch/commit by workflow-state-manager'
   - '2026-08-05 Phase 0 LOCKED — D-S044-batch-b B1=3,B2=1,B3=1,B4=1; deepen M5; Lean preset pending G4; route_status=phase0_locked_pending_proceed; 00-context completed; 16-evolve in_progress; no git branch/commit by workflow-state-manager'
@@ -33475,6 +33529,7 @@ evolve_cycles:
   - '2026-08-05 07-build — T1–T5 implementation complete pending commit; artifacts execution-plan/hooks/ci-cd/TC-EV036/DEVELOPMENT; handoff 08-verify-build after commit; no commit SHA invented'
   - '2026-08-05 07-build COMPLETE @ d4fd6955 (d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b) — T1–T5; pending_commit false; tip_sha d4fd6955; current_stage 08-verify-build in_progress'
   - '2026-08-05 08-verify-build COMPLETE PASS @ d4fd6955 — artifact docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md; current_stage 09-qa in_progress'
+  - '2026-08-05 Phase 4 NEAR-COMPLETE — D-S044-11 approve_all_met; D-S044-12-13-waive waived_no_runtime; D-S044-next push_and_pr; tip 95fac992; close pending PR URL (parent follow-up); active_session retained'
 - id: EV-035
   session_id: S043-rule-source-traceability
   cycle_type: feature
