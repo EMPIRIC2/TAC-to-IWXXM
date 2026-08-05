@@ -3,6 +3,57 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-037 — Matrix dispositions #869 / #870 / #872 (S045)
+
+**Session**: S045-matrix-disposition-residuals  
+**Features**: deepen **F2 / F6 / F32** only (no new Fn — Q2/Q3)  
+**Started**: 2026-08-05  
+**Branch**: `evolve/EV-037-matrix-disposition-residuals`  
+**Status**: **in_progress** — Phase A 01-requirements in_progress  
+**Prior**: S044 / EV-036 completed  
+**Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+
+### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=1,Q3=1,Q4=1` + `G2=1`)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Session? | Open **S045** → **EV-037** |
+| Q2 | decision | Dispositions? | **Approve all three** research dispositions as cycle scope |
+| Q3 | decision | Preset? | **Lean + 07/08** — `00→16→01→02→07→08→11` (skip 03–06, 09, 10, 12/13) |
+| Q4 | decision | UI preview? | **N/A** — no product UI |
+| G2 | decision | Proceed? | Approve → commit session-open → **01-requirements** |
+
+### Locked dispositions
+
+| Ticket | Disposition |
+|--------|-------------|
+| **#869** | Non-blocking upstream Guidance gap; VONA SoT = ICAO + FM205 + AHL + XSD/SCH + code lists; cookbook = derived implementation guide |
+| **#870** | Official US Schematron = **N/A / not published**; retain WMO XSD/SCH + US XSD + semantic/fixtures columns (do not N/A all US validation) |
+| **#872** | AHL **source** ✅ for all mapped families; redesign Bulletin AHL cell into source \| T1T2 map \| parser \| BBB \| splitter \| filename \| COLLECT \| fixtures \| CI; children only for true impl gaps |
+
+### Out of scope
+
+New Fn; browser UI; deploy runtime; inventing US Schematron; editing upstream
+`TAC-to-XML-Guidance.txt`; full AHL parser/fixture implementation beyond matrix redesign
+and residual child tickets.
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product]` | cite | F2 / F6 / F32 deepen | no new Fn |
+| `[Corpus: tests]` | cite | provenance / matrix TCs | TC-EV037-* as needed |
+| `[Corpus: decisions]` | cite | this cycle | — |
+| `[docs/domain/rules/COVERAGE_MATRIX.md]` | cite | matrix cells | domain opt-in |
+| `[docs/domain/rules/PROVENANCE_MAP.md]` | cite | VONA / US / AHL cites | + `.json` |
+
+### Proposed Lean+07/08 routing (Q3=1)
+
+`00 → 16 → 01 → 02 → 07 → 08 → 11`  
+Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 12/13 at gate)
+
+---
+
 ## Cycle EV-036 — Local long jobs on pre-commit / slim CI (S044)
 
 **Session**: S044-local-precommit-long-jobs  

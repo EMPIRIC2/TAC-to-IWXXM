@@ -25,6 +25,8 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
+| [S045-matrix-disposition-residuals](S045-matrix-disposition-residuals/session-brief.md) | feature | in_progress | #869/#870/#872 matrix dispositions; deepen F2/F6/F32; EV-037 | evolve/EV-037-matrix-disposition-residuals | 2026-08-05 | — |
+| [S044-local-precommit-long-jobs](S044-local-precommit-long-jobs/session-brief.md) | feature | completed | Local long jobs on pre-commit + slim CI; deepen M5; EV-036; PR #875 | evolve/EV-036-local-precommit-long-jobs | 2026-08-05 | 2026-08-05 |
 | [S043-rule-source-traceability](S043-rule-source-traceability/session-brief.md) | feature | completed | Rule↔source provenance deepen F6/F12/F15/F2; EV-035; deploy waived | evolve/EV-035-rule-source-traceability | 2026-08-05 | 2026-08-05 |
 | [S042-doks-cd-rollout](S042-doks-cd-rollout/session-brief.md) | feature | completed | Automate DOKS CD rollout; EV-034; TC-F30-007 @ 20260805115809-d3f4bb9 | main @ d3f4bb95 | 2026-08-05 | 2026-08-05 |
 | [S041-worker-poller-hardening](S041-worker-poller-hardening/session-brief.md) | feature | completed | F8 deepen INGEST_POLLER_URL hardening; EV-033 lean-close D-S041-1+3 | main (#865) | 2026-08-04 | 2026-08-05 |

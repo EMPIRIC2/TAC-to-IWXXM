@@ -3,10 +3,162 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 44
-evolve_cycle_counter: 36
-active_session: null
+session_counter: 45
+evolve_cycle_counter: 37
+active_session:
+  id: S045-matrix-disposition-residuals
+  type: feature
+  intent: |
+    Dispose EV-035 residual tickets #869/#870/#872 — VONA SoT wording,
+    IWXXM-US Schematron N/A, Bulletin AHL source vs impl matrix.
+  status: in_progress
+  started: "2026-08-05"
+  started_at: "2026-08-05"
+  branch: evolve/EV-037-matrix-disposition-residuals
+  branch_base: main@485fa8cb
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-037
+  feature_ids: []
+  deepen_feature_ids:
+  - F2
+  - F6
+  - F32
+  feature_note: deepen F2/F6/F32 matrix+provenance dispositions — no new Fn; no UI
+  artifacts_dir: docs/sessions/S045-matrix-disposition-residuals/
+  prior_session: S044-local-precommit-long-jobs
+  prior_evolve_cycle_id: EV-036
+  preset: Lean+07/08
+  preset_status: approved
+  preset_note: "Q3=1 Lean+07/08 — 00→16→01→02→07→08→11; skip 03–06,09,10,12,13"
+  github_issues:
+  - 869
+  - 870
+  - 872
+  parent_epic: 846
+  ui_preview: n_a
+  decisions:
+    Q1: "1"
+    Q1_note: open_S045
+    Q2: "1"
+    Q2_note: approve_all_three_dispositions
+    Q3: "1"
+    Q3_note: lean_plus_0708
+    Q4: "1"
+    Q4_note: no_UI
+    G2: "1"
+    G2_note: approve_commit_start_01
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: "2026-08-05"
+    completed: "2026-08-05"
+  - stage: 16-evolve
+    mode: orchestrator
+    required: true
+    status: in_progress
+    started: "2026-08-05"
+    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 01-requirements
+  - stage: 01-requirements
+    mode: delta
+    required: true
+    status: in_progress
+    started: "2026-08-05"
+  - stage: 02-verify-plan
+    mode: delta
+    required: true
+    status: pending
+  - stage: 07-build
+    mode: full
+    required: true
+    status: pending
+  - stage: 08-verify-build
+    mode: delta
+    required: true
+    status: pending
+  - stage: 11-verify-impl
+    mode: delta
+    required: true
+    status: pending
+  current_stage: 01-requirements
 sessions:
+- id: S045-matrix-disposition-residuals
+  type: feature
+  intent: |
+    Dispose EV-035 residual tickets #869/#870/#872 — VONA SoT wording,
+    IWXXM-US Schematron N/A, Bulletin AHL source vs impl matrix.
+  status: in_progress
+  started: "2026-08-05"
+  started_at: "2026-08-05"
+  branch: evolve/EV-037-matrix-disposition-residuals
+  branch_base: main@485fa8cb
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-037
+  feature_ids: []
+  deepen_feature_ids:
+  - F2
+  - F6
+  - F32
+  feature_note: deepen F2/F6/F32 matrix+provenance dispositions — no new Fn; no UI
+  artifacts_dir: docs/sessions/S045-matrix-disposition-residuals/
+  prior_session: S044-local-precommit-long-jobs
+  prior_evolve_cycle_id: EV-036
+  preset: Lean+07/08
+  preset_status: approved
+  preset_note: "Q3=1 Lean+07/08 — 00→16→01→02→07→08→11; skip 03–06,09,10,12,13"
+  github_issues:
+  - 869
+  - 870
+  - 872
+  parent_epic: 846
+  ui_preview: n_a
+  decisions:
+    Q1: "1"
+    Q1_note: open_S045
+    Q2: "1"
+    Q2_note: approve_all_three_dispositions
+    Q3: "1"
+    Q3_note: lean_plus_0708
+    Q4: "1"
+    Q4_note: no_UI
+    G2: "1"
+    G2_note: approve_commit_start_01
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: "2026-08-05"
+    completed: "2026-08-05"
+  - stage: 16-evolve
+    mode: orchestrator
+    required: true
+    status: in_progress
+    started: "2026-08-05"
+    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 01-requirements
+  - stage: 01-requirements
+    mode: delta
+    required: true
+    status: in_progress
+    started: "2026-08-05"
+  - stage: 02-verify-plan
+    mode: delta
+    required: true
+    status: pending
+  - stage: 07-build
+    mode: full
+    required: true
+    status: pending
+  - stage: 08-verify-build
+    mode: delta
+    required: true
+    status: pending
+  - stage: 11-verify-impl
+    mode: delta
+    required: true
+    status: pending
+  current_stage: 01-requirements
 - id: S044-local-precommit-long-jobs
   type: feature
   intent: |
@@ -5122,25 +5274,30 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: local-precommit-long-jobs
-    session_id: S044-local-precommit-long-jobs
-    evolve_cycle_id: EV-036
+    scoped_slug: matrix-disposition-residuals
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
     started: '2026-08-05'
     started_at: '2026-08-05'
     completed: '2026-08-05'
     completed_at: '2026-08-05'
-    tip_sha: 97a5c131
-    tip_sha_full: 97a5c1310699bf1ed11e622af8c19fa85c03dd6d
-    note: 'S044/EV-036 COMPLETE — 00-context done; Phase 0 Batch B locked (D-S044-batch-b); D-S044-g1-g2 approved Lean; handoff 16-evolve → 01-requirements; branch evolve/EV-036-local-precommit-long-jobs exists:true (parent creating)'
-    prior_note: 'S040/EV-032 COMPLETE — brief+routing+context; branch cut from main @ 2ed85da1; stash S039-EV031-WIP; handoff 01-requirements; #846/#835/#741/#808 (stages mirror was stale through S041–S043; logical prior_session S043/EV-035 completed)'
-    prior_session_id: S043-rule-source-traceability
-    prior_evolve_cycle_id: EV-035
-    prior_scoped_slug: rule-source-traceability
+    tip_sha: 485fa8cb
+    note: 'S045/EV-037 OPEN — 00-context completed; Lean+07/08; handoff 16-evolve; tickets #869/#870/#872; deepen F2/F6/F32; branch evolve/EV-037-matrix-disposition-residuals'
+    prior_note: 'S044/EV-036 COMPLETE — 00-context done; Phase 0 Batch B locked (D-S044-batch-b); D-S044-g1-g2 approved Lean; handoff 16-evolve → 01-requirements; branch evolve/EV-036-local-precommit-long-jobs exists:true (parent creating)'
+    prior_session_id: S044-local-precommit-long-jobs
+    prior_evolve_cycle_id: EV-036
+    prior_scoped_slug: local-precommit-long-jobs
     prior_completed: '2026-08-05'
     prior_started: '2026-08-05'
+    prior_tip_sha: 97a5c131
+    prior_tip_sha_full: 97a5c1310699bf1ed11e622af8c19fa85c03dd6d
+    prior_prior_note: 'S040/EV-032 COMPLETE — brief+routing+context; branch cut from main @ 2ed85da1; stash S039-EV031-WIP; handoff 01-requirements; #846/#835/#741/#808 (stages mirror was stale through S041–S043; logical prior_session S043/EV-035 completed)'
+    prior_prior_session_id: S043-rule-source-traceability
+    prior_prior_evolve_cycle_id: EV-035
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
     artifacts:
+    - docs/sessions/S045-matrix-disposition-residuals/
     - docs/sessions/S044-local-precommit-long-jobs/
     - docs/sessions/S043-rule-source-traceability/
     - docs/sessions/S040-iwxxm-corpus-quality/session-brief.md
@@ -11934,6 +12091,38 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S045-g2
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S045-matrix-disposition-residuals
+  evolve_cycle_id: EV-037
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase0_phase1
+  category: routing
+  status: confirmed
+  topic: Approve proceed → commit session-open + start 01-requirements
+  summary: 'G2=1 approve_commit_start_01 — Phase 0/1 intake done; start 01-requirements'
+  decision: |
+    D-S045-g2=G2=1 — Phase 0/1 routing proceed for S045/EV-037.
+    G2=1: approve → commit session-open artifacts → start 01-requirements (delta).
+    Preset Lean+07/08 already locked (Q3=1): 00→16→01→02→07→08→11.
+    16-evolve remains in_progress as orchestrator (Phase 0–1 intake done);
+    current_stage=01-requirements in_progress.
+    deepen_feature_ids=[F2,F6,F32]; feature_ids=[]; tickets #869/#870/#872.
+    No git commit by workflow-state-manager (parent commits sha later).
+  user_option: 'G2=1'
+  branch: evolve/EV-037-matrix-disposition-residuals
+  related_decisions:
+  - D-S045-open
+  deepen_feature_ids:
+  - F2
+  - F6
+  - F32
+  feature_ids: []
+  preset: Lean+07/08
+  note: 'route proceed; current_stage=01-requirements; no git commit by workflow-state-manager'
 - id: D-S044-merge
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -33434,6 +33623,89 @@ evolve_cycles:
   pr_number: 845
   pr_status: open
   pr_head: evolve/EV-031-platform-independence-842
+- id: EV-037
+  session_id: S045-matrix-disposition-residuals
+  cycle_type: general
+  feature_ids: []
+  deepen_feature_ids:
+  - F2
+  - F6
+  - F32
+  title: "Matrix dispositions #869/#870/#872"
+  status: in_progress
+  started: "2026-08-05"
+  completed: null
+  scope_summary: |
+    #869 VONA: non-blocking upstream Guidance gap; SoT = ICAO+FM205+AHL+XSD/SCH+code lists; cookbook derived.
+    #870 IWXXM-US: official US Schematron N/A/not published; split validation columns.
+    #872 Bulletin AHL: source ✅ all families; split source vs impl columns; children for true gaps only.
+    Deepen F2/F6/F32; no new Fn; no UI; Lean+07/08.
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 07-build
+    - 08-verify-build
+    - 11-verify-impl
+    skipped_stages:
+    - 03-plan-tooling
+    - 04-tech-plan
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 10-e2e
+    - 12-verify-deploy
+    - 13-deploy-smoke
+  current_stage: 01-requirements
+  stages:
+    00-context:
+      status: completed
+      started: "2026-08-05"
+      completed: "2026-08-05"
+    16-evolve:
+      status: in_progress
+      started: "2026-08-05"
+      completed: null
+      note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 01-requirements
+    01-requirements:
+      status: in_progress
+      started: "2026-08-05"
+    02-verify-plan:
+      status: pending
+    07-build:
+      status: pending
+    08-verify-build:
+      status: pending
+    11-verify-impl:
+      status: pending
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: waived_lean
+    phase_c: pending
+    phase_d: pending
+    deploy: waived_expected
+  artifacts:
+  - path: docs/sessions/S045-matrix-disposition-residuals/session-brief.md
+    status: completed
+  - path: docs/sessions/S045-matrix-disposition-residuals/routing-plan.md
+    status: completed
+  - path: docs/context/matrix-disposition-residuals.md
+    status: completed
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  issues:
+  - 869
+  - 870
+  - 872
+  notes:
+  - '2026-08-05 Phase 0/1 ROUTING APPROVED — G2=1 approve_commit_start_01; Phase 0–1 intake done; 16-evolve orchestrator remains in_progress; current_stage=01-requirements in_progress; no git commit by workflow-state-manager'
 - id: EV-036
   session_id: S044-local-precommit-long-jobs
   cycle_type: feature
@@ -35263,6 +35535,13 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-037-matrix-disposition-residuals
+    status: active
+    base: main
+    base_sha: 485fa8cb
+    created: "2026-08-05"
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
   - name: evolve/EV-036-local-precommit-long-jobs
     status: merged
     base: main
