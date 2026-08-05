@@ -5,8 +5,9 @@ project:
   output_directory: docs/
 session_counter: 44
 evolve_cycle_counter: 36
-active_session:
-  id: S044-local-precommit-long-jobs
+active_session: null
+sessions:
+- id: S044-local-precommit-long-jobs
   type: feature
   intent: |
     Offload local-capable long-running jobs onto local pre-commit to save CI
@@ -14,9 +15,11 @@ active_session:
     move long suites from husky pre-push into pre-commit. Goal = CI minutes saved.
     Tooling/hooks/docs only — not product UI (Q3 N/A; frontend mentions = local
     gate jobs like test-unit-frontend/audit-frontend).
-  status: in_progress
+  status: completed
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
   branch: evolve/EV-036-local-precommit-long-jobs
-  branch_note: exists — parent creating/cutting branch now; workflow-state-manager did not git checkout/create
+  branch_note: 'CLOSED — EV-036 completed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy 12/13 waived (D-S044-12-13-waive)'
   orchestrator: 16-evolve
   evolve_cycle_id: EV-036
   feature_ids: []
@@ -31,8 +34,8 @@ active_session:
   preset_note: 'G1=1 Lean routing approved; G2=1 proceed → branch + 01-requirements'
   started: '2026-08-05'
   started_at: '2026-08-05'
-  route_status: approved_lean
-  note: 'NEAR-COMPLETE — D-S044-11 approve_all_met (11 closed); D-S044-12-13-waive waived_no_runtime; D-S044-next push_and_pr in progress; close_session pending PR URL + docs commit; tip 95fac992; Lean deepen M5; tooling only'
+  route_status: completed
+  note: 'COMPLETED — EV-036 closed; PR #875 MERGED @ d17b8be3 (head tip bf020c2c); D-S044-11 approve_all_met; D-S044-12-13-waive waived_no_runtime; deploy waived; Cloud CI 31028291943 SUCCESS; local make ci PASS'
   decisions:
     Q1: '1'
     Q1_note: open_S044
@@ -65,6 +68,8 @@ active_session:
     D-S044-12-13-waive_note: 'waive 12/13 — no runtime product change'
     D-S044-next: push_and_pr
     D-S044-next_note: 'push branch + open PR to main'
+    D-S044-merge: pr_875_merged
+    D-S044-merge_note: 'PR #875 MERGED to main @ d17b8be3; tip bf020c2c; CI 31028291943 SUCCESS'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -79,11 +84,13 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-08-05'
     started_at: '2026-08-05'
+    completed: '2026-08-05'
+    completed_at: '2026-08-05'
     skip_rationale:
-    note: 'Phase 4 closing / PR pending — D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr; tip 95fac992; close pending PR URL'
+    note: 'COMPLETE — EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived; CI 31028291943 SUCCESS'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -192,8 +199,65 @@ active_session:
     skip_rationale: Lean — with 12; waived D-S044-12-13-waive
     note: 'WAIVED — D-S044-12-13-waive waived_no_runtime'
   current_stage: completed
-  current_stage_note: 'NEAR-COMPLETE — 11 approved (D-S044-11); 12/13 waived (D-S044-12-13-waive); push_and_pr in progress (D-S044-next); close_session pending PR URL'
-sessions:
+  current_stage_note: 'COMPLETED — EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; D-S044-11; D-S044-12-13-waive; deploy waived; CI 31028291943 SUCCESS'
+  next_stage: null
+  next_stage_status: null
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: waived
+    deploy_note: 'D-S044-12-13-waive waived_no_runtime — tooling only; no product runtime'
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: passed
+    deploy: waived
+  tip_sha: bf020c2c
+  tip_sha_full: bf020c2c4b0a15091703f958c96586387e0b0cfb
+  tip_note: 'PR #875 head tip before merge; merge commit d17b8be3 on main'
+  merge_commit_sha: d17b8be3
+  merge_commit_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+  merged_at: '2026-08-05T17:08:05Z'
+  pr_number: 875
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/875
+  pr_status: merged
+  pr_title: '[EV-036] Local pre-commit long jobs / slim remote CI'
+  pr_base: main
+  pr_head: evolve/EV-036-local-precommit-long-jobs
+  pr_ci_run: '31028291943'
+  pr_ci_status: SUCCESS
+  pr_ci_note: 'units + Coverage PR comment; Deploy skipped on PR'
+  local_prepush: PASS
+  local_prepush_note: 'make ci PASSED before push'
+  pull_requests:
+  - id: PR-EV-036
+    number: 875
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/875
+    title: '[EV-036] Local pre-commit long jobs / slim remote CI'
+    status: merged
+    head: evolve/EV-036-local-precommit-long-jobs
+    base: main
+    tip_sha: bf020c2c
+    tip_sha_full: bf020c2c4b0a15091703f958c96586387e0b0cfb
+    merge_commit_sha: d17b8be3
+    merge_commit_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+    merged_at: '2026-08-05T17:08:05Z'
+    ci_run: '31028291943'
+    ci_status: SUCCESS
+    note: 'MERGED to main — Cloud CI 31028291943 SUCCESS; Deploy skipped on PR; deploy 12/13 waived'
+  decision_refs:
+  - D-S044-open
+  - D-S044-intent
+  - D-S044-batch-b
+  - D-S044-g1-g2
+  - D-S044-r1-ac
+  - D-S044-02-gate-a
+  - D-S044-11
+  - D-S044-12-13-waive
+  - D-S044-next
+  - D-S044-merge
 - id: S043-rule-source-traceability
   type: feature
   intent: |
@@ -11590,21 +11654,21 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S044-local-precommit-long-jobs
     evolve_cycle_id: EV-036
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at:
-    completed:
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     previous_session_id: S043-rule-source-traceability
     previous_evolve_cycle_id: EV-035
     previous_completed_at: '2026-08-05'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
     current_child_stage: completed
-    note: 'Phase 4 closing / PR pending — S044/EV-036 D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr; tip 95fac992; close pending PR URL'
+    note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS; active_session=null'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -11870,6 +11934,110 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S044-merge
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S044-local-precommit-long-jobs
+  evolve_cycle_id: EV-036
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase4_close
+  category: merge_close
+  status: confirmed
+  topic: 'PR #875 merged to main — close S044/EV-036'
+  summary: 'pr_875_merged — MERGED @ d17b8be3; head tip bf020c2c; Cloud CI 31028291943 SUCCESS; close_session'
+  decision: |
+    D-S044-merge=pr_875_merged — PR #875 MERGED to main (merge commit d17b8be3;
+    head tip bf020c2c). Local pre-push make ci PASSED. Cloud CI run 31028291943
+    SUCCESS (units + Coverage PR comment; Deploy skipped on PR). D-S044-11
+    approve_all_met; D-S044-12-13-waive waived_no_runtime (deploy waived).
+    Mark EV-036 completed (phase 4 done); archive S044; active_session=null.
+    Parent may commit workflow-state after merge checkout — workflow-state-manager
+    does not git commit.
+  user_option: push_and_pr
+  branch: evolve/EV-036-local-precommit-long-jobs
+  related_decisions:
+  - D-S044-next
+  - D-S044-11
+  - D-S044-12-13-waive
+  deepen_feature_ids:
+  - M5
+  feature_ids: []
+  pr_number: 875
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/875
+  pr_status: merged
+  merge_commit_sha: d17b8be3
+  merge_commit_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+  tip_sha: bf020c2c
+  tip_sha_full: bf020c2c4b0a15091703f958c96586387e0b0cfb
+  ci_run: '31028291943'
+  ci_status: SUCCESS
+  artifacts:
+  - docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+  - docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+  note: 'close_session applied; active_session=null; EV-036 completed'
+- id: D-S044-11
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S044-local-precommit-long-jobs
+  evolve_cycle_id: EV-036
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: gate
+  status: confirmed
+  topic: '11-verify-impl — approve all M5 / EV-036 acceptance criteria'
+  summary: 'approve_all_met — all 5 M5 ACs MET; continue → close path with deploy waive'
+  decision: |
+    D-S044-11=approve_all_met — User approved all M5/EV-036 acceptance criteria as
+    MET (1,1,1). 11-verify-impl completed / approved. Report:
+    docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md. Tip
+    95fac992 at approval; later tip bf020c2c on PR #875 head before merge.
+  user_option: '1,1,1'
+  branch: evolve/EV-036-local-precommit-long-jobs
+  related_decisions:
+  - D-S044-12-13-waive
+  - D-S044-next
+  - D-S044-merge
+  deepen_feature_ids:
+  - M5
+  feature_ids: []
+  artifacts:
+  - docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
+  - docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
+  tip_sha: 95fac992
+  tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+- id: D-S044-12-13-waive
+  date: '2026-08-05'
+  timestamp: '2026-08-05'
+  resolved_at: '2026-08-05'
+  session_id: S044-local-precommit-long-jobs
+  evolve_cycle_id: EV-036
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: gate
+  status: confirmed
+  topic: 'Waive 12-verify-deploy + 13-deploy-smoke (no runtime surface)'
+  summary: 'waived_no_runtime — tooling/hooks/docs only; no API/FE/worker runtime delta'
+  decision: |
+    D-S044-12-13-waive=waived_no_runtime — User waived 12-verify-deploy and
+    13-deploy-smoke. Cycle is Lean tooling (hooks/CI/docs) only; no product
+    runtime surface. gates.deploy + checkpoints.deploy = waived. Proceed to
+    push_and_pr then close EV-036 / S044.
+  user_option: waive
+  branch: evolve/EV-036-local-precommit-long-jobs
+  related_decisions:
+  - D-S044-11
+  - D-S044-next
+  - D-S044-merge
+  deepen_feature_ids:
+  - M5
+  feature_ids: []
+  artifacts:
+  - docs/sessions/S044-local-precommit-long-jobs/reports/verify-impl.md
 - id: D-S044-02-gate-a
   date: '2026-08-05'
   timestamp: '2026-08-05'
@@ -33275,11 +33443,13 @@ evolve_cycles:
   feature_note: deepen M5 workspace tooling only — no new Fn (B4=1 locked)
   title: Local pre-commit long jobs (save CI minutes)
   slug: local-precommit-long-jobs
-  status: in_progress
+  status: completed
   phase: 4
-  phase_note: 'Phase 4 closing / PR pending — D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr; close pending PR URL'
+  phase_note: 'Phase 4 done — PR #875 MERGED; deploy waived (D-S044-12-13-waive); close_session applied'
   started: '2026-08-05'
   started_at: '2026-08-05'
+  completed: '2026-08-05'
+  completed_at: '2026-08-05'
   scope_summary: |
     Offload local-capable long-running jobs onto local pre-commit/pre-push to
     save CI runner time. Tooling/hooks/docs only — not product UI. Phase 0 locked
@@ -33288,10 +33458,10 @@ evolve_cycles:
     TC-EV036-001..003 approved. Gate A amend (D-S044-02-gate-a): keep remote
     units+coverage+PR comment; drop validate+Compose; local lint only.
   branch: evolve/EV-036-local-precommit-long-jobs
-  branch_note: 'active — tip 95fac992; push_and_pr in progress (D-S044-next); close pending PR URL'
-  tip_sha: 95fac992
-  tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
-  tip_note: 'NEAR-COMPLETE — tip 95fac992; D-S044-11 approve_all_met; D-S044-12-13-waive; D-S044-next push_and_pr'
+  branch_note: 'CLOSED — EV-036 completed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived'
+  tip_sha: bf020c2c
+  tip_sha_full: bf020c2c4b0a15091703f958c96586387e0b0cfb
+  tip_note: 'COMPLETED — PR #875 head tip bf020c2c; merge commit d17b8be3; D-S044-11; D-S044-12-13-waive; CI 31028291943 SUCCESS'
   preset: Lean
   preset_status: approved
   preset_note: 'G1=1 Lean approved; route_status=approved_lean'
@@ -33332,10 +33502,10 @@ evolve_cycles:
     - 12-verify-deploy
     - 13-deploy-smoke
     path: 00→16→01→02→07→08→09→11
-    note: 'Lean — approved D-S044-g1-g2; skip tooling/tech-plan/e2e/deploy; 07–11 completed; 12/13 waived D-S044-12-13-waive; Phase 4 closing / PR pending'
+    note: 'Lean COMPLETE — 07–11 done; 12/13 waived D-S044-12-13-waive; PR #875 MERGED; Phase 4 done; deploy waived'
   current_stage: completed
   current_stage_status: completed
-  current_stage_note: 'NEAR-COMPLETE — 11 approved (D-S044-11); 12/13 waived; push_and_pr in progress; close pending PR URL'
+  current_stage_note: 'COMPLETED — EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived; CI 31028291943 SUCCESS'
   next_stage: null
   next_stage_status: null
   gates:
@@ -33351,11 +33521,11 @@ evolve_cycles:
     phase_c: passed
     phase_d: passed
     deploy: waived
-    note: 'Lean tooling cycle — Phase 4 closing; deploy waived (D-S044-12-13-waive); PR pending'
+    note: 'Lean tooling cycle — Phase 4 done; deploy waived (D-S044-12-13-waive); PR #875 MERGED'
   adrs: []
   artifacts:
   - path: docs/sessions/S044-local-precommit-long-jobs/
-    status: in_progress
+    status: completed
   - path: docs/sessions/S044-local-precommit-long-jobs/session-brief.md
     status: updated
   - path: docs/sessions/S044-local-precommit-long-jobs/routing-plan.md
@@ -33435,6 +33605,7 @@ evolve_cycles:
   - D-S044-11
   - D-S044-12-13-waive
   - D-S044-next
+  - D-S044-merge
   stages:
     00-context:
       status: completed
@@ -33445,10 +33616,12 @@ evolve_cycles:
       completed_at: '2026-08-05'
       note: COMPLETE — Batch B locked; handoff 16-evolve
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-08-05'
       started_at: '2026-08-05'
-      note: 'Phase 4 closing / PR pending — D-S044-11; D-S044-12-13-waive; D-S044-next push_and_pr; tip 95fac992'
+      completed: '2026-08-05'
+      completed_at: '2026-08-05'
+      note: 'COMPLETE — EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived; CI 31028291943 SUCCESS'
     01-requirements:
       status: completed
       mode: delta
@@ -33520,7 +33693,35 @@ evolve_cycles:
     13-deploy-smoke:
       status: skipped
       note: 'WAIVED — D-S044-12-13-waive waived_no_runtime'
+  pr_number: 875
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/875
+  pr_status: merged
+  pr_title: '[EV-036] Local pre-commit long jobs / slim remote CI'
+  pr_base: main
+  pr_head: evolve/EV-036-local-precommit-long-jobs
+  merge_commit_sha: d17b8be3
+  merge_commit_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+  merged_at: '2026-08-05T17:08:05Z'
+  pr_ci_run: '31028291943'
+  pr_ci_status: SUCCESS
+  pull_requests:
+  - id: PR-EV-036
+    number: 875
+    url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/875
+    title: '[EV-036] Local pre-commit long jobs / slim remote CI'
+    status: merged
+    head: evolve/EV-036-local-precommit-long-jobs
+    base: main
+    tip_sha: bf020c2c
+    tip_sha_full: bf020c2c4b0a15091703f958c96586387e0b0cfb
+    merge_commit_sha: d17b8be3
+    merge_commit_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+    merged_at: '2026-08-05T17:08:05Z'
+    ci_run: '31028291943'
+    ci_status: SUCCESS
+    note: 'MERGED to main — Deploy skipped on PR; deploy 12/13 waived'
   notes:
+  - '2026-08-05 S044/EV-036 CLOSED — PR #875 MERGED @ d17b8be3 (head tip bf020c2c); D-S044-11 approve_all_met; D-S044-12-13-waive; deploy waived; local make ci PASS; Cloud CI 31028291943 SUCCESS; active_session=null; Phase 4 done'
   - '2026-08-05 S044/EV-036 OPEN — open_session; D-S044-open=1; D-S044-intent=4+1/N/A; session_counter 44; evolve_cycle_counter 36; branch evolve/EV-036-local-precommit-long-jobs pending_create; deepen M5 likely; no git branch/commit by workflow-state-manager'
   - '2026-08-05 Phase 0 LOCKED — D-S044-batch-b B1=3,B2=1,B3=1,B4=1; deepen M5; Lean preset pending G4; route_status=phase0_locked_pending_proceed; 00-context completed; 16-evolve in_progress; no git branch/commit by workflow-state-manager'
   - '2026-08-05 Phase 0/1 ROUTING APPROVED — D-S044-g1-g2 G1=1 Lean + G2=1 proceed; preset_status=approved; route_status=approved_lean; current_stage=01-requirements in_progress; branch exists:true (parent creating); no git branch/commit by workflow-state-manager'
@@ -34598,29 +34799,30 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-036-local-precommit-long-jobs
-  ahead_of_origin: 2
-  pushed: false
+  current_branch: main
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: false
-  pending_commit_note: 'cleared — 95fac992 recorded; workflow-state tip sync may leave dirty tree for follow-up commit'
+  pending_commit_note: 'cleared — close_session only; parent may commit workflow-state after merge checkout'
   dirty: true
-  tip_sha: 95fac992
-  tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
-  tip_note: 'S044/EV-036 — 09-qa PASS @ 95fac992; 11-verify-impl in_progress; branch evolve/EV-036-local-precommit-long-jobs'
+  tip_sha: d17b8be3
+  tip_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+  tip_note: 'main tip after PR #875 MERGED; EV-036 head tip bf020c2c; S044/EV-036 closed; active_session=null'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
     prior_branch: evolve/EV-031-platform-independence-842
     session_id: S040-iwxxm-corpus-quality
     date: '2026-08-04'
-  main_merge_sha: 8bd111c
-  main_merge_sha_full: 8bd111c5e25a9f46f05fa057b1557ec8d7591cd1
-  main_tip_sha: 5245f8de
-  main_tip_sha_full: 5245f8de547c966a20ee5f81734248dba50a440d
-  recommended_branch: evolve/EV-036-local-precommit-long-jobs
-  note: 'S044/EV-036 09 PASS @ 95fac992; current_stage 11-verify-impl in_progress; pending_commit false; tip 95fac992; ahead_of_origin=2 pushed=false'
+  main_merge_sha: d17b8be3
+  main_merge_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+  main_tip_sha: d17b8be3
+  main_tip_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+  recommended_branch: main
+  note: 'S044/EV-036 CLOSED — PR #875 MERGED @ d17b8be3; tip bf020c2c on evolve head; CI 31028291943 SUCCESS; active_session=null; pending_commit false'
 
   notes:
+  - '2026-08-05 S044/EV-036 CLOSE — PR #875 MERGED @ d17b8be3 (head tip bf020c2c); Cloud CI 31028291943 SUCCESS; local make ci PASS; D-S044-11/D-S044-12-13-waive/D-S044-merge recorded; EV-036 completed; active_session=null; no git commit by workflow-state-manager'
   - '2026-08-05 S044/EV-036 — recorded git commit 95fac992 (95fac99236ef53c4d099dfa7bab72b1936127b1e) [EV-036] docs: 08 verification + 09 hook smoke reports; 09-qa COMPLETE PASS; 11-verify-impl in_progress; tip 95fac992; ahead_of_origin=2 pushed=false'
   - '2026-08-05 S044/EV-036 — recorded git commit d4fd6955 (d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b) [EV-036] feat: local Compose on pre-push; remote units + coverage PR comment; 07-build COMPLETE (T1–T5; pending_commit false); 08-verify-build in_progress; tip d4fd6955; ahead_of_origin=1 pushed=false'
   - '2026-08-05 S044/EV-036 D-S044-02-gate-a — Gate A PASS S02.M2 modified; 02 completed; 07-build T1–T5 impl pending commit → 08; no git commit/SHA invented by workflow-state-manager; tip main @ 97a5c131'
@@ -35062,7 +35264,7 @@ git_history:
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
   - name: evolve/EV-036-local-precommit-long-jobs
-    status: active
+    status: merged
     base: main
     base_sha: 97a5c131
     base_sha_full: 97a5c1310699bf1ed11e622af8c19fa85c03dd6d
@@ -35071,12 +35273,21 @@ git_history:
     evolve_cycle_id: EV-036
     created: '2026-08-05'
     created_at: '2026-08-05'
-    tip_sha: 95fac992
-    tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
+    tip_sha: bf020c2c
+    tip_sha_full: bf020c2c4b0a15091703f958c96586387e0b0cfb
     exists: true
-    pushed: false
-    ahead_of_origin: 2
-    note: 'active — tip 95fac992; 09 PASS; 11 in_progress; not pushed'
+    pushed: true
+    ahead_of_origin: 0
+    pr_number: 875
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/875
+    pr_status: merged
+    merge_commit_sha: d17b8be3
+    merge_commit_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+    merged_at: '2026-08-05T17:08:05Z'
+    merged_into: main
+    ci_run: '31028291943'
+    ci_status: SUCCESS
+    note: 'MERGED via PR #875 @ d17b8be3 — tip bf020c2c; CI 31028291943 SUCCESS; EV-036/S044 closed'
   - name: evolve/EV-034-doks-cd-rollout
     status: active
     base: main
@@ -36143,6 +36354,26 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: d17b8be320d2009355da5fb8e74071e2f0227a35
+    short: d17b8be3
+    branch: main
+    message: 'Merge pull request #875 from EMPIRIC2/evolve/EV-036-local-precommit-long-jobs'
+    stage: 16-evolve
+    skill_id: 16-evolve
+    stages:
+    - 16-evolve
+    session_id: S044-local-precommit-long-jobs
+    evolve_cycle_id: EV-036
+    pr_number: 875
+    merge: true
+    tip_sha: d17b8be3
+    tip_sha_full: d17b8be320d2009355da5fb8e74071e2f0227a35
+    head_tip_sha: bf020c2c
+    head_tip_sha_full: bf020c2c4b0a15091703f958c96586387e0b0cfb
+    timestamp: '2026-08-05'
+    timestamp_utc: '2026-08-05T17:08:05Z'
+    pushed: true
+    note: 'S044/EV-036 PR #875 MERGED to main — close_session; CI 31028291943 SUCCESS'
   - sha: 95fac99236ef53c4d099dfa7bab72b1936127b1e
     short: 95fac992
     branch: evolve/EV-036-local-precommit-long-jobs

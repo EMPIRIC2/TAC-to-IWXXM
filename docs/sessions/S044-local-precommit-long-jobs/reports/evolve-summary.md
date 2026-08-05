@@ -2,9 +2,10 @@
 
 **Title:** Local long jobs on pre-commit / slim remote CI  
 **Branch:** `evolve/EV-036-local-precommit-long-jobs`  
-**Status:** **completed** 2026-08-05 (PR open — merge awaits approval)  
+**Status:** **completed** 2026-08-05 — PR [#875](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/875) MERGED @ `d17b8be3`  
 **Features:** deepen **M5** only (no new Fn — B4=1)  
-**Preset:** Lean · **Deploy:** waived (`D-S044-12-13-waive`)
+**Preset:** Lean · **Deploy:** waived (`D-S044-12-13-waive`)  
+**CI:** local `make ci` PASS · cloud [31028291943](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31028291943) SUCCESS (Coverage PR comment PASS)
 
 ## What shipped
 
