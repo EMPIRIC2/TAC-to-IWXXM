@@ -64,9 +64,11 @@ On push to `main`, the **Deploy** job in `.github/workflows/ci-cd.yml`:
 
 | Actions secret | Required | Description |
 |----------------|----------|-------------|
-| `KUBE_CONFIG` | **Yes** (main Deploy) | Base64-encoded kubeconfig with rights to mutate Deployments in `metar-iwxxm`. Missing ⇒ Deploy fails (fail-closed). |
+| `KUBE_CONFIG` | **Yes** (main Deploy) | Base64-encoded kubeconfig with rights to mutate Deployments in `metar-iwxxm`. Must use a **static** credential (ServiceAccount token or client cert) — **not** a DigitalOcean `doctl` exec plugin (runners do not have `doctl`). Missing ⇒ Deploy fails (fail-closed). |
 
 Encode: `base64 -w0 <kubeconfig.yaml>` (macOS: `base64 -i kubeconfig.yaml | tr -d '\n'`).
+
+Recommended: SA `github-actions-deploy` in `metar-iwxxm` with Role patch/get/list/watch on Deployments (+ get/list/watch Pods for rollout status).
 
 **F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
 F8 worker runs on DOKS.
