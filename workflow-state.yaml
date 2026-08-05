@@ -34,6 +34,12 @@ active_session:
   - 869
   - 870
   - 872
+  github_issues_closed:
+  - 869
+  - 870
+  - 872
+  github_issues_closed_at: "2026-08-05"
+  github_issues_closed_note: "Closed on 07-build @ c51e6e9b — AC4 dispositions landed"
   parent_epic: 846
   ui_preview: n_a
   decisions:
@@ -63,7 +69,7 @@ active_session:
     required: true
     status: in_progress
     started: "2026-08-05"
-    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 07-build (Gate A PASS)
+    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 08-verify-build (07 COMPLETE @ c51e6e9b)
   - stage: 01-requirements
     mode: delta
     required: true
@@ -80,17 +86,22 @@ active_session:
   - stage: 07-build
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: "2026-08-05"
+    completed: "2026-08-05"
+    tip_sha: c51e6e9b
+    note: "COMPLETE @ c51e6e9b — matrix/provenance + #869/#870/#872 closed; handoff 08"
   - stage: 08-verify-build
     mode: delta
     required: true
-    status: pending
+    status: in_progress
+    started: "2026-08-05"
+    note: "STARTED — Lean delta verify after 07 @ c51e6e9b; b_to_c waived_lean"
   - stage: 11-verify-impl
     mode: delta
     required: true
     status: pending
-  current_stage: 07-build
+  current_stage: 08-verify-build
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
@@ -120,6 +131,12 @@ sessions:
   - 869
   - 870
   - 872
+  github_issues_closed:
+  - 869
+  - 870
+  - 872
+  github_issues_closed_at: "2026-08-05"
+  github_issues_closed_note: "Closed on 07-build @ c51e6e9b — AC4 dispositions landed"
   parent_epic: 846
   ui_preview: n_a
   decisions:
@@ -149,7 +166,7 @@ sessions:
     required: true
     status: in_progress
     started: "2026-08-05"
-    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 07-build (Gate A PASS)
+    note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 08-verify-build (07 COMPLETE @ c51e6e9b)
   - stage: 01-requirements
     mode: delta
     required: true
@@ -166,17 +183,22 @@ sessions:
   - stage: 07-build
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: "2026-08-05"
+    completed: "2026-08-05"
+    tip_sha: c51e6e9b
+    note: "COMPLETE @ c51e6e9b — matrix/provenance + #869/#870/#872 closed; handoff 08"
   - stage: 08-verify-build
     mode: delta
     required: true
-    status: pending
+    status: in_progress
+    started: "2026-08-05"
+    note: "STARTED — Lean delta verify after 07 @ c51e6e9b; b_to_c waived_lean"
   - stage: 11-verify-impl
     mode: delta
     required: true
     status: pending
-  current_stage: 07-build
+  current_stage: 08-verify-build
 - id: S044-local-precommit-long-jobs
   type: feature
   intent: |
@@ -7935,11 +7957,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: null
-    completed: null
+    completed_at: '2026-08-05'
+    completed: '2026-08-05'
     previous_started_at: '2026-08-05'
     previous_completed_at: '2026-08-05'
     previous_session_id: S044-local-precommit-long-jobs
@@ -7958,12 +7980,16 @@ stages:
     session_id: S045-matrix-disposition-residuals
     evolve_cycle_id: EV-037
     mode: full
-    note: 'S045/EV-037 07-build IN_PROGRESS — Gate A PASS (D-S045-02-gate-a); S02.M1–M3 as 07 work; matrix/provenance + ticket dispositions #869/#870/#872; deepen F2/F6/F32'
-    tip_sha: null
-    tip_sha_full: null
-    tip_note: 'pending first 07 commit'
+    note: 'S045/EV-037 07-build COMPLETE @ c51e6e9b — matrix/provenance dispositions; #869/#870/#872 CLOSED; Gate A D-S045-02-gate-a; b_to_c waived_lean; handoff 08-verify-build'
+    tip_sha: c51e6e9b
+    tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+    tip_note: '07 COMPLETE — parent-confirmed tip c51e6e9b'
     pending_commit: false
     next_stage: 08-verify-build
+    issues_closed:
+    - 869
+    - 870
+    - 872
     current_milestone: null
     current_task: null
     active_milestone: null
@@ -7982,6 +8008,13 @@ stages:
     - D-S044-g1-g2
     - D-S044-batch-b
     artifacts:
+    - docs/sessions/S045-matrix-disposition-residuals/reports/07-build-report.md
+    - docs/sessions/S045-matrix-disposition-residuals/reports/provenance-gaps.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/domain/rules/PROVENANCE_MAP.md
+    - docs/domain/rules/PROVENANCE_MAP.json
+    - tests/provenance/test_tc_ev037_dispositions.py
+    - Makefile
     - docs/sessions/S045-matrix-disposition-residuals/reports/02-verify-plan-audit.md
     - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     artifacts_s044:
@@ -8001,16 +8034,16 @@ stages:
       session_id: S045-matrix-disposition-residuals
       evolve_cycle_id: EV-037
       skill_id: 07-build
-      status: in_progress
+      status: completed
       mode: full
       started_at: '2026-08-05'
       started: '2026-08-05'
-      completed_at: null
-      completed: null
-      tip_sha: null
-      tip_sha_full: null
+      completed_at: '2026-08-05'
+      completed: '2026-08-05'
+      tip_sha: c51e6e9b
+      tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
       pending_commit: false
-      note: 'IN_PROGRESS — Gate A PASS D-S045-02-gate-a; S02.M1–M3 as 07; deepen F2/F6/F32'
+      note: 'COMPLETE @ c51e6e9b — #869/#870/#872 closed; handoff 08-verify-build; b_to_c waived_lean'
       feature_ids: []
       deepen_feature_ids:
       - F2
@@ -8019,7 +8052,17 @@ stages:
       decision_refs:
       - D-S045-02-gate-a
       - D-S045-ac
+      issues_closed:
+      - 869
+      - 870
+      - 872
       artifacts:
+      - docs/sessions/S045-matrix-disposition-residuals/reports/07-build-report.md
+      - docs/sessions/S045-matrix-disposition-residuals/reports/provenance-gaps.md
+      - docs/domain/rules/COVERAGE_MATRIX.md
+      - docs/domain/rules/PROVENANCE_MAP.md
+      - docs/domain/rules/PROVENANCE_MAP.json
+      - tests/provenance/test_tc_ev037_dispositions.py
       - docs/sessions/S045-matrix-disposition-residuals/reports/02-verify-plan-audit.md
       - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     prior_active_session:
@@ -10208,21 +10251,30 @@ stages:
     - D-S039-route
     report: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
   08-verify-build:
-    status: completed
+    status: in_progress
     mode: delta
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
+    completed_at: null
+    completed: null
     previous_started_at: '2026-08-05'
     previous_completed_at: '2026-08-05'
-    previous_session_id: S042-doks-cd-rollout
-    previous_evolve_cycle_id: EV-034
-    previous_tip_sha: 9ae9c323
-    previous_tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-    previous_note: 'COMPLETE — PASS scoped 2026-08-05; report docs/sessions/S042-doks-cd-rollout/reports/verification-report.md; PR #867 MERGED; #868 MERGED @ d3f4bb95 (D-S042-868-hold resolved; phase_c_checkpoint choice 1); gates.c_to_d passed; Phase D → 09-qa'
-    previous_report: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+    previous_session_id: S044-local-precommit-long-jobs
+    previous_evolve_cycle_id: EV-036
+    previous_tip_sha: d4fd6955
+    previous_tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
+    previous_note: 'PASS — S044/EV-036 COMPLETE @ tip d4fd6955; artifact docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md; handoff 09-qa'
+    previous_report: docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
     previous_overall: pass
+    previous_s042_started_at: '2026-08-05'
+    previous_s042_completed_at: '2026-08-05'
+    previous_s042_session_id: S042-doks-cd-rollout
+    previous_s042_evolve_cycle_id: EV-034
+    previous_s042_tip_sha: 9ae9c323
+    previous_s042_tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
+    previous_s042_note: 'COMPLETE — PASS scoped 2026-08-05; report docs/sessions/S042-doks-cd-rollout/reports/verification-report.md; PR #867 MERGED; #868 MERGED @ d3f4bb95 (D-S042-868-hold resolved; phase_c_checkpoint choice 1); gates.c_to_d passed; Phase D → 09-qa'
+    previous_s042_report: docs/sessions/S042-doks-cd-rollout/reports/verification-report.md
+    previous_s042_overall: pass
     previous_s040_started_at: '2026-08-04'
     previous_s040_completed_at: '2026-08-04'
     previous_s040_session_id: S040-iwxxm-corpus-quality
@@ -10247,17 +10299,19 @@ stages:
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S044-local-precommit-long-jobs
-    evolve_cycle_id: EV-036
-    tip_sha: d4fd6955
-    tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
-    note: 'PASS — S044/EV-036 COMPLETE @ tip d4fd6955; artifact docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md; handoff 09-qa'
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
+    tip_sha: c51e6e9b
+    tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+    note: 'S045/EV-037 08-verify-build IN_PROGRESS — started after 07 COMPLETE @ c51e6e9b; b_to_c waived_lean; expected report docs/sessions/S045-matrix-disposition-residuals/reports/verification-report.md'
+    expected_report: docs/sessions/S045-matrix-disposition-residuals/reports/verification-report.md
+    report: null
+    overall: null
     prior_s040_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
     prior_s040_report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
     prior_s040_overall: pass
-    expected_report: docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
-    report: docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
-    overall: pass
+    s044_report: docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
+    s044_overall: pass
     prior_s042_pr_number: 867
     prior_s042_pr_status: merged
     prior_s042_hotfix_pr_number: 868
@@ -10279,43 +10333,59 @@ stages:
     m5_boundary_complete: true
     m7_pack: true
     decision_refs:
+    - D-S045-02-gate-a
+    - D-S045-ac
     - D-S044-02-gate-a
     - D-S044-r1-ac
     - D-S044-g1-g2
     - D-S044-batch-b
     substeps:
       lint:
-        status: completed
+        status: pending
       format:
-        status: completed
+        status: pending
       typecheck:
-        status: completed
+        status: pending
       tests:
-        status: completed
+        status: pending
       security:
-        status: completed
-        note: Lean tooling — run if required by 08 skill
+        status: pending
+        note: Lean matrix — run if required by 08 skill
       report:
-        status: completed
+        status: pending
     active_session:
+      session_id: S045-matrix-disposition-residuals
+      evolve_cycle_id: EV-037
+      skill_id: 08-verify-build
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-05'
+      started: '2026-08-05'
+      completed_at: null
+      completed: null
+      tip_sha: c51e6e9b
+      tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+      overall: null
+      report: null
+      expected_report: docs/sessions/S045-matrix-disposition-residuals/reports/verification-report.md
+      note: 'IN_PROGRESS — after 07 @ c51e6e9b; b_to_c waived_lean; #869/#870/#872 closed'
+      deepen_feature_ids:
+      - F2
+      - F6
+      - F32
+      decision_refs:
+      - D-S045-02-gate-a
+      - D-S045-ac
+    prior_active_session:
       session_id: S044-local-precommit-long-jobs
       evolve_cycle_id: EV-036
       skill_id: 08-verify-build
       status: completed
       mode: delta
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      completed_at: '2026-08-05'
-      completed: '2026-08-05'
       tip_sha: d4fd6955
-      tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
       overall: pass
       report: docs/sessions/S044-local-precommit-long-jobs/reports/verification-report.md
       note: 'PASS — handoff 09-qa'
-      deepen_feature_ids:
-      - M5
-      decision_refs:
-      - D-S044-02-gate-a
     delta_substages:
     - id: S044-local-precommit-long-jobs-08
       session_id: S044-local-precommit-long-jobs
@@ -11808,21 +11878,24 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S044-local-precommit-long-jobs
-    evolve_cycle_id: EV-036
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
-    previous_session_id: S043-rule-source-traceability
-    previous_evolve_cycle_id: EV-035
+    completed_at: null
+    completed: null
+    previous_session_id: S044-local-precommit-long-jobs
+    previous_evolve_cycle_id: EV-036
     previous_completed_at: '2026-08-05'
+    previous_note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage: completed
-    note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS; active_session=null'
+    current_child_stage: 08-verify-build
+    tip_sha: c51e6e9b
+    tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+    note: 'IN_PROGRESS — S045/EV-037 Phase C; child 08-verify-build; 07 COMPLETE @ c51e6e9b; b_to_c waived_lean; #869/#870/#872 closed'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -33733,7 +33806,7 @@ evolve_cycles:
     - 10-e2e
     - 12-verify-deploy
     - 13-deploy-smoke
-  current_stage: 07-build
+  current_stage: 08-verify-build
   stages:
     00-context:
       status: completed
@@ -33743,7 +33816,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-05"
       completed: null
-      note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 07-build (Gate A PASS)
+      note: Phase 0–1 intake done (G2=1); orchestrator remains in_progress; child 08-verify-build (07 COMPLETE @ c51e6e9b; b_to_c waived_lean)
     01-requirements:
       status: completed
       started: "2026-08-05"
@@ -33755,16 +33828,23 @@ evolve_cycles:
       completed: "2026-08-05"
       note: Gate A PASS (D-S045-02-gate-a); S02.M1–M3 as 07 work; handoff 07-build
     07-build:
+      status: completed
+      started: "2026-08-05"
+      completed: "2026-08-05"
+      tip_sha: c51e6e9b
+      tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+      note: "COMPLETE @ c51e6e9b — matrix/provenance dispositions; #869/#870/#872 closed; handoff 08"
+    08-verify-build:
       status: in_progress
       started: "2026-08-05"
-    08-verify-build:
-      status: pending
+      note: "STARTED — Lean delta verify; b_to_c waived_lean (04/05 skipped)"
     11-verify-impl:
       status: pending
   gates:
     a_to_b: passed
     a_to_b_note: 'D-S045-02-gate-a GateA=1 PASS — S02.M1–M3 accepted as 07 work; Lean → 07 (no 04)'
-    b_to_c: pending
+    b_to_c: waived_lean
+    b_to_c_note: 'Lean+07/08 — 04/05 skipped; B→C waived_lean at 07 complete → 08'
     c_to_d: pending
     deploy: pending
   checkpoints:
@@ -33788,11 +33868,25 @@ evolve_cycles:
     status: completed
     stage: 02-verify-plan
     note: D-S045-02-gate-a
+  - path: docs/sessions/S045-matrix-disposition-residuals/reports/07-build-report.md
+    status: completed
+    stage: 07-build
+    tip_sha: c51e6e9b
+  - path: docs/sessions/S045-matrix-disposition-residuals/reports/provenance-gaps.md
+    status: completed
+    stage: 07-build
   issues:
   - 869
   - 870
   - 872
+  issues_closed:
+  - 869
+  - 870
+  - 872
+  issues_closed_at: "2026-08-05"
+  issues_closed_sha: c51e6e9b
   notes:
+  - '2026-08-05 07-build COMPLETE @ c51e6e9b — matrix/provenance + #869/#870/#872 CLOSED; gates.b_to_c=waived_lean; current_stage=08-verify-build in_progress; no git commit by workflow-state-manager'
   - '2026-08-05 Gate A PASS (D-S045-02-gate-a) — GateA=1 pass_S02.M1-M3_as_07; 02-verify-plan completed; gates.a_to_b=passed; current_stage=07-build in_progress; Phase C; no git commit by workflow-state-manager'
   - '2026-08-05 01-requirements COMPLETE — AC=1 approve_AC1-4_close_01; AC1–AC4 approved; current_stage=02-verify-plan in_progress; no git commit by workflow-state-manager'
   - '2026-08-05 Phase 0/1 ROUTING APPROVED — G2=1 approve_commit_start_01; Phase 0–1 intake done; 16-evolve orchestrator remains in_progress; current_stage=01-requirements in_progress; no git commit by workflow-state-manager'
@@ -35161,7 +35255,7 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: main
+  current_branch: evolve/EV-037-matrix-disposition-residuals
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
@@ -35632,6 +35726,11 @@ git_history:
     created: "2026-08-05"
     session_id: S045-matrix-disposition-residuals
     evolve_cycle_id: EV-037
+    tip_sha: c51e6e9b
+    tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+    exists: true
+    pushed: false
+    note: "ACTIVE — tip c51e6e9b 07-build COMPLETE; handoff 08-verify-build; #869/#870/#872 closed"
   - name: evolve/EV-036-local-precommit-long-jobs
     status: merged
     base: main
@@ -36723,6 +36822,32 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: c51e6e9b
+    short: c51e6e9b
+    sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+    branch: evolve/EV-037-matrix-disposition-residuals
+    message: "[EV-037] docs+test: dispose #869/#870/#872 matrix provenance"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S045-matrix-disposition-residuals
+    evolve_cycle_id: EV-037
+    files_changed:
+    - Makefile
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/domain/rules/PROVENANCE_MAP.json
+    - docs/domain/rules/PROVENANCE_MAP.md
+    - docs/sessions/S045-matrix-disposition-residuals/reports/07-build-report.md
+    - docs/sessions/S045-matrix-disposition-residuals/reports/provenance-gaps.md
+    - tests/provenance/test_tc_ev037_dispositions.py
+    files_changed_count: 7
+    timestamp: "2026-08-05"
+    timestamp_utc: "2026-08-05T20:15:30Z"
+    pushed: false
+    tip_sha: c51e6e9b
+    tip_sha_full: c51e6e9bedf45422c5466876d0fa7b532d95b2a1
+    note: "S045/EV-037 07-build COMPLETE — matrix/provenance dispositions #869/#870/#872 closed; handoff 08-verify-build; b_to_c waived_lean"
   - sha: d9e49c5d
     branch: evolve/EV-037-matrix-disposition-residuals
     message: "[EV-037] docs: open S045 matrix dispositions #869/#870/#872"

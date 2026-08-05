@@ -9,9 +9,9 @@
 **Features**: deepen **F2 / F6 / F32** only (no new Fn — Q2/Q3)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-037-matrix-disposition-residuals`  
-**Status**: **in_progress** — Phase C / 07-build in_progress (Gate A **PASS**)
+**Status**: **in_progress** — Phase C / **08-verify-build** in_progress (07 COMPLETE @ `c51e6e9b`; Gate A **PASS**; `b_to_c` **waived_lean**)
 **Prior**: S044 / EV-036 completed
-**Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+**Issues**: [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869), [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870), [#872](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/872) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) — **all closed** 2026-08-05 @ `c51e6e9b`
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=1,Q3=1,Q4=1` + `G2=1`)
 
@@ -40,7 +40,7 @@
 | AC1 | VONA SoT hierarchy + non-blocking Guidance silence; cookbook derived | TC-EV037-001 | **approved** |
 | AC2 | US Schematron N/A; validate class split | TC-EV037-002 | **approved** |
 | AC3 | AHL source ✅ + source vs impl matrix columns | TC-EV037-003 | **approved** |
-| AC4 | Close/reword #869/#870/#872; link #846 | TC-EV037-004 | **approved** |
+| AC4 | Close/reword #869/#870/#872; link #846 | TC-EV037-004 | **approved** — issues **closed** 2026-08-05 |
 
 ### Out of scope
 
@@ -71,6 +71,7 @@ Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 
 | S02.M2 | decision | Bulletin AHL gaps? | **1** — accept as **07** — split source vs impl columns |
 | S02.M3 | decision | TC-EV037 tests missing? | **1** — accept as **07** — add `tests/provenance/test_tc_ev037_*.py` |
 | Gate A | gate | Phase A / 02 close? | **PASS** (`D-S045-02-gate-a`) GateA=1 — start **07-build** (Lean; no 04) |
+| B→C | gate | Phase B skipped (Lean)? | **waived_lean** — 04/05 skipped; 07 COMPLETE → **08-verify-build** |
 
 ### Stage log
 
@@ -79,7 +80,8 @@ Skip: `03`, `04`, `05`, `06`, `09`, `10`, `12`, `13` (docs/matrix; no UI; waive 
 | 00-context | 2026-08-05 | S045 open; Lean+07/08 Q1–Q4 |
 | 01-requirements | 2026-08-05 | AC=1 approve AC1–AC4; `reports/01-requirements-summary.md` |
 | 02-verify-plan | 2026-08-05 | Gate A **PASS**; S02.M1–M3 → 07; `reports/02-verify-plan-audit.md` |
-| 07-build | in_progress | matrix/provenance + ticket dispositions |
+| 07-build | 2026-08-05 | COMPLETE @ `c51e6e9b`; #869/#870/#872 closed; `reports/07-build-report.md` |
+| 08-verify-build | in_progress | Phase C verify; `b_to_c` waived_lean |
 
 ---
 

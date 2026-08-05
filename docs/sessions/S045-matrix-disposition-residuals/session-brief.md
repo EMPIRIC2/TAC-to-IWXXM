@@ -30,7 +30,12 @@ deepen_feature_ids:
   - F32
 feature_note: "Deepen F2/F6/F32 matrix+provenance dispositions — no new Fn; no product UI"
 route_status: approved_lean_plus_0708
-current_stage: 07-build
+current_stage: 08-verify-build
+github_issues_closed:
+  - 869
+  - 870
+  - 872
+tip_sha_07: c51e6e9b
 ui_preview: n_a
 ---
 
@@ -75,6 +80,15 @@ provenance matrices (and related cites), without blocking product encode/validat
 ## Routing plan
 
 See [routing-plan.md](./routing-plan.md).
+
+## Phase C (in progress)
+
+| Item | Status |
+|------|--------|
+| 07-build | **completed** @ `c51e6e9b` — matrix/provenance + AC4 |
+| Issues #869 / #870 / #872 | **closed** |
+| `gates.b_to_c` | **waived_lean** (04/05 skipped) |
+| 08-verify-build | **in_progress** |
 
 ## Links
 
