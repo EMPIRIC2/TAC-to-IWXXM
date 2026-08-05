@@ -1,9 +1,10 @@
 ---
 session_id: S045-matrix-disposition-residuals
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-037-matrix-disposition-residuals
 started_at: 2026-08-05
+completed_at: 2026-08-05
 intent: "Dispose EV-035 residual tickets #869/#870/#872 — VONA SoT wording, IWXXM-US Schematron N/A, Bulletin AHL source vs impl matrix"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-037
@@ -29,19 +30,22 @@ deepen_feature_ids:
   - F6
   - F32
 feature_note: "Deepen F2/F6/F32 matrix+provenance dispositions — no new Fn; no product UI"
-route_status: approved_lean_plus_0708
-current_stage: push_and_pr
+route_status: completed
+current_stage: completed
 tip_sha_08: 90c2e8a3
 github_issues_closed:
   - 869
   - 870
   - 872
 tip_sha_07: c51e6e9b
+merge_sha: b7302fe4
+pr: 887
 ui_preview: n_a
 decisions:
   D-S045-11: approve_all_met
   D-S045-12-13-waive: waived_no_runtime
   D-S045-next: push_and_pr
+  D-S045-merge: "1"
 ---
 
 # Session S045 — matrix-disposition-residuals
@@ -86,7 +90,7 @@ provenance matrices (and related cites), without blocking product encode/validat
 
 See [routing-plan.md](./routing-plan.md).
 
-## Phase C→D (complete — push+PR pending)
+## Phase C→D / close (complete)
 
 | Item | Status |
 |------|--------|
@@ -97,7 +101,8 @@ See [routing-plan.md](./routing-plan.md).
 | `gates.c_to_d` | **passed** (`D-S045-11` AC1–AC4 MET) |
 | 11-verify-impl | **completed** — `reports/verify-impl.md` |
 | Deploy 12/13 | **waived** (`D-S045-12-13-waive`) |
-| Next | **push + open PR** (`D-S045-next`) |
+| PR | [#887](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/887) **MERGED** @ `b7302fe4` (`D-S045-merge=1`) |
+| Session / cycle | **closed** |
 
 ## Links
 
