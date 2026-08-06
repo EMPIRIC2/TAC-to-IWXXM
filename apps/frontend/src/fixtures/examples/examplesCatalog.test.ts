@@ -145,10 +145,10 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
     expect(getTacExamplesForProduct('AIRMET').some((ex) => ex.wmoPass)).toBe(true);
   });
 
-  it('lists VA/TC SIGMET official stems (EGGX ref + A6-2-TC passer; multi-location passer)', () => {
+  it('lists VA/TC SIGMET official stems (EGGX passer + A6-2-TC passer; multi-location passer)', () => {
     const eggx = getExampleById('sigmet_va_eggx');
-    expect(eggx?.wmoReference).toBe(true);
-    expect(eggx?.wmoPass).not.toBe(true);
+    expect(eggx?.wmoPass).toBe(true);
+    expect(eggx?.wmoReference).not.toBe(true);
     expect(eggx?.wmoSeed).toBe('sigmet-VA-EGGX');
     const tc = getExampleById('sigmet_a6_2_tc');
     expect(tc?.wmoPass).toBe(true);

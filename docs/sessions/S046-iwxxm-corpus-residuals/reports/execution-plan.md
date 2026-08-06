@@ -13,8 +13,9 @@
 |-------|-------|
 | **Active phase** | Phase C — build (B→C PASS) |
 | **Active milestone** | M4 — Encode deepen |
-| **Active task** | T4.5 — ADR-032 vs sigmet-VA-EGGX (#856) |
-| **Tasks** | 20 / 28 completed (through T4.4) |
+| **Active milestone** | M5 — Verify / deploy closeout |
+| **Active task** | T5.1 — 08-verify-build |
+| **Tasks** | 24 / 28 completed (through T4.8 / M4) |
 | **Last updated** | 2026-08-06 |
 
 ## Tech Stack Summary
@@ -102,10 +103,10 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 | T4.2 | Code | Encode `VolcanicAshCloudVerticalExtent` path (no invented packing) | AC11; F32 | T4.1 | **completed** |
 | T4.3 | Test | Green SCH + matrix residual row for G-VONA-1 | TC-EV038-011 | T4.2 | **completed** |
 | T4.4 | Test/Docs | RESUSPENDED_VOLCANIC_ASH — fixtures **or** cite-only deferral + matrix | AC12; TC-EV038-012; #850 | T4.3 | **completed** |
-| T4.5 | Test | Red: ADR-032 equality vs `sigmet-VA-EGGX` (or irreducible-diff doc) | AC13; TC-EV038-013; #856 | T4.4 | pending |
-| T4.6 | Code | Encode/canonicalize deltas → equality green when feasible | AC13; ADR-032 | T4.5 | pending |
-| T4.7 | Code | Catalog promote → `wmoPass` **or** document residual; FIXTURE_GAPS | AC13; TC-EV038-013 | T4.6 | pending |
-| T4.8 | Docs | Close/defer #849/#850/#856; COVERAGE_MATRIX | AC14 | T4.7 | pending |
+| T4.5 | Test | Red: ADR-032 equality vs `sigmet-VA-EGGX` (or irreducible-diff doc) | AC13; TC-EV038-013; #856 | T4.4 | **completed** |
+| T4.6 | Code | Encode/canonicalize deltas → equality green when feasible | AC13; ADR-032 | T4.5 | **completed** |
+| T4.7 | Code | Catalog promote → `wmoPass` **or** document residual; FIXTURE_GAPS | AC13; TC-EV038-013 | T4.6 | **completed** |
+| T4.8 | Docs | Close/defer #849/#850/#856; COVERAGE_MATRIX | AC14 | T4.7 | **completed** |
 
 ### M5 — Verify / deploy closeout
 

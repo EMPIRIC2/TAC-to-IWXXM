@@ -174,13 +174,13 @@ export const EXAMPLES: readonly GoldenExample[] = [
   },
   {
     id: 'sigmet_va_eggx',
-    label: 'VA SIGMET WMO EGGX (reference)',
+    label: 'VA SIGMET WMO EGGX (passer)',
     product: 'SIGMET',
     inputMode: 'tac',
     body: sigmetVaEggx,
     nonOperational: true,
     provenance: `${PKG}/annex3_golden/sigmet_va_eggx.tac`,
-    wmoReference: true,
+    wmoPass: true,
     wmoSeed: 'sigmet-VA-EGGX',
   },
   {
