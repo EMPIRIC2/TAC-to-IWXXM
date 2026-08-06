@@ -17,8 +17,8 @@ active_session:
   artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
-  current_stage: "09-qa+10-e2e"
-  current_stage_note: "09-qa + 10-e2e in parallel after 08 PASS; Docker LIVE harness committed"
+  current_stage: "11-verify-impl"
+  current_stage_note: "09+10 PASS; next 11-verify-impl (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -55,7 +55,7 @@ active_session:
     status: in_progress
     started: "2026-08-06"
     completed: null
-    note: "in_progress — 09-qa + 10-e2e started in parallel after 08 PASS; Docker LIVE harness committed; tip 57c645dc"
+    note: "in_progress — 09+10 PASS; 11-verify-impl started (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
   - stage: 01-requirements
     mode: delta
     required: true
@@ -118,17 +118,26 @@ active_session:
   - stage: 09-qa
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: "2026-08-06"
+    completed: "2026-08-06"
+    overall: pass_with_advisories
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
+    note: "COMPLETE PASS with advisories — report qa-report.md; handoff 11-verify-impl"
   - stage: 10-e2e
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: "2026-08-06"
+    completed: "2026-08-06"
+    overall: pass
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
+    note: "COMPLETE PASS — report e2e-report.md; handoff 11-verify-impl"
   - stage: 11-verify-impl
     mode: full
     required: true
-    status: pending
+    status: in_progress
+    started: "2026-08-06"
   - stage: 12-verify-deploy
     mode: full
     required: true
@@ -35358,14 +35367,14 @@ evolve_cycles:
     skipped_stages:
       - 03-plan-tooling
       - 06-tech-tooling
-  current_stage: "09-qa+10-e2e"
+  current_stage: "11-verify-impl"
   current_stage_status: in_progress
-  current_stage_note: "09-qa + 10-e2e in parallel after 08 PASS; Docker LIVE harness committed"
+  current_stage_note: "09+10 PASS; next 11-verify-impl (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: d78e0915
-  tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
-  tip_sha_note: "tip d78e0915 — M2 complete (T2.1–T2.5); next 08-verify-build"
+  tip_sha: f2b2f558
+  tip_sha_full: f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9
+  tip_sha_note: "tip f2b2f558 — 09+10 PASS; 11-verify-impl in_progress"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -35394,7 +35403,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       completed: null
-      note: "in_progress — 09-qa + 10-e2e started in parallel after 08 PASS; Docker LIVE harness committed; tip 57c645dc"
+      note: "in_progress — 09+10 PASS; 11-verify-impl started (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
     01-requirements:
       status: completed
       started: "2026-08-06"
@@ -35469,13 +35478,22 @@ evolve_cycles:
       overall: pass
       note: "COMPLETE PASS — quality gates green; Docker LIVE TC-F16-LIVE-001/002/004 PASS (003 skipped QEMU); PAUSED per user after LIVE; harness fixes uncommitted; handoff 09-qa pending"
     09-qa:
-      status: in_progress
+      status: completed
       started: "2026-08-06"
+      completed: "2026-08-06"
+      overall: pass_with_advisories
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
+      note: "COMPLETE PASS with advisories — report qa-report.md; handoff 11-verify-impl"
     10-e2e:
+      status: completed
+      started: "2026-08-06"
+      completed: "2026-08-06"
+      overall: pass
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
+      note: "COMPLETE PASS — report e2e-report.md; handoff 11-verify-impl"
+    11-verify-impl:
       status: in_progress
       started: "2026-08-06"
-    11-verify-impl:
-      status: pending
     12-verify-deploy:
       status: pending
     13-deploy-smoke:
@@ -35509,12 +35527,21 @@ evolve_cycles:
     status: completed
     stage: 07-build
     note: "T2.5 — M2 teardown audit report"
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
+    status: completed
+    stage: 09-qa
+    note: "PASS with advisories — qa-report.md"
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
+    status: completed
+    stage: 10-e2e
+    note: "PASS — e2e-report.md"
   - path: docs/spec.md
     status: completed
     note: "S02.M3 resolved — F16 EV-039 deepen bullet"
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 09-qa + 10-e2e COMPLETE PASS — qa pass_with_advisories + e2e pass; reports qa-report.md + e2e-report.md; current_stage 11-verify-impl; 16-evolve remains in_progress; tip f2b2f558; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 09-qa + 10-e2e STARTED in parallel — after 08 PASS; Docker LIVE harness committed; current_stage 09-qa+10-e2e; 16-evolve remains in_progress; tip 57c645dc; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 08-verify-build COMPLETE PASS — quality gates green; Docker LIVE TC-F16-LIVE-001/002/004 PASS (003 skipped QEMU); PAUSED per user after LIVE; harness fixes uncommitted; current_stage 08-verify-build (completed, not advanced); 09-qa pending; 16-evolve remains in_progress; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 M2 COMPLETE @ d78e0915 ([T2.5] teardown audit) + c8850404 ([T2.4] F16 teardown audit + skip SQL Server on compose up); completed_tasks T2.1–T2.5; active_task null; active_milestone M2 done; next 08-verify-build; tip d78e0915; no git commit by workflow-state-manager"
@@ -37293,15 +37320,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-039-sql-ingest-live-e2e
-  ahead_of_origin: 16
+  ahead_of_origin: 20
   pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state.yaml dirty after M2 complete bookkeeping (not workflow-state-manager commit)"
-  tip_sha: d78e0915
-  tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
-  tip_note: 'S047/EV-039 — tip d78e0915 [T2.5]; M2 complete (T2.1–T2.5); next 08-verify-build'
+  dirty_note: "workflow-state.yaml dirty after 09+10 PASS bookkeeping (not workflow-state-manager commit)"
+  tip_sha: f2b2f558
+  tip_sha_full: f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9
+  tip_note: 'S047/EV-039 — tip f2b2f558; 09+10 PASS; 11-verify-impl in_progress'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -37313,9 +37340,10 @@ git_history:
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   recommended_branch: evolve/EV-039-sql-ingest-live-e2e
-  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ d78e0915; 07-build M2 complete (T2.1–T2.5); active_task null; next 08-verify-build; 16-evolve remains in_progress; no git commit by workflow-state-manager'
+  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ f2b2f558; 09+10 PASS; 11-verify-impl in_progress; 16-evolve remains in_progress; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S047/EV-039 — recorded git commits f2b2f558 (f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9) [EV-039] test: align Playwright live-mode assert with skipWebServer + 476c9c9d (476c9c9d7bb70375baa0d0cdf118be9ae53d6c48) chore(deps): pin js-yaml >=4.3.1; 09-qa PASS with advisories + 10-e2e PASS; reports qa-report.md + e2e-report.md; current_stage 11-verify-impl; tip f2b2f558; ahead_of_origin=20 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits d78e0915 (d78e0915bf05b96e03005407876e8cb8e1bfce23) [T2.5] docs: S047 teardown audit report and M2 complete + c8850404 (c88504040c7434a96a2034eb8f832b09d8599440) [T2.4] test: F16 teardown audit + skip SQL Server on compose up; M2 COMPLETE (T2.1–T2.5); active_task null; active_milestone M2 done; next 08-verify-build; tip d78e0915; ahead_of_origin=16 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits b0a930f1 (b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3) [T2.2] feat: implement TC-F16-LIVE Playwright against Compose DBs + 454754f3 (454754f308fd3e62722bd34034832f5e40f2bccd) [T2.3] feat: async-driver live write-assert helper for F16; T2.1–T2.3 COMPLETE; active_task T2.4; tip b0a930f1; ahead_of_origin=14 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commit d5f1bfe3 (d5f1bfe3c40e47189cd7b0046581a5c647ee5545) [T2.1] test: red TC-F16-LIVE-001..004 Playwright stubs; T2.1 COMPLETE; active_task T2.2; next T2.2 + T2.3 parallel; tip d5f1bfe3; ahead_of_origin=12 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -37789,7 +37817,7 @@ git_history:
     tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
     exists: true
     pushed: false
-    note: "S047/EV-039 ACTIVE — tip d78e0915; 07-build M2 complete (T2.1–T2.5); next 08-verify-build"
+    note: "S047/EV-039 ACTIVE — tip f2b2f558; 09+10 PASS; 11-verify-impl in_progress"
   - name: evolve/EV-038-iwxxm-corpus-residuals
     status: merged
     base: main
@@ -38927,6 +38955,56 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: f2b2f558
+    short: f2b2f558
+    sha_full: f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9
+    branch: evolve/EV-039-sql-ingest-live-e2e
+    message: "[EV-039] test: align Playwright live-mode assert with skipWebServer"
+    stage: 09-qa+10-e2e
+    skill_id: 10-e2e
+    stages:
+    - 09-qa
+    - 10-e2e
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    files_changed:
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
+    - tests/unit/test_playwright_live_mode.py
+    files_changed_count: 3
+    timestamp: "2026-08-06T17:30:21-04:00"
+    pushed: false
+    tip_sha: f2b2f558
+    tip_sha_full: f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9
+    note: "S047/EV-039 — 09+10 COMPLETE; qa pass_with_advisories + e2e pass; reports qa-report.md + e2e-report.md; handoff 11-verify-impl"
+  - sha: 476c9c9d
+    short: 476c9c9d
+    sha_full: 476c9c9d7bb70375baa0d0cdf118be9ae53d6c48
+    branch: evolve/EV-039-sql-ingest-live-e2e
+    message: "chore(deps): pin js-yaml >=4.3.1 for GHSA-5p4m-2wfm-xmqj"
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    stages:
+    - 08-verify-build
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    files_changed:
+    - .gitignore
+    - Makefile
+    - apps/e2e/playwright.config.ts
+    - apps/e2e/uj027-f16-live-sql.e2e.spec.ts
+    - docker-compose.yml
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/verification-report.md
+    - package.json
+    - pnpm-lock.yaml
+    - start-dev-servers.sh
+    - workflow-state.yaml
+    files_changed_count: 10
+    timestamp: "2026-08-06T17:27:41-04:00"
+    pushed: false
+    tip_sha: 476c9c9d
+    tip_sha_full: 476c9c9d7bb70375baa0d0cdf118be9ae53d6c48
+    note: "S047/EV-039 — 08-verify-build harness fixes + js-yaml pin; verification-report.md; precedes 09+10"
   - sha: 57c645dc
     short: 57c645dc
     sha_full: 57c645dc11fa3286e2eb53038ab61649e158c7bc
