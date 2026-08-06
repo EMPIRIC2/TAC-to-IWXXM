@@ -18,7 +18,7 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
   current_stage: "12-verify-deploy"
-  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
+  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -57,7 +57,7 @@ active_session:
     status: in_progress
     started: "2026-08-06"
     completed: null
-    note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
+    note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
   - stage: 01-requirements
     mode: delta
     required: true
@@ -150,10 +150,10 @@ active_session:
     required: true
     status: in_progress
     started: "2026-08-06"
-    tip_sha: 415898d0
-    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+    tip_sha: 61c8a355
+    tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
     report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-    note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
+    note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
   - stage: 13-deploy-smoke
     mode: full
     required: true
@@ -11912,12 +11912,12 @@ stages:
     session_id: S047-sql-ingest-live-e2e
     evolve_cycle_id: EV-039
     mode: full
-    note: 'IN_PROGRESS — S047/EV-039 deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream'
+    note: 'IN_PROGRESS — S047/EV-039 deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream'
     report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
     report_status: drafted
-    tip_sha: 415898d0
-    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
-    tip_note: 'S047/EV-039 tip 415898d0 — deploy-checklist drafted; awaiting D-S047-12; no upstream'
+    tip_sha: 61c8a355
+    tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
+    tip_note: 'S047/EV-039 tip 61c8a355 — deploy-checklist drafted; awaiting D-S047-12; no upstream'
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
@@ -11946,11 +11946,11 @@ stages:
       completed: null
       completed_at: null
       branch: evolve/EV-039-sql-ingest-live-e2e
-      tip_sha: 415898d0
-      tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+      tip_sha: 61c8a355
+      tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
       report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
       report_status: drafted
-      note: 'IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream'
+      note: 'IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream'
       deepen_feature_ids:
       - F16
     - id: S046-iwxxm-corpus-residuals-12
@@ -35462,12 +35462,12 @@ evolve_cycles:
       - 06-tech-tooling
   current_stage: "12-verify-deploy"
   current_stage_status: in_progress
-  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
+  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: 415898d0
-  tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
-  tip_sha_note: "tip 415898d0 — deploy-checklist.md drafted; awaiting D-S047-12; branch has no upstream"
+  tip_sha: 61c8a355
+  tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
+  tip_sha_note: "tip 61c8a355 — deploy-checklist.md drafted; awaiting D-S047-12; branch has no upstream"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -35499,7 +35499,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       completed: null
-      note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
+      note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
     01-requirements:
       status: completed
       started: "2026-08-06"
@@ -35601,11 +35601,11 @@ evolve_cycles:
     12-verify-deploy:
       status: in_progress
       started: "2026-08-06"
-      tip_sha: 415898d0
-      tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+      tip_sha: 61c8a355
+      tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
       report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
       report_status: drafted
-      note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
+      note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
     13-deploy-smoke:
       status: pending
   artifacts:
@@ -35652,14 +35652,15 @@ evolve_cycles:
   - path: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
     status: drafted
     stage: 12-verify-deploy
-    note: "drafted — awaiting D-S047-12; tip 415898d0; branch has no upstream"
+    note: "drafted — awaiting D-S047-12; tip 61c8a355; branch has no upstream"
   - path: docs/spec.md
     status: completed
     note: "S02.M3 resolved — F16 EV-039 deepen bullet"
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
-  - "2026-08-06 S047/EV-039 12-verify-deploy — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream; 12 remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-06 S047/EV-039 tip sync — tip 61c8a355 (61c8a35552a6079c14255ae63c2b1031ac9bdbfe); 12-verify-deploy remains in_progress; deploy-checklist.md drafted; awaiting D-S047-12; branch has no upstream; no git commit by workflow-state-manager"
+  - "2026-08-06 S047/EV-039 12-verify-deploy — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream; 12 remains in_progress; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 11-verify-impl COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); overall approved; report verify-impl.md; checkpoints.phase_c+gates.c_to_d passed; current_stage 12-verify-deploy; 16-evolve remains in_progress; tip 415898d0; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 09-qa + 10-e2e COMPLETE PASS — qa pass_with_advisories + e2e pass; reports qa-report.md + e2e-report.md; current_stage 11-verify-impl; 16-evolve remains in_progress; tip f2b2f558; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 09-qa + 10-e2e STARTED in parallel — after 08 PASS; Docker LIVE harness committed; current_stage 09-qa+10-e2e; 16-evolve remains in_progress; tip 57c645dc; no git commit by workflow-state-manager"
