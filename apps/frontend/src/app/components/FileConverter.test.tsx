@@ -948,7 +948,8 @@ describe('FileConverter Component', () => {
         ).toBeInTheDocument();
       });
       expect(screen.getByText('Source TAC')).toBeInTheDocument();
-      expect(screen.getByText(tac)).toBeInTheDocument();
+      // EV-040: TAC remains in the editor after convert, so it appears twice.
+      expect(screen.getAllByText(tac).length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText('METAR FAOR 101200Z')).toBeInTheDocument();
       expect(screen.getByText(/Download: manual_input\.txt/)).toBeInTheDocument();
     });
@@ -975,7 +976,8 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(screen.getByText('Source TAC')).toBeInTheDocument();
       });
-      expect(screen.getByText(tac)).toBeInTheDocument();
+      // EV-040: editor keeps input; Source TAC panel also shows it.
+      expect(screen.getAllByText(tac).length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText('METAR KJFK 121251Z')).toBeInTheDocument();
     });
 
