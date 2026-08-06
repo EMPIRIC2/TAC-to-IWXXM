@@ -1883,6 +1883,71 @@ def _vona_a7_1_peer(ir: dict[str, Any]) -> bool:
     )
 
 
+# XSD ``VolcanicAshCloudMovementType`` (vona.xsd) — do not invent tokens.
+_VONA_ASH_MOVEMENT = frozenset(
+    {
+        "UNKNOWN",
+        "OBSCURED",
+        "VERTICAL",
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW",
+    }
+)
+
+
+def _vona_ash_movement_token(raw: str | None) -> str | None:
+    """Map TAC MOV to XSD enum; raise when present but not in vocabulary."""
+    if raw is None:
+        return None
+    token = re.sub(r"\s+", " ", str(raw).strip().upper())
+    if not token:
+        return None
+    if token not in _VONA_ASH_MOVEMENT:
+        raise ValueError(f"unknown VONA MOV / ash movement token: {raw!r} (not in VolcanicAshCloudMovementType)")
+    return token
+
+
+def _vona_ash_phenomenon_property(
+    ir: dict[str, Any],
+    *,
+    peer: bool,
+    vol_slug: str,
+) -> str:
+    """
+    Ash ``phenomenonProperty`` for VONA MetFeature.
+
+    A7-1 peer keeps ``iwxxm/nil/inapplicable`` (official golden). Non-peer TAC that
+    supplies ``HGT SOURCE`` and/or ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
+    per XSD (G-VONA-1 / #849) — no packing rules beyond free-text heightSource + enum MOV.
+    """
+    height_source = ir.get("height_source")
+    movement = _vona_ash_movement_token(cast(str | None, ir.get("movement")))
+    use_extent = (not peer) and bool(height_source or movement)
+    if not use_extent:
+        return f'<iwxxm:phenomenonProperty nilReason="{_IWXXM_NIL}/inapplicable"></iwxxm:phenomenonProperty>'
+
+    hs_xml = (
+        f"\n                    <iwxxm:heightSource>{escape(str(height_source))}</iwxxm:heightSource>"
+        if height_source
+        else f'\n                    <iwxxm:heightSource xsi:nil="true" nilReason="{_IWXXM_NIL}/unknown"/>'
+    )
+    mov_xml = (
+        f"\n                    <iwxxm:movement>{escape(movement)}</iwxxm:movement>"
+        if movement
+        else f'\n                    <iwxxm:movement xsi:nil="true" nilReason="{_IWXXM_NIL}/unknown"/>'
+    )
+    return f"""<iwxxm:phenomenonProperty>
+                <iwxxm:VolcanicAshCloudVerticalExtent gml:id="vona.ash.extent.{vol_slug}">{hs_xml}{mov_xml}
+                </iwxxm:VolcanicAshCloudVerticalExtent>
+            </iwxxm:phenomenonProperty>"""
+
+
 def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """
     Emit an IWXXM ``VolcanoObservatoryNoticeForAviation`` document (F32 / EV-032).
@@ -1890,7 +1955,9 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     Matches A7-1 field shape (MetFeature volcano + ash, ``iwxxm/AviationColourCode``).
     Official ``vona-A7-1`` peer uses example-specific identifier/coord stamps for
     ADR-032 ``canonicalize_xml`` equality (TC-F32-004 / T2.6). Ash
-    ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` per A7-1 (G-VONA-1).
+    ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` on the A7-1 peer; non-peer
+    TAC with ``HGT SOURCE`` / ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
+    (G-VONA-1 / TC-EV038-011 / #849).
     """
     from tac2iwxxm.codelists import aviation_colour_href
 
@@ -1992,7 +2059,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
                     <iwxxm:verticalReference>MSL</iwxxm:verticalReference>
                 </iwxxm:ElevatedLevel>
             </iwxxm:phenomenonGeometry>
-            <iwxxm:phenomenonProperty nilReason="{_IWXXM_NIL}/inapplicable"></iwxxm:phenomenonProperty>
+            {_vona_ash_phenomenon_property(ir, peer=peer, vol_slug=vol_slug)}
         </iwxxm:MeteorologicalFeature>
     </iwxxm:feature>"""
 
