@@ -17,8 +17,8 @@ active_session:
   artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
-  current_stage: "11-verify-impl"
-  current_stage_note: "09+10 PASS; next 11-verify-impl (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
+  current_stage: "12-verify-deploy"
+  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -41,6 +41,8 @@ active_session:
     D-S047-04-plan_note: "Approve execution plan + build-plan-card as written; close 04 → 05-verify-tech"
     D-S047-05-gate-b: "1"
     D-S047-05-gate-b_note: "PASS; S05.M*/L1 as 07; close 05 → 07-build M1 T1.1 (06 skipped)"
+    D-S047-11: "1"
+    D-S047-11_note: "Approve AC1–AC7 (SQL Server waive OK); close 11-verify-impl → 12-verify-deploy"
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -55,7 +57,7 @@ active_session:
     status: in_progress
     started: "2026-08-06"
     completed: null
-    note: "in_progress — 09+10 PASS; 11-verify-impl started (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
+    note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
   - stage: 01-requirements
     mode: delta
     required: true
@@ -136,12 +138,22 @@ active_session:
   - stage: 11-verify-impl
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: "2026-08-06"
+    completed: "2026-08-06"
+    overall: approved
+    tip_sha: 415898d0
+    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+    note: "COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); reports/verify-impl.md; handoff 12-verify-deploy"
   - stage: 12-verify-deploy
     mode: full
     required: true
-    status: pending
+    status: in_progress
+    started: "2026-08-06"
+    tip_sha: 415898d0
+    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+    note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
   - stage: 13-deploy-smoke
     mode: full
     required: true
@@ -10315,17 +10327,17 @@ stages:
     started: '2026-08-06'
     completed_at: '2026-08-06'
     completed: '2026-08-06'
-    previous_started_at: '2026-08-05'
-    previous_started: '2026-08-05'
-    previous_completed_at: '2026-08-05'
-    previous_completed: '2026-08-05'
-    previous_session_id: S045-matrix-disposition-residuals
-    previous_evolve_cycle_id: EV-037
-    previous_tip_sha: 90c2e8a3
-    previous_tip_sha_full: 90c2e8a3f090d49341fccb1f397b6ff4033d32df
+    previous_started_at: '2026-08-06'
+    previous_started: '2026-08-06'
+    previous_completed_at: '2026-08-06'
+    previous_completed: '2026-08-06'
+    previous_session_id: S046-iwxxm-corpus-residuals
+    previous_evolve_cycle_id: EV-038
+    previous_tip_sha: 2195978e
+    previous_tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
     previous_overall: approved
-    previous_report: docs/sessions/S045-matrix-disposition-residuals/reports/verify-impl.md
-    previous_note: 'COMPLETE — S045/EV-037 D-S045-11 approve_all_met @ 90c2e8a3; provenance 188 green; 12/13 waived; handoff push+PR (D-S045-next)'
+    previous_report: docs/sessions/S046-iwxxm-corpus-residuals/reports/verify-impl.md
+    previous_note: 'COMPLETE — S046/EV-038 D-S046-11=1 approve AC1–AC14 + UJ-050; report verify-impl.md; overall approved; handoff T5.4 12'
     previous_s044_started_at: '2026-08-05'
     previous_s044_started: '2026-08-05'
     previous_s044_completed_at: '2026-08-05'
@@ -10362,28 +10374,31 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
     mode: full
     overall: approved
-    note: 'COMPLETE — S046/EV-038 D-S046-11=1 approve AC1–AC14 + UJ-050; report verify-impl.md; overall approved; handoff T5.4 12'
-    report: docs/sessions/S046-iwxxm-corpus-residuals/reports/verify-impl.md
+    note: 'COMPLETE — S047/EV-039 D-S047-11=1 AC1–AC7 MET (SQL Server waive); report verify-impl.md; overall approved; handoff 12-verify-deploy'
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
     report_status: approved
-    tip_sha: 2195978e
-    tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
-    tip_note: 'S046/EV-038 tip 2195978e — T5.3 APPROVED; next T5.4 12/13; H4-H5 required for UJ-050'
+    tip_sha: 415898d0
+    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+    tip_note: 'S047/EV-039 tip 415898d0 — 11 COMPLETE (D-S047-11=1); handoff 12-verify-deploy'
     awaiting_user_decision: false
     awaiting_user_decision_note: null
-    decision_id: D-S046-11
+    decision_id: D-S047-11
     decision_ids:
-    - D-S046-11
-    - D-S046-ui-preview
+    - D-S047-11
     deepen_feature_ids:
-    - F2
-    - F4
-    - F6
-    - F7
-    - F32
+    - F16
+    previous_s046_session_id: S046-iwxxm-corpus-residuals
+    previous_s046_evolve_cycle_id: EV-038
+    previous_s046_overall: approved
+    previous_s046_report: docs/sessions/S046-iwxxm-corpus-residuals/reports/verify-impl.md
+    previous_s046_tip_sha: 2195978e
+    previous_s046_tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
+    previous_s046_decision_id: D-S046-11
+    previous_s046_note: 'COMPLETE — S046/EV-038 D-S046-11=1 approve AC1–AC14 + UJ-050; handoff T5.4 12'
     previous_s045_session_id: S045-matrix-disposition-residuals
     previous_s045_evolve_cycle_id: EV-037
     previous_s045_overall: approved
@@ -10403,32 +10418,48 @@ stages:
     previous_s044_main_ci_cd_pipeline_run: '31003268652'
     previous_s044_main_ci_cd_pipeline_status: SUCCESS
     previous_s044_doks_tag: 20260805115809-d3f4bb9
-    active_milestone: M5
-    active_task: T5.3
-    active_task_status: completed
-    progress: 27/28
     substeps:
       collect_results:
         status: completed
-        note: 08 PASS; 09 pass_with_advisories; 10 T0 PASS; H4-H5→T5.4
+        note: 08 PASS; 09 pass_with_advisories; 10 PASS; SQL Server waive OK
       feature_completeness:
         status: completed
-        note: deepen F2/F4/F6/F7/F32 AC1–AC14 met
+        note: deepen F16 AC1–AC7 met (SQL Server waive)
       journey_signoff:
         status: completed
-        note: UJ-050 approved (T0); H4-H5 live pending T5.4/13
+        note: F16 live e2e AC sign-off via D-S047-11=1
       feature_approval:
         status: completed
-        note: D-S046-11=1 approve all AC1–AC14 + UJ-050
+        note: D-S047-11=1 approve AC1–AC7 (SQL Server waive OK)
       fixes_applied:
         status: n/a
       scope_analysis:
         status: completed
-        note: '#849–#861 closed; epic #846 roll-up'
+        note: deepen F16 only — no new Fn
       summary:
         status: completed
-        path: docs/sessions/S046-iwxxm-corpus-residuals/reports/verify-impl.md
+        path: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
     delta_substages:
+    - id: S047-sql-ingest-live-e2e-11
+      session_id: S047-sql-ingest-live-e2e
+      evolve_cycle_id: EV-039
+      skill_id: 11-verify-impl
+      status: completed
+      mode: full
+      started_at: '2026-08-06'
+      started: '2026-08-06'
+      completed_at: '2026-08-06'
+      completed: '2026-08-06'
+      tip_sha: 415898d0
+      tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
+      report_status: approved
+      overall: approved
+      decision_id: D-S047-11
+      note: 'COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); handoff 12-verify-deploy'
+      deepen_feature_ids:
+      - F16
+      branch: evolve/EV-039-sql-ingest-live-e2e
     - id: S046-iwxxm-corpus-residuals-11
       session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-038
@@ -11829,23 +11860,34 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: completed
+    status: in_progress
     started_at: '2026-08-06'
     started: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    overall: approved
-    previous_started_at: '2026-08-05'
-    previous_started: '2026-08-05'
-    previous_completed: '2026-08-05'
-    previous_completed_at: '2026-08-05'
-    previous_session_id: S042-doks-cd-rollout
-    previous_evolve_cycle_id: EV-034
-    previous_note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
-    previous_report: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
-    previous_overall: pass
-    previous_tip_sha: d3f4bb95
-    previous_tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    completed: null
+    completed_at: null
+    overall: null
+    previous_started_at: '2026-08-06'
+    previous_started: '2026-08-06'
+    previous_completed: '2026-08-06'
+    previous_completed_at: '2026-08-06'
+    previous_session_id: S046-iwxxm-corpus-residuals
+    previous_evolve_cycle_id: EV-038
+    previous_note: 'COMPLETE — S046/EV-038 D-S046-12=1 approve checklist; report deploy-checklist.md; overall approved; opening PR → CI → merge → 13 H4-H5'
+    previous_report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+    previous_overall: approved
+    previous_tip_sha: 2195978e
+    previous_tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
+    previous_s042_started_at: '2026-08-05'
+    previous_s042_started: '2026-08-05'
+    previous_s042_completed: '2026-08-05'
+    previous_s042_completed_at: '2026-08-05'
+    previous_s042_session_id: S042-doks-cd-rollout
+    previous_s042_evolve_cycle_id: EV-034
+    previous_s042_note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
+    previous_s042_report: docs/sessions/S042-doks-cd-rollout/reports/deploy-checklist.md
+    previous_s042_overall: pass
+    previous_s042_tip_sha: d3f4bb95
+    previous_s042_tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
     previous_s040_started_at: '2026-08-04'
     previous_s040_started: '2026-08-04'
     previous_s040_completed: '2026-08-04'
@@ -11867,32 +11909,50 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
     mode: full
-    note: 'COMPLETE — S046/EV-038 D-S046-12=1 approve checklist; report deploy-checklist.md; overall approved; opening PR → CI → merge → 13 H4-H5'
-    report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
-    report_status: approved
-    tip_sha: 2195978e
-    tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
-    tip_note: 'S046/EV-038 tip 2195978e — 12 APPROVED; opening PR → CI → merge → 13 H4-H5'
+    note: 'IN_PROGRESS — S047/EV-039 deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream'
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+    report_status: drafted
+    tip_sha: 415898d0
+    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+    tip_note: 'S047/EV-039 tip 415898d0 — deploy-checklist drafted; awaiting D-S047-12; no upstream'
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
-    active_milestone: M5
-    active_task: T5.4
-    active_task_status: completed
-    progress: 27/28
-    awaiting_user_decision: false
-    decision_id: D-S046-12
+    awaiting_user_decision: true
+    awaiting_user_decision_note: 'awaiting D-S047-12'
+    decision_id: null
     decision_ids:
+    - D-S047-11
     - D-S046-12
     - D-S046-11
     - D-S042-13
     - D-S040-12
     - D-S036-12
     - D-S045-12-13-waive
+    deepen_feature_ids:
+    - F16
     delta_substages:
+    - id: S047-sql-ingest-live-e2e-12
+      session_id: S047-sql-ingest-live-e2e
+      evolve_cycle_id: EV-039
+      skill_id: 12-verify-deploy
+      status: in_progress
+      mode: full
+      started: '2026-08-06'
+      started_at: '2026-08-06'
+      completed: null
+      completed_at: null
+      branch: evolve/EV-039-sql-ingest-live-e2e
+      tip_sha: 415898d0
+      tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+      report_status: drafted
+      note: 'IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream'
+      deepen_feature_ids:
+      - F16
     - id: S046-iwxxm-corpus-residuals-12
       session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-038
@@ -13122,6 +13182,39 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S047-11
+  date: '2026-08-06'
+  timestamp: '2026-08-06'
+  resolved_at: '2026-08-06'
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: implementation_signoff
+  status: confirmed
+  topic: '11-verify-impl AC sign-off (SQL Server waive OK)'
+  summary: '1 — Approve AC1–AC7 (SQL Server waive OK); close 11 → 12-verify-deploy'
+  decision: |
+    D-S047-11=1 — user approved AC1–AC7 with SQL Server waive OK.
+    11-verify-impl overall approved; report docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md;
+    tip 415898d0; close 11-verify-impl; start 12-verify-deploy.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-039-sql-ingest-live-e2e
+  tip_sha: 415898d0
+  tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+  current_stage: 12-verify-deploy
+  report: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
+  overall: approved
+  related_decisions:
+  - D-S047-05-gate-b
+  - D-S047-ac
+  - D-S047-open
+  deepen_feature_ids:
+  - F16
+  feature_ids: []
+  note: '11-verify-impl COMPLETE; current_stage=12-verify-deploy; tip 415898d0'
 - id: D-S047-05-gate-b
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -35367,24 +35460,26 @@ evolve_cycles:
     skipped_stages:
       - 03-plan-tooling
       - 06-tech-tooling
-  current_stage: "11-verify-impl"
+  current_stage: "12-verify-deploy"
   current_stage_status: in_progress
-  current_stage_note: "09+10 PASS; next 11-verify-impl (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
+  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: f2b2f558
-  tip_sha_full: f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9
-  tip_sha_note: "tip f2b2f558 — 09+10 PASS; 11-verify-impl in_progress"
+  tip_sha: 415898d0
+  tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+  tip_sha_note: "tip 415898d0 — deploy-checklist.md drafted; awaiting D-S047-12; branch has no upstream"
   gates:
     a_to_b: passed
     b_to_c: passed
-    c_to_d: pending
+    c_to_d: passed
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
+    phase_c_note: "passed — D-S047-11=1 AC1–AC7 MET (SQL Server waive); 11-verify-impl COMPLETE"
     phase_d: pending
+    phase_d_note: "pending — 12-verify-deploy in_progress; deploy-checklist.md drafted; awaiting D-S047-12"
     deploy: pending
   decision_refs:
   - D-S047-open
@@ -35393,6 +35488,7 @@ evolve_cycles:
   - D-S047-04
   - D-S047-04-plan
   - D-S047-05-gate-b
+  - D-S047-11
   stages:
     00-context:
       status: completed
@@ -35403,7 +35499,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       completed: null
-      note: "in_progress — 09+10 PASS; 11-verify-impl started (per-AC F16 + UI preview AskQuestion); tip f2b2f558"
+      note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
     01-requirements:
       status: completed
       started: "2026-08-06"
@@ -35492,10 +35588,24 @@ evolve_cycles:
       report: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
       note: "COMPLETE PASS — report e2e-report.md; handoff 11-verify-impl"
     11-verify-impl:
+      status: completed
+      started: "2026-08-06"
+      completed: "2026-08-06"
+      overall: approved
+      tip_sha: 415898d0
+      tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
+      report_status: approved
+      decision_id: D-S047-11
+      note: "COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); reports/verify-impl.md; handoff 12-verify-deploy"
+    12-verify-deploy:
       status: in_progress
       started: "2026-08-06"
-    12-verify-deploy:
-      status: pending
+      tip_sha: 415898d0
+      tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+      report_status: drafted
+      note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream"
     13-deploy-smoke:
       status: pending
   artifacts:
@@ -35535,12 +35645,22 @@ evolve_cycles:
     status: completed
     stage: 10-e2e
     note: "PASS — e2e-report.md"
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
+    status: approved
+    stage: 11-verify-impl
+    note: "COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive)"
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+    status: drafted
+    stage: 12-verify-deploy
+    note: "drafted — awaiting D-S047-12; tip 415898d0; branch has no upstream"
   - path: docs/spec.md
     status: completed
     note: "S02.M3 resolved — F16 EV-039 deepen bullet"
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 12-verify-deploy — deploy-checklist.md drafted; awaiting D-S047-12; tip 415898d0; branch has no upstream; 12 remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-06 S047/EV-039 11-verify-impl COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); overall approved; report verify-impl.md; checkpoints.phase_c+gates.c_to_d passed; current_stage 12-verify-deploy; 16-evolve remains in_progress; tip 415898d0; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 09-qa + 10-e2e COMPLETE PASS — qa pass_with_advisories + e2e pass; reports qa-report.md + e2e-report.md; current_stage 11-verify-impl; 16-evolve remains in_progress; tip f2b2f558; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 09-qa + 10-e2e STARTED in parallel — after 08 PASS; Docker LIVE harness committed; current_stage 09-qa+10-e2e; 16-evolve remains in_progress; tip 57c645dc; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 08-verify-build COMPLETE PASS — quality gates green; Docker LIVE TC-F16-LIVE-001/002/004 PASS (003 skipped QEMU); PAUSED per user after LIVE; harness fixes uncommitted; current_stage 08-verify-build (completed, not advanced); 09-qa pending; 16-evolve remains in_progress; no git commit by workflow-state-manager"

@@ -1,8 +1,7 @@
 # Verify Implementation — S047 / EV-039 (11-verify-impl)
 
-> Drafted: 2026-08-06  
-> Awaiting user sign-off  
-> Tip: `1733ab47`  
+> Status: **APPROVED** (`D-S047-11`=1) — 2026-08-06  
+> Tip: `415898d0`  
 > Corpus: [Corpus: product §F16] [Corpus: journeys §UJ-027] [Corpus: tests] TC-F16-LIVE
 
 ## Inputs collected
@@ -15,8 +14,8 @@
 
 ## Per-AC status (EV-039 / F16 deepen)
 
-| AC | Criterion | Evidence | Proposed |
-|----|-----------|----------|----------|
+| AC | Criterion | Evidence | Status |
+|----|-----------|----------|--------|
 | AC1 | Compose mock-byoc healthy PG/MySQL/SQL Server; SQLite disposable | `compose-mock-byoc-up` healthy; SQL Server waived QEMU | **MET** (SQL Server waive) |
 | AC2 | Live Playwright + write assert four dialects | LIVE-001/002/004 PASS; 003 skipped | **MET** (SQL Server waive) |
 | AC3 | Mocked H6′ stays green, separate | `uj027-030` 7/7 PASS | **MET** |
@@ -25,18 +24,45 @@
 | AC6 | Teardown audit gaps fixed/waived | `reports/teardown-audit.md` | **MET** |
 | AC7 | make/CI docs for LIVE | tech-spec recipe + `make test-e2e-f16-live-sql` | **MET** |
 
+## Journey signoff
+
+| Journey | T0 / H6′ | LIVE | User |
+|---------|----------|------|------|
+| UJ-027 (F16 drawer / BYOC) | 7/7 mocked PASS | LIVE-001/002/004 PASS; 003 waived | **Approved** via `D-S047-11`=1 |
+
+Staging H4–H5 remote: **deferred** to 12/13 (QA-004 / e2e-report).
+
 ## UI preview
 
-- Open session: UI preview **declined** (`D-S047-open` Q5=2)
-- Docker FE still at **http://localhost:18000** (non-deployed) if you want a look before sign-off
+- Open session: declined (`D-S047-open` Q5=2)
+- Sign-off: user chose **Approve AC1–AC7** without opening preview (`D-S047-11`=1)
+- Docker FE was available at http://localhost:18000 (non-deployed) during draft
 
-## Advisories carried from 09
+## Advisories carried to 12
 
-- QA-001 SQL Server skip on this Mac  
-- QA-002 stale local `.env` Playwright `:5173` (Makefile overrides)  
-- QA-003 env-check service-role naming warn  
-- QA-004 staging H4–H5 not run this cycle  
+- QA-001 SQL Server skip on this Mac (accepted waive)
+- QA-002 stale local `.env` Playwright `:5173` (Makefile overrides)
+- QA-003 env-check service-role naming warn
+- QA-004 staging H4–H5 not run this cycle
 
-## Decision needed
+## Scope analysis
 
-Approve AC1–AC7 (with SQL Server waive) → proceed **12-verify-deploy** / **13-deploy-smoke**, or request UI preview / changes first.
+| Metric | Count |
+|--------|-------|
+| Features in cycle | 1 (deepen F16) |
+| Approved | 1 |
+| Fixed / deferred | 0 |
+| Scope creep | 0 |
+| Scope gap | 0 (SQL Server waived, not gap) |
+
+## Decision
+
+**`D-S047-11`=1** — Approve AC1–AC7 (SQL Server waive OK) → **12-verify-deploy**.
+
+## Deploy gate (partial)
+
+- [x] QA checks (09)
+- [x] E2E behaviors (10)
+- [x] Implementation verified by user (11)
+- [ ] Deploy strategy (12)
+- [ ] Deploy smoke (13)

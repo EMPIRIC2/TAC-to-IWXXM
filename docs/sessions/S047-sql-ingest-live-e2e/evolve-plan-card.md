@@ -25,10 +25,10 @@ Playwright, with mandatory teardown across integration, e2e, and local harnesses
 
 ## Next child stage
 
-**07-build** — **M2 T2.1 done** (red LIVE stubs); next **T2.2** (implement live e2e) + **T2.3** (write asserts, parallel).
+**12-verify-deploy** — draft checklist ready; await `D-S047-12` (push + PR + CD path; no prod SQL).
 
 ## Risks / open decisions
 
-- Playwright file `uj027-f16-live-sql.e2e.spec.ts` has T2.1 red stubs; T2.2 fills live UI flow
-- Write-assert helpers in Python (S05.M3) — T2.3
-- SQL Server: required **local**; CI skippable (`D-S047-04` Q4)
+- SQL Server waived on this Mac (QEMU) — accepted `D-S047-11`
+- Branch has **no upstream** — tip CI gate needs push before 12→13
+- `js-yaml` pin ⇒ FE rebuild on merge; H4–H5 at 13
