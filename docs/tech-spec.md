@@ -73,8 +73,12 @@ F16_LIVE_SQL=0 make test-live-e2e
 ```
 
 SQL Server may be skipped in CI (opt-in / heavy image); **local close** still requires all four
-dialects (AC2 / AC7 / `D-S047-04` Q4).
+dialects when the host can run SQL Server (AC2 / AC7 / `D-S047-04` Q4). On hosts where
+SQL Server cannot start (e.g. Apple Silicon QEMU VA layout), set
+`F16_SKIP_SQLSERVER=1` (or `F16_LIVE_SQL_SERVER=0`) so `compose-mock-byoc-up` omits
+`byoc-sqlserver` from `--wait` and LIVE-003 is skipped — record the waiver in the
+session teardown audit.
 
-**Teardown:** `compose-mock-byoc-down` removes the isolated project’s containers and volumes;
-Playwright/pytest fixtures must not leave SQLite temp files or lingering processes after
-pass/fail/skip.
+**API process env (required for LIVE PG/MySQL/SQL Server):** the running API must have
+`DISSEMINATION_EGRESS_ALLOWLIST` set (empty ⇒ deny). Restart local API after exporting
+the recipe above; SQLite LIVE-004 has no hostname and does not need allowlist.

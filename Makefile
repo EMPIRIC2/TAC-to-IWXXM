@@ -412,7 +412,12 @@ BYOC_COMPOSE := $(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) \
 	-f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc
 
 compose-mock-byoc-up:
-	$(BYOC_COMPOSE) up -d --build --wait byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19
+	@set -e; \
+	if [ "$(F16_SKIP_SQLSERVER)" = "1" ] || [ "$(F16_LIVE_SQL_SERVER)" = "0" ]; then \
+		$(BYOC_COMPOSE) up -d --build --wait byoc-postgres byoc-mysql byoc-mailhog byoc-f19; \
+	else \
+		$(BYOC_COMPOSE) up -d --build --wait byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19; \
+	fi
 
 compose-mock-byoc-down:
 	@$(BYOC_COMPOSE) down -v --remove-orphans || true
@@ -533,13 +538,15 @@ test-live-e2e:
 	@if [ "$(F16_LIVE_SQL)" = "1" ]; then $(MAKE) test-e2e-f16-live-sql; fi
 
 # EV-039 / AC7 — F16 live local SQL Playwright (Compose). Default on locally; off in CI (S05.M2).
+# SQL Server may be omitted via F16_SKIP_SQLSERVER=1 or F16_LIVE_SQL_SERVER=0 (S05.L1 / Apple Silicon).
 F16_LIVE_SQL ?= $(if $(CI),0,1)
+F16_SKIP_SQLSERVER ?= 0
 
 test-e2e-f16-live-sql:
 	@set -e; \
-	$(MAKE) compose-mock-byoc-up; \
+	$(MAKE) compose-mock-byoc-up F16_SKIP_SQLSERVER="$(F16_SKIP_SQLSERVER)" F16_LIVE_SQL_SERVER="$(F16_LIVE_SQL_SERVER)"; \
 	trap '$(MAKE) compose-mock-byoc-down' EXIT; \
-	cd apps/e2e && F16_LIVE_SQL=1 \
+	cd apps/e2e && F16_LIVE_SQL=1 F16_SKIP_SQLSERVER="$(F16_SKIP_SQLSERVER)" F16_LIVE_SQL_SERVER="$(F16_LIVE_SQL_SERVER)" \
 		$(PNPM) exec playwright test uj027-f16-live-sql.e2e.spec.ts
 
 # T7.1 / EV-031 — F31 UJ-045..047 against provisional DOKS (Host-header / resolver-rules)

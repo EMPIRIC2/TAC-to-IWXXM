@@ -68,3 +68,13 @@ def test_test_e2e_f16_live_sql_uses_compose_and_teardown() -> None:
     assert "compose-mock-byoc-up" in recipe
     assert "compose-mock-byoc-down" in recipe
     assert "playwright" in recipe.lower() or "uj027-f16-live-sql" in recipe
+
+
+def test_compose_mock_byoc_up_can_skip_sqlserver() -> None:
+    """S05.L1 / T2.4 — omit byoc-sqlserver from --wait when F16_SKIP_SQLSERVER=1."""
+    recipe = _makefile_recipe(
+        MAKEFILE.read_text(encoding="utf-8"), "compose-mock-byoc-up"
+    )
+    assert "F16_SKIP_SQLSERVER" in recipe
+    assert "byoc-postgres" in recipe
+    assert "byoc-mysql" in recipe
