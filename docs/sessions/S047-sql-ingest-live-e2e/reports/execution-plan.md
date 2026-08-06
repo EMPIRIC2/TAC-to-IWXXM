@@ -15,8 +15,8 @@
 |-------|-------|
 | **Active phase** | Phase 1: Live local SQL e2e |
 | **Active milestone** | M1: Teardown harden + harness |
-| **Active task** | T1.3 |
-| **Tasks completed** | 2 / 10 |
+| **Active task** | T1.4 |
+| **Tasks completed** | 3 / 10 |
 | **Last updated** | 2026-08-06 |
 | **Build Plan Card** | `docs/sessions/S047-sql-ingest-live-e2e/build-plan-card.md` |
 
@@ -67,7 +67,7 @@
 |---|------|------|--------|-------------|------------|-----------|
 | T1.1 | Test: after up→down, assert no `metar-iwxxm-byoc-*` containers/volumes | Test | **completed** | AC4; S02.M1; tech-spec mock-byoc | — | Docker |
 | T1.2 | Harden `compose-mock-byoc-down` → `down -v --remove-orphans` (+ keep all-down path) | Config | **completed** | AC4; Makefile; docker-compose.mock-byoc.yml | T1.1 | — |
-| T1.3 | Add `test-e2e-f16-live-sql`; `F16_LIVE_SQL=1` on `test-live-e2e`; local `test-live` includes LIVE | Config | pending | AC7; S02.M2/M5; Q3/Q4 | T1.2 | — |
+| T1.3 | Add `test-e2e-f16-live-sql`; `F16_LIVE_SQL=1` on `test-live-e2e`; local `test-live` includes LIVE | Config | **completed** | AC7; S02.M2/M5; Q3/Q4 | T1.2 | — |
 | T1.4 | Local harness recipe: CORS + allowlist `localhost`/`127.0.0.0/8` for live API↔FE | Config | pending | ADR-030; env-contract; H4–H5 local | T1.3 | — |
 | T1.5 | Docs: tech-spec make targets + CI opt-in / SQL Server skip note | Docs | pending | tech-spec §mock-byoc; AC7; Q4 | T1.3 | — |
 
@@ -124,7 +124,7 @@ After T2.1: T2.2 and T2.3 can proceed in parallel (different files: e2e spec vs 
 |------|-----------|--------|------------|
 | T1.1 | M1 | **completed** | — |
 | T1.2 | M1 | **completed** | — |
-| T1.3 | M1 | pending | T1.2 |
+| T1.3 | M1 | **completed** | — |
 | T1.4 | M1 | pending | T1.3 |
 | T1.5 | M1 | pending | T1.3 |
 | T2.1 | M2 | pending | T1.4 |

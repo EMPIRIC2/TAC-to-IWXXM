@@ -53,6 +53,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
+	test-e2e-f16-live-sql \
 	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
 	test-integration coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
@@ -529,6 +530,17 @@ test-live-e2e:
 	cd apps/e2e && DISABLE_AUTH=false PLAYWRIGHT_BASE_URL="$$PLAYWRIGHT_BASE_URL" \
 		PLAYWRIGHT_API_BASE_URL="$$PLAYWRIGHT_API_BASE_URL" \
 		$(PNPM) exec playwright test
+	@if [ "$(F16_LIVE_SQL)" = "1" ]; then $(MAKE) test-e2e-f16-live-sql; fi
+
+# EV-039 / AC7 — F16 live local SQL Playwright (Compose). Default on locally; off in CI (S05.M2).
+F16_LIVE_SQL ?= $(if $(CI),0,1)
+
+test-e2e-f16-live-sql:
+	@set -e; \
+	$(MAKE) compose-mock-byoc-up; \
+	trap '$(MAKE) compose-mock-byoc-down' EXIT; \
+	cd apps/e2e && F16_LIVE_SQL=1 \
+		$(PNPM) exec playwright test uj027-f16-live-sql.e2e.spec.ts
 
 # T7.1 / EV-031 — F31 UJ-045..047 against provisional DOKS (Host-header / resolver-rules)
 test-live-e2e-doks-provisional:
