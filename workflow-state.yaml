@@ -3,187 +3,124 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 47
-evolve_cycle_counter: 39
+session_counter: 48
+evolve_cycle_counter: 40
 active_session:
-  id: S047-sql-ingest-live-e2e
+  id: S048-workbench-lint-ux
   type: feature
-  intent: "Deepen F16 — local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload; teardown for integration+e2e+local. No new Fn."
+  intent: Workbench lint UX + prefs + official AHL/Collect + catalog source; fix example lint FPs
   status: in_progress
-  started_at: "2026-08-06"
-  started: "2026-08-06"
-  branch: evolve/EV-039-sql-ingest-live-e2e
-  branch_base: main@0d8ce885
-  artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
+  started_at: '2026-08-06'
+  started: '2026-08-06'
+  branch: evolve/EV-040-workbench-lint-ux
+  branch_base: main@fea30aba
+  artifacts_dir: docs/sessions/S048-workbench-lint-ux/
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-039
-  current_stage: "13-deploy-smoke"
-  current_stage_note: "BLOCKED — tip CI missing on PR #891; hard stop pending user decision; 13 not completed"
-  tip_sha: cfe1236b
-  tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
+  evolve_cycle_id: EV-040
+  current_stage: 00-context
+  current_stage_note: OPEN — D-S048-open locked; plan approved; handoff 01-requirements
+  tip_sha: fea30aba
+  tip_sha_full: fea30abacf14a8d6106637c99d7cce8d7652dabf
   tip_sha_pushed: true
-  tip_sha_note: "pushed tip cfe1236b — PR #891 open; GitHub Actions has not created workflow runs (check_suites only cursor app); local husky pre-push make ci passed; 13 hard-stop pending user decision"
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
-  pr_number: 891
-  pr_status: open
-  pr_title: "[EV-039] F16 SQL ingest live e2e + teardown"
-  pr_base: main
-  pr_head: evolve/EV-039-sql-ingest-live-e2e
-  prior_session: S046-iwxxm-corpus-residuals
-  prior_evolve_cycle_id: EV-038
+  prior_session: S047-sql-ingest-live-e2e
+  prior_evolve_cycle_id: EV-039
   feature_ids: []
   deepen_feature_ids:
-  - F16
-  feature_note: "Deepen F16 — no new Fn; UI preview declined"
-  ui_preview: declined
+  - F7
+  - F10
+  - F15
+  feature_note: Deepen F7/F10/F15 — no new Fn; UI preview accepted
+  ui_preview: accepted
   context_briefs:
-  - docs/context/sql-ingest-live-e2e.md
+  - docs/context/workbench-lint-ux.md
   decisions:
-    D-S047-open: "Q1=1 Q2=1 Q3=1 Q4=1 Q5=2"
-    D-S047-open_note: "Open S047→EV-039; deepen F16 SQL ingest live e2e + teardown; Standard routing; UI preview declined (Q5=2)"
-    D-S047-ac: "1"
-    D-S047-ac_note: "AC=1 approve AC1–AC7 + manifest; close 01; start 02-verify-plan (Gate A)"
-    D-S047-02-gate-a: "2"
-    D-S047-02-gate-a_note: "Gate A PASS — S02.M3 resolved via spec.md F16 EV-039 deepen; S02.M1/M2/M4/M5 as 04/07; close 02 → start 04-tech-plan"
-    D-S047-04: "Q1=1 Q2=1 Q3=1+3 Q4=1+2+3(local)"
-    D-S047-04_note: "Teardown down -v; async write assert; test-e2e-f16-live-sql + F16_LIVE_SQL flag; local test-live includes LIVE + all four dialects; CI opt-in / SQL Server skippable"
-    D-S047-04-plan: "1"
-    D-S047-04-plan_note: "Approve execution plan + build-plan-card as written; close 04 → 05-verify-tech"
-    D-S047-05-gate-b: "1"
-    D-S047-05-gate-b_note: "PASS; S05.M*/L1 as 07; close 05 → 07-build M1 T1.1 (06 skipped)"
-    D-S047-11: "1"
-    D-S047-11_note: "Approve AC1–AC7 (SQL Server waive OK); close 11-verify-impl → 12-verify-deploy"
-    D-S047-12: "1"
-    D-S047-12_note: "Approve checklist; push + PR; 13 after CI/CD (H4–H5 required)"
+    D-S048-open: Q1=1 Q2=investigate+note+fix-FPs Q3=1 Q4=1
+    D-S048-open_note: Open S048→EV-040; Standard; FPs noted+fix; prefs name/ext; official AHL/Collect; UI preview yes
+    D-S048-ac: '1'
+    D-S048-ac_note: Approve AC1–AC7 from plan; close 01 → 02
   routing_plan:
   - stage: 00-context
     mode: scoped
     required: true
     status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    note: "COMPLETE — S047 open; D-S047-open locked; handoff 16-evolve"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — S048 open; D-S048-open locked
   - stage: 16-evolve
     mode: orchestrator
     required: true
     status: in_progress
-    started: "2026-08-06"
-    completed: null
-    note: "in_progress — D-S047-12=1; 13-deploy-smoke BLOCKED (tip CI missing on PR #891; check_suites only cursor app); tip cfe1236b pushed; hard stop pending user decision; 13 NOT completed"
+    started: '2026-08-06'
+    note: EV-040 in progress
   - stage: 01-requirements
     mode: delta
     required: true
-    status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    note: "COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan"
+    status: pending
   - stage: 02-verify-plan
     mode: delta
     required: true
-    status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: "COMPLETE — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07; reports/02-verify-plan-audit.md; tip 7970ba46; handoff 04-tech-plan"
+    status: pending
   - stage: 04-tech-plan
     mode: delta
     required: true
-    status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: "COMPLETE — D-S047-04-plan=1; execution-plan + build-plan-card approved; reports/04-tech-plan.md; handoff 05-verify-tech"
+    status: pending
   - stage: 05-verify-tech
     mode: delta
     required: true
-    status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    note: "COMPLETE — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; 06 skipped"
+    status: pending
   - stage: 07-build
     mode: delta
     required: true
-    status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    tip_sha: d78e0915
-    tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
-    note: "COMPLETE — M1+M2 (T1.1–T2.5); handoff 08-verify-build"
+    status: pending
   - stage: 08-verify-build
     mode: full
     required: true
-    status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    overall: pass
-    note: "COMPLETE PASS — quality gates green; Docker LIVE TC-F16-LIVE-001/002/004 PASS (003 skipped QEMU); PAUSED per user after LIVE; harness fixes uncommitted; handoff 09-qa pending"
+    status: pending
   - stage: 09-qa
     mode: full
     required: true
-    status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: pass_with_advisories
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
-    note: "COMPLETE PASS with advisories — report qa-report.md; handoff 11-verify-impl"
+    status: pending
   - stage: 10-e2e
     mode: full
     required: true
-    status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: pass
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
-    note: "COMPLETE PASS — report e2e-report.md; handoff 11-verify-impl"
+    status: pending
   - stage: 11-verify-impl
     mode: full
     required: true
-    status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: approved
-    tip_sha: 415898d0
-    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
-    note: "COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); reports/verify-impl.md; handoff 12-verify-deploy"
+    status: pending
   - stage: 12-verify-deploy
     mode: full
     required: true
-    status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: approved
-    tip_sha: a5e5d89e
-    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-    report_status: approved
-    decision_id: D-S047-12
-    note: "COMPLETE — D-S047-12=1; checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet"
+    status: pending
   - stage: 13-deploy-smoke
     mode: full
     required: true
-    status: in_progress
-    started: "2026-08-06"
-    tip_sha: cfe1236b
-    tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
-    blocked: true
-    blocked_reason: "GitHub Actions has not created workflow runs for PR #891 (check_suites only cursor app); tip CI missing; local husky pre-push make ci passed; hard stop pending user decision"
-    note: "IN_PROGRESS BLOCKED — PR #891 open @ tip cfe1236b; tip CI missing (no GHA workflow runs); hard stop pending user decision; 13 NOT completed; H4–H5 smoke deferred"
+    status: pending
   route_status: in_progress
   preset: Standard
-  preset_note: "Standard — 00→16→01→02→04→05→07→08→09→10→11→12→13; skip 03/06"
 sessions:
+- id: S048-workbench-lint-ux
+  type: feature
+  intent: Workbench lint UX + prefs + official AHL/Collect + catalog source; fix example lint FPs
+  status: in_progress
+  started_at: '2026-08-06'
+  started: '2026-08-06'
+  branch: evolve/EV-040-workbench-lint-ux
+  branch_base: main@fea30aba
+  artifacts_dir: docs/sessions/S048-workbench-lint-ux/
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-040
+  current_stage: 00-context
+  tip_sha: fea30aba
+  tip_sha_full: fea30abacf14a8d6106637c99d7cce8d7652dabf
+  prior_session: S047-sql-ingest-live-e2e
+  prior_evolve_cycle_id: EV-039
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  - F10
+  - F15
+  ui_preview: accepted
 - id: S046-iwxxm-corpus-residuals
   type: feature
   status: completed
@@ -28319,6 +28256,59 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-040
+  session_id: S048-workbench-lint-ux
+  cycle_type: general
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  - F10
+  - F15
+  feature_note: Deepen F7/F10/F15 — no new Fn; UI preview accepted
+  title: Workbench lint UX + examples + prefs
+  status: in_progress
+  started: '2026-08-06'
+  started_at: '2026-08-06'
+  scope_summary: 'Deepen F7/F10/F15: lint console; preserve input; New TAC; slim prefs; official AHL/Collect; catalog source; fix RVR/AHL FPs.'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 05-verify-tech
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 06-tech-tooling
+  current_stage: 00-context
+  current_stage_status: in_progress
+  ui_preview: accepted
+  branch: evolve/EV-040-workbench-lint-ux
+  tip_sha: fea30aba
+  tip_sha_full: fea30abacf14a8d6106637c99d7cce8d7652dabf
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S048-workbench-lint-ux/session-brief.md
+    status: in_progress
 - id: EV-022
   session_id: S029-sigmet-decode-residuals
   cycle_type: feature

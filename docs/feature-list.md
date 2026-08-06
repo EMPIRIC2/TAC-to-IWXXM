@@ -14,15 +14,15 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S046 / EV-038 encode (#849/#850/#856/#857); prior S045 / EV-037 |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
-| F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
+| F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S043 / EV-035 ISSUE_CATALOG↔source |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S043 / EV-035 ISSUE_CATALOG↔source; **deepen** S048 / EV-040 catalog source attribution in API/FE + RVR/AHL FP fixes |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL Playwright + teardown |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
@@ -559,6 +559,21 @@
   5. Encode/SCH/bulletin cites included when those rules are revisited (full stack)
 - **Source**: [Context: rule-source-traceability](context/rule-source-traceability.md);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-035
+
+### F7 / F10 / F15 deepen (S048 / EV-040 — workbench lint UX + catalog attribution)
+
+- **Status note**: F7 remains **Planned**; F10/F15 remain **Done**; **no new Fn**. Operator UX
+  and catalog presentation deepen only.
+- **Acceptance (EV-040)**:
+  1. Lint console: one line per issue (no `+N more` truncation) — F10
+  2. Convert / Convert&Send does not clear manual TAC input — F7/F10
+  3. **New TAC** label; action strip below header, above selects, above bench — F7
+  4. UserPreferences slimmed to output name + extension (F22 Privacy unchanged) — F7
+  5. Examples include official-provenanced AHL bulletin + IWXXM Collect — F7.g
+  6. Lint catalog (MD/JSON/API/FE) shows WMO/ICAO/IWXXM source attribution — F15
+  7. WMO A3-1 + AHL demo lint without false-positive errors; FPs logged — F15
+- **Source**: [Context: workbench-lint-ux](context/workbench-lint-ux.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-040
 
 ### F6 deepen (S015 / EV-011 — METAR)
 

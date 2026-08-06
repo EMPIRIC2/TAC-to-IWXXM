@@ -889,22 +889,26 @@ def get_schema_status():
 async def lint_issue_catalog(
     product: Optional[str] = None,
 ) -> Response:
-    """Export the tac-validate issue registry for FE tooltips / catalog panel (E11-31)."""
+    """Export the tac-validate issue registry for FE tooltips / catalog panel (E11-31 / EV-040)."""
+    from tac_validate.catalog_attribution import attribution_for
+
     entries = tac_catalog_entries(product=product)
-    return msgspec_json_response(
-        LintIssueCatalogResponse(
-            issues=[
-                LintIssueCatalogEntryModel(
-                    code=spec.code,
-                    severity=spec.severity,
-                    message_template=spec.message_template,
-                    product=spec.product,
-                    tags=list(spec.tags),
-                )
-                for spec in entries
-            ]
+    issues: list[LintIssueCatalogEntryModel] = []
+    for spec in entries:
+        attr = attribution_for(spec.code)
+        issues.append(
+            LintIssueCatalogEntryModel(
+                code=spec.code,
+                severity=spec.severity,
+                message_template=spec.message_template,
+                product=spec.product,
+                tags=list(spec.tags),
+                source_id=attr.get("source_id"),
+                source_url=attr.get("source_url"),
+                source_attribution=attr.get("source_attribution"),
+            )
         )
-    )
+    return msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 
 
 @app.post(

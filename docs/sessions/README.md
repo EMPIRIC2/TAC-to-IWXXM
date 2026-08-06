@@ -25,7 +25,8 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S047-sql-ingest-live-e2e](S047-sql-ingest-live-e2e/session-brief.md) | feature | in_progress | F16 live local multi-DB SQL ingest Playwright + teardown; EV-039 | evolve/EV-039-sql-ingest-live-e2e | 2026-08-06 | — |
+| [S048-workbench-lint-ux](S048-workbench-lint-ux/session-brief.md) | feature | in_progress | Workbench lint UX + prefs + official AHL/Collect + catalog source; EV-040 | evolve/EV-040-workbench-lint-ux | 2026-08-06 | — |
+| [S047-sql-ingest-live-e2e](S047-sql-ingest-live-e2e/session-brief.md) | feature | completed | F16 live local multi-DB SQL ingest Playwright + teardown; EV-039; PR #891 | evolve/EV-039-sql-ingest-live-e2e → main @ fea30aba | 2026-08-06 | 2026-08-06 |
 | [S046-iwxxm-corpus-residuals](S046-iwxxm-corpus-residuals/session-brief.md) | feature | completed | #846 residuals #849–#861; deepen F2/F4/F6/F7/F32; EV-038; PR #890 | main @ 619a7ac3 / DOKS 20260806144346-619a7ac | 2026-08-05 | 2026-08-06 |
 | [S045-matrix-disposition-residuals](S045-matrix-disposition-residuals/session-brief.md) | feature | completed | #869/#870/#872 matrix dispositions; deepen F2/F6/F32; EV-037; PR #887 | evolve/EV-037-matrix-disposition-residuals | 2026-08-05 | 2026-08-05 |
 | [S044-local-precommit-long-jobs](S044-local-precommit-long-jobs/session-brief.md) | feature | completed | Local long jobs on pre-commit + slim CI; deepen M5; EV-036; PR #875 | evolve/EV-036-local-precommit-long-jobs | 2026-08-05 | 2026-08-05 |

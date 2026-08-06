@@ -1,0 +1,34 @@
+# Routing plan — S048 / EV-040
+
+**Preset:** Standard (+05 for B→C)  
+**Route:** `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`  
+**Skip:** `03-plan-tooling`, `06-tech-tooling`  
+**Branch:** `evolve/EV-040-workbench-lint-ux`  
+**Features:** deepen **F7 / F10 / F15** (no new Fn)  
+**Status:** in_progress  
+**Approved:** 2026-08-06 (plan + intake)
+
+| Stage | Required | Mode | Status | Notes |
+|-------|----------|------|--------|-------|
+| 00-context | yes | scoped | **in_progress** | S048 open |
+| 16-evolve | yes | orchestrator | **in_progress** | EV-040 |
+| 01-requirements | yes | delta | pending | ACs from plan |
+| 02-verify-plan | yes | delta | pending | Gate A |
+| 03-plan-tooling | no | — | skipped | No new Cursor rules |
+| 04-tech-plan | yes | delta | pending | Execution plan |
+| 05-verify-tech | yes | delta | pending | Gate B |
+| 06-tech-tooling | no | — | skipped | No new deps tooling |
+| 07-build | yes | full | pending | M1 UX + M2 catalog/lint |
+| 08-verify-build | yes | delta | pending | |
+| 09-qa | yes | delta | pending | |
+| 10-e2e | yes | full | pending | H4–H5 when UI ships |
+| 11-verify-impl | yes | delta | pending | |
+| 12-verify-deploy | yes | delta | pending | |
+| 13-deploy-smoke | yes | delta | pending | |
+
+## Skip rationale
+
+| Skipped | Why |
+|---------|-----|
+| 03 | No new plan-adherence rules |
+| 06 | Catalog join uses existing domain JSON/MD; no new publish deps |

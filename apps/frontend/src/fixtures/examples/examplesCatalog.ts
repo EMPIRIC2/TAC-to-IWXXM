@@ -12,7 +12,8 @@ import type { TacProduct } from '@/utils/tacProduct';
 
 import airmetA61aTs from './bodies/airmet_a6_1a_ts.tac?raw';
 import metarA31 from './bodies/metar_a3_1.tac?raw';
-import metarBasicGolden from './bodies/metar_basic.golden.xml?raw';
+import metarAhlWmoA31 from './bodies/metar_ahl_wmo_a3_1.txt?raw';
+import metarNilCollect from './bodies/metar_nil_collect.xml?raw';
 import metarMultiAhl from './bodies/metar_multi_ahl.txt?raw';
 import sigmetA61aTs from './bodies/sigmet_a6_1a_ts.tac?raw';
 import sigmetA61bCnl from './bodies/sigmet_a6_1b_cnl.tac?raw';
@@ -283,8 +284,19 @@ export const EXAMPLES: readonly GoldenExample[] = [
     wmoSeed: 'vona-A7-1',
   },
   {
+    id: 'ahl_metar_wmo_a3_1',
+    label: 'AHL bulletin + WMO METAR A3-1 (official)',
+    product: 'METAR',
+    inputMode: 'ahl_bulletin',
+    body: metarAhlWmoA31,
+    nonOperational: true,
+    provenance: `${PKG}/ahl/sa_metar_a3_1_bulletin.txt`,
+    wmoReference: true,
+    wmoSeed: 'metar-A3-1',
+  },
+  {
     id: 'ahl_metar_multi',
-    label: 'AHL METAR multi-report bulletin',
+    label: 'AHL METAR multi-report bulletin (demo)',
     product: 'METAR',
     inputMode: 'ahl_bulletin',
     body: metarMultiAhl,
@@ -292,13 +304,15 @@ export const EXAMPLES: readonly GoldenExample[] = [
     provenance: `${PKG}/metar_multi_ahl.txt`,
   },
   {
-    id: 'iwxxm_metar_basic',
-    label: 'IWXXM METAR basic (happy-path XML)',
+    id: 'iwxxm_metar_nil_collect',
+    label: 'IWXXM Collect METAR NIL (WMO official)',
     product: 'METAR',
     inputMode: 'collect_iwxxm',
-    body: metarBasicGolden,
+    body: metarNilCollect,
     nonOperational: true,
-    provenance: `${PKG}/annex3_golden/metar_basic.golden.xml`,
+    provenance: `${PKG}/annex3_golden/metar_nil_collect.xml`,
+    wmoReference: true,
+    wmoSeed: 'metar-NIL-collect',
   },
 ] as const;
 

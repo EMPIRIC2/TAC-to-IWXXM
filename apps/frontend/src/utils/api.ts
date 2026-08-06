@@ -479,6 +479,12 @@ export interface LintIssueCatalogEntry {
   message_template: string;
   product?: string | null;
   tags: string[];
+  /** Provenance map source id (EV-040) */
+  source_id?: string | null;
+  /** Public or landing URL for the source (citation only) */
+  source_url?: string | null;
+  /** Operator-facing WMO/ICAO/IWXXM attribution line */
+  source_attribution?: string | null;
 }
 
 export interface LintIssueCatalogResponse {

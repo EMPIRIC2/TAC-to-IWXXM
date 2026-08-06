@@ -276,13 +276,16 @@ class LintTacResponse(BaseModel):
 
 
 class LintIssueCatalogEntryModel(BaseModel):
-    """One registry row exported by GET /api/v1/lint-issue-catalog (E11-31)."""
+    """One registry row exported by GET /api/v1/lint-issue-catalog (E11-31 / EV-040)."""
 
     code: str
     severity: str
     message_template: str
     product: Optional[str] = None
     tags: List[str] = Field(default_factory=list)
+    source_id: Optional[str] = None
+    source_url: Optional[str] = None
+    source_attribution: Optional[str] = None
 
 
 class LintIssueCatalogResponse(BaseModel):

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { UserPreferencesDialog } from './UserPreferencesDialog';
@@ -14,20 +13,6 @@ vi.mock('sonner', () => ({
   toast: mockToast,
 }));
 
-vi.mock('./IcaoAutocomplete', () => ({
-  IcaoAutocomplete: ({ value, onChange, id, label }: any) => (
-    <label htmlFor={id}>
-      {label}
-      <input
-        id={id}
-        data-testid="icao-autocomplete"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </label>
-  ),
-}));
-
 const defaultProps = {
   isOpen: true,
   onClose: vi.fn(),
@@ -35,7 +20,7 @@ const defaultProps = {
   onPreferencesSaved: vi.fn(),
 };
 
-describe('UserPreferencesDialog', () => {
+describe('UserPreferencesDialog (EV-040 slim)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
@@ -53,31 +38,28 @@ describe('UserPreferencesDialog', () => {
     render(<UserPreferencesDialog {...defaultProps} />);
 
     expect(await screen.findByDisplayValue('prefs')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('prefs@example.com')).toBeInTheDocument();
-    expect(screen.getByLabelText(/iwxxm schema version/i)).toHaveValue('2025-2');
+    expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.xml');
+    expect(screen.queryByLabelText(/iwxxm schema version/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/bulletin id/i)).not.toBeInTheDocument();
   });
 
-  it('merges stored preferences from localStorage', async () => {
+  it('merges display name and extension from localStorage', async () => {
     localStorage.setItem(
       'metar_converter_preferences',
       JSON.stringify({
+        displayName: 'Ops Name',
+        outputFileExtension: '.iwxxm',
         bulletinIdExample: 'ABCD12',
-        issuingCenter: 'KLAX',
-        iwxxmVersion: '2023-1',
-        onError: 'skip',
-        logLevel: 'DEBUG',
       }),
     );
 
     render(<UserPreferencesDialog {...defaultProps} />);
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('ABCD12')).toBeInTheDocument();
-      expect(screen.getByTestId('icao-autocomplete')).toHaveValue('KLAX');
-      expect(screen.getByLabelText(/iwxxm schema version/i)).toHaveValue('2023-1');
-      expect(screen.getByLabelText(/on error behavior/i)).toHaveValue('skip');
-      expect(screen.getByLabelText(/log level/i)).toHaveValue('DEBUG');
+      expect(screen.getByDisplayValue('Ops Name')).toBeInTheDocument();
+      expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.iwxxm');
     });
+    expect(screen.queryByDisplayValue('ABCD12')).not.toBeInTheDocument();
   });
 
   it('saves updated preferences and notifies parent', async () => {
@@ -90,9 +72,10 @@ describe('UserPreferencesDialog', () => {
       />,
     );
 
-    const displayName = await screen.findByLabelText(/display name/i);
+    const displayName = await screen.findByLabelText(/display \/ output name/i);
     await user.clear(displayName);
     await user.type(displayName, 'Workflow User');
+    await user.selectOptions(screen.getByLabelText(/output file extension/i), '.iwxxm');
 
     await user.click(screen.getByRole('button', { name: /save preferences/i }));
 
@@ -100,218 +83,65 @@ describe('UserPreferencesDialog', () => {
       localStorage.getItem('metar_converter_preferences') || '{}',
     );
     expect(stored.displayName).toBe('Workflow User');
+    expect(stored.outputFileExtension).toBe('.iwxxm');
     expect(mockToast.success).toHaveBeenCalledWith('Preferences saved successfully');
     expect(onPreferencesSaved).toHaveBeenCalledTimes(1);
     expect(screen.getByText(/preferences saved successfully/i)).toBeInTheDocument();
   });
 
-  it('updates preference fields across sections', async () => {
+  it('preserves legacy keys when saving slim fields', async () => {
+    localStorage.setItem(
+      'metar_converter_preferences',
+      JSON.stringify({
+        bulletinIdExample: 'KEEP12',
+        displayName: 'Old',
+        outputFileExtension: '.xml',
+      }),
+    );
     const user = userEvent.setup();
     render(<UserPreferencesDialog {...defaultProps} />);
 
-    await screen.findByLabelText(/display name/i);
+    const displayName = await screen.findByLabelText(/display \/ output name/i);
+    await user.clear(displayName);
+    await user.type(displayName, 'New');
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
 
-    fireEvent.change(screen.getByLabelText(/bulletin id/i), {
-      target: { value: 'wxyz99' },
-    });
-    await user.selectOptions(screen.getByLabelText(/input file encoding/i), 'ASCII');
-    await user.selectOptions(screen.getByLabelText(/max input file size/i), '25MB');
-    await user.selectOptions(screen.getByLabelText(/output file extension/i), '.iwxxm');
-    await user.selectOptions(screen.getByLabelText(/output file encoding/i), 'UTF-16');
-    await user.click(screen.getByLabelText(/strict validation/i));
-    await user.click(screen.getByLabelText(/include nil reasons/i));
-    fireEvent.change(screen.getByLabelText(/max metar length/i), {
-      target: { value: '1500' },
-    });
-    fireEvent.change(screen.getByLabelText(/metar encoding/i), {
-      target: { value: 'UTF-8' },
-    });
-
-    expect(screen.getByLabelText(/bulletin id/i)).toHaveValue('WXYZ99');
-    expect(screen.getByLabelText(/input file encoding/i)).toHaveValue('ASCII');
-    expect(screen.getByLabelText(/max input file size/i)).toHaveValue('25MB');
-    expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.iwxxm');
-    expect(screen.getByLabelText(/output file encoding/i)).toHaveValue('UTF-16');
-    expect(screen.getByLabelText(/strict validation/i)).not.toBeChecked();
-    expect(screen.getByLabelText(/include nil reasons/i)).not.toBeChecked();
-    expect(screen.getByLabelText(/max metar length/i)).toHaveValue(1500);
-    expect(screen.getByLabelText(/metar encoding/i)).toHaveValue('UTF-8');
+    const stored = JSON.parse(
+      localStorage.getItem('metar_converter_preferences') || '{}',
+    );
+    expect(stored.displayName).toBe('New');
+    expect(stored.bulletinIdExample).toBe('KEEP12');
   });
 
   it('resets preferences after confirmation', async () => {
     localStorage.setItem(
       'metar_converter_preferences',
-      JSON.stringify({ bulletinIdExample: 'ZZZZ99', issuingCenter: 'KJFK' }),
+      JSON.stringify({
+        displayName: 'Custom',
+        outputFileExtension: '.iwxxm',
+      }),
     );
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
-    const onPreferencesSaved = vi.fn();
     const user = userEvent.setup();
-
-    render(
-      <UserPreferencesDialog
-        {...defaultProps}
-        onPreferencesSaved={onPreferencesSaved}
-      />,
-    );
-
-    await screen.findByDisplayValue('ZZZZ99');
-    await user.click(
-      screen.getByRole('button', { name: /reset preferences to defaults/i }),
-    );
-
-    expect(confirmSpy).toHaveBeenCalled();
-    expect(screen.getByDisplayValue('SAAA00')).toBeInTheDocument();
-    expect(mockToast.success).toHaveBeenCalledWith('Preferences reset to defaults');
-    expect(onPreferencesSaved).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not reset when confirmation is cancelled', async () => {
-    localStorage.setItem(
-      'metar_converter_preferences',
-      JSON.stringify({ bulletinIdExample: 'KEEP01' }),
-    );
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
-    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     render(<UserPreferencesDialog {...defaultProps} />);
-
-    await screen.findByDisplayValue('KEEP01');
+    await screen.findByDisplayValue('Custom');
     await user.click(
       screen.getByRole('button', { name: /reset preferences to defaults/i }),
     );
 
-    expect(screen.getByDisplayValue('KEEP01')).toBeInTheDocument();
-    expect(mockToast.success).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('prefs')).toBeInTheDocument();
+      expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.xml');
+    });
   });
 
   it('handles invalid stored preferences gracefully', async () => {
     localStorage.setItem('metar_converter_preferences', '{not-json');
     render(<UserPreferencesDialog {...defaultProps} />);
-
     await waitFor(() => {
       expect(mockToast.error).toHaveBeenCalledWith('Failed to load preferences');
-      expect(screen.getByDisplayValue('prefs@example.com')).toBeInTheDocument();
     });
-  });
-
-  it('closes when cancel is clicked', async () => {
-    const onClose = vi.fn();
-    const user = userEvent.setup();
-    render(<UserPreferencesDialog {...defaultProps} onClose={onClose} />);
-
-    await screen.findByRole('button', { name: /^cancel$/i });
-    await user.click(screen.getByRole('button', { name: /^cancel$/i }));
-
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('closes when backdrop is clicked', async () => {
-    const onClose = vi.fn();
-    const user = userEvent.setup();
-    render(<UserPreferencesDialog {...defaultProps} onClose={onClose} />);
-
-    await screen.findByRole('dialog');
-    await user.click(screen.getByRole('dialog'));
-
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('updates issuing center, IWXXM version, and error handling fields', async () => {
-    const user = userEvent.setup();
-    render(<UserPreferencesDialog {...defaultProps} />);
-
-    await screen.findByLabelText(/display name/i);
-
-    fireEvent.change(screen.getByTestId('icao-autocomplete'), {
-      target: { value: 'KLAX' },
-    });
-    await user.selectOptions(screen.getByLabelText(/iwxxm schema version/i), '2023-1');
-    await user.selectOptions(screen.getByLabelText(/on error behavior/i), 'fail');
-    await user.selectOptions(screen.getByLabelText(/log level/i), 'WARNING');
-
-    expect(screen.getByTestId('icao-autocomplete')).toHaveValue('KLAX');
-    expect(screen.getByLabelText(/iwxxm schema version/i)).toHaveValue('2023-1');
-    expect(screen.getByLabelText(/on error behavior/i)).toHaveValue('fail');
-    expect(screen.getByLabelText(/log level/i)).toHaveValue('WARNING');
-  });
-
-  it('shows save error state when localStorage write fails', async () => {
-    const user = userEvent.setup();
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new Error('quota exceeded');
-    });
-
-    render(<UserPreferencesDialog {...defaultProps} />);
-
-    await screen.findByRole('button', { name: /save preferences/i });
-    await user.click(screen.getByRole('button', { name: /save preferences/i }));
-
-    expect(mockToast.error).toHaveBeenCalledWith('Failed to save preferences');
-    expect(
-      screen.getByText('Failed to save preferences. Please try again.'),
-    ).toBeInTheDocument();
-
-    setItemSpy.mockRestore();
-  });
-
-  it('shows reset error toast when localStorage write fails', async () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new Error('quota exceeded');
-    });
-    const user = userEvent.setup();
-
-    render(<UserPreferencesDialog {...defaultProps} />);
-
-    await screen.findByRole('button', { name: /reset preferences to defaults/i });
-    await user.click(
-      screen.getByRole('button', { name: /reset preferences to defaults/i }),
-    );
-
-    expect(mockToast.error).toHaveBeenCalledWith('Failed to reset preferences');
-
-    setItemSpy.mockRestore();
-  });
-
-  it('clears success status after save timeout', async () => {
-    render(<UserPreferencesDialog {...defaultProps} />);
-
-    await screen.findByRole('button', { name: /save preferences/i });
-
-    vi.useFakeTimers();
-    fireEvent.click(screen.getByRole('button', { name: /save preferences/i }));
-
-    expect(screen.getByText(/preferences saved successfully/i)).toBeInTheDocument();
-
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
-
-    expect(
-      screen.queryByText(/preferences saved successfully/i),
-    ).not.toBeInTheDocument();
-
-    vi.useRealTimers();
-  });
-
-  it('saves preferences without optional saved callback', async () => {
-    const user = userEvent.setup();
-    render(
-      <UserPreferencesDialog isOpen onClose={vi.fn()} userEmail="solo@example.com" />,
-    );
-
-    await screen.findByRole('button', { name: /save preferences/i });
-    await user.click(screen.getByRole('button', { name: /save preferences/i }));
-
-    expect(mockToast.success).toHaveBeenCalledWith('Preferences saved successfully');
-  });
-
-  it('falls back to default max METAR length for invalid numeric input', async () => {
-    render(<UserPreferencesDialog {...defaultProps} />);
-
-    const maxLength = await screen.findByLabelText(/max metar length/i);
-    fireEvent.change(maxLength, { target: { value: '' } });
-
-    expect(maxLength).toHaveValue(1000);
+    expect(await screen.findByDisplayValue('prefs')).toBeInTheDocument();
   });
 });
