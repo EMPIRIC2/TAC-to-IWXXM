@@ -346,7 +346,7 @@ S045/EV-037). Encode **SoT** = ICAO → FM205 → XSD/SCH → AHL → A7-1 →
 | ID | Disposition |
 |----|-------------|
 | G-VONA-0 | Closed — cookbook + this matrix row (G2) |
-| G-VONA-1 | Deepen child — optional `VolcanicAshCloudVerticalExtent` when TAC has HGT SOURCE/MOV beyond A7-1 inapplicable ash — [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849) |
+| G-VONA-1 | **Closed (S046 / EV-038 T4.1–T4.3)** — non-peer TAC with HGT SOURCE/MOV encodes `VolcanicAshCloudVerticalExtent` (XSD enum MOV only); A7-1 peer keeps `iwxxm/nil/inapplicable`; TC-EV038-011 — [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849) |
 | G-VONA-2 | Closed — `KVERT`→`UHPP` registry/fixture constant |
 | G-VONA-3 | Closed cite-only — Doc 10157 paywall; field labels from vendor TAC + XSD |
 | G-VONA-4 | Closed — `WM`→`LM` in `map_t1t2` |
