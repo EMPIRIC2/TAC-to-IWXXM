@@ -94,7 +94,7 @@ See [01-requirements-summary.md](../sessions/S046-iwxxm-corpus-residuals/reports
 | 02-verify-plan | completed | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1); handoff **04-tech-plan** |
 | 04-tech-plan | completed | **D-S046-04-plan**=1; execution-plan approved @ `f03ed255`; handoff **05** |
 | 05-verify-tech | completed | Gate B PASS (`D-S046-05-gate-b`=1); handoff **07-build** |
-| 07-build | in_progress | M3 T3.1 — #859 codes.wmo.int drift (`D-S046-859`=1) |
+| 07-build | in_progress | M3 T3.2 — #860 translation-failed inventory (deferral + METAR/TAF fixtures) |
 
 ### #853 lag policy (07 — locked **D-S046-853**=1)
 

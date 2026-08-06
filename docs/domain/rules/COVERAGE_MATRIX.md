@@ -119,6 +119,9 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | VONA | WM → LM | `iwxxm:VolcanoObservatoryNoticeForAviation` | `vona-A7-1` (**wmoPass** — EV-032 / #741) |
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
+Inventory + soft-path status (S046 / #860 / **TC-EV038-009**):
+[t3.2-translation-failed-inventory.md](../../sessions/S046-iwxxm-corpus-residuals/reports/t3.2-translation-failed-inventory.md)
+— METAR/TAF convert covered (TC-EV023-003); other product convert quarantine **deferred**.
 
 **Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS (durable table below). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
 
