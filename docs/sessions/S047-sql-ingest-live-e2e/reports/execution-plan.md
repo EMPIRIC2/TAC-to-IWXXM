@@ -15,7 +15,7 @@
 |-------|-------|
 | **Active phase** | Phase 1: Live local SQL e2e |
 | **Active milestone** | M2: Live Playwright + write assert (after M1 done) |
-| **Active task** | T2.2 (after T2.1) |
+| **Active task** | T2.4 |
 | **Tasks completed** | 5 / 10 |
 | **Last updated** | 2026-08-06 |
 | **Build Plan Card** | `docs/sessions/S047-sql-ingest-live-e2e/build-plan-card.md` |
@@ -83,8 +83,8 @@ None in M1 (linear TDD: test → config → docs).
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
 | T2.1 | Red tests: TC-F16-LIVE-001..004 (live Playwright stubs / markers) | Test | **completed** | test-plan TC-F16-LIVE; UJ-027 | T1.4 | Compose |
-| T2.2 | Live e2e spec (separate from `uj027-030-…` mocked H6′) | Code | pending | UJ-027 live; AC3 | T2.1 | Compose |
-| T2.3 | Write-assertion helpers via async drivers (PG/MySQL/SQL Server/SQLite) | Code | pending | AC2; S02.M4; Q2 | T2.1 | Compose + ODBC for MSSQL |
+| T2.2 | Live e2e spec (separate from `uj027-030-…` mocked H6′) | Code | **completed** | UJ-027 live; AC3 | T2.1 | Compose |
+| T2.3 | Write-assertion helpers via async drivers (PG/MySQL/SQL Server/SQLite) | Code | **completed** | AC2; S02.M4; Q2 | T2.1 | Compose + ODBC for MSSQL |
 | T2.4 | Teardown audit: Testcontainers fixtures + SQLite temp removal; fix gaps | Test | pending | AC5/AC6; LIVE-004 | T2.2, T2.3 | — |
 | T2.5 | Session report: teardown audit results / waivers | Docs | pending | AC6; session reports | T2.4 | — |
 
@@ -128,8 +128,8 @@ After T2.1: T2.2 and T2.3 can proceed in parallel (different files: e2e spec vs 
 | T1.4 | M1 | **completed** | — |
 | T1.5 | M1 | **completed** | — |
 | T2.1 | M2 | **completed** | T1.4 |
-| T2.2 | M2 | pending | T2.1 |
-| T2.3 | M2 | pending | T2.1 |
+| T2.2 | M2 | **completed** | T2.1 |
+| T2.3 | M2 | **completed** | T2.1 |
 | T2.4 | M2 | pending | T2.2, T2.3 |
 | T2.5 | M2 | pending | T2.4 |
 

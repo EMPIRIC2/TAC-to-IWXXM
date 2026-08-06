@@ -1,8 +1,7 @@
-"""EV-039 / T2.1 — TC-F16-LIVE Playwright stub markers (contract).
+"""EV-039 — TC-F16-LIVE Playwright suite markers (contract).
 
 Asserts the live suite file declares LIVE-001..004, is gated by F16_LIVE_SQL,
-and does not mock dissemination routes (AC3). Red Playwright bodies land in
-``uj027-f16-live-sql.e2e.spec.ts`` until T2.2/T2.3.
+and does not mock dissemination routes (AC3).
 
 [Corpus: product §F16] [Corpus: tests] TC-F16-LIVE [Corpus: tech-spec]
 """
@@ -24,13 +23,13 @@ REQUIRED_TC_IDS = (
 
 
 def test_live_sql_playwright_spec_exists() -> None:
-    assert LIVE_SPEC.is_file(), f"missing live Playwright stub: {LIVE_SPEC}"
+    assert LIVE_SPEC.is_file(), f"missing live Playwright suite: {LIVE_SPEC}"
 
 
 def test_live_sql_playwright_declares_all_tc_ids() -> None:
     text = LIVE_SPEC.read_text(encoding="utf-8")
     for tc_id in REQUIRED_TC_IDS:
-        assert tc_id in text, f"live stub must declare {tc_id}"
+        assert tc_id in text, f"live suite must declare {tc_id}"
 
 
 def test_live_sql_playwright_gated_by_f16_live_sql_flag() -> None:
@@ -44,7 +43,6 @@ def test_live_sql_playwright_gated_by_f16_live_sql_flag() -> None:
 def test_live_sql_playwright_does_not_mock_dissemination_routes() -> None:
     """AC3 — live path must not page.route preflight/send (mocked H6' stays separate)."""
     text = LIVE_SPEC.read_text(encoding="utf-8")
-    # Ignore comments/docs that mention page.route; ban actual route() calls.
     code_only = "\n".join(
         line
         for line in text.splitlines()
@@ -59,12 +57,8 @@ def test_live_sql_playwright_does_not_mock_dissemination_routes() -> None:
     ), "must not mock /api/v1/dissemination/* in live suite"
 
 
-def test_live_sql_playwright_red_stub_markers_until_t22() -> None:
-    """T2.1 red phase: stubs intentionally fail until T2.2 implements the flow."""
+def test_live_sql_playwright_invokes_write_assert_helper() -> None:
+    """T2.2/T2.3 — suite must call the Python live_write_assert helper."""
     text = LIVE_SPEC.read_text(encoding="utf-8")
-    assert "T2.2" in text or "EV-039 T2.2" in text
-    # Four intentional failure markers (expect(false) or throw)
-    fail_markers = len(re.findall(r"expect\(\s*false", text)) + len(
-        re.findall(r"throw new Error", text)
-    )
-    assert fail_markers >= 4, "expected ≥4 red stub failure markers for LIVE-001..004"
+    assert "dissemination.live_write_assert" in text
+    assert "assertLiveDbWrite" in text or "live_write_assert" in text

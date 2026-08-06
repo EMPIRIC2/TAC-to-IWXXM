@@ -18,7 +18,7 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
   current_stage: 07-build
-  current_stage_note: "M2 T2.1 in_progress — TC-F16-LIVE red Playwright stubs; M1 complete; Gate B PASS; tip a19bedfa"
+  current_stage_note: "M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -101,7 +101,9 @@ active_session:
     started: "2026-08-06"
     started_at: "2026-08-06"
     completed: null
-    note: "IN_PROGRESS — M2 T2.1 TC-F16-LIVE red Playwright stubs; M1 complete; Gate B PASS; tip a19bedfa"
+    tip_sha: d5f1bfe3
+    tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
+    note: "IN_PROGRESS — M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
   - stage: 08-verify-build
     mode: full
     required: true
@@ -35349,12 +35351,12 @@ evolve_cycles:
       - 06-tech-tooling
   current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "M2 T2.1 in_progress — TC-F16-LIVE red Playwright stubs; M1 complete; Gate B PASS; tip a19bedfa"
+  current_stage_note: "M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: a19bedfa
-  tip_sha_full: a19bedfa1b41047044b8efac26b51372c402803b
-  tip_sha_note: "tip a19bedfa — M1 complete; advance Build Plan Card to M2; M2 T2.1 in_progress"
+  tip_sha: d5f1bfe3
+  tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
+  tip_sha_note: "tip d5f1bfe3 — M2 T2.1 done; next T2.2 + T2.3 parallel"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -35432,14 +35434,17 @@ evolve_cycles:
       started: "2026-08-06"
       started_at: "2026-08-06"
       completed: null
-      note: "IN_PROGRESS — M2 T2.1 TC-F16-LIVE red Playwright stubs; M1 complete; tip a19bedfa"
-      active_task: T2.1
+      tip_sha: d5f1bfe3
+      tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
+      note: "IN_PROGRESS — M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
+      active_task: T2.2
       active_milestone: M2
       completed_tasks:
       - T1.1
       - T1.2
       - T1.3
       - T1.4
+      - T2.1
     08-verify-build:
       status: pending
     09-qa:
@@ -35483,6 +35488,7 @@ evolve_cycles:
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 T2.1 COMPLETE @ d5f1bfe3 ([T2.1] test: red TC-F16-LIVE-001..004 Playwright stubs); active_task T2.2; next T2.2 + T2.3 parallel; tip d5f1bfe3; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 continue M2 T2.1 in_progress (TC-F16-LIVE red Playwright stubs); M1 complete; Gate B PASS; tip a19bedfa; no new git_history commits; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 Gate B PASS (D-S047-05-gate-b=1); checkpoints.phase_b+gates.b_to_c passed; close 05; start 07-build M1 T1.1 (06 skipped); no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 04 COMPLETE (D-S047-04-plan=1); 05-verify-tech STARTED — audit drafted reports/05-verify-tech-audit.md; gates.b_to_c + checkpoints.phase_b pending; awaiting D-S047-05-gate-b; no git commit by workflow-state-manager"
@@ -37256,15 +37262,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-039-sql-ingest-live-e2e
-  ahead_of_origin: 9
+  ahead_of_origin: 12
   pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state.yaml dirty after 07-build T1.1–T1.3 bookkeeping (not workflow-state-manager commit)"
-  tip_sha: 6e2d7766
-  tip_sha_full: 6e2d7766cf68c429e5436862ef5b959e2a4215d8
-  tip_note: 'S047/EV-039 — tip 6e2d7766 [T1.3]; 07-build active T1.4; completed_tasks T1.1–T1.3'
+  dirty_note: "workflow-state.yaml dirty after T2.1 bookkeeping (not workflow-state-manager commit)"
+  tip_sha: d5f1bfe3
+  tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
+  tip_note: 'S047/EV-039 — tip d5f1bfe3 [T2.1]; 07-build active T2.2; next T2.2 + T2.3 parallel; completed_tasks include T2.1'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -37276,9 +37282,10 @@ git_history:
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   recommended_branch: evolve/EV-039-sql-ingest-live-e2e
-  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ 6e2d7766; 07-build M1 T1.1–T1.3 complete / active T1.4; 16-evolve remains in_progress; no git commit by workflow-state-manager'
+  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ d5f1bfe3; 07-build M2 T2.1 done / active T2.2; next T2.2 + T2.3 parallel; 16-evolve remains in_progress; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S047/EV-039 — recorded git commit d5f1bfe3 (d5f1bfe3c40e47189cd7b0046581a5c647ee5545) [T2.1] test: red TC-F16-LIVE-001..004 Playwright stubs; T2.1 COMPLETE; active_task T2.2; next T2.2 + T2.3 parallel; tip d5f1bfe3; ahead_of_origin=12 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits 6e2d7766 ([T1.3] test-e2e-f16-live-sql) + 5794f5c0 ([T1.1][T1.2] compose-mock-byoc-down) + f86e07e5 (Gate B PASS; close 04/05; start 07-build); 07-build in_progress active_task T1.4; completed_tasks T1.1–T1.3; tip 6e2d7766; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits 7970ba46 (Gate A PASS) + 326a2279 (audit draft); stage 02-verify-plan COMPLETE; gates.a_to_b + phase_a passed; D-S047-02-gate-a=2; S02.M3 via spec.md; current_stage 04-tech-plan; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commit b39ce3be (b39ce3be9489223a114bef299aa938a5b1e0042a) [EV-039] chore: mark 01-requirements complete; advance to 02; stage 02-verify-plan STARTED; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -38887,6 +38894,31 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: d5f1bfe3
+    short: d5f1bfe3
+    sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
+    branch: evolve/EV-039-sql-ingest-live-e2e
+    message: "[T2.1] test: red TC-F16-LIVE-001..004 Playwright stubs"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    files_changed:
+    - README.md
+    - apps/e2e/uj027-f16-live-sql.e2e.spec.ts
+    - docs/sessions/S047-sql-ingest-live-e2e/build-plan-card.md
+    - docs/sessions/S047-sql-ingest-live-e2e/evolve-plan-card.md
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
+    - tests/unit/test_f16_live_sql_playwright_stubs.py
+    - workflow-state.yaml
+    files_changed_count: 7
+    timestamp: "2026-08-06T14:27:20-04:00"
+    pushed: false
+    tip_sha: d5f1bfe3
+    tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
+    note: "S047/EV-039 — T2.1 COMPLETE; red TC-F16-LIVE Playwright stubs; active_task T2.2; next T2.2 + T2.3 parallel"
   - sha: 6e2d7766
     short: 6e2d7766
     sha_full: 6e2d7766cf68c429e5436862ef5b959e2a4215d8
