@@ -9,6 +9,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import tac_validate.catalog_attribution as catalog_attribution
+from tac_validate.catalog_attribution import attribution_for
 from tac_validate.issue_registry import ISSUES
 
 REPO = Path(__file__).resolve().parents[3]
@@ -17,8 +19,10 @@ CATALOG_MD = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.md"
 
 
 def _registry_rows() -> list[dict[str, object]]:
+    """Registry + EV-040 provenance attribution (same shape as ``make catalog-regen``)."""
     rows: list[dict[str, object]] = []
     for spec in ISSUES:
+        attr = attribution_for(spec.code)
         rows.append(
             {
                 "code": spec.code,
@@ -26,6 +30,9 @@ def _registry_rows() -> list[dict[str, object]]:
                 "message_template": spec.message_template,
                 "product": spec.product,
                 "tags": list(spec.tags),
+                "source_id": attr["source_id"],
+                "source_url": attr["source_url"],
+                "source_attribution": attr["source_attribution"],
             }
         )
     rows.sort(key=lambda r: str(r["code"]))
@@ -33,10 +40,12 @@ def _registry_rows() -> list[dict[str, object]]:
 
 
 def test_issue_catalog_json_matches_registry() -> None:
+    catalog_attribution._load.cache_clear()
     assert CATALOG_JSON.is_file(), "missing ISSUE_CATALOG.json — run make catalog-regen"
     payload = json.loads(CATALOG_JSON.read_text(encoding="utf-8"))
     assert payload["schema_version"] == 1
     assert "generated from tac_validate.issue_registry" in payload["source"]
+    assert "PROVENANCE_MAP" in payload["source"]
     assert payload["issues"] == _registry_rows()
 
 
@@ -44,6 +53,7 @@ def test_issue_catalog_md_lists_every_code() -> None:
     assert CATALOG_MD.is_file(), "missing ISSUE_CATALOG.md — run make catalog-regen"
     text = CATALOG_MD.read_text(encoding="utf-8")
     assert "generated from tac_validate.issue_registry" in text
+    assert "Source attribution" in text
     assert "Registry module pending" not in text
     for spec in ISSUES:
         assert f"`{spec.code}`" in text, f"catalog MD missing {spec.code}"
