@@ -4,9 +4,10 @@
 > Status: **APPROVED** (`D-S047-12`=1) — push + PR; 13 after CI/CD (H4–H5 required)  
 > Prior: 11 **APPROVED** (`D-S047-11`=1)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · DOKS CD on `main`  
-> Tip: `a5e5d89e` — push/PR in progress  
+> Tip: `cfe1236b` · PR [#891](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891)  
 > `env_role`: **live = prod** (sole DOKS stack `api|app.tac-to-iwxxm.com`)  
-> Corpus: `[Corpus: tech-spec]` · `[Corpus: product §F16]` · `[Corpus: tests]` · connectivity-gates §12–13
+> Corpus: `[Corpus: tech-spec]` · `[Corpus: product §F16]` · `[Corpus: tests]` · connectivity-gates §12–13  
+> **CI note:** Branch pushed; local pre-push `make ci` green. GitHub Actions has **not** started check suites on #891 (only Cursor suite queued) — tip CI gate blocked until runs appear or waived.
 
 ## Scope (delta)
 

@@ -18,7 +18,17 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
   current_stage: "13-deploy-smoke"
-  current_stage_note: "12 APPROVED; push/PR then smoke"
+  current_stage_note: "BLOCKED — tip CI missing on PR #891; hard stop pending user decision; 13 not completed"
+  tip_sha: cfe1236b
+  tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
+  tip_sha_pushed: true
+  tip_sha_note: "pushed tip cfe1236b — PR #891 open; GitHub Actions has not created workflow runs (check_suites only cursor app); local husky pre-push make ci passed; 13 hard-stop pending user decision"
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
+  pr_number: 891
+  pr_status: open
+  pr_title: "[EV-039] F16 SQL ingest live e2e + teardown"
+  pr_base: main
+  pr_head: evolve/EV-039-sql-ingest-live-e2e
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -59,7 +69,7 @@ active_session:
     status: in_progress
     started: "2026-08-06"
     completed: null
-    note: "in_progress — 12 APPROVED (D-S047-12=1); current 13-deploy-smoke; push/PR then smoke (H4–H5); tip a5e5d89e; no PR URL yet"
+    note: "in_progress — D-S047-12=1; 13-deploy-smoke BLOCKED (tip CI missing on PR #891; check_suites only cursor app); tip cfe1236b pushed; hard stop pending user decision; 13 NOT completed"
   - stage: 01-requirements
     mode: delta
     required: true
@@ -165,9 +175,11 @@ active_session:
     required: true
     status: in_progress
     started: "2026-08-06"
-    tip_sha: a5e5d89e
-    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-    note: "IN_PROGRESS — 12 APPROVED; push/PR then smoke (H4–H5 required); tip a5e5d89e; no PR URL yet"
+    tip_sha: cfe1236b
+    tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
+    blocked: true
+    blocked_reason: "GitHub Actions has not created workflow runs for PR #891 (check_suites only cursor app); tip CI missing; local husky pre-push make ci passed; hard stop pending user decision"
+    note: "IN_PROGRESS BLOCKED — PR #891 open @ tip cfe1236b; tip CI missing (no GHA workflow runs); hard stop pending user decision; 13 NOT completed; H4–H5 smoke deferred"
   route_status: in_progress
   preset: Standard
   preset_note: "Standard — 00→16→01→02→04→05→07→08→09→10→11→12→13; skip 03/06"
@@ -35576,12 +35588,19 @@ evolve_cycles:
       - 06-tech-tooling
   current_stage: "13-deploy-smoke"
   current_stage_status: in_progress
-  current_stage_note: "12 APPROVED; push/PR then smoke"
+  current_stage_note: "BLOCKED — tip CI missing on PR #891; hard stop pending user decision; 13 not completed"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: a5e5d89e
-  tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-  tip_sha_note: "tip a5e5d89e — D-S047-12=1; 13 in_progress; tip will refresh after push; no PR URL yet"
+  tip_sha: cfe1236b
+  tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
+  tip_sha_pushed: true
+  tip_sha_note: "pushed tip cfe1236b — PR #891 open; GitHub Actions has not created workflow runs (check_suites only cursor app); local husky pre-push make ci passed; 13 hard-stop pending user decision"
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
+  pr_number: 891
+  pr_status: open
+  pr_title: "[EV-039] F16 SQL ingest live e2e + teardown"
+  pr_base: main
+  pr_head: evolve/EV-039-sql-ingest-live-e2e
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -35593,7 +35612,7 @@ evolve_cycles:
     phase_c: passed
     phase_c_note: "passed — D-S047-11=1 AC1–AC7 MET (SQL Server waive); 11-verify-impl COMPLETE"
     phase_d: pending
-    phase_d_note: "12 APPROVED (D-S047-12=1); push/PR then 13 smoke (H4–H5 required); deploy pending until CI/CD + smoke"
+    phase_d_note: "12 APPROVED (D-S047-12=1); PR #891 open @ tip cfe1236b; 13 BLOCKED — tip CI missing (no GHA workflow runs); hard stop pending user decision; deploy pending until CI/CD + smoke"
     deploy: pending
   decision_refs:
   - D-S047-open
@@ -35614,7 +35633,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       completed: null
-      note: "in_progress — 12 APPROVED (D-S047-12=1); current 13-deploy-smoke; push/PR then smoke (H4–H5); tip a5e5d89e; no PR URL yet"
+      note: "in_progress — D-S047-12=1; 13-deploy-smoke BLOCKED (tip CI missing on PR #891; check_suites only cursor app); tip cfe1236b pushed; hard stop pending user decision; 13 NOT completed"
     01-requirements:
       status: completed
       started: "2026-08-06"
@@ -35728,9 +35747,11 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       started_at: "2026-08-06"
-      tip_sha: a5e5d89e
-      tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-      note: "IN_PROGRESS — 12 APPROVED; push/PR then smoke (H4–H5 required); tip a5e5d89e; no PR URL yet"
+      tip_sha: cfe1236b
+      tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
+      blocked: true
+      blocked_reason: "GitHub Actions has not created workflow runs for PR #891 (check_suites only cursor app); tip CI missing; local husky pre-push make ci passed; hard stop pending user decision"
+      note: "IN_PROGRESS BLOCKED — PR #891 open @ tip cfe1236b; tip CI missing (no GHA workflow runs); hard stop pending user decision; 13 NOT completed; H4–H5 smoke deferred"
   artifacts:
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
@@ -35782,6 +35803,7 @@ evolve_cycles:
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 13-deploy-smoke BLOCKED — PR #891 OPEN https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891 @ tip cfe1236b (cfe1236b4c3e8c5594447d44b69e4d20c7e01522); branch evolve/EV-039-sql-ingest-live-e2e pushed; D-S047-12=1 already set; GitHub Actions has not created workflow runs for this PR (check_suites only cursor app); local husky pre-push make ci passed; tip CI missing → hard stop pending user decision; 13 NOT completed; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 D-S047-12=1 — Approve checklist; 12-verify-deploy COMPLETE; current_stage 13-deploy-smoke in_progress; push + PR then smoke after CI/CD (H4–H5 required); tip a5e5d89e (a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9); no PR URL yet; tip will refresh after push; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 tip sync — tip 61c8a355 (61c8a35552a6079c14255ae63c2b1031ac9bdbfe); 12-verify-deploy remains in_progress; deploy-checklist.md drafted; awaiting D-S047-12; branch has no upstream; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 12-verify-deploy — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream; 12 remains in_progress; no git commit by workflow-state-manager"
@@ -37565,15 +37587,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-039-sql-ingest-live-e2e
-  ahead_of_origin: 20
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state.yaml dirty after 09+10 PASS bookkeeping (not workflow-state-manager commit)"
-  tip_sha: f2b2f558
-  tip_sha_full: f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9
-  tip_note: 'S047/EV-039 — tip f2b2f558; 09+10 PASS; 11-verify-impl in_progress'
+  dirty_note: "workflow-state.yaml dirty after 13 BLOCKED bookkeeping (PR #891 tip CI missing; not workflow-state-manager commit); also local dirty: apps/frontend/public/config.json + docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md"
+  tip_sha: cfe1236b
+  tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
+  tip_note: 'S047/EV-039 — tip cfe1236b pushed; PR #891 open; tip CI missing (no GHA workflow runs); 13-deploy-smoke BLOCKED hard stop'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -37585,9 +37607,10 @@ git_history:
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   recommended_branch: evolve/EV-039-sql-ingest-live-e2e
-  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ f2b2f558; 09+10 PASS; 11-verify-impl in_progress; 16-evolve remains in_progress; no git commit by workflow-state-manager'
+  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ cfe1236b; pushed=true ahead_of_origin=0; PR #891 open; tip CI missing; 13 BLOCKED; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S047/EV-039 — tip cfe1236b (cfe1236b4c3e8c5594447d44b69e4d20c7e01522) [EV-039] chore: retrigger PR CI for tip gate; branch pushed; PR #891 OPEN; ahead_of_origin=0 pushed=true; tip CI missing (check_suites only cursor app); local husky pre-push make ci passed; 13-deploy-smoke BLOCKED hard stop pending user decision; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits f2b2f558 (f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9) [EV-039] test: align Playwright live-mode assert with skipWebServer + 476c9c9d (476c9c9d7bb70375baa0d0cdf118be9ae53d6c48) chore(deps): pin js-yaml >=4.3.1; 09-qa PASS with advisories + 10-e2e PASS; reports qa-report.md + e2e-report.md; current_stage 11-verify-impl; tip f2b2f558; ahead_of_origin=20 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits d78e0915 (d78e0915bf05b96e03005407876e8cb8e1bfce23) [T2.5] docs: S047 teardown audit report and M2 complete + c8850404 (c88504040c7434a96a2034eb8f832b09d8599440) [T2.4] test: F16 teardown audit + skip SQL Server on compose up; M2 COMPLETE (T2.1–T2.5); active_task null; active_milestone M2 done; next 08-verify-build; tip d78e0915; ahead_of_origin=16 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits b0a930f1 (b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3) [T2.2] feat: implement TC-F16-LIVE Playwright against Compose DBs + 454754f3 (454754f308fd3e62722bd34034832f5e40f2bccd) [T2.3] feat: async-driver live write-assert helper for F16; T2.1–T2.3 COMPLETE; active_task T2.4; tip b0a930f1; ahead_of_origin=14 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -38058,11 +38081,18 @@ git_history:
     created: "2026-08-06"
     session_id: S047-sql-ingest-live-e2e
     evolve_cycle_id: EV-039
-    tip_sha: d78e0915
-    tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
+    tip_sha: cfe1236b
+    tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
     exists: true
-    pushed: false
-    note: "S047/EV-039 ACTIVE — tip f2b2f558; 09+10 PASS; 11-verify-impl in_progress"
+    pushed: true
+    ahead_of_origin: 0
+    pr_number: 891
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
+    pr_status: open
+    pr_title: "[EV-039] F16 SQL ingest live e2e + teardown"
+    pr_head: evolve/EV-039-sql-ingest-live-e2e
+    pr_base: main
+    note: "S047/EV-039 ACTIVE — tip cfe1236b pushed; PR #891 open; tip CI missing (no GHA workflow runs); 13 BLOCKED hard stop"
   - name: evolve/EV-038-iwxxm-corpus-residuals
     status: merged
     base: main
