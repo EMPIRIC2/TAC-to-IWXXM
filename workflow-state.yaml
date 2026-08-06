@@ -29,8 +29,8 @@ active_session:
   ui_preview: yes_at_m2_854
   current_stage: 08-verify-build
   current_stage_note: 'T5.1 PASS — Phase C→D gate met; awaiting Phase C checkpoint / T5.2 (09+10); tip 5da17e32'
-  tip_sha: 60c508b0
-  tip_sha_full: 60c508b08f27f92e15789abf77db3c69b350763b
+  tip_sha: 0ad62c92
+  tip_sha_full: 0ad62c928fc3b2de39dc42a02ec78a834be7a29b
   tip_sha_note: 'T5.1 COMPLETE — 08 PASS; Phase C checkpoint pending.'
   milestones:
     M1: [858, 861, 855]
@@ -37881,9 +37881,9 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
-  - sha: 60c508b0
+  - sha: 0ad62c92
     short: 5135c56c
-    sha_full: 60c508b08f27f92e15789abf77db3c69b350763b
+    sha_full: 0ad62c928fc3b2de39dc42a02ec78a834be7a29b
     branch: evolve/EV-038-iwxxm-corpus-residuals
     message: "[T5.1] docs: 08-verify-build PASS for EV-038 Phase C closeout"
     stage: 08-verify-build
@@ -37899,8 +37899,8 @@ git_history:
     files_changed_count: 3
     timestamp: "2026-08-06T09:35:00-04:00"
     pushed: false
-    tip_sha: 60c508b0
-    tip_sha_full: 60c508b08f27f92e15789abf77db3c69b350763b
+    tip_sha: 0ad62c92
+    tip_sha_full: 0ad62c928fc3b2de39dc42a02ec78a834be7a29b
     note: "S046/EV-038 — T5.1 COMPLETE; 08-verify-build PASS; Phase C checkpoint pending"
   - sha: 5da17e32
     short: 5da17e32
