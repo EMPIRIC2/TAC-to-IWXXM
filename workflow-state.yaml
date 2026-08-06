@@ -27,11 +27,11 @@ active_session:
   deepen_feature_ids: [F2, F4, F6, F7, F32]
   feature_note: 'Deepen F2/F4/F6/F7/F32 — no new Fn expected unless encode unlock requires one; #854 UI'
   ui_preview: yes_at_m2_854
-  current_stage: 07-build
-  current_stage_note: 'IN_PROGRESS — M2 COMPLETE (#851–#854 closed); next M3 T3.1'
-  tip_sha: 234d5052
-  tip_sha_full: 234d5052fdee9d5a0a5787f08008ae2bb7567e28
-  tip_sha_note: 'T2.7 COMPLETE @ 234d5052; pushed; iwxxm-us compat smoke SUCCESS 31061572647; next T2.8'
+  current_stage: 08-verify-build
+  current_stage_note: 'T5.1 PASS — Phase C→D gate met; awaiting Phase C checkpoint / T5.2 (09+10); tip 5da17e32'
+  tip_sha: 60c508b0
+  tip_sha_full: 60c508b08f27f92e15789abf77db3c69b350763b
+  tip_sha_note: 'T5.1 COMPLETE — 08 PASS; Phase C checkpoint pending.'
   milestones:
     M1: [858, 861, 855]
     M2: [851, 852, 853, 854]
@@ -63,9 +63,22 @@ active_session:
     - stage: 07-build
       required: true
       mode: full
-      status: in_progress
+      status: completed
       started: '2026-08-05'
-      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
+      completed: '2026-08-06'
+      tip_sha: 5da17e32
+      tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+      note: 'COMPLETE — M1–M4 complete through T4.8 @ 5da17e32; VA-EGGX wmoPass; handoff 08-verify-build T5.1'
+    - stage: 08-verify-build
+      required: true
+      mode: full
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+      tip_sha: 5da17e32
+      tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/verification-report.md
+      note: 'COMPLETE — T5.1 PASS; Phase C→D gate met; report verification-report.md; awaiting Phase C checkpoint / T5.2'
   decisions:
     D-S046-open: 'Q1=1 Q2=5 Q3=2'
     D-S046-open_note: 'Open S046→EV-038; whole residuals #849–#861; Standard (+05 for B→C)'
@@ -94,7 +107,7 @@ active_session:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase 2 (Phase B) — Gate B PASS; orchestrating 07-build M2 T2.8; T2.7 #853 COMPLETE (D-S046-853=1)'
+      note: 'Phase C complete (08 PASS); next T5.2 09+10 after checkpoint; tip 5da17e32'
     01-requirements:
       status: completed
       started: '2026-08-05'
@@ -116,10 +129,20 @@ active_session:
       completed: '2026-08-05'
       note: 'COMPLETE — Gate B PASS (D-S046-05-gate-b=1); handoff 07-build'
     07-build:
-      status: in_progress
+      status: completed
       started: '2026-08-05'
-      completed: null
-      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
+      completed: '2026-08-06'
+      tip_sha: 5da17e32
+      tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+      note: 'COMPLETE — M1–M4 complete through T4.8 @ 5da17e32; VA-EGGX wmoPass; handoff 08-verify-build'
+    08-verify-build:
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+      tip_sha: 5da17e32
+      tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/verification-report.md
+      note: 'COMPLETE — T5.1 PASS; Phase C→D gate met; report verification-report.md; awaiting Phase C checkpoint / T5.2'
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
@@ -34549,7 +34572,7 @@ evolve_cycles:
   title: "Epic #846 corpus residuals #849–#861"
   status: in_progress
   phase: 2
-  phase_note: 'Phase 2 (Phase B) — Gate B PASS; 07-build M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); SoT python_to_generated_json_fe_openapi_ci; UI yes@M2/#854'
+  phase_note: 'Phase C complete (T5.1 08 PASS @ 5da17e32); Phase C→D gate met; awaiting user Phase C checkpoint before T5.2 09+10; SoT python_to_generated_json_fe_openapi_ci; UI yes@M2/#854'
   started: '2026-08-05'
   started_at: '2026-08-05'
   completed: null
@@ -34576,21 +34599,26 @@ evolve_cycles:
     skipped_stages:
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: 07-build
-  current_stage_status: in_progress
-  current_stage_note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1)'
+  current_stage: 08-verify-build
+  current_stage_status: completed
+  current_stage_note: 'T5.1 PASS — Phase C→D gate met; checkpoints.phase_c=passed; awaiting user Phase C checkpoint before 09+10 (T5.2); tip 5da17e32'
   ui_preview: yes_at_m2_854
   branch: evolve/EV-038-iwxxm-corpus-residuals
+  tip_sha: 5da17e32
+  tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+  tip_sha_note: 'T5.1 08 PASS @ 5da17e32 (unchanged until next commit)'
   sot_decision: python_to_generated_json_fe_openapi_ci
   gates:
     a_to_b: passed
     b_to_c: passed
     c_to_d: pending
+    c_to_d_note: 'T5.1 08 PASS — Phase C→D technical gate met; awaiting user Phase C checkpoint before 09+10'
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_b: passed
-    phase_c: pending
+    phase_c: passed
+    phase_c_note: 'confirmed — T5.1 08 PASS @ 5da17e32; awaiting user Phase C checkpoint before T5.2 09+10'
     phase_d: pending
     deploy: pending
   issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
@@ -34611,7 +34639,7 @@ evolve_cycles:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase 2 orchestrator — Gate B PASS; 07-build M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1)'
+      note: 'Phase C complete (08 PASS); next T5.2 09+10 after checkpoint; tip 5da17e32'
     01-requirements:
       status: completed
       started: '2026-08-05'
@@ -34633,11 +34661,23 @@ evolve_cycles:
       completed: '2026-08-05'
       note: 'COMPLETE — Gate B PASS (D-S046-05-gate-b=1); handoff 07-build'
     07-build:
-      status: in_progress
+      status: completed
       started: '2026-08-05'
-      completed: null
-      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
+      completed: '2026-08-06'
+      tip_sha: 5da17e32
+      tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+      note: 'COMPLETE — M1–M4 complete through T4.8 @ 5da17e32; VA-EGGX wmoPass; handoff 08-verify-build'
+    08-verify-build:
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+      tip_sha: 5da17e32
+      tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/verification-report.md
+      note: 'COMPLETE — T5.1 PASS; Phase C→D gate met; report verification-report.md; awaiting Phase C checkpoint / T5.2'
   notes:
+  - '2026-08-06 T5.1 08-verify-build PASS @ 5da17e32 — Phase C→D gate met; checkpoints.phase_c=passed; report docs/sessions/S046-iwxxm-corpus-residuals/reports/verification-report.md; awaiting user Phase C checkpoint before T5.2 09+10'
+  - '2026-08-06 T4.7/T4.8 COMPLETE @ 5da17e32 — VA-EGGX wmoPass; M4 closeout; 07-build COMPLETE; start 08-verify-build T5.1 (Phase C→D)'
   - '2026-08-05 D-S046-853=1 + D-S046-853-push=1 — Ship WMO-only first; make iwxxm-us-compat-smoke; RELEASE_LINE lag policy; T2.7 complete locally; tip 66a41f38 commit+push pending; next T2.8'
   - '2026-08-05 D-S046-05-gate-b=1 — Gate B PASS; S05.M*/L1 as 07; close 05; start 07-build M1 T1.1; gates.b_to_c=passed; checkpoints.phase_b=passed; tip f03ed255'
   - '2026-08-05 D-S046-02-gate-a=2 + D-S046-sot=1 — Gate A PASS; close 02-verify-plan; start 04-tech-plan; gates.a_to_b=passed; commit sha pending (HEAD e9df8f84 pre-Gate-A)'
@@ -37841,6 +37881,52 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 60c508b0
+    short: 5135c56c
+    sha_full: 60c508b08f27f92e15789abf77db3c69b350763b
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[T5.1] docs: 08-verify-build PASS for EV-038 Phase C closeout"
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    stages:
+    - 08-verify-build
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/verification-report.md
+    - workflow-state.yaml
+    files_changed_count: 3
+    timestamp: "2026-08-06T09:35:00-04:00"
+    pushed: false
+    tip_sha: 60c508b0
+    tip_sha_full: 60c508b08f27f92e15789abf77db3c69b350763b
+    note: "S046/EV-038 — T5.1 COMPLETE; 08-verify-build PASS; Phase C checkpoint pending"
+  - sha: 5da17e32
+    short: 5da17e32
+    sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[T4.7/T4.8] feat: promote VA-EGGX to wmoPass; M4 closeout (#856)"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - apps/frontend/src/fixtures/examples/FIXTURE_GAPS.md
+    - apps/frontend/src/fixtures/examples/examplesCatalog.test.ts
+    - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/t4.5-t4.7-va-eggx-wmopass.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/t4.8-m4-closeout.md
+    files_changed_count: 7
+    timestamp: "2026-08-06T09:23:00-04:00"
+    pushed: true
+    tip_sha: 5da17e32
+    tip_sha_full: 5da17e32108c574b3e5ba680673738b73a76f9a8
+    note: "S046/EV-038 — T4.7/T4.8 COMPLETE; VA-EGGX wmoPass; M4 closeout (#856); handoff T5.1 08-verify-build"
   - sha: 66a41f38
     short: 66a41f38
     sha_full: 66a41f381d245acea66963a96a829ef530322a77

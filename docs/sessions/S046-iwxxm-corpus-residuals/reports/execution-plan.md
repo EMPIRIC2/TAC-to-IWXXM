@@ -1,6 +1,6 @@
 # Execution plan — S046 / EV-038 (#846 residuals #849–#861)
 
-> **Status**: **approved** (`D-S046-04-plan`=1) — Gate B PASS; **07-build**  
+> **Status**: **approved** (`D-S046-04-plan`=1) — Gate B PASS; **08 PASS** — Phase C checkpoint  
 > **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
 > **Evolve cycle**: EV-038  
 > **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn)  
@@ -11,11 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase C — build (B→C PASS) |
-| **Active milestone** | M4 — Encode deepen |
+| **Active phase** | Phase C complete — awaiting C→D checkpoint |
 | **Active milestone** | M5 — Verify / deploy closeout |
-| **Active task** | T5.1 — 08-verify-build |
-| **Tasks** | 24 / 28 completed (through T4.8 / M4) |
+| **Active task** | T5.2 — 09-qa + 10-e2e (UJ-050) |
+| **Tasks** | 25 / 28 completed (through T5.1 / 08 PASS) |
 | **Last updated** | 2026-08-06 |
 
 ## Tech Stack Summary
@@ -112,7 +111,7 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T5.1 | Config | 08-verify-build — lint/typecheck/format/suites | 08 | T4.8 | pending |
+| T5.1 | Config | 08-verify-build — lint/typecheck/format/suites | 08 | T4.8 | **completed** |
 | T5.2 | Test | 09-qa + 10-e2e (UJ-050); H4–H5 prep | 09; 10 | T5.1 | pending |
 | T5.3 | Docs | 11-verify-impl AC roll-up; epic #846 update | AC14; TC-EV038-014; 11 | T5.2 | pending |
 | T5.4 | Deploy | 12 + 13 (or waive if final ship docs-only — unlikely after M2+) | 12; 13; S02.M5 | T5.3 | pending |
