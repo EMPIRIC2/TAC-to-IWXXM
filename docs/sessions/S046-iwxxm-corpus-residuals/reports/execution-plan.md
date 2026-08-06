@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build (B→C PASS) |
 | **Active milestone** | M2 — Release-line |
-| **Active task** | T2.6 — tip-diff script (#852) |
-| **Tasks** | 9 / 28 completed (T2.1–T2.5 done) |
+| **Active task** | T2.7 — iwxxm-us gate docs (#853) |
+| **Tasks** | 10 / 28 completed (through T2.6) |
 | **Last updated** | 2026-08-05 |
 
 ## Tech Stack Summary
@@ -81,7 +81,7 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 | T2.3 | Code | FE import JSON for picker options + Latest/Previous labels; drop hardcodes | AC7; UJ-050; TC-EV038-007; #854 | T2.2 | **completed** |
 | T2.4 | Code | OpenAPI / schema enum docs align with export; CI assert | AC4; TC-EV038-004 | T2.2 | **completed** |
 | T2.5 | Test | Green drift CI + FE Vitest for labels | TC-EV038-004/007 | T2.3, T2.4 | **completed** |
-| T2.6 | Code | Sync-PR tip-diff script (XSD/SCH/example stems); link adopt checklist | AC5; TC-EV038-005; #852 | T2.5 | pending |
+| T2.6 | Code | Sync-PR tip-diff script (XSD/SCH/example stems); link adopt checklist | AC5; TC-EV038-005; #852 | T2.5 | **completed** |
 | T2.7 | Docs | iwxxm-us compatibility checklist + optional CI smoke; lag decision | AC6; TC-EV038-006; #853 | T2.6 | pending |
 | T2.8 | Docs | Close #851–#854; local UI preview note | AC14; UJ-050 | T2.7 | pending |
 

@@ -81,36 +81,37 @@ Ordered steps to add WMO line `YYYY-N` as **latest**, demoting current latest �
 
 1. [ ] Read upstream ReleaseNotes / diff vs current pin (informative; cite #804 surfaces).
 2. [ ] Sync `iwxxm` (and matching `iwxxm-modelling` / codelists as needed) via `scripts/vendor/sync_iwxxm.py` — **sync PR only**; never hand-edit under `vendor/schemas/*`.
-3. [ ] **iwxxm-modelling delta watch (G8 / #861):** record tip-vs-pin Modelling/UML/Pattern-ID notes in the sync PR (or linked issue) — informs latest+1; **no** duplicate [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807) org mine.
-4. [ ] Update `vendor/manifest.json` tag + SHA + tree hash.
-5. [ ] Run ADR-027 xsdata codegen (`scripts/codegen/iwxxm_xsd.py`); commit generated status/artifacts.
-6. [ ] Confirm `iwxxm-validate` wheel bundle / MANIFEST includes the new tree.
+3. [ ] **Tip-diff summary (#852):** run `make tip-diff-iwxxm` (or `scripts/vendor/tip_diff_iwxxm.py --from <prev> --to <new>`) and paste XSD/SCH/example-stem deltas into the sync PR — **TC-EV038-005**.
+5. [ ] **iwxxm-modelling delta watch (G8 / #861):** record tip-vs-pin Modelling/UML/Pattern-ID notes in the sync PR (or linked issue) — informs latest+1; **no** duplicate [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807) org mine.
+6. [ ] Update `vendor/manifest.json` tag + SHA + tree hash.
+7. [ ] Run ADR-027 xsdata codegen (`scripts/codegen/iwxxm_xsd.py`); commit generated status/artifacts.
+8. [ ] Confirm `iwxxm-validate` wheel bundle / MANIFEST includes the new tree.
 
 ### B. Runtime enums & remaps
 
-7. [ ] Add `YYYY-N` to `SUPPORTED_VERSIONS` in `apps/backend/src/config/iwxxm_versions.py`; set `DEFAULT_VERSION`.
-8. [ ] Record breaking-change notes + any remap aliases (peer `2025-1`→`2025-2`).
-9. [ ] Demote prior latest → previous; schedule old previous for 6-month warning (policy).
-10. [ ] Smoke `normalize_version` / deprecated → HTTP 400 paths.
+9. [ ] Add `YYYY-N` to `SUPPORTED_VERSIONS` in `apps/backend/src/config/iwxxm_versions.py`; set `DEFAULT_VERSION`.
+10. [ ] Record breaking-change notes + any remap aliases (peer `2025-1`→`2025-2`).
+11. [ ] Demote prior latest → previous; schedule old previous for 6-month warning (policy).
+12. [ ] Smoke `normalize_version` / deprecated → HTTP 400 paths.
 
 ### C. Convert / validate
 
-11. [ ] Convert smoke per product family on new default (METAR…VONA as in catalog).
-12. [ ] XSD + Schematron on official peers for **that line only** (never mix SCH across lines).
-13. [ ] Rebaseline or soft→strict ADR-032 goldens; update `wmoPass` / `wmoReference` intentionally.
-14. [ ] Refresh `wmo_official_tac_inventory` / FIXTURE_GAPS / Examples catalog as peers appear.
+13. [ ] Convert smoke per product family on new default (METAR…VONA as in catalog).
+14. [ ] XSD + Schematron on official peers for **that line only** (never mix SCH across lines).
+15. [ ] Rebaseline or soft→strict ADR-032 goldens; update `wmoPass` / `wmoReference` intentionally.
+16. [ ] Refresh `wmo_official_tac_inventory` / FIXTURE_GAPS / Examples catalog as peers appear.
 
 ### D. UI / worker / API
 
-15. [ ] FE version picker options + prefs migration for dropped lines → new default.
-16. [ ] Worker default `iwxxm_version` if deploy sets it.
-17. [ ] OpenAPI / client docs for `iwxxm_version` enum.
+17. [ ] FE version picker options + prefs migration for dropped lines → new default.
+18. [ ] Worker default `iwxxm_version` if deploy sets it.
+19. [ ] OpenAPI / client docs for `iwxxm_version` enum.
 
 ### E. Docs & release
 
-18. [ ] Update VERSION_SUPPORT_POLICY table + Appendix A package matrix if package numbers change.
-19. [ ] CHANGELOG / deploy notes; link non-technical handoff (#847).
-20. [ ] CI: `validate-fast` + relevant `make test-*-quality` / canaries green on sync PR.
+20. [ ] Update VERSION_SUPPORT_POLICY table + Appendix A package matrix if package numbers change.
+21. [ ] CHANGELOG / deploy notes; link non-technical handoff (#847).
+22. [ ] CI: `validate-fast` + relevant `make test-*-quality` / canaries green on sync PR.
 
 ---
 
@@ -158,7 +159,7 @@ First real use is when a line actually enters the warning window.
 | Gap | Issue |
 |-----|-------|
 | Supported-versions single source (FE/OpenAPI) | [#851](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/851) |
-| Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) |
+| Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) — `make tip-diff-iwxxm` (S046) |
 | iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) |
 | UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) |
 | Deprecation calendar / reminder template | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) — **template landed** S046/EV-038 |

@@ -13,7 +13,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/dissemination/src packages/dissemination/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync export-iwxxm-versions \
+.PHONY: install test test-unit vendor-sync export-iwxxm-versions tip-diff-iwxxm \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
@@ -267,6 +267,10 @@ codegen-iwxxm-xsd:
 # S046 / EV-038 / #851 — Python SoT → FE generated JSON (D-S046-sot)
 export-iwxxm-versions:
 	$(UV) run python scripts/iwxxm/export_iwxxm_versions.py
+
+# S046 / EV-038 / #852 — XSD/SCH/example stem deltas between vendor pins
+tip-diff-iwxxm:
+	$(UV) run python scripts/vendor/tip_diff_iwxxm.py --from 2023-1 --to 2025-2
 
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
