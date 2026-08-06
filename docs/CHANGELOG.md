@@ -2,6 +2,21 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-06 — S046 EV-038 (Epic #846 corpus residuals #849–#861)
+
+### Added
+- **F4 / F7**: IWXXM release-line SoT export → FE Latest/Previous picker (UJ-050 / #854).
+- **F2 / F6 / F32**: VONA vertical-extent encode; VA-EGGX → `wmoPass`; SWXA A7-4/A7-5 samples.
+- CI: codelist URI drift + iwxxm-us compat smoke workflows.
+
+### Docs
+- Release-line adoptability / coverage matrix residuals closed under epic #846.
+
+### Deploy
+- Live: [#890](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/890) @ `619a7ac3`; DOKS
+  `20260806144346-619a7ac`; H1–H5 + UJ-050 PASS.
+- Report: [evolve-summary.md](sessions/S046-iwxxm-corpus-residuals/reports/evolve-summary.md).
+
 ## 2026-08-05 — S040 EV-032 close (IWXXM corpus / F32 VONA)
 
 ### Added

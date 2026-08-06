@@ -25,7 +25,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S046-iwxxm-corpus-residuals](S046-iwxxm-corpus-residuals/session-brief.md) | feature | in_progress | #846 residuals #849–#861; deepen F2/F4/F6/F7/F32; EV-038 Standard | evolve/EV-038-iwxxm-corpus-residuals | 2026-08-05 | — |
+| [S046-iwxxm-corpus-residuals](S046-iwxxm-corpus-residuals/session-brief.md) | feature | completed | #846 residuals #849–#861; deepen F2/F4/F6/F7/F32; EV-038; PR #890 | main @ 619a7ac3 / DOKS 20260806144346-619a7ac | 2026-08-05 | 2026-08-06 |
 | [S045-matrix-disposition-residuals](S045-matrix-disposition-residuals/session-brief.md) | feature | completed | #869/#870/#872 matrix dispositions; deepen F2/F6/F32; EV-037; PR #887 | evolve/EV-037-matrix-disposition-residuals | 2026-08-05 | 2026-08-05 |
 | [S044-local-precommit-long-jobs](S044-local-precommit-long-jobs/session-brief.md) | feature | completed | Local long jobs on pre-commit + slim CI; deepen M5; EV-036; PR #875 | evolve/EV-036-local-precommit-long-jobs | 2026-08-05 | 2026-08-05 |
 | [S043-rule-source-traceability](S043-rule-source-traceability/session-brief.md) | feature | completed | Rule↔source provenance deepen F6/F12/F15/F2; EV-035; deploy waived | evolve/EV-035-rule-source-traceability | 2026-08-05 | 2026-08-05 |

@@ -9,10 +9,11 @@
 **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected — Q2 whole residual set)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
-**Status**: **in_progress** — Phase D **12 APPROVED** (`D-S046-12`=1); opening PR → CI → merge → **13** H4-H5  
+**Status**: **completed** (`D-S046-13`=1) — PR [#890](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/890) MERGED @ `619a7ac3`; DOKS `20260806144346-619a7ac`; H1–H5 + UJ-050 PASS  
+**Completed**: 2026-08-06  
 **Prior**: S045 / EV-037 completed  
-**Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)  
-**Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+**Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) — **all closed**  
+**Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) **CLOSED**
 
 ### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=5,Q3=2`)
 
@@ -41,6 +42,7 @@
 | D-S046-phase-c | decision | Phase C checkpoint? | **1** — push + start T5.2 (09-qa + 10-e2e); `gates.c_to_d` passed (tech + user) |
 | D-S046-11 | decision | 11-verify-impl? | **1** — approve AC1–AC14 + UJ-050; proceed to T5.4 |
 | D-S046-12 | decision | 12-verify-deploy? | **1** — approve checklist; open PR; merge+13 after CI |
+| D-S046-13 | decision | 13-deploy-smoke? | **1** — approve H1–H5 + UJ-050; close EV-038 / S046 |
 
 | Milestone | Issues | Theme | Notes |
 |-----------|--------|-------|-------|
@@ -92,13 +94,19 @@ See [01-requirements-summary.md](../sessions/S046-iwxxm-corpus-residuals/reports
 
 | Stage | Status | Note |
 |-------|--------|------|
-| 00-context | completed | Session-open commit `c56ec359`; D-S046-mplan locked |
-| 16-evolve | in_progress | Phase A done; orchestrating 04+ |
-| 01-requirements | completed | **D-S046-ac** AC=1; tip `e9df8f84` |
-| 02-verify-plan | completed | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1); handoff **04-tech-plan** |
-| 04-tech-plan | completed | **D-S046-04-plan**=1; execution-plan approved @ `f03ed255`; handoff **05** |
-| 05-verify-tech | completed | Gate B PASS (`D-S046-05-gate-b`=1); handoff **07-build** |
-| 07-build | in_progress | M3 T3.2 — #860 translation-failed inventory (deferral + METAR/TAF fixtures) |
+| 00-context | completed | Session-open; D-S046-mplan locked |
+| 16-evolve | **completed** | Closed `D-S046-13`=1 @ 2026-08-06 |
+| 01-requirements | completed | **D-S046-ac** AC=1 |
+| 02-verify-plan | completed | Gate A PASS |
+| 04-tech-plan | completed | **D-S046-04-plan**=1 |
+| 05-verify-tech | completed | Gate B PASS |
+| 07-build | completed | M1–M4 through T4.8 |
+| 08-verify-build | completed | T5.1 PASS |
+| 09-qa | completed | pass_with_advisories |
+| 10-e2e | completed | T0 PASS |
+| 11-verify-impl | completed | **D-S046-11**=1 |
+| 12-verify-deploy | completed | **D-S046-12**=1; #890 |
+| 13-deploy-smoke | completed | **D-S046-13**=1; DOKS `20260806144346-619a7ac`; H1–H5 + UJ-050 |
 
 ### #853 lag policy (07 — locked **D-S046-853**=1)
 

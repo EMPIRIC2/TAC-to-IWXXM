@@ -1,10 +1,10 @@
 # Deploy Checklist — S046 / EV-038 (Stage 12 / T5.4)
 
 > Generated: 2026-08-06  
-> Status: **APPROVED** (`D-S046-12`=1) — open PR → merge → 13  
+> Status: **APPROVED** (`D-S046-12`=1) — **merged #890**; 13 smoke **technical PASS**  
 > Prior: 11 **APPROVED** (`D-S046-11`=1)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · DOKS CD on `main`  
-> Branch: `evolve/EV-038-iwxxm-corpus-residuals` @ `2195978e` (+ T5.3 commit)  
+> Tip: `619a7ac3` · DOKS `20260806144346-619a7ac` · CI [31112016561](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31112016561)  
 > Lock: **S02.M5** — API + static redeploy; H1–H3; **H4–H5 required** (UJ-050 / #854)  
 > Corpus: `[Corpus: tech-spec]` · `[Corpus: tests]` · connectivity-gates §12–13
 
@@ -32,19 +32,19 @@
 - [x] H0c CORS — 6/6 (T5.1 / T5.2)
 - [x] Connectivity scripts — `scripts/deploy/verify_connectivity.sh`
 - [x] Local `make ci` green on branch push
-- [ ] PR to `main` opened
-- [ ] Merge approved + CD SUCCESS
-- [ ] Post-deploy H1–H3 + **H4–H5**
+- [x] PR to `main` opened (#890)
+- [x] Merge approved + CD SUCCESS (`619a7ac3` / Deploy job)
+- [x] Post-deploy H1–H3 + **H4–H5** (see `deploy-smoke.md`)
 
 ## Failure Mitigations
 
 | # | Risk | Mitigation | Status |
 |---|------|------------|--------|
-| 1 | Image/CD failure | `ci-cd.yml` on PR + Deploy job | pending PR |
+| 1 | Image/CD failure | `ci-cd.yml` on PR + Deploy job | **PASS** Deploy SUCCESS |
 | 2 | VA-EGGX / VONA regression | `test-va-sigmet-quality` + `test-vona-quality` @ 08 | **ready** |
-| 3 | FE missing Latest/Previous | Vitest + Playwright UJ-050; **H4–H5 required** | **ready** |
-| 4 | CORS after FE rebuild | `verify_connectivity.sh` | **ready** |
-| 5 | Deploy drift (main ≠ branch) | Merge before smoke | pending |
+| 3 | FE missing Latest/Previous | Vitest + Playwright UJ-050; **H4–H5 required** | **PASS** live App chunk |
+| 4 | CORS after FE rebuild | `verify_connectivity.sh` | **PASS** H4 2/2 |
+| 5 | Deploy drift (main ≠ branch) | Merge before smoke | **cleared** @ `619a7ac3` |
 
 ## Rollback
 
