@@ -37,6 +37,20 @@
 
 **Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06 unless later need)
 
+### Acceptance (locked 2026-08-06; chat `1` → **D-S047-ac**)
+
+| AC | Criterion |
+|----|-----------|
+| AC1 | Compose mock-byoc healthy PG/MySQL/SQL Server; SQLite disposable file |
+| AC2 | Live Playwright preflight→send for all four dialects + write assertion |
+| AC3 | Mocked H6′ UJ-027 suite stays green and separate |
+| AC4 | Compose/e2e teardown — no orphans; SQLite temps removed |
+| AC5 | Testcontainers fixtures always tear down |
+| AC6 | Teardown audit gaps fixed or waived in session report |
+| AC7 | TC-F16-LIVE-* mapped; make/CI documents live suite (opt-in OK) |
+
+**01-requirements**: standing deltas written 2026-08-06 — feature-list §F16, user-journeys UJ-027, test-plan TC-F16-LIVE-*, tech-spec pointer, requirements-decisions EV-039 rows.
+
 ---
 
 ## Cycle EV-038 — Epic #846 corpus residuals #849–#861 (S046)

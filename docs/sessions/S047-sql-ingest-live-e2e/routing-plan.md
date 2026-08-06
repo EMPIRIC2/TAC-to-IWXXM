@@ -12,7 +12,7 @@
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | S047 open; D-S047-open |
 | 16-evolve | yes | orchestrator | **in_progress** | EV-039 Phase 0–1 |
-| 01-requirements | yes | delta | pending | F16 deepen ACs + teardown ACs |
+| 01-requirements | yes | delta | **completed** | F16 deepen ACs + teardown; D-S047-ac |
 | 02-verify-plan | yes | delta | pending | Gate A |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules planned |
 | 04-tech-plan | yes | delta | pending | Compose profile + e2e harness plan |

@@ -80,7 +80,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
 | UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
 | UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
-| UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F16-001..005 |
+| UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (+ live local suite EV-039) | H6′ / live local | TC-F16-001..005; TC-F16-LIVE-001..004 |
 | UJ-028 | F17 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F17-001..002 |
 | UJ-029 | F18 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (UI smoke; live BYOC cycle-close) | live BYOC | TC-F18-001..002 |
 | UJ-030 | F19 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F19-001..003 |
@@ -2067,6 +2067,37 @@ New **TC-EV038-001..014**. Deepens F2 / F4 / F6 / F7 / F32. Milestones M1→M2�
      `toHaveScreenshot` for in-flight + failed states (E18-13/14/16)
 - **Source**: F16 deepen; S024 / EV-018; #785; E18-4..E18-6; E18-9..E18-16
 
+### TC-F16-LIVE-001: Live local Postgres upload (UJ-027 / EV-039)
+
+- **Level**: T2 / T3 (local Compose — not production)
+- **Objective**: Playwright live (no route mocks) preflight→send to Compose `byoc-postgres`
+- **Pass criteria**: UI success; row/writer-contract write asserted; suite tears down containers
+- **Harness**: `make compose-mock-byoc-up` / `compose-mock-byoc-down`; allowlist includes localhost
+- **Source**: F16 deepen; S047 / EV-039; AC2/AC4; [Corpus: product §F16]
+
+### TC-F16-LIVE-002: Live local MySQL upload (UJ-027 / EV-039)
+
+- **Level**: T2 / T3 (local Compose)
+- **Objective**: Same as LIVE-001 against Compose `byoc-mysql`
+- **Pass criteria**: UI success + write assertion + teardown
+- **Source**: F16 deepen; S047 / EV-039; AC2/AC4
+
+### TC-F16-LIVE-003: Live local SQL Server upload (UJ-027 / EV-039)
+
+- **Level**: T2 / T3 (local Compose; may be opt-in in CI if image is heavy)
+- **Objective**: Same as LIVE-001 against Compose `byoc-sqlserver`
+- **Pass criteria**: UI success + write assertion + teardown; documented skip/opt-in if CI-waived
+- **Source**: F16 deepen; S047 / EV-039; AC2/AC4/AC7
+
+### TC-F16-LIVE-004: Live local SQLite upload + teardown audit (UJ-027 / EV-039)
+
+- **Level**: T2 / T3 (local file path)
+- **Objective**: Live Playwright against disposable SQLite file URI; verify temp file removed
+  after suite; integration Testcontainers fixtures tear down on pass/fail/skip (AC5/AC6)
+- **Pass criteria**: Write asserted; no leftover `.db` from the live suite; teardown audit
+  gaps fixed or waived in session report
+- **Source**: F16 deepen; S047 / EV-039; AC2/AC4/AC5/AC6
+
 ### TC-F17-001: Staging wis2box publish (UJ-028)
 
 - **Level**: T2 / staging
@@ -2111,6 +2142,8 @@ New **TC-EV038-001..014**. Deepens F2 / F4 / F6 / F7 / F32. Milestones M1→M2�
 ### F16–F19 verify/deploy gate
 
 - [ ] TC-F16-001..005 green (multi-DB + SSRF + drawer + multi-select)
+- [ ] TC-F16-LIVE-001..004 green locally (or documented CI opt-in + local evidence) — S047 / EV-039
+- [ ] Teardown: Compose down / Testcontainers stop / SQLite temp cleanup — no orphans (AC4–AC6)
 - [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
 - [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)
@@ -2305,6 +2338,8 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
   (D-S008-05-batch2)
 - S016 / EV-012 (2026-07-20): TC-F7-007 / UJ-025 Manual TAC Input modes (#730 / ADR-024);
   H6′ + staging gate; F7 stays Planned
+- S047 / EV-039 (2026-08-06): TC-F16-LIVE-001..004 live local Compose multi-DB + teardown
+  gates (F16 deepen; UJ-027)
 
 ### TC-LIVE-005: Stale Test Migration
 

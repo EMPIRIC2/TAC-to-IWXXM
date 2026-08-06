@@ -25,8 +25,8 @@ Playwright, with mandatory teardown across integration, e2e, and local harnesses
 
 ## Next child stage
 
-**01-requirements** (delta) — draft F16 deepen ACs for live multi-DB upload + teardown
-hygiene; cite [Corpus: product], [Corpus: tests], [Corpus: journeys], [Corpus: tech-spec].
+**02-verify-plan** (delta) — Gate A consistency on F16 / UJ-027 / TC-F16-LIVE / tech-spec
+deltas. [Corpus: product §F16] [Corpus: tests] [Corpus: journeys]
 
 ## Risks / open decisions
 

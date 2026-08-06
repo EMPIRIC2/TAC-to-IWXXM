@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S046 / EV-038 — #846 residuals #849–#861; prior S045 / EV-037)
+> **Last updated**: 2026-08-06 (S047 / EV-039 — F16 live local SQL e2e + teardown; prior S046 / EV-038)
 
 ## Summary
 
@@ -23,7 +23,7 @@
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S043 / EV-035 ISSUE_CATALOG↔source |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785) |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL Playwright + teardown |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
@@ -574,7 +574,10 @@
 
 ### F16: Dissemination drawer + multi-DB upload (BYOC URI) — S019 / EV-014
 
-- **Status**: **Done** (EV-014 closed 2026-07-21; #771/#772). **Deepen** S024 / EV-018 / [#785](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/785) — multi-file export selection (in progress).
+- **Status**: **Done** (EV-014 closed 2026-07-21; #771/#772). **Deepen** S024 / EV-018 /
+  [#785](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/785) — multi-file export selection.
+  **Deepen** S047 / EV-039 — live local multi-DB SQL ingest Playwright + teardown hygiene
+  (in progress).
 - **What it does**: Unified **dissemination drawer** for Convert&Send / Upload: any **public**
   operator (F21 — no login) pastes a **one-shot** destination URI (memory-only on API; never
   persisted; no saved profiles). Backend-mediated preflight + send with structured schema diff;
@@ -606,7 +609,19 @@
      green check on success, red mark on fail (E18-10/13). When `prefers-reduced-motion`,
      hide graphic and show text-only status (E18-14).
   7. F17–F19 **reuse the same selection contract** in the drawer (E18-2).
-- **Acceptance** (base EV-014 + EV-018):
+- **EV-039 deepen (S047) — live local SQL ingest + teardown**:
+  1. Reuse **`docker-compose.mock-byoc.yml`** profile `mock-byoc` for disposable Postgres,
+     MySQL, and SQL Server; SQLite uses a disposable file path (not a long-lived service).
+  2. Playwright **live** (no HTTP route mocks) exercises drawer preflight→send against those
+     local URIs for **all four** dialects and asserts a successful write (row / writer-contract
+     equivalent).
+  3. Mocked H6′ UJ-027 suite remains **separate** and must stay green.
+  4. **Teardown** is mandatory across integration (Testcontainers), e2e/Playwright, and local
+     Compose make targets — no orphan containers, volumes (where safe), temp SQLite files, or
+     lingering processes after pass/fail/skip.
+  5. Document `make` / CI entrypoints; live suite may be opt-in in CI if SQL Server is heavy,
+     but must be runnable locally for EV-039 close.
+- **Acceptance** (base EV-014 + EV-018 + EV-039):
   1. Preflight returns actionable schema/permission/auth diffs; Send disabled until green
   2. One-shot URI never appears in logs, session JSON, or IndexedDB rows
   3. Allowlist enforced; private-IP / metadata targets rejected
@@ -619,11 +634,24 @@
      does not silently drop the rest without reporting
   10. BYOC credentials remain memory-only; no new destination-secret persistence
   11. Playwright visual snapshot of progress row (in-flight + failed) passes (E18-16)
+  12. **(EV-039 AC1)** Compose mock-byoc profile brings healthy Postgres, MySQL, SQL Server;
+      SQLite disposable file path documented
+  13. **(EV-039 AC2)** Live Playwright preflight→send succeeds for each of four dialects against
+      local URIs with write assertion
+  14. **(EV-039 AC3)** Existing mocked H6′ UJ-027 suite stays green and separate from live suite
+  15. **(EV-039 AC4)** After live e2e / mock-byoc targets: Compose down; no orphan
+      containers/processes; SQLite temp files removed
+  16. **(EV-039 AC5)** Integration/Testcontainers writer-contract fixtures always tear down on
+      pass/fail/skip
+  17. **(EV-039 AC6)** Teardown audit gaps fixed or explicitly waived in session report
+  18. **(EV-039 AC7)** Test-plan maps UJ-027 live path ↔ TC-F16-LIVE-*; `make`/CI documents how
+      to run the live suite
 - **Out of scope**: Saved/encrypted connection profiles; pasting Supabase **auth** keys in-app;
   F8 auto-push; Finished work-history as export sources (v1); batched multi-payload API (v1);
-  browser zip archive download unrelated to sink send
+  browser zip archive download unrelated to sink send; new DB vendors; live WIS2/EDIS/F19 BYOC;
+  production SQL containers
 - **Source**: #729; S019 / EV-014; ADR-021 amend; ADR-029 (SSRF); ADR-030 (package/API);
-  **#785; S024 / EV-018** (multi-select deepen)
+  **#785; S024 / EV-018** (multi-select deepen); **S047 / EV-039** (live local SQL + teardown)
 
 ### F17: WIS2 dissemination pathway — S019 / EV-014
 

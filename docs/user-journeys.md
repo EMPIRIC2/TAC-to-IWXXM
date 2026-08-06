@@ -42,7 +42,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
-| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ |
+| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose) |
 | UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′ |
 | UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3** (live BYOC) |
 | UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3** |
@@ -1508,7 +1508,23 @@ database via one-shot URI.
 
 **Errors**: Auth/SSL/allowlist/private-IP/schema mismatch — actionable drawer messages; Send
 blocked for non-green files; over-cap (>20) shows clear error.
-**Tier**: T2 / T3 / H6′. **Tests**: TC-F16-001..005.
+**Tier**: T2 / T3 / H6′. **Tests**: TC-F16-001..005 (mocked H6′); **TC-F16-LIVE-001..004**
+(live local Compose — S047 / EV-039).
+
+**Live local path (S047 / EV-039 — deepen F16)**:
+1. Start disposable engines: `make compose-mock-byoc-up` (Postgres, MySQL, SQL Server via
+   `docker-compose.mock-byoc.yml` profile `mock-byoc`). SQLite uses a disposable file URI.
+2. Configure API allowlist for local compose hosts (`DISSEMINATION_EGRESS_ALLOWLIST` includes
+   `127.0.0.1` / `localhost` and documented compose hostnames — [Corpus: adr/ADR-029]).
+3. Run Playwright **without** mocking `/api/v1/dissemination/preflight` or `/send`: for each
+   sink type (postgres, mysql, sqlserver, sqlite), paste the local URI, preflight (DDL if
+   needed), Disseminate, assert UI success **and** a DB write (or writer-contract equivalent).
+4. Tear down: `make compose-mock-byoc-down` (or suite global teardown) removes containers;
+   SQLite temp files deleted; no orphan processes. Integration Testcontainers fixtures must
+   likewise always tear down on pass/fail/skip.
+
+Mocked H6′ specs (`uj027-030-dissemination-drawer.e2e.spec.ts`) remain the default CI smoke;
+live suite is a **separate** target (may be opt-in in CI if SQL Server is heavy).
 
 ### UJ-028: Dissemination drawer — WIS2 publish (F17 / #2)
 
@@ -1589,3 +1605,5 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
   (F27/#737); deepen UJ-032 / TC-F7-008
 - S038 / EV-031 (2026-08-03): UJ-045..048 hybrid Auth sessions + DOKS; UJ-003 restored via
   UJ-046; deepen UJ-001/004/033; UJ-OPS-001 → DOKS primary (F30/F31; #842/#830/#712)
+- S047 / EV-039 (2026-08-06): UJ-027 live local Compose multi-DB path + TC-F16-LIVE-*;
+  teardown hygiene across integration / e2e / local (F16 deepen)
