@@ -3,6 +3,42 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-039 — SQL ingest live e2e + teardown (S047)
+
+**Session**: S047-sql-ingest-live-e2e  
+**Features**: deepen **F16** (no new Fn expected)  
+**Started**: 2026-08-06  
+**Branch**: `evolve/EV-039-sql-ingest-live-e2e`  
+**Status**: in_progress — Phase 0 locked  
+**Prior**: S046 / EV-038 completed  
+**Corpus**: [Corpus: product §F16], [Corpus: tests], [Corpus: journeys §UJ-027], [Corpus: tech-spec], [Corpus: adr/ADR-029], [Corpus: adr/ADR-030]
+
+### Scope (Phase 0 — locked 2026-08-06; AskQuestion unavailable — chat `1,1,1,1,2` → **D-S047-open**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Session? | Open **S047** → **EV-039** (feature / deepen F16) |
+| Q2 | decision | DB coverage? | **All four**: Postgres + MySQL + SQL Server + SQLite |
+| Q3 | decision | Teardown? | **Integration + e2e + local** — audit and fix gaps |
+| Q4 | decision | Harness? | **Docker Compose profile** + Playwright against local stack |
+| Q5 | decision | UI preview? | **No** — docs/repo only |
+
+### In scope
+
+- Local live SQL engines for F16 BYOC upload verification via Playwright (non-mocked preflight/send)
+- Compose-managed disposable DBs + SQLite file path; hard teardown (containers, volumes, temp files, processes)
+- Test-plan / journey / tech-spec deltas for live local SQL suite
+
+### Out of scope
+
+- New DB vendors; live WIS2/EDIS/F19; production SQL containers; new product Fn; UI preview this cycle
+
+### Preset
+
+**Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06 unless later need)
+
+---
+
 ## Cycle EV-038 — Epic #846 corpus residuals #849–#861 (S046)
 
 **Session**: S046-iwxxm-corpus-residuals  

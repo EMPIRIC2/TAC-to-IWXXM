@@ -1,11 +1,98 @@
-overall_status: idle
+overall_status: in_progress
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 46
-evolve_cycle_counter: 38
-active_session: null
+session_counter: 47
+evolve_cycle_counter: 39
+active_session:
+  id: S047-sql-ingest-live-e2e
+  type: feature
+  intent: "Deepen F16 — local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload; teardown for integration+e2e+local. No new Fn."
+  status: in_progress
+  started_at: "2026-08-06"
+  started: "2026-08-06"
+  branch: evolve/EV-039-sql-ingest-live-e2e
+  branch_base: main@0d8ce885
+  artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-039
+  current_stage: 16-evolve
+  current_stage_note: "OPEN — 00-context completed; 16-evolve in_progress; handoff toward 01-requirements"
+  prior_session: S046-iwxxm-corpus-residuals
+  prior_evolve_cycle_id: EV-038
+  feature_ids: []
+  deepen_feature_ids:
+  - F16
+  feature_note: "Deepen F16 — no new Fn; UI preview declined"
+  ui_preview: declined
+  context_briefs:
+  - docs/context/sql-ingest-live-e2e.md
+  decisions:
+    D-S047-open: "Q1=1 Q2=1 Q3=1 Q4=1 Q5=2"
+    D-S047-open_note: "Open S047→EV-039; deepen F16 SQL ingest live e2e + teardown; Standard routing; UI preview declined (Q5=2)"
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: "2026-08-06"
+    completed: "2026-08-06"
+    note: "COMPLETE — S047 open; D-S047-open locked; handoff 16-evolve"
+  - stage: 16-evolve
+    mode: orchestrator
+    required: true
+    status: in_progress
+    started: "2026-08-06"
+    completed: null
+    note: "in_progress — Phase 0 / evolve plan card done; next 01-requirements"
+  - stage: 01-requirements
+    mode: delta
+    required: true
+    status: pending
+  - stage: 02-verify-plan
+    mode: delta
+    required: true
+    status: pending
+  - stage: 04-tech-plan
+    mode: delta
+    required: true
+    status: pending
+  - stage: 05-verify-tech
+    mode: delta
+    required: true
+    status: pending
+  - stage: 07-build
+    mode: full
+    required: true
+    status: pending
+  - stage: 08-verify-build
+    mode: full
+    required: true
+    status: pending
+  - stage: 09-qa
+    mode: full
+    required: true
+    status: pending
+  - stage: 10-e2e
+    mode: full
+    required: true
+    status: pending
+  - stage: 11-verify-impl
+    mode: full
+    required: true
+    status: pending
+  - stage: 12-verify-deploy
+    mode: full
+    required: true
+    status: pending
+  - stage: 13-deploy-smoke
+    mode: full
+    required: true
+    status: pending
+  route_status: in_progress
+  preset: Standard
+  preset_note: "Standard — 00→16→01→02→04→05→07→08→09→10→11→12→13; skip 03/06"
 sessions:
 - id: S046-iwxxm-corpus-residuals
   type: feature
@@ -5567,28 +5654,33 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: iwxxm-corpus-residuals
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
-    started: '2026-08-05'
-    started_at: '2026-08-05'
-    completed: '2026-08-05'
-    completed_at: '2026-08-05'
-    note: 'S046/EV-038 COMPLETE — 00-context done; D-S046-mplan M1→M2→M3→M4; handoff 01-requirements'
-    prior_note: 'S045/EV-037 COMPLETE — PR #887 MERGED @ b7302fe4; matrix dispositions #869/#870/#872 closed; deploy waived; active_session=null before S046 open'
-    prior_session_id: S045-matrix-disposition-residuals
-    prior_evolve_cycle_id: EV-037
-    prior_scoped_slug: matrix-disposition-residuals
+    scoped_slug: sql-ingest-live-e2e
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    started: '2026-08-06'
+    started_at: '2026-08-06'
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    note: 'S047/EV-039 COMPLETE — 00-context done; D-S047-open locked; handoff 16-evolve → 01-requirements'
+    prior_note: 'S046/EV-038 COMPLETE — 00-context done; D-S046-mplan M1→M2→M3→M4; handoff 01-requirements; EV-038 closed D-S046-13=1 #890 MERGED'
+    prior_session_id: S046-iwxxm-corpus-residuals
+    prior_evolve_cycle_id: EV-038
+    prior_scoped_slug: iwxxm-corpus-residuals
     prior_completed: '2026-08-05'
     prior_started: '2026-08-05'
-    prior_tip_sha: 2d8202f3
-    prior_tip_sha_full: 2d8202f34129c8d3d25fb60133bb7d3b54dad0ed
-    prior_prior_note: 'S040/EV-032 COMPLETE — brief+routing+context; branch cut from main @ 2ed85da1; stash S039-EV031-WIP; handoff 01-requirements; #846/#835/#741/#808 (stages mirror was stale through S041–S043; logical prior_session S043/EV-035 completed)'
-    prior_prior_session_id: S043-rule-source-traceability
-    prior_prior_evolve_cycle_id: EV-035
+    prior_tip_sha: 619a7ac3
+    prior_tip_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
+    prior_prior_note: 'S045/EV-037 COMPLETE — PR #887 MERGED @ b7302fe4; matrix dispositions #869/#870/#872 closed; deploy waived; active_session=null before S046 open'
+    prior_prior_session_id: S045-matrix-disposition-residuals
+    prior_prior_evolve_cycle_id: EV-037
+    prior_prior_scoped_slug: matrix-disposition-residuals
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
+    tip_sha: 0d8ce885
+    tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
     artifacts:
+    - docs/sessions/S047-sql-ingest-live-e2e/
+    - docs/context/sql-ingest-live-e2e.md
     - docs/sessions/S046-iwxxm-corpus-residuals/
     - docs/sessions/S045-matrix-disposition-residuals/
     - docs/sessions/S044-local-precommit-long-jobs/
@@ -12918,6 +13010,36 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S047-open
+  date: '2026-08-06'
+  timestamp: '2026-08-06'
+  resolved_at: '2026-08-06'
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: Open S047-sql-ingest-live-e2e → EV-039 (F16 SQL ingest live e2e + teardown)
+  summary: 'Q1=1 Q2=1 Q3=1 Q4=1 Q5=2 — open S047; deepen F16; Standard; UI preview declined'
+  decision: |
+    D-S047-open=Q1=1 Q2=1 Q3=1 Q4=1 Q5=2 — Open feature session S047-sql-ingest-live-e2e with
+    orchestrator 16-evolve / evolve_cycle_id EV-039. session_counter 47;
+    evolve_cycle_counter 39. prior_session S046-iwxxm-corpus-residuals (EV-038 completed).
+    Scope: deepen F16 — local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload;
+    teardown for integration+e2e+local. No new Fn. Standard routing (skip 03/06).
+    UI preview declined (Q5=2). Branch evolve/EV-039-sql-ingest-live-e2e ACTIVE @ 0d8ce885.
+    No git commit by workflow-state-manager.
+  user_option: 'Q1=1 Q2=1 Q3=1 Q4=1 Q5=2'
+  branch: evolve/EV-039-sql-ingest-live-e2e
+  related_decisions: []
+  prior_session: S046-iwxxm-corpus-residuals
+  prior_evolve_cycle_id: EV-038
+  deepen_feature_ids:
+  - F16
+  feature_ids: []
+  note: 'active_session set; EV-039 created; stages.00-context mirror updated; branch ACTIVE'
 - id: D-S046-12
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -34951,6 +35073,107 @@ evolve_cycles:
   pr_number: 845
   pr_status: open
   pr_head: evolve/EV-031-platform-independence-842
+- id: EV-039
+  session_id: S047-sql-ingest-live-e2e
+  cycle_type: general
+  feature_ids: []
+  deepen_feature_ids:
+  - F16
+  feature_note: "Deepen F16 — no new Fn; UI preview declined"
+  title: "SQL ingest live e2e + teardown"
+  status: in_progress
+  started: "2026-08-06"
+  started_at: "2026-08-06"
+  completed: null
+  completed_at: null
+  scope_summary: |
+    Deepen F16: local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload;
+    teardown for integration+e2e+local. No new Fn. UI preview declined.
+  routing_plan:
+    required_stages:
+      - 00-context
+      - 16-evolve
+      - 01-requirements
+      - 02-verify-plan
+      - 04-tech-plan
+      - 05-verify-tech
+      - 07-build
+      - 08-verify-build
+      - 09-qa
+      - 10-e2e
+      - 11-verify-impl
+      - 12-verify-deploy
+      - 13-deploy-smoke
+    skipped_stages:
+      - 03-plan-tooling
+      - 06-tech-tooling
+  current_stage: 01-requirements
+  current_stage_status: pending
+  current_stage_note: "OPEN — 00-context completed; 16-evolve in_progress; next 01-requirements"
+  ui_preview: declined
+  branch: evolve/EV-039-sql-ingest-live-e2e
+  tip_sha: 0d8ce885
+  tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+  tip_sha_note: "branch cut from main @ 0d8ce885 (S046 closeout tip)"
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  decision_refs:
+  - D-S047-open
+  stages:
+    00-context:
+      status: completed
+      started: "2026-08-06"
+      completed: "2026-08-06"
+      note: "COMPLETE — S047 open; D-S047-open locked"
+    16-evolve:
+      status: in_progress
+      started: "2026-08-06"
+      completed: null
+      note: "in_progress — evolve plan card complete; handoff 01-requirements"
+    01-requirements:
+      status: pending
+    02-verify-plan:
+      status: pending
+    04-tech-plan:
+      status: pending
+    05-verify-tech:
+      status: pending
+    07-build:
+      status: pending
+    08-verify-build:
+      status: pending
+    09-qa:
+      status: pending
+    10-e2e:
+      status: pending
+    11-verify-impl:
+      status: pending
+    12-verify-deploy:
+      status: pending
+    13-deploy-smoke:
+      status: pending
+  artifacts:
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  - path: docs/sessions/S047-sql-ingest-live-e2e/session-brief.md
+    status: completed
+  - path: docs/sessions/S047-sql-ingest-live-e2e/routing-plan.md
+    status: completed
+  - path: docs/sessions/S047-sql-ingest-live-e2e/evolve-plan-card.md
+    status: completed
+  - path: docs/context/sql-ingest-live-e2e.md
+    status: completed
+  notes:
+  - "2026-08-06 S047/EV-039 OPEN — open_session; D-S047-open Q1=1 Q2=1 Q3=1 Q4=1 Q5=2; deepen F16 SQL ingest live e2e + teardown; session_counter 47; evolve_cycle_counter 39; branch evolve/EV-039-sql-ingest-live-e2e ACTIVE @ 0d8ce885; 00-context completed; 16-evolve in_progress; next 01-requirements; UI preview declined"
 - id: EV-038
   session_id: S046-iwxxm-corpus-residuals
   cycle_type: general
@@ -36714,29 +36937,31 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-038-iwxxm-corpus-residuals
-  ahead_of_origin: 7
+  current_branch: evolve/EV-039-sql-ingest-live-e2e
+  ahead_of_origin: 0
   pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  tip_sha: 66a41f38
-  tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
-  tip_note: 'S046/EV-038 — M2 T2.1–T2.6 COMPLETE @ 66a41f38; T2.7 iwxxm-us gate next; branch unpushed (ahead 7)'
+  dirty_note: "session artifacts + evolve-decisions pending commit by parent (not workflow-state-manager)"
+  tip_sha: 0d8ce885
+  tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+  tip_note: 'S047/EV-039 OPEN — branch cut from main @ 0d8ce885 (S046 closeout); tip equals main'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
     prior_branch: evolve/EV-031-platform-independence-842
     session_id: S040-iwxxm-corpus-quality
     date: '2026-08-04'
-  main_merge_sha: b7302fe4
-  main_merge_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
-  main_tip_sha: b7302fe4
-  main_tip_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
-  recommended_branch: evolve/EV-038-iwxxm-corpus-residuals
-  note: 'S046/EV-038 — M2 T2.1–T2.6 COMPLETE @ 66a41f38; T2.7 iwxxm-us gate next; branch unpushed (ahead 7); dirty .cursor/rules/core/tdd.mdc only'
+  main_merge_sha: 0d8ce885
+  main_merge_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+  main_tip_sha: 0d8ce885
+  main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+  recommended_branch: evolve/EV-039-sql-ingest-live-e2e
+  note: 'S047/EV-039 OPEN — current_branch evolve/EV-039-sql-ingest-live-e2e @ 0d8ce885 (=main); session docs dirty pending parent commit; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S047/EV-039 OPEN — open_session; D-S047-open Q1=1 Q2=1 Q3=1 Q4=1 Q5=2; session_counter 47; evolve_cycle_counter 39; branch evolve/EV-039-sql-ingest-live-e2e ACTIVE @ 0d8ce885 (base main); 00-context completed; 16-evolve in_progress; next 01-requirements; deepen F16; UI preview declined; no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit 66a41f38 (66a41f381d245acea66963a96a829ef530322a77) [T2.6] feat: IWXXM vendor tip-diff for sync PRs (#852); T2.1–T2.6 COMPLETE; active_task T2.7 pending; pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit 2511869d (2511869d23b9ef26c2ab1ac0b7facf55194d4710) [T2.3][T2.4][T2.5] feat: FE SoT picker labels + api-contract enum (#851/#854); pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit 205fa00e (205fa00ef3bed4895c43c35fbf1931d39a950b8d) [T2.1][T2.2] feat: export iwxxm versions JSON + SoT drift CI (#851); pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
@@ -37189,18 +37414,40 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
-  - name: evolve/EV-038-iwxxm-corpus-residuals
+  - name: evolve/EV-039-sql-ingest-live-e2e
     status: active
+    base: main
+    base_sha: 0d8ce885
+    base_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+    created: "2026-08-06"
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    tip_sha: 0d8ce885
+    tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+    exists: true
+    pushed: false
+    note: "S047/EV-039 OPEN — cut from main @ 0d8ce885; deepen F16 SQL ingest live e2e + teardown"
+  - name: evolve/EV-038-iwxxm-corpus-residuals
+    status: merged
     base: main
     base_sha: b7302fe4
     created: "2026-08-05"
     session_id: S046-iwxxm-corpus-residuals
     evolve_cycle_id: EV-038
-    tip_sha: f03ed255
-    tip_sha_full: f03ed255f9e855888f3a9cf6c8a55cb34fd73951
-    exists: true
-    pushed: false
-    note: "S046/EV-038 — Gate A PASS @ f03ed255; 02 complete; 04-tech-plan in_progress; draft execution plan M1–M4"
+    tip_sha: 619a7ac3
+    tip_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
+    exists: false
+    pushed: true
+    pr_number: 890
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/890
+    pr_status: merged
+    pr_title: "[EV-038] Epic #846 corpus residuals #849–#861"
+    pr_head: evolve/EV-038-iwxxm-corpus-residuals
+    merge_commit_sha: 619a7ac3
+    merge_commit_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
+    merged_at: "2026-08-06"
+    merged_into: main
+    note: "MERGED via PR #890 @ 619a7ac3 — EV-038/S046 closed (D-S046-13=1); branch deleted locally; superseded by EV-039"
   - name: evolve/EV-037-matrix-disposition-residuals
     status: merged
     base: main
