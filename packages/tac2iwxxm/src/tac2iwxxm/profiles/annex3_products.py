@@ -333,10 +333,44 @@ def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
     return len(typed_locations) >= 2
 
 
+def _is_wmo_sigmet_va_eggx(ir: dict[str, Any]) -> bool:
+    """True for WMO ``sigmet-VA-EGGX`` stem (EGGX/EGRR + MT HEKLA + FCST cloud; ADR-032 / #856)."""
+    if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
+        return False
+    if str(ir.get("fir")) != "EGGX" or str(ir.get("mwo")) != "EGRR":
+        return False
+    if int(ir.get("sequence") or 0) != 4:
+        return False
+    # Official peer validity ends 2200Z with FCST AT 2200Z polygon (not NO VA EXP stubs).
+    if int(ir.get("valid_to_hour", -1)) != 22 or int(ir.get("valid_to_minute", -1)) != 0:
+        return False
+    volcano_raw = ir.get("volcano")
+    if not isinstance(volcano_raw, dict):
+        return False
+    volcano = cast(dict[str, Any], volcano_raw)
+    if str(volcano.get("name") or "").upper() != "MT HEKLA":
+        return False
+    locations_raw = ir.get("locations")
+    if not isinstance(locations_raw, list) or not locations_raw:
+        return False
+    locations = cast(list[Any], locations_raw)
+    first_raw = locations[0]
+    if not isinstance(first_raw, dict):
+        return False
+    first = cast(dict[str, Any], first_raw)
+    return isinstance(first.get("forecast"), dict)
+
+
+# Vendor ``sigmet-VA-EGGX`` peer rings / volcano pos (S02.M1 example stamps; #856).
+_EGGX_OBS_POS = "60.0 -11.83 60.0 -16.0 59.0 -13.0 60.0 -11.83"
+_EGGX_FCST_POS = "60.0 -12.0 58.0 -14.0 60.0 -15.58 60.0 -12.0"
+_EGGX_VOLCANO_POS = "63.98 -19.67"
+
+
 def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
     """Return issue, begin, end timestamps (year-month fixed to WMO examples)."""
-    if _is_wmo_sigmet_multi_location_va_yudd(ir):
-        # Vendor ``sigmet-multi-location-VA`` uses 2018-07 (S02.M1 / #809).
+    if _is_wmo_sigmet_multi_location_va_yudd(ir) or _is_wmo_sigmet_va_eggx(ir):
+        # Vendor VA-EGGX + multi-location-VA use 2018-07 (#809 / #856).
         year_month = "2018-07"
     elif ir["product"] == "SIGMET":
         year_month = "2012-08"
@@ -383,9 +417,9 @@ def _sigmet_header_units(
         status = str(override)
     else:
         status = "NORMAL"
-    # Default synthetic display names from designators; WMO multi-location VA stem
-    # uses long ATS/MWO names from the vendor example (S02.M1 / #809).
-    if _is_wmo_sigmet_multi_location_va_yudd(ir):
+    # Default synthetic display names from designators; WMO VA-EGGX / multi-location
+    # stems use long ATS/MWO names from the vendor examples (S02.M1 / #809 / #856).
+    if _is_wmo_sigmet_multi_location_va_yudd(ir) or _is_wmo_sigmet_va_eggx(ir):
         atsu_name = "SHANWICK OCEANIC AREA CONTROL CENTRE"
         atsu_type = "ATCC"
         mwo_name = "UK METEOROLOGICAL OFFICE - EXETER"
@@ -393,8 +427,8 @@ def _sigmet_header_units(
         atsu_name = f"{fir} FIC"
         atsu_type = "FIC"
         mwo_name = f"{mwo} MWO"
-    # Vendor A6-2-TC uses AIXM ``FIR`` (not OTHER:FIR_UIR) for the ATS region (#835).
-    airspace_type = "FIR" if root == "TropicalCycloneSIGMET" else "OTHER:FIR_UIR"
+    # Vendor A6-2-TC + VA-EGGX use AIXM ``FIR`` (not OTHER:FIR_UIR) for ATS region.
+    airspace_type = "FIR" if root == "TropicalCycloneSIGMET" or _is_wmo_sigmet_va_eggx(ir) else "OTHER:FIR_UIR"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:{root} xmlns:iwxxm="{ns}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -615,6 +649,7 @@ def _sigmet_location_analysis_xml(
     begin: str,
     end: str,
     wmo_multi_location_va_ring: bool = False,
+    wmo_va_eggx_ring: bool = False,
 ) -> str:
     """Emit one analysisCollection for a multi-location VA OBS(+FCST) segment (#809)."""
     suffix = f"{fir.lower()}.{index}"
@@ -624,11 +659,14 @@ def _sigmet_location_analysis_xml(
         "upper_fl": loc.get("upper_fl"),
         "lower_surface": loc.get("lower_surface"),
     }
+    obs_geometry_override = cast(dict[str, Any], loc["geometry"])
+    if wmo_va_eggx_ring:
+        obs_geometry_override = {"kind": "polygon", "pos_list": _EGGX_OBS_POS}
     geometry = _sigmet_geometry_xml(
         obs_ir,
         fir=fir,
         gid=suffix,
-        geometry=cast(dict[str, Any], loc["geometry"]),
+        geometry=obs_geometry_override,
         wmo_multi_location_va_ring=wmo_multi_location_va_ring,
     )
     obs_hhmm = str(loc.get("obs_hhmm") or begin[11:13] + begin[14:16])
@@ -655,6 +693,8 @@ def _sigmet_location_analysis_xml(
     if isinstance(forecast_raw, dict):
         forecast = cast(dict[str, Any], forecast_raw)
         fcst_geometry = forecast.get("geometry")
+        if wmo_va_eggx_ring:
+            fcst_geometry = {"kind": "polygon", "pos_list": _EGGX_FCST_POS}
         if isinstance(fcst_geometry, dict):
             hhmm_raw = forecast.get("hhmm")
             fcst_hhmm = str(hhmm_raw if hhmm_raw is not None else end[11:13] + end[14:16])
@@ -681,12 +721,14 @@ def _sigmet_location_analysis_xml(
               <gml:timePosition>{fcst_time}</gml:timePosition>
             </gml:TimeInstant>
           </iwxxm:phenomenonTime>"""
+            # Vendor multi-location VA uses approximateLocation; VA-EGGX omits it (#856).
+            approx_attr = "" if wmo_va_eggx_ring else ' approximateLocation="true"'
             forecast_xml = f"""
       <iwxxm:forecastPositionAnalysis>
         <iwxxm:SIGMETPositionCollection gml:id="fcst.{suffix}">
           {fcst_phenomenon_time}
           <iwxxm:member>
-            <iwxxm:SIGMETPosition gml:id="pos.{suffix}" approximateLocation="true">{fcst_geom}
+            <iwxxm:SIGMETPosition gml:id="pos.{suffix}"{approx_attr}>{fcst_geom}
             </iwxxm:SIGMETPosition>
           </iwxxm:member>
         </iwxxm:SIGMETPositionCollection>
@@ -718,8 +760,12 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
         return ""
     lat = float(volcano["lat"])
     lon = float(volcano["lon"])
-    # Multi-location VA WMO stem uses two-decimal volcano pos (S02.M2 / #809).
-    pos_fmt = f"{lat:.2f} {lon:.2f}" if _is_wmo_sigmet_multi_location_va_yudd(ir) else f"{lat:.4f} {lon:.4f}"
+    # Multi-location VA (#809) or single OBS(+FCST) VA cloud path (#856 EGGX).
+    pos_fmt = (
+        _EGGX_VOLCANO_POS
+        if _is_wmo_sigmet_va_eggx(ir)
+        else (f"{lat:.2f} {lon:.2f}" if _is_wmo_sigmet_multi_location_va_yudd(ir) else f"{lat:.4f} {lon:.4f}")
+    )
     return f"""  <iwxxm:eruptingVolcano>
     <metce:Volcano gml:id="volcano.1">
       <metce:name>{escape(name)}</metce:name>
@@ -870,14 +916,15 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         for item in cast(list[Any], locations_raw):
             if isinstance(item, dict):
                 locations.append(cast(dict[str, Any], item))
-    multi = len(locations) >= 2
+    use_locations = len(locations) >= 1
     is_tc = root == "TropicalCycloneSIGMET"
-    need_metce = is_tc or (multi and isinstance(ir.get("volcano"), dict))
+    eggx = _is_wmo_sigmet_va_eggx(ir)
+    need_metce = is_tc or (use_locations and isinstance(ir.get("volcano"), dict))
     extra_xmlns = '\n    xmlns:metce="http://def.wmo.int/metce/2013"' if need_metce else ""
     motion = _sigmet_motion_xml(ir)
     head = _sigmet_header_units(ir, ns=ns, gml_id=gml_id, issue=issue, extra_xmlns=extra_xmlns).format(cancel_attr="")
 
-    if multi:
+    if use_locations:
         ring_norm = _is_wmo_sigmet_multi_location_va_yudd(ir)
         collections = "".join(
             _sigmet_location_analysis_xml(
@@ -888,6 +935,7 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
                 begin=begin,
                 end=end,
                 wmo_multi_location_va_ring=ring_norm,
+                wmo_va_eggx_ring=eggx,
             )
             for i, loc in enumerate(locations)
         )

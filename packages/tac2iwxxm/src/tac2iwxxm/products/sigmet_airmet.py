@@ -7,12 +7,12 @@ from typing import Any, cast
 
 _SIGMET = re.compile(
     r"^(?P<fir>[A-Z]{4})\s+SIGMET\s+(?P<seq>\d+)\s+VALID\s+"
-    r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})-\s*(?P<body>.*)$",
+    r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
 _AIRMET = re.compile(
     r"^(?P<fir>[A-Z]{4})\s+AIRMET\s+(?P<seq>\d+)\s+VALID\s+"
-    r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})-\s*(?P<body>.*)$",
+    r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
 _CNL = re.compile(
@@ -246,9 +246,9 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
     if volcano is not None:
         ir["volcano"] = volcano
 
-    # Multi-location VA (AND-joined OBS/FCST clouds) — #809 / TC-EV025-008.
+    # Multi-location VA (AND-joined OBS/FCST) or single OBS(+FCST) VA cloud (#809 / #856).
     locations = _parse_va_locations(body)
-    if len(locations) >= 2:
+    if locations:
         ir["locations"] = locations
         first = locations[0]
         ir["geometry"] = first["geometry"]
@@ -412,6 +412,8 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         fir_name = "AMSWELL FIR"
     elif "SHANLON" in upper_body:
         fir_name = "SHANLON FIR/UIR"
+    elif "SHANWICK OCEANIC FIR" in upper_body:
+        fir_name = "SHANWICK OCEANIC FIR"
     else:
         fir_name = match.group("fir").upper()
     ir: dict[str, Any] = {
