@@ -182,10 +182,10 @@ as the make target.
 
 | Gap | Issue |
 |-----|-------|
-| Supported-versions single source (FE/OpenAPI) | [#851](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/851) |
-| Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) — `make tip-diff-iwxxm` (S046) |
-| iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) — `make iwxxm-us-compat-smoke` + lag policy (S046 / **D-S046-853**) |
-| UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) |
+| Supported-versions single source (FE/OpenAPI) | [#851](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/851) — **closed** S046 (`make export-iwxxm-versions` + drift CI) |
+| Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) — **closed** S046 (`make tip-diff-iwxxm`) |
+| iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) — **closed** S046 (`make iwxxm-us-compat-smoke` + **D-S046-853**) |
+| UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) — **closed** S046 (SoT JSON roles; UJ-050) |
 | Deprecation calendar / reminder template | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) — **template landed** S046/EV-038 |
 | iwxxm-modelling delta watch (G8) | [#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) — sync-PR checklist step |
 

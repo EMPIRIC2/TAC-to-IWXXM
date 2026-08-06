@@ -19,7 +19,7 @@ active_session:
   prior_session: S045-matrix-disposition-residuals
   prior_evolve_cycle_id: EV-037
   github_issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
-  github_issues_closed: [858, 861, 855]
+  github_issues_closed: [858, 861, 855, 851, 852, 853, 854]
   github_issues_closed_at: "2026-08-05"
   github_issues_closed_note: "Closed on 07-build @ 1360dcc6 — M1 closeout (#858/#861/#855)"
   parent_epic: 846
@@ -28,10 +28,10 @@ active_session:
   feature_note: 'Deepen F2/F4/F6/F7/F32 — no new Fn expected unless encode unlock requires one; #854 UI'
   ui_preview: yes_at_m2_854
   current_stage: 07-build
-  current_stage_note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1)'
-  tip_sha: 66a41f38
-  tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
-  tip_sha_note: 'T2.7 implemented locally; commit+push pending'
+  current_stage_note: 'IN_PROGRESS — M2 COMPLETE (#851–#854 closed); next M3 T3.1'
+  tip_sha: 234d5052
+  tip_sha_full: 234d5052fdee9d5a0a5787f08008ae2bb7567e28
+  tip_sha_note: 'T2.7 COMPLETE @ 234d5052; pushed; iwxxm-us compat smoke SUCCESS 31061572647; next T2.8'
   milestones:
     M1: [858, 861, 855]
     M2: [851, 852, 853, 854]
@@ -8267,7 +8267,7 @@ stages:
     tip_sha: 66a41f38
     tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
     tip_note: 'T2.7 implemented locally; commit+push pending'
-    pending_commit: true
+    pending_commit: false
     next_stage: null
     current_milestone: M2
     current_task: T2.8

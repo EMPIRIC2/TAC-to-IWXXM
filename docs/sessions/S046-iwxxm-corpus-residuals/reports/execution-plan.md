@@ -12,10 +12,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build (B→C PASS) |
-| **Active milestone** | M2 — Release-line |
-| **Active task** | T2.8 — Close #851–#854; local UI preview note |
-| **Tasks** | 11 / 28 completed (through T2.7) |
-| **Last updated** | 2026-08-05 |
+| **Active milestone** | M3 — Corpus soft / gates |
+| **Active task** | T3.1 — codes.wmo.int drift check (#859) |
+| **Tasks** | 12 / 28 completed (through T2.8 / M2) |
+| **Last updated** | 2026-08-06 |
 
 ## Tech Stack Summary
 
@@ -83,7 +83,7 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 | T2.5 | Test | Green drift CI + FE Vitest for labels | TC-EV038-004/007 | T2.3, T2.4 | **completed** |
 | T2.6 | Code | Sync-PR tip-diff script (XSD/SCH/example stems); link adopt checklist | AC5; TC-EV038-005; #852 | T2.5 | **completed** |
 | T2.7 | Docs | iwxxm-us compatibility checklist + optional CI smoke; lag decision | AC6; TC-EV038-006; #853 | T2.6 | **completed** |
-| T2.8 | Docs | Close #851–#854; local UI preview note | AC14; UJ-050 | T2.7 | pending |
+| T2.8 | Docs | Close #851–#854; local UI preview note | AC14; UJ-050 | T2.7 | **completed** |
 
 ### M3 — Corpus soft / gates (#859, #860, #857)
 
