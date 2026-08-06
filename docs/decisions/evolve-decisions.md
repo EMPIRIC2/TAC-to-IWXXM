@@ -9,7 +9,7 @@
 **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected — Q2 whole residual set)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
-**Status**: **in_progress** — Phase C **07-build**; Gate B PASS (`D-S046-05-gate-b`=1)  
+**Status**: **in_progress** — Phase D **T5.2** parallel 09-qa + 10-e2e (`D-S046-phase-c`=1)  
 **Prior**: S045 / EV-037 completed  
 **Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)  
 **Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
@@ -38,6 +38,7 @@
 | D-S046-853-push | decision | Push before T2.7? | **1** — continue T2.7 then push (lag+push chat `1,1`) |
 | D-S046-859 | decision | #859 drift? | **1** — offline SCH↔CSV non-flake gate; live RDF optional soft; known SpaceWx SCH-ahead allowlisted |
 | D-S046-850 | decision | #850 resuspended? | **1** — cite-only deferral (no WMO peer / no invented TAC); matrix G-VONA-5 |
+| D-S046-phase-c | decision | Phase C checkpoint? | **1** — push + start T5.2 (09-qa + 10-e2e); `gates.c_to_d` passed (tech + user) |
 
 | Milestone | Issues | Theme | Notes |
 |-----------|--------|-------|-------|
