@@ -3,6 +3,120 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-038 — Epic #846 corpus residuals #849–#861 (S046)
+
+**Session**: S046-iwxxm-corpus-residuals  
+**Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected — Q2 whole residual set)  
+**Started**: 2026-08-05  
+**Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
+**Status**: **in_progress** — Phase D **12 APPROVED** (`D-S046-12`=1); opening PR → CI → merge → **13** H4-H5  
+**Prior**: S045 / EV-037 completed  
+**Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)  
+**Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+
+### Scope (Phase 0 — locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=5,Q3=2`)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Session? | Open **S046** → **EV-038** |
+| Q2 | decision | Scope? | **Whole residual set** #849–#861 (split milestones) |
+| Q3 | decision | Preset? | **Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06) |
+
+### Milestone plan (locked 2026-08-05; AskQuestion unavailable — chat `Q1=1,Q2=1,Q3=1` → **D-S046-mplan**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| D-S046-mplan Q1 | decision | Order? | **M1 docs → M2 release-line → M3 corpus soft → M4 encode** |
+| D-S046-mplan Q2 | decision | UI preview? | **Yes** — open local non-deployed UI when M2/#854 |
+| D-S046-mplan Q3 | decision | Proceed? | Lock → commit session-open → **01-requirements** |
+| D-S046-ac | decision | ACs? | **AC=1** approve AC1–AC14 |
+| D-S046-02-gate-a | decision | Gate A? | **2** — PASS after OpenAPI/SoT decision in 02 |
+| D-S046-sot | decision | #851 SoT shape? | **1** — Python SoT → generated committed JSON → FE + OpenAPI/CI |
+| D-S046-04-plan | decision | Execution plan? | **1** — approve as written; close 04 → start 05 |
+| D-S046-05-gate-b | decision | Gate B? | **1** — PASS; S05.M*/L1 as 07; close 05 → 07 M1 T1.1 |
+| D-S046-853 | decision | #853 US lag? | **1** — **Ship WMO-only first**; document lag in sync PR; do not block ICAO default |
+| D-S046-853-push | decision | Push before T2.7? | **1** — continue T2.7 then push (lag+push chat `1,1`) |
+| D-S046-859 | decision | #859 drift? | **1** — offline SCH↔CSV non-flake gate; live RDF optional soft; known SpaceWx SCH-ahead allowlisted |
+| D-S046-850 | decision | #850 resuspended? | **1** — cite-only deferral (no WMO peer / no invented TAC); matrix G-VONA-5 |
+| D-S046-phase-c | decision | Phase C checkpoint? | **1** — push + start T5.2 (09-qa + 10-e2e); `gates.c_to_d` passed (tech + user) |
+| D-S046-11 | decision | 11-verify-impl? | **1** — approve AC1–AC14 + UJ-050; proceed to T5.4 |
+| D-S046-12 | decision | 12-verify-deploy? | **1** — approve checklist; open PR; merge+13 after CI |
+
+| Milestone | Issues | Theme | Notes |
+|-----------|--------|-------|-------|
+| **M1** | #858, #861, #855 | Docs / process | G5 OOS, G8 modelling watch, deprecation template — chip epic early |
+| **M2** | #851, #852, #853, #854 | Release-line automation + UX | SoT → tip-diff → US gate → picker Latest/Previous (#854 after SoT); local UI preview |
+| **M3** | #859, #860, #857 | Corpus soft / gates | Codes drift, translation-failed (optional), SWXA unlock |
+| **M4** | #849, #850, #856 | Encode deepen | VONA vertical/resuspended + VA-EGGX `wmoPass` |
+
+### Out of scope
+
+Metrics UI (#836); workbench epic (#840) unless tiny catalog-tier; hand-edit
+`vendor/schemas/*`; re-pin as primary goal of this cycle.
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product]` | cite | F2 / F4 / F6 / F7 / F32 deepen | no new Fn expected |
+| `[Corpus: tech-spec]` | cite | versions / vendor pin / CI | #851–#853, #859 |
+| `[Corpus: api]` | cite | OpenAPI enum alignment | #851 |
+| `[Corpus: tests]` | cite | TC-EV038-* / quality pack | per milestone |
+| `[Corpus: decisions]` | cite | this cycle | — |
+| `[docs/domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md]` | cite | adopt gaps | #851–#855, #861 |
+| `[docs/domain/rules/COVERAGE_MATRIX.md]` | cite | G3–G8 / F32 residuals | #849–#850, #856–#861 |
+
+### Acceptance criteria (01 — **approved** AC=1 / **D-S046-ac**)
+
+See [01-requirements-summary.md](../sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md).
+
+| ID | Milestone | Ticket | Summary | Status |
+|----|-----------|--------|---------|--------|
+| AC1–AC3 | M1 | #858/#861/#855 | OOS docs, modelling watch, deprecation template | **approved** |
+| AC4–AC7 | M2 | #851–#854 | SoT, tip-diff, US gate, picker Latest/Previous | **approved** |
+| AC8–AC10 | M3 | #859/#860/#857 | Codes drift, translation-failed, SWXA unlock | **approved** |
+| AC11–AC13 | M4 | #849/#850/#856 | VONA deepen + VA-EGGX `wmoPass` | **approved** |
+| AC14 | Roll-up | #846 | Close/defer all residuals | **approved** |
+
+### SoT decision (02 — locked **D-S046-sot**=1)
+
+| Layer | Choice |
+|-------|--------|
+| Runtime SoT | `apps/backend/src/config/iwxxm_versions.py` |
+| Shared artifact | Generated committed JSON (roles: `latest` / `previous` + `default` + version ids) |
+| FE | Import JSON for picker options/labels (#854) |
+| OpenAPI | Enum/docs from same export; CI asserts match |
+| CI | Regen + drift fail (`git diff --exit-code` or equivalent) |
+
+### Stage log
+
+| Stage | Status | Note |
+|-------|--------|------|
+| 00-context | completed | Session-open commit `c56ec359`; D-S046-mplan locked |
+| 16-evolve | in_progress | Phase A done; orchestrating 04+ |
+| 01-requirements | completed | **D-S046-ac** AC=1; tip `e9df8f84` |
+| 02-verify-plan | completed | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1); handoff **04-tech-plan** |
+| 04-tech-plan | completed | **D-S046-04-plan**=1; execution-plan approved @ `f03ed255`; handoff **05** |
+| 05-verify-tech | completed | Gate B PASS (`D-S046-05-gate-b`=1); handoff **07-build** |
+| 07-build | in_progress | M3 T3.2 — #860 translation-failed inventory (deferral + METAR/TAF fixtures) |
+
+### #853 lag policy (07 — locked **D-S046-853**=1)
+
+**Ship WMO-only first.** Annex 3 / `DEFAULT_VERSION` adopt proceeds when WMO checklist is
+ready. If `make iwxxm-us-compat-smoke` fails, record lag in the sync PR and keep US on the
+last-known-good WMO base until NWS pin catches up; open a child under #846 if encode work
+is needed. Do **not** block ICAO adopt on US lag.
+See [RELEASE_LINE_ADOPTABILITY.md §iwxxm-us lag policy](../domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md).
+
+### #859 drift policy (07 — locked **D-S046-859**=1)
+
+Offline **SCH RDF ↔ iwxxm-codelists CSV** is the CI gate (no HTML). Live `--live` is
+advisory (soft-skip HTML/network). Known SCH-ahead URIs allowlisted until codelist pin
+catches up. Drift always emits stable `http://codes.wmo.int/…` for #889.
+See [RELEASE_LINE_ADOPTABILITY.md §codes.wmo.int URI drift](../domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md).
+
+---
+
 ## Cycle EV-037 — Matrix dispositions #869 / #870 / #872 (S045)
 
 **Session**: S045-matrix-disposition-residuals  

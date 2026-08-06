@@ -66,7 +66,8 @@ Pin-vs-tip watch: use `#804` / `#807` digs + `scripts/vendor/check_upstream.py` 
 | Manifest pin | `vendor/manifest.json` → `iwxxm.tag` (today **`v2025-2`**) |
 | Upstream tip | `scripts/vendor/check_upstream.py` / GitHub `wmo-im/iwxxm` tags & ReleaseNotes |
 | Breaking themes to triage | New/removed XSD types; Schematron assert IDs; example stem add/drop; namespace year; codelist URI drift; product roots (e.g. VONA entered 2025-2) |
-| US pin | `iwxxm-us` **3.0** tarball — confirm NWS still targets same WMO base before assuming US encode still validates |
+| US pin | `iwxxm-us` **3.0** tarball — confirm NWS still targets same WMO base before assuming US encode still validates; gate via `make iwxxm-us-compat-smoke` ([#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) · **TC-EV038-006**) |
+| **iwxxm-modelling** (corpus G8) | On **every vendor sync PR**: skim `wmo-im/iwxxm-modelling` tip vs `vendor/manifest.json` modelling pin — note UML/EA / Pattern-ID taxonomy deltas that inform **latest+1** adopt window. **Short watch only** — do **not** re-run full org mine [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807). Child [#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) · S046 / EV-038 · **TC-EV038-002** |
 
 **No re-pin in EV-032 / #808.** File children when automation would reduce manual triage (T3.3).
 
@@ -80,35 +81,39 @@ Ordered steps to add WMO line `YYYY-N` as **latest**, demoting current latest �
 
 1. [ ] Read upstream ReleaseNotes / diff vs current pin (informative; cite #804 surfaces).
 2. [ ] Sync `iwxxm` (and matching `iwxxm-modelling` / codelists as needed) via `scripts/vendor/sync_iwxxm.py` — **sync PR only**; never hand-edit under `vendor/schemas/*`.
-3. [ ] Update `vendor/manifest.json` tag + SHA + tree hash.
-4. [ ] Run ADR-027 xsdata codegen (`scripts/codegen/iwxxm_xsd.py`); commit generated status/artifacts.
-5. [ ] Confirm `iwxxm-validate` wheel bundle / MANIFEST includes the new tree.
+3. [ ] **Tip-diff summary (#852):** run `make tip-diff-iwxxm` (or `scripts/vendor/tip_diff_iwxxm.py --from <prev> --to <new>`) and paste XSD/SCH/example-stem deltas into the sync PR — **TC-EV038-005**.
+4. [ ] **iwxxm-us compatibility gate (#853):** run `make iwxxm-us-compat-smoke` (report + annex3/`iwxxm_us` convert+validate smoke). On US fail, apply **§iwxxm-us lag policy (D-S046-853)** — ship WMO-only first; document lag in the sync PR; do **not** block ICAO default. — **TC-EV038-006**.
+4b. [ ] **codes.wmo.int URI drift (#859):** run `make codelist-uri-drift`; resolve new SCH↔CSV drift or document allowlist; paste summary in sync PR — **TC-EV038-008** / **D-S046-859**.
+5. [ ] **iwxxm-modelling delta watch (G8 / #861):** record tip-vs-pin Modelling/UML/Pattern-ID notes in the sync PR (or linked issue) — informs latest+1; **no** duplicate [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807) org mine.
+6. [ ] Update `vendor/manifest.json` tag + SHA + tree hash.
+7. [ ] Run ADR-027 xsdata codegen (`scripts/codegen/iwxxm_xsd.py`); commit generated status/artifacts.
+8. [ ] Confirm `iwxxm-validate` wheel bundle / MANIFEST includes the new tree.
 
 ### B. Runtime enums & remaps
 
-6. [ ] Add `YYYY-N` to `SUPPORTED_VERSIONS` in `apps/backend/src/config/iwxxm_versions.py`; set `DEFAULT_VERSION`.
-7. [ ] Record breaking-change notes + any remap aliases (peer `2025-1`→`2025-2`).
-8. [ ] Demote prior latest → previous; schedule old previous for 6-month warning (policy).
-9. [ ] Smoke `normalize_version` / deprecated → HTTP 400 paths.
+9. [ ] Add `YYYY-N` to `SUPPORTED_VERSIONS` in `apps/backend/src/config/iwxxm_versions.py`; set `DEFAULT_VERSION`.
+10. [ ] Record breaking-change notes + any remap aliases (peer `2025-1`→`2025-2`).
+11. [ ] Demote prior latest → previous; schedule old previous for 6-month warning (policy).
+12. [ ] Smoke `normalize_version` / deprecated → HTTP 400 paths.
 
 ### C. Convert / validate
 
-10. [ ] Convert smoke per product family on new default (METAR…VONA as in catalog).
-11. [ ] XSD + Schematron on official peers for **that line only** (never mix SCH across lines).
-12. [ ] Rebaseline or soft→strict ADR-032 goldens; update `wmoPass` / `wmoReference` intentionally.
-13. [ ] Refresh `wmo_official_tac_inventory` / FIXTURE_GAPS / Examples catalog as peers appear.
+13. [ ] Convert smoke per product family on new default (METAR…VONA as in catalog).
+14. [ ] XSD + Schematron on official peers for **that line only** (never mix SCH across lines).
+15. [ ] Rebaseline or soft→strict ADR-032 goldens; update `wmoPass` / `wmoReference` intentionally.
+16. [ ] Refresh `wmo_official_tac_inventory` / FIXTURE_GAPS / Examples catalog as peers appear.
 
 ### D. UI / worker / API
 
-14. [ ] FE version picker options + prefs migration for dropped lines → new default.
-15. [ ] Worker default `iwxxm_version` if deploy sets it.
-16. [ ] OpenAPI / client docs for `iwxxm_version` enum.
+17. [ ] FE version picker options + prefs migration for dropped lines → new default.
+18. [ ] Worker default `iwxxm_version` if deploy sets it.
+19. [ ] OpenAPI / client docs for `iwxxm_version` enum.
 
 ### E. Docs & release
 
-17. [ ] Update VERSION_SUPPORT_POLICY table + Appendix A package matrix if package numbers change.
-18. [ ] CHANGELOG / deploy notes; link non-technical handoff (#847).
-19. [ ] CI: `validate-fast` + relevant `make test-*-quality` / canaries green on sync PR.
+20. [ ] Update VERSION_SUPPORT_POLICY table + Appendix A package matrix if package numbers change.
+21. [ ] CHANGELOG / deploy notes; link non-technical handoff (#847).
+22. [ ] CI: `validate-fast` + relevant `make test-*-quality` / canaries green on sync PR.
 
 ---
 
@@ -116,14 +121,24 @@ Ordered steps to add WMO line `YYYY-N` as **latest**, demoting current latest �
 
 When policy moves a line from **previous** → **warning** → **unsupported**:
 
-1. [ ] Announce 6-month warning (CHANGELOG + operator-facing #847 copy).
-2. [ ] Confirm FE prefs migrate unsupported values to default (existing tests cover legacy `2.1`→`2025-2` pattern).
-3. [ ] Remove from `SUPPORTED_VERSIONS`; keep explicit `VersionDeprecatedError` / 400 message listing remaining supported.
-4. [ ] Stop shipping removed tree in `iwxxm-validate` wheels (size + correctness).
-5. [ ] Drop or archive line-specific goldens/CI that only exercised the dropped line.
-6. [ ] Update VERSION_SUPPORT_POLICY “Currently Supported” + FAQ; remove picker option.
-7. [ ] Grep for hard-coded version strings (`2023-1`, etc.) in apps/packages/tests/docs — fix stragglers.
-8. [ ] Verify IndexedDB / work-session prefs do not strand operators (F7.h).
+1. [ ] **Open a tracked reminder** with
+   [`.github/ISSUE_TEMPLATE/iwxxm_deprecation_warning.md`](../../../.github/ISSUE_TEMPLATE/iwxxm_deprecation_warning.md)
+   when the line enters the **6-month warning** window ([#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) · **TC-EV038-003**).
+   Fill VERSION_SUPPORT_POLICY + [RELEASE_LINE_STAFF_GUIDE](./RELEASE_LINE_STAFF_GUIDE.md) checklist fields.
+2. [ ] Announce 6-month warning (CHANGELOG + operator-facing #847 copy); link the reminder issue.
+3. [ ] Confirm FE prefs migrate unsupported values to default (existing tests cover legacy `2.1`→`2025-2` pattern).
+4. [ ] Remove from `SUPPORTED_VERSIONS`; keep explicit `VersionDeprecatedError` / 400 message listing remaining supported.
+5. [ ] Stop shipping removed tree in `iwxxm-validate` wheels (size + correctness).
+6. [ ] Drop or archive line-specific goldens/CI that only exercised the dropped line.
+7. [ ] Update VERSION_SUPPORT_POLICY “Currently Supported” + FAQ; remove picker option.
+8. [ ] Grep for hard-coded version strings (`2023-1`, etc.) in apps/packages/tests/docs — fix stragglers.
+9. [ ] Verify IndexedDB / work-session prefs do not strand operators (F7.h).
+
+### Dry-run note (#855 — no fake deprecation)
+
+**2026-08-05 (S046 / EV-038):** Template + checklist step documented only. Do **not** open a
+live deprecation issue while `2023-1` remains supported **previous** under current policy.
+First real use is when a line actually enters the warning window.
 
 ---
 
@@ -134,10 +149,65 @@ When policy moves a line from **previous** → **warning** → **unsupported**:
 | ADR-032 golden equality vs vendor XML | High | Soft→strict per stem; catalog tiers; path-filtered canaries |
 | Dual-line CI time / disk | Medium | Keep window at 2; quality packs path-filtered |
 | Manual ReleaseNotes triage | Medium | Child: structured triage template / CI tip-diff summary |
-| `iwxxm-us` lag vs WMO line | Medium | Explicit check on every WMO adopt; child if US encode blocks |
+| `iwxxm-us` lag vs WMO line | Medium | Explicit check every WMO adopt (`make iwxxm-us-compat-smoke`); **§iwxxm-us lag policy** |
 | Enum duplication (backend vs FE defaults) | Medium | Child: single generated supported-versions artifact |
 | Schematron xslt2 / Docker path | Medium | Line-local SCH only; keep smoke in canaries |
-| Codelist URI drift vs codes.wmo.int | Low–Med | Periodic check (gap G6 → child under #846/#808) |
+| Codelist URI drift vs codes.wmo.int | Low–Med | `make codelist-uri-drift` (#859 / **D-S046-859**); optional `--live` |
+
+---
+
+## codes.wmo.int URI drift (D-S046-859 / #859)
+
+**Locked 2026-08-06 (S046 / EV-038):** Offline SCH RDF ↔ `iwxxm-codelists` CSV is the
+**non-flake** gate; live HTML browse is **never** required for CI.
+
+### Cadence
+
+| When | Action |
+|------|--------|
+| Every vendor sync PR touching `iwxxm` SCH `rule/codes.wmo.int-*.rdf` or `iwxxm-codelists` | Run `make codelist-uri-drift` and paste summary in the PR |
+| Quarterly / on suspicion of live registry change | Optional `uv run python scripts/iwxxm/codelist_uri_drift.py --live` (RDF Accept; soft-skip HTML/network) |
+| Adopt-new-line checklist | After tip-diff / before DEFAULT bump — confirm drift green or disposition recorded |
+
+### Failure disposition
+
+1. **New SCH ↔ CSV drift (not allowlisted)** — **block** the sync PR until resolved (re-pin
+   codelists, fix SCH bundle, or document intentional lag with an allowlist entry + issue).
+2. **Known SCH-ahead allowlist** (`KNOWN_SCH_AHEAD_URIS` in the script) — report as
+   `KNOWN_LAG`; clear when the next `iwxxm-codelists` pin includes the notations. Current:
+   `49-2/SpaceWxLocation/DAYSIDE` + `NIGHTSIDE`.
+3. **`iwxxm/*` registers** — no CSV in the current codelists pin; SCH inventory only + optional
+   live RDF. Dual colour / MetFeature policy unchanged (encode per XSD `vocabulary=`).
+4. **Live `--live` advisory drift** — do **not** fail offline CI; open/update a child under
+   [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) if TAC/encode hrefs need changes.
+5. **#889 hand-off** — drift lines always emit stable `http://codes.wmo.int/…` URIs for
+   [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) (TAC verify/cover/cite).
+
+Optional CI: [`.github/workflows/codelist-uri-drift.yml`](../../../.github/workflows/codelist-uri-drift.yml)
+(path-filtered; offline only). **TC-EV038-008**.
+
+---
+
+## iwxxm-us lag policy (D-S046-853 / #853)
+
+**Locked 2026-08-05 (S046 / EV-038):** **Ship WMO-only first.**
+
+When a new WMO line becomes `DEFAULT_VERSION` / annex3 latest:
+
+1. Run **`make iwxxm-us-compat-smoke`** (prints SoT default + `iwxxm-us` pin; runs annex3 +
+   `iwxxm_us` convert+XSD/SCH smoke against the SoT default).
+2. Confirm NWS `iwxxm-us` still targets the same WMO base (manifest pin + upstream notes).
+3. **If US smoke passes** — record green in the sync PR; continue adopt checklist.
+4. **If US smoke fails** — still merge the WMO default bump when Annex 3 is ready; document
+   the lag in the sync PR (pin tag, failing case ids, last-known-good WMO base for US);
+   keep `iwxxm_us` fixtures/docs on that last-known-good base until NWS catches up; open a
+   child issue under [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) if encode
+   work is needed. **Do not block ICAO/Annex 3 adopt on US lag.**
+
+Optional CI: path-filtered workflow
+[`.github/workflows/iwxxm-us-compat-smoke.yml`](../../../.github/workflows/iwxxm-us-compat-smoke.yml)
+(vendor / US profile / gate script). Non-blocking relative to full quality packs — same smoke
+as the make target.
 
 ---
 
@@ -145,13 +215,15 @@ When policy moves a line from **previous** → **warning** → **unsupported**:
 
 | Gap | Issue |
 |-----|-------|
-| Supported-versions single source (FE/OpenAPI) | [#851](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/851) |
-| Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) |
-| iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) |
-| UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) |
-| Deprecation calendar / reminder template | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) |
+| Supported-versions single source (FE/OpenAPI) | [#851](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/851) — **closed** S046 (`make export-iwxxm-versions` + drift CI) |
+| Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) — **closed** S046 (`make tip-diff-iwxxm`) |
+| iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) — **closed** S046 (`make iwxxm-us-compat-smoke` + **D-S046-853**) |
+| UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) — **closed** S046 (SoT JSON roles; UJ-050) |
+| Deprecation calendar / reminder template | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) — **template landed** S046/EV-038 |
+| codes.wmo.int vs vendor URI drift (G6 residual) | [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) — `make codelist-uri-drift` (**D-S046-859**; #889 hand-off) |
+| iwxxm-modelling delta watch (G8) | [#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) — sync-PR checklist step |
 
-Related corpus residuals (G6 codelist drift, G8 modelling watch) may fold into #852 or stay under #846 (T4.1).
+Related: TAC verify/cover/cite of registry URIs continues under [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889).
 
 ---
 

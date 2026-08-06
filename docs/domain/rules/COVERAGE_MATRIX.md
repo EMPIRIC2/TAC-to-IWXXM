@@ -111,16 +111,35 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | TAF | FC/FT → LC/LT | `iwxxm:TAF` | `taf-A5-1`, cancel `taf-A5-2` |
 | SIGMET | WS → LS | `iwxxm:SIGMET` | `sigmet-A6-1a-TS`, CNL `…-1b-CNL` |
 | SIGMET TC | WC → LY | `iwxxm:TropicalCycloneSIGMET` | `sigmet-A6-2-TC` |
-| SIGMET VA | WV → LV | `iwxxm:VolcanicAshSIGMET` | `sigmet-VA-EGGX` (**wmoReference**) · `sigmet-multi-location-VA` (**wmoPass**) |
+| SIGMET VA | WV → LV | `iwxxm:VolcanicAshSIGMET` | `sigmet-VA-EGGX` (**wmoPass**, S046/#856) · `sigmet-multi-location-VA` (**wmoPass**) |
 | AIRMET | WA → LW | `iwxxm:AIRMET` | `airmet-A6-1a-TS` |
 | VAA | FV → LU | `iwxxm:VolcanicAshAdvisory` | `va-advisory-A7-2` (vendor AHL `FVFE01`) |
 | TCA | FK → LK | `iwxxm:TropicalCycloneAdvisory` | `tc-advisory-A2-2` |
-| SWXA | FN → LN | `iwxxm:SpaceWeatherAdvisory` | `spacewx-A7-3/4/5` (+ `_alternate`) — menu unlock **M11** |
+| SWXA | FN → LN | `iwxxm:SpaceWeatherAdvisory` | `spacewx-A7-3/4/5` (+ `_alternate`) — **A7-3/4/5 unlocked** `wmoReference` (S046/#857) |
 | VONA | WM → LM | `iwxxm:VolcanoObservatoryNoticeForAviation` | `vona-A7-1` (**wmoPass** — EV-032 / #741) |
 
 Failed convert path: `*-translation-failed.*` → `@translationFailedTAC` quarantine shape.
+Inventory + soft-path status (S046 / #860 / **TC-EV038-009**):
+[t3.2-translation-failed-inventory.md](../../sessions/S046-iwxxm-corpus-residuals/reports/t3.2-translation-failed-inventory.md)
+— METAR/TAF convert covered (TC-EV023-003); other product convert quarantine **deferred**.
 
-**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS. **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **SWXA** `spacewx-A7-3` is **`wmoReference`** (#740 closed). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+**Sample-menu tiers (UJ-039 / ADR-032 amend · S031):** `wmoPass` = default-golden equality; `wmoReference` = loadable official TAC (may not equal encoder). **VONA** `vona-A7-1` is **`wmoPass`** (EV-032 / #741 / F32). **QVACI / WAFS / SIGWX** stay OOS (durable table below). **TC SIGMET** `sigmet-A6-2-TC` is **`wmoPass`** (EV-032 / #835); **VA-EGGX** `sigmet-VA-EGGX` is **`wmoPass`** (S046 / EV-038 / #856); **SWXA** `spacewx-A7-3/4/5` are **`wmoReference`** (#740 + S046/#857). Shape inventory: [example-inventory.md](../../sessions/S036-eight-family-ahl-rules-823/reports/mining/example-inventory.md).
+
+### XML-only products — permanent OOS for F6 convert (corpus G5)
+
+Durable stance so these are **not** silently reopened as TAC→IWXXM convert / sample-menu
+work under F6. Epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) · child
+[#858](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/858) · S046 / EV-038 · **TC-EV038-001**.
+Vendor XSD/examples may exist for validate/smoke; **no encode** in this issue.
+
+| Product | Vendor / package presence (informative) | TAC→IWXXM convert | Sample menu | Stance |
+|---------|------------------------------------------|-------------------|-------------|--------|
+| **WAFS** (Significant Weather Forecast) | `WAFSSigWxFC.xsd` · `WAFS-Example` | ❌ none | ❌ | **OOS** — IWXXM-only; future Fn only via evolve |
+| **QVACI** (Quantitative Volcanic Ash) | `qvaci.xsd` · `qvaci-Example` | ❌ none | ❌ | **OOS** — IWXXM-only; future Fn only via evolve |
+| **SIGWX** (significant weather / WAFS SIGWX family) | Package/roadmap cites; no F6 TAC path | ❌ none | ❌ | **OOS** — do not treat as F6 product convert |
+
+**Do not:** add workbench catalog stems, lint packs, or ADR-032 equality work for these
+without a new approved Fn. Cite this table from epic #846 roll-ups.
 
 ---
 
@@ -327,11 +346,11 @@ S045/EV-037). Encode **SoT** = ICAO → FM205 → XSD/SCH → AHL → A7-1 →
 | ID | Disposition |
 |----|-------------|
 | G-VONA-0 | Closed — cookbook + this matrix row (G2) |
-| G-VONA-1 | Deepen child — optional `VolcanicAshCloudVerticalExtent` when TAC has HGT SOURCE/MOV beyond A7-1 inapplicable ash — [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849) |
+| G-VONA-1 | **Closed (S046 / EV-038 T4.1–T4.3)** — non-peer TAC with HGT SOURCE/MOV encodes `VolcanicAshCloudVerticalExtent` (XSD enum MOV only); A7-1 peer keeps `iwxxm/nil/inapplicable`; TC-EV038-011 — [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849) |
 | G-VONA-2 | Closed — `KVERT`→`UHPP` registry/fixture constant |
 | G-VONA-3 | Closed cite-only — Doc 10157 paywall; field labels from vendor TAC + XSD |
 | G-VONA-4 | Closed — `WM`→`LM` in `map_t1t2` |
-| G-VONA-5 | Deepen child — `RESUSPENDED_VOLCANIC_ASH` (XSD present; no A7-1 peer) — [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850) |
+| G-VONA-5 | **Cite-only deferral (S046 / EV-038 T4.4)** — XSD `ResuspendedVolcanicAsh` present; no vendor VONA peer / normative TAC; no invented packing — [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850); [t4.4 report](../../sessions/S046-iwxxm-corpus-residuals/reports/t4.4-resuspended-ash-deferral.md) |
 | G-VONA-6 | Closed — `vona-` in-scope + `vona-A7-1` registered; catalog `wmoPass` |
 
 ---

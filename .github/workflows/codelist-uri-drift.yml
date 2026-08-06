@@ -1,0 +1,46 @@
+# S046 / EV-038 / #859 — optional codes.wmo.int SCH↔CSV URI drift (TC-EV038-008).
+# Offline only — does not fetch HTML from codes.wmo.int (non-flake).
+name: codelist URI drift
+
+on:
+  push:
+    branches: [main, evolve/EV-038-iwxxm-corpus-residuals]
+    paths:
+      - "vendor/schemas/iwxxm/**/rule/codes.wmo.int-*.rdf"
+      - "vendor/schemas/iwxxm-codelists/CSV/**"
+      - "vendor/manifest.json"
+      - "scripts/iwxxm/codelist_uri_drift.py"
+      - "scripts/ci/run_codelist_uri_drift.sh"
+      - ".github/workflows/codelist-uri-drift.yml"
+  pull_request:
+    paths:
+      - "vendor/schemas/iwxxm/**/rule/codes.wmo.int-*.rdf"
+      - "vendor/schemas/iwxxm-codelists/CSV/**"
+      - "vendor/manifest.json"
+      - "scripts/iwxxm/codelist_uri_drift.py"
+      - "scripts/ci/run_codelist_uri_drift.sh"
+      - ".github/workflows/codelist-uri-drift.yml"
+  workflow_dispatch:
+
+jobs:
+  codelist-uri-drift:
+    runs-on: ubuntu-latest
+    name: codelist URI drift (TC-EV038-008)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run offline codelist URI drift
+        run: bash scripts/ci/run_codelist_uri_drift.sh

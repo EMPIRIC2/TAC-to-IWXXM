@@ -6,6 +6,12 @@ import { Card } from './ui/card';
 import { Settings, Loader2, CheckCircle, AlertCircle, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
+import {
+  DEFAULT_IWXXM_VERSION,
+  IWXXM_VERSION_OPTIONS,
+  type IwxxmVersionId,
+  coerceIwxxmVersion,
+} from '@/utils/iwxxmVersions';
 
 interface UserPreferencesDialogProps {
   isOpen: boolean;
@@ -14,7 +20,7 @@ interface UserPreferencesDialogProps {
   onPreferencesSaved?: () => void;
 }
 
-type IWXXMVersion = '2025-2' | '2023-1';
+type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
@@ -65,7 +71,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   issuingCenter: 'KWBC',
 
   // IWXXM Settings
-  iwxxmVersion: '2025-2',
+  iwxxmVersion: DEFAULT_IWXXM_VERSION,
   strictValidation: true,
   includeNilReasons: true,
 
@@ -415,12 +421,18 @@ export function UserPreferencesDialog({
                     id="iwxxm-version"
                     value={preferences.iwxxmVersion}
                     onChange={(e) =>
-                      updatePreference('iwxxmVersion', e.target.value as IWXXMVersion)
+                      updatePreference(
+                        'iwxxmVersion',
+                        coerceIwxxmVersion(e.target.value),
+                      )
                     }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="2025-2">2025-2 (Latest)</option>
-                    <option value="2023-1">2023-1 (Previous)</option>
+                    {IWXXM_VERSION_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>

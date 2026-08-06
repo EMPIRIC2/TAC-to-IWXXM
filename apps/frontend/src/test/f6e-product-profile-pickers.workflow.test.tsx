@@ -150,6 +150,11 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     expect(product.value).toBe('auto');
     expect(profile.value).toBe('annex3');
     expect(version.value).toBe('2025-2');
+
+    // UJ-050 / TC-EV038-007 — Latest / Previous labels from SoT JSON roles (#854)
+    const versionLabels = Array.from(version.options).map((o) => o.textContent ?? '');
+    expect(versionLabels.some((t) => t.includes('(Latest)'))).toBe(true);
+    expect(versionLabels.some((t) => t.includes('(Previous)'))).toBe(true);
   });
 
   it('sends selected product, profile, and version on convert (annex3 METAR)', async () => {

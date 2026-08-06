@@ -54,12 +54,11 @@ describe('examplesCatalog (TC-F7-008 C1)', () => {
     }
   });
 
-  it('documents WMO single-seed gaps for METAR/SPECI/AIRMET/VAA/TCA/SWXA/VONA', () => {
+  it('documents WMO fixture-gap rows for METAR/SPECI/AIRMET/VAA/TCA/VONA', () => {
     expect(FIXTURE_GAPS.map((gap) => gap.product).sort()).toEqual([
       'AIRMET',
       'METAR',
       'SPECI',
-      'SWXA',
       'TCA',
       'VAA',
       'VONA',
@@ -146,10 +145,10 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
     expect(getTacExamplesForProduct('AIRMET').some((ex) => ex.wmoPass)).toBe(true);
   });
 
-  it('lists VA/TC SIGMET official stems (EGGX ref + A6-2-TC passer; multi-location passer)', () => {
+  it('lists VA/TC SIGMET official stems (EGGX passer + A6-2-TC passer; multi-location passer)', () => {
     const eggx = getExampleById('sigmet_va_eggx');
-    expect(eggx?.wmoReference).toBe(true);
-    expect(eggx?.wmoPass).not.toBe(true);
+    expect(eggx?.wmoPass).toBe(true);
+    expect(eggx?.wmoReference).not.toBe(true);
     expect(eggx?.wmoSeed).toBe('sigmet-VA-EGGX');
     const tc = getExampleById('sigmet_a6_2_tc');
     expect(tc?.wmoPass).toBe(true);
@@ -181,6 +180,8 @@ describe('examplesCatalog WMO-passers (TC-F25-003)', () => {
       { id: 'vaa_a7_2', seed: 'va-advisory-A7-2' },
       { id: 'tca_a2_2', seed: 'tc-advisory-A2-2' },
       { id: 'swxa_a7_3', seed: 'spacewx-A7-3' },
+      { id: 'swxa_a7_4', seed: 'spacewx-A7-4' },
+      { id: 'swxa_a7_5', seed: 'spacewx-A7-5' },
       { id: 'vona_a7_1', seed: 'vona-A7-1' },
     ];
     for (const { id, seed } of expected) {
@@ -257,7 +258,7 @@ describe('examplesCatalog VAA/TCA unlock (TC-F26-005 / TC-F27-005 / S02.M2)', ()
   });
 });
 
-describe('examplesCatalog SWXA unlock (TC-F28-005 / S036 M11)', () => {
+describe('examplesCatalog SWXA unlock (TC-F28-005 / S036 M11 + S046 #857)', () => {
   it('unlocks WMO spacewx-A7-3 as wmoReference with annex3 provenance', () => {
     const swxa = getExampleById('swxa_a7_3');
     expect(swxa?.product).toBe('SWXA');
@@ -268,12 +269,32 @@ describe('examplesCatalog SWXA unlock (TC-F28-005 / S036 M11)', () => {
     expect(swxa?.body).toMatch(/SWX ADVISORY/);
   });
 
-  it('treats SWXA as WMO-scope with a single-seed gap (A7-4/A7-5 deferred)', () => {
+  it('unlocks WMO spacewx-A7-4 and A7-5 as wmoReference (TC-EV038-010 / #857)', () => {
+    for (const [id, seed] of [
+      ['swxa_a7_4', 'spacewx-A7-4'],
+      ['swxa_a7_5', 'spacewx-A7-5'],
+    ] as const) {
+      const swxa = getExampleById(id);
+      expect(swxa?.product).toBe('SWXA');
+      expect(swxa?.wmoReference).toBe(true);
+      expect(swxa?.wmoPass).not.toBe(true);
+      expect(swxa?.wmoSeed).toBe(seed);
+      expect(swxa?.provenance).toMatch(new RegExp(`annex3_golden/${id}\\.tac`));
+      expect(swxa?.body).toMatch(/SWX ADVISORY/);
+    }
+  });
+
+  it('treats SWXA as WMO-scope with three vendor-peer reference seeds', () => {
     expect(WMO_SCOPE_PRODUCTS).toContain('SWXA');
     expect(EXAMPLE_PRODUCTS).toContain('SWXA');
     const examples = getTacExamplesForProduct('SWXA');
-    expect(examples).toHaveLength(1);
+    expect(examples).toHaveLength(3);
     expect(examples.every((ex) => ex.wmoReference === true)).toBe(true);
+    expect(examples.map((ex) => ex.wmoSeed).sort()).toEqual([
+      'spacewx-A7-3',
+      'spacewx-A7-4',
+      'spacewx-A7-5',
+    ]);
   });
 });
 

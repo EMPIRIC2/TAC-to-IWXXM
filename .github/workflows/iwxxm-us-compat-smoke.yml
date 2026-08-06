@@ -1,0 +1,54 @@
+# S046 / EV-038 / #853 — optional iwxxm-us compatibility gate (TC-EV038-006).
+# Runs when WMO / US vendor trees or US profile / gate scripts change.
+name: iwxxm-us compat smoke
+
+on:
+  push:
+    branches: [main, evolve/EV-038-iwxxm-corpus-residuals]
+    paths:
+      - "vendor/schemas/iwxxm/**"
+      - "vendor/schemas/iwxxm-us/**"
+      - "vendor/manifest.json"
+      - "apps/backend/src/config/iwxxm_versions.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
+      - "packages/tac2iwxxm/tests/test_tc_f6_003_metar_speci_iwxxm_us.py"
+      - "packages/tac2iwxxm/tests/test_tc_f6_020_021_metar_speci_annex3.py"
+      - "scripts/iwxxm/iwxxm_us_compat_gate.py"
+      - "scripts/ci/run_iwxxm_us_compat_smoke.sh"
+      - ".github/workflows/iwxxm-us-compat-smoke.yml"
+  pull_request:
+    paths:
+      - "vendor/schemas/iwxxm/**"
+      - "vendor/schemas/iwxxm-us/**"
+      - "vendor/manifest.json"
+      - "apps/backend/src/config/iwxxm_versions.py"
+      - "packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py"
+      - "packages/tac2iwxxm/tests/test_tc_f6_003_metar_speci_iwxxm_us.py"
+      - "packages/tac2iwxxm/tests/test_tc_f6_020_021_metar_speci_annex3.py"
+      - "scripts/iwxxm/iwxxm_us_compat_gate.py"
+      - "scripts/ci/run_iwxxm_us_compat_smoke.sh"
+      - ".github/workflows/iwxxm-us-compat-smoke.yml"
+  workflow_dispatch:
+
+jobs:
+  iwxxm-us-compat-smoke:
+    runs-on: ubuntu-latest
+    name: iwxxm-us compat smoke (TC-EV038-006)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run iwxxm-us compat smoke
+        run: bash scripts/ci/run_iwxxm_us_compat_smoke.sh

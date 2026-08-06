@@ -13,7 +13,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/dissemination/src packages/dissemination/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync \
+.PHONY: install test test-unit vendor-sync export-iwxxm-versions tip-diff-iwxxm \
+	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
@@ -263,6 +264,22 @@ bench-validation-stack:
 # F11 / ADR-027 — xsdata codegen from pinned XSD (T3.6).
 codegen-iwxxm-xsd:
 	$(UV) run python scripts/codegen/iwxxm_xsd.py
+
+# S046 / EV-038 / #851 — Python SoT → FE generated JSON (D-S046-sot)
+export-iwxxm-versions:
+	$(UV) run python scripts/iwxxm/export_iwxxm_versions.py
+
+# S046 / EV-038 / #852 — XSD/SCH/example stem deltas between vendor pins
+tip-diff-iwxxm:
+	$(UV) run python scripts/vendor/tip_diff_iwxxm.py --from 2023-1 --to 2025-2
+
+# S046 / EV-038 / #853 — iwxxm-us gate report + annex3/US smoke (D-S046-853)
+iwxxm-us-compat-smoke:
+	$(UV) run python scripts/iwxxm/iwxxm_us_compat_gate.py --smoke
+
+# S046 / EV-038 / #859 — SCH RDF ↔ codelist CSV URI drift (D-S046-859; non-flake)
+codelist-uri-drift:
+	$(UV) run python scripts/iwxxm/codelist_uri_drift.py
 
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \

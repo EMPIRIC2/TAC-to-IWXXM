@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:SpaceWeatherAdvisory xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="swxa.donlon"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+    <iwxxm:issueTime>
+        <gml:TimeInstant gml:id="swxa.t.issue.donlon">
+            <gml:timePosition>2020-11-08T01:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:issueTime>
+    <iwxxm:issuingSpaceWeatherCentre>
+        <aixm:Unit gml:id="unit.swxc.donlon">
+            <aixm:timeSlice>
+                <aixm:UnitTimeSlice gml:id="unit.swxc.ts.donlon">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:name>DONLON</aixm:name>
+                    <aixm:type>OTHER:SWXC</aixm:type>
+                </aixm:UnitTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Unit>
+    </iwxxm:issuingSpaceWeatherCentre>
+    <iwxxm:advisoryNumber>2020/2</iwxxm:advisoryNumber>
+    <iwxxm:replacedAdvisoryNumber>2020/1</iwxxm:replacedAdvisoryNumber>
+    <iwxxm:effect>GNSS</iwxxm:effect>
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="swxa.an.donlon.0" timeIndicator="OBSERVATION">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="swxa.an.donlon.0.t">
+                    <gml:timePosition>2020-11-08T01:00:00Z</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:intensityAndRegion>
+                <iwxxm:SpaceWeatherIntensityAndRegion gml:id="swxa.an.donlon.0.iar.0">
+                    <iwxxm:intensity>MOD</iwxxm:intensity>
+                    <iwxxm:region>
+                        <iwxxm:SpaceWeatherRegion gml:id="swxa.reg.donlon.0">
+                            <iwxxm:location>
+                                <aixm:AirspaceVolume gml:id="swxa.reg.donlon.0.vol">
+                                    <aixm:horizontalProjection>
+                                        <aixm:Surface gml:id="swxa.reg.donlon.0.sfc" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                                            <gml:patches>
+                                                <gml:PolygonPatch>
+                                                    <gml:exterior>
+                                                        <gml:LinearRing>
+                                                            <gml:posList>
+                                                                60 180
+                                                                90 180
+                                                                90 -180
+                                                                60 -180
+                                                                60 180
+                                                            </gml:posList>
+                                                        </gml:LinearRing>
+                                                    </gml:exterior>
+                                                </gml:PolygonPatch>
+                                            </gml:patches>
+                                        </aixm:Surface>
+                                    </aixm:horizontalProjection>
+                                </aixm:AirspaceVolume>
+                            </iwxxm:location>
+                            <iwxxm:locationIndicator xlink:href="http://codes.wmo.int/49-2/SpaceWxLocation/HNH"/>
+                        </iwxxm:SpaceWeatherRegion>
+                    </iwxxm:region>
+                    <iwxxm:region>
+                        <iwxxm:SpaceWeatherRegion gml:id="swxa.reg.donlon.1">
+                            <iwxxm:location>
+                                <aixm:AirspaceVolume gml:id="swxa.reg.donlon.1.vol">
+                                    <aixm:horizontalProjection>
+                                        <aixm:Surface gml:id="swxa.reg.donlon.1.sfc" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                                            <gml:patches>
+                                                <gml:PolygonPatch>
+                                                    <gml:exterior>
+                                                        <gml:LinearRing>
+                                                            <gml:posList>
+                                                                -90 180
+                                                                -60 180
+                                                                -60 -180
+                                                                -90 -180
+                                                                -90 180
+                                                            </gml:posList>
+                                                        </gml:LinearRing>
+                                                    </gml:exterior>
+                                                </gml:PolygonPatch>
+                                            </gml:patches>
+                                        </aixm:Surface>
+                                    </aixm:horizontalProjection>
+                                </aixm:AirspaceVolume>
+                            </iwxxm:location>
+                            <iwxxm:locationIndicator xlink:href="http://codes.wmo.int/49-2/SpaceWxLocation/HSH"/>
+                        </iwxxm:SpaceWeatherRegion>
+                    </iwxxm:region>
+                </iwxxm:SpaceWeatherIntensityAndRegion>
+            </iwxxm:intensityAndRegion>
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="swxa.an.donlon.1" timeIndicator="FORECAST">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="swxa.an.donlon.1.t">
+                    <gml:timePosition>2020-11-08T07:00:00Z</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:intensityAndRegion>
+                <iwxxm:SpaceWeatherIntensityAndRegion gml:id="swxa.an.donlon.1.iar.0">
+                    <iwxxm:intensity>MOD</iwxxm:intensity>
+                    <iwxxm:region>
+                        <iwxxm:SpaceWeatherRegion gml:id="swxa.reg.donlon.0">
+                            <iwxxm:location>
+                                <aixm:AirspaceVolume gml:id="swxa.reg.donlon.0.vol">
+                                    <aixm:horizontalProjection>
+                                        <aixm:Surface gml:id="swxa.reg.donlon.0.sfc" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                                            <gml:patches>
+                                                <gml:PolygonPatch>
+                                                    <gml:exterior>
+                                                        <gml:LinearRing>
+                                                            <gml:posList>
+                                                                60 180
+                                                                90 180
+                                                                90 -180
+                                                                60 -180
+                                                                60 180
+                                                            </gml:posList>
+                                                        </gml:LinearRing>
+                                                    </gml:exterior>
+                                                </gml:PolygonPatch>
+                                            </gml:patches>
+                                        </aixm:Surface>
+                                    </aixm:horizontalProjection>
+                                </aixm:AirspaceVolume>
+                            </iwxxm:location>
+                            <iwxxm:locationIndicator xlink:href="http://codes.wmo.int/49-2/SpaceWxLocation/HNH"/>
+                        </iwxxm:SpaceWeatherRegion>
+                    </iwxxm:region>
+                    <iwxxm:region>
+                        <iwxxm:SpaceWeatherRegion gml:id="swxa.reg.donlon.1">
+                            <iwxxm:location>
+                                <aixm:AirspaceVolume gml:id="swxa.reg.donlon.1.vol">
+                                    <aixm:horizontalProjection>
+                                        <aixm:Surface gml:id="swxa.reg.donlon.1.sfc" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                                            <gml:patches>
+                                                <gml:PolygonPatch>
+                                                    <gml:exterior>
+                                                        <gml:LinearRing>
+                                                            <gml:posList>
+                                                                -90 180
+                                                                -60 180
+                                                                -60 -180
+                                                                -90 -180
+                                                                -90 180
+                                                            </gml:posList>
+                                                        </gml:LinearRing>
+                                                    </gml:exterior>
+                                                </gml:PolygonPatch>
+                                            </gml:patches>
+                                        </aixm:Surface>
+                                    </aixm:horizontalProjection>
+                                </aixm:AirspaceVolume>
+                            </iwxxm:location>
+                            <iwxxm:locationIndicator xlink:href="http://codes.wmo.int/49-2/SpaceWxLocation/HSH"/>
+                        </iwxxm:SpaceWeatherRegion>
+                    </iwxxm:region>
+                </iwxxm:SpaceWeatherIntensityAndRegion>
+            </iwxxm:intensityAndRegion>
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="swxa.an.donlon.2" timeIndicator="FORECAST">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="swxa.an.donlon.2.t">
+                    <gml:timePosition>2020-11-08T13:00:00Z</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:intensityAndRegion nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="swxa.an.donlon.3" timeIndicator="FORECAST">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="swxa.an.donlon.3.t">
+                    <gml:timePosition>2020-11-08T19:00:00Z</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:intensityAndRegion nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>
+    <iwxxm:analysis>
+        <iwxxm:SpaceWeatherAnalysis gml:id="swxa.an.donlon.4" timeIndicator="FORECAST">
+            <iwxxm:phenomenonTime>
+                <gml:TimeInstant gml:id="swxa.an.donlon.4.t">
+                    <gml:timePosition>2020-11-09T01:00:00Z</gml:timePosition>
+                </gml:TimeInstant>
+            </iwxxm:phenomenonTime>
+            <iwxxm:intensityAndRegion nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>
+        </iwxxm:SpaceWeatherAnalysis>
+    </iwxxm:analysis>
+    <iwxxm:remarks>SWX EVENT INPR POSSIBLY IMPACTING GNSS PER. AREA OF IMPACT MOVES WITH EARTH'S ROTATION, STAYING STRONGER ON NIGHTSIDE. EXP TO SUBSIDE IN THE FCST PERIOD. SEE WWW.SPACEWEATHERPROVIDER.WEB</iwxxm:remarks>
+    <iwxxm:nextAdvisoryTime>
+        <gml:TimeInstant gml:id="swxa.t.next.donlon">
+            <gml:timePosition>2020-11-08T07:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:nextAdvisoryTime>
+</iwxxm:SpaceWeatherAdvisory>

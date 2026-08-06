@@ -46,7 +46,7 @@
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
           <aixm:type>OTHER:FIR_UIR</aixm:type>
           <aixm:designator>EGGX</aixm:designator>
-          <aixm:name>EGGX</aixm:name>
+          <aixm:name>SHANWICK OCEANIC FIR</aixm:name>
         </aixm:AirspaceTimeSlice>
       </aixm:timeSlice>
     </aixm:Airspace>
@@ -72,5 +72,4 @@
         </iwxxm:SIGMETEvolvingConditionCollection>
       </iwxxm:analysis>
     </iwxxm:analysisAndForecastPositionAnalysis>
-  </iwxxm:analysisCollection>
-</iwxxm:VolcanicAshSIGMET>
+  </iwxxm:analysisCollection></iwxxm:VolcanicAshSIGMET>

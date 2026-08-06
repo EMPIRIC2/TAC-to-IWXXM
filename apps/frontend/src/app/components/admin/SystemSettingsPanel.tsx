@@ -7,8 +7,14 @@ import { Loader2, Save, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { IcaoAutocomplete } from '../IcaoAutocomplete';
 import { adminUrl } from '@/utils/apiBase';
+import {
+  DEFAULT_IWXXM_VERSION,
+  IWXXM_VERSION_OPTIONS,
+  type IwxxmVersionId,
+  coerceIwxxmVersion,
+} from '@/utils/iwxxmVersions';
 
-type IWXXMVersion = '2025-2' | '2023-1';
+type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
@@ -31,7 +37,7 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   const [settings, setSettings] = useState<SystemSettings>({
     defaultBulletinId: 'SAAA00',
     defaultIssuingCenter: 'KWBC',
-    defaultIwxxmVersion: '2025-2',
+    defaultIwxxmVersion: DEFAULT_IWXXM_VERSION,
     defaultStrictValidation: true,
     defaultIncludeNilReasons: true,
     defaultOnError: 'warn',
@@ -217,13 +223,16 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
                 onChange={(e) =>
                   setSettings((prev) => ({
                     ...prev,
-                    defaultIwxxmVersion: e.target.value as IWXXMVersion,
+                    defaultIwxxmVersion: coerceIwxxmVersion(e.target.value),
                   }))
                 }
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
-                <option value="2025-2">2025-2 (Latest)</option>
-                <option value="2023-1">2023-1 (Previous)</option>
+                {IWXXM_VERSION_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </div>
 

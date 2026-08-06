@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-04 (S038 / EV-031 UJ-045..048 + S040 / EV-032 UJ-049 F32 VONA)
+> **Last updated**: 2026-08-05 (S046 / EV-038 UJ-050 IWXXM version Latest/Previous; prior UJ-049)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -66,6 +66,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-047 | Privacy prefs ↔ IndexedDB / Auth cookies (deepen UJ-033) | apps/frontend | F22+F31 | T0 / T2 / H4–H5 |
 | UJ-048 | Ops: DOKS cutover smoke (API + FE + worker) | DOKS / ops | F30 | T3 / H0–H5 |
 | UJ-049 | VONA lint / convert→validate + F7 product surface | apps/frontend / API / CI | F32 (+F6/F7/F12) | T0 / T2 / **T3** / H4–H5 |
+| UJ-050 | IWXXM version picker Latest / Previous labels | apps/frontend | F4+F7 deepen (EV-038 / #854) | T2 / **T3** / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -1381,6 +1382,39 @@ required when FE ships (`D-S040-E32-M` Q2=3).
 
 **Source**: #741 · #846 · ADR-028 · ADR-032 ·
 [Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md)
+
+---
+
+### UJ-050: IWXXM Version Picker Latest / Previous Labels (S046 / EV-038)
+
+**Actor**: Operator (guest or logged-in)
+
+**Goal**: See which IWXXM release-line option is **Latest** (default) vs **Previous**
+without reading domain policy docs; labels stay aligned with the shared version SoT
+(#851) when lines rotate. Convert semantics unchanged.
+
+**Feature**: **F4** + **F7** deepen — S046 / EV-038 ·
+Issue [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) · parent
+[#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+
+**Steps (operator — T2/T3; H4–H5 when FE ships)**:
+
+1. Open workbench; open the IWXXM **version** control.
+2. Confirm options indicate **Latest** / **Previous** (label, badge, or adjacent help)
+   matching `VERSION_SUPPORT_POLICY` / SoT roles.
+3. Select Previous vs Latest — convert still uses the chosen year line (no remap surprise).
+4. After a line rotation (staging/local SoT change), labels still match roles.
+
+**Acceptance**: **TC-EV038-007** green; SoT drift CI (#851 / TC-EV038-004) keeps options
+aligned; local non-deployed UI preview at M2 (`D-S046-mplan` Q2=1).
+
+**Automated tests**: TC-EV038-007; FE Vitest/Playwright as applicable; H4–H5 at deploy.
+
+**Browser wiring**: No new origins. Same API host; version field unchanged.
+
+**Source**: #854 · #851 ·
+[RELEASE_LINE_STAFF_GUIDE.md](domain/iwxxm/RELEASE_LINE_STAFF_GUIDE.md) ·
+[Context: iwxxm-corpus-residuals-846](context/iwxxm-corpus-residuals-846.md)
 
 ---
 

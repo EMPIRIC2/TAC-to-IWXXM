@@ -185,6 +185,10 @@ Canonical companions:
 - **Consumer:** `tac-validate`, `tac2iwxxm`, `iwxxm-validate`, UI-decode
 - **Label:** normative-vocabulary
 - **Offline:** `vendor/schemas/iwxxm/IWXXM/rule/codes.wmo.int-*.rdf` + bundle `iwxxm-codelists`
+- **Drift check (#859 / TC-EV038-008):** `make codelist-uri-drift` — SCH RDF ↔ CSV URI
+  membership (non-flake); optional `--live` RDF (never HTML). Cadence + disposition:
+  [RELEASE_LINE_ADOPTABILITY §codes.wmo.int URI drift](../iwxxm/RELEASE_LINE_ADOPTABILITY.md).
+  Cite-ready URIs hand off to [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889).
 - **Refresh:** aviation inventory re-checked 2026-07-30 — [mining/codes-wmo-int-aviation-mining-notes.md](../mining/codes-wmo-int-aviation-mining-notes.md)
 
 ### IWXXM register (`_iwxxm`)

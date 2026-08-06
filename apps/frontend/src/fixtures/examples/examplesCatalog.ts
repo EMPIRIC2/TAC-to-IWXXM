@@ -23,6 +23,8 @@ import speciA32 from './bodies/speci_a3_2.tac?raw';
 import tafA51 from './bodies/taf_a5_1.tac?raw';
 import tafA52 from './bodies/taf_a5_2.tac?raw';
 import swxaA73 from './bodies/swxa_a7_3.tac?raw';
+import swxaA74 from './bodies/swxa_a7_4.tac?raw';
+import swxaA75 from './bodies/swxa_a7_5.tac?raw';
 import tcaA22 from './bodies/tca_a2_2.tac?raw';
 import vaaA72 from './bodies/vaa_a7_2.tac?raw';
 import vonaA71 from './bodies/vona_a7_1.tac?raw';
@@ -172,13 +174,13 @@ export const EXAMPLES: readonly GoldenExample[] = [
   },
   {
     id: 'sigmet_va_eggx',
-    label: 'VA SIGMET WMO EGGX (reference)',
+    label: 'VA SIGMET WMO EGGX (passer)',
     product: 'SIGMET',
     inputMode: 'tac',
     body: sigmetVaEggx,
     nonOperational: true,
     provenance: `${PKG}/annex3_golden/sigmet_va_eggx.tac`,
-    wmoReference: true,
+    wmoPass: true,
     wmoSeed: 'sigmet-VA-EGGX',
   },
   {
@@ -248,6 +250,28 @@ export const EXAMPLES: readonly GoldenExample[] = [
     wmoSeed: 'spacewx-A7-3',
   },
   {
+    id: 'swxa_a7_4',
+    label: 'SWXA WMO A7-4 (annex3 reference)',
+    product: 'SWXA',
+    inputMode: 'tac',
+    body: swxaA74,
+    nonOperational: true,
+    provenance: `${PKG}/annex3_golden/swxa_a7_4.tac`,
+    wmoReference: true,
+    wmoSeed: 'spacewx-A7-4',
+  },
+  {
+    id: 'swxa_a7_5',
+    label: 'SWXA WMO A7-5 (annex3 reference)',
+    product: 'SWXA',
+    inputMode: 'tac',
+    body: swxaA75,
+    nonOperational: true,
+    provenance: `${PKG}/annex3_golden/swxa_a7_5.tac`,
+    wmoReference: true,
+    wmoSeed: 'spacewx-A7-5',
+  },
+  {
     id: 'vona_a7_1',
     label: 'VONA WMO A7-1 (annex3)',
     product: 'VONA',
@@ -306,11 +330,6 @@ export const FIXTURE_GAPS: readonly FixtureGap[] = [
     product: 'TCA',
     reason:
       'WMO-only catalog (F27): single unlocked seed tc-advisory-A2-2; second WMO TCA deferred.',
-  },
-  {
-    product: 'SWXA',
-    reason:
-      'WMO-only catalog (F28): single unlocked seed spacewx-A7-3 (wmoReference); A7-4/A7-5 deferred.',
   },
   {
     product: 'VONA',

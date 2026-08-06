@@ -103,6 +103,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-047 | F22+F31 | Privacy prefs ↔ IndexedDB / Auth cookies | **H4–H5 required** | TC-F31-005; TC-F22-* deepen |
 | UJ-048 | F30 | DOKS cutover smoke (API + FE + worker) | **H0–H5 required** | TC-F30-004/005; TC-EV031-* |
 | UJ-049 | F32 + F6/F7/F12/F2/F13 deepen | VONA quality bar + full F7 surface (#741); cycle also #835/#808/corpus | H4–H5 when FE | TC-EV032-001..008; TC-F32-001..006 |
+| UJ-050 | F4+F7 deepen (EV-038) | IWXXM version picker Latest / Previous (#854) | H4–H5 when FE | TC-EV038-007 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -1793,6 +1794,115 @@ residuals. No UI — H4–H5 **N/A**. Corpus: `[Corpus: product]` · `[Corpus: t
 - [ ] No new Fn in feature-list (deepen F2/F6/F32 only)
 - [ ] H4–H5 **N/A** (no UI); deploy 12/13 waive expected
 - [ ] Domain path-cites for matrix/provenance updates
+
+## S046 / EV-038 — Epic #846 corpus residuals (#849–#861)
+
+New **TC-EV038-001..014**. Deepens F2 / F4 / F6 / F7 / F32. Milestones M1→M2→M3→M4.
+
+### TC-EV038-001: WAFS / QVACI / SIGWX XML-only OOS (G5 / #858)
+
+- **Level**: T0 / docs
+- **Objective**: Durable OOS row; cited from epic #846 + COVERAGE_MATRIX; no encode work
+- **Pass criteria**: Matrix + epic note; #858 closable
+- **Source**: #858; G5
+
+### TC-EV038-002: iwxxm-modelling delta watch (G8 / #861)
+
+- **Level**: T0 / docs
+- **Objective**: Sync-PR checklist step for modelling deltas; no duplicate #807 mine
+- **Pass criteria**: RELEASE_LINE_ADOPTABILITY (or peer) links watch note; #861 closable
+- **Source**: #861; G8
+
+### TC-EV038-003: Deprecation calendar / reminder template (#855)
+
+- **Level**: T0 / process
+- **Objective**: GitHub issue template (or runbook) for previous→warning window; dry-run doc
+- **Pass criteria**: Template + VERSION_SUPPORT_POLICY / staff-guide links; #855 closable
+- **Source**: #855
+
+### TC-EV038-004: FE/OpenAPI IWXXM versions from single SoT (#851)
+
+- **Level**: T0 / T1
+- **Objective**: One SoT drives FE options + API enum; CI fails on drift
+- **Pass criteria**: Drift test red→green; docs point to SoT
+- **Source**: #851; RELEASE_LINE_ADOPTABILITY §Automation gaps
+
+### TC-EV038-005: Sync-PR tip-diff summary (#852)
+
+- **Level**: T0 / T1
+- **Objective**: Script/job lists XSD/SCH/example stem deltas vs previous pin
+- **Pass criteria**: Linked from adopt checklist; no vendor hand-edit
+- **Source**: #852
+
+### TC-EV038-006: iwxxm-us compatibility gate (#853)
+
+- **Level**: T0 / T1
+- **Objective**: Checklist (+ optional CI smoke) when WMO default moves; lag decision documented
+- **Pass criteria**: RELEASE_LINE_ADOPTABILITY link; #853 closable
+- **Source**: #853
+
+### TC-EV038-007: Version picker Latest / Previous labels (#854)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Picker or help shows Latest/Previous; syncs with SoT; no convert-semantics change
+- **Pass criteria**: UI shows roles; Vitest/Playwright as applicable; local preview at M2
+- **Source**: #854; **UJ-050**
+
+### TC-EV038-008: codes.wmo.int vs vendor codelist drift (G6 / #859)
+
+- **Level**: T0 / T1
+- **Objective**: Cadence + failure disposition; optional non-flake CI
+- **Pass criteria**: Documented check; #859 closable or CI green
+- **Source**: #859; G6
+
+### TC-EV038-009: iwxxm-translation failed-case parity (G7 / #860)
+
+- **Level**: T0 / T1
+- **Objective**: Inventory of failed-case stems vs soft path; fixtures or explicit deferral
+- **Pass criteria**: Inventory + fixtures **or** deferral rationale; #860 closable/deferred
+- **Source**: #860; G7
+
+### TC-EV038-010: SWXA A7-4 / A7-5 sample-menu unlock (G4 / #857)
+
+- **Level**: T0 / T1
+- **Objective**: Inventory disposition; catalog only with vendor peers (no invented TAC)
+- **Pass criteria**: Disposition documented; unlock when bar matches A7-3 policy
+- **Source**: #857; G4; F28
+
+### TC-EV038-011: VONA VolcanicAshCloudVerticalExtent (G-VONA-1 / #849)
+
+- **Level**: T1
+- **Objective**: Encode vertical extent when TAC supplies HGT SOURCE / MOV beyond A7-1 inapplicable
+- **Pass criteria**: Accept + negative fixtures; SCH green; COVERAGE_MATRIX residual row
+- **Source**: #849; F32 deepen
+
+### TC-EV038-012: RESUSPENDED_VOLCANIC_ASH path (G-VONA-5 / #850)
+
+- **Level**: T0 / T1
+- **Objective**: Lint/encode when normative TAC known — else cite-only deferral documented
+- **Pass criteria**: Fixtures **or** documented deferral; matrix row
+- **Source**: #850; F32 deepen
+
+### TC-EV038-013: Promote sigmet-VA-EGGX to wmoPass (G3 / #856)
+
+- **Level**: T1
+- **Objective**: ADR-032 equality vs vendor golden (or irreducible diffs documented); catalog tier flip
+- **Pass criteria**: `wmoPass` **or** documented residual; FIXTURE_GAPS / matrix updated
+- **Source**: #856; G3; ADR-032
+
+### TC-EV038-014: Epic #846 residual roll-up
+
+- **Level**: T0 / process
+- **Objective**: #849–#861 closed or explicitly deferred; epic roll-up acceptance updated
+- **Pass criteria**: Epic body reflects dispositions; no silent open children
+- **Source**: #846 acceptance
+
+### EV-038 verify gate
+
+- [ ] TC-EV038-001..014 green (or explicit deferral recorded)
+- [ ] No new Fn in feature-list (deepen F2/F4/F6/F7/F32 only)
+- [ ] H4–H5 for #854 at deploy; M1 may waive 12/13 if docs-only ship alone
+- [ ] Domain path-cites for matrix / RELEASE_LINE updates
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 

@@ -47,6 +47,12 @@ import {
   GUEST_LOSS_OF_PROGRESS_MESSAGE,
   shouldShowGuestLossOfProgressNotice,
 } from '@/utils/guestLossNotice';
+import {
+  DEFAULT_IWXXM_VERSION,
+  IWXXM_VERSION_OPTIONS,
+  type IwxxmVersionId,
+  coerceIwxxmVersion,
+} from '@/utils/iwxxmVersions';
 import { signOutWithScope } from '/utils/supabase/logout';
 import { getExampleById } from '@/fixtures/examples/examplesCatalog';
 import { IcaoAutocomplete } from './IcaoAutocomplete';
@@ -145,7 +151,7 @@ interface FileConverterProps {
   loadedWorkSession?: WorkSession | null;
 }
 
-type IWXXMVersion = '2025-2' | '2023-1';
+type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
@@ -219,7 +225,7 @@ export function FileConverter({
     issuingCenter: '',
     product: 'auto',
     profile: 'annex3',
-    iwxxmVersion: '2025-2',
+    iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
     includeNilReasons: true,
     onError: 'warn',
@@ -293,14 +299,7 @@ export function FileConverter({
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
           const prefs = JSON.parse(stored);
-          // Migrate old version identifiers to new ones
-          let iwxxmVersion: IWXXMVersion = '2025-2';
-          if (prefs.iwxxmVersion === '2023-1') {
-            iwxxmVersion = '2023-1';
-          } else {
-            // Default any other version (3.0, 2.1, 2021-2) to 2025-2
-            iwxxmVersion = '2025-2';
-          }
+          const iwxxmVersion = coerceIwxxmVersion(prefs.iwxxmVersion);
 
           setConversionParams({
             bulletinId: prefs.bulletinIdExample || 'SAAA00',
@@ -432,14 +431,7 @@ export function FileConverter({
       const stored = localStorage.getItem('metar_converter_preferences');
       if (stored) {
         const prefs = JSON.parse(stored);
-        // Migrate old version identifiers to new ones
-        let iwxxmVersion: IWXXMVersion = '2025-2';
-        if (prefs.iwxxmVersion === '2023-1') {
-          iwxxmVersion = '2023-1';
-        } else {
-          // Default any other version (3.0, 2.1, 2021-2) to 2025-2
-          iwxxmVersion = '2025-2';
-        }
+        const iwxxmVersion = coerceIwxxmVersion(prefs.iwxxmVersion);
 
         setConversionParams({
           bulletinId: prefs.bulletinIdExample || 'SAAA00',
@@ -1702,13 +1694,16 @@ export function FileConverter({
                     onChange={(e) =>
                       setConversionParams((prev) => ({
                         ...prev,
-                        iwxxmVersion: e.target.value as IWXXMVersion,
+                        iwxxmVersion: coerceIwxxmVersion(e.target.value),
                       }))
                     }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="2025-2">2025-2 (Latest)</option>
-                    <option value="2023-1">2023-1 (Previous)</option>
+                    {IWXXM_VERSION_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

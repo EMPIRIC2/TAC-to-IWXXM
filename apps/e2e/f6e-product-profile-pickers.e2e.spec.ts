@@ -1,7 +1,8 @@
 /**
- * T8.4 / H6 — F6.e product + profile pickers (UJ-005) + UJ-008 smoke.
+ * T8.4 / H6 — F6.e product + profile pickers (UJ-005) + UJ-008 smoke + UJ-050.
  *
- * Spec: docs/user-journeys.md UJ-005 / UJ-008; docs/test-plan.md TC-F6-001, TC-F6-010.
+ * Spec: docs/user-journeys.md UJ-005 / UJ-008 / UJ-050; docs/test-plan.md TC-F6-001,
+ * TC-F6-010, TC-EV038-007.
  * F21: public convert — no Auth login fixture.
  */
 import { expect, test } from '@playwright/test';
@@ -92,6 +93,20 @@ test.describe('H6 / T8.4: F6.e product + profile pickers', () => {
         timeout: 30000,
       },
     );
+  });
+
+  test('UJ-050: IWXXM version options show Latest / Previous labels', async ({
+    page,
+  }) => {
+    await openPublicConverter(page);
+    if (!(await requireF6ePickers(page))) {
+      return;
+    }
+
+    const version = page.locator('#param-iwxxm-version');
+    const labels = await version.locator('option').allTextContents();
+    expect(labels.some((t) => t.includes('(Latest)'))).toBe(true);
+    expect(labels.some((t) => t.includes('(Previous)'))).toBe(true);
   });
 
   test('UJ-008 smoke: unknown product rejected by convert API', async ({ request }) => {

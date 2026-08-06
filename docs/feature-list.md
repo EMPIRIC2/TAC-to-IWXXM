@@ -2,19 +2,19 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S045 / EV-037 — matrix dispositions #869/#870/#872; prior S044 / EV-036)
+> **Last updated**: 2026-08-05 (S046 / EV-038 — #846 residuals #849–#861; prior S045 / EV-037)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S045 / EV-037 US Schematron N/A (#870); prior S043 / EV-035 |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S046 / EV-038 corpus residuals (#856–#860); prior S045 / EV-037 |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
-| F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md |
+| F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S045 / EV-037 AHL source vs impl matrix (#872); prior S043 / EV-035 |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid sessions |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S046 / EV-038 encode (#849/#850/#856/#857); prior S045 / EV-037 |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
@@ -39,7 +39,7 @@
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; **deepen** S042 / EV-034 CD auto-rollout |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
-| F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S045 / EV-037 VONA SoT / Guidance silence (#869); epic #846 |
+| F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S046 / EV-038 G-VONA-1/5 (#849/#850); prior S045 / EV-037; epic #846 |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1363,14 +1363,47 @@
 
 ### Corpus / WMO-source parity (S040 / EV-032 — #846)
 
-- **Status**: **In progress** — in-cycle tickets closed; children filed (T4.1); verify/deploy pending
+- **Status**: **In progress** — core children closed (S040); matrix residuals closed (S045);
+  remaining **#849–#861** under S046 / EV-038
 - **What it does**: Continuous good results vs official IWXXM corpus and related WMO sources
   (wmo-im/iwxxm, iwxxm-translation, iwxxm-codelists, codes.wmo.int, iwxxm-modelling). File
   child issues for concrete gaps; index durable stance in domain/session docs.
 - **Acceptance**: **TC-EV032-005**; children linked from #846; deepen UJ-039 / UJ-042 /
-  UJ-045 as applicable
+  UJ-045 as applicable; **TC-EV038-001..014** for residual closeout
 - **Children (T4.1)**: #849–#861 (see [t4.1-846-children.md](sessions/S040-iwxxm-corpus-quality/reports/t4.1-846-children.md))
-- **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable
+- **XML-only OOS (corpus G5 / #858)**: **WAFS / QVACI / SIGWX** — durable row in
+  [COVERAGE_MATRIX.md](domain/rules/COVERAGE_MATRIX.md) §XML-only products; not F6 convert
+- **Out of scope**: Metrics UI #836; re-doing closed mining #804/#807 as primary deliverable;
+  WAFS/QVACI/SIGWX TAC→IWXXM encode (see G5 table)
+
+### F2 / F4 / F6 / F7 / F32 deepen (S046 / EV-038 — #846 residuals #849–#861)
+
+- **Status**: **In progress** (S046 / EV-038) — deepen only; **no new Fn**
+- **Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
+- **Milestones** (`D-S046-mplan`):
+  | M | Issues | Theme |
+  |---|--------|-------|
+  | M1 | #858, #861, #855 | Docs / process (G5 OOS, G8 watch, deprecation template) |
+  | M2 | #851–#854 | Release-line SoT, tip-diff, iwxxm-us gate, picker Latest/Previous |
+  | M3 | #859, #860, #857 | Codes drift, translation-failed, SWXA A7-4/A7-5 |
+  | M4 | #849, #850, #856 | VONA deepen + VA-EGGX `wmoPass` |
+- **Acceptance**: AC1–AC14 in
+  [01-requirements-summary.md](sessions/S046-iwxxm-corpus-residuals/reports/01-requirements-summary.md);
+  **TC-EV038-001..014**
+- **UI**: #854 — local non-deployed preview at M2 (`D-S046-mplan` Q2=1); H4–H5 at deploy
+- **SoT (#851)**: Python `iwxxm_versions.py` → generated committed JSON (roles
+  `latest`/`previous`) → FE + OpenAPI/CI (`D-S046-sot`=1)
+- **US gate (#853)**: `make iwxxm-us-compat-smoke` + lag policy **D-S046-853** (ship
+  WMO-only first); see RELEASE_LINE_ADOPTABILITY §iwxxm-us lag policy
+- **Journeys / tests**: **UJ-050** (version picker Latest/Previous); **TC-EV038-001..014**;
+  prior **TC-EV032-*** / **TC-F32-***
+- **Execution plan**: [execution-plan.md](sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md)
+- **Out of scope**: Metrics UI #836; workbench epic #840 unless tiny catalog-tier;
+  hand-edit `vendor/schemas/*`; re-pin as primary goal
+- **Corpus**: `[Corpus: product]` · `[Corpus: tech-spec]` · `[Corpus: api]` ·
+  `[Corpus: tests]` · `[Corpus: decisions]` ·
+  `[docs/domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md]` ·
+  `[docs/domain/rules/COVERAGE_MATRIX.md]`
 
 ## Platform Feature Details (Monorepo Migration)
 
