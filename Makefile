@@ -405,18 +405,19 @@ compose-wis2box-harness:
 	bash scripts/ci/run_wis2box_harness.sh
 
 # F16–F19 mock BYOC destinations (Postgres / MySQL / SQL Server / MailHog / F19) — local only.
+# Use a dedicated compose project so `down -v` cannot tear down backend/frontend (EV-039 / AC4).
+BYOC_COMPOSE_PROJECT := metar-iwxxm-mock-byoc
+BYOC_COMPOSE := $(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) \
+	-f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc
+
 compose-mock-byoc-up:
-	$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc \
-		up -d --build --wait byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19
+	$(BYOC_COMPOSE) up -d --build --wait byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19
 
 compose-mock-byoc-down:
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc \
-		stop byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 || true
-	@$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml --profile mock-byoc \
-		rm -f byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 || true
+	@$(BYOC_COMPOSE) down -v --remove-orphans || true
 
 compose-mock-byoc-full-up:
-	$(COMPOSE) -f docker-compose.yml -f docker-compose.mock-byoc.yml -f docker-compose.wis2box.yml \
+	$(COMPOSE) -p $(BYOC_COMPOSE_PROJECT) -f docker-compose.yml -f docker-compose.mock-byoc.yml -f docker-compose.wis2box.yml \
 		--profile mock-byoc --profile wis2box up -d --build --wait \
 		byoc-postgres byoc-mysql byoc-sqlserver byoc-mailhog byoc-f19 wis2box
 
