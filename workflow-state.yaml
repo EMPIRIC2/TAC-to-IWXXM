@@ -17,8 +17,8 @@ active_session:
   artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
-  current_stage: 16-evolve
-  current_stage_note: "OPEN — 00-context completed; 16-evolve in_progress; handoff toward 01-requirements"
+  current_stage: 02-verify-plan
+  current_stage_note: "01-requirements COMPLETE (D-S047-ac=1); 02-verify-plan next; 16-evolve remains in_progress (orchestrator)"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -31,6 +31,8 @@ active_session:
   decisions:
     D-S047-open: "Q1=1 Q2=1 Q3=1 Q4=1 Q5=2"
     D-S047-open_note: "Open S047→EV-039; deepen F16 SQL ingest live e2e + teardown; Standard routing; UI preview declined (Q5=2)"
+    D-S047-ac: "1"
+    D-S047-ac_note: "AC=1 approve AC1–AC7 + manifest; close 01; start 02-verify-plan (Gate A)"
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -45,11 +47,14 @@ active_session:
     status: in_progress
     started: "2026-08-06"
     completed: null
-    note: "in_progress — Phase 0 / evolve plan card done; next 01-requirements"
+    note: "in_progress — Phase 0 locked; child 01-requirements COMPLETE (D-S047-ac); next 02-verify-plan"
   - stage: 01-requirements
     mode: delta
     required: true
-    status: pending
+    status: completed
+    started: "2026-08-06"
+    completed: "2026-08-06"
+    note: "COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan"
   - stage: 02-verify-plan
     mode: delta
     required: true
@@ -5700,36 +5705,45 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-08-05'
-    started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
-    prior_session_id: S045-matrix-disposition-residuals
-    prior_evolve_cycle_id: EV-037
+    started_at: '2026-08-06'
+    started: '2026-08-06'
+    completed_at: '2026-08-06'
+    completed: '2026-08-06'
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    tip_sha: a4f4d3a6
+    tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
+    note: 'S047/EV-039 01-requirements COMPLETE (delta) — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan'
+    prior_session_id: S046-iwxxm-corpus-residuals
+    prior_evolve_cycle_id: EV-038
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
-    prior_note: 'S045/EV-037 01-requirements COMPLETE (delta) — AC=1 approve AC1–AC4; deepen F2/F6/F32; tickets #869/#870/#872; handoff 02-verify-plan'
-    prior_prior_session_id: S044-local-precommit-long-jobs
-    prior_prior_evolve_cycle_id: EV-036
-    prior_prior_note: 'S044/EV-036 01-requirements COMPLETE (delta) — D-S044-r1-ac R1=local_compose AC=1; M5 ACs + TC-EV036-001..003; remove remote Compose/integration → local pre-push make ci; handoff 02-verify-plan'
-    note: 'S046/EV-038 01-requirements COMPLETE (delta) — D-S046-ac AC=1 approve AC1–AC14; handoff 02-verify-plan'
+    prior_note: 'S046/EV-038 01-requirements COMPLETE (delta) — D-S046-ac AC=1 approve AC1–AC14; handoff 02-verify-plan'
+    prior_prior_session_id: S045-matrix-disposition-residuals
+    prior_prior_evolve_cycle_id: EV-037
+    prior_prior_note: 'S045/EV-037 01-requirements COMPLETE (delta) — AC=1 approve AC1–AC4; deepen F2/F6/F32; tickets #869/#870/#872; handoff 02-verify-plan'
     decision_refs:
-    - D-S046-ac
-    - D-S046-mplan
-    - D-S046-open
+    - D-S047-open
+    - D-S047-ac
     artifacts:
-    - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/01-requirements-summary.md
+    - docs/sessions/S047-sql-ingest-live-e2e/
+    - docs/context/sql-ingest-live-e2e.md
     - docs/feature-list.md
+    - docs/user-journeys.md
     - docs/test-plan.md
+    - docs/tech-spec.md
+    - docs/env-contract.md
     - docs/decisions/evolve-decisions.md
+    - docs/decisions/requirements-decisions.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/
+    - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     substeps:
       interviews:
-        status: completed
-        completed: 1
-        current_template: completed
-        current_section: completed
+        status: pending
+        completed: 0
+        current_template: pending
+        current_section: pending
     delta_substages:
     - status: completed
       mode: delta
@@ -6435,31 +6449,20 @@ stages:
     - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
     - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
   02-verify-plan:
-    status: completed
+    status: pending
     mode: delta
-    started_at: '2026-08-05'
-    started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
-    prior_session_id: S045-matrix-disposition-residuals
-    prior_evolve_cycle_id: EV-037
+    started_at: null
+    started: null
+    completed_at: null
+    completed: null
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    note: 'S047/EV-039 02-verify-plan pending (delta) — Gate A next after D-S047-ac; 01 tip a4f4d3a6'
+    prior_session_id: S046-iwxxm-corpus-residuals
+    prior_evolve_cycle_id: EV-038
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
-    prior_note: 'S045/EV-037 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S045-02-gate-a); GateA=1 pass_S02.M1-M3_as_07; report reports/02-verify-plan-audit.md; handoff 07-build'
-    prior_prior_session_id: S044-local-precommit-long-jobs
-    prior_prior_evolve_cycle_id: EV-036
-    prior_prior_note: 'S044/EV-036 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S044-02-gate-a); contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; S02.M2 keep remote units+coverage+PR comment; drop validate+Compose; local lint only; report reports/02-verify-plan-audit.md; handoff 07-build'
-    note: 'S046/EV-038 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S046-02-gate-a=2 + D-S046-sot=1); S02.M1–M5 as 04/07; handoff 04-tech-plan'
-    contradictions_resolved: []
-    contradictions_deferred:
-    decision_refs:
-    - D-S046-02-gate-a
-    - D-S046-sot
-    - D-S046-ac
-    - D-S046-mplan
-    - D-S046-open
+    prior_note: 'S046/EV-038 02-verify-plan COMPLETE — Gate A PASS; handoff 04-tech-plan'
     substeps:
       inventory:
         status: completed
@@ -13010,6 +13013,36 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S047-ac
+  date: '2026-08-06'
+  timestamp: '2026-08-06'
+  resolved_at: '2026-08-06'
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: requirements
+  status: confirmed
+  topic: Approve AC1–AC7 + document manifest → close 01-requirements → start 02-verify-plan
+  summary: 'AC=1 approve_AC1-7_close_01 — AC1–AC7 + manifest approved; close 01; start 02-verify-plan (Gate A)'
+  decision: |
+    D-S047-ac=1 — 01-requirements delta for S047/EV-039.
+    Approve document manifest (feature-list §F16, UJ-027, TC-F16-LIVE-*, tech-spec,
+    env-contract, requirements-decisions) and AC1–AC7 (Compose live SQL + Playwright
+    + teardown + TC mapping). Close 01-requirements (completed 2026-08-06); next
+    02-verify-plan (delta) Gate A. deepen_feature_ids=[F16]; feature_ids=[].
+    Commit a4f4d3a6 records F16 live SQL e2e ACs + TC-F16-LIVE.
+  user_option: '1'
+  branch: evolve/EV-039-sql-ingest-live-e2e
+  related_decisions:
+  - D-S047-open
+  deepen_feature_ids:
+  - F16
+  feature_ids: []
+  tip_sha: a4f4d3a6
+  tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
+  note: '01-requirements COMPLETE; current_stage 02-verify-plan; stages.01-requirements baseline completed; git commit recorded; no git commit by workflow-state-manager'
 - id: D-S047-open
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -35107,14 +35140,14 @@ evolve_cycles:
     skipped_stages:
       - 03-plan-tooling
       - 06-tech-tooling
-  current_stage: 01-requirements
+  current_stage: 02-verify-plan
   current_stage_status: pending
-  current_stage_note: "OPEN — 00-context completed; 16-evolve in_progress; next 01-requirements"
+  current_stage_note: "01-requirements COMPLETE (D-S047-ac=1); next 02-verify-plan Gate A; tip a4f4d3a6"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: 0d8ce885
-  tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
-  tip_sha_note: "branch cut from main @ 0d8ce885 (S046 closeout tip)"
+  tip_sha: a4f4d3a6
+  tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
+  tip_sha_note: "01-requirements tip a4f4d3a6 — F16 live SQL e2e ACs + TC-F16-LIVE"
   gates:
     a_to_b: pending
     b_to_c: pending
@@ -35128,6 +35161,7 @@ evolve_cycles:
     deploy: pending
   decision_refs:
   - D-S047-open
+  - D-S047-ac
   stages:
     00-context:
       status: completed
@@ -35138,9 +35172,15 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       completed: null
-      note: "in_progress — evolve plan card complete; handoff 01-requirements"
+      note: "in_progress — Phase 0 locked; 01-requirements COMPLETE; next 02-verify-plan"
     01-requirements:
-      status: pending
+      status: completed
+      started: "2026-08-06"
+      started_at: "2026-08-06"
+      completed: "2026-08-06"
+      tip_sha: a4f4d3a6
+      tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
+      note: "COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; handoff 02-verify-plan"
     02-verify-plan:
       status: pending
     04-tech-plan:
@@ -35170,9 +35210,13 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S047-sql-ingest-live-e2e/evolve-plan-card.md
     status: completed
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/01-requirements-summary.md
+    status: completed
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 01-requirements COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; tip a4f4d3a6; artifacts reports/01-requirements-summary.md; current_stage 02-verify-plan; 16-evolve remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-06 S047/EV-039 — 01-requirements STARTED in_progress; tip 8d7d4c2d ([EV-039] docs: open S047 SQL ingest live e2e + teardown); 16-evolve remains in_progress; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 OPEN — open_session; D-S047-open Q1=1 Q2=1 Q3=1 Q4=1 Q5=2; deepen F16 SQL ingest live e2e + teardown; session_counter 47; evolve_cycle_counter 39; branch evolve/EV-039-sql-ingest-live-e2e ACTIVE @ 0d8ce885; 00-context completed; 16-evolve in_progress; next 01-requirements; UI preview declined"
 - id: EV-038
   session_id: S046-iwxxm-corpus-residuals
@@ -36938,15 +36982,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-039-sql-ingest-live-e2e
-  ahead_of_origin: 0
+  ahead_of_origin: 2
   pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "session artifacts + evolve-decisions pending commit by parent (not workflow-state-manager)"
-  tip_sha: 0d8ce885
-  tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
-  tip_note: 'S047/EV-039 OPEN — branch cut from main @ 0d8ce885 (S046 closeout); tip equals main'
+  dirty_note: "workflow-state.yaml dirty after 01-requirements COMPLETE bookkeeping (not workflow-state-manager commit)"
+  tip_sha: a4f4d3a6
+  tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
+  tip_note: 'S047/EV-039 — tip a4f4d3a6 01-requirements ACs; current_stage 02-verify-plan'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -36958,9 +37002,11 @@ git_history:
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   recommended_branch: evolve/EV-039-sql-ingest-live-e2e
-  note: 'S047/EV-039 OPEN — current_branch evolve/EV-039-sql-ingest-live-e2e @ 0d8ce885 (=main); session docs dirty pending parent commit; no git commit by workflow-state-manager'
+  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ a4f4d3a6; 01-requirements COMPLETE; 02-verify-plan next; 16-evolve remains in_progress; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S047/EV-039 — recorded git commit a4f4d3a6 (a4f4d3a6d948ff1a238563ac7f119ac093204156) [EV-039] docs: F16 live SQL e2e ACs + TC-F16-LIVE (01-requirements); stage 01-requirements; D-S047-ac=1; current_stage 02-verify-plan; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
+  - '2026-08-06 S047/EV-039 — recorded git commit 8d7d4c2d (8d7d4c2df9b08ec68f94ec7c5895037555844d79) [EV-039] docs: open S047 SQL ingest live e2e + teardown; stage 16-evolve/00-context session open; 01-requirements STARTED in_progress; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 OPEN — open_session; D-S047-open Q1=1 Q2=1 Q3=1 Q4=1 Q5=2; session_counter 47; evolve_cycle_counter 39; branch evolve/EV-039-sql-ingest-live-e2e ACTIVE @ 0d8ce885 (base main); 00-context completed; 16-evolve in_progress; next 01-requirements; deepen F16; UI preview declined; no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit 66a41f38 (66a41f381d245acea66963a96a829ef530322a77) [T2.6] feat: IWXXM vendor tip-diff for sync PRs (#852); T2.1–T2.6 COMPLETE; active_task T2.7 pending; pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit 2511869d (2511869d23b9ef26c2ab1ac0b7facf55194d4710) [T2.3][T2.4][T2.5] feat: FE SoT picker labels + api-contract enum (#851/#854); pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
@@ -37422,11 +37468,11 @@ git_history:
     created: "2026-08-06"
     session_id: S047-sql-ingest-live-e2e
     evolve_cycle_id: EV-039
-    tip_sha: 0d8ce885
-    tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+    tip_sha: a4f4d3a6
+    tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
     exists: true
     pushed: false
-    note: "S047/EV-039 OPEN — cut from main @ 0d8ce885; deepen F16 SQL ingest live e2e + teardown"
+    note: "S047/EV-039 ACTIVE — tip a4f4d3a6 01-requirements COMPLETE; next 02-verify-plan"
   - name: evolve/EV-038-iwxxm-corpus-residuals
     status: merged
     base: main
@@ -38564,6 +38610,62 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: a4f4d3a6
+    short: a4f4d3a6
+    sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
+    branch: evolve/EV-039-sql-ingest-live-e2e
+    message: "[EV-039] docs: F16 live SQL e2e ACs + TC-F16-LIVE (01-requirements)"
+    stage: 01-requirements
+    skill_id: 01-requirements
+    stages:
+    - 01-requirements
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    files_changed:
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/requirements-decisions.md
+    - docs/env-contract.md
+    - docs/feature-list.md
+    - docs/sessions/S047-sql-ingest-live-e2e/evolve-plan-card.md
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/01-requirements-summary.md
+    - docs/sessions/S047-sql-ingest-live-e2e/routing-plan.md
+    - docs/sessions/S047-sql-ingest-live-e2e/session-brief.md
+    - docs/tech-spec.md
+    - docs/test-plan.md
+    - docs/user-journeys.md
+    files_changed_count: 11
+    timestamp: "2026-08-06T11:57:45-04:00"
+    pushed: false
+    tip_sha: a4f4d3a6
+    tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
+    note: "S047/EV-039 — 01-requirements COMPLETE; D-S047-ac=1 AC1–AC7; reports/01-requirements-summary.md"
+  - sha: 8d7d4c2d
+    short: 8d7d4c2d
+    sha_full: 8d7d4c2df9b08ec68f94ec7c5895037555844d79
+    branch: evolve/EV-039-sql-ingest-live-e2e
+    message: "[EV-039] docs: open S047 SQL ingest live e2e + teardown"
+    stage: 16-evolve
+    skill_id: 00-context
+    stages:
+    - 16-evolve
+    - 00-context
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    files_changed:
+    - docs/context/README.md
+    - docs/context/sql-ingest-live-e2e.md
+    - docs/decisions/evolve-decisions.md
+    - docs/sessions/README.md
+    - docs/sessions/S047-sql-ingest-live-e2e/evolve-plan-card.md
+    - docs/sessions/S047-sql-ingest-live-e2e/routing-plan.md
+    - docs/sessions/S047-sql-ingest-live-e2e/session-brief.md
+    - workflow-state.yaml
+    files_changed_count: 8
+    timestamp: "2026-08-06T11:51:00-04:00"
+    pushed: false
+    tip_sha: 8d7d4c2d
+    tip_sha_full: 8d7d4c2df9b08ec68f94ec7c5895037555844d79
+    note: "S047/EV-039 — session open docs; 00-context completed; 16-evolve in_progress; recorded before 01-requirements start"
   - sha: 0ad62c92
     short: 5135c56c
     sha_full: 0ad62c928fc3b2de39dc42a02ec78a834be7a29b
