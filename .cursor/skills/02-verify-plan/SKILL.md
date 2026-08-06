@@ -15,6 +15,7 @@ medium/low confidence statements for approval/denial/modification.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — Agent-only audit; flag vague Goal/non-goals that would break 04/07 Plan (no SwitchMode here).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 ## Connectivity (stage 02)
@@ -320,3 +321,5 @@ Next step: 03-plan-tooling
 6. **Cite the source**: Every statement notes its origin and confidence rationale.
 7. **Consistency is embedded**: Cross-document checks run as part of this skill, not as
    a separate invocation.
+8. **Plan-readiness**: Deny or modify statements that leave session Goal / Out of scope /
+   acceptance too vague for a later Build Plan Card.

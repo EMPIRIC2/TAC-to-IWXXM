@@ -14,6 +14,7 @@ implementation.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — Agent-only; ensure tooling assumes 07 Plan(batch)→Agent(Task Loop) (no SwitchMode here).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 ## Connectivity (stage 06)
@@ -46,6 +47,8 @@ Technical tooling must be installed **before** build execution (Stage 07) becaus
 - TDD rules enforce test-first workflow
 - Atomic commit rules prevent WIP commits
 - Build execution rules enforce pre/post task validation
+- Plan→Agent loop ([plan-mode-loop.md](../plan-mode-loop.md)) is assumed by 07 — card +
+  execution plan are the batch source of truth
 - Without these, code quality degrades silently
 
 
@@ -296,6 +299,7 @@ Guardrails active: [N] rules + [N] hooks
   - Test-first workflow enforced
 
 Next step: 07-build
+  (Plan mode → refine next batch from Build Plan Card; Agent mode → Task Loop)
 ```
 
 **State**: Set status to `completed`.
@@ -315,3 +319,5 @@ On re-invocation:
 3. **Verify installation**: Confirm tools work before marking complete.
 4. **Match tech stack**: Tool choices must match execution-plan.md §Tech Stack Summary.
 5. **Executable scripts**: Hook scripts must be valid for the user's platform.
+6. **Plan handoff ready**: Confirm Build Plan Card path is documented for 07; build-execution
+   rules must not invent a parallel task list.

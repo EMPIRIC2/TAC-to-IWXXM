@@ -26,6 +26,10 @@ sole writer of `workflow-state.yaml`. Batch updates per protocol-card (start + e
 [considerations.md](considerations.md), [connectivity-gates.md](connectivity-gates.md),
 [workflow-state-reference.md](workflow-state-reference.md).
 
+**Plan ↔ Agent (04 / 07 / 16):** [plan-mode-loop.md](plan-mode-loop.md) — Plan mode for
+evolve orchestration (16) and build batches (04/07); Agent mode for TDD execution and
+child stages. Stages 00–03 / 05–06 leave Plan-compatible seeds/gates only.
+
 **Legacy twins** (do not invoke): `gather-context`, `doc-planner`, `build-planner`,
 `build-executor`, `verify-build`, `audit-docs`, `deploy-verify` — stubs redirect; archives under
 [_archive/](_archive/README.md).

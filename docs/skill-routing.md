@@ -105,6 +105,16 @@ Once **00-context** opens a session (`active_session` in `workflow-state.yaml`),
 **00–19** run per `docs/sessions/SNNN-slug/routing-plan.md`. Invoking **07-build** or
 **01-requirements** directly is allowed **only** when `active_session` exists and lists that stage.
 
+## Plan ↔ Agent (Cursor modes)
+
+See [plan-mode-loop.md](../.cursor/skills/plan-mode-loop.md).
+
+| Skill | Mode |
+|-------|------|
+| **16-evolve** | Plan = **default orchestrator** (Phase 0–1 + re-routes); Agent runs child stages |
+| **04-tech-plan** / **07-build** | Plan = execution structure / next milestone batch; Agent = write files / Task Loop |
+| **00–03, 05–06, 08–15** | Agent only (Plan-compatible seeds/gates where noted) |
+
 ## 16-evolve vs 14-hotfix
 
 | Criterion | 14-hotfix | 16-evolve |

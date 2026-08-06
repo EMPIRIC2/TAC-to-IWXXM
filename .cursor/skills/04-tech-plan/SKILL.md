@@ -2,10 +2,10 @@
 name: 04-tech-plan
 description: >
   Interviews the user for technical details: architecture, deployment strategy, test plan
-  specifics, integration points, package choices, and architectural decision records. Produces
-  an execution plan, dependency inventory, ADRs, deployment plan, and data management plan.
-  Supports delta mode via 16-evolve for new features and large changes. Template-driven
-  interview with batched questions. Includes deployment strategy planning.
+  specifics, integration points, package choices, and ADRs. Produces an execution plan,
+  Build Plan Card (Plan-mode handoff), dependency inventory, ADRs, deployment plan, and data
+  management plan. Supports delta mode via 16-evolve. Optional Cursor Plan mode to refine
+  phases/milestones before writing artifacts.
 ---
 
 # 04 — Technical Planning Interview
@@ -16,6 +16,7 @@ inventory, ADRs, deployment plan, and data management plan.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — produce execution plan **and** Build Plan Card; optional Plan mode to refine phases before writing files.
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 ## Connectivity (stage 04)
@@ -227,6 +228,15 @@ Produce `workflow-state.yaml + execution plan artifact` using the template from
 Organize implementation into **phases**, each containing **milestones**, each containing
 **tasks** in TDD order (test first, then implementation).
 
+**Plan-compatible (required):** After the first milestone’s tasks are drafted:
+
+1. Write `docs/sessions/{id}/build-plan-card.md` per [plan-mode-loop.md](../plan-mode-loop.md)
+   (Goal from session-brief; In scope = M1 tasks; Spec Sources filled).
+2. If phases/milestones are large or ambiguous: **SwitchMode → plan** with the Plan session
+   prompt; on approval, update the execution plan + card in Agent mode.
+3. Do not mark 04 complete until the card’s In-scope task IDs match Task Tracking for the
+   active milestone.
+
 **Template scaffold phase** (if template selected): The first phase must always be:
 
 > **Phase 1: Template Scaffold**
@@ -324,6 +334,7 @@ Deployment: [platform]
 
 Documents generated: [N]
   workflow-state.yaml + execution plan artifact
+  docs/sessions/{id}/build-plan-card.md
   docs/dependency-inventory.md
   docs/adr/001-[name].md (x[N])
   docs/[deployment-plan].md
@@ -361,6 +372,8 @@ Before marking 04-tech-plan `completed`, verify these items are **tasks or ADRs*
 - [ ] Modal testing tiers per [ADR-004](../../docs/adr/ADR-004.md) (T0–T3) assigned to stages
 - [ ] deploy targets in plan match [deployment-catalog.md](../deployment-catalog.md) and
   `workflow-state.yaml` §template.gpu_tiers (or all ten if unset); drift documented if deferred
+- [ ] **Build Plan Card** exists; In-scope IDs = active milestone Task Tracking
+- [ ] Card Goal / Out of scope align with session-brief (00) and product non-goals (01)
 
 ## Output Rules
 
@@ -370,3 +383,5 @@ Before marking 04-tech-plan `completed`, verify these items are **tasks or ADRs*
 4. **Deployment planning here**: Deployment strategy is decided in this stage.
 5. **Batched interviews**: 3-5 questions per batch, grouped by topic.
 6. **ADR for each decision**: Non-obvious tech choices get an ADR.
+7. **Plan-compatible**: Execution plan + Build Plan Card are the sole inputs for 07’s
+   Plan→Agent loop — no reliance on chat memory.

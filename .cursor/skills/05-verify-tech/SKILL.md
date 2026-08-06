@@ -15,6 +15,7 @@ consistency with the approved product plan.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — Agent-only gate; verify Build Plan Card ↔ execution plan parity before 07 (no SwitchMode here).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 ## Connectivity (stage 05)
@@ -25,6 +26,8 @@ Verify technical statements:
 - Test plan H0c/H0i/H4/H5 align with [connectivity-gates.md](../connectivity-gates.md)
 - Secrets matrix includes CORS + VITE rows for every browser path
 - No task assumes “smoke script = UI verified” without H4–H5
+- **Plan-readiness**: Build Plan Card exists; every In-scope task ID ∈ Task Tracking;
+  each has Spec Source; TDD order within the batch; card is not a second tracker
 
 Auto-approve only when product plan already requires connectivity tiers (02 pass).
 
@@ -224,3 +227,5 @@ Next step: 06-tech-tooling
 5. **Immediate persistence**: State writes after every verdict.
 6. **Surgical updates**: Change only the specific claim in source documents.
 7. **Product alignment**: Technical decisions must not violate product requirements.
+8. **Plan-readiness gate**: Do not complete 05 if the Build Plan Card is missing or drifts
+   from the active milestone Task Tracking.

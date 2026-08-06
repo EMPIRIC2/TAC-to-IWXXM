@@ -14,7 +14,8 @@ Open sessions and produce context briefs for downstream skills.
 
 **Protocol:** [protocol-card.md](../protocol-card.md)  
 **Detail:** [reference.md](reference.md) (Phase 1A–1C detail, ecosystem scan, templates)  
-**Routing:** [docs/skill-routing.md](../../docs/skill-routing.md)
+**Routing:** [docs/skill-routing.md](../../docs/skill-routing.md)  
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — Agent-only producer; seed Goal/Out of scope for the 04 Build Plan Card (no SwitchMode here).
 
 ## Corpus first
 
@@ -61,8 +62,11 @@ Record choice + skip rationale in `routing-plan.md`.
 1. If `active_session` exists: AskQuestion — resume / close+new / abandon.
 2. Classify session type; `open_session` → `S{NNN}-{slug}`.
 3. Write `session-brief.md` + propose `routing-plan.md` (preset above).
+   Include a one-sentence **Goal** and explicit **Out of scope** — these seed the later
+   Build Plan Card ([plan-mode-loop.md](../plan-mode-loop.md)).
 4. AskQuestion — approve/edit plan; set `active_session`; create branch.
-5. Hand off to orchestrator / first stage.
+5. Hand off to orchestrator / first stage. When routing includes **04→07** or **16**, Plan
+   mode is used in those skills; this stage stays in Agent.
 
 ## UI preview offer (non-deployed)
 
@@ -108,6 +112,7 @@ options:
 ## Exit criteria
 
 - [ ] Session allocated (or waived) with approved routing-plan
+- [ ] Session brief has one-sentence Goal + Out of scope (Plan-compatible seed)
 - [ ] Context brief written when mode requires it
 - [ ] Next orchestrator / stage identified
 - [ ] If UI in scope: non-deployed preview AskQuestion offered (accept/decline recorded)

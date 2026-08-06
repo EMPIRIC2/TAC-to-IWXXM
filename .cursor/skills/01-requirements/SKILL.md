@@ -15,6 +15,7 @@ template section, ask targeted questions to fill it.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — Agent-only; keep acceptance task-sized for later 04/07 Plan batches (no SwitchMode here).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 ## Connectivity (stage 01)
@@ -376,3 +377,5 @@ Next step: 02-verify-plan
 7. **Template-faithful**: Generated documents follow template structure exactly.
 8. **UI preview (non-deployed)**: When UI is in scope, AskQuestion for a local / non-deployed
    reference preview; never imply it is staging or production.
+9. **Plan-compatible**: Prefer task-sized acceptance criteria and explicit non-goals so
+   04 can build a short Build Plan Card without re-interview ([plan-mode-loop.md](../plan-mode-loop.md)).

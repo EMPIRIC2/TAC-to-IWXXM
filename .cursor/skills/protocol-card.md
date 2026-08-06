@@ -60,6 +60,16 @@ Browser-facing work: honor [connectivity-gates.md](connectivity-gates.md) tiers 
 
 ---
 
+## Plan ↔ Agent loop (04 / 07 / 16)
+
+- **16-evolve:** Plan mode = **default orchestrator** (Phase 0–1 + re-routes); Agent runs
+  child stages. Evolve Plan Card: `docs/sessions/{id}/evolve-plan-card.md`.
+- **04 / 07:** Plan refines execution structure / next milestone batch; Agent implements.
+  Build Plan Card: `docs/sessions/{id}/build-plan-card.md`.
+- See [plan-mode-loop.md](plan-mode-loop.md). Do not SwitchMode → Plan from 01–03, 05–06, 08–15.
+
+---
+
 ## Legacy skills
 
 Do not invoke: `gather-context`, `doc-planner`, `build-planner`, `build-executor`,

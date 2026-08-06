@@ -16,6 +16,7 @@ subsequent stages.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — Agent-only guardrails; keep 04/07 Plan→Agent inside product scope (no SwitchMode here).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 ## Connectivity (stage 03)
@@ -291,3 +292,5 @@ On re-invocation:
 3. **Merge, don't overwrite**: Respect existing hooks.json and rule files.
 4. **Verify installation**: Always confirm tooling is valid before marking complete.
 5. **Domain-specific**: Skills and agents are tailored to THIS project, not generic.
+6. **Plan handoff**: Rules/skills may point at [plan-mode-loop.md](../plan-mode-loop.md);
+   do not invent a second task tracker outside the execution plan + Build Plan Card.

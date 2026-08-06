@@ -4,7 +4,8 @@ description: >
   Greenfield session orchestrator: runs stages 00-context through 13-deploy-smoke for a new
   project inside an active_session with type greenfield. Requires 00-context to open the session
   and approve routing-plan.md (recommended). Combines phase gates, transition checks, and
-  connectivity gates. Post-deployment work uses other session types (hotfix, feature, integration).
+  connectivity gates. Expects Plan-compatible handoffs (Build Plan Card) from 04 into 07;
+  SwitchMode → Plan in 16/04/07 only. Post-deployment work uses other session types.
   Use when building from scratch with an approved greenfield routing plan.
 ---
 
@@ -35,14 +36,17 @@ description: >
 
 ```
 A Product:  00 → 01 → 02 → 03
-B Tech:     04 → 05 → 06
-C Build:    07 ◄── 08 (milestones)
+B Tech:     04 → 05 → 06     (Plan only in 04; card from 04; 05–06 Agent)
+C Build:    07 ◄── 08        (Plan = next batch; Agent = Task Loop)
 D Verify:   09 + 10 → 11 → 12 → 13
 ```
 
 On-demand after: 14 / 15 / 16 / 17 / 18 / 19.
 
 **Preset:** greenfield defaults to **Full**. Existing-app work must not use this orchestrator.
+
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md). SwitchMode → Plan in **16**
+(orchestrator), **04**, and **07**; earlier product stages are Plan-compatible producers.
 
 ## Corpus first
 
@@ -64,6 +68,7 @@ Cumulative checklist: [connectivity-gates.md](../connectivity-gates.md). Hybrid 
 ## Exit criteria
 
 - [ ] Routed stages completed or waived with rationale
+- [ ] Build Plan Card present when 04+ ran (Plan-compatible handoff)
 - [ ] Deploy smoke (13) done or explicitly deferred
 - [ ] Session close AskQuestion when routing-plan complete
 

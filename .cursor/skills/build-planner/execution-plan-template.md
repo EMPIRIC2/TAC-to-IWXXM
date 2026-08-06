@@ -21,6 +21,16 @@ Track overall progress. Update this section as work proceeds.
 | **Active task** | T1.1: ... |
 | **Tasks completed** | 0 / [total] |
 | **Last updated** | [date] |
+| **Build Plan Card** | `docs/sessions/{id}/build-plan-card.md` |
+
+## Build Plan Card (Plan ↔ Agent)
+
+Required companion for Cursor Plan mode → Agent build loop. Full format:
+[plan-mode-loop.md](../plan-mode-loop.md).
+
+- Card is a **view** of the active milestone Task Tracking — not a second tracker.
+- Update the card when Current State advances to a new milestone.
+- 07-build enters Plan mode with the card + this Current State; Agent runs approved task IDs.
 
 ## Tech Stack Summary
 

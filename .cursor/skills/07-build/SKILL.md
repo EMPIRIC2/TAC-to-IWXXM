@@ -2,19 +2,21 @@
 name: 07-build
 description: >
   Executes the implementation plan task-by-task following TDD ordering, spec-adherence rules,
-  and atomic commit conventions. Orchestrates parallel agents for independent tasks, manages
-  branches and PRs, invokes 08-verify-build at milestone boundaries, and keeps the execution
-  plan in sync with progress. Supports delta mode for feature addition and large changes via
-  active 16-evolve cycles only — do not use for net-new features without an evolve cycle.
+  and atomic commit conventions. Starts each milestone batch in Cursor Plan mode (Build Plan
+  Card) then switches to Agent mode for the Task Loop. Orchestrates parallel agents for
+  independent tasks, manages branches and PRs, invokes 08-verify-build at milestone boundaries,
+  and keeps the execution plan in sync. Supports delta mode via active 16-evolve cycles only.
 ---
 
 # 07 — Technical Execution (Build)
 
-Execute the execution plan: implement tasks in TDD order, commit atomically, create PRs
-at milestone and phase boundaries, and orchestrate parallel agents for independent work.
+Execute the execution plan: refine the next milestone batch in **Plan mode**, implement in
+**Agent mode** (TDD Task Loop), commit atomically, create PRs at milestone and phase
+boundaries, and orchestrate parallel agents for independent work.
 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — required handoff format from 00–06 / 16.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
@@ -39,11 +41,13 @@ dependencies, data management, branches, and checks allow — across **multiple 
 ## Prerequisites
 
 1. **Phase B gate must pass**:
-   - 04-tech-plan `completed` — execution plan exists
-   - 05-verify-tech `completed` — tech plan audited
+   - 04-tech-plan `completed` — execution plan **and** Build Plan Card exist
+   - 05-verify-tech `completed` — tech plan audited (includes Plan-readiness)
    - 06-tech-tooling `completed` — dev tooling installed
 2. Required:
    - `workflow-state.yaml + execution plan artifact` with at least one approved phase
+   - `docs/sessions/{id}/build-plan-card.md` (or `docs/build-plan-card.md`) matching
+     active milestone Task Tracking — see [plan-mode-loop.md](../plan-mode-loop.md)
    - `.cursor/rules/` — spec-adherence, tdd, atomic-commits, build-execution rules
    - `.cursor/hooks.json` — hooks installed
 3. **Data management** (if applicable): Check `docs/spec.md §Data`. Tasks with data
@@ -74,8 +78,9 @@ substep. **Do not** edit `workflow-state.yaml` directly.
 ### On invocation
 
 1. Read `workflow-state.yaml + execution plan artifact` §Current State
-2. Determine active phase, milestone, task
-3. Report current position:
+2. Read **Build Plan Card** (`docs/sessions/{id}/build-plan-card.md`)
+3. Determine active phase, milestone, task
+4. Report current position:
 
 ```
 Execution State:
@@ -83,12 +88,23 @@ Execution State:
   Milestone: M[N] — [Milestone Name]
   Task:      T[N.N] — [Task description]
   Progress:  [N] / [N] tasks ([%])
+  Plan card: [path] — batch tasks: [ids]
 
   Ready to work on: T[N.N] — [description]
 ```
 
-4. Start the Task Loop without AskQuestion unless tasks are `blocked` or the user
-   narrowed scope.
+5. **Plan mode batch refine** (milestone start / unclear batch / user asked to replan):
+   - Call `SwitchMode` → `plan` with explanation: refine next build batch from card.
+   - Use the Plan session prompt from [plan-mode-loop.md](../plan-mode-loop.md).
+   - On user approval of the batch: update card + Task Tracking if needed.
+   - Call `SwitchMode` → `agent` (or continue in Agent) before any implementation.
+   - Skip Plan mode only when the card’s In-scope list is already approved and the user
+     narrowed to those task IDs this turn.
+6. Start the Task Loop for **approved batch task IDs** without further AskQuestion unless
+   tasks are `blocked` or the user narrowed scope further.
+
+Do **not** re-enter Plan mode between every atomic task — only at batch/milestone
+boundaries or when blocked by `[Ambiguity]` / `[Decision]`.
 
 ## Delta / feature-addition mode
 
@@ -205,7 +221,9 @@ When all tasks in a milestone are `completed`:
    - Title: `[M{N}] {Milestone Name}`
    - Body: task list, spec references, check results
 3. **Present to user** (PR URL). Do NOT stop the session.
-4. Update PR Plan table. Continue Task Loop for next milestone.
+4. Update PR Plan table. **Refresh Build Plan Card** for the next milestone (In scope,
+   acceptance, Next Plan prompt). Continue Task Loop — enter Plan mode again only if the
+   next batch needs refine.
 
 ### Phase Boundary
 
@@ -283,3 +301,5 @@ repeat post-deploy surprises (RET-001).
 6. **State always current**: Execution plan reflects true progress at all times
 7. **Verify before PR**: Always invoke 08-verify-build at boundaries
 8. **Maximize per pass**: Complete many tasks and milestones per invocation
+9. **Plan then Agent**: Refine batches in Plan mode; implement only in Agent mode; keep
+   the Build Plan Card in sync with Task Tracking (never a dual tracker)

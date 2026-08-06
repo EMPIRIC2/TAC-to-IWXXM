@@ -20,6 +20,9 @@ cycle**) through updated specs, verified plans, implementation, and redeploy —
 **Detail:** [reference.md](reference.md) · [pipeline-preamble.md](../pipeline-preamble.md)
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `feature` or `new_service` active_session.
 **Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — when to use evolve vs hotfix vs pipeline.
+**Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — **Plan mode is the default
+  orchestrator** for Phase 0–1 (scope → Fn → routing); Agent runs child stages; 04/07 Plan
+  separately for execution batches.
 **State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
 
 **Corpus:** Open [docs/CORPUS.md](../../docs/CORPUS.md) rows for **touched features only** — not the
@@ -73,6 +76,76 @@ Before starting an evolve cycle:
 If `active_session` is null, route to [00-context](../00-context/SKILL.md) first.
 If prerequisites are missing, ask via AskQuestion: run full [pipeline](../pipeline/SKILL.md) first,
 or proceed with a reduced doc set (record waiver via workflow-state-manager).
+
+## Plan mode as orchestrator (default)
+
+**16-evolve uses Cursor Plan mode as the default orchestrator** for cycle design — not a rare
+exception. Pattern:
+
+| When | Mode | Purpose |
+|------|------|---------|
+| Phase 0–1 start / resume / re-route | **Plan** | Scope, Fn allocation, impact, Lean/Standard/Full routing, stage order |
+| After Plan approval | **Agent** | Write evolve-plan-card, decisions, invoke child skills |
+| Phase checkpoints (A/B/C/D) when replan needed | **Plan** | Adjust remaining routing / batch before continuing |
+| Child **04** / **07** | Their own Plan→Agent | Execution plan + Build Plan Card / milestone batches |
+| Child 01–03, 05–06, 08–15 | **Agent only** | Interviews, audits, tooling, verify, deploy |
+
+### Evolve Plan Card
+
+Write/update: `docs/sessions/{id}/evolve-plan-card.md` (alongside `routing-plan.md`).
+
+```markdown
+# Evolve Plan Card
+
+> Cycle: EV-NNN | Session: SNNN-slug | Updated: ISO-8601
+
+## Goal
+[one sentence]
+
+## Features
+- F{n} — [title] — [Corpus: …]
+
+## In / out of scope
+- In: …
+- Out: …
+
+## Preset + routing
+- Preset: Lean | Standard | Full
+- Stages (ordered): …
+
+## Next child stage
+[NN-name] — delta context summary
+
+## Risks / open decisions
+- …
+```
+
+### Plan session prompt (evolve)
+
+```
+You are orchestrating an evolve cycle (16-evolve), not implementing code.
+
+Read:
+1. docs/sessions/{id}/session-brief.md + routing-plan.md
+2. docs/sessions/{id}/evolve-plan-card.md (if present)
+3. docs/CORPUS.md rows for touched Fn only (+ feature-list excerpts)
+
+Produce:
+1. Concrete Goal, In/Out of scope, Fn list with corpus cites
+2. Recommended preset (Lean default on existing apps) + ordered stage list + skip rationale
+3. Impacted docs / packages
+4. Updated Evolve Plan Card body
+5. First child stage to invoke after Agent switch
+
+Do not edit product code or run 07 Task Loop. AskQuestion categories for ambiguities.
+When approved → Agent mode continues 16-evolve Phase 1 write + Phase 2 child invocation.
+```
+
+**SwitchMode:** at Phase 0 start (and when re-routing mid-cycle), `SwitchMode` → `plan` with
+the prompt above; after user approval → `agent` to persist the card and execute. Skip Plan
+only when the user already approved a complete evolve-plan-card this turn.
+
+---
 
 ## Interactive questions (required)
 
@@ -159,22 +232,19 @@ for multi-Fn cycles, intake batches, checkpoints, and routing matrix.
 ## Workflow overview
 
 ```
-Change / feature intake (Phase 0)
-       │
-       ▼
-Fn allocation (multi-Fn) + impact analysis → routing plan (user approves)
-       │
+Plan mode (orchestrator): intake → Fn → impact → routing
+       │  approve → Agent writes evolve-plan-card + routing-plan
        ▼
 ┌──────────────────────────────────────────────────────────┐
-│  A: Product     01* → 02* → 03*                          │
+│  A: Product     01* → 02* → 03*     (Agent)              │
 ├──────────────────────────────────────────────────────────┤
-│  B: Technical   04* → 05* → 06*                          │
+│  B: Technical   04* → 05* → 06*     (04: Plan+Agent)     │
 ├──────────────────────────────────────────────────────────┤
-│  C: Build       07* ◄── 08*                              │
+│  C: Build       07* ◄── 08*         (07: Plan+Agent)     │
 ├──────────────────────────────────────────────────────────┤
-│  D: Verify      09* + 10* → 11* → 12* → 13*              │
+│  D: Verify      09* + 10* → 11* → 12* → 13*  (Agent)     │
 └──────────────────────────────────────────────────────────┘
-       │
+       │  (re-enter Plan at checkpoints if re-routing)
        ▼
 Evolve summary + optional 14-hotfix / 15-service-health / 17-retrospective
 
@@ -223,6 +293,9 @@ Detail checklist: [reference.md](reference.md) §Corpus citation checklist.
 
 ## Phase 0 — Change / feature intake
 
+**Default:** enter **Plan mode** (see §Plan mode as orchestrator) before locking scope.
+Use AskQuestion inside Plan or after Agent return for corpus gaps and the proceed gate.
+
 Interview until the change is concrete enough for Fn allocation and impact analysis.
 
 **For net-new features**, use intake batches in [reference.md](reference.md) §Feature intake batches.
@@ -244,8 +317,12 @@ Include confirmed `[Corpus: …]` citations (or approved doc-add / waiver) in th
 
 Record approved scope in `docs/decisions/evolve-decisions.md` §Cycle {id} — Scope (via committed doc;
 agent records cycle metadata). Each scope bullet must cite CORPUS.
+Update **Evolve Plan Card** Goal / In-Out / Features.
 
 ## Phase 1 — Fn allocation, impact analysis, routing
+
+Stay in or re-enter **Plan mode** until preset + stage list are approved; then **Agent**
+writes artifacts.
 
 1. **Multi-feature default:** one cycle, multiple Fn — assign next Fn ids from `feature-list.md`
    (`[Corpus: product]`).
@@ -261,9 +338,11 @@ agent records cycle metadata). Each scope bullet must cite CORPUS.
    | **Full** | Standard + `03` / `05` / `06` as needed |
 
 4. Present preset + skip rationale via AskQuestion; user confirms or adjusts.
-5. Agent `update`: create evolve cycle with `feature_ids`, `checkpoints`, routing.
+5. Persist `evolve-plan-card.md` + `routing-plan.md`; agent `update`: create evolve cycle with
+   `feature_ids`, `checkpoints`, routing.
 6. **Checkpoints:** mandatory after A/B/C/D/deploy on **Standard/Full**; on **Lean**, only on
    gate failure or user request (token/step savings — RET-001).
+7. If checkpoint requires re-route: **Plan** again, then Agent continues Phase 2.
 
 ## Phase 2 — Execute routed stages (delta mode)
 
@@ -337,6 +416,8 @@ Same as pipeline — never re-run entire phases for verification failures.
    present staging/production as that preview unless the user explicitly requests it.
 9. **Corpus citations** — every change/reference includes `[Corpus: …]`; missing coverage →
    AskQuestion doc-add interview before continuing (never invent standing docs).
+10. **Plan orchestrates, Agent executes** — Phase 0–1 (and re-routes) in Plan mode; persist
+    Evolve Plan Card in Agent; do not implement feature code while still in Plan.
 
 ## Additional resources
 
