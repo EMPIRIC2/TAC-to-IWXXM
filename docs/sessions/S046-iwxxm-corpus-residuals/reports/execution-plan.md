@@ -12,9 +12,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase C — build (B→C PASS) |
-| **Active milestone** | M3 — Corpus soft / gates |
-| **Active task** | T3.4 — Close/defer #859/#860/#857 |
-| **Tasks** | 15 / 28 completed (through T3.3) |
+| **Active milestone** | M4 — Encode deepen |
+| **Active task** | T4.1 — VONA vertical extent (#849) |
+| **Tasks** | 16 / 28 completed (through T3.4 / M3) |
 | **Last updated** | 2026-08-06 |
 
 ## Tech Stack Summary
@@ -92,7 +92,7 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 | T3.1 | Docs/Config | codes.wmo.int vs vendor codelist drift check cadence (+ optional CI) | AC8; TC-EV038-008; #859 | T2.8 | **completed** |
 | T3.2 | Docs | Inventory `*-translation-failed*` vs soft path; fixtures or deferral | AC9; TC-EV038-009; #860 | T3.1 | **completed** |
 | T3.3 | Docs | SWXA A7-4/A7-5 disposition; catalog only with vendor peers | AC10; TC-EV038-010; #857 | T3.2 | **completed** |
-| T3.4 | Docs | Close/defer #859/#860/#857 | AC14 | T3.3 | pending |
+| T3.4 | Docs | Close/defer #859/#860/#857 | AC14 | T3.3 | **completed** |
 
 ### M4 — Encode deepen (#849, #850, #856)
 
