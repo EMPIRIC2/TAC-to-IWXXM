@@ -13,8 +13,8 @@
 |-------|-------|
 | **Active phase** | Phase C — build (B→C PASS) |
 | **Active milestone** | M3 — Corpus soft / gates |
-| **Active task** | T3.1 — codes.wmo.int drift check (#859) |
-| **Tasks** | 12 / 28 completed (through T2.8 / M2) |
+| **Active task** | T3.2 — translation-failed inventory (#860) |
+| **Tasks** | 13 / 28 completed (through T3.1) |
 | **Last updated** | 2026-08-06 |
 
 ## Tech Stack Summary
@@ -89,7 +89,7 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 
 | Task | Type | Description | Spec Source | Depends On | Status |
 |------|------|-------------|-------------|------------|--------|
-| T3.1 | Docs/Config | codes.wmo.int vs vendor codelist drift check cadence (+ optional CI) | AC8; TC-EV038-008; #859 | T2.8 | pending |
+| T3.1 | Docs/Config | codes.wmo.int vs vendor codelist drift check cadence (+ optional CI) | AC8; TC-EV038-008; #859 | T2.8 | **completed** |
 | T3.2 | Docs | Inventory `*-translation-failed*` vs soft path; fixtures or deferral | AC9; TC-EV038-009; #860 | T3.1 | pending |
 | T3.3 | Docs | SWXA A7-4/A7-5 disposition; catalog only with vendor peers | AC10; TC-EV038-010; #857 | T3.2 | pending |
 | T3.4 | Docs | Close/defer #859/#860/#857 | AC14 | T3.3 | pending |

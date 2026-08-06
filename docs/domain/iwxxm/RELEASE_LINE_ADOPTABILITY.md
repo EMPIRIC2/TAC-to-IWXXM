@@ -83,6 +83,7 @@ Ordered steps to add WMO line `YYYY-N` as **latest**, demoting current latest �
 2. [ ] Sync `iwxxm` (and matching `iwxxm-modelling` / codelists as needed) via `scripts/vendor/sync_iwxxm.py` — **sync PR only**; never hand-edit under `vendor/schemas/*`.
 3. [ ] **Tip-diff summary (#852):** run `make tip-diff-iwxxm` (or `scripts/vendor/tip_diff_iwxxm.py --from <prev> --to <new>`) and paste XSD/SCH/example-stem deltas into the sync PR — **TC-EV038-005**.
 4. [ ] **iwxxm-us compatibility gate (#853):** run `make iwxxm-us-compat-smoke` (report + annex3/`iwxxm_us` convert+validate smoke). On US fail, apply **§iwxxm-us lag policy (D-S046-853)** — ship WMO-only first; document lag in the sync PR; do **not** block ICAO default. — **TC-EV038-006**.
+4b. [ ] **codes.wmo.int URI drift (#859):** run `make codelist-uri-drift`; resolve new SCH↔CSV drift or document allowlist; paste summary in sync PR — **TC-EV038-008** / **D-S046-859**.
 5. [ ] **iwxxm-modelling delta watch (G8 / #861):** record tip-vs-pin Modelling/UML/Pattern-ID notes in the sync PR (or linked issue) — informs latest+1; **no** duplicate [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807) org mine.
 6. [ ] Update `vendor/manifest.json` tag + SHA + tree hash.
 7. [ ] Run ADR-027 xsdata codegen (`scripts/codegen/iwxxm_xsd.py`); commit generated status/artifacts.
@@ -151,7 +152,39 @@ First real use is when a line actually enters the warning window.
 | `iwxxm-us` lag vs WMO line | Medium | Explicit check every WMO adopt (`make iwxxm-us-compat-smoke`); **§iwxxm-us lag policy** |
 | Enum duplication (backend vs FE defaults) | Medium | Child: single generated supported-versions artifact |
 | Schematron xslt2 / Docker path | Medium | Line-local SCH only; keep smoke in canaries |
-| Codelist URI drift vs codes.wmo.int | Low–Med | Periodic check (gap G6 → child under #846/#808) |
+| Codelist URI drift vs codes.wmo.int | Low–Med | `make codelist-uri-drift` (#859 / **D-S046-859**); optional `--live` |
+
+---
+
+## codes.wmo.int URI drift (D-S046-859 / #859)
+
+**Locked 2026-08-06 (S046 / EV-038):** Offline SCH RDF ↔ `iwxxm-codelists` CSV is the
+**non-flake** gate; live HTML browse is **never** required for CI.
+
+### Cadence
+
+| When | Action |
+|------|--------|
+| Every vendor sync PR touching `iwxxm` SCH `rule/codes.wmo.int-*.rdf` or `iwxxm-codelists` | Run `make codelist-uri-drift` and paste summary in the PR |
+| Quarterly / on suspicion of live registry change | Optional `uv run python scripts/iwxxm/codelist_uri_drift.py --live` (RDF Accept; soft-skip HTML/network) |
+| Adopt-new-line checklist | After tip-diff / before DEFAULT bump — confirm drift green or disposition recorded |
+
+### Failure disposition
+
+1. **New SCH ↔ CSV drift (not allowlisted)** — **block** the sync PR until resolved (re-pin
+   codelists, fix SCH bundle, or document intentional lag with an allowlist entry + issue).
+2. **Known SCH-ahead allowlist** (`KNOWN_SCH_AHEAD_URIS` in the script) — report as
+   `KNOWN_LAG`; clear when the next `iwxxm-codelists` pin includes the notations. Current:
+   `49-2/SpaceWxLocation/DAYSIDE` + `NIGHTSIDE`.
+3. **`iwxxm/*` registers** — no CSV in the current codelists pin; SCH inventory only + optional
+   live RDF. Dual colour / MetFeature policy unchanged (encode per XSD `vocabulary=`).
+4. **Live `--live` advisory drift** — do **not** fail offline CI; open/update a child under
+   [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) if TAC/encode hrefs need changes.
+5. **#889 hand-off** — drift lines always emit stable `http://codes.wmo.int/…` URIs for
+   [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) (TAC verify/cover/cite).
+
+Optional CI: [`.github/workflows/codelist-uri-drift.yml`](../../../.github/workflows/codelist-uri-drift.yml)
+(path-filtered; offline only). **TC-EV038-008**.
 
 ---
 
@@ -187,9 +220,10 @@ as the make target.
 | iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) — **closed** S046 (`make iwxxm-us-compat-smoke` + **D-S046-853**) |
 | UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) — **closed** S046 (SoT JSON roles; UJ-050) |
 | Deprecation calendar / reminder template | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) — **template landed** S046/EV-038 |
+| codes.wmo.int vs vendor URI drift (G6 residual) | [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) — `make codelist-uri-drift` (**D-S046-859**; #889 hand-off) |
 | iwxxm-modelling delta watch (G8) | [#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) — sync-PR checklist step |
 
-Related corpus residuals (G6 codelist drift) may fold into #852 or stay under #846.
+Related: TAC verify/cover/cite of registry URIs continues under [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889).
 
 ---
 

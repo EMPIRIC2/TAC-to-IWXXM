@@ -14,7 +14,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync export-iwxxm-versions tip-diff-iwxxm \
-	iwxxm-us-compat-smoke \
+	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
@@ -276,6 +276,10 @@ tip-diff-iwxxm:
 # S046 / EV-038 / #853 — iwxxm-us gate report + annex3/US smoke (D-S046-853)
 iwxxm-us-compat-smoke:
 	$(UV) run python scripts/iwxxm/iwxxm_us_compat_gate.py --smoke
+
+# S046 / EV-038 / #859 — SCH RDF ↔ codelist CSV URI drift (D-S046-859; non-flake)
+codelist-uri-drift:
+	$(UV) run python scripts/iwxxm/codelist_uri_drift.py
 
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
