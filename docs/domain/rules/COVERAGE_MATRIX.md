@@ -350,7 +350,7 @@ S045/EV-037). Encode **SoT** = ICAO → FM205 → XSD/SCH → AHL → A7-1 →
 | G-VONA-2 | Closed — `KVERT`→`UHPP` registry/fixture constant |
 | G-VONA-3 | Closed cite-only — Doc 10157 paywall; field labels from vendor TAC + XSD |
 | G-VONA-4 | Closed — `WM`→`LM` in `map_t1t2` |
-| G-VONA-5 | Deepen child — `RESUSPENDED_VOLCANIC_ASH` (XSD present; no A7-1 peer) — [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850) |
+| G-VONA-5 | **Cite-only deferral (S046 / EV-038 T4.4)** — XSD `ResuspendedVolcanicAsh` present; no vendor VONA peer / normative TAC; no invented packing — [#850](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/850); [t4.4 report](../../sessions/S046-iwxxm-corpus-residuals/reports/t4.4-resuspended-ash-deferral.md) |
 | G-VONA-6 | Closed — `vona-` in-scope + `vona-A7-1` registered; catalog `wmoPass` |
 
 ---

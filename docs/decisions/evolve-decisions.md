@@ -37,6 +37,7 @@
 | D-S046-853 | decision | #853 US lag? | **1** — **Ship WMO-only first**; document lag in sync PR; do not block ICAO default |
 | D-S046-853-push | decision | Push before T2.7? | **1** — continue T2.7 then push (lag+push chat `1,1`) |
 | D-S046-859 | decision | #859 drift? | **1** — offline SCH↔CSV non-flake gate; live RDF optional soft; known SpaceWx SCH-ahead allowlisted |
+| D-S046-850 | decision | #850 resuspended? | **1** — cite-only deferral (no WMO peer / no invented TAC); matrix G-VONA-5 |
 
 | Milestone | Issues | Theme | Notes |
 |-----------|--------|-------|-------|
