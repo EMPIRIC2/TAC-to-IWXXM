@@ -2107,11 +2107,11 @@ describe('FileConverter Component', () => {
     it('loads an IWXXM example onto collect_iwxxm mode (C4)', async () => {
       render(<FileConverter {...defaultProps} />);
 
-      await selectGoldenExample(/IWXXM METAR basic/i);
+      await selectGoldenExample(/IWXXM Collect METAR NIL/i);
 
       expect(screen.getByTestId('input-mode-collect_iwxxm')).toHaveClass('bg-blue-600');
       const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
-      expect(editor.value).toMatch(/<\?xml|iwxxm|METAR/i);
+      expect(editor.value).toMatch(/MeteorologicalBulletin|iwxxm|METAR/i);
     });
 
     it('loads TC SIGMET A6-2-TC reference into editor (TC-EV030-005 / UJ-039)', async () => {
