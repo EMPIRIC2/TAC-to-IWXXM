@@ -1,6 +1,6 @@
 # Execution plan — S046 / EV-038 (#846 residuals #849–#861)
 
-> **Status**: **approved** (`D-S046-04-plan`=1) — Gate B PASS; **08 PASS**; Phase C **`D-S046-phase-c`=1**; T5.2 **09+10 PASS**  
+> **Status**: **approved** (`D-S046-04-plan`=1) — Gate B PASS; **08 PASS**; Phase C **`D-S046-phase-c`=1**; T5.2 **09+10 PASS**; T5.3 **APPROVED** (`D-S046-11`=1); Phase D deploy — T5.4 **12-verify-deploy in progress**  
 > **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
 > **Evolve cycle**: EV-038  
 > **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn)  
@@ -11,10 +11,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Phase D — next T5.3 11-verify-impl |
+| **Active phase** | Phase D — deploy (T5.4 12→13) |
 | **Active milestone** | M5 — Verify / deploy closeout |
-| **Active task** | T5.3 — 11-verify-impl AC roll-up |
-| **Tasks** | 26 / 28 completed (through T5.2 / 09+10) |
+| **Active task** | T5.4 — 12 + 13 (**in_progress**) |
+| **Tasks** | 27 / 28 completed (through T5.3); T5.4 in progress |
 | **Last updated** | 2026-08-06 |
 
 ## Tech Stack Summary
@@ -57,6 +57,8 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 | D-S046-04-plan | **1** — approved as written |
 | D-S046-05-gate-b | **1** — PASS → 07 M1 |
 | D-S046-phase-c | **1** — push + start T5.2 (09+10) |
+| D-S046-ui-preview | **2** — decline non-deployed preview; approve from reports/tests only |
+| D-S046-11 | **1** — Approve all AC1–AC14 + UJ-050; proceed to T5.4 |
 
 ## Milestones & Tasks (TDD order)
 
@@ -114,8 +116,8 @@ Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py
 |------|------|-------------|-------------|------------|--------|
 | T5.1 | Config | 08-verify-build — lint/typecheck/format/suites | 08 | T4.8 | **completed** |
 | T5.2 | Test | 09-qa + 10-e2e (UJ-050); H4–H5 prep | 09; 10 | T5.1 | **completed** |
-| T5.3 | Docs | 11-verify-impl AC roll-up; epic #846 update | AC14; TC-EV038-014; 11 | T5.2 | pending |
-| T5.4 | Deploy | 12 + 13 (or waive if final ship docs-only — unlikely after M2+) | 12; 13; S02.M5 | T5.3 | pending |
+| T5.3 | Docs | 11-verify-impl AC roll-up; epic #846 update | AC14; TC-EV038-014; 11 | T5.2 | **completed** |
+| T5.4 | Deploy | 12 + 13 (or waive if final ship docs-only — unlikely after M2+) | 12; 13; S02.M5 | T5.3 | **in_progress** |
 
 ## PR / Git Strategy
 
