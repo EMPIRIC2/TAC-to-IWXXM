@@ -25,8 +25,8 @@ Playwright, with mandatory teardown across integration, e2e, and local harnesses
 
 ## Next child stage
 
-**02-verify-plan** (delta) — Gate A consistency on F16 / UJ-027 / TC-F16-LIVE / tech-spec
-deltas. [Corpus: product §F16] [Corpus: tests] [Corpus: journeys]
+**04-tech-plan** (delta) — execution plan for Compose teardown harden, live Playwright
+harness, write-assertion approach, make/CI targets. S02.M1/M2/M4/M5.
 
 ## Risks / open decisions
 

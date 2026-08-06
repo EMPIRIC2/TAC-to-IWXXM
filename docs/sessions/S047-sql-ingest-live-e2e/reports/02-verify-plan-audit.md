@@ -20,7 +20,7 @@
 | 8 | 01-requirements-summary.md | Manifest + AC table | audited |
 
 Skipped (per D-S047-ac manifest): api-contract.md, new ADR.  
-**spec.md**: no EV-039 delta yet — F16 component already present (dissemination package); see S02.M3.
+**spec.md**: EV-039 deepen bullet added in 02 (`D-S047-02-gate-a`=2) — S02.M3 resolved.
 
 ## Consistency checklist
 
@@ -59,7 +59,7 @@ Skipped (per D-S047-ac manifest): api-contract.md, new ADR.
 |----|-----------|-------|-----------|
 | S02.M1 | `compose-mock-byoc-down` today is `stop`+`rm -f`, not `down -v` | Volumes / `restart: unless-stopped` may linger vs AC4 “volumes where safe” | **04/07:** harden teardown (down -v or explicit volume rm; assert no orphans) |
 | S02.M2 | Live Playwright needs local API+FE + CORS + allowlist wiring | Not specified beyond env-contract pointer | **04:** execution-plan tasks for harness env, make target, H4–H5 local |
-| S02.M3 | `spec.md` §F16 lacks EV-039 one-liner | Manifest skipped full spec interview; component map still valid | **Optional 07 docs:** one deepen bullet — or waive (test-only deepen) |
+| S02.M3 | `spec.md` §F16 lacks EV-039 one-liner | **RESOLVED** in 02 — deepen bullet added (`D-S047-02-gate-a`=2) | — |
 | S02.M4 | “Write assertion” mechanism unspecified | Query DB from test vs trust send response | **04:** pick approach (prefer verify row via async driver or SQL CLI) |
 | S02.M5 | T3 naming for local Compose vs deployed T3 | Journeys already say “local Compose — not production” | **Accept** wording; keep LIVE suite out of prod `make test-live` unless opted in |
 
@@ -71,7 +71,7 @@ Skipped (per D-S047-ac manifest): api-contract.md, new ADR.
 
 ## Contradictions
 
-None blocking.
+None blocking. S02.M3 resolved by `spec.md` §F16 EV-039 deepen bullet.
 
 ## Connectivity (stage 02)
 
@@ -81,11 +81,14 @@ None blocking.
 
 ## Gate A recommendation
 
-**PASS** with S02.M1–M5 + S02.L1 accepted as **04/07** work (not 01 doc bugs).  
+**PASS** with S02.M1–M2, M4–M5 + S02.L1 accepted as **04/07** work; S02.M3 fixed in 02.
 Close 02 → start **04-tech-plan** (Standard; 03 skipped).
 
-## Gate A result (pending user)
+## Gate A result (locked)
 
-| ID | Options |
-|----|---------|
-| D-S047-02-gate-a | **1** PASS as recommended → close 02 → 04 · **2** PASS but fix S02.M3 (spec note) in 02 first · **3** Hold — edit ACs · **4** Explain |
+| ID | Decision |
+|----|----------|
+| D-S047-02-gate-a | **2** — PASS; add `spec.md` EV-039 note in 02 first, then close → 04 |
+
+**Status:** Gate A **PASS** 2026-08-06 — close 02 → **04-tech-plan**.
+

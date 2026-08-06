@@ -51,6 +51,14 @@
 
 **01-requirements**: standing deltas written 2026-08-06 — feature-list §F16, user-journeys UJ-027, test-plan TC-F16-LIVE-*, tech-spec pointer, requirements-decisions EV-039 rows.
 
+### Gate A (locked 2026-08-06; chat `2` → **D-S047-02-gate-a**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-02-gate-a | **2** — PASS; add `spec.md` EV-039 deepen note in 02; S02.M1/M2/M4/M5 → 04/07 |
+
+**Status:** Gate A **PASS** — close 02 → **04-tech-plan**.
+
 ---
 
 ## Cycle EV-038 — Epic #846 corpus residuals #849–#861 (S046)

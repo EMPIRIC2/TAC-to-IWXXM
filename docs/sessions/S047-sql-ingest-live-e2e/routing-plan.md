@@ -13,7 +13,7 @@
 | 00-context | yes | scoped | **completed** | S047 open; D-S047-open |
 | 16-evolve | yes | orchestrator | **in_progress** | EV-039 Phase 0–1 |
 | 01-requirements | yes | delta | **completed** | F16 deepen ACs + teardown; D-S047-ac |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S047-02-gate-a`=2); S02.M3 fixed |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules planned |
 | 04-tech-plan | yes | delta | pending | Compose profile + e2e harness plan |
 | 05-verify-tech | yes | delta | pending | Gate B |
@@ -38,7 +38,7 @@
 | Gate | Result | When |
 |------|--------|------|
 | Phase 0 open | **PASS** (`D-S047-open`) | 2026-08-06 |
-| A→B / 02 | pending | — |
+| A→B / 02 | **PASS** (`D-S047-02-gate-a`=2) | 2026-08-06 |
 | B→C / 05 | pending | — |
 | C→D / 11 | pending | — |
 | Deploy 12/13 | pending | — |
