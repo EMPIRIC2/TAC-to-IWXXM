@@ -18,7 +18,7 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
   current_stage: 07-build
-  current_stage_note: "M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
+  current_stage_note: "M2 T2.1–T2.3 done; next T2.4 teardown audit; tip b0a930f1"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -101,9 +101,9 @@ active_session:
     started: "2026-08-06"
     started_at: "2026-08-06"
     completed: null
-    tip_sha: d5f1bfe3
-    tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
-    note: "IN_PROGRESS — M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
+    tip_sha: b0a930f1
+    tip_sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
+    note: "IN_PROGRESS — M2 T2.1–T2.3 done; next T2.4 teardown audit; tip b0a930f1"
   - stage: 08-verify-build
     mode: full
     required: true
@@ -35351,12 +35351,12 @@ evolve_cycles:
       - 06-tech-tooling
   current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
+  current_stage_note: "M2 T2.1–T2.3 done; next T2.4 teardown audit; tip b0a930f1"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: d5f1bfe3
-  tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
-  tip_sha_note: "tip d5f1bfe3 — M2 T2.1 done; next T2.2 + T2.3 parallel"
+  tip_sha: b0a930f1
+  tip_sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
+  tip_sha_note: "tip b0a930f1 — M2 T2.1–T2.3 done; next T2.4 teardown audit"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -35434,10 +35434,10 @@ evolve_cycles:
       started: "2026-08-06"
       started_at: "2026-08-06"
       completed: null
-      tip_sha: d5f1bfe3
-      tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
-      note: "IN_PROGRESS — M2 T2.1 done; next T2.2 + T2.3 parallel; tip d5f1bfe3"
-      active_task: T2.2
+      tip_sha: b0a930f1
+      tip_sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
+      note: "IN_PROGRESS — M2 T2.1–T2.3 done; next T2.4 teardown audit; tip b0a930f1"
+      active_task: T2.4
       active_milestone: M2
       completed_tasks:
       - T1.1
@@ -35445,6 +35445,8 @@ evolve_cycles:
       - T1.3
       - T1.4
       - T2.1
+      - T2.2
+      - T2.3
     08-verify-build:
       status: pending
     09-qa:
@@ -35488,6 +35490,7 @@ evolve_cycles:
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 T2.2+T2.3 COMPLETE @ b0a930f1 ([T2.2] Playwright TC-F16-LIVE) + 454754f3 ([T2.3] async live write-assert); completed_tasks T2.1–T2.3; active_task T2.4 teardown audit; tip b0a930f1; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 T2.1 COMPLETE @ d5f1bfe3 ([T2.1] test: red TC-F16-LIVE-001..004 Playwright stubs); active_task T2.2; next T2.2 + T2.3 parallel; tip d5f1bfe3; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 continue M2 T2.1 in_progress (TC-F16-LIVE red Playwright stubs); M1 complete; Gate B PASS; tip a19bedfa; no new git_history commits; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 Gate B PASS (D-S047-05-gate-b=1); checkpoints.phase_b+gates.b_to_c passed; close 05; start 07-build M1 T1.1 (06 skipped); no git commit by workflow-state-manager"
@@ -37262,15 +37265,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-039-sql-ingest-live-e2e
-  ahead_of_origin: 12
+  ahead_of_origin: 14
   pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state.yaml dirty after T2.1 bookkeeping (not workflow-state-manager commit)"
-  tip_sha: d5f1bfe3
-  tip_sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
-  tip_note: 'S047/EV-039 — tip d5f1bfe3 [T2.1]; 07-build active T2.2; next T2.2 + T2.3 parallel; completed_tasks include T2.1'
+  dirty_note: "workflow-state.yaml dirty after T2.2+T2.3 bookkeeping (not workflow-state-manager commit)"
+  tip_sha: b0a930f1
+  tip_sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
+  tip_note: 'S047/EV-039 — tip b0a930f1 [T2.2]; 07-build active T2.4; T2.1–T2.3 done; next T2.4 teardown audit'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -37282,9 +37285,10 @@ git_history:
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   recommended_branch: evolve/EV-039-sql-ingest-live-e2e
-  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ d5f1bfe3; 07-build M2 T2.1 done / active T2.2; next T2.2 + T2.3 parallel; 16-evolve remains in_progress; no git commit by workflow-state-manager'
+  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ b0a930f1; 07-build M2 T2.1–T2.3 done / active T2.4; next T2.4 teardown audit; 16-evolve remains in_progress; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S047/EV-039 — recorded git commits b0a930f1 (b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3) [T2.2] feat: implement TC-F16-LIVE Playwright against Compose DBs + 454754f3 (454754f308fd3e62722bd34034832f5e40f2bccd) [T2.3] feat: async-driver live write-assert helper for F16; T2.1–T2.3 COMPLETE; active_task T2.4; tip b0a930f1; ahead_of_origin=14 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commit d5f1bfe3 (d5f1bfe3c40e47189cd7b0046581a5c647ee5545) [T2.1] test: red TC-F16-LIVE-001..004 Playwright stubs; T2.1 COMPLETE; active_task T2.2; next T2.2 + T2.3 parallel; tip d5f1bfe3; ahead_of_origin=12 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits 6e2d7766 ([T1.3] test-e2e-f16-live-sql) + 5794f5c0 ([T1.1][T1.2] compose-mock-byoc-down) + f86e07e5 (Gate B PASS; close 04/05; start 07-build); 07-build in_progress active_task T1.4; completed_tasks T1.1–T1.3; tip 6e2d7766; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits 7970ba46 (Gate A PASS) + 326a2279 (audit draft); stage 02-verify-plan COMPLETE; gates.a_to_b + phase_a passed; D-S047-02-gate-a=2; S02.M3 via spec.md; current_stage 04-tech-plan; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -37752,11 +37756,11 @@ git_history:
     created: "2026-08-06"
     session_id: S047-sql-ingest-live-e2e
     evolve_cycle_id: EV-039
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+    tip_sha: b0a930f1
+    tip_sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
     exists: true
     pushed: false
-    note: "S047/EV-039 ACTIVE — tip 7970ba46; Gate B PASS (D-S047-05-gate-b=1); 07-build M1 T1.1 in_progress"
+    note: "S047/EV-039 ACTIVE — tip b0a930f1; 07-build M2 T2.1–T2.3 done; active_task T2.4 teardown audit"
   - name: evolve/EV-038-iwxxm-corpus-residuals
     status: merged
     base: main
@@ -38894,6 +38898,49 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: b0a930f1
+    short: b0a930f1
+    sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
+    branch: evolve/EV-039-sql-ingest-live-e2e
+    message: "[T2.2] feat: implement TC-F16-LIVE Playwright against Compose DBs"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    files_changed:
+    - apps/e2e/uj027-f16-live-sql.e2e.spec.ts
+    - docs/sessions/S047-sql-ingest-live-e2e/build-plan-card.md
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
+    - tests/unit/test_f16_live_sql_playwright_stubs.py
+    - workflow-state.yaml
+    files_changed_count: 5
+    timestamp: "2026-08-06T14:31:48-04:00"
+    pushed: false
+    tip_sha: b0a930f1
+    tip_sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
+    note: "S047/EV-039 — T2.2 COMPLETE; TC-F16-LIVE Playwright against Compose DBs; tip; active_task T2.4"
+  - sha: 454754f3
+    short: 454754f3
+    sha_full: 454754f308fd3e62722bd34034832f5e40f2bccd
+    branch: evolve/EV-039-sql-ingest-live-e2e
+    message: "[T2.3] feat: async-driver live write-assert helper for F16"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    files_changed:
+    - packages/dissemination/src/dissemination/live_write_assert.py
+    - packages/dissemination/tests/test_live_write_assert.py
+    files_changed_count: 2
+    timestamp: "2026-08-06T14:31:35-04:00"
+    pushed: false
+    tip_sha: b0a930f1
+    tip_sha_full: b0a930f14ea7afe0b7b0d50d81e0bbfcf64980a3
+    note: "S047/EV-039 — T2.3 COMPLETE; async-driver live write-assert helper; precedes tip T2.2"
   - sha: d5f1bfe3
     short: d5f1bfe3
     sha_full: d5f1bfe3c40e47189cd7b0046581a5c647ee5545
