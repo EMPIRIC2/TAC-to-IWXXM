@@ -1,6 +1,6 @@
 # Build Plan Card
 
-> Session: S047-sql-ingest-live-e2e | Updated: 2026-08-06 | Active: Phase 1 / M2 / T2.1
+> Session: S047-sql-ingest-live-e2e | Updated: 2026-08-06 | Active: Phase 1 / M2 / T2.2
 
 ## Goal (one sentence)
 
@@ -15,7 +15,7 @@ Implement TC-F16-LIVE Playwright (no route mocks) with async-driver write assert
 
 ## In scope (this batch — M2)
 
-- [ ] T2.1 — Test — TC-F16-LIVE-001..004 red stubs/markers — Spec: test-plan TC-F16-LIVE
+- [x] T2.1 — Test — TC-F16-LIVE-001..004 red stubs/markers — Spec: test-plan TC-F16-LIVE
 - [ ] T2.2 — Code — live e2e spec `uj027-f16-live-sql.e2e.spec.ts` — Spec: UJ-027; AC3
 - [ ] T2.3 — Code — write-assertion helpers (async drivers) — Spec: AC2; Q2
 - [ ] T2.4 — Test — teardown audit Testcontainers + SQLite temps — Spec: AC5/AC6

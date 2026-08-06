@@ -18,7 +18,7 @@ active_session:
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
   current_stage: 07-build
-  current_stage_note: "M1 T1.1–T1.3 done; next T1.4 CORS/allowlist recipe; tip 6e2d7766 [T1.3]"
+  current_stage_note: "M2 T2.1 in_progress — TC-F16-LIVE red Playwright stubs; M1 complete; Gate B PASS; tip a19bedfa"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -101,7 +101,7 @@ active_session:
     started: "2026-08-06"
     started_at: "2026-08-06"
     completed: null
-    note: "IN_PROGRESS — M1 T1.1 teardown contract test; Gate B PASS (D-S047-05-gate-b=1)"
+    note: "IN_PROGRESS — M2 T2.1 TC-F16-LIVE red Playwright stubs; M1 complete; Gate B PASS; tip a19bedfa"
   - stage: 08-verify-build
     mode: full
     required: true
@@ -35349,12 +35349,12 @@ evolve_cycles:
       - 06-tech-tooling
   current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "M1 T1.1–T1.3 completed; active T1.4; tip 6e2d7766 [T1.3]"
+  current_stage_note: "M2 T2.1 in_progress — TC-F16-LIVE red Playwright stubs; M1 complete; Gate B PASS; tip a19bedfa"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: 6e2d7766
-  tip_sha_full: 6e2d7766cf68c429e5436862ef5b959e2a4215d8
-  tip_sha_note: "tip 6e2d7766 — [T1.3] test-e2e-f16-live-sql + F16_LIVE_SQL; prior 5794f5c0 T1.1/T1.2"
+  tip_sha: a19bedfa
+  tip_sha_full: a19bedfa1b41047044b8efac26b51372c402803b
+  tip_sha_note: "tip a19bedfa — M1 complete; advance Build Plan Card to M2; M2 T2.1 in_progress"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -35432,12 +35432,14 @@ evolve_cycles:
       started: "2026-08-06"
       started_at: "2026-08-06"
       completed: null
-      note: "M1 T1.1–T1.3 completed; active T1.4"
-      active_task: T1.4
+      note: "IN_PROGRESS — M2 T2.1 TC-F16-LIVE red Playwright stubs; M1 complete; tip a19bedfa"
+      active_task: T2.1
+      active_milestone: M2
       completed_tasks:
       - T1.1
       - T1.2
       - T1.3
+      - T1.4
     08-verify-build:
       status: pending
     09-qa:
@@ -35481,6 +35483,7 @@ evolve_cycles:
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 continue M2 T2.1 in_progress (TC-F16-LIVE red Playwright stubs); M1 complete; Gate B PASS; tip a19bedfa; no new git_history commits; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 Gate B PASS (D-S047-05-gate-b=1); checkpoints.phase_b+gates.b_to_c passed; close 05; start 07-build M1 T1.1 (06 skipped); no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 04 COMPLETE (D-S047-04-plan=1); 05-verify-tech STARTED — audit drafted reports/05-verify-tech-audit.md; gates.b_to_c + checkpoints.phase_b pending; awaiting D-S047-05-gate-b; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 04-tech-plan draft ready — D-S047-04 locked (Q1=1 Q2=1 Q3=1+3 Q4=1+2+3 local); execution-plan + build-plan-card + reports/04-tech-plan.md; phase4_user_review in_progress; awaiting D-S047-04-plan approve → 05; no git commit by workflow-state-manager"

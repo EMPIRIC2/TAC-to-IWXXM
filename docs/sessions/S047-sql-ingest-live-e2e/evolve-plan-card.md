@@ -25,10 +25,10 @@ Playwright, with mandatory teardown across integration, e2e, and local harnesses
 
 ## Next child stage
 
-**07-build** — **M1 complete**; next **M2 T2.1** (live Playwright TC-F16-LIVE). Optional 08 at M1 boundary.
+**07-build** — **M2 T2.1 done** (red LIVE stubs); next **T2.2** (implement live e2e) + **T2.3** (write asserts, parallel).
 
 ## Risks / open decisions
 
-- Playwright file `uj027-f16-live-sql.e2e.spec.ts` not yet implemented (T2.2) — make target will fail until then
+- Playwright file `uj027-f16-live-sql.e2e.spec.ts` has T2.1 red stubs; T2.2 fills live UI flow
 - Write-assert helpers in Python (S05.M3) — T2.3
 - SQL Server: required **local**; CI skippable (`D-S047-04` Q4)
