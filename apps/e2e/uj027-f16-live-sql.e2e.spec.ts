@@ -14,7 +14,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { execFile } from 'node:child_process';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
@@ -25,6 +24,9 @@ const execFileAsync = promisify(execFile);
 const liveEnabled = process.env.F16_LIVE_SQL === '1';
 const skipSqlServer =
   process.env.F16_LIVE_SQL_SERVER === '0' || process.env.F16_SKIP_SQLSERVER === '1';
+/** API runs in Docker — rewrite host-published fixture URIs to Compose DNS names. */
+const dockerApi =
+  process.env.F16_DOCKER_API === '1' || process.env.F16_DOCKER_API === 'true';
 
 const E2E_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(E2E_DIR, '../..');
@@ -46,6 +48,25 @@ type MockByocFixtures = {
 
 function loadComposeUris(): MockByocFixtures {
   return JSON.parse(fs.readFileSync(FIXTURES, 'utf8')) as MockByocFixtures;
+}
+
+/**
+ * Host fixtures use 127.0.0.1:&lt;published-port&gt;. Inside the API container those
+ * loopback targets miss BYOC — use Compose service DNS + container ports instead.
+ * Write-assert still uses the host URI (Playwright runs on the host).
+ */
+function apiEgressUri(hostUri: string, sinkType: SinkType): string {
+  if (!dockerApi) return hostUri;
+  if (sinkType === 'postgres') {
+    return hostUri.replace(/@127\.0\.0\.1:25432\b/, '@byoc-postgres:5432');
+  }
+  if (sinkType === 'mysql') {
+    return hostUri.replace(/@127\.0\.0\.1:13306\b/, '@byoc-mysql:3306');
+  }
+  if (sinkType === 'sqlserver') {
+    return hostUri.replace(/@127\.0\.0\.1:11433\b/, '@byoc-sqlserver:1433');
+  }
+  return hostUri;
 }
 
 async function assertApiHealthy(): Promise<void> {
@@ -164,7 +185,7 @@ test.describe('TC-F16-LIVE: live local SQL dissemination (UJ-027 / EV-039)', () 
     const { postgres_compose } = loadComposeUris();
     const uploadKey = await liveDisseminate(page, {
       sinkType: 'postgres',
-      uri: postgres_compose.uri,
+      uri: apiEgressUri(postgres_compose.uri, 'postgres'),
     });
     await assertLiveDbWrite({
       sinkType: 'postgres',
@@ -177,7 +198,7 @@ test.describe('TC-F16-LIVE: live local SQL dissemination (UJ-027 / EV-039)', () 
     const { mysql_compose } = loadComposeUris();
     const uploadKey = await liveDisseminate(page, {
       sinkType: 'mysql',
-      uri: mysql_compose.uri,
+      uri: apiEgressUri(mysql_compose.uri, 'mysql'),
     });
     await assertLiveDbWrite({
       sinkType: 'mysql',
@@ -194,7 +215,7 @@ test.describe('TC-F16-LIVE: live local SQL dissemination (UJ-027 / EV-039)', () 
     const { sqlserver_compose } = loadComposeUris();
     const uploadKey = await liveDisseminate(page, {
       sinkType: 'sqlserver',
-      uri: sqlserver_compose.uri,
+      uri: apiEgressUri(sqlserver_compose.uri, 'sqlserver'),
     });
     await assertLiveDbWrite({
       sinkType: 'sqlserver',
@@ -206,15 +227,21 @@ test.describe('TC-F16-LIVE: live local SQL dissemination (UJ-027 / EV-039)', () 
   test('TC-F16-LIVE-004: Live local SQLite upload + teardown audit', async ({
     page,
   }) => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'f16-live-sqlite-'));
+    // Colima bind of host /tmp is not reliably shared; use repo tmp mounted at /tmp/f16-live.
+    const hostBase = path.join(REPO_ROOT, 'tmp', 'f16-live');
+    fs.mkdirSync(hostBase, { recursive: true });
+    const tmpDir = fs.mkdtempSync(path.join(hostBase, 'sqlite-'));
     const dbPath = path.join(tmpDir, 'live-suite.db');
-    const uri = `sqlite+aiosqlite:///${dbPath}`;
+    const apiUri = dockerApi
+      ? `sqlite+aiosqlite:////tmp/f16-live/${path.basename(tmpDir)}/live-suite.db`
+      : `sqlite+aiosqlite:///${dbPath}`;
+    const assertUri = `sqlite+aiosqlite:///${dbPath}`;
     try {
       const uploadKey = await liveDisseminate(page, {
         sinkType: 'sqlite',
-        uri,
+        uri: apiUri,
       });
-      await assertLiveDbWrite({ sinkType: 'sqlite', uri, uploadKey });
+      await assertLiveDbWrite({ sinkType: 'sqlite', uri: assertUri, uploadKey });
       expect(fs.existsSync(dbPath)).toBe(true);
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });

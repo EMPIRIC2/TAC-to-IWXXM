@@ -189,3 +189,4 @@ packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 
 # Local DOKS kube/access secrets (never commit)
 deploy/doks/.env.access
+tmp/

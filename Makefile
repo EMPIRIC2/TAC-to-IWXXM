@@ -545,8 +545,14 @@ F16_SKIP_SQLSERVER ?= 0
 test-e2e-f16-live-sql:
 	@set -e; \
 	$(MAKE) compose-mock-byoc-up F16_SKIP_SQLSERVER="$(F16_SKIP_SQLSERVER)" F16_LIVE_SQL_SERVER="$(F16_LIVE_SQL_SERVER)"; \
-	trap '$(MAKE) compose-mock-byoc-down' EXIT; \
+	trap '$(MAKE) -C "$(CURDIR)" compose-mock-byoc-down' EXIT; \
+	if docker inspect metar-iwxxm-backend >/dev/null 2>&1; then \
+		docker network connect metar-iwxxm-mock-byoc_metar-network metar-iwxxm-backend 2>/dev/null || true; \
+	fi; \
 	cd apps/e2e && F16_LIVE_SQL=1 F16_SKIP_SQLSERVER="$(F16_SKIP_SQLSERVER)" F16_LIVE_SQL_SERVER="$(F16_LIVE_SQL_SERVER)" \
+		PLAYWRIGHT_SKIP_WEBSERVER=1 F16_DOCKER_API="$${F16_DOCKER_API:-1}" \
+		PLAYWRIGHT_BASE_URL="$${PLAYWRIGHT_BASE_URL:-http://localhost:18000}" \
+		PLAYWRIGHT_API_BASE_URL="$${PLAYWRIGHT_API_BASE_URL:-http://localhost:18001}" \
 		$(PNPM) exec playwright test uj027-f16-live-sql.e2e.spec.ts
 
 # T7.1 / EV-031 — F31 UJ-045..047 against provisional DOKS (Host-header / resolver-rules)

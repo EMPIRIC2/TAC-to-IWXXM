@@ -87,6 +87,26 @@ list_listening_pids_on_port() {
   fi
 }
 
+# Never kill Colima/Lima/Docker port-forward listeners (EV-039 / S047).
+# Playwright webServer used AUTO_KILL_PORTS=true and killed Colima's ssh mux,
+# which took down the Docker daemon socket and host port forwards.
+is_protected_port_listener() {
+  local pid="$1"
+  local process_name="$2"
+  local cmd_line
+  cmd_line="$(ps -p "${pid}" -o command= 2>/dev/null || true)"
+
+  case "${process_name}" in
+    ssh|ssh.exe|com.docker*|docker-proxy|vpnkit|lima|colima)
+      return 0
+      ;;
+  esac
+  if [[ "${cmd_line}" == *colima* || "${cmd_line}" == *lima* || "${cmd_line}" == *docker.sock* ]]; then
+    return 0
+  fi
+  return 1
+}
+
 check_and_handle_port() {
   local port="$1"
   local pid process_name answer
@@ -101,6 +121,13 @@ check_and_handle_port() {
     while IFS= read -r pid; do
       [[ -z "${pid}" ]] && continue
       process_name="$(ps -p "${pid}" -o comm= 2>/dev/null | xargs || echo unknown)"
+
+      if is_protected_port_listener "${pid}" "${process_name}"; then
+        echo "Port ${port} is held by protected listener PID ${pid} (${process_name})." >&2
+        echo "Refusing to kill Colima/Docker/Lima port forwarding. Use Docker compose for API/FE," >&2
+        echo "or free the port without killing the VM mux (e.g. stop containers)." >&2
+        exit 1
+      fi
 
       if [[ "${AUTO_KILL_PORTS}" == "true" ]]; then
         echo "Port ${port} is in use by PID ${pid} (${process_name}). Killing process..."

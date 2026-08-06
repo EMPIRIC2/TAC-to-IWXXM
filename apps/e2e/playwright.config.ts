@@ -67,6 +67,11 @@ function isRemoteBaseUrl(url: string): boolean {
 }
 
 const remotePlaywright = isRemoteBaseUrl(configuredBaseUrl);
+/** Skip webServer when API/FE already run in Docker (EV-039 F16 LIVE). */
+const skipWebServer =
+  remotePlaywright ||
+  process.env.PLAYWRIGHT_SKIP_WEBSERVER === '1' ||
+  process.env.PLAYWRIGHT_SKIP_WEBSERVER === 'true';
 const localConfigEnv = process.env.METAR_CONFIG_ENV || 'local';
 
 /** Provisional DOKS (D-S038-t63-waive): map placeholder Hosts → LB IP in Chromium. */
@@ -122,7 +127,7 @@ export default defineConfig({
     },
   ],
 
-  ...(remotePlaywright
+  ...(skipWebServer
     ? {}
     : {
         webServer: {
