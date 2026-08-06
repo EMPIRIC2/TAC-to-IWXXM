@@ -25,10 +25,10 @@ Playwright, with mandatory teardown across integration, e2e, and local harnesses
 
 ## Next child stage
 
-**12-verify-deploy** — draft checklist ready; await `D-S047-12` (push + PR + CD path; no prod SQL).
+**13-deploy-smoke** — push/PR → tip CI green → merge (explicit) → H1–H5 on live.
 
 ## Risks / open decisions
 
 - SQL Server waived on this Mac (QEMU) — accepted `D-S047-11`
-- Branch has **no upstream** — tip CI gate needs push before 12→13
-- `js-yaml` pin ⇒ FE rebuild on merge; H4–H5 at 13
+- `js-yaml` pin ⇒ FE rebuild on merge; H4–H5 required at 13 (`D-S047-12`)
+- No prod SQL containers this cycle

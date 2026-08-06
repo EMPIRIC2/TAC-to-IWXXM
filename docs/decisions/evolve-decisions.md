@@ -9,7 +9,7 @@
 **Features**: deepen **F16** (no new Fn expected)  
 **Started**: 2026-08-06  
 **Branch**: `evolve/EV-039-sql-ingest-live-e2e`  
-**Status**: in_progress — 11 approved; 12 draft  
+**Status**: in_progress — 12 approved; 13 push/PR/CI  
 **Prior**: S046 / EV-038 completed  
 **Corpus**: [Corpus: product §F16], [Corpus: tests], [Corpus: journeys §UJ-027], [Corpus: tech-spec], [Corpus: adr/ADR-029], [Corpus: adr/ADR-030]
 
@@ -102,11 +102,15 @@
 **Evidence:** 09 PASS (advisories); 10 H6′ 7/7 + LIVE 001/002/004; tip `415898d0`.  
 **Artifacts:** `reports/verify-impl.md`; `docs/reports/implementation-verification.md`.
 
-### 12-verify-deploy (draft 2026-08-06 — awaiting **D-S047-12**)
+### 12-verify-deploy (locked 2026-08-06; chat `1` → **D-S047-12**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-12 | **1** — Approve checklist; push + PR; 13 after CI/CD (**H4–H5 required**) |
 
 - No prod SQL containers; harness + docs + `js-yaml` pin; H0c 6/6.
-- Branch **no upstream** — push required before tip CI gate.
 - Checklist: `reports/deploy-checklist.md`.
+- Merge to `main` still requires explicit approval before live smoke.
 
 ---
 

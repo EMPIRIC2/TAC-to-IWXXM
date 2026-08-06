@@ -5,7 +5,7 @@
 **Skip:** `03-plan-tooling`, `06-tech-tooling` (revisit if teardown needs new hooks/deps inventory tooling)  
 **Branch:** `evolve/EV-039-sql-ingest-live-e2e`  
 **Features:** deepen **F16** (no new Fn expected)  
-**Status:** in_progress — 11 approved; **12-verify-deploy** draft  
+**Status:** in_progress — 12 approved (`D-S047-12`=1); **13-deploy-smoke** after push/PR/CI  
 **Approved:** 2026-08-06 (chat intake `1,1,1,1,2`)
 
 | Stage | Required | Mode | Status | Notes |
@@ -23,8 +23,8 @@
 | 09-qa | yes | delta | **completed** | PASS + advisories; `reports/qa-report.md` |
 | 10-e2e | yes | full | **completed** | H6′ 7/7 + LIVE 001/002/004; `reports/e2e-report.md` |
 | 11-verify-impl | yes | delta | **completed** | `D-S047-11`=1 AC1–AC7 + SQL Server waive |
-| 12-verify-deploy | yes | delta | **in_progress** | Harness + `js-yaml` pin; no prod SQL |
-| 13-deploy-smoke | yes | delta | pending | After push/PR/CD; H4–H5 on live stack |
+| 12-verify-deploy | yes | delta | **completed** | `D-S047-12`=1; checklist approved |
+| 13-deploy-smoke | yes | delta | **in_progress** | Push/PR → CI → merge → H1–H5 |
 
 ## Skip rationale
 
@@ -41,4 +41,5 @@
 | A→B / 02 | **PASS** (`D-S047-02-gate-a`=2) | 2026-08-06 |
 | B→C / 05 | **PASS** (`D-S047-05-gate-b`=1) | 2026-08-06 |
 | C→D / 11 | **PASS** (`D-S047-11`=1) | 2026-08-06 |
-| Deploy 12/13 | pending | — |
+| Deploy 12 | **PASS** (`D-S047-12`=1) | 2026-08-06 |
+| Deploy 13 | pending | push/PR/CI then smoke |

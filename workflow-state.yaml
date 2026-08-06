@@ -17,8 +17,8 @@ active_session:
   artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
-  current_stage: "12-verify-deploy"
-  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
+  current_stage: "13-deploy-smoke"
+  current_stage_note: "12 APPROVED; push/PR then smoke"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -43,6 +43,8 @@ active_session:
     D-S047-05-gate-b_note: "PASS; S05.M*/L1 as 07; close 05 → 07-build M1 T1.1 (06 skipped)"
     D-S047-11: "1"
     D-S047-11_note: "Approve AC1–AC7 (SQL Server waive OK); close 11-verify-impl → 12-verify-deploy"
+    D-S047-12: "1"
+    D-S047-12_note: "Approve checklist; push + PR; 13 after CI/CD (H4–H5 required)"
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -57,7 +59,7 @@ active_session:
     status: in_progress
     started: "2026-08-06"
     completed: null
-    note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
+    note: "in_progress — 12 APPROVED (D-S047-12=1); current 13-deploy-smoke; push/PR then smoke (H4–H5); tip a5e5d89e; no PR URL yet"
   - stage: 01-requirements
     mode: delta
     required: true
@@ -148,16 +150,24 @@ active_session:
   - stage: 12-verify-deploy
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: "2026-08-06"
-    tip_sha: 61c8a355
-    tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
+    completed: "2026-08-06"
+    overall: approved
+    tip_sha: a5e5d89e
+    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
     report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-    note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
+    report_status: approved
+    decision_id: D-S047-12
+    note: "COMPLETE — D-S047-12=1; checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet"
   - stage: 13-deploy-smoke
     mode: full
     required: true
-    status: pending
+    status: in_progress
+    started: "2026-08-06"
+    tip_sha: a5e5d89e
+    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+    note: "IN_PROGRESS — 12 APPROVED; push/PR then smoke (H4–H5 required); tip a5e5d89e; no PR URL yet"
   route_status: in_progress
   preset: Standard
   preset_note: "Standard — 00→16→01→02→04→05→07→08→09→10→11→12→13; skip 03/06"
@@ -11860,12 +11870,12 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: in_progress
+    status: completed
     started_at: '2026-08-06'
     started: '2026-08-06'
-    completed: null
-    completed_at: null
-    overall: null
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    overall: approved
     previous_started_at: '2026-08-06'
     previous_started: '2026-08-06'
     previous_completed: '2026-08-06'
@@ -11912,19 +11922,20 @@ stages:
     session_id: S047-sql-ingest-live-e2e
     evolve_cycle_id: EV-039
     mode: full
-    note: 'IN_PROGRESS — S047/EV-039 deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream'
+    note: 'COMPLETE — S047/EV-039 D-S047-12=1 checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet'
     report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-    report_status: drafted
-    tip_sha: 61c8a355
-    tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
-    tip_note: 'S047/EV-039 tip 61c8a355 — deploy-checklist drafted; awaiting D-S047-12; no upstream'
+    report_status: approved
+    tip_sha: a5e5d89e
+    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+    tip_note: 'S047/EV-039 tip a5e5d89e — D-S047-12=1; push/PR then 13; tip will refresh after push'
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
-    awaiting_user_decision: true
-    awaiting_user_decision_note: 'awaiting D-S047-12'
-    decision_id: null
+    awaiting_user_decision: false
+    awaiting_user_decision_note: null
+    decision_id: D-S047-12
     decision_ids:
+    - D-S047-12
     - D-S047-11
     - D-S046-12
     - D-S046-11
@@ -11939,18 +11950,20 @@ stages:
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
       skill_id: 12-verify-deploy
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-08-06'
       started_at: '2026-08-06'
-      completed: null
-      completed_at: null
+      completed: '2026-08-06'
+      completed_at: '2026-08-06'
       branch: evolve/EV-039-sql-ingest-live-e2e
-      tip_sha: 61c8a355
-      tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
+      tip_sha: a5e5d89e
+      tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
       report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-      report_status: drafted
-      note: 'IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream'
+      report_status: approved
+      overall: approved
+      decision_id: D-S047-12
+      note: 'COMPLETE — D-S047-12=1 checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet'
       deepen_feature_ids:
       - F16
     - id: S046-iwxxm-corpus-residuals-12
@@ -12196,25 +12209,44 @@ stages:
     tip_note: '12 signed off awaiting 13 smoke'
     decision_id: D-S038-12
   13-deploy-smoke:
-    status: completed
+    status: in_progress
     mode: full
-    started_at: '2026-08-05'
-    started: '2026-08-05'
-    completed: '2026-08-05'
-    completed_at: '2026-08-05'
-    previous_started_at: '2026-08-04T21:35:00Z'
-    previous_started: '2026-08-04T21:35:00Z'
-    previous_completed:
-    previous_completed_at:
-    previous_session_id: S040-iwxxm-corpus-quality
-    previous_evolve_cycle_id: EV-032
-    previous_tip_sha: 22b4251b
-    previous_tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
-    previous_overall:
-    previous_note: 'S040/EV-032 T4.5 COMPLETED after resume — D-S040-close=1; re-verify 20260805115809-d3f4bb9; prior tip during suspend was 22b4251b'
-    previous_completed: '2026-08-05'
-    previous_completed_at: '2026-08-05'
-    previous_overall: pass
+    started_at: '2026-08-06'
+    started: '2026-08-06'
+    completed: null
+    completed_at: null
+    previous_started_at: '2026-08-06'
+    previous_started: '2026-08-06'
+    previous_completed: '2026-08-06'
+    previous_completed_at: '2026-08-06'
+    previous_session_id: S046-iwxxm-corpus-residuals
+    previous_evolve_cycle_id: EV-038
+    previous_tip_sha: 619a7ac3
+    previous_tip_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
+    previous_overall: approved
+    previous_note: 'COMPLETE — S046/EV-038 D-S046-13=1 approve H1–H5 + UJ-050; report deploy-smoke.md; DOKS 20260806144346-619a7ac; close EV-038/S046'
+    previous_report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-smoke.md
+    previous_s042_started_at: '2026-08-05'
+    previous_s042_started: '2026-08-05'
+    previous_s042_completed: '2026-08-05'
+    previous_s042_completed_at: '2026-08-05'
+    previous_s042_session_id: S042-doks-cd-rollout
+    previous_s042_evolve_cycle_id: EV-034
+    previous_s042_overall: pass
+    previous_s042_note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md; TC-F30-007 live MET; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
+    previous_s042_report: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
+    previous_s042_tip_sha: d3f4bb95
+    previous_s042_tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
+    previous_s040_started_at: '2026-08-04T21:35:00Z'
+    previous_s040_started: '2026-08-04T21:35:00Z'
+    previous_s040_completed: '2026-08-05'
+    previous_s040_completed_at: '2026-08-05'
+    previous_s040_session_id: S040-iwxxm-corpus-quality
+    previous_s040_evolve_cycle_id: EV-032
+    previous_s040_tip_sha: 22b4251b
+    previous_s040_tip_sha_full: 22b4251b93a1e7beba5d3d2b01dbd98898bc898e
+    previous_s040_overall: pass
+    previous_s040_note: 'S040/EV-032 T4.5 COMPLETED after resume — D-S040-close=1; re-verify 20260805115809-d3f4bb9; prior tip during suspend was 22b4251b'
     prior_s038_session_id: S038-platform-independence-842
     prior_s038_evolve_cycle_id: EV-031
     prior_s038_tip_sha: b4feac02
@@ -12224,18 +12256,18 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 8bd111c
-    session_id: S042-doks-cd-rollout
-    evolve_cycle_id: EV-034
-    overall: pass
-    note: 'COMPLETE — overall pass; D-S042-13=1; report docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md; TC-F30-007 live MET; CI 31003268652 SUCCESS; DOKS 20260805115809-d3f4bb9'
-    report: docs/sessions/S042-doks-cd-rollout/reports/deploy-smoke.md
-    report_status: approved
-    tip_sha: d3f4bb95
-    tip_sha_full: d3f4bb955ca71d57506a44d5be9f346a31ae56d3
-    tip_note: 'main tip d3f4bb95; DOKS auto-rollout 20260805115809-d3f4bb9'
-    main_ci_cd_pipeline_run: '31003268652'
-    main_ci_cd_pipeline_status: SUCCESS
-    doks_tag: 20260805115809-d3f4bb9
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    overall: null
+    note: 'IN_PROGRESS — S047/EV-039 12 APPROVED (D-S047-12=1); push/PR then smoke (H4–H5 required); tip a5e5d89e; no PR URL yet'
+    report: null
+    report_status: null
+    tip_sha: a5e5d89e
+    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+    tip_note: 'S047/EV-039 tip a5e5d89e — 13 in_progress after D-S047-12=1; tip will refresh after push'
+    main_ci_cd_pipeline_run: null
+    main_ci_cd_pipeline_status: null
+    doks_tag: null
     active_milestone:
     active_task:
     active_task_status:
@@ -12243,11 +12275,55 @@ stages:
     completed_through:
     awaiting_deploy_approval: false
     awaiting_user_decision: false
-    decision_id: D-S042-13
-    pr_number: 868
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
-    pr_status: merged
+    decision_id: null
+    decision_ids:
+    - D-S047-12
+    pr_number: null
+    pr_url: null
+    pr_status: null
     delta_substages:
+    - id: S047-sql-ingest-live-e2e-13
+      session_id: S047-sql-ingest-live-e2e
+      evolve_cycle_id: EV-039
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      mode: full
+      started: '2026-08-06'
+      started_at: '2026-08-06'
+      completed: null
+      completed_at: null
+      branch: evolve/EV-039-sql-ingest-live-e2e
+      tip_sha: a5e5d89e
+      tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+      note: 'IN_PROGRESS — 12 APPROVED; push/PR then smoke (H4–H5 required); tip a5e5d89e; no PR URL yet'
+      deepen_feature_ids:
+      - F16
+    - id: S046-iwxxm-corpus-residuals-13
+      session_id: S046-iwxxm-corpus-residuals
+      evolve_cycle_id: EV-038
+      skill_id: 13-deploy-smoke
+      status: completed
+      mode: full
+      started: '2026-08-06'
+      started_at: '2026-08-06'
+      completed: '2026-08-06'
+      completed_at: '2026-08-06'
+      branch: evolve/EV-038-iwxxm-corpus-residuals
+      tip_sha: 619a7ac3
+      tip_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-smoke.md
+      report_status: approved
+      overall: approved
+      decision_id: D-S046-13
+      doks_tag: 20260806144346-619a7ac
+      ci_deploy_run: '31112016561'
+      note: 'COMPLETE — D-S046-13=1 approve H1–H5 + UJ-050; report deploy-smoke.md; close EV-038/S046'
+      deepen_feature_ids:
+      - F2
+      - F4
+      - F6
+      - F7
+      - F32
     - id: S045-matrix-disposition-residuals-13
       session_id: S045-matrix-disposition-residuals
       evolve_cycle_id: EV-037
@@ -12894,28 +12970,32 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
-    started_at: '2026-08-05'
-    started: '2026-08-05'
-    completed_at: '2026-08-06'
-    completed: '2026-08-06'
-    previous_session_id: S045-matrix-disposition-residuals
-    previous_evolve_cycle_id: EV-037
-    previous_completed_at: '2026-08-05'
-    previous_note: 'COMPLETE — S045/EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI 31049365217 SUCCESS'
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    started_at: '2026-08-06'
+    started: '2026-08-06'
+    completed_at: null
+    completed: null
+    previous_session_id: S046-iwxxm-corpus-residuals
+    previous_evolve_cycle_id: EV-038
+    previous_completed_at: '2026-08-06'
+    previous_note: 'COMPLETE — D-S046-13=1; EV-038/S046 closed; #890 @ 619a7ac3; DOKS 20260806144346-619a7ac; evolve-summary.md'
+    prior_s045_session_id: S045-matrix-disposition-residuals
+    prior_s045_evolve_cycle_id: EV-037
+    prior_s045_completed_at: '2026-08-05'
+    prior_s045_note: 'COMPLETE — S045/EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI 31049365217 SUCCESS'
     prior_s044_session_id: S044-local-precommit-long-jobs
     prior_s044_evolve_cycle_id: EV-036
     prior_s044_completed_at: '2026-08-05'
     prior_s044_note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage: completed
-    tip_sha: 619a7ac3
-    tip_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
-    note: 'COMPLETE — D-S046-13=1; EV-038/S046 closed; #890 @ 619a7ac3; DOKS 20260806144346-619a7ac; evolve-summary.md'
+    current_child_stage: 13-deploy-smoke
+    tip_sha: a5e5d89e
+    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+    note: 'in_progress — S047/EV-039 12 APPROVED (D-S047-12=1); current 13-deploy-smoke; push/PR then smoke (H4–H5); tip a5e5d89e; no PR URL yet'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -13182,6 +13262,40 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S047-12
+  date: '2026-08-06'
+  timestamp: '2026-08-06'
+  resolved_at: '2026-08-06'
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: deploy_checklist
+  status: confirmed
+  topic: '12-verify-deploy checklist approval'
+  summary: '1 — Approve checklist; push + PR; 13 after CI/CD (H4–H5 required)'
+  decision: |
+    D-S047-12=1 — user approved deploy checklist (deploy-checklist.md).
+    Push branch; open PR; run 13-deploy-smoke after CI/CD (H4–H5 required).
+    Tip a5e5d89e (a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9) — refresh after push.
+    No PR URL yet. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-039-sql-ingest-live-e2e
+  tip_sha: a5e5d89e
+  tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+  current_stage: 13-deploy-smoke
+  report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+  overall: approved
+  related_decisions:
+  - D-S047-11
+  - D-S047-05-gate-b
+  - D-S047-ac
+  - D-S047-open
+  deepen_feature_ids:
+  - F16
+  feature_ids: []
+  note: '12-verify-deploy COMPLETE; current_stage=13-deploy-smoke; tip a5e5d89e; push/PR then smoke'
 - id: D-S047-11
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -35460,14 +35574,14 @@ evolve_cycles:
     skipped_stages:
       - 03-plan-tooling
       - 06-tech-tooling
-  current_stage: "12-verify-deploy"
+  current_stage: "13-deploy-smoke"
   current_stage_status: in_progress
-  current_stage_note: "12 in_progress — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
+  current_stage_note: "12 APPROVED; push/PR then smoke"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
-  tip_sha: 61c8a355
-  tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
-  tip_sha_note: "tip 61c8a355 — deploy-checklist.md drafted; awaiting D-S047-12; branch has no upstream"
+  tip_sha: a5e5d89e
+  tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+  tip_sha_note: "tip a5e5d89e — D-S047-12=1; 13 in_progress; tip will refresh after push; no PR URL yet"
   gates:
     a_to_b: passed
     b_to_c: passed
@@ -35479,7 +35593,7 @@ evolve_cycles:
     phase_c: passed
     phase_c_note: "passed — D-S047-11=1 AC1–AC7 MET (SQL Server waive); 11-verify-impl COMPLETE"
     phase_d: pending
-    phase_d_note: "pending — 12-verify-deploy in_progress; deploy-checklist.md drafted; awaiting D-S047-12"
+    phase_d_note: "12 APPROVED (D-S047-12=1); push/PR then 13 smoke (H4–H5 required); deploy pending until CI/CD + smoke"
     deploy: pending
   decision_refs:
   - D-S047-open
@@ -35489,6 +35603,7 @@ evolve_cycles:
   - D-S047-04-plan
   - D-S047-05-gate-b
   - D-S047-11
+  - D-S047-12
   stages:
     00-context:
       status: completed
@@ -35499,7 +35614,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       completed: null
-      note: "in_progress — 12-verify-deploy; deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
+      note: "in_progress — 12 APPROVED (D-S047-12=1); current 13-deploy-smoke; push/PR then smoke (H4–H5); tip a5e5d89e; no PR URL yet"
     01-requirements:
       status: completed
       started: "2026-08-06"
@@ -35599,15 +35714,23 @@ evolve_cycles:
       decision_id: D-S047-11
       note: "COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); reports/verify-impl.md; handoff 12-verify-deploy"
     12-verify-deploy:
+      status: completed
+      started: "2026-08-06"
+      completed: "2026-08-06"
+      overall: approved
+      tip_sha: a5e5d89e
+      tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+      report_status: approved
+      decision_id: D-S047-12
+      note: "COMPLETE — D-S047-12=1; checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet"
+    13-deploy-smoke:
       status: in_progress
       started: "2026-08-06"
-      tip_sha: 61c8a355
-      tip_sha_full: 61c8a35552a6079c14255ae63c2b1031ac9bdbfe
-      report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-      report_status: drafted
-      note: "IN_PROGRESS — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream"
-    13-deploy-smoke:
-      status: pending
+      started_at: "2026-08-06"
+      tip_sha: a5e5d89e
+      tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+      note: "IN_PROGRESS — 12 APPROVED; push/PR then smoke (H4–H5 required); tip a5e5d89e; no PR URL yet"
   artifacts:
   - path: docs/decisions/evolve-decisions.md
     status: in_progress
@@ -35650,15 +35773,16 @@ evolve_cycles:
     stage: 11-verify-impl
     note: "COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive)"
   - path: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-    status: drafted
+    status: approved
     stage: 12-verify-deploy
-    note: "drafted — awaiting D-S047-12; tip 61c8a355; branch has no upstream"
+    note: "approved — D-S047-12=1; tip a5e5d89e; push/PR then 13"
   - path: docs/spec.md
     status: completed
     note: "S02.M3 resolved — F16 EV-039 deepen bullet"
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 D-S047-12=1 — Approve checklist; 12-verify-deploy COMPLETE; current_stage 13-deploy-smoke in_progress; push + PR then smoke after CI/CD (H4–H5 required); tip a5e5d89e (a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9); no PR URL yet; tip will refresh after push; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 tip sync — tip 61c8a355 (61c8a35552a6079c14255ae63c2b1031ac9bdbfe); 12-verify-deploy remains in_progress; deploy-checklist.md drafted; awaiting D-S047-12; branch has no upstream; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 12-verify-deploy — deploy-checklist.md drafted; awaiting D-S047-12; tip 61c8a355; branch has no upstream; 12 remains in_progress; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 11-verify-impl COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); overall approved; report verify-impl.md; checkpoints.phase_c+gates.c_to_d passed; current_stage 12-verify-deploy; 16-evolve remains in_progress; tip 415898d0; no git commit by workflow-state-manager"

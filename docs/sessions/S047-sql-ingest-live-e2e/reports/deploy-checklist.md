@@ -1,10 +1,10 @@
 # Deploy Checklist — S047 / EV-039 (12-verify-deploy)
 
 > Generated: 2026-08-06  
-> Status: **DRAFT — awaiting `D-S047-12`**  
+> Status: **APPROVED** (`D-S047-12`=1) — push + PR; 13 after CI/CD (H4–H5 required)  
 > Prior: 11 **APPROVED** (`D-S047-11`=1)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · DOKS CD on `main`  
-> Tip (local): `415898d0` — **branch not pushed** (no upstream; CI tip gate pending push)  
+> Tip: `a5e5d89e` — push/PR in progress  
 > `env_role`: **live = prod** (sole DOKS stack `api|app.tac-to-iwxxm.com`)  
 > Corpus: `[Corpus: tech-spec]` · `[Corpus: product §F16]` · `[Corpus: tests]` · connectivity-gates §12–13
 
@@ -63,8 +63,8 @@
 5. H1–H3 → **`bash scripts/deploy/verify_connectivity.sh`** (H4–H5).
 6. Optional: mocked H6′ already green locally; LIVE SQL remains **local/CI opt-in** (not prod SQL).
 
-## Sign-Off (pending)
+## Sign-Off
 
 - [x] User approved implementation (11 / `D-S047-11`)
-- [ ] User approved deploy strategy (this checklist / `D-S047-12`)
-- [ ] Ready to push / PR / 13-deploy-smoke
+- [x] User approved deploy strategy (this checklist / `D-S047-12`=1)
+- [x] Ready to push / PR / 13-deploy-smoke (merge still needs explicit approval)
