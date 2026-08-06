@@ -17,8 +17,8 @@ active_session:
   artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-039
-  current_stage: 04-tech-plan
-  current_stage_note: "02-verify-plan COMPLETE (D-S047-02-gate-a=2 Gate A PASS); S02.M3 via spec.md; next 04-tech-plan; tip 7970ba46; 16-evolve remains in_progress (orchestrator)"
+  current_stage: 07-build
+  current_stage_note: "Gate B PASS (D-S047-05-gate-b=1); 07 M1 T1.1 in_progress — teardown contract test"
   prior_session: S046-iwxxm-corpus-residuals
   prior_evolve_cycle_id: EV-038
   feature_ids: []
@@ -35,6 +35,12 @@ active_session:
     D-S047-ac_note: "AC=1 approve AC1–AC7 + manifest; close 01; start 02-verify-plan (Gate A)"
     D-S047-02-gate-a: "2"
     D-S047-02-gate-a_note: "Gate A PASS — S02.M3 resolved via spec.md F16 EV-039 deepen; S02.M1/M2/M4/M5 as 04/07; close 02 → start 04-tech-plan"
+    D-S047-04: "Q1=1 Q2=1 Q3=1+3 Q4=1+2+3(local)"
+    D-S047-04_note: "Teardown down -v; async write assert; test-e2e-f16-live-sql + F16_LIVE_SQL flag; local test-live includes LIVE + all four dialects; CI opt-in / SQL Server skippable"
+    D-S047-04-plan: "1"
+    D-S047-04-plan_note: "Approve execution plan + build-plan-card as written; close 04 → 05-verify-tech"
+    D-S047-05-gate-b: "1"
+    D-S047-05-gate-b_note: "PASS; S05.M*/L1 as 07; close 05 → 07-build M1 T1.1 (06 skipped)"
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -49,7 +55,7 @@ active_session:
     status: in_progress
     started: "2026-08-06"
     completed: null
-    note: "in_progress — Phase 0 locked; 02 COMPLETE (D-S047-02-gate-a=2); next 04-tech-plan; tip 7970ba46"
+    note: "in_progress — Phase 0 locked; Gate B PASS (D-S047-05-gate-b=1); 07-build M1 T1.1 in_progress; tip 7970ba46"
   - stage: 01-requirements
     mode: delta
     required: true
@@ -71,21 +77,31 @@ active_session:
   - stage: 04-tech-plan
     mode: delta
     required: true
+    status: completed
+    started: "2026-08-06"
+    started_at: "2026-08-06"
+    completed: "2026-08-06"
+    completed_at: "2026-08-06"
+    tip_sha: 7970ba46
+    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+    note: "COMPLETE — D-S047-04-plan=1; execution-plan + build-plan-card approved; reports/04-tech-plan.md; handoff 05-verify-tech"
+  - stage: 05-verify-tech
+    mode: delta
+    required: true
+    status: completed
+    started: "2026-08-06"
+    started_at: "2026-08-06"
+    completed: "2026-08-06"
+    completed_at: "2026-08-06"
+    note: "COMPLETE — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; 06 skipped"
+  - stage: 07-build
+    mode: delta
+    required: true
     status: in_progress
     started: "2026-08-06"
     started_at: "2026-08-06"
     completed: null
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: "STARTED — after Gate A PASS; tip 7970ba46; pending execution plan"
-  - stage: 05-verify-tech
-    mode: delta
-    required: true
-    status: pending
-  - stage: 07-build
-    mode: full
-    required: true
-    status: pending
+    note: "IN_PROGRESS — M1 T1.1 teardown contract test; Gate B PASS (D-S047-05-gate-b=1)"
   - stage: 08-verify-build
     mode: full
     required: true
@@ -7241,12 +7257,12 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-06'
     started: '2026-08-06'
-    completed_at: null
-    completed: null
+    completed_at: '2026-08-06'
+    completed: '2026-08-06'
     previous_started_at: '2026-08-05'
     previous_completed_at: '2026-08-05'
     previous_session_id: S046-iwxxm-corpus-residuals
@@ -7261,35 +7277,37 @@ stages:
     evolve_cycle_id: EV-039
     tip_sha: 7970ba46
     tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: 'S047/EV-039 04-tech-plan STARTED (delta) — after Gate A PASS (D-S047-02-gate-a=2); tip 7970ba46; execution plan pending'
+    note: "COMPLETE D-S047-04-plan=1"
     decision_refs:
     - D-S047-02-gate-a
     - D-S047-ac
     - D-S047-open
+    - D-S047-04
+    - D-S047-04-plan
     substeps:
       phase_1_toolchain:
-        status: pending
+        status: completed
       phase_2_interview:
-        status: pending
+        status: completed
       phase_3_execution_plan:
-        status: pending
+        status: completed
       phase_4_user_review:
-        status: pending
+        status: completed
       phase_5_back_add:
-        status: pending
+        status: completed
       phase_6_documents:
-        status: pending
+        status: completed
     active_session:
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
       skill_id: 04-tech-plan
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-06'
       started: '2026-08-06'
-      completed_at: null
-      completed: null
-      note: 'STARTED (delta) — after Gate A PASS (D-S047-02-gate-a=2); tip 7970ba46; execution plan pending'
+      completed_at: '2026-08-06'
+      completed: '2026-08-06'
+      note: 'COMPLETE D-S047-04-plan=1'
       feature_ids: []
       deepen_feature_ids:
       - F16
@@ -8241,12 +8259,24 @@ stages:
     - '2026-08-05 S046/EV-038 04-tech-plan COMPLETE (D-S046-04-plan=1) — execution-plan approved M1–M5; handoff 05-verify-tech; tip f03ed255'
   05-verify-tech:
     status: completed
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
     mode: delta
-    started_at: '2026-06-15T01:15:00Z'
-    completed_at: '2026-06-15T01:45:00Z'
-    note: 'S046/EV-038 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S046-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; historical baseline status remains completed; tip f03ed255'
+    started_at: '2026-08-06'
+    started: '2026-08-06'
+    completed_at: '2026-08-06'
+    completed: '2026-08-06'
+    previous_started_at: '2026-06-15T01:15:00Z'
+    previous_completed_at: '2026-06-15T01:45:00Z'
+    previous_session_id: S046-iwxxm-corpus-residuals
+    previous_evolve_cycle_id: EV-038
+    previous_note: 'S046/EV-038 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S046-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
+    prior_session_id: S046-iwxxm-corpus-residuals
+    prior_evolve_cycle_id: EV-038
+    prior_started: '2026-08-05'
+    prior_completed: '2026-08-05'
+    prior_note: 'S046/EV-038 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S046-05-gate-b=1); tip f03ed255'
+    note: "COMPLETE Gate B PASS"
     substeps:
       inventory:
         status: completed
@@ -8263,6 +8293,31 @@ stages:
     - docs/decisions/tech-audit.md
     - docs/decisions/tech-decisions.md
     delta_substages:
+    - session_id: S047-sql-ingest-live-e2e
+      evolve_cycle_id: EV-039
+      skill_id: 05-verify-tech
+      status: completed
+      started_at: '2026-08-06'
+      started: '2026-08-06'
+      completed_at: '2026-08-06'
+      completed: '2026-08-06'
+      mode: delta
+      overall: pass
+      feature_ids: []
+      deepen_feature_ids:
+      - F16
+      decision_refs:
+      - D-S047-05-gate-b
+      - D-S047-04-plan
+      - D-S047-04
+      - D-S047-02-gate-a
+      - D-S047-ac
+      - D-S047-open
+      note: 'COMPLETE — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1'
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+      artifacts:
+      - docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+      - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
     - session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-038
       skill_id: 05-verify-tech
@@ -8358,6 +8413,7 @@ stages:
       overall: pass
       note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
     notes:
+    - '2026-08-06 S047/EV-039 05-verify-tech COMPLETE (D-S047-05-gate-b=1) — Gate B PASS; S05.M*/L1 as 07; handoff 07-build M1 T1.1; 06 skipped'
     - '2026-08-05 S046/EV-038 05-verify-tech COMPLETE (D-S046-05-gate-b=1) — Gate B PASS; S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
     - '2026-08-05 S046/EV-038 05-verify-tech STARTED (D-S046-04-plan=1) — Gate B; verify execution-plan M1–M5 vs AC1–AC14 / D-S046-sot / routing; historical baseline status remains completed; tip f03ed255'
     - 2026-07-21 S019/EV-014 05-verify-tech START on main (post-#753) — delta audit of execution-plan + ADR-030 + deps
@@ -8505,57 +8561,58 @@ stages:
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
     status: in_progress
-    started_at: '2026-08-05'
-    started: '2026-08-05'
+    started_at: '2026-08-06'
+    started: '2026-08-06'
     completed_at: null
     completed: null
     previous_started_at: '2026-08-05'
-    previous_completed_at: '2026-08-05'
-    previous_session_id: S044-local-precommit-long-jobs
-    previous_evolve_cycle_id: EV-036
-    previous_tip_sha: d4fd6955
-    previous_tip_sha_full: d4fd6955df69af6dff53a4c5afaa8ad5e76c0e4b
-    previous_note: 'S044/EV-036 07-build COMPLETE — T1–T5 done @ d4fd6955; local Compose on pre-push; remote units + coverage PR comment; Gate A D-S044-02-gate-a; pending_commit false; handoff 08-verify-build'
-    prior_session_id: S044-local-precommit-long-jobs
-    prior_evolve_cycle_id: EV-036
+    previous_completed_at: '2026-08-06'
+    previous_session_id: S046-iwxxm-corpus-residuals
+    previous_evolve_cycle_id: EV-038
+    previous_tip_sha: 619a7ac3
+    previous_tip_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
+    previous_note: 'S046/EV-038 07-build COMPLETE — EV-038 closed; #890 MERGED @ 619a7ac3; Gate B PASS (D-S046-05-gate-b=1)'
+    prior_session_id: S046-iwxxm-corpus-residuals
+    prior_evolve_cycle_id: EV-038
     prior_started: '2026-08-05'
-    prior_completed: '2026-08-05'
-    prior_note: 'S044/EV-036 07-build COMPLETE — T1–T5 @ d4fd6955; handoff 08-verify-build'
-    prior_prior_session_id: S042-doks-cd-rollout
-    prior_prior_evolve_cycle_id: EV-034
-    prior_prior_note: 'S042/EV-034 07-build COMPLETE — PR #867 MERGED; deepen F30; #868; handoff 08'
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
-    mode: full
-    note: 'S046/EV-038 07-build IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); T2.1–T2.7 done locally; tip still 66a41f38 (commit+push pending); M1 @ 1360dcc6 (#858/#861/#855 closed); Gate B PASS (D-S046-05-gate-b=1); 06 skipped'
-    tip_sha: 66a41f38
-    tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
-    tip_note: 'T2.7 implemented locally; commit+push pending'
+    prior_completed: '2026-08-06'
+    prior_note: 'S046/EV-038 07-build COMPLETE — #890 MERGED @ 619a7ac3'
+    prior_prior_session_id: S044-local-precommit-long-jobs
+    prior_prior_evolve_cycle_id: EV-036
+    prior_prior_note: 'S044/EV-036 07-build COMPLETE — T1–T5 @ d4fd6955; handoff 08'
+    session_id: S047-sql-ingest-live-e2e
+    evolve_cycle_id: EV-039
+    mode: delta
+    note: 'M1 T1.1'
+    tip_sha: 7970ba46
+    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+    tip_note: 'Gate B PASS; starting M1 T1.1'
     pending_commit: false
     next_stage: null
-    current_milestone: M2
-    current_task: T2.8
-    active_milestone: M2
-    active_task: T2.8
-    active_task_status: pending
-    completed_through: T2.7
+    current_milestone: M1
+    current_task: T1.1
+    active_milestone: M1
+    active_task: T1.1
+    active_task_status: in_progress
+    completed_through: null
     progress: null
-    next_task: T2.8
+    next_task: T1.1
     decision_refs:
-    - D-S046-853
-    - D-S046-853-push
-    - D-S046-05-gate-b
-    - D-S046-04-plan
-    - D-S046-sot
-    - D-S046-ac
-    - D-S046-mplan
-    - D-S046-open
+    - D-S047-05-gate-b
+    - D-S047-04-plan
+    - D-S047-04
+    - D-S047-02-gate-a
+    - D-S047-ac
+    - D-S047-open
     decision_refs_s044:
     - D-S044-02-gate-a
     - D-S044-r1-ac
     - D-S044-g1-g2
     - D-S044-batch-b
     artifacts:
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
+    - docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+    artifacts_s046:
     - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
     - docs/sessions/S046-iwxxm-corpus-residuals/reports/05-verify-tech-audit.md
     artifacts_s045:
@@ -8582,41 +8639,36 @@ stages:
     - tests/test_tc_ev036_local_precommit_ci.py
     - tests/unit/test_format_coverage_pr_comment.py
     active_session:
-      session_id: S046-iwxxm-corpus-residuals
-      evolve_cycle_id: EV-038
+      session_id: S047-sql-ingest-live-e2e
+      evolve_cycle_id: EV-039
       skill_id: 07-build
       status: in_progress
-      mode: full
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      tip_sha: 66a41f38
-      tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
-      pending_commit: true
-      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
+      mode: delta
+      started_at: '2026-08-06'
+      started: '2026-08-06'
+      tip_sha: 7970ba46
+      tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+      pending_commit: false
+      note: 'IN_PROGRESS — M1 T1.1 teardown contract test; Gate B PASS (D-S047-05-gate-b=1)'
       feature_ids: []
       deepen_feature_ids:
-      - F2
-      - F4
-      - F6
-      - F7
-      - F32
+      - F16
       decision_refs:
-      - D-S046-853
-      - D-S046-853-push
-      - D-S046-05-gate-b
-      - D-S046-04-plan
-      - D-S046-sot
-      - D-S046-ac
-      - D-S046-mplan
-      active_milestone: M2
-      current_milestone: M2
-      active_task: T2.8
-      current_task: T2.8
-      active_task_status: pending
-      completed_through: T2.7
+      - D-S047-05-gate-b
+      - D-S047-04-plan
+      - D-S047-04
+      - D-S047-02-gate-a
+      - D-S047-ac
+      - D-S047-open
+      active_milestone: M1
+      current_milestone: M1
+      active_task: T1.1
+      current_task: T1.1
+      active_task_status: in_progress
+      completed_through: null
       artifacts:
-      - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
-      - docs/sessions/S046-iwxxm-corpus-residuals/reports/05-verify-tech-audit.md
+      - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
+      - docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
     prior_active_session:
       session_id: S045-matrix-disposition-residuals
       evolve_cycle_id: EV-037
@@ -13050,6 +13102,42 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S047-05-gate-b
+  date: '2026-08-06'
+  timestamp: '2026-08-06'
+  resolved_at: '2026-08-06'
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  skill: 05-verify-tech
+  skill_id: 05-verify-tech
+  stage: 05-verify-tech
+  category: gate
+  status: confirmed
+  topic: 'Gate B PASS → 07-build M1 T1.1 (06 skipped)'
+  summary: '1 — Gate B PASS; S05.M*/L1 as 07; close 05 → start 07-build M1 T1.1'
+  decision: |
+    D-S047-05-gate-b=1 — Gate B PASS for S047/EV-039.
+    S05.M*/L1 deferred to 07-build; close 05 → start 07-build M1 T1.1 (06-tech-tooling skipped).
+    checkpoints.phase_b=passed; gates.b_to_c=passed.
+  rationale: |
+    05-verify-tech-audit Gate B locked PASS; proceed to implementation.
+  user_option: '1'
+  branch: evolve/EV-039-sql-ingest-live-e2e
+  related_decisions:
+  - D-S047-04-plan
+  - D-S047-04
+  - D-S047-02-gate-a
+  - D-S047-ac
+  - D-S047-open
+  deepen_feature_ids:
+  - F16
+  feature_ids: []
+  tip_sha: 7970ba46
+  tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+  artifacts:
+  - docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+  - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
+  note: '05-verify-tech COMPLETE; current_stage=07-build; Gate B tip 7970ba46; M1 T1.1 in_progress'
 - id: D-S047-02-gate-a
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -24887,6 +24975,50 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+  type: session-report
+  kind: verify-tech-audit
+  stage: 05-verify-tech
+  skill_id: 05-verify-tech
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  created_at: '2026-08-06'
+  updated_at: '2026-08-06'
+  status: approved/pass
+  note: '05-verify-tech-audit.md Gate B locked'
+- path: docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
+  type: execution-plan
+  kind: execution-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  created_at: '2026-08-06'
+  updated_at: '2026-08-06'
+  status: approved
+  note: 'S047/EV-039 04 COMPLETE — D-S047-04-plan=1; execution-plan approved'
+- path: docs/sessions/S047-sql-ingest-live-e2e/build-plan-card.md
+  type: build-plan-card
+  kind: build-plan-card
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  created_at: '2026-08-06'
+  updated_at: '2026-08-06'
+  status: approved
+  note: 'S047/EV-039 04 COMPLETE — D-S047-04-plan=1; build-plan-card approved'
+- path: docs/sessions/S047-sql-ingest-live-e2e/reports/04-tech-plan.md
+  type: session-report
+  kind: tech-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  created_at: '2026-08-06'
+  updated_at: '2026-08-06'
+  status: approved
+  note: 'S047/EV-039 04 COMPLETE — D-S047-04-plan=1; reports/04-tech-plan.md approved'
 - path: docs/sessions/S046-iwxxm-corpus-residuals/reports/verify-impl.md
   type: session-report
   kind: verify-impl
@@ -35215,9 +35347,9 @@ evolve_cycles:
     skipped_stages:
       - 03-plan-tooling
       - 06-tech-tooling
-  current_stage: 04-tech-plan
+  current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "02 COMPLETE (D-S047-02-gate-a=2 Gate A PASS); S02.M3 via spec.md; 04-tech-plan in_progress; tip 7970ba46"
+  current_stage_note: "Gate B PASS (D-S047-05-gate-b=1); 07 M1 T1.1 in_progress — teardown contract test"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
   tip_sha: 7970ba46
@@ -35225,12 +35357,12 @@ evolve_cycles:
   tip_sha_note: "tip 7970ba46 — Gate A PASS close 02; prior audit draft 326a2279"
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -35238,6 +35370,9 @@ evolve_cycles:
   - D-S047-open
   - D-S047-ac
   - D-S047-02-gate-a
+  - D-S047-04
+  - D-S047-04-plan
+  - D-S047-05-gate-b
   stages:
     00-context:
       status: completed
@@ -35248,7 +35383,7 @@ evolve_cycles:
       status: in_progress
       started: "2026-08-06"
       completed: null
-      note: "in_progress — Phase 0 locked; 02 COMPLETE (D-S047-02-gate-a=2); 04-tech-plan in_progress; tip 7970ba46"
+      note: "in_progress — Phase 0 locked; Gate B PASS; 07-build M1 T1.1 in_progress; tip 7970ba46"
     01-requirements:
       status: completed
       started: "2026-08-06"
@@ -35267,17 +35402,38 @@ evolve_cycles:
       tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
       note: "COMPLETE — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07; reports/02-verify-plan-audit.md; tip 7970ba46; handoff 04"
     04-tech-plan:
+      status: completed
+      mode: delta
+      started: "2026-08-06"
+      started_at: "2026-08-06"
+      completed: "2026-08-06"
+      completed_at: "2026-08-06"
+      tip_sha: 7970ba46
+      tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+      note: "COMPLETE — D-S047-04-plan=1; execution-plan approved; handoff 05"
+      substeps:
+        phase1_toolchain: completed
+        phase2_interview: completed
+        phase3_execution_plan: completed
+        phase4_user_review: completed
+        phase5_back_add: completed
+        phase6_docs: completed
+    05-verify-tech:
+      status: completed
+      mode: delta
+      started: "2026-08-06"
+      started_at: "2026-08-06"
+      completed: "2026-08-06"
+      completed_at: "2026-08-06"
+      note: "COMPLETE — Gate B PASS D-S047-05-gate-b=1; handoff 07"
+    07-build:
       status: in_progress
+      mode: delta
       started: "2026-08-06"
       started_at: "2026-08-06"
       completed: null
-      tip_sha: 7970ba46
-      tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-      note: "STARTED — after Gate A PASS; tip 7970ba46"
-    05-verify-tech:
-      status: pending
-    07-build:
-      status: pending
+      note: "M1 T1.1 in_progress"
+      active_task: T1.1
     08-verify-build:
       status: pending
     09-qa:
@@ -35303,12 +35459,27 @@ evolve_cycles:
     status: completed
   - path: docs/sessions/S047-sql-ingest-live-e2e/reports/02-verify-plan-audit.md
     status: completed
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+  - path: docs/sessions/S047-sql-ingest-live-e2e/build-plan-card.md
+    status: approved
+    stage: 04-tech-plan
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/04-tech-plan.md
+    status: approved
+    stage: 04-tech-plan
+  - path: docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+    status: approved/pass
+    stage: 05-verify-tech
   - path: docs/spec.md
     status: completed
     note: "S02.M3 resolved — F16 EV-039 deepen bullet"
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   notes:
+  - "2026-08-06 S047/EV-039 Gate B PASS (D-S047-05-gate-b=1); checkpoints.phase_b+gates.b_to_c passed; close 05; start 07-build M1 T1.1 (06 skipped); no git commit by workflow-state-manager"
+  - "2026-08-06 S047/EV-039 04 COMPLETE (D-S047-04-plan=1); 05-verify-tech STARTED — audit drafted reports/05-verify-tech-audit.md; gates.b_to_c + checkpoints.phase_b pending; awaiting D-S047-05-gate-b; no git commit by workflow-state-manager"
+  - "2026-08-06 S047/EV-039 04-tech-plan draft ready — D-S047-04 locked (Q1=1 Q2=1 Q3=1+3 Q4=1+2+3 local); execution-plan + build-plan-card + reports/04-tech-plan.md; phase4_user_review in_progress; awaiting D-S047-04-plan approve → 05; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 02-verify-plan COMPLETE — Gate A PASS (D-S047-02-gate-a=2); gates.a_to_b + checkpoints.phase_a passed; S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07; tip 7970ba46 (Gate A PASS) + 326a2279 (audit draft); current_stage 04-tech-plan; 16-evolve remains in_progress; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 02-verify-plan STARTED in_progress — Gate A; tip b39ce3be ([EV-039] chore: mark 01-requirements complete; advance to 02); 16-evolve remains in_progress; recorded commit b39ce3be; no git commit by workflow-state-manager"
   - "2026-08-06 S047/EV-039 01-requirements COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; tip a4f4d3a6; artifacts reports/01-requirements-summary.md; current_stage 02-verify-plan; 16-evolve remains in_progress; no git commit by workflow-state-manager"
@@ -37086,7 +37257,7 @@ git_history:
   dirty_note: "workflow-state.yaml dirty after 02-verify-plan COMPLETE / 04-tech-plan STARTED bookkeeping (not workflow-state-manager commit)"
   tip_sha: 7970ba46
   tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-  tip_note: 'S047/EV-039 — tip 7970ba46 Gate A PASS; 02 COMPLETE; 04-tech-plan in_progress'
+  tip_note: 'S047/EV-039 — tip 7970ba46; Gate B PASS (D-S047-05-gate-b=1); 07-build M1 T1.1 in_progress'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -37098,7 +37269,7 @@ git_history:
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   recommended_branch: evolve/EV-039-sql-ingest-live-e2e
-  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ 7970ba46; 02 COMPLETE (D-S047-02-gate-a=2); 04-tech-plan in_progress; 16-evolve remains in_progress; no git commit by workflow-state-manager'
+  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ 7970ba46; Gate B PASS; 07-build M1 T1.1 in_progress; 16-evolve remains in_progress; no git commit by workflow-state-manager'
 
   notes:
   - '2026-08-06 S047/EV-039 — recorded git commits 7970ba46 (Gate A PASS) + 326a2279 (audit draft); stage 02-verify-plan COMPLETE; gates.a_to_b + phase_a passed; D-S047-02-gate-a=2; S02.M3 via spec.md; current_stage 04-tech-plan; pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -37570,7 +37741,7 @@ git_history:
     tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
     exists: true
     pushed: false
-    note: "S047/EV-039 ACTIVE — tip 7970ba46 Gate A PASS; 02 COMPLETE; 04-tech-plan in_progress"
+    note: "S047/EV-039 ACTIVE — tip 7970ba46; Gate B PASS (D-S047-05-gate-b=1); 07-build M1 T1.1 in_progress"
   - name: evolve/EV-038-iwxxm-corpus-residuals
     status: merged
     base: main

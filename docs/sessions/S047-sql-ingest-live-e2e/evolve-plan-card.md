@@ -25,13 +25,11 @@ Playwright, with mandatory teardown across integration, e2e, and local harnesses
 
 ## Next child stage
 
-**04-tech-plan** (delta) — execution plan for Compose teardown harden, live Playwright
-harness, write-assertion approach, make/CI targets. S02.M1/M2/M4/M5.
+**07-build** — M1 T1.1 (teardown contract test); then T1.2–T1.5. 06 skipped.
 
 ## Risks / open decisions
 
-- Local SSRF allowlist for compose service hostnames (test-only) vs existing
-  `DISSEMINATION_EGRESS_ALLOWLIST` — [Corpus: adr/ADR-030]
-- SQL Server image weight / CI flakiness — may mark opt-in profile while still required in
-  local live suite
-- Existing UJ-027 specs mock HTTP; live suite must be separate (not break mocked H6′ smokes)
+- Local allowlist: `localhost` / `127.0.0.0/8` in harness recipe (T1.4) — [Corpus: adr/ADR-030]
+- SQL Server: required **local**; CI skippable / LIVE opt-in (`D-S047-04` Q4)
+- Mocked H6′ stays separate from TC-F16-LIVE (AC3)
+- `F16_LIVE_SQL` off when `CI=true` (S05.M2) — implement in T1.3

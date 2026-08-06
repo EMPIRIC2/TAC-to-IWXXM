@@ -59,6 +59,40 @@
 
 **Status:** Gate A **PASS** — close 02 → **04-tech-plan**.
 
+### 04-tech-plan (locked 2026-08-06; chat `Q1:1 Q2:1 Q3:1+3 Q4:1+2+3(local only)` → **D-S047-04**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Teardown (S02.M1)? | **1** — `compose … down -v --remove-orphans` + post-check no named containers/volumes |
+| Q2 | decision | Write assertion (S02.M4)? | **1** — query DB via async drivers after UI success |
+| Q3 | decision | Harness (S02.M2)? | **1+3** — `make test-e2e-f16-live-sql` **and** `F16_LIVE_SQL=1` on `test-live-e2e` |
+| Q4 | decision | LIVE vs CI (S02.M5)? | **1+2+3 local-only** — **Local:** LIVE in `make test-live` + all four dialects required. **CI:** opt-in; SQL Server skippable; LIVE not on default CI path |
+
+**Artifacts:** `docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md` (10 tasks M1–M2); `build-plan-card.md` (M1 active).  
+**Status:** draft pending `D-S047-04-plan` approval → then **05-verify-tech**.
+
+### Plan approve (locked 2026-08-06; chat `1` → **D-S047-04-plan**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-04-plan | **1** — approve execution plan + Build Plan Card as written; close 04 → **05-verify-tech** |
+
+**Status:** 04 **COMPLETE** — handoff Gate B.
+
+### Gate B (locked 2026-08-06; chat `1` → **D-S047-05-gate-b**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-05-gate-b | **1** — PASS; S05.M*/L1 as 07 work; close 05 → **07-build M1 T1.1** (06 skipped) |
+
+**Status:** Gate B **PASS** — Phase B complete; handoff **07-build**.
+
+### 07-build notes (T1.1–T1.2)
+
+- Teardown uses `BYOC_COMPOSE` with `-p metar-iwxxm-mock-byoc` so `down -v --remove-orphans`
+  cannot remove backend/frontend (shared compose files).
+- Contract tests: `tests/unit/test_compose_mock_byoc_teardown.py`.
+
 ---
 
 ## Cycle EV-038 — Epic #846 corpus residuals #849–#861 (S046)

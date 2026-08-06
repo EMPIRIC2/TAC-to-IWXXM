@@ -24,12 +24,15 @@ deepen_feature_ids:
   - F16
 feature_note: "Deepen F16 — live local BYOC SQL upload e2e + teardown; no new Fn expected"
 route_status: in_progress
-current_stage: 04-tech-plan
+current_stage: 07-build
 ui_preview: declined
 decisions:
   D-S047-open: "Q1=1 Q2=1 Q3=1 Q4=1 Q5=2"
   D-S047-ac: "1"
   D-S047-02-gate-a: "2"
+  D-S047-04: "Q1=1 Q2=1 Q3=1+3 Q4=1+2+3(local)"
+  D-S047-04-plan: "1"
+  D-S047-05-gate-b: "1"
 ---
 
 # Session S047 — sql-ingest-live-e2e

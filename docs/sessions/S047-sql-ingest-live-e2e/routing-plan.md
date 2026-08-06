@@ -15,10 +15,10 @@
 | 01-requirements | yes | delta | **completed** | F16 deepen ACs + teardown; D-S047-ac |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S047-02-gate-a`=2); S02.M3 fixed |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules planned |
-| 04-tech-plan | yes | delta | pending | Compose profile + e2e harness plan |
-| 05-verify-tech | yes | delta | pending | Gate B |
+| 04-tech-plan | yes | delta | **completed** | `D-S047-04-plan`=1; execution-plan approved |
+| 05-verify-tech | yes | delta | **completed** | Gate B PASS (`D-S047-05-gate-b`=1) |
 | 06-tech-tooling | no | — | skipped | Unless new deps force inventory pass |
-| 07-build | yes | full | pending | Compose + Playwright live + teardown |
+| 07-build | yes | full | **in_progress** | M1 T1.1 |
 | 08-verify-build | yes | delta | pending | — |
 | 09-qa | yes | delta | pending | — |
 | 10-e2e | yes | full | pending | Live SQL upload Playwright |
@@ -39,6 +39,6 @@
 |------|--------|------|
 | Phase 0 open | **PASS** (`D-S047-open`) | 2026-08-06 |
 | A→B / 02 | **PASS** (`D-S047-02-gate-a`=2) | 2026-08-06 |
-| B→C / 05 | pending | — |
+| B→C / 05 | **PASS** (`D-S047-05-gate-b`=1) | 2026-08-06 |
 | C→D / 11 | pending | — |
 | Deploy 12/13 | pending | — |
