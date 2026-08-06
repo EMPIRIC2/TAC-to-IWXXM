@@ -66,7 +66,7 @@ Pin-vs-tip watch: use `#804` / `#807` digs + `scripts/vendor/check_upstream.py` 
 | Manifest pin | `vendor/manifest.json` → `iwxxm.tag` (today **`v2025-2`**) |
 | Upstream tip | `scripts/vendor/check_upstream.py` / GitHub `wmo-im/iwxxm` tags & ReleaseNotes |
 | Breaking themes to triage | New/removed XSD types; Schematron assert IDs; example stem add/drop; namespace year; codelist URI drift; product roots (e.g. VONA entered 2025-2) |
-| US pin | `iwxxm-us` **3.0** tarball — confirm NWS still targets same WMO base before assuming US encode still validates |
+| US pin | `iwxxm-us` **3.0** tarball — confirm NWS still targets same WMO base before assuming US encode still validates; gate via `make iwxxm-us-compat-smoke` ([#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) · **TC-EV038-006**) |
 | **iwxxm-modelling** (corpus G8) | On **every vendor sync PR**: skim `wmo-im/iwxxm-modelling` tip vs `vendor/manifest.json` modelling pin — note UML/EA / Pattern-ID taxonomy deltas that inform **latest+1** adopt window. **Short watch only** — do **not** re-run full org mine [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807). Child [#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) · S046 / EV-038 · **TC-EV038-002** |
 
 **No re-pin in EV-032 / #808.** File children when automation would reduce manual triage (T3.3).
@@ -82,6 +82,7 @@ Ordered steps to add WMO line `YYYY-N` as **latest**, demoting current latest �
 1. [ ] Read upstream ReleaseNotes / diff vs current pin (informative; cite #804 surfaces).
 2. [ ] Sync `iwxxm` (and matching `iwxxm-modelling` / codelists as needed) via `scripts/vendor/sync_iwxxm.py` — **sync PR only**; never hand-edit under `vendor/schemas/*`.
 3. [ ] **Tip-diff summary (#852):** run `make tip-diff-iwxxm` (or `scripts/vendor/tip_diff_iwxxm.py --from <prev> --to <new>`) and paste XSD/SCH/example-stem deltas into the sync PR — **TC-EV038-005**.
+4. [ ] **iwxxm-us compatibility gate (#853):** run `make iwxxm-us-compat-smoke` (report + annex3/`iwxxm_us` convert+validate smoke). On US fail, apply **§iwxxm-us lag policy (D-S046-853)** — ship WMO-only first; document lag in the sync PR; do **not** block ICAO default. — **TC-EV038-006**.
 5. [ ] **iwxxm-modelling delta watch (G8 / #861):** record tip-vs-pin Modelling/UML/Pattern-ID notes in the sync PR (or linked issue) — informs latest+1; **no** duplicate [#807](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/807) org mine.
 6. [ ] Update `vendor/manifest.json` tag + SHA + tree hash.
 7. [ ] Run ADR-027 xsdata codegen (`scripts/codegen/iwxxm_xsd.py`); commit generated status/artifacts.
@@ -147,10 +148,33 @@ First real use is when a line actually enters the warning window.
 | ADR-032 golden equality vs vendor XML | High | Soft→strict per stem; catalog tiers; path-filtered canaries |
 | Dual-line CI time / disk | Medium | Keep window at 2; quality packs path-filtered |
 | Manual ReleaseNotes triage | Medium | Child: structured triage template / CI tip-diff summary |
-| `iwxxm-us` lag vs WMO line | Medium | Explicit check on every WMO adopt; child if US encode blocks |
+| `iwxxm-us` lag vs WMO line | Medium | Explicit check every WMO adopt (`make iwxxm-us-compat-smoke`); **§iwxxm-us lag policy** |
 | Enum duplication (backend vs FE defaults) | Medium | Child: single generated supported-versions artifact |
 | Schematron xslt2 / Docker path | Medium | Line-local SCH only; keep smoke in canaries |
 | Codelist URI drift vs codes.wmo.int | Low–Med | Periodic check (gap G6 → child under #846/#808) |
+
+---
+
+## iwxxm-us lag policy (D-S046-853 / #853)
+
+**Locked 2026-08-05 (S046 / EV-038):** **Ship WMO-only first.**
+
+When a new WMO line becomes `DEFAULT_VERSION` / annex3 latest:
+
+1. Run **`make iwxxm-us-compat-smoke`** (prints SoT default + `iwxxm-us` pin; runs annex3 +
+   `iwxxm_us` convert+XSD/SCH smoke against the SoT default).
+2. Confirm NWS `iwxxm-us` still targets the same WMO base (manifest pin + upstream notes).
+3. **If US smoke passes** — record green in the sync PR; continue adopt checklist.
+4. **If US smoke fails** — still merge the WMO default bump when Annex 3 is ready; document
+   the lag in the sync PR (pin tag, failing case ids, last-known-good WMO base for US);
+   keep `iwxxm_us` fixtures/docs on that last-known-good base until NWS catches up; open a
+   child issue under [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) if encode
+   work is needed. **Do not block ICAO/Annex 3 adopt on US lag.**
+
+Optional CI: path-filtered workflow
+[`.github/workflows/iwxxm-us-compat-smoke.yml`](../../../.github/workflows/iwxxm-us-compat-smoke.yml)
+(vendor / US profile / gate script). Non-blocking relative to full quality packs — same smoke
+as the make target.
 
 ---
 
@@ -160,7 +184,7 @@ First real use is when a line actually enters the warning window.
 |-----|-------|
 | Supported-versions single source (FE/OpenAPI) | [#851](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/851) |
 | Sync PR tip-diff summary (+ golden fail list can ride along) | [#852](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/852) — `make tip-diff-iwxxm` (S046) |
-| iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) |
+| iwxxm-us compatibility gate | [#853](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/853) — `make iwxxm-us-compat-smoke` + lag policy (S046 / **D-S046-853**) |
 | UX Latest/Previous picker labels | [#854](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/854) |
 | Deprecation calendar / reminder template | [#855](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/855) — **template landed** S046/EV-038 |
 | iwxxm-modelling delta watch (G8) | [#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) — sync-PR checklist step |

@@ -34,6 +34,8 @@
 | D-S046-sot | decision | #851 SoT shape? | **1** — Python SoT → generated committed JSON → FE + OpenAPI/CI |
 | D-S046-04-plan | decision | Execution plan? | **1** — approve as written; close 04 → start 05 |
 | D-S046-05-gate-b | decision | Gate B? | **1** — PASS; S05.M*/L1 as 07; close 05 → 07 M1 T1.1 |
+| D-S046-853 | decision | #853 US lag? | **1** — **Ship WMO-only first**; document lag in sync PR; do not block ICAO default |
+| D-S046-853-push | decision | Push before T2.7? | **1** — continue T2.7 then push (lag+push chat `1,1`) |
 
 | Milestone | Issues | Theme | Notes |
 |-----------|--------|-------|-------|
@@ -91,7 +93,15 @@ See [01-requirements-summary.md](../sessions/S046-iwxxm-corpus-residuals/reports
 | 02-verify-plan | completed | Gate A PASS (`D-S046-02-gate-a`=2 + `D-S046-sot`=1); handoff **04-tech-plan** |
 | 04-tech-plan | completed | **D-S046-04-plan**=1; execution-plan approved @ `f03ed255`; handoff **05** |
 | 05-verify-tech | completed | Gate B PASS (`D-S046-05-gate-b`=1); handoff **07-build** |
-| 07-build | in_progress | M1 T1.1+ — #858/#861/#855 docs |
+| 07-build | in_progress | M2 T2.7 — #853 iwxxm-us gate (`D-S046-853`=1) |
+
+### #853 lag policy (07 — locked **D-S046-853**=1)
+
+**Ship WMO-only first.** Annex 3 / `DEFAULT_VERSION` adopt proceeds when WMO checklist is
+ready. If `make iwxxm-us-compat-smoke` fails, record lag in the sync PR and keep US on the
+last-known-good WMO base until NWS pin catches up; open a child under #846 if encode work
+is needed. Do **not** block ICAO adopt on US lag.
+See [RELEASE_LINE_ADOPTABILITY.md §iwxxm-us lag policy](../domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md).
 
 ---
 

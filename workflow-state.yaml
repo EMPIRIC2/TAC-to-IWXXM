@@ -19,16 +19,19 @@ active_session:
   prior_session: S045-matrix-disposition-residuals
   prior_evolve_cycle_id: EV-037
   github_issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
+  github_issues_closed: [858, 861, 855]
+  github_issues_closed_at: "2026-08-05"
+  github_issues_closed_note: "Closed on 07-build @ 1360dcc6 — M1 closeout (#858/#861/#855)"
   parent_epic: 846
   feature_ids: []
   deepen_feature_ids: [F2, F4, F6, F7, F32]
   feature_note: 'Deepen F2/F4/F6/F7/F32 — no new Fn expected unless encode unlock requires one; #854 UI'
   ui_preview: yes_at_m2_854
   current_stage: 07-build
-  current_stage_note: 'STARTED — M1 T1.1 #858 COVERAGE_MATRIX WAFS/QVACI/SIGWX OOS'
-  tip_sha: f03ed255
-  tip_sha_full: f03ed255f9e855888f3a9cf6c8a55cb34fd73951
-  tip_sha_note: 'Gate B PASS @ f03ed255; 07-build M1 T1.1 in_progress; dirty .cursor/rules/core/tdd.mdc only'
+  current_stage_note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1)'
+  tip_sha: 66a41f38
+  tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
+  tip_sha_note: 'T2.7 implemented locally; commit+push pending'
   milestones:
     M1: [858, 861, 855]
     M2: [851, 852, 853, 854]
@@ -62,7 +65,7 @@ active_session:
       mode: full
       status: in_progress
       started: '2026-08-05'
-      note: 'IN_PROGRESS — M1 T1.1 #858 COVERAGE_MATRIX WAFS/QVACI/SIGWX OOS'
+      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
   decisions:
     D-S046-open: 'Q1=1 Q2=5 Q3=2'
     D-S046-open_note: 'Open S046→EV-038; whole residuals #849–#861; Standard (+05 for B→C)'
@@ -78,6 +81,9 @@ active_session:
     D-S046-04-plan_note: 'Approve execution plan as written; close 04; start 05-verify-tech'
     D-S046-05-gate-b: '1'
     D-S046-05-gate-b_note: 'PASS — S05.M*/L1 as 07; close 05; start 07 M1 T1.1'
+    D-S046-853: '1'
+    D-S046-853_note: 'Ship WMO-only first; make iwxxm-us-compat-smoke; RELEASE_LINE lag policy'
+    D-S046-853-push: '1'
   stages:
     00-context:
       status: completed
@@ -88,7 +94,7 @@ active_session:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase 2 (Phase B) — Gate B PASS; orchestrating 07-build M1 T1.1'
+      note: 'Phase 2 (Phase B) — Gate B PASS; orchestrating 07-build M2 T2.8; T2.7 #853 COMPLETE (D-S046-853=1)'
     01-requirements:
       status: completed
       started: '2026-08-05'
@@ -113,7 +119,7 @@ active_session:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'IN_PROGRESS — M1 T1.1 #858 COVERAGE_MATRIX WAFS/QVACI/SIGWX OOS'
+      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
@@ -8234,11 +8240,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-08-05'
     started: '2026-08-05'
-    completed_at: '2026-08-05'
-    completed: '2026-08-05'
+    completed_at: null
+    completed: null
     previous_started_at: '2026-08-05'
     previous_completed_at: '2026-08-05'
     previous_session_id: S044-local-precommit-long-jobs
@@ -8257,21 +8263,23 @@ stages:
     session_id: S046-iwxxm-corpus-residuals
     evolve_cycle_id: EV-038
     mode: full
-    note: 'S046/EV-038 07-build STARTED — M1 T1.1 #858 COVERAGE_MATRIX WAFS/QVACI/SIGWX OOS; Gate B PASS (D-S046-05-gate-b=1); 06 skipped'
-    tip_sha: f03ed255
-    tip_sha_full: f03ed255f9e855888f3a9cf6c8a55cb34fd73951
-    tip_note: '07 STARTED — parent-confirmed tip f03ed255; M1 T1.1 in_progress'
-    pending_commit: false
+    note: 'S046/EV-038 07-build IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); T2.1–T2.7 done locally; tip still 66a41f38 (commit+push pending); M1 @ 1360dcc6 (#858/#861/#855 closed); Gate B PASS (D-S046-05-gate-b=1); 06 skipped'
+    tip_sha: 66a41f38
+    tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
+    tip_note: 'T2.7 implemented locally; commit+push pending'
+    pending_commit: true
     next_stage: null
-    current_milestone: M1
-    current_task: T1.1
-    active_milestone: M1
-    active_task: T1.1
-    active_task_status: in_progress
-    completed_through: null
+    current_milestone: M2
+    current_task: T2.8
+    active_milestone: M2
+    active_task: T2.8
+    active_task_status: pending
+    completed_through: T2.7
     progress: null
-    next_task: null
+    next_task: T2.8
     decision_refs:
+    - D-S046-853
+    - D-S046-853-push
     - D-S046-05-gate-b
     - D-S046-04-plan
     - D-S046-sot
@@ -8317,10 +8325,10 @@ stages:
       mode: full
       started_at: '2026-08-05'
       started: '2026-08-05'
-      tip_sha: f03ed255
-      tip_sha_full: f03ed255f9e855888f3a9cf6c8a55cb34fd73951
-      pending_commit: false
-      note: 'STARTED — M1 T1.1 #858 COVERAGE_MATRIX WAFS/QVACI/SIGWX OOS'
+      tip_sha: 66a41f38
+      tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
+      pending_commit: true
+      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
       feature_ids: []
       deepen_feature_ids:
       - F2
@@ -8329,16 +8337,19 @@ stages:
       - F7
       - F32
       decision_refs:
+      - D-S046-853
+      - D-S046-853-push
       - D-S046-05-gate-b
       - D-S046-04-plan
       - D-S046-sot
       - D-S046-ac
       - D-S046-mplan
-      active_milestone: M1
-      current_milestone: M1
-      active_task: T1.1
-      current_task: T1.1
-      active_task_status: in_progress
+      active_milestone: M2
+      current_milestone: M2
+      active_task: T2.8
+      current_task: T2.8
+      active_task_status: pending
+      completed_through: T2.7
       artifacts:
       - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
       - docs/sessions/S046-iwxxm-corpus-residuals/reports/05-verify-tech-audit.md
@@ -34538,7 +34549,7 @@ evolve_cycles:
   title: "Epic #846 corpus residuals #849–#861"
   status: in_progress
   phase: 2
-  phase_note: 'Phase 2 (Phase B) — Gate B PASS; 07-build M1 T1.1 in_progress; SoT python_to_generated_json_fe_openapi_ci; UI yes@M2/#854'
+  phase_note: 'Phase 2 (Phase B) — Gate B PASS; 07-build M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); SoT python_to_generated_json_fe_openapi_ci; UI yes@M2/#854'
   started: '2026-08-05'
   started_at: '2026-08-05'
   completed: null
@@ -34567,7 +34578,7 @@ evolve_cycles:
     - 06-tech-tooling
   current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: 'STARTED — M1 T1.1 #858 COVERAGE_MATRIX WAFS/QVACI/SIGWX OOS'
+  current_stage_note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1)'
   ui_preview: yes_at_m2_854
   branch: evolve/EV-038-iwxxm-corpus-residuals
   sot_decision: python_to_generated_json_fe_openapi_ci
@@ -34589,7 +34600,7 @@ evolve_cycles:
     M2: [851, 852, 853, 854]
     M3: [859, 860, 857]
     M4: [849, 850, 856]
-  decision_refs: [D-S046-ac, D-S046-mplan, D-S046-open, D-S046-02-gate-a, D-S046-sot, D-S046-04-plan, D-S046-05-gate-b]
+  decision_refs: [D-S046-ac, D-S046-mplan, D-S046-open, D-S046-02-gate-a, D-S046-sot, D-S046-04-plan, D-S046-05-gate-b, D-S046-853, D-S046-853-push]
   stages:
     00-context:
       status: completed
@@ -34600,7 +34611,7 @@ evolve_cycles:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase 2 orchestrator — Gate B PASS; 07-build M1 T1.1 active'
+      note: 'Phase 2 orchestrator — Gate B PASS; 07-build M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1)'
     01-requirements:
       status: completed
       started: '2026-08-05'
@@ -34625,8 +34636,9 @@ evolve_cycles:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'IN_PROGRESS — M1 T1.1 #858 COVERAGE_MATRIX WAFS/QVACI/SIGWX OOS'
+      note: 'IN_PROGRESS — M2 T2.8 next; T2.7 #853 COMPLETE (D-S046-853=1); commit+push pending'
   notes:
+  - '2026-08-05 D-S046-853=1 + D-S046-853-push=1 — Ship WMO-only first; make iwxxm-us-compat-smoke; RELEASE_LINE lag policy; T2.7 complete locally; tip 66a41f38 commit+push pending; next T2.8'
   - '2026-08-05 D-S046-05-gate-b=1 — Gate B PASS; S05.M*/L1 as 07; close 05; start 07-build M1 T1.1; gates.b_to_c=passed; checkpoints.phase_b=passed; tip f03ed255'
   - '2026-08-05 D-S046-02-gate-a=2 + D-S046-sot=1 — Gate A PASS; close 02-verify-plan; start 04-tech-plan; gates.a_to_b=passed; commit sha pending (HEAD e9df8f84 pre-Gate-A)'
   - '2026-08-05 D-S046-ac AC=1 — approve AC1–AC14; close 01-requirements; start 02-verify-plan awaiting Gate A; commit e9df8f84'
@@ -36227,14 +36239,14 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-038-iwxxm-corpus-residuals
-  ahead_of_origin: 3
+  ahead_of_origin: 7
   pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  tip_sha: f03ed255
-  tip_sha_full: f03ed255f9e855888f3a9cf6c8a55cb34fd73951
-  tip_note: 'S046/EV-038 — Gate A PASS @ f03ed255; 02 complete; 04-tech-plan in_progress; draft execution plan M1–M4'
+  tip_sha: 66a41f38
+  tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
+  tip_note: 'S046/EV-038 — M2 T2.1–T2.6 COMPLETE @ 66a41f38; T2.7 iwxxm-us gate next; branch unpushed (ahead 7)'
   stash:
   - name: S039-EV031-WIP
     note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
@@ -36246,9 +36258,13 @@ git_history:
   main_tip_sha: b7302fe4
   main_tip_sha_full: b7302fe47c8ad8b248bd997a163646b2516038d4
   recommended_branch: evolve/EV-038-iwxxm-corpus-residuals
-  note: 'S046/EV-038 — Gate A PASS @ f03ed255; 02 complete; 04-tech-plan in_progress; branch unpushed (ahead 3); dirty .cursor/rules/core/tdd.mdc only'
+  note: 'S046/EV-038 — M2 T2.1–T2.6 COMPLETE @ 66a41f38; T2.7 iwxxm-us gate next; branch unpushed (ahead 7); dirty .cursor/rules/core/tdd.mdc only'
 
   notes:
+  - '2026-08-05 S046/EV-038 — recorded git commit 66a41f38 (66a41f381d245acea66963a96a829ef530322a77) [T2.6] feat: IWXXM vendor tip-diff for sync PRs (#852); T2.1–T2.6 COMPLETE; active_task T2.7 pending; pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
+  - '2026-08-05 S046/EV-038 — recorded git commit 2511869d (2511869d23b9ef26c2ab1ac0b7facf55194d4710) [T2.3][T2.4][T2.5] feat: FE SoT picker labels + api-contract enum (#851/#854); pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
+  - '2026-08-05 S046/EV-038 — recorded git commit 205fa00e (205fa00ef3bed4895c43c35fbf1931d39a950b8d) [T2.1][T2.2] feat: export iwxxm versions JSON + SoT drift CI (#851); pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
+  - '2026-08-05 S046/EV-038 — recorded git commit 1360dcc6 (1360dcc6f514f245152a5c0967ad5699bfbdd1b2) [EV-038] docs: Gate B PASS; M1 #858/#861/#855 closeout; 07-build M2 T2.1 next; pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit f03ed255 (f03ed255f9e855888f3a9cf6c8a55cb34fd73951) [EV-038] docs: Gate A PASS; SoT JSON export; draft execution plan; gate_a_commit_pending cleared; 04-tech-plan in_progress; pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 Gate A PASS — D-S046-02-gate-a=2 + D-S046-sot=1; close 02-verify-plan; start 04-tech-plan; gates.a_to_b=passed; commit sha PENDING (HEAD e9df8f84 pre-Gate-A message); no git commit by workflow-state-manager'
   - '2026-08-05 S046/EV-038 — recorded git commit e9df8f84 (e9df8f8493803d69cef032327a0d8a899cf476d7) [EV-038] docs: approve AC1–AC14; 02 audit + UJ-050; D-S046-ac AC=1; 01-requirements COMPLETE; 02-verify-plan in_progress awaiting Gate A; pushed=false; dirty=true (.cursor/rules/core/tdd.mdc); no git commit by workflow-state-manager'
@@ -37825,6 +37841,108 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 66a41f38
+    short: 66a41f38
+    sha_full: 66a41f381d245acea66963a96a829ef530322a77
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[T2.6] feat: IWXXM vendor tip-diff for sync PRs (#852)"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - Makefile
+    - docs/domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
+    - scripts/vendor/__init__.py
+    - scripts/vendor/tip_diff_iwxxm.py
+    - tests/unit/test_tip_diff_iwxxm.py
+    files_changed_count: 6
+    timestamp: "2026-08-05T20:03:11-04:00"
+    pushed: false
+    tip_sha: 66a41f38
+    tip_sha_full: 66a41f381d245acea66963a96a829ef530322a77
+    note: "S046/EV-038 — T2.6 COMPLETE; tip-diff script for #852 sync PRs; next T2.7 iwxxm-us gate"
+  - sha: 2511869d
+    short: 2511869d
+    sha_full: 2511869d23b9ef26c2ab1ac0b7facf55194d4710
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[T2.3][T2.4][T2.5] feat: FE SoT picker labels + api-contract enum (#851/#854)"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - apps/backend/tests/unit/test_iwxxm_versions_sot_drift.py
+    - apps/frontend/src/app/components/FileConverter.tsx
+    - apps/frontend/src/app/components/UserPreferencesDialog.tsx
+    - apps/frontend/src/app/components/admin/SystemSettingsPanel.tsx
+    - apps/frontend/src/utils/api.ts
+    - apps/frontend/src/utils/iwxxmVersions.test.ts
+    - apps/frontend/src/utils/iwxxmVersions.ts
+    - docs/api-contract.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
+    files_changed_count: 9
+    timestamp: "2026-08-05T19:59:54-04:00"
+    pushed: false
+    tip_sha: 2511869d
+    tip_sha_full: 2511869d23b9ef26c2ab1ac0b7facf55194d4710
+    note: "S046/EV-038 — T2.3–T2.5 COMPLETE; FE SoT picker labels + api-contract enum (#851/#854)"
+  - sha: 205fa00e
+    short: 205fa00e
+    sha_full: 205fa00ef3bed4895c43c35fbf1931d39a950b8d
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[T2.1][T2.2] feat: export iwxxm versions JSON + SoT drift CI (#851)"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - Makefile
+    - apps/backend/tests/unit/test_iwxxm_versions_sot_drift.py
+    - apps/frontend/src/generated/iwxxm_versions.json
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
+    - scripts/iwxxm/export_iwxxm_versions.py
+    files_changed_count: 5
+    timestamp: "2026-08-05T19:55:08-04:00"
+    pushed: false
+    tip_sha: 205fa00e
+    tip_sha_full: 205fa00ef3bed4895c43c35fbf1931d39a950b8d
+    note: "S046/EV-038 — T2.1–T2.2 COMPLETE; export iwxxm versions JSON + SoT drift CI (#851)"
+  - sha: 1360dcc6
+    short: 1360dcc6
+    sha_full: 1360dcc6f514f245152a5c0967ad5699bfbdd1b2
+    branch: evolve/EV-038-iwxxm-corpus-residuals
+    message: "[EV-038] docs: Gate B PASS; M1 #858/#861/#855 closeout"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S046-iwxxm-corpus-residuals
+    evolve_cycle_id: EV-038
+    files_changed:
+    - .github/ISSUE_TEMPLATE/iwxxm_deprecation_warning.md
+    - docs/decisions/evolve-decisions.md
+    - docs/domain/iwxxm/RELEASE_LINE_ADOPTABILITY.md
+    - docs/domain/iwxxm/RELEASE_LINE_STAFF_GUIDE.md
+    - docs/domain/rules/COVERAGE_MATRIX.md
+    - docs/feature-list.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/05-verify-tech-audit.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
+    - docs/sessions/S046-iwxxm-corpus-residuals/routing-plan.md
+    - workflow-state.yaml
+    files_changed_count: 10
+    timestamp: "2026-08-05"
+    pushed: false
+    tip_sha: 1360dcc6
+    tip_sha_full: 1360dcc6f514f245152a5c0967ad5699bfbdd1b2
+    note: "S046/EV-038 — M1 COMPLETE; #858/#861/#855 closed; handoff M2 T2.1 SoT drift red test"
   - sha: f03ed255
     short: f03ed255
     sha_full: f03ed255f9e855888f3a9cf6c8a55cb34fd73951

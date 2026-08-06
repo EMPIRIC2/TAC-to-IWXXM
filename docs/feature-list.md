@@ -1393,6 +1393,8 @@
 - **UI**: #854 — local non-deployed preview at M2 (`D-S046-mplan` Q2=1); H4–H5 at deploy
 - **SoT (#851)**: Python `iwxxm_versions.py` → generated committed JSON (roles
   `latest`/`previous`) → FE + OpenAPI/CI (`D-S046-sot`=1)
+- **US gate (#853)**: `make iwxxm-us-compat-smoke` + lag policy **D-S046-853** (ship
+  WMO-only first); see RELEASE_LINE_ADOPTABILITY §iwxxm-us lag policy
 - **Journeys / tests**: **UJ-050** (version picker Latest/Previous); **TC-EV038-001..014**;
   prior **TC-EV032-*** / **TC-F32-***
 - **Execution plan**: [execution-plan.md](sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md)
