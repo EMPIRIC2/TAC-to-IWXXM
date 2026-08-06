@@ -1,7 +1,7 @@
 # Deploy Checklist — S046 / EV-038 (Stage 12 / T5.4)
 
 > Generated: 2026-08-06  
-> Status: **READY pending user D-S046-12**  
+> Status: **APPROVED** (`D-S046-12`=1) — open PR → merge → 13  
 > Prior: 11 **APPROVED** (`D-S046-11`=1)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · DOKS CD on `main`  
 > Branch: `evolve/EV-038-iwxxm-corpus-residuals` @ `2195978e` (+ T5.3 commit)  

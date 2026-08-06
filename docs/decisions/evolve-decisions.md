@@ -9,7 +9,7 @@
 **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn expected — Q2 whole residual set)  
 **Started**: 2026-08-05  
 **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
-**Status**: **in_progress** — Phase D **T5.2** parallel 09-qa + 10-e2e (`D-S046-phase-c`=1)  
+**Status**: **in_progress** — Phase D **12 APPROVED** (`D-S046-12`=1); opening PR → CI → merge → **13** H4-H5  
 **Prior**: S045 / EV-037 completed  
 **Issues**: [#849](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/849)–[#861](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/861) under epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)  
 **Epic**: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
@@ -39,6 +39,8 @@
 | D-S046-859 | decision | #859 drift? | **1** — offline SCH↔CSV non-flake gate; live RDF optional soft; known SpaceWx SCH-ahead allowlisted |
 | D-S046-850 | decision | #850 resuspended? | **1** — cite-only deferral (no WMO peer / no invented TAC); matrix G-VONA-5 |
 | D-S046-phase-c | decision | Phase C checkpoint? | **1** — push + start T5.2 (09-qa + 10-e2e); `gates.c_to_d` passed (tech + user) |
+| D-S046-11 | decision | 11-verify-impl? | **1** — approve AC1–AC14 + UJ-050; proceed to T5.4 |
+| D-S046-12 | decision | 12-verify-deploy? | **1** — approve checklist; open PR; merge+13 after CI |
 
 | Milestone | Issues | Theme | Notes |
 |-----------|--------|-------|-------|

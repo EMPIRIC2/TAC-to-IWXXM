@@ -28,10 +28,10 @@ active_session:
   feature_note: 'Deepen F2/F4/F6/F7/F32 — no new Fn expected unless encode unlock requires one; #854 UI'
   ui_preview: yes_at_m2_854
   current_stage: 12-verify-deploy
-  current_stage_note: 'T5.3 APPROVED D-S046-11=1; T5.4 12 checklist then 13; H4-H5 required for UJ-050'
+  current_stage_note: '12 APPROVED (D-S046-12=1); opening PR → CI → merge → 13 H4-H5'
   tip_sha: 2195978e
   tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
-  tip_sha_note: 'T5.3 APPROVED D-S046-11=1 @ 2195978e; T5.4 12-verify-deploy in_progress; H4-H5→13 for UJ-050'
+  tip_sha_note: '12 APPROVED D-S046-12=1 @ 2195978e; opening PR → CI → merge → 13 H4-H5'
   tip_sha_pushed: true
   milestones:
     M1: [858, 861, 855]
@@ -112,10 +112,14 @@ active_session:
     - stage: 12-verify-deploy
       required: true
       mode: full
-      status: in_progress
+      status: completed
       started: '2026-08-06'
-      completed: null
-      note: 'IN_PROGRESS — T5.4 12 checklist then 13; H4-H5 required for UJ-050'
+      completed: '2026-08-06'
+      overall: approved
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+      report_status: approved
+      decision_id: D-S046-12
+      note: 'COMPLETE — D-S046-12=1 approve checklist; open PR; merge+13 after CI; report deploy-checklist.md'
   decisions:
     D-S046-open: 'Q1=1 Q2=5 Q3=2'
     D-S046-open_note: 'Open S046→EV-038; whole residuals #849–#861; Standard (+05 for B→C)'
@@ -140,6 +144,8 @@ active_session:
     D-S046-ui-preview_note: 'decline non-deployed preview — approve from reports/tests only'
     D-S046-11: '1'
     D-S046-11_note: '1 — Approve all AC1–AC14 + UJ-050; proceed to T5.4'
+    D-S046-12: '1'
+    D-S046-12_note: '1 — Approve deploy checklist; open PR; merge+13 after CI'
   stages:
     00-context:
       status: completed
@@ -150,7 +156,7 @@ active_session:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase D deploy — T5.3 APPROVED D-S046-11=1; T5.4 12-verify-deploy in_progress; H4-H5 required for UJ-050'
+      note: 'Phase D deploy — 12 APPROVED (D-S046-12=1); opening PR → CI → merge → 13 H4-H5'
     01-requirements:
       status: completed
       started: '2026-08-05'
@@ -210,10 +216,14 @@ active_session:
       decision_id: D-S046-11
       note: 'COMPLETE — D-S046-11=1 approve AC1–AC14 + UJ-050; report verify-impl.md; overall approved; handoff T5.4 12'
     12-verify-deploy:
-      status: in_progress
+      status: completed
       started: '2026-08-06'
-      completed: null
-      note: 'IN_PROGRESS — T5.4 12 checklist then 13; H4-H5 required for UJ-050'
+      completed: '2026-08-06'
+      overall: approved
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+      report_status: approved
+      decision_id: D-S046-12
+      note: 'COMPLETE — D-S046-12=1 approve checklist; open PR; merge+13 after CI; report deploy-checklist.md'
 sessions:
 - id: S045-matrix-disposition-residuals
   type: feature
@@ -11587,12 +11597,12 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: in_progress
+    status: completed
     started_at: '2026-08-06'
     started: '2026-08-06'
-    completed: null
-    completed_at: null
-    overall: null
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    overall: approved
     previous_started_at: '2026-08-05'
     previous_started: '2026-08-05'
     previous_completed: '2026-08-05'
@@ -11628,22 +11638,23 @@ stages:
     session_id: S046-iwxxm-corpus-residuals
     evolve_cycle_id: EV-038
     mode: full
-    note: 'IN_PROGRESS — S046/EV-038 T5.4 12 checklist then 13; H4-H5 required for UJ-050; after D-S046-11=1'
-    report: null
-    report_status: pending
+    note: 'COMPLETE — S046/EV-038 D-S046-12=1 approve checklist; report deploy-checklist.md; overall approved; opening PR → CI → merge → 13 H4-H5'
+    report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+    report_status: approved
     tip_sha: 2195978e
     tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
-    tip_note: 'S046/EV-038 tip 2195978e — T5.4 12-verify-deploy in_progress'
+    tip_note: 'S046/EV-038 tip 2195978e — 12 APPROVED; opening PR → CI → merge → 13 H4-H5'
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
     active_milestone: M5
     active_task: T5.4
-    active_task_status: in_progress
+    active_task_status: completed
     progress: 27/28
     awaiting_user_decision: false
-    decision_id: D-S046-11
+    decision_id: D-S046-12
     decision_ids:
+    - D-S046-12
     - D-S046-11
     - D-S042-13
     - D-S040-12
@@ -11654,17 +11665,20 @@ stages:
       session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-038
       skill_id: 12-verify-deploy
-      status: in_progress
+      status: completed
       mode: full
       started: '2026-08-06'
       started_at: '2026-08-06'
-      completed: null
-      completed_at: null
+      completed: '2026-08-06'
+      completed_at: '2026-08-06'
       branch: evolve/EV-038-iwxxm-corpus-residuals
       tip_sha: 2195978e
       tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
-      decision_id: D-S046-11
-      note: 'IN_PROGRESS — T5.4 12 checklist then 13; H4-H5 required for UJ-050'
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+      report_status: approved
+      overall: approved
+      decision_id: D-S046-12
+      note: 'COMPLETE — D-S046-12=1 approve checklist; open PR; merge+13 after CI; report deploy-checklist.md'
       deepen_feature_ids:
       - F2
       - F4
@@ -11673,7 +11687,7 @@ stages:
       - F32
       active_milestone: M5
       active_task: T5.4
-      active_task_status: in_progress
+      active_task_status: completed
       progress: 27/28
     - id: S045-matrix-disposition-residuals-12
       session_id: S045-matrix-disposition-residuals
@@ -12609,7 +12623,7 @@ stages:
     current_child_stage: 12-verify-deploy
     tip_sha: 2195978e
     tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
-    note: 'Phase D deploy — T5.3 APPROVED D-S046-11=1; T5.4 12-verify-deploy in_progress; H4-H5 required for UJ-050'
+    note: 'Phase D deploy — 12 APPROVED (D-S046-12=1); opening PR → CI → merge → 13 H4-H5'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -12875,6 +12889,43 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S046-12
+  date: '2026-08-06'
+  timestamp: '2026-08-06'
+  resolved_at: '2026-08-06'
+  session_id: S046-iwxxm-corpus-residuals
+  evolve_cycle_id: EV-038
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: deploy_checklist
+  status: confirmed
+  topic: '12-verify-deploy checklist approval'
+  summary: '1 — Approve deploy checklist; open PR; merge+13 after CI'
+  decision: |
+    D-S046-12=1 — user approved deploy checklist (deploy-checklist.md).
+    Open PR to main; after CI green merge then run 13-deploy-smoke (H4-H5 for UJ-050).
+    gates.deploy remains pending until 13 / PR merge.
+  user_option: '1'
+  branch: evolve/EV-038-iwxxm-corpus-residuals
+  tip_sha: 2195978e
+  tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
+  active_task: T5.4
+  active_task_status: completed
+  current_stage: 12-verify-deploy
+  report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+  overall: approved
+  related_decisions:
+  - D-S046-11
+  - D-S046-phase-c
+  deepen_feature_ids:
+  - F2
+  - F4
+  - F6
+  - F7
+  - F32
+  feature_ids: []
+  parent_epic: 846
 - id: D-S046-11
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -34884,7 +34935,7 @@ evolve_cycles:
   title: "Epic #846 corpus residuals #849–#861"
   status: in_progress
   phase: 3
-  phase_note: 'Phase D deploy — T5.3 APPROVED; T5.4 12 in_progress'
+  phase_note: 'Phase D deploy — 12 APPROVED (D-S046-12=1); opening PR → CI → merge → 13 H4-H5'
   started: '2026-08-05'
   started_at: '2026-08-05'
   completed: null
@@ -34912,13 +34963,13 @@ evolve_cycles:
     - 03-plan-tooling
     - 06-tech-tooling
   current_stage: 12-verify-deploy
-  current_stage_status: in_progress
-  current_stage_note: 'T5.3 APPROVED D-S046-11=1; T5.4 12 checklist then 13; H4-H5 required for UJ-050'
+  current_stage_status: completed
+  current_stage_note: '12 APPROVED (D-S046-12=1); opening PR → CI → merge → 13 H4-H5'
   ui_preview: yes_at_m2_854
   branch: evolve/EV-038-iwxxm-corpus-residuals
   tip_sha: 2195978e
   tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
-  tip_sha_note: 'T5.3 APPROVED D-S046-11=1 @ 2195978e; T5.4 12-verify-deploy in_progress; H4-H5→13 for UJ-050'
+  tip_sha_note: '12 APPROVED D-S046-12=1 @ 2195978e; opening PR → CI → merge → 13 H4-H5'
   sot_decision: python_to_generated_json_fe_openapi_ci
   gates:
     a_to_b: passed
@@ -34928,6 +34979,7 @@ evolve_cycles:
     c_to_d_decision: D-S046-phase-c
     c_to_d_passed_at: '2026-08-06'
     deploy: pending
+    deploy_note: 'D-S046-12=1 approved; awaiting PR open → CI → merge → 13 H4-H5'
   checkpoints:
     phase_a: passed
     phase_b: passed
@@ -34937,6 +34989,7 @@ evolve_cycles:
     phase_c_passed_at: '2026-08-06'
     phase_d: pending
     deploy: pending
+    deploy_note: 'awaiting PR merge + 13-deploy-smoke (H4-H5)'
   issues: [849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861]
   parent_epic: 846
   milestones:
@@ -34944,7 +34997,7 @@ evolve_cycles:
     M2: [851, 852, 853, 854]
     M3: [859, 860, 857]
     M4: [849, 850, 856]
-  decision_refs: [D-S046-ac, D-S046-mplan, D-S046-open, D-S046-02-gate-a, D-S046-sot, D-S046-04-plan, D-S046-05-gate-b, D-S046-853, D-S046-853-push, D-S046-phase-c, D-S046-ui-preview, D-S046-11]
+  decision_refs: [D-S046-ac, D-S046-mplan, D-S046-open, D-S046-02-gate-a, D-S046-sot, D-S046-04-plan, D-S046-05-gate-b, D-S046-853, D-S046-853-push, D-S046-phase-c, D-S046-ui-preview, D-S046-11, D-S046-12]
   stages:
     00-context:
       status: completed
@@ -34955,7 +35008,7 @@ evolve_cycles:
       status: in_progress
       started: '2026-08-05'
       completed: null
-      note: 'Phase D deploy — T5.3 APPROVED D-S046-11=1; T5.4 12-verify-deploy in_progress; H4-H5 required for UJ-050'
+      note: 'Phase D deploy — 12 APPROVED (D-S046-12=1); opening PR → CI → merge → 13 H4-H5'
     01-requirements:
       status: completed
       started: '2026-08-05'
@@ -35015,11 +35068,16 @@ evolve_cycles:
       decision_id: D-S046-11
       note: 'COMPLETE — D-S046-11=1 approve AC1–AC14 + UJ-050; report verify-impl.md; handoff T5.4 12'
     12-verify-deploy:
-      status: in_progress
+      status: completed
       started: '2026-08-06'
-      completed: null
-      note: 'IN_PROGRESS — T5.4 12 checklist then 13; H4-H5 required for UJ-050'
+      completed: '2026-08-06'
+      overall: approved
+      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+      report_status: approved
+      decision_id: D-S046-12
+      note: 'COMPLETE — D-S046-12=1 approve checklist; open PR; merge+13 after CI; report deploy-checklist.md'
   notes:
+  - '2026-08-06 D-S046-12=1 — Approve deploy checklist; 12-verify-deploy COMPLETE (overall approved); report deploy-checklist.md; gates.deploy pending until PR merge + 13 H4-H5; opening PR → CI → merge → 13'
   - '2026-08-06 D-S046-11=1 — Approve all AC1–AC14 + UJ-050; 11-verify-impl COMPLETE (overall approved); report verify-impl.md; T5.3 completed; T5.4 / 12-verify-deploy in_progress; H4-H5 required for UJ-050'
   - '2026-08-06 T5.2 COMPLETE — 09-qa pass_with_advisories + 10-e2e T0 PASS; reports qa-report.md + e2e-report.md; H4-H5→T5.4; next T5.3 11-verify-impl'
   - '2026-08-06 D-S046-phase-c=1 — user Phase C checkpoint option 1: push + start T5.2 (09+10); gates.c_to_d passed (tech + user); checkpoints.phase_c user-approved/passed; Phase D parallel 09-qa + 10-e2e'
