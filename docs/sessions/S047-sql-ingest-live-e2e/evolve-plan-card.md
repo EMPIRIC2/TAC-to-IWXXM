@@ -25,11 +25,10 @@ Playwright, with mandatory teardown across integration, e2e, and local harnesses
 
 ## Next child stage
 
-**07-build** — M1 T1.1 (teardown contract test); then T1.2–T1.5. 06 skipped.
+**07-build** — **M1 complete**; next **M2 T2.1** (live Playwright TC-F16-LIVE). Optional 08 at M1 boundary.
 
 ## Risks / open decisions
 
-- Local allowlist: `localhost` / `127.0.0.0/8` in harness recipe (T1.4) — [Corpus: adr/ADR-030]
-- SQL Server: required **local**; CI skippable / LIVE opt-in (`D-S047-04` Q4)
-- Mocked H6′ stays separate from TC-F16-LIVE (AC3)
-- `F16_LIVE_SQL` off when `CI=true` (S05.M2) — implement in T1.3
+- Playwright file `uj027-f16-live-sql.e2e.spec.ts` not yet implemented (T2.2) — make target will fail until then
+- Write-assert helpers in Python (S05.M3) — T2.3
+- SQL Server: required **local**; CI skippable (`D-S047-04` Q4)
