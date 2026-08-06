@@ -1,6 +1,6 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-07-12
+> Stage: 01-requirements | Last updated: 2026-08-06 (S047 / EV-039)
 
 | ID | Topic | Decision | Status |
 |----|-------|----------|--------|
@@ -195,6 +195,20 @@
 | EV-010/F14-R2 | Publish CI | OIDC trusted publishing per package version tag | confirmed |
 | EV-010/R-deploy | Render | Full 12–13 redeploy (msgspec HTTP); PyPI publish in same cycle | confirmed |
 | EV-010/R-config | Config/deploy docs | Minimal PyPI OIDC notes in config-spec + deploy (02 S8.M1=A) | confirmed |
+
+## EV-039 / F16 — Live local SQL ingest e2e + teardown (2026-08-06)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-039/F16-R1 | Scope | Deepen F16 only — no new Fn | confirmed |
+| EV-039/F16-R2 | Engines | All four: Postgres + MySQL + SQL Server + SQLite | confirmed |
+| EV-039/F16-R3 | Harness | Reuse `docker-compose.mock-byoc.yml` + Playwright live (no route mocks) | confirmed |
+| EV-039/F16-R4 | Teardown | Integration + e2e + local Compose — audit and fix gaps | confirmed |
+| EV-039/F16-R5 | UI preview | Declined this cycle | confirmed |
+| EV-039/F16-R6 | Manifest | feature-list, journeys, test-plan, tech-spec; skip api-contract/spec/new ADR | confirmed |
+| EV-039/F16-R7 | ACs | AC1–AC7 approved (`D-S047-ac`=1) | confirmed |
+| EV-039/F16-R8 | CI | Live suite documented via make; may be opt-in if SQL Server heavy | confirmed |
+| EV-039/F16-R9 | OOS | New vendors; live WIS2/EDIS/F19; prod SQL containers | confirmed |
 
 ## EV-014 / F16–F19 — Dissemination epic (2026-07-21)
 

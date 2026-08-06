@@ -33,9 +33,17 @@ services:
       # F31 Auth — password grant + JWKS-only verify (ADR-033 / env-contract)
       - SUPABASE_URL=${SUPABASE_URL:-}
       - SUPABASE_JWKS_URL=${SUPABASE_JWKS_URL:-}
+      # F16 LIVE / ADR-029 — empty allowlist ⇒ deny; local recipe from tech-spec.
+      # Docker API + BYOC Compose DNS also needs byoc-* hosts and bridge CIDR
+      # (private resolved IPs require overlapping CIDR — ADR-029 rebinding guard).
+      - DISSEMINATION_EGRESS_ALLOWLIST=${DISSEMINATION_EGRESS_ALLOWLIST:-wis2box,127.0.0.1,127.0.0.0/8,localhost,byoc-postgres,byoc-mysql,byoc-sqlserver,172.16.0.0/12}
+      - METAR_CORS_ORIGINS=${METAR_CORS_ORIGINS:-http://localhost:18000,http://127.0.0.1:18000}
       # Default to the bundled `db` service so `docker compose up` is self-contained.
       # Override by setting DATABASE_URL in `.env` (e.g. a Supabase pooler URL).
       - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}}
+    volumes:
+      # LIVE-004 — repo tmp shared into API (Colima host /tmp bind is unreliable).
+      - ./tmp/f16-live:/tmp/f16-live
     depends_on:
       db:
         condition: service_healthy

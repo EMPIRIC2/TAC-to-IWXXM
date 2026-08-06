@@ -44,7 +44,7 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
 | Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
 | Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) |
-| Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | API / `.env` (ADR-029) |
+| Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | API / `.env` (ADR-029); **local F16 LIVE recipe:** `wis2box,127.0.0.1,127.0.0.0/8,localhost` (+ see tech-spec §Local mock BYOC / harness recipe) |
 | F8 poller feed URL | `INGEST_POLLER_URL` | DOKS `metar-worker-secrets` / local `.env` — **https:// only**; reject `REPLACE_ME_*` |
 | F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker ConfigMap (default `30`) |
 | Live API URL | `LIVE_API_URL` | Local/CI live harness |

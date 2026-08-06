@@ -3,6 +3,117 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-039 — SQL ingest live e2e + teardown (S047)
+
+**Session**: S047-sql-ingest-live-e2e  
+**Features**: deepen **F16** (no new Fn expected)  
+**Started**: 2026-08-06  
+**Branch**: `evolve/EV-039-sql-ingest-live-e2e`  
+**Status**: in_progress — 12 approved; 13 push/PR/CI  
+**Prior**: S046 / EV-038 completed  
+**Corpus**: [Corpus: product §F16], [Corpus: tests], [Corpus: journeys §UJ-027], [Corpus: tech-spec], [Corpus: adr/ADR-029], [Corpus: adr/ADR-030]
+
+### Scope (Phase 0 — locked 2026-08-06; AskQuestion unavailable — chat `1,1,1,1,2` → **D-S047-open**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Session? | Open **S047** → **EV-039** (feature / deepen F16) |
+| Q2 | decision | DB coverage? | **All four**: Postgres + MySQL + SQL Server + SQLite |
+| Q3 | decision | Teardown? | **Integration + e2e + local** — audit and fix gaps |
+| Q4 | decision | Harness? | **Docker Compose profile** + Playwright against local stack |
+| Q5 | decision | UI preview? | **No** — docs/repo only |
+
+### In scope
+
+- Local live SQL engines for F16 BYOC upload verification via Playwright (non-mocked preflight/send)
+- Compose-managed disposable DBs + SQLite file path; hard teardown (containers, volumes, temp files, processes)
+- Test-plan / journey / tech-spec deltas for live local SQL suite
+
+### Out of scope
+
+- New DB vendors; live WIS2/EDIS/F19; production SQL containers; new product Fn; UI preview this cycle
+
+### Preset
+
+**Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06 unless later need)
+
+### Acceptance (locked 2026-08-06; chat `1` → **D-S047-ac**)
+
+| AC | Criterion |
+|----|-----------|
+| AC1 | Compose mock-byoc healthy PG/MySQL/SQL Server; SQLite disposable file |
+| AC2 | Live Playwright preflight→send for all four dialects + write assertion |
+| AC3 | Mocked H6′ UJ-027 suite stays green and separate |
+| AC4 | Compose/e2e teardown — no orphans; SQLite temps removed |
+| AC5 | Testcontainers fixtures always tear down |
+| AC6 | Teardown audit gaps fixed or waived in session report |
+| AC7 | TC-F16-LIVE-* mapped; make/CI documents live suite (opt-in OK) |
+
+**01-requirements**: standing deltas written 2026-08-06 — feature-list §F16, user-journeys UJ-027, test-plan TC-F16-LIVE-*, tech-spec pointer, requirements-decisions EV-039 rows.
+
+### Gate A (locked 2026-08-06; chat `2` → **D-S047-02-gate-a**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-02-gate-a | **2** — PASS; add `spec.md` EV-039 deepen note in 02; S02.M1/M2/M4/M5 → 04/07 |
+
+**Status:** Gate A **PASS** — close 02 → **04-tech-plan**.
+
+### 04-tech-plan (locked 2026-08-06; chat `Q1:1 Q2:1 Q3:1+3 Q4:1+2+3(local only)` → **D-S047-04**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Teardown (S02.M1)? | **1** — `compose … down -v --remove-orphans` + post-check no named containers/volumes |
+| Q2 | decision | Write assertion (S02.M4)? | **1** — query DB via async drivers after UI success |
+| Q3 | decision | Harness (S02.M2)? | **1+3** — `make test-e2e-f16-live-sql` **and** `F16_LIVE_SQL=1` on `test-live-e2e` |
+| Q4 | decision | LIVE vs CI (S02.M5)? | **1+2+3 local-only** — **Local:** LIVE in `make test-live` + all four dialects required. **CI:** opt-in; SQL Server skippable; LIVE not on default CI path |
+
+**Artifacts:** `docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md` (10 tasks M1–M2); `build-plan-card.md` (M1 active).  
+**Status:** draft pending `D-S047-04-plan` approval → then **05-verify-tech**.
+
+### Plan approve (locked 2026-08-06; chat `1` → **D-S047-04-plan**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-04-plan | **1** — approve execution plan + Build Plan Card as written; close 04 → **05-verify-tech** |
+
+**Status:** 04 **COMPLETE** — handoff Gate B.
+
+### Gate B (locked 2026-08-06; chat `1` → **D-S047-05-gate-b**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-05-gate-b | **1** — PASS; S05.M*/L1 as 07 work; close 05 → **07-build M1 T1.1** (06 skipped) |
+
+**Status:** Gate B **PASS** — Phase B complete; handoff **07-build**.
+
+### 07-build notes (T1.1–T1.2)
+
+- Teardown uses `BYOC_COMPOSE` with `-p metar-iwxxm-mock-byoc` so `down -v --remove-orphans`
+  cannot remove backend/frontend (shared compose files).
+- Contract tests: `tests/unit/test_compose_mock_byoc_teardown.py`.
+
+### 11-verify-impl (locked 2026-08-06; chat `1` → **D-S047-11**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-11 | **1** — Approve AC1–AC7 (SQL Server waive OK); close 11 → **12-verify-deploy** |
+
+**Evidence:** 09 PASS (advisories); 10 H6′ 7/7 + LIVE 001/002/004; tip `415898d0`.  
+**Artifacts:** `reports/verify-impl.md`; `docs/reports/implementation-verification.md`.
+
+### 12-verify-deploy (locked 2026-08-06; chat `1` → **D-S047-12**)
+
+| ID | Decision |
+|----|----------|
+| D-S047-12 | **1** — Approve checklist; push + PR; 13 after CI/CD (**H4–H5 required**) |
+
+- No prod SQL containers; harness + docs + `js-yaml` pin; H0c 6/6.
+- Checklist: `reports/deploy-checklist.md`.
+- Merge to `main` still requires explicit approval before live smoke.
+
+---
+
 ## Cycle EV-038 — Epic #846 corpus residuals #849–#861 (S046)
 
 **Session**: S046-iwxxm-corpus-residuals  

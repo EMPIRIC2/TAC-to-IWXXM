@@ -337,17 +337,22 @@ metar-to-IWXXM/
   **N sequential** `/preflight`+`/send` with per-file aggregated results; selection count
   **≤20**; Finished IndexedDB history and batched multi-payload API **out of scope** v1.
   F17–F19 reuse the same selection UI contract.
+- **F16 deepen (S047 / EV-039)**: Live local multi-DB SQL ingest via Playwright against
+  `docker-compose.mock-byoc.yml` (Postgres / MySQL / SQL Server + disposable SQLite); separate
+  from mocked H6′; mandatory teardown across integration / e2e / local Compose. No new
+  components — test/harness deepen of existing drawer + `packages/dissemination`.
+  [Corpus: product §F16] [Corpus: tests]
 - **F17**: WIS2 publish — staging wis2box harness for test; live BYOC waived at EV-014 close (Q15).
 - **F18**: EDIS-compliant submit to RTH Washington — BYOC SMTP/gateway in drawer; live waived (Q15).
 - **F19**: AMHS / SWIM / AFS adapters in the same drawer (staging stubs; live optional).
 - **Auth / F5**: Public dissemination (F21 — no operator JWT). Local session may record
   `kv_upload_key` on Finished in IndexedDB only; never store destination secrets.
-- **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772). Multi-select deepen **in
-  progress** (EV-018).
+- **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772). Multi-select deepen EV-018;
+  live local SQL e2e deepen **in progress** (S047 / EV-039).
 - **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
   (`packages/dissemination` + sink/API/wis2box/EDIS).
 - **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014;
-  **#785; evolve-decisions EV-018**.
+  **#785; evolve-decisions EV-018**; **S047 / evolve-decisions EV-039**.
 
 ### F20 — TAF + SPECI quality bar (S020 / EV-015) — Done
 
