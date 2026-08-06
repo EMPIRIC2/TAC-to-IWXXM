@@ -18,10 +18,10 @@
 | 04-tech-plan | yes | delta | **completed** | `D-S047-04-plan`=1; execution-plan approved |
 | 05-verify-tech | yes | delta | **completed** | Gate B PASS (`D-S047-05-gate-b`=1) |
 | 06-tech-tooling | no | — | skipped | Unless new deps force inventory pass |
-| 07-build | yes | full | **in_progress** | M1 **done** (T1.1–T1.5); next M2 T2.1 |
-| 08-verify-build | yes | delta | pending | — |
-| 09-qa | yes | delta | pending | — |
-| 10-e2e | yes | full | pending | Live SQL upload Playwright |
+| 07-build | yes | full | **completed** | M1+M2 done |
+| 08-verify-build | yes | delta | **completed** | PASS; Docker LIVE harness |
+| 09-qa | yes | delta | **completed** | PASS + advisories; `reports/qa-report.md` |
+| 10-e2e | yes | full | **completed** | H6′ 7/7 + LIVE 001/002/004; `reports/e2e-report.md` |
 | 11-verify-impl | yes | delta | pending | Per-AC F16 |
 | 12-verify-deploy | yes | delta | pending | Docs/CI only if no prod SQL services |
 | 13-deploy-smoke | yes | delta | pending | H6′ live local or documented CI job |
