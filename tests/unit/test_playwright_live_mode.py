@@ -14,5 +14,8 @@ def test_playwright_config_disables_webserver_for_remote_base_url() -> None:
 
     assert "function isRemoteBaseUrl" in content
     assert "const remotePlaywright = isRemoteBaseUrl(configuredBaseUrl)" in content
-    assert "...(remotePlaywright" in content or "remotePlaywright\n    ? {}" in content
+    # EV-039: skipWebServer covers remote URLs and PLAYWRIGHT_SKIP_WEBSERVER (Docker LIVE).
+    assert "const skipWebServer" in content
+    assert "PLAYWRIGHT_SKIP_WEBSERVER" in content
+    assert "...(skipWebServer" in content or "skipWebServer\n    ? {}" in content
     assert "webServer:" in content
