@@ -19,7 +19,12 @@ MANIFEST_PATH = FIXTURES / "manifest.json"
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-SWXA_CASE_IDS = ("swxa_a7_3",)
+SWXA_CASE_IDS = ("swxa_a7_3", "swxa_a7_4", "swxa_a7_5")
+_SWXA_SEEDS = {
+    "swxa_a7_3": ("SX3", "spacewx-A7-3"),
+    "swxa_a7_4": ("SX4", "spacewx-A7-4"),
+    "swxa_a7_5": ("SX5", "spacewx-A7-5"),
+}
 
 
 def _load_manifest() -> dict:
@@ -36,9 +41,10 @@ def test_tc_f28_002_annex3_swxa_theme_present() -> None:
     assert set(SWXA_CASE_IDS) <= ids
     for case in data["cases"]:
         if case["id"] in SWXA_CASE_IDS:
+            theme, seed = _SWXA_SEEDS[case["id"]]
             assert case["product"] == "SWXA"
-            assert case.get("theme") == "SX3"
-            assert case.get("seed") == "spacewx-A7-3"
+            assert case.get("theme") == theme
+            assert case.get("seed") == seed
             assert case.get("wmoReference") is True
             assert (FIXTURES / case["tac"]).is_file()
             assert (FIXTURES / case["golden"]).is_file()
@@ -110,7 +116,14 @@ def test_tc_f28_003_swxa_wmo_reference_peer(case_id: str) -> None:
     assert _has_root(result.xml, "SpaceWeatherAdvisory")
     assert _has_root(golden, "SpaceWeatherAdvisory")
     assert "DONLON" in result.xml.upper()
-    assert "HF_COM" in result.xml
+    # Effect token differs by peer (A7-3 HF COM / A7-4 GNSS / A7-5 RADIATION).
+    effect_markers = {
+        "swxa_a7_3": "HF_COM",
+        "swxa_a7_4": "GNSS",
+        "swxa_a7_5": "RADIATION",
+    }
+    marker = effect_markers[case_id]
+    assert marker in result.xml.upper() or marker in result.xml
 
 
 def test_tc_f28_002_swxa_a7_3_content_signals() -> None:

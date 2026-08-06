@@ -280,6 +280,26 @@
       "note": "F28 theme SX3 \u2014 WMO DONLON/HF COM vendor peer (TC-F28-002/003); S02.L1 wmoReference (geometry approx)"
     },
     {
+      "id": "swxa_a7_4",
+      "product": "SWXA",
+      "theme": "SX4",
+      "tac": "swxa_a7_4.tac",
+      "golden": "swxa_a7_4.golden.xml",
+      "seed": "spacewx-A7-4",
+      "wmoReference": true,
+      "note": "S046/EV-038 #857 \u2014 vendor peer unlock as wmoReference (TC-EV038-010); bar matches A7-3 convert+XSD/SCH"
+    },
+    {
+      "id": "swxa_a7_5",
+      "product": "SWXA",
+      "theme": "SX5",
+      "tac": "swxa_a7_5.tac",
+      "golden": "swxa_a7_5.golden.xml",
+      "seed": "spacewx-A7-5",
+      "wmoReference": true,
+      "note": "S046/EV-038 #857 \u2014 vendor peer unlock as wmoReference (TC-EV038-010); bar matches A7-3 convert+XSD/SCH"
+    },
+    {
       "id": "vona_a7_1",
       "product": "VONA",
       "theme": "V3",
