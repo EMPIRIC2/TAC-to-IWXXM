@@ -43,11 +43,38 @@ production or DOKS services:
 | Piece | Location |
 |-------|----------|
 | Overlay | `docker-compose.mock-byoc.yml` (profile `mock-byoc`) — Postgres, MySQL, SQL Server (+ MailHog / F19 harness) |
-| Make | `compose-mock-byoc-up` / `compose-mock-byoc-down` (and `*-all-*` with wis2box) |
-| Allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` — see [env-contract.md](env-contract.md); local typically includes `127.0.0.1`, `localhost`, and documented compose hostnames ([Corpus: adr/ADR-029]) |
+| Compose project | `-p metar-iwxxm-mock-byoc` (via `BYOC_COMPOSE`) so `down -v` cannot tear down backend/frontend |
+| Make | `compose-mock-byoc-up` / `compose-mock-byoc-down` (`down -v --remove-orphans`); `*-all-*` with wis2box |
+| Live suite | `make test-e2e-f16-live-sql` — up → Playwright `uj027-f16-live-sql.e2e.spec.ts` → always down |
+| Flag | `F16_LIVE_SQL` — default **1** locally, **0** when `CI` is set; `test-live-e2e` / local `test-live` invoke LIVE when `1` |
+| Allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` — see [env-contract.md](env-contract.md); local recipe below ([Corpus: adr/ADR-029]) |
 | Fixtures | `docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json` |
 | Live Playwright | TC-F16-LIVE-001..004 / UJ-027 live path — [test-plan.md](test-plan.md); separate from mocked H6′ |
 
-**Teardown:** Compose down targets and Playwright/pytest fixtures must not leave orphan
-containers, volumes (where safe), SQLite temp files, or lingering processes after
-pass/fail/skip. Detail in 04/07 execution plan for EV-039.
+### Local harness recipe (CORS + allowlist — H4–H5 local)
+
+For TC-F16-LIVE against **local** API + FE + Compose DBs (host-published ports):
+
+```bash
+# API allowlist (hosts/CIDRs only — never secrets)
+export DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost
+
+# Browser → API (local FE origin must be listed; Compose FE defaults to :18000)
+export METAR_CORS_ORIGINS=http://localhost:18000,http://127.0.0.1:18000
+# Or rely on config/local.json corsOrigins: ["http://localhost:18000"]
+
+# Dedicated LIVE suite (Compose up/down included)
+make test-e2e-f16-live-sql
+
+# Or fold into local test-live / test-live-e2e (F16_LIVE_SQL defaults on when CI unset)
+make test-live-e2e
+# CI / opt-out:
+F16_LIVE_SQL=0 make test-live-e2e
+```
+
+SQL Server may be skipped in CI (opt-in / heavy image); **local close** still requires all four
+dialects (AC2 / AC7 / `D-S047-04` Q4).
+
+**Teardown:** `compose-mock-byoc-down` removes the isolated project’s containers and volumes;
+Playwright/pytest fixtures must not leave SQLite temp files or lingering processes after
+pass/fail/skip.
