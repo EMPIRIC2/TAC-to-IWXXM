@@ -95,6 +95,25 @@ class TestH0iCorsPreflight:
         allow_methods = response.headers.get("access-control-allow-methods", "")
         assert "POST" in allow_methods.upper()
 
+    def test_options_mass_ingest_allows_post(self, h0i_client: TestClient) -> None:
+        """F33 / UJ-051 — browser preflight for POST /api/v1/ingest/mass (H0i → H4)."""
+        response = h0i_client.options(
+            "/api/v1/ingest/mass",
+            headers={
+                "Origin": BROWSER_ORIGIN,
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "authorization,content-type",
+            },
+        )
+        assert response.status_code == 200
+        allow_methods = response.headers.get("access-control-allow-methods", "")
+        assert "POST" in allow_methods.upper()
+        allow_origin = response.headers.get("access-control-allow-origin", "")
+        assert allow_origin in (BROWSER_ORIGIN, "*")
+        # Route is JWT-gated; unauthenticated POST must not be public 200.
+        denied = h0i_client.post("/api/v1/ingest/mass")
+        assert denied.status_code in {401, 403, 422}
+
 
 class TestH0iPublicConversionWiring:
     """tac2iwxxm conversion on single backend deployable without Auth."""
