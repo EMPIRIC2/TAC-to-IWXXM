@@ -42,8 +42,12 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Auth JWKS URL (server) | `SUPABASE_JWKS_URL` **or** default `{SUPABASE_URL}/auth/v1/.well-known/jwks.json` | API only — never FE (`D-S038-04-b1` Q2=2) |
 | Auth JWT verify (server) | **JWKS-only** (PyJWT + fetched JWKS); cache keys with TTL | API only; **`SUPABASE_JWT_SECRET` retired** for product verify |
 | Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
+| F33 mass ingest rate limit | `RATE_LIMIT_MASS_INGEST_PER_MIN` | API / `.env` (default **10**) — S050 / EV-042 |
 | Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
-| Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) |
+| Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) — **global** convert/validate; F33 mass may use a higher dedicated limit (see below) |
+| F33 mass ingest max files | `MASS_INGEST_MAX_FILES` | API / `.env` (default **200**) — S050 / EV-042 |
+| F33 mass ingest max file bytes | `MASS_INGEST_MAX_FILE_BYTES` | API / `.env` (default **5242880** = 5 MiB) |
+| F33 mass ingest max total bytes | `MASS_INGEST_MAX_TOTAL_BYTES` | API / `.env` (default **52428800** = 50 MiB unzipped) — must be ≤ effective body limit for the mass route |
 | Dissemination egress allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` | API / `.env` (ADR-029); **local F16 LIVE recipe:** `wis2box,127.0.0.1,127.0.0.0/8,localhost` (+ see tech-spec §Local mock BYOC / harness recipe) |
 | F8 poller feed URL | `INGEST_POLLER_URL` | DOKS `metar-worker-secrets` / local `.env` — **https:// only**; reject `REPLACE_ME_*` |
 | F8 poll interval | `INGEST_POLL_INTERVAL_SEC` | Worker ConfigMap (default `30`) |

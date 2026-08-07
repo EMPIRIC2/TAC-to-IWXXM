@@ -3,127 +3,412 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 49
-evolve_cycle_counter: 41
+session_counter: 50
+evolve_cycle_counter: 42
 active_session:
-  id: S049-operator-sources-briefing
+  id: S050-remove-db-tools-operator-throughput
   type: feature
-  intent: Operator UI source-centric runbook + PPT source pack / walkthrough (docs-only)
+  intent: "Remove Dissemination drawer DB sinks (F16 Postgres/MySQL/SQL Server/SQLite); improve operator churn workflow; secure mass file/folder ingest. DB restore deferred to #898. Epic #897."
   status: in_progress
-  started: '2026-08-06'
-  started_at: '2026-08-06'
-  branch: evolve/EV-041-operator-sources-briefing
-  branch_base: main@73e13281
-  artifacts_dir: docs/sessions/S049-operator-sources-briefing/
+  started: '2026-08-07'
+  started_at: '2026-08-07'
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  branch_base: main@fa5b2140
+  branch_status: active
+  branch_exists: true
+  branch_note: ACTIVE — created from main@fa5b2140; tip fa5b2140
+  artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-041
-  prior_session: S048-workbench-lint-ux
-  prior_evolve_cycle_id: EV-040
-  feature_ids: []
+  evolve_cycle_id: EV-042
+  prior_session: S049-operator-sources-briefing
+  prior_evolve_cycle_id: EV-041
+  feature_ids:
+  - F33
   deepen_feature_ids:
   - F7
-  feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
-  ui_preview: n/a (docs-only; screenshots optional local)
-  preset: Lean
-  tip_sha: 42ae629a
-  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+  - F16
+  - F17
+  - F18
+  - F19
+  feature_note: 'D-S050-ac=1 — F33 new; deepen F7 + F16–F19 (R2: hide all F16–F19 destinations)'
+  ui_preview: accepted
+  ui_preview_url: http://localhost:18000
+  ui_preview_note: 'accepted local http://localhost:18000'
+  preset: Standard
+  preset_note: Recommended Standard for product code (drawer + churn UX + mass ingest); routing-plan approval pending (parent writes brief)
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
   tip_sha_pushed: true
-  tip_sha_note: 'PR #895 OPEN @ 42ae629a; session open pending merge'
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
-  pr_number: 895
-  pr_status: open
-  pr_title: '[EV-041] Operator UI sources runbook + PPT pack'
-  pr_base: main
-  pr_head: evolve/EV-041-operator-sources-briefing
-  current_stage: 08-verify-build
+  tip_sha_note: 'ACTIVE branch @ fa5b2140; D-S050-gate-b=PASS; current_stage 07-build; M1 T1.1 in_progress'
+  github_issues: [897, 898]
+  parent_epic: 897
+  github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
+  scope_decisions_locked:
+  - 'DB tools = Dissemination drawer DB sinks only (Postgres/MySQL/SQL Server/SQLite); leave DatabaseUploadDialog'
+  - 'R2 amend — hide all F16–F19 destinations (incl. WIS2/EDIS/AMHS/SWIM/AFS) this cycle; deepen F7 + F16–F19'
+  - 'Cycle ships remove DB/F16–F19 dest UI + operator churn UX + secure mass file/folder ingest (F33)'
+  - 'Follow-up #898 for DB restore'
+  - 'D-S050-C1 — dedicated mass-route limit for F33 secure mass ingest'
+  phase0_status: completed
+  phase0_note: 'Phase 0 COMPLETE — D-S050-proceed=1 allocate F16 deepen + F7 deepen + new F33; proceed to 01-requirements'
+  phase0_proceed: D-S050-proceed
+  active_milestone: M1
+  active_task: T1.1
+  active_task_note: 'OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false flag; hide Convert&Send + Disseminate'
+  decisions:
+    D-S050-open: open_session
+    D-S050-db-scope: locked
+    D-S050-db-scope_note: 'DB tools = Dissemination drawer DB sinks only; keep WIS2/EDIS/AMHS/SWIM/AFS; leave DatabaseUploadDialog — superseded in part by R2 amend (hide all F16–F19 dest)'
+    D-S050-cycle-scope: locked
+    D-S050-cycle-scope_note: 'Cycle ships all three — remove DB tools + operator churn UX + secure mass file/folder ingest; #898 restore deferred'
+    D-S050-ev041: locked
+    D-S050-ev041_note: 'Prior EV-041 closed; merge-first #895; continue from main@fa5b2140'
+    D-S050-proceed: '1'
+    D-S050-proceed_note: 'option 1 — allocate F16 deepen + F7 deepen + new F33; ui_preview accepted local http://localhost:18000'
+    D-S050-ac: '1'
+    D-S050-ac_note: 'AC1–AC7 locked; R2 amend hide all F16–F19 destinations; deepen F7,F16–F19; F33'
+    D-S050-C1: dedicated_mass_route_limit
+    D-S050-C1_note: 'dedicated mass-route limit for F33 secure mass file/folder ingest'
+    D-S050-gate-a: PASS
+    D-S050-gate-a_note: 'Gate A PASS — 02-verify-plan complete; proceed 04-tech-plan'
+    D-S050-04-tech: approved
+    D-S050-04-tech_note: '04-tech-plan complete — execution plan + build-plan-card'
+    D-S050-04-plan: approved
+    D-S050-04-plan_note: 'execution-plan.md approved; proceed Gate B'
+    D-S050-gate-b: PASS
+    D-S050-gate-b_note: 'Gate B PASS — 05-verify-tech complete; proceed 07-build M1 T1.1'
+  artifacts:
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/routing-plan.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/evolve-plan-card.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/context/remove-db-tools-operator-throughput.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    kind: context-brief
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/01-requirements-summary.md
+    status: written
+    stage: 01-requirements
+    skill_id: 01-requirements
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/02-verify-plan.md
+    status: written
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/build-plan-card.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
+    status: written
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+  current_stage: 07-build
   route_status: in_progress
+  proceed_decision_id: D-S050-proceed
+  ac_decision_id: D-S050-ac
+  gate_a_decision_id: D-S050-gate-a
+  gate_b_decision_id: D-S050-gate-b
   routing_plan:
   - stage: 00-context
     mode: scoped
     required: true
     status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    note: COMPLETE — S049 open; open_session; handoff 16-evolve
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — D-S050-proceed=1; Phase 0 proceed; F33 + deepen F7/F16; ui_preview accepted
   - stage: 16-evolve
     mode: orchestrator
     required: true
     status: in_progress
-    started: '2026-08-06'
-    note: IN_PROGRESS — PR #895 OPEN @ 42ae629a; session not closed
+    started: '2026-08-07'
+    note: IN_PROGRESS — Gate B PASS; orchestrating 07-build M1 T1.1 (D-S050-gate-b)
   - stage: 01-requirements
     mode: delta
     required: true
     status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    note: COMPLETE — docs ACs / Lean scope
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — D-S050-ac=1 AC1–AC7 locked; R2 amend hide F16–F19 dest; summary 01-requirements-summary.md
   - stage: 02-verify-plan
     mode: delta
     required: true
     status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    note: COMPLETE — Gate A (docs)
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — Gate A PASS (D-S050-gate-a); D-S050-C1 dedicated mass-route limit; report 02-verify-plan.md
   - stage: 03-plan-tooling
     required: false
     status: skipped
-    note: skipped — Lean docs; no new Cursor rules
+    note: skipped — Standard; no new Cursor rules
   - stage: 04-tech-plan
-    required: false
-    status: skipped
-    note: skipped — Lean docs; no tech plan
-  - stage: 05-verify-tech
-    required: false
-    status: skipped
-    note: skipped — Lean docs; no Gate B
-  - stage: 06-tech-tooling
-    required: false
-    status: skipped
-    note: skipped — Lean docs; no new publish deps
-  - stage: 07-build
-    mode: full
-    required: true
-    status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    note: COMPLETE — runbook + PPT source pack + decisions
-  - stage: 08-verify-build
     mode: delta
     required: true
     status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    note: COMPLETE — docs verification
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — D-S050-04-tech / D-S050-04-plan; execution-plan.md + build-plan-card.md
+  - stage: 05-verify-tech
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — Gate B PASS (D-S050-gate-b); report 05-verify-tech.md
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    note: skipped — Standard; no new publish deps
+  - stage: 07-build
+    mode: full
+    required: true
+    status: in_progress
+    started: '2026-08-07'
+    note: IN_PROGRESS — M1 T1.1 OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate
+  - stage: 08-verify-build
+    mode: delta
+    required: true
+    status: pending
   - stage: 09-qa
-    required: false
-    status: skipped
-    note: skipped — Lean docs
+    mode: delta
+    required: true
+    status: pending
   - stage: 10-e2e
-    required: false
-    status: skipped
-    note: skipped — Lean docs
+    mode: full
+    required: true
+    status: pending
   - stage: 11-verify-impl
-    required: false
-    status: skipped
-    note: skipped — Lean docs
+    mode: delta
+    required: true
+    status: pending
   - stage: 12-verify-deploy
-    required: false
-    status: skipped
-    note: skipped — Lean docs; no runtime deploy
+    mode: delta
+    required: true
+    status: pending
   - stage: 13-deploy-smoke
+    mode: delta
+    required: true
+    status: pending
+
+sessions:
+- id: S050-remove-db-tools-operator-throughput
+  type: feature
+  intent: "Remove Dissemination drawer DB sinks (F16 Postgres/MySQL/SQL Server/SQLite); improve operator churn workflow; secure mass file/folder ingest. DB restore deferred to #898. Epic #897."
+  status: in_progress
+  started: '2026-08-07'
+  started_at: '2026-08-07'
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  branch_base: main@fa5b2140
+  branch_status: active
+  branch_exists: true
+  branch_note: ACTIVE — created from main@fa5b2140; tip fa5b2140
+  artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-042
+  prior_session: S049-operator-sources-briefing
+  prior_evolve_cycle_id: EV-041
+  feature_ids:
+  - F33
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  - F18
+  - F19
+  feature_note: 'D-S050-ac=1 — F33 new; deepen F7 + F16–F19 (R2: hide all F16–F19 destinations)'
+  ui_preview: accepted
+  ui_preview_url: http://localhost:18000
+  ui_preview_note: 'accepted local http://localhost:18000'
+  preset: Standard
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  tip_sha_pushed: true
+  tip_sha_note: 'ACTIVE branch @ fa5b2140; D-S050-gate-b=PASS; current_stage 07-build; M1 T1.1 in_progress'
+  github_issues: [897, 898]
+  parent_epic: 897
+  github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
+  scope_decisions_locked:
+  - 'DB tools = Dissemination drawer DB sinks only (Postgres/MySQL/SQL Server/SQLite); leave DatabaseUploadDialog'
+  - 'R2 amend — hide all F16–F19 destinations (incl. WIS2/EDIS/AMHS/SWIM/AFS) this cycle; deepen F7 + F16–F19'
+  - 'Cycle ships remove DB/F16–F19 dest UI + operator churn UX + secure mass file/folder ingest (F33)'
+  - 'Follow-up #898 for DB restore'
+  - 'D-S050-C1 — dedicated mass-route limit for F33 secure mass ingest'
+  phase0_status: completed
+  phase0_note: 'Phase 0 COMPLETE — D-S050-proceed=1 allocate F16 deepen + F7 deepen + new F33; proceed to 01-requirements'
+  phase0_proceed: D-S050-proceed
+  active_milestone: M1
+  active_task: T1.1
+  active_task_note: 'OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false flag; hide Convert&Send + Disseminate'
+  decisions:
+    D-S050-open: open_session
+    D-S050-db-scope: locked
+    D-S050-db-scope_note: 'DB tools = Dissemination drawer DB sinks only; keep WIS2/EDIS/AMHS/SWIM/AFS; leave DatabaseUploadDialog — superseded in part by R2 amend (hide all F16–F19 dest)'
+    D-S050-cycle-scope: locked
+    D-S050-cycle-scope_note: 'Cycle ships all three — remove DB tools + operator churn UX + secure mass file/folder ingest; #898 restore deferred'
+    D-S050-ev041: locked
+    D-S050-ev041_note: 'Prior EV-041 closed; merge-first #895; continue from main@fa5b2140'
+    D-S050-proceed: '1'
+    D-S050-proceed_note: 'option 1 — allocate F16 deepen + F7 deepen + new F33; ui_preview accepted local http://localhost:18000'
+    D-S050-ac: '1'
+    D-S050-ac_note: 'AC1–AC7 locked; R2 amend hide all F16–F19 destinations; deepen F7,F16–F19; F33'
+    D-S050-C1: dedicated_mass_route_limit
+    D-S050-C1_note: 'dedicated mass-route limit for F33 secure mass file/folder ingest'
+    D-S050-gate-a: PASS
+    D-S050-gate-a_note: 'Gate A PASS — 02-verify-plan complete; proceed 04-tech-plan'
+    D-S050-04-tech: approved
+    D-S050-04-tech_note: '04-tech-plan complete — execution plan + build-plan-card'
+    D-S050-04-plan: approved
+    D-S050-04-plan_note: 'execution-plan.md approved; proceed Gate B'
+    D-S050-gate-b: PASS
+    D-S050-gate-b_note: 'Gate B PASS — 05-verify-tech complete; proceed 07-build M1 T1.1'
+  artifacts:
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/routing-plan.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/evolve-plan-card.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/context/remove-db-tools-operator-throughput.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    kind: context-brief
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/01-requirements-summary.md
+    status: written
+    stage: 01-requirements
+    skill_id: 01-requirements
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/02-verify-plan.md
+    status: written
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/build-plan-card.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
+    status: written
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+  current_stage: 07-build
+  route_status: in_progress
+  open_decision_id: D-S050-open
+  proceed_decision_id: D-S050-proceed
+  ac_decision_id: D-S050-ac
+  gate_a_decision_id: D-S050-gate-a
+  gate_b_decision_id: D-S050-gate-b
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — D-S050-proceed=1; Phase 0 proceed; F33 + deepen F7/F16; ui_preview accepted
+  - stage: 16-evolve
+    mode: orchestrator
+    required: true
+    status: in_progress
+    started: '2026-08-07'
+    note: IN_PROGRESS — Gate B PASS; orchestrating 07-build M1 T1.1 (D-S050-gate-b)
+  - stage: 01-requirements
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — D-S050-ac=1 AC1–AC7 locked; R2 amend hide F16–F19 dest; summary 01-requirements-summary.md
+  - stage: 02-verify-plan
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — Gate A PASS (D-S050-gate-a); D-S050-C1 dedicated mass-route limit; report 02-verify-plan.md
+  - stage: 03-plan-tooling
     required: false
     status: skipped
-    note: skipped — Lean docs; no runtime deploy
-sessions:
+    note: skipped — Standard; no new Cursor rules
+  - stage: 04-tech-plan
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — D-S050-04-tech / D-S050-04-plan; execution-plan.md + build-plan-card.md
+  - stage: 05-verify-tech
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    note: COMPLETE — Gate B PASS (D-S050-gate-b); report 05-verify-tech.md
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    note: skipped — Standard; no new publish deps
+  - stage: 07-build
+    mode: full
+    required: true
+    status: in_progress
+    started: '2026-08-07'
+    note: IN_PROGRESS — M1 T1.1 OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate
+  - stage: 08-verify-build
+    mode: delta
+    required: true
+    status: pending
+  - stage: 09-qa
+    mode: delta
+    required: true
+    status: pending
+  - stage: 10-e2e
+    mode: full
+    required: true
+    status: pending
+  - stage: 11-verify-impl
+    mode: delta
+    required: true
+    status: pending
+  - stage: 12-verify-deploy
+    mode: delta
+    required: true
+    status: pending
+  - stage: 13-deploy-smoke
+    mode: delta
+    required: true
+    status: pending
 - id: S049-operator-sources-briefing
   type: feature
   intent: Operator UI source-centric runbook + PPT source pack / walkthrough (docs-only)
-  status: in_progress
+  status: completed
+  completed: '2026-08-07'
+  completed_at: '2026-08-07'
   started: '2026-08-06'
   started_at: '2026-08-06'
   branch: evolve/EV-041-operator-sources-briefing
   branch_base: main@73e13281
+  branch_note: 'CLOSED — EV-041 completed; PR #895 MERGED (merge `fa5b2140`); D-S049-close; merge-first then close for new evolve #897'
   artifacts_dir: docs/sessions/S049-operator-sources-briefing/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-041
@@ -135,18 +420,25 @@ sessions:
   feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
   ui_preview: n/a (docs-only; screenshots optional local)
   preset: Lean
-  tip_sha: 42ae629a
-  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
   tip_sha_pushed: true
-  tip_sha_note: 'PR #895 OPEN @ 42ae629a; session open pending merge'
+  tip_sha_note: 'CLOSED D-S049-close — PR #895 MERGED @ `fa5b2140`; evolve tip was 42ae629a; main tip after merge'
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
   pr_number: 895
-  pr_status: open
+  pr_status: merged
   pr_title: '[EV-041] Operator UI sources runbook + PPT pack'
   pr_base: main
   pr_head: evolve/EV-041-operator-sources-briefing
-  current_stage: 08-verify-build
-  route_status: in_progress
+  pr_merged_at: '2026-08-07'
+  pr_merge_commit: fa5b2140b608a6460ba063b18c87000a7130e367
+  current_stage: 16-evolve
+  current_stage_note: 'CLOSED — PR #895 MERGED @ `fa5b2140`; D-S049-close; active_session→S050'
+  close_decision_id: D-S049-close
+  route_status: completed
+  decisions:
+    D-S049-close: merge-first-then-close
+    D-S049-close_note: 'User approved merge-first then close for new evolve (#897); PR #895 merged @ `fa5b2140`'
   routing_plan:
   - stage: 00-context
     mode: scoped
@@ -158,9 +450,10 @@ sessions:
   - stage: 16-evolve
     mode: orchestrator
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-06'
-    note: IN_PROGRESS — PR #895 OPEN @ 42ae629a; session not closed
+    completed: '2026-08-07'
+    note: 'COMPLETE — D-S049-close; EV-041 closed; PR #895 MERGED @ `fa5b2140`'
   - stage: 01-requirements
     mode: delta
     required: true
@@ -225,6 +518,7 @@ sessions:
     required: false
     status: skipped
     note: skipped — Lean docs; no runtime deploy
+
 - id: S048-workbench-lint-ux
   type: feature
   intent: Workbench lint UX + prefs + official AHL/Collect + catalog source; fix example lint FPs
@@ -13201,18 +13495,20 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S048-workbench-lint-ux
-    evolve_cycle_id: EV-040
-    started_at: '2026-08-06'
-    started: '2026-08-06'
-    completed_at: '2026-08-06'
-    completed: '2026-08-06'
-    previous_session_id: S048-workbench-lint-ux
-    previous_evolve_cycle_id: EV-040
-    previous_completed_at: '2026-08-06'
-    previous_note: 'COMPLETE — D-S048-close=1,1,1; EV-040/S048 closed; PR #893 merged (merge `4be24994`); merge `4be24994`; tip was 5a9f28ef/2462a397; #894 under #840'
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    started_at: '2026-08-07'
+    started: '2026-08-07'
+    previous_session_id: S049-operator-sources-briefing
+    previous_evolve_cycle_id: EV-041
+    previous_completed_at: '2026-08-07'
+    previous_note: 'COMPLETE — D-S049-close; EV-041/S049 closed; PR #895 MERGED (merge `fa5b2140`); tip `fa5b2140`; open S050/EV-042'
+    prior_s048_session_id: S048-workbench-lint-ux
+    prior_s048_evolve_cycle_id: EV-040
+    prior_s048_completed_at: '2026-08-06'
+    prior_s048_note: 'COMPLETE — D-S048-close=1,1,1; EV-040/S048 closed; PR #893 merged (merge `4be24994`); tip was 5a9f28ef/2462a397; #894 under #840'
     prior_s046_session_id: S046-iwxxm-corpus-residuals
     prior_s046_evolve_cycle_id: EV-038
     prior_s046_completed_at: '2026-08-06'
@@ -13227,10 +13523,11 @@ stages:
     prior_s044_note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage: closed
-    tip_sha: 5a9f28ef
-    tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
-    note: 'COMPLETED — S048/EV-040 closed D-S048-close=1,1,1; PR #893 merged (merge `4be24994`); #894 closed under #840; tip 5a9f28ef; active_session=null'
+    current_child_stage: 07-build
+    current_child_stage_note: 'Gate B PASS (D-S050-gate-b); 07-build M1 T1.1 OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate'
+    tip_sha: fa5b2140
+    tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+    note: 'IN_PROGRESS — S050/EV-042 Gate B PASS D-S050-gate-b; 07-build M1 T1.1 in_progress'
 
   15-service-health:
     status: completed
@@ -13500,6 +13797,328 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S050-gate-b
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 05-verify-tech
+  skill_id: 05-verify-tech
+  stage: 05-verify-tech
+  category: gate_b
+  status: confirmed
+  topic: 'Gate B PASS — proceed to 07-build'
+  summary: 'D-S050-gate-b=PASS; 04+05 completed; 07-build M1 T1.1 started'
+  decision: |
+    D-S050-gate-b=PASS — Gate B passed for S050/EV-042.
+    Related: D-S050-04-tech, D-S050-04-plan (execution-plan + build-plan-card).
+    Artifact: docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
+    Mark 04-tech-plan + 05-verify-tech completed; start 07-build M1 T1.1
+    (OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate).
+    Keep 16-evolve in_progress.
+    No git commit by workflow-state-manager.
+  user_option: PASS
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  related_decisions:
+  - D-S050-04-tech
+  - D-S050-04-plan
+  - D-S050-gate-a
+  feature_ids:
+  - F33
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  current_stage: 07-build
+  active_task: T1.1
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
+  note: '05-verify-tech COMPLETE; Gate B PASS; 07-build in_progress'
+- id: D-S050-04-plan
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: execution_plan
+  status: confirmed
+  topic: 'Approve execution-plan.md'
+  summary: 'D-S050-04-plan=approved — execution-plan.md locked; proceed Gate B'
+  decision: |
+    D-S050-04-plan — execution-plan.md approved for S050/EV-042.
+    Artifact: docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
+    Proceed 05-verify-tech / Gate B.
+    No git commit by workflow-state-manager.
+  user_option: approved
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  related_decisions:
+  - D-S050-04-tech
+  - D-S050-gate-b
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'execution plan approved'
+- id: D-S050-04-tech
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech_plan
+  status: confirmed
+  topic: 'Complete 04-tech-plan — build-plan-card + execution plan'
+  summary: 'D-S050-04-tech=approved — tech plan complete; build-plan-card written'
+  decision: |
+    D-S050-04-tech — 04-tech-plan completed for S050/EV-042.
+    Artifacts: build-plan-card.md + reports/execution-plan.md
+    M1 T1.1 first: OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate.
+    Proceed Gate B (05-verify-tech).
+    No git commit by workflow-state-manager.
+  user_option: approved
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  related_decisions:
+  - D-S050-04-plan
+  - D-S050-gate-a
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/build-plan-card.md
+  - docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: '04-tech-plan COMPLETE'
+- id: D-S050-gate-a
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate_a
+  status: confirmed
+  topic: 'Gate A PASS — proceed to 04-tech-plan'
+  summary: 'D-S050-gate-a=PASS; D-S050-C1 dedicated mass-route limit; 02 completed; 04-tech-plan started'
+  decision: |
+    D-S050-gate-a=PASS — Gate A passed for S050/EV-042.
+    Related: D-S050-C1 = dedicated mass-route limit for F33 secure mass ingest.
+    Artifact: docs/sessions/S050-remove-db-tools-operator-throughput/reports/02-verify-plan.md
+    Mark 02-verify-plan completed; start 04-tech-plan; keep 16-evolve in_progress.
+    No git commit by workflow-state-manager.
+  user_option: PASS
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  related_decisions:
+  - D-S050-C1
+  - D-S050-ac
+  - D-S050-proceed
+  feature_ids:
+  - F33
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  - F18
+  - F19
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  current_stage: 04-tech-plan
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/reports/02-verify-plan.md
+  note: '02-verify-plan COMPLETE; Gate A PASS; 04-tech-plan in_progress'
+- id: D-S050-C1
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: design_constraint
+  status: confirmed
+  topic: 'Dedicated mass-route limit for F33'
+  summary: 'D-S050-C1 — dedicated mass-route limit for secure mass file/folder ingest (F33)'
+  decision: |
+    D-S050-C1 — dedicated mass-route limit (not shared generic upload limits).
+    Applies to F33 secure mass file/folder ingest.
+    Locked with Gate A (D-S050-gate-a=PASS).
+    No git commit by workflow-state-manager.
+  user_option: dedicated_mass_route_limit
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  related_decisions:
+  - D-S050-gate-a
+  - D-S050-ac
+  feature_ids:
+  - F33
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'Constraint locked for tech plan / build'
+- id: D-S050-ac
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: acceptance_criteria
+  status: confirmed
+  topic: 'Lock AC1–AC7; R2 amend hide all F16–F19 destinations'
+  summary: 'D-S050-ac=1 — AC1–AC7 locked; deepen F7+F16–F19; F33; hide all F16–F19 dest this cycle; proceed 02-verify-plan'
+  decision: |
+    D-S050-ac=1 — user locked AC1–AC7.
+    feature_ids: [F33]
+    deepen_feature_ids: [F7, F16, F17, F18, F19]
+    R2 amend: hide all F16–F19 destinations (incl. WIS2/EDIS/AMHS/SWIM/AFS) this cycle
+    (partially supersedes earlier keep-WIS2/EDIS/AMHS/SWIM/AFS lock for drawer visibility).
+    Artifact: docs/sessions/S050-remove-db-tools-operator-throughput/reports/01-requirements-summary.md
+    Mark 01-requirements completed; start 02-verify-plan; keep 16-evolve in_progress.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  related_decisions:
+  - D-S050-proceed
+  - D-S050-open
+  - D-S050-db-scope
+  - D-S050-cycle-scope
+  feature_ids:
+  - F33
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  - F18
+  - F19
+  github_issues: [897, 898]
+  parent_epic: 897
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  current_stage: 02-verify-plan
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/reports/01-requirements-summary.md
+  note: '01-requirements COMPLETE; 02-verify-plan in_progress; R2 amend recorded'
+- id: D-S050-proceed
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase0_proceed
+  category: phase0_gate
+  status: confirmed
+  topic: 'Phase 0 proceed — allocate F16 deepen + F7 deepen + new F33'
+  summary: 'option 1 — deepen F16+F7; allocate new F33; ui_preview accepted local http://localhost:18000; proceed to 01-requirements'
+  decision: |
+    D-S050-proceed=1 — user chose option 1 on Phase 0 proceed gate:
+    allocate F16 deepen + F7 deepen + new F33 (secure mass file/folder ingest).
+    Prior locks remain: D-S050-db-scope, D-S050-cycle-scope, D-S050-ev041.
+    ui_preview accepted at local http://localhost:18000.
+    Mark 00-context completed; keep 16-evolve in_progress; start 01-requirements.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  related_decisions:
+  - D-S050-open
+  - D-S050-db-scope
+  - D-S050-cycle-scope
+  - D-S050-ev041
+  feature_ids:
+  - F33
+  deepen_feature_ids:
+  - F7
+  - F16
+  github_issues: [897, 898]
+  parent_epic: 897
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  ui_preview: accepted
+  ui_preview_url: http://localhost:18000
+  current_stage: 01-requirements
+  note: 'Phase 0 COMPLETE; 00-context completed; 01-requirements in_progress; 16-evolve remains in_progress'
+- id: D-S050-open
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: 'Open S050/EV-042 — remove drawer DB sinks + churn UX + secure mass ingest (#897/#898)'
+  summary: 'open_session after S049 close; epic #897; #898 DB restore deferred; branch pending_create'
+  decision: |
+    D-S050-open — open_session for feature work after S049/EV-041 close (merge-first #895).
+    Intent: remove Dissemination drawer DB sinks (Postgres/MySQL/SQL Server/SQLite);
+    improve operator churn workflow; secure mass file/folder ingest.
+    Scope locked: drawer DB sinks only (keep WIS2/EDIS/AMHS/SWIM/AFS; leave DatabaseUploadDialog);
+    cycle ships all three; follow-up #898 for restore.
+    Feature IDs TBD (deepen F7/F16; possible new Fn for mass ingest).
+    Branch evolve/EV-042-remove-db-tools-operator-throughput pending_create by parent @ main@fa5b2140.
+    Current stage 00-context → handoff 16-evolve Phase 0.
+    Parent writes session-brief.md + routing-plan.md (not workflow-state-manager).
+    No git branch/commit by workflow-state-manager.
+  user_option: open_session
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  prior_session: S049-operator-sources-briefing
+  prior_evolve_cycle_id: EV-041
+  github_issues: [897, 898]
+  parent_epic: 897
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  deepen_feature_ids:
+  - F7
+  - F16
+  feature_ids: []
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/
+  note: 'open_session applied; active_session=S050-remove-db-tools-operator-throughput; EV-042 in_progress; session_counter=50; evolve_cycle_counter=42'
+- id: D-S049-close
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S049-operator-sources-briefing
+  evolve_cycle_id: EV-041
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase4_close
+  category: merge_close
+  status: confirmed
+  topic: 'Close S049/EV-041 — PR #895 merged; then open new evolve (#897)'
+  summary: 'merge-first then close — PR #895 MERGED @ `fa5b2140`; EV-041/S049 completed; open S050/EV-042'
+  decision: |
+    D-S049-close — user approved merge-first then close for new evolve (#897).
+    PR #895 MERGED into main (merge commit `fa5b2140b608a6460ba063b18c87000a7130e367` / `fa5b2140`).
+    Mark EV-041 completed; archive S049 as completed; tip sha = merged main tip.
+    Set 16-evolve stage completed for S049.
+    Immediately followed by open_session S050/EV-042 (not leave active_session null).
+    workflow-state-manager does not git commit or merge the PR.
+  user_option: merge-first-then-close
+  branch: evolve/EV-041-operator-sources-briefing
+  related_decisions: []
+  deepen_feature_ids:
+  - F7
+  feature_ids: []
+  pr_number: 895
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
+  pr_status: merged
+  merge_commit_sha: fa5b2140b608a6460ba063b18c87000a7130e367
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  artifacts:
+  - docs/sessions/S049-operator-sources-briefing/
+  - docs/ops/operator-ui-runbook.md
+  - docs/guides/operator-sources-pptx/
+  note: 'close_session applied; EV-041 completed; PR #895 merged `fa5b2140`; then open_session S050'
 - id: D-S048-close
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -25483,6 +26102,123 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
+  type: session-report
+  kind: verify-tech
+  stage: 05-verify-tech
+  skill_id: 05-verify-tech
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 Gate B PASS — D-S050-gate-b'
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
+  type: execution-plan
+  kind: execution-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 D-S050-04-plan approved'
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/build-plan-card.md
+  type: build-plan-card
+  kind: build-plan-card
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 D-S050-04-tech'
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/02-verify-plan.md
+  type: session-report
+  kind: verify-plan
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 Gate A PASS — D-S050-gate-a; D-S050-C1 dedicated mass-route limit'
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/01-requirements-summary.md
+  type: session-report
+  kind: requirements-summary
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 01 COMPLETE — D-S050-ac=1 AC1–AC7; R2 hide F16–F19 dest'
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
+  type: session-brief
+  kind: session-brief
+  stage: 00-context
+  skill_id: 00-context
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 00-context — session-brief written; Phase 0 partial; stage NOT complete'
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/routing-plan.md
+  type: routing-plan
+  kind: routing-plan
+  stage: 00-context
+  skill_id: 00-context
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 00-context — routing-plan written; approval pending further AskQuestion'
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/evolve-plan-card.md
+  type: evolve-plan-card
+  kind: evolve-plan-card
+  stage: 00-context
+  skill_id: 00-context
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 Phase 0 — evolve-plan-card drafted; partial locks only'
+- path: docs/context/remove-db-tools-operator-throughput.md
+  type: context-brief
+  kind: context-brief
+  stage: 00-context
+  skill_id: 00-context
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  note: 'S050/EV-042 scoped context brief'
 - path: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
   type: session-report
   kind: deploy-smoke
@@ -28630,6 +29366,164 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-042
+  session_id: S050-remove-db-tools-operator-throughput
+  cycle_type: general
+  feature_ids:
+  - F33
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  - F18
+  - F19
+  feature_note: 'D-S050-ac=1 — F33 new; deepen F7 + F16–F19 (R2: hide all F16–F19 destinations)'
+  title: "Remove drawer DB sinks + operator churn + secure mass ingest"
+  status: in_progress
+  started: "2026-08-07"
+  started_at: "2026-08-07"
+  scope_summary: >
+    Remove Dissemination drawer DB sinks and hide all F16–F19 destinations (R2 amend);
+    improve operator churn workflow; secure mass file/folder ingest (F33).
+    Leave DatabaseUploadDialog. DB restore deferred to #898. Epic #897.
+  scope_decisions_locked:
+  - 'DB tools = Dissemination drawer DB sinks only; leave DatabaseUploadDialog'
+  - 'R2 amend — hide all F16–F19 destinations (incl. WIS2/EDIS/AMHS/SWIM/AFS) this cycle'
+  - 'Cycle ships remove DB/F16–F19 dest UI + churn UX + secure mass ingest (F33); #898 restore deferred'
+  github_issues: [897, 898]
+  issue_ids: [897, 898]
+  parent_epic: 897
+  github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 05-verify-tech
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 06-tech-tooling
+    note: Standard recommended; pending routing-plan approval
+  current_stage: 07-build
+  current_stage_status: in_progress
+  current_stage_note: 'IN_PROGRESS — Gate B PASS (D-S050-gate-b); 07-build M1 T1.1 OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate'
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-07'
+      completed: '2026-08-07'
+      note: COMPLETE — D-S050-proceed=1
+    16-evolve:
+      status: in_progress
+      started: '2026-08-07'
+      note: Gate B PASS; orchestrating 07-build M1 T1.1
+    01-requirements:
+      status: completed
+      started: '2026-08-07'
+      completed: '2026-08-07'
+      note: COMPLETE — D-S050-ac=1 AC1–AC7; R2 amend
+    02-verify-plan:
+      status: completed
+      started: '2026-08-07'
+      completed: '2026-08-07'
+      note: COMPLETE — Gate A PASS (D-S050-gate-a); D-S050-C1
+    04-tech-plan:
+      status: completed
+      started: '2026-08-07'
+      completed: '2026-08-07'
+      note: COMPLETE — D-S050-04-tech / D-S050-04-plan
+    05-verify-tech:
+      status: completed
+      started: '2026-08-07'
+      completed: '2026-08-07'
+      note: COMPLETE — Gate B PASS (D-S050-gate-b)
+    07-build:
+      status: in_progress
+      started: '2026-08-07'
+      note: M1 T1.1 — OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate
+  active_milestone: M1
+  active_task: T1.1
+  phase0_status: completed
+  phase0_proceed: D-S050-proceed
+  phase0_locks:
+  - D-S050-db-scope
+  - D-S050-cycle-scope
+  - D-S050-ev041
+  - D-S050-proceed
+  ui_preview: accepted
+  ui_preview_url: http://localhost:18000
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  branch_status: active
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  tip_sha_pushed: false
+  tip_sha_note: 'ACTIVE branch @ fa5b2140; D-S050-gate-b=PASS; current_stage 07-build; M1 T1.1'
+  preset: Standard
+  gates:
+    a_to_b: passed
+    a_to_b_note: 'D-S050-gate-a=PASS'
+    b_to_c: passed
+    b_to_c_note: 'D-S050-gate-b=PASS'
+  checkpoints:
+    phase_a: passed
+    phase_a_note: 'Gate A PASS — D-S050-gate-a; D-S050-C1 dedicated mass-route limit'
+    phase_b: passed
+    phase_b_note: 'Gate B PASS — D-S050-gate-b; D-S050-04-tech/04-plan'
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/routing-plan.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/evolve-plan-card.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+  - path: docs/context/remove-db-tools-operator-throughput.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    kind: context-brief
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/01-requirements-summary.md
+    status: written
+    stage: 01-requirements
+    skill_id: 01-requirements
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/02-verify-plan.md
+    status: written
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/build-plan-card.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
+    status: written
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+  notes:
+  - '2026-08-07 S050/EV-042 Gate B PASS — D-S050-gate-b=PASS; D-S050-04-tech/04-plan; 04+05 completed; 07-build M1 T1.1 in_progress (OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate); no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 Gate A PASS — D-S050-gate-a=PASS; D-S050-C1 dedicated mass-route limit; 02 completed; 04-tech-plan in_progress; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 01 COMPLETE — D-S050-ac=1 AC1–AC7 locked; R2 amend hide all F16–F19 destinations; deepen F7,F16–F19; F33; 02-verify-plan in_progress; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 Phase 0 COMPLETE — D-S050-proceed=1 allocate F16 deepen + F7 deepen + new F33; ui_preview accepted localhost:18000; 00-context completed; 01-requirements in_progress; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 UPDATE — branch ACTIVE @ fa5b2140; artifacts session-brief/routing-plan/evolve-plan-card/context written; Phase 0 partial locks D-S050-db-scope, D-S050-cycle-scope, D-S050-ev041; 00-context NOT complete; awaiting more AskQuestion; no git commit by workflow-state-manager'
+  - '2026-08-07 S050-remove-db-tools-operator-throughput/EV-042 OPEN — open_session after S049/EV-041 close; epic #897; #898 follow-up; branch evolve/EV-042-remove-db-tools-operator-throughput pending_create @ fa5b2140; 00-context in_progress → 16-evolve Phase 0; no git branch/commit by workflow-state-manager'
 - id: EV-041
   session_id: S049-operator-sources-briefing
   cycle_type: general
@@ -28638,9 +29532,11 @@ evolve_cycles:
   - F7
   feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
   title: "Operator UI runbook + source-centric PPT pack"
-  status: in_progress
+  status: completed
   started: "2026-08-06"
   started_at: "2026-08-06"
+  completed: "2026-08-07"
+  completed_at: "2026-08-07"
   scope_summary: Docs-only: operator UI runbook + PPT source pack (outline, bibliography, image pointers, build walkthrough); Lean; path-cite domain/ops; no product code; no binary pptx in git
   routing_plan:
     required_stages:
@@ -28658,18 +29554,19 @@ evolve_cycles:
     - 11-verify-impl
     - 12-verify-deploy
     - 13-deploy-smoke
-  current_stage: 08-verify-build
+  current_stage: closed
   current_stage_status: completed
-  current_stage_note: COMPLETE — 01/02/07/08 done; PR #895 OPEN @ 42ae629a; session open pending merge
+  current_stage_note: 'CLOSED — D-S049-close; PR #895 MERGED @ `fa5b2140`; tip fa5b2140'
   stages:
     00-context:
       status: completed
       started: '2026-08-06'
       completed: '2026-08-06'
     16-evolve:
-      status: in_progress
+      status: completed
       started: '2026-08-06'
-      note: PR #895 OPEN @ 42ae629a; session not closed — awaiting merge
+      completed: '2026-08-07'
+      note: 'COMPLETE — PR #895 MERGED @ `fa5b2140`; D-S049-close'
     01-requirements:
       status: completed
       started: '2026-08-06'
@@ -28688,17 +29585,20 @@ evolve_cycles:
       completed: '2026-08-06'
   ui_preview: n/a (docs-only; screenshots optional local)
   branch: evolve/EV-041-operator-sources-briefing
-  tip_sha: 42ae629a
-  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
   tip_sha_pushed: true
-  tip_sha_note: 'PR #895 OPEN @ 42ae629a; session open pending merge'
+  tip_sha_note: 'CLOSED D-S049-close — PR #895 MERGED @ `fa5b2140`; evolve tip was 42ae629a'
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
   pr_number: 895
-  pr_status: open
+  pr_status: merged
   pr_title: '[EV-041] Operator UI sources runbook + PPT pack'
   pr_base: main
   pr_head: evolve/EV-041-operator-sources-briefing
+  pr_merged_at: '2026-08-07'
+  pr_merge_commit: fa5b2140b608a6460ba063b18c87000a7130e367
   preset: Lean
+  close_decision_id: D-S049-close
   gates:
     a_to_b: passed
     a_to_b_note: docs Gate A passed
@@ -28734,10 +29634,11 @@ evolve_cycles:
     stage: 00-context
   - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
     kind: pull-request
-    status: open
+    status: merged
     pr_number: 895
     stage: 16-evolve
   notes:
+  - '2026-08-07 S049/EV-041 CLOSED — D-S049-close; PR #895 MERGED @ `fa5b2140`; merge-first then close for new evolve #897; active_session→S050/EV-042'
   - '2026-08-06 S049/EV-041 PR #895 OPEN @ 42ae629a — tip pushed; session open pending merge; no git commit by workflow-state-manager'
   - '2026-08-06 S049/EV-041 PROGRESS — 00/01/02/07/08 completed; gates a_to_b=passed; b_to_c/c_to_d/deploy waived; 16-evolve in_progress (PR pending); session open; no git commit by workflow-state-manager'
   - '2026-08-06 S049/EV-041 OPEN — open_session; Lean docs; deepen F7; branch evolve/EV-041-operator-sources-briefing @ 73e13281; 00-context completed; next 16-evolve; no git commit by workflow-state-manager'
@@ -38107,30 +39008,37 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-041-operator-sources-briefing
+  current_branch: evolve/EV-042-remove-db-tools-operator-throughput
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state dirty after S049/EV-041 PR #895 record; parent to commit; no git commit by workflow-state-manager"
-  tip_sha: 42ae629a
-  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
-  tip_note: 'S049/EV-041 PR #895 OPEN @ 42ae629a; tip pushed; session open pending merge'
+  dirty_note: "workflow-state dirty after S050 branch ACTIVE + Phase 0 partial artifacts; parent to commit; no git commit by workflow-state-manager"
+  tip_sha: fa5b2140
+  tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  tip_note: 'S050/EV-042 branch ACTIVE @ fa5b2140 (base main); Phase 0 partial; 00-context in_progress'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
     prior_branch: evolve/EV-031-platform-independence-842
     session_id: S040-iwxxm-corpus-quality
     date: '2026-08-04'
-  main_merge_sha: 0d8ce885
-  main_merge_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
-  main_tip_sha: 0d8ce885
-  main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
-  recommended_branch: evolve/EV-041-operator-sources-briefing
+  main_merge_sha: fa5b2140
+  main_merge_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  main_tip_sha: fa5b2140
+  main_tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+  recommended_branch: evolve/EV-042-remove-db-tools-operator-throughput
   note: 'S047/EV-039 — current_branch evolve/EV-040-workbench-lint-ux @ 861c5457; pushed=true ahead_of_origin=0; PR #893 OPEN; 13 in_progress H1–H5 PASS; tip CD awaiting merge; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-07 S050/EV-042 Gate B PASS — D-S050-gate-b=PASS; 04+05 completed; 07-build M1 T1.1 in_progress (OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; hide Convert&Send + Disseminate); no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 Gate A PASS — D-S050-gate-a=PASS; D-S050-C1 dedicated mass-route limit; 02 completed; 04-tech-plan in_progress; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 01 COMPLETE — D-S050-ac=1 AC1–AC7; R2 hide F16–F19 dest; deepen F7,F16–F19; F33; 02-verify-plan in_progress; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 Phase 0 COMPLETE — D-S050-proceed=1 F16+F7 deepen + F33; 00-context completed; 01-requirements in_progress; ui_preview accepted localhost:18000; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 UPDATE — branch ACTIVE @ fa5b2140; artifacts session-brief/routing-plan/evolve-plan-card/context; Phase 0 partial D-S050-db-scope, D-S050-cycle-scope, D-S050-ev041; 00-context NOT complete; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 OPEN — open_session after S049 close; session_counter 50; evolve_cycle_counter 42; branch evolve/EV-042-remove-db-tools-operator-throughput pending_create @ fa5b2140 (base main #895 merge); 00-context in_progress → 16-evolve Phase 0; epic #897; #898 deferred; no git branch/commit by workflow-state-manager'
+  - '2026-08-07 S049/EV-041 CLOSED — D-S049-close; PR #895 MERGED @ `fa5b2140` (fa5b2140b608a6460ba063b18c87000a7130e367); 16-evolve completed; tip main; then open S050/EV-042; no git commit by workflow-state-manager'
   - '2026-08-06 S049/EV-041 PR #895 OPEN @ 42ae629a — tip pushed; ahead_of_origin=0 pushed=true; session open pending merge; no git commit by workflow-state-manager'
   - '2026-08-06 S049/EV-041 OPEN — open_session; session_counter 49; evolve_cycle_counter 41; branch evolve/EV-041-operator-sources-briefing ACTIVE @ 73e13281 (base main); 00-context completed; next 16-evolve; Lean docs deepen F7; no git commit by workflow-state-manager'
   - '2026-08-06 S048/EV-040 — tip 861c5457 (08c805ebb9c935e989ba91b2fd3012974140b2e9); recorded commits e909231d + 861c5457 (+ earlier EV-040 feat/fix/test); PR #893 OPEN; 09–12 COMPLETE; 13-deploy-smoke IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb; session/cycle remain open; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -38597,26 +39505,45 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-042-remove-db-tools-operator-throughput
+    status: active
+    base: main
+    base_sha: fa5b2140
+    base_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+    created: "2026-08-07"
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    tip_sha: fa5b2140
+    tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
+    exists: true
+    pushed: false
+    ahead_of_origin: 0
+    pr_number: null
+    pr_url: null
+    pr_status: null
+    note: "S050/EV-042 ACTIVE @ fa5b2140 (base main@fa5b2140); Phase 0 partial locks; 00-context NOT complete"
   - name: evolve/EV-041-operator-sources-briefing
-    status: open
+    status: merged
     base: main
     base_sha: 73e13281
     base_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
     created: "2026-08-06"
     session_id: S049-operator-sources-briefing
     evolve_cycle_id: EV-041
-    tip_sha: 42ae629a
-    tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+    tip_sha: fa5b2140
+    tip_sha_full: fa5b2140b608a6460ba063b18c87000a7130e367
     exists: true
     pushed: true
     ahead_of_origin: 0
     pr_number: 895
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
-    pr_status: open
+    pr_status: merged
     pr_title: "[EV-041] Operator UI sources runbook + PPT pack"
     pr_head: evolve/EV-041-operator-sources-briefing
     pr_base: main
-    note: "S049/EV-041 PR #895 OPEN @ 42ae629a; tip pushed; session open pending merge"
+    merged_at: "2026-08-07"
+    merge_commit: fa5b2140b608a6460ba063b18c87000a7130e367
+    note: "CLOSED D-S049-close — PR #895 MERGED (merge `fa5b2140`); evolve tip was 42ae629a"
   - name: evolve/EV-040-workbench-lint-ux
     status: merged
     base: main

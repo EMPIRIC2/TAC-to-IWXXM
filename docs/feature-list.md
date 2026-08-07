@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-06 (S047 / EV-039 — F16 live local SQL e2e + teardown; prior S046 / EV-038)
+> **Last updated**: 2026-08-07 (S050 / EV-042 — F33 mass ingest + F7/F16 deepen; prior S047 / EV-039)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S046 / EV-038 encode (#849/#850/#856/#857); prior S045 / EV-037 |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -23,10 +23,10 @@
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S043 / EV-035 ISSUE_CATALOG↔source; **deepen** S048 / EV-040 catalog source attribution in API/FE + RVR/AHL FP fixes |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL Playwright + teardown |
-| F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; mock-BYOC close (Q15 waive) |
-| F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; mock-BYOC close (Q15 waive) |
-| F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; staging stubs; live optional |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
+| F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; **S050 / EV-042** operator UI hidden with F16–F19 (restore #898) |
+| F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; **S050 / EV-042** operator UI hidden (restore #898) |
+| F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; **S050 / EV-042** operator UI hidden (restore #898) |
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778 |
 | F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
@@ -40,6 +40,7 @@
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; **deepen** S042 / EV-034 CD auto-rollout |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S046 / EV-038 G-VONA-1/5 (#849/#850); prior S045 / EV-037; epic #846 |
+| F33 | Secure mass file/folder ingest | Planned | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1378,6 +1379,48 @@
   full AHL impl packs beyond matrix redesign
 - **Source**: E37-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-037;
   [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md); #869/#870/#872
+
+### F33: Secure mass file/folder ingest — S050 / EV-042
+
+- **Status**: **Planned** (S050 / EV-042; ACs below).
+- **What it does**: Authenticated operators ingest **many** TAC (and related text) files via
+  multi-select and **folder/zip** upload, with progress and per-file errors, then feed the
+  existing convert → lint → validate path (**no** operator dissemination destinations this
+  cycle — F16–F19 UI hidden). Server enforces size/count/MIME caps, rejects
+  binaries/executables, and applies **content sniff + zip-bomb guards**.
+- **Caps (R1)**: ≤**200** files / request; ≤**5 MiB** / file; ≤**50 MiB** total unzipped.
+- **Auth (R3)**: JWT required for folder/zip mass path; guests may keep existing small
+  multi-file upload behavior.
+- **Issues**: Parent epic [#897](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/897);
+  restore destinations [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+- **Deepens / companions**: **F7** (queue + batch convert/validate), **F16–F19** (UI-hide
+  all sinks; API retained for harness).
+- **Acceptance**:
+  1. Auth-gated folder/zip mass ingest with progress + per-file errors (**TC-F33-001**, **UJ-051**)
+  2. Caps enforced: 200 files / 5 MiB each / 50 MiB total unzipped (**TC-F33-002**)
+  3. Binary/executable + content-sniff rejects; zip-bomb / nested-zip abuse rejected (**TC-F33-003**)
+  4. Unauthenticated mass path → clear 401/403; guest small multi-file unchanged if previously allowed (**TC-F33-004**)
+  5. Ingested items enter workbench queue for convert/validate churn (**TC-F33-005**, **UJ-052**)
+  6. H4–H5 connectivity for new browser→API mass ingest calls (**TC-F33-006**)
+- **Out of scope**: Restoring F16–F19 destinations (#898); connector spike (#896);
+  `DatabaseUploadDialog`; F8 auto-push; operator dissemination send; weakening SSRF allowlist.
+- **Source**: E42-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-042;
+  [Context: remove-db-tools-operator-throughput](context/remove-db-tools-operator-throughput.md);
+  #897; ADR-029 / ADR-030
+
+### F7 / F16–F19 deepen (S050 / EV-042 — #897 destinations UI hide + churn)
+
+- **Status note**: F16–F19 remain **Done** (engines/APIs); **operator UI destinations temporarily
+  removed**. F7 remains **Planned** with churn deepen.
+- **Acceptance (EV-042 shared)**:
+  1. No Dissemination sink chooser / Convert&Send destination path in operator UI (**UJ-053**, **TC-EV042-001**)
+  2. Harness/tests can still call dissemination preflight/send (**TC-EV042-002**)
+  3. Queue + keyboard next/prev + Enter convert/validate; multi-select batch convert/validate (**UJ-052**, **TC-EV042-003**)
+  4. Mass progress toast + convert/validate keyboard shortcuts (**TC-EV042-004**)
+  5. #898 updated to restore **all** destinations (DB + F17–F19)
+- **Journeys / tests**: **UJ-051..053**; **TC-F33-001..006**; **TC-EV042-001..004**
+- **Out of scope**: Implementing #898; soft-deleting `packages/dissemination` adapters
+- **Source**: #897; evolve-decisions §EV-042
 
 ### F23 deepen (S040 / EV-032 — #835 A6-2-TC → wmoPass)
 
