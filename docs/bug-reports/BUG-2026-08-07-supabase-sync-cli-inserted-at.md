@@ -8,7 +8,8 @@
 | **Classification** | integration / tooling |
 | **Remediation path** | Pin Supabase CLI below broken `latest`; strip stale onrender allow-list leftovers |
 | **Branch** | `fix/BUG-2026-08-07-supabase-sync-cli-pin` |
-| **CI runs** | https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31178626341/job/92866314571 · PR #901 https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31190674882 |
+| **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/902 (cherry-picked onto #901) |
+| **CI runs** | Fail: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31178626341/job/92866314571 · Green: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31201943165 |
 
 ## Error description
 
