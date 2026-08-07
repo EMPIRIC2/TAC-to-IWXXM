@@ -93,7 +93,8 @@ pytest wiring, no card aria/label churn (download *attribute* is the contract).
 | Frontend `npm run lint` + full `npm test` (798 passed) | pass |
 | `make test-bugs` (incl. this module) | 56 passed, 5 skipped |
 | Ruff on new pytest | pass |
-| PR branch / main CI (`gh`) | pending push/merge |
+| PR branch CI (`CI/CD Pipeline` [31213294994](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31213294994)) | **success** |
+| Main CI after merge | pending merge |
 
 ## Prevention & countermeasures
 
