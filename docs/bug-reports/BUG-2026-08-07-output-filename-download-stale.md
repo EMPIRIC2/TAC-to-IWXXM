@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | fixed (pending verify / PR) |
+| **Status** | resolved |
 | **Feature** | F1 / F10 (workbench download UX); origin #664 |
 | **Severity** | medium (wrong download name; XML correct) |
 | **Classification** | domain / UI logic (not connectivity) |
@@ -11,6 +11,7 @@
 | **Remediation path** | local-first (deploy only after explicit approval) |
 | **Branch** | `fix/output-filename-download-stale` |
 | **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905 |
+| **Merge tip** | `a15541e5` (main CI/CD [31226647517](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31226647517) SUCCESS incl. Deploy + E2E) |
 
 ## Error description
 
@@ -33,6 +34,7 @@ N/A — UI QoL; no server traceback. Symptom is downloaded filename vs current f
 | 2026-08-07 | Opened from `/14-hotfix` + #904; intent = new issue |
 | 2026-08-07 | Session S051 opened; branch `fix/output-filename-download-stale` |
 | 2026-08-07 | Confirmed in code: `handleDownloadSingle` / ZIP members use `file.originalName` only; ZIP *archive* name already uses live `outputFilename` |
+| 2026-08-07 | PR #905 merged; Phase 5 prevention + Cursor rule landed |
 
 ### Hypotheses
 
@@ -76,6 +78,17 @@ pytest wiring, no card aria/label churn (download *attribute* is the contract).
 - `bug_repro_matches`: Yes — matches (Vitest: expected `second_name.xml`, got `first_name.xml`)
 - `bug_root_cause`: Agree — proceed to fix
 - `bug_verified`: Yes — verified
+- `D-S051-prod`: `2` — assume deploy good; Phase 5
+- `prevention_recurrence_risk`: Possible on similar download/name UX changes (P-A recommended)
+- `prevention_detect_earlier`: CI unit (Vitest) on PR (P-A recommended)
+- `prevention_automated`: Bug repro test only (done) — `1:1`
+- `prevention_code_hardening`: Refactor download naming into one shared path for all result types — `2:1`
+- `prevention_process`: Spec / journeys note (F1/F10 download live rename) — `3:2`
+- `prevention_when`: Next PR — `P-C recommended`
+- `prevention_who`: Agent now / next PR — `P-C recommended`
+- `prevention_plan_confirm`: Proceed — `1`
+- `prevention_cursor_rule`: Yes — create rule now — `1`
+- `cursor_rule_approve_draft`: Approve — write rule — `1`
 
 ## Verification plan
 
@@ -83,7 +96,7 @@ pytest wiring, no card aria/label churn (download *attribute* is the contract).
 |------|--------|
 | **Success criterion** | After convert, rename Output filename → Download (and ZIP members) use new sanitized name; XML unchanged |
 | **Checks** | Full main CI parity (local) + `gh` CI on `main` after merge |
-| **Monitoring** | User watches production after deploy |
+| **Monitoring** | User watches production after deploy (Step 0.5); prod click-verify waived `D-S051-prod=2` |
 
 ### Verification log (local)
 
@@ -94,12 +107,67 @@ pytest wiring, no card aria/label churn (download *attribute* is the contract).
 | `make test-bugs` (incl. this module) | 56 passed, 5 skipped |
 | Ruff on new pytest | pass |
 | PR branch CI (`CI/CD Pipeline` [31213294994](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31213294994)) | **success** |
-| Main CI after merge | pending merge |
+| Main CI after merge (`CI/CD` [31226647517](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31226647517)) | **success** (`a15541e5`) |
+| Supabase Sync / E2E on main | **success** |
+| Production user-verify | **waived** — `D-S051-prod=2` assume deploy good (Deploy + E2E green); Phase 5 |
+
+### Verification layers
+
+| Layer | Result |
+|-------|--------|
+| L1 local repro + suite | pass |
+| L2 PR CI | pass |
+| L3 main CI + Deploy + E2E | pass |
+| L4 production click-verify | waived (`D-S051-prod=2`) |
+
+## Post-deploy monitoring
+
+User monitors per Step 0.5 (convert → rename → Download on live workbench). No scheduled 15-service-health unless requested.
 
 ## Prevention & countermeasures
 
-*(pending Phase 5)*
+### Batch P-A (recorded)
+
+| Topic | Choice |
+|-------|--------|
+| Recurrence risk | Possible on similar download/name UX changes |
+| Detect earlier | CI unit (Vitest) on PR (bug Vitest + `tests/bugs` wiring already enrolled) |
+
+### Batch P-B (recorded)
+
+| Topic | Choice |
+|-------|--------|
+| Automated | Bug repro test only (done) |
+| Code hardening | Refactor download naming into one shared path for all result types |
+| Process / docs | Spec / journeys note (F1/F10 download live rename) |
+
+### Batch P-C (recorded)
+
+| Topic | Choice |
+|-------|--------|
+| When | Next PR |
+| Who | Agent (next PR / follow-up session) |
+
+### Planned actions (confirmed)
+
+| # | Action | When | Owner |
+|---|--------|------|-------|
+| 1 | Keep Vitest + `tests/bugs` wiring enrolled (done #905) | Done | — |
+| 2 | Refactor: one shared download-name path for all result types | Next PR | Agent |
+| 3 | Journeys / product note: post-convert Output filename drives Download / ZIP members [Corpus: product] F1/F10 · [Corpus: journeys] | Next PR (with #2) | Agent |
 
 ## Cursor rule
 
-*(pending Phase 5.1)*
+| Field | Value |
+|-------|-------|
+| **Status** | created |
+| **Path** | `.cursor/rules/optional/workbench-live-output-filename-download.mdc` |
+| **Approved** | `cursor_rule_approve_draft=1` |
+
+## Follow-ups
+
+- Next PR: shared download-name resolver + F1/F10 journeys/product delta (owner: agent).
+
+## Hotfix log
+
+`docs/hotfix-log.md` #13

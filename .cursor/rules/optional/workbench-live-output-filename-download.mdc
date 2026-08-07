@@ -1,0 +1,21 @@
+---
+description: Manual Output filename must drive Download/ZIP names (BUG-2026-08-07)
+globs: apps/frontend/src/components/FileConverter.tsx,apps/frontend/src/utils/outputFilename.ts,apps/frontend/src/test/**/*output-filename*
+alwaysApply: false
+---
+
+# Workbench live Output filename → download
+
+Evidence: BUG-2026-08-07 / #904 / S051 — preview updated, Download stayed on convert-time name.
+
+1. **One live resolver** — For manual-input results, single Download and ZIP
+   member names must use the current sanitized Output filename (same source as
+   the field preview), not a convert-time-only baked `originalName`.
+2. **Tag manual slots** — Keep `liveOutputSlot` (or successor shared API) so
+   download code can recompute names after rename.
+3. **Uploads unchanged** — File-queue / upload results keep their own names;
+   do not force live Output filename onto uploads unless product says so.
+4. **Regression** — Keep
+   `apps/frontend/src/test/bug-2026-08-07-output-filename-download-stale.test.tsx`
+   and `tests/bugs/test_bug_2026_08_07_output_filename_download_stale.py` green
+   when changing download naming.

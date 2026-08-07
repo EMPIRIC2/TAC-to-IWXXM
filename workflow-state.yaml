@@ -12,7 +12,7 @@ active_session:
   status: in_progress
   branch: fix/output-filename-download-stale
   branch_base: main@d6f6fa04
-  branch_status: pending_create
+  branch_status: merged
   orchestrator: 14-hotfix
   evolve_cycle_id: null
   artifacts_dir: docs/sessions/S051-output-filename-download-stale/
@@ -20,6 +20,27 @@ active_session:
   github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904
   remediation_path: local-first
   prior_session: S050-remove-db-tools-operator-throughput
+  tip_sha: a15541e5
+  tip_sha_note: 'PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+  pr_number: 905
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
+  pr_status: merged
+  merge_sha: a15541e5
+  main_ci_cd_pipeline_run: '31226647517'
+  main_ci_cd_pipeline_status: SUCCESS
+  hotfix_log_entry: 13
+  bug_report_status: resolved
+  prevention_plan: confirmed
+  cursor_rule_path: .cursor/rules/optional/workbench-live-output-filename-download.mdc
+  decisions:
+    D-S051-open: open_session
+    D-S051-prod: '2'
+    D-S051-prod_note: '2 — Assume deploy good for now; continue Phase 5 prevention interview; production user-verify waived (assume good); PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS including Deploy + E2E'
+    D-S051-cursor_rule: '1'
+    D-S051-cursor_rule_note: '1 — approved draft written; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc`; prevention_plan confirmed; hotfix-log #13; bug report status resolved'
+  notes:
+  - '2026-08-07 D-S051-cursor_rule=1 — Phase 5 complete; prevention_plan confirmed; Cursor rule written; hotfix-log #13; BUG resolved; pending user close AskQuestion + closeout commit on main; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+  - '2026-08-07 D-S051-prod=2 — assume deploy good; Phase 5 prevention interview in progress; tip/merge PR #905 @ a15541e5; main CI 31226647517 SUCCESS (Deploy + E2E); production user-verify waived'
   routing_plan:
   - stage: 14-hotfix
     required: true
@@ -27,7 +48,7 @@ active_session:
     status: in_progress
     started: '2026-08-07'
     skip_rationale: null
-    note: 'IN_PROGRESS — #904 output filename stale on Download; BUG-2026-08-07-output-filename-download-stale'
+    note: 'Phase 5 complete; pending user close AskQuestion + closeout commit on main; D-S051-cursor_rule=1; hotfix-log #13; Cursor rule created; BUG resolved; PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
   - stage: 15-service-health
     required: false
     mode: when_deployed
@@ -35,6 +56,7 @@ active_session:
     skip_rationale: null
     note: optional after deploy (explicit approval required)
   current_stage: 14-hotfix
+  current_stage_note: 'Phase 5 complete; pending user close AskQuestion + closeout commit on main; D-S051-cursor_rule=1; hotfix-log #13; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc`; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
   started_at: '2026-08-07'
   started: '2026-08-07'
   context_briefs: []
@@ -13741,12 +13763,23 @@ stages:
     status: in_progress
     session_id: S051-output-filename-download-stale
     current_bug: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
-    bug_status: investigating
+    bug_status: resolved
+    hotfix_log_entry: 13
+    cursor_rule_path: .cursor/rules/optional/workbench-live-output-filename-download.mdc
+    prevention_plan: confirmed
     github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904
     remediation_path: local-first
     started_at: '2026-08-07'
     started: '2026-08-07'
-    note: 'S051 OPEN — #904 output filename change after convert ignored on Download; BUG-2026-08-07-output-filename-download-stale; local-first'
+    tip_sha: a15541e5
+    tip_sha_note: 'PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+    pr_number: 905
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
+    pr_status: merged
+    merge_sha: a15541e5
+    main_ci_cd_pipeline_run: '31226647517'
+    main_ci_cd_pipeline_status: SUCCESS
+    note: 'S051 IN_PROGRESS — Phase 5 complete; hotfix-log #13; Cursor rule created; BUG resolved; pending user close AskQuestion + closeout commit on main; PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS; #904 / BUG-2026-08-07-output-filename-download-stale'
     prior_session_id: S028-sigmet-multiline-split
     prior_bug: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
     prior_bug_status: resolved
@@ -13760,6 +13793,8 @@ stages:
     prior_prior_pr_number: 721
     prior_prior_merge_sha: 6412b21
     notes:
+    - '2026-08-07 D-S051-cursor_rule=1 — Phase 5 complete; prevention_plan confirmed; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc` created; hotfix-log #13; bug_status resolved; pending user close AskQuestion + closeout commit on main; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+    - '2026-08-07 D-S051-prod=2 — assume deploy good; Phase 5 prevention interview in progress; PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS (Deploy + E2E); production user-verify waived'
     - '2026-08-07 — S051-output-filename-download-stale open (#904 / BUG-2026-08-07-output-filename-download-stale); cleared S028 as current; routing 14-hotfix + optional 15 after deploy'
     - 2026-07-30 — S028 CLOSED — PR #796 merged 17c93bd
     - 2026-07-30 — S028-sigmet-multiline-split open (BUG-2026-07-30 SIGMET/AIRMET multi-line split); pointer docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md; cleared S012 as current.
@@ -14088,6 +14123,73 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S051-cursor_rule
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  session_id: S051-output-filename-download-stale
+  skill: 14-hotfix
+  skill_id: 14-hotfix
+  stage: 14-hotfix
+  category: prevention_cursor_rule
+  status: confirmed
+  topic: 'Phase 5 — approve Cursor rule draft + confirm prevention plan'
+  summary: '1 — approved draft written; prevention_plan confirmed; hotfix-log #13; bug report resolved'
+  decision: |
+    D-S051-cursor_rule=1 — user approved Cursor rule draft; write rule.
+    Cursor rule path: .cursor/rules/optional/workbench-live-output-filename-download.mdc
+    prevention_plan confirmed.
+    hotfix-log #13 recorded.
+    Bug report BUG-2026-08-07-output-filename-download-stale status resolved.
+    Tip: PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS.
+    Phase 5 complete; pending user close AskQuestion + closeout commit on main.
+    Do NOT close_session yet — wait for user close approval.
+    Session remains S051 hotfix (no new evolve cycle; do not open 16-evolve).
+  user_option: '1'
+  cursor_rule_path: .cursor/rules/optional/workbench-live-output-filename-download.mdc
+  prevention_plan: confirmed
+  hotfix_log_entry: 13
+  bug_report: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+  bug_report_status: resolved
+  branch: fix/output-filename-download-stale
+  tip_sha: a15541e5
+  merge_commit_sha: a15541e5
+  pr_number: 905
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
+  pr_status: merged
+  main_ci_cd_pipeline_run: '31226647517'
+  main_ci_cd_pipeline_status: SUCCESS
+  current_stage: 14-hotfix
+  note: 'Phase 5 complete; D-S051-cursor_rule=1; hotfix-log #13; Cursor rule created; pending close AskQuestion; tip PR #905 @ a15541e5; CI 31226647517 SUCCESS'
+- id: D-S051-prod
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  session_id: S051-output-filename-download-stale
+  skill: 14-hotfix
+  skill_id: 14-hotfix
+  stage: 14-hotfix
+  category: production_check_gate
+  status: confirmed
+  topic: 'Production check gate — assume deploy good; Phase 5 prevention'
+  summary: '2 — Assume deploy good for now; continue Phase 5 prevention interview; production user-verify waived'
+  decision: |
+    D-S051-prod=2 — user chose recommended option 2 from production check gate.
+    Assume deploy good for now; continue Phase 5 prevention interview.
+    Production user-verify waived (assume good).
+    PR #905 MERGED @ a15541e5.
+    main CI/CD Pipeline run 31226647517 SUCCESS including Deploy + E2E.
+    Session remains S051 hotfix (no new evolve cycle; do not open 16-evolve).
+    current_stage remains 14-hotfix; Phase 5 prevention interview in progress.
+  user_option: '2'
+  branch: fix/output-filename-download-stale
+  tip_sha: a15541e5
+  merge_commit_sha: a15541e5
+  pr_number: 905
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
+  pr_status: merged
+  main_ci_cd_pipeline_run: '31226647517'
+  main_ci_cd_pipeline_status: SUCCESS
+  current_stage: 14-hotfix
+  note: 'D-S051-prod=2 assume deploy good; Phase 5 prevention; PR #905 @ a15541e5; CI 31226647517 SUCCESS'
 - id: D-S051-open
   date: '2026-08-07'
   timestamp: '2026-08-07'
