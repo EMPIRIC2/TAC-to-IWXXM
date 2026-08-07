@@ -25,7 +25,7 @@
 | 10-e2e | yes | full | **completed** | H4–H5 live; UI local preview |
 | 11-verify-impl | yes | delta | **completed** | verify-impl.md |
 | 12-verify-deploy | yes | delta | **completed** | deploy-checklist approved |
-| 13-deploy-smoke | yes | delta | **in_progress** | H1–H5 PASS; tip CD after merge |
+| 13-deploy-smoke | yes | delta | **completed*** | H1–H5 PASS + CI green; *tip CD after merge approval |
 
 ## Skip rationale
 

@@ -3,7 +3,7 @@
 **Session:** S048-workbench-lint-ux  
 **Completed (impl):** 2026-08-06 · **Deploy tip:** awaiting merge of PR #893  
 **Deepen:** F7 / F10 / F15  
-**PR:** [#893](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893) OPEN @ `861c5457`
+**PR:** [#893](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893) OPEN @ `65b1ab01`
 
 ## Shipped
 
