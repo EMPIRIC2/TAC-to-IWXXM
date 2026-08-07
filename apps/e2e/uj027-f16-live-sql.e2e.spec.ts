@@ -9,6 +9,8 @@
  *
  * [Corpus: product §F16] [Corpus: tests] TC-F16-LIVE [Corpus: journeys §UJ-027]
  * [Corpus: tech-spec] mock-byoc
+ *
+ * EV-042: operator Disseminate UI hidden — skipped until #898 (API harness remains).
  */
 
 import { expect, test, type Page } from '@playwright/test';
@@ -20,6 +22,11 @@ import { promisify } from 'node:util';
 import { openConverterForE2e, playwrightApiBaseUrl } from './playwright-e2e-helpers';
 
 const execFileAsync = promisify(execFile);
+
+test.skip(
+  true,
+  'EV-042: operator Disseminate UI hidden; restore live SQL UI path in #898',
+);
 
 const liveEnabled = process.env.F16_LIVE_SQL === '1';
 const skipSqlServer =

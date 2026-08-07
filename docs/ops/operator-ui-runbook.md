@@ -23,6 +23,20 @@ standards, schemas, and packages** underwrite that behavior.
 **Journeys:** UJ-001/005 (convert), UJ-013/015–018 (workbench), UJ-020/021 (decode/preview),
 UJ-027–030 (dissemination when used) — [Corpus: journeys].
 
+## EV-042 — Operator destinations deferred (#897 / #898)
+
+**Status (S050 / EV-042):** Operator Dissemination drawer sinks, Convert&Send, and
+**Upload to Database** are **hidden** (`destinationsEnabled=false` in
+`operatorDisseminationUi.ts`). Operators use Convert, Validate, mass Folder/Zip ingest
+(F33, auth required), and the work queue (UJ-052).
+
+- Backend `/api/v1/dissemination/*` remains for harness / CI.
+- Restore all destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS), including Upload to Database /
+  Convert&Send, via [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+- Live UJ-027–030 Playwright stays skipped until restore; UJ-051..053 cover the interim UI.
+
+[Corpus: product §F16–F19/F33] [Corpus: journeys §UJ-051..053]
+
 ---
 
 ## 2. What the tool implements (pipeline)

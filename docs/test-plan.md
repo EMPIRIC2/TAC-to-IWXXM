@@ -104,6 +104,9 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-048 | F30 | DOKS cutover smoke (API + FE + worker) | **H0–H5 required** | TC-F30-004/005; TC-EV031-* |
 | UJ-049 | F32 + F6/F7/F12/F2/F13 deepen | VONA quality bar + full F7 surface (#741); cycle also #835/#808/corpus | H4–H5 when FE | TC-EV032-001..008; TC-F32-001..006 |
 | UJ-050 | F4+F7 deepen (EV-038) | IWXXM version picker Latest / Previous (#854) | H4–H5 when FE | TC-EV038-007 |
+| UJ-051 | F33 | Secure mass file/folder ingest (auth + caps) | **H4–H5 required** | TC-F33-001..006 |
+| UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
+| UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -125,7 +128,8 @@ admin suite modules.
 | H3 | Live API smoke (pytest) | `make test-live-api` |
 | H4 | Live CORS preflight | `make test-live-connectivity` |
 | H5 | Frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** + **UJ-027–030** (H6′ when F16–F19 ships) | `make test-live-e2e` |
+| H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** + **UJ-027–030** (H6′ when F16–F19 ships; **operator UI deferred #898 / EV-042**) + **UJ-051..053** (EV-042) | `make test-live-e2e` |
+
 | **H7** | Live bulletin → split → convert → Schematron (UJ-011) | `make test-live-bulletin` (planned) |
 
 **Post-migration / F21 Amended (EV-031)**: Single API origin serves `/api/v1/*` **and**
@@ -1965,6 +1969,94 @@ New **TC-EV038-001..014**. Deepens F2 / F4 / F6 / F7 / F32. Milestones M1→M2�
 - **Pass criteria**: `make test-live-connectivity` green; Playwright smokes for notice + login
   entry; **not waived** behind a feature flag this cycle (`D-S038-tp` Q2=1)
 - **Source**: F31 AC6; UJ-045–047
+
+## F33 / EV-042 — Mass ingest + destinations hide + churn (S050)
+
+> Operator Dissemination destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS) and Convert&Send are
+> **UI-hidden** this cycle (`OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false`). Backend
+> `/api/v1/dissemination/*` retained for harness. Restore track: [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+> Ops: [Corpus: ops] `docs/ops/operator-ui-runbook.md` §EV-042 destinations deferred.
+
+### TC-F33-001: Authenticated mass ingest accepts TAC / zip (UJ-051)
+
+- **Level**: T0 / T2 / T3
+- **Objective**: JWT bearer required; accepted text files land in work queue
+- **Pass criteria**: POST `/api/v1/ingest/mass` 200 with JWT; per-file `accepted` + `content`;
+  FE Folder/Zip → queue (Playwright `uj051-053-ev042-mass-queue.e2e.spec.ts`)
+- **Source**: F33 AC4; UJ-051
+
+### TC-F33-002: Caps 200 / 5 MiB / 50 MiB enforced (UJ-051)
+
+- **Level**: T0
+- **Objective**: Reject over-count, oversize file, or oversize total unzipped
+- **Pass criteria**: Structured reject / 413-class errors; unit TC-F33 guards green
+- **Source**: F33 R1; UJ-051
+
+### TC-F33-003: Sniff + zip-bomb reject without aborting siblings (UJ-051)
+
+- **Level**: T0
+- **Objective**: Binary / zip-bomb entries rejected; other files in batch may still accept
+- **Pass criteria**: Per-file `accepted=false` + reason; batch continues
+- **Source**: F33 AC4; UJ-051
+
+### TC-F33-004: Unauthenticated mass path denied (UJ-051)
+
+- **Level**: T0 / T2 / T3
+- **Objective**: No JWT → 401/403; guest UI prompts sign-in (does not open chooser)
+- **Pass criteria**: API deny; Playwright guest Folder shows toast / login
+- **Source**: F33 AC5 / R3; UJ-051
+
+### TC-F33-005: Mass successes hand off to work queue (UJ-051/052)
+
+- **Level**: T2 / T3
+- **Objective**: Accepted mass items appear in operator work queue for convert/validate
+- **Pass criteria**: Queue region visible with accepted names after mass ingest
+- **Source**: AC6; UJ-051/052
+
+### TC-F33-006: Live H4–H5 mass route + FE URLs (UJ-051)
+
+- **Level**: H4–H5 / T3
+- **Objective**: Browser CORS OPTIONS for `/api/v1/ingest/mass`; FE `/config.json` uses shared
+  `api.baseUrl` (no separate mass URL)
+- **Pass criteria**: `make test-live-connectivity` + H0i OPTIONS mass ingest; live
+  `test_t83_h4_cors_preflight_mass_ingest` / staging smoke; H5 `massIngestUrl` absent
+- **Source**: AC6; connectivity-gates H4–H5
+
+### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053)
+
+- **Level**: T2 / T3
+- **Objective**: Convert&Send + Disseminate + **Upload to Database** absent; Convert/Validate remain
+- **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
+  `open-dissemination-drawer` / `upload-to-database-button` count 0; convert still succeeds
+- **Source**: AC1; UJ-053; #897; 11-verify-impl amend (hide DatabaseUploadDialog)
+
+### TC-EV042-002: Dissemination API retained for harness (UJ-053)
+
+- **Level**: T0 / T2
+- **Objective**: `/api/v1/dissemination/preflight` + `/send` still mounted for tests/harness
+- **Pass criteria**: Existing dissemination API tests green; operator Playwright UJ-027–030
+  skipped until #898
+- **Source**: AC2; UJ-053
+
+### TC-EV042-003: Work queue keyboard next/prev + Enter convert/validate (UJ-052)
+
+- **Level**: T2 / T3
+- **Objective**: Sticky queue; ArrowUp/Down focus; Enter convert; Shift+Enter validate
+- **Pass criteria**: Vitest TC-EV042-003; Playwright queue focus + batch controls
+- **Source**: AC3; UJ-052
+
+### TC-EV042-004: Batch convert / batch validate (no disseminate) (UJ-052)
+
+- **Level**: T2 / T3
+- **Objective**: Multi-select → Batch Convert / Batch Validate; no batch disseminate
+- **Pass criteria**: Buttons enabled with selection; no disseminate batch control
+- **Source**: AC3 / R4; UJ-052
+
+### EV-042 verify gate
+
+- [ ] TC-F33-001..006 + TC-EV042-001..004 green (or explicit deferral)
+- [ ] H4–H5 mass route wired (H0i + live smoke + Playwright UJ-051..053)
+- [ ] Operator destinations restore tracked in #898
 
 ### TC-EV031-001: One-time migrate legacy Supabase → DO Postgres
 

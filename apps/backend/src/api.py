@@ -23,7 +23,14 @@ try:
     # Try relative imports first (when run as module in Docker)
     from .config.icao_opmet import get_icao_region, get_translation_centre_info
     from .msgspec_http import msgspec_json_response
-    from .routers import dissemination, evaluation, icao_opmet, validation, work_sessions
+    from .routers import (
+        dissemination,
+        evaluation,
+        icao_opmet,
+        mass_ingest,
+        validation,
+        work_sessions,
+    )
     from .schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -66,7 +73,14 @@ except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
     from config.icao_opmet import get_icao_region, get_translation_centre_info
     from msgspec_http import msgspec_json_response
-    from routers import dissemination, evaluation, icao_opmet, validation, work_sessions
+    from routers import (
+        dissemination,
+        evaluation,
+        icao_opmet,
+        mass_ingest,
+        validation,
+        work_sessions,
+    )
     from schemas.conversion import (
         ConversionIssue,
         ConversionIssueSeverity,
@@ -688,6 +702,12 @@ try:
     logger.info("DEBUG: included dissemination router successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination router: {e}", exc_info=True)
+
+try:
+    app.include_router(mass_ingest.router)
+    logger.info("DEBUG: included mass_ingest router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include mass_ingest router: {e}", exc_info=True)
 
 try:
     app.include_router(icao_opmet.router)

@@ -21,6 +21,8 @@ import {
   Download,
   Copy,
   FileText,
+  FolderOpen,
+  Archive,
   Loader2,
   Database,
   Settings,
@@ -36,6 +38,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
+import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
@@ -61,9 +64,17 @@ import {
   convertMetarToIwxxm as callBackendConversion,
   convertBulletin,
   ingestCollect,
+  massIngestFiles,
+  lintTac,
   EndpointNotImplementedError,
   type FailedSpan,
 } from '/utils/api';
+import {
+  clampQueueIndex,
+  nextQueueIndex,
+  prevQueueIndex,
+  toggleQueueSelection,
+} from '/utils/operatorWorkQueue';
 import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
 import { isAbortError } from '/utils/liveAssist';
 import {
@@ -182,6 +193,11 @@ export function FileConverter({
   loadedWorkSession,
 }: FileConverterProps) {
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
+  const [queueFocusIndex, setQueueFocusIndex] = useState(0);
+  const [selectedPendingIds, setSelectedPendingIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [isBatchValidating, setIsBatchValidating] = useState(false);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
   const [manualInput, setManualInput] = useState('');
   const [decodeError, setDecodeError] = useState<string | null>(null);
@@ -213,6 +229,7 @@ export function FileConverter({
   const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
+  const [isMassIngesting, setIsMassIngesting] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
   const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
@@ -232,7 +249,16 @@ export function FileConverter({
     logLevel: 'INFO',
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const massFolderInputRef = useRef<HTMLInputElement>(null);
+  const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const el = massFolderInputRef.current;
+    if (!el) return;
+    el.setAttribute('webkitdirectory', '');
+    el.setAttribute('directory', '');
+  }, []);
 
   const buildSnapshot = (
     overrides?: Partial<ConverterSnapshot>,
@@ -517,15 +543,119 @@ export function FileConverter({
     setIsDragging(false);
   };
 
-  const performConversion = async (): Promise<{
+  /**
+   * Auth-gated mass ingest (F33): upload folder/zip via ``POST /api/v1/ingest/mass``,
+   * then hand accepted text into the pending convert queue.
+   */
+  const handleMassIngest = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    const token = accessToken?.trim();
+    if (!token) {
+      toast.error('Sign in required for mass folder or zip ingest');
+      onRequestLogin?.();
+      return;
+    }
+
+    const fileList = Array.from(files);
+    setIsMassIngesting(true);
+    const progressId = toast.loading(`Mass ingesting ${fileList.length} file(s)…`);
+
+    try {
+      const response = await massIngestFiles({
+        files: fileList,
+        accessToken: token,
+      });
+
+      const accepted: PendingFile[] = [];
+      const rejectSamples: string[] = [];
+      for (const [index, item] of response.results.entries()) {
+        if (item.accepted && item.content != null) {
+          accepted.push({
+            id: `mass-${item.name}-${Date.now()}-${index}`,
+            name: item.name,
+            content: item.content,
+          });
+        } else if (!item.accepted) {
+          if (rejectSamples.length < 5) {
+            rejectSamples.push(`${item.name}: ${item.reason || 'rejected'}`);
+          }
+        }
+      }
+
+      if (accepted.length > 0) {
+        setPendingFiles((prev) => [...prev, ...accepted]);
+      }
+
+      for (const sample of rejectSamples) {
+        toast.error(sample);
+      }
+
+      toast.success(
+        `Mass ingest: ${response.accepted_count} accepted, ${response.rejected_count} rejected`,
+        { id: progressId },
+      );
+    } catch (error) {
+      console.error('[FileConverter] Mass ingest error:', error);
+      toast.error(error instanceof Error ? error.message : 'Mass ingest failed', {
+        id: progressId,
+      });
+    } finally {
+      setIsMassIngesting(false);
+      if (massFolderInputRef.current) massFolderInputRef.current.value = '';
+      if (massZipInputRef.current) massZipInputRef.current.value = '';
+    }
+  };
+
+  const requestMassFolder = () => {
+    if (!accessToken?.trim()) {
+      toast.error('Sign in required for mass folder or zip ingest');
+      onRequestLogin?.();
+      return;
+    }
+    massFolderInputRef.current?.click();
+  };
+
+  const requestMassZip = () => {
+    if (!accessToken?.trim()) {
+      toast.error('Sign in required for mass folder or zip ingest');
+      onRequestLogin?.();
+      return;
+    }
+    massZipInputRef.current?.click();
+  };
+
+  const performConversion = async (opts?: {
+    pendingSubset?: PendingFile[];
+    includeManual?: boolean;
+  }): Promise<{
     files: ConvertedFile[];
     hasErrors: boolean;
     softFail: boolean;
   } | null> => {
-    if (pendingFiles.length === 0 && !manualInput.trim()) {
+    const queueFiles = opts?.pendingSubset ?? pendingFiles;
+    const includeManual = opts?.includeManual !== false;
+    const manualText = includeManual ? manualInput.trim() : '';
+
+    if (queueFiles.length === 0 && !manualText) {
       toast.error('Please add files or enter manual input');
       return null;
     }
+
+    const clearConvertedFromQueue = () => {
+      if (opts?.pendingSubset) {
+        const done = new Set(opts.pendingSubset.map((f) => f.id));
+        setPendingFiles((prev) => prev.filter((f) => !done.has(f.id)));
+        setSelectedPendingIds((prev) => {
+          const next = new Set(prev);
+          for (const id of done) next.delete(id);
+          return next;
+        });
+      } else {
+        setPendingFiles([]);
+        setSelectedPendingIds(new Set());
+      }
+    };
 
     setConversionStatus({ type: 'loading', message: 'Converting...' });
     setConversionLog(null);
@@ -534,7 +664,7 @@ export function FileConverter({
     setPlaceholderNotice(null);
 
     try {
-      const tacForDetect = [manualInput.trim(), ...pendingFiles.map((f) => f.content)]
+      const tacForDetect = [manualText, ...queueFiles.map((f) => f.content)]
         .filter(Boolean)
         .join('\n');
 
@@ -563,14 +693,14 @@ export function FileConverter({
         }
       }
 
-      const filesToConvert: File[] = pendingFiles.map((file) => {
+      const filesToConvert: File[] = queueFiles.map((file) => {
         return new File([file.content], file.name, { type: 'text/plain' });
       });
 
       if (mode === 'collect_iwxxm') {
         try {
           await ingestCollect({
-            manualText: manualInput.trim() || undefined,
+            manualText: manualText || undefined,
             files: filesToConvert.length > 0 ? filesToConvert : undefined,
             profile: conversionParams.profile,
             iwxxmVersion: conversionParams.iwxxmVersion,
@@ -603,7 +733,7 @@ export function FileConverter({
 
       if (mode === 'ahl_bulletin') {
         const bulletinResponse = await convertBulletin({
-          manualText: manualInput.trim() || undefined,
+          manualText: manualText || undefined,
           files: filesToConvert.length > 0 ? filesToConvert : undefined,
           product: resolvedProduct,
           profile: conversionParams.profile,
@@ -645,7 +775,7 @@ export function FileConverter({
         });
         const failed = bulletinResponse.results.filter((r) => !r.ok).length;
         setConvertedFiles(newConvertedFiles);
-        setPendingFiles([]);
+        clearConvertedFromQueue();
         // EV-040: keep manual TAC input after convert (do not clear).
         setConversionLog(issueBag.length > 0 ? { errors: [], issues: issueBag } : null);
         setConversionStatus({ type: 'idle' });
@@ -664,7 +794,7 @@ export function FileConverter({
       const newConvertedFiles: ConvertedFile[] = [];
 
       console.log('[FileConverter] Starting conversion with:', {
-        manualInput: manualInput.trim() ? 'provided' : 'none',
+        manualInput: manualText ? 'provided' : 'none',
         fileCount: filesToConvert.length,
         softPreview,
       });
@@ -675,7 +805,7 @@ export function FileConverter({
       );
 
       const response = await callBackendConversion({
-        manualText: manualInput.trim() || undefined,
+        manualText: manualText || undefined,
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
         profile: conversionParams.profile,
@@ -696,7 +826,7 @@ export function FileConverter({
 
       if (response.results && Array.isArray(response.results)) {
         // Match backend split_manual_entries (SIGMET/AIRMET/VAA/TCA stay one doc).
-        const manualLines = splitManualEntries(manualInput, resolvedProduct);
+        const manualLines = splitManualEntries(manualText, resolvedProduct);
         const manualResultCount = manualLines.length;
 
         response.results.forEach(
@@ -712,7 +842,7 @@ export function FileConverter({
           ) => {
             const isManualResult = index < manualResultCount;
             const fileIndex = index - manualResultCount;
-            const pendingFile = pendingFiles[fileIndex];
+            const pendingFile = queueFiles[fileIndex];
             const originalName = isManualResult
               ? manualOutputName(outputFilename, index, manualResultCount)
               : (pendingFile?.name ?? result.name ?? 'unknown');
@@ -775,7 +905,7 @@ export function FileConverter({
       }
 
       setConvertedFiles(newConvertedFiles);
-      setPendingFiles([]);
+      clearConvertedFromQueue();
       // EV-040: keep manual TAC input after convert. Clear failed spans only on hard success.
       if (!softFail) {
         setFailedSpans([]);
@@ -1041,6 +1171,139 @@ export function FileConverter({
 
   const removePendingFile = (id: string) => {
     setPendingFiles((prev) => prev.filter((f) => f.id !== id));
+    setSelectedPendingIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  };
+
+  const focusQueueItem = (index: number) => {
+    const clamped = clampQueueIndex(index, pendingFiles.length);
+    setQueueFocusIndex(clamped);
+    const item = pendingFiles[clamped];
+    if (item) {
+      setManualInput(item.content);
+    }
+  };
+
+  const handleQueueConvertFocused = async () => {
+    const focused = pendingFiles[clampQueueIndex(queueFocusIndex, pendingFiles.length)];
+    if (!focused || isReadOnly || isBusy) return;
+    setIsConverting(true);
+    try {
+      const result = await performConversion({
+        pendingSubset: [focused],
+        includeManual: false,
+      });
+      if (result && !result.softFail) {
+        toast.success(`Converted ${focused.name}`);
+      }
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  const handleQueueValidateFocused = async () => {
+    const focused = pendingFiles[clampQueueIndex(queueFocusIndex, pendingFiles.length)];
+    if (!focused || isBusy) return;
+    setIsBatchValidating(true);
+    const progressId = toast.loading(`Validating ${focused.name}…`);
+    try {
+      const product = resolveConvertProduct(conversionParams.product, focused.content);
+      const report = await lintTac({
+        manualText: focused.content,
+        product,
+      });
+      if (report.ok) {
+        toast.success(`${focused.name}: lint OK`, { id: progressId });
+      } else {
+        const issueCount = report.issues?.length ?? 0;
+        toast.error(`${focused.name}: ${issueCount} lint issue(s)`, {
+          id: progressId,
+        });
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : `Validate failed for ${focused.name}`,
+        { id: progressId },
+      );
+    } finally {
+      setIsBatchValidating(false);
+    }
+  };
+
+  const handleBatchConvertSelected = async () => {
+    const selected = pendingFiles.filter((f) => selectedPendingIds.has(f.id));
+    if (selected.length === 0) {
+      toast.error('Select one or more queue items to batch convert');
+      return;
+    }
+    if (isReadOnly || isBusy) return;
+    setIsConverting(true);
+    try {
+      const result = await performConversion({
+        pendingSubset: selected,
+        includeManual: false,
+      });
+      if (result) {
+        toast.success(`Batch converted ${result.files.length} file(s)`);
+      }
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  const handleBatchValidateSelected = async () => {
+    const selected = pendingFiles.filter((f) => selectedPendingIds.has(f.id));
+    if (selected.length === 0) {
+      toast.error('Select one or more queue items to batch validate');
+      return;
+    }
+    if (isBusy) return;
+    setIsBatchValidating(true);
+    const progressId = toast.loading(`Batch validating ${selected.length} file(s)…`);
+    let okCount = 0;
+    let failCount = 0;
+    try {
+      for (const file of selected) {
+        try {
+          const product = resolveConvertProduct(conversionParams.product, file.content);
+          const report = await lintTac({
+            manualText: file.content,
+            product,
+          });
+          if (report.ok) okCount += 1;
+          else failCount += 1;
+        } catch {
+          failCount += 1;
+        }
+      }
+      toast.success(`Batch validate: ${okCount} ok, ${failCount} with issues`, {
+        id: progressId,
+      });
+    } finally {
+      setIsBatchValidating(false);
+    }
+  };
+
+  const handleWorkQueueKeyDown = (e: React.KeyboardEvent) => {
+    if (pendingFiles.length === 0) return;
+    const focus = clampQueueIndex(queueFocusIndex, pendingFiles.length);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      focusQueueItem(nextQueueIndex(focus, pendingFiles.length));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      focusQueueItem(prevQueueIndex(focus, pendingFiles.length));
+    } else if (e.key === 'Enter' && e.shiftKey) {
+      e.preventDefault();
+      void handleQueueValidateFocused();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      void handleQueueConvertFocused();
+    }
   };
 
   const removeConvertedFile = (id: string) => {
@@ -1049,6 +1312,8 @@ export function FileConverter({
 
   const handleClear = () => {
     setPendingFiles([]);
+    setSelectedPendingIds(new Set());
+    setQueueFocusIndex(0);
     setManualInput('');
     setDemoExampleLabel(null);
     setOutputFilename('');
@@ -1066,10 +1331,15 @@ export function FileConverter({
     toast.info('Queue cleared');
   };
 
-  const isBusy = isConverting || isConvertAndSending;
+  const isBusy =
+    isConverting || isConvertAndSending || isMassIngesting || isBatchValidating;
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const convertDisabled = isBusy || !hasInput || isReadOnly;
+  const safeQueueFocusIndex = clampQueueIndex(queueFocusIndex, pendingFiles.length);
+  const activeSelectedCount = pendingFiles.filter((f) =>
+    selectedPendingIds.has(f.id),
+  ).length;
 
   const liveAssistProduct = resolveConvertProduct(
     conversionParams.product,
@@ -1348,48 +1618,55 @@ export function FileConverter({
               />
               Convert
             </Button>
-            <Button
-              data-testid="convert-and-send-button"
-              onClick={handleConvertAndSend}
-              disabled={convertDisabled}
-              className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              aria-busy={isConvertAndSending}
-              aria-label={
-                isConvertAndSending
-                  ? 'Converting and sending files, please wait'
-                  : 'Convert TAC to IWXXM XML and send to database'
-              }
-            >
-              <Loader2
-                className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
-                aria-hidden="true"
-              />
-              Convert&Send
-            </Button>
-            <Button
-              onClick={() => setIsUploadDialogOpen(true)}
-              disabled={isBusy || !hasConverted || isReadOnly}
-              variant="outline"
-              className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-              aria-label={`Upload ${convertedFiles.length} converted files to database`}
-            >
-              <Database className="w-4 h-4" aria-hidden="true" />
-              Upload to Database
-              <span className="inline-block min-w-[1.75rem] tabular-nums">
-                ({convertedFiles.length})
-              </span>
-            </Button>
-            <Button
-              type="button"
-              data-testid="open-dissemination-drawer"
-              onClick={() => setIsDisseminationOpen(true)}
-              disabled={isBusy || isReadOnly}
-              variant="outline"
-              className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-              aria-label="Open dissemination drawer for BYOC upload or publish"
-            >
-              Disseminate
-            </Button>
+            {isOperatorDisseminationDestinationsEnabled() ? (
+              <Button
+                data-testid="convert-and-send-button"
+                onClick={handleConvertAndSend}
+                disabled={convertDisabled}
+                className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-busy={isConvertAndSending}
+                aria-label={
+                  isConvertAndSending
+                    ? 'Converting and sending files, please wait'
+                    : 'Convert TAC to IWXXM XML and send to database'
+                }
+              >
+                <Loader2
+                  className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
+                  aria-hidden="true"
+                />
+                Convert&Send
+              </Button>
+            ) : null}
+            {isOperatorDisseminationDestinationsEnabled() ? (
+              <Button
+                data-testid="upload-to-database-button"
+                onClick={() => setIsUploadDialogOpen(true)}
+                disabled={isBusy || !hasConverted || isReadOnly}
+                variant="outline"
+                className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                aria-label={`Upload ${convertedFiles.length} converted files to database`}
+              >
+                <Database className="w-4 h-4" aria-hidden="true" />
+                Upload to Database
+                <span className="inline-block min-w-[1.75rem] tabular-nums">
+                  ({convertedFiles.length})
+                </span>
+              </Button>
+            ) : null}
+            {isOperatorDisseminationDestinationsEnabled() ? (
+              <Button
+                type="button"
+                data-testid="open-dissemination-drawer"
+                onClick={() => setIsDisseminationOpen(true)}
+                disabled={isBusy || isReadOnly}
+                variant="outline"
+                className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                aria-label="Open dissemination drawer for BYOC upload or publish"
+              >
+                Disseminate
+              </Button>
+            ) : null}
             <Button
               onClick={handleDownloadAll}
               disabled={isBusy || !hasConverted}
@@ -1637,7 +1914,8 @@ export function FileConverter({
                         Drop TAC files or select
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Multiple files · .txt, .metar, .tac, .xml, .gz
+                        Multiple files · Folder/Zip mass ingest (signed in) · .txt,
+                        .metar, .tac, .xml, .gz, .zip
                       </p>
                     </div>
                   </div>
@@ -1657,11 +1935,68 @@ export function FileConverter({
                       e.stopPropagation();
                       fileInputRef.current?.click();
                     }}
+                    disabled={isBusy || isReadOnly}
                     className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     aria-label="Browse and select files"
                   >
                     Select Files
                   </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-testid="mass-ingest-folder-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      requestMassFolder();
+                    }}
+                    disabled={isBusy || isReadOnly}
+                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-label="Mass ingest a folder of TAC files (sign-in required)"
+                    aria-busy={isMassIngesting}
+                  >
+                    <FolderOpen className="h-4 w-4" aria-hidden="true" />
+                    Folder
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-testid="mass-ingest-zip-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      requestMassZip();
+                    }}
+                    disabled={isBusy || isReadOnly}
+                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
+                    aria-busy={isMassIngesting}
+                  >
+                    <Archive className="h-4 w-4" aria-hidden="true" />
+                    Zip
+                  </Button>
+                  <input
+                    ref={massFolderInputRef}
+                    type="file"
+                    multiple
+                    className="hidden"
+                    data-testid="mass-ingest-folder-input"
+                    onChange={(e) => {
+                      void handleMassIngest(e.target.files);
+                    }}
+                    aria-label="Select folder for mass ingest"
+                  />
+                  <input
+                    ref={massZipInputRef}
+                    type="file"
+                    accept=".zip,application/zip"
+                    className="hidden"
+                    data-testid="mass-ingest-zip-input"
+                    onChange={(e) => {
+                      void handleMassIngest(e.target.files);
+                    }}
+                    aria-label="Select zip archive for mass ingest"
+                  />
                 </div>
               </Card>
             </div>
@@ -1985,48 +2320,122 @@ export function FileConverter({
               </div>
             )}
 
-            {/* Pending Files */}
+            {/* Pending Files — operator work queue (UJ-052) */}
             {pendingFiles.length > 0 && (
-              <div className="mb-8" role="region" aria-label="Pending files queue">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                  Pending Files
-                </h2>
-                <div className="space-y-2">
-                  {pendingFiles.map((file) => (
-                    <Card
-                      key={file.id}
-                      className="p-4 bg-white dark:bg-gray-800 dark:border-gray-700"
+              <div
+                className="mb-8 sticky top-2 z-10 rounded-lg border border-gray-200 bg-white/95 p-4 shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-900/95"
+                role="region"
+                aria-label="Pending files queue"
+                data-testid="operator-work-queue"
+                tabIndex={0}
+                onKeyDown={handleWorkQueueKeyDown}
+              >
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      Work queue
+                    </h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      ↑/↓ focus · Enter convert · Shift+Enter validate · multi-select
+                      for batch
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      data-testid="batch-convert-button"
+                      disabled={isBusy || isReadOnly || activeSelectedCount === 0}
+                      onClick={() => {
+                        void handleBatchConvertSelected();
+                      }}
+                      aria-label="Batch convert selected queue items"
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <FileText
-                            className="w-5 h-5 text-blue-500 dark:text-blue-400"
-                            aria-hidden="true"
-                          />
-                          <div>
-                            <p className="text-base font-medium text-gray-900 dark:text-white">
-                              {file.name}
-                            </p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {file.content.split('\n').length} line(s)
-                            </p>
+                      Batch Convert
+                      <span className="ml-1 tabular-nums">({activeSelectedCount})</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      data-testid="batch-validate-button"
+                      disabled={isBusy || activeSelectedCount === 0}
+                      onClick={() => {
+                        void handleBatchValidateSelected();
+                      }}
+                      aria-label="Batch validate selected queue items"
+                    >
+                      Batch Validate
+                      <span className="ml-1 tabular-nums">({activeSelectedCount})</span>
+                    </Button>
+                  </div>
+                </div>
+                <div className="space-y-2" role="listbox" aria-label="Queue items">
+                  {pendingFiles.map((file, index) => {
+                    const focused = index === safeQueueFocusIndex;
+                    const selected = selectedPendingIds.has(file.id);
+                    return (
+                      <Card
+                        key={file.id}
+                        role="option"
+                        aria-selected={focused}
+                        data-testid={`queue-item-${index}`}
+                        className={`p-4 cursor-pointer dark:border-gray-700 ${
+                          focused
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-950 ring-2 ring-blue-500'
+                            : 'bg-white dark:bg-gray-800'
+                        }`}
+                        onClick={() => focusQueueItem(index)}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <input
+                              type="checkbox"
+                              className="h-4 w-4 shrink-0"
+                              data-testid={`queue-select-${index}`}
+                              checked={selected}
+                              onClick={(e) => e.stopPropagation()}
+                              onChange={() => {
+                                setSelectedPendingIds((prev) =>
+                                  toggleQueueSelection(prev, file.id),
+                                );
+                              }}
+                              aria-label={`Select ${file.name} for batch actions`}
+                            />
+                            <FileText
+                              className="w-5 h-5 shrink-0 text-blue-500 dark:text-blue-400"
+                              aria-hidden="true"
+                            />
+                            <div className="min-w-0">
+                              <p className="truncate text-base font-medium text-gray-900 dark:text-white">
+                                {file.name}
+                              </p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                {file.content.split('\n').length} line(s)
+                                {focused ? ' · focused' : ''}
+                              </p>
+                            </div>
                           </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removePendingFile(file.id);
+                            }}
+                            className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
+                            aria-label={`Remove ${file.name} from queue`}
+                          >
+                            <X
+                              className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                              aria-hidden="true"
+                            />
+                          </Button>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removePendingFile(file.id)}
-                          className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-red-500"
-                          aria-label={`Remove ${file.name} from queue`}
-                        >
-                          <X
-                            className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </Button>
-                      </div>
-                    </Card>
-                  ))}
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -2171,20 +2580,24 @@ export function FileConverter({
         </div>
       </div>
 
-      {/* Database Upload Dialog */}
-      <DatabaseUploadDialog
-        convertedFiles={convertedFiles}
-        isOpen={isUploadDialogOpen}
-        onClose={() => setIsUploadDialogOpen(false)}
-      />
+      {/* Database Upload Dialog — gated with destinations UI (EV-042 / #897; restore #898) */}
+      {isOperatorDisseminationDestinationsEnabled() ? (
+        <DatabaseUploadDialog
+          convertedFiles={convertedFiles}
+          isOpen={isUploadDialogOpen}
+          onClose={() => setIsUploadDialogOpen(false)}
+        />
+      ) : null}
 
-      <DisseminationDrawer
-        open={isDisseminationOpen}
-        onOpenChange={setIsDisseminationOpen}
-        iwxxmXml={convertedFiles[0]?.convertedContent}
-        tacText={manualInput || undefined}
-        product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
-      />
+      {isOperatorDisseminationDestinationsEnabled() ? (
+        <DisseminationDrawer
+          open={isDisseminationOpen}
+          onOpenChange={setIsDisseminationOpen}
+          iwxxmXml={convertedFiles[0]?.convertedContent}
+          tacText={manualInput || undefined}
+          product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
+        />
+      ) : null}
 
       {/* User Preferences Dialog */}
       <UserPreferencesDialog

@@ -505,6 +505,28 @@ Encoding: **msgspec** request Struct validation + response encode; thin pydantic
 aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
 `METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 / H6′ for UJ-027–030).
 
+### S050 / EV-042 — Operator UI destinations hidden
+
+Operator Dissemination drawer / Convert&Send destination path is **UI-hidden** (UJ-053).
+These `/dissemination/*` routes remain for **harness/tests** until [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898) restores destinations. No API deletion this cycle.
+
+## F33 Secure mass ingest (S050 / EV-042 / #897)
+
+### `POST /api/v1/ingest/mass`
+
+| Field | Notes |
+|-------|-------|
+| Auth | **Required** JWT (Bearer). Unauthenticated → 401/403. |
+| Request | `multipart/form-data`: one or more `files`, and/or a single `.zip`; optional folder client expands to files before upload |
+| Caps | ≤**200** files; ≤**5 MiB** each; ≤**50 MiB** total unzipped |
+| Guards | MIME/extension allowlist (text/TAC); reject binaries/executables; **content sniff**; **zip-bomb** / excessive nesting reject |
+| Success | Per-file results: accepted path/name, rejected reason; items queued for convert/validate client-side |
+| Failure | 413 over caps; 400 sniff/zip reject; 401/403 auth |
+
+Guest **small** multi-file convert upload (existing convert multipart) is unchanged and remains public if previously public. Mass folder/zip path is auth-only.
+
+CORS: no new origins; H4–H5 for UJ-051.
+
 ## Error Format
 
 ```json

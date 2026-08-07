@@ -3,13 +3,125 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-042 — Remove dissemination destinations + operator throughput + mass ingest (S050)
+
+**Session**: S050-remove-db-tools-operator-throughput  
+**Features**: deepen **F7 / F16–F19**; new **F33**  
+**Started**: 2026-08-07  
+**Branch**: `evolve/EV-042-remove-db-tools-operator-throughput`  
+**Status**: in_progress — 01-requirements  
+**Issues**: [#897](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/897) epic;
+[#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898) follow-up (restore all destinations)  
+**Prior**: S049 / EV-041 completed (PR #895 merged @ `fa5b2140`)  
+**Corpus**: [Corpus: product §F7], [Corpus: product §F16], [Corpus: product §F33],
+[Corpus: product §F17–F19], [Corpus: system-spec], [Corpus: api], [Corpus: tests],
+[Corpus: adr/ADR-021], [Corpus: adr/ADR-029], [Corpus: adr/ADR-030]
+
+### Scope (Phase 0 — locked 2026-08-07; **R2 amend**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Clear EV-041? | **Merge #895 then close** (user option 2) |
+| Q2 | ambiguity | What to remove from UI? | **R2 amend**: hide **all** Dissemination destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS); leave `DatabaseUploadDialog`; APIs retained for harness |
+| Q2b | decision | 11-verify-impl flag | **Also hide Upload to Database / DatabaseUploadDialog** (user 2026-08-07); restore with #898 |
+| Q3 | decision | Cycle ship bar? | Remove destinations UI + churn UX + secure mass file/folder ingest (F33) |
+| Q4 | decision | Churn UX? | **Queue+keyboard and batch convert/validate** (disseminate batch **N/A** while destinations hidden) |
+| Q5 | decision | Mass ingest shape? | **Multi-file + folder** (`webkitdirectory` / zip) with progress + per-file errors |
+| Q6 | decision | Mass ingest security? | Auth-gated + size/count/MIME caps + reject binaries/executables + **content sniff / zip-bomb guards** |
+| Q7 | ambiguity | Backend sinks? | **UI hide only** — backend still accepts sink types for tests/harness |
+| Q8 | decision | Preset? | **Standard** |
+| Q9 | decision | Improvements pack? | Keyboard shortcuts + mass progress toast; keep export multi-select for convert outputs; **no** default-sink polish |
+| Q10 | decision | UI preview? | **Yes** — local `http://localhost:18000` |
+
+### 01-requirements intake (locked 2026-08-07)
+
+| ID | Topic | Decision |
+|----|-------|----------|
+| R1 | Mass-ingest caps | **≤200 files / request, ≤5 MiB each, ≤50 MiB total unzipped** |
+| R2 | Dissemination UI | **Hide all sinks** (DB + F17–F19); drawer/send destinations gone |
+| R3 | Who can mass-ingest | **Auth** for folder/zip + mass path; guests keep existing small multi-file |
+| R4 | Batch disseminate | **N/A** this cycle (no operator destinations) |
+
+### Preset
+
+**Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03/06 unless needed)
+
+### Improvements pack (in scope)
+
+- Keyboard shortcuts for convert / validate
+- Progress toast for mass jobs
+- Keep export multi-select for convert outputs (no sink send)
+- ~~Default drawer sink~~ — **removed** (no destinations)
+
+### Proceed gate (Phase 0→1 — locked 2026-08-07)
+
+| ID | Decision |
+|----|----------|
+| D-S050-proceed | **Allocate F16 deepen + F7 deepen + new F33**; F17–F19 UI-hide via R2 amend |
+
+### Fn allocation
+
+| Fn | Role | Status |
+|----|------|--------|
+| F16–F19 deepen | UI-hide all drawer sinks; API retained | deepen |
+| F7 deepen | Queue+keyboard + batch convert/validate + improvements | deepen |
+| **F33** | Secure mass file/folder ingest | **Planned** |
+
+### Impacted docs / packages
+
+| Artifact | Delta |
+|----------|-------|
+| [Corpus: product] | F33 ACs; F7/F16–F19 deepen notes |
+| [Corpus: journeys] | UJ-051..053 |
+| [Corpus: system-spec] | Destinations UI policy; mass ingest |
+| [Corpus: api] | Mass upload caps + auth |
+| [Corpus: tests] | TC-F33-*; TC-EV042-*; H4–H5 |
+| [Corpus: tech-spec] | Upload limit env/config |
+| `apps/frontend` | Hide Convert&Send / drawer destinations; churn; F33 UI |
+| `apps/backend` | Sniff/zip-bomb; auth on mass path |
+| `packages/dissemination` | Keep adapters |
+
+### Acceptance (locked — **D-S050-ac** = user option 1, 2026-08-07)
+
+| AC | Criterion |
+|----|-----------|
+| AC1 | Operator UI has **no** Dissemination sink chooser / Convert&Send destination path (F16–F19 UI hidden) |
+| AC2 | Backend dissemination preflight/send still works in harness/tests (UI-hide only) |
+| AC3 | Result queue + keyboard next/prev + Enter convert/validate; multi-select batch convert/validate |
+| AC4 | F33: auth required for folder/zip mass ingest; caps **200 / 5 MiB / 50 MiB**; sniff + zip-bomb reject; progress + per-file errors |
+| AC5 | Guests retain existing small multi-file upload (if already allowed); mass path returns clear 401/403 without JWT |
+| AC6 | UJ-051..053 + TC-F33-001..006 + H4–H5 mapped in test-plan |
+| AC7 | #898 tracks restore of **all** destinations (not DB-only) |
+
+### Gate A (02) — PASS 2026-08-07
+
+| ID | Decision |
+|----|----------|
+| D-S050-C1 | Dedicated mass-route body limit; keep global `MAX_REQUEST_BODY_BYTES` = 2 MiB |
+| D-S050-gate-a | Gate A PASS → 04-tech-plan |
+
+### Tech plan (04) — approved 2026-08-07
+
+| ID | Decision |
+|----|----------|
+| D-S050-04-tech | Accept defaults: server zip unpack; client folder expand; F31 JWT; no new ADR; mass rate limit 10/min; stdlib zipfile |
+| D-S050-04-plan | Execution plan M1–M4 approved → Gate B → 07-build |
+
+### Gate B (05) — PASS 2026-08-07
+
+| ID | Decision |
+|----|----------|
+| D-S050-gate-b | Gate B PASS → 07-build M1 |
+
+---
+
 ## Cycle EV-041 — Operator UI runbook + source-centric PPT pack (S049)
 
 **Session**: S049-operator-sources-briefing  
 **Features**: deepen **F7** narrative (no new Fn)  
 **Started**: 2026-08-06  
 **Branch**: `evolve/EV-041-operator-sources-briefing`  
-**Status**: in_progress  
+**Status**: **completed** — PR [#895](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895) merged @ `fa5b2140`  
 **Prior**: S048 / EV-040 completed  
 **Corpus**: [Corpus: product §F7], [Corpus: system-spec], [Corpus: tech-spec];
 path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],

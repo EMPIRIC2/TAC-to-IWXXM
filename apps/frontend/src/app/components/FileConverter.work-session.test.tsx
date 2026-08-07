@@ -29,6 +29,7 @@ vi.mock('/utils/supabase/logout', () => ({
 
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: vi.fn(),
+  massIngestFiles: vi.fn(),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
   lintTac: vi.fn().mockResolvedValue({
     ok: true,
@@ -149,7 +150,7 @@ describe('FileConverter F5 workflow', () => {
     );
 
     expect(screen.getByTestId('convert-button')).toBeDisabled();
-    expect(screen.getByTestId('convert-and-send-button')).toBeDisabled();
+    expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
     expect(screen.getByText(/read-only/i)).toBeInTheDocument();
   });
 
@@ -193,7 +194,7 @@ describe('FileConverter F5 workflow', () => {
     };
 
     invokeReactClick(screen.getByTestId('convert-button'));
-    invokeReactClick(screen.getByTestId('convert-and-send-button'));
+    expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
 
     expect(mockConvert).not.toHaveBeenCalled();
     expect(mockUpload).not.toHaveBeenCalled();
@@ -232,7 +233,7 @@ describe('FileConverter F5 workflow', () => {
     });
   });
 
-  it('skips upload when Convert&Send gets partial conversion errors', async () => {
+  it.skip('skips upload when Convert&Send gets partial conversion errors — restore #898', async () => {
     const user = userEvent.setup();
     mockConvert.mockResolvedValueOnce({
       results: [{ iwxxm_xml: '<iwxxm/>', name: 'manual.txt' }],
@@ -255,7 +256,7 @@ describe('FileConverter F5 workflow', () => {
     });
   });
 
-  it('persists failed status when Convert&Send conversion returns no files', async () => {
+  it.skip('persists failed status when Convert&Send conversion returns no files — restore #898', async () => {
     const user = userEvent.setup();
     mockConvert.mockResolvedValueOnce({
       results: [],
@@ -277,7 +278,7 @@ describe('FileConverter F5 workflow', () => {
     });
   });
 
-  it('persists WIP after successful Convert&Send', async () => {
+  it.skip('persists WIP after successful Convert&Send — restore #898', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter />);
 
@@ -294,7 +295,7 @@ describe('FileConverter F5 workflow', () => {
     });
   });
 
-  it('keeps WIP when Convert&Send upload fails', async () => {
+  it.skip('keeps WIP when Convert&Send upload fails — restore #898', async () => {
     const user = userEvent.setup();
     mockUpload.mockRejectedValueOnce(new Error('upload failed'));
 

@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-05 (S046 / EV-038 UJ-050 IWXXM version Latest/Previous; prior UJ-049)
+> **Last updated**: 2026-08-07 (S050 / EV-042 UJ-051..053 mass ingest + destinations hide + churn; prior UJ-050)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -42,10 +42,10 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
-| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose) |
-| UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′ |
-| UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3** (live BYOC) |
-| UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3** |
+| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose); **operator UI deferred EV-042** — harness only until #898 |
+| UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′; **operator UI deferred EV-042** until #898 |
+| UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3**; **operator UI deferred EV-042** until #898 |
+| UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3**; **operator UI deferred EV-042** until #898 |
 | UJ-031 | TAF + SPECI lint / convert→validate golden | UI / API / CI | F20 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-032 | Load golden example → convert / validate | apps/frontend | F7 (#780) | T0 / T2 / H4–H5 |
 | UJ-033 | Privacy notice + settings + GPC | apps/frontend | F22 | T0 / T2 / H4–H5 |
@@ -67,6 +67,9 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-048 | Ops: DOKS cutover smoke (API + FE + worker) | DOKS / ops | F30 | T3 / H0–H5 |
 | UJ-049 | VONA lint / convert→validate + F7 product surface | apps/frontend / API / CI | F32 (+F6/F7/F12) | T0 / T2 / **T3** / H4–H5 |
 | UJ-050 | IWXXM version picker Latest / Previous labels | apps/frontend | F4+F7 deepen (EV-038 / #854) | T2 / **T3** / H4–H5 |
+| UJ-051 | Secure mass file/folder ingest (auth + caps) | apps/frontend | F33 | T2 / **T3** / H4–H5 |
+| UJ-052 | Operator queue + keyboard/batch convert·validate churn | apps/frontend | F7 deepen (EV-042) | T2 / **T3** / H4–H5 |
+| UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -1415,6 +1418,69 @@ aligned; local non-deployed UI preview at M2 (`D-S046-mplan` Q2=1).
 **Source**: #854 · #851 ·
 [RELEASE_LINE_STAFF_GUIDE.md](domain/iwxxm/RELEASE_LINE_STAFF_GUIDE.md) ·
 [Context: iwxxm-corpus-residuals-846](context/iwxxm-corpus-residuals-846.md)
+
+---
+
+### UJ-051: Secure Mass File/Folder Ingest (S050 / EV-042 / F33)
+
+**Actor**: Authenticated operator
+
+**Goal**: Upload many TAC text files via multi-select and folder/zip, with progress and
+per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
+
+**Feature**: **F33** — [#897](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/897)
+
+**Steps**:
+
+1. Sign in; open workbench mass-ingest control (folder and/or zip).
+2. Select ≤200 files totaling ≤50 MiB unzipped (each ≤5 MiB); see progress toast.
+3. Per-file failures (binary, oversize, sniff reject) do not abort the rest.
+4. Successful items appear in the result/work queue for convert/validate (UJ-052).
+5. Without JWT, mass path is denied with a clear error; guest small multi-file (if any) unchanged.
+
+**Acceptance**: TC-F33-001..006; caps R1; auth R3.
+
+**Browser wiring**: Same API origin; new mass-ingest route(s) require Authorization.
+
+---
+
+### UJ-052: Operator Queue + Keyboard/Batch Convert·Validate (S050 / EV-042)
+
+**Actor**: Operator (guest or logged-in)
+
+**Goal**: Churn through reports quickly via queue navigation and batch convert/validate
+(no dissemination destinations this cycle).
+
+**Feature**: **F7** deepen — EV-042 / #897
+
+**Steps**:
+
+1. After convert or mass ingest, see a sticky result/queue list.
+2. Use next/prev keyboard shortcuts; Enter triggers convert or validate for the focused item.
+3. Multi-select items → batch convert and/or batch validate; progress visible.
+4. Confirm Convert&Send / Disseminate destination UI is absent (UJ-053).
+
+**Acceptance**: TC-EV042-003..004.
+
+---
+
+### UJ-053: No Operator Dissemination Destinations (S050 / EV-042)
+
+**Actor**: Operator
+
+**Goal**: Dissemination drawer sink chooser, Convert&Send destination path, and
+**Upload to Database** / `DatabaseUploadDialog` are not available (DB + WIS2/EDIS/AMHS/SWIM/AFS).
+Backend APIs remain for harness until #898.
+
+**Feature**: **F16–F19** deepen — EV-042 / #897; restore [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898)
+
+**Steps**:
+
+1. Open workbench; confirm no sink chooser / Convert&Send / Upload to Database.
+2. Convert and validate still work (UJ-001/002/052).
+3. Harness/tests may still call `/api/v1/dissemination/*` outside the operator UI.
+
+**Acceptance**: TC-EV042-001..002.
 
 ---
 

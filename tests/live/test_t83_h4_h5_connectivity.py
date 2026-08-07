@@ -60,8 +60,35 @@ def test_t83_h4_cors_preflight_convert() -> None:
     assert "POST" in allow_methods, allow_methods
 
 
+def test_t83_h4_cors_preflight_mass_ingest() -> None:
+    """H4 — OPTIONS preflight for /api/v1/ingest/mass (F33 / UJ-051)."""
+    api, origin = _urls()
+    api_headers = live_api_host_headers()
+    with httpx.Client(timeout=45.0) as client:
+        client.get(f"{api}/health", headers=api_headers)
+        response = client.options(
+            f"{api}/api/v1/ingest/mass",
+            headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "Authorization, Content-Type",
+                **api_headers,
+            },
+        )
+    assert response.status_code in (200, 204), response.text
+    allow_origin = response.headers.get("access-control-allow-origin", "")
+    assert allow_origin in (origin, "*"), (
+        f"Expected CORS allow-origin {origin!r} or '*', got {allow_origin!r}"
+    )
+    allow_methods = response.headers.get("access-control-allow-methods", "").upper()
+    assert "POST" in allow_methods or allow_methods == "*", allow_methods
+
+
 def test_t83_h5_frontend_config_json_api_base() -> None:
-    """H5 — staging /config.json api.baseUrl matches expected API base."""
+    """H5 — staging /config.json api.baseUrl matches expected API base.
+
+    F33 mass ingest uses the same ``api.baseUrl`` (no separate mass URL knob).
+    """
     _api, _frontend = _urls()
     expected = expected_api_base_url()
     fetch_base = live_frontend_fetch_base()
@@ -76,8 +103,9 @@ def test_t83_h5_frontend_config_json_api_base() -> None:
     assert actual == expected, (
         f"config.json api.baseUrl mismatch: expected {expected!r}, got {actual!r}"
     )
-    # Sanity: parseable JSON with expected keys
+    # Sanity: parseable JSON with expected keys; no separate mass-ingest URL.
     assert "api" in cfg
+    assert "massIngestUrl" not in cfg.get("api", {})
     assert json.dumps(cfg)
 
 

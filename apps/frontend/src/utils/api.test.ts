@@ -12,6 +12,7 @@ import {
   fetchLintIssueCatalog,
   ingestCollect,
   lintTac,
+  massIngestFiles,
   type ConversionResponse,
   type HealthResponse,
   type ApiError,
@@ -915,6 +916,73 @@ describe('API Utils', () => {
         accessToken: 'tok',
       });
       expect(global.fetch).toHaveBeenCalled();
+    });
+  });
+
+  describe('massIngestFiles (F33 / EV-042)', () => {
+    it('requires access token and at least one file', async () => {
+      await expect(
+        massIngestFiles({ files: [new File(['x'], 'a.tac')], accessToken: '  ' }),
+      ).rejects.toThrow(/Sign in required/);
+      await expect(massIngestFiles({ files: [], accessToken: 'tok' })).rejects.toThrow(
+        /At least one file/,
+      );
+    });
+
+    it('posts multipart to /ingest/mass and returns results', async () => {
+      mockFetchResponse({
+        accepted_count: 1,
+        rejected_count: 0,
+        results: [
+          {
+            name: 'a.tac',
+            accepted: true,
+            reason: null,
+            size_bytes: 10,
+            content: 'METAR',
+          },
+        ],
+      });
+      const file = new File(['METAR'], 'a.tac', { type: 'text/plain' });
+      const result = await massIngestFiles({
+        files: [file],
+        accessToken: 'jwt-f33',
+      });
+      expect(result.accepted_count).toBe(1);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/ingest/mass'),
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            Authorization: 'Bearer jwt-f33',
+          }),
+        }),
+      );
+    });
+
+    it('throws on mass ingest HTTP error', async () => {
+      mockFetchResponse({ detail: { message: 'too many files' } }, false, 413);
+      await expect(
+        massIngestFiles({
+          files: [new File(['x'], 'a.tac')],
+          accessToken: 'tok',
+        }),
+      ).rejects.toThrow(/too many files/);
+    });
+
+    it('throws when mass ingest error body is not JSON', async () => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Server Error',
+        json: vi.fn().mockRejectedValueOnce(new Error('not json')),
+      });
+      await expect(
+        massIngestFiles({
+          files: [new File(['x'], 'a.tac')],
+          accessToken: 'tok',
+        }),
+      ).rejects.toThrow(/HTTP 500|Mass ingest failed|Server Error/);
     });
   });
 });

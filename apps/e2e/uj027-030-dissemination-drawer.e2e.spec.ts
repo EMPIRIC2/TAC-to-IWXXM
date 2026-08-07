@@ -3,11 +3,18 @@
  *
  * Spec: docs/test-plan.md TC-F16..F19 + H6′; docs/user-journeys.md UJ-027–030.
  * Live BYOC (TC-F17-002 / TC-F18-002) remains cycle-close only — stubbed here.
+ *
+ * EV-042 / #897: operator Disseminate UI hidden — file skipped until #898.
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fillManualTac, openConverterForE2e } from './playwright-e2e-helpers';
+
+test.skip(
+  true,
+  'EV-042: OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; restore operator UJ-027–030 in #898',
+);
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
 const IWXXM_XML =

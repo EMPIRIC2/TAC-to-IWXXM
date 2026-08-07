@@ -86,3 +86,38 @@ async def test_staging_cors_preflight_work_sessions_patch() -> None:
     assert response.status_code in (200, 204), response.text
     allow_methods = response.headers.get("access-control-allow-methods", "").upper()
     assert "PATCH" in allow_methods, allow_methods
+
+
+@pytest.mark.asyncio
+async def test_staging_cors_preflight_mass_ingest_post() -> None:
+    """H4 — F33 mass ingest POST preflight from frontend origin (UJ-051 / EV-042)."""
+    warn_deprecated_env()
+    api_url = live_api_url()
+    origin = live_frontend_url()
+    if not api_url or not origin:
+        pytest.skip(
+            "LIVE_API_URL and LIVE_FRONTEND_URL not set — skip live H4 connectivity"
+        )
+
+    import httpx
+
+    headers = {
+        "Origin": origin,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "Authorization, Content-Type",
+        **live_api_host_headers(),
+    }
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.options(
+            f"{api_url}/api/v1/ingest/mass",
+            headers=headers,
+        )
+
+    assert response.status_code in (200, 204), response.text
+    allow_origin = response.headers.get("access-control-allow-origin", "")
+    assert allow_origin in (origin, "*"), (
+        f"Expected CORS allow-origin {origin!r} or '*', got {allow_origin!r}"
+    )
+    allow_methods = response.headers.get("access-control-allow-methods", "").upper()
+    assert "POST" in allow_methods or allow_methods == "*", allow_methods
