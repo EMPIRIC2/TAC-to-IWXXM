@@ -53,7 +53,11 @@ _WX_STANDALONE = frozenset({"TS", "SS", "DS", "SQ", "FC", "PO", "BR", "FG", "FU"
 _WX_SPECIAL = frozenset({"UP", "//"})
 _RVR = re.compile(r"^R\d{2}")
 # R8: RVR runway visual range (simplified ICAO/US shapes).
-_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT|N)?$")
+# ICAO tendency U|D|N may follow the value (and optional FT for US). EV-040: R12/1000U
+# from WMO A3-1 is valid — prior pattern only allowed bare N/FT, not U/D.
+_RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?[UDN]?$")
+# WMO AHL heading: T1T2A1A2ii CCCC YYGGgg [BBB] — YYGGgg must not be treated as visibility.
+_AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
 _WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
 _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
@@ -741,8 +745,10 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
         issues.append(order_issue)
 
     # Visibility lives before RMK — do not treat PK WND dddss/tt digits as vis (R2/R5).
+    # Strip WMO AHL heading lines so YYGGgg (e.g. 121200) is not INVALID_VISIBILITY (EV-040).
     rmk_at = core.find("RMK")
     vis_core = core[:rmk_at] if rmk_at >= 0 else core
+    vis_core = "\n".join(line for line in vis_core.splitlines() if not _AHL_HEADING_LINE.match(line.strip()))
     bad_vis = list(_VIS_BAD.finditer(vis_core))
     if bad_vis:
         for match in bad_vis:

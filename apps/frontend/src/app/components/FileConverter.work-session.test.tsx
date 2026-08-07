@@ -120,7 +120,7 @@ describe('FileConverter F5 workflow', () => {
   it('shows draft saved indicator when authenticated (T4.11)', () => {
     render(<FileConverter />);
     expect(screen.getByTestId('autosave-indicator')).toHaveTextContent('Draft saved');
-    expect(screen.getByTestId('new-metar-button')).toBeInTheDocument();
+    expect(screen.getByTestId('new-tac-button')).toBeInTheDocument();
   });
 
   it('disables convert buttons for finished sessions (F5-R35)', () => {
@@ -205,9 +205,9 @@ describe('FileConverter F5 workflow', () => {
 
     render(<FileConverter onNewMetar={onNewMetar} />);
 
-    await user.click(screen.getByTestId('new-metar-button'));
+    await user.click(screen.getByTestId('new-tac-button'));
     expect(onNewMetar).toHaveBeenCalled();
-    expect(mockToast.info).toHaveBeenCalledWith('Starting a new METAR draft');
+    expect(mockToast.info).toHaveBeenCalledWith('Starting a new TAC draft');
   });
 
   it('persists failed status when convert returns partial errors', async () => {

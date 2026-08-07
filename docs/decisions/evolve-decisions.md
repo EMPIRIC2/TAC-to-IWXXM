@@ -3,6 +3,52 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-040 — Workbench lint UX + examples + prefs (S048)
+
+**Session**: S048-workbench-lint-ux  
+**Features**: deepen **F7 / F10 / F15** (no new Fn)  
+**Started**: 2026-08-06  
+**Completed**: 2026-08-06  
+**Branch**: `evolve/EV-040-workbench-lint-ux`  
+**Status**: completed  
+**PR**: [#893](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893) **merged**  
+**Issues**: [#894](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/894) closed under [#840](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/840)  
+**Close**: **D-S048-close=1,1,1** — Merge #893; file+close #894 under #840; stop  
+**Prior**: S047 / EV-039 completed  
+**Corpus**: [Corpus: product §F7/F10/F15], [Corpus: api], [Corpus: tests], [Corpus: journeys], [Corpus: adr/ADR-028]
+
+### Scope (Phase 0 — locked 2026-08-06; plan approve + chat → **D-S048-open**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Session? | Open **S048** → **EV-040** (feature / Standard) |
+| Q2 | decision | Example lint fails? | **False positives** — note + fix (RVR tendency; AHL YYGGgg) |
+| Q3 | decision | Prefs + examples? | Prefs → name + extension; official AHL + Collect; F22 untouched |
+| Q4 | decision | UI preview? | **Yes** — non-deployed local |
+
+### False-positive notes
+
+| Fixture | Code | Verdict | Disposition |
+|---------|------|---------|-------------|
+| WMO A3-1 `R12/1000U` | `INVALID_RVR` | FP | Extend `_RVR_OK` for tendency U\|D\|N |
+| AHL `SAUS31 KZNY 121200` | `INVALID_VISIBILITY` | FP | Skip AHL heading before vis scans |
+
+### Preset
+
+**Standard** — `00→16→01→02→04→05→07→08→09→10→11→12→13` (skip 03, 06)
+
+### Acceptance (locked from approved plan — **D-S048-ac**)
+
+| AC | Criterion |
+|----|-----------|
+| AC1 | Lint console emits one line per issue (no `+N more` truncation) |
+| AC2 | Convert / Convert&Send does not clear manual TAC input |
+| AC3 | New TAC label; action strip below header, above selects, above bench |
+| AC4 | UserPreferences slimmed to output name + extension (F22 Privacy unchanged) |
+| AC5 | Examples include official-provenanced AHL bulletin + IWXXM Collect |
+| AC6 | Lint catalog (MD/JSON/API/FE) shows WMO/ICAO/IWXXM source attribution |
+| AC7 | A3-1 and AHL demo lint `ok=True` for errors after FP fixes; FPs logged |
+
 ## Cycle EV-039 — SQL ingest live e2e + teardown (S047)
 
 **Session**: S047-sql-ingest-live-e2e  

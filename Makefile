@@ -94,7 +94,8 @@ catalog-regen:
 
 catalog-check: catalog-regen
 	@git diff --quiet -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json \
-		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json; exit 1)
+		packages/tac-validate/src/tac_validate/data/catalog_attribution.json \
+		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json packages/tac-validate/src/tac_validate/data/catalog_attribution.json; exit 1)
 
 # F15 — hard-fail on severity= literals in rule modules (T2.2a / E11-32)
 issue-registry-guard:

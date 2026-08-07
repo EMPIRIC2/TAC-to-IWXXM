@@ -165,37 +165,39 @@ export function useLiveWorkbenchAssist({
         setDecodeSummary(decodeResult.summary ?? '');
 
         const summaryLevel = lintResult.ok ? 'info' : 'warn';
-        const issuePreview = lintResult.issues
-          .slice(0, 3)
-          .map((i) => {
-            const code = i.code ? `[${i.code}] ` : '';
-            return `${code}${i.message}`;
-          })
-          .join('; ');
-        const more =
-          lintResult.issues.length > 3
-            ? ` (+${lintResult.issues.length - 3} more)`
-            : '';
         const nextLines: LiveWorkbenchConsoleLine[] = [
           {
             level: summaryLevel,
             source: 'lint-tac',
             message: lintResult.ok
               ? `ok (${lintResult.issues.length} messages)`
-              : lintResult.issues.length === 0
-                ? '0 issue(s)'
-                : `${lintResult.issues.length} issue(s): ${issuePreview}${more}`,
+              : `${lintResult.issues.length} issue(s)`,
             at: Date.now(),
           },
         ];
+        // EV-040 / F10: one console line per issue (no truncated "+N more" summary).
         for (const issue of lintResult.issues) {
+          const code = issue.code ? `[${issue.code}] ` : '';
+          const level =
+            issue.severity === 'error'
+              ? 'error'
+              : issue.severity === 'warning' || issue.severity === 'warn'
+                ? 'warn'
+                : 'info';
           if (issue.code === 'MISSING_TERMINATOR' && fixByCode.has('add_terminator')) {
             nextLines.push({
               level: 'info',
               source: 'lint-tac',
-              message: issue.message,
+              message: `${code}${issue.message}`,
               at: Date.now(),
               action: { id: 'add_terminator', label: 'Add `=`' },
+            });
+          } else {
+            nextLines.push({
+              level,
+              source: 'lint-tac',
+              message: `${code}${issue.message}`,
+              at: Date.now(),
             });
           }
         }

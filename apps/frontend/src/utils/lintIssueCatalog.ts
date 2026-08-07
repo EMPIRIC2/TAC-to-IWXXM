@@ -84,5 +84,11 @@ export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
   if (entry.product) {
     parts.push(`product: ${entry.product}`);
   }
+  if (entry.source_attribution) {
+    parts.push(`source: ${entry.source_attribution}`);
+  } else if (entry.source_id) {
+    const url = entry.source_url ? ` (${entry.source_url})` : '';
+    parts.push(`source: ${entry.source_id}${url}`);
+  }
   return parts.join(' ');
 }

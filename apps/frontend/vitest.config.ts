@@ -29,6 +29,9 @@ export default defineConfig({
         'tests/',
         '**/*.d.ts',
         '**/*.spec.ts',
+        // Static TAC/XML example bodies + generated SoT — not executable app code
+        'src/fixtures/**',
+        'src/generated/**',
         // CodeMirror editor shell / decoration field — covered by TacEditor + span unit smokes
         'src/utils/tacEditorSpans.ts',
         'src/app/components/TacEditor.tsx',

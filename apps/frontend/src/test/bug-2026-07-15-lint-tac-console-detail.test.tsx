@@ -71,10 +71,38 @@ describe('BUG-2026-07-15 descriptive lint-tac console', () => {
 
     await flushDebouncedAssist();
 
-    const last = result.current.consoleLines.at(-1);
-    expect(last?.source).toBe('lint-tac');
-    expect(last?.message).toContain('1 issue(s):');
-    expect(last?.message).toMatch(/Unrecognized group fjgfjf|TAC_PARSE/);
-    expect(last?.message).not.toBe('1 issue(s)');
+    const lines = result.current.consoleLines.filter((l) => l.source === 'lint-tac');
+    expect(lines.some((l) => l.message === '1 issue(s)')).toBe(true);
+    expect(
+      lines.some((l) => /Unrecognized group fjgfjf|TAC_PARSE/.test(l.message)),
+    ).toBe(true);
+    expect(lines.every((l) => !l.message.includes('more)'))).toBe(true);
+  });
+
+  it('EV-040: emits one console line per lint issue (no +N more truncation)', async () => {
+    lintTac.mockResolvedValueOnce({
+      ok: false,
+      issues: [
+        { severity: 'error', code: 'A', message: 'first', start: 0, end: 1 },
+        { severity: 'info', code: 'B', message: 'second', start: 2, end: 3 },
+        { severity: 'info', code: 'C', message: 'third', start: 4, end: 5 },
+        { severity: 'info', code: 'D', message: 'fourth', start: 6, end: 7 },
+      ],
+      fixes: [],
+    });
+    const { result } = renderHook(() =>
+      useLiveWorkbenchAssist({
+        text: 'METAR KJFK 010000Z 00000KT 10SM SKC 10/00 A2992=',
+        product: 'METAR',
+        accessToken: 'tok',
+        enabled: true,
+      }),
+    );
+    await flushDebouncedAssist();
+    const detail = result.current.consoleLines.filter(
+      (l) => l.source === 'lint-tac' && l.message.includes('['),
+    );
+    expect(detail).toHaveLength(4);
+    expect(detail.map((l) => l.message).join('\n')).not.toMatch(/\(\+\d+ more\)/);
   });
 });

@@ -3,187 +3,166 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 47
-evolve_cycle_counter: 39
-active_session:
-  id: S047-sql-ingest-live-e2e
+session_counter: 48
+evolve_cycle_counter: 40
+active_session: null
+sessions:
+- id: S048-workbench-lint-ux
   type: feature
-  intent: "Deepen F16 — local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload; teardown for integration+e2e+local. No new Fn."
-  status: in_progress
-  started_at: "2026-08-06"
-  started: "2026-08-06"
-  branch: evolve/EV-039-sql-ingest-live-e2e
-  branch_base: main@0d8ce885
-  artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
+  intent: Workbench lint UX + prefs + official AHL/Collect + catalog source; fix example lint FPs
+  status: completed
+  completed: '2026-08-06'
+  completed_at: '2026-08-06'
+  started_at: '2026-08-06'
+  started: '2026-08-06'
+  branch: evolve/EV-040-workbench-lint-ux
+  branch_base: main@fea30aba
+  branch_note: 'CLOSED — EV-040 completed; PR #893 MERGED (merge SHA pending parent); #894 closed under #840; D-S048-close=1,1,1'
+  artifacts_dir: docs/sessions/S048-workbench-lint-ux/
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-039
-  current_stage: "13-deploy-smoke"
-  current_stage_note: "BLOCKED — tip CI missing on PR #891; hard stop pending user decision; 13 not completed"
-  tip_sha: cfe1236b
-  tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
+  evolve_cycle_id: EV-040
+  current_stage: 16-evolve
+  current_stage_note: "CLOSED — PR #893 merged; #894 closed; D-S048-close=1,1,1"
+  tip_sha: 5a9f28ef
+  tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
   tip_sha_pushed: true
-  tip_sha_note: "pushed tip cfe1236b — PR #891 open; GitHub Actions has not created workflow runs (check_suites only cursor app); local husky pre-push make ci passed; 13 hard-stop pending user decision"
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
-  pr_number: 891
-  pr_status: open
-  pr_title: "[EV-039] F16 SQL ingest live e2e + teardown"
-  pr_base: main
-  pr_head: evolve/EV-039-sql-ingest-live-e2e
-  prior_session: S046-iwxxm-corpus-residuals
-  prior_evolve_cycle_id: EV-038
+  tip_sha_note: 'CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894 under #840'
+  prior_session: S047-sql-ingest-live-e2e
+  prior_evolve_cycle_id: EV-039
   feature_ids: []
   deepen_feature_ids:
-  - F16
-  feature_note: "Deepen F16 — no new Fn; UI preview declined"
-  ui_preview: declined
+  - F7
+  - F10
+  - F15
+  feature_note: Deepen F7/F10/F15 — no new Fn; UI preview accepted
+  ui_preview: accepted
   context_briefs:
-  - docs/context/sql-ingest-live-e2e.md
+  - docs/context/workbench-lint-ux.md
+  github_issues: [894]
+  github_issues_closed: [894]
+  github_issues_closed_at: '2026-08-06'
+  github_issues_closed_note: 'File+close #894 under #840; D-S048-close=1,1,1'
+  parent_epic: 840
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+  pr_number: 893
+  pr_status: merged
+  pr_title: '[EV-040] Workbench lint UX + examples + prefs'
+  pr_base: main
+  pr_head: evolve/EV-040-workbench-lint-ux
+  close_decision_id: D-S048-close
+  route_status: completed
+  preset: Standard
   decisions:
-    D-S047-open: "Q1=1 Q2=1 Q3=1 Q4=1 Q5=2"
-    D-S047-open_note: "Open S047→EV-039; deepen F16 SQL ingest live e2e + teardown; Standard routing; UI preview declined (Q5=2)"
-    D-S047-ac: "1"
-    D-S047-ac_note: "AC=1 approve AC1–AC7 + manifest; close 01; start 02-verify-plan (Gate A)"
-    D-S047-02-gate-a: "2"
-    D-S047-02-gate-a_note: "Gate A PASS — S02.M3 resolved via spec.md F16 EV-039 deepen; S02.M1/M2/M4/M5 as 04/07; close 02 → start 04-tech-plan"
-    D-S047-04: "Q1=1 Q2=1 Q3=1+3 Q4=1+2+3(local)"
-    D-S047-04_note: "Teardown down -v; async write assert; test-e2e-f16-live-sql + F16_LIVE_SQL flag; local test-live includes LIVE + all four dialects; CI opt-in / SQL Server skippable"
-    D-S047-04-plan: "1"
-    D-S047-04-plan_note: "Approve execution plan + build-plan-card as written; close 04 → 05-verify-tech"
-    D-S047-05-gate-b: "1"
-    D-S047-05-gate-b_note: "PASS; S05.M*/L1 as 07; close 05 → 07-build M1 T1.1 (06 skipped)"
-    D-S047-11: "1"
-    D-S047-11_note: "Approve AC1–AC7 (SQL Server waive OK); close 11-verify-impl → 12-verify-deploy"
-    D-S047-12: "1"
-    D-S047-12_note: "Approve checklist; push + PR; 13 after CI/CD (H4–H5 required)"
+    D-S048-open: Q1=1 Q2=investigate+note+fix-FPs Q3=1 Q4=1
+    D-S048-open_note: Open S048→EV-040; Standard; FPs noted+fix; prefs name/ext; official AHL/Collect; UI preview yes
+    D-S048-ac: '1'
+    D-S048-ac_note: Approve AC1–AC7 from plan; close 01 → 02
+    D-S048-close: "1,1,1"
+    D-S048-close_note: "Merge #893; file+close #894 under #840; stop"
   routing_plan:
   - stage: 00-context
     mode: scoped
     required: true
     status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    note: "COMPLETE — S047 open; D-S047-open locked; handoff 16-evolve"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — S048 open; D-S048-open locked
   - stage: 16-evolve
     mode: orchestrator
     required: true
-    status: in_progress
-    started: "2026-08-06"
-    completed: null
-    note: "in_progress — D-S047-12=1; 13-deploy-smoke BLOCKED (tip CI missing on PR #891; check_suites only cursor app); tip cfe1236b pushed; hard stop pending user decision; 13 NOT completed"
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: 'COMPLETE — D-S048-close=1,1,1; EV-040 closed; PR #893 merged; #894 closed under #840'
   - stage: 01-requirements
     mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    note: "COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — AC1–AC7
   - stage: 02-verify-plan
     mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: "COMPLETE — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07; reports/02-verify-plan-audit.md; tip 7970ba46; handoff 04-tech-plan"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — Gate A
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    note: skipped — no new Cursor rules
   - stage: 04-tech-plan
     mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: "COMPLETE — D-S047-04-plan=1; execution-plan + build-plan-card approved; reports/04-tech-plan.md; handoff 05-verify-tech"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — Execution plan
   - stage: 05-verify-tech
     mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    note: "COMPLETE — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; 06 skipped"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — Gate B
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    note: skipped — no new publish deps
   - stage: 07-build
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — M1 UX + M2 catalog/lint
+  - stage: 08-verify-build
     mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    tip_sha: d78e0915
-    tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
-    note: "COMPLETE — M1+M2 (T1.1–T2.5); handoff 08-verify-build"
-  - stage: 08-verify-build
-    mode: full
-    required: true
-    status: completed
-    started: "2026-08-06"
-    started_at: "2026-08-06"
-    completed: "2026-08-06"
-    completed_at: "2026-08-06"
-    overall: pass
-    note: "COMPLETE PASS — quality gates green; Docker LIVE TC-F16-LIVE-001/002/004 PASS (003 skipped QEMU); PAUSED per user after LIVE; harness fixes uncommitted; handoff 09-qa pending"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE
   - stage: 09-qa
-    mode: full
+    mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: pass_with_advisories
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
-    note: "COMPLETE PASS with advisories — report qa-report.md; handoff 11-verify-impl"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — qa-report.md
+    report: docs/sessions/S048-workbench-lint-ux/reports/qa-report.md
   - stage: 10-e2e
     mode: full
     required: true
     status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: pass
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
-    note: "COMPLETE PASS — report e2e-report.md; handoff 11-verify-impl"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — H4–H5 live; UI local preview
   - stage: 11-verify-impl
-    mode: full
+    mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: approved
-    tip_sha: 415898d0
-    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
-    note: "COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); reports/verify-impl.md; handoff 12-verify-deploy"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — verify-impl.md
+    report: docs/sessions/S048-workbench-lint-ux/reports/verify-impl.md
   - stage: 12-verify-deploy
-    mode: full
+    mode: delta
     required: true
     status: completed
-    started: "2026-08-06"
-    completed: "2026-08-06"
-    overall: approved
-    tip_sha: a5e5d89e
-    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-    report_status: approved
-    decision_id: D-S047-12
-    note: "COMPLETE — D-S047-12=1; checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet"
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — deploy-checklist approved
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-checklist.md
   - stage: 13-deploy-smoke
-    mode: full
+    mode: delta
     required: true
-    status: in_progress
-    started: "2026-08-06"
-    tip_sha: cfe1236b
-    tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
-    blocked: true
-    blocked_reason: "GitHub Actions has not created workflow runs for PR #891 (check_suites only cursor app); tip CI missing; local husky pre-push make ci passed; hard stop pending user decision"
-    note: "IN_PROGRESS BLOCKED — PR #891 open @ tip cfe1236b; tip CI missing (no GHA workflow runs); hard stop pending user decision; 13 NOT completed; H4–H5 smoke deferred"
-  route_status: in_progress
-  preset: Standard
-  preset_note: "Standard — 00→16→01→02→04→05→07→08→09→10→11→12→13; skip 03/06"
-sessions:
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: 'COMPLETE — H1–H5 PASS + CI green; D-S048-close=1,1,1; tip 5a9f28ef'
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
 - id: S046-iwxxm-corpus-residuals
   type: feature
   status: completed
@@ -10069,14 +10048,14 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e34866
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
-    tip_sha: 0ad62c92
-    tip_sha_full: 0ad62c928fc3b2de39dc42a02ec78a834be7a29b
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    tip_sha: 08c805eb
+    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
     mode: delta
-    overall: pass_with_advisories
-    report: docs/sessions/S046-iwxxm-corpus-residuals/reports/qa-report.md
-    note: 'COMPLETE — S046/EV-038 T5.2 pass_with_advisories; report qa-report.md; H4-H5→T5.4; handoff T5.3 11-verify-impl'
+    overall: pass
+    report: docs/sessions/S048-workbench-lint-ux/reports/qa-report.md
+    note: 'COMPLETE — S048/EV-040 qa-report.md pass; tip 861c5457; handoff 10-e2e/11'
     pending_commit: false
     active_milestone: M5
     active_task: T5.2
@@ -10396,19 +10375,19 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    mode: full
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    mode: delta
     overall: approved
-    note: 'COMPLETE — S047/EV-039 D-S047-11=1 AC1–AC7 MET (SQL Server waive); report verify-impl.md; overall approved; handoff 12-verify-deploy'
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
+    note: 'COMPLETE — S048/EV-040 AC1–AC7 MET; report verify-impl.md; tip 861c5457; handoff 12'
+    report: docs/sessions/S048-workbench-lint-ux/reports/verify-impl.md
     report_status: approved
-    tip_sha: 415898d0
-    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
-    tip_note: 'S047/EV-039 tip 415898d0 — 11 COMPLETE (D-S047-11=1); handoff 12-verify-deploy'
+    tip_sha: 08c805eb
+    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    tip_note: 'S048/EV-040 tip 861c5457 — 11 COMPLETE; handoff 12-verify-deploy'
     awaiting_user_decision: false
     awaiting_user_decision_note: null
-    decision_id: D-S047-11
+    decision_id: null
     decision_ids:
     - D-S047-11
     deepen_feature_ids:
@@ -10704,14 +10683,14 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e34866
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
-    tip_sha: 0ad62c92
-    tip_sha_full: 0ad62c928fc3b2de39dc42a02ec78a834be7a29b
-    mode: delta
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    tip_sha: 08c805eb
+    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    mode: full
     overall: pass
-    report: docs/sessions/S046-iwxxm-corpus-residuals/reports/e2e-report.md
-    note: 'COMPLETE — S046/EV-038 T5.2 T0 PASS; report e2e-report.md; H4-H5 pending T5.4; handoff T5.3 11-verify-impl'
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
+    note: 'COMPLETE — S048/EV-040 H4–H5 live + UI local preview; tip 861c5457; handoff 11'
     active_milestone: M5
     active_task: T5.2
     active_task_status: completed
@@ -11141,16 +11120,16 @@ stages:
     - 2026-07-14 S011/EV-008 10-e2e in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 10-e2e completed — pass_with_advisories; see reports/e2e-report.md - F7.g
     # S039 active override (duplicate-key last-wins trailer)
-    session_id: S039-doks-dns-cutover
+    session_id: S048-workbench-lint-ux
     status: completed
-    mode: ops
+    mode: full
     started: '2026-08-04'
-    completed: '2026-08-04'
-    note: 'S039 07-build largely COMPLETE — HTTP+TLS pin https://api|app.tac-to-iwxxm.com; D-S039-tls=1; D-S038-t63-waive LIFTED; handoff 13-deploy-smoke; branch evolve/EV-031-platform-independence-842; #842/#712'
+    completed: '2026-08-06'
+    note: 'COMPLETE — S048/EV-040 H4–H5 live + UI local preview; tip 861c5457; handoff 11'
     decision_refs:
     - D-S039-tls
     - D-S039-route
-    report: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
   08-verify-build:
     status: completed
     mode: delta
@@ -11931,21 +11910,21 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    mode: full
-    note: 'COMPLETE — S047/EV-039 D-S047-12=1 checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet'
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    mode: delta
+    note: 'COMPLETE — S048/EV-040 deploy-checklist approved; PR #893 open; tip 861c5457; handoff 13'
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-checklist.md
     report_status: approved
-    tip_sha: a5e5d89e
-    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-    tip_note: 'S047/EV-039 tip a5e5d89e — D-S047-12=1; push/PR then 13; tip will refresh after push'
+    tip_sha: 08c805eb
+    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    tip_note: 'S048/EV-040 tip 861c5457 — 12 COMPLETE; 13 in_progress'
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
     awaiting_user_decision: false
     awaiting_user_decision_note: null
-    decision_id: D-S047-12
+    decision_id: null
     decision_ids:
     - D-S047-12
     - D-S047-11
@@ -12221,12 +12200,13 @@ stages:
     tip_note: '12 signed off awaiting 13 smoke'
     decision_id: D-S038-12
   13-deploy-smoke:
-    status: in_progress
-    mode: full
+    status: completed
+    awaiting_user_decision_note: 'Merge approval required for tip CD; session/cycle remain open'
+    mode: delta
     started_at: '2026-08-06'
     started: '2026-08-06'
-    completed: null
-    completed_at: null
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
     previous_started_at: '2026-08-06'
     previous_started: '2026-08-06'
     previous_completed: '2026-08-06'
@@ -12268,32 +12248,53 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 8bd111c
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    overall: null
-    note: 'IN_PROGRESS — S047/EV-039 12 APPROVED (D-S047-12=1); push/PR then smoke (H4–H5 required); tip a5e5d89e; no PR URL yet'
-    report: null
-    report_status: null
-    tip_sha: a5e5d89e
-    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-    tip_note: 'S047/EV-039 tip a5e5d89e — 13 in_progress after D-S047-12=1; tip will refresh after push'
-    main_ci_cd_pipeline_run: null
-    main_ci_cd_pipeline_status: null
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    overall: pass
+    note: 'COMPLETE* — H1–H5 PASS + CI green; PR #893 open; tip CD awaiting merge approval; tip 08c805eb'
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
+    report_status: completed
+    tip_sha: 08c805eb
+    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    tip_note: 'S048/EV-040 tip 08c805eb — 13 smoke baseline COMPLETE*; tip CD awaiting merge #893'
+    main_ci_cd_pipeline_run: '31134161218'
+    main_ci_cd_pipeline_status: success
     doks_tag: null
     active_milestone:
     active_task:
     active_task_status:
     progress:
     completed_through:
-    awaiting_deploy_approval: false
-    awaiting_user_decision: false
+    awaiting_deploy_approval: true
+    awaiting_user_decision: true
     decision_id: null
     decision_ids:
     - D-S047-12
-    pr_number: null
-    pr_url: null
-    pr_status: null
+    pr_number: 893
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+    pr_status: open
     delta_substages:
+    - id: S048-workbench-lint-ux-13
+      session_id: S048-workbench-lint-ux
+      evolve_cycle_id: EV-040
+      skill_id: 13-deploy-smoke
+      status: completed
+      mode: delta
+      started: '2026-08-06'
+      started_at: '2026-08-06'
+      completed: '2026-08-06'
+      completed_at: '2026-08-06'
+      branch: evolve/EV-040-workbench-lint-ux
+      tip_sha: 08c805eb
+      tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+      report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
+      pr_number: 893
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+      note: 'COMPLETE* — H1–H5 PASS + CI green; tip CD awaiting merge #893; tip 08c805eb'
+      deepen_feature_ids:
+      - F7
+      - F10
+      - F15
     - id: S047-sql-ingest-live-e2e-13
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
@@ -12934,14 +12935,14 @@ stages:
     tip_note: 'Phase 4 close D-S038-13=1'
     awaiting_user_decision:
     decision_id: D-S038-13
-    overall: pass
+    overall: null
     report: docs/sessions/S038-platform-independence-842/reports/deploy-smoke.md
     # S039 active override (duplicate-key last-wins trailer)
-    session_id: S039-doks-dns-cutover
-    status: pending
-    mode: ops
-    note: 'S039 NEXT — formal H4–H5 smoke on https://api|app.tac-to-iwxxm.com (user may still want formal smoke); then 15-service-health; #842/#712'
-    report: docs/sessions/S039-doks-dns-cutover/reports/dns-tls-cutover.md
+    session_id: S048-workbench-lint-ux
+    status: in_progress
+    mode: delta
+    note: 'IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb'
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
   14-hotfix:
     status: completed
     session_id: S028-sigmet-multiline-split
@@ -12982,18 +12983,22 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
     started_at: '2026-08-06'
     started: '2026-08-06'
-    completed_at: null
-    completed: null
-    previous_session_id: S046-iwxxm-corpus-residuals
-    previous_evolve_cycle_id: EV-038
+    completed_at: '2026-08-06'
+    completed: '2026-08-06'
+    previous_session_id: S048-workbench-lint-ux
+    previous_evolve_cycle_id: EV-040
     previous_completed_at: '2026-08-06'
-    previous_note: 'COMPLETE — D-S046-13=1; EV-038/S046 closed; #890 @ 619a7ac3; DOKS 20260806144346-619a7ac; evolve-summary.md'
+    previous_note: 'COMPLETE — D-S048-close=1,1,1; EV-040/S048 closed; PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894 under #840'
+    prior_s046_session_id: S046-iwxxm-corpus-residuals
+    prior_s046_evolve_cycle_id: EV-038
+    prior_s046_completed_at: '2026-08-06'
+    prior_s046_note: 'COMPLETE — D-S046-13=1; EV-038/S046 closed; #890 @ 619a7ac3; DOKS 20260806144346-619a7ac; evolve-summary.md'
     prior_s045_session_id: S045-matrix-disposition-residuals
     prior_s045_evolve_cycle_id: EV-037
     prior_s045_completed_at: '2026-08-05'
@@ -13004,10 +13009,11 @@ stages:
     prior_s044_note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS'
     prior_mirror_session_id: S040-iwxxm-corpus-quality
     prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage: 13-deploy-smoke
-    tip_sha: a5e5d89e
-    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-    note: 'in_progress — S047/EV-039 12 APPROVED (D-S047-12=1); current 13-deploy-smoke; push/PR then smoke (H4–H5); tip a5e5d89e; no PR URL yet'
+    current_child_stage: closed
+    tip_sha: 5a9f28ef
+    tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
+    note: 'COMPLETED — S048/EV-040 closed D-S048-close=1,1,1; PR #893 merged (merge SHA pending parent); #894 closed under #840; tip 5a9f28ef; active_session=null'
+
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -13039,7 +13045,7 @@ deployment:
     commit_head: 619a7ac3
     commit_head_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
     doks_tag: 20260806144346-619a7ac
-    drift: false
+    drift: true
     platform: doks
     namespace: metar-iwxxm
     urls:
@@ -13050,9 +13056,9 @@ deployment:
     deploy_ids:
       api:
       frontend:
-    report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-smoke.md
-    session_id: S046-iwxxm-corpus-residuals
-    evolve_cycle_id: EV-038
+    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260806144346-619a7ac
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260806144346-619a7ac
@@ -13078,6 +13084,8 @@ deployment:
       topology: pass_3_of_3
       host_header: pass_5_of_5
     notes:
+    - '2026-08-06 S048/EV-040 CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); #894 under #840; tip 5a9f28ef; active_session=null; tip CD after merge'
+    - '2026-08-06 S048/EV-040 13 COMPLETE* — H1–H5 PASS on live DOKS (pre-merge baseline); PR #893 was open @ 08c805eb'
     - '2026-08-06 S046/EV-038 CLOSED D-S046-13=1 — #890 MERGED @ 619a7ac3; CI 31112016561; DOKS 20260806144346-619a7ac; H1–H5+UJ-050 PASS; evolve-summary.md; active_session=null'
     - '2026-08-05 S042/EV-034 CLOSED D-S042-13=1 — 11/12/13 PASS; CI 31003268652; DOKS 20260805115809-d3f4bb9; active_session=null; S040 remains suspended (eligible to resume; do not auto-resume)'
     - '2026-08-05 EV-034 automated CD SUCCESS — CI/CD Pipeline run 31003268652 SUCCESS including Deploy; DOKS tag `20260805115809-d3f4bb9` (main tip d3f4bb95 / #868); set-image metar-api, metar-frontend, metar-worker ns metar-iwxxm; all rollout status success; live: api /health 200; OpenAPI /auth/login+/auth/me; app 200; H0ci pass; drift false; reports verify-impl.md + deploy-checklist.md + deploy-smoke.md; APPROVED D-S042-13=1 — cycle closed'
@@ -13274,6 +13282,49 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S048-close
+  date: '2026-08-06'
+  timestamp: '2026-08-06'
+  resolved_at: '2026-08-06'
+  session_id: S048-workbench-lint-ux
+  evolve_cycle_id: EV-040
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase4_close
+  category: merge_close
+  status: confirmed
+  topic: 'Close S048/EV-040 — merge #893; file+close #894 under #840; stop'
+  summary: '1,1,1 — Merge #893; file+close #894 under #840; close EV-040/S048; stop'
+  decision: |
+    D-S048-close=1,1,1 — user approved Phase 4 close:
+    (1) merge PR #893; (2) file+close #894 under #840; (3) close EV-040/S048 then stop.
+    PR #893 recorded pr_status=merged (actual merge + merge SHA by parent — pending at bookkeeping time).
+    Tip on evolve branch 5a9f28ef (5a9f28efdc1fe993fbb0d62456d5d525e2ec3157).
+    Mark EV-040 completed; archive S048; active_session=null.
+    workflow-state-manager does not git commit or merge the PR.
+  user_option: '1,1,1'
+  branch: evolve/EV-040-workbench-lint-ux
+  related_decisions:
+  - D-S048-open
+  - D-S048-ac
+  deepen_feature_ids:
+  - F7
+  - F10
+  - F15
+  feature_ids: []
+  github_issues: [894]
+  parent_epic: 840
+  pr_number: 893
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+  pr_status: merged
+  merge_commit_sha: pending
+  tip_sha: 5a9f28ef
+  tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
+  artifacts:
+  - docs/sessions/S048-workbench-lint-ux/session-brief.md
+  - docs/evolve-report-EV-040.md
+  - docs/decisions/evolve-decisions.md
+  note: 'close_session applied; active_session=null; EV-040 completed; merge SHA pending parent'
 - id: D-S047-12
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -25214,6 +25265,48 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
+  type: session-report
+  kind: deploy-smoke
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  session_id: S048-workbench-lint-ux
+  evolve_cycle_id: EV-040
+  created_at: '2026-08-06'
+  updated_at: '2026-08-06'
+  status: in_progress
+  tip_sha: 08c805eb
+  tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+  pr_number: 893
+  note: 'S048/EV-040 13 IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb'
+- path: docs/evolve-report-EV-040.md
+  type: evolve-report
+  kind: evolve-report
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S048-workbench-lint-ux
+  evolve_cycle_id: EV-040
+  created_at: '2026-08-06'
+  updated_at: '2026-08-06'
+  status: draft
+  tip_sha: 08c805eb
+  tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+  note: 'S048/EV-040 evolve-report draft — cycle remains open pending merge #893'
+- path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+  type: pull-request
+  kind: pull-request
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  session_id: S048-workbench-lint-ux
+  evolve_cycle_id: EV-040
+  created_at: '2026-08-06'
+  updated_at: '2026-08-06'
+  status: open
+  pr_number: 893
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+  tip_sha: 08c805eb
+  tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+  note: 'PR #893 OPEN — tip 861c5457; tip CD awaiting merge approval'
 - path: docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
   type: session-report
   kind: verify-tech-audit
@@ -28319,6 +28412,105 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-040
+  session_id: S048-workbench-lint-ux
+  cycle_type: general
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  - F10
+  - F15
+  feature_note: Deepen F7/F10/F15 — no new Fn; UI preview accepted
+  title: Workbench lint UX + examples + prefs
+  status: completed
+  started: '2026-08-06'
+  started_at: '2026-08-06'
+  completed: '2026-08-06'
+  completed_at: '2026-08-06'
+  scope_summary: 'Deepen F7/F10/F15: lint console; preserve input; New TAC; slim prefs; official AHL/Collect; catalog source; fix RVR/AHL FPs.'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 05-verify-tech
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 06-tech-tooling
+  current_stage: closed
+  current_stage_status: completed
+  current_stage_note: 'CLOSED — D-S048-close=1,1,1; PR #893 merged; #894 closed under #840; tip 5a9f28ef'
+  ui_preview: accepted
+  branch: evolve/EV-040-workbench-lint-ux
+  tip_sha: 5a9f28ef
+  tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
+  tip_sha_pushed: true
+  tip_sha_note: 'CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894'
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+  pr_number: 893
+  pr_status: merged
+  pr_title: '[EV-040] Workbench lint UX + examples + prefs'
+  pr_base: main
+  pr_head: evolve/EV-040-workbench-lint-ux
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: passed
+    deploy_note: 'D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); #894 closed'
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: passed
+    phase_d_note: 'CLOSED — D-S048-close=1,1,1; PR #893 merged; tip 5a9f28ef'
+    deploy: passed
+    deploy_note: 'D-S048-close=1,1,1 — merge #893; #894 closed under #840'
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S048-workbench-lint-ux/session-brief.md
+    status: completed
+  - path: docs/sessions/S048-workbench-lint-ux/routing-plan.md
+    status: completed
+  - path: docs/sessions/S048-workbench-lint-ux/reports/qa-report.md
+    status: completed
+    stage: 09-qa
+  - path: docs/sessions/S048-workbench-lint-ux/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+  - path: docs/sessions/S048-workbench-lint-ux/reports/deploy-checklist.md
+    status: completed
+    stage: 12-verify-deploy
+  - path: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
+    status: completed
+    stage: 13-deploy-smoke
+  - path: docs/evolve-report-EV-040.md
+    status: completed
+    stage: 16-evolve
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+    kind: pull-request
+    status: merged
+    pr_number: 893
+    stage: 16-evolve
+  github_issues: [894]
+  issue_ids: [894]
+  parent_epic: 840
+  close_decision_id: D-S048-close
+  phase: 4
+  phase_note: 'CLOSED — D-S048-close=1,1,1; PR #893 merged; #894 closed under #840'
+  notes:
+  - '2026-08-06 S048/EV-040 CLOSED — D-S048-close=1,1,1; PR #893 merged (merge SHA pending parent); #894 under #840; tip 5a9f28ef'
+  - '2026-08-06 S048/EV-040 — 13-deploy-smoke COMPLETE* — H1–H5 PASS on live DOKS; PR #893 was open @ 08c805eb; tip CD after merge'
+
 - id: EV-022
   session_id: S029-sigmet-decode-residuals
   cycle_type: feature
@@ -37586,19 +37778,19 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-039-sql-ingest-live-e2e
+  current_branch: evolve/EV-040-workbench-lint-ux
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state.yaml dirty after 13 BLOCKED bookkeeping (PR #891 tip CI missing; not workflow-state-manager commit); also local dirty: apps/frontend/public/config.json + docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md"
-  tip_sha: cfe1236b
-  tip_sha_full: cfe1236b4c3e8c5594447d44b69e4d20c7e01522
-  tip_note: 'S047/EV-039 — tip cfe1236b pushed; PR #891 open; tip CI missing (no GHA workflow runs); 13-deploy-smoke BLOCKED hard stop'
+  dirty_note: "workflow-state + session docs dirty after S048/EV-040 close (workflow-state-manager); parent to commit; also local dirty: apps/frontend/public/config.json"
+  tip_sha: 5a9f28ef
+  tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
+  tip_note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending parent); #894'
   stash:
   - name: S039-EV031-WIP
-    note: 'Parked EV-031/S039 dirty worktree WIP before cutting evolve/EV-032 from main (D-S040-branch=1)'
+    note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
     prior_branch: evolve/EV-031-platform-independence-842
     session_id: S040-iwxxm-corpus-quality
     date: '2026-08-04'
@@ -37606,10 +37798,11 @@ git_history:
   main_merge_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
-  recommended_branch: evolve/EV-039-sql-ingest-live-e2e
-  note: 'S047/EV-039 — current_branch evolve/EV-039-sql-ingest-live-e2e @ cfe1236b; pushed=true ahead_of_origin=0; PR #891 open; tip CI missing; 13 BLOCKED; no git commit by workflow-state-manager'
+  recommended_branch: evolve/EV-040-workbench-lint-ux
+  note: 'S047/EV-039 — current_branch evolve/EV-040-workbench-lint-ux @ 861c5457; pushed=true ahead_of_origin=0; PR #893 OPEN; 13 in_progress H1–H5 PASS; tip CD awaiting merge; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S048/EV-040 — tip 861c5457 (08c805ebb9c935e989ba91b2fd3012974140b2e9); recorded commits e909231d + 861c5457 (+ earlier EV-040 feat/fix/test); PR #893 OPEN; 09–12 COMPLETE; 13-deploy-smoke IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb; session/cycle remain open; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — tip cfe1236b (cfe1236b4c3e8c5594447d44b69e4d20c7e01522) [EV-039] chore: retrigger PR CI for tip gate; branch pushed; PR #891 OPEN; ahead_of_origin=0 pushed=true; tip CI missing (check_suites only cursor app); local husky pre-push make ci passed; 13-deploy-smoke BLOCKED hard stop pending user decision; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits f2b2f558 (f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9) [EV-039] test: align Playwright live-mode assert with skipWebServer + 476c9c9d (476c9c9d7bb70375baa0d0cdf118be9ae53d6c48) chore(deps): pin js-yaml >=4.3.1; 09-qa PASS with advisories + 10-e2e PASS; reports qa-report.md + e2e-report.md; current_stage 11-verify-impl; tip f2b2f558; ahead_of_origin=20 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits d78e0915 (d78e0915bf05b96e03005407876e8cb8e1bfce23) [T2.5] docs: S047 teardown audit report and M2 complete + c8850404 (c88504040c7434a96a2034eb8f832b09d8599440) [T2.4] test: F16 teardown audit + skip SQL Server on compose up; M2 COMPLETE (T2.1–T2.5); active_task null; active_milestone M2 done; next 08-verify-build; tip d78e0915; ahead_of_origin=16 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -38073,6 +38266,26 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-040-workbench-lint-ux
+    status: merged
+    base: main
+    base_sha: fea30aba
+    base_sha_full: fea30abacf14a8d6106637c99d7cce8d7652dabf
+    created: "2026-08-06"
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    tip_sha: 5a9f28ef
+    tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
+    exists: true
+    pushed: true
+    ahead_of_origin: 0
+    pr_number: 893
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
+    pr_status: merged
+    pr_title: "[EV-040] Workbench lint UX + examples + prefs"
+    pr_head: evolve/EV-040-workbench-lint-ux
+    pr_base: main
+    note: "CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894 under #840"
   - name: evolve/EV-039-sql-ingest-live-e2e
     status: active
     base: main
@@ -39230,6 +39443,162 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 861c5457
+    short: 861c5457
+    sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    branch: evolve/EV-040-workbench-lint-ux
+    message: "[EV-040] test: exclude fixture bodies from FE coverage threshold"
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    stages:
+    - 13-deploy-smoke
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    files_changed:
+    - apps/frontend/src/app/components/UserPreferencesDialog.test.tsx
+    - apps/frontend/vitest.config.ts
+    files_changed_count: 2
+    timestamp: "2026-08-06T20:10:02-04:00"
+    pushed: true
+    tip_sha: 08c805eb
+    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    note: "S048/EV-040 — FE coverage threshold exclude fixtures; tip for PR #893"
+  - sha: e909231d
+    short: e909231d
+    sha_full: e909231dee170bb41908c05afb828ffb2a21a121
+    branch: evolve/EV-040-workbench-lint-ux
+    message: "[EV-040] test: cover catalog attribution and align ISSUE_CATALOG drift"
+    stage: 09-qa
+    skill_id: 09-qa
+    stages:
+    - 09-qa
+    - 11-verify-impl
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    files_changed:
+    - packages/tac-validate/tests/test_ev040_catalog_attribution.py
+    - packages/tac-validate/tests/test_tc_f15_001_catalog_drift.py
+    files_changed_count: 2
+    timestamp: "2026-08-06T19:54:36-04:00"
+    pushed: true
+    tip_sha: e909231d
+    tip_sha_full: e909231dee170bb41908c05afb828ffb2a21a121
+    note: "S048/EV-040 — catalog attribution tests + ISSUE_CATALOG drift align"
+  - sha: 3f2f8314
+    short: 3f2f8314
+    sha_full: 3f2f831493e9d611e8b6fde48bf8b2b1316f7cce
+    branch: evolve/EV-040-workbench-lint-ux
+    message: "[EV-040] test: allow duplicate TAC text after convert keeps input"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    files_changed:
+    - apps/frontend/src/app/components/FileConverter.test.tsx
+    files_changed_count: 1
+    timestamp: "2026-08-06T19:46:03-04:00"
+    pushed: true
+    tip_sha: 3f2f8314
+    tip_sha_full: 3f2f831493e9d611e8b6fde48bf8b2b1316f7cce
+    note: "S048/EV-040 — convert keeps TAC input (duplicate text) test"
+  - sha: 70cbeb42
+    short: 70cbeb42
+    sha_full: 70cbeb42a582f8c4ab0e4ad6553308c945d1bbd3
+    branch: evolve/EV-040-workbench-lint-ux
+    message: "[EV-040] test: update FileConverter golden example for Collect NIL"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    files_changed:
+    - apps/frontend/src/app/components/FileConverter.test.tsx
+    files_changed_count: 1
+    timestamp: "2026-08-06T19:39:36-04:00"
+    pushed: true
+    tip_sha: 70cbeb42
+    tip_sha_full: 70cbeb42a582f8c4ab0e4ad6553308c945d1bbd3
+    note: "S048/EV-040 — FileConverter Collect NIL golden example"
+  - sha: 94293275
+    short: 94293275
+    sha_full: 942932756ad798ad058407b258a7830ede9b1aa7
+    branch: evolve/EV-040-workbench-lint-ux
+    message: "[EV-040] fix: drop prefs dialog from IWXXM SoT picker drift check"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    files_changed:
+    - apps/backend/tests/unit/test_iwxxm_versions_sot_drift.py
+    files_changed_count: 1
+    timestamp: "2026-08-06T19:32:57-04:00"
+    pushed: true
+    tip_sha: 94293275
+    tip_sha_full: 942932756ad798ad058407b258a7830ede9b1aa7
+    note: "S048/EV-040 — drop prefs dialog from IWXXM SoT picker drift check"
+  - sha: 2883d7c8
+    short: 2883d7c8
+    sha_full: 2883d7c8cbed51d9877cdb7a542458498fa83c1e
+    branch: evolve/EV-040-workbench-lint-ux
+    message: "[EV-040] feat: workbench lint UX, slim prefs, official examples, catalog sources"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S048-workbench-lint-ux
+    evolve_cycle_id: EV-040
+    files_changed:
+    - Makefile
+    - apps/backend/src/api.py
+    - apps/backend/src/schemas/validation.py
+    - apps/frontend/src/app/components/FileConverter.tsx
+    - apps/frontend/src/app/components/FileConverter.work-session.test.tsx
+    - apps/frontend/src/app/components/UserPreferencesDialog.test.tsx
+    - apps/frontend/src/app/components/UserPreferencesDialog.tsx
+    - apps/frontend/src/fixtures/examples/bodies/metar_ahl_wmo_a3_1.txt
+    - apps/frontend/src/fixtures/examples/bodies/metar_nil_collect.xml
+    - apps/frontend/src/fixtures/examples/examplesCatalog.ts
+    - apps/frontend/src/hooks/useLiveWorkbenchAssist.ts
+    - apps/frontend/src/test/bug-2026-07-15-lint-tac-console-detail.test.tsx
+    - apps/frontend/src/utils/api.ts
+    - apps/frontend/src/utils/lintIssueCatalog.test.ts
+    - apps/frontend/src/utils/lintIssueCatalog.ts
+    - docs/CHANGELOG.md
+    - docs/api-contract.md
+    - docs/context/workbench-lint-ux.md
+    - docs/decisions/evolve-decisions.md
+    - docs/domain/rules/ISSUE_CATALOG.json
+    - docs/domain/rules/ISSUE_CATALOG.md
+    - docs/feature-list.md
+    - docs/sessions/README.md
+    - docs/sessions/S048-workbench-lint-ux/build-plan-card.md
+    - docs/sessions/S048-workbench-lint-ux/evolve-plan-card.md
+    - docs/sessions/S048-workbench-lint-ux/execution-plan.md
+    - docs/sessions/S048-workbench-lint-ux/reports/01-requirements-summary.md
+    - docs/sessions/S048-workbench-lint-ux/reports/deploy-checklist.md
+    - docs/sessions/S048-workbench-lint-ux/reports/qa-report.md
+    - docs/sessions/S048-workbench-lint-ux/reports/verify-impl.md
+    - docs/sessions/S048-workbench-lint-ux/routing-plan.md
+    - docs/sessions/S048-workbench-lint-ux/session-brief.md
+    - docs/test-plan.md
+    - packages/tac-validate/src/tac_validate/catalog_attribution.py
+    - packages/tac-validate/src/tac_validate/data/catalog_attribution.json
+    - packages/tac-validate/src/tac_validate/product_rules.py
+    - packages/tac-validate/tests/test_ev040_rvr_ahl_false_positives.py
+    - packages/tac2iwxxm/tests/fixtures/ahl/sa_metar_a3_1_bulletin.txt
+    - packages/tac2iwxxm/tests/fixtures/annex3_golden/metar_nil_collect.xml
+    - scripts/tac-validate/regen_issue_catalog.py
+    files_changed_count: 41
+    timestamp: "2026-08-06T19:28:14-04:00"
+    pushed: true
+    tip_sha: 2883d7c8
+    tip_sha_full: 2883d7c8cbed51d9877cdb7a542458498fa83c1e
+    note: "S048/EV-040 — feat workbench lint UX / prefs / official examples / catalog sources"
   - sha: f2b2f558
     short: f2b2f558
     sha_full: f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9

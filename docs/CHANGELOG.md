@@ -2,6 +2,19 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-06 — S048 EV-040 (Workbench lint UX + examples + prefs)
+
+### Changed
+- **F10**: Lint console lists each issue on its own line (no `+N more` truncation).
+- **F7**: Convert keeps manual TAC input; **New TAC** label; action buttons above selects.
+- **F7**: User preferences slimmed to display name + output extension.
+- **F7.g**: Official AHL + WMO METAR A3-1 bulletin and IWXXM Collect NIL examples.
+- **F15**: Lint catalog / API / FE show WMO–ICAO–IWXXM source attribution; RVR `U|D`
+  tendency + AHL YYGGgg false positives fixed.
+
+### Docs
+- feature-list / api-contract / test-plan / evolve-decisions §EV-040.
+
 ## 2026-08-06 — S046 EV-038 (Epic #846 corpus residuals #849–#861)
 
 ### Added

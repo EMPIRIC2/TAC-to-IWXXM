@@ -360,6 +360,16 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 - **Source**: UJ-025; ADR-024; [#730](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/730);
   S016 / EV-012 (E12-1..E12-4; S2.2 = T1–T6 hard)
 
+### TC-EV040-001: Workbench lint UX + catalog source (S048 / EV-040)
+
+- **Objective**: Lint console lists each issue on its own line; convert keeps TAC input;
+  New TAC + action strip above selects; slim prefs; official AHL/Collect examples;
+  catalog source attribution; A3-1/AHL FPs fixed.
+- **Tier**: T0 unit (Vitest + pytest) + H4–H5 when UI ships
+- **Source**: F7/F10/F15 deepen; [Corpus: product]; evolve-decisions §EV-040
+- **Asserts**: AC1–AC7; `test_ev040_rvr_ahl_false_positives.py`; lint console Vitest;
+  examplesCatalog Vitest; prefs slim Vitest
+
 ### TC-F7-008: Golden examples load (UJ-032 / #780)
 
 - **Level**: T0 / T2 (Vitest hard) / H4–H5 when FE deploys

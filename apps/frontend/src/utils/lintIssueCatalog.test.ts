@@ -125,6 +125,16 @@ describe('lintIssueCatalog TAF tag helpers (T5.1 / E15-14)', () => {
     expect(shared).toMatch(/tags:.*taf/i);
     expect(shared).not.toMatch(/product:/i);
   });
+
+  it('formatCatalogEntryCopy includes source attribution when present (EV-040)', () => {
+    const copy = formatCatalogEntryCopy({
+      ...TAF_SAMPLE[0],
+      source_id: 'icao-annex-3',
+      source_url: 'https://store.icao.int/',
+      source_attribution: 'icao-annex-3 — access:paywall',
+    });
+    expect(copy).toContain('source: icao-annex-3 — access:paywall');
+  });
 });
 
 describe('lintIssueCatalog SIGMET/VA tag helpers (T5.1 / E19-17)', () => {

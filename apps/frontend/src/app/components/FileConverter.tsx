@@ -646,9 +646,7 @@ export function FileConverter({
         const failed = bulletinResponse.results.filter((r) => !r.ok).length;
         setConvertedFiles(newConvertedFiles);
         setPendingFiles([]);
-        if (!softPreview) {
-          setManualInput('');
-        }
+        // EV-040: keep manual TAC input after convert (do not clear).
         setConversionLog(issueBag.length > 0 ? { errors: [], issues: issueBag } : null);
         setConversionStatus({ type: 'idle' });
         if (failed > 0) {
@@ -778,9 +776,8 @@ export function FileConverter({
 
       setConvertedFiles(newConvertedFiles);
       setPendingFiles([]);
-      // Keep TAC in editor on soft-fail so Failed-TAC cue stays contextual (UJ-016).
+      // EV-040: keep manual TAC input after convert. Clear failed spans only on hard success.
       if (!softFail) {
-        setManualInput('');
         setFailedSpans([]);
       }
       setConversionLog(
@@ -840,7 +837,7 @@ export function FileConverter({
             originalContent: file.originalContent,
             convertedContent: file.convertedContent,
           })),
-          manualInput: '',
+          manualInput,
           pendingFiles: [],
         });
         await persistSession(snapshot, {
@@ -877,7 +874,7 @@ export function FileConverter({
               originalContent: file.originalContent,
               convertedContent: file.convertedContent,
             })),
-            manualInput: result.softFail ? manualInput : '',
+            manualInput,
             pendingFiles: [],
           }),
           { status: 'failed' },
@@ -894,7 +891,7 @@ export function FileConverter({
           originalContent: file.originalContent,
           convertedContent: file.convertedContent,
         })),
-        manualInput: '',
+        manualInput,
         pendingFiles: [],
       });
 
@@ -932,9 +929,7 @@ export function FileConverter({
     setConversionStatus({ type: 'idle' });
     onActiveSessionIdChange?.(null);
     onNewMetar?.();
-    toast.info(
-      isReadOnly ? 'Starting a new METAR session' : 'Starting a new METAR draft',
-    );
+    toast.info(isReadOnly ? 'Starting a new TAC session' : 'Starting a new TAC draft');
   };
 
   const handleLoadGoldenExample = useCallback((exampleId: string) => {
@@ -1308,6 +1303,116 @@ export function FileConverter({
           />
         </div>
 
+        {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
+        <div className="mb-8" data-testid="action-button-strip">
+          <div
+            className="mb-2 flex h-5 items-center"
+            aria-live="polite"
+            data-testid="autosave-indicator"
+          >
+            {saveIndicatorLabel ? (
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {saveIndicatorLabel}
+              </span>
+            ) : (
+              <span className="sr-only">Autosave idle</span>
+            )}
+          </div>
+          <div className="flex min-h-10 flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleNewMetar}
+              disabled={isBusy}
+              data-testid="new-tac-button"
+              aria-label="Start a new TAC session"
+              className="min-w-[7.5rem]"
+            >
+              New TAC
+            </Button>
+            <Button
+              data-testid="convert-button"
+              onClick={handleConvert}
+              disabled={convertDisabled}
+              className="min-w-[7.5rem] bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              aria-busy={isConverting}
+              aria-label={
+                isConverting
+                  ? 'Converting files, please wait'
+                  : 'Convert TAC to IWXXM XML'
+              }
+            >
+              <Loader2
+                className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
+                aria-hidden="true"
+              />
+              Convert
+            </Button>
+            <Button
+              data-testid="convert-and-send-button"
+              onClick={handleConvertAndSend}
+              disabled={convertDisabled}
+              className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              aria-busy={isConvertAndSending}
+              aria-label={
+                isConvertAndSending
+                  ? 'Converting and sending files, please wait'
+                  : 'Convert TAC to IWXXM XML and send to database'
+              }
+            >
+              <Loader2
+                className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
+                aria-hidden="true"
+              />
+              Convert&Send
+            </Button>
+            <Button
+              onClick={() => setIsUploadDialogOpen(true)}
+              disabled={isBusy || !hasConverted || isReadOnly}
+              variant="outline"
+              className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              aria-label={`Upload ${convertedFiles.length} converted files to database`}
+            >
+              <Database className="w-4 h-4" aria-hidden="true" />
+              Upload to Database
+              <span className="inline-block min-w-[1.75rem] tabular-nums">
+                ({convertedFiles.length})
+              </span>
+            </Button>
+            <Button
+              type="button"
+              data-testid="open-dissemination-drawer"
+              onClick={() => setIsDisseminationOpen(true)}
+              disabled={isBusy || isReadOnly}
+              variant="outline"
+              className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+              aria-label="Open dissemination drawer for BYOC upload or publish"
+            >
+              Disseminate
+            </Button>
+            <Button
+              onClick={handleDownloadAll}
+              disabled={isBusy || !hasConverted}
+              variant="outline"
+              className="min-w-[10rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
+            >
+              Download ZIP
+              <span className="inline-block min-w-[1.75rem] tabular-nums">
+                ({convertedFiles.length})
+              </span>
+            </Button>
+            <Button
+              onClick={handleClear}
+              variant="outline"
+              className="min-w-[5.5rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              aria-label="Clear all pending files and manual input"
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
           <div>
             {/* Manual Input — primary workbench */}
@@ -1317,7 +1422,7 @@ export function FileConverter({
                   className="mb-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
                   role="status"
                 >
-                  This session is finished and read-only. Use <strong>New METAR</strong>{' '}
+                  This session is finished and read-only. Use <strong>New TAC</strong>{' '}
                   to start fresh.
                 </p>
               )}
@@ -1812,116 +1917,6 @@ export function FileConverter({
                 </div>
               </div>
             </Card>
-
-            {/* Action Buttons — fixed strip; status lives outside so busy/save text cannot reflow */}
-            <div className="mb-8" data-testid="action-button-strip">
-              <div
-                className="mb-2 flex h-5 items-center"
-                aria-live="polite"
-                data-testid="autosave-indicator"
-              >
-                {saveIndicatorLabel ? (
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {saveIndicatorLabel}
-                  </span>
-                ) : (
-                  <span className="sr-only">Autosave idle</span>
-                )}
-              </div>
-              <div className="flex min-h-10 flex-wrap items-center gap-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleNewMetar}
-                  disabled={isBusy}
-                  data-testid="new-metar-button"
-                  aria-label="Start a new METAR session"
-                  className="min-w-[7.5rem]"
-                >
-                  New METAR
-                </Button>
-                <Button
-                  data-testid="convert-button"
-                  onClick={handleConvert}
-                  disabled={convertDisabled}
-                  className="min-w-[7.5rem] bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  aria-busy={isConverting}
-                  aria-label={
-                    isConverting
-                      ? 'Converting files, please wait'
-                      : 'Convert METAR files to IWXXM XML'
-                  }
-                >
-                  <Loader2
-                    className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
-                    aria-hidden="true"
-                  />
-                  Convert
-                </Button>
-                <Button
-                  data-testid="convert-and-send-button"
-                  onClick={handleConvertAndSend}
-                  disabled={convertDisabled}
-                  className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  aria-busy={isConvertAndSending}
-                  aria-label={
-                    isConvertAndSending
-                      ? 'Converting and sending files, please wait'
-                      : 'Convert METAR files to IWXXM XML and send to database'
-                  }
-                >
-                  <Loader2
-                    className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
-                    aria-hidden="true"
-                  />
-                  Convert&Send
-                </Button>
-                <Button
-                  onClick={() => setIsUploadDialogOpen(true)}
-                  disabled={isBusy || !hasConverted || isReadOnly}
-                  variant="outline"
-                  className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                  aria-label={`Upload ${convertedFiles.length} converted files to database`}
-                >
-                  <Database className="w-4 h-4" aria-hidden="true" />
-                  Upload to Database
-                  <span className="inline-block min-w-[1.75rem] tabular-nums">
-                    ({convertedFiles.length})
-                  </span>
-                </Button>
-                <Button
-                  type="button"
-                  data-testid="open-dissemination-drawer"
-                  onClick={() => setIsDisseminationOpen(true)}
-                  disabled={isBusy || isReadOnly}
-                  variant="outline"
-                  className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-                  aria-label="Open dissemination drawer for BYOC upload or publish"
-                >
-                  Disseminate
-                </Button>
-                <Button
-                  onClick={handleDownloadAll}
-                  disabled={isBusy || !hasConverted}
-                  variant="outline"
-                  className="min-w-[10rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                  aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
-                >
-                  Download ZIP
-                  <span className="inline-block min-w-[1.75rem] tabular-nums">
-                    ({convertedFiles.length})
-                  </span>
-                </Button>
-                <Button
-                  onClick={handleClear}
-                  variant="outline"
-                  className="min-w-[5.5rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                  aria-label="Clear all pending files and manual input"
-                >
-                  Clear
-                </Button>
-              </div>
-            </div>
 
             {conversionLog && (
               <ErrorLogPanel

@@ -18,8 +18,8 @@ from src.config.iwxxm_versions import DEFAULT_VERSION, SUPPORTED_VERSIONS
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
 GENERATED_JSON = _REPO_ROOT / "apps" / "frontend" / "src" / "generated" / "iwxxm_versions.json"
+# EV-040: UserPreferencesDialog no longer hosts IWXXM version (workbench FileConverter does).
 _FE_PICKER_FILES = (
-    _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "UserPreferencesDialog.tsx",
     _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "admin" / "SystemSettingsPanel.tsx",
     _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "FileConverter.tsx",
 )

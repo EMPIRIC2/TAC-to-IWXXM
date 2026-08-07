@@ -350,11 +350,18 @@ lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response s
       "severity": "info",
       "message_template": "Reports in bulletins end with '=' — add it before publishing",
       "product": null,
-      "tags": ["terminator", "metar", "speci"]
+      "tags": ["terminator", "metar", "speci"],
+      "source_id": "icao-annex-3",
+      "source_url": "https://store.icao.int/",
+      "source_attribution": "ICAO Annex 3 (paywall) — citation only; see RULE_SOURCE_URLS / PROVENANCE_MAP"
     }
   ]
 }
 ```
+
+**Additive (S048 / EV-040)**: optional `source_id`, `source_url`, `source_attribution` join
+provenance from `PROVENANCE_MAP` so the FE catalog spells out WMO/ICAO/IWXXM sources
+(citations/URLs only — no copyrighted Annex prose). Older clients may ignore the fields.
 
 `code` / default `severity` / `message_template` match the registry module. FE uses this for
 code tooltips; live lint findings still come from `POST /lint-tac`.
