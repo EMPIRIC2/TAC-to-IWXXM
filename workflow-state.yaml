@@ -16,7 +16,7 @@ active_session:
   branch_base: main@fa5b2140
   branch_status: active
   branch_exists: true
-  branch_note: ACTIVE — tip 18d028ed; tip_sha_pushed=true ahead_of_origin=0; 11 complete; 12-verify-deploy in_progress; watching tip CI; PR #899
+  branch_note: ACTIVE — tip 4fe4c37f (checklist); product CI green @18d028ed run 31195470994; tip_sha_pushed=true ahead_of_origin=0; 12 COMPLETE (D-S050-12=1); awaiting merge #899 then 13; PR #899 MERGEABLE
   artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-042
@@ -36,10 +36,10 @@ active_session:
   ui_preview_note: 'accepted local http://localhost:18000'
   preset: Standard
   preset_note: Recommended Standard for product code (drawer + churn UX + mass ingest); routing-plan approval pending (parent writes brief)
-  tip_sha: 18d028ed
-  tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+  tip_sha: 4fe4c37f
+  tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
   tip_sha_pushed: true
-  tip_sha_note: 'pushed; 11 complete; starting 12-verify-deploy; watching tip CI'
+  tip_sha_note: 'pushed; checklist tip 4fe4c37f; product tip CI green @18d028ed (31195470994); 12 COMPLETE D-S050-12=1; awaiting merge #899 then 13'
   github_issues: [897, 898]
   parent_epic: 897
   github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
@@ -54,7 +54,7 @@ active_session:
   phase0_proceed: D-S050-proceed
   active_milestone: M4
   active_task: T4.3
-  active_task_note: 'T4.3 handoff — 11 complete @ 18d028ed; 12-verify-deploy in_progress; watching tip CI'
+  active_task_note: 'T4.3 handoff — 12 COMPLETE (D-S050-12=1) @ 4fe4c37f; awaiting merge #899 then 13-deploy-smoke (pending)'
   decisions:
     D-S050-open: open_session
     D-S050-db-scope: locked
@@ -79,6 +79,8 @@ active_session:
     D-S050-gate-b_note: 'Gate B PASS — 05-verify-tech complete; proceed 07-build M1 T1.1'
     D-S050-11-verify: approved
     D-S050-11-verify_note: 'Approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 T3→13; UI preview accepted; fix adad127c; next 12-verify-deploy'
+    D-S050-12: '1'
+    D-S050-12_note: '1 — Approve deploy strategy/checklist; env_role live=prod (sole DOKS); product CI green @ 18d028ed (31195470994); Sync DB migrations CI OOS; rollback prior DOKS/GHCR tag; next merge #899 then 13'
   artifacts:
   - path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
     status: written
@@ -133,8 +135,12 @@ active_session:
     status: written
     stage: 11-verify-impl
     skill_id: 11-verify-impl
-  current_stage: 12-verify-deploy
-  current_stage_note: '12-verify-deploy in_progress @ 18d028ed; watching tip CI; PR #899 tip updated'
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+    status: written
+    stage: 12-verify-deploy
+    skill_id: 12-verify-deploy
+  current_stage: 13-deploy-smoke
+  current_stage_note: '12 COMPLETE; awaiting merge #899 then 13; tip 4fe4c37f; product CI @18d028ed green'
   route_status: in_progress
   proceed_decision_id: D-S050-proceed
   ac_decision_id: D-S050-ac
@@ -153,7 +159,7 @@ active_session:
     required: true
     status: in_progress
     started: '2026-08-07'
-    note: IN_PROGRESS — 11-verify-impl COMPLETE @ adad127c; T4.3 handoff; next 12-verify-deploy; live H4–H5/T3 deferred to 13
+    note: IN_PROGRESS — 12-verify-deploy COMPLETE (D-S050-12=1) @ 4fe4c37f; awaiting merge #899 then 13-deploy-smoke; live H4–H5/T3 deferred to 13
   - stage: 01-requirements
     mode: delta
     required: true
@@ -245,16 +251,25 @@ active_session:
   - stage: 12-verify-deploy
     mode: delta
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-07'
     started_at: '2026-08-07'
-    tip_sha: 18d028ed
-    tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
-    note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy @ 18d028ed; tip pushed; watching tip CI; PR #899 tip updated'
+    completed: '2026-08-07'
+    completed_at: '2026-08-07'
+    overall: approved
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+    tip_sha: 4fe4c37f
+    tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+    product_tip_sha: 18d028ed
+    product_tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+    product_ci_run: '31195470994'
+    decision_id: D-S050-12
+    note: 'COMPLETE — D-S050-12=1 deploy strategy approved; env_role live=prod (sole DOKS); product tip CI green @ 18d028ed (run 31195470994); checklist tip 4fe4c37f; PR #899 open MERGEABLE; Sync database migrations CI fail OOS accepted; rollback prior DOKS/GHCR tag (no migrations); next merge #899 then 13; report docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md'
   - stage: 13-deploy-smoke
     mode: delta
     required: true
     status: pending
+    note: 'PENDING — awaiting merge #899 then 13; 12 COMPLETE (D-S050-12=1)'
 
 sessions:
 - id: S050-remove-db-tools-operator-throughput
@@ -267,7 +282,7 @@ sessions:
   branch_base: main@fa5b2140
   branch_status: active
   branch_exists: true
-  branch_note: ACTIVE — tip 18d028ed; tip_sha_pushed=true ahead_of_origin=0; 11 complete; 12-verify-deploy in_progress; watching tip CI; PR #899
+  branch_note: ACTIVE — tip 4fe4c37f (checklist); product CI green @18d028ed run 31195470994; tip_sha_pushed=true ahead_of_origin=0; 12 COMPLETE (D-S050-12=1); awaiting merge #899 then 13; PR #899 MERGEABLE
   artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-042
@@ -286,10 +301,10 @@ sessions:
   ui_preview_url: http://localhost:18000
   ui_preview_note: 'accepted local http://localhost:18000'
   preset: Standard
-  tip_sha: 18d028ed
-  tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+  tip_sha: 4fe4c37f
+  tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
   tip_sha_pushed: true
-  tip_sha_note: 'pushed; 11 complete; starting 12-verify-deploy; watching tip CI'
+  tip_sha_note: 'pushed; checklist tip 4fe4c37f; product tip CI green @18d028ed (31195470994); 12 COMPLETE D-S050-12=1; awaiting merge #899 then 13'
   github_issues: [897, 898]
   parent_epic: 897
   github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
@@ -304,7 +319,7 @@ sessions:
   phase0_proceed: D-S050-proceed
   active_milestone: M4
   active_task: T4.3
-  active_task_note: 'T4.3 handoff — 11 complete @ 18d028ed; 12-verify-deploy in_progress; watching tip CI'
+  active_task_note: 'T4.3 handoff — 12 COMPLETE (D-S050-12=1) @ 4fe4c37f; awaiting merge #899 then 13-deploy-smoke (pending)'
   decisions:
     D-S050-open: open_session
     D-S050-db-scope: locked
@@ -329,6 +344,8 @@ sessions:
     D-S050-gate-b_note: 'Gate B PASS — 05-verify-tech complete; proceed 07-build M1 T1.1'
     D-S050-11-verify: approved
     D-S050-11-verify_note: 'Approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 T3→13; UI preview accepted; fix adad127c; next 12-verify-deploy'
+    D-S050-12: '1'
+    D-S050-12_note: '1 — Approve deploy strategy/checklist; env_role live=prod (sole DOKS); product CI green @ 18d028ed (31195470994); Sync DB migrations CI OOS; rollback prior DOKS/GHCR tag; next merge #899 then 13'
   artifacts:
   - path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
     status: written
@@ -383,8 +400,12 @@ sessions:
     status: written
     stage: 11-verify-impl
     skill_id: 11-verify-impl
-  current_stage: 12-verify-deploy
-  current_stage_note: '12-verify-deploy in_progress @ 18d028ed; watching tip CI; PR #899 tip updated'
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+    status: written
+    stage: 12-verify-deploy
+    skill_id: 12-verify-deploy
+  current_stage: 13-deploy-smoke
+  current_stage_note: '12 COMPLETE; awaiting merge #899 then 13; tip 4fe4c37f; product CI @18d028ed green'
   route_status: in_progress
   open_decision_id: D-S050-open
   proceed_decision_id: D-S050-proceed
@@ -404,7 +425,7 @@ sessions:
     required: true
     status: in_progress
     started: '2026-08-07'
-    note: IN_PROGRESS — 11-verify-impl COMPLETE @ adad127c; T4.3 handoff; next 12-verify-deploy; live H4–H5/T3 deferred to 13
+    note: IN_PROGRESS — 12-verify-deploy COMPLETE (D-S050-12=1) @ 4fe4c37f; awaiting merge #899 then 13-deploy-smoke; live H4–H5/T3 deferred to 13
   - stage: 01-requirements
     mode: delta
     required: true
@@ -496,16 +517,25 @@ sessions:
   - stage: 12-verify-deploy
     mode: delta
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-07'
     started_at: '2026-08-07'
-    tip_sha: 18d028ed
-    tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
-    note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy @ 18d028ed; tip pushed; watching tip CI; PR #899 tip updated'
+    completed: '2026-08-07'
+    completed_at: '2026-08-07'
+    overall: approved
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+    tip_sha: 4fe4c37f
+    tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+    product_tip_sha: 18d028ed
+    product_tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+    product_ci_run: '31195470994'
+    decision_id: D-S050-12
+    note: 'COMPLETE — D-S050-12=1 deploy strategy approved; env_role live=prod (sole DOKS); product tip CI green @ 18d028ed (run 31195470994); checklist tip 4fe4c37f; PR #899 open MERGEABLE; Sync database migrations CI fail OOS accepted; rollback prior DOKS/GHCR tag (no migrations); next merge #899 then 13; report docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md'
   - stage: 13-deploy-smoke
     mode: delta
     required: true
     status: pending
+    note: 'PENDING — awaiting merge #899 then 13; 12 COMPLETE (D-S050-12=1)'
 - id: S049-operator-sources-briefing
   type: feature
   intent: Operator UI source-centric runbook + PPT source pack / walkthrough (docs-only)
@@ -12683,10 +12713,12 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: in_progress
+    status: completed
     started_at: '2026-08-07'
     started: '2026-08-07'
-    overall: null
+    completed: '2026-08-07'
+    completed_at: '2026-08-07'
+    overall: approved
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed: '2026-08-06'
@@ -12755,26 +12787,34 @@ stages:
     session_id: S050-remove-db-tools-operator-throughput
     evolve_cycle_id: EV-042
     mode: delta
-    note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy @ 18d028ed; tip pushed; watching tip CI; PR #899 tip updated; not completed'
-    report: null
-    report_status: null
-    tip_sha: 18d028ed
-    tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
-    tip_note: 'S050/EV-042 tip 18d028ed — 12-verify-deploy in_progress; tip_sha_pushed=true ahead_of_origin=0; watching tip CI'
+    note: 'COMPLETE — D-S050-12=1 deploy strategy approved; env_role live=prod (sole DOKS); product tip CI green @ 18d028ed (run 31195470994); checklist tip 4fe4c37f; PR #899 open MERGEABLE; Sync database migrations CI fail OOS accepted; rollback prior DOKS/GHCR tag (no migrations); next merge #899 then 13; report docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md'
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+    report_status: approved
+    tip_sha: 4fe4c37f
+    tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+    tip_note: 'S050/EV-042 tip 4fe4c37f (checklist); product CI green @18d028ed (31195470994); 12 COMPLETE D-S050-12=1; awaiting merge #899 then 13'
+    product_tip_sha: 18d028ed
+    product_tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+    product_ci_run: '31195470994'
+    env_role: live_prod
+    pr_number: 899
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899
+    pr_status: open
+    pr_mergeable: true
     feature_ids:
     - F33
     active_milestone: M4
     active_task: T4.3
     active_task_status: in_progress
-    active_task_note: 'T4.3 handoff — 11 complete @ 18d028ed; 12-verify-deploy in_progress; watching tip CI'
-    decision_id: null
-    main_ci_cd_pipeline_run: '31003268652'
+    active_task_note: 'T4.3 handoff — 12 COMPLETE (D-S050-12=1) @ 4fe4c37f; awaiting merge #899 then 13-deploy-smoke (pending)'
+    decision_id: D-S050-12
+    main_ci_cd_pipeline_run: '31195470994'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
     awaiting_user_decision: false
-    awaiting_user_decision_note: null
-    decision_id: null
+    awaiting_user_decision_note: 'Next: decide merge #899 then start 13-deploy-smoke'
     decision_ids:
+    - D-S050-12
     - D-S047-12
     - D-S047-11
     - D-S046-12
@@ -12794,13 +12834,22 @@ stages:
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
       skill_id: 12-verify-deploy
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-07'
       started: '2026-08-07'
-      tip_sha: adad127c
-      tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
-      note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy STARTED after 11 COMPLETE @ adad127c'
+      completed: '2026-08-07'
+      completed_at: '2026-08-07'
+      tip_sha: 4fe4c37f
+      tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+      product_tip_sha: 18d028ed
+      product_tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+      product_ci_run: '31195470994'
+      report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+      report_status: approved
+      overall: approved
+      decision_id: D-S050-12
+      note: 'COMPLETE — D-S050-12=1 deploy strategy approved; env_role live=prod (sole DOKS); product tip CI green @ 18d028ed (run 31195470994); checklist tip 4fe4c37f; PR #899 open MERGEABLE; Sync database migrations CI fail OOS accepted; rollback prior DOKS/GHCR tag (no migrations); next merge #899 then 13; report docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md'
       feature_ids:
       - F33
       deepen_feature_ids:
@@ -13072,9 +13121,9 @@ stages:
     - S002 / EV-003 — user approved mitigations + rollback; H0c/H4/H5 PASS pre-merge baseline
     - S003 — strategy verified; deploy blocked on key rotation (Docker COPY fixed in repo)
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
-    # S038 active override (duplicate-key last-wins trailer)
-    tip_note: '12 signed off awaiting 13 smoke'
-    decision_id: D-S038-12
+    # S050 active override (duplicate-key last-wins trailer)
+    tip_note: 'S050/EV-042 tip 4fe4c37f (checklist); product CI green @18d028ed (31195470994); 12 COMPLETE D-S050-12=1; awaiting merge #899 then 13'
+    decision_id: D-S050-12
   13-deploy-smoke:
     status: completed
     awaiting_user_decision_note: 'Merge approval required for tip CD; session/cycle remain open'
@@ -14161,6 +14210,61 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S050-12
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: deploy_checklist
+  status: confirmed
+  topic: '12-verify-deploy deploy strategy sign-off'
+  summary: '1 — Approve deploy strategy/checklist; env_role live=prod (sole DOKS); next merge #899 then 13'
+  decision: |
+    D-S050-12=1 — user approved deploy strategy (option 1).
+    env_role: live = prod (sole DOKS).
+    Product tip CI green @ 18d028ed (run 31195470994).
+    Checklist tip 4fe4c37f (docs); local working tree may finalize signed checklist.
+    PR #899 open, MERGEABLE.
+    Sync database migrations CI fail = OOS (accepted).
+    Rollback: prior DOKS/GHCR tag; no migrations this cycle.
+    Report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+    12-verify-deploy COMPLETE; current_stage=13-deploy-smoke pending;
+    do NOT start 13 until merge #899 decided.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  tip_sha: 4fe4c37f
+  tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+  product_tip_sha: 18d028ed
+  product_tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+  product_ci_run: '31195470994'
+  current_stage: 13-deploy-smoke
+  active_task: T4.3
+  report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+  overall: approved
+  env_role: live_prod
+  pr_number: 899
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899
+  pr_status: open
+  related_decisions:
+  - D-S050-11-verify
+  - D-S050-ac
+  - D-S050-proceed
+  feature_ids:
+  - F33
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  - F18
+  - F19
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+  note: '12-verify-deploy COMPLETE; current_stage=13-deploy-smoke pending; awaiting merge #899'
 - id: D-S050-11-verify
   date: '2026-08-07'
   timestamp: '2026-08-07'
@@ -26541,6 +26645,22 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+  type: session-report
+  kind: deploy-checklist
+  stage: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: 4fe4c37f
+  tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+  product_tip_sha: 18d028ed
+  product_ci_run: '31195470994'
+  decision_id: D-S050-12
+  note: 'S050/EV-042 12-verify-deploy COMPLETE — D-S050-12=1; awaiting merge #899 then 13'
 - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
   type: session-report
   kind: verify-impl
@@ -29891,9 +30011,9 @@ evolve_cycles:
     - 03-plan-tooling
     - 06-tech-tooling
     note: Standard recommended; pending routing-plan approval
-  current_stage: 12-verify-deploy
-  current_stage_status: in_progress
-  current_stage_note: '12-verify-deploy in_progress @ 18d028ed; watching tip CI; PR #899 tip updated'
+  current_stage: 13-deploy-smoke
+  current_stage_status: pending
+  current_stage_note: '12 COMPLETE; awaiting merge #899 then 13; tip 4fe4c37f; product CI @18d028ed green'
   stages:
     00-context:
       status: completed
@@ -29903,7 +30023,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-07'
-      note: IN_PROGRESS — 11-verify-impl COMPLETE @ adad127c; T4.3 handoff; next 12-verify-deploy; live H4–H5/T3 deferred to 13
+      note: IN_PROGRESS — 12-verify-deploy COMPLETE (D-S050-12=1) @ 4fe4c37f; awaiting merge #899 then 13-deploy-smoke; live H4–H5/T3 deferred to 13
     01-requirements:
       status: completed
       started: '2026-08-07'
@@ -29969,15 +30089,26 @@ evolve_cycles:
       decision_id: D-S050-11-verify
       note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
     12-verify-deploy:
-      status: in_progress
+      status: completed
       started: '2026-08-07'
       started_at: '2026-08-07'
-      tip_sha: 18d028ed
-      tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
-      note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy @ 18d028ed; tip pushed; watching tip CI; PR #899 tip updated'
+      completed: '2026-08-07'
+      completed_at: '2026-08-07'
+      overall: approved
+      report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+      tip_sha: 4fe4c37f
+      tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+      product_tip_sha: 18d028ed
+      product_tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+      product_ci_run: '31195470994'
+      decision_id: D-S050-12
+      note: 'COMPLETE — D-S050-12=1 deploy strategy approved; env_role live=prod (sole DOKS); product tip CI green @ 18d028ed (run 31195470994); checklist tip 4fe4c37f; PR #899 open MERGEABLE; Sync database migrations CI fail OOS accepted; rollback prior DOKS/GHCR tag (no migrations); next merge #899 then 13; report docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md'
+    13-deploy-smoke:
+      status: pending
+      note: 'PENDING — awaiting merge #899 then 13; 12 COMPLETE (D-S050-12=1)'
   active_milestone: M4
   active_task: T4.3
-  active_task_note: 'T4.3 handoff — 11 complete @ 18d028ed; 12-verify-deploy in_progress; watching tip CI'
+  active_task_note: 'T4.3 handoff — 12 COMPLETE (D-S050-12=1) @ 4fe4c37f; awaiting merge #899 then 13-deploy-smoke (pending)'
   phase0_status: completed
   phase0_proceed: D-S050-proceed
   phase0_locks:
@@ -29989,21 +30120,24 @@ evolve_cycles:
   ui_preview_url: http://localhost:18000
   branch: evolve/EV-042-remove-db-tools-operator-throughput
   branch_status: active
-  tip_sha: 18d028ed
-  tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+  tip_sha: 4fe4c37f
+  tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
   tip_sha_pushed: true
-  tip_sha_note: 'pushed; 11 complete; starting 12-verify-deploy; watching tip CI'
+  tip_sha_note: 'pushed; checklist tip 4fe4c37f; product tip CI green @18d028ed (31195470994); 12 COMPLETE D-S050-12=1; awaiting merge #899 then 13'
   pr_number: 899
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899
   pr_status: open
+  pr_mergeable: true
   pr_title: '[M1–M3] EV-042: hide destinations UI, F33 mass ingest, work queue'
-  pr_note: 'tip updated to 18d028ed'
+  pr_note: 'tip 4fe4c37f (checklist); product CI green @18d028ed; MERGEABLE; awaiting merge then 13'
   preset: Standard
   gates:
     a_to_b: passed
     a_to_b_note: 'D-S050-gate-a=PASS'
     b_to_c: passed
     b_to_c_note: 'D-S050-gate-b=PASS'
+    deploy: pending
+    deploy_note: '12 APPROVED (D-S050-12=1); awaiting merge #899 then 13-deploy-smoke'
   checkpoints:
     phase_a: passed
     phase_a_note: 'Gate A PASS — D-S050-gate-a; D-S050-C1 dedicated mass-route limit'
@@ -30068,7 +30202,12 @@ evolve_cycles:
     status: written
     stage: 11-verify-impl
     skill_id: 11-verify-impl
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
+    status: written
+    stage: 12-verify-deploy
+    skill_id: 12-verify-deploy
   notes:
+  - '2026-08-07 S050/EV-042 12-verify-deploy COMPLETE — D-S050-12=1; env_role live=prod; product CI green @18d028ed (31195470994); checklist tip 4fe4c37f; PR #899 MERGEABLE; Sync DB migrations CI OOS; rollback prior DOKS/GHCR tag; current_stage 13-deploy-smoke pending; awaiting merge #899; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 PR #899 tip updated to 18d028ed — tip_sha_pushed=true ahead_of_origin=0; 11 complete; 12-verify-deploy in_progress; watching tip CI; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 11-verify-impl COMPLETE — D-S050-11-verify @ adad127c; report verify-impl.md; T3→13; current_stage 12-verify-deploy; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 11-verify-impl STARTED — in_progress @ 6ecff489; tip_sha_pushed=false ahead_of_origin=3; not completed'
@@ -30097,7 +30236,7 @@ evolve_cycles:
   started_at: "2026-08-06"
   completed: "2026-08-07"
   completed_at: "2026-08-07"
-  scope_summary: Docs-only: operator UI runbook + PPT source pack (outline, bibliography, image pointers, build walkthrough); Lean; path-cite domain/ops; no product code; no binary pptx in git
+  scope_summary: "Docs-only: operator UI runbook + PPT source pack (outline, bibliography, image pointers, build walkthrough); Lean; path-cite domain/ops; no product code; no binary pptx in git"
   routing_plan:
     required_stages:
     - 01-requirements
@@ -39574,10 +39713,10 @@ git_history:
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: 'workflow-state.yaml tip sync @ 18d028ed (this update only)'
-  tip_sha: 18d028ed
-  tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
-  tip_note: 'pushed; 11 complete; starting 12-verify-deploy; watching tip CI'
+  dirty_note: 'workflow-state.yaml + deploy-checklist after D-S050-12; tip 4fe4c37f; do not commit config.json'
+  tip_sha: 4fe4c37f
+  tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+  tip_note: 'pushed; checklist tip 4fe4c37f; product tip CI green @18d028ed (31195470994); 12 COMPLETE D-S050-12=1; awaiting merge #899 then 13'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -39592,6 +39731,7 @@ git_history:
   note: 'S047/EV-039 — current_branch evolve/EV-040-workbench-lint-ux @ 861c5457; pushed=true ahead_of_origin=0; PR #893 OPEN; 13 in_progress H1–H5 PASS; tip CD awaiting merge; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-07 S050/EV-042 12-verify-deploy COMPLETE — D-S050-12=1; tip 4fe4c37f (4fe4c37f55c596ae9eaecf0722501f594bb275b5); product CI green @18d028ed (31195470994); PR #899 MERGEABLE; Sync DB migrations CI OOS; current_stage 13-deploy-smoke pending; awaiting merge #899; recorded commit 4fe4c37f if missing; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 PR #899 tip updated to 18d028ed (18d028edf433d2e57efec50c1ede690d445c3bd6) — tip_sha_pushed=true ahead_of_origin=0; 11 complete; starting/continuing 12-verify-deploy; watching tip CI; recorded commits 18d028ed + 6ecff489 if missing; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 11-verify-impl COMPLETE @ adad127c — recorded commit adad127c ([11] fix: hide Upload to Database with destinations UI gate); D-S050-11-verify approve F33+F7 deepen+F16–F19 deepen; UJ-051..053 T3→13; report verify-impl.md; tip_sha_pushed=false ahead_of_origin=4 dirty docs; current_stage 12-verify-deploy; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 09+10 @ dff22265 — recorded commit dff22265 ([09] docs: S050/EV-042 QA pass_with_advisories; advance to 10-e2e); 10-e2e local PASS (artifact e2e-report.md; UJ-051..053 6/6; TC-F33 20/20; H0i 10/10; H0c 6/6); tip_sha_pushed=false ahead_of_origin=1; next 11-verify-impl; no git commit by workflow-state-manager'
@@ -40080,8 +40220,8 @@ git_history:
     created: "2026-08-07"
     session_id: S050-remove-db-tools-operator-throughput
     evolve_cycle_id: EV-042
-    tip_sha: 18d028ed
-    tip_sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6
+    tip_sha: 4fe4c37f
+    tip_sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
     exists: true
     pushed: true
     tip_sha_pushed: true
@@ -40089,7 +40229,8 @@ git_history:
     pr_number: 899
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899
     pr_status: open
-    note: "S050/EV-042 ACTIVE @ 18d028ed; PR #899 tip updated to 18d028ed; 11 complete; 12-verify-deploy in_progress; tip_sha_pushed=true ahead_of_origin=0; watching tip CI"
+    pr_mergeable: true
+    note: "S050/EV-042 ACTIVE @ 4fe4c37f; 12 COMPLETE (D-S050-12=1); PR #899 MERGEABLE; awaiting merge then 13; product CI @18d028ed green"
   - name: evolve/EV-041-operator-sources-briefing
     status: merged
     base: main
@@ -41289,6 +41430,16 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 4fe4c37f
+    sha_full: 4fe4c37f55c596ae9eaecf0722501f594bb275b5
+    message: '[12] docs: S050/EV-042 deploy checklist; tip CI green @ 18d028ed'
+    branch: evolve/EV-042-remove-db-tools-operator-throughput
+    stage: 12-verify-deploy
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    timestamp: '2026-08-07'
+    files_changed:
+    - docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-checklist.md
   - sha: 18d028ed
     short: 18d028ed
     sha_full: 18d028edf433d2e57efec50c1ede690d445c3bd6

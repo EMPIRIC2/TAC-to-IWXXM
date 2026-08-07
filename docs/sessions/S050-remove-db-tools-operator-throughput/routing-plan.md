@@ -25,8 +25,8 @@
 | 09-qa | yes | delta | **completed** | pass_with_advisories; qa-report.md |
 | 10-e2e | yes | full | **completed** | local UJ-051..053 6/6; live H4–H5 → 13 |
 | 11-verify-impl | yes | delta | **completed** | features+UJ approved; T3→13; fix adad127c |
-| 12-verify-deploy | yes | delta | pending | |
-| 13-deploy-smoke | yes | delta | pending | |
+| 12-verify-deploy | yes | delta | **completed** | D-S050-12=1; tip CI green @ 18d028ed; Sync DB mig OOS |
+| 13-deploy-smoke | yes | delta | pending | awaiting merge #899 → CD → live H4–H5 |
 
 ## Skip rationale
 
