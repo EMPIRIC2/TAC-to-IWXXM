@@ -11,7 +11,8 @@ set -euo pipefail
 
 API_BASE="https://api.render.com/v1"
 SERVICE_NAME="${RENDER_SERVICE_NAME:-metar-to-iwxxm-api}"
-FRONTEND_ORIGIN="${FRONTEND_ORIGIN:-https://metar-to-iwxxm-frontend-v4-web.onrender.com}"
+# Render frontend is suspended (S038); default to live DOKS operator origin.
+FRONTEND_ORIGIN="${FRONTEND_ORIGIN:-https://app.tac-to-iwxxm.com}"
 
 if [[ -z "${RENDER_API_KEY:-}" && -f .env ]]; then
   RENDER_API_KEY="$(grep -E '^RENDER_API_KEY=' .env | head -1 | cut -d= -f2- | tr -d '\r\"'"'"'')"

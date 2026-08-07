@@ -2,7 +2,7 @@
 
 > **Session**: S003-supabase-keys-config  
 > **Supabase project**: `ktvxijislbtgqapllmuk` (`https://ktvxijislbtgqapllmuk.supabase.co`)  
-> **Last updated**: 2026-06-24
+> **Last updated**: 2026-08-07 (Auth redirects → `app.tac-to-iwxxm.com`; BUG-2026-08-07)
 
 Operator checklist for keeping secrets and config aligned across environments.
 
@@ -26,7 +26,7 @@ Operator checklist for keeping secrets and config aligned across environments.
 2. **API Keys** → create **Publishable** (`sb_publishable_*`) and **Secret** (`sb_secret_*`) keys.
 3. **Database → Connect** → copy **Transaction pooler** `DATABASE_URL`.
 4. **Authentication → URL configuration** → set redirect URLs:
-   - `https://metar-to-iwxxm-frontend-v4-web.onrender.com/**`
+   - `https://app.tac-to-iwxxm.com/**` (live DOKS; do **not** re-add suspended Render hosts)
    - `http://localhost:18000/**` (local)
 5. **Authentication → Password Security** → enable **Leaked password protection** (HaveIBeenPwned).
 6. Apply SQL migrations `003` and `004` if not yet applied (see §Database advisor below).
@@ -123,8 +123,8 @@ Deprecate: `FRONTEND_VITE_SUPABASE_URL`, `FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEF
 make test-integration
 
 # Optional live signoff (credentials in .env)
-export LIVE_API_URL=https://metar-to-iwxxm-api.onrender.com
-export LIVE_FRONTEND_URL=https://metar-to-iwxxm-frontend-v4-web.onrender.com
+export LIVE_API_URL=https://api.tac-to-iwxxm.com
+export LIVE_FRONTEND_URL=https://app.tac-to-iwxxm.com
 make test-live-connectivity
 ```
 

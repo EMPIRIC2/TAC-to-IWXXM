@@ -6,18 +6,17 @@ metadata:
     app.kubernetes.io/name: metar-frontend
     app.kubernetes.io/component: frontend
 data:
-  # Provisional cutover config (D-S038-t63-waive): placeholder hosts + LB via /etc/hosts.
-  # Public Render URLs remain in committed config/prod.json until real DNS (T6.3 residual).
+  # Runtime bootstrap mirrors config/prod.json hosts (Render frontend decommissioned).
   config.json: |
     {
       "environment": "prod",
       "api": {
-        "baseUrl": "http://api.doks.placeholder.metar-iwxxm.local",
-        "frontendUrl": "http://app.doks.placeholder.metar-iwxxm.local",
+        "baseUrl": "https://api.tac-to-iwxxm.com",
+        "frontendUrl": "https://app.tac-to-iwxxm.com",
         "corsOrigins": [
-          "http://app.doks.placeholder.metar-iwxxm.local",
-          "http://168.144.12.70",
-          "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+          "https://app.tac-to-iwxxm.com",
+          "http://app.tac-to-iwxxm.com",
+          "http://168.144.12.70"
         ]
       },
       "supabase": {

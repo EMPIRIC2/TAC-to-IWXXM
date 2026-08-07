@@ -135,7 +135,7 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | husky | root `package.json` devDependency (^9.1.7) | Git hooksPath — pre-commit (fast+medium) + pre-push (`make ci` units+Compose; EV-036) |
 | actionlint | pre-commit hook | GitHub Actions workflow lint (EV-002) |
 | yamllint | pre-commit hook | `.github/` YAML lint (EV-002) |
-| supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` |
+| supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` — **pin `2.111.0`** (not `latest`; CLI 2.112.0 breaks `link` on api-keys `inserted_at`, supabase/cli#6115 / BUG-2026-08-07) |
 | docker / compose | system | Local multi-service |
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
 | cargo / maturin | **required before cutover** | PyO3 wheel build in CI/API image (ADR-017) |
