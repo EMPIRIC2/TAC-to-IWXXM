@@ -13,6 +13,6 @@ data:
   LOG_LEVEL: "INFO"
   ENABLE_STATISTICS: "true"
   ENABLE_WEBHOOKS: "false"
-  # Provisional CORS (D-S038-t63-waive): Host-header FE + LB IP until real DNS.
-  METAR_CORS_ORIGINS: "http://app.doks.placeholder.metar-iwxxm.local,http://168.144.12.70,https://app.doks.placeholder.metar-iwxxm.local,https://metar-to-iwxxm-frontend-v4-web.onrender.com"
+  # CORS: DOKS FE hosts + LB IP. Suspended Render frontend origin removed (BUG-2026-08-07).
+  METAR_CORS_ORIGINS: "https://app.tac-to-iwxxm.com,http://app.tac-to-iwxxm.com,http://168.144.12.70"
   PORT: "8000"

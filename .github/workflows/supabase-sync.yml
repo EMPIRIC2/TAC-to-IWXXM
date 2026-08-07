@@ -74,11 +74,13 @@ jobs:
           fi
           echo "skip=false" >> "${GITHUB_OUTPUT}"
 
+      # Pin 2.111.0 — CLI 2.112.0 breaks `link` on api-keys inserted_at (+00:00 vs Z).
+      # Upstream: https://github.com/supabase/cli/issues/6115 (BUG-2026-08-07).
       - name: Install Supabase CLI
         if: steps.guard.outputs.skip != 'true'
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.111.0
 
       - name: Link project
         if: steps.guard.outputs.skip != 'true'
@@ -123,11 +125,12 @@ jobs:
           fi
           echo "skip=false" >> "${GITHUB_OUTPUT}"
 
+      # Same pin as migrations job (BUG-2026-08-07 / supabase/cli#6115).
       - name: Install Supabase CLI
         if: steps.guard.outputs.skip != 'true'
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.111.0
 
       - name: Provision project root for functions
         if: steps.guard.outputs.skip != 'true'
