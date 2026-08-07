@@ -144,4 +144,58 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
     });
     expect(await screen.findByDisplayValue('prefs')).toBeInTheDocument();
   });
+
+  it('does not reset when confirmation is cancelled', async () => {
+    localStorage.setItem(
+      'metar_converter_preferences',
+      JSON.stringify({
+        displayName: 'Keep Me',
+        outputFileExtension: '.iwxxm',
+      }),
+    );
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    render(<UserPreferencesDialog {...defaultProps} />);
+    await screen.findByDisplayValue('Keep Me');
+    await user.click(
+      screen.getByRole('button', { name: /reset preferences to defaults/i }),
+    );
+
+    expect(screen.getByDisplayValue('Keep Me')).toBeInTheDocument();
+    expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.iwxxm');
+  });
+
+  it('toasts when save fails', async () => {
+    const user = userEvent.setup();
+    render(<UserPreferencesDialog {...defaultProps} />);
+    await screen.findByDisplayValue('prefs');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota');
+    });
+
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith('Failed to save preferences');
+    });
+  });
+
+  it('toasts when reset fails after confirm', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    render(<UserPreferencesDialog {...defaultProps} />);
+    await screen.findByDisplayValue('prefs');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota');
+    });
+
+    await user.click(
+      screen.getByRole('button', { name: /reset preferences to defaults/i }),
+    );
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith('Failed to reset preferences');
+    });
+  });
 });
