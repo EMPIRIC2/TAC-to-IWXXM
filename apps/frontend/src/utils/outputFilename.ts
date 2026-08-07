@@ -54,6 +54,25 @@ export function manualOutputName(base: string, index: number, total: number): st
 }
 
 /**
+ * Build the download XML filename from the *current* Output filename field.
+ *
+ * Used after convert when the operator renames the field (#904) — must not
+ * rely on the convert-time {@link manualOutputName} baked into result state.
+ *
+ * @param base - Current raw Output filename field value.
+ * @param index - Zero-based index of the manual result.
+ * @param total - Total number of manual results in the batch.
+ * @returns The `.xml` download name (sanitized + multi-line suffix).
+ */
+export function manualDownloadXmlName(
+  base: string,
+  index: number,
+  total: number,
+): string {
+  return manualOutputName(base, index, total).replace(/\.(txt|metar)$/i, '.xml');
+}
+
+/**
  * Build the "Download All" ZIP archive name.
  *
  * Uses `<base>.zip` when the user set a custom name; otherwise the historical

@@ -3,9 +3,41 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 50
+session_counter: 51
 evolve_cycle_counter: 42
-active_session: null
+active_session:
+  id: S051-output-filename-download-stale
+  type: hotfix
+  intent: "Fix #904 — after convert, Output filename field changes must apply to Download / ZIP member names (BUG-2026-08-07-output-filename-download-stale)"
+  status: in_progress
+  branch: fix/output-filename-download-stale
+  branch_base: main@d6f6fa04
+  branch_status: pending_create
+  orchestrator: 14-hotfix
+  evolve_cycle_id: null
+  artifacts_dir: docs/sessions/S051-output-filename-download-stale/
+  bug_report: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904
+  remediation_path: local-first
+  prior_session: S050-remove-db-tools-operator-throughput
+  routing_plan:
+  - stage: 14-hotfix
+    required: true
+    mode: full
+    status: in_progress
+    started: '2026-08-07'
+    skip_rationale: null
+    note: 'IN_PROGRESS — #904 output filename stale on Download; BUG-2026-08-07-output-filename-download-stale'
+  - stage: 15-service-health
+    required: false
+    mode: when_deployed
+    status: pending
+    skip_rationale: null
+    note: optional after deploy (explicit approval required)
+  current_stage: 14-hotfix
+  started_at: '2026-08-07'
+  started: '2026-08-07'
+  context_briefs: []
 sessions:
 - id: S050-remove-db-tools-operator-throughput
   type: feature
@@ -13706,29 +13738,30 @@ stages:
     note: 'IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb'
     report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
   14-hotfix:
-    status: completed
-    session_id: S028-sigmet-multiline-split
-    current_bug: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
-    bug_status: resolved
+    status: in_progress
+    session_id: S051-output-filename-download-stale
+    current_bug: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+    bug_status: investigating
+    github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904
     remediation_path: local-first
-    started_at: '2026-07-30'
-    started: '2026-07-30'
-    completed: '2026-07-30'
-    completed_at: '2026-07-30'
-    tip_sha: 17c93bd
-    tip_sha_full: 17c93bdeba4c26a5f9d43bdc2faf1906fcae39df
-    pr_number: 796
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/796
-    pr_status: merged
-    merge_sha: 17c93bd
-    note: 'S028 COMPLETE — PR #796 merged 17c93bd; main CI Deploy PASS; live API soft-preview PASS (posList+WEAKEN); UI production_verified deferred (user moved to F9 decode deepen)'
-    prior_session_id: S012-empty-bearer-lint-tac
-    prior_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
+    started_at: '2026-08-07'
+    started: '2026-08-07'
+    note: 'S051 OPEN — #904 output filename change after convert ignored on Download; BUG-2026-08-07-output-filename-download-stale; local-first'
+    prior_session_id: S028-sigmet-multiline-split
+    prior_bug: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
     prior_bug_status: resolved
-    prior_pr_number: 721
-    prior_merge_sha: 6412b21
+    prior_completed: '2026-07-30'
+    prior_completed_at: '2026-07-30'
+    prior_pr_number: 796
+    prior_merge_sha: 17c93bd
+    prior_prior_session_id: S012-empty-bearer-lint-tac
+    prior_prior_bug: docs/bug-reports/BUG-2026-07-15-empty-bearer-lint-tac.md
+    prior_prior_bug_status: resolved
+    prior_prior_pr_number: 721
+    prior_prior_merge_sha: 6412b21
     notes:
-    - 2026-07-30 — S028 CLOSED — PR
+    - '2026-08-07 — S051-output-filename-download-stale open (#904 / BUG-2026-08-07-output-filename-download-stale); cleared S028 as current; routing 14-hotfix + optional 15 after deploy'
+    - 2026-07-30 — S028 CLOSED — PR #796 merged 17c93bd
     - 2026-07-30 — S028-sigmet-multiline-split open (BUG-2026-07-30 SIGMET/AIRMET multi-line split); pointer docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md; cleared S012 as current.
     - 2026-07-15 — S012-empty-bearer-lint-tac open (empty Bearer on lint-tac/decode-tac + lint UX issue details); cleared stale S009 pointer.
     - 2026-07-12 — Docs reorg via /14-hotfix rejected (not a bug/hotfix); deferred until S006 complete (S006-R4).
@@ -14055,6 +14088,31 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S051-open
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  session_id: S051-output-filename-download-stale
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: 'Open hotfix session S051 for GitHub #904 output filename download stale'
+  summary: 'open_session S051/14-hotfix for BUG-2026-08-07-output-filename-download-stale; routing 14 required + optional 15 after deploy'
+  decision: |
+    D-S051-open — workflow-state-manager open_session after S050 close.
+    active_session=S051-output-filename-download-stale; session_counter=51.
+    Intent: Fix #904 — Output filename field changes after convert must apply to Download / ZIP member names.
+    Bug report: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+    GitHub: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904
+    Remediation: local-first; deploy only after explicit approval.
+    Branch: fix/output-filename-download-stale (pending_create from main@d6f6fa04).
+    stages.14-hotfix → in_progress.
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904
+  bug_report: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+  branch: fix/output-filename-download-stale
+  tip_sha: d6f6fa04
+  note: 'open_session applied; active_session=S051-output-filename-download-stale; session_counter=51; stages.14-hotfix in_progress'
 - id: D-S050-13
   date: '2026-08-07'
   timestamp: '2026-08-07'

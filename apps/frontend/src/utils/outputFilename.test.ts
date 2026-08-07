@@ -3,6 +3,7 @@ import {
   DEFAULT_OUTPUT_BASENAME,
   sanitizeOutputFilename,
   manualOutputName,
+  manualDownloadXmlName,
   outputArchiveName,
 } from './outputFilename';
 
@@ -56,6 +57,22 @@ describe('manualOutputName', () => {
 
   it('sanitizes the base before applying a suffix', () => {
     expect(manualOutputName('my/out.xml', 0, 2)).toBe('out_1.txt');
+  });
+});
+
+describe('manualDownloadXmlName', () => {
+  it('uses the current field value as .xml (not a convert-time baked name)', () => {
+    expect(manualDownloadXmlName('second_name', 0, 1)).toBe('second_name.xml');
+    expect(manualDownloadXmlName('first_name', 0, 1)).toBe('first_name.xml');
+  });
+
+  it('suffixes _N for multi-line batches', () => {
+    expect(manualDownloadXmlName('report', 0, 2)).toBe('report_1.xml');
+    expect(manualDownloadXmlName('report', 1, 2)).toBe('report_2.xml');
+  });
+
+  it('falls back to manual_input.xml when blank', () => {
+    expect(manualDownloadXmlName('', 0, 1)).toBe('manual_input.xml');
   });
 });
 

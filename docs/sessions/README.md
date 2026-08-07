@@ -25,6 +25,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
+| [S051-output-filename-download-stale](S051-output-filename-download-stale/session-brief.md) | hotfix | in_progress | #904 output filename stale on Download; BUG-2026-08-07 | fix/output-filename-download-stale | 2026-08-07 | — |
 | [S049-operator-sources-briefing](S049-operator-sources-briefing/session-brief.md) | feature | in_progress | Operator UI source-centric runbook + PPT pack; EV-041 Lean docs | evolve/EV-041-operator-sources-briefing | 2026-08-06 | — |
 | [S048-workbench-lint-ux](S048-workbench-lint-ux/session-brief.md) | feature | completed | Workbench lint UX + prefs + official AHL/Collect + catalog source; EV-040; PR #893; #894 | evolve/EV-040-workbench-lint-ux | 2026-08-06 | 2026-08-06 |
 | [S047-sql-ingest-live-e2e](S047-sql-ingest-live-e2e/session-brief.md) | feature | completed | F16 live local multi-DB SQL ingest Playwright + teardown; EV-039; PR #891 | evolve/EV-039-sql-ingest-live-e2e → main @ fea30aba | 2026-08-06 | 2026-08-06 |
@@ -72,11 +73,11 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 ## Active session
 
-**None** (`active_session: null`).
+**[S051-output-filename-download-stale](S051-output-filename-download-stale/session-brief.md)** — hotfix / 14-hotfix  
+Fix [#904](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904): Output filename field changes after convert must apply to Download / ZIP member names.  
+Branch: `fix/output-filename-download-stale` (pending create). Bug report: `docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md`.
 
-Last closed: **[S043-rule-source-traceability](S043-rule-source-traceability/session-brief.md)** (EV-035) —
-deepen F6/F12/F15/F2 provenance map; deploy 12/13 waived; tip on
-`evolve/EV-035-rule-source-traceability`. Prior: S042 / EV-034.
+Prior closed: **[S050-remove-db-tools-operator-throughput](S050-remove-db-tools-operator-throughput/session-brief.md)** (EV-042) — PR #899 @ e3d1c7c8.
 
 Epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) remains **OPEN** for residual children
 (#869/#870/#872; #871 closeable). S040 remains suspended eligible to resume (do not auto-resume).
