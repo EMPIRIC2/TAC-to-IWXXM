@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-06 (local) / 2026-08-07 UTC  
 **PR:** https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893  
-**Branch tip:** `861c5457` (`evolve/EV-040-workbench-lint-ux`)  
+**Branch tip:** `65ad32d7` (`evolve/EV-040-workbench-lint-ux`)  
 **Live stack:** DOKS `api.tac-to-iwxxm.com` / `app.tac-to-iwxxm.com` (pre-merge tip)
 
 ## Sequence
@@ -10,7 +10,7 @@
 | Step | Result | Notes |
 |------|--------|-------|
 | Push + local `make ci` | PASS | Pre-push green |
-| GitHub CI (PR) | pending → re-run after FE coverage fix | First tip failed lines 94.99%; fix excludes fixtures |
+| GitHub CI (PR) | PASS | Frontend coverage fix; run 31134161218 green |
 | H0c (CORS unit) | PASS | via `verify_connectivity.sh` |
 | H1–H3 live API | PASS | `make test-live-api` — 20 passed, 1 skipped |
 | H4–H5 | PASS | `bash scripts/deploy/verify_connectivity.sh` |
