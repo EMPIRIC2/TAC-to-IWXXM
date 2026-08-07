@@ -23,6 +23,7 @@
 |----|----------|----------|----------|
 | Q1 | decision | Clear EV-041? | **Merge #895 then close** (user option 2) |
 | Q2 | ambiguity | What to remove from UI? | **R2 amend**: hide **all** Dissemination destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS); leave `DatabaseUploadDialog`; APIs retained for harness |
+| Q2b | decision | 11-verify-impl flag | **Also hide Upload to Database / DatabaseUploadDialog** (user 2026-08-07); restore with #898 |
 | Q3 | decision | Cycle ship bar? | Remove destinations UI + churn UX + secure mass file/folder ingest (F33) |
 | Q4 | decision | Churn UX? | **Queue+keyboard and batch convert/validate** (disseminate batch **N/A** while destinations hidden) |
 | Q5 | decision | Mass ingest shape? | **Multi-file + folder** (`webkitdirectory` / zip) with progress + per-file errors |

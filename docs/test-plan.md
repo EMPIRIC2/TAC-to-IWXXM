@@ -2025,10 +2025,10 @@ New **TC-EV038-001..014**. Deepens F2 / F4 / F6 / F7 / F32. Milestones M1â†’M2â†
 ### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053)
 
 - **Level**: T2 / T3
-- **Objective**: Convert&Send + Disseminate drawer entry absent; Convert/Validate remain
+- **Objective**: Convert&Send + Disseminate + **Upload to Database** absent; Convert/Validate remain
 - **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
-  `open-dissemination-drawer` count 0; convert still succeeds
-- **Source**: AC1; UJ-053; #897
+  `open-dissemination-drawer` / `upload-to-database-button` count 0; convert still succeeds
+- **Source**: AC1; UJ-053; #897; 11-verify-impl amend (hide DatabaseUploadDialog)
 
 ### TC-EV042-002: Dissemination API retained for harness (UJ-053)
 

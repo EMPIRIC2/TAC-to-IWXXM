@@ -71,6 +71,11 @@ function getTacFiles(): TacFixture[] {
 
 test.describe('TAC File Upload to Database', () => {
   test('upload button stays disabled before conversion', async ({ page }) => {
+    // EV-042 / UJ-053: Upload to Database hidden until #898 restore.
+    test.skip(
+      true,
+      'EV-042: Upload to Database hidden (destinationsEnabled=false); restore #898',
+    );
     await loginAndOpenConverter(page);
 
     await expect(
@@ -117,6 +122,10 @@ test.describe('TAC File Upload to Database', () => {
   });
 
   test('single TAC file can be converted and uploaded', async ({ page }) => {
+    test.skip(
+      true,
+      'EV-042: Upload to Database dialog hidden (destinationsEnabled=false); restore #898',
+    );
     const tacFiles = getTacFiles();
     test.skip(
       tacFiles.length === 0,
@@ -161,6 +170,10 @@ test.describe('TAC File Upload to Database', () => {
   });
 
   test('multiple TAC files can be queued and converted', async ({ page }) => {
+    test.skip(
+      true,
+      'EV-042: Upload to Database button hidden (destinationsEnabled=false); restore #898',
+    );
     const tacFiles = getTacFiles();
     test.skip(
       tacFiles.length < 2,

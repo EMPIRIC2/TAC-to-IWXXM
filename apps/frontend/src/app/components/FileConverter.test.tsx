@@ -370,6 +370,7 @@ describe('FileConverter Component', () => {
     });
 
     it('should display database upload button', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
       const dbBtn = await screen.findByText(/upload to database/i, {
         selector: 'button',
@@ -389,6 +390,7 @@ describe('FileConverter Component', () => {
 
   describe('Dialog Management', () => {
     it('should open database upload dialog', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
 
       // Database upload button is initially disabled (no converted files)
@@ -403,6 +405,7 @@ describe('FileConverter Component', () => {
     });
 
     it('should close database upload dialog', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
 
       // Database upload button is initially disabled
@@ -1237,7 +1240,8 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('opens upload dialog when converted files are present', async () => {
+    it('opens upload dialog when converted files are present (destinations UI on)', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>upload-test</iwxxm>' }],
@@ -1248,9 +1252,7 @@ describe('FileConverter Component', () => {
       await user.type(textarea, 'METAR UPLOAD BUTTON');
       await user.click(screen.getByTestId('convert-button'));
 
-      const uploadButton = await screen.findByRole('button', {
-        name: /upload 1 converted files to database/i,
-      });
+      const uploadButton = await screen.findByTestId('upload-to-database-button');
       expect(uploadButton).toBeEnabled();
 
       await user.click(uploadButton);
@@ -1261,10 +1263,16 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('hides Disseminate control while destinations UI is off (TC-EV042-001 / #897)', () => {
+    it('hides Convert&Send, Disseminate, and Upload to Database while destinations UI is off (TC-EV042-001 / #897)', () => {
       render(<FileConverter {...defaultProps} />);
       expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
       expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', {
+          name: /upload .* converted files to database/i,
+        }),
+      ).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-button')).toBeInTheDocument();
     });
 
@@ -2141,6 +2149,7 @@ describe('FileConverter Component', () => {
 
     // line 829: DatabaseUploadDialog onClose callback sets isUploadDialogOpen to false
     it('closes database upload dialog when onClose is invoked', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>close-dialog</iwxxm>' }],

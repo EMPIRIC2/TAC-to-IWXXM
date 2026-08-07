@@ -1638,19 +1638,22 @@ export function FileConverter({
                 Convert&Send
               </Button>
             ) : null}
-            <Button
-              onClick={() => setIsUploadDialogOpen(true)}
-              disabled={isBusy || !hasConverted || isReadOnly}
-              variant="outline"
-              className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-              aria-label={`Upload ${convertedFiles.length} converted files to database`}
-            >
-              <Database className="w-4 h-4" aria-hidden="true" />
-              Upload to Database
-              <span className="inline-block min-w-[1.75rem] tabular-nums">
-                ({convertedFiles.length})
-              </span>
-            </Button>
+            {isOperatorDisseminationDestinationsEnabled() ? (
+              <Button
+                data-testid="upload-to-database-button"
+                onClick={() => setIsUploadDialogOpen(true)}
+                disabled={isBusy || !hasConverted || isReadOnly}
+                variant="outline"
+                className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                aria-label={`Upload ${convertedFiles.length} converted files to database`}
+              >
+                <Database className="w-4 h-4" aria-hidden="true" />
+                Upload to Database
+                <span className="inline-block min-w-[1.75rem] tabular-nums">
+                  ({convertedFiles.length})
+                </span>
+              </Button>
+            ) : null}
             {isOperatorDisseminationDestinationsEnabled() ? (
               <Button
                 type="button"
@@ -2577,12 +2580,14 @@ export function FileConverter({
         </div>
       </div>
 
-      {/* Database Upload Dialog */}
-      <DatabaseUploadDialog
-        convertedFiles={convertedFiles}
-        isOpen={isUploadDialogOpen}
-        onClose={() => setIsUploadDialogOpen(false)}
-      />
+      {/* Database Upload Dialog — gated with destinations UI (EV-042 / #897; restore #898) */}
+      {isOperatorDisseminationDestinationsEnabled() ? (
+        <DatabaseUploadDialog
+          convertedFiles={convertedFiles}
+          isOpen={isUploadDialogOpen}
+          onClose={() => setIsUploadDialogOpen(false)}
+        />
+      ) : null}
 
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DisseminationDrawer

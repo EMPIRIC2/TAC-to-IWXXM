@@ -1468,14 +1468,15 @@ per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 
 **Actor**: Operator
 
-**Goal**: Dissemination drawer sink chooser and Convert&Send destination path are not
-available (DB + WIS2/EDIS/AMHS/SWIM/AFS). Backend APIs remain for harness until #898.
+**Goal**: Dissemination drawer sink chooser, Convert&Send destination path, and
+**Upload to Database** / `DatabaseUploadDialog` are not available (DB + WIS2/EDIS/AMHS/SWIM/AFS).
+Backend APIs remain for harness until #898.
 
 **Feature**: **F16–F19** deepen — EV-042 / #897; restore [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898)
 
 **Steps**:
 
-1. Open workbench; confirm no sink chooser / Convert&Send destination flow.
+1. Open workbench; confirm no sink chooser / Convert&Send / Upload to Database.
 2. Convert and validate still work (UJ-001/002/052).
 3. Harness/tests may still call `/api/v1/dissemination/*` outside the operator UI.
 

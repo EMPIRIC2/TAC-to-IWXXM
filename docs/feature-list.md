@@ -1413,11 +1413,11 @@
 - **Status note**: F16–F19 remain **Done** (engines/APIs); **operator UI destinations temporarily
   removed**. F7 remains **Planned** with churn deepen.
 - **Acceptance (EV-042 shared)**:
-  1. No Dissemination sink chooser / Convert&Send destination path in operator UI (**UJ-053**, **TC-EV042-001**)
+  1. No Dissemination sink chooser / Convert&Send / **Upload to Database** in operator UI (**UJ-053**, **TC-EV042-001**)
   2. Harness/tests can still call dissemination preflight/send (**TC-EV042-002**)
   3. Queue + keyboard next/prev + Enter convert/validate; multi-select batch convert/validate (**UJ-052**, **TC-EV042-003**)
   4. Mass progress toast + convert/validate keyboard shortcuts (**TC-EV042-004**)
-  5. #898 updated to restore **all** destinations (DB + F17–F19)
+  5. #898 updated to restore **all** destinations (DB + F17–F19), including Upload to Database / Convert&Send
 - **Journeys / tests**: **UJ-051..053**; **TC-F33-001..006**; **TC-EV042-001..004**
 - **Out of scope**: Implementing #898; soft-deleting `packages/dissemination` adapters
 - **Source**: #897; evolve-decisions §EV-042
