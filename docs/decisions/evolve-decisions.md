@@ -3,6 +3,48 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-041 — Operator UI runbook + source-centric PPT pack (S049)
+
+**Session**: S049-operator-sources-briefing  
+**Features**: deepen **F7** narrative (no new Fn)  
+**Started**: 2026-08-06  
+**Branch**: `evolve/EV-041-operator-sources-briefing`  
+**Status**: in_progress  
+**Prior**: S048 / EV-040 completed  
+**Corpus**: [Corpus: product §F7], [Corpus: system-spec], [Corpus: tech-spec];
+path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
+[docs/domain/rules/ACCESS_AND_CITATION.md], [docs/domain/rules/PROVENANCE_MAP.md],
+[docs/domain/mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md];
+[Corpus: WAIVED — ops/guides CORPUS membership; reason: path-cite only (EV-035 G3 pattern); decided: EV-041]
+
+### Scope (Phase 0 — locked 2026-08-06; plan `operator_sources_docs` → **D-S049-open**)
+
+| ID | Category | Question | Decision |
+|----|----------|----------|----------|
+| Q1 | decision | Deliverables? | Docs-only runbook + PPT **source pack** + guided `.pptx` walkthrough (no binary in git) |
+| Q2 | decision | Audience? | **Split** — runbook = operators; PPT = external sources/architecture briefing |
+| Q3 | decision | CORPUS? | Path-cite domain/ops/guides — **no** minimal-corpus membership |
+| Q4 | decision | UI preview? | **N/A** — docs-only (optional local screenshots for personal deck only) |
+
+### Preset
+
+**Lean (docs override)** — `00→16→01→02→07→08` (skip 03–06, 09–13)
+
+### Acceptance (locked — **D-S049-ac**)
+
+| AC | Criterion |
+|----|-----------|
+| AC1 | Runbook covers operator workflow **and** maps each major surface to standards/vendor/package sources |
+| AC2 | PPT pack has complete slide outline + bibliography + image pointers + build walkthrough |
+| AC3 | All citations follow ACCESS_AND_CITATION (paywall labeled; no copyrighted full text) |
+| AC4 | Walkthrough can produce a briefing deck without inventing new normative claims |
+| AC5 | Session artifacts + branch recorded; PR when requested |
+
+### In / out
+
+- **In**: `docs/ops/operator-ui-runbook.md`; `docs/guides/operator-sources-pptx/*`; this section; domain README pointer
+- **Out**: product code; `.pptx`/PDFs/PNGs in git; provenance catalog rewrite; deploy
+
 ## Cycle EV-040 — Workbench lint UX + examples + prefs (S048)
 
 **Session**: S048-workbench-lint-ux  

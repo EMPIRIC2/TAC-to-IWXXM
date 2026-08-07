@@ -74,6 +74,9 @@ Product × role coverage: [rules/COVERAGE_MATRIX.md](./rules/COVERAGE_MATRIX.md)
 **Rules catalog strategy:** [rules/README.md](./rules/README.md) (role routing + **apply playbooks**) ·
 [rules/COVERAGE_MATRIX.md](./rules/COVERAGE_MATRIX.md) (G1–G7 gates · product × strategy cites).
 
+**Operator / briefing (sources-first, EV-041):** [../ops/operator-ui-runbook.md](../ops/operator-ui-runbook.md) ·
+[../guides/operator-sources-pptx/](../guides/operator-sources-pptx/) (PPT pack — path-cite only; not CORPUS).
+
 **Canonical strategy deep dives (2026-07-14 continue · 2026-07-30 promote #797):**
 
 | Doc | Added for this pass |
