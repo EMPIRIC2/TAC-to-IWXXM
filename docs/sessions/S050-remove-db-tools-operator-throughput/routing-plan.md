@@ -23,7 +23,7 @@
 | 07-build | yes | full | **completed** | M1–M4 T4.1–T4.2 |
 | 08-verify-build | yes | delta | **completed** | M4 PASS @ 6bc756ef |
 | 09-qa | yes | delta | **completed** | pass_with_advisories; qa-report.md |
-| 10-e2e | yes | full | pending | H4–H5 (+ UJ-051..053) |
+| 10-e2e | yes | full | **completed** | local UJ-051..053 6/6; live H4–H5 → 13 |
 | 11-verify-impl | yes | delta | pending | |
 | 12-verify-deploy | yes | delta | pending | |
 | 13-deploy-smoke | yes | delta | pending | |
