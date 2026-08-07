@@ -50,9 +50,16 @@
 
 | Task | Spec Source | Depends On | Status | Data Deps |
 |------|-------------|------------|--------|-----------|
-| T3.1 | Result/work queue UI + keyboard next/prev + Enter convert/validate | AC3; UJ-052 | T1.1 | pending | |
-| T3.2 | Multi-select batch convert + batch validate (no disseminate) | AC3; R4 | T3.1 | pending | |
-| T3.3 | Wire mass-ingest successes into queue; Vitest/Playwright TC-EV042-003..004 + TC-F33-005 | AC3/AC6; UJ-051/052 | T2.3, T3.2 | pending | |
+| T3.1 | Result/work queue UI + keyboard next/prev + Enter convert/validate | AC3; UJ-052 | T1.1 | **completed** | |
+| T3.2 | Multi-select batch convert + batch validate (no disseminate) | AC3; R4 | T3.1 | **completed** | |
+| T3.3 | Wire mass-ingest successes into queue; Vitest/Playwright TC-EV042-003..004 + TC-F33-005 | AC3/AC6; UJ-051/052 | T2.3, T3.2 | **completed** | |
+
+## Milestone M3 notes
+
+- Sticky work queue with focus ring; ↑/↓ + Enter convert + Shift+Enter lint validate
+- Multi-select Batch Convert / Batch Validate (no disseminate)
+- Mass ingest already hands accepted items into `pendingFiles` (T2.3); Vitest TC-EV042-003 + helpers
+- Playwright H4–H5 for mass route deferred to M4
 
 ## Milestone M4 — Verify / connectivity / docs close
 

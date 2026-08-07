@@ -25,7 +25,7 @@ mass file/folder ingest (F33) — restore destinations on #898.
 
 ## Next child stage
 
-**07-build** — M2 complete; start **M3** (T3.1 queue/keyboard/batch churn)
+**07-build** — M3 complete; start **M4** (H4–H5 / 08–13) or run **08-verify-build**
 
 ## Locked
 

@@ -86,6 +86,7 @@ const mockToast = vi.hoisted(() => ({
   dismiss: vi.fn(),
   promise: vi.fn(),
   info: vi.fn(),
+  warning: vi.fn(),
 }));
 const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 const mockScheduleAutoSave = vi.hoisted(() => vi.fn());
@@ -1307,6 +1308,82 @@ describe('FileConverter Component', () => {
       expect(mockToast.loading).toHaveBeenCalled();
       expect(mockToast.success).toHaveBeenCalledWith(
         'Mass ingest: 1 accepted, 0 rejected',
+        expect.anything(),
+      );
+    });
+
+    it('work queue keyboard next + Enter converts focused item (TC-EV042-003)', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
+          {
+            iwxxm_xml: '<iwxxm>focused</iwxxm>',
+            name: 'second.tac',
+            tac_input: 'METAR SECOND',
+          },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'first.tac', text: vi.fn().mockResolvedValue('METAR FIRST') },
+            1: {
+              name: 'second.tac',
+              text: vi.fn().mockResolvedValue('METAR SECOND'),
+            },
+            length: 2,
+          },
+        },
+      });
+
+      const queue = await screen.findByTestId('operator-work-queue');
+      queue.focus();
+      await user.keyboard('{ArrowDown}{Enter}');
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
+      });
+      const call = mockConvertMetarToIwxxm.mock.calls.at(-1)?.[0] as {
+        files?: File[];
+        manualText?: string;
+      };
+      expect(call.manualText).toBeUndefined();
+      expect(call.files?.map((f) => f.name)).toEqual(['second.tac']);
+    });
+
+    it('batch validate runs lint on selected queue items (TC-EV042-003)', async () => {
+      const user = userEvent.setup();
+      mockLintTac.mockResolvedValue({ ok: true, issues: [], fixes: [] });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'a.tac', text: vi.fn().mockResolvedValue('METAR A') },
+            1: { name: 'b.tac', text: vi.fn().mockResolvedValue('METAR B') },
+            length: 2,
+          },
+        },
+      });
+
+      await screen.findByTestId('operator-work-queue');
+      await user.click(screen.getByTestId('queue-select-0'));
+      await user.click(screen.getByTestId('queue-select-1'));
+      await user.click(screen.getByTestId('batch-validate-button'));
+
+      await waitFor(() => {
+        expect(mockLintTac).toHaveBeenCalledTimes(2);
+      });
+      expect(mockToast.success).toHaveBeenCalledWith(
+        'Batch validate: 2 ok, 0 with issues',
         expect.anything(),
       );
     });
