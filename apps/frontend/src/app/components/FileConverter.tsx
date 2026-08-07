@@ -99,6 +99,7 @@ import {
 } from '/utils/workSessionPayload';
 import { readGuestConverterState } from '/utils/guestConverterState';
 import {
+  manualDownloadXmlName,
   manualOutputName,
   outputArchiveName,
   sanitizeOutputFilename,
@@ -134,6 +135,12 @@ interface ConvertedFile {
   /** 1-based index when manual input had multiple lines. */
   manualLineIndex?: number;
   manualLineTotal?: number;
+  /**
+   * When set, Download / ZIP member names follow the live Output filename
+   * field (#904) instead of convert-time {@link originalName}.
+   * `index` is 0-based; `total` is the manual batch size.
+   */
+  liveOutputSlot?: { index: number; total: number };
 }
 
 interface PendingFile {
@@ -861,6 +868,9 @@ export function FileConverter({
                 isManualResult && manualResultCount > 1 ? index + 1 : undefined,
               manualLineTotal:
                 isManualResult && manualResultCount > 1 ? manualResultCount : undefined,
+              liveOutputSlot: isManualResult
+                ? { index, total: manualResultCount }
+                : undefined,
               convertedContent: result.iwxxm_xml || result.xml || result.content || '',
               timestamp: Date.now(),
             });
@@ -1092,12 +1102,23 @@ export function FileConverter({
     toast.info(`Loaded ${example.label} example`);
   }, []);
 
+  const resolveDownloadXmlName = (file: ConvertedFile): string => {
+    if (file.liveOutputSlot) {
+      return manualDownloadXmlName(
+        outputFilename,
+        file.liveOutputSlot.index,
+        file.liveOutputSlot.total,
+      );
+    }
+    return file.originalName.replace(/\.(txt|metar)$/i, '.xml');
+  };
+
   const handleDownloadSingle = (file: ConvertedFile) => {
     const blob = new Blob([file.convertedContent], { type: 'text/xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = file.originalName.replace(/\.(txt|metar)$/i, '.xml');
+    a.download = resolveDownloadXmlName(file);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1111,7 +1132,7 @@ export function FileConverter({
     const zip = new JSZip();
 
     convertedFiles.forEach((file) => {
-      const filename = file.originalName.replace(/\.(txt|metar)$/i, '.xml');
+      const filename = resolveDownloadXmlName(file);
       zip.file(filename, file.convertedContent);
     });
 
