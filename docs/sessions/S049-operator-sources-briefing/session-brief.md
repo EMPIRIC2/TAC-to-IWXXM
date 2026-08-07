@@ -21,11 +21,15 @@ deepen_feature_ids:
   - F7
 feature_note: "Docs deepen F7 narrative — no new Fn; Lean docs-only"
 route_status: in_progress
-current_stage: 07-build
+current_stage: 16-evolve
 ui_preview: n/a
 preset: Lean
+pr_number: 895
+pr_status: open
+pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
 decisions:
   D-S049-open: "plan approve; deliverables=docs+walkthrough; audience=split"
+  D-S049-ac: "AC1-AC5 locked"
 ---
 
 # Session S049 — operator-sources-briefing
