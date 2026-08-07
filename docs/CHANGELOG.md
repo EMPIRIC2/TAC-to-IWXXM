@@ -2,6 +2,23 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-07 — S050 EV-042 (Hide destinations + F33 mass ingest + work queue)
+
+### Added
+- **F33**: Secure mass folder/zip ingest (`POST /api/v1/ingest/mass`) with caps, sniff,
+  zip-bomb guards, dedicated body limit; signed-in only.
+- **F7**: Work-queue keyboard + batch convert controls for operator throughput.
+
+### Changed
+- **F16–F19**: Operator destinations UI hidden (`destinationsEnabled=false`), including
+  Convert&Send, Disseminate, and Upload to Database. Restore tracked in [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+
+### Deploy
+- Live: [#899](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899) @ `e3d1c7c8`; DOKS CD
+  [31197264636](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31197264636); H0c/H1/H4–H5
+  (mass) + UJ-051..053 6/6 PASS (`D-S050-13=1`).
+- Report: [deploy-smoke.md](sessions/S050-remove-db-tools-operator-throughput/reports/deploy-smoke.md).
+
 ## 2026-08-06 — S048 EV-040 (Workbench lint UX + examples + prefs)
 
 ### Changed

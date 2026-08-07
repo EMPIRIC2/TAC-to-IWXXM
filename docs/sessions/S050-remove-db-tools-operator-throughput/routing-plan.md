@@ -6,7 +6,7 @@
 **Branch:** `evolve/EV-042-remove-db-tools-operator-throughput`  
 **Features:** deepen **F7 / F16**; propose **F33** secure mass ingest (Phase 1 confirm)  
 **Issues:** [#897](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/897) epic; [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898) follow-up  
-**Status:** in_progress — Phase 0 locked; proceed gate pending  
+**Status:** completed — `D-S050-13=1`; #899 merged; live smoke PASS; S050/EV-042 closed  
 **Prior:** S049 / EV-041 completed (PR #895 merged)  
 **Approved routing:** 2026-08-07 (user Q8=1)
 
@@ -26,7 +26,7 @@
 | 10-e2e | yes | full | **completed** | local UJ-051..053 6/6; live H4–H5 → 13 |
 | 11-verify-impl | yes | delta | **completed** | features+UJ approved; T3→13; fix adad127c |
 | 12-verify-deploy | yes | delta | **completed** | D-S050-12=1; tip CI green @ 18d028ed; Sync DB mig OOS |
-| 13-deploy-smoke | yes | delta | pending | awaiting merge #899 → CD → live H4–H5 |
+| 13-deploy-smoke | yes | delta | **completed** | D-S050-13=1; CD green; H4–H5+UJ 6/6; S050/EV-042 closed |
 
 ## Skip rationale
 

@@ -36,8 +36,8 @@
 - [x] Branch pushed — tip `18d028ed` (product) / `4fe4c37f` (checklist docs)
 - [x] Tip CI green — [CI/CD Pipeline 31195470994](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31195470994) **success** @ `18d028ed`
 - [x] PR open — [#899](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899)
-- [ ] Merge + CD (explicit user approval)
-- [ ] Post-deploy H1–H3 + **H4–H5** mass ingest (13)
+- [x] Merge + CD — #899 MERGED @ `e3d1c7c8`; Deploy [31197264636](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31197264636) success
+- [x] Post-deploy H1 + **H4–H5** mass ingest (13) — see `deploy-smoke.md`; awaiting `D-S050-13`
 
 ## Failure Mitigations
 
