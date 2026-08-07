@@ -10,7 +10,7 @@
 | **Session** | S051-output-filename-download-stale |
 | **Remediation path** | local-first (deploy only after explicit approval) |
 | **Branch** | `fix/output-filename-download-stale` |
-| **PR** | — |
+| **PR** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905 |
 
 ## Error description
 
