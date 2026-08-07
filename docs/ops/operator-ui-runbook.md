@@ -220,8 +220,13 @@ Detailed E2E IDs: [Corpus: journeys] UJ-013–021, UJ-025, UJ-032.
 
 ---
 
-## 10. Briefing deck
+## 10. Briefing deck (authority / compliance audience)
 
-For stakeholder presentations on **sources used to build the tool**, use
-[../guides/operator-sources-pptx/](../guides/operator-sources-pptx/) and follow
-`build-walkthrough.md`. Do not commit the finished `.pptx` unless explicitly requested.
+For **national MET / aviation authority leadership** (TAC→IWXXM compliance /
+OPMET exchange), use:
+
+- [../guides/operator-sources-pptx/](../guides/operator-sources-pptx/) — slide outline
+- [../guides/operator-sources-pptx/citation-search-guide.md](../guides/operator-sources-pptx/citation-search-guide.md) — **sources to cite + search walkthrough**
+- `build-walkthrough.md` to assemble a personal `.pptx` (do not commit binaries)
+
+Day-to-day staff use this runbook; leaders use the deck + citation guide.

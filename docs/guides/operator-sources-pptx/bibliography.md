@@ -4,8 +4,24 @@ Subset of [RULE_SOURCE_URLS.md](../../domain/rules/RULE_SOURCE_URLS.md) plus sof
 cites. Labels: **normative** | **normative-schema** | **normative-vocabulary** |
 **informative** | **software**. Access: **public** | **paywall** | **library**.
 
+**Audience:** national MET / aviation authority leadership (compliance).
+**Search walkthrough:** [citation-search-guide.md](./citation-search-guide.md).
+
 Vendor pin (runtime): IWXXM **v2025-2**, codelists **49-2**, iwxxm-us **3.0** —
 [`vendor/manifest.json`](../../../vendor/manifest.json).
+
+---
+
+## A0. Leadership priority cites (print first)
+
+| Priority | Title | URL | Access |
+|----------|-------|-----|--------|
+| 1 | ICAO Annex 3 | https://store.icao.int/en/annexes/annex-3 | paywall |
+| 2 | ICAO Doc 10003 | https://store.icao.int/en/manual-on-the-icao-meteorological-information-exchange-model-doc-10003 | paywall |
+| 3 | OPMET IWXXM Exchange Guidelines 5th Ed. | https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf | public |
+| 4 | IWXXM schemas 2025-2 | https://schemas.wmo.int/iwxxm/2025-2/ | public |
+| 5 | codes.wmo.int | https://codes.wmo.int/ | public |
+| 6 | WMO-No. 306 Vol I.3 | https://library.wmo.int/idurl/4/35769 | library |
 
 ---
 

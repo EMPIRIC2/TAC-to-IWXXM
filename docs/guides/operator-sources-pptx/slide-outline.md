@@ -1,263 +1,200 @@
-# Slide outline — TAC-to-IWXXM sources briefing
+# Slide outline — National compliance briefing (TAC → IWXXM)
 
-Copy each block into one slide. Speaker notes are for presenter view only.
+**Audience:** Heads of MET services / aviation authorities / State representatives
+responsible for meeting **ICAO/WMO OPMET–IWXXM** exchange expectations.
+**Tone:** Why compliance matters → which sources bind → how this tool helps prove
+lint → convert → validate. Not a click tutorial.
+
+**Citation pack:** [citation-search-guide.md](./citation-search-guide.md)
+**Policy:** cite landings + section numbers; never paste Annex 3 / MoC body text.
 
 ---
 
 ## Slide 1 — Title
 
-**Title:** TAC → IWXXM Operator System  
-**Subtitle:** Built from ICAO / WMO / NWS sources · Runtime pin **IWXXM v2025-2**
+**Title:** Meeting OPMET IWXXM Exchange Expectations
+**Subtitle:** TAC → validated IWXXM for international air navigation · Schema pin **IWXXM v2025-2**
 
-**Bullets (optional footer):**
+**Bullets:**
+- For: State MET / ANSP / aviation authority leadership
+- Scope: convert Traditional Alphanumeric Code (TAC) to IWXXM XML and prove quality
 
-- Repository: EMPIRIC2/TAC-to-IWXXM (monorepo)
-- Briefing pack: `docs/guides/operator-sources-pptx/`
+**Speaker notes:** Frame as **compliance enablement**. Obligations come from ICAO/WMO —
+this system implements lint/convert/validate against published schemas.
+[citation-search-guide.md] [Corpus: product §F6/F7]
 
-**Speaker notes:** This deck is about *provenance* — which standards and schema pins
-underwrite the tool — not a feature tour. Operator click-paths live in
-`docs/ops/operator-ui-runbook.md`. [Corpus: product §F7] [Corpus: system-spec]
-
-**Figure:** none (or org logo only)
-
-**Sources:** vendor/manifest.json · feature-list F7
+**Sources footer:** Annex 3 (Store) · OPMET Guidelines 5th (public) · schemas.wmo.int/2025-2
 
 ---
 
-## Slide 2 — Why IWXXM (problem framing)
+## Slide 2 — Why leadership cares
 
-**Title:** TAC presentation vs IWXXM exchange
+**Title:** From TAC operations to IWXXM exchange
 
 **Bullets:**
+- TAC remains widely used for **presentation** and local ops
+- International OPMET **exchange** increasingly requires **IWXXM** (XML/GML)
+- Annex 3 sets MET service / product SARPs (State-adopted edition) — *Access: paywall*
+- Public **OPMET IWXXM Exchange Guidelines (5th Ed., 2023)** describe prep, translation, exchange over AFS/AMHS
+- Authorities need: **valid TAC → correct IWXXM → XSD + Schematron pass**
 
-- TAC remains familiar for human presentation
-- IWXXM (XML/GML) is the structured exchange form for OPMET
-- Annex 3 frames dual TAC + IWXXM obligations (cite; do not quote)
-- Operators need software to lint TAC, encode IWXXM, and validate XSD + Schematron
+**Speaker notes:** Do **not** invent a global TAC sunset date unless your licensed Annex 3 /
+regional agreement states it. Workshop ~2030 talk is **informative** only (PPT-02).
 
-**Speaker notes:** Informative workshop framing (PPT-02) says consumers still render TAC
-often while exchange moves to IWXXM. Do not claim TAC sunset dates as binding unless
-citing a current SARPs edition. [docs/domain/mining/PPT-02-…] [Corpus: product]
-
-**Figure:** optional simple two-column diagram “TAC text” ↔ “IWXXM XML” (draw yourself)
-
-**Sources:** ICAO Annex 3 (paywall store landing) · PPT-02 informative · OPMET Guidelines 5th (public)
+**Cite:** Annex 3 Store · Guidelines PDF · Doc 10003 Store
 
 ---
 
-## Slide 3 — Standards map
+## Slide 3 — Binding sources map
 
-**Title:** Standards & registries we built from
+**Title:** Sources States cite for IWXXM programmes
 
 **Bullets:**
+| Layer | Instrument | Access |
+|-------|------------|--------|
+| SARPs / TAC templates | **ICAO Annex 3** | Paywall (Store) |
+| Exchange model | **ICAO Doc 10003** | Paywall (Store) |
+| Implementation of exchange | **OPMET IWXXM Guidelines 5th** | Public PDF |
+| Code forms / FM 205 | **WMO-No. 306 Vol I.3** | Library |
+| Machine schemas | **schemas.wmo.int/iwxxm/2025-2** | Public |
+| Vocabularies | **codes.wmo.int** | Public |
+| Overview only | TT-AvData workshop PPT-02 | Public **informative** |
 
-- **ICAO Annex 3** — TAC SARPs / templates — *Access: paywall*
-- **WMO-No. 306 Vol I.3** — Manual on Codes / FM 205 representations — *library*
-- **codes.wmo.int** — linked-data vocabularies — *public*
-- **schemas.wmo.int/iwxxm** — XSD + Schematron landings — *public*
-- **FMH-1 / iwxxm-us** — US METAR/SPECI REMARKS overlay — *public*
-- **EUR Doc 014** — SIGMET/AIRMET guide — *public PDF*
-
-**Speaker notes:** Full catalog: RULE_SOURCE_URLS.md. Paywalled prose never lives in the
-repo. [docs/domain/rules/RULE_SOURCE_URLS.md] [ACCESS_AND_CITATION.md]
-
-**Figure:** see image-pointers §Standards logos / landings table (screenshot of landings list OK)
-
-**Sources:** RULE_SOURCE_URLS §1–§3
+**Speaker notes:** Walk leaders through citation-search-guide §2–§3. Regional guides
+(e.g. EUR Doc 014) **complement** Annex 3 — they do not replace it.
 
 ---
 
-## Slide 4 — What we implemented (architecture)
+## Slide 4 — What “compliance-ready IWXXM” means
 
-**Title:** Monorepo components
-
-**Bullets:**
-
-- `apps/frontend` — operator workbench (React / Vite)
-- `apps/backend` — FastAPI convert / lint / validate / decode
-- `apps/worker` — near-RT ingest (F8; not auto-disseminate)
-- `packages/tac-validate` · `tac2iwxxm` · `iwxxm-validate`
-- `vendor/schemas/*` — read-only WMO / NWS snapshots
-
-**Speaker notes:** Redraw from spec.md runtime diagram. Auth optional for long-term
-sessions only (F21/F31). [Corpus: system-spec] [Corpus: product §F21/F31]
-
-**Figure:** architecture box diagram — **draw from** image-pointers §Architecture (mermaid in pack)
-
-**Sources:** docs/spec.md §System Architecture · docs/CORPUS.md
-
----
-
-## Slide 5 — Build pipeline (TAC → validated IWXXM)
-
-**Title:** Seven-stage domain pipeline
+**Title:** Proof points Regulators and ROCs expect
 
 **Bullets:**
-
-1. TAC lint (Annex 3 / vocab)
-2. Convert (encode + nilReasons)
+1. TAC matches Annex 3 / WMO templates (lint)
+2. Encode follows IWXXM structure + nilReason practice (convert)
 3. Well-formed XML
-4. XSD (structure)
-5. Schematron (+ offline RDF)
-6. Golden example pairs
-7. Bulletin / AHL / ops (when used)
+4. Passes **XSD** for the agreed IWXXM year line
+5. Passes **Schematron** (+ codelist checks)
+6. Prefer official TAC↔XML example pairs for acceptance tests
+7. Translation metadata when translating for another centre; retain TAC on failure
 
-**Speaker notes:** Stages must stay separate — Schematron pass ≠ Annex 3 SARPs proof.
-Hub table in docs/domain/README.md. Engines: tac-validate → tac2iwxxm → iwxxm-validate.
+**Speaker notes:** Guidelines 5th §5.3.2 — schema **and** Schematron. Default pin **2025-2**.
+Hub: docs/domain/README.md pipeline table.
 
-**Figure:** horizontal pipeline arrows (draw) — image-pointers §Pipeline
-
-**Sources:** docs/domain/README.md · TAC_VALIDATION / IWXXM_CONVERSION / IWXXM_VALIDATION
+**Cite:** Guidelines 5th · schemas.wmo.int/2025-2 · IWXXM_VALIDATION.md
 
 ---
 
-## Slide 6 — Vendor / upstream pins
+## Slide 5 — How this system maps
 
-**Title:** Runtime schema pins
+**Title:** Software pipeline aligned to ICAO/WMO sources
 
 **Bullets:**
+- **Operator workbench** — multi-product TAC, decode, live lint/preview (F7/F9/F10)
+- **`tac-validate`** — Annex 3 / vocab lint with source-traced issue codes
+- **`tac2iwxxm`** — TAC → IWXXM encode (vendor pin)
+- **`iwxxm-validate`** — XSD + Schematron against **v2025-2**
+- **Provenance** — RULE_SOURCE_URLS / PROVENANCE_MAP / lint catalog attribution
+- **Not a substitute** for State licensing of Annex 3 / Doc 10003
 
-- `wmo-im/iwxxm` **v2025-2**
-- `wmo-im/iwxxm-codelists` **49-2**
-- `wmo-im/iwxxm-modelling` **v2025-2**
-- `iwxxm-translation` — informative parity only
-- `iwxxm-us` **3.0** (NWS)
-
-**Speaker notes:** Pins are in vendor/manifest.json with SHAs. Conflict rule: defer to pin
-over older printed package tables. Supported operator window typically Latest + Previous
-(2025-2 + 2023-1). [Corpus: system-spec] vendor · VERSION_SUPPORT_POLICY
-
-**Figure:** screenshot of `vendor/manifest.json` keys (redact nothing secret — file is public) OR table
-
-**Sources:** vendor/manifest.json · schemas.wmo.int/iwxxm/2025-2/
+**Cite:** feature-list F6/F7 · vendor/manifest.json · operator-ui-runbook.md
 
 ---
 
-## Slide 7 — Operator UI (capability → feature)
+## Slide 6 — Products in scope
 
-**Title:** Operator workbench surfaces
+**Title:** Products covered for State programmes
 
 **Bullets:**
+- Core: METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA
+- Extensions where pinned: SWXA, VONA
+- Profiles: **annex3** (default) · **iwxxm_us** (national REMARKS)
+- Bulletin modes: TAC / AHL / COLLECT
 
-- Multi-product workbench + sessions — **F7**
-- Value-aware decode + summary — **F9**
-- Live IWXXM preview / lint UX — **F10**
-- Golden / official examples — **F7.g**
-- Optional dissemination drawer — **F16–F19**
-- Public convert; optional Auth for storage — **F21 / F31**
-
-**Speaker notes:** This slide is the only “UI” slide — keep it capability-mapped, not a
-click tutorial. Screenshots from *local* non-deployed preview preferred.
-[Corpus: product] [docs/ops/operator-ui-runbook.md]
-
-**Figure:** 1–2 local UI screenshots (optional) — image-pointers §UI
-
-**Sources:** feature-list F7/F9/F10 · S011 session brief
+**Cite:** Annex 3 product apps · COVERAGE_MATRIX · EUR Doc 014 (regional)
 
 ---
 
-## Slide 8 — Rule provenance story
+## Slide 7 — Schema pin & version governance
 
-**Title:** From dig → rule → operator message
+**Title:** Validate against a published IWXXM line
 
 **Bullets:**
+- Runtime pin: **IWXXM v2025-2** (+ codelists **49-2**; US **3.0** when needed)
+- Public SoT: https://schemas.wmo.int/iwxxm/2025-2/
+- github.com/wmo-im/iwxxm tag `v2025-2`
+- Conflict rule: machine pin wins over older printed tables / workshop slides
 
-- Mine public / licensed sources → `docs/domain/mining/*`
-- Promote durable cites → RULE_SOURCE_URLS + canonical strategy docs
-- ISSUE_CATALOG codes link operators to sources
-- PROVENANCE_MAP indexes dig ↔ rule ↔ source
-- UI lint catalog shows WMO/ICAO/IWXXM attribution
-
-**Speaker notes:** S043/EV-035 built standing provenance; EV-040 surfaced attribution in UI.
-Gaps are labeled `gap` / `paywall` — never silently invented. [docs/domain/rules/PROVENANCE_MAP.md]
-
-**Figure:** simple flow Dig → Catalog → Lint console (draw)
-
-**Sources:** PROVENANCE_MAP · ISSUE_CATALOG · RULE_SOURCE_URLS
+**Cite:** schemas.wmo.int · vendor/manifest.json · VERSION_SUPPORT_POLICY.md
 
 ---
 
-## Slide 9 — Access friction
+## Slide 8 — Governance & access (procurement / legal)
 
-**Title:** What operators can open freely
+**Title:** What your State must hold vs what is free
 
 **Bullets:**
+- **Purchase / license:** Annex 3, Doc 10003, Doc 8896 (ICAO Store)
+- **Library access:** WMO-No. 306 Vol I.3
+- **Free for implementation & CI:** schemas.wmo.int, codes.wmo.int, OPMET Guidelines PDF, EUR Doc 014, wmo-im GitHub
+- This repository **does not** redistribute Annex 3 / Manual on Codes full text
 
-| Class | Examples | In-repo handling |
-|-------|----------|------------------|
-| Paywall | Annex 3, Doc 10003 | Cite store URL only |
-| Library / captcha | WMO-306 | Mining notes + gitignored `.local/` |
-| Public machine | schemas / codes / EUR Doc 014 | Prefer for CI + goldens |
-| Informative | PPT-02 workshop deck | Corroboration only |
-
-**Speaker notes:** ACCESS_AND_CITATION.md is the standing policy. Unofficial mirror PDFs are
-not SoT. [docs/domain/rules/ACCESS_AND_CITATION.md]
-
-**Figure:** none (table is the figure)
-
-**Sources:** ACCESS_AND_CITATION.md
+**Cite:** ACCESS_AND_CITATION.md · citation-search-guide.md §2
 
 ---
 
-## Slide 10 — Informative workshop corroboration (PPT-02)
+## Slide 9 — Recommended leadership actions
 
-**Title:** WMO TT-AvData “IWXXM Framework” (workshop)
+**Title:** Next steps for a State programme
 
 **Bullets:**
+1. Confirm Annex 3 / Doc 10003 editions on file
+2. Agree IWXXM year line with ROC/Region (align to **2025-2** or documented bilateral)
+3. Require **XSD + Schematron** in translator acceptance criteria
+4. Stand up lint → convert → validate with official example packs
+5. Monitor partial-translation / failure rates (Guidelines §7 themes)
+6. Keep regional guides as supplements only
 
-- Public ICAO filebrowser deck (ESAF workshop, 2025-10-22)
-- Convenient pointer cluster to WMO + ICAO landings
-- Package × IWXXM-line matrix — **informative**; prefer vendor XSD versions
-- Translation attrs + `translationFailedTAC` reminder
-
-**Speaker notes:** Label every claim **informative**. Full dig:
-docs/domain/mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md. Local slide PNGs under
-`.local/reference/ppt-02-…/extracts/slide-images/` — **do not commit**. Official download:
-https://www.icao.int/filebrowser/download/26741?fid=26741
-
-**Figure:** optional *personal* extract of PPT-02 slides 6–7 landings (cite deck) — not for git
-
-**Sources:** PPT-02 mining notes · ICAO filebrowser URL
+**Cite:** Guidelines 5th · Doc 10003 · ICAO_OPMET_COMPLIANCE.md
 
 ---
 
-## Slide 11 — Software stack (high level)
+## Slide 10 — Informative workshop context (optional)
 
-**Title:** Implementation stack
+**Title:** Industry briefing context (not SARPs)
 
 **Bullets:**
+- TT-AvData “IWXXM Framework” (ESAF, Oct 2025) — public download
+- Useful for landings map / messaging — label **INFORMATIVE**
+- Forward messages (e.g. TAC sunset discussions) → verify against **your** Annex 3 edition / Region
 
-- Python 3.12 · FastAPI · msgspec HTTP DTOs
-- React 18 · Vite · TypeScript · CodeMirror 6
-- `tac-validate` / `tac2iwxxm` / `iwxxm-validate` workspace packages
-- Optional Rust core in iwxxm-validate path (F13)
-- DigitalOcean Postgres + Supabase Auth (JWT) · DOKS deploy target
-
-**Speaker notes:** Details in dependency-inventory.md — do not dump every pin on the slide.
-GIFTs removed at F6 cutover (ADR-014). [Corpus: tech-spec]
-
-**Figure:** none or small stack icons (optional)
-
-**Sources:** docs/dependency-inventory.md · docs/tech-spec.md
+**Cite:** https://www.icao.int/filebrowser/download/26741?fid=26741
 
 ---
 
-## Slide 12 — Bibliography / further reading
+## Slide 11 — References (handout)
 
-**Title:** Landings to keep
+**Title:** Cite these landings
 
-**Bullets (short URLs on slide; full table in bibliography.md):**
+**Bullets:**
+- Annex 3 — store.icao.int/en/annexes/annex-3
+- Doc 10003 — ICAO Store
+- OPMET IWXXM Guidelines 5th — icao.int METP PDF (public)
+- schemas.wmo.int/iwxxm/2025-2/
+- codes.wmo.int
+- library.wmo.int — Manual on Codes I.3
+- Full search steps: `docs/guides/operator-sources-pptx/citation-search-guide.md`
 
-- https://schemas.wmo.int/iwxxm/2025-2/
-- https://codes.wmo.int/
-- https://github.com/wmo-im/iwxxm (tag v2025-2)
-- ICAO Annex 3 store listing (paywall)
-- OPMET IWXXM Exchange Guidelines 5th (public PDF)
-- Repo: `docs/domain/rules/RULE_SOURCE_URLS.md`
+---
 
-**Speaker notes:** Hand out bibliography.md or link the repo path. Remind: purchase ICAO
-docs for normative prose. Operator runbook for day-to-day use.
+## Slide 12 — Closing
 
-**Figure:** none
+**Title:** Compliance is standards-led; software makes it operable
 
-**Sources:** bibliography.md
+**Bullets:**
+- SARPs and manuals define the obligation
+- Public schemas and Guidelines define the machine test
+- This system: **lint → convert → XSD + Schematron** with source-traced rules
+- Staff path: operator UI runbook · Leadership path: this deck + citation guide
+
+**Cite:** [Corpus: product §F6/F7] [docs/domain/README.md]
