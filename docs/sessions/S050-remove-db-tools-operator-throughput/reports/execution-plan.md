@@ -65,8 +65,8 @@
 
 | Task | Spec Source | Depends On | Status | Data Deps |
 |------|-------------|------------|--------|-----------|
-| T4.1 | H4–H5 smoke for new mass route + FE URLs | AC6; connectivity-gates | M1–M3 | pending | |
-| T4.2 | Update test-plan TC details if needed; ops note destinations deferred | [Corpus: tests] | T4.1 | pending | |
+| T4.1 | H4–H5 smoke for new mass route + FE URLs | AC6; connectivity-gates | M1–M3 | **completed** | |
+| T4.2 | Update test-plan TC details if needed; ops note destinations deferred | [Corpus: tests] | T4.1 | **completed** | |
 | T4.3 | 08–13 per Standard routing | routing-plan | T4.1 | pending | |
 
 ## Proposed tech defaults (pending AskQuestion)

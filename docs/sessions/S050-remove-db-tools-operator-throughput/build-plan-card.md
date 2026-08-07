@@ -23,7 +23,7 @@ raising global `MAX_REQUEST_BODY_BYTES` to 50 MiB; F8 auto-push.
 
 After 05 Gate B: start **M1** (T1.1) on `evolve/EV-042-remove-db-tools-operator-throughput`.
 
-**Progress**: M1–M3 complete — next **M4** / 08-verify-build.
+**Progress**: M1–M4 T4.1–T4.2 complete — next **T4.3** / 08–13 per Standard routing.
 
 ## Risks
 
