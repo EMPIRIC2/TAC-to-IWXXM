@@ -25,7 +25,7 @@ mass file/folder ingest (F33) — restore destinations on #898.
 
 ## Next child stage
 
-**07-build** — M3 complete; start **M4** (H4–H5 / 08–13) or run **08-verify-build**
+**08-verify-build** PASS (M1–M3 boundary). Open milestone PR → then **M4** / 09–13.
 
 ## Locked
 

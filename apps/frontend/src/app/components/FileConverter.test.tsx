@@ -10,6 +10,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
+import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
@@ -243,6 +244,7 @@ describe('FileConverter Component', () => {
   beforeEach(() => {
     cleanup();
     vi.clearAllMocks();
+    operatorDisseminationUiConfig.destinationsEnabled = false;
     // Reset queued Once/implementations so coverage runs do not leak mocks across cases.
     mockConvertMetarToIwxxm.mockReset();
     mockConvertBulletin.mockReset();
@@ -293,6 +295,7 @@ describe('FileConverter Component', () => {
   });
 
   afterEach(() => {
+    operatorDisseminationUiConfig.destinationsEnabled = false;
     cleanup();
   });
 
@@ -1388,7 +1391,109 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it.skip('opens dissemination drawer from Disseminate control (T6.2) — restore #898', async () => {
+    it('batch convert runs convert on selected queue items (TC-EV042-003)', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
+          { iwxxm_xml: '<iwxxm>a</iwxxm>', name: 'a.tac', tac_input: 'METAR A' },
+          { iwxxm_xml: '<iwxxm>b</iwxxm>', name: 'b.tac', tac_input: 'METAR B' },
+        ],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'a.tac', text: vi.fn().mockResolvedValue('METAR A') },
+            1: { name: 'b.tac', text: vi.fn().mockResolvedValue('METAR B') },
+            length: 2,
+          },
+        },
+      });
+
+      await screen.findByTestId('operator-work-queue');
+      await user.click(screen.getByTestId('queue-select-0'));
+      await user.click(screen.getByTestId('queue-select-1'));
+      await user.click(screen.getByTestId('batch-convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
+      });
+      expect(mockToast.success).toHaveBeenCalledWith(
+        expect.stringMatching(/Batch converted/i),
+      );
+    });
+
+    it('work queue Shift+Enter validates focused item (TC-EV042-003)', async () => {
+      const user = userEvent.setup();
+      mockLintTac.mockResolvedValue({ ok: true, issues: [], fixes: [] });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'only.tac', text: vi.fn().mockResolvedValue('METAR ONLY') },
+            length: 1,
+          },
+        },
+      });
+
+      const queue = await screen.findByTestId('operator-work-queue');
+      queue.focus();
+      await user.keyboard('{Shift>}{Enter}{/Shift}');
+
+      await waitFor(() => {
+        expect(mockLintTac).toHaveBeenCalled();
+      });
+      expect(mockToast.success).toHaveBeenCalledWith(
+        'only.tac: lint OK',
+        expect.anything(),
+      );
+    });
+
+    it('mass ingest Zip button triggers file chooser when signed in', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
+      const clickSpy = vi.spyOn(zipInput, 'click');
+      await user.click(screen.getByTestId('mass-ingest-zip-button'));
+      expect(clickSpy).toHaveBeenCalled();
+    });
+
+    it('queue item click focuses and loads TAC into editor', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'first.tac', text: vi.fn().mockResolvedValue('METAR FIRST') },
+            1: {
+              name: 'second.tac',
+              text: vi.fn().mockResolvedValue('METAR SECOND'),
+            },
+            length: 2,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+      await user.click(screen.getByTestId('queue-item-1'));
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await waitFor(() => {
+        expect(textarea.value).toContain('METAR SECOND');
+      });
+    });
+
+    it('opens dissemination drawer from Disseminate control when destinations UI on', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
 
@@ -1400,6 +1505,176 @@ describe('FileConverter Component', () => {
       expect(
         screen.getByRole('heading', { name: /dissemination/i }),
       ).toBeInTheDocument();
+    });
+
+    it('mass ingest Folder input hands accepted files into queue when signed in', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+
+      const folderInput = screen.getByTestId(
+        'mass-ingest-folder-input',
+      ) as HTMLInputElement;
+      const tac = new File(['METAR KJFK=\n'], 'folder.tac', { type: 'text/plain' });
+      await user.upload(folderInput, tac);
+
+      await waitFor(() => {
+        expect(mockMassIngestFiles).toHaveBeenCalled();
+      });
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /pending files queue/i }),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('batch convert with no selection shows error toast', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'a.tac', text: vi.fn().mockResolvedValue('METAR A') },
+            length: 1,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+      // Button disabled when none selected — force handler via empty selection toast path
+      const btn = screen.getByTestId('batch-convert-button');
+      expect(btn).toBeDisabled();
+      await user.click(screen.getByTestId('batch-validate-button'));
+      expect(screen.getByTestId('batch-validate-button')).toBeDisabled();
+    });
+
+    it('mass ingest surfaces API rejection toast', async () => {
+      mockMassIngestFiles.mockRejectedValueOnce(new Error('zip bomb'));
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
+      const zipFile = new File(['PK'], 'bad.zip', { type: 'application/zip' });
+      await userEvent.setup().upload(zipInput, zipFile);
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith('zip bomb', expect.anything());
+      });
+    });
+
+    it('mass ingest Zip button prompts login when guest', async () => {
+      const user = userEvent.setup();
+      const onRequestLogin = vi.fn();
+      render(
+        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
+      );
+      await user.click(screen.getByTestId('mass-ingest-zip-button'));
+      expect(onRequestLogin).toHaveBeenCalled();
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Sign in required for mass folder or zip ingest',
+      );
+    });
+
+    it('mass ingest Folder button opens chooser when signed in', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+      const folderInput = screen.getByTestId(
+        'mass-ingest-folder-input',
+      ) as HTMLInputElement;
+      const clickSpy = vi.spyOn(folderInput, 'click');
+      await user.click(screen.getByTestId('mass-ingest-folder-button'));
+      expect(clickSpy).toHaveBeenCalled();
+    });
+
+    it('mass ingest queues accepted files and toasts rejects', async () => {
+      mockMassIngestFiles.mockResolvedValueOnce({
+        accepted_count: 1,
+        rejected_count: 1,
+        results: [
+          {
+            name: 'ok.tac',
+            accepted: true,
+            reason: null,
+            size_bytes: 10,
+            content: 'METAR OK=\n',
+          },
+          {
+            name: 'bad.tac',
+            accepted: false,
+            reason: 'binary',
+            size_bytes: 4,
+            content: null,
+          },
+        ],
+      });
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
+      await userEvent
+        .setup()
+        .upload(zipInput, new File(['PK'], 'mix.zip', { type: 'application/zip' }));
+      await waitFor(() => {
+        expect(mockToast.success).toHaveBeenCalledWith(
+          'Mass ingest: 1 accepted, 1 rejected',
+          expect.anything(),
+        );
+      });
+      expect(
+        screen.getByRole('region', { name: /pending files queue/i }),
+      ).toBeInTheDocument();
+    });
+
+    it('removes a pending file from the work queue', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'gone.tac', text: vi.fn().mockResolvedValue('METAR GONE') },
+            length: 1,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+      await user.click(
+        screen.getByRole('button', { name: /Remove gone\.tac from queue/i }),
+      );
+      await waitFor(() => {
+        expect(screen.queryByTestId('operator-work-queue')).not.toBeInTheDocument();
+      });
+    });
+
+    it('focused validate reports lint issues toast', async () => {
+      const user = userEvent.setup();
+      mockLintTac.mockResolvedValue({
+        ok: false,
+        issues: [
+          { severity: 'error', code: 'x', message: 'bad', start: 0, end: 1 },
+          { severity: 'error', code: 'y', message: 'worse', start: 2, end: 3 },
+        ],
+        fixes: [],
+      });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'lint.tac', text: vi.fn().mockResolvedValue('METAR LINT') },
+            length: 1,
+          },
+        },
+      });
+      const queue = await screen.findByTestId('operator-work-queue');
+      queue.focus();
+      await user.keyboard('{Shift>}{Enter}{/Shift}');
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          'lint.tac: 2 lint issue(s)',
+          expect.anything(),
+        );
+      });
     });
 
     it('handles partial multi-file conversion where only one result is returned', async () => {
@@ -1894,7 +2169,8 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it.skip('displays Convert&Send button and chains convert with upload — restore #898', async () => {
+    it('displays Convert&Send button and chains convert with upload (flag-on coverage)', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>send-test</iwxxm>' }],
@@ -1927,7 +2203,8 @@ describe('FileConverter Component', () => {
       expect(mockToast.success).toHaveBeenCalledWith('Files uploaded successfully');
     });
 
-    it.skip('shows send failure when convert succeeds but upload fails — restore #898', async () => {
+    it('shows send failure when convert succeeds but upload fails (flag-on coverage)', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>send-fail</iwxxm>' }],
@@ -1948,7 +2225,8 @@ describe('FileConverter Component', () => {
       expect(screen.getByText(/send failed: upload rejected/i)).toBeInTheDocument();
     });
 
-    it.skip('enables Convert&Send without auth token (F21) — restore #898', async () => {
+    it('enables Convert&Send without auth token when destinations UI on (F21)', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup();
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;

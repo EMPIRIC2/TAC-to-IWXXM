@@ -56,9 +56,6 @@ def _looks_binary(sample: bytes) -> bool:
         return False
     for magic in _BINARY_MAGIC:
         if sample.startswith(magic):
-            # Standalone PK zip is handled as archive upload, not as a text member.
-            if magic == b"PK\x03\x04":
-                return True
             return True
     if b"\x00" in sample[:512]:
         return True

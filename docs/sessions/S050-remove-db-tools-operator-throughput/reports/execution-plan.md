@@ -84,3 +84,10 @@
 - A→B: Gate A PASS (D-S050-gate-a)
 - B→C: 05-verify-tech after this plan approved
 - C→D: 08 + tests green before 09–13
+
+## PR Plan
+
+| PR | Scope | Status | URL |
+|----|-------|--------|-----|
+| Minor (M1–M3) | Hide destinations UI; F33 mass ingest; work queue/batch | opening | TBD |
+| M4 follow-up | H4–H5 / 08–13 close | pending | — |

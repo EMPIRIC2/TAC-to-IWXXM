@@ -38,7 +38,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
-import { OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED } from '/utils/operatorDisseminationUi';
+import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
@@ -1618,7 +1618,7 @@ export function FileConverter({
               />
               Convert
             </Button>
-            {OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED ? (
+            {isOperatorDisseminationDestinationsEnabled() ? (
               <Button
                 data-testid="convert-and-send-button"
                 onClick={handleConvertAndSend}
@@ -1651,7 +1651,7 @@ export function FileConverter({
                 ({convertedFiles.length})
               </span>
             </Button>
-            {OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED ? (
+            {isOperatorDisseminationDestinationsEnabled() ? (
               <Button
                 type="button"
                 data-testid="open-dissemination-drawer"
@@ -2584,7 +2584,7 @@ export function FileConverter({
         onClose={() => setIsUploadDialogOpen(false)}
       />
 
-      {OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED ? (
+      {isOperatorDisseminationDestinationsEnabled() ? (
         <DisseminationDrawer
           open={isDisseminationOpen}
           onOpenChange={setIsDisseminationOpen}
