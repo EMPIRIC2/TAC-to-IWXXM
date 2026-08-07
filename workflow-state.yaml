@@ -3,10 +3,208 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 48
-evolve_cycle_counter: 40
-active_session: null
+session_counter: 49
+evolve_cycle_counter: 41
+active_session:
+  id: S049-operator-sources-briefing
+  type: feature
+  intent: Operator UI source-centric runbook + PPT source pack / walkthrough (docs-only)
+  status: in_progress
+  started: '2026-08-06'
+  started_at: '2026-08-06'
+  branch: evolve/EV-041-operator-sources-briefing
+  branch_base: main@73e13281
+  artifacts_dir: docs/sessions/S049-operator-sources-briefing/
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-041
+  prior_session: S048-workbench-lint-ux
+  prior_evolve_cycle_id: EV-040
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
+  ui_preview: n/a (docs-only; screenshots optional local)
+  preset: Lean
+  current_stage: 08-verify-build
+  route_status: in_progress
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — S049 open; open_session; handoff 16-evolve
+  - stage: 16-evolve
+    mode: orchestrator
+    required: true
+    status: in_progress
+    started: '2026-08-06'
+    note: IN_PROGRESS — awaiting PR; session not closed
+  - stage: 01-requirements
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — docs ACs / Lean scope
+  - stage: 02-verify-plan
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — Gate A (docs)
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no new Cursor rules
+  - stage: 04-tech-plan
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no tech plan
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no Gate B
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no new publish deps
+  - stage: 07-build
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — runbook + PPT source pack + decisions
+  - stage: 08-verify-build
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — docs verification
+  - stage: 09-qa
+    required: false
+    status: skipped
+    note: skipped — Lean docs
+  - stage: 10-e2e
+    required: false
+    status: skipped
+    note: skipped — Lean docs
+  - stage: 11-verify-impl
+    required: false
+    status: skipped
+    note: skipped — Lean docs
+  - stage: 12-verify-deploy
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no runtime deploy
+  - stage: 13-deploy-smoke
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no runtime deploy
 sessions:
+- id: S049-operator-sources-briefing
+  type: feature
+  intent: Operator UI source-centric runbook + PPT source pack / walkthrough (docs-only)
+  status: in_progress
+  started: '2026-08-06'
+  started_at: '2026-08-06'
+  branch: evolve/EV-041-operator-sources-briefing
+  branch_base: main@73e13281
+  artifacts_dir: docs/sessions/S049-operator-sources-briefing/
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-041
+  prior_session: S048-workbench-lint-ux
+  prior_evolve_cycle_id: EV-040
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
+  ui_preview: n/a (docs-only; screenshots optional local)
+  preset: Lean
+  current_stage: 08-verify-build
+  route_status: in_progress
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — S049 open; open_session; handoff 16-evolve
+  - stage: 16-evolve
+    mode: orchestrator
+    required: true
+    status: in_progress
+    started: '2026-08-06'
+    note: IN_PROGRESS — awaiting PR; session not closed
+  - stage: 01-requirements
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — docs ACs / Lean scope
+  - stage: 02-verify-plan
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — Gate A (docs)
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no new Cursor rules
+  - stage: 04-tech-plan
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no tech plan
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no Gate B
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no new publish deps
+  - stage: 07-build
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — runbook + PPT source pack + decisions
+  - stage: 08-verify-build
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — docs verification
+  - stage: 09-qa
+    required: false
+    status: skipped
+    note: skipped — Lean docs
+  - stage: 10-e2e
+    required: false
+    status: skipped
+    note: skipped — Lean docs
+  - stage: 11-verify-impl
+    required: false
+    status: skipped
+    note: skipped — Lean docs
+  - stage: 12-verify-deploy
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no runtime deploy
+  - stage: 13-deploy-smoke
+    required: false
+    status: skipped
+    note: skipped — Lean docs; no runtime deploy
 - id: S048-workbench-lint-ux
   type: feature
   intent: Workbench lint UX + prefs + official AHL/Collect + catalog source; fix example lint FPs
@@ -28412,6 +28610,104 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-041
+  session_id: S049-operator-sources-briefing
+  cycle_type: general
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
+  title: "Operator UI runbook + source-centric PPT pack"
+  status: in_progress
+  started: "2026-08-06"
+  started_at: "2026-08-06"
+  scope_summary: Docs-only: operator UI runbook + PPT source pack (outline, bibliography, image pointers, build walkthrough); Lean; path-cite domain/ops; no product code; no binary pptx in git
+  routing_plan:
+    required_stages:
+    - 01-requirements
+    - 02-verify-plan
+    - 07-build
+    - 08-verify-build
+    skipped_stages:
+    - 03-plan-tooling
+    - 04-tech-plan
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+  current_stage: 08-verify-build
+  current_stage_status: completed
+  current_stage_note: COMPLETE — 01/02/07/08 done; 16-evolve in_progress awaiting PR; session open
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+    16-evolve:
+      status: in_progress
+      started: '2026-08-06'
+      note: awaiting PR; session not closed
+    01-requirements:
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+    02-verify-plan:
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+    07-build:
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+    08-verify-build:
+      status: completed
+      started: '2026-08-06'
+      completed: '2026-08-06'
+  ui_preview: n/a (docs-only; screenshots optional local)
+  branch: evolve/EV-041-operator-sources-briefing
+  tip_sha: 73e13281
+  tip_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
+  tip_sha_pushed: false
+  preset: Lean
+  gates:
+    a_to_b: passed
+    a_to_b_note: docs Gate A passed
+    b_to_c: waived_lean
+    b_to_c_note: Lean docs — no 04-tech-plan / 05-verify-tech
+    c_to_d: waived
+    c_to_d_note: Lean docs — skip 09/10/11; 07/08 verified as docs pack
+    deploy: waived
+    deploy_note: Lean docs — no 12/13 runtime deploy
+  checkpoints:
+    phase_a: passed
+    phase_b: waived_lean
+    phase_b_note: Lean docs — skip 04/05
+    phase_c: passed
+    phase_c_note: 07-build + 08-verify-build docs complete
+    phase_d: waived
+    phase_d_note: Lean docs — skip 09/10/11
+    deploy: waived
+    deploy_note: Lean docs — skip 12/13
+  adrs: []
+  artifacts:
+  - path: docs/ops/operator-ui-runbook.md
+    status: completed
+    stage: 07-build
+  - path: docs/guides/operator-sources-pptx/
+    status: completed
+    stage: 07-build
+  - path: docs/decisions/evolve-decisions.md
+    status: completed
+    stage: 16-evolve
+  - path: docs/sessions/S049-operator-sources-briefing/
+    status: completed
+    stage: 00-context
+  notes:
+  - '2026-08-06 S049/EV-041 PROGRESS — 00/01/02/07/08 completed; gates a_to_b=passed; b_to_c/c_to_d/deploy waived; 16-evolve in_progress (PR pending); session open; no git commit by workflow-state-manager'
+  - '2026-08-06 S049/EV-041 OPEN — open_session; Lean docs; deepen F7; branch evolve/EV-041-operator-sources-briefing @ 73e13281; 00-context completed; next 16-evolve; no git commit by workflow-state-manager'
 - id: EV-040
   session_id: S048-workbench-lint-ux
   cycle_type: general
@@ -37778,16 +38074,16 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-040-workbench-lint-ux
+  current_branch: evolve/EV-041-operator-sources-briefing
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state + session docs dirty after S048/EV-040 close (workflow-state-manager); parent to commit; also local dirty: apps/frontend/public/config.json"
-  tip_sha: 5a9f28ef
-  tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
-  tip_note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge `4be24994`); #894'
+  dirty_note: "workflow-state dirty after S049/EV-041 open_session; parent to commit; no git commit by workflow-state-manager"
+  tip_sha: 73e13281
+  tip_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
+  tip_note: 'S049/EV-041 OPEN — tip 73e13281 (main base); branch evolve/EV-041-operator-sources-briefing local; not pushed'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -37798,10 +38094,11 @@ git_history:
   main_merge_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
   main_tip_sha: 0d8ce885
   main_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
-  recommended_branch: evolve/EV-040-workbench-lint-ux
+  recommended_branch: evolve/EV-041-operator-sources-briefing
   note: 'S047/EV-039 — current_branch evolve/EV-040-workbench-lint-ux @ 861c5457; pushed=true ahead_of_origin=0; PR #893 OPEN; 13 in_progress H1–H5 PASS; tip CD awaiting merge; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S049/EV-041 OPEN — open_session; session_counter 49; evolve_cycle_counter 41; branch evolve/EV-041-operator-sources-briefing ACTIVE @ 73e13281 (base main); 00-context completed; next 16-evolve; Lean docs deepen F7; no git commit by workflow-state-manager'
   - '2026-08-06 S048/EV-040 — tip 861c5457 (08c805ebb9c935e989ba91b2fd3012974140b2e9); recorded commits e909231d + 861c5457 (+ earlier EV-040 feat/fix/test); PR #893 OPEN; 09–12 COMPLETE; 13-deploy-smoke IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb; session/cycle remain open; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — tip cfe1236b (cfe1236b4c3e8c5594447d44b69e4d20c7e01522) [EV-039] chore: retrigger PR CI for tip gate; branch pushed; PR #891 OPEN; ahead_of_origin=0 pushed=true; tip CI missing (check_suites only cursor app); local husky pre-push make ci passed; 13-deploy-smoke BLOCKED hard stop pending user decision; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — recorded git commits f2b2f558 (f2b2f5589a0d0bb46a8be65cb4d9c1267253c3d9) [EV-039] test: align Playwright live-mode assert with skipWebServer + 476c9c9d (476c9c9d7bb70375baa0d0cdf118be9ae53d6c48) chore(deps): pin js-yaml >=4.3.1; 09-qa PASS with advisories + 10-e2e PASS; reports qa-report.md + e2e-report.md; current_stage 11-verify-impl; tip f2b2f558; ahead_of_origin=20 pushed=false; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -38266,6 +38563,20 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-041-operator-sources-briefing
+    status: open
+    base: main
+    base_sha: 73e13281
+    base_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
+    created: "2026-08-06"
+    session_id: S049-operator-sources-briefing
+    evolve_cycle_id: EV-041
+    tip_sha: 73e13281
+    tip_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
+    exists: true
+    pushed: false
+    ahead_of_origin: 0
+    note: "S049/EV-041 OPEN — open_session; Lean docs; base main@73e13281; local branch created; not pushed"
   - name: evolve/EV-040-workbench-lint-ux
     status: merged
     base: main
