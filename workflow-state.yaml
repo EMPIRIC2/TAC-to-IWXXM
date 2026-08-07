@@ -16,7 +16,7 @@ active_session:
   branch_base: main@fa5b2140
   branch_status: active
   branch_exists: true
-  branch_note: ACTIVE — created from main@fa5b2140; tip 739c4396 (08 PASS + PR #899; M4 T4.1 in progress)
+  branch_note: ACTIVE — created from main@fa5b2140; tip 6bc756ef (M4 T4.1–T4.2 done; local 08 PASS; tip CI green 05893ccb)
   artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-042
@@ -36,10 +36,10 @@ active_session:
   ui_preview_note: 'accepted local http://localhost:18000'
   preset: Standard
   preset_note: Recommended Standard for product code (drawer + churn UX + mass ingest); routing-plan approval pending (parent writes brief)
-  tip_sha: 739c4396
-  tip_sha_full: 739c439633a10bb150410793837de612ca62dfba
+  tip_sha: 6bc756ef
+  tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
   tip_sha_pushed: true
-  tip_sha_note: 'ACTIVE branch @ 739c4396; tip_sha_pushed=true (tracks origin after #899 docs); 08 PASS + PR #899; M4 T4.1 H4–H5 / UJ-051..053 in progress; Sync database migrations CI OOS (not EV-042); 09 pending after M4'
+  tip_sha_note: 'ACTIVE branch @ 6bc756ef; tip_sha_pushed=true; M4 T4.1–T4.2 done; local 08 PASS; tip CI green for 05893ccb (H4–H5 wiring); docs tip 6bc756ef; next 09-qa per Standard'
   github_issues: [897, 898]
   parent_epic: 897
   github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
@@ -53,8 +53,8 @@ active_session:
   phase0_note: 'Phase 0 COMPLETE — D-S050-proceed=1 allocate F16 deepen + F7 deepen + new F33; proceed to 01-requirements'
   phase0_proceed: D-S050-proceed
   active_milestone: M4
-  active_task: T4.1
-  active_task_note: 'Starting T4.1 — H4–H5 smoke wiring / UJ-051..053 (user: Start M4 after 08 PASS + PR #899); tip 739c4396 pushed; Sync database migrations CI OOS (not EV-042)'
+  active_task: T4.3
+  active_task_note: '09-qa PASS (pass_with_advisories); next 10-e2e'
   decisions:
     D-S050-open: open_session
     D-S050-db-scope: locked
@@ -119,7 +119,12 @@ active_session:
     status: written
     stage: 08-verify-build
     skill_id: 08-verify-build
-  current_stage: 07-build
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    skill_id: 09-qa
+  current_stage: 10-e2e
+  current_stage_note: '09 PASS pass_with_advisories; next 10-e2e'
   route_status: in_progress
   proceed_decision_id: D-S050-proceed
   ac_decision_id: D-S050-ac
@@ -138,7 +143,7 @@ active_session:
     required: true
     status: in_progress
     started: '2026-08-07'
-    note: IN_PROGRESS — M4 T4.1 in progress (H4–H5 / UJ-051..053); tip 739c4396 after 08 PASS + PR #899; 07-build resumed
+    note: IN_PROGRESS — M4 T4.1–T4.2 done; T4.3 handoff to 09–13; tip 6bc756ef; local 08 PASS; tip CI green 05893ccb
   - stage: 01-requirements
     mode: delta
     required: true
@@ -178,9 +183,10 @@ active_session:
   - stage: 07-build
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-07'
-    note: IN_PROGRESS — M4 T4.1 H4–H5 / UJ-051..053; tip 739c4396 (08 PASS + PR #899); Sync database migrations CI OOS (not EV-042)
+    completed: '2026-08-07'
+    note: COMPLETE — M4 done (T4.1–T4.2); T4.3 is stage handoff to 09–13; tip 6bc756ef; tip CI green 05893ccb (H4–H5); local 08 PASS
   - stage: 08-verify-build
     mode: delta
     required: true
@@ -189,11 +195,16 @@ active_session:
     completed: '2026-08-07'
     report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
     overall: PASS
-    note: COMPLETE — Overall PASS @ 410055cf (M1–M3 boundary); report verification-report.md; next M4/PR
+    note: COMPLETE — M4 local 08 PASS @ 6bc756ef (after T4.1–T4.2 H4–H5 wiring); tip CI green for 05893ccb; report verification-report.md; next 09-qa (T4.3 handoff)
   - stage: 09-qa
     mode: delta
     required: true
-    status: pending
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    overall: pass_with_advisories
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    note: '09 PASS pass_with_advisories; next 10-e2e'
   - stage: 10-e2e
     mode: full
     required: true
@@ -222,7 +233,7 @@ sessions:
   branch_base: main@fa5b2140
   branch_status: active
   branch_exists: true
-  branch_note: ACTIVE — created from main@fa5b2140; tip 739c4396 (08 PASS + PR #899; M4 T4.1 in progress)
+  branch_note: ACTIVE — created from main@fa5b2140; tip 6bc756ef (M4 T4.1–T4.2 done; local 08 PASS; tip CI green 05893ccb)
   artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-042
@@ -241,10 +252,10 @@ sessions:
   ui_preview_url: http://localhost:18000
   ui_preview_note: 'accepted local http://localhost:18000'
   preset: Standard
-  tip_sha: 739c4396
-  tip_sha_full: 739c439633a10bb150410793837de612ca62dfba
+  tip_sha: 6bc756ef
+  tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
   tip_sha_pushed: true
-  tip_sha_note: 'ACTIVE branch @ 739c4396; tip_sha_pushed=true (tracks origin after #899 docs); 08 PASS + PR #899; M4 T4.1 H4–H5 / UJ-051..053 in progress; Sync database migrations CI OOS (not EV-042); 09 pending after M4'
+  tip_sha_note: 'ACTIVE branch @ 6bc756ef; tip_sha_pushed=true; M4 T4.1–T4.2 done; local 08 PASS; tip CI green for 05893ccb (H4–H5 wiring); docs tip 6bc756ef; next 09-qa per Standard'
   github_issues: [897, 898]
   parent_epic: 897
   github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
@@ -258,8 +269,8 @@ sessions:
   phase0_note: 'Phase 0 COMPLETE — D-S050-proceed=1 allocate F16 deepen + F7 deepen + new F33; proceed to 01-requirements'
   phase0_proceed: D-S050-proceed
   active_milestone: M4
-  active_task: T4.1
-  active_task_note: 'Starting T4.1 — H4–H5 smoke wiring / UJ-051..053 (user: Start M4 after 08 PASS + PR #899); tip 739c4396 pushed; Sync database migrations CI OOS (not EV-042)'
+  active_task: T4.3
+  active_task_note: '09-qa PASS (pass_with_advisories); next 10-e2e'
   decisions:
     D-S050-open: open_session
     D-S050-db-scope: locked
@@ -324,7 +335,12 @@ sessions:
     status: written
     stage: 08-verify-build
     skill_id: 08-verify-build
-  current_stage: 07-build
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    skill_id: 09-qa
+  current_stage: 10-e2e
+  current_stage_note: '09 PASS pass_with_advisories; next 10-e2e'
   route_status: in_progress
   open_decision_id: D-S050-open
   proceed_decision_id: D-S050-proceed
@@ -344,7 +360,7 @@ sessions:
     required: true
     status: in_progress
     started: '2026-08-07'
-    note: IN_PROGRESS — M4 T4.1 in progress (H4–H5 / UJ-051..053); tip 739c4396 after 08 PASS + PR #899; 07-build resumed
+    note: IN_PROGRESS — M4 T4.1–T4.2 done; T4.3 handoff to 09–13; tip 6bc756ef; local 08 PASS; tip CI green 05893ccb
   - stage: 01-requirements
     mode: delta
     required: true
@@ -384,9 +400,10 @@ sessions:
   - stage: 07-build
     mode: full
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-07'
-    note: IN_PROGRESS — M4 T4.1 H4–H5 / UJ-051..053; tip 739c4396 (08 PASS + PR #899); Sync database migrations CI OOS (not EV-042)
+    completed: '2026-08-07'
+    note: COMPLETE — M4 done (T4.1–T4.2); T4.3 is stage handoff to 09–13; tip 6bc756ef; tip CI green 05893ccb (H4–H5); local 08 PASS
   - stage: 08-verify-build
     mode: delta
     required: true
@@ -395,11 +412,16 @@ sessions:
     completed: '2026-08-07'
     report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
     overall: PASS
-    note: COMPLETE — Overall PASS @ 410055cf (M1–M3 boundary); report verification-report.md; next M4/PR
+    note: COMPLETE — M4 local 08 PASS @ 6bc756ef (after T4.1–T4.2 H4–H5 wiring); tip CI green for 05893ccb; report verification-report.md; next 09-qa (T4.3 handoff)
   - stage: 09-qa
     mode: delta
     required: true
-    status: pending
+    status: completed
+    started: '2026-08-07'
+    completed: '2026-08-07'
+    overall: pass_with_advisories
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    note: '09 PASS pass_with_advisories; next 10-e2e'
   - stage: 10-e2e
     mode: full
     required: true
@@ -9146,20 +9168,20 @@ stages:
     session_id: S050-remove-db-tools-operator-throughput
     evolve_cycle_id: EV-042
     mode: full
-    note: 'M4 T4.1 in progress — H4–H5 / UJ-051..053; tip 739c4396 (08 PASS + PR #899); Sync database migrations CI OOS'
-    tip_sha: 739c4396
-    tip_sha_full: 739c439633a10bb150410793837de612ca62dfba
-    tip_note: 'S050/EV-042 M4 T4.1 @ 739c4396; H4–H5 / UJ-051..053; tip_sha_pushed=true'
+    note: 'M4 T4.1–T4.2 completed; T4.3 handoff to 09–13; tip 6bc756ef; local 08 PASS; tip CI green 05893ccb'
+    tip_sha: 6bc756ef
+    tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+    tip_note: 'S050/EV-042 M4 @ 6bc756ef; T4.1–T4.2 done; tip CI green 05893ccb; tip_sha_pushed=true'
     pending_commit: false
-    next_stage: 07-build
+    next_stage: 09-qa
     current_milestone: M4
-    current_task: T4.1
+    current_task: T4.3
     active_milestone: M4
-    active_task: T4.1
+    active_task: T4.3
     active_task_status: in_progress
-    completed_through: M3
-    progress: 'M1–M3; 08 PASS; M4 T4.1 in progress'
-    next_task: T4.1
+    completed_through: M4-T4.2
+    progress: 'M1–M3; M4 T4.1–T4.2 done; local 08 PASS; T4.3→09-qa'
+    next_task: T4.3
     decision_refs:
     - D-S047-05-gate-b
     - D-S047-04-plan
@@ -10571,10 +10593,21 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
     status: completed
-    started_at: '2026-08-06'
-    started: '2026-08-06'
-    completed_at: '2026-08-06'
-    completed: '2026-08-06'
+    started_at: '2026-08-07'
+    started: '2026-08-07'
+    completed_at: '2026-08-07'
+    completed: '2026-08-07'
+    previous_s048_started_at: '2026-08-06'
+    previous_s048_started: '2026-08-06'
+    previous_s048_completed_at: '2026-08-06'
+    previous_s048_completed: '2026-08-06'
+    previous_s048_session_id: S048-workbench-lint-ux
+    previous_s048_evolve_cycle_id: EV-040
+    previous_s048_tip_sha: 08c805eb
+    previous_s048_tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    previous_s048_overall: pass
+    previous_s048_report: docs/sessions/S048-workbench-lint-ux/reports/qa-report.md
+    previous_s048_note: 'COMPLETE — S048/EV-040 qa-report.md pass; tip 861c5457; handoff 10-e2e/11'
     previous_started_at: '2026-08-05'
     previous_started: '2026-08-05'
     previous_completed_at: '2026-08-05'
@@ -10614,21 +10647,39 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e34866
-    session_id: S048-workbench-lint-ux
-    evolve_cycle_id: EV-040
-    tip_sha: 08c805eb
-    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    tip_sha: 6bc756ef
+    tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
     mode: delta
-    overall: pass
-    report: docs/sessions/S048-workbench-lint-ux/reports/qa-report.md
-    note: 'COMPLETE — S048/EV-040 qa-report.md pass; tip 861c5457; handoff 10-e2e/11'
+    overall: pass_with_advisories
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    note: '09 PASS pass_with_advisories; next 10-e2e'
     pending_commit: false
-    active_milestone: M5
-    active_task: T5.2
+    active_milestone: M4
+    active_task: T4.3
     active_task_status: completed
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: in_progress
     delta_substages:
+    - id: S050-remove-db-tools-operator-throughput-09
+      session_id: S050-remove-db-tools-operator-throughput
+      evolve_cycle_id: EV-042
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-07'
+      started_at: '2026-08-07'
+      completed: '2026-08-07'
+      completed_at: '2026-08-07'
+      tip_sha: 6bc756ef
+      tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+      overall: pass_with_advisories
+      report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: completed
+      note: '09 PASS pass_with_advisories; next 10-e2e'
     - id: S046-iwxxm-corpus-residuals-09
       session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-038
@@ -11756,9 +11807,9 @@ stages:
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
     session_id: S050-remove-db-tools-operator-throughput
     evolve_cycle_id: EV-042
-    tip_sha: 410055cf
-    tip_sha_full: 410055cfd5551e3e83ffc68a390d8b9a28d4d9e2
-    note: 'S050/EV-042 08-verify-build COMPLETE PASS @ 410055cf — M1–M3 boundary; report verification-report.md Overall PASS; next M4/PR; 09 pending after M4'
+    tip_sha: 6bc756ef
+    tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+    note: 'S050/EV-042 08-verify-build COMPLETE M4 PASS @ 6bc756ef — after T4.1–T4.2 H4–H5; tip CI green 05893ccb; report verification-report.md; next 09-qa (T4.3 handoff)'
     expected_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
     report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
     overall: PASS
@@ -26199,6 +26250,19 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+  type: session-report
+  kind: qa-report
+  stage: 09-qa
+  skill_id: 09-qa
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: 6bc756ef
+  tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+  note: 'S050/EV-042 09-qa COMPLETE — pass_with_advisories; next 10-e2e'
 - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
   type: session-report
   kind: verify-tech
@@ -29510,9 +29574,9 @@ evolve_cycles:
     - 03-plan-tooling
     - 06-tech-tooling
     note: Standard recommended; pending routing-plan approval
-  current_stage: 07-build
-  current_stage_status: in_progress
-  current_stage_note: '07-build resumed — M4 T4.1 H4–H5 / UJ-051..053 in progress; tip 739c4396 after 08 PASS + PR #899; Sync database migrations CI OOS'
+  current_stage: 10-e2e
+  current_stage_status: pending
+  current_stage_note: '09 PASS pass_with_advisories; next 10-e2e'
   stages:
     00-context:
       status: completed
@@ -29522,7 +29586,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-07'
-      note: M4 T4.1 in progress (H4–H5 / UJ-051..053); tip 739c4396 after 08 PASS + PR #899
+      note: M4 T4.1–T4.2 done; T4.3 handoff to 09–13; tip 6bc756ef; local 08 PASS
     01-requirements:
       status: completed
       started: '2026-08-07'
@@ -29544,20 +29608,31 @@ evolve_cycles:
       completed: '2026-08-07'
       note: COMPLETE — Gate B PASS (D-S050-gate-b)
     07-build:
-      status: in_progress
+      status: completed
       started: '2026-08-07'
-      note: M4 T4.1 H4–H5 / UJ-051..053 in progress; tip 739c4396 (08 PASS + PR #899)
+      completed: '2026-08-07'
+      note: COMPLETE — M4 done (T4.1–T4.2); T4.3 is stage handoff to 09–13; tip 6bc756ef
     08-verify-build:
       status: completed
       started: '2026-08-07'
       completed: '2026-08-07'
-      tip_sha: 410055cf
-      tip_sha_full: 410055cfd5551e3e83ffc68a390d8b9a28d4d9e2
+      tip_sha: 6bc756ef
+      tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
       report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
       overall: PASS
-      note: COMPLETE — Overall PASS @ 410055cf (M1–M3 boundary); next M4/PR
+      note: COMPLETE — M4 local 08 PASS @ 6bc756ef (T4.1–T4.2 H4–H5); tip CI green 05893ccb; next 09-qa
+    09-qa:
+      status: completed
+      started: '2026-08-07'
+      completed: '2026-08-07'
+      overall: pass_with_advisories
+      report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+      note: '09 PASS pass_with_advisories; next 10-e2e'
+    10-e2e:
+      status: pending
+      note: 'next after 09 PASS pass_with_advisories'
   active_milestone: M4
-  active_task: T4.1
+  active_task: T4.3
   phase0_status: completed
   phase0_proceed: D-S050-proceed
   phase0_locks:
@@ -29569,10 +29644,10 @@ evolve_cycles:
   ui_preview_url: http://localhost:18000
   branch: evolve/EV-042-remove-db-tools-operator-throughput
   branch_status: active
-  tip_sha: 739c4396
-  tip_sha_full: 739c439633a10bb150410793837de612ca62dfba
+  tip_sha: 6bc756ef
+  tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
   tip_sha_pushed: true
-  tip_sha_note: 'ACTIVE branch @ 739c4396; tip_sha_pushed=true (tracks origin after #899 docs); 08 PASS + PR #899; M4 T4.1 H4–H5 / UJ-051..053 in progress; Sync database migrations CI OOS (not EV-042); 09 pending after M4'
+  tip_sha_note: 'ACTIVE branch @ 6bc756ef; tip_sha_pushed=true; M4 T4.1–T4.2 done; local 08 PASS; tip CI green for 05893ccb (H4–H5 wiring); docs tip 6bc756ef; next 09-qa per Standard'
   preset: Standard
   gates:
     a_to_b: passed
@@ -29629,7 +29704,13 @@ evolve_cycles:
     status: written
     stage: 08-verify-build
     skill_id: 08-verify-build
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    status: written
+    stage: 09-qa
+    skill_id: 09-qa
   notes:
+  - '2026-08-07 S050/EV-042 09-qa COMPLETE — pass_with_advisories; report qa-report.md; current_stage 10-e2e pending; no git commit by workflow-state-manager'
+  - '2026-08-07 S050/EV-042 M4 T4.1–T4.2 + local 08 PASS @ 6bc756ef — commits b92e6e7e (T4.1), 05893ccb (T4.2), 6bc756ef ([08] docs); tip CI green for 05893ccb; active_task T4.3; next 09-qa per Standard; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 M4 START — active_task T4.1 H4–H5 / UJ-051..053; tip 739c4396 tip_sha_pushed=true (tracks origin after #899); current_stage 07-build; Sync database migrations CI OOS (not EV-042); no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 08-verify-build PASS @ 410055cf — Overall PASS (verification-report.md); m3_boundary checkpoint pass; tip_sha_pushed=false (push in progress); current_stage 07-build next M4/PR; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 M1–M3 COMPLETE @ 97d1a6fd — commits 6ee9396d (M2), dcaa8ce8 (M1), 97d1a6fd (M3); tip_sha_pushed=false; current_stage 08-verify-build (M3 boundary); 07 remains in_progress (M4 pending after 08); no git commit by workflow-state-manager'
@@ -39130,9 +39211,9 @@ git_history:
   pending_commit_note: null
   dirty: false
   dirty_note: null
-  tip_sha: 739c4396
-  tip_sha_full: 739c439633a10bb150410793837de612ca62dfba
-  tip_note: 'S050/EV-042 tip 739c4396 — M4 T4.1 in progress (H4–H5 / UJ-051..053); tip_sha_pushed=true ahead_of_origin=0 after #899 docs; Sync database migrations CI OOS'
+  tip_sha: 6bc756ef
+  tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+  tip_note: 'S050/EV-042 tip 6bc756ef — M4 T4.1–T4.2 done; local 08 PASS; tip CI green 05893ccb; active_task T4.3; tip_sha_pushed=true ahead_of_origin=0; next 09-qa'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -39147,6 +39228,7 @@ git_history:
   note: 'S047/EV-039 — current_branch evolve/EV-040-workbench-lint-ux @ 861c5457; pushed=true ahead_of_origin=0; PR #893 OPEN; 13 in_progress H1–H5 PASS; tip CD awaiting merge; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-07 S050/EV-042 M4 T4.1–T4.2 + 08 @ 6bc756ef — recorded commits b92e6e7e ([T4.1] test H4–H5), 05893ccb ([T4.2] docs), 6bc756ef ([08] docs M4 verification); tip_sha_pushed=true ahead_of_origin=0; active_task T4.3; next 09-qa; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 M4 START T4.1 @ 739c4396 — H4–H5 / UJ-051..053; tip_sha_pushed=true ahead_of_origin=0 pushed=true (tracks origin after #899); Sync database migrations CI OOS (not EV-042); no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 08-verify-build PASS @ 410055cf — recorded commit 410055cf ([08] fix: restore coverage gates after F33 mass ingest); tip 410055cf; tip_sha_pushed=false (push in progress); ahead_of_origin=4; m3_boundary pass; next M4/PR; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 M1–M3 COMPLETE @ 97d1a6fd — recorded commits 6ee9396d (M2), dcaa8ce8 (M1), 97d1a6fd (M3); tip 97d1a6fd; ahead_of_origin=3 pushed=false dirty=false; current_stage 08-verify-build; no git commit by workflow-state-manager'
@@ -39631,8 +39713,8 @@ git_history:
     created: "2026-08-07"
     session_id: S050-remove-db-tools-operator-throughput
     evolve_cycle_id: EV-042
-    tip_sha: 739c4396
-    tip_sha_full: 739c439633a10bb150410793837de612ca62dfba
+    tip_sha: 6bc756ef
+    tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
     exists: true
     pushed: true
     tip_sha_pushed: true
@@ -39640,7 +39722,7 @@ git_history:
     pr_number: null
     pr_url: null
     pr_status: null
-    note: "S050/EV-042 ACTIVE @ 739c4396; M4 T4.1 H4–H5 / UJ-051..053 in progress; tip_sha_pushed=true; Sync database migrations CI OOS"
+    note: "S050/EV-042 ACTIVE @ 6bc756ef; M4 T4.1–T4.2 done; local 08 PASS; tip CI green 05893ccb; T4.3 handoff 09-qa; tip_sha_pushed=true"
   - name: evolve/EV-041-operator-sources-briefing
     status: merged
     base: main
@@ -40840,6 +40922,57 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 6bc756ef
+    short: 6bc756ef
+    sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+    branch: evolve/EV-042-remove-db-tools-operator-throughput
+    message: "[08] docs: M4 verification report after T4.1–T4.2 H4–H5 wiring"
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    stages:
+    - 08-verify-build
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    files_changed_count: 2
+    timestamp: "2026-08-07T10:43:25-04:00"
+    pushed: true
+    tip_sha: 6bc756ef
+    tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+    note: "S050/EV-042 — M4 local 08 PASS; verification-report after T4.1–T4.2 H4–H5 wiring; tip"
+  - sha: 05893ccb
+    short: 05893ccb
+    sha_full: 05893ccb79625476e2ec10e635840770abc33fa1
+    branch: evolve/EV-042-remove-db-tools-operator-throughput
+    message: "[T4.2] docs: TC-F33/EV042 details and destinations deferred ops note"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    files_changed_count: 5
+    timestamp: "2026-08-07T10:39:27-04:00"
+    pushed: true
+    tip_sha: 05893ccb
+    tip_sha_full: 05893ccb79625476e2ec10e635840770abc33fa1
+    note: "S050/EV-042 — T4.2 docs TC-F33/EV042 + destinations deferred; tip CI green for H4–H5 wiring"
+  - sha: b92e6e7e
+    short: b92e6e7e
+    sha_full: b92e6e7e9156a1d217f3ef39501689b3c3fb11ab
+    branch: evolve/EV-042-remove-db-tools-operator-throughput
+    message: "[T4.1] test: H4–H5 mass ingest CORS + UJ-051..053 Playwright"
+    stage: 07-build
+    skill_id: 07-build
+    stages:
+    - 07-build
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    files_changed_count: 6
+    timestamp: "2026-08-07T10:38:51-04:00"
+    pushed: true
+    tip_sha: b92e6e7e
+    tip_sha_full: b92e6e7e9156a1d217f3ef39501689b3c3fb11ab
+    note: "S050/EV-042 — T4.1 H4–H5 mass ingest CORS + UJ-051..053 Playwright"
   - sha: 410055cf
     short: 410055cf
     sha_full: 410055cfd5551e3e83ffc68a390d8b9a28d4d9e2

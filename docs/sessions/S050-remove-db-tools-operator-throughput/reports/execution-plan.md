@@ -67,7 +67,7 @@
 |------|-------------|------------|--------|-----------|
 | T4.1 | H4–H5 smoke for new mass route + FE URLs | AC6; connectivity-gates | M1–M3 | **completed** | |
 | T4.2 | Update test-plan TC details if needed; ops note destinations deferred | [Corpus: tests] | T4.1 | **completed** | |
-| T4.3 | 08–13 per Standard routing | routing-plan | T4.1 | **in_progress** (08 local PASS @ 05893ccb; CI watch) | |
+| T4.3 | 08–13 per Standard routing | routing-plan | T4.1 | **in_progress** (08+09 PASS; next 10-e2e) | |
 
 
 ## Proposed tech defaults (pending AskQuestion)

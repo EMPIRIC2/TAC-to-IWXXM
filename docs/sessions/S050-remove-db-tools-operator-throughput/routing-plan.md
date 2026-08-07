@@ -17,12 +17,12 @@
 | 01-requirements | yes | delta | **completed** | AC1–AC7 locked |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS; C1 dedicated mass limit |
 | 03-plan-tooling | no | — | skipped | |
-| 04-tech-plan | yes | delta | **in_progress** | execution-plan drafted |
-| 05-verify-tech | yes | delta | pending | Gate B |
+| 04-tech-plan | yes | delta | **completed** | execution-plan + build-plan-card |
+| 05-verify-tech | yes | delta | **completed** | Gate B PASS |
 | 06-tech-tooling | no | — | skipped* | |
-| 07-build | yes | full | pending | |
-| 08-verify-build | yes | delta | pending | |
-| 09-qa | yes | delta | pending | |
+| 07-build | yes | full | **completed** | M1–M4 T4.1–T4.2 |
+| 08-verify-build | yes | delta | **completed** | M4 PASS @ 6bc756ef |
+| 09-qa | yes | delta | **completed** | pass_with_advisories; qa-report.md |
 | 10-e2e | yes | full | pending | H4–H5 (+ UJ-051..053) |
 | 11-verify-impl | yes | delta | pending | |
 | 12-verify-deploy | yes | delta | pending | |
