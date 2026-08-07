@@ -89,5 +89,5 @@
 
 | PR | Scope | Status | URL |
 |----|-------|--------|-----|
-| Minor (M1–M3) | Hide destinations UI; F33 mass ingest; work queue/batch | opening | TBD |
-| M4 follow-up | H4–H5 / 08–13 close | pending | — |
+| Minor (M1–M3) | Hide destinations UI; F33 mass ingest; work queue/batch | **open** | https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899 |
+| M4 follow-up | H4–H5 / 09–13 close | pending | — |
