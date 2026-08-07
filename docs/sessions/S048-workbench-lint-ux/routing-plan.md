@@ -5,14 +5,14 @@
 **Skip:** `03-plan-tooling`, `06-tech-tooling`  
 **Branch:** `evolve/EV-040-workbench-lint-ux`  
 **Features:** deepen **F7 / F10 / F15** (no new Fn)  
-**Status:** in_progress — 13 smoke baseline green; merge pending for tip CD  
+**Status:** completed — D-S048-close=1,1,1; PR #893 merged; #894 closed under #840  
 **Approved:** 2026-08-06 (plan + intake)  
 **PR:** https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | scoped | **completed** | S048 open |
-| 16-evolve | yes | orchestrator | **in_progress** | EV-040 close after merge |
+| 16-evolve | yes | orchestrator | **completed** | CLOSED D-S048-close=1,1,1 |
 | 01-requirements | yes | delta | **completed** | AC1–AC7 |
 | 02-verify-plan | yes | delta | **completed** | Gate A |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules |

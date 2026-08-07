@@ -1,15 +1,17 @@
 ---
 session_id: S048-workbench-lint-ux
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-040-workbench-lint-ux
 started_at: 2026-08-06
+completed_at: 2026-08-06
 intent: "Workbench lint UX, prefs slim, official AHL/Collect examples, catalog source attribution; fix example lint FPs"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-040
 prior_session: S047-sql-ingest-live-e2e
 prior_evolve_cycle_id: EV-039
-github_issues: []
+github_issues: [894]
+parent_epic: 840
 context_briefs:
   - docs/context/workbench-lint-ux.md
 standing_docs_touched:
@@ -25,11 +27,16 @@ deepen_feature_ids:
   - F10
   - F15
 feature_note: "Deepen F7/F10/F15 — no new Fn; UI preview accepted"
-route_status: in_progress
-current_stage: 00-context
+route_status: completed
+current_stage: 16-evolve
 ui_preview: accepted
+pr_number: 893
+pr_status: merged
+close_decision_id: D-S048-close
 decisions:
   D-S048-open: "Q1=1 Q2=investigate+note+fix FPs Q3=1 Q4=1"
+  D-S048-ac: "1"
+  D-S048-close: "1,1,1"
 ---
 
 # Session S048 — workbench-lint-ux
@@ -46,6 +53,11 @@ lines in the lint issue catalog. Fix two confirmed example lint false positives.
 
 Ship a clearer workbench lint/UX surface with official bulletin/collect demos and
 catalog source attribution, with WMO example lint FPs documented and corrected.
+
+## Status
+
+**Completed** 2026-08-06 — **D-S048-close=1,1,1**: merge PR #893; file+close #894 under #840;
+close EV-040/S048; stop. (`route_status: completed`)
 
 ## Phase 0 (locked 2026-08-06 — plan approve + chat `1 / investigate+note / 1 / 1`)
 

@@ -8,8 +8,12 @@
 **Session**: S048-workbench-lint-ux  
 **Features**: deepen **F7 / F10 / F15** (no new Fn)  
 **Started**: 2026-08-06  
+**Completed**: 2026-08-06  
 **Branch**: `evolve/EV-040-workbench-lint-ux`  
-**Status**: in_progress  
+**Status**: completed  
+**PR**: [#893](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893) **merged**  
+**Issues**: [#894](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/894) closed under [#840](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/840)  
+**Close**: **D-S048-close=1,1,1** — Merge #893; file+close #894 under #840; stop  
 **Prior**: S047 / EV-039 completed  
 **Corpus**: [Corpus: product §F7/F10/F15], [Corpus: api], [Corpus: tests], [Corpus: journeys], [Corpus: adr/ADR-028]
 

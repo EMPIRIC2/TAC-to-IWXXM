@@ -1,9 +1,11 @@
 # Evolve report — EV-040
 
 **Session:** S048-workbench-lint-ux  
-**Completed (impl):** 2026-08-06 · **Deploy tip:** awaiting merge of PR #893  
+**Completed:** 2026-08-06 · **Close:** D-S048-close=1,1,1  
 **Deepen:** F7 / F10 / F15  
-**PR:** [#893](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893) OPEN @ `65b1ab01`
+**PR:** [#893](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893) **merged** (merge SHA pending parent at bookkeeping time)  
+**Issue:** [#894](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/894) filed+closed under [#840](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/840)  
+**Tip (evolve branch):** `5a9f28ef`
 
 ## Shipped
 
@@ -14,8 +16,12 @@
 ## Verification
 
 - Local + pre-push CI green; FE coverage fix for fixture exclusion.
-- Live H1–H3 + H0c/H4/H5 PASS on current DOKS (pre-merge baseline).
-- Post-merge: re-run H4–H5 after FE/API tip rolls.
+- Live H1–H3 + H0c/H4/H5 PASS on DOKS (pre-merge baseline).
+- Post-merge: tip CD + re-run H4–H5 after FE/API tip rolls (parent).
+
+## Close
+
+Phase 4 close approved (**D-S048-close=1,1,1**): merge #893; file+close #894 under #840; close EV-040/S048; stop.
 
 ## Artifacts
 

@@ -24,7 +24,7 @@ Clearer workbench lint/UX, slim prefs, official AHL/Collect examples, catalog so
 
 ## Next child stage
 
-01-requirements — delta ACs from locked plan
+CLOSED — D-S048-close=1,1,1 (PR #893 merged; #894 closed under #840)
 
 ## Risks / open decisions
 
