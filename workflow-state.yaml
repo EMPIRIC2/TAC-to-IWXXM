@@ -16,7 +16,7 @@ active_session:
   branch_base: main@fa5b2140
   branch_status: active
   branch_exists: true
-  branch_note: ACTIVE — tip 6ecff489; tip_sha_pushed=false ahead_of_origin=3; 11-verify-impl in_progress
+  branch_note: ACTIVE — tip adad127c; tip_sha_pushed=false ahead_of_origin=4; 11-verify-impl COMPLETE; next 12-verify-deploy; dirty docs tip
   artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-042
@@ -36,10 +36,10 @@ active_session:
   ui_preview_note: 'accepted local http://localhost:18000'
   preset: Standard
   preset_note: Recommended Standard for product code (drawer + churn UX + mass ingest); routing-plan approval pending (parent writes brief)
-  tip_sha: 6ecff489
-  tip_sha_full: 6ecff489b631f4daa562bc49ef9089054017c546
+  tip_sha: adad127c
+  tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
   tip_sha_pushed: false
-  tip_sha_note: '11-verify-impl STARTED @ 6ecff489; tip_sha_pushed=false ahead_of_origin=3'
+  tip_sha_note: '11-verify-impl COMPLETE @ adad127c; tip_sha_pushed=false ahead_of_origin=4; dirty (docs + workflow-state); next 12-verify-deploy'
   github_issues: [897, 898]
   parent_epic: 897
   github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
@@ -54,7 +54,7 @@ active_session:
   phase0_proceed: D-S050-proceed
   active_milestone: M4
   active_task: T4.3
-  active_task_note: '11-verify-impl in_progress @ 6ecff489'
+  active_task_note: 'T4.3 handoff — 11-verify-impl COMPLETE @ adad127c; next 12-verify-deploy'
   decisions:
     D-S050-open: open_session
     D-S050-db-scope: locked
@@ -77,6 +77,8 @@ active_session:
     D-S050-04-plan_note: 'execution-plan.md approved; proceed Gate B'
     D-S050-gate-b: PASS
     D-S050-gate-b_note: 'Gate B PASS — 05-verify-tech complete; proceed 07-build M1 T1.1'
+    D-S050-11-verify: approved
+    D-S050-11-verify_note: 'Approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 T3→13; UI preview accepted; fix adad127c; next 12-verify-deploy'
   artifacts:
   - path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
     status: written
@@ -127,8 +129,12 @@ active_session:
     status: written
     stage: 10-e2e
     skill_id: 10-e2e
-  current_stage: 11-verify-impl
-  current_stage_note: '11-verify-impl in_progress @ 6ecff489'
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    status: written
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+  current_stage: 12-verify-deploy
+  current_stage_note: '12-verify-deploy in_progress after 11 COMPLETE @ adad127c'
   route_status: in_progress
   proceed_decision_id: D-S050-proceed
   ac_decision_id: D-S050-ac
@@ -147,7 +153,7 @@ active_session:
     required: true
     status: in_progress
     started: '2026-08-07'
-    note: IN_PROGRESS — 09+10 done @ dff22265; T4.3 handoff; next 11-verify-impl; live H4–H5/T3 deferred to 13
+    note: IN_PROGRESS — 11-verify-impl COMPLETE @ adad127c; T4.3 handoff; next 12-verify-deploy; live H4–H5/T3 deferred to 13
   - stage: 01-requirements
     mode: delta
     required: true
@@ -225,14 +231,26 @@ active_session:
   - stage: 11-verify-impl
     mode: delta
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-07'
     started_at: '2026-08-07'
-    note: 'IN_PROGRESS — S050/EV-042 11-verify-impl STARTED @ 6ecff489'
+    completed: '2026-08-07'
+    completed_at: '2026-08-07'
+    overall: approved
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    decision_id: D-S050-11-verify
+    note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
   - stage: 12-verify-deploy
     mode: delta
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-07'
+    started_at: '2026-08-07'
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy STARTED after 11 COMPLETE @ adad127c'
   - stage: 13-deploy-smoke
     mode: delta
     required: true
@@ -249,7 +267,7 @@ sessions:
   branch_base: main@fa5b2140
   branch_status: active
   branch_exists: true
-  branch_note: ACTIVE — tip 6ecff489; tip_sha_pushed=false ahead_of_origin=3; 11-verify-impl in_progress
+  branch_note: ACTIVE — tip adad127c; tip_sha_pushed=false ahead_of_origin=4; 11-verify-impl COMPLETE; next 12-verify-deploy; dirty docs tip
   artifacts_dir: docs/sessions/S050-remove-db-tools-operator-throughput/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-042
@@ -268,10 +286,10 @@ sessions:
   ui_preview_url: http://localhost:18000
   ui_preview_note: 'accepted local http://localhost:18000'
   preset: Standard
-  tip_sha: 6ecff489
-  tip_sha_full: 6ecff489b631f4daa562bc49ef9089054017c546
+  tip_sha: adad127c
+  tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
   tip_sha_pushed: false
-  tip_sha_note: '11-verify-impl STARTED @ 6ecff489; tip_sha_pushed=false ahead_of_origin=3'
+  tip_sha_note: '11-verify-impl COMPLETE @ adad127c; tip_sha_pushed=false ahead_of_origin=4; dirty (docs + workflow-state); next 12-verify-deploy'
   github_issues: [897, 898]
   parent_epic: 897
   github_issues_note: 'Epic #897; follow-up #898 DB restore deferred'
@@ -286,7 +304,7 @@ sessions:
   phase0_proceed: D-S050-proceed
   active_milestone: M4
   active_task: T4.3
-  active_task_note: '11-verify-impl in_progress @ 6ecff489'
+  active_task_note: 'T4.3 handoff — 11-verify-impl COMPLETE @ adad127c; next 12-verify-deploy'
   decisions:
     D-S050-open: open_session
     D-S050-db-scope: locked
@@ -309,6 +327,8 @@ sessions:
     D-S050-04-plan_note: 'execution-plan.md approved; proceed Gate B'
     D-S050-gate-b: PASS
     D-S050-gate-b_note: 'Gate B PASS — 05-verify-tech complete; proceed 07-build M1 T1.1'
+    D-S050-11-verify: approved
+    D-S050-11-verify_note: 'Approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 T3→13; UI preview accepted; fix adad127c; next 12-verify-deploy'
   artifacts:
   - path: docs/sessions/S050-remove-db-tools-operator-throughput/session-brief.md
     status: written
@@ -359,8 +379,12 @@ sessions:
     status: written
     stage: 10-e2e
     skill_id: 10-e2e
-  current_stage: 11-verify-impl
-  current_stage_note: '11-verify-impl in_progress @ 6ecff489'
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    status: written
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+  current_stage: 12-verify-deploy
+  current_stage_note: '12-verify-deploy in_progress after 11 COMPLETE @ adad127c'
   route_status: in_progress
   open_decision_id: D-S050-open
   proceed_decision_id: D-S050-proceed
@@ -380,7 +404,7 @@ sessions:
     required: true
     status: in_progress
     started: '2026-08-07'
-    note: IN_PROGRESS — 09+10 done @ dff22265; T4.3 handoff; next 11-verify-impl; live H4–H5/T3 deferred to 13
+    note: IN_PROGRESS — 11-verify-impl COMPLETE @ adad127c; T4.3 handoff; next 12-verify-deploy; live H4–H5/T3 deferred to 13
   - stage: 01-requirements
     mode: delta
     required: true
@@ -458,14 +482,26 @@ sessions:
   - stage: 11-verify-impl
     mode: delta
     required: true
-    status: in_progress
+    status: completed
     started: '2026-08-07'
     started_at: '2026-08-07'
-    note: 'IN_PROGRESS — S050/EV-042 11-verify-impl STARTED @ 6ecff489'
+    completed: '2026-08-07'
+    completed_at: '2026-08-07'
+    overall: approved
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    decision_id: D-S050-11-verify
+    note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
   - stage: 12-verify-deploy
     mode: delta
     required: true
-    status: pending
+    status: in_progress
+    started: '2026-08-07'
+    started_at: '2026-08-07'
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy STARTED after 11 COMPLETE @ adad127c'
   - stage: 13-deploy-smoke
     mode: delta
     required: true
@@ -10972,9 +11008,11 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
-    status: in_progress
+    status: completed
     started_at: '2026-08-07'
     started: '2026-08-07'
+    completed: '2026-08-07'
+    completed_at: '2026-08-07'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -11047,17 +11085,18 @@ stages:
     session_id: S050-remove-db-tools-operator-throughput
     evolve_cycle_id: EV-042
     mode: delta
-    overall: null
-    note: 'IN_PROGRESS — S050/EV-042 11-verify-impl STARTED @ 6ecff489; not completed'
-    report: null
-    report_status: null
-    tip_sha: 6ecff489
-    tip_sha_full: 6ecff489b631f4daa562bc49ef9089054017c546
-    tip_note: 'S050/EV-042 tip 6ecff489 — 11-verify-impl in_progress; tip_sha_pushed=false ahead_of_origin=3'
+    overall: approved
+    note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
+    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    report_status: approved
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    tip_note: 'S050/EV-042 tip adad127c — 11-verify-impl COMPLETE; tip_sha_pushed=false ahead_of_origin=4; next 12-verify-deploy'
     awaiting_user_decision: false
     awaiting_user_decision_note: null
-    decision_id: null
+    decision_id: D-S050-11-verify
     decision_ids:
+    - D-S050-11-verify
     - D-S047-11
     deepen_feature_ids:
     - F7
@@ -11070,6 +11109,7 @@ stages:
     active_milestone: M4
     active_task: T4.3
     active_task_status: in_progress
+    active_task_note: 'T4.3 handoff — 11-verify-impl COMPLETE @ adad127c; next 12-verify-deploy'
     previous_s046_session_id: S046-iwxxm-corpus-residuals
     previous_s046_evolve_cycle_id: EV-038
     previous_s046_overall: approved
@@ -11100,36 +11140,43 @@ stages:
     substeps:
       collect_results:
         status: completed
-        note: 08 PASS; 09 pass_with_advisories; 10 PASS; SQL Server waive OK
+        note: 08 PASS; 09 pass_with_advisories; 10 PASS local; live H4–H5/T3 → 13
       feature_completeness:
         status: completed
-        note: deepen F16 AC1–AC7 met (SQL Server waive)
+        note: F33 + F7 deepen + F16–F19 deepen approved (D-S050-11-verify)
       journey_signoff:
         status: completed
-        note: F16 live e2e AC sign-off via D-S047-11=1
+        note: UJ-051..053 approved; T3/H4–H5 waived until 13
       feature_approval:
         status: completed
-        note: D-S047-11=1 approve AC1–AC7 (SQL Server waive OK)
+        note: D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen
       fixes_applied:
-        status: n/a
+        status: completed
+        note: adad127c hide Upload to Database with destinations UI gate
       scope_analysis:
         status: completed
-        note: deepen F16 only — no new Fn
+        note: F33 new + F7/F16–F19 deepen; #898 DB restore deferred; no creep
       summary:
         status: completed
-        path: docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md
+        path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
     delta_substages:
     - id: S050-remove-db-tools-operator-throughput-11
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
       skill_id: 11-verify-impl
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-07'
       started: '2026-08-07'
-      tip_sha: 6ecff489
-      tip_sha_full: 6ecff489b631f4daa562bc49ef9089054017c546
-      note: 'IN_PROGRESS — S050/EV-042 11-verify-impl STARTED @ 6ecff489'
+      completed_at: '2026-08-07'
+      completed: '2026-08-07'
+      tip_sha: adad127c
+      tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+      report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+      report_status: approved
+      overall: approved
+      decision_id: D-S050-11-verify
+      note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
       feature_ids:
       - F33
       deepen_feature_ids:
@@ -11142,6 +11189,7 @@ stages:
       active_milestone: M4
       active_task: T4.3
       active_task_status: in_progress
+      active_task_note: 'T4.3 handoff — 11-verify-impl COMPLETE @ adad127c; next 12-verify-deploy'
     - id: S047-sql-ingest-live-e2e-11
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
@@ -11332,6 +11380,7 @@ stages:
     - D-S045-next
     - D-S036-11
     notes:
+    - '2026-08-07 S050/EV-042 11-verify-impl COMPLETE — D-S050-11-verify @ adad127c; report verify-impl.md; T3→13; next 12-verify-deploy; no git commit by workflow-state-manager'
     - '2026-08-07 S050/EV-042 11-verify-impl STARTED — status in_progress @ 6ecff489; tip_sha_pushed=false ahead_of_origin=3; not completed'
     - '2026-08-05 S045/EV-037 11-verify-impl COMPLETE — D-S045-11 approve_all_met @ 90c2e8a3; report verify-impl.md pending closeout commit; 12/13 waived; handoff push+PR (D-S045-next); no git commit by workflow-state-manager'
     - '2026-07-28 S023/EV-017 11-verify-impl COMPLETE — F21/F22 approved; F5/F7.h ack; T3→13; advisories disposed; verify-impl.md; tip 17ad563; next 12-verify-deploy; #783'
@@ -12634,23 +12683,43 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: completed
-    started_at: '2026-08-06'
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    overall: approved
+    status: in_progress
+    started_at: '2026-08-07'
+    started: '2026-08-07'
+    overall: null
+    previous_s048_started_at: '2026-08-06'
+    previous_s048_started: '2026-08-06'
+    previous_s048_completed: '2026-08-06'
+    previous_s048_completed_at: '2026-08-06'
+    previous_s048_session_id: S048-workbench-lint-ux
+    previous_s048_evolve_cycle_id: EV-040
+    previous_s048_note: 'COMPLETE — S048/EV-040 deploy-checklist approved; PR #893 open; tip 861c5457; handoff 13'
+    previous_s048_report: docs/sessions/S048-workbench-lint-ux/reports/deploy-checklist.md
+    previous_s048_overall: approved
+    previous_s048_tip_sha: 08c805eb
+    previous_s048_tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
     previous_started_at: '2026-08-06'
     previous_started: '2026-08-06'
     previous_completed: '2026-08-06'
     previous_completed_at: '2026-08-06'
-    previous_session_id: S046-iwxxm-corpus-residuals
-    previous_evolve_cycle_id: EV-038
-    previous_note: 'COMPLETE — S046/EV-038 D-S046-12=1 approve checklist; report deploy-checklist.md; overall approved; opening PR → CI → merge → 13 H4-H5'
-    previous_report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+    previous_session_id: S048-workbench-lint-ux
+    previous_evolve_cycle_id: EV-040
+    previous_note: 'COMPLETE — S048/EV-040 deploy-checklist approved; PR #893 open; tip 861c5457; handoff 13'
+    previous_report: docs/sessions/S048-workbench-lint-ux/reports/deploy-checklist.md
     previous_overall: approved
-    previous_tip_sha: 2195978e
-    previous_tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
+    previous_tip_sha: 08c805eb
+    previous_tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
+    previous_s046_started_at: '2026-08-06'
+    previous_s046_started: '2026-08-06'
+    previous_s046_completed: '2026-08-06'
+    previous_s046_completed_at: '2026-08-06'
+    previous_s046_session_id: S046-iwxxm-corpus-residuals
+    previous_s046_evolve_cycle_id: EV-038
+    previous_s046_note: 'COMPLETE — S046/EV-038 D-S046-12=1 approve checklist; report deploy-checklist.md; overall approved; opening PR → CI → merge → 13 H4-H5'
+    previous_s046_report: docs/sessions/S046-iwxxm-corpus-residuals/reports/deploy-checklist.md
+    previous_s046_overall: approved
+    previous_s046_tip_sha: 2195978e
+    previous_s046_tip_sha_full: 2195978ecbbbce082cdadeb34b7bdd8cb1bc0cc2
     previous_s042_started_at: '2026-08-05'
     previous_s042_started: '2026-08-05'
     previous_s042_completed: '2026-08-05'
@@ -12683,15 +12752,22 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S048-workbench-lint-ux
-    evolve_cycle_id: EV-040
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
     mode: delta
-    note: 'COMPLETE — S048/EV-040 deploy-checklist approved; PR #893 open; tip 861c5457; handoff 13'
-    report: docs/sessions/S048-workbench-lint-ux/reports/deploy-checklist.md
-    report_status: approved
-    tip_sha: 08c805eb
-    tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
-    tip_note: 'S048/EV-040 tip 861c5457 — 12 COMPLETE; 13 in_progress'
+    note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy STARTED after 11 COMPLETE @ adad127c; not completed'
+    report: null
+    report_status: null
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    tip_note: 'S050/EV-042 tip adad127c — 12-verify-deploy in_progress; tip_sha_pushed=false ahead_of_origin=4'
+    feature_ids:
+    - F33
+    active_milestone: M4
+    active_task: T4.3
+    active_task_status: in_progress
+    active_task_note: 'T4.3 handoff — 11-verify-impl COMPLETE @ adad127c; next 12-verify-deploy'
+    decision_id: null
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: SUCCESS
     doks_tag: 20260805115809-d3f4bb9
@@ -12708,8 +12784,35 @@ stages:
     - D-S036-12
     - D-S045-12-13-waive
     deepen_feature_ids:
+    - F7
     - F16
+    - F17
+    - F18
+    - F19
     delta_substages:
+    - id: S050-remove-db-tools-operator-throughput-12
+      session_id: S050-remove-db-tools-operator-throughput
+      evolve_cycle_id: EV-042
+      skill_id: 12-verify-deploy
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-07'
+      started: '2026-08-07'
+      tip_sha: adad127c
+      tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+      note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy STARTED after 11 COMPLETE @ adad127c'
+      feature_ids:
+      - F33
+      deepen_feature_ids:
+      - F7
+      - F16
+      - F17
+      - F18
+      - F19
+      branch: evolve/EV-042-remove-db-tools-operator-throughput
+      active_milestone: M4
+      active_task: T4.3
+      active_task_status: in_progress
     - id: S047-sql-ingest-live-e2e-12
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
@@ -14058,6 +14161,53 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S050-11-verify
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: implementation_signoff
+  status: confirmed
+  topic: '11-verify-impl feature+journey sign-off; T3→13'
+  summary: 'Approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved with T3/H4–H5 waived until 13; UI preview accepted; fix adad127c'
+  decision: |
+    D-S050-11-verify — user approved F33, F7 deepen, F16–F19 deepen.
+    Journeys UJ-051..053 approved; T3/H4–H5 waived until 13-deploy-smoke.
+    UI preview accepted (localhost:18000).
+    Fix in place: adad127c hide Upload to Database with destinations UI gate.
+    Report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    Also docs/reports/implementation-verification.md will be updated.
+    Tip: adad127c (adad127c9c3ca6ffe8c1a86e29e00c33de21eb58); tip_sha_pushed=false ahead_of_origin=4; dirty with docs.
+    11-verify-impl COMPLETE; advance current_stage to 12-verify-deploy; keep active_task T4.3.
+    Do not mark 12 completed.
+    No git commit by workflow-state-manager.
+  user_option: approved
+  branch: evolve/EV-042-remove-db-tools-operator-throughput
+  tip_sha: adad127c
+  tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+  current_stage: 12-verify-deploy
+  active_task: T4.3
+  report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+  overall: approved
+  related_decisions:
+  - D-S050-10-e2e
+  - D-S050-ac
+  - D-S050-proceed
+  feature_ids:
+  - F33
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  - F18
+  - F19
+  artifacts:
+  - docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+  note: '11-verify-impl COMPLETE; current_stage=12-verify-deploy; tip adad127c; T3→13'
 - id: D-S050-10-e2e
   date: '2026-08-07'
   timestamp: '2026-08-07'
@@ -26391,6 +26541,19 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+  type: session-report
+  kind: verify-impl
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S050-remove-db-tools-operator-throughput
+  evolve_cycle_id: EV-042
+  created_at: '2026-08-07'
+  updated_at: '2026-08-07'
+  status: written
+  tip_sha: adad127c
+  tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+  note: 'S050/EV-042 11-verify-impl COMPLETE — D-S050-11-verify; approved features+UJ; T3→13; next 12-verify-deploy'
 - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/e2e-report.md
   type: session-report
   kind: e2e-report
@@ -29728,9 +29891,9 @@ evolve_cycles:
     - 03-plan-tooling
     - 06-tech-tooling
     note: Standard recommended; pending routing-plan approval
-  current_stage: 11-verify-impl
+  current_stage: 12-verify-deploy
   current_stage_status: in_progress
-  current_stage_note: '11-verify-impl in_progress @ 6ecff489'
+  current_stage_note: '12-verify-deploy in_progress after 11 COMPLETE @ adad127c'
   stages:
     00-context:
       status: completed
@@ -29740,7 +29903,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-07'
-      note: 09+10 done @ dff22265; T4.3 handoff; next 11-verify-impl; live H4–H5/T3 deferred to 13
+      note: IN_PROGRESS — 11-verify-impl COMPLETE @ adad127c; T4.3 handoff; next 12-verify-deploy; live H4–H5/T3 deferred to 13
     01-requirements:
       status: completed
       started: '2026-08-07'
@@ -29794,14 +29957,27 @@ evolve_cycles:
       tip_sha_full: dff22265cd77e68549238d93c15e1de931b64da8
       note: 'COMPLETE — local PASS (UJ-051..053 6/6; TC-F33 20/20; H0i 10/10; H0c 6/6); live H4–H5/T3 deferred to 13; next 11-verify-impl'
     11-verify-impl:
+      status: completed
+      started: '2026-08-07'
+      started_at: '2026-08-07'
+      completed: '2026-08-07'
+      completed_at: '2026-08-07'
+      overall: approved
+      report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+      tip_sha: adad127c
+      tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+      decision_id: D-S050-11-verify
+      note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
+    12-verify-deploy:
       status: in_progress
       started: '2026-08-07'
       started_at: '2026-08-07'
-      tip_sha: 6ecff489
-      tip_sha_full: 6ecff489b631f4daa562bc49ef9089054017c546
-      note: 'IN_PROGRESS — S050/EV-042 11-verify-impl STARTED @ 6ecff489'
+      tip_sha: adad127c
+      tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+      note: 'IN_PROGRESS — S050/EV-042 12-verify-deploy STARTED after 11 COMPLETE @ adad127c'
   active_milestone: M4
   active_task: T4.3
+  active_task_note: 'T4.3 handoff — 11-verify-impl COMPLETE @ adad127c; next 12-verify-deploy'
   phase0_status: completed
   phase0_proceed: D-S050-proceed
   phase0_locks:
@@ -29813,10 +29989,10 @@ evolve_cycles:
   ui_preview_url: http://localhost:18000
   branch: evolve/EV-042-remove-db-tools-operator-throughput
   branch_status: active
-  tip_sha: 6ecff489
-  tip_sha_full: 6ecff489b631f4daa562bc49ef9089054017c546
+  tip_sha: adad127c
+  tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
   tip_sha_pushed: false
-  tip_sha_note: '11-verify-impl STARTED @ 6ecff489; tip_sha_pushed=false ahead_of_origin=3'
+  tip_sha_note: '11-verify-impl COMPLETE @ adad127c; tip_sha_pushed=false ahead_of_origin=4; dirty (docs + workflow-state); next 12-verify-deploy'
   preset: Standard
   gates:
     a_to_b: passed
@@ -29883,7 +30059,12 @@ evolve_cycles:
     status: written
     stage: 10-e2e
     skill_id: 10-e2e
+  - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    status: written
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
   notes:
+  - '2026-08-07 S050/EV-042 11-verify-impl COMPLETE — D-S050-11-verify @ adad127c; report verify-impl.md; T3→13; current_stage 12-verify-deploy; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 11-verify-impl STARTED — in_progress @ 6ecff489; tip_sha_pushed=false ahead_of_origin=3; not completed'
   - '2026-08-07 S050/EV-042 10-e2e COMPLETE — local PASS (UJ-051..053 6/6; TC-F33 20/20; H0i 10/10; H0c 6/6); report e2e-report.md; tip dff22265 tip_sha_pushed=false ahead=1; live H4–H5/T3 deferred to 13; current_stage 11-verify-impl; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 09-qa COMPLETE — pass_with_advisories; report qa-report.md; commit dff22265; current_stage was 10-e2e; no git commit by workflow-state-manager'
@@ -39382,15 +39563,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-042-remove-db-tools-operator-throughput
-  ahead_of_origin: 2
+  ahead_of_origin: 4
   pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: 'workflow-state.yaml tip sync after ac9e203a (10-e2e commit recorded)'
-  tip_sha: ac9e203a
-  tip_sha_full: ac9e203a0b82cb3da915fbb244e9cc6931e08a5e
-  tip_note: '10-e2e committed @ ac9e203a; next 11-verify-impl'
+  dirty_note: 'workflow-state.yaml 11-verify-impl COMPLETE sync @ adad127c; uncommitted docs (feature-list/execution-plan/routing-plan/verify-impl.md)'
+  tip_sha: adad127c
+  tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+  tip_note: '11-verify-impl COMPLETE @ adad127c; next 12-verify-deploy'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -39405,6 +39586,7 @@ git_history:
   note: 'S047/EV-039 — current_branch evolve/EV-040-workbench-lint-ux @ 861c5457; pushed=true ahead_of_origin=0; PR #893 OPEN; 13 in_progress H1–H5 PASS; tip CD awaiting merge; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-07 S050/EV-042 11-verify-impl COMPLETE @ adad127c — recorded commit adad127c ([11] fix: hide Upload to Database with destinations UI gate); D-S050-11-verify approve F33+F7 deepen+F16–F19 deepen; UJ-051..053 T3→13; report verify-impl.md; tip_sha_pushed=false ahead_of_origin=4 dirty docs; current_stage 12-verify-deploy; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 09+10 @ dff22265 — recorded commit dff22265 ([09] docs: S050/EV-042 QA pass_with_advisories; advance to 10-e2e); 10-e2e local PASS (artifact e2e-report.md; UJ-051..053 6/6; TC-F33 20/20; H0i 10/10; H0c 6/6); tip_sha_pushed=false ahead_of_origin=1; next 11-verify-impl; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 M4 T4.1–T4.2 + 08 @ 6bc756ef — recorded commits b92e6e7e ([T4.1] test H4–H5), 05893ccb ([T4.2] docs), 6bc756ef ([08] docs M4 verification); tip_sha_pushed=true ahead_of_origin=0; active_task T4.3; next 09-qa; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 M4 START T4.1 @ 739c4396 — H4–H5 / UJ-051..053; tip_sha_pushed=true ahead_of_origin=0 pushed=true (tracks origin after #899); Sync database migrations CI OOS (not EV-042); no git commit by workflow-state-manager'
@@ -39891,16 +40073,16 @@ git_history:
     created: "2026-08-07"
     session_id: S050-remove-db-tools-operator-throughput
     evolve_cycle_id: EV-042
-    tip_sha: 6ecff489
-    tip_sha_full: 6ecff489b631f4daa562bc49ef9089054017c546
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
     exists: true
     pushed: false
     tip_sha_pushed: false
-    ahead_of_origin: 3
+    ahead_of_origin: 4
     pr_number: null
     pr_url: null
     pr_status: null
-    note: "S050/EV-042 ACTIVE @ 6ecff489; 11-verify-impl in_progress; tip_sha_pushed=false ahead_of_origin=3"
+    note: "S050/EV-042 ACTIVE @ adad127c; 11-verify-impl COMPLETE; 12-verify-deploy in_progress; tip_sha_pushed=false ahead_of_origin=4"
   - name: evolve/EV-041-operator-sources-briefing
     status: merged
     base: main
@@ -41100,6 +41282,24 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: adad127c
+    short: adad127c
+    sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    branch: evolve/EV-042-remove-db-tools-operator-throughput
+    message: "[11] fix: hide Upload to Database with destinations UI gate"
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    stages:
+    - 11-verify-impl
+    - 16-evolve
+    session_id: S050-remove-db-tools-operator-throughput
+    evolve_cycle_id: EV-042
+    files_changed_count: 11
+    timestamp: "2026-08-07T11:49:55-04:00"
+    pushed: false
+    tip_sha: adad127c
+    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
+    note: "S050/EV-042 — 11-verify-impl fix @ adad127c; D-S050-11-verify COMPLETE; tip_sha_pushed=false ahead_of_origin=4; next 12-verify-deploy"
   - sha: ac9e203a
     short: ac9e203a
     sha_full: ac9e203a0b82cb3da915fbb244e9cc6931e08a5e

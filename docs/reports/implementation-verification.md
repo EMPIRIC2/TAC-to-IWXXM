@@ -1,8 +1,9 @@
-# Implementation Verification — S047 / EV-039
+# Implementation Verification — S050 / EV-042
 
-> Canonical session report: [`docs/sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md`](../sessions/S047-sql-ingest-live-e2e/reports/verify-impl.md)
+> Canonical session report: [`docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md`](../sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md)
 
-**Status:** APPROVED (`D-S047-11`=1) — AC1–AC7 MET (SQL Server waive OK).  
-**Tip:** `415898d0` · deepen **F16** · [Corpus: product §F16]
+**Status:** APPROVED (`D-S050-11-verify`) — F33 + F7/F16–F19 deepen + UJ-051..053.  
+**Tip:** `adad127c` · [Corpus: product §F7/F16–F19/F33]  
+**T3/H4–H5:** waived until **13-deploy-smoke**.
 
-Next: **12-verify-deploy** (`reports/deploy-checklist.md`).
+Next: **12-verify-deploy**.

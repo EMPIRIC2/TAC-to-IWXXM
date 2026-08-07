@@ -40,7 +40,7 @@
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; **deepen** S042 / EV-034 CD auto-rollout |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S046 / EV-038 G-VONA-1/5 (#849/#850); prior S045 / EV-037; epic #846 |
-| F33 | Secure mass file/folder ingest | Planned | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip |
+| F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1382,7 +1382,7 @@
 
 ### F33: Secure mass file/folder ingest — S050 / EV-042
 
-- **Status**: **Planned** (S050 / EV-042; ACs below).
+- **Status**: **Implemented** (S050 / EV-042; 11-verify-impl approved 2026-08-07).
 - **What it does**: Authenticated operators ingest **many** TAC (and related text) files via
   multi-select and **folder/zip** upload, with progress and per-file errors, then feed the
   existing convert → lint → validate path (**no** operator dissemination destinations this
