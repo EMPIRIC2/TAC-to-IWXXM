@@ -25,6 +25,16 @@ active_session:
   feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
   ui_preview: n/a (docs-only; screenshots optional local)
   preset: Lean
+  tip_sha: 42ae629a
+  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+  tip_sha_pushed: true
+  tip_sha_note: 'PR #895 OPEN @ 42ae629a; session open pending merge'
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
+  pr_number: 895
+  pr_status: open
+  pr_title: '[EV-041] Operator UI sources runbook + PPT pack'
+  pr_base: main
+  pr_head: evolve/EV-041-operator-sources-briefing
   current_stage: 08-verify-build
   route_status: in_progress
   routing_plan:
@@ -40,7 +50,7 @@ active_session:
     required: true
     status: in_progress
     started: '2026-08-06'
-    note: IN_PROGRESS — awaiting PR; session not closed
+    note: IN_PROGRESS — PR #895 OPEN @ 42ae629a; session not closed
   - stage: 01-requirements
     mode: delta
     required: true
@@ -125,6 +135,16 @@ sessions:
   feature_note: Docs deepen F7 narrative — no new Fn; source-centric runbook + PPT pack
   ui_preview: n/a (docs-only; screenshots optional local)
   preset: Lean
+  tip_sha: 42ae629a
+  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+  tip_sha_pushed: true
+  tip_sha_note: 'PR #895 OPEN @ 42ae629a; session open pending merge'
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
+  pr_number: 895
+  pr_status: open
+  pr_title: '[EV-041] Operator UI sources runbook + PPT pack'
+  pr_base: main
+  pr_head: evolve/EV-041-operator-sources-briefing
   current_stage: 08-verify-build
   route_status: in_progress
   routing_plan:
@@ -140,7 +160,7 @@ sessions:
     required: true
     status: in_progress
     started: '2026-08-06'
-    note: IN_PROGRESS — awaiting PR; session not closed
+    note: IN_PROGRESS — PR #895 OPEN @ 42ae629a; session not closed
   - stage: 01-requirements
     mode: delta
     required: true
@@ -28640,7 +28660,7 @@ evolve_cycles:
     - 13-deploy-smoke
   current_stage: 08-verify-build
   current_stage_status: completed
-  current_stage_note: COMPLETE — 01/02/07/08 done; 16-evolve in_progress awaiting PR; session open
+  current_stage_note: COMPLETE — 01/02/07/08 done; PR #895 OPEN @ 42ae629a; session open pending merge
   stages:
     00-context:
       status: completed
@@ -28649,7 +28669,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-06'
-      note: awaiting PR; session not closed
+      note: PR #895 OPEN @ 42ae629a; session not closed — awaiting merge
     01-requirements:
       status: completed
       started: '2026-08-06'
@@ -28668,9 +28688,16 @@ evolve_cycles:
       completed: '2026-08-06'
   ui_preview: n/a (docs-only; screenshots optional local)
   branch: evolve/EV-041-operator-sources-briefing
-  tip_sha: 73e13281
-  tip_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
-  tip_sha_pushed: false
+  tip_sha: 42ae629a
+  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+  tip_sha_pushed: true
+  tip_sha_note: 'PR #895 OPEN @ 42ae629a; session open pending merge'
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
+  pr_number: 895
+  pr_status: open
+  pr_title: '[EV-041] Operator UI sources runbook + PPT pack'
+  pr_base: main
+  pr_head: evolve/EV-041-operator-sources-briefing
   preset: Lean
   gates:
     a_to_b: passed
@@ -28705,7 +28732,13 @@ evolve_cycles:
   - path: docs/sessions/S049-operator-sources-briefing/
     status: completed
     stage: 00-context
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
+    kind: pull-request
+    status: open
+    pr_number: 895
+    stage: 16-evolve
   notes:
+  - '2026-08-06 S049/EV-041 PR #895 OPEN @ 42ae629a — tip pushed; session open pending merge; no git commit by workflow-state-manager'
   - '2026-08-06 S049/EV-041 PROGRESS — 00/01/02/07/08 completed; gates a_to_b=passed; b_to_c/c_to_d/deploy waived; 16-evolve in_progress (PR pending); session open; no git commit by workflow-state-manager'
   - '2026-08-06 S049/EV-041 OPEN — open_session; Lean docs; deepen F7; branch evolve/EV-041-operator-sources-briefing @ 73e13281; 00-context completed; next 16-evolve; no git commit by workflow-state-manager'
 - id: EV-040
@@ -38076,14 +38109,14 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-041-operator-sources-briefing
   ahead_of_origin: 0
-  pushed: false
+  pushed: true
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: "workflow-state dirty after S049/EV-041 open_session; parent to commit; no git commit by workflow-state-manager"
-  tip_sha: 73e13281
-  tip_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
-  tip_note: 'S049/EV-041 OPEN — tip 73e13281 (main base); branch evolve/EV-041-operator-sources-briefing local; not pushed'
+  dirty_note: "workflow-state dirty after S049/EV-041 PR #895 record; parent to commit; no git commit by workflow-state-manager"
+  tip_sha: 42ae629a
+  tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+  tip_note: 'S049/EV-041 PR #895 OPEN @ 42ae629a; tip pushed; session open pending merge'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -38098,6 +38131,7 @@ git_history:
   note: 'S047/EV-039 — current_branch evolve/EV-040-workbench-lint-ux @ 861c5457; pushed=true ahead_of_origin=0; PR #893 OPEN; 13 in_progress H1–H5 PASS; tip CD awaiting merge; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-06 S049/EV-041 PR #895 OPEN @ 42ae629a — tip pushed; ahead_of_origin=0 pushed=true; session open pending merge; no git commit by workflow-state-manager'
   - '2026-08-06 S049/EV-041 OPEN — open_session; session_counter 49; evolve_cycle_counter 41; branch evolve/EV-041-operator-sources-briefing ACTIVE @ 73e13281 (base main); 00-context completed; next 16-evolve; Lean docs deepen F7; no git commit by workflow-state-manager'
   - '2026-08-06 S048/EV-040 — tip 861c5457 (08c805ebb9c935e989ba91b2fd3012974140b2e9); recorded commits e909231d + 861c5457 (+ earlier EV-040 feat/fix/test); PR #893 OPEN; 09–12 COMPLETE; 13-deploy-smoke IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb; session/cycle remain open; dirty=true (workflow-state); no git commit by workflow-state-manager'
   - '2026-08-06 S047/EV-039 — tip cfe1236b (cfe1236b4c3e8c5594447d44b69e4d20c7e01522) [EV-039] chore: retrigger PR CI for tip gate; branch pushed; PR #891 OPEN; ahead_of_origin=0 pushed=true; tip CI missing (check_suites only cursor app); local husky pre-push make ci passed; 13-deploy-smoke BLOCKED hard stop pending user decision; dirty=true (workflow-state); no git commit by workflow-state-manager'
@@ -38571,12 +38605,18 @@ git_history:
     created: "2026-08-06"
     session_id: S049-operator-sources-briefing
     evolve_cycle_id: EV-041
-    tip_sha: 73e13281
-    tip_sha_full: 73e13281efcfffe5b869f10c86d49b6daea0331f
+    tip_sha: 42ae629a
+    tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
     exists: true
-    pushed: false
+    pushed: true
     ahead_of_origin: 0
-    note: "S049/EV-041 OPEN — open_session; Lean docs; base main@73e13281; local branch created; not pushed"
+    pr_number: 895
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
+    pr_status: open
+    pr_title: "[EV-041] Operator UI sources runbook + PPT pack"
+    pr_head: evolve/EV-041-operator-sources-briefing
+    pr_base: main
+    note: "S049/EV-041 PR #895 OPEN @ 42ae629a; tip pushed; session open pending merge"
   - name: evolve/EV-040-workbench-lint-ux
     status: merged
     base: main
@@ -39754,6 +39794,26 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 42ae629a
+    short: 42ae629a
+    sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+    branch: evolve/EV-041-operator-sources-briefing
+    message: "[EV-041] docs: operator UI sources runbook and PPT pack"
+    stage: 16-evolve
+    skill_id: 16-evolve
+    stages:
+    - 16-evolve
+    - 07-build
+    session_id: S049-operator-sources-briefing
+    evolve_cycle_id: EV-041
+    files_changed_count: null
+    timestamp: "2026-08-06"
+    pushed: true
+    tip_sha: 42ae629a
+    tip_sha_full: 42ae629acae3aa373048bd4f4d4c271192844d1d
+    pr_number: 895
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/895
+    note: "S049/EV-041 — docs runbook + PPT pack; PR #895 OPEN; session open"
   - sha: 861c5457
     short: 861c5457
     sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
