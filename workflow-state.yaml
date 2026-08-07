@@ -17,16 +17,16 @@ sessions:
   started: '2026-08-06'
   branch: evolve/EV-040-workbench-lint-ux
   branch_base: main@fea30aba
-  branch_note: 'CLOSED — EV-040 completed; PR #893 MERGED (merge SHA pending parent); #894 closed under #840; D-S048-close=1,1,1'
+  branch_note: 'CLOSED — EV-040 completed; PR #893 MERGED (merge `4be24994`); #894 closed under #840; D-S048-close=1,1,1'
   artifacts_dir: docs/sessions/S048-workbench-lint-ux/
   orchestrator: 16-evolve
   evolve_cycle_id: EV-040
   current_stage: 16-evolve
   current_stage_note: "CLOSED — PR #893 merged; #894 closed; D-S048-close=1,1,1"
-  tip_sha: 5a9f28ef
-  tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
+  tip_sha: 4be24994
+  tip_sha_full: 4be24994c8d134b0ed4105f37ef15e33df61b7c8
   tip_sha_pushed: true
-  tip_sha_note: 'CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894 under #840'
+  tip_sha_note: 'CLOSED D-S048-close=1,1,1 — PR #893 merged @ `4be24994`; evolve tip was 2462a397; #894 under #840'
   prior_session: S047-sql-ingest-live-e2e
   prior_evolve_cycle_id: EV-039
   feature_ids: []
@@ -12994,7 +12994,7 @@ stages:
     previous_session_id: S048-workbench-lint-ux
     previous_evolve_cycle_id: EV-040
     previous_completed_at: '2026-08-06'
-    previous_note: 'COMPLETE — D-S048-close=1,1,1; EV-040/S048 closed; PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894 under #840'
+    previous_note: 'COMPLETE — D-S048-close=1,1,1; EV-040/S048 closed; PR #893 merged (merge `4be24994`); merge `4be24994`; tip was 5a9f28ef/2462a397; #894 under #840'
     prior_s046_session_id: S046-iwxxm-corpus-residuals
     prior_s046_evolve_cycle_id: EV-038
     prior_s046_completed_at: '2026-08-06'
@@ -13012,7 +13012,7 @@ stages:
     current_child_stage: closed
     tip_sha: 5a9f28ef
     tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
-    note: 'COMPLETED — S048/EV-040 closed D-S048-close=1,1,1; PR #893 merged (merge SHA pending parent); #894 closed under #840; tip 5a9f28ef; active_session=null'
+    note: 'COMPLETED — S048/EV-040 closed D-S048-close=1,1,1; PR #893 merged (merge `4be24994`); #894 closed under #840; tip 5a9f28ef; active_session=null'
 
   15-service-health:
     status: completed
@@ -13084,7 +13084,7 @@ deployment:
       topology: pass_3_of_3
       host_header: pass_5_of_5
     notes:
-    - '2026-08-06 S048/EV-040 CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); #894 under #840; tip 5a9f28ef; active_session=null; tip CD after merge'
+    - '2026-08-06 S048/EV-040 CLOSED D-S048-close=1,1,1 — PR #893 merged (merge `4be24994`); #894 under #840; tip 5a9f28ef; active_session=null; tip CD after merge'
     - '2026-08-06 S048/EV-040 13 COMPLETE* — H1–H5 PASS on live DOKS (pre-merge baseline); PR #893 was open @ 08c805eb'
     - '2026-08-06 S046/EV-038 CLOSED D-S046-13=1 — #890 MERGED @ 619a7ac3; CI 31112016561; DOKS 20260806144346-619a7ac; H1–H5+UJ-050 PASS; evolve-summary.md; active_session=null'
     - '2026-08-05 S042/EV-034 CLOSED D-S042-13=1 — 11/12/13 PASS; CI 31003268652; DOKS 20260805115809-d3f4bb9; active_session=null; S040 remains suspended (eligible to resume; do not auto-resume)'
@@ -13324,7 +13324,7 @@ decisions_log:
   - docs/sessions/S048-workbench-lint-ux/session-brief.md
   - docs/evolve-report-EV-040.md
   - docs/decisions/evolve-decisions.md
-  note: 'close_session applied; active_session=null; EV-040 completed; merge SHA pending parent'
+  note: 'close_session applied; active_session=null; EV-040 completed; merge `4be24994`'
 - id: D-S047-12
   date: '2026-08-06'
   timestamp: '2026-08-06'
@@ -28454,7 +28454,7 @@ evolve_cycles:
   tip_sha: 5a9f28ef
   tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
   tip_sha_pushed: true
-  tip_sha_note: 'CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894'
+  tip_sha_note: 'CLOSED D-S048-close=1,1,1 — PR #893 merged (merge `4be24994`); tip 5a9f28ef; #894'
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/893
   pr_number: 893
   pr_status: merged
@@ -28466,7 +28466,7 @@ evolve_cycles:
     b_to_c: passed
     c_to_d: passed
     deploy: passed
-    deploy_note: 'D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); #894 closed'
+    deploy_note: 'D-S048-close=1,1,1 — PR #893 merged (merge `4be24994`); #894 closed'
   checkpoints:
     phase_a: passed
     phase_b: passed
@@ -28508,7 +28508,7 @@ evolve_cycles:
   phase: 4
   phase_note: 'CLOSED — D-S048-close=1,1,1; PR #893 merged; #894 closed under #840'
   notes:
-  - '2026-08-06 S048/EV-040 CLOSED — D-S048-close=1,1,1; PR #893 merged (merge SHA pending parent); #894 under #840; tip 5a9f28ef'
+  - '2026-08-06 S048/EV-040 CLOSED — D-S048-close=1,1,1; PR #893 merged (merge `4be24994`); #894 under #840; tip 5a9f28ef'
   - '2026-08-06 S048/EV-040 — 13-deploy-smoke COMPLETE* — H1–H5 PASS on live DOKS; PR #893 was open @ 08c805eb; tip CD after merge'
 
 - id: EV-022
@@ -37787,7 +37787,7 @@ git_history:
   dirty_note: "workflow-state + session docs dirty after S048/EV-040 close (workflow-state-manager); parent to commit; also local dirty: apps/frontend/public/config.json"
   tip_sha: 5a9f28ef
   tip_sha_full: 5a9f28efdc1fe993fbb0d62456d5d525e2ec3157
-  tip_note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending parent); #894'
+  tip_note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge `4be24994`); #894'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -38285,7 +38285,7 @@ git_history:
     pr_title: "[EV-040] Workbench lint UX + examples + prefs"
     pr_head: evolve/EV-040-workbench-lint-ux
     pr_base: main
-    note: "CLOSED D-S048-close=1,1,1 — PR #893 merged (merge SHA pending parent); tip 5a9f28ef; #894 under #840"
+    note: "CLOSED D-S048-close=1,1,1 — PR #893 merged (merge `4be24994`); merge `4be24994`; tip was 5a9f28ef/2462a397; #894 under #840"
   - name: evolve/EV-039-sql-ingest-live-e2e
     status: active
     base: main
