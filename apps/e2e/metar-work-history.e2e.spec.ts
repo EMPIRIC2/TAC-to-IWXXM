@@ -63,7 +63,7 @@ test.describe('UJ-004 — METAR work history (IndexedDB)', () => {
     await page.getByRole('button', { name: /KJFK finished/i }).click();
 
     await expect(page.getByTestId('convert-button')).toBeDisabled({ timeout: 10_000 });
-    await expect(page.getByTestId('convert-and-send-button')).toBeDisabled();
+    await expect(page.getByTestId('convert-and-send-button')).toHaveCount(0);
     await expect(
       page.getByRole('status').filter({ hasText: /read-only/i }),
     ).toBeVisible();

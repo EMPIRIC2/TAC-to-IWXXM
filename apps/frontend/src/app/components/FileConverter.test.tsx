@@ -61,6 +61,21 @@ const mockDecodeTac = vi.hoisted(() =>
     residuals: [],
   }),
 );
+const mockMassIngestFiles = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    accepted_count: 1,
+    rejected_count: 0,
+    results: [
+      {
+        name: 'mass.tac',
+        accepted: true,
+        reason: null,
+        size_bytes: 20,
+        content: 'METAR KJFK 121251Z=\n',
+      },
+    ],
+  }),
+);
 const mockUploadConvertedFiles = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
 );
@@ -89,6 +104,7 @@ vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertBulletin: mockConvertBulletin,
   ingestCollect: mockIngestCollect,
+  massIngestFiles: mockMassIngestFiles,
   EndpointNotImplementedError: MockEndpointNotImplementedError,
   convertTafToIwxxm: vi
     .fn()
@@ -231,9 +247,23 @@ describe('FileConverter Component', () => {
     mockConvertBulletin.mockReset();
     mockDecodeTac.mockReset();
     mockLintTac.mockReset();
+    mockMassIngestFiles.mockReset();
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
+    mockMassIngestFiles.mockResolvedValue({
+      accepted_count: 1,
+      rejected_count: 0,
+      results: [
+        {
+          name: 'mass.tac',
+          accepted: true,
+          reason: null,
+          size_bytes: 20,
+          content: 'METAR KJFK 121251Z=\n',
+        },
+      ],
+    });
     mockConvertMetarToIwxxm.mockResolvedValue({
       success: true,
       data: '<iwxxm>test</iwxxm>',
@@ -1227,7 +1257,61 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('opens dissemination drawer from Disseminate control (T6.2)', async () => {
+    it('hides Disseminate control while destinations UI is off (TC-EV042-001 / #897)', () => {
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
+      expect(screen.getByTestId('convert-button')).toBeInTheDocument();
+    });
+
+    it('mass ingest Folder button prompts login when guest (TC-F33-004 / UJ-051)', async () => {
+      const user = userEvent.setup();
+      const onRequestLogin = vi.fn();
+      render(
+        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
+      );
+
+      await user.click(screen.getByTestId('mass-ingest-folder-button'));
+
+      expect(onRequestLogin).toHaveBeenCalled();
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Sign in required for mass folder or zip ingest',
+      );
+      expect(mockMassIngestFiles).not.toHaveBeenCalled();
+    });
+
+    it('mass ingest Zip hands accepted files into pending queue (TC-F33-001 / UJ-051)', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+
+      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
+      const zipFile = new File(['PK fake'], 'batch.zip', { type: 'application/zip' });
+      await user.upload(zipInput, zipFile);
+
+      await waitFor(() => {
+        expect(mockMassIngestFiles).toHaveBeenCalledWith(
+          expect.objectContaining({
+            accessToken: 'jwt-f33',
+            files: expect.arrayContaining([
+              expect.objectContaining({ name: 'batch.zip' }),
+            ]),
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /pending files queue/i }),
+        ).toBeInTheDocument();
+      });
+      expect(mockToast.loading).toHaveBeenCalled();
+      expect(mockToast.success).toHaveBeenCalledWith(
+        'Mass ingest: 1 accepted, 0 rejected',
+        expect.anything(),
+      );
+    });
+
+    it.skip('opens dissemination drawer from Disseminate control (T6.2) — restore #898', async () => {
       const user = userEvent.setup();
       render(<FileConverter {...defaultProps} />);
 
@@ -1733,7 +1817,7 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('displays Convert&Send button and chains convert with upload', async () => {
+    it.skip('displays Convert&Send button and chains convert with upload — restore #898', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>send-test</iwxxm>' }],
@@ -1766,7 +1850,7 @@ describe('FileConverter Component', () => {
       expect(mockToast.success).toHaveBeenCalledWith('Files uploaded successfully');
     });
 
-    it('shows send failure when convert succeeds but upload fails', async () => {
+    it.skip('shows send failure when convert succeeds but upload fails — restore #898', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>send-fail</iwxxm>' }],
@@ -1787,7 +1871,7 @@ describe('FileConverter Component', () => {
       expect(screen.getByText(/send failed: upload rejected/i)).toBeInTheDocument();
     });
 
-    it('enables Convert&Send without auth token (F21)', async () => {
+    it.skip('enables Convert&Send without auth token (F21) — restore #898', async () => {
       const user = userEvent.setup();
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;

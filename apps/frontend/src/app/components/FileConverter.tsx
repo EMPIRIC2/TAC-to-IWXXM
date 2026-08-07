@@ -21,6 +21,8 @@ import {
   Download,
   Copy,
   FileText,
+  FolderOpen,
+  Archive,
   Loader2,
   Database,
   Settings,
@@ -36,6 +38,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
+import { OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED } from '/utils/operatorDisseminationUi';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
@@ -61,6 +64,7 @@ import {
   convertMetarToIwxxm as callBackendConversion,
   convertBulletin,
   ingestCollect,
+  massIngestFiles,
   EndpointNotImplementedError,
   type FailedSpan,
 } from '/utils/api';
@@ -213,6 +217,7 @@ export function FileConverter({
   const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
+  const [isMassIngesting, setIsMassIngesting] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
   const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
@@ -232,7 +237,16 @@ export function FileConverter({
     logLevel: 'INFO',
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const massFolderInputRef = useRef<HTMLInputElement>(null);
+  const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const el = massFolderInputRef.current;
+    if (!el) return;
+    el.setAttribute('webkitdirectory', '');
+    el.setAttribute('directory', '');
+  }, []);
 
   const buildSnapshot = (
     overrides?: Partial<ConverterSnapshot>,
@@ -515,6 +529,88 @@ export function FileConverter({
 
   const handleDragLeave = () => {
     setIsDragging(false);
+  };
+
+  /**
+   * Auth-gated mass ingest (F33): upload folder/zip via ``POST /api/v1/ingest/mass``,
+   * then hand accepted text into the pending convert queue.
+   */
+  const handleMassIngest = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    const token = accessToken?.trim();
+    if (!token) {
+      toast.error('Sign in required for mass folder or zip ingest');
+      onRequestLogin?.();
+      return;
+    }
+
+    const fileList = Array.from(files);
+    setIsMassIngesting(true);
+    const progressId = toast.loading(`Mass ingesting ${fileList.length} file(s)…`);
+
+    try {
+      const response = await massIngestFiles({
+        files: fileList,
+        accessToken: token,
+      });
+
+      const accepted: PendingFile[] = [];
+      const rejectSamples: string[] = [];
+      for (const [index, item] of response.results.entries()) {
+        if (item.accepted && item.content != null) {
+          accepted.push({
+            id: `mass-${item.name}-${Date.now()}-${index}`,
+            name: item.name,
+            content: item.content,
+          });
+        } else if (!item.accepted) {
+          if (rejectSamples.length < 5) {
+            rejectSamples.push(`${item.name}: ${item.reason || 'rejected'}`);
+          }
+        }
+      }
+
+      if (accepted.length > 0) {
+        setPendingFiles((prev) => [...prev, ...accepted]);
+      }
+
+      for (const sample of rejectSamples) {
+        toast.error(sample);
+      }
+
+      toast.success(
+        `Mass ingest: ${response.accepted_count} accepted, ${response.rejected_count} rejected`,
+        { id: progressId },
+      );
+    } catch (error) {
+      console.error('[FileConverter] Mass ingest error:', error);
+      toast.error(error instanceof Error ? error.message : 'Mass ingest failed', {
+        id: progressId,
+      });
+    } finally {
+      setIsMassIngesting(false);
+      if (massFolderInputRef.current) massFolderInputRef.current.value = '';
+      if (massZipInputRef.current) massZipInputRef.current.value = '';
+    }
+  };
+
+  const requestMassFolder = () => {
+    if (!accessToken?.trim()) {
+      toast.error('Sign in required for mass folder or zip ingest');
+      onRequestLogin?.();
+      return;
+    }
+    massFolderInputRef.current?.click();
+  };
+
+  const requestMassZip = () => {
+    if (!accessToken?.trim()) {
+      toast.error('Sign in required for mass folder or zip ingest');
+      onRequestLogin?.();
+      return;
+    }
+    massZipInputRef.current?.click();
   };
 
   const performConversion = async (): Promise<{
@@ -1066,7 +1162,7 @@ export function FileConverter({
     toast.info('Queue cleared');
   };
 
-  const isBusy = isConverting || isConvertAndSending;
+  const isBusy = isConverting || isConvertAndSending || isMassIngesting;
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const convertDisabled = isBusy || !hasInput || isReadOnly;
@@ -1348,24 +1444,26 @@ export function FileConverter({
               />
               Convert
             </Button>
-            <Button
-              data-testid="convert-and-send-button"
-              onClick={handleConvertAndSend}
-              disabled={convertDisabled}
-              className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              aria-busy={isConvertAndSending}
-              aria-label={
-                isConvertAndSending
-                  ? 'Converting and sending files, please wait'
-                  : 'Convert TAC to IWXXM XML and send to database'
-              }
-            >
-              <Loader2
-                className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
-                aria-hidden="true"
-              />
-              Convert&Send
-            </Button>
+            {OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED ? (
+              <Button
+                data-testid="convert-and-send-button"
+                onClick={handleConvertAndSend}
+                disabled={convertDisabled}
+                className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-busy={isConvertAndSending}
+                aria-label={
+                  isConvertAndSending
+                    ? 'Converting and sending files, please wait'
+                    : 'Convert TAC to IWXXM XML and send to database'
+                }
+              >
+                <Loader2
+                  className={`w-4 h-4 animate-spin ${isConvertAndSending ? '' : 'invisible'}`}
+                  aria-hidden="true"
+                />
+                Convert&Send
+              </Button>
+            ) : null}
             <Button
               onClick={() => setIsUploadDialogOpen(true)}
               disabled={isBusy || !hasConverted || isReadOnly}
@@ -1379,17 +1477,19 @@ export function FileConverter({
                 ({convertedFiles.length})
               </span>
             </Button>
-            <Button
-              type="button"
-              data-testid="open-dissemination-drawer"
-              onClick={() => setIsDisseminationOpen(true)}
-              disabled={isBusy || isReadOnly}
-              variant="outline"
-              className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-              aria-label="Open dissemination drawer for BYOC upload or publish"
-            >
-              Disseminate
-            </Button>
+            {OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED ? (
+              <Button
+                type="button"
+                data-testid="open-dissemination-drawer"
+                onClick={() => setIsDisseminationOpen(true)}
+                disabled={isBusy || isReadOnly}
+                variant="outline"
+                className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                aria-label="Open dissemination drawer for BYOC upload or publish"
+              >
+                Disseminate
+              </Button>
+            ) : null}
             <Button
               onClick={handleDownloadAll}
               disabled={isBusy || !hasConverted}
@@ -1637,7 +1737,8 @@ export function FileConverter({
                         Drop TAC files or select
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Multiple files · .txt, .metar, .tac, .xml, .gz
+                        Multiple files · Folder/Zip mass ingest (signed in) · .txt,
+                        .metar, .tac, .xml, .gz, .zip
                       </p>
                     </div>
                   </div>
@@ -1657,11 +1758,68 @@ export function FileConverter({
                       e.stopPropagation();
                       fileInputRef.current?.click();
                     }}
+                    disabled={isBusy || isReadOnly}
                     className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     aria-label="Browse and select files"
                   >
                     Select Files
                   </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-testid="mass-ingest-folder-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      requestMassFolder();
+                    }}
+                    disabled={isBusy || isReadOnly}
+                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-label="Mass ingest a folder of TAC files (sign-in required)"
+                    aria-busy={isMassIngesting}
+                  >
+                    <FolderOpen className="h-4 w-4" aria-hidden="true" />
+                    Folder
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    data-testid="mass-ingest-zip-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      requestMassZip();
+                    }}
+                    disabled={isBusy || isReadOnly}
+                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
+                    aria-busy={isMassIngesting}
+                  >
+                    <Archive className="h-4 w-4" aria-hidden="true" />
+                    Zip
+                  </Button>
+                  <input
+                    ref={massFolderInputRef}
+                    type="file"
+                    multiple
+                    className="hidden"
+                    data-testid="mass-ingest-folder-input"
+                    onChange={(e) => {
+                      void handleMassIngest(e.target.files);
+                    }}
+                    aria-label="Select folder for mass ingest"
+                  />
+                  <input
+                    ref={massZipInputRef}
+                    type="file"
+                    accept=".zip,application/zip"
+                    className="hidden"
+                    data-testid="mass-ingest-zip-input"
+                    onChange={(e) => {
+                      void handleMassIngest(e.target.files);
+                    }}
+                    aria-label="Select zip archive for mass ingest"
+                  />
                 </div>
               </Card>
             </div>
@@ -2178,13 +2336,15 @@ export function FileConverter({
         onClose={() => setIsUploadDialogOpen(false)}
       />
 
-      <DisseminationDrawer
-        open={isDisseminationOpen}
-        onOpenChange={setIsDisseminationOpen}
-        iwxxmXml={convertedFiles[0]?.convertedContent}
-        tacText={manualInput || undefined}
-        product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
-      />
+      {OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED ? (
+        <DisseminationDrawer
+          open={isDisseminationOpen}
+          onOpenChange={setIsDisseminationOpen}
+          iwxxmXml={convertedFiles[0]?.convertedContent}
+          tacText={manualInput || undefined}
+          product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
+        />
+      ) : null}
 
       {/* User Preferences Dialog */}
       <UserPreferencesDialog

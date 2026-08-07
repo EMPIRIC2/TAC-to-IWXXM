@@ -79,6 +79,10 @@ test.describe('TAC File Upload to Database', () => {
   });
 
   test('single TAC file can be converted and sent with one click', async ({ page }) => {
+    test.skip(
+      true,
+      'EV-042: Convert&Send hidden (OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false); restore #898',
+    );
     const tacFiles = getTacFiles();
     test.skip(
       tacFiles.length === 0,

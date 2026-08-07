@@ -637,6 +637,74 @@ export function downloadBlob(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
+/** Per-file outcome from ``POST /api/v1/ingest/mass`` (F33). */
+export interface MassIngestFileResult {
+  name: string;
+  accepted: boolean;
+  reason: string | null;
+  size_bytes: number;
+  content: string | null;
+}
+
+/** Response from ``POST /api/v1/ingest/mass`` (F33 / EV-042). */
+export interface MassIngestResponse {
+  accepted_count: number;
+  rejected_count: number;
+  results: MassIngestFileResult[];
+}
+
+/**
+ * Auth-gated mass file/folder ingest with server-side caps and sniff guards.
+ *
+ * **Endpoint**: POST /api/v1/ingest/mass
+ *
+ * Client expands folder picks to files before upload; zip archives may be sent
+ * as-is for server unpack ([Corpus: product §F33], [Corpus: api]).
+ *
+ * @param params.files - Multipart files and/or ``.zip`` archives
+ * @param params.accessToken - Required Bearer JWT
+ * @param params.signal - Optional abort signal
+ * @returns Per-file accept/reject list and summary counts
+ */
+export async function massIngestFiles(params: {
+  files: File[];
+  accessToken: string;
+  signal?: AbortSignal;
+}): Promise<MassIngestResponse> {
+  if (!params.accessToken.trim()) {
+    throw new Error('Sign in required for mass ingest');
+  }
+  if (!params.files.length) {
+    throw new Error('At least one file is required');
+  }
+
+  const formData = new FormData();
+  for (const file of params.files) {
+    formData.append('files', file, file.name);
+  }
+
+  const response = await withTimeout(
+    fetch(apiUrl('/ingest/mass'), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${params.accessToken}`,
+      },
+      body: formData,
+      signal: params.signal,
+    }),
+    120000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Mass ingest failed: ${response.statusText}`,
+    }));
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
+  }
+
+  return (await response.json()) as MassIngestResponse;
+}
+
 export default {
   checkHealth,
   convertMetarToIwxxm,
@@ -645,5 +713,6 @@ export default {
   decodeTac,
   fetchLintIssueCatalog,
   fetchAirportRegion,
+  massIngestFiles,
   downloadBlob,
 };
