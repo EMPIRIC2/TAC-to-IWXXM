@@ -7,8 +7,14 @@ Kustomize **base** + **overlays** for DigitalOcean Kubernetes — API, static FE
 | `overlays/prod` | `metar-iwxxm` | `api.tac-to-iwxxm.com`, `app.tac-to-iwxxm.com` |
 | `overlays/staging` | `metar-iwxxm-staging` | `api.staging.tac-to-iwxxm.com`, `app.staging.tac-to-iwxxm.com` |
 
-LB: `168.144.12.70`. Staging DNS at Porkbun — see [docs/ops/doks-staging-dns-runbook.md](../../docs/ops/doks-staging-dns-runbook.md).
+| Env | Cluster | LB |
+|-----|---------|-----|
+| prod | `metar-iwxxm` | `168.144.12.70` |
+| staging | `metar-iwxxm-staging` (DO Project **Staging TAC-to-IWXXM**) | `143.244.202.13` |
+
+Staging DNS at Porkbun — see [docs/ops/doks-staging-dns-runbook.md](../../docs/ops/doks-staging-dns-runbook.md).
 Promote path: [ADR-034](../../docs/adr/ADR-034-doks-staging-promote-from-stage.md).
+Apply overlays with the matching kube context (`do-nyc1-metar-iwxxm` vs `do-nyc1-metar-iwxxm-staging`).
 
 ## Apply
 
@@ -24,11 +30,12 @@ kubectl kustomize deploy/doks/overlays/staging
 
 ## Secrets (create out-of-band)
 
-Staging must use DB `metar_iwxxm_staging` (never prod `defaultdb`). Example:
+Staging must use the **staging** Postgres instance `metar-iwxxm-staging` (never prod
+`metar-iwxxm` / prod `defaultdb`). Example:
 
 ```bash
-kubectl -n metar-iwxxm-staging create secret generic metar-api-secrets \
-  --from-literal=DATABASE_URL='postgresql+asyncpg://…/metar_iwxxm_staging?ssl=require' \
+kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secret generic metar-api-secrets \
+  --from-literal=DATABASE_URL='postgresql+asyncpg://…@metar-iwxxm-staging-….db.ondigitalocean.com:25060/defaultdb?ssl=require' \
   --from-literal=SUPABASE_URL='https://….supabase.co' \
   --from-literal=SUPABASE_JWKS_URL='' \
   --from-literal=SUPABASE_PUBLISHABLE_KEY='…' \

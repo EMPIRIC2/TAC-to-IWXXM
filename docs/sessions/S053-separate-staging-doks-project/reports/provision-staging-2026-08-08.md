@@ -28,12 +28,24 @@
 | cert-manager | installed (v1.17.2) |
 | **Staging LB** | `143.244.202.13` |
 
-## Remaining (T2.4–T3.*)
+## Workloads (T2.4 — 2026-08-08)
+
+Applied `deploy/doks/overlays/staging` on context `do-nyc1-metar-iwxxm-staging` with
+ClusterIssuers, `ghcr-pull`, `metar-api-secrets` / `metar-worker-secrets` (dedicated staging
+Postgres `defaultdb`). Alembic Job Completed. Host-header smoke:
+
+```bash
+curl -sS -H "Host: api.staging.tac-to-iwxxm.com" http://143.244.202.13/health   # 200
+curl -sS -I -H "Host: app.staging.tac-to-iwxxm.com" http://143.244.202.13/     # 200
+```
+
+Worker remains at 0 replicas (staging overlay); can scale on dedicated node after smoke.
+
+## Remaining (T3.*)
 
 - [ ] Porkbun A: `api.staging` / `app.staging` → `143.244.202.13`
-- [ ] Apply `deploy/doks/overlays/staging` + secrets against staging context
-- [ ] Set GH Environment `staging` `KUBE_CONFIG` to staging cluster
-- [ ] Tear down prod-cluster ns `metar-iwxxm-staging` after smoke
-- [x] Workflow parity: `stage` branch triggers (this commit)
+- [ ] Set GH Environment `staging` `KUBE_CONFIG` to staging cluster (prod Env keeps prod)
+- [ ] Tear down prod-cluster ns `metar-iwxxm-staging` after HTTPS smoke
+- [x] Workflow parity: `stage` branch triggers
 
 **Secrets:** connection password is **not** recorded here — use `doctl databases connection` / DO UI.
