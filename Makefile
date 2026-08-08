@@ -271,7 +271,7 @@ rust-check:
 # EV-047 / #834 — re-record converter PR baselines (explicit; never on gate failure).
 # On CI: make perf-converter-baseline HOST=ubuntu-latest STATUS=ci_recorded
 perf-converter-baseline:
-	$(UV) run python scripts/bench/record_converter_pr_baselines.py \
+	PYTHONPATH=. $(UV) run python scripts/bench/record_converter_pr_baselines.py \
 		--host "$(or $(HOST),$(shell uname -s))" \
 		--status "$(or $(STATUS),ci_recorded)"
 

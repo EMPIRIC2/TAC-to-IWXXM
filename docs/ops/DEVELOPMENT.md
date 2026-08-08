@@ -274,6 +274,20 @@ matrix entry (moved to local hooks). Historical merges into validate (EV-002): `
 Vendor schemas: weekly GitHub Action syncs wmo-im repos into `vendor/schemas/` (see
 `scripts/vendor/sync-iwxxm.sh`).
 
+### Converter PR perf baselines (EV-047 / #834)
+
+Committed baselines: `tests/perf/baselines/converter_pr.yaml` (`status: ci_recorded`).
+CI job **`Converter perf (tac2iwxxm)`** hard-fails when convert-only p95 exceeds
+`max(baseline×1.20, baseline+200µs)`.
+
+```bash
+make test-converter-pr-gate                          # run the gate locally
+make perf-converter-baseline HOST=ubuntu-latest STATUS=ci_recorded   # intentional refresh
+```
+
+Do **not** bump ceilings by editing YAML after a red gate without measuring on a
+Linux/CI-class host. Husky does **not** run this gate (CI-only).
+
 ## Troubleshooting
 
 ### `make install` fails

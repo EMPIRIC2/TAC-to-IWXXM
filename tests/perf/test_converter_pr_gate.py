@@ -26,7 +26,7 @@ def test_tc_ev047_baseline_file_schema() -> None:
     assert data["version"] == 1
     assert data["metric"] == "convert_only_wall_p95_s"
     assert float(data["ratio_limit"]) == pytest.approx(1.20)
-    assert float(data["absolute_floor_s"]) == pytest.approx(0.000050)
+    assert float(data["absolute_floor_s"]) == pytest.approx(0.000200)
     for key in ("metar", "speci", "taf", "sigmet"):
         assert key in data["products"]
         assert float(data["products"][key]["baseline_p95_s"]) > 0
@@ -90,3 +90,16 @@ def test_tc_ev047_makefile_has_baseline_refresh_target() -> None:
     """TC-EV047-006 — explicit refresh target (no silent auto-raise)."""
     makefile = (REPO / "Makefile").read_text(encoding="utf-8")
     assert "perf-converter-baseline" in makefile
+
+
+def test_tc_ev047_ci_job_locked_name() -> None:
+    """TC-EV047-007 — CI job display name matches ruleset context."""
+    workflow = (REPO / ".github" / "workflows" / "ci-cd.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "name: Converter perf (tac2iwxxm)" in workflow
+    assert "converter-perf:" in workflow
+    script = (REPO / "scripts" / "deploy" / "apply_gh_branch_rulesets.sh").read_text(
+        encoding="utf-8"
+    )
+    assert "Converter perf (tac2iwxxm)" in script

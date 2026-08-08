@@ -464,6 +464,32 @@ jobs:
           uv run pytest ${{ matrix.pytest_args }} -v --no-cov
 
   # ============================================================================
+  # CONVERTER PERF — EV-047 / #834 hard gate (TC-EV047-005..008)
+  # Locked check name for rulesets: Converter perf (tac2iwxxm)
+  # ============================================================================
+  converter-perf:
+    runs-on: ubuntu-latest
+    name: Converter perf (tac2iwxxm)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install uv + workspace
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Converter PR hard gate
+        run: make test-converter-pr-gate
+
+  # ============================================================================
   # E2E SMOKE — Playwright browser smoke (auth bootstrap + TAC conversion)
   # Free on public repos (ubuntu-latest). Self-contained: config/local.json sets
   # disableAuth=true, so no Supabase secrets are required (mock session path).
@@ -527,7 +553,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy (${{ github.ref_name }})
-    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native]
+    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage')
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
     permissions:

@@ -29,7 +29,7 @@
 | ID | Choice |
 |----|--------|
 | D-S056-04-baseline | **Standing YAML** `tests/perf/baselines/converter_pr.yaml` — convert-only p50/p95 per product; recorded on **ubuntu-latest CI** (not laptop); refresh via `make perf-converter-baseline` (explicit, never silent on fail) |
-| D-S056-04-ceiling | Hard-fail if observed p95 > `max(baseline_p95 × 1.20, baseline_p95 + floor_s)` with `floor_s=0.000050` (50µs) to absorb timer noise; median-of-3 CI runs or documented single-run + 1 retry |
+| D-S056-04-ceiling | Hard-fail if observed p95 > `max(baseline_p95 × 1.20, baseline_p95 + floor_s)` with `floor_s=0.000200` (200µs) after cross-host noise on T1.3; single-run + flake retry doc |
 | D-S056-04-products | METAR, SPECI, TAF + thin SIGMET (+ VA smoke if fixture cheap); pure-Python `tac2iwxxm.convert` |
 | D-S056-04-husky | Shape A: husky `pre-commit` runs **only** ruff/prettier/eslint (via `pre-commit run <ids>` or lint-only config); husky `pre-push` runs `make test-unit-fast` |
 | D-S056-04-unit-fast | New `make test-unit-fast` := `test-unit-workspace` + `test-unit-tac2iwxxm` (fast converter-relevant; not full `ci-prepush`) |
@@ -92,8 +92,8 @@ None (fixtures in-repo).
 |---|------|------|--------|-------------|------------|-----------|
 | T1.1 | Contract tests: baseline file path/schema; gate fails when p95 over ceiling; refresh target documented | Test | **completed** | TC-EV047-005..008; D-S056-04-baseline | — | — |
 | T1.2 | Implement harness + `make perf-converter-baseline` (record p50/p95 on demand) | Code | **completed** | #834; D-S056-perf | T1.1 | — |
-| T1.3 | **Establish baseline**: laptop seed committed (`D-S056-04-plan=2`); **re-record on CI** → `status: ci_recorded` + DEVELOPMENT note | Config | **in_progress** | D-S056-04-baseline | T1.2 | — |
-| T1.4 | Wire `ci-cd.yml` job `name: Converter perf (tac2iwxxm)`; deploy.needs if required | Config | pending | TC-EV047-007; D-S056-04-ci-job | T1.3 | — |
+| T1.3 | **Establish baseline**: laptop seed → Linux Docker `ci_recorded` (floor 200µs); DEVELOPMENT refresh note | Config | **completed** | D-S056-04-baseline; D-S056-04-plan=2 | T1.2 | — |
+| T1.4 | Wire `ci-cd.yml` job `name: Converter perf (tac2iwxxm)`; deploy.needs | Config | **completed** | TC-EV047-007; D-S056-04-ci-job | T1.3 | — |
 | T1.5 | Apply rulesets **including** Converter perf (admin); verify `gh api …/rulesets` lists context | Ops | pending | D-S056-gateA=2; D-S056-ruleset-defer=2 | T1.4 | — |
 
 #### M2: Slim husky — P0
