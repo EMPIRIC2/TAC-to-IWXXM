@@ -37,6 +37,7 @@ kind: Deployment
 metadata:
   name: metar-worker
 spec:
+  replicas: 0
   template:
     spec:
       containers:
