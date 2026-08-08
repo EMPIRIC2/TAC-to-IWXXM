@@ -1677,31 +1677,35 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   4. Missing `KUBE_CONFIG` fails Deploy; missing Render hooks do **not** fail Deploy
 - **Source**: F30 AC7; S042 / EV-034; `E34-1..4`
 
-### TC-F30-008: Staging namespace + isolated secrets (EV-043)
+### TC-F30-008: Staging cluster + isolated secrets (EV-043 / EV-044)
 
 - **Level**: Ops / T0
-- **Objective**: DOKS namespace `metar-iwxxm-staging` exists with API/FE/worker; secrets and
-  `DATABASE_URL` point at staging DB (`metar_iwxxm_staging`), not prod `defaultdb`
-- **Pass criteria**: `kubectl -n metar-iwxxm-staging get deploy` shows three workloads;
-  staging `DATABASE_URL` database name ≠ prod
-- **Source**: F30 AC8; S052 / EV-043; #886
+- **Objective**: Staging DOKS cluster `metar-iwxxm-staging` (DO Project **Staging TAC-to-IWXXM**)
+  has ns `metar-iwxxm-staging` with API/FE/worker; secrets and `DATABASE_URL` point at
+  dedicated staging Postgres `metar-iwxxm-staging`, not prod `metar-iwxxm` / `defaultdb`.
+  Prod cluster remains on DO Project **TAC-to-IWXXM**.
+- **Pass criteria**: `doctl projects resources list` shows staging cluster+DB under Staging
+  project and prod under TAC-to-IWXXM; `kubectl --context staging -n metar-iwxxm-staging get deploy`
+  shows workloads; staging `DATABASE_URL` host/db ≠ prod
+- **Source**: F30 AC8; S052 / EV-043; S053 / EV-044; #886
 
 ### TC-F30-009: Staging DNS + TLS
 
 - **Level**: Ops / T3
 - **Objective**: `https://api.staging.tac-to-iwxxm.com` and `https://app.staging.tac-to-iwxxm.com`
-  resolve to DOKS LB and serve valid TLS
-- **Pass criteria**: DNS A/AAAA → `168.144.12.70`; `/health` 200 on API; FE returns 200;
-  cert-manager Certificate Ready (or equivalent Ingress TLS secret)
-- **Source**: F30 AC9; D-S052-dns
+  resolve to the **staging** DOKS LB and serve valid TLS
+- **Pass criteria**: DNS A/AAAA → staging LB EXTERNAL-IP (not necessarily prod `168.144.12.70`);
+  `/health` 200 on API; FE returns 200; cert-manager Certificate Ready
+- **Source**: F30 AC9; D-S052-dns; D-S053-dns
 
 ### TC-F30-010: Dual-branch auto CD
 
 - **Level**: Ops / CI
-- **Objective**: Push/merge to `stage` deploys staging; push/merge to `main` deploys prod
+- **Objective**: Push/merge to `stage` deploys **staging cluster**; push/merge to `main`
+  deploys **prod cluster**
 - **Pass criteria**: Deploy jobs bound to GH Environments `staging` / `production`;
-  `DOKS_NAMESPACE` correct per branch; image tags rolled
-- **Source**: F30 AC10; #886
+  env-scoped kubeconfig + `DOKS_NAMESPACE` correct per branch; image tags rolled
+- **Source**: F30 AC10; #886; EV-044
 
 ### TC-F30-011: Branch protection on stage and main
 
@@ -1719,7 +1723,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   succeeded for the SHA; documented in deploy.md
 - **Source**: F30 AC12; D-S052-promote
 
-### Live harness — staging (EV-043)
+### TC-F30-013: Shared-cluster staging ns teardown (EV-044)
+
+- **Level**: Ops / T0
+- **Objective**: After staging cluster cutover, prod cluster no longer hosts
+  `metar-iwxxm-staging` workloads (EV-043 leftover removed)
+- **Pass criteria**: `kubectl --context prod get ns metar-iwxxm-staging` is NotFound (or
+  empty/terminating with no Deployments); staging smoke uses staging cluster context only
+- **Source**: F30 AC13; D-S053-teardown
+
+### Live harness — staging (EV-043 / EV-044)
 
 | Env | API | Frontend |
 |-----|-----|----------|
