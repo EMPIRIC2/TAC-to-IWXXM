@@ -8,9 +8,14 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, waitFor, cleanup, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '@/app/components/FileConverter';
+
+/** Avoid per-keystroke delays — full `make ci` suite otherwise times out at 20s. */
+async function setInputValue(el: HTMLElement, value: string) {
+  fireEvent.change(el, { target: { value } });
+}
 
 const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn());
 const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
@@ -134,7 +139,7 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
   });
 
   it('Download uses the current Output filename after rename (not convert-time)', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     let downloadedName = '';
     const createUrlSpy = vi
       .spyOn(URL, 'createObjectURL')
@@ -153,28 +158,30 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
     );
 
     const filenameInput = screen.getByTestId('output-filename-input');
-    await user.clear(filenameInput);
-    await user.type(filenameInput, 'first_name');
+    await setInputValue(filenameInput, 'first_name');
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-    await user.type(textarea, SAMPLE_TAC);
+    await setInputValue(textarea, SAMPLE_TAC);
     await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /download first_name\.txt as xml/i }),
+        screen.getByRole('button', {
+          name: /download first_name\.txt as xml/i,
+        }),
       ).toBeInTheDocument();
     });
 
-    await user.clear(filenameInput);
-    await user.type(filenameInput, 'second_name');
+    await setInputValue(filenameInput, 'second_name');
     expect(screen.getByTestId('output-filename-preview')).toHaveTextContent(
       'second_name.xml',
     );
 
     // Card label may still show convert-time originalName; download attribute uses live field.
     await user.click(
-      screen.getByRole('button', { name: /download first_name\.txt as xml/i }),
+      screen.getByRole('button', {
+        name: /download first_name\.txt as xml/i,
+      }),
     );
 
     await waitFor(() => {
@@ -184,10 +191,10 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
     createUrlSpy.mockRestore();
     revokeUrlSpy.mockRestore();
     clickSpy.mockRestore();
-  });
+  }, 30_000);
 
   it('Download All ZIP members use the current Output filename after rename', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const createUrlSpy = vi
       .spyOn(URL, 'createObjectURL')
       .mockReturnValue('blob:rename-zip');
@@ -203,19 +210,17 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
     );
 
     const filenameInput = screen.getByTestId('output-filename-input');
-    await user.clear(filenameInput);
-    await user.type(filenameInput, 'first_name');
+    await setInputValue(filenameInput, 'first_name');
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-    await user.type(textarea, SAMPLE_TAC);
+    await setInputValue(textarea, SAMPLE_TAC);
     await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
       expect(screen.getByText(/first_name\.txt/)).toBeInTheDocument();
     });
 
-    await user.clear(filenameInput);
-    await user.type(filenameInput, 'second_name');
+    await setInputValue(filenameInput, 'second_name');
     expect(screen.getByTestId('output-filename-preview')).toHaveTextContent(
       'second_name.xml',
     );
@@ -234,5 +239,5 @@ describe('BUG-2026-08-07 output filename download stale (#904)', () => {
     createUrlSpy.mockRestore();
     revokeUrlSpy.mockRestore();
     clickSpy.mockRestore();
-  });
+  }, 30_000);
 });
