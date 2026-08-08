@@ -1,5 +1,5 @@
 ---
-description: Dual DOKS env_role + promote-from-stage (EV-043 / ADR-034 / #886)
+description: Dual DOKS env_role + promote-from-stage (EV-043/044 / ADR-034 / #886)
 globs:
   - .github/workflows/ci-cd.yml
   - deploy/doks/**
@@ -12,13 +12,13 @@ alwaysApply: false
 
 ## Environments
 
-| `env_role` | Branch | Namespace | Hosts |
-|------------|--------|-----------|-------|
-| `staging` | `stage` | `metar-iwxxm-staging` | `api\|app.staging.tac-to-iwxxm.com` |
-| `prod` | `main` | `metar-iwxxm` | `api\|app.tac-to-iwxxm.com` |
+| `env_role` | Branch | DO Project | Cluster | Namespace | Hosts |
+|------------|--------|------------|---------|-----------|-------|
+| `staging` | `stage` | Staging TAC-to-IWXXM | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `api\|app.staging.tac-to-iwxxm.com` |
+| `prod` | `main` | TAC-to-IWXXM | `metar-iwxxm` | `metar-iwxxm` | `api\|app.tac-to-iwxxm.com` |
 
-Do **not** label staging URLs as production. Sole-stack language applies only when staging
-is absent; after EV-043 both exist.
+Do **not** label staging URLs as production. After EV-044, staging and prod are **separate
+DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
 
 ## Promote path
 
@@ -32,8 +32,8 @@ manual gate (no Environment reviewers required).
 
 ## Secrets
 
-Staging `DATABASE_URL` must use DB `metar_iwxxm_staging` (or dedicated staging instance) —
-never prod `defaultdb`. Do not copy prod secrets into staging ConfigMaps/docs.
+Staging `DATABASE_URL` must use dedicated Postgres `metar-iwxxm-staging` (EV-044) — never
+prod `metar-iwxxm` / `defaultdb`. Do not copy prod secrets into staging ConfigMaps/docs.
 
 ## Citations
 

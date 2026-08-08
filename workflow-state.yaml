@@ -3,9 +3,120 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 52
-evolve_cycle_counter: 43
+session_counter: 53
+evolve_cycle_counter: 44
 active_session:
+  id: S053-separate-staging-doks-project
+  type: feature
+  intent: "Separate staging DOKS + Postgres under DO Project Staging TAC-to-IWXXM; prod remains on TAC-to-IWXXM; amend ADR-034 shared-cluster"
+  status: in_progress
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-044-separate-staging-doks
+  branch_base: main@d0a51f5a
+  branch_base_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  branch_status: active
+  branch_exists: true
+  branch_note: 'OPEN — cut from origin/main@d0a51f5a after D-S053-open=1'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-044
+  artifacts_dir: docs/sessions/S053-separate-staging-doks-project/
+  prior_session: S052-doks-staging-prod-branch-deploys
+  feature_ids: [F30]
+  deepen_feature_ids: [F30]
+  feature_note: 'Deepen F30 — dual DO Projects / separate staging DOKS + PG'
+  preset: Standard
+  scope_summary: >
+    Provision staging DOKS metar-iwxxm-staging (1x s-2vcpu-4gb) + managed PG
+    metar-iwxxm-staging (db-s-1vcpu-1gb) under DO Project Staging TAC-to-IWXXM;
+    keep prod on TAC-to-IWXXM; rewire stage CD to staging cluster; tear down shared-ns staging;
+    amend ADR-034.
+  scope_decisions_locked:
+  - 'D-S053-open=1 — approve S053/EV-044 Standard'
+  - 'D-S053-db=1 — new cheapest managed PG under Staging project'
+  - 'D-S053-size=1 — 1x s-2vcpu-4gb nyc1'
+  - 'D-S053-teardown=1 — tear down shared-cluster staging ns after cutover'
+  decisions:
+    D-S053-open: '1'
+    D-S053-db: '1'
+    D-S053-size: '1'
+    D-S053-teardown: '1'
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — D-S053-open=1; handoff 16-evolve'
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-08-08'
+    note: 'Phase A → Gate A / 02-03-04'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — ADR-034 amend + F30 AC13 + deploy/test deltas'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: in_progress
+    started: '2026-08-08'
+    note: 'Gate A in progress'
+  - stage: 03-plan-tooling
+    required: true
+    mode: delta
+    status: pending
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: pending
+  - stage: 06-tech-tooling
+    required: false
+    mode: skipped
+    status: skipped
+    skip_rationale: 'no new runtime deps'
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+  current_stage: 02-verify-plan
+  current_stage_note: '01 done; Gate A then 03/04'
+  notes:
+  - '2026-08-08 D-S053-open=1 — OPEN S053/EV-044; counters 53/44; branch evolve/EV-044-separate-staging-doks @ main@d0a51f5a'
   id: S052-doks-staging-prod-branch-deploys
   type: feature
   intent: "Stand up DOKS staging + prod environments, protect stage/main, CI/CD for both; auto-deploy stage→staging; manual promote to main/prod (#886)"
@@ -80,6 +191,22 @@ active_session:
   notes:
   - '2026-08-08 D-S052-open=1 — OPEN S052/EV-043 for #886; session_counter=52; evolve_cycle_counter=43; branch evolve/EV-043-doks-staging-prod ACTIVE recorded (not created yet) @ main@81701500; 00-context completed → 16-evolve Phase 0; no git commit by workflow-state-manager'
 sessions:
+- id: S053-separate-staging-doks-project
+  type: feature
+  intent: "Separate staging DOKS + Postgres under DO Project Staging TAC-to-IWXXM; amend ADR-034"
+  status: in_progress
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-044-separate-staging-doks
+  branch_base: main@d0a51f5a
+  branch_status: active
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-044
+  artifacts_dir: docs/sessions/S053-separate-staging-doks-project/
+  prior_session: S052-doks-staging-prod-branch-deploys
+  feature_ids: [F30]
+  preset: Standard
+  note: 'OPEN — D-S053-open=1; Phase A docs; Gate A next'
 - id: S051-output-filename-download-stale
   type: hotfix
   intent: "Fix #904 — after convert, Output filename field changes must apply to Download / ZIP member names (BUG-2026-08-07-output-filename-download-stale)"
@@ -30525,6 +30652,30 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-044
+  session_id: S053-separate-staging-doks-project
+  cycle_type: general
+  feature_ids: [F30]
+  title: "Separate staging DOKS + DO Project (amend ADR-034)"
+  status: in_progress
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  completed: null
+  scope_summary: >
+    Separate staging DOKS + PG under Staging TAC-to-IWXXM; prod on TAC-to-IWXXM;
+    amend ADR-034; tear down shared-ns staging after cutover.
+  routing_plan:
+    required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 03-plan-tooling, 04-tech-plan, 05-verify-tech, 07-build, 08-verify-build, 09-qa, 10-e2e, 11-verify-impl, 12-verify-deploy, 13-deploy-smoke]
+    skipped_stages: [06-tech-tooling]
+  current_stage: 02-verify-plan
+  gates: {a_to_b: pending, b_to_c: pending, c_to_d: pending, deploy: pending}
+  checkpoints: {phase_a: pending, phase_b: pending, phase_c: pending, phase_d: pending, deploy: pending}
+  adrs: [docs/adr/ADR-034-doks-staging-promote-from-stage.md]
+  artifacts:
+  - path: docs/sessions/S053-separate-staging-doks-project/
+    status: in_progress
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
 - id: EV-043
   session_id: S052-doks-staging-prod-branch-deploys
   cycle_type: general
@@ -40947,6 +41098,14 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-044-separate-staging-doks
+    base: main
+    base_sha: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    status: active
+    created: '2026-08-08'
+    session_id: S053-separate-staging-doks-project
+    evolve_cycle_id: EV-044
+    note: 'S053/EV-044 separate staging DOKS + DO Project'
   - name: evolve/EV-043-doks-staging-prod
     status: ACTIVE
     purpose: "DOKS staging + prod + protected-branch CI/CD (#886); S052/EV-043"
