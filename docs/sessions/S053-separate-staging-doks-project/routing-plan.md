@@ -12,9 +12,9 @@
 | 00-context | yes | session | **completed** | S053 open; decisions locked |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase A specs → Gate A |
 | 01-requirements | yes | delta | **completed** | ADR-034 amend + F30 AC13 + deploy/test deltas |
-| 02-verify-plan | yes | delta | pending | Gate A |
-| 03-plan-tooling | yes | delta | pending | dual-cluster kubeconfig / project rules |
-| 04-tech-plan | yes | delta | pending | execution-plan + provision tasks |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS |
+| 03-plan-tooling | yes | delta | **completed** | promote rule dual-cluster |
+| 04-tech-plan | yes | delta | **completed** | execution-plan + Build Plan Card |
 | 05-verify-tech | yes | delta | pending | Gate B |
 | 06-tech-tooling | no | — | skipped | no new runtime deps |
 | 07-build | yes | full | pending | provision + CD + overlays/docs |

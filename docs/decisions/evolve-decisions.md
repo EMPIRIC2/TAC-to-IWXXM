@@ -43,7 +43,11 @@
 
 ### Gate A (02)
 
-Pass when F30 deepen AC + ADR-034 amend + this section committed — proceed 03/04.
+**PASS** 2026-08-08 — F30 deepen AC + ADR-034 amend + this section committed; proceed 03/04.
+
+### Gate B (05)
+
+Pass when execution-plan tasks T2–T4 approved — proceed 07-build provision.
 
 ---
 

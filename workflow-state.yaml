@@ -113,8 +113,8 @@ active_session:
     required: true
     mode: delta
     status: pending
-  current_stage: 02-verify-plan
-  current_stage_note: '01 done; Gate A then 03/04'
+  current_stage: 05-verify-tech
+  current_stage_note: 'Gate A PASS; 02/03/04 done; awaiting Gate B'
   notes:
   - '2026-08-08 D-S053-open=1 — OPEN S053/EV-044; counters 53/44; branch evolve/EV-044-separate-staging-doks @ main@d0a51f5a'
   id: S052-doks-staging-prod-branch-deploys
@@ -30667,8 +30667,8 @@ evolve_cycles:
   routing_plan:
     required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 03-plan-tooling, 04-tech-plan, 05-verify-tech, 07-build, 08-verify-build, 09-qa, 10-e2e, 11-verify-impl, 12-verify-deploy, 13-deploy-smoke]
     skipped_stages: [06-tech-tooling]
-  current_stage: 02-verify-plan
-  gates: {a_to_b: pending, b_to_c: pending, c_to_d: pending, deploy: pending}
+  current_stage: 05-verify-tech
+  gates: {a_to_b: passed, b_to_c: pending, c_to_d: pending, deploy: pending}
   checkpoints: {phase_a: pending, phase_b: pending, phase_c: pending, phase_d: pending, deploy: pending}
   adrs: [docs/adr/ADR-034-doks-staging-promote-from-stage.md]
   artifacts:
