@@ -32,7 +32,8 @@
 | D-S056-phase0 | **1** — Phase 0 locked; proceed **01-requirements** |
 | D-S056-01-ac | **1** — Approve AC1–AC9 as written (2026-08-08) |
 | D-S056-ui-preview | **2** — No non-deployed UI preview for 01; Help placement in 04 |
-| D-S056-gateA | **2** — Gate A PASS; **require ruleset update for converter perf check before 04** |
+| D-S056-gateA | **2** — Gate A PASS; **require ruleset update for converter perf check** (amended by defer) |
+| D-S056-ruleset-defer | **2** — Defer **requiring** `Converter perf (tac2iwxxm)` in live rulesets until CI job ships (M1 T1.4→T1.5); keep other checks; establish **baselines first** for comparison |
 
 ### Locked defaults (perf / hooks / docs)
 

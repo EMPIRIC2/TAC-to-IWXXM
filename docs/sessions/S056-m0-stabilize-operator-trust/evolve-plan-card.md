@@ -32,7 +32,7 @@ regressions on PR/CI, and ship operator one-pager + minimal handbook.
 
 ## Next child stage
 
-**01-requirements** — confirm AC1–AC9 (`D-S056-01-ac`) → **02-verify-plan**.
+**04-tech-plan** — approve execution plan (`D-S056-04-plan`) → 05 → **07 M1 baselines**.
 
 ## Locked decisions
 

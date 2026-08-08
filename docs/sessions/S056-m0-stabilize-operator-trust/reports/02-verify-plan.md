@@ -85,7 +85,9 @@ User chose **option 2**: PASS but **require ruleset update for converter perf ch
 
 ### Next
 
-1. Inspect current rulesets / permissions  
-2. Update `apply_gh_branch_rulesets.sh` (or equivalent) with the perf check context  
-3. Apply ruleset (or AskQuestion waive if token lacks admin)  
+1. ~~Inspect current rulesets / permissions~~ — empty; token non-admin  
+2. ~~Update `apply_gh_branch_rulesets.sh`~~ — includes `Converter perf (tac2iwxxm)`; backtick bug fixed (`77180c29`)  
+3. **User applies with admin** (`D-S056-ruleset-apply=1` pending)  
 4. Only then start **04-tech-plan**
+
+**Chicken/egg note:** the CI job with `name: Converter perf (tac2iwxxm)` is not on `stage` until EV-047 07 lands. Requiring it on `protect-stage` before that job exists can leave other PRs waiting on a missing check. Prefer applying after the job is wired, or apply only once EV-047 is ready to merge promptly.
