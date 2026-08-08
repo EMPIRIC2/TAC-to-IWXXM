@@ -1,66 +1,82 @@
-overall_status: in_progress
+overall_status: completed
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 51
 evolve_cycle_counter: 42
-active_session:
-  id: S051-output-filename-download-stale
+active_session: null
+sessions:
+- id: S051-output-filename-download-stale
   type: hotfix
   intent: "Fix #904 — after convert, Output filename field changes must apply to Download / ZIP member names (BUG-2026-08-07-output-filename-download-stale)"
-  status: in_progress
+  status: completed
+  completed: '2026-08-07'
+  completed_at: '2026-08-07'
+  started: '2026-08-07'
+  started_at: '2026-08-07'
   branch: fix/output-filename-download-stale
   branch_base: main@d6f6fa04
   branch_status: merged
+  branch_exists: true
+  branch_note: 'CLOSED — D-S051-close=1; PR #905 MERGED @ a15541e5; tip closeout da2a6656; hotfix-log #13; Cursor rule; BUG resolved; follow-ups deferred (shared download-name path + F1/F10 journeys note)'
   orchestrator: 14-hotfix
   evolve_cycle_id: null
   artifacts_dir: docs/sessions/S051-output-filename-download-stale/
   bug_report: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+  bug_report_status: resolved
   github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/904
   remediation_path: local-first
   prior_session: S050-remove-db-tools-operator-throughput
-  tip_sha: a15541e5
-  tip_sha_note: 'PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+  tip_sha: da2a6656
+  tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
+  tip_sha_note: 'CLOSED D-S051-close=1 — PR #905 MERGED @ a15541e5; tip closeout da2a6656 (Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid>=3.3.17 pin); main CI 31226647517 SUCCESS at merge'
   pr_number: 905
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
   pr_status: merged
   merge_sha: a15541e5
+  merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_ci_cd_pipeline_run: '31226647517'
   main_ci_cd_pipeline_status: SUCCESS
   hotfix_log_entry: 13
-  bug_report_status: resolved
   prevention_plan: confirmed
   cursor_rule_path: .cursor/rules/optional/workbench-live-output-filename-download.mdc
+  follow_ups_deferred:
+  - shared download-name path
+  - F1/F10 journeys note
   decisions:
     D-S051-open: open_session
     D-S051-prod: '2'
     D-S051-prod_note: '2 — Assume deploy good for now; continue Phase 5 prevention interview; production user-verify waived (assume good); PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS including Deploy + E2E'
     D-S051-cursor_rule: '1'
     D-S051-cursor_rule_note: '1 — approved draft written; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc`; prevention_plan confirmed; hotfix-log #13; bug report status resolved'
+    D-S051-close: '1'
+    D-S051-close_note: '1 — commit closeout on main, push, close S051; tip da2a6656; PR #905 @ a15541e5; active_session=null; 14-hotfix completed; optional 15 skipped'
   notes:
-  - '2026-08-07 D-S051-cursor_rule=1 — Phase 5 complete; prevention_plan confirmed; Cursor rule written; hotfix-log #13; BUG resolved; pending user close AskQuestion + closeout commit on main; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
-  - '2026-08-07 D-S051-prod=2 — assume deploy good; Phase 5 prevention interview in progress; tip/merge PR #905 @ a15541e5; main CI 31226647517 SUCCESS (Deploy + E2E); production user-verify waived'
+  - '2026-08-07 D-S051-close=1 — CLOSED; closeout commit da2a6656 on main; PR #905 MERGED @ a15541e5; hotfix-log #13; Cursor rule; BUG resolved; follow-ups deferred to next PR; active_session=null'
+  - '2026-08-07 D-S051-cursor_rule=1 — Phase 5 complete; prevention_plan confirmed; Cursor rule written; hotfix-log #13; BUG resolved; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+  - '2026-08-07 D-S051-prod=2 — assume deploy good; Phase 5 prevention; tip/merge PR #905 @ a15541e5; main CI 31226647517 SUCCESS (Deploy + E2E); production user-verify waived'
   routing_plan:
   - stage: 14-hotfix
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-08-07'
+    completed: '2026-08-07'
     skip_rationale: null
-    note: 'Phase 5 complete; pending user close AskQuestion + closeout commit on main; D-S051-cursor_rule=1; hotfix-log #13; Cursor rule created; BUG resolved; PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+    note: 'COMPLETE — D-S051-close=1; PR #905 MERGED @ a15541e5; tip closeout da2a6656; hotfix-log #13; Cursor rule; BUG resolved; follow-ups deferred'
   - stage: 15-service-health
     required: false
     mode: when_deployed
-    status: pending
-    skip_rationale: null
-    note: optional after deploy (explicit approval required)
-  current_stage: 14-hotfix
-  current_stage_note: 'Phase 5 complete; pending user close AskQuestion + closeout commit on main; D-S051-cursor_rule=1; hotfix-log #13; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc`; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
-  started_at: '2026-08-07'
-  started: '2026-08-07'
+    status: skipped
+    skip_rationale: 'optional; not requested at D-S051-close=1'
+    note: 'SKIPPED — optional after deploy; session closed without 15'
+  current_stage: completed
+  current_stage_note: 'CLOSED — D-S051-close=1; PR #905 MERGED @ a15541e5; tip closeout da2a6656; hotfix-log #13; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc`; BUG resolved; follow-ups deferred (shared download-name path + F1/F10 journeys); active_session=null'
+  close_decision_id: D-S051-close
+  close_note: 'D-S051-close=1 — closeout da2a6656; PR #905 @ a15541e5; hotfix-log #13; Cursor rule; BUG resolved; follow-ups deferred'
+  note: 'COMPLETE — D-S051-close=1; PR #905 MERGED @ a15541e5; tip da2a6656; hotfix-log #13; Cursor rule; BUG-2026-08-07-output-filename-download-stale resolved; active_session=null'
   context_briefs: []
-sessions:
 - id: S050-remove-db-tools-operator-throughput
   type: feature
   intent: "Remove Dissemination drawer DB sinks (F16 Postgres/MySQL/SQL Server/SQLite); improve operator churn workflow; secure mass file/folder ingest. DB restore deferred to #898. Epic #897."
@@ -13760,7 +13776,7 @@ stages:
     note: 'IN_PROGRESS — H1–H5 PASS on live DOKS; PR #893 open; tip CD awaiting merge approval; tip commit 08c805eb'
     report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
   14-hotfix:
-    status: in_progress
+    status: completed
     session_id: S051-output-filename-download-stale
     current_bug: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
     bug_status: resolved
@@ -13771,15 +13787,21 @@ stages:
     remediation_path: local-first
     started_at: '2026-08-07'
     started: '2026-08-07'
-    tip_sha: a15541e5
-    tip_sha_note: 'PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+    completed: '2026-08-07'
+    completed_at: '2026-08-07'
+    tip_sha: da2a6656
+    tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
+    tip_sha_note: 'CLOSED D-S051-close=1 — PR #905 MERGED @ a15541e5; tip closeout da2a6656; main CI 31226647517 SUCCESS at merge'
     pr_number: 905
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
     pr_status: merged
     merge_sha: a15541e5
+    merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
+    closeout_sha: da2a6656
+    closeout_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
     main_ci_cd_pipeline_run: '31226647517'
     main_ci_cd_pipeline_status: SUCCESS
-    note: 'S051 IN_PROGRESS — Phase 5 complete; hotfix-log #13; Cursor rule created; BUG resolved; pending user close AskQuestion + closeout commit on main; PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS; #904 / BUG-2026-08-07-output-filename-download-stale'
+    note: 'COMPLETE — D-S051-close=1; S051 closed; PR #905 MERGED @ a15541e5; tip closeout da2a6656; hotfix-log #13; Cursor rule; BUG resolved; follow-ups deferred; active_session=null; #904 / BUG-2026-08-07-output-filename-download-stale'
     prior_session_id: S028-sigmet-multiline-split
     prior_bug: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
     prior_bug_status: resolved
@@ -13793,7 +13815,8 @@ stages:
     prior_prior_pr_number: 721
     prior_prior_merge_sha: 6412b21
     notes:
-    - '2026-08-07 D-S051-cursor_rule=1 — Phase 5 complete; prevention_plan confirmed; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc` created; hotfix-log #13; bug_status resolved; pending user close AskQuestion + closeout commit on main; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
+    - '2026-08-07 D-S051-close=1 — S051 CLOSED; closeout da2a6656; PR #905 @ a15541e5; 14-hotfix completed; active_session=null; optional 15 skipped; follow-ups deferred'
+    - '2026-08-07 D-S051-cursor_rule=1 — Phase 5 complete; prevention_plan confirmed; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc` created; hotfix-log #13; bug_status resolved; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
     - '2026-08-07 D-S051-prod=2 — assume deploy good; Phase 5 prevention interview in progress; PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS (Deploy + E2E); production user-verify waived'
     - '2026-08-07 — S051-output-filename-download-stale open (#904 / BUG-2026-08-07-output-filename-download-stale); cleared S028 as current; routing 14-hotfix + optional 15 after deploy'
     - 2026-07-30 — S028 CLOSED — PR #796 merged 17c93bd
@@ -14123,6 +14146,52 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S051-close
+  date: '2026-08-07'
+  timestamp: '2026-08-07'
+  resolved_at: '2026-08-07'
+  session_id: S051-output-filename-download-stale
+  skill: 14-hotfix
+  skill_id: 14-hotfix
+  stage: close_session
+  category: session-close
+  status: confirmed
+  topic: 'Close S051 output-filename-download-stale hotfix'
+  summary: '1 — commit closeout on main, push, close S051; tip da2a6656; PR #905 @ a15541e5; active_session=null'
+  decision: |
+    D-S051-close=1 — user approved closeout commit on main, push, close S051.
+    Closeout commit on main: da2a6656 (da2a6656257696ced3d046d4d19ea4515b9c73b5)
+    includes S051 Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid>=3.3.17 pin
+    that unblocked pre-commit.
+    Bug resolved: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+    PR #905 MERGED @ a15541e5; tip closeout da2a6656.
+    Cursor rule: .cursor/rules/optional/workbench-live-output-filename-download.mdc
+    Hotfix log #13.
+    Follow-ups deferred to next PR: shared download-name path + F1/F10 journeys note.
+    Archive S051 to sessions[]; active_session=null.
+    Mark stages.14-hotfix completed; optional 15-service-health skipped (not requested).
+    No new session or evolve cycle.
+    No git commit by workflow-state-manager (closeout already at da2a6656).
+  user_option: '1'
+  tip_sha: da2a6656
+  tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
+  merge_commit_sha: a15541e5
+  merge_commit_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
+  closeout_sha: da2a6656
+  pr_number: 905
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
+  pr_status: merged
+  hotfix_log_entry: 13
+  cursor_rule_path: .cursor/rules/optional/workbench-live-output-filename-download.mdc
+  bug_report: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+  bug_report_status: resolved
+  main_ci_cd_pipeline_run: '31226647517'
+  main_ci_cd_pipeline_status: SUCCESS
+  follow_ups_deferred:
+  - shared download-name path
+  - F1/F10 journeys note
+  current_stage: completed
+  note: 'close_session applied; active_session=null; 14-hotfix completed; tip da2a6656; PR #905 @ a15541e5'
 - id: D-S051-cursor_rule
   date: '2026-08-07'
   timestamp: '2026-08-07'
@@ -39875,29 +39944,30 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: main
-  ahead_of_origin: 0
-  pushed: true
+  ahead_of_origin: 1
+  pushed: false
   pending_commit: false
   pending_commit_note: null
   dirty: true
-  dirty_note: 'workflow-state.yaml after D-S050-merge / 13 start; do not commit config.json'
-  tip_sha: e3d1c7c8
-  tip_sha_full: e3d1c7c84836751ea070cb6162df749b218d2ef2
-  tip_note: 'main @ e3d1c7c8 after PR #899 merge; tip before merge 5558c7e4; watching CI/CD 31197264636; 13 in_progress'
+  dirty_note: 'workflow-state.yaml after D-S051-close / close_session; no git commit by workflow-state-manager'
+  tip_sha: da2a6656
+  tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
+  tip_note: 'main @ da2a6656 S051 closeout (Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid pin); PR #905 merge a15541e5; local ahead of origin by 1 pending push'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
     prior_branch: evolve/EV-031-platform-independence-842
     session_id: S040-iwxxm-corpus-quality
     date: '2026-08-04'
-  main_merge_sha: e3d1c7c8
-  main_merge_sha_full: e3d1c7c84836751ea070cb6162df749b218d2ef2
-  main_tip_sha: e3d1c7c8
-  main_tip_sha_full: e3d1c7c84836751ea070cb6162df749b218d2ef2
+  main_merge_sha: a15541e5
+  main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
+  main_tip_sha: da2a6656
+  main_tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
   recommended_branch: main
-  note: 'S050/EV-042 — PR #899 MERGED @ e3d1c7c8; tip before merge 5558c7e4; 13-deploy-smoke in_progress watching CI/CD 31197264636; no git commit by workflow-state-manager'
+  note: 'S051 CLOSED D-S051-close=1 — tip da2a6656; PR #905 @ a15541e5; active_session=null; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-07 S051 CLOSED D-S051-close=1 — closeout da2a6656 on main (Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid>=3.3.17); PR #905 MERGED @ a15541e5; 14-hotfix completed; active_session=null; recorded commits da2a6656 + a15541e5; local ahead_of_origin=1 pending push; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 13-deploy-smoke STARTED — D-S050-merge=1; PR #899 MERGED @ e3d1c7c8 (e3d1c7c84836751ea070cb6162df749b218d2ef2) at 2026-08-07T16:22:36Z; tip before merge 5558c7e4 (5558c7e44107c6389b30f90189c477a183490792) signed 12; watching main CI/CD Pipeline run 31197264636 for DOKS Deploy; recorded commits 5558c7e4+e3d1c7c8; Sync DB migrations OOS accepted; 13 not completed; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 12-verify-deploy COMPLETE — D-S050-12=1; tip 4fe4c37f (4fe4c37f55c596ae9eaecf0722501f594bb275b5); product CI green @18d028ed (31195470994); PR #899 MERGEABLE; Sync DB migrations CI OOS; current_stage 13-deploy-smoke pending; awaiting merge #899; recorded commit 4fe4c37f if missing; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 PR #899 tip updated to 18d028ed (18d028edf433d2e57efec50c1ede690d445c3bd6) — tip_sha_pushed=true ahead_of_origin=0; 11 complete; starting/continuing 12-verify-deploy; watching tip CI; recorded commits 18d028ed + 6ecff489 if missing; no git commit by workflow-state-manager'
@@ -40380,6 +40450,25 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: fix/output-filename-download-stale
+    status: merged
+    base: main
+    base_sha: d6f6fa04
+    created: '2026-08-07'
+    session_id: S051-output-filename-download-stale
+    tip_sha: a15541e5
+    tip_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
+    exists: true
+    pushed: true
+    tip_sha_pushed: true
+    ahead_of_origin: 0
+    pr_number: 905
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/905
+    pr_status: merged
+    merge_commit: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
+    merge_commit_short: a15541e5
+    closeout_sha: da2a6656
+    note: 'MERGED via #905 @ a15541e5; S051 CLOSED D-S051-close=1; tip closeout da2a6656 on main'
   - name: evolve/EV-042-remove-db-tools-operator-throughput
     status: merged
     base: main
@@ -41601,6 +41690,39 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: da2a6656
+    sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
+    message: 'chore(deps): pin nanoid >=3.3.17 for GHSA-2v37-7h3g-55p8'
+    branch: main
+    stage: 14-hotfix
+    skill_id: 14-hotfix
+    session_id: S051-output-filename-download-stale
+    timestamp: '2026-08-07T19:45:20-04:00'
+    decision_id: D-S051-close
+    files_changed:
+    - .cursor/rules/optional/workbench-live-output-filename-download.mdc
+    - docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
+    - docs/hotfix-log.md
+    - docs/sessions/S051-output-filename-download-stale/session-brief.md
+    - package.json
+    - pnpm-lock.yaml
+    - workflow-state.yaml
+    pushed: false
+    tip_sha: da2a6656
+    tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
+    note: 'S051 closeout on main — Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid pin; D-S051-close=1'
+  - sha: a15541e5
+    sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
+    message: 'Merge pull request #905 from EMPIRIC2/fix/output-filename-download-stale'
+    branch: main
+    stage: 14-hotfix
+    skill_id: 14-hotfix
+    session_id: S051-output-filename-download-stale
+    timestamp: '2026-08-07T19:17:03-04:00'
+    pr_number: 905
+    pr_status: merged
+    merge_sha: a15541e5
+    note: 'PR #905 MERGED to main; S051 hotfix fix; main CI 31226647517 SUCCESS'
   - sha: e3d1c7c8
     sha_full: e3d1c7c84836751ea070cb6162df749b218d2ef2
     message: 'Merge pull request #899 from EMPIRIC2/evolve/EV-042-remove-db-tools-operator-throughput'
