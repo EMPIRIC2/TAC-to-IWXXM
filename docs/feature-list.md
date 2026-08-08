@@ -223,7 +223,7 @@
   SIGMET-family; **CI required check only** (not husky); pure-Python path first;
   median-of-N + documented flake retry; intentional baseline bumps via documented refresh
   (no silent auto-raise).
-- **Acceptance (EV-047 / #834)** — pending `D-S056-01-ac`:
+- **Acceptance (EV-047 / #834)** — **approved** (`D-S056-01-ac=1`):
   1. Artificial slowdown in `tac2iwxxm.convert` turns the gate **red** in CI.
   2. Reverting the slowdown turns the gate **green**.
   3. Gate is a **required** status check (or equivalent) on the protected branch path.
@@ -349,7 +349,7 @@
   **minimal operational handbook** under `docs/guides/`; discoverable from README Quick start
   **and** in-app Help (`D-S056-docs=1`). No internal `[Corpus:]` / ADR / session IDs in
   published operator text. Does **not** flip F7 → Implemented.
-- **Acceptance (EV-047 / #956/#957)** — pending `D-S056-01-ac`:
+- **Acceptance (EV-047 / #956/#957)** — **approved** (`D-S056-01-ac=1`):
   1. `docs/guides/operator-one-pager.md` fits one printed page; covers paste/convert →
      validate → download; IWXXM version pick; soft preview in plain language.
   2. `docs/guides/operator-handbook.md` covers login/access, convert & validate, work
@@ -1663,7 +1663,7 @@
   - **Remote CI**: unchanged merge strength — typecheck, catalog/registry, secrets/yaml,
     unit coverage, integration/e2e, Rust checks remain enforced in `.github/workflows`.
   - Heavy local parity stays opt-in via `make validate-fast` / `validate-ci` / `ci-prepush`.
-- **Acceptance (EV-047 / #833)** — pending `D-S056-01-ac`:
+- **Acceptance (EV-047 / #833)** — **approved** (`D-S056-01-ac=1`):
   1. After `make install-hooks`, normal commit does **not** run typecheck / catalog /
      registry-guard / actionlint / yamllint / medium validate unless opted in.
   2. Normal push runs the agreed **fast unit** subset only (not full `validate-ci`).

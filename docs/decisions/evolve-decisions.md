@@ -30,6 +30,8 @@
 | D-S056-perf | **1** — convert-only wall **p95** vs committed YAML; hard-fail **>20% or absolute ceiling**; METAR/SPECI/TAF + thin SIGMET-family smoke; **CI required check only** (not husky); pure-Python first; median-of-N + flake retry doc |
 | D-S056-docs | **1** — one-pager `docs/guides/operator-one-pager.md` (+ printable if cheap); handbook `docs/guides/operator-handbook.md`; README Quick start **and** in-app Help (F7); no new CORPUS root member |
 | D-S056-phase0 | **1** — Phase 0 locked; proceed **01-requirements** |
+| D-S056-01-ac | **1** — Approve AC1–AC9 as written (2026-08-08) |
+| D-S056-ui-preview | **2** — No non-deployed UI preview for 01; Help placement in 04 |
 
 ### Locked defaults (perf / hooks / docs)
 
@@ -39,7 +41,7 @@
 | Perf metric | convert-only p95; CI-only gate; 20% / ceiling; Annex-3 thin smoke |
 | Docs | `docs/guides/operator-*.md` + README + Help |
 
-### Acceptance (proposed — confirm `D-S056-01-ac`)
+### Acceptance (confirmed `D-S056-01-ac=1`)
 
 | AC | Criterion | TC |
 |----|-----------|-----|

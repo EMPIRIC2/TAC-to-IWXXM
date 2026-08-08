@@ -1,6 +1,6 @@
 # 01-requirements — S056 / EV-047
 
-**Status**: drafted — awaiting `D-S056-01-ac`  
+**Status**: completed — `D-S056-01-ac=1` (UI preview declined `D-S056-ui-preview=2`)  
 **Date**: 2026-08-08  
 **Mode**: delta (deepen M5 + F6 + F7)  
 **Issues**: [#833](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/833),
@@ -29,7 +29,7 @@
 - `api-contract.md` / `deploy.md` — no new HTTP/env unless Help is static-only
 - Dependency inventory — no new runtime deps expected
 
-## Acceptance criteria (proposed → confirm)
+## Acceptance criteria (confirmed)
 
 | AC | Issue | Criterion | TC |
 |----|-------|-----------|-----|
@@ -54,4 +54,4 @@
 
 ## Next
 
-Confirm ACs (`D-S056-01-ac`) + UI preview offer → mark 01 completed → **02-verify-plan**.
+**02-verify-plan** (Gate A).
