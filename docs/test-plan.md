@@ -1677,6 +1677,58 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   4. Missing `KUBE_CONFIG` fails Deploy; missing Render hooks do **not** fail Deploy
 - **Source**: F30 AC7; S042 / EV-034; `E34-1..4`
 
+### TC-F30-008: Staging namespace + isolated secrets (EV-043)
+
+- **Level**: Ops / T0
+- **Objective**: DOKS namespace `metar-iwxxm-staging` exists with API/FE/worker; secrets and
+  `DATABASE_URL` point at staging DB (`metar_iwxxm_staging`), not prod `defaultdb`
+- **Pass criteria**: `kubectl -n metar-iwxxm-staging get deploy` shows three workloads;
+  staging `DATABASE_URL` database name ≠ prod
+- **Source**: F30 AC8; S052 / EV-043; #886
+
+### TC-F30-009: Staging DNS + TLS
+
+- **Level**: Ops / T3
+- **Objective**: `https://api.staging.tac-to-iwxxm.com` and `https://app.staging.tac-to-iwxxm.com`
+  resolve to DOKS LB and serve valid TLS
+- **Pass criteria**: DNS A/AAAA → `168.144.12.70`; `/health` 200 on API; FE returns 200;
+  cert-manager Certificate Ready (or equivalent Ingress TLS secret)
+- **Source**: F30 AC9; D-S052-dns
+
+### TC-F30-010: Dual-branch auto CD
+
+- **Level**: Ops / CI
+- **Objective**: Push/merge to `stage` deploys staging; push/merge to `main` deploys prod
+- **Pass criteria**: Deploy jobs bound to GH Environments `staging` / `production`;
+  `DOKS_NAMESPACE` correct per branch; image tags rolled
+- **Source**: F30 AC10; #886
+
+### TC-F30-011: Branch protection on stage and main
+
+- **Level**: Ops / T0
+- **Objective**: `stage` and `main` require PR; force-push denied (rulesets or classic protection)
+- **Pass criteria**: `gh api` rulesets/protection show required PR + block force push
+- **Source**: F30 AC11; D-S052-gh
+
+### TC-F30-012: staging-gate on PRs to main
+
+- **Level**: CI
+- **Objective**: PRs targeting `main` fail unless head branch is `stage` and tip has green
+  **Staging smoke** (H0c/H1 + H4–H5 against staging DNS)
+- **Pass criteria**: `staging-gate` job fails for non-`stage` heads; passes when Staging smoke
+  succeeded for the SHA; documented in deploy.md
+- **Source**: F30 AC12; D-S052-promote
+
+### Live harness — staging (EV-043)
+
+| Env | API | Frontend |
+|-----|-----|----------|
+| staging | `https://api.staging.tac-to-iwxxm.com` | `https://app.staging.tac-to-iwxxm.com` |
+| prod | `https://api.tac-to-iwxxm.com` | `https://app.tac-to-iwxxm.com` |
+
+CI **Staging smoke** sets `LIVE_API_URL` / `LIVE_FRONTEND_URL` to staging hosts after Deploy
+staging. Prod smokes remain Makefile / 13-deploy-smoke against prod hosts.
+
 ## S043 / EV-035 — Rule-source provenance (deepen F6 / F12 / F15 / F2)
 
 **No new Fn** (G1=2). Standing provenance map under `docs/domain/rules/` (path-cite; G3=1).

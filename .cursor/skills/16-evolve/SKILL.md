@@ -2,14 +2,18 @@
 name: 16-evolve
 description: >
   Orchestrator for feature and new_service sessions: adds product capabilities, scope/API/arch
-  changes, breaking refactors, new dependencies, and multi-doc spec updates. Requires active_session
-  (opened by 00-context) with type feature or new_service. Mandates [Corpus:] citations for every
-  change/reference; interviews via AskQuestion when CORPUS docs are missing before implementing.
-  Interviews the user, routes selectively through stages 00–15 in delta mode per routing-plan.md.
-  Use after 00-context for structured change on an existing app — not for surgical bugs (14-hotfix)
-  or greenfield (pipeline).
+  changes, breaking refactors, new dependencies, and multi-doc spec updates. Uses Cursor Plan
+  mode as the default orchestrator for intake, Fn allocation, impact, and routing (Phase 0–1),
+  then Agent mode to run routed child stages; 04/07 keep their own Plan→Agent batch loops.
+  Requires active_session (00-context) with type feature or new_service. Every change must cite
+  the project doc corpus. Use after 00-context for structured change on an existing app — not
+  for surgical bugs (14-hotfix) or greenfield (pipeline).
 ---
-
+<!--
+Personal skill (project-agnostic). Paths like docs/ and workflow-state.yaml refer to the
+*active workspace project*, not this skills directory. Fill {{PLACEHOLDER}} tokens from
+the project's docs/CORPUS.md, feature-list, and deploy docs.
+-->
 # 16 — Evolve (Features & Large Changes)
 
 Take an **existing** service from change request (including **multiple new features in one
@@ -19,27 +23,42 @@ cycle**) through updated specs, verified plans, implementation, and redeploy —
 **Protocol:** [protocol-card.md](../protocol-card.md) — corpus-first, Lean/Standard/Full, batched state.
 **Detail:** [reference.md](reference.md) · [pipeline-preamble.md](../pipeline-preamble.md)
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `feature` or `new_service` active_session.
-**Routing:** [docs/skill-routing.md](../../docs/skill-routing.md) — when to use evolve vs hotfix vs pipeline.
+**Routing:** `docs/skill-routing.md` (active project) — when to use evolve vs hotfix vs pipeline.
 **Plan ↔ Agent:** [plan-mode-loop.md](../plan-mode-loop.md) — **Plan mode is the default
   orchestrator** for Phase 0–1 (scope → Fn → routing); Agent runs child stages; 04/07 Plan
   separately for execution batches.
-**State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
+**State agent:** project `.cursor/agents/workflow-state-manager.md` if present; else edit `workflow-state.yaml` per [workflow-state-reference.md](../workflow-state-reference.md) — mandatory read/update.
 
-**Corpus:** Open [docs/CORPUS.md](../../docs/CORPUS.md) rows for **touched features only** — not the
-entire minimal corpus on every cycle. Domain/guides opt-in. Enforced by
-[docs-corpus.mdc](../../rules/core/docs-corpus.mdc).
-
-**Corpus citations (mandatory):** Every change, claim, scope decision, routing rationale, and
-cross-doc reference in the cycle must carry `[Corpus: <id>]` or `[Corpus: <id> §section]`.
-Ephemeral session/bug/ARCHIVE docs are not substitutes. If no CORPUS row covers the work →
-**block** and interview (AskQuestion) about adding documentation — do not invent standing
-docs or implement from chat. See §Corpus citation gate.
+**Corpus:** Open `docs/CORPUS.md` (active project) rows for **touched features only** — not the
+entire minimal corpus on every cycle. Domain/guides opt-in. See **Doc corpus citations** below
+(and always-apply rule `doc-corpus-citations` — canonical:
+`packages/agent-tooling/docs/conventions/doc-corpus-citations.md`).
 
 **Connectivity:** Browser-facing changes → applicable [connectivity-gates.md](../connectivity-gates.md)
 rows (at minimum 01/04 delta, 07, 12–13 with H4–H5 when UI ships).
 
 **User is the source of truth.** Interview before editing specs or code. Every ambiguous,
 uncertain, or contradictory finding uses **AskQuestion** — never guess.
+
+## Doc corpus citations (mandatory)
+
+Every **change**, **claim**, and **reference** in an evolve cycle must cite the doc corpus.
+
+| Form | When |
+|------|------|
+| `[Corpus: <id>]` | `docs/CORPUS.md` exists and lists the row |
+| `[path §section]` | No corpus id yet — still cite the standing doc |
+| `[Corpus: WAIVED — <topic>; reason: …; decided: EV-NNN\|date]` | Coverage missing and user chose proceed |
+
+**Missing coverage** (`CORPUS.md` absent, no row, or no authoritative section):
+
+1. **Interview** via AskQuestion — recommend **add doc/row now**; always offer waive-and-proceed and re-scope.
+2. **Proceed only** with an explicit **waiver citation** (table above) if the user chooses waive.
+3. Log the waiver under `docs/decisions/evolve-decisions.md` §Cycle {id}.
+4. **Do not** invent normative docs silently; draft only after the user picks add-now.
+
+Pass citation obligations to child stages in evolve context (`corpus_cites` / waiver ids). Checkpoint
+digests and impact/routing plans must list cites (or waivers) for each Fn and artifact edit.
 
 ## When to use
 
@@ -151,6 +170,8 @@ only when the user already approved a complete evolve-plan-card this turn.
 
 **Every user-facing question must use the AskQuestion tool** — same protocol as
 [14-hotfix](../14-hotfix/SKILL.md) and [considerations.md](../considerations.md) §7.
+If the AskQuestion tool is unavailable, use the **markdown numbered-options fallback** in
+considerations §7 — same option rules; do not invent answers.
 
 | Situation | Pattern |
 |-----------|---------|
@@ -158,12 +179,12 @@ only when the user already approved a complete evolve-plan-card this turn.
 | Single gate or approval | One AskQuestion; first option = recommendation; last = `Let me explain / provide more context` |
 | Impact / stage routing | Present recommended stage list; user confirms or adjusts |
 | Ambiguity / contradiction | Category label in prompt: `[Decision]`, `[Ambiguity]`, `[Contradiction]`, `[Uncertainty]` |
+| **Missing corpus coverage** | AskQuestion: add doc/row now (recommended) / waive-and-proceed / re-scope; record cite or waiver |
 | Phase gate failure | List unmet criteria; **block** until resolved (no silent proceed) |
 | Phase checkpoint (A–D, deploy) | Progress digest + AskQuestion before next phase |
 | **UI in scope** | AskQuestion: offer a **non-deployed** (local) UI preview — see §UI preview |
-| **Missing CORPUS coverage** | AskQuestion `[Decision]`: add/update corpus docs before continuing — see §Corpus citation gate |
 
-Do not post interview prompts as markdown lists expecting inline replies.
+Do not invent user answers. Prefer the AskQuestion tool; markdown lists are allowed only as the §7 fallback.
 
 ## UI preview (when the cycle includes UI)
 
@@ -218,6 +239,25 @@ On invocation:
 After every substep: agent `update` on the active cycle (status, `current_stage`, artifacts, ADRs,
 checkpoints, `git_history`).
 
+### Mid-evolve interrupt → 14-hotfix
+
+When **live** H3 (or other P0 production) fails during an `in_progress` evolve cycle (often
+from 13-deploy-smoke or 15-service-health):
+
+1. **AskQuestion** immediately (do not silently keep building the next milestone):
+   - **Pause evolve and open 14-hotfix** (recommended)
+   - Continue evolve with explicit waiver (record risk)
+   - Investigate only (stay on 15) then re-AskQuestion
+   - Let me explain / provide more context
+2. If pause+14: set `evolve_cycles[].interrupted_by_hotfix: true`, `interrupt_reason`, and
+   `hotfix_ref` (BUG/PR when known). Update `HANDOFF.md` with an **Interrupt** section
+   (symptom, tip SHA, next = 14-hotfix).
+3. Resume **16-evolve** only after hotfix close AskQuestion clears the interrupt flag
+   (or the user explicitly abandons the cycle).
+
+Deploy gates still require tip CI/CD green and honest `env_role` (`staging` vs `prod` when
+dual DOKS envs exist — ADR-034; sole stack = live/prod only when staging is absent).
+
 ### Git branch and commit-as-you-go
 
 Each evolve cycle works on `evolve/{cycle-id}-{slug}`. Record branch via agent on creation.
@@ -252,45 +292,6 @@ Evolve summary + optional 14-hotfix / 15-service-health / 17-retrospective
 **Checkpoints:** mandatory digest + AskQuestion after phases A, B, C, D, and deploy
 ```
 
-## Corpus citation gate
-
-Before editing specs or code (and again at each phase gate), map every in-scope change to
-CORPUS rows. Cite in intake notes, routing plan, evolve-decisions, ADRs, commits/PRs, and
-child-stage deltas.
-
-| Change kind | Required citation |
-|-------------|-------------------|
-| New/changed Fn or acceptance | `[Corpus: product]` (+ `[Corpus: journeys]` if UI/E2E) |
-| Components / arch / constraints | `[Corpus: system-spec]` (+ `[Corpus: adr/…]` if decided) |
-| Config / env / deploy / deps | `[Corpus: tech-spec]` (+ satellite path) |
-| HTTP contract | `[Corpus: api]` |
-| Tests / smoke / CI gates | `[Corpus: tests]` |
-| Interview / evolve “why” | `[Corpus: decisions]` or `[Corpus: adr/…]` |
-
-**Missing doc procedure** (block until resolved):
-
-1. Name the gap: change + which CORPUS id/section is absent or insufficient.
-2. AskQuestion `[Decision]` — recommend the CORPUS path to add or extend.
-3. On approval: write the doc (update `docs/CORPUS.md` if membership changes; ADR/`decisions/`
-   when the choice is non-obvious), then continue with citations.
-4. On waiver: record in `docs/decisions/evolve-decisions.md` §Cycle {id}; do not implement
-   the uncovered slice.
-
-```
-prompt: "[Decision] No CORPUS coverage for <change>. Add documentation?
-
-  Needed: <product|system-spec|tech-spec|api|tests|adr|decisions> — <gap>"
-
-options:
-  1. "Add to <recommended path> — then continue"
-  2. "Add ADR / decisions entry only — then continue"
-  3. "New CORPUS member (update docs/CORPUS.md) — then continue"
-  4. "Waive for this change — document waiver"
-  5. "Let me explain / provide more context"
-```
-
-Detail checklist: [reference.md](reference.md) §Corpus citation checklist.
-
 ## Phase 0 — Change / feature intake
 
 **Default:** enter **Plan mode** (see §Plan mode as orchestrator) before locking scope.
@@ -306,17 +307,16 @@ Interview until the change is concrete enough for Fn allocation and impact analy
 |-------|--------|
 | **Intent** | What to change, why now, success criteria |
 | **Scope** | In/out of scope, breaking vs compatible, features affected |
-| **Corpus map** | CORPUS ids/sections that cover each change; gaps → §Corpus citation gate |
 | **Constraints** | Cost, latency, data, deploy target |
 
-Surface **immediately** via AskQuestion anything ambiguous, uncertain, or contradictory —
-including missing CORPUS coverage.
+Surface **immediately** via AskQuestion anything ambiguous, uncertain, or contradictory.
+Map each in-scope area to a corpus cite (or interview for missing docs / waiver) before the
+proceed gate.
 
 **Approval gate:** AskQuestion — "Proceed to allocate Fn(s) and impact analysis on this scope?"
-Include confirmed `[Corpus: …]` citations (or approved doc-add / waiver) in the prompt.
 
 Record approved scope in `docs/decisions/evolve-decisions.md` §Cycle {id} — Scope (via committed doc;
-agent records cycle metadata). Each scope bullet must cite CORPUS.
+agent records cycle metadata). Include **Corpus cites / waivers** for the approved scope.
 Update **Evolve Plan Card** Goal / In-Out / Features.
 
 ## Phase 1 — Fn allocation, impact analysis, routing
@@ -324,11 +324,8 @@ Update **Evolve Plan Card** Goal / In-Out / Features.
 Stay in or re-enter **Plan mode** until preset + stage list are approved; then **Agent**
 writes artifacts.
 
-1. **Multi-feature default:** one cycle, multiple Fn — assign next Fn ids from `feature-list.md`
-   (`[Corpus: product]`).
-2. List **docs to update** (CORPUS paths only for design gates) and **routing_plan** —
-   [reference.md](reference.md) (Stage routing matrix). Every listed doc change cites
-   `[Corpus: …]`; gaps → §Corpus citation gate before routing approval.
+1. **Multi-feature default:** one cycle, multiple Fn — assign next Fn ids from `feature-list.md`.
+2. List **docs to update** and **routing_plan** — [reference.md](reference.md) (Stage routing matrix).
 3. **Presets** (AskQuestion; default **Lean** on existing apps — see protocol-card):
 
    | Preset | Required stages (typical) |
@@ -355,6 +352,8 @@ feature_ids: [F19, F20, F21]
 scope: <approved Phase 0>
 affected_artifacts: [paths]
 delta_only: true
+corpus_cites: ["[Corpus: id]", "[docs/… §…]"]
+corpus_waivers: []   # explicit WAIVED cites if any
 ```
 
 Child skills invoke **workflow-state-manager** themselves; 16-evolve verifies transition checks
@@ -373,10 +372,10 @@ For **11-verify-impl** (when routed), include **per–acceptance-criterion** sta
 
 | Gate | Criteria |
 |------|----------|
-| **A→B** | Fn in feature-list; delta specs; 02 pass; 03 if routed; every delta cites CORPUS |
-| **B→C** | Execution-plan tasks approved; 05 pass; 06 if routed; tech deltas cite CORPUS |
-| **C→D** | All Fn tasks done; latest 08 pass; commits/PRs cite CORPUS for scope |
-| **Deploy** | 09+10 pass; 11+12 user-approved; deploy approved |
+| **A→B** | Fn in feature-list; delta specs; 02 pass; 03 if routed |
+| **B→C** | Execution-plan tasks approved; 05 pass; 06 if routed |
+| **C→D** | All Fn tasks done; latest 08 pass |
+| **Deploy** | 09+10 pass; 11+12 user-approved; deploy approved; tip CI/CD green unless waived; `env_role` honest (`staging`/`prod` or sole stack = live/prod) |
 
 On failure: list unmet criteria → AskQuestion → fix in place per considerations §2.
 
@@ -414,8 +413,8 @@ Same as pipeline — never re-run entire phases for verification failures.
 7. **Do not `@`-attach** full skill bodies — name + routing-plan is enough.
 8. **UI preview** — when UI is in scope, AskQuestion for a **non-deployed** preview; never
    present staging/production as that preview unless the user explicitly requests it.
-9. **Corpus citations** — every change/reference includes `[Corpus: …]`; missing coverage →
-   AskQuestion doc-add interview before continuing (never invent standing docs).
+9. **Corpus cites** — every change/reference includes `[Corpus: …]` / path+§ or an explicit
+   `[Corpus: WAIVED — …]` after interview; never silent undocumented invent.
 10. **Plan orchestrates, Agent executes** — Phase 0–1 (and re-routes) in Plan mode; persist
     Evolve Plan Card in Agent; do not implement feature code while still in Plan.
 

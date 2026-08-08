@@ -3,9 +3,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, stage]
   pull_request:
-    branches: [main, dev]
+    branches: [main, stage]
 
 env:
   REGISTRY: ghcr.io
@@ -20,10 +20,28 @@ env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   FRONTEND_VITE_SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
   FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
+  # Default bake URLs are prod; Deploy jobs override per environment (EV-043).
   FRONTEND_VITE_APP_URL: https://app.tac-to-iwxxm.com
   FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
+  # EV-043 / TC-F30-012 — PRs to main must promote from stage after Staging smoke.
+  staging-gate:
+    runs-on: ubuntu-latest
+    name: Staging gate
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    permissions:
+      contents: read
+      checks: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v5
+      - name: Enforce promote-from-stage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STAGING_API_URL: https://api.staging.tac-to-iwxxm.com
+        run: bash scripts/ci/staging_gate.sh
+
   # EV-036: remote validate job removed — lint/format/config on local pre-commit.
   # Unit matrix + coverage remain; Compose integration is local pre-push only.
   test:
@@ -408,14 +426,15 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # DEPLOY — build/push GHCR images (main push only), then roll DOKS (F30 / EV-034).
-  # Render hooks optional/non-blocking (suspended OK). Skip when GHCR login fails.
+  # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043).
+  # stage → staging ns; main → prod ns. Render hooks optional (main only).
   # ============================================================================
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy
+    name: Deploy (${{ github.ref_name }})
     needs: [test, test-alembic, tac2iwxxm-native]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage')
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
     permissions:
       contents: read
       packages: write
@@ -423,15 +442,31 @@ jobs:
       RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
       RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
       RENDER_WORKER_DEPLOY_HOOK: ${{ secrets.RENDER_WORKER_DEPLOY_HOOK }}
-      # Optional: REST fallback when deploy-hook+imgURL returns 5xx (BUG-2026-08-03).
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-      # Required for DOKS rollout (EV-034 / TC-F30-007) — base64 kubeconfig.
       KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: false
+
+      - name: Resolve deploy target
+        id: target
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
+            echo "namespace=metar-iwxxm" >> "$GITHUB_OUTPUT"
+            echo "latest_tag=main-latest" >> "$GITHUB_OUTPUT"
+            echo "app_url=https://app.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
+            echo "api_url=https://api.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
+            echo "env_role=prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "namespace=metar-iwxxm-staging" >> "$GITHUB_OUTPUT"
+            echo "latest_tag=stage-latest" >> "$GITHUB_OUTPUT"
+            echo "app_url=https://app.staging.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
+            echo "api_url=https://api.staging.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
+            echo "env_role=staging" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Guard CD credentials (skip if GHCR unavailable)
         id: guard
@@ -447,7 +482,6 @@ jobs:
             exit 0
           fi
 
-          # Probe GHCR write access under the current org (EMPIRIC2).
           if ! printf '%s' "${REGISTRY_PASSWORD}" | docker login "${REGISTRY}" -u "${REGISTRY_USERNAME}" --password-stdin; then
             echo "::notice::GHCR login failed — skipping Deploy"
             echo "skip=true" >> "${GITHUB_OUTPUT}"
@@ -506,7 +540,7 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
-            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:main-latest
+            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE }}:${{ steps.target.outputs.latest_tag }}
 
       - name: Build and push frontend Docker image
         if: steps.guard.outputs.skip != 'true'
@@ -520,12 +554,12 @@ jobs:
           build-args: |
             VITE_SUPABASE_URL=${{ env.FRONTEND_VITE_SUPABASE_URL }}
             VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY=${{ env.FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
-            VITE_APP_URL=${{ env.FRONTEND_VITE_APP_URL }}
-            VITE_API_BASE_URL=${{ env.FRONTEND_VITE_API_BASE_URL }}
+            VITE_APP_URL=${{ steps.target.outputs.app_url }}
+            VITE_API_BASE_URL=${{ steps.target.outputs.api_url }}
             VITE_FRONTEND_DEPLOY_MARK=${{ github.sha }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.tags.outputs.image_tag }}
-            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:main-latest
+            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE }}:${{ steps.target.outputs.latest_tag }}
 
       - name: Build and push worker Docker image
         if: steps.guard.outputs.skip != 'true'
@@ -537,15 +571,13 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.tags.outputs.image_tag }}
-            ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:main-latest
+            ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.target.outputs.latest_tag }}
 
-      # Render is suspended (T6.5). Hooks are optional and must never fail Deploy (E34-4).
-      - name: Optional Render hooks (non-blocking)
-        if: steps.guard.outputs.skip != 'true'
+      - name: Optional Render hooks (non-blocking, main/prod only)
+        if: steps.guard.outputs.skip != 'true' && github.ref == 'refs/heads/main'
         continue-on-error: true
         env:
           IMAGE_TAG: ${{ steps.tags.outputs.image_tag }}
-          # BUG-2026-08-03 — keep skip-if-suspended path wired for suspended Render.
           RENDER_SKIP_IF_SUSPENDED: "1"
         run: |
           set +e
@@ -581,11 +613,11 @@ jobs:
         if: steps.guard.outputs.skip != 'true'
         uses: azure/setup-kubectl@v4
 
-      # EV-034 / TC-F30-007 — fail-closed when KUBE_CONFIG missing on main Deploy.
       - name: Roll out DOKS images
         if: steps.guard.outputs.skip != 'true'
         env:
           IMAGE_TAG: ${{ steps.tags.outputs.image_tag }}
+          DOKS_NAMESPACE: ${{ steps.target.outputs.namespace }}
         run: |
           set -euo pipefail
           if [ -z "${KUBE_CONFIG:-}" ]; then
@@ -593,8 +625,6 @@ jobs:
             exit 1
           fi
           mkdir -p "${HOME}/.kube"
-          # Secret is base64-encoded kubeconfig (docs/deploy.md §CD — DOKS image rollout).
-          # Must be static SA/token auth — doctl exec plugins fail on GHA runners.
           if ! printf '%s' "${KUBE_CONFIG}" | base64 --decode > "${HOME}/.kube/config" 2>/dev/null; then
             echo "::error::KUBE_CONFIG is not valid base64"
             exit 1
@@ -604,8 +634,27 @@ jobs:
             echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig (docs/deploy.md)"
             exit 1
           fi
+          echo "Rolling DOKS env_role=${{ steps.target.outputs.env_role }} ns=${DOKS_NAMESPACE} tag=${IMAGE_TAG}"
           bash scripts/deploy/doks_rollout_images.sh "${IMAGE_TAG}"
 
       - name: CD skipped (credentials)
         if: steps.guard.outputs.skip == 'true'
         run: echo "Deploy skipped — GHCR package write unavailable for EMPIRIC2."
+
+  staging-smoke:
+    runs-on: ubuntu-latest
+    name: Staging smoke
+    needs: [deploy]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/stage' && needs.deploy.result == 'success'
+    permissions:
+      contents: read
+    env:
+      LIVE_API_URL: https://api.staging.tac-to-iwxxm.com
+      LIVE_FRONTEND_URL: https://app.staging.tac-to-iwxxm.com
+      STAGING_SMOKE_PYTEST: "0"
+    steps:
+      - uses: actions/checkout@v5
+      - name: Wait briefly for ingress/TLS
+        run: sleep 20
+      - name: Run staging smoke
+        run: bash scripts/deploy/staging_smoke.sh
