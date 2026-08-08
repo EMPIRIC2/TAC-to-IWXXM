@@ -1,6 +1,7 @@
-# DOKS IaC (F30 / #712 / EV-043 #886)
+# DOKS IaC (F30 / #712 / EV-043 #886 / EV-044)
 
 Kustomize **base** + **overlays** for DigitalOcean Kubernetes — API, static FE (nginx), and F8 worker.
+**Dual cluster** (EV-044): staging and prod are separate DOKS clusters + DO Projects.
 
 | Overlay | Namespace | Hosts |
 |---------|-----------|-------|
@@ -44,12 +45,14 @@ kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secr
 
 Also copy `ghcr-pull` and (if still required) `work-session-ssl-fix` into the staging namespace.
 
-## CD image rollout (EV-034 / EV-043)
+## CD image rollout (EV-034 / EV-043 / EV-044)
 
-| Branch | Namespace | Script env |
-|--------|-----------|------------|
-| `stage` | `metar-iwxxm-staging` | `DOKS_NAMESPACE=metar-iwxxm-staging` |
-| `main` | `metar-iwxxm` | default |
+| Branch | Cluster | Namespace | Script env |
+|--------|---------|-----------|------------|
+| `stage` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `DOKS_NAMESPACE=metar-iwxxm-staging` + staging kubeconfig |
+| `main` | `metar-iwxxm` | `metar-iwxxm` | default + prod kubeconfig |
+
+Promote to `main` only after Staging smoke green — see ADR-034 / `docs/deploy.md` §Promote.
 
 ```bash
 bash scripts/deploy/doks_rollout_images.sh 20260805003332-5245f8d

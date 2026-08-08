@@ -23,12 +23,15 @@ DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
 ## Promote path
 
 1. Feature → PR → `stage` (required CI).
-2. Merge to `stage` → auto Deploy staging + **Staging smoke**.
-3. Promote: PR **`stage` → `main` only**. CI `staging-gate` must pass.
-4. Merge to `main` → auto Deploy production.
+2. Merge to `stage` → auto Deploy **staging cluster** + **Staging smoke** (HTTPS or
+   Host-header via staging LB `143.244.202.13` / `STAGING_LB_IP`).
+3. Promote: PR **`stage` → `main` only**. CI **Staging gate** (`staging-gate`) must pass
+   (head=`stage` + tip Staging smoke green). No feature→`main`.
+4. Merge to `main` → auto Deploy **prod cluster**.
 
 Never push directly to `stage`/`main` when rulesets are enabled. Solo-dev: PR is the
-manual gate (no Environment reviewers required).
+manual gate (no Environment reviewers required). Do not promote while Staging smoke or
+Staging gate is red/missing.
 
 ## Secrets
 

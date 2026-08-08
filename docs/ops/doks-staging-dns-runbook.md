@@ -24,9 +24,8 @@ kubectl --context <staging> -n ingress-nginx get svc ingress-nginx-controller \
 
 (Or CNAME both to the same LB hostname if preferred.)
 
-**Transitional (EV-043 shared LB):** if staging still shares prod LB before cutover,
-Answer may temporarily be `168.144.12.70`. Update to `$STAGING_LB_IP` when the staging
-cluster Ingress is live.
+**Do not** point staging hosts at the prod LB `168.144.12.70` (EV-043 shared-LB path
+retired after EV-044 dual-cluster cutover).
 
 ## Verify
 
@@ -58,8 +57,18 @@ curl -sS -H "Host: api.staging.tac-to-iwxxm.com" http://$STAGING_LB_IP/health
 ## Capacity note
 
 With a **dedicated** staging cluster (EV-044), staging worker may run at 1 replica without
-competing with prod for the single prod node. Until cutover completes, the EV-043 shared-cluster
-mitigation (staging worker at 0) may still apply on the prod cluster leftover ns.
+competing with prod for the single prod node. Shared-cluster ns `metar-iwxxm-staging` on
+prod was torn down (T3.3).
+
+## Promote to main (after DNS/TLS)
+
+Do **not** open or merge `stage`→`main` until:
+
+1. Porkbun A records resolve to `$STAGING_LB_IP` (or Host-header smoke is explicitly accepted).
+2. **Staging smoke** is green for the tip SHA on `stage`.
+3. PR head is **`stage`** and CI **Staging gate** passes (`scripts/ci/staging_gate.sh`).
+
+See [docs/deploy.md](../deploy.md) §Promote and [ADR-034](../adr/ADR-034-doks-staging-promote-from-stage.md).
 
 ## GitHub admin (403 for non-admins)
 

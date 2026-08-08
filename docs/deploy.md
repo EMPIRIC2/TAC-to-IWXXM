@@ -40,7 +40,7 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 | Worker | (in-cluster) | (in-cluster) |
 | DO Project | TAC-to-IWXXM | Staging TAC-to-IWXXM |
 | Cluster | `metar-iwxxm` | `metar-iwxxm-staging` |
-| LB | `168.144.12.70` (prod) | **staging LB** (new EXTERNAL-IP after EV-044 provision) |
+| LB | `168.144.12.70` (prod) | `143.244.202.13` (staging; re-check if LB replaced) |
 | Config profile | `config/prod.json` | `config/staging.json` |
 | Product DB | DO Postgres `metar-iwxxm` / `defaultdb` | DO Postgres `metar-iwxxm-staging` (dedicated) |
 
@@ -74,9 +74,20 @@ On push to `stage` or `main`, **Deploy** in `.github/workflows/ci-cd.yml`:
    `scripts/deploy/doks_rollout_images.sh <tag>` (staging secret ≠ prod secret after EV-044).
 3. **Render hooks** (optional, **main only**): `--skip-if-suspended` (`E34-4`).
 
-**Promote:** Feature → PR → `stage` → Staging smoke → PR **`stage`→`main`** (job
-**Staging gate** / `scripts/ci/staging_gate.sh`) → prod Deploy. Solo-dev: PR is the
-manual gate (no Environment reviewers). See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md).
+**Promote (required before any merge to `main`):** [Corpus: adr/ADR-034]
+
+1. Feature work → PR into **`stage`** (required CI green).
+2. Merge to `stage` → **Deploy (stage)** to staging cluster + **Staging smoke** green for that SHA
+   (HTTPS when Porkbun A records point at staging LB `143.244.202.13`; until then Host-header
+   probes via `STAGING_LB_IP` / `DOKS_LB_IP` are valid).
+3. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
+   (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
+   successful **Staging smoke** check-run.
+4. Merge to `main` → **Deploy (main)** to prod cluster.
+
+Solo-dev: the PR is the manual gate (no Environment reviewers). Do **not** promote while
+Staging smoke or Staging gate is red/missing. See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md)
+and [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 
 | Actions secret | Required | Description |
 |----------------|----------|-------------|
