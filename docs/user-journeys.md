@@ -76,6 +76,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-DEV-003b | Maintain tac2iwxxm + iwxxm-us pins | Maintainer workflow | F6, M2 | CI |
 | UJ-DEV-004 | Package CI for tac-validate + iwxxm-validate | `make test` / CI | F2, F6, M5 | T0 / CI |
 | UJ-DEV-005 | pip install published packages + convert/validate | clean venv | F12–F14 | T0 / CI |
+| UJ-DEV-006 | Rust crate CI (fmt/clippy/test + maturin) | `make rust-check` / CI | F13, F14 | T0 / CI |
 | UJ-OPS-001 | Deploy Render stack (API + static + worker) | render.yaml | M4, F8 | T3 (staging) |
 
 **E2E tiers**:
@@ -708,6 +709,27 @@ Extended: sync may include **iwxxm-us** pin updates via manifest (in addition to
 
 **Acceptance**: All install+smoke steps succeed offline for schema-bundled validate.
 **Tier: T0 / CI**.
+
+---
+
+### UJ-DEV-006: Rust Crate CI — fmt / clippy / test / maturin (F13/F14 / #725)
+
+**Actor**: Developer / CI
+
+**Goal**: Catch Rust style, borrow-checker, unit, and PyO3 bridge regressions before merge
+for both native crates.
+
+**Steps**:
+
+1. Locally: `make rust-check` (or CI equivalent) on
+   `packages/tac2iwxxm/rust` and `packages/iwxxm-validate/rust`.
+2. CI on PR/push: `cargo fmt --check`, `cargo clippy -- -D warnings`, `cargo test`.
+3. Maturin/PyO3 smoke for **both** packages (required-Rust env flags).
+4. Confirm required GH check(s) block merge when red.
+
+**Acceptance**: Unformatted Rust, clippy warnings, failing `cargo test`, or missing
+iwxxm-validate maturin smoke fail CI. **Tier: T0 / CI**. TC-EV045-001..007.
+[Corpus: product §F13] [Corpus: product §F14] [Corpus: tests]
 
 ---
 
@@ -1673,3 +1695,4 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
   UJ-046; deepen UJ-001/004/033; UJ-OPS-001 → DOKS primary (F30/F31; #842/#830/#712)
 - S047 / EV-039 (2026-08-06): UJ-027 live local Compose multi-DB path + TC-F16-LIVE-*;
   teardown hygiene across integration / e2e / local (F16 deepen)
+- S054 / EV-045 (2026-08-08): UJ-DEV-006 Rust crate CI (F13/F14 deepen; #725)
