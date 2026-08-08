@@ -40,6 +40,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           STAGING_API_URL: https://api.staging.tac-to-iwxxm.com
+          # pull_request GITHUB_SHA is a merge commit — gate the PR head tip on stage.
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: bash scripts/ci/staging_gate.sh
 
   # EV-036: remote validate job removed — lint/format/config on local pre-commit.
