@@ -26,9 +26,10 @@ Product UI; App Platform; changing staging-gate / promote policy; Render reopen.
 |----|------|------|-------------|------------|--------|
 | T1.1 | docs | F30 AC8–13 + ADR-034 amend + evolve-decisions EV-044 + deploy/test/runbook | feature-list; ADR-034; #886 residual | — | **completed** |
 | T1.2 | rule | promote-from-stage rule dual DO Project / dual cluster | ADR-034 | T1.1 | **completed** |
-| T2.1 | ops | Provision staging DOKS `metar-iwxxm-staging` 1× `s-2vcpu-4gb` nyc1; assign to **Staging TAC-to-IWXXM** | D-S053-size; ADR-034 | T1.1 | pending |
-| T2.2 | ops | Provision staging Postgres `metar-iwxxm-staging` `db-s-1vcpu-1gb`; assign to Staging project; Alembic upgrade; firewall DOKS | D-S053-db; TC-F30-008 | T2.1 | pending |
-| T2.3 | ops | Install ingress-nginx + cert-manager on staging cluster; note LB EXTERNAL-IP | deploy.md; DNS runbook | T2.1 | pending |
+| T2.1 | ops | Provision staging DOKS `metar-iwxxm-staging` 1× `s-2vcpu-4gb` nyc1; assign to **Staging TAC-to-IWXXM** | D-S053-size; ADR-034 | T1.1 | **completed** |
+| T2.2 | ops | Provision staging Postgres `metar-iwxxm-staging` `db-s-1vcpu-1gb`; assign to Staging project; Alembic upgrade; firewall DOKS | D-S053-db; TC-F30-008 | T2.1 | **completed** (Alembic pending apply) |
+| T2.3 | ops | Install ingress-nginx + cert-manager on staging cluster; note LB EXTERNAL-IP | deploy.md; DNS runbook | T2.1 | **completed** (`143.244.202.13`) |
+| T3.0 | ci | Add `stage` to all workflows that push/PR on `main` (parity) | user 2026-08-08 | T1.1 | **completed** |
 | T2.4 | ops | Apply `deploy/doks/overlays/staging` + secrets (staging DB URL, Auth, GHCR pull) | overlays; staging-secrets-matrix | T2.2, T2.3 | pending |
 | T3.1 | ci | Ensure GH Env `staging` `KUBE_CONFIG` = staging cluster (prod Env keeps prod kubeconfig); document if workflow change needed | ci-cd.yml; TC-F30-010 | T2.1 | pending |
 | T3.2 | ops | Porkbun A records → staging LB; wait TLS Ready | TC-F30-009; DNS runbook | T2.3, T2.4 | pending |

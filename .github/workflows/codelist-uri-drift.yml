@@ -4,7 +4,7 @@ name: codelist URI drift
 
 on:
   push:
-    branches: [main, evolve/EV-038-iwxxm-corpus-residuals]
+    branches: [main, stage, evolve/EV-038-iwxxm-corpus-residuals]
     paths:
       - "vendor/schemas/iwxxm/**/rule/codes.wmo.int-*.rdf"
       - "vendor/schemas/iwxxm-codelists/CSV/**"

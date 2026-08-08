@@ -17,8 +17,10 @@ kubectl --context <staging> -n ingress-nginx get svc ingress-nginx-controller \
 
 | Type | Host | Answer | TTL |
 |------|------|--------|-----|
-| A | `api.staging` | `$STAGING_LB_IP` | 300 |
-| A | `app.staging` | `$STAGING_LB_IP` | 300 |
+| A | `api.staging` | `143.244.202.13` | 300 |
+| A | `app.staging` | `143.244.202.13` | 300 |
+
+(`$STAGING_LB_IP` as of EV-044 provision 2026-08-08 — re-check if LB is replaced.)
 
 (Or CNAME both to the same LB hostname if preferred.)
 
