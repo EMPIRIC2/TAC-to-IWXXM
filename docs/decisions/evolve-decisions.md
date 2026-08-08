@@ -3,6 +3,81 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-045 — Rust crate CI (#725) (S054)
+
+**Session**: S054-rust-ci-crates  
+**Features**: deepen **F13**, **F14**  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-045-rust-ci`  
+**Status**: in_progress  
+**Issues**: [#725](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725)  
+**Corpus**: [Corpus: product §F13], [Corpus: product §F14], [Corpus: tech-spec],
+[Corpus: tests], [Corpus: adr/ADR-017]
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-park-doks | Park EV-043 + EV-044; repair mashed `active_session`; clear for #725 |
+| D-S054-open | Open S054 / EV-045; Standard with skips 03/06/10/12/13; deepen F13+F14 |
+| D-S054-01-ac | **1** — confirm ACs + defaults (extend `ci-cd.yml`, clippy `-D warnings`, `make rust-check`) → 02-verify-plan |
+| D-S054-gateA | **2** — PASS Gate A but **ruleset update before 04**; check names locked in test-plan + `apply_gh_branch_rulesets.sh` |
+| D-S054-ac6-waive | **2** — Waive AC6 **ops** half (live GH rulesets/required checks); keep docs + `apply_gh_branch_rulesets.sh`; proceed **04**; apply later when admin available |
+| D-S054-04-jobs | **2** — cargo via crate **matrix** + thin gate job `name: Rust crates (fmt/clippy/test)` (avoids GH matrix name suffix breaking required checks) |
+| D-S054-04-maturin | **2** — extend `tac2iwxxm-native` → two-package matrix; `name: ${{ matrix.check_name }}` for locked maturin contexts |
+| D-S054-04-trigger | **1** — run with default `ci-cd.yml` PR/push (not path-filter-only) |
+| D-S054-04-local | **2** — `deploy.needs` includes rust gate + native matrix; `make rust-check` = cargo both crates **+** both maturin smokes |
+| D-S054-04-plan | **1** — Approve execution plan + Build Plan Card as written → 05-verify-tech |
+| D-S054-gateB | **1** — PASS Gate B; confirm syncs; proceed 07-build (06 skipped) |
+
+**Goal**: Required CI + Makefile parity for `packages/tac2iwxxm/rust` and
+`packages/iwxxm-validate/rust` (`fmt`, `clippy -D warnings`, `cargo test`, maturin/PyO3
+smoke for both).
+
+**Out of scope**: Rust HTTP service; multi-arch wheel CI beyond `pypi-publish`; Schematron
+perf gates; browser E2E; staging/prod deploy.
+
+### Preset
+
+**Standard** — skip 03/06/10/12/13 (tooling/deps/UI/deploy not in scope).
+
+### Acceptance (F13/F14 deepen — TC-EV045-001..007) — confirmed D-S054-01-ac=1
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | `cargo fmt --check` fails on unformatted Rust (both crates) | TC-EV045-001 |
+| AC2 | `clippy -- -D warnings` fails on warnings | TC-EV045-002 |
+| AC3 | `cargo test` green for both crates | TC-EV045-003 |
+| AC4 | Maturin/PyO3 smoke for **both** packages | TC-EV045-004 |
+| AC5 | `make rust-check` mirrors CI (cargo both + both maturin smokes) | TC-EV045-005 |
+| AC6 | Required check name(s) documented; merge blocked when red | TC-EV045-006 |
+| AC7 | Jobs on default `ci-cd.yml` PR/push (not path-filter-only) | TC-EV045-007 |
+
+**AC6 split (D-S054-ac6-waive=2):** docs half **in scope** (locked contexts in
+`docs/test-plan.md` + script). Ops half (repo rulesets actually requiring those
+contexts) **waived until admin** runs `bash scripts/deploy/apply_gh_branch_rulesets.sh`.
+Same class as EV-043 admin gap. [Corpus: tests] [Corpus: decisions]
+
+### Implementation defaults (confirmed D-S054-01-ac=1)
+
+| Topic | Default |
+|-------|---------|
+| Workflow | Extend `.github/workflows/ci-cd.yml` (matrix); not a new workflow unless latency forces |
+| Clippy | Hard `-D warnings` |
+| Local | `make rust-check` mirrors CI |
+| Cache | `Swatinem/rust-cache` (or equivalent) |
+| Toolchain | `dtolnay/rust-toolchain@stable` + rustfmt,clippy |
+
+**Current stage**: 07-build (D-S054-gateB=1; active T1.1)
+
+### Corpus cites / waivers
+
+- [Corpus: product §F13] [Corpus: product §F14]
+- [Corpus: tech-spec] [Corpus: tests] [Corpus: journeys] [Corpus: adr/ADR-017]
+- `[Corpus: WAIVED — AC6 GitHub rulesets/required-checks apply; reason: token admin=false / no rulesets; decided: D-S054-ac6-waive=2 / EV-045]`
+
+---
+
 ## Cycle EV-043 — DOKS staging + prod protected-branch CI/CD (S052)
 
 **Session**: S052-doks-staging-prod-branch-deploys  

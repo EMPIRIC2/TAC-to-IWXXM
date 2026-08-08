@@ -12,10 +12,15 @@ create_ruleset() {
   local body
   body="$(python3 - <<PY
 import json
+# Job `name:` strings from .github/workflows/ci-cd.yml (must match exactly).
+# EV-045 / #725 / TC-EV045-006 — Rust crates + both maturin smokes.
 checks = [
     {"context": "Test (backend)", "integration_id": 0},
     {"context": "Test (frontend)", "integration_id": 0},
     {"context": "Alembic migrations", "integration_id": 0},
+    {"context": "Rust crates (fmt/clippy/test)", "integration_id": 0},
+    {"context": "tac2iwxxm PyO3 (maturin)", "integration_id": 0},
+    {"context": "iwxxm-validate PyO3 (maturin)", "integration_id": 0},
 ]
 extra = json.loads('''${extra_checks_json}''')
 checks.extend(extra)
