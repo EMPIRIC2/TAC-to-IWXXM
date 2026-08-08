@@ -34,6 +34,18 @@ Until DNS exists, Host-header probes still work:
 curl -sS -H "Host: api.staging.tac-to-iwxxm.com" http://168.144.12.70/health
 ```
 
+## Single-node capacity
+
+Cluster `metar-iwxxm` currently has **one** worker node. Running full API+FE+worker in
+**both** namespaces can OOM-schedule (`Insufficient memory`). Mitigations:
+
+1. Keep staging `metar-worker` at **0** replicas until the node pool is enlarged, or
+2. Lower staging resource requests (overlay `patch-resources.yaml`), or
+3. Scale the DOKS default node pool (`doctl kubernetes cluster node-pool …`).
+
+Prod Deploy timeouts on rollout usually mean the new pod cannot schedule — free memory
+(scale staging down briefly) then re-run `doks_rollout_images.sh`.
+
 ## GitHub admin (403 for non-admins)
 
 Create Environments + rulesets in the GitHub UI (or as a repo admin):
