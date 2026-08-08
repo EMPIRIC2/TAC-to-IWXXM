@@ -209,7 +209,8 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 **Features**: deepen **F16** (no new Fn expected)  
 **Started**: 2026-08-06  
 **Branch**: `evolve/EV-039-sql-ingest-live-e2e`  
-**Status**: in_progress — 13 evidence green; awaiting `D-S047-13` / close (`D-S047-resume`=2)  
+**Status**: **completed** (`D-S047-13=1` / `D-S047-close=1`) — 2026-08-08  
+**Completed**: 2026-08-08  
 **Prior**: S046 / EV-038 completed  
 **PR**: [#891](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891) MERGED @ `fea30aba`  
 **Corpus**: [Corpus: product §F16], [Corpus: tests], [Corpus: journeys §UJ-027], [Corpus: tech-spec], [Corpus: adr/ADR-029], [Corpus: adr/ADR-030]
@@ -319,9 +320,11 @@ path-cites [docs/domain/README.md], [docs/domain/rules/RULE_SOURCE_URLS.md],
 |----|----------|
 | D-S047-13-cli | **1** (2026-08-06) — CLI DOKS tag `20260806224839-7df9f8f` while GHA tip CI outage |
 | D-S047-resume | **2** — Resume S047; finish 13 properly then close (not cancel hygiene-only) |
-| D-S047-13 | pending — evidence: post-merge CD [31130303373](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31130303373) SUCCESS; H0c 6/6; H1 20p/1s; H4 3/3; H5 config OK (2026-08-08) |
+| D-S047-13 | **1** — Approve 13; post-merge CD [31130303373](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31130303373); H0c/H1/H4–H5 re-PASS 2026-08-08 |
+| D-S047-close | **1** — Close S047 / EV-039; land closeout docs on `main` |
 
-**Artifacts:** `reports/deploy-smoke.md`; `docs/evolve-report-EV-039.md`.
+**Artifacts:** `reports/deploy-smoke.md`; `docs/evolve-report-EV-039.md`.  
+**Status:** EV-039 / S047 **CLOSED**.
 
 ---
 

@@ -1,7 +1,7 @@
 # Deploy smoke — S047 / EV-039 (13-deploy-smoke)
 
 > Date: 2026-08-08 (resume) · prior CLI path 2026-08-06  
-> Status: **PENDING SIGN-OFF** — evidence green; awaiting `D-S047-13`  
+> Status: **COMPLETE** — `D-S047-13=1` (2026-08-08)  
 > PR: [#891](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891) **MERGED** @ `fea30aba`  
 > Product tip at merge: `fea30abacf14a8d6106637c99d7cce8d7652dabf`  
 > `env_role`: **live = prod** (sole DOKS)  
@@ -69,4 +69,4 @@ Prior DOKS/GHCR tag via `doks_rollout_images.sh` / previous Deploy run; no DB mi
 - [x] #891 merged + post-merge DOKS CD green (31130303373)
 - [x] Historical CLI deploy + H1/H3/H4/H5 (2026-08-06)
 - [x] Resume re-verify H0c + H1 + H4–H5 (2026-08-08)
-- [ ] User approves 13 complete (`D-S047-13`) — then close S047 / EV-039
+- [x] User approves 13 complete (`D-S047-13=1`) — S047 / EV-039 closed (`D-S047-close=1`)

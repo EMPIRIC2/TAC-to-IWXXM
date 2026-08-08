@@ -1,4 +1,4 @@
-overall_status: in_progress
+overall_status: completed
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -6,245 +6,6 @@ project:
 session_counter: 51
 evolve_cycle_counter: 42
 active_session:
-  id: S047-sql-ingest-live-e2e
-  type: feature
-  intent: Deepen F16 — local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload; teardown for integration+e2e+local. No new Fn.
-  status: in_progress
-  started_at: '2026-08-06'
-  started: '2026-08-06'
-  branch: docs/EV-039-closeout
-  branch_base: main@0d8ce885
-  branch_note: 'RESUMED 2026-08-08 D-S047-resume=2 — closeout docs branch (product already on main via #891 @ fea30aba); prior product branch evolve/EV-039-sql-ingest-live-e2e merged; tip of main 3502af27 supersedes CLI tag narrative'
-  artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-039
-  current_stage: 13-deploy-smoke
-  current_stage_note: 'EVIDENCE GREEN 2026-08-08 — H0c/H1/H4–H5 PASS on live DOKS; images 20260808004030-3502af2; CD 31130303373 SUCCESS; report docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; NOT completed'
-  tip_sha: 3502af27
-  tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
-  tip_sha_note: 'live DOKS images 20260808004030-3502af2 (short 3502af2); main tip 3502af27 includes EV-039 via #891 + later S050/S051; closeout docs on docs/EV-039-closeout; awaiting D-S047-13'
-  closeout_branch_tip: c65726dd
-  closeout_branch_tip_full: c65726dd7b744e8ccc98234303679abe5a8d6075
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
-  pr_number: 891
-  pr_status: merged
-  pr_merged_at: '2026-08-06T23:01:57Z'
-  pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
-  pr_merge_commit_short: fea30aba
-  merge_sha: fea30aba
-  merge_sha_full: fea30abacf14a8d6106637c99d7cce8d7652dabf
-  pr_title: '[EV-039] F16 SQL ingest live e2e + teardown'
-  pr_base: main
-  pr_head: evolve/EV-039-sql-ingest-live-e2e
-  main_ci_cd_pipeline_run: '31130303373'
-  main_ci_cd_pipeline_status: SUCCESS
-  env_role: live_prod
-  env_role_note: live=prod (sole DOKS)
-  prior_session: S046-iwxxm-corpus-residuals
-  prior_evolve_cycle_id: EV-038
-  feature_ids: []
-  deepen_feature_ids:
-  - F16
-  feature_note: Deepen F16 — no new Fn; UI preview declined
-  ui_preview: declined
-  context_briefs:
-  - docs/context/sql-ingest-live-e2e.md
-  preset: Standard
-  route_status: in_progress
-  resumed_at: '2026-08-08'
-  resume_decision_id: D-S047-resume
-  resume_note: 'D-S047-resume=2 — Resume S047 first; finish 13-deploy-smoke properly, then close. Orphan hygiene: S047 was absent from sessions[] while EV-039 remained in_progress with stale pr_status=open. Draft closeout on docs/EV-039-closeout @ c65726dd never merged to main.'
-  decisions:
-    D-S047-open: Q1=1 Q2=1 Q3=1 Q4=1 Q5=2
-    D-S047-open_note: Open S047→EV-039; deepen F16 SQL ingest live e2e + teardown; Standard routing; UI preview declined (Q5=2)
-    D-S047-ac: '1'
-    D-S047-ac_note: AC=1 approve AC1–AC7 + manifest; close 01; start 02-verify-plan (Gate A)
-    D-S047-02-gate-a: '2'
-    D-S047-02-gate-a_note: Gate A PASS — S02.M3 resolved via spec.md F16 EV-039 deepen; S02.M1/M2/M4/M5 as 04/07; close 02 → start 04-tech-plan
-    D-S047-04: Q1=1 Q2=1 Q3=1+3 Q4=1+2+3(local)
-    D-S047-04_note: Teardown down -v; async write assert; test-e2e-f16-live-sql + F16_LIVE_SQL flag; local test-live includes LIVE + all four dialects; CI opt-in / SQL Server skippable
-    D-S047-04-plan: '1'
-    D-S047-04-plan_note: Approve execution plan + build-plan-card as written; close 04 → 05-verify-tech
-    D-S047-05-gate-b: '1'
-    D-S047-05-gate-b_note: PASS; S05.M*/L1 as 07; close 05 → 07-build M1 T1.1 (06 skipped)
-    D-S047-11: '1'
-    D-S047-11_note: Approve AC1–AC7 (SQL Server waive OK); close 11-verify-impl → 12-verify-deploy
-    D-S047-12: '1'
-    D-S047-12_note: Approve checklist; push + PR; 13 after CI/CD (H4–H5 required)
-    D-S047-13-ci: '1'
-    D-S047-13-ci_note: wait for Actions recovery (not waive); superseded for this rollout by D-S047-13-cli=1 CLI deploy after local CI while GHA major_outage
-    D-S047-13-cli: '1'
-    D-S047-13-cli_note: 'CLI deploy after local make ci PASS while GitHub Actions major_outage blocked PR #891 tip CI; docker buildx push + doks_rollout_images.sh SUCCESS tag 20260806224839-7df9f8f; H1/H3/H0c/H4/H5 PASS; PR #891 still open'
-    D-S047-13-merge: '1'
-    D-S047-13-merge_note: 'Merge now; skip post-merge deploys and CI observation — CLI deploy 20260806224839-7df9f8f @ tip 7df9f8f5 remains authoritative; PR #891 MERGED @ fea30aba 2026-08-06T23:01:57Z'
-    D-S047-resume: '2'
-    D-S047-resume_note: '2 — Resume S047 first; finish 13-deploy-smoke properly, then close; PR #891 MERGED @ fea30aba; post-merge CD 31130303373 SUCCESS; branch docs/EV-039-closeout for closeout docs; product on main; smokes re-run pending'
-  routing_plan:
-  - stage: 00-context
-    mode: scoped
-    required: true
-    status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    note: COMPLETE — S047 open; D-S047-open locked; handoff 16-evolve
-  - stage: 16-evolve
-    mode: orchestrator
-    required: true
-    status: in_progress
-    started: '2026-08-06'
-    completed:
-    note: 'in_progress — 13 evidence green 2026-08-08; awaiting D-S047-13 then close; CD 31130303373; images 20260808004030-3502af2'
-    completed_at:
-    resumed_at: '2026-08-08'
-  - stage: 01-requirements
-    mode: delta
-    required: true
-    status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    note: COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan
-  - stage: 02-verify-plan
-    mode: delta
-    required: true
-    status: completed
-    started: '2026-08-06'
-    started_at: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: COMPLETE — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07; reports/02-verify-plan-audit.md; tip 7970ba46; handoff 04-tech-plan
-  - stage: 04-tech-plan
-    mode: delta
-    required: true
-    status: completed
-    started: '2026-08-06'
-    started_at: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: COMPLETE — D-S047-04-plan=1; execution-plan + build-plan-card approved; reports/04-tech-plan.md; handoff 05-verify-tech
-  - stage: 05-verify-tech
-    mode: delta
-    required: true
-    status: completed
-    started: '2026-08-06'
-    started_at: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    note: COMPLETE — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; 06 skipped
-  - stage: 07-build
-    mode: delta
-    required: true
-    status: completed
-    started: '2026-08-06'
-    started_at: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    tip_sha: d78e0915
-    tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
-    note: COMPLETE — M1+M2 (T1.1–T2.5); handoff 08-verify-build
-  - stage: 08-verify-build
-    mode: full
-    required: true
-    status: completed
-    started: '2026-08-06'
-    started_at: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    overall: pass
-    note: COMPLETE PASS — quality gates green; Docker LIVE TC-F16-LIVE-001/002/004 PASS (003 skipped QEMU); PAUSED per user after LIVE; harness fixes uncommitted; handoff 09-qa pending
-  - stage: 09-qa
-    mode: full
-    required: true
-    status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    overall: pass_with_advisories
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
-    note: COMPLETE PASS with advisories — report qa-report.md; handoff 11-verify-impl
-  - stage: 10-e2e
-    mode: full
-    required: true
-    status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    overall: pass
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
-    note: COMPLETE PASS — report e2e-report.md; handoff 11-verify-impl
-  - stage: 11-verify-impl
-    mode: full
-    required: true
-    status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    overall: approved
-    tip_sha: 415898d0
-    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
-    note: COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); reports/verify-impl.md; handoff 12-verify-deploy
-  - stage: 12-verify-deploy
-    mode: full
-    required: true
-    status: completed
-    started: '2026-08-06'
-    completed: '2026-08-06'
-    overall: approved
-    tip_sha: a5e5d89e
-    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
-    report_status: approved
-    decision_id: D-S047-12
-    note: COMPLETE — D-S047-12=1; checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet
-  - stage: 13-deploy-smoke
-    mode: full
-    required: true
-    status: in_progress
-    started: '2026-08-06'
-    completed:
-    tip_sha: 7df9f8f5
-    tip_sha_full: 7df9f8f5bd9b686a90b7768bbe1102665c8b014d
-    blocked: false
-    doks_tag: 20260808004030-3502af2
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-    report_status: pending_signoff
-    overall: pass
-    decision_id: D-S047-13-cli
-    note: 'EVIDENCE GREEN 2026-08-08 — H0c 6/6; H1 live API 20p/1s; H4 3/3 (convert + work_sessions PATCH + ingest/mass); H5 config.json api.baseUrl=https://api.tac-to-iwxxm.com; live images 20260808004030-3502af2; post-merge CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; NOT completed/closed'
-    resumed_at: '2026-08-08'
-    pr_status: merged
-    pr_number: 891
-    pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
-    main_ci_cd_pipeline_run: '31130303373'
-    health_tiers: &id001
-      H0ci: pass
-      H0c: pass
-      H1: pass
-      H2: covered_by_H1 (health in make test-live-api)
-      H3: covered_by_H1 (convert in make test-live-api)
-      H4: pass
-      H5: pass
-      h0ci: pass
-      h0ci_github_main: pass
-      h0c: pass
-      h1: pass
-      h2: covered_by_H1 (health in make test-live-api)
-      h3: covered_by_H1 (convert in make test-live-api)
-      h4: pass
-      h5: pass
-      note: H0c 6/6 PASS; H1 make test-live-api 20 passed/1 skipped (covers health+convert ⇒ H2/H3); H4 3/3 PASS (convert + work_sessions PATCH + ingest/mass); H5 PASS api.baseUrl=https://api.tac-to-iwxxm.com; images 20260808004030-3502af2; CD 31130303373 SUCCESS; pending D-S047-13
-  notes:
-  - 2026-08-08 13-deploy-smoke EVIDENCE — H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS; images 20260808004030-3502af2; CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; session NOT closed
-  - '2026-08-08 D-S047-resume=2 — RESUMED orphan S047/EV-039; finish 13-deploy-smoke properly then close; active_session restored; branch docs/EV-039-closeout; PR #891 MERGED @ fea30aba; post-merge CI/CD 31130303373 SUCCESS; main tip 3502af27; smokes pending re-run; NOT completed/closed'
-  - 2026-08-06 orphan hygiene context — S047 was cleared from active_session without sessions[] archive; EV-039 left in_progress with stale pr_status=open; draft closeout docs on docs/EV-039-closeout never merged
-  doks_tag: 20260808004030-3502af2
-  report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-  report_status: pending_signoff
-  evolve_report: docs/evolve-report-EV-039.md
-  awaiting_user_decision: true
-  awaiting_user_decision_note: awaiting D-S047-13 approve 13-deploy-smoke / then close
-  decision_pending: D-S047-13
-  health_tiers: *id001
 sessions:
 - id: S051-output-filename-download-stale
   type: hotfix
@@ -887,6 +648,254 @@ sessions:
     completed: '2026-08-06'
     note: 'COMPLETE — H1–H5 PASS + CI green; D-S048-close=1,1,1; tip 5a9f28ef'
     report: docs/sessions/S048-workbench-lint-ux/reports/deploy-smoke.md
+- id: S047-sql-ingest-live-e2e
+  type: feature
+  intent: Deepen F16 — local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload; teardown for integration+e2e+local. No new Fn.
+  status: completed
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
+  started: '2026-08-06'
+  started_at: '2026-08-06'
+  branch: docs/EV-039-closeout
+  product_branch: evolve/EV-039-sql-ingest-live-e2e
+  branch_base: main@0d8ce885
+  branch_status: merged
+  branch_exists: true
+  branch_note: 'CLOSED — product branch evolve/EV-039-sql-ingest-live-e2e merged via #891 @ fea30aba; closeout docs on docs/EV-039-closeout landing on main (D-S047-close=1)'
+  artifacts_dir: docs/sessions/S047-sql-ingest-live-e2e/
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-039
+  prior_session: S046-iwxxm-corpus-residuals
+  prior_evolve_cycle_id: EV-038
+  feature_ids: []
+  deepen_feature_ids:
+  - F16
+  feature_note: Deepen F16 — no new Fn; UI preview declined
+  ui_preview: declined
+  context_briefs:
+  - docs/context/sql-ingest-live-e2e.md
+  preset: Standard
+  route_status: completed
+  tip_sha: 3502af27
+  tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
+  tip_sha_pushed: true
+  tip_sha_note: 'CLOSED D-S047-close=1 — live tag 20260808004030-3502af2; tip 3502af27; PR #891 @ fea30aba; CD 31130303373; closeout docs landing on main'
+  doks_tag: 20260808004030-3502af2
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
+  pr_number: 891
+  pr_status: merged
+  pr_merged_at: '2026-08-06T23:01:57Z'
+  pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
+  pr_merge_commit_short: fea30aba
+  merge_sha: fea30aba
+  merge_sha_full: fea30abacf14a8d6106637c99d7cce8d7652dabf
+  pr_title: '[EV-039] F16 SQL ingest live e2e + teardown'
+  pr_base: main
+  pr_head: evolve/EV-039-sql-ingest-live-e2e
+  main_ci_cd_pipeline_run: '31130303373'
+  main_ci_cd_pipeline_status: SUCCESS
+  env_role: live_prod
+  report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
+  report_status: approved
+  evolve_report: docs/evolve-report-EV-039.md
+  health_tiers: &id001
+    H0ci: pass
+    H0c: pass
+    H1: pass
+    H4: pass
+    H5: pass
+    h0ci: pass
+    h0ci_github_main: pass
+    h0c: pass
+    h1: pass
+    h4: pass
+    h5: pass
+    H2: covered_by_H1 (health in make test-live-api)
+    H3: covered_by_H1 (convert in make test-live-api)
+    h2: covered_by_H1 (health in make test-live-api)
+    h3: covered_by_H1 (convert in make test-live-api)
+    note: H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS; images 20260808004030-3502af2; CD 31130303373; D-S047-13=1 approved
+  close_decision_id: D-S047-close
+  close_note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
+  current_stage: completed
+  current_stage_note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
+  resumed_at: '2026-08-08'
+  resume_decision_id: D-S047-resume
+  note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
+  decisions:
+    D-S047-open: Q1=1 Q2=1 Q3=1 Q4=1 Q5=2
+    D-S047-open_note: Open S047→EV-039; deepen F16 SQL ingest live e2e + teardown; Standard routing; UI preview declined (Q5=2)
+    D-S047-ac: '1'
+    D-S047-ac_note: AC=1 approve AC1–AC7 + manifest; close 01; start 02-verify-plan (Gate A)
+    D-S047-02-gate-a: '2'
+    D-S047-02-gate-a_note: Gate A PASS — S02.M3 resolved via spec.md F16 EV-039 deepen; S02.M1/M2/M4/M5 as 04/07; close 02 → start 04-tech-plan
+    D-S047-04: Q1=1 Q2=1 Q3=1+3 Q4=1+2+3(local)
+    D-S047-04_note: Teardown down -v; async write assert; test-e2e-f16-live-sql + F16_LIVE_SQL flag; local test-live includes LIVE + all four dialects; CI opt-in / SQL Server skippable
+    D-S047-04-plan: '1'
+    D-S047-04-plan_note: Approve execution plan + build-plan-card as written; close 04 → 05-verify-tech
+    D-S047-05-gate-b: '1'
+    D-S047-05-gate-b_note: PASS; S05.M*/L1 as 07; close 05 → 07-build M1 T1.1 (06 skipped)
+    D-S047-11: '1'
+    D-S047-11_note: Approve AC1–AC7 (SQL Server waive OK); close 11-verify-impl → 12-verify-deploy
+    D-S047-12: '1'
+    D-S047-12_note: Approve checklist; push + PR; 13 after CI/CD (H4–H5 required)
+    D-S047-13-ci: '1'
+    D-S047-13-ci_note: wait for Actions recovery (not waive); superseded for this rollout by D-S047-13-cli=1 CLI deploy after local CI while GHA major_outage
+    D-S047-13-cli: '1'
+    D-S047-13-cli_note: 'CLI deploy after local make ci PASS while GitHub Actions major_outage blocked PR #891 tip CI; docker buildx push + doks_rollout_images.sh SUCCESS tag 20260806224839-7df9f8f; H1/H3/H0c/H4/H5 PASS; PR #891 still open'
+    D-S047-13-merge: '1'
+    D-S047-13-merge_note: 'Merge now; skip post-merge deploys and CI observation — CLI deploy 20260806224839-7df9f8f @ tip 7df9f8f5 remains authoritative; PR #891 MERGED @ fea30aba 2026-08-06T23:01:57Z'
+    D-S047-resume: '2'
+    D-S047-resume_note: '2 — Resume S047 first; finish 13-deploy-smoke properly, then close; PR #891 MERGED @ fea30aba; post-merge CD 31130303373 SUCCESS; branch docs/EV-039-closeout for closeout docs; product on main; smokes re-run pending'
+    D-S047-13: '1'
+    D-S047-13_note: 1 — Approve 13-deploy-smoke complete; H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; report deploy-smoke.md approved
+    D-S047-close: '1'
+    D-S047-close_note: '1 — Close session + cycle; land closeout docs on main; PR #891 @ fea30aba; tag 20260808004030-3502af2; active_session=null'
+  routing_plan:
+  - stage: 00-context
+    mode: scoped
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — S047 open; D-S047-open locked; handoff 16-evolve
+  - stage: 16-evolve
+    mode: orchestrator
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-08'
+    note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; tag 20260808004030-3502af2'
+    completed_at: '2026-08-08'
+    resumed_at: '2026-08-08'
+  - stage: 01-requirements
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    note: COMPLETE — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan
+  - stage: 02-verify-plan
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    started_at: '2026-08-06'
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    tip_sha: 7970ba46
+    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+    note: COMPLETE — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07; reports/02-verify-plan-audit.md; tip 7970ba46; handoff 04-tech-plan
+  - stage: 04-tech-plan
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    started_at: '2026-08-06'
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    tip_sha: 7970ba46
+    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
+    note: COMPLETE — D-S047-04-plan=1; execution-plan + build-plan-card approved; reports/04-tech-plan.md; handoff 05-verify-tech
+  - stage: 05-verify-tech
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    started_at: '2026-08-06'
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    note: COMPLETE — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; 06 skipped
+  - stage: 07-build
+    mode: delta
+    required: true
+    status: completed
+    started: '2026-08-06'
+    started_at: '2026-08-06'
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    tip_sha: d78e0915
+    tip_sha_full: d78e0915bf05b96e03005407876e8cb8e1bfce23
+    note: COMPLETE — M1+M2 (T1.1–T2.5); handoff 08-verify-build
+  - stage: 08-verify-build
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    started_at: '2026-08-06'
+    completed: '2026-08-06'
+    completed_at: '2026-08-06'
+    overall: pass
+    note: COMPLETE PASS — quality gates green; Docker LIVE TC-F16-LIVE-001/002/004 PASS (003 skipped QEMU); PAUSED per user after LIVE; harness fixes uncommitted; handoff 09-qa pending
+  - stage: 09-qa
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    overall: pass_with_advisories
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/qa-report.md
+    note: COMPLETE PASS with advisories — report qa-report.md; handoff 11-verify-impl
+  - stage: 10-e2e
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    overall: pass
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/e2e-report.md
+    note: COMPLETE PASS — report e2e-report.md; handoff 11-verify-impl
+  - stage: 11-verify-impl
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    overall: approved
+    tip_sha: 415898d0
+    tip_sha_full: 415898d0c886dbf56e15f5d5327de2b8d3f71efe
+    note: COMPLETE — D-S047-11=1 AC1–AC7 MET (SQL Server waive); reports/verify-impl.md; handoff 12-verify-deploy
+  - stage: 12-verify-deploy
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-06'
+    overall: approved
+    tip_sha: a5e5d89e
+    tip_sha_full: a5e5d89e9edf0a486950ac82f9ee62ca82c3ffd9
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-checklist.md
+    report_status: approved
+    decision_id: D-S047-12
+    note: COMPLETE — D-S047-12=1; checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet
+  - stage: 13-deploy-smoke
+    mode: full
+    required: true
+    status: completed
+    started: '2026-08-06'
+    completed: '2026-08-08'
+    tip_sha: 7df9f8f5
+    tip_sha_full: 7df9f8f5bd9b686a90b7768bbe1102665c8b014d
+    blocked: false
+    doks_tag: 20260808004030-3502af2
+    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
+    report_status: approved
+    overall: approved
+    decision_id: D-S047-13
+    note: 'COMPLETE — D-S047-13=1; H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; report deploy-smoke.md'
+    resumed_at: '2026-08-08'
+    pr_status: merged
+    pr_number: 891
+    pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
+    main_ci_cd_pipeline_run: '31130303373'
+    health_tiers: *id001
+    completed_at: '2026-08-08'
+  notes:
+  - '2026-08-08 D-S047-13=1 + D-S047-close=1 — CLOSED; archived to sessions[] (was orphaned); PR #891 @ fea30aba; CD 31130303373; H0c/H1/H4–H5 PASS; tag 20260808004030-3502af2; active_session=null'
+  - 2026-08-08 D-S047-resume=2 — resumed orphan to finish 13 properly then close
+  - 2026-08-08 13-deploy-smoke EVIDENCE — H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS; images 20260808004030-3502af2; CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; session NOT closed
+  - '2026-08-08 D-S047-resume=2 — RESUMED orphan S047/EV-039; finish 13-deploy-smoke properly then close; active_session restored; branch docs/EV-039-closeout; PR #891 MERGED @ fea30aba; post-merge CI/CD 31130303373 SUCCESS; main tip 3502af27; smokes pending re-run; NOT completed/closed'
+  - 2026-08-06 orphan hygiene context — S047 was cleared from active_session without sessions[] archive; EV-039 left in_progress with stale pr_status=open; draft closeout docs on docs/EV-039-closeout never merged
 - id: S046-iwxxm-corpus-residuals
   type: feature
   status: completed
@@ -9434,14 +9443,14 @@ stages:
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
       skill_id: 07-build
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-06'
       started: '2026-08-06'
       tip_sha: 7970ba46
       tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
       pending_commit: false
-      note: 'IN_PROGRESS — M1 T1.1 teardown contract test; Gate B PASS (D-S047-05-gate-b=1); superseded by S050'
+      note: 'COMPLETED historically (M1+M2); S047/EV-039 closed 2026-08-08 via D-S047-close=1; do not reopen; S050 07 mirror left as-is (S050 already completed in sessions[])'
       feature_ids: []
       deepen_feature_ids:
       - F16
@@ -9456,11 +9465,13 @@ stages:
       current_milestone: M1
       active_task: T1.1
       current_task: T1.1
-      active_task_status: in_progress
+      active_task_status: completed
       completed_through:
       artifacts:
       - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
       - docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+      completed: '2026-08-06'
+      completed_at: '2026-08-06'
     prior_active_session:
       session_id: S045-matrix-disposition-residuals
       evolve_cycle_id: EV-037
@@ -13003,12 +13014,12 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
     # S050 active override (duplicate-key last-wins trailer)
   13-deploy-smoke:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-07'
     started: '2026-08-07'
-    completed:
-    completed_at:
+    completed: '2026-08-08'
+    completed_at: '2026-08-08'
     previous_started_at: '2026-08-06'
     previous_started: '2026-08-06'
     previous_completed: '2026-08-06'
@@ -13063,10 +13074,10 @@ stages:
     prior_s037_tip_sha: 8bd111c
     session_id: S047-sql-ingest-live-e2e
     evolve_cycle_id: EV-039
-    overall: pass_pending_signoff
-    note: 'EVIDENCE GREEN 2026-08-08 — H0c 6/6; H1 live API 20p/1s; H4 3/3 (convert + work_sessions PATCH + ingest/mass); H5 config.json api.baseUrl=https://api.tac-to-iwxxm.com; live images 20260808004030-3502af2; post-merge CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; NOT completed/closed'
+    overall: approved
+    note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
     report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-    report_status: pending_signoff
+    report_status: approved
     tip_sha: 3502af27
     tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
     tip_before_merge: 5558c7e4
@@ -13083,10 +13094,10 @@ stages:
     progress:
     completed_through:
     awaiting_deploy_approval: false
-    awaiting_user_decision: true
-    awaiting_user_decision_note: 'awaiting D-S047-13'
-    decision_id: D-S047-resume
-    decision_pending: D-S047-13
+    awaiting_user_decision: false
+    awaiting_user_decision_note: ''
+    decision_id: D-S047-13
+    decision_pending:
     decision_ids:
     - D-S050-13
     - D-S050-merge
@@ -13105,16 +13116,16 @@ stages:
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
       skill_id: 13-deploy-smoke
-      status: in_progress
+      status: completed
       mode: delta
       started: '2026-08-06'
       started_at: '2026-08-06'
-      completed:
-      completed_at:
+      completed: '2026-08-08'
+      completed_at: '2026-08-08'
       branch: docs/EV-039-closeout
       tip_sha: 3502af27
       tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
-      note: 'EVIDENCE GREEN 2026-08-08 — H0c 6/6; H1 live API 20p/1s; H4 3/3 (convert + work_sessions PATCH + ingest/mass); H5 config.json api.baseUrl=https://api.tac-to-iwxxm.com; live images 20260808004030-3502af2; post-merge CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; NOT completed/closed'
+      note: 'COMPLETE — D-S047-13=1; H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; closed via D-S047-close=1'
       deepen_feature_ids:
       - F16
       resumed_at: '2026-08-08'
@@ -13127,18 +13138,18 @@ stages:
       main_ci_cd_pipeline_run: '31130303373'
       main_ci_cd_pipeline_status: SUCCESS
       env_role: live_prod
-      decision_id: D-S047-resume
+      decision_id: D-S047-13
       report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-      report_status: pending_signoff
-      overall: pass_pending_signoff
+      report_status: approved
+      overall: approved
       health_tiers: *id001
       doks_tag: 20260808004030-3502af2
       images:
         api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260808004030-3502af2
         frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260808004030-3502af2
         worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260808004030-3502af2
-      decision_pending: D-S047-13
-      awaiting_user_decision: true
+      decision_pending:
+      awaiting_user_decision: false
       h2_h3_note: H1 suite covers health+convert ⇒ H2/H3
     - id: S050-remove-db-tools-operator-throughput-13
       session_id: S050-remove-db-tools-operator-throughput
@@ -13792,6 +13803,7 @@ stages:
       report: docs/sessions/S014-package-publish-validation/reports/deploy-smoke.md
       hard_gates_report: docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md
     notes:
+    - 2026-08-08 S047/EV-039 CLOSED D-S047-13=1 + D-S047-close=1 — H0c/H1/H4–H5 PASS; tag 20260808004030-3502af2; CD 31130303373; active_session=null
     - 2026-08-08 S047/EV-039 13 EVIDENCE — H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; report PENDING SIGN-OFF; awaiting D-S047-13
     - '2026-08-08 D-S047-resume=2 — RESUMED S047/EV-039 13-deploy-smoke; #891 merged; CD 31130303373 SUCCESS; smokes pending re-run'
     - 2026-07-31 S032/EV-025 deferred D-S032-EV025-closeout=1; when ships after merge
@@ -13836,43 +13848,25 @@ stages:
     resume_decision_id: D-S047-resume
     branch: docs/EV-039-closeout
     active_session:
-      session_id: S047-sql-ingest-live-e2e
-      evolve_cycle_id: EV-039
-      skill_id: 13-deploy-smoke
-      status: in_progress
-      mode: delta
-      started: '2026-08-06'
-      started_at: '2026-08-06'
-      resumed_at: '2026-08-08'
-      completed:
-      completed_at:
-      branch: docs/EV-039-closeout
-      tip_sha: 3502af27
-      tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
-      pr_number: 891
-      pr_status: merged
-      pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
-      main_ci_cd_pipeline_run: '31130303373'
-      env_role: live_prod
-      decision_id: D-S047-resume
-      note: 'EVIDENCE GREEN 2026-08-08 — H0c 6/6; H1 live API 20p/1s; H4 3/3 (convert + work_sessions PATCH + ingest/mass); H5 config.json api.baseUrl=https://api.tac-to-iwxxm.com; live images 20260808004030-3502af2; post-merge CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; NOT completed/closed'
-      deepen_feature_ids:
-      - F16
-      feature_ids: []
-      doks_tag: 20260808004030-3502af2
-      report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-      report_status: pending_signoff
-      health_tiers: *id001
-      decision_pending: D-S047-13
-      awaiting_user_decision: true
     health_tiers: *id001
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260808004030-3502af2
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260808004030-3502af2
       worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260808004030-3502af2
       note: live 2026-08-08; tag 20260808004030-3502af2
-    h2_h3_note: H1 suite (make test-live-api) covers health + convert ⇒ H2/H3
+    h2_h3_note: H1 suite covers health+convert ⇒ H2/H3
     evolve_report: docs/evolve-report-EV-039.md
+    previous_s047_session_id: S047-sql-ingest-live-e2e
+    previous_s047_evolve_cycle_id: EV-039
+    previous_s047_overall: approved
+    previous_s047_note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
+    previous_s047_report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
+    previous_s047_tip_sha: 3502af27
+    previous_s047_tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
+    previous_s047_completed: '2026-08-08'
+    previous_s047_doks_tag: 20260808004030-3502af2
+    previous_s047_pr_number: 891
+    close_decision_id: D-S047-close
   14-hotfix:
     status: completed
     session_id: S051-output-filename-download-stale
@@ -14026,6 +14020,7 @@ deployment:
       note: S047/EV-039 13 evidence 2026-08-08 — 20260808004030-3502af2; pending D-S047-13; prior S050 closed record superseded for live tip
     health_tiers: *id001
     notes:
+    - 2026-08-08 S047/EV-039 CLOSED D-S047-13=1 + D-S047-close=1 — H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; active_session=null
     - 2026-08-08 S047/EV-039 13-deploy-smoke EVIDENCE (pending D-S047-13) — H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS; images 20260808004030-3502af2; CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; active_session remains S047; NOT closed
     - '2026-08-07 S050/EV-042 CLOSED D-S050-13=1 — PR #899 MERGED @ e3d1c7c8; CI/CD 31197264636 SUCCESS; H0c/H1/H4–H5 + UJ-051..053 6/6 PASS; advisories accepted; Epic #897 noted for close; #898 open; report deploy-smoke.md; active_session=null; deployment remains live prod'
     - '2026-08-07 S050/EV-042 13-deploy-smoke smoke PASS pending D-S050-13 — PR #899 MERGED @ e3d1c7c8; CI/CD 31197264636 SUCCESS (DOKS Deploy); H0c 6/6; H1 live API 20p/1s; H3 convert round-trip pass; H4 3/3 incl /api/v1/ingest/mass CORS; H5 api.baseUrl=https://api.tac-to-iwxxm.com; live UJ-051..053 6/6; advisories LIVE_* parent shell + H7 empty_bulletin OOS + Sync DB migrations OOS; report deploy-smoke.md; superseded by D-S050-13 close'
@@ -14228,6 +14223,82 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S047-close
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: close_session
+  category: session-close
+  status: confirmed
+  topic: Close S047/EV-039; land closeout docs on main
+  summary: '1 — Close session + cycle; land closeout docs on main; PR #891 @ fea30aba; CD 31130303373; tag 20260808004030-3502af2; active_session=null'
+  decision: "D-S047-close=1 — user approved close S047 + EV-039; land closeout docs on main.\nD-S047-13=1 already approved 13-deploy-smoke.\nPR #891 MERGED @ fea30abacf14a8d6106637c99d7cce8d7652dabf.\nPost-merge CD 31130303373 SUCCESS; live tag 20260808004030-3502af2.\nReports: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md COMPLETE; docs/evolve-report-EV-039.md completed.\nArchive S047 into sessions[] (was orphaned/missing); clear active_session=null.\nMark EV-039 completed; stages 13 + 16-evolve completed; gates.deploy + phase_d passed.\noverall_status=completed.\nDo NOT invent S052; do NOT reopen S050/S051.\nCloseout tip may update after docs commit on docs/EV-039-closeout → main.\nNo git commit by workflow-state-manager."
+  user_option: '1'
+  branch: docs/EV-039-closeout
+  product_branch: evolve/EV-039-sql-ingest-live-e2e
+  doks_tag: 20260808004030-3502af2
+  tip_sha: 3502af27
+  tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
+  pr_number: 891
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
+  pr_status: merged
+  pr_merged_at: '2026-08-06T23:01:57Z'
+  pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
+  merge_sha: fea30aba
+  merge_sha_full: fea30abacf14a8d6106637c99d7cce8d7652dabf
+  main_ci_cd_pipeline_run: '31130303373'
+  main_ci_cd_pipeline_status: SUCCESS
+  report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
+  evolve_report: docs/evolve-report-EV-039.md
+  env_role: live_prod
+  current_stage: completed
+  close_decision_id: D-S047-close
+  related_decisions:
+  - D-S047-13
+  - D-S047-resume
+  - D-S047-12
+  deepen_feature_ids:
+  - F16
+  note: close_session applied; active_session=null; EV-039 completed; S047 archived to sessions[]; tip may refresh after closeout commit
+- id: D-S047-13
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S047-sql-ingest-live-e2e
+  evolve_cycle_id: EV-039
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: deploy_smoke_approval
+  status: confirmed
+  topic: Approve 13-deploy-smoke complete (S047/EV-039)
+  summary: 1 — Approve 13-deploy-smoke complete; H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; report deploy-smoke.md
+  decision: "D-S047-13=1 — user approved 13-deploy-smoke complete.\nEvidence 2026-08-08: H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS;\nlive tag 20260808004030-3502af2; post-merge CD 31130303373 SUCCESS; PR #891 MERGED @ fea30aba.\nReport docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md COMPLETE/approved.\nMark 13 completed; gates.deploy + phase_d passed; proceed to D-S047-close.\nNo git commit by workflow-state-manager."
+  user_option: '1'
+  branch: docs/EV-039-closeout
+  doks_tag: 20260808004030-3502af2
+  tip_sha: 3502af27
+  tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
+  pr_number: 891
+  pr_status: merged
+  pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
+  main_ci_cd_pipeline_run: '31130303373'
+  main_ci_cd_pipeline_status: SUCCESS
+  report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
+  overall: approved
+  env_role: live_prod
+  current_stage: 13-deploy-smoke
+  related_decisions:
+  - D-S047-13-evidence
+  - D-S047-resume
+  - D-S047-12
+  deepen_feature_ids:
+  - F16
+  note: 13-deploy-smoke COMPLETE; awaiting/paired with D-S047-close
 - id: D-S047-13-evidence
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -38075,11 +38146,11 @@ evolve_cycles:
   - F16
   feature_note: "Deepen F16 — no new Fn; UI preview declined"
   title: "SQL ingest live e2e + teardown"
-  status: in_progress
+  status: completed
   started: "2026-08-06"
   started_at: "2026-08-06"
-  completed:
-  completed_at:
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
   scope_summary: |
     Deepen F16: local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live upload;
     teardown for integration+e2e+local. No new Fn. UI preview declined.
@@ -38101,15 +38172,15 @@ evolve_cycles:
     skipped_stages:
     - 03-plan-tooling
     - 06-tech-tooling
-  current_stage: "13-deploy-smoke"
-  current_stage_status: in_progress
-  current_stage_note: "EVIDENCE GREEN 2026-08-08 — H0c/H1/H4–H5 PASS; awaiting D-S047-13; images 20260808004030-3502af2; CD 31130303373; report PENDING SIGN-OFF"
+  current_stage: "completed"
+  current_stage_status: completed
+  current_stage_note: "CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout"
   ui_preview: declined
   branch: evolve/EV-039-sql-ingest-live-e2e
   tip_sha: 3502af27
   tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
   tip_sha_pushed: true
-  tip_sha_note: "live images 20260808004030-3502af2; main tip 3502af27 (EV-039 on main via #891 + later work); awaiting D-S047-13"
+  tip_sha_note: "CLOSED — live tag 20260808004030-3502af2; main tip 3502af27 includes EV-039 via #891 + later work; closeout docs on docs/EV-039-closeout (landing on main)"
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
   pr_number: 891
   pr_status: merged
@@ -38120,15 +38191,15 @@ evolve_cycles:
     a_to_b: passed
     b_to_c: passed
     c_to_d: passed
-    deploy: pending
+    deploy: passed
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_c: passed
     phase_c_note: "passed — D-S047-11=1 AC1–AC7 MET (SQL Server waive); 11-verify-impl COMPLETE"
-    phase_d: pending
-    phase_d_note: "13 evidence green 2026-08-08 (H0c/H1/H4–H5); awaiting D-S047-13 user approval before close"
-    deploy: pending
+    phase_d: passed
+    phase_d_note: "PASSED 2026-08-08 — D-S047-13=1 approve 13; D-S047-close=1 close cycle; H0c/H1/H4–H5 PASS; CD 31130303373; tag 20260808004030-3502af2"
+    deploy: passed
   decision_refs:
   - D-S047-open
   - D-S047-ac
@@ -38139,6 +38210,8 @@ evolve_cycles:
   - D-S047-11
   - D-S047-12
   - D-S047-resume
+  - D-S047-13
+  - D-S047-close
   stages:
     00-context:
       status: completed
@@ -38146,11 +38219,12 @@ evolve_cycles:
       completed: "2026-08-06"
       note: "COMPLETE — S047 open; D-S047-open locked"
     16-evolve:
-      status: in_progress
+      status: completed
       started: "2026-08-06"
-      completed:
-      note: "in_progress — 13 evidence green 2026-08-08; awaiting D-S047-13 then close; CD 31130303373; images 20260808004030-3502af2; NOT completed"
+      completed: '2026-08-08'
+      note: "COMPLETE — D-S047-close=1; EV-039 closed; PR #891 MERGED @ fea30aba; CD 31130303373; H0c/H1/H4–H5 PASS; tag 20260808004030-3502af2"
       resumed_at: '2026-08-08'
+      completed_at: '2026-08-08'
     01-requirements:
       status: completed
       started: "2026-08-06"
@@ -38261,16 +38335,16 @@ evolve_cycles:
       decision_id: D-S047-12
       note: "COMPLETE — D-S047-12=1; checklist approved; push + PR; 13 after CI/CD (H4–H5 required); tip a5e5d89e; no PR URL yet"
     13-deploy-smoke:
-      status: in_progress
+      status: completed
       started: "2026-08-06"
       started_at: "2026-08-06"
       tip_sha: 3502af27
       tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
       blocked: false
       blocked_reason:
-      note: "EVIDENCE GREEN 2026-08-08 — H0c 6/6; H1 live API 20p/1s; H4 3/3 (convert + work_sessions PATCH + ingest/mass); H5 config.json api.baseUrl=https://api.tac-to-iwxxm.com; live images 20260808004030-3502af2; post-merge CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; awaiting D-S047-13; NOT completed/closed"
-      completed:
-      completed_at:
+      note: "COMPLETE — D-S047-13=1 approve 13-deploy-smoke; H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; report deploy-smoke.md; close via D-S047-close=1"
+      completed: '2026-08-08'
+      completed_at: '2026-08-08'
       resumed_at: '2026-08-08'
       pr_number: 891
       pr_status: merged
@@ -38280,8 +38354,8 @@ evolve_cycles:
       env_role: live_prod
       evidence_recorded_at: '2026-08-08'
       report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-      report_status: pending_signoff
-      overall: pass_pending_signoff
+      report_status: approved
+      overall: approved
       health_tiers: *id001
       doks_tag: 20260808004030-3502af2
       images:
@@ -38289,12 +38363,13 @@ evolve_cycles:
         frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260808004030-3502af2
         worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260808004030-3502af2
         note: 'live DOKS 2026-08-08 re-verify; tag 20260808004030-3502af2 @ tip 3502af27 (includes EV-039 via #891)'
-      awaiting_user_decision: true
-      decision_pending: D-S047-13
-      h2_h3_note: H1 suite (make test-live-api) covers health + convert ⇒ H2/H3
+      awaiting_user_decision: false
+      decision_pending:
+      h2_h3_note: H1 suite covers health+convert ⇒ H2/H3
+      decision_id: D-S047-13
   artifacts:
   - path: docs/decisions/evolve-decisions.md
-    status: in_progress
+    status: completed
   - path: docs/sessions/S047-sql-ingest-live-e2e/session-brief.md
     status: completed
   - path: docs/sessions/S047-sql-ingest-live-e2e/routing-plan.md
@@ -38343,14 +38418,15 @@ evolve_cycles:
   - path: docs/context/sql-ingest-live-e2e.md
     status: completed
   - path: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-    status: pending_signoff
+    status: approved
     stage: 13-deploy-smoke
-    note: EVIDENCE GREEN 2026-08-08; awaiting D-S047-13
+    note: COMPLETE — D-S047-13=1
   - path: docs/evolve-report-EV-039.md
-    status: draft
-    stage: 13-deploy-smoke
-    note: evolve report for EV-039 closeout; pending D-S047-13
+    status: completed
+    stage: 16-evolve
+    note: COMPLETE — D-S047-close=1
   notes:
+  - '2026-08-08 D-S047-13=1 + D-S047-close=1 — CLOSED EV-039/S047; PR #891 @ fea30aba; CD 31130303373; H0c/H1/H4–H5 PASS; tag 20260808004030-3502af2; active_session=null; S047 archived to sessions[]'
   - 2026-08-08 13-deploy-smoke EVIDENCE — H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS; images 20260808004030-3502af2; CD 31130303373 SUCCESS; report PENDING SIGN-OFF; awaiting D-S047-13; NOT completed
   - 2026-08-08 D-S047-resume=2 — RESUMED S047/EV-039; finish 13 properly then close; pr_status corrected to merged (#891 @ fea30aba); post-merge CD 31130303373 SUCCESS; closeout branch docs/EV-039-closeout @ c65726dd; main tip 3502af27; smokes pending; NOT completed
   - "2026-08-06 S047/EV-039 13-deploy-smoke BLOCKED — PR #891 OPEN https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891 @ tip cfe1236b (cfe1236b4c3e8c5594447d44b69e4d20c7e01522); branch evolve/EV-039-sql-ingest-live-e2e pushed; D-S047-12=1 already set; GitHub Actions has not created workflow runs for this PR (check_suites only cursor app); local husky pre-push make ci passed; tip CI missing → hard stop pending user decision; 13 NOT completed; no git commit by workflow-state-manager"
@@ -38385,6 +38461,8 @@ evolve_cycles:
   closeout_branch_tip_full: c65726dd7b744e8ccc98234303679abe5a8d6075
   branch_note: 'product branch merged via #891 @ fea30aba; active closeout work on docs/EV-039-closeout'
   doks_tag: 20260808004030-3502af2
+  close_decision_id: D-S047-close
+  note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
 - id: EV-038
   session_id: S046-iwxxm-corpus-residuals
   cycle_type: general

@@ -2,7 +2,7 @@
 
 - **Cycle**: EV-039
 - **Session**: [S047-sql-ingest-live-e2e](sessions/S047-sql-ingest-live-e2e/session-brief.md)
-- **Status**: 13 evidence green — pending `D-S047-13` / close
+- **Status**: **completed** (`D-S047-13=1` / `D-S047-close=1`)
 - **Scope**: Deepen F16 — local Compose Postgres/MySQL/SQL Server/SQLite; Playwright live
   upload; teardown for integration + e2e + local. No new Fn. UI preview declined.
   [Corpus: product §F16] [Corpus: tests] [Corpus: journeys §UJ-027]
@@ -40,7 +40,7 @@ Session closeout stalled (unpushed docs branch); resumed 2026-08-08 (`D-S047-res
 | 10-e2e | PASS |
 | 11-verify-impl | APPROVED (`D-S047-11=1`; SQL Server waive OK) |
 | 12-verify-deploy | APPROVED (`D-S047-12=1`) |
-| 13-deploy-smoke | Evidence PASS — see [deploy-smoke.md](sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md) |
+| 13-deploy-smoke | **APPROVED** (`D-S047-13=1`) — see [deploy-smoke.md](sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md) |
 
 ## Decisions (deploy / close)
 
@@ -48,5 +48,5 @@ Session closeout stalled (unpushed docs branch); resumed 2026-08-08 (`D-S047-res
 |----|--------|
 | D-S047-13-cli | CLI deploy after local `make ci` while GHA outage (2026-08-06) |
 | D-S047-resume | **2** — resume S047; finish 13 properly then close (2026-08-08) |
-| D-S047-13 | pending user approval |
-| D-S047-close | pending after 13 |
+| D-S047-13 | **1** — approve 13; close S047 / EV-039 (2026-08-08) |
+| D-S047-close | **1** — session + cycle closed (2026-08-08) |
