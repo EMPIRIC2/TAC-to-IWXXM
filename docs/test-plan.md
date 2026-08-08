@@ -78,6 +78,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-023 | F12–F14 | PyPI tag → install smoke | CI | TC-F14-001 |
 | UJ-DEV-005 | F12–F14 | pip install packages | CI | TC-F12-001, TC-F13-001, TC-F14-002 |
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
+| UJ-DEV-006 | F13–F14 | Rust fmt/clippy/`cargo test` + maturin both crates | CI | TC-EV045-001..007 |
 | UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
 | UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
 | UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (+ live local suite EV-039) | H6′ / live local | TC-F16-001..005; TC-F16-LIVE-001..004 |
@@ -556,6 +557,45 @@ Before closing S013 / EV-009:
 - [ ] Hard perf gates at publish (E10-24)
 - [ ] H4–H5 + H6′ UJ-022 after Render redeploy
 - [ ] PyPI install smokes for three packages
+
+### EV-045 / #725 — Rust crate CI (S054; F13/F14 deepen)
+
+CI must gate **both** `packages/tac2iwxxm/rust` and `packages/iwxxm-validate/rust`
+with fmt, clippy, unit tests, and maturin/PyO3 integration smoke. Prefer extending
+`.github/workflows/ci-cd.yml` (matrix) over a separate workflow unless latency requires
+split. Tooling: `dtolnay/rust-toolchain@stable` + components `rustfmt,clippy`;
+Cargo cache (`Swatinem/rust-cache` or equivalent). Local: `make rust-check`.
+[Corpus: product §F13] [Corpus: product §F14] [Corpus: tests] [Corpus: adr/ADR-017]
+
+| ID | Level | Assert |
+|----|-------|--------|
+| TC-EV045-001 | CI | `cargo fmt --check` fails on unformatted Rust in both crate trees |
+| TC-EV045-002 | CI | `cargo clippy -- -D warnings` fails on warnings (documented allowlist only if needed) |
+| TC-EV045-003 | CI | `cargo test` green for `tac2iwxxm` and `iwxxm-validate` Rust crates |
+| TC-EV045-004 | CI | Maturin/PyO3 smoke for **both** packages (`TAC2IWXXM_REQUIRE_RUST` /
+  `IWXXM_VALIDATE_REQUIRE_RUST` or equivalent) |
+| TC-EV045-005 | T0 | `make rust-check` mirrors CI: fmt + clippy + `cargo test` **both** crates **and** both `test-*-native` maturin smokes (D-S054-04-local=2) |
+| TC-EV045-006 | Ops | Required check name(s) **documented**; PRs cannot merge with red Rust CI **once rulesets applied** |
+| TC-EV045-007 | CI | Jobs run on default `ci-cd.yml` PR/push (same as today’s native job; **not** path-filter-only — D-S054-04-trigger=1) |
+
+**Required status check contexts** (must match `ci-cd.yml` job `name:` exactly; applied via
+`scripts/deploy/apply_gh_branch_rulesets.sh` when repo admin is available):
+
+| Context | Role |
+|---------|------|
+| `Rust crates (fmt/clippy/test)` | fmt + clippy + `cargo test` both crates (EV-045) |
+| `tac2iwxxm PyO3 (maturin)` | existing maturin smoke |
+| `iwxxm-validate PyO3 (maturin)` | EV-045 maturin smoke (new) |
+
+Also retained from F30 script: `Test (backend)`, `Test (frontend)`, `Alembic migrations`;
+`main` adds `Staging gate`.
+
+**AC6 ops waiver (D-S054-ac6-waive=2 / EV-045):** docs + script updated this cycle; live
+GitHub rulesets/required-check wiring deferred until an admin runs the apply script
+(token `admin=false`; rulesets currently empty — same class as EV-043). Cycle close may
+treat TC-EV045-006 as **docs/script met; ops deferred**. [Corpus: tests] [Corpus: decisions]
+
+**UJ mapping**: UJ-DEV-006 (new); deepen UJ-DEV-004.
 
 ### EV-028 / #781 — EMPIRIC2 Codecov purge + PyPI Trusted Publisher (S035)
 
@@ -1677,31 +1717,35 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   4. Missing `KUBE_CONFIG` fails Deploy; missing Render hooks do **not** fail Deploy
 - **Source**: F30 AC7; S042 / EV-034; `E34-1..4`
 
-### TC-F30-008: Staging namespace + isolated secrets (EV-043)
+### TC-F30-008: Staging cluster + isolated secrets (EV-043 / EV-044)
 
 - **Level**: Ops / T0
-- **Objective**: DOKS namespace `metar-iwxxm-staging` exists with API/FE/worker; secrets and
-  `DATABASE_URL` point at staging DB (`metar_iwxxm_staging`), not prod `defaultdb`
-- **Pass criteria**: `kubectl -n metar-iwxxm-staging get deploy` shows three workloads;
-  staging `DATABASE_URL` database name ≠ prod
-- **Source**: F30 AC8; S052 / EV-043; #886
+- **Objective**: Staging DOKS cluster `metar-iwxxm-staging` (DO Project **Staging TAC-to-IWXXM**)
+  has ns `metar-iwxxm-staging` with API/FE/worker; secrets and `DATABASE_URL` point at
+  dedicated staging Postgres `metar-iwxxm-staging`, not prod `metar-iwxxm` / `defaultdb`.
+  Prod cluster remains on DO Project **TAC-to-IWXXM**.
+- **Pass criteria**: `doctl projects resources list` shows staging cluster+DB under Staging
+  project and prod under TAC-to-IWXXM; `kubectl --context staging -n metar-iwxxm-staging get deploy`
+  shows workloads; staging `DATABASE_URL` host/db ≠ prod
+- **Source**: F30 AC8; S052 / EV-043; S053 / EV-044; #886
 
 ### TC-F30-009: Staging DNS + TLS
 
 - **Level**: Ops / T3
 - **Objective**: `https://api.staging.tac-to-iwxxm.com` and `https://app.staging.tac-to-iwxxm.com`
-  resolve to DOKS LB and serve valid TLS
-- **Pass criteria**: DNS A/AAAA → `168.144.12.70`; `/health` 200 on API; FE returns 200;
-  cert-manager Certificate Ready (or equivalent Ingress TLS secret)
-- **Source**: F30 AC9; D-S052-dns
+  resolve to the **staging** DOKS LB and serve valid TLS
+- **Pass criteria**: DNS A/AAAA → staging LB EXTERNAL-IP (not necessarily prod `168.144.12.70`);
+  `/health` 200 on API; FE returns 200; cert-manager Certificate Ready
+- **Source**: F30 AC9; D-S052-dns; D-S053-dns
 
 ### TC-F30-010: Dual-branch auto CD
 
 - **Level**: Ops / CI
-- **Objective**: Push/merge to `stage` deploys staging; push/merge to `main` deploys prod
+- **Objective**: Push/merge to `stage` deploys **staging cluster**; push/merge to `main`
+  deploys **prod cluster**
 - **Pass criteria**: Deploy jobs bound to GH Environments `staging` / `production`;
-  `DOKS_NAMESPACE` correct per branch; image tags rolled
-- **Source**: F30 AC10; #886
+  env-scoped kubeconfig + `DOKS_NAMESPACE` correct per branch; image tags rolled
+- **Source**: F30 AC10; #886; EV-044
 
 ### TC-F30-011: Branch protection on stage and main
 
@@ -1719,7 +1763,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   succeeded for the SHA; documented in deploy.md
 - **Source**: F30 AC12; D-S052-promote
 
-### Live harness — staging (EV-043)
+### TC-F30-013: Shared-cluster staging ns teardown (EV-044)
+
+- **Level**: Ops / T0
+- **Objective**: After staging cluster cutover, prod cluster no longer hosts
+  `metar-iwxxm-staging` workloads (EV-043 leftover removed)
+- **Pass criteria**: `kubectl --context prod get ns metar-iwxxm-staging` is NotFound (or
+  empty/terminating with no Deployments); staging smoke uses staging cluster context only
+- **Source**: F30 AC13; D-S053-teardown
+
+### Live harness — staging (EV-043 / EV-044)
 
 | Env | API | Frontend |
 |-----|-----|----------|
@@ -2592,8 +2645,8 @@ locally (pre-commit). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 |---------|----------|------|--------|
 | Local commit | husky → pre-commit | fast + medium | existing fast hooks + `validate-ci` medium extras (de-duped) |
 | Local push | husky pre-push | long | `make ci` = `ci-prepush` + Compose **integration** (ports 18000/18001; wis2box harness via local target) |
-| PR / push `main`, `dev` | `ci-cd.yml` | **remote** | **no** validate job, **no** Compose integration; **keep** unit matrix + coverage + PR coverage comment; keep `tac2iwxxm-native`, `e2e-smoke`, `test-alembic` |
-| push `main` only | `ci-cd.yml` | **deploy** | needs `test` + alembic + native (+ e2e if required); GHCR + **DOKS**; Render optional |
+| PR / push `main`, `dev` | `ci-cd.yml` | **remote** | **no** validate job, **no** Compose integration; **keep** unit matrix + coverage + PR coverage comment; keep `tac2iwxxm-native`, **Rust crate checks** (EV-045: fmt/clippy/`cargo test` + `iwxxm-validate` maturin smoke), `e2e-smoke`, `test-alembic` |
+| push `main` / `stage` | `ci-cd.yml` | **deploy** | needs `test` + alembic + native + **Rust crate checks** (+ e2e if required); GHCR + **DOKS**; Render optional |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
 | Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 / EV-036 scope |
 

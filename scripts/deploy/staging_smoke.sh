@@ -6,7 +6,8 @@ set -euo pipefail
 API_URL="${LIVE_API_URL:-https://api.staging.tac-to-iwxxm.com}"
 FE_URL="${LIVE_FRONTEND_URL:-https://app.staging.tac-to-iwxxm.com}"
 
-LB_IP="${DOKS_LB_IP:-168.144.12.70}"
+# EV-044: staging cluster LB (not prod 168.144.12.70). Override via STAGING_LB_IP / DOKS_LB_IP.
+LB_IP="${STAGING_LB_IP:-${DOKS_LB_IP:-143.244.202.13}}"
 API_HOST="${API_URL#https://}"
 API_HOST="${API_HOST#http://}"
 API_HOST="${API_HOST%%/*}"

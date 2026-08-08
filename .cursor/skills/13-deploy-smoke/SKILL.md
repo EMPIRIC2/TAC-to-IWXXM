@@ -32,10 +32,11 @@ Inherit `env_role` from 12 (or re-resolve). If `staging_as_live` / sole stack:
 - Do not describe the cutover as “staging-only” when no distinct prod stack exists.
 - Prefer labeling results as **live** even when hostnames still contain `staging`.
 
-**TAC-to-IWXXM (ADR-034):** When staging exists, smoke **staging** at
-`api|app.staging.tac-to-iwxxm.com` (or CI **Staging smoke**) before promoting via PR
-`stage`→`main`; then smoke **prod** at `api|app.tac-to-iwxxm.com`. Never call staging URLs
-production.
+**TAC-to-IWXXM (ADR-034 / EV-044):** Smoke **staging cluster** at
+`api|app.staging.tac-to-iwxxm.com` (or CI **Staging smoke**, Host-header via
+`STAGING_LB_IP=143.244.202.13` until DNS/TLS Ready) before promoting via PR
+`stage`→`main` only; then smoke **prod** at `api|app.tac-to-iwxxm.com`. Never call
+staging URLs production; never promote while Staging smoke/gate is red.
 
 ## CI/CD tip gate
 

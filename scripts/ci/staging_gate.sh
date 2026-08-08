@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Fail PRs to main unless head is stage and tip has a green Staging smoke run.
-# Traces: F30 AC12 / TC-F30-012 / ADR-034 / #886
+# Traces: F30 AC12 / TC-F30-012 / ADR-034 / #886 / EV-044 (staging LB Host-header)
 set -euo pipefail
 
 REPO="${GITHUB_REPOSITORY:?}"
@@ -83,7 +83,8 @@ PY
 done
 
 API_URL="${STAGING_API_URL:-https://api.staging.tac-to-iwxxm.com}"
-LB_IP="${DOKS_LB_IP:-168.144.12.70}"
+# EV-044: staging cluster LB (not prod 168.144.12.70). Override via STAGING_LB_IP / DOKS_LB_IP.
+LB_IP="${STAGING_LB_IP:-${DOKS_LB_IP:-143.244.202.13}}"
 code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 "${API_URL}/health" || echo 000)"
 if [[ "${code}" != "200" ]]; then
   code="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 \

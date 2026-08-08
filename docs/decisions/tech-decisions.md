@@ -1,7 +1,20 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-07-22 (S020 / EV-015 04-tech-plan)
+> Last updated: 2026-08-08 (S054 / EV-045)
+
+## S054 / EV-045 05-verify-tech (2026-08-08)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| D-S054-04-plan | 2026-08-08 | Plan | Approve execution-plan + Build Plan Card → 05 | confirmed |
+| S2.1 | 2026-08-08 | AC7 / TC-EV045-007 | Always-on default CI (not path-filter-only) | synced |
+| S2.2 | 2026-08-08 | TC-EV045-005 | `make rust-check` includes both maturin smokes | synced |
+| S3.1 | 2026-08-08 | T1.7 deps | Depends on T1.2–T1.6 | synced |
+| S3.2 | 2026-08-08 | F13 AC5 | Docs merge-block; ops rulesets waived | synced |
+| D-S054-gateB | 2026-08-08 | Gate B | PASS → 07-build (06 skipped) | confirmed |
+
+Session report: `docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md`.
 
 ## S020 / EV-015 04-tech-plan (2026-07-22)
 
