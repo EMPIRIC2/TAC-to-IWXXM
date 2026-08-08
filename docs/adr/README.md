@@ -36,7 +36,8 @@
 | [ADR-030](ADR-030-dissemination-package-architecture.md) | `packages/dissemination` + sink/API/wis2box/EDIS architecture (F16–F19) | Accepted |
 | [ADR-031](ADR-031-public-app-indexeddb-history.md) | Public unauthenticated app + IndexedDB local history (F21/F22) | **Partially superseded by ADR-033** |
 | [ADR-032](ADR-032-wmo-default-golden-glossary.md) | WMO default golden parity + extensible decode glossary | Accepted |
-| [ADR-033](ADR-033-platform-independence-auth-do-doks.md) | Platform independence — Auth-only Supabase, DO Postgres, DOKS (F30/F31) | **Proposed** |
+| [ADR-033](ADR-033-platform-independence-auth-do-doks.md) | Platform independence — Auth-only Supabase, DO Postgres, DOKS (F30/F31) | **Accepted** (amended by ADR-034) |
+| [ADR-034](ADR-034-doks-staging-promote-from-stage.md) | DOKS staging + promote-from-stage CD (F30 deepen / #886) | **Accepted** |
 
 ## Process
 

@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: metar-iwxxm
+resources:
+  - ../../base
+patches:
+  - path: patch-ingress-api.yaml
+  - path: patch-ingress-frontend.yaml
+  - path: patch-configmap-api.yaml
+  - path: patch-configmap-frontend.yaml
+labels:
+  - pairs:
+      app.kubernetes.io/environment: production
+    includeSelectors: false

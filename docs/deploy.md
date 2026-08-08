@@ -2,9 +2,9 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
-> **Last updated**: 2026-08-03 (S038 / EV-031 — T6.5 Render decommission)
+> **Last updated**: 2026-08-08 (S052 / EV-043 — dual-env staging + prod / #886)
 
-## Topology (F30 target — DOKS)
+## Topology (F30 — DOKS dual env)
 
 | Workload | Type | Source | Notes |
 |----------|------|--------|-------|
@@ -12,9 +12,16 @@
 | metar-frontend | Static / CDN or nginx | `apps/frontend` Vite build | `/config.json` inject |
 | metar-worker | Deployment (Background) | `apps/worker` image | No public HTTP; `DATABASE_URL` |
 
-**IaC (T6.1 / #712):** Kustomize base at [`deploy/doks/`](../deploy/doks/) —
-`kubectl apply -k deploy/doks/base`. Secrets stubbed as `REPLACE_ME_*` (create
-out-of-band). Placeholder Ingress hosts until **T6.3**.
+| `env_role` | Branch | Namespace | Hosts |
+|------------|--------|-----------|-------|
+| staging | `stage` | `metar-iwxxm-staging` | `https://api.staging.tac-to-iwxxm.com`, `https://app.staging.tac-to-iwxxm.com` |
+| prod | `main` | `metar-iwxxm` | `https://api.tac-to-iwxxm.com`, `https://app.tac-to-iwxxm.com` |
+
+**IaC (T6.1 / #712 / EV-043):** Kustomize overlays at
+[`deploy/doks/overlays/{staging,prod}`](../deploy/doks/) —
+`kubectl apply -k deploy/doks/overlays/staging` (or `prod`). Secrets create out-of-band.
+Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md). Promote path:
+[ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md).
 
 **Release migrate (T6.2):** API Deployment **initContainer** runs idempotent
 `alembic upgrade head` (same as `make db-migrate` / CI). Optional Job:
@@ -23,16 +30,16 @@ out-of-band). Placeholder Ingress hosts until **T6.3**.
 **Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
 **Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
 
-### DOKS public hostnames (T6.3 — prod DNS)
+### DOKS public hostnames (T6.3 + EV-043 staging)
 
-Canonical in `config/prod.json` and live harness (T6.5):
-
-| Role | URL |
-|------|-----|
-| API | `https://api.tac-to-iwxxm.com` |
-| Frontend | `https://app.tac-to-iwxxm.com` |
-| Worker | (no public URL — in-cluster only) |
-| LB | `168.144.12.70` (legacy Host-header smoke only) |
+| Role | Prod | Staging |
+|------|------|---------|
+| API | `https://api.tac-to-iwxxm.com` | `https://api.staging.tac-to-iwxxm.com` |
+| Frontend | `https://app.tac-to-iwxxm.com` | `https://app.staging.tac-to-iwxxm.com` |
+| Worker | (in-cluster) | (in-cluster) |
+| LB | `168.144.12.70` | same LB (Host-based routing) |
+| Config profile | `config/prod.json` | `config/staging.json` |
+| Product DB | DO Postgres `defaultdb` | DO Postgres `metar_iwxxm_staging` |
 
 Soak checklist (closed early under `D-S038-t65-waive`):
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).
@@ -50,25 +57,32 @@ Render archive: [ops/render-decommission-archive.md](ops/render-decommission-arc
 `--skip-if-suspended` / `RENDER_SKIP_IF_SUSPENDED` so main CI Deploy skips suspended Render
 services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the prod target.
 
-### CD — DOKS image rollout (S042 / EV-034 / F30 deepen)
+### CD — DOKS image rollout (S042 / EV-034 / EV-043 dual env)
 
-On push to `main`, the **Deploy** job in `.github/workflows/ci-cd.yml`:
+| Branch | GH Environment | Namespace | Latest tag | Post-deploy |
+|--------|----------------|-----------|------------|-------------|
+| `stage` | `staging` | `metar-iwxxm-staging` | `stage-latest` | **Staging smoke** job |
+| `main` | `production` | `metar-iwxxm` | `main-latest` | (prod smoke via 13 / Makefile) |
 
-1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `main-latest`.
-2. **Rolls DOKS** (required): `scripts/deploy/doks_rollout_images.sh <tag>` sets
-   `metar-api` / `metar-frontend` / `metar-worker` in namespace `metar-iwxxm` to
-   `ghcr.io/empiric2/tac-to-iwxxm/{backend,frontend,worker}:<tag>` and waits for
-   `kubectl rollout status`.
-3. **Render hooks** (optional): if present, may fire with `--skip-if-suspended`; missing
-   or suspended Render must **not** fail Deploy (`E34-4`).
+On push to `stage` or `main`, **Deploy** in `.github/workflows/ci-cd.yml`:
+
+1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `{stage\|main}-latest`.
+2. **Rolls DOKS** with `DOKS_NAMESPACE` set per branch via
+   `scripts/deploy/doks_rollout_images.sh <tag>`.
+3. **Render hooks** (optional, **main only**): `--skip-if-suspended` (`E34-4`).
+
+**Promote:** Feature → PR → `stage` → Staging smoke → PR **`stage`→`main`** (job
+**Staging gate** / `scripts/ci/staging_gate.sh`) → prod Deploy. Solo-dev: PR is the
+manual gate (no Environment reviewers). See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md).
 
 | Actions secret | Required | Description |
 |----------------|----------|-------------|
-| `KUBE_CONFIG` | **Yes** (main Deploy) | Base64-encoded kubeconfig with rights to mutate Deployments in `metar-iwxxm`. Must use a **static** credential (ServiceAccount token or client cert) — **not** a DigitalOcean `doctl` exec plugin (runners do not have `doctl`). Missing ⇒ Deploy fails (fail-closed). |
+| `KUBE_CONFIG` | **Yes** (Deploy) | Base64 kubeconfig that can mutate Deployments in **both** `metar-iwxxm` and `metar-iwxxm-staging` (ClusterRole `github-actions-deploy`). Static SA/token — not `doctl` exec. Missing ⇒ Deploy fails (fail-closed). |
 
 Encode: `base64 -w0 <kubeconfig.yaml>` (macOS: `base64 -i kubeconfig.yaml | tr -d '\n'`).
 
-Recommended: SA `github-actions-deploy` in `metar-iwxxm` with Role patch/get/list/watch on Deployments (+ get/list/watch Pods for rollout status).
+Branch protection / Environments (admin): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
++ [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 
 **F21 Amended / F31**: Optional Auth restored via `packages/auth`. Convert remains public.
 F8 worker runs on DOKS.

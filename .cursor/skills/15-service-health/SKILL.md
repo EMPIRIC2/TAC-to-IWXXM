@@ -8,7 +8,11 @@ description: >
   bugs. Use for production health, ambiguous API/DB errors, periodic ops, post-deploy verification,
   or confirming main CI passes after merge/hotfix.
 ---
-
+<!--
+Personal skill (project-agnostic). Paths like docs/ and workflow-state.yaml refer to the
+*active workspace project*, not this skills directory. Fill {{PLACEHOLDER}} tokens from
+the project's docs/CORPUS.md, feature-list, and deploy docs.
+-->
 # 15 — Service Health
 
 Investigate the **live** deployment: correct version, database ready, API paths working,
@@ -20,7 +24,7 @@ and alignment with `docs/deploy.md` §Integration — without assuming a hotfix 
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md)
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [deployment-catalog.md](../deployment-catalog.md), [connectivity-gates.md](../connectivity-gates.md).
-**State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md)
+**State agent:** project `.cursor/agents/workflow-state-manager.md` if present; else edit `workflow-state.yaml` per [workflow-state-reference.md](../workflow-state-reference.md)
 
 ## Connectivity (stage 15)
 
@@ -60,6 +64,24 @@ Per-run reports under `docs/service-health-reports/` (ephemeral).
 | **Behavior** | Do primary API flows work end-to-end? | Approved smokes return expected status/body |
 
 Record **Infra overall**, **E2E overall**, and **Overall** separately in the report.
+
+## Health ≠ primary-journey-ready
+
+Liveness/`/health` and dependency probes can be green while the **primary user journey** fails
+(hang, timeout, wrong runtime).
+
+- If H3 is in scope: **H3 fail or hang ⇒ Overall FAIL** (and Behavior FAIL) even when H1 is PASS.
+- Do not report Overall PASS on infra-only evidence when the requested depth includes H3.
+- On H3 P0 during an active evolve cycle: recommend pause **16-evolve** → **14-hotfix**.
+
+## Single-env / live role
+
+If only one deployed stack exists (`env_role: staging_as_live`), label checks and reports as
+**live/prod** — do not imply a safer non-prod target.
+
+**TAC-to-IWXXM (ADR-034):** Dual DOKS — use `env_role: staging` vs `prod` and the matching
+hosts (`*.staging.tac-to-iwxxm.com` vs `api|app.tac-to-iwxxm.com`). Do not use sole-stack
+language when `metar-iwxxm-staging` is provisioned.
 
 ## Health tiers (default recommendations)
 

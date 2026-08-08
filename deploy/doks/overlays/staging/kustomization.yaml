@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: metar-iwxxm-staging
+resources:
+  - ../../base
+patches:
+  - target:
+      kind: Namespace
+      name: metar-iwxxm
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: metar-iwxxm-staging
+      - op: replace
+        path: /metadata/labels/app.kubernetes.io~1name
+        value: metar-iwxxm-staging
+  - path: patch-ingress-api.yaml
+  - path: patch-ingress-frontend.yaml
+  - path: patch-configmap-api.yaml
+  - path: patch-configmap-frontend.yaml
+  - path: patch-resources.yaml
+labels:
+  - pairs:
+      app.kubernetes.io/environment: staging
+    includeSelectors: false

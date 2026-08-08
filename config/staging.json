@@ -1,0 +1,28 @@
+{
+  "environment": "staging",
+  "api": {
+    "baseUrl": "https://api.staging.tac-to-iwxxm.com",
+    "corsOrigins": [
+      "https://app.staging.tac-to-iwxxm.com",
+      "http://app.staging.tac-to-iwxxm.com",
+      "http://168.144.12.70"
+    ],
+    "frontendUrl": "https://app.staging.tac-to-iwxxm.com"
+  },
+  "supabase": {
+    "url": "https://ktvxijislbtgqapllmuk.supabase.co"
+  },
+  "validation": {
+    "wmoOnline": true,
+    "wmoTimeoutSeconds": 5,
+    "schematronUseDocker": false
+  },
+  "observability": {
+    "logLevel": "INFO",
+    "enableStatistics": true
+  },
+  "liveE2e": {
+    "apiUrl": "https://api.staging.tac-to-iwxxm.com",
+    "frontendUrl": "https://app.staging.tac-to-iwxxm.com"
+  }
+}
