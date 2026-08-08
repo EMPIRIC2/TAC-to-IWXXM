@@ -47,10 +47,17 @@ Deleted ns `metar-iwxxm-staging` from **prod** cluster `do-nyc1-metar-iwxxm`.
 Post-check: prod `/health` 200; new staging Host-header 200; old LB
 `168.144.12.70` + staging Host → 503 (expected).
 
+## GitHub (T3.1 — 2026-08-08)
+
+Via `gh secret set KUBE_CONFIG`:
+- Environment **staging** → staging cluster SA token kubeconfig (static, no doctl)
+- Environment **production** → prod cluster SA token kubeconfig
+- Repo-level `KUBE_CONFIG` refreshed to prod (fallback)
+
 ## Remaining (T3.*)
 
 - [ ] Porkbun A: `api.staging` / `app.staging` → `143.244.202.13`
-- [ ] Set GH Environment `staging` `KUBE_CONFIG` to staging cluster (prod Env keeps prod)
+- [x] GH Env `KUBE_CONFIG` dual-cluster
 - [x] Tear down prod-cluster ns `metar-iwxxm-staging`
 - [x] Workflow parity: `stage` branch triggers
 
