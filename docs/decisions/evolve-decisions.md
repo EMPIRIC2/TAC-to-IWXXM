@@ -3,6 +3,40 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-047 — M0 stabilize + operator trust (#833/#834/#956/#957) (S056)
+
+**Session**: S056-m0-stabilize-operator-trust  
+**Features**: deepen **M5 / F6 / F7** (no new Fn)  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-047-m0-stabilize-operator-trust` (base `stage@adcf3b1f`)  
+**Status**: in_progress — Phase 0–1  
+**Issues**: [#833](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/833),
+[#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834),
+[#956](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/956),
+[#957](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/957)  
+**Corpus**: [Corpus: product §M5], [Corpus: product §F6], [Corpus: product §F7],
+[Corpus: tests], [Corpus: tech-spec], [Corpus: decisions] · ops
+`docs/ops/DEVELOPMENT.md`
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S056-open | **1** — Open S056 → EV-047 for #833+#834+#956+#957 |
+| D-S056-bundle | **1** — One cycle, all four issues |
+| D-S056-husky | **1** — Husky day-to-day = lint + fast units; heavier gates CI / opt-in `make` (**explicit reverse** of EV-036/S044 local-heavy developer path) |
+| D-S056-preset | **1** — Standard (`00→16→01→02→04→05→07→08→09→11`); waive 12/13 (and 10) unless help-link needs E2E/deploy |
+
+### Open (Phase 0 remaining)
+
+| Topic | Status |
+|-------|--------|
+| #833 hook shape A vs B | Recommend after inventory in 01 |
+| #834 metric / baseline / delta / product scope / runner policy | AskQuestion batch |
+| #956/#957 doc paths + help-link vs README-only | AskQuestion batch |
+
+---
+
 ## Cycle EV-046 — codes.wmo.int aviation registers → TAC present/cite/cover (S055)
 
 **Session**: S055-wmo-aviation-registers  

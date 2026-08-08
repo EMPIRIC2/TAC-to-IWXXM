@@ -3,9 +3,122 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 55
-evolve_cycle_counter: 46
-active_session: null
+session_counter: 56
+evolve_cycle_counter: 47
+active_session:
+  id: S056-m0-stabilize-operator-trust
+  type: feature
+  intent: "M0 slice: slim husky (#833) + converter perf harness (#834) + operator one-pager (#956) + minimal handbook (#957)"
+  status: in_progress
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-047-m0-stabilize-operator-trust
+  branch_base: stage@adcf3b1f
+  branch_status: active
+  branch_exists: true
+  tip_sha: adcf3b1f
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-047
+  artifacts_dir: docs/sessions/S056-m0-stabilize-operator-trust/
+  prior_session: S055-wmo-aviation-registers
+  github_issues:
+  - 833
+  - 834
+  - 956
+  - 957
+  issue_ids:
+  - 833
+  - 834
+  - 956
+  - 957
+  milestone: "M0 — Stabilize + operator trust + narrative"
+  feature_ids: []
+  deepen_feature_ids:
+  - M5
+  - F6
+  - F7
+  feature_note: "Deepen M5 (husky reverse EV-036) + F6 (converter perf PR gate) + F7 help/docs for #956/#957; no new product Fn"
+  preset: Standard
+  ui_preview: N/A unless help-link UI
+  current_stage: 16-evolve
+  current_stage_note: "Phase 0–1 intake; D-S056-open/bundle/husky/preset=1 locked"
+  decisions:
+    D-S056-open: "1 — open S056/EV-047 all four issues"
+    D-S056-bundle: "1 — one cycle all four"
+    D-S056-husky: "1 — husky lint+fast units; reverse EV-036 day-to-day path"
+    D-S056-preset: "1 — Standard; waive 12/13 unless help-link deploy"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: COMPLETE — D-S056-open=1; handoff 16-evolve
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-08-08'
+    note: "Phase 0–1 — scope locked; remaining intake #834/#956/#957"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 03-plan-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: Standard skip unless new Cursor rules
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: pending
+  - stage: 06-tech-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: no new runtime deps expected
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: false
+    mode: skip
+    status: skipped
+    note: waive unless help-link UI ships
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+  - stage: 12-verify-deploy
+    required: false
+    mode: skip
+    status: skipped
+    note: waived D-S056-preset=1 unless help-link deploy
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skip
+    status: skipped
+    note: waived D-S056-preset=1 unless help-link deploy
+  note: "Opened from 16-evolve after D-S056-open=1,1,1,1"
 sessions:
 - id: S055-wmo-aviation-registers
   type: feature
@@ -32329,6 +32442,42 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-047
+  session_id: S056-m0-stabilize-operator-trust
+  status: in_progress
+  cycle_type: feature
+  preset: Standard
+  feature_ids: []
+  deepen_feature_ids:
+  - M5
+  - F6
+  - F7
+  feature_note: "Deepen M5 + F6 + F7 docs/help; no new Fn"
+  title: "M0 stabilize + operator trust (husky, perf harness, operator docs)"
+  slug: m0-stabilize-operator-trust
+  github_issues:
+  - 833
+  - 834
+  - 956
+  - 957
+  milestone: "M0 — Stabilize + operator trust + narrative"
+  phase: 0
+  current_stage: 16-evolve
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-047-m0-stabilize-operator-trust
+  interrupted_by_hotfix: false
+  parked: false
+  scope_note: "Husky=lint+fast units (explicit reverse EV-036 day-to-day); #834 converter hard PR gate; #956 one-pager + #957 handbook"
+  decisions_locked:
+  - D-S056-open=1
+  - D-S056-bundle=1
+  - D-S056-husky=1
+  - D-S056-preset=1
+  artifacts:
+  - docs/sessions/S056-m0-stabilize-operator-trust/session-brief.md
+  - docs/sessions/S056-m0-stabilize-operator-trust/routing-plan.md
+  - docs/sessions/S056-m0-stabilize-operator-trust/evolve-plan-card.md
 - id: EV-046
   session_id: S055-wmo-aviation-registers
   status: completed
@@ -43085,6 +43234,14 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-047-m0-stabilize-operator-trust
+    base: stage
+    base_sha: adcf3b1f
+    status: active
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
+    created: '2026-08-08'
+    note: "S056/EV-047 M0 husky+perf+operator docs"
   - name: evolve/EV-046-wmo-aviation-registers
     status: active
     base: main@d0a51f5a
