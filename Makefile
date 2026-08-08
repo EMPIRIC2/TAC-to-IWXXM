@@ -19,6 +19,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-backend test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
+	build-tac2iwxxm-native build-iwxxm-validate-native \
+	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
 	db-migrate test-alembic \
 	verify-supabase-to-do-migrate migrate-supabase-to-do \
 	test-sigmet-quality \
@@ -254,6 +256,16 @@ test-iwxxm-validate-native: build-iwxxm-validate-native
 	IWXXM_VALIDATE_REQUIRE_RUST=1 $(UV) run pytest \
 		packages/iwxxm-validate/tests/test_native_scaffold.py \
 		packages/iwxxm-validate/tests/test_tc_f13_001_parity.py -v --no-cov
+
+# EV-045 / TC-EV045-005 — local mirror of CI: fmt + clippy + cargo test both crates + maturin smokes.
+# PYO3_PYTHON pins uv's interpreter so host 3.14+ does not break PyO3 build scripts.
+rust-check:
+	@PYO3_PYTHON="$$($(UV) run python -c 'import sys; print(sys.executable)')"; \
+	export PYO3_PYTHON; \
+	(cd packages/tac2iwxxm/rust && cargo fmt --check && cargo clippy -- -D warnings && cargo test) && \
+	(cd packages/iwxxm-validate/rust && cargo fmt --check && cargo clippy -- -D warnings && cargo test)
+	$(MAKE) test-tac2iwxxm-native
+	$(MAKE) test-iwxxm-validate-native
 
 # M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
 bench-validation-stack:
