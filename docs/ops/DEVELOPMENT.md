@@ -217,8 +217,8 @@ Primary workflow: `.github/workflows/ci-cd.yml` (**EV-036** local-first amend).
 |------|-------|------|
 | Fast + medium | husky **pre-commit** | Fast pre-commit hooks + `make validate-ci-medium` (config-guard, env-check, audit-frontend). Strict lint/format stay here. |
 | Long local | husky **pre-push** | `make ci` = `ci-prepush` + Compose **integration** (ports **18000/18001**). Needs Docker. |
-| Remote PR/push | GitHub Actions | **No** `validate` job; **no** Compose integration. **Keeps** package **unit matrix** + coverage + sticky **PR coverage comment**. Also `tac2iwxxm-native`, `e2e-smoke`, `test-alembic`. |
-| Deploy | `main` push only | needs `test` + `test-alembic` + `tac2iwxxm-native`; GHCR + DOKS; Render optional |
+| Remote PR/push | GitHub Actions | **No** `validate` job; **no** Compose integration. **Keeps** package **unit matrix** + coverage + sticky **PR coverage comment**. Also `rust-crates` / `Rust crates (fmt/clippy/test)` gate, `tac2iwxxm-native` maturin matrix (both packages), `e2e-smoke`, `test-alembic` (EV-045). |
+| Deploy | `main`/`stage` push | needs `test` + `test-alembic` + `rust-crates-gate` + `tac2iwxxm-native`; GHCR + DOKS; Render optional |
 
 Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgURL`, with REST
 `imageUrl` fallback when `RENDER_API_KEY` is set — BUG-2026-08-03).
@@ -227,7 +227,9 @@ Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgUR
 |-----|--------|
 | **test** (matrix) | Package unit tests with coverage (`--cov-fail-under` / Vitest) |
 | **coverage-pr-comment** | Sticky PR comment from coverage XML / Vitest summary (PRs only) |
-| **tac2iwxxm-native** | PyO3 / maturin smoke |
+| **rust-crates** / **rust-crates-gate** | fmt + clippy `-D warnings` + `cargo test` both crates; gate name `Rust crates (fmt/clippy/test)` |
+| **tac2iwxxm-native** | PyO3 / maturin matrix (`tac2iwxxm` + `iwxxm-validate` display names) |
+| **make rust-check** | Local mirror of rust crates + both native smokes |
 | **e2e-smoke** | Playwright smoke |
 | **test-alembic** | Alembic upgrade head (TC-EV031-002) |
 | **deploy** | Docker build/push + DOKS/Render (`main` push only; skipped if CD credentials incomplete) |

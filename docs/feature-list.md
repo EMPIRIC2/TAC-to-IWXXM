@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-07 (S050 / EV-042 — F33 mass ingest + F7/F16 deepen; prior S047 / EV-039)
+> **Last updated**: 2026-08-08 (S054 / EV-045 — F13/F14 Rust CI deepen #725; prior S050 / EV-042)
 
 ## Summary
 
@@ -20,8 +20,8 @@
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance |
-| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699 |
-| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693 |
+| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725) |
+| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S043 / EV-035 ISSUE_CATALOG↔source; **deepen** S048 / EV-040 catalog source attribution in API/FE + RVR/AHL FP fixes |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; **S050 / EV-042** operator UI hidden with F16–F19 (restore #898) |
@@ -478,7 +478,7 @@
 ### F13: Fast IWXXM Validate (Rust Core + Schematron + PyPI)
 
 - **Status**: **Implemented** — S014 / EV-010 (#699); EMPIRIC2 OIDC + consumer landing
-  pages EV-028 / #781 (`0.1.1`).
+  pages EV-028 / #781 (`0.1.1`); **deepen** S054 / EV-045 ([#725](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725)).
 - **What it does**: Publish **`iwxxm-validate`** with Rust core (PyO3/maturin):
   well-formed + XSD + **native Rust Schematron/SVRL**; Python SDK
   `validate_iwxxm(...)`; pinned `vendor/schemas/*` **bundled** in the wheel; version/profile
@@ -491,12 +491,23 @@
   3. Parity tests vs golden IWXXM corpus; IWXXM-US profile supported when pin present
   4. Tag `iwxxm-validate-v*` → trusted publishing; no TAC parsing in package
   5. PyPI landing usable without internal ADR/Feature IDs
-- **Source**: #699; E10-6/7/19/22; ADR-017; #781
+- **S054 / EV-045 deepen (Rust CI — #725)**: PR/default CI must gate
+  `packages/iwxxm-validate/rust` with `cargo fmt --check`, `cargo clippy -- -D warnings`,
+  `cargo test`, plus maturin/PyO3 smoke (parity with `tac2iwxxm` native job). Local
+  `make rust-check` mirrors CI. See TC-EV045-*.
+- **Acceptance (EV-045 deepen)**:
+  1. CI fails on unformatted Rust under `packages/iwxxm-validate/rust`
+  2. CI fails on clippy warnings (`-D warnings`) unless documented allowlist
+  3. `cargo test` green for the crate on PR/push default CI
+  4. Maturin/PyO3 integration smoke required for `iwxxm-validate` (not only `tac2iwxxm`)
+  5. Required check name(s) documented so red Rust CI blocks merge (**ops** ruleset
+     apply may be deferred — D-S054-ac6-waive=2)
+- **Source**: #699; E10-6/7/19/22; ADR-017; #781; #725
 
 ### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI
 
 - **Status**: **Implemented** — S014 / EV-010 (#693); EMPIRIC2 OIDC + consumer landing
-  pages EV-028 / #781 (`0.1.1`).
+  pages EV-028 / #781 (`0.1.1`); **deepen** S054 / EV-045 ([#725](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725)).
 - **What it does**: Publish **`tac2iwxxm`** to PyPI (conversion library + optional
   PyO3). Extra **`tac2iwxxm[validate]`** depends on `tac-validate` + `iwxxm-validate`.
   Shared GitHub Actions **OIDC trusted publishing** — one workflow matrix on version
@@ -507,7 +518,16 @@
   2. `pip install tac2iwxxm[validate]` pulls both validators
   3. Tag-driven publish CI green; README install/usage (consumer-facing, no ADR/Fn required)
   4. UJ-DEV-005 / UJ-023 smokes pass
-- **Source**: #693; E10-5/19/20/25; #781
+- **S054 / EV-045 deepen (Rust CI — #725)**: Same Rust lint/typecheck/unit/integration
+  gates for `packages/tac2iwxxm/rust` as F13; extend beyond maturin-only
+  `tac2iwxxm-native` smoke. Deploy `needs` must include the new Rust check job(s).
+- **Acceptance (EV-045 deepen)**:
+  1. CI fails on unformatted Rust under `packages/tac2iwxxm/rust`
+  2. CI fails on clippy warnings (`-D warnings`) unless documented allowlist
+  3. `cargo test` green for the crate on PR/push default CI
+  4. Existing maturin smoke retained; crate-local `cargo test` is also required
+  5. `make rust-check` documents local parity for both crates
+- **Source**: #693; E10-5/19/20/25; #781; #725
 
 ### F15: Maintainable TAC Lint Issue Registry + METAR/SPECI Quality Bar
 

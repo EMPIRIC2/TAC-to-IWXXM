@@ -2,7 +2,7 @@
 
 > **Corpus ID:** `tech-spec` — see [CORPUS.md](CORPUS.md).  
 > **Architecture / components:** [spec.md](spec.md) (`system-spec`).  
-> **Last updated:** 2026-08-06 (S047 / EV-039 — mock-byoc live SQL e2e pointer; prior 2026-07-12 S007)
+> **Last updated:** 2026-08-08 (S054 / EV-045 — Rust CI pointer; prior S047 / EV-039)
 
 This file is the **entry point** for runtime, configuration, deployment, and dependency
 truth. Detail lives in the satellites below — do not duplicate long tables here.
@@ -34,6 +34,21 @@ When changing runtime behavior or deploy/config:
 3. New library appears in **dependency-inventory** (or AskQuestion before adding).
 4. Component boundaries still match **spec.md** §Component Overview.
 5. If the change is a non-obvious trade-off, add or cite an **ADR**.
+
+## Rust native crates (F13 / F14 — S054 / EV-045)
+
+Hot-path Rust lives under `packages/tac2iwxxm/rust` and `packages/iwxxm-validate/rust`
+(PyO3 / maturin; [Corpus: adr/ADR-017]).
+
+| Surface | Location |
+|---------|----------|
+| Remote CI | `.github/workflows/ci-cd.yml` — cargo **crate matrix** + gate job `Rust crates (fmt/clippy/test)`; maturin **two-package matrix** with locked PyO3 names (EV-045 / D-S054-04) |
+| Local mirror | `make rust-check` (= fmt/clippy/`cargo test` both + both `test-*-native` smokes) |
+| Test IDs | [test-plan.md](test-plan.md) §EV-045 / TC-EV045-*; journey UJ-DEV-006 |
+| Rulesets | `scripts/deploy/apply_gh_branch_rulesets.sh` (admin apply deferred — D-S054-ac6-waive=2) |
+
+No new runtime language deps for this deepen — toolchain already required for native builds.
+Action cache helpers (e.g. `Swatinem/rust-cache`) are CI-only, not Python inventory.
 
 ## Local mock BYOC / live SQL e2e (F16 — S047 / EV-039)
 
