@@ -5,7 +5,7 @@ project:
   output_directory: docs/
 session_counter: 51
 evolve_cycle_counter: 42
-active_session:
+active_session: null
 sessions:
 - id: S051-output-filename-download-stale
   type: hotfix
