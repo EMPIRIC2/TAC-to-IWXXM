@@ -1,10 +1,10 @@
 ---
 session_id: S047-sql-ingest-live-e2e
 type: feature
-status: in_progress
-branch: evolve/EV-039-sql-ingest-live-e2e
+status: completed
+branch: docs/EV-039-closeout
 started_at: 2026-08-06
-completed_at: null
+completed_at: 2026-08-08
 intent: "Live local multi-DB SQL ingest Playwright verification (Postgres/MySQL/SQL Server/SQLite) plus teardown hygiene across integration, e2e, and local harnesses"
 orchestrator: 16-evolve
 evolve_cycle_id: EV-039
@@ -23,9 +23,14 @@ feature_ids: []
 deepen_feature_ids:
   - F16
 feature_note: "Deepen F16 — live local BYOC SQL upload e2e + teardown; no new Fn expected"
-route_status: in_progress
-current_stage: 07-build
+route_status: completed
+current_stage: closed
 ui_preview: declined
+pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
+pr_status: merged
+pr_merge_commit: fea30aba
+main_ci_cd_pipeline_run: "31130303373"
+doks_tag: 20260808004030-3502af2
 decisions:
   D-S047-open: "Q1=1 Q2=1 Q3=1 Q4=1 Q5=2"
   D-S047-ac: "1"
@@ -33,6 +38,12 @@ decisions:
   D-S047-04: "Q1=1 Q2=1 Q3=1+3 Q4=1+2+3(local)"
   D-S047-04-plan: "1"
   D-S047-05-gate-b: "1"
+  D-S047-11: "1"
+  D-S047-12: "1"
+  D-S047-13-cli: "1"
+  D-S047-resume: "2"
+  D-S047-13: "1"
+  D-S047-close: "1"
 ---
 
 # Session S047 — sql-ingest-live-e2e

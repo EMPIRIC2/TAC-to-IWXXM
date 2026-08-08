@@ -1,13 +1,13 @@
 # Deploy Checklist — S047 / EV-039 (12-verify-deploy)
 
 > Generated: 2026-08-06  
-> Status: **APPROVED** (`D-S047-12`=1) — push + PR; 13 after CI/CD (H4–H5 required)  
+> Status: **APPROVED** (`D-S047-12`=1) — merge + CD done; 13 evidence pending `D-S047-13`  
 > Prior: 11 **APPROVED** (`D-S047-11`=1)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · DOKS CD on `main`  
-> Tip: `cfe1236b` · PR [#891](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891)  
+> Merge: PR [#891](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891) @ `fea30aba` · CD [31130303373](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31130303373)  
 > `env_role`: **live = prod** (sole DOKS stack `api|app.tac-to-iwxxm.com`)  
 > Corpus: `[Corpus: tech-spec]` · `[Corpus: product §F16]` · `[Corpus: tests]` · connectivity-gates §12–13  
-> **CI note:** Branch pushed; local pre-push `make ci` green. GitHub Actions has **not** started check suites on #891 (only Cursor suite queued) — tip CI gate blocked until runs appear or waived.
+> **CI note (historical):** Tip CI on PR head blocked by GHA outage; CLI deploy `D-S047-13-cli=1` then merge; post-merge CD SUCCESS.
 
 ## Scope (delta)
 
@@ -32,10 +32,10 @@
 - [x] Rollback — prior DOKS/GHCR tag / previous rollout
 - [x] H0c CORS — `tests/unit/test_cors_policy.py` **6/6 PASS** (2026-08-06)
 - [x] Connectivity scripts — `scripts/deploy/verify_connectivity.sh` present
-- [ ] Branch pushed + tip CI green (`ci.yml` / project CI)
-- [ ] PR to `main` opened
-- [ ] Merge + CD (explicit user approval)
-- [ ] Post-deploy H1–H3 + H4–H5 (or documented waive for harness-only)
+- [x] Branch pushed + tip CI green (`ci.yml` / project CI) — post-merge CD 31130303373 (PR-head tip CI waived via CLI path)
+- [x] PR to `main` opened (#891)
+- [x] Merge + CD (merged 2026-08-06; Deploy job green)
+- [x] Post-deploy H1–H3 + H4–H5 — resume re-verify 2026-08-08 (see `deploy-smoke.md`)
 
 ## Failure Mitigations
 
