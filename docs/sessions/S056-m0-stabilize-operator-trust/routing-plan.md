@@ -1,8 +1,8 @@
 # Routing plan — S056 / EV-047
 
 **Preset:** Standard (**approved** `D-S056-preset=1`)  
-**Route:** `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`  
-**Skip:** `03`, `06`, `10`, `12`, `13`  
+**Route:** `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11`  
+**Skip:** `03`, `06`, `12`, `13`  
 **Branch:** `evolve/EV-047-m0-stabilize-operator-trust` (base `stage`)  
 **Features:** deepen **M5**, **F6**, **F7** (no new Fn)  
 **Issues:** [#833](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/833),
@@ -15,7 +15,7 @@
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | S056 open (`D-S056-open=1`) |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1; remaining intake #834/#956/#957 |
-| 01-requirements | yes | delta | pending | |
+| 01-requirements | yes | delta | **in_progress** | AC draft; awaiting D-S056-01-ac |
 | 02-verify-plan | yes | delta | pending | Gate A |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
 | 04-tech-plan | yes | delta | pending | husky + perf harness + docs tasks |
@@ -24,10 +24,10 @@
 | 07-build | yes | full | pending | |
 | 08-verify-build | yes | delta | pending | |
 | 09-qa | yes | delta | pending | |
-| 10-e2e | no | — | skipped | re-enable if help-link UI |
+| 10-e2e | yes | delta | pending | UJ-054 Help entry (`D-S056-docs=1`) |
 | 11-verify-impl | yes | delta | pending | |
-| 12-verify-deploy | no | — | skipped | waived unless help-link deploy |
-| 13-deploy-smoke | no | — | skipped | waived unless help-link deploy |
+| 12-verify-deploy | no | — | skipped | waived unless 11 requires deploy |
+| 13-deploy-smoke | no | — | skipped | waived unless 11 requires deploy |
 
 ## Skip rationale
 
@@ -35,5 +35,4 @@
 |---------|-----|
 | 03 | No new Cursor rules/hooks expected beyond husky/pre-commit edits |
 | 06 | No new runtime dependency inventory change expected |
-| 10 | No browser UI unless help entry ships; re-route if needed |
-| 12 / 13 | CI/docs cycle; merge gate is tip CI green → `stage` (D-S056-preset=1) |
+| 12 / 13 | Merge gate is tip CI green → `stage` unless Help needs live deploy at 11 |

@@ -1,6 +1,18 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-08 (S054 / EV-045)
+> Stage: 01-requirements | Last updated: 2026-08-08 (S056 / EV-047)
+
+## EV-047 / S056 — M0 husky + converter perf + operator docs (pending AC confirm)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-047 / M5 | Husky shape A | pre-commit lint/format; pre-push fast units; reverse EV-036 day-to-day weight | proposed |
+| EV-047 / F6 | Converter perf gate | convert-only p95; YAML baselines; >20% or ceiling; CI required; not husky | proposed |
+| EV-047 / F7 | Operator docs | `docs/guides/operator-one-pager.md` + `operator-handbook.md`; README + Help | proposed |
+| EV-047 / route | 10-e2e | Re-enabled for UJ-054 Help; 12/13 waived unless 11 requires deploy | proposed |
+
+[Corpus: product §M5] [Corpus: product §F6] [Corpus: product §F7] [Corpus: tests]
+[Corpus: journeys]
 
 | ID | Topic | Decision | Status |
 |----|-------|----------|--------|

@@ -25,15 +25,33 @@
 | D-S056-open | **1** — Open S056 → EV-047 for #833+#834+#956+#957 |
 | D-S056-bundle | **1** — One cycle, all four issues |
 | D-S056-husky | **1** — Husky day-to-day = lint + fast units; heavier gates CI / opt-in `make` (**explicit reverse** of EV-036/S044 local-heavy developer path) |
-| D-S056-preset | **1** — Standard (`00→16→01→02→04→05→07→08→09→11`); waive 12/13 (and 10) unless help-link needs E2E/deploy |
+| D-S056-preset | **1** — Standard; amended by D-S056-docs for Help → **re-enable 10-e2e**; 12/13 stay waived unless deploy gate needed at 11 |
+| D-S056-husky-shape | **1 (A)** — `pre-commit` = lint/format only; `pre-push` = fast unit subset |
+| D-S056-perf | **1** — convert-only wall **p95** vs committed YAML; hard-fail **>20% or absolute ceiling**; METAR/SPECI/TAF + thin SIGMET-family smoke; **CI required check only** (not husky); pure-Python first; median-of-N + flake retry doc |
+| D-S056-docs | **1** — one-pager `docs/guides/operator-one-pager.md` (+ printable if cheap); handbook `docs/guides/operator-handbook.md`; README Quick start **and** in-app Help (F7); no new CORPUS root member |
+| D-S056-phase0 | **1** — Phase 0 locked; proceed **01-requirements** |
 
-### Open (Phase 0 remaining)
+### Locked defaults (perf / hooks / docs)
 
-| Topic | Status |
-|-------|--------|
-| #833 hook shape A vs B | Recommend after inventory in 01 |
-| #834 metric / baseline / delta / product scope / runner policy | AskQuestion batch |
-| #956/#957 doc paths + help-link vs README-only | AskQuestion batch |
+| Area | Default |
+|------|---------|
+| Husky | Shape **A** (`D-S056-husky-shape=1`) |
+| Perf metric | convert-only p95; CI-only gate; 20% / ceiling; Annex-3 thin smoke |
+| Docs | `docs/guides/operator-*.md` + README + Help |
+
+### Acceptance (proposed — confirm `D-S056-01-ac`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Commit = lint/format only | TC-EV047-001 |
+| AC2 | Push = fast unit subset only | TC-EV047-002 |
+| AC3 | DEVELOPMENT.md + test-plan match shape A | TC-EV047-003 |
+| AC4 | Offloaded gates still in CI | TC-EV047-004 |
+| AC5 | Artificial convert slowdown → red; revert → green | TC-EV047-005/006 |
+| AC6 | Required CI check; baselines + flake policy; p95 / 20% pack | TC-EV047-007/008 |
+| AC7 | Operator one-pager (one page; no internal cites) | TC-EV047-009 |
+| AC8 | Minimal handbook (sections + ingest pointer) | TC-EV047-010 |
+| AC9 | README + in-app Help → one-pager (UJ-054) | TC-EV047-011 |
 
 ---
 

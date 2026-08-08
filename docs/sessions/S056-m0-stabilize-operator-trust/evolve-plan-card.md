@@ -27,13 +27,12 @@ regressions on PR/CI, and ship operator one-pager + minimal handbook.
 
 ## Preset + routing
 
-- Preset: Standard (skips 03/06/10/12/13)
-- Stages (ordered): `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`
+- Preset: Standard (skips 03/06/12/13; **10-e2e required** for Help)
+- Stages (ordered): `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11`
 
 ## Next child stage
 
-**Finish Phase 0 intake** (AskQuestion: #834 thresholds + docs paths/help-link) →
-then **01-requirements**.
+**01-requirements** — confirm AC1–AC9 (`D-S056-01-ac`) → **02-verify-plan**.
 
 ## Locked decisions
 
@@ -42,15 +41,15 @@ then **01-requirements**.
 | D-S056-open | 1 — S056 / EV-047 |
 | D-S056-bundle | 1 — all four issues one cycle |
 | D-S056-husky | 1 — lint + fast units; reverse EV-036 developer path |
-| D-S056-preset | 1 — Standard; waive 12/13 |
+| D-S056-husky-shape | 1 (A) — pre-commit lint; pre-push fast units |
+| D-S056-perf | 1 — convert p95 / 20% / CI-only / thin product smoke |
+| D-S056-docs | 1 — guides one-pager + handbook; README + Help |
+| D-S056-preset | 1 — Standard; waive 12/13; 10 re-enabled |
+| D-S056-phase0 | 1 — Phase 0 locked |
 
 ## Risks / open decisions
 
-- **#834 evaluation** — metric, baseline store, allowed delta, product scope,
-  runner noise, pure-Python vs native (issue checklist)
-- **#833 hook shape** — A (pre-commit lint / pre-push units) vs B (single
-  pre-commit lint+units) — recommend in 01 after inventory
-- **#956/#957 paths** — `docs/guides/` vs `docs/ops/` vs published site; help
-  entry vs README Quick start only
-- **Corpus:** operator handbook is under opt-in `docs/ops|guides` — cite
-  product/journeys for help-link; no new CORPUS root member without AskQuestion
+- Absolute ms ceiling value (derive in 04 from baselines×1.20 + floor)
+- Exact “fast unit subset” Makefile target name (04 inventory)
+- Help UI placement in existing shell (04/07)
+- CORPUS: guides remain opt-in; cite product/journeys for Help — no new root member

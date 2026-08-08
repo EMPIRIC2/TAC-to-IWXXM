@@ -45,7 +45,7 @@
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
-| M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005; **deepen** S044 / EV-036 local-first hooks + slim CI |
+| M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005; **deepen** S056 / EV-047 slim husky (#833; supersedes EV-036 day-to-day hook weight) |
 | M6 | Vendor upstream sync (wmo-im iwxxm-*) | Planned | Platform | REQ-009 |
 
 **Status key**: Implemented = production-ready, Planned = approved in requirements interview, Experimental = works but not validated, Superseded / Deprecated = replaced by a later decision
@@ -212,6 +212,28 @@
 - **Source**: [Context: rule-source-traceability](context/rule-source-traceability.md);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-035
 
+### F6 deepen (S056 / EV-047 — converter perf regression harness / #834)
+
+- **Status note**: F6 remains **Implemented**; add a **hard PR/CI gate** when
+  `tac2iwxxm.convert` regresses vs committed baselines (`D-S056-perf=1`). Soft benches and
+  publish-only hard gates (E10-24 / T66) remain; this cycle adds a **default-branch merge
+  block** for converter latency.
+- **Defaults**: convert-only wall **p95**; committed YAML baselines; hard-fail if **>20%
+  slower than baseline or above absolute ceiling**; product smoke = METAR/SPECI/TAF + thin
+  SIGMET-family; **CI required check only** (not husky); pure-Python path first;
+  median-of-N + documented flake retry; intentional baseline bumps via documented refresh
+  (no silent auto-raise).
+- **Acceptance (EV-047 / #834)** — pending `D-S056-01-ac`:
+  1. Artificial slowdown in `tac2iwxxm.convert` turns the gate **red** in CI.
+  2. Reverting the slowdown turns the gate **green**.
+  3. Gate is a **required** status check (or equivalent) on the protected branch path.
+  4. Baselines + refresh procedure documented; flake policy documented.
+  5. TC-EV047-005..008 green.
+- **Out of scope**: Converter micro-optimizations; hard-failing every soft validate bench;
+  husky-local enforcement of the perf gate.
+- **Source**: [#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-047; [Corpus: tests]
+
 ### F6 deepen (S045 / EV-037 — Bulletin AHL source vs impl matrix)
 
 - **Status note**: F6 remains **Implemented**; this cycle **reclassifies** eight-family
@@ -323,6 +345,20 @@
      (**live H4–H5 waived 2026-07-27** → [#781](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/781);
      code on `main` @ `c49f22b` / PR #782)
   5. No backend routes, env vars, or DB seeds required
+- **S056 / EV-047 deepen (#956/#957 — operator docs + Help)**: User-facing **one-pager** and
+  **minimal operational handbook** under `docs/guides/`; discoverable from README Quick start
+  **and** in-app Help (`D-S056-docs=1`). No internal `[Corpus:]` / ADR / session IDs in
+  published operator text. Does **not** flip F7 → Implemented.
+- **Acceptance (EV-047 / #956/#957)** — pending `D-S056-01-ac`:
+  1. `docs/guides/operator-one-pager.md` fits one printed page; covers paste/convert →
+     validate → download; IWXXM version pick; soft preview in plain language.
+  2. `docs/guides/operator-handbook.md` covers login/access, convert & validate, work
+     history, dissemination destinations (high level), troubleshooting; points to automated
+     ingest when available.
+  3. README Quick start links both; in-app Help entry reaches the one-pager (handbook linked
+     from one-pager for depth).
+  4. No internal engineering citations in user-facing handbook/one-pager text.
+  5. UJ-054 / TC-EV047-009..011 green (Vitest/Playwright for Help entry as applicable).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -1617,6 +1653,23 @@
   4. Deploy on `main` gated by remaining remote jobs (test + alembic + native [+ e2e per graph]).
   5. TC-EV036-001..003 green (hook wiring + workflow contract tests; dense asserts).
 - **Source**: REQ-005; EV-002; ADR-014; S008 realtime amend; **S044 / EV-036**
+- **S056 / EV-047 deepen (#833 — slim husky)**: **Supersedes EV-036 day-to-day local hook
+  weight** for developer commit/push. Target shape **A** (`D-S056-husky-shape=1`):
+  - **Commit (husky → pre-commit)**: **lint/format only** (ruff / prettier / eslint — align
+    `Makefile` `PY_LINT` / JS lint). No typecheck, catalog-check, issue-registry-guard,
+    actionlint/yamllint, or medium `validate-ci` on the default commit path.
+  - **Push (husky pre-push)**: **fast unit-test subset only** (explicit target; not full
+    coverage-fail-under matrix / not `make validate-ci` / not Compose integration).
+  - **Remote CI**: unchanged merge strength — typecheck, catalog/registry, secrets/yaml,
+    unit coverage, integration/e2e, Rust checks remain enforced in `.github/workflows`.
+  - Heavy local parity stays opt-in via `make validate-fast` / `validate-ci` / `ci-prepush`.
+- **Acceptance (EV-047 / #833)** — pending `D-S056-01-ac`:
+  1. After `make install-hooks`, normal commit does **not** run typecheck / catalog /
+     registry-guard / actionlint / yamllint / medium validate unless opted in.
+  2. Normal push runs the agreed **fast unit** subset only (not full `validate-ci`).
+  3. `docs/ops/DEVELOPMENT.md` + test-plan hook tables match shape A.
+  4. PR/`main`/`stage` CI still fails if any offloaded gate fails.
+  5. TC-EV047-001..004 green.
 
 ### M6: Upstream Vendor Sync
 

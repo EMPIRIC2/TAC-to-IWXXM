@@ -108,6 +108,9 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-051 | F33 | Secure mass file/folder ingest (auth + caps) | **H4–H5 required** | TC-F33-001..006 |
 | UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
+| UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
+| UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
+| UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -2635,40 +2638,59 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 
 ## CI/CD (Monorepo)
 
-**Policy (EV-002 → EV-036 amend)**: Single workflow file for PR/push. **Local-first** for
-long/Compose work: medium validate on **commit**, units+Compose on **push**. Remote CI
-**drops** redundant validate + Compose integration but **keeps** the package **unit matrix**,
-**coverage** gates, and a sticky **PR coverage comment**. Strict lint/format is enforced
-locally (pre-commit). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
+**Policy (EV-002 → EV-036 → EV-047 amend)**: Single workflow file for PR/push. **EV-047
+(#833)** restores a **slim developer hook path**: local commit = **lint/format only**;
+local push = **fast unit subset only**. Heavier gates (typecheck, catalog/registry,
+actionlint/yamllint, medium validate, full coverage matrix, Compose integration) stay on
+**remote CI** and opt-in `make` targets — **not** on default husky. Remote CI **keeps**
+merge strength (unit matrix + coverage + PR coverage comment + native/Rust/e2e/alembic as
+wired). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
-| Local commit | husky → pre-commit | fast + medium | existing fast hooks + `validate-ci` medium extras (de-duped) |
-| Local push | husky pre-push | long | `make ci` = `ci-prepush` + Compose **integration** (ports 18000/18001; wis2box harness via local target) |
-| PR / push `main`, `dev` | `ci-cd.yml` | **remote** | **no** validate job, **no** Compose integration; **keep** unit matrix + coverage + PR coverage comment; keep `tac2iwxxm-native`, **Rust crate checks** (EV-045: fmt/clippy/`cargo test` + `iwxxm-validate` maturin smoke), `e2e-smoke`, `test-alembic` |
-| push `main` / `stage` | `ci-cd.yml` | **deploy** | needs `test` + alembic + native + **Rust crate checks** (+ e2e if required); GHCR + **DOKS**; Render optional |
+| Local commit | husky → pre-commit | lint | ruff / prettier / eslint (lint/format only; shape A) |
+| Local push | husky pre-push | fast units | agreed fast unit subset only (not `validate-ci` / not Compose) |
+| PR / push `main`, `stage`, `dev` | `ci-cd.yml` | **remote** | typecheck + catalog/registry + secrets/yaml as configured; unit matrix + coverage + PR coverage comment; `tac2iwxxm-native`; **Rust crate checks** (EV-045); **converter perf hard gate** (EV-047 / #834); `e2e-smoke`; `test-alembic` |
+| push `main` / `stage` | `ci-cd.yml` | **deploy** | needs remaining remote jobs; GHCR + **DOKS**; Render optional |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
-| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 / EV-036 scope |
+| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 / EV-036 / EV-047 day-to-day husky scope |
 
-### Pre-commit / husky (local gates) — EV-036
+### Pre-commit / husky (local gates) — EV-047 (#833; supersedes EV-036 day-to-day)
 
 | Hook | Tool | Role |
 |------|------|------|
-| pre-commit (fast) | ruff / prettier / eslint / tsc / basedpyright / gitleaks / actionlint / yamllint / catalog | always-on cheap gates (strict lint/format) |
-| pre-commit (medium) | `make validate-ci-medium` | config-guard, env-check, audit-frontend (de-duped vs fast) |
-| husky pre-push (long) | `make ci` | `ci-prepush` + Compose integration — local Compose source of truth |
+| husky pre-commit | lint/format only | ruff / prettier / eslint — **no** tsc/basedpyright/catalog/registry/actionlint/yamllint/medium validate on default path |
+| husky pre-push | fast unit subset | explicit Makefile/pytest target — **not** full `ci-prepush` / Compose |
+| Opt-in local | `make validate-*` / `ci-prepush` | full parity when contributor chooses |
 | Remote PR coverage | `coverage-pr-comment` | sticky PR comment from unit coverage artifacts |
+| Remote converter perf | hard gate job | EV-047 / #834 — fail on convert p95 regression |
 
 Family `test-*-quality` packs stay path-filtered / opt-in — **not** on every commit/push.
 Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not every local push).
 
-### TC-EV036 (M5 / S044) — local-first CI
+### TC-EV036 (M5 / S044) — local-first CI *(superseded for husky day-to-day by EV-047)*
 
 | ID | Level | Assert |
 |----|-------|--------|
-| TC-EV036-001 | T0 | husky pre-commit runs fast pre-commit + medium validate (`validate-ci-medium` / config-guard+env-check+audit) |
-| TC-EV036-002 | T0 | `.husky/pre-push` runs `make ci` (or `ci-prepush` + `test-integration`) and does **not** re-run `validate-ci`; remote Compose `integration` matrix entry absent |
-| TC-EV036-003 | T0 | `ci-cd.yml` — no `validate:` job; unit matrix present with coverage; coverage PR comment job present; no Compose integration job; deploy `needs` includes `test` |
+| TC-EV036-001 | T0 | *(historical)* husky pre-commit ran fast + medium validate |
+| TC-EV036-002 | T0 | *(historical)* `.husky/pre-push` ran `make ci` |
+| TC-EV036-003 | T0 | `ci-cd.yml` — no `validate:` job; unit matrix + coverage + PR comment; no Compose integration; deploy `needs` includes `test` — **still relevant for remote graph** |
+
+### TC-EV047 (M5 / F6 / F7 / S056) — slim husky + converter perf + operator docs
+
+| ID | Level | Assert |
+|----|-------|--------|
+| TC-EV047-001 | T0 | `.husky/pre-commit` (via `make install-hooks`) runs lint/format only — does **not** invoke tsc, basedpyright, catalog-check, issue-registry-guard, actionlint, yamllint, or medium validate |
+| TC-EV047-002 | T0 | `.husky/pre-push` runs agreed **fast unit** subset only — does **not** run `validate-ci` or Compose integration |
+| TC-EV047-003 | T0 | `docs/ops/DEVELOPMENT.md` hook table matches shape A; opt-in `make` targets documented |
+| TC-EV047-004 | T0/CI | Offloaded gates still present in CI (typecheck and/or catalog/registry/secrets/yaml/unit coverage as configured) — contract test or workflow assert |
+| TC-EV047-005 | T0/CI | Artificial slowdown in `tac2iwxxm.convert` fails converter perf hard gate |
+| TC-EV047-006 | T0/CI | Revert slowdown → gate green; baselines committed YAML with documented refresh (no silent auto-raise) |
+| TC-EV047-007 | CI | Perf gate is required check (or merge-blocking job) on PR path to protected branches |
+| TC-EV047-008 | T0 | Flake policy documented (median-of-N / retry / tolerance); convert-only p95; METAR/SPECI/TAF + thin SIGMET-family; pure-Python first |
+| TC-EV047-009 | T0 | `docs/guides/operator-one-pager.md` exists; one-page content checklist (convert→validate→download; version; soft preview); no internal citations |
+| TC-EV047-010 | T0 | `docs/guides/operator-handbook.md` has required sections + ingest pointer; no internal citations; one-pager links here |
+| TC-EV047-011 | T0/T2 | README Quick start links both docs; in-app Help entry reaches one-pager (UJ-054) |
 
 ### Removed workflows (EV-002)
 
