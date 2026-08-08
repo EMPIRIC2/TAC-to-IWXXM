@@ -100,6 +100,25 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | VONA | `iwxxm/AviationColourCode` + MetFeature VOLCANO/**VOLCANIC_ASH** (+ optional `RESUSPENDED_VOLCANIC_ASH`) | ✅ colour / volcano; ⚠ resuspended deepen | Prefer `iwxxm/` colour (not legacy `49-2/`); A7-1 ash often `phenomenonProperty` inapplicable — [cookbook](../../sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md) |
 | All (nil) | `common/nil` **and** `iwxxm/nil` | ✅ | Dual SCH RDF; classic F6 examples prefer `common/nil` — [codes dig](../mining/codes-wmo-int-aviation-mining-notes.md) |
 
+### Fixture coverage % (S055 / EV-046 Lean — #889)
+
+Offline token∩register vs `tac-validate` / `tac2iwxxm` `.tac` fixtures (coarse; exclusions
+documented). Full table + gaps:
+[codes-wmo-int-coverage.md](../../sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md).
+**Validated** automated membership deferred to [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959).
+
+| Family | Primary register | Fixture ∩ % (Lean) |
+|--------|------------------|--------------------|
+| METAR/SPECI/TAF | 306/4678 & 49-2 present weather | ~4% of 402 |
+| METAR/SPECI/TAF | CloudAmountReportedAtAerodrome | ~60% of 10 |
+| METAR/SPECI/TAF | SigConvectiveCloudType | 50% (CB; TCU gap) |
+| SIGMET/VA | SigWxPhenomena | ~12% of 17 |
+| AIRMET | WeatherCausingVisibilityReduction | ~26% of 19 |
+| AIRMET | AirWxPhenomena | ~0% (underscore forms) |
+| SWXA | SpaceWxLocation | ~86% of 7 |
+| VAA/VONA | iwxxm/AviationColourCode | ~33% of colour set |
+| All | common/nil / iwxxm/nil | 0% as TAC tokens (expected) |
+
 ---
 
 ## Official example pairs (wmo-im/iwxxm v2025-2)

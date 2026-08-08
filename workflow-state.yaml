@@ -3,83 +3,553 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 52
-evolve_cycle_counter: 43
-active_session:
-  id: S052-doks-staging-prod-branch-deploys
+session_counter: 55
+evolve_cycle_counter: 46
+active_session: null
+sessions:
+- id: S055-wmo-aviation-registers
   type: feature
-  intent: "Stand up DOKS staging + prod environments, protect stage/main, CI/CD for both; auto-deploy stage→staging; manual promote to main/prod (#886)"
-  status: in_progress
+  intent: Mine codes.wmo.int aviation registers → TAC code verification + fixture coverage (#889)
+  status: completed
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
+  close_decision: D-S055-close=1
+  close_note: 'Close EV-046/S055; commit EV-046 docs; PR → stage'
   started: '2026-08-08'
   started_at: '2026-08-08'
-  branch: evolve/EV-043-doks-staging-prod
-  branch_base: main@81701500
-  branch_base_full: 8170150038e740c181cc9f236caaeaf84247ff1a
-  branch_status: ACTIVE
-  branch_exists: false
-  branch_note: 'ACTIVE recorded @ open; branch not present locally/remotely yet — parent creates from main@81701500; tip SHA from git HEAD'
+  branch: evolve/EV-046-wmo-aviation-registers
+  branch_base: main@d0a51f5a
+  branch_status: active
+  branch_note: 'CLOSED session — D-S055-close=1; commit EV-046 docs then PR → stage; tip still d0a51f5a until docs commit'
+  branch_exists: true
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   orchestrator: 16-evolve
-  evolve_cycle_id: EV-043
-  artifacts_dir: docs/sessions/S052-doks-staging-prod-branch-deploys/
-  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/886
-  github_issues: [886]
-  issue_ids: [886]
-  prior_session: S051-output-filename-download-stale
-  prior_session_note: 'S051 hotfix closed D-S051-close=1; PR #905 MERGED @ a15541e5; tip closeout da2a6656; main tip now 81701500 includes later EV-039 closeout #939'
+  evolve_cycle_id: EV-046
+  artifacts_dir: docs/sessions/S055-wmo-aviation-registers/
+  prior_session: S054-rust-ci-crates
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889
+  github_issues:
+  - 889
+  - 959
+  issue_ids:
+  - 889
+  - 959
+  parent_epic: 846
+  related_issues:
+  - 859
+  - 882
+  - 719
+  - 959
+  github_issue_status: open
+  github_issue_note: 'Leave #889 OPEN until #959 Validated lands (or until user closes); Lean present/cite/cover done'
+  project_status: Ready for PR
+  project_status_note: 'Ready for PR — In review after PR opens; commit EV-046 docs then PR → stage'
   feature_ids:
-  - F30
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
   deepen_feature_ids:
-  - F30
-  feature_note: 'Deepen F30 platform independence — DOKS staging env + protected branches + manual promote to main/prod (#886)'
-  preset: Standard
-  preset_note: Standard (pending Plan approval)
-  tip_sha: 81701500
-  tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
-  tip_sha_pushed: true
-  tip_sha_note: 'main HEAD @ open (81701500); evolve branch tip will match once created'
-  scope_summary: >
-    Add DOKS staging + keep prod; stage→staging auto-deploy; main→prod MANUAL ONLY;
-    protect stage/main; GH Envs staging/production; product=DOKS (not App Platform).
-    Phase 0 not fully locked — Plan mode next; exact promote gate shape TBD (D-S052-cd-manual).
-  scope_decisions_locked:
-  - 'D-S052-open=1 — open session for #886'
-  - 'D-S052-scope=1 — Add DOKS staging + keep prod; stage→staging, main→prod'
-  - 'D-S052-product=1 — DOKS (not App Platform)'
-  - 'D-S052-gh=1 — Create stage branch + protect stage/main + GH Envs staging/production'
-  - 'D-S052-cd-manual — CI/CD for both staging and prod; promote to main AND prod is MANUAL ONLY (skill changes may be needed); exact gate shape TBD next AskQuestion'
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  preset: Lean
+  preset_note: D-S055-open=2 — Lean docs/coverage; skip 03-13; defer harvest wiring
+  ui_preview: N/A — no browser UI
+  scope_summary: 'Lean: present inventory + citations + coverage % + gap report for aviation codes.wmo.int registers vs vendor SoT; deepen F6/F12/F15/F20/F23/F24/F26/F27/F28/F32. Out: live HTML CI, vendor hand-edits, #882 notify, full tac-validate harvest loop (Validated waived for Lean).'
   decisions:
-    D-S052-open: '1'
-    D-S052-open_note: '1 — open session for GitHub #886 DOKS staging+prod / branch protection / CI/CD both envs / manual promote'
-    D-S052-scope: '1'
-    D-S052-scope_note: '1 — Add DOKS staging + keep prod; stage→staging, main→prod'
-    D-S052-product: '1'
-    D-S052-product_note: '1 — DOKS (not App Platform)'
-    D-S052-gh: '1'
-    D-S052-gh_note: '1 — Create stage branch + protect stage/main + GH Envs staging/production'
-    D-S052-cd-manual: pending_gate_shape
-    D-S052-cd-manual_note: 'CI/CD for both staging and prod required; promote to main AND prod MANUAL ONLY; skill changes may be needed; exact gate shape TBD next AskQuestion'
+    D-S055-open: '2'
+    D-S055-open_note: 2 — Open S055 Lean preset (docs/coverage first; defer full harvest wiring)
+    D-S055-families: '3'
+    D-S055-families_note: Full priority-register coverage % across all supported F6 products
+    D-S055-validated: '1'
+    D-S055-validated_note: Waive Validated for Lean close; Standard follow-on child
+    D-S055-cite: '2'
+    D-S055-cite_note: Domain docs + ISSUE_CATALOG/provenance stable concept URIs
+    D-S055-phase01: '1'
+    D-S055-phase01_note: Lock scope; start 01-requirements
+    D-S055-01-ac: '1'
+    D-S055-01-ac_note: '1 — AC1–AC6 confirmed; 01 COMPLETE; handoff 02-verify-plan'
+    D-S055-gateA: '1'
+    D-S055-gateA_note: 'Gate A PASS; accept M1/M2/L1; execute Lean docs'
+    D-S055-959: '1'
+    D-S055-959_note: '1 — opened #959 for Validated Standard follow-on'
+    D-S055-close: '1'
+    D-S055-close_note: '1 — Close EV-046/S055; commit EV-046 docs; PR → stage'
+  scope_decisions_locked:
+  - 'D-S055-open=2 — Lean docs/coverage; skip 03-13; defer harvest wiring'
+  - 'D-S055-families=3 — Full priority-register coverage % across all supported F6 products'
+  - 'D-S055-validated=1 — Waive Validated for Lean close; Standard follow-on child'
+  - 'D-S055-cite=2 — Domain docs + ISSUE_CATALOG/provenance stable concept URIs'
+  - 'D-S055-phase01=1 — Lock scope; start 01-requirements'
   routing_plan:
   - stage: 00-context
     required: true
-    mode: scoped
+    mode: session
     status: completed
     started: '2026-08-08'
     completed: '2026-08-08'
-    skip_rationale:
-    note: 'COMPLETE — open_session applied; decisions D-S052-open/scope/product/gh recorded; handoff 16-evolve Phase 0'
+    note: COMPLETE — D-S055-open=2 Lean; handoff 16-evolve
   - stage: 16-evolve
     required: true
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    skip_rationale:
-    note: 'IN_PROGRESS — Phase 0 handoff; scope draft from open decisions; Plan approval next; Standard pending'
-  current_stage: 16-evolve
-  current_stage_note: '00-context completed (session open); handoff 16-evolve Phase 0 — Plan mode next; promote gate shape TBD'
-  context_briefs: []
+    note: 'Lean AC1–AC6 docs complete; Validated follow-on #959 (D-S055-959=1); lean-docs-complete; awaiting close AskQuestion; cycle NOT completed'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: COMPLETE — D-S055-01-ac=1; AC1–AC6 confirmed; handoff 02-verify-plan
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: COMPLETE — Gate A PASS (D-S055-gateA=1); accept M1/M2/L1; handoff lean-docs-execution
+    gate_a: PASS
+    gate_a_decision: D-S055-gateA=1
+  - stage: 03-plan-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: Lean skip
+  - stage: 04-tech-plan
+    required: false
+    mode: skip
+    status: skipped
+    note: defer harvest wiring
+  - stage: 05-verify-tech
+    required: false
+    mode: skip
+    status: skipped
+  - stage: 06-tech-tooling
+    required: false
+    mode: skip
+    status: skipped
+  - stage: 07-build
+    required: false
+    mode: skip
+    status: skipped
+    note: defer code
+  - stage: 08-verify-build
+    required: false
+    mode: skip
+    status: skipped
+  - stage: 09-qa
+    required: false
+    mode: skip
+    status: skipped
+  - stage: 10-e2e
+    required: false
+    mode: skip
+    status: skipped
+    note: no UI
+  - stage: 11-verify-impl
+    required: false
+    mode: skip
+    status: skipped
+  - stage: 12-verify-deploy
+    required: false
+    mode: skip
+    status: skipped
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skip
+    status: skipped
+  current_stage: completed
+  current_stage_note: 'CLOSED — D-S055-close=1; EV-046 completed; Lean present/cite/cover done; #889 OPEN until #959 Validated lands; EV-043/044 remain PARKED; active_session=null; no git commit by workflow-state-manager'
+  gate_a: PASS
+  gate_a_status: pass
+  gate_a_decision: D-S055-gateA=1
   notes:
-  - '2026-08-08 D-S052-open=1 — OPEN S052/EV-043 for #886; session_counter=52; evolve_cycle_counter=43; branch evolve/EV-043-doks-staging-prod ACTIVE recorded (not created yet) @ main@81701500; 00-context completed → 16-evolve Phase 0; no git commit by workflow-state-manager'
-sessions:
+  - '2026-08-08 D-S055-close=1 — CLOSED S055/EV-046; Lean AC1–AC6 present/cite/cover done; 16-evolve COMPLETE; cycle COMPLETE; #889 OPEN until #959 Validated lands (or user closes); project_status Ready for PR (In review after PR opens); commit EV-046 docs then PR → stage; EV-043/EV-044 remain PARKED (D-park-doks=1); active_session=null; no git commit by workflow-state-manager'
+  - '2026-08-08 S055/EV-046 lean-docs-complete — AC1–AC6 Lean docs done; D-S055-959=1 opened #959 Validated Standard follow-on; awaiting close AskQuestion; cycle NOT completed; 16-evolve remains in_progress'
+  - '2026-08-08 S055/EV-046 OPEN after S054 close — D-S055-open=2 Lean; EV-043/EV-044 remain PARKED; active_session=S055-wmo-aviation-registers'
+- id: S054-rust-ci-crates
+  type: feature
+  intent: "CI: lint, typecheck, unit, and integration tests for Rust crates (#725)"
+  status: completed
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
+  close_decision: D-S054-11=1
+  close_note: 'Approve F13+F14 deepen + accept QA-001..005; PR #953 MERGED → stage; EV-043/EV-044 remain PARKED'
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-045-rust-ci
+  branch_base: main@d0a51f5a
+  branch_status: merged
+  branch_exists: true
+  branch_note: 'CLOSED session — PR #953 MERGED → stage @ c51e0e2f; evolve tip before merge 021a323d; D-S054-next=2 stop — leave on stage; promote stage→main deferred (no stage→main PR)'
+  tip_sha: 021a323d
+  tip_sha_full: 021a323db2ef979ab4692845981c90f83f774854
+  tip_sha_pushed: true
+  tip_sha_note: 'PR tip before merge 021a323d; merge commit c51e0e2f on stage; pre-merge CI 31279042234 SUCCESS'
+  pr_number: 953
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+  pr_status: merged
+  pr_base: stage
+  pr_supersedes: 952
+  pr_note: 'PR #953 MERGED → stage'
+  merge_sha: c51e0e2f
+  merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
+  merge_target: stage
+  merged_at: '2026-08-08T21:32:57Z'
+  ci_cd_pipeline_run: '31279042234'
+  ci_cd_pipeline_status: SUCCESS
+  ci_cd_pipeline_note: 'Pre-merge tip CI — run 31279042234 SUCCESS @ tip 021a323d; prior accepted tip CI 31273500621 @ 09ce2bef; PR #953 MERGED → stage @ c51e0e2f'
+  stage_ci_run: '31279573710'
+  stage_ci_status: SUCCESS
+  stage_deploy: success
+  stage_smoke: success
+  stage_gate: skipped
+  stage_gate_note: 'Staging gate SKIPPED on post-merge stage run 31279573710 @ c51e0e2f — investigate before stage→main promote'
+  stage_ci_note: 'Post-merge stage CI 31279573710 SUCCESS @ c51e0e2f; Deploy (stage) SUCCESS; Staging smoke SUCCESS; Staging gate SKIPPED; Rust crates gate + both maturin SUCCESS'
+  next_decision: D-S054-next=2
+  next_step: deferred_promote_stage_to_main
+  next_step_note: 'D-S054-next=2 — Stop here; leave #953 on stage @ c51e0e2f; promote stage→main later; do NOT open stage→main PR'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-045
+  artifacts_dir: docs/sessions/S054-rust-ci-crates/
+  prior_session: S053-separate-staging-doks-project
+  prior_session_note: 'S053/EV-044 and S052/EV-043 PARKED (D-park-doks=1) for this session'
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725
+  github_issues: [725]
+  issue_ids: [725]
+  github_issue_status: open
+  project_status: On stage
+  github_issue_closeout_comment: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725#issuecomment-5228402622
+  github_issue_decision: D-S054-issue=1
+  github_issue_note: 'D-S054-issue=1 — Leave #725 OPEN @ On stage until stage→main; do NOT close or set Done; pending promote'
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  feature_note: 'Deepen F13/F14 — Rust CI gates (fmt/clippy/cargo test + maturin smoke both crates); M5 Makefile optional later'
+  preset: Standard
+  preset_note: 'Standard with skips 03/06/10/12/13 per D-S054-open=1'
+  scope_summary: >
+    Add GitHub Actions CI for packages/tac2iwxxm/rust and packages/iwxxm-validate/rust:
+    rustfmt, clippy -D warnings, cargo test, maturin/PyO3 integration smoke for both;
+    Makefile local parity (make rust-check); required checks so PRs cannot merge red Rust CI.
+    Out: Rust HTTP service; multi-arch wheel CI beyond pypi-publish; Schematron perf gates.
+  scope_decisions_locked:
+  - 'D-park-doks=1 — park EV-043+EV-044'
+  - 'D-S054-open=1 — approve S054/EV-045 Standard skips 03/06/10/12/13'
+  - 'D-S054-ac6-waive=2 — waive AC6 ops half; docs+apply_gh_branch_rulesets.sh only; wire rulesets when admin available'
+  - 'D-S054-04 locked — jobs=2 maturin=2 trigger=1 local=2; plan approved (D-S054-04-plan=1)'
+  - 'D-S054-04-plan=1 — approve execution plan as written; close 04 → 05-verify-tech'
+  - 'D-S054-gateB=1 — Gate B PASS; medium/low syncs confirmed; proceed 07-build (06 skipped ADR-017)'
+  - 'D-S054-t17-ci=1 — Accept run 31273500621 as tip CI evidence; tip delta after f270618c docs-only (09ce2bef); Staging FAIL was base=main only; continue 08-verify-build'
+  - 'D-S054-phaseC=1 — Approve Phase C; start 09-qa'
+  - 'D-S054-11=1 — Approve F13+F14 deepen + accept QA-001..005; close cycle'
+  decisions:
+    D-S054-open: '1'
+    D-S054-open_note: '1 — open S054 as proposed (Standard; skip 03/06/10/12/13; deepen F13+F14)'
+    D-S054-phase01: '1'
+    D-S054-phase01_note: '1 — deepen F13+F14; proceed to 01-requirements'
+    D-S054-01-ac: '1'
+    D-S054-01-ac_note: '1 — confirm ACs + defaults (extend ci-cd.yml, clippy -D warnings, make rust-check) → 02'
+    D-S054-gateA: '2'
+    D-S054-gateA_note: '2 — Gate A PASS; BLOCKED before 04 — no GH rulesets; token admin=false; need admin apply_gh_branch_rulesets.sh or waiver'
+    D-S054-ac6-waive: '2'
+    D-S054-ac6-waive_note: '2 — waive AC6 ops half (GitHub rulesets/required checks wiring); docs+apply_gh_branch_rulesets.sh only; proceed 04; wire rulesets later when admin can run script; AC6 docs half still in scope (locked check names)'
+    D-S054-04-jobs: '2'
+    D-S054-04-jobs_note: '2 — matrix + gate job for locked check name'
+    D-S054-04-maturin: '2'
+    D-S054-04-maturin_note: '2 — extend native; two-package matrix, distinct check_names'
+    D-S054-04-trigger: '1'
+    D-S054-04-trigger_note: '1 — always default CI; no path-filter-only'
+    D-S054-04-local: '2'
+    D-S054-04-local_note: '2 — gate deploy; rust-check includes maturin'
+    D-S054-04: jobs=2 maturin=2 trigger=1 local=2
+    D-S054-04_note: '04-tech-plan interview locked — matrix+gate; two-package maturin; default CI triggers; gate deploy + rust-check maturin; plan approved D-S054-04-plan=1'
+    D-S054-04-plan: '1'
+    D-S054-04-plan_note: '1 — approve execution plan as written; close 04 → 05-verify-tech'
+    D-S054-gateB: '1'
+    D-S054-gateB_note: '1 — Gate B PASS; medium/low syncs confirmed; proceed 07-build M1 T1.1 (06 skipped ADR-017)'
+    D-S054-t17-ci: '1'
+    D-S054-t17-ci_note: '1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs; tip delta after f270618c is docs-only (09ce2bef); Staging gate failure was base=main only; continue to 08-verify-build'
+    D-S054-phaseC: '1'
+    D-S054-phaseC_note: '1 — Approve Phase C; start 09-qa'
+    D-S054-11: '1'
+    D-S054-11_note: '1 — Approve F13+F14 deepen + accept QA-001..005; proceed to cycle close'
+    D-S054-next: '2'
+    D-S054-next_note: '2 — Stop after stage merge; leave #953 on stage @ c51e0e2f; promote stage→main later; no stage→main PR'
+    D-S054-issue: '1'
+    D-S054-issue_note: '1 — Leave #725 OPEN @ On stage until stage→main; do NOT close or set Done'
+  ui_preview: 'N/A — no browser UI'
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — D-S054-open=1; handoff 16-evolve Phase 0'
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — D-S054-11=1; EV-045 closed; PR #953 later MERGED → stage'
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — D-S054-01-ac=1; ACs + defaults (extend ci-cd.yml, clippy -D warnings, make rust-check)'
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — Gate A PASS (D-S054-gateA=2); AC6 ops half waived (D-S054-ac6-waive=2); handoff 04-tech-plan'
+    gate_a: PASS
+    gate_a_decision: D-S054-gateA=2
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; reports/04-tech-plan.md; handoff 05-verify-tech'
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); medium/low syncs confirmed; report 05-verify-tech.md; handoff 07-build M1 T1.1'
+    gate_b: PASS
+    gate_b_decision: D-S054-gateB=1
+  - stage: 07-build
+    required: true
+    mode: full
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: 'COMPLETE — T1.1–T1.7 (7/7); D-S054-t17-ci=1 accepted run 31273500621 tip CI; handoff 08-verify-build'
+    active_task:
+    active_task_status: completed
+    active_milestone: M1
+    completed_through: T1.7
+    progress: 7/7
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
+    overall: PASS
+    note: 'COMPLETE — PASS @ tip 09ce2bef; D-S054-t17-ci=1 run 31273500621; format/lint/typecheck PASS; TC-EV045+H0c 14 PASS; rust-check PASS; pip-audit 0 CVEs; Phase C approved D-S054-phaseC=1'
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    report: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
+    overall: pass_with_advisories
+    note: 'COMPLETE — pass_with_advisories; QA-001..005 (AC6 ops deferred primary); handoff 11-verify-impl'
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    report: docs/sessions/S054-rust-ci-crates/reports/verify-impl.md
+    overall: approved
+    decision: D-S054-11=1
+    note: 'COMPLETE — D-S054-11=1 approve F13+F14 deepen + accept QA-001..005; cycle close'
+  - stage: 03-plan-tooling
+    required: false
+    mode: skipped
+    status: skipped
+    skip_rationale: 'no new Cursor rules/hooks expected'
+  - stage: 06-tech-tooling
+    required: false
+    mode: skipped
+    status: skipped
+    skip_rationale: 'skipped — Standard routing; no new runtime deps; toolchain already ADR-017 (06-tech-tooling N/A)'
+  - stage: 10-e2e
+    required: false
+    mode: skipped
+    status: skipped
+    skip_rationale: 'no browser UI'
+  - stage: 12-verify-deploy
+    required: false
+    mode: skipped
+    status: skipped
+    skip_rationale: 'CI-only; tip CI green is gate'
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skipped
+    status: skipped
+    skip_rationale: 'CI-only; no staging/prod deploy'
+  current_stage: completed
+  current_stage_note: 'CLOSED — D-S054-11=1; EV-045 COMPLETE; PR #953 on stage @ c51e0e2f; D-S054-next=2 stop — promote stage→main deferred (user stop; no stage→main PR)'
+  gate_a: PASS
+  gate_b: PASS
+  gate_b_status: pass
+  gate_b_decision: D-S054-gateB=1
+  phase_c_checkpoint: passed
+  phase_c_checkpoint_note: 'D-S054-phaseC=1 — Phase C approved; gates.c_to_d passed; 09-qa COMPLETE'
+  gate_c_to_d: passed
+  gate_c_to_d_decision: D-S054-phaseC=1
+  active_task:
+  active_task_status: completed
+  active_milestone: M1
+  completed_through: T1.7
+  progress: 7/7
+  gate_a_status: pass
+  ac6_ops_deferred: true
+  ac6_ops_deferred_note: 'GitHub rulesets/required checks wiring deferred until admin can run apply_gh_branch_rulesets.sh'
+  evolve_context:
+    mode: evolve
+    evolve_cycle_id: EV-045
+    feature_ids: [F13, F14]
+    delta_only: true
+    current_child_stage: completed
+    current_child_stage_status: completed
+    current_child_stage_note: 'COMPLETE — D-S054-11=1; cycle closed'
+    corpus_cites:
+    - "[Corpus: product §F13]"
+    - "[Corpus: product §F14]"
+    - "[Corpus: tech-spec]"
+    - "[Corpus: tests]"
+    - "[Corpus: adr/ADR-017]"
+  artifacts:
+  - path: docs/sessions/S054-rust-ci-crates/reports/01-requirements.md
+    status: completed
+    note: 'COMPLETE — D-S054-01-ac=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    note: 'APPROVED — T1.1–T1.7; D-S054-04-plan=1'
+  - path: docs/sessions/S054-rust-ci-crates/build-plan-card.md
+    status: approved
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    note: 'APPROVED — active M1 batch for 07; D-S054-04-plan=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/04-tech-plan.md
+    status: approved
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    note: 'APPROVED — D-S054-04-plan=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+    status: approved
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+    note: 'APPROVED — Gate B PASS (D-S054-gateB=1)'
+  - path: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
+    status: completed
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    note: 'COMPLETE — PASS @ tip 09ce2bef; Phase C approved D-S054-phaseC=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
+    status: completed
+    stage: 09-qa
+    skill_id: 09-qa
+    note: 'COMPLETE — pass_with_advisories; QA-001..005 (AC6 ops deferred primary)'
+  - path: docs/sessions/S054-rust-ci-crates/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    note: 'COMPLETE — D-S054-11=1 approved'
+  - path: docs/sessions/S054-rust-ci-crates/reports/evolve-summary.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'COMPLETE — EV-045 closeout'
+  - path: docs/evolve-report-EV-045.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'COMPLETE — EV-045 standing evolve report'
+  - path: docs/sessions/S054-rust-ci-crates/
+    status: completed
+  notes:
+  - '2026-08-08 S055/EV-046 lean-docs-complete — AC1–AC6 Lean docs done; D-S055-959=1 opened #959 Validated Standard follow-on; awaiting close AskQuestion; cycle NOT completed; 16-evolve remains in_progress'
+  - 2026-08-08 S055/EV-046 OPEN after S054 close — D-S055-open=2 Lean; EV-043/EV-044 remain PARKED; active_session=S055-wmo-aviation-registers
+  - '2026-08-08 D-S054-issue=1 — Leave #725 OPEN @ On stage until stage→main; S054/EV-045 remain closed; active_session=null'
+  - '2026-08-08 D-S054-ticket — #725 Project Status → On stage; closeout comment posted; issue remains OPEN pending user (Done/close vs leave open until stage→main); S054/EV-045 already completed; active_session=null'
+  - '2026-08-08 D-S054-next=2 — Stop after stage merge; leave #953 on stage @ c51e0e2f; Staging smoke green (31279573710); promote stage→main later; #725 On stage status still pending rate-limit retry'
+  - '2026-08-08 D-S054-stage-ci — post-merge stage CI 31279573710 SUCCESS; Deploy+Staging smoke SUCCESS; Staging gate SKIPPED; tip c51e0e2f; #725 project Status update blocked by GraphQL rate limit (still Backlog)'
+  - '2026-08-08 D-S054-merge-stage — PR #953 MERGED → stage @ tip 021a323d; CI 31279042234 SUCCESS; S054/EV-045 remain closed; active_session=null; promote stage→main only after Staging smoke/gate'
+  - '2026-08-08 D-S054-11=1 — CLOSED S054/EV-045; approve F13+F14 deepen + accept QA-001..005; 11-verify-impl COMPLETE (verify-impl.md); 16-evolve COMPLETE; cycle COMPLETE; PR #953 still OPEN → stage (not merged); tip 09ce2bef; closeout docs may be uncommitted; EV-043/EV-044 remain PARKED (D-park-doks=1); active_session=null; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 09-qa COMPLETE pass_with_advisories @ tip 09ce2bef — report docs/sessions/S054-rust-ci-crates/reports/qa-report.md; advisories QA-001..005 (AC6 ops deferred primary); 11-verify-impl in_progress; PR #953 → stage; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-phaseC=1 — Phase C approved; checkpoints.phase_c=passed; gates.c_to_d=passed; 08 COMPLETE; 09-qa in_progress (started 2026-08-08); tip 09ce2bef; PR #953 → stage; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 08-verify-build PASS COMPLETE @ tip 09ce2bef — report docs/sessions/S054-rust-ci-crates/reports/verification-report.md; D-S054-t17-ci=1 run 31273500621; make format-check/lint/typecheck PASS; TC-EV045+H0c 14 PASS; make rust-check PASS; uvx pip-audit 0 CVEs; 07-build remains COMPLETE 7/7; Phase C checkpoint pending AskQuestion before 09-qa (09 not started); no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-t17-ci=1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs; tip delta after f270618c is docs-only (09ce2bef); Staging gate FAIL was base=main only; T1.7 COMPLETE (7/7); 07-build COMPLETE; 08-verify-build in_progress (delta verify after T1.7 CI accept); no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 07-build — T1.1–T1.6 COMPLETE + T1.7 near-complete @ tip 09ce2bef (09ce2befdf0b5878ec6a832ec30718c489b4824b); commits cfd292f4 (T1.1), b8a1cb16 (T1.2), 3cd5844b (T1.3–5), b344b4d2 (T1.7 fix), f270618c (T1.6), 09ce2bef (T1.7 docs); branch evolve/EV-045-rust-ci pushed; PR #953 open → stage (supersedes #952) https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953; CI run 31273500621 SUCCESS (Rust crates gate + both maturin + all tests); Staging gate FAIL only because PR briefly targeted main; tip after docs commit awaiting fresh Actions run (not queued yet); active_task T1.7 in_progress near-complete pending tip CI re-trigger; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-gateB=1 — S054/EV-045 Gate B PASS; medium/low syncs confirmed (S2.1/S2.2/S3.1/S3.2); 05 COMPLETE; 06 skipped ADR-017; 07-build in_progress M1 T1.1 pending; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-04-plan=1 — S054/EV-045 04 COMPLETE; execution-plan + build-plan-card approved; 05-verify-tech in_progress; Gate B pending; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 04-tech-plan draft ready — D-S054-04 locked (jobs=2 maturin=2 trigger=1 local=2); execution-plan + build-plan-card + reports/04-tech-plan.md; awaiting D-S054-04-plan approve → 05; still in_progress; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-ac6-waive=2 — AC6 ops half waived; proceed 04-tech-plan; docs+apply_gh_branch_rulesets.sh only; wire rulesets when admin available; AC6 docs half still in scope (locked check names)'
+  - '2026-08-08 D-S054-gateA=2 — Gate A PASS; 02 COMPLETE; BLOCKED before 04 (no GH rulesets; token admin=false)'
+  - '2026-08-08 D-S054-01-ac=1 — 01 COMPLETE; ACs+defaults confirmed; 02-verify-plan in_progress'
+  - '2026-08-08 01-requirements note — drafted docs/sessions/S054-rust-ci-crates/reports/01-requirements.md + standing docs; awaiting D-S054-01-ac; still in_progress'
+  - '2026-08-08 D-S054-phase01=1 — proceed to 01-requirements; deepen F13+F14; 01 in_progress'
+  - '2026-08-08 D-S054-open=1 — OPEN S054/EV-045 for #725; counters 54/45; branch evolve/EV-045-rust-ci'
+- id: S053-separate-staging-doks-project
+  type: feature
+  intent: "Separate staging DOKS + Postgres under DO Project Staging TAC-to-IWXXM; amend ADR-034"
+  status: in_progress
+  parked: true
+  parked_at: '2026-08-08'
+  park_reason: 'D-park-doks=1 — parked for #725 Rust CI session'
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-044-separate-staging-doks
+  branch_base: main@d0a51f5a
+  branch_status: active
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-044
+  artifacts_dir: docs/sessions/S053-separate-staging-doks-project/
+  prior_session: S052-doks-staging-prod-branch-deploys
+  feature_ids: [F30]
+  preset: Standard
+  note: 'PARKED — D-park-doks=1; Gate A PASS / awaiting Gate B when resumed'
+- id: S052-doks-staging-prod-branch-deploys
+  type: feature
+  intent: "Stand up DOKS staging + prod environments, protect stage/main, CI/CD for both; auto-deploy stage→staging; manual promote to main/prod (#886)"
+  status: in_progress
+  parked: true
+  parked_at: '2026-08-08'
+  park_reason: 'D-park-doks=1 — parked for #725 Rust CI session'
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-043-doks-staging-prod
+  branch_base: main@81701500
+  branch_status: ACTIVE
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-043
+  artifacts_dir: docs/sessions/S052-doks-staging-prod-branch-deploys/
+  github_issues: [886]
+  feature_ids: [F30]
+  preset: Standard
+  note: 'PARKED — D-park-doks=1; Phase 0 incomplete'
 - id: S051-output-filename-download-stale
   type: hotfix
   intent: "Fix #904 — after convert, Output filename field changes must apply to Download / ZIP member names (BUG-2026-08-07-output-filename-download-stale)"
@@ -6527,30 +6997,31 @@ template:
 stages:
   00-context:
     status: completed
-    mode: scoped
-    scoped_slug: doks-staging-prod-branch-deploys
-    session_id: S052-doks-staging-prod-branch-deploys
-    evolve_cycle_id: EV-043
+    mode: session
+    scoped_slug: wmo-aviation-registers
+    session_id: S055-wmo-aviation-registers
+    evolve_cycle_id: EV-046
     started: '2026-08-08'
     started_at: '2026-08-08'
     completed: '2026-08-08'
     completed_at: '2026-08-08'
-    note: 'S052/EV-043 COMPLETE — open_session for #886; D-S052-open/scope/product/gh locked; handoff 16-evolve Phase 0; Standard pending Plan approval'
-    prior_note: 'S047/EV-039 COMPLETE — 00-context done; D-S047-open locked; handoff 16-evolve → 01-requirements'
-    prior_session_id: S047-sql-ingest-live-e2e
-    prior_evolve_cycle_id: EV-039
-    prior_scoped_slug: sql-ingest-live-e2e
-    prior_completed: '2026-08-06'
-    prior_started: '2026-08-06'
-    prior_tip_sha: 0d8ce885
-    prior_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
-    prior_prior_note: 'S046/EV-038 COMPLETE — 00-context done; D-S046-mplan M1→M2→M3→M4; handoff 01-requirements; EV-038 closed D-S046-13=1 #890 MERGED'
-    prior_prior_session_id: S046-iwxxm-corpus-residuals
-    prior_prior_evolve_cycle_id: EV-038
-    prior_prior_scoped_slug: iwxxm-corpus-residuals
-    tip_sha: 81701500
-    tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+    note: 'S055/EV-046 COMPLETE — open_session D-S055-open=2 Lean for #889; handoff 16-evolve Phase 0; EV-043/EV-044 remain PARKED'
+    prior_note: 'S052/EV-043 COMPLETE — open_session for #886; D-S052-open/scope/product/gh locked; handoff 16-evolve Phase 0; Standard pending Plan approval'
+    prior_session_id: S052-doks-staging-prod-branch-deploys
+    prior_evolve_cycle_id: EV-043
+    prior_scoped_slug: doks-staging-prod-branch-deploys
+    prior_completed: '2026-08-08'
+    prior_started: '2026-08-08'
+    prior_tip_sha: 81701500
+    prior_tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+    prior_prior_note: 'S047/EV-039 COMPLETE — 00-context done; D-S047-open locked; handoff 16-evolve → 01-requirements'
+    prior_prior_session_id: S047-sql-ingest-live-e2e
+    prior_prior_evolve_cycle_id: EV-039
+    prior_prior_scoped_slug: sql-ingest-live-e2e
+    tip_sha: d0a51f5a
+    tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
     artifacts:
+    - docs/sessions/S055-wmo-aviation-registers/
     - docs/sessions/S052-doks-staging-prod-branch-deploys/
     - docs/sessions/S051-output-filename-download-stale/
     - docs/sessions/S050-remove-db-tools-operator-throughput/
@@ -6575,27 +7046,35 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-08-06'
-    started: '2026-08-06'
-    completed_at: '2026-08-06'
-    completed: '2026-08-06'
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    tip_sha: a4f4d3a6
-    tip_sha_full: a4f4d3a6d948ff1a238563ac7f119ac093204156
-    note: 'S047/EV-039 01-requirements COMPLETE (delta) — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan'
-    prior_session_id: S046-iwxxm-corpus-residuals
-    prior_evolve_cycle_id: EV-038
-    prior_started: '2026-08-05'
-    prior_completed: '2026-08-05'
-    prior_note: 'S046/EV-038 01-requirements COMPLETE (delta) — D-S046-ac AC=1 approve AC1–AC14; handoff 02-verify-plan'
-    prior_prior_session_id: S045-matrix-disposition-residuals
-    prior_prior_evolve_cycle_id: EV-037
-    prior_prior_note: 'S045/EV-037 01-requirements COMPLETE (delta) — AC=1 approve AC1–AC4; deepen F2/F6/F32; tickets #869/#870/#872; handoff 02-verify-plan'
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
+    session_id: S055-wmo-aviation-registers
+    evolve_cycle_id: EV-046
+    tip_sha: d0a51f5a
+    tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    note: 'S055/EV-046 COMPLETE — D-S055-01-ac=1; AC1–AC6 confirmed; handoff 02-verify-plan'
+    prior_session_id: S047-sql-ingest-live-e2e
+    prior_evolve_cycle_id: EV-039
+    prior_started: '2026-08-06'
+    prior_completed: '2026-08-06'
+    prior_note: 'S047/EV-039 01-requirements COMPLETE (delta) — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan'
+    prior_prior_session_id: S046-iwxxm-corpus-residuals
+    prior_prior_evolve_cycle_id: EV-038
+    prior_prior_note: 'S046/EV-038 01-requirements COMPLETE (delta) — D-S046-ac AC=1 approve AC1–AC14; handoff 02-verify-plan'
     decision_refs:
+    - D-S055-01-ac
+    - D-S055-phase01
+    - D-S055-open
+    - D-S055-families
+    - D-S055-validated
+    - D-S055-cite
     - D-S047-open
     - D-S047-ac
     artifacts:
+    - docs/sessions/S055-wmo-aviation-registers/
+    - docs/sessions/S055-wmo-aviation-registers/reports/01-requirements.md
     - docs/sessions/S047-sql-ingest-live-e2e/reports/01-requirements-summary.md
     - docs/sessions/S047-sql-ingest-live-e2e/
     - docs/context/sql-ingest-live-e2e.md
@@ -6610,10 +7089,10 @@ stages:
     - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
     substeps:
       interviews:
-        status: pending
-        completed: 0
-        current_template: pending
-        current_section: pending
+        status: completed
+        completed: 1
+        current_template: done
+        current_section: done
     delta_substages:
     - status: completed
       mode: delta
@@ -7321,38 +7800,89 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-06'
-    started: '2026-08-06'
-    completed_at: '2026-08-06'
-    completed: '2026-08-06'
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: 'S047/EV-039 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07; tip 7970ba46; handoff 04-tech-plan'
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
+    session_id: S055-wmo-aviation-registers
+    evolve_cycle_id: EV-046
+    tip_sha: d0a51f5a
+    tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    note: 'S055/EV-046 COMPLETE — Gate A PASS (D-S055-gateA=1); accept M1/M2/L1; handoff lean-docs-execution'
+    gate_a: PASS
+    gate_a_status: pass
+    gate_a_decision: D-S055-gateA=1
     decision_refs:
-    - D-S047-02-gate-a
-    - D-S047-ac
-    - D-S047-open
-    prior_session_id: S046-iwxxm-corpus-residuals
-    prior_evolve_cycle_id: EV-038
-    prior_started: '2026-08-05'
-    prior_completed: '2026-08-05'
-    prior_note: 'S046/EV-038 02-verify-plan COMPLETE — Gate A PASS; handoff 04-tech-plan'
+    - D-S055-gateA
+    - D-S055-01-ac
+    - D-S055-phase01
+    - D-S055-open
+    prior_session_id: S047-sql-ingest-live-e2e
+    prior_evolve_cycle_id: EV-039
+    prior_started: '2026-08-06'
+    prior_completed: '2026-08-06'
+    prior_note: 'S047/EV-039 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; tip 7970ba46; handoff 04-tech-plan'
+    prior_prior_session_id: S046-iwxxm-corpus-residuals
+    prior_prior_evolve_cycle_id: EV-038
+    prior_prior_note: 'S046/EV-038 02-verify-plan COMPLETE — Gate A PASS; handoff 04-tech-plan'
     substeps:
       inventory:
         status: completed
       consistency_check:
         status: completed
       statement_review:
-        auto_approved: 6
+        auto_approved: 0
         pending: 0
-        reviewed: 3
+        reviewed: 0
         status: completed
-        note: 'Gate A PASS — S02.M3 via spec.md; S02.M1/M2/M4/M5 as 04/07'
+        note: 'S055 Gate A PASS — D-S055-gateA=1; accept M1/M2/L1'
     current_document:
     current_statement:
     active_session:
+      session_id: S055-wmo-aviation-registers
+      evolve_cycle_id: EV-046
+      skill_id: 02-verify-plan
+      status: completed
+      mode: delta
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      completed_at: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — Gate A PASS (D-S055-gateA=1); accept M1/M2/L1; handoff lean-docs-execution'
+      gate_a: PASS
+      gate_a_decision: D-S055-gateA=1
+      feature_ids:
+      - F6
+      - F12
+      - F15
+      - F20
+      - F23
+      - F24
+      - F26
+      - F27
+      - F28
+      - F32
+      deepen_feature_ids:
+      - F6
+      - F12
+      - F15
+      - F20
+      - F23
+      - F24
+      - F26
+      - F27
+      - F28
+      - F32
+      decision_refs:
+      - D-S055-gateA
+      - D-S055-01-ac
+      - D-S055-phase01
+      - D-S055-open
+      artifacts:
+      - docs/sessions/S055-wmo-aviation-registers/reports/02-verify-plan.md
+      - docs/sessions/S055-wmo-aviation-registers/reports/01-requirements.md
+      - docs/sessions/S055-wmo-aviation-registers/
+    prior_active_session:
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
       skill_id: 02-verify-plan
@@ -7374,7 +7904,7 @@ stages:
       - docs/sessions/S047-sql-ingest-live-e2e/reports/02-verify-plan-audit.md
       - docs/sessions/S047-sql-ingest-live-e2e/reports/01-requirements-summary.md
       - docs/spec.md
-    prior_active_session:
+    prior_prior_active_session:
       session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-038
       skill_id: 02-verify-plan
@@ -8098,45 +8628,61 @@ stages:
   04-tech-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-06'
-    started: '2026-08-06'
-    completed_at: '2026-08-06'
-    completed: '2026-08-06'
-    previous_started_at: '2026-08-05'
-    previous_completed_at: '2026-08-05'
-    previous_session_id: S046-iwxxm-corpus-residuals
-    previous_evolve_cycle_id: EV-038
-    previous_note: 'S046/EV-038 04-tech-plan COMPLETE (delta) — D-S046-04-plan=1; execution-plan approved M1–M5; handoff 05-verify-tech'
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
+    previous_started_at: '2026-08-06'
+    previous_completed_at: '2026-08-06'
+    previous_session_id: S047-sql-ingest-live-e2e
+    previous_evolve_cycle_id: EV-039
+    previous_note: 'S047/EV-039 04-tech-plan COMPLETE (delta) — D-S047-04-plan=1; execution-plan approved M1–M5; handoff 05-verify-tech'
     prior_session_id: S046-iwxxm-corpus-residuals
     prior_evolve_cycle_id: EV-038
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
     prior_note: 'S046/EV-038 04-tech-plan COMPLETE (delta) — D-S046-04-plan=1; handoff 05-verify-tech'
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    tip_sha: 7970ba46
-    tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    note: "COMPLETE D-S047-04-plan=1"
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
     decision_refs:
-    - D-S047-02-gate-a
-    - D-S047-ac
-    - D-S047-open
-    - D-S047-04
-    - D-S047-04-plan
-    substeps:
-      phase_1_toolchain:
-        status: completed
-      phase_2_interview:
-        status: completed
-      phase_3_execution_plan:
-        status: completed
-      phase_4_user_review:
-        status: completed
-      phase_5_back_add:
-        status: completed
-      phase_6_documents:
-        status: completed
+    - D-S054-04-plan
+    - D-S054-04-jobs
+    - D-S054-04-maturin
+    - D-S054-04-trigger
+    - D-S054-04-local
+    - D-S054-ac6-waive
+    - D-S054-gateA
+    - D-S054-01-ac
+    - D-S054-open
     active_session:
+      session_id: S054-rust-ci-crates
+      evolve_cycle_id: EV-045
+      skill_id: 04-tech-plan
+      status: completed
+      mode: delta
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      completed_at: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
+      feature_ids: [F13, F14]
+      deepen_feature_ids: [F13, F14]
+      decision_refs:
+      - D-S054-04-plan
+      - D-S054-04-jobs
+      - D-S054-04-maturin
+      - D-S054-04-trigger
+      - D-S054-04-local
+      - D-S054-ac6-waive
+      - D-S054-gateA
+      - D-S054-01-ac
+      - D-S054-open
+      artifacts:
+      - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+      - docs/sessions/S054-rust-ci-crates/build-plan-card.md
+      - docs/sessions/S054-rust-ci-crates/reports/04-tech-plan.md
+    prior_active_session:
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
       skill_id: 04-tech-plan
@@ -8156,7 +8702,7 @@ stages:
       - D-S047-open
       artifacts:
       - docs/sessions/S047-sql-ingest-live-e2e/reports/02-verify-plan-audit.md
-    prior_active_session:
+    prior_prior_active_session:
       session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-038
       skill_id: 04-tech-plan
@@ -8180,26 +8726,6 @@ stages:
       - D-S046-sot
       - D-S046-ac
       - D-S046-mplan
-    prior_prior_active_session:
-      session_id: S043-rule-source-traceability
-      evolve_cycle_id: EV-035
-      skill_id: 04-tech-plan
-      status: in_progress
-      mode: delta
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      completed_at:
-      completed:
-      note: 'STARTED (delta) — Gate A PASS; Batch A 1,1,1,1; handoff from 02-verify-plan'
-      feature_ids: []
-      deepen_feature_ids:
-      - F6
-      - F12
-      - F15
-      - F2
-      decision_refs:
-      - D-S043-02-phase-a
-      - D-S043-02-batch-a
     artifacts:
     - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
     - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
@@ -9098,24 +9624,25 @@ stages:
     - '2026-08-05 S046/EV-038 04-tech-plan COMPLETE (D-S046-04-plan=1) — execution-plan approved M1–M5; handoff 05-verify-tech; tip f03ed255'
   05-verify-tech:
     status: completed
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
     mode: delta
-    started_at: '2026-08-06'
-    started: '2026-08-06'
-    completed_at: '2026-08-06'
-    completed: '2026-08-06'
-    previous_started_at: '2026-06-15T01:15:00Z'
-    previous_completed_at: '2026-06-15T01:45:00Z'
-    previous_session_id: S046-iwxxm-corpus-residuals
-    previous_evolve_cycle_id: EV-038
-    previous_note: 'S046/EV-038 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S046-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
+    overall: pass
+    previous_started_at: '2026-08-06'
+    previous_completed_at: '2026-08-06'
+    previous_session_id: S047-sql-ingest-live-e2e
+    previous_evolve_cycle_id: EV-039
+    previous_note: 'S047/EV-039 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
     prior_session_id: S046-iwxxm-corpus-residuals
     prior_evolve_cycle_id: EV-038
     prior_started: '2026-08-05'
     prior_completed: '2026-08-05'
     prior_note: 'S046/EV-038 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S046-05-gate-b=1); tip f03ed255'
-    note: "COMPLETE Gate B PASS"
+    note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); medium/low syncs confirmed; handoff 07-build M1 T1.1; 06 skipped ADR-017'
     substeps:
       inventory:
         status: completed
@@ -9132,6 +9659,35 @@ stages:
     - docs/decisions/tech-audit.md
     - docs/decisions/tech-decisions.md
     delta_substages:
+    - session_id: S054-rust-ci-crates
+      evolve_cycle_id: EV-045
+      skill_id: 05-verify-tech
+      status: completed
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      completed_at: '2026-08-08'
+      completed: '2026-08-08'
+      mode: delta
+      overall: pass
+      feature_ids: [F13, F14]
+      deepen_feature_ids: [F13, F14]
+      decision_refs:
+      - D-S054-gateB
+      - D-S054-04-plan
+      - D-S054-04-jobs
+      - D-S054-04-maturin
+      - D-S054-04-trigger
+      - D-S054-04-local
+      - D-S054-ac6-waive
+      - D-S054-gateA
+      - D-S054-01-ac
+      - D-S054-open
+      note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); medium/low syncs confirmed; handoff 07-build M1 T1.1'
+      report: docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+      artifacts:
+      - docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+      - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+      - docs/sessions/S054-rust-ci-crates/build-plan-card.md
     - session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
       skill_id: 05-verify-tech
@@ -9252,6 +9808,8 @@ stages:
       overall: pass
       note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
     notes:
+    - '2026-08-08 D-S054-gateB=1 — S054/EV-045 05-verify-tech COMPLETE; Gate B PASS; medium/low syncs confirmed; handoff 07-build M1 T1.1; 06 skipped ADR-017; no git commit by workflow-state-manager'
+    - '2026-08-08 S054/EV-045 05-verify-tech STARTED (D-S054-04-plan=1) — Gate B; verify execution-plan T1.1–T1.7 vs ACs / D-S054-04 locked / routing; gates.b_to_c + checkpoints.phase_b pending; no git commit by workflow-state-manager'
     - '2026-08-06 S047/EV-039 05-verify-tech COMPLETE (D-S047-05-gate-b=1) — Gate B PASS; S05.M*/L1 as 07; handoff 07-build M1 T1.1; 06 skipped'
     - '2026-08-05 S046/EV-038 05-verify-tech COMPLETE (D-S046-05-gate-b=1) — Gate B PASS; S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
     - '2026-08-05 S046/EV-038 05-verify-tech STARTED (D-S046-04-plan=1) — Gate B; verify execution-plan M1–M5 vs AC1–AC14 / D-S046-sot / routing; historical baseline status remains completed; tip f03ed255'
@@ -9269,33 +9827,77 @@ stages:
     - S011/EV-008 delta 05-verify-tech completed 2026-07-13 — audit PASS; A1–A3 as-is; phase_b still pending (no auto-pass)
     - S014/EV-010 delta 05-verify-tech PASS 2026-07-18 — 12 auto + 44A–47A; Phase B checkpoint before 06
     active_session:
-      session_id: S046-iwxxm-corpus-residuals
-      evolve_cycle_id: EV-038
+      session_id: S054-rust-ci-crates
+      evolve_cycle_id: EV-045
+      skill_id: 07-build
+      status: in_progress
+      mode: full
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      note: 'IN_PROGRESS — D-S054-gateB=1; M1 T1.1 pending (06 skipped ADR-017)'
+      feature_ids: [F13, F14]
+      deepen_feature_ids: [F13, F14]
+      decision_refs:
+      - D-S054-gateB
+      - D-S054-04-plan
+      - D-S054-04-jobs
+      - D-S054-04-maturin
+      - D-S054-04-trigger
+      - D-S054-04-local
+      - D-S054-ac6-waive
+      - D-S054-gateA
+      - D-S054-01-ac
+      - D-S054-open
+      active_milestone: M1
+      active_task: T1.1
+      active_task_status: pending
+      artifacts:
+      - docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+      - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+      - docs/sessions/S054-rust-ci-crates/build-plan-card.md
+    prior_active_session:
+      session_id: S054-rust-ci-crates
+      evolve_cycle_id: EV-045
       skill_id: 05-verify-tech
       status: completed
       mode: delta
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      completed_at: '2026-08-05'
-      completed: '2026-08-05'
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      completed_at: '2026-08-08'
+      completed: '2026-08-08'
       overall: pass
-      note: 'COMPLETE — Gate B PASS (D-S046-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1'
+      note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); handoff 07-build M1 T1.1'
+      feature_ids: [F13, F14]
+      deepen_feature_ids: [F13, F14]
+      decision_refs:
+      - D-S054-gateB
+      - D-S054-04-plan
+      report: docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+    prior_prior_active_session:
+      session_id: S047-sql-ingest-live-e2e
+      evolve_cycle_id: EV-039
+      skill_id: 05-verify-tech
+      status: completed
+      mode: delta
+      started_at: '2026-08-06'
+      started: '2026-08-06'
+      completed_at: '2026-08-06'
+      completed: '2026-08-06'
+      overall: pass
+      note: 'COMPLETE — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1'
       feature_ids: []
       deepen_feature_ids:
-      - F2
-      - F4
-      - F6
-      - F7
-      - F32
+      - F16
       decision_refs:
-      - D-S046-05-gate-b
-      - D-S046-04-plan
-      - D-S046-sot
-      - D-S046-ac
-      - D-S046-mplan
-      report: docs/sessions/S046-iwxxm-corpus-residuals/reports/05-verify-tech-audit.md
-    prior_active_session:
-      session_id: S019-dissemination-upload
+      - D-S047-05-gate-b
+      - D-S047-04-plan
+      - D-S047-04
+      - D-S047-02-gate-a
+      - D-S047-ac
+      - D-S047-open
+      report: docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
+    prior_prior_prior_active_session:
+      session_id: S046-iwxxm-corpus-residuals
       evolve_cycle_id: EV-014
       skill_id: 05-verify-tech
       status: completed
@@ -9399,50 +10001,65 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
-    started_at: '2026-08-07'
-    started: '2026-08-07'
-    completed_at:
-    completed:
-    previous_started_at: '2026-08-06'
-    previous_completed_at:
-    previous_session_id: S047-sql-ingest-live-e2e
-    previous_evolve_cycle_id: EV-039
-    previous_tip_sha: 7970ba46
-    previous_tip_sha_full: 7970ba4671f2654b48244720254e6b175ed7474c
-    previous_note: 'S047/EV-039 07-build was in_progress @ 7970ba46 (M1 T1.1); superseded by S050/EV-042'
-    prior_session_id: S046-iwxxm-corpus-residuals
-    prior_evolve_cycle_id: EV-038
-    prior_started: '2026-08-05'
+    status: completed
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
+    previous_started_at: '2026-08-07'
+    previous_completed_at: '2026-08-07'
+    previous_session_id: S050-remove-db-tools-operator-throughput
+    previous_evolve_cycle_id: EV-042
+    previous_tip_sha: 6bc756ef
+    previous_tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+    previous_note: 'S050/EV-042 07-build COMPLETE — M4 done; superseded by S054/EV-045'
+    prior_session_id: S047-sql-ingest-live-e2e
+    prior_evolve_cycle_id: EV-039
+    prior_started: '2026-08-06'
     prior_completed: '2026-08-06'
-    prior_note: 'S046/EV-038 07-build COMPLETE — #890 MERGED @ 619a7ac3'
-    prior_prior_session_id: S044-local-precommit-long-jobs
-    prior_prior_evolve_cycle_id: EV-036
-    prior_prior_note: 'S044/EV-036 07-build COMPLETE — T1–T5 @ d4fd6955; handoff 08'
-    session_id: S050-remove-db-tools-operator-throughput
-    evolve_cycle_id: EV-042
+    prior_note: 'S047/EV-039 07-build COMPLETE historically; closed D-S047-close=1'
+    prior_prior_session_id: S046-iwxxm-corpus-residuals
+    prior_prior_evolve_cycle_id: EV-038
+    prior_prior_note: 'S046/EV-038 07-build COMPLETE — #890 MERGED @ 619a7ac3'
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
     mode: full
-    note: 'M4 T4.1–T4.2 completed; T4.3 handoff to 09–13; tip 6bc756ef; local 08 PASS; tip CI green 05893ccb'
-    tip_sha: 6bc756ef
-    tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
-    tip_note: 'S050/EV-042 M4 @ 6bc756ef; T4.1–T4.2 done; tip CI green 05893ccb; tip_sha_pushed=true'
+    note: 'COMPLETE — T1.1–T1.7 (7/7); D-S054-t17-ci=1 accepted run 31273500621 tip CI; handoff 08-verify-build'
+    tip_sha: 09ce2bef
+    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    tip_sha_pushed: true
+    pr_number: 953
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+    pr_status: open
+    pr_base: stage
+    pr_supersedes: 952
+    ci_cd_pipeline_run: '31273500621'
+    ci_cd_pipeline_status: SUCCESS
+    ci_cd_pipeline_note: 'Accepted tip CI — run 31273500621 per D-S054-t17-ci=1; docs-only tip delta after f270618c; Staging FAIL was base=main only'
     pending_commit: false
-    next_stage: 09-qa
-    current_milestone: M4
-    current_task: T4.3
-    active_milestone: M4
-    active_task: T4.3
-    active_task_status: in_progress
-    completed_through: M4-T4.2
-    progress: 'M1–M3; M4 T4.1–T4.2 done; local 08 PASS; T4.3→09-qa'
-    next_task: T4.3
+    current_milestone: M1
+    current_task:
+    active_milestone: M1
+    active_task:
+    active_task_status: completed
+    completed_through: T1.7
+    progress: 7/7
     decision_refs:
-    - D-S047-05-gate-b
-    - D-S047-04-plan
-    - D-S047-04
-    - D-S047-02-gate-a
-    - D-S047-ac
-    - D-S047-open
+    - D-S054-t17-ci
+    - D-S054-gateB
+    - D-S054-04-plan
+    - D-S054-04-jobs
+    - D-S054-04-maturin
+    - D-S054-04-trigger
+    - D-S054-04-local
+    - D-S054-ac6-waive
+    - D-S054-gateA
+    - D-S054-01-ac
+    - D-S054-open
+    artifacts_s054:
+    - docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+    - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+    - docs/sessions/S054-rust-ci-crates/build-plan-card.md
     decision_refs_s044:
     - D-S044-02-gate-a
     - D-S044-r1-ac
@@ -9478,17 +10095,63 @@ stages:
     - tests/test_tc_ev036_local_precommit_ci.py
     - tests/unit/test_format_coverage_pr_comment.py
     active_session:
+      session_id: S054-rust-ci-crates
+      evolve_cycle_id: EV-045
+      skill_id: 07-build
+      status: completed
+      mode: full
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      completed_at: '2026-08-08'
+      completed: '2026-08-08'
+      pending_commit: false
+      note: 'COMPLETE — T1.1–T1.7 (7/7); D-S054-t17-ci=1; handoff 08-verify-build'
+      tip_sha: 09ce2bef
+      tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+      tip_sha_pushed: true
+      pr_number: 953
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+      pr_status: open
+      pr_base: stage
+      feature_ids: [F13, F14]
+      deepen_feature_ids: [F13, F14]
+      decision_refs:
+      - D-S054-t17-ci
+      - D-S054-gateB
+      - D-S054-04-plan
+      - D-S054-04-jobs
+      - D-S054-04-maturin
+      - D-S054-04-trigger
+      - D-S054-04-local
+      - D-S054-ac6-waive
+      - D-S054-gateA
+      - D-S054-01-ac
+      - D-S054-open
+      active_milestone: M1
+      current_milestone: M1
+      active_task:
+      current_task:
+      active_task_status: completed
+      completed_through: T1.7
+      progress: 7/7
+      artifacts:
+      - docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+      - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+      - docs/sessions/S054-rust-ci-crates/build-plan-card.md
+    prior_active_session_s050:
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
       skill_id: 07-build
-      status: in_progress
+      status: completed
       mode: full
       started_at: '2026-08-07'
       started: '2026-08-07'
-      tip_sha: 410055cf
-      tip_sha_full: 410055cfd5551e3e83ffc68a390d8b9a28d4d9e2
+      completed_at: '2026-08-07'
+      completed: '2026-08-07'
+      tip_sha: 6bc756ef
+      tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
       pending_commit: false
-      note: 'IN_PROGRESS — 08 PASS @ 410055cf; next M4/PR (T4.1)'
+      note: 'COMPLETE — S050/EV-042 M4 done; superseded by S054/EV-045'
       feature_ids:
       - F33
       deepen_feature_ids:
@@ -9506,10 +10169,8 @@ stages:
       - D-S050-proceed
       active_milestone: M4
       current_milestone: M4
-      active_task:
-      current_task:
       active_task_status: completed
-      completed_through: M3
+      completed_through: M4
       artifacts:
       - docs/sessions/S050-remove-db-tools-operator-throughput/reports/execution-plan.md
       - docs/sessions/S050-remove-db-tools-operator-throughput/reports/05-verify-tech.md
@@ -9608,9 +10269,6 @@ stages:
     s044_tasks: T1-T5 completed
     s044_impl_complete: true
     s044_handoff: 08-verify-build
-    pr_number: 867
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/867
-    pr_status: merged
     pr_title: '[EV-034] Automate DOKS image rollout in CD'
     hotfix_pr_number: 868
     hotfix_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/868
@@ -10401,6 +11059,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-08 D-S054-t17-ci=1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs; tip delta after f270618c is docs-only (09ce2bef); Staging gate FAIL was base=main only; T1.7 COMPLETE (7/7); 07-build COMPLETE; 08-verify-build in_progress (delta verify after T1.7 CI accept); no git commit by workflow-state-manager'
+    - '2026-08-08 S054/EV-045 07-build — T1.1–T1.6 COMPLETE + T1.7 near-complete @ tip 09ce2bef (09ce2befdf0b5878ec6a832ec30718c489b4824b); commits cfd292f4 (T1.1), b8a1cb16 (T1.2), 3cd5844b (T1.3–5), b344b4d2 (T1.7 fix), f270618c (T1.6), 09ce2bef (T1.7 docs); branch evolve/EV-045-rust-ci pushed; PR #953 open → stage (supersedes #952) https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953; CI run 31273500621 SUCCESS (Rust crates gate + both maturin + all tests); Staging gate FAIL only because PR briefly targeted main; tip after docs commit awaiting fresh Actions run (not queued yet); active_task T1.7 in_progress near-complete pending tip CI re-trigger; no git commit by workflow-state-manager'
     - '2026-08-04 S040/EV-032 — T4.3 COMPLETE (09-qa pass_with_advisories + 10-e2e T0 pass); reports qa-report.md + e2e-report.md; progress 24/28; completed_through T4.3; active_task T4.4 pending; current_stage 11-verify-impl; tip 7b3c329b pending_commit; PR #848; #846'
     - '2026-08-04 S040/EV-032 — T2.8 COMPLETE @ d13f25e8 (d13f25e85e3b42e9fbfef136d5ce117b17924533) [T2.8] chore: add VONA quality pack and path-filtered canary; T2.6–T2.8 COMPLETE this session; active_task T2.9 pending @ M2; progress 17/28; ahead_of_origin=3 pushed=false (6f53dcb7, 682919cb, d13f25e8); next T2.9 COVERAGE_MATRIX / #741 closeout; #846/#741'
     - '2026-08-04 S040/EV-032 — T2.7 COMPLETE @ 682919cb (682919cb658a1afe952774aaefcedba788554b18) [T2.7] feat: runtime product=vona and FE Examples unlock; product=vona API + FE picker + Examples wmoPass vona-A7-1; active_task T2.8 in_progress @ M2; progress 16/28; ahead_of_origin=2 pushed=false; #846/#741'
@@ -10706,10 +11366,21 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
     status: completed
-    started_at: '2026-08-07'
-    started: '2026-08-07'
-    completed_at: '2026-08-07'
-    completed: '2026-08-07'
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
+    previous_started_at: '2026-08-07'
+    previous_started: '2026-08-07'
+    previous_completed_at: '2026-08-07'
+    previous_completed: '2026-08-07'
+    previous_session_id: S050-remove-db-tools-operator-throughput
+    previous_evolve_cycle_id: EV-042
+    previous_tip_sha: dff22265
+    previous_tip_sha_full: dff22265cd77e68549238d93c15e1de931b64da8
+    previous_overall: pass_with_advisories
+    previous_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    previous_note: 'S050/EV-042 09 PASS pass_with_advisories @ dff22265 — superseded by S054/EV-045'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -10721,17 +11392,6 @@ stages:
     previous_s048_overall: pass
     previous_s048_report: docs/sessions/S048-workbench-lint-ux/reports/qa-report.md
     previous_s048_note: 'COMPLETE — S048/EV-040 qa-report.md pass; tip 861c5457; handoff 10-e2e/11'
-    previous_started_at: '2026-08-05'
-    previous_started: '2026-08-05'
-    previous_completed_at: '2026-08-05'
-    previous_completed: '2026-08-05'
-    previous_session_id: S044-local-precommit-long-jobs
-    previous_evolve_cycle_id: EV-036
-    previous_tip_sha: 95fac992
-    previous_tip_sha_full: 95fac99236ef53c4d099dfa7bab72b1936127b1e
-    previous_overall: pass
-    previous_report: docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md
-    previous_note: 'PASS — S044/EV-036 COMPLETE @ tip 95fac992; artifact docs/sessions/S044-local-precommit-long-jobs/reports/09-qa.md; handoff 11-verify-impl'
     previous_s042_started_at: '2026-08-05'
     previous_s042_started: '2026-08-05'
     previous_s042_completed_at: '2026-08-05'
@@ -10760,21 +11420,52 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S050-remove-db-tools-operator-throughput
-    evolve_cycle_id: EV-042
-    tip_sha: dff22265
-    tip_sha_full: dff22265cd77e68549238d93c15e1de931b64da8
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    tip_sha: 09ce2bef
+    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    tip_sha_pushed: true
+    pr_number: 953
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
     mode: delta
     overall: pass_with_advisories
-    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
-    note: '09 PASS pass_with_advisories @ dff22265; next was 10-e2e (now COMPLETE)'
+    report: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
+    expected_report: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
+    note: 'COMPLETE — pass_with_advisories; QA-001..005 (AC6 ops deferred primary); handoff 11-verify-impl'
+    advisories: [QA-001, QA-002, QA-003, QA-004, QA-005]
+    advisories_note: 'AC6 ops deferred is primary (D-S054-ac6-waive=2)'
+    decision_refs:
+    - D-S054-phaseC
+    - D-S054-t17-ci
+    - D-S054-gateB
+    - D-S054-ac6-waive
+    - D-S054-open
     pending_commit: false
-    active_milestone: M4
-    active_task: T4.3
-    active_task_status: completed
+    active_milestone: M1
+    active_task:
+    active_task_status:
+    prior_s050_session_id: S050-remove-db-tools-operator-throughput
+    prior_s050_evolve_cycle_id: EV-042
+    prior_s050_tip_sha: dff22265
+    prior_s050_overall: pass_with_advisories
+    prior_s050_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
     main_ci_cd_pipeline_run: '31003268652'
     main_ci_cd_pipeline_status: in_progress
     delta_substages:
+    - id: S054-rust-ci-crates-09
+      session_id: S054-rust-ci-crates
+      evolve_cycle_id: EV-045
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-08'
+      started_at: '2026-08-08'
+      completed: '2026-08-08'
+      completed_at: '2026-08-08'
+      tip_sha: 09ce2bef
+      overall: pass_with_advisories
+      report: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
+      note: 'COMPLETE — pass_with_advisories; QA-001..005'
     - id: S050-remove-db-tools-operator-throughput-09
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
@@ -11054,10 +11745,18 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
     status: completed
-    started_at: '2026-08-07'
-    started: '2026-08-07'
-    completed: '2026-08-07'
-    completed_at: '2026-08-07'
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    completed_at: '2026-08-08'
+    previous_started_at: '2026-08-07'
+    previous_started: '2026-08-07'
+    previous_completed: '2026-08-07'
+    previous_completed_at: '2026-08-07'
+    previous_session_id: S050-remove-db-tools-operator-throughput
+    previous_evolve_cycle_id: EV-042
+    previous_overall: approved
+    previous_note: 'S050/EV-042 11 COMPLETE — superseded by S054/EV-045'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -11069,17 +11768,9 @@ stages:
     previous_s048_overall: approved
     previous_s048_report: docs/sessions/S048-workbench-lint-ux/reports/verify-impl.md
     previous_s048_note: 'COMPLETE — S048/EV-040 AC1–AC7 MET; report verify-impl.md; tip 861c5457; handoff 12'
-    previous_started_at: '2026-08-06'
-    previous_started: '2026-08-06'
-    previous_completed_at: '2026-08-06'
-    previous_completed: '2026-08-06'
-    previous_session_id: S048-workbench-lint-ux
-    previous_evolve_cycle_id: EV-040
     previous_tip_sha: 08c805eb
     previous_tip_sha_full: 08c805ebb9c935e989ba91b2fd3012974140b2e9
-    previous_overall: approved
     previous_report: docs/sessions/S048-workbench-lint-ux/reports/verify-impl.md
-    previous_note: 'COMPLETE — S048/EV-040 AC1–AC7 MET; report verify-impl.md; tip 861c5457; handoff 12'
     previous_s046_started_at: '2026-08-06'
     previous_s046_started: '2026-08-06'
     previous_s046_completed_at: '2026-08-06'
@@ -11127,15 +11818,33 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S050-remove-db-tools-operator-throughput
-    evolve_cycle_id: EV-042
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    tip_sha: 09ce2bef
+    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    tip_sha_pushed: true
+    pr_number: 953
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+    pr_status: open
+    pr_base: stage
     mode: delta
     overall: approved
-    note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
-    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
+    report: docs/sessions/S054-rust-ci-crates/reports/verify-impl.md
+    expected_report: docs/sessions/S054-rust-ci-crates/reports/verify-impl.md
+    decision: D-S054-11=1
+    note: 'COMPLETE — D-S054-11=1; PR #953 still OPEN → stage; tip 09ce2bef'
+    decision_refs:
+    - D-S054-phaseC
+    - D-S054-t17-ci
+    - D-S054-ac6-waive
+    - D-S054-gateB
+    - D-S054-open
+    prior_s050_session_id: S050-remove-db-tools-operator-throughput
+    prior_s050_evolve_cycle_id: EV-042
+    prior_s050_overall: approved
+    prior_s050_note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
+    prior_s050_report_note: 'S050/EV-042 11 COMPLETE — superseded by S054/EV-045'
     report_status: approved
-    tip_sha: adad127c
-    tip_sha_full: adad127c9c3ca6ffe8c1a86e29e00c33de21eb58
     tip_note: 'S050/EV-042 tip adad127c — 11-verify-impl COMPLETE; tip_sha_pushed=false ahead_of_origin=4; next 12-verify-deploy'
     awaiting_user_decision: false
     awaiting_user_decision_note:
@@ -11937,19 +12646,28 @@ stages:
   08-verify-build:
     status: completed
     mode: delta
-    started_at: '2026-08-07'
-    started: '2026-08-07'
-    completed_at: '2026-08-07'
-    completed: '2026-08-07'
-    previous_started_at: '2026-08-05'
-    previous_completed_at: '2026-08-05'
-    previous_session_id: S045-matrix-disposition-residuals
-    previous_evolve_cycle_id: EV-037
-    previous_tip_sha: 90c2e8a3
-    previous_tip_sha_full: 90c2e8a3f090d49341fccb1f397b6ff4033d32df
-    previous_note: 'PASS — S045/EV-037 COMPLETE @ tip 90c2e8a3; report verification-report.md; handoff 11-verify-impl'
-    previous_report: docs/sessions/S045-matrix-disposition-residuals/reports/verification-report.md
-    previous_overall: pass
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
+    previous_started_at: '2026-08-07'
+    previous_completed_at: '2026-08-07'
+    previous_session_id: S050-remove-db-tools-operator-throughput
+    previous_evolve_cycle_id: EV-042
+    previous_tip_sha: 6bc756ef
+    previous_tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
+    previous_note: 'S050/EV-042 08-verify-build COMPLETE M4 PASS @ 6bc756ef — superseded by S054/EV-045'
+    previous_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
+    previous_overall: PASS
+    previous_s045_started_at: '2026-08-05'
+    previous_s045_completed_at: '2026-08-05'
+    previous_s045_session_id: S045-matrix-disposition-residuals
+    previous_s045_evolve_cycle_id: EV-037
+    previous_s045_tip_sha: 90c2e8a3
+    previous_s045_tip_sha_full: 90c2e8a3f090d49341fccb1f397b6ff4033d32df
+    previous_s045_note: 'PASS — S045/EV-037 COMPLETE @ tip 90c2e8a3; report verification-report.md; handoff 11-verify-impl'
+    previous_s045_report: docs/sessions/S045-matrix-disposition-residuals/reports/verification-report.md
+    previous_s045_overall: pass
     previous_s044_started_at: '2026-08-05'
     previous_s044_completed_at: '2026-08-05'
     previous_s044_session_id: S044-local-precommit-long-jobs
@@ -11992,15 +12710,33 @@ stages:
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S050-remove-db-tools-operator-throughput
-    evolve_cycle_id: EV-042
-    tip_sha: 6bc756ef
-    tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
-    note: 'S050/EV-042 08-verify-build COMPLETE M4 PASS @ 6bc756ef — after T4.1–T4.2 H4–H5; tip CI green 05893ccb; report verification-report.md; next 09-qa (T4.3 handoff)'
-    expected_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
-    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    tip_sha: 09ce2bef
+    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    tip_sha_pushed: true
+    pr_number: 953
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+    pr_status: open
+    pr_base: stage
+    ci_cd_pipeline_run: '31273500621'
+    ci_cd_pipeline_status: SUCCESS
+    ci_cd_pipeline_note: 'Accepted tip CI — run 31273500621 per D-S054-t17-ci=1'
+    note: 'COMPLETE — PASS @ tip 09ce2bef; Phase C checkpoint pending AskQuestion before 09-qa'
+    expected_report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
+    report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
     overall: PASS
-    next_stage: 07-build
+    phase_c_checkpoint: passed
+    phase_c_checkpoint_note: 'D-S054-phaseC=1 — Phase C approved; 09-qa started'
+    next_stage: 09-qa
+    next_stage_status: in_progress
+    next_stage_note: 'D-S054-phaseC=1 — 09-qa in_progress'
+    prior_s050_session_id: S050-remove-db-tools-operator-throughput
+    prior_s050_evolve_cycle_id: EV-042
+    prior_s050_tip_sha: 6bc756ef
+    prior_s050_note: 'S050/EV-042 08-verify-build COMPLETE M4 PASS @ 6bc756ef — superseded by S054/EV-045'
+    prior_s050_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
+    prior_s050_overall: PASS
     prior_s040_report: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report.md
     prior_s040_report_m4: docs/sessions/S040-iwxxm-corpus-quality/reports/verification-report-M4.md
     prior_s040_overall: pass
@@ -12018,16 +12754,21 @@ stages:
     m5_overall: pass
     m5_tip_sha: 7a2cb7d0
     m5_report: docs/sessions/S038-platform-independence-842/reports/verification-report-M5.md
-    active_milestone: M4
+    active_milestone: M1
     active_task:
     active_task_status:
     progress:
-    completed_through: M3
+    completed_through: T1.7
     m3_boundary: passed
     m5_boundary: false
     m5_boundary_complete: true
     m7_pack: true
     decision_refs:
+    - D-S054-t17-ci
+    - D-S054-gateB
+    - D-S054-04-plan
+    - D-S054-open
+    decision_refs_prior_s050:
     - D-S050-gate-b
     - D-S050-ac
     - D-S050-proceed
@@ -12041,24 +12782,50 @@ stages:
     substeps:
       lint:
         status: completed
-        note: PASS
+        note: PASS — make lint
       format:
         status: completed
-        note: PASS
+        note: PASS — make format-check
       typecheck:
         status: completed
-        note: PASS
+        note: PASS — make typecheck
       tests:
         status: completed
-        note: PASS
+        note: PASS — TC-EV045+H0c 14 PASS; make rust-check PASS
       security:
         status: completed
-        note: PASS
+        note: PASS — uvx pip-audit 0 CVEs
       report:
         status: completed
-        path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
+        path: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
         note: Overall PASS
     active_session:
+      session_id: S054-rust-ci-crates
+      evolve_cycle_id: EV-045
+      skill_id: 08-verify-build
+      status: completed
+      mode: delta
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      completed_at: '2026-08-08'
+      completed: '2026-08-08'
+      tip_sha: 09ce2bef
+      tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+      tip_sha_pushed: true
+      pr_number: 953
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+      overall: PASS
+      report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
+      expected_report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
+      note: 'COMPLETE — PASS @ tip 09ce2bef; Phase C checkpoint pending AskQuestion before 09-qa'
+      feature_ids: [F13, F14]
+      deepen_feature_ids: [F13, F14]
+      decision_refs:
+      - D-S054-t17-ci
+      - D-S054-gateB
+      - D-S054-04-plan
+      - D-S054-open
+    prior_active_session_s050:
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
       skill_id: 08-verify-build
@@ -12073,7 +12840,7 @@ stages:
       overall: PASS
       report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
       expected_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verification-report.md
-      note: 'PASS @ 410055cf — M1–M3 boundary; next M4/PR; handoff 07-build M4'
+      note: 'PASS @ 410055cf — M1–M3 boundary; superseded by S054/EV-045'
       feature_ids:
       - F33
       deepen_feature_ids:
@@ -14002,18 +14769,18 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
-    session_id: S052-doks-staging-prod-branch-deploys
-    evolve_cycle_id: EV-043
+    session_id: S055-wmo-aviation-registers
+    evolve_cycle_id: EV-046
     started_at: '2026-08-08'
     started: '2026-08-08'
-    completed:
-    completed_at:
-    previous_session_id: S050-remove-db-tools-operator-throughput
-    previous_evolve_cycle_id: EV-042
-    previous_completed_at: '2026-08-07'
-    previous_note: 'COMPLETE — D-S050-13=1; EV-042/S050 closed; PR #899 @ e3d1c7c8; CI/CD 31197264636; active_session=null'
+    completed: '2026-08-08'
+    completed_at: '2026-08-08'
+    previous_session_id: S052-doks-staging-prod-branch-deploys
+    previous_evolve_cycle_id: EV-043
+    previous_completed_at:
+    previous_note: 'IN_PROGRESS — S052/EV-043 open for #886; 00-context completed; Phase 0 handoff; branch evolve/EV-043-doks-staging-prod ACTIVE recorded (create pending); no git commit by workflow-state-manager'
     prior_s051_session_id: S051-output-filename-download-stale
     prior_s051_note: 'COMPLETE — D-S051-close=1; hotfix closed; PR #905 @ a15541e5; tip closeout da2a6656; no evolve cycle'
     prior_s049_session_id: S049-operator-sources-briefing
@@ -14028,12 +14795,16 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: phase0
-    current_child_stage_note: 'IN_PROGRESS — Phase 0 after open; Plan approval next; promote gate shape TBD (D-S052-cd-manual)'
-    tip_sha: 81701500
-    tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
-    note: 'IN_PROGRESS — S052/EV-043 open for #886; 00-context completed; Phase 0 handoff; branch evolve/EV-043-doks-staging-prod ACTIVE recorded (create pending); no git commit by workflow-state-manager'
+    current_child_stage: completed
+    current_child_stage_note: 'COMPLETE — D-S055-close=1; Lean AC1–AC6 done; Validated follow-on #959; cycle COMPLETE'
+    tip_sha: d0a51f5a
+    tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    note: 'COMPLETE — D-S055-close=1; S055/EV-046 closed; Lean present/cite/cover done; #889 OPEN until #959; Ready for PR; EV-043/EV-044 remain PARKED; active_session=null; no git commit by workflow-state-manager'
+    close_decision: D-S055-close=1
 
+    prior_s054_session_id: S054-rust-ci-crates
+    prior_s054_evolve_cycle_id: EV-045
+    prior_s054_note: 'COMPLETE — D-S054-11=1 / D-S054-next=2; PR #953 MERGED → stage; EV-043/EV-044 PARKED; active_session was null before S055 open'
   15-service-health:
     status: completed
     session_id: S039-doks-dns-cutover
@@ -14293,6 +15064,951 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S055-close
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: close
+  status: confirmed
+  topic: 'Close EV-046/S055 Lean cycle; commit docs; PR → stage'
+  summary: '1 — Close EV-046/S055; commit EV-046 docs; PR → stage'
+  decision: |
+    D-S055-close=1 — Close EV-046/S055.
+    Mark EV-046 completed; 16-evolve completed.
+    Lean present/cite/cover done (AC1–AC6).
+    Leave #889 OPEN until #959 Validated lands (or until user closes).
+    project_status: Ready for PR (In review after PR opens).
+    Commit EV-046 docs; open PR → stage (not by workflow-state-manager).
+    EV-043/EV-044 remain PARKED (D-park-doks=1).
+    active_session=null; no git commit by workflow-state-manager.
+  user_option: '1'
+  feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  next_stage: null
+  artifacts:
+  - docs/sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md
+  - docs/sessions/S055-wmo-aviation-registers/reports/evolve-summary.md
+  - docs/evolve-report-EV-046.md
+  - https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959
+  github_issues:
+  - 889
+  - 959
+  github_issue_note: 'Leave #889 OPEN until #959 Validated lands (or until user closes); Lean present/cite/cover done'
+  project_status: Ready for PR
+  project_status_note: 'Ready for PR — In review after PR opens; commit EV-046 docs then PR → stage'
+  branch: evolve/EV-046-wmo-aviation-registers
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  current_stage: completed
+  note: '1 — Close EV-046/S055; commit EV-046 docs; PR → stage'
+- id: D-S055-959
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: lean-docs-complete
+  category: follow-on
+  status: confirmed
+  topic: 'Open #959 Validated Standard follow-on for WMO aviation registers'
+  summary: '1 — opened #959 for Validated Standard follow-on'
+  decision: |
+    D-S055-959=1 — opened #959 for Validated Standard follow-on.
+    Lean AC1–AC6 docs complete for EV-046 / S055.
+    Validated harvest deferred to Standard child (#959).
+    current_stage=lean-docs-complete; 16-evolve close pending AskQuestion.
+    Cycle NOT completed (await user close).
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  next_stage: 16-evolve-close-pending
+  artifacts:
+  - docs/sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md
+  - docs/sessions/S055-wmo-aviation-registers/reports/evolve-summary.md
+  - docs/evolve-report-EV-046.md
+  - https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959
+  github_issues:
+  - 889
+  - 959
+  branch: evolve/EV-046-wmo-aviation-registers
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  current_stage: lean-docs-complete
+  note: '1 — opened #959 for Validated Standard follow-on'
+- id: D-S055-gateA
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'Gate A PASS → lean-docs-execution (Lean; skip 03–13)'
+  summary: '1 — Gate A PASS; accept M1/M2/L1; execute Lean docs'
+  decision: |
+    D-S055-gateA=1 — Gate A PASS for S055/EV-046.
+    Accept M1/M2/L1 findings. Close 02-verify-plan (completed 2026-08-08).
+    Execute Lean docs on branch (no 04/07); EV-046.current_stage=lean-docs-execution.
+    16-evolve remains in_progress (orchestrator).
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  next_stage: lean-docs-execution
+  artifacts:
+  - docs/sessions/S055-wmo-aviation-registers/reports/02-verify-plan.md
+  - docs/sessions/S055-wmo-aviation-registers/reports/01-requirements.md
+  github_issues:
+  - 889
+  branch: evolve/EV-046-wmo-aviation-registers
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  current_stage: lean-docs-execution
+  note: 'Gate A PASS; accept M1/M2/L1; execute Lean docs'
+- id: D-S055-01-ac
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: acceptance_criteria
+  status: confirmed
+  topic: 'Confirm AC1–AC6 for WMO aviation registers (#889)'
+  summary: '1 — AC1–AC6 confirmed; 01 COMPLETE; handoff 02-verify-plan'
+  decision: |
+    D-S055-01-ac=1 — confirm acceptance criteria AC1–AC6 for EV-046 / S055.
+    AC1–AC6 confirmed. 01-requirements COMPLETE; start 02-verify-plan (Gate A).
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  next_stage: 02-verify-plan
+  artifacts:
+  - docs/sessions/S055-wmo-aviation-registers/reports/01-requirements.md
+  github_issues:
+  - 889
+  branch: evolve/EV-046-wmo-aviation-registers
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  current_stage: 02-verify-plan
+  note: '01 completed; 02-verify-plan in_progress'
+- id: D-S055-phase01
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: phase0_to_1
+  category: phase_proceed
+  status: confirmed
+  topic: 'Phase 0 scope lock — start 01-requirements'
+  summary: '1 — Lock scope; start 01-requirements'
+  decision: |
+    D-S055-phase01=1 — Phase 0 scope locked; proceed to 01-requirements (in_progress; not completed).
+    Locked with D-S055-families=3, D-S055-validated=1, D-S055-cite=2, D-S055-open=2.
+    feature_ids/deepen: F6, F12, F15, F20, F23, F24, F26, F27, F28, F32.
+    Families: full priority-register coverage % across all supported F6 products.
+    Validated: waive for Lean close; Standard follow-on child.
+    Cite: domain docs + ISSUE_CATALOG/provenance stable concept URIs.
+    EV-046.current_stage=01-requirements. 16-evolve remains in_progress (orchestrator).
+    Awaiting AC confirm before marking 01 completed.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  related_decisions:
+  - D-S055-open
+  - D-S055-families
+  - D-S055-validated
+  - D-S055-cite
+  github_issues:
+  - 889
+  branch: evolve/EV-046-wmo-aviation-registers
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  current_stage: 01-requirements
+  note: 'Phase 0 COMPLETE/locked; 01-requirements in_progress (awaiting AC); 16-evolve remains in_progress'
+- id: D-S055-families
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase0
+  category: scope
+  status: confirmed
+  topic: 'Register family coverage scope'
+  summary: '3 — Full priority-register coverage % across all supported F6 products'
+  decision: |
+    D-S055-families=3 — Full priority-register coverage % across all supported F6 products.
+    Part of S055/EV-046 Phase 0 scope lock with D-S055-phase01=1.
+  user_option: '3'
+  note: 'Phase 0 scope lock'
+- id: D-S055-validated
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase0
+  category: scope
+  status: confirmed
+  topic: 'Validated / harvest wiring for Lean close'
+  summary: '1 — Waive Validated for Lean close; Standard follow-on child'
+  decision: |
+    D-S055-validated=1 — Waive Validated for Lean close; Standard follow-on child.
+    Part of S055/EV-046 Phase 0 scope lock with D-S055-phase01=1.
+  user_option: '1'
+  note: 'Phase 0 scope lock'
+- id: D-S055-cite
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: phase0
+  category: scope
+  status: confirmed
+  topic: 'Citation / provenance surface'
+  summary: '2 — Domain docs + ISSUE_CATALOG/provenance stable concept URIs'
+  decision: |
+    D-S055-cite=2 — Domain docs + ISSUE_CATALOG/provenance stable concept URIs.
+    Part of S055/EV-046 Phase 0 scope lock with D-S055-phase01=1.
+  user_option: '2'
+  note: 'Phase 0 scope lock'
+- id: D-S055-open
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: Open S055/EV-046 Lean — WMO aviation registers present/cite/cover (#889)
+  summary: 'D-S055-open=2 Lean S055/EV-046 for #889; EV-043/044 remain PARKED'
+  decision: "D-S055-open=2 — Open S055 Lean preset (docs/coverage first; defer full harvest wiring).\nSession S055-wmo-aviation-registers; evolve cycle EV-046; session_counter 55; evolve_cycle_counter 46.\nIntent: Mine codes.wmo.int aviation registers → TAC code verification + fixture coverage (#889).\nDeepen F15/F20/F23. Branch evolve/EV-046-wmo-aviation-registers active @ main@d0a51f5a.\nEV-043/EV-044 remain PARKED (D-park-doks=1). S054 stays completed in sessions[].\nstages.00-context completed; stages.16-evolve in_progress.\nNo git commit by workflow-state-manager.\n"
+  user_option: '2'
+  branch: evolve/EV-046-wmo-aviation-registers
+  prior_session: S054-rust-ci-crates
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889
+  github_issues:
+  - 889
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  note: 'D-S055-open=2 Lean S055/EV-046 for #889; EV-043/044 remain PARKED'
+- id: D-S054-issue
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: completed
+  category: github_issue
+  status: confirmed
+  topic: 'Leave #725 OPEN @ On stage until stage→main'
+  summary: '2026-08-08 D-S054-issue=1 — Leave #725 OPEN @ On stage until stage→main; S054/EV-045 remain closed; active_session=null'
+  decision: |
+    D-S054-issue=1 — Leave #725 OPEN @ On stage until stage→main.
+    Do NOT close the issue or set Done.
+    S054/EV-045 remain closed; active_session=null.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  github_issue: 725
+  github_issue_status: open
+  project_status: On stage
+  note: 'Issue stays OPEN pending promote stage→main'
+- id: D-S054-ticket
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: completed
+  category: github_issue
+  status: confirmed
+  topic: '#725 Project Status On stage; closeout comment; issue remains OPEN'
+  summary: '2026-08-08 D-S054-ticket — #725 Project Status → On stage; closeout comment posted; issue remains OPEN pending user (Done/close vs leave open until stage→main); S054/EV-045 already completed; active_session=null'
+  decision: |
+    D-S054-ticket — #725 Project Status → On stage; closeout comment posted
+    (https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725#issuecomment-5228402622);
+    issue remains OPEN pending user (Done/close vs leave open until stage→main).
+    S054/EV-045 already completed; active_session=null.
+    No git commit by workflow-state-manager.
+  github_issue: 725
+  github_issue_status: open
+  project_status: On stage
+  github_issue_closeout_comment: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725#issuecomment-5228402622
+  note: 'Issue OPEN pending user decision on close/Done'
+- id: D-S054-next
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: completed
+  category: next_step
+  status: confirmed
+  topic: 'Stop after stage merge; defer promote stage→main'
+  summary: '2026-08-08 D-S054-next=2 — Stop after stage merge; leave #953 on stage @ c51e0e2f; Staging smoke green (31279573710); promote stage→main later; #725 On stage status still pending rate-limit retry'
+  decision: |
+    D-S054-next=2 — Stop after stage merge; leave #953 on stage @ c51e0e2f;
+    Staging smoke green (31279573710); promote stage→main later; do NOT open stage→main PR.
+    #725 On stage status still pending rate-limit retry.
+    S054/EV-045 remain closed; active_session=null.
+    No git commit by workflow-state-manager.
+  user_option: '2'
+  merge_sha: c51e0e2f
+  stage_ci_run: '31279573710'
+  pr_number: 953
+  pr_status: merged
+  pr_base: stage
+  next_step: deferred_promote_stage_to_main
+  note: 'Stop here; leave on stage; promote later; no stage→main PR'
+- id: D-S054-stage-ci
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: completed
+  category: stage_ci
+  status: confirmed
+  topic: 'Post-merge stage CI/CD at c51e0e2f'
+  summary: '2026-08-08 D-S054-stage-ci — post-merge stage CI 31279573710 SUCCESS; Deploy+Staging smoke SUCCESS; Staging gate SKIPPED; tip c51e0e2f; #725 project Status update blocked by GraphQL rate limit (still Backlog)'
+  decision: |
+    D-S054-stage-ci — post-merge stage CI 31279573710 SUCCESS; Deploy+Staging smoke SUCCESS;
+    Staging gate SKIPPED; tip c51e0e2f; Rust crates gate + both maturin SUCCESS.
+    #725 project Status update blocked by GraphQL rate limit (still Backlog).
+    S054/EV-045 remain closed; active_session=null. Investigate Staging gate skip before stage→main.
+    No git commit by workflow-state-manager.
+  merge_sha: c51e0e2f
+  merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
+  stage_ci_run: '31279573710'
+  stage_ci_status: SUCCESS
+  stage_deploy: success
+  stage_smoke: success
+  stage_gate: skipped
+  pr_number: 953
+  pr_status: merged
+  note: 'S054/EV-045 remain closed; active_session=null; Staging gate SKIPPED — investigate before stage→main'
+- id: D-S054-merge-stage
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: completed
+  category: merge
+  status: confirmed
+  topic: 'Merge PR #953 into stage'
+  summary: 'PR #953 MERGED → stage @ tip 021a323d; CI 31279042234 SUCCESS'
+  decision: |
+    D-S054-merge-stage — PR #953 MERGED → stage @ tip 021a323d; CI 31279042234 SUCCESS;
+    S054/EV-045 remain closed; active_session=null; promote stage→main only after Staging smoke/gate.
+    Merge commit c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2. EV-043/EV-044 remain PARKED.
+    No git commit by workflow-state-manager.
+  user_option: continue_with_merge
+  branch: evolve/EV-045-rust-ci
+  related_decisions:
+  - D-S054-11
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  current_stage: completed
+  tip_sha: 021a323d
+  tip_sha_full: 021a323db2ef979ab4692845981c90f83f774854
+  merge_sha: c51e0e2f
+  merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
+  pr_number: 953
+  pr_status: merged
+  pr_base: stage
+  ci_cd_pipeline_run: '31279042234'
+  ci_cd_pipeline_status: SUCCESS
+  note: 'S054/EV-045 remain closed; active_session=null; promote stage→main only after Staging smoke/gate'
+- id: D-S054-11
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: verify_impl_approval
+  status: confirmed
+  topic: 'Approve F13+F14 deepen + accept QA-001..005; close cycle'
+  summary: '1 — Approve F13+F14 deepen + accept QA-001..005; proceed to cycle close'
+  decision: |
+    D-S054-11=1 — Approve F13+F14 deepen + accept QA-001..005 for S054/EV-045.
+    Complete 11-verify-impl (verify-impl.md); complete 16-evolve; close EV-045 and S054.
+    PR #953 remains OPEN → stage (not merged). Tip 09ce2bef; closeout docs may be uncommitted.
+    EV-043/EV-044 remain PARKED (D-park-doks=1).
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-045-rust-ci
+  related_decisions:
+  - D-S054-phaseC
+  - D-S054-t17-ci
+  - D-S054-ac6-waive
+  - D-S054-gateB
+  - D-S054-open
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  current_stage: completed
+  tip_sha: 09ce2bef
+  pr_number: 953
+  pr_status: open
+  note: 'Cycle+session CLOSED; active_session=null'
+- id: D-S054-phaseC
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: phase_c_checkpoint
+  status: confirmed
+  topic: 'Approve Phase C; start 09-qa'
+  summary: '1 — Approve Phase C; start 09-qa'
+  decision: |
+    D-S054-phaseC=1 — Approve Phase C for S054/EV-045 after 08-verify-build PASS.
+    checkpoints.phase_c=passed; gates.c_to_d=passed.
+    Start 09-qa (in_progress, started 2026-08-08).
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-045-rust-ci
+  related_decisions:
+  - D-S054-t17-ci
+  - D-S054-gateB
+  - D-S054-open
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  current_stage: 09-qa
+  tip_sha: 09ce2bef
+  note: 'Phase C approved; 09-qa in_progress'
+- id: D-S054-t17-ci
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: ci_evidence
+  status: confirmed
+  topic: 'Accept run 31273500621 as tip CI evidence; close T1.7 → 08-verify-build'
+  summary: '1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs; tip delta after f270618c is docs-only (09ce2bef); Staging gate failure was base=main only; continue to 08-verify-build'
+  decision: |
+    D-S054-t17-ci=1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs.
+    Tip delta after f270618c is docs-only (09ce2bef); Staging gate failure was base=main only.
+    Close T1.7 / 07-build (completed 2026-08-08, progress 7/7); start 08-verify-build (in_progress).
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-045-rust-ci
+  related_decisions:
+  - D-S054-gateB
+  - D-S054-04-plan
+  - D-S054-open
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  current_stage: 08-verify-build
+  completed_through: T1.7
+  progress: 7/7
+  ci_cd_pipeline_run: '31273500621'
+  tip_sha: 09ce2bef
+  note: 'T1.7 COMPLETE; 07-build COMPLETE; 08-verify-build in_progress'
+- id: D-S054-gateB
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 05-verify-tech
+  skill_id: 05-verify-tech
+  stage: 05-verify-tech
+  category: gate_b
+  status: confirmed
+  topic: 'Gate B PASS — proceed 07-build M1 T1.1 (06 skipped)'
+  summary: '1 — Gate B PASS; medium/low syncs confirmed; close 05 → start 07-build M1 T1.1 (06 skipped ADR-017)'
+  decision: |
+    D-S054-gateB=1 — Gate B PASS for S054/EV-045.
+    Medium/low syncs confirmed (S2.1/S2.2/S3.1/S3.2).
+    Close 05-verify-tech (completed 2026-08-08); start 07-build (in_progress) M1 T1.1 pending.
+    06-tech-tooling skipped per Standard routing + ADR-017 (maturin/rust toolchain already documented).
+    gates.b_to_c=passed; checkpoints.phase_b=passed.
+    Artifact: docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-045-rust-ci
+  related_decisions:
+  - D-S054-04-plan
+  - D-S054-04-jobs
+  - D-S054-04-maturin
+  - D-S054-04-trigger
+  - D-S054-04-local
+  - D-S054-ac6-waive
+  - D-S054-gateA
+  - D-S054-01-ac
+  - D-S054-open
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  current_stage: 07-build
+  active_task: T1.1
+  active_task_status: pending
+  active_milestone: M1
+  artifacts:
+  - docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+  - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+  - docs/sessions/S054-rust-ci-crates/build-plan-card.md
+  note: '05-verify-tech COMPLETE; Gate B PASS; 07-build in_progress M1 T1.1 pending'
+- id: D-S054-04-plan
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech_plan_approval
+  status: confirmed
+  topic: 'Approve execution plan as written → 05-verify-tech'
+  summary: '1 — approve execution plan + build-plan-card as written; close 04 → 05-verify-tech'
+  decision: |
+    D-S054-04-plan=1 — approve execution plan as written for S054/EV-045.
+    Close 04-tech-plan (completed 2026-08-08); start 05-verify-tech (in_progress).
+    Artifacts approved: execution-plan.md (T1.1–T1.7), build-plan-card.md, reports/04-tech-plan.md.
+    Locked interview: jobs=2 maturin=2 trigger=1 local=2 (D-S054-04).
+    gates.b_to_c + checkpoints.phase_b pending Gate B.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  related_decisions:
+  - D-S054-04-jobs
+  - D-S054-04-maturin
+  - D-S054-04-trigger
+  - D-S054-04-local
+  - D-S054-ac6-waive
+  - D-S054-gateA
+  - D-S054-01-ac
+  - D-S054-open
+  artifacts:
+  - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+  - docs/sessions/S054-rust-ci-crates/build-plan-card.md
+  - docs/sessions/S054-rust-ci-crates/reports/04-tech-plan.md
+  note: '04-tech-plan COMPLETE; 05-verify-tech in_progress; awaiting Gate B'
+- id: D-S054-04-local
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech_plan_interview
+  status: confirmed
+  topic: '04 Q4 — deploy/local parity'
+  summary: '2 — gate deploy; rust-check includes maturin'
+  decision: |
+    D-S054-04-local=2 — gate deploy on Rust CI; make rust-check includes maturin smoke.
+    Part of D-S054-04 interview locked for EV-045 / S054.
+    04-tech-plan plan drafted; awaiting D-S054-04-plan approval; stage remains in_progress.
+    No git commit by workflow-state-manager.
+  user_option: '2'
+  related_decisions:
+  - D-S054-04-jobs
+  - D-S054-04-maturin
+  - D-S054-04-trigger
+  note: '04 interview Q4 locked; awaiting D-S054-04-plan'
+- id: D-S054-04-trigger
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech_plan_interview
+  status: confirmed
+  topic: '04 Q3 — CI triggers'
+  summary: '1 — always default CI; no path-filter-only'
+  decision: |
+    D-S054-04-trigger=1 — Rust CI runs on default CI triggers; no path-filter-only workflow.
+    Part of D-S054-04 interview locked for EV-045 / S054.
+    04-tech-plan plan drafted; awaiting D-S054-04-plan approval; stage remains in_progress.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  related_decisions:
+  - D-S054-04-jobs
+  - D-S054-04-maturin
+  - D-S054-04-local
+  note: '04 interview Q3 locked; awaiting D-S054-04-plan'
+- id: D-S054-04-maturin
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech_plan_interview
+  status: confirmed
+  topic: '04 Q2 — maturin integration smoke'
+  summary: '2 — extend native; two-package matrix, distinct check_names'
+  decision: |
+    D-S054-04-maturin=2 — extend native CI; two-package maturin matrix with distinct check_names for tac2iwxxm and iwxxm-validate.
+    Part of D-S054-04 interview locked for EV-045 / S054.
+    04-tech-plan plan drafted; awaiting D-S054-04-plan approval; stage remains in_progress.
+    No git commit by workflow-state-manager.
+  user_option: '2'
+  related_decisions:
+  - D-S054-04-jobs
+  - D-S054-04-trigger
+  - D-S054-04-local
+  note: '04 interview Q2 locked; awaiting D-S054-04-plan'
+- id: D-S054-04-jobs
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: tech_plan_interview
+  status: confirmed
+  topic: '04 Q1 — CI job shape'
+  summary: '2 — matrix + gate job for locked check name'
+  decision: |
+    D-S054-04-jobs=2 — matrix jobs plus gate job for locked required-check name (AC6 docs half).
+    Part of D-S054-04 interview locked for EV-045 / S054.
+    Artifacts drafted: execution-plan.md, build-plan-card.md, reports/04-tech-plan.md.
+    Awaiting D-S054-04-plan approval; 04-tech-plan remains in_progress (not completed).
+    No git commit by workflow-state-manager.
+  user_option: '2'
+  related_decisions:
+  - D-S054-04-maturin
+  - D-S054-04-trigger
+  - D-S054-04-local
+  artifacts:
+  - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+  - docs/sessions/S054-rust-ci-crates/build-plan-card.md
+  - docs/sessions/S054-rust-ci-crates/reports/04-tech-plan.md
+  note: '04 interview Q1 locked; plan drafted; awaiting D-S054-04-plan'
+- id: D-S054-ac6-waive
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: ac6_ops_waiver
+  status: confirmed
+  topic: 'Waive AC6 ops half — GitHub rulesets/required checks wiring deferred'
+  summary: '2 — waive AC6 ops half; docs+apply_gh_branch_rulesets.sh only; proceed 04-tech-plan; wire rulesets later when admin can run script'
+  decision: |
+    D-S054-ac6-waive=2 — user waived AC6 ops half (GitHub rulesets/required checks wiring) for now.
+    In scope now: AC6 docs half (locked check names) + apply_gh_branch_rulesets.sh script/docs only.
+    Deferred: admin apply of rulesets until token admin=true or admin runs apply_gh_branch_rulesets.sh.
+    Unblocks EV-045 / S054 before 04-tech-plan after Gate A PASS (D-S054-gateA=2).
+    EV-045 gates.a_to_b=passed_ops_deferred; checkpoints.phase_a=passed.
+    04-tech-plan in_progress. No git commit by workflow-state-manager.
+  user_option: '2'
+  gate: A
+  gate_result: PASS
+  prior_blocker: 'no GH rulesets; token admin=false'
+  ac6_docs_in_scope: true
+  ac6_ops_deferred: true
+  next_stage: 04-tech-plan
+  note: 'Blocker cleared; 04-tech-plan started; AC6 ops deferred'
+- id: D-S054-gateA
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate_a
+  status: confirmed
+  topic: 'Gate A — pass with ruleset blocker before Phase A→B / 04-tech-plan'
+  summary: '2 — Gate A PASS; BLOCKED before 04 — no GH rulesets; token admin=false; need admin apply_gh_branch_rulesets.sh or waiver'
+  decision: |
+    D-S054-gateA=2 — Gate A PASS (02-verify-plan audit complete) but Phase A→B blocked.
+    Blocker: no GitHub rulesets on repo; token admin=false.
+    Unblock paths: admin runs apply_gh_branch_rulesets.sh, or explicit waiver to proceed to 04.
+    02-verify-plan COMPLETE. 04-tech-plan NOT started.
+    EV-045 gates.a_to_b=pending_blocked_ruleset; checkpoints.phase_a=pass_blocked_ruleset.
+    No git commit by workflow-state-manager.
+  user_option: '2'
+  gate: A
+  gate_result: PASS
+  next_stage_blocked: 04-tech-plan
+  unblock_options:
+  - admin apply_gh_branch_rulesets.sh
+  - waiver to proceed without rulesets
+  note: '02 completed; 04 not started; blocked_before_stage=04-tech-plan'
+- id: D-S054-01-ac
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: acceptance_criteria
+  status: confirmed
+  topic: 'Confirm ACs + defaults for Rust crate CI (#725)'
+  summary: '1 — confirm ACs + defaults (extend ci-cd.yml, clippy -D warnings, make rust-check)'
+  decision: |
+    D-S054-01-ac=1 — confirm acceptance criteria and defaults for EV-045 / S054.
+    Defaults locked:
+      - Extend ci-cd.yml (crate matrix); not separate rust-ci.yml unless latency forces
+      - cargo clippy -- -D warnings hard-fail
+      - make rust-check local mirror of CI
+    Deepen F13 + F14. 01-requirements COMPLETE; start 02-verify-plan (Gate A).
+    requirements-decisions.md EV-045 rows already confirmed in standing doc.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  next_stage: 02-verify-plan
+  artifacts:
+  - docs/sessions/S054-rust-ci-crates/reports/01-requirements.md
+  - docs/decisions/requirements-decisions.md
+  note: '01 completed; 02-verify-plan in_progress'
+- id: D-S054-phase01
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: phase0_to_1
+  category: phase_proceed
+  status: confirmed
+  topic: 'Phase 0→1 proceed — deepen F13+F14; start 01-requirements'
+  summary: '1 — deepen F13+F14; proceed to 01-requirements'
+  decision: |
+    D-S054-phase01=1 — user/parent proceeded Phase 0→1.
+    Deepen F13 + F14 (Rust CI gates). Start 01-requirements (in_progress; not completed).
+    EV-045.current_stage=01-requirements. Corpus: product §F13/§F14, tech-spec, tests, ADR-017.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  corpus_cites:
+  - "[Corpus: product §F13]"
+  - "[Corpus: product §F14]"
+  - "[Corpus: tech-spec]"
+  - "[Corpus: tests]"
+  - "[Corpus: adr/ADR-017]"
+  note: '01-requirements marked in_progress; not completed'
+- id: D-S054-open
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: 'Open S054/EV-045 — Rust crate CI fmt/clippy/test/integration (#725)'
+  summary: '1 — open S054 as proposed (Standard; skip 03/06/10/12/13; deepen F13+F14)'
+  decision: |
+    D-S054-open=1 — open_session for GitHub #725 Rust crate CI.
+    Session S054-rust-ci-crates; evolve cycle EV-045; session_counter 54; evolve_cycle_counter 45.
+    Intent: CI lint/typecheck/unit/integration for packages/tac2iwxxm/rust and packages/iwxxm-validate/rust.
+    Preset Standard with skips 03/06/10/12/13.
+    Deepen F13 + F14. Prior S053/EV-044 and S052/EV-043 remain PARKED (D-park-doks=1).
+    Branch evolve/EV-045-rust-ci status active; base main@d0a51f5a (d0a51f5a863daac91a2cac5ca545f4d5459baac8).
+    Branch not present in local git at open — parent creates (exists=false recorded).
+    artifacts_dir docs/sessions/S054-rust-ci-crates/ (parent writes session-brief/routing-plan; not workflow-state-manager).
+    stages.00-context completed; active_session.current_stage=16-evolve; stages.16-evolve in_progress.
+    overall_status=in_progress. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-045-rust-ci
+  prior_session: S053-separate-staging-doks-project
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725
+  github_issues: [725]
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  deepen_feature_ids: [F13, F14]
+  feature_ids: [F13, F14]
+  artifacts:
+  - docs/sessions/S054-rust-ci-crates/
+  note: 'open_session applied; active_session=S054-rust-ci-crates; EV-045 in_progress; session_counter=54; evolve_cycle_counter=45; branch ACTIVE recorded exists=false @ main@d0a51f5a'
+- id: D-park-doks
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  skill: 00-context
+  skill_id: 00-context
+  stage: park_sessions
+  category: session_park
+  status: confirmed
+  topic: 'Park EV-043+EV-044; repair active_session mash; clear active_session for #725'
+  summary: 'D-park-doks=1 — Park EV-043+EV-044; repair active_session mash; clear active_session for #725 Rust CI'
+  decision: |
+    D-park-doks=1 — user chose park to open #725 Rust CI session.
+    - Repaired corrupted active_session (S053+S052 concatenated) → active_session: null
+    - EV-044/S053 parked (status in_progress, parked=true); resume_at_stage 05-verify-tech
+    - EV-043/S052 parked (status in_progress, parked=true); resume_at_stage 16-evolve; S052 inserted into sessions[]
+    - session_counter / evolve_cycle_counter unchanged (53/44); #725 session NOT opened in this update
+  user_option: '1'
+  related_sessions:
+  - S053-separate-staging-doks-project
+  - S052-doks-staging-prod-branch-deploys
+  related_evolve_cycles:
+  - EV-044
+  - EV-043
+  github_issues_deferred: [725]
 - id: D-S052-open
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -27182,6 +28898,94 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md
+  type: session-report
+  kind: coverage-report
+  stage: lean-docs-complete
+  skill_id: 16-evolve
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: written
+  note: 'S055/EV-046 Lean AC1–AC6 coverage — awaiting close AskQuestion'
+- path: docs/sessions/S055-wmo-aviation-registers/reports/evolve-summary.md
+  type: session-report
+  kind: evolve-summary
+  stage: lean-docs-complete
+  skill_id: 16-evolve
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: written
+  note: 'S055/EV-046 Lean evolve summary — cycle NOT completed'
+- path: docs/evolve-report-EV-046.md
+  type: standing-report
+  kind: evolve-report
+  stage: lean-docs-complete
+  skill_id: 16-evolve
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: written
+  note: 'S055/EV-046 standing evolve report — awaiting close AskQuestion'
+- path: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959
+  type: github-issue
+  kind: follow-on
+  stage: lean-docs-complete
+  skill_id: 16-evolve
+  session_id: S055-wmo-aviation-registers
+  evolve_cycle_id: EV-046
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: open
+  note: 'D-S055-959=1 — opened #959 for Validated Standard follow-on'
+- path: docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+  type: session-report
+  kind: verify-tech
+  stage: 05-verify-tech
+  skill_id: 05-verify-tech
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: approved
+  note: 'S054/EV-045 Gate B PASS — D-S054-gateB=1'
+- path: docs/sessions/S054-rust-ci-crates/reports/04-tech-plan.md
+  type: session-report
+  kind: tech-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: approved
+  note: 'S054/EV-045 04-tech-plan APPROVED — D-S054-04-plan=1'
+- path: docs/sessions/S054-rust-ci-crates/build-plan-card.md
+  type: session-artifact
+  kind: build-plan-card
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: approved
+  note: 'S054/EV-045 build-plan-card APPROVED — D-S054-04-plan=1'
+- path: docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+  type: session-artifact
+  kind: execution-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S054-rust-ci-crates
+  evolve_cycle_id: EV-045
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: approved
+  note: 'S054/EV-045 execution-plan APPROVED — T1.1–T1.7; D-S054-04-plan=1'
 - path: docs/sessions/S052-doks-staging-prod-branch-deploys/
   status: pending
   stage: 00-context
@@ -30525,6 +32329,314 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-046
+  session_id: S055-wmo-aviation-registers
+  status: completed
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
+  close_decision: D-S055-close=1
+  close_note: 'Close EV-046/S055; commit EV-046 docs; PR → stage'
+  cycle_type: feature
+  preset: Lean
+  feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F26
+  - F27
+  - F28
+  - F32
+  github_issues:
+  - 889
+  - 959
+  current_stage: completed
+  started: '2026-08-08'
+  branch: evolve/EV-046-wmo-aviation-registers
+  interrupted_by_hotfix: false
+  parked: false
+  gate_a: PASS
+  gate_a_decision: D-S055-gateA=1
+  follow_on_issue: 959
+  follow_on_decision: D-S055-959=1
+  github_issue_status: open
+  project_status: Ready for PR
+  project_status_note: 'Ready for PR — In review after PR opens; commit EV-046 docs then PR → stage'
+  github_issue_note: 'Leave #889 OPEN until #959 Validated lands (or until user closes); Lean present/cite/cover done'
+  note: 'COMPLETED — D-S055-close=1; Lean AC1–AC6 present/cite/cover done; Validated follow-on #959; #889 OPEN; PR → stage pending docs commit; EV-043/044 PARKED'
+  artifacts:
+  - path: docs/sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'Lean coverage report — AC1–AC6'
+  - path: docs/sessions/S055-wmo-aviation-registers/reports/evolve-summary.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'COMPLETE — EV-046 closeout (D-S055-close=1)'
+  - path: docs/evolve-report-EV-046.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'COMPLETE — standing evolve report EV-046'
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959
+    status: open
+    kind: github-issue
+    note: 'D-S055-959=1 — Validated Standard follow-on'
+- id: EV-045
+  session_id: S054-rust-ci-crates
+  cycle_type: general
+  feature_ids: [F13, F14]
+  deepen_feature_ids: [F13, F14]
+  title: "Rust crate CI — fmt/clippy/test/integration (#725)"
+  status: completed
+  started: '2026-08-08'
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
+  github_issues: [725]
+  github_issue_status: open
+  project_status: On stage
+  github_issue_closeout_comment: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725#issuecomment-5228402622
+  github_issue_decision: D-S054-issue=1
+  github_issue_note: 'D-S054-issue=1 — Leave #725 OPEN @ On stage until stage→main; do NOT close or set Done; pending promote'
+  branch: evolve/EV-045-rust-ci
+  branch_status: merged
+  tip_sha: 021a323d
+  tip_sha_full: 021a323db2ef979ab4692845981c90f83f774854
+  tip_sha_pushed: true
+  tip_sha_note: 'PR tip before merge 021a323d; merge commit c51e0e2f on stage; pre-merge CI 31279042234 SUCCESS'
+  pr_number: 953
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+  pr_status: merged
+  pr_base: stage
+  pr_supersedes: 952
+  pr_note: 'PR #953 MERGED → stage'
+  merge_sha: c51e0e2f
+  merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
+  merge_target: stage
+  merged_at: '2026-08-08T21:32:57Z'
+  ci_cd_pipeline_run: '31279042234'
+  ci_cd_pipeline_status: SUCCESS
+  ci_cd_pipeline_note: 'Pre-merge tip CI — run 31279042234 SUCCESS @ tip 021a323d; prior accepted tip CI 31273500621 @ 09ce2bef; PR #953 MERGED → stage @ c51e0e2f'
+  stage_ci_run: '31279573710'
+  stage_ci_status: SUCCESS
+  stage_deploy: success
+  stage_smoke: success
+  stage_gate: skipped
+  stage_gate_note: 'Staging gate SKIPPED on post-merge stage run 31279573710 @ c51e0e2f — investigate before stage→main promote'
+  stage_ci_note: 'Post-merge stage CI 31279573710 SUCCESS @ c51e0e2f; Deploy (stage) SUCCESS; Staging smoke SUCCESS; Staging gate SKIPPED; Rust crates gate + both maturin SUCCESS'
+  next_decision: D-S054-next=2
+  next_step: deferred_promote_stage_to_main
+  next_step_note: 'D-S054-next=2 — Stop here; leave #953 on stage @ c51e0e2f; promote stage→main later; do NOT open stage→main PR'
+  current_stage: completed
+  active_task:
+  active_task_status: completed
+  active_milestone: M1
+  completed_through: T1.7
+  progress: 7/7
+  phase_c_checkpoint: passed
+  routing_plan:
+    required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 04-tech-plan, 05-verify-tech, 07-build, 08-verify-build, 09-qa, 11-verify-impl]
+    skipped_stages: [03-plan-tooling, 06-tech-tooling, 10-e2e, 12-verify-deploy, 13-deploy-smoke]
+  gates: {a_to_b: passed_ops_deferred, b_to_c: passed, c_to_d: passed, deploy: skipped}
+  gates_note: 'c_to_d passed — D-S054-phaseC=1; phase_d passed — D-S054-11=1 cycle close; deploy skipped (CI-only)'
+  checkpoints: {phase_a: passed, phase_b: passed, phase_c: passed, phase_d: passed, deploy: skipped}
+  checkpoints_note: 'phase_d passed D-S054-11=1; cycle COMPLETE; PR #953 MERGED → stage @ c51e0e2f; D-S054-next=2 promote deferred'
+  ac6_ops_deferred: true
+  ac6_docs_in_scope: true
+  artifacts:
+  - path: docs/sessions/S054-rust-ci-crates/reports/01-requirements.md
+    status: completed
+    note: 'COMPLETE — D-S054-01-ac=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    note: 'APPROVED — T1.1–T1.7; D-S054-04-plan=1'
+  - path: docs/sessions/S054-rust-ci-crates/build-plan-card.md
+    status: approved
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    note: 'APPROVED — active M1 batch for 07; D-S054-04-plan=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/04-tech-plan.md
+    status: approved
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    note: 'APPROVED — D-S054-04-plan=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/05-verify-tech.md
+    status: approved
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+    note: 'APPROVED — Gate B PASS (D-S054-gateB=1)'
+  - path: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
+    status: completed
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    note: 'COMPLETE — PASS @ tip 09ce2bef; Phase C approved D-S054-phaseC=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
+    status: completed
+    stage: 09-qa
+    skill_id: 09-qa
+    note: 'COMPLETE — pass_with_advisories; QA-001..005 (AC6 ops deferred primary)'
+  - path: docs/sessions/S054-rust-ci-crates/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    note: 'COMPLETE — D-S054-11=1'
+  - path: docs/sessions/S054-rust-ci-crates/reports/evolve-summary.md
+    status: completed
+    stage: 16-evolve
+    note: 'COMPLETE — EV-045 closeout'
+  - path: docs/evolve-report-EV-045.md
+    status: completed
+    stage: 16-evolve
+    note: 'COMPLETE — EV-045 standing report'
+  - path: docs/sessions/S054-rust-ci-crates/
+    status: completed
+  - path: docs/sessions/S054-rust-ci-crates/session-brief.md
+    status: in_progress
+  - path: docs/sessions/S054-rust-ci-crates/routing-plan.md
+    status: in_progress
+  - path: docs/sessions/S054-rust-ci-crates/evolve-plan-card.md
+    status: in_progress
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+    note: 'EV-045 section'
+  - path: docs/decisions/requirements-decisions.md
+    status: confirmed
+    note: 'EV-045 rows already confirmed (D-S054-01-ac=1)'
+  current_stage_note: 'CLOSED — D-S054-11=1; EV-045 COMPLETE; PR #953 on stage @ c51e0e2f; D-S054-next=2 stop; D-S054-issue=1 leave #725 OPEN @ On stage until stage→main'
+  notes:
+  - '2026-08-08 D-S054-issue=1 — Leave #725 OPEN @ On stage until stage→main; S054/EV-045 remain closed; active_session=null'
+  - '2026-08-08 D-S054-ticket — #725 Project Status → On stage; closeout comment posted; issue remains OPEN pending user (Done/close vs leave open until stage→main); S054/EV-045 already completed; active_session=null'
+  - '2026-08-08 D-S054-next=2 — Stop after stage merge; leave #953 on stage @ c51e0e2f; Staging smoke green (31279573710); promote stage→main later; #725 On stage status still pending rate-limit retry'
+  - '2026-08-08 D-S054-stage-ci — post-merge stage CI 31279573710 SUCCESS; Deploy+Staging smoke SUCCESS; Staging gate SKIPPED; tip c51e0e2f; #725 project Status update blocked by GraphQL rate limit (still Backlog)'
+  - '2026-08-08 D-S054-merge-stage — PR #953 MERGED → stage @ tip 021a323d; CI 31279042234 SUCCESS; S054/EV-045 remain closed; active_session=null; promote stage→main only after Staging smoke/gate'
+  - '2026-08-08 D-S054-11=1 — CLOSED S054/EV-045; approve F13+F14 deepen + accept QA-001..005; 11-verify-impl COMPLETE (verify-impl.md); 16-evolve COMPLETE; cycle COMPLETE; PR #953 still OPEN → stage (not merged); tip 09ce2bef; closeout docs may be uncommitted; EV-043/EV-044 remain PARKED (D-park-doks=1); active_session=null; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 09-qa COMPLETE pass_with_advisories @ tip 09ce2bef — report docs/sessions/S054-rust-ci-crates/reports/qa-report.md; advisories QA-001..005 (AC6 ops deferred primary); 11-verify-impl in_progress; PR #953 → stage; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-phaseC=1 — Phase C approved; checkpoints.phase_c=passed; gates.c_to_d=passed; 08 COMPLETE; 09-qa in_progress (started 2026-08-08); tip 09ce2bef; PR #953 → stage; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 08-verify-build PASS COMPLETE @ tip 09ce2bef — report docs/sessions/S054-rust-ci-crates/reports/verification-report.md; D-S054-t17-ci=1 run 31273500621; make format-check/lint/typecheck PASS; TC-EV045+H0c 14 PASS; make rust-check PASS; uvx pip-audit 0 CVEs; 07-build remains COMPLETE 7/7; Phase C checkpoint pending AskQuestion before 09-qa (09 not started); no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-t17-ci=1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs; tip delta after f270618c is docs-only (09ce2bef); Staging gate FAIL was base=main only; T1.7 COMPLETE (7/7); 07-build COMPLETE; 08-verify-build in_progress (delta verify after T1.7 CI accept); no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 07-build — T1.1–T1.6 COMPLETE + T1.7 near-complete @ tip 09ce2bef (09ce2befdf0b5878ec6a832ec30718c489b4824b); commits cfd292f4 (T1.1), b8a1cb16 (T1.2), 3cd5844b (T1.3–5), b344b4d2 (T1.7 fix), f270618c (T1.6), 09ce2bef (T1.7 docs); branch evolve/EV-045-rust-ci pushed; PR #953 open → stage (supersedes #952) https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953; CI run 31273500621 SUCCESS (Rust crates gate + both maturin + all tests); Staging gate FAIL only because PR briefly targeted main; tip after docs commit awaiting fresh Actions run (not queued yet); active_task T1.7 in_progress near-complete pending tip CI re-trigger; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-gateB=1 — S054/EV-045 Gate B PASS; medium/low syncs confirmed (S2.1/S2.2/S3.1/S3.2); 05 COMPLETE; 06 skipped ADR-017; 07-build in_progress M1 T1.1 pending; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-04-plan=1 — S054/EV-045 04 COMPLETE; execution-plan + build-plan-card approved; 05-verify-tech in_progress; Gate B pending; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 04-tech-plan draft ready — D-S054-04 locked (jobs=2 maturin=2 trigger=1 local=2); execution-plan + build-plan-card + reports/04-tech-plan.md; awaiting D-S054-04-plan approve → 05; still in_progress; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-ac6-waive=2 — AC6 ops half waived; proceed 04-tech-plan; docs+apply_gh_branch_rulesets.sh only; wire rulesets when admin available'
+  - '2026-08-08 D-S054-gateA=2 — Gate A PASS; 02 COMPLETE; a_to_b pending_blocked_ruleset; 04 NOT started'
+  - '2026-08-08 D-S054-01-ac=1 — 01 COMPLETE; defaults confirmed; 02-verify-plan in_progress'
+  - '2026-08-08 D-S054-phase01=1 — deepen F13+F14; proceed to 01-requirements (in_progress)'
+  - '2026-08-08 Phase 0 locked — D-S054-open=1; Standard skips 03/06/10/12/13; deepen F13+F14; #725; awaiting proceed to 01-requirements'
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — D-S054-open=1; handoff 16-evolve Phase 0'
+    16-evolve:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — D-S054-11=1; EV-045 closed; PR #953 later MERGED → stage'
+    01-requirements:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — D-S054-01-ac=1; ACs + defaults confirmed'
+    02-verify-plan:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — Gate A PASS (D-S054-gateA=2); AC6 ops waived (D-S054-ac6-waive=2); handoff 04-tech-plan'
+      gate_a: PASS
+    04-tech-plan:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
+    05-verify-tech:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); medium/low syncs confirmed; handoff 07-build M1 T1.1'
+      gate_b: PASS
+      gate_b_decision: D-S054-gateB=1
+    06-tech-tooling:
+      status: skipped
+      note: 'skipped — Standard routing; toolchain already ADR-017 (06-tech-tooling N/A)'
+    07-build:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: 'COMPLETE — T1.1–T1.7 (7/7); D-S054-t17-ci=1 accepted run 31273500621 tip CI; handoff 08-verify-build'
+      active_task:
+      active_task_status: completed
+      active_milestone: M1
+      completed_through: T1.7
+      progress: 7/7
+    08-verify-build:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
+      overall: PASS
+      note: 'COMPLETE — PASS @ tip 09ce2bef; D-S054-t17-ci=1 run 31273500621; Phase C approved D-S054-phaseC=1'
+    09-qa:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      report: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
+      overall: pass_with_advisories
+      note: 'COMPLETE — pass_with_advisories; QA-001..005 (AC6 ops deferred primary); handoff 11-verify-impl'
+    11-verify-impl:
+      status: in_progress
+      started: '2026-08-08'
+      note: 'IN_PROGRESS — after 09-qa pass_with_advisories; tip 09ce2bef'
+- id: EV-044
+  session_id: S053-separate-staging-doks-project
+  cycle_type: general
+  feature_ids: [F30]
+  title: "Separate staging DOKS + DO Project (amend ADR-034)"
+  status: in_progress
+  parked: true
+  parked_at: '2026-08-08'
+  park_reason: 'D-park-doks=1 — user chose park to open #725 Rust CI; resume later'
+  resume_at_stage: 05-verify-tech
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  completed:
+  scope_summary: >
+    Separate staging DOKS + PG under Staging TAC-to-IWXXM; prod on TAC-to-IWXXM;
+    amend ADR-034; tear down shared-ns staging after cutover.
+  routing_plan:
+    required_stages: [00-context, 16-evolve, 01-requirements, 02-verify-plan, 03-plan-tooling, 04-tech-plan, 05-verify-tech, 07-build, 08-verify-build, 09-qa, 10-e2e, 11-verify-impl, 12-verify-deploy, 13-deploy-smoke]
+    skipped_stages: [06-tech-tooling]
+  current_stage: 05-verify-tech
+  current_stage_note: 'PARKED — D-park-doks=1; Gate A PASS / awaiting Gate B when resumed'
+  gates: {a_to_b: passed, b_to_c: pending, c_to_d: pending, deploy: pending}
+  checkpoints: {phase_a: pending, phase_b: pending, phase_c: pending, phase_d: pending, deploy: pending}
+  adrs: [docs/adr/ADR-034-doks-staging-promote-from-stage.md]
+  artifacts:
+  - path: docs/sessions/S053-separate-staging-doks-project/
+    status: in_progress
+  - path: docs/decisions/evolve-decisions.md
+    status: in_progress
+  notes:
+  - '2026-08-08 D-park-doks=1 — PARKED for #725 Rust CI; resume at 05-verify-tech (Gate B)'
+
 - id: EV-043
   session_id: S052-doks-staging-prod-branch-deploys
   cycle_type: general
@@ -30535,6 +32647,10 @@ evolve_cycles:
   feature_note: 'Deepen F30 platform independence — staging env + manual prod promote (#886); infra/platform'
   title: "DOKS staging + prod + protected-branch CI/CD (#886)"
   status: in_progress
+  parked: true
+  parked_at: '2026-08-08'
+  park_reason: 'D-park-doks=1 — user chose park to open #725 Rust CI; resume later'
+  resume_at_stage: 16-evolve
   started: "2026-08-08"
   started_at: "2026-08-08"
   completed:
@@ -30563,7 +32679,7 @@ evolve_cycles:
     note: Standard (pending Plan approval); full child-stage list after Phase 0 / Plan
   current_stage: 16-evolve
   current_stage_status: in_progress
-  current_stage_note: '00-context completed at open; Phase 0 handoff — Plan mode next; promote gate TBD'
+  current_stage_note: 'PARKED — D-park-doks=1; Phase 0 incomplete (promote gate TBD)'
   stages:
     00-context:
       status: completed
@@ -30608,6 +32724,7 @@ evolve_cycles:
     note: parent writes session-brief/routing-plan/context
   issues: []
   notes:
+  - '2026-08-08 D-park-doks=1 — PARKED for #725 Rust CI; resume at 16-evolve Phase 0'
   - '2026-08-08 EV-043/S052-doks-staging-prod-branch-deploys OPEN — D-S052-open=1; deepen F30; #886; branch evolve/EV-043-doks-staging-prod ACTIVE recorded exists=false @ main@81701500; 00-context completed → 16-evolve Phase 0; Standard pending Plan; no git commit by workflow-state-manager'
 - id: EV-042
   session_id: S050-remove-db-tools-operator-throughput
@@ -40439,16 +42556,24 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: main
+  current_branch: evolve/EV-046-wmo-aviation-registers
   ahead_of_origin: 0
-  pushed: true
+  pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml after D-S052-open / open_session S052/EV-043; no git commit by workflow-state-manager'
-  tip_sha: 81701500
-  tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
-  tip_note: 'main @ 81701500 ([EV-039] docs: close S047 after 13-deploy-smoke #939); S052/EV-043 open for #886; evolve branch create pending'
+  dirty_note: 'workflow-state.yaml after lean-docs-complete + D-S055-959=1; awaiting close AskQuestion; no git commit by workflow-state-manager'
+  tip_sha: d0a51f5a
+  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  tip_note: 'S055/EV-046 @ main@d0a51f5a; current_stage lean-docs-complete; 16-evolve close pending; EV-043/EV-044 PARKED'
+  evolve_branch: evolve/EV-045-rust-ci
+  evolve_tip_sha: 021a323d
+  evolve_tip_sha_full: 021a323db2ef979ab4692845981c90f83f774854
+  evolve_tip_sha_pushed: true
+  stage_merge_sha: c51e0e2f
+  stage_merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
+  stage_tip_sha: c51e0e2f
+  stage_tip_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -40457,12 +42582,25 @@ git_history:
     date: '2026-08-04'
   main_merge_sha: a15541e5
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
-  main_tip_sha: 81701500
-  main_tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
-  recommended_branch: evolve/EV-043-doks-staging-prod
-  note: 'S052/EV-043 OPEN D-S052-open=1 — main tip 81701500; branch evolve/EV-043-doks-staging-prod ACTIVE recorded exists=false; active_session=S052-doks-staging-prod-branch-deploys; no git commit by workflow-state-manager'
+  main_tip_sha: d0a51f5a
+  main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+  recommended_branch: evolve/EV-046-wmo-aviation-registers
+  note: 'S055/EV-046 lean-docs-complete — D-S055-959=1 #959; awaiting close AskQuestion; cycle NOT completed; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-08 D-S055-959=1 — Lean AC1–AC6 docs complete; opened #959 Validated Standard follow-on; current_stage=lean-docs-complete; 16-evolve close pending AskQuestion; cycle NOT completed; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S055-gateA=1 — Gate A PASS; accept M1/M2/L1; 02-verify-plan COMPLETE; lean-docs-execution; 16-evolve remains in_progress; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S055-01-ac=1 — AC1–AC6 confirmed; 01-requirements COMPLETE; 02-verify-plan in_progress; 16-evolve remains in_progress; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S055-phase01=1 — Phase 0 scope locked; feature_ids F6/F12/F15/F20/F23/F24/F26/F27/F28/F32; families=3 validated=1 cite=2; 01-requirements in_progress (awaiting AC); 16-evolve remains in_progress; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
+  - '2026-08-08 S055/EV-046 OPEN — D-S055-open=2 Lean; session_counter 55; evolve_cycle_counter 46; branch evolve/EV-046-wmo-aviation-registers active @ main@d0a51f5a; 00-context completed → 16-evolve Phase 0; #889 deepen F15/F20/F23; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-merge-stage — PR #953 MERGED → stage @ tip 021a323d; CI 31279042234 SUCCESS; S054/EV-045 remain closed; active_session=null; promote stage→main only after Staging smoke/gate'
+  - '2026-08-08 D-S054-11=1 — CLOSED S054/EV-045; approve F13+F14 deepen + accept QA-001..005; 11-verify-impl COMPLETE (verify-impl.md); 16-evolve COMPLETE; cycle COMPLETE; PR #953 still OPEN → stage (not merged); tip 09ce2bef; closeout docs may be uncommitted; EV-043/EV-044 remain PARKED (D-park-doks=1); active_session=null; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 07-build — T1.1–T1.6 COMPLETE + T1.7 near-complete @ tip 09ce2bef (09ce2befdf0b5878ec6a832ec30718c489b4824b); commits cfd292f4 (T1.1), b8a1cb16 (T1.2), 3cd5844b (T1.3–5), b344b4d2 (T1.7 fix), f270618c (T1.6), 09ce2bef (T1.7 docs); branch evolve/EV-045-rust-ci pushed; PR #953 open → stage (supersedes #952) https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953; CI run 31273500621 SUCCESS (Rust crates gate + both maturin + all tests); Staging gate FAIL only because PR briefly targeted main; tip after docs commit awaiting fresh Actions run (not queued yet); active_task T1.7 in_progress near-complete pending tip CI re-trigger; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-gateB=1 — S054/EV-045 Gate B PASS; medium/low syncs confirmed (S2.1/S2.2/S3.1/S3.2); 05 COMPLETE; 06 skipped ADR-017; 07-build in_progress M1 T1.1 pending; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-04-plan=1 — S054/EV-045 04 COMPLETE; execution-plan + build-plan-card approved; 05-verify-tech in_progress; Gate B pending; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 04-tech-plan draft ready — D-S054-04 locked (jobs=2 maturin=2 trigger=1 local=2); execution-plan + build-plan-card + reports/04-tech-plan.md; awaiting D-S054-04-plan approve → 05; still in_progress; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S054-ac6-waive=2 — AC6 ops half waived; unblock → 04-tech-plan in_progress; docs+apply_gh_branch_rulesets.sh only; wire rulesets when admin available; no git commit by workflow-state-manager'
+  - '2026-08-08 S054/EV-045 OPEN — D-S054-open=1; session_counter 54; evolve_cycle_counter 45; branch evolve/EV-045-rust-ci ACTIVE recorded exists=false @ main@d0a51f5a; 00-context completed → 16-evolve Phase 0; #725 deepen F13+F14; Standard skips 03/06/10/12/13; no git commit by workflow-state-manager'
   - '2026-08-08 S052/EV-043 OPEN — D-S052-open=1; session_counter 52; evolve_cycle_counter 43; branch evolve/EV-043-doks-staging-prod ACTIVE recorded exists=false @ main@81701500; 00-context completed → 16-evolve Phase 0; #886 deepen F30; Standard pending Plan; no git commit by workflow-state-manager'
   - '2026-08-07 S051 CLOSED D-S051-close=1 — closeout da2a6656 on main (Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid>=3.3.17); PR #905 MERGED @ a15541e5; 14-hotfix completed; active_session=null; recorded commits da2a6656 + a15541e5; local ahead_of_origin=1 pending push; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 13-deploy-smoke STARTED — D-S050-merge=1; PR #899 MERGED @ e3d1c7c8 (e3d1c7c84836751ea070cb6162df749b218d2ef2) at 2026-08-07T16:22:36Z; tip before merge 5558c7e4 (5558c7e44107c6389b30f90189c477a183490792) signed 12; watching main CI/CD Pipeline run 31197264636 for DOKS Deploy; recorded commits 5558c7e4+e3d1c7c8; Sync DB migrations OOS accepted; 13 not completed; no git commit by workflow-state-manager'
@@ -40947,6 +43085,56 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-046-wmo-aviation-registers
+    status: active
+    base: main@d0a51f5a
+    base_sha: d0a51f5a
+    base_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    created: '2026-08-08'
+    exists: true
+    purpose: EV-046 / S055 WMO aviation registers (#889)
+    session_id: S055-wmo-aviation-registers
+    evolve_cycle_id: EV-046
+    tip_sha: d0a51f5a
+    tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    tip_sha_pushed: false
+    note: ACTIVE — open_session S055/EV-046 D-S055-open=2 Lean @ main@d0a51f5a; EV-043/EV-044 remain PARKED
+  - name: evolve/EV-045-rust-ci
+    status: merged
+    purpose: EV-045 / S054 Rust CI #725
+    base: main@d0a51f5a
+    base_sha: d0a51f5a
+    base_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    created: '2026-08-08'
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    tip_sha: 021a323d
+    tip_sha_full: 021a323db2ef979ab4692845981c90f83f774854
+    tip_note: 'PR tip before merge 021a323d; PR #953 MERGED → stage @ c51e0e2f; CI 31279042234 SUCCESS'
+    exists: true
+    pushed: true
+    tip_sha_pushed: true
+    ahead_of_origin: 0
+    pr_number: 953
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
+    pr_status: merged
+    pr_base: stage
+    pr_supersedes: 952
+    merge_sha: c51e0e2f
+    merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
+    merge_target: stage
+    merged_at: '2026-08-08T21:32:57Z'
+    ci_cd_pipeline_run: '31279042234'
+    ci_cd_pipeline_status: SUCCESS
+    note: 'MERGED — PR #953 → stage @ c51e0e2f; tip before merge 021a323d; CI 31279042234 SUCCESS; promote stage→main only after Staging smoke/gate'
+  - name: evolve/EV-044-separate-staging-doks
+    base: main
+    base_sha: d0a51f5a863daac91a2cac5ca545f4d5459baac8
+    status: active
+    created: '2026-08-08'
+    session_id: S053-separate-staging-doks-project
+    evolve_cycle_id: EV-044
+    note: 'S053/EV-044 separate staging DOKS + DO Project'
   - name: evolve/EV-043-doks-staging-prod
     status: ACTIVE
     purpose: "DOKS staging + prod + protected-branch CI/CD (#886); S052/EV-043"
@@ -42205,6 +44393,80 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 09ce2bef
+    sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    message: '[T1.7] docs: note PR #952 retargeted to stage for tip CI'
+    branch: evolve/EV-045-rust-ci
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    task_id: T1.7
+    timestamp: '2026-08-08'
+    pushed: true
+    tip_sha: 09ce2bef
+    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    note: 'S054/EV-045 T1.7 docs — PR #953 open → stage (supersedes #952); tip CI re-trigger pending'
+  - sha: f270618c
+    sha_full: f270618c25ab445185ff51157290c248f3d3187b
+    message: '[T1.6] docs: S054/EV-045 Rust CI specs, session artifacts, ruleset script'
+    branch: evolve/EV-045-rust-ci
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    task_id: T1.6
+    timestamp: '2026-08-08'
+    pushed: true
+    note: 'S054/EV-045 T1.6 COMPLETE — docs + ruleset script'
+  - sha: b344b4d2
+    sha_full: b344b4d2d3d193cb6ab0b4111068401bfd762605
+    message: '[T1.7] fix: clear clippy -D warnings in iwxxm-validate rust'
+    branch: evolve/EV-045-rust-ci
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    task_id: T1.7
+    timestamp: '2026-08-08'
+    pushed: true
+    note: 'S054/EV-045 T1.7 fix — clippy debt cleared in iwxxm-validate'
+  - sha: 3cd5844b
+    sha_full: 3cd5844b93728cb48d468dccc9349010ef7b106f
+    message: '[T1.3][T1.4][T1.5] config: rust crates CI matrix, maturin matrix, deploy needs'
+    branch: evolve/EV-045-rust-ci
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    task_id: T1.3
+    timestamp: '2026-08-08'
+    pushed: true
+    note: 'S054/EV-045 T1.3–T1.5 COMPLETE — CI matrix + deploy needs'
+  - sha: b8a1cb16
+    sha_full: b8a1cb16ec0ffb818f0db581f29cc72d3e75c9d7
+    message: '[T1.2] config: add make rust-check for cargo + maturin parity'
+    branch: evolve/EV-045-rust-ci
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    task_id: T1.2
+    timestamp: '2026-08-08'
+    pushed: true
+    note: 'S054/EV-045 T1.2 COMPLETE — make rust-check'
+  - sha: cfd292f4
+    sha_full: cfd292f4658d60a250182ca61fb45bbf00ba9e70
+    message: '[T1.1] test: add TC-EV045 rust CI contract tests'
+    branch: evolve/EV-045-rust-ci
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S054-rust-ci-crates
+    evolve_cycle_id: EV-045
+    task_id: T1.1
+    timestamp: '2026-08-08'
+    pushed: true
+    note: 'S054/EV-045 T1.1 COMPLETE — contract tests red→green'
   - sha: da2a6656
     sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
     message: 'chore(deps): pin nanoid >=3.3.17 for GHSA-2v37-7h3g-55p8'
