@@ -90,6 +90,9 @@ None.
 | T1.6 | Back-add tech-spec / feature AC notes with final job ids + matrix/gate rationale; confirm ruleset script lists locked names | Docs | completed | tech-spec; test-plan; apply_gh_branch_rulesets.sh | T1.5 | — |
 | T1.7 | Tip CI green on `evolve/EV-045-rust-ci` (watch `ci-cd.yml`); fix clippy/fmt debt if jobs fail | Code | in_progress | TC-EV045-*; build-execution | T1.2–T1.6 | — |
 
+**PR**: [#952](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/952) → **`stage`** (ADR-034; not direct to main).  
+Prior tip run [31273500621](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31273500621): all Rust/maturin/test jobs **success**; only **Staging gate** failed while base was briefly `main`.
+
 ###### Parallelizable
 
 After T1.1 green (red→green on contracts): T1.2 ∥ T1.3 ∥ T1.4, then T1.5 → T1.6 → T1.7.
