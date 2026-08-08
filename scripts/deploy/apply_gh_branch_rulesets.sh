@@ -14,6 +14,7 @@ create_ruleset() {
 import json
 # Job `name:` strings from .github/workflows/ci-cd.yml (must match exactly).
 # EV-045 / #725 / TC-EV045-006 — Rust crates + both maturin smokes.
+# EV-047 / #834 / TC-EV047-007 — converter perf hard gate (D-S056-gateA=2).
 checks = [
     {"context": "Test (backend)", "integration_id": 0},
     {"context": "Test (frontend)", "integration_id": 0},
@@ -21,6 +22,7 @@ checks = [
     {"context": "Rust crates (fmt/clippy/test)", "integration_id": 0},
     {"context": "tac2iwxxm PyO3 (maturin)", "integration_id": 0},
     {"context": "iwxxm-validate PyO3 (maturin)", "integration_id": 0},
+    {"context": "Converter perf (tac2iwxxm)", "integration_id": 0},
 ]
 extra = json.loads('''${extra_checks_json}''')
 checks.extend(extra)

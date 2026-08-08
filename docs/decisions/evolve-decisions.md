@@ -32,6 +32,7 @@
 | D-S056-phase0 | **1** — Phase 0 locked; proceed **01-requirements** |
 | D-S056-01-ac | **1** — Approve AC1–AC9 as written (2026-08-08) |
 | D-S056-ui-preview | **2** — No non-deployed UI preview for 01; Help placement in 04 |
+| D-S056-gateA | **2** — Gate A PASS; **require ruleset update for converter perf check before 04** |
 
 ### Locked defaults (perf / hooks / docs)
 

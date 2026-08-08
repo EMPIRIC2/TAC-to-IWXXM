@@ -40,8 +40,8 @@ active_session:
   feature_note: "Deepen M5 (husky reverse EV-036) + F6 (converter perf PR gate) + F7 help/docs for #956/#957; no new product Fn"
   preset: Standard
   ui_preview: N/A unless help-link UI
-  current_stage: 02-verify-plan
-  current_stage_note: "01 complete; 02 Gate A in progress"
+  current_stage: 16-evolve
+  current_stage_note: "Gate A PASS (D-S056-gateA=2); blocked on ruleset apply before 04"
   decisions:
     D-S056-open: "1 — open S056/EV-047 all four issues"
     D-S056-bundle: "1 — one cycle all four"
@@ -71,9 +71,12 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: Gate A — awaiting D-S056-gateA
+    completed: '2026-08-08'
+    note: COMPLETE — Gate A PASS D-S056-gateA=2; ruleset blocker before 04
+    gate_a: PASS
+    gate_a_decision: D-S056-gateA=2
   - stage: 03-plan-tooling
     required: false
     mode: skip

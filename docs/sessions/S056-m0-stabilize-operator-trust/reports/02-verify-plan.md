@@ -2,7 +2,7 @@
 
 **Date**: 2026-08-08  
 **Mode**: delta — M5 husky (#833) + F6 perf (#834) + F7 docs/Help (#956/#957)  
-**Status**: in_progress — awaiting Gate A AskQuestion  
+**Status**: Gate A PASS with blocker — `D-S056-gateA=2` (ruleset for perf check before 04)  
 **01**: completed (`D-S056-01-ac=1`; UI preview declined `D-S056-ui-preview=2`)
 
 ## Inventory (touched)
@@ -66,3 +66,26 @@ None blocking. EV-036 TC-EV036-001/002 marked historical; TC-EV036-003 remote gr
 ## Gate A recommendation
 
 **PASS** — accept S2.1–S2.4 as 04/07 work; S3.1 optional PDF.
+
+## Gate A decision (`D-S056-gateA=2`)
+
+User chose **option 2**: PASS but **require ruleset update for converter perf check before 04**.
+
+| Item | Locked for 04/07 |
+|------|------------------|
+| S2.1 | Fast unit subset — 04 inventory |
+| S2.2 | Absolute ceiling — 04 from baselines |
+| S2.3 | **Blocker** — document + apply required check for perf gate before 04 starts |
+| S2.4 | Help = static markdown link |
+| S3.1 | PDF optional |
+
+### Locked check name (pending job wire-up in 07; ruleset before 04 may use placeholder)
+
+- `Converter perf (tac2iwxxm)` — exact `jobs.*.name` must match ruleset context (confirm in 04/07)
+
+### Next
+
+1. Inspect current rulesets / permissions  
+2. Update `apply_gh_branch_rulesets.sh` (or equivalent) with the perf check context  
+3. Apply ruleset (or AskQuestion waive if token lacks admin)  
+4. Only then start **04-tech-plan**

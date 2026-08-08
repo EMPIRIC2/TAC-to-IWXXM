@@ -16,7 +16,7 @@
 | 00-context | yes | session | **completed** | S056 open (`D-S056-open=1`) |
 | 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1; remaining intake #834/#956/#957 |
 | 01-requirements | yes | delta | **completed** | D-S056-01-ac=1; ui-preview=2 |
-| 02-verify-plan | yes | delta | **in_progress** | Gate A — medium statements S2.1–S2.4 |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS D-S056-gateA=2; ruleset before 04 |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
 | 04-tech-plan | yes | delta | pending | husky + perf harness + docs tasks |
 | 05-verify-tech | yes | delta | pending | Gate B |
