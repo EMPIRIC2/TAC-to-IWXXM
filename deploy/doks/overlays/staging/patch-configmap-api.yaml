@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metar-api-config
+data:
+  METAR_CONFIG_ENV: "staging"
+  METAR_CORS_ORIGINS: "https://app.staging.tac-to-iwxxm.com,http://app.staging.tac-to-iwxxm.com,http://168.144.12.70"

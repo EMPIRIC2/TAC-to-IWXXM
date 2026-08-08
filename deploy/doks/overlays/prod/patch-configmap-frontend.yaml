@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metar-frontend-runtime-config
+data:
+  config.json: |
+    {
+      "environment": "prod",
+      "api": {
+        "baseUrl": "https://api.tac-to-iwxxm.com",
+        "frontendUrl": "https://app.tac-to-iwxxm.com",
+        "corsOrigins": [
+          "https://app.tac-to-iwxxm.com",
+          "http://app.tac-to-iwxxm.com",
+          "http://168.144.12.70"
+        ]
+      },
+      "supabase": {
+        "url": "https://ktvxijislbtgqapllmuk.supabase.co"
+      }
+    }

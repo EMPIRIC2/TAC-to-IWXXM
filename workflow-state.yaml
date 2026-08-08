@@ -1,11 +1,84 @@
-overall_status: completed
+overall_status: in_progress
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 51
-evolve_cycle_counter: 42
-active_session: null
+session_counter: 52
+evolve_cycle_counter: 43
+active_session:
+  id: S052-doks-staging-prod-branch-deploys
+  type: feature
+  intent: "Stand up DOKS staging + prod environments, protect stage/main, CI/CD for both; auto-deploy stage→staging; manual promote to main/prod (#886)"
+  status: in_progress
+  started: '2026-08-08'
+  started_at: '2026-08-08'
+  branch: evolve/EV-043-doks-staging-prod
+  branch_base: main@81701500
+  branch_base_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+  branch_status: ACTIVE
+  branch_exists: false
+  branch_note: 'ACTIVE recorded @ open; branch not present locally/remotely yet — parent creates from main@81701500; tip SHA from git HEAD'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-043
+  artifacts_dir: docs/sessions/S052-doks-staging-prod-branch-deploys/
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/886
+  github_issues: [886]
+  issue_ids: [886]
+  prior_session: S051-output-filename-download-stale
+  prior_session_note: 'S051 hotfix closed D-S051-close=1; PR #905 MERGED @ a15541e5; tip closeout da2a6656; main tip now 81701500 includes later EV-039 closeout #939'
+  feature_ids:
+  - F30
+  deepen_feature_ids:
+  - F30
+  feature_note: 'Deepen F30 platform independence — DOKS staging env + protected branches + manual promote to main/prod (#886)'
+  preset: Standard
+  preset_note: Standard (pending Plan approval)
+  tip_sha: 81701500
+  tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+  tip_sha_pushed: true
+  tip_sha_note: 'main HEAD @ open (81701500); evolve branch tip will match once created'
+  scope_summary: >
+    Add DOKS staging + keep prod; stage→staging auto-deploy; main→prod MANUAL ONLY;
+    protect stage/main; GH Envs staging/production; product=DOKS (not App Platform).
+    Phase 0 not fully locked — Plan mode next; exact promote gate shape TBD (D-S052-cd-manual).
+  scope_decisions_locked:
+  - 'D-S052-open=1 — open session for #886'
+  - 'D-S052-scope=1 — Add DOKS staging + keep prod; stage→staging, main→prod'
+  - 'D-S052-product=1 — DOKS (not App Platform)'
+  - 'D-S052-gh=1 — Create stage branch + protect stage/main + GH Envs staging/production'
+  - 'D-S052-cd-manual — CI/CD for both staging and prod; promote to main AND prod is MANUAL ONLY (skill changes may be needed); exact gate shape TBD next AskQuestion'
+  decisions:
+    D-S052-open: '1'
+    D-S052-open_note: '1 — open session for GitHub #886 DOKS staging+prod / branch protection / CI/CD both envs / manual promote'
+    D-S052-scope: '1'
+    D-S052-scope_note: '1 — Add DOKS staging + keep prod; stage→staging, main→prod'
+    D-S052-product: '1'
+    D-S052-product_note: '1 — DOKS (not App Platform)'
+    D-S052-gh: '1'
+    D-S052-gh_note: '1 — Create stage branch + protect stage/main + GH Envs staging/production'
+    D-S052-cd-manual: pending_gate_shape
+    D-S052-cd-manual_note: 'CI/CD for both staging and prod required; promote to main AND prod MANUAL ONLY; skill changes may be needed; exact gate shape TBD next AskQuestion'
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: scoped
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    skip_rationale:
+    note: 'COMPLETE — open_session applied; decisions D-S052-open/scope/product/gh recorded; handoff 16-evolve Phase 0'
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-08-08'
+    skip_rationale:
+    note: 'IN_PROGRESS — Phase 0 handoff; scope draft from open decisions; Plan approval next; Standard pending'
+  current_stage: 16-evolve
+  current_stage_note: '00-context completed (session open); handoff 16-evolve Phase 0 — Plan mode next; promote gate shape TBD'
+  context_briefs: []
+  notes:
+  - '2026-08-08 D-S052-open=1 — OPEN S052/EV-043 for #886; session_counter=52; evolve_cycle_counter=43; branch evolve/EV-043-doks-staging-prod ACTIVE recorded (not created yet) @ main@81701500; 00-context completed → 16-evolve Phase 0; no git commit by workflow-state-manager'
 sessions:
 - id: S051-output-filename-download-stale
   type: hotfix
@@ -6455,31 +6528,32 @@ stages:
   00-context:
     status: completed
     mode: scoped
-    scoped_slug: sql-ingest-live-e2e
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    started: '2026-08-06'
-    started_at: '2026-08-06'
-    completed: '2026-08-06'
-    completed_at: '2026-08-06'
-    note: 'S047/EV-039 COMPLETE — 00-context done; D-S047-open locked; handoff 16-evolve → 01-requirements'
-    prior_note: 'S046/EV-038 COMPLETE — 00-context done; D-S046-mplan M1→M2→M3→M4; handoff 01-requirements; EV-038 closed D-S046-13=1 #890 MERGED'
-    prior_session_id: S046-iwxxm-corpus-residuals
-    prior_evolve_cycle_id: EV-038
-    prior_scoped_slug: iwxxm-corpus-residuals
-    prior_completed: '2026-08-05'
-    prior_started: '2026-08-05'
-    prior_tip_sha: 619a7ac3
-    prior_tip_sha_full: 619a7ac31165ee8f66f99f1de2c431a2716d966e
-    prior_prior_note: 'S045/EV-037 COMPLETE — PR #887 MERGED @ b7302fe4; matrix dispositions #869/#870/#872 closed; deploy waived; active_session=null before S046 open'
-    prior_prior_session_id: S045-matrix-disposition-residuals
-    prior_prior_evolve_cycle_id: EV-037
-    prior_prior_scoped_slug: matrix-disposition-residuals
-    prior_mirror_session_id: S040-iwxxm-corpus-quality
-    prior_mirror_evolve_cycle_id: EV-032
-    tip_sha: 0d8ce885
-    tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+    scoped_slug: doks-staging-prod-branch-deploys
+    session_id: S052-doks-staging-prod-branch-deploys
+    evolve_cycle_id: EV-043
+    started: '2026-08-08'
+    started_at: '2026-08-08'
+    completed: '2026-08-08'
+    completed_at: '2026-08-08'
+    note: 'S052/EV-043 COMPLETE — open_session for #886; D-S052-open/scope/product/gh locked; handoff 16-evolve Phase 0; Standard pending Plan approval'
+    prior_note: 'S047/EV-039 COMPLETE — 00-context done; D-S047-open locked; handoff 16-evolve → 01-requirements'
+    prior_session_id: S047-sql-ingest-live-e2e
+    prior_evolve_cycle_id: EV-039
+    prior_scoped_slug: sql-ingest-live-e2e
+    prior_completed: '2026-08-06'
+    prior_started: '2026-08-06'
+    prior_tip_sha: 0d8ce885
+    prior_tip_sha_full: 0d8ce8859d517ae2f83ccc4fbc4dfd6d030afedc
+    prior_prior_note: 'S046/EV-038 COMPLETE — 00-context done; D-S046-mplan M1→M2→M3→M4; handoff 01-requirements; EV-038 closed D-S046-13=1 #890 MERGED'
+    prior_prior_session_id: S046-iwxxm-corpus-residuals
+    prior_prior_evolve_cycle_id: EV-038
+    prior_prior_scoped_slug: iwxxm-corpus-residuals
+    tip_sha: 81701500
+    tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
     artifacts:
+    - docs/sessions/S052-doks-staging-prod-branch-deploys/
+    - docs/sessions/S051-output-filename-download-stale/
+    - docs/sessions/S050-remove-db-tools-operator-throughput/
     - docs/sessions/S047-sql-ingest-live-e2e/
     - docs/context/sql-ingest-live-e2e.md
     - docs/sessions/S046-iwxxm-corpus-residuals/
@@ -13928,41 +14002,37 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S050-remove-db-tools-operator-throughput
-    evolve_cycle_id: EV-042
-    started_at: '2026-08-07'
-    started: '2026-08-07'
-    completed: '2026-08-07'
-    completed_at: '2026-08-07'
-    previous_session_id: S049-operator-sources-briefing
-    previous_evolve_cycle_id: EV-041
+    session_id: S052-doks-staging-prod-branch-deploys
+    evolve_cycle_id: EV-043
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed:
+    completed_at:
+    previous_session_id: S050-remove-db-tools-operator-throughput
+    previous_evolve_cycle_id: EV-042
     previous_completed_at: '2026-08-07'
-    previous_note: 'COMPLETE — D-S049-close; EV-041/S049 closed; PR #895 MERGED (merge `fa5b2140`); tip `fa5b2140`; open S050/EV-042'
+    previous_note: 'COMPLETE — D-S050-13=1; EV-042/S050 closed; PR #899 @ e3d1c7c8; CI/CD 31197264636; active_session=null'
+    prior_s051_session_id: S051-output-filename-download-stale
+    prior_s051_note: 'COMPLETE — D-S051-close=1; hotfix closed; PR #905 @ a15541e5; tip closeout da2a6656; no evolve cycle'
+    prior_s049_session_id: S049-operator-sources-briefing
+    prior_s049_evolve_cycle_id: EV-041
+    prior_s049_completed_at: '2026-08-07'
+    prior_s049_note: 'COMPLETE — D-S049-close; EV-041/S049 closed; PR #895 MERGED (merge `fa5b2140`); tip `fa5b2140`; open S050/EV-042'
     prior_s048_session_id: S048-workbench-lint-ux
     prior_s048_evolve_cycle_id: EV-040
     prior_s048_completed_at: '2026-08-06'
     prior_s048_note: 'COMPLETE — D-S048-close=1,1,1; EV-040/S048 closed; PR #893 merged (merge `4be24994`); tip was 5a9f28ef/2462a397; #894 under #840'
-    prior_s046_session_id: S046-iwxxm-corpus-residuals
-    prior_s046_evolve_cycle_id: EV-038
-    prior_s046_completed_at: '2026-08-06'
-    prior_s046_note: 'COMPLETE — D-S046-13=1; EV-038/S046 closed; #890 @ 619a7ac3; DOKS 20260806144346-619a7ac; evolve-summary.md'
-    prior_s045_session_id: S045-matrix-disposition-residuals
-    prior_s045_evolve_cycle_id: EV-037
-    prior_s045_completed_at: '2026-08-05'
-    prior_s045_note: 'COMPLETE — S045/EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI 31049365217 SUCCESS'
-    prior_s044_session_id: S044-local-precommit-long-jobs
-    prior_s044_evolve_cycle_id: EV-036
-    prior_s044_completed_at: '2026-08-05'
-    prior_s044_note: 'COMPLETE — S044/EV-036 closed; PR #875 MERGED @ d17b8be3; tip bf020c2c; deploy waived (D-S044-12-13-waive); CI 31028291943 SUCCESS'
-    prior_mirror_session_id: S040-iwxxm-corpus-quality
-    prior_mirror_evolve_cycle_id: EV-032
-    current_child_stage:
-    current_child_stage_note: 'CLOSED — D-S050-13=1; routing complete'
-    tip_sha: e3d1c7c8
-    tip_sha_full: e3d1c7c84836751ea070cb6162df749b218d2ef2
-    note: 'COMPLETE — D-S050-13=1; EV-042/S050 closed; PR #899 @ e3d1c7c8; CI/CD 31197264636; active_session=null'
+    prior_s047_session_id: S047-sql-ingest-live-e2e
+    prior_s047_evolve_cycle_id: EV-039
+    prior_s047_completed_at: '2026-08-08'
+    prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
+    current_child_stage: phase0
+    current_child_stage_note: 'IN_PROGRESS — Phase 0 after open; Plan approval next; promote gate shape TBD (D-S052-cd-manual)'
+    tip_sha: 81701500
+    tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+    note: 'IN_PROGRESS — S052/EV-043 open for #886; 00-context completed; Phase 0 handoff; branch evolve/EV-043-doks-staging-prod ACTIVE recorded (create pending); no git commit by workflow-state-manager'
 
   15-service-health:
     status: completed
@@ -14223,6 +14293,57 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S052-open
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S052-doks-staging-prod-branch-deploys
+  evolve_cycle_id: EV-043
+  skill: 00-context
+  skill_id: 00-context
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: 'Open S052/EV-043 — DOKS staging+prod, GH branch protection, CI/CD both envs, manual promote (#886)'
+  summary: '1 — open session for #886; DOKS staging+prod; stage→staging; main→prod MANUAL; protect stage/main; GH Envs; Standard pending Plan'
+  decision: |
+    D-S052-open=1 — open_session for GitHub #886.
+    Session S052-doks-staging-prod-branch-deploys; evolve cycle EV-043; session_counter 52; evolve_cycle_counter 43.
+    Intent: Stand up DOKS staging + prod environments, protect stage/main, CI/CD for both;
+    auto-deploy stage→staging; manual promote to main/prod.
+    Decisions recorded at open:
+      D-S052-scope=1 — Add DOKS staging + keep prod; stage→staging, main→prod
+      D-S052-product=1 — DOKS (not App Platform)
+      D-S052-gh=1 — Create stage branch + protect stage/main + GH Envs staging/production
+      D-S052-cd-manual — CI/CD for both staging and prod; promote to main AND prod is MANUAL ONLY
+        (skill changes may be needed); exact gate shape TBD next AskQuestion
+    Feature: deepen F30 initially (platform independence).
+    Branch evolve/EV-043-doks-staging-prod status ACTIVE; base main; tip SHA from git 81701500 (8170150038e740c181cc9f236caaeaf84247ff1a).
+    Branch not present in local git at open — parent creates (exists=false recorded).
+    artifacts_dir docs/sessions/S052-doks-staging-prod-branch-deploys/ (parent writes session-brief/routing-plan; not workflow-state-manager).
+    stages.00-context in_progress→completed; active_session.current_stage=16-evolve; stages.16-evolve in_progress.
+    overall_status=in_progress. prior_session S051-output-filename-download-stale.
+    Phase 0 not fully locked — Plan mode next.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-043-doks-staging-prod
+  prior_session: S051-output-filename-download-stale
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/886
+  github_issues: [886]
+  tip_sha: 81701500
+  tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+  deepen_feature_ids:
+  - F30
+  feature_ids:
+  - F30
+  related_decisions:
+  - D-S052-scope
+  - D-S052-product
+  - D-S052-gh
+  - D-S052-cd-manual
+  artifacts:
+  - docs/sessions/S052-doks-staging-prod-branch-deploys/
+  note: 'open_session applied; active_session=S052-doks-staging-prod-branch-deploys; EV-043 in_progress; session_counter=52; evolve_cycle_counter=43; branch ACTIVE recorded exists=false @ main@81701500'
 - id: D-S047-close
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -27061,6 +27182,14 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S052-doks-staging-prod-branch-deploys/
+  status: pending
+  stage: 00-context
+  skill_id: 00-context
+  session_id: S052-doks-staging-prod-branch-deploys
+  evolve_cycle_id: EV-043
+  kind: session_dir
+  note: 'S052 open — parent writes session-brief/routing-plan/context; dir may be created by parent'
 - path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-smoke.md
   type: session-report
   kind: deploy-smoke
@@ -30396,6 +30525,90 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-043
+  session_id: S052-doks-staging-prod-branch-deploys
+  cycle_type: general
+  feature_ids:
+  - F30
+  deepen_feature_ids:
+  - F30
+  feature_note: 'Deepen F30 platform independence — staging env + manual prod promote (#886); infra/platform'
+  title: "DOKS staging + prod + protected-branch CI/CD (#886)"
+  status: in_progress
+  started: "2026-08-08"
+  started_at: "2026-08-08"
+  completed:
+  completed_at:
+  scope_summary: >
+    Add DOKS staging environment alongside existing prod; protect GitHub branches stage and main;
+    CI/CD for both staging and production; auto-deploy stage→staging; promote to main AND prod is
+    MANUAL ONLY (skill changes may be needed — exact gate shape TBD). Product platform = DOKS
+    (not App Platform). Create stage branch + GitHub Environments staging/production.
+    Phase 0 not fully locked — Plan mode next. Issue #886.
+  scope_decisions_locked:
+  - 'D-S052-open=1 — open session for #886'
+  - 'D-S052-scope=1 — Add DOKS staging + keep prod; stage→staging, main→prod'
+  - 'D-S052-product=1 — DOKS (not App Platform)'
+  - 'D-S052-gh=1 — Create stage branch + protect stage/main + GH Envs staging/production'
+  - 'D-S052-cd-manual — CI/CD both envs; promote to main/prod MANUAL ONLY; gate shape TBD'
+  github_issues: [886]
+  issue_ids: [886]
+  github_issue: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/886
+  github_issues_note: 'GitHub #886 — DOKS staging+prod + protected-branch CI/CD + manual promote'
+  routing_plan:
+    required_stages:
+    - 00-context
+    - 16-evolve
+    skipped_stages: []
+    note: Standard (pending Plan approval); full child-stage list after Phase 0 / Plan
+  current_stage: 16-evolve
+  current_stage_status: in_progress
+  current_stage_note: '00-context completed at open; Phase 0 handoff — Plan mode next; promote gate TBD'
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-08'
+      completed: '2026-08-08'
+      note: COMPLETE — D-S052-open=1; session open; handoff Phase 0
+    16-evolve:
+      status: in_progress
+      started: '2026-08-08'
+      note: IN_PROGRESS — Phase 0; scope draft from open decisions; Plan approval next
+  phase0_status: in_progress
+  phase0_note: 'Draft locks from open decisions; Phase 0 not fully locked — Plan mode next'
+  branch: evolve/EV-043-doks-staging-prod
+  branch_status: ACTIVE
+  branch_exists: false
+  branch_base: main
+  branch_base_sha: 81701500
+  branch_base_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+  tip_sha: 81701500
+  tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+  tip_sha_pushed: true
+  tip_sha_note: 'main tip at open; evolve branch create pending by parent'
+  preset: Standard
+  preset_note: Standard (pending Plan approval)
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  adrs: []
+  artifacts:
+  - path: docs/sessions/S052-doks-staging-prod-branch-deploys/
+    status: pending
+    stage: 00-context
+    skill_id: 00-context
+    note: parent writes session-brief/routing-plan/context
+  issues: []
+  notes:
+  - '2026-08-08 EV-043/S052-doks-staging-prod-branch-deploys OPEN — D-S052-open=1; deepen F30; #886; branch evolve/EV-043-doks-staging-prod ACTIVE recorded exists=false @ main@81701500; 00-context completed → 16-evolve Phase 0; Standard pending Plan; no git commit by workflow-state-manager'
 - id: EV-042
   session_id: S050-remove-db-tools-operator-throughput
   cycle_type: general
@@ -40227,15 +40440,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: main
-  ahead_of_origin: 1
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml after D-S051-close / close_session; no git commit by workflow-state-manager'
-  tip_sha: da2a6656
-  tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
-  tip_note: 'main @ da2a6656 S051 closeout (Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid pin); PR #905 merge a15541e5; local ahead of origin by 1 pending push'
+  dirty_note: 'workflow-state.yaml after D-S052-open / open_session S052/EV-043; no git commit by workflow-state-manager'
+  tip_sha: 81701500
+  tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+  tip_note: 'main @ 81701500 ([EV-039] docs: close S047 after 13-deploy-smoke #939); S052/EV-043 open for #886; evolve branch create pending'
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -40244,12 +40457,13 @@ git_history:
     date: '2026-08-04'
   main_merge_sha: a15541e5
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
-  main_tip_sha: da2a6656
-  main_tip_sha_full: da2a6656257696ced3d046d4d19ea4515b9c73b5
-  recommended_branch: main
-  note: 'S051 CLOSED D-S051-close=1 — tip da2a6656; PR #905 @ a15541e5; active_session=null; no git commit by workflow-state-manager'
+  main_tip_sha: 81701500
+  main_tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+  recommended_branch: evolve/EV-043-doks-staging-prod
+  note: 'S052/EV-043 OPEN D-S052-open=1 — main tip 81701500; branch evolve/EV-043-doks-staging-prod ACTIVE recorded exists=false; active_session=S052-doks-staging-prod-branch-deploys; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-08 S052/EV-043 OPEN — D-S052-open=1; session_counter 52; evolve_cycle_counter 43; branch evolve/EV-043-doks-staging-prod ACTIVE recorded exists=false @ main@81701500; 00-context completed → 16-evolve Phase 0; #886 deepen F30; Standard pending Plan; no git commit by workflow-state-manager'
   - '2026-08-07 S051 CLOSED D-S051-close=1 — closeout da2a6656 on main (Phase 5 docs + Cursor rule + hotfix-log #13 + nanoid>=3.3.17); PR #905 MERGED @ a15541e5; 14-hotfix completed; active_session=null; recorded commits da2a6656 + a15541e5; local ahead_of_origin=1 pending push; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 13-deploy-smoke STARTED — D-S050-merge=1; PR #899 MERGED @ e3d1c7c8 (e3d1c7c84836751ea070cb6162df749b218d2ef2) at 2026-08-07T16:22:36Z; tip before merge 5558c7e4 (5558c7e44107c6389b30f90189c477a183490792) signed 12; watching main CI/CD Pipeline run 31197264636 for DOKS Deploy; recorded commits 5558c7e4+e3d1c7c8; Sync DB migrations OOS accepted; 13 not completed; no git commit by workflow-state-manager'
   - '2026-08-07 S050/EV-042 12-verify-deploy COMPLETE — D-S050-12=1; tip 4fe4c37f (4fe4c37f55c596ae9eaecf0722501f594bb275b5); product CI green @18d028ed (31195470994); PR #899 MERGEABLE; Sync DB migrations CI OOS; current_stage 13-deploy-smoke pending; awaiting merge #899; recorded commit 4fe4c37f if missing; no git commit by workflow-state-manager'
@@ -40733,6 +40947,24 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-043-doks-staging-prod
+    status: ACTIVE
+    purpose: "DOKS staging + prod + protected-branch CI/CD (#886); S052/EV-043"
+    base: main
+    base_sha: 81701500
+    base_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+    created: '2026-08-08'
+    session_id: S052-doks-staging-prod-branch-deploys
+    evolve_cycle_id: EV-043
+    tip_sha: 81701500
+    tip_sha_full: 8170150038e740c181cc9f236caaeaf84247ff1a
+    exists: false
+    pushed: false
+    tip_sha_pushed: false
+    ahead_of_origin:
+    pr_url:
+    pr_status:
+    note: 'ACTIVE recorded at D-S052-open; branch not created yet — parent creates from main@81701500; no git commit by workflow-state-manager'
   - name: fix/output-filename-download-stale
     status: merged
     base: main

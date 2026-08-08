@@ -3,6 +3,50 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-043 — DOKS staging + prod protected-branch CI/CD (S052)
+
+**Session**: S052-doks-staging-prod-branch-deploys  
+**Features**: deepen **F30**  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-043-doks-staging-prod`  
+**Status**: in_progress  
+**Issues**: [#886](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/886)  
+**Corpus**: [Corpus: product §F30], [Corpus: deploy], [Corpus: tech-spec],
+[Corpus: tests], [Corpus: adr/ADR-033], [Corpus: adr/ADR-034]
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S052-open | Open S052 / EV-043 for #886 |
+| D-S052-scope | Add DOKS **staging** + keep prod |
+| D-S052-product | **DOKS** (same cluster `metar-iwxxm`) |
+| D-S052-gh | Create/protect `stage` + `main`; GH Envs `staging` / `production` |
+| D-S052-cd | Auto CI/CD both: `stage`→staging, `main`→prod |
+| D-S052-manual | Solo-dev: **PR is the manual gate** (no required reviewers) |
+| D-S052-promote | PRs to `main` must be from `stage` + **staging-gate** (Staging smoke green) |
+| D-S052-dns | `api.staging.tac-to-iwxxm.com` / `app.staging.tac-to-iwxxm.com` → LB `168.144.12.70` |
+
+### Acceptance (F30 deepen — TC-F30-008..012)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Staging ns `metar-iwxxm-staging` + secrets isolated from prod | TC-F30-008 |
+| AC2 | Staging DNS + TLS for api/app.staging hosts | TC-F30-009 |
+| AC3 | Push/merge to `stage` deploys staging; to `main` deploys prod | TC-F30-010 |
+| AC4 | `stage`/`main` require PR; no force-push (rulesets) | TC-F30-011 |
+| AC5 | PR to `main` fails unless head=`stage` and Staging smoke green | TC-F30-012 |
+
+### Preset
+
+**Standard** — include 03 for promote/env_role rule; skip 06.
+
+### Gate A (02)
+
+Pass when F30 deepen AC + test-plan smokes + this section committed — proceed 03/04.
+
+---
+
 ## Cycle EV-042 — Remove dissemination destinations + operator throughput + mass ingest (S050)
 
 **Session**: S050-remove-db-tools-operator-throughput  

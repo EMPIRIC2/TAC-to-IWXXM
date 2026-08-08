@@ -5,7 +5,11 @@ description: >
   CORS + frontend bundle wiring), health checks, changelog, and monitoring baseline. Final
   pipeline stage. Blocking — user must approve deployment results.
 ---
-
+<!--
+Personal skill (project-agnostic). Paths like docs/ and workflow-state.yaml refer to the
+*active workspace project*, not this skills directory. Fill {{PLACEHOLDER}} tokens from
+the project's docs/CORPUS.md, feature-list, and deploy docs.
+-->
 # 13 — Deploy & Smoke Check
 
 Deploy the application and verify it works with smoke tests and health checks.
@@ -13,12 +17,38 @@ Deploy the application and verify it works with smoke tests and health checks.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
-**State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
+**State agent:** project `.cursor/agents/workflow-state-manager.md` if present; else edit `workflow-state.yaml` per [workflow-state-reference.md](../workflow-state-reference.md) — mandatory read/update.
 
 ## Connectivity (stage 13)
 
 Mandatory sequence: **H0c** (pre) → deploy → **H1–H3** → **`verify_connectivity.sh`** (H4–H5).
 Do not mark `deployed` without H4–H5 pass or user-waived checklist entry. See connectivity-gates §Stage 13.
+
+## Single-env / live role
+
+Inherit `env_role` from 12 (or re-resolve). If `staging_as_live` / sole stack:
+
+- Smokes and promotes target **production traffic** — say so in every AskQuestion and report.
+- Do not describe the cutover as “staging-only” when no distinct prod stack exists.
+- Prefer labeling results as **live** even when hostnames still contain `staging`.
+
+**TAC-to-IWXXM (ADR-034):** When staging exists, smoke **staging** at
+`api|app.staging.tac-to-iwxxm.com` (or CI **Staging smoke**) before promoting via PR
+`stage`→`main`; then smoke **prod** at `api|app.tac-to-iwxxm.com`. Never call staging URLs
+production.
+
+## CI/CD tip gate
+
+Before deploy, promote, or cutover CLI: tip SHA required workflows must be **green**.
+Red/cancelled → **hard stop** unless the user explicitly waives via AskQuestion.
+
+## Health ≠ primary-journey-ready
+
+Liveness/`/health` (and dependency probes) can pass while the **primary user journey** fails.
+
+- **H3** (primary journey smoke): timeout, hang, or hard error = **FAIL** even if H1 health is green.
+- Do not mark `health_tiers.h3: pass` on health-only evidence.
+- On H3 P0 failure during an evolve cycle: recommend pause **16-evolve** → **14-hotfix**.
 
 ## Prerequisites
 
@@ -125,13 +155,14 @@ Record every commit in `workflow-state.yaml` §`git_history.commits` with
 
 ### Phase 1.5 — Pre-deploy integration (T1)
 
-Before production deploy:
+Before production / live deploy (`env_role: prod` or `staging_as_live`):
 
-1. T0 green: `pytest tests/e2e/ -m "e2e and not live"`
-2. **H0c green:** `pytest tests/unit/test_cors_policy.py` (browser CORS on all FastAPI apps)
-3. Migrations apply on staging DB: `alembic upgrade head`
-4. Optional: `scripts/rag_smoke.py` against local TestClient
-5. **Connectivity readiness (12):** `{artifacts_dir}/reports/deploy-checklist.md`` includes H0c + `VITE_*` / `METAR_CORS_ORIGINS` rows per [connectivity-gates.md](../connectivity-gates.md)
+1. T0 green: `pytest tests/e2e/ -m "e2e and not live"` (or project equivalent)
+2. **H0c green:** CORS unit gate when the project uses connectivity-gates
+3. Migrations apply on **target** DB (the live stack when single-env)
+4. Optional: local smoke against TestClient
+5. **Connectivity readiness (12):** deploy-checklist includes H0c + frontend/API origin rows
+6. **CI/CD tip green**: project CI watch for tip SHA — hard stop if red
 
 **Deploy gate**: T1 fail → 14-hotfix or fix-in-place; do not deploy.
 
@@ -161,22 +192,24 @@ Capture full stdout/stderr.
 Run **backend** smokes first, then **browser connectivity** (H4–H5). Backend-only pass is **not**
 sufficient for deployed service hybrid deploys — see [connectivity-gates.md](../connectivity-gates.md).
 
-**Operator env (staging):**
+**Operator env (live stack — names may still say “staging”):**
 
 ```bash
-uv run --with pydo --with pyyaml scripts/deploy/do_apps.py urls --frontend
-# Set METAR_STAGING_ADMIN_API_URL from Modal deploy output
-export METAR_STAGING_ADMIN_API_URL=https://deployed-service--deployed-service-data-management-fastapi-app.modal.run
+# Resolve URLs via project deploy helpers; export API/frontend bases for smokes
+export {{ENV_PREFIX}}_STAGING_ADMIN_API_URL=https://{{STAGING_URL_HOST}}
 ```
 
+When `env_role` is `staging_as_live` / sole stack, state in the report: **these URLs are production**.
+
 **Agent 1 — API connectivity (H1)**:
-- `bash scripts/deploy/staging_smoke.sh` or `tests/smoke/test_staging_health.py -m live`
-- Verify TLS, `/health` 200 on ChatRAG + write API
-- Return: pass/fail, response times
+- Project staging/live smoke script or health tests (`-m live` when used)
+- Verify TLS and liveness/`/health` on public APIs; dependency probes ok when applicable
+- Return: pass/fail, response times — **H1 green alone does not pass the stage**
 
 **Agent 2 — Functional smoke (H2–H3)**:
-- H2: DB pool + Alembic head (`staging_h2.py`)
-- H3: `POST /api/v1/ask` with fixture question (warm LLM first if cold — see deploy-report)
+- H2: DB / migration head (or project equivalent)
+- H3: primary user-journey request (warm cold dependencies first if needed)
+- **H3 timeout / hang / error = FAIL** even if H1 health is green
 - Negative API paths per test-plan / config-spec where applicable
 - Return: pass/fail, response details
 

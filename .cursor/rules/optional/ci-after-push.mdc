@@ -12,7 +12,9 @@ session, open a PR as ready, or mark work complete after `git push` without watc
 
 | Branch | Workflow | Must pass |
 |--------|----------|-----------|
-| Any | `.github/workflows/ci-cd.yml` | `backend-tests` (and other jobs for touched areas) |
+| Any | `.github/workflows/ci-cd.yml` | Test matrix (+ alembic/native as required) |
+| `stage` | same | **Deploy (stage)** + **Staging smoke** (after merge/push) |
+| `main` | same | **Deploy (main)** to prod; PRs need **Staging gate** |
 
 Workflows live at **monorepo root** (`../` from this backend package when checked out alone).
 

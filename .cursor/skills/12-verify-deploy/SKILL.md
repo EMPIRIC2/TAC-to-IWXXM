@@ -6,7 +6,11 @@ description: >
   secrets, browser connectivity readiness (CORS + VITE_*), data management, rollback plan,
   and resource allocation against the deployment spec.
 ---
-
+<!--
+Personal skill (project-agnostic). Paths like docs/ and workflow-state.yaml refer to the
+*active workspace project*, not this skills directory. Fill {{PLACEHOLDER}} tokens from
+the project's docs/CORPUS.md, feature-list, and deploy docs.
+-->
 # 12 — Verify Deploy Strategy
 
 Pre-deploy gate verifying that the deployment strategy planned in Stage 04 still holds
@@ -15,13 +19,42 @@ after implementation, and all deployment prerequisites are met.
 **Preamble:** [pipeline-preamble.md](../pipeline-preamble.md) — shared conventions for stages 00–19.
 **Sessions:** [sessions-reference.md](../sessions-reference.md) — requires `active_session` unless waived; reports under `docs/sessions/{id}/reports/`.
 **Cross-cutting:** [considerations.md](../considerations.md), [connectivity-gates.md](../connectivity-gates.md).
-**State agent:** [workflow-state-manager](../../agents/workflow-state-manager.md) — mandatory read/update.
+**State agent:** project `.cursor/agents/workflow-state-manager.md` if present; else edit `workflow-state.yaml` per [workflow-state-reference.md](../workflow-state-reference.md) — mandatory read/update.
 
 ## Connectivity (stage 12)
 
 Run **Agent 6** and populate deploy-checklist connectivity rows (H0c, VITE matrix, CORS origins,
 `verify_connectivity.sh` planned). Sign-off means “ready for 13 including H4–H5,” not API-only.
 See connectivity-gates §Stage 12.
+
+## Single-env / live role
+
+Before marking deploy-ready, resolve **what the target stack is**:
+
+| Situation | `env_role` | Agent behavior |
+|-----------|------------|----------------|
+| Distinct non-prod + prod stacks exist | `staging` then `prod` | Keep separate checklists; never treat staging URLs as prod |
+| **Only one** deployed stack (names may still say “staging”) | `staging_as_live` / **live = prod** | Treat that stack as **production** in AskQuestions, checklists, and reports |
+| Explicit second env planned but not provisioned | `staging_as_live` | Same as sole-stack; do not imply a safer non-prod cutover target |
+
+**TAC-to-IWXXM (ADR-034 / EV-043):** Dual DOKS envs — `stage`→`metar-iwxxm-staging`
+(`api\|app.staging.tac-to-iwxxm.com`); `main`→`metar-iwxxm` (prod hosts). Prefer
+`env_role: staging` then `prod`. Promote = PR **stage→main** after **Staging smoke** /
+**Staging gate** green. Do not use sole-stack language when both namespaces exist.
+
+Record `env_role` on the deploy checklist and in the session note. Prefer a project ADR when the
+workspace documents single-env topology.
+
+## CI/CD tip gate
+
+Tip SHA must have **required** workflows green before deploy-ready / promote:
+
+- Always: project CI workflow(s)
+- On default branch / live cutover: deploy-preflight and any CD the project treats as a gate
+
+**Red, cancelled, or missing run** → **hard stop**. Do not continue 12→13 or promote without an
+explicit **waiver AskQuestion** (first option = wait/fix; last = explain). Prefer the project’s
+CI watch script (if present) and treat non-zero exit as blocking.
 
 ## Prerequisites
 
@@ -112,7 +145,7 @@ Launch parallel agents:
 - Read [connectivity-gates.md](../connectivity-gates.md)
 - Verify `tests/unit/test_cors_policy.py` exists and passes (`H0c`)
 - Verify each FastAPI `create_app` uses `deployed-service_shared_schemas.cors.configure_cors`
-- Cross-check `docs/ops/staging-secrets-matrix.md`: every `VITE_*` row has a matching API URL + `METAR_CORS_ORIGINS` entry
+- Cross-check `docs/ops/staging-secrets-matrix.md`: every `VITE_*` row has a matching API URL + `{{ENV_PREFIX}}_CORS_ORIGINS` entry
 - Confirm `scripts/deploy/verify_connectivity.sh` and `tests/smoke/test_staging_connectivity.py` are present
 - Return: pass/fail + missing wiring items (do **not** assume H1–H3 alone is enough)
 
@@ -146,7 +179,7 @@ Common failure modes to check:
 - Network/port binding issues
 - Cold start timeout
 - Memory exhaustion
-- **Auth/CORS / browser connectivity** — static frontend on different origin than API; mitigated by `METAR_CORS_ORIGINS` + H4/H5 gates (see connectivity-gates)
+- **Auth/CORS / browser connectivity** — static frontend on different origin than API; mitigated by `{{ENV_PREFIX}}_CORS_ORIGINS` + H4/H5 gates (see connectivity-gates)
 
 ### Phase 3 — Rollback Plan Review
 
@@ -187,7 +220,7 @@ Write `{artifacts_dir}/reports/deploy-checklist.md``:
 - [ ] Rollback plan reviewed
 - [ ] H0c CORS unit tests pass (`pytest tests/unit/test_cors_policy.py`)
 - [ ] Frontend `VITE_*` ↔ API URL matrix complete (connectivity-gates §Wiring)
-- [ ] `METAR_CORS_ORIGINS` documented per API service for staging/prod
+- [ ] `{{ENV_PREFIX}}_CORS_ORIGINS` documented per API service for staging/prod
 - [ ] Post-deploy H4–H5 command documented (`verify_connectivity.sh`)
 
 ## Failure Mitigations
@@ -247,3 +280,6 @@ Next step: 13-deploy-smoke
 3. **Rollback is required**: Every deployment must have a documented rollback procedure.
 4. **User approves risks**: Every accepted risk requires explicit user acknowledgment.
 5. **Checklist persists**: The deploy checklist is a reusable artifact for future deploys.
+6. **Single-env honesty**: If only one stack exists, call it **live/prod** in user-facing text —
+   do not imply a safer “staging-only” cutover.
+7. **CI/CD tip green**: Red tip SHA blocks deploy-ready unless the user waives.
