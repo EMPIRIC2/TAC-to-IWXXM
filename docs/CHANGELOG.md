@@ -2,6 +2,22 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-06 — S047 EV-039 (F16 live local SQL e2e + teardown)
+
+### Added
+- **F16 deepen**: Compose mock-byoc Postgres/MySQL/SQL Server + SQLite file path; Playwright
+  `TC-F16-LIVE-*` live BYOC upload; async write assert; teardown across integration/e2e/local.
+- FE dependency pin: `js-yaml` ≥4.3.1.
+
+### Docs
+- Test-plan / journeys / tech-spec harness recipe for live SQL; feature-list §F16 EV-039 ACs.
+
+### Deploy
+- PR [#891](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891) MERGED @ `fea30aba`; post-merge
+  CD [31130303373](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31130303373); historical
+  CLI tag `20260806224839-7df9f8f` during GHA outage; H0c/H1/H4–H5 re-verified 2026-08-08.
+- Report: [evolve-report-EV-039.md](evolve-report-EV-039.md).
+
 ## 2026-08-07 — S050 EV-042 (Hide destinations + F33 mass ingest + work queue)
 
 ### Added
