@@ -3,6 +3,60 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-046 — codes.wmo.int aviation registers → TAC present/cite/cover (S055)
+
+**Session**: S055-wmo-aviation-registers  
+**Features**: deepen **F6 / F12 / F15 / F20 / F23 / F24 / F26 / F27 / F28 / F32**  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-046-wmo-aviation-registers`  
+**Status**: **completed** 2026-08-08 (`D-S055-close=1`; PR → `stage`)  
+**Issues**: [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889)
+(parent epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
+compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
+[#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882);
+Validated follow-on [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959))  
+**Corpus**: [Corpus: product §F6/F12/F15/F20/F23/F24/F26/F27/F28/F32],
+[Corpus: tests], [Corpus: decisions] · domain opt-in
+`docs/domain/rules/*`, `docs/domain/mining/*`
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S055-open | **2** — Lean preset (docs/coverage first; defer full harvest wiring) |
+| D-S055-families | **3** — Full priority-register coverage % across **all supported F6 products** (METAR, SPECI, TAF, SIGMET/VA, AIRMET, VAA, TCA, SWXA, VONA) |
+| D-S055-validated | **1** — **Waive Validated** for Lean close; document gap + Standard follow-on child |
+| D-S055-cite | **2** — Domain docs + COVERAGE_MATRIX + RULE_SOURCE_URLS + mining notes **and** ISSUE_CATALOG / rule provenance where notations already exist |
+| D-S055-phase01 | **1** — Lock scope; proceed 01-requirements |
+| D-park-doks | EV-043 / EV-044 remain **PARKED** |
+
+### Acceptance (Lean — confirmed `D-S055-01-ac=1` 2026-08-08)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | **Present:** Priority-register inventory (49-2, 306/4678, iwxxm, common/nil) lists members we depend on vs vendor SoT; dual/404/obsolete dispositions documented | TC-EV046-001 |
+| AC2 | **Cited:** RULE_SOURCE_URLS + mining notes + COVERAGE_MATRIX rows updated; ISSUE_CATALOG / PROVENANCE_MAP entries that already claim codes.wmo.int use **stable concept URIs** (not bare register root only) where a concept URI exists | TC-EV046-002 |
+| AC3 | **Cover:** Coverage report — % of priority-register members exercised by TAC fixtures **per F6 product family**; intentional exclusions with cite + reason | TC-EV046-003 |
+| AC4 | **Gap report:** Registry notations with no fixture / lint / encode / citation → child issues or explicit deferrals on #846 / #889 | TC-EV046-004 |
+| AC5 | **Validated (waived):** Lean close documents waiver + files Standard follow-on for harvest + automated TAC-token membership checks (no live HTML in PR CI) | TC-EV046-005 |
+| AC6 | Harvest SoT path documented (vendor RDF/CSV + `vendor/manifest.json` pin/cadence); cross-links to #859 / #882 current | TC-EV046-006 |
+
+### Out of scope (Lean)
+
+- Standing machine harvest job + `tac-validate` membership CI (Standard follow-on)
+- Live `codes.wmo.int` HTML in PR CI; vendor hand-edits; #882 notify pipeline
+- Replacing XSD/Schematron; dumping non-aviation trees
+
+### Preset
+
+**Lean** — `00 → 16 → 01 → 02`; skip `03`–`13`.
+
+### Gate A (02)
+
+Pass when Lean ACs + test-plan TC-EV046-* + this section committed — then Lean close (no 04/07).
+
+---
+
 ## Cycle EV-045 — Rust crate CI (#725) (S054)
 
 **Session**: S054-rust-ci-crates  
@@ -81,6 +135,8 @@ PR #953 open → `stage` (merge separate). AC6 ops still deferred.
 - [Corpus: product §F13] [Corpus: product §F14]
 - [Corpus: tech-spec] [Corpus: tests] [Corpus: journeys] [Corpus: adr/ADR-017]
 - `[Corpus: WAIVED — AC6 GitHub rulesets/required-checks apply; reason: token admin=false / no rulesets; decided: D-S054-ac6-waive=2 / EV-045]`
+
+---
 
 ---
 

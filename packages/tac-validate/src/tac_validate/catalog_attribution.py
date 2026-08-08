@@ -65,10 +65,11 @@ def attribution_for(code: str) -> dict[str, str | None]:
         parts.append(source_id)
     if status in {"paywall", "gap", "N/A"}:
         parts.append(f"access:{status}")
+    # Prefer stable URL in operator-facing attribution (EV-046); note is secondary.
+    if source_url:
+        parts.append(source_url)
     if note:
         parts.append(note)
-    elif source_url:
-        parts.append(source_url)
     attribution = " — ".join(parts) if parts else None
     return {
         "source_id": source_id,

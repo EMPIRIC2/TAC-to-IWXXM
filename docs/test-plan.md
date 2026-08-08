@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S045 / EV-037 matrix dispositions #869/#870/#872)
+> **Last updated**: 2026-08-08 (S055 / EV-046 — #889 codes.wmo.int present/cite/cover Lean)
 
 ## Scope
 
@@ -2022,6 +2022,71 @@ New **TC-EV038-001..014**. Deepens F2 / F4 / F6 / F7 / F32. Milestones M1→M2�
 - [ ] No new Fn in feature-list (deepen F2/F4/F6/F7/F32 only)
 - [ ] H4–H5 for #854 at deploy; M1 may waive 12/13 if docs-only ship alone
 - [ ] Domain path-cites for matrix / RELEASE_LINE updates
+
+## S055 / EV-046 — codes.wmo.int aviation registers (#889 Lean)
+
+New **TC-EV046-001..006**. Deepens F6 / F12 / F15 / F20 / F23 / F24 / F26 / F27 / F28 / F32.
+Docs/coverage only — no H4–H5. Complements **TC-EV038-008** / [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
+(URI drift) — this cycle is TAC present/cite/cover + Validated waiver.
+
+### TC-EV046-001: Present inventory (priority registers)
+
+- **Level**: T0 / docs
+- **Objective**: Inventory of 49-2, 306/4678, iwxxm, common/nil (and duals) vs vendor SoT;
+  dual/404/obsolete dispositions recorded
+- **Pass criteria**: Standing or session report lists depended-on notations + dispositions;
+  offline SoT path cited
+- **Source**: #889 Present; AC1; [Corpus: product] EV-046 deepen
+
+### TC-EV046-002: Citations (docs + ISSUE_CATALOG)
+
+- **Level**: T0 / docs
+- **Objective**: RULE_SOURCE_URLS + mining notes + COVERAGE_MATRIX cite stable concept URIs;
+  ISSUE_CATALOG / PROVENANCE_MAP rows that claim codes.wmo.int use concept URIs where available
+- **Pass criteria**: Spot-check ≥ sample of weather/phenomena/nil-related catalog rows; no
+  bare-root-only where concept URI exists (or explicit gap noted)
+- **Source**: #889 Cited; AC2; `D-S055-cite=2`
+
+### TC-EV046-003: Coverage % per F6 product family
+
+- **Level**: T0 / docs
+- **Objective**: % of priority-register members exercised by TAC fixtures for each supported
+  F6 product (METAR, SPECI, TAF, SIGMET/VA, AIRMET, VAA, TCA, SWXA, VONA); exclusions with
+  cite + reason
+- **Pass criteria**: Coverage report committed; exclusions listed
+- **Source**: #889 Cover; AC3; `D-S055-families=3`
+
+### TC-EV046-004: Gap report / backlog children
+
+- **Level**: T0 / process
+- **Objective**: Notations with no fixture / lint / encode / citation → children or deferrals
+  on #846 / #889
+- **Pass criteria**: Gap list filed or deferred with rationale; epic/issue cross-links
+- **Source**: #889 Gap report; AC4
+
+### TC-EV046-005: Validated waiver + Standard follow-on
+
+- **Level**: T0 / process
+- **Objective**: Lean close records Validated waiver and opens/links Standard follow-on for
+  harvest + automated TAC-token membership checks (vendor offline in PR CI)
+- **Pass criteria**: Waiver in evolve-decisions §EV-046; follow-on issue or clearly titled
+  child; no live HTML CI introduced
+- **Source**: #889 Validated (waived); AC5; `D-S055-validated=1`
+
+### TC-EV046-006: Harvest SoT + compose links (#859 / #882)
+
+- **Level**: T0 / docs
+- **Objective**: Document vendor RDF/CSV + manifest pin/cadence; keep compose links to #859
+  (drift) and #882 (notify) current
+- **Pass criteria**: SoT path + pin notes in mining/RULE_SOURCE_URLS; cross-links present
+- **Source**: #889 bookkeeping; AC6
+
+### EV-046 verify gate
+
+- [ ] TC-EV046-001..006 green (or explicit deferral recorded)
+- [ ] No new Fn (deepen only); Validated waived with follow-on
+- [ ] No live `codes.wmo.int` HTML in PR CI
+- [ ] Domain path-cites for RULE_SOURCE_URLS / COVERAGE_MATRIX / mining / ISSUE_CATALOG
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 
