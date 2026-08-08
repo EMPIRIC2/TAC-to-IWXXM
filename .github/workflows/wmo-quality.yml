@@ -5,7 +5,7 @@ name: WMO quality
 
 on:
   push:
-    branches: [main, evolve/EV-020-airmet-quality, evolve/EV-021-vaa-quality]
+    branches: [main, stage, evolve/EV-020-airmet-quality, evolve/EV-021-vaa-quality]
     paths:
       - "packages/tac-validate/**"
       - "packages/tac2iwxxm/**"

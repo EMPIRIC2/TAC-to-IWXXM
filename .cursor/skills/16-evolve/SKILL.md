@@ -256,7 +256,9 @@ from 13-deploy-smoke or 15-service-health):
    (or the user explicitly abandons the cycle).
 
 Deploy gates still require tip CI/CD green and honest `env_role` (`staging` vs `prod` when
-dual DOKS envs exist — ADR-034; sole stack = live/prod only when staging is absent).
+dual DOKS **clusters** exist — ADR-034 / EV-044; sole stack = live/prod only when staging
+is absent). **Promote to `main` only via PR `stage`→`main` after Staging smoke + Staging
+gate green** — never feature→`main`.
 
 ### Git branch and commit-as-you-go
 
@@ -375,7 +377,7 @@ For **11-verify-impl** (when routed), include **per–acceptance-criterion** sta
 | **A→B** | Fn in feature-list; delta specs; 02 pass; 03 if routed |
 | **B→C** | Execution-plan tasks approved; 05 pass; 06 if routed |
 | **C→D** | All Fn tasks done; latest 08 pass |
-| **Deploy** | 09+10 pass; 11+12 user-approved; deploy approved; tip CI/CD green unless waived; `env_role` honest (`staging`/`prod` or sole stack = live/prod) |
+| **Deploy** | 09+10 pass; 11+12 user-approved; deploy approved; tip CI/CD green unless waived; `env_role` honest (`staging`/`prod` or sole stack = live/prod); promote to `main` only via `stage` after Staging smoke/gate |
 
 On failure: list unmet criteria → AskQuestion → fix in place per considerations §2.
 

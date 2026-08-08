@@ -6,9 +6,9 @@ name: E2E Tests with Real Services
 # and was always-red on cron. Keep manual + push until rewritten for apps/.
 
 on:
-  # Run on main branch pushes
+  # Run on main and stage branch pushes
   push:
-    branches: [main]
+    branches: [main, stage]
     paths:
       - 'apps/**'
       - 'packages/**'

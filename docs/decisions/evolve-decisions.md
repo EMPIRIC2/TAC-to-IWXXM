@@ -3,6 +3,54 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-044 — Separate staging DOKS + DO Project (S053)
+
+**Session**: S053-separate-staging-doks-project  
+**Features**: deepen **F30**  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-044-separate-staging-doks`  
+**Status**: in_progress  
+**Amends**: [ADR-034](../adr/ADR-034-doks-staging-promote-from-stage.md) (shared cluster → dual cluster)  
+**Corpus**: [Corpus: product §F30], [Corpus: deploy], [Corpus: tech-spec],
+[Corpus: tests], [Corpus: adr/ADR-033], [Corpus: adr/ADR-034]
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S053-open | Open S053 / EV-044; Standard routing (`1:1`) |
+| D-S053-scope | Separate staging DOKS under **Staging TAC-to-IWXXM**; prod on **TAC-to-IWXXM** |
+| D-S053-db | New cheapest managed PG (`db-s-1vcpu-1gb`) under Staging project (`2:1`) |
+| D-S053-size | Staging DOKS 1× `s-2vcpu-4gb`, `nyc1`, name `metar-iwxxm-staging` (`3:1`) |
+| D-S053-teardown | Tear down shared-cluster ns `metar-iwxxm-staging` after new stack green (`4:1`) |
+| D-S053-cd | Keep promote-from-stage: `stage`→staging cluster, `main`→prod cluster |
+| D-S053-dns | Staging hosts → **new** staging LB IP (Porkbun A update) |
+
+### Acceptance (F30 deepen — amend TC-F30-008..010)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Staging DOKS + PG assigned to DO Project **Staging TAC-to-IWXXM** | TC-F30-008′ |
+| AC2 | Prod DOKS + PG remain on **TAC-to-IWXXM** | TC-F30-008′ |
+| AC3 | Staging DNS + TLS for api/app.staging → staging LB | TC-F30-009 |
+| AC4 | `stage` CD targets staging cluster; `main` CD targets prod | TC-F30-010 |
+| AC5 | Shared-cluster staging ns removed after cutover | TC-F30-013 (new) |
+| AC6 | Promote gate unchanged (head=`stage` + Staging smoke) | TC-F30-012 |
+
+### Preset
+
+**Standard** — include 03 for dual-cluster / project tooling; skip 06.
+
+### Gate A (02)
+
+**PASS** 2026-08-08 — F30 deepen AC + ADR-034 amend + this section committed; proceed 03/04.
+
+### Gate B (05)
+
+Pass when execution-plan tasks T2–T4 approved — proceed 07-build provision.
+
+---
+
 ## Cycle EV-043 — DOKS staging + prod protected-branch CI/CD (S052)
 
 **Session**: S052-doks-staging-prod-branch-deploys  

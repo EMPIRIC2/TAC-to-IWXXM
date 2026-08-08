@@ -14,7 +14,15 @@ session, open a PR as ready, or mark work complete after `git push` without watc
 |--------|----------|-----------|
 | Any | `.github/workflows/ci-cd.yml` | Test matrix (+ alembic/native as required) |
 | `stage` | same | **Deploy (stage)** + **Staging smoke** (after merge/push) |
-| `main` | same | **Deploy (main)** to prod; PRs need **Staging gate** |
+| `main` | same | **Deploy (main)** to prod |
+| PR → `main` | same | **Staging gate** — head must be `stage` + tip **Staging smoke** green |
+
+## Promote to main (DOKS / ADR-034)
+
+Never open feature→`main`. Path: feature → PR → `stage` → Staging smoke green → PR
+**`stage`→`main`** → Staging gate → merge → prod Deploy. Staging LB Host-header /
+HTTPS probes use staging cluster IP (`STAGING_LB_IP`, default `143.244.202.13`), not
+prod `168.144.12.70`. See `docs/deploy.md` §Promote and `doks-promote-from-stage.mdc`.
 
 Workflows live at **monorepo root** (`../` from this backend package when checked out alone).
 

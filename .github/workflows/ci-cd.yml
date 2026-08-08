@@ -40,6 +40,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           STAGING_API_URL: https://api.staging.tac-to-iwxxm.com
+          # EV-044 staging cluster LB (Host-header fallback until Porkbun HTTPS).
+          STAGING_LB_IP: "143.244.202.13"
+          DOKS_LB_IP: "143.244.202.13"
           # pull_request GITHUB_SHA is a merge commit — gate the PR head tip on stage.
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: bash scripts/ci/staging_gate.sh
@@ -428,8 +431,10 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043).
-  # stage → staging ns; main → prod ns. Render hooks optional (main only).
+  # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043 / EV-044).
+  # stage → staging cluster (env staging); main → prod cluster (env production).
+  # Promote to main only via PR stage→main after Staging smoke + staging-gate (ADR-034).
+  # Render hooks optional (main only).
   # ============================================================================
   deploy:
     runs-on: ubuntu-latest
@@ -653,6 +658,9 @@ jobs:
     env:
       LIVE_API_URL: https://api.staging.tac-to-iwxxm.com
       LIVE_FRONTEND_URL: https://app.staging.tac-to-iwxxm.com
+      # Host-header fallback until Porkbun A records → staging LB (EV-044).
+      STAGING_LB_IP: "143.244.202.13"
+      DOKS_LB_IP: "143.244.202.13"
       STAGING_SMOKE_PYTEST: "0"
     steps:
       - uses: actions/checkout@v5

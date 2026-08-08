@@ -79,9 +79,10 @@ Liveness/`/health` and dependency probes can be green while the **primary user j
 If only one deployed stack exists (`env_role: staging_as_live`), label checks and reports as
 **live/prod** — do not imply a safer non-prod target.
 
-**TAC-to-IWXXM (ADR-034):** Dual DOKS — use `env_role: staging` vs `prod` and the matching
-hosts (`*.staging.tac-to-iwxxm.com` vs `api|app.tac-to-iwxxm.com`). Do not use sole-stack
-language when `metar-iwxxm-staging` is provisioned.
+**TAC-to-IWXXM (ADR-034 / EV-044):** Dual DOKS **clusters** — use `env_role: staging` vs
+`prod` and the matching hosts (`*.staging.tac-to-iwxxm.com` / staging LB vs
+`api|app.tac-to-iwxxm.com`). Do not use sole-stack language when cluster
+`metar-iwxxm-staging` is provisioned. Promotions to `main` require Staging smoke green.
 
 ## Health tiers (default recommendations)
 

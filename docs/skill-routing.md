@@ -125,6 +125,13 @@ See [plan-mode-loop.md](../.cursor/skills/plan-mode-loop.md).
 | Needs execution-plan tasks | No | Yes |
 | User-visible new capability | No | Yes |
 
+## DOKS promote to main (F30 / ADR-034)
+
+After dual-env CD (EV-043/044): **never** merge feature branches to `main`. Path is
+feature → PR → `stage` → **Staging smoke** green → PR **`stage`→`main`** → **Staging gate**
+→ prod Deploy. See [docs/deploy.md](deploy.md) §Promote and
+`.cursor/rules/optional/doks-promote-from-stage.mdc`.
+
 ## Numbered stages (00–19)
 
 | Range | Phase | Purpose |
