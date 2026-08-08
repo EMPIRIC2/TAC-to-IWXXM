@@ -41,11 +41,17 @@ curl -sS -I -H "Host: app.staging.tac-to-iwxxm.com" http://143.244.202.13/     #
 
 Worker remains at 0 replicas (staging overlay); can scale on dedicated node after smoke.
 
+## Teardown (T3.3 — 2026-08-08)
+
+Deleted ns `metar-iwxxm-staging` from **prod** cluster `do-nyc1-metar-iwxxm`.
+Post-check: prod `/health` 200; new staging Host-header 200; old LB
+`168.144.12.70` + staging Host → 503 (expected).
+
 ## Remaining (T3.*)
 
 - [ ] Porkbun A: `api.staging` / `app.staging` → `143.244.202.13`
 - [ ] Set GH Environment `staging` `KUBE_CONFIG` to staging cluster (prod Env keeps prod)
-- [ ] Tear down prod-cluster ns `metar-iwxxm-staging` after HTTPS smoke
+- [x] Tear down prod-cluster ns `metar-iwxxm-staging`
 - [x] Workflow parity: `stage` branch triggers
 
 **Secrets:** connection password is **not** recorded here — use `doctl databases connection` / DO UI.

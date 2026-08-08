@@ -33,7 +33,7 @@ Product UI; App Platform; changing staging-gate / promote policy; Render reopen.
 | T2.4 | ops | Apply `deploy/doks/overlays/staging` + secrets (staging DB URL, Auth, GHCR pull) | overlays; staging-secrets-matrix | T2.2, T2.3 | **completed** (Host-header `/health` 200) |
 | T3.1 | ci | Ensure GH Env `staging` `KUBE_CONFIG` = staging cluster (prod Env keeps prod kubeconfig); document if workflow change needed | ci-cd.yml; TC-F30-010 | T2.1 | pending |
 | T3.2 | ops | Porkbun A records → staging LB; wait TLS Ready | TC-F30-009; DNS runbook | T2.3, T2.4 | pending |
-| T3.3 | ops | Tear down prod-cluster ns `metar-iwxxm-staging` after staging smoke green | D-S053-teardown; TC-F30-013 | T3.2, T4.1 | pending |
+| T3.3 | ops | Tear down prod-cluster ns `metar-iwxxm-staging` after staging smoke green | D-S053-teardown; TC-F30-013 | T3.2, T4.1 | **completed** (2026-08-08; Host-header green; HTTPS pending DNS) |
 | T3.4 | docs | Update deploy README / skills notes for dual kubeconfig; drop shared-LB wording | deploy.md | T3.1 | pending |
 | T4.1 | verify | Staging Host-header + HTTPS smoke; project resource list check | TC-F30-008..010 | T2.4, T3.1 | pending |
 | T4.2 | verify | Promote path still green (staging-gate); prod `/health` unchanged | TC-F30-012 | T4.1 | pending |
