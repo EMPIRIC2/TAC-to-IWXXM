@@ -43,12 +43,14 @@ api() {
 
 TMP="$(mktemp)"
 trap 'rm -f "${TMP}"' EXIT
-api "/commits/${SHA}/check-runs?per_page=100" >"${TMP}"
-
-python3 - <<'PY' "${TMP}"
+# PR synchronize often races the stage-push Staging smoke job — poll up to ~12 minutes.
+DEADLINE=$((SECONDS + 720))
+ok_count=0
+while true; do
+  api "/commits/${SHA}/check-runs?per_page=100" >"${TMP}"
+  ok_count="$(python3 - <<'PY' "${TMP}"
 import json, sys
-path = sys.argv[1]
-with open(path, encoding="utf-8") as f:
+with open(sys.argv[1], encoding="utf-8") as f:
     data = json.load(f)
 runs = data.get("check_runs") or []
 ok = [
@@ -57,13 +59,28 @@ ok = [
     and r.get("status") == "completed"
     and r.get("conclusion") == "success"
 ]
-if not ok:
-    names = sorted({r.get("name") for r in runs if r.get("conclusion") == "success"})
-    print("::error::No successful 'Staging smoke' check-run for this SHA. Merge to stage, wait for Deploy + Staging smoke, then open/update the PR.")
-    print("successful check names sample:", ", ".join(names[:30]))
-    sys.exit(1)
-print(f"staging-gate: found {len(ok)} successful Staging smoke check-run(s)")
+print(len(ok))
 PY
+)"
+  if [[ "${ok_count}" -gt 0 ]]; then
+    echo "staging-gate: found ${ok_count} successful Staging smoke check-run(s)"
+    break
+  fi
+  if [[ "${SECONDS}" -ge "${DEADLINE}" ]]; then
+    python3 - <<'PY' "${TMP}"
+import json, sys
+with open(sys.argv[1], encoding="utf-8") as f:
+    data = json.load(f)
+runs = data.get("check_runs") or []
+names = sorted({r.get("name") for r in runs if r.get("conclusion") == "success"})
+print("::error::No successful 'Staging smoke' check-run for this SHA after waiting. Merge to stage, wait for Deploy + Staging smoke, then open/update the PR.")
+print("successful check names sample:", ", ".join(names[:30]))
+sys.exit(1)
+PY
+  fi
+  echo "staging-gate: Staging smoke not green yet for ${SHA}; sleeping 30s…"
+  sleep 30
+done
 
 API_URL="${STAGING_API_URL:-https://api.staging.tac-to-iwxxm.com}"
 LB_IP="${DOKS_LB_IP:-168.144.12.70}"
