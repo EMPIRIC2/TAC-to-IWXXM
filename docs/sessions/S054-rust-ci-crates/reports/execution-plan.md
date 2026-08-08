@@ -15,9 +15,9 @@
 |-------|-------|
 | **Active phase** | Phase 1: Rust CI gates |
 | **Active milestone** | M1: Makefile + CI workflow |
-| **Active task** | T1.7 (local cargo green; tip CI pending push) |
-| **Tasks completed** | 6 / 7 |
-| **Stage** | 07-build (D-S054-gateB=1) |
+| **Active task** | — (M1 complete) |
+| **Tasks completed** | 7 / 7 |
+| **Stage** | 08-verify-build (D-S054-t17-ci=1) |
 | **Last updated** | 2026-08-08 |
 | **Build Plan Card** | `docs/sessions/S054-rust-ci-crates/build-plan-card.md` |
 
@@ -88,10 +88,10 @@ None.
 | T1.4 | Refactor `tac2iwxxm-native` → package matrix with `check_name` for both PyO3 smokes (`IWXXM_VALIDATE_REQUIRE_RUST` / existing tac2iwxxm tests) | Config | completed | AC4; D-S054-04-maturin | T1.1 | — |
 | T1.5 | Wire `deploy.needs` to rust gate + native matrix; keep default CI triggers (no path-filter-only) | Config | completed | D-S054-04-trigger/local; ADR-034 deploy | T1.3, T1.4 | — |
 | T1.6 | Back-add tech-spec / feature AC notes with final job ids + matrix/gate rationale; confirm ruleset script lists locked names | Docs | completed | tech-spec; test-plan; apply_gh_branch_rulesets.sh | T1.5 | — |
-| T1.7 | Tip CI green on `evolve/EV-045-rust-ci` (watch `ci-cd.yml`); fix clippy/fmt debt if jobs fail | Code | in_progress | TC-EV045-*; build-execution | T1.2–T1.6 | — |
+| T1.7 | Tip CI green on `evolve/EV-045-rust-ci` (watch `ci-cd.yml`); fix clippy/fmt debt if jobs fail | Code | completed | TC-EV045-*; build-execution | T1.2–T1.6 | — |
 
-**PR**: [#952](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/952) → **`stage`** (ADR-034; not direct to main).  
-Prior tip run [31273500621](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31273500621): all Rust/maturin/test jobs **success**; only **Staging gate** failed while base was briefly `main`.
+**PR**: [#953](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953) → **`stage`** (ADR-034; supersedes #952).  
+**T1.7 closed** (`D-S054-t17-ci=1`): accept run [31273500621](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31273500621) @ `f270618c` as tip CI for EV-045 Rust/maturin/test jobs (tip `09ce2bef` docs-only after that; Staging gate fail was base=`main` only).
 
 ###### Parallelizable
 
@@ -99,11 +99,11 @@ After T1.1 green (red→green on contracts): T1.2 ∥ T1.3 ∥ T1.4, then T1.5 �
 
 #### Phase 1 Gate Check
 
-- [ ] All M1 tasks `completed`
-- [ ] Contract tests green
-- [ ] Tip CI includes Rust gate + both maturin checks green
-- [ ] `make rust-check` documented and works where Rust/maturin available
-- [ ] AC6 docs/script present; ops waive recorded (D-S054-ac6-waive=2)
+- [x] All M1 tasks `completed`
+- [x] Contract tests green
+- [x] Tip CI includes Rust gate + both maturin checks green (`D-S054-t17-ci=1` / run 31273500621)
+- [x] `make rust-check` documented and works where Rust/maturin available
+- [x] AC6 docs/script present; ops waive recorded (D-S054-ac6-waive=2)
 
 ## Git Strategy
 
@@ -131,15 +131,15 @@ After T1.1 green (red→green on contracts): T1.2 ∥ T1.3 ∥ T1.4, then T1.5 �
 | T1.4 | completed | F13, F14 | EV-045 |
 | T1.5 | completed | F13, F14 | EV-045 |
 | T1.6 | completed | F13, F14 | EV-045 |
-| T1.7 | in_progress | F13, F14 | EV-045 |
+| T1.7 | completed | F13, F14 | EV-045 |
 
 ## Phase Gate Log
 
 | Gate | Result | Date | Notes |
 |------|--------|------|-------|
-| A→B | pending | — | D-S054-04-plan=1; awaiting D-S054-gateB |
-| B→C | — | — | — |
-| C→D | — | — | — |
+| A→B | PASS | 2026-08-08 | D-S054-gateA=2; AC6 ops waived |
+| B→C | PASS | 2026-08-08 | D-S054-gateB=1 |
+| C→D | PASS | 2026-08-08 | 08 PASS; 09 pass_with_advisories; 11 APPROVED D-S054-11=1 |
 
 ## Out of scope (confirm)
 

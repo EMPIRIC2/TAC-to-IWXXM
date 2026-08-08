@@ -9,8 +9,9 @@
 **Features**: deepen **F13**, **F14**  
 **Started**: 2026-08-08  
 **Branch**: `evolve/EV-045-rust-ci`  
-**Status**: in_progress  
+**Status**: **completed** 2026-08-08  
 **Issues**: [#725](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725)  
+**PR**: [#953](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953) → `stage` (open at close)  
 **Corpus**: [Corpus: product §F13], [Corpus: product §F14], [Corpus: tech-spec],
 [Corpus: tests], [Corpus: adr/ADR-017]
 
@@ -30,6 +31,9 @@
 | D-S054-04-local | **2** — `deploy.needs` includes rust gate + native matrix; `make rust-check` = cargo both crates **+** both maturin smokes |
 | D-S054-04-plan | **1** — Approve execution plan + Build Plan Card as written → 05-verify-tech |
 | D-S054-gateB | **1** — PASS Gate B; confirm syncs; proceed 07-build (06 skipped) |
+| D-S054-t17-ci | **1** — Accept Actions run 31273500621 as tip CI for EV-045 jobs (docs-only tip after) |
+| D-S054-phaseC | **1** — Approve Phase C; start 09-qa |
+| D-S054-11 | **1** — Approve F13+F14 deepen + accept QA-001..005; close cycle (12/13 skipped) |
 
 **Goal**: Required CI + Makefile parity for `packages/tac2iwxxm/rust` and
 `packages/iwxxm-validate/rust` (`fmt`, `clippy -D warnings`, `cargo test`, maturin/PyO3
@@ -69,7 +73,8 @@ Same class as EV-043 admin gap. [Corpus: tests] [Corpus: decisions]
 | Cache | `Swatinem/rust-cache` (or equivalent) |
 | Toolchain | `dtolnay/rust-toolchain@stable` + rustfmt,clippy |
 
-**Current stage**: 07-build (D-S054-gateB=1; active T1.1)
+**Closed**: 2026-08-08 — `D-S054-11=1`; reports `evolve-summary.md` + `docs/evolve-report-EV-045.md`.  
+PR #953 open → `stage` (merge separate). AC6 ops still deferred.
 
 ### Corpus cites / waivers
 

@@ -1,6 +1,6 @@
 # Build Plan Card
 
-> Session: S054-rust-ci-crates | Updated: 2026-08-08 | Active: Phase 1 / M1 / T1.7
+> Session: S054-rust-ci-crates | Updated: 2026-08-08 | Active: 08-verify-build (M1 complete)
 
 ## Goal (one sentence)
 
@@ -25,7 +25,7 @@ Gate PRs on fmt/clippy/`cargo test` + maturin smokes for both Rust crates, with
 - [x] T1.4 — Config — maturin two-package matrix — Spec: D-S054-04-maturin
 - [x] T1.5 — Config — deploy.needs + always-on CI trigger — Spec: D-S054-04-trigger/local
 - [x] T1.6 — Docs — tech-spec / script confirm — Spec: tech-spec; test-plan
-- [ ] T1.7 — Code — tip CI green / clippy-fmt debt — Spec: TC-EV045-*
+- [x] T1.7 — Code — tip CI green / clippy-fmt debt — Spec: TC-EV045-* (`D-S054-t17-ci=1`)
 
 ## Out of scope (explicit)
 
@@ -40,12 +40,11 @@ Gate PRs on fmt/clippy/`cargo test` + maturin smokes for both Rust crates, with
 
 ## Acceptance for this batch
 
-- [ ] Contract tests green
-- [ ] Tip `ci-cd.yml` shows locked check names green
-- [ ] `make rust-check` mirrors CI cargo + maturin
-- [ ] TC-EV045-006 docs/script met; ops deferred
+- [x] Contract tests green
+- [x] Tip `ci-cd.yml` shows locked check names green (`D-S054-t17-ci=1` / run 31273500621)
+- [x] `make rust-check` mirrors CI cargo + maturin
+- [x] TC-EV045-006 docs/script met; ops deferred
 
 ## Next Plan prompt
 
-Refine M1 task order only if tip CI latency forces splitting the cargo matrix differently;
-otherwise Agent runs T1.1→T1.7 per execution-plan.md.
+M1 complete — Agent runs **08-verify-build** (delta), then Phase C checkpoint → **09-qa**.

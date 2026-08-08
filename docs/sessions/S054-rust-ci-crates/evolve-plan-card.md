@@ -27,7 +27,7 @@ unformatted, clippy-noisy, or failing `cargo test` / maturin bridges cannot merg
 
 ## Next child stage
 
-**07-build** — T1.1–T1.6 done locally; **T1.7** tip CI after commit/push. Then 08→09→11.
+**None** — cycle **completed** (`D-S054-11=1`). PR #953 open → `stage` (merge separate).
 
 ## Locked defaults (D-S054-01-ac=1 + D-S054-04)
 
