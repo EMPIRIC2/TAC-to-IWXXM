@@ -21,6 +21,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-dissemination test-unit-worker test-bugs \
 	build-tac2iwxxm-native build-iwxxm-validate-native \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
+	perf-converter-baseline test-converter-pr-gate test-unit-fast \
 	db-migrate test-alembic \
 	verify-supabase-to-do-migrate migrate-supabase-to-do \
 	test-sigmet-quality \
@@ -266,6 +267,20 @@ rust-check:
 	(cd packages/iwxxm-validate/rust && cargo fmt --check && cargo clippy -- -D warnings && cargo test)
 	$(MAKE) test-tac2iwxxm-native
 	$(MAKE) test-iwxxm-validate-native
+
+# EV-047 / #834 — re-record converter PR baselines (explicit; never on gate failure).
+# On CI: make perf-converter-baseline HOST=ubuntu-latest STATUS=ci_recorded
+perf-converter-baseline:
+	$(UV) run python scripts/bench/record_converter_pr_baselines.py \
+		--host "$(or $(HOST),$(shell uname -s))" \
+		--status "$(or $(STATUS),ci_recorded)"
+
+# EV-047 hard gate suite (TC-EV047-005..008).
+test-converter-pr-gate:
+	$(UV) run pytest tests/perf/test_converter_pr_gate.py -v --no-cov
+
+# EV-047 / #833 — husky pre-push fast unit subset (shape A).
+test-unit-fast: test-unit-workspace test-unit-tac2iwxxm
 
 # M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
 bench-validation-stack:

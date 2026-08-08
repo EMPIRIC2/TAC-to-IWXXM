@@ -40,8 +40,8 @@ active_session:
   feature_note: "Deepen M5 (husky reverse EV-036) + F6 (converter perf PR gate) + F7 help/docs for #956/#957; no new product Fn"
   preset: Standard
   ui_preview: N/A unless help-link UI
-  current_stage: 04-tech-plan
-  current_stage_note: "04 draft; ruleset-defer=2; awaiting D-S056-04-plan"
+  current_stage: 07-build
+  current_stage_note: "07 M1 — laptop seed baselines; CI re-record T1.3"
   decisions:
     D-S056-open: "1 — open S056/EV-047 all four issues"
     D-S056-bundle: "1 — one cycle all four"
@@ -85,13 +85,17 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: draft execution-plan; D-S056-ruleset-defer=2; baseline-first M1
+    completed: '2026-08-08'
+    note: COMPLETE — D-S056-04-plan=2 laptop seed + CI re-record T1.3
   - stage: 05-verify-tech
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: COMPLETE — Gate B PASS D-S056-gateB=1
   - stage: 06-tech-tooling
     required: false
     mode: skip
@@ -100,7 +104,9 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: '2026-08-08'
+    note: M1 T1.1–T1.2 done; T1.3 CI re-record + T1.4 job next
   - stage: 08-verify-build
     required: true
     mode: delta

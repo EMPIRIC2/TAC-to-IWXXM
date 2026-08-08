@@ -1,0 +1,43 @@
+# EV-047 / #834 — converter PR hard-gate baselines (convert-only p95).
+# Seeded from laptop spike 2026-08-08 (D-S056-04-plan=2).
+# Re-record on ubuntu-latest CI via `make perf-converter-baseline` (T1.3) — never silent auto-raise.
+
+version: 1
+status: laptop_seed  # → ci_recorded after T1.3
+recorded: "2026-08-08"
+recorded_host: "darwin-laptop-spike"
+source: docs/sessions/S056-m0-stabilize-operator-trust/reports/laptop-convert-spike-2026-08-08.md
+iwxxm_version: "2025-2"
+profile: annex3
+warmup: 5
+iterations: 50
+metric: convert_only_wall_p95_s
+ratio_limit: 1.20
+absolute_floor_s: 0.000050  # 50µs noise floor added to baseline before max()
+
+# ceiling_p95_s = max(baseline_p95_s * ratio_limit, baseline_p95_s + absolute_floor_s)
+products:
+  metar:
+    product: METAR
+    tac: "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
+    baseline_p50_s: 0.000013792
+    baseline_p95_s: 0.000015664
+  speci:
+    product: SPECI
+    tac: "SPECI KJFK 231812Z 18015G25KT 3SM -RA BKN015 14/12 A2990="
+    baseline_p50_s: 0.000015313
+    baseline_p95_s: 0.000016421
+  taf:
+    product: TAF
+    tac: "TAF KJFK 231720Z 2318/2424 18012KT P6SM FEW040="
+    baseline_p50_s: 0.000008375
+    baseline_p95_s: 0.000008925
+  sigmet:
+    product: SIGMET
+    fixture: packages/tac2iwxxm/tests/fixtures/product_matrix/sigmet_basic.tac
+    baseline_p50_s: 0.000016813
+    baseline_p95_s: 0.000018870
+
+caveats:
+  - laptop_seed_not_ci_authoritative
+  - re_record_on_ubuntu_latest_t1_3

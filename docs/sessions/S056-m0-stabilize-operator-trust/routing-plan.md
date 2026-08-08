@@ -18,10 +18,10 @@
 | 01-requirements | yes | delta | **completed** | D-S056-01-ac=1; ui-preview=2 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS D-S056-gateA=2; ruleset before 04 |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
-| 04-tech-plan | yes | delta | **in_progress** | draft plan; baseline-first M1; ruleset defer=2 |
-| 05-verify-tech | yes | delta | pending | Gate B |
+| 04-tech-plan | yes | delta | **completed** | D-S056-04-plan=2 |
+| 05-verify-tech | yes | delta | **completed** | Gate B PASS D-S056-gateB=1 |
 | 06-tech-tooling | no | — | skipped | no new runtime deps expected |
-| 07-build | yes | full | pending | |
+| 07-build | yes | full | **in_progress** | M1 T1.1–T1.2; T1.3 CI re-record |
 | 08-verify-build | yes | delta | pending | |
 | 09-qa | yes | delta | pending | |
 | 10-e2e | yes | delta | pending | UJ-054 Help entry (`D-S056-docs=1`) |

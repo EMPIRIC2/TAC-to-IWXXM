@@ -17,10 +17,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Stabilize + narrative |
-| **Active milestone** | M1: Converter perf baselines + harness (pending plan approve) |
-| **Active task** | — |
-| **Tasks completed** | 0 / 16 |
-| **Stage** | 04-tech-plan (draft) |
+| **Active milestone** | M1: Converter perf baselines + harness |
+| **Active task** | T1.3 CI re-record (after T1.1–T1.2 landed locally) |
+| **Tasks completed** | 2 / 16 (T1.1–T1.2; laptop seed for T1.3) |
+| **Stage** | 07-build |
 | **Last updated** | 2026-08-08 |
 | **Ruleset** | `D-S056-ruleset-defer=2` — require `Converter perf (tac2iwxxm)` **after** job ships in M2 (not before) |
 
@@ -90,9 +90,9 @@ None (fixtures in-repo).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T1.1 | Contract tests: baseline file path/schema; gate fails when p95 over ceiling; refresh target documented | Test | pending | TC-EV047-005..008; D-S056-04-baseline | — | — |
-| T1.2 | Implement harness + `make perf-converter-baseline` (record p50/p95 on demand) | Code | pending | #834; D-S056-perf | T1.1 | — |
-| T1.3 | **Establish baseline**: run recorder on CI (or local→CI confirm), commit `tests/perf/baselines/converter_pr.yaml` with ubuntu-class numbers + refresh procedure in DEVELOPMENT/test-plan | Config | pending | D-S056-04-baseline; user “establish baseline” | T1.2 | — |
+| T1.1 | Contract tests: baseline file path/schema; gate fails when p95 over ceiling; refresh target documented | Test | **completed** | TC-EV047-005..008; D-S056-04-baseline | — | — |
+| T1.2 | Implement harness + `make perf-converter-baseline` (record p50/p95 on demand) | Code | **completed** | #834; D-S056-perf | T1.1 | — |
+| T1.3 | **Establish baseline**: laptop seed committed (`D-S056-04-plan=2`); **re-record on CI** → `status: ci_recorded` + DEVELOPMENT note | Config | **in_progress** | D-S056-04-baseline | T1.2 | — |
 | T1.4 | Wire `ci-cd.yml` job `name: Converter perf (tac2iwxxm)`; deploy.needs if required | Config | pending | TC-EV047-007; D-S056-04-ci-job | T1.3 | — |
 | T1.5 | Apply rulesets **including** Converter perf (admin); verify `gh api …/rulesets` lists context | Ops | pending | D-S056-gateA=2; D-S056-ruleset-defer=2 | T1.4 | — |
 
