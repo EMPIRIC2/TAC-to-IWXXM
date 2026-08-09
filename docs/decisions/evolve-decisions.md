@@ -3,6 +3,47 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-048 — Strip internal doc refs from UI + public API (#951) (S057)
+
+**Session**: S057-strip-internal-doc-refs  
+**Features**: deepen **F7 / F21** (no new Fn)  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-048-strip-internal-doc-refs` (base `stage@d7652d5d`)  
+**Status**: **in_progress**  
+
+**Issues**: [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951)  
+**Corpus**: [Corpus: product §F7], [Corpus: product §F21], [Corpus: api],
+[Corpus: journeys], [Corpus: tests], [Corpus: decisions]
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S057-open | **1** — Open S057 → EV-048 for #951 |
+| D-S057-scope | **1** — Full #951: UI + OpenAPI + client errors + automated guard |
+| D-S057-preset | **1** — Standard (amended from initial Lean) |
+| D-S057-preset-reconfirm | **1** — `00→16→01→02→04→05→07→08→09→10→11`; skip 03/06/12/13 |
+| D-S057-ui-preview | **1** — Non-deployed local UI at http://localhost:5173/ |
+| D-S057-01-ac | **1** — Approve AC1–AC6 + UJ-055 as drafted |
+| D-S057-guard-s0 | **1** — Include `\bS0\d+\b` in guard patterns |
+| D-S057-gateA | **1** — Gate A PASS; S2.1–S2.4 as 04/07 defaults |
+| D-S057-04-plan | **1** — Approve M1–M3 / T1.1–T3.3 as drafted; proceed 05 then 07 |
+| D-S057-04-guard-ext | **1** — Extend guard with `\bTC-[A-Z0-9-]+\b`, `\bE\d{2}-\d+\b`, `\b#\d{3,}\b` on scanned surfaces |
+| D-S057-gateB | **1** — Gate B PASS; S5.M1–S5.M3 defaults; proceed 07-build M1 |
+
+### Acceptance (confirmed `D-S057-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Audit findings listed in PR | TC-EV048-001 |
+| AC2 | OpenAPI descriptions pass guard | TC-EV048-002 |
+| AC3 | Operator UI string catalogs pass guard | TC-EV048-003 |
+| AC4 | Client-facing API errors pass guard | TC-EV048-004 |
+| AC5 | Automated guard fails on synthetic regression | TC-EV048-005 |
+| AC6 | Soft-preview etc. operator-friendly; tests updated | TC-EV048-002/003 |
+
+---
+
 ## Cycle EV-047 — M0 stabilize + operator trust (#833/#834/#956/#957) (S056)
 
 **Session**: S056-m0-stabilize-operator-trust  

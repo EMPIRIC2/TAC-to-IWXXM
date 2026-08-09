@@ -1,6 +1,17 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-08 (S056 / EV-047)
+> Stage: 01-requirements | Last updated: 2026-08-08 (S057 / EV-048)
+
+## EV-048 / S057 — Strip internal doc refs (#951) (`D-S057-01-ac=1`)
+
+| Prefix | Topic | Decision | Status |
+|--------|-------|----------|--------|
+| EV-048 / F7 | Operator UI copy | No Corpus/ADR/EV/S0/`docs/` cites in operator-visible strings | confirmed |
+| EV-048 / F21 | Public OpenAPI + errors | Operator language only in descriptions/`detail` | confirmed |
+| EV-048 / guard | Patterns | `\[Corpus:`, `docs/sessions/`, `docs/feature-list`, `ADR-\d+`, `EV-\d+`, `S0\d+` (`D-S057-guard-s0=1`) + `TC-*`, `E##-##`, `#NNN` (`D-S057-04-guard-ext=1`) | confirmed |
+| EV-048 / UJ | UJ-055 | New journey; T0/T2; T3 if UI audit finds hits | confirmed |
+| EV-048 / UI | 01 preview | Non-deployed local Vite (`D-S057-ui-preview=1`) | confirmed |
+| EV-048 / route | Standard | 04/05/07–11 required; 12/13 waived | confirmed |
 
 ## EV-047 / S056 — M0 husky + converter perf + operator docs (`D-S056-01-ac=1`)
 

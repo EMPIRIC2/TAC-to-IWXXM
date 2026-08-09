@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-08 (S055 / EV-046 — #889 codes.wmo.int present/cite/cover Lean)
+> **Last updated**: 2026-08-08 (S057 / EV-048 — #951 strip internal doc refs; prior EV-046/047)
 
 ## Scope
 
@@ -109,6 +109,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
+| UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -2693,6 +2694,23 @@ Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not ever
 | TC-EV047-009 | T0 | `docs/guides/operator-one-pager.md` exists; one-page content checklist (convert→validate→download; version; soft preview); no internal citations |
 | TC-EV047-010 | T0 | `docs/guides/operator-handbook.md` has required sections + ingest pointer; no internal citations; one-pager links here |
 | TC-EV047-011 | T0/T2 | README Quick start links both docs; in-app Help entry reaches one-pager (UJ-054) |
+
+### TC-EV048 (F7 / F21 / S057) — strip internal doc refs from UI + public API (#951)
+
+**Guard patterns** (fail when found in scanned user-facing surfaces): `\[Corpus:`,
+`docs/sessions/`, `docs/feature-list`, `\bADR-\d+\b`, `\bEV-\d+\b`, `\bS0\d+\b`,
+`\bTC-[A-Z0-9-]+\b`, `\bE\d{2}-\d+\b`, `(?<!\w)#\d{3,}\b` (`D-S057-guard-s0=1`,
+`D-S057-04-guard-ext=1`; `#NNN` uses lookbehind because `\b#` misses `#702` after
+spaces/slashes). Allowlist only for true domain false positives. Do **not** scan
+`docs/` standing text, source comments-only, or `*.test.*` / pytest modules.
+
+| ID | Tier | Criterion |
+|----|------|-----------|
+| TC-EV048-001 | T0 | PR (or session report) lists audit findings for UI strings + OpenAPI descriptions + client-facing errors |
+| TC-EV048-002 | T0 | OpenAPI export / schema `description` + operation summaries pass guard (no internal-doc patterns) |
+| TC-EV048-003 | T0/T2 | Operator-visible FE string catalogs (labels/helpers/tooltips/banners/empty states/console/catalog/example tiers/privacy-auth) pass guard |
+| TC-EV048-004 | T0 | Client-facing API `detail` / error messages pass guard |
+| TC-EV048-005 | T0/CI | Automated unit/CI test fails if a synthetic internal cite is injected into scanned OpenAPI or FE catalogs; comments/tests remain allowed |
 
 ### Removed workflows (EV-002)
 

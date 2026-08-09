@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-08 (S056 / EV-047 UJ-054 Help/docs + UJ-DEV-007/008 husky/perf; prior UJ-051..053)
+> **Last updated**: 2026-08-08 (S057 / EV-048 UJ-055 strip internal doc refs; prior UJ-054 / EV-047)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -71,6 +71,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-052 | Operator queue + keyboard/batch convert·validate churn | apps/frontend | F7 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
+| UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -788,6 +789,27 @@ merge-strength gates.
 **Acceptance**: User-facing text has **no** internal corpus/ADR/session citations.
 TC-EV047-009..011. **Tier: T0 / T2 / T3**.
 [Corpus: product §F7] [Corpus: journeys]
+
+---
+
+### UJ-055: Operator Surfaces Without Internal Doc References (F7+F21 / #951)
+
+**Actor**: Meteorological operator / API consumer
+
+**Goal**: Use convert soft-preview, public OpenAPI `/docs` field descriptions, and
+representative privacy/auth empty-state copy without seeing internal planning vocabulary.
+
+**Steps**:
+
+1. Open the operator app (non-deployed or deployed). Confirm soft-preview helper text
+   describes best-effort IWXXM / failed spans in plain language (no ADR/Corpus/session IDs).
+2. Open public API `/docs` (or Redoc). Spot-check convert `preview` / nilReason / plain-language
+   field descriptions — operator meaning only.
+3. Spot-check privacy/auth empty-state or helper copy for the same constraint.
+
+**Acceptance**: No `[Corpus:…]`, `ADR-NNN`, `EV-NNN`, `S0NN`, or `docs/…` path citations in
+those surfaces. TC-EV048-001..005. **Tier: T0 / T2**; **T3** if UI audit finds visible hits.
+[Corpus: product §F7] [Corpus: product §F21] [Corpus: api] [Corpus: journeys]
 
 ---
 
