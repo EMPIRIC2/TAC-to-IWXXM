@@ -1,6 +1,6 @@
 # Build Plan Card
 
-> Session: S061-ci-polish-quality-pr-stats | Updated: 2026-08-09 | Active: Phase 1 / M4 / T4.1
+> Session: S061-ci-polish-quality-pr-stats | Updated: 2026-08-09 | Active: Phase 1 / M5 / T5.1
 
 ## Goal (one sentence)
 
@@ -13,29 +13,27 @@ Restore ≥95% coverage gates (#950), add quality/golden sticky PR comment #2, a
 - Locked: Upstash; AC1–AC12; openapi-typescript; `D-S061-cov-branches=3` → [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968)
 - Skip 12/13 unless live Redis multi-replica proof required
 
-## In scope (this batch — M4)
+## In scope (this batch — M5)
 
-- [ ] T4.1 — Test — generated types exist; openapi:check fails on drift — Spec: TC-EV052-009
-- [ ] T4.2 — Config — openapi-typescript + generate/check scripts; commit artifact — Spec: D-S061-orval=1
-- [ ] T4.3 — Code — wire FE convert/validate to generated types — Spec: AC9
+- [ ] T5.1 — Docs — env/deps/ADR/feature-list/test-plan parity — Spec: TC-EV052-010
+- [ ] T5.2 — Tip CI green (coverage + quality comment + OpenAPI check + units) — Spec: TC-EV052-012
 
 ## Out of scope (explicit)
 
 - Vitest branches ≥95 (tracked #968); paid tiers; #874/#727/#836; AMS #958; stage→main
-- M1–M3 — **completed**
+- M1–M4 — **completed**
 
 ## Dependencies / blockers
 
 - Data: none
-- Prior: M1–M3 **completed**
+- Prior: M1–M4 **completed**
 - Tooling: 06 skipped
 
 ## Acceptance for this batch
 
-- [ ] Committed OpenAPI types; CI drift check
-- [ ] High-churn convert/validate use generated types
-- [ ] TC-EV052-009
+- [ ] Standing docs match implementation
+- [ ] Tip PR CI green including `openapi:check`
 
 ## Next Plan prompt
 
-Approve M4 T4.1–T4.3; Agent runs Task Loop. Then M5 docs/CI closeout.
+Approve M5 T5.1–T5.2; Agent runs Task Loop. Then 08 → 09 → 11.

@@ -147,6 +147,8 @@ make dev              # Start API + Vite (interactive port cleanup)
 make dev-kill         # Same, auto-kill conflicting ports
 make test-unit        # Python workspace + packages/shared tests
 make vendor-sync      # Refresh vendor/schemas from wmo-im manifest
+make openapi-refresh  # Dump FastAPI OpenAPI + regenerate FE types (EV-052)
+# Drift check: pnpm --filter @metar/frontend run openapi:check
 ```
 
 ### Per-package development

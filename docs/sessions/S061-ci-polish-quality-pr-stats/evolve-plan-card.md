@@ -37,7 +37,7 @@ by profile, and ship free-tier Sentry + shared rate-limit backend + OpenAPI type
 
 ## Next child stage
 
-**05-verify-tech** — Gate B; then **07-build** (M1).
+**07-build** — M5 docs/CI closeout (T5.1–T5.2); then **08-verify-build**.
 
 ## Locked decisions
 
@@ -48,9 +48,11 @@ by profile, and ship free-tier Sentry + shared rate-limit backend + OpenAPI type
 | D-S061-route | **1** — Standard |
 | D-S061-gateA | **1** — PASS Gate A → 04 |
 | D-S061-04-plan | **1** — openapi-typescript; plan as drafted |
+| D-S061-gateB | **1** — PASS Gate B → 07 |
+| D-S061-cov-branches | **3** — lines/stmts/funcs ≥95; branches → #968 |
 
 ## Risks / open decisions
 
-- Gate B (`D-S061-gateB`) pending
-- Coverage fill may be large (frontend thresholds currently 94/84)
+- M5 tip CI must stay green with `openapi:check` + coverage/quality stickies
 - Sentry Developer: 1 user, 5k errors/mo — sample/filter under quota
+- Vitest branches still waived at 84 (`#968`)

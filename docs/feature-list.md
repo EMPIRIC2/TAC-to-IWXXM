@@ -1663,7 +1663,8 @@
   3. Sentry SDK (API + FE + worker) behind DSN env; Developer free tier
   4. Upstash Redis (`REDIS_URL` or approved Upstash env) as slowapi shared store — **no**
      new DOKS Redis Deployment (`D-S061-redis=1`)
-  5. Orval or openapi-typescript client gen from FastAPI OpenAPI (04 picks tool)
+  5. `openapi-typescript` FE types from committed OpenAPI snapshot (`make openapi-refresh`;
+     `pnpm openapi:check` drift gate) — locked `D-S061-orval=1` (not full Orval)
 - **Acceptance**: AC1–AC12 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-052;
   **TC-EV052-001..012**
 - **Out of scope**: Paid Sentry/Valkey; in-cluster Redis service; #874/#727/#836; AMS #958;

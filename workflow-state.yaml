@@ -50,7 +50,7 @@ sessions:
   - M5
   prior_session: S060-tag-driven-prod-deploy
   current_stage: 07-build
-  current_stage_note: 'M3 COMPLETE (T3.1–T3.5 @ f4236636); PR #969 → stage; next M4 T4.1'
+  current_stage_note: 'M4 COMPLETE (T4.1–T4.3); PR #969 → stage; next M5 T5.1'
   decisions:
     D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
     D-S061-redis: "1 — Upstash Redis free"
@@ -105,7 +105,7 @@ sessions:
   - stage: 07-build
     status: in_progress
     mode: delta
-    note: "M3 COMPLETE @ f4236636; PR #969 open → stage; next M4 T4.1"
+    note: "M4 COMPLETE; openapi-typescript + validateIwxxm; PR #969; next M5 T5.1"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -113,6 +113,7 @@ sessions:
   - stage: 11-verify-impl
     status: pending
   notes:
+  - "2026-08-09 M4 COMPLETE (T4.1–T4.3) — openapi-typescript FE types + openapi:check; PR #969; next M5"
   - "2026-08-09 M3 COMPLETE (T3.1–T3.5) @ f4236636 — Sentry + REDIS_URL slowapi; PR #969; next M4"
   - "2026-08-09 M2 COMPLETE (T2.1–T2.4) @ 99d56b9c — quality sticky PR comment; next M3 T3.1"
   - "2026-08-09 M2 START — T2.1 in_progress (quality sticky); D-S061-cov-branches=3 locked; M1 done"
@@ -864,7 +865,7 @@ sessions:
     D-S057-preset-reconfirm: "1 — Standard 00→16→01→02→04→05→07→08→09→10→11; skip 03/06/12/13"
     D-S057-ui-preview: "1 — yes non-deployed local UI"
     D-S057-01-ac: "1 — Approve AC1–AC6 + UJ-055"
-    D-S057-guard-s0: "1 — Include S0\d+ in guard"
+    D-S057-guard-s0: '1 — Include S0\d+ in guard'
     D-S057-gateA: "1 — PASS; S2.1–S2.4 as 04/07 defaults; proceed 04"
     D-S057-04-plan: "1 — Approve M1–M3 / T1.1–T3.3 as drafted; proceed 05 then 07"
     D-S057-04-guard-ext: "1 — Extend guard with TC-*, E##-##, #NNN (3+ digits) on scanned surfaces"
@@ -35456,15 +35457,16 @@ evolve_cycles:
   github_issues: [950, 900, 841, 968]
   preset: Standard
   current_stage: 07-build
-  current_stage_note: "M3 COMPLETE @ f4236636; PR #969; next M4 T4.1"
+  current_stage_note: "M4 COMPLETE; PR #969; next M5 T5.1"
   branch: evolve/EV-052-ci-polish-quality-pr-stats
   branch_base: stage@80197a58
   branch_base_sha: 80197a58
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
   branch_status: active
-  tip_sha: f4236636
-  tip_sha_full: f423663606cc55f0634be3723bc24f85b7208474
-  tip_sha_pushed: true
+  tip_sha: 04ac2cd0
+  tip_sha_full: 04ac2cd0e378e5632c7b454372121cc4e540d5ed
+  tip_sha_pushed: false
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969
   gates:
     a_to_b: passed
     a_to_b_note: "D-S061-gateA=1 — Gate A PASS"
@@ -35496,6 +35498,7 @@ evolve_cycles:
   - D-S061-gateB=1
   - D-S061-cov-branches=3
   notes:
+  - "2026-08-09 M4 COMPLETE (T4.1–T4.3) @ 04ac2cd0 — openapi-typescript FE types + openapi:check; PR #969; next M5"
   - "2026-08-09 M1 COMPLETE (T1.1–T1.5) @ 9582b352 — D-S061-cov-branches=3; child #968; next M2 T2.1"
   - "2026-08-09 D-S061-cov-branches=3 — Vitest lines/stmts/funcs ≥95 now; branches ≥95 via child issue + explicit waiver (not silent); T1.5"
   - "2026-08-09 D-S061-gateB=1 — Gate B PASS; gates.b_to_c passed; 05 COMPLETE; 06 skipped; 07-build M1 in_progress"
@@ -35504,7 +35507,7 @@ evolve_cycles:
   - "2026-08-09 04 execution-plan + build-plan-card drafted; await D-S061-04-plan; 04 remains in_progress"
   - "2026-08-09 D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed; 02 COMPLETE; 04-tech-plan in_progress (delta)"
   - "Opened after D-S061-intake; D-S061-redis=1 Upstash; 01 COMPLETE D-S061-01-ac=1"
-  note: "M1 COMPLETE @ 9582b352; next M2 T2.1; child #968; current_stage 07-build (delta)"
+  note: "M4 COMPLETE; next M5 T5.1; PR #969; current_stage 07-build (delta)"
 - id: EV-051
   session_id: S060-tag-driven-prod-deploy
   type: feature

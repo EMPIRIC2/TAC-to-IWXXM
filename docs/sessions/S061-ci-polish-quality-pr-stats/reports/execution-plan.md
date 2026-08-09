@@ -18,9 +18,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: CI polish + #900 |
-| **Active milestone** | M4: OpenAPI → typed FE client (next) |
-| **Active task** | T4.1 |
-| **Tasks completed** | 14 / 22 |
+| **Active milestone** | M5: Docs parity + tip CI (next) |
+| **Active task** | T5.1 |
+| **Tasks completed** | 17 / 22 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
 | **Build Plan Card** | `docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md` |
@@ -124,9 +124,9 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T4.1 | Contract: generated types exist; `openapi:check` fails on drift; convert/validate import generated types | Test | pending | TC-EV052-009; AC9 | — | — |
-| T4.2 | Add `openapi-typescript` + `make`/`pnpm` generate + check scripts; commit artifact | Config/Code | pending | D-S061-orval=1; D-S061-codegen | T4.1 | — |
-| T4.3 | Wire FE convert/validate (high-churn) to generated types / thin wrappers | Code | pending | AC9; M5 | T4.2 | — |
+| T4.1 | Contract: generated types exist; `openapi:check` fails on drift; convert/validate import generated types | Test | **completed** | TC-EV052-009; AC9 | — | — |
+| T4.2 | Add `openapi-typescript` + `make`/`pnpm` generate + check scripts; commit artifact | Config/Code | **completed** | D-S061-orval=1; D-S061-codegen | T4.1 | — |
+| T4.3 | Wire FE convert/validate (high-churn) to generated types / thin wrappers | Code | **completed** | AC9; M5 | T4.2 | — |
 
 #### M5: Docs parity + tip CI — P0
 
@@ -148,10 +148,10 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 
 | Task | Milestone | Status | Depends |
 |------|-----------|--------|---------|
-| T1.1–T1.5 | M1 | pending | chain |
+| T1.1–T1.5 | M1 | **completed** | chain |
 | T2.1–T2.4 | M2 | **completed** | T2 internal; // M1 |
 | T3.1–T3.5 | M3 | **completed** | T3 internal; // M1 |
-| T4.1–T4.3 | M4 | pending | after M1 preferred |
+| T4.1–T4.3 | M4 | **completed** | after M1 preferred |
 | T5.1–T5.2 | M5 | pending | M1–M4 |
 
 Parallelism: After T1.2 inventory lands, M2/M3/M4 may proceed in parallel; M5 last.
