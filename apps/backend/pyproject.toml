@@ -28,6 +28,8 @@ dependencies = [
     "asyncpg>=0.29.0",
     "psycopg[binary]>=3.0.0",
     "slowapi>=0.1.10",
+    "redis>=5.0",
+    "sentry-sdk[fastapi]>=2.0",
 ]
 
 [build-system]
@@ -51,6 +53,7 @@ dev = [
     "httpx2>=2.0",
     "requests>=2.31.0",
     "skyfield>=1.45",
+    "fakeredis>=2.0",
 ]
 
 [tool.pytest.ini_options]

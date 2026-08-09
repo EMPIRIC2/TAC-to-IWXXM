@@ -838,53 +838,47 @@ export function FileConverter({
         const manualLines = splitManualEntries(manualText, resolvedProduct);
         const manualResultCount = manualLines.length;
 
-        response.results.forEach(
-          (
-            result: {
-              iwxxm_xml?: string;
-              xml?: string;
-              content?: string;
-              tac_input?: string;
-              name?: string;
-            },
-            index: number,
-          ) => {
-            const isManualResult = index < manualResultCount;
-            const fileIndex = index - manualResultCount;
-            const pendingFile = queueFiles[fileIndex];
-            const originalName = isManualResult
-              ? manualOutputName(outputFilename, index, manualResultCount)
-              : (pendingFile?.name ?? result.name ?? 'unknown');
-            const originalContent = resolveOriginalTac(
-              result.tac_input,
-              manualLines[index],
-              pendingFile?.content,
-            );
+        response.results.forEach((result, index) => {
+          const isManualResult = index < manualResultCount;
+          const fileIndex = index - manualResultCount;
+          const pendingFile = queueFiles[fileIndex];
+          const originalName = isManualResult
+            ? manualOutputName(outputFilename, index, manualResultCount)
+            : (pendingFile?.name ?? result.name ?? 'unknown');
+          const originalContent = resolveOriginalTac(
+            result.tac_input ?? undefined,
+            manualLines[index],
+            pendingFile?.content,
+          );
 
-            newConvertedFiles.push({
-              id: `converted-${Date.now()}-${index}`,
-              originalName,
-              originalContent,
-              displayTitle: deriveTacDisplayTitle(originalContent, originalName),
-              manualLineIndex:
-                isManualResult && manualResultCount > 1 ? index + 1 : undefined,
-              manualLineTotal:
-                isManualResult && manualResultCount > 1 ? manualResultCount : undefined,
-              liveOutputSlot: isManualResult
-                ? { index, total: manualResultCount }
-                : undefined,
-              convertedContent: result.iwxxm_xml || result.xml || result.content || '',
-              timestamp: Date.now(),
-            });
-          },
-        );
+          newConvertedFiles.push({
+            id: `converted-${Date.now()}-${index}`,
+            originalName,
+            originalContent,
+            displayTitle: deriveTacDisplayTitle(originalContent, originalName),
+            manualLineIndex:
+              isManualResult && manualResultCount > 1 ? index + 1 : undefined,
+            manualLineTotal:
+              isManualResult && manualResultCount > 1 ? manualResultCount : undefined,
+            liveOutputSlot: isManualResult
+              ? { index, total: manualResultCount }
+              : undefined,
+            convertedContent: result.iwxxm_xml || result.xml || result.content || '',
+            timestamp: Date.now(),
+          });
+        });
       }
 
       const responseErrors = response.errors ?? [];
       const responseIssues = response.issues ?? [];
       const hasLog = responseErrors.length > 0 || responseIssues.length > 0;
       const softFail = Boolean(softPreview && response.ok === false);
-      const spans = response.failed_spans ?? [];
+      const spans = (response.failed_spans ?? []).map((span) => ({
+        start: span.start,
+        end: span.end,
+        code: span.code ?? undefined,
+        message: span.message ?? undefined,
+      }));
 
       if (softFail) {
         setFailedSpans(spans);
@@ -1399,7 +1393,14 @@ export function FileConverter({
           setPreviewMode('live');
         }
         if (response.failed_spans?.length) {
-          setFailedSpans(response.failed_spans);
+          setFailedSpans(
+            response.failed_spans.map((span) => ({
+              start: span.start,
+              end: span.end,
+              code: span.code ?? undefined,
+              message: span.message ?? undefined,
+            })),
+          );
           setPreviewStatus('soft-fail');
           setPreviewSoftFailDetail(
             'Some groups could not be converted. Fix the highlighted spans in the editor, then retry. This Soft preview is not for publish.',

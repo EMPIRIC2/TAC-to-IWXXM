@@ -11,6 +11,7 @@ Env knobs (env-contract):
 
 from __future__ import annotations
 
+import logging
 import os
 from collections.abc import Callable
 from typing import Any, cast
@@ -22,6 +23,8 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi.util import get_remote_address
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, ExceptionHandler, Receive, Scope, Send
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_PUBLIC_PER_MIN = 60
 DEFAULT_DISSEMINATION_PER_MIN = 10
@@ -107,18 +110,30 @@ def get_limiter() -> Limiter:
 
 def create_limiter() -> Limiter:
     """
-    Create an in-memory slowapi Limiter (single Render instance baseline).
+    Create a slowapi Limiter.
+
+    When ``REDIS_URL`` is set (Upstash ``rediss://…``), uses that as the shared
+    storage backend so multi-replica pods share counters (EV-052 / ADR-031 amend).
+    When unset, falls back to in-memory storage and logs a warning.
 
     Returns
     -------
     Limiter
         Shared limiter; attach to ``app.state.limiter``.
     """
-    return Limiter(
-        key_func=get_remote_address,
-        default_limits=[public_limit_string()],
-        headers_enabled=False,
-    )
+    redis_url = os.environ.get("REDIS_URL", "").strip()
+    kwargs: dict[str, Any] = {
+        "key_func": get_remote_address,
+        "default_limits": [public_limit_string()],
+        "headers_enabled": False,
+    }
+    if redis_url:
+        kwargs["storage_uri"] = redis_url
+    else:
+        logger.warning(
+            "REDIS_URL unset — slowapi using in-memory storage (not shared across replicas; set REDIS_URL for Upstash)"
+        )
+    return Limiter(**kwargs)
 
 
 class MaxBodySizeMiddleware:

@@ -73,3 +73,12 @@ local storage. Abuse controls are required once APIs are public.
 | Convert / lint / decode / validate / preview | 60/min/IP | `RATE_LIMIT_PUBLIC_PER_MIN` |
 | Dissemination preflight/send | 10/min/IP | `RATE_LIMIT_DISSEMINATION_PER_MIN` |
 | Max request body | 2 MiB | `MAX_REQUEST_BODY_BYTES` |
+
+## Amendment — EV-052 / S061 (2026-08-09)
+
+**Decision 4 (abuse controls)** is amended: when `REDIS_URL` (or approved Upstash env) is
+set, **slowapi** uses a **shared Redis-compatible store** (Upstash free tier —
+`D-S061-redis=1`) so multi-replica DOKS API pods share one counter. When unset (local
+dev), keep **in-memory** limiter. Defaults in the table above are unchanged. No new
+in-cluster Redis Deployment. See [Corpus: decisions §EV-052] and
+`docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`.

@@ -13,7 +13,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/dissemination/src packages/dissemination/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync export-iwxxm-versions tip-diff-iwxxm \
+.PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
@@ -331,6 +331,11 @@ codegen-iwxxm-xsd:
 # S046 / EV-038 / #851 — Python SoT → FE generated JSON (D-S046-sot)
 export-iwxxm-versions:
 	$(UV) run python scripts/iwxxm/export_iwxxm_versions.py
+
+# EV-052 / #900 — FastAPI OpenAPI snapshot + openapi-typescript FE types (D-S061-openapi-src)
+openapi-refresh:
+	$(UV) run python scripts/openapi/export_openapi.py
+	$(PNPM) --filter @metar/frontend run openapi:generate
 
 # S046 / EV-038 / #852 — XSD/SCH/example stem deltas between vendor pins
 tip-diff-iwxxm:

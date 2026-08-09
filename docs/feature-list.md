@@ -1648,6 +1648,33 @@
   `[Corpus: decisions]` · `[docs/domain/TAC_VALIDATION.md]` ·
   `[docs/domain/rules/COVERAGE_MATRIX.md]`
 
+### F29 / F6 / F21 / F30 / M5 deepen (S061 / EV-052 — #950 + #900 + quality PR stats)
+
+- **Status note**: No new Fn. CI polish: restore **≥95% coverage gates** (#950); second
+  sticky **PR comment** with golden/quality-matrix outcomes by product × profile; free-tier
+  **Sentry** + **Upstash Redis** for shared slowapi limits + OpenAPI→typed FE client (#900).
+- **Issues**: [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950) ·
+  [#900](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/900) · epic
+  [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841)
+- **What changes**:
+  1. Inventory + enforce ADR-007 **≥95%** on every package/app coverage surface; fill tests
+  2. CI job: quality-matrix + annex3/`iwxxm_us` golden outcome summary → sticky PR comment
+     (marker ≠ EV-036 coverage comment)
+  3. Sentry SDK (API + FE + worker) behind DSN env; Developer free tier
+  4. Upstash Redis (`REDIS_URL` or approved Upstash env) as slowapi shared store — **no**
+     new DOKS Redis Deployment (`D-S061-redis=1`)
+  5. `openapi-typescript` FE types from committed OpenAPI snapshot (`make openapi-refresh`;
+     `pnpm openapi:check` drift gate) — locked `D-S061-orval=1` (not full Orval)
+- **Acceptance**: AC1–AC12 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-052;
+  **TC-EV052-001..012**
+- **Out of scope**: Paid Sentry/Valkey; in-cluster Redis service; #874/#727/#836; AMS #958;
+  stage→main promote this cycle
+- **Journeys / UI**: N/A (codegen only; no new operator UJ)
+- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
+  `[Corpus: deploy]` · `[Corpus: adr/ADR-007]` · `[Corpus: adr/ADR-006]` ·
+  `[Corpus: adr/ADR-031]` · `[Corpus: decisions]`
+- **Infra**: `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout

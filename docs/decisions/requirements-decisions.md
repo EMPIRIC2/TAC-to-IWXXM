@@ -2,6 +2,18 @@
 
 > Stage: 01-requirements | Last updated: 2026-08-09 (S059 / EV-050)
 
+## EV-052 / S061 — CI polish + quality PR stats + Sentry/Redis/Orval (`D-S061-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-052 / F29+F6 | Quality sticky PR comment #2 | match/soft-diff/fail/skip × product × profile; separate from EV-036 coverage | confirmed |
+| EV-052 / tests | #950 ≥95% gates | Restore ADR-007 floors; fill tests; inventory required | confirmed |
+| EV-052 / F30 | Sentry Developer free | API+FE+worker; DSN optional; no new K8s service | confirmed |
+| EV-052 / F21 | Upstash Redis free | Shared slowapi store; no DOKS Redis Deployment (`D-S061-redis=1`) | confirmed |
+| EV-052 / M5 | Orval or openapi-typescript | Pick in 04; typed FE client from OpenAPI | confirmed |
+| EV-052 / UI | 01 preview | N/A (`D-S061-ui-preview=3`) | confirmed |
+| EV-052 / route | Standard | skip 03/06/10/12/13 | confirmed |
+
 ## EV-050 / S059 — codes.wmo.int Validated (#959) (`D-S059-01-ac=4a` + profile amend)
 
 | Prefix | Topic | Decision | Status |

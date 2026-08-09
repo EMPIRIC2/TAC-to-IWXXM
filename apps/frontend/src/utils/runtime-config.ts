@@ -13,6 +13,8 @@ export type MetarRuntimeConfig = {
     url: string;
     publishableKey?: string;
   };
+  /** Optional Sentry DSN (EV-052); unset = disabled. */
+  sentryDsn?: string;
 };
 
 let cachedConfig: MetarRuntimeConfig | null = null;
@@ -30,6 +32,7 @@ function configFromViteEnv(): MetarRuntimeConfig {
         import.meta.env.VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY || ''
       ).trim(),
     },
+    sentryDsn: (import.meta.env.VITE_SENTRY_DSN || '').trim() || undefined,
   };
 }
 
