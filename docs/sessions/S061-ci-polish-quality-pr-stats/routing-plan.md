@@ -14,10 +14,10 @@
 | 05-verify-tech | yes | delta | **completed** | `D-S061-gateB=1` |
 | 06-tech-tooling | no | — | skipped | Deps via 04 + inventory back-add |
 | 07-build | yes | delta | **completed** | M1–M5; tip CI green |
-| 08-verify-build | yes | delta | pending | next |
-| 09-qa | yes | delta | pending | |
+| 08-verify-build | yes | delta | **completed** | PASS @ 828c7087; `reports/verification-report.md` |
+| 09-qa | yes | delta | **completed** | PASS; `reports/qa-report.md` |
 | 10-e2e | no | — | skipped | No operator journey delta; unit/CI gates cover |
-| 11-verify-impl | yes | delta | pending | |
+| 11-verify-impl | yes | delta | **completed** | `D-S061-11=1`; UI preview accepted; `D-S061-merge=1` next |
 | 12-verify-deploy | no | — | skipped | Waive unless Redis/Sentry needs live DOKS proof |
 | 13-deploy-smoke | no | — | skipped | Waive; staging apply secrets later promote |
 

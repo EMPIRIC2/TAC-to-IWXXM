@@ -25,11 +25,14 @@
 | D-S061-redis | **1** — Upstash Redis free (no new DOKS Redis Deployment) |
 | D-S061-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→11`; skip `03,06,10,12,13` |
 | D-S061-01-ac | **1** — Accept AC1–AC12 (continue after Redis lock) |
-| D-S061-ui-preview | **3** — N/A (no operator UI product work) |
+| D-S061-ui-preview | **3** — N/A at intake (no operator UI product work) |
 | D-S061-gateA | **1** — PASS Gate A → 04 |
 | D-S061-04-plan | **1** — Approve execution plan as drafted; **openapi-typescript** (not Orval) |
 | D-S061-gateB | **1** — PASS Gate B → 07-build M1 |
 | D-S061-cov-branches | **3** — Enforce Vitest lines/stmts/funcs ≥95; **branches** floor 84 + child [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) (FileConverter excluded from Vitest collection; not silent) |
+| D-S061-ui-preview-11 | **1** — Non-deployed local preview accepted at 11 (`:18000` / `:18001`) |
+| D-S061-11 | **1** — Approve AC1–AC12 / Fn deepen; 11 complete; Phase 4 close / merge-path next |
+| D-S061-merge | **1** — Commit session verify artifacts + push tip, then merge [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` (no stage→main this cycle; 12/13 waived per routing) |
 
 ### Acceptance
 

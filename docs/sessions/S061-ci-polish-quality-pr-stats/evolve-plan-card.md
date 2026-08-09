@@ -37,7 +37,7 @@ by profile, and ship free-tier Sentry + shared rate-limit backend + OpenAPI type
 
 ## Next child stage
 
-**08-verify-build** — Phase C gate; then **09-qa** → **11-verify-impl**.
+**Phase 4 merge** — `D-S061-merge=1`: commit session verify artifacts + push; merge PR #969 → `stage`.
 
 ## Locked decisions
 
