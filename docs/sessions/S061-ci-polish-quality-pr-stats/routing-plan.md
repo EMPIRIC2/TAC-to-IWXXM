@@ -17,7 +17,7 @@
 | 08-verify-build | yes | delta | **completed** | PASS @ 828c7087; `reports/verification-report.md` |
 | 09-qa | yes | delta | **completed** | PASS; `reports/qa-report.md` |
 | 10-e2e | no | — | skipped | No operator journey delta; unit/CI gates cover |
-| 11-verify-impl | yes | delta | **completed** | `D-S061-11=1`; UI preview accepted; `D-S061-merge=1` next |
+| 11-verify-impl | yes | delta | **completed** | `D-S061-11=1`; UI preview accepted; closed via `D-S061-close=1` |
 | 12-verify-deploy | no | — | skipped | Waive unless Redis/Sentry needs live DOKS proof |
 | 13-deploy-smoke | no | — | skipped | Waive; staging apply secrets later promote |
 

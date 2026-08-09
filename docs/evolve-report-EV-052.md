@@ -1,10 +1,9 @@
 # Evolve report — EV-052
 
 **Session:** S061-ci-polish-quality-pr-stats  
-**Status:** merged to `stage`; cycle close pending  
-**Product tip (pre-merge):** `828c7087`  
-**Merge tip:** `fd84c00a` (merge of [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969))  
-**Closeout tip:** `57a1542d` (session verify docs on evolve branch)  
+**Status:** **completed** (`D-S061-close=1`)  
+**Product merge:** [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` @ `fd84c00a`  
+**Docs closeout:** [#971](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971) → `stage` @ `3e019b57`  
 **Summary:** [docs/sessions/S061-ci-polish-quality-pr-stats/reports/evolve-summary.md](sessions/S061-ci-polish-quality-pr-stats/reports/evolve-summary.md)
 
 ## Outcome
@@ -16,13 +15,18 @@ Deepened F29 / F6 / F21 / F30 / M5: restored ≥95% coverage gates (#950; Vitest
 Standard completed: `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.  
 Skipped/waived: `03`, `06`, `10`, `12`, `13`.
 
-## Merge
+## Merge / close
 
-`D-S061-merge=1` — session verify artifacts committed + pushed; tip CI green @ `57a1542d` ([run 31332412071](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31332412071)); [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) MERGED → `stage` @ `fd84c00a`.
+| Decision | Result |
+|----------|--------|
+| `D-S061-merge=1` | #969 MERGED → `stage` @ `fd84c00a`; tip CI + stage CI green |
+| Follow-up | #971 MERGED → `stage` @ `3e019b57` (docs/state closeout) |
+| `D-S061-close=1` | EV-052 / S061 closed; no stage→main this cycle |
+| Tickets | #950 / #900 → Done; #841 On stage (epic); #968 In progress (branches) |
 
 ## Decisions
 
-`D-S061-merge=1` · `D-S061-11=1` · `D-S061-ui-preview-11=1` · `D-S061-cov-branches=3` · see [Corpus: decisions §EV-052]
+`D-S061-close=1` · `D-S061-merge=1` · `D-S061-11=1` · `D-S061-ui-preview-11=1` · `D-S061-cov-branches=3` · see [Corpus: decisions §EV-052]
 
 ## Corpus
 
