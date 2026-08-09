@@ -23,7 +23,7 @@ active_session:
   tip_sha: 71779d46
   tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
   tip_sha_pushed: false
-  branch_note: "ACTIVE — tip 71779d46 after 07-build M1–M3; T3.3 skipped; 08-verify-build in_progress"
+  branch_note: "ACTIVE — tip 71779d46 after 07-build M1–M3; 08-verify-build COMPLETE PASS; Phase C checkpoint pending"
   github_issues:
   - 951
   issue_ids:
@@ -41,8 +41,8 @@ active_session:
   ui_preview_url: http://localhost:5173/
   prior_session: S056-m0-stabilize-operator-trust
   artifacts_dir: docs/sessions/S057-strip-internal-doc-refs/
-  current_stage: 08-verify-build
-  current_stage_note: "IN_PROGRESS — after 07-build M1–M3 COMPLETE @ 71779d46; T3.3 skipped"
+  current_stage: 16-evolve
+  current_stage_note: "IN_PROGRESS — Phase C done (07+08 PASS); await D-S057-phaseC checkpoint before 09+10"
   decisions:
     D-S057-open: "1 — open S057/EV-048 for #951"
     D-S057-scope: "1 — full #951 UI+OpenAPI+guard"
@@ -68,7 +68,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    note: "IN_PROGRESS — Standard orchestrator; child stage 08-verify-build in_progress; 07-build COMPLETE @ 71779d46"
+    note: "IN_PROGRESS — Standard orchestrator; Phase C done (07+08 PASS); await D-S057-phaseC before 09+10"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -125,9 +125,11 @@ active_session:
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: "IN_PROGRESS — verify EV-048 tip after 07"
+    completed: '2026-08-08'
+    note: "COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md"
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
   - stage: 09-qa
     required: true
     mode: delta
@@ -277,8 +279,18 @@ active_session:
     evolve_cycle_id: EV-048
     created_at: '2026-08-08'
     note: "Gate B PASS D-S057-gateB=1; S5.M1–S5.M3 defaults"
-  note: "07-build COMPLETE @ 71779d46; 08-verify-build IN_PROGRESS; 16-evolve orchestrator; ui_preview http://localhost:5173/"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
+    type: report
+    status: completed
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    created_at: '2026-08-08'
+    note: "COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md"
+  note: "08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; 16-evolve orchestrator; ui_preview http://localhost:5173/"
   notes:
+  - "2026-08-08 08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; 16-evolve orchestrator"
   - "2026-08-08 07-build COMPLETE @ 71779d46 — M1–M3 done; T3.3 skipped; 08-verify-build IN_PROGRESS; 16-evolve remains orchestrator"
   - "2026-08-08 D-S057-gateB=1 — Gate B PASS; S5.M1–S5.M3 defaults accepted; 05 COMPLETE; 07-build IN_PROGRESS M1; 16-evolve remains orchestrator"
   - "2026-08-08 D-S057-04-plan=1 + D-S057-04-guard-ext=1 — execution plan approved; guard extended TC/E##/#; 04 COMPLETE; 05-verify-tech IN_PROGRESS; 16-evolve remains orchestrator"
@@ -13334,12 +13346,12 @@ stages:
     - D-S039-tls
     - D-S039-route
   08-verify-build:
-    status: in_progress
+    status: completed
     mode: delta
     started_at: '2026-08-08'
     started: '2026-08-08'
-    completed_at:
-    completed:
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
     previous_started_at: '2026-08-08'
     previous_completed_at: '2026-08-08'
     previous_session_id: S056-m0-stabilize-operator-trust
@@ -13414,11 +13426,11 @@ stages:
     tip_sha_pushed: false
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
-    ci_cd_pipeline_note: 'awaiting tip CI after 07 @ 71779d46'
-    note: 'IN_PROGRESS — verify EV-048 tip after 07'
+    ci_cd_pipeline_note: '08 PASS locally; tip CI optional before PR'
+    note: 'COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md'
     expected_report: docs/sessions/S057-strip-internal-doc-refs/reports/verification-report.md
-    report:
-    overall:
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
+    overall: PASS
     previous_s056_session_id: S056-m0-stabilize-operator-trust
     previous_s056_evolve_cycle_id: EV-047
     previous_s056_tip_sha: 3ca4f438
@@ -13428,9 +13440,9 @@ stages:
     previous_s056_overall: pass
     previous_s056_phase_c_checkpoint: passed
     skill_id: 08-verify-build
-    next_stage: 09-qa
+    next_stage: phase-c-checkpoint
     next_stage_status: pending
-    next_stage_note: 'pending after 08-verify-build'
+    next_stage_note: 'await D-S057-phaseC before 09+10'
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_tip_sha: 6bc756ef
@@ -13503,17 +13515,19 @@ stages:
       session_id: S057-strip-internal-doc-refs
       evolve_cycle_id: EV-048
       skill_id: 08-verify-build
-      status: in_progress
+      status: completed
       mode: delta
       started_at: '2026-08-08'
       started: '2026-08-08'
+      completed_at: '2026-08-08'
+      completed: '2026-08-08'
       tip_sha: 71779d46
       tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
       tip_sha_pushed: false
-      overall:
-      report:
+      overall: PASS
+      report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
       expected_report: docs/sessions/S057-strip-internal-doc-refs/reports/verification-report.md
-      note: 'IN_PROGRESS — verify EV-048 tip after 07'
+      note: 'COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md'
       feature_ids: []
       deepen_feature_ids: [F7, F21]
       decision_refs:
@@ -15526,12 +15540,12 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: 08-verify-build
-    current_child_stage_note: '08-verify-build in_progress after 07 COMPLETE @ 71779d46; T3.3 skipped'
+    current_child_stage: phase-c-checkpoint
+    current_child_stage_note: '08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC'
     tip_sha: 71779d46
     tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
     tip_sha_pushed: false
-    note: 'IN_PROGRESS — S057/EV-048 Standard orchestrator; child 08-verify-build in_progress; 07-build COMPLETE @ 71779d46; ui_preview http://localhost:5173/; no git commit by workflow-state-manager'
+    note: 'IN_PROGRESS — S057/EV-048 Standard orchestrator; 08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; tip 71779d46; ui_preview http://localhost:5173/; no git commit by workflow-state-manager'
     prior_close_decision: D-S056-close=1
 
     prior_s054_session_id: S054-rust-ci-crates
@@ -15796,6 +15810,27 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S057-08-complete
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  session_id: S057-strip-internal-doc-refs
+  evolve_cycle_id: EV-048
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: progress
+  status: recorded
+  topic: 'S057/EV-048 08-verify-build COMPLETE PASS → phase-c-checkpoint'
+  summary: '2026-08-08 08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; 16-evolve orchestrator'
+  decision: |
+    2026-08-08 08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; 16-evolve orchestrator
+    Report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md.
+    Tip 71779d46. No git commit by workflow-state-manager.
+  report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
+  tip_sha: 71779d46
+  tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+  current_stage: phase-c-checkpoint
+  note: '08 COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; 16-evolve remains orchestrator'
 - id: D-S057-07-complete
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -29999,6 +30034,17 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
+  type: report
+  kind: verify-build
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  session_id: S057-strip-internal-doc-refs
+  evolve_cycle_id: EV-048
+  created_at: '2026-08-08'
+  updated_at: '2026-08-08'
+  status: completed
+  note: 'S057/EV-048 08 COMPLETE PASS — COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md'
 - path: docs/sessions/S057-strip-internal-doc-refs/reports/04-tech-plan.md
   type: session-report
   kind: tech-plan
@@ -33590,8 +33636,8 @@ evolve_cycles:
   - 951
   milestone: "M0 — Stabilize + operator trust + narrative"
   phase: 1
-  current_stage: 08-verify-build
-  current_stage_note: "IN_PROGRESS — after 07-build M1–M3 COMPLETE @ 71779d46; T3.3 skipped"
+  current_stage: phase-c-checkpoint
+  current_stage_note: "IN_PROGRESS — Phase C done (07+08 PASS); await D-S057-phaseC checkpoint before 09+10"
   started: '2026-08-08'
   started_at: '2026-08-08'
   branch: evolve/EV-048-strip-internal-doc-refs
@@ -33637,7 +33683,7 @@ evolve_cycles:
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    note: "IN_PROGRESS — Standard orchestrator; child stage 08-verify-build in_progress; 07-build COMPLETE @ 71779d46"
+    note: "IN_PROGRESS — Standard orchestrator; Phase C done (07+08 PASS); await D-S057-phaseC before 09+10"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -33694,9 +33740,11 @@ evolve_cycles:
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: "IN_PROGRESS — verify EV-048 tip after 07"
+    completed: '2026-08-08'
+    note: "COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md"
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
   - stage: 09-qa
     required: true
     mode: delta
@@ -33722,7 +33770,7 @@ evolve_cycles:
     mode: skip
     status: skipped
     note: "waive unless deploy (Standard)"
-  note: "IN_PROGRESS — S057/EV-048 Standard; current_stage 08-verify-build; 07-build COMPLETE @ 71779d46; T3.3 skipped; 16-evolve orchestrator in_progress; ui_preview http://localhost:5173/"
+  note: "IN_PROGRESS — S057/EV-048 Standard; current_stage phase-c-checkpoint; 08 COMPLETE PASS; await D-S057-phaseC; tip 71779d46; 16-evolve orchestrator; ui_preview http://localhost:5173/"
   artifacts:
   - docs/sessions/S057-strip-internal-doc-refs/
   - path: docs/sessions/S057-strip-internal-doc-refs/session-brief.md
@@ -33809,6 +33857,13 @@ evolve_cycles:
     stage: 02-verify-plan
     session_id: S057-strip-internal-doc-refs
     note: "D-S057-gateA=1 Gate A PASS"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
+    type: report
+    status: completed
+    stage: 08-verify-build
+    skill_id: 08-verify-build
+    session_id: S057-strip-internal-doc-refs
+    note: "COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md"
 - id: EV-047
   session_id: S056-m0-stabilize-operator-trust
   status: completed
