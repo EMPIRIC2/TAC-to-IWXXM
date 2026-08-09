@@ -35,14 +35,15 @@ membership-checked in CI — no live `codes.wmo.int` HTML in PR CI.
 
 ## Next child stage
 
-**11-verify-impl** user approval → push + PR → `stage` (12/13 waived).
-M1–M4 complete; 08/09 PASS @ `48b6328d`; `#889` Validated satisfied (`D-S059-validated=1`).
+**None** — cycle **completed** (`D-S059-merge=1` / `D-S059-close=1`).
+PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) **merged** → `stage` @ `2815ffbe`;
+#959 closed; #889 already CLOSED (residuals defer+cite).
 
 ## Risks / open decisions
 
-- Residual Present/Cited depth / exhaustive 402 weather — defer+cite under #959/#889
+- Residual Present/Cited depth / exhaustive 402 weather — defer+cite in session reports
 - #882 notify job remains open (design-only note shipped)
-- Docs PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) → `stage` may still be open (unrelated)
+- No `stage`→`main` this cycle
 
 ## Gate A
 

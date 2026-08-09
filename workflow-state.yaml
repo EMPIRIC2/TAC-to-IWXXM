@@ -5,11 +5,16 @@ project:
   output_directory: docs/
 session_counter: 59
 evolve_cycle_counter: 50
-active_session:
-  id: S059-codes-wmo-validated
+active_session: null
+sessions:
+- id: S059-codes-wmo-validated
   type: feature
   intent: "Offline harvest + tac-validate membership checks for codes.wmo.int (#959 / #889 Validated)"
-  status: in_progress
+  status: completed
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S059-close=1
+  close_note: 'Close EV-050/S059; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED (Present/Cited residual — defer+cite)'
   started: '2026-08-09'
   started_at: '2026-08-09'
   orchestrator: 16-evolve
@@ -18,12 +23,22 @@ active_session:
   branch_base: stage@b57f2a87
   branch_base_sha: b57f2a87
   branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
-  branch_status: active
+  branch_status: merged
   branch_exists: true
-  tip_sha: 271efa49
-  tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
-  tip_sha_pushed: false
+  tip_sha: 856471fe
+  tip_sha_full: 856471fe1110c1679577390a1f2c5f1068675eaa
+  tip_sha_pushed: true
+  tip_sha_note: "PR tip before merge 856471fe; merge commit 2815ffbe on stage"
+  branch_note: "CLOSED session — PR #964 MERGED → stage @ 2815ffbe; evolve tip before merge 856471fe; #959 closed; #889 already CLOSED"
+  pr_number: 964
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+  pr_status: merged
   pr_base: stage
+  pr_note: "PR #964 MERGED → stage @ 2815ffbe; D-S059-merge=1"
+  merge_sha: 2815ffbe
+  merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+  merge_target: stage
+  github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
   github_issues:
   - 959
   issue_ids:
@@ -49,8 +64,8 @@ active_session:
   ui_preview_note: "N/A — no browser UI"
   prior_session: S058-ams-2027-abstract
   artifacts_dir: docs/sessions/S059-codes-wmo-validated/
-  current_stage: 11-verify-impl
-  current_stage_note: "08/09 PASS; verify-impl awaiting approval; tip 7f3d871b; local ahead 22 not pushed"
+  current_stage: completed
+  current_stage_note: 'CLOSED — D-S059-close=1; EV-050 COMPLETE; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED (residuals defer+cite); active_session=null'
   decisions:
     D-S058-park: "1a — park S058/#958 Ready; keep scaffold"
     D-S059-ticket: "2a — open S059/EV-050 for #959"
@@ -67,6 +82,8 @@ active_session:
     D-S059-04-adr: "1 — no new ADR"
     D-S059-04-plan: "1 — approve execution plan + build-plan-card → 05"
     D-S059-gateB: "1 — Gate B PASS; handoff 07-build M1"
+    D-S059-merge: "1 — Merge PR #964 → stage @ 2815ffbe; close #959; #889 already CLOSED"
+    D-S059-close: "1 — Close EV-050 / S059; clear active_session"
   routing_plan:
   - stage: 00-context
     required: true
@@ -78,9 +95,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-08-09'
-    note: "orchestrator after route approve; Phase A → 01"
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S059-close=1; EV-050 closed; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -122,10 +140,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
-    started: '2026-08-09'
-    note: "M1–M4 complete; tip 7f3d871b"
     status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — M1–M4; tip 856471fe; PR #964 → stage"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -137,7 +155,7 @@ active_session:
     mode: delta
     status: completed
     completed: '2026-08-09'
-    note: \"PASS — reports/qa-report.md\"
+    note: "PASS — reports/qa-report.md"
   - stage: 10-e2e
     required: false
     mode: skip
@@ -146,9 +164,10 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-09'
-    note: \"awaiting user AC approval + push/PR\"
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S059-merge=1 + D-S059-close=1; PR #964 MERGED → stage @ 2815ffbe"
   - stage: 12-verify-deploy
     required: false
     mode: skip
@@ -158,7 +177,7 @@ active_session:
     required: false
     mode: skip
     status: skipped
-    note: "waive; no stage→main"
+    note: "waive; no stage→main (12/13 waived)"
   artifacts:
   - path: docs/sessions/S059-codes-wmo-validated/session-brief.md
     status: written
@@ -244,7 +263,19 @@ active_session:
     session_id: S059-codes-wmo-validated
     evolve_cycle_id: EV-050
     created_at: '2026-08-09'
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+    type: pull_request
+    status: merged
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+    note: "PR #964 MERGED → stage @ 2815ffbe; D-S059-merge=1"
+  note: "CLOSED — D-S059-close=1; EV-050 COMPLETE; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED; active_session=null"
   notes:
+  - "2026-08-09 D-S059-close=1 — EV-050 / S059 completed; active_session cleared"
+  - "2026-08-09 D-S059-merge=1 — merge #964 → stage; close #959; #889 already CLOSED (residuals defer+cite in session reports)"
   - "2026-08-09 tip 271efa49 — M2+M3 complete (T2.4@d6dc64e0; T3.1@848c01a7; T3.2@926342fe+f38f9466; T3.3@3d06b144; T3.4@271efa49); next M4 T4.1 #882 design note; local ahead ~15 not pushed; tip_sha_pushed=false; 07-build remains in_progress; dirty workflow-state expected; ignore untracked no-internal-doc-refs if present (do not add); no git commit by workflow-state-manager"
   - "2026-08-09 commit 848c01a7 — T3.1 dual-profile harness; tip 848c01a7 local ahead 11; no push; T2.4@d6dc64e0 closed M2; next T3.2 disposition docs (AC7); 07-build remains in_progress; no git commit by workflow-state-manager"
   - "2026-08-09 commit d6dc64e0 — T2.4 complete (M2 closed); tip d6dc64e0 local ahead 10; no push; M3 starting at T3.1 dual-profile harness; single PR → stage after 08–11 (no mid-cycle PR); 07-build remains in_progress; no git commit by workflow-state-manager"
@@ -265,7 +296,6 @@ active_session:
   - "2026-08-09 D-S059-01-ac=4a (families=1a fixtures=2c 882=3a) — 01 deltas drafted; preview held; no push"
   - "2026-08-09 D-S059-route=1 — Standard approved; handoff 01-requirements; tip 849af115"
   - "2026-08-09 D-S058-park=1a + D-S059-ticket=2a — PARK S058; OPEN S059/EV-050 for #959; Standard proposed; awaiting D-S059-route; no git commit by workflow-state-manager"
-sessions:
 - id: S058-ams-2027-abstract
   type: feature
   intent: "AMS 2027 abstract — US international partnerships / TAC→IWXXM (#958); abstract prose handwritten by human"
@@ -16407,6 +16437,73 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S059-close
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S059-codes-wmo-validated
+  evolve_cycle_id: EV-050
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: session_close
+  status: confirmed
+  topic: Close EV-050 / S059; clear active_session
+  summary: 'D-S059-close=1 — EV-050 / S059 completed; active_session cleared; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED'
+  decision: |
+    D-S059-close=1 — EV-050 / S059 completed; active_session cleared.
+    PR #964 MERGED → stage @ 2815ffbe (2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1).
+    Issue #959 closed. Issue #889 already CLOSED (Present/Cited residual — defer+cite; do not invent reopen).
+    Session archived; active_session=null. EV-050 status=completed.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-050-codes-wmo-validated
+  related_issues:
+  - '959'
+  - '889'
+  related_decisions:
+  - D-S059-merge
+  pr_number: 964
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+  pr_status: merged
+  pr_base: stage
+  merge_sha: 2815ffbe
+  merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+  merge_target: stage
+  tip_sha: 856471fe
+  tip_sha_full: 856471fe1110c1679577390a1f2c5f1068675eaa
+- id: D-S059-merge
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S059-codes-wmo-validated
+  evolve_cycle_id: EV-050
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: merge
+  status: confirmed
+  topic: 'Merge PR #964 into stage'
+  summary: 'D-S059-merge=1 — merge #964 → stage; close #959; #889 already CLOSED (residuals defer+cite in session reports)'
+  decision: |
+    D-S059-merge=1 — merge #964 → stage; close #959; #889 already CLOSED (residuals defer+cite in session reports).
+    Merge commit 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1 on stage.
+    Issue #959 closed. Issue #889 was already CLOSED on GitHub — leave residual Present/Cited depth noted; do not invent reopen.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-050-codes-wmo-validated
+  related_issues:
+  - '959'
+  - '889'
+  pr_number: 964
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+  pr_status: merged
+  pr_base: stage
+  merge_sha: 2815ffbe
+  merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+  merge_target: stage
+  tip_sha: 856471fe
+  tip_sha_full: 856471fe1110c1679577390a1f2c5f1068675eaa
 - id: D-S057-close
   date: '2026-08-09'
   timestamp: '2026-08-09'
@@ -34385,9 +34482,30 @@ evolve_cycles:
   session_id: S059-codes-wmo-validated
   type: feature
   cycle_type: feature
-  status: in_progress
+  status: completed
   started: '2026-08-09'
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S059-close=1
+  close_note: 'Close EV-050/S059; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED (Present/Cited residual — defer+cite)'
   branch: evolve/EV-050-codes-wmo-validated
+  branch_base: stage@b57f2a87
+  branch_base_sha: b57f2a87
+  branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+  branch_status: merged
+  tip_sha: 856471fe
+  tip_sha_full: 856471fe1110c1679577390a1f2c5f1068675eaa
+  tip_sha_pushed: true
+  tip_sha_note: "PR tip before merge 856471fe; merge commit 2815ffbe on stage"
+  pr_number: 964
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+  pr_status: merged
+  pr_base: stage
+  github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+  merge_sha: 2815ffbe
+  merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+  merge_target: stage
+  pr_note: "PR #964 MERGED → stage @ 2815ffbe; D-S059-merge=1"
   github_issues:
   - 959
   parent_issues:
@@ -34401,7 +34519,8 @@ evolve_cycles:
   - F24
   - F28
   preset: Standard
-  current_stage: 07-build
+  current_stage: completed
+  current_stage_note: "D-S059-close=1 — EV-050 COMPLETE; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED"
   decisions:
     D-S059-route: "1 — Standard as drafted: 00→16→01→02→04→05→07→08→09→11; skip 03,06,10,12,13"
     D-S059-families: "1a — weather+recent+cloud+SIGMET/AIRMET+nil"
@@ -34416,7 +34535,48 @@ evolve_cycles:
     D-S059-04-adr: "1 — no new ADR"
     D-S059-04-plan: "1 — approve execution plan + build-plan-card → 05"
     D-S059-gateB: "1 — Gate B PASS; handoff 07-build M1"
-  note: "#889 Validated follow-on; offline harvest + tac-validate membership; M2+M3 complete @ 271efa49; next M4 T4.1 #882 design note; local ahead ~15 not pushed; 07-build remains in_progress"
+    D-S059-merge: "1 — Merge PR #964 → stage @ 2815ffbe; close #959; #889 already CLOSED"
+    D-S059-close: "1 — Close EV-050 / S059; clear active_session"
+  decisions_locked:
+  - D-S059-route=1
+  - D-S059-families=1a
+  - D-S059-fixtures=2c
+  - D-S059-882=3a
+  - D-S059-01-ac=4a
+  - D-S059-profiles=1b
+  - D-S059-gateA=1
+  - D-S059-04-milestones=1
+  - D-S059-04-harvest=1
+  - D-S059-04-wire=1
+  - D-S059-04-adr=1
+  - D-S059-04-plan=1
+  - D-S059-gateB=1
+  - D-S059-merge=1
+  - D-S059-close=1
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    deploy: waived
+    deploy_note: "12/13 waived — no stage→main deploy for EV-050; D-S059-route skipped 12/13"
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_d: passed
+    deploy: waived
+  artifacts:
+  - docs/sessions/S059-codes-wmo-validated/
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+    type: pull_request
+    status: merged
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+    note: "PR #964 MERGED → stage @ 2815ffbe; D-S059-merge=1"
+  note: "COMPLETED — D-S059-close=1; EV-050 closed; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED (Present/Cited residual — defer+cite; do not reopen)"
 - id: EV-049
   session_id: S058-ams-2027-abstract
   type: feature
@@ -45067,24 +45227,24 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-050-codes-wmo-validated
-  ahead_of_origin: 15
-  pushed: false
+  current_branch: stage
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml (+ docs/decisions/evolve-decisions.md); ignore untracked no-internal-doc-refs if present (do not add)'
-  tip_sha: 271efa49
-  tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
-  tip_note: 'S059/EV-050 — tip 271efa49 local ahead ~15 (not pushed); M2+M3 complete; next M4 T4.1 #882 design note; 07-build remains in_progress'
+  dirty_note: 'workflow-state.yaml dirty after D-S059-close=1 closeout; no git commit by workflow-state-manager'
+  tip_sha: 2815ffbe
+  tip_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+  tip_note: 'S059/EV-050 CLOSED — PR #964 MERGED → stage @ 2815ffbe; tip 856471fe; active_session=null'
   evolve_branch: evolve/EV-050-codes-wmo-validated
-  evolve_tip_sha: 271efa49
-  evolve_tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
-  evolve_tip_sha_pushed: false
-  stage_merge_sha: 06a9543f
-  stage_merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
-  stage_tip_sha: 06a9543f
-  stage_tip_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+  evolve_tip_sha: 856471fe
+  evolve_tip_sha_full: 856471fe1110c1679577390a1f2c5f1068675eaa
+  evolve_tip_sha_pushed: true
+  stage_merge_sha: 2815ffbe
+  stage_merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+  stage_tip_sha: 2815ffbe
+  stage_tip_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -45096,9 +45256,11 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: stage
-  note: 'S059/EV-050 — tip 271efa49 local ahead ~15 (not pushed); M2+M3 complete; next M4 T4.1 #882 design note; 07-build remains in_progress; dirty=workflow-state expected'
+  note: 'S059/EV-050 CLOSED — D-S059-close=1; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED; active_session=null'
 
   notes:
+  - '2026-08-09 D-S059-close=1 — EV-050 / S059 completed; active_session cleared; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED; no git commit by workflow-state-manager'
+  - '2026-08-09 D-S059-merge=1 — merge #964 → stage; close #959; #889 already CLOSED (residuals defer+cite in session reports); merge 2815ffbe; tip 856471fe; no git commit by workflow-state-manager'
   - '2026-08-09 tip 271efa49 — M2+M3 complete (T2.4@d6dc64e0; T3.1@848c01a7; T3.2@926342fe+f38f9466; T3.3@3d06b144; T3.4@271efa49); next M4 T4.1 #882 design note; local ahead ~15 not pushed; tip_sha_pushed=false; 07-build remains in_progress; dirty workflow-state expected; ignore untracked no-internal-doc-refs if present (do not add); no git commit by workflow-state-manager'
   - '2026-08-09 commit 848c01a7 — T3.1 dual-profile harness; tip 848c01a7 local ahead 11; no push; T2.4@d6dc64e0 closed M2; next T3.2 disposition docs (AC7); 07-build remains in_progress; pending_commit cleared; no git commit by workflow-state-manager'
   - '2026-08-09 commit d6dc64e0 — T2.4 complete (M2 closed); tip d6dc64e0 local ahead 10; no push; M3 starting at T3.1 dual-profile harness; single PR → stage after 08–11 (no mid-cycle PR); 07-build remains in_progress; pending_commit cleared; no git commit by workflow-state-manager'
@@ -45629,17 +45791,23 @@ git_history:
     base: stage
     base_sha: b57f2a87
     base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
-    status: active
+    status: merged
     created: '2026-08-09'
     exists: true
     purpose: "EV-050 / S059 codes.wmo.int harvest + tac-validate membership (#959)"
     session_id: S059-codes-wmo-validated
     evolve_cycle_id: EV-050
-    tip_sha: 271efa49
-    tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
-    tip_sha_pushed: false
+    tip_sha: 856471fe
+    tip_sha_full: 856471fe1110c1679577390a1f2c5f1068675eaa
+    tip_sha_pushed: true
+    pr_number: 964
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964
+    pr_status: merged
     pr_base: stage
-    note: "S059/EV-050 tip 271efa49 local ahead ~15; M2+M3 complete; next M4 T4.1 #882 design note; 07-build remains in_progress; not pushed"
+    merge_sha: 2815ffbe
+    merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+    merge_target: stage
+    note: "S059/EV-050 PR #964 MERGED → stage @ 2815ffbe; evolve tip 856471fe; #959 closed; #889 already CLOSED; D-S059-close=1"
   - name: evolve/EV-049-ams-2027-abstract
     base: stage
     base_sha: b57f2a87

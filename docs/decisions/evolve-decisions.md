@@ -9,13 +9,15 @@
 **Features**: deepen **F6 / F12 / F15 / F20 / F23 / F24 / F28** (no new Fn; F6 for
 `annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
 **Started**: 2026-08-09  
-**Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
-**Status**: **in_progress** — **11-verify-impl** approved (`D-S059-11-next=1`); push + PR → `stage`
-**Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
-(parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
+**Branch**: `evolve/EV-050-codes-wmo-validated` (merged → `stage` @ `2815ffbe`)  
+**Status**: **completed** 2026-08-09 (`D-S059-merge=1` / `D-S059-close=1`; PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964))  
+**Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) (closed);
+parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) (already CLOSED —
+Validated satisfied; residual Present/Cited depth defer+cite in session reports);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
 compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
-[#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882))  
+[#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882)  
+
 **Corpus**: [Corpus: product §F6/F12/F15/F20/F23/F24/F28], [Corpus: tests],
 [Corpus: tech-spec], [Corpus: decisions] · domain opt-in
 `docs/domain/rules/*`, `docs/domain/mining/*`, `docs/domain/TAC_VALIDATION.md`
@@ -53,8 +55,19 @@ AC8 / TC-EV050-008: true-error fix — `REMARK_US_EXTENSION` gated to `iwxxm_us`
 URI drift; [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notification pipeline;
 exhaustive 402 weather / residual register depth under #959/#889 **defer+cite**.
 
-**Issue comments:** criteria above posted on #889 and #959 at T4.2 (close #959 when PR merges;
-#889 remains open for residual Present/Cited depth unless maintainers close Validated-only).
+**Issue comments:** criteria above posted on #889 and #959 at T4.2.
+**Close:** #959 closed on merge; #889 was already CLOSED (Validated-only) — residuals stay
+defer+cite in `fixture-coverage-delta-t2.4.md` / this section (no reopen).
+
+### Close (2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S059-merge | **1** — Merge [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) → `stage` @ `2815ffbe` |
+| D-S059-close | **1** — Close EV-050 / S059; clear `active_session` |
+
+Summary: `docs/sessions/S059-codes-wmo-validated/reports/evolve-summary.md` ·
+report: `docs/evolve-report-EV-050.md`.
 
 ### Scope (Phase 0–1 — locked 2026-08-09; profile amend 2026-08-09)
 
@@ -77,6 +90,8 @@ exhaustive 402 weather / residual register depth under #959/#889 **defer+cite**.
 | D-S059-gateB | **1** — Gate B **PASS**; handoff **07-build** M1 / T1.1 (L1–L3 advisory accepted) |
 | D-S059-validated | **1** — #889 Validated **satisfied** (AC5); supersedes Lean `D-S055-validated=1` for this triad element |
 | D-S059-11-next | **1** — Approve AC1–AC8; push branch + open PR → `stage` (12/13 stay skipped) |
+| D-S059-merge | **1** — Merge #964 → `stage` @ `2815ffbe`; close #959 |
+| D-S059-close | **1** — Close EV-050 / S059; `active_session` cleared |
 
 ### Gate A (02) — PASS 2026-08-09
 
