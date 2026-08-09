@@ -21,11 +21,10 @@ def test_openapi_snapshot_exists() -> None:
 
 
 def test_openapi_snapshot_matches_live_schema() -> None:
-    """Snapshot must equal live OpenAPI (sorted JSON) — CI drift gate."""
+    """Snapshot object must equal live OpenAPI — CI drift gate (ignore JSON whitespace)."""
     live = api_module.app.openapi()
-    expected = json.dumps(live, indent=2, sort_keys=True) + "\n"
-    loaded = OPENAPI_SNAPSHOT.read_text(encoding="utf-8")
-    assert loaded == expected, (
+    loaded = json.loads(OPENAPI_SNAPSHOT.read_text(encoding="utf-8"))
+    assert loaded == live, (
         "OpenAPI snapshot drift; run: make openapi-refresh "
         "(then regenerate FE types with pnpm --filter @metar/frontend openapi:generate)"
     )

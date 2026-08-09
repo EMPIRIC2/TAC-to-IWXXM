@@ -8,3 +8,6 @@ uv.lock
 *.xml
 *.xsd
 *.xsl
+# EV-052 — openapi-typescript artifacts (do not reformat; drift checks are exact)
+apps/frontend/openapi/
+apps/frontend/src/generated/openapi.d.ts

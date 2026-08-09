@@ -5,7 +5,11 @@
         "description": "Combined results from multiple validation layers.",
         "example": {
           "execution_time_ms": 13.5,
-          "layers_validated": ["airport_icao", "tac_syntax", "xml_wellformed"],
+          "layers_validated": [
+            "airport_icao",
+            "tac_syntax",
+            "xml_wellformed"
+          ],
           "passed": false,
           "results": [
             {
@@ -73,7 +77,10 @@
             "type": "string"
           }
         },
-        "required": ["passed", "layers_validated"],
+        "required": [
+          "passed",
+          "layers_validated"
+        ],
         "title": "AggregatedValidationResult",
         "type": "object"
       },
@@ -94,7 +101,9 @@
             "$ref": "#/components/schemas/UserResponse"
           }
         },
-        "required": ["user"],
+        "required": [
+          "user"
+        ],
         "title": "AuthResponse",
         "type": "object"
       },
@@ -111,7 +120,10 @@
               "content_type": "tac"
             }
           ],
-          "layers": ["airport_icao", "tac_syntax"]
+          "layers": [
+            "airport_icao",
+            "tac_syntax"
+          ]
         },
         "properties": {
           "items": {
@@ -140,7 +152,9 @@
             "title": "Layers"
           }
         },
-        "required": ["items"],
+        "required": [
+          "items"
+        ],
         "title": "BatchValidationRequest",
         "type": "object"
       },
@@ -152,7 +166,10 @@
           "results": [
             {
               "execution_time_ms": 15.2,
-              "layers_validated": ["airport_icao", "tac_syntax"],
+              "layers_validated": [
+                "airport_icao",
+                "tac_syntax"
+              ],
               "passed": true,
               "results": [],
               "total_issues": 0
@@ -354,7 +371,9 @@
             "type": "string"
           }
         },
-        "required": ["product"],
+        "required": [
+          "product"
+        ],
         "title": "Body_convert_bulletin_api_v1_convert_bulletin_post",
         "type": "object"
       },
@@ -405,7 +424,9 @@
             "type": "string"
           }
         },
-        "required": ["product"],
+        "required": [
+          "product"
+        ],
         "title": "Body_decode_tac_endpoint_api_v1_decode_tac_post",
         "type": "object"
       },
@@ -490,7 +511,9 @@
             "type": "array"
           }
         },
-        "required": ["files"],
+        "required": [
+          "files"
+        ],
         "title": "Body_mass_ingest_api_v1_ingest_mass_post",
         "type": "object"
       },
@@ -503,7 +526,9 @@
             "type": "string"
           },
           "layers": {
-            "default": ["ALL"],
+            "default": [
+              "ALL"
+            ],
             "description": "Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)",
             "items": {
               "type": "string"
@@ -599,7 +624,14 @@
             "type": "string"
           }
         },
-        "required": ["ahl", "report_count", "tt", "aa", "cccc", "yygggg"],
+        "required": [
+          "ahl",
+          "report_count",
+          "tt",
+          "aa",
+          "cccc",
+          "yygggg"
+        ],
         "title": "BulletinMetaModel",
         "type": "object"
       },
@@ -644,7 +676,11 @@
             "title": "Xml"
           }
         },
-        "required": ["report_index", "ok", "tac_input"],
+        "required": [
+          "report_index",
+          "ok",
+          "tac_input"
+        ],
         "title": "BulletinReportResultModel",
         "type": "object"
       },
@@ -716,13 +752,21 @@
             "type": "array"
           }
         },
-        "required": ["passed", "our_elements", "their_elements"],
+        "required": [
+          "passed",
+          "our_elements",
+          "their_elements"
+        ],
         "title": "ComparisonDetail",
         "type": "object"
       },
       "ComparisonStatus": {
         "description": "Comparison result status.",
-        "enum": ["pass", "fail", "error"],
+        "enum": [
+          "pass",
+          "fail",
+          "error"
+        ],
         "title": "ComparisonStatus",
         "type": "string"
       },
@@ -739,7 +783,10 @@
               }
             ],
             "description": "Machine-readable issue code",
-            "examples": ["MISSING_KEYWORD", "INVALID_ICAO_FORMAT"],
+            "examples": [
+              "MISSING_KEYWORD",
+              "INVALID_ICAO_FORMAT"
+            ],
             "title": "Code"
           },
           "end": {
@@ -765,7 +812,9 @@
               }
             ],
             "description": "Concise suggested fix for the user",
-            "examples": ["Start the report with METAR or SPECI and a valid ICAO code"],
+            "examples": [
+              "Start the report with METAR or SPECI and a valid ICAO code"
+            ],
             "title": "Hint"
           },
           "layer": {
@@ -778,7 +827,10 @@
               }
             ],
             "description": "Validation layer associated with the issue",
-            "examples": ["airport_icao", "tac_syntax"],
+            "examples": [
+              "airport_icao",
+              "tac_syntax"
+            ],
             "title": "Layer"
           },
           "location": {
@@ -791,7 +843,9 @@
               }
             ],
             "description": "Optional location context from parser/validator",
-            "examples": ["line 1, column 12"],
+            "examples": [
+              "line 1, column 12"
+            ],
             "title": "Location"
           },
           "message": {
@@ -807,7 +861,10 @@
           },
           "source": {
             "description": "Input source identifier (e.g., 'manual_input' or filename)",
-            "examples": ["manual_input", "EGLL_231750Z.txt"],
+            "examples": [
+              "manual_input",
+              "EGLL_231750Z.txt"
+            ],
             "title": "Source",
             "type": "string"
           },
@@ -825,13 +882,20 @@
             "title": "Start"
           }
         },
-        "required": ["source", "message"],
+        "required": [
+          "source",
+          "message"
+        ],
         "title": "ConversionIssue",
         "type": "object"
       },
       "ConversionIssueSeverity": {
         "description": "Severity level for conversion and validation issues.",
-        "enum": ["error", "warning", "info"],
+        "enum": [
+          "error",
+          "warning",
+          "info"
+        ],
         "title": "ConversionIssueSeverity",
         "type": "string"
       },
@@ -869,7 +933,10 @@
           },
           "failed": {
             "description": "Number of failed conversions",
-            "examples": [0, 1],
+            "examples": [
+              0,
+              1
+            ],
             "minimum": 0.0,
             "title": "Failed",
             "type": "integer"
@@ -918,20 +985,30 @@
           },
           "successful": {
             "description": "Number of successful conversions",
-            "examples": [2, 4],
+            "examples": [
+              2,
+              4
+            ],
             "minimum": 0.0,
             "title": "Successful",
             "type": "integer"
           },
           "total_processed": {
             "description": "Total number of inputs processed (manual_text + files)",
-            "examples": [2, 5],
+            "examples": [
+              2,
+              5
+            ],
             "minimum": 0.0,
             "title": "Total Processed",
             "type": "integer"
           }
         },
-        "required": ["total_processed", "successful", "failed"],
+        "required": [
+          "total_processed",
+          "successful",
+          "failed"
+        ],
         "title": "ConversionResponse",
         "type": "object"
       },
@@ -952,20 +1029,29 @@
           },
           "name": {
             "description": "Output filename for this conversion",
-            "examples": ["manual_input.txt", "KJFK_231751Z.txt"],
+            "examples": [
+              "manual_input.txt",
+              "KJFK_231751Z.txt"
+            ],
             "title": "Name",
             "type": "string"
           },
           "size_bytes": {
             "description": "Output XML document size in bytes",
-            "examples": [1452, 2048],
+            "examples": [
+              1452,
+              2048
+            ],
             "minimum": 0.0,
             "title": "Size Bytes",
             "type": "integer"
           },
           "source": {
             "description": "Source of input: 'manual' for text input, filename for uploads",
-            "examples": ["manual", "KJFK.txt"],
+            "examples": [
+              "manual",
+              "KJFK.txt"
+            ],
             "title": "Source",
             "type": "string"
           },
@@ -979,11 +1065,18 @@
               }
             ],
             "description": "Original TAC input that produced this IWXXM output",
-            "examples": ["METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023="],
+            "examples": [
+              "METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023="
+            ],
             "title": "Tac Input"
           }
         },
-        "required": ["name", "content", "source", "size_bytes"],
+        "required": [
+          "name",
+          "content",
+          "source",
+          "size_bytes"
+        ],
         "title": "ConversionResult",
         "type": "object"
       },
@@ -1001,7 +1094,9 @@
             "type": "array"
           }
         },
-        "required": ["bulletin_meta"],
+        "required": [
+          "bulletin_meta"
+        ],
         "title": "ConvertBulletinResponse",
         "type": "object"
       },
@@ -1021,7 +1116,11 @@
             "type": "string"
           }
         },
-        "required": ["start", "end", "text"],
+        "required": [
+          "start",
+          "end",
+          "text"
+        ],
         "title": "DecodeResidualModel",
         "type": "object"
       },
@@ -1045,7 +1144,12 @@
             "type": "integer"
           }
         },
-        "required": ["start", "end", "code", "explanation"],
+        "required": [
+          "start",
+          "end",
+          "code",
+          "explanation"
+        ],
         "title": "DecodeSegmentModel",
         "type": "object"
       },
@@ -1077,7 +1181,9 @@
             "type": "string"
           }
         },
-        "required": ["product"],
+        "required": [
+          "product"
+        ],
         "title": "DecodeTacResponse",
         "type": "object"
       },
@@ -1098,7 +1204,9 @@
           },
           "job_id": {
             "description": "Unique job identifier (UUID)",
-            "examples": ["job_550e8400e29b41d4a71662f7d6e6b1c0"],
+            "examples": [
+              "job_550e8400e29b41d4a71662f7d6e6b1c0"
+            ],
             "title": "Job Id",
             "type": "string"
           },
@@ -1113,7 +1221,12 @@
             "description": "Current job status: pending, running, completed, failed"
           }
         },
-        "required": ["job_id", "status", "station_count", "created_at"],
+        "required": [
+          "job_id",
+          "status",
+          "station_count",
+          "created_at"
+        ],
         "title": "EvaluationJobResponse",
         "type": "object"
       },
@@ -1191,13 +1304,23 @@
             "type": "integer"
           }
         },
-        "required": ["job_id", "status", "progress", "total", "created_at"],
+        "required": [
+          "job_id",
+          "status",
+          "progress",
+          "total",
+          "created_at"
+        ],
         "title": "EvaluationJobStatus",
         "type": "object"
       },
       "EvaluationMode": {
         "description": "Evaluation mode.",
-        "enum": ["single", "random", "all"],
+        "enum": [
+          "single",
+          "random",
+          "all"
+        ],
         "title": "EvaluationMode",
         "type": "string"
       },
@@ -1214,7 +1337,11 @@
           "hours": {
             "default": 1.5,
             "description": "Hours back to search for METAR data",
-            "examples": [1.5, 3.0, 6.0],
+            "examples": [
+              1.5,
+              3.0,
+              6.0
+            ],
             "maximum": 24.0,
             "minimum": 0.5,
             "title": "Hours",
@@ -1243,7 +1370,11 @@
             ],
             "default": 100,
             "description": "Number of stations to sample (for 'random' mode)",
-            "examples": [50, 100, 200],
+            "examples": [
+              50,
+              100,
+              200
+            ],
             "title": "Sample Size"
           },
           "scheduled_service_only": {
@@ -1265,11 +1396,19 @@
               }
             ],
             "description": "Specific ICAO codes (required for 'single' mode)",
-            "examples": [["KJFK", "EGLL", "RJTT"]],
+            "examples": [
+              [
+                "KJFK",
+                "EGLL",
+                "RJTT"
+              ]
+            ],
             "title": "Station Ids"
           }
         },
-        "required": ["mode"],
+        "required": [
+          "mode"
+        ],
         "title": "EvaluationRequest",
         "type": "object"
       },
@@ -1327,7 +1466,10 @@
           },
           "station_id": {
             "description": "ICAO airport code",
-            "examples": ["KJFK", "EGLL"],
+            "examples": [
+              "KJFK",
+              "EGLL"
+            ],
             "title": "Station Id",
             "type": "string"
           },
@@ -1362,7 +1504,11 @@
             "type": "string"
           }
         },
-        "required": ["station_id", "timestamp", "comparison_status"],
+        "required": [
+          "station_id",
+          "timestamp",
+          "comparison_status"
+        ],
         "title": "EvaluationResultDetail",
         "type": "object"
       },
@@ -1472,7 +1618,10 @@
             "type": "integer"
           }
         },
-        "required": ["start", "end"],
+        "required": [
+          "start",
+          "end"
+        ],
         "title": "FailedSpan",
         "type": "object"
       },
@@ -1515,13 +1664,27 @@
             "type": "string"
           }
         },
-        "required": ["status", "version", "tac2iwxxm_available"],
+        "required": [
+          "status",
+          "version",
+          "tac2iwxxm_available"
+        ],
         "title": "HealthResponse",
         "type": "object"
       },
       "ICAORegion": {
         "description": "ICAO Regional Offices as per user decision 3.",
-        "enum": ["AFI", "APAC", "ESAF", "EUR", "MID", "NAM", "NAT", "SAM", "WAFR"],
+        "enum": [
+          "AFI",
+          "APAC",
+          "ESAF",
+          "EUR",
+          "MID",
+          "NAM",
+          "NAT",
+          "SAM",
+          "WAFR"
+        ],
         "title": "ICAORegion",
         "type": "string"
       },
@@ -1595,7 +1758,13 @@
             "description": "Summary statistics (if completed)"
           }
         },
-        "required": ["job_id", "status", "station_count", "progress", "created_at"],
+        "required": [
+          "job_id",
+          "status",
+          "station_count",
+          "progress",
+          "created_at"
+        ],
         "title": "JobListItem",
         "type": "object"
       },
@@ -1643,13 +1812,23 @@
             "type": "integer"
           }
         },
-        "required": ["jobs", "total", "page", "per_page"],
+        "required": [
+          "jobs",
+          "total",
+          "page",
+          "per_page"
+        ],
         "title": "JobListResponse",
         "type": "object"
       },
       "JobStatus": {
         "description": "Job execution status.",
-        "enum": ["pending", "running", "completed", "failed"],
+        "enum": [
+          "pending",
+          "running",
+          "completed",
+          "failed"
+        ],
         "title": "JobStatus",
         "type": "string"
       },
@@ -1721,7 +1900,13 @@
             "type": "integer"
           }
         },
-        "required": ["total", "passed", "failed", "errors", "pass_rate"],
+        "required": [
+          "total",
+          "passed",
+          "failed",
+          "errors",
+          "pass_rate"
+        ],
         "title": "JobSummaryStats",
         "type": "object"
       },
@@ -1741,7 +1926,11 @@
             "type": "string"
           }
         },
-        "required": ["code", "message", "replacement"],
+        "required": [
+          "code",
+          "message",
+          "replacement"
+        ],
         "title": "LintFixModel",
         "type": "object"
       },
@@ -1812,7 +2001,11 @@
             "type": "array"
           }
         },
-        "required": ["code", "severity", "message_template"],
+        "required": [
+          "code",
+          "severity",
+          "message_template"
+        ],
         "title": "LintIssueCatalogEntryModel",
         "type": "object"
       },
@@ -1881,7 +2074,11 @@
             "title": "Start"
           }
         },
-        "required": ["severity", "code", "message"],
+        "required": [
+          "severity",
+          "code",
+          "message"
+        ],
         "title": "LintIssueModel",
         "type": "object"
       },
@@ -1918,7 +2115,9 @@
             "title": "Product"
           }
         },
-        "required": ["ok"],
+        "required": [
+          "ok"
+        ],
         "title": "LintTacResponse",
         "type": "object"
       },
@@ -1934,7 +2133,10 @@
             "type": "string"
           }
         },
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "title": "LoginRequest",
         "type": "object"
       },
@@ -2000,7 +2202,11 @@
             "title": "Start"
           }
         },
-        "required": ["layer", "severity", "message"],
+        "required": [
+          "layer",
+          "severity",
+          "message"
+        ],
         "title": "PackageIssueModel",
         "type": "object"
       },
@@ -2018,7 +2224,9 @@
             "type": "string"
           }
         },
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "title": "PendingFilePayload",
         "type": "object"
       },
@@ -2038,7 +2246,11 @@
             "type": "string"
           }
         },
-        "required": ["access_token", "refresh_token", "expires_at"],
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_at"
+        ],
         "title": "SessionResponse",
         "type": "object"
       },
@@ -2049,8 +2261,14 @@
           "centre_name": "NOAA Meteorological Development Laboratory",
           "icao_location_indicator": "KWBC",
           "online_since": "2024-01-15T00:00:00Z",
-          "supported_iwxxm_versions": ["2025-2", "2023-1"],
-          "supported_products": ["METAR", "SPECI"]
+          "supported_iwxxm_versions": [
+            "2025-2",
+            "2023-1"
+          ],
+          "supported_products": [
+            "METAR",
+            "SPECI"
+          ]
         },
         "properties": {
           "centre_designator": {
@@ -2125,7 +2343,10 @@
             "type": "array"
           },
           "supported_products": {
-            "default": ["METAR", "SPECI"],
+            "default": [
+              "METAR",
+              "SPECI"
+            ],
             "description": "Supported aviation product types",
             "items": {
               "type": "string"
@@ -2134,7 +2355,9 @@
             "type": "array"
           }
         },
-        "required": ["supported_iwxxm_versions"],
+        "required": [
+          "supported_iwxxm_versions"
+        ],
         "title": "TranslationCentreInfo",
         "type": "object"
       },
@@ -2368,7 +2591,10 @@
             "type": "string"
           }
         },
-        "required": ["start_date", "end_date"],
+        "required": [
+          "start_date",
+          "end_date"
+        ],
         "title": "TranslationStatisticsRequest",
         "type": "object"
       },
@@ -2389,7 +2615,10 @@
             "type": "object"
           }
         },
-        "required": ["id", "email"],
+        "required": [
+          "id",
+          "email"
+        ],
         "title": "UserResponse",
         "type": "object"
       },
@@ -2455,7 +2684,11 @@
             "title": "Start"
           }
         },
-        "required": ["layer", "level", "message"],
+        "required": [
+          "layer",
+          "level",
+          "message"
+        ],
         "title": "ValidateIssueModel",
         "type": "object"
       },
@@ -2493,7 +2726,10 @@
             "type": "string"
           }
         },
-        "required": ["level", "message"],
+        "required": [
+          "level",
+          "message"
+        ],
         "title": "ValidateLayerIssueModel",
         "type": "object"
       },
@@ -2508,7 +2744,9 @@
         "properties": {
           "iwxxm_xml": {
             "description": "IWXXM XML content to validate",
-            "examples": ["<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>"],
+            "examples": [
+              "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>"
+            ],
             "minLength": 1,
             "title": "Iwxxm Xml",
             "type": "string"
@@ -2516,7 +2754,10 @@
           "profile": {
             "default": "annex3",
             "description": "Schema profile: annex3 (WMO) or iwxxm_us",
-            "examples": ["annex3", "iwxxm_us"],
+            "examples": [
+              "annex3",
+              "iwxxm_us"
+            ],
             "title": "Profile",
             "type": "string"
           },
@@ -2537,19 +2778,27 @@
             ],
             "default": "comprehensive",
             "description": "Validation depth: 'basic', 'schema', 'schematron', 'icao_opmet', 'comprehensive'",
-            "examples": ["basic", "comprehensive"],
+            "examples": [
+              "basic",
+              "comprehensive"
+            ],
             "title": "Validation Level"
           },
           "version": {
             "default": "2025-2",
             "description": "Target IWXXM version",
-            "examples": ["2025-2", "2023-1"],
+            "examples": [
+              "2025-2",
+              "2023-1"
+            ],
             "pattern": "^\\d{4}-\\d+$",
             "title": "Version",
             "type": "string"
           }
         },
-        "required": ["iwxxm_xml"],
+        "required": [
+          "iwxxm_xml"
+        ],
         "title": "ValidateRequest",
         "type": "object"
       },
@@ -2636,7 +2885,10 @@
             "type": "string"
           }
         },
-        "required": ["is_valid", "version"],
+        "required": [
+          "is_valid",
+          "version"
+        ],
         "title": "ValidateResponse",
         "type": "object"
       },
@@ -2672,7 +2924,11 @@
             "type": "string"
           }
         },
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError",
         "type": "object"
       },
@@ -2737,7 +2993,11 @@
             "title": "Suggestion"
           }
         },
-        "required": ["layer", "level", "message"],
+        "required": [
+          "layer",
+          "level",
+          "message"
+        ],
         "title": "ValidationIssue",
         "type": "object"
       },
@@ -2761,7 +3021,9 @@
           "blocking": true,
           "description": "Parse and validate METAR TAC syntax",
           "layer": "tac_syntax",
-          "supported_content_types": ["tac"]
+          "supported_content_types": [
+            "tac"
+          ]
         },
         "properties": {
           "blocking": {
@@ -2787,7 +3049,11 @@
             "type": "array"
           }
         },
-        "required": ["layer", "description", "blocking"],
+        "required": [
+          "layer",
+          "description",
+          "blocking"
+        ],
         "title": "ValidationLayerInfo",
         "type": "object"
       },
@@ -2799,13 +3065,17 @@
               "blocking": true,
               "description": "Extract and validate ICAO code against airport database",
               "layer": "airport_icao",
-              "supported_content_types": ["tac"]
+              "supported_content_types": [
+                "tac"
+              ]
             },
             {
               "blocking": true,
               "description": "Parse and validate METAR TAC syntax",
               "layer": "tac_syntax",
-              "supported_content_types": ["tac"]
+              "supported_content_types": [
+                "tac"
+              ]
             }
           ]
         },
@@ -2819,13 +3089,20 @@
             "type": "array"
           }
         },
-        "required": ["layers"],
+        "required": [
+          "layers"
+        ],
         "title": "ValidationLayersResponse",
         "type": "object"
       },
       "ValidationLevel": {
         "description": "Severity level for validation issues.",
-        "enum": ["critical", "error", "warning", "info"],
+        "enum": [
+          "critical",
+          "error",
+          "warning",
+          "info"
+        ],
         "title": "ValidationLevel",
         "type": "string"
       },
@@ -2835,12 +3112,17 @@
           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
           "content_type": "tac",
           "iwxxm_version": "3.0.1",
-          "layers": ["airport_icao", "tac_syntax"]
+          "layers": [
+            "airport_icao",
+            "tac_syntax"
+          ]
         },
         "properties": {
           "content": {
             "description": "Content to validate (METAR TAC or IWXXM XML)",
-            "examples": ["METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2"],
+            "examples": [
+              "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2"
+            ],
             "minLength": 1,
             "title": "Content",
             "type": "string"
@@ -2848,7 +3130,10 @@
           "content_type": {
             "default": "tac",
             "description": "Content type: 'tac' (METAR TAC) or 'xml' (IWXXM XML)",
-            "examples": ["tac", "xml"],
+            "examples": [
+              "tac",
+              "xml"
+            ],
             "title": "Content Type",
             "type": "string"
           },
@@ -2862,7 +3147,9 @@
               }
             ],
             "description": "IWXXM version for validation context",
-            "examples": ["3.0.1"],
+            "examples": [
+              "3.0.1"
+            ],
             "title": "Iwxxm Version"
           },
           "layers": {
@@ -2881,7 +3168,9 @@
             "title": "Layers"
           }
         },
-        "required": ["content"],
+        "required": [
+          "content"
+        ],
         "title": "ValidationRequest",
         "type": "object"
       },
@@ -2943,7 +3232,10 @@
             "type": "string"
           }
         },
-        "required": ["passed", "layer"],
+        "required": [
+          "passed",
+          "layer"
+        ],
         "title": "ValidationResult",
         "type": "object"
       },
@@ -3135,7 +3427,9 @@
             "title": "Title"
           }
         },
-        "required": ["product"],
+        "required": [
+          "product"
+        ],
         "title": "WorkSessionCreate",
         "type": "object"
       },
@@ -3162,19 +3456,38 @@
             "type": "integer"
           }
         },
-        "required": ["items", "total", "page", "limit"],
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ],
         "title": "WorkSessionListResponse",
         "type": "object"
       },
       "WorkSessionProduct": {
         "description": "Product ids stored on ``tac_work_sessions.product`` (lowercase).",
-        "enum": ["airmet", "metar", "sigmet", "speci", "taf", "vaa", "tca", "swxa"],
+        "enum": [
+          "airmet",
+          "metar",
+          "sigmet",
+          "speci",
+          "taf",
+          "vaa",
+          "tca",
+          "swxa"
+        ],
         "title": "WorkSessionProduct",
         "type": "string"
       },
       "WorkSessionStatus": {
         "description": "Lifecycle status for a user's TAC work session.",
-        "enum": ["draft", "wip", "finished", "failed"],
+        "enum": [
+          "draft",
+          "wip",
+          "finished",
+          "failed"
+        ],
         "title": "WorkSessionStatus",
         "type": "string"
       },
@@ -3339,7 +3652,9 @@
           }
         },
         "summary": "Convert",
-        "tags": ["Conversion"]
+        "tags": [
+          "Conversion"
+        ]
       }
     },
     "/api/v1/convert-bulletin": {
@@ -3378,7 +3693,9 @@
           }
         },
         "summary": "Convert Bulletin",
-        "tags": ["Conversion"]
+        "tags": [
+          "Conversion"
+        ]
       }
     },
     "/api/v1/convert-zip": {
@@ -3409,7 +3726,9 @@
           }
         },
         "summary": "Convert Zip",
-        "tags": ["Conversion"]
+        "tags": [
+          "Conversion"
+        ]
       }
     },
     "/api/v1/decode-tac": {
@@ -3445,7 +3764,9 @@
           }
         },
         "summary": "Decode Tac Endpoint",
-        "tags": ["Conversion"]
+        "tags": [
+          "Conversion"
+        ]
       }
     },
     "/api/v1/dissemination/preflight": {
@@ -3463,7 +3784,9 @@
           }
         },
         "summary": "Dissemination Preflight",
-        "tags": ["Dissemination"]
+        "tags": [
+          "Dissemination"
+        ]
       }
     },
     "/api/v1/dissemination/send": {
@@ -3481,7 +3804,9 @@
           }
         },
         "summary": "Dissemination Send",
-        "tags": ["Dissemination"]
+        "tags": [
+          "Dissemination"
+        ]
       }
     },
     "/api/v1/eval/jobs": {
@@ -3536,7 +3861,10 @@
           }
         },
         "summary": "List User Jobs",
-        "tags": ["Evaluation", "Evaluation"]
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
       },
       "post": {
         "description": "Create a new evaluation job.",
@@ -3574,7 +3902,10 @@
           }
         },
         "summary": "Create Evaluation Job",
-        "tags": ["Evaluation", "Evaluation"]
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
       }
     },
     "/api/v1/eval/jobs/{job_id}": {
@@ -3615,7 +3946,10 @@
           }
         },
         "summary": "Get Job Status",
-        "tags": ["Evaluation", "Evaluation"]
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
       }
     },
     "/api/v1/eval/jobs/{job_id}/results": {
@@ -3695,7 +4029,10 @@
           }
         },
         "summary": "Get Job Results",
-        "tags": ["Evaluation", "Evaluation"]
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
       }
     },
     "/api/v1/ingest-collect": {
@@ -3739,7 +4076,9 @@
           }
         },
         "summary": "Ingest Collect",
-        "tags": ["Conversion"]
+        "tags": [
+          "Conversion"
+        ]
       }
     },
     "/api/v1/ingest/mass": {
@@ -3782,7 +4121,9 @@
           }
         ],
         "summary": "Mass Ingest",
-        "tags": ["mass-ingest"]
+        "tags": [
+          "mass-ingest"
+        ]
       }
     },
     "/api/v1/lint-issue-catalog": {
@@ -3830,7 +4171,9 @@
           }
         },
         "summary": "Lint Issue Catalog",
-        "tags": ["Validation"]
+        "tags": [
+          "Validation"
+        ]
       }
     },
     "/api/v1/lint-tac": {
@@ -3872,7 +4215,9 @@
           }
         },
         "summary": "Lint Tac",
-        "tags": ["Validation"]
+        "tags": [
+          "Validation"
+        ]
       }
     },
     "/api/v1/schema-status": {
@@ -3890,7 +4235,9 @@
           }
         },
         "summary": "Get Schema Status",
-        "tags": ["Conversion"]
+        "tags": [
+          "Conversion"
+        ]
       }
     },
     "/api/v1/translation/airport-region/{airport_code}": {
@@ -3929,7 +4276,9 @@
           }
         },
         "summary": "Get Airport Region",
-        "tags": ["ICAO OPMET Statistics"]
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
       }
     },
     "/api/v1/translation/centre-info": {
@@ -3949,7 +4298,9 @@
           }
         },
         "summary": "Get Centre Info",
-        "tags": ["ICAO OPMET Statistics"]
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
       }
     },
     "/api/v1/translation/health": {
@@ -3967,7 +4318,9 @@
           }
         },
         "summary": "Statistics Health",
-        "tags": ["ICAO OPMET Statistics"]
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
       }
     },
     "/api/v1/translation/statistics": {
@@ -4007,7 +4360,9 @@
           }
         },
         "summary": "Get Translation Statistics",
-        "tags": ["ICAO OPMET Statistics"]
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
       }
     },
     "/api/v1/translation/statistics/by-region": {
@@ -4065,7 +4420,9 @@
           }
         },
         "summary": "Get Statistics By Region",
-        "tags": ["ICAO OPMET Statistics"]
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
       }
     },
     "/api/v1/translation/statistics/recent": {
@@ -4147,7 +4504,9 @@
           }
         },
         "summary": "Get Recent Statistics",
-        "tags": ["ICAO OPMET Statistics"]
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
       }
     },
     "/api/v1/validate": {
@@ -4186,7 +4545,9 @@
           }
         },
         "summary": "Validate Comprehensive",
-        "tags": ["Validation"]
+        "tags": [
+          "Validation"
+        ]
       }
     },
     "/api/v1/validation/layers": {
@@ -4206,7 +4567,10 @@
           }
         },
         "summary": "Get available validation layers",
-        "tags": ["Validation", "Validation"]
+        "tags": [
+          "Validation",
+          "Validation"
+        ]
       }
     },
     "/api/v1/validation/validate": {
@@ -4246,7 +4610,10 @@
           }
         },
         "summary": "Validate METAR TAC or IWXXM XML content",
-        "tags": ["Validation", "Validation"]
+        "tags": [
+          "Validation",
+          "Validation"
+        ]
       }
     },
     "/api/v1/validation/validate-multi": {
@@ -4286,7 +4653,10 @@
           }
         },
         "summary": "Validate multiple METAR TAC or IWXXM XML inputs",
-        "tags": ["Validation", "Validation"]
+        "tags": [
+          "Validation",
+          "Validation"
+        ]
       }
     },
     "/api/v1/versions": {
@@ -4304,7 +4674,9 @@
           }
         },
         "summary": "Get Supported Versions",
-        "tags": ["Conversion"]
+        "tags": [
+          "Conversion"
+        ]
       }
     },
     "/api/v1/work-sessions": {
@@ -4441,7 +4813,9 @@
           }
         ],
         "summary": "List Work Sessions",
-        "tags": ["Work Sessions"]
+        "tags": [
+          "Work Sessions"
+        ]
       },
       "post": {
         "operationId": "create_work_session_api_v1_work_sessions_post",
@@ -4483,7 +4857,9 @@
           }
         ],
         "summary": "Create Work Session",
-        "tags": ["Work Sessions"]
+        "tags": [
+          "Work Sessions"
+        ]
       }
     },
     "/api/v1/work-sessions/{session_id}": {
@@ -4529,7 +4905,9 @@
           }
         ],
         "summary": "Delete Work Session",
-        "tags": ["Work Sessions"]
+        "tags": [
+          "Work Sessions"
+        ]
       },
       "get": {
         "operationId": "get_work_session_api_v1_work_sessions__session_id__get",
@@ -4573,7 +4951,9 @@
           }
         ],
         "summary": "Get Work Session",
-        "tags": ["Work Sessions"]
+        "tags": [
+          "Work Sessions"
+        ]
       },
       "patch": {
         "operationId": "update_work_session_api_v1_work_sessions__session_id__patch",
@@ -4627,7 +5007,9 @@
           }
         ],
         "summary": "Update Work Session",
-        "tags": ["Work Sessions"]
+        "tags": [
+          "Work Sessions"
+        ]
       }
     },
     "/api/v1/work-sessions/{session_id}/restore": {
@@ -4673,7 +5055,9 @@
           }
         ],
         "summary": "Restore Work Session",
-        "tags": ["Work Sessions"]
+        "tags": [
+          "Work Sessions"
+        ]
       }
     },
     "/auth/login": {
@@ -4713,7 +5097,9 @@
           }
         },
         "summary": "Login",
-        "tags": ["Auth"]
+        "tags": [
+          "Auth"
+        ]
       }
     },
     "/auth/me": {
@@ -4761,7 +5147,9 @@
           }
         },
         "summary": "Me",
-        "tags": ["Auth"]
+        "tags": [
+          "Auth"
+        ]
       }
     },
     "/health": {
@@ -4781,7 +5169,9 @@
           }
         },
         "summary": "Health",
-        "tags": ["Health"]
+        "tags": [
+          "Health"
+        ]
       }
     }
   },
