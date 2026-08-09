@@ -20,10 +20,16 @@ active_session:
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
   branch_status: active
   branch_exists: true
-  tip_sha: 014c9125
-  tip_sha_full: 014c9125f9e3b40518613879b14657cd53a9d5a1
-  tip_sha_pushed: false
-  branch_note: "ACTIVE — tip 014c9125; 11-verify-impl PASS; qa003 fixed; next push+PR to stage"
+  tip_sha: 923c7170
+  tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+  tip_sha_pushed: true
+  branch_note: "ACTIVE — tip 748cbb84 pushed; PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval"
+  pr_number: 963
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+  pr_status: open
+  pr_base: stage
+  pr_note: "PR #963 OPEN → stage; tip 748cbb84; CI/CD Pipeline run 31290962521 SUCCESS"
+  github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
   github_issues:
   - 951
   issue_ids:
@@ -42,7 +48,7 @@ active_session:
   prior_session: S056-m0-stabilize-operator-trust
   artifacts_dir: docs/sessions/S057-strip-internal-doc-refs/
   current_stage: 16-evolve
-  current_stage_note: "IN_PROGRESS — 11 PASS; next push+PR to stage"
+  current_stage_note: "IN_PROGRESS — PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval"
   decisions:
     D-S057-open: "1 — open S057/EV-048 for #951"
     D-S057-scope: "1 — full #951 UI+OpenAPI+guard"
@@ -61,7 +67,7 @@ active_session:
     D-S057-f7: "1 — Approve F7 deepen (operator UI copy)"
     D-S057-f21: "1 — Approve F21 deepen (public OpenAPI/error surfaces)"
     D-S057-qa003: "2 — Fixed (expand guard for product Fn IDs @ 014c9125)"
-    D-S057-11-next: "1 — Next push+PR to stage"
+    D-S057-11-next: "1 — Next push+PR to stage (PR #963 open)"
   routing_plan:
   - stage: 00-context
     required: true
@@ -75,7 +81,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    note: "IN_PROGRESS — Phase D in progress after D-S057-phaseC=1"
+    note: "IN_PROGRESS — PR #963 open → stage; awaiting merge approval after D-S057-11-next=1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -334,8 +340,9 @@ active_session:
     evolve_cycle_id: EV-048
     created_at: '2026-08-08'
     note: "COMPLETE — PASS; D-S057-uj055=1 + f7=1 + f21=1 + qa003=2 + 11-next=1"
-  note: "11 PASS; next push+PR to stage; tip 014c9125; qa003 fixed; 16-evolve orchestrator"
+  note: "PR #963 open → stage; tip 748cbb84 pushed; CI/CD 31290962521 SUCCESS; awaiting merge approval"
   notes:
+  - "2026-08-08 PR #963 OPEN → stage; tip 748cbb84 pushed; CI/CD Pipeline run 31290962521 SUCCESS; D-S057-11-next=1 PR opened; awaiting merge approval"
   - "2026-08-08 11-verify-impl COMPLETE PASS — D-S057-uj055=1, f7=1, f21=1, qa003=2, 11-next=1; tip 014c9125; next push+PR to stage"
   - "2026-08-08 09-qa COMPLETE pass_with_advisories + 10-e2e COMPLETE PASS; 11-verify-impl IN_PROGRESS awaiting UJ-055 + F7/F21 signoff; tip 3a43da37; 16-evolve orchestrator"
   - "2026-08-08 D-S057-phaseC=1 + D-S057-ui-preview-verify=2 — Phase D started; 09-qa + 10-e2e in_progress; tip 3a43da37; 16-evolve orchestrator"
@@ -15670,11 +15677,13 @@ stages:
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
     current_child_stage: 11-verify-impl
-    current_child_stage_note: '11 PASS; next push+PR to stage; D-S057-11-next=1'
-    tip_sha: 014c9125
-    tip_sha_full: 014c9125f9e3b40518613879b14657cd53a9d5a1
-    tip_sha_pushed: false
-    note: 'IN_PROGRESS — S057/EV-048 11 PASS; tip 014c9125; qa003 fixed; next push+PR to stage'
+    current_child_stage_note: 'PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval'
+    tip_sha: 923c7170
+    tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+    tip_sha_pushed: true
+    pr_number: 963
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+    note: 'IN_PROGRESS — S057/EV-048 PR #963 open → stage; tip 748cbb84 pushed; CI/CD 31290962521 SUCCESS; awaiting merge approval'
     prior_close_decision: D-S056-close=1
 
     prior_s054_session_id: S054-rust-ci-crates
@@ -15939,6 +15948,39 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S057-11-next-pr
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S057-strip-internal-doc-refs
+  evolve_cycle_id: EV-048
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: pr_opened
+  status: recorded
+  topic: 'S057/EV-048 D-S057-11-next=1 — PR #963 opened → stage'
+  summary: 'D-S057-11-next=1 PR opened — https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963; tip 748cbb84 pushed; CI/CD Pipeline run 31290962521 SUCCESS; awaiting merge approval'
+  decision: |
+    D-S057-11-next=1 — PR opened after 11-verify-impl PASS.
+    PR #963 OPEN → base stage.
+    Tip 748cbb84 (923c717070975f3c6201432f95b2890e024ae5cf) tip_sha_pushed=true.
+    CI/CD Pipeline run 31290962521 SUCCESS — https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31290962521
+    Awaiting merge approval.
+  branch: evolve/EV-048-strip-internal-doc-refs
+  related_issues:
+  - '951'
+  pr_number: 963
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+  pr_status: open
+  pr_base: stage
+  tip_sha: 923c7170
+  tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+  tip_sha_pushed: true
+  ci_cd_pipeline_run: '31290962521'
+  ci_cd_pipeline_status: SUCCESS
+  ci_cd_pipeline_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31290962521
+  note: 'PR #963 open; CI green; awaiting merge approval'
 - id: D-S057-11-next
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -33824,7 +33866,7 @@ evolve_cycles:
   milestone: "M0 — Stabilize + operator trust + narrative"
   phase: 1
   current_stage: 11-verify-impl
-  current_stage_note: "COMPLETE — 11 PASS; qa003 fixed; awaiting PR to stage"
+  current_stage_note: "COMPLETE — 11 PASS; PR #963 open → stage; awaiting merge approval"
   started: '2026-08-08'
   started_at: '2026-08-08'
   branch: evolve/EV-048-strip-internal-doc-refs
@@ -33832,9 +33874,18 @@ evolve_cycles:
   branch_base_sha: d7652d5d
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
   branch_status: active
-  tip_sha: 014c9125
-  tip_sha_full: 014c9125f9e3b40518613879b14657cd53a9d5a1
-  tip_sha_pushed: false
+  tip_sha: 923c7170
+  tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+  tip_sha_pushed: true
+  pr_number: 963
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+  pr_status: open
+  pr_base: stage
+  github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+  pr_note: "PR #963 OPEN → stage; tip 748cbb84; CI/CD 31290962521 SUCCESS; awaiting merge approval"
+  ci_cd_pipeline_run: '31290962521'
+  ci_cd_pipeline_status: SUCCESS
+  ci_cd_pipeline_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31290962521
   interrupted_by_hotfix: false
   parked: false
   ui_preview: requested
@@ -33877,7 +33928,7 @@ evolve_cycles:
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    note: "IN_PROGRESS — Phase D in progress after D-S057-phaseC=1"
+    note: "IN_PROGRESS — PR #963 open → stage; awaiting merge approval after D-S057-11-next=1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -33976,7 +34027,7 @@ evolve_cycles:
     mode: skip
     status: skipped
     note: "waive unless deploy (Standard)"
-  note: "11 PASS; qa003 fixed; awaiting PR to stage; tip 014c9125; 16-evolve orchestrator"
+  note: "PR #963 open → stage; tip 748cbb84 pushed; CI/CD 31290962521 SUCCESS; awaiting merge approval"
   artifacts:
   - docs/sessions/S057-strip-internal-doc-refs/
   - path: docs/sessions/S057-strip-internal-doc-refs/session-brief.md
