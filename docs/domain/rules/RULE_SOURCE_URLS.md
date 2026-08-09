@@ -202,7 +202,8 @@ Canonical companions:
   matrix pointer [COVERAGE_MATRIX §codes.wmo.int](./COVERAGE_MATRIX.md#fixture-coverage--s055--ev-046-lean--889).
   Composes with [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
   URI drift and [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notify
-  (design-only this cycle — no live HTML in PR CI).
+  (design-only this cycle — no live HTML in PR CI):
+  [882-compose-design-note.md](../../sessions/S059-codes-wmo-validated/reports/882-compose-design-note.md).
 
 ### IWXXM register (`_iwxxm`)
 
