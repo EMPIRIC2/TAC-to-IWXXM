@@ -1744,14 +1744,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   `/health` 200 on API; FE returns 200; cert-manager Certificate Ready
 - **Source**: F30 AC9; D-S052-dns; D-S053-dns
 
-### TC-F30-010: Dual-branch auto CD
+### TC-F30-010: Dual-branch CD (amended EV-051)
 
 - **Level**: Ops / CI
-- **Objective**: Push/merge to `stage` deploys **staging cluster**; push/merge to `main`
-  deploys **prod cluster**
-- **Pass criteria**: Deploy jobs bound to GH Environments `staging` / `production`;
-  env-scoped kubeconfig + `DOKS_NAMESPACE` correct per branch; image tags rolled
-- **Source**: F30 AC10; #886; EV-044
+- **Objective**: Push/merge to `stage` deploys **staging cluster** after full Deploy
+  `needs` (incl. `e2e-smoke`). Push/merge to `main` runs full CI but **does not** Deploy
+  prod (EV-051).
+- **Pass criteria**: Staging Deploy bound to GH Environment `staging`; `main` push workflow
+  has no successful prod Deploy job for that event; env-scoped kubeconfig + `DOKS_NAMESPACE`
+  correct when Deploy runs
+- **Source**: F30 AC10; #886; EV-044; **EV-051 / S060** (`D-S060-scope=1`)
 
 ### TC-F30-011: Branch protection on stage and main
 
@@ -1777,6 +1779,59 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: `kubectl --context prod get ns metar-iwxxm-staging` is NotFound (or
   empty/terminating with no Deployments); staging smoke uses staging cluster context only
 - **Source**: F30 AC13; D-S053-teardown
+
+### TC-F30-014: Tag-driven prod Deploy (EV-051)
+
+- **Level**: Ops / CI
+- **Objective**: Prod Deploy runs only for `vYYYY.MM.DD-deploy` tag pushes (pattern
+  `v*-*-deploy`) or `workflow_dispatch` targeting production — after Deploy `needs`
+  including `e2e-smoke` pass. Solo-dev approval = tag/dispatch (no Environment reviewers).
+- **Pass criteria**: Workflow `on.push.tags` / `workflow_dispatch` documented; Deploy job
+  `if` excludes bare `main` push; `needs` includes `e2e-smoke`; ADR-034 + deploy.md match
+- **Source**: F30 AC14; EV-051 / S060; TC-EV051-001..006
+
+### TC-EV051-001: Deploy needs include e2e-smoke
+
+- **Level**: T0 (workflow review)
+- **Objective**: `deploy.needs` lists prior jobs plus `e2e-smoke`
+- **Pass criteria**: `.github/workflows/ci-cd.yml` `deploy.needs` contains `e2e-smoke`
+- **Source**: EV-051 AC1
+
+### TC-EV051-002: stage push still auto-deploys staging
+
+- **Level**: Ops / CI
+- **Objective**: Unchanged staging path after needs widen
+- **Pass criteria**: `deploy` `if` allows `refs/heads/stage` push; Environment `staging`
+- **Source**: EV-051 AC2
+
+### TC-EV051-003: main push does not Deploy prod
+
+- **Level**: Ops / CI
+- **Objective**: Bare `main` push is CI-only for Deploy purposes
+- **Pass criteria**: `deploy` `if` excludes `refs/heads/main`
+- **Source**: EV-051 AC3
+
+### TC-EV051-004: deploy tag triggers prod Deploy
+
+- **Level**: Ops / CI
+- **Objective**: Tag `v*-*-deploy` triggers prod Deploy path
+- **Pass criteria**: `on.push.tags` includes pattern; Deploy resolves `env_role=prod`
+- **Source**: EV-051 AC4; TC-F30-014
+
+### TC-EV051-005: workflow_dispatch prod escape hatch
+
+- **Level**: Ops / CI
+- **Objective**: Manual `workflow_dispatch` can Deploy production
+- **Pass criteria**: `on.workflow_dispatch` present; Deploy `if` includes dispatch → production
+- **Source**: EV-051 AC5
+
+### TC-EV051-006: Docs / ADR / rule parity
+
+- **Level**: T0
+- **Objective**: Standing docs describe tag-driven prod + full CI needs
+- **Pass criteria**: ADR-034, deploy.md §CD, doks-promote-from-stage.mdc, feature-list F30
+  AC10/AC14 consistent
+- **Source**: EV-051 AC6
 
 ### Live harness — staging (EV-043 / EV-044)
 

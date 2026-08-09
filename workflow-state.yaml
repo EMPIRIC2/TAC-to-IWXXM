@@ -3,9 +3,210 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 59
-evolve_cycle_counter: 50
-active_session: null
+session_counter: 60
+evolve_cycle_counter: 51
+active_session:
+  id: S060-tag-driven-prod-deploy
+  type: feature
+  title: "Tag-driven prod deploy + full CI Deploy needs (solo)"
+  intent: "Deepen F30: widen Deploy needs to full CI; stop auto Deploy on main push; prod Deploy only on vYYYY.MM.DD-deploy tag (and optional workflow_dispatch); staging stays auto after full CI; amend ADR-034, docs/deploy.md, doks-promote-from-stage.mdc, ci-cd.yml. Design 2+3+4. User chose open evolve option 1."
+  status: in_progress
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-051
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  branch_base: stage@c146baec
+  branch_base_sha: c146baec
+  branch_base_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
+  branch_status: active
+  branch_exists: true
+  tip_sha: cb8d9771
+  tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+  tip_sha_pushed: true
+  tip_sha_note: "PR #966 tip cb8d9771 — tag-driven prod Deploy after full CI; awaiting merge → stage"
+  pr_number: 966
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  pr_status: open
+  pr_base: stage
+  github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  artifacts_dir: docs/sessions/S060-tag-driven-prod-deploy/
+  artifacts:
+  - path: docs/sessions/S060-tag-driven-prod-deploy/
+    status: in_progress
+    note: "session-brief.md, routing-plan.md, evolve-plan-card.md + reports; PR #966 open → stage"
+  - path: docs/sessions/S060-tag-driven-prod-deploy/session-brief.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/routing-plan.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/evolve-plan-card.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/reports/verify-impl.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/reports/qa-report.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/reports/verification-report.md
+    status: present
+  feature_ids:
+  - F30
+  deepen_feature_ids:
+  - F30
+  feature_note: "Deepen F30 — tag-driven prod Deploy + full CI Deploy needs; supersedes ADR-034 TC-F30-010 auto-deploy-on-main pending amend"
+  prior_session: S059-codes-wmo-validated
+  preset: Lean+
+  preset_status: approved
+  preset_note: "D-S060-route=1 Lean+ — 00→16→01→02→03→07→08→09→11; skip 04,05,06,10,12,13"
+  auto_lean: false
+  ui_preview: n/a
+  ui_preview_note: "N/A — no browser UI"
+  scope_summary: "LOCKED D-S060-scope=1 — design 2+3+4: widen Deploy needs to full CI (+e2e-smoke); no auto Deploy on main push; prod Deploy only on vYYYY.MM.DD-deploy tag (+ optional workflow_dispatch); staging auto after full CI; amend ADR-034 / docs/deploy.md / doks-promote-from-stage.mdc / ci-cd.yml / TC-F30-010"
+  routing_plan_meta:
+    status: approved
+    decision: D-S060-route=1
+    preset: Lean+
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 03-plan-tooling
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 11-verify-impl
+    skipped_stages:
+    - 04-tech-plan
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 10-e2e
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    ordered: "00 → 16 → 01 → 02 → 03 → 07 → 08 → 09 → 11"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "D-S060-open=1; D-S060-scope=1 locked 2+3+4"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-08-09'
+    note: "Orchestrating Lean+; 07/08/09/11 COMPLETE; awaiting merge PR #966 → stage"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "AC1–AC6 locked (design 2+3+4)"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "Gate A PASS D-S060-gateA=1; gates.a_to_b passed"
+  - stage: 03-plan-tooling
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "Rules / promote semantics updated"
+  - stage: 04-tech-plan
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean+ skip"
+  - stage: 05-verify-tech
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean+ skip"
+  - stage: 06-tech-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean+ skip"
+  - stage: 07-build
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE @ cb8d9771 — ci-cd.yml / ADR-034 / deploy docs / promote rule"
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — verification-report.md; gates.c_to_d passed"
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — qa-report.md"
+  - stage: 10-e2e
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean+ skip"
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S060-11-next=1; PR #966 OPEN → stage; awaiting merge"
+  - stage: 12-verify-deploy
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean+ skip — first tag-driven prod cutover later promote; deploy waived"
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean+ skip — deploy waived"
+  routing_plan_note: "D-S060-route=1 Lean+ approved; required_stages 00/16/01/02/03/07/08/09/11"
+  current_stage: 11-verify-impl
+  current_stage_status: completed
+  current_stage_note: "11-verify-impl COMPLETE — D-S060-gateA=1 + D-S060-11-next=1; PR #966 OPEN → stage @ tip cb8d9771; awaiting merge; deploy waived"
+  open_decision: D-S060-11-next=1
+  decisions:
+    D-S060-open: "1 — open evolve S060/EV-051 tag-driven prod deploy (design 2+3+4); do not resume parked EV-043/EV-044"
+    D-S060-scope: "1 — lock scope to design 2+3+4 (full CI Deploy needs; no auto Deploy on main; tag-driven prod + optional workflow_dispatch; staging auto; amend ADR-034/deploy docs/rule/ci-cd)"
+    D-S060-route: "1 — Lean+ as drafted: 00→16→01→02→03→07→08→09→11; skip 04,05,06,10,12,13"
+    D-S060-gateA: "1 — Gate A PASS; proceed build/verify"
+    D-S060-11-next: "1 — PR #966 opened → stage; awaiting merge"
+  decisions_locked:
+  - D-S060-open=1
+  - D-S060-scope=1
+  - D-S060-route=1
+  - D-S060-gateA=1
+  - D-S060-11-next=1
+  gates:
+    a_to_b: passed
+    a_to_b_note: "D-S060-gateA=1 — Gate A PASS"
+    b_to_c: passed
+    b_to_c_note: "Lean+ skip 04/05; proceed 07 after Gate A"
+    c_to_d: passed
+    c_to_d_note: "08-verify-build COMPLETE; Phase C→D passed"
+    deploy: waived
+    deploy_note: "Lean+ skip 12/13; first tag-driven prod cutover later promote"
+  notes:
+  - "2026-08-09 D-S060-gateA=1 + D-S060-11-next=1 — Gate A PASS; 07/08/09/11 COMPLETE; PR #966 OPEN → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; awaiting merge"
+  - "2026-08-09 D-S060-scope=1 — scope locked to design 2+3+4; artifacts under docs/sessions/S060-tag-driven-prod-deploy/"
+  - "2026-08-09 D-S060-route=1 — Lean+ approved; 00/01/02/03 completed; current_stage 07-build in_progress; gates.a_to_b pending user Gate A confirm"
+  - "2026-08-09 D-S060-open=1 — session opened; EV-051 deepens F30; EV-043/EV-044 remain parked unless user later chooses resume"
+  - "EV-051 supersedes auto-deploy-on-main behavior from ADR-034 / TC-F30-010 pending amend"
 sessions:
 - id: S059-codes-wmo-validated
   type: feature
@@ -8002,29 +8203,33 @@ stages:
   00-context:
     status: completed
     mode: session
-    scoped_slug: strip-internal-doc-refs
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
-    started: '2026-08-08'
-    started_at: '2026-08-08'
-    completed: '2026-08-08'
-    completed_at: '2026-08-08'
-    note: 'S057/EV-048 COMPLETE — D-S057-preset-reconfirm=1 Standard amend; exit 00 → 16-evolve; session-brief + routing-plan written'
-    prior_note: 'S055/EV-046 COMPLETE — open_session D-S055-open=2 Lean for #889; handoff 16-evolve Phase 0; EV-043/EV-044 remain PARKED'
-    prior_session_id: S055-wmo-aviation-registers
-    prior_evolve_cycle_id: EV-046
-    prior_scoped_slug: wmo-aviation-registers
+    scoped_slug: tag-driven-prod-deploy
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    started: '2026-08-09'
+    started_at: '2026-08-09'
+    completed: '2026-08-09'
+    completed_at: '2026-08-09'
+    note: 'S060/EV-051 COMPLETE — D-S060-open=1 + D-S060-scope=1 (2+3+4) + D-S060-route=1 Lean+; session-brief + routing-plan + evolve-plan-card; handoff 07-build (Gate A confirm pending)'
+    prior_note: 'S057/EV-048 COMPLETE — D-S057-preset-reconfirm=1 Standard amend; exit 00 → 16-evolve; session-brief + routing-plan written'
+    prior_session_id: S057-strip-internal-doc-refs
+    prior_evolve_cycle_id: EV-048
+    prior_scoped_slug: strip-internal-doc-refs
     prior_completed: '2026-08-08'
     prior_started: '2026-08-08'
-    prior_tip_sha: d0a51f5a
-    prior_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-    prior_prior_note: 'S052/EV-043 COMPLETE — open_session for #886; D-S052-open/scope/product/gh locked; handoff 16-evolve Phase 0; Standard pending Plan approval'
-    prior_prior_session_id: S052-doks-staging-prod-branch-deploys
-    prior_prior_evolve_cycle_id: EV-043
-    prior_prior_scoped_slug: doks-staging-prod-branch-deploys
-    tip_sha: d7652d5d
-    tip_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
+    prior_tip_sha: d7652d5d
+    prior_tip_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
+    prior_prior_note: 'S055/EV-046 COMPLETE — open_session D-S055-open=2 Lean for #889; handoff 16-evolve Phase 0; EV-043/EV-044 remain PARKED'
+    prior_prior_session_id: S055-wmo-aviation-registers
+    prior_prior_evolve_cycle_id: EV-046
+    prior_prior_scoped_slug: wmo-aviation-registers
+    tip_sha: c146baec
+    tip_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
     artifacts:
+    - docs/sessions/S060-tag-driven-prod-deploy/
+    - docs/sessions/S060-tag-driven-prod-deploy/session-brief.md
+    - docs/sessions/S060-tag-driven-prod-deploy/routing-plan.md
+    - docs/sessions/S060-tag-driven-prod-deploy/evolve-plan-card.md
     - docs/sessions/S057-strip-internal-doc-refs/
     - docs/sessions/S057-strip-internal-doc-refs/session-brief.md
     - docs/sessions/S057-strip-internal-doc-refs/routing-plan.md
@@ -8055,36 +8260,41 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
     skill_id: 01-requirements
-    tip_sha: d7652d5d
-    tip_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
-    deepen_feature_ids: [F7, F21]
+    tip_sha: c146baec
+    tip_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
+    deepen_feature_ids: [F30]
     feature_ids: []
     delta_only: true
     corpus_cites:
-    - '[Corpus: api]'
-    - '[Corpus: product §F7]'
-    - '[Corpus: product §F21]'
+    - '[Corpus: product §F30]'
+    - '[Corpus: deploy]'
+    - '[Corpus: adr/ADR-034]'
     - '[Corpus: tests]'
-    report: docs/sessions/S057-strip-internal-doc-refs/reports/01-requirements.md
+    report:
     decision_refs:
-    - D-S057-01-ac
-    - D-S057-guard-s0
-    note: 'S057/EV-048 COMPLETE — D-S057-01-ac=1 + D-S057-guard-s0=1; AC1–AC6 + UJ-055; report 01-requirements.md; handoff 02-verify-plan'
-    prior_session_id: S055-wmo-aviation-registers
-    prior_evolve_cycle_id: EV-046
+    - D-S060-scope
+    - D-S060-route
+    note: 'S060/EV-051 COMPLETE — D-S060-scope=1 design 2+3+4; AC1–AC6 locked; handoff 02-verify-plan'
+    prior_session_id: S057-strip-internal-doc-refs
+    prior_evolve_cycle_id: EV-048
     prior_started: '2026-08-08'
     prior_completed: '2026-08-08'
-    prior_note: 'S055/EV-046 COMPLETE — D-S055-01-ac=1; AC1–AC6 confirmed; handoff 02-verify-plan'
-    prior_prior_session_id: S047-sql-ingest-live-e2e
-    prior_prior_evolve_cycle_id: EV-039
-    prior_prior_note: 'S047/EV-039 01-requirements COMPLETE (delta) — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan'
+    prior_note: 'S057/EV-048 COMPLETE — D-S057-01-ac=1 + D-S057-guard-s0=1; AC1–AC6 + UJ-055; report 01-requirements.md; handoff 02-verify-plan'
+    prior_prior_session_id: S055-wmo-aviation-registers
+    prior_prior_evolve_cycle_id: EV-046
+    prior_prior_started: '2026-08-08'
+    prior_prior_completed: '2026-08-08'
+    prior_prior_note: 'S055/EV-046 COMPLETE — D-S055-01-ac=1; AC1–AC6 confirmed; handoff 02-verify-plan'
+    prior_prior_prior_session_id: S047-sql-ingest-live-e2e
+    prior_prior_prior_evolve_cycle_id: EV-039
+    prior_prior_prior_note: 'S047/EV-039 01-requirements COMPLETE (delta) — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan'
     prior_decision_refs:
     - D-S055-01-ac
     - D-S055-phase01
@@ -8822,43 +9032,50 @@ stages:
   02-verify-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
     skill_id: 02-verify-plan
-    tip_sha: d7652d5d
-    tip_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
-    deepen_feature_ids: [F7, F21]
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    deepen_feature_ids: [F30]
     feature_ids: []
     delta_only: true
     gate_a: PASS
     gate_a_status: pass
-    gate_a_decision: D-S057-gateA=1
-    report: docs/sessions/S057-strip-internal-doc-refs/reports/02-verify-plan.md
+    gate_a_decision: D-S060-gateA=1
+    gate_a_note: 'D-S060-gateA=1 — Gate A PASS; gates.a_to_b passed'
+    report: docs/sessions/S060-tag-driven-prod-deploy/reports/02-verify-plan.md
     decision_refs:
-    - D-S057-gateA
-    - D-S057-01-ac
-    - D-S057-guard-s0
-    note: 'S057/EV-048 COMPLETE — Gate A PASS D-S057-gateA=1; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; handoff 04-tech-plan'
-    prior_session_id: S055-wmo-aviation-registers
-    prior_evolve_cycle_id: EV-046
+    - D-S060-gateA
+    - D-S060-scope
+    - D-S060-route
+    note: 'S060/EV-051 COMPLETE — Gate A PASS D-S060-gateA=1; Lean+ skip 04/05 → 07-build'
+    prior_session_id: S057-strip-internal-doc-refs
+    prior_evolve_cycle_id: EV-048
     prior_started: '2026-08-08'
     prior_completed: '2026-08-08'
-    prior_note: 'S055/EV-046 COMPLETE — Gate A PASS (D-S055-gateA=1); accept M1/M2/L1; handoff lean-docs-execution'
+    prior_note: 'S057/EV-048 COMPLETE — Gate A PASS D-S057-gateA=1; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; handoff 04-tech-plan'
     prior_gate_a: PASS
     prior_gate_a_status: pass
-    prior_gate_a_decision: D-S055-gateA=1
+    prior_gate_a_decision: D-S057-gateA=1
+    prior_prior_session_id: S055-wmo-aviation-registers
+    prior_prior_evolve_cycle_id: EV-046
+    prior_prior_note: 'S055/EV-046 COMPLETE — Gate A PASS (D-S055-gateA=1); accept M1/M2/L1; handoff lean-docs-execution'
+    prior_prior_gate_a: PASS
+    prior_prior_gate_a_status: pass
+    prior_prior_gate_a_decision: D-S055-gateA=1
     prior_decision_refs:
     - D-S055-gateA
     - D-S055-01-ac
     - D-S055-phase01
     - D-S055-open
-    prior_prior_session_id: S047-sql-ingest-live-e2e
-    prior_prior_evolve_cycle_id: EV-039
-    prior_prior_note: 'S047/EV-039 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; tip 7970ba46; handoff 04-tech-plan'
+    prior_prior_prior_session_id: S047-sql-ingest-live-e2e
+    prior_prior_prior_evolve_cycle_id: EV-039
+    prior_prior_prior_note: 'S047/EV-039 02-verify-plan COMPLETE (delta) — Gate A PASS (D-S047-02-gate-a=2); S02.M3 via spec.md; tip 7970ba46; handoff 04-tech-plan'
     substeps:
       inventory:
         status: completed
@@ -9599,8 +9816,20 @@ stages:
     - Product plan verification complete; 4 source docs updated
   03-plan-tooling:
     status: completed
-    started_at: '2026-06-14T23:59:00Z'
-    completed_at: '2026-06-15T00:15:00Z'
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    skill_id: 03-plan-tooling
+    mode: delta
+    tip_sha: c146baec
+    tip_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
+    deepen_feature_ids: [F30]
+    note: 'S060/EV-051 COMPLETE — D-S060-route=1 Lean+ includes 03; rules/promote semantics updated; handoff 07-build'
+    previous_started_at: '2026-06-14T23:59:00Z'
+    previous_completed_at: '2026-06-15T00:15:00Z'
     substeps:
       analyze_plan:
         status: completed
@@ -9625,6 +9854,7 @@ stages:
     - docs/sessions/S019-dissemination-upload/reports/03-plan-tooling.md
     - .cursor/rules/optional/dissemination-egress-ssrf.mdc
     notes:
+    - 2026-08-09 S060/EV-051 03-plan-tooling COMPLETE (D-S060-route=1 Lean+) — promote/rule semantics; handoff 07-build; gates.a_to_b pending user Gate A confirm
     - 2026-07-28 S023/EV-017 03-plan-tooling skipped — Standard routing skip; 04 prerequisite waived (D-S023-02-phase-a-A)
     - 2026-07-21 S019/EV-014 03 COMPLETE (D-S019-EV014-Q30A-03-tooling) — plan-adherence F16–F19; dissemination-egress-ssrf; feature_drift/scope_check; Phase A awaiting checkpoint
     - 2026-07-21 S019/EV-014 03-plan-tooling delta starting (Q29=A) — F16–F19 dissemination guardrails
@@ -11161,17 +11391,24 @@ stages:
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
     status: completed
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
     previous_started_at: '2026-08-08'
     previous_completed_at: '2026-08-08'
-    previous_session_id: S056-m0-stabilize-operator-trust
-    previous_evolve_cycle_id: EV-047
-    previous_tip_sha: 3ca4f438
-    previous_tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
-    previous_note: 'COMPLETE — M1–M3+M2.5 done @ 3ca4f438; T1.5 deferred (D-S056-t15-admin); superseded by S057/EV-048'
+    previous_session_id: S057-strip-internal-doc-refs
+    previous_evolve_cycle_id: EV-048
+    previous_tip_sha: 71779d46
+    previous_tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+    previous_note: 'COMPLETE — M1–M3; OpenAPI strip + BE/FE guards; T3.3 skipped; commit 71779d46; superseded by S060/EV-051'
+    previous_s056_started_at: '2026-08-08'
+    previous_s056_completed_at: '2026-08-08'
+    previous_s056_session_id: S056-m0-stabilize-operator-trust
+    previous_s056_evolve_cycle_id: EV-047
+    previous_s056_tip_sha: 3ca4f438
+    previous_s056_tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    previous_s056_note: 'COMPLETE — M1–M3+M2.5 done @ 3ca4f438; T1.5 deferred (D-S056-t15-admin); superseded by S057/EV-048'
     prior_session_id: S054-rust-ci-crates
     prior_evolve_cycle_id: EV-045
     prior_started: '2026-08-08'
@@ -11182,34 +11419,40 @@ stages:
     prior_prior_session_id: S050-remove-db-tools-operator-throughput
     prior_prior_evolve_cycle_id: EV-042
     prior_prior_note: 'S050/EV-042 07-build COMPLETE — M4 done; superseded by S054/EV-045'
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
     skill_id: 07-build
-    mode: full
-    note: 'COMPLETE — M1–M3; OpenAPI strip + BE/FE guards; T3.3 skipped; commit 71779d46'
-    tip_sha: 71779d46
-    tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
-    tip_sha_pushed: false
-    pr_number:
-    pr_url:
-    pr_status:
+    mode: delta
+    note: 'COMPLETE — S060/EV-051 @ cb8d9771; ci-cd.yml / ADR-034 / deploy docs / promote rule; D-S060-gateA=1'
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    tip_sha_pushed: true
+    pr_number: 966
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    pr_status: open
     pr_base: stage
     pr_supersedes:
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
-    ci_cd_pipeline_note: 'S056 prior tip CI archived under previous_*; S057 tip 71779d46 on evolve/EV-048'
+    ci_cd_pipeline_note: 'S060/EV-051 07 COMPLETE @ tip cb8d9771; PR #966 OPEN → stage; prior S057 tip 71779d46 archived under previous_*'
     pending_commit: false
-    current_milestone: M3
+    current_milestone:
     current_task:
-    active_milestone: M3
+    active_milestone:
     active_task:
     active_task_status: completed
-    completed_through: T3.2
-    progress: 8/9
-    skipped_tasks: [T3.3]
-    deepen_feature_ids: [F7, F21]
+    completed_through:
+    progress:
+    skipped_tasks: []
+    deepen_feature_ids: [F30]
     feature_ids: []
     decision_refs:
+    - D-S060-gateA
+    - D-S060-11-next
+    - D-S060-scope
+    - D-S060-route
+    - D-S060-open
+    decision_refs_s057:
     - D-S057-gateB
     - D-S057-04-plan
     - D-S057-04-guard-ext
@@ -12608,21 +12851,32 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
     status: completed
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
-    previous_started_at: '2026-08-07'
-    previous_started: '2026-08-07'
-    previous_completed_at: '2026-08-07'
-    previous_completed: '2026-08-07'
-    previous_session_id: S050-remove-db-tools-operator-throughput
-    previous_evolve_cycle_id: EV-042
-    previous_tip_sha: dff22265
-    previous_tip_sha_full: dff22265cd77e68549238d93c15e1de931b64da8
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
+    previous_started_at: '2026-08-08'
+    previous_started: '2026-08-08'
+    previous_completed_at: '2026-08-08'
+    previous_completed: '2026-08-08'
+    previous_session_id: S057-strip-internal-doc-refs
+    previous_evolve_cycle_id: EV-048
+    previous_tip_sha: 3a43da37
+    previous_tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
     previous_overall: pass_with_advisories
-    previous_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
-    previous_note: 'S050/EV-042 09 PASS pass_with_advisories @ dff22265 — superseded by S054/EV-045'
+    previous_report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    previous_note: 'S057/EV-048 09 PASS pass_with_advisories @ 3a43da37 — superseded by S060/EV-051'
+    previous_s050_started_at: '2026-08-07'
+    previous_s050_started: '2026-08-07'
+    previous_s050_completed_at: '2026-08-07'
+    previous_s050_completed: '2026-08-07'
+    previous_s050_session_id: S050-remove-db-tools-operator-throughput
+    previous_s050_evolve_cycle_id: EV-042
+    previous_s050_tip_sha: dff22265
+    previous_s050_tip_sha_full: dff22265cd77e68549238d93c15e1de931b64da8
+    previous_s050_overall: pass_with_advisories
+    previous_s050_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
+    previous_s050_note: 'S050/EV-042 09 PASS pass_with_advisories @ dff22265 — superseded by S054/EV-045'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -12662,17 +12916,24 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
-    tip_sha: 3a43da37
-    tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
-    tip_sha_pushed: false
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    tip_sha_pushed: true
     mode: delta
-    overall: pass_with_advisories
-    report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
-    expected_report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
-    note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 11-verify-impl'
+    overall: pass
+    report: docs/sessions/S060-tag-driven-prod-deploy/reports/qa-report.md
+    expected_report: docs/sessions/S060-tag-driven-prod-deploy/reports/qa-report.md
+    note: 'COMPLETE — S060/EV-051 qa-report.md; handoff 11-verify-impl; tip cb8d9771'
     skill_id: 09-qa
+    previous_s057_session_id: S057-strip-internal-doc-refs
+    previous_s057_evolve_cycle_id: EV-048
+    previous_s057_tip_sha: 3a43da37
+    previous_s057_tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+    previous_s057_overall: pass_with_advisories
+    previous_s057_report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    previous_s057_note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 11-verify-impl'
     previous_s056_session_id: S056-m0-stabilize-operator-trust
     previous_s056_evolve_cycle_id: EV-047
     previous_s056_tip_sha: 3ca4f438
@@ -12680,9 +12941,11 @@ stages:
     previous_s056_overall: pass_with_advisories
     previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/qa-report.md
     previous_s056_note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 10-e2e'
-    advisories: [QA-001, QA-002, QA-003, QA-004]
-    advisories_note: 'EV-048: tip unpushed; 12/13 waived; privacy Fn IDs out of regex; T3 Playwright skipped'
+    advisories: []
+    advisories_note: 'S060/EV-051 Lean+; 12/13 waived (deploy waived)'
     decision_refs:
+    - D-S060-gateA
+    - D-S060-11-next
     - D-S057-phaseC
     - D-S057-ui-preview-verify
     - D-S057-gateB
@@ -13007,18 +13270,22 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
     status: completed
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed: '2026-08-08'
-    completed_at: '2026-08-08'
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    completed_at: '2026-08-09'
     previous_started_at: '2026-08-08'
     previous_started: '2026-08-08'
     previous_completed: '2026-08-08'
     previous_completed_at: '2026-08-08'
-    previous_session_id: S054-rust-ci-crates
-    previous_evolve_cycle_id: EV-045
-    previous_overall: approved
-    previous_note: 'S054/EV-045 11 COMPLETE — superseded by S056/EV-047 Phase D'
+    previous_session_id: S057-strip-internal-doc-refs
+    previous_evolve_cycle_id: EV-048
+    previous_overall: PASS
+    previous_note: 'S057/EV-048 11 COMPLETE @ 014c9125 — superseded by S060/EV-051'
+    previous_s054_session_id: S054-rust-ci-crates
+    previous_s054_evolve_cycle_id: EV-045
+    previous_s054_overall: approved
+    previous_s054_note: 'S054/EV-045 11 COMPLETE — superseded by S056/EV-047 Phase D'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -13080,17 +13347,28 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
-    tip_sha: 014c9125
-    tip_sha_full: 014c9125f9e3b40518613879b14657cd53a9d5a1
-    tip_sha_pushed: false
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    tip_sha_pushed: true
     mode: delta
     overall: PASS
-    report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
-    expected_report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
-    note: 'COMPLETE — PASS @ 014c9125; D-S057-uj055=1, f7=1, f21=1, qa003=2, 11-next=1; next push+PR to stage'
+    report: docs/sessions/S060-tag-driven-prod-deploy/reports/verify-impl.md
+    expected_report: docs/sessions/S060-tag-driven-prod-deploy/reports/verify-impl.md
+    note: 'COMPLETE — PASS @ cb8d9771; D-S060-gateA=1 + D-S060-11-next=1; PR #966 OPEN → stage; awaiting merge; deploy waived'
     skill_id: 11-verify-impl
+    pr_number: 966
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    pr_status: open
+    pr_base: stage
+    previous_s057_session_id: S057-strip-internal-doc-refs
+    previous_s057_evolve_cycle_id: EV-048
+    previous_s057_tip_sha: 014c9125
+    previous_s057_tip_sha_full: 014c9125f9e3b40518613879b14657cd53a9d5a1
+    previous_s057_overall: PASS
+    previous_s057_report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
+    previous_s057_note: 'COMPLETE — PASS @ 014c9125; D-S057-uj055=1, f7=1, f21=1, qa003=2, 11-next=1'
     previous_s056_session_id: S056-m0-stabilize-operator-trust
     previous_s056_evolve_cycle_id: EV-047
     previous_s056_tip_sha: 3ca4f438
@@ -13099,6 +13377,8 @@ stages:
     previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
     previous_s056_note: 'COMPLETE — PASS @ 3ca4f438; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; phase_d passed; handoff phase4-close / PR #961'
     decision_refs:
+    - D-S060-gateA
+    - D-S060-11-next
     - D-S057-uj055
     - D-S057-f7
     - D-S057-f21
@@ -13120,11 +13400,13 @@ stages:
     prior_s050_note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
     prior_s050_report_note: 'S050/EV-042 11 COMPLETE — superseded by S054/EV-045'
     report_status: approved
-    tip_note: 'S057/EV-048 tip 014c9125 — 11-verify-impl PASS; qa003 fixed; next push+PR to stage'
-    awaiting_user_decision: false
-    awaiting_user_decision_note:
-    decision_id: D-S057-11-next
+    tip_note: 'S060/EV-051 tip cb8d9771 — 11-verify-impl PASS; PR #966 OPEN → stage; awaiting merge'
+    awaiting_user_decision: true
+    awaiting_user_decision_note: 'awaiting merge approval for PR #966 → stage'
+    decision_id: D-S060-11-next
     decision_ids:
+    - D-S060-gateA
+    - D-S060-11-next
     - D-S057-uj055
     - D-S057-f7
     - D-S057-f21
@@ -13133,10 +13415,9 @@ stages:
     - D-S050-11-verify
     - D-S047-11
     deepen_feature_ids:
-    - F7
-    - F21
+    - F30
     feature_ids: []
-    active_milestone: M1
+    active_milestone:
     active_task:
     active_task_status: completed
     active_task_note: '11-verify-impl COMPLETE PASS — next push+PR to stage'
@@ -13965,17 +14246,24 @@ stages:
   08-verify-build:
     status: completed
     mode: delta
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
     previous_started_at: '2026-08-08'
     previous_completed_at: '2026-08-08'
-    previous_session_id: S056-m0-stabilize-operator-trust
-    previous_evolve_cycle_id: EV-047
-    previous_tip_sha: 3ca4f438
-    previous_tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
-    previous_note: 'COMPLETE — PASS @ tip 3ca4f438; superseded by S057/EV-048'
+    previous_session_id: S057-strip-internal-doc-refs
+    previous_evolve_cycle_id: EV-048
+    previous_tip_sha: 71779d46
+    previous_tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+    previous_note: 'COMPLETE — PASS @ tip 71779d46; superseded by S060/EV-051'
+    previous_s056_started_at: '2026-08-08'
+    previous_s056_completed_at: '2026-08-08'
+    previous_s056_session_id: S056-m0-stabilize-operator-trust
+    previous_s056_evolve_cycle_id: EV-047
+    previous_s056_tip_sha: 3ca4f438
+    previous_s056_tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    previous_s056_note_archived: 'COMPLETE — PASS @ tip 3ca4f438; superseded by S057/EV-048'
     previous_s050_started_at: '2026-08-07'
     previous_s050_completed_at: '2026-08-07'
     previous_s050_session_id: S050-remove-db-tools-operator-throughput
@@ -14036,18 +14324,25 @@ stages:
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
-    tip_sha: 71779d46
-    tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
-    tip_sha_pushed: false
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    tip_sha_pushed: true
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
-    ci_cd_pipeline_note: '08 PASS locally; tip CI optional before PR'
-    note: 'COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md'
-    expected_report: docs/sessions/S057-strip-internal-doc-refs/reports/verification-report.md
-    report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
+    ci_cd_pipeline_note: 'S060/EV-051 08 PASS; tip cb8d9771; PR #966 OPEN → stage'
+    note: 'COMPLETE — PASS S060/EV-051; report verification-report.md; gates.c_to_d passed'
+    expected_report: docs/sessions/S060-tag-driven-prod-deploy/reports/verification-report.md
+    report: docs/sessions/S060-tag-driven-prod-deploy/reports/verification-report.md
     overall: PASS
+    previous_s057_session_id: S057-strip-internal-doc-refs
+    previous_s057_evolve_cycle_id: EV-048
+    previous_s057_tip_sha: 71779d46
+    previous_s057_tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+    previous_s057_note: 'COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md'
+    previous_s057_report: docs/sessions/S057-strip-internal-doc-refs/reports/08-verify-build.md
+    previous_s057_overall: PASS
     previous_s056_session_id: S056-m0-stabilize-operator-trust
     previous_s056_evolve_cycle_id: EV-047
     previous_s056_tip_sha: 3ca4f438
@@ -14057,9 +14352,9 @@ stages:
     previous_s056_overall: pass
     previous_s056_phase_c_checkpoint: passed
     skill_id: 08-verify-build
-    next_stage: phase-c-checkpoint
-    next_stage_status: pending
-    next_stage_note: 'await D-S057-phaseC before 09+10'
+    next_stage: 09-qa
+    next_stage_status: completed
+    next_stage_note: 'S060/EV-051 Phase C→D passed; 09+11 completed; awaiting merge #966'
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_tip_sha: 6bc756ef
@@ -16125,15 +16420,20 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
-    completed: '2026-08-09'
-    completed_at: '2026-08-09'
-    close_decision: D-S057-close=1
+    status: in_progress
+    completed:
+    completed_at:
+    close_decision:
     mode: orchestrator
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
-    started_at: '2026-08-08'
-    started: '2026-08-08'
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    previous_s057_session_id: S057-strip-internal-doc-refs
+    previous_s057_evolve_cycle_id: EV-048
+    previous_s057_completed: '2026-08-09'
+    previous_s057_close_decision: D-S057-close=1
+    previous_s057_note: 'CLOSED — D-S057-close=1; EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed'
     previous_s056_session_id: S056-m0-stabilize-operator-trust
     previous_s056_evolve_cycle_id: EV-047
     previous_s056_completed: '2026-08-08'
@@ -16160,19 +16460,24 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: completed
-    current_child_stage_note: 'CLOSED D-S057-close=1; EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed'
-    tip_sha: c52521c7
-    tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+    current_child_stage: 11-verify-impl
+    current_child_stage_status: completed
+    current_child_stage_note: 'S060/EV-051 — 07/08/09/11 COMPLETE; D-S060-gateA=1 + D-S060-11-next=1; PR #966 OPEN → stage @ cb8d9771; awaiting merge'
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
     tip_sha_pushed: true
-    pr_number: 963
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
-    pr_status: merged
-    merge_sha: 06a9543f
-    merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+    pr_number: 966
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    pr_status: open
+    merge_sha:
+    merge_sha_full:
     merge_target: stage
-    branch_status: merged
-    note: 'CLOSED — D-S057-close=1; S057/EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed; active_session=null'
+    branch_status: active
+    note: 'IN PROGRESS — S060/EV-051; 11-verify-impl COMPLETE / awaiting merge PR #966 → stage; gates.a_to_b/c_to_d passed; deploy waived; tip cb8d9771'
+    prior_s057_pr_number: 963
+    prior_s057_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+    prior_s057_merge_sha: 06a9543f
+    prior_s057_merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
     prior_close_decision: D-S056-close=1
 
     prior_s054_session_id: S054-rust-ci-crates
@@ -16437,6 +16742,173 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S060-11-next
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S060-tag-driven-prod-deploy
+  evolve_cycle_id: EV-051
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: verify_impl_signoff
+  status: confirmed
+  topic: 'S060/EV-051 11-verify-impl PASS → PR #966 → stage'
+  summary: 'D-S060-11-next=1 — 11 PASS; PR #966 OPEN → stage @ tip cb8d9771; awaiting merge; deploy waived'
+  decision: |
+    D-S060-11-next=1 — Finish verify-impl and open PR → stage.
+    PR #966 OPEN → base stage — https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    Tip cb8d9771 (cb8d97719d89a97b540115a21a533640c6397e4c) tip_sha_pushed=true.
+    Stages 07/08/09/11 COMPLETE. gates.a_to_b/c_to_d passed; deploy waived (Lean+ skip 12/13).
+    Report: docs/sessions/S060-tag-driven-prod-deploy/reports/verify-impl.md.
+    Awaiting merge approval. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  related_features:
+  - F30
+  related_decisions:
+  - D-S060-gateA
+  - D-S060-route
+  - D-S060-scope
+  pr_number: 966
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  pr_status: open
+  pr_base: stage
+  tip_sha: cb8d9771
+  tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+  tip_sha_pushed: true
+  report: docs/sessions/S060-tag-driven-prod-deploy/reports/verify-impl.md
+  note: 'PR #966 open; awaiting merge approval'
+- id: D-S060-gateA
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S060-tag-driven-prod-deploy
+  evolve_cycle_id: EV-051
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'S060 Gate A — PASS; proceed 07-build'
+  summary: 'D-S060-gateA=1 — Gate A PASS; gates.a_to_b passed; Lean+ proceed 07→08→09→11'
+  decision: |
+    D-S060-gateA=1 — PASS Gate A.
+    gates.a_to_b passed. Lean+ skips 04/05/06; proceed 07-build through 11-verify-impl.
+    Report: docs/sessions/S060-tag-driven-prod-deploy/reports/02-verify-plan.md.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  gate_a: PASS
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  related_features:
+  - F30
+  related_decisions:
+  - D-S060-scope
+  - D-S060-route
+  report: docs/sessions/S060-tag-driven-prod-deploy/reports/02-verify-plan.md
+  note: 'Gate A PASS; unlock Phase B build'
+- id: D-S060-route
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S060-tag-driven-prod-deploy
+  evolve_cycle_id: EV-051
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: routing
+  status: confirmed
+  topic: Approve Lean+ routing for S060/EV-051
+  summary: "D-S060-route=1 — Lean+ approved: 00→16→01→02→03→07→08→09→11; skip 04,05,06,10,12,13; current_stage 07-build; gates.a_to_b pending user Gate A confirm"
+  decision: |
+    D-S060-route=1 — User approved Lean+ routing as drafted.
+    Required stages: 00-context, 16-evolve, 01-requirements, 02-verify-plan, 03-plan-tooling,
+    07-build, 08-verify-build, 09-qa, 11-verify-impl.
+    Skip: 04-tech-plan, 05-verify-tech, 06-tech-tooling, 10-e2e, 12-verify-deploy, 13-deploy-smoke.
+    Stages 00/01/02/03 marked completed; 07-build in_progress.
+    gates.a_to_b remains pending until user Gate A confirm.
+    Artifacts: docs/sessions/S060-tag-driven-prod-deploy/{session-brief,routing-plan,evolve-plan-card}.md
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  related_features:
+  - F30
+  related_decisions:
+  - D-S060-open
+  - D-S060-scope
+  note: "Lean+; Gate A user confirm still pending"
+- id: D-S060-scope
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S060-tag-driven-prod-deploy
+  evolve_cycle_id: EV-051
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 00-context
+  category: scope_lock
+  status: confirmed
+  topic: Lock EV-051 scope to design 2+3+4
+  summary: "D-S060-scope=1 — lock scope to design 2+3+4 (full CI Deploy needs; no auto Deploy on main; tag-driven prod + optional workflow_dispatch; staging auto; amend ADR-034/deploy docs/rule/ci-cd)"
+  decision: |
+    D-S060-scope=1 — User locked Phase 0 scope to design 2+3+4.
+    (2) Widen Deploy needs to full CI (include e2e-smoke; frontend already in test matrix).
+    (3) Split: push to main runs full CI without prod Deploy.
+    (4) Tag-driven prod: Deploy prod on vYYYY.MM.DD-deploy (+ optional workflow_dispatch);
+    staging stays auto after full CI on stage.
+    Amend ADR-034, docs/deploy.md, doks-promote-from-stage.mdc, ci-cd.yml, TC-F30-010 wording.
+    Out: Environment reviewers; Slack bots; PyPI path change; resume EV-043/EV-044; quality packs as Deploy needs.
+    Artifacts noted under docs/sessions/S060-tag-driven-prod-deploy/.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  related_features:
+  - F30
+  related_decisions:
+  - D-S060-open
+  related_adrs:
+  - docs/adr/ADR-034-doks-staging-promote-from-stage.md
+  related_test_cases:
+  - TC-F30-010
+  parked_cycles_unchanged:
+  - EV-043
+  - EV-044
+  note: "Scope locked; routing D-S060-route=1 follows"
+- id: D-S060-open
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S060-tag-driven-prod-deploy
+  evolve_cycle_id: EV-051
+  skill: 00-context
+  skill_id: 00-context
+  stage: 00-context
+  category: session_open
+  status: confirmed
+  topic: Open S060/EV-051 tag-driven prod deploy (deepen F30)
+  summary: "D-S060-open=1 — open S060/EV-051; deepen F30 tag-driven prod Deploy + full CI Deploy needs; design 2+3+4; EV-051 supersedes ADR-034 TC-F30-010 auto-deploy-on-main pending amend; parked EV-043/EV-044 remain parked"
+  decision: |
+    D-S060-open=1 — User chose open evolve option 1.
+    Allocate S060-tag-driven-prod-deploy / EV-051 on branch evolve/EV-051-tag-driven-prod-deploy based on stage@c146baec.
+    Deepen F30: widen Deploy needs to full CI; stop auto Deploy on main push; prod Deploy only on
+    vYYYY.MM.DD-deploy tag (and optional workflow_dispatch); staging stays auto after full CI;
+    amend ADR-034, docs/deploy.md, doks-promote-from-stage.mdc, ci-cd.yml. Design 2+3+4.
+    EV-051 supersedes auto-deploy-on-main behavior from ADR-034 / TC-F30-010 pending amend.
+    Parked cycles EV-043 and EV-044 remain parked — do NOT resume unless user later chooses.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  related_features:
+  - F30
+  related_decisions: []
+  related_adrs:
+  - docs/adr/ADR-034-doks-staging-promote-from-stage.md
+  related_test_cases:
+  - TC-F30-010
+  parked_cycles_unchanged:
+  - EV-043
+  - EV-044
+  note: "Parked EV-043/EV-044 remain parked; new cycle deepens F30 rather than resuming those sessions"
 - id: D-S059-close
   date: '2026-08-09'
   timestamp: '2026-08-09'
@@ -34478,6 +34950,117 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-051
+  session_id: S060-tag-driven-prod-deploy
+  type: feature
+  cycle_type: general
+  status: in_progress
+  parked: false
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  completed:
+  completed_at:
+  title: "Tag-driven prod deploy + full CI gates (solo)"
+  slug: tag-driven-prod-deploy
+  feature_ids:
+  - F30
+  deepen_feature_ids:
+  - F30
+  feature_note: "Deepen F30 — tag-driven prod Deploy + full CI Deploy needs; supersedes ADR-034 TC-F30-010 auto-deploy-on-main pending amend"
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  branch_base: stage@c146baec
+  branch_base_sha: c146baec
+  branch_base_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
+  branch_status: active
+  tip_sha: cb8d9771
+  tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+  tip_sha_pushed: true
+  tip_sha_note: "PR #966 tip cb8d9771; awaiting merge → stage"
+  pr_number: 966
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  pr_status: open
+  pr_base: stage
+  github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  preset: Lean+
+  scope_summary: "LOCKED D-S060-scope=1 — design 2+3+4: widen Deploy needs to full CI (+e2e-smoke); no auto Deploy on main push; prod Deploy only on vYYYY.MM.DD-deploy tag (+ optional workflow_dispatch); staging auto after full CI; amend ADR-034 / docs/deploy.md / doks-promote-from-stage.mdc / ci-cd.yml / TC-F30-010"
+  scope_note: "Phase 0 locked via D-S060-scope=1 (design 2+3+4)"
+  routing_plan:
+    status: approved
+    decision: D-S060-route=1
+    preset: Lean+
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 03-plan-tooling
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 11-verify-impl
+    skipped_stages:
+    - 04-tech-plan
+    - 05-verify-tech
+    - 06-tech-tooling
+    - 10-e2e
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    ordered: "00 → 16 → 01 → 02 → 03 → 07 → 08 → 09 → 11"
+  routing_plan_note: "D-S060-route=1 Lean+ approved; artifact docs/sessions/S060-tag-driven-prod-deploy/routing-plan.md"
+  current_stage: 11-verify-impl
+  current_stage_status: completed
+  current_stage_note: "11-verify-impl COMPLETE — D-S060-gateA=1 + D-S060-11-next=1; PR #966 OPEN → stage @ tip cb8d9771; awaiting merge; deploy waived"
+  gates:
+    a_to_b: passed
+    a_to_b_note: "D-S060-gateA=1 — Gate A PASS"
+    b_to_c: passed
+    b_to_c_note: "Lean+ skip 04/05; proceed 07 after Gate A"
+    c_to_d: passed
+    c_to_d_note: "08-verify-build COMPLETE"
+    deploy: waived
+    deploy_note: "Lean+ skip 12/13; first tag-driven prod cutover later promote"
+  checkpoints:
+    phase_a: passed
+    phase_a_note: "D-S060-gateA=1"
+    phase_b: passed
+    phase_b_note: "Lean+ skip 04/05; 07 COMPLETE"
+    phase_c: passed
+    phase_c_note: "08 COMPLETE; gates.c_to_d passed"
+    phase_d: passed
+    phase_d_note: "09+11 COMPLETE; awaiting merge #966"
+    deploy: waived
+  adrs:
+  - docs/adr/ADR-034-doks-staging-promote-from-stage.md
+  artifacts:
+  - path: docs/sessions/S060-tag-driven-prod-deploy/
+    status: in_progress
+    note: "session-brief.md, routing-plan.md, evolve-plan-card.md + reports; PR #966 open"
+  - path: docs/sessions/S060-tag-driven-prod-deploy/session-brief.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/routing-plan.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/evolve-plan-card.md
+    status: present
+  - path: docs/sessions/S060-tag-driven-prod-deploy/reports/verify-impl.md
+    status: present
+  decisions:
+    D-S060-open: "1 — open evolve S060/EV-051; deepen F30; EV-043/EV-044 remain parked"
+    D-S060-scope: "1 — lock scope to design 2+3+4"
+    D-S060-route: "1 — Lean+: 00→16→01→02→03→07→08→09→11; skip 04,05,06,10,12,13"
+    D-S060-gateA: "1 — Gate A PASS; proceed build/verify"
+    D-S060-11-next: "1 — PR #966 opened → stage; awaiting merge"
+  decisions_locked:
+  - D-S060-open=1
+  - D-S060-scope=1
+  - D-S060-route=1
+  - D-S060-gateA=1
+  - D-S060-11-next=1
+  notes:
+  - "2026-08-09 D-S060-gateA=1 + D-S060-11-next=1 — Gate A PASS; 07/08/09/11 COMPLETE; PR #966 OPEN → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; awaiting merge"
+  - "2026-08-09 D-S060-scope=1 — scope locked to design 2+3+4"
+  - "2026-08-09 D-S060-route=1 — Lean+ approved; current_stage 07-build; gates.a_to_b pending user Gate A confirm"
+  - "2026-08-09 D-S060-open=1 — EV-051 opened; deepens F30; supersedes ADR-034 TC-F30-010 auto-deploy-on-main pending amend; parked EV-043/EV-044 remain parked — do not resume unless user later chooses"
+  note: "IN PROGRESS — 11 COMPLETE / awaiting merge PR #966 → stage; tip cb8d9771; deploy waived; parked EV-043/EV-044 unchanged"
 - id: EV-050
   session_id: S059-codes-wmo-validated
   type: feature
@@ -45227,24 +45810,24 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: stage
+  current_branch: evolve/EV-051-tag-driven-prod-deploy
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after D-S059-close=1 closeout; no git commit by workflow-state-manager'
-  tip_sha: 2815ffbe
-  tip_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
-  tip_note: 'S059/EV-050 CLOSED — PR #964 MERGED → stage @ 2815ffbe; tip 856471fe; active_session=null'
-  evolve_branch: evolve/EV-050-codes-wmo-validated
-  evolve_tip_sha: 856471fe
-  evolve_tip_sha_full: 856471fe1110c1679577390a1f2c5f1068675eaa
+  dirty_note: 'workflow-state.yaml dirty after D-S060-gateA=1 + D-S060-11-next=1 (07/08/09/11 COMPLETE; PR #966 open); no git commit by workflow-state-manager'
+  tip_sha: cb8d9771
+  tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+  tip_note: 'S060/EV-051 — D-S060-gateA=1 + D-S060-11-next=1; 11 COMPLETE / awaiting merge PR #966 → stage; tip cb8d9771 pushed; active_session=S060-tag-driven-prod-deploy'
+  evolve_branch: evolve/EV-051-tag-driven-prod-deploy
+  evolve_tip_sha: cb8d9771
+  evolve_tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
   evolve_tip_sha_pushed: true
   stage_merge_sha: 2815ffbe
   stage_merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
-  stage_tip_sha: 2815ffbe
-  stage_tip_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
+  stage_tip_sha: c146baec
+  stage_tip_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -45255,10 +45838,14 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: stage
-  note: 'S059/EV-050 CLOSED — D-S059-close=1; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED; active_session=null'
+  recommended_branch: evolve/EV-051-tag-driven-prod-deploy
+  note: 'S060/EV-051 — 11-verify-impl COMPLETE / awaiting merge PR #966 → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; EV-043/EV-044 remain parked'
 
   notes:
+  - '2026-08-09 D-S060-gateA=1 + D-S060-11-next=1 — Gate A PASS; 07/08/09/11 COMPLETE; PR #966 OPEN → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; awaiting merge; no git commit by workflow-state-manager'
+  - '2026-08-09 commit cb8d9771 — [EV-051] feat: tag-driven prod Deploy after full CI (solo gate); tip cb8d9771 pushed; PR #966; stages 07-build/16-evolve'
+  - '2026-08-09 D-S060-scope=1 + D-S060-route=1 — scope locked 2+3+4; Lean+ routing; 00/01/02/03 completed; current_stage 07-build; gates.a_to_b pending user Gate A confirm; artifacts docs/sessions/S060-tag-driven-prod-deploy/; no git commit by workflow-state-manager'
+  - '2026-08-09 D-S060-open=1 — open S060/EV-051 on evolve/EV-051-tag-driven-prod-deploy @ stage@c146baec; deepen F30; supersedes ADR-034 TC-F30-010 auto-deploy-on-main pending amend; EV-043/EV-044 remain parked; no git commit by workflow-state-manager'
   - '2026-08-09 D-S059-close=1 — EV-050 / S059 completed; active_session cleared; PR #964 MERGED → stage @ 2815ffbe; #959 closed; #889 already CLOSED; no git commit by workflow-state-manager'
   - '2026-08-09 D-S059-merge=1 — merge #964 → stage; close #959; #889 already CLOSED (residuals defer+cite in session reports); merge 2815ffbe; tip 856471fe; no git commit by workflow-state-manager'
   - '2026-08-09 tip 271efa49 — M2+M3 complete (T2.4@d6dc64e0; T3.1@848c01a7; T3.2@926342fe+f38f9466; T3.3@3d06b144; T3.4@271efa49); next M4 T4.1 #882 design note; local ahead ~15 not pushed; tip_sha_pushed=false; 07-build remains in_progress; dirty workflow-state expected; ignore untracked no-internal-doc-refs if present (do not add); no git commit by workflow-state-manager'
@@ -45787,6 +46374,24 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-051-tag-driven-prod-deploy
+    base: stage
+    base_sha: c146baec
+    base_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
+    status: active
+    created: '2026-08-09'
+    exists: true
+    purpose: "EV-051 / S060 tag-driven prod deploy + full CI Deploy needs (deepen F30)"
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    tip_sha_pushed: true
+    pr_number: 966
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    pr_status: open
+    pr_base: stage
+    note: "S060/EV-051 D-S060-gateA=1 + D-S060-11-next=1; 11 COMPLETE / awaiting merge PR #966 → stage; tip cb8d9771; no git commit by workflow-state-manager"
   - name: evolve/EV-050-codes-wmo-validated
     base: stage
     base_sha: b57f2a87
@@ -47170,6 +47775,22 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: cb8d9771
+    sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    message: "[EV-051] feat: tag-driven prod Deploy after full CI (solo gate)"
+    branch: evolve/EV-051-tag-driven-prod-deploy
+    stage: 07-build
+    skill_id: 16-evolve
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    files_changed: 19
+    timestamp: '2026-08-09'
+    pushed: true
+    tip_sha: cb8d9771
+    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    pr_number: 966
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    note: 'S060/EV-051 tip; stages 07-build + 16-evolve; PR #966 OPEN → stage; 08/09/11 completed after tip'
   - sha: 271efa49
     sha_full: 271efa494e06f6926de010fb378f327982f4536a
     message: "[T3.4] test: TC-EV050-008 REMARK_US_EXTENSION profile regressions"

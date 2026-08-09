@@ -4,8 +4,19 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [main, stage]
+    # EV-051 — prod Deploy gate (solo): tag on main tip, not bare main push
+    tags:
+      - 'v*-*-deploy'
   pull_request:
     branches: [main, stage]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Deploy target (escape hatch after full CI)'
+        type: choice
+        options:
+          - production
+        default: production
 
 env:
   REGISTRY: ghcr.io
@@ -569,17 +580,21 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043 / EV-044).
-  # stage → staging cluster (env staging); main → prod cluster (env production).
+  # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043 / EV-044 / EV-051).
+  # stage push → staging (auto). main push → CI only (no Deploy).
+  # Prod Deploy: tag v*-*-deploy or workflow_dispatch → production (solo gate).
   # Promote to main only via PR stage→main after Staging smoke + staging-gate (ADR-034).
-  # Render hooks optional (main only).
+  # Render hooks optional (prod Deploy only).
   # ============================================================================
   deploy:
     runs-on: ubuntu-latest
     name: Deploy (${{ github.ref_name }})
-    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage')
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke]
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(github.ref_name, 'v') && endsWith(github.ref_name, '-deploy')) ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production')
+    environment: ${{ github.ref == 'refs/heads/stage' && 'staging' || 'production' }}
     permissions:
       contents: read
       packages: write
@@ -599,18 +614,19 @@ jobs:
         id: target
         run: |
           set -euo pipefail
-          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
-            echo "namespace=metar-iwxxm" >> "$GITHUB_OUTPUT"
-            echo "latest_tag=main-latest" >> "$GITHUB_OUTPUT"
-            echo "app_url=https://app.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
-            echo "api_url=https://api.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
-            echo "env_role=prod" >> "$GITHUB_OUTPUT"
-          else
+          # stage branch → staging; deploy tags / workflow_dispatch → prod (EV-051)
+          if [ "${GITHUB_REF}" = "refs/heads/stage" ]; then
             echo "namespace=metar-iwxxm-staging" >> "$GITHUB_OUTPUT"
             echo "latest_tag=stage-latest" >> "$GITHUB_OUTPUT"
             echo "app_url=https://app.staging.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
             echo "api_url=https://api.staging.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
             echo "env_role=staging" >> "$GITHUB_OUTPUT"
+          else
+            echo "namespace=metar-iwxxm" >> "$GITHUB_OUTPUT"
+            echo "latest_tag=main-latest" >> "$GITHUB_OUTPUT"
+            echo "app_url=https://app.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
+            echo "api_url=https://api.tac-to-iwxxm.com" >> "$GITHUB_OUTPUT"
+            echo "env_role=prod" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Guard CD credentials (skip if GHCR unavailable)
@@ -718,8 +734,8 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.tags.outputs.image_tag }}
             ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE }}:${{ steps.target.outputs.latest_tag }}
 
-      - name: Optional Render hooks (non-blocking, main/prod only)
-        if: steps.guard.outputs.skip != 'true' && github.ref == 'refs/heads/main'
+      - name: Optional Render hooks (non-blocking, prod Deploy only)
+        if: steps.guard.outputs.skip != 'true' && steps.target.outputs.env_role == 'prod'
         continue-on-error: true
         env:
           IMAGE_TAG: ${{ steps.tags.outputs.image_tag }}

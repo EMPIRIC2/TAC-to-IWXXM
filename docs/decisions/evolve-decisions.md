@@ -3,6 +3,51 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-051 — Tag-driven prod deploy + full CI Deploy needs (S060)
+
+**Session**: S060-tag-driven-prod-deploy  
+**Features**: deepen **F30** (no new Fn)  
+**Started**: 2026-08-09  
+**Branch**: `evolve/EV-051-tag-driven-prod-deploy` (base `stage@c146baec`)  
+**Status**: **in_progress** — Phase A (01)  
+**Corpus**: [Corpus: product §F30] [Corpus: deploy] [Corpus: adr/ADR-034] [Corpus: tests]
+
+### Scope (Phase 0–1 — locked 2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S060-open | **1** — Open S060 / EV-051; EV-043/044 remain parked |
+| D-S060-scope | **1** — Design 2+3+4: widen Deploy `needs` (+ `e2e-smoke`); no auto Deploy on `main` push; prod via `vYYYY.MM.DD-deploy` tag + optional `workflow_dispatch`; staging stays auto after full CI |
+| D-S060-route | **1** — Lean+: `00→16→01→02→03→07→08→09→11`; skip `04,05,06,10,12,13` |
+| D-S060-gateA | **1** — Gate A PASS; handoff 07/08/09/11 |
+| D-S060-11-next | **1** — Approve AC1–AC6; push + PR → `stage` (12/13 skipped) |
+
+### Acceptance
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Deploy `needs` includes prior set **plus** `e2e-smoke` (frontend remains inside `test` matrix) | TC-EV051-001 |
+| AC2 | Push/merge to `stage` still auto-Deploys **staging** after those needs pass | TC-F30-010 (amended) / TC-EV051-002 |
+| AC3 | Push/merge to `main` runs full CI but **does not** Deploy prod | TC-EV051-003 |
+| AC4 | Push tag matching `vYYYY.MM.DD-deploy` (pattern `v*-*-deploy`) on a commit runs prod Deploy after full CI | TC-EV051-004 / TC-F30-014 |
+| AC5 | `workflow_dispatch` can trigger prod Deploy (escape hatch) after full CI | TC-EV051-005 |
+| AC6 | ADR-034, `docs/deploy.md`, `doks-promote-from-stage.mdc`, feature-list F30 / TC-F30-010 amended; solo-dev approval = tag (or dispatch), not Environment reviewers | TC-EV051-006 |
+
+### Out of scope
+
+- GitHub Environment required reviewers
+- Quality-pack workflows as Deploy `needs`
+- Chat/Slack approve
+- PyPI publish path changes
+- Resume EV-043 / EV-044
+- Promote `stage`→`main` / first prod tag cutover in this cycle (docs+workflow only → `stage`)
+
+### Preset
+
+**Lean+** — `00 → 16 → 01 → 02 → 03 → 07 → 08 → 09 → 11`.
+
+---
+
 ## Cycle EV-050 — codes.wmo.int Validated: harvest + tac-validate membership (#959) (S059)
 
 **Session**: S059-codes-wmo-validated  
