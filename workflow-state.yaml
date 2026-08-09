@@ -3,10 +3,301 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 57
-evolve_cycle_counter: 48
-active_session: null
+session_counter: 59
+evolve_cycle_counter: 50
+active_session:
+  id: S059-codes-wmo-validated
+  type: feature
+  intent: "Offline harvest + tac-validate membership checks for codes.wmo.int (#959 / #889 Validated)"
+  status: in_progress
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-050
+  branch: evolve/EV-050-codes-wmo-validated
+  branch_base: stage@b57f2a87
+  branch_base_sha: b57f2a87
+  branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+  branch_status: active
+  branch_exists: true
+  tip_sha: b57f2a87
+  tip_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+  tip_sha_pushed: false
+  pr_base: stage
+  github_issues:
+  - 959
+  issue_ids:
+  - 959
+  parent_epic: 846
+  related_issues:
+  - 889
+  - 859
+  - 882
+  feature_ids: []
+  deepen_feature_ids:
+  - F12
+  - F15
+  - F20
+  - F23
+  feature_note: "Deepen tac-validate / quality bars — #889 Validated; no new Fn"
+  preset: Standard
+  auto_lean: false
+  ui_preview: n/a
+  ui_preview_note: "N/A — no browser UI"
+  prior_session: S058-ams-2027-abstract
+  artifacts_dir: docs/sessions/S059-codes-wmo-validated/
+  current_stage: 00-context
+  current_stage_note: "OPEN after S058 park; awaiting D-S059-route Standard approval"
+  decisions:
+    D-S058-park: "1a — park S058/#958 Ready; keep scaffold"
+    D-S059-ticket: "2a — open S059/EV-050 for #959"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: in_progress
+    started: '2026-08-09'
+    note: "OPEN S059; awaiting D-S059-route"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: pending
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 03-plan-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Standard skip unless rules"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: pending
+  - stage: 06-tech-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Standard skip unless new deps"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: false
+    mode: skip
+    status: skipped
+    note: "no UI"
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+  - stage: 12-verify-deploy
+    required: false
+    mode: skip
+    status: skipped
+    note: "waive unless deploy"
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skip
+    status: skipped
+    note: "waive; no stage→main"
+  artifacts:
+  - path: docs/sessions/S059-codes-wmo-validated/session-brief.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/routing-plan.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  notes:
+  - "2026-08-09 D-S058-park=1a + D-S059-ticket=2a — PARK S058; OPEN S059/EV-050 for #959; Standard proposed; awaiting D-S059-route; no git commit by workflow-state-manager"
 sessions:
+- id: S058-ams-2027-abstract
+  type: feature
+  intent: "AMS 2027 abstract — US international partnerships / TAC→IWXXM (#958); abstract prose handwritten by human"
+  status: parked
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S058-park=1a
+  close_note: 'Park S058/EV-049; #958→Ready; abstract deferred; next S059/#959'
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-049
+  branch: evolve/EV-049-ams-2027-abstract
+  branch_base: stage@b57f2a87
+  branch_base_sha: b57f2a87
+  branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+  branch_status: parked
+  branch_exists: true
+  tip_sha: b57f2a87
+  tip_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+  tip_sha_pushed: false
+  pr_base: stage
+  github_issues:
+  - 958
+  issue_ids:
+  - 958
+  milestone: "M0 — Stabilize + operator trust + narrative"
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  feature_note: "Narrative/process deepen only; no new product Fn; evidence from M0–M3"
+  preset: Lean
+  auto_lean: true
+  auto_lean_rationale: "Docs/narrative; no API/arch/schema — Auto-Lean"
+  ui_preview: n/a
+  ui_preview_note: "N/A — no browser UI in session"
+  handwritten_abstract: true
+  prior_session: S057-strip-internal-doc-refs
+  artifacts_dir: docs/sessions/S058-ams-2027-abstract/
+  current_stage: parked
+  current_stage_note: 'PARKED D-S058-park=1a; handwritten still applies on resume; #958 Ready'
+  decisions:
+    D-S058-ticket: "958 — explicit user pick (overrides numeric 1a→#959)"
+    D-S058-ready: "2a — Ready #959+#950+#948; #958 In progress"
+    D-S058-promote: "3a — no stage→main; PR→stage only if docs land"
+    D-S058-handwritten: "1 — abstract prose handwritten; agent must not draft title/body"
+    D-S058-route: "1a — Lean Auto-Lean 00→16→01→02; handoff 16-evolve"
+    D-S058-scaffold: "2a — evidence + deadline tracker + AC checklist + empty paste scaffold"
+    D-S058-park: "1a — park session; #958→Ready; keep scaffold; open #959 next"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S058-route=1a Lean; D-S058-scaffold=2a"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: parked
+    note: "PARKED D-S058-park=1a — resume via 00-context"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: parked
+    note: "PARKED D-S058-park=1a"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: parked
+    note: "PARKED D-S058-park=1a"
+  - stage: 03-plan-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 04-tech-plan
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 05-verify-tech
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 06-tech-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 07-build
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip — no product code"
+  - stage: 08-verify-build
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 09-qa
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 10-e2e
+    required: false
+    mode: skip
+    status: skipped
+    note: "no UI"
+  - stage: 11-verify-impl
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean close after Gate A"
+  - stage: 12-verify-deploy
+    required: false
+    mode: skip
+    status: skipped
+    note: "no deploy; D-S058-promote=3a"
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skip
+    status: skipped
+    note: "no deploy; D-S058-promote=3a"
+  artifacts:
+  - path: docs/sessions/S058-ams-2027-abstract/session-brief.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  - path: docs/sessions/S058-ams-2027-abstract/routing-plan.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  - path: docs/sessions/S058-ams-2027-abstract/evolve-plan-card.md
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  - path: docs/sessions/S058-ams-2027-abstract/reports/park-note.md
+    status: written
+    stage: parked
+    skill_id: 00-context
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  notes:
+  - "2026-08-09 D-S058-ticket=958 + D-S058-ready=2a + D-S058-promote=3a + D-S058-handwritten=1 — OPEN S058/EV-049; branch evolve/EV-049-ams-2027-abstract @ stage@b57f2a87; Ready #959/#950/#948; #958 In progress; awaiting D-S058-route; no git commit by workflow-state-manager"
+  - "2026-08-09 D-S058-park=1a — PARK S058/EV-049; #958→Ready; abstract deferred; OPEN S059/EV-050 for #959; no git commit by workflow-state-manager"
 - id: S057-strip-internal-doc-refs
   type: feature
   intent: "Strip internal document references from user-facing UI and API surfaces (#951)"
@@ -33961,6 +34252,42 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-050
+  session_id: S059-codes-wmo-validated
+  type: feature
+  cycle_type: feature
+  status: in_progress
+  started: '2026-08-09'
+  branch: evolve/EV-050-codes-wmo-validated
+  github_issues:
+  - 959
+  parent_issues:
+  - 889
+  deepen_feature_ids:
+  - F12
+  - F15
+  - F20
+  - F23
+  preset: Standard
+  note: "#889 Validated follow-on; offline harvest + tac-validate membership; PR→stage"
+- id: EV-049
+  session_id: S058-ams-2027-abstract
+  type: feature
+  cycle_type: general
+  status: parked
+  started: '2026-08-09'
+  completed: '2026-08-09'
+  close_decision: D-S058-park=1a
+  close_note: 'Park S058/EV-049; #958→Ready; abstract deferred; next S059/#959'
+  branch: evolve/EV-049-ams-2027-abstract
+  github_issues:
+  - 958
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  preset: Lean
+  note: "parked pending resume; handwritten abstract"
 - id: EV-048
   session_id: S057-strip-internal-doc-refs
   status: completed
@@ -45133,6 +45460,36 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-050-codes-wmo-validated
+    base: stage
+    base_sha: b57f2a87
+    base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+    status: active
+    created: '2026-08-09'
+    exists: true
+    purpose: "EV-050 / S059 codes.wmo.int harvest + tac-validate membership (#959)"
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    tip_sha: b57f2a87
+    tip_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+    tip_sha_pushed: false
+    pr_base: stage
+    note: "S059/EV-050 OPEN @ stage@b57f2a87; awaiting D-S059-route; no git commit by workflow-state-manager"
+  - name: evolve/EV-049-ams-2027-abstract
+    base: stage
+    base_sha: b57f2a87
+    base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+    status: parked
+    created: '2026-08-09'
+    exists: true
+    purpose: "EV-049 / S058 AMS 2027 abstract support (#958)"
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    tip_sha: b57f2a87
+    tip_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+    tip_sha_pushed: false
+    pr_base: stage
+    note: "S058/EV-049 PARKED D-S058-park=1a @ stage@b57f2a87; resume later; no git commit by workflow-state-manager"
   - name: evolve/EV-048-strip-internal-doc-refs
     base: stage
     base_sha: d7652d5d

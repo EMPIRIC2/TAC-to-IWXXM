@@ -25,6 +25,9 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
+| [S059-codes-wmo-validated](S059-codes-wmo-validated/session-brief.md) | feature | in_progress | #959 codes.wmo.int Validated harvest + tac-validate; EV-050 Standard | evolve/EV-050-codes-wmo-validated | 2026-08-09 | — |
+| [S058-ams-2027-abstract](S058-ams-2027-abstract/session-brief.md) | feature | parked | #958 AMS 2027 abstract (handwritten); EV-049 Lean — parked `D-S058-park=1a` | evolve/EV-049-ams-2027-abstract | 2026-08-09 | parked 2026-08-09 |
+| [S057-strip-internal-doc-refs](S057-strip-internal-doc-refs/session-brief.md) | feature | completed | #951 strip internal doc refs from UI/API; EV-048; PR #963 → stage | evolve/EV-048-strip-internal-doc-refs | 2026-08-08 | 2026-08-09 |
 | [S055-wmo-aviation-registers](S055-wmo-aviation-registers/session-brief.md) | feature | completed | #889 codes.wmo.int aviation registers → TAC verify/cite/cover (Lean); EV-046 | evolve/EV-046-wmo-aviation-registers | 2026-08-08 | 2026-08-08 |
 | [S054-rust-ci-crates](S054-rust-ci-crates/session-brief.md) | feature | completed | #725 Rust crate CI; EV-045; PR #953 → stage | evolve/EV-045-rust-ci | 2026-08-08 | 2026-08-08 |
 | [S051-output-filename-download-stale](S051-output-filename-download-stale/session-brief.md) | hotfix | in_progress | #904 output filename stale on Download; BUG-2026-08-07 | fix/output-filename-download-stale | 2026-08-07 | — |
