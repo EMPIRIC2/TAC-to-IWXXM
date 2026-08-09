@@ -380,3 +380,107 @@ def test_get_compiled_schematron_xml_syntax_error_raises(tmp_path):
 
     with pytest.raises(etree.XMLSyntaxError):
         validator._get_compiled_schematron("2023-1")
+
+
+def test_setup_working_directory_2025_2_without_iwxxm_nil(tmp_path):
+    """Cover false branch of 2025-2 iwxxm-nil presence check (108->113)."""
+    validator = SchematronValidator()
+    codelists = tmp_path / "rule"
+    codelists.mkdir()
+    for name in [
+        "codes.wmo.int-common-nil.rdf",
+        "codes.wmo.int-49-2-AerodromeRecentWeather.rdf",
+        "codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf",
+    ]:
+        (codelists / name).write_text("<rdf:RDF/>", encoding="utf-8")
+
+    validator.registry = SimpleNamespace(get_codelists_dir=lambda _version: codelists)
+    work_dir = validator._setup_working_directory("2025-2")
+    assert (work_dir / "codes.wmo.int-common-nil.rdf").exists()
+    validator.clear_cache("2025-2")
+
+
+def test_get_compiled_schematron_2025_2_query_binding_read_failure(monkeypatch, tmp_path):
+    """Cover except block at 167-168 for version 2025-2."""
+    validator = SchematronValidator()
+    sch_path = tmp_path / "iwxxm.sch"
+    sch_path.write_text('<schema queryBinding="xslt1"></schema>', encoding="utf-8")
+    validator.registry = SimpleNamespace(get_schematron_path=lambda _version: sch_path)
+
+    real_open = builtins.open
+
+    def _fake_open(path, mode="r", *args, **kwargs):
+        if str(path).endswith("iwxxm.sch") and "r" in mode and "b" not in mode:
+            raise OSError("cannot read sch for binding check")
+        return real_open(path, mode, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "open", _fake_open)
+    monkeypatch.setattr(validator, "_setup_working_directory", lambda _version: tmp_path)
+    monkeypatch.setattr(etree, "parse", lambda *_args, **_kwargs: etree.ElementTree(etree.Element("schema")))
+    monkeypatch.setattr(
+        isoschematron,
+        "Schematron",
+        lambda *_args, **_kwargs: _FakeSchematron(valid=True, report=etree.Element("svrl")),
+    )
+
+    compiled = validator._get_compiled_schematron("2025-2")
+    assert compiled is not None
+
+
+def test_get_compiled_schematron_unexpected_error_raises(monkeypatch, tmp_path):
+    """Cover non-xslt2 unexpected compile error path (200-201)."""
+    validator = SchematronValidator()
+    sch_path = tmp_path / "iwxxm.sch"
+    sch_path.write_text("<schema></schema>", encoding="utf-8")
+    validator.registry = SimpleNamespace(get_schematron_path=lambda _version: sch_path)
+    monkeypatch.setattr(validator, "_setup_working_directory", lambda _version: tmp_path)
+    monkeypatch.setattr(etree, "parse", lambda *_args, **_kwargs: etree.ElementTree(etree.Element("schema")))
+
+    def _boom(*_args, **_kwargs):
+        raise RuntimeError("unexpected compile failure")
+
+    monkeypatch.setattr(isoschematron, "Schematron", _boom)
+
+    with pytest.raises(RuntimeError, match="unexpected compile failure"):
+        validator._get_compiled_schematron("2023-1")
+
+
+def test_validate_passed_logs_debug_path(monkeypatch):
+    """Cover is_valid True branch at line 339."""
+    validator = SchematronValidator()
+    monkeypatch.setattr(
+        validator,
+        "_get_compiled_schematron",
+        lambda _version: _FakeSchematron(valid=True, report=None),
+    )
+
+    result = validator.validate("<root/>", "2023-1")
+    assert result.is_valid is True
+    assert result.issues == []
+
+
+def test_clear_cache_skips_missing_work_dirs(tmp_path):
+    """Cover work_dir.exists() false branches in clear_cache."""
+    validator = SchematronValidator()
+    missing = tmp_path / "already-removed"
+    validator._schematron_cache["2023-1"] = _FakeSchematron()
+    validator._working_dirs["2023-1"] = missing
+
+    validator.clear_cache("2023-1")
+    assert "2023-1" not in validator._working_dirs
+
+    missing2 = tmp_path / "gone-all"
+    validator._working_dirs["2025-2"] = missing2
+    validator.clear_cache()
+    assert validator._working_dirs == {}
+
+
+def test_del_ignores_clear_cache_errors(monkeypatch):
+    """Cover __del__ exception swallow (389-390)."""
+    validator = SchematronValidator()
+
+    def _boom(_version=None):
+        raise RuntimeError("cleanup failed")
+
+    monkeypatch.setattr(validator, "clear_cache", _boom)
+    validator.__del__()

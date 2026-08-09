@@ -71,3 +71,50 @@ def test_normalize_mysql_sqlite_and_sqlserver_prefixes() -> None:
 async def test_run_db_preflight_requires_uri() -> None:
     with pytest.raises(ValueError, match="uri is required"):
         await run_db_preflight(PreflightRequest(sink_type="sqlite", uri=None))
+
+
+@pytest.mark.asyncio
+async def test_run_db_preflight_validates_host_when_present(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "127.0.0.1,localhost")
+    # Hostless sqlite memory skips allowlist; use a file URI with host.
+    uri = "sqlite+aiosqlite://localhost//tmp/should-not-matter.db"
+    # Force hostname path: patch uri_hostname + engine path via memory sqlite.
+    monkeypatch.setattr(
+        "dissemination.db_preflight.uri_hostname",
+        lambda _u: "127.0.0.1",
+    )
+    resp = await run_db_preflight(PreflightRequest(sink_type="sqlite", uri="sqlite+aiosqlite:///:memory:", ddl=False))
+    assert resp.connectivity_ok is True
+    _ = uri  # keep local for readability
+
+
+@pytest.mark.asyncio
+async def test_run_db_preflight_redacts_engine_errors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "")
+
+    async def _boom(_engine: object, *, dialect: str) -> list[object]:
+        raise RuntimeError('{"password": "supersecret"} boom')
+
+    monkeypatch.setattr("dissemination.db_preflight.diff_writer_contract", _boom)
+    with pytest.raises(ValueError) as excinfo:
+        await run_db_preflight(
+            PreflightRequest(
+                sink_type="sqlite",
+                uri="sqlite+aiosqlite:///:memory:",
+                ddl=False,
+            )
+        )
+    assert "supersecret" not in str(excinfo.value)
+    assert "***" in str(excinfo.value)
+
+
+def test_handle_get_expires_inline(monkeypatch: pytest.MonkeyPatch) -> None:
+    store = HandleStore(ttl_seconds=5)
+    h = store.create(user_id="a", sink_type="sqlite", uri="x", now=100.0)
+    # Skip purge so the inline expires_at check (68-69) is reachable.
+    monkeypatch.setattr(store, "_purge", lambda _now: None)
+    assert store.get(h, user_id="a", now=106.0) is None

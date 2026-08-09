@@ -42,3 +42,31 @@ def test_rate_limiter_env_and_reset(monkeypatch: pytest.MonkeyPatch) -> None:
     lim.reset("u")
     lim.check("u", now=1.0)
     lim.reset()
+
+
+def test_rate_limiter_evicts_stale_hits() -> None:
+    lim = DisseminationRateLimiter(max_per_minute=1)
+    lim.check("u", now=1000.0)
+    # Outside the 60s window — prior hit must be dropped (line 50).
+    lim.check("u", now=1061.0)
+
+
+def test_redact_uri_password_without_port() -> None:
+    out = redact_uri("postgresql://alice:s3cret@db.example.com/wx")
+    assert "s3cret" not in out
+    assert "alice" in out
+
+
+def test_redact_uri_password_without_username() -> None:
+    # urlparse.password set, username absent → netloc rebuilt without userinfo (33→35).
+    out = redact_uri("postgresql://:s3cret@db.example.com:5432/wx")
+    assert "s3cret" not in out
+    assert "db.example.com" in out
+
+
+def test_redact_uri_swallows_urlparse_errors(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _boom(_uri: str):  # noqa: ANN202
+        raise ValueError("parse failed")
+
+    monkeypatch.setattr("dissemination.redact.urlparse", _boom)
+    assert redact_uri("postgresql://u:p@h/db") == "postgresql://u:***@h/db"
