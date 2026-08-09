@@ -13,6 +13,7 @@
 | EV-050 / Fn | Deepen | F6/F12/F15/F20/F23/F24/F28 (no new Fn); UI N/A | amended |
 | EV-050 / profiles | annex3 vs iwxxm_us | All F6 products; `iwxxm_us` N/A where unsupported; classify shared / intentional L5 / true error; fix true errors (`D-S059-profiles=1b`) | confirmed |
 | EV-050 / UI | Preview | N/A — no browser UI | confirmed |
+| EV-050 / Validated | #889 AC5 | Satisfied via offline harvest + membership CI (`D-S059-validated=1`); supersedes Lean `D-S055-validated=1` for Validated | confirmed |
 
 [Corpus: product §F6/F12/F15/F20/F23/F24/F28] [Corpus: tests] [Corpus: tech-spec]
 [Corpus: decisions]

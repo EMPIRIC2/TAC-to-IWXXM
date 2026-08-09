@@ -11,7 +11,7 @@
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
 **Status**: **in_progress** — Phase C / **07-build** (Gate B PASS `D-S059-gateB=1`;
-**M2 complete** after T2.4 — next M3 dual-profile)
+**M2+M3 complete**; M4 closeout docs in progress)
 **Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
 (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
@@ -35,6 +35,28 @@ AC7 / TC-EV050-007: dual-profile harness + disposition
 AC8 / TC-EV050-008: true-error fix — `REMARK_US_EXTENSION` gated to `iwxxm_us` only;
 `INVALID_REMARK` remains under both. Tip after M3: `271efa49`.
 
+### M4 / AC5 — #889 Validated satisfied (T4.2 — 2026-08-09)
+
+**Decision `D-S059-validated=1`:** Parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889)
+**Validated** triad element is **satisfied** by S059 / EV-050 (not re-scoped). Lean waiver
+`D-S055-validated=1` is superseded for this element.
+
+| Criterion | Evidence |
+|-----------|----------|
+| Offline harvest → CI membership sets | AC1 / TC-EV050-001 — `wmo_membership.json` + `make membership-regen` |
+| Happy + unknown/sad per v1 families | AC2 / TC-EV050-002 — membership matrix |
+| Cadence vs `iwxxm-codelists` pin | AC3 / TC-EV050-003 — tech-spec + TAC_VALIDATION + RULE_SOURCE_URLS |
+| Fixture gaps closed or defer+cite | AC4 / TC-EV050-004 — `fixture-coverage-delta-t2.4.md` |
+| Dual-profile disposition + true-error fix | AC7–AC8 — disposition + `REMARK_US_EXTENSION` gating |
+| #882 notify job | **Not** required for Validated — AC6 design-only (`D-S059-882=3a`) |
+
+**Still open (compose, not Validated blockers):** [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
+URI drift; [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notification pipeline;
+exhaustive 402 weather / residual register depth under #959/#889 **defer+cite**.
+
+**Issue comments:** criteria above posted on #889 and #959 at T4.2 (close #959 when PR merges;
+#889 remains open for residual Present/Cited depth unless maintainers close Validated-only).
+
 ### Scope (Phase 0–1 — locked 2026-08-09; profile amend 2026-08-09)
 
 | ID | Decision |
@@ -54,6 +76,7 @@ AC8 / TC-EV050-008: true-error fix — `REMARK_US_EXTENSION` gated to `iwxxm_us`
 | D-S059-04-adr | **1** — No new ADR; path/cadence in tech-spec / domain + execution plan |
 | D-S059-04-plan | **1** — Approve execution plan + Build Plan Card → **05-verify-tech** |
 | D-S059-gateB | **1** — Gate B **PASS**; handoff **07-build** M1 / T1.1 (L1–L3 advisory accepted) |
+| D-S059-validated | **1** — #889 Validated **satisfied** (AC5); supersedes Lean `D-S055-validated=1` for this triad element |
 
 ### Gate A (02) — PASS 2026-08-09
 

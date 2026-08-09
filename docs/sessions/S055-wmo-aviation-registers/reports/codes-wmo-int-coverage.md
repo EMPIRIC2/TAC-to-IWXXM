@@ -111,11 +111,12 @@ appear as TAC tokens → 0% expected until Validated wiring (#959).
 Post-M2 coverage numbers:
 [fixture-coverage-delta-t2.4.md](../../S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md).
 
-## AC5 — Validated waiver
+## AC5 — Validated waiver → **satisfied** (EV-050)
 
-Lean **waives** automated Validated checks (`D-S055-validated=1`). Evidence of waiver +
-follow-on: this report + [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959).
-No live HTML CI introduced.
+Lean **waived** automated Validated checks (`D-S055-validated=1`). Follow-on
+[#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) / S059 / EV-050 **satisfied**
+Validated (`D-S059-validated=1`) — offline harvest + `tac-validate` membership CI; see
+[evolve-decisions §EV-050 AC5](../../../decisions/evolve-decisions.md). No live HTML CI.
 
 ## TC checklist
 

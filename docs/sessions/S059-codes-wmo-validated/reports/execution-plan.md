@@ -16,7 +16,7 @@
 |-------|-------|
 | **Active phase** | Phase 1: Validated membership |
 | **Active milestone** | M4: Closeout docs |
-| **Active task** | T4.1 (in_progress) |
+| **Active task** | T4.2 (in_progress) |
 | **Tasks completed** | 12 / 15 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
@@ -109,8 +109,8 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T4.1 | Docs: #882 compose design note (session report or domain/ops) — outside PR CI; no job impl | Docs | in_progress | TC-EV050-006; AC6; 882=3a | — | — |
-| T4.2 | Docs/process: #889 Validated satisfied (or re-scope) in evolve-decisions + issue comment criteria | Docs | pending | TC-EV050-005; AC5 | T2.2, T3.4 | — |
+| T4.1 | Docs: #882 compose design note (session report or domain/ops) — outside PR CI; no job impl | Docs | completed | TC-EV050-006; AC6; 882=3a | — | — |
+| T4.2 | Docs/process: #889 Validated satisfied (or re-scope) in evolve-decisions + issue comment criteria | Docs | in_progress | TC-EV050-005; AC5 | T2.2, T3.4 | — |
 | T4.3 | Docs: tech-spec / domain back-add for harvest path + membership regenerate (no ADR) | Docs | pending | D-S059-04-adr; AC3 | T1.4 | — |
 
 ### Phase 1 Gate Check
@@ -139,8 +139,8 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 | T3.2 | M3 | completed | T3.1 |
 | T3.3 | M3 | completed | T3.1, T3.2 |
 | T3.4 | M3 | completed | T3.3 |
-| T4.1 | M4 | in_progress | — |
-| T4.2 | M4 | pending | T2.2, T3.4 |
+| T4.1 | M4 | completed | — |
+| T4.2 | M4 | in_progress | T2.2, T3.4 |
 | T4.3 | M4 | pending | T1.4 |
 
 **Count**: 15 numbered tasks (22 if counting fixture/sub-cases as separate work units in 07). Parallelizable: T1.1 ‖ T4.1; after T1.2: T1.3 ‖ T1.4; after T2.1: T2.2 ‖ T2.3.
