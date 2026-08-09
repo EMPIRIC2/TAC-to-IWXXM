@@ -2,6 +2,33 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-09 — Promote EV-043..EV-047 (`stage` → `main`)
+
+### Added
+- **F30 / EV-044**: Dedicated staging DOKS cluster + Postgres; dual-cluster promote path
+  (Staging smoke + Staging gate); staging LB pin for Host-header probes.
+- **EV-045**: Rust crates CI + maturin matrix for `tac2iwxxm` / `iwxxm-validate`;
+  `make rust-check`.
+- **EV-047 / M5**: Slim husky (`lint-fast` / `test-unit-fast`); Converter perf CI hard gate
+  + committed baselines; Python package + per-file coverage ≥95% (incl. auth/worker).
+- **EV-047 / F7**: Operator one-pager, handbook, and in-app Help (UJ-054).
+- **Process**: Release-on-promote guidance (semver + CHANGELOG on `stage`, deploy/PyPI tags
+  after merge) — ADR-034 amend; Staging-gate advisory reminder.
+
+### Changed
+- **EV-046 / F15**: `tac-validate` catalog attribution prefers stable source URL
+  (`codes.wmo.int` present → cite → cover).
+- **EV-043**: Staging worker default replicas `0` on single-node staging.
+
+### Packages
+- `tac-validate` **0.1.1 → 0.1.2** (URL-first attribution).
+- `tac2iwxxm` remains **0.2.4** (tests/CI only this window).
+- `iwxxm-validate` remains **0.1.2** (Rust clippy/format only).
+
+### Deploy
+- Promote PR [#947](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/947) (`stage` → `main`).
+- Post-merge: tag `v2026.08.09-deploy`; PyPI tag `tac-validate-v0.1.2` after checklist.
+
 ## 2026-08-06 — S047 EV-039 (F16 live local SQL e2e + teardown)
 
 ### Added
