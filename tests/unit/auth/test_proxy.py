@@ -90,7 +90,12 @@ def test_headers_missing_env_raises_503() -> None:
     assert exc_info.value.status_code == 503
 
 
-def test_headers_missing_key_only_raises_503() -> None:
+def test_headers_missing_key_only_raises_503(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # CI injects SUPABASE_PUBLISHABLE_KEY; empty constructor arg falls through to env.
+    monkeypatch.delenv("SUPABASE_PUBLISHABLE_KEY", raising=False)
+    monkeypatch.delenv("SUPABASE_ANON_KEY", raising=False)
     proxy = SupabaseAuthProxy(
         supabase_url="https://proj.supabase.co",
         publishable_key="",
