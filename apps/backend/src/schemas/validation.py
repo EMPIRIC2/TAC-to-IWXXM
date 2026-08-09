@@ -276,7 +276,7 @@ class LintTacResponse(BaseModel):
 
 
 class LintIssueCatalogEntryModel(BaseModel):
-    """One registry row exported by GET /api/v1/lint-issue-catalog (E11-31 / EV-040)."""
+    """One registry row exported by GET /api/v1/lint-issue-catalog."""
 
     code: str
     severity: str
@@ -295,7 +295,7 @@ class LintIssueCatalogResponse(BaseModel):
 
 
 class DecodeSegmentModel(BaseModel):
-    """HTTP DTO for one TAC decode/annotate segment (S011 / #702)."""
+    """HTTP DTO for one TAC decode/annotate segment."""
 
     start: int
     end: int
@@ -319,7 +319,7 @@ class DecodeTacResponse(BaseModel):
     residuals: List[DecodeResidualModel] = Field(default_factory=list)
     summary: str = Field(
         default="",
-        description="Deterministic plain-language paragraph of the report (F9 / ADR-025)",
+        description="Deterministic plain-language paragraph of the report",
     )
 
 
@@ -336,7 +336,7 @@ class PackageIssueModel(BaseModel):
 
 
 class ValidateIssueModel(BaseModel):
-    """HTTP DTO for a legacy F2 orchestrator finding on /validate."""
+    """HTTP DTO for a validation orchestrator finding on /validate."""
 
     layer: str
     level: str
@@ -357,7 +357,7 @@ class ValidateLayerIssueModel(BaseModel):
 
 
 class ValidateResponse(BaseModel):
-    """Response for POST /api/v1/validate (F2 layers + package_* extras)."""
+    """Response for POST /api/v1/validate (validation layers + package_* extras)."""
 
     is_valid: bool
     version: str

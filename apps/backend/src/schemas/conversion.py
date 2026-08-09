@@ -61,7 +61,7 @@ class ConversionIssue(BaseModel):
 
 
 class FailedSpan(BaseModel):
-    """Character span marking a soft-preview failure (ADR-022 / F7)."""
+    """Character span marking a soft-preview failure."""
 
     start: int = Field(..., ge=0, description="Inclusive character offset into source TAC")
     end: int = Field(..., ge=0, description="Exclusive character offset into source TAC")
@@ -152,11 +152,11 @@ class ConversionResponse(BaseModel):
     )
     ok: Optional[bool] = Field(
         default=None,
-        description="Soft-preview envelope flag (ADR-022); set when preview=true",
+        description="Soft-preview envelope flag; set when preview=true",
     )
     failed_spans: List[FailedSpan] = Field(
         default_factory=list,
-        description="Soft-preview failed character spans (ADR-022); empty when preview omitted/false",
+        description="Soft-preview failed character spans; empty when preview omitted/false",
     )
 
 
@@ -223,7 +223,7 @@ class ConversionRequest(BaseModel):
     )
     preview: bool = Field(
         default=False,
-        description="Soft-preview mode (ADR-022): best-effort IWXXM + failed_spans on partial failure",
+        description="Soft-preview: best-effort IWXXM with failure spans on partial convert",
     )
     product: Optional[str] = Field(
         default=None,

@@ -539,6 +539,17 @@ Convert responses may also carry `errors` / `issues` / `failed_spans` with optio
 `start` / `end` (see Conversion). HTTP status codes: 400 / 422 / 5xx as documented for F6; soft-preview
 uses **200** with structured partial failure when `preview=true`.
 
+### Operator-facing OpenAPI and error copy (EV-048 / #951)
+
+Public OpenAPI (path/operation summaries, parameter and schema `description` fields that
+feed `/docs` / Redoc) and client-facing `detail` / error messages MUST describe controls and
+failures in plain operator language. They MUST NOT cite internal engineering documents or
+planning IDs — including `[Corpus:…]`, `ADR-NNN`, `EV-NNN`, `S0NN`, `docs/sessions/`,
+`docs/feature-list`, or UJ/TC/GitHub issue numbers used as planning vocabulary.
+
+Developer source comments, test names/docstrings, and standing `docs/` remain free to cite
+corpus/ADRs. Automated guard: TC-EV048-002/004/005. [Corpus: api] [Corpus: product §F21]
+
 ## Frontend Integration
 
 Runtime config via `GET /config.json` (copied from `config/prod.json` at deploy; publishable

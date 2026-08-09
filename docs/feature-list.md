@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-08 (S055 / EV-046 — #889 codes.wmo.int Lean; S054 / EV-045 Rust CI on stage)
+> **Last updated**: 2026-08-08 (S057 / EV-048 — #951 strip internal doc refs from UI/API; prior EV-046/047)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889 codes.wmo.int coverage across products; prior S046 / EV-038 |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX; **deepen** S057 / EV-048 #951 no internal-doc cites in operator UI |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -28,7 +28,7 @@
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; **S050 / EV-042** operator UI hidden (restore #898) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; **S050 / EV-042** operator UI hidden (restore #898) |
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889 |
-| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend |
+| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
 | F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889 |
 | F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793; **deepen** S055 / EV-046 #889 |
@@ -359,6 +359,16 @@
      from one-pager for depth).
   4. No internal engineering citations in user-facing handbook/one-pager text.
   5. UJ-054 / TC-EV047-009..011 green (Vitest/Playwright for Help entry as applicable).
+- **S057 / EV-048 deepen (#951 — strip internal doc refs from operator UI)**: Operator-visible
+  UI copy (labels, helpers, tooltips, banners, empty states, console/catalog copy, example
+  tier labels, privacy/auth copy) must not cite internal engineering vocabulary
+  (`[Corpus:…]`, ADR/session/EV IDs, product `FNN` ids, `docs/` paths, UJ/TC/issue numbers).
+  Source comments, tests, and repo docs remain allowed. Does **not** flip F7 → Implemented.
+- **Acceptance (EV-048 / #951 — F7 UI slice)** — **approved** (`D-S057-01-ac=1`):
+  1. Audit findings for UI string catalogs listed in the PR.
+  2. No operator-visible UI string matches guard patterns (see test-plan TC-EV048).
+  3. Automated guard covers FE string catalogs; comments/tests excluded.
+  4. UJ-055 / TC-EV048-003 green.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -828,7 +838,18 @@
   5. Env/docs: Supabase **Auth** credentials for login path; product **DB** = DO `DATABASE_URL`
   6. E2E: public convert UJs plus login / guest-notice / privacy UJs (F31)
 - **Out of scope**: Forced login for convert; CMP; selling personal data
-- **Source**: #783; E17-*; **S038 / EV-031**; [Context: platform-independence-842](context/platform-independence-842.md)
+- **S057 / EV-048 deepen (#951 — public OpenAPI / client error copy)**: Public OpenAPI
+  path/operation summaries, parameter/schema `description` fields, runtime `/docs` / Redoc
+  text, and client-facing `detail`/error messages must use operator-friendly language —
+  no `[Corpus:…]`, ADR/session/EV IDs, product `FNN` ids, `docs/` paths, TC/E## planning
+  IDs, or GitHub issue `#NNN` citations. Developer comments and test docstrings remain allowed.
+- **Acceptance (EV-048 / #951 — F21 API slice)** — **approved** (`D-S057-01-ac=1`):
+  1. Audit findings for OpenAPI + client-facing errors listed in the PR.
+  2. OpenAPI export and error surfaces pass automated guard (TC-EV048-002/004/005).
+  3. Soft-preview and related field descriptions preserve intent without ADR citations.
+  4. Backend unit/OpenAPI snapshot tests updated.
+- **Source**: #783; E17-*; **S038 / EV-031**; [Context: platform-independence-842](context/platform-independence-842.md);
+  [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951) (S057 / EV-048)
 
 ### F22: Privacy Preference Center — S023 / EV-017
 

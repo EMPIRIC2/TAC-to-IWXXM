@@ -50,7 +50,7 @@ export interface StorageInventoryItem {
 export const STORAGE_INVENTORY: readonly StorageInventoryItem[] = [
   {
     kind: 'indexedDB',
-    purpose: 'Guest work history and converter sessions (F5 / F7.h / F31)',
+    purpose: 'Guest work history and converter sessions',
     necessary: false,
   },
   {
@@ -60,7 +60,7 @@ export const STORAGE_INVENTORY: readonly StorageInventoryItem[] = [
   },
   {
     kind: 'cookie',
-    purpose: 'Supabase Auth session cookies when signed in (F31 / UJ-047)',
+    purpose: 'Supabase Auth session cookies when signed in',
     necessary: false,
   },
 ] as const;

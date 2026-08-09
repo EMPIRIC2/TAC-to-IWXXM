@@ -71,7 +71,7 @@ async def get_translation_statistics(
     Retrieves translation centre statistics for a specified time period with optional filters.
     Implements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.
 
-    **Authentication**: Public (no JWT) — F21 / ADR-031.
+    **Authentication**: Public (no login required).
 
     **Request Parameters**:
     - **start_date** (required): Statistics period start (ISO 8601)
@@ -146,7 +146,7 @@ async def get_recent_statistics(
 
     Convenience endpoint for querying recent activity without specifying exact dates.
 
-    **Authentication**: Public (no JWT) — F21 / ADR-031.
+    **Authentication**: Public (no login required).
 
     **Query Parameters**:
     - **hours**: Number of hours to look back (1-168, default: 24)
@@ -195,7 +195,7 @@ async def get_statistics_by_region(
     Returns translation activity summary for all ICAO regions.
     Useful for identifying regional distribution and capacity planning.
 
-    **Authentication**: Public (no JWT) — F21 / ADR-031.
+    **Authentication**: Public (no login required).
 
     **Query Parameters**:
     - **start_date**: Statistics period start (ISO 8601)
