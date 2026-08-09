@@ -1,12 +1,12 @@
 # Evolve summary — EV-047 / S056
 
-**Status:** closed — merge to `stage` via PR #961  
+**Status:** **completed** — merged to `stage`  
 **Date:** 2026-08-08  
 **Preset:** Standard (`00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11`)  
 **Branch:** `evolve/EV-047-m0-stabilize-operator-trust`  
-**Tip:** `3ca4f438` (+ closeout docs commit)  
-**Tip CI:** [31286442836](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31286442836)  
-**PR:** [#961](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/961) → `stage`  
+**Tip:** `269475cc` (closeout) · merge `2a1fb22d`  
+**Tip CI:** [31287717253](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31287717253) (closeout); prior [31286442836](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31286442836)  
+**PR:** [#961](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/961) **merged** → `stage`  
 **Issues:** [#833](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/833),
 [#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834),
 [#956](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/956),

@@ -5,23 +5,35 @@ project:
   output_directory: docs/
 session_counter: 56
 evolve_cycle_counter: 47
-active_session:
-  id: S056-m0-stabilize-operator-trust
+active_session: null
+sessions:
+- id: S056-m0-stabilize-operator-trust
   type: feature
   intent: "M0 slice: slim husky (#833) + converter perf harness (#834) + operator one-pager (#956) + minimal handbook (#957)"
-  status: closing
+  status: completed
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
+  close_decision: D-S056-close=1
+  close_note: 'Close EV-047/S056; PR #961 MERGED → stage @ 2a1fb22d'
   started: '2026-08-08'
   started_at: '2026-08-08'
-  close_decision: D-S056-close=1
-  close_note: 'Close EV-047/S056; merge PR #961 → stage'
   branch: evolve/EV-047-m0-stabilize-operator-trust
   branch_base: stage@adcf3b1f
-  branch_status: active
+  branch_status: merged
   branch_exists: true
-  tip_sha: 3ca4f438
-  tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
-  tip_sha_note: 'M3+M4 verify reports; tip CI green 31286442836'
+  branch_note: 'CLOSED session — PR #961 MERGED → stage @ 2a1fb22d; evolve tip before merge 269475cc; T1.5 deferred'
+  tip_sha: 269475cc
+  tip_sha_full: 269475ccde9befbfd826e59dcfd8cc1fb6b2a9bc
+  tip_sha_note: 'PR tip before merge 269475cc; merge commit 2a1fb22d on stage'
   tip_sha_pushed: true
+  pr_number: 961
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/961
+  pr_status: merged
+  pr_base: stage
+  pr_note: 'PR #961 MERGED → stage'
+  merge_sha: 2a1fb22d
+  merge_sha_full: 2a1fb22d9697dc8fedf979f49ac621c045f96956
+  merge_target: stage
   orchestrator: 16-evolve
   evolve_cycle_id: EV-047
   artifacts_dir: docs/sessions/S056-m0-stabilize-operator-trust/
@@ -45,9 +57,8 @@ active_session:
   feature_note: "Deepen M5 (husky reverse EV-036) + F6 (converter perf PR gate) + F7 help/docs for #956/#957; no new product Fn"
   preset: Standard
   ui_preview: N/A unless help-link UI
-  current_stage: 16-evolve
-  current_stage_note: "EV-047 closing; merge PR #961 → stage"
-  state_note: "D-S056-close=1 — EV-047 cycle COMPLETE; PR #961 merge to stage pending confirmation; active_session closing (not archived); T1.5 deferred"
+  current_stage: completed
+  current_stage_note: 'CLOSED — D-S056-close=1; EV-047 COMPLETE; PR #961 MERGED → stage @ 2a1fb22d; T1.5 deferred; active_session=null'
   decisions:
     D-S056-open: "1 — open S056/EV-047 all four issues"
     D-S056-bundle: "1 — one cycle all four"
@@ -78,7 +89,7 @@ active_session:
     status: completed
     started: '2026-08-08'
     completed: '2026-08-08'
-    note: "COMPLETE — D-S056-close=1; EV-047 closed; PR #961 merge to stage pending confirmation; T1.5 deferred"
+    note: "COMPLETE — D-S056-close=1; EV-047 closed; PR #961 MERGED → stage @ 2a1fb22d; T1.5 deferred"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -125,14 +136,14 @@ active_session:
     status: completed
     started: '2026-08-08'
     completed: '2026-08-08'
-    note: "COMPLETE — M2.5+M3 done @ 3ca4f438; T1.5 blocked/deferred (D-S056-t15-admin); handoff 08-verify-build (D-S056-m4-next=1)"
+    note: "COMPLETE — M2.5+M3 done @ 269475cc; T1.5 blocked/deferred (D-S056-t15-admin); handoff 08-verify-build (D-S056-m4-next=1)"
   - stage: 08-verify-build
     required: true
     mode: delta
     status: completed
     started: '2026-08-08'
     completed: '2026-08-08'
-    note: "COMPLETE — PASS @ 3ca4f438; report verification-report.md; tip CI 31286442836; handoff 09-qa"
+    note: "COMPLETE — PASS @ 269475cc; report verification-report.md; handoff 09-qa"
   - stage: 09-qa
     required: true
     mode: delta
@@ -155,7 +166,7 @@ active_session:
     completed: '2026-08-08'
     report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
     overall: pass
-    note: "COMPLETE — PASS; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; T1.5 defer; tip 3ca4f438; PR #961"
+    note: "COMPLETE — PASS; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; T1.5 defer; tip 269475cc; PR #961 MERGED → stage"
   - stage: 12-verify-deploy
     required: false
     mode: skip
@@ -167,7 +178,8 @@ active_session:
     status: skipped
     note: waived D-S056-preset=1 unless help-link deploy
   note: "Opened from 16-evolve after D-S056-open=1,1,1,1; D-S056-cov95=2 + D-S056-m3-order=2 → M2.5 coverage before M3; T1.5 deferred"
-sessions:
+  notes:
+  - '2026-08-08 D-S056-close=1 — CLOSED S056/EV-047; PR #961 MERGED → stage @ merge 2a1fb22d tip 269475cc; active_session=null; T1.5 deferred; no git commit by workflow-state-manager'
 - id: S055-wmo-aviation-registers
   type: feature
   intent: Mine codes.wmo.int aviation registers → TAC code verification + fixture coverage (#889)
@@ -14958,11 +14970,11 @@ stages:
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
     current_child_stage: completed
-    current_child_stage_note: 'D-S056-close=1 — EV-047 cycle COMPLETE; PR #961 merge to stage pending confirmation'
-    tip_sha: 3ca4f438
-    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    current_child_stage_note: 'D-S056-close=1 — EV-047 COMPLETE; PR #961 MERGED → stage @ 2a1fb22d'
+    tip_sha: 269475cc
+    tip_sha_full: 269475ccde9befbfd826e59dcfd8cc1fb6b2a9bc
     tip_sha_pushed: true
-    note: 'COMPLETE — D-S056-close=1; EV-047 closed; PR #961 merge to stage pending confirmation; active_session closing; T1.5 deferred; no git commit by workflow-state-manager'
+    note: 'COMPLETE — D-S056-close=1; EV-047 closed; PR #961 MERGED → stage @ 2a1fb22d; active_session=null; T1.5 deferred; no git commit by workflow-state-manager'
     close_decision: D-S056-close=1
 
     prior_s054_session_id: S054-rust-ci-crates
@@ -32603,7 +32615,7 @@ evolve_cycles:
   completed: '2026-08-08'
   completed_at: '2026-08-08'
   close_decision: D-S056-close=1
-  close_note: 'Close EV-047/S056; merge PR #961 → stage'
+  close_note: 'Close EV-047/S056; PR #961 MERGED → stage @ 2a1fb22d'
   cycle_type: feature
   preset: Standard
   feature_ids: []
@@ -32622,25 +32634,29 @@ evolve_cycles:
   milestone: "M0 — Stabilize + operator trust + narrative"
   phase: 1
   current_stage: completed
-  current_stage_note: "D-S056-close=1 — EV-047 COMPLETE; PR #961 merge to stage pending confirmation"
+  current_stage_note: "D-S056-close=1 — EV-047 COMPLETE; PR #961 MERGED → stage @ 2a1fb22d"
   started: '2026-08-08'
   started_at: '2026-08-08'
   branch: evolve/EV-047-m0-stabilize-operator-trust
-  tip_sha: 3ca4f438
-  tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+  branch_status: merged
+  tip_sha: 269475cc
+  tip_sha_full: 269475ccde9befbfd826e59dcfd8cc1fb6b2a9bc
   tip_sha_pushed: true
   interrupted_by_hotfix: false
   parked: false
   phase_c_checkpoint: passed
-  phase_c_checkpoint_note: 'Phase C done — 08/09/10 PASS @ 3ca4f438'
+  phase_c_checkpoint_note: 'Phase C done — 08/09/10 PASS @ 269475cc'
   phase_d_checkpoint: passed
-  phase_d_checkpoint_note: 'Phase D done — 11-verify-impl PASS @ 3ca4f438; D-S056-ac-bundle=1, uj054=1, advisories=1, 11-ui-preview=2'
+  phase_d_checkpoint_note: 'Phase D done — 11-verify-impl PASS @ 269475cc; D-S056-ac-bundle=1, uj054=1, advisories=1, 11-ui-preview=2'
   pr_number: 961
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/961
-  pr_status: open
+  pr_status: merged
   pr_base: stage
-  pr_note: 'PR #961 merge to stage pending confirmation'
-  note: 'COMPLETED — D-S056-close=1; EV-047 closed; PR #961 merge to stage pending confirmation; T1.5 deferred'
+  merge_sha: 2a1fb22d
+  merge_sha_full: 2a1fb22d9697dc8fedf979f49ac621c045f96956
+  merge_target: stage
+  pr_note: 'PR #961 MERGED → stage'
+  note: 'COMPLETED — D-S056-close=1; EV-047 closed; PR #961 MERGED → stage @ 2a1fb22d; T1.5 deferred'
   scope_note: "Husky=lint+fast units (explicit reverse EV-036 day-to-day); #834 converter hard PR gate; #956 one-pager + #957 handbook; M2.5 package+per-file coverage ≥95% incl. auth+worker (D-S056-cov95-scope=2) — M2.5 done"
   decisions_locked:
   - D-S056-open=1
@@ -32658,7 +32674,7 @@ evolve_cycles:
   - D-S056-11-ui-preview=2
   - D-S056-close=1
   checkpoints: {phase_a: passed, phase_b: passed, phase_c: passed, phase_d: passed, deploy: skipped}
-  checkpoints_note: 'phase_d passed — D-S056-ac-bundle=1; 12/13 waived D-S056-preset=1; cycle COMPLETE D-S056-close=1; PR #961 merge to stage pending confirmation'
+  checkpoints_note: 'phase_d passed — D-S056-ac-bundle=1; 12/13 waived D-S056-preset=1; cycle COMPLETE D-S056-close=1; PR #961 MERGED → stage @ 2a1fb22d'
   artifacts:
   - docs/sessions/S056-m0-stabilize-operator-trust/session-brief.md
   - docs/sessions/S056-m0-stabilize-operator-trust/routing-plan.md
@@ -42905,24 +42921,24 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-047-m0-stabilize-operator-trust
+  current_branch: stage
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml + evolve-plan-card after M2.5 tip update (da31bf1f); tip pushed; dirty state uncommitted — parent may commit; no git commit by workflow-state-manager'
-  tip_sha: da31bf1f
-  tip_sha_full: da31bf1f73263b4037d9d00ec6ecb7e040c824ab
-  tip_note: 'S056/EV-047 @ da31bf1f; M2.5 T2.5.1–T2.5.4 COMPLETE; next M3 T3.1; T1.5 deferred (no admin); tip pushed'
+  dirty_note: 'workflow-state.yaml close_session for S056/EV-047 PR #961 merge; no git commit by workflow-state-manager'
+  tip_sha: 269475cc
+  tip_sha_full: 269475ccde9befbfd826e59dcfd8cc1fb6b2a9bc
+  tip_note: 'S056/EV-047 PR #961 MERGED → stage @ 2a1fb22d; evolve tip 269475cc'
   evolve_branch: evolve/EV-047-m0-stabilize-operator-trust
-  evolve_tip_sha: da31bf1f
-  evolve_tip_sha_full: da31bf1f73263b4037d9d00ec6ecb7e040c824ab
+  evolve_tip_sha: 269475cc
+  evolve_tip_sha_full: 269475ccde9befbfd826e59dcfd8cc1fb6b2a9bc
   evolve_tip_sha_pushed: true
-  stage_merge_sha: c51e0e2f
-  stage_merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
-  stage_tip_sha: c51e0e2f
-  stage_tip_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
+  stage_merge_sha: 2a1fb22d
+  stage_merge_sha_full: 2a1fb22d9697dc8fedf979f49ac621c045f96956
+  stage_tip_sha: 2a1fb22d
+  stage_tip_sha_full: 2a1fb22d9697dc8fedf979f49ac621c045f96956
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -42933,10 +42949,11 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-047-m0-stabilize-operator-trust
-  note: 'S056/EV-047 07-build — M2.5 T2.5.1–T2.5.4 COMPLETE @ da31bf1f; next M3 T3.1; D-S056-t15-admin blocked; tip pushed; dirty workflow-state uncommitted; no git commit by workflow-state-manager'
+  recommended_branch: stage
+  note: 'S056/EV-047 CLOSED — PR #961 MERGED → stage @ 2a1fb22d; evolve tip 269475cc; active_session=null; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-08 D-S056-close=1 — CLOSED S056/EV-047; PR #961 MERGED → stage @ merge 2a1fb22d tip 269475cc; active_session=null; T1.5 deferred; no git commit by workflow-state-manager'
   - '2026-08-08 S056/EV-047 M2.5 COMPLETE — recorded commits b45d3162 ([T2.5.2] checker), 2b50b983 ([T2.5.1][T2.5.4] auth+worker), 2408e2bb ([T2.5.3] package gaps), da31bf1f ([T2.5.2] CI/Makefile enforce); tip da31bf1f (da31bf1f73263b4037d9d00ec6ecb7e040c824ab); ahead_of_origin=0 pushed=true; next M3 T3.1; T1.5 still admin-blocked; dirty workflow-state uncommitted; no git commit by workflow-state-manager'
   - '2026-08-08 D-S056-cov95=2 + D-S056-m3-order=2 — package+per-file ≥95% this cycle (all Python packages in CI); resolve coverage (M2.5) before M3 docs/Help; T2.5.1 in_progress; T1.5 still admin-blocked; no git commit by workflow-state-manager'
   - '2026-08-08 D-S056-next-m3=1 + D-S056-t15-admin=blocked — M2 shipped @ 748b4a6c; proceed M3 T3.1–T3.4; T1.5 ruleset apply deferred (no admin); coverage 95% per-package+per-file pending AskQuestion before scope change; no git commit by workflow-state-manager'
@@ -43440,11 +43457,21 @@ git_history:
   - name: evolve/EV-047-m0-stabilize-operator-trust
     base: stage
     base_sha: adcf3b1f
-    status: active
+    status: merged
     session_id: S056-m0-stabilize-operator-trust
     evolve_cycle_id: EV-047
     created: '2026-08-08'
-    note: "S056/EV-047 M0 husky+perf+operator docs"
+    tip_sha: 269475cc
+    tip_sha_full: 269475ccde9befbfd826e59dcfd8cc1fb6b2a9bc
+    tip_sha_pushed: true
+    pr_number: 961
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/961
+    pr_status: merged
+    pr_base: stage
+    merge_sha: 2a1fb22d
+    merge_sha_full: 2a1fb22d9697dc8fedf979f49ac621c045f96956
+    merge_target: stage
+    note: "S056/EV-047 PR #961 MERGED → stage @ 2a1fb22d; evolve tip 269475cc"
   - name: evolve/EV-046-wmo-aviation-registers
     status: active
     base: main@d0a51f5a
@@ -44753,6 +44780,20 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 2a1fb22d
+    sha_full: 2a1fb22d9697dc8fedf979f49ac621c045f96956
+    message: 'Merge pull request #961 from EMPIRIC2/evolve/EV-047-m0-stabilize-operator-trust'
+    branch: stage
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
+    pr_number: 961
+    merge_target: stage
+    tip_sha: 269475cc
+    tip_sha_full: 269475ccde9befbfd826e59dcfd8cc1fb6b2a9bc
+    timestamp: '2026-08-08'
+    note: 'PR #961 MERGED → stage; evolve tip 269475cc'
   - sha: da31bf1f
     sha_full: da31bf1f73263b4037d9d00ec6ecb7e040c824ab
     message: '[T2.5.2] config: enforce per-file coverage in CI and Makefile'

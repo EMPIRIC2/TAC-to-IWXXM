@@ -9,7 +9,7 @@
 [#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834),
 [#956](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/956),
 [#957](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/957)  
-**Status:** in_progress — M4 **11-verify-impl** (08/09/10 PASS)
+**Status:** **completed** — merged to `stage` via PR #961 (`2a1fb22d`)
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
