@@ -9,23 +9,23 @@
 [#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834),
 [#956](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/956),
 [#957](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/957)  
-**Status:** in_progress — Phase 0–1
+**Status:** in_progress — M4 **11-verify-impl** (08/09/10 PASS)
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | S056 open (`D-S056-open=1`) |
-| 16-evolve | yes | orchestrator | **in_progress** | Phase 0–1; remaining intake #834/#956/#957 |
+| 16-evolve | yes | orchestrator | **in_progress** | Orchestrating M4 verify 08→09+10→11; PR #961 |
 | 01-requirements | yes | delta | **completed** | D-S056-01-ac=1; ui-preview=2 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS D-S056-gateA=2; ruleset before 04 |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
 | 04-tech-plan | yes | delta | **completed** | D-S056-04-plan=2 |
 | 05-verify-tech | yes | delta | **completed** | Gate B PASS D-S056-gateB=1 |
 | 06-tech-tooling | no | — | skipped | no new runtime deps expected |
-| 07-build | yes | full | **in_progress** | M1 T1.1–T1.2; T1.3 CI re-record |
-| 08-verify-build | yes | delta | pending | |
-| 09-qa | yes | delta | pending | |
-| 10-e2e | yes | delta | pending | UJ-054 Help entry (`D-S056-docs=1`) |
-| 11-verify-impl | yes | delta | pending | |
+| 07-build | yes | full | **completed** | M2.5+M3 done @ 3ca4f438; T1.5 blocked/deferred |
+| 08-verify-build | yes | delta | **completed** | PASS — verification-report.md; tip CI 31286442836 |
+| 09-qa | yes | delta | **completed** | pass_with_advisories — qa-report.md |
+| 10-e2e | yes | delta | **completed** | UJ-054 PASS — e2e-report.md |
+| 11-verify-impl | yes | delta | **completed** | D-S056-ac-bundle=1; uj054=1; advisories=1; ui-preview=2 |
 | 12-verify-deploy | no | — | skipped | waived unless 11 requires deploy |
 | 13-deploy-smoke | no | — | skipped | waived unless 11 requires deploy |
 

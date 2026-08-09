@@ -141,7 +141,7 @@ None (fixtures in-repo).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T4.1 | Tip CI green; 08/09/10/11 reports | Verify | pending | routing Standard | M1–M2.5–M3 | — |
+| T4.1 | Tip CI green; 08/09/10/11 reports | Verify | **completed** | routing Standard; D-S056-ac-bundle=1 | M1–M2.5–M3 | — |
 
 ###### Parallelizable
 
@@ -155,8 +155,9 @@ After plan approve: M1 and M2 can proceed in parallel once T1.1/T2.1 land; **M2.
 
 ## Phase Gate Check
 
-- [ ] AC1–AC9 met  
-- [ ] Baselines committed from CI-class measurement  
-- [ ] Ruleset requires `Converter perf (tac2iwxxm)` after M2 job  
-- [ ] Package + per-file coverage ≥95% in CI (`D-S056-cov95=2`)  
-- [ ] Tip CI green  
+- [x] AC1–AC9 met (`D-S056-ac-bundle=1`)  
+- [x] Baselines committed from CI-class measurement  
+- [ ] Ruleset requires `Converter perf (tac2iwxxm)` — **deferred** T1.5 / `D-S056-t15-admin` (script lists job; admin apply pending)  
+- [x] Package + per-file coverage ≥95% in CI (`D-S056-cov95=2`)  
+- [x] Tip CI green ([31286442836](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31286442836) @ `3ca4f438`)  
+

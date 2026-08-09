@@ -9,16 +9,18 @@ active_session:
   id: S056-m0-stabilize-operator-trust
   type: feature
   intent: "M0 slice: slim husky (#833) + converter perf harness (#834) + operator one-pager (#956) + minimal handbook (#957)"
-  status: in_progress
+  status: closing
   started: '2026-08-08'
   started_at: '2026-08-08'
+  close_decision: D-S056-close=1
+  close_note: 'Close EV-047/S056; merge PR #961 → stage'
   branch: evolve/EV-047-m0-stabilize-operator-trust
   branch_base: stage@adcf3b1f
   branch_status: active
   branch_exists: true
-  tip_sha: da31bf1f
-  tip_sha_full: da31bf1f73263b4037d9d00ec6ecb7e040c824ab
-  tip_sha_note: 'M2.5 T2.5.1–T2.5.4 complete @ da31bf1f (pushed); next M3 T3.1; T1.5 deferred (no admin)'
+  tip_sha: 3ca4f438
+  tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+  tip_sha_note: 'M3+M4 verify reports; tip CI green 31286442836'
   tip_sha_pushed: true
   orchestrator: 16-evolve
   evolve_cycle_id: EV-047
@@ -43,9 +45,9 @@ active_session:
   feature_note: "Deepen M5 (husky reverse EV-036) + F6 (converter perf PR gate) + F7 help/docs for #956/#957; no new product Fn"
   preset: Standard
   ui_preview: N/A unless help-link UI
-  current_stage: 07-build
-  current_stage_note: "M2.5 T2.5.1–T2.5.4 completed locally; tip pushed; next M3 T3.1; T1.5 still admin-blocked"
-  state_note: "D-S056-cov95-scope=2 — package + per-file ≥95% incl. auth + worker. M2.5 T2.5.1–T2.5.4 COMPLETE @ da31bf1f; next M3 T3.1; T1.5 still admin-blocked."
+  current_stage: 16-evolve
+  current_stage_note: "EV-047 closing; merge PR #961 → stage"
+  state_note: "D-S056-close=1 — EV-047 cycle COMPLETE; PR #961 merge to stage pending confirmation; active_session closing (not archived); T1.5 deferred"
   decisions:
     D-S056-open: "1 — open S056/EV-047 all four issues"
     D-S056-bundle: "1 — one cycle all four"
@@ -56,6 +58,12 @@ active_session:
     D-S056-cov95: "2 — package + per-file ≥95% this cycle (all Python packages in CI)"
     D-S056-m3-order: "2 — resolve coverage first, then M3 docs/Help"
     D-S056-cov95-scope: "2 — literally every Python package including auth + worker; package + per-file ≥95%"
+    D-S056-m4-next: "1 — M4 verify 08→09+10→11"
+    D-S056-11-ui-preview: "2 — no preview at 11; reports only"
+    D-S056-uj054: "1 — Approve UJ-054"
+    D-S056-ac-bundle: "1 — Approve AC1–AC9 + cov95; T1.5 defer"
+    D-S056-advisories: "1 — Accept QA-001..006"
+    D-S056-close: "1 — close EV-047; merge #961 to stage"
   routing_plan:
   - stage: 00-context
     required: true
@@ -67,9 +75,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: "Orchestrating 07-build — M2.5 COMPLETE @ da31bf1f; next M3 T3.1 (D-S056-cov95=2, D-S056-m3-order=2); T1.5 deferred (D-S056-t15-admin)"
+    completed: '2026-08-08'
+    note: "COMPLETE — D-S056-close=1; EV-047 closed; PR #961 merge to stage pending confirmation; T1.5 deferred"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -113,26 +122,40 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: "M1 T1.1–T1.4 + M2 T2.1–T2.3 + M2.5 T2.5.1–T2.5.4 COMPLETE @ da31bf1f; next M3 T3.1; T1.5 pending/blocked (no admin)"
+    completed: '2026-08-08'
+    note: "COMPLETE — M2.5+M3 done @ 3ca4f438; T1.5 blocked/deferred (D-S056-t15-admin); handoff 08-verify-build (D-S056-m4-next=1)"
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: "COMPLETE — PASS @ 3ca4f438; report verification-report.md; tip CI 31286442836; handoff 09-qa"
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: "COMPLETE — pass_with_advisories; report qa-report.md; handoff 10-e2e"
   - stage: 10-e2e
     required: true
     mode: delta
-    status: pending
-    note: UJ-054 Help (D-S056-docs=1)
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    note: "COMPLETE — PASS UJ-054 Help; report e2e-report.md; handoff 11-verify-impl"
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
+    overall: pass
+    note: "COMPLETE — PASS; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; T1.5 defer; tip 3ca4f438; PR #961"
   - stage: 12-verify-deploy
     required: false
     mode: skip
@@ -10139,11 +10162,11 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
+    status: completed
     started_at: '2026-08-08'
     started: '2026-08-08'
-    completed_at:
-    completed:
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
     previous_started_at: '2026-08-08'
     previous_completed_at: '2026-08-08'
     previous_session_id: S054-rust-ci-crates
@@ -10162,9 +10185,9 @@ stages:
     session_id: S056-m0-stabilize-operator-trust
     evolve_cycle_id: EV-047
     mode: full
-    note: 'IN_PROGRESS — M1+T1.1–T1.4 + M2 T2.1–T2.3 + M2.5 T2.5.1–T2.5.4 COMPLETE @ da31bf1f; next M3 T3.1–T3.4 (D-S056-next-m3=1); T1.5 blocked (D-S056-t15-admin); tip pushed'
-    tip_sha: da31bf1f
-    tip_sha_full: da31bf1f73263b4037d9d00ec6ecb7e040c824ab
+    note: 'COMPLETE — M1–M3+M2.5 done @ 3ca4f438; T1.5 deferred (D-S056-t15-admin); handoff M4 verify 08→09+10→11'
+    tip_sha: 3ca4f438
+    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
     tip_sha_pushed: true
     pr_number:
     pr_url:
@@ -11562,18 +11585,16 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S054-rust-ci-crates
-    evolve_cycle_id: EV-045
-    tip_sha: 09ce2bef
-    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
+    tip_sha: 3ca4f438
+    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
     tip_sha_pushed: true
-    pr_number: 953
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
     mode: delta
     overall: pass_with_advisories
-    report: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
-    expected_report: docs/sessions/S054-rust-ci-crates/reports/qa-report.md
-    note: 'COMPLETE — pass_with_advisories; QA-001..005 (AC6 ops deferred primary); handoff 11-verify-impl'
+    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/qa-report.md
+    expected_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/qa-report.md
+    note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 10-e2e'
     advisories: [QA-001, QA-002, QA-003, QA-004, QA-005]
     advisories_note: 'AC6 ops deferred is primary (D-S054-ac6-waive=2)'
     decision_refs:
@@ -11891,14 +11912,14 @@ stages:
     started: '2026-08-08'
     completed: '2026-08-08'
     completed_at: '2026-08-08'
-    previous_started_at: '2026-08-07'
-    previous_started: '2026-08-07'
-    previous_completed: '2026-08-07'
-    previous_completed_at: '2026-08-07'
-    previous_session_id: S050-remove-db-tools-operator-throughput
-    previous_evolve_cycle_id: EV-042
+    previous_started_at: '2026-08-08'
+    previous_started: '2026-08-08'
+    previous_completed: '2026-08-08'
+    previous_completed_at: '2026-08-08'
+    previous_session_id: S054-rust-ci-crates
+    previous_evolve_cycle_id: EV-045
     previous_overall: approved
-    previous_note: 'S050/EV-042 11 COMPLETE — superseded by S054/EV-045'
+    previous_note: 'S054/EV-045 11 COMPLETE — superseded by S056/EV-047 Phase D'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -11960,22 +11981,21 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S054-rust-ci-crates
-    evolve_cycle_id: EV-045
-    tip_sha: 09ce2bef
-    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
+    tip_sha: 3ca4f438
+    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
     tip_sha_pushed: true
-    pr_number: 953
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
-    pr_status: open
-    pr_base: stage
     mode: delta
-    overall: approved
-    report: docs/sessions/S054-rust-ci-crates/reports/verify-impl.md
-    expected_report: docs/sessions/S054-rust-ci-crates/reports/verify-impl.md
-    decision: D-S054-11=1
-    note: 'COMPLETE — D-S054-11=1; PR #953 still OPEN → stage; tip 09ce2bef'
+    overall: pass
+    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
+    expected_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
+    note: 'COMPLETE — PASS @ 3ca4f438; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; phase_d passed; handoff phase4-close / PR #961'
     decision_refs:
+    - D-S056-ac-bundle
+    - D-S056-uj054
+    - D-S056-advisories
+    - D-S056-11-ui-preview
     - D-S054-phaseC
     - D-S054-t17-ci
     - D-S054-ac6-waive
@@ -12288,10 +12308,10 @@ stages:
     skill_id: 11-verify-impl
   10-e2e:
     status: completed
-    started_at: '2026-08-07'
-    started: '2026-08-07'
-    completed_at: '2026-08-07'
-    completed: '2026-08-07'
+    started_at: '2026-08-08'
+    started: '2026-08-08'
+    completed_at: '2026-08-08'
+    completed: '2026-08-08'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -12328,14 +12348,14 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S050-remove-db-tools-operator-throughput
-    evolve_cycle_id: EV-042
-    tip_sha: dff22265
-    tip_sha_full: dff22265cd77e68549238d93c15e1de931b64da8
-    mode: full
-    overall: PASS
-    report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/e2e-report.md
-    note: 'COMPLETE — S050/EV-042 local PASS (UJ-051..053 6/6; TC-F33 20/20; H0i 10/10; H0c 6/6); live H4–H5/T3 deferred to 13; tip dff22265; next 11-verify-impl'
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
+    tip_sha: 3ca4f438
+    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    mode: delta
+    overall: pass
+    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/e2e-report.md
+    note: 'COMPLETE — PASS UJ-054 Help; report e2e-report.md; handoff 11-verify-impl'
     active_milestone: M4
     active_task: T4.3
     active_task_status: completed
@@ -12852,27 +12872,23 @@ stages:
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S054-rust-ci-crates
-    evolve_cycle_id: EV-045
-    tip_sha: 09ce2bef
-    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
+    tip_sha: 3ca4f438
+    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
     tip_sha_pushed: true
-    pr_number: 953
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
-    pr_status: open
-    pr_base: stage
-    ci_cd_pipeline_run: '31273500621'
+    ci_cd_pipeline_run: '31286442836'
     ci_cd_pipeline_status: SUCCESS
-    ci_cd_pipeline_note: 'Accepted tip CI — run 31273500621 per D-S054-t17-ci=1'
-    note: 'COMPLETE — PASS @ tip 09ce2bef; Phase C checkpoint pending AskQuestion before 09-qa'
-    expected_report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
-    report: docs/sessions/S054-rust-ci-crates/reports/verification-report.md
-    overall: PASS
+    ci_cd_pipeline_note: 'Tip CI green — run 31286442836 @ 3ca4f438'
+    note: 'COMPLETE — PASS @ tip 3ca4f438; report docs/sessions/S056-m0-stabilize-operator-trust/reports/verification-report.md; Phase C done; handoff 09-qa'
+    expected_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verification-report.md
+    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verification-report.md
+    overall: pass
     phase_c_checkpoint: passed
-    phase_c_checkpoint_note: 'D-S054-phaseC=1 — Phase C approved; 09-qa started'
-    next_stage: 09-qa
+    phase_c_checkpoint_note: 'Phase C done — 08/09/10 PASS @ 3ca4f438; entering Phase D / 11-verify-impl'
+    next_stage: 11-verify-impl
     next_stage_status: in_progress
-    next_stage_note: 'D-S054-phaseC=1 — 09-qa in_progress'
+    next_stage_note: '11-verify-impl in_progress — awaiting AC sign-off'
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_tip_sha: 6bc756ef
@@ -14911,14 +14927,14 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
     mode: orchestrator
     session_id: S056-m0-stabilize-operator-trust
     evolve_cycle_id: EV-047
     started_at: '2026-08-08'
     started: '2026-08-08'
-    completed:
-    completed_at:
+    completed: '2026-08-08'
+    completed_at: '2026-08-08'
     previous_s055_session_id: S055-wmo-aviation-registers
     previous_s055_evolve_cycle_id: EV-046
     previous_s055_completed: '2026-08-08'
@@ -14941,13 +14957,13 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: 07-build
-    current_child_stage_note: 'M2.5 COMPLETE @ da31bf1f; next M3 T3.1 (D-S056-cov95=2, D-S056-m3-order=2); T1.5 deferred (D-S056-t15-admin)'
-    tip_sha: da31bf1f
-    tip_sha_full: da31bf1f73263b4037d9d00ec6ecb7e040c824ab
+    current_child_stage: completed
+    current_child_stage_note: 'D-S056-close=1 — EV-047 cycle COMPLETE; PR #961 merge to stage pending confirmation'
+    tip_sha: 3ca4f438
+    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
     tip_sha_pushed: true
-    note: 'IN_PROGRESS — S056/EV-047 orchestrating 07-build; M2.5 T2.5.1–T2.5.4 COMPLETE @ da31bf1f (pushed); next M3 T3.1; D-S056-cov95=2 D-S056-m3-order=2; T1.5 blocked no admin; no git commit by workflow-state-manager'
-    close_decision:
+    note: 'COMPLETE — D-S056-close=1; EV-047 closed; PR #961 merge to stage pending confirmation; active_session closing; T1.5 deferred; no git commit by workflow-state-manager'
+    close_decision: D-S056-close=1
 
     prior_s054_session_id: S054-rust-ci-crates
     prior_s054_evolve_cycle_id: EV-045
@@ -32583,7 +32599,11 @@ retrospective_cycles:
 evolve_cycles:
 - id: EV-047
   session_id: S056-m0-stabilize-operator-trust
-  status: in_progress
+  status: completed
+  completed: '2026-08-08'
+  completed_at: '2026-08-08'
+  close_decision: D-S056-close=1
+  close_note: 'Close EV-047/S056; merge PR #961 → stage'
   cycle_type: feature
   preset: Standard
   feature_ids: []
@@ -32601,16 +32621,26 @@ evolve_cycles:
   - 957
   milestone: "M0 — Stabilize + operator trust + narrative"
   phase: 1
-  current_stage: 07-build
-  current_stage_note: "M2.5 T2.5.1–T2.5.4 COMPLETE @ da31bf1f; next M3 T3.1; T1.5 admin-blocked"
+  current_stage: completed
+  current_stage_note: "D-S056-close=1 — EV-047 COMPLETE; PR #961 merge to stage pending confirmation"
   started: '2026-08-08'
   started_at: '2026-08-08'
   branch: evolve/EV-047-m0-stabilize-operator-trust
-  tip_sha: da31bf1f
-  tip_sha_full: da31bf1f73263b4037d9d00ec6ecb7e040c824ab
+  tip_sha: 3ca4f438
+  tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
   tip_sha_pushed: true
   interrupted_by_hotfix: false
   parked: false
+  phase_c_checkpoint: passed
+  phase_c_checkpoint_note: 'Phase C done — 08/09/10 PASS @ 3ca4f438'
+  phase_d_checkpoint: passed
+  phase_d_checkpoint_note: 'Phase D done — 11-verify-impl PASS @ 3ca4f438; D-S056-ac-bundle=1, uj054=1, advisories=1, 11-ui-preview=2'
+  pr_number: 961
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/961
+  pr_status: open
+  pr_base: stage
+  pr_note: 'PR #961 merge to stage pending confirmation'
+  note: 'COMPLETED — D-S056-close=1; EV-047 closed; PR #961 merge to stage pending confirmation; T1.5 deferred'
   scope_note: "Husky=lint+fast units (explicit reverse EV-036 day-to-day); #834 converter hard PR gate; #956 one-pager + #957 handbook; M2.5 package+per-file coverage ≥95% incl. auth+worker (D-S056-cov95-scope=2) — M2.5 done"
   decisions_locked:
   - D-S056-open=1
@@ -32622,10 +32652,32 @@ evolve_cycles:
   - D-S056-cov95=2
   - D-S056-cov95-scope=2
   - D-S056-m3-order=2
+  - D-S056-ac-bundle=1
+  - D-S056-uj054=1
+  - D-S056-advisories=1
+  - D-S056-11-ui-preview=2
+  - D-S056-close=1
+  checkpoints: {phase_a: passed, phase_b: passed, phase_c: passed, phase_d: passed, deploy: skipped}
+  checkpoints_note: 'phase_d passed — D-S056-ac-bundle=1; 12/13 waived D-S056-preset=1; cycle COMPLETE D-S056-close=1; PR #961 merge to stage pending confirmation'
   artifacts:
   - docs/sessions/S056-m0-stabilize-operator-trust/session-brief.md
   - docs/sessions/S056-m0-stabilize-operator-trust/routing-plan.md
   - docs/sessions/S056-m0-stabilize-operator-trust/evolve-plan-card.md
+  - path: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    note: 'COMPLETE — PASS; D-S056-ac-bundle=1, uj054=1, advisories=1, 11-ui-preview=2'
+  - path: docs/sessions/S056-m0-stabilize-operator-trust/reports/evolve-summary.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'COMPLETE — EV-047 closeout'
+  - path: docs/evolve-report-EV-047.md
+    status: completed
+    stage: 16-evolve
+    skill_id: 16-evolve
+    note: 'COMPLETE — EV-047 standing evolve report'
 - id: EV-046
   session_id: S055-wmo-aviation-registers
   status: completed

@@ -32,8 +32,8 @@ regressions on PR/CI, and ship operator one-pager + minimal handbook.
 
 ## Next child stage
 
-**07-build / M3 T3.1** — operator docs + Help (`D-S056-next-m3=1`, `D-S056-m3-order=2`).  
-M2.5 T2.5.1–T2.5.4 COMPLETE @ `da31bf1f`. T1.5 ruleset apply deferred (`D-S056-t15-admin` — no repo admin).
+**Phase 4 close** — 11 COMPLETE (`D-S056-ac-bundle=1`); 12/13 waived; PR #961 → `stage`.  
+T1.5 still deferred (`D-S056-t15-admin`). Await close/merge AskQuestion.
 
 ## Locked decisions
 
@@ -51,6 +51,7 @@ M2.5 T2.5.1–T2.5.4 COMPLETE @ `da31bf1f`. T1.5 ruleset apply deferred (`D-S056
 | D-S056-t15-admin | blocked — no repo admin; ruleset apply deferred; script/docs remain |
 | D-S056-cov95 | 2 — package + per-file ≥95% this cycle (all Python packages in CI) |
 | D-S056-m3-order | 2 — resolve coverage first, then M3 docs/Help |
+| D-S056-m4-next | 1 — M4 verify 08→09+10→11 |
 
 ## Risks / open decisions
 

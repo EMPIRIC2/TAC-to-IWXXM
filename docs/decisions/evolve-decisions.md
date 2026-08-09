@@ -9,7 +9,8 @@
 **Features**: deepen **M5 / F6 / F7** (no new Fn)  
 **Started**: 2026-08-08  
 **Branch**: `evolve/EV-047-m0-stabilize-operator-trust` (base `stage@adcf3b1f`)  
-**Status**: in_progress — Phase 0–1  
+**Status**: **completed** 2026-08-08 (`D-S056-close=1`; PR #961 → `stage`)  
+
 **Issues**: [#833](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/833),
 [#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834),
 [#956](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/956),
@@ -39,6 +40,12 @@
 | D-S056-cov95 | **2** — package + per-file ≥95% this cycle (all Python packages in CI); M2.5 T2.5.1–T2.5.3 |
 | D-S056-cov95-scope | **2** — literally every Python package including auth + worker; package + per-file ≥95%; M2.5 adds T2.5.4 |
 | D-S056-m3-order | **2** — resolve coverage first (M2.5), then M3 docs/Help (amends sequencing after `D-S056-next-m3=1`) |
+| D-S056-m4-next | **1** — M4 verify 08 → 09+10 → 11 |
+| D-S056-11-ui-preview | **2** — No non-deployed preview at 11; approve from reports/tests only |
+| D-S056-uj054 | **1** — Approve UJ-054 Operator Help → one-pager |
+| D-S056-ac-bundle | **1** — Approve AC1–AC9 + cov95; accept T1.5 ruleset defer |
+| D-S056-advisories | **1** — Accept QA-001..006 as listed in verify-impl.md |
+| D-S056-close | **1** — Close EV-047; merge #961 → `stage` (12/13 waived; T1.5 deferred) |
 
 ### Locked defaults (perf / hooks / docs)
 
