@@ -20,10 +20,10 @@ active_session:
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
   branch_status: active
   branch_exists: true
-  tip_sha: 923c7170
-  tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+  tip_sha: c52521c7
+  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
   tip_sha_pushed: true
-  branch_note: "ACTIVE — tip 748cbb84 pushed; PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval"
+  branch_note: "ACTIVE — tip c52521c7 pushed (PR tip was 748cbb84); PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval"
   pr_number: 963
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
   pr_status: open
@@ -15678,8 +15678,8 @@ stages:
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
     current_child_stage: 11-verify-impl
     current_child_stage_note: 'PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval'
-    tip_sha: 923c7170
-    tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+    tip_sha: c52521c7
+    tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
     tip_sha_pushed: true
     pr_number: 963
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
@@ -15964,7 +15964,7 @@ decisions_log:
   decision: |
     D-S057-11-next=1 — PR opened after 11-verify-impl PASS.
     PR #963 OPEN → base stage.
-    Tip 748cbb84 (923c717070975f3c6201432f95b2890e024ae5cf) tip_sha_pushed=true.
+    Tip 748cbb84 (c52521c772a950d9e43ca088933dd5163ad59a12) tip_sha_pushed=true.
     CI/CD Pipeline run 31290962521 SUCCESS — https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31290962521
     Awaiting merge approval.
   branch: evolve/EV-048-strip-internal-doc-refs
@@ -15974,8 +15974,8 @@ decisions_log:
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
   pr_status: open
   pr_base: stage
-  tip_sha: 923c7170
-  tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+  tip_sha: c52521c7
+  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
   tip_sha_pushed: true
   ci_cd_pipeline_run: '31290962521'
   ci_cd_pipeline_status: SUCCESS
@@ -33874,8 +33874,8 @@ evolve_cycles:
   branch_base_sha: d7652d5d
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
   branch_status: active
-  tip_sha: 923c7170
-  tip_sha_full: 923c717070975f3c6201432f95b2890e024ae5cf
+  tip_sha: c52521c7
+  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
   tip_sha_pushed: true
   pr_number: 963
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
