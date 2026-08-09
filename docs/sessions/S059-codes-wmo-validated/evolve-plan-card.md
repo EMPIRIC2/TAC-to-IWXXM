@@ -35,15 +35,14 @@ membership-checked in CI — no live `codes.wmo.int` HTML in PR CI.
 
 ## Next child stage
 
-**07-build** — M1 / T1.1 (`D-S059-gateB=1`)
+**11-verify-impl** user approval → push + PR → `stage` (12/13 waived).
+M1–M4 complete; 08/09 PASS @ `48b6328d`; `#889` Validated satisfied (`D-S059-validated=1`).
 
 ## Risks / open decisions
 
-- Aggressive fixtures + dual-profile matrix enlarges 07 — size milestones in 04
-  (advisory M3: may split M1 harvest / M2 fixtures / M3 profiles)
-- True-error volume unknown until compare runs — AC8 defer+cite OK (advisory M1)
-- Full F6 matrix: many products are N/A for `iwxxm_us` — must not fail those rows (M2)
-- Docs PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) → `stage` still open
+- Residual Present/Cited depth / exhaustive 402 weather — defer+cite under #959/#889
+- #882 notify job remains open (design-only note shipped)
+- Docs PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) → `stage` may still be open (unrelated)
 
 ## Gate A
 

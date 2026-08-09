@@ -48,7 +48,7 @@ Offline L3 token membership for `tac-validate` — **no** live `codes.wmo.int` H
 | Artifact | `packages/tac-validate/src/tac_validate/data/wmo_membership.json` |
 | Harvest module | `packages/tac-validate/src/tac_validate/membership.py` |
 | CLI | `scripts/iwxxm/harvest_wmo_membership.py` |
-| Regenerate | `make membership-regen` |
+| Regenerate | `make membership-regen` (harvest + Prettier so format-check matches) |
 | Drift check | `make membership-check` (regen + fail if artifact dirty) |
 | Related | `make codelist-uri-drift` ([#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)); #882 design-only compose note (session report) |
 
