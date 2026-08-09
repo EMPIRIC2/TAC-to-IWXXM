@@ -13,8 +13,8 @@
 | 04-tech-plan | yes | delta | **completed** | `D-S061-04-plan=1` |
 | 05-verify-tech | yes | delta | **completed** | `D-S061-gateB=1` |
 | 06-tech-tooling | no | — | skipped | Deps via 04 + inventory back-add |
-| 07-build | yes | delta | **in_progress** | M1 T1.1–T1.5 |
-| 08-verify-build | yes | delta | pending | |
+| 07-build | yes | delta | **completed** | M1–M5; tip CI green |
+| 08-verify-build | yes | delta | pending | next |
 | 09-qa | yes | delta | pending | |
 | 10-e2e | no | — | skipped | No operator journey delta; unit/CI gates cover |
 | 11-verify-impl | yes | delta | pending | |

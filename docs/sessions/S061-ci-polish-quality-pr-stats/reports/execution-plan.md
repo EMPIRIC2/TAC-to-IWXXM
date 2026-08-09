@@ -18,10 +18,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: CI polish + #900 |
-| **Active milestone** | M5: Docs parity + tip CI (next) |
-| **Active task** | T5.1 |
-| **Tasks completed** | 17 / 22 |
-| **Stage** | 07-build |
+| **Active milestone** | Phase 1 complete (M1–M5) |
+| **Active task** | — (handoff 08-verify-build) |
+| **Tasks completed** | 22 / 22 |
+| **Stage** | 07-build → 08 |
 | **Last updated** | 2026-08-09 |
 | **Build Plan Card** | `docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md` |
 | **Plan approval** | `D-S061-04-plan=1` — approved as drafted |
@@ -135,8 +135,8 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T5.1 | Back-add env names, dependency pins, ADR notes, feature-list/test-plan parity | Docs | pending | AC10; TC-EV052-010 | M1–M4 | — |
-| T5.2 | Tip CI green on evolve branch (coverage gates + quality comment + new units) | Config | pending | AC12; TC-EV052-012 | T1.5, T2.4, T3.5, T4.3, T5.1 | — |
+| T5.1 | Back-add env names, dependency pins, ADR notes, feature-list/test-plan parity | Docs | **completed** | AC10; TC-EV052-010 | M1–M4 | — |
+| T5.2 | Tip CI green on evolve branch (coverage gates + quality comment + new units) | Config | **completed** | AC12; TC-EV052-012 | T1.5, T2.4, T3.5, T4.3, T5.1 | — |
 
 ## Git Strategy
 
@@ -152,7 +152,7 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 | T2.1–T2.4 | M2 | **completed** | T2 internal; // M1 |
 | T3.1–T3.5 | M3 | **completed** | T3 internal; // M1 |
 | T4.1–T4.3 | M4 | **completed** | after M1 preferred |
-| T5.1–T5.2 | M5 | pending | M1–M4 |
+| T5.1–T5.2 | M5 | **completed** | M1–M4 |
 
 Parallelism: After T1.2 inventory lands, M2/M3/M4 may proceed in parallel; M5 last.
 

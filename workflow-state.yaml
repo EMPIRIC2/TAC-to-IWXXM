@@ -50,7 +50,7 @@ sessions:
   - M5
   prior_session: S060-tag-driven-prod-deploy
   current_stage: 07-build
-  current_stage_note: 'M4 COMPLETE (T4.1–T4.3); PR #969 → stage; next M5 T5.1'
+  current_stage_note: 'M1–M5 COMPLETE; tip CI green @ eb7c580d; PR #969; next 08-verify-build'
   decisions:
     D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
     D-S061-redis: "1 — Upstash Redis free"
@@ -113,6 +113,7 @@ sessions:
   - stage: 11-verify-impl
     status: pending
   notes:
+  - "2026-08-09 M5 COMPLETE (T5.1–T5.2) @ eb7c580d — tip CI success run 31330124240; next 08"
   - "2026-08-09 M4 COMPLETE (T4.1–T4.3) — openapi-typescript FE types + openapi:check; PR #969; next M5"
   - "2026-08-09 M3 COMPLETE (T3.1–T3.5) @ f4236636 — Sentry + REDIS_URL slowapi; PR #969; next M4"
   - "2026-08-09 M2 COMPLETE (T2.1–T2.4) @ 99d56b9c — quality sticky PR comment; next M3 T3.1"

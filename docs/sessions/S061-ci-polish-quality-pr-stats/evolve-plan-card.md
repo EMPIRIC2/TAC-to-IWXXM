@@ -37,7 +37,7 @@ by profile, and ship free-tier Sentry + shared rate-limit backend + OpenAPI type
 
 ## Next child stage
 
-**07-build** — M5 docs/CI closeout (T5.1–T5.2); then **08-verify-build**.
+**08-verify-build** — Phase C gate; then **09-qa** → **11-verify-impl**.
 
 ## Locked decisions
 
