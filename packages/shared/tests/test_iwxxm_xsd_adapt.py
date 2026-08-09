@@ -77,3 +77,28 @@ def test_available_versions_ignores_bad_status_shape(
     bad.write_text('{"versions": {"not": "a list"}}', encoding="utf-8")
     monkeypatch.setattr(adapt, "_STATUS_PATH", bad)
     assert adapt.available_versions() == []
+
+
+def test_available_versions_rejects_non_object_root(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import metar_shared.iwxxm_xsd.adapt as adapt
+
+    bad = tmp_path / "STATUS.json"
+    bad.write_text('["2025-2"]', encoding="utf-8")
+    monkeypatch.setattr(adapt, "_STATUS_PATH", bad)
+    assert adapt.available_versions() == []
+
+
+def test_available_versions_skips_non_scalar_entries(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import metar_shared.iwxxm_xsd.adapt as adapt
+
+    status = tmp_path / "STATUS.json"
+    status.write_text(
+        '{"versions": ["2025-2", {"nested": true}, null, 2023]}',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(adapt, "_STATUS_PATH", status)
+    assert adapt.available_versions() == ["2025-2", "2023"]

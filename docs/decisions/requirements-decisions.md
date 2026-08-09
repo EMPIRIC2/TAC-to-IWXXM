@@ -1,6 +1,19 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-06 (S047 / EV-039)
+> Stage: 01-requirements | Last updated: 2026-08-08 (S056 / EV-047)
+
+## EV-047 / S056 — M0 husky + converter perf + operator docs (`D-S056-01-ac=1`)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-047 / M5 | Husky shape A | pre-commit lint/format; pre-push fast units; reverse EV-036 day-to-day weight | confirmed |
+| EV-047 / F6 | Converter perf gate | convert-only p95; YAML baselines; >20% or ceiling; CI required; not husky | confirmed |
+| EV-047 / F7 | Operator docs | `docs/guides/operator-one-pager.md` + `operator-handbook.md`; README + Help | confirmed |
+| EV-047 / route | 10-e2e | Re-enabled for UJ-054 Help; 12/13 waived unless 11 requires deploy | confirmed |
+| EV-047 / UI | 01 preview | Declined non-deployed UI (`D-S056-ui-preview=2`) | confirmed |
+
+[Corpus: product §M5] [Corpus: product §F6] [Corpus: product §F7] [Corpus: tests]
+[Corpus: journeys]
 
 | ID | Topic | Decision | Status |
 |----|-------|----------|--------|
@@ -396,6 +409,18 @@
 | EV-025/E25-T5 | Gate C residuals | Encode residual **blocks** Gate C (supersedes S02.M2 soft deferral) | confirmed |
 | EV-025/E25-T6 | Draft plan | Draft from T1–T5; Gate B pending | confirmed |
 | EV-025/E25-04 | Gate B | Approve M0–M7 → 07-build @ T0.1 | confirmed |
+
+## EV-045 / #725 — Rust crate CI (2026-08-08)
+
+| ID | Topic | Decision | Status |
+|----|-------|----------|--------|
+| EV-045/scope | Fn | Deepen **F13** + **F14** (no new Fn; M5 optional later) | confirmed |
+| EV-045/ui | UI | N/A — no browser UI / no H4–H5 | confirmed |
+| EV-045/workflow | CI shape | Extend `ci-cd.yml` (matrix over both crates); separate `rust-ci.yml` only if latency forces | confirmed |
+| EV-045/clippy | Lint policy | `cargo clippy -- -D warnings` hard-fail; allowlist only if build proves need | confirmed |
+| EV-045/make | Local | `make rust-check` mirrors CI | confirmed |
+| EV-045/docs | Standing | feature-list, test-plan TC-EV045-*, UJ-DEV-006, tech-spec pointer | confirmed |
+| EV-045/01-ac | Gate | D-S054-01-ac=1 — ACs + defaults confirmed → 02 | confirmed |
 
 ## EV-031 / #842+#830+#712 — Platform independence (2026-08-03)
 

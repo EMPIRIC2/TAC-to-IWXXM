@@ -42,3 +42,7 @@ staging; promote via PR into `main` auto-deploys prod only after staging is prov
 
 **Standard**: `00 → 16 → 01 → 02 → 03 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`  
 Skip `06` (no new runtime deps).
+
+## Parked
+
+**D-park-doks=1** (2026-08-08) — Parked to open #725 Rust CI. Resume at `16-evolve` (Phase 0 incomplete; promote gate TBD). `active_session` cleared.

@@ -2,9 +2,9 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
-> **Last updated**: 2026-08-08 (S052 / EV-043 — dual-env staging + prod / #886)
+> **Last updated**: 2026-08-08 (S053 / EV-044 — dual DOKS clusters + DO Projects)
 
-## Topology (F30 — DOKS dual env)
+## Topology (F30 — DOKS dual env / dual cluster)
 
 | Workload | Type | Source | Notes |
 |----------|------|--------|-------|
@@ -12,14 +12,15 @@
 | metar-frontend | Static / CDN or nginx | `apps/frontend` Vite build | `/config.json` inject |
 | metar-worker | Deployment (Background) | `apps/worker` image | No public HTTP; `DATABASE_URL` |
 
-| `env_role` | Branch | Namespace | Hosts |
-|------------|--------|-----------|-------|
-| staging | `stage` | `metar-iwxxm-staging` | `https://api.staging.tac-to-iwxxm.com`, `https://app.staging.tac-to-iwxxm.com` |
-| prod | `main` | `metar-iwxxm` | `https://api.tac-to-iwxxm.com`, `https://app.tac-to-iwxxm.com` |
+| `env_role` | Branch | DO Project | Cluster | Namespace | Hosts |
+|------------|--------|------------|---------|-----------|-------|
+| staging | `stage` | **Staging TAC-to-IWXXM** | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `https://api.staging.tac-to-iwxxm.com`, `https://app.staging.tac-to-iwxxm.com` |
+| prod | `main` | **TAC-to-IWXXM** | `metar-iwxxm` | `metar-iwxxm` | `https://api.tac-to-iwxxm.com`, `https://app.tac-to-iwxxm.com` |
 
-**IaC (T6.1 / #712 / EV-043):** Kustomize overlays at
+**IaC (T6.1 / #712 / EV-043 / EV-044):** Kustomize overlays at
 [`deploy/doks/overlays/{staging,prod}`](../deploy/doks/) —
-`kubectl apply -k deploy/doks/overlays/staging` (or `prod`). Secrets create out-of-band.
+`kubectl apply -k deploy/doks/overlays/staging` (or `prod`) against the **matching** cluster.
+Secrets create out-of-band.
 Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md). Promote path:
 [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md).
 
@@ -30,16 +31,18 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 **Product DB**: DigitalOcean Postgres (`DATABASE_URL`) — sessions + F8 store/quarantine.  
 **Auth**: Supabase Auth only (**JWKS**). No Supabase product DB on default path (ADR-033).
 
-### DOKS public hostnames (T6.3 + EV-043 staging)
+### DOKS public hostnames (T6.3 + EV-043 / EV-044 staging)
 
 | Role | Prod | Staging |
 |------|------|---------|
 | API | `https://api.tac-to-iwxxm.com` | `https://api.staging.tac-to-iwxxm.com` |
 | Frontend | `https://app.tac-to-iwxxm.com` | `https://app.staging.tac-to-iwxxm.com` |
 | Worker | (in-cluster) | (in-cluster) |
-| LB | `168.144.12.70` | same LB (Host-based routing) |
+| DO Project | TAC-to-IWXXM | Staging TAC-to-IWXXM |
+| Cluster | `metar-iwxxm` | `metar-iwxxm-staging` |
+| LB | `168.144.12.70` (prod) | `143.244.202.13` (staging; re-check if LB replaced) |
 | Config profile | `config/prod.json` | `config/staging.json` |
-| Product DB | DO Postgres `defaultdb` | DO Postgres `metar_iwxxm_staging` |
+| Product DB | DO Postgres `metar-iwxxm` / `defaultdb` | DO Postgres `metar-iwxxm-staging` (dedicated) |
 
 Soak checklist (closed early under `D-S038-t65-waive`):
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).
@@ -57,27 +60,62 @@ Render archive: [ops/render-decommission-archive.md](ops/render-decommission-arc
 `--skip-if-suspended` / `RENDER_SKIP_IF_SUSPENDED` so main CI Deploy skips suspended Render
 services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the prod target.
 
-### CD — DOKS image rollout (S042 / EV-034 / EV-043 dual env)
+### CD — DOKS image rollout (S042 / EV-034 / EV-043 / EV-044 dual cluster)
 
-| Branch | GH Environment | Namespace | Latest tag | Post-deploy |
-|--------|----------------|-----------|------------|-------------|
-| `stage` | `staging` | `metar-iwxxm-staging` | `stage-latest` | **Staging smoke** job |
-| `main` | `production` | `metar-iwxxm` | `main-latest` | (prod smoke via 13 / Makefile) |
+| Branch | GH Environment | Cluster | Namespace | Latest tag | Post-deploy |
+|--------|----------------|---------|-----------|------------|-------------|
+| `stage` | `staging` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `stage-latest` | **Staging smoke** job |
+| `main` | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | (prod smoke via 13 / Makefile) |
 
 On push to `stage` or `main`, **Deploy** in `.github/workflows/ci-cd.yml`:
 
 1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `{stage\|main}-latest`.
-2. **Rolls DOKS** with `DOKS_NAMESPACE` set per branch via
-   `scripts/deploy/doks_rollout_images.sh <tag>`.
+2. **Rolls DOKS** with `DOKS_NAMESPACE` + **env-scoped kubeconfig** via
+   `scripts/deploy/doks_rollout_images.sh <tag>` (staging secret ≠ prod secret after EV-044).
 3. **Render hooks** (optional, **main only**): `--skip-if-suspended` (`E34-4`).
 
-**Promote:** Feature → PR → `stage` → Staging smoke → PR **`stage`→`main`** (job
-**Staging gate** / `scripts/ci/staging_gate.sh`) → prod Deploy. Solo-dev: PR is the
-manual gate (no Environment reviewers). See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md).
+**Promote (required before any merge to `main`):** [Corpus: adr/ADR-034]
+
+1. Feature work → PR into **`stage`** (required CI green).
+2. Merge to `stage` → **Deploy (stage)** to staging cluster + **Staging smoke** green for that SHA
+   (HTTPS when Porkbun A records point at staging LB `143.244.202.13`; until then Host-header
+   probes via `STAGING_LB_IP` / `DOKS_LB_IP` are valid).
+3. **Release prep on `stage` (recommended):** bump publishable package semver when those
+   packages changed since the last release; cut `docs/CHANGELOG.md`; commit on `stage` so the
+   promote PR carries the release metadata (see checklist below).
+4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
+   (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
+   successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
+5. Merge to `main` → **Deploy (main)** to prod cluster.
+6. **Tag the release** on the merged `main` tip: deploy tag + any PyPI package tags (F12–F14).
+
+Solo-dev: the PR is the manual gate (no Environment reviewers). Do **not** promote while
+Staging smoke or Staging gate is red/missing. See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md)
+and [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
+
+### Release checklist (`stage` → `main`)
+
+Treat every promote to prod as a release. Soft recommendation (does not block Staging gate):
+
+- [ ] Diff `stage` vs last deploy tag / last promote: note which of `packages/tac2iwxxm`,
+      `packages/tac-validate`, `packages/iwxxm-validate` changed
+- [ ] For each changed publishable package: decide **none / patch / minor / major**; sync
+      `pyproject.toml`, `__version__`, and Cargo/locks when present
+- [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
+- [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
+- [ ] After merge: `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>`
+- [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,
+      `iwxxm-validate-v*`) only after [pypi-release-checklist](../.cursor/skills/pypi-release-checklist/SKILL.md)
+- [ ] Docs-only / infra-only with no package diffs: skip package semver + PyPI tags; still
+      cut CHANGELOG + deploy tag when shipping to prod
+
+Rule: [`.cursor/rules/optional/doks-promote-from-stage.mdc`](../.cursor/rules/optional/doks-promote-from-stage.mdc)
+§Release on promote. [Corpus: product §F12–F14]
 
 | Actions secret | Required | Description |
 |----------------|----------|-------------|
-| `KUBE_CONFIG` | **Yes** (Deploy) | Base64 kubeconfig that can mutate Deployments in **both** `metar-iwxxm` and `metar-iwxxm-staging` (ClusterRole `github-actions-deploy`). Static SA/token — not `doctl` exec. Missing ⇒ Deploy fails (fail-closed). |
+| `KUBE_CONFIG` (production env) | **Yes** (prod Deploy) | Base64 kubeconfig for **prod** cluster `metar-iwxxm` / ns `metar-iwxxm`. Static SA/token — not `doctl` exec. |
+| `KUBE_CONFIG` (staging env) or `KUBE_CONFIG_STAGING` | **Yes** (staging Deploy) | Base64 kubeconfig for **staging** cluster `metar-iwxxm-staging` / ns `metar-iwxxm-staging`. |
 
 Encode: `base64 -w0 <kubeconfig.yaml>` (macOS: `base64 -i kubeconfig.yaml | tr -d '\n'`).
 

@@ -37,6 +37,36 @@ async def test_apply_then_diff_is_empty_sqlite(sqlite_engine: AsyncEngine) -> No
 
 
 @pytest.mark.asyncio
+async def test_postgres_dialect_alias_normalized(sqlite_engine: AsyncEngine, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Alias ``postgres`` → ``postgresql`` (writer_contract lines 95/109).
+    seen: list[str] = []
+
+    async def _fake_diff(_conn: object, *, dialect: str) -> list[SchemaDiff]:
+        seen.append(dialect)
+        return []
+
+    monkeypatch.setattr(
+        "dissemination.writer_contract._diff_on_connection",
+        _fake_diff,
+    )
+    assert await diff_writer_contract(sqlite_engine, dialect="postgres") == []
+    assert seen == ["postgresql"]
+
+    ddl_seen: list[str] = []
+
+    def _fake_ddl(dialect: str) -> str:
+        ddl_seen.append(dialect)
+        return "SELECT 1"
+
+    monkeypatch.setattr(
+        "dissemination.writer_contract.writer_contract_ddl",
+        _fake_ddl,
+    )
+    await apply_writer_contract(sqlite_engine, dialect="postgres")
+    assert ddl_seen == ["postgresql"]
+
+
+@pytest.mark.asyncio
 async def test_diff_reports_missing_column_sqlite(sqlite_engine: AsyncEngine) -> None:
     await apply_writer_contract(sqlite_engine, dialect="sqlite")
     async with sqlite_engine.begin() as conn:

@@ -14,6 +14,9 @@ description: >
 - Before `git tag` for `tac-validate-v*`, `iwxxm-validate-v*`, or `tac2iwxxm-v*`
 - When adding/editing `.github/workflows/*publish*` / PyPI workflows
 - During **12-verify-deploy** / **08-verify-build** publish gates (S014 / EV-010)
+- On every **`stage` → `main` promote** when publishable packages changed (recommended
+  release-on-promote; [Corpus: deploy] §Promote · ADR-034) — bump on `stage`, tag after
+  merge to `main`
 - User asks "ready to publish to PyPI?"
 
 ## Spec Sources

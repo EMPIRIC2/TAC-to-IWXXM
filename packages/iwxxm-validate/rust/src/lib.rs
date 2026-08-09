@@ -92,9 +92,7 @@ impl VendorResolver {
             k
         };
         let by_basename = {
-            let mut guard = resolver_index_cache()
-                .lock()
-                .expect("resolver index lock");
+            let mut guard = resolver_index_cache().lock().expect("resolver index lock");
             if let Some(idx) = guard.get(&key) {
                 idx.clone()
             } else {
@@ -112,7 +110,7 @@ impl VendorResolver {
     }
 
     fn candidates(&self, location: &str, base: Option<&str>) -> Vec<PathBuf> {
-        let loc = location.split('/').last().unwrap_or(location);
+        let loc = location.split('/').next_back().unwrap_or(location);
         let stripped = location
             .strip_prefix("http://")
             .or_else(|| location.strip_prefix("https://"))
@@ -141,8 +139,8 @@ impl VendorResolver {
         // Progressive URL-path suffixes (host/…/file → …/file → file).
         let suffix_paths = url_path_suffixes(stripped);
         let remapped = aixm_schema_remaps(stripped);
-        let version_hint = version_hint_from_location(stripped)
-            .or_else(|| self.version_hint_from_resolved_dirs());
+        let version_hint =
+            version_hint_from_location(stripped).or_else(|| self.version_hint_from_resolved_dirs());
 
         for root in &self.roots {
             out.push(root.join(location));
@@ -217,9 +215,14 @@ fn is_relative_schema_location(location: &str) -> bool {
     location.starts_with("./")
         || location.starts_with("../")
         || !location.contains("://")
-            && Path::new(location)
-                .components()
-                .all(|c| matches!(c, std::path::Component::Normal(_)| std::path::Component::CurDir | std::path::Component::ParentDir))
+            && Path::new(location).components().all(|c| {
+                matches!(
+                    c,
+                    std::path::Component::Normal(_)
+                        | std::path::Component::CurDir
+                        | std::path::Component::ParentDir
+                )
+            })
 }
 
 fn version_hint_from_location(stripped: &str) -> Option<String> {
@@ -252,10 +255,7 @@ fn url_path_suffixes(stripped: &str) -> Vec<String> {
 fn aixm_schema_remaps(stripped: &str) -> Vec<String> {
     // http://www.aixm.aero/schema/5.1.1/AIXM_Features.xsd
     //   → aero/aixm/5.1.1/AIXM_Features.xsd
-    const PREFIXES: &[&str] = &[
-        "www.aixm.aero/schema/",
-        "aixm.aero/schema/",
-    ];
+    const PREFIXES: &[&str] = &["www.aixm.aero/schema/", "aixm.aero/schema/"];
     for prefix in PREFIXES {
         if let Some(rest) = stripped.strip_prefix(prefix) {
             return vec![format!("aero/aixm/{rest}"), rest.to_string()];
@@ -293,7 +293,7 @@ fn best_basename_match(
         .iter()
         .map(|p| (score_schema_candidate(p, url_parent, &segments), p))
         .collect();
-    ranked.sort_by(|a, b| b.0.cmp(&a.0));
+    ranked.sort_by_key(|b| std::cmp::Reverse(b.0));
     ranked.first().map(|(_, p)| (*p).clone())
 }
 
@@ -430,10 +430,7 @@ fn catalog_key(catalog_roots: &[String]) -> Vec<String> {
     key
 }
 
-fn get_or_parse_xsd(
-    xsd_path: &str,
-    catalog_roots: &[String],
-) -> Result<Arc<XsdSchema>, String> {
+fn get_or_parse_xsd(xsd_path: &str, catalog_roots: &[String]) -> Result<Arc<XsdSchema>, String> {
     let key = (xsd_path.to_string(), catalog_key(catalog_roots));
     {
         let guard = xsd_cache().lock().expect("xsd cache lock");
@@ -548,14 +545,7 @@ fn validate_document<'py>(
                 } else {
                     "SCHEMA_PARSE_ERROR"
                 };
-                issues.append(issue_dict(
-                    py,
-                    "error",
-                    code,
-                    &msg,
-                    "xsd",
-                    Some(xsd_path),
-                )?)?;
+                issues.append(issue_dict(py, "error", code, &msg, "xsd", Some(xsd_path))?)?;
                 if !want_sch {
                     return Ok(issues);
                 }

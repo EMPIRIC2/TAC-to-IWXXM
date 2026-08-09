@@ -25,6 +25,8 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
+| [S055-wmo-aviation-registers](S055-wmo-aviation-registers/session-brief.md) | feature | completed | #889 codes.wmo.int aviation registers → TAC verify/cite/cover (Lean); EV-046 | evolve/EV-046-wmo-aviation-registers | 2026-08-08 | 2026-08-08 |
+| [S054-rust-ci-crates](S054-rust-ci-crates/session-brief.md) | feature | completed | #725 Rust crate CI; EV-045; PR #953 → stage | evolve/EV-045-rust-ci | 2026-08-08 | 2026-08-08 |
 | [S051-output-filename-download-stale](S051-output-filename-download-stale/session-brief.md) | hotfix | in_progress | #904 output filename stale on Download; BUG-2026-08-07 | fix/output-filename-download-stale | 2026-08-07 | — |
 | [S049-operator-sources-briefing](S049-operator-sources-briefing/session-brief.md) | feature | in_progress | Operator UI source-centric runbook + PPT pack; EV-041 Lean docs | evolve/EV-041-operator-sources-briefing | 2026-08-06 | — |
 | [S048-workbench-lint-ux](S048-workbench-lint-ux/session-brief.md) | feature | completed | Workbench lint UX + prefs + official AHL/Collect + catalog source; EV-040; PR #893; #894 | evolve/EV-040-workbench-lint-ux | 2026-08-06 | 2026-08-06 |

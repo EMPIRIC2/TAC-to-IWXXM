@@ -12,10 +12,18 @@ create_ruleset() {
   local body
   body="$(python3 - <<PY
 import json
+# Job name: strings from .github/workflows/ci-cd.yml (must match exactly).
+# EV-045 / #725 / TC-EV045-006 — Rust crates + both maturin smokes.
+# EV-047 / #834 / TC-EV047-007 — converter perf hard gate (D-S056-gateA=2).
+# NOTE: do not use shell backticks in this heredoc (they expand before python).
 checks = [
     {"context": "Test (backend)", "integration_id": 0},
     {"context": "Test (frontend)", "integration_id": 0},
     {"context": "Alembic migrations", "integration_id": 0},
+    {"context": "Rust crates (fmt/clippy/test)", "integration_id": 0},
+    {"context": "tac2iwxxm PyO3 (maturin)", "integration_id": 0},
+    {"context": "iwxxm-validate PyO3 (maturin)", "integration_id": 0},
+    {"context": "Converter perf (tac2iwxxm)", "integration_id": 0},
 ]
 extra = json.loads('''${extra_checks_json}''')
 checks.extend(extra)
@@ -43,8 +51,17 @@ print(json.dumps({
 PY
 )"
   echo "Creating/updating ruleset ${name} for ${pattern}"
-  gh api --method POST "repos/${REPO}/rulesets" --input - <<<"${body}" \
-    || echo "::warning::ruleset ${name} create failed (need admin). See docs/ops/doks-staging-dns-runbook.md"
+  # Prefer create; if name exists, PATCH by id.
+  if ! gh api --method POST "repos/${REPO}/rulesets" --input - <<<"${body}"; then
+    existing_id="$(gh api "repos/${REPO}/rulesets" --jq ".[] | select(.name==\"${name}\") | .id" 2>/dev/null || true)"
+    if [[ -n "${existing_id}" ]]; then
+      echo "Ruleset ${name} exists (id=${existing_id}); updating"
+      gh api --method PUT "repos/${REPO}/rulesets/${existing_id}" --input - <<<"${body}" \
+        || echo "::warning::ruleset ${name} update failed (need admin)."
+    else
+      echo "::warning::ruleset ${name} create failed (need admin). See docs/ops/doks-staging-dns-runbook.md"
+    fi
+  fi
 }
 
 create_ruleset "protect-stage" "refs/heads/stage" "[]"

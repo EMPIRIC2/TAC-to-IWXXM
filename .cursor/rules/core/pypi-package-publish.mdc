@@ -33,6 +33,10 @@ Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package compone
 - Do not publish from arbitrary branch pushes — **tag-driven** only.
 - First public release this cycle: `0.1.0` for all three.
 - Extra `tac2iwxxm[validate]` must depend on both validators (F14).
+- **Promote timing (recommended):** bump package versions on `stage` before the
+  `stage`→`main` PR; push package tags from the merged `main` tip when publishing.
+  Deploy cutovers also use `vYYYY.MM.DD-deploy`. See [Corpus: deploy] §Promote and
+  `doks-promote-from-stage.mdc` §Release on promote.
 
 ## Package boundaries
 

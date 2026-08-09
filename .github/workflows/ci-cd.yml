@@ -36,12 +36,20 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Need full history + tags so promote_release_reminder can diff since last v*-deploy.
+          fetch-depth: 0
+          fetch-tags: true
       - name: Enforce promote-from-stage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           STAGING_API_URL: https://api.staging.tac-to-iwxxm.com
+          # EV-044 staging cluster LB (Host-header fallback until Porkbun HTTPS).
+          STAGING_LB_IP: "143.244.202.13"
+          DOKS_LB_IP: "143.244.202.13"
           # pull_request GITHUB_SHA is a merge commit — gate the PR head tip on stage.
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        # staging_gate.sh also runs promote_release_reminder.sh (advisory notices).
         run: bash scripts/ci/staging_gate.sh
 
   # EV-036: remote validate job removed — lint/format/config on local pre-commit.
@@ -62,6 +70,7 @@ jobs:
             iwxxm-validate,
             tac-validate,
             dissemination,
+            worker,
             bugs,
           ]
 
@@ -108,25 +117,32 @@ jobs:
           uv run pytest packages/shared/tests --cov=metar_shared \
             --cov-config=packages/shared/pyproject.toml --cov-branch \
             --cov-report=xml:packages/shared/coverage.xml \
+            --cov-report=json:packages/shared/coverage.json \
             --cov-report=term-missing --cov-fail-under=98 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
           pnpm --filter @metar/shared run test:coverage
 
       - name: Run backend unit tests with coverage
         if: matrix.package == 'backend'
         run: |
-          cd apps/backend && uv run pytest tests/unit \
+          (cd apps/backend && uv run pytest tests/unit \
             --cov=src --cov-config=pyproject.toml --cov-branch \
-            --cov-report=xml:coverage.xml --cov-report=term-missing \
-            --cov-fail-under=98 -v
+            --cov-report=xml:coverage.xml \
+            --cov-report=json:coverage.json \
+            --cov-report=term-missing \
+            --cov-fail-under=98 -v)
+          uv run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
 
-      # F31 / EV-031 T1.3 — JWKS Auth unit tests (tests/unit/auth). Coverage report only;
-      # fail_under deferred until proxy/router surface is fully exercised.
+      # F31 / EV-047 — JWKS Auth units; package + per-file ≥95% (D-S056-cov95-scope=2).
       - name: Run auth unit tests with coverage
         if: matrix.package == 'auth'
         run: |
           uv run pytest tests/unit/auth --cov=metar_auth \
             --cov-config=packages/auth/pyproject.toml --cov-branch \
-            --cov-report=xml:packages/auth/coverage.xml --cov-report=term-missing -v
+            --cov-report=xml:packages/auth/coverage.xml \
+            --cov-report=json:packages/auth/coverage.json \
+            --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
       # EV-023 / E23-T4=2: TC-EV023-005 Amd79 informative cases use xfail(strict=False);
       # xfail_strict=false in packages/tac2iwxxm/pyproject.toml — soft failures must not hard-fail.
@@ -136,7 +152,9 @@ jobs:
           uv run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
             --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac2iwxxm/coverage.xml \
+            --cov-report=json:packages/tac2iwxxm/coverage.json \
             --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
       - name: Install Rust toolchain (iwxxm-validate native)
         if: matrix.package == 'iwxxm-validate'
@@ -158,7 +176,9 @@ jobs:
           uv run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
             --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/iwxxm-validate/coverage.xml \
+            --cov-report=json:packages/iwxxm-validate/coverage.json \
             --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/iwxxm-validate/coverage.json
 
       - name: Run tac-validate unit tests with coverage
         if: matrix.package == 'tac-validate'
@@ -166,7 +186,9 @@ jobs:
           uv run pytest packages/tac-validate/tests --cov=tac_validate \
             --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac-validate/coverage.xml \
+            --cov-report=json:packages/tac-validate/coverage.json \
             --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/tac-validate/coverage.json
 
       # F16–F19 / T0.1 — skips until packages/dissemination is scaffolded (T1.1/T1.2).
       - name: Run dissemination unit tests with coverage
@@ -177,6 +199,11 @@ jobs:
       - name: Run dissemination multi-DB integration tests
         if: matrix.package == 'dissemination'
         run: make test-integration-dissemination
+
+      # F8 / EV-047 — worker unit + package/per-file ≥95%.
+      - name: Run worker unit tests with coverage
+        if: matrix.package == 'worker'
+        run: make test-unit-worker
 
       - name: Run frontend tests with coverage
         if: matrix.package == 'frontend'
@@ -332,11 +359,94 @@ jobs:
         run: make test-alembic
 
   # ============================================================================
-  # NATIVE — tac2iwxxm PyO3 / maturin scaffold (ADR-017 / T4.3)
+  # RUST CRATES — fmt / clippy / cargo test (EV-045 / #725 / TC-EV045-001..003)
+  # Matrix legs get GH name suffixes; required check is rust-crates-gate below.
+  # ============================================================================
+  rust-crates:
+    runs-on: ubuntu-latest
+    name: Rust crate (${{ matrix.package }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: tac2iwxxm
+            workdir: packages/tac2iwxxm/rust
+          - package: iwxxm-validate
+            workdir: packages/iwxxm-validate/rust
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      # PyO3 build scripts need a supported CPython (crate max 3.13 today).
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cargo cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ${{ matrix.workdir }} -> target
+
+      - name: cargo fmt --check
+        working-directory: ${{ matrix.workdir }}
+        run: cargo fmt --check
+
+      - name: cargo clippy -D warnings
+        working-directory: ${{ matrix.workdir }}
+        run: |
+          export PYO3_PYTHON="$(command -v python)"
+          cargo clippy -- -D warnings
+
+      - name: cargo test
+        working-directory: ${{ matrix.workdir }}
+        run: |
+          export PYO3_PYTHON="$(command -v python)"
+          cargo test
+
+  rust-crates-gate:
+    runs-on: ubuntu-latest
+    name: Rust crates (fmt/clippy/test)
+    needs: [rust-crates]
+    if: always()
+    steps:
+      - name: Require rust-crates matrix success
+        run: |
+          result="${{ needs.rust-crates.result }}"
+          echo "rust-crates result=${result}"
+          test "${result}" = "success"
+
+  # ============================================================================
+  # NATIVE — PyO3 / maturin smokes (ADR-017 / T4.3; EV-045 extends iwxxm-validate)
+  # Job id stays tac2iwxxm-native for EV-036 contract tests; display names are locked.
   # ============================================================================
   tac2iwxxm-native:
     runs-on: ubuntu-latest
-    name: tac2iwxxm PyO3 (maturin)
+    name: ${{ matrix.check_name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: tac2iwxxm
+            path: packages/tac2iwxxm
+            check_name: tac2iwxxm PyO3 (maturin)
+            require_env: TAC2IWXXM_REQUIRE_RUST
+            pytest_args: >-
+              packages/tac2iwxxm/tests/test_native_scaffold.py
+              packages/tac2iwxxm/tests/test_pyo3_hotspots.py
+          - package: iwxxm-validate
+            path: packages/iwxxm-validate
+            check_name: iwxxm-validate PyO3 (maturin)
+            require_env: IWXXM_VALIDATE_REQUIRE_RUST
+            pytest_args: >-
+              packages/iwxxm-validate/tests/test_native_scaffold.py
+              packages/iwxxm-validate/tests/test_tc_f13_001_parity.py
     steps:
       - uses: actions/checkout@v5
         with:
@@ -359,18 +469,49 @@ jobs:
       - name: Install maturin
         run: uv pip install maturin
 
-      - name: Build tac2iwxxm._rust extension
-        working-directory: packages/tac2iwxxm
+      - name: Sync iwxxm-validate runtime schemas
+        if: matrix.package == 'iwxxm-validate'
+        run: uv run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
+
+      - name: Build ${{ matrix.package }}._rust extension
+        working-directory: ${{ matrix.path }}
         run: |
           source "$HOME/.cargo/env" 2>/dev/null || true
           uv run maturin develop --manifest-path rust/Cargo.toml --uv
 
       - name: Smoke-test required native extension
         env:
-          TAC2IWXXM_REQUIRE_RUST: '1'
+          REQUIRE_ENV: ${{ matrix.require_env }}
         run: |
-          uv run pytest packages/tac2iwxxm/tests/test_native_scaffold.py \
-            packages/tac2iwxxm/tests/test_pyo3_hotspots.py -v --no-cov
+          export "${REQUIRE_ENV}=1"
+          # shellcheck disable=SC2086
+          uv run pytest ${{ matrix.pytest_args }} -v --no-cov
+
+  # ============================================================================
+  # CONVERTER PERF — EV-047 / #834 hard gate (TC-EV047-005..008)
+  # Locked check name for rulesets: Converter perf (tac2iwxxm)
+  # ============================================================================
+  converter-perf:
+    runs-on: ubuntu-latest
+    name: Converter perf (tac2iwxxm)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install uv + workspace
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Converter PR hard gate
+        run: make test-converter-pr-gate
 
   # ============================================================================
   # E2E SMOKE — Playwright browser smoke (auth bootstrap + TAC conversion)
@@ -428,13 +569,15 @@ jobs:
           retention-days: 7
 
   # ============================================================================
-  # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043).
-  # stage → staging ns; main → prod ns. Render hooks optional (main only).
+  # DEPLOY — build/push GHCR images, then roll DOKS (F30 / EV-034 / EV-043 / EV-044).
+  # stage → staging cluster (env staging); main → prod cluster (env production).
+  # Promote to main only via PR stage→main after Staging smoke + staging-gate (ADR-034).
+  # Render hooks optional (main only).
   # ============================================================================
   deploy:
     runs-on: ubuntu-latest
     name: Deploy (${{ github.ref_name }})
-    needs: [test, test-alembic, tac2iwxxm-native]
+    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage')
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
     permissions:
@@ -653,6 +796,9 @@ jobs:
     env:
       LIVE_API_URL: https://api.staging.tac-to-iwxxm.com
       LIVE_FRONTEND_URL: https://app.staging.tac-to-iwxxm.com
+      # Host-header fallback until Porkbun A records → staging LB (EV-044).
+      STAGING_LB_IP: "143.244.202.13"
+      DOKS_LB_IP: "143.244.202.13"
       STAGING_SMOKE_PYTEST: "0"
     steps:
       - uses: actions/checkout@v5

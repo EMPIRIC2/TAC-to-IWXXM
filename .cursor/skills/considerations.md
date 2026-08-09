@@ -50,10 +50,14 @@ The default pipeline is **linear**, but **recovery** is allowed when validation 
 
 Atomic commits and PRs use structured messages, but **nothing automatically becomes** user-facing **release notes**.
 
-**Convention** (when cutting a release or completing 13-deploy-smoke):
+**Convention** (when cutting a release, promoting **`stage` → `main`**, or completing 13-deploy-smoke):
 - Append a release section to `docs/deploy-report.md` or maintain `docs/CHANGELOG.md`
 - Aggregate merge commits and PR titles since the last deploy tag
 - Include: version/date, deployment URL, merged milestones, notable decisions
+- **Promote = release (recommended):** bump changed publishable package semver on `stage`,
+  cut CHANGELOG, then after merge to `main` tag `vYYYY.MM.DD-deploy` (+ PyPI package tags
+  when publishing). See [docs/deploy.md](../../docs/deploy.md) §Promote and
+  `doks-promote-from-stage.mdc` §Release on promote.
 
 ## 4. Performance testing
 

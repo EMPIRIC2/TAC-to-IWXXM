@@ -31,6 +31,7 @@ import {
   AlertCircle,
   XCircle,
   LogOut,
+  CircleHelp,
 } from 'lucide-react';
 import JSZip from 'jszip';
 import { toast } from 'sonner';
@@ -98,6 +99,7 @@ import {
   resolveManualLineMetaFromResult,
 } from '/utils/workSessionPayload';
 import { readGuestConverterState } from '/utils/guestConverterState';
+import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
 import {
   manualDownloadXmlName,
   manualOutputName,
@@ -1479,6 +1481,23 @@ export function FileConverter({
               METAR → IWXXM Converter
             </h1>
             <div className="flex items-center gap-3">
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
+              >
+                <a
+                  href={OPERATOR_ONE_PAGER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open operator help one-pager"
+                  data-testid="operator-help-link"
+                >
+                  <CircleHelp className="w-4 h-4 mr-2" aria-hidden="true" />
+                  Help
+                </a>
+              </Button>
               <Button
                 onClick={() => setIsPreferencesDialogOpen(true)}
                 variant="outline"

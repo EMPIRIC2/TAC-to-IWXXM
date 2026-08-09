@@ -146,6 +146,72 @@ async def test_edis_submit_redacts_password_in_errors() -> None:
     assert "REDACTED" in str(excinfo.value)
 
 
+def test_format_wmo_ahl_unknown_tt_falls_back() -> None:
+    # map_t1t2 miss → keep raw TT (edis 117-118).
+    assert format_wmo_ahl(tt="ZZ", aa="US", ii="31", cccc="KZNY", yygggg="121200") == ("ZZUS31 KZNY 121200")
+
+
+def test_format_wmo_ahl_invalid_bbb_raises() -> None:
+    with pytest.raises(ValueError):
+        format_wmo_ahl(
+            tt="SA",
+            aa="US",
+            ii="31",
+            cccc="KZNY",
+            yygggg="121200",
+            bbb="YYZ",
+        )
+
+
+def test_build_edis_message_rejects_empty_body() -> None:
+    with pytest.raises(ValueError, match="non-empty"):
+        build_edis_message(_params(), tac_body="   ")
+
+
+@pytest.mark.asyncio
+async def test_edis_submit_without_auth_and_redact_without_secrets() -> None:
+    params = _params(username=None, password=None)
+    smtp = AsyncMock()
+    smtp.connect = AsyncMock()
+    smtp.send_message = AsyncMock()
+    smtp.quit = AsyncMock()
+    result = await edis_submit(
+        params,
+        tac_body="METAR KJFK 121151Z 18008KT=",
+        allowlist=_allowlist("smtp.gateway.example.test"),
+        smtp=smtp,
+    )
+    assert result.ok is True
+    smtp.login.assert_not_called()
+
+    smtp_fail = AsyncMock()
+    smtp_fail.connect = AsyncMock(side_effect=RuntimeError("boom"))
+    with pytest.raises(ValueError, match="boom"):
+        await edis_submit(
+            params,
+            tac_body="METAR KJFK 121151Z 18008KT=",
+            allowlist=_allowlist("smtp.gateway.example.test"),
+            smtp=smtp_fail,
+        )
+
+
+@pytest.mark.asyncio
+async def test_edis_submit_reraises_egress_denied() -> None:
+    params = _params()
+    smtp = AsyncMock()
+    smtp.connect = AsyncMock()
+    smtp.login = AsyncMock()
+    smtp.send_message = AsyncMock(side_effect=EgressDenied("blocked"))
+    smtp.quit = AsyncMock()
+    with pytest.raises(EgressDenied):
+        await edis_submit(
+            params,
+            tac_body="METAR KJFK 121151Z 18008KT=",
+            allowlist=_allowlist("smtp.gateway.example.test"),
+            smtp=smtp,
+        )
+
+
 @pytest.fixture(autouse=True)
 def _public_dns_for_example_hosts():
     with patch(

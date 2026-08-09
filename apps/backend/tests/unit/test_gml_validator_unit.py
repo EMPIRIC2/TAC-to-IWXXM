@@ -260,3 +260,126 @@ def test_extract_rdf_file_and_element_without_fragment():
     rdf_file, element_id = validator._extract_rdf_file_and_element("codes.wmo.int-49-2-AerodromeState.rdf")
     assert rdf_file == "codes.wmo.int-49-2-AerodromeState.rdf"
     assert element_id == ""
+
+
+def test_load_rdf_elements_skips_description_without_about(tmp_path):
+    """Cover false branch of ``if about:`` when rdf:Description has no about."""
+    rdf_file = tmp_path / "codes.wmo.int-common-nil.rdf"
+    rdf_file.write_text(
+        """
+        <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description/>
+          <rdf:Description rdf:about="http://codes.wmo.int/common/nil#missing"/>
+        </rdf:RDF>
+        """,
+        encoding="utf-8",
+    )
+
+    validator = GMLReferenceValidator(codelists_dir=tmp_path)
+    elements = validator._load_rdf_elements(rdf_file.name)
+    assert "missing" in elements
+
+
+def test_extract_gml_ids_registers_and_duplicates():
+    """
+    Cover ``_extract_gml_ids`` body.
+
+    XPath uses GML 3.2.1 namespace; attribute get uses GML 3.2 — both must be present.
+    """
+    from lxml import etree
+
+    xml = """
+    <root xmlns:gml="http://www.opengis.net/gml/3.2.1"
+          xmlns:gml32="http://www.opengis.net/gml/3.2">
+      <a gml:id="xpath-a" gml32:id="shared"/>
+      <b gml:id="xpath-b" gml32:id="shared"/>
+      <c gml:id="xpath-c" gml32:id="unique"/>
+    </root>
+    """
+    tree = etree.fromstring(xml.encode("utf-8"))
+    validator = GMLReferenceValidator()
+    registry = validator._extract_gml_ids(tree)
+
+    assert "shared" in registry
+    assert len(registry["shared"]) == 2
+    assert registry["unique"] == ["/root/c"]
+
+
+def test_extract_href_references_skips_non_internal_hrefs():
+    """Cover false branch when xlink:href does not start with '#'."""
+    from lxml import etree
+
+    xml = """
+    <root xmlns:xlink="http://www.w3.org/1999/xlink">
+      <ext xlink:href="codes.wmo.int-49-2-AerodromeState.rdf#OPEN"/>
+      <internal xlink:href="#target-id"/>
+    </root>
+    """
+    tree = etree.fromstring(xml.encode("utf-8"))
+    validator = GMLReferenceValidator()
+    refs = validator._extract_href_references(tree)
+
+    assert len(refs) == 1
+    assert refs[0][0] == "#target-id"
+    assert refs[0][1] == "target-id"
+
+
+def test_validate_autoload_codelists_exception_is_swallowed(monkeypatch):
+    """Cover lines 251-252 when schema registry lookup fails."""
+    validator = GMLReferenceValidator(codelists_dir=None)
+
+    def _boom():
+        raise RuntimeError("registry unavailable")
+
+    # validate() does `from .schema_registry import get_schema_registry`
+    monkeypatch.setattr(
+        "src.utilities.schema_registry.get_schema_registry",
+        _boom,
+    )
+
+    result = validator.validate("<root/>", version="2025-2")
+    assert result.is_valid is True
+
+
+def test_validate_skips_autoload_when_codelists_already_set(tmp_path):
+    """Cover false branch of ``if version and not self.codelists_dir``."""
+    validator = GMLReferenceValidator(codelists_dir=tmp_path)
+    result = validator.validate("<root/>", version="2025-2")
+    assert result.is_valid is True
+    assert validator.codelists_dir == tmp_path
+
+
+def test_validate_reports_broken_internal_via_real_id_extract():
+    """Exercise duplicate-id and broken-internal paths without monkeypatching extractors."""
+    xml = """
+    <root xmlns:gml="http://www.opengis.net/gml/3.2.1"
+          xmlns:gml32="http://www.opengis.net/gml/3.2"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
+      <a gml:id="xa" gml32:id="dup"/>
+      <b gml:id="xb" gml32:id="dup"/>
+      <ref xlink:href="#missing"/>
+    </root>
+    """
+    validator = GMLReferenceValidator()
+    result = validator.validate(xml)
+
+    codes = {issue.code for issue in result.issues}
+    assert "DUPLICATE_GML_ID" in codes
+    assert "BROKEN_INTERNAL_REFERENCE" in codes
+
+
+def test_validate_geometry_passes_with_crs_and_coordinates():
+    """Cover geometry success path (coordinates present + is_valid debug)."""
+    xml = """
+    <root xmlns:gml="http://www.opengis.net/gml/3.2.1">
+      <gml:Point srsName="EPSG:4326">
+        <gml:pos>10 20</gml:pos>
+      </gml:Point>
+    </root>
+    """
+    validator = GMLReferenceValidator()
+    result = validator.validate_geometry(xml)
+
+    assert result.is_valid is True
+    assert result.issues == []
+    assert result.total_ids == 1

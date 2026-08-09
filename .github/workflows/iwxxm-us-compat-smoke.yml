@@ -4,7 +4,7 @@ name: iwxxm-us compat smoke
 
 on:
   push:
-    branches: [main, evolve/EV-038-iwxxm-corpus-residuals]
+    branches: [main, stage, evolve/EV-038-iwxxm-corpus-residuals]
     paths:
       - "vendor/schemas/iwxxm/**"
       - "vendor/schemas/iwxxm-us/**"

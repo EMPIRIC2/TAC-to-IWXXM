@@ -142,12 +142,22 @@ No SCH `document()` filename gap for these dual registers on the current pin.
 - **iwxxm-validate:** Keep both nil RDF + both colour RDF + MetFeature RDF in pin — filenames present and member-complete for current pin.
 - **Caveats / TBD:** Periodic vendor-sync re-diff vs live colour/MetFeature only; do not gate on HTML 4678 count.
 
+## S055 / EV-046 operational follow-on (#889 Lean) — 2026-08-08
+
+Standing present/cite/cover (not a new dig):  
+[codes-wmo-int-coverage.md](../../sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md).
+
+- Offline SoT confirmed: `iwxxm-codelists` tag `49-2` + 2025-2 `codes.wmo.int-*.rdf`
+- ISSUE_CATALOG provenance upgraded from bare root → register landings
+- Fixture ∩ register coverage % recorded (coarse); **Validated** → [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
+
 ## Suggested next mining passes
 
 1. ~~Member-set diff MetFeature~~ — **done** (`VOLCANIC_ASH` only on `iwxxm/`; counts 28 vs 27).
 2. ~~Confirm SCH RDF filenames~~ — **done** (colour/nil/MetFeature all present + match).
 3. ~~Diff vendor 4678 vs live HTML~~ — **done** (HTML incomplete; CSV=402 SoT).
 4. Optional: after next `iwxxm-codelists` sync, re-diff colour/MetFeature RDF vs live.
+5. **Standard (#959):** harvest + `tac-validate` membership asserts (no live HTML in PR CI).
 
 ## Promotion checklist
 

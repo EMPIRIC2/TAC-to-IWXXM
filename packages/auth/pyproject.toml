@@ -37,6 +37,5 @@ branch = true
 source = ["src/metar_auth"]
 
 [tool.coverage.report]
-# Soft report floor — CI auth matrix reports coverage without --cov-fail-under
-# until proxy/router surface has fuller unit coverage (EV-031 M1).
+fail_under = 95
 show_missing = true

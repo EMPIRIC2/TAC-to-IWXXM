@@ -172,3 +172,23 @@ def test_get_frontend_url_from_config_rejects_non_object_api(
     )
     _write_config(tmp_path, "bad", {"api": None})
     assert get_frontend_url_from_config("bad") == ""
+
+
+def test_get_cors_origins_from_config_handles_missing_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    assert get_cors_origins_from_config("missing") == []
+
+
+def test_get_frontend_url_from_config_handles_missing_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from metar_shared.config_loader import get_frontend_url_from_config
+
+    monkeypatch.setattr(
+        "metar_shared.config_loader._REPO_ROOT", tmp_path, raising=False
+    )
+    assert get_frontend_url_from_config("missing") == ""

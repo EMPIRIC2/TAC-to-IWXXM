@@ -190,6 +190,13 @@ Canonical companions:
   [RELEASE_LINE_ADOPTABILITY §codes.wmo.int URI drift](../iwxxm/RELEASE_LINE_ADOPTABILITY.md).
   Cite-ready URIs hand off to [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889).
 - **Refresh:** aviation inventory re-checked 2026-07-30 — [mining/codes-wmo-int-aviation-mining-notes.md](../mining/codes-wmo-int-aviation-mining-notes.md)
+- **S055 / EV-046 (#889 Lean):** present/cite/cover —
+  [codes-wmo-int-coverage.md](../../sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md);
+  ISSUE_CATALOG weather/cloud/nil rows cite register landings; pin
+  `vendor/manifest.json` → `iwxxm-codelists` tag `49-2`. **Validated** deferred to
+  [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959); compose
+  [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) /
+  [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882).
 
 ### IWXXM register (`_iwxxm`)
 

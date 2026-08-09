@@ -5,7 +5,7 @@ name: Quality matrices smoke
 
 on:
   push:
-    branches: [main, evolve/EV-030-quality-residuals-831]
+    branches: [main, stage, evolve/EV-030-quality-residuals-831]
     paths:
       - "tests/quality_matrices/**"
       - "scripts/ci/run_quality_matrices_smoke.sh"

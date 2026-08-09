@@ -3,6 +3,260 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-047 — M0 stabilize + operator trust (#833/#834/#956/#957) (S056)
+
+**Session**: S056-m0-stabilize-operator-trust  
+**Features**: deepen **M5 / F6 / F7** (no new Fn)  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-047-m0-stabilize-operator-trust` (base `stage@adcf3b1f`)  
+**Status**: **completed** 2026-08-08 (`D-S056-close=1`; PR #961 → `stage`)  
+
+**Issues**: [#833](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/833),
+[#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834),
+[#956](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/956),
+[#957](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/957)  
+**Corpus**: [Corpus: product §M5], [Corpus: product §F6], [Corpus: product §F7],
+[Corpus: tests], [Corpus: tech-spec], [Corpus: decisions] · ops
+`docs/ops/DEVELOPMENT.md`
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S056-open | **1** — Open S056 → EV-047 for #833+#834+#956+#957 |
+| D-S056-bundle | **1** — One cycle, all four issues |
+| D-S056-husky | **1** — Husky day-to-day = lint + fast units; heavier gates CI / opt-in `make` (**explicit reverse** of EV-036/S044 local-heavy developer path) |
+| D-S056-preset | **1** — Standard; amended by D-S056-docs for Help → **re-enable 10-e2e**; 12/13 stay waived unless deploy gate needed at 11 |
+| D-S056-husky-shape | **1 (A)** — `pre-commit` = lint/format only; `pre-push` = fast unit subset |
+| D-S056-perf | **1** — convert-only wall **p95** vs committed YAML; hard-fail **>20% or absolute ceiling**; METAR/SPECI/TAF + thin SIGMET-family smoke; **CI required check only** (not husky); pure-Python first; median-of-N + flake retry doc |
+| D-S056-docs | **1** — one-pager `docs/guides/operator-one-pager.md` (+ printable if cheap); handbook `docs/guides/operator-handbook.md`; README Quick start **and** in-app Help (F7); no new CORPUS root member |
+| D-S056-phase0 | **1** — Phase 0 locked; proceed **01-requirements** |
+| D-S056-01-ac | **1** — Approve AC1–AC9 as written (2026-08-08) |
+| D-S056-ui-preview | **2** — No non-deployed UI preview for 01; Help placement in 04 |
+| D-S056-gateA | **2** — Gate A PASS; **require ruleset update for converter perf check** (amended by defer) |
+| D-S056-ruleset-defer | **2** — Defer **requiring** `Converter perf (tac2iwxxm)` in live rulesets until CI job ships (M1 T1.4→T1.5); keep other checks; establish **baselines first** for comparison |
+| D-S056-04-plan | **2** — Approve execution plan; **seed** `converter_pr.yaml` from laptop spike now; **re-record on CI** in T1.3 |
+| D-S056-04-floor | **200µs** absolute floor (amended from 50µs after cross-host noise on T1.3 Linux Docker re-record) |
+| D-S056-cov95 | **2** — package + per-file ≥95% this cycle (all Python packages in CI); M2.5 T2.5.1–T2.5.3 |
+| D-S056-cov95-scope | **2** — literally every Python package including auth + worker; package + per-file ≥95%; M2.5 adds T2.5.4 |
+| D-S056-m3-order | **2** — resolve coverage first (M2.5), then M3 docs/Help (amends sequencing after `D-S056-next-m3=1`) |
+| D-S056-m4-next | **1** — M4 verify 08 → 09+10 → 11 |
+| D-S056-11-ui-preview | **2** — No non-deployed preview at 11; approve from reports/tests only |
+| D-S056-uj054 | **1** — Approve UJ-054 Operator Help → one-pager |
+| D-S056-ac-bundle | **1** — Approve AC1–AC9 + cov95; accept T1.5 ruleset defer |
+| D-S056-advisories | **1** — Accept QA-001..006 as listed in verify-impl.md |
+| D-S056-close | **1** — Close EV-047; merge #961 → `stage` (12/13 waived; T1.5 deferred) |
+
+### Locked defaults (perf / hooks / docs)
+
+| Area | Default |
+|------|---------|
+| Husky | Shape **A** (`D-S056-husky-shape=1`) |
+| Perf metric | convert-only p95; CI-only gate; 20% / ceiling; Annex-3 thin smoke |
+| Docs | `docs/guides/operator-*.md` + README + Help |
+
+### Acceptance (confirmed `D-S056-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Commit = lint/format only | TC-EV047-001 |
+| AC2 | Push = fast unit subset only | TC-EV047-002 |
+| AC3 | DEVELOPMENT.md + test-plan match shape A | TC-EV047-003 |
+| AC4 | Offloaded gates still in CI | TC-EV047-004 |
+| AC5 | Artificial convert slowdown → red; revert → green | TC-EV047-005/006 |
+| AC6 | Required CI check; baselines + flake policy; p95 / 20% pack | TC-EV047-007/008 |
+| AC7 | Operator one-pager (one page; no internal cites) | TC-EV047-009 |
+| AC8 | Minimal handbook (sections + ingest pointer) | TC-EV047-010 |
+| AC9 | README + in-app Help → one-pager (UJ-054) | TC-EV047-011 |
+
+---
+
+## Cycle EV-046 — codes.wmo.int aviation registers → TAC present/cite/cover (S055)
+
+**Session**: S055-wmo-aviation-registers  
+**Features**: deepen **F6 / F12 / F15 / F20 / F23 / F24 / F26 / F27 / F28 / F32**  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-046-wmo-aviation-registers`  
+**Status**: **completed** 2026-08-08 (`D-S055-close=1`; PR → `stage`)  
+**Issues**: [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889)
+(parent epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
+compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
+[#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882);
+Validated follow-on [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959))  
+**Corpus**: [Corpus: product §F6/F12/F15/F20/F23/F24/F26/F27/F28/F32],
+[Corpus: tests], [Corpus: decisions] · domain opt-in
+`docs/domain/rules/*`, `docs/domain/mining/*`
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S055-open | **2** — Lean preset (docs/coverage first; defer full harvest wiring) |
+| D-S055-families | **3** — Full priority-register coverage % across **all supported F6 products** (METAR, SPECI, TAF, SIGMET/VA, AIRMET, VAA, TCA, SWXA, VONA) |
+| D-S055-validated | **1** — **Waive Validated** for Lean close; document gap + Standard follow-on child |
+| D-S055-cite | **2** — Domain docs + COVERAGE_MATRIX + RULE_SOURCE_URLS + mining notes **and** ISSUE_CATALOG / rule provenance where notations already exist |
+| D-S055-phase01 | **1** — Lock scope; proceed 01-requirements |
+| D-park-doks | EV-043 / EV-044 remain **PARKED** |
+
+### Acceptance (Lean — confirmed `D-S055-01-ac=1` 2026-08-08)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | **Present:** Priority-register inventory (49-2, 306/4678, iwxxm, common/nil) lists members we depend on vs vendor SoT; dual/404/obsolete dispositions documented | TC-EV046-001 |
+| AC2 | **Cited:** RULE_SOURCE_URLS + mining notes + COVERAGE_MATRIX rows updated; ISSUE_CATALOG / PROVENANCE_MAP entries that already claim codes.wmo.int use **stable concept URIs** (not bare register root only) where a concept URI exists | TC-EV046-002 |
+| AC3 | **Cover:** Coverage report — % of priority-register members exercised by TAC fixtures **per F6 product family**; intentional exclusions with cite + reason | TC-EV046-003 |
+| AC4 | **Gap report:** Registry notations with no fixture / lint / encode / citation → child issues or explicit deferrals on #846 / #889 | TC-EV046-004 |
+| AC5 | **Validated (waived):** Lean close documents waiver + files Standard follow-on for harvest + automated TAC-token membership checks (no live HTML in PR CI) | TC-EV046-005 |
+| AC6 | Harvest SoT path documented (vendor RDF/CSV + `vendor/manifest.json` pin/cadence); cross-links to #859 / #882 current | TC-EV046-006 |
+
+### Out of scope (Lean)
+
+- Standing machine harvest job + `tac-validate` membership CI (Standard follow-on)
+- Live `codes.wmo.int` HTML in PR CI; vendor hand-edits; #882 notify pipeline
+- Replacing XSD/Schematron; dumping non-aviation trees
+
+### Preset
+
+**Lean** — `00 → 16 → 01 → 02`; skip `03`–`13`.
+
+### Gate A (02)
+
+Pass when Lean ACs + test-plan TC-EV046-* + this section committed — then Lean close (no 04/07).
+
+---
+
+## Cycle EV-045 — Rust crate CI (#725) (S054)
+
+**Session**: S054-rust-ci-crates  
+**Features**: deepen **F13**, **F14**  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-045-rust-ci`  
+**Status**: **completed** 2026-08-08  
+**Issues**: [#725](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/725)  
+**PR**: [#953](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953) → `stage` (open at close)  
+**Corpus**: [Corpus: product §F13], [Corpus: product §F14], [Corpus: tech-spec],
+[Corpus: tests], [Corpus: adr/ADR-017]
+
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-park-doks | Park EV-043 + EV-044; repair mashed `active_session`; clear for #725 |
+| D-S054-open | Open S054 / EV-045; Standard with skips 03/06/10/12/13; deepen F13+F14 |
+| D-S054-01-ac | **1** — confirm ACs + defaults (extend `ci-cd.yml`, clippy `-D warnings`, `make rust-check`) → 02-verify-plan |
+| D-S054-gateA | **2** — PASS Gate A but **ruleset update before 04**; check names locked in test-plan + `apply_gh_branch_rulesets.sh` |
+| D-S054-ac6-waive | **2** — Waive AC6 **ops** half (live GH rulesets/required checks); keep docs + `apply_gh_branch_rulesets.sh`; proceed **04**; apply later when admin available |
+| D-S054-04-jobs | **2** — cargo via crate **matrix** + thin gate job `name: Rust crates (fmt/clippy/test)` (avoids GH matrix name suffix breaking required checks) |
+| D-S054-04-maturin | **2** — extend `tac2iwxxm-native` → two-package matrix; `name: ${{ matrix.check_name }}` for locked maturin contexts |
+| D-S054-04-trigger | **1** — run with default `ci-cd.yml` PR/push (not path-filter-only) |
+| D-S054-04-local | **2** — `deploy.needs` includes rust gate + native matrix; `make rust-check` = cargo both crates **+** both maturin smokes |
+| D-S054-04-plan | **1** — Approve execution plan + Build Plan Card as written → 05-verify-tech |
+| D-S054-gateB | **1** — PASS Gate B; confirm syncs; proceed 07-build (06 skipped) |
+| D-S054-t17-ci | **1** — Accept Actions run 31273500621 as tip CI for EV-045 jobs (docs-only tip after) |
+| D-S054-phaseC | **1** — Approve Phase C; start 09-qa |
+| D-S054-11 | **1** — Approve F13+F14 deepen + accept QA-001..005; close cycle (12/13 skipped) |
+
+**Goal**: Required CI + Makefile parity for `packages/tac2iwxxm/rust` and
+`packages/iwxxm-validate/rust` (`fmt`, `clippy -D warnings`, `cargo test`, maturin/PyO3
+smoke for both).
+
+**Out of scope**: Rust HTTP service; multi-arch wheel CI beyond `pypi-publish`; Schematron
+perf gates; browser E2E; staging/prod deploy.
+
+### Preset
+
+**Standard** — skip 03/06/10/12/13 (tooling/deps/UI/deploy not in scope).
+
+### Acceptance (F13/F14 deepen — TC-EV045-001..007) — confirmed D-S054-01-ac=1
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | `cargo fmt --check` fails on unformatted Rust (both crates) | TC-EV045-001 |
+| AC2 | `clippy -- -D warnings` fails on warnings | TC-EV045-002 |
+| AC3 | `cargo test` green for both crates | TC-EV045-003 |
+| AC4 | Maturin/PyO3 smoke for **both** packages | TC-EV045-004 |
+| AC5 | `make rust-check` mirrors CI (cargo both + both maturin smokes) | TC-EV045-005 |
+| AC6 | Required check name(s) documented; merge blocked when red | TC-EV045-006 |
+| AC7 | Jobs on default `ci-cd.yml` PR/push (not path-filter-only) | TC-EV045-007 |
+
+**AC6 split (D-S054-ac6-waive=2):** docs half **in scope** (locked contexts in
+`docs/test-plan.md` + script). Ops half (repo rulesets actually requiring those
+contexts) **waived until admin** runs `bash scripts/deploy/apply_gh_branch_rulesets.sh`.
+Same class as EV-043 admin gap. [Corpus: tests] [Corpus: decisions]
+
+### Implementation defaults (confirmed D-S054-01-ac=1)
+
+| Topic | Default |
+|-------|---------|
+| Workflow | Extend `.github/workflows/ci-cd.yml` (matrix); not a new workflow unless latency forces |
+| Clippy | Hard `-D warnings` |
+| Local | `make rust-check` mirrors CI |
+| Cache | `Swatinem/rust-cache` (or equivalent) |
+| Toolchain | `dtolnay/rust-toolchain@stable` + rustfmt,clippy |
+
+**Closed**: 2026-08-08 — `D-S054-11=1`; reports `evolve-summary.md` + `docs/evolve-report-EV-045.md`.  
+PR #953 open → `stage` (merge separate). AC6 ops still deferred.
+
+### Corpus cites / waivers
+
+- [Corpus: product §F13] [Corpus: product §F14]
+- [Corpus: tech-spec] [Corpus: tests] [Corpus: journeys] [Corpus: adr/ADR-017]
+- `[Corpus: WAIVED — AC6 GitHub rulesets/required-checks apply; reason: token admin=false / no rulesets; decided: D-S054-ac6-waive=2 / EV-045]`
+
+---
+
+---
+
+## Cycle EV-044 — Separate staging DOKS + DO Project (S053)
+
+**Session**: S053-separate-staging-doks-project  
+**Features**: deepen **F30**  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-044-separate-staging-doks`  
+**Status**: in_progress  
+**Amends**: [ADR-034](../adr/ADR-034-doks-staging-promote-from-stage.md) (shared cluster → dual cluster)  
+**Corpus**: [Corpus: product §F30], [Corpus: deploy], [Corpus: tech-spec],
+[Corpus: tests], [Corpus: adr/ADR-033], [Corpus: adr/ADR-034]
+
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S053-open | Open S053 / EV-044; Standard routing (`1:1`) |
+| D-S053-scope | Separate staging DOKS under **Staging TAC-to-IWXXM**; prod on **TAC-to-IWXXM** |
+| D-S053-db | New cheapest managed PG (`db-s-1vcpu-1gb`) under Staging project (`2:1`) |
+| D-S053-size | Staging DOKS 1× `s-2vcpu-4gb`, `nyc1`, name `metar-iwxxm-staging` (`3:1`) |
+| D-S053-teardown | Tear down shared-cluster ns `metar-iwxxm-staging` after new stack green (`4:1`) |
+| D-S053-cd | Keep promote-from-stage: `stage`→staging cluster, `main`→prod cluster |
+| D-S053-dns | Staging hosts → **new** staging LB IP (Porkbun A update) |
+
+### Acceptance (F30 deepen — amend TC-F30-008..010)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Staging DOKS + PG assigned to DO Project **Staging TAC-to-IWXXM** | TC-F30-008′ |
+| AC2 | Prod DOKS + PG remain on **TAC-to-IWXXM** | TC-F30-008′ |
+| AC3 | Staging DNS + TLS for api/app.staging → staging LB | TC-F30-009 |
+| AC4 | `stage` CD targets staging cluster; `main` CD targets prod | TC-F30-010 |
+| AC5 | Shared-cluster staging ns removed after cutover | TC-F30-013 (new) |
+| AC6 | Promote gate unchanged (head=`stage` + Staging smoke) | TC-F30-012 |
+
+### Preset
+
+**Standard** — include 03 for dual-cluster / project tooling; skip 06.
+
+### Gate A (02)
+
+**PASS** 2026-08-08 — F30 deepen AC + ADR-034 amend + this section committed; proceed 03/04.
+
+### Gate B (05)
+
+Pass when execution-plan tasks T2–T4 approved — proceed 07-build provision.
+
+---
+
 ## Cycle EV-043 — DOKS staging + prod protected-branch CI/CD (S052)
 
 **Session**: S052-doks-staging-prod-branch-deploys  

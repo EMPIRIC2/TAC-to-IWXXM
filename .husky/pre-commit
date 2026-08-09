@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
-# Fast gates (ruff/prettier/eslint/types/gitleaks/actionlint) via pre-commit framework.
-# Medium validate extras (config-guard / env-check / audit-frontend) — de-duped vs validate-fast.
-# EV-036 / M5 — long suites moved to husky pre-push (full local CI target).
+# EV-047 / #833 — shape A: lint/format only on commit.
+# Typecheck, catalog/registry, actionlint/yamllint, medium validate → CI / opt-in make.
 set -e
-uv run pre-commit run
-echo "husky pre-commit: make validate-ci-medium"
-make validate-ci-medium
+echo "husky pre-commit: lint-fast (ruff / prettier / eslint)"
+make lint-fast

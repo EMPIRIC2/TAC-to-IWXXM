@@ -1,5 +1,5 @@
 ---
-description: Dual DOKS env_role + promote-from-stage (EV-043 / ADR-034 / #886)
+description: Dual DOKS env_role + promote-from-stage (EV-043/044 / ADR-034 / #886)
 globs:
   - .github/workflows/ci-cd.yml
   - deploy/doks/**
@@ -12,28 +12,53 @@ alwaysApply: false
 
 ## Environments
 
-| `env_role` | Branch | Namespace | Hosts |
-|------------|--------|-----------|-------|
-| `staging` | `stage` | `metar-iwxxm-staging` | `api\|app.staging.tac-to-iwxxm.com` |
-| `prod` | `main` | `metar-iwxxm` | `api\|app.tac-to-iwxxm.com` |
+| `env_role` | Branch | DO Project | Cluster | Namespace | Hosts |
+|------------|--------|------------|---------|-----------|-------|
+| `staging` | `stage` | Staging TAC-to-IWXXM | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `api\|app.staging.tac-to-iwxxm.com` |
+| `prod` | `main` | TAC-to-IWXXM | `metar-iwxxm` | `metar-iwxxm` | `api\|app.tac-to-iwxxm.com` |
 
-Do **not** label staging URLs as production. Sole-stack language applies only when staging
-is absent; after EV-043 both exist.
+Do **not** label staging URLs as production. After EV-044, staging and prod are **separate
+DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
 
 ## Promote path
 
 1. Feature → PR → `stage` (required CI).
-2. Merge to `stage` → auto Deploy staging + **Staging smoke**.
-3. Promote: PR **`stage` → `main` only**. CI `staging-gate` must pass.
-4. Merge to `main` → auto Deploy production.
+2. Merge to `stage` → auto Deploy **staging cluster** + **Staging smoke** (HTTPS or
+   Host-header via staging LB `143.244.202.13` / `STAGING_LB_IP`).
+3. **Release prep on `stage` (recommended before every promote):** bump publishable
+   package semver when those packages changed, cut `docs/CHANGELOG.md`, commit on
+   `stage` — see §Release on promote and [Corpus: deploy] §Promote.
+4. Promote: PR **`stage` → `main` only**. CI **Staging gate** (`staging-gate`) must pass
+   (head=`stage` + tip Staging smoke green). No feature→`main`.
+5. Merge to `main` → auto Deploy **prod cluster**.
+6. **Tag the release** on the merged `main` tip (deploy tag + any PyPI package tags).
 
 Never push directly to `stage`/`main` when rulesets are enabled. Solo-dev: PR is the
-manual gate (no Environment reviewers required).
+manual gate (no Environment reviewers required). Do not promote while Staging smoke or
+Staging gate is red/missing.
+
+## Release on promote
+
+Every **`stage` → `main`** promote should treat prod cutover as a **release** (not only a
+deploy). Recommendation (soft — Staging gate does not fail on missing bumps):
+
+| Step | When | Action |
+|------|------|--------|
+| Semver | On `stage`, before opening/updating the promote PR | For each changed publishable package (`tac2iwxxm`, `tac-validate`, `iwxxm-validate`): decide none/patch/minor/major; sync `pyproject.toml` + `__version__` + Cargo/locks when present |
+| CHANGELOG | Same commit(s) on `stage` | Move Unreleased bullets into a dated section; note promote PR |
+| Deploy tag | After merge to `main` | `git tag vYYYY.MM.DD-deploy` (or next agreed scheme) on the merge tip; push tag |
+| PyPI tags | After merge when publishing | Per-package tags only (`tac2iwxxm-v*`, …); run **pypi-release-checklist** first |
+
+Docs-only / infra-only promotes with **no** package tree changes may skip package semver
+and PyPI tags, but still cut CHANGELOG + a deploy tag when shipping to prod.
+
+Details: [docs/deploy.md](../../docs/deploy.md) §Promote · skill
+`pypi-release-checklist` · [Corpus: product §F12–F14].
 
 ## Secrets
 
-Staging `DATABASE_URL` must use DB `metar_iwxxm_staging` (or dedicated staging instance) —
-never prod `defaultdb`. Do not copy prod secrets into staging ConfigMaps/docs.
+Staging `DATABASE_URL` must use dedicated Postgres `metar-iwxxm-staging` (EV-044) — never
+prod `metar-iwxxm` / `defaultdb`. Do not copy prod secrets into staging ConfigMaps/docs.
 
 ## Citations
 

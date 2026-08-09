@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-05 (S045 / EV-037 matrix dispositions #869/#870/#872)
+> **Last updated**: 2026-08-08 (S055 / EV-046 — #889 codes.wmo.int present/cite/cover Lean)
 
 ## Scope
 
@@ -78,6 +78,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-023 | F12–F14 | PyPI tag → install smoke | CI | TC-F14-001 |
 | UJ-DEV-005 | F12–F14 | pip install packages | CI | TC-F12-001, TC-F13-001, TC-F14-002 |
 | UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
+| UJ-DEV-006 | F13–F14 | Rust fmt/clippy/`cargo test` + maturin both crates | CI | TC-EV045-001..007 |
 | UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
 | UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
 | UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (+ live local suite EV-039) | H6′ / live local | TC-F16-001..005; TC-F16-LIVE-001..004 |
@@ -107,6 +108,9 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-051 | F33 | Secure mass file/folder ingest (auth + caps) | **H4–H5 required** | TC-F33-001..006 |
 | UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
+| UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
+| UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
+| UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -163,6 +167,8 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 | Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
 
 **Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
+Python also enforces **per-file ≥95%** via `scripts/ci/check_per_file_coverage.py` (EV-047 /
+D-S056-cov95-scope=2), including auth and worker.
 
 ## Migration Test Cases
 
@@ -556,6 +562,45 @@ Before closing S013 / EV-009:
 - [ ] Hard perf gates at publish (E10-24)
 - [ ] H4–H5 + H6′ UJ-022 after Render redeploy
 - [ ] PyPI install smokes for three packages
+
+### EV-045 / #725 — Rust crate CI (S054; F13/F14 deepen)
+
+CI must gate **both** `packages/tac2iwxxm/rust` and `packages/iwxxm-validate/rust`
+with fmt, clippy, unit tests, and maturin/PyO3 integration smoke. Prefer extending
+`.github/workflows/ci-cd.yml` (matrix) over a separate workflow unless latency requires
+split. Tooling: `dtolnay/rust-toolchain@stable` + components `rustfmt,clippy`;
+Cargo cache (`Swatinem/rust-cache` or equivalent). Local: `make rust-check`.
+[Corpus: product §F13] [Corpus: product §F14] [Corpus: tests] [Corpus: adr/ADR-017]
+
+| ID | Level | Assert |
+|----|-------|--------|
+| TC-EV045-001 | CI | `cargo fmt --check` fails on unformatted Rust in both crate trees |
+| TC-EV045-002 | CI | `cargo clippy -- -D warnings` fails on warnings (documented allowlist only if needed) |
+| TC-EV045-003 | CI | `cargo test` green for `tac2iwxxm` and `iwxxm-validate` Rust crates |
+| TC-EV045-004 | CI | Maturin/PyO3 smoke for **both** packages (`TAC2IWXXM_REQUIRE_RUST` /
+  `IWXXM_VALIDATE_REQUIRE_RUST` or equivalent) |
+| TC-EV045-005 | T0 | `make rust-check` mirrors CI: fmt + clippy + `cargo test` **both** crates **and** both `test-*-native` maturin smokes (D-S054-04-local=2) |
+| TC-EV045-006 | Ops | Required check name(s) **documented**; PRs cannot merge with red Rust CI **once rulesets applied** |
+| TC-EV045-007 | CI | Jobs run on default `ci-cd.yml` PR/push (same as today’s native job; **not** path-filter-only — D-S054-04-trigger=1) |
+
+**Required status check contexts** (must match `ci-cd.yml` job `name:` exactly; applied via
+`scripts/deploy/apply_gh_branch_rulesets.sh` when repo admin is available):
+
+| Context | Role |
+|---------|------|
+| `Rust crates (fmt/clippy/test)` | fmt + clippy + `cargo test` both crates (EV-045) |
+| `tac2iwxxm PyO3 (maturin)` | existing maturin smoke |
+| `iwxxm-validate PyO3 (maturin)` | EV-045 maturin smoke (new) |
+
+Also retained from F30 script: `Test (backend)`, `Test (frontend)`, `Alembic migrations`;
+`main` adds `Staging gate`.
+
+**AC6 ops waiver (D-S054-ac6-waive=2 / EV-045):** docs + script updated this cycle; live
+GitHub rulesets/required-check wiring deferred until an admin runs the apply script
+(token `admin=false`; rulesets currently empty — same class as EV-043). Cycle close may
+treat TC-EV045-006 as **docs/script met; ops deferred**. [Corpus: tests] [Corpus: decisions]
+
+**UJ mapping**: UJ-DEV-006 (new); deepen UJ-DEV-004.
 
 ### EV-028 / #781 — EMPIRIC2 Codecov purge + PyPI Trusted Publisher (S035)
 
@@ -1677,31 +1722,35 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   4. Missing `KUBE_CONFIG` fails Deploy; missing Render hooks do **not** fail Deploy
 - **Source**: F30 AC7; S042 / EV-034; `E34-1..4`
 
-### TC-F30-008: Staging namespace + isolated secrets (EV-043)
+### TC-F30-008: Staging cluster + isolated secrets (EV-043 / EV-044)
 
 - **Level**: Ops / T0
-- **Objective**: DOKS namespace `metar-iwxxm-staging` exists with API/FE/worker; secrets and
-  `DATABASE_URL` point at staging DB (`metar_iwxxm_staging`), not prod `defaultdb`
-- **Pass criteria**: `kubectl -n metar-iwxxm-staging get deploy` shows three workloads;
-  staging `DATABASE_URL` database name ≠ prod
-- **Source**: F30 AC8; S052 / EV-043; #886
+- **Objective**: Staging DOKS cluster `metar-iwxxm-staging` (DO Project **Staging TAC-to-IWXXM**)
+  has ns `metar-iwxxm-staging` with API/FE/worker; secrets and `DATABASE_URL` point at
+  dedicated staging Postgres `metar-iwxxm-staging`, not prod `metar-iwxxm` / `defaultdb`.
+  Prod cluster remains on DO Project **TAC-to-IWXXM**.
+- **Pass criteria**: `doctl projects resources list` shows staging cluster+DB under Staging
+  project and prod under TAC-to-IWXXM; `kubectl --context staging -n metar-iwxxm-staging get deploy`
+  shows workloads; staging `DATABASE_URL` host/db ≠ prod
+- **Source**: F30 AC8; S052 / EV-043; S053 / EV-044; #886
 
 ### TC-F30-009: Staging DNS + TLS
 
 - **Level**: Ops / T3
 - **Objective**: `https://api.staging.tac-to-iwxxm.com` and `https://app.staging.tac-to-iwxxm.com`
-  resolve to DOKS LB and serve valid TLS
-- **Pass criteria**: DNS A/AAAA → `168.144.12.70`; `/health` 200 on API; FE returns 200;
-  cert-manager Certificate Ready (or equivalent Ingress TLS secret)
-- **Source**: F30 AC9; D-S052-dns
+  resolve to the **staging** DOKS LB and serve valid TLS
+- **Pass criteria**: DNS A/AAAA → staging LB EXTERNAL-IP (not necessarily prod `168.144.12.70`);
+  `/health` 200 on API; FE returns 200; cert-manager Certificate Ready
+- **Source**: F30 AC9; D-S052-dns; D-S053-dns
 
 ### TC-F30-010: Dual-branch auto CD
 
 - **Level**: Ops / CI
-- **Objective**: Push/merge to `stage` deploys staging; push/merge to `main` deploys prod
+- **Objective**: Push/merge to `stage` deploys **staging cluster**; push/merge to `main`
+  deploys **prod cluster**
 - **Pass criteria**: Deploy jobs bound to GH Environments `staging` / `production`;
-  `DOKS_NAMESPACE` correct per branch; image tags rolled
-- **Source**: F30 AC10; #886
+  env-scoped kubeconfig + `DOKS_NAMESPACE` correct per branch; image tags rolled
+- **Source**: F30 AC10; #886; EV-044
 
 ### TC-F30-011: Branch protection on stage and main
 
@@ -1719,7 +1768,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   succeeded for the SHA; documented in deploy.md
 - **Source**: F30 AC12; D-S052-promote
 
-### Live harness — staging (EV-043)
+### TC-F30-013: Shared-cluster staging ns teardown (EV-044)
+
+- **Level**: Ops / T0
+- **Objective**: After staging cluster cutover, prod cluster no longer hosts
+  `metar-iwxxm-staging` workloads (EV-043 leftover removed)
+- **Pass criteria**: `kubectl --context prod get ns metar-iwxxm-staging` is NotFound (or
+  empty/terminating with no Deployments); staging smoke uses staging cluster context only
+- **Source**: F30 AC13; D-S053-teardown
+
+### Live harness — staging (EV-043 / EV-044)
 
 | Env | API | Frontend |
 |-----|-----|----------|
@@ -1969,6 +2027,71 @@ New **TC-EV038-001..014**. Deepens F2 / F4 / F6 / F7 / F32. Milestones M1→M2�
 - [ ] No new Fn in feature-list (deepen F2/F4/F6/F7/F32 only)
 - [ ] H4–H5 for #854 at deploy; M1 may waive 12/13 if docs-only ship alone
 - [ ] Domain path-cites for matrix / RELEASE_LINE updates
+
+## S055 / EV-046 — codes.wmo.int aviation registers (#889 Lean)
+
+New **TC-EV046-001..006**. Deepens F6 / F12 / F15 / F20 / F23 / F24 / F26 / F27 / F28 / F32.
+Docs/coverage only — no H4–H5. Complements **TC-EV038-008** / [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
+(URI drift) — this cycle is TAC present/cite/cover + Validated waiver.
+
+### TC-EV046-001: Present inventory (priority registers)
+
+- **Level**: T0 / docs
+- **Objective**: Inventory of 49-2, 306/4678, iwxxm, common/nil (and duals) vs vendor SoT;
+  dual/404/obsolete dispositions recorded
+- **Pass criteria**: Standing or session report lists depended-on notations + dispositions;
+  offline SoT path cited
+- **Source**: #889 Present; AC1; [Corpus: product] EV-046 deepen
+
+### TC-EV046-002: Citations (docs + ISSUE_CATALOG)
+
+- **Level**: T0 / docs
+- **Objective**: RULE_SOURCE_URLS + mining notes + COVERAGE_MATRIX cite stable concept URIs;
+  ISSUE_CATALOG / PROVENANCE_MAP rows that claim codes.wmo.int use concept URIs where available
+- **Pass criteria**: Spot-check ≥ sample of weather/phenomena/nil-related catalog rows; no
+  bare-root-only where concept URI exists (or explicit gap noted)
+- **Source**: #889 Cited; AC2; `D-S055-cite=2`
+
+### TC-EV046-003: Coverage % per F6 product family
+
+- **Level**: T0 / docs
+- **Objective**: % of priority-register members exercised by TAC fixtures for each supported
+  F6 product (METAR, SPECI, TAF, SIGMET/VA, AIRMET, VAA, TCA, SWXA, VONA); exclusions with
+  cite + reason
+- **Pass criteria**: Coverage report committed; exclusions listed
+- **Source**: #889 Cover; AC3; `D-S055-families=3`
+
+### TC-EV046-004: Gap report / backlog children
+
+- **Level**: T0 / process
+- **Objective**: Notations with no fixture / lint / encode / citation → children or deferrals
+  on #846 / #889
+- **Pass criteria**: Gap list filed or deferred with rationale; epic/issue cross-links
+- **Source**: #889 Gap report; AC4
+
+### TC-EV046-005: Validated waiver + Standard follow-on
+
+- **Level**: T0 / process
+- **Objective**: Lean close records Validated waiver and opens/links Standard follow-on for
+  harvest + automated TAC-token membership checks (vendor offline in PR CI)
+- **Pass criteria**: Waiver in evolve-decisions §EV-046; follow-on issue or clearly titled
+  child; no live HTML CI introduced
+- **Source**: #889 Validated (waived); AC5; `D-S055-validated=1`
+
+### TC-EV046-006: Harvest SoT + compose links (#859 / #882)
+
+- **Level**: T0 / docs
+- **Objective**: Document vendor RDF/CSV + manifest pin/cadence; keep compose links to #859
+  (drift) and #882 (notify) current
+- **Pass criteria**: SoT path + pin notes in mining/RULE_SOURCE_URLS; cross-links present
+- **Source**: #889 bookkeeping; AC6
+
+### EV-046 verify gate
+
+- [ ] TC-EV046-001..006 green (or explicit deferral recorded)
+- [ ] No new Fn (deepen only); Validated waived with follow-on
+- [ ] No live `codes.wmo.int` HTML in PR CI
+- [ ] Domain path-cites for RULE_SOURCE_URLS / COVERAGE_MATRIX / mining / ISSUE_CATALOG
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 
@@ -2517,40 +2640,59 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
 
 ## CI/CD (Monorepo)
 
-**Policy (EV-002 → EV-036 amend)**: Single workflow file for PR/push. **Local-first** for
-long/Compose work: medium validate on **commit**, units+Compose on **push**. Remote CI
-**drops** redundant validate + Compose integration but **keeps** the package **unit matrix**,
-**coverage** gates, and a sticky **PR coverage comment**. Strict lint/format is enforced
-locally (pre-commit). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
+**Policy (EV-002 → EV-036 → EV-047 amend)**: Single workflow file for PR/push. **EV-047
+(#833)** restores a **slim developer hook path**: local commit = **lint/format only**;
+local push = **fast unit subset only**. Heavier gates (typecheck, catalog/registry,
+actionlint/yamllint, medium validate, full coverage matrix, Compose integration) stay on
+**remote CI** and opt-in `make` targets — **not** on default husky. Remote CI **keeps**
+merge strength (unit matrix + coverage + PR coverage comment + native/Rust/e2e/alembic as
+wired). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 
 | Trigger | Workflow | Jobs | Checks |
 |---------|----------|------|--------|
-| Local commit | husky → pre-commit | fast + medium | existing fast hooks + `validate-ci` medium extras (de-duped) |
-| Local push | husky pre-push | long | `make ci` = `ci-prepush` + Compose **integration** (ports 18000/18001; wis2box harness via local target) |
-| PR / push `main`, `dev` | `ci-cd.yml` | **remote** | **no** validate job, **no** Compose integration; **keep** unit matrix + coverage + PR coverage comment; keep `tac2iwxxm-native`, `e2e-smoke`, `test-alembic` |
-| push `main` only | `ci-cd.yml` | **deploy** | needs `test` + alembic + native (+ e2e if required); GHCR + **DOKS**; Render optional |
+| Local commit | husky → pre-commit | lint | ruff / prettier / eslint (lint/format only; shape A) |
+| Local push | husky pre-push | fast units | agreed fast unit subset only (not `validate-ci` / not Compose) |
+| PR / push `main`, `stage`, `dev` | `ci-cd.yml` | **remote** | typecheck + catalog/registry + secrets/yaml as configured; unit matrix + coverage + PR coverage comment; `tac2iwxxm-native`; **Rust crate checks** (EV-045); **converter perf hard gate** (EV-047 / #834); `e2e-smoke`; `test-alembic` |
+| push `main` / `stage` | `ci-cd.yml` | **deploy** | needs remaining remote jobs; GHCR + **DOKS**; Render optional |
 | Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
-| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 / EV-036 scope |
+| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 / EV-036 / EV-047 day-to-day husky scope |
 
-### Pre-commit / husky (local gates) — EV-036
+### Pre-commit / husky (local gates) — EV-047 (#833; supersedes EV-036 day-to-day)
 
 | Hook | Tool | Role |
 |------|------|------|
-| pre-commit (fast) | ruff / prettier / eslint / tsc / basedpyright / gitleaks / actionlint / yamllint / catalog | always-on cheap gates (strict lint/format) |
-| pre-commit (medium) | `make validate-ci-medium` | config-guard, env-check, audit-frontend (de-duped vs fast) |
-| husky pre-push (long) | `make ci` | `ci-prepush` + Compose integration — local Compose source of truth |
+| husky pre-commit | lint/format only | ruff / prettier / eslint — **no** tsc/basedpyright/catalog/registry/actionlint/yamllint/medium validate on default path |
+| husky pre-push | fast unit subset | explicit Makefile/pytest target — **not** full `ci-prepush` / Compose |
+| Opt-in local | `make validate-*` / `ci-prepush` | full parity when contributor chooses |
 | Remote PR coverage | `coverage-pr-comment` | sticky PR comment from unit coverage artifacts |
+| Remote converter perf | hard gate job | EV-047 / #834 — fail on convert p95 regression |
 
 Family `test-*-quality` packs stay path-filtered / opt-in — **not** on every commit/push.
 Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not every local push).
 
-### TC-EV036 (M5 / S044) — local-first CI
+### TC-EV036 (M5 / S044) — local-first CI *(superseded for husky day-to-day by EV-047)*
 
 | ID | Level | Assert |
 |----|-------|--------|
-| TC-EV036-001 | T0 | husky pre-commit runs fast pre-commit + medium validate (`validate-ci-medium` / config-guard+env-check+audit) |
-| TC-EV036-002 | T0 | `.husky/pre-push` runs `make ci` (or `ci-prepush` + `test-integration`) and does **not** re-run `validate-ci`; remote Compose `integration` matrix entry absent |
-| TC-EV036-003 | T0 | `ci-cd.yml` — no `validate:` job; unit matrix present with coverage; coverage PR comment job present; no Compose integration job; deploy `needs` includes `test` |
+| TC-EV036-001 | T0 | *(historical)* husky pre-commit ran fast + medium validate |
+| TC-EV036-002 | T0 | *(historical)* `.husky/pre-push` ran `make ci` |
+| TC-EV036-003 | T0 | `ci-cd.yml` — no `validate:` job; unit matrix + coverage + PR comment; no Compose integration; deploy `needs` includes `test` — **still relevant for remote graph** |
+
+### TC-EV047 (M5 / F6 / F7 / S056) — slim husky + converter perf + operator docs
+
+| ID | Level | Assert |
+|----|-------|--------|
+| TC-EV047-001 | T0 | `.husky/pre-commit` (via `make install-hooks`) runs lint/format only — does **not** invoke tsc, basedpyright, catalog-check, issue-registry-guard, actionlint, yamllint, or medium validate |
+| TC-EV047-002 | T0 | `.husky/pre-push` runs agreed **fast unit** subset only — does **not** run `validate-ci` or Compose integration |
+| TC-EV047-003 | T0 | `docs/ops/DEVELOPMENT.md` hook table matches shape A; opt-in `make` targets documented |
+| TC-EV047-004 | T0/CI | Offloaded gates still present in CI (typecheck and/or catalog/registry/secrets/yaml/unit coverage as configured) — contract test or workflow assert |
+| TC-EV047-005 | T0/CI | Artificial slowdown in `tac2iwxxm.convert` fails converter perf hard gate |
+| TC-EV047-006 | T0/CI | Revert slowdown → gate green; baselines committed YAML with documented refresh (no silent auto-raise) |
+| TC-EV047-007 | CI | Perf gate is required check (or merge-blocking job) on PR path to protected branches — job `name:` **`Converter perf (tac2iwxxm)`** must match `scripts/deploy/apply_gh_branch_rulesets.sh` (D-S056-gateA=2) |
+| TC-EV047-008 | T0 | Flake policy documented (median-of-N / retry / tolerance); convert-only p95; METAR/SPECI/TAF + thin SIGMET-family; pure-Python first |
+| TC-EV047-009 | T0 | `docs/guides/operator-one-pager.md` exists; one-page content checklist (convert→validate→download; version; soft preview); no internal citations |
+| TC-EV047-010 | T0 | `docs/guides/operator-handbook.md` has required sections + ingest pointer; no internal citations; one-pager links here |
+| TC-EV047-011 | T0/T2 | README Quick start links both docs; in-app Help entry reaches one-pager (UJ-054) |
 
 ### Removed workflows (EV-002)
 
@@ -2570,7 +2712,7 @@ Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not ever
 
 | Metric | Threshold | Context |
 |--------|-----------|---------|
-| Backend unit coverage | **95% all packages/apps** | ADR-007 universal gate |
+| Backend unit coverage | **95% all packages/apps** + **per-file ≥95%** (Python) | ADR-007 / EV-047 |
 | E2E pass rate | 100% on T2 before merge | Big-bang gate |
 | Live E2E (T3) | Manual signoff before release | `make test-live` — not CI-gated |
 | Vendor sync PR | human review required | No auto-merge to main |

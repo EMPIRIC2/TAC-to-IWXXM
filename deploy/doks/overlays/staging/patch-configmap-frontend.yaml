@@ -12,7 +12,7 @@ data:
         "corsOrigins": [
           "https://app.staging.tac-to-iwxxm.com",
           "http://app.staging.tac-to-iwxxm.com",
-          "http://168.144.12.70"
+          "http://143.244.202.13"
         ]
       },
       "supabase": {

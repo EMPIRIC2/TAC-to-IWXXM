@@ -5,7 +5,7 @@ name: VAA quality
 
 on:
   push:
-    branches: [main, evolve/EV-029-eight-family-ahl-rules]
+    branches: [main, stage, evolve/EV-029-eight-family-ahl-rules]
     paths:
       - "packages/tac2iwxxm/src/tac2iwxxm/convert.py"
       - "packages/tac2iwxxm/src/tac2iwxxm/bulletin.py"

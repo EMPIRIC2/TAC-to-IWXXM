@@ -2,7 +2,7 @@
 
 [![CI/CD](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml)
 [![E2E](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml)
-[![E2E tests](https://img.shields.io/badge/E2E_tests-80-blue)](apps/e2e)
+[![E2E tests](https://img.shields.io/badge/E2E_tests-81-blue)](apps/e2e)
 [![Unit coverage gate](https://img.shields.io/badge/unit_coverage-%E2%89%A598%25-success)](docs/test-plan.md)
 
 Convert aviation METAR/SPECI TAC messages to WMO IWXXM XML. React frontend, FastAPI backend,
@@ -56,6 +56,13 @@ Open http://localhost:5173. With Docker Compose instead:
 docker compose up --build
 # Frontend http://localhost:18000  ·  API http://localhost:18001
 ```
+
+**Operator docs** (convert → validate → download):
+
+- [Operator one-pager](docs/guides/operator-one-pager.md) — one printed page
+- [Operator handbook](docs/guides/operator-handbook.md) — login, history, ingest, troubleshooting
+
+In the app, use **Help** in the converter header (same one-pager).
 
 Docker Compose ships a bundled PostgreSQL service (`db`), so the stack is
 self-contained out of the box — no external database is required for the API to

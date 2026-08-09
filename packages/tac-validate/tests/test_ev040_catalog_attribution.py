@@ -114,4 +114,4 @@ def test_attribution_includes_access_status_when_paywall(tmp_path: Path, monkeyp
     monkeypatch.setattr(ca, "_DATA", path)
     ca._load.cache_clear()
     attr = ca.attribution_for("X")
-    assert attr["source_attribution"] == ("icao-annex-3 — access:paywall — Table A3-2")
+    assert attr["source_attribution"] == ("icao-annex-3 — access:paywall — https://example.invalid/annex3 — Table A3-2")
