@@ -89,7 +89,16 @@ _RMK_LINE = re.compile(r"(?m)^\s*RMK\s*:\s*(.*)$", re.IGNORECASE)
 _NXT_ADVISORY_LINE = re.compile(r"(?m)^\s*NXT\s+ADVISORY\s*:\s*(.*)$", re.IGNORECASE)
 _NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b", re.IGNORECASE)
 _SWXC_LINE = re.compile(r"(?m)^\s*SWXC\s*:", re.IGNORECASE)
+_SWX_EFFECT_LINE = re.compile(r"(?m)^\s*SWX\s+EFFECT\s*:\s*(.+?)\s*$", re.IGNORECASE)
+_OBS_SWX_LINE = re.compile(r"(?m)^\s*OBS\s+SWX\s*:\s*(.+)$", re.IGNORECASE)
 _NO_SWX_EXP = re.compile(r"\bNO\s+SWX\s+EXP\b", re.IGNORECASE)
+# SpaceWxPhenomena register prefixes (vendor CSV) — TAC EFFECT uses spaces.
+_SWX_EFFECT_PREFIX: dict[str, str] = {
+    "HF COM": "HF_COM",
+    "GNSS": "GNSS",
+    "RADIATION": "RADIATION",
+    "SATCOM": "SATCOM",
+}
 _MAX_WIND_LINE = re.compile(r"(?m)^\s*MAX\s+WIND\s*:", re.IGNORECASE)
 _SVO_LINE = re.compile(r"(?m)^\s*SVO\s*:", re.IGNORECASE)
 _ONSET_LINE = re.compile(r"(?m)^\s*ONSET\s*:\s*(.*)$", re.IGNORECASE)
@@ -2206,6 +2215,53 @@ def _check_tca(tac: str) -> list[Issue]:
     return issues
 
 
+def _check_swxa_spacewx_membership(body: str, *, start: int) -> list[Issue]:
+    """Map SWX EFFECT + OBS severity to SpaceWxPhenomena membership (EV-050)."""
+    issues: list[Issue] = []
+    effect_m = _SWX_EFFECT_LINE.search(body)
+    if effect_m is None:
+        return issues
+    effect_raw = effect_m.group(1).strip().rstrip("=")
+    effect_key = " ".join(effect_raw.upper().split())
+    prefix = _SWX_EFFECT_PREFIX.get(effect_key)
+    e_start, e_end = start + effect_m.start(1), start + effect_m.end(1)
+    if prefix is None:
+        issues.append(
+            _membership_issue(
+                product="SWXA",
+                token=effect_raw,
+                family="spacewx_phenomena",
+                start=e_start,
+                end=e_end,
+                location="effect",
+            )
+        )
+        return issues
+    obs_m = _OBS_SWX_LINE.search(body)
+    severity: str | None = None
+    if obs_m is not None:
+        obs_upper = obs_m.group(1).upper()
+        if re.search(r"\bSEV\b", obs_upper):
+            severity = "SEV"
+        elif re.search(r"\bMOD\b", obs_upper):
+            severity = "MOD"
+    if severity is None:
+        return issues
+    notation = f"{prefix}_{severity}"
+    if not membership.is_member("spacewx_phenomena", notation):
+        issues.append(
+            _membership_issue(
+                product="SWXA",
+                token=notation,
+                family="spacewx_phenomena",
+                start=e_start,
+                end=e_end,
+                location="effect",
+            )
+        )
+    return issues
+
+
 def _check_swxa(tac: str) -> list[Issue]:
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
@@ -2229,6 +2285,7 @@ def _check_swxa(tac: str) -> list[Issue]:
                 location="swxc",
             )
         )
+    issues.extend(_check_swxa_spacewx_membership(body, start=start))
     # F28 theme SX1 — exceptional remarks / forecast / next-advisory cues (#740).
     rmk_m = _RMK_LINE.search(body)
     if rmk_m:
