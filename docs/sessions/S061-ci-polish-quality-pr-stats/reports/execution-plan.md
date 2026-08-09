@@ -18,9 +18,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: CI polish + #900 |
-| **Active milestone** | M1: Coverage ≥95% |
-| **Active task** | T2.1 (M2 next) |
-| **Tasks completed** | 5 / 22 |
+| **Active milestone** | M3: Sentry + Upstash Redis slowapi (next) |
+| **Active task** | T3.1 |
+| **Tasks completed** | 9 / 22 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
 | **Build Plan Card** | `docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md` |
@@ -99,10 +99,10 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Unit tests for quality stats aggregator + markdown formatter (fixture JSON → tables) | Test | pending | TC-EV052-005; AC5 | — | — |
-| T2.2 | Implement `scripts/ci/format_quality_pr_comment.py` (+ helpers); distinct sticky marker | Code | pending | AC4; D-S061-quality-marker | T2.1 | — |
-| T2.3 | Wire `quality-pr-comment` job in `ci-cd.yml` (artifacts from quality-matrix / golden jobs) | Config | pending | TC-EV052-004; D-S061-quality-job | T2.2 | — |
-| T2.4 | Idempotent sticky update test/doc (github-script pattern parity with coverage) | Test/Docs | pending | AC5 | T2.3 | — |
+| T2.1 | Unit tests for quality stats aggregator + markdown formatter (fixture JSON → tables) | Test | **completed** | TC-EV052-005; AC5 | — | — |
+| T2.2 | Implement `scripts/ci/format_quality_pr_comment.py` (+ helpers); distinct sticky marker | Code | **completed** | AC4; D-S061-quality-marker | T2.1 | — |
+| T2.3 | Wire `quality-pr-comment` job in `ci-cd.yml` (artifacts from quality-matrix / golden jobs) | Config | **completed** | TC-EV052-004; D-S061-quality-job | T2.2 | — |
+| T2.4 | Idempotent sticky update test/doc (github-script pattern parity with coverage) | Test/Docs | **completed** | AC5 | T2.3 | — |
 
 #### M3: Sentry + Upstash Redis slowapi — P0
 
@@ -149,7 +149,7 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 | Task | Milestone | Status | Depends |
 |------|-----------|--------|---------|
 | T1.1–T1.5 | M1 | pending | chain |
-| T2.1–T2.4 | M2 | pending | T2 internal; // M1 |
+| T2.1–T2.4 | M2 | **completed** | T2 internal; // M1 |
 | T3.1–T3.5 | M3 | pending | T3 internal; // M1 |
 | T4.1–T4.3 | M4 | pending | after M1 preferred |
 | T5.1–T5.2 | M5 | pending | M1–M4 |

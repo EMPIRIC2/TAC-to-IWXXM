@@ -218,7 +218,7 @@ Primary workflow: `.github/workflows/ci-cd.yml` (**EV-036** local-first amend).
 | Lint (EV-047) | husky **pre-commit** | `make lint-fast` — ruff / prettier / eslint only. |
 | Fast units (EV-047) | husky **pre-push** | `make test-unit-fast` — workspace + tac2iwxxm units (not Compose / not validate-ci). |
 | Opt-in full local | `make` | `validate-ci` / `ci-prepush` / `make ci` (units + Compose on **18000/18001**) when you want full parity. |
-| Remote PR/push | GitHub Actions | **No** `validate` job; **no** Compose integration. **Keeps** package **unit matrix** + coverage + sticky **PR coverage comment**. Also `rust-crates` / `Rust crates (fmt/clippy/test)` gate, `tac2iwxxm-native` maturin matrix (both packages), `e2e-smoke`, `test-alembic` (EV-045). |
+| Remote PR/push | GitHub Actions | **No** `validate` job; **no** Compose integration. **Keeps** package **unit matrix** + coverage + sticky **PR coverage comment** + sticky **quality/golden PR comment** (EV-052). Also `rust-crates` / `Rust crates (fmt/clippy/test)` gate, `tac2iwxxm-native` maturin matrix (both packages), `e2e-smoke`, `test-alembic` (EV-045). |
 | Deploy | `main`/`stage` push | needs `test` + `test-alembic` + `rust-crates-gate` + `tac2iwxxm-native`; GHCR + DOKS; Render optional |
 
 Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgURL`, with REST
@@ -228,6 +228,7 @@ Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgUR
 |-----|--------|
 | **test** (matrix) | Package unit tests with coverage (`--cov-fail-under` / Vitest) |
 | **coverage-pr-comment** | Sticky PR comment from coverage XML / Vitest summary (PRs only) |
+| **quality-pr-comment** | Sticky PR comment #2: quality-matrix + annex3/`iwxxm_us` golden outcomes by product × profile (PRs only; EV-052) |
 | **rust-crates** / **rust-crates-gate** | fmt + clippy `-D warnings` + `cargo test` both crates; gate name `Rust crates (fmt/clippy/test)` |
 | **tac2iwxxm-native** | PyO3 / maturin matrix (`tac2iwxxm` + `iwxxm-validate` display names) |
 | **make rust-check** | Local mirror of rust crates + both native smokes |
