@@ -386,7 +386,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "UNKNOWN_WMO_MEMBERSHIP",
         "error",
-        "{product} token {token!r} not in WMO register ({family}) — EV-050 / #959",
+        "{product} token {token!r} not in WMO register ({family})",
         tags=("membership", "wmo", "ev050", "weather", "cloud", "phenomenon"),
     ),
     # F23 theme G1 — general SIGMET exceptional (#733 / research G1)

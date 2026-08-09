@@ -42,8 +42,8 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2/SigConvectiveCloudType",
       "status": "ok",
-      "note": "EV-046: CB/TCU convective type register",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/SigConvectiveCloudType \u2014 EV-046: CB/TCU convective type register"
+      "note": "CB/TCU convective type register",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/SigConvectiveCloudType \u2014 CB/TCU convective type register"
     },
     "CNL_REPORT": {
       "source_id": "icao-annex-3",
@@ -91,8 +91,8 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "status": "ok",
-      "note": "EV-046: cloud amount register landing",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u2014 EV-046: cloud amount register landing"
+      "note": "Cloud amount register landing",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u2014 Cloud amount register landing"
     },
     "INVALID_CNL_SHAPE": {
       "source_id": "icao-annex-3",
@@ -133,8 +133,8 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2",
       "status": "ok",
-      "note": "EV-046: no single RVR concept register \u2014 cite 49-2 family + grammar sources",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 EV-046: no single RVR concept register \u2014 cite 49-2 family + grammar sources"
+      "note": "No single RVR concept register \u2014 cite 49-2 family + grammar sources",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 No single RVR concept register \u2014 cite 49-2 family + grammar sources"
     },
     "INVALID_SIGMET_CNL": {
       "source_id": "icao-eur-doc-014",
@@ -175,22 +175,22 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2",
       "status": "ok",
-      "note": "EV-046: vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 EV-046: vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
+      "note": "Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
     },
     "INVALID_WEATHER": {
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
       "status": "ok",
-      "note": "EV-046: prefer register landing + 306/4678 concept pattern over bare root",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather \u2014 EV-046: prefer register landing + 306/4678 concept pattern over bare root"
+      "note": "Prefer register landing + 306/4678 concept pattern over bare root",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather \u2014 Prefer register landing + 306/4678 concept pattern over bare root"
     },
     "INVALID_WIND": {
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2",
       "status": "ok",
-      "note": "EV-046: wind not in AerodromePresentWeather list",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 EV-046: wind not in AerodromePresentWeather list"
+      "note": "Wind not in AerodromePresentWeather list",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 Wind not in AerodromePresentWeather list"
     },
     "MISSING_CCCC": {
       "source_id": "icao-annex-3",
@@ -203,8 +203,8 @@
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "status": "ok",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok",
+      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     "MISSING_FIR_OR_CTA": {
       "source_id": "icao-eur-doc-014",
@@ -266,8 +266,8 @@
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "status": "ok",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok",
+      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     "MISSING_SWXC": {
       "source_id": "icao-annex-3",
@@ -350,8 +350,8 @@
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "status": "ok",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok",
+      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     "MISSING_WIND": {
       "source_id": "icao-annex-3",
@@ -378,8 +378,8 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "status": "ok",
-      "note": "EV-046: NCD cloud amount notation family",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u2014 EV-046: NCD cloud amount notation family"
+      "note": "NCD cloud amount notation family",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u2014 NCD cloud amount notation family"
     },
     "NIL_REPORT": {
       "source_id": "icao-annex-3",
@@ -595,15 +595,15 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/",
       "status": "N/A",
-      "note": "EV-046: intentional bare root \u2014 not a registry notation check",
-      "source_attribution": "codes-wmo-int \u2014 access:N/A \u2014 https://codes.wmo.int/ \u2014 EV-046: intentional bare root \u2014 not a registry notation check"
+      "note": "Intentional bare root \u2014 not a registry notation check",
+      "source_attribution": "codes-wmo-int \u2014 access:N/A \u2014 https://codes.wmo.int/ \u2014 Intentional bare root \u2014 not a registry notation check"
     },
     "UNKNOWN_WMO_MEMBERSHIP": {
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/49-2",
       "status": "ok",
-      "note": "EV-050 / #959 Validated: tac-validate membership gate vs harvested wmo_membership.json",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 EV-050 / #959 Validated: tac-validate membership gate vs harvested wmo_membership.json"
+      "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     "VAA_FCST_NO_VA_EXP": {
       "source_id": "icao-annex-3",
@@ -665,22 +665,22 @@
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "status": "ok",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok",
+      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     "VONA_ONSET_NIL": {
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "status": "ok",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok",
+      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     "VV_NOT_OBSERVABLE": {
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/common/nil",
       "status": "ok",
-      "note": "EV-046: vertical visibility missingness via nil",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil \u2014 EV-046: vertical visibility missingness via nil"
+      "note": "Vertical visibility missingness via nil",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil \u2014 Vertical visibility missingness via nil"
     },
     "VV_OMIT": {
       "source_id": "icao-annex-3",
@@ -707,8 +707,8 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/common/nil",
       "status": "ok",
-      "note": "EV-046: nilReason notObservable; prefer iwxxm/nil when pin policy says so",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil \u2014 EV-046: nilReason notObservable; prefer iwxxm/nil when pin policy says so"
+      "note": "nilReason notObservable; prefer iwxxm/nil when pin policy says so",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil \u2014 nilReason notObservable; prefer iwxxm/nil when pin policy says so"
     }
   }
 }

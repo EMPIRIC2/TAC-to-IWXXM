@@ -328,7 +328,7 @@ def _membership_issue(
     """Build ``UNKNOWN_WMO_MEMBERSHIP`` for a token missing from a harvested family."""
     return _issue(
         "UNKNOWN_WMO_MEMBERSHIP",
-        f"{product} token {token!r} not in WMO register ({family}) — EV-050 / #959",
+        f"{product} token {token!r} not in WMO register ({family})",
         start=start,
         end=end,
         location=location,
