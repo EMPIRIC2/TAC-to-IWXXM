@@ -26,11 +26,10 @@ tag (+ optional `workflow_dispatch`); amend ADR-034 / deploy docs / promote rule
 
 ## Next child stage
 
-**08-verify-build** / **09-qa** after Gate A user confirm — then 11 + PR → `stage`.
+**CLOSED** — `D-S060-close=1`; PR #966 MERGED → `stage` @ `8882856b`.
 
 ## Risks / open decisions
 
-- Tag workflow must pin SHA on `main` tip (reject tags on wrong commit?)
-- Hotfix via `workflow_dispatch` vs tag-only
-- Whether quality-pack workflows join Deploy `needs`
-- First real prod cutover after merge needs a deliberate tag (behavior change)
+- First prod cutover after `stage`→`main` promote needs deliberate
+  `vYYYY.MM.DD-deploy` tag (or workflow_dispatch)
+- Quality-pack workflows as Deploy `needs` remains OOS

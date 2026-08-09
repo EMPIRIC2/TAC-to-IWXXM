@@ -5,12 +5,17 @@ project:
   output_directory: docs/
 session_counter: 60
 evolve_cycle_counter: 51
-active_session:
-  id: S060-tag-driven-prod-deploy
+active_session: null
+sessions:
+- id: S060-tag-driven-prod-deploy
   type: feature
   title: "Tag-driven prod deploy + full CI Deploy needs (solo)"
   intent: "Deepen F30: widen Deploy needs to full CI; stop auto Deploy on main push; prod Deploy only on vYYYY.MM.DD-deploy tag (and optional workflow_dispatch); staging stays auto after full CI; amend ADR-034, docs/deploy.md, doks-promote-from-stage.mdc, ci-cd.yml. Design 2+3+4. User chose open evolve option 1."
-  status: in_progress
+  status: completed
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S060-close=1
+  close_note: 'Close EV-051/S060; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1'
   started: '2026-08-09'
   started_at: '2026-08-09'
   orchestrator: 16-evolve
@@ -19,22 +24,27 @@ active_session:
   branch_base: stage@c146baec
   branch_base_sha: c146baec
   branch_base_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
-  branch_status: active
+  branch_status: merged
   branch_exists: true
-  tip_sha: cb8d9771
-  tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+  tip_sha: 8882856b
+  tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
   tip_sha_pushed: true
-  tip_sha_note: "PR #966 tip cb8d9771 — tag-driven prod Deploy after full CI; awaiting merge → stage"
+  tip_sha_note: "PR #966 MERGED → stage @ 8882856b; D-S060-merge=1; D-S060-close=1"
+  branch_note: "CLOSED session — PR #966 MERGED → stage @ 8882856b; evolve tip cb8d9771; D-S060-close=1"
   pr_number: 966
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
-  pr_status: open
+  pr_status: merged
   pr_base: stage
   github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  merge_sha: 8882856b
+  merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  merge_target: stage
+  pr_note: "PR #966 MERGED → stage @ 8882856b; D-S060-merge=1"
   artifacts_dir: docs/sessions/S060-tag-driven-prod-deploy/
   artifacts:
   - path: docs/sessions/S060-tag-driven-prod-deploy/
-    status: in_progress
-    note: "session-brief.md, routing-plan.md, evolve-plan-card.md + reports; PR #966 open → stage"
+    status: completed
+    note: "session-brief.md, routing-plan.md, evolve-plan-card.md + reports; PR #966 MERGED → stage @ 8882856b; D-S060-close=1 COMPLETE"
   - path: docs/sessions/S060-tag-driven-prod-deploy/session-brief.md
     status: present
   - path: docs/sessions/S060-tag-driven-prod-deploy/routing-plan.md
@@ -47,6 +57,21 @@ active_session:
     status: present
   - path: docs/sessions/S060-tag-driven-prod-deploy/reports/verification-report.md
     status: present
+  - path: docs/evolve-report-EV-051.md
+    status: present
+    note: "COMPLETE — D-S060-close=1; EV-051 closed; PR #966 MERGED → stage @ 8882856b"
+  - path: docs/sessions/S060-tag-driven-prod-deploy/reports/evolve-summary.md
+    status: present
+    note: "COMPLETE — D-S060-close=1; session close summary; PR #966 MERGED → stage @ 8882856b"
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    type: pull_request
+    status: merged
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    created_at: '2026-08-09'
+    note: "PR #966 MERGED → stage @ 8882856b; D-S060-merge=1"
   feature_ids:
   - F30
   deepen_feature_ids:
@@ -93,9 +118,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-08-09'
-    note: "Orchestrating Lean+; 07/08/09/11 COMPLETE; awaiting merge PR #966 → stage"
+    note: "COMPLETE — D-S060-close=1; EV-051 closed; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1"
+    completed: '2026-08-09'
   - stage: 01-requirements
     required: true
     mode: delta
@@ -176,22 +202,24 @@ active_session:
     status: skipped
     note: "Lean+ skip — deploy waived"
   routing_plan_note: "D-S060-route=1 Lean+ approved; required_stages 00/16/01/02/03/07/08/09/11"
-  current_stage: 11-verify-impl
-  current_stage_status: completed
-  current_stage_note: "11-verify-impl COMPLETE — D-S060-gateA=1 + D-S060-11-next=1; PR #966 OPEN → stage @ tip cb8d9771; awaiting merge; deploy waived"
-  open_decision: D-S060-11-next=1
+  current_stage: completed
+  current_stage_note: 'CLOSED — D-S060-close=1; EV-051 COMPLETE; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1; active_session=null'
   decisions:
     D-S060-open: "1 — open evolve S060/EV-051 tag-driven prod deploy (design 2+3+4); do not resume parked EV-043/EV-044"
     D-S060-scope: "1 — lock scope to design 2+3+4 (full CI Deploy needs; no auto Deploy on main; tag-driven prod + optional workflow_dispatch; staging auto; amend ADR-034/deploy docs/rule/ci-cd)"
     D-S060-route: "1 — Lean+ as drafted: 00→16→01→02→03→07→08→09→11; skip 04,05,06,10,12,13"
     D-S060-gateA: "1 — Gate A PASS; proceed build/verify"
     D-S060-11-next: "1 — PR #966 opened → stage; awaiting merge"
+    D-S060-merge: "1 — Merge #966 when CI green (user continue)"
+    D-S060-close: "1 — Close EV-051 / S060; clear active_session"
   decisions_locked:
   - D-S060-open=1
   - D-S060-scope=1
   - D-S060-route=1
   - D-S060-gateA=1
   - D-S060-11-next=1
+  - D-S060-merge=1
+  - D-S060-close=1
   gates:
     a_to_b: passed
     a_to_b_note: "D-S060-gateA=1 — Gate A PASS"
@@ -202,12 +230,14 @@ active_session:
     deploy: waived
     deploy_note: "Lean+ skip 12/13; first tag-driven prod cutover later promote"
   notes:
+  - "2026-08-09 D-S060-close=1 — EV-051 / S060 completed; active_session cleared"
+  - "2026-08-09 D-S060-merge=1 — PR #966 MERGED → stage @ 8882856b; CI green on PR; post-merge stage CI/Deploy queued"
   - "2026-08-09 D-S060-gateA=1 + D-S060-11-next=1 — Gate A PASS; 07/08/09/11 COMPLETE; PR #966 OPEN → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; awaiting merge"
   - "2026-08-09 D-S060-scope=1 — scope locked to design 2+3+4; artifacts under docs/sessions/S060-tag-driven-prod-deploy/"
   - "2026-08-09 D-S060-route=1 — Lean+ approved; 00/01/02/03 completed; current_stage 07-build in_progress; gates.a_to_b pending user Gate A confirm"
   - "2026-08-09 D-S060-open=1 — session opened; EV-051 deepens F30; EV-043/EV-044 remain parked unless user later chooses resume"
   - "EV-051 supersedes auto-deploy-on-main behavior from ADR-034 / TC-F30-010 pending amend"
-sessions:
+  note: "CLOSED — D-S060-close=1; EV-051 COMPLETE; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1; active_session=null"
 - id: S059-codes-wmo-validated
   type: feature
   intent: "Offline harvest + tac-validate membership checks for codes.wmo.int (#959 / #889 Validated)"
@@ -16420,15 +16450,20 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
-    completed:
-    completed_at:
-    close_decision:
+    status: completed
+    completed: '2026-08-09'
+    completed_at: '2026-08-09'
+    close_decision: D-S060-close=1
     mode: orchestrator
     session_id: S060-tag-driven-prod-deploy
     evolve_cycle_id: EV-051
     started_at: '2026-08-09'
     started: '2026-08-09'
+    previous_s060_session_id: S060-tag-driven-prod-deploy
+    previous_s060_evolve_cycle_id: EV-051
+    previous_s060_completed: '2026-08-09'
+    previous_s060_close_decision: D-S060-close=1
+    previous_s060_note: 'CLOSED — D-S060-close=1; EV-051 COMPLETE; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1; active_session=null'
     previous_s057_session_id: S057-strip-internal-doc-refs
     previous_s057_evolve_cycle_id: EV-048
     previous_s057_completed: '2026-08-09'
@@ -16460,20 +16495,20 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: 11-verify-impl
+    current_child_stage: completed
     current_child_stage_status: completed
-    current_child_stage_note: 'S060/EV-051 — 07/08/09/11 COMPLETE; D-S060-gateA=1 + D-S060-11-next=1; PR #966 OPEN → stage @ cb8d9771; awaiting merge'
-    tip_sha: cb8d9771
-    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    current_child_stage_note: 'CLOSED — D-S060-close=1; EV-051 COMPLETE; PR #966 MERGED → stage @ 8882856b; active_session=null'
+    tip_sha: 8882856b
+    tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
     tip_sha_pushed: true
     pr_number: 966
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
-    pr_status: open
-    merge_sha:
-    merge_sha_full:
+    pr_status: merged
+    merge_sha: 8882856b
+    merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
     merge_target: stage
-    branch_status: active
-    note: 'IN PROGRESS — S060/EV-051; 11-verify-impl COMPLETE / awaiting merge PR #966 → stage; gates.a_to_b/c_to_d passed; deploy waived; tip cb8d9771'
+    branch_status: merged
+    note: 'COMPLETE — D-S060-close=1; EV-051 / S060 closed; PR #966 MERGED → stage @ 8882856b; gates.a_to_b/c_to_d passed; deploy waived; active_session=null'
     prior_s057_pr_number: 963
     prior_s057_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
     prior_s057_merge_sha: 06a9543f
@@ -16742,6 +16777,80 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S060-close
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S060-tag-driven-prod-deploy
+  evolve_cycle_id: EV-051
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: session_close
+  status: confirmed
+  topic: Close EV-051 / S060; clear active_session
+  summary: 'D-S060-close=1 — EV-051 / S060 completed; active_session cleared; PR #966 MERGED → stage @ 8882856b'
+  decision: |
+    D-S060-close=1 — EV-051 / S060 completed; active_session cleared.
+    PR #966 MERGED → stage @ 8882856b (8882856b0df902d72890350196c8eb1786c304c8).
+    Session archived; active_session=null. EV-051 status=completed.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  related_features:
+  - F30
+  related_decisions:
+  - D-S060-merge
+  - D-S060-11-next
+  - D-S060-gateA
+  pr_number: 966
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  pr_status: merged
+  pr_base: stage
+  merge_sha: 8882856b
+  merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  merge_target: stage
+  tip_sha: 8882856b
+  tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  tip_sha_pushed: true
+  note: 'PR #966 MERGED → stage @ 8882856b; active_session=null; EV-051 COMPLETE'
+- id: D-S060-merge
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S060-tag-driven-prod-deploy
+  evolve_cycle_id: EV-051
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: merge
+  status: confirmed
+  topic: 'S060/EV-051 merge PR #966 → stage'
+  summary: 'D-S060-merge=1 — PR #966 MERGED → stage @ 8882856b; CI green on PR; post-merge stage CI/Deploy queued; awaiting D-S060-close'
+  decision: |
+    D-S060-merge=1 — Merge #966 when CI green (user continue).
+    PR #966 MERGED → base stage @ 8882856b (8882856b0df902d72890350196c8eb1786c304c8).
+    active_session retained; EV-051 remains in_progress pending D-S060-close.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-051-tag-driven-prod-deploy
+  related_features:
+  - F30
+  related_decisions:
+  - D-S060-11-next
+  - D-S060-gateA
+  - D-S060-route
+  - D-S060-scope
+  pr_number: 966
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  pr_status: merged
+  pr_base: stage
+  merge_sha: 8882856b
+  merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  tip_sha: 8882856b
+  tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  tip_sha_pushed: true
+  note: 'PR #966 MERGED → stage @ 8882856b; awaiting D-S060-close'
 - id: D-S060-11-next
   date: '2026-08-09'
   timestamp: '2026-08-09'
@@ -34954,12 +35063,14 @@ evolve_cycles:
   session_id: S060-tag-driven-prod-deploy
   type: feature
   cycle_type: general
-  status: in_progress
+  status: completed
   parked: false
   started: '2026-08-09'
   started_at: '2026-08-09'
-  completed:
-  completed_at:
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S060-close=1
+  close_note: 'Close EV-051/S060; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1'
   title: "Tag-driven prod deploy + full CI gates (solo)"
   slug: tag-driven-prod-deploy
   feature_ids:
@@ -34971,16 +35082,20 @@ evolve_cycles:
   branch_base: stage@c146baec
   branch_base_sha: c146baec
   branch_base_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
-  branch_status: active
-  tip_sha: cb8d9771
-  tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+  branch_status: merged
+  tip_sha: 8882856b
+  tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
   tip_sha_pushed: true
-  tip_sha_note: "PR #966 tip cb8d9771; awaiting merge → stage"
+  tip_sha_note: "PR #966 MERGED → stage @ 8882856b; D-S060-merge=1; D-S060-close=1"
   pr_number: 966
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
-  pr_status: open
+  pr_status: merged
   pr_base: stage
   github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+  merge_sha: 8882856b
+  merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  merge_target: stage
+  pr_note: "PR #966 MERGED → stage @ 8882856b; D-S060-merge=1"
   preset: Lean+
   scope_summary: "LOCKED D-S060-scope=1 — design 2+3+4: widen Deploy needs to full CI (+e2e-smoke); no auto Deploy on main push; prod Deploy only on vYYYY.MM.DD-deploy tag (+ optional workflow_dispatch); staging auto after full CI; amend ADR-034 / docs/deploy.md / doks-promote-from-stage.mdc / ci-cd.yml / TC-F30-010"
   scope_note: "Phase 0 locked via D-S060-scope=1 (design 2+3+4)"
@@ -35007,9 +35122,9 @@ evolve_cycles:
     - 13-deploy-smoke
     ordered: "00 → 16 → 01 → 02 → 03 → 07 → 08 → 09 → 11"
   routing_plan_note: "D-S060-route=1 Lean+ approved; artifact docs/sessions/S060-tag-driven-prod-deploy/routing-plan.md"
-  current_stage: 11-verify-impl
+  current_stage: completed
   current_stage_status: completed
-  current_stage_note: "11-verify-impl COMPLETE — D-S060-gateA=1 + D-S060-11-next=1; PR #966 OPEN → stage @ tip cb8d9771; awaiting merge; deploy waived"
+  current_stage_note: "D-S060-close=1 — EV-051 COMPLETE; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1"
   gates:
     a_to_b: passed
     a_to_b_note: "D-S060-gateA=1 — Gate A PASS"
@@ -35027,14 +35142,14 @@ evolve_cycles:
     phase_c: passed
     phase_c_note: "08 COMPLETE; gates.c_to_d passed"
     phase_d: passed
-    phase_d_note: "09+11 COMPLETE; awaiting merge #966"
+    phase_d_note: "09+11 COMPLETE; PR #966 MERGED → stage @ 8882856b; D-S060-close=1"
     deploy: waived
   adrs:
   - docs/adr/ADR-034-doks-staging-promote-from-stage.md
   artifacts:
   - path: docs/sessions/S060-tag-driven-prod-deploy/
-    status: in_progress
-    note: "session-brief.md, routing-plan.md, evolve-plan-card.md + reports; PR #966 open"
+    status: completed
+    note: "session-brief.md, routing-plan.md, evolve-plan-card.md + reports; PR #966 MERGED → stage @ 8882856b; D-S060-close=1 COMPLETE"
   - path: docs/sessions/S060-tag-driven-prod-deploy/session-brief.md
     status: present
   - path: docs/sessions/S060-tag-driven-prod-deploy/routing-plan.md
@@ -35043,24 +35158,45 @@ evolve_cycles:
     status: present
   - path: docs/sessions/S060-tag-driven-prod-deploy/reports/verify-impl.md
     status: present
+  - path: docs/evolve-report-EV-051.md
+    status: present
+    note: "COMPLETE — D-S060-close=1; EV-051 closed; PR #966 MERGED → stage @ 8882856b"
+  - path: docs/sessions/S060-tag-driven-prod-deploy/reports/evolve-summary.md
+    status: present
+    note: "COMPLETE — D-S060-close=1; session close summary; PR #966 MERGED → stage @ 8882856b"
+  - path: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
+    type: pull_request
+    status: merged
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S060-tag-driven-prod-deploy
+    evolve_cycle_id: EV-051
+    created_at: '2026-08-09'
+    note: "PR #966 MERGED → stage @ 8882856b; D-S060-merge=1"
   decisions:
     D-S060-open: "1 — open evolve S060/EV-051; deepen F30; EV-043/EV-044 remain parked"
     D-S060-scope: "1 — lock scope to design 2+3+4"
     D-S060-route: "1 — Lean+: 00→16→01→02→03→07→08→09→11; skip 04,05,06,10,12,13"
     D-S060-gateA: "1 — Gate A PASS; proceed build/verify"
     D-S060-11-next: "1 — PR #966 opened → stage; awaiting merge"
+    D-S060-merge: "1 — Merge #966 when CI green (user continue)"
+    D-S060-close: "1 — Close EV-051 / S060; clear active_session"
   decisions_locked:
   - D-S060-open=1
   - D-S060-scope=1
   - D-S060-route=1
   - D-S060-gateA=1
   - D-S060-11-next=1
+  - D-S060-merge=1
+  - D-S060-close=1
   notes:
+  - "2026-08-09 D-S060-close=1 — EV-051 / S060 completed; active_session cleared"
+  - "2026-08-09 D-S060-merge=1 — PR #966 MERGED → stage @ 8882856b; CI green on PR; post-merge stage CI/Deploy queued"
   - "2026-08-09 D-S060-gateA=1 + D-S060-11-next=1 — Gate A PASS; 07/08/09/11 COMPLETE; PR #966 OPEN → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; awaiting merge"
   - "2026-08-09 D-S060-scope=1 — scope locked to design 2+3+4"
   - "2026-08-09 D-S060-route=1 — Lean+ approved; current_stage 07-build; gates.a_to_b pending user Gate A confirm"
   - "2026-08-09 D-S060-open=1 — EV-051 opened; deepens F30; supersedes ADR-034 TC-F30-010 auto-deploy-on-main pending amend; parked EV-043/EV-044 remain parked — do not resume unless user later chooses"
-  note: "IN PROGRESS — 11 COMPLETE / awaiting merge PR #966 → stage; tip cb8d9771; deploy waived; parked EV-043/EV-044 unchanged"
+  note: "COMPLETED — D-S060-close=1; EV-051 closed; PR #966 MERGED → stage @ 8882856b; D-S060-merge=1 / D-S060-close=1; deploy waived; parked EV-043/EV-044 unchanged"
 - id: EV-050
   session_id: S059-codes-wmo-validated
   type: feature
@@ -45816,18 +45952,18 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after D-S060-gateA=1 + D-S060-11-next=1 (07/08/09/11 COMPLETE; PR #966 open); no git commit by workflow-state-manager'
-  tip_sha: cb8d9771
-  tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
-  tip_note: 'S060/EV-051 — D-S060-gateA=1 + D-S060-11-next=1; 11 COMPLETE / awaiting merge PR #966 → stage; tip cb8d9771 pushed; active_session=S060-tag-driven-prod-deploy'
+  dirty_note: 'workflow-state.yaml dirty after D-S060-close=1 (EV-051/S060 closed; PR #966 MERGED → stage @ 8882856b; active_session=null); no git commit by workflow-state-manager'
+  tip_sha: 8882856b
+  tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  tip_note: 'S060/EV-051 CLOSED — D-S060-close=1; PR #966 MERGED → stage @ 8882856b; active_session=null'
   evolve_branch: evolve/EV-051-tag-driven-prod-deploy
   evolve_tip_sha: cb8d9771
   evolve_tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
   evolve_tip_sha_pushed: true
-  stage_merge_sha: 2815ffbe
-  stage_merge_sha_full: 2815ffbe3a9f91e1b1da1677b93b8e6a025f20d1
-  stage_tip_sha: c146baec
-  stage_tip_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
+  stage_merge_sha: 8882856b
+  stage_merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  stage_tip_sha: 8882856b
+  stage_tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -45838,10 +45974,12 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-051-tag-driven-prod-deploy
-  note: 'S060/EV-051 — 11-verify-impl COMPLETE / awaiting merge PR #966 → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; EV-043/EV-044 remain parked'
+  recommended_branch: stage
+  note: 'S060/EV-051 CLOSED — D-S060-close=1; PR #966 MERGED → stage @ 8882856b; active_session=null; EV-043/EV-044 remain parked'
 
   notes:
+  - '2026-08-09 D-S060-close=1 — EV-051 / S060 completed; active_session cleared; PR #966 MERGED → stage @ 8882856b; no git commit by workflow-state-manager'
+  - '2026-08-09 D-S060-merge=1 — PR #966 MERGED → stage @ 8882856b; CI green on PR; post-merge stage CI/Deploy queued; awaiting D-S060-close; no git commit by workflow-state-manager'
   - '2026-08-09 D-S060-gateA=1 + D-S060-11-next=1 — Gate A PASS; 07/08/09/11 COMPLETE; PR #966 OPEN → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; awaiting merge; no git commit by workflow-state-manager'
   - '2026-08-09 commit cb8d9771 — [EV-051] feat: tag-driven prod Deploy after full CI (solo gate); tip cb8d9771 pushed; PR #966; stages 07-build/16-evolve'
   - '2026-08-09 D-S060-scope=1 + D-S060-route=1 — scope locked 2+3+4; Lean+ routing; 00/01/02/03 completed; current_stage 07-build; gates.a_to_b pending user Gate A confirm; artifacts docs/sessions/S060-tag-driven-prod-deploy/; no git commit by workflow-state-manager'
@@ -46378,7 +46516,7 @@ git_history:
     base: stage
     base_sha: c146baec
     base_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
-    status: active
+    status: merged
     created: '2026-08-09'
     exists: true
     purpose: "EV-051 / S060 tag-driven prod deploy + full CI Deploy needs (deepen F30)"
@@ -46389,9 +46527,12 @@ git_history:
     tip_sha_pushed: true
     pr_number: 966
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
-    pr_status: open
+    pr_status: merged
     pr_base: stage
-    note: "S060/EV-051 D-S060-gateA=1 + D-S060-11-next=1; 11 COMPLETE / awaiting merge PR #966 → stage; tip cb8d9771; no git commit by workflow-state-manager"
+    merge_sha: 8882856b
+    merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+    merge_target: stage
+    note: "S060/EV-051 PR #966 MERGED → stage @ 8882856b; evolve tip cb8d9771; D-S060-merge=1; D-S060-close=1; no git commit by workflow-state-manager"
   - name: evolve/EV-050-codes-wmo-validated
     base: stage
     base_sha: b57f2a87
