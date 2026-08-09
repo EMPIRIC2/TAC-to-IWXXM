@@ -35,11 +35,16 @@ membership-checked in CI — no live `codes.wmo.int` HTML in PR CI.
 
 ## Next child stage
 
-**02-verify-plan** — Gate A
+**04-tech-plan** — execution plan (harvest + membership + dual-profile compare/fixes)
 
 ## Risks / open decisions
 
 - Aggressive fixtures + dual-profile matrix enlarges 07 — size milestones in 04
-- True-error volume unknown until compare runs — may need deferrals with cite
-- Full F6 matrix: many products are N/A for `iwxxm_us` — must not fail those rows
+  (advisory M3: may split M1 harvest / M2 fixtures / M3 profiles)
+- True-error volume unknown until compare runs — AC8 defer+cite OK (advisory M1)
+- Full F6 matrix: many products are N/A for `iwxxm_us` — must not fail those rows (M2)
 - Docs PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) → `stage` still open
+
+## Gate A
+
+**PASS** `D-S059-gateA=1` (2026-08-09) — report `reports/02-verify-plan.md`

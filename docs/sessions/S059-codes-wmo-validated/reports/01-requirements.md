@@ -55,4 +55,4 @@ N/A — no browser UI.
 - [x] Feature-list deepen (F6 + quality bars)
 - [x] Test-plan TC-EV050-001..008
 - [x] Commit locally (`2a`) — no push
-- [ ] Gate A — **02-verify-plan**
+- [x] Gate A — **02-verify-plan** PASS (`D-S059-gateA=1`)

@@ -4,19 +4,19 @@
 **Route:** `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`  
 **Skip:** `03`, `06`, `10`, `12`, `13`  
 **Branch:** `evolve/EV-050-codes-wmo-validated` (base `stage`)  
-**Tip:** `849af115`  
+**Tip:** `aab35494` (local ahead; Gate A commit may advance)  
 **Features:** deepen **F6**, **F12**, **F15**, **F20**, **F23**, **F24**, **F28** (no new Fn)  
 **Issues:** [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889))  
-**Status:** approved — Phase A → **02-verify-plan** (01 locked incl. `D-S059-profiles=1b`)
+**Status:** approved — Phase A **PASS** (`D-S059-gateA=1`) → **04-tech-plan**
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | `D-S059-route=1` |
 | 16-evolve | yes | orchestrator | **in_progress** | EV-050 |
 | 01-requirements | yes | delta | **completed** | AC1–AC8; profiles 1b |
-| 02-verify-plan | yes | delta | **in_progress** | Gate A |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S059-gateA=1` |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
-| 04-tech-plan | yes | delta | pending | execution plan |
+| 04-tech-plan | yes | delta | **in_progress** | execution plan |
 | 05-verify-tech | yes | delta | pending | Gate B |
 | 06-tech-tooling | no | — | skipped | no new runtime deps expected |
 | 07-build | yes | full | pending | harvest + tac-validate wire |
