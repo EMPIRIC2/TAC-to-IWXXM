@@ -23,8 +23,8 @@ sessions:
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
   branch_status: active
   branch_exists: true
-  tip_sha: 9582b352
-  tip_sha_full: 9582b352341ed9de48c810d8738c767905d5f890
+  tip_sha: 2ed6f5cc
+  tip_sha_full: 2ed6f5cc8245ebe6bff09557b4e5062563c8853a
   tip_sha_pushed: false
   artifacts_dir: docs/sessions/S061-ci-polish-quality-pr-stats/
   github_issues:
@@ -46,7 +46,7 @@ sessions:
   - M5
   prior_session: S060-tag-driven-prod-deploy
   current_stage: 07-build
-  current_stage_note: 'M1 COMPLETE (T1.1–T1.5 @ 9582b352); D-S061-cov-branches=3; child #968; next M2 T2.1'
+  current_stage_note: 'M2 COMPLETE @ 99d56b9c (T2.1–T2.4); next M3 T3.1 Sentry+Redis'
   decisions:
     D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
     D-S061-redis: "1 — Upstash Redis free"
@@ -101,7 +101,7 @@ sessions:
   - stage: 07-build
     status: in_progress
     mode: delta
-    note: "M1 COMPLETE @ 9582b352; next M2 T2.1; child #968 (branches waiver)"
+    note: "M2 COMPLETE @ 99d56b9c; next M3 T3.1; child #968"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -109,6 +109,8 @@ sessions:
   - stage: 11-verify-impl
     status: pending
   notes:
+  - "2026-08-09 M2 COMPLETE (T2.1–T2.4) @ 99d56b9c — quality sticky PR comment; next M3 T3.1"
+  - "2026-08-09 M2 START — T2.1 in_progress (quality sticky); D-S061-cov-branches=3 locked; M1 done"
   - "2026-08-09 M1 COMPLETE (T1.1–T1.5) @ 9582b352 — D-S061-cov-branches=3; child issue #968; next M2 T2.1"
   - "2026-08-09 D-S061-cov-branches=3 — Vitest lines/stmts/funcs ≥95 now; branches ≥95 via child issue + explicit waiver (not silent); T1.5"
   - "2026-08-09 D-S061-gateB=1 — Gate B PASS; 05 COMPLETE; 06 skipped; 07-build M1 in_progress"
@@ -35449,7 +35451,7 @@ evolve_cycles:
   github_issues: [950, 900, 841, 968]
   preset: Standard
   current_stage: 07-build
-  current_stage_note: "M1 COMPLETE (T1.1–T1.5 @ 9582b352); D-S061-cov-branches=3; child #968; next M2 T2.1"
+  current_stage_note: "M2 COMPLETE @ 99d56b9c; next M3 T3.1"
   branch: evolve/EV-052-ci-polish-quality-pr-stats
   branch_base: stage@80197a58
   branch_base_sha: 80197a58
@@ -48364,6 +48366,21 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 99d56b9c
+    sha_full: 99d56b9c8f8f7170e4873d24e30f4445cb17993b
+    branch: evolve/EV-052-ci-polish-quality-pr-stats
+    message: "[EV-052] feat: M2 quality sticky PR comment (product x profile stats)"
+    stage: 07-build
+    session_id: S061-ci-polish-quality-pr-stats
+    evolve_cycle_id: EV-052
+    files_changed:
+    - ci-cd.yml
+    - format/collect scripts
+    - unit tests
+    - DEVELOPMENT.md
+    - build-plan-card
+    - execution-plan
+    timestamp: '2026-08-09'
   - sha: 9582b352
     sha_full: 9582b352341ed9de48c810d8738c767905d5f890
     message: "[EV-052] feat: M1 coverage inventory + ≥95 lines/stmts/funcs gates"
