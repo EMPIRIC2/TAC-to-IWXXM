@@ -295,7 +295,7 @@ L3 token membership for CI uses a **generated** artifact — never live `codes.w
 | Drift check | `make membership-check` |
 | Module | `tac_validate.membership` |
 
-**Cadence:** regenerate when `vendor/manifest.json` bumps `iwxxm-codelists` (same vendor sync PRs as [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) URI drift). See [RULE_SOURCE_URLS.md](rules/RULE_SOURCE_URLS.md) §codes.wmo.int.
+**Cadence:** regenerate when `vendor/manifest.json` bumps `iwxxm-codelists` (same vendor sync PRs as [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) URI drift). Standing tech entry: [tech-spec.md](../tech-spec.md) §WMO membership harvest. See [RULE_SOURCE_URLS.md](rules/RULE_SOURCE_URLS.md) §codes.wmo.int.
 
 **Fixture∩ coverage (AC4):** post-M2 register hit rates + residual defer+cite —
 [fixture-coverage-delta-t2.4.md](../sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md);

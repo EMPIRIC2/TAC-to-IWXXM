@@ -10,8 +10,7 @@
 `annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
-**Status**: **in_progress** — Phase C / **07-build** (Gate B PASS `D-S059-gateB=1`;
-**M2+M3 complete**; M4 closeout docs in progress)
+**Status**: **in_progress** — Phase C / **07-build** complete (M1–M4); next **08-verify-build**
 **Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
 (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);

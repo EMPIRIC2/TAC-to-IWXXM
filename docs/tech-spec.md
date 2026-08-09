@@ -2,7 +2,7 @@
 
 > **Corpus ID:** `tech-spec` — see [CORPUS.md](CORPUS.md).  
 > **Architecture / components:** [spec.md](spec.md) (`system-spec`).  
-> **Last updated:** 2026-08-08 (S054 / EV-045 — Rust CI pointer; prior S047 / EV-039)
+> **Last updated:** 2026-08-09 (S059 / EV-050 — WMO membership harvest; prior S054 / EV-045)
 
 This file is the **entry point** for runtime, configuration, deployment, and dependency
 truth. Detail lives in the satellites below — do not duplicate long tables here.
@@ -34,6 +34,27 @@ When changing runtime behavior or deploy/config:
 3. New library appears in **dependency-inventory** (or AskQuestion before adding).
 4. Component boundaries still match **spec.md** §Component Overview.
 5. If the change is a non-obvious trade-off, add or cite an **ADR**.
+
+## WMO membership harvest (F12 deepen — S059 / EV-050)
+
+Offline L3 token membership for `tac-validate` — **no** live `codes.wmo.int` HTML in PR CI
+([Corpus: product §F12], [Corpus: decisions §EV-050], `D-S059-04-adr=1` — no new ADR).
+
+| Surface | Location |
+|---------|----------|
+| SoT (CSV `notation`) | `vendor/schemas/iwxxm-codelists/CSV/**/*_entity.csv` |
+| SoT (nil RDF) | `vendor/schemas/iwxxm/{pin}/IWXXM/rule/codes.wmo.int-{common,iwxxm}-nil.rdf` |
+| Pin / cadence | `vendor/manifest.json` → `iwxxm-codelists`; refresh on normal vendor sync PRs |
+| Artifact | `packages/tac-validate/src/tac_validate/data/wmo_membership.json` |
+| Harvest module | `packages/tac-validate/src/tac_validate/membership.py` |
+| CLI | `scripts/iwxxm/harvest_wmo_membership.py` |
+| Regenerate | `make membership-regen` |
+| Drift check | `make membership-check` (regen + fail if artifact dirty) |
+| Related | `make codelist-uri-drift` ([#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)); #882 design-only compose note (session report) |
+
+Domain narrative: [TAC_VALIDATION.md](domain/TAC_VALIDATION.md) §Offline membership harvest;
+[RULE_SOURCE_URLS.md](domain/rules/RULE_SOURCE_URLS.md) §codes.wmo.int.
+Test IDs: [test-plan.md](test-plan.md) §EV-050 / TC-EV050-001..003.
 
 ## Rust native crates (F13 / F14 — S054 / EV-045)
 
