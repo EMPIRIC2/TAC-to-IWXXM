@@ -18,8 +18,8 @@
 |-------|-------|
 | **Active phase** | Phase 1: Stabilize + narrative |
 | **Active milestone** | M1: Converter perf baselines + harness |
-| **Active task** | T1.3 CI re-record (after T1.1–T1.2 landed locally) |
-| **Tasks completed** | 2 / 16 (T1.1–T1.2; laptop seed for T1.3) |
+| **Active task** | T1.5 ruleset apply; M3 docs |
+| **Tasks completed** | 10 / 16 (M1 T1.1–T1.4 + M2 T2.1–T2.3) |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-08 |
 | **Ruleset** | `D-S056-ruleset-defer=2` — require `Converter perf (tac2iwxxm)` **after** job ships in M2 (not before) |
