@@ -32,7 +32,7 @@ Ship offline WMO codelist harvest + `tac-validate` membership CI and all-F6
 ## Dependencies / blockers
 
 - Data: in-repo `vendor/schemas/iwxxm-codelists` + pin RDF (verified present)
-- Prior: Gate A PASS (`D-S059-gateA=1`); awaiting Gate B after 04 approve
+- Prior: Gate A PASS (`D-S059-gateA=1`); plan approved (`D-S059-04-plan=1`); Gate B pending
 - Tooling: 06 skipped
 
 ## Acceptance for this batch

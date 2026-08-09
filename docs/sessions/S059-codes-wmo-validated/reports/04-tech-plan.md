@@ -30,4 +30,4 @@
 
 - [x] Tech interview locked (user `1,1,1,1`)
 - [x] Execution plan + Build Plan Card drafted
-- [ ] User approve plan (`D-S059-04-plan`) → **05-verify-tech**
+- [x] User approve plan (`D-S059-04-plan=1`) → **05-verify-tech**

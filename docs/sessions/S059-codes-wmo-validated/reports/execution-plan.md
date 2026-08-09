@@ -15,11 +15,12 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Validated membership |
-| **Active milestone** | M1: Offline harvest (pending Gate B / 07) |
-| **Active task** | — (awaiting `D-S059-04-plan` approve → 05) |
-| **Tasks completed** | 0 / 22 |
-| **Stage** | 04-tech-plan |
+| **Active milestone** | M1: Offline harvest (awaiting Gate B → 07) |
+| **Active task** | T1.1 (first after Gate B) |
+| **Tasks completed** | 0 / 15 |
+| **Stage** | 05-verify-tech |
 | **Last updated** | 2026-08-09 |
+| **Plan approve** | `D-S059-04-plan=1` |
 | **Build Plan Card** | `docs/sessions/S059-codes-wmo-validated/build-plan-card.md` |
 
 ## Tech decisions (**locked** `D-S059-04-*`)

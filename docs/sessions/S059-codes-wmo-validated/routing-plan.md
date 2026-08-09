@@ -7,7 +7,7 @@
 **Tip:** `aab35494` (local ahead; Gate A commit may advance)  
 **Features:** deepen **F6**, **F12**, **F15**, **F20**, **F23**, **F24**, **F28** (no new Fn)  
 **Issues:** [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889))  
-**Status:** approved — Phase A **PASS** (`D-S059-gateA=1`) → **04-tech-plan**
+**Status:** approved — Phase B → **05-verify-tech** (`D-S059-04-plan=1`)
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
@@ -16,8 +16,8 @@
 | 01-requirements | yes | delta | **completed** | AC1–AC8; profiles 1b |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S059-gateA=1` |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
-| 04-tech-plan | yes | delta | **in_progress** | plan drafted; awaiting `D-S059-04-plan` |
-| 05-verify-tech | yes | delta | pending | Gate B (after 04 approve) |
+| 04-tech-plan | yes | delta | **completed** | `D-S059-04-plan=1` |
+| 05-verify-tech | yes | delta | **in_progress** | Gate B |
 | 06-tech-tooling | no | — | skipped | no new runtime deps expected |
 | 07-build | yes | full | pending | harvest + tac-validate wire |
 | 08-verify-build | yes | delta | pending | |
