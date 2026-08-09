@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-08 (S057 / EV-048 — #951 strip internal doc refs; prior EV-046/047)
+> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated membership; prior EV-046/048)
 
 ## Scope
 
@@ -2093,6 +2093,99 @@ Docs/coverage only — no H4–H5. Complements **TC-EV038-008** / [#859](https:/
 - [ ] No new Fn (deepen only); Validated waived with follow-on
 - [ ] No live `codes.wmo.int` HTML in PR CI
 - [ ] Domain path-cites for RULE_SOURCE_URLS / COVERAGE_MATRIX / mining / ISSUE_CATALOG
+
+## S059 / EV-050 — codes.wmo.int Validated harvest + membership (#959)
+
+New **TC-EV050-001..008**. Deepens F6 / F12 / F15 / F20 / F23 / F24 / F28 (fixtures may touch
+F6 packs). Completes Validated waived in EV-046 (`D-S055-validated=1`). Adds **annex3 vs
+`iwxxm_us`** membership/lint compare + true-error fixes. No H4–H5 (no UI).
+No live `codes.wmo.int` HTML in PR CI.
+
+### TC-EV050-001: Offline harvest → membership sets
+
+- **Level**: T0 / T1
+- **Objective**: Standing harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF) produces
+  machine-readable membership set(s) used by CI / `tac-validate`
+- **Pass criteria**: Harvest path documented; CI consumes offline artifact only; no network
+  fetch of codes.wmo.int HTML in PR CI
+- **Source**: #959 §1; AC1; [Corpus: tech-spec] [Corpus: product §F12]
+
+### TC-EV050-002: Membership happy + unknown/sad
+
+- **Level**: T1
+- **Objective**: Assert known-good tokens pass and unknown/sad tokens fail for v1 families:
+  present/forecast weather, recent weather, cloud amount/type, SIGMET + AIRMET phenomena,
+  nilReason where lint already checks URIs
+- **Pass criteria**: Matrix or unit tests green for happy + sad per family; failures carry
+  stable issue codes where applicable
+- **Source**: #959 §2; AC2; `D-S059-families=1a`
+
+### TC-EV050-003: Harvest cadence vs manifest pin
+
+- **Level**: T0 / docs
+- **Objective**: Document refresh cadence tied to `vendor/manifest.json` `iwxxm-codelists`
+  pin (vendor sync PRs)
+- **Pass criteria**: Standing docs (RULE_SOURCE_URLS / TAC_VALIDATION / mining) state pin +
+  cadence; cross-link #859
+- **Source**: #959 Acceptance; AC3
+
+### TC-EV050-004: Aggressive fixture expansion (EV-046 gaps)
+
+- **Level**: T0 / T1
+- **Objective**: Add fixtures covering `RE*`, AIRMET underscore phenomena, SpaceWxPhenomena,
+  TCU; update coverage notes; residual gaps deferred with cite
+- **Pass criteria**: Fixtures land under `tac-validate` / product packs; coverage report or
+  COVERAGE_MATRIX delta records uplift; deferrals listed
+- **Source**: AC4; `D-S059-fixtures=2c`; EV-046 coverage gap table
+
+### TC-EV050-005: #889 Validated satisfied
+
+- **Level**: T0 / process
+- **Objective**: Parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) Validated
+  triad element closed via this cycle’s membership CI (or explicit re-scope)
+- **Pass criteria**: evolve-decisions §EV-050 AC5 + issue comments / close criteria met; no
+  silent waiver without cite
+- **Source**: #959 Acceptance; AC5
+
+### TC-EV050-006: #882 design-only compose note
+
+- **Level**: T0 / docs
+- **Objective**: Short design note for optional scheduled live refresh **outside** PR CI
+  composing with #882 — no job implementation
+- **Pass criteria**: Note committed (session report or domain/ops pointer); states out of
+  scope for notify pipeline and PR CI live HTML
+- **Source**: AC6; `D-S059-882=3a`
+
+### TC-EV050-007: annex3 vs iwxxm_us membership/lint compare
+
+- **Level**: T0 / T1
+- **Objective**: For **all supported F6 products**, same TAC corpus (or representative
+  matrix) linted/membership-checked under `profile=annex3` and `profile=iwxxm_us`. Where
+  `iwxxm_us` is unsupported for a product, row is **N/A** (not a fail). Where both apply,
+  disposition: shared WMO expected · intentional L5 US overlay · suspect/true error
+- **Pass criteria**: Report committed (session or domain) covering all F6 product families;
+  N/A rows cited; CI or unit harness fails if an unclassified divergent outcome appears for
+  dual-profile packs; WMO L3 SoT unchanged for both profiles; L5 only under `iwxxm_us`
+- **Source**: AC7; `D-S059-profiles=1b`; [Corpus: product §F6];
+  `docs/domain/TAC_VALIDATION.md` L3/L5
+
+### TC-EV050-008: True-error profile fixes
+
+- **Level**: T1
+- **Objective**: Each **true error** from AC7 is fixed with a regression test (happy and/or
+  sad); intentional diffs and N/A rows retain cited disposition
+- **Pass criteria**: No open true-error rows without fix or explicit deferral+cite; no
+  invented US weather tokens outside FMH-1 / NWS / iwxxm-us pins
+- **Source**: AC8; `D-S059-profiles=1b`
+
+### EV-050 verify gate
+
+- [ ] TC-EV050-001..008 green (or explicit deferral recorded)
+- [ ] No new Fn (deepen only); #889 Validated satisfied or re-scoped
+- [ ] No live `codes.wmo.int` HTML in PR CI
+- [ ] H4–H5 **N/A** (no UI); 12/13 waived per routing
+- [ ] Aggressive fixture families present or deferred with cite
+- [ ] annex3 vs iwxxm_us disposition table present; true errors fixed or deferred with cite
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 

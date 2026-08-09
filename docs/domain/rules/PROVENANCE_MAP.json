@@ -44,7 +44,7 @@
       "source_url": "https://www.icao.int/safety/meteorology/Pages/IWXXM.aspx",
       "source_id": "opmet-guidelines-5th",
       "ticket": null,
-      "note": "Landing/cite \u2014 see RULE_SOURCE_URLS for exact PDF"
+      "note": "Landing/cite — see RULE_SOURCE_URLS for exact PDF"
     },
     {
       "path": "docs/domain/mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md",
@@ -84,7 +84,7 @@
       "source_url": "https://library.wmo.int/",
       "source_id": "wmo-306-i3-2019",
       "ticket": null,
-      "note": "historical dig 1\u2013272 complete \u00b7 #798"
+      "note": "historical dig 1–272 complete · #798"
     },
     {
       "path": "docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md",
@@ -183,7 +183,7 @@
       "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
       "source_id": "fmh-1",
       "ticket": null,
-      "note": "FMH-1 US national; URL may redirect \u2014 cite RULE_SOURCE_URLS"
+      "note": "FMH-1 US national; URL may redirect — cite RULE_SOURCE_URLS"
     },
     {
       "path": "docs/domain/mining/icao-annex-3-mining-notes.md",
@@ -328,7 +328,7 @@
       "source_url": "https://github.com/wmo-im/iwxxm-us",
       "source_id": "iwxxm-us",
       "ticket": null,
-      "note": "validate column \u26a0 \u2014 no US SCH in pin \u00b7 #870"
+      "note": "validate column ⚠ — no US SCH in pin · #870"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-metce-mining-notes.md",
@@ -386,7 +386,7 @@
       "source_url": "https://schemas.wmo.int/rule/",
       "source_id": "schemas-rule-index",
       "ticket": null,
-      "note": "index only \u2014 pin uses vendor rule/iwxxm.sch"
+      "note": "index only — pin uses vendor rule/iwxxm.sch"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-saf-mining-notes.md",
@@ -433,7 +433,7 @@
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "source_id": "vona-ahl-fm205",
       "ticket": null,
-      "note": "Guidance silent \u00b7 #869; AHL WM/LM + FM205 promote"
+      "note": "Guidance silent · #869; AHL WM/LM + FM205 promote"
     },
     {
       "path": "docs/domain/mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md",
@@ -585,8 +585,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/SigConvectiveCloudType",
-      "note": "EV-046: CB/TCU convective type register"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/SigConvectiveCloudType",
+      "note": "CB/TCU convective type register"
     },
     {
       "code": "CNL_REPORT",
@@ -656,8 +656,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
-      "note": "EV-046: cloud amount register landing"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "note": "Cloud amount register landing"
     },
     {
       "code": "INVALID_CNL_SHAPE",
@@ -716,8 +716,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar)",
-      "note": "EV-046: no single RVR concept register \u2014 cite 49-2 family + grammar sources"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar)",
+      "note": "No single RVR concept register — cite 49-2 family + grammar sources"
     },
     {
       "code": "INVALID_SIGMET_CNL",
@@ -777,8 +777,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes)",
-      "note": "EV-046: vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes)",
+      "note": "Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
     },
     {
       "code": "INVALID_WEATHER",
@@ -788,8 +788,19 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC})",
-      "note": "EV-046: prefer register landing + 306/4678 concept pattern over bare root"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC})",
+      "note": "Prefer register landing + 306/4678 concept pattern over bare root"
+    },
+    {
+      "code": "UNKNOWN_WMO_MEMBERSHIP",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/49-2",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership)",
+      "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     {
       "code": "INVALID_WIND",
@@ -799,8 +810,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list)",
-      "note": "EV-046: wind not in AerodromePresentWeather list"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list)",
+      "note": "Wind not in AerodromePresentWeather list"
     },
     {
       "code": "MISSING_CCCC",
@@ -820,7 +831,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
       "ticket": "#869",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "MISSING_FIR_OR_CTA",
@@ -910,7 +921,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
       "ticket": "#869",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "MISSING_SWXC",
@@ -1030,7 +1041,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
       "ticket": "#869",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "MISSING_WIND",
@@ -1070,8 +1081,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
-      "note": "EV-046: NCD cloud amount notation family"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "note": "NCD cloud amount notation family"
     },
     {
       "code": "NIL_REPORT",
@@ -1380,8 +1391,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ (product routing N/A to aviation weather registers)",
-      "note": "EV-046: intentional bare root \u2014 not a registry notation check"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/ (product routing N/A to aviation weather registers)",
+      "note": "Intentional bare root — not a registry notation check"
     },
     {
       "code": "VAA_FCST_NO_VA_EXP",
@@ -1471,7 +1482,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
       "ticket": "#869",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "VONA_ONSET_NIL",
@@ -1481,7 +1492,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md",
       "ticket": "#869",
-      "note": "Guidance silent residual tracked #869; AHL/FM205/XSD cites ok"
+      "note": "Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "VV_NOT_OBSERVABLE",
@@ -1491,8 +1502,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil/notObservable",
-      "note": "EV-046: vertical visibility missingness via nil"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable",
+      "note": "Vertical visibility missingness via nil"
     },
     {
       "code": "VV_OMIT",
@@ -1532,8 +1543,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil)",
-      "note": "EV-046: nilReason notObservable; prefer iwxxm/nil when pin policy says so"
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil)",
+      "note": "nilReason notObservable; prefer iwxxm/nil when pin policy says so"
     }
   ],
   "matrix_cells": [
@@ -1889,7 +1900,7 @@
       "status": "ok",
       "pin_version": "2025-2",
       "ticket": null,
-      "note": "WM\u2192LM ok; #869 is Guidance silence tracker only"
+      "note": "WM→LM ok; #869 is Guidance silence tracker only"
     },
     {
       "rule_id": "VONA_FM205_PACKAGE",
@@ -1910,7 +1921,7 @@
       "status": "N/A",
       "pin_version": "2025-2",
       "ticket": "#869",
-      "note": "Upstream Guidance silence \u2014 non-blocking encode; SoT hierarchy documented EV-037"
+      "note": "Upstream Guidance silence — non-blocking encode; SoT hierarchy documented EV-037"
     },
     {
       "rule_id": "IWXXM_SCH_PIN",
@@ -1931,7 +1942,7 @@
       "status": "N/A",
       "pin_version": "3.0",
       "ticket": "#870",
-      "note": "Official US Schematron not published \u2014 N/A artifact (EV-037)"
+      "note": "Official US Schematron not published — N/A artifact (EV-037)"
     },
     {
       "rule_id": "AHL_SPECI_SP_LP",
@@ -1942,7 +1953,7 @@
       "status": "ok",
       "pin_version": "2025-2",
       "ticket": null,
-      "note": "fixtures/ahl/sp_speci \u2014 matrix refresh may close #872"
+      "note": "fixtures/ahl/sp_speci — matrix refresh may close #872"
     }
   ],
   "revisited_executable": [

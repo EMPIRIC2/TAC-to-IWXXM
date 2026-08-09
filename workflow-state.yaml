@@ -3,10 +3,430 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 57
-evolve_cycle_counter: 48
-active_session: null
+session_counter: 59
+evolve_cycle_counter: 50
+active_session:
+  id: S059-codes-wmo-validated
+  type: feature
+  intent: "Offline harvest + tac-validate membership checks for codes.wmo.int (#959 / #889 Validated)"
+  status: in_progress
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-050
+  branch: evolve/EV-050-codes-wmo-validated
+  branch_base: stage@b57f2a87
+  branch_base_sha: b57f2a87
+  branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+  branch_status: active
+  branch_exists: true
+  tip_sha: 271efa49
+  tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
+  tip_sha_pushed: false
+  pr_base: stage
+  github_issues:
+  - 959
+  issue_ids:
+  - 959
+  parent_epic: 846
+  related_issues:
+  - 889
+  - 859
+  - 882
+  feature_ids: []
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F28
+  feature_note: "Deepen tac-validate / quality bars — #889 Validated; no new Fn"
+  preset: Standard
+  auto_lean: false
+  ui_preview: n/a
+  ui_preview_note: "N/A — no browser UI"
+  prior_session: S058-ams-2027-abstract
+  artifacts_dir: docs/sessions/S059-codes-wmo-validated/
+  current_stage: 11-verify-impl
+  current_stage_note: "08/09 PASS; verify-impl awaiting approval; tip 7f3d871b; local ahead 22 not pushed"
+  decisions:
+    D-S058-park: "1a — park S058/#958 Ready; keep scaffold"
+    D-S059-ticket: "2a — open S059/EV-050 for #959"
+    D-S059-route: "1 — Standard as drafted: 00→16→01→02→04→05→07→08→09→11; skip 03,06,10,12,13"
+    D-S059-families: "1a — weather+recent+cloud+SIGMET/AIRMET+nil"
+    D-S059-fixtures: "2c — aggressive RE*/AIRMET_/SpaceWx/TCU"
+    D-S059-882: "3a — design-only #882 compose"
+    D-S059-01-ac: "4a — lock AC1–AC6; 01 deltas drafted for preview"
+    D-S059-profiles: "1b — all F6; iwxxm_us N/A where unsupported; AC7–AC8"
+    D-S059-gateA: "1 — Gate A PASS; handoff 04-tech-plan"
+    D-S059-04-milestones: "1 — four milestones M1–M4"
+    D-S059-04-harvest: "1 — CSV notation + pin RDF nil/dual"
+    D-S059-04-wire: "1 — tac-validate generated artifact + pytest + make"
+    D-S059-04-adr: "1 — no new ADR"
+    D-S059-04-plan: "1 — approve execution plan + build-plan-card → 05"
+    D-S059-gateB: "1 — Gate B PASS; handoff 07-build M1"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "D-S059-route=1 Standard approved"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: in_progress
+    started: '2026-08-09'
+    note: "orchestrator after route approve; Phase A → 01"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "AC locked; fixture baseline report; commit 00875e9c; not pushed"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — Gate A PASS D-S059-gateA=1; report reports/02-verify-plan.md; handoff 04"
+  - stage: 03-plan-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Standard skip unless rules"
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S059-04-plan=1; handoff 05"
+  - stage: 05-verify-tech
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — Gate B PASS D-S059-gateB=1; handoff 07-build M1"
+  - stage: 06-tech-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Standard skip unless new deps"
+  - stage: 07-build
+    required: true
+    mode: full
+    status: in_progress
+    started: '2026-08-09'
+    note: "M1–M4 complete; tip 7f3d871b"
+    status: completed
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: completed
+    completed: '2026-08-09'
+    note: "PASS — verification-report.md"
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: completed
+    completed: '2026-08-09'
+    note: \"PASS — reports/qa-report.md\"
+  - stage: 10-e2e
+    required: false
+    mode: skip
+    status: skipped
+    note: "no UI"
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: in_progress
+    started: '2026-08-09'
+    note: \"awaiting user AC approval + push/PR\"
+  - stage: 12-verify-deploy
+    required: false
+    mode: skip
+    status: skipped
+    note: "waive unless deploy"
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skip
+    status: skipped
+    note: "waive; no stage→main"
+  artifacts:
+  - path: docs/sessions/S059-codes-wmo-validated/session-brief.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/routing-plan.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/evolve-plan-card.md
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/01-requirements.md
+    status: written
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/decisions/evolve-decisions.md
+    status: touched
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/fixture-quality-baseline.md
+    status: written
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/02-verify-plan.md
+    status: written
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/execution-plan.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/build-plan-card.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/04-tech-plan.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/05-verify-tech.md
+    status: written
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md
+    status: written
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  notes:
+  - "2026-08-09 tip 271efa49 — M2+M3 complete (T2.4@d6dc64e0; T3.1@848c01a7; T3.2@926342fe+f38f9466; T3.3@3d06b144; T3.4@271efa49); next M4 T4.1 #882 design note; local ahead ~15 not pushed; tip_sha_pushed=false; 07-build remains in_progress; dirty workflow-state expected; ignore untracked no-internal-doc-refs if present (do not add); no git commit by workflow-state-manager"
+  - "2026-08-09 commit 848c01a7 — T3.1 dual-profile harness; tip 848c01a7 local ahead 11; no push; T2.4@d6dc64e0 closed M2; next T3.2 disposition docs (AC7); 07-build remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-09 commit d6dc64e0 — T2.4 complete (M2 closed); tip d6dc64e0 local ahead 10; no push; M3 starting at T3.1 dual-profile harness; single PR → stage after 08–11 (no mid-cycle PR); 07-build remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-09 user confirmed T2.2@90f5606b + T2.3@48323861 done; T2.4 in_progress (COVERAGE_MATRIX / fixture baseline delta + deferrals; closes M2); T2.4 not completed; next after T2.4 → M3 T3.1; tip 48323861 local ahead 9; no push; no git commit by workflow-state-manager"
+  - "2026-08-09 commit 48323861 — T2.3 aggressive RE*/AIRMET_/SpaceWx/TCU membership fixtures; tip 48323861 local ahead 9; no push; next T2.4 coverage/baseline docs"
+  - "2026-08-09 commit 90f5606b — T2.2 wire WMO membership into tac-validate lint; tip 90f5606b local ahead 8; no push; next T2.3 aggressive fixtures"
+  - "2026-08-09 commit 72253342 — T2.1 membership matrix; tip 72253342 local ahead 7; no push; next T2.2 wire membership into lint"
+  - "2026-08-09 commit 7497cebe — Gate B PASS + M1 T1.1–T1.4 complete; tip 7497cebe local ahead 6; no push; next T2.1"
+  - "2026-08-09 D-S059-gateB=1 — Gate B PASS; 05 COMPLETE; handoff 07-build; M1 T1.1–T1.4 done locally pending commit; tip 861e3d3c"
+  - "2026-08-09 commit 861e3d3c — approve 04 plan; draft Gate B audit; tip 861e3d3c local ahead 5; no push; awaiting D-S059-gateB"
+  - "2026-08-09 D-S059-04-plan=1 — 04 COMPLETE; handoff 05; Gate B audit drafted (recommended PASS); awaiting D-S059-gateB; tip 743eb962; dirty until commit"
+  - "2026-08-09 commit 743eb962 — 04-tech-plan draft; tip 743eb962 local ahead 4; no push; awaiting D-S059-04-plan"
+  - "2026-08-09 04 draft ready — D-S059-04-milestones/harvest/wire/adr locked; awaiting D-S059-04-plan; tip 2e232569; dirty until commit"
+  - "2026-08-09 commit 2e232569 — Gate A PASS; 02 report + state committed; tip 2e232569 local ahead 3; no push; 04-tech-plan in_progress"
+  - "2026-08-09 D-S059-gateA=1 — Gate A PASS; 02 COMPLETE; report 02-verify-plan.md; handoff 04-tech-plan; M1–M3 advisory accepted (defer+cite OK; N/A not fail; 04 may split milestones)"
+  - "2026-08-09 D-S059-profiles=1b locked — all F6; iwxxm_us N/A where unsupported; AC7–AC8; tip aab35494 local ahead 2; 02 Gate A pending user (D-S059-gateA); 02 report uncommitted; no git commit by workflow-state-manager"
+  - "2026-08-09 01-requirements COMPLETE — AC locked; fixture quality preview delivered; commit 00875e9c local only; no push; handoff 02-verify-plan"
+  - "2026-08-09 D-S059-01-ac=4a (families=1a fixtures=2c 882=3a) — 01 deltas drafted; preview held; no push"
+  - "2026-08-09 D-S059-route=1 — Standard approved; handoff 01-requirements; tip 849af115"
+  - "2026-08-09 D-S058-park=1a + D-S059-ticket=2a — PARK S058; OPEN S059/EV-050 for #959; Standard proposed; awaiting D-S059-route; no git commit by workflow-state-manager"
 sessions:
+- id: S058-ams-2027-abstract
+  type: feature
+  intent: "AMS 2027 abstract — US international partnerships / TAC→IWXXM (#958); abstract prose handwritten by human"
+  status: parked
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S058-park=1a
+  close_note: 'Park S058/EV-049; #958→Ready; abstract deferred; next S059/#959'
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-049
+  branch: evolve/EV-049-ams-2027-abstract
+  branch_base: stage@b57f2a87
+  branch_base_sha: b57f2a87
+  branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+  branch_status: parked
+  branch_exists: true
+  tip_sha: 7f3d871b
+  tip_sha_full: 7f3d871b87d749c5a258da4a5ac12d0524ea34ed
+  tip_sha_pushed: false
+  pr_base: stage
+  github_issues:
+  - 958
+  issue_ids:
+  - 958
+  milestone: "M0 — Stabilize + operator trust + narrative"
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  feature_note: "Narrative/process deepen only; no new product Fn; evidence from M0–M3"
+  preset: Lean
+  auto_lean: true
+  auto_lean_rationale: "Docs/narrative; no API/arch/schema — Auto-Lean"
+  ui_preview: n/a
+  ui_preview_note: "N/A — no browser UI in session"
+  handwritten_abstract: true
+  prior_session: S057-strip-internal-doc-refs
+  artifacts_dir: docs/sessions/S058-ams-2027-abstract/
+  current_stage: parked
+  current_stage_note: 'PARKED D-S058-park=1a; handwritten still applies on resume; #958 Ready'
+  decisions:
+    D-S058-ticket: "958 — explicit user pick (overrides numeric 1a→#959)"
+    D-S058-ready: "2a — Ready #959+#950+#948; #958 In progress"
+    D-S058-promote: "3a — no stage→main; PR→stage only if docs land"
+    D-S058-handwritten: "1 — abstract prose handwritten; agent must not draft title/body"
+    D-S058-route: "1a — Lean Auto-Lean 00→16→01→02; handoff 16-evolve"
+    D-S058-scaffold: "2a — evidence + deadline tracker + AC checklist + empty paste scaffold"
+    D-S058-park: "1a — park session; #958→Ready; keep scaffold; open #959 next"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-09'
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S058-route=1a Lean; D-S058-scaffold=2a"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrator
+    status: parked
+    note: "PARKED D-S058-park=1a — resume via 00-context"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: parked
+    note: "PARKED D-S058-park=1a"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: parked
+    note: "PARKED D-S058-park=1a"
+  - stage: 03-plan-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 04-tech-plan
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 05-verify-tech
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 06-tech-tooling
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 07-build
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip — no product code"
+  - stage: 08-verify-build
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 09-qa
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean Auto-Lean skip"
+  - stage: 10-e2e
+    required: false
+    mode: skip
+    status: skipped
+    note: "no UI"
+  - stage: 11-verify-impl
+    required: false
+    mode: skip
+    status: skipped
+    note: "Lean close after Gate A"
+  - stage: 12-verify-deploy
+    required: false
+    mode: skip
+    status: skipped
+    note: "no deploy; D-S058-promote=3a"
+  - stage: 13-deploy-smoke
+    required: false
+    mode: skip
+    status: skipped
+    note: "no deploy; D-S058-promote=3a"
+  artifacts:
+  - path: docs/sessions/S058-ams-2027-abstract/session-brief.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  - path: docs/sessions/S058-ams-2027-abstract/routing-plan.md
+    status: written
+    stage: 00-context
+    skill_id: 00-context
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  - path: docs/sessions/S058-ams-2027-abstract/evolve-plan-card.md
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  - path: docs/sessions/S058-ams-2027-abstract/reports/park-note.md
+    status: written
+    stage: parked
+    skill_id: 00-context
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    created_at: '2026-08-09'
+  notes:
+  - "2026-08-09 D-S058-ticket=958 + D-S058-ready=2a + D-S058-promote=3a + D-S058-handwritten=1 — OPEN S058/EV-049; branch evolve/EV-049-ams-2027-abstract @ stage@b57f2a87; Ready #959/#950/#948; #958 In progress; awaiting D-S058-route; no git commit by workflow-state-manager"
+  - "2026-08-09 D-S058-park=1a — PARK S058/EV-049; #958→Ready; abstract deferred; OPEN S059/EV-050 for #959; no git commit by workflow-state-manager"
 - id: S057-strip-internal-doc-refs
   type: feature
   intent: "Strip internal document references from user-facing UI and API surfaces (#951)"
@@ -33961,6 +34381,60 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-050
+  session_id: S059-codes-wmo-validated
+  type: feature
+  cycle_type: feature
+  status: in_progress
+  started: '2026-08-09'
+  branch: evolve/EV-050-codes-wmo-validated
+  github_issues:
+  - 959
+  parent_issues:
+  - 889
+  deepen_feature_ids:
+  - F6
+  - F12
+  - F15
+  - F20
+  - F23
+  - F24
+  - F28
+  preset: Standard
+  current_stage: 07-build
+  decisions:
+    D-S059-route: "1 — Standard as drafted: 00→16→01→02→04→05→07→08→09→11; skip 03,06,10,12,13"
+    D-S059-families: "1a — weather+recent+cloud+SIGMET/AIRMET+nil"
+    D-S059-fixtures: "2c — aggressive RE*/AIRMET_/SpaceWx/TCU"
+    D-S059-882: "3a — design-only #882 compose"
+    D-S059-01-ac: "4a — lock AC1–AC6; 01 deltas drafted for preview"
+    D-S059-profiles: "1b — all F6; iwxxm_us N/A where unsupported; AC7–AC8"
+    D-S059-gateA: "1 — Gate A PASS; handoff 04-tech-plan"
+    D-S059-04-milestones: "1 — four milestones M1–M4"
+    D-S059-04-harvest: "1 — CSV notation + pin RDF nil/dual"
+    D-S059-04-wire: "1 — tac-validate generated artifact + pytest + make"
+    D-S059-04-adr: "1 — no new ADR"
+    D-S059-04-plan: "1 — approve execution plan + build-plan-card → 05"
+    D-S059-gateB: "1 — Gate B PASS; handoff 07-build M1"
+  note: "#889 Validated follow-on; offline harvest + tac-validate membership; M2+M3 complete @ 271efa49; next M4 T4.1 #882 design note; local ahead ~15 not pushed; 07-build remains in_progress"
+- id: EV-049
+  session_id: S058-ams-2027-abstract
+  type: feature
+  cycle_type: general
+  status: parked
+  started: '2026-08-09'
+  completed: '2026-08-09'
+  close_decision: D-S058-park=1a
+  close_note: 'Park S058/EV-049; #958→Ready; abstract deferred; next S059/#959'
+  branch: evolve/EV-049-ams-2027-abstract
+  github_issues:
+  - 958
+  deepen_feature_ids:
+  - F7
+  - F16
+  - F17
+  preset: Lean
+  note: "parked pending resume; handwritten abstract"
 - id: EV-048
   session_id: S057-strip-internal-doc-refs
   status: completed
@@ -44593,20 +45067,20 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-048-strip-internal-doc-refs
-  ahead_of_origin: 0
-  pushed: true
+  current_branch: evolve/EV-050-codes-wmo-validated
+  ahead_of_origin: 15
+  pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml S057/EV-048 merge bookkeeping (D-S057-merge=1); PR #963 MERGED @ 06a9543f; no git commit by workflow-state-manager'
-  tip_sha: c52521c7
-  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
-  tip_note: 'S057/EV-048 MERGED — PR tip c52521c7; merge commit 06a9543f on stage; Phase 4 close awaiting D-S057-close'
-  evolve_branch: evolve/EV-048-strip-internal-doc-refs
-  evolve_tip_sha: c52521c7
-  evolve_tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
-  evolve_tip_sha_pushed: true
+  dirty_note: 'workflow-state.yaml (+ docs/decisions/evolve-decisions.md); ignore untracked no-internal-doc-refs if present (do not add)'
+  tip_sha: 271efa49
+  tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
+  tip_note: 'S059/EV-050 — tip 271efa49 local ahead ~15 (not pushed); M2+M3 complete; next M4 T4.1 #882 design note; 07-build remains in_progress'
+  evolve_branch: evolve/EV-050-codes-wmo-validated
+  evolve_tip_sha: 271efa49
+  evolve_tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
+  evolve_tip_sha_pushed: false
   stage_merge_sha: 06a9543f
   stage_merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
   stage_tip_sha: 06a9543f
@@ -44622,9 +45096,27 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: stage
-  note: 'S057/EV-048 MERGED — D-S057-merge=1; PR #963 → stage @ 06a9543f; tip CI 31291149689 SUCCESS; current_stage 16-evolve; Phase 4 close awaiting D-S057-close; no git commit by workflow-state-manager'
+  note: 'S059/EV-050 — tip 271efa49 local ahead ~15 (not pushed); M2+M3 complete; next M4 T4.1 #882 design note; 07-build remains in_progress; dirty=workflow-state expected'
 
   notes:
+  - '2026-08-09 tip 271efa49 — M2+M3 complete (T2.4@d6dc64e0; T3.1@848c01a7; T3.2@926342fe+f38f9466; T3.3@3d06b144; T3.4@271efa49); next M4 T4.1 #882 design note; local ahead ~15 not pushed; tip_sha_pushed=false; 07-build remains in_progress; dirty workflow-state expected; ignore untracked no-internal-doc-refs if present (do not add); no git commit by workflow-state-manager'
+  - '2026-08-09 commit 848c01a7 — T3.1 dual-profile harness; tip 848c01a7 local ahead 11; no push; T2.4@d6dc64e0 closed M2; next T3.2 disposition docs (AC7); 07-build remains in_progress; pending_commit cleared; no git commit by workflow-state-manager'
+  - '2026-08-09 commit d6dc64e0 — T2.4 complete (M2 closed); tip d6dc64e0 local ahead 10; no push; M3 starting at T3.1 dual-profile harness; single PR → stage after 08–11 (no mid-cycle PR); 07-build remains in_progress; pending_commit cleared; no git commit by workflow-state-manager'
+  - '2026-08-09 user confirmed T2.2@90f5606b + T2.3@48323861 done; T2.4 in_progress (closes M2 when done); not marking T2.4 completed; next after T2.4 → M3 T3.1; tip 48323861 local ahead 9; no push; no git commit by workflow-state-manager'
+  - '2026-08-09 commit 48323861 — T2.3 aggressive RE*/AIRMET_/SpaceWx/TCU membership fixtures; tip 48323861 local ahead 9; no push; next T2.4 coverage/baseline docs; pending_commit cleared'
+  - '2026-08-09 commit 90f5606b — T2.2 wire WMO membership into tac-validate lint; tip 90f5606b local ahead 8; no push; next T2.3 aggressive fixtures; pending_commit cleared'
+  - '2026-08-09 commit 72253342 — T2.1 membership matrix; tip 72253342 local ahead 7; no push; next T2.2 wire membership into lint'
+  - '2026-08-09 commit 7497cebe — Gate B PASS + M1 T1.1–T1.4 complete; tip 7497cebe local ahead 6; no push; next T2.1'
+  - '2026-08-09 D-S059-gateB=1 — Gate B PASS; 05 COMPLETE; handoff 07-build; M1 T1.1–T1.4 locally pending commit; tip 861e3d3c unchanged; no git commit by workflow-state-manager'
+  - '2026-08-09 commit 861e3d3c — approve 04 plan; draft Gate B audit; tip 861e3d3c local ahead 5; no push; awaiting D-S059-gateB'
+  - '2026-08-09 D-S059-04-plan=1 — 04 COMPLETE; 05-verify-tech in_progress; Gate B report drafted; awaiting D-S059-gateB; tip 743eb962 unchanged; dirty until commit; no git commit by workflow-state-manager'
+  - '2026-08-09 commit 743eb962 — 04-tech-plan draft; tip 743eb962 local ahead 4; no push; awaiting D-S059-04-plan'
+  - '2026-08-09 04 draft ready — D-S059-04-milestones/harvest/wire/adr locked; awaiting D-S059-04-plan; tip 2e232569 unchanged; dirty until commit; no git commit by workflow-state-manager'
+  - '2026-08-09 commit 2e232569 — Gate A PASS; 02 report + state; tip 2e232569 local ahead 3; no push; 04-tech-plan in_progress'
+  - '2026-08-09 D-S059-gateA=1 — Gate A PASS; 02 COMPLETE; report 02-verify-plan.md; handoff 04-tech-plan; tip aab35494 unchanged (commit pending); no git commit by workflow-state-manager'
+  - '2026-08-09 D-S059-profiles=1b — tip aab35494 local ahead 2; deepen F6+F12/F15/F20/F23/F24/F28; 02-verify-plan in_progress Gate A pending D-S059-gateA; no git commit by workflow-state-manager'
+  - '2026-08-09 01-requirements COMPLETE — commit 00875e9c local only (not pushed); fixture quality preview delivered; handoff 02-verify-plan; no git commit by workflow-state-manager'
+  - '2026-08-09 D-S059-route=1 — refreshed current_branch from stale S057 to evolve/EV-050-codes-wmo-validated @ 849af115; tracks origin; handoff 01-requirements; no git commit by workflow-state-manager'
   - '2026-08-08 D-S057-merge=1 — PR #963 MERGED → stage @ 06a9543ff4ccd586191dafeec63d9521e967d933; tip CI 31291149689 SUCCESS; evolve tip c52521c7; Phase 4 close awaiting D-S057-close; closeout docs written; no git commit by workflow-state-manager'
   - '2026-08-08 07-build COMPLETE @ 71779d46 — M1–M3 done; T3.3 skipped; 08-verify-build IN_PROGRESS; 16-evolve remains orchestrator'
   - '2026-08-08 02-verify-plan COMPLETE / 04-tech-plan IN_PROGRESS — D-S057-gateA=1 PASS; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; evolve-decisions note; 16-evolve remains orchestrator; no git commit by workflow-state-manager'
@@ -45133,6 +45625,36 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-050-codes-wmo-validated
+    base: stage
+    base_sha: b57f2a87
+    base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+    status: active
+    created: '2026-08-09'
+    exists: true
+    purpose: "EV-050 / S059 codes.wmo.int harvest + tac-validate membership (#959)"
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    tip_sha: 271efa49
+    tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
+    tip_sha_pushed: false
+    pr_base: stage
+    note: "S059/EV-050 tip 271efa49 local ahead ~15; M2+M3 complete; next M4 T4.1 #882 design note; 07-build remains in_progress; not pushed"
+  - name: evolve/EV-049-ams-2027-abstract
+    base: stage
+    base_sha: b57f2a87
+    base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+    status: parked
+    created: '2026-08-09'
+    exists: true
+    purpose: "EV-049 / S058 AMS 2027 abstract support (#958)"
+    session_id: S058-ams-2027-abstract
+    evolve_cycle_id: EV-049
+    tip_sha: b57f2a87
+    tip_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
+    tip_sha_pushed: false
+    pr_base: stage
+    note: "S058/EV-049 PARKED D-S058-park=1a @ stage@b57f2a87; resume later; no git commit by workflow-state-manager"
   - name: evolve/EV-048-strip-internal-doc-refs
     base: stage
     base_sha: d7652d5d
@@ -46480,6 +47002,207 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 271efa49
+    sha_full: 271efa494e06f6926de010fb378f327982f4536a
+    message: "[T3.4] test: TC-EV050-008 REMARK_US_EXTENSION profile regressions"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    files_changed: 3
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 271efa49
+    tip_sha_full: 271efa494e06f6926de010fb378f327982f4536a
+    note: 'T3.4 complete; M2+M3 closed; next M4 T4.1 #882 design note; local ahead ~15; no push'
+  - sha: 3d06b144
+    sha_full: 3d06b1442613080e66990d94d8e8aba991c92da4
+    message: "[T3.3] fix: gate REMARK_US_EXTENSION to iwxxm_us profile only"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    files_changed: 3
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 3d06b144
+    tip_sha_full: 3d06b1442613080e66990d94d8e8aba991c92da4
+    note: 'T3.3 complete; next T3.4 profile regressions; local only; no push'
+  - sha: f38f9466
+    sha_full: f38f9466f690c65520ab4d79f204a95e87fa9710
+    message: "[T3.2] chore: drop unrelated EV-048 catalog/rules from disposition commit"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    files_changed: 10
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: f38f9466
+    tip_sha_full: f38f9466f690c65520ab4d79f204a95e87fa9710
+    note: 'T3.2 chore follow-up; disposition docs@926342fe; local only; no push'
+  - sha: 926342fe
+    sha_full: 926342fe03a8fed5f4582b374b0b9a7712ca69f9
+    message: "[T3.2] docs: all-F6 annex3 vs iwxxm_us disposition table"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    files_changed: 14
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 926342fe
+    tip_sha_full: 926342fe03a8fed5f4582b374b0b9a7712ca69f9
+    note: 'T3.2 docs complete (AC7 disposition); next T3.3 REMARK_US_EXTENSION gate; local only; no push'
+  - sha: 848c01a7
+    sha_full: 848c01a7b6e9db58eab16fffa53f322fb81413b5
+    message: "[T3.1] test: dual-profile annex3 vs iwxxm_us lint harness"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    files_changed: 8
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 848c01a7
+    tip_sha_full: 848c01a7b6e9db58eab16fffa53f322fb81413b5
+    note: 'T3.1 complete; next T3.2 dual-profile disposition table (AC7); T2.4@d6dc64e0 closed M2; local only; no push'
+  - sha: d6dc64e0
+    sha_full: d6dc64e0baef2a9c39c6b1770cba3e85b9549fe7
+    message: "[T2.4] docs: COVERAGE_MATRIX + fixture baseline delta; AC4 deferrals"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    files_changed: 9
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: d6dc64e0
+    tip_sha_full: d6dc64e0baef2a9c39c6b1770cba3e85b9549fe7
+    note: 'T2.4 complete; M2 closed; next T3.1 dual-profile harness; M3 starting; single PR → stage after 08–11 (no mid-cycle PR); local only; no push'
+  - sha: 48323861
+    sha_full: 483238614703ac3241608fd895d1e009eb15d5ff
+    message: "[T2.3] test: aggressive RE*/AIRMET_/SpaceWx/TCU membership fixtures"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 48323861
+    tip_sha_full: 483238614703ac3241608fd895d1e009eb15d5ff
+    note: 'T2.3 complete; next T2.4 coverage/baseline docs; local only; no push'
+  - sha: 90f5606b
+    sha_full: 90f5606b645fca9ac1b87f335ffd95ad104d06c9
+    message: "[T2.2] feat: wire WMO membership into tac-validate lint"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 90f5606b
+    tip_sha_full: 90f5606b645fca9ac1b87f335ffd95ad104d06c9
+    note: 'T2.2 complete; next T2.3 aggressive fixtures; local only; no push'
+  - sha: 72253342
+    sha_full: 72253342d2dd481602abc6ebf13d1a4c255e5435
+    message: "[T2.1] test: TC-EV050-002 membership happy/sad matrix"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 72253342
+    tip_sha_full: 72253342d2dd481602abc6ebf13d1a4c255e5435
+    note: 'T2.1 complete; next T2.2 wire membership into lint; local only; no push'
+  - sha: 7497cebe
+    sha_full: 7497cebe229e4fc9feae3a9ebe41cdecc6be6dea
+    message: "[T1.1-T1.4] feat: offline WMO membership harvest for tac-validate"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 7497cebe
+    tip_sha_full: 7497cebe229e4fc9feae3a9ebe41cdecc6be6dea
+    note: 'Gate B PASS + M1 T1.1–T1.4 complete; next T2.1; local only; no push'
+  - sha: 861e3d3c
+    sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
+    message: "[EV-050] docs: approve 04 plan; draft Gate B audit"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 861e3d3c
+    tip_sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
+    note: 'D-S059-04-plan=1; Gate B audit drafted; awaiting D-S059-gateB; local only; no push'
+  - sha: 743eb962
+    sha_full: 743eb962886ca848fcfeadee700321f6cdc60dbf
+    message: "[EV-050] docs: 04-tech-plan draft — harvest/membership/profiles"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 743eb962
+    tip_sha_full: 743eb962886ca848fcfeadee700321f6cdc60dbf
+    note: '04 draft — D-S059-04-milestones/harvest/wire/adr locked; awaiting D-S059-04-plan; local only; no push'
+  - sha: 2e232569
+    sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
+    message: "[EV-050] docs: Gate A PASS — handoff 04-tech-plan"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 2e232569
+    tip_sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
+    note: 'Gate A PASS D-S059-gateA=1; 02 COMPLETE; handoff 04-tech-plan; local only; no push'
+  - sha: aab35494
+    sha_full: aab354945518be8bc0dad0ef842cbe9e83980cf5
+    message: "[EV-050] docs: lock annex3 vs iwxxm_us compare for all F6"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: aab35494
+    tip_sha_full: aab354945518be8bc0dad0ef842cbe9e83980cf5
+    note: 'D-S059-profiles=1b — all F6; iwxxm_us N/A where unsupported; AC7–AC8; local only; no push'
+  - sha: 00875e9c
+    sha_full: 00875e9c34b5f703d173c7feb2978af98c9c95d6
+    message: "[EV-050] docs: lock S059/01 ACs and fixture quality baseline"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 00875e9c
+    tip_sha_full: 00875e9c34b5f703d173c7feb2978af98c9c95d6
+    note: '01 COMPLETE — AC locked; fixture quality preview delivered; commit local only; no push'
   - sha: 06a9543f
     sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
     message: 'Merge pull request #963 from EMPIRIC2/evolve/EV-048-strip-internal-doc-refs'

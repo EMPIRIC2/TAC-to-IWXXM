@@ -3,6 +3,130 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-050 — codes.wmo.int Validated: harvest + tac-validate membership (#959) (S059)
+
+**Session**: S059-codes-wmo-validated  
+**Features**: deepen **F6 / F12 / F15 / F20 / F23 / F24 / F28** (no new Fn; F6 for
+`annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
+**Started**: 2026-08-09  
+**Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
+**Status**: **in_progress** — **11-verify-impl** approved (`D-S059-11-next=1`); push + PR → `stage`
+**Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
+(parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
+epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
+compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
+[#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882))  
+**Corpus**: [Corpus: product §F6/F12/F15/F20/F23/F24/F28], [Corpus: tests],
+[Corpus: tech-spec], [Corpus: decisions] · domain opt-in
+`docs/domain/rules/*`, `docs/domain/mining/*`, `docs/domain/TAC_VALIDATION.md`
+
+### M2 close (T2.4 — 2026-08-09)
+
+AC4 / TC-EV050-004: aggressive `RE*` / AIRMET `_` / SpaceWx composed / TCU packs landed;
+coverage delta + residual **defer+cite** (no new GitHub children) in
+`docs/sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md`.
+Exhaustive 402 weather + remaining register depth stay under #959/#889 per OOS.
+
+### M3 close (T3.1–T3.4 — 2026-08-09)
+
+AC7 / TC-EV050-007: dual-profile harness + disposition
+(`reports/dual-profile-disposition.md`) — N/A for VAA/TCA/SWXA/VONA.
+AC8 / TC-EV050-008: true-error fix — `REMARK_US_EXTENSION` gated to `iwxxm_us` only;
+`INVALID_REMARK` remains under both. Tip after M3: `271efa49`.
+
+### M4 / AC5 — #889 Validated satisfied (T4.2 — 2026-08-09)
+
+**Decision `D-S059-validated=1`:** Parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889)
+**Validated** triad element is **satisfied** by S059 / EV-050 (not re-scoped). Lean waiver
+`D-S055-validated=1` is superseded for this element.
+
+| Criterion | Evidence |
+|-----------|----------|
+| Offline harvest → CI membership sets | AC1 / TC-EV050-001 — `wmo_membership.json` + `make membership-regen` |
+| Happy + unknown/sad per v1 families | AC2 / TC-EV050-002 — membership matrix |
+| Cadence vs `iwxxm-codelists` pin | AC3 / TC-EV050-003 — tech-spec + TAC_VALIDATION + RULE_SOURCE_URLS |
+| Fixture gaps closed or defer+cite | AC4 / TC-EV050-004 — `fixture-coverage-delta-t2.4.md` |
+| Dual-profile disposition + true-error fix | AC7–AC8 — disposition + `REMARK_US_EXTENSION` gating |
+| #882 notify job | **Not** required for Validated — AC6 design-only (`D-S059-882=3a`) |
+
+**Still open (compose, not Validated blockers):** [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
+URI drift; [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notification pipeline;
+exhaustive 402 weather / residual register depth under #959/#889 **defer+cite**.
+
+**Issue comments:** criteria above posted on #889 and #959 at T4.2 (close #959 when PR merges;
+#889 remains open for residual Present/Cited depth unless maintainers close Validated-only).
+
+### Scope (Phase 0–1 — locked 2026-08-09; profile amend 2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S058-park | **1a** — Park S058 / #958; keep handwritten AMS constraint |
+| D-S059-ticket | **2a** — Open S059 / EV-050 for #959 |
+| D-S059-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→11`; skip `03,06,10,12,13` |
+| D-S059-families | **1a** — v1 membership: weather (306/4678 + present/forecast) + recent + cloud amount/type + SIGMET/AIRMET phenomena + nilReason URI checks where lint already touches them |
+| D-S059-fixtures | **2c** — **Aggressive** fixture expansion this cycle: `RE*`, AIRMET `_` phenomena, SpaceWxPhenomena, TCU (plus packs needed for membership happy/sad) |
+| D-S059-882 | **3a** — Design-only compose note with #882; no scheduled live refresh job this cycle |
+| D-S059-01-ac | **4a** — Lock AC1–AC6 as drafted (with 1a/2c/3a amendments) |
+| D-S059-profiles | **1b** — Expand: compare **`annex3` vs `iwxxm_us`** across **all F6 products** (`iwxxm_us` **N/A** where no US profile); fix **true errors** (AC7–AC8) |
+| D-S059-gateA | **1** — Gate A **PASS**; handoff **04-tech-plan** (advisories M1–M3 accepted: AC8 defer+cite OK; N/A ≠ fail; 04 may split milestones) |
+| D-S059-04-milestones | **1** — Four milestones: M1 harvest · M2 membership+fixtures · M3 profiles · M4 closeout docs |
+| D-S059-04-harvest | **1** — L3 SoT = vendor CSV `notation`; pin RDF for nil / dual paths |
+| D-S059-04-wire | **1** — Generated membership under `packages/tac-validate` data + pytest + `make` regen |
+| D-S059-04-adr | **1** — No new ADR; path/cadence in tech-spec / domain + execution plan |
+| D-S059-04-plan | **1** — Approve execution plan + Build Plan Card → **05-verify-tech** |
+| D-S059-gateB | **1** — Gate B **PASS**; handoff **07-build** M1 / T1.1 (L1–L3 advisory accepted) |
+| D-S059-validated | **1** — #889 Validated **satisfied** (AC5); supersedes Lean `D-S055-validated=1` for this triad element |
+| D-S059-11-next | **1** — Approve AC1–AC8; push branch + open PR → `stage` (12/13 stay skipped) |
+
+### Gate A (02) — PASS 2026-08-09
+
+Report: `docs/sessions/S059-codes-wmo-validated/reports/02-verify-plan.md`. Corpus cites for scope: [Corpus: product] [Corpus: tests] [Corpus: tech-spec] [Corpus: decisions].
+
+### 04-tech-plan — APPROVED 2026-08-09 (`D-S059-04-plan=1`)
+
+Artifacts: `reports/execution-plan.md`, `build-plan-card.md` (M1 = T1.1–T1.4), `reports/04-tech-plan.md`.
+
+### Gate B (05) — PASS 2026-08-09 (`D-S059-gateB=1`)
+
+Report: `reports/05-verify-tech.md`. Advisories L1–L3 accepted. Next: **07-build** M1.
+
+### Acceptance (Standard — AC1–AC8 confirmed `D-S059-01-ac=4a` + `D-S059-profiles=1b`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | **Offline harvest:** Standing harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF under `vendor/schemas/iwxxm/…/rule/`) produces machine-readable membership set(s) consumed by CI / `tac-validate` — **no live HTML in PR CI** | TC-EV050-001 |
+| AC2 | **Membership Validated:** Happy + unknown/sad asserts for v1 families (`D-S059-families=1a`): present/forecast weather, recent weather, cloud amount/type, SIGMET + AIRMET phenomena, nilReason where lint already emits/checks URIs | TC-EV050-002 |
+| AC3 | **Cadence:** Harvest refresh documented vs `vendor/manifest.json` `iwxxm-codelists` pin; refresh with normal vendor sync PRs | TC-EV050-003 |
+| AC4 | **Gaps / fixtures:** Aggressive fixture expansion (`D-S059-fixtures=2c`) closes EV-046 gap rows for RE*, AIRMET underscore matching, SpaceWxPhenomena, TCU; remaining gaps → child issues or explicit deferrals with cite | TC-EV050-004 |
+| AC5 | **#889 Validated:** Parent Validated triad element satisfied (or explicit re-scope recorded here + on #889/#959) | TC-EV050-005 |
+| AC6 | **#882 compose (design-only):** Short design note for optional scheduled live refresh **outside** PR CI composing with #882 notify — **no** full notification pipeline; **no** job implementation this cycle (`D-S059-882=3a`) | TC-EV050-006 |
+| AC7 | **Profile compare:** Document + CI-checkable delta of membership / lint outcomes for the same TAC under **`profile=annex3` vs `profile=iwxxm_us`** for **all supported F6 products**. Where `iwxxm_us` is not defined for a product, record **N/A** (not a fail). Where both apply (typically METAR/SPECI/TAF + shared WMO L3), classify each delta: **shared WMO expected** · **intentional US overlay (L5 REMARKS / FMH-1)** · **suspect / true error**. WMO harvest remains SoT for L3; US SoT for L5 only | TC-EV050-007 |
+| AC8 | **True-error fixes:** For deltas classified **true error** (wrong severity, false fail/pass, missing membership, incorrect profile gating), fix in this cycle with regression tests; intentional diffs and N/A rows get a cited disposition (no silent ignore). Do **not** invent US weather vocab outside FMH-1 / documented NWS / iwxxm-us pins | TC-EV050-008 |
+
+### Out of scope
+
+- Hand-edit `vendor/schemas/*`
+- Live `codes.wmo.int` HTML in PR CI
+- Replacing XSD/Schematron (`iwxxm-validate`)
+- Full #882 notification pipeline / scheduled live job implementation
+- `#958` AMS abstract (parked S058)
+- Promote `stage`→`main` unless separately approved
+- Exhaustive 402 weather combinations (representative + aggressive gap packs only)
+- Colour / MetFeature / VONA encode duals beyond nil/phenomena already in v1 families (defer unless needed for sad packs)
+- Country / regional scorecards beyond the two product profiles (`annex3` / `iwxxm_us`)
+- Inventing national weather tokens not grounded in FMH-1 / NWS / iwxxm-us docs
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.  
+Skip `03`, `06`, `10`, `12`, `13`.
+
+### Gate A (02)
+
+Pass when AC1–AC6 + TC-EV050-* + feature-list deepen + this section are consistent — then 04.
+
+---
+
 ## Cycle EV-048 — Strip internal doc refs from UI + public API (#951) (S057)
 
 **Session**: S057-strip-internal-doc-refs  

@@ -382,6 +382,13 @@ ISSUES: tuple[IssueSpec, ...] = (
         "{product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate",
         tags=("phenomenon", "sigmet", "airmet"),
     ),
+    # S059 / EV-050 / #959 — offline WMO register membership (Validated)
+    _row(
+        "UNKNOWN_WMO_MEMBERSHIP",
+        "error",
+        "{product} token {token!r} not in WMO register ({family})",
+        tags=("membership", "wmo", "ev050", "weather", "cloud", "phenomenon"),
+    ),
     # F23 theme G1 — general SIGMET exceptional (#733 / research G1)
     _row(
         "SIGMET_CNL",

@@ -105,19 +105,25 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 Offline token∩register vs `tac-validate` / `tac2iwxxm` `.tac` fixtures (coarse; exclusions
 documented). Full table + gaps:
 [codes-wmo-int-coverage.md](../../sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md).
-**Validated** automated membership deferred to [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959).
 
-| Family | Primary register | Fixture ∩ % (Lean) |
-|--------|------------------|--------------------|
-| METAR/SPECI/TAF | 306/4678 & 49-2 present weather | ~4% of 402 |
-| METAR/SPECI/TAF | CloudAmountReportedAtAerodrome | ~60% of 10 |
-| METAR/SPECI/TAF | SigConvectiveCloudType | 50% (CB; TCU gap) |
-| SIGMET/VA | SigWxPhenomena | ~12% of 17 |
-| AIRMET | WeatherCausingVisibilityReduction | ~26% of 19 |
-| AIRMET | AirWxPhenomena | ~0% (underscore forms) |
-| SWXA | SpaceWxLocation | ~86% of 7 |
-| VAA/VONA | iwxxm/AviationColourCode | ~33% of colour set |
-| All | common/nil / iwxxm/nil | 0% as TAC tokens (expected) |
+**Validated (S059 / EV-050 / #959):** offline harvest + `tac-validate` membership CI shipped
+(M1–M2). Aggressive gap packs (`RE*`, AIRMET `_`, SpaceWx composed, TCU) closed; residual
+depth **defer+cite** — post-M2 table:
+[fixture-coverage-delta-t2.4.md](../../sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md).
+
+| Family | Primary register | Fixture ∩ % (Lean EV-046) | Post-M2 (EV-050) |
+|--------|------------------|---------------------------|------------------|
+| METAR/SPECI/TAF | 306/4678 & 49-2 present weather | ~4% of 402 | **4.5%** (defer exhaustive) |
+| METAR/SPECI | AerodromeRecentWeather | 0% of 26 | **7.7%** (`RERA`/`RESN` + sad) |
+| METAR/SPECI/TAF | CloudAmountReportedAtAerodrome | ~60% of 10 | ~40–60%* (tokenizer) |
+| METAR/SPECI/TAF | SigConvectiveCloudType | 50% (CB; TCU gap) | **100%** (CB+TCU) |
+| SIGMET/VA | SigWxPhenomena | ~12% of 17 | ~12% |
+| AIRMET | WeatherCausingVisibilityReduction | ~26% of 19 | ~32% |
+| AIRMET | AirWxPhenomena | ~0% (underscore forms) | **11.1%** (`ISOL_TS`/`MOD_ICE` + normalize) |
+| SWXA | SpaceWxLocation | ~86% of 7 | ~86% |
+| SWXA | SpaceWxPhenomena | 0% exact | **37.5% composed** (EFFECT+sev); 0% exact TAC |
+| VAA/VONA | iwxxm/AviationColourCode | ~33% of colour set | unchanged (v1 OOS deepen) |
+| All | common/nil / iwxxm/nil | 0% as TAC tokens (expected) | expected (IWXXM hrefs) |
 
 ---
 

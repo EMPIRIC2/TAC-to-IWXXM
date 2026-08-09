@@ -99,20 +99,24 @@ appear as TAC tokens → 0% expected until Validated wiring (#959).
 
 | Gap | Disposition |
 |-----|-------------|
-| Automated TAC∈register membership tests | **[#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)** (Validated) |
-| Raise weather fixture coverage beyond ~4% of 402 | Child of #959 / #889 |
-| Recent-weather (`RE*`) fixture tokens | Child of #959 |
-| AIRMET AirWxPhenomena underscore matching | Child of #959 |
-| SpaceWxPhenomena fixture tokens | Child of #959 / F28 |
-| TCU convective type in fixtures | Optional child of #889 |
+| Automated TAC∈register membership tests | **Closed** — S059 / EV-050 M1–M2 ([#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)) |
+| Raise weather fixture coverage beyond ~4% of 402 | **Defer+cite** — still ~4.5%; EV-050 OOS exhaustive 402 ([T2.4 delta](../../S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md)) |
+| Recent-weather (`RE*`) fixture tokens | **Closed** — EV-050 aggressive packs (representative + sad) |
+| AIRMET AirWxPhenomena underscore matching | **Closed** — EV-050 fixtures + normalize |
+| SpaceWxPhenomena fixture tokens | **Closed** — composed EFFECT+sev membership path (+ sad); residual notations defer |
+| TCU convective type in fixtures | **Closed** — CB+TCU = 100% register |
 | URI membership drift vs live | Keep [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) |
 | Change-notification pipeline | Keep [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) |
 
-## AC5 — Validated waiver
+Post-M2 coverage numbers:
+[fixture-coverage-delta-t2.4.md](../../S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md).
 
-Lean **waives** automated Validated checks (`D-S055-validated=1`). Evidence of waiver +
-follow-on: this report + [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959).
-No live HTML CI introduced.
+## AC5 — Validated waiver → **satisfied** (EV-050)
+
+Lean **waived** automated Validated checks (`D-S055-validated=1`). Follow-on
+[#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) / S059 / EV-050 **satisfied**
+Validated (`D-S059-validated=1`) — offline harvest + `tac-validate` membership CI; see
+[evolve-decisions §EV-050 AC5](../../../decisions/evolve-decisions.md). No live HTML CI.
 
 ## TC checklist
 

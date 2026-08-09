@@ -935,6 +935,38 @@
       "cite": "VA CNL FIR-moved cancel; research C1",
       "tac": "accept/sigmet_c1_va_cnl_fir_moved.tac",
       "ok": true
+    },
+    {
+      "id": "accept_metar_ev050_recent_rera",
+      "product": "METAR",
+      "theme": "EV050",
+      "cite": "EV-050 / #959 AerodromeRecentWeather RERA; AC4 fixtures 2c",
+      "tac": "accept/metar_ev050_recent_rera.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_metar_ev050_recent_resn",
+      "product": "METAR",
+      "theme": "EV050",
+      "cite": "EV-050 / #959 AerodromeRecentWeather RESN; AC4 fixtures 2c",
+      "tac": "accept/metar_ev050_recent_resn.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_ev050_phenomenon_underscore",
+      "product": "AIRMET",
+      "theme": "EV050",
+      "cite": "EV-050 / #959 AirWxPhenomena ISOL_TS underscore; AC4 fixtures 2c",
+      "tac": "accept/airmet_ev050_phenomenon_underscore.tac",
+      "ok": true
+    },
+    {
+      "id": "accept_airmet_ev050_mod_ice_underscore",
+      "product": "AIRMET",
+      "theme": "EV050",
+      "cite": "EV-050 / #959 AirWxPhenomena MOD_ICE underscore; AC4 fixtures 2c",
+      "tac": "accept/airmet_ev050_mod_ice_underscore.tac",
+      "ok": true
     }
   ],
   "negative": [
@@ -1370,6 +1402,39 @@
       "tac": "negative/vona/missing_volcano.tac",
       "ok": false,
       "expected_codes": ["MISSING_VONA_VOLCANO"],
+      "require_spans": true
+    },
+    {
+      "id": "metar_unknown_recent_weather",
+      "product": "METAR",
+      "theme": "EV050",
+      "depth": "full_checklist",
+      "cite": "EV-050 / #959 unknown RE* \u2192 UNKNOWN_WMO_MEMBERSHIP",
+      "tac": "negative/metar/unknown_recent_weather.tac",
+      "ok": false,
+      "expected_codes": ["UNKNOWN_WMO_MEMBERSHIP"],
+      "require_spans": true
+    },
+    {
+      "id": "airmet_unknown_phenomenon_underscore",
+      "product": "AIRMET",
+      "theme": "EV050",
+      "depth": "full_checklist",
+      "cite": "EV-050 / #959 unknown ISOL_ZZ \u2192 UNKNOWN_WMO_MEMBERSHIP",
+      "tac": "negative/airmet/unknown_phenomenon_underscore.tac",
+      "ok": false,
+      "expected_codes": ["UNKNOWN_WMO_MEMBERSHIP"],
+      "require_spans": true
+    },
+    {
+      "id": "swxa_unknown_effect",
+      "product": "SWXA",
+      "theme": "EV050",
+      "depth": "template_gate",
+      "cite": "A2-3 / A7 SpaceWxPhenomena; EV-050 / #959 unknown SWX EFFECT \u2192 UNKNOWN_WMO_MEMBERSHIP",
+      "tac": "negative/swxa/unknown_effect.tac",
+      "ok": false,
+      "expected_codes": ["UNKNOWN_WMO_MEMBERSHIP"],
       "require_spans": true
     }
   ],
