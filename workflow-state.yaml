@@ -5,11 +5,16 @@ project:
   output_directory: docs/
 session_counter: 57
 evolve_cycle_counter: 48
-active_session:
-  id: S057-strip-internal-doc-refs
+active_session: null
+sessions:
+- id: S057-strip-internal-doc-refs
   type: feature
   intent: "Strip internal document references from user-facing UI and API surfaces (#951)"
-  status: in_progress
+  status: completed
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S057-close=1
+  close_note: 'Close EV-048/S057; PR #963 MERGED → stage @ 06a9543f; #951 closed'
   started: '2026-08-08'
   started_at: '2026-08-08'
   orchestrator: 16-evolve
@@ -18,17 +23,21 @@ active_session:
   branch_base: stage@d7652d5d
   branch_base_sha: d7652d5d
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
-  branch_status: active
+  branch_status: merged
   branch_exists: true
   tip_sha: c52521c7
   tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
   tip_sha_pushed: true
-  branch_note: "ACTIVE — tip c52521c7 pushed (PR tip was 748cbb84); PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval"
+  tip_sha_note: "PR tip before merge c52521c7; merge commit 06a9543f on stage"
+  branch_note: "CLOSED session — PR #963 MERGED → stage @ 06a9543f; evolve tip before merge c52521c7; #951 closed"
   pr_number: 963
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
-  pr_status: open
+  pr_status: merged
   pr_base: stage
-  pr_note: "PR #963 OPEN → stage; tip 748cbb84; CI/CD Pipeline run 31290962521 SUCCESS"
+  pr_note: "PR #963 MERGED → stage @ 06a9543f; tip CI 31291149689 SUCCESS"
+  merge_sha: 06a9543f
+  merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+  merge_target: stage
   github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
   github_issues:
   - 951
@@ -47,8 +56,8 @@ active_session:
   ui_preview_url: http://localhost:5173/
   prior_session: S056-m0-stabilize-operator-trust
   artifacts_dir: docs/sessions/S057-strip-internal-doc-refs/
-  current_stage: 16-evolve
-  current_stage_note: "IN_PROGRESS — PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval"
+  current_stage: completed
+  current_stage_note: 'CLOSED — D-S057-close=1; EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed; active_session=null'
   decisions:
     D-S057-open: "1 — open S057/EV-048 for #951"
     D-S057-scope: "1 — full #951 UI+OpenAPI+guard"
@@ -68,6 +77,8 @@ active_session:
     D-S057-f21: "1 — Approve F21 deepen (public OpenAPI/error surfaces)"
     D-S057-qa003: "2 — Fixed (expand guard for product Fn IDs @ 014c9125)"
     D-S057-11-next: "1 — Next push+PR to stage (PR #963 open)"
+    D-S057-merge: "1 — Merge PR #963 → stage @ 06a9543f"
+    D-S057-close: "1 — Close EV-048 / S057; clear active_session"
   routing_plan:
   - stage: 00-context
     required: true
@@ -79,9 +90,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: "IN_PROGRESS — PR #963 open → stage; awaiting merge approval after D-S057-11-next=1"
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S057-close=1; EV-048 closed; PR #963 MERGED → stage @ 06a9543f; #951 closed"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -340,8 +352,28 @@ active_session:
     evolve_cycle_id: EV-048
     created_at: '2026-08-08'
     note: "COMPLETE — PASS; D-S057-uj055=1 + f7=1 + f21=1 + qa003=2 + 11-next=1"
-  note: "PR #963 open → stage; tip 748cbb84 pushed; CI/CD 31290962521 SUCCESS; awaiting merge approval"
+  - path: docs/evolve-report-EV-048.md
+    type: report
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    created_at: '2026-08-08'
+    note: "Phase 4 closeout — standing evolve report (CLOSED D-S057-close=1)"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/evolve-summary.md
+    type: report
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    created_at: '2026-08-08'
+    note: "Phase 4 closeout — evolve-summary (CLOSED D-S057-close=1)"
+  note: "CLOSED — D-S057-close=1; EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed; active_session=null"
   notes:
+  - '2026-08-09 D-S057-close=1 — CLOSED S057/EV-048; PR #963 MERGED → stage @ merge 06a9543f tip c52521c7; #951 closed; active_session=null; no git commit by workflow-state-manager'
+  - "2026-08-08 D-S057-merge=1 — PR #963 MERGED → stage @ 06a9543f; tip CI 31291149689 SUCCESS; closeout docs written; Phase 4 close awaiting D-S057-close; session/cycle remain in_progress; no git commit by workflow-state-manager"
   - "2026-08-08 PR #963 OPEN → stage; tip 748cbb84 pushed; CI/CD Pipeline run 31290962521 SUCCESS; D-S057-11-next=1 PR opened; awaiting merge approval"
   - "2026-08-08 11-verify-impl COMPLETE PASS — D-S057-uj055=1, f7=1, f21=1, qa003=2, 11-next=1; tip 014c9125; next push+PR to stage"
   - "2026-08-08 09-qa COMPLETE pass_with_advisories + 10-e2e COMPLETE PASS; 11-verify-impl IN_PROGRESS awaiting UJ-055 + F7/F21 signoff; tip 3a43da37; 16-evolve orchestrator"
@@ -356,7 +388,6 @@ active_session:
   - "2026-08-08 01-requirements IN_PROGRESS — evolve delta deepen F7/F21; corpus api/product§F7/F21/tests; 16-evolve remains orchestrator; D-S057-preset-reconfirm=1 already recorded; no git commit by workflow-state-manager"
   - "2026-08-08 01-requirements COMPLETE — D-S057-01-ac=1 + D-S057-guard-s0=1; report 01-requirements.md; standing doc deltas recorded; 02-verify-plan IN_PROGRESS; 16-evolve remains orchestrator; no git commit by workflow-state-manager"
   - "2026-08-08 02-verify-plan COMPLETE — D-S057-gateA=1 PASS; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; evolve-decisions note; 04-tech-plan IN_PROGRESS; 16-evolve remains orchestrator; no git commit by workflow-state-manager"
-sessions:
 - id: S056-m0-stabilize-operator-trust
   type: feature
   intent: "M0 slice: slim husky (#833) + converter perf harness (#834) + operator one-pager (#956) + minimal handbook (#957)"
@@ -15644,7 +15675,10 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
+    status: completed
+    completed: '2026-08-09'
+    completed_at: '2026-08-09'
+    close_decision: D-S057-close=1
     mode: orchestrator
     session_id: S057-strip-internal-doc-refs
     evolve_cycle_id: EV-048
@@ -15676,14 +15710,19 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: 11-verify-impl
-    current_child_stage_note: 'PR #963 open → stage; CI/CD 31290962521 SUCCESS; awaiting merge approval'
+    current_child_stage: completed
+    current_child_stage_note: 'CLOSED D-S057-close=1; EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed'
     tip_sha: c52521c7
     tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
     tip_sha_pushed: true
     pr_number: 963
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
-    note: 'IN_PROGRESS — S057/EV-048 PR #963 open → stage; tip 748cbb84 pushed; CI/CD 31290962521 SUCCESS; awaiting merge approval'
+    pr_status: merged
+    merge_sha: 06a9543f
+    merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+    merge_target: stage
+    branch_status: merged
+    note: 'CLOSED — D-S057-close=1; S057/EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed; active_session=null'
     prior_close_decision: D-S056-close=1
 
     prior_s054_session_id: S054-rust-ci-crates
@@ -15948,6 +15987,80 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S057-close
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S057-strip-internal-doc-refs
+  evolve_cycle_id: EV-048
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: session_close
+  status: confirmed
+  topic: Close EV-048 / S057; clear active_session
+  summary: 'D-S057-close=1 — Close EV-048 / S057; PR #963 MERGED → stage @ 06a9543f; #951 closed; active_session=null'
+  decision: |
+    D-S057-close=1 — Close EV-048 / S057; clear active_session.
+    PR #963 MERGED → stage @ 06a9543f (06a9543ff4ccd586191dafeec63d9521e967d933).
+    Issue #951 closed. Session archived; active_session=null. EV-048 status=completed.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-048-strip-internal-doc-refs
+  related_issues:
+  - '951'
+  related_decisions:
+  - D-S057-merge
+  pr_number: 963
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+  pr_status: merged
+  pr_base: stage
+  merge_sha: 06a9543f
+  merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+  merge_target: stage
+  tip_sha: c52521c7
+  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+- id: D-S057-merge
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S057-strip-internal-doc-refs
+  evolve_cycle_id: EV-048
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: merge
+  status: confirmed
+  topic: 'Merge PR #963 into stage'
+  summary: 'D-S057-merge=1 — PR #963 MERGED → stage @ 06a9543f; tip CI 31291149689 SUCCESS; Phase 4 close awaiting D-S057-close'
+  decision: |
+    D-S057-merge=1 — Merge PR #963 → stage @ 06a9543f.
+    Merge commit 06a9543ff4ccd586191dafeec63d9521e967d933 on stage.
+    Tip CI run 31291149689 SUCCESS — https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31291149689
+    Closeout docs written: docs/evolve-report-EV-048.md + docs/sessions/S057-strip-internal-doc-refs/reports/evolve-summary.md
+    Session S057 / cycle EV-048 remain in_progress; Phase 4 close awaiting D-S057-close.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-048-strip-internal-doc-refs
+  related_issues:
+  - '951'
+  related_decisions:
+  - D-S057-11-next
+  pr_number: 963
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+  pr_status: merged
+  pr_base: stage
+  merge_sha: 06a9543f
+  merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+  merge_target: stage
+  tip_sha: c52521c7
+  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+  tip_sha_pushed: true
+  ci_cd_pipeline_run: '31291149689'
+  ci_cd_pipeline_status: SUCCESS
+  ci_cd_pipeline_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31291149689
+  current_stage: 16-evolve
+  note: 'PR #963 MERGED; tip CI green; awaiting D-S057-close'
 - id: D-S057-11-next-pr
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -33850,7 +33963,11 @@ retrospective_cycles:
 evolve_cycles:
 - id: EV-048
   session_id: S057-strip-internal-doc-refs
-  status: in_progress
+  status: completed
+  completed: '2026-08-09'
+  completed_at: '2026-08-09'
+  close_decision: D-S057-close=1
+  close_note: 'Close EV-048/S057; PR #963 MERGED → stage @ 06a9543f; #951 closed'
   cycle_type: feature
   preset: Standard
   preset_note: "D-S057-preset-reconfirm=1 — Lean→Standard; 00→16→01→02→04→05→07→08→09→10→11; skip 03/06/12/13"
@@ -33865,27 +33982,32 @@ evolve_cycles:
   - 951
   milestone: "M0 — Stabilize + operator trust + narrative"
   phase: 1
-  current_stage: 11-verify-impl
-  current_stage_note: "COMPLETE — 11 PASS; PR #963 open → stage; awaiting merge approval"
+  current_stage: completed
+  current_stage_note: "D-S057-close=1 — EV-048 COMPLETE; PR #963 MERGED → stage @ 06a9543f; #951 closed"
   started: '2026-08-08'
   started_at: '2026-08-08'
   branch: evolve/EV-048-strip-internal-doc-refs
   branch_base: stage@d7652d5d
   branch_base_sha: d7652d5d
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
-  branch_status: active
+  branch_status: merged
   tip_sha: c52521c7
   tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
   tip_sha_pushed: true
+  tip_sha_note: "PR tip before merge c52521c7; merge commit 06a9543f on stage"
   pr_number: 963
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
-  pr_status: open
+  pr_status: merged
   pr_base: stage
   github_pr: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
-  pr_note: "PR #963 OPEN → stage; tip 748cbb84; CI/CD 31290962521 SUCCESS; awaiting merge approval"
-  ci_cd_pipeline_run: '31290962521'
+  merge_sha: 06a9543f
+  merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+  merge_target: stage
+  pr_note: "PR #963 MERGED → stage @ 06a9543f; tip CI 31291149689 SUCCESS"
+  ci_cd_pipeline_run: '31291149689'
   ci_cd_pipeline_status: SUCCESS
-  ci_cd_pipeline_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31290962521
+  ci_cd_pipeline_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31291149689
+  ci_cd_pipeline_note: "Tip CI post-merge/on tip — run 31291149689 SUCCESS; prior PR tip CI 31290962521 SUCCESS @ 748cbb84/c52521c7"
   interrupted_by_hotfix: false
   parked: false
   ui_preview: requested
@@ -33911,6 +34033,8 @@ evolve_cycles:
   - D-S057-f21=1
   - D-S057-qa003=2
   - D-S057-11-next=1
+  - D-S057-merge=1
+  - D-S057-close=1
   gate_a: PASS
   gate_a_decision: D-S057-gateA=1
   gate_b: PASS
@@ -33926,9 +34050,10 @@ evolve_cycles:
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: in_progress
+    status: completed
     started: '2026-08-08'
-    note: "IN_PROGRESS — PR #963 open → stage; awaiting merge approval after D-S057-11-next=1"
+    completed: '2026-08-09'
+    note: "COMPLETE — D-S057-close=1; EV-048 closed; PR #963 MERGED → stage @ 06a9543f; #951 closed"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -34027,7 +34152,7 @@ evolve_cycles:
     mode: skip
     status: skipped
     note: "waive unless deploy (Standard)"
-  note: "PR #963 open → stage; tip 748cbb84 pushed; CI/CD 31290962521 SUCCESS; awaiting merge approval"
+  note: 'COMPLETED — D-S057-close=1; EV-048 closed; PR #963 MERGED → stage @ 06a9543f; #951 closed'
   artifacts:
   - docs/sessions/S057-strip-internal-doc-refs/
   - path: docs/sessions/S057-strip-internal-doc-refs/session-brief.md
@@ -34142,6 +34267,20 @@ evolve_cycles:
     skill_id: 11-verify-impl
     session_id: S057-strip-internal-doc-refs
     note: "COMPLETE — PASS; D-S057-uj055=1 + f7=1 + f21=1 + qa003=2 + 11-next=1"
+  - path: docs/evolve-report-EV-048.md
+    type: report
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S057-strip-internal-doc-refs
+    note: "Phase 4 closeout — standing evolve report (CLOSED D-S057-close=1)"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/evolve-summary.md
+    type: report
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S057-strip-internal-doc-refs
+    note: "Phase 4 closeout — evolve-summary (CLOSED D-S057-close=1)"
 - id: EV-047
   session_id: S056-m0-stabilize-operator-trust
   status: completed
@@ -44455,23 +44594,23 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-048-strip-internal-doc-refs
-  ahead_of_origin: 1
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml S057/EV-048 stage bookkeeping; tip 71779d46; no git commit by workflow-state-manager'
-  tip_sha: 71779d46
-  tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
-  tip_note: 'S057/EV-048 ACTIVE on evolve/EV-048-strip-internal-doc-refs @ tip 71779d46 (07-build COMPLETE)'
+  dirty_note: 'workflow-state.yaml S057/EV-048 merge bookkeeping (D-S057-merge=1); PR #963 MERGED @ 06a9543f; no git commit by workflow-state-manager'
+  tip_sha: c52521c7
+  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+  tip_note: 'S057/EV-048 MERGED — PR tip c52521c7; merge commit 06a9543f on stage; Phase 4 close awaiting D-S057-close'
   evolve_branch: evolve/EV-048-strip-internal-doc-refs
-  evolve_tip_sha: 71779d46
-  evolve_tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
-  evolve_tip_sha_pushed: false
-  stage_merge_sha: 2a1fb22d
-  stage_merge_sha_full: 2a1fb22d9697dc8fedf979f49ac621c045f96956
-  stage_tip_sha: d7652d5d
-  stage_tip_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
+  evolve_tip_sha: c52521c7
+  evolve_tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+  evolve_tip_sha_pushed: true
+  stage_merge_sha: 06a9543f
+  stage_merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+  stage_tip_sha: 06a9543f
+  stage_tip_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -44482,10 +44621,11 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-048-strip-internal-doc-refs
-  note: 'S057/EV-048 ACTIVE — Standard; current_stage 08-verify-build; 07-build COMPLETE @ 71779d46; ui_preview http://localhost:5173/; no git commit by workflow-state-manager'
+  recommended_branch: stage
+  note: 'S057/EV-048 MERGED — D-S057-merge=1; PR #963 → stage @ 06a9543f; tip CI 31291149689 SUCCESS; current_stage 16-evolve; Phase 4 close awaiting D-S057-close; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-08 D-S057-merge=1 — PR #963 MERGED → stage @ 06a9543ff4ccd586191dafeec63d9521e967d933; tip CI 31291149689 SUCCESS; evolve tip c52521c7; Phase 4 close awaiting D-S057-close; closeout docs written; no git commit by workflow-state-manager'
   - '2026-08-08 07-build COMPLETE @ 71779d46 — M1–M3 done; T3.3 skipped; 08-verify-build IN_PROGRESS; 16-evolve remains orchestrator'
   - '2026-08-08 02-verify-plan COMPLETE / 04-tech-plan IN_PROGRESS — D-S057-gateA=1 PASS; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; evolve-decisions note; 16-evolve remains orchestrator; no git commit by workflow-state-manager'
   - '2026-08-08 01-requirements COMPLETE / 02-verify-plan IN_PROGRESS — D-S057-01-ac=1 + D-S057-guard-s0=1; standing doc deltas recorded; 16-evolve remains orchestrator; no git commit by workflow-state-manager'
@@ -44997,16 +45137,23 @@ git_history:
     base: stage
     base_sha: d7652d5d
     base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
-    status: active
+    status: merged
     created: '2026-08-08'
     exists: true
     purpose: "EV-048 / S057 strip internal doc refs from UI/API (#951)"
     session_id: S057-strip-internal-doc-refs
     evolve_cycle_id: EV-048
-    tip_sha: 71779d46
-    tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
-    tip_sha_pushed: false
-    note: "ACTIVE — tip 71779d46 after 07-build M1–M3; T3.3 skipped; 08-verify-build in_progress"
+    tip_sha: c52521c7
+    tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+    tip_sha_pushed: true
+    pr_number: 963
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
+    pr_status: merged
+    pr_base: stage
+    merge_sha: 06a9543f
+    merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+    merge_target: stage
+    note: "S057/EV-048 PR #963 MERGED → stage @ 06a9543f; tip CI 31291149689 SUCCESS; evolve tip c52521c7; Phase 4 close awaiting D-S057-close"
   - name: evolve/EV-047-m0-stabilize-operator-trust
     base: stage
     base_sha: adcf3b1f
@@ -46333,6 +46480,20 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 06a9543f
+    sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
+    message: 'Merge pull request #963 from EMPIRIC2/evolve/EV-048-strip-internal-doc-refs'
+    branch: stage
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    pr_number: 963
+    merge_target: stage
+    tip_sha: c52521c7
+    tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+    timestamp: '2026-08-08'
+    note: 'PR #963 MERGED → stage @ 06a9543f; tip CI 31291149689 SUCCESS; D-S057-merge=1; Phase 4 close awaiting D-S057-close'
   - sha: 71779d46
     sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
     message: '[EV-048] fix: strip internal doc refs from OpenAPI and add guards'

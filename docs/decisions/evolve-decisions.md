@@ -9,9 +9,9 @@
 **Features**: deepen **F7 / F21** (no new Fn)  
 **Started**: 2026-08-08  
 **Branch**: `evolve/EV-048-strip-internal-doc-refs` (base `stage@d7652d5d`)  
-**Status**: **in_progress**  
+**Status**: **completed** 2026-08-09 (`D-S057-close=1`; PR #963 → `stage` @ `06a9543f`)  
 
-**Issues**: [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951)  
+**Issues**: [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951) (closed)  
 **Corpus**: [Corpus: product §F7], [Corpus: product §F21], [Corpus: api],
 [Corpus: journeys], [Corpus: tests], [Corpus: decisions]
 
@@ -37,6 +37,8 @@
 | D-S057-f21 | **1** — Approve F21 deepen (OpenAPI/errors) |
 | D-S057-qa003 | **2** — Expand guard with `\bF\d+\b`; strip Fn IDs from privacy + OpenAPI |
 | D-S057-11-next | **1** — Push branch + open PR to `stage` (12/13 stay skipped) |
+| D-S057-merge | **1** — Merge PR #963 → `stage` @ `06a9543f` |
+| D-S057-close | **1** — Close EV-048 / S057; clear `active_session` |
 
 ### Acceptance (confirmed `D-S057-01-ac=1`)
 

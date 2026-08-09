@@ -1,6 +1,6 @@
 # Evolve Plan Card
 
-> Cycle: EV-048 | Session: S057-strip-internal-doc-refs | Updated: 2026-08-08
+> Cycle: EV-048 | Session: S057-strip-internal-doc-refs | Updated: 2026-08-09
 
 ## Goal
 
@@ -26,11 +26,9 @@ API/OpenAPI surfaces, with an automated regression guard. [#951]
 
 ## Next child stage
 
-**11-verify-impl** — 09+10 PASS (delta); tip `3a43da37` not pushed yet
+**CLOSED** — `D-S057-close=1`; PR #963 → `stage` @ `06a9543f`; #951 closed
 
 ## Risks / open decisions
 
-- UI preview before Verify: declined (`D-S057-ui-preview-verify=2`)
-- OpenAPI stripped; BE+FE guards green; T3.3 Playwright skipped (no FE hits)
-- `#NNN` pattern uses `(?<!\w)#\d{3,}\b` (lookbehind; `\b#` missed `#702`)
-- Push + PR to `stage` after 11 approval (QA-001)
+- 12/13 waived; promote `stage`→`main` is a separate release path
+
