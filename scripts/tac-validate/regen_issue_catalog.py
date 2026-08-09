@@ -8,18 +8,11 @@ Also writes packages/tac-validate/.../catalog_attribution.json from PROVENANCE_M
 from __future__ import annotations
 
 import json
-import re
 import sys
 from datetime import date
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-
-# Operator-facing attribution must stay free of planning vocabulary (EV-048).
-_INTERNAL_DOC_REF_IN_NOTE = re.compile(
-    r"(?:\[Corpus:|\bADR-\d+\b|\bEV-\d+\b|\bS0\d+\b|\bTC-[A-Z0-9-]+\b|"
-    r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b|docs/sessions/|docs/feature-list)"
-)
 CATALOG_MD = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.md"
 CATALOG_JSON = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.json"
 PROVENANCE = REPO / "docs" / "domain" / "rules" / "PROVENANCE_MAP.json"
@@ -73,18 +66,11 @@ def _attribution_fields(prov: dict[str, object] | None) -> dict[str, str | None]
         parts.append(str(source_id))
     if status in {"paywall", "gap", "N/A"}:
         parts.append(f"access:{status}")
-    # Prefer stable URL in operator-facing attribution; note is secondary.
+    # Prefer stable URL in operator-facing attribution (EV-046); note is secondary.
     if source_url:
         parts.append(str(source_url))
-    # Notes join into API/FE source_attribution — omit planning ids (EV-048).
-    if note and not _INTERNAL_DOC_REF_IN_NOTE.search(str(note)):
+    if note:
         parts.append(str(note))
-    elif note:
-        print(
-            f"warning: omitting provenance note with internal doc refs from "
-            f"operator attribution (code fields still keep note in package JSON): {note!r}",
-            file=sys.stderr,
-        )
     return {
         "source_id": str(source_id) if source_id else None,
         "source_url": str(source_url) if source_url else None,

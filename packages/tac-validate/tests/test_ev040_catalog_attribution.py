@@ -3,26 +3,11 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 import pytest
 
 import tac_validate.catalog_attribution as ca
-
-# Locked with EV-048 OpenAPI / FE guards (operator-facing attribution).
-_INTERNAL_DOC_REF_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
-    ("Corpus", re.compile(r"\[Corpus:")),
-    ("docs/sessions", re.compile(r"docs/sessions/")),
-    ("docs/feature-list", re.compile(r"docs/feature-list")),
-    ("ADR", re.compile(r"\bADR-\d+\b")),
-    ("EV", re.compile(r"\bEV-\d+\b")),
-    ("S0", re.compile(r"\bS0\d+\b")),
-    ("TC", re.compile(r"\bTC-[A-Z0-9-]+\b")),
-    ("E##", re.compile(r"\bE\d{2}-\d+\b")),
-    ("#NNN", re.compile(r"(?<!\w)#\d{3,}\b")),
-    ("Fn", re.compile(r"\bF\d+\b")),
-)
 
 
 @pytest.fixture(autouse=True)
@@ -130,52 +115,3 @@ def test_attribution_includes_access_status_when_paywall(tmp_path: Path, monkeyp
     ca._load.cache_clear()
     attr = ca.attribution_for("X")
     assert attr["source_attribution"] == ("icao-annex-3 — access:paywall — https://example.invalid/annex3 — Table A3-2")
-
-
-def test_packaged_source_attribution_has_no_internal_doc_refs() -> None:
-    """Operator-facing attribution must not leak EV/ADR/#/Fn planning ids (EV-048)."""
-    payload = json.loads(ca._DATA.read_text(encoding="utf-8"))
-    codes = payload.get("codes") or {}
-    hits: list[str] = []
-    for code, row in codes.items():
-        if not isinstance(row, dict):
-            continue
-        for key in ("note", "source_attribution"):
-            text = row.get(key)
-            if not isinstance(text, str):
-                continue
-            for name, pattern in _INTERNAL_DOC_REF_PATTERNS:
-                for match in pattern.finditer(text):
-                    hits.append(f"{code}.{key}: {name}={match.group(0)!r}")
-        joined = ca.attribution_for(str(code)).get("source_attribution")
-        if isinstance(joined, str):
-            for name, pattern in _INTERNAL_DOC_REF_PATTERNS:
-                for match in pattern.finditer(joined):
-                    hits.append(f"{code}.joined: {name}={match.group(0)!r}")
-    assert hits == [], "planning vocabulary in lint attribution:\n" + "\n".join(hits)
-
-
-def test_attribution_omits_note_with_internal_doc_refs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Runtime join drops planning-vocabulary notes from the operator string."""
-    path = tmp_path / "codes.json"
-    path.write_text(
-        json.dumps(
-            {
-                "codes": {
-                    "X": {
-                        "source_id": "codes-wmo-int",
-                        "source_url": "https://codes.wmo.int/49-2",
-                        "status": "ok",
-                        "note": "EV-050 / #959 tracked membership gate",
-                    }
-                }
-            }
-        ),
-        encoding="utf-8",
-    )
-    monkeypatch.setattr(ca, "_DATA", path)
-    ca._load.cache_clear()
-    attr = ca.attribution_for("X")
-    assert attr["source_attribution"] == "codes-wmo-int — https://codes.wmo.int/49-2"
-    assert "EV-050" not in (attr["source_attribution"] or "")
-    assert "#959" not in (attr["source_attribution"] or "")
