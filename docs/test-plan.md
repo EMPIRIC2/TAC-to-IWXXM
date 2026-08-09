@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-08 (S057 / EV-048 — #951 strip internal doc refs; prior EV-046/047)
+> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated membership; prior EV-046/048)
 
 ## Scope
 
@@ -2093,6 +2093,75 @@ Docs/coverage only — no H4–H5. Complements **TC-EV038-008** / [#859](https:/
 - [ ] No new Fn (deepen only); Validated waived with follow-on
 - [ ] No live `codes.wmo.int` HTML in PR CI
 - [ ] Domain path-cites for RULE_SOURCE_URLS / COVERAGE_MATRIX / mining / ISSUE_CATALOG
+
+## S059 / EV-050 — codes.wmo.int Validated harvest + membership (#959)
+
+New **TC-EV050-001..006**. Deepens F12 / F15 / F20 / F23 / F24 / F28 (fixtures may touch F6
+packs). Completes Validated waived in EV-046 (`D-S055-validated=1`). No H4–H5 (no UI).
+No live `codes.wmo.int` HTML in PR CI.
+
+### TC-EV050-001: Offline harvest → membership sets
+
+- **Level**: T0 / T1
+- **Objective**: Standing harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF) produces
+  machine-readable membership set(s) used by CI / `tac-validate`
+- **Pass criteria**: Harvest path documented; CI consumes offline artifact only; no network
+  fetch of codes.wmo.int HTML in PR CI
+- **Source**: #959 §1; AC1; [Corpus: tech-spec] [Corpus: product §F12]
+
+### TC-EV050-002: Membership happy + unknown/sad
+
+- **Level**: T1
+- **Objective**: Assert known-good tokens pass and unknown/sad tokens fail for v1 families:
+  present/forecast weather, recent weather, cloud amount/type, SIGMET + AIRMET phenomena,
+  nilReason where lint already checks URIs
+- **Pass criteria**: Matrix or unit tests green for happy + sad per family; failures carry
+  stable issue codes where applicable
+- **Source**: #959 §2; AC2; `D-S059-families=1a`
+
+### TC-EV050-003: Harvest cadence vs manifest pin
+
+- **Level**: T0 / docs
+- **Objective**: Document refresh cadence tied to `vendor/manifest.json` `iwxxm-codelists`
+  pin (vendor sync PRs)
+- **Pass criteria**: Standing docs (RULE_SOURCE_URLS / TAC_VALIDATION / mining) state pin +
+  cadence; cross-link #859
+- **Source**: #959 Acceptance; AC3
+
+### TC-EV050-004: Aggressive fixture expansion (EV-046 gaps)
+
+- **Level**: T0 / T1
+- **Objective**: Add fixtures covering `RE*`, AIRMET underscore phenomena, SpaceWxPhenomena,
+  TCU; update coverage notes; residual gaps deferred with cite
+- **Pass criteria**: Fixtures land under `tac-validate` / product packs; coverage report or
+  COVERAGE_MATRIX delta records uplift; deferrals listed
+- **Source**: AC4; `D-S059-fixtures=2c`; EV-046 coverage gap table
+
+### TC-EV050-005: #889 Validated satisfied
+
+- **Level**: T0 / process
+- **Objective**: Parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) Validated
+  triad element closed via this cycle’s membership CI (or explicit re-scope)
+- **Pass criteria**: evolve-decisions §EV-050 AC5 + issue comments / close criteria met; no
+  silent waiver without cite
+- **Source**: #959 Acceptance; AC5
+
+### TC-EV050-006: #882 design-only compose note
+
+- **Level**: T0 / docs
+- **Objective**: Short design note for optional scheduled live refresh **outside** PR CI
+  composing with #882 — no job implementation
+- **Pass criteria**: Note committed (session report or domain/ops pointer); states out of
+  scope for notify pipeline and PR CI live HTML
+- **Source**: AC6; `D-S059-882=3a`
+
+### EV-050 verify gate
+
+- [ ] TC-EV050-001..006 green (or explicit deferral recorded)
+- [ ] No new Fn (deepen only); #889 Validated satisfied or re-scoped
+- [ ] No live `codes.wmo.int` HTML in PR CI
+- [ ] H4–H5 **N/A** (no UI); 12/13 waived per routing
+- [ ] Aggressive fixture families present or deferred with cite
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 

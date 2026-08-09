@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-08 (S057 / EV-048 — #951 strip internal doc refs from UI/API; prior EV-046/047)
+> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated harvest + membership; prior EV-046/048)
 
 ## Summary
 
@@ -19,23 +19,23 @@
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG codes.wmo.int URIs |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725) |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 register cover/cite (Lean); prior S048 / EV-040 |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; **S050 / EV-042** operator UI hidden with F16–F19 (restore #898) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; **S050 / EV-042** operator UI hidden (restore #898) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; **S050 / EV-042** operator UI hidden (restore #898) |
-| F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889 |
+| F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 |
 | F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
-| F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889 |
-| F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793; **deepen** S055 / EV-046 #889 |
+| F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 phenomena membership |
+| F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 underscore phenomena fixtures |
 | F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794; **deepen** S055 / EV-046 #889 |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
-| F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889 |
+| F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); **deepen** S053 / EV-044 separate staging DOKS + DO Project |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
@@ -1606,6 +1606,33 @@
 - **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: decisions]` ·
   `[docs/domain/rules/RULE_SOURCE_URLS.md]` · `[docs/domain/rules/COVERAGE_MATRIX.md]` ·
   `[docs/domain/mining/codes-wmo-int-aviation-mining-notes.md]`
+- **Follow-on**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) / S059 / EV-050
+  (Validated — below)
+
+### F12 / F15 / F20 / F23 / F24 / F28 deepen (S059 / EV-050 — #959 Validated)
+
+- **Status note**: No new Fn. Standard follow-on to EV-046 Lean: standing **offline harvest** +
+  `tac-validate` membership CI for the Validated triad element; aggressive fixture expansion
+  for EV-046 gap rows (`D-S059-fixtures=2c`).
+- **Issue**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) · parent
+  [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) · epic
+  [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) · compose
+  [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) / [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882)
+- **What changes**:
+  1. Offline harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF) → membership sets
+  2. Wire `tac-validate` / matrix: happy + unknown/sad for weather, recent, cloud,
+     SIGMET/AIRMET phenomena, nilReason where lint already touches URIs
+  3. Document harvest cadence vs `vendor/manifest.json` `iwxxm-codelists` pin
+  4. Aggressive fixtures: `RE*`, AIRMET `_` phenomena, SpaceWxPhenomena, TCU
+  5. Design-only #882 compose note (no scheduled live job this cycle)
+- **Acceptance**: AC1–AC6 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-050;
+  **TC-EV050-001..006**
+- **Out of scope**: Live HTML in PR CI; vendor hand-edits; full #882 notify; `iwxxm-validate`
+  replacement; `stage`→`main` promote; exhaustive 402 weather combos
+- **Journeys / UI**: N/A
+- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
+  `[Corpus: decisions]` · `[docs/domain/TAC_VALIDATION.md]` ·
+  `[docs/domain/rules/COVERAGE_MATRIX.md]`
 
 ## Platform Feature Details (Monorepo Migration)
 

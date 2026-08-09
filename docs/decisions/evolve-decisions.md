@@ -3,6 +3,68 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-050 — codes.wmo.int Validated: harvest + tac-validate membership (#959) (S059)
+
+**Session**: S059-codes-wmo-validated  
+**Features**: deepen **F12 / F15 / F20 / F23 / F24 / F28** (no new Fn; also touches F6 encode
+fixtures where matrix needs tokens)  
+**Started**: 2026-08-09  
+**Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
+**Status**: **in_progress** — Phase A / 01 deltas drafted (`D-S059-01-ac=4a`); Gate A next  
+**Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
+(parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
+epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
+compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
+[#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882))  
+**Corpus**: [Corpus: product §F12/F15/F20/F23/F24/F28], [Corpus: tests],
+[Corpus: tech-spec], [Corpus: decisions] · domain opt-in
+`docs/domain/rules/*`, `docs/domain/mining/*`, `docs/domain/TAC_VALIDATION.md`
+
+### Scope (Phase 0–1 — locked 2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S058-park | **1a** — Park S058 / #958; keep handwritten AMS constraint |
+| D-S059-ticket | **2a** — Open S059 / EV-050 for #959 |
+| D-S059-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→11`; skip `03,06,10,12,13` |
+| D-S059-families | **1a** — v1 membership: weather (306/4678 + present/forecast) + recent + cloud amount/type + SIGMET/AIRMET phenomena + nilReason URI checks where lint already touches them |
+| D-S059-fixtures | **2c** — **Aggressive** fixture expansion this cycle: `RE*`, AIRMET `_` phenomena, SpaceWxPhenomena, TCU (plus packs needed for membership happy/sad) |
+| D-S059-882 | **3a** — Design-only compose note with #882; no scheduled live refresh job this cycle |
+| D-S059-01-ac | **4a** — Lock AC1–AC6 as drafted (with 1a/2c/3a amendments) |
+
+### Acceptance (Standard — confirmed `D-S059-01-ac=4a` 2026-08-09)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | **Offline harvest:** Standing harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF under `vendor/schemas/iwxxm/…/rule/`) produces machine-readable membership set(s) consumed by CI / `tac-validate` — **no live HTML in PR CI** | TC-EV050-001 |
+| AC2 | **Membership Validated:** Happy + unknown/sad asserts for v1 families (`D-S059-families=1a`): present/forecast weather, recent weather, cloud amount/type, SIGMET + AIRMET phenomena, nilReason where lint already emits/checks URIs | TC-EV050-002 |
+| AC3 | **Cadence:** Harvest refresh documented vs `vendor/manifest.json` `iwxxm-codelists` pin; refresh with normal vendor sync PRs | TC-EV050-003 |
+| AC4 | **Gaps / fixtures:** Aggressive fixture expansion (`D-S059-fixtures=2c`) closes EV-046 gap rows for RE*, AIRMET underscore matching, SpaceWxPhenomena, TCU; remaining gaps → child issues or explicit deferrals with cite | TC-EV050-004 |
+| AC5 | **#889 Validated:** Parent Validated triad element satisfied (or explicit re-scope recorded here + on #889/#959) | TC-EV050-005 |
+| AC6 | **#882 compose (design-only):** Short design note for optional scheduled live refresh **outside** PR CI composing with #882 notify — **no** full notification pipeline; **no** job implementation this cycle (`D-S059-882=3a`) | TC-EV050-006 |
+
+### Out of scope
+
+- Hand-edit `vendor/schemas/*`
+- Live `codes.wmo.int` HTML in PR CI
+- Replacing XSD/Schematron (`iwxxm-validate`)
+- Full #882 notification pipeline / scheduled live job implementation
+- `#958` AMS abstract (parked S058)
+- Promote `stage`→`main` unless separately approved
+- Exhaustive 402 weather combinations (representative + aggressive gap packs only)
+- Colour / MetFeature / VONA encode duals beyond nil/phenomena already in v1 families (defer unless needed for sad packs)
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.  
+Skip `03`, `06`, `10`, `12`, `13`.
+
+### Gate A (02)
+
+Pass when AC1–AC6 + TC-EV050-* + feature-list deepen + this section are consistent — then 04.
+
+---
+
 ## Cycle EV-048 — Strip internal doc refs from UI + public API (#951) (S057)
 
 **Session**: S057-strip-internal-doc-refs  

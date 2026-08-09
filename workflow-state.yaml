@@ -20,9 +20,9 @@ active_session:
   branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
   branch_status: active
   branch_exists: true
-  tip_sha: b57f2a87
-  tip_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
-  tip_sha_pushed: false
+  tip_sha: 849af115
+  tip_sha_full: 849af115343b28d97f6b207985cf7f41ef584d7a
+  tip_sha_pushed: true
   pr_base: stage
   github_issues:
   - 959
@@ -39,6 +39,8 @@ active_session:
   - F15
   - F20
   - F23
+  - F24
+  - F28
   feature_note: "Deepen tac-validate / quality bars — #889 Validated; no new Fn"
   preset: Standard
   auto_lean: false
@@ -46,26 +48,36 @@ active_session:
   ui_preview_note: "N/A — no browser UI"
   prior_session: S058-ams-2027-abstract
   artifacts_dir: docs/sessions/S059-codes-wmo-validated/
-  current_stage: 00-context
-  current_stage_note: "OPEN after S058 park; awaiting D-S059-route Standard approval"
+  current_stage: 01-requirements
+  current_stage_note: "01 deltas drafted for user preview; no commit/push yet; next 02 after approve"
   decisions:
     D-S058-park: "1a — park S058/#958 Ready; keep scaffold"
     D-S059-ticket: "2a — open S059/EV-050 for #959"
+    D-S059-route: "1 — Standard as drafted: 00→16→01→02→04→05→07→08→09→11; skip 03,06,10,12,13"
+    D-S059-families: "1a — weather+recent+cloud+SIGMET/AIRMET+nil"
+    D-S059-fixtures: "2c — aggressive RE*/AIRMET_/SpaceWx/TCU"
+    D-S059-882: "3a — design-only #882 compose"
+    D-S059-01-ac: "4a — lock AC1–AC6; 01 deltas drafted for preview"
   routing_plan:
   - stage: 00-context
     required: true
     mode: session
-    status: in_progress
+    status: completed
     started: '2026-08-09'
-    note: "OPEN S059; awaiting D-S059-route"
+    completed: '2026-08-09'
+    note: "D-S059-route=1 Standard approved"
   - stage: 16-evolve
     required: true
     mode: orchestrator
-    status: pending
+    status: in_progress
+    started: '2026-08-09'
+    note: "orchestrator after route approve; Phase A → 01"
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-09'
+    note: "AC locked; docs drafted; awaiting preview/commit"
   - stage: 02-verify-plan
     required: true
     mode: delta
@@ -134,7 +146,30 @@ active_session:
     session_id: S059-codes-wmo-validated
     evolve_cycle_id: EV-050
     created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/evolve-plan-card.md
+    status: written
+    stage: 16-evolve
+    skill_id: 16-evolve
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/01-requirements.md
+    status: written
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/decisions/evolve-decisions.md
+    status: touched
+    stage: 01-requirements
+    skill_id: 01-requirements
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
   notes:
+  - "2026-08-09 D-S059-01-ac=4a (families=1a fixtures=2c 882=3a) — 01 deltas drafted; preview held; no push"
+  - "2026-08-09 D-S059-route=1 — Standard approved; handoff 01-requirements; tip 849af115"
   - "2026-08-09 D-S058-park=1a + D-S059-ticket=2a — PARK S058; OPEN S059/EV-050 for #959; Standard proposed; awaiting D-S059-route; no git commit by workflow-state-manager"
 sessions:
 - id: S058-ams-2027-abstract
@@ -34268,7 +34303,16 @@ evolve_cycles:
   - F15
   - F20
   - F23
+  - F24
+  - F28
   preset: Standard
+  current_stage: 01-requirements
+  decisions:
+    D-S059-route: "1 — Standard as drafted: 00→16→01→02→04→05→07→08→09→11; skip 03,06,10,12,13"
+    D-S059-families: "1a — weather+recent+cloud+SIGMET/AIRMET+nil"
+    D-S059-fixtures: "2c — aggressive RE*/AIRMET_/SpaceWx/TCU"
+    D-S059-882: "3a — design-only #882 compose"
+    D-S059-01-ac: "4a — lock AC1–AC6; 01 deltas drafted for preview"
   note: "#889 Validated follow-on; offline harvest + tac-validate membership; PR→stage"
 - id: EV-049
   session_id: S058-ams-2027-abstract
@@ -44920,19 +44964,19 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-048-strip-internal-doc-refs
+  current_branch: evolve/EV-050-codes-wmo-validated
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml S057/EV-048 merge bookkeeping (D-S057-merge=1); PR #963 MERGED @ 06a9543f; no git commit by workflow-state-manager'
-  tip_sha: c52521c7
-  tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
-  tip_note: 'S057/EV-048 MERGED — PR tip c52521c7; merge commit 06a9543f on stage; Phase 4 close awaiting D-S057-close'
-  evolve_branch: evolve/EV-048-strip-internal-doc-refs
-  evolve_tip_sha: c52521c7
-  evolve_tip_sha_full: c52521c772a950d9e43ca088933dd5163ad59a12
+  dirty_note: 'workflow-state.yaml S059/EV-050 D-S059-route=1 bookkeeping; tip 849af115; no git commit by workflow-state-manager'
+  tip_sha: 849af115
+  tip_sha_full: 849af115343b28d97f6b207985cf7f41ef584d7a
+  tip_note: 'S059/EV-050 — refreshed from stale S057 current_branch; tip 849af115 tracks origin; D-S059-route=1; handoff 01-requirements'
+  evolve_branch: evolve/EV-050-codes-wmo-validated
+  evolve_tip_sha: 849af115
+  evolve_tip_sha_full: 849af115343b28d97f6b207985cf7f41ef584d7a
   evolve_tip_sha_pushed: true
   stage_merge_sha: 06a9543f
   stage_merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
@@ -44949,9 +44993,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: stage
-  note: 'S057/EV-048 MERGED — D-S057-merge=1; PR #963 → stage @ 06a9543f; tip CI 31291149689 SUCCESS; current_stage 16-evolve; Phase 4 close awaiting D-S057-close; no git commit by workflow-state-manager'
+  note: 'S059/EV-050 — current_branch evolve/EV-050-codes-wmo-validated @ 849af115 (was stale S057); D-S059-route=1 Standard; handoff 01-requirements; no new commits invented'
 
   notes:
+  - '2026-08-09 D-S059-route=1 — refreshed current_branch from stale S057 to evolve/EV-050-codes-wmo-validated @ 849af115; tracks origin; handoff 01-requirements; no git commit by workflow-state-manager'
   - '2026-08-08 D-S057-merge=1 — PR #963 MERGED → stage @ 06a9543ff4ccd586191dafeec63d9521e967d933; tip CI 31291149689 SUCCESS; evolve tip c52521c7; Phase 4 close awaiting D-S057-close; closeout docs written; no git commit by workflow-state-manager'
   - '2026-08-08 07-build COMPLETE @ 71779d46 — M1–M3 done; T3.3 skipped; 08-verify-build IN_PROGRESS; 16-evolve remains orchestrator'
   - '2026-08-08 02-verify-plan COMPLETE / 04-tech-plan IN_PROGRESS — D-S057-gateA=1 PASS; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; evolve-decisions note; 16-evolve remains orchestrator; no git commit by workflow-state-manager'
@@ -45470,11 +45515,11 @@ git_history:
     purpose: "EV-050 / S059 codes.wmo.int harvest + tac-validate membership (#959)"
     session_id: S059-codes-wmo-validated
     evolve_cycle_id: EV-050
-    tip_sha: b57f2a87
-    tip_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
-    tip_sha_pushed: false
+    tip_sha: 849af115
+    tip_sha_full: 849af115343b28d97f6b207985cf7f41ef584d7a
+    tip_sha_pushed: true
     pr_base: stage
-    note: "S059/EV-050 OPEN @ stage@b57f2a87; awaiting D-S059-route; no git commit by workflow-state-manager"
+    note: "S059/EV-050 D-S059-route=1 Standard approved; tip 849af115 tracks origin; handoff 01-requirements"
   - name: evolve/EV-049-ams-2027-abstract
     base: stage
     base_sha: b57f2a87

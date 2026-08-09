@@ -1,18 +1,19 @@
 # Routing plan — S059 / EV-050
 
-**Preset:** Standard (**proposed** — code + CI membership checks; not Auto-Lean)  
+**Preset:** Standard (**approved** `D-S059-route=1`)  
 **Route:** `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`  
 **Skip:** `03`, `06`, `10`, `12`, `13`  
 **Branch:** `evolve/EV-050-codes-wmo-validated` (base `stage`)  
+**Tip:** `849af115`  
 **Features:** deepen **F12**, **F15**, **F20**, **F23** (no new Fn)  
 **Issues:** [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889))  
-**Status:** proposed — awaiting `D-S059-route`
+**Status:** approved — Phase A → **01-requirements**
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 00-context | yes | session | **in_progress** | Open after S058 park |
-| 16-evolve | yes | orchestrator | pending | EV-050 |
-| 01-requirements | yes | delta | pending | ACs for harvest + membership |
+| 00-context | yes | session | **completed** | `D-S059-route=1` |
+| 16-evolve | yes | orchestrator | **in_progress** | EV-050 |
+| 01-requirements | yes | delta | **in_progress** | ACs for harvest + membership |
 | 02-verify-plan | yes | delta | pending | Gate A |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
 | 04-tech-plan | yes | delta | pending | execution plan |
@@ -37,7 +38,7 @@
 
 ## Approved
 
-Pending `D-S059-route`.
+`D-S059-route=1` — Standard as drafted (2026-08-09).
 
 ## Corpus cites
 

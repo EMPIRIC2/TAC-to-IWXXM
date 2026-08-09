@@ -1,6 +1,20 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-08 (S057 / EV-048)
+> Stage: 01-requirements | Last updated: 2026-08-09 (S059 / EV-050)
+
+## EV-050 / S059 — codes.wmo.int Validated (#959) (`D-S059-01-ac=4a`)
+
+| Prefix | Topic | Decision | Status |
+|--------|-------|----------|--------|
+| EV-050 / route | Standard | `00→16→01→02→04→05→07→08→09→11`; skip 03/06/10/12/13 (`D-S059-route=1`) | confirmed |
+| EV-050 / families | Membership v1 | Weather + recent + cloud amount/type + SIGMET/AIRMET phenomena + nilReason where lint touches (`D-S059-families=1a`) | confirmed |
+| EV-050 / fixtures | Expansion | Aggressive: RE*, AIRMET `_`, SpaceWxPhenomena, TCU this cycle (`D-S059-fixtures=2c`) | confirmed |
+| EV-050 / #882 | Live refresh | Design-only compose note; no job this cycle (`D-S059-882=3a`) | confirmed |
+| EV-050 / Fn | Deepen | F12/F15/F20/F23/F24/F28 (no new Fn); UI N/A | confirmed |
+| EV-050 / UI | Preview | N/A — no browser UI | confirmed |
+
+[Corpus: product §F12/F15/F20/F23/F24/F28] [Corpus: tests] [Corpus: tech-spec]
+[Corpus: decisions]
 
 ## EV-048 / S057 — Strip internal doc refs (#951) (`D-S057-01-ac=1`)
 
