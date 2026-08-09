@@ -20,10 +20,10 @@ active_session:
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
   branch_status: active
   branch_exists: true
-  tip_sha: 71779d46
-  tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+  tip_sha: 3a43da37
+  tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
   tip_sha_pushed: false
-  branch_note: "ACTIVE — tip 71779d46 after 07-build M1–M3; 08-verify-build COMPLETE PASS; Phase C checkpoint pending"
+  branch_note: "ACTIVE — tip 3a43da37; Phase D 11-verify-impl awaiting sign-off; 09+10 complete"
   github_issues:
   - 951
   issue_ids:
@@ -42,7 +42,7 @@ active_session:
   prior_session: S056-m0-stabilize-operator-trust
   artifacts_dir: docs/sessions/S057-strip-internal-doc-refs/
   current_stage: 16-evolve
-  current_stage_note: "IN_PROGRESS — Phase C done (07+08 PASS); await D-S057-phaseC checkpoint before 09+10"
+  current_stage_note: "IN_PROGRESS — Phase D 11-verify-impl awaiting user sign-off; 09+10 complete"
   decisions:
     D-S057-open: "1 — open S057/EV-048 for #951"
     D-S057-scope: "1 — full #951 UI+OpenAPI+guard"
@@ -55,6 +55,8 @@ active_session:
     D-S057-04-plan: "1 — Approve M1–M3 / T1.1–T3.3 as drafted; proceed 05 then 07"
     D-S057-04-guard-ext: "1 — Extend guard with TC-*, E##-##, #NNN (3+ digits) on scanned surfaces"
     D-S057-gateB: "1 — PASS; accept S5.M1–S5.M3 defaults; proceed 07-build M1"
+    D-S057-phaseC: "1 — Continue 09-qa + 10-e2e delta → 11-verify-impl"
+    D-S057-ui-preview-verify: "2 — No non-deployed UI preview before Verify (FE catalogs clean)"
   routing_plan:
   - stage: 00-context
     required: true
@@ -68,7 +70,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    note: "IN_PROGRESS — Standard orchestrator; Phase C done (07+08 PASS); await D-S057-phaseC before 09+10"
+    note: "IN_PROGRESS — Phase D in progress after D-S057-phaseC=1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -133,18 +135,28 @@ active_session:
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
-    note: "pending required (Standard)"
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    overall: pass_with_advisories
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    note: "COMPLETE — pass_with_advisories; report qa-report.md; handoff 11-verify-impl"
   - stage: 10-e2e
     required: true
     mode: delta
-    status: pending
-    note: "pending required (Standard)"
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    overall: PASS
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/e2e-report.md
+    note: "COMPLETE — PASS; report e2e-report.md; delta/light UJ-055 T0/T2; T3 skipped"
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
-    note: "pending required (Standard)"
+    status: in_progress
+    started: '2026-08-08'
+    note: "IN_PROGRESS — awaiting UJ-055 + F7/F21 signoff"
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
   - stage: 12-verify-deploy
     required: false
     mode: skip
@@ -288,8 +300,37 @@ active_session:
     evolve_cycle_id: EV-048
     created_at: '2026-08-08'
     note: "COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md"
-  note: "08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; 16-evolve orchestrator; ui_preview http://localhost:5173/"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    type: report
+    status: completed
+    stage: 09-qa
+    skill_id: 09-qa
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    created_at: '2026-08-08'
+    note: "COMPLETE — pass_with_advisories; report qa-report.md"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/e2e-report.md
+    type: report
+    status: completed
+    stage: 10-e2e
+    skill_id: 10-e2e
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    created_at: '2026-08-08'
+    note: "COMPLETE — PASS; report e2e-report.md"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
+    type: report
+    status: draft
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    created_at: '2026-08-08'
+    note: "DRAFT — awaiting UJ-055 + F7/F21 signoff"
+  note: "Phase D 11-verify-impl awaiting user sign-off; 09+10 complete; tip 3a43da37; 16-evolve orchestrator"
   notes:
+  - "2026-08-08 09-qa COMPLETE pass_with_advisories + 10-e2e COMPLETE PASS; 11-verify-impl IN_PROGRESS awaiting UJ-055 + F7/F21 signoff; tip 3a43da37; 16-evolve orchestrator"
+  - "2026-08-08 D-S057-phaseC=1 + D-S057-ui-preview-verify=2 — Phase D started; 09-qa + 10-e2e in_progress; tip 3a43da37; 16-evolve orchestrator"
   - "2026-08-08 08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; 16-evolve orchestrator"
   - "2026-08-08 07-build COMPLETE @ 71779d46 — M1–M3 done; T3.3 skipped; 08-verify-build IN_PROGRESS; 16-evolve remains orchestrator"
   - "2026-08-08 D-S057-gateB=1 — Gate B PASS; S5.M1–S5.M3 defaults accepted; 05 COMPLETE; 07-build IN_PROGRESS M1; 16-evolve remains orchestrator"
@@ -12125,26 +12166,33 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S056-m0-stabilize-operator-trust
-    evolve_cycle_id: EV-047
-    tip_sha: 3ca4f438
-    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
-    tip_sha_pushed: true
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    tip_sha: 3a43da37
+    tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+    tip_sha_pushed: false
     mode: delta
     overall: pass_with_advisories
-    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/qa-report.md
-    expected_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/qa-report.md
-    note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 10-e2e'
-    advisories: [QA-001, QA-002, QA-003, QA-004, QA-005]
-    advisories_note: 'AC6 ops deferred is primary (D-S054-ac6-waive=2)'
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    expected_report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 11-verify-impl'
+    skill_id: 09-qa
+    previous_s056_session_id: S056-m0-stabilize-operator-trust
+    previous_s056_evolve_cycle_id: EV-047
+    previous_s056_tip_sha: 3ca4f438
+    previous_s056_tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    previous_s056_overall: pass_with_advisories
+    previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/qa-report.md
+    previous_s056_note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 10-e2e'
+    advisories: [QA-001, QA-002, QA-003, QA-004]
+    advisories_note: 'EV-048: tip unpushed; 12/13 waived; privacy Fn IDs out of regex; T3 Playwright skipped'
     decision_refs:
-    - D-S054-phaseC
-    - D-S054-t17-ci
-    - D-S054-gateB
-    - D-S054-ac6-waive
-    - D-S054-open
+    - D-S057-phaseC
+    - D-S057-ui-preview-verify
+    - D-S057-gateB
+    - D-S057-preset-reconfirm
     pending_commit: false
-    active_milestone: M1
+    active_milestone:
     active_task:
     active_task_status:
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
@@ -12152,9 +12200,24 @@ stages:
     prior_s050_tip_sha: dff22265
     prior_s050_overall: pass_with_advisories
     prior_s050_report: docs/sessions/S050-remove-db-tools-operator-throughput/reports/qa-report.md
-    main_ci_cd_pipeline_run: '31003268652'
-    main_ci_cd_pipeline_status: in_progress
+    main_ci_cd_pipeline_run:
+    main_ci_cd_pipeline_status:
     delta_substages:
+    - id: S057-strip-internal-doc-refs-09
+      session_id: S057-strip-internal-doc-refs
+      evolve_cycle_id: EV-048
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-08'
+      started_at: '2026-08-08'
+      completed: '2026-08-08'
+      completed_at: '2026-08-08'
+      tip_sha: 3a43da37
+      tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+      overall: pass_with_advisories
+      report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+      note: 'COMPLETE — pass_with_advisories; report qa-report.md'
     - id: S054-rust-ci-crates-09
       session_id: S054-rust-ci-crates
       evolve_cycle_id: EV-045
@@ -12447,11 +12510,11 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa in_progress (T6.2; D-S011-EV008-c-to-d-pass)
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
-    status: completed
+    status: in_progress
     started_at: '2026-08-08'
     started: '2026-08-08'
-    completed: '2026-08-08'
-    completed_at: '2026-08-08'
+    completed:
+    completed_at:
     previous_started_at: '2026-08-08'
     previous_started: '2026-08-08'
     previous_completed: '2026-08-08'
@@ -12521,17 +12584,26 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S056-m0-stabilize-operator-trust
-    evolve_cycle_id: EV-047
-    tip_sha: 3ca4f438
-    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
-    tip_sha_pushed: true
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    tip_sha: 3a43da37
+    tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+    tip_sha_pushed: false
     mode: delta
-    overall: pass
-    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
-    expected_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
-    note: 'COMPLETE — PASS @ 3ca4f438; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; phase_d passed; handoff phase4-close / PR #961'
+    overall:
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
+    expected_report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
+    note: 'IN_PROGRESS — awaiting UJ-055 + F7/F21 signoff; report verify-impl.md draft; 09+10 complete'
+    skill_id: 11-verify-impl
+    previous_s056_session_id: S056-m0-stabilize-operator-trust
+    previous_s056_evolve_cycle_id: EV-047
+    previous_s056_tip_sha: 3ca4f438
+    previous_s056_tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    previous_s056_overall: pass
+    previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
+    previous_s056_note: 'COMPLETE — PASS @ 3ca4f438; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; phase_d passed; handoff phase4-close / PR #961'
     decision_refs:
+    - D-S057-phaseC
     - D-S056-ac-bundle
     - D-S056-uj054
     - D-S056-advisories
@@ -12546,26 +12618,22 @@ stages:
     prior_s050_overall: approved
     prior_s050_note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
     prior_s050_report_note: 'S050/EV-042 11 COMPLETE — superseded by S054/EV-045'
-    report_status: approved
-    tip_note: 'S050/EV-042 tip adad127c — 11-verify-impl COMPLETE; tip_sha_pushed=false ahead_of_origin=4; next 12-verify-deploy'
-    awaiting_user_decision: false
-    awaiting_user_decision_note:
-    decision_id: D-S050-11-verify
+    report_status: draft
+    tip_note: 'S057/EV-048 tip 3a43da37 — 11-verify-impl IN_PROGRESS; awaiting UJ-055 + F7/F21 signoff'
+    awaiting_user_decision: true
+    awaiting_user_decision_note: 'Awaiting UJ-055 + F7/F21 signoff'
+    decision_id:
     decision_ids:
     - D-S050-11-verify
     - D-S047-11
     deepen_feature_ids:
     - F7
-    - F16
-    - F17
-    - F18
-    - F19
-    feature_ids:
-    - F33
-    active_milestone: M4
-    active_task: T4.3
-    active_task_status: in_progress
-    active_task_note: 'T4.3 handoff — 11 complete @ 18d028ed; 12-verify-deploy in_progress; watching tip CI'
+    - F21
+    feature_ids: []
+    active_milestone: M1
+    active_task:
+    active_task_status:
+    active_task_note: '11-verify-impl in_progress — awaiting UJ-055 + F7/F21 signoff'
     previous_s046_decision_id: D-S046-11
     previous_s045_session_id: S045-matrix-disposition-residuals
     previous_s045_evolve_cycle_id: EV-037
@@ -12609,6 +12677,22 @@ stages:
         status: completed
         path: docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md
     delta_substages:
+    - id: S057-strip-internal-doc-refs-11
+      session_id: S057-strip-internal-doc-refs
+      evolve_cycle_id: EV-048
+      skill_id: 11-verify-impl
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-08'
+      started: '2026-08-08'
+      tip_sha: 3a43da37
+      tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+      report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
+      report_status: draft
+      deepen_feature_ids:
+      - F7
+      - F21
+      note: 'IN_PROGRESS — awaiting UJ-055 + F7/F21 signoff; report verify-impl.md draft'
     - id: S050-remove-db-tools-operator-throughput-11
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
@@ -12888,19 +12972,43 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S056-m0-stabilize-operator-trust
-    evolve_cycle_id: EV-047
-    tip_sha: 3ca4f438
-    tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    session_id: S057-strip-internal-doc-refs
+    evolve_cycle_id: EV-048
+    tip_sha: 3a43da37
+    tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+    tip_sha_pushed: false
     mode: delta
-    overall: pass
-    report: docs/sessions/S056-m0-stabilize-operator-trust/reports/e2e-report.md
-    note: 'COMPLETE — PASS UJ-054 Help; report e2e-report.md; handoff 11-verify-impl'
+    overall: PASS
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/e2e-report.md
+    note: 'COMPLETE — PASS; report e2e-report.md; delta/light UJ-055 T0/T2; T3 skipped; handoff 11-verify-impl'
+    skill_id: 10-e2e
+    previous_s056_session_id: S056-m0-stabilize-operator-trust
+    previous_s056_evolve_cycle_id: EV-047
+    previous_s056_tip_sha: 3ca4f438
+    previous_s056_tip_sha_full: 3ca4f43863063beb56ac0ca20b6a23a52c8306f0
+    previous_s056_overall: pass
+    previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/e2e-report.md
+    previous_s056_note: 'COMPLETE — PASS UJ-054 Help; report e2e-report.md; handoff 11-verify-impl'
     active_milestone: M4
     active_task: T4.3
     active_task_status: completed
     pending_commit: false
     delta_substages:
+    - id: S057-strip-internal-doc-refs-10
+      session_id: S057-strip-internal-doc-refs
+      evolve_cycle_id: EV-048
+      skill_id: 10-e2e
+      status: completed
+      mode: delta
+      started: '2026-08-08'
+      started_at: '2026-08-08'
+      completed: '2026-08-08'
+      completed_at: '2026-08-08'
+      tip_sha: 3a43da37
+      tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+      overall: PASS
+      report: docs/sessions/S057-strip-internal-doc-refs/reports/e2e-report.md
+      note: 'COMPLETE — PASS; delta/light UJ-055 T0/T2; T3 skipped'
     - id: S050-remove-db-tools-operator-throughput-10
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
@@ -15540,12 +15648,12 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: phase-c-checkpoint
-    current_child_stage_note: '08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC'
-    tip_sha: 71779d46
-    tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+    current_child_stage: 11-verify-impl
+    current_child_stage_note: 'Phase D 11-verify-impl awaiting user sign-off; 09+10 complete; D-S057-ui-preview-verify=2'
+    tip_sha: 3a43da37
+    tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
     tip_sha_pushed: false
-    note: 'IN_PROGRESS — S057/EV-048 Standard orchestrator; 08-verify-build COMPLETE PASS; Phase C checkpoint pending D-S057-phaseC; tip 71779d46; ui_preview http://localhost:5173/; no git commit by workflow-state-manager'
+    note: 'IN_PROGRESS — S057/EV-048 Phase D 11-verify-impl awaiting user sign-off; 09+10 complete; tip 3a43da37; no git commit by workflow-state-manager'
     prior_close_decision: D-S056-close=1
 
     prior_s054_session_id: S054-rust-ci-crates
@@ -15810,6 +15918,33 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S057-phaseC
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S057-strip-internal-doc-refs
+  evolve_cycle_id: EV-048
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: phase_c_checkpoint
+  status: confirmed
+  topic: 'S057/EV-048 Phase C → Phase D; UI preview before Verify'
+  summary: 'D-S057-phaseC=1 + D-S057-ui-preview-verify=2 — Continue 09-qa + 10-e2e delta → 11-verify-impl; no non-deployed UI preview before Verify'
+  decision: |
+    D-S057-phaseC=1 — Continue 09-qa + 10-e2e delta → 11-verify-impl.
+    D-S057-ui-preview-verify=2 — No non-deployed UI preview before Verify (FE catalogs clean).
+    Phase C PASS; Phase D started (09-qa + 10-e2e in_progress). Tip 3a43da37.
+    No git commit by workflow-state-manager.
+  user_option: '1 / 2'
+  branch: evolve/EV-048-strip-internal-doc-refs
+  related_issues:
+  - '951'
+  tip_sha: 3a43da37
+  tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
+  tip_sha_pushed: false
+  current_stage: 09-qa
+  note: 'Phase C PASS; Phase D 09+10 in progress; D-S057-ui-preview-verify=2'
 - id: D-S057-08-complete
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -33636,8 +33771,8 @@ evolve_cycles:
   - 951
   milestone: "M0 — Stabilize + operator trust + narrative"
   phase: 1
-  current_stage: phase-c-checkpoint
-  current_stage_note: "IN_PROGRESS — Phase C done (07+08 PASS); await D-S057-phaseC checkpoint before 09+10"
+  current_stage: 11-verify-impl
+  current_stage_note: "IN_PROGRESS — Phase D 11-verify-impl awaiting user sign-off; 09+10 complete"
   started: '2026-08-08'
   started_at: '2026-08-08'
   branch: evolve/EV-048-strip-internal-doc-refs
@@ -33645,8 +33780,8 @@ evolve_cycles:
   branch_base_sha: d7652d5d
   branch_base_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
   branch_status: active
-  tip_sha: 71779d46
-  tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+  tip_sha: 3a43da37
+  tip_sha_full: 3a43da37ba2aca0fe4a1a992f7adef1f8ae6dbb4
   tip_sha_pushed: false
   interrupted_by_hotfix: false
   parked: false
@@ -33666,6 +33801,8 @@ evolve_cycles:
   - D-S057-04-plan=1
   - D-S057-04-guard-ext=1
   - D-S057-gateB=1
+  - D-S057-phaseC=1
+  - D-S057-ui-preview-verify=2
   gate_a: PASS
   gate_a_decision: D-S057-gateA=1
   gate_b: PASS
@@ -33683,7 +33820,7 @@ evolve_cycles:
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    note: "IN_PROGRESS — Standard orchestrator; Phase C done (07+08 PASS); await D-S057-phaseC before 09+10"
+    note: "IN_PROGRESS — Phase D in progress after D-S057-phaseC=1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -33748,18 +33885,28 @@ evolve_cycles:
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
-    note: "pending required (Standard)"
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    overall: pass_with_advisories
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    note: "COMPLETE — pass_with_advisories; report qa-report.md; handoff 11-verify-impl"
   - stage: 10-e2e
     required: true
     mode: delta
-    status: pending
-    note: "pending required (Standard)"
+    status: completed
+    started: '2026-08-08'
+    completed: '2026-08-08'
+    overall: PASS
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/e2e-report.md
+    note: "COMPLETE — PASS; report e2e-report.md; delta/light UJ-055 T0/T2; T3 skipped"
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
-    note: "pending required (Standard)"
+    status: in_progress
+    started: '2026-08-08'
+    note: "IN_PROGRESS — awaiting UJ-055 + F7/F21 signoff"
+    report: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
   - stage: 12-verify-deploy
     required: false
     mode: skip
@@ -33770,7 +33917,7 @@ evolve_cycles:
     mode: skip
     status: skipped
     note: "waive unless deploy (Standard)"
-  note: "IN_PROGRESS — S057/EV-048 Standard; current_stage phase-c-checkpoint; 08 COMPLETE PASS; await D-S057-phaseC; tip 71779d46; 16-evolve orchestrator; ui_preview http://localhost:5173/"
+  note: "IN_PROGRESS — S057/EV-048 Phase D 11-verify-impl awaiting user sign-off; 09+10 complete; tip 3a43da37; 16-evolve orchestrator"
   artifacts:
   - docs/sessions/S057-strip-internal-doc-refs/
   - path: docs/sessions/S057-strip-internal-doc-refs/session-brief.md
@@ -33864,6 +34011,27 @@ evolve_cycles:
     skill_id: 08-verify-build
     session_id: S057-strip-internal-doc-refs
     note: "COMPLETE — PASS validate-fast + EV-048 unit/Vitest; report 08-verify-build.md"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/qa-report.md
+    type: report
+    status: completed
+    stage: 09-qa
+    skill_id: 09-qa
+    session_id: S057-strip-internal-doc-refs
+    note: "COMPLETE — pass_with_advisories; report qa-report.md"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/e2e-report.md
+    type: report
+    status: completed
+    stage: 10-e2e
+    skill_id: 10-e2e
+    session_id: S057-strip-internal-doc-refs
+    note: "COMPLETE — PASS; report e2e-report.md"
+  - path: docs/sessions/S057-strip-internal-doc-refs/reports/verify-impl.md
+    type: report
+    status: draft
+    stage: 11-verify-impl
+    skill_id: 11-verify-impl
+    session_id: S057-strip-internal-doc-refs
+    note: "DRAFT — awaiting UJ-055 + F7/F21 signoff"
 - id: EV-047
   session_id: S056-m0-stabilize-operator-trust
   status: completed

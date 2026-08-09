@@ -26,10 +26,11 @@ API/OpenAPI surfaces, with an automated regression guard. [#951]
 
 ## Next child stage
 
-**08-verify-build** — M1–M3 implementation done; tip CI / local verify
+**11-verify-impl** — 09+10 PASS (delta); tip `3a43da37` not pushed yet
 
 ## Risks / open decisions
 
-- UI preview: http://localhost:5173/
+- UI preview before Verify: declined (`D-S057-ui-preview-verify=2`)
 - OpenAPI stripped; BE+FE guards green; T3.3 Playwright skipped (no FE hits)
 - `#NNN` pattern uses `(?<!\w)#\d{3,}\b` (lookbehind; `\b#` missed `#702`)
+- Push + PR to `stage` after 11 approval (QA-001)

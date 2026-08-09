@@ -30,6 +30,8 @@
 | D-S057-04-plan | **1** — Approve M1–M3 / T1.1–T3.3 as drafted; proceed 05 then 07 |
 | D-S057-04-guard-ext | **1** — Extend guard with `\bTC-[A-Z0-9-]+\b`, `\bE\d{2}-\d+\b`, `\b#\d{3,}\b` on scanned surfaces |
 | D-S057-gateB | **1** — Gate B PASS; S5.M1–S5.M3 defaults; proceed 07-build M1 |
+| D-S057-phaseC | **1** — Continue 09-qa + 10-e2e (delta/light) → 11-verify-impl |
+| D-S057-ui-preview-verify | **2** — No non-deployed UI preview before Verify (FE catalogs clean) |
 
 ### Acceptance (confirmed `D-S057-01-ac=1`)
 

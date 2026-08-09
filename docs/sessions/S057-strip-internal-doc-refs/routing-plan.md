@@ -6,12 +6,12 @@
 **Branch:** `evolve/EV-048-strip-internal-doc-refs` (base `stage@d7652d5d`)  
 **Features:** deepen **F7**, **F21** (no new Fn)  
 **Issues:** [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951)  
-**Status:** **in_progress** — 16-evolve → 08-verify-build
+**Status:** **in_progress** — 16-evolve → 11-verify-impl (09+10 done)
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | S057 open; Standard amend |
-| 16-evolve | yes | orchestrator | **in_progress** | Orchestrating; child 08 |
+| 16-evolve | yes | orchestrator | **in_progress** | Phase D; D-S057-phaseC=1 |
 | 01-requirements | yes | delta | **completed** | D-S057-01-ac=1; guard-s0=1 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS D-S057-gateA=1 |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules for guard |
@@ -20,9 +20,9 @@
 | 06-tech-tooling | no | — | skipped | no new runtime deps |
 | 07-build | yes | full | **completed** | M1–M3; T3.3 skipped @ 71779d46 |
 | 08-verify-build | yes | delta | **completed** | PASS; report 08-verify-build.md |
-| 09-qa | yes | delta | pending | |
-| 10-e2e | yes | delta | pending | operator-visible copy if UI hits |
-| 11-verify-impl | yes | delta | pending | |
+| 09-qa | yes | delta | **completed** | pass_with_advisories; qa-report.md |
+| 10-e2e | yes | delta | **completed** | UJ-055 T0 PASS; T3 skipped; e2e-report.md |
+| 11-verify-impl | yes | delta | **in_progress** | AC + UJ signoff |
 | 12-verify-deploy | no | — | skipped | waive unless deploy |
 | 13-deploy-smoke | no | — | skipped | waive unless deploy |
 
