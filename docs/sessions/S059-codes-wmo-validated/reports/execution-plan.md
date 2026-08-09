@@ -158,9 +158,9 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 
 ## PR Plan
 
-| PR | Base | When |
-|----|------|------|
-| EV-050 Validated harvest + membership | `stage` | After 08–11 (or earlier docs-only if split) |
+| PR | Base | When | Status |
+|----|------|------|--------|
+| EV-050 Validated harvest + membership | `stage` | After 08–11 (`D-S059-11-next=1`) | opening |
 
 ## Advisories (from Gate A — accepted)
 

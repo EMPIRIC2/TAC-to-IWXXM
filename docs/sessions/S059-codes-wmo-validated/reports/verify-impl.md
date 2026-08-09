@@ -41,8 +41,8 @@ N/A — no browser UI (`ui_preview: n/a`).
 
 12/13 **waived** — PR → `stage` only; no `stage`→`main` this cycle.
 
-## Open for user approval
+## User approval
 
-1. Approve AC1–AC8 / deepen as implemented  
-2. Push branch + open PR → `stage`  
-3. After merge: close #959; leave #889 for residual Present/Cited depth  
+**`D-S059-11-next=1`** (2026-08-09) — AC1–AC8 approved; push + PR → `stage`.
+
+After merge: close #959; leave #889 for residual Present/Cited depth unless maintainers close Validated-only.

@@ -4,26 +4,26 @@
 **Route:** `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`  
 **Skip:** `03`, `06`, `10`, `12`, `13`  
 **Branch:** `evolve/EV-050-codes-wmo-validated` (base `stage`)  
-**Tip:** `aab35494` (local ahead; Gate A commit may advance)  
+**Tip:** local tip advances with push; PR → `stage`  
 **Features:** deepen **F6**, **F12**, **F15**, **F20**, **F23**, **F24**, **F28** (no new Fn)  
 **Issues:** [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889))  
-**Status:** approved — Phase C → **07-build** (`D-S059-gateB=1`)
+**Status:** **11-verify-impl** approved (`D-S059-11-next=1`) — push + PR → `stage`
 
 | Stage | Required | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | `D-S059-route=1` |
-| 16-evolve | yes | orchestrator | **in_progress** | EV-050 |
+| 16-evolve | yes | orchestrator | **in_progress** | EV-050 — close after PR merge |
 | 01-requirements | yes | delta | **completed** | AC1–AC8; profiles 1b |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S059-gateA=1` |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
 | 04-tech-plan | yes | delta | **completed** | `D-S059-04-plan=1` |
 | 05-verify-tech | yes | delta | **completed** | Gate B PASS `D-S059-gateB=1` |
 | 06-tech-tooling | no | — | skipped | no new runtime deps expected |
-| 07-build | yes | full | **in_progress** | M1 / T1.1 |
-| 08-verify-build | yes | delta | pending | |
-| 09-qa | yes | delta | pending | |
+| 07-build | yes | full | **completed** | M1–M4 |
+| 08-verify-build | yes | delta | **completed** | PASS |
+| 09-qa | yes | delta | **completed** | PASS |
 | 10-e2e | no | — | skipped | no browser UI |
-| 11-verify-impl | yes | delta | pending | |
+| 11-verify-impl | yes | delta | **completed** | `D-S059-11-next=1` |
 | 12-verify-deploy | no | — | skipped | waive unless deploy |
 | 13-deploy-smoke | no | — | skipped | waive unless deploy; no stage→main |
 

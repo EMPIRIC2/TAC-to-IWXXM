@@ -10,8 +10,7 @@
 `annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
-**Status**: **in_progress** — Phase C done (M1–M4; 08/09 PASS); **11-verify-impl** awaiting
-approval → push + PR → `stage` (tip `82607ed5`)
+**Status**: **in_progress** — **11-verify-impl** approved (`D-S059-11-next=1`); push + PR → `stage`
 **Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
 (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
@@ -77,6 +76,7 @@ exhaustive 402 weather / residual register depth under #959/#889 **defer+cite**.
 | D-S059-04-plan | **1** — Approve execution plan + Build Plan Card → **05-verify-tech** |
 | D-S059-gateB | **1** — Gate B **PASS**; handoff **07-build** M1 / T1.1 (L1–L3 advisory accepted) |
 | D-S059-validated | **1** — #889 Validated **satisfied** (AC5); supersedes Lean `D-S055-validated=1` for this triad element |
+| D-S059-11-next | **1** — Approve AC1–AC8; push branch + open PR → `stage` (12/13 stay skipped) |
 
 ### Gate A (02) — PASS 2026-08-09
 
