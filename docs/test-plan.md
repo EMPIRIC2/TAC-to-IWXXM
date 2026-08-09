@@ -1833,6 +1833,102 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   AC10/AC14 consistent
 - **Source**: EV-051 AC6
 
+### EV-052 / S061 — CI polish + quality PR stats + Sentry/Redis/Orval
+
+- **Level**: T0 / CI
+- **Objective**: Restore ≥95% coverage gates (#950); second sticky PR comment with
+  golden/quality-matrix outcomes by product × profile; free Sentry + Upstash-backed
+  slowapi + OpenAPI typed FE client (#900).
+- **Pass criteria**: AC1–AC12 in evolve-decisions §EV-052; TC-EV052-001..012
+- **Source**: F29/F6/F21/F30/M5 deepen; EV-052 / S061; [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950);
+  [#900](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/900)
+
+### TC-EV052-001: Coverage surface inventory
+
+- **Level**: T0
+- **Objective**: Document every coverage surface + threshold vs ≥95%
+- **Pass criteria**: Session inventory table (or test-plan appendix) lists apps/packages/scripts
+- **Source**: EV-052 AC1; #950
+
+### TC-EV052-002: ≥95% enforced in CI
+
+- **Level**: T0 / CI
+- **Objective**: Soft/deferred gates removed; fail_under / Vitest thresholds ≥95
+- **Pass criteria**: Frontend lines/statements/branches ≥95 (or justified exclude); auth and
+  all packages use fail_under ≥95; CI runs fail when under
+- **Source**: EV-052 AC2; ADR-007
+
+### TC-EV052-003: Suite green with gates
+
+- **Level**: T0
+- **Objective**: Tests added so gates pass; no silent waive
+- **Pass criteria**: `make coverage-*` / CI coverage jobs green at tip
+- **Source**: EV-052 AC3
+
+### TC-EV052-004: Quality sticky PR comment
+
+- **Level**: T0 / CI
+- **Objective**: Second sticky comment with match/soft-diff/fail/skip by product × profile
+- **Pass criteria**: Workflow posts markdown with distinct sticky marker; tables cover
+  quality-matrix + annex3/`iwxxm_us` golden outcomes
+- **Source**: EV-052 AC4
+
+### TC-EV052-005: Comment formatter + sticky idempotence
+
+- **Level**: T0
+- **Objective**: Formatter unit-tested; update-in-place sticky
+- **Pass criteria**: pytest for formatter; github-script finds marker and updates
+- **Source**: EV-052 AC5
+
+### TC-EV052-006: Sentry optional init
+
+- **Level**: T0
+- **Objective**: API/FE/worker init when DSN set; no-op when unset
+- **Pass criteria**: Unit tests mock SDK; docs cite Developer free tier
+- **Source**: EV-052 AC6
+
+### TC-EV052-007: Upstash-backed slowapi
+
+- **Level**: T0
+- **Objective**: Shared Redis URL enables distributed limits; unset → in-memory
+- **Pass criteria**: `abuse_controls` / limiter factory branches covered
+- **Source**: EV-052 AC7; `D-S061-redis=1`
+
+### TC-EV052-008: Shared-store rate-limit tests
+
+- **Level**: T0
+- **Objective**: Fake Redis proves cross-"replica" shared counters
+- **Pass criteria**: Unit/integration with fakeredis or equivalent
+- **Source**: EV-052 AC8
+
+### TC-EV052-009: OpenAPI typed FE client
+
+- **Level**: T0
+- **Objective**: Generated client/types for high-churn paths; drift policy
+- **Pass criteria**: Orval or openapi-typescript wired; CI check or committed artifacts
+- **Source**: EV-052 AC9
+
+### TC-EV052-010: Docs / ADR parity
+
+- **Level**: T0
+- **Objective**: feature-list, test-plan, env-contract, deploy, inventory, ADR-006/031
+- **Pass criteria**: Corpus deltas match implementation
+- **Source**: EV-052 AC10
+
+### TC-EV052-011: Free-tier infra record
+
+- **Level**: T0
+- **Objective**: No new DOKS Redis; Upstash + Sentry secrets documented
+- **Pass criteria**: infra-free-tier.md + deploy/env stubs; kustomization has no Redis Deployment
+- **Source**: EV-052 AC11
+
+### TC-EV052-012: PR CI green
+
+- **Level**: CI
+- **Objective**: Tip PR CI includes coverage gates + quality comment job + new unit tests
+- **Pass criteria**: Required workflows SUCCESS on evolve PR
+- **Source**: EV-052 AC12
+
 ### Live harness — staging (EV-043 / EV-044)
 
 | Env | API | Frontend |

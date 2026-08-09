@@ -33,6 +33,22 @@ describe('detectTacProduct', () => {
   it('defaults to METAR when no keyword', () => {
     expect(detectTacProduct('KJFK 121851Z 24008KT 10SM FEW250')).toBe('METAR');
   });
+
+  it('maps VOLCANIC ASH advisory phrasing to VAA', () => {
+    expect(
+      detectTacProduct('VOLCANIC ASH ADVISORY\nDTG: 20240923/0130Z\nVAAC: TOKYO\n'),
+    ).toBe('VAA');
+  });
+
+  it('maps TROPICAL CYCLONE advisory phrasing to TCA', () => {
+    expect(detectTacProduct('TROPICAL CYCLONE ADVISORY\nDTG: 20040925/1900Z\n')).toBe(
+      'TCA',
+    );
+  });
+
+  it('honors an explicit defaultProduct when no keyword matches', () => {
+    expect(detectTacProduct('KJFK 121851Z 24008KT 10SM FEW250', 'TAF')).toBe('TAF');
+  });
 });
 
 describe('resolveConvertProduct', () => {

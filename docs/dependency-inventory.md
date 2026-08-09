@@ -1,8 +1,8 @@
 # Dependency Inventory
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-03 (S038 / EV-031 T0.3 — JWKS-only Auth; Alembic pins)
-> **Status**: **Accepted** for F30/F31 planned deps (Gate B / T0.3; install in M1–M2)
+> **Last updated**: 2026-08-09 (S061 / EV-052 — Sentry + Upstash Redis + OpenAPI FE client)
+> **Status**: **Accepted** for F30/F31; **EV-052 planned** deps below (install in 07-build)
 
 ## Runtime Dependencies
 
@@ -18,6 +18,9 @@
 | httpx2 | Starlette TestClient (dev) | BSD | PyPI |
 | python-multipart | File uploads | Apache-2.0 | PyPI |
 | slowapi | Public API rate limits (F21 / ADR-031) | MIT | PyPI (E17-15) |
+| redis | Optional slowapi storage backend (Upstash Redis URL) — EV-052 / #900 | MIT | PyPI (planned S061) |
+| sentry-sdk[fastapi] | Error monitoring when `SENTRY_DSN` set — EV-052 / #900 | MIT / BSL (SDK) | PyPI (planned S061) |
+| fakeredis | Unit tests for shared rate-limit store — EV-052 | MIT | PyPI (dev; planned S061) |
 | alembic | Schema migrations against `DATABASE_URL` (F30); CI/deploy `upgrade head` | MIT | PyPI (`>=1.13,<2`) |
 | sqlalchemy | DO Postgres access for sessions / F8 (shared) | MIT | PyPI (`>=2.0,<3`) |
 | asyncpg / psycopg | Postgres drivers for `DATABASE_URL` | Apache-2.0 / LGPL | PyPI (existing + Alembic) |
@@ -116,6 +119,8 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | fake-indexeddb | Vitest IndexedDB polyfill for TC-004 | Unlicense | npm (dev; T2.3) |
 | **@supabase/supabase-js** | Optional client Auth bootstrap (F31 login) | Apache-2.0 | npm — restore in 04 |
 | CodeMirror 6 | F7 workbench editor | MIT | npm — pinned S011 M2 T2.5: `codemirror@6.0.2`, `@codemirror/view@6.43.6`, `@codemirror/state@6.7.1`, `@codemirror/commands@6.10.4`, `@codemirror/language@6.12.4` (autocomplete deferred until needed) |
+| @sentry/react | Browser error monitoring when DSN set — EV-052 / #900 | MIT | npm (planned S061) |
+| openapi-typescript | OpenAPI → typed FE client — EV-052 / #900 (`D-S061-orval=1`; not full Orval) | MIT | npm (dev; planned S061) |
 
 ## Workspace Tooling
 

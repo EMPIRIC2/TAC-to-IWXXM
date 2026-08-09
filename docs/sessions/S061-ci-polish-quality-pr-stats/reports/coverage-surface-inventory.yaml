@@ -1,0 +1,128 @@
+# EV-052 / S061 / #950 — coverage surface inventory (AC1 / TC-EV052-001)
+# Corpus: [Corpus: adr/ADR-007] [Corpus: tests] [Corpus: product]
+#
+# target_floor: universal minimum (ADR-007). Higher package floors (98) are OK.
+# current_* fields document measured config at inventory time; T1.4 raises soft gates.
+
+target_floor: 95
+generated: "2026-08-09"
+issue: 950
+cycle: EV-052
+
+surfaces:
+  - id: root-pyproject
+    config_path: pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 98
+    ci_job_or_make: "make test-unit / root pytest cov config"
+    notes: "Aggregate workspace floor; keep 98"
+
+  - id: backend
+    config_path: apps/backend/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 98
+    ci_job_or_make: "ci-cd.yml matrix package=backend (--cov-fail-under=98) + per-file check"
+    notes: "Keep 98"
+
+  - id: worker
+    config_path: apps/worker/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 95
+    ci_job_or_make: "make test-unit-worker / ci-cd.yml matrix package=worker"
+
+  - id: auth
+    config_path: packages/auth/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 95
+    ci_job_or_make: "ci-cd.yml matrix package=auth (--cov-fail-under=95) + per-file check"
+
+  - id: shared-py
+    config_path: packages/shared/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 98
+    ci_job_or_make: "ci-cd.yml matrix package=shared (Python --cov-fail-under=98) + per-file check"
+
+  - id: shared-js
+    config_path: packages/shared/vitest.config.ts
+    kind: vitest_thresholds
+    target_min: 95
+    enforced: 98
+    ci_job_or_make: "ci-cd.yml matrix package=shared (pnpm @metar/shared test:coverage)"
+    current_thresholds:
+      lines: 98
+      statements: 98
+      functions: 98
+      branches: 98
+
+  - id: tac2iwxxm
+    config_path: packages/tac2iwxxm/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 95
+    ci_job_or_make: "ci-cd.yml matrix package=tac2iwxxm (--cov-fail-under=95) + per-file check"
+
+  - id: tac-validate
+    config_path: packages/tac-validate/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 95
+    ci_job_or_make: "ci-cd.yml matrix package=tac-validate (--cov-fail-under=95) + per-file check"
+
+  - id: iwxxm-validate
+    config_path: packages/iwxxm-validate/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 95
+    ci_job_or_make: "ci-cd.yml matrix package=iwxxm-validate (--cov-fail-under=95) + per-file check"
+
+  - id: dissemination
+    config_path: packages/dissemination/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 95
+    enforced: 95
+    ci_job_or_make: "scripts/ci/run_dissemination_coverage.sh (--cov-fail-under=95) + per-file check"
+
+  - id: frontend
+    config_path: apps/frontend/vitest.config.ts
+    kind: vitest_thresholds
+    target_min: 95
+    enforced: 95  # lines/statements/functions; see branch_waiver
+    ci_job_or_make: "ci-cd.yml matrix package=frontend (pnpm @metar/frontend test:coverage)"
+    current_thresholds:
+      lines: 95
+      statements: 95
+      functions: 95
+      branches: 84
+    soft_gate: false
+    branch_waiver:
+      decision: D-S061-cov-branches=3
+      threshold: 84
+      reason: >
+        Branch hits dominated by FileConverter (~144 misses). Explicit child issue
+        under #950 for branches ≥95 — not a silent soft gate.
+      child_issue: 968
+    intentional_excludes:
+      - "src/hooks/useLiveWorkbenchAssist.ts — covered by dedicated unit + FileConverter live"
+      - "src/utils/gunzip.ts — DecompressionStream happy-path needs Chromium"
+      - "src/app/App.tsx — Playwright smoke + UJ live"
+      - "src/app/components/FileConverter.tsx — workbench shell; unit+Playwright; branch uplift on child issue"
+    notes: "EV-052 — lines/stmts/funcs ≥95; branches waived per D-S061-cov-branches=3"
+
+  - id: per-file-checker
+    config_path: scripts/ci/check_per_file_coverage.py
+    kind: per_file_script
+    target_min: 95
+    enforced: 95
+    ci_job_or_make: "invoked after Python package coverage JSON in ci-cd.yml / Makefile"
+    notes: "Default --min-pct 95; applies to shared/backend/auth/tac2iwxxm/iwxxm-validate/tac-validate/dissemination/worker"
+
+intentional_non_surfaces:
+  - id: bugs
+    reason: "tests/bugs runs with --no-cov (regression suite, not a package coverage surface)"
+  - id: e2e-playwright
+    reason: "Out of scope for ADR-007 unit line/statement gates (#950)"

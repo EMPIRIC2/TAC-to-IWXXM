@@ -811,6 +811,42 @@ describe('API Utils', () => {
         decodeTac({ manualText: 'METAR', product: 'METAR' }),
       ).rejects.toThrow();
     });
+
+    it('uses FastAPI string detail on lint-issue-catalog failure', async () => {
+      mockFetchResponse({ detail: 'catalog unavailable' }, false, 503);
+      await expect(fetchLintIssueCatalog()).rejects.toThrow('catalog unavailable');
+    });
+
+    it('falls back when lint-issue-catalog error body is not JSON', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 502,
+        statusText: 'Bad Gateway',
+        json: vi.fn().mockRejectedValueOnce(new Error('not json')),
+      });
+      await expect(fetchLintIssueCatalog({ product: 'taf' })).rejects.toThrow(
+        /HTTP 502|Bad Gateway/,
+      );
+    });
+
+    it('falls back when decode-tac error body is not JSON', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Server Error',
+        json: vi.fn().mockRejectedValueOnce(new Error('not json')),
+      });
+      await expect(
+        decodeTac({ manualText: 'METAR', product: 'METAR' }),
+      ).rejects.toThrow(/HTTP 500|Server Error/);
+    });
+
+    it('uses nested detail.message on decode-tac failure', async () => {
+      mockFetchResponse({ detail: { message: 'decode rejected' } }, false, 422);
+      await expect(
+        decodeTac({ manualText: 'METAR', product: 'METAR' }),
+      ).rejects.toThrow('decode rejected');
+    });
   });
 
   describe('convertBulletin / ingestCollect (ADR-023/024)', () => {

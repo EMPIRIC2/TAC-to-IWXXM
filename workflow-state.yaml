@@ -3,10 +3,119 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 60
-evolve_cycle_counter: 51
-active_session: null
+session_counter: 61
+evolve_cycle_counter: 52
+active_session: S061-ci-polish-quality-pr-stats
 sessions:
+
+- id: S061-ci-polish-quality-pr-stats
+  type: feature
+  title: "CI polish: 95% coverage, quality PR stats, Sentry/Redis/Orval"
+  intent: "EV-052: #950 coverage gates ≥95%; sticky PR comment #2 for golden/quality-matrix outcomes by product×profile; implement #900 free Sentry + Redis rate limits + Orval/openapi-typescript. Preset Standard. Infra: reuse DOKS; prefer Upstash free over new Redis Deployment."
+  status: in_progress
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-052
+  branch: evolve/EV-052-ci-polish-quality-pr-stats
+  branch_base: stage@80197a58
+  branch_base_sha: 80197a58
+  branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+  branch_status: active
+  branch_exists: true
+  tip_sha: 80197a58
+  tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+  tip_sha_pushed: false
+  artifacts_dir: docs/sessions/S061-ci-polish-quality-pr-stats/
+  github_issues:
+  - 950
+  - 900
+  - 841
+  feature_ids:
+  - F29
+  - F6
+  - F21
+  - F30
+  - M5
+  deepen_feature_ids:
+  - F29
+  - F6
+  - F21
+  - F30
+  - M5
+  prior_session: S060-tag-driven-prod-deploy
+  current_stage: 07-build
+  current_stage_note: '07 M1 — T1.5 under D-S061-cov-branches=3 (lines/stmts/funcs ≥95; branches child+waiver)'
+  decisions:
+    D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
+    D-S061-redis: "1 — Upstash Redis free"
+    D-S061-01-ac: "1 — AC1–AC12 locked"
+    D-S061-gateA: "1 — Gate A PASS; proceed 04-tech-plan"
+    D-S061-04-plan: "1 — approve as drafted; openapi-typescript"
+    D-S061-gateB: "1 — PASS; start 07 M1"
+    D-S061-cov-branches: "3 — lines/stmts/funcs ≥95; branches child issue + waiver"
+  artifacts:
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/
+    status: present
+    note: session-brief + routing-plan + evolve-plan-card + infra-free-tier report
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/session-brief.md
+    status: present
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/routing-plan.md
+    status: present
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/evolve-plan-card.md
+    status: present
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md
+    status: present
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/01-requirements.md
+    status: present
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
+    status: present
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+    status: present
+    note: "approved D-S061-04-plan=1 — openapi-typescript"
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
+    status: present
+    note: "approved D-S061-04-plan=1"
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+    status: present
+    note: "Gate B PASS D-S061-gateB=1"
+  routing_plan:
+  - stage: 00-context
+    status: completed
+  - stage: 16-evolve
+    status: in_progress
+  - stage: 01-requirements
+    status: completed
+  - stage: 02-verify-plan
+    status: completed
+    note: "COMPLETE — Gate A PASS D-S061-gateA=1; report reports/02-verify-plan-audit.md; handoff 04"
+  - stage: 04-tech-plan
+    status: completed
+    mode: delta
+    note: "COMPLETE — D-S061-04-plan=1; openapi-typescript; handoff 05"
+  - stage: 05-verify-tech
+    status: completed
+    mode: delta
+    note: "COMPLETE — Gate B PASS D-S061-gateB=1; handoff 07 M1 (06 skipped)"
+  - stage: 07-build
+    status: in_progress
+    mode: delta
+    note: "IN_PROGRESS — M1 T1.5 under D-S061-cov-branches=3"
+  - stage: 08-verify-build
+    status: pending
+  - stage: 09-qa
+    status: pending
+  - stage: 11-verify-impl
+    status: pending
+  notes:
+  - "2026-08-09 D-S061-cov-branches=3 — Vitest lines/stmts/funcs ≥95 now; branches ≥95 via child issue + explicit waiver (not silent); T1.5"
+  - "2026-08-09 D-S061-gateB=1 — Gate B PASS; 05 COMPLETE; 06 skipped; 07-build M1 in_progress"
+  - "2026-08-09 05 audit — I-01/I-02 fixed; recommended medium defaults in 05 report; Gate B pending (D-S061-gateB)"
+  - "2026-08-09 D-S061-04-plan=1 — approve execution plan as drafted (openapi-typescript, not Orval); 04 COMPLETE; 05-verify-tech in_progress"
+  - "2026-08-09 04 execution-plan + build-plan-card drafted; D-S061-04-plan pending; 04 remains in_progress"
+  - "2026-08-09 D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed; 02 COMPLETE; 04-tech-plan in_progress (delta); no git commit by workflow-state-manager"
+  - "2026-08-09 D-S061-intake locked from user; opened S061/EV-052; infra-free-tier.md written; D-S061-redis pending"
+  - "2026-08-09 D-S061-redis=1 Upstash; 01 COMPLETE D-S061-01-ac=1; 02 audit PASS recommended; await D-S061-gateA"
 - id: S060-tag-driven-prod-deploy
   type: feature
   title: "Tag-driven prod deploy + full CI Deploy needs (solo)"
@@ -9066,38 +9175,46 @@ stages:
     started: '2026-08-09'
     completed_at: '2026-08-09'
     completed: '2026-08-09'
-    session_id: S060-tag-driven-prod-deploy
-    evolve_cycle_id: EV-051
+    session_id: S061-ci-polish-quality-pr-stats
+    evolve_cycle_id: EV-052
     skill_id: 02-verify-plan
-    tip_sha: cb8d9771
-    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
-    deepen_feature_ids: [F30]
+    tip_sha: 80197a58
+    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    deepen_feature_ids: [F29, F6, F21, F30, M5]
     feature_ids: []
     delta_only: true
     gate_a: PASS
     gate_a_status: pass
-    gate_a_decision: D-S060-gateA=1
-    gate_a_note: 'D-S060-gateA=1 — Gate A PASS; gates.a_to_b passed'
-    report: docs/sessions/S060-tag-driven-prod-deploy/reports/02-verify-plan.md
+    gate_a_decision: D-S061-gateA=1
+    gate_a_note: 'D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed'
+    report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
     decision_refs:
-    - D-S060-gateA
-    - D-S060-scope
-    - D-S060-route
-    note: 'S060/EV-051 COMPLETE — Gate A PASS D-S060-gateA=1; Lean+ skip 04/05 → 07-build'
-    prior_session_id: S057-strip-internal-doc-refs
-    prior_evolve_cycle_id: EV-048
-    prior_started: '2026-08-08'
-    prior_completed: '2026-08-08'
-    prior_note: 'S057/EV-048 COMPLETE — Gate A PASS D-S057-gateA=1; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; handoff 04-tech-plan'
+    - D-S061-gateA
+    - D-S061-01-ac
+    - D-S061-redis
+    note: 'S061/EV-052 COMPLETE — Gate A PASS D-S061-gateA=1; handoff 04-tech-plan (delta)'
+    prior_session_id: S060-tag-driven-prod-deploy
+    prior_evolve_cycle_id: EV-051
+    prior_started: '2026-08-09'
+    prior_completed: '2026-08-09'
+    prior_note: 'S060/EV-051 COMPLETE — Gate A PASS D-S060-gateA=1; Lean+ skip 04/05 → 07-build'
     prior_gate_a: PASS
     prior_gate_a_status: pass
-    prior_gate_a_decision: D-S057-gateA=1
-    prior_prior_session_id: S055-wmo-aviation-registers
-    prior_prior_evolve_cycle_id: EV-046
-    prior_prior_note: 'S055/EV-046 COMPLETE — Gate A PASS (D-S055-gateA=1); accept M1/M2/L1; handoff lean-docs-execution'
+    prior_gate_a_decision: D-S060-gateA=1
+    prior_prior_session_id: S057-strip-internal-doc-refs
+    prior_prior_evolve_cycle_id: EV-048
+    prior_prior_started: '2026-08-08'
+    prior_prior_completed: '2026-08-08'
+    prior_prior_note: 'S057/EV-048 COMPLETE — Gate A PASS D-S057-gateA=1; S2.1–S2.4 as 04/07 defaults; report 02-verify-plan.md; handoff 04-tech-plan'
     prior_prior_gate_a: PASS
     prior_prior_gate_a_status: pass
-    prior_prior_gate_a_decision: D-S055-gateA=1
+    prior_prior_gate_a_decision: D-S057-gateA=1
+    prior_prior_prior_session_id: S055-wmo-aviation-registers
+    prior_prior_prior_evolve_cycle_id: EV-046
+    prior_prior_prior_note: 'S055/EV-046 COMPLETE — Gate A PASS (D-S055-gateA=1); accept M1/M2/L1; handoff lean-docs-execution'
+    prior_prior_prior_gate_a: PASS
+    prior_prior_prior_gate_a_status: pass
+    prior_prior_prior_gate_a_decision: D-S055-gateA=1
     prior_decision_refs:
     - D-S055-gateA
     - D-S055-01-ac
@@ -9120,6 +9237,36 @@ stages:
     current_document:
     current_statement:
     active_session:
+      session_id: S061-ci-polish-quality-pr-stats
+      evolve_cycle_id: EV-052
+      skill_id: 02-verify-plan
+      status: completed
+      mode: delta
+      started_at: '2026-08-09'
+      started: '2026-08-09'
+      completed_at: '2026-08-09'
+      completed: '2026-08-09'
+      note: 'COMPLETE — Gate A PASS D-S061-gateA=1; handoff 04-tech-plan'
+      gate_a: PASS
+      gate_a_decision: D-S061-gateA=1
+      feature_ids: []
+      deepen_feature_ids:
+      - F29
+      - F6
+      - F21
+      - F30
+      - M5
+      decision_refs:
+      - D-S061-gateA
+      - D-S061-01-ac
+      - D-S061-redis
+      artifacts:
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/01-requirements.md
+      - docs/feature-list.md
+      - docs/test-plan.md
+      - docs/decisions/evolve-decisions.md
+    prior_active_session_s057:
       session_id: S057-strip-internal-doc-refs
       evolve_cycle_id: EV-048
       skill_id: 02-verify-plan
@@ -9816,6 +9963,7 @@ stages:
       - docs/feature-list.md
       - docs/CORPUS.md
     notes:
+    - '2026-08-09 S061/EV-052 02-verify-plan COMPLETE (D-S061-gateA=1) — Gate A PASS; gates.a_to_b passed; report docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md; handoff 04-tech-plan; no git commit by workflow-state-manager'
     - '2026-08-05 S046/EV-038 02-verify-plan COMPLETE (D-S046-02-gate-a + D-S046-sot) — Gate A PASS; S02.M1–M5 as 04/07; handoff 04-tech-plan; commit sha pending (HEAD e9df8f84 pre-Gate-A); no git commit by workflow-state-manager'
     - '2026-08-05 S045/EV-037 02-verify-plan COMPLETE (D-S045-02-gate-a) — Gate A PASS; GateA=1 pass_S02.M1-M3_as_07; report docs/sessions/S045-matrix-disposition-residuals/reports/02-verify-plan-audit.md; handoff 07-build; no git commit by workflow-state-manager'
     - '2026-08-05 S044/EV-036 02-verify-plan COMPLETE (D-S044-02-gate-a) — Gate A PASS; contradiction 1,1,1,1 then Gate A 1,1,1,1 amended; S02.M2 keep remote units+coverage+PR comment; drop validate+Compose; local lint only; report docs/sessions/S044-local-precommit-long-jobs/reports/02-verify-plan-audit.md; handoff 07-build; no commit SHA invented'
@@ -9952,31 +10100,32 @@ stages:
   04-tech-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
+    session_id: S061-ci-polish-quality-pr-stats
+    evolve_cycle_id: EV-052
     skill_id: 04-tech-plan
-    tip_sha: d7652d5d
-    tip_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
-    deepen_feature_ids: [F7, F21]
+    tip_sha: 80197a58
+    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    deepen_feature_ids: [F29, F6, F21, F30, M5]
     feature_ids: []
     delta_only: true
-    report: docs/sessions/S057-strip-internal-doc-refs/reports/04-tech-plan.md
+    report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
     decision_refs:
-    - D-S057-04-plan
-    - D-S057-04-guard-ext
-    - D-S057-gateA
-    - D-S057-01-ac
-    - D-S057-guard-s0
-    note: 'S057/EV-048 COMPLETE — D-S057-04-plan=1 + D-S057-04-guard-ext=1; execution-plan + build-plan-card; handoff 05-verify-tech'
+    - D-S061-04-plan
+    - D-S061-gateA
+    - D-S061-01-ac
+    note: 'S061/EV-052 COMPLETE — D-S061-04-plan=1; openapi-typescript; handoff 05-verify-tech'
     previous_started_at: '2026-08-08'
     previous_completed_at: '2026-08-08'
-    previous_session_id: S054-rust-ci-crates
-    previous_evolve_cycle_id: EV-045
-    previous_note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
+    previous_session_id: S057-strip-internal-doc-refs
+    previous_evolve_cycle_id: EV-048
+    previous_note: 'S057/EV-048 COMPLETE — D-S057-04-plan=1 + D-S057-04-guard-ext=1; execution-plan + build-plan-card; handoff 05-verify-tech'
+    prior_previous_session_id: S054-rust-ci-crates
+    prior_previous_evolve_cycle_id: EV-045
+    prior_previous_note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
     prior_session_id: S047-sql-ingest-live-e2e
     prior_evolve_cycle_id: EV-039
     prior_started: '2026-08-06'
@@ -9993,6 +10142,33 @@ stages:
     - D-S054-01-ac
     - D-S054-open
     active_session:
+      session_id: S061-ci-polish-quality-pr-stats
+      evolve_cycle_id: EV-052
+      skill_id: 04-tech-plan
+      status: completed
+      mode: delta
+      started_at: '2026-08-09'
+      started: '2026-08-09'
+      completed_at: '2026-08-09'
+      completed: '2026-08-09'
+      note: 'COMPLETE — D-S061-04-plan=1; openapi-typescript; handoff 05-verify-tech'
+      feature_ids: []
+      deepen_feature_ids:
+      - F29
+      - F6
+      - F21
+      - F30
+      - M5
+      decision_refs:
+      - D-S061-04-plan
+      - D-S061-gateA
+      - D-S061-01-ac
+      artifacts:
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/01-requirements.md
+    prior_active_session:
       session_id: S057-strip-internal-doc-refs
       evolve_cycle_id: EV-048
       skill_id: 04-tech-plan
@@ -10019,7 +10195,7 @@ stages:
       - docs/sessions/S057-strip-internal-doc-refs/build-plan-card.md
       - docs/sessions/S057-strip-internal-doc-refs/reports/02-verify-plan.md
       - docs/sessions/S057-strip-internal-doc-refs/reports/01-requirements.md
-    prior_active_session:
+    prior_prior_active_session:
       session_id: S054-rust-ci-crates
       evolve_cycle_id: EV-045
       skill_id: 04-tech-plan
@@ -10932,6 +11108,9 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-08-09 S061/EV-052 04 COMPLETE (D-S061-04-plan=1) — approve as drafted; openapi-typescript; handoff 05-verify-tech; no git commit by workflow-state-manager'
+    - '2026-08-09 S061/EV-052 04 DRAFT (D-S061-04-plan pending) — execution-plan + build-plan-card drafted; 04 remains in_progress; no git commit by workflow-state-manager'
+    - '2026-08-09 S061/EV-052 04-tech-plan STARTED (D-S061-gateA=1) — Gate A PASS; gates.a_to_b passed; mode delta; no git commit by workflow-state-manager'
     - '2026-08-05 S046/EV-038 04-tech-plan STARTED (D-S046-02-gate-a + D-S046-sot) — Gate A PASS; gates.a_to_b passed; SoT python_to_generated_json_fe_openapi_ci; execution plan M1–M4; commit sha pending; no git commit by workflow-state-manager'
     - '2026-08-03 S038/EV-031 04 COMPLETE Gate B (D-S038-04-plan=1) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; gates.b_to_c passed; sha pending parent commit; #842/#830/#712'
     - '2026-08-03 S038/EV-031 — D-S038-04-b2=1,1,1(+CI),1 Batches 1–2 locked (placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B); execution-plan.md drafted (38 tasks M0–M7); Gate B pending (D-S038-04-plan); 04 remains in_progress; tip 6b7fd0e; #842/#830/#712'
@@ -10988,51 +11167,82 @@ stages:
     - '2026-08-05 S046/EV-038 04-tech-plan COMPLETE (D-S046-04-plan=1) — execution-plan approved M1–M5; handoff 05-verify-tech; tip f03ed255'
   05-verify-tech:
     status: completed
-    session_id: S057-strip-internal-doc-refs
-    evolve_cycle_id: EV-048
+    session_id: S061-ci-polish-quality-pr-stats
+    evolve_cycle_id: EV-052
     skill_id: 05-verify-tech
     mode: delta
-    started_at: '2026-08-08'
-    started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
-    tip_sha: d7652d5d
-    tip_sha_full: d7652d5dfba56db5d9878c75195c24b1ed0283d5
-    deepen_feature_ids: [F7, F21]
+    started_at: '2026-08-09'
+    started: '2026-08-09'
+    completed_at: '2026-08-09'
+    completed: '2026-08-09'
+    tip_sha: 80197a58
+    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    deepen_feature_ids: [F29, F6, F21, F30, M5]
     feature_ids: []
     delta_only: true
     gate_b: PASS
-    gate_b_decision: D-S057-gateB=1
+    gate_b_status: pass
+    gate_b_decision: D-S061-gateB=1
     overall: pass
     previous_started_at: '2026-08-08'
     previous_completed_at: '2026-08-08'
-    previous_session_id: S054-rust-ci-crates
-    previous_evolve_cycle_id: EV-045
+    previous_session_id: S057-strip-internal-doc-refs
+    previous_evolve_cycle_id: EV-048
     previous_overall: pass
-    previous_note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); medium/low syncs confirmed; handoff 07-build M1 T1.1; 06 skipped ADR-017'
+    previous_note: 'COMPLETE — D-S057-gateB=1 PASS; S5.M1–S5.M3 defaults; report 05-verify-tech.md'
+    prior_previous_session_id: S054-rust-ci-crates
+    prior_previous_evolve_cycle_id: EV-045
+    prior_previous_overall: pass
+    prior_previous_note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); medium/low syncs confirmed; handoff 07-build M1 T1.1; 06 skipped ADR-017'
     prior_session_id: S047-sql-ingest-live-e2e
     prior_evolve_cycle_id: EV-039
     prior_started: '2026-08-06'
     prior_completed: '2026-08-06'
     prior_note: 'S047/EV-039 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
-    note: 'COMPLETE — D-S057-gateB=1 PASS; S5.M1–S5.M3 defaults; report 05-verify-tech.md'
-    report: docs/sessions/S057-strip-internal-doc-refs/reports/05-verify-tech.md
+    note: 'S061/EV-052 COMPLETE — Gate B PASS D-S061-gateB=1; handoff 07-build M1 (06 skipped)'
+    report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+    decision_refs:
+    - D-S061-gateB
+    - D-S061-04-plan
+    - D-S061-gateA
     substeps:
       inventory:
         status: completed
       consistency_check:
         status: completed
-        notes: 17 checks; 11 pass; 14 contradiction items resolved
       statement_review:
-        auto_approved: 24
-        pending: 0
-        reviewed: 14
+        status: completed
     current_document:
     current_statement:
     artifacts:
+    - docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
     - docs/decisions/tech-audit.md
     - docs/decisions/tech-decisions.md
     delta_substages:
+    - session_id: S061-ci-polish-quality-pr-stats
+      evolve_cycle_id: EV-052
+      skill_id: 05-verify-tech
+      status: completed
+      started_at: '2026-08-09'
+      started: '2026-08-09'
+      completed_at: '2026-08-09'
+      completed: '2026-08-09'
+      mode: delta
+      overall: pass
+      gate_b: PASS
+      gate_b_decision: D-S061-gateB=1
+      feature_ids: []
+      deepen_feature_ids: [F29, F6, F21, F30, M5]
+      decision_refs:
+      - D-S061-gateB
+      - D-S061-04-plan
+      - D-S061-gateA
+      note: 'COMPLETE — Gate B PASS D-S061-gateB=1; handoff 07 M1'
+      report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+      artifacts:
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
     - session_id: S057-strip-internal-doc-refs
       evolve_cycle_id: EV-048
       skill_id: 05-verify-tech
@@ -11210,6 +11420,9 @@ stages:
       overall: pass
       note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
     notes:
+    - '2026-08-09 S061/EV-052 05 COMPLETE (D-S061-gateB=1) — Gate B PASS; handoff 07-build M1; 06 skipped; no git commit by workflow-state-manager'
+    - '2026-08-09 S061/EV-052 05 AUDIT (D-S061-gateB pending) — PASS recommended; I-01/I-02 fixed; medium defaults in 05-verify-tech.md; 05 remains in_progress; no git commit by workflow-state-manager'
+    - '2026-08-09 S061/EV-052 05-verify-tech STARTED (D-S061-04-plan=1) — plan approved openapi-typescript; Gate B pending; no git commit by workflow-state-manager'
     - '2026-08-08 D-S057-gateB=1 — S057/EV-048 05-verify-tech COMPLETE; Gate B PASS; S5.M1–S5.M3 defaults accepted; handoff 07-build M1 T1.1; 06 skipped Standard; no git commit by workflow-state-manager'
     - '2026-08-08 D-S054-gateB=1 — S054/EV-045 05-verify-tech COMPLETE; Gate B PASS; medium/low syncs confirmed; handoff 07-build M1 T1.1; 06 skipped ADR-017; no git commit by workflow-state-manager'
     - '2026-08-08 S054/EV-045 05-verify-tech STARTED (D-S054-04-plan=1) — Gate B; verify execution-plan T1.1–T1.7 vs ACs / D-S054-04 locked / routing; gates.b_to_c + checkpoints.phase_b pending; no git commit by workflow-state-manager'
@@ -11420,18 +11633,25 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-08-09'
     started: '2026-08-09'
-    completed_at: '2026-08-09'
-    completed: '2026-08-09'
-    previous_started_at: '2026-08-08'
-    previous_completed_at: '2026-08-08'
-    previous_session_id: S057-strip-internal-doc-refs
-    previous_evolve_cycle_id: EV-048
-    previous_tip_sha: 71779d46
-    previous_tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
-    previous_note: 'COMPLETE — M1–M3; OpenAPI strip + BE/FE guards; T3.3 skipped; commit 71779d46; superseded by S060/EV-051'
+    completed_at:
+    completed:
+    previous_started_at: '2026-08-09'
+    previous_completed_at: '2026-08-09'
+    previous_session_id: S060-tag-driven-prod-deploy
+    previous_evolve_cycle_id: EV-051
+    previous_tip_sha: cb8d9771
+    previous_tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    previous_note: 'COMPLETE — S060/EV-051 @ cb8d9771; ci-cd.yml / ADR-034 / deploy docs / promote rule; D-S060-gateA=1'
+    previous_s057_started_at: '2026-08-08'
+    previous_s057_completed_at: '2026-08-08'
+    previous_s057_session_id: S057-strip-internal-doc-refs
+    previous_s057_evolve_cycle_id: EV-048
+    previous_s057_tip_sha: 71779d46
+    previous_s057_tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
+    previous_s057_note: 'COMPLETE — M1–M3; OpenAPI strip + BE/FE guards; T3.3 skipped; commit 71779d46; superseded by S060/EV-051'
     previous_s056_started_at: '2026-08-08'
     previous_s056_completed_at: '2026-08-08'
     previous_s056_session_id: S056-m0-stabilize-operator-trust
@@ -11449,34 +11669,39 @@ stages:
     prior_prior_session_id: S050-remove-db-tools-operator-throughput
     prior_prior_evolve_cycle_id: EV-042
     prior_prior_note: 'S050/EV-042 07-build COMPLETE — M4 done; superseded by S054/EV-045'
-    session_id: S060-tag-driven-prod-deploy
-    evolve_cycle_id: EV-051
+    session_id: S061-ci-polish-quality-pr-stats
+    evolve_cycle_id: EV-052
     skill_id: 07-build
     mode: delta
-    note: 'COMPLETE — S060/EV-051 @ cb8d9771; ci-cd.yml / ADR-034 / deploy docs / promote rule; D-S060-gateA=1'
-    tip_sha: cb8d9771
-    tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
-    tip_sha_pushed: true
-    pr_number: 966
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966
-    pr_status: open
-    pr_base: stage
+    note: 'IN_PROGRESS — M1 T1.5 under D-S061-cov-branches=3 (lines/stmts/funcs ≥95; branches child+waiver)'
+    tip_sha: 80197a58
+    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    tip_sha_pushed: false
+    pr_number:
+    pr_url:
+    pr_status:
+    pr_base:
     pr_supersedes:
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
-    ci_cd_pipeline_note: 'S060/EV-051 07 COMPLETE @ tip cb8d9771; PR #966 OPEN → stage; prior S057 tip 71779d46 archived under previous_*'
+    ci_cd_pipeline_note:
     pending_commit: false
-    current_milestone:
-    current_task:
-    active_milestone:
-    active_task:
-    active_task_status: completed
+    current_milestone: M1
+    current_task: T1.5
+    active_milestone: M1
+    active_task: T1.5
+    active_task_status: in_progress
     completed_through:
     progress:
     skipped_tasks: []
-    deepen_feature_ids: [F30]
+    deepen_feature_ids: [F29, F6, F21, F30, M5]
     feature_ids: []
     decision_refs:
+    - D-S061-cov-branches
+    - D-S061-gateB
+    - D-S061-04-plan
+    - D-S061-gateA
+    decision_refs_s060:
     - D-S060-gateA
     - D-S060-11-next
     - D-S060-scope
@@ -11549,6 +11774,38 @@ stages:
     - tests/test_tc_ev036_local_precommit_ci.py
     - tests/unit/test_format_coverage_pr_comment.py
     active_session:
+      session_id: S061-ci-polish-quality-pr-stats
+      evolve_cycle_id: EV-052
+      skill_id: 07-build
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-09'
+      started: '2026-08-09'
+      pending_commit: false
+      note: 'IN_PROGRESS — M1 T1.5 under D-S061-cov-branches=3'
+      tip_sha: 80197a58
+      tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+      tip_sha_pushed: false
+      feature_ids: []
+      deepen_feature_ids: [F29, F6, F21, F30, M5]
+      decision_refs:
+      - D-S061-cov-branches
+      - D-S061-gateB
+      - D-S061-04-plan
+      - D-S061-gateA
+      active_milestone: M1
+      current_milestone: M1
+      active_task: T1.5
+      current_task: T1.5
+      active_task_status: in_progress
+      completed_through:
+      progress:
+      skipped_tasks: []
+      artifacts:
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+      - docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
+    prior_active_session_s057:
       session_id: S057-strip-internal-doc-refs
       evolve_cycle_id: EV-048
       skill_id: 07-build
@@ -11558,29 +11815,12 @@ stages:
       started: '2026-08-08'
       completed_at: '2026-08-08'
       completed: '2026-08-08'
-      pending_commit: false
       note: 'COMPLETE — M1–M3; OpenAPI strip + BE/FE guards; T3.3 skipped; commit 71779d46'
       tip_sha: 71779d46
       tip_sha_full: 71779d46e5a6f53da5d4244b0f465e1e5c420773
-      tip_sha_pushed: false
       feature_ids: []
       deepen_feature_ids: [F7, F21]
-      decision_refs:
-      - D-S057-gateB
-      - D-S057-04-plan
-      - D-S057-04-guard-ext
-      - D-S057-gateA
-      - D-S057-01-ac
-      - D-S057-guard-s0
-      - D-S057-open
       active_milestone: M3
-      current_milestone: M3
-      active_task:
-      current_task:
-      active_task_status: completed
-      completed_through: T3.2
-      progress: 8/9
-      skipped_tasks: [T3.3]
       artifacts:
       - docs/sessions/S057-strip-internal-doc-refs/reports/05-verify-tech.md
       - docs/sessions/S057-strip-internal-doc-refs/reports/execution-plan.md
@@ -12574,6 +12814,8 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-09 S061/EV-052 D-S061-cov-branches=3 — T1.5 lines/stmts/funcs ≥95 now; branches ≥95 child issue + explicit waiver; no git commit by workflow-state-manager'
+    - '2026-08-09 S061/EV-052 07-build STARTED (D-S061-gateB=1) — Gate B PASS; M1 in_progress; 06 skipped; no git commit by workflow-state-manager'
     - '2026-08-08 D-S054-t17-ci=1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs; tip delta after f270618c is docs-only (09ce2bef); Staging gate FAIL was base=main only; T1.7 COMPLETE (7/7); 07-build COMPLETE; 08-verify-build in_progress (delta verify after T1.7 CI accept); no git commit by workflow-state-manager'
     - '2026-08-08 S054/EV-045 07-build — T1.1–T1.6 COMPLETE + T1.7 near-complete @ tip 09ce2bef (09ce2befdf0b5878ec6a832ec30718c489b4824b); commits cfd292f4 (T1.1), b8a1cb16 (T1.2), 3cd5844b (T1.3–5), b344b4d2 (T1.7 fix), f270618c (T1.6), 09ce2bef (T1.7 docs); branch evolve/EV-045-rust-ci pushed; PR #953 open → stage (supersedes #952) https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953; CI run 31273500621 SUCCESS (Rust crates gate + both maturin + all tests); Staging gate FAIL only because PR briefly targeted main; tip after docs commit awaiting fresh Actions run (not queued yet); active_task T1.7 in_progress near-complete pending tip CI re-trigger; no git commit by workflow-state-manager'
     - '2026-08-04 S040/EV-032 — T4.3 COMPLETE (09-qa pass_with_advisories + 10-e2e T0 pass); reports qa-report.md + e2e-report.md; progress 24/28; completed_through T4.3; active_task T4.4 pending; current_stage 11-verify-impl; tip 7b3c329b pending_commit; PR #848; #846'
@@ -16777,6 +17019,136 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S061-cov-branches
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S061-ci-polish-quality-pr-stats
+  evolve_cycle_id: EV-052
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: coverage_policy
+  status: confirmed
+  topic: 'S061/EV-052 Vitest coverage branches policy (T1.5)'
+  summary: 'D-S061-cov-branches=3 — enforce lines/stmts/funcs ≥95 now; branches ≥95 via child issue + explicit waiver (not silent)'
+  decision: |
+    D-S061-cov-branches=3 — Enforce Vitest lines/statements/functions ≥95 now.
+    For branches ≥95: open a child issue and record an explicit waiver (not silent).
+    Applies to 07-build M1 T1.5 coverage gates.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '3'
+  branch: evolve/EV-052-ci-polish-quality-pr-stats
+  related_features:
+  - F29
+  - M5
+  related_decisions:
+  - D-S061-gateB
+  - D-S061-04-plan
+  active_milestone: M1
+  active_task: T1.5
+  note: 'T1.5 coverage policy locked — lines/stmts/funcs hard; branches deferred via child+waiver'
+- id: D-S061-gateB
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S061-ci-polish-quality-pr-stats
+  evolve_cycle_id: EV-052
+  skill: 05-verify-tech
+  skill_id: 05-verify-tech
+  stage: 05-verify-tech
+  category: gate
+  status: confirmed
+  topic: 'S061 Gate B — PASS; proceed 07-build M1'
+  summary: 'D-S061-gateB=1 — PASS; gates.b_to_c passed; 06 skipped; start 07 M1'
+  decision: |
+    D-S061-gateB=1 — PASS Gate B.
+    gates.b_to_c passed. checkpoints.phase_b passed.
+    05-verify-tech COMPLETE (delta). 06-tech-tooling skipped (Standard).
+    Proceed 07-build at M1.
+    Report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  gate_b: PASS
+  branch: evolve/EV-052-ci-polish-quality-pr-stats
+  related_features:
+  - F29
+  - F6
+  - F21
+  - F30
+  - M5
+  related_decisions:
+  - D-S061-04-plan
+  - D-S061-gateA
+  report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+  note: 'Gate B PASS; unlock 07-build M1'
+- id: D-S061-04-plan
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S061-ci-polish-quality-pr-stats
+  evolve_cycle_id: EV-052
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: plan_approval
+  status: confirmed
+  topic: 'S061/EV-052 approve 04 execution plan → 05'
+  summary: 'D-S061-04-plan=1 — approve as drafted; openapi-typescript (not Orval); proceed 05-verify-tech'
+  decision: |
+    D-S061-04-plan=1 — Approve execution plan as drafted.
+    FE OpenAPI client: openapi-typescript (not Orval).
+    04-tech-plan COMPLETE (delta). Proceed 05-verify-tech (in_progress).
+    Artifacts: docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+    + docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-052-ci-polish-quality-pr-stats
+  related_features:
+  - F29
+  - F6
+  - F21
+  - F30
+  - M5
+  related_decisions:
+  - D-S061-gateA
+  - D-S061-01-ac
+  report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+  build_plan_card: docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
+  note: '04 approved; handoff 05-verify-tech'
+- id: D-S061-gateA
+  date: '2026-08-09'
+  timestamp: '2026-08-09'
+  resolved_at: '2026-08-09'
+  session_id: S061-ci-polish-quality-pr-stats
+  evolve_cycle_id: EV-052
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'S061 Gate A — PASS; proceed 04-tech-plan'
+  summary: 'D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed; proceed 04-tech-plan (delta)'
+  decision: |
+    D-S061-gateA=1 — PASS Gate A.
+    gates.a_to_b passed. Standard routing; proceed 04-tech-plan (delta).
+    Report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  gate_a: PASS
+  branch: evolve/EV-052-ci-polish-quality-pr-stats
+  related_features:
+  - F29
+  - F6
+  - F21
+  - F30
+  - M5
+  related_decisions:
+  - D-S061-01-ac
+  - D-S061-redis
+  - D-S061-intake
+  report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
+  note: 'Gate A PASS; unlock 04-tech-plan (delta)'
 - id: D-S060-close
   date: '2026-08-09'
   timestamp: '2026-08-09'
@@ -18584,7 +18956,6 @@ decisions_log:
   related_evolve_cycles:
   - EV-044
   - EV-043
-  github_issues_deferred: [725]
 - id: D-S052-open
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -35059,6 +35430,67 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-052
+  session_id: S061-ci-polish-quality-pr-stats
+  type: feature
+  cycle_type: general
+  status: in_progress
+  started: '2026-08-09'
+  started_at: '2026-08-09'
+  title: "CI polish + quality PR stats + free Sentry/Redis/Orval"
+  feature_ids: [F29, F6, F21, F30, M5]
+  deepen_feature_ids: [F29, F6, F21, F30, M5]
+  github_issues: [950, 900, 841]
+  preset: Standard
+  current_stage: 07-build
+  current_stage_note: "07 M1 — T1.5 under D-S061-cov-branches=3 (lines/stmts/funcs ≥95; branches child+waiver)"
+  branch: evolve/EV-052-ci-polish-quality-pr-stats
+  branch_base: stage@80197a58
+  branch_base_sha: 80197a58
+  branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+  branch_status: active
+  tip_sha: 80197a58
+  tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+  tip_sha_pushed: false
+  gates:
+    a_to_b: passed
+    a_to_b_note: "D-S061-gateA=1 — Gate A PASS"
+    b_to_c: passed
+    b_to_c_note: "D-S061-gateB=1 — Gate B PASS; 06 skipped Standard"
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_a_note: "D-S061-gateA=1"
+    phase_b: passed
+    phase_b_note: "D-S061-gateB=1"
+    phase_c: pending
+    phase_d: pending
+  decisions:
+    D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
+    D-S061-redis: "1 — Upstash Redis free"
+    D-S061-01-ac: "1 — AC1–AC12 locked"
+    D-S061-gateA: "1 — Gate A PASS; proceed 04-tech-plan"
+    D-S061-04-plan: "1 — approve as drafted; openapi-typescript"
+    D-S061-gateB: "1 — PASS; start 07 M1"
+    D-S061-cov-branches: "3 — lines/stmts/funcs ≥95; branches child issue + waiver"
+  decisions_locked:
+  - D-S061-intake=1
+  - D-S061-redis=1
+  - D-S061-01-ac=1
+  - D-S061-gateA=1
+  - D-S061-04-plan=1
+  - D-S061-gateB=1
+  - D-S061-cov-branches=3
+  notes:
+  - "2026-08-09 D-S061-cov-branches=3 — Vitest lines/stmts/funcs ≥95 now; branches ≥95 via child issue + explicit waiver (not silent); T1.5"
+  - "2026-08-09 D-S061-gateB=1 — Gate B PASS; gates.b_to_c passed; 05 COMPLETE; 06 skipped; 07-build M1 in_progress"
+  - "2026-08-09 05 audit — I-01/I-02 fixed; recommended medium defaults in 05 report; Gate B pending (D-S061-gateB)"
+  - "2026-08-09 D-S061-04-plan=1 — plan approved (openapi-typescript, not Orval); 04 COMPLETE; 05-verify-tech in_progress"
+  - "2026-08-09 04 execution-plan + build-plan-card drafted; await D-S061-04-plan; 04 remains in_progress"
+  - "2026-08-09 D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed; 02 COMPLETE; 04-tech-plan in_progress (delta)"
+  - "Opened after D-S061-intake; D-S061-redis=1 Upstash; 01 COMPLETE D-S061-01-ac=1"
+  note: "07 M1 — T1.5 under D-S061-cov-branches=3; current_stage 07-build (delta)"
 - id: EV-051
   session_id: S060-tag-driven-prod-deploy
   type: feature
@@ -46512,6 +46944,15 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+
+  - name: evolve/EV-052-ci-polish-quality-pr-stats
+    base: stage
+    base_sha: 80197a58
+    status: active
+    session_id: S061-ci-polish-quality-pr-stats
+    evolve_cycle_id: EV-052
+    created: '2026-08-09'
+    note: "Opened S061/EV-052 CI polish + quality PR stats"
   - name: evolve/EV-051-tag-driven-prod-deploy
     base: stage
     base_sha: c146baec

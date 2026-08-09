@@ -3,6 +3,68 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-052 — CI polish + quality PR stats + free Sentry/Redis/Orval (S061)
+
+**Session**: S061-ci-polish-quality-pr-stats  
+**Features**: deepen **F29**, **F6**, **F21**, **F30**, **M5** (no new Fn)  
+**Started**: 2026-08-09  
+**Branch**: `evolve/EV-052-ci-polish-quality-pr-stats` (base `stage@80197a58`)  
+**Status**: **in_progress**  
+**Corpus**: [Corpus: product §F29] [Corpus: product §F6] [Corpus: product §F21]
+[Corpus: product §F30] [Corpus: product §M5] [Corpus: tests] [Corpus: adr/ADR-007]
+[Corpus: adr/ADR-006] [Corpus: adr/ADR-031] [Corpus: tech-spec] [Corpus: deploy]
+
+### Scope (Phase 0–1 — locked 2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S061-intake | **1** — Open S061 / EV-052 for quality PR comment + #950 + #900 (implement 2–4) |
+| D-S061-quality | **1** — Quality-matrix + annex3/`iwxxm_us` golden outcome stats by product × profile |
+| D-S061-comment | **1** — Second sticky PR comment (separate from EV-036 coverage) |
+| D-S061-900 | **2–4** — Implement free Sentry + Redis rate limits + Orval/openapi-typescript |
+| D-S061-redis | **1** — Upstash Redis free (no new DOKS Redis Deployment) |
+| D-S061-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→11`; skip `03,06,10,12,13` |
+| D-S061-01-ac | **1** — Accept AC1–AC12 (continue after Redis lock) |
+| D-S061-ui-preview | **3** — N/A (no operator UI product work) |
+| D-S061-gateA | **1** — PASS Gate A → 04 |
+| D-S061-04-plan | **1** — Approve execution plan as drafted; **openapi-typescript** (not Orval) |
+| D-S061-gateB | **1** — PASS Gate B → 07-build M1 |
+| D-S061-cov-branches | **3** — Enforce Vitest lines/stmts/funcs ≥95; **branches** floor 84 + child [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) (FileConverter excluded from Vitest collection; not silent) |
+
+### Acceptance
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Coverage surface inventory vs ≥95% | TC-EV052-001 |
+| AC2 | Every surface enforces ≥95% in CI; soft/deferred gates removed | TC-EV052-002 |
+| AC3 | Suite green with gates; excludes justified | TC-EV052-003 |
+| AC4 | Second sticky PR comment: match/soft-diff/fail/skip by product × profile | TC-EV052-004 |
+| AC5 | Comment formatter tested + sticky update idempotent | TC-EV052-005 |
+| AC6 | Sentry on API+FE+worker when DSN set; free Developer documented | TC-EV052-006 |
+| AC7 | slowapi → Upstash when configured; in-memory fallback when unset | TC-EV052-007 |
+| AC8 | Shared-store rate-limit behavior unit/integration covered | TC-EV052-008 |
+| AC9 | OpenAPI → typed FE client; CI/commit policy | TC-EV052-009 |
+| AC10 | Standing docs + ADR notes accurate | TC-EV052-010 |
+| AC11 | Free-tier + no new DOKS Redis service documented | TC-EV052-011 |
+| AC12 | PR CI green with new jobs/tests | TC-EV052-012 |
+
+### Out of scope
+
+- Paid Sentry Team / DO Managed Valkey unless free path fails
+- #874 mutation / #727 Schemathesis / #836 UI metrics tab
+- AMS #958; stage→main promote this cycle
+- New in-cluster Redis Deployment
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.
+
+### Infra note
+
+See `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`.
+
+---
+
 ## Cycle EV-051 — Tag-driven prod deploy + full CI Deploy needs (S060)
 
 **Session**: S060-tag-driven-prod-deploy  
