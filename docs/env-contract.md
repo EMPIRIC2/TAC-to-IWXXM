@@ -44,6 +44,9 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Public rate limit | `RATE_LIMIT_PUBLIC_PER_MIN` | API / `.env` (default **60**) |
 | F33 mass ingest rate limit | `RATE_LIMIT_MASS_INGEST_PER_MIN` | API / `.env` (default **10**) — S050 / EV-042 |
 | Dissemination rate limit | `RATE_LIMIT_DISSEMINATION_PER_MIN` | API / `.env` (default **10**) |
+| Shared rate-limit store (Upstash) | `REDIS_URL` | API / DOKS secret — Upstash `rediss://…` (EV-052); **unset → in-memory slowapi + warning** (not shared across replicas) |
+| Sentry DSN (API / worker) | `SENTRY_DSN` | API + worker env / DOKS secret — unset = disabled (EV-052 / ADR-006 amend) |
+| Sentry DSN (frontend) | `sentryDsn` in `/config.json` (or `VITE_SENTRY_DSN` local) | Static deploy inject — unset = disabled (EV-052) |
 | Max request body | `MAX_REQUEST_BODY_BYTES` | API / `.env` (default **2097152** = 2 MiB) — **global** convert/validate; F33 mass may use a higher dedicated limit (see below) |
 | F33 mass ingest max files | `MASS_INGEST_MAX_FILES` | API / `.env` (default **200**) — S050 / EV-042 |
 | F33 mass ingest max file bytes | `MASS_INGEST_MAX_FILE_BYTES` | API / `.env` (default **5242880** = 5 MiB) |

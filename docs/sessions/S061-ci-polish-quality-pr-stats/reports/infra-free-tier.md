@@ -32,8 +32,9 @@ Source: [sentry.io/pricing](https://sentry.io/pricing/) (fetched 2026-08-09)
 **Infra changes (no new K8s service):**
 
 1. Create Sentry org/projects (api, frontend, worker) on Developer plan.
-2. Store DSNs in DOKS secrets (staging + prod): e.g. `SENTRY_DSN`, `VITE_SENTRY_DSN` /
-   runtime `/config.json` key — exact names in 04 / env-contract.
+2. Store DSNs in DOKS secrets (staging + prod): `SENTRY_DSN` (API+worker),
+   FE `sentryDsn` via `/config.json` (`VITE_SENTRY_DSN` local fallback) — see
+   [env-contract.md](../../../env-contract.md).
 3. SDK deps: `sentry-sdk[fastapi]` (API+worker), `@sentry/react` (FE).
 4. Optional: release/environment tags = `staging` | `prod`; sample rates to stay under 5k.
 

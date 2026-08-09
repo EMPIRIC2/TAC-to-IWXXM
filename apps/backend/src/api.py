@@ -68,6 +68,7 @@ try:
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import install_fastapi_observability, setup_logging
+    from .utilities.sentry_init import init_sentry
     from .utilities.tac_parser import extract_airport_code
 except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
@@ -118,6 +119,7 @@ except ImportError:
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import install_fastapi_observability, setup_logging
+    from utilities.sentry_init import init_sentry
     from utilities.tac_parser import extract_airport_code
 
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
@@ -131,6 +133,7 @@ from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
 setup_logging("backend")
 logger = logging.getLogger(__name__)
+init_sentry(service_name="backend")
 
 app = FastAPI(
     title="METAR to IWXXM Backend API",

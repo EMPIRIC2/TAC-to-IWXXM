@@ -18,9 +18,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: CI polish + #900 |
-| **Active milestone** | M3: Sentry + Upstash Redis slowapi (next) |
-| **Active task** | T3.1 |
-| **Tasks completed** | 9 / 22 |
+| **Active milestone** | M4: OpenAPI → typed FE client (next) |
+| **Active task** | T4.1 |
+| **Tasks completed** | 14 / 22 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
 | **Build Plan Card** | `docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md` |
@@ -111,11 +111,11 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | Tests: Sentry no-op when DSN unset; init path when set (API/worker/FE smoke) | Test | pending | TC-EV052-006; AC6 | — | — |
-| T3.2 | Wire `sentry-sdk` / `@sentry/react` behind env; low sample rates | Code | pending | AC6; D-S061-sentry-* | T3.1 | — |
-| T3.3 | Tests: slowapi uses Redis storage when `REDIS_URL` set; fakeredis shared counters | Test | pending | TC-EV052-007..008; AC7–AC8 | — | — |
-| T3.4 | `create_limiter()` → Redis storage URI when set; warn + memory fallback when unset (covers public + dissemination + mass-ingest via shared factory) | Code | pending | AC7; ADR-031; D-S061-redis-env | T3.3 | — |
-| T3.5 | Env-contract / deploy / infra-free-tier secret stubs; no DOKS Redis Deployment | Docs | pending | AC11; TC-EV052-011 | T3.2, T3.4 | — |
+| T3.1 | Tests: Sentry no-op when DSN unset; init path when set (API/worker/FE smoke) | Test | **completed** | TC-EV052-006; AC6 | — | — |
+| T3.2 | Wire `sentry-sdk` / `@sentry/react` behind env; low sample rates | Code | **completed** | AC6; D-S061-sentry-* | T3.1 | — |
+| T3.3 | Tests: slowapi uses Redis storage when `REDIS_URL` set; fakeredis shared counters | Test | **completed** | TC-EV052-007..008; AC7–AC8 | — | — |
+| T3.4 | `create_limiter()` → Redis storage URI when set; warn + memory fallback when unset (covers public + dissemination + mass-ingest via shared factory) | Code | **completed** | AC7; ADR-031; D-S061-redis-env | T3.3 | — |
+| T3.5 | Env-contract / deploy / infra-free-tier secret stubs; no DOKS Redis Deployment | Docs | **completed** | AC11; TC-EV052-011 | T3.2, T3.4 | — |
 
 #### M4: OpenAPI → typed FE client — P1
 
@@ -150,7 +150,7 @@ None (in-repo fixtures / goldens / quality-matrix packs).
 |------|-----------|--------|---------|
 | T1.1–T1.5 | M1 | pending | chain |
 | T2.1–T2.4 | M2 | **completed** | T2 internal; // M1 |
-| T3.1–T3.5 | M3 | pending | T3 internal; // M1 |
+| T3.1–T3.5 | M3 | **completed** | T3 internal; // M1 |
 | T4.1–T4.3 | M4 | pending | after M1 preferred |
 | T5.1–T5.2 | M5 | pending | M1–M4 |
 
