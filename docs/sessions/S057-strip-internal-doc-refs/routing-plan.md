@@ -18,8 +18,8 @@
 | 04-tech-plan | yes | delta | **completed** | D-S057-04-plan=1; guard-ext=1 |
 | 05-verify-tech | yes | delta | **completed** | Gate B PASS D-S057-gateB=1 |
 | 06-tech-tooling | no | — | skipped | no new runtime deps |
-| 07-build | yes | full | **completed** | M1–M3; T3.3 skipped |
-| 08-verify-build | yes | delta | pending | |
+| 07-build | yes | full | **completed** | M1–M3; T3.3 skipped @ 71779d46 |
+| 08-verify-build | yes | delta | **completed** | PASS; report 08-verify-build.md |
 | 09-qa | yes | delta | pending | |
 | 10-e2e | yes | delta | pending | operator-visible copy if UI hits |
 | 11-verify-impl | yes | delta | pending | |
