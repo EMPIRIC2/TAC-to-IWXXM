@@ -9,7 +9,7 @@
 **Features**: deepen **F29**, **F6**, **F21**, **F30**, **M5** (no new Fn)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-052-ci-polish-quality-pr-stats` (base `stage@80197a58`)  
-**Status**: **in_progress** — PR [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) **MERGED** → `stage` @ `fd84c00a` (`D-S061-merge=1`); cycle close AskQuestion pending  
+**Status**: **completed** (`D-S061-close=1`) — [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` @ `fd84c00a`; docs [#971](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971) → `stage` @ `3e019b57`; no stage→main  
 **Corpus**: [Corpus: product §F29] [Corpus: product §F6] [Corpus: product §F21]
 [Corpus: product §F30] [Corpus: product §M5] [Corpus: tests] [Corpus: adr/ADR-007]
 [Corpus: adr/ADR-006] [Corpus: adr/ADR-031] [Corpus: tech-spec] [Corpus: deploy]
@@ -33,6 +33,7 @@
 | D-S061-ui-preview-11 | **1** — Non-deployed local preview accepted at 11 (`:18000` / `:18001`) |
 | D-S061-11 | **1** — Approve AC1–AC12 / Fn deepen; 11 complete; Phase 4 close / merge-path next |
 | D-S061-merge | **1** — Commit session verify artifacts + push tip, then merge [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` (no stage→main this cycle; 12/13 waived per routing) |
+| D-S061-close | **1** — Merge [#971](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971) → `stage`, close EV-052 / S061; leave [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) open |
 
 ### Acceptance
 

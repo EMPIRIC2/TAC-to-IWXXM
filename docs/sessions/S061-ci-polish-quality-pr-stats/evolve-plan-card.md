@@ -37,7 +37,7 @@ by profile, and ship free-tier Sentry + shared rate-limit backend + OpenAPI type
 
 ## Next child stage
 
-**Phase 4 merge** — `D-S061-merge=1`: commit session verify artifacts + push; merge PR #969 → `stage`.
+**Completed** — `D-S061-close=1`; #969 + #971 on `stage`; EV-052 / S061 closed.
 
 ## Locked decisions
 
