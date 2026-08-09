@@ -36,6 +36,10 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Need full history + tags so promote_release_reminder can diff since last v*-deploy.
+          fetch-depth: 0
+          fetch-tags: true
       - name: Enforce promote-from-stage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,6 +49,7 @@ jobs:
           DOKS_LB_IP: "143.244.202.13"
           # pull_request GITHUB_SHA is a merge commit — gate the PR head tip on stage.
           GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        # staging_gate.sh also runs promote_release_reminder.sh (advisory notices).
         run: bash scripts/ci/staging_gate.sh
 
   # EV-036: remote validate job removed — lint/format/config on local pre-commit.

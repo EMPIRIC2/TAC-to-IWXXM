@@ -240,13 +240,19 @@ Verify service health:
 
 Record monitoring baseline.
 
-### Phase 4 — Generate Changelog
+### Phase 4 — Generate Changelog + release tags
+
+For **`stage` → `main` promotes**, release prep belongs on `stage` **before** the promote
+PR (semver + CHANGELOG); tags land on `main` **after** merge. See
+[docs/deploy.md](../../../docs/deploy.md) §Release checklist and
+`doks-promote-from-stage.mdc` §Release on promote.
 
 Aggregate commits and PRs into a structured changelog:
 
 1. `git log --oneline [last-deploy-tag]..HEAD`
 2. Group by phase and milestone using `[T{id}]` and `[M{id}]` prefixes
-3. Write `CHANGELOG.md`:
+3. Prefer updating `docs/CHANGELOG.md` (dated section); keep root `CHANGELOG.md` only if
+   the project still uses it:
 
 ```markdown
 # Changelog
@@ -260,7 +266,9 @@ Aggregate commits and PRs into a structured changelog:
 ...
 ```
 
-4. Tag: `git tag v[version]-deploy`
+4. Tag on **`main` tip after promote merge**: `git tag vYYYY.MM.DD-deploy` (push tag)
+5. If publishable packages shipped: confirm semver was bumped on `stage`; run
+   **pypi-release-checklist**, then push per-package tags (`tac2iwxxm-v*`, …)
 
 ### Phase 5 — Generate Deploy Report
 

@@ -67,6 +67,9 @@ Do **not** open or merge `stage`→`main` until:
 1. Porkbun A records resolve to `$STAGING_LB_IP` (or Host-header smoke is explicitly accepted).
 2. **Staging smoke** is green for the tip SHA on `stage`.
 3. PR head is **`stage`** and CI **Staging gate** passes (`scripts/ci/staging_gate.sh`).
+4. **Release prep (recommended):** semver bumps for changed publishable packages +
+   `docs/CHANGELOG.md` on `stage`; after merge, tag `vYYYY.MM.DD-deploy` (+ PyPI tags if
+   publishing). See [docs/deploy.md](../deploy.md) §Release checklist.
 
 See [docs/deploy.md](../deploy.md) §Promote and [ADR-034](../adr/ADR-034-doks-staging-promote-from-stage.md).
 

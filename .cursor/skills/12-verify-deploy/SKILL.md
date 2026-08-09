@@ -41,8 +41,10 @@ Before marking deploy-ready, resolve **what the target stack is**:
 `stage`→ cluster `metar-iwxxm-staging` / ns `metar-iwxxm-staging`
 (`api\|app.staging.tac-to-iwxxm.com`, LB `143.244.202.13`); `main`→ cluster `metar-iwxxm`
 (prod hosts). Prefer `env_role: staging` then `prod`. **Promote = PR `stage`→`main` only**
-after **Staging smoke** + **Staging gate** green (never feature→`main`). Do not use
-sole-stack language when the staging cluster is provisioned.
+after **Staging smoke** + **Staging gate** green (never feature→`main`). Before promote:
+recommend **release prep** (package semver + CHANGELOG on `stage`); after merge: deploy +
+PyPI tags per [docs/deploy.md](../../../docs/deploy.md) §Promote. Do not use sole-stack
+language when the staging cluster is provisioned.
 
 Record `env_role` on the deploy checklist and in the session note. Prefer a project ADR when the
 workspace documents single-env topology.

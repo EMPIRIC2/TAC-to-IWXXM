@@ -1,10 +1,11 @@
 # ADR-034: DOKS staging + promote-from-stage CD (F30 deepen / #886)
 
-> **Status**: Accepted (S052 / EV-043); **Amended** (S053 / EV-044 — dual DOKS clusters)  
+> **Status**: Accepted (S052 / EV-043); **Amended** (S053 / EV-044 — dual DOKS clusters;
+> S056 follow-up — release bump+tag on promote)  
 > **Date**: 2026-08-08  
-> **Deciders**: User (issue #886 + Evolve Plan Card; EV-044 project visibility)  
+> **Deciders**: User (issue #886 + Evolve Plan Card; EV-044 project visibility; promote-release)  
 > **Amends**: [ADR-033](ADR-033-platform-independence-auth-do-doks.md) (single prod DOKS → dual env)  
-> **Related**: F30; [docs/deploy.md](../deploy.md); EV-034 CD rollout  
+> **Related**: F30; F12–F14; [docs/deploy.md](../deploy.md); EV-034 CD rollout  
 > **Sessions**: S052-doks-staging-prod-branch-deploys / EV-043; S053-separate-staging-doks-project / EV-044
 
 ## Context
@@ -34,16 +35,23 @@ visible and isolated in the DigitalOcean control plane.
    (`168.144.12.70` until rotated).
 5. **Promote path** — Only PRs from `stage` → `main`. CI job `staging-gate` requires green
    **Staging smoke** for the tip SHA. After merge to `main`, prod Deploy runs automatically.
-6. **Solo-dev** — No required Environment reviewers; the PR is the manual step.
-7. **IaC** — Kustomize overlays `deploy/doks/overlays/{staging,prod}`; CD uses
+6. **Release on promote (recommended)** — Treat each `stage` → `main` cutover as a release:
+   on `stage` before the promote PR, bump publishable package semver when those packages
+   changed and cut `docs/CHANGELOG.md`; after merge to `main`, tag a deploy release
+   (`vYYYY.MM.DD-deploy`) and any PyPI package tags (F12–F14) when publishing. Soft
+   recommendation — Staging gate remains smoke/path enforcement only (prints a reminder).
+7. **Solo-dev** — No required Environment reviewers; the PR is the manual step.
+8. **IaC** — Kustomize overlays `deploy/doks/overlays/{staging,prod}`; CD uses
    **per-environment kubeconfig** (`KUBE_CONFIG` / `KUBE_CONFIG_STAGING` or GH Env secrets).
-8. **Teardown** — After staging cluster smokes green, delete shared-cluster namespace
+9. **Teardown** — After staging cluster smokes green, delete shared-cluster namespace
    `metar-iwxxm-staging` from the **prod** cluster (EV-043 leftover).
 
 ## Consequences
 
 - Skills 12/13/15/16 and ci-after-push must distinguish `env_role: staging | prod` **and**
   cluster/project (not only namespace).
+- Promote PRs should include release prep (semver + CHANGELOG) and post-merge tags; agents
+  follow `.cursor/rules/optional/doks-promote-from-stage.mdc` §Release on promote.
 - Staging and prod no longer share node-pool memory; staging worker may run at 1 replica
   without starving prod.
 - Cost: second cheapest DOKS node + cheapest managed PG.

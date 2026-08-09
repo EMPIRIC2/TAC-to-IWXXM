@@ -95,4 +95,12 @@ if [[ "${code}" != "200" ]]; then
   exit 1
 fi
 echo "staging-gate: staging /health → 200"
+
+# Soft release reminder (never fails the gate) — ADR-034 §Release on promote.
+if [[ -f "${GITHUB_WORKSPACE:-.}/scripts/ci/promote_release_reminder.sh" ]]; then
+  bash "${GITHUB_WORKSPACE:-.}/scripts/ci/promote_release_reminder.sh" || true
+elif [[ -f "scripts/ci/promote_release_reminder.sh" ]]; then
+  bash scripts/ci/promote_release_reminder.sh || true
+fi
+
 echo "staging-gate: PASS"

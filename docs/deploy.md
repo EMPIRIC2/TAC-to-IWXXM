@@ -80,14 +80,37 @@ On push to `stage` or `main`, **Deploy** in `.github/workflows/ci-cd.yml`:
 2. Merge to `stage` → **Deploy (stage)** to staging cluster + **Staging smoke** green for that SHA
    (HTTPS when Porkbun A records point at staging LB `143.244.202.13`; until then Host-header
    probes via `STAGING_LB_IP` / `DOKS_LB_IP` are valid).
-3. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
+3. **Release prep on `stage` (recommended):** bump publishable package semver when those
+   packages changed since the last release; cut `docs/CHANGELOG.md`; commit on `stage` so the
+   promote PR carries the release metadata (see checklist below).
+4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
    (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
-   successful **Staging smoke** check-run.
-4. Merge to `main` → **Deploy (main)** to prod cluster.
+   successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
+5. Merge to `main` → **Deploy (main)** to prod cluster.
+6. **Tag the release** on the merged `main` tip: deploy tag + any PyPI package tags (F12–F14).
 
 Solo-dev: the PR is the manual gate (no Environment reviewers). Do **not** promote while
 Staging smoke or Staging gate is red/missing. See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md)
 and [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
+
+### Release checklist (`stage` → `main`)
+
+Treat every promote to prod as a release. Soft recommendation (does not block Staging gate):
+
+- [ ] Diff `stage` vs last deploy tag / last promote: note which of `packages/tac2iwxxm`,
+      `packages/tac-validate`, `packages/iwxxm-validate` changed
+- [ ] For each changed publishable package: decide **none / patch / minor / major**; sync
+      `pyproject.toml`, `__version__`, and Cargo/locks when present
+- [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
+- [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
+- [ ] After merge: `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>`
+- [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,
+      `iwxxm-validate-v*`) only after [pypi-release-checklist](../.cursor/skills/pypi-release-checklist/SKILL.md)
+- [ ] Docs-only / infra-only with no package diffs: skip package semver + PyPI tags; still
+      cut CHANGELOG + deploy tag when shipping to prod
+
+Rule: [`.cursor/rules/optional/doks-promote-from-stage.mdc`](../.cursor/rules/optional/doks-promote-from-stage.mdc)
+§Release on promote. [Corpus: product §F12–F14]
 
 | Actions secret | Required | Description |
 |----------------|----------|-------------|

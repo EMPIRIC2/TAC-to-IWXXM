@@ -91,6 +91,7 @@ Run rows that apply to touched paths.
 | F3 | OpenAPI / contract changes: `bash scripts/check_openapi_specs.sh` | 🔴 |
 | F4 | Modal / deploy changes: `bash scripts/check_modal_no_database_url.sh` | 🔴 |
 | F5 | Migrations included when schema changes | 🔴 |
+| F6 | PR `stage`→`main`: release prep noted (semver for changed publishable pkgs + CHANGELOG); post-merge deploy/PyPI tags planned ([Corpus: deploy] §Promote) | 🟡 |
 
 ---
 

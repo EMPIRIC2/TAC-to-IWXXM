@@ -128,9 +128,12 @@ See [plan-mode-loop.md](../.cursor/skills/plan-mode-loop.md).
 ## DOKS promote to main (F30 / ADR-034)
 
 After dual-env CD (EV-043/044): **never** merge feature branches to `main`. Path is
-feature → PR → `stage` → **Staging smoke** green → PR **`stage`→`main`** → **Staging gate**
-→ prod Deploy. See [docs/deploy.md](deploy.md) §Promote and
-`.cursor/rules/optional/doks-promote-from-stage.mdc`.
+feature → PR → `stage` → **Staging smoke** green → **release prep on `stage`** (semver +
+CHANGELOG) → PR **`stage`→`main`** → **Staging gate** → prod Deploy → **tag release** on
+`main` (`vYYYY.MM.DD-deploy` + optional PyPI tags). See [docs/deploy.md](deploy.md)
+§Promote / §Release checklist and `.cursor/rules/optional/doks-promote-from-stage.mdc`
+§Release on promote. PR body template:
+`.github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md`.
 
 ## Numbered stages (00–19)
 
