@@ -23,9 +23,9 @@ sessions:
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
   branch_status: active
   branch_exists: true
-  tip_sha: 828c7087
-  tip_sha_full: 828c708723549fd480a93203b600e742bf88a343
-  tip_sha_pushed: true
+  tip_sha: 16ca35f1
+  tip_sha_full: 16ca35f1fc399d5b39b4a650793e29424fa2aba6
+  tip_sha_pushed: false
   pr_number: 969
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969
   pr_status: open
@@ -35621,9 +35621,9 @@ evolve_cycles:
   branch_base_sha: 80197a58
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
   branch_status: active
-  tip_sha: 828c7087
-  tip_sha_full: 828c708723549fd480a93203b600e742bf88a343
-  tip_sha_pushed: true
+  tip_sha: 16ca35f1
+  tip_sha_full: 16ca35f1fc399d5b39b4a650793e29424fa2aba6
+  tip_sha_pushed: false
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969
   gates:
     a_to_b: passed
