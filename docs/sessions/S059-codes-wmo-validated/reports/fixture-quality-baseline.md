@@ -47,3 +47,10 @@ Fixture **quality bar before harvest wiring** is unchanged from EV-046 on the ha
 recent weather, AIRMET underscore, SpaceWxPhenomena remain **0% exact ∩**. Weather ~4.5%
 and locations ~86% are already representative. Option **2c** means 07 must add those packs
 (and likely a small tokenizer/normalize layer) before AC2/AC4 can go green.
+
+## Profile note (AC7 — `D-S059-profiles=1b`)
+
+This baseline is **profile-agnostic token ∩ WMO register** (L3). It does **not** yet
+split `annex3` vs `iwxxm_us` lint outcomes. AC7 adds a dual-profile disposition for **all
+F6 products** (`iwxxm_us` **N/A** where unsupported). US L5 REMARKS / FMH-1 diffs are
+expected under `iwxxm_us` only and must not be scored as WMO membership failures.

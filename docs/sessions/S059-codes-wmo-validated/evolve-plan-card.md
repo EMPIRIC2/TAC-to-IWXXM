@@ -10,19 +10,20 @@ membership-checked in CI — no live `codes.wmo.int` HTML in PR CI.
 
 ## Features
 
-- Deepen **F12**, **F15**, **F20**, **F23**, **F24**, **F28** (no new Fn) —
+- Deepen **F6**, **F12**, **F15**, **F20**, **F23**, **F24**, **F28** (no new Fn) —
   [Corpus: product]
 - Parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) Validated —
   child [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) — [Corpus: tests]
 - SoT / pin cadence — [Corpus: tech-spec]
+- Profiles: **`annex3` vs `iwxxm_us`** compare + true-error fixes — [Corpus: product §F6]
 
 ## In / out of scope
 
 - In: offline harvest; membership happy/sad for weather/recent/cloud/SIGMET+AIRMET
   phenomena/nilReason; aggressive fixtures (RE*, AIRMET `_`, SpaceWx, TCU); cadence docs;
-  #882 design-only compose note
+  #882 design-only compose note; **profile compare + fix true errors (AC7–AC8)**
 - Out: vendor hand-edits; live HTML PR CI; `iwxxm-validate` replace; full #882 job;
-  `#958`; `stage`→`main`; exhaustive 402 wx combos
+  `#958`; `stage`→`main`; exhaustive 402 wx combos; country scorecards beyond two profiles
 
 ## Preset + routing
 
@@ -30,13 +31,15 @@ membership-checked in CI — no live `codes.wmo.int` HTML in PR CI.
 - Stages: `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`
 - Skip: `03`, `06`, `10`, `12`, `13`
 - Intake: `D-S059-families=1a`, `D-S059-fixtures=2c`, `D-S059-882=3a`, `D-S059-01-ac=4a`
+- Amend: `D-S059-profiles=1b` — all F6; `iwxxm_us` N/A where unsupported; AC7–AC8 locked
 
 ## Next child stage
 
-**02-verify-plan** — Gate A (after user approves 01 preview + commit)
+**02-verify-plan** — Gate A
 
 ## Risks / open decisions
 
-- Aggressive fixtures enlarge 07 scope (F24/F28 packs) — watch milestone sizing in 04
+- Aggressive fixtures + dual-profile matrix enlarges 07 — size milestones in 04
+- True-error volume unknown until compare runs — may need deferrals with cite
+- Full F6 matrix: many products are N/A for `iwxxm_us` — must not fail those rows
 - Docs PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) → `stage` still open
-- 01 deltas drafted locally — **preview held; no push yet**

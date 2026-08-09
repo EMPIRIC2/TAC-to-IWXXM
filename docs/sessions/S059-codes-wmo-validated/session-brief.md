@@ -17,13 +17,14 @@ related_issues:
   - 882
 feature_ids: []
 deepen_feature_ids:
+  - F6
   - F12
   - F15
   - F20
   - F23
   - F24
   - F28
-feature_note: "Deepen tac-validate / quality bars — #889 Validated triad; no new product Fn"
+feature_note: "Deepen tac-validate / F6 profiles — #889 Validated + annex3 vs iwxxm_us; no new Fn"
 preset: Standard
 auto_lean: false
 ui_preview: N/A — no browser UI
@@ -35,6 +36,7 @@ decisions:
   D-S059-fixtures: "2c — aggressive RE*/AIRMET_/SpaceWx/TCU"
   D-S059-882: "3a — design-only #882 compose"
   D-S059-01-ac: "4a — lock AC1–AC6"
+  D-S059-profiles: "1b — all F6; iwxxm_us N/A where unsupported; AC7–AC8 locked"
 ---
 
 # Session S059 — codes.wmo.int Validated (#959)
@@ -46,8 +48,8 @@ Ship the **Validated** follow-on deferred from S055/EV-046: standing offline har
 weather/phenomena/nil (and agreed) tokens are membership-checked against the harvested set
 in CI — without live `codes.wmo.int` HTML in PR CI.
 
-[Corpus: product §F12] [Corpus: product §F15] [Corpus: product §F20]
-[Corpus: product §F23] [Corpus: tests] [Corpus: tech-spec]
+[Corpus: product §F6] [Corpus: product §F12] [Corpus: product §F15]
+[Corpus: product §F20] [Corpus: product §F23] [Corpus: tests] [Corpus: tech-spec]
 
 ## Issues
 
@@ -63,6 +65,8 @@ in CI — without live `codes.wmo.int` HTML in PR CI.
 3. **Aggressive** fixtures: `RE*`, AIRMET `_`, SpaceWxPhenomena, TCU (`D-S059-fixtures=2c`)
 4. `#882` compose note **design-only** (`D-S059-882=3a`)
 5. Close EV-046 gap rows in scope; residual → children/deferrals
+6. **Compare `annex3` vs `iwxxm_us`** for **all F6** (`iwxxm_us` N/A where unsupported);
+   fix **true errors** (AC7–AC8; `D-S059-profiles=1b`)
 
 ## Out of scope
 
@@ -72,6 +76,7 @@ in CI — without live `codes.wmo.int` HTML in PR CI.
 - Full `#882` notification pipeline
 - `#958` AMS abstract (parked S058)
 - Promote `stage`→`main` unless separately approved
+- Country scorecards beyond the two profiles; inventing US tokens outside FMH-1 / NWS / iwxxm-us
 
 ## Routing
 

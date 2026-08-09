@@ -2096,8 +2096,9 @@ Docs/coverage only — no H4–H5. Complements **TC-EV038-008** / [#859](https:/
 
 ## S059 / EV-050 — codes.wmo.int Validated harvest + membership (#959)
 
-New **TC-EV050-001..006**. Deepens F12 / F15 / F20 / F23 / F24 / F28 (fixtures may touch F6
-packs). Completes Validated waived in EV-046 (`D-S055-validated=1`). No H4–H5 (no UI).
+New **TC-EV050-001..008**. Deepens F6 / F12 / F15 / F20 / F23 / F24 / F28 (fixtures may touch
+F6 packs). Completes Validated waived in EV-046 (`D-S055-validated=1`). Adds **annex3 vs
+`iwxxm_us`** membership/lint compare + true-error fixes. No H4–H5 (no UI).
 No live `codes.wmo.int` HTML in PR CI.
 
 ### TC-EV050-001: Offline harvest → membership sets
@@ -2155,13 +2156,36 @@ No live `codes.wmo.int` HTML in PR CI.
   scope for notify pipeline and PR CI live HTML
 - **Source**: AC6; `D-S059-882=3a`
 
+### TC-EV050-007: annex3 vs iwxxm_us membership/lint compare
+
+- **Level**: T0 / T1
+- **Objective**: For **all supported F6 products**, same TAC corpus (or representative
+  matrix) linted/membership-checked under `profile=annex3` and `profile=iwxxm_us`. Where
+  `iwxxm_us` is unsupported for a product, row is **N/A** (not a fail). Where both apply,
+  disposition: shared WMO expected · intentional L5 US overlay · suspect/true error
+- **Pass criteria**: Report committed (session or domain) covering all F6 product families;
+  N/A rows cited; CI or unit harness fails if an unclassified divergent outcome appears for
+  dual-profile packs; WMO L3 SoT unchanged for both profiles; L5 only under `iwxxm_us`
+- **Source**: AC7; `D-S059-profiles=1b`; [Corpus: product §F6];
+  `docs/domain/TAC_VALIDATION.md` L3/L5
+
+### TC-EV050-008: True-error profile fixes
+
+- **Level**: T1
+- **Objective**: Each **true error** from AC7 is fixed with a regression test (happy and/or
+  sad); intentional diffs and N/A rows retain cited disposition
+- **Pass criteria**: No open true-error rows without fix or explicit deferral+cite; no
+  invented US weather tokens outside FMH-1 / NWS / iwxxm-us pins
+- **Source**: AC8; `D-S059-profiles=1b`
+
 ### EV-050 verify gate
 
-- [ ] TC-EV050-001..006 green (or explicit deferral recorded)
+- [ ] TC-EV050-001..008 green (or explicit deferral recorded)
 - [ ] No new Fn (deepen only); #889 Validated satisfied or re-scoped
 - [ ] No live `codes.wmo.int` HTML in PR CI
 - [ ] H4–H5 **N/A** (no UI); 12/13 waived per routing
 - [ ] Aggressive fixture families present or deferred with cite
+- [ ] annex3 vs iwxxm_us disposition table present; true errors fixed or deferred with cite
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 

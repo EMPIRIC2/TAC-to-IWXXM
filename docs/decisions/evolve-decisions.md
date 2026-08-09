@@ -6,21 +6,22 @@
 ## Cycle EV-050 — codes.wmo.int Validated: harvest + tac-validate membership (#959) (S059)
 
 **Session**: S059-codes-wmo-validated  
-**Features**: deepen **F12 / F15 / F20 / F23 / F24 / F28** (no new Fn; also touches F6 encode
-fixtures where matrix needs tokens)  
+**Features**: deepen **F6 / F12 / F15 / F20 / F23 / F24 / F28** (no new Fn; F6 for
+`annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
-**Status**: **in_progress** — Phase A / 01 deltas drafted (`D-S059-01-ac=4a`); Gate A next  
+**Status**: **in_progress** — Phase A / 01 locked incl. profiles (`D-S059-profiles=1b`);
+next **02-verify-plan** Gate A  
 **Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
 (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
 compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
 [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882))  
-**Corpus**: [Corpus: product §F12/F15/F20/F23/F24/F28], [Corpus: tests],
+**Corpus**: [Corpus: product §F6/F12/F15/F20/F23/F24/F28], [Corpus: tests],
 [Corpus: tech-spec], [Corpus: decisions] · domain opt-in
 `docs/domain/rules/*`, `docs/domain/mining/*`, `docs/domain/TAC_VALIDATION.md`
 
-### Scope (Phase 0–1 — locked 2026-08-09)
+### Scope (Phase 0–1 — locked 2026-08-09; profile amend 2026-08-09)
 
 | ID | Decision |
 |----|----------|
@@ -31,8 +32,9 @@ compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
 | D-S059-fixtures | **2c** — **Aggressive** fixture expansion this cycle: `RE*`, AIRMET `_` phenomena, SpaceWxPhenomena, TCU (plus packs needed for membership happy/sad) |
 | D-S059-882 | **3a** — Design-only compose note with #882; no scheduled live refresh job this cycle |
 | D-S059-01-ac | **4a** — Lock AC1–AC6 as drafted (with 1a/2c/3a amendments) |
+| D-S059-profiles | **1b** — Expand: compare **`annex3` vs `iwxxm_us`** across **all F6 products** (`iwxxm_us` **N/A** where no US profile); fix **true errors** (AC7–AC8) |
 
-### Acceptance (Standard — confirmed `D-S059-01-ac=4a` 2026-08-09)
+### Acceptance (Standard — AC1–AC8 confirmed `D-S059-01-ac=4a` + `D-S059-profiles=1b`)
 
 | AC | Criterion | TC |
 |----|-----------|-----|
@@ -42,6 +44,8 @@ compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
 | AC4 | **Gaps / fixtures:** Aggressive fixture expansion (`D-S059-fixtures=2c`) closes EV-046 gap rows for RE*, AIRMET underscore matching, SpaceWxPhenomena, TCU; remaining gaps → child issues or explicit deferrals with cite | TC-EV050-004 |
 | AC5 | **#889 Validated:** Parent Validated triad element satisfied (or explicit re-scope recorded here + on #889/#959) | TC-EV050-005 |
 | AC6 | **#882 compose (design-only):** Short design note for optional scheduled live refresh **outside** PR CI composing with #882 notify — **no** full notification pipeline; **no** job implementation this cycle (`D-S059-882=3a`) | TC-EV050-006 |
+| AC7 | **Profile compare:** Document + CI-checkable delta of membership / lint outcomes for the same TAC under **`profile=annex3` vs `profile=iwxxm_us`** for **all supported F6 products**. Where `iwxxm_us` is not defined for a product, record **N/A** (not a fail). Where both apply (typically METAR/SPECI/TAF + shared WMO L3), classify each delta: **shared WMO expected** · **intentional US overlay (L5 REMARKS / FMH-1)** · **suspect / true error**. WMO harvest remains SoT for L3; US SoT for L5 only | TC-EV050-007 |
+| AC8 | **True-error fixes:** For deltas classified **true error** (wrong severity, false fail/pass, missing membership, incorrect profile gating), fix in this cycle with regression tests; intentional diffs and N/A rows get a cited disposition (no silent ignore). Do **not** invent US weather vocab outside FMH-1 / documented NWS / iwxxm-us pins | TC-EV050-008 |
 
 ### Out of scope
 
@@ -53,6 +57,8 @@ compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
 - Promote `stage`→`main` unless separately approved
 - Exhaustive 402 weather combinations (representative + aggressive gap packs only)
 - Colour / MetFeature / VONA encode duals beyond nil/phenomena already in v1 families (defer unless needed for sad packs)
+- Country / regional scorecards beyond the two product profiles (`annex3` / `iwxxm_us`)
+- Inventing national weather tokens not grounded in FMH-1 / NWS / iwxxm-us docs
 
 ### Preset
 

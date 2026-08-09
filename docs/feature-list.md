@@ -13,7 +13,7 @@
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889 codes.wmo.int coverage across products; prior S046 / EV-038 |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
 | F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX; **deepen** S057 / EV-048 #951 no internal-doc cites in operator UI |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
@@ -1609,11 +1609,12 @@
 - **Follow-on**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) / S059 / EV-050
   (Validated — below)
 
-### F12 / F15 / F20 / F23 / F24 / F28 deepen (S059 / EV-050 — #959 Validated)
+### F6 / F12 / F15 / F20 / F23 / F24 / F28 deepen (S059 / EV-050 — #959 Validated)
 
 - **Status note**: No new Fn. Standard follow-on to EV-046 Lean: standing **offline harvest** +
   `tac-validate` membership CI for the Validated triad element; aggressive fixture expansion
-  for EV-046 gap rows (`D-S059-fixtures=2c`).
+  for EV-046 gap rows (`D-S059-fixtures=2c`); **profile compare** `annex3` vs `iwxxm_us`
+  with true-error fixes (AC7–AC8).
 - **Issue**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) · parent
   [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) · epic
   [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) · compose
@@ -1625,10 +1626,14 @@
   3. Document harvest cadence vs `vendor/manifest.json` `iwxxm-codelists` pin
   4. Aggressive fixtures: `RE*`, AIRMET `_` phenomena, SpaceWxPhenomena, TCU
   5. Design-only #882 compose note (no scheduled live job this cycle)
-- **Acceptance**: AC1–AC6 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-050;
-  **TC-EV050-001..006**
+  6. **Compare** membership/lint under `profile=annex3` vs `profile=iwxxm_us` for **all F6
+     products** (`iwxxm_us` **N/A** where unsupported); classify shared / intentional L5 /
+     true error; **fix true errors** this cycle with regressions
+- **Acceptance**: AC1–AC8 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-050;
+  **TC-EV050-001..008**
 - **Out of scope**: Live HTML in PR CI; vendor hand-edits; full #882 notify; `iwxxm-validate`
-  replacement; `stage`→`main` promote; exhaustive 402 weather combos
+  replacement; `stage`→`main` promote; exhaustive 402 weather combos; country scorecards
+  beyond the two profiles; inventing US tokens outside FMH-1 / NWS / iwxxm-us
 - **Journeys / UI**: N/A
 - **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
   `[Corpus: decisions]` · `[docs/domain/TAC_VALIDATION.md]` ·
