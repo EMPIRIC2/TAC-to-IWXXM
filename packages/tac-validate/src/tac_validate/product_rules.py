@@ -2385,7 +2385,12 @@ def _check_vona(tac: str) -> list[Issue]:
     return issues
 
 
-def check_product_rules(tac_text: str, product: str) -> list[Issue]:
+def check_product_rules(
+    tac_text: str,
+    product: str,
+    *,
+    profile: str = "annex3",
+) -> list[Issue]:
     """
     Run product checklist / template-gate rules after parse-gate success.
 
@@ -2395,12 +2400,16 @@ def check_product_rules(tac_text: str, product: str) -> list[Issue]:
         Raw TAC text.
     product :
         F6 product id.
+    profile :
+        ``annex3`` or ``iwxxm_us``. Reserved for L5 overlay gating (EV-050 T3.3);
+        WMO L3 membership checks are shared across profiles today.
 
     Returns
     -------
     list[Issue]
         Error-severity findings with spans when possible.
     """
+    _ = profile  # L5 gating wired in T3.3 when disposition finds true errors
     if product in {"METAR", "SPECI"}:
         return _check_metar_speci(tac_text, product)
     if product == "TAF":

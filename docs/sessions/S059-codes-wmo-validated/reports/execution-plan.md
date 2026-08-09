@@ -16,8 +16,8 @@
 |-------|-------|
 | **Active phase** | Phase 1: Validated membership |
 | **Active milestone** | M3: Dual-profile compare |
-| **Active task** | T3.1 |
-| **Tasks completed** | 8 / 15 |
+| **Active task** | T3.2 |
+| **Tasks completed** | 9 / 15 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
 | **Plan approve** | `D-S059-04-plan=1` |
@@ -97,7 +97,7 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | Test: dual-profile harness — same TAC under `profile=annex3` and `iwxxm_us`; fail on unclassified divergent dual-applicable rows | Test | pending | TC-EV050-007; AC7 | T2.2 | fixtures + packs |
+| T3.1 | Test: dual-profile harness — same TAC under `profile=annex3` and `iwxxm_us`; fail on unclassified divergent dual-applicable rows | Test | completed | TC-EV050-007; AC7 | T2.2 | fixtures + packs |
 | T3.2 | Docs: disposition table for **all F6 products** (shared WMO · intentional L5 · true error · N/A) | Docs | pending | AC7; TAC_VALIDATION L3/L5 | T3.1 | — |
 | T3.3 | Code: fix true-error rows (severity / false pass-fail / missing membership / wrong gating); no invented US tokens | Code | pending | TC-EV050-008; AC8 | T3.1, T3.2 | — |
 | T3.4 | Test: regression cases per fixed true error; intentional/N/A retain cites; allow AC8 defer+cite | Test | pending | AC8; Gate A M1 | T3.3 | — |
@@ -135,7 +135,7 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 | T2.2 | M2 | completed | T2.1 |
 | T2.3 | M2 | completed | T2.1 |
 | T2.4 | M2 | completed | T2.3 |
-| T3.1 | M3 | pending | T2.2 |
+| T3.1 | M3 | completed | T2.2 |
 | T3.2 | M3 | pending | T3.1 |
 | T3.3 | M3 | pending | T3.1, T3.2 |
 | T3.4 | M3 | pending | T3.3 |

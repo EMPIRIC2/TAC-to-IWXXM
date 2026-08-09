@@ -103,15 +103,21 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
     return issues, fixes
 
 
-def check_product_rules(tac_text: str, product: str) -> list[Issue]:
+def check_product_rules(
+    tac_text: str,
+    product: str,
+    *,
+    profile: str = "annex3",
+) -> list[Issue]:
     """
     Product-specific checklist / template-gate rules (F12 / E10-21).
 
     Delegates to ``product_rules`` after parse-gate success.
+    ``profile`` is reserved for L5 gating (EV-050); L3 membership is shared.
     """
     from tac_validate.product_rules import check_product_rules as _impl
 
-    return _impl(tac_text, product)
+    return _impl(tac_text, product, profile=profile)
 
 
 __all__ = ["check_parse_gate", "check_product_rules"]
