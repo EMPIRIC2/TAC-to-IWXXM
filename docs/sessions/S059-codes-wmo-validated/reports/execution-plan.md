@@ -15,9 +15,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Validated membership |
-| **Active milestone** | M3: Dual-profile compare |
-| **Active task** | T3.3 |
-| **Tasks completed** | 10 / 15 |
+| **Active milestone** | M4: Closeout docs |
+| **Active task** | T4.1 |
+| **Tasks completed** | 12 / 15 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
 | **Plan approve** | `D-S059-04-plan=1` |
@@ -99,8 +99,8 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 |---|------|------|--------|-------------|------------|-----------|
 | T3.1 | Test: dual-profile harness — same TAC under `profile=annex3` and `iwxxm_us`; fail on unclassified divergent dual-applicable rows | Test | completed | TC-EV050-007; AC7 | T2.2 | fixtures + packs |
 | T3.2 | Docs: disposition table for **all F6 products** (shared WMO · intentional L5 · true error · N/A) | Docs | completed | AC7; TAC_VALIDATION L3/L5 | T3.1 | — |
-| T3.3 | Code: fix true-error rows (severity / false pass-fail / missing membership / wrong gating); no invented US tokens | Code | pending | TC-EV050-008; AC8 | T3.1, T3.2 | — |
-| T3.4 | Test: regression cases per fixed true error; intentional/N/A retain cites; allow AC8 defer+cite | Test | pending | AC8; Gate A M1 | T3.3 | — |
+| T3.3 | Code: fix true-error rows (severity / false pass-fail / missing membership / wrong gating); no invented US tokens | Code | completed | TC-EV050-008; AC8 | T3.1, T3.2 | — |
+| T3.4 | Test: regression cases per fixed true error; intentional/N/A retain cites; allow AC8 defer+cite | Test | completed | AC8; Gate A M1 | T3.3 | — |
 
 #### M4: Closeout docs (#889 / #882) — P1
 
@@ -137,8 +137,8 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 | T2.4 | M2 | completed | T2.3 |
 | T3.1 | M3 | completed | T2.2 |
 | T3.2 | M3 | completed | T3.1 |
-| T3.3 | M3 | pending | T3.1, T3.2 |
-| T3.4 | M3 | pending | T3.3 |
+| T3.3 | M3 | completed | T3.1, T3.2 |
+| T3.4 | M3 | completed | T3.3 |
 | T4.1 | M4 | pending | — |
 | T4.2 | M4 | pending | T2.2, T3.4 |
 | T4.3 | M4 | pending | T1.4 |
