@@ -21,7 +21,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-dissemination test-unit-worker test-bugs \
 	build-tac2iwxxm-native build-iwxxm-validate-native \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
-	perf-converter-baseline test-converter-pr-gate test-unit-fast \
+	perf-converter-baseline test-converter-pr-gate test-unit-fast lint-fast \
 	db-migrate test-alembic \
 	verify-supabase-to-do-migrate migrate-supabase-to-do \
 	test-sigmet-quality \
@@ -74,21 +74,29 @@ install:
 	$(PNPM) install
 
 install-hooks:
-	# husky owns core.hooksPath (.husky/*); pre-commit framework runs from .husky/pre-commit.
-	# EV-036: commit = fast + validate-ci-medium; push = make ci (units + Compose).
+	# husky owns core.hooksPath (.husky/*).
+	# EV-047: commit = lint-fast; push = test-unit-fast (heavier gates → CI / opt-in make).
 	corepack enable
 	$(PNPM) install
 	$(PNPM) exec husky
 	$(UV) run pre-commit install-hooks
 	chmod +x .husky/pre-commit .husky/pre-push
 
+# EV-047 / #833 — husky pre-commit lint/format only (shape A).
+lint-fast:
+	$(UV) run pre-commit run ruff-format --all-files
+	$(UV) run pre-commit run ruff-check --all-files
+	$(UV) run pre-commit run prettier-check --all-files
+	$(UV) run pre-commit run eslint --all-files
+
 pre-commit-run:
+	# Opt-in full local parity (not husky default after EV-047).
 	$(UV) run pre-commit run --all-files
 	$(MAKE) validate-ci-medium
 
 pre-push-run:
-	# Same as husky pre-push (EV-036): units + Compose; no second validate-ci.
-	$(MAKE) ci
+	# Same as husky pre-push (EV-047): fast units only.
+	$(MAKE) test-unit-fast
 
 # --- F15 issue catalog (ADR-028 / EV-011) ---
 

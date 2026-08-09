@@ -103,9 +103,9 @@ None (fixtures in-repo).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Contract tests for husky scripts + `test-unit-fast` + DEVELOPMENT table | Test | pending | TC-EV047-001..004 | — | — |
-| T2.2 | Implement slim `.husky/pre-commit` / `pre-push`; add `make test-unit-fast` | Config | pending | D-S056-04-husky/unit-fast | T2.1 | — |
-| T2.3 | Update `docs/ops/DEVELOPMENT.md` + test-plan hook tables (EV-047 supersede EV-036 day-to-day) | Docs | pending | AC3 | T2.2 | — |
+| T2.1 | Contract tests for husky scripts + `test-unit-fast` + DEVELOPMENT table | Test | **completed** | TC-EV047-001..004 | — | — |
+| T2.2 | Implement slim `.husky/pre-commit` / `pre-push`; add `make lint-fast` / `test-unit-fast` | Config | **completed** | D-S056-04-husky/unit-fast | T2.1 | — |
+| T2.3 | Update `docs/ops/DEVELOPMENT.md` + test-plan hook tables (EV-047 supersede EV-036 day-to-day) | Docs | **completed** | AC3 | T2.2 | — |
 
 #### M3: Operator one-pager + handbook + Help — P0
 
