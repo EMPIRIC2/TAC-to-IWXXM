@@ -110,8 +110,10 @@ catalog-check: catalog-regen
 		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json packages/tac-validate/src/tac_validate/data/catalog_attribution.json; exit 1)
 
 # S059 / EV-050 / AC1 — offline WMO membership harvest (no live codes.wmo.int HTML)
+# Prettier after dump so short arrays match workspace format-check (json.dumps expands them).
 membership-regen:
 	$(UV) run python scripts/iwxxm/harvest_wmo_membership.py
+	pnpm exec prettier --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
 
 membership-check: membership-regen
 	@git diff --quiet -- packages/tac-validate/src/tac_validate/data/wmo_membership.json \
