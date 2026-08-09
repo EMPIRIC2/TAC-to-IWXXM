@@ -19,6 +19,8 @@ export const INTERNAL_DOC_REF_PATTERNS: ReadonlyArray<{
   { name: 'E##', pattern: /\bE\d{2}-\d+\b/g },
   // `(?<!\w)#` — `\b#` misses `#702` after spaces/slashes.
   { name: '#NNN', pattern: /(?<!\w)#\d{3,}\b/g },
+  // Product feature ids (D-S057-qa003=2 — privacy / OpenAPI operator surfaces).
+  { name: 'Fn', pattern: /\bF\d+\b/g },
 ];
 
 /** Empty unless a proven domain false positive is documented. */

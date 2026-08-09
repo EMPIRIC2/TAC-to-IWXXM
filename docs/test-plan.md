@@ -2699,10 +2699,11 @@ Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not ever
 
 **Guard patterns** (fail when found in scanned user-facing surfaces): `\[Corpus:`,
 `docs/sessions/`, `docs/feature-list`, `\bADR-\d+\b`, `\bEV-\d+\b`, `\bS0\d+\b`,
-`\bTC-[A-Z0-9-]+\b`, `\bE\d{2}-\d+\b`, `(?<!\w)#\d{3,}\b` (`D-S057-guard-s0=1`,
-`D-S057-04-guard-ext=1`; `#NNN` uses lookbehind because `\b#` misses `#702` after
-spaces/slashes). Allowlist only for true domain false positives. Do **not** scan
-`docs/` standing text, source comments-only, or `*.test.*` / pytest modules.
+`\bTC-[A-Z0-9-]+\b`, `\bE\d{2}-\d+\b`, `(?<!\w)#\d{3,}\b`, `\bF\d+\b`
+(`D-S057-guard-s0=1`, `D-S057-04-guard-ext=1`, `D-S057-qa003=2`; `#NNN` uses
+lookbehind because `\b#` misses `#702` after spaces/slashes). Allowlist only for
+true domain false positives. Do **not** scan `docs/` standing text, source
+comments-only, or `*.test.*` / pytest modules.
 
 | ID | Tier | Criterion |
 |----|------|-----------|

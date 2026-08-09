@@ -32,6 +32,11 @@
 | D-S057-gateB | **1** — Gate B PASS; S5.M1–S5.M3 defaults; proceed 07-build M1 |
 | D-S057-phaseC | **1** — Continue 09-qa + 10-e2e (delta/light) → 11-verify-impl |
 | D-S057-ui-preview-verify | **2** — No non-deployed UI preview before Verify (FE catalogs clean) |
+| D-S057-uj055 | **1** — Approve UJ-055 |
+| D-S057-f7 | **1** — Approve F7 deepen (copy hygiene) |
+| D-S057-f21 | **1** — Approve F21 deepen (OpenAPI/errors) |
+| D-S057-qa003 | **2** — Expand guard with `\bF\d+\b`; strip Fn IDs from privacy + OpenAPI |
+| D-S057-11-next | **1** — Push branch + open PR to `stage` (12/13 stay skipped) |
 
 ### Acceptance (confirmed `D-S057-01-ac=1`)
 

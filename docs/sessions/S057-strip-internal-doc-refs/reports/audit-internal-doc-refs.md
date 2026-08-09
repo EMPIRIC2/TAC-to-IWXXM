@@ -33,8 +33,8 @@ Operator-visible catalog strings are **clean** under the locked guard (Soft-prev
 plain language; exported `SOFT_PREVIEW_*` for scanning). ADRs/EV/S0/UJ remain in **comments**
 and **tests** (allowed). **T3.3 Playwright skipped** (D-S057-04-t3 — no visible hits).
 
-Note: privacy inventory purposes still mention product Fn IDs (`F5` / `F31`) — **not** in
-the locked regex set; left as-is unless a follow-on cycle expands the guard.
+**QA-003 fix (`D-S057-qa003=2`)**: Guard now includes `\bF\d+\b`. Privacy inventory
+purposes and OpenAPI F2/F6 planning cites rewritten to operator language.
 
 ## Client-facing errors
 

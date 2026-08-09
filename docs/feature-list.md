@@ -362,8 +362,8 @@
 - **S057 / EV-048 deepen (#951 — strip internal doc refs from operator UI)**: Operator-visible
   UI copy (labels, helpers, tooltips, banners, empty states, console/catalog copy, example
   tier labels, privacy/auth copy) must not cite internal engineering vocabulary
-  (`[Corpus:…]`, ADR/session/EV IDs, `docs/` paths, UJ/TC/issue numbers). Source comments,
-  tests, and repo docs remain allowed. Does **not** flip F7 → Implemented.
+  (`[Corpus:…]`, ADR/session/EV IDs, product `FNN` ids, `docs/` paths, UJ/TC/issue numbers).
+  Source comments, tests, and repo docs remain allowed. Does **not** flip F7 → Implemented.
 - **Acceptance (EV-048 / #951 — F7 UI slice)** — **approved** (`D-S057-01-ac=1`):
   1. Audit findings for UI string catalogs listed in the PR.
   2. No operator-visible UI string matches guard patterns (see test-plan TC-EV048).
@@ -841,8 +841,8 @@
 - **S057 / EV-048 deepen (#951 — public OpenAPI / client error copy)**: Public OpenAPI
   path/operation summaries, parameter/schema `description` fields, runtime `/docs` / Redoc
   text, and client-facing `detail`/error messages must use operator-friendly language —
-  no `[Corpus:…]`, ADR/session/EV IDs, `docs/` paths, TC/E## planning IDs, or GitHub
-  issue `#NNN` citations. Developer comments and test docstrings remain allowed.
+  no `[Corpus:…]`, ADR/session/EV IDs, product `FNN` ids, `docs/` paths, TC/E## planning
+  IDs, or GitHub issue `#NNN` citations. Developer comments and test docstrings remain allowed.
 - **Acceptance (EV-048 / #951 — F21 API slice)** — **approved** (`D-S057-01-ac=1`):
   1. Audit findings for OpenAPI + client-facing errors listed in the PR.
   2. OpenAPI export and error surfaces pass automated guard (TC-EV048-002/004/005).

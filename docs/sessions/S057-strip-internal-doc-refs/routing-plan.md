@@ -22,7 +22,7 @@
 | 08-verify-build | yes | delta | **completed** | PASS; report 08-verify-build.md |
 | 09-qa | yes | delta | **completed** | pass_with_advisories; qa-report.md |
 | 10-e2e | yes | delta | **completed** | UJ-055 T0 PASS; T3 skipped; e2e-report.md |
-| 11-verify-impl | yes | delta | **in_progress** | AC + UJ signoff |
+| 11-verify-impl | yes | delta | **completed** | PASS; D-S057-uj055/f7/f21=1; qa003=2 |
 | 12-verify-deploy | no | — | skipped | waive unless deploy |
 | 13-deploy-smoke | no | — | skipped | waive unless deploy |
 

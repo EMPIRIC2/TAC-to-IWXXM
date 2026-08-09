@@ -18,7 +18,7 @@ class WorkSessionStatus(str, Enum):
 
 
 class WorkSessionProduct(str, Enum):
-    """F6 product ids stored on ``tac_work_sessions.product`` (lowercase)."""
+    """Product ids stored on ``tac_work_sessions.product`` (lowercase)."""
 
     AIRMET = "airmet"
     METAR = "metar"

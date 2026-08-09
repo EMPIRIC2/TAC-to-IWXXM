@@ -336,7 +336,7 @@ class PackageIssueModel(BaseModel):
 
 
 class ValidateIssueModel(BaseModel):
-    """HTTP DTO for a legacy F2 orchestrator finding on /validate."""
+    """HTTP DTO for a validation orchestrator finding on /validate."""
 
     layer: str
     level: str
@@ -357,7 +357,7 @@ class ValidateLayerIssueModel(BaseModel):
 
 
 class ValidateResponse(BaseModel):
-    """Response for POST /api/v1/validate (F2 layers + package_* extras)."""
+    """Response for POST /api/v1/validate (validation layers + package_* extras)."""
 
     is_valid: bool
     version: str

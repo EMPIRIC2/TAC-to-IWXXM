@@ -1469,7 +1469,10 @@ async def convert(
     bulletin_id: str = Form(default="", description="Optional bulletin identifier"),
     issuing_center: str = Form(default="", description="Optional issuing centre ICAO code"),
     lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
-    product: str = Form(default="METAR", description="TAC product (required for F6; default METAR for legacy)"),
+    product: str = Form(
+        default="METAR",
+        description="TAC product type (default METAR for legacy clients)",
+    ),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     preview: bool = Form(
         default=False,

@@ -12,7 +12,7 @@ import { collectOperatorVisibleCopy } from './operatorVisibleCopy';
 describe('TC-EV048 internal doc ref guard (FE)', () => {
   it('TC-EV048-005: detects synthetic planning cites', () => {
     const poisoned =
-      'Soft-preview (ADR-022); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 [Corpus: product]';
+      'Soft-preview (ADR-022); see #702 and TC-F7-002 / E11-31 / EV-040 / S011 / F31 [Corpus: product]';
     const hits = findInternalDocRefs(poisoned);
     const names = new Set(hits.map((h) => h.name));
     expect(names.has('ADR')).toBe(true);
@@ -22,6 +22,7 @@ describe('TC-EV048 internal doc ref guard (FE)', () => {
     expect(names.has('EV')).toBe(true);
     expect(names.has('S0')).toBe(true);
     expect(names.has('Corpus')).toBe(true);
+    expect(names.has('Fn')).toBe(true);
   });
 
   it('TC-EV048-005: clean operator copy passes', () => {

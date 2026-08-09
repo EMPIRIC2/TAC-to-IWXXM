@@ -807,8 +807,9 @@ representative privacy/auth empty-state copy without seeing internal planning vo
    field descriptions — operator meaning only.
 3. Spot-check privacy/auth empty-state or helper copy for the same constraint.
 
-**Acceptance**: No `[Corpus:…]`, `ADR-NNN`, `EV-NNN`, `S0NN`, or `docs/…` path citations in
-those surfaces. TC-EV048-001..005. **Tier: T0 / T2**; **T3** if UI audit finds visible hits.
+**Acceptance**: No `[Corpus:…]`, `ADR-NNN`, `EV-NNN`, `S0NN`, `FNN` product ids, or
+`docs/…` path citations in those surfaces. TC-EV048-001..005. **Tier: T0 / T2**;
+**T3** if UI audit finds visible hits.
 [Corpus: product §F7] [Corpus: product §F21] [Corpus: api] [Corpus: journeys]
 
 ---

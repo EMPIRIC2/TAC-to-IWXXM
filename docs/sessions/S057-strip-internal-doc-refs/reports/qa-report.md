@@ -41,7 +41,7 @@ QA Results:
 |----|---------|----------|------------------|
 | QA-001 | Tip not pushed — no remote CI run for `3a43da37` | advisory | Push branch before PR to `stage`; watch `ci.yml` |
 | QA-002 | H4–H5 / 12/13 deploy smoke waived by routing | advisory | Merge gate = tip CI → `stage` (no live deploy required) |
-| QA-003 | Privacy inventory still mentions product Fn IDs (`F5`/`F31`) — outside locked guard regex | advisory | Accept for #951; optional follow-on if Fn IDs should be stripped |
+| QA-003 | Privacy inventory / OpenAPI had product Fn IDs | **fixed** (`D-S057-qa003=2`) | Guard += `\bF\d+\b`; privacy + OpenAPI rewritten |
 | QA-004 | T3.3 Playwright UJ-055 skipped (no FE visible hits) | advisory | Accept T0/T2 unit guards per D-S057-04-t3 / Gate B |
 
 ### AC → evidence map
