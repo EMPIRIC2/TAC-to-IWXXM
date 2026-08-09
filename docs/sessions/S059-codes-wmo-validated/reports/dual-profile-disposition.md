@@ -26,8 +26,8 @@ Applicability mirrors `tac2iwxxm.convert` `_US_PRODUCTS`:
 
 | Product | `iwxxm_us` | Disposition | Divergent codes (annex3 ↔ us) | Notes / cite |
 |---------|------------|-------------|-------------------------------|--------------|
-| METAR | dual | **shared WMO** | _(none today)_ | L3 membership identical; `REMARK_US_EXTENSION` info fires under both today (shared awareness — allowlisted). Representative: `accept/metar_basic.tac` |
-| SPECI | dual | **shared WMO** | _(none)_ | Same as METAR. `accept/speci_basic.tac` |
+| METAR | dual | **shared WMO** + **intentional L5** on REMARKS | `REMARK_US_EXTENSION` (us only) | L3 membership identical. US REMARKS info gated to `iwxxm_us` (T3.3 / AC8). Representative body: `accept/metar_basic.tac`; REMARKS: `remark_us_info` pack |
+| SPECI | dual | **shared WMO** + **intentional L5** on REMARKS | `REMARK_US_EXTENSION` (us only) | Same as METAR. `accept/speci_basic.tac` |
 | TAF | dual | **shared WMO** | _(none)_ | US encode path exists; lint L3 shared. `accept/taf_basic.tac` |
 | SIGMET | dual | **shared WMO** | _(none)_ | US emit wrapper exists; no L5 lint overlay yet. `accept/sigmet_basic.tac` |
 | AIRMET | dual | **shared WMO** | _(none)_ | Same; underscore AirWx membership shared. `accept/airmet_a2_phenomenon.tac` |
@@ -49,10 +49,11 @@ Applicability mirrors `tac2iwxxm.convert` `_US_PRODUCTS`:
 
 | Code | Why allowlisted |
 |------|-----------------|
-| `REMARK_US_EXTENSION` | Info awareness for US REMARKS tokens; reserved if future gating emits only under `iwxxm_us` |
+| `REMARK_US_EXTENSION` | Intentional L5 — emitted only under `iwxxm_us` (T3.3 fix); annex3 suppresses |
 
-No **true error** rows open after T3.1 representative matrix (T3.3 may still find cases when
-scanning broader packs / REMARKS fixtures).
+**True error fixed (T3.3):** annex3 previously emitted `REMARK_US_EXTENSION` (US profile
+awareness) — wrong gating. Now annex3-silent; `iwxxm_us` retains info. Regression:
+TC-EV050-008 / R5 annex3 suppression tests.
 
 ## Membership sad path (dual)
 
@@ -64,8 +65,8 @@ scanning broader packs / REMARKS fixtures).
 
 | Item | Disposition |
 |------|-------------|
-| Gate `REMARK_US_EXTENSION` / `INVALID_REMARK` to `iwxxm_us` only | Optional true-error or intentional L5 deepen — decide in T3.3 if annex3 should suppress US remark info |
-| Broader dual-pack scan beyond representatives | Expand harness fixtures if T3.3 finds divergent packs |
+| Gate `REMARK_US_EXTENSION` to `iwxxm_us` only | **Done** (T3.3); `INVALID_REMARK` stays on both (malformed) |
+| Broader dual-pack scan beyond representatives | Expand harness fixtures if further true errors appear |
 | Encode-path XML diffs (`tac2iwxxm` annex3 vs iwxxm_us) | Out of AC7 lint/membership scope; convert goldens already cover encode |
 
 ## AC7 checklist

@@ -420,8 +420,13 @@ def _check_us_remarks(
     core: str,
     body_start: int,
     body_end: int,
+    profile: str = "annex3",
 ) -> list[Issue]:
-    """Lint US REMARKS after ``RMK`` (research R5 / iwxxm_us awareness)."""
+    """Lint US REMARKS after ``RMK`` (research R5 / iwxxm_us L5 overlay).
+
+    Malformed remark tokens are errors under both profiles. ``REMARK_US_EXTENSION``
+    info is emitted only under ``profile=iwxxm_us`` (EV-050 / AC8 true-error fix).
+    """
     if "RMK" not in tokens:
         return []
     rmk_i = tokens.index("RMK")
@@ -504,7 +509,7 @@ def _check_us_remarks(
             continue
         i += 1
 
-    if saw_us:
+    if saw_us and profile == "iwxxm_us":
         _append_remark_issue(
             issues,
             code="REMARK_US_EXTENSION",
@@ -741,7 +746,7 @@ def _check_c1_multi_report(tac: str, product: str) -> list[Issue]:
     ]
 
 
-def _check_metar_speci(tac: str, product: str) -> list[Issue]:
+def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
     # Drop trailing '=' for token scans.
@@ -990,6 +995,7 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
             core=core,
             body_start=start,
             body_end=end,
+            profile=profile,
         )
     )
     issues.extend(
@@ -2409,9 +2415,8 @@ def check_product_rules(
     list[Issue]
         Error-severity findings with spans when possible.
     """
-    _ = profile  # L5 gating wired in T3.3 when disposition finds true errors
     if product in {"METAR", "SPECI"}:
-        return _check_metar_speci(tac_text, product)
+        return _check_metar_speci(tac_text, product, profile=profile)
     if product == "TAF":
         return _check_taf(tac_text)
     if product in {"SIGMET", "AIRMET"}:
