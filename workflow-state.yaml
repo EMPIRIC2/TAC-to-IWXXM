@@ -32,6 +32,9 @@ sessions:
   pr_base: stage
   pr_merged_sha: fd84c00a
   pr_merged_sha_full: fd84c00ae4d4563edb080d322cc2ab3d683bd4f1
+  followup_pr_number: 971
+  followup_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971
+  followup_pr_note: "docs closeout after #969 merge (ea8d40f7)"
   artifacts_dir: docs/sessions/S061-ci-polish-quality-pr-stats/
   github_issues:
   - 950
@@ -35632,6 +35635,8 @@ evolve_cycles:
   pr_status: merged
   pr_merged_sha: fd84c00a
   pr_merged_sha_full: fd84c00ae4d4563edb080d322cc2ab3d683bd4f1
+  followup_pr_number: 971
+  followup_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971
   gates:
     a_to_b: passed
     a_to_b_note: "D-S061-gateA=1 — Gate A PASS"
