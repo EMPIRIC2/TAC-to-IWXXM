@@ -37,7 +37,7 @@
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); **deepen** S053 / EV-044 separate staging DOKS + DO Project |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
@@ -1341,12 +1341,16 @@
   5. **CD auto-rollout (EV-034)**: On `main` Deploy after GHCR push, pin `metar-api` /
      `metar-frontend` / `metar-worker` to the immutable `TIMESTAMP-SHA` tag via kubectl
      (`KUBE_CONFIG` Actions secret). Render hooks optional/non-blocking.
-  6. **Dual-env CD (EV-043 / #886)**: `stage` → staging; `main` → prod. PR-required branches;
-     promote `stage`→`main` only after Staging smoke green (`staging-gate`). Solo-dev: PR is
-     the manual promote step (no Environment reviewers).
+  6. **Dual-env CD (EV-043 / #886)**: `stage` → staging auto-Deploy; promote `stage`→`main`
+     only after Staging smoke green (`staging-gate`). Solo-dev: PR is the promote-to-`main`
+     step (no Environment reviewers).
   7. **Dual DOKS + DO Projects (EV-044)**: Staging cluster + managed PG under DO Project
      **Staging TAC-to-IWXXM**; prod cluster + PG under **TAC-to-IWXXM**. Amends ADR-034
      (supersedes same-cluster two-namespace staging).
+  8. **Tag-driven prod (EV-051 / S060)**: Push to `main` runs full CI **without** prod Deploy.
+     Prod Deploy runs after full CI on `vYYYY.MM.DD-deploy` tag push (pattern `v*-*-deploy`)
+     or optional `workflow_dispatch`. Deploy `needs` include `e2e-smoke`. Solo-dev “approval”
+     = cutting the deploy tag (or dispatch).
 - **Convert APIs**: Remain public (no JWT) for convert/lint/validate/disseminate (`D-S038-F30`).
 - **Acceptance**:
   1. Product path boots/smokes without Supabase **database** credentials (**TC-F30-001**)
@@ -1355,16 +1359,21 @@
   4. DOKS hosts API + worker + static; cutover runbook + H0–H5 against new endpoints (**TC-F30-004**)
   5. Render decommissioned after soak or residual ticket with checklist (**TC-F30-005**)
   6. Docs/CORPUS/env-contract no longer require Supabase as data plane (**TC-F30-006**)
-  7. `main` CD rolls DOKS images to the pushed immutable tag without manual kubectl (**TC-F30-007**)
+  7. Prod CD rolls DOKS images to the immutable tag without manual kubectl when a deploy
+     tag (or dispatch) runs (**TC-F30-007**)
   8. Staging DOKS + isolated DB/secrets on DO Project **Staging TAC-to-IWXXM**; prod on
      **TAC-to-IWXXM** (**TC-F30-008** / **TC-F30-008′**)
   9. Staging DNS + TLS for `api|app.staging.tac-to-iwxxm.com` → staging LB (**TC-F30-009**)
-  10. `stage`/`main` auto-deploy to staging/prod clusters respectively (**TC-F30-010**)
+  10. `stage` auto-deploys staging after full CI; `main` push does **not** auto-deploy prod
+      (**TC-F30-010** amended EV-051)
   11. Branch protection / rulesets: PR required on `stage` and `main` (**TC-F30-011**)
   12. PRs to `main` require head=`stage` + Staging smoke green (**TC-F30-012**)
   13. Shared-cluster staging namespace removed after dual-cluster cutover (**TC-F30-013**)
-- **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer prod approvals
-- **Source**: E31-*; E34-*; E43-*; E44-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886; S042 / EV-034; S052 / EV-043; S053 / EV-044
+  14. Prod Deploy via `vYYYY.MM.DD-deploy` tag (or `workflow_dispatch`) after full CI incl.
+      `e2e-smoke` (**TC-F30-014** / TC-EV051-*)
+- **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer Environment
+  approvals (solo uses tag/dispatch)
+- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 

@@ -105,7 +105,8 @@ Commits and PRs are structured, but **no file is auto-updated** for end users. W
 release, promoting **`stage` → `main`**, or completing deploy, aggregate merged work into
 `docs/CHANGELOG.md` and/or the deploy report (see `.cursor/skills/considerations.md`).
 
-**Promote = release (recommended):** bump changed publishable package semver on `stage`,
-cut CHANGELOG, merge via Staging gate, then tag `vYYYY.MM.DD-deploy` on `main` (+ PyPI
-package tags when publishing). Details: [docs/deploy.md](../../../docs/deploy.md) §Promote ·
-[doks-promote-from-stage.mdc](../optional/doks-promote-from-stage.mdc) §Release on promote.
+**Promote = release:** bump changed publishable package semver on `stage`, cut CHANGELOG,
+merge via Staging gate to `main` (CI only), then push `vYYYY.MM.DD-deploy` to roll **prod**
+(+ PyPI package tags when publishing). Details: [docs/deploy.md](../../../docs/deploy.md)
+§Promote · [doks-promote-from-stage.mdc](../optional/doks-promote-from-stage.mdc)
+§Release on promote (EV-051).

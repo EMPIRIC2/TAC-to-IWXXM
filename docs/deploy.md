@@ -60,19 +60,20 @@ Render archive: [ops/render-decommission-archive.md](ops/render-decommission-arc
 `--skip-if-suspended` / `RENDER_SKIP_IF_SUSPENDED` so main CI Deploy skips suspended Render
 services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the prod target.
 
-### CD — DOKS image rollout (S042 / EV-034 / EV-043 / EV-044 dual cluster)
+### CD — DOKS image rollout (S042 / EV-034 / EV-043 / EV-044 / EV-051 tag-driven prod)
 
-| Branch | GH Environment | Cluster | Namespace | Latest tag | Post-deploy |
-|--------|----------------|---------|-----------|------------|-------------|
-| `stage` | `staging` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `stage-latest` | **Staging smoke** job |
-| `main` | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | (prod smoke via 13 / Makefile) |
+| Trigger | GH Environment | Cluster | Namespace | Latest tag | Post-deploy |
+|---------|----------------|---------|-----------|------------|-------------|
+| Push `stage` | `staging` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `stage-latest` | **Staging smoke** job |
+| Push `main` | — | — | — | — | **CI only** (no Deploy) |
+| Tag `vYYYY.MM.DD-deploy` (`v*-*-deploy`) or `workflow_dispatch` → production | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | prod smoke via 13 / Makefile |
 
-On push to `stage` or `main`, **Deploy** in `.github/workflows/ci-cd.yml`:
+**Deploy** in `.github/workflows/ci-cd.yml` waits on full CI including **`e2e-smoke`**, then:
 
 1. Builds/pushes GHCR images tagged `TIMESTAMP-SHA` and `{stage\|main}-latest`.
 2. **Rolls DOKS** with `DOKS_NAMESPACE` + **env-scoped kubeconfig** via
    `scripts/deploy/doks_rollout_images.sh <tag>` (staging secret ≠ prod secret after EV-044).
-3. **Render hooks** (optional, **main only**): `--skip-if-suspended` (`E34-4`).
+3. **Render hooks** (optional, **prod Deploy only**): `--skip-if-suspended` (`E34-4`).
 
 **Promote (required before any merge to `main`):** [Corpus: adr/ADR-034]
 
@@ -86,16 +87,20 @@ On push to `stage` or `main`, **Deploy** in `.github/workflows/ci-cd.yml`:
 4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
    (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
    successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
-5. Merge to `main` → **Deploy (main)** to prod cluster.
-6. **Tag the release** on the merged `main` tip: deploy tag + any PyPI package tags (F12–F14).
+5. Merge to `main` → full CI on `main` (**no** prod Deploy).
+6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
+   `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
+   Actions → CI/CD Pipeline → **Run workflow** (`workflow_dispatch`, production).
+7. PyPI package tags (F12–F14) when publishing — separate from the deploy tag.
 
-Solo-dev: the PR is the manual gate (no Environment reviewers). Do **not** promote while
-Staging smoke or Staging gate is red/missing. See [ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md)
-and [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
+Solo-dev gates: (1) PR `stage`→`main`, (2) deploy tag or dispatch. No Environment reviewers.
+Do **not** promote while Staging smoke or Staging gate is red/missing. See
+[ADR-034](adr/ADR-034-doks-staging-promote-from-stage.md) and
+[ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 
-### Release checklist (`stage` → `main`)
+### Release checklist (`stage` → `main` → tag)
 
-Treat every promote to prod as a release. Soft recommendation (does not block Staging gate):
+Treat every prod cutover as a release:
 
 - [ ] Diff `stage` vs last deploy tag / last promote: note which of `packages/tac2iwxxm`,
       `packages/tac-validate`, `packages/iwxxm-validate` changed
@@ -103,14 +108,15 @@ Treat every promote to prod as a release. Soft recommendation (does not block St
       `pyproject.toml`, `__version__`, and Cargo/locks when present
 - [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
 - [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
-- [ ] After merge: `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>`
+- [ ] Merge to `main`; wait for tip CI green (**Deploy must not run** on that push)
+- [ ] `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>` → prod Deploy
 - [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,
       `iwxxm-validate-v*`) only after [pypi-release-checklist](../.cursor/skills/pypi-release-checklist/SKILL.md)
 - [ ] Docs-only / infra-only with no package diffs: skip package semver + PyPI tags; still
       cut CHANGELOG + deploy tag when shipping to prod
 
 Rule: [`.cursor/rules/optional/doks-promote-from-stage.mdc`](../.cursor/rules/optional/doks-promote-from-stage.mdc)
-§Release on promote. [Corpus: product §F12–F14]
+§Release on promote. [Corpus: product §F12–F14] [Corpus: product §F30]
 
 | Actions secret | Required | Description |
 |----------------|----------|-------------|
