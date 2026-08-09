@@ -15,12 +15,13 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Validated membership |
-| **Active milestone** | M1: Offline harvest (awaiting Gate B → 07) |
-| **Active task** | T1.1 (first after Gate B) |
-| **Tasks completed** | 0 / 15 |
-| **Stage** | 05-verify-tech |
+| **Active milestone** | M1: Offline harvest |
+| **Active task** | T2.1 (next) |
+| **Tasks completed** | 4 / 15 |
+| **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
 | **Plan approve** | `D-S059-04-plan=1` |
+| **Gate B** | `D-S059-gateB=1` |
 | **Build Plan Card** | `docs/sessions/S059-codes-wmo-validated/build-plan-card.md` |
 
 ## Tech decisions (**locked** `D-S059-04-*`)
@@ -71,10 +72,10 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T1.1 | Test: harvest produces frozen membership for v1 families (`D-S059-families=1a`); assert offline-only (no network) | Test | pending | TC-EV050-001; AC1 | — | vendor CSV + RDF |
-| T1.2 | Code: harvest script/module (CSV `notation` + pin RDF for nil); write artifact under `packages/tac-validate` data | Code | pending | AC1; D-S059-04-harvest/wire | T1.1 | vendor |
-| T1.3 | Config: `make` target to regenerate membership on `iwxxm-codelists` pin bump; wire optional CI drift check | Config | pending | AC1; AC3 | T1.2 | — |
-| T1.4 | Docs: harvest cadence vs `vendor/manifest.json` pin; cross-link #859; RULE_SOURCE_URLS / TAC_VALIDATION pointers | Docs | pending | TC-EV050-003; AC3 | T1.2 | — |
+| T1.1 | Test: harvest produces frozen membership for v1 families (`D-S059-families=1a`); assert offline-only (no network) | Test | completed | TC-EV050-001; AC1 | — | vendor CSV + RDF |
+| T1.2 | Code: harvest script/module (CSV `notation` + pin RDF for nil); write artifact under `packages/tac-validate` data | Code | completed | AC1; D-S059-04-harvest/wire | T1.1 | vendor |
+| T1.3 | Config: `make` target to regenerate membership on `iwxxm-codelists` pin bump; wire optional CI drift check | Config | completed | AC1; AC3 | T1.2 | — |
+| T1.4 | Docs: harvest cadence vs `vendor/manifest.json` pin; cross-link #859; RULE_SOURCE_URLS / TAC_VALIDATION pointers | Docs | completed | TC-EV050-003; AC3 | T1.2 | — |
 
 #### M2: Membership wire + aggressive fixtures — P0
 
@@ -126,10 +127,10 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 
 | ID | Milestone | Status | Depends On |
 |----|-----------|--------|------------|
-| T1.1 | M1 | pending | — |
-| T1.2 | M1 | pending | T1.1 |
-| T1.3 | M1 | pending | T1.2 |
-| T1.4 | M1 | pending | T1.2 |
+| T1.1 | M1 | completed | — |
+| T1.2 | M1 | completed | T1.1 |
+| T1.3 | M1 | completed | T1.2 |
+| T1.4 | M1 | completed | T1.2 |
 | T2.1 | M2 | pending | T1.2 |
 | T2.2 | M2 | pending | T2.1 |
 | T2.3 | M2 | pending | T2.1 |

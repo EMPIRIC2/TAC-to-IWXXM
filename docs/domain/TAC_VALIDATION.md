@@ -282,6 +282,21 @@ Validate token **membership** / spellings against registry (not full Annex prose
 
 Offline RDF (pin-aligned): `vendor/schemas/iwxxm/2025-2/IWXXM/rule/codes.wmo.int-*.rdf` (also mirrored under repo-root `IWXXM/rule/` in some layouts).
 
+### Offline membership harvest (EV-050 / #959 Validated)
+
+L3 token membership for CI uses a **generated** artifact — never live `codes.wmo.int` HTML in PR CI:
+
+| Item | Path / command |
+|------|----------------|
+| SoT (CSV) | `vendor/schemas/iwxxm-codelists/CSV/**/*_entity.csv` (`notation` column) |
+| SoT (nil RDF) | `vendor/schemas/iwxxm/{pin}/IWXXM/rule/codes.wmo.int-{common,iwxxm}-nil.rdf` |
+| Artifact | `packages/tac-validate/src/tac_validate/data/wmo_membership.json` |
+| Regenerate | `make membership-regen` |
+| Drift check | `make membership-check` |
+| Module | `tac_validate.membership` |
+
+**Cadence:** regenerate when `vendor/manifest.json` bumps `iwxxm-codelists` (same vendor sync PRs as [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) URI drift). See [RULE_SOURCE_URLS.md](rules/RULE_SOURCE_URLS.md) §codes.wmo.int.
+
 ---
 
 ## Official TAC fixtures (accept / reject shapes)

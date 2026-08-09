@@ -62,4 +62,10 @@
 | 06 if routed | N/A (skipped) |
 | Build Plan Card parity | PASS |
 
-**Overall (recommended):** Gate B **PASS** → **07-build** (M1 / T1.1).
+**Overall:** Gate B **PASS** (`D-S059-gateB=1`) → **07-build** (M1 / T1.1).
+
+## Exit
+
+- [x] Consistency + plan-readiness PASS
+- [x] Advisories L1–L3 accepted
+- [x] User Gate B decision `1`

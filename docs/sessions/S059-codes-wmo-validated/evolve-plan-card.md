@@ -35,7 +35,7 @@ membership-checked in CI — no live `codes.wmo.int` HTML in PR CI.
 
 ## Next child stage
 
-**05-verify-tech** — Gate B (`D-S059-04-plan=1` approved)
+**07-build** — M1 / T1.1 (`D-S059-gateB=1`)
 
 ## Risks / open decisions
 

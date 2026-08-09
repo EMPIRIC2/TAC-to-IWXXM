@@ -193,10 +193,13 @@ Canonical companions:
 - **S055 / EV-046 (#889 Lean):** present/cite/cover —
   [codes-wmo-int-coverage.md](../../sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md);
   ISSUE_CATALOG weather/cloud/nil rows cite register landings; pin
-  `vendor/manifest.json` → `iwxxm-codelists` tag `49-2`. **Validated** deferred to
-  [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959); compose
-  [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) /
-  [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882).
+  `vendor/manifest.json` → `iwxxm-codelists` tag `49-2`. **Validated (S059 / EV-050 / #959):**
+  offline harvest → `packages/tac-validate/src/tac_validate/data/wmo_membership.json`
+  via `make membership-regen` (CSV `notation` + pin RDF for nil). Refresh with normal
+  vendor sync PRs that bump the `iwxxm-codelists` pin; optional drift:
+  `make membership-check`. Composes with [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
+  URI drift and [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notify
+  (design-only this cycle — no live HTML in PR CI).
 
 ### IWXXM register (`_iwxxm`)
 

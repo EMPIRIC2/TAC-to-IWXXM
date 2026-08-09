@@ -10,7 +10,7 @@
 `annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
-**Status**: **in_progress** — Phase B / **05-verify-tech** (04 approved `D-S059-04-plan=1`)
+**Status**: **in_progress** — Phase C / **07-build** (Gate B PASS `D-S059-gateB=1`)
 **Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
 (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
@@ -38,6 +38,7 @@ compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
 | D-S059-04-wire | **1** — Generated membership under `packages/tac-validate` data + pytest + `make` regen |
 | D-S059-04-adr | **1** — No new ADR; path/cadence in tech-spec / domain + execution plan |
 | D-S059-04-plan | **1** — Approve execution plan + Build Plan Card → **05-verify-tech** |
+| D-S059-gateB | **1** — Gate B **PASS**; handoff **07-build** M1 / T1.1 (L1–L3 advisory accepted) |
 
 ### Gate A (02) — PASS 2026-08-09
 
@@ -45,8 +46,11 @@ Report: `docs/sessions/S059-codes-wmo-validated/reports/02-verify-plan.md`. Corp
 
 ### 04-tech-plan — APPROVED 2026-08-09 (`D-S059-04-plan=1`)
 
-Artifacts: `reports/execution-plan.md`, `build-plan-card.md` (M1 = T1.1–T1.4), `reports/04-tech-plan.md`.  
-Next: **05-verify-tech** Gate B.
+Artifacts: `reports/execution-plan.md`, `build-plan-card.md` (M1 = T1.1–T1.4), `reports/04-tech-plan.md`.
+
+### Gate B (05) — PASS 2026-08-09 (`D-S059-gateB=1`)
+
+Report: `reports/05-verify-tech.md`. Advisories L1–L3 accepted. Next: **07-build** M1.
 
 ### Acceptance (Standard — AC1–AC8 confirmed `D-S059-01-ac=4a` + `D-S059-profiles=1b`)
 

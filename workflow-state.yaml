@@ -20,8 +20,8 @@ active_session:
   branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
   branch_status: active
   branch_exists: true
-  tip_sha: 743eb962
-  tip_sha_full: 743eb962886ca848fcfeadee700321f6cdc60dbf
+  tip_sha: 861e3d3c
+  tip_sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
   tip_sha_pushed: false
   pr_base: stage
   github_issues:
@@ -49,8 +49,8 @@ active_session:
   ui_preview_note: "N/A — no browser UI"
   prior_session: S058-ams-2027-abstract
   artifacts_dir: docs/sessions/S059-codes-wmo-validated/
-  current_stage: 05-verify-tech
-  current_stage_note: "Gate B audit drafted; awaiting D-S059-gateB; tip 743eb962; dirty until commit"
+  current_stage: 07-build
+  current_stage_note: "Gate B PASS; M1 T1.1–T1.4 done locally pending commit; tip 861e3d3c"
   decisions:
     D-S058-park: "1a — park S058/#958 Ready; keep scaffold"
     D-S059-ticket: "2a — open S059/EV-050 for #959"
@@ -66,6 +66,7 @@ active_session:
     D-S059-04-wire: "1 — tac-validate generated artifact + pytest + make"
     D-S059-04-adr: "1 — no new ADR"
     D-S059-04-plan: "1 — approve execution plan + build-plan-card → 05"
+    D-S059-gateB: "1 — Gate B PASS; handoff 07-build M1"
   routing_plan:
   - stage: 00-context
     required: true
@@ -109,9 +110,10 @@ active_session:
   - stage: 05-verify-tech
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-09'
-    note: "Gate B awaiting D-S059-gateB; report drafted"
+    completed: '2026-08-09'
+    note: "COMPLETE — Gate B PASS D-S059-gateB=1; handoff 07-build M1"
   - stage: 06-tech-tooling
     required: false
     mode: skip
@@ -120,7 +122,9 @@ active_session:
   - stage: 07-build
     required: true
     mode: full
-    status: pending
+    status: in_progress
+    started: '2026-08-09'
+    note: "M1 harvest complete pending commit"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -227,6 +231,8 @@ active_session:
     evolve_cycle_id: EV-050
     created_at: '2026-08-09'
   notes:
+  - "2026-08-09 D-S059-gateB=1 — Gate B PASS; 05 COMPLETE; handoff 07-build; M1 T1.1–T1.4 done locally pending commit; tip 861e3d3c"
+  - "2026-08-09 commit 861e3d3c — approve 04 plan; draft Gate B audit; tip 861e3d3c local ahead 5; no push; awaiting D-S059-gateB"
   - "2026-08-09 D-S059-04-plan=1 — 04 COMPLETE; handoff 05; Gate B audit drafted (recommended PASS); awaiting D-S059-gateB; tip 743eb962; dirty until commit"
   - "2026-08-09 commit 743eb962 — 04-tech-plan draft; tip 743eb962 local ahead 4; no push; awaiting D-S059-04-plan"
   - "2026-08-09 04 draft ready — D-S059-04-milestones/harvest/wire/adr locked; awaiting D-S059-04-plan; tip 2e232569; dirty until commit"
@@ -34373,7 +34379,7 @@ evolve_cycles:
   - F24
   - F28
   preset: Standard
-  current_stage: 05-verify-tech
+  current_stage: 07-build
   decisions:
     D-S059-route: "1 — Standard as drafted: 00→16→01→02→04→05→07→08→09→11; skip 03,06,10,12,13"
     D-S059-families: "1a — weather+recent+cloud+SIGMET/AIRMET+nil"
@@ -34387,7 +34393,8 @@ evolve_cycles:
     D-S059-04-wire: "1 — tac-validate generated artifact + pytest + make"
     D-S059-04-adr: "1 — no new ADR"
     D-S059-04-plan: "1 — approve execution plan + build-plan-card → 05"
-  note: "#889 Validated follow-on; offline harvest + tac-validate membership; PR→stage; D-S059-04-plan=1; Gate B pending"
+    D-S059-gateB: "1 — Gate B PASS; handoff 07-build M1"
+  note: "#889 Validated follow-on; offline harvest + tac-validate membership; PR→stage; Gate B PASS; handoff 07-build M1"
 - id: EV-049
   session_id: S058-ams-2027-abstract
   type: feature
@@ -45039,18 +45046,18 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-050-codes-wmo-validated
-  ahead_of_origin: 4
+  ahead_of_origin: 5
   pushed: false
   pending_commit: true
-  pending_commit_note: '04 approve + 05 Gate B report'
+  pending_commit_note: 'Gate B PASS + M1 T1.1–T1.4 harvest + gateB docs'
   dirty: true
-  dirty_note: '04 approve + 05 Gate B report + state uncommitted; tip 743eb962'
-  tip_sha: 743eb962
-  tip_sha_full: 743eb962886ca848fcfeadee700321f6cdc60dbf
-  tip_note: 'S059/EV-050 — tip 743eb962 local ahead 4 (not pushed); D-S059-04-plan=1; 05 Gate B awaiting D-S059-gateB; dirty'
+  dirty_note: 'many uncommitted M1 files + gateB docs; tip 861e3d3c until parent commits'
+  tip_sha: 861e3d3c
+  tip_sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
+  tip_note: 'S059/EV-050 — tip 861e3d3c local ahead 5 (not pushed); Gate B PASS; 07-build M1 dirty pending commit'
   evolve_branch: evolve/EV-050-codes-wmo-validated
-  evolve_tip_sha: 743eb962
-  evolve_tip_sha_full: 743eb962886ca848fcfeadee700321f6cdc60dbf
+  evolve_tip_sha: 861e3d3c
+  evolve_tip_sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
   evolve_tip_sha_pushed: false
   stage_merge_sha: 06a9543f
   stage_merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
@@ -45067,9 +45074,11 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: stage
-  note: 'S059/EV-050 — tip 743eb962 local ahead 4 (not pushed); D-S059-04-plan=1; 05 Gate B pending; dirty/pending_commit'
+  note: 'S059/EV-050 — tip 861e3d3c local ahead 5 (not pushed); Gate B PASS; 07-build M1 dirty/pending_commit'
 
   notes:
+  - '2026-08-09 D-S059-gateB=1 — Gate B PASS; 05 COMPLETE; handoff 07-build; M1 T1.1–T1.4 locally pending commit; tip 861e3d3c unchanged; no git commit by workflow-state-manager'
+  - '2026-08-09 commit 861e3d3c — approve 04 plan; draft Gate B audit; tip 861e3d3c local ahead 5; no push; awaiting D-S059-gateB'
   - '2026-08-09 D-S059-04-plan=1 — 04 COMPLETE; 05-verify-tech in_progress; Gate B report drafted; awaiting D-S059-gateB; tip 743eb962 unchanged; dirty until commit; no git commit by workflow-state-manager'
   - '2026-08-09 commit 743eb962 — 04-tech-plan draft; tip 743eb962 local ahead 4; no push; awaiting D-S059-04-plan'
   - '2026-08-09 04 draft ready — D-S059-04-milestones/harvest/wire/adr locked; awaiting D-S059-04-plan; tip 2e232569 unchanged; dirty until commit; no git commit by workflow-state-manager'
@@ -45596,11 +45605,11 @@ git_history:
     purpose: "EV-050 / S059 codes.wmo.int harvest + tac-validate membership (#959)"
     session_id: S059-codes-wmo-validated
     evolve_cycle_id: EV-050
-    tip_sha: 743eb962
-    tip_sha_full: 743eb962886ca848fcfeadee700321f6cdc60dbf
+    tip_sha: 861e3d3c
+    tip_sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
     tip_sha_pushed: false
     pr_base: stage
-    note: "S059/EV-050 tip 743eb962 local ahead 4; 04 draft committed; awaiting D-S059-04-plan; not pushed"
+    note: "S059/EV-050 tip 861e3d3c local ahead 5; D-S059-04-plan=1; Gate B awaiting D-S059-gateB; not pushed"
   - name: evolve/EV-049-ams-2027-abstract
     base: stage
     base_sha: b57f2a87
@@ -46963,6 +46972,19 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 861e3d3c
+    sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
+    message: "[EV-050] docs: approve 04 plan; draft Gate B audit"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 05-verify-tech
+    skill_id: 05-verify-tech
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 861e3d3c
+    tip_sha_full: 861e3d3c65b2dc7082298c0cabbd8475568e6c73
+    note: 'D-S059-04-plan=1; Gate B audit drafted; awaiting D-S059-gateB; local only; no push'
   - sha: 743eb962
     sha_full: 743eb962886ca848fcfeadee700321f6cdc60dbf
     message: "[EV-050] docs: 04-tech-plan draft — harvest/membership/profiles"
