@@ -1,9 +1,10 @@
 # Evolve summary — S061 / EV-052
 
 **Date:** 2026-08-09  
-**PR:** [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage`  
-**Tip:** `828c7087`  
-**11:** complete (`D-S061-11=1`)
+**PR:** [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` **MERGED** @ `fd84c00a`  
+**Closeout tip:** `57a1542d`  
+**11:** complete (`D-S061-11=1`)  
+**Merge:** `D-S061-merge=1`
 
 ## Delivered
 
@@ -18,4 +19,4 @@
 
 ## Next
 
-`D-S061-merge=1` — commit session verify artifacts + push tip, then merge #969 → `stage` (no stage→main this cycle; 12/13 waived).
+Phase 4 cycle/session close AskQuestion (no stage→main this cycle; 12/13 waived).

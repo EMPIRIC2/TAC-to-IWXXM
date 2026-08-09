@@ -9,7 +9,7 @@
 **Features**: deepen **F29**, **F6**, **F21**, **F30**, **M5** (no new Fn)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-052-ci-polish-quality-pr-stats` (base `stage@80197a58`)  
-**Status**: **in_progress**  
+**Status**: **in_progress** — PR [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) **MERGED** → `stage` @ `fd84c00a` (`D-S061-merge=1`); cycle close AskQuestion pending  
 **Corpus**: [Corpus: product §F29] [Corpus: product §F6] [Corpus: product §F21]
 [Corpus: product §F30] [Corpus: product §M5] [Corpus: tests] [Corpus: adr/ADR-007]
 [Corpus: adr/ADR-006] [Corpus: adr/ADR-031] [Corpus: tech-spec] [Corpus: deploy]
