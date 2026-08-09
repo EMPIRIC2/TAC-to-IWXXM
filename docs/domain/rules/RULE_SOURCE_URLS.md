@@ -197,7 +197,10 @@ Canonical companions:
   offline harvest → `packages/tac-validate/src/tac_validate/data/wmo_membership.json`
   via `make membership-regen` (CSV `notation` + pin RDF for nil). Refresh with normal
   vendor sync PRs that bump the `iwxxm-codelists` pin; optional drift:
-  `make membership-check`. Composes with [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
+  `make membership-check`. Fixture∩ uplift + AC4 deferrals:
+  [fixture-coverage-delta-t2.4.md](../../sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md);
+  matrix pointer [COVERAGE_MATRIX §codes.wmo.int](./COVERAGE_MATRIX.md#fixture-coverage--s055--ev-046-lean--889).
+  Composes with [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
   URI drift and [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notify
   (design-only this cycle — no live HTML in PR CI).
 

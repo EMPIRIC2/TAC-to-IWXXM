@@ -4,9 +4,12 @@
 **Method:** Coarse token ∩ vendor notations (EV-046 style), refined for cloud groups
 `FEW###` / `…TCU` suffixes and CSV `notation` column.  
 **Corpus:** [Corpus: tests] [Corpus: product §F12/F15/F20/F23/F24/F28]  
-**Note:** This is **fixture coverage quality**, not yet Validated membership CI (AC2 lands in 07).
+**Note:** Pre-07 baseline only. **Post-M2 delta (T2.4):**
+[fixture-coverage-delta-t2.4.md](./fixture-coverage-delta-t2.4.md)
+(Validated membership CI landed in T2.1–T2.3; AC4 gap rows closed or defer+cite).
 
-**Scan:** 263 `*.tac` under `packages/tac-validate/tests/fixtures` + `packages/tac2iwxxm`.
+**Scan:** 263 `*.tac` under `packages/tac-validate/tests/fixtures` + `packages/tac2iwxxm`
+(pre-07; post-M2 scan = 270 — see T2.4 delta).
 
 ## Register ∩ fixtures (current tip)
 

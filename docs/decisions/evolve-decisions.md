@@ -10,7 +10,8 @@
 `annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
 **Started**: 2026-08-09  
 **Branch**: `evolve/EV-050-codes-wmo-validated` (base `stage@b57f2a87`; tip docs may advance)  
-**Status**: **in_progress** — Phase C / **07-build** (Gate B PASS `D-S059-gateB=1`)
+**Status**: **in_progress** — Phase C / **07-build** (Gate B PASS `D-S059-gateB=1`;
+**M2 complete** after T2.4 — next M3 dual-profile)
 **Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959)
 (parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889);
 epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
@@ -19,6 +20,13 @@ compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
 **Corpus**: [Corpus: product §F6/F12/F15/F20/F23/F24/F28], [Corpus: tests],
 [Corpus: tech-spec], [Corpus: decisions] · domain opt-in
 `docs/domain/rules/*`, `docs/domain/mining/*`, `docs/domain/TAC_VALIDATION.md`
+
+### M2 close (T2.4 — 2026-08-09)
+
+AC4 / TC-EV050-004: aggressive `RE*` / AIRMET `_` / SpaceWx composed / TCU packs landed;
+coverage delta + residual **defer+cite** (no new GitHub children) in
+`docs/sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md`.
+Exhaustive 402 weather + remaining register depth stay under #959/#889 per OOS.
 
 ### Scope (Phase 0–1 — locked 2026-08-09; profile amend 2026-08-09)
 
