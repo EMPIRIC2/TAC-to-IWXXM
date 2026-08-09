@@ -16,7 +16,9 @@ active_session:
   branch_base: stage@adcf3b1f
   branch_status: active
   branch_exists: true
-  tip_sha: adcf3b1f
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+  tip_sha_note: 'M2 shipped @ 748b4a6c; next M2.5 coverage then M3; T1.5 deferred (no admin)'
   orchestrator: 16-evolve
   evolve_cycle_id: EV-047
   artifacts_dir: docs/sessions/S056-m0-stabilize-operator-trust/
@@ -41,12 +43,18 @@ active_session:
   preset: Standard
   ui_preview: N/A unless help-link UI
   current_stage: 07-build
-  current_stage_note: "07 M1 — laptop seed baselines; CI re-record T1.3"
+  current_stage_note: "M2.5 full cov: auth+worker included; then M3"
+  state_note: "D-S056-cov95-scope=2 — literally every Python package including auth + worker; package + per-file ≥95%. Active M2.5 T2.5.1; T2.5.4 auth+worker lift; T1.5 still admin-blocked; M3 after coverage."
   decisions:
     D-S056-open: "1 — open S056/EV-047 all four issues"
     D-S056-bundle: "1 — one cycle all four"
     D-S056-husky: "1 — husky lint+fast units; reverse EV-036 day-to-day path"
     D-S056-preset: "1 — Standard; waive 12/13 unless help-link deploy"
+    D-S056-next-m3: "1 — M3 operator docs + Help (skip T1.5 for now; no admin)"
+    D-S056-t15-admin: "blocked — no repo admin; ruleset apply deferred; script/docs remain"
+    D-S056-cov95: "2 — package + per-file ≥95% this cycle (all Python packages in CI)"
+    D-S056-m3-order: "2 — resolve coverage first, then M3 docs/Help"
+    D-S056-cov95-scope: "2 — literally every Python package including auth + worker; package + per-file ≥95%"
   routing_plan:
   - stage: 00-context
     required: true
@@ -60,7 +68,7 @@ active_session:
     mode: orchestrator
     status: in_progress
     started: '2026-08-08'
-    note: "Phase 0–1 — scope locked; remaining intake #834/#956/#957"
+    note: "Orchestrating 07-build — M2.5 coverage gate before M3 (D-S056-cov95=2, D-S056-m3-order=2); T1.5 deferred (D-S056-t15-admin)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -106,7 +114,7 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-08-08'
-    note: M1 T1.1–T1.2 done; T1.3 CI re-record + T1.4 job next
+    note: "M1 T1.1–T1.4 + M2 T2.1–T2.3 complete; active M2.5 full cov (T2.5.1 in_progress; T2.5.4 auth+worker); M3 after; T1.5 pending/blocked (no admin)"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -134,7 +142,7 @@ active_session:
     mode: skip
     status: skipped
     note: waived D-S056-preset=1 unless help-link deploy
-  note: "Opened from 16-evolve after D-S056-open=1,1,1,1"
+  note: "Opened from 16-evolve after D-S056-open=1,1,1,1; D-S056-cov95=2 + D-S056-m3-order=2 → M2.5 coverage before M3; T1.5 deferred"
 sessions:
 - id: S055-wmo-aviation-registers
   type: feature
@@ -10130,49 +10138,53 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
+    status: in_progress
     started_at: '2026-08-08'
     started: '2026-08-08'
-    completed_at: '2026-08-08'
-    completed: '2026-08-08'
-    previous_started_at: '2026-08-07'
-    previous_completed_at: '2026-08-07'
-    previous_session_id: S050-remove-db-tools-operator-throughput
-    previous_evolve_cycle_id: EV-042
-    previous_tip_sha: 6bc756ef
-    previous_tip_sha_full: 6bc756efe902f77373fa4de8d4c15b50219dd333
-    previous_note: 'S050/EV-042 07-build COMPLETE — M4 done; superseded by S054/EV-045'
-    prior_session_id: S047-sql-ingest-live-e2e
-    prior_evolve_cycle_id: EV-039
-    prior_started: '2026-08-06'
-    prior_completed: '2026-08-06'
-    prior_note: 'S047/EV-039 07-build COMPLETE historically; closed D-S047-close=1'
-    prior_prior_session_id: S046-iwxxm-corpus-residuals
-    prior_prior_evolve_cycle_id: EV-038
-    prior_prior_note: 'S046/EV-038 07-build COMPLETE — #890 MERGED @ 619a7ac3'
-    session_id: S054-rust-ci-crates
-    evolve_cycle_id: EV-045
+    completed_at:
+    completed:
+    previous_started_at: '2026-08-08'
+    previous_completed_at: '2026-08-08'
+    previous_session_id: S054-rust-ci-crates
+    previous_evolve_cycle_id: EV-045
+    previous_tip_sha: 09ce2bef
+    previous_tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    previous_note: 'S054/EV-045 07-build COMPLETE — T1.1–T1.7; superseded by S056/EV-047'
+    prior_session_id: S050-remove-db-tools-operator-throughput
+    prior_evolve_cycle_id: EV-042
+    prior_started: '2026-08-07'
+    prior_completed: '2026-08-07'
+    prior_note: 'S050/EV-042 07-build COMPLETE — M4 done; superseded by S054/EV-045'
+    prior_prior_session_id: S047-sql-ingest-live-e2e
+    prior_prior_evolve_cycle_id: EV-039
+    prior_prior_note: 'S047/EV-039 07-build COMPLETE historically; closed D-S047-close=1'
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
     mode: full
-    note: 'COMPLETE — T1.1–T1.7 (7/7); D-S054-t17-ci=1 accepted run 31273500621 tip CI; handoff 08-verify-build'
-    tip_sha: 09ce2bef
-    tip_sha_full: 09ce2befdf0b5878ec6a832ec30718c489b4824b
+    note: 'IN_PROGRESS — M1+T1.1–T1.4 + M2 T2.1–T2.3 done @ 748b4a6c; next M3 T3.1–T3.4 (D-S056-next-m3=1); T1.5 blocked (D-S056-t15-admin)'
+    tip_sha: 748b4a6c
+    tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
     tip_sha_pushed: true
-    pr_number: 953
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/953
-    pr_status: open
+    pr_number:
+    pr_url:
+    pr_status:
     pr_base: stage
-    pr_supersedes: 952
-    ci_cd_pipeline_run: '31273500621'
-    ci_cd_pipeline_status: SUCCESS
-    ci_cd_pipeline_note: 'Accepted tip CI — run 31273500621 per D-S054-t17-ci=1; docs-only tip delta after f270618c; Staging FAIL was base=main only'
+    pr_supersedes:
+    ci_cd_pipeline_run:
+    ci_cd_pipeline_status:
+    ci_cd_pipeline_note: 'S054 prior tip CI 31273500621 archived under previous_*; S056 tip CI tracked on evolve/EV-047'
     pending_commit: false
-    current_milestone: M1
-    current_task:
-    active_milestone: M1
-    active_task:
-    active_task_status: completed
-    completed_through: T1.7
-    progress: 7/7
+    current_milestone: M3
+    current_task: T3.1
+    active_milestone: M3
+    active_task: T3.1
+    active_task_status: pending
+    completed_through: T2.3
+    progress: 10/16
+    decision_refs_s056:
+    - D-S056-next-m3
+    - D-S056-t15-admin
+    - D-S056-04-plan
     decision_refs:
     - D-S054-t17-ci
     - D-S054-gateB
@@ -14898,14 +14910,18 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
+    status: in_progress
     mode: orchestrator
-    session_id: S055-wmo-aviation-registers
-    evolve_cycle_id: EV-046
+    session_id: S056-m0-stabilize-operator-trust
+    evolve_cycle_id: EV-047
     started_at: '2026-08-08'
     started: '2026-08-08'
-    completed: '2026-08-08'
-    completed_at: '2026-08-08'
+    completed:
+    completed_at:
+    previous_s055_session_id: S055-wmo-aviation-registers
+    previous_s055_evolve_cycle_id: EV-046
+    previous_s055_completed: '2026-08-08'
+    previous_s055_note: 'COMPLETE — D-S055-close=1; Lean AC1–AC6; #959 follow-on'
     previous_session_id: S052-doks-staging-prod-branch-deploys
     previous_evolve_cycle_id: EV-043
     previous_completed_at:
@@ -14924,12 +14940,12 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: completed
-    current_child_stage_note: 'COMPLETE — D-S055-close=1; Lean AC1–AC6 done; Validated follow-on #959; cycle COMPLETE'
-    tip_sha: d0a51f5a
-    tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-    note: 'COMPLETE — D-S055-close=1; S055/EV-046 closed; Lean present/cite/cover done; #889 OPEN until #959; Ready for PR; EV-043/EV-044 remain PARKED; active_session=null; no git commit by workflow-state-manager'
-    close_decision: D-S055-close=1
+    current_child_stage: 07-build
+    current_child_stage_note: 'M2.5 coverage gate before M3 (D-S056-cov95=2, D-S056-m3-order=2); T1.5 deferred (D-S056-t15-admin)'
+    tip_sha: 748b4a6c
+    tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+    note: 'IN_PROGRESS — S056/EV-047 orchestrating 07-build; M2.5 T2.5.1 in_progress; D-S056-cov95=2 D-S056-m3-order=2; T1.5 blocked no admin; no git commit by workflow-state-manager'
+    close_decision:
 
     prior_s054_session_id: S054-rust-ci-crates
     prior_s054_evolve_cycle_id: EV-045
@@ -15193,6 +15209,111 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S056-cov95-scope
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S056-m0-stabilize-operator-trust
+  evolve_cycle_id: EV-047
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: quality
+  status: confirmed
+  topic: 'Coverage scope — literally every Python package including auth + worker'
+  summary: '2 — literally every Python package including auth + worker; package + per-file ≥95%'
+  decision: 'D-S056-cov95-scope=2 — M2.5 applies to literally every Python package including packages/auth and apps/worker; package + per-file ≥95%; adds T2.5.4 auth+worker lift.'
+  user_option: '2'
+  note: 'Clarifies D-S056-cov95=2 scope; M2.5 T2.5.1 in_progress; T2.5.4 pending; then M3.'
+  branch: evolve/EV-047-m0-stabilize-operator-trust
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+  related_issues: ['833', '834', '956', '957']
+  related_decisions: ['D-S056-cov95', 'D-S056-m3-order']
+- id: D-S056-cov95
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S056-m0-stabilize-operator-trust
+  evolve_cycle_id: EV-047
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 07-build
+  category: quality
+  status: confirmed
+  topic: 'Coverage gate — package + per-file ≥95% this cycle'
+  summary: '2 — package + per-file ≥95% this cycle (all Python packages in CI)'
+  decision: 'D-S056-cov95=2 — Raise/enforce package fail_under ≥95 where missing; add CI per-file ≥95 check; fix tac2iwxxm flaky ~94.96%; applies to all Python packages in CI this cycle.'
+  user_option: '2'
+  note: 'User answered coverage=2. Implemented as milestone M2.5 (T2.5.1–T2.5.3) before M3.'
+  branch: evolve/EV-047-m0-stabilize-operator-trust
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+  related_issues: ['833', '834', '956', '957']
+  related_decisions: ['D-S056-m3-order', 'D-S056-next-m3']
+- id: D-S056-m3-order
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S056-m0-stabilize-operator-trust
+  evolve_cycle_id: EV-047
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 07-build
+  category: routing
+  status: confirmed
+  topic: 'Order — coverage vs M3 docs/Help'
+  summary: '2 — resolve coverage first, then M3 docs/Help'
+  decision: 'D-S056-m3-order=2 — Resolve M2.5 coverage gate before starting T3.1; amends sequencing after D-S056-next-m3=1.'
+  user_option: '2'
+  note: 'User answered proceed=2. Active milestone M2.5; M3 deferred until coverage tasks complete.'
+  branch: evolve/EV-047-m0-stabilize-operator-trust
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+  related_issues: ['956', '957']
+  related_decisions: ['D-S056-cov95', 'D-S056-next-m3']
+- id: D-S056-next-m3
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S056-m0-stabilize-operator-trust
+  evolve_cycle_id: EV-047
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 07-build
+  category: routing
+  status: confirmed
+  topic: 'Next milestone after M2 — M3 operator docs + Help'
+  summary: '1 — M3 operator docs + Help (skip T1.5 for now; no admin)'
+  decision: 'D-S056-next-m3=1 — Proceed to M3 (T3.1–T3.4) operator one-pager/handbook/Help; skip T1.5 ruleset apply for now (no repo admin).'
+  user_option: '1'
+  note: 'User chose Next=1 M3 docs/Help. Coverage 95% per-package+per-file requested — pending AskQuestion before scope change.'
+  branch: evolve/EV-047-m0-stabilize-operator-trust
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+  related_issues: ['956', '957', '833', '834']
+  related_decisions: ['D-S056-t15-admin', 'D-S056-docs']
+- id: D-S056-t15-admin
+  date: '2026-08-08'
+  timestamp: '2026-08-08'
+  resolved_at: '2026-08-08'
+  session_id: S056-m0-stabilize-operator-trust
+  evolve_cycle_id: EV-047
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 07-build
+  category: blocker
+  status: blocked
+  topic: 'T1.5 apply Converter perf ruleset (admin)'
+  summary: 'blocked — no repo admin; ruleset apply deferred; script/docs remain'
+  decision: 'D-S056-t15-admin=blocked — T1.5 ruleset apply deferred until repo admin available; keep apply script/docs; do not block M3.'
+  user_option: 'blocked'
+  note: 'No repo admin to apply GitHub rulesets; T1.5 remains pending/blocked.'
+  branch: evolve/EV-047-m0-stabilize-operator-trust
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+  related_issues: ['834']
+  related_decisions: ['D-S056-ruleset-defer', 'D-S056-next-m3']
 - id: D-S055-close
   date: '2026-08-08'
   timestamp: '2026-08-08'
@@ -32477,19 +32598,27 @@ evolve_cycles:
   - 956
   - 957
   milestone: "M0 — Stabilize + operator trust + narrative"
-  phase: 0
-  current_stage: 16-evolve
+  phase: 1
+  current_stage: 07-build
+  current_stage_note: "M2.5 full cov: auth+worker included; then M3"
   started: '2026-08-08'
   started_at: '2026-08-08'
   branch: evolve/EV-047-m0-stabilize-operator-trust
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
   interrupted_by_hotfix: false
   parked: false
-  scope_note: "Husky=lint+fast units (explicit reverse EV-036 day-to-day); #834 converter hard PR gate; #956 one-pager + #957 handbook"
+  scope_note: "Husky=lint+fast units (explicit reverse EV-036 day-to-day); #834 converter hard PR gate; #956 one-pager + #957 handbook; M2.5 package+per-file coverage ≥95% incl. auth+worker (D-S056-cov95-scope=2)"
   decisions_locked:
   - D-S056-open=1
   - D-S056-bundle=1
   - D-S056-husky=1
   - D-S056-preset=1
+  - D-S056-next-m3=1
+  - D-S056-t15-admin=blocked
+  - D-S056-cov95=2
+  - D-S056-cov95-scope=2
+  - D-S056-m3-order=2
   artifacts:
   - docs/sessions/S056-m0-stabilize-operator-trust/session-brief.md
   - docs/sessions/S056-m0-stabilize-operator-trust/routing-plan.md
@@ -42721,19 +42850,19 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-046-wmo-aviation-registers
+  current_branch: evolve/EV-047-m0-stabilize-operator-trust
   ahead_of_origin: 0
-  pushed: false
+  pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml after lean-docs-complete + D-S055-959=1; awaiting close AskQuestion; no git commit by workflow-state-manager'
-  tip_sha: d0a51f5a
-  tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  tip_note: 'S055/EV-046 @ main@d0a51f5a; current_stage lean-docs-complete; 16-evolve close pending; EV-043/EV-044 PARKED'
-  evolve_branch: evolve/EV-045-rust-ci
-  evolve_tip_sha: 021a323d
-  evolve_tip_sha_full: 021a323db2ef979ab4692845981c90f83f774854
+  dirty_note: 'workflow-state.yaml + session docs after D-S056-cov95 / D-S056-m3-order (M2.5); no git commit by workflow-state-manager'
+  tip_sha: 748b4a6c
+  tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
+  tip_note: 'S056/EV-047 @ 748b4a6c; 07-build M2.5 coverage before M3; T1.5 deferred (no admin)'
+  evolve_branch: evolve/EV-047-m0-stabilize-operator-trust
+  evolve_tip_sha: 748b4a6c
+  evolve_tip_sha_full: 748b4a6c84933f1c904c7cf9f782907a3fb1ed15
   evolve_tip_sha_pushed: true
   stage_merge_sha: c51e0e2f
   stage_merge_sha_full: c51e0e2f0c1a18619612470ee9ae03eae6b8e2f2
@@ -42749,10 +42878,12 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-046-wmo-aviation-registers
-  note: 'S055/EV-046 lean-docs-complete — D-S055-959=1 #959; awaiting close AskQuestion; cycle NOT completed; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
+  recommended_branch: evolve/EV-047-m0-stabilize-operator-trust
+  note: 'S056/EV-047 07-build — D-S056-cov95=2 D-S056-m3-order=2 M2.5 before M3; D-S056-t15-admin blocked; tip 748b4a6c; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-08 D-S056-cov95=2 + D-S056-m3-order=2 — package+per-file ≥95% this cycle (all Python packages in CI); resolve coverage (M2.5) before M3 docs/Help; T2.5.1 in_progress; T1.5 still admin-blocked; no git commit by workflow-state-manager'
+  - '2026-08-08 D-S056-next-m3=1 + D-S056-t15-admin=blocked — M2 shipped @ 748b4a6c; proceed M3 T3.1–T3.4; T1.5 ruleset apply deferred (no admin); coverage 95% per-package+per-file pending AskQuestion before scope change; no git commit by workflow-state-manager'
   - '2026-08-08 D-S055-959=1 — Lean AC1–AC6 docs complete; opened #959 Validated Standard follow-on; current_stage=lean-docs-complete; 16-evolve close pending AskQuestion; cycle NOT completed; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
   - '2026-08-08 D-S055-gateA=1 — Gate A PASS; accept M1/M2/L1; 02-verify-plan COMPLETE; lean-docs-execution; 16-evolve remains in_progress; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'
   - '2026-08-08 D-S055-01-ac=1 — AC1–AC6 confirmed; 01-requirements COMPLETE; 02-verify-plan in_progress; 16-evolve remains in_progress; EV-043/EV-044 remain PARKED; no git commit by workflow-state-manager'

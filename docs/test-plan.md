@@ -167,6 +167,8 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 | Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
 
 **Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
+Python also enforces **per-file ≥95%** via `scripts/ci/check_per_file_coverage.py` (EV-047 /
+D-S056-cov95-scope=2), including auth and worker.
 
 ## Migration Test Cases
 
@@ -2710,7 +2712,7 @@ Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not ever
 
 | Metric | Threshold | Context |
 |--------|-----------|---------|
-| Backend unit coverage | **95% all packages/apps** | ADR-007 universal gate |
+| Backend unit coverage | **95% all packages/apps** + **per-file ≥95%** (Python) | ADR-007 / EV-047 |
 | E2E pass rate | 100% on T2 before merge | Big-bang gate |
 | Live E2E (T3) | Manual signoff before release | `make test-live` — not CI-gated |
 | Vendor sync PR | human review required | No auto-merge to main |

@@ -36,6 +36,9 @@
 | D-S056-ruleset-defer | **2** — Defer **requiring** `Converter perf (tac2iwxxm)` in live rulesets until CI job ships (M1 T1.4→T1.5); keep other checks; establish **baselines first** for comparison |
 | D-S056-04-plan | **2** — Approve execution plan; **seed** `converter_pr.yaml` from laptop spike now; **re-record on CI** in T1.3 |
 | D-S056-04-floor | **200µs** absolute floor (amended from 50µs after cross-host noise on T1.3 Linux Docker re-record) |
+| D-S056-cov95 | **2** — package + per-file ≥95% this cycle (all Python packages in CI); M2.5 T2.5.1–T2.5.3 |
+| D-S056-cov95-scope | **2** — literally every Python package including auth + worker; package + per-file ≥95%; M2.5 adds T2.5.4 |
+| D-S056-m3-order | **2** — resolve coverage first (M2.5), then M3 docs/Help (amends sequencing after `D-S056-next-m3=1`) |
 
 ### Locked defaults (perf / hooks / docs)
 

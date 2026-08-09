@@ -17,12 +17,13 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Stabilize + narrative |
-| **Active milestone** | M1: Converter perf baselines + harness |
-| **Active task** | T1.5 ruleset apply; M3 docs |
-| **Tasks completed** | 10 / 16 (M1 T1.1–T1.4 + M2 T2.1–T2.3) |
+| **Active milestone** | M3: Operator docs + Help (after M2.5) |
+| **Active task** | T3.1 one-pager |
+| **Tasks completed** | 14 / 20 (M1–M2 + M2.5 T2.5.1–T2.5.4 done; M3 next) |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-08 |
 | **Ruleset** | `D-S056-ruleset-defer=2` — require `Converter perf (tac2iwxxm)` **after** job ships in M2 (not before) |
+| **Coverage** | `D-S056-cov95=2` + `D-S056-cov95-scope=2` + `D-S056-m3-order=2` — M2.5 (incl. auth+worker) before M3; T1.5 still admin-blocked |
 
 ## Tech decisions (proposed → confirm `D-S056-04-plan`)
 
@@ -36,6 +37,9 @@
 | D-S056-04-ci-job | New job `name: Converter perf (tac2iwxxm)` in `ci-cd.yml`; gate job if matrix needed; then **apply ruleset** including this context |
 | D-S056-04-docs | `docs/guides/operator-one-pager.md` + `operator-handbook.md`; README Quick start; Help = static link/modal to one-pager (no new API) |
 | D-S056-ruleset-defer | **2** — do **not** require Converter perf in live rulesets until M2 job exists on `stage` |
+| D-S056-cov95 | **2** — package + per-file ≥95% this cycle (all Python packages in CI) |
+| D-S056-cov95-scope | **2** — literally every Python package including auth + worker; package + per-file ≥95% |
+| D-S056-m3-order | **2** — resolve coverage first, then M3 docs/Help |
 
 ### Laptop spike (informational only — **not** the PR baseline)
 
@@ -107,14 +111,28 @@ None (fixtures in-repo).
 | T2.2 | Implement slim `.husky/pre-commit` / `pre-push`; add `make lint-fast` / `test-unit-fast` | Config | **completed** | D-S056-04-husky/unit-fast | T2.1 | — |
 | T2.3 | Update `docs/ops/DEVELOPMENT.md` + test-plan hook tables (EV-047 supersede EV-036 day-to-day) | Docs | **completed** | AC3 | T2.2 | — |
 
-#### M3: Operator one-pager + handbook + Help — P0
+#### M2.5: Coverage ≥95% (package + per-file) — P0
 
-**Goal**: User-facing docs + discovery.  
-**Acceptance**: TC-EV047-009..011; UJ-054.
+**Goal**: Enforce package `fail_under` ≥95 and CI per-file ≥95 for literally every Python package including `packages/auth` and `apps/worker`; stabilize tac2iwxxm flake (~94.96%).  
+**Acceptance**: CI fails under package or per-file coverage below 95%; tac2iwxxm no longer flakes under 95; auth + worker meet the same gates.  
+**Decisions**: `D-S056-cov95=2`, `D-S056-cov95-scope=2`, `D-S056-m3-order=2` (before M3 / T3.1).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | Write `docs/guides/operator-one-pager.md` (one printed page; no internal cites) | Docs | pending | #956 AC7 | — | — |
+| T2.5.1 | Raise package `fail_under` ≥95 where missing (all Python packages in CI) | Config | **completed** | D-S056-cov95=2 | T2.3 | — |
+| T2.5.2 | Add CI per-file ≥95 coverage check | Config | **completed** | D-S056-cov95=2 | T2.5.1 | — |
+| T2.5.3 | Fix tac2iwxxm flaky ~94.96% so package gate stays ≥95 | Test | **completed** | D-S056-cov95=2 | T2.5.1 | — |
+| T2.5.4 | Lift `packages/auth` + `apps/worker` to package + per-file ≥95% | Test | **completed** | D-S056-cov95-scope=2 | T2.5.1 | — |
+
+#### M3: Operator one-pager + handbook + Help — P0
+
+**Goal**: User-facing docs + discovery.  
+**Acceptance**: TC-EV047-009..011; UJ-054.  
+**Blocked until**: M2.5 complete (`D-S056-m3-order=2`).
+
+| # | Task | Type | Status | Spec Source | Depends On | Data Deps |
+|---|------|------|--------|-------------|------------|-----------|
+| T3.1 | Write `docs/guides/operator-one-pager.md` (one printed page; no internal cites) | Docs | pending | #956 AC7 | T2.5.1–T2.5.4 | — |
 | T3.2 | Write `docs/guides/operator-handbook.md` (sections + ingest pointer; link from one-pager) | Docs | pending | #957 AC8 | T3.1 | — |
 | T3.3 | README Quick start links; in-app Help entry → one-pager | Code | pending | AC9; UJ-054 | T3.1 | — |
 | T3.4 | Vitest/Playwright for Help entry (TC-EV047-011) | Test | pending | TC-EV047-011; 10-e2e | T3.3 | — |
@@ -123,21 +141,22 @@ None (fixtures in-repo).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T4.1 | Tip CI green; 08/09/10/11 reports | Verify | pending | routing Standard | M1–M3 | — |
+| T4.1 | Tip CI green; 08/09/10/11 reports | Verify | pending | routing Standard | M1–M2.5–M3 | — |
 
 ###### Parallelizable
 
-After plan approve: M1 and M2 can proceed in parallel once T1.1/T2.1 land; M3 independent of M1/M2 except final verify.
+After plan approve: M1 and M2 can proceed in parallel once T1.1/T2.1 land; **M2.5 before M3** (`D-S056-m3-order=2`); M3 after coverage gate.
 
 ## PR Plan
 
 | Milestone | PR title | Target |
 |-----------|----------|--------|
-| M1–M3 | `[EV-047] M0: slim husky, converter perf gate, operator docs` | `stage` |
+| M1–M3 | `[EV-047] M0: slim husky, converter perf gate, coverage 95%, operator docs` | `stage` |
 
 ## Phase Gate Check
 
 - [ ] AC1–AC9 met  
 - [ ] Baselines committed from CI-class measurement  
 - [ ] Ruleset requires `Converter perf (tac2iwxxm)` after M2 job  
+- [ ] Package + per-file coverage ≥95% in CI (`D-S056-cov95=2`)  
 - [ ] Tip CI green  

@@ -32,7 +32,8 @@ regressions on PR/CI, and ship operator one-pager + minimal handbook.
 
 ## Next child stage
 
-**04-tech-plan** — approve execution plan (`D-S056-04-plan`) → 05 → **07 M1 baselines**.
+**07-build / M2.5** — T2.5.1–T2.5.3 package + per-file coverage ≥95% (`D-S056-cov95=2`, `D-S056-m3-order=2`).  
+Then **M3** T3.1–T3.4 operator docs + Help. T1.5 ruleset apply deferred (`D-S056-t15-admin` — no repo admin).
 
 ## Locked decisions
 
@@ -46,10 +47,14 @@ regressions on PR/CI, and ship operator one-pager + minimal handbook.
 | D-S056-docs | 1 — guides one-pager + handbook; README + Help |
 | D-S056-preset | 1 — Standard; waive 12/13; 10 re-enabled |
 | D-S056-phase0 | 1 — Phase 0 locked |
+| D-S056-next-m3 | 1 — M3 operator docs + Help (skip T1.5 for now; no admin) |
+| D-S056-t15-admin | blocked — no repo admin; ruleset apply deferred; script/docs remain |
+| D-S056-cov95 | 2 — package + per-file ≥95% this cycle (all Python packages in CI) |
+| D-S056-m3-order | 2 — resolve coverage first, then M3 docs/Help |
 
 ## Risks / open decisions
 
-- Absolute ms ceiling value (derive in 04 from baselines×1.20 + floor)
-- Exact “fast unit subset” Makefile target name (04 inventory)
-- Help UI placement in existing shell (04/07)
+- Help UI placement in existing shell (07 T3.3)
 - CORPUS: guides remain opt-in; cite product/journeys for Help — no new root member
+- M2.5 coverage: package `fail_under` + CI per-file ≥95; tac2iwxxm flaky ~94.96%
+- T1.5 admin ruleset apply still pending when admin available

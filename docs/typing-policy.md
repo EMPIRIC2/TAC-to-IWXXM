@@ -53,9 +53,13 @@ cd apps/frontend && pnpm exec eslint src
 cd apps/frontend && pnpm exec tsc --noEmit
 ```
 
-## Coverage gate (ADR-007)
+## Coverage gate (ADR-007 / EV-047)
 
-**95%** line/branch coverage on all workspace members — pytest for Python, Vitest for frontend. Configured in root `pyproject.toml` `[tool.coverage.report]` and per-package overrides during Phase 1 (T1.9).
+**95%** line/branch coverage on all workspace members — pytest for Python, Vitest for frontend.
+Configured in root `pyproject.toml` `[tool.coverage.report]` and per-package overrides
+(Phase 1 T1.9). **EV-047 / D-S056-cov95-scope=2:** every measured Python source file must
+also be ≥95% (`scripts/ci/check_per_file_coverage.py` after package unit jobs); auth and
+worker use hard `fail_under = 95` (no longer soft-report-only).
 
 ## References
 

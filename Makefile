@@ -16,7 +16,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 .PHONY: install test test-unit vendor-sync export-iwxxm-versions tip-diff-iwxxm \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
-	test-unit-backend test-unit-frontend \
+	test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
 	build-tac2iwxxm-native build-iwxxm-validate-native \
@@ -195,7 +195,9 @@ test-unit-workspace-py:
 
 test-unit-shared-py:
 	$(UV) run pytest packages/shared/tests --cov=metar_shared \
-		--cov-config=packages/shared/pyproject.toml --cov-branch --cov-fail-under=98 -v
+		--cov-config=packages/shared/pyproject.toml --cov-branch \
+		--cov-report=json:packages/shared/coverage.json --cov-fail-under=98 -v
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
 
 test-unit-shared-js:
 	$(PNPM) --filter @metar/shared run test:coverage
@@ -206,10 +208,20 @@ test-unit-workspace-js:
 test-unit-workspace: test-unit-workspace-py test-unit-shared-py test-unit-shared-js
 
 test-unit-backend:
-	cd apps/backend && $(UV) run pytest tests/unit \
+	(cd apps/backend && $(UV) run pytest tests/unit \
 		--cov=src --cov-config=pyproject.toml --cov-branch \
-		--cov-report=xml:coverage.xml --cov-report=term-missing \
-		--cov-fail-under=98 -v
+		--cov-report=xml:coverage.xml --cov-report=json:coverage.json \
+		--cov-report=term-missing \
+		--cov-fail-under=98 -v)
+	$(UV) run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
+
+# F31 / EV-047 — auth package + per-file ≥95%.
+test-unit-auth:
+	$(UV) run pytest tests/unit/auth --cov=metar_auth \
+		--cov-config=packages/auth/pyproject.toml --cov-branch \
+		--cov-report=json:packages/auth/coverage.json \
+		--cov-report=term-missing --cov-fail-under=95 -v
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
 # F30 / ADR-033 / TC-EV031-002 — Alembic against DATABASE_URL (idempotent upgrade head).
 db-migrate:
@@ -242,7 +254,9 @@ test-unit-frontend:
 test-unit-tac2iwxxm:
 	$(UV) run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
 		--cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
+		--cov-report=json:packages/tac2iwxxm/coverage.json \
 		--cov-report=term-missing --cov-fail-under=95 -v
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
 # Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
 build-tac2iwxxm-native:
@@ -321,12 +335,16 @@ codelist-uri-drift:
 test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
 		--cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
+		--cov-report=json:packages/iwxxm-validate/coverage.json \
 		--cov-report=term-missing --cov-fail-under=95 -v
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/iwxxm-validate/coverage.json
 
 test-unit-tac-validate:
 	$(UV) run pytest packages/tac-validate/tests --cov=tac_validate \
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
+		--cov-report=json:packages/tac-validate/coverage.json \
 		--cov-report=term-missing --cov-fail-under=95 -v
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac-validate/coverage.json
 
 # F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3): SIGMET keep-green + AIRMET + METAR/SPECI/TAF
 # Extended F26/F27 / EV-021 (S02.L1): + VAA + TCA keyword filters
@@ -467,13 +485,20 @@ compose-mock-byoc-all-up: compose-mock-byoc-full-up
 
 compose-mock-byoc-all-down: compose-mock-byoc-down compose-wis2box-down
 
+# F8 / EV-047 T2.5.4 — package + per-file ≥95% for metar_worker (unit only).
 test-unit-worker:
-	$(UV) run pytest apps/worker/tests -v --no-cov
+	$(UV) run pytest apps/worker/tests -m unit \
+		--cov=metar_worker --cov-config=apps/worker/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-report=json:apps/worker/coverage.json \
+		--cov-fail-under=95 -v
+	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
+		$(UV) run python scripts/ci/check_per_file_coverage.py apps/worker/coverage.json; \
+	fi
 
 test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
-test-unit: test-unit-workspace test-unit-backend test-unit-frontend \
+test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs
 
