@@ -16,8 +16,8 @@
 |-------|-------|
 | **Active phase** | Phase 1: Validated membership |
 | **Active milestone** | M1: Offline harvest |
-| **Active task** | T2.1 (next) |
-| **Tasks completed** | 4 / 15 |
+| **Active task** | T2.2 |
+| **Tasks completed** | 5 / 15 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-09 |
 | **Plan approve** | `D-S059-04-plan=1` |
@@ -84,7 +84,7 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Test: happy + sad membership matrix for weather / recent / cloud / SIGMET+AIRMET phenomena / nil | Test | pending | TC-EV050-002; AC2; families 1a | T1.2 | membership artifact |
+| T2.1 | Test: happy + sad membership matrix for weather / recent / cloud / SIGMET+AIRMET phenomena / nil | Test | completed | TC-EV050-002; AC2; families 1a | T1.2 | membership artifact |
 | T2.2 | Code: wire membership checks into lint/rules (stable issue codes); underscore↔space normalize for AIRMET as needed | Code | pending | AC2; fixture baseline | T2.1 | — |
 | T2.3 | Test+fixtures: aggressive packs — `RE*`, AIRMET `_` / spaced phenomena, SpaceWxPhenomena, TCU (accept + unknown/sad) | Test | pending | TC-EV050-004; AC4; fixtures 2c | T2.1 | fixtures |
 | T2.4 | Docs: COVERAGE_MATRIX / fixture baseline delta; residual gaps → child issues or defer+cite | Docs | pending | AC4; fixture-quality-baseline.md | T2.3 | — |
@@ -131,7 +131,7 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 | T1.2 | M1 | completed | T1.1 |
 | T1.3 | M1 | completed | T1.2 |
 | T1.4 | M1 | completed | T1.2 |
-| T2.1 | M2 | pending | T1.2 |
+| T2.1 | M2 | completed | T1.2 |
 | T2.2 | M2 | pending | T2.1 |
 | T2.3 | M2 | pending | T2.1 |
 | T2.4 | M2 | pending | T2.3 |
