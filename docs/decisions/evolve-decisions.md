@@ -33,10 +33,19 @@ compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
 | D-S059-01-ac | **4a** — Lock AC1–AC6 as drafted (with 1a/2c/3a amendments) |
 | D-S059-profiles | **1b** — Expand: compare **`annex3` vs `iwxxm_us`** across **all F6 products** (`iwxxm_us` **N/A** where no US profile); fix **true errors** (AC7–AC8) |
 | D-S059-gateA | **1** — Gate A **PASS**; handoff **04-tech-plan** (advisories M1–M3 accepted: AC8 defer+cite OK; N/A ≠ fail; 04 may split milestones) |
+| D-S059-04-milestones | **1** — Four milestones: M1 harvest · M2 membership+fixtures · M3 profiles · M4 closeout docs |
+| D-S059-04-harvest | **1** — L3 SoT = vendor CSV `notation`; pin RDF for nil / dual paths |
+| D-S059-04-wire | **1** — Generated membership under `packages/tac-validate` data + pytest + `make` regen |
+| D-S059-04-adr | **1** — No new ADR; path/cadence in tech-spec / domain + execution plan |
 
 ### Gate A (02) — PASS 2026-08-09
 
 Report: `docs/sessions/S059-codes-wmo-validated/reports/02-verify-plan.md`. Corpus cites for scope: [Corpus: product] [Corpus: tests] [Corpus: tech-spec] [Corpus: decisions].
+
+### 04-tech-plan — draft 2026-08-09
+
+Artifacts: `reports/execution-plan.md`, `build-plan-card.md` (M1 = T1.1–T1.4), `reports/04-tech-plan.md`.  
+Awaiting **`D-S059-04-plan`** approve → 05-verify-tech.
 
 ### Acceptance (Standard — AC1–AC8 confirmed `D-S059-01-ac=4a` + `D-S059-profiles=1b`)
 

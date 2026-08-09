@@ -35,7 +35,7 @@ membership-checked in CI — no live `codes.wmo.int` HTML in PR CI.
 
 ## Next child stage
 
-**04-tech-plan** — execution plan (harvest + membership + dual-profile compare/fixes)
+**04-tech-plan** — draft ready; awaiting `D-S059-04-plan` → **05-verify-tech**
 
 ## Risks / open decisions
 

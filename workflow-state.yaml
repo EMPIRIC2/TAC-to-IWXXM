@@ -20,8 +20,8 @@ active_session:
   branch_base_sha_full: b57f2a87f63f7553550750b07929c3bb7a18e859
   branch_status: active
   branch_exists: true
-  tip_sha: aab35494
-  tip_sha_full: aab354945518be8bc0dad0ef842cbe9e83980cf5
+  tip_sha: 2e232569
+  tip_sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
   tip_sha_pushed: false
   pr_base: stage
   github_issues:
@@ -50,7 +50,7 @@ active_session:
   prior_session: S058-ams-2027-abstract
   artifacts_dir: docs/sessions/S059-codes-wmo-validated/
   current_stage: 04-tech-plan
-  current_stage_note: "Gate A PASS D-S059-gateA=1; 02 COMPLETE; tip will update after commit; handoff 04-tech-plan"
+  current_stage_note: "04 draft ready; awaiting D-S059-04-plan; tip 2e232569; dirty until commit"
   decisions:
     D-S058-park: "1a — park S058/#958 Ready; keep scaffold"
     D-S059-ticket: "2a — open S059/EV-050 for #959"
@@ -61,6 +61,10 @@ active_session:
     D-S059-01-ac: "4a — lock AC1–AC6; 01 deltas drafted for preview"
     D-S059-profiles: "1b — all F6; iwxxm_us N/A where unsupported; AC7–AC8"
     D-S059-gateA: "1 — Gate A PASS; handoff 04-tech-plan"
+    D-S059-04-milestones: "1 — four milestones M1–M4"
+    D-S059-04-harvest: "1 — CSV notation + pin RDF nil/dual"
+    D-S059-04-wire: "1 — tac-validate generated artifact + pytest + make"
+    D-S059-04-adr: "1 — no new ADR"
   routing_plan:
   - stage: 00-context
     required: true
@@ -99,7 +103,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-09'
-    note: "next — execution plan for harvest + membership + dual-profile"
+    note: "draft execution-plan + build-plan-card; awaiting D-S059-04-plan"
   - stage: 05-verify-tech
     required: true
     mode: delta
@@ -190,7 +194,30 @@ active_session:
     session_id: S059-codes-wmo-validated
     evolve_cycle_id: EV-050
     created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/execution-plan.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/build-plan-card.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
+  - path: docs/sessions/S059-codes-wmo-validated/reports/04-tech-plan.md
+    status: written
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    created_at: '2026-08-09'
   notes:
+  - "2026-08-09 04 draft ready — D-S059-04-milestones/harvest/wire/adr locked; awaiting D-S059-04-plan; tip 2e232569; dirty until commit"
+  - "2026-08-09 commit 2e232569 — Gate A PASS; 02 report + state committed; tip 2e232569 local ahead 3; no push; 04-tech-plan in_progress"
   - "2026-08-09 D-S059-gateA=1 — Gate A PASS; 02 COMPLETE; report 02-verify-plan.md; handoff 04-tech-plan; M1–M3 advisory accepted (defer+cite OK; N/A not fail; 04 may split milestones)"
   - "2026-08-09 D-S059-profiles=1b locked — all F6; iwxxm_us N/A where unsupported; AC7–AC8; tip aab35494 local ahead 2; 02 Gate A pending user (D-S059-gateA); 02 report uncommitted; no git commit by workflow-state-manager"
   - "2026-08-09 01-requirements COMPLETE — AC locked; fixture quality preview delivered; commit 00875e9c local only; no push; handoff 02-verify-plan"
@@ -34342,7 +34369,11 @@ evolve_cycles:
     D-S059-01-ac: "4a — lock AC1–AC6; 01 deltas drafted for preview"
     D-S059-profiles: "1b — all F6; iwxxm_us N/A where unsupported; AC7–AC8"
     D-S059-gateA: "1 — Gate A PASS; handoff 04-tech-plan"
-  note: "#889 Validated follow-on; offline harvest + tac-validate membership; PR→stage; D-S059-profiles=1b locked; Gate A PASS; handoff 04"
+    D-S059-04-milestones: "1 — four milestones M1–M4"
+    D-S059-04-harvest: "1 — CSV notation + pin RDF nil/dual"
+    D-S059-04-wire: "1 — tac-validate generated artifact + pytest + make"
+    D-S059-04-adr: "1 — no new ADR"
+  note: "#889 Validated follow-on; offline harvest + tac-validate membership; PR→stage; Gate A PASS; 04 draft awaiting D-S059-04-plan"
 - id: EV-049
   session_id: S058-ams-2027-abstract
   type: feature
@@ -44994,18 +45025,18 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-050-codes-wmo-validated
-  ahead_of_origin: 2
+  ahead_of_origin: 3
   pushed: false
   pending_commit: true
-  pending_commit_note: 'Gate A PASS — awaiting parent commit of 02 report + workflow-state; tip remains aab35494'
+  pending_commit_note: '04-tech-plan draft commit'
   dirty: true
-  dirty_note: 'awaiting commit of 02 report + state for Gate A PASS'
-  tip_sha: aab35494
-  tip_sha_full: aab354945518be8bc0dad0ef842cbe9e83980cf5
-  tip_note: 'S059/EV-050 — tip aab35494 local ahead 2 (not pushed); Gate A PASS; handoff 04; commit pending'
+  dirty_note: '04 artifacts + evolve-decisions + state uncommitted'
+  tip_sha: 2e232569
+  tip_sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
+  tip_note: 'S059/EV-050 — tip 2e232569 local ahead 3 (not pushed); 04 draft ready; awaiting D-S059-04-plan; dirty'
   evolve_branch: evolve/EV-050-codes-wmo-validated
-  evolve_tip_sha: aab35494
-  evolve_tip_sha_full: aab354945518be8bc0dad0ef842cbe9e83980cf5
+  evolve_tip_sha: 2e232569
+  evolve_tip_sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
   evolve_tip_sha_pushed: false
   stage_merge_sha: 06a9543f
   stage_merge_sha_full: 06a9543ff4ccd586191dafeec63d9521e967d933
@@ -45022,9 +45053,11 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: stage
-  note: 'S059/EV-050 — tip aab35494 local ahead 2 (not pushed); Gate A PASS; handoff 04; commit pending'
+  note: 'S059/EV-050 — tip 2e232569 local ahead 3 (not pushed); 04 draft ready; awaiting D-S059-04-plan; dirty/pending_commit'
 
   notes:
+  - '2026-08-09 04 draft ready — D-S059-04-milestones/harvest/wire/adr locked; awaiting D-S059-04-plan; tip 2e232569 unchanged; dirty until commit; no git commit by workflow-state-manager'
+  - '2026-08-09 commit 2e232569 — Gate A PASS; 02 report + state; tip 2e232569 local ahead 3; no push; 04-tech-plan in_progress'
   - '2026-08-09 D-S059-gateA=1 — Gate A PASS; 02 COMPLETE; report 02-verify-plan.md; handoff 04-tech-plan; tip aab35494 unchanged (commit pending); no git commit by workflow-state-manager'
   - '2026-08-09 D-S059-profiles=1b — tip aab35494 local ahead 2; deepen F6+F12/F15/F20/F23/F24/F28; 02-verify-plan in_progress Gate A pending D-S059-gateA; no git commit by workflow-state-manager'
   - '2026-08-09 01-requirements COMPLETE — commit 00875e9c local only (not pushed); fixture quality preview delivered; handoff 02-verify-plan; no git commit by workflow-state-manager'
@@ -45547,11 +45580,11 @@ git_history:
     purpose: "EV-050 / S059 codes.wmo.int harvest + tac-validate membership (#959)"
     session_id: S059-codes-wmo-validated
     evolve_cycle_id: EV-050
-    tip_sha: aab35494
-    tip_sha_full: aab354945518be8bc0dad0ef842cbe9e83980cf5
+    tip_sha: 2e232569
+    tip_sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
     tip_sha_pushed: false
     pr_base: stage
-    note: "S059/EV-050 tip aab35494 local ahead 2; Gate A PASS D-S059-gateA=1; handoff 04; commit pending"
+    note: "S059/EV-050 tip 2e232569 local ahead 3; Gate A PASS; handoff 04; not pushed"
   - name: evolve/EV-049-ams-2027-abstract
     base: stage
     base_sha: b57f2a87
@@ -46914,6 +46947,19 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 2e232569
+    sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
+    message: "[EV-050] docs: Gate A PASS — handoff 04-tech-plan"
+    branch: evolve/EV-050-codes-wmo-validated
+    stage: 02-verify-plan
+    skill_id: 02-verify-plan
+    session_id: S059-codes-wmo-validated
+    evolve_cycle_id: EV-050
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 2e232569
+    tip_sha_full: 2e23256916f70cd220830429fca69bcf2c06aafd
+    note: 'Gate A PASS D-S059-gateA=1; 02 COMPLETE; handoff 04-tech-plan; local only; no push'
   - sha: aab35494
     sha_full: aab354945518be8bc0dad0ef842cbe9e83980cf5
     message: "[EV-050] docs: lock annex3 vs iwxxm_us compare for all F6"

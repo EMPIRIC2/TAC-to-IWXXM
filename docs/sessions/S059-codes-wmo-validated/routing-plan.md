@@ -16,8 +16,8 @@
 | 01-requirements | yes | delta | **completed** | AC1–AC8; profiles 1b |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S059-gateA=1` |
 | 03-plan-tooling | no | — | skipped | unless new Cursor rules |
-| 04-tech-plan | yes | delta | **in_progress** | execution plan |
-| 05-verify-tech | yes | delta | pending | Gate B |
+| 04-tech-plan | yes | delta | **in_progress** | plan drafted; awaiting `D-S059-04-plan` |
+| 05-verify-tech | yes | delta | pending | Gate B (after 04 approve) |
 | 06-tech-tooling | no | — | skipped | no new runtime deps expected |
 | 07-build | yes | full | pending | harvest + tac-validate wire |
 | 08-verify-build | yes | delta | pending | |
