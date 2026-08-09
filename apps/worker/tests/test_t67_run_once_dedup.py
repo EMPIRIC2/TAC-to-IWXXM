@@ -9,6 +9,8 @@ from metar_worker import __main__ as worker_main
 from metar_worker.settings import WorkerSettings
 from metar_worker.store import RESULTS_TABLE
 
+pytestmark = pytest.mark.unit
+
 
 class MemoryStore:
     def __init__(self) -> None:

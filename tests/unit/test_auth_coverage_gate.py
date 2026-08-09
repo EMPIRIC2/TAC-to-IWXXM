@@ -1,4 +1,4 @@
-"""Auth package restored — no separate Makefile coverage gate required (F31)."""
+"""Auth package coverage gate — fail_under=95 in packages/auth pyproject (EV-047)."""
 
 from __future__ import annotations
 
@@ -10,9 +10,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 @pytest.mark.unit
-def test_auth_package_present_without_legacy_makefile_gate() -> None:
-    """packages/auth exists; legacy test-unit-auth / coverage-auth targets stay retired."""
+def test_auth_package_fail_under_95() -> None:
+    """packages/auth pyproject enforces fail_under = 95 (D-S056-cov95-scope=2)."""
     assert (ROOT / "packages" / "auth").is_dir()
-    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    assert "test-unit-auth" not in makefile
-    assert "coverage-auth" not in makefile
+    content = (ROOT / "packages" / "auth" / "pyproject.toml").read_text(
+        encoding="utf-8"
+    )
+    assert "fail_under = 95" in content

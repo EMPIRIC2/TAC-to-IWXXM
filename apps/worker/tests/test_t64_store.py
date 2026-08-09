@@ -4,9 +4,12 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
 from metar_worker.pipeline import PipelineResult
 from metar_worker.poller import IngestJob
 from metar_worker.store import QUARANTINE_TABLE, RESULTS_TABLE, write_result
+
+pytestmark = pytest.mark.unit
 
 
 class MemoryStore:

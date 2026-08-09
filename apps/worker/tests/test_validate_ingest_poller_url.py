@@ -8,6 +8,8 @@ from metar_worker.poller_url import (
     validate_ingest_poller_url,
 )
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.mark.parametrize(
     "bad",

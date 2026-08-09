@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import pytest
 from metar_worker.pipeline import process_job
 from metar_worker.poller import IngestJob
+
+pytestmark = pytest.mark.unit
 
 
 def test_t63_pipeline_metar_pass() -> None:

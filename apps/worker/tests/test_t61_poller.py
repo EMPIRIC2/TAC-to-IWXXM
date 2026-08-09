@@ -10,6 +10,8 @@ import pytest
 import respx
 from metar_worker.poller import fetch_jobs, safe_url_for_log
 
+pytestmark = pytest.mark.unit
+
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "ingest_feed.json"
 FEED_URL = "https://ingest.example.test/feed.json"
 
