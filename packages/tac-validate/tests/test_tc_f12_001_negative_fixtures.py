@@ -71,7 +71,7 @@ def test_negative_depth_split_matches_e10_21() -> None:
             assert depth == "full_checklist"
         elif product == "SIGMET" and case.get("theme") in {"G1", "G2", "V1", "V2", "C1"}:
             assert depth == "full_checklist"
-        elif product == "AIRMET" and case.get("theme") in {"A1", "A2"}:
+        elif product == "AIRMET" and case.get("theme") in {"A1", "A2", "EV050"}:
             assert depth == "full_checklist"
         else:
             assert depth == "template_gate"

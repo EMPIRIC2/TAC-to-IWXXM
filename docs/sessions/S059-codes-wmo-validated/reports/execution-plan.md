@@ -160,7 +160,7 @@ No external download / Modal volume staging. Vendor remains read-only (sync PRs 
 
 | PR | Base | When | Status |
 |----|------|------|--------|
-| EV-050 Validated harvest + membership | `stage` | After 08–11 (`D-S059-11-next=1`) | opening |
+| EV-050 Validated harvest + membership | `stage` | After 08–11 (`D-S059-11-next=1`) | open — [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) |
 
 ## Advisories (from Gate A — accepted)
 
