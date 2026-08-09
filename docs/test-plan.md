@@ -1905,7 +1905,9 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T0
 - **Objective**: Generated client/types for high-churn paths; drift policy
-- **Pass criteria**: Orval or openapi-typescript wired; CI check or committed artifacts
+- **Pass criteria**: `openapi-typescript` wired (`D-S061-orval=1`); committed
+  `apps/frontend/openapi/openapi.json` + `src/generated/openapi.d.ts`;
+  `pnpm openapi:check` fails on drift; convert/validate use generated aliases
 - **Source**: EV-052 AC9
 
 ### TC-EV052-010: Docs / ADR parity

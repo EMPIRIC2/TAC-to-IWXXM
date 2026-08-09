@@ -216,6 +216,11 @@ jobs:
         if: matrix.package == 'worker'
         run: make test-unit-worker
 
+      # EV-052 / TC-EV052-009 — committed OpenAPI types must match snapshot.
+      - name: Check OpenAPI FE types drift
+        if: matrix.package == 'frontend'
+        run: pnpm --filter @metar/frontend run openapi:check
+
       - name: Run frontend tests with coverage
         if: matrix.package == 'frontend'
         run: pnpm --filter @metar/frontend run test:coverage

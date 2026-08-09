@@ -13,6 +13,7 @@ import {
   ingestCollect,
   lintTac,
   massIngestFiles,
+  validateIwxxm,
   type ConversionResponse,
   type HealthResponse,
   type ApiError,
@@ -536,7 +537,7 @@ describe('API Utils', () => {
 
   /**
    * T5.4 / TC-F11-001 / ADR-026 — msgspec HTTP shape parity guards.
-   * Keys match backend contract smoke (T5.1); no OpenAPI→TS codegen this cycle.
+   * Keys match backend contract smoke; OpenAPI→TS types live in openapiTypes (EV-052).
    */
   describe('msgspec HTTP shape parity (ADR-026 / T5.4)', () => {
     const requiredKeys = (obj: Record<string, unknown>, keys: string[]) => {
@@ -758,6 +759,37 @@ describe('API Utils', () => {
       await expect(
         lintTac({ manualText: 'METAR', product: 'METAR' }),
       ).rejects.toThrow();
+    });
+
+    it('posts validate with TAC/XML and returns ValidateResponse', async () => {
+      mockFetchResponse({
+        is_valid: true,
+        version: '2025-2',
+        profile: 'annex3',
+        layers_run: ['ALL'],
+        layers_passed: ['ALL'],
+        layers_failed: [],
+        total_issues: 0,
+        issues: [],
+        issues_by_layer: {},
+        package_ok: true,
+        package_issues: [],
+      });
+      const result = await validateIwxxm({
+        manualText: 'METAR KJFK 010000Z 18010KT 10SM SKC 20/10 A2992',
+        xmlContent: '<iwxxm:METAR/>',
+      });
+      expect(result.is_valid).toBe(true);
+      expect(result.version).toBe('2025-2');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/validate'),
+        expect.objectContaining({ method: 'POST' }),
+      );
+      const [, init] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = init.body as FormData;
+      expect(body.get('manual_text')).toContain('METAR KJFK');
+      expect(body.get('xml_content')).toContain('iwxxm:METAR');
+      expect(body.getAll('layers')).toEqual(['ALL']);
     });
 
     it('GETs lint-issue-catalog with optional product filter', async () => {
