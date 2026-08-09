@@ -3,6 +3,74 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-047 — M0 stabilize + operator trust (#833/#834/#956/#957) (S056)
+
+**Session**: S056-m0-stabilize-operator-trust  
+**Features**: deepen **M5 / F6 / F7** (no new Fn)  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-047-m0-stabilize-operator-trust` (base `stage@adcf3b1f`)  
+**Status**: **completed** 2026-08-08 (`D-S056-close=1`; PR #961 → `stage`)  
+
+**Issues**: [#833](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/833),
+[#834](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/834),
+[#956](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/956),
+[#957](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/957)  
+**Corpus**: [Corpus: product §M5], [Corpus: product §F6], [Corpus: product §F7],
+[Corpus: tests], [Corpus: tech-spec], [Corpus: decisions] · ops
+`docs/ops/DEVELOPMENT.md`
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S056-open | **1** — Open S056 → EV-047 for #833+#834+#956+#957 |
+| D-S056-bundle | **1** — One cycle, all four issues |
+| D-S056-husky | **1** — Husky day-to-day = lint + fast units; heavier gates CI / opt-in `make` (**explicit reverse** of EV-036/S044 local-heavy developer path) |
+| D-S056-preset | **1** — Standard; amended by D-S056-docs for Help → **re-enable 10-e2e**; 12/13 stay waived unless deploy gate needed at 11 |
+| D-S056-husky-shape | **1 (A)** — `pre-commit` = lint/format only; `pre-push` = fast unit subset |
+| D-S056-perf | **1** — convert-only wall **p95** vs committed YAML; hard-fail **>20% or absolute ceiling**; METAR/SPECI/TAF + thin SIGMET-family smoke; **CI required check only** (not husky); pure-Python first; median-of-N + flake retry doc |
+| D-S056-docs | **1** — one-pager `docs/guides/operator-one-pager.md` (+ printable if cheap); handbook `docs/guides/operator-handbook.md`; README Quick start **and** in-app Help (F7); no new CORPUS root member |
+| D-S056-phase0 | **1** — Phase 0 locked; proceed **01-requirements** |
+| D-S056-01-ac | **1** — Approve AC1–AC9 as written (2026-08-08) |
+| D-S056-ui-preview | **2** — No non-deployed UI preview for 01; Help placement in 04 |
+| D-S056-gateA | **2** — Gate A PASS; **require ruleset update for converter perf check** (amended by defer) |
+| D-S056-ruleset-defer | **2** — Defer **requiring** `Converter perf (tac2iwxxm)` in live rulesets until CI job ships (M1 T1.4→T1.5); keep other checks; establish **baselines first** for comparison |
+| D-S056-04-plan | **2** — Approve execution plan; **seed** `converter_pr.yaml` from laptop spike now; **re-record on CI** in T1.3 |
+| D-S056-04-floor | **200µs** absolute floor (amended from 50µs after cross-host noise on T1.3 Linux Docker re-record) |
+| D-S056-cov95 | **2** — package + per-file ≥95% this cycle (all Python packages in CI); M2.5 T2.5.1–T2.5.3 |
+| D-S056-cov95-scope | **2** — literally every Python package including auth + worker; package + per-file ≥95%; M2.5 adds T2.5.4 |
+| D-S056-m3-order | **2** — resolve coverage first (M2.5), then M3 docs/Help (amends sequencing after `D-S056-next-m3=1`) |
+| D-S056-m4-next | **1** — M4 verify 08 → 09+10 → 11 |
+| D-S056-11-ui-preview | **2** — No non-deployed preview at 11; approve from reports/tests only |
+| D-S056-uj054 | **1** — Approve UJ-054 Operator Help → one-pager |
+| D-S056-ac-bundle | **1** — Approve AC1–AC9 + cov95; accept T1.5 ruleset defer |
+| D-S056-advisories | **1** — Accept QA-001..006 as listed in verify-impl.md |
+| D-S056-close | **1** — Close EV-047; merge #961 → `stage` (12/13 waived; T1.5 deferred) |
+
+### Locked defaults (perf / hooks / docs)
+
+| Area | Default |
+|------|---------|
+| Husky | Shape **A** (`D-S056-husky-shape=1`) |
+| Perf metric | convert-only p95; CI-only gate; 20% / ceiling; Annex-3 thin smoke |
+| Docs | `docs/guides/operator-*.md` + README + Help |
+
+### Acceptance (confirmed `D-S056-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Commit = lint/format only | TC-EV047-001 |
+| AC2 | Push = fast unit subset only | TC-EV047-002 |
+| AC3 | DEVELOPMENT.md + test-plan match shape A | TC-EV047-003 |
+| AC4 | Offloaded gates still in CI | TC-EV047-004 |
+| AC5 | Artificial convert slowdown → red; revert → green | TC-EV047-005/006 |
+| AC6 | Required CI check; baselines + flake policy; p95 / 20% pack | TC-EV047-007/008 |
+| AC7 | Operator one-pager (one page; no internal cites) | TC-EV047-009 |
+| AC8 | Minimal handbook (sections + ingest pointer) | TC-EV047-010 |
+| AC9 | README + in-app Help → one-pager (UJ-054) | TC-EV047-011 |
+
+---
+
 ## Cycle EV-046 — codes.wmo.int aviation registers → TAC present/cite/cover (S055)
 
 **Session**: S055-wmo-aviation-registers  

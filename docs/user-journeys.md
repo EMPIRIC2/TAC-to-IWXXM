@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-07 (S050 / EV-042 UJ-051..053 mass ingest + destinations hide + churn; prior UJ-050)
+> **Last updated**: 2026-08-08 (S056 / EV-047 UJ-054 Help/docs + UJ-DEV-007/008 husky/perf; prior UJ-051..053)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -70,6 +70,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-051 | Secure mass file/folder ingest (auth + caps) | apps/frontend | F33 | T2 / **T3** / H4–H5 |
 | UJ-052 | Operator queue + keyboard/batch convert·validate churn | apps/frontend | F7 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
+| UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -77,6 +78,8 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-DEV-004 | Package CI for tac-validate + iwxxm-validate | `make test` / CI | F2, F6, M5 | T0 / CI |
 | UJ-DEV-005 | pip install published packages + convert/validate | clean venv | F12–F14 | T0 / CI |
 | UJ-DEV-006 | Rust crate CI (fmt/clippy/test + maturin) | `make rust-check` / CI | F13, F14 | T0 / CI |
+| UJ-DEV-007 | Slim husky — lint commit + fast-unit push | husky / make install-hooks | M5 deepen (EV-047 / #833) | T0 |
+| UJ-DEV-008 | Converter perf regression blocks PR | CI perf gate | F6 deepen (EV-047 / #834) | T0 / CI |
 | UJ-OPS-001 | Deploy Render stack (API + static + worker) | render.yaml | M4, F8 | T3 (staging) |
 
 **E2E tiers**:
@@ -730,6 +733,61 @@ for both native crates.
 **Acceptance**: Unformatted Rust, clippy warnings, failing `cargo test`, or missing
 iwxxm-validate maturin smoke fail CI. **Tier: T0 / CI**. TC-EV045-001..007.
 [Corpus: product §F13] [Corpus: product §F14] [Corpus: tests]
+
+---
+
+### UJ-DEV-007: Slim Husky — Lint on Commit + Fast Units on Push (M5 / #833)
+
+**Actor**: Developer
+
+**Goal**: Keep the day-to-day git hook path fast (lint + unit subset) while remote CI holds
+merge-strength gates.
+
+**Steps**:
+
+1. `make install-hooks`.
+2. Make a trivial lint-clean change; `git commit` — only lint/format hooks run.
+3. `git push` — only the agreed fast unit subset runs (not typecheck / validate-ci / Compose).
+4. Confirm heavier targets still available via `make` and enforced in PR CI.
+
+**Acceptance**: TC-EV047-001..004. **Tier: T0**.
+[Corpus: product §M5] [Corpus: tests]
+
+---
+
+### UJ-DEV-008: Converter Perf Regression Blocks PR (F6 / #834)
+
+**Actor**: Developer / CI
+
+**Goal**: A slower `tac2iwxxm.convert` cannot merge green.
+
+**Steps**:
+
+1. CI runs converter hard-gate job on PR (convert-only p95 vs committed baselines).
+2. Artificial slowdown → job red; revert → green.
+3. Intentional baseline bump uses documented refresh procedure (not silent on failure).
+
+**Acceptance**: TC-EV047-005..008. **Tier: T0 / CI**.
+[Corpus: product §F6] [Corpus: tests]
+
+---
+
+### UJ-054: Operator Help → One-Pager / Handbook (F7 / #956/#957)
+
+**Actor**: Meteorological operator / workshop attendee
+
+**Goal**: Find a one-page quick start and a short handbook without reading engineering docs.
+
+**Steps**:
+
+1. From the operator app, open **Help** (entry reaches the one-pager).
+2. Follow paste/convert → validate → download; note IWXXM version pick and soft-preview wording.
+3. From the one-pager (or README Quick start), open the minimal handbook for login, history,
+   dissemination overview, troubleshooting, and automated-ingest pointer.
+
+**Acceptance**: User-facing text has **no** internal corpus/ADR/session citations.
+TC-EV047-009..011. **Tier: T0 / T2 / T3**.
+[Corpus: product §F7] [Corpus: journeys]
 
 ---
 

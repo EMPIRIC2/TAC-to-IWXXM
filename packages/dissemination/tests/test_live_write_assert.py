@@ -114,3 +114,44 @@ def test_cli_main_ok_and_fail(tmp_path: Path, capsys: pytest.CaptureFixture[str]
     assert main(["--sink-type", "sqlite", "--uri", empty_uri]) == 1
     err = json.loads(capsys.readouterr().err)
     assert err["ok"] is False
+
+
+def test_cli_main_generic_error_exits_2(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    async def _boom(**_kwargs: object) -> int:
+        raise RuntimeError("engine exploded")
+
+    monkeypatch.setattr(
+        "dissemination.live_write_assert.assert_live_write",
+        _boom,
+    )
+    assert main(["--sink-type", "sqlite", "--uri", "sqlite+aiosqlite:///:memory:"]) == 2
+    err = json.loads(capsys.readouterr().err)
+    assert err["ok"] is False
+    assert "exploded" in err["error"]
+
+
+def test_cli_module_main_guard(monkeypatch: pytest.MonkeyPatch) -> None:
+    import runpy
+    import sys
+
+    async def _boom(**_kwargs: object) -> int:
+        raise RuntimeError("cli guard")
+
+    monkeypatch.setattr(
+        "dissemination.live_write_assert.assert_live_write",
+        _boom,
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "dissemination.live_write_assert",
+            "--sink-type",
+            "sqlite",
+            "--uri",
+            "sqlite+aiosqlite:///:memory:",
+        ],
+    )
+    with pytest.raises(SystemExit) as excinfo:
+        runpy.run_module("dissemination.live_write_assert", run_name="__main__")
+    assert excinfo.value.code == 2

@@ -19,11 +19,14 @@ fi
 cd "${ROOT}"
 # Unit coverage gate: exclude Testcontainers engine suite (T2.5) from the 95% path;
 # those tests are invoked via `make test-integration-dissemination` (Docker optional).
-exec uv run pytest packages/dissemination/tests \
+uv run pytest packages/dissemination/tests \
   -m "not integration" \
   --cov=dissemination \
   --cov-config=packages/dissemination/pyproject.toml \
   --cov-branch \
   --cov-report=term-missing \
+  --cov-report=json:packages/dissemination/coverage.json \
   --cov-fail-under=95 \
   -v
+exec uv run python scripts/ci/check_per_file_coverage.py \
+  packages/dissemination/coverage.json

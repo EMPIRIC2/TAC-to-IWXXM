@@ -215,8 +215,9 @@ Primary workflow: `.github/workflows/ci-cd.yml` (**EV-036** local-first amend).
 
 | Tier | Where | What |
 |------|-------|------|
-| Fast + medium | husky **pre-commit** | Fast pre-commit hooks + `make validate-ci-medium` (config-guard, env-check, audit-frontend). Strict lint/format stay here. |
-| Long local | husky **pre-push** | `make ci` = `ci-prepush` + Compose **integration** (ports **18000/18001**). Needs Docker. |
+| Lint (EV-047) | husky **pre-commit** | `make lint-fast` — ruff / prettier / eslint only. |
+| Fast units (EV-047) | husky **pre-push** | `make test-unit-fast` — workspace + tac2iwxxm units (not Compose / not validate-ci). |
+| Opt-in full local | `make` | `validate-ci` / `ci-prepush` / `make ci` (units + Compose on **18000/18001**) when you want full parity. |
 | Remote PR/push | GitHub Actions | **No** `validate` job; **no** Compose integration. **Keeps** package **unit matrix** + coverage + sticky **PR coverage comment**. Also `rust-crates` / `Rust crates (fmt/clippy/test)` gate, `tac2iwxxm-native` maturin matrix (both packages), `e2e-smoke`, `test-alembic` (EV-045). |
 | Deploy | `main`/`stage` push | needs `test` + `test-alembic` + `rust-crates-gate` + `tac2iwxxm-native`; GHCR + DOKS; Render optional |
 
@@ -238,8 +239,10 @@ Local gates:
 
 ```bash
 make install-hooks    # husky (.husky/*) + pre-commit hook environments
-make pre-commit-run   # fast pre-commit + validate-ci-medium (same as git commit)
-make pre-push-run     # make ci (units + Compose; same as git push)
+make lint-fast        # husky pre-commit default (EV-047)
+make test-unit-fast   # husky pre-push default (EV-047)
+make pre-commit-run   # opt-in: all-files pre-commit + validate-ci-medium
+make pre-push-run     # same as husky pre-push (test-unit-fast)
 make validate-fast    # format/lint/typecheck/secrets/yaml/catalog
 make validate-ci-medium  # config-guard + env-check + audit-frontend
 make validate-ci      # validate-fast + validate-ci-medium (manual full local validate)
@@ -251,16 +254,19 @@ make test-tc-sigmet-quality         # TC SIGMET long pack (includes #835 A6-2 de
 make test-vona-quality              # VONA long pack (lint → convert → validate + API enum)
 ```
 
-Hooks (after `make install-hooks`; husky sets `core.hooksPath=.husky`):
+Hooks (after `make install-hooks`; husky sets `core.hooksPath=.husky`; **EV-047**):
 
 | Git hook | Runs |
 |----------|------|
-| **pre-commit** (husky → pre-commit + medium) | gitleaks, ruff, prettier, eslint, tsc, basedpyright, catalog + issue-registry, actionlint/yamllint; path-filtered canaries; then `make validate-ci-medium` |
-| **pre-push** (husky) | `make ci` (units + Compose). Family long packs (`make test-*-quality`) stay opt-in / path-filtered — not on every push |
+| **pre-commit** | `make lint-fast` (ruff / prettier / eslint only) |
+| **pre-push** | `make test-unit-fast` (workspace + tac2iwxxm units) |
+
+Heavier gates (typecheck, catalog/registry, actionlint/yamllint, medium validate, full
+unit matrix, Compose) stay on **remote CI** and opt-in `make validate-*` / `ci-prepush` /
+`make ci`. Family long packs (`make test-*-quality`) stay opt-in / path-filtered.
 
 Bypass only when intentional: `git commit --no-verify` / `git push --no-verify`.
-Skipping pre-push skips **local Compose/integration** — remote CI will **not** catch that gap.
-Do **not** use `--no-verify` as a merge path for `main` — remote unit/coverage CI must stay green.
+Do **not** use `--no-verify` as a merge path for `main` / `stage` — remote CI must stay green.
 
 - Python 3.12 + Node 22
 - Unit coverage gates enforced in CI (`test` job) and locally via husky / `make ci-prepush`
@@ -273,6 +279,20 @@ matrix entry (moved to local hooks). Historical merges into validate (EV-002): `
 
 Vendor schemas: weekly GitHub Action syncs wmo-im repos into `vendor/schemas/` (see
 `scripts/vendor/sync-iwxxm.sh`).
+
+### Converter PR perf baselines (EV-047 / #834)
+
+Committed baselines: `tests/perf/baselines/converter_pr.yaml` (`status: ci_recorded`).
+CI job **`Converter perf (tac2iwxxm)`** hard-fails when convert-only p95 exceeds
+`max(baseline×1.20, baseline+200µs)`.
+
+```bash
+make test-converter-pr-gate                          # run the gate locally
+make perf-converter-baseline HOST=ubuntu-latest STATUS=ci_recorded   # intentional refresh
+```
+
+Do **not** bump ceilings by editing YAML after a red gate without measuring on a
+Linux/CI-class host. Husky does **not** run this gate (CI-only).
 
 ## Troubleshooting
 

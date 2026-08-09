@@ -65,6 +65,7 @@ jobs:
             iwxxm-validate,
             tac-validate,
             dissemination,
+            worker,
             bugs,
           ]
 
@@ -111,25 +112,32 @@ jobs:
           uv run pytest packages/shared/tests --cov=metar_shared \
             --cov-config=packages/shared/pyproject.toml --cov-branch \
             --cov-report=xml:packages/shared/coverage.xml \
+            --cov-report=json:packages/shared/coverage.json \
             --cov-report=term-missing --cov-fail-under=98 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
           pnpm --filter @metar/shared run test:coverage
 
       - name: Run backend unit tests with coverage
         if: matrix.package == 'backend'
         run: |
-          cd apps/backend && uv run pytest tests/unit \
+          (cd apps/backend && uv run pytest tests/unit \
             --cov=src --cov-config=pyproject.toml --cov-branch \
-            --cov-report=xml:coverage.xml --cov-report=term-missing \
-            --cov-fail-under=98 -v
+            --cov-report=xml:coverage.xml \
+            --cov-report=json:coverage.json \
+            --cov-report=term-missing \
+            --cov-fail-under=98 -v)
+          uv run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
 
-      # F31 / EV-031 T1.3 — JWKS Auth unit tests (tests/unit/auth). Coverage report only;
-      # fail_under deferred until proxy/router surface is fully exercised.
+      # F31 / EV-047 — JWKS Auth units; package + per-file ≥95% (D-S056-cov95-scope=2).
       - name: Run auth unit tests with coverage
         if: matrix.package == 'auth'
         run: |
           uv run pytest tests/unit/auth --cov=metar_auth \
             --cov-config=packages/auth/pyproject.toml --cov-branch \
-            --cov-report=xml:packages/auth/coverage.xml --cov-report=term-missing -v
+            --cov-report=xml:packages/auth/coverage.xml \
+            --cov-report=json:packages/auth/coverage.json \
+            --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
       # EV-023 / E23-T4=2: TC-EV023-005 Amd79 informative cases use xfail(strict=False);
       # xfail_strict=false in packages/tac2iwxxm/pyproject.toml — soft failures must not hard-fail.
@@ -139,7 +147,9 @@ jobs:
           uv run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
             --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac2iwxxm/coverage.xml \
+            --cov-report=json:packages/tac2iwxxm/coverage.json \
             --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
       - name: Install Rust toolchain (iwxxm-validate native)
         if: matrix.package == 'iwxxm-validate'
@@ -161,7 +171,9 @@ jobs:
           uv run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
             --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/iwxxm-validate/coverage.xml \
+            --cov-report=json:packages/iwxxm-validate/coverage.json \
             --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/iwxxm-validate/coverage.json
 
       - name: Run tac-validate unit tests with coverage
         if: matrix.package == 'tac-validate'
@@ -169,7 +181,9 @@ jobs:
           uv run pytest packages/tac-validate/tests --cov=tac_validate \
             --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac-validate/coverage.xml \
+            --cov-report=json:packages/tac-validate/coverage.json \
             --cov-report=term-missing --cov-fail-under=95 -v
+          uv run python scripts/ci/check_per_file_coverage.py packages/tac-validate/coverage.json
 
       # F16–F19 / T0.1 — skips until packages/dissemination is scaffolded (T1.1/T1.2).
       - name: Run dissemination unit tests with coverage
@@ -180,6 +194,11 @@ jobs:
       - name: Run dissemination multi-DB integration tests
         if: matrix.package == 'dissemination'
         run: make test-integration-dissemination
+
+      # F8 / EV-047 — worker unit + package/per-file ≥95%.
+      - name: Run worker unit tests with coverage
+        if: matrix.package == 'worker'
+        run: make test-unit-worker
 
       - name: Run frontend tests with coverage
         if: matrix.package == 'frontend'
@@ -464,6 +483,32 @@ jobs:
           uv run pytest ${{ matrix.pytest_args }} -v --no-cov
 
   # ============================================================================
+  # CONVERTER PERF — EV-047 / #834 hard gate (TC-EV047-005..008)
+  # Locked check name for rulesets: Converter perf (tac2iwxxm)
+  # ============================================================================
+  converter-perf:
+    runs-on: ubuntu-latest
+    name: Converter perf (tac2iwxxm)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install uv + workspace
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Converter PR hard gate
+        run: make test-converter-pr-gate
+
+  # ============================================================================
   # E2E SMOKE — Playwright browser smoke (auth bootstrap + TAC conversion)
   # Free on public repos (ubuntu-latest). Self-contained: config/local.json sets
   # disableAuth=true, so no Supabase secrets are required (mock session path).
@@ -527,7 +572,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy (${{ github.ref_name }})
-    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native]
+    needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage')
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
     permissions:

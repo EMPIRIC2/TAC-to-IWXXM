@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
-# EV-036 / M5 — long local gate: units + Compose integration (ports 18000/18001).
-# Medium validate already ran on commit; do not re-run validate-ci here.
-# Remote CI keeps unit matrix + coverage; Compose stays local-only.
+# EV-047 / #833 — shape A: fast unit subset on push (not full CI / Compose).
 set -e
-echo "husky pre-push: make ci (ci-prepush + test-integration)"
-echo "Requires Docker and free ports 18000/18001. Bypass only with --no-verify (not for main)."
-make ci
+echo "husky pre-push: make test-unit-fast"
+echo "Full local parity: make validate-ci OR make ci-prepush OR make ci (opt-in)."
+make test-unit-fast

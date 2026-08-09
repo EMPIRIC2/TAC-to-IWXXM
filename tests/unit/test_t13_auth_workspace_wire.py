@@ -23,8 +23,8 @@ class TestT13AuthWorkspaceWire:
         assert "packages/auth/src" in makefile
         assert "basedpyright packages/auth/src" in makefile
         assert "lint-auth" in makefile
-        # Legacy per-package coverage targets stay retired (T1.1 gate).
-        assert "test-unit-auth" not in makefile
+        # EV-047 D-S056-cov95-scope=2 — restore make test-unit-auth (≥95% + per-file).
+        assert "test-unit-auth:" in makefile
         assert "coverage-auth" not in makefile
 
     def test_ci_matrix_includes_auth_package(self) -> None:
@@ -32,6 +32,9 @@ class TestT13AuthWorkspaceWire:
         assert "auth," in workflow or "\n            auth," in workflow
         assert "matrix.package == 'auth'" in workflow
         assert "tests/unit/auth" in workflow
+        assert "--cov-fail-under=95" in workflow
+        assert "check_per_file_coverage.py" in workflow
+        assert "worker," in workflow or "\n            worker," in workflow
 
     def test_env_example_documents_jwks(self) -> None:
         root_env = (ROOT / ".env.example").read_text(encoding="utf-8")
