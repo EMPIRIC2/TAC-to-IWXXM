@@ -8,8 +8,8 @@
 **Session**: S060-tag-driven-prod-deploy  
 **Features**: deepen **F30** (no new Fn)  
 **Started**: 2026-08-09  
-**Branch**: `evolve/EV-051-tag-driven-prod-deploy` (base `stage@c146baec`)  
-**Status**: **in_progress** — Phase A (01)  
+**Branch**: `evolve/EV-051-tag-driven-prod-deploy` (merged → `stage` @ `8882856b`)  
+**Status**: **completed** 2026-08-09 (`D-S060-merge=1` / `D-S060-close=1`; PR [#966](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966) → `stage` @ `8882856b`)  
 **Corpus**: [Corpus: product §F30] [Corpus: deploy] [Corpus: adr/ADR-034] [Corpus: tests]
 
 ### Scope (Phase 0–1 — locked 2026-08-09)
@@ -21,6 +21,8 @@
 | D-S060-route | **1** — Lean+: `00→16→01→02→03→07→08→09→11`; skip `04,05,06,10,12,13` |
 | D-S060-gateA | **1** — Gate A PASS; handoff 07/08/09/11 |
 | D-S060-11-next | **1** — Approve AC1–AC6; push + PR → `stage` (12/13 skipped) |
+| D-S060-merge | **1** — Merge #966 when CI green (user continue) |
+| D-S060-close | **1** — Close EV-051 / S060; clear `active_session` |
 
 ### Acceptance
 
