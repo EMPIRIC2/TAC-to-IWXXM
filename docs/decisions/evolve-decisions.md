@@ -28,6 +28,13 @@ coverage delta + residual **defer+cite** (no new GitHub children) in
 `docs/sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md`.
 Exhaustive 402 weather + remaining register depth stay under #959/#889 per OOS.
 
+### M3 close (T3.1–T3.4 — 2026-08-09)
+
+AC7 / TC-EV050-007: dual-profile harness + disposition
+(`reports/dual-profile-disposition.md`) — N/A for VAA/TCA/SWXA/VONA.
+AC8 / TC-EV050-008: true-error fix — `REMARK_US_EXTENSION` gated to `iwxxm_us` only;
+`INVALID_REMARK` remains under both. Tip after M3: `271efa49`.
+
 ### Scope (Phase 0–1 — locked 2026-08-09; profile amend 2026-08-09)
 
 | ID | Decision |
