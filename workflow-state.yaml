@@ -21,15 +21,20 @@ sessions:
   branch_base: stage@80197a58
   branch_base_sha: 80197a58
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
-  branch_status: active
+  branch_status: merged
   branch_exists: true
-  tip_sha: 16ca35f1
-  tip_sha_full: 16ca35f1fc399d5b39b4a650793e29424fa2aba6
-  tip_sha_pushed: false
+  tip_sha: 57a1542d
+  tip_sha_full: 57a1542dc56a2942ded4ee4c7a3b55a8b929a778
+  tip_sha_pushed: true
   pr_number: 969
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969
-  pr_status: open
+  pr_status: merged
   pr_base: stage
+  pr_merged_sha: fd84c00a
+  pr_merged_sha_full: fd84c00ae4d4563edb080d322cc2ab3d683bd4f1
+  followup_pr_number: 971
+  followup_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971
+  followup_pr_note: "docs closeout after #969 merge (ea8d40f7)"
   artifacts_dir: docs/sessions/S061-ci-polish-quality-pr-stats/
   github_issues:
   - 950
@@ -50,7 +55,7 @@ sessions:
   - M5
   prior_session: S060-tag-driven-prod-deploy
   current_stage: 16-evolve
-  current_stage_note: 'D-S061-merge=1 — committing session verify artifacts + push; merge #969 → stage'
+  current_stage_note: 'D-S061-merge=1 DONE — #969 MERGED → stage @ fd84c00a; stage CI green; Phase 4 close AskQuestion'
   decisions:
     D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
     D-S061-redis: "1 — Upstash Redis free"
@@ -98,16 +103,16 @@ sessions:
     note: "11-verify-impl COMPLETE PASS D-S061-11=1 @ 828c7087"
   - path: docs/evolve-report-EV-052.md
     status: present
-    note: "Phase 4 closeout — standing evolve report; merge pending"
+    note: "Phase 4 — evolve report; #969 merged → stage @ fd84c00a"
   - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/evolve-summary.md
     status: present
-    note: "Phase 4 closeout — evolve-summary; merge pending"
+    note: "Phase 4 — evolve-summary; #969 merged → stage @ fd84c00a"
   routing_plan:
   - stage: 00-context
     status: completed
   - stage: 16-evolve
     status: in_progress
-    note: "IN_PROGRESS — D-S061-merge=1 commit+push then merge #969 → stage"
+    note: "IN_PROGRESS — #969 MERGED → stage @ fd84c00a; await Phase 4 close AskQuestion"
   - stage: 01-requirements
     status: completed
   - stage: 02-verify-plan
@@ -139,6 +144,7 @@ sessions:
     report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/verify-impl.md
     note: "COMPLETE — PASS D-S061-11=1; UI preview local :18000; handoff 16-evolve Phase 4 close"
   notes:
+  - "2026-08-09 D-S061-merge=1 DONE — #969 MERGED → stage @ fd84c00a; tip CI 31332412071; stage CI 31332553538 green; issues #950/#900/#841 On stage; #968 In progress (branches follow-up)"
   - "2026-08-09 D-S061-merge=1 — commit session verify artifacts + push tip; merge #969 → stage (12/13 waived)"
   - "2026-08-09 11-verify-impl COMPLETE PASS — D-S061-11=1, D-S061-ui-preview-11=1; UI preview local :18000; Phase 4 close / merge AskQuestion; tip 828c7087; PR #969; no git commit by workflow-state-manager"
   - "2026-08-09 09-qa PASS (advisories #968 branches, Redis/Sentry ops); 11-verify-impl START — verify-impl.md drafted; await D-S061-11"
@@ -35614,17 +35620,23 @@ evolve_cycles:
   deepen_feature_ids: [F29, F6, F21, F30, M5]
   github_issues: [950, 900, 841, 968]
   preset: Standard
-  current_stage: 16-evolve Phase 4 / merge in progress
-  current_stage_note: "D-S061-merge=1 — commit session verify artifacts + push; merge #969 → stage"
+  current_stage: 16-evolve Phase 4 / close AskQuestion
+  current_stage_note: "D-S061-merge=1 DONE — #969 MERGED → stage @ fd84c00a; stage CI green; await close"
   branch: evolve/EV-052-ci-polish-quality-pr-stats
   branch_base: stage@80197a58
   branch_base_sha: 80197a58
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
-  branch_status: active
-  tip_sha: 16ca35f1
-  tip_sha_full: 16ca35f1fc399d5b39b4a650793e29424fa2aba6
-  tip_sha_pushed: false
+  branch_status: merged
+  tip_sha: 57a1542d
+  tip_sha_full: 57a1542dc56a2942ded4ee4c7a3b55a8b929a778
+  tip_sha_pushed: true
+  pr_number: 969
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969
+  pr_status: merged
+  pr_merged_sha: fd84c00a
+  pr_merged_sha_full: fd84c00ae4d4563edb080d322cc2ab3d683bd4f1
+  followup_pr_number: 971
+  followup_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971
   gates:
     a_to_b: passed
     a_to_b_note: "D-S061-gateA=1 — Gate A PASS"
@@ -35632,7 +35644,8 @@ evolve_cycles:
     b_to_c_note: "D-S061-gateB=1 — Gate B PASS; 06 skipped Standard"
     c_to_d: passed
     c_to_d_note: "08-verify-build PASS; Phase C→D passed"
-    deploy: pending
+    deploy: waived
+    deploy_note: "12/13 skipped per D-S061-route; stage CD green after #969 merge (run 31332553538)"
   checkpoints:
     phase_a: passed
     phase_a_note: "D-S061-gateA=1"
@@ -35641,7 +35654,7 @@ evolve_cycles:
     phase_c: passed
     phase_c_note: "08-verify-build PASS @ 828c7087; verification-report.md"
     phase_d: passed
-    phase_d_note: "11-verify-impl PASS D-S061-11=1; Phase 4 close / merge AskQuestion pending"
+    phase_d_note: "11 PASS; #969 MERGED → stage @ fd84c00a; Phase 4 close AskQuestion pending"
   decisions:
     D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
     D-S061-redis: "1 — Upstash Redis free"
@@ -35681,6 +35694,7 @@ evolve_cycles:
     status: present
     note: "08-verify-build PASS @ 828c7087"
   notes:
+  - "2026-08-09 D-S061-merge=1 DONE — #969 MERGED → stage @ fd84c00a; tip CI + stage CI green; #950/#900/#841 On stage; #968 In progress"
   - "2026-08-09 D-S061-merge=1 — commit session verify artifacts + push tip; merge #969 → stage"
   - "2026-08-09 11-verify-impl COMPLETE PASS — D-S061-11=1; Phase 4 close / merge AskQuestion; tip 828c7087; PR #969"
   - "2026-08-09 09-qa PASS (advisories #968 branches, Redis/Sentry ops); 11-verify-impl START — verify-impl.md drafted; await D-S061-11"
@@ -35695,7 +35709,7 @@ evolve_cycles:
   - "2026-08-09 04 execution-plan + build-plan-card drafted; await D-S061-04-plan; 04 remains in_progress"
   - "2026-08-09 D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed; 02 COMPLETE; 04-tech-plan in_progress (delta)"
   - "Opened after D-S061-intake; D-S061-redis=1 Upstash; 01 COMPLETE D-S061-01-ac=1"
-  note: "D-S061-merge=1 — commit+push session verify; merge #969 → stage in progress"
+  note: "D-S061-merge=1 DONE — #969 MERGED → stage @ fd84c00a; await Phase 4 close AskQuestion"
 - id: EV-051
   session_id: S060-tag-driven-prod-deploy
   type: feature
