@@ -305,6 +305,16 @@ describe('FileConverter Component', () => {
       expect(container).toBeTruthy();
     });
 
+    it('exposes Help link to the operator one-pager (UJ-054 / TC-EV047-011)', () => {
+      render(<FileConverter {...defaultProps} />);
+      const help = screen.getByTestId('operator-help-link');
+      expect(help).toHaveAttribute(
+        'href',
+        expect.stringContaining('docs/guides/operator-one-pager.md'),
+      );
+      expect(help).toHaveAttribute('target', '_blank');
+    });
+
     it('shows Sign in for guests and guest loss notice when local work exists', async () => {
       const user = userEvent.setup();
       const onRequestLogin = vi.fn();

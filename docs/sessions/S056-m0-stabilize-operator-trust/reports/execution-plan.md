@@ -17,9 +17,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Stabilize + narrative |
-| **Active milestone** | M3: Operator docs + Help (after M2.5) |
-| **Active task** | T3.1 one-pager |
-| **Tasks completed** | 14 / 20 (M1–M2 + M2.5 T2.5.1–T2.5.4 done; M3 next) |
+| **Active milestone** | M4: Verify closeout |
+| **Active task** | T4.1 tip CI + 08/09/10/11 |
+| **Tasks completed** | 18 / 20 (M1–M3 done; T1.5 admin-blocked; T4.1 next) |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-08 |
 | **Ruleset** | `D-S056-ruleset-defer=2` — require `Converter perf (tac2iwxxm)` **after** job ships in M2 (not before) |
@@ -132,10 +132,10 @@ None (fixtures in-repo).
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | Write `docs/guides/operator-one-pager.md` (one printed page; no internal cites) | Docs | pending | #956 AC7 | T2.5.1–T2.5.4 | — |
-| T3.2 | Write `docs/guides/operator-handbook.md` (sections + ingest pointer; link from one-pager) | Docs | pending | #957 AC8 | T3.1 | — |
-| T3.3 | README Quick start links; in-app Help entry → one-pager | Code | pending | AC9; UJ-054 | T3.1 | — |
-| T3.4 | Vitest/Playwright for Help entry (TC-EV047-011) | Test | pending | TC-EV047-011; 10-e2e | T3.3 | — |
+| T3.1 | Write `docs/guides/operator-one-pager.md` (one printed page; no internal cites) | Docs | **completed** | #956 AC7 | T2.5.1–T2.5.4 | — |
+| T3.2 | Write `docs/guides/operator-handbook.md` (sections + ingest pointer; link from one-pager) | Docs | **completed** | #957 AC8 | T3.1 | — |
+| T3.3 | README Quick start links; in-app Help entry → one-pager | Code | **completed** | AC9; UJ-054 | T3.1 | — |
+| T3.4 | Vitest/Playwright for Help entry (TC-EV047-011) | Test | **completed** | TC-EV047-011; 10-e2e | T3.3 | — |
 
 #### M4: Verify closeout — P1
 
