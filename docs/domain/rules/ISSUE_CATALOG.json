@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-08-08",
+  "generated": "2026-08-09",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -1303,6 +1303,23 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/",
       "source_attribution": "codes-wmo-int \u2014 access:N/A \u2014 https://codes.wmo.int/ \u2014 EV-046: intentional bare root \u2014 not a registry notation check"
+    },
+    {
+      "code": "UNKNOWN_WMO_MEMBERSHIP",
+      "severity": "error",
+      "message_template": "{product} token {token!r} not in WMO register ({family}) \u2014 EV-050 / #959",
+      "product": null,
+      "tags": [
+        "membership",
+        "wmo",
+        "ev050",
+        "weather",
+        "cloud",
+        "phenomenon"
+      ],
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/49-2",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 EV-050 / #959 Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     {
       "code": "VAA_FCST_NO_VA_EXP",

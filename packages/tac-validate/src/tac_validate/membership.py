@@ -203,3 +203,41 @@ def is_member(family: str, notation: str, *, sets: dict[str, frozenset[str]] | N
     if members is None:
         raise KeyError(f"unknown membership family: {family!r}")
     return notation in members
+
+
+def normalize_register_notation(token: str) -> str:
+    """
+    Map TAC spaced phenomena to register underscore form.
+
+    Parameters
+    ----------
+    token : str
+        TAC fragment (e.g. ``ISOL TS`` or ``ISOL_TS``).
+
+    Returns
+    -------
+    str
+        Underscore-joined notation (e.g. ``ISOL_TS``).
+    """
+    return "_".join(token.strip().split())
+
+
+def is_member_normalized(
+    family: str,
+    notation: str,
+    *,
+    sets: dict[str, frozenset[str]] | None = None,
+) -> bool:
+    """
+    Return True if ``notation`` or its underscore-normalized form is in ``family``.
+
+    Used for AIRMET/SIGMET phenomena where TAC may use spaces (``ISOL TS``) while
+    ``codes.wmo.int`` / vendor CSV notations use underscores (``ISOL_TS``).
+    """
+    table = sets if sets is not None else load_membership_sets()
+    if is_member(family, notation, sets=table):
+        return True
+    normalized = normalize_register_notation(notation)
+    if normalized != notation and is_member(family, normalized, sets=table):
+        return True
+    return False

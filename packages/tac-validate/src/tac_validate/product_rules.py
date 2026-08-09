@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import re
 
+from tac_validate import membership
 from tac_validate.issue_registry import issue_from
 from tac_validate.models import Issue
 
@@ -131,26 +132,48 @@ _WV_MAX_VALIDITY_HOURS = 6.0
 _WC_MAX_VALIDITY_HOURS = 6.0
 
 # Phenomenon family markers (template+gate — not exhaustive Annex vocab).
+# Underscore forms match vendor AirWx/SigWx notations (EV-050 / #959).
 _SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
-    ("TS", re.compile(r"\b(?:OBSC|EMBD|FRQ|SQL)?\s*TS(?:GR)?\b")),
-    ("TURB", re.compile(r"\b(?:SEV|MOD)?\s*TURB\b")),
-    ("ICE", re.compile(r"\b(?:SEV|MOD)?\s*ICE\b")),
-    ("MTW", re.compile(r"\b(?:SEV|MOD)?\s*MTW\b")),
-    ("DS_SS", re.compile(r"\b(?:HVY\s+)?(?:DS|SS)\b")),
+    ("TS", re.compile(r"\b(?:OBSC|EMBD|FRQ|SQL)?(?:\s+|_)?TS(?:GR)?\b")),
+    ("TURB", re.compile(r"\b(?:SEV|MOD)?(?:\s+|_)?TURB\b")),
+    ("ICE", re.compile(r"\b(?:SEV|MOD)?(?:\s+|_)?ICE(?:(?:\s+|_)FZRA)?\b")),
+    ("MTW", re.compile(r"\b(?:SEV|MOD)?(?:\s+|_)?MTW\b")),
+    ("DS_SS", re.compile(r"\b(?:HVY(?:\s+|_))?(?:DS|SS)\b")),
     ("VA", re.compile(r"\bVA\b")),
     ("TC", re.compile(r"\bTC\b")),
-    ("RDOACT", re.compile(r"\bRDOACT\s+CLD\b")),
+    ("RDOACT", re.compile(r"\bRDOACT(?:\s+|_)CLD\b")),
 )
 _AIRMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
-    ("TS", re.compile(r"\b(?:ISOL|OCNL|FRQ)\s+TS\b")),
-    ("ICE", re.compile(r"\b(?:MOD|SEV)?\s*ICE\b")),
-    ("TURB", re.compile(r"\b(?:MOD|SEV)?\s*TURB\b")),
-    ("MTW", re.compile(r"\b(?:MOD|SEV)?\s*MTW\b")),
-    ("MT_OBSC", re.compile(r"\bMT\s+OBSC\b")),
-    ("CLD", re.compile(r"\b(?:BKN|OVC)\s+CLD\b")),
-    ("CB_TCU", re.compile(r"\b(?:ISOL|OCNL|FRQ)\s+(?:CB|TCU)\b")),
-    ("SFC", re.compile(r"\bSFC\s+(?:WIND|VIS)\b")),
+    ("TS", re.compile(r"\b(?:ISOL|OCNL|FRQ)(?:\s+|_)TS(?:GR)?\b")),
+    ("ICE", re.compile(r"\b(?:MOD|SEV)?(?:\s+|_)?ICE\b")),
+    ("TURB", re.compile(r"\b(?:MOD|SEV)?(?:\s+|_)?TURB\b")),
+    ("MTW", re.compile(r"\b(?:MOD|SEV)?(?:\s+|_)?MTW\b")),
+    ("MT_OBSC", re.compile(r"\bMT(?:\s+|_)OBSC\b")),
+    ("CLD", re.compile(r"\b(?:BKN|OVC)(?:\s+|_)CLD\b")),
+    ("CB_TCU", re.compile(r"\b(?:ISOL|OCNL|FRQ)(?:\s+|_)(?:CB|TCU)\b")),
+    ("SFC", re.compile(r"\bSFC(?:\s+|_)(?:WIND|VIS)\b")),
 )
+# Candidate phrases for WMO membership (includes unknown/sad forms).
+_AIRMET_PHENOM_CANDIDATE = re.compile(
+    r"\b("
+    r"(?:ISOL|OCNL|FRQ)(?:\s+|_)[A-Z]{2,}|"
+    r"(?:MOD|SEV)(?:\s+|_)(?:ICE|TURB|MTW)|"
+    r"MT(?:\s+|_)OBSC|"
+    r"(?:BKN|OVC)(?:\s+|_)CLD|"
+    r"SFC(?:\s+|_)(?:WIND|VIS)"
+    r")\b"
+)
+_SIGMET_PHENOM_CANDIDATE = re.compile(
+    r"\b("
+    r"(?:OBSC|EMBD|FRQ|SQL)(?:\s+|_)TS(?:GR)?|"
+    r"(?:SEV|MOD)(?:\s+|_)(?:ICE(?:(?:\s+|_)FZRA)?|TURB|MTW)|"
+    r"HVY(?:\s+|_)(?:DS|SS)|"
+    r"RDOACT(?:\s+|_)CLD|"
+    r"VA|TC"
+    r")\b"
+)
+_RECENT_WX = re.compile(r"^RE[A-Z]{2,}$")
+_LAYER_CLOUD_PARTS = re.compile(r"^(FEW|SCT|BKN|OVC)\d{3}(CB|TCU)?$")
 
 _METAR_SPECI_SKIP = frozenset({"METAR", "SPECI", "COR", "AUTO", "NIL", "CAVOK", "NOSIG"})
 _TAF_SKIP = frozenset({"TAF", "AMD", "COR", "NIL", "CNL", "CAVOK"})
@@ -282,6 +305,65 @@ def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, in
 def _is_valid_cloud_token(token: str) -> bool:
     """Return True when ``token`` is a valid A3-2 cloud / VV / NSC-class group."""
     return bool(_CLOUD_OK.fullmatch(token))
+
+
+def _membership_issue(
+    *,
+    product: str,
+    token: str,
+    family: str,
+    start: int,
+    end: int,
+    location: str,
+) -> Issue:
+    """Build ``UNKNOWN_WMO_MEMBERSHIP`` for a token missing from a harvested family."""
+    return _issue(
+        "UNKNOWN_WMO_MEMBERSHIP",
+        f"{product} token {token!r} not in WMO register ({family}) — EV-050 / #959",
+        start=start,
+        end=end,
+        location=location,
+    )
+
+
+def _weather_in_register(token: str) -> bool:
+    """Return True when present-weather ``token`` is in harvested WMO sets."""
+    if token in {"//"}:
+        return True
+    return membership.is_member("present_or_forecast_weather", token) or membership.is_member("weather_306_4678", token)
+
+
+def _check_phenomenon_membership(
+    upper: str,
+    *,
+    product: str,
+    start: int,
+    end: int,
+) -> list[Issue]:
+    """Emit membership errors for SIGMET/AIRMET phenomenon candidates (EV-050)."""
+    family = "airwx_phenomena" if product == "AIRMET" else "sigwx_phenomena"
+    pattern = _AIRMET_PHENOM_CANDIDATE if product == "AIRMET" else _SIGMET_PHENOM_CANDIDATE
+    issues: list[Issue] = []
+    seen: set[str] = set()
+    for match in pattern.finditer(upper):
+        raw = match.group(1)
+        key = membership.normalize_register_notation(raw)
+        if key in seen:
+            continue
+        seen.add(key)
+        if membership.is_member_normalized(family, raw):
+            continue
+        issues.append(
+            _membership_issue(
+                product=product,
+                token=raw,
+                family=family,
+                start=start + match.start(1),
+                end=start + match.end(1),
+                location="phenomenon",
+            )
+        )
+    return issues
 
 
 def _cloud_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
@@ -773,30 +855,49 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
         )
 
     for _i, wx_tok in _weather_candidate_tokens(tokens):
-        if _is_valid_weather_token(wx_tok):
-            continue
         span = _token_span_in_core(core, wx_tok, start)
         if span is None:
-            issues.append(
-                _issue(
-                    "INVALID_WEATHER",
-                    f"{product} invalid present weather token {wx_tok!r} — A3-2 #8 / research R3",
-                    start=start,
-                    end=end,
-                    location="weather",
-                )
-            )
+            wx_start, wx_end = start, end
         else:
             wx_start, wx_end = span
+        # Recent weather (RE*) — AerodromeRecentWeather membership (EV-050).
+        if _RECENT_WX.fullmatch(wx_tok):
+            if membership.is_member("recent_weather", wx_tok):
+                continue
             issues.append(
-                _issue(
-                    "INVALID_WEATHER",
-                    f"{product} invalid present weather token {wx_tok!r} — A3-2 #8 / research R3",
+                _membership_issue(
+                    product=product,
+                    token=wx_tok,
+                    family="recent_weather",
                     start=wx_start,
                     end=wx_end,
                     location="weather",
                 )
             )
+            continue
+        if _is_valid_weather_token(wx_tok):
+            if _weather_in_register(wx_tok):
+                continue
+            issues.append(
+                _membership_issue(
+                    product=product,
+                    token=wx_tok,
+                    family="present_or_forecast_weather",
+                    start=wx_start,
+                    end=wx_end,
+                    location="weather",
+                )
+            )
+            continue
+        issues.append(
+            _issue(
+                "INVALID_WEATHER",
+                f"{product} invalid present weather token {wx_tok!r} — A3-2 #8 / research R3",
+                start=wx_start,
+                end=wx_end,
+                location="weather",
+            )
+        )
 
     if not _TEMP.search(core):
         issues.append(
@@ -837,6 +938,31 @@ def _check_metar_speci(tac: str, product: str) -> list[Issue]:
                 )
             )
             continue
+        parts = _LAYER_CLOUD_PARTS.fullmatch(cloud_tok)
+        if parts is not None:
+            amount, ctype = parts.group(1), parts.group(2)
+            if not membership.is_member("cloud_amount", amount):
+                issues.append(
+                    _membership_issue(
+                        product=product,
+                        token=amount,
+                        family="cloud_amount",
+                        start=cloud_start,
+                        end=cloud_end,
+                        location="cloud",
+                    )
+                )
+            if ctype is not None and not membership.is_member("cloud_type", ctype):
+                issues.append(
+                    _membership_issue(
+                        product=product,
+                        token=ctype,
+                        family="cloud_type",
+                        start=cloud_start,
+                        end=cloud_end,
+                        location="cloud",
+                    )
+                )
         if cloud_tok.endswith(("CB", "TCU")):
             issues.append(
                 _issue(
@@ -1869,6 +1995,9 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
                 location="phenomenon",
             )
         )
+
+    # EV-050 — AirWx/SigWx register membership (underscore↔space normalize).
+    issues.extend(_check_phenomenon_membership(upper, product=product, start=start, end=end))
 
     return issues
 

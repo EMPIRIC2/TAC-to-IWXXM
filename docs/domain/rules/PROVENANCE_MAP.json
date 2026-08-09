@@ -792,6 +792,17 @@
       "note": "EV-046: prefer register landing + 306/4678 concept pattern over bare root"
     },
     {
+      "code": "UNKNOWN_WMO_MEMBERSHIP",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://codes.wmo.int/49-2",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership; EV-050)",
+      "note": "EV-050 / #959 Validated: tac-validate membership gate vs harvested wmo_membership.json"
+    },
+    {
       "code": "INVALID_WIND",
       "status": "ok",
       "source_id": "codes-wmo-int",

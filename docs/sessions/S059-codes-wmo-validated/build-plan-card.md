@@ -1,6 +1,6 @@
 # Build Plan Card
 
-> Session: S059-codes-wmo-validated | Updated: 2026-08-09 | Active: Phase 1 / M2 / T2.1
+> Session: S059-codes-wmo-validated | Updated: 2026-08-09 | Active: Phase 1 / M2 / T2.2
 
 ## Goal (one sentence)
 
@@ -20,7 +20,7 @@ Ship offline WMO codelist harvest + `tac-validate` membership CI and all-F6
 ## In scope (this batch — M2)
 
 - [x] T2.1 — Test — happy + sad membership matrix (weather/recent/cloud/SIGMET+AIRMET/nil) — Spec: TC-EV050-002; AC2
-- [ ] T2.2 — Code — wire membership into lint/rules (+ AIRMET underscore normalize) — Spec: AC2
+- [x] T2.2 — Code — wire membership into lint/rules (+ AIRMET underscore normalize) — Spec: AC2
 - [ ] T2.3 — Test+fixtures — aggressive RE*/AIRMET_/SpaceWx/TCU packs — Spec: TC-EV050-004; AC4
 - [ ] T2.4 — Docs — coverage / baseline delta; deferrals — Spec: AC4
 
@@ -38,7 +38,7 @@ Ship offline WMO codelist harvest + `tac-validate` membership CI and all-F6
 ## Acceptance for this batch
 
 - [x] M1: TC-EV050-001 / AC3 docs (`make membership-regen`)
-- [ ] TC-EV050-002 green (happy + sad)
+- [x] TC-EV050-002 green (happy + sad + lint wire)
 - [ ] TC-EV050-004 fixtures landed or defer+cite
 
 ## Next Plan prompt
