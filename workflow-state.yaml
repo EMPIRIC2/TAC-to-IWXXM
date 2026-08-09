@@ -23,14 +23,15 @@ sessions:
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
   branch_status: active
   branch_exists: true
-  tip_sha: 80197a58
-  tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+  tip_sha: 9582b352
+  tip_sha_full: 9582b352341ed9de48c810d8738c767905d5f890
   tip_sha_pushed: false
   artifacts_dir: docs/sessions/S061-ci-polish-quality-pr-stats/
   github_issues:
   - 950
   - 900
   - 841
+  - 968
   feature_ids:
   - F29
   - F6
@@ -45,7 +46,7 @@ sessions:
   - M5
   prior_session: S060-tag-driven-prod-deploy
   current_stage: 07-build
-  current_stage_note: '07 M1 — T1.5 under D-S061-cov-branches=3 (lines/stmts/funcs ≥95; branches child+waiver)'
+  current_stage_note: 'M1 COMPLETE (T1.1–T1.5 @ 9582b352); D-S061-cov-branches=3; child #968; next M2 T2.1'
   decisions:
     D-S061-intake: "1 open; Q2=1 quality sticky; Q3=1 second comment; Q4=2-4 Sentry+Redis+Orval; Q5=1 Standard; reuse infra; raise no-shared-store risk"
     D-S061-redis: "1 — Upstash Redis free"
@@ -53,7 +54,7 @@ sessions:
     D-S061-gateA: "1 — Gate A PASS; proceed 04-tech-plan"
     D-S061-04-plan: "1 — approve as drafted; openapi-typescript"
     D-S061-gateB: "1 — PASS; start 07 M1"
-    D-S061-cov-branches: "3 — lines/stmts/funcs ≥95; branches child issue + waiver"
+    D-S061-cov-branches: "3 — lines/stmts/funcs ≥95; branches child issue + waiver (#968)"
   artifacts:
   - path: docs/sessions/S061-ci-polish-quality-pr-stats/
     status: present
@@ -100,7 +101,7 @@ sessions:
   - stage: 07-build
     status: in_progress
     mode: delta
-    note: "IN_PROGRESS — M1 T1.5 under D-S061-cov-branches=3"
+    note: "M1 COMPLETE @ 9582b352; next M2 T2.1; child #968 (branches waiver)"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -108,6 +109,7 @@ sessions:
   - stage: 11-verify-impl
     status: pending
   notes:
+  - "2026-08-09 M1 COMPLETE (T1.1–T1.5) @ 9582b352 — D-S061-cov-branches=3; child issue #968; next M2 T2.1"
   - "2026-08-09 D-S061-cov-branches=3 — Vitest lines/stmts/funcs ≥95 now; branches ≥95 via child issue + explicit waiver (not silent); T1.5"
   - "2026-08-09 D-S061-gateB=1 — Gate B PASS; 05 COMPLETE; 06 skipped; 07-build M1 in_progress"
   - "2026-08-09 05 audit — I-01/I-02 fixed; recommended medium defaults in 05 report; Gate B pending (D-S061-gateB)"
@@ -11673,9 +11675,9 @@ stages:
     evolve_cycle_id: EV-052
     skill_id: 07-build
     mode: delta
-    note: 'IN_PROGRESS — M1 T1.5 under D-S061-cov-branches=3 (lines/stmts/funcs ≥95; branches child+waiver)'
-    tip_sha: 80197a58
-    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    note: 'M1 COMPLETE (T1.1–T1.5 @ 9582b352); D-S061-cov-branches=3; child #968; next M2 T2.1'
+    tip_sha: 9582b352
+    tip_sha_full: 9582b352341ed9de48c810d8738c767905d5f890
     tip_sha_pushed: false
     pr_number:
     pr_url:
@@ -11686,13 +11688,13 @@ stages:
     ci_cd_pipeline_status:
     ci_cd_pipeline_note:
     pending_commit: false
-    current_milestone: M1
-    current_task: T1.5
-    active_milestone: M1
-    active_task: T1.5
-    active_task_status: in_progress
-    completed_through:
-    progress:
+    current_milestone: M2
+    current_task: T2.1
+    active_milestone: M2
+    active_task: T2.1
+    active_task_status: pending
+    completed_through: T1.5
+    progress: M1 done
     skipped_tasks: []
     deepen_feature_ids: [F29, F6, F21, F30, M5]
     feature_ids: []
@@ -11701,6 +11703,8 @@ stages:
     - D-S061-gateB
     - D-S061-04-plan
     - D-S061-gateA
+    child_issue: 968
+    child_issue_note: 'branches ≥95 waiver tracking (D-S061-cov-branches=3)'
     decision_refs_s060:
     - D-S060-gateA
     - D-S060-11-next
@@ -11782,9 +11786,9 @@ stages:
       started_at: '2026-08-09'
       started: '2026-08-09'
       pending_commit: false
-      note: 'IN_PROGRESS — M1 T1.5 under D-S061-cov-branches=3'
-      tip_sha: 80197a58
-      tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+      note: 'M1 COMPLETE @ 9582b352; next M2 T2.1; child #968'
+      tip_sha: 9582b352
+      tip_sha_full: 9582b352341ed9de48c810d8738c767905d5f890
       tip_sha_pushed: false
       feature_ids: []
       deepen_feature_ids: [F29, F6, F21, F30, M5]
@@ -11793,14 +11797,15 @@ stages:
       - D-S061-gateB
       - D-S061-04-plan
       - D-S061-gateA
-      active_milestone: M1
-      current_milestone: M1
-      active_task: T1.5
-      current_task: T1.5
-      active_task_status: in_progress
-      completed_through:
-      progress:
+      active_milestone: M2
+      current_milestone: M2
+      active_task: T2.1
+      current_task: T2.1
+      active_task_status: pending
+      completed_through: T1.5
+      progress: M1 done
       skipped_tasks: []
+      child_issue: 968
       artifacts:
       - docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
       - docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
@@ -12814,6 +12819,7 @@ stages:
       active_task_status: completed
       completed_at: '2026-07-19'
     notes:
+    - '2026-08-09 S061/EV-052 M1 COMPLETE (T1.1–T1.5) @ 9582b352 — D-S061-cov-branches=3; child #968; next M2 T2.1'
     - '2026-08-09 S061/EV-052 D-S061-cov-branches=3 — T1.5 lines/stmts/funcs ≥95 now; branches ≥95 child issue + explicit waiver; no git commit by workflow-state-manager'
     - '2026-08-09 S061/EV-052 07-build STARTED (D-S061-gateB=1) — Gate B PASS; M1 in_progress; 06 skipped; no git commit by workflow-state-manager'
     - '2026-08-08 D-S054-t17-ci=1 — Accept GitHub Actions run 31273500621 as tip CI evidence for EV-045 Rust/maturin/test jobs; tip delta after f270618c is docs-only (09ce2bef); Staging gate FAIL was base=main only; T1.7 COMPLETE (7/7); 07-build COMPLETE; 08-verify-build in_progress (delta verify after T1.7 CI accept); no git commit by workflow-state-manager'
@@ -35440,17 +35446,17 @@ evolve_cycles:
   title: "CI polish + quality PR stats + free Sentry/Redis/Orval"
   feature_ids: [F29, F6, F21, F30, M5]
   deepen_feature_ids: [F29, F6, F21, F30, M5]
-  github_issues: [950, 900, 841]
+  github_issues: [950, 900, 841, 968]
   preset: Standard
   current_stage: 07-build
-  current_stage_note: "07 M1 — T1.5 under D-S061-cov-branches=3 (lines/stmts/funcs ≥95; branches child+waiver)"
+  current_stage_note: "M1 COMPLETE (T1.1–T1.5 @ 9582b352); D-S061-cov-branches=3; child #968; next M2 T2.1"
   branch: evolve/EV-052-ci-polish-quality-pr-stats
   branch_base: stage@80197a58
   branch_base_sha: 80197a58
   branch_base_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
   branch_status: active
-  tip_sha: 80197a58
-  tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+  tip_sha: 9582b352
+  tip_sha_full: 9582b352341ed9de48c810d8738c767905d5f890
   tip_sha_pushed: false
   gates:
     a_to_b: passed
@@ -35473,7 +35479,7 @@ evolve_cycles:
     D-S061-gateA: "1 — Gate A PASS; proceed 04-tech-plan"
     D-S061-04-plan: "1 — approve as drafted; openapi-typescript"
     D-S061-gateB: "1 — PASS; start 07 M1"
-    D-S061-cov-branches: "3 — lines/stmts/funcs ≥95; branches child issue + waiver"
+    D-S061-cov-branches: "3 — lines/stmts/funcs ≥95; branches child issue + waiver (#968)"
   decisions_locked:
   - D-S061-intake=1
   - D-S061-redis=1
@@ -35483,6 +35489,7 @@ evolve_cycles:
   - D-S061-gateB=1
   - D-S061-cov-branches=3
   notes:
+  - "2026-08-09 M1 COMPLETE (T1.1–T1.5) @ 9582b352 — D-S061-cov-branches=3; child #968; next M2 T2.1"
   - "2026-08-09 D-S061-cov-branches=3 — Vitest lines/stmts/funcs ≥95 now; branches ≥95 via child issue + explicit waiver (not silent); T1.5"
   - "2026-08-09 D-S061-gateB=1 — Gate B PASS; gates.b_to_c passed; 05 COMPLETE; 06 skipped; 07-build M1 in_progress"
   - "2026-08-09 05 audit — I-01/I-02 fixed; recommended medium defaults in 05 report; Gate B pending (D-S061-gateB)"
@@ -35490,7 +35497,7 @@ evolve_cycles:
   - "2026-08-09 04 execution-plan + build-plan-card drafted; await D-S061-04-plan; 04 remains in_progress"
   - "2026-08-09 D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed; 02 COMPLETE; 04-tech-plan in_progress (delta)"
   - "Opened after D-S061-intake; D-S061-redis=1 Upstash; 01 COMPLETE D-S061-01-ac=1"
-  note: "07 M1 — T1.5 under D-S061-cov-branches=3; current_stage 07-build (delta)"
+  note: "M1 COMPLETE @ 9582b352; next M2 T2.1; child #968; current_stage 07-build (delta)"
 - id: EV-051
   session_id: S060-tag-driven-prod-deploy
   type: feature
@@ -48357,6 +48364,19 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 9582b352
+    sha_full: 9582b352341ed9de48c810d8738c767905d5f890
+    message: "[EV-052] feat: M1 coverage inventory + ≥95 lines/stmts/funcs gates"
+    branch: evolve/EV-052-ci-polish-quality-pr-stats
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S061-ci-polish-quality-pr-stats
+    evolve_cycle_id: EV-052
+    timestamp: '2026-08-09'
+    pushed: false
+    tip_sha: 9582b352
+    tip_sha_full: 9582b352341ed9de48c810d8738c767905d5f890
+    note: 'M1 T1.1–T1.5 COMPLETE; D-S061-cov-branches=3; child #968; next M2 T2.1'
   - sha: cb8d9771
     sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
     message: "[EV-051] feat: tag-driven prod Deploy after full CI (solo gate)"
