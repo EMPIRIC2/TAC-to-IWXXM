@@ -32,8 +32,8 @@ regressions on PR/CI, and ship operator one-pager + minimal handbook.
 
 ## Next child stage
 
-**07-build / M2.5** — T2.5.1–T2.5.3 package + per-file coverage ≥95% (`D-S056-cov95=2`, `D-S056-m3-order=2`).  
-Then **M3** T3.1–T3.4 operator docs + Help. T1.5 ruleset apply deferred (`D-S056-t15-admin` — no repo admin).
+**07-build / M3 T3.1** — operator docs + Help (`D-S056-next-m3=1`, `D-S056-m3-order=2`).  
+M2.5 T2.5.1–T2.5.4 COMPLETE @ `da31bf1f`. T1.5 ruleset apply deferred (`D-S056-t15-admin` — no repo admin).
 
 ## Locked decisions
 
@@ -56,5 +56,5 @@ Then **M3** T3.1–T3.4 operator docs + Help. T1.5 ruleset apply deferred (`D-S0
 
 - Help UI placement in existing shell (07 T3.3)
 - CORPUS: guides remain opt-in; cite product/journeys for Help — no new root member
-- M2.5 coverage: package `fail_under` + CI per-file ≥95; tac2iwxxm flaky ~94.96%
+- M2.5 coverage COMPLETE (package + per-file ≥95 incl. auth/worker) @ `da31bf1f` (pushed)
 - T1.5 admin ruleset apply still pending when admin available
