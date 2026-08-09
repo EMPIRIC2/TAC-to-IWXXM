@@ -40,6 +40,9 @@ Traces to `[Corpus: product]` F15, `[Corpus: adr]` ADR-028, `#732`, S015 / EV-01
 - Emit unknown `code` strings — CI must fail on unregistered codes.
 - Put IWXXM/XSD/Schematron logic in `tac-validate`.
 - Treat FlightPlanDatabase FMS format as METAR authority.
+- Put planning ids (`EV-`, `ADR-`, `#NNN`, `S0`, `TC-*`, `F\d+`) in provenance `note` or
+  other fields that join into operator-facing `source_attribution` — keep those on
+  `ticket` / digs only (EV-048).
 
 ## Related
 

@@ -1,6 +1,6 @@
 # Build Plan Card
 
-> Session: S059-codes-wmo-validated | Updated: 2026-08-09 | Active: Phase 1 / M3 / T3.2
+> Session: S059-codes-wmo-validated | Updated: 2026-08-09 | Active: Phase 1 / M3 / T3.3
 
 ## Goal (one sentence)
 
@@ -20,7 +20,7 @@ Ship offline WMO codelist harvest + `tac-validate` membership CI and all-F6
 ## In scope (this batch — M3)
 
 - [x] T3.1 — Test — dual-profile harness (`annex3` vs `iwxxm_us`); fail unclassified dual-applicable divergent rows — Spec: TC-EV050-007; AC7
-- [ ] T3.2 — Docs — disposition table for all F6 products (shared WMO · intentional L5 · true error · N/A) — Spec: AC7
+- [x] T3.2 — Docs — disposition table for all F6 products (shared WMO · intentional L5 · true error · N/A) — Spec: AC7
 - [ ] T3.3 — Code — fix true-error rows (severity / false pass-fail / missing membership / wrong gating) — Spec: TC-EV050-008; AC8
 - [ ] T3.4 — Test — regressions per fixed true error; intentional/N/A retain cites; AC8 defer+cite OK — Spec: AC8
 

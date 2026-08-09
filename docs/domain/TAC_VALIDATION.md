@@ -329,6 +329,10 @@ Additional (informative) pairs: https://github.com/wmo-im/iwxxm-translation — 
 
 ## US profile (`iwxxm_us`) — Annex 3 differences
 
+**Dual-profile disposition (EV-050 / AC7):** all-F6 lint compare + N/A rows —
+[dual-profile-disposition.md](../sessions/S059-codes-wmo-validated/reports/dual-profile-disposition.md)
+(`tac_validate.dual_profile` / TC-EV050-007).
+
 | Resource | URL | Use |
 |----------|-----|-----|
 | FMH-1 (2019) | https://www.icams-portal.gov/resources/ofcm/fmh/FMH1/fmh1_2019.pdf | Surface obs / METAR REMARKS coding — [mining dig](mining/fmh1-2019-mining-notes.md) |
