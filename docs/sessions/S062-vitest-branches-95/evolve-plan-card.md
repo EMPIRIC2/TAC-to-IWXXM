@@ -28,7 +28,7 @@ Raise Vitest `branches` to ≥95% (FileConverter-heavy) and close the explicit
 
 ## Next child stage
 
-**02-verify-plan** (delta) — Gate A on AC1–AC5 + corpus deltas.
+**04-tech-plan** — await `D-S062-04-plan` on execution plan (M1→M2→M3), then 07 M1.
 
 ## Risks / open decisions
 

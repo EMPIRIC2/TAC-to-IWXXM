@@ -1,6 +1,6 @@
 # 02-verify-plan audit — S062 / EV-053
 
-**Status**: recommended **PASS** — awaiting `D-S062-gateA`  
+**Status**: **PASS** — `D-S062-gateA=1` / `D-S062-m1=1`  
 **Date**: 2026-08-10  
 **Mode**: delta (F29/M5 deepen — Vitest branches / FileConverter)
 
@@ -28,7 +28,7 @@
 
 | # | Statement | Recommendation |
 |---|-----------|----------------|
-| M1 | AC5 enforcement: Vitest has aggregate thresholds only by default — FileConverter ≥95% branches is proven via coverage JSON/html + session verify report (08/09/11), not a separate CI fail-under plugin unless 04 adds one | **Approve** — document proof in verify reports; optional lightweight CI script in 04/07 if cheap |
+| M1 | AC5 enforcement: Vitest has aggregate thresholds only by default — FileConverter ≥95% branches is proven via coverage JSON/html + session verify report (08/09/11), not a separate CI fail-under plugin unless 04 adds one | **Approve** (`D-S062-m1=1`) — verify-report proof; optional lightweight CI script only if cheap |
 
 ### Low
 
@@ -46,10 +46,6 @@ None.
 | Scope vs parent waiver | PASS — closes D-S061-cov-branches; does not reopen EV-052 product scope |
 | ADR-007 conflict? | PASS — raises Vitest branches to match universal 95 intent; no ADR rewrite (Q2=1) |
 
-## Gate A recommendation
+## Gate A
 
-**PASS** — proceed to **04-tech-plan** (05 skipped per routing).
-
-## Blocking until user
-
-`D-S062-gateA` (+ M1 verdict).
+**PASS** (`D-S062-gateA=1`) — proceed to **04-tech-plan** (05 skipped per routing).

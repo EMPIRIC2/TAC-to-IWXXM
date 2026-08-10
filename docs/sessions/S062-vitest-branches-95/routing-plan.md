@@ -8,9 +8,9 @@
 | 00-context | yes | session | **completed** | Opened S062; `D-S062-route=1` |
 | 16-evolve | yes | orchestrate | **in_progress** | Phase A → 02 after 01 |
 | 01-requirements | yes | delta | **completed** | `D-S062-01-ac=1`; AC1–AC5; re-include FileConverter |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S062-gateA=1`); M1=1; `reports/02-verify-plan-audit.md` |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
-| 04-tech-plan | yes | delta | pending | Thin execution plan (test milestones) |
+| 04-tech-plan | yes | delta | **in_progress** | Execution plan + Build Plan Card |
 | 05-verify-tech | no | — | skipped | Skip unless 04 adds deps/arch |
 | 06-tech-tooling | no | — | skipped | No new deps |
 | 07-build | yes | delta | pending | Raise branches gate + fill FileConverter-heavy tests |

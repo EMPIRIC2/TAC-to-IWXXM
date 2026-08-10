@@ -36,8 +36,8 @@ sessions:
   - F29
   - M5
   prior_session: S061-ci-polish-quality-pr-stats
-  current_stage: 02-verify-plan
-  current_stage_note: '01 COMPLETE D-S062-01-ac=1; Gate A / 02 next'
+  current_stage: 04-tech-plan
+  current_stage_note: 'Gate A PASS D-S062-gateA=1 M1=1; 02 COMPLETE; 04 in_progress'
   decisions:
     D-S062-route: "1 — Standard 00→16→01→02→04→07→08→09→11; skip 03,05,06,10,12,13"
     D-S062-ui-preview: "2 — no local UI preview; Vitest/docs only"
@@ -45,6 +45,8 @@ sessions:
     D-S062-fc-strategy: "1 — re-include FileConverter; fill tests to ≥95"
     D-S062-01-manifest: "1 — delta feature-list + test-plan + decisions"
     D-S062-01-ac: "1 — AC1–AC5 locked (AC5 FileConverter ≥95% branches)"
+    D-S062-gateA: "1 — PASS Gate A + M1 approve (verify-report AC5 proof)"
+    D-S062-m1: "1 — AC5 via coverage JSON/html + session verify; optional CI script if cheap"
   artifacts:
   - path: docs/sessions/S062-vitest-branches-95/
     status: present
@@ -58,6 +60,9 @@ sessions:
   - path: docs/sessions/S062-vitest-branches-95/reports/01-requirements.md
     status: present
     note: "01 COMPLETE D-S062-01-ac=1"
+  - path: docs/sessions/S062-vitest-branches-95/reports/02-verify-plan-audit.md
+    status: present
+    note: "02 COMPLETE Gate A PASS D-S062-gateA=1"
   routing_plan:
   - stage: 00-context
     status: completed
@@ -69,10 +74,11 @@ sessions:
     status: completed
     note: "D-S062-01-ac=1; AC1–AC5; FileConverter re-include"
   - stage: 02-verify-plan
-    status: pending
-    note: "Gate A next"
+    status: completed
+    note: "Gate A PASS D-S062-gateA=1; M1=1; report 02-verify-plan-audit.md"
   - stage: 04-tech-plan
-    status: pending
+    status: in_progress
+    note: "delta execution plan after Gate A"
   - stage: 07-build
     status: pending
   - stage: 08-verify-build
@@ -82,6 +88,7 @@ sessions:
   - stage: 11-verify-impl
     status: pending
   notes:
+  - "2026-08-10 D-S062-gateA=1 / M1=1 — Gate A PASS; AC5 verify-report proof; 02 COMPLETE; 04-tech-plan START"
   - "2026-08-10 D-S062-01-ac=1 — AC1–AC5; re-include FileConverter; AC5 file branches ≥95; handoff 02-verify-plan"
   - "2026-08-10 D-S062-route=1 / ui-preview=2 / dirty=2 — opened S062/EV-053; S061 leftovers already on stage (#972); branch evolve/EV-053-vitest-branches-95 @ 6f25c0b1"
 
@@ -35708,8 +35715,8 @@ evolve_cycles:
   parent_waiver: D-S061-cov-branches=3
   parent_cycle: EV-052
   preset: Standard
-  current_stage: 02-verify-plan
-  current_stage_note: "01 COMPLETE D-S062-01-ac=1; Gate A pending"
+  current_stage: 04-tech-plan
+  current_stage_note: "Gate A PASS D-S062-gateA=1; 04 in_progress"
   branch: evolve/EV-053-vitest-branches-95
   branch_base: stage@6f25c0b1
   branch_base_sha: 6f25c0b1
@@ -35719,13 +35726,15 @@ evolve_cycles:
   tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
   tip_sha_pushed: false
   gates:
-    a_to_b: pending
+    a_to_b: passed
+    a_to_b_note: "D-S062-gateA=1 — Gate A PASS; M1=1"
     b_to_c: pending
     c_to_d: pending
     deploy: waived
     deploy_note: "12/13 skipped per D-S062-route (CI-only)"
   checkpoints:
-    phase_a: pending
+    phase_a: passed
+    phase_a_note: "D-S062-gateA=1"
     phase_b: pending
     phase_c: pending
     phase_d: pending
@@ -35736,6 +35745,8 @@ evolve_cycles:
     D-S062-fc-strategy: "1 — re-include FileConverter"
     D-S062-01-manifest: "1 — delta docs"
     D-S062-01-ac: "1 — AC1–AC5 (AC5 FileConverter ≥95% branches)"
+    D-S062-gateA: "1 — PASS + M1 approve"
+    D-S062-m1: "1 — AC5 verify-report proof; optional CI if cheap"
   decisions_locked:
   - D-S062-route=1
   - D-S062-ui-preview=2
@@ -35743,6 +35754,8 @@ evolve_cycles:
   - D-S062-fc-strategy=1
   - D-S062-01-manifest=1
   - D-S062-01-ac=1
+  - D-S062-gateA=1
+  - D-S062-m1=1
   artifacts:
   - path: docs/sessions/S062-vitest-branches-95/session-brief.md
     status: present
@@ -35756,9 +35769,10 @@ evolve_cycles:
   - path: docs/sessions/S062-vitest-branches-95/reports/01-requirements.md
     status: present
   notes:
+  - "2026-08-10 D-S062-gateA=1 / M1=1 — Gate A PASS; 04 START"
   - "2026-08-10 D-S062-01-ac=1 — 01 COMPLETE; Gate A / 02 next"
   - "2026-08-10 opened after D-S062-route=1; parent D-S061-cov-branches=3 / #968"
-  note: "IN_PROGRESS — 01 done; Gate A pending"
+  note: "IN_PROGRESS — Gate A passed; 04-tech-plan"
 - id: EV-052
   session_id: S061-ci-polish-quality-pr-stats
   type: feature

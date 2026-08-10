@@ -23,6 +23,8 @@
 | D-S062-fc-strategy | **1** — Re-include `FileConverter.tsx` in Vitest coverage; fill tests until aggregate ≥95 |
 | D-S062-01-manifest | **1** — Delta: feature-list + test-plan + decisions (+ inventory in 07) |
 | D-S062-01-ac | **1** — Lock AC1–AC5 (AC5 = FileConverter ≥95% branches when included) |
+| D-S062-gateA | **1** — PASS Gate A + M1 approve (AC5 via coverage JSON/html + session verify; optional CI if cheap) |
+| D-S062-m1 | **1** — Same as Gate A M1 verdict |
 
 ### Acceptance (locked `D-S062-01-ac=1`)
 
