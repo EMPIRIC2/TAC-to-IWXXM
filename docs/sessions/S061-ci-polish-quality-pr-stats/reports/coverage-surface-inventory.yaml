@@ -91,27 +91,29 @@ surfaces:
     config_path: apps/frontend/vitest.config.ts
     kind: vitest_thresholds
     target_min: 95
-    enforced: 95  # lines/statements/functions; see branch_waiver
+    enforced: 95
     ci_job_or_make: "ci-cd.yml matrix package=frontend (pnpm @metar/frontend test:coverage)"
     current_thresholds:
       lines: 95
       statements: 95
       functions: 95
-      branches: 84
+      branches: 95
     soft_gate: false
     branch_waiver:
       decision: D-S061-cov-branches=3
-      threshold: 84
-      reason: >
-        Branch hits dominated by FileConverter (~144 misses). Explicit child issue
-        under #950 for branches ≥95 — not a silent soft gate.
+      status: resolving  # EV-053 / #968 — thresholds raised; close after AC2/AC5 green (M3)
+      prior_threshold: 84
       child_issue: 968
+      resolve_cycle: EV-053
+      reason: >
+        Re-included FileConverter.tsx; Vitest branches floor raised to 95.
+        Waiver closes when suite green + FileConverter file branches ≥95 (AC5).
     intentional_excludes:
       - "src/hooks/useLiveWorkbenchAssist.ts — covered by dedicated unit + FileConverter live"
       - "src/utils/gunzip.ts — DecompressionStream happy-path needs Chromium"
       - "src/app/App.tsx — Playwright smoke + UJ live"
-      - "src/app/components/FileConverter.tsx — workbench shell; unit+Playwright; branch uplift on child issue"
-    notes: "EV-052 — lines/stmts/funcs ≥95; branches waived per D-S061-cov-branches=3"
+      # FileConverter.tsx removed from excludes (EV-053 / D-S062-fc-strategy=1)
+    notes: "EV-053 — closing D-S061-cov-branches; FileConverter in coverage set"
 
   - id: per-file-checker
     config_path: scripts/ci/check_per_file_coverage.py

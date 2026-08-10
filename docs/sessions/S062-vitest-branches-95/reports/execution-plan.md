@@ -14,14 +14,14 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Vitest branches / FileConverter |
-| **Active milestone** | — (await `D-S062-04-plan`) |
-| **Active task** | — |
-| **Tasks completed** | 0 / 9 |
-| **Stage** | 04-tech-plan |
+| **Active milestone** | M2 FileConverter branch fill |
+| **Active task** | T2.1 |
+| **Tasks completed** | 3 / 9 (M1 complete) |
+| **Stage** | 07-build |
 | **Last updated** | 2026-08-10 |
-| **Plan approval** | pending `D-S062-04-plan` |
+| **Plan approval** | `D-S062-04-plan=1` |
 
-## Tech decisions (proposed — await `D-S062-04-plan`)
+## Tech decisions (locked `D-S062-04-plan=1`)
 
 | ID | Choice |
 |----|--------|
@@ -69,9 +69,9 @@ None.
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T1.1 | Remove FileConverter from `vitest.config.ts` coverage exclude; set `branches: 95`; scrub waiver comments | Config | pending | TC-EV053-001; AC1; D-S062-cov-* | — | — |
-| T1.2 | Run FE coverage once; record aggregate + FileConverter per-file % in session baseline note | Test/Docs | pending | AC5 baseline; D-S062-ac5-proof | T1.1 | — |
-| T1.3 | Contract assert (unit or doc test): thresholds ≥95 and FileConverter not in exclude list | Test | pending | TC-EV053-001; AC1 | T1.1 | — |
+| T1.1 | Remove FileConverter from `vitest.config.ts` coverage exclude; set `branches: 95`; scrub waiver comments | Config | **completed** | TC-EV053-001; AC1; D-S062-cov-* | — | — |
+| T1.2 | Run FE coverage once; record aggregate + FileConverter per-file % in session baseline note | Test/Docs | **completed** | AC5 baseline; D-S062-ac5-proof | T1.1 | — |
+| T1.3 | Contract assert (unit or doc test): thresholds ≥95 and FileConverter not in exclude list | Test | **completed** | TC-EV053-001; AC1 | T1.1 | — |
 
 #### M2: FileConverter branch fill — P0
 
@@ -80,7 +80,7 @@ None.
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Triage uncovered FileConverter branches from coverage JSON (group by handler/UI path) | Test | pending | AC5; #968 | T1.2 | — |
+| T2.1 | Triage uncovered FileConverter branches from coverage JSON (group by handler/UI path) | Test | **in_progress** | AC5; #968 | T1.2 | — |
 | T2.2 | Add/extend Vitest cases for highest-miss branch clusters (iterate until FileConverter branches ≥95) | Test | pending | AC5; TC-EV053-005 | T2.1 | — |
 | T2.3 | Ensure aggregate lines/stmts/funcs/branches all ≥95 with FileConverter included | Test | pending | AC2; TC-EV053-002 | T2.2 | — |
 

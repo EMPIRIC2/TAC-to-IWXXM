@@ -10,10 +10,10 @@
 | 01-requirements | yes | delta | **completed** | `D-S062-01-ac=1`; AC1–AC5; re-include FileConverter |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS (`D-S062-gateA=1`); M1=1; `reports/02-verify-plan-audit.md` |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
-| 04-tech-plan | yes | delta | **in_progress** | Execution plan + Build Plan Card |
-| 05-verify-tech | no | — | skipped | Skip unless 04 adds deps/arch |
+| 04-tech-plan | yes | delta | **completed** | `D-S062-04-plan=1`; skip 05 |
+| 05-verify-tech | no | — | skipped | No new deps/arch |
 | 06-tech-tooling | no | — | skipped | No new deps |
-| 07-build | yes | delta | pending | Raise branches gate + fill FileConverter-heavy tests |
+| 07-build | yes | delta | **in_progress** | M1 complete; M2 FileConverter fill |
 | 08-verify-build | yes | delta | pending | Local + tip CI |
 | 09-qa | yes | delta | pending | Coverage thresholds / inventory |
 | 10-e2e | no | — | skipped | No journey delta; Vitest + existing Playwright coverage |

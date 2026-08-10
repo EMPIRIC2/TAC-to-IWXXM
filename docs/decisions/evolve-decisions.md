@@ -25,6 +25,7 @@
 | D-S062-01-ac | **1** — Lock AC1–AC5 (AC5 = FileConverter ≥95% branches when included) |
 | D-S062-gateA | **1** — PASS Gate A + M1 approve (AC5 via coverage JSON/html + session verify; optional CI if cheap) |
 | D-S062-m1 | **1** — Same as Gate A M1 verdict |
+| D-S062-04-plan | **1** — Approve execution plan as drafted; skip 05; start 07 M1 |
 
 ### Acceptance (locked `D-S062-01-ac=1`)
 
