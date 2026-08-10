@@ -26,10 +26,20 @@ describe('resultTraceability', () => {
     expect(deriveTacDisplayTitle('', 'uploaded.metar')).toBe('uploaded.metar');
   });
 
+  it('uses a compact unknown TAC as the display title', () => {
+    expect(deriveTacDisplayTitle('  unusual   input  ', 'uploaded.metar')).toBe(
+      'unusual input',
+    );
+  });
+
   it('truncateTacSnippet shortens long TAC', () => {
     const long = 'METAR ' + 'X'.repeat(100);
     expect(truncateTacSnippet(long, 20).endsWith('…')).toBe(true);
     expect(truncateTacSnippet(long, 20).length).toBe(20);
+  });
+
+  it('keeps snippets at or below the requested length', () => {
+    expect(truncateTacSnippet('  METAR   KJFK  ', 20)).toBe('METAR KJFK');
   });
 
   it('resolveOriginalTac prefers API tac_input', () => {
@@ -43,5 +53,6 @@ describe('resultTraceability', () => {
       'METAR MANUAL',
     );
     expect(resolveOriginalTac('', '', 'METAR FILE')).toBe('METAR FILE');
+    expect(resolveOriginalTac('  ', undefined, undefined)).toBe('');
   });
 });

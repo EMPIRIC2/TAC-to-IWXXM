@@ -37,4 +37,22 @@ describe('inputKind', () => {
     expect(kindToMode('unknown')).toBe('tac');
     expect(kindToMode('tac')).toBe('tac');
   });
+
+  it('handles alternative headers, compressed extensions, and IWXXM XML without COLLECT', () => {
+    expect(
+      looksLikeAhlBulletin('\n  \nSAUS31 KZNY 121200 COR\nMETAR KJFK 121251Z='),
+    ).toBe(true);
+    expect(
+      looksLikeCollectIwxxm(
+        '<collect:MeteorologicalBulletin xmlns:iwxxm="https://icao.int/iwxxm"/>',
+      ),
+    ).toBe(true);
+    expect(looksLikeCollectIwxxm('<collect:Bulletin/>')).toBe(true);
+    expect(looksLikeCollectIwxxm('not a bulletin')).toBe(false);
+    expect(detectInputKind('report.gzip')).toBe('gzip');
+    expect(detectInputKind('single.xml', '<iwxxm:METAR xmlns:iwxxm="example"/>')).toBe(
+      'collect_iwxxm',
+    );
+    expect(kindToMode('collect_iwxxm')).toBe('collect_iwxxm');
+  });
 });

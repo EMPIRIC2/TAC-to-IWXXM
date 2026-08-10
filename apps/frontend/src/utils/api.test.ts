@@ -761,6 +761,21 @@ describe('API Utils', () => {
       ).rejects.toThrow();
     });
 
+    it('prefers nested API details and falls back to message fields', async () => {
+      mockFetchResponse({ detail: { message: 'nested lint failure' } }, false, 422);
+      await expect(lintTac({ manualText: 'METAR' })).rejects.toThrow(
+        'nested lint failure',
+      );
+
+      mockFetchResponse({ message: 'validation message' }, false, 422);
+      await expect(validateIwxxm({ manualText: 'METAR' })).rejects.toThrow(
+        'validation message',
+      );
+
+      mockFetchResponse({ detail: { message: ['not text'] }, message: '' }, false, 503);
+      await expect(lintTac({ manualText: 'METAR' })).rejects.toThrow('HTTP 503');
+    });
+
     it('posts validate with TAC/XML and returns ValidateResponse', async () => {
       mockFetchResponse({
         is_valid: true,
@@ -947,6 +962,15 @@ describe('API Utils', () => {
       ).rejects.toBeInstanceOf(EndpointNotImplementedError);
     });
 
+    it('uses COLLECT placeholder defaults when the 501 body has no details', async () => {
+      mockFetchResponse({}, false, 501);
+      await expect(ingestCollect({ manualText: '<collect/>' })).rejects.toMatchObject({
+        message: 'COLLECT / FTBP ingest is not implemented yet (placeholder).',
+        status: 501,
+        code: 'not_implemented',
+      });
+    });
+
     it('posts ingest-collect success path', async () => {
       mockFetchResponse({ message: 'ok', status: 'accepted' });
       const file = new File(['<c/>'], 'c.xml', { type: 'application/xml' });
@@ -984,6 +1008,25 @@ describe('API Utils', () => {
         accessToken: 'tok',
       });
       expect(global.fetch).toHaveBeenCalled();
+    });
+
+    it('uses default conversion fields when optional values are omitted', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({ manualText: '   ' });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('manual_text')).toBeNull();
+      expect(body.get('product')).toBe('METAR');
+      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('validate_output')).toBe('false');
+      expect(body.get('include_nil_reasons')).toBe('true');
+      expect(body.get('preview')).toBeNull();
     });
   });
 

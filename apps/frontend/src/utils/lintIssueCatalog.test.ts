@@ -79,9 +79,13 @@ const SIGMET_SAMPLE: LintIssueCatalogEntry[] = [
 
 describe('lintIssueCatalog tooltip resolver (T5.3)', () => {
   it('indexes entries by code', () => {
-    const byCode = indexCatalogByCode(SAMPLE);
+    const byCode = indexCatalogByCode([
+      ...SAMPLE,
+      { ...SAMPLE[0], code: '' },
+      { ...SAMPLE[1], code: 'MISSING_TERMINATOR', severity: 'warning' },
+    ]);
     expect(byCode.size).toBe(2);
-    expect(byCode.get('MISSING_TERMINATOR')?.severity).toBe('info');
+    expect(byCode.get('MISSING_TERMINATOR')?.severity).toBe('warning');
   });
 
   it('resolves severity + message_template for a known code', () => {
@@ -134,6 +138,35 @@ describe('lintIssueCatalog TAF tag helpers (T5.1 / E15-14)', () => {
       source_attribution: 'icao-annex-3 — access:paywall',
     });
     expect(copy).toContain('source: icao-annex-3 — access:paywall');
+  });
+
+  it('formats source ID with URL when attribution is unavailable', () => {
+    const copy = formatCatalogEntryCopy({
+      ...TAF_SAMPLE[0],
+      tags: [],
+      product: null,
+      source_id: 'wmo-guide',
+      source_url: 'https://example.test/guide',
+    });
+    expect(copy).toBe(
+      'FM_PRESENT (info) source: wmo-guide (https://example.test/guide)',
+    );
+  });
+
+  it('handles rows without tags, product, or provenance', () => {
+    expect(
+      filterCatalogByTag(
+        [{ ...TAF_SAMPLE[0], tags: undefined } as unknown as LintIssueCatalogEntry],
+        'taf',
+      ),
+    ).toEqual([]);
+    expect(
+      formatCatalogEntryCopy({
+        ...TAF_SAMPLE[0],
+        tags: undefined,
+        product: null,
+      } as unknown as LintIssueCatalogEntry),
+    ).toBe('FM_PRESENT (info)');
   });
 });
 
