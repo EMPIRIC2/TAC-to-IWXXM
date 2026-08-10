@@ -21,8 +21,8 @@ active_session:
   branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   branch_status: active
   branch_exists: true
-  tip_sha: f2926ac8
-  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  tip_sha: efac83e6
+  tip_sha_full: efac83e6c7a5bbddec39099ec1fe802d90b61b3d
   tip_sha_pushed: false
   tip_sha_note: 'branch from stage@f2926ac8; tip not pushed'
   artifacts_dir: docs/sessions/S063-quality-metrics-tab/
