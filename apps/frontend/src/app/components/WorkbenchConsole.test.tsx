@@ -59,4 +59,25 @@ describe('WorkbenchConsole', () => {
     );
     expect(onClear).toHaveBeenCalled();
   });
+
+  it('shows the log-level empty message when lines exist but are filtered out', () => {
+    render(
+      <WorkbenchConsole
+        defaultOpen
+        minLogLevel="ERROR"
+        lines={[{ level: 'info', source: 'lint', message: 'hidden', at: 1 }]}
+      />,
+    );
+
+    expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(
+      /no messages at error or above/i,
+    );
+  });
+
+  it('shows the empty console message when there are no lines', () => {
+    render(<WorkbenchConsole defaultOpen lines={[]} />);
+    expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(
+      /no messages yet/i,
+    );
+  });
 });

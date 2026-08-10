@@ -126,4 +126,14 @@ describe('runtime-config', () => {
     expect(config.api.baseUrl).toBe('http://localhost:18001');
     expect(config.api.frontendUrl).toBe('http://localhost:18000');
   });
+
+  it('uses development when MODE is unset in Vite env fallback', async () => {
+    vi.unstubAllEnvs();
+    vi.stubEnv('MODE', '');
+    vi.stubEnv('VITE_API_BASE_URL', 'http://localhost:18001');
+    vi.stubEnv('VITE_APP_URL', 'http://localhost:18000');
+
+    const runtime = await import('./runtime-config');
+    expect(runtime.getRuntimeConfig().environment).toBe('development');
+  });
 });

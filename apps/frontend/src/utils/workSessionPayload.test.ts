@@ -134,4 +134,21 @@ describe('workSessionPayload', () => {
       ]),
     ).toEqual({ manualLineIndex: 2, manualLineTotal: 2 });
   });
+
+  it('returns empty metadata for a lone indexed manual filename', () => {
+    expect(
+      resolveManualLineMetaFromResult('manual_input_1.txt', {}, ['manual_input_1.txt']),
+    ).toEqual({});
+  });
+
+  it('falls back to metar when resolved product is outside session products', () => {
+    const payload = buildWorkSessionPayload({
+      manualInput: 'VONA\nDTG: 20240216/0130Z\nVOLCANO: KARYMSKY\n',
+      pendingFiles: [],
+      convertedFiles: [],
+      conversionLog: null,
+      conversionParams: { product: 'auto' },
+    });
+    expect(payload.product).toBe('metar');
+  });
 });

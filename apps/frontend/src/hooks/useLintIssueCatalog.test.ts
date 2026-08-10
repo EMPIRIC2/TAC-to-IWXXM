@@ -58,4 +58,33 @@ describe('useLintIssueCatalog', () => {
     expect(result.current.loading).toBe(false);
     expect(fetchLintIssueCatalog).not.toHaveBeenCalled();
   });
+
+  it('ignores errors after the hook unmounts', async () => {
+    fetchLintIssueCatalog.mockImplementation(
+      ({ signal }) =>
+        new Promise((_resolve, reject) => {
+          const timer = window.setTimeout(() => reject(new Error('boom')), 0);
+          signal?.addEventListener('abort', () => {
+            window.clearTimeout(timer);
+            reject(new Error('aborted'));
+          });
+        }),
+    );
+    const { result, unmount } = renderHook(() =>
+      useLintIssueCatalog({ accessToken: 'tok' }),
+    );
+    expect(result.current.loading).toBe(true);
+    unmount();
+    await waitFor(() => {
+      expect(result.current.error).toBeNull();
+    });
+  });
+
+  it('uses a generic message for non-Error fetch failures', async () => {
+    fetchLintIssueCatalog.mockRejectedValueOnce('offline');
+    const { result } = renderHook(() => useLintIssueCatalog({ accessToken: 'tok' }));
+    await waitFor(() => {
+      expect(result.current.error).toBe('Catalog load failed');
+    });
+  });
 });

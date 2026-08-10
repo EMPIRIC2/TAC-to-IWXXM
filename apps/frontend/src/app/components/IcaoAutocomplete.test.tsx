@@ -221,4 +221,47 @@ describe('IcaoAutocomplete', () => {
     expect(await screen.findByText('KJFK')).toBeInTheDocument();
     expect(screen.getByText('New York, US')).toBeInTheDocument();
   });
+
+  it('renders helper text below the input', () => {
+    render(
+      <IcaoAutocomplete
+        label="Station"
+        value=""
+        onChange={vi.fn()}
+        helperText="Enter a four-letter ICAO code"
+      />,
+    );
+
+    expect(screen.getByText('Enter a four-letter ICAO code')).toBeInTheDocument();
+  });
+
+  it('uses fallback labels when suggestion rows omit ICAO or airport names', async () => {
+    const user = userEvent.setup();
+    mockSearchByIcao.mockReturnValue([
+      { city: 'Nowhere', country: 'ZZ' },
+      { icao: 'KORD', name: 'Chicago O Hare', city: 'Chicago' },
+    ]);
+
+    function Wrapper() {
+      const [value, setValue] = useState('');
+      return <IcaoAutocomplete label="Station" value={value} onChange={setValue} />;
+    }
+
+    render(<Wrapper />);
+
+    await user.type(screen.getByLabelText('Station'), 'KO');
+    expect(await screen.findByText('Unknown Airport')).toBeInTheDocument();
+    expect(screen.getByText('Chicago O Hare')).toBeInTheDocument();
+    expect(screen.getByText('Chicago')).toBeInTheDocument();
+  });
+
+  it('treats partial codes shorter than four characters as not yet valid', async () => {
+    const user = userEvent.setup();
+    renderHarness();
+
+    await user.type(screen.getByLabelText('ICAO'), 'KJF');
+    expect(mockIsValid).not.toHaveBeenCalled();
+    expect(screen.queryByLabelText(/valid icao code/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/invalid icao code/i)).not.toBeInTheDocument();
+  });
 });

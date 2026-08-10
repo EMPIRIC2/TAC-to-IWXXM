@@ -92,6 +92,11 @@ const mockToast = vi.hoisted(() => ({
 const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 const mockScheduleAutoSave = vi.hoisted(() => vi.fn());
 const mockInflateGzipToText = vi.hoisted(() => vi.fn());
+const mockReadGuestConverterState = vi.hoisted(() => vi.fn(() => null));
+const mockIsReadOnly = vi.hoisted(() => ({ value: false }));
+const mockSaveIndicator = vi.hoisted(() => ({
+  value: 'idle' as 'idle' | 'pending' | 'saving' | 'saved' | 'error',
+}));
 
 // Mock dependencies
 vi.mock('/utils/supabase/info', () => ({
@@ -171,12 +176,18 @@ vi.mock('sonner', () => ({
 vi.mock('@/hooks/useWorkSessionSync', () => ({
   AUTOSAVE_DEBOUNCE_MS: 3000,
   useWorkSessionSync: () => ({
-    isReadOnly: false,
-    saveIndicator: 'idle' as const,
+    isReadOnly: mockIsReadOnly.value,
+    saveIndicator: mockSaveIndicator.value,
     scheduleAutoSave: mockScheduleAutoSave,
     persistSession: mockPersistSession,
     flushAutoSave: vi.fn().mockResolvedValue(null),
   }),
+}));
+
+vi.mock('/utils/guestConverterState', () => ({
+  readGuestConverterState: mockReadGuestConverterState,
+  saveGuestConverterState: vi.fn(),
+  clearGuestConverterState: vi.fn(),
 }));
 
 vi.mock('./WorkHistorySidebar', () => ({
@@ -307,6 +318,9 @@ describe('FileConverter Component', () => {
       fixes: [],
     });
     mockInflateGzipToText.mockResolvedValue('METAR KJFK 121251Z 18004KT=');
+    mockReadGuestConverterState.mockReturnValue(null);
+    mockIsReadOnly.value = false;
+    mockSaveIndicator.value = 'idle';
   });
 
   afterEach(() => {
@@ -2665,6 +2679,32 @@ describe('FileConverter Component', () => {
     const collectSample =
       '<?xml version="1.0"?>\n<collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/1.2" xmlns:iwxxm="http://icao.int/iwxxm/3.0">';
 
+    function invokeReactOnClick(element: HTMLElement) {
+      const propsKey = Object.keys(element).find((key) =>
+        key.startsWith('__reactProps$'),
+      );
+      const onClick = propsKey
+        ? (element as unknown as Record<string, { onClick?: () => void }>)[propsKey]
+            ?.onClick
+        : undefined;
+      onClick?.();
+    }
+
+    async function addQueueFile(container: HTMLElement, name: string, content: string) {
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name, text: vi.fn().mockResolvedValue(content) },
+            length: 1,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+    }
+
     it('AHL convert: ok+xml builds result card and success toast', async () => {
       const user = userEvent.setup();
       mockConvertBulletin.mockResolvedValueOnce({
@@ -3466,6 +3506,1248 @@ describe('FileConverter Component', () => {
           screen.getByRole('region', { name: /conversion results/i }),
         ).toBeInTheDocument();
       });
+    });
+
+    it('restores guest output filename from session snapshot on mount', async () => {
+      mockReadGuestConverterState.mockReturnValue({
+        conversionParams: { output_filename: 'guest/report.xml' },
+      } as any);
+      render(<FileConverter {...defaultProps} />);
+
+      expect(screen.getByTestId('output-filename-input')).toHaveValue(
+        'guest/report.xml',
+      );
+    });
+
+    it('loads iwxxm_us profile and default ?? true flags when prefs omit booleans', async () => {
+      const user = userEvent.setup();
+      localStorage.setItem(
+        'metar_converter_preferences',
+        JSON.stringify({
+          profile: 'iwxxm_us',
+          iwxxmVersion: '2025-2',
+        }),
+      );
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({
+            profile: 'iwxxm_us',
+            includeNilReasons: true,
+          }),
+        );
+      });
+    });
+
+    it('reloads preferences after dialog save with explicit false booleans', async () => {
+      const user = userEvent.setup();
+      localStorage.setItem(
+        'metar_converter_preferences',
+        JSON.stringify({
+          bulletinIdExample: 'SAAA00',
+          issuingCenter: 'KWBC',
+          profile: 'iwxxm_us',
+          iwxxmVersion: '2025-2',
+          strictValidation: false,
+          includeNilReasons: false,
+          onError: 'fail',
+          logLevel: 'DEBUG',
+        }),
+      );
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByLabelText(/open user preferences/i));
+      await user.click(screen.getByTestId('save-prefs-dialog'));
+
+      expect(mockToast.info).toHaveBeenCalledWith(
+        'Conversion parameters updated from preferences',
+      );
+    });
+
+    it('hydrates conversion log from issues-only and string output filename', async () => {
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'ev053-issues-only',
+              status: 'draft',
+              errors: null,
+              issues: [{ code: 'WARN', message: 'stored issue' }],
+              conversion_params: { output_filename: 'hydrated.xml' },
+              converted_results: [],
+            } as any
+          }
+        />,
+      );
+
+      expect(await screen.findByText(/stored issue/i)).toBeInTheDocument();
+      expect(screen.getByTestId('output-filename-input')).toHaveValue('hydrated.xml');
+    });
+
+    it('hydrates conversion log from errors-only session data', async () => {
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'ev053-errors-only',
+              status: 'draft',
+              errors: ['stored error'],
+              issues: undefined,
+              converted_results: [],
+            } as any
+          }
+        />,
+      );
+
+      expect(await screen.findByText('stored error')).toBeInTheDocument();
+    });
+
+    it('ignores empty file selection without adding queue items', async () => {
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+
+      fireEvent.change(fileInput, { target: { files: null } });
+      fireEvent.change(fileInput, { target: { files: { length: 0 } } });
+
+      expect(screen.queryByTestId('operator-work-queue')).not.toBeInTheDocument();
+    });
+
+    it('shows convert error when neither files nor manual input are present', () => {
+      render(<FileConverter {...defaultProps} />);
+      const convertButton = screen.getByTestId('convert-button');
+      const propsKey = Object.keys(convertButton).find((key) =>
+        key.startsWith('__reactProps$'),
+      );
+      const onClick = propsKey
+        ? (convertButton as unknown as Record<string, { onClick?: () => void }>)[
+            propsKey
+          ]?.onClick
+        : undefined;
+      onClick?.();
+
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Please add files or enter manual input',
+      );
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+    });
+
+    it('reports non-Error file read failures with a generic message', async () => {
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: {
+              name: 'broken.txt',
+              text: vi.fn().mockRejectedValue('disk offline'),
+            },
+            length: 1,
+          },
+        },
+      });
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith('Failed to read broken.txt');
+      });
+    });
+
+    it('switches back to TAC mode when a plain report is added in AHL mode', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
+
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: {
+              name: 'plain.tac',
+              text: vi.fn().mockResolvedValue('METAR KJFK 121251Z 18004KT='),
+            },
+            length: 1,
+          },
+        },
+      });
+
+      await waitFor(() => {
+        expect(mockToast.info).toHaveBeenCalledWith('Switched to TAC report mode');
+      });
+      expect(screen.getByTestId('input-mode-tac')).toHaveClass('bg-blue-600');
+    });
+
+    it('sets webkitdirectory on the mass-ingest folder input', () => {
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+      const folderInput = screen.getByTestId('mass-ingest-folder-input');
+      expect(folderInput).toHaveAttribute('webkitdirectory');
+      expect(folderInput).toHaveAttribute('directory');
+    });
+
+    it('ignores empty mass-ingest file lists', async () => {
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
+
+      fireEvent.change(zipInput, { target: { files: null } });
+
+      expect(mockMassIngestFiles).not.toHaveBeenCalled();
+    });
+
+    it('uses custom output filename for manual multi-line convert results', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          { iwxxm_xml: '<line1/>', tac_input: 'METAR A=' },
+          { iwxxm_xml: '<line2/>', tac_input: 'METAR B=' },
+        ],
+        errors: [],
+        issues: [],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('output-filename-input'), 'batch/out');
+      await user.type(screen.getByTestId('tac-editor'), 'METAR A=\nMETAR B=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('<line1/>')).toBeInTheDocument();
+        expect(screen.getByText('<line2/>')).toBeInTheDocument();
+      });
+    });
+
+    it('soft-preview convert maps missing failed_span fields and warns on soft fail', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<soft-fail/>', tac_input: 'METAR BAD=' }],
+        errors: [],
+        issues: [],
+        ok: false,
+        failed_spans: [{ start: 0, end: 4 }],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('soft-preview-toggle'));
+      await user.type(screen.getByTestId('tac-editor'), 'METAR BAD=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ preview: true }),
+        );
+        expect(screen.getByTestId('iwxxm-preview-soft-fail')).toBeInTheDocument();
+      });
+      expect(mockToast.warning).toHaveBeenCalledWith(
+        'Soft-preview returned Failed-TAC markers — not ready to publish',
+      );
+    });
+
+    it('soft-preview passed path sets preview status without soft-fail detail', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<soft-pass/>', tac_input: 'METAR OK=' }],
+        errors: [],
+        issues: [],
+        ok: true,
+        failed_spans: [],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('soft-preview-toggle'));
+      await user.type(screen.getByTestId('tac-editor'), 'METAR OK=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('iwxxm-preview-xml')).toHaveTextContent(
+          '<soft-pass/>',
+        );
+      });
+      expect(screen.queryByTestId('iwxxm-preview-soft-fail')).not.toBeInTheDocument();
+    });
+
+    it('uses generic conversion failure message for non-Error throws', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockRejectedValueOnce('backend offline');
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          'Conversion failed. Please check the input and try again.',
+        );
+      });
+    });
+
+    it('Convert & Send persists failed when conversion returns null', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [],
+        errors: ['nothing converted'],
+        issues: [],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'BAD');
+      await user.click(screen.getByTestId('convert-and-send-button'));
+
+      await waitFor(() => {
+        expect(mockPersistSession).toHaveBeenCalledWith(expect.anything(), {
+          status: 'failed',
+        });
+      });
+      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
+    });
+
+    it('Convert & Send blocks upload on soft-preview soft fail', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<partial/>', tac_input: 'METAR PART=' }],
+        errors: [],
+        issues: [{ message: 'lint warn' }],
+        ok: false,
+        failed_spans: [{ start: 0, end: 3, message: 'bad' }],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('soft-preview-toggle'));
+      await user.type(screen.getByTestId('tac-editor'), 'METAR PART=');
+      await user.click(screen.getByTestId('convert-and-send-button'));
+
+      await waitFor(() => {
+        expect(mockToast.warning).toHaveBeenCalledWith(
+          'Soft-preview Failed-TAC — fix markers before Convert & Send',
+        );
+      });
+      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
+    });
+
+    it('Convert & Send uses fallback success message when upload response omits message', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<sent/>', tac_input: 'METAR SEND=' }],
+        errors: [],
+        issues: [],
+      });
+      mockUploadConvertedFiles.mockResolvedValueOnce({});
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR SEND=');
+      await user.click(screen.getByTestId('convert-and-send-button'));
+
+      await waitFor(() => {
+        expect(mockToast.success).toHaveBeenCalledWith(
+          'Files converted and sent successfully',
+        );
+      });
+    });
+
+    it('Convert & Send reports generic upload failure for non-Error throws', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<sent/>', tac_input: 'METAR SEND=' }],
+        errors: [],
+        issues: [],
+      });
+      mockUploadConvertedFiles.mockRejectedValueOnce('network down');
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR SEND=');
+      await user.click(screen.getByTestId('convert-and-send-button'));
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          'Conversion succeeded but send failed: Failed to upload to database',
+        );
+      });
+    });
+
+    it('shows read-only new session toast when starting a new TAC', async () => {
+      mockIsReadOnly.value = true;
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
+      await user.click(screen.getByTestId('new-tac-button'));
+
+      expect(mockToast.info).toHaveBeenCalledWith('Starting a new TAC session');
+    });
+
+    it('ignores unknown golden example ids without changing editor state', async () => {
+      const catalog = await import('@/fixtures/examples/examplesCatalog');
+      const spy = vi.spyOn(catalog, 'getExampleById').mockReturnValue(undefined);
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'KEEP ME');
+      await user.click(screen.getByTestId('examples-select'));
+      const option = await screen.findByRole('option', {
+        name: /METAR WMO A3-1 \(annex3\)/i,
+      });
+      await user.click(option);
+
+      expect(screen.getByTestId('tac-editor')).toHaveValue('KEEP ME');
+      expect(screen.queryByTestId('demo-example-banner')).not.toBeInTheDocument();
+      spy.mockRestore();
+    });
+
+    it('shows batch convert error when no queue items are selected', async () => {
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: {
+              name: 'solo.tac',
+              text: vi.fn().mockResolvedValue('METAR SOLO='),
+            },
+            length: 1,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+
+      const batchButton = screen.getByTestId('batch-convert-button');
+      const propsKey = Object.keys(batchButton).find((key) =>
+        key.startsWith('__reactProps$'),
+      );
+      const onClick = propsKey
+        ? (batchButton as unknown as Record<string, { onClick?: () => void }>)[propsKey]
+            ?.onClick
+        : undefined;
+      onClick?.();
+
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Select one or more queue items to batch convert',
+      );
+    });
+
+    it('shows batch validate error when no queue items are selected', async () => {
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: {
+              name: 'solo.tac',
+              text: vi.fn().mockResolvedValue('METAR SOLO='),
+            },
+            length: 1,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+
+      const batchButton = screen.getByTestId('batch-validate-button');
+      const propsKey = Object.keys(batchButton).find((key) =>
+        key.startsWith('__reactProps$'),
+      );
+      const onClick = propsKey
+        ? (batchButton as unknown as Record<string, { onClick?: () => void }>)[propsKey]
+            ?.onClick
+        : undefined;
+      onClick?.();
+
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Select one or more queue items to batch validate',
+      );
+    });
+
+    it('focused validate reports lint issue counts when lint fails', async () => {
+      mockLintTac.mockResolvedValueOnce({
+        ok: false,
+        issues: [{ severity: 'error', code: 'X', message: 'bad', start: 0, end: 3 }],
+        fixes: [],
+      });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: {
+              name: 'lint-fail.tac',
+              text: vi.fn().mockResolvedValue('METAR BAD='),
+            },
+            length: 1,
+          },
+        },
+      });
+      const queue = await screen.findByTestId('operator-work-queue');
+      fireEvent.keyDown(queue, { key: 'Enter', shiftKey: true });
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          'lint-fail.tac: 1 lint issue(s)',
+          expect.anything(),
+        );
+      });
+    });
+
+    it('batch validate counts lint failures from rejected lint calls', async () => {
+      const user = userEvent.setup();
+      mockLintTac
+        .mockResolvedValueOnce({ ok: true, issues: [], fixes: [] })
+        .mockRejectedValueOnce('offline');
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'a.tac', text: vi.fn().mockResolvedValue('METAR A=') },
+            1: { name: 'b.tac', text: vi.fn().mockResolvedValue('METAR B=') },
+            length: 2,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+      await user.click(screen.getByTestId('queue-select-0'));
+      await user.click(screen.getByTestId('queue-select-1'));
+      await user.click(screen.getByTestId('batch-validate-button'));
+
+      await waitFor(() => {
+        expect(mockToast.success).toHaveBeenCalledWith(
+          'Batch validate: 1 ok, 1 with issues',
+          expect.anything(),
+        );
+      });
+    });
+
+    it('work queue ArrowUp moves focus to the previous item', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'first.tac', text: vi.fn().mockResolvedValue('METAR FIRST=') },
+            1: {
+              name: 'second.tac',
+              text: vi.fn().mockResolvedValue('METAR SECOND='),
+            },
+            length: 2,
+          },
+        },
+      });
+      const queue = await screen.findByTestId('operator-work-queue');
+      await user.click(screen.getByTestId('queue-item-1'));
+      queue.focus();
+      await user.keyboard('{ArrowUp}');
+
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      await waitFor(() => {
+        expect(textarea.value).toContain('METAR FIRST');
+      });
+    });
+
+    it('live IWXXM uses iwxxm_xml fallback and clears spans on ok preview', async () => {
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
+        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+
+        mockConvertMetarToIwxxm.mockResolvedValueOnce({
+          results: [{ iwxxm_xml: '<live-iwxxm/>' }],
+          ok: true,
+          failed_spans: [],
+        });
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 121251Z' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+
+        expect(screen.getByText('<live-iwxxm/>')).toBeInTheDocument();
+        expect(screen.queryByTestId('failed-tac-cue')).toBeNull();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('live IWXXM maps failed spans with missing code/message fields', async () => {
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
+        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+
+        mockConvertMetarToIwxxm.mockResolvedValueOnce({
+          results: [{ xml: '<live/>' }],
+          ok: true,
+          failed_spans: [{ start: 1, end: 4 }],
+        });
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 121251Z 18004KT' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+
+        expect(screen.getByTestId('failed-tac-cue')).toBeInTheDocument();
+        expect(screen.getByTestId('iwxxm-preview-soft-fail')).toBeInTheDocument();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('live IWXXM reports generic failure for non-Error throws', async () => {
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
+        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+
+        mockConvertMetarToIwxxm.mockRejectedValueOnce('live offline');
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 121251Z' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+
+        expect(screen.getByTestId('decode-panel-mock')).toBeInTheDocument();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('applyLintFix no-ops when the fix has no replacement text', async () => {
+      mockLintTac.mockResolvedValueOnce({
+        ok: false,
+        issues: [
+          {
+            severity: 'error',
+            code: 'MISSING_TERMINATOR',
+            message: 'missing =',
+            start: 0,
+            end: 10,
+          },
+        ],
+        fixes: [{ code: 'add_terminator' }],
+      });
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 121251Z' },
+      });
+
+      fireEvent.click(screen.getByTestId('workbench-console-toggle'));
+      const action = await screen.findByTestId(
+        'console-action-add_terminator',
+        {},
+        { timeout: 3000 },
+      );
+      await user.click(action);
+
+      expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z');
+    });
+
+    it('renders work history aside when onLoadWorkSession is provided', () => {
+      const onLoadWorkSession = vi.fn();
+      const { container } = render(
+        <FileConverter {...defaultProps} onLoadWorkSession={onLoadWorkSession} />,
+      );
+
+      expect(container.querySelector('aside')).toBeInTheDocument();
+    });
+
+    it('passes speci product to dissemination drawer when SPECI is selected', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      fireEvent.change(screen.getByTestId('product-type-select'), {
+        target: { value: 'SPECI' },
+      });
+      await user.click(screen.getByTestId('open-dissemination-drawer'));
+
+      expect(screen.getByTestId('dissemination-drawer')).toBeInTheDocument();
+    });
+
+    it('no-ops convert and convert-and-send when workbench is read-only', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockIsReadOnly.value = true;
+      render(<FileConverter {...defaultProps} />);
+
+      invokeReactOnClick(screen.getByTestId('convert-button'));
+      invokeReactOnClick(screen.getByTestId('convert-and-send-button'));
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
+    });
+
+    it('skips focused and batch queue convert when workbench is read-only', async () => {
+      mockIsReadOnly.value = true;
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'queued.tac', 'METAR QUEUED=');
+      await user.click(screen.getByTestId('queue-select-0'));
+
+      invokeReactOnClick(screen.getByTestId('batch-convert-button'));
+      fireEvent.keyDown(screen.getByTestId('operator-work-queue'), { key: 'Enter' });
+
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+    });
+
+    it('skips focused and batch queue convert while conversion is busy', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'queued.tac', 'METAR QUEUED=');
+      await user.click(screen.getByTestId('queue-select-0'));
+
+      mockConvertMetarToIwxxm.mockImplementation(
+        () =>
+          new Promise(() => {
+            /* keep busy */
+          }),
+      );
+      invokeReactOnClick(screen.getByTestId('convert-button'));
+      await act(async () => {
+        await Promise.resolve();
+      });
+      invokeReactOnClick(screen.getByTestId('batch-convert-button'));
+      fireEvent.keyDown(screen.getByTestId('operator-work-queue'), { key: 'Enter' });
+
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips batch validate while another validate/conversion is busy', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'queued.tac', 'METAR QUEUED=');
+      await user.click(screen.getByTestId('queue-select-0'));
+
+      mockLintTac.mockImplementation(
+        () =>
+          new Promise(() => {
+            /* keep busy */
+          }),
+      );
+      invokeReactOnClick(screen.getByTestId('batch-validate-button'));
+      await act(async () => {
+        await Promise.resolve();
+      });
+      invokeReactOnClick(screen.getByTestId('batch-validate-button'));
+
+      expect(mockLintTac).toHaveBeenCalledTimes(1);
+    });
+
+    it('no-ops download-all when there are no converted files', () => {
+      render(<FileConverter {...defaultProps} />);
+      invokeReactOnClick(
+        screen.getByRole('button', { name: /download all 0 converted files as zip/i }),
+      );
+      expect(mockToast.success).not.toHaveBeenCalledWith('All files downloaded as ZIP');
+    });
+
+    it('blocks mass ingest file input when signed out', async () => {
+      const onRequestLogin = vi.fn();
+      render(
+        <FileConverter {...defaultProps} isGuest onRequestLogin={onRequestLogin} />,
+      );
+      const zipInput = screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement;
+      fireEvent.change(zipInput, {
+        target: {
+          files: [new File(['PK'], 'guest.zip', { type: 'application/zip' })],
+        },
+      });
+
+      expect(onRequestLogin).toHaveBeenCalled();
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Sign in required for mass folder or zip ingest',
+      );
+      expect(mockMassIngestFiles).not.toHaveBeenCalled();
+    });
+
+    it('renders autosave indicator labels for each save state', () => {
+      const labels: Array<[typeof mockSaveIndicator.value, RegExp]> = [
+        ['pending', /unsaved changes/i],
+        ['saving', /saving draft/i],
+        ['saved', /draft saved/i],
+        ['error', /save failed/i],
+      ];
+
+      for (const [state, pattern] of labels) {
+        cleanup();
+        mockSaveIndicator.value = state;
+        render(<FileConverter {...defaultProps} />);
+        expect(screen.getByTestId('autosave-indicator')).toHaveTextContent(pattern);
+      }
+    });
+
+    it('shows draft toast when starting a new TAC while editable', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
+      await user.click(screen.getByTestId('new-tac-button'));
+
+      expect(mockToast.info).toHaveBeenCalledWith('Starting a new TAC draft');
+    });
+
+    it('applies lint fix replacement text from the workbench console', async () => {
+      mockLintTac.mockResolvedValueOnce({
+        ok: false,
+        issues: [
+          {
+            severity: 'error',
+            code: 'MISSING_TERMINATOR',
+            message: 'missing =',
+            start: 0,
+            end: 10,
+          },
+        ],
+        fixes: [{ code: 'add_terminator', replacement: 'METAR KJFK 121251Z=' }],
+      });
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 121251Z' },
+      });
+      fireEvent.click(screen.getByTestId('workbench-console-toggle'));
+      const action = await screen.findByTestId('console-action-add_terminator');
+      await user.click(action);
+
+      expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z=');
+    });
+
+    it('uses live output filename when downloading multi-line manual results', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          { iwxxm_xml: '<line1/>', tac_input: 'METAR A=' },
+          { iwxxm_xml: '<line2/>', tac_input: 'METAR B=' },
+        ],
+        errors: [],
+        issues: [],
+      });
+      const createUrlSpy = vi
+        .spyOn(URL, 'createObjectURL')
+        .mockReturnValue('blob:download-one');
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('output-filename-input'), 'batch/out');
+      await user.type(screen.getByTestId('tac-editor'), 'METAR A=\nMETAR B=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      const downloadBtn = await screen.findByRole('button', {
+        name: /download out_1\.txt as xml/i,
+      });
+      await user.click(downloadBtn);
+
+      expect(clickSpy).toHaveBeenCalled();
+      createUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it('clears queue selection when removing a selected pending file', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'remove-me.tac', 'METAR REMOVE=');
+      await user.click(screen.getByTestId('queue-select-0'));
+
+      await user.click(
+        screen.getByRole('button', { name: /remove remove-me\.tac from queue/i }),
+      );
+
+      expect(screen.queryByTestId('operator-work-queue')).not.toBeInTheDocument();
+    });
+
+    it('warns when selected product differs from detected TAC product', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<taf/>', tac_input: 'METAR KJFK=' }],
+        errors: [],
+        issues: [],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      fireEvent.change(screen.getByTestId('product-type-select'), {
+        target: { value: 'TAF' },
+      });
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK 121251Z=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockToast.warning).toHaveBeenCalledWith(
+          expect.stringMatching(/Selected product TAF differs from detected METAR/i),
+        );
+      });
+    });
+
+    it('signs out from all devices and other devices scopes', async () => {
+      const user = userEvent.setup();
+      render(
+        <FileConverter {...defaultProps} isGuest={false} userEmail="op@example.com" />,
+      );
+
+      await user.click(screen.getByTestId('logout-button'));
+      await user.click(
+        screen.getByRole('button', { name: /sign out from all devices/i }),
+      );
+      expect(mockSignOutWithScope).toHaveBeenCalledWith('global');
+
+      mockSignOutWithScope.mockClear();
+      await user.click(screen.getByTestId('logout-button'));
+      await user.click(screen.getByRole('button', { name: /sign out other devices/i }));
+      expect(mockSignOutWithScope).toHaveBeenCalledWith('others');
+    });
+
+    it('does not re-hydrate when loadedWorkSession id is unchanged', async () => {
+      const session = {
+        id: 'ev053-same-id',
+        status: 'draft',
+        manual_tac: 'METAR FIRST=',
+        converted_results: [],
+      } as any;
+      const { rerender } = render(
+        <FileConverter {...defaultProps} loadedWorkSession={session} />,
+      );
+      expect(await screen.findByDisplayValue('METAR FIRST=')).toBeInTheDocument();
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={{ ...session, manual_tac: 'METAR SECOND=' }}
+        />,
+      );
+
+      expect(screen.getByTestId('tac-editor')).toHaveValue('METAR FIRST=');
+    });
+
+    it('batch validate increments fail count when lint returns not ok', async () => {
+      const user = userEvent.setup();
+      mockLintTac
+        .mockResolvedValueOnce({ ok: true, issues: [], fixes: [] })
+        .mockResolvedValueOnce({
+          ok: false,
+          issues: [{ severity: 'error', code: 'X', message: 'bad', start: 0, end: 3 }],
+          fixes: [],
+        });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'a.tac', text: vi.fn().mockResolvedValue('METAR A=') },
+            1: { name: 'b.tac', text: vi.fn().mockResolvedValue('METAR B=') },
+            length: 2,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+      await user.click(screen.getByTestId('queue-select-0'));
+      await user.click(screen.getByTestId('queue-select-1'));
+      await user.click(screen.getByTestId('batch-validate-button'));
+
+      await waitFor(() => {
+        expect(mockToast.success).toHaveBeenCalledWith(
+          'Batch validate: 1 ok, 1 with issues',
+          expect.anything(),
+        );
+      });
+    });
+
+    it('reloads populated preference fields after dialog save', async () => {
+      const user = userEvent.setup();
+      localStorage.setItem(
+        'metar_converter_preferences',
+        JSON.stringify({
+          bulletinIdExample: 'BBBB01',
+          issuingCenter: 'KDEN',
+          product: 'METAR',
+          profile: 'iwxxm_us',
+          iwxxmVersion: '2025-2',
+          strictValidation: true,
+          includeNilReasons: true,
+          onError: 'fail',
+          logLevel: 'DEBUG',
+        }),
+      );
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByLabelText(/open user preferences/i));
+      await user.click(screen.getByTestId('save-prefs-dialog'));
+
+      expect(mockToast.info).toHaveBeenCalledWith(
+        'Conversion parameters updated from preferences',
+      );
+    });
+
+    it('swallows corrupt preference JSON when reloading after save', async () => {
+      const user = userEvent.setup();
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      localStorage.setItem('metar_converter_preferences', '{not-json');
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByLabelText(/open user preferences/i));
+      await user.click(screen.getByTestId('save-prefs-dialog'));
+
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+
+    it('rethrows non-placeholder COLLECT ingest failures', async () => {
+      const user = userEvent.setup();
+      mockIngestCollect.mockRejectedValueOnce(new Error('collect service down'));
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('input-mode-collect_iwxxm'));
+      await user.type(screen.getByTestId('tac-editor'), collectSample);
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith('collect service down');
+      });
+    });
+
+    it('toasts per-file success after focused queue convert', async () => {
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<focused/>', tac_input: 'METAR FOC=' }],
+        errors: [],
+        issues: [],
+      });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'focused.tac', 'METAR FOC=');
+
+      fireEvent.keyDown(screen.getByTestId('operator-work-queue'), { key: 'Enter' });
+
+      await waitFor(() => {
+        expect(mockToast.success).toHaveBeenCalledWith('Converted focused.tac');
+      });
+    });
+
+    it('scrolls failed-span cue when preview failed-count is clicked', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<soft/>', tac_input: 'METAR BAD=' }],
+        errors: [],
+        issues: [],
+        ok: false,
+        failed_spans: [{ start: 0, end: 4, message: 'bad' }],
+      });
+      const scrollMock = vi.fn();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('soft-preview-toggle'));
+      await user.type(screen.getByTestId('tac-editor'), 'METAR BAD=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      const cue = await screen.findByTestId('failed-tac-cue');
+      cue.scrollIntoView = scrollMock;
+      await user.click(await screen.findByTestId('iwxxm-preview-failed-count'));
+
+      expect(scrollMock).toHaveBeenCalled();
+    });
+
+    it('clears the workbench console via the clear control', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK=');
+      fireEvent.click(screen.getByTestId('workbench-console-toggle'));
+      await screen.findByTestId('workbench-console-lines');
+      await user.click(screen.getByTestId('workbench-console-clear'));
+
+      expect(screen.getByTestId('workbench-console-lines')).toHaveTextContent(
+        /cleared/i,
+      );
+    });
+
+    it('loads golden examples without an explicit product as auto', async () => {
+      const catalog = await import('@/fixtures/examples/examplesCatalog');
+      const spy = vi.spyOn(catalog, 'getExampleById').mockReturnValue({
+        id: 'no-product',
+        label: 'No product demo',
+        body: 'METAR DEMO=',
+        inputMode: 'tac',
+      } as any);
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('examples-select'));
+      await user.click(await screen.findByRole('option', { name: /METAR WMO A3-1/i }));
+
+      expect(screen.getByTestId('product-type-select')).toHaveValue('auto');
+      spy.mockRestore();
+    });
+
+    it('clears mass-ingest inputs after a successful folder upload', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+      const folderInput = screen.getByTestId(
+        'mass-ingest-folder-input',
+      ) as HTMLInputElement;
+
+      await user.upload(
+        folderInput,
+        new File(['METAR KJFK='], 'one.tac', { type: 'text/plain' }),
+      );
+
+      await waitFor(() => {
+        expect(mockMassIngestFiles).toHaveBeenCalled();
+        expect(folderInput.value).toBe('');
+      });
+    });
+
+    it('ignores preference reload when nothing is stored on save', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByLabelText(/open user preferences/i));
+      await user.click(screen.getByTestId('save-prefs-dialog'));
+
+      expect(mockToast.info).not.toHaveBeenCalledWith(
+        'Conversion parameters updated from preferences',
+      );
+    });
+
+    it('does not warn when selected product matches detected TAC', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<ok/>', tac_input: 'METAR KJFK=' }],
+        errors: [],
+        issues: [],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      fireEvent.change(screen.getByTestId('product-type-select'), {
+        target: { value: 'METAR' },
+      });
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK 121251Z=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => expect(mockConvertMetarToIwxxm).toHaveBeenCalled());
+      expect(mockToast.warning).not.toHaveBeenCalledWith(
+        expect.stringMatching(/differs from detected/i),
+      );
+    });
+
+    it('names queue results from API when extra results exceed queued files', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          { iwxxm_xml: '<q/>', tac_input: 'METAR Q=', name: 'queued.tac' },
+          { iwxxm_xml: '<extra/>', tac_input: 'METAR X=', name: 'extra-from-api.tac' },
+        ],
+        errors: [],
+        issues: [],
+      });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'queued.tac', 'METAR Q=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText(/extra-from-api\.tac/i)).toBeInTheDocument();
+      });
+    });
+
+    it('downloads queue file results using the .metar to .xml rename path', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          { iwxxm_xml: '<file/>', tac_input: 'METAR Q=', name: 'report.metar' },
+        ],
+        errors: [],
+        issues: [],
+      });
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+      vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:file');
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'report.metar', 'METAR Q=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      const downloadBtn = await screen.findByRole('button', {
+        name: /download report\.metar as xml/i,
+      });
+      await user.click(downloadBtn);
+
+      expect(clickSpy).toHaveBeenCalled();
+      clickSpy.mockRestore();
+    });
+
+    it('skips focused convert success toast on soft-preview soft fail', async () => {
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<soft/>', tac_input: 'METAR SOFT=' }],
+        errors: [],
+        issues: [],
+        ok: false,
+        failed_spans: [{ start: 0, end: 4 }],
+      });
+      const user = userEvent.setup();
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await addQueueFile(container, 'soft.tac', 'METAR SOFT=');
+
+      await user.click(screen.getByTestId('soft-preview-toggle'));
+      fireEvent.keyDown(screen.getByTestId('operator-work-queue'), { key: 'Enter' });
+
+      await waitFor(() => expect(mockConvertMetarToIwxxm).toHaveBeenCalled());
+      expect(mockToast.success).not.toHaveBeenCalledWith('Converted soft.tac');
+    });
+
+    it('live IWXXM sets empty preview when response has no XML', async () => {
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
+        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+
+        mockConvertMetarToIwxxm.mockResolvedValueOnce({
+          results: [{}],
+          ok: true,
+          failed_spans: [],
+        });
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 121251Z' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+
+        expect(screen.getByTestId('iwxxm-preview-pane')).toBeInTheDocument();
+        expect(screen.queryByTestId('iwxxm-preview-xml')).not.toBeInTheDocument();
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 });

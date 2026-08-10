@@ -198,6 +198,19 @@ describe('localWorkSessionStore (TC-004)', () => {
     expect(restored.items.map((s) => s.title).sort()).toEqual(['A', 'B']);
   });
 
+  it('defaults optional collection fields when omitted on create', async () => {
+    const created = await createLocalWorkSession({
+      title: 'Sparse draft',
+    });
+    expect(created).toMatchObject({
+      pending_files: [],
+      converted_results: [],
+      errors: [],
+      issues: [],
+      conversion_params: {},
+    });
+  });
+
   it('uses defaults, filters, paginates, and preserves existing optional values', async () => {
     const first = await createLocalWorkSession(
       draftPayload({
@@ -205,6 +218,11 @@ describe('localWorkSessionStore (TC-004)', () => {
         product: undefined,
         status: undefined,
         manual_tac: undefined,
+        pending_files: undefined,
+        converted_results: undefined,
+        errors: undefined,
+        issues: undefined,
+        conversion_params: undefined,
         kv_upload_key: 'keep-me',
       }),
     );

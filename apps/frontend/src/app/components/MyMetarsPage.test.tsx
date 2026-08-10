@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { WorkSession } from '@metar/shared';
 import { MyMetarsPage } from './MyMetarsPage';
@@ -341,5 +341,54 @@ describe('MyMetarsPage', () => {
     const file = new File(['{}'], 'export.json', { type: 'application/json' });
     await user.upload(screen.getByTestId('import-sessions-input'), file);
     await screen.findByText('Import failed');
+  });
+
+  it('passes a concrete status filter to the server list API', async () => {
+    const user = userEvent.setup();
+    render(
+      <MyMetarsPage
+        accessToken="jwt-token"
+        onBack={onBack}
+        onOpenSession={onOpenSession}
+      />,
+    );
+
+    await waitFor(() => expect(mockListServer).toHaveBeenCalledTimes(1));
+    await user.selectOptions(screen.getByDisplayValue('All'), 'finished');
+
+    await waitFor(() => {
+      expect(mockListServer).toHaveBeenLastCalledWith('jwt-token', {
+        status: 'finished',
+        product: ['metar', 'speci'],
+        include_deleted: false,
+        limit: 50,
+      });
+    });
+  });
+
+  it('shows Error messages from export and import failures', async () => {
+    const user = userEvent.setup();
+    mockExport.mockRejectedValueOnce(new Error('disk full'));
+    mockImport.mockRejectedValueOnce(new Error('invalid schema'));
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+
+    await screen.findByText('KJFK draft');
+    await user.click(screen.getByTestId('export-sessions'));
+    await screen.findByText('disk full');
+
+    const file = new File(['{}'], 'export.json', { type: 'application/json' });
+    await user.upload(screen.getByTestId('import-sessions-input'), file);
+    await screen.findByText('invalid schema');
+  });
+
+  it('ignores import when no file is chosen', async () => {
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+
+    await screen.findByText('KJFK draft');
+    fireEvent.change(screen.getByTestId('import-sessions-input'), {
+      target: { files: [] },
+    });
+
+    expect(mockImport).not.toHaveBeenCalled();
   });
 });

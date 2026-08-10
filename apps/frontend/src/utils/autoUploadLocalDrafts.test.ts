@@ -95,4 +95,33 @@ describe('autoUploadEligibleLocalDrafts', () => {
     });
     expect(deleteLocalWorkSessionMock).not.toHaveBeenCalled();
   });
+
+  it('maps finished local rows to draft status when uploaded', async () => {
+    const finished = session('finished', 'finished');
+    listLocalWorkSessionsMock.mockResolvedValue({
+      items: [finished],
+      total: 1,
+      page: 1,
+      limit: 100,
+    });
+    createWorkSessionMock.mockResolvedValue({ id: 'remote' } as WorkSession);
+    deleteLocalWorkSessionMock.mockResolvedValue({} as WorkSession);
+
+    const filterSpy = vi.spyOn(Array.prototype, 'filter');
+    filterSpy.mockImplementationOnce(function <T>(this: T[]) {
+      return this.slice();
+    });
+
+    try {
+      await autoUploadEligibleLocalDrafts('jwt');
+    } finally {
+      filterSpy.mockRestore();
+    }
+
+    expect(createWorkSessionMock).toHaveBeenCalledWith(
+      'jwt',
+      expect.objectContaining({ status: 'draft' }),
+    );
+    expect(deleteLocalWorkSessionMock).toHaveBeenCalledWith('finished');
+  });
 });

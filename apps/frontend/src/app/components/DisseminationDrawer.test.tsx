@@ -2,12 +2,27 @@
  * Dissemination drawer Vitest — F16 / TC-F16-001/004/005; UJ-027; EV-018.
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { DRAWER_SINK_TYPES, isPreflightGreen } from '/utils/dissemination';
+
+const mockRunDisseminationQueue = vi.hoisted(() => vi.fn());
+const actualRunDisseminationQueue = vi.hoisted(() => ({
+  fn: null as typeof import('/utils/disseminationQueue').runDisseminationQueue | null,
+}));
+
+vi.mock('/utils/disseminationQueue', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('/utils/disseminationQueue')>();
+  actualRunDisseminationQueue.fn = actual.runDisseminationQueue;
+  mockRunDisseminationQueue.mockImplementation(actual.runDisseminationQueue);
+  return {
+    ...actual,
+    runDisseminationQueue: (...args: unknown[]) => mockRunDisseminationQueue(...args),
+  };
+});
 
 vi.mock('/utils/apiBase', () => ({
   apiUrl: (path: string) =>
@@ -72,8 +87,14 @@ describe('isPreflightGreen', () => {
 
 describe('DisseminationDrawer', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.spyOn(global, 'fetch');
+    mockRunDisseminationQueue.mockClear();
+    mockRunDisseminationQueue.mockImplementation(actualRunDisseminationQueue.fn!);
+    vi.stubGlobal('fetch', vi.fn());
+  });
+
+  afterEach(() => {
+    mockRunDisseminationQueue.mockImplementation(actualRunDisseminationQueue.fn!);
+    vi.unstubAllGlobals();
   });
 
   it('renders nothing when closed', () => {
@@ -583,5 +604,234 @@ describe('DisseminationDrawer', () => {
 
     await user.click(screen.getByTestId('dissemination-drawer-backdrop'));
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('shows selection cap error when select-all exceeds 20 files (TC-F16-005)', async () => {
+    const user = userEvent.setup();
+    const manyOutputs = Array.from({ length: 21 }, (_, index) => ({
+      id: `extra-${index}`,
+      name: `extra-${index}.xml`,
+      source: 'session' as const,
+      product: 'metar',
+      iwxxmXml: `<extra id="${index}"/>`,
+    }));
+
+    render(<DisseminationDrawer {...defaultProps} sessionOutputs={manyOutputs} />);
+
+    await user.click(screen.getByTestId('dissemination-select-all'));
+    expect(screen.getByTestId('dissemination-selection-cap-error')).toHaveTextContent(
+      /limited to 20 files/i,
+    );
+  });
+
+  it('ignores drag-drop when the file list is empty', () => {
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml={undefined}
+        tacText={undefined}
+      />,
+    );
+
+    const dropzone = screen.getByTestId('dissemination-dropzone');
+    fireEvent.drop(dropzone, { dataTransfer: { files: [] } });
+    expect(
+      screen.queryByTestId('dissemination-payload-status'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('names dropped TAC files without extensions using drop.tac', async () => {
+    const user = userEvent.setup();
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml={undefined}
+        tacText={undefined}
+      />,
+    );
+
+    const file = new File(['METAR KORD 010000Z ...='], '', { type: 'text/plain' });
+    await user.upload(screen.getByTestId('dissemination-file-input'), file);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-payload-status')).toHaveTextContent(
+        /1 candidate/,
+      );
+    });
+    await user.click(screen.getByTestId('dissemination-selection-expand'));
+    expect(screen.getByText('drop.tac')).toBeInTheDocument();
+  });
+
+  it('names dropped XML payloads without filenames using drop.xml', async () => {
+    const user = userEvent.setup();
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml={undefined}
+        tacText={undefined}
+      />,
+    );
+
+    const file = new File(['<iwxxm:METAR/>'], '', { type: 'text/xml' });
+    await user.upload(screen.getByTestId('dissemination-file-input'), file);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-payload-status')).toHaveTextContent(
+        /1 candidate/,
+      );
+    });
+    await user.click(screen.getByTestId('dissemination-selection-expand'));
+    expect(screen.getByText('drop.xml')).toBeInTheDocument();
+  });
+
+  it('rejects null BYOC JSON before calling preflight', async () => {
+    const user = userEvent.setup();
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.selectOptions(screen.getByTestId('dissemination-sink-chooser'), 'wis2');
+    fireEvent.change(screen.getByTestId('dissemination-byoc-params'), {
+      target: { value: 'null' },
+    });
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    expect(screen.getByTestId('dissemination-error')).toHaveTextContent(/JSON object/i);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('surfaces aggregate failure without per-file detail', async () => {
+    const user = userEvent.setup();
+    mockRunDisseminationQueue.mockImplementation(async function* () {
+      yield {
+        type: 'file_done',
+        result: {
+          candidateId: 'session-primary',
+          status: 'failed',
+          phase: 'preflight',
+        },
+      };
+    });
+
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/no-detail.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
+        /1 of 1 file\(s\) failed — see progress below/i,
+      );
+    });
+  });
+
+  it('uses drawer product when session output omits product', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        ok: true,
+        connectivity_ok: true,
+        diffs: [],
+        handle: 'h-product',
+      }),
+    } as Response);
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        product="taf"
+        sessionOutputs={[
+          {
+            id: 'no-product',
+            name: 'orphan.xml',
+            source: 'session',
+            iwxxmXml: '<taf/>',
+          },
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByTestId('dissemination-select-all'));
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/product.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+    const body = JSON.parse(
+      (global.fetch as unknown as { mock: { calls: [[string, { body: string }]] } })
+        .mock.calls[0][1].body,
+    );
+    expect(body.product).toBe('taf');
+  });
+
+  it('shows generic dissemination error for non-Error queue failures', async () => {
+    const user = userEvent.setup();
+    mockRunDisseminationQueue.mockImplementation(() => {
+      throw 'queue exploded';
+    });
+
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/queue.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
+        'Dissemination failed',
+      );
+    });
+  });
+
+  it('shows pending progress rows when results exist without row state', async () => {
+    const user = userEvent.setup();
+    mockRunDisseminationQueue.mockImplementation(async function* () {
+      yield {
+        type: 'file_done',
+        result: {
+          candidateId: 'session-primary',
+          status: 'success',
+          phase: 'preflight',
+        },
+      };
+    });
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        sessionOutputs={[
+          {
+            id: 'extra-1',
+            name: 'extra.xml',
+            source: 'session',
+            product: 'metar',
+            iwxxmXml: '<extra/>',
+          },
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByTestId('dissemination-select-all'));
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/pending.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-progress-list')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('dissemination-progress-row-extra-1')).toHaveAttribute(
+      'data-status',
+      'pending',
+    );
   });
 });

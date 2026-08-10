@@ -56,6 +56,20 @@ describe('workSessionApi', () => {
     );
   });
 
+  it('lists work sessions with a single product filter', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ items: [], total: 0, page: 1, limit: 20 }),
+    } as Response);
+
+    await listWorkSessions('token-abc', { product: 'metar' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://api.test/api/v1/work-sessions?product=metar',
+      expect.any(Object),
+    );
+  });
+
   it('creates a work session via POST', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue({
       ok: true,

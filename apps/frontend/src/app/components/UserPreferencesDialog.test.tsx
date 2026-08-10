@@ -243,4 +243,18 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
       expect(mockToast.error).toHaveBeenCalledWith('Failed to reset preferences');
     });
   });
+
+  it('uses an empty display name when the email local-part is missing', async () => {
+    render(<UserPreferencesDialog {...defaultProps} userEmail="@domain.com" />);
+
+    const displayName = await screen.findByLabelText(/display \/ output name/i);
+    expect(displayName).toHaveValue('');
+  });
+
+  it('loads first-time defaults from the email prefix when storage is empty', async () => {
+    render(<UserPreferencesDialog {...defaultProps} userEmail="newuser@example.com" />);
+
+    expect(await screen.findByDisplayValue('newuser')).toBeInTheDocument();
+    expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.xml');
+  });
 });

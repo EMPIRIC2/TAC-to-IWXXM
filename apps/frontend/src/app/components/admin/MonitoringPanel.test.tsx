@@ -376,4 +376,89 @@ describe('MonitoringPanel', () => {
       expect(mockToast.success).toHaveBeenCalledWith('Admin status granted');
     });
   });
+
+  it('defaults to an empty user list when the API omits users', async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({}),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ stats: null }),
+      } as Response);
+
+    render(<MonitoringPanel accessToken={accessToken} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No users found')).toBeInTheDocument();
+    });
+  });
+
+  it('shows the filtered-empty message when search excludes all rows', async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.mocked(fetch);
+
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          users: [
+            {
+              user_id: 'u1',
+              email: 'pilot@example.com',
+              username: 'pilot',
+              approval_status: 'approved',
+              is_admin: false,
+              created_at: '2026-01-01T00:00:00.000Z',
+            },
+          ],
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ stats: null }),
+      } as Response);
+
+    render(<MonitoringPanel accessToken={accessToken} />);
+    await screen.findByText('pilot@example.com');
+
+    await user.type(
+      screen.getByPlaceholderText(/search by email or username/i),
+      'missing-user',
+    );
+
+    expect(screen.getByText('No users match your filters')).toBeInTheDocument();
+  });
+
+  it('renders rejected users with the rejected status badge styling', async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          users: [
+            {
+              user_id: 'u1',
+              email: 'denied@example.com',
+              username: 'denied',
+              approval_status: 'rejected',
+              is_admin: false,
+              created_at: '2026-01-01T00:00:00.000Z',
+            },
+          ],
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ stats: null }),
+      } as Response);
+
+    render(<MonitoringPanel accessToken={accessToken} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('rejected')).toBeInTheDocument();
+    });
+  });
 });

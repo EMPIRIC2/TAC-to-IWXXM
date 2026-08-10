@@ -25,6 +25,25 @@ describe('resultTraceability', () => {
     });
   });
 
+  it('returns null fields for blank or unparseable TAC', () => {
+    expect(parseTacHeadline('')).toEqual({
+      product: null,
+      station: null,
+      time: null,
+    });
+    expect(parseTacHeadline('\n\n')).toEqual({
+      product: null,
+      station: null,
+      time: null,
+    });
+  });
+
+  it('deriveTacDisplayTitle uses METAR fallback in headline labels', () => {
+    expect(deriveTacDisplayTitle('KJFK 121251Z 18012KT', 'manual_input.txt')).toBe(
+      'METAR KJFK 121251Z',
+    );
+  });
+
   it('deriveTacDisplayTitle builds headline label', () => {
     const tac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
     expect(deriveTacDisplayTitle(tac, 'manual_input.txt')).toBe('METAR FAOR 101200Z');

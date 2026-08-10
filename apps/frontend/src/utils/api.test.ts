@@ -289,6 +289,27 @@ describe('API Utils', () => {
       await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow();
     });
 
+    it('falls back to top-level message when convert error detail is absent', async () => {
+      mockFetchResponse({ message: 'Validation rejected' }, false, 422);
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow(
+        'Validation rejected',
+      );
+    });
+
+    it('falls back to HTTP status when convert error body has no message fields', async () => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: false,
+        status: 503,
+        statusText: '',
+        json: vi.fn().mockResolvedValueOnce({}),
+      });
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow(
+        'HTTP 503',
+      );
+    });
+
     it('should handle network errors during conversion', async () => {
       (global.fetch as any).mockRejectedValueOnce(new Error('Network timeout'));
 
@@ -942,6 +963,18 @@ describe('API Utils', () => {
       ).rejects.toThrow('bulletin too large');
     });
 
+    it('uses string detail and message fallbacks for convert-bulletin errors', async () => {
+      mockFetchResponse({ detail: 'plain bulletin failure' }, false, 400);
+      await expect(convertBulletin({ product: 'metar' })).rejects.toThrow(
+        'plain bulletin failure',
+      );
+
+      mockFetchResponse({ message: 'missing bulletin body' }, false, 422);
+      await expect(convertBulletin({ product: 'metar' })).rejects.toThrow(
+        'missing bulletin body',
+      );
+    });
+
     it('uses bulletin defaults and stringifies a non-string detail error', async () => {
       mockFetchResponse(
         { detail: { code: 'invalid_bulletin' }, message: '' },
@@ -1047,6 +1080,13 @@ describe('API Utils', () => {
     it('throws on ingest-collect non-501 failure', async () => {
       mockFetchResponse({ detail: { message: 'bad upload' } }, false, 400);
       await expect(ingestCollect({ manualText: 'x' })).rejects.toThrow('bad upload');
+    });
+
+    it('falls back to top-level message for ingest-collect failures', async () => {
+      mockFetchResponse({ message: 'collect payload invalid' }, false, 400);
+      await expect(ingestCollect({ manualText: 'x' })).rejects.toThrow(
+        'collect payload invalid',
+      );
     });
 
     it('sends convert optional bulletin/log fields', async () => {

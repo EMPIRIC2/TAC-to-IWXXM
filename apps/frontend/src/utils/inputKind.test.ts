@@ -40,6 +40,17 @@ describe('inputKind', () => {
     expect(kindToMode('tac')).toBe('tac');
   });
 
+  it('uses the first non-empty line for AHL detection', () => {
+    expect(looksLikeAhlBulletin('\r\n\r\nSAUS31 KZNY 121200\nMETAR KJFK=')).toBe(true);
+  });
+
+  it('classifies .xml by content when present', () => {
+    const collectXml =
+      '<?xml version="1.0"?><collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/1.2"/>';
+    expect(detectInputKind('report.xml', collectXml)).toBe('collect_iwxxm');
+    expect(detectInputKind('report.xml')).toBe('unknown');
+  });
+
   it('handles alternative headers, compressed extensions, and IWXXM XML without COLLECT', () => {
     expect(
       looksLikeAhlBulletin('\n  \nSAUS31 KZNY 121200 COR\nMETAR KJFK 121251Z='),

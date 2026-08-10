@@ -127,4 +127,19 @@ describe('databaseUpload', () => {
       }),
     ).rejects.toThrow('Failed to upload to database (503)');
   });
+
+  it('treats non-object JSON bodies as empty payloads', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      text: async () => JSON.stringify('accepted'),
+    });
+
+    const result = await uploadConvertedFiles({
+      files: [],
+      accessToken: 'test-token',
+      options: CONVERT_AND_SEND_UPLOAD_OPTIONS,
+    });
+
+    expect(result).toEqual({});
+  });
 });
