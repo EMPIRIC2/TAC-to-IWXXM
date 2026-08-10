@@ -91,6 +91,7 @@ const mockToast = vi.hoisted(() => ({
 }));
 const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 const mockScheduleAutoSave = vi.hoisted(() => vi.fn());
+const mockInflateGzipToText = vi.hoisted(() => vi.fn());
 
 // Mock dependencies
 vi.mock('/utils/supabase/info', () => ({
@@ -155,6 +156,12 @@ vi.mock('/utils/databaseUpload', () => ({
     destination: 'primary',
     includeOriginal: false,
   },
+}));
+
+vi.mock('/utils/gunzip', () => ({
+  inflateGzipToText: mockInflateGzipToText,
+  isGzipFileName: (name: string) =>
+    name.toLowerCase().endsWith('.gz') || name.toLowerCase().endsWith('.gzip'),
 }));
 
 vi.mock('sonner', () => ({
@@ -252,6 +259,7 @@ describe('FileConverter Component', () => {
     mockDecodeTac.mockReset();
     mockLintTac.mockReset();
     mockMassIngestFiles.mockReset();
+    mockInflateGzipToText.mockReset();
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
@@ -298,6 +306,7 @@ describe('FileConverter Component', () => {
       issues: [{ severity: 'error', code: 'x', message: 'm', start: 0, end: 5 }],
       fixes: [],
     });
+    mockInflateGzipToText.mockResolvedValue('METAR KJFK 121251Z 18004KT=');
   });
 
   afterEach(() => {
@@ -3208,6 +3217,191 @@ describe('FileConverter Component', () => {
       expect(mockToast.error).toHaveBeenCalledWith(
         'Sign in required for mass folder or zip ingest',
       );
+    });
+
+    it('inflates a gzip drop, removes its extension, and detects AHL mode', async () => {
+      const user = userEvent.setup();
+      mockInflateGzipToText.mockResolvedValueOnce(ahlSample);
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+
+      await user.upload(
+        fileInput,
+        new File(['compressed'], 'bulletin.TAC.GZ', {
+          type: 'application/gzip',
+        }),
+      );
+
+      await waitFor(() => {
+        expect(mockInflateGzipToText).toHaveBeenCalledOnce();
+        expect(screen.getByText('bulletin.TAC')).toBeInTheDocument();
+      });
+      expect(mockToast.info).toHaveBeenCalledWith('Decompressed bulletin.TAC.GZ');
+      expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
+    });
+
+    it('reports a gzip inflate error without adding a pending file', async () => {
+      mockInflateGzipToText.mockRejectedValueOnce(new Error('invalid gzip'));
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: new File(['bad'], 'broken.gzip'),
+            length: 1,
+          },
+        },
+      });
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith('invalid gzip');
+      });
+      expect(screen.queryByTestId('operator-work-queue')).not.toBeInTheDocument();
+    });
+
+    it('limits mass-ingest rejection samples and defaults blank reasons', async () => {
+      const rejected = Array.from({ length: 6 }, (_, index) => ({
+        name: `bad-${index}.tac`,
+        accepted: false,
+        reason: index === 0 ? '' : null,
+        size_bytes: 1,
+        content: null,
+      }));
+      mockMassIngestFiles.mockResolvedValueOnce({
+        accepted_count: 0,
+        rejected_count: 6,
+        results: rejected,
+      });
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+
+      await userEvent
+        .setup()
+        .upload(
+          screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement,
+          new File(['PK'], 'rejected.zip', { type: 'application/zip' }),
+        );
+
+      await waitFor(() => {
+        expect(mockToast.success).toHaveBeenCalledWith(
+          'Mass ingest: 0 accepted, 6 rejected',
+          expect.anything(),
+        );
+      });
+      expect(mockToast.error).toHaveBeenCalledWith('bad-0.tac: rejected');
+      expect(mockToast.error).toHaveBeenCalledWith('bad-4.tac: rejected');
+      expect(mockToast.error).not.toHaveBeenCalledWith('bad-5.tac: rejected');
+    });
+
+    it('uses the generic mass-ingest failure message for non-Error rejections', async () => {
+      mockMassIngestFiles.mockRejectedValueOnce('offline');
+      render(<FileConverter {...defaultProps} accessToken="jwt-f33" />);
+
+      await userEvent
+        .setup()
+        .upload(
+          screen.getByTestId('mass-ingest-zip-input') as HTMLInputElement,
+          new File(['PK'], 'offline.zip', { type: 'application/zip' }),
+        );
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          'Mass ingest failed',
+          expect.anything(),
+        );
+      });
+    });
+
+    it('uses xml and content fallbacks for hard conversion result cards', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          { xml: '<hard-xml/>', tac_input: 'METAR XML=' },
+          { content: '<hard-content/>', tac_input: 'METAR CONTENT=' },
+        ],
+        errors: [],
+        issues: [],
+      });
+      const { container } = render(<FileConverter {...defaultProps} />);
+
+      await user.type(
+        container.querySelector('textarea') as HTMLTextAreaElement,
+        'METAR XML=\nMETAR CONTENT=',
+      );
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('<hard-xml/>')).toBeInTheDocument();
+        expect(screen.getByText('<hard-content/>')).toBeInTheDocument();
+      });
+    });
+
+    it('marks Convert & Send failed without uploading when conversion has errors', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<partial/>', tac_input: 'METAR PARTIAL=' }],
+        errors: ['partial conversion'],
+        issues: [],
+      });
+      const { container } = render(<FileConverter {...defaultProps} />);
+
+      await user.type(
+        container.querySelector('textarea') as HTMLTextAreaElement,
+        'METAR PARTIAL=',
+      );
+      await user.click(screen.getByTestId('convert-and-send-button'));
+
+      await waitFor(() => {
+        expect(mockPersistSession).toHaveBeenCalledWith(expect.anything(), {
+          status: 'failed',
+        });
+      });
+      expect(mockUploadConvertedFiles).not.toHaveBeenCalled();
+    });
+
+    it('shows bulletin failures while retaining converted reports and issue fallback', async () => {
+      const user = userEvent.setup();
+      mockConvertBulletin.mockResolvedValueOnce({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 2,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [
+          {
+            report_index: 0,
+            ok: true,
+            xml: '<bulletin-ok/>',
+            tac_input: 'METAR OK=',
+            issues: [],
+          },
+          {
+            report_index: 1,
+            ok: false,
+            xml: '',
+            tac_input: 'METAR BAD=',
+            issues: [{ message: 'bad report' }],
+          },
+        ],
+      });
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
+      await user.type(screen.getByTestId('tac-editor'), ahlSample);
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('<bulletin-ok/>')).toBeInTheDocument();
+        expect(mockToast.warning).toHaveBeenCalledWith('Bulletin: 1 ok, 1 failed');
+      });
     });
   });
 });

@@ -33,4 +33,15 @@ describe('GoldenExamplesSelect', () => {
     await user.click(option);
     expect(onSelectExample).toHaveBeenCalledWith('sigmet_a6_2_tc');
   });
+
+  it('disables the example picker without calling the selection callback', async () => {
+    const user = userEvent.setup();
+    const onSelectExample = vi.fn();
+    render(<GoldenExamplesSelect disabled onSelectExample={onSelectExample} />);
+
+    const trigger = screen.getByTestId('examples-select');
+    expect(trigger).toBeDisabled();
+    await user.click(trigger);
+    expect(onSelectExample).not.toHaveBeenCalled();
+  });
 });

@@ -277,4 +277,69 @@ describe('MyMetarsPage', () => {
     expect(mockList).not.toHaveBeenCalled();
     expect(screen.queryByTestId('export-sessions')).not.toBeInTheDocument();
   });
+
+  it('uses server mutations for deleted and active authenticated sessions', async () => {
+    const user = userEvent.setup();
+    mockListServer
+      .mockResolvedValueOnce({
+        items: [sampleSession({ id: 'srv-1', deleted_at: null })],
+        total: 1,
+        page: 1,
+        limit: 50,
+      })
+      .mockResolvedValueOnce({
+        items: [
+          sampleSession({
+            id: 'srv-1',
+            deleted_at: '2026-08-03T00:00:00Z',
+          }),
+        ],
+        total: 1,
+        page: 1,
+        limit: 50,
+      })
+      .mockResolvedValueOnce({
+        items: [sampleSession({ id: 'srv-1', deleted_at: null })],
+        total: 1,
+        page: 1,
+        limit: 50,
+      });
+
+    render(
+      <MyMetarsPage
+        accessToken="jwt-token"
+        onBack={onBack}
+        onOpenSession={onOpenSession}
+      />,
+    );
+
+    await screen.findByText('KJFK draft');
+    await user.click(screen.getByRole('button', { name: '' }));
+    await waitFor(() =>
+      expect(mockDeleteServer).toHaveBeenCalledWith('jwt-token', 'srv-1'),
+    );
+
+    await waitFor(() => expect(mockRestoreServer).not.toHaveBeenCalled());
+    await user.click(screen.getByRole('button', { name: '' }));
+    await waitFor(() =>
+      expect(mockRestoreServer).toHaveBeenCalledWith('jwt-token', 'srv-1'),
+    );
+    expect(mockDelete).not.toHaveBeenCalled();
+    expect(mockRestore).not.toHaveBeenCalled();
+  });
+
+  it('shows generic messages when local export or import fails non-Exception', async () => {
+    const user = userEvent.setup();
+    mockExport.mockRejectedValueOnce('storage unavailable');
+    mockImport.mockRejectedValueOnce('bad export');
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+
+    await screen.findByText('KJFK draft');
+    await user.click(screen.getByTestId('export-sessions'));
+    await screen.findByText('Export failed');
+
+    const file = new File(['{}'], 'export.json', { type: 'application/json' });
+    await user.upload(screen.getByTestId('import-sessions-input'), file);
+    await screen.findByText('Import failed');
+  });
 });

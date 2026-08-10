@@ -168,6 +168,32 @@ describe('DatabaseUploadDialog', () => {
     });
   });
 
+  it('shows the uploading state and recovers from a non-Error rejection', async () => {
+    const user = userEvent.setup();
+    let rejectUpload: (reason: unknown) => void = () => undefined;
+    vi.mocked(global.fetch).mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          rejectUpload = reject;
+        }),
+    );
+
+    render(<DatabaseUploadDialog {...defaultProps} />);
+    await user.click(screen.getByRole('button', { name: /upload files to database/i }));
+    expect(
+      screen.getByRole('button', { name: /uploading to database/i }),
+    ).toBeDisabled();
+    expect(screen.getByText('Uploading...')).toBeInTheDocument();
+
+    rejectUpload('offline');
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith('Failed to upload to database');
+      expect(
+        screen.getByRole('button', { name: /upload files to database/i }),
+      ).toBeEnabled();
+    });
+  });
+
   it('uploads with both format and both destination options', async () => {
     const user = userEvent.setup();
     vi.mocked(global.fetch).mockResolvedValue({
@@ -206,5 +232,14 @@ describe('DatabaseUploadDialog', () => {
 
     expect(screen.getByLabelText(/store as iwxxm xml only/i)).toBeChecked();
     expect(screen.getByLabelText(/upload to primary database/i)).toBeChecked();
+  });
+
+  it('does not close when clicks stay inside the dialog card', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+    render(<DatabaseUploadDialog {...defaultProps} onClose={onClose} />);
+
+    await user.click(screen.getByRole('heading', { name: /upload to database/i }));
+    expect(onClose).not.toHaveBeenCalled();
   });
 });

@@ -537,4 +537,51 @@ describe('DisseminationDrawer', () => {
     });
     expect(global.fetch).toHaveBeenCalledTimes(3);
   });
+
+  it('uses a TAC-only primary candidate and reports a failed preflight', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        ok: false,
+        connectivity_ok: false,
+        diffs: [],
+        handle: null,
+      }),
+    } as Response);
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml="  "
+        tacText="METAR KJFK 010000Z"
+      />,
+    );
+
+    expect(screen.getByTestId('dissemination-selection-expand')).toHaveTextContent(
+      '1 file selected',
+    );
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/tac.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
+        /1 of 1 file\(s\) failed: Preflight not green/i,
+      );
+    });
+    expect(
+      screen.getByTestId('dissemination-progress-row-session-primary'),
+    ).toHaveAttribute('data-status', 'failed');
+  });
+
+  it('closes and resets via the drawer backdrop', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<DisseminationDrawer {...defaultProps} onOpenChange={onOpenChange} />);
+
+    await user.click(screen.getByTestId('dissemination-drawer-backdrop'));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
 });

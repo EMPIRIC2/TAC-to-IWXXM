@@ -62,6 +62,18 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
     expect(screen.queryByDisplayValue('ABCD12')).not.toBeInTheDocument();
   });
 
+  it('falls back to the email prefix and default extension for incomplete storage', async () => {
+    localStorage.setItem(
+      'metar_converter_preferences',
+      JSON.stringify({ displayName: 42, outputFileExtension: null }),
+    );
+
+    render(<UserPreferencesDialog {...defaultProps} />);
+
+    expect(await screen.findByDisplayValue('prefs')).toBeInTheDocument();
+    expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.xml');
+  });
+
   it('saves updated preferences and notifies parent', async () => {
     const onPreferencesSaved = vi.fn();
     const user = userEvent.setup();
@@ -164,6 +176,39 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
 
     expect(screen.getByDisplayValue('Keep Me')).toBeInTheDocument();
     expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.iwxxm');
+  });
+
+  it('closes from cancel and from the dialog backdrop', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <UserPreferencesDialog {...defaultProps} onClose={onClose} />,
+    );
+
+    await screen.findByDisplayValue('prefs');
+    await user.click(screen.getByRole('button', { name: /cancel/i }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+
+    rerender(<UserPreferencesDialog {...defaultProps} onClose={onClose} />);
+    await user.click(screen.getByRole('dialog'));
+    expect(onClose).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps an empty prior object when the stored value cannot be parsed while saving', async () => {
+    localStorage.setItem('metar_converter_preferences', '{broken');
+    const user = userEvent.setup();
+    render(<UserPreferencesDialog {...defaultProps} />);
+
+    await screen.findByDisplayValue('prefs');
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+
+    expect(
+      JSON.parse(localStorage.getItem('metar_converter_preferences') || '{}'),
+    ).toMatchObject({
+      displayName: 'prefs',
+      email: 'prefs@example.com',
+      outputFileExtension: '.xml',
+    });
   });
 
   it('toasts when save fails', async () => {

@@ -942,6 +942,36 @@ describe('API Utils', () => {
       ).rejects.toThrow('bulletin too large');
     });
 
+    it('uses bulletin defaults and stringifies a non-string detail error', async () => {
+      mockFetchResponse(
+        { detail: { code: 'invalid_bulletin' }, message: '' },
+        false,
+        422,
+      );
+      await expect(convertBulletin({ product: 'metar' })).rejects.toThrow(
+        JSON.stringify({ code: 'invalid_bulletin' }),
+      );
+
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: null,
+          report_count: 0,
+          tt: null,
+          aa: null,
+          cccc: null,
+          yygggg: null,
+          bbb: null,
+        },
+        results: [],
+      });
+      await convertBulletin({ product: 'taf' });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('manual_text')).toBeNull();
+      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('lint')).toBe('true');
+    });
+
     it('throws EndpointNotImplementedError on ingest-collect 501', async () => {
       mockFetchResponse(
         {
@@ -983,6 +1013,35 @@ describe('API Utils', () => {
         expect.stringContaining('/ingest-collect'),
         expect.objectContaining({ method: 'POST' }),
       );
+    });
+
+    it('uses configured validation layers and false stop-on-error', async () => {
+      mockFetchResponse({
+        is_valid: false,
+        version: '2025-2',
+        profile: 'annex3',
+        layers_run: ['XSD'],
+        layers_passed: [],
+        layers_failed: ['XSD'],
+        total_issues: 1,
+        issues: [],
+        issues_by_layer: {},
+        package_ok: false,
+        package_issues: [],
+      });
+
+      await validateIwxxm({
+        xmlContent: ' <iwxxm:METAR/> ',
+        iwxxmVersion: '2023-1',
+        layers: ['XSD', 'SCHEMATRON'],
+        stopOnError: false,
+      });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('xml_content')).toBe('<iwxxm:METAR/>');
+      expect(body.get('iwxxm_version')).toBe('2023-1');
+      expect(body.get('stop_on_error')).toBe('false');
+      expect(body.getAll('layers')).toEqual(['XSD', 'SCHEMATRON']);
     });
 
     it('throws on ingest-collect non-501 failure', async () => {
