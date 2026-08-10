@@ -3,6 +3,51 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-053 — Vitest branches ≥95 FileConverter follow-up (S062)
+
+**Session**: S062-vitest-branches-95  
+**Features**: deepen **F29**, **M5** (no new Fn)  
+**Started**: 2026-08-10  
+**Branch**: `evolve/EV-053-vitest-branches-95` (base `stage@6f25c0b1`)  
+**Status**: **in_progress** — Phase 0–1 open; child of `D-S061-cov-branches=3` / [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968)  
+**Corpus**: [Corpus: product §F29] [Corpus: product §M5] [Corpus: tests]
+[Corpus: adr/ADR-007] [Corpus: decisions §EV-052] [Corpus: decisions §EV-053]
+
+### Scope (Phase 0–1 — locked 2026-08-10)
+
+| ID | Decision |
+|----|----------|
+| D-S062-route | **1** — Standard: `00→16→01→02→04→07→08→09→11`; skip `03,05,06,10,12,13` |
+| D-S062-ui-preview | **2** — No non-deployed UI preview; Vitest/docs only |
+| D-S062-dirty | **2** — S061 closeout already on `stage` via [#972](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/972); open clean from `stage` |
+
+### Acceptance (from #968 — refine in 01)
+
+| AC | Criterion |
+|----|-----------|
+| AC1 | Vitest `branches` threshold ≥95 in `apps/frontend/vitest.config.ts` |
+| AC2 | Suite green under that gate (tests and/or justified excludes) |
+| AC3 | Coverage inventory `branch_waiver` resolved |
+| AC4 | Closeout cited in evolve-decisions / test-plan |
+
+### Out of scope
+
+- Lowering lines/stmts/funcs below 95
+- #874 mutation / #727 Schemathesis / #836 UI metrics
+- stage→main this cycle
+- Operator UI redesign
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 11`.
+
+### Parent waiver
+
+`D-S061-cov-branches=3` — EV-052 enforced lines/stmts/funcs ≥95; branches floor 84 +
+explicit child #968 (not silent).
+
+---
+
 ## Cycle EV-052 — CI polish + quality PR stats + free Sentry/Redis/Orval (S061)
 
 **Session**: S061-ci-polish-quality-pr-stats  

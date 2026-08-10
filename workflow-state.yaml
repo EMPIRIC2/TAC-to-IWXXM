@@ -3,10 +3,78 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 61
-evolve_cycle_counter: 52
-active_session: null
+session_counter: 62
+evolve_cycle_counter: 53
+active_session: S062-vitest-branches-95
 sessions:
+
+- id: S062-vitest-branches-95
+  type: feature
+  title: "Vitest branches ≥95% (FileConverter) — #968 EV-052 waiver follow-up"
+  intent: "EV-053: close D-S061-cov-branches waiver; raise Vitest branches ≥95; FileConverter-heavy tests and/or justified excludes; resolve coverage inventory branch_waiver. Preset Standard. Parent #950/EV-052."
+  status: in_progress
+  started: '2026-08-10'
+  started_at: '2026-08-10'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-053
+  branch: evolve/EV-053-vitest-branches-95
+  branch_base: stage@6f25c0b1
+  branch_base_sha: 6f25c0b1
+  branch_base_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  branch_status: open
+  branch_exists: true
+  tip_sha: 6f25c0b1
+  tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  tip_sha_pushed: false
+  artifacts_dir: docs/sessions/S062-vitest-branches-95/
+  github_issues:
+  - 968
+  feature_ids:
+  - F29
+  - M5
+  deepen_feature_ids:
+  - F29
+  - M5
+  prior_session: S061-ci-polish-quality-pr-stats
+  current_stage: 16-evolve
+  current_stage_note: 'OPENED — D-S062-route=1; Phase 0–1; next 01-requirements after proceed gate'
+  decisions:
+    D-S062-route: "1 — Standard 00→16→01→02→04→07→08→09→11; skip 03,05,06,10,12,13"
+    D-S062-ui-preview: "2 — no local UI preview; Vitest/docs only"
+    D-S062-dirty: "2 — S061 closeout already on stage via #972; clean open from stage"
+  artifacts:
+  - path: docs/sessions/S062-vitest-branches-95/
+    status: present
+    note: session-brief + routing-plan + evolve-plan-card
+  - path: docs/sessions/S062-vitest-branches-95/session-brief.md
+    status: present
+  - path: docs/sessions/S062-vitest-branches-95/routing-plan.md
+    status: present
+  - path: docs/sessions/S062-vitest-branches-95/evolve-plan-card.md
+    status: present
+  routing_plan:
+  - stage: 00-context
+    status: completed
+    note: "D-S062-route=1; opened S062 from stage@6f25c0b1"
+  - stage: 16-evolve
+    status: in_progress
+    note: "Phase 0–1 locked intake; await proceed → 01"
+  - stage: 01-requirements
+    status: pending
+  - stage: 02-verify-plan
+    status: pending
+  - stage: 04-tech-plan
+    status: pending
+  - stage: 07-build
+    status: pending
+  - stage: 08-verify-build
+    status: pending
+  - stage: 09-qa
+    status: pending
+  - stage: 11-verify-impl
+    status: pending
+  notes:
+  - "2026-08-10 D-S062-route=1 / ui-preview=2 / dirty=2 — opened S062/EV-053; S061 leftovers already on stage (#972); branch evolve/EV-053-vitest-branches-95 @ 6f25c0b1"
 
 - id: S061-ci-polish-quality-pr-stats
   type: feature
@@ -35617,6 +35685,62 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-053
+  session_id: S062-vitest-branches-95
+  type: feature
+  cycle_type: general
+  status: in_progress
+  started: '2026-08-10'
+  started_at: '2026-08-10'
+  title: "Vitest branches ≥95 FileConverter follow-up (#968)"
+  feature_ids: [F29, M5]
+  deepen_feature_ids: [F29, M5]
+  github_issues: [968]
+  parent_waiver: D-S061-cov-branches=3
+  parent_cycle: EV-052
+  preset: Standard
+  current_stage: 16-evolve Phase 0-1
+  current_stage_note: "OPENED — D-S062-route=1; next 01 after proceed"
+  branch: evolve/EV-053-vitest-branches-95
+  branch_base: stage@6f25c0b1
+  branch_base_sha: 6f25c0b1
+  branch_base_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  branch_status: open
+  tip_sha: 6f25c0b1
+  tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  tip_sha_pushed: false
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: waived
+    deploy_note: "12/13 skipped per D-S062-route (CI-only)"
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+  decisions:
+    D-S062-route: "1 — Standard; skip 03,05,06,10,12,13"
+    D-S062-ui-preview: "2 — no local UI preview"
+    D-S062-dirty: "2 — #972 already on stage"
+  decisions_locked:
+  - D-S062-route=1
+  - D-S062-ui-preview=2
+  - D-S062-dirty=2
+  artifacts:
+  - path: docs/sessions/S062-vitest-branches-95/session-brief.md
+    status: present
+  - path: docs/sessions/S062-vitest-branches-95/routing-plan.md
+    status: present
+  - path: docs/sessions/S062-vitest-branches-95/evolve-plan-card.md
+    status: present
+  - path: docs/decisions/evolve-decisions.md
+    status: present
+    note: "§Cycle EV-053 added"
+  notes:
+  - "2026-08-10 opened after D-S062-route=1; parent D-S061-cov-branches=3 / #968"
+  note: "IN_PROGRESS — Phase 0–1; await proceed to 01-requirements"
 - id: EV-052
   session_id: S061-ci-polish-quality-pr-stats
   type: feature
@@ -46616,24 +46740,24 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-051-tag-driven-prod-deploy
+  current_branch: evolve/EV-053-vitest-branches-95
   ahead_of_origin: 0
-  pushed: true
-  pending_commit: false
-  pending_commit_note:
+  pushed: false
+  pending_commit: true
+  pending_commit_note: 'S062/EV-053 session open artifacts pending first commit'
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after D-S060-close=1 (EV-051/S060 closed; PR #966 MERGED → stage @ 8882856b; active_session=null); no git commit by workflow-state-manager'
-  tip_sha: 8882856b
-  tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
-  tip_note: 'S060/EV-051 CLOSED — D-S060-close=1; PR #966 MERGED → stage @ 8882856b; active_session=null'
-  evolve_branch: evolve/EV-051-tag-driven-prod-deploy
-  evolve_tip_sha: cb8d9771
-  evolve_tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
-  evolve_tip_sha_pushed: true
-  stage_merge_sha: 8882856b
-  stage_merge_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
-  stage_tip_sha: 8882856b
-  stage_tip_sha_full: 8882856b0df902d72890350196c8eb1786c304c8
+  dirty_note: 'Opening S062/EV-053; session docs + evolve-decisions + workflow-state'
+  tip_sha: 6f25c0b1
+  tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  tip_note: 'S062/EV-053 OPENED — D-S062-route=1; base stage@6f25c0b1 (#972 tip)'
+  evolve_branch: evolve/EV-053-vitest-branches-95
+  evolve_tip_sha: 6f25c0b1
+  evolve_tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  evolve_tip_sha_pushed: false
+  stage_merge_sha: 6f25c0b1
+  stage_merge_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  stage_tip_sha: 6f25c0b1
+  stage_tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -46644,10 +46768,11 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: stage
-  note: 'S060/EV-051 CLOSED — D-S060-close=1; PR #966 MERGED → stage @ 8882856b; active_session=null; EV-043/EV-044 remain parked'
+  recommended_branch: evolve/EV-053-vitest-branches-95
+  note: 'S062/EV-053 OPENED — D-S062-route=1; Vitest branches ≥95 #968; base stage@6f25c0b1'
 
   notes:
+  - '2026-08-10 D-S062-route=1 — opened S062/EV-053 on evolve/EV-053-vitest-branches-95 @ stage@6f25c0b1; #968 In progress'
   - '2026-08-09 D-S060-close=1 — EV-051 / S060 completed; active_session cleared; PR #966 MERGED → stage @ 8882856b; no git commit by workflow-state-manager'
   - '2026-08-09 D-S060-merge=1 — PR #966 MERGED → stage @ 8882856b; CI green on PR; post-merge stage CI/Deploy queued; awaiting D-S060-close; no git commit by workflow-state-manager'
   - '2026-08-09 D-S060-gateA=1 + D-S060-11-next=1 — Gate A PASS; 07/08/09/11 COMPLETE; PR #966 OPEN → stage @ tip cb8d9771; gates.a_to_b/c_to_d passed; deploy waived; awaiting merge; no git commit by workflow-state-manager'
@@ -47183,10 +47308,24 @@ git_history:
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
 
+  - name: evolve/EV-053-vitest-branches-95
+    base: stage
+    base_sha: 6f25c0b1
+    base_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+    status: open
+    created: '2026-08-10'
+    exists: true
+    purpose: "EV-053 / S062 Vitest branches ≥95 FileConverter (#968)"
+    session_id: S062-vitest-branches-95
+    evolve_cycle_id: EV-053
+    tip_sha: 6f25c0b1
+    tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+    tip_sha_pushed: false
+    note: "Opened after D-S062-route=1; parent waiver D-S061-cov-branches=3"
   - name: evolve/EV-052-ci-polish-quality-pr-stats
     base: stage
     base_sha: 80197a58
-    status: active
+    status: merged
     session_id: S061-ci-polish-quality-pr-stats
     evolve_cycle_id: EV-052
     created: '2026-08-09'
