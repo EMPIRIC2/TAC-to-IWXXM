@@ -33,11 +33,12 @@ diff package (v1); #840 epic; stage→main unless approved.
 | T1.1–T1.3 | **completed** — M1 artifact + tests |
 | T2.1–T2.3 | **completed** — public API + OpenAPI + FE clients |
 | T3.1–T3.3 | **completed** — shell nav + list/summary + Vitest |
-| T4.1 | next — detail panes (TAC / XML / residuals / lint / validate) |
+| T4.1–T4.3 | **completed** — detail panes + unifiedLineDiff + Vitest |
+| T5.1 | next — Playwright UJ-056 |
 
 ## Next
 
-**07-build** M4 — detail + unified XML diff
+**07-build** M5 — Playwright + CI/docs closeout
 
 ## Corpus
 

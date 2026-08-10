@@ -14,8 +14,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Quality metrics (F7.q) |
-| **Active milestone** | M3 — Shell tab + corpus browser (complete) |
-| **Active task** | — (next: M4 T4.1) |
+| **Active milestone** | M4 — Detail pane + unified XML diff (complete) |
+| **Active task** | — (next: M5 T5.1) |
 | **Tasks completed** | 6 / 15 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-10 |
@@ -111,9 +111,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T4.1 | Detail fetch + panes: TAC, official XML, converted XML, residuals, lint, validate (empty states) | Impl | pending | AC2/AC3 | T3.2 | — |
-| T4.2 | Local `unifiedLineDiff` helper + unified diff view (no new npm dep) | Impl | pending | AC2; `D-S063-diff-impl` | T4.1 | — |
-| T4.3 | Vitest: detail panels + diff for mocked equal/unequal stems | Test | pending | TC-EV054-003..004 | T4.2 | — |
+| T4.1 | Detail fetch + panes: TAC, official XML, converted XML, residuals, lint, validate (empty states) | Impl | completed | AC2/AC3 | T3.2 | — |
+| T4.2 | Local `unifiedLineDiff` helper + unified diff view (no new npm dep) | Impl | completed | AC2; `D-S063-diff-impl` | T4.1 | — |
+| T4.3 | Vitest: detail panels + diff for mocked equal/unequal stems | Test | completed | TC-EV054-003..004 | T4.2 | — |
 
 #### M5: E2E / CI / docs closeout — P0
 

@@ -30,7 +30,7 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 
 ## Next child stage
 
-**07-build** M4 — detail panes + unified XML diff (T4.1–T4.3); M1–M3 done
+**07-build** M5 — Playwright UJ-056 + CI/docs (T5.1–T5.3); M1–M4 done
 
 ## Risks / open decisions
 

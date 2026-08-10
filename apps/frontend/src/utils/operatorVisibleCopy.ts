@@ -8,6 +8,10 @@
 import { EXAMPLES } from '@/fixtures/examples/examplesCatalog';
 import { SHELL_NAV_LABELS } from '@/app/components/AppShellNav';
 import {
+  QUALITY_METRICS_DIFF_EMPTY_LABEL,
+  QUALITY_METRICS_EMPTY_DIAGNOSTICS,
+} from '@/app/components/QualityMetricsDetail';
+import {
   QUALITY_METRICS_DEFERRED_LABEL,
   QUALITY_METRICS_PAGE_TITLE,
 } from '@/app/components/QualityMetricsPage';
@@ -41,6 +45,11 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
     { id: 'quality-metrics.title', text: QUALITY_METRICS_PAGE_TITLE },
     { id: 'quality-metrics.deferred-label', text: QUALITY_METRICS_DEFERRED_LABEL },
+    { id: 'quality-metrics.diff-empty', text: QUALITY_METRICS_DIFF_EMPTY_LABEL },
+    {
+      id: 'quality-metrics.empty-diagnostics',
+      text: QUALITY_METRICS_EMPTY_DIAGNOSTICS,
+    },
   ];
 
   for (const item of STORAGE_INVENTORY) {

@@ -1,16 +1,18 @@
 /**
- * Quality metrics corpus browser — product filter, summary strip, file list.
+ * Quality metrics corpus browser — product filter, summary strip, file list, detail.
  *
- * List view for F7.q / EV-054 (detail + unified diff land in M4).
+ * List + detail for F7.q / EV-054 (AC1–AC5).
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { fetchQualityMetrics } from '@/utils/api';
+import { fetchQualityMetrics, fetchQualityMetricsDetail } from '@/utils/api';
 import type {
+  QualityMetricsDetailResponse,
   QualityMetricsFileRow,
   QualityMetricsSummary,
 } from '@/utils/openapiTypes';
+import { QualityMetricsDetail } from './QualityMetricsDetail';
 import { Card } from './ui/card';
 
 /** Operator-visible label for deferred / gap stems (AC5). */
@@ -20,7 +22,7 @@ export const QUALITY_METRICS_DEFERRED_LABEL = 'Deferred gap';
 export const QUALITY_METRICS_PAGE_TITLE = 'Quality metrics';
 
 interface QualityMetricsPageProps {
-  /** Optional stem select hook (detail pane wires in M4). */
+  /** Optional stem select hook (in addition to in-page detail). */
   onSelectStem?: (stem: string) => void;
 }
 
@@ -37,6 +39,10 @@ export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
   const [iwxxmPin, setIwxxmPin] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedStem, setSelectedStem] = useState<string | null>(null);
+  const [detail, setDetail] = useState<QualityMetricsDetailResponse | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState<string | null>(null);
 
   const loadMetrics = useCallback(async () => {
     setLoading(true);
@@ -63,6 +69,39 @@ export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
     void loadMetrics();
   }, [loadMetrics]);
   /* eslint-enable react-hooks/set-state-in-effect */
+
+  useEffect(() => {
+    if (!selectedStem) {
+      return;
+    }
+
+    let cancelled = false;
+    void (async () => {
+      setDetailLoading(true);
+      setDetailError(null);
+      try {
+        const response = await fetchQualityMetricsDetail({ stem: selectedStem });
+        if (!cancelled) {
+          setDetail(response);
+        }
+      } catch (err: unknown) {
+        if (!cancelled) {
+          setDetail(null);
+          setDetailError(
+            err instanceof Error ? err.message : 'Failed to load stem detail',
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setDetailLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedStem]);
 
   const productOptions = useMemo(() => {
     const fromSummaries = summaries.map((s) => s.product);
@@ -95,6 +134,21 @@ export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
     }
     return summaries.find((s) => s.product === productFilter) ?? null;
   }, [productFilter, summaries]);
+
+  const handleSelectStem = (stem: string) => {
+    setSelectedStem(stem);
+    setDetail(null);
+    setDetailError(null);
+    setDetailLoading(true);
+    onSelectStem?.(stem);
+  };
+
+  const handleCloseDetail = () => {
+    setSelectedStem(null);
+    setDetail(null);
+    setDetailError(null);
+    setDetailLoading(false);
+  };
 
   return (
     <div
@@ -175,44 +229,74 @@ export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
                   No corpus files for this filter.
                 </li>
               ) : (
-                files.map((row) => (
-                  <li key={row.stem}>
-                    <button
-                      type="button"
-                      className="flex w-full flex-wrap items-center justify-between gap-2 px-1 py-3 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-800/60"
-                      data-testid={`quality-metrics-row-${row.stem}`}
-                      onClick={() => onSelectStem?.(row.stem)}
-                    >
-                      <div className="min-w-0">
-                        <div className="font-medium text-gray-900 dark:text-gray-100">
-                          {row.stem}
+                files.map((row) => {
+                  const selected = selectedStem === row.stem;
+                  return (
+                    <li key={row.stem}>
+                      <button
+                        type="button"
+                        className={`flex w-full flex-wrap items-center justify-between gap-2 px-1 py-3 text-left text-sm ${
+                          selected
+                            ? 'bg-blue-50 dark:bg-blue-950/40'
+                            : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                        }`}
+                        data-testid={`quality-metrics-row-${row.stem}`}
+                        aria-pressed={selected}
+                        onClick={() => handleSelectStem(row.stem)}
+                      >
+                        <div className="min-w-0">
+                          <div className="font-medium text-gray-900 dark:text-gray-100">
+                            {row.stem}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {row.product.toUpperCase()} · {row.tier} · match{' '}
+                            {row.match_status}
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {row.product.toUpperCase()} · {row.tier} · match{' '}
-                          {row.match_status}
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2 text-xs">
-                        {row.deferred ? (
-                          <span
-                            className="rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200"
-                            data-testid={`quality-metrics-deferred-${row.stem}`}
-                          >
-                            {QUALITY_METRICS_DEFERRED_LABEL}
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          {row.deferred ? (
+                            <span
+                              className="rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+                              data-testid={`quality-metrics-deferred-${row.stem}`}
+                            >
+                              {QUALITY_METRICS_DEFERRED_LABEL}
+                            </span>
+                          ) : null}
+                          <span className="text-gray-500 dark:text-gray-400">
+                            R{row.residual_count} L{row.lint_error_count} V
+                            {row.validate_error_count}
                           </span>
-                        ) : null}
-                        <span className="text-gray-500 dark:text-gray-400">
-                          R{row.residual_count} L{row.lint_error_count} V
-                          {row.validate_error_count}
-                        </span>
-                      </div>
-                    </button>
-                  </li>
-                ))
+                        </div>
+                      </button>
+                    </li>
+                  );
+                })
               )}
             </ul>
           )}
         </Card>
+
+        {selectedStem ? (
+          <Card className="p-4">
+            {detailLoading && (
+              <div
+                className="flex items-center gap-2 text-sm text-gray-500"
+                data-testid="quality-metrics-detail-loading"
+              >
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Loading stem detail…
+              </div>
+            )}
+            {detailError && (
+              <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+                {detailError}
+              </p>
+            )}
+            {!detailLoading && !detailError && detail ? (
+              <QualityMetricsDetail detail={detail} onClose={handleCloseDetail} />
+            ) : null}
+          </Card>
+        ) : null}
       </div>
     </div>
   );
