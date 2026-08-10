@@ -14,7 +14,7 @@
 | 05-verify-tech | yes | delta | **completed** | `D-S063-05=1` Gate B PASS |
 | 06-tech-tooling | no | — | skipped | No new deps expected |
 | 07-build | yes | delta | **completed** | M1–M5; UJ-056 Playwright; `make generate-quality-metrics` |
-| 08-verify-build | yes | delta | pending | Local + tip CI |
+| 08-verify-build | yes | delta | **completed** | Gate C local PASS @ `7a1d1845`; report `reports/verification-report.md`; tip CI via PR→stage |
 | 09-qa | yes | delta | pending | AC map |
 | 10-e2e | yes | delta | pending | Playwright / H4–H5 smoke per #836 AC |
 | 11-verify-impl | yes | delta | pending | AC sign-off; close #836 |

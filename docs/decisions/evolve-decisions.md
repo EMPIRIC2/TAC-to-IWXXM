@@ -94,6 +94,7 @@ Journey: **UJ-056**. API: [Corpus: api] `GET /api/v1/quality-metrics*`.
 | 05-verify-tech | 2026-08-10 | `D-S063-05=1` — Gate B PASS; C1–C7 resolved; handoff 07 M1 |
 | 07-build M1–M4 | 2026-08-10 | Generator + API + shell/list + detail/diff; tip through `6a385f79` |
 | 07-build M5 | 2026-08-10 | T5.1 Playwright UJ-056 / TC-EV054-007 green; T5.2 `make generate-quality-metrics`; T5.3 docs + tip push |
+| 08-verify-build | 2026-08-10 | Gate C local PASS — lint/format/typecheck/units/H0c/UJ-056; `reports/verification-report.md`; CI via PR→stage |
 
 ### Build M5 notes (2026-08-10)
 
