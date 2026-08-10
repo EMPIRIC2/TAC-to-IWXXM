@@ -30,7 +30,7 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 
 ## Next child stage
 
-**07-build** M5 — Playwright UJ-056 + CI/docs (T5.1–T5.3); M1–M4 done
+**08-verify-build** — Gate C after 07 M1–M5 complete (UJ-056 Playwright green)
 
 ## Risks / open decisions
 
@@ -40,4 +40,5 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 4. ~~Shell placement~~ → **separate primary tab** (`D-S063-shell-tab=1`)
 5. ~~04 plan~~ → **approved as drafted** (`D-S063-04-plan=1`); no new npm diff
 6. ~~05 Gate B~~ → **PASS** (`D-S063-05=1`); C1–C7 resolved
-7. Ready queue thin (2) — refill from M0 Backlog
+7. ~~07 M5~~ → Playwright TC-EV054-007 green; regen Make target; H4–H5 → 12/13
+8. Ready queue thin (2) — refill from M0 Backlog

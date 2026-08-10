@@ -9,7 +9,7 @@
 **Features**: deepen **F7** (note **F7.q** in feature-list; no new top-level Fn)  
 **Started**: 2026-08-10  
 **Branch**: `evolve/EV-054-quality-metrics-tab` (base `stage@f2926ac8`)  
-**Status**: **in_progress** — Phase B complete (`D-S063-05=1`); **07-build** M1 next  
+**Status**: **in_progress** — Phase C: **07-build M1–M5 COMPLETE**; next **08-verify-build**  
 **Issue**: [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836)  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F25] [Corpus: journeys]
 [Corpus: tests] [Corpus: adr/ADR-032] [Corpus: adr/ADR-025] [Corpus: api]
@@ -92,6 +92,18 @@ Journey: **UJ-056**. API: [Corpus: api] `GET /api/v1/quality-metrics*`.
 | 02-verify-plan | 2026-08-10 | Gate A PASS (`D-S063-gateA=2`); api-contract reopened; **05 re-enabled** |
 | 04-tech-plan | 2026-08-10 | `D-S063-04-plan=1` — M1→M5 / 15 tasks; client-side line diff; single corpus blob |
 | 05-verify-tech | 2026-08-10 | `D-S063-05=1` — Gate B PASS; C1–C7 resolved; handoff 07 M1 |
+| 07-build M1–M4 | 2026-08-10 | Generator + API + shell/list + detail/diff; tip through `6a385f79` |
+| 07-build M5 | 2026-08-10 | T5.1 Playwright UJ-056 / TC-EV054-007 green; T5.2 `make generate-quality-metrics`; T5.3 docs + tip push |
+
+### Build M5 notes (2026-08-10)
+
+| Item | Evidence |
+|------|----------|
+| Playwright | `apps/e2e/uj056-quality-metrics.e2e.spec.ts` — open tab → METAR filter → `metar-A3-1` detail + deferred `metar-NIL-collect`; asserts list/detail API calls |
+| Diff pane | Semantic `match_status=equal` may still show line hunks (gml:id / whitespace); assert `unified-diff` + empty\|body |
+| Regen | `make generate-quality-metrics` → `scripts/ci/generate_quality_metrics.py`; artifact README notes CI does not auto-regen |
+| E2E badge | README `E2E_tests-82` |
+| H4–H5 live | Deferred to stages **12/13** after staging deploy (C7) |
 
 ---
 

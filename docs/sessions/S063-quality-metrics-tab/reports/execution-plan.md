@@ -14,10 +14,10 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Quality metrics (F7.q) |
-| **Active milestone** | M4 — Detail pane + unified XML diff (complete) |
-| **Active task** | — (next: M5 T5.1) |
-| **Tasks completed** | 6 / 15 |
-| **Stage** | 07-build |
+| **Active milestone** | M5 — E2E / CI / docs closeout (**complete**) |
+| **Active task** | — (M5 complete; handoff 08-verify-build) |
+| **Tasks completed** | 15 / 15 |
+| **Stage** | 07-build → 08-verify-build |
 | **Last updated** | 2026-08-10 |
 | **Plan approval** | **approved** `D-S063-04-plan=1`; Gate B `D-S063-05=1` |
 | **PR** | — |
@@ -122,9 +122,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T5.1 | Playwright: open tab → filter product → open passer → expect diagnostics/diff; H4–H5 after staging via stages 12/13 (not a separate EP task) | Test | pending | TC-EV054-007; UJ-056; connectivity H4–H5 | T4.3 | — |
-| T5.2 | Optional: Make target / CI note to regenerate metrics when inventory changes | Config | pending | AC4 refresh | T1.1 | — |
-| T5.3 | Docs touch-up if wire shape drifted; evolve-decisions stage log; tip push + CI | Docs/CI | pending | AC6/AC7 | T5.1 | — |
+| T5.1 | Playwright: open tab → filter product → open passer → expect diagnostics/diff; H4–H5 after staging via stages 12/13 (not a separate EP task) | Test | completed | TC-EV054-007; UJ-056; connectivity H4–H5 | T4.3 | — |
+| T5.2 | Optional: Make target / CI note to regenerate metrics when inventory changes | Config | completed | AC4 refresh | T1.1 | — |
+| T5.3 | Docs touch-up if wire shape drifted; evolve-decisions stage log; tip push + CI | Docs/CI | completed | AC6/AC7 | T5.1 | — |
 
 **M5 exit / connectivity**: T5.1 covers Playwright (AC6 local/CI). Live **H4–H5** staging
 smoke is handed off to routed stages **12-verify-deploy** + **13-deploy-smoke** (C7).

@@ -64,6 +64,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
+	generate-quality-metrics \
 	issue-registry-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
@@ -114,6 +115,10 @@ catalog-check: catalog-regen
 membership-regen:
 	$(UV) run python scripts/iwxxm/harvest_wmo_membership.py
 	pnpm exec prettier --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
+
+# EV-054 / F7.q — regenerate precomputed Quality metrics corpus artifact
+generate-quality-metrics:
+	$(UV) run python scripts/ci/generate_quality_metrics.py
 
 membership-check: membership-regen
 	@git diff --quiet -- packages/tac-validate/src/tac_validate/data/wmo_membership.json \

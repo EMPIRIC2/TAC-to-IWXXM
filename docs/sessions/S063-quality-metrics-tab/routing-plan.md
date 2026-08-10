@@ -6,14 +6,14 @@
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | `D-S063-route=1` / `D-S063-ui-preview=2` |
-| 16-evolve | yes | orchestrate | **in_progress** | Phase 0–1 Plan orchestrator |
+| 16-evolve | yes | orchestrate | **in_progress** | Phase C — 07 M1–M5 done; next 08 |
 | 01-requirements | yes | delta | **completed** | `D-S063-01-ac=1`; UJ-056; TC-EV054; shell-tab + unified diff |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S063-gateA=2`; api-contract + 05 |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
 | 04-tech-plan | yes | delta | **completed** | `D-S063-04-plan=1` — M1→M5 / 15 tasks |
 | 05-verify-tech | yes | delta | **completed** | `D-S063-05=1` Gate B PASS |
 | 06-tech-tooling | no | — | skipped | No new deps expected |
-| 07-build | yes | delta | **in_progress** | M1 generator + artifact |
+| 07-build | yes | delta | **completed** | M1–M5; UJ-056 Playwright; `make generate-quality-metrics` |
 | 08-verify-build | yes | delta | pending | Local + tip CI |
 | 09-qa | yes | delta | pending | AC map |
 | 10-e2e | yes | delta | pending | Playwright / H4–H5 smoke per #836 AC |

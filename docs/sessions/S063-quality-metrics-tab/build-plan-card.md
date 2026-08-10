@@ -34,11 +34,11 @@ diff package (v1); #840 epic; stage→main unless approved.
 | T2.1–T2.3 | **completed** — public API + OpenAPI + FE clients |
 | T3.1–T3.3 | **completed** — shell nav + list/summary + Vitest |
 | T4.1–T4.3 | **completed** — detail panes + unifiedLineDiff + Vitest |
-| T5.1 | next — Playwright UJ-056 |
+| T5.1–T5.3 | **completed** — Playwright UJ-056; `make generate-quality-metrics`; docs |
 
 ## Next
 
-**07-build** M5 — Playwright + CI/docs closeout
+**08-verify-build** — Gate C (M1–M5 complete)
 
 ## Corpus
 
