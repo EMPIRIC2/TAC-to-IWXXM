@@ -1,6 +1,20 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-09 (S059 / EV-050)
+> Stage: 01-requirements | Last updated: 2026-08-10 (S062 / EV-053)
+
+## EV-053 / S062 — Vitest branches ≥95 FileConverter (#968) (`D-S062-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-053 / strategy | Re-include FileConverter | Fill branch+line tests until aggregate ≥95 (`D-S062-fc-strategy=1`) | confirmed |
+| EV-053 / AC5 | FileConverter ≥95% branches | Stricter than aggregate-only (`D-S062-01-ac` Q3=2) | confirmed |
+| EV-053 / docs | Delta manifest | feature-list + test-plan + decisions; inventory resolve in 07 | confirmed |
+| EV-053 / UI | Preview | Declined (`D-S062-ui-preview=2`); CI/Vitest only | confirmed |
+| EV-053 / route | Standard | skip 03/05/06/10/12/13 | confirmed |
+| EV-053 / Fn | Deepen | F29 + M5 only; no new Fn | confirmed |
+
+[Corpus: product §F29] [Corpus: product §M5] [Corpus: tests] [Corpus: adr/ADR-007]
+[Corpus: decisions §EV-053]
 
 ## EV-052 / S061 — CI polish + quality PR stats + Sentry/Redis/Orval (`D-S061-01-ac=1`)
 

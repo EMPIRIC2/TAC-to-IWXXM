@@ -1675,6 +1675,24 @@
   `[Corpus: adr/ADR-031]` · `[Corpus: decisions]`
 - **Infra**: `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`
 
+### F29 / M5 deepen (S062 / EV-053 — Vitest branches ≥95 / #968)
+
+- **Status note**: No new Fn. Close EV-052 Vitest **branches** waiver
+  (`D-S061-cov-branches=3`): raise frontend `branches` to **≥95**, re-include
+  `FileConverter.tsx` in Vitest coverage, and require FileConverter itself ≥95% branches.
+- **Issues**: [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) (child of
+  [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950) / EV-052)
+- **What changes**:
+  1. Remove `FileConverter.tsx` from Vitest coverage `exclude`; set `branches: 95`
+  2. Fill FileConverter-heavy branch (and line) tests until aggregate + FileConverter ≥95
+  3. Resolve coverage inventory `branch_waiver`; cite closeout in decisions / test-plan
+- **Acceptance**: AC1–AC5 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-053;
+  **TC-EV053-001..005** (`D-S062-01-ac=1`)
+- **Out of scope**: Lowering other thresholds; #874/#727/#836; stage→main; UI redesign
+- **Journeys / UI**: N/A (CI / Vitest only; `D-S062-ui-preview=2`)
+- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: adr/ADR-007]` ·
+  `[Corpus: decisions §EV-052]` · `[Corpus: decisions §EV-053]`
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout

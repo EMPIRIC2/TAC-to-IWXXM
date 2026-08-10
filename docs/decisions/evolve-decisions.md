@@ -9,7 +9,7 @@
 **Features**: deepen **F29**, **M5** (no new Fn)  
 **Started**: 2026-08-10  
 **Branch**: `evolve/EV-053-vitest-branches-95` (base `stage@6f25c0b1`)  
-**Status**: **in_progress** — Phase 0–1 open; child of `D-S061-cov-branches=3` / [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968)  
+**Status**: **in_progress** — 01 COMPLETE (`D-S062-01-ac=1`); next 02-verify-plan  
 **Corpus**: [Corpus: product §F29] [Corpus: product §M5] [Corpus: tests]
 [Corpus: adr/ADR-007] [Corpus: decisions §EV-052] [Corpus: decisions §EV-053]
 
@@ -20,15 +20,19 @@
 | D-S062-route | **1** — Standard: `00→16→01→02→04→07→08→09→11`; skip `03,05,06,10,12,13` |
 | D-S062-ui-preview | **2** — No non-deployed UI preview; Vitest/docs only |
 | D-S062-dirty | **2** — S061 closeout already on `stage` via [#972](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/972); open clean from `stage` |
+| D-S062-fc-strategy | **1** — Re-include `FileConverter.tsx` in Vitest coverage; fill tests until aggregate ≥95 |
+| D-S062-01-manifest | **1** — Delta: feature-list + test-plan + decisions (+ inventory in 07) |
+| D-S062-01-ac | **1** — Lock AC1–AC5 (AC5 = FileConverter ≥95% branches when included) |
 
-### Acceptance (from #968 — refine in 01)
+### Acceptance (locked `D-S062-01-ac=1`)
 
-| AC | Criterion |
-|----|-----------|
-| AC1 | Vitest `branches` threshold ≥95 in `apps/frontend/vitest.config.ts` |
-| AC2 | Suite green under that gate (tests and/or justified excludes) |
-| AC3 | Coverage inventory `branch_waiver` resolved |
-| AC4 | Closeout cited in evolve-decisions / test-plan |
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Vitest `branches` threshold ≥95 in `apps/frontend/vitest.config.ts` (lines/stmts/funcs remain ≥95) | TC-EV053-001 |
+| AC2 | FE coverage suite green with FileConverter in the coverage set | TC-EV053-002 |
+| AC3 | Coverage inventory `branch_waiver` resolved; excludes justified (no silent soft gate) | TC-EV053-003 |
+| AC4 | Standing docs cite closeout; #968 closable after merge | TC-EV053-004 |
+| AC5 | With FileConverter included, **that file’s** branch coverage ≥95% | TC-EV053-005 |
 
 ### Out of scope
 
@@ -36,6 +40,7 @@
 - #874 mutation / #727 Schemathesis / #836 UI metrics
 - stage→main this cycle
 - Operator UI redesign
+- Keeping FileConverter excluded while only raising aggregate branches
 
 ### Preset
 
@@ -44,7 +49,7 @@
 ### Parent waiver
 
 `D-S061-cov-branches=3` — EV-052 enforced lines/stmts/funcs ≥95; branches floor 84 +
-explicit child #968 (not silent).
+explicit child #968 (not silent). This cycle **closes** that waiver.
 
 ---
 

@@ -6,8 +6,8 @@
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | Opened S062; `D-S062-route=1` |
-| 16-evolve | yes | orchestrate | **in_progress** | Phase 0–1 lock + child stages |
-| 01-requirements | yes | delta | pending | AC from #968; FileConverter include vs exclude strategy |
+| 16-evolve | yes | orchestrate | **in_progress** | Phase A → 02 after 01 |
+| 01-requirements | yes | delta | **completed** | `D-S062-01-ac=1`; AC1–AC5; re-include FileConverter |
 | 02-verify-plan | yes | delta | pending | Gate A |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
 | 04-tech-plan | yes | delta | pending | Thin execution plan (test milestones) |

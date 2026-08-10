@@ -36,12 +36,15 @@ sessions:
   - F29
   - M5
   prior_session: S061-ci-polish-quality-pr-stats
-  current_stage: 16-evolve
-  current_stage_note: 'OPENED — D-S062-route=1; Phase 0–1; next 01-requirements after proceed gate'
+  current_stage: 02-verify-plan
+  current_stage_note: '01 COMPLETE D-S062-01-ac=1; Gate A / 02 next'
   decisions:
     D-S062-route: "1 — Standard 00→16→01→02→04→07→08→09→11; skip 03,05,06,10,12,13"
     D-S062-ui-preview: "2 — no local UI preview; Vitest/docs only"
     D-S062-dirty: "2 — S061 closeout already on stage via #972; clean open from stage"
+    D-S062-fc-strategy: "1 — re-include FileConverter; fill tests to ≥95"
+    D-S062-01-manifest: "1 — delta feature-list + test-plan + decisions"
+    D-S062-01-ac: "1 — AC1–AC5 locked (AC5 FileConverter ≥95% branches)"
   artifacts:
   - path: docs/sessions/S062-vitest-branches-95/
     status: present
@@ -52,6 +55,9 @@ sessions:
     status: present
   - path: docs/sessions/S062-vitest-branches-95/evolve-plan-card.md
     status: present
+  - path: docs/sessions/S062-vitest-branches-95/reports/01-requirements.md
+    status: present
+    note: "01 COMPLETE D-S062-01-ac=1"
   routing_plan:
   - stage: 00-context
     status: completed
@@ -60,9 +66,11 @@ sessions:
     status: in_progress
     note: "Phase 0–1 locked intake; await proceed → 01"
   - stage: 01-requirements
-    status: pending
+    status: completed
+    note: "D-S062-01-ac=1; AC1–AC5; FileConverter re-include"
   - stage: 02-verify-plan
     status: pending
+    note: "Gate A next"
   - stage: 04-tech-plan
     status: pending
   - stage: 07-build
@@ -74,6 +82,7 @@ sessions:
   - stage: 11-verify-impl
     status: pending
   notes:
+  - "2026-08-10 D-S062-01-ac=1 — AC1–AC5; re-include FileConverter; AC5 file branches ≥95; handoff 02-verify-plan"
   - "2026-08-10 D-S062-route=1 / ui-preview=2 / dirty=2 — opened S062/EV-053; S061 leftovers already on stage (#972); branch evolve/EV-053-vitest-branches-95 @ 6f25c0b1"
 
 - id: S061-ci-polish-quality-pr-stats
@@ -35699,8 +35708,8 @@ evolve_cycles:
   parent_waiver: D-S061-cov-branches=3
   parent_cycle: EV-052
   preset: Standard
-  current_stage: 16-evolve Phase 0-1
-  current_stage_note: "OPENED — D-S062-route=1; next 01 after proceed"
+  current_stage: 02-verify-plan
+  current_stage_note: "01 COMPLETE D-S062-01-ac=1; Gate A pending"
   branch: evolve/EV-053-vitest-branches-95
   branch_base: stage@6f25c0b1
   branch_base_sha: 6f25c0b1
@@ -35724,10 +35733,16 @@ evolve_cycles:
     D-S062-route: "1 — Standard; skip 03,05,06,10,12,13"
     D-S062-ui-preview: "2 — no local UI preview"
     D-S062-dirty: "2 — #972 already on stage"
+    D-S062-fc-strategy: "1 — re-include FileConverter"
+    D-S062-01-manifest: "1 — delta docs"
+    D-S062-01-ac: "1 — AC1–AC5 (AC5 FileConverter ≥95% branches)"
   decisions_locked:
   - D-S062-route=1
   - D-S062-ui-preview=2
   - D-S062-dirty=2
+  - D-S062-fc-strategy=1
+  - D-S062-01-manifest=1
+  - D-S062-01-ac=1
   artifacts:
   - path: docs/sessions/S062-vitest-branches-95/session-brief.md
     status: present
@@ -35737,10 +35752,13 @@ evolve_cycles:
     status: present
   - path: docs/decisions/evolve-decisions.md
     status: present
-    note: "§Cycle EV-053 added"
+    note: "§Cycle EV-053 AC1–AC5 locked"
+  - path: docs/sessions/S062-vitest-branches-95/reports/01-requirements.md
+    status: present
   notes:
+  - "2026-08-10 D-S062-01-ac=1 — 01 COMPLETE; Gate A / 02 next"
   - "2026-08-10 opened after D-S062-route=1; parent D-S061-cov-branches=3 / #968"
-  note: "IN_PROGRESS — Phase 0–1; await proceed to 01-requirements"
+  note: "IN_PROGRESS — 01 done; Gate A pending"
 - id: EV-052
   session_id: S061-ci-polish-quality-pr-stats
   type: feature

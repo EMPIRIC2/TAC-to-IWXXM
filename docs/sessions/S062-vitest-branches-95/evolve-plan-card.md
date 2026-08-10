@@ -28,15 +28,13 @@ Raise Vitest `branches` to ≥95% (FileConverter-heavy) and close the explicit
 
 ## Next child stage
 
-**01-requirements** (delta) — lock AC + FileConverter include/exclude strategy after
-Phase 0–1 proceed gate.
+**02-verify-plan** (delta) — Gate A on AC1–AC5 + corpus deltas.
 
 ## Risks / open decisions
 
-- Re-including `FileConverter.tsx` in coverage may need a large test campaign (~144
-  branch misses historically)
-- Alternative: keep exclude + raise aggregate branches another way — must stay honest
-  (no silent soft gate) per [Corpus: adr/ADR-007] / #968
+- Re-including `FileConverter.tsx` (~2.6k LOC) + AC5 (file ≥95% branches) is a large
+  dedicated Vitest campaign — expect multi-milestone 07 work
+- Must keep lines/stmts/funcs ≥95 while raising branches (no trade-down)
 
 ## Locked decisions
 
@@ -45,3 +43,6 @@ Phase 0–1 proceed gate.
 | D-S062-route | 1 — Standard |
 | D-S062-ui-preview | 2 — no local UI preview |
 | D-S062-dirty | 2 — #972 already on stage |
+| D-S062-fc-strategy | 1 — re-include FileConverter |
+| D-S062-01-manifest | 1 — delta docs |
+| D-S062-01-ac | 1 — AC1–AC5 (AC5 file branches ≥95) |

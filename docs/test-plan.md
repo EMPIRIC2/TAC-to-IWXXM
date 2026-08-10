@@ -1931,6 +1931,55 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Required workflows SUCCESS on evolve PR
 - **Source**: EV-052 AC12
 
+### EV-053 / S062 — Vitest branches ≥95 (FileConverter / #968)
+
+- **Level**: T0 / CI
+- **Objective**: Close `D-S061-cov-branches` waiver — Vitest `branches` ≥95; re-include
+  `FileConverter.tsx`; FileConverter itself ≥95% branches; inventory waiver resolved.
+- **Pass criteria**: AC1–AC5 in evolve-decisions §EV-053; TC-EV053-001..005
+- **Source**: F29/M5 deepen; EV-053 / S062; [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968);
+  parent [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950) / EV-052
+
+### TC-EV053-001: Vitest branches threshold ≥95
+
+- **Level**: T0 / CI
+- **Objective**: `apps/frontend/vitest.config.ts` enforces `branches: 95` (with lines /
+  statements / functions still ≥95)
+- **Pass criteria**: Config thresholds all ≥95; no branches floor of 84
+- **Source**: EV-053 AC1; ADR-007; #968
+
+### TC-EV053-002: FE coverage suite green under gates
+
+- **Level**: T0 / CI
+- **Objective**: Frontend Vitest coverage job green with FileConverter in the coverage set
+- **Pass criteria**: `pnpm --filter @metar/frontend test:coverage` (or CI matrix equivalent)
+  passes at tip
+- **Source**: EV-053 AC2
+
+### TC-EV053-003: Coverage inventory branch_waiver resolved
+
+- **Level**: T0
+- **Objective**: Inventory no longer records an open branches waiver for frontend
+- **Pass criteria**: S061 inventory updated (or EV-053 successor) shows `branch_waiver`
+  resolved / removed; intentional excludes listed without silent soft gate
+- **Source**: EV-053 AC3
+
+### TC-EV053-004: Standing docs + #968 closeout
+
+- **Level**: T0
+- **Objective**: feature-list / test-plan / evolve-decisions cite EV-053 close; #968 Done
+- **Pass criteria**: Corpus deltas match; issue closable after merge
+- **Source**: EV-053 AC4
+
+### TC-EV053-005: FileConverter ≥95% branches when included
+
+- **Level**: T0
+- **Objective**: With `FileConverter.tsx` in coverage collection, that file’s branch
+  coverage is ≥95% (not only aggregate)
+- **Pass criteria**: Coverage report (json/html or per-file summary) shows FileConverter
+  branches ≥95; documented in session verify report
+- **Source**: EV-053 AC5 (`D-S062-01-ac` Q3=2)
+
 ### Live harness — staging (EV-043 / EV-044)
 
 | Env | API | Frontend |
