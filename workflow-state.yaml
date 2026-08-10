@@ -23,8 +23,8 @@ sessions:
   branch_base_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
   branch_status: open
   branch_exists: true
-  tip_sha: 6f25c0b1
-  tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  tip_sha: 9bb5f851
+  tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
   tip_sha_pushed: false
   artifacts_dir: docs/sessions/S062-vitest-branches-95/
   github_issues:
@@ -35706,8 +35706,8 @@ evolve_cycles:
   branch_base_sha: 6f25c0b1
   branch_base_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
   branch_status: open
-  tip_sha: 6f25c0b1
-  tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  tip_sha: 9bb5f851
+  tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
   tip_sha_pushed: false
   gates:
     a_to_b: pending
@@ -46741,18 +46741,18 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-053-vitest-branches-95
-  ahead_of_origin: 0
+  ahead_of_origin: 1
   pushed: false
-  pending_commit: true
-  pending_commit_note: 'S062/EV-053 session open artifacts pending first commit'
-  dirty: true
-  dirty_note: 'Opening S062/EV-053; session docs + evolve-decisions + workflow-state'
-  tip_sha: 6f25c0b1
-  tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
-  tip_note: 'S062/EV-053 OPENED — D-S062-route=1; base stage@6f25c0b1 (#972 tip)'
+  pending_commit: false
+  pending_commit_note:
+  dirty: false
+  dirty_note:
+  tip_sha: 9bb5f851
+  tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
+  tip_note: 'S062/EV-053 OPENED — tip 9bb5f851 session open commit'
   evolve_branch: evolve/EV-053-vitest-branches-95
-  evolve_tip_sha: 6f25c0b1
-  evolve_tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  evolve_tip_sha: 9bb5f851
+  evolve_tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
   evolve_tip_sha_pushed: false
   stage_merge_sha: 6f25c0b1
   stage_merge_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
@@ -47318,10 +47318,10 @@ git_history:
     purpose: "EV-053 / S062 Vitest branches ≥95 FileConverter (#968)"
     session_id: S062-vitest-branches-95
     evolve_cycle_id: EV-053
-    tip_sha: 6f25c0b1
-    tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+    tip_sha: 9bb5f851
+    tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
     tip_sha_pushed: false
-    note: "Opened after D-S062-route=1; parent waiver D-S061-cov-branches=3"
+    note: "Opened after D-S062-route=1; tip 9bb5f851"
   - name: evolve/EV-052-ci-polish-quality-pr-stats
     base: stage
     base_sha: 80197a58
@@ -48734,6 +48734,22 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+
+  - sha: 9bb5f851
+    sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
+    branch: evolve/EV-053-vitest-branches-95
+    message: "[EV-053] docs: open S062 Vitest branches ≥95 follow-up (#968)"
+    stage: "00-context"
+    session_id: S062-vitest-branches-95
+    evolve_cycle_id: EV-053
+    files_changed:
+    - docs/sessions/S062-vitest-branches-95/session-brief.md
+    - docs/sessions/S062-vitest-branches-95/routing-plan.md
+    - docs/sessions/S062-vitest-branches-95/evolve-plan-card.md
+    - docs/decisions/evolve-decisions.md
+    - workflow-state.yaml
+    timestamp: '2026-08-10T15:40:40Z'
+
   - sha: f4236636
     sha_full: f423663606cc55f0634be3723bc24f85b7208474
     branch: evolve/EV-052-ci-polish-quality-pr-stats
