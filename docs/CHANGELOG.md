@@ -2,6 +2,33 @@
 
 All notable user-facing and deployable changes for METAR to IWXXM.
 
+## 2026-08-10 — Promote EV-048..EV-053 (`stage` → `main`)
+
+### Added
+- **EV-050 / F12–F15 / F20 / F23 / F24 / F28**: Offline WMO codes membership harvest +
+  `tac-validate` Validated dual-profile lint (annex3 vs iwxxm_us); fixture matrix for
+  RE*/cloud/phenomena/SpaceWx membership.
+- **EV-051 / F30**: Tag-driven prod Deploy — `main` push runs full CI only; prod rolls on
+  `vYYYY.MM.DD-deploy` (or `workflow_dispatch`).
+- **EV-052 / F29 / M5 / F21**: Optional Sentry (API/FE/worker); Upstash-backed slowapi;
+  openapi-typescript FE types + `openapi:check`; coverage inventory + ≥95 lines/stmts/funcs
+  gates; quality sticky PR comment (product × profile).
+- **EV-053 / M5**: Vitest **branches** ≥95 (FileConverter re-included); closes EV-052 branch
+  waiver (#968).
+
+### Changed
+- **EV-048 / F7 / F21**: Strip internal doc refs (Corpus/ADR/EV/TC ids) from operator UI,
+  OpenAPI descriptions, and client-visible error copy.
+
+### Packages
+- `tac-validate` **0.1.2 → 0.1.3** (WMO membership Validated + dual-profile).
+- `tac2iwxxm` remains **0.2.4**.
+- `iwxxm-validate` remains **0.1.2**.
+
+### Deploy
+- Promote PR `stage` → `main` (this release).
+- Post-merge: tag `v2026.08.10-deploy`; optional PyPI `tac-validate-v0.1.3` after checklist.
+
 ## 2026-08-09 — Promote EV-043..EV-047 (`stage` → `main`)
 
 ### Added
