@@ -14,9 +14,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Quality metrics (F7.q) |
-| **Active milestone** | M1 — Precompute pipeline + artifact (complete) |
-| **Active task** | — (next: M2 T2.1) |
-| **Tasks completed** | 3 / 15 |
+| **Active milestone** | M2 — Public quality-metrics API (complete) |
+| **Active task** | — (next: M3 T3.1) |
+| **Tasks completed** | 6 / 15 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-10 |
 | **Plan approval** | **approved** `D-S063-04-plan=1`; Gate B `D-S063-05=1` |
@@ -89,9 +89,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Schemas + router; load artifact; 404/503; msgspec; wire `include_router` | Impl | pending | [Corpus: api]; TC-EV054-008 | T1.2 | artifact |
-| T2.2 | Backend unit tests (list filter, detail, unknown stem, missing artifact) | Test | pending | TC-EV054-006/008 | T2.1 | — |
-| T2.3 | Regenerate FE OpenAPI types; add `fetchQualityMetrics` / detail client helpers | Impl | pending | `D-S063-openapi` | T2.1 | — |
+| T2.1 | Schemas + router; load artifact; 404/503; msgspec; wire `include_router` | Impl | completed | [Corpus: api]; TC-EV054-008 | T1.2 | artifact |
+| T2.2 | Backend unit tests (list filter, detail, unknown stem, missing artifact) | Test | completed | TC-EV054-006/008 | T2.1 | — |
+| T2.3 | Regenerate FE OpenAPI types; add `fetchQualityMetrics` / detail client helpers | Impl | completed | `D-S063-openapi` | T2.1 | — |
 
 #### M3: Shell tab + corpus browser — P0
 

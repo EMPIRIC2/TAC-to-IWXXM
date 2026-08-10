@@ -33,7 +33,7 @@ active_session:
   - F7
   prior_session: S062-vitest-branches-95
   current_stage: 07-build
-  current_stage_note: "07-build M1 COMPLETE (T1.1–T1.3); next M2 T2.1"
+  current_stage_note: "07-build M1+M2 COMPLETE (T1.1–T2.3); next M3 T3.1"
   decisions:
     D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
     D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
@@ -110,7 +110,7 @@ active_session:
     note: "COMPLETE — D-S063-05=1 Gate B PASS; report reports/05-verify-tech.md"
   - stage: 07-build
     status: in_progress
-    note: "M1 COMPLETE T1.1–T1.3; next M2 API"
+    note: "M1+M2 COMPLETE T1.1–T2.3; next M3 shell tab"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -124,6 +124,7 @@ active_session:
   - stage: 13-deploy-smoke
     status: pending
   notes:
+  - "2026-08-10 07 M2 COMPLETE — T2.1–T2.3 quality-metrics API + OpenAPI/FE clients; next M3"
   - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
   - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
   - "2026-08-10 D-S063-04-plan=1 — 04 COMPLETE; 05-verify-tech started; await D-S063-05 (C1–C7); report reports/05-verify-tech.md"
@@ -164,7 +165,7 @@ sessions:
   - F7
   prior_session: S062-vitest-branches-95
   current_stage: 07-build
-  current_stage_note: "07-build M1 COMPLETE (T1.1–T1.3); next M2 T2.1"
+  current_stage_note: "07-build M1+M2 COMPLETE (T1.1–T2.3); next M3 T3.1"
   decisions:
     D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
     D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
@@ -241,7 +242,7 @@ sessions:
     note: "COMPLETE — D-S063-05=1 Gate B PASS; report reports/05-verify-tech.md"
   - stage: 07-build
     status: in_progress
-    note: "M1 COMPLETE T1.1–T1.3; next M2 API"
+    note: "M1+M2 COMPLETE T1.1–T2.3; next M3 shell tab"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -255,6 +256,7 @@ sessions:
   - stage: 13-deploy-smoke
     status: pending
   notes:
+  - "2026-08-10 07 M2 COMPLETE — T2.1–T2.3 quality-metrics API + OpenAPI/FE clients; next M3"
   - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
   - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
   - "2026-08-10 D-S063-04-plan=1 — 04 COMPLETE; 05-verify-tech started; await D-S063-05 (C1–C7); report reports/05-verify-tech.md"
@@ -36170,7 +36172,7 @@ evolve_cycles:
   preset: Standard
   scope_summary: "LOCKED D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1 — full #836 Quality metrics tab (workbench/F7): official WMO IWXXM corpus by product with match/residuals/lint/validate; deepen F7 only (note F7.q; no F34); default view precomputed fixture/CI metrics JSON (on-demand refresh optional later); complements CI matrices #815/#831; Standard routing"
   current_stage: 07-build
-  current_stage_note: "07-build M1 COMPLETE (T1.1–T1.3); next M2 T2.1"
+  current_stage_note: "07-build M1+M2 COMPLETE (T1.1–T2.3); next M3 T3.1"
   branch: evolve/EV-054-quality-metrics-tab
   branch_base: stage@f2926ac8
   branch_base_sha: f2926ac8
@@ -36322,6 +36324,7 @@ evolve_cycles:
     status: present
     note: "TC-EV054 Quality metrics"
   notes:
+  - "2026-08-10 07 M2 COMPLETE — T2.1–T2.3 quality-metrics API + OpenAPI/FE clients; next M3"
   - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
   - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
   - "2026-08-10 D-S063-04-plan=1 — 04 COMPLETE; 05-verify-tech started; await D-S063-05 (C1–C7); report reports/05-verify-tech.md"

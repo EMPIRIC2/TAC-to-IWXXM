@@ -282,6 +282,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/quality-metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List corpus quality metrics
+         * @description Serve product summaries and file inventory from the precomputed artifact.
+         */
+        get: operations["list_quality_metrics_api_v1_quality_metrics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/quality-metrics/{stem}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Corpus quality metrics for one stem
+         * @description Serve per-stem TAC / XML / match / residual / lint / validate detail.
+         */
+        get: operations["get_quality_metrics_detail_api_v1_quality_metrics__stem__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/schema-status": {
         parameters: {
             query?: never;
@@ -2345,6 +2385,140 @@ export interface components {
             name: string;
         };
         /**
+         * QualityMetricsDetailResponse
+         * @description Response for GET /api/v1/quality-metrics/{stem}.
+         */
+        QualityMetricsDetailResponse: {
+            /**
+             * Converted Xml
+             * @default
+             */
+            converted_xml: string;
+            /** Deferral Reason */
+            deferral_reason?: string | null;
+            /**
+             * Deferred
+             * @default false
+             */
+            deferred: boolean;
+            /** Lint Issues */
+            lint_issues?: {
+                [key: string]: unknown;
+            }[];
+            /** Match Status */
+            match_status: string;
+            /**
+             * Official Xml
+             * @default
+             */
+            official_xml: string;
+            /** Product */
+            product: string;
+            /** Residuals */
+            residuals?: {
+                [key: string]: unknown;
+            }[];
+            /** Stem */
+            stem: string;
+            /**
+             * Tac
+             * @default
+             */
+            tac: string;
+            /** Tier */
+            tier: string;
+            /** Validate Issues */
+            validate_issues?: {
+                [key: string]: unknown;
+            }[];
+        };
+        /**
+         * QualityMetricsFileRowModel
+         * @description Slim inventory row for the corpus file list.
+         */
+        QualityMetricsFileRowModel: {
+            /**
+             * Deferred
+             * @default false
+             */
+            deferred: boolean;
+            /**
+             * Lint Error Count
+             * @default 0
+             */
+            lint_error_count: number;
+            /** Match Status */
+            match_status: string;
+            /** Product */
+            product: string;
+            /**
+             * Residual Count
+             * @default 0
+             */
+            residual_count: number;
+            /** Stem */
+            stem: string;
+            /** Tier */
+            tier: string;
+            /**
+             * Validate Error Count
+             * @default 0
+             */
+            validate_error_count: number;
+        };
+        /**
+         * QualityMetricsListResponse
+         * @description Response for GET /api/v1/quality-metrics.
+         */
+        QualityMetricsListResponse: {
+            /** Files */
+            files?: components["schemas"]["QualityMetricsFileRowModel"][];
+            /** Generated At */
+            generated_at: string;
+            /** Iwxxm Pin */
+            iwxxm_pin: string;
+            /** Summaries */
+            summaries?: components["schemas"]["QualityMetricsSummaryModel"][];
+        };
+        /**
+         * QualityMetricsSummaryModel
+         * @description Per-product aggregate counts for the corpus browser.
+         */
+        QualityMetricsSummaryModel: {
+            /**
+             * Deferred Gaps
+             * @default 0
+             */
+            deferred_gaps: number;
+            /**
+             * Lint Fail
+             * @default 0
+             */
+            lint_fail: number;
+            /**
+             * Match Fail
+             * @default 0
+             */
+            match_fail: number;
+            /**
+             * Match Pass
+             * @default 0
+             */
+            match_pass: number;
+            /** Product */
+            product: string;
+            /**
+             * Residual Nonempty
+             * @default 0
+             */
+            residual_nonempty: number;
+            /**
+             * Validate Fail
+             * @default 0
+             */
+            validate_fail: number;
+        };
+        /**
          * SessionResponse
          * @description Session tokens.
          */
@@ -3541,6 +3715,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_quality_metrics_api_v1_quality_metrics_get: {
+        parameters: {
+            query?: {
+                /** @description Optional product filter (e.g. metar, taf, sigmet) */
+                product?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityMetricsListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_quality_metrics_detail_api_v1_quality_metrics__stem__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stem: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityMetricsDetailResponse"];
+                };
             };
             /** @description Validation Error */
             422: {

@@ -30,14 +30,13 @@ diff package (v1); #840 epic; stage→main unless approved.
 
 | Task | Status |
 |------|--------|
-| T1.1 | **completed** — `generate_quality_metrics.py` |
-| T1.2 | **completed** — `corpus_metrics.json` + README |
-| T1.3 | **completed** — TC-EV054-005 loader/summary tests |
-| T2.1 | next — quality-metrics router + schemas |
+| T1.1–T1.3 | **completed** — M1 artifact + tests |
+| T2.1–T2.3 | **completed** — public API + OpenAPI + FE clients |
+| T3.1 | next — shell nav + `AppView: 'quality'` |
 
 ## Next
 
-**07-build** M2 — public API + OpenAPI/FE client
+**07-build** M3 — shell tab + corpus browser
 
 ## Corpus
 

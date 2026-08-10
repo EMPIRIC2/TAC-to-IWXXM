@@ -28,6 +28,7 @@ try:
         evaluation,
         icao_opmet,
         mass_ingest,
+        quality_metrics,
         validation,
         work_sessions,
     )
@@ -79,6 +80,7 @@ except ImportError:
         evaluation,
         icao_opmet,
         mass_ingest,
+        quality_metrics,
         validation,
         work_sessions,
     )
@@ -717,6 +719,12 @@ try:
     logger.info("DEBUG: included ICAO OPMET router successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
+
+try:
+    app.include_router(quality_metrics.router)
+    logger.info("DEBUG: included quality_metrics router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include quality_metrics router: {e}", exc_info=True)
 
 # Auth routers restored (F31 / ADR-033) — JWKS-only Supabase Auth; no /admin.
 try:
