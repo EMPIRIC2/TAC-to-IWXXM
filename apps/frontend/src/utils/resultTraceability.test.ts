@@ -17,6 +17,14 @@ describe('resultTraceability', () => {
     });
   });
 
+  it('defaults a product-less headline to METAR', () => {
+    expect(parseTacHeadline('KJFK 121251Z 18012KT')).toEqual({
+      product: 'METAR',
+      station: 'KJFK',
+      time: '121251Z',
+    });
+  });
+
   it('deriveTacDisplayTitle builds headline label', () => {
     const tac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
     expect(deriveTacDisplayTitle(tac, 'manual_input.txt')).toBe('METAR FAOR 101200Z');
@@ -54,5 +62,6 @@ describe('resultTraceability', () => {
     );
     expect(resolveOriginalTac('', '', 'METAR FILE')).toBe('METAR FILE');
     expect(resolveOriginalTac('  ', undefined, undefined)).toBe('');
+    expect(resolveOriginalTac('', undefined, ' METAR FILE ')).toBe('METAR FILE');
   });
 });

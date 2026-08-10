@@ -3403,5 +3403,69 @@ describe('FileConverter Component', () => {
         expect(mockToast.warning).toHaveBeenCalledWith('Bulletin: 1 ok, 1 failed');
       });
     });
+
+    it('renders a hydrated result without source TAC as unavailable', async () => {
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'ev053-missing-source',
+              status: 'draft',
+              converted_results: [{ name: 'no-source.xml', iwxxm_xml: '<xml/>' }],
+            } as any
+          }
+        />,
+      );
+
+      expect(
+        await screen.findByText('Original TAC unavailable for this result.'),
+      ).toBeInTheDocument();
+    });
+
+    it('hydrates partial session fields with safe queue, result, log, and parameter fallbacks', async () => {
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'ev053-partial-session',
+              status: 'draft',
+              manual_tac: '',
+              pending_files: [{ name: 'queued.tac', content: 'METAR KJFK 121251Z=' }],
+              converted_results: [{}],
+              errors: ['stored error'],
+              issues: [{ code: 'stored-issue' }],
+              conversion_params: {
+                output_filename: 123,
+                product: 'not-a-product',
+                profile: 'not-a-profile',
+              },
+            } as any
+          }
+        />,
+      );
+
+      expect(await screen.findByText('queued.tac')).toBeInTheDocument();
+      expect(screen.getByText('result-1')).toBeInTheDocument();
+      expect(
+        screen.getByText('Original TAC unavailable for this result.'),
+      ).toBeInTheDocument();
+    });
+
+    it('keeps a result card when the API provides no XML field', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({ results: [{}] });
+      render(<FileConverter {...defaultProps} />);
+
+      await user.type(screen.getByTestId('tac-editor'), 'METAR KJFK 121251Z=');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /conversion results/i }),
+        ).toBeInTheDocument();
+      });
+    });
   });
 });

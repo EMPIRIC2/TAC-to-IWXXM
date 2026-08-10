@@ -29,6 +29,8 @@ describe('inputKind', () => {
   it('handles empty AHL text and xml unknowns', () => {
     expect(looksLikeAhlBulletin('')).toBe(false);
     expect(looksLikeAhlBulletin('   \n')).toBe(false);
+    expect(detectInputKind('plain.txt')).toBe('tac');
+    expect(detectInputKind('document.xml')).toBe('unknown');
     expect(detectInputKind('plain.txt', 'METAR KJFK')).toBe('tac');
     expect(detectInputKind('other.xml', '<root/>')).toBe('unknown');
     expect(detectInputKind('other.xml', '<iwxxm:METAR xmlns:iwxxm="x"/>')).toBe(
