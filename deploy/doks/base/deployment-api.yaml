@@ -43,13 +43,9 @@ spec:
                 name: metar-api-config
             - secretRef:
                 name: metar-api-secrets
-          # T7.1 interim: mount sslmode rewrite until GHCR push republishes ev031-doks
-          # with work_session_service._sync_database_url fix (remove after image bump).
-          volumeMounts:
-            - name: work-session-ssl-fix
-              mountPath: /app/apps/backend/src/services/work_session_service.py
-              subPath: work_session_service.py
-              readOnly: true
+          # sslmode rewrite lives in-image (_sync_database_url). Do not remount
+          # work_session_service.py via ConfigMap — stale mounts caused staging
+          # NameError: UUID (BUG-2026-08-10).
           readinessProbe:
             httpGet:
               path: /health
@@ -69,7 +65,3 @@ spec:
             limits:
               cpu: "1"
               memory: 1Gi
-      volumes:
-        - name: work-session-ssl-fix
-          configMap:
-            name: work-session-ssl-fix

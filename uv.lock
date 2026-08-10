@@ -2479,7 +2479,7 @@ wheels = [
 
 [[package]]
 name = "tac-validate"
-version = "0.1.2"
+version = "0.1.3"
 source = { editable = "packages/tac-validate" }
 dependencies = [
     { name = "msgspec" },
