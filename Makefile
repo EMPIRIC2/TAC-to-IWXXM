@@ -13,7 +13,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/dissemination/src packages/dissemination/tests \
 	tests
 
-.PHONY: install test test-unit vendor-sync export-iwxxm-versions tip-diff-iwxxm \
+.PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
@@ -63,6 +63,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
+	membership-regen membership-check \
 	issue-registry-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
@@ -107,6 +108,17 @@ catalog-check: catalog-regen
 	@git diff --quiet -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json \
 		packages/tac-validate/src/tac_validate/data/catalog_attribution.json \
 		|| (echo "ISSUE_CATALOG drift — run make catalog-regen and commit"; git diff --stat -- docs/domain/rules/ISSUE_CATALOG.md docs/domain/rules/ISSUE_CATALOG.json packages/tac-validate/src/tac_validate/data/catalog_attribution.json; exit 1)
+
+# S059 / EV-050 / AC1 — offline WMO membership harvest (no live codes.wmo.int HTML)
+# Prettier after dump so short arrays match workspace format-check (json.dumps expands them).
+membership-regen:
+	$(UV) run python scripts/iwxxm/harvest_wmo_membership.py
+	pnpm exec prettier --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
+
+membership-check: membership-regen
+	@git diff --quiet -- packages/tac-validate/src/tac_validate/data/wmo_membership.json \
+		|| (echo "wmo_membership.json drift — run make membership-regen and commit"; \
+		git diff --stat -- packages/tac-validate/src/tac_validate/data/wmo_membership.json; exit 1)
 
 # F15 — hard-fail on severity= literals in rule modules (T2.2a / E11-32)
 issue-registry-guard:
@@ -319,6 +331,11 @@ codegen-iwxxm-xsd:
 # S046 / EV-038 / #851 — Python SoT → FE generated JSON (D-S046-sot)
 export-iwxxm-versions:
 	$(UV) run python scripts/iwxxm/export_iwxxm_versions.py
+
+# EV-052 / #900 — FastAPI OpenAPI snapshot + openapi-typescript FE types (D-S061-openapi-src)
+openapi-refresh:
+	$(UV) run python scripts/openapi/export_openapi.py
+	$(PNPM) --filter @metar/frontend run openapi:generate
 
 # S046 / EV-038 / #852 — XSD/SCH/example stem deltas between vendor pins
 tip-diff-iwxxm:

@@ -23,6 +23,7 @@ describe('sanitizeOutputFilename', () => {
     expect(sanitizeOutputFilename('my/output')).toBe('output');
     expect(sanitizeOutputFilename('a\\b\\c')).toBe('c');
     expect(sanitizeOutputFilename('../../etc/passwd')).toBe('passwd');
+    expect(sanitizeOutputFilename('///')).toBe(DEFAULT_OUTPUT_BASENAME);
   });
 
   it('drops a user-supplied extension', () => {

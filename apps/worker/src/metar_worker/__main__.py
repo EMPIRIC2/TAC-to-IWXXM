@@ -79,6 +79,10 @@ def main() -> None:
     signal.signal(signal.SIGTERM, _handle_sigterm)
     signal.signal(signal.SIGINT, _handle_sigterm)
 
+    from metar_worker.sentry_init import init_sentry
+
+    init_sentry()
+
     settings = WorkerSettings()
     try:
         validate_ingest_poller_url(settings.ingest_poller_url)

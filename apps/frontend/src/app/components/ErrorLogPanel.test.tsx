@@ -59,4 +59,47 @@ describe('ErrorLogPanel', () => {
       screen.getByText(/\[error\] parser: Missing severity field/),
     ).toBeInTheDocument();
   });
+
+  it('hides sub-critical issues when the operator log level is CRITICAL', () => {
+    render(
+      <ErrorLogPanel
+        minLogLevel="CRITICAL"
+        log={{
+          errors: ['Fatal conversion error'],
+          issues: [
+            {
+              source: 'parser',
+              message: 'Minor warning',
+              severity: 'warning',
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/Fatal conversion error/)).toBeInTheDocument();
+    expect(screen.getByText(/1 · 1 hidden by log level/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Minor warning/)).not.toBeInTheDocument();
+  });
+
+  it('shows the log-level empty message when everything is filtered out', () => {
+    render(
+      <ErrorLogPanel
+        minLogLevel="CRITICAL"
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'parser',
+              message: 'Info only',
+              severity: 'info',
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/0 · 1 hidden by log level/i)).toBeInTheDocument();
+    expect(screen.getByText(/no messages at CRITICAL or above/i)).toBeInTheDocument();
+  });
 });

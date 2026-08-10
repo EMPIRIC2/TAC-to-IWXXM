@@ -68,6 +68,7 @@ try:
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import install_fastapi_observability, setup_logging
+    from .utilities.sentry_init import init_sentry
     from .utilities.tac_parser import extract_airport_code
 except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
@@ -118,6 +119,7 @@ except ImportError:
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import install_fastapi_observability, setup_logging
+    from utilities.sentry_init import init_sentry
     from utilities.tac_parser import extract_airport_code
 
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
@@ -131,6 +133,7 @@ from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
 setup_logging("backend")
 logger = logging.getLogger(__name__)
+init_sentry(service_name="backend")
 
 app = FastAPI(
     title="METAR to IWXXM Backend API",
@@ -909,7 +912,7 @@ def get_schema_status():
 async def lint_issue_catalog(
     product: Optional[str] = None,
 ) -> Response:
-    """Export the tac-validate issue registry for FE tooltips / catalog panel (E11-31 / EV-040)."""
+    """Export the tac-validate issue registry for FE tooltips / catalog panel."""
     from tac_validate.catalog_attribution import attribution_for
 
     entries = tac_catalog_entries(product=product)
@@ -998,7 +1001,7 @@ async def decode_tac_endpoint(
     manual_text: str = Form(default="", description="TAC text to decode"),
     files: Optional[List[UploadFile]] = File(None),
 ) -> Response:
-    """Thin wrapper over ``tac2iwxxm.decode_tac`` (S011 / #702 / TC-F7-002)."""
+    """Decode TAC into annotated segments and a plain-language summary."""
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -1053,10 +1056,10 @@ async def convert_bulletin(
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
 ) -> Response:
-    """Split a WMO AHL bulletin and convert each TAC report (F6.bulletin / TC-F6-030).
+    """Split a WMO AHL bulletin and convert each TAC report.
 
-    Partial success is allowed: HTTP 200 when split succeeds even if some reports fail
-    (Q6=A). Per-report ``issues`` / ``fixes`` follow lint-style identity (Q7=C).
+    Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
+    Per-report ``issues`` / ``fixes`` follow lint-style identity.
     """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
@@ -1186,7 +1189,7 @@ async def ingest_collect(
     profile: str = Form(default="annex3"),
     iwxxm_version: str = Form(default="2025-2"),
 ) -> dict[str, Any]:
-    """Placeholder for IWXXM COLLECT / FTBP ingest (ADR-024).
+    """Placeholder for IWXXM COLLECT / FTBP ingest.
 
     Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
     can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
@@ -1269,7 +1272,7 @@ async def validate_comprehensive(
     6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
     7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
 
-    **Authentication**: Public (no JWT) — F21 / ADR-031
+    **Authentication**: Public (no login required)
 
     **Request Parameters**:
     - **manual_text** (required): METAR TAC text to validate
@@ -1469,15 +1472,18 @@ async def convert(
     bulletin_id: str = Form(default="", description="Optional bulletin identifier"),
     issuing_center: str = Form(default="", description="Optional issuing centre ICAO code"),
     lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
-    product: str = Form(default="METAR", description="TAC product (required for F6; default METAR for legacy)"),
+    product: str = Form(
+        default="METAR",
+        description="TAC product type (default METAR for legacy clients)",
+    ),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     preview: bool = Form(
         default=False,
-        description="Soft-preview mode (ADR-022): best-effort IWXXM + failed_spans on partial failure",
+        description="Soft-preview: best-effort IWXXM with failure spans on partial convert",
     ),
     include_nil_reasons: bool = Form(
         default=True,
-        description="When false, prefer omitting nilReason attributes (engine may still emit NIL report shells; ADR-024)",
+        description=("When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)"),
     ),
     emit_translation_centre: bool = Form(
         default=False,
@@ -1566,7 +1572,7 @@ async def convert(
     - Input validation (ICAO code and TAC syntax)
     - Optional output validation (full 7-layer IWXXM validation)
 
-    **Authentication**: Public (no JWT) — F21 / ADR-031
+    **Authentication**: Public (no login required)
 
     **Request Parameters**:
     - **files** (array): Optional uploaded text files containing METAR TAC
@@ -2789,7 +2795,7 @@ async def convert_zip(
     Similar to `/api/v1/convert` but returns results as a ZIP archive instead of JSON.
     Useful for batch processing or downloading multiple converted files.
 
-    **Authentication**: Public (no JWT) — F21 / ADR-031
+    **Authentication**: Public (no login required)
 
     **Request Parameters**:
     - **files** (array): Optional uploaded text files containing METAR TAC

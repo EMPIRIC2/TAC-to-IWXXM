@@ -1,6 +1,21 @@
 # Technical Plan Audit Report
 
-> Stage: 05-verify-tech | Last delta: 2026-08-08 (S054 / EV-045)
+> Stage: 05-verify-tech | Last delta: 2026-08-09 (S061 / EV-052)
+
+## S061 / EV-052 delta (2026-08-09)
+
+| Metric | Count |
+|--------|-------|
+| Documents audited | 8 |
+| Auto-approved (high) | 12 |
+| Medium/low (recommended defaults) | 5 |
+| Denied | 0 |
+| Plan-readiness | **PASS** — card ↔ T1.1–T1.5 |
+| Consistency | **PASS** — I-01/I-02 fixed; I-03/I-04 → T5.1 |
+
+Full walk: `docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md`.
+
+---
 
 ## S054 / EV-045 delta (2026-08-08)
 

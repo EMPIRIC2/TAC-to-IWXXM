@@ -10,11 +10,12 @@ session, open a PR as ready, or mark work complete after `git push` without watc
 
 ## Workflows (monorepo)
 
-| Branch | Workflow | Must pass |
-|--------|----------|-----------|
-| Any | `.github/workflows/ci-cd.yml` | Test matrix (+ alembic/native as required) |
-| `stage` | same | **Deploy (stage)** + **Staging smoke** (after merge/push) |
-| `main` | same | **Deploy (main)** to prod |
+| Branch / event | Workflow | Must pass |
+|----------------|----------|-----------|
+| Any PR / push | `.github/workflows/ci-cd.yml` | Test matrix (+ alembic/native/`e2e-smoke` as required) |
+| `stage` push | same | **Deploy (stage)** + **Staging smoke** (after merge/push) |
+| `main` push | same | Full CI; **no** auto prod Deploy (EV-051) |
+| Tag `v*-*-deploy` or prod `workflow_dispatch` | same | Full CI + **Deploy (production)** |
 | PR → `main` | same | **Staging gate** — head must be `stage` + tip **Staging smoke** green |
 
 ## Promote to main (DOKS / ADR-034)

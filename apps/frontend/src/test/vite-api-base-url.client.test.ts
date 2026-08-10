@@ -115,6 +115,27 @@ describe('VITE_API_BASE_URL client', () => {
       expect(() => requireBase()).toThrow(/config\.json|VITE_API_BASE_URL/);
     });
 
+    it('throws in production when only the localhost runtime fallback is configured', async () => {
+      vi.resetModules();
+      vi.stubEnv('VITE_API_BASE_URL', '');
+      vi.stubEnv('MODE', 'production');
+      global.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          environment: 'production',
+          api: {
+            baseUrl: 'http://localhost:18001',
+            frontendUrl: 'http://localhost:18000',
+          },
+          supabase: { url: 'https://project.supabase.co' },
+        }),
+      });
+      const runtime = await import('../utils/runtime-config');
+      await runtime.initRuntimeConfig();
+      const { requireApiBaseUrl: requireBase } = await import('../utils/apiBase');
+      expect(() => requireBase()).toThrow(/config\.json|VITE_API_BASE_URL/);
+    });
+
     it('returns trimmed URL when configured', async () => {
       vi.resetModules();
       vi.stubEnv('VITE_API_BASE_URL', '  https://api.example.onrender.com  ');

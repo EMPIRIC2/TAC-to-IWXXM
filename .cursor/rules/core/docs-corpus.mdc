@@ -25,6 +25,14 @@ CORPUS row: `[Corpus: <id>]` or `[Corpus: <id> §section]` (e.g. `[Corpus: produ
 Do **not** use session reports, bug reports, ARCHIVE, or guides as substitutes for CORPUS
 rows in scope or design gates.
 
+## Not for operator / public surfaces
+
+`[Corpus: …]`, ADR/EV/S0/TC/E##/#NNN/Fn, and `docs/sessions/` paths are **agent and
+repo documentation only**. Never place them in UI copy, OpenAPI descriptions,
+HTTP error `detail`, help/toasts, or lint `source_attribution`. See
+[no-internal-doc-refs-user-facing.mdc](no-internal-doc-refs-user-facing.mdc)
+(EV-048).
+
 ## Missing documentation → interview (block)
 
 If no CORPUS row covers the change, or the cited row lacks the needed section:

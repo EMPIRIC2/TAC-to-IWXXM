@@ -2,6 +2,13 @@
  * Soft-preview checkbox for convert ``preview=true`` (UJ-016 / ADR-022).
  */
 
+/** Operator-visible label (scanned by TC-EV048-003). */
+export const SOFT_PREVIEW_LABEL = 'Soft-preview';
+
+/** Operator-visible help under the soft-preview toggle (scanned by TC-EV048-003). */
+export const SOFT_PREVIEW_HELP =
+  'Return best-effort IWXXM and failed spans when TAC is partial (not for publish).';
+
 export interface SoftPreviewControlProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -30,10 +37,9 @@ export function SoftPreviewControl({
         onChange={(e) => onChange(e.target.checked)}
       />
       <span>
-        <span className="font-medium">Soft-preview</span>
+        <span className="font-medium">{SOFT_PREVIEW_LABEL}</span>
         <span className="block text-xs text-gray-500 dark:text-gray-400">
-          Return best-effort IWXXM and failed spans when TAC is partial (not for
-          publish).
+          {SOFT_PREVIEW_HELP}
         </span>
       </span>
     </label>

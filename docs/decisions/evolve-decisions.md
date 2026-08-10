@@ -3,6 +3,379 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-053 — Vitest branches ≥95 FileConverter follow-up (S062)
+
+**Session**: S062-vitest-branches-95  
+**Features**: deepen **F29**, **M5** (no new Fn)  
+**Started**: 2026-08-10  
+**Branch**: `evolve/EV-053-vitest-branches-95` (base `stage@6f25c0b1`)  
+**Status**: **completed** (`D-S062-merge=1` / `D-S062-close=1`) — [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` @ `ef68ac67`; [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) closed; no stage→main  
+**Corpus**: [Corpus: product §F29] [Corpus: product §M5] [Corpus: tests]
+[Corpus: adr/ADR-007] [Corpus: decisions §EV-052] [Corpus: decisions §EV-053]
+
+### Build closeout notes (2026-08-10)
+
+| Item | Evidence |
+|------|----------|
+| Aggregate Vitest branches | **96.39%** @ `b3416505` (suite green) |
+| FileConverter branches (AC5) | **95.95%** (521/543) — `reports/m3-ac5-coverage-proof.md` |
+| Inventory `branch_waiver` | **resolved** — S061 `coverage-surface-inventory.yaml` |
+| Parent waiver | `D-S061-cov-branches=3` closed by EV-053 / #968 |
+| Merge | [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` @ `ef68ac67` (`D-S062-merge=1`) |
+| Issue | [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) **CLOSED** (`D-S062-close=1`) |
+
+### Close decisions (2026-08-10)
+
+| ID | Decision |
+|----|----------|
+| D-S062-merge | **1** — Merge [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` |
+| D-S062-close | **1** — Close #968; complete EV-053 / S062; no stage→main this cycle |
+
+### Scope (Phase 0–1 — locked 2026-08-10)
+
+| ID | Decision |
+|----|----------|
+| D-S062-route | **1** — Standard: `00→16→01→02→04→07→08→09→11`; skip `03,05,06,10,12,13` |
+| D-S062-ui-preview | **2** — No non-deployed UI preview; Vitest/docs only |
+| D-S062-dirty | **2** — S061 closeout already on `stage` via [#972](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/972); open clean from `stage` |
+| D-S062-fc-strategy | **1** — Re-include `FileConverter.tsx` in Vitest coverage; fill tests until aggregate ≥95 |
+| D-S062-01-manifest | **1** — Delta: feature-list + test-plan + decisions (+ inventory in 07) |
+| D-S062-01-ac | **1** — Lock AC1–AC5 (AC5 = FileConverter ≥95% branches when included) |
+| D-S062-gateA | **1** — PASS Gate A + M1 approve (AC5 via coverage JSON/html + session verify; optional CI if cheap) |
+| D-S062-m1 | **1** — Same as Gate A M1 verdict |
+| D-S062-04-plan | **1** — Approve execution plan as drafted; skip 05; start 07 M1 |
+
+### Acceptance (locked `D-S062-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Vitest `branches` threshold ≥95 in `apps/frontend/vitest.config.ts` (lines/stmts/funcs remain ≥95) | TC-EV053-001 |
+| AC2 | FE coverage suite green with FileConverter in the coverage set | TC-EV053-002 |
+| AC3 | Coverage inventory `branch_waiver` resolved; excludes justified (no silent soft gate) | TC-EV053-003 |
+| AC4 | Standing docs cite closeout; #968 closable after merge | TC-EV053-004 |
+| AC5 | With FileConverter included, **that file’s** branch coverage ≥95% | TC-EV053-005 |
+
+### Out of scope
+
+- Lowering lines/stmts/funcs below 95
+- #874 mutation / #727 Schemathesis / #836 UI metrics
+- stage→main this cycle
+- Operator UI redesign
+- Keeping FileConverter excluded while only raising aggregate branches
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 11`.
+
+### Parent waiver
+
+`D-S061-cov-branches=3` — EV-052 enforced lines/stmts/funcs ≥95; branches floor 84 +
+explicit child #968 (not silent). This cycle **closes** that waiver.
+
+---
+
+## Cycle EV-052 — CI polish + quality PR stats + free Sentry/Redis/Orval (S061)
+
+**Session**: S061-ci-polish-quality-pr-stats  
+**Features**: deepen **F29**, **F6**, **F21**, **F30**, **M5** (no new Fn)  
+**Started**: 2026-08-09  
+**Branch**: `evolve/EV-052-ci-polish-quality-pr-stats` (base `stage@80197a58`)  
+**Status**: **completed** (`D-S061-close=1`) — [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` @ `fd84c00a`; docs [#971](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971) → `stage` @ `3e019b57`; no stage→main  
+**Corpus**: [Corpus: product §F29] [Corpus: product §F6] [Corpus: product §F21]
+[Corpus: product §F30] [Corpus: product §M5] [Corpus: tests] [Corpus: adr/ADR-007]
+[Corpus: adr/ADR-006] [Corpus: adr/ADR-031] [Corpus: tech-spec] [Corpus: deploy]
+
+### Scope (Phase 0–1 — locked 2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S061-intake | **1** — Open S061 / EV-052 for quality PR comment + #950 + #900 (implement 2–4) |
+| D-S061-quality | **1** — Quality-matrix + annex3/`iwxxm_us` golden outcome stats by product × profile |
+| D-S061-comment | **1** — Second sticky PR comment (separate from EV-036 coverage) |
+| D-S061-900 | **2–4** — Implement free Sentry + Redis rate limits + Orval/openapi-typescript |
+| D-S061-redis | **1** — Upstash Redis free (no new DOKS Redis Deployment) |
+| D-S061-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→11`; skip `03,06,10,12,13` |
+| D-S061-01-ac | **1** — Accept AC1–AC12 (continue after Redis lock) |
+| D-S061-ui-preview | **3** — N/A at intake (no operator UI product work) |
+| D-S061-gateA | **1** — PASS Gate A → 04 |
+| D-S061-04-plan | **1** — Approve execution plan as drafted; **openapi-typescript** (not Orval) |
+| D-S061-gateB | **1** — PASS Gate B → 07-build M1 |
+| D-S061-cov-branches | **3** — Enforce Vitest lines/stmts/funcs ≥95; **branches** floor 84 + child [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) (FileConverter excluded from Vitest collection; not silent) |
+| D-S061-ui-preview-11 | **1** — Non-deployed local preview accepted at 11 (`:18000` / `:18001`) |
+| D-S061-11 | **1** — Approve AC1–AC12 / Fn deepen; 11 complete; Phase 4 close / merge-path next |
+| D-S061-merge | **1** — Commit session verify artifacts + push tip, then merge [#969](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969) → `stage` (no stage→main this cycle; 12/13 waived per routing) |
+| D-S061-close | **1** — Merge [#971](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/971) → `stage`, close EV-052 / S061; leave [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) open |
+
+### Acceptance
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Coverage surface inventory vs ≥95% | TC-EV052-001 |
+| AC2 | Every surface enforces ≥95% in CI; soft/deferred gates removed | TC-EV052-002 |
+| AC3 | Suite green with gates; excludes justified | TC-EV052-003 |
+| AC4 | Second sticky PR comment: match/soft-diff/fail/skip by product × profile | TC-EV052-004 |
+| AC5 | Comment formatter tested + sticky update idempotent | TC-EV052-005 |
+| AC6 | Sentry on API+FE+worker when DSN set; free Developer documented | TC-EV052-006 |
+| AC7 | slowapi → Upstash when configured; in-memory fallback when unset | TC-EV052-007 |
+| AC8 | Shared-store rate-limit behavior unit/integration covered | TC-EV052-008 |
+| AC9 | OpenAPI → typed FE client; CI/commit policy | TC-EV052-009 |
+| AC10 | Standing docs + ADR notes accurate | TC-EV052-010 |
+| AC11 | Free-tier + no new DOKS Redis service documented | TC-EV052-011 |
+| AC12 | PR CI green with new jobs/tests | TC-EV052-012 |
+
+### Out of scope
+
+- Paid Sentry Team / DO Managed Valkey unless free path fails
+- #874 mutation / #727 Schemathesis / #836 UI metrics tab
+- AMS #958; stage→main promote this cycle
+- New in-cluster Redis Deployment
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.
+
+### Infra note
+
+See `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`.
+
+---
+
+## Cycle EV-051 — Tag-driven prod deploy + full CI Deploy needs (S060)
+
+**Session**: S060-tag-driven-prod-deploy  
+**Features**: deepen **F30** (no new Fn)  
+**Started**: 2026-08-09  
+**Branch**: `evolve/EV-051-tag-driven-prod-deploy` (merged → `stage` @ `8882856b`)  
+**Status**: **completed** 2026-08-09 (`D-S060-merge=1` / `D-S060-close=1`; PR [#966](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/966) → `stage` @ `8882856b`)  
+**Corpus**: [Corpus: product §F30] [Corpus: deploy] [Corpus: adr/ADR-034] [Corpus: tests]
+
+### Scope (Phase 0–1 — locked 2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S060-open | **1** — Open S060 / EV-051; EV-043/044 remain parked |
+| D-S060-scope | **1** — Design 2+3+4: widen Deploy `needs` (+ `e2e-smoke`); no auto Deploy on `main` push; prod via `vYYYY.MM.DD-deploy` tag + optional `workflow_dispatch`; staging stays auto after full CI |
+| D-S060-route | **1** — Lean+: `00→16→01→02→03→07→08→09→11`; skip `04,05,06,10,12,13` |
+| D-S060-gateA | **1** — Gate A PASS; handoff 07/08/09/11 |
+| D-S060-11-next | **1** — Approve AC1–AC6; push + PR → `stage` (12/13 skipped) |
+| D-S060-merge | **1** — Merge #966 when CI green (user continue) |
+| D-S060-close | **1** — Close EV-051 / S060; clear `active_session` |
+
+### Acceptance
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Deploy `needs` includes prior set **plus** `e2e-smoke` (frontend remains inside `test` matrix) | TC-EV051-001 |
+| AC2 | Push/merge to `stage` still auto-Deploys **staging** after those needs pass | TC-F30-010 (amended) / TC-EV051-002 |
+| AC3 | Push/merge to `main` runs full CI but **does not** Deploy prod | TC-EV051-003 |
+| AC4 | Push tag matching `vYYYY.MM.DD-deploy` (pattern `v*-*-deploy`) on a commit runs prod Deploy after full CI | TC-EV051-004 / TC-F30-014 |
+| AC5 | `workflow_dispatch` can trigger prod Deploy (escape hatch) after full CI | TC-EV051-005 |
+| AC6 | ADR-034, `docs/deploy.md`, `doks-promote-from-stage.mdc`, feature-list F30 / TC-F30-010 amended; solo-dev approval = tag (or dispatch), not Environment reviewers | TC-EV051-006 |
+
+### Out of scope
+
+- GitHub Environment required reviewers
+- Quality-pack workflows as Deploy `needs`
+- Chat/Slack approve
+- PyPI publish path changes
+- Resume EV-043 / EV-044
+- Promote `stage`→`main` / first prod tag cutover in this cycle (docs+workflow only → `stage`)
+
+### Preset
+
+**Lean+** — `00 → 16 → 01 → 02 → 03 → 07 → 08 → 09 → 11`.
+
+---
+
+## Cycle EV-050 — codes.wmo.int Validated: harvest + tac-validate membership (#959) (S059)
+
+**Session**: S059-codes-wmo-validated  
+**Features**: deepen **F6 / F12 / F15 / F20 / F23 / F24 / F28** (no new Fn; F6 for
+`annex3` vs `iwxxm_us` profile compare; fixtures may touch encode packs)  
+**Started**: 2026-08-09  
+**Branch**: `evolve/EV-050-codes-wmo-validated` (merged → `stage` @ `2815ffbe`)  
+**Status**: **completed** 2026-08-09 (`D-S059-merge=1` / `D-S059-close=1`; PR [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964))  
+**Issues**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) (closed);
+parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) (already CLOSED —
+Validated satisfied; residual Present/Cited depth defer+cite in session reports);
+epic [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846);
+compose [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859),
+[#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882)  
+
+**Corpus**: [Corpus: product §F6/F12/F15/F20/F23/F24/F28], [Corpus: tests],
+[Corpus: tech-spec], [Corpus: decisions] · domain opt-in
+`docs/domain/rules/*`, `docs/domain/mining/*`, `docs/domain/TAC_VALIDATION.md`
+
+### M2 close (T2.4 — 2026-08-09)
+
+AC4 / TC-EV050-004: aggressive `RE*` / AIRMET `_` / SpaceWx composed / TCU packs landed;
+coverage delta + residual **defer+cite** (no new GitHub children) in
+`docs/sessions/S059-codes-wmo-validated/reports/fixture-coverage-delta-t2.4.md`.
+Exhaustive 402 weather + remaining register depth stay under #959/#889 per OOS.
+
+### M3 close (T3.1–T3.4 — 2026-08-09)
+
+AC7 / TC-EV050-007: dual-profile harness + disposition
+(`reports/dual-profile-disposition.md`) — N/A for VAA/TCA/SWXA/VONA.
+AC8 / TC-EV050-008: true-error fix — `REMARK_US_EXTENSION` gated to `iwxxm_us` only;
+`INVALID_REMARK` remains under both. Tip after M3: `271efa49`.
+
+### M4 / AC5 — #889 Validated satisfied (T4.2 — 2026-08-09)
+
+**Decision `D-S059-validated=1`:** Parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889)
+**Validated** triad element is **satisfied** by S059 / EV-050 (not re-scoped). Lean waiver
+`D-S055-validated=1` is superseded for this element.
+
+| Criterion | Evidence |
+|-----------|----------|
+| Offline harvest → CI membership sets | AC1 / TC-EV050-001 — `wmo_membership.json` + `make membership-regen` |
+| Happy + unknown/sad per v1 families | AC2 / TC-EV050-002 — membership matrix |
+| Cadence vs `iwxxm-codelists` pin | AC3 / TC-EV050-003 — tech-spec + TAC_VALIDATION + RULE_SOURCE_URLS |
+| Fixture gaps closed or defer+cite | AC4 / TC-EV050-004 — `fixture-coverage-delta-t2.4.md` |
+| Dual-profile disposition + true-error fix | AC7–AC8 — disposition + `REMARK_US_EXTENSION` gating |
+| #882 notify job | **Not** required for Validated — AC6 design-only (`D-S059-882=3a`) |
+
+**Still open (compose, not Validated blockers):** [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859)
+URI drift; [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882) notification pipeline;
+exhaustive 402 weather / residual register depth under #959/#889 **defer+cite**.
+
+**Issue comments:** criteria above posted on #889 and #959 at T4.2.
+**Close:** #959 closed on merge; #889 was already CLOSED (Validated-only) — residuals stay
+defer+cite in `fixture-coverage-delta-t2.4.md` / this section (no reopen).
+
+### Close (2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S059-merge | **1** — Merge [#964](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/964) → `stage` @ `2815ffbe` |
+| D-S059-close | **1** — Close EV-050 / S059; clear `active_session` |
+
+Summary: `docs/sessions/S059-codes-wmo-validated/reports/evolve-summary.md` ·
+report: `docs/evolve-report-EV-050.md`.
+
+### Scope (Phase 0–1 — locked 2026-08-09; profile amend 2026-08-09)
+
+| ID | Decision |
+|----|----------|
+| D-S058-park | **1a** — Park S058 / #958; keep handwritten AMS constraint |
+| D-S059-ticket | **2a** — Open S059 / EV-050 for #959 |
+| D-S059-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→11`; skip `03,06,10,12,13` |
+| D-S059-families | **1a** — v1 membership: weather (306/4678 + present/forecast) + recent + cloud amount/type + SIGMET/AIRMET phenomena + nilReason URI checks where lint already touches them |
+| D-S059-fixtures | **2c** — **Aggressive** fixture expansion this cycle: `RE*`, AIRMET `_` phenomena, SpaceWxPhenomena, TCU (plus packs needed for membership happy/sad) |
+| D-S059-882 | **3a** — Design-only compose note with #882; no scheduled live refresh job this cycle |
+| D-S059-01-ac | **4a** — Lock AC1–AC6 as drafted (with 1a/2c/3a amendments) |
+| D-S059-profiles | **1b** — Expand: compare **`annex3` vs `iwxxm_us`** across **all F6 products** (`iwxxm_us` **N/A** where no US profile); fix **true errors** (AC7–AC8) |
+| D-S059-gateA | **1** — Gate A **PASS**; handoff **04-tech-plan** (advisories M1–M3 accepted: AC8 defer+cite OK; N/A ≠ fail; 04 may split milestones) |
+| D-S059-04-milestones | **1** — Four milestones: M1 harvest · M2 membership+fixtures · M3 profiles · M4 closeout docs |
+| D-S059-04-harvest | **1** — L3 SoT = vendor CSV `notation`; pin RDF for nil / dual paths |
+| D-S059-04-wire | **1** — Generated membership under `packages/tac-validate` data + pytest + `make` regen |
+| D-S059-04-adr | **1** — No new ADR; path/cadence in tech-spec / domain + execution plan |
+| D-S059-04-plan | **1** — Approve execution plan + Build Plan Card → **05-verify-tech** |
+| D-S059-gateB | **1** — Gate B **PASS**; handoff **07-build** M1 / T1.1 (L1–L3 advisory accepted) |
+| D-S059-validated | **1** — #889 Validated **satisfied** (AC5); supersedes Lean `D-S055-validated=1` for this triad element |
+| D-S059-11-next | **1** — Approve AC1–AC8; push branch + open PR → `stage` (12/13 stay skipped) |
+| D-S059-merge | **1** — Merge #964 → `stage` @ `2815ffbe`; close #959 |
+| D-S059-close | **1** — Close EV-050 / S059; `active_session` cleared |
+
+### Gate A (02) — PASS 2026-08-09
+
+Report: `docs/sessions/S059-codes-wmo-validated/reports/02-verify-plan.md`. Corpus cites for scope: [Corpus: product] [Corpus: tests] [Corpus: tech-spec] [Corpus: decisions].
+
+### 04-tech-plan — APPROVED 2026-08-09 (`D-S059-04-plan=1`)
+
+Artifacts: `reports/execution-plan.md`, `build-plan-card.md` (M1 = T1.1–T1.4), `reports/04-tech-plan.md`.
+
+### Gate B (05) — PASS 2026-08-09 (`D-S059-gateB=1`)
+
+Report: `reports/05-verify-tech.md`. Advisories L1–L3 accepted. Next: **07-build** M1.
+
+### Acceptance (Standard — AC1–AC8 confirmed `D-S059-01-ac=4a` + `D-S059-profiles=1b`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | **Offline harvest:** Standing harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF under `vendor/schemas/iwxxm/…/rule/`) produces machine-readable membership set(s) consumed by CI / `tac-validate` — **no live HTML in PR CI** | TC-EV050-001 |
+| AC2 | **Membership Validated:** Happy + unknown/sad asserts for v1 families (`D-S059-families=1a`): present/forecast weather, recent weather, cloud amount/type, SIGMET + AIRMET phenomena, nilReason where lint already emits/checks URIs | TC-EV050-002 |
+| AC3 | **Cadence:** Harvest refresh documented vs `vendor/manifest.json` `iwxxm-codelists` pin; refresh with normal vendor sync PRs | TC-EV050-003 |
+| AC4 | **Gaps / fixtures:** Aggressive fixture expansion (`D-S059-fixtures=2c`) closes EV-046 gap rows for RE*, AIRMET underscore matching, SpaceWxPhenomena, TCU; remaining gaps → child issues or explicit deferrals with cite | TC-EV050-004 |
+| AC5 | **#889 Validated:** Parent Validated triad element satisfied (or explicit re-scope recorded here + on #889/#959) | TC-EV050-005 |
+| AC6 | **#882 compose (design-only):** Short design note for optional scheduled live refresh **outside** PR CI composing with #882 notify — **no** full notification pipeline; **no** job implementation this cycle (`D-S059-882=3a`) | TC-EV050-006 |
+| AC7 | **Profile compare:** Document + CI-checkable delta of membership / lint outcomes for the same TAC under **`profile=annex3` vs `profile=iwxxm_us`** for **all supported F6 products**. Where `iwxxm_us` is not defined for a product, record **N/A** (not a fail). Where both apply (typically METAR/SPECI/TAF + shared WMO L3), classify each delta: **shared WMO expected** · **intentional US overlay (L5 REMARKS / FMH-1)** · **suspect / true error**. WMO harvest remains SoT for L3; US SoT for L5 only | TC-EV050-007 |
+| AC8 | **True-error fixes:** For deltas classified **true error** (wrong severity, false fail/pass, missing membership, incorrect profile gating), fix in this cycle with regression tests; intentional diffs and N/A rows get a cited disposition (no silent ignore). Do **not** invent US weather vocab outside FMH-1 / documented NWS / iwxxm-us pins | TC-EV050-008 |
+
+### Out of scope
+
+- Hand-edit `vendor/schemas/*`
+- Live `codes.wmo.int` HTML in PR CI
+- Replacing XSD/Schematron (`iwxxm-validate`)
+- Full #882 notification pipeline / scheduled live job implementation
+- `#958` AMS abstract (parked S058)
+- Promote `stage`→`main` unless separately approved
+- Exhaustive 402 weather combinations (representative + aggressive gap packs only)
+- Colour / MetFeature / VONA encode duals beyond nil/phenomena already in v1 families (defer unless needed for sad packs)
+- Country / regional scorecards beyond the two product profiles (`annex3` / `iwxxm_us`)
+- Inventing national weather tokens not grounded in FMH-1 / NWS / iwxxm-us docs
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 11`.  
+Skip `03`, `06`, `10`, `12`, `13`.
+
+### Gate A (02)
+
+Pass when AC1–AC6 + TC-EV050-* + feature-list deepen + this section are consistent — then 04.
+
+---
+
+## Cycle EV-048 — Strip internal doc refs from UI + public API (#951) (S057)
+
+**Session**: S057-strip-internal-doc-refs  
+**Features**: deepen **F7 / F21** (no new Fn)  
+**Started**: 2026-08-08  
+**Branch**: `evolve/EV-048-strip-internal-doc-refs` (base `stage@d7652d5d`)  
+**Status**: **completed** 2026-08-09 (`D-S057-close=1`; PR #963 → `stage` @ `06a9543f`)  
+
+**Issues**: [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951) (closed)  
+**Corpus**: [Corpus: product §F7], [Corpus: product §F21], [Corpus: api],
+[Corpus: journeys], [Corpus: tests], [Corpus: decisions]
+
+### Scope (Phase 0 — locked 2026-08-08)
+
+| ID | Decision |
+|----|----------|
+| D-S057-open | **1** — Open S057 → EV-048 for #951 |
+| D-S057-scope | **1** — Full #951: UI + OpenAPI + client errors + automated guard |
+| D-S057-preset | **1** — Standard (amended from initial Lean) |
+| D-S057-preset-reconfirm | **1** — `00→16→01→02→04→05→07→08→09→10→11`; skip 03/06/12/13 |
+| D-S057-ui-preview | **1** — Non-deployed local UI at http://localhost:5173/ |
+| D-S057-01-ac | **1** — Approve AC1–AC6 + UJ-055 as drafted |
+| D-S057-guard-s0 | **1** — Include `\bS0\d+\b` in guard patterns |
+| D-S057-gateA | **1** — Gate A PASS; S2.1–S2.4 as 04/07 defaults |
+| D-S057-04-plan | **1** — Approve M1–M3 / T1.1–T3.3 as drafted; proceed 05 then 07 |
+| D-S057-04-guard-ext | **1** — Extend guard with `\bTC-[A-Z0-9-]+\b`, `\bE\d{2}-\d+\b`, `\b#\d{3,}\b` on scanned surfaces |
+| D-S057-gateB | **1** — Gate B PASS; S5.M1–S5.M3 defaults; proceed 07-build M1 |
+| D-S057-phaseC | **1** — Continue 09-qa + 10-e2e (delta/light) → 11-verify-impl |
+| D-S057-ui-preview-verify | **2** — No non-deployed UI preview before Verify (FE catalogs clean) |
+| D-S057-uj055 | **1** — Approve UJ-055 |
+| D-S057-f7 | **1** — Approve F7 deepen (copy hygiene) |
+| D-S057-f21 | **1** — Approve F21 deepen (OpenAPI/errors) |
+| D-S057-qa003 | **2** — Expand guard with `\bF\d+\b`; strip Fn IDs from privacy + OpenAPI |
+| D-S057-11-next | **1** — Push branch + open PR to `stage` (12/13 stay skipped) |
+| D-S057-merge | **1** — Merge PR #963 → `stage` @ `06a9543f` |
+| D-S057-close | **1** — Close EV-048 / S057; clear `active_session` |
+
+### Acceptance (confirmed `D-S057-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Audit findings listed in PR | TC-EV048-001 |
+| AC2 | OpenAPI descriptions pass guard | TC-EV048-002 |
+| AC3 | Operator UI string catalogs pass guard | TC-EV048-003 |
+| AC4 | Client-facing API errors pass guard | TC-EV048-004 |
+| AC5 | Automated guard fails on synthetic regression | TC-EV048-005 |
+| AC6 | Soft-preview etc. operator-friendly; tests updated | TC-EV048-002/003 |
+
+---
+
 ## Cycle EV-047 — M0 stabilize + operator trust (#833/#834/#956/#957) (S056)
 
 **Session**: S056-m0-stabilize-operator-trust  

@@ -7,6 +7,43 @@
 
 import { apiUrl, getApiBaseUrl } from './apiBase';
 import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
+import type {
+  BulletinMeta,
+  BulletinReportResult,
+  ConversionIssue,
+  ConversionResponse,
+  ConversionResult,
+  ConvertBulletinResponse,
+  DecodeResidual,
+  DecodeSegment,
+  DecodeTacResponse,
+  FailedSpan,
+  LintFix,
+  LintIssue,
+  LintIssueCatalogEntry,
+  LintIssueCatalogResponse,
+  LintTacResponse,
+  ValidateResponse,
+} from './openapiTypes';
+
+export type {
+  BulletinMeta,
+  BulletinReportResult,
+  ConversionIssue,
+  ConversionResponse,
+  ConversionResult,
+  ConvertBulletinResponse,
+  DecodeResidual,
+  DecodeSegment,
+  DecodeTacResponse,
+  FailedSpan,
+  LintFix,
+  LintIssue,
+  LintIssueCatalogEntry,
+  LintIssueCatalogResponse,
+  LintTacResponse,
+  ValidateResponse,
+};
 
 /**
  * Timeout wrapper for fetch requests
@@ -26,49 +63,6 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 30000): Promise
       ),
     ),
   ]);
-}
-
-export interface ConversionResult {
-  name: string;
-  content: string;
-  source: string;
-  size_bytes: number;
-  tac_input?: string;
-  iwxxm_xml?: string;
-  xml?: string;
-}
-
-export interface ConversionIssue {
-  source: string;
-  message: string;
-  hint?: string;
-  code?: string;
-  severity?: 'error' | 'warning' | 'info';
-  layer?: string;
-  location?: string;
-  start?: number;
-  end?: number;
-}
-
-export interface FailedSpan {
-  start: number;
-  end: number;
-  code?: string;
-  message?: string;
-}
-
-export interface ConversionResponse {
-  results: ConversionResult[];
-  errors: string[];
-  issues?: ConversionIssue[];
-  total_processed: number;
-  successful: number;
-  failed: number;
-  /** Echoed request metadata (bulletin_id, validation options, etc.). */
-  metadata?: Record<string, unknown>;
-  /** Soft-preview envelope (ADR-022); set when preview=true */
-  ok?: boolean | null;
-  failed_spans?: FailedSpan[];
 }
 
 export interface HealthResponse {
@@ -237,30 +231,6 @@ export async function convertMetarToIwxxm(params: {
   }
 }
 
-export interface BulletinMeta {
-  ahl: string;
-  report_count: number;
-  tt: string;
-  aa: string;
-  cccc: string;
-  yygggg: string;
-  bbb?: string | null;
-}
-
-export interface BulletinReportResult {
-  report_index: number;
-  ok: boolean;
-  tac_input: string;
-  xml?: string | null;
-  issues: LintIssue[];
-  fixes: LintFix[];
-}
-
-export interface ConvertBulletinResponse {
-  bulletin_meta: BulletinMeta;
-  results: BulletinReportResult[];
-}
-
 /**
  * Split a WMO AHL bulletin and convert each TAC report.
  *
@@ -380,58 +350,6 @@ export async function ingestCollect(params: {
   return (await response.json()) as { message: string; status: string };
 }
 
-export interface DecodeSegment {
-  start: number;
-  end: number;
-  code: string;
-  explanation: string;
-}
-
-export interface DecodeResidual {
-  start: number;
-  end: number;
-  text: string;
-}
-
-export interface DecodeTacResponse {
-  product: string;
-  segments: DecodeSegment[];
-  residuals: DecodeResidual[];
-  /** Deterministic plain-language paragraph (F9 / ADR-025); always present after msgspec HTTP. */
-  summary: string;
-}
-
-/**
- * Decode TAC into ordered Code | Explanation segments.
- *
- * **Endpoint**: POST /api/v1/decode-tac
- *
- * @param params.manualText - TAC text
- * @param params.product - Required F6 product id
- * @returns Ordered segments and residuals
- */
-export interface LintIssue {
-  severity: string;
-  code: string;
-  message: string;
-  location?: string | null;
-  start?: number | null;
-  end?: number | null;
-}
-
-export interface LintFix {
-  code: string;
-  message: string;
-  replacement: string;
-}
-
-export interface LintTacResponse {
-  ok: boolean;
-  issues: LintIssue[];
-  fixes: LintFix[];
-  product?: string | null;
-}
-
 /**
  * Lint TAC via tac-validate (parse gate + shared rules — not Schematron).
  *
@@ -473,22 +391,58 @@ export async function lintTac(params: {
   return (await response.json()) as LintTacResponse;
 }
 
-export interface LintIssueCatalogEntry {
-  code: string;
-  severity: string;
-  message_template: string;
-  product?: string | null;
-  tags: string[];
-  /** Provenance map source id (EV-040) */
-  source_id?: string | null;
-  /** Public or landing URL for the source (citation only) */
-  source_url?: string | null;
-  /** Operator-facing WMO/ICAO/IWXXM attribution line */
-  source_attribution?: string | null;
-}
+/**
+ * Run layered IWXXM validation (TAC and/or XML).
+ *
+ * **Endpoint**: POST /api/v1/validate
+ *
+ * @param params.manualText - Optional TAC to convert then validate
+ * @param params.xmlContent - Optional IWXXM XML to validate directly
+ * @returns Layered validation report (`ValidateResponse`)
+ */
+export async function validateIwxxm(params: {
+  manualText?: string;
+  xmlContent?: string;
+  product?: string;
+  profile?: string;
+  iwxxmVersion?: string;
+  layers?: string[];
+  stopOnError?: boolean;
+  accessToken?: string;
+  signal?: AbortSignal;
+}): Promise<ValidateResponse> {
+  const formData = new FormData();
+  if (params.manualText?.trim()) {
+    formData.append('manual_text', params.manualText.trim());
+  }
+  if (params.xmlContent?.trim()) {
+    formData.append('xml_content', params.xmlContent.trim());
+  }
+  formData.append('profile', params.profile || 'annex3');
+  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
+  formData.append('stop_on_error', params.stopOnError === false ? 'false' : 'true');
+  const layers = params.layers?.length ? params.layers : ['ALL'];
+  for (const layer of layers) {
+    formData.append('layers', layer);
+  }
 
-export interface LintIssueCatalogResponse {
-  issues: LintIssueCatalogEntry[];
+  const response = await withTimeout(
+    fetch(apiUrl('/validate'), {
+      method: 'POST',
+      body: formData,
+      signal: params.signal,
+    }),
+    60000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Validation failed: ${response.statusText}`,
+    }));
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
+  }
+
+  return (await response.json()) as ValidateResponse;
 }
 
 /**
@@ -523,6 +477,15 @@ export async function fetchLintIssueCatalog(params?: {
   return (await response.json()) as LintIssueCatalogResponse;
 }
 
+/**
+ * Decode TAC into ordered Code | Explanation segments.
+ *
+ * **Endpoint**: POST /api/v1/decode-tac
+ *
+ * @param params.manualText - TAC text
+ * @param params.product - Required F6 product id
+ * @returns Ordered segments and residuals
+ */
 export async function decodeTac(params: {
   manualText: string;
   product: string;
@@ -710,6 +673,7 @@ export default {
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
   lintTac,
+  validateIwxxm,
   decodeTac,
   fetchLintIssueCatalog,
   fetchAirportRegion,

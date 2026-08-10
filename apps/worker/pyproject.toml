@@ -13,6 +13,7 @@ dependencies = [
     "pydantic-settings>=2.14.2",
     "sqlalchemy>=2.0.0",
     "psycopg[binary]>=3.0.0",
+    "sentry-sdk>=2.0",
 ]
 
 [build-system]

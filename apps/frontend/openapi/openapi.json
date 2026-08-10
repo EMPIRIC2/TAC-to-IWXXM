@@ -1,0 +1,5200 @@
+{
+  "components": {
+    "schemas": {
+      "AggregatedValidationResult": {
+        "description": "Combined results from multiple validation layers.",
+        "example": {
+          "execution_time_ms": 13.5,
+          "layers_validated": [
+            "airport_icao",
+            "tac_syntax",
+            "xml_wellformed"
+          ],
+          "passed": false,
+          "results": [
+            {
+              "execution_time_ms": 5.2,
+              "issues": [],
+              "layer": "airport_icao",
+              "passed": true
+            },
+            {
+              "execution_time_ms": 8.3,
+              "issues": [
+                {
+                  "code": "INVALID_TAC_FORMAT",
+                  "layer": "tac_syntax",
+                  "level": "error",
+                  "location": "line 1, column 18",
+                  "message": "Invalid TAC format: missing wind speed",
+                  "suggestion": "Check wind speed component"
+                }
+              ],
+              "layer": "tac_syntax",
+              "passed": false
+            }
+          ],
+          "total_issues": 2,
+          "validated_at": "2026-02-10T14:30:45.123456"
+        },
+        "properties": {
+          "execution_time_ms": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Execution Time Ms",
+            "type": "number"
+          },
+          "layers_validated": {
+            "description": "Layers validated",
+            "items": {
+              "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer"
+            },
+            "title": "Layers Validated",
+            "type": "array"
+          },
+          "passed": {
+            "description": "Whether all layers passed",
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationResult"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "total_issues": {
+            "default": 0,
+            "description": "Total issues",
+            "minimum": 0.0,
+            "title": "Total Issues",
+            "type": "integer"
+          },
+          "validated_at": {
+            "format": "date-time",
+            "title": "Validated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "passed",
+          "layers_validated"
+        ],
+        "title": "AggregatedValidationResult",
+        "type": "object"
+      },
+      "AuthResponse": {
+        "description": "Login response.",
+        "properties": {
+          "session": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SessionResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "required": [
+          "user"
+        ],
+        "title": "AuthResponse",
+        "type": "object"
+      },
+      "BatchValidationRequest": {
+        "description": "Request to validate multiple inputs.",
+        "example": {
+          "items": [
+            {
+              "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
+              "content_type": "tac"
+            },
+            {
+              "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
+              "content_type": "tac"
+            }
+          ],
+          "layers": [
+            "airport_icao",
+            "tac_syntax"
+          ]
+        },
+        "properties": {
+          "items": {
+            "description": "Items to validate",
+            "items": {
+              "$ref": "#/components/schemas/ValidationRequest"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Items",
+            "type": "array"
+          },
+          "layers": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ValidationLayer-Input"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Layers to apply to all items (None = all layers)",
+            "title": "Layers"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "BatchValidationRequest",
+        "type": "object"
+      },
+      "BatchValidationResponse": {
+        "description": "Response from batch validation.",
+        "example": {
+          "failed_items": 1,
+          "passed_items": 1,
+          "results": [
+            {
+              "execution_time_ms": 15.2,
+              "layers_validated": [
+                "airport_icao",
+                "tac_syntax"
+              ],
+              "passed": true,
+              "results": [],
+              "total_issues": 0
+            }
+          ],
+          "total_execution_time_ms": 30.5,
+          "total_items": 2
+        },
+        "properties": {
+          "failed_items": {
+            "description": "Number of items that failed",
+            "minimum": 0.0,
+            "title": "Failed Items",
+            "type": "integer"
+          },
+          "passed_items": {
+            "description": "Number of items that passed",
+            "minimum": 0.0,
+            "title": "Passed Items",
+            "type": "integer"
+          },
+          "results": {
+            "description": "Validation results for each item",
+            "items": {
+              "$ref": "#/components/schemas/AggregatedValidationResult"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "total_execution_time_ms": {
+            "description": "Total execution time",
+            "minimum": 0.0,
+            "title": "Total Execution Time Ms",
+            "type": "number"
+          },
+          "total_items": {
+            "description": "Total items requested",
+            "minimum": 0.0,
+            "title": "Total Items",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "results",
+          "total_items",
+          "passed_items",
+          "failed_items",
+          "total_execution_time_ms"
+        ],
+        "title": "BatchValidationResponse",
+        "type": "object"
+      },
+      "Body_convert_api_v1_convert_post": {
+        "properties": {
+          "bulletin_id": {
+            "default": "",
+            "description": "Optional bulletin identifier",
+            "title": "Bulletin Id",
+            "type": "string"
+          },
+          "emit_translation_centre": {
+            "default": false,
+            "description": "When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ \u00a714.5). Default omit for in-State.",
+            "title": "Emit Translation Centre",
+            "type": "boolean"
+          },
+          "include_nil_reasons": {
+            "default": true,
+            "description": "When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)",
+            "title": "Include Nil Reasons",
+            "type": "boolean"
+          },
+          "issuing_center": {
+            "default": "",
+            "description": "Optional issuing centre ICAO code",
+            "title": "Issuing Center",
+            "type": "string"
+          },
+          "iwxxm_version": {
+            "default": "2025-2",
+            "description": "Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
+            "title": "Iwxxm Version",
+            "type": "string"
+          },
+          "lint": {
+            "default": true,
+            "description": "Run tac-validate before convert (Q14=C; default on)",
+            "title": "Lint",
+            "type": "boolean"
+          },
+          "log_level": {
+            "default": "INFO",
+            "description": "Minimum severity for conversion/validation/lint process issues echoed to the client",
+            "title": "Log Level",
+            "type": "string"
+          },
+          "manual_text": {
+            "default": "",
+            "description": "Optional manual text input (METAR TAC format)",
+            "title": "Manual Text",
+            "type": "string"
+          },
+          "preview": {
+            "default": false,
+            "description": "Soft-preview: best-effort IWXXM with failure spans on partial convert",
+            "title": "Preview",
+            "type": "boolean"
+          },
+          "product": {
+            "default": "METAR",
+            "description": "TAC product type (default METAR for legacy clients)",
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "default": "annex3",
+            "description": "Schema profile: annex3 or iwxxm_us",
+            "title": "Profile",
+            "type": "string"
+          },
+          "stop_on_error": {
+            "default": false,
+            "description": "Stop processing remaining inputs after first error",
+            "title": "Stop On Error",
+            "type": "boolean"
+          },
+          "translation_centre_designator": {
+            "default": "",
+            "description": "Optional translationCentreDesignator when emit_translation_centre is true",
+            "title": "Translation Centre Designator",
+            "type": "string"
+          },
+          "translation_centre_name": {
+            "default": "",
+            "description": "Optional translationCentreName when emit_translation_centre is true",
+            "title": "Translation Centre Name",
+            "type": "string"
+          },
+          "validate_output": {
+            "default": false,
+            "description": "Enable full 7-layer IWXXM validation after conversion",
+            "title": "Validate Output",
+            "type": "boolean"
+          },
+          "validation_level": {
+            "default": "basic",
+            "description": "Validation depth: basic, schema, schematron, icao_opmet, comprehensive",
+            "title": "Validation Level",
+            "type": "string"
+          }
+        },
+        "title": "Body_convert_api_v1_convert_post",
+        "type": "object"
+      },
+      "Body_convert_bulletin_api_v1_convert_bulletin_post": {
+        "properties": {
+          "files": {
+            "anyOf": [
+              {
+                "items": {
+                  "contentMediaType": "application/octet-stream",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Files"
+          },
+          "iwxxm_version": {
+            "default": "2025-2",
+            "description": "Target IWXXM version",
+            "title": "Iwxxm Version",
+            "type": "string"
+          },
+          "lint": {
+            "default": true,
+            "description": "Run tac-validate before each report convert",
+            "title": "Lint",
+            "type": "boolean"
+          },
+          "manual_text": {
+            "default": "",
+            "description": "Bulletin string",
+            "title": "Manual Text",
+            "type": "string"
+          },
+          "product": {
+            "description": "TAC product (required)",
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "default": "annex3",
+            "description": "Schema profile: annex3 or iwxxm_us",
+            "title": "Profile",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "title": "Body_convert_bulletin_api_v1_convert_bulletin_post",
+        "type": "object"
+      },
+      "Body_convert_zip_api_v1_convert_zip_post": {
+        "properties": {
+          "iwxxm_version": {
+            "default": "2025-2",
+            "description": "Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
+            "title": "Iwxxm Version",
+            "type": "string"
+          },
+          "manual_text": {
+            "default": "",
+            "description": "Optional manual text input (METAR TAC format)",
+            "title": "Manual Text",
+            "type": "string"
+          }
+        },
+        "title": "Body_convert_zip_api_v1_convert_zip_post",
+        "type": "object"
+      },
+      "Body_decode_tac_endpoint_api_v1_decode_tac_post": {
+        "properties": {
+          "files": {
+            "anyOf": [
+              {
+                "items": {
+                  "contentMediaType": "application/octet-stream",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Files"
+          },
+          "manual_text": {
+            "default": "",
+            "description": "TAC text to decode",
+            "title": "Manual Text",
+            "type": "string"
+          },
+          "product": {
+            "description": "TAC product (required)",
+            "title": "Product",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "title": "Body_decode_tac_endpoint_api_v1_decode_tac_post",
+        "type": "object"
+      },
+      "Body_ingest_collect_api_v1_ingest_collect_post": {
+        "properties": {
+          "files": {
+            "anyOf": [
+              {
+                "items": {
+                  "contentMediaType": "application/octet-stream",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Files"
+          },
+          "iwxxm_version": {
+            "default": "2025-2",
+            "title": "Iwxxm Version",
+            "type": "string"
+          },
+          "manual_text": {
+            "default": "",
+            "description": "COLLECT IWXXM XML or inflated gzip text",
+            "title": "Manual Text",
+            "type": "string"
+          },
+          "profile": {
+            "default": "annex3",
+            "title": "Profile",
+            "type": "string"
+          }
+        },
+        "title": "Body_ingest_collect_api_v1_ingest_collect_post",
+        "type": "object"
+      },
+      "Body_lint_tac_api_v1_lint_tac_post": {
+        "properties": {
+          "files": {
+            "anyOf": [
+              {
+                "items": {
+                  "contentMediaType": "application/octet-stream",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Files"
+          },
+          "manual_text": {
+            "default": "",
+            "description": "TAC text to lint",
+            "title": "Manual Text",
+            "type": "string"
+          },
+          "product": {
+            "default": "METAR",
+            "description": "Product hint when known",
+            "title": "Product",
+            "type": "string"
+          }
+        },
+        "title": "Body_lint_tac_api_v1_lint_tac_post",
+        "type": "object"
+      },
+      "Body_mass_ingest_api_v1_ingest_mass_post": {
+        "properties": {
+          "files": {
+            "items": {
+              "contentMediaType": "application/octet-stream",
+              "type": "string"
+            },
+            "title": "Files",
+            "type": "array"
+          }
+        },
+        "required": [
+          "files"
+        ],
+        "title": "Body_mass_ingest_api_v1_ingest_mass_post",
+        "type": "object"
+      },
+      "Body_validate_comprehensive_api_v1_validate_post": {
+        "properties": {
+          "iwxxm_version": {
+            "default": "2025-2",
+            "description": "Target IWXXM version",
+            "title": "Iwxxm Version",
+            "type": "string"
+          },
+          "layers": {
+            "default": [
+              "ALL"
+            ],
+            "description": "Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Layers",
+            "type": "array"
+          },
+          "manual_text": {
+            "default": "",
+            "description": "METAR TAC text to validate",
+            "title": "Manual Text",
+            "type": "string"
+          },
+          "profile": {
+            "default": "annex3",
+            "description": "Schema profile: annex3 or iwxxm_us",
+            "title": "Profile",
+            "type": "string"
+          },
+          "request_body": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ValidateRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "stop_on_error": {
+            "default": true,
+            "description": "Stop at first blocking layer failure",
+            "title": "Stop On Error",
+            "type": "boolean"
+          },
+          "xml_content": {
+            "default": "",
+            "description": "Optional XML to validate (if omitted, TAC will be converted first)",
+            "title": "Xml Content",
+            "type": "string"
+          }
+        },
+        "title": "Body_validate_comprehensive_api_v1_validate_post",
+        "type": "object"
+      },
+      "BulletinMetaModel": {
+        "description": "HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).",
+        "properties": {
+          "aa": {
+            "title": "Aa",
+            "type": "string"
+          },
+          "ahl": {
+            "title": "Ahl",
+            "type": "string"
+          },
+          "bbb": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bbb"
+          },
+          "cccc": {
+            "title": "Cccc",
+            "type": "string"
+          },
+          "report_count": {
+            "title": "Report Count",
+            "type": "integer"
+          },
+          "report_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Status"
+          },
+          "tt": {
+            "title": "Tt",
+            "type": "string"
+          },
+          "yygggg": {
+            "title": "Yygggg",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ahl",
+          "report_count",
+          "tt",
+          "aa",
+          "cccc",
+          "yygggg"
+        ],
+        "title": "BulletinMetaModel",
+        "type": "object"
+      },
+      "BulletinReportResultModel": {
+        "description": "Per-report convert-bulletin result (partial success allowed).",
+        "properties": {
+          "fixes": {
+            "items": {
+              "$ref": "#/components/schemas/LintFixModel"
+            },
+            "title": "Fixes",
+            "type": "array"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/LintIssueModel"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "report_index": {
+            "title": "Report Index",
+            "type": "integer"
+          },
+          "tac_input": {
+            "title": "Tac Input",
+            "type": "string"
+          },
+          "xml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Xml"
+          }
+        },
+        "required": [
+          "report_index",
+          "ok",
+          "tac_input"
+        ],
+        "title": "BulletinReportResultModel",
+        "type": "object"
+      },
+      "ComparisonDetail": {
+        "description": "Detailed comparison result between our and reference IWXXM.",
+        "example": {
+          "extra_elements": [],
+          "missing_elements": [],
+          "our_elements": 28,
+          "passed": true,
+          "their_elements": 28,
+          "value_mismatches": []
+        },
+        "properties": {
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Error message if comparison failed",
+            "title": "Error Message"
+          },
+          "extra_elements": {
+            "description": "Elements present in our output but not in reference",
+            "items": {
+              "type": "string"
+            },
+            "title": "Extra Elements",
+            "type": "array"
+          },
+          "missing_elements": {
+            "description": "Elements present in reference but missing from our output",
+            "items": {
+              "type": "string"
+            },
+            "title": "Missing Elements",
+            "type": "array"
+          },
+          "our_elements": {
+            "description": "Number of elements in our converted IWXXM",
+            "minimum": 0.0,
+            "title": "Our Elements",
+            "type": "integer"
+          },
+          "passed": {
+            "description": "Whether comparison passed",
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "their_elements": {
+            "description": "Number of elements in reference IWXXM",
+            "minimum": 0.0,
+            "title": "Their Elements",
+            "type": "integer"
+          },
+          "value_mismatches": {
+            "description": "Element values that differ between our and reference outputs",
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Value Mismatches",
+            "type": "array"
+          }
+        },
+        "required": [
+          "passed",
+          "our_elements",
+          "their_elements"
+        ],
+        "title": "ComparisonDetail",
+        "type": "object"
+      },
+      "ComparisonStatus": {
+        "description": "Comparison result status.",
+        "enum": [
+          "pass",
+          "fail",
+          "error"
+        ],
+        "title": "ComparisonStatus",
+        "type": "string"
+      },
+      "ConversionIssue": {
+        "description": "Structured issue for a single conversion input item.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Machine-readable issue code",
+            "examples": [
+              "MISSING_KEYWORD",
+              "INVALID_ICAO_FORMAT"
+            ],
+            "title": "Code"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional exclusive character offset into the source TAC",
+            "title": "End"
+          },
+          "hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Concise suggested fix for the user",
+            "examples": [
+              "Start the report with METAR or SPECI and a valid ICAO code"
+            ],
+            "title": "Hint"
+          },
+          "layer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Validation layer associated with the issue",
+            "examples": [
+              "airport_icao",
+              "tac_syntax"
+            ],
+            "title": "Layer"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional location context from parser/validator",
+            "examples": [
+              "line 1, column 12"
+            ],
+            "title": "Location"
+          },
+          "message": {
+            "description": "Human-readable issue message",
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/ConversionIssueSeverity",
+            "default": "error",
+            "description": "Issue severity"
+          },
+          "source": {
+            "description": "Input source identifier (e.g., 'manual_input' or filename)",
+            "examples": [
+              "manual_input",
+              "EGLL_231750Z.txt"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional inclusive character offset into the source TAC",
+            "title": "Start"
+          }
+        },
+        "required": [
+          "source",
+          "message"
+        ],
+        "title": "ConversionIssue",
+        "type": "object"
+      },
+      "ConversionIssueSeverity": {
+        "description": "Severity level for conversion and validation issues.",
+        "enum": [
+          "error",
+          "warning",
+          "info"
+        ],
+        "title": "ConversionIssueSeverity",
+        "type": "string"
+      },
+      "ConversionResponse": {
+        "description": "Response from conversion endpoint with results and errors.",
+        "example": {
+          "errors": [],
+          "failed": 0,
+          "issues": [],
+          "results": [
+            {
+              "content": "<?xml version='1.0' encoding='utf-8'?>...",
+              "name": "manual_input.txt",
+              "size_bytes": 1452,
+              "source": "manual"
+            },
+            {
+              "content": "<?xml version='1.0' encoding='utf-8'?>...",
+              "name": "EGLL_231750Z.txt",
+              "size_bytes": 1389,
+              "source": "EGLL.txt"
+            }
+          ],
+          "successful": 2,
+          "total_processed": 2
+        },
+        "properties": {
+          "errors": {
+            "description": "Error messages for failed conversions",
+            "items": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "failed": {
+            "description": "Number of failed conversions",
+            "examples": [
+              0,
+              1
+            ],
+            "minimum": 0.0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "failed_spans": {
+            "description": "Soft-preview failed character spans; empty when preview omitted/false",
+            "items": {
+              "$ref": "#/components/schemas/FailedSpan"
+            },
+            "title": "Failed Spans",
+            "type": "array"
+          },
+          "issues": {
+            "description": "Structured issues (errors/warnings/info) for failed or partial conversions",
+            "items": {
+              "$ref": "#/components/schemas/ConversionIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "description": "Echoed request metadata such as bulletin_id, issuing_center, and validation options",
+            "title": "Metadata",
+            "type": "object"
+          },
+          "ok": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Soft-preview envelope flag; set when preview=true",
+            "title": "Ok"
+          },
+          "results": {
+            "description": "Successfully converted IWXXM XML documents",
+            "items": {
+              "$ref": "#/components/schemas/ConversionResult"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "successful": {
+            "description": "Number of successful conversions",
+            "examples": [
+              2,
+              4
+            ],
+            "minimum": 0.0,
+            "title": "Successful",
+            "type": "integer"
+          },
+          "total_processed": {
+            "description": "Total number of inputs processed (manual_text + files)",
+            "examples": [
+              2,
+              5
+            ],
+            "minimum": 0.0,
+            "title": "Total Processed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total_processed",
+          "successful",
+          "failed"
+        ],
+        "title": "ConversionResponse",
+        "type": "object"
+      },
+      "ConversionResult": {
+        "description": "Individual conversion result for a single METAR input.",
+        "example": {
+          "content": "<?xml version='1.0' encoding='utf-8'?>\n<iwxxm:METAR gml:id='METAR_KJFK_231751Z'>\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id='TP1'>\n      <gml:timePosition>2023-09-23T17:51:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n</iwxxm:METAR>",
+          "name": "KJFK_231751Z.txt",
+          "size_bytes": 1452,
+          "source": "file"
+        },
+        "properties": {
+          "content": {
+            "description": "Complete IWXXM XML document as UTF-8 text",
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          },
+          "name": {
+            "description": "Output filename for this conversion",
+            "examples": [
+              "manual_input.txt",
+              "KJFK_231751Z.txt"
+            ],
+            "title": "Name",
+            "type": "string"
+          },
+          "size_bytes": {
+            "description": "Output XML document size in bytes",
+            "examples": [
+              1452,
+              2048
+            ],
+            "minimum": 0.0,
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "source": {
+            "description": "Source of input: 'manual' for text input, filename for uploads",
+            "examples": [
+              "manual",
+              "KJFK.txt"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "tac_input": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original TAC input that produced this IWXXM output",
+            "examples": [
+              "METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023="
+            ],
+            "title": "Tac Input"
+          }
+        },
+        "required": [
+          "name",
+          "content",
+          "source",
+          "size_bytes"
+        ],
+        "title": "ConversionResult",
+        "type": "object"
+      },
+      "ConvertBulletinResponse": {
+        "description": "Response for POST /api/v1/convert-bulletin.",
+        "properties": {
+          "bulletin_meta": {
+            "$ref": "#/components/schemas/BulletinMetaModel"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/BulletinReportResultModel"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "bulletin_meta"
+        ],
+        "title": "ConvertBulletinResponse",
+        "type": "object"
+      },
+      "DecodeResidualModel": {
+        "description": "HTTP DTO for an undecoded TAC span (explicit residuals \u2014 G4).",
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "integer"
+          },
+          "start": {
+            "title": "Start",
+            "type": "integer"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "text"
+        ],
+        "title": "DecodeResidualModel",
+        "type": "object"
+      },
+      "DecodeSegmentModel": {
+        "description": "HTTP DTO for one TAC decode/annotate segment.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "end": {
+            "title": "End",
+            "type": "integer"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "code",
+          "explanation"
+        ],
+        "title": "DecodeSegmentModel",
+        "type": "object"
+      },
+      "DecodeTacResponse": {
+        "description": "Response for POST /api/v1/decode-tac.",
+        "properties": {
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "residuals": {
+            "items": {
+              "$ref": "#/components/schemas/DecodeResidualModel"
+            },
+            "title": "Residuals",
+            "type": "array"
+          },
+          "segments": {
+            "items": {
+              "$ref": "#/components/schemas/DecodeSegmentModel"
+            },
+            "title": "Segments",
+            "type": "array"
+          },
+          "summary": {
+            "default": "",
+            "description": "Deterministic plain-language paragraph of the report",
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "title": "DecodeTacResponse",
+        "type": "object"
+      },
+      "EvaluationJobResponse": {
+        "description": "Response when creating an evaluation job.",
+        "example": {
+          "created_at": "2026-02-10T14:30:45.123456+00:00",
+          "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+          "station_count": 50,
+          "status": "pending"
+        },
+        "properties": {
+          "created_at": {
+            "description": "Job creation timestamp",
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "job_id": {
+            "description": "Unique job identifier (UUID)",
+            "examples": [
+              "job_550e8400e29b41d4a71662f7d6e6b1c0"
+            ],
+            "title": "Job Id",
+            "type": "string"
+          },
+          "station_count": {
+            "description": "Number of stations to evaluate",
+            "minimum": 0.0,
+            "title": "Station Count",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus",
+            "description": "Current job status: pending, running, completed, failed"
+          }
+        },
+        "required": [
+          "job_id",
+          "status",
+          "station_count",
+          "created_at"
+        ],
+        "title": "EvaluationJobResponse",
+        "type": "object"
+      },
+      "EvaluationJobStatus": {
+        "description": "Current status of an evaluation job.",
+        "example": {
+          "created_at": "2026-02-10T14:30:45.123456+00:00",
+          "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+          "progress": 25,
+          "status": "running",
+          "total": 50
+        },
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Job completion timestamp (if completed)",
+            "title": "Completed At"
+          },
+          "created_at": {
+            "description": "Job creation timestamp",
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Error message if job failed",
+            "title": "Error Message"
+          },
+          "job_id": {
+            "description": "Unique job identifier",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "progress": {
+            "description": "Number of stations processed",
+            "minimum": 0.0,
+            "title": "Progress",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus",
+            "description": "Current status: pending, running, completed, failed"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobSummaryStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Summary statistics (populated when job completes)"
+          },
+          "total": {
+            "description": "Total stations to process",
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "job_id",
+          "status",
+          "progress",
+          "total",
+          "created_at"
+        ],
+        "title": "EvaluationJobStatus",
+        "type": "object"
+      },
+      "EvaluationMode": {
+        "description": "Evaluation mode.",
+        "enum": [
+          "single",
+          "random",
+          "all"
+        ],
+        "title": "EvaluationMode",
+        "type": "string"
+      },
+      "EvaluationRequest": {
+        "description": "Request to create an evaluation job.",
+        "example": {
+          "hours": 1.5,
+          "large_airports_only": true,
+          "mode": "random",
+          "sample_size": 50,
+          "scheduled_service_only": true
+        },
+        "properties": {
+          "hours": {
+            "default": 1.5,
+            "description": "Hours back to search for METAR data",
+            "examples": [
+              1.5,
+              3.0,
+              6.0
+            ],
+            "maximum": 24.0,
+            "minimum": 0.5,
+            "title": "Hours",
+            "type": "number"
+          },
+          "large_airports_only": {
+            "default": true,
+            "description": "Only evaluate large airports (IATA code available)",
+            "title": "Large Airports Only",
+            "type": "boolean"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/EvaluationMode",
+            "description": "Evaluation mode: 'single' (specific stations), 'random' (random sample), or 'all' (all airports)"
+          },
+          "sample_size": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 100,
+            "description": "Number of stations to sample (for 'random' mode)",
+            "examples": [
+              50,
+              100,
+              200
+            ],
+            "title": "Sample Size"
+          },
+          "scheduled_service_only": {
+            "default": true,
+            "description": "Only evaluate airports with scheduled service",
+            "title": "Scheduled Service Only",
+            "type": "boolean"
+          },
+          "station_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Specific ICAO codes (required for 'single' mode)",
+            "examples": [
+              [
+                "KJFK",
+                "EGLL",
+                "RJTT"
+              ]
+            ],
+            "title": "Station Ids"
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "title": "EvaluationRequest",
+        "type": "object"
+      },
+      "EvaluationResultDetail": {
+        "description": "Detailed result for a single station evaluation.",
+        "example": {
+          "comparison": {
+            "our_elements": 28,
+            "passed": true,
+            "their_elements": 28
+          },
+          "comparison_status": "pass",
+          "errors": [],
+          "our_iwxxm": "<?xml version='1.0'?>...",
+          "station_id": "KJFK",
+          "tac_input": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
+          "their_iwxxm": "<?xml version='1.0'?>...",
+          "timestamp": "2026-02-10T14:30:45.123456+00:00"
+        },
+        "properties": {
+          "comparison": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ComparisonDetail"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Detailed comparison information"
+          },
+          "comparison_status": {
+            "$ref": "#/components/schemas/ComparisonStatus",
+            "description": "Comparison result: pass, fail, or error"
+          },
+          "errors": {
+            "description": "Any errors during evaluation",
+            "items": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "our_iwxxm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Our converted IWXXM XML output",
+            "title": "Our Iwxxm"
+          },
+          "station_id": {
+            "description": "ICAO airport code",
+            "examples": [
+              "KJFK",
+              "EGLL"
+            ],
+            "title": "Station Id",
+            "type": "string"
+          },
+          "tac_input": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original METAR TAC input",
+            "title": "Tac Input"
+          },
+          "their_iwxxm": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Reference IWXXM XML for comparison",
+            "title": "Their Iwxxm"
+          },
+          "timestamp": {
+            "description": "Evaluation timestamp",
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "station_id",
+          "timestamp",
+          "comparison_status"
+        ],
+        "title": "EvaluationResultDetail",
+        "type": "object"
+      },
+      "EvaluationResultsResponse": {
+        "description": "Response with paginated evaluation results.",
+        "example": {
+          "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+          "page": 1,
+          "per_page": 20,
+          "results": [
+            {
+              "comparison_status": "pass",
+              "station_id": "KJFK",
+              "timestamp": "2026-02-10T14:30:45.123456+00:00"
+            }
+          ],
+          "total_pages": 3,
+          "total_results": 50
+        },
+        "properties": {
+          "job_id": {
+            "description": "Job identifier",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "page": {
+            "description": "Current page number (1-indexed)",
+            "minimum": 1.0,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "description": "Results per page",
+            "minimum": 1.0,
+            "title": "Per Page",
+            "type": "integer"
+          },
+          "results": {
+            "description": "Results for this page",
+            "items": {
+              "$ref": "#/components/schemas/EvaluationResultDetail"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "total_pages": {
+            "description": "Total number of pages",
+            "minimum": 0.0,
+            "title": "Total Pages",
+            "type": "integer"
+          },
+          "total_results": {
+            "description": "Total number of results",
+            "minimum": 0.0,
+            "title": "Total Results",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "job_id",
+          "results",
+          "page",
+          "per_page",
+          "total_results",
+          "total_pages"
+        ],
+        "title": "EvaluationResultsResponse",
+        "type": "object"
+      },
+      "FailedSpan": {
+        "description": "Character span marking a soft-preview failure.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Machine-readable failure code",
+            "title": "Code"
+          },
+          "end": {
+            "description": "Exclusive character offset into source TAC",
+            "minimum": 0.0,
+            "title": "End",
+            "type": "integer"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Human-readable failure message",
+            "title": "Message"
+          },
+          "start": {
+            "description": "Inclusive character offset into source TAC",
+            "minimum": 0.0,
+            "title": "Start",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "FailedSpan",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "description": "Health check response.",
+        "properties": {
+          "service": {
+            "default": "metar-to-iwxxm",
+            "title": "Service",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "tac2iwxxm_available": {
+            "title": "Tac2Iwxxm Available",
+            "type": "boolean"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "version",
+          "tac2iwxxm_available"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "ICAORegion": {
+        "description": "ICAO Regional Offices as per user decision 3.",
+        "enum": [
+          "AFI",
+          "APAC",
+          "ESAF",
+          "EUR",
+          "MID",
+          "NAM",
+          "NAT",
+          "SAM",
+          "WAFR"
+        ],
+        "title": "ICAORegion",
+        "type": "string"
+      },
+      "JobListItem": {
+        "description": "Summary item for job list.",
+        "example": {
+          "completed_at": "2026-02-10T15:45:30.123456+00:00",
+          "created_at": "2026-02-10T14:30:45.123456+00:00",
+          "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+          "progress": 50,
+          "station_count": 50,
+          "status": "completed",
+          "summary": {
+            "errors": 2,
+            "failed": 3,
+            "pass_rate": 0.9,
+            "passed": 45,
+            "total": 50
+          }
+        },
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Completion timestamp (if completed)",
+            "title": "Completed At"
+          },
+          "created_at": {
+            "description": "Creation timestamp",
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "job_id": {
+            "description": "Job identifier",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "progress": {
+            "description": "Stations processed so far",
+            "minimum": 0.0,
+            "title": "Progress",
+            "type": "integer"
+          },
+          "station_count": {
+            "description": "Total stations in job",
+            "minimum": 0.0,
+            "title": "Station Count",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus",
+            "description": "Job status"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobSummaryStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Summary statistics (if completed)"
+          }
+        },
+        "required": [
+          "job_id",
+          "status",
+          "station_count",
+          "progress",
+          "created_at"
+        ],
+        "title": "JobListItem",
+        "type": "object"
+      },
+      "JobListResponse": {
+        "description": "Response with list of jobs.",
+        "example": {
+          "jobs": [
+            {
+              "created_at": "2026-02-10T14:30:45.123456+00:00",
+              "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+              "progress": 50,
+              "station_count": 50,
+              "status": "completed"
+            }
+          ],
+          "page": 1,
+          "per_page": 20,
+          "total": 15
+        },
+        "properties": {
+          "jobs": {
+            "description": "Jobs on this page",
+            "items": {
+              "$ref": "#/components/schemas/JobListItem"
+            },
+            "title": "Jobs",
+            "type": "array"
+          },
+          "page": {
+            "description": "Current page number (1-indexed)",
+            "minimum": 1.0,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "description": "Jobs per page",
+            "minimum": 1.0,
+            "title": "Per Page",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Total number of jobs",
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "jobs",
+          "total",
+          "page",
+          "per_page"
+        ],
+        "title": "JobListResponse",
+        "type": "object"
+      },
+      "JobStatus": {
+        "description": "Job execution status.",
+        "enum": [
+          "pending",
+          "running",
+          "completed",
+          "failed"
+        ],
+        "title": "JobStatus",
+        "type": "string"
+      },
+      "JobSummaryStats": {
+        "description": "Summary statistics for a job.",
+        "example": {
+          "avg_elements_our": 28.5,
+          "avg_elements_their": 26.8,
+          "errors": 2,
+          "failed": 3,
+          "pass_rate": 0.9,
+          "passed": 45,
+          "total": 50
+        },
+        "properties": {
+          "avg_elements_our": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Average number of elements in our converted IWXXM",
+            "title": "Avg Elements Our"
+          },
+          "avg_elements_their": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Average number of elements in reference IWXXM",
+            "title": "Avg Elements Their"
+          },
+          "errors": {
+            "description": "Number of stations with evaluation errors",
+            "minimum": 0.0,
+            "title": "Errors",
+            "type": "integer"
+          },
+          "failed": {
+            "description": "Number of stations with failing comparison",
+            "minimum": 0.0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "pass_rate": {
+            "description": "Pass rate as decimal (0.0-1.0)",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Pass Rate",
+            "type": "number"
+          },
+          "passed": {
+            "description": "Number of stations with passing comparison",
+            "minimum": 0.0,
+            "title": "Passed",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Total stations evaluated",
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "passed",
+          "failed",
+          "errors",
+          "pass_rate"
+        ],
+        "title": "JobSummaryStats",
+        "type": "object"
+      },
+      "LintFixModel": {
+        "description": "HTTP DTO for an optional tac-validate fix suggestion.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "replacement": {
+            "title": "Replacement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "replacement"
+        ],
+        "title": "LintFixModel",
+        "type": "object"
+      },
+      "LintIssueCatalogEntryModel": {
+        "description": "One registry row exported by GET /api/v1/lint-issue-catalog.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message_template": {
+            "title": "Message Template",
+            "type": "string"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "source_attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Attribution"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Id"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "message_template"
+        ],
+        "title": "LintIssueCatalogEntryModel",
+        "type": "object"
+      },
+      "LintIssueCatalogResponse": {
+        "description": "Response for GET /api/v1/lint-issue-catalog.",
+        "properties": {
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/LintIssueCatalogEntryModel"
+            },
+            "title": "Issues",
+            "type": "array"
+          }
+        },
+        "title": "LintIssueCatalogResponse",
+        "type": "object"
+      },
+      "LintIssueModel": {
+        "description": "HTTP DTO for a tac-validate issue (msgspec \u2192 pydantic).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exclusive character offset",
+            "title": "End"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Inclusive character offset",
+            "title": "Start"
+          }
+        },
+        "required": [
+          "severity",
+          "code",
+          "message"
+        ],
+        "title": "LintIssueModel",
+        "type": "object"
+      },
+      "LintTacResponse": {
+        "description": "Response for POST /api/v1/lint-tac.",
+        "properties": {
+          "fixes": {
+            "items": {
+              "$ref": "#/components/schemas/LintFixModel"
+            },
+            "title": "Fixes",
+            "type": "array"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/LintIssueModel"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "LintTacResponse",
+        "type": "object"
+      },
+      "LoginRequest": {
+        "description": "Login credentials.",
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "type": "object"
+      },
+      "PackageIssueModel": {
+        "description": "HTTP DTO for an iwxxm-validate package finding (additive on /validate).",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exclusive offset when known",
+            "title": "End"
+          },
+          "layer": {
+            "title": "Layer",
+            "type": "string"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Inclusive offset when known",
+            "title": "Start"
+          }
+        },
+        "required": [
+          "layer",
+          "severity",
+          "message"
+        ],
+        "title": "PackageIssueModel",
+        "type": "object"
+      },
+      "PendingFilePayload": {
+        "description": "Queued file content stored inline on the session row.",
+        "properties": {
+          "content": {
+            "default": "",
+            "title": "Content",
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "PendingFilePayload",
+        "type": "object"
+      },
+      "SessionResponse": {
+        "description": "Session tokens.",
+        "properties": {
+          "access_token": {
+            "title": "Access Token",
+            "type": "string"
+          },
+          "expires_at": {
+            "title": "Expires At",
+            "type": "integer"
+          },
+          "refresh_token": {
+            "title": "Refresh Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_at"
+        ],
+        "title": "SessionResponse",
+        "type": "object"
+      },
+      "TranslationCentreInfo": {
+        "description": "Translation Centre identification metadata.",
+        "example": {
+          "centre_designator": "NOAA-MDL",
+          "centre_name": "NOAA Meteorological Development Laboratory",
+          "icao_location_indicator": "KWBC",
+          "online_since": "2024-01-15T00:00:00Z",
+          "supported_iwxxm_versions": [
+            "2025-2",
+            "2023-1"
+          ],
+          "supported_products": [
+            "METAR",
+            "SPECI"
+          ]
+        },
+        "properties": {
+          "centre_designator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Short designator for translation centre",
+            "title": "Centre Designator"
+          },
+          "centre_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Full name of translation centre",
+            "title": "Centre Name"
+          },
+          "contact_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Technical contact email",
+            "title": "Contact Email"
+          },
+          "icao_location_indicator": {
+            "anyOf": [
+              {
+                "maxLength": 4,
+                "minLength": 4,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ICAO location indicator (CCCC)",
+            "title": "Icao Location Indicator"
+          },
+          "online_since": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Service start date (ISO 8601)",
+            "title": "Online Since"
+          },
+          "supported_iwxxm_versions": {
+            "description": "Supported IWXXM versions",
+            "items": {
+              "type": "string"
+            },
+            "title": "Supported Iwxxm Versions",
+            "type": "array"
+          },
+          "supported_products": {
+            "default": [
+              "METAR",
+              "SPECI"
+            ],
+            "description": "Supported aviation product types",
+            "items": {
+              "type": "string"
+            },
+            "title": "Supported Products",
+            "type": "array"
+          }
+        },
+        "required": [
+          "supported_iwxxm_versions"
+        ],
+        "title": "TranslationCentreInfo",
+        "type": "object"
+      },
+      "TranslationStatistics": {
+        "description": "Aggregated translation statistics for ICAO OPMET compliance.\n\nProvides summary metrics for a given time period and optional filters.",
+        "example": {
+          "average_duration_ms": 237,
+          "failed_translations": 24,
+          "period_end": "2026-02-13T23:59:59Z",
+          "period_start": "2026-02-13T00:00:00Z",
+          "success_rate": 98.45,
+          "successful_translations": 1523,
+          "total_translations": 1547,
+          "translations_by_region": {
+            "APAC": 234,
+            "EUR": 421,
+            "NAM": 892
+          },
+          "translations_by_version": {
+            "2023-1": 46,
+            "2025-2": 1501
+          }
+        },
+        "properties": {
+          "average_duration_ms": {
+            "description": "Average translation duration (milliseconds)",
+            "minimum": 0.0,
+            "title": "Average Duration Ms",
+            "type": "number"
+          },
+          "common_validation_errors": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Most frequent validation errors (optional)",
+            "title": "Common Validation Errors"
+          },
+          "failed_translations": {
+            "description": "Failed translations",
+            "minimum": 0.0,
+            "title": "Failed Translations",
+            "type": "integer"
+          },
+          "median_duration_ms": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Median translation duration (milliseconds)",
+            "title": "Median Duration Ms"
+          },
+          "partial_translations": {
+            "default": 0,
+            "description": "Translations completed with warnings",
+            "minimum": 0.0,
+            "title": "Partial Translations",
+            "type": "integer"
+          },
+          "period_end": {
+            "description": "Statistics period end (ISO 8601)",
+            "format": "date-time",
+            "title": "Period End",
+            "type": "string"
+          },
+          "period_start": {
+            "description": "Statistics period start (ISO 8601)",
+            "format": "date-time",
+            "title": "Period Start",
+            "type": "string"
+          },
+          "success_rate": {
+            "description": "Translation success rate (percentage)",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Success Rate",
+            "type": "number"
+          },
+          "successful_translations": {
+            "description": "Successfully completed translations",
+            "minimum": 0.0,
+            "title": "Successful Translations",
+            "type": "integer"
+          },
+          "total_translations": {
+            "description": "Total number of translations in period",
+            "minimum": 0.0,
+            "title": "Total Translations",
+            "type": "integer"
+          },
+          "translations_by_airport": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Top airports by translation volume (optional)",
+            "title": "Translations By Airport"
+          },
+          "translations_by_region": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Translation count by ICAO region",
+            "propertyNames": {
+              "$ref": "#/components/schemas/ICAORegion"
+            },
+            "title": "Translations By Region",
+            "type": "object"
+          },
+          "translations_by_version": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Translation count by IWXXM version",
+            "title": "Translations By Version",
+            "type": "object"
+          },
+          "validation_layer_success_rates": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Success rate per validation layer (percentage)",
+            "propertyNames": {
+              "$ref": "#/components/schemas/src__schemas__icao_opmet__ValidationLayer"
+            },
+            "title": "Validation Layer Success Rates",
+            "type": "object"
+          }
+        },
+        "required": [
+          "period_start",
+          "period_end",
+          "total_translations",
+          "successful_translations",
+          "failed_translations",
+          "success_rate",
+          "average_duration_ms"
+        ],
+        "title": "TranslationStatistics",
+        "type": "object"
+      },
+      "TranslationStatisticsRequest": {
+        "description": "Request parameters for translation statistics query.",
+        "example": {
+          "end_date": "2026-02-13T23:59:59Z",
+          "icao_region": "NAM",
+          "include_airport_breakdown": true,
+          "iwxxm_version": "2025-2",
+          "start_date": "2026-02-01T00:00:00Z"
+        },
+        "properties": {
+          "airport_code": {
+            "anyOf": [
+              {
+                "maxLength": 4,
+                "minLength": 4,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter by specific airport (optional)",
+            "title": "Airport Code"
+          },
+          "end_date": {
+            "description": "Statistics period end (ISO 8601)",
+            "format": "date-time",
+            "title": "End Date",
+            "type": "string"
+          },
+          "icao_region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ICAORegion"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter by ICAO region (optional)"
+          },
+          "include_airport_breakdown": {
+            "default": false,
+            "description": "Include per-airport statistics",
+            "title": "Include Airport Breakdown",
+            "type": "boolean"
+          },
+          "include_error_details": {
+            "default": false,
+            "description": "Include detailed error analysis",
+            "title": "Include Error Details",
+            "type": "boolean"
+          },
+          "iwxxm_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter by IWXXM version (optional)",
+            "title": "Iwxxm Version"
+          },
+          "start_date": {
+            "description": "Statistics period start (ISO 8601)",
+            "format": "date-time",
+            "title": "Start Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_date",
+          "end_date"
+        ],
+        "title": "TranslationStatisticsRequest",
+        "type": "object"
+      },
+      "UserResponse": {
+        "description": "Auth user projection.",
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "title": "Metadata",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "email"
+        ],
+        "title": "UserResponse",
+        "type": "object"
+      },
+      "ValidateIssueModel": {
+        "description": "HTTP DTO for a validation orchestrator finding on /validate.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exclusive offset when known",
+            "title": "End"
+          },
+          "layer": {
+            "title": "Layer",
+            "type": "string"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Inclusive offset when known",
+            "title": "Start"
+          }
+        },
+        "required": [
+          "layer",
+          "level",
+          "message"
+        ],
+        "title": "ValidateIssueModel",
+        "type": "object"
+      },
+      "ValidateLayerIssueModel": {
+        "description": "Per-layer issue entry nested under ``issues_by_layer``.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "level": {
+            "title": "Level",
+            "type": "string"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "level",
+          "message"
+        ],
+        "title": "ValidateLayerIssueModel",
+        "type": "object"
+      },
+      "ValidateRequest": {
+        "description": "Request for IWXXM validation via JSON body.",
+        "example": {
+          "iwxxm_xml": "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>",
+          "stop_on_error": false,
+          "validation_level": "comprehensive",
+          "version": "2025-2"
+        },
+        "properties": {
+          "iwxxm_xml": {
+            "description": "IWXXM XML content to validate",
+            "examples": [
+              "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>"
+            ],
+            "minLength": 1,
+            "title": "Iwxxm Xml",
+            "type": "string"
+          },
+          "profile": {
+            "default": "annex3",
+            "description": "Schema profile: annex3 (WMO) or iwxxm_us",
+            "examples": [
+              "annex3",
+              "iwxxm_us"
+            ],
+            "title": "Profile",
+            "type": "string"
+          },
+          "stop_on_error": {
+            "default": false,
+            "description": "Stop processing on first error",
+            "title": "Stop On Error",
+            "type": "boolean"
+          },
+          "validation_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": "comprehensive",
+            "description": "Validation depth: 'basic', 'schema', 'schematron', 'icao_opmet', 'comprehensive'",
+            "examples": [
+              "basic",
+              "comprehensive"
+            ],
+            "title": "Validation Level"
+          },
+          "version": {
+            "default": "2025-2",
+            "description": "Target IWXXM version",
+            "examples": [
+              "2025-2",
+              "2023-1"
+            ],
+            "pattern": "^\\d{4}-\\d+$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "iwxxm_xml"
+        ],
+        "title": "ValidateRequest",
+        "type": "object"
+      },
+      "ValidateResponse": {
+        "description": "Response for POST /api/v1/validate (validation layers + package_* extras).",
+        "properties": {
+          "is_valid": {
+            "title": "Is Valid",
+            "type": "boolean"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ValidateIssueModel"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "issues_by_layer": {
+            "additionalProperties": {
+              "items": {
+                "$ref": "#/components/schemas/ValidateLayerIssueModel"
+              },
+              "type": "array"
+            },
+            "title": "Issues By Layer",
+            "type": "object"
+          },
+          "layers_failed": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Layers Failed",
+            "type": "array"
+          },
+          "layers_passed": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Layers Passed",
+            "type": "array"
+          },
+          "layers_run": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Layers Run",
+            "type": "array"
+          },
+          "package_issues": {
+            "items": {
+              "$ref": "#/components/schemas/PackageIssueModel"
+            },
+            "title": "Package Issues",
+            "type": "array"
+          },
+          "package_ok": {
+            "default": true,
+            "title": "Package Ok",
+            "type": "boolean"
+          },
+          "profile": {
+            "default": "annex3",
+            "title": "Profile",
+            "type": "string"
+          },
+          "stopped_at_layer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stopped At Layer"
+          },
+          "total_issues": {
+            "default": 0,
+            "title": "Total Issues",
+            "type": "integer"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "is_valid",
+          "version"
+        ],
+        "title": "ValidateResponse",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "ValidationIssue": {
+        "description": "Single validation issue with context.",
+        "example": {
+          "code": "INVALID_ICAO",
+          "layer": "airport_icao",
+          "level": "error",
+          "location": "line 1, column 12",
+          "message": "Unknown ICAO code: ZZZZ"
+        },
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Machine-readable error code",
+            "title": "Code"
+          },
+          "layer": {
+            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "description": "Validation layer that found this issue"
+          },
+          "level": {
+            "$ref": "#/components/schemas/ValidationLevel",
+            "description": "Severity level"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Location in document",
+            "title": "Location"
+          },
+          "message": {
+            "description": "Human-readable error message",
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "suggestion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Suggested fix",
+            "title": "Suggestion"
+          }
+        },
+        "required": [
+          "layer",
+          "level",
+          "message"
+        ],
+        "title": "ValidationIssue",
+        "type": "object"
+      },
+      "ValidationLayer-Input": {
+        "description": "Validation layer identifiers.",
+        "enum": [
+          "airport_icao",
+          "tac_syntax",
+          "xml_wellformed",
+          "xml_schema",
+          "schematron",
+          "gml_references",
+          "wmo_codelists"
+        ],
+        "title": "ValidationLayer",
+        "type": "string"
+      },
+      "ValidationLayerInfo": {
+        "description": "Information about a validation layer.",
+        "example": {
+          "blocking": true,
+          "description": "Parse and validate METAR TAC syntax",
+          "layer": "tac_syntax",
+          "supported_content_types": [
+            "tac"
+          ]
+        },
+        "properties": {
+          "blocking": {
+            "description": "Whether this layer blocks further validation if it fails",
+            "title": "Blocking",
+            "type": "boolean"
+          },
+          "description": {
+            "description": "Human-readable description",
+            "title": "Description",
+            "type": "string"
+          },
+          "layer": {
+            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "description": "Layer identifier"
+          },
+          "supported_content_types": {
+            "description": "Content types this layer supports (tac/xml)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Supported Content Types",
+            "type": "array"
+          }
+        },
+        "required": [
+          "layer",
+          "description",
+          "blocking"
+        ],
+        "title": "ValidationLayerInfo",
+        "type": "object"
+      },
+      "ValidationLayersResponse": {
+        "description": "List of available validation layers with configurations.",
+        "example": {
+          "layers": [
+            {
+              "blocking": true,
+              "description": "Extract and validate ICAO code against airport database",
+              "layer": "airport_icao",
+              "supported_content_types": [
+                "tac"
+              ]
+            },
+            {
+              "blocking": true,
+              "description": "Parse and validate METAR TAC syntax",
+              "layer": "tac_syntax",
+              "supported_content_types": [
+                "tac"
+              ]
+            }
+          ]
+        },
+        "properties": {
+          "layers": {
+            "description": "Available validation layers",
+            "items": {
+              "$ref": "#/components/schemas/ValidationLayerInfo"
+            },
+            "title": "Layers",
+            "type": "array"
+          }
+        },
+        "required": [
+          "layers"
+        ],
+        "title": "ValidationLayersResponse",
+        "type": "object"
+      },
+      "ValidationLevel": {
+        "description": "Severity level for validation issues.",
+        "enum": [
+          "critical",
+          "error",
+          "warning",
+          "info"
+        ],
+        "title": "ValidationLevel",
+        "type": "string"
+      },
+      "ValidationRequest": {
+        "description": "Request for validation operation.",
+        "example": {
+          "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
+          "content_type": "tac",
+          "iwxxm_version": "3.0.1",
+          "layers": [
+            "airport_icao",
+            "tac_syntax"
+          ]
+        },
+        "properties": {
+          "content": {
+            "description": "Content to validate (METAR TAC or IWXXM XML)",
+            "examples": [
+              "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2"
+            ],
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          },
+          "content_type": {
+            "default": "tac",
+            "description": "Content type: 'tac' (METAR TAC) or 'xml' (IWXXM XML)",
+            "examples": [
+              "tac",
+              "xml"
+            ],
+            "title": "Content Type",
+            "type": "string"
+          },
+          "iwxxm_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "IWXXM version for validation context",
+            "examples": [
+              "3.0.1"
+            ],
+            "title": "Iwxxm Version"
+          },
+          "layers": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ValidationLayer-Input"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Specific layers to validate (None = all layers)",
+            "title": "Layers"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "title": "ValidationRequest",
+        "type": "object"
+      },
+      "ValidationResult": {
+        "description": "Result from a validation operation.",
+        "example": {
+          "execution_time_ms": 12.5,
+          "issues": [],
+          "layer": "airport_icao",
+          "passed": true
+        },
+        "properties": {
+          "execution_time_ms": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Execution time in ms",
+            "title": "Execution Time Ms"
+          },
+          "issues": {
+            "description": "List of issues",
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "layer": {
+            "$ref": "#/components/schemas/src__schemas__validation__ValidationLayer",
+            "description": "Validation layer"
+          },
+          "metadata": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Layer-specific metadata",
+            "title": "Metadata"
+          },
+          "passed": {
+            "description": "Whether validation passed",
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "validated_at": {
+            "format": "date-time",
+            "title": "Validated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "passed",
+          "layer"
+        ],
+        "title": "ValidationResult",
+        "type": "object"
+      },
+      "WorkSession": {
+        "description": "Persisted work session returned by the API.",
+        "properties": {
+          "conversion_params": {
+            "additionalProperties": true,
+            "title": "Conversion Params",
+            "type": "object"
+          },
+          "converted_results": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Converted Results",
+            "type": "array"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "deleted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deleted At"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "issues": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "kv_upload_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kv Upload Key"
+          },
+          "manual_tac": {
+            "default": "",
+            "title": "Manual Tac",
+            "type": "string"
+          },
+          "pending_files": {
+            "items": {
+              "$ref": "#/components/schemas/PendingFilePayload"
+            },
+            "title": "Pending Files",
+            "type": "array"
+          },
+          "product": {
+            "$ref": "#/components/schemas/WorkSessionProduct"
+          },
+          "status": {
+            "$ref": "#/components/schemas/WorkSessionStatus"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "product",
+          "status",
+          "title",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "WorkSession",
+        "type": "object"
+      },
+      "WorkSessionCreate": {
+        "description": "Body for POST /api/v1/work-sessions.",
+        "properties": {
+          "conversion_params": {
+            "additionalProperties": true,
+            "title": "Conversion Params",
+            "type": "object"
+          },
+          "converted_results": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Converted Results",
+            "type": "array"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "issues": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "kv_upload_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kv Upload Key"
+          },
+          "manual_tac": {
+            "default": "",
+            "title": "Manual Tac",
+            "type": "string"
+          },
+          "pending_files": {
+            "items": {
+              "$ref": "#/components/schemas/PendingFilePayload"
+            },
+            "title": "Pending Files",
+            "type": "array"
+          },
+          "product": {
+            "$ref": "#/components/schemas/WorkSessionProduct"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkSessionStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "title": "WorkSessionCreate",
+        "type": "object"
+      },
+      "WorkSessionListResponse": {
+        "description": "Paginated list of work sessions.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/WorkSession"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ],
+        "title": "WorkSessionListResponse",
+        "type": "object"
+      },
+      "WorkSessionProduct": {
+        "description": "Product ids stored on ``tac_work_sessions.product`` (lowercase).",
+        "enum": [
+          "airmet",
+          "metar",
+          "sigmet",
+          "speci",
+          "taf",
+          "vaa",
+          "tca",
+          "swxa"
+        ],
+        "title": "WorkSessionProduct",
+        "type": "string"
+      },
+      "WorkSessionStatus": {
+        "description": "Lifecycle status for a user's TAC work session.",
+        "enum": [
+          "draft",
+          "wip",
+          "finished",
+          "failed"
+        ],
+        "title": "WorkSessionStatus",
+        "type": "string"
+      },
+      "WorkSessionUpdate": {
+        "description": "Body for PATCH /api/v1/work-sessions/{id}.",
+        "properties": {
+          "conversion_params": {
+            "additionalProperties": true,
+            "title": "Conversion Params",
+            "type": "object"
+          },
+          "converted_results": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Converted Results",
+            "type": "array"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "issues": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "kv_upload_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kv Upload Key"
+          },
+          "manual_tac": {
+            "default": "",
+            "title": "Manual Tac",
+            "type": "string"
+          },
+          "pending_files": {
+            "items": {
+              "$ref": "#/components/schemas/PendingFilePayload"
+            },
+            "title": "Pending Files",
+            "type": "array"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkSessionProduct"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WorkSessionStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "WorkSessionUpdate",
+        "type": "object"
+      },
+      "src__schemas__icao_opmet__ValidationLayer": {
+        "description": "7-layer IWXXM validation stages.",
+        "enum": [
+          "AIRPORT_ICAO",
+          "TAC_SYNTAX",
+          "XML_WELLFORMED",
+          "XML_SCHEMA",
+          "SCHEMATRON",
+          "GML_REFERENCES",
+          "WMO_CODELISTS"
+        ],
+        "title": "ValidationLayer",
+        "type": "string"
+      },
+      "src__schemas__validation__ValidationLayer": {
+        "description": "Validation layer identifiers.",
+        "enum": [
+          "airport_icao",
+          "tac_syntax",
+          "xml_wellformed",
+          "xml_schema",
+          "schematron",
+          "gml_references",
+          "wmo_codelists"
+        ],
+        "title": "ValidationLayer",
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "description": "Convert METAR/SPECI TAC messages to IWXXM XML format with comprehensive validation",
+    "title": "METAR to IWXXM Backend API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/convert": {
+      "post": {
+        "operationId": "convert_api_v1_convert_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_convert_api_v1_convert_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Convert",
+        "tags": [
+          "Conversion"
+        ]
+      }
+    },
+    "/api/v1/convert-bulletin": {
+      "post": {
+        "description": "Split a WMO AHL bulletin and convert each TAC report.\n\nPartial success is allowed: HTTP 200 when split succeeds even if some reports fail.\nPer-report ``issues`` / ``fixes`` follow lint-style identity.",
+        "operationId": "convert_bulletin_api_v1_convert_bulletin_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_convert_bulletin_api_v1_convert_bulletin_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConvertBulletinResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "description": "Empty bulletin (no reports after split)"
+          },
+          "415": {
+            "description": "Unsupported Media Type \u2014 multipart/form-data required"
+          },
+          "422": {
+            "description": "AHL split failed or missing required fields"
+          }
+        },
+        "summary": "Convert Bulletin",
+        "tags": [
+          "Conversion"
+        ]
+      }
+    },
+    "/api/v1/convert-zip": {
+      "post": {
+        "operationId": "convert_zip_api_v1_convert_zip_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_convert_zip_api_v1_convert_zip_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Convert Zip",
+        "tags": [
+          "Conversion"
+        ]
+      }
+    },
+    "/api/v1/decode-tac": {
+      "post": {
+        "description": "Decode TAC into annotated segments and a plain-language summary.",
+        "operationId": "decode_tac_endpoint_api_v1_decode_tac_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_decode_tac_endpoint_api_v1_decode_tac_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DecodeTacResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "415": {
+            "description": "Unsupported Media Type \u2014 multipart/form-data required"
+          },
+          "422": {
+            "description": "Missing required product field"
+          }
+        },
+        "summary": "Decode Tac Endpoint",
+        "tags": [
+          "Conversion"
+        ]
+      }
+    },
+    "/api/v1/dissemination/preflight": {
+      "post": {
+        "description": "Run sink preflight; return schema diffs and optional memory-only handle.",
+        "operationId": "dissemination_preflight_api_v1_dissemination_preflight_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Dissemination Preflight",
+        "tags": [
+          "Dissemination"
+        ]
+      }
+    },
+    "/api/v1/dissemination/send": {
+      "post": {
+        "description": "Send IWXXM via a green preflight handle or inline sink params.",
+        "operationId": "dissemination_send_api_v1_dissemination_send_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Dissemination Send",
+        "tags": [
+          "Dissemination"
+        ]
+      }
+    },
+    "/api/v1/eval/jobs": {
+      "get": {
+        "description": "List all evaluation jobs for the current user.",
+        "operationId": "list_user_jobs_api_v1_eval_jobs_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Per Page",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List User Jobs",
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
+      },
+      "post": {
+        "description": "Create a new evaluation job.",
+        "operationId": "create_evaluation_job_api_v1_eval_jobs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationJobResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Evaluation Job",
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
+      }
+    },
+    "/api/v1/eval/jobs/{job_id}": {
+      "get": {
+        "description": "Get the status of an evaluation job.",
+        "operationId": "get_job_status_api_v1_eval_jobs__job_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationJobStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Job Status",
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
+      }
+    },
+    "/api/v1/eval/jobs/{job_id}/results": {
+      "get": {
+        "description": "Get evaluation results for a job (paginated).",
+        "operationId": "get_job_results_api_v1_eval_jobs__job_id__results_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Per Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status_filter",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ComparisonStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status Filter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationResultsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Job Results",
+        "tags": [
+          "Evaluation",
+          "Evaluation"
+        ]
+      }
+    },
+    "/api/v1/ingest-collect": {
+      "post": {
+        "description": "Placeholder for IWXXM COLLECT / FTBP ingest.\n\nAccepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI\ncan exercise the path; returns HTTP 501 until member extraction + validate is shipped.",
+        "operationId": "ingest_collect_api_v1_ingest_collect_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_ingest_collect_api_v1_ingest_collect_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Ingest Collect Api V1 Ingest Collect Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "501": {
+            "description": "COLLECT / FTBP ingest not implemented yet (placeholder)"
+          }
+        },
+        "summary": "Ingest Collect",
+        "tags": [
+          "Conversion"
+        ]
+      }
+    },
+    "/api/v1/ingest/mass": {
+      "post": {
+        "description": "Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.\n\nParameters\n----------\nrequest : Request\n    Incoming request (slowapi).\nfiles : list[UploadFile] | None\n    Multipart files and/or ``.zip`` archives.\n_user : dict[str, Any]\n    Verified JWT claims (must include ``sub``).\n\nReturns\n-------\nJSONResponse\n    Per-file accept/reject list and summary counts.",
+        "operationId": "mass_ingest_api_v1_ingest_mass_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_mass_ingest_api_v1_ingest_mass_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Mass Ingest",
+        "tags": [
+          "mass-ingest"
+        ]
+      }
+    },
+    "/api/v1/lint-issue-catalog": {
+      "get": {
+        "description": "Export the tac-validate issue registry for FE tooltips / catalog panel.",
+        "operationId": "lint_issue_catalog_api_v1_lint_issue_catalog_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LintIssueCatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Lint Issue Catalog",
+        "tags": [
+          "Validation"
+        ]
+      }
+    },
+    "/api/v1/lint-tac": {
+      "post": {
+        "description": "Thin wrapper over ``packages/tac-validate`` (multipart/form-data only \u2014 Q8=A).",
+        "operationId": "lint_tac_api_v1_lint_tac_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_lint_tac_api_v1_lint_tac_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LintTacResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "415": {
+            "description": "Unsupported Media Type \u2014 multipart/form-data required"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Lint Tac",
+        "tags": [
+          "Validation"
+        ]
+      }
+    },
+    "/api/v1/schema-status": {
+      "get": {
+        "description": "Get comprehensive schema status including RC versions and mirroring info.\n\nReturns detailed information about all IWXXM schema versions including:\n- Stable releases and Release Candidates (RC)\n- Discovery dates and source URLs\n- Mirroring status\n- Channel classification\n\n## Response\n```json\n{\n  \"stable\": [\"2025-2\", \"2023-1\"],\n  \"rc\": [\"2025-2RC1\"],\n  \"all\": [\"2025-2\", \"2025-2RC1\", \"2023-1\"],\n  \"default\": \"2025-2\",\n  \"metadata\": {\n    \"2025-2\": {\n      \"name\": \"IWXXM 2025-2\",\n      \"channel\": \"stable\",\n      \"status\": \"latest\",\n      \"discovered\": \"2025-11-25T00:00:00Z\",\n      \"source_url\": \"https://github.com/wmo-im/iwxxm/tree/v2025-2\",\n      \"mirrored\": true\n    },\n    \"2025-2RC1\": {\n      \"name\": \"IWXXM 2025-2 RC1\",\n      \"channel\": \"rc\",\n      \"status\": \"rc\",\n      \"discovered\": \"2026-02-10T00:00:00Z\",\n      \"source_url\": \"https://schemas.wmo.int/iwxxm/2025-2RC1/\",\n      \"mirrored\": false,\n      \"promoted_to_stable\": null\n    }\n  }\n}\n```",
+        "operationId": "get_schema_status_api_v1_schema_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Schema Status",
+        "tags": [
+          "Conversion"
+        ]
+      }
+    },
+    "/api/v1/translation/airport-region/{airport_code}": {
+      "get": {
+        "description": "Determine ICAO region for a given airport code.\n\nUtility endpoint for testing ICAO region mapping.\nThis endpoint is public and does not require authentication.\n\n**Path Parameters**:\n- **airport_code**: 4-letter ICAO airport identifier\n\n**Returns**:\n```json\n{\n    \"airport_code\": \"KJFK\",\n    \"icao_region\": \"NAM\",\n    \"region_name\": \"North American\"\n}\n```\n\n**Example**:\n- `GET /api/v1/translation/airport-region/KJFK` \u2192 `{\"icao_region\": \"NAM\"}`\n- `GET /api/v1/translation/airport-region/EGLL` \u2192 `{\"icao_region\": \"EUR\"}`\n- `GET /api/v1/translation/airport-region/RJAA` \u2192 `{\"icao_region\": \"APAC\"}`",
+        "operationId": "get_airport_region_api_v1_translation_airport_region__airport_code__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "airport_code",
+            "required": true,
+            "schema": {
+              "title": "Airport Code",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Airport Region",
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
+      }
+    },
+    "/api/v1/translation/centre-info": {
+      "get": {
+        "description": "Get Translation Centre identification and capabilities.\n\nReturns metadata about this Translation Centre as per ICAO OPMET guidelines.\nThis endpoint is public and does not require authentication.\n\n**Returns**:\n- Translation centre name and designator\n- ICAO location indicator\n- Supported IWXXM versions\n- Supported aviation product types\n- Service online date",
+        "operationId": "get_centre_info_api_v1_translation_centre_info_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationCentreInfo"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Centre Info",
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
+      }
+    },
+    "/api/v1/translation/health": {
+      "get": {
+        "description": "Translation statistics service health check.\n\nReturns service status and configuration.\nPublic endpoint (no authentication required).",
+        "operationId": "statistics_health_api_v1_translation_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Statistics Health",
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
+      }
+    },
+    "/api/v1/translation/statistics": {
+      "post": {
+        "description": "Query aggregated translation statistics.\n\nRetrieves translation centre statistics for a specified time period with optional filters.\nImplements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.\n\n**Authentication**: Public (no login required).\n\n**Request Parameters**:\n- **start_date** (required): Statistics period start (ISO 8601)\n- **end_date** (required): Statistics period end (ISO 8601)\n- **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)\n- **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)\n- **airport_code** (optional): Filter by specific ICAO airport code\n- **include_airport_breakdown** (optional): Include per-airport statistics (default: false)\n- **include_error_details** (optional): Include detailed error analysis (default: false)\n\n**Returns**:\n- Aggregated translation statistics including:\n  - Total, successful, and failed translation counts\n  - Success rate percentage\n  - Average and median processing duration\n  - Breakdown by ICAO region\n  - Breakdown by IWXXM version\n  - Validation layer success rates\n  - Optional airport-level details\n  - Optional error frequency analysis\n\n**Example**:\n```json\n{\n    \"start_date\": \"2026-02-01T00:00:00Z\",\n    \"end_date\": \"2026-02-13T23:59:59Z\",\n    \"icao_region\": \"NAM\",\n    \"include_airport_breakdown\": true\n}\n```",
+        "operationId": "get_translation_statistics_api_v1_translation_statistics_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranslationStatisticsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationStatistics"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Translation Statistics",
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
+      }
+    },
+    "/api/v1/translation/statistics/by-region": {
+      "get": {
+        "description": "Get translation statistics grouped by ICAO region.\n\nReturns translation activity summary for all ICAO regions.\nUseful for identifying regional distribution and capacity planning.\n\n**Authentication**: Public (no login required).\n\n**Query Parameters**:\n- **start_date**: Statistics period start (ISO 8601)\n- **end_date**: Statistics period end (ISO 8601)\n\n**Returns**:\nDictionary mapping ICAO region codes to statistics:\n```json\n{\n    \"NAM\": {\"total\": 1500, \"success_rate\": 98.5},\n    \"EUR\": {\"total\": 890, \"success_rate\": 97.2},\n    \"APAC\": {\"total\": 456, \"success_rate\": 99.1}\n}\n```",
+        "operationId": "get_statistics_by_region_api_v1_translation_statistics_by_region_get",
+        "parameters": [
+          {
+            "description": "Statistics period start (ISO 8601)",
+            "in": "query",
+            "name": "start_date",
+            "required": true,
+            "schema": {
+              "description": "Statistics period start (ISO 8601)",
+              "format": "date-time",
+              "title": "Start Date",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Statistics period end (ISO 8601)",
+            "in": "query",
+            "name": "end_date",
+            "required": true,
+            "schema": {
+              "description": "Statistics period end (ISO 8601)",
+              "format": "date-time",
+              "title": "End Date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Statistics By Region Api V1 Translation Statistics By Region Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Statistics By Region",
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
+      }
+    },
+    "/api/v1/translation/statistics/recent": {
+      "get": {
+        "description": "Get recent translation statistics (last N hours).\n\nConvenience endpoint for querying recent activity without specifying exact dates.\n\n**Authentication**: Public (no login required).\n\n**Query Parameters**:\n- **hours**: Number of hours to look back (1-168, default: 24)\n- **icao_region**: Optional ICAO region filter\n- **iwxxm_version**: Optional IWXXM version filter\n\n**Returns**:\nAggregated translation statistics for the specified time window.",
+        "operationId": "get_recent_statistics_api_v1_translation_statistics_recent_get",
+        "parameters": [
+          {
+            "description": "Number of hours to query (1-168)",
+            "in": "query",
+            "name": "hours",
+            "required": false,
+            "schema": {
+              "default": 24,
+              "description": "Number of hours to query (1-168)",
+              "maximum": 168,
+              "minimum": 1,
+              "title": "Hours",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter by ICAO region",
+            "in": "query",
+            "name": "icao_region",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ICAORegion"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by ICAO region",
+              "title": "Icao Region"
+            }
+          },
+          {
+            "description": "Filter by IWXXM version",
+            "in": "query",
+            "name": "iwxxm_version",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by IWXXM version",
+              "title": "Iwxxm Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranslationStatistics"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Recent Statistics",
+        "tags": [
+          "ICAO OPMET Statistics"
+        ]
+      }
+    },
+    "/api/v1/validate": {
+      "post": {
+        "description": "Perform comprehensive 7-layer IWXXM validation.\n\nValidates METAR TAC input through all 7 validation layers:\n\n1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database\n2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics\n3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed\n4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas\n5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron\n6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references\n7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists\n\n**Authentication**: Public (no login required)\n\n**Request Parameters**:\n- **manual_text** (required): METAR TAC text to validate\n- **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)\n- **iwxxm_version**: Target IWXXM version (default: \"2025-2\")\n- **layers**: Validation layers to run (default: [\"ALL\"])\n  - \"ALL\": Run all 7 layers\n  - Or specify: [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_SCHEMA\", \"SCHEMATRON\", ...]\n- **stop_on_error**: Stop at first blocking layer failure (default: true)\n\n**Response**:\n```json\n{\n  \"is_valid\": true,\n  \"version\": \"2025-2\",\n  \"layers_run\": [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_WELLFORMED\", \"XML_SCHEMA\", \"SCHEMATRON\", \"GML_REFERENCES\", \"WMO_CODELISTS\"],\n  \"layers_passed\": [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_WELLFORMED\", \"XML_SCHEMA\", \"SCHEMATRON\", \"GML_REFERENCES\", \"WMO_CODELISTS\"],\n  \"layers_failed\": [],\n  \"total_issues\": 0,\n  \"issues_by_layer\": {},\n  \"stopped_at_layer\": null\n}\n```",
+        "operationId": "validate_comprehensive_api_v1_validate_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_validate_comprehensive_api_v1_validate_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Validate Comprehensive",
+        "tags": [
+          "Validation"
+        ]
+      }
+    },
+    "/api/v1/validation/layers": {
+      "get": {
+        "description": "Get information about available validation layers.\n\nEach layer validates specific aspects of METAR TAC or IWXXM XML content.\nLayers marked as blocking will stop further validation if they fail.\n\n## Response\nReturns list of validation layers with:\n- **layer**: Layer identifier\n- **description**: What this layer validates\n- **blocking**: Whether it blocks further layers on failure\n- **supported_content_types**: Content types this layer supports (\"tac\" or \"xml\")\n\n## Available Layers\n1. **airport_icao**: Extract and validate ICAO code against airport database\n2. **tac_syntax**: Parse and validate METAR TAC syntax\n3. **xml_wellformed**: Check if output XML is well-formed\n4. **xml_schema**: Validate against XSD schema\n5. **schematron**: SCHEMATRON rules validation\n6. **gml_references**: GML reference checks\n7. **wmo_codelists**: WMO code list validation\n\n## Example Response\n```json\n{\n  \"layers\": [\n    {\n      \"layer\": \"airport_icao\",\n      \"description\": \"Extract and validate ICAO code against airport database\",\n      \"blocking\": true,\n      \"supported_content_types\": [\"tac\"]\n    },\n    {\n      \"layer\": \"tac_syntax\",\n      \"description\": \"Parse and validate METAR TAC syntax\",\n      \"blocking\": true,\n      \"supported_content_types\": [\"tac\"]\n    }\n  ]\n}\n```",
+        "operationId": "get_validation_layers_api_v1_validation_layers_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationLayersResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get available validation layers",
+        "tags": [
+          "Validation",
+          "Validation"
+        ]
+      }
+    },
+    "/api/v1/validation/validate": {
+      "post": {
+        "description": "Validate METAR TAC or IWXXM XML content through multiple validation layers.\n\n## Request Body\n- **content** (string, required): The METAR TAC or IWXXM XML content to validate\n- **content_type** (string, default=\"tac\"): Type of content (\"tac\" or \"xml\")\n- **layers** (array, optional): Specific validation layers to run. If None, runs all layers:\n  - `airport_icao`: Validate ICAO airport code\n  - `tac_syntax`: Validate METAR TAC syntax\n  - `xml_wellformed`: Check XML is well-formed\n  - `xml_schema`: Validate against XSD schema\n  - `schematron`: SCHEMATRON rules validation\n  - `gml_references`: GML reference checks\n  - `wmo_codelists`: WMO code list validation\n- **iwxxm_version** (string, optional): IWXXM version for context (e.g., \"3.0.1\")\n\n## Response\nReturns aggregated validation results with:\n- **passed** (boolean): Whether all requested layers passed\n- **layers_validated** (array): Layers that were run\n- **total_issues** (integer): Total validation issues found\n- **results** (array): Per-layer validation details\n- **execution_time_ms** (float): Total execution time\n\n## Example Success Response\n```json\n{\n  \"passed\": true,\n  \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n  \"total_issues\": 0,\n  \"results\": [\n    {\n      \"passed\": true,\n      \"layer\": \"airport_icao\",\n      \"issues\": [],\n      \"execution_time_ms\": 5.2\n    }\n  ],\n  \"execution_time_ms\": 10.5\n}\n```\n\n## Example Failure Response\n```json\n{\n  \"passed\": false,\n  \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n  \"total_issues\": 1,\n  \"results\": [\n    {\n      \"passed\": false,\n      \"layer\": \"tac_syntax\",\n      \"issues\": [\n        {\n          \"layer\": \"tac_syntax\",\n          \"level\": \"error\",\n          \"message\": \"Invalid TAC format\",\n          \"code\": \"INVALID_TAC_FORMAT\"\n        }\n      ],\n      \"execution_time_ms\": 8.3\n    }\n  ],\n  \"execution_time_ms\": 8.3\n}\n```",
+        "operationId": "validate_content_api_v1_validation_validate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AggregatedValidationResult"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Validate METAR TAC or IWXXM XML content",
+        "tags": [
+          "Validation",
+          "Validation"
+        ]
+      }
+    },
+    "/api/v1/validation/validate-multi": {
+      "post": {
+        "description": "Validate multiple METAR TAC or IWXXM XML inputs in a single request.\n\nUseful for batch validation of multiple entries. Each item is validated\nindependently and can have different content types.\n\n## Request Body\n- **items** (array, required): Array of validation requests (1-100 items)\n  - Each item has: content, content_type, layers (optional), iwxxm_version (optional)\n- **layers** (array, optional): Default layers to apply to all items\n\n## Response\nReturns batch validation results with:\n- **results** (array): Aggregated validation result for each item\n- **total_items** (integer): Total items requested\n- **passed_items** (integer): Items that passed all layers\n- **failed_items** (integer): Items that failed at least one layer\n- **total_execution_time_ms** (float): Total execution time for all items\n\n## Example Request\n```json\n{\n  \"items\": [\n    {\n      \"content\": \"METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005\",\n      \"content_type\": \"tac\"\n    },\n    {\n      \"content\": \"METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007\",\n      \"content_type\": \"tac\"\n    }\n  ],\n  \"layers\": [\"airport_icao\", \"tac_syntax\"]\n}\n```\n\n## Example Response\n```json\n{\n  \"results\": [\n    {\n      \"passed\": true,\n      \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n      \"total_issues\": 0,\n      \"results\": [],\n      \"execution_time_ms\": 12.3\n    },\n    {\n      \"passed\": false,\n      \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n      \"total_issues\": 1,\n      \"results\": [],\n      \"execution_time_ms\": 8.5\n    }\n  ],\n  \"total_items\": 2,\n  \"passed_items\": 1,\n  \"failed_items\": 1,\n  \"total_execution_time_ms\": 20.8\n}\n```",
+        "operationId": "validate_multiple_api_v1_validation_validate_multi_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchValidationResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Validate multiple METAR TAC or IWXXM XML inputs",
+        "tags": [
+          "Validation",
+          "Validation"
+        ]
+      }
+    },
+    "/api/v1/versions": {
+      "get": {
+        "description": "Get list of supported IWXXM versions.\n\nReturns information about all supported IWXXM versions including\nversion strings, release dates, and status (latest, previous, legacy).\n\n## Response\n```json\n{\n  \"default_version\": \"2025-2\",\n  \"supported_versions\": [\n    {\n      \"version\": \"2025-2\",\n      \"name\": \"IWXXM 2025-2\",\n      \"status\": \"latest\",\n      \"release_date\": \"2025-11-25\",\n      \"wmo_amendment\": 82\n    },\n    {\n      \"version\": \"2023-1\",\n      \"name\": \"IWXXM 2023-1\",\n      \"status\": \"previous\",\n      \"release_date\": \"2023-06-02\",\n      \"wmo_amendment\": 78\n    }\n  ],\n  \"notes\": {\n    \"2025-1\": \"Version 2025-1 does not exist; requests are remapped to 2025-2\"\n  },\n  \"deprecated_versions\": [\n    \"2021-2\",\n    \"2018\",\n    \"2016\",\n    \"3.0\",\n    \"2.1\",\n    \"2.0\",\n    \"1.1\"\n  ]\n}\n```",
+        "operationId": "get_supported_versions_api_v1_versions_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Supported Versions",
+        "tags": [
+          "Conversion"
+        ]
+      }
+    },
+    "/api/v1/work-sessions": {
+      "get": {
+        "operationId": "list_work_sessions_api_v1_work_sessions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/WorkSessionStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "description": "Comma-separated product filter (e.g. metar,speci for My METARs)",
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comma-separated product filter (e.g. metar,speci for My METARs)",
+              "title": "Product"
+            }
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "From"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "To"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_deleted",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Deleted",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkSessionListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Work Sessions",
+        "tags": [
+          "Work Sessions"
+        ]
+      },
+      "post": {
+        "operationId": "create_work_session_api_v1_work_sessions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkSessionCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Work Session",
+        "tags": [
+          "Work Sessions"
+        ]
+      }
+    },
+    "/api/v1/work-sessions/{session_id}": {
+      "delete": {
+        "operationId": "delete_work_session_api_v1_work_sessions__session_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Work Session",
+        "tags": [
+          "Work Sessions"
+        ]
+      },
+      "get": {
+        "operationId": "get_work_session_api_v1_work_sessions__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Work Session",
+        "tags": [
+          "Work Sessions"
+        ]
+      },
+      "patch": {
+        "operationId": "update_work_session_api_v1_work_sessions__session_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkSessionUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Work Session",
+        "tags": [
+          "Work Sessions"
+        ]
+      }
+    },
+    "/api/v1/work-sessions/{session_id}/restore": {
+      "post": {
+        "operationId": "restore_work_session_api_v1_work_sessions__session_id__restore_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkSession"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Restore Work Session",
+        "tags": [
+          "Work Sessions"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "description": "Authenticate via Supabase Auth password grant.",
+        "operationId": "login_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "description": "Return the current user after JWKS verification.",
+        "operationId": "me_auth_me_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Me",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Check API health and conversion availability.\n\nVerifies that the API is running and tac2iwxxm can convert a sample METAR.\nReturns overall status and version information.\n\n## Response\n- **status** (string): \"healthy\" or \"degraded\"\n- **version** (string): API version\n- **tac2iwxxm_available** (boolean): Whether tac2iwxxm convert works",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "Health"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "API health and status checks",
+      "name": "Health"
+    },
+    {
+      "description": "Convert METAR TAC to IWXXM XML format",
+      "name": "Conversion"
+    },
+    {
+      "description": "Validate METAR TAC and IWXXM XML content through multiple validation layers",
+      "name": "Validation"
+    },
+    {
+      "description": "Run evaluation jobs to compare conversion results with reference data",
+      "name": "Evaluation"
+    },
+    {
+      "description": "Translation Centre statistics and ICAO OPMET Data Exchange compliance",
+      "name": "ICAO OPMET Statistics"
+    }
+  ]
+}

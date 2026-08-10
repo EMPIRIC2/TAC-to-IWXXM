@@ -172,4 +172,17 @@ describe('dissemination helpers', () => {
       'HTTP 429',
     );
   });
+
+  it('falls back to statusText when parsed error JSON has no detail field', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 502,
+      statusText: 'Bad Gateway',
+      json: async () => ({ message: 'upstream unavailable' }),
+    } as Response);
+
+    await expect(
+      disseminationPreflight({ sink_type: 'wis2', params: {} }),
+    ).rejects.toThrow('Bad Gateway');
+  });
 });

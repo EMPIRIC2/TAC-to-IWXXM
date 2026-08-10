@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-08 (S055 / EV-046 — #889 codes.wmo.int Lean; S054 / EV-045 Rust CI on stage)
+> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated harvest + membership; prior EV-046/048)
 
 ## Summary
 
@@ -13,31 +13,31 @@
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889 codes.wmo.int coverage across products; prior S046 / EV-038 |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX; **deepen** S057 / EV-048 #951 no internal-doc cites in operator UI |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG codes.wmo.int URIs |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725) |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 register cover/cite (Lean); prior S048 / EV-040 |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; **S050 / EV-042** operator UI hidden with F16–F19 (restore #898) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; **S050 / EV-042** operator UI hidden (restore #898) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; **S050 / EV-042** operator UI hidden (restore #898) |
-| F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889 |
-| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend |
+| F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 |
+| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
-| F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889 |
-| F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793; **deepen** S055 / EV-046 #889 |
+| F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 phenomena membership |
+| F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 underscore phenomena fixtures |
 | F25 | WMO official example parity (METAR/SPECI/TAF) + UI gate | Done | Product | S026 / EV-020; PR #793 |
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794; **deepen** S055 / EV-046 #889 |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
-| F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889 |
+| F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); **deepen** S053 / EV-044 separate staging DOKS + DO Project |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
@@ -359,6 +359,16 @@
      from one-pager for depth).
   4. No internal engineering citations in user-facing handbook/one-pager text.
   5. UJ-054 / TC-EV047-009..011 green (Vitest/Playwright for Help entry as applicable).
+- **S057 / EV-048 deepen (#951 — strip internal doc refs from operator UI)**: Operator-visible
+  UI copy (labels, helpers, tooltips, banners, empty states, console/catalog copy, example
+  tier labels, privacy/auth copy) must not cite internal engineering vocabulary
+  (`[Corpus:…]`, ADR/session/EV IDs, product `FNN` ids, `docs/` paths, UJ/TC/issue numbers).
+  Source comments, tests, and repo docs remain allowed. Does **not** flip F7 → Implemented.
+- **Acceptance (EV-048 / #951 — F7 UI slice)** — **approved** (`D-S057-01-ac=1`):
+  1. Audit findings for UI string catalogs listed in the PR.
+  2. No operator-visible UI string matches guard patterns (see test-plan TC-EV048).
+  3. Automated guard covers FE string catalogs; comments/tests excluded.
+  4. UJ-055 / TC-EV048-003 green.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -828,7 +838,18 @@
   5. Env/docs: Supabase **Auth** credentials for login path; product **DB** = DO `DATABASE_URL`
   6. E2E: public convert UJs plus login / guest-notice / privacy UJs (F31)
 - **Out of scope**: Forced login for convert; CMP; selling personal data
-- **Source**: #783; E17-*; **S038 / EV-031**; [Context: platform-independence-842](context/platform-independence-842.md)
+- **S057 / EV-048 deepen (#951 — public OpenAPI / client error copy)**: Public OpenAPI
+  path/operation summaries, parameter/schema `description` fields, runtime `/docs` / Redoc
+  text, and client-facing `detail`/error messages must use operator-friendly language —
+  no `[Corpus:…]`, ADR/session/EV IDs, product `FNN` ids, `docs/` paths, TC/E## planning
+  IDs, or GitHub issue `#NNN` citations. Developer comments and test docstrings remain allowed.
+- **Acceptance (EV-048 / #951 — F21 API slice)** — **approved** (`D-S057-01-ac=1`):
+  1. Audit findings for OpenAPI + client-facing errors listed in the PR.
+  2. OpenAPI export and error surfaces pass automated guard (TC-EV048-002/004/005).
+  3. Soft-preview and related field descriptions preserve intent without ADR citations.
+  4. Backend unit/OpenAPI snapshot tests updated.
+- **Source**: #783; E17-*; **S038 / EV-031**; [Context: platform-independence-842](context/platform-independence-842.md);
+  [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951) (S057 / EV-048)
 
 ### F22: Privacy Preference Center — S023 / EV-017
 
@@ -1320,12 +1341,16 @@
   5. **CD auto-rollout (EV-034)**: On `main` Deploy after GHCR push, pin `metar-api` /
      `metar-frontend` / `metar-worker` to the immutable `TIMESTAMP-SHA` tag via kubectl
      (`KUBE_CONFIG` Actions secret). Render hooks optional/non-blocking.
-  6. **Dual-env CD (EV-043 / #886)**: `stage` → staging; `main` → prod. PR-required branches;
-     promote `stage`→`main` only after Staging smoke green (`staging-gate`). Solo-dev: PR is
-     the manual promote step (no Environment reviewers).
+  6. **Dual-env CD (EV-043 / #886)**: `stage` → staging auto-Deploy; promote `stage`→`main`
+     only after Staging smoke green (`staging-gate`). Solo-dev: PR is the promote-to-`main`
+     step (no Environment reviewers).
   7. **Dual DOKS + DO Projects (EV-044)**: Staging cluster + managed PG under DO Project
      **Staging TAC-to-IWXXM**; prod cluster + PG under **TAC-to-IWXXM**. Amends ADR-034
      (supersedes same-cluster two-namespace staging).
+  8. **Tag-driven prod (EV-051 / S060)**: Push to `main` runs full CI **without** prod Deploy.
+     Prod Deploy runs after full CI on `vYYYY.MM.DD-deploy` tag push (pattern `v*-*-deploy`)
+     or optional `workflow_dispatch`. Deploy `needs` include `e2e-smoke`. Solo-dev “approval”
+     = cutting the deploy tag (or dispatch).
 - **Convert APIs**: Remain public (no JWT) for convert/lint/validate/disseminate (`D-S038-F30`).
 - **Acceptance**:
   1. Product path boots/smokes without Supabase **database** credentials (**TC-F30-001**)
@@ -1334,16 +1359,21 @@
   4. DOKS hosts API + worker + static; cutover runbook + H0–H5 against new endpoints (**TC-F30-004**)
   5. Render decommissioned after soak or residual ticket with checklist (**TC-F30-005**)
   6. Docs/CORPUS/env-contract no longer require Supabase as data plane (**TC-F30-006**)
-  7. `main` CD rolls DOKS images to the pushed immutable tag without manual kubectl (**TC-F30-007**)
+  7. Prod CD rolls DOKS images to the immutable tag without manual kubectl when a deploy
+     tag (or dispatch) runs (**TC-F30-007**)
   8. Staging DOKS + isolated DB/secrets on DO Project **Staging TAC-to-IWXXM**; prod on
      **TAC-to-IWXXM** (**TC-F30-008** / **TC-F30-008′**)
   9. Staging DNS + TLS for `api|app.staging.tac-to-iwxxm.com` → staging LB (**TC-F30-009**)
-  10. `stage`/`main` auto-deploy to staging/prod clusters respectively (**TC-F30-010**)
+  10. `stage` auto-deploys staging after full CI; `main` push does **not** auto-deploy prod
+      (**TC-F30-010** amended EV-051)
   11. Branch protection / rulesets: PR required on `stage` and `main` (**TC-F30-011**)
   12. PRs to `main` require head=`stage` + Staging smoke green (**TC-F30-012**)
   13. Shared-cluster staging namespace removed after dual-cluster cutover (**TC-F30-013**)
-- **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer prod approvals
-- **Source**: E31-*; E34-*; E43-*; E44-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886; S042 / EV-034; S052 / EV-043; S053 / EV-044
+  14. Prod Deploy via `vYYYY.MM.DD-deploy` tag (or `workflow_dispatch`) after full CI incl.
+      `e2e-smoke` (**TC-F30-014** / TC-EV051-*)
+- **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer Environment
+  approvals (solo uses tag/dispatch)
+- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 
@@ -1585,6 +1615,83 @@
 - **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: decisions]` ·
   `[docs/domain/rules/RULE_SOURCE_URLS.md]` · `[docs/domain/rules/COVERAGE_MATRIX.md]` ·
   `[docs/domain/mining/codes-wmo-int-aviation-mining-notes.md]`
+- **Follow-on**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) / S059 / EV-050
+  (Validated — below)
+
+### F6 / F12 / F15 / F20 / F23 / F24 / F28 deepen (S059 / EV-050 — #959 Validated)
+
+- **Status note**: No new Fn. Standard follow-on to EV-046 Lean: standing **offline harvest** +
+  `tac-validate` membership CI for the Validated triad element; aggressive fixture expansion
+  for EV-046 gap rows (`D-S059-fixtures=2c`); **profile compare** `annex3` vs `iwxxm_us`
+  with true-error fixes (AC7–AC8).
+- **Issue**: [#959](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959) · parent
+  [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) · epic
+  [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846) · compose
+  [#859](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/859) / [#882](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/882)
+- **What changes**:
+  1. Offline harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF) → membership sets
+  2. Wire `tac-validate` / matrix: happy + unknown/sad for weather, recent, cloud,
+     SIGMET/AIRMET phenomena, nilReason where lint already touches URIs
+  3. Document harvest cadence vs `vendor/manifest.json` `iwxxm-codelists` pin
+  4. Aggressive fixtures: `RE*`, AIRMET `_` phenomena, SpaceWxPhenomena, TCU
+  5. Design-only #882 compose note (no scheduled live job this cycle)
+  6. **Compare** membership/lint under `profile=annex3` vs `profile=iwxxm_us` for **all F6
+     products** (`iwxxm_us` **N/A** where unsupported); classify shared / intentional L5 /
+     true error; **fix true errors** this cycle with regressions
+- **Acceptance**: AC1–AC8 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-050;
+  **TC-EV050-001..008**
+- **Out of scope**: Live HTML in PR CI; vendor hand-edits; full #882 notify; `iwxxm-validate`
+  replacement; `stage`→`main` promote; exhaustive 402 weather combos; country scorecards
+  beyond the two profiles; inventing US tokens outside FMH-1 / NWS / iwxxm-us
+- **Journeys / UI**: N/A
+- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
+  `[Corpus: decisions]` · `[docs/domain/TAC_VALIDATION.md]` ·
+  `[docs/domain/rules/COVERAGE_MATRIX.md]`
+
+### F29 / F6 / F21 / F30 / M5 deepen (S061 / EV-052 — #950 + #900 + quality PR stats)
+
+- **Status note**: No new Fn. CI polish: restore **≥95% coverage gates** (#950); second
+  sticky **PR comment** with golden/quality-matrix outcomes by product × profile; free-tier
+  **Sentry** + **Upstash Redis** for shared slowapi limits + OpenAPI→typed FE client (#900).
+- **Issues**: [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950) ·
+  [#900](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/900) · epic
+  [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841)
+- **What changes**:
+  1. Inventory + enforce ADR-007 **≥95%** on every package/app coverage surface; fill tests
+  2. CI job: quality-matrix + annex3/`iwxxm_us` golden outcome summary → sticky PR comment
+     (marker ≠ EV-036 coverage comment)
+  3. Sentry SDK (API + FE + worker) behind DSN env; Developer free tier
+  4. Upstash Redis (`REDIS_URL` or approved Upstash env) as slowapi shared store — **no**
+     new DOKS Redis Deployment (`D-S061-redis=1`)
+  5. `openapi-typescript` FE types from committed OpenAPI snapshot (`make openapi-refresh`;
+     `pnpm openapi:check` drift gate) — locked `D-S061-orval=1` (not full Orval)
+- **Acceptance**: AC1–AC12 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-052;
+  **TC-EV052-001..012**
+- **Out of scope**: Paid Sentry/Valkey; in-cluster Redis service; #874/#727/#836; AMS #958;
+  stage→main promote this cycle
+- **Journeys / UI**: N/A (codegen only; no new operator UJ)
+- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
+  `[Corpus: deploy]` · `[Corpus: adr/ADR-007]` · `[Corpus: adr/ADR-006]` ·
+  `[Corpus: adr/ADR-031]` · `[Corpus: decisions]`
+- **Infra**: `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`
+
+### F29 / M5 deepen (S062 / EV-053 — Vitest branches ≥95 / #968)
+
+- **Status note**: No new Fn. Close EV-052 Vitest **branches** waiver
+  (`D-S061-cov-branches=3`): raise frontend `branches` to **≥95**, re-include
+  `FileConverter.tsx` in Vitest coverage, and require FileConverter itself ≥95% branches.
+- **Issues**: [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) (child of
+  [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950) / EV-052)
+- **What changes**:
+  1. Remove `FileConverter.tsx` from Vitest coverage `exclude`; set `branches: 95`
+  2. Fill FileConverter-heavy branch (and line) tests until aggregate + FileConverter ≥95
+  3. Resolve coverage inventory `branch_waiver`; cite closeout in decisions / test-plan
+- **Acceptance**: AC1–AC5 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-053;
+  **TC-EV053-001..005** (`D-S062-01-ac=1`)
+- **Out of scope**: Lowering other thresholds; #874/#727/#836; stage→main; UI redesign
+- **Journeys / UI**: N/A (CI / Vitest only; `D-S062-ui-preview=2`)
+- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: adr/ADR-007]` ·
+  `[Corpus: decisions §EV-052]` · `[Corpus: decisions §EV-053]`
 
 ## Platform Feature Details (Monorepo Migration)
 

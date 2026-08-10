@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-08 (S055 / EV-046 — #889 codes.wmo.int present/cite/cover Lean)
+> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated membership; prior EV-046/048)
 
 ## Scope
 
@@ -109,6 +109,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
+| UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -1743,14 +1744,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   `/health` 200 on API; FE returns 200; cert-manager Certificate Ready
 - **Source**: F30 AC9; D-S052-dns; D-S053-dns
 
-### TC-F30-010: Dual-branch auto CD
+### TC-F30-010: Dual-branch CD (amended EV-051)
 
 - **Level**: Ops / CI
-- **Objective**: Push/merge to `stage` deploys **staging cluster**; push/merge to `main`
-  deploys **prod cluster**
-- **Pass criteria**: Deploy jobs bound to GH Environments `staging` / `production`;
-  env-scoped kubeconfig + `DOKS_NAMESPACE` correct per branch; image tags rolled
-- **Source**: F30 AC10; #886; EV-044
+- **Objective**: Push/merge to `stage` deploys **staging cluster** after full Deploy
+  `needs` (incl. `e2e-smoke`). Push/merge to `main` runs full CI but **does not** Deploy
+  prod (EV-051).
+- **Pass criteria**: Staging Deploy bound to GH Environment `staging`; `main` push workflow
+  has no successful prod Deploy job for that event; env-scoped kubeconfig + `DOKS_NAMESPACE`
+  correct when Deploy runs
+- **Source**: F30 AC10; #886; EV-044; **EV-051 / S060** (`D-S060-scope=1`)
 
 ### TC-F30-011: Branch protection on stage and main
 
@@ -1776,6 +1779,206 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: `kubectl --context prod get ns metar-iwxxm-staging` is NotFound (or
   empty/terminating with no Deployments); staging smoke uses staging cluster context only
 - **Source**: F30 AC13; D-S053-teardown
+
+### TC-F30-014: Tag-driven prod Deploy (EV-051)
+
+- **Level**: Ops / CI
+- **Objective**: Prod Deploy runs only for `vYYYY.MM.DD-deploy` tag pushes (pattern
+  `v*-*-deploy`) or `workflow_dispatch` targeting production — after Deploy `needs`
+  including `e2e-smoke` pass. Solo-dev approval = tag/dispatch (no Environment reviewers).
+- **Pass criteria**: Workflow `on.push.tags` / `workflow_dispatch` documented; Deploy job
+  `if` excludes bare `main` push; `needs` includes `e2e-smoke`; ADR-034 + deploy.md match
+- **Source**: F30 AC14; EV-051 / S060; TC-EV051-001..006
+
+### TC-EV051-001: Deploy needs include e2e-smoke
+
+- **Level**: T0 (workflow review)
+- **Objective**: `deploy.needs` lists prior jobs plus `e2e-smoke`
+- **Pass criteria**: `.github/workflows/ci-cd.yml` `deploy.needs` contains `e2e-smoke`
+- **Source**: EV-051 AC1
+
+### TC-EV051-002: stage push still auto-deploys staging
+
+- **Level**: Ops / CI
+- **Objective**: Unchanged staging path after needs widen
+- **Pass criteria**: `deploy` `if` allows `refs/heads/stage` push; Environment `staging`
+- **Source**: EV-051 AC2
+
+### TC-EV051-003: main push does not Deploy prod
+
+- **Level**: Ops / CI
+- **Objective**: Bare `main` push is CI-only for Deploy purposes
+- **Pass criteria**: `deploy` `if` excludes `refs/heads/main`
+- **Source**: EV-051 AC3
+
+### TC-EV051-004: deploy tag triggers prod Deploy
+
+- **Level**: Ops / CI
+- **Objective**: Tag `v*-*-deploy` triggers prod Deploy path
+- **Pass criteria**: `on.push.tags` includes pattern; Deploy resolves `env_role=prod`
+- **Source**: EV-051 AC4; TC-F30-014
+
+### TC-EV051-005: workflow_dispatch prod escape hatch
+
+- **Level**: Ops / CI
+- **Objective**: Manual `workflow_dispatch` can Deploy production
+- **Pass criteria**: `on.workflow_dispatch` present; Deploy `if` includes dispatch → production
+- **Source**: EV-051 AC5
+
+### TC-EV051-006: Docs / ADR / rule parity
+
+- **Level**: T0
+- **Objective**: Standing docs describe tag-driven prod + full CI needs
+- **Pass criteria**: ADR-034, deploy.md §CD, doks-promote-from-stage.mdc, feature-list F30
+  AC10/AC14 consistent
+- **Source**: EV-051 AC6
+
+### EV-052 / S061 — CI polish + quality PR stats + Sentry/Redis/Orval
+
+- **Level**: T0 / CI
+- **Objective**: Restore ≥95% coverage gates (#950); second sticky PR comment with
+  golden/quality-matrix outcomes by product × profile; free Sentry + Upstash-backed
+  slowapi + OpenAPI typed FE client (#900).
+- **Pass criteria**: AC1–AC12 in evolve-decisions §EV-052; TC-EV052-001..012
+- **Source**: F29/F6/F21/F30/M5 deepen; EV-052 / S061; [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950);
+  [#900](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/900)
+
+### TC-EV052-001: Coverage surface inventory
+
+- **Level**: T0
+- **Objective**: Document every coverage surface + threshold vs ≥95%
+- **Pass criteria**: Session inventory table (or test-plan appendix) lists apps/packages/scripts
+- **Source**: EV-052 AC1; #950
+
+### TC-EV052-002: ≥95% enforced in CI
+
+- **Level**: T0 / CI
+- **Objective**: Soft/deferred gates removed; fail_under / Vitest thresholds ≥95
+- **Pass criteria**: Frontend lines/statements/branches ≥95 (or justified exclude); auth and
+  all packages use fail_under ≥95; CI runs fail when under
+- **Source**: EV-052 AC2; ADR-007
+
+### TC-EV052-003: Suite green with gates
+
+- **Level**: T0
+- **Objective**: Tests added so gates pass; no silent waive
+- **Pass criteria**: `make coverage-*` / CI coverage jobs green at tip
+- **Source**: EV-052 AC3
+
+### TC-EV052-004: Quality sticky PR comment
+
+- **Level**: T0 / CI
+- **Objective**: Second sticky comment with match/soft-diff/fail/skip by product × profile
+- **Pass criteria**: Workflow posts markdown with distinct sticky marker; tables cover
+  quality-matrix + annex3/`iwxxm_us` golden outcomes
+- **Source**: EV-052 AC4
+
+### TC-EV052-005: Comment formatter + sticky idempotence
+
+- **Level**: T0
+- **Objective**: Formatter unit-tested; update-in-place sticky
+- **Pass criteria**: pytest for formatter; github-script finds marker and updates
+- **Source**: EV-052 AC5
+
+### TC-EV052-006: Sentry optional init
+
+- **Level**: T0
+- **Objective**: API/FE/worker init when DSN set; no-op when unset
+- **Pass criteria**: Unit tests mock SDK; docs cite Developer free tier
+- **Source**: EV-052 AC6
+
+### TC-EV052-007: Upstash-backed slowapi
+
+- **Level**: T0
+- **Objective**: Shared Redis URL enables distributed limits; unset → in-memory
+- **Pass criteria**: `abuse_controls` / limiter factory branches covered
+- **Source**: EV-052 AC7; `D-S061-redis=1`
+
+### TC-EV052-008: Shared-store rate-limit tests
+
+- **Level**: T0
+- **Objective**: Fake Redis proves cross-"replica" shared counters
+- **Pass criteria**: Unit/integration with fakeredis or equivalent
+- **Source**: EV-052 AC8
+
+### TC-EV052-009: OpenAPI typed FE client
+
+- **Level**: T0
+- **Objective**: Generated client/types for high-churn paths; drift policy
+- **Pass criteria**: `openapi-typescript` wired (`D-S061-orval=1`); committed
+  `apps/frontend/openapi/openapi.json` + `src/generated/openapi.d.ts`;
+  `pnpm openapi:check` fails on drift; convert/validate use generated aliases
+- **Source**: EV-052 AC9
+
+### TC-EV052-010: Docs / ADR parity
+
+- **Level**: T0
+- **Objective**: feature-list, test-plan, env-contract, deploy, inventory, ADR-006/031
+- **Pass criteria**: Corpus deltas match implementation
+- **Source**: EV-052 AC10
+
+### TC-EV052-011: Free-tier infra record
+
+- **Level**: T0
+- **Objective**: No new DOKS Redis; Upstash + Sentry secrets documented
+- **Pass criteria**: infra-free-tier.md + deploy/env stubs; kustomization has no Redis Deployment
+- **Source**: EV-052 AC11
+
+### TC-EV052-012: PR CI green
+
+- **Level**: CI
+- **Objective**: Tip PR CI includes coverage gates + quality comment job + new unit tests
+- **Pass criteria**: Required workflows SUCCESS on evolve PR
+- **Source**: EV-052 AC12
+
+### EV-053 / S062 — Vitest branches ≥95 (FileConverter / #968)
+
+- **Level**: T0 / CI
+- **Objective**: Close `D-S061-cov-branches` waiver — Vitest `branches` ≥95; re-include
+  `FileConverter.tsx`; FileConverter itself ≥95% branches; inventory waiver resolved.
+- **Pass criteria**: AC1–AC5 in evolve-decisions §EV-053; TC-EV053-001..005
+- **Source**: F29/M5 deepen; EV-053 / S062; [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968);
+  parent [#950](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/950) / EV-052
+
+### TC-EV053-001: Vitest branches threshold ≥95
+
+- **Level**: T0 / CI
+- **Objective**: `apps/frontend/vitest.config.ts` enforces `branches: 95` (with lines /
+  statements / functions still ≥95)
+- **Pass criteria**: Config thresholds all ≥95; no branches floor of 84
+- **Source**: EV-053 AC1; ADR-007; #968
+
+### TC-EV053-002: FE coverage suite green under gates
+
+- **Level**: T0 / CI
+- **Objective**: Frontend Vitest coverage job green with FileConverter in the coverage set
+- **Pass criteria**: `pnpm --filter @metar/frontend test:coverage` (or CI matrix equivalent)
+  passes at tip
+- **Source**: EV-053 AC2
+
+### TC-EV053-003: Coverage inventory branch_waiver resolved
+
+- **Level**: T0
+- **Objective**: Inventory no longer records an open branches waiver for frontend
+- **Pass criteria**: S061 inventory updated (or EV-053 successor) shows `branch_waiver`
+  resolved / removed; intentional excludes listed without silent soft gate
+- **Source**: EV-053 AC3
+
+### TC-EV053-004: Standing docs + #968 closeout
+
+- **Level**: T0
+- **Objective**: feature-list / test-plan / evolve-decisions cite EV-053 close; #968 Done
+- **Pass criteria**: Corpus deltas match; issue closable after merge
+- **Source**: EV-053 AC4
+
+### TC-EV053-005: FileConverter ≥95% branches when included
+
+- **Level**: T0
+- **Objective**: With `FileConverter.tsx` in coverage collection, that file’s branch
+  coverage is ≥95% (not only aggregate)
+- **Pass criteria**: Coverage report (json/html or per-file summary) shows FileConverter
+  branches ≥95; documented in session verify report
+- **Source**: EV-053 AC5 (`D-S062-01-ac` Q3=2)
 
 ### Live harness — staging (EV-043 / EV-044)
 
@@ -2092,6 +2295,99 @@ Docs/coverage only — no H4–H5. Complements **TC-EV038-008** / [#859](https:/
 - [ ] No new Fn (deepen only); Validated waived with follow-on
 - [ ] No live `codes.wmo.int` HTML in PR CI
 - [ ] Domain path-cites for RULE_SOURCE_URLS / COVERAGE_MATRIX / mining / ISSUE_CATALOG
+
+## S059 / EV-050 — codes.wmo.int Validated harvest + membership (#959)
+
+New **TC-EV050-001..008**. Deepens F6 / F12 / F15 / F20 / F23 / F24 / F28 (fixtures may touch
+F6 packs). Completes Validated waived in EV-046 (`D-S055-validated=1`). Adds **annex3 vs
+`iwxxm_us`** membership/lint compare + true-error fixes. No H4–H5 (no UI).
+No live `codes.wmo.int` HTML in PR CI.
+
+### TC-EV050-001: Offline harvest → membership sets
+
+- **Level**: T0 / T1
+- **Objective**: Standing harvest from `vendor/schemas/iwxxm-codelists` (+ pin RDF) produces
+  machine-readable membership set(s) used by CI / `tac-validate`
+- **Pass criteria**: Harvest path documented; CI consumes offline artifact only; no network
+  fetch of codes.wmo.int HTML in PR CI
+- **Source**: #959 §1; AC1; [Corpus: tech-spec] [Corpus: product §F12]
+
+### TC-EV050-002: Membership happy + unknown/sad
+
+- **Level**: T1
+- **Objective**: Assert known-good tokens pass and unknown/sad tokens fail for v1 families:
+  present/forecast weather, recent weather, cloud amount/type, SIGMET + AIRMET phenomena,
+  nilReason where lint already checks URIs
+- **Pass criteria**: Matrix or unit tests green for happy + sad per family; failures carry
+  stable issue codes where applicable
+- **Source**: #959 §2; AC2; `D-S059-families=1a`
+
+### TC-EV050-003: Harvest cadence vs manifest pin
+
+- **Level**: T0 / docs
+- **Objective**: Document refresh cadence tied to `vendor/manifest.json` `iwxxm-codelists`
+  pin (vendor sync PRs)
+- **Pass criteria**: Standing docs (RULE_SOURCE_URLS / TAC_VALIDATION / mining) state pin +
+  cadence; cross-link #859
+- **Source**: #959 Acceptance; AC3
+
+### TC-EV050-004: Aggressive fixture expansion (EV-046 gaps)
+
+- **Level**: T0 / T1
+- **Objective**: Add fixtures covering `RE*`, AIRMET underscore phenomena, SpaceWxPhenomena,
+  TCU; update coverage notes; residual gaps deferred with cite
+- **Pass criteria**: Fixtures land under `tac-validate` / product packs; coverage report or
+  COVERAGE_MATRIX delta records uplift; deferrals listed
+- **Source**: AC4; `D-S059-fixtures=2c`; EV-046 coverage gap table
+
+### TC-EV050-005: #889 Validated satisfied
+
+- **Level**: T0 / process
+- **Objective**: Parent [#889](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/889) Validated
+  triad element closed via this cycle’s membership CI (or explicit re-scope)
+- **Pass criteria**: evolve-decisions §EV-050 AC5 + issue comments / close criteria met; no
+  silent waiver without cite
+- **Source**: #959 Acceptance; AC5
+
+### TC-EV050-006: #882 design-only compose note
+
+- **Level**: T0 / docs
+- **Objective**: Short design note for optional scheduled live refresh **outside** PR CI
+  composing with #882 — no job implementation
+- **Pass criteria**: Note committed (session report or domain/ops pointer); states out of
+  scope for notify pipeline and PR CI live HTML
+- **Source**: AC6; `D-S059-882=3a`
+
+### TC-EV050-007: annex3 vs iwxxm_us membership/lint compare
+
+- **Level**: T0 / T1
+- **Objective**: For **all supported F6 products**, same TAC corpus (or representative
+  matrix) linted/membership-checked under `profile=annex3` and `profile=iwxxm_us`. Where
+  `iwxxm_us` is unsupported for a product, row is **N/A** (not a fail). Where both apply,
+  disposition: shared WMO expected · intentional L5 US overlay · suspect/true error
+- **Pass criteria**: Report committed (session or domain) covering all F6 product families;
+  N/A rows cited; CI or unit harness fails if an unclassified divergent outcome appears for
+  dual-profile packs; WMO L3 SoT unchanged for both profiles; L5 only under `iwxxm_us`
+- **Source**: AC7; `D-S059-profiles=1b`; [Corpus: product §F6];
+  `docs/domain/TAC_VALIDATION.md` L3/L5
+
+### TC-EV050-008: True-error profile fixes
+
+- **Level**: T1
+- **Objective**: Each **true error** from AC7 is fixed with a regression test (happy and/or
+  sad); intentional diffs and N/A rows retain cited disposition
+- **Pass criteria**: No open true-error rows without fix or explicit deferral+cite; no
+  invented US weather tokens outside FMH-1 / NWS / iwxxm-us pins
+- **Source**: AC8; `D-S059-profiles=1b`
+
+### EV-050 verify gate
+
+- [ ] TC-EV050-001..008 green (or explicit deferral recorded)
+- [ ] No new Fn (deepen only); #889 Validated satisfied or re-scoped
+- [ ] No live `codes.wmo.int` HTML in PR CI
+- [ ] H4–H5 **N/A** (no UI); 12/13 waived per routing
+- [ ] Aggressive fixture families present or deferred with cite
+- [ ] annex3 vs iwxxm_us disposition table present; true errors fixed or deferred with cite
 
 ### TC-F31-001: Guest convert + local-only history (UJ-045)
 
@@ -2693,6 +2989,24 @@ Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not ever
 | TC-EV047-009 | T0 | `docs/guides/operator-one-pager.md` exists; one-page content checklist (convert→validate→download; version; soft preview); no internal citations |
 | TC-EV047-010 | T0 | `docs/guides/operator-handbook.md` has required sections + ingest pointer; no internal citations; one-pager links here |
 | TC-EV047-011 | T0/T2 | README Quick start links both docs; in-app Help entry reaches one-pager (UJ-054) |
+
+### TC-EV048 (F7 / F21 / S057) — strip internal doc refs from UI + public API (#951)
+
+**Guard patterns** (fail when found in scanned user-facing surfaces): `\[Corpus:`,
+`docs/sessions/`, `docs/feature-list`, `\bADR-\d+\b`, `\bEV-\d+\b`, `\bS0\d+\b`,
+`\bTC-[A-Z0-9-]+\b`, `\bE\d{2}-\d+\b`, `(?<!\w)#\d{3,}\b`, `\bF\d+\b`
+(`D-S057-guard-s0=1`, `D-S057-04-guard-ext=1`, `D-S057-qa003=2`; `#NNN` uses
+lookbehind because `\b#` misses `#702` after spaces/slashes). Allowlist only for
+true domain false positives. Do **not** scan `docs/` standing text, source
+comments-only, or `*.test.*` / pytest modules.
+
+| ID | Tier | Criterion |
+|----|------|-----------|
+| TC-EV048-001 | T0 | PR (or session report) lists audit findings for UI strings + OpenAPI descriptions + client-facing errors |
+| TC-EV048-002 | T0 | OpenAPI export / schema `description` + operation summaries pass guard (no internal-doc patterns) |
+| TC-EV048-003 | T0/T2 | Operator-visible FE string catalogs (labels/helpers/tooltips/banners/empty states/console/catalog/example tiers/privacy-auth) pass guard |
+| TC-EV048-004 | T0 | Client-facing API `detail` / error messages pass guard |
+| TC-EV048-005 | T0/CI | Automated unit/CI test fails if a synthetic internal cite is injected into scanned OpenAPI or FE catalogs; comments/tests remain allowed |
 
 ### Removed workflows (EV-002)
 

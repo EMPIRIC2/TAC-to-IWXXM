@@ -3,7 +3,7 @@
  * TC-F31-005 — privacy gate on IndexedDB writes (T4.4).
  */
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { WorkSessionUpsertPayload } from '@metar/shared';
 import {
   EXPORT_SCHEMA_ID,
@@ -17,6 +17,7 @@ import {
   importLocalWorkSessions,
   listLocalWorkSessions,
   listMyMetars,
+  migrateGuestSessionStorageToIndexedDb,
   resetLocalWorkSessionDbCache,
   restoreLocalWorkSession,
   updateLocalWorkSession,
@@ -195,5 +196,109 @@ describe('localWorkSessionStore (TC-004)', () => {
     const restored = await listLocalWorkSessions();
     expect(restored.total).toBe(2);
     expect(restored.items.map((s) => s.title).sort()).toEqual(['A', 'B']);
+  });
+
+  it('defaults optional collection fields when omitted on create', async () => {
+    const created = await createLocalWorkSession({
+      title: 'Sparse draft',
+    });
+    expect(created).toMatchObject({
+      pending_files: [],
+      converted_results: [],
+      errors: [],
+      issues: [],
+      conversion_params: {},
+    });
+  });
+
+  it('uses defaults, filters, paginates, and preserves existing optional values', async () => {
+    const first = await createLocalWorkSession(
+      draftPayload({
+        title: undefined,
+        product: undefined,
+        status: undefined,
+        manual_tac: undefined,
+        pending_files: undefined,
+        converted_results: undefined,
+        errors: undefined,
+        issues: undefined,
+        conversion_params: undefined,
+        kv_upload_key: 'keep-me',
+      }),
+    );
+    await createLocalWorkSession(
+      draftPayload({
+        title: 'TAF',
+        product: 'taf',
+        manual_tac: 'TAF KJFK 121720Z 1218/1324 18010KT P6SM FEW250',
+      }),
+    );
+
+    expect(first).toMatchObject({
+      product: 'metar',
+      status: 'draft',
+      title: 'Untitled',
+      manual_tac: '',
+      kv_upload_key: 'keep-me',
+    });
+    const unchanged = await updateLocalWorkSession(first.id, {
+      kv_upload_key: undefined,
+    });
+    expect(unchanged.kv_upload_key).toBe('keep-me');
+
+    const filtered = await listLocalWorkSessions({
+      product: 'metar',
+      status: 'draft',
+      page: 0,
+      limit: 0,
+    });
+    expect(filtered).toMatchObject({ total: 1, page: 1, limit: 20 });
+    expect(filtered.items[0]?.id).toBe(first.id);
+
+    const secondPage = await listLocalWorkSessions({
+      include_deleted: true,
+      page: 2,
+      limit: 1,
+    });
+    expect(secondPage).toMatchObject({ total: 2, page: 2, limit: 1 });
+    expect(secondPage.items).toHaveLength(1);
+  });
+
+  it('rejects missing rows and invalid exports while restoring blank imported user IDs', async () => {
+    await expect(getLocalWorkSession('missing')).rejects.toThrow(
+      'Work session not found: missing',
+    );
+    await expect(
+      importLocalWorkSessions({
+        schema: 'other-schema' as typeof EXPORT_SCHEMA_ID,
+        exported_at: '2026-01-01T00:00:00.000Z',
+        sessions: [],
+      }),
+    ).rejects.toThrow('Unsupported export schema');
+
+    const created = await createLocalWorkSession(draftPayload());
+    const exported = await exportLocalWorkSessions();
+    await clearLocalWorkSessions();
+    await importLocalWorkSessions({
+      ...exported,
+      sessions: [{ ...created, user_id: '' }],
+    });
+    expect((await getLocalWorkSession(created.id)).user_id).toBe('local');
+  });
+
+  it('uses a fallback ID without crypto and skips guest migration when no snapshot exists', async () => {
+    const originalCrypto = globalThis.crypto;
+    vi.stubGlobal('crypto', undefined);
+    try {
+      const created = await createLocalWorkSession(draftPayload());
+      expect(created.id).toMatch(/^local-/);
+    } finally {
+      vi.stubGlobal('crypto', originalCrypto);
+    }
+
+    await expect(migrateGuestSessionStorageToIndexedDb()).resolves.toEqual({
+      migrated: false,
+      sessionId: null,
+    });
   });
 });

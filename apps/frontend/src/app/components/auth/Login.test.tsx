@@ -190,4 +190,33 @@ describe('Login', () => {
     expect(screen.getByLabelText(/remember me/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/forgot password/i)).toBeInTheDocument();
   });
+
+  it('shows generic login errors for non-Error rejections', async () => {
+    const user = userEvent.setup();
+    mockLogin.mockRejectedValueOnce('offline');
+
+    render(<Login {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email address/i), 'pilot@example.com');
+    await user.type(screen.getByLabelText(/^password$/i), 'secret123');
+    await user.click(screen.getByRole('button', { name: /sign in to account/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'An error occurred during login. Please try again.',
+      );
+    });
+  });
+
+  it('continues as guest when the optional callback is provided', async () => {
+    const user = userEvent.setup();
+    const onContinueAsGuest = vi.fn();
+
+    render(<Login {...defaultProps} onContinueAsGuest={onContinueAsGuest} />);
+
+    await user.click(
+      screen.getByRole('button', { name: /continue to converter without signing in/i }),
+    );
+    expect(onContinueAsGuest).toHaveBeenCalledTimes(1);
+  });
 });

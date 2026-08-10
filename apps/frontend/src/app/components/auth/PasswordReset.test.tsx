@@ -203,4 +203,51 @@ describe('PasswordReset', () => {
       expect(mockToast.error).toHaveBeenCalledWith('Token expired');
     });
   });
+
+  it('shows generic request errors for non-Error rejections', async () => {
+    const user = userEvent.setup();
+    mockRequestPasswordReset.mockRejectedValueOnce('offline');
+
+    render(<PasswordReset onBackToLogin={vi.fn()} />);
+
+    await user.type(screen.getByLabelText(/email address/i), 'pilot@example.com');
+    await user.click(screen.getByRole('button', { name: /send reset email/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'Failed to send password reset email',
+      );
+    });
+  });
+
+  it('shows generic update errors for non-Error rejections', async () => {
+    const user = userEvent.setup();
+    mockConfirmPasswordReset.mockRejectedValueOnce('expired');
+
+    render(<PasswordReset onBackToLogin={vi.fn()} resetToken="token-123" />);
+
+    await user.type(screen.getByLabelText(/new password/i), 'secret123');
+    await user.type(screen.getByLabelText(/confirm password/i), 'secret123');
+    await user.click(screen.getByRole('button', { name: /update password/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith('Failed to update password');
+    });
+  });
+
+  it('blocks password update when the reset token disappears before submit', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <PasswordReset onBackToLogin={vi.fn()} resetToken="token-123" />,
+    );
+
+    await user.type(screen.getByLabelText(/new password/i), 'secret123');
+    await user.type(screen.getByLabelText(/confirm password/i), 'secret123');
+    rerender(<PasswordReset onBackToLogin={vi.fn()} resetToken={undefined} />);
+    await user.click(screen.getByRole('button', { name: /update password/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith('Reset token not found');
+    });
+  });
 });

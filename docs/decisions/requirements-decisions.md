@@ -1,6 +1,59 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-08 (S056 / EV-047)
+> Stage: 01-requirements | Last updated: 2026-08-10 (S062 / EV-053)
+
+## EV-053 / S062 — Vitest branches ≥95 FileConverter (#968) (`D-S062-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-053 / strategy | Re-include FileConverter | Fill branch+line tests until aggregate ≥95 (`D-S062-fc-strategy=1`) | confirmed |
+| EV-053 / AC5 | FileConverter ≥95% branches | Stricter than aggregate-only (`D-S062-01-ac` Q3=2) | confirmed |
+| EV-053 / docs | Delta manifest | feature-list + test-plan + decisions; inventory resolve in 07 | confirmed |
+| EV-053 / UI | Preview | Declined (`D-S062-ui-preview=2`); CI/Vitest only | confirmed |
+| EV-053 / route | Standard | skip 03/05/06/10/12/13 | confirmed |
+| EV-053 / Fn | Deepen | F29 + M5 only; no new Fn | confirmed |
+
+[Corpus: product §F29] [Corpus: product §M5] [Corpus: tests] [Corpus: adr/ADR-007]
+[Corpus: decisions §EV-053]
+
+## EV-052 / S061 — CI polish + quality PR stats + Sentry/Redis/Orval (`D-S061-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-052 / F29+F6 | Quality sticky PR comment #2 | match/soft-diff/fail/skip × product × profile; separate from EV-036 coverage | confirmed |
+| EV-052 / tests | #950 ≥95% gates | Restore ADR-007 floors; fill tests; inventory required | confirmed |
+| EV-052 / F30 | Sentry Developer free | API+FE+worker; DSN optional; no new K8s service | confirmed |
+| EV-052 / F21 | Upstash Redis free | Shared slowapi store; no DOKS Redis Deployment (`D-S061-redis=1`) | confirmed |
+| EV-052 / M5 | Orval or openapi-typescript | Pick in 04; typed FE client from OpenAPI | confirmed |
+| EV-052 / UI | 01 preview | N/A (`D-S061-ui-preview=3`) | confirmed |
+| EV-052 / route | Standard | skip 03/06/10/12/13 | confirmed |
+
+## EV-050 / S059 — codes.wmo.int Validated (#959) (`D-S059-01-ac=4a` + profile amend)
+
+| Prefix | Topic | Decision | Status |
+|--------|-------|----------|--------|
+| EV-050 / route | Standard | `00→16→01→02→04→05→07→08→09→11`; skip 03/06/10/12/13 (`D-S059-route=1`) | confirmed |
+| EV-050 / families | Membership v1 | Weather + recent + cloud amount/type + SIGMET/AIRMET phenomena + nilReason where lint touches (`D-S059-families=1a`) | confirmed |
+| EV-050 / fixtures | Expansion | Aggressive: RE*, AIRMET `_`, SpaceWxPhenomena, TCU this cycle (`D-S059-fixtures=2c`) | confirmed |
+| EV-050 / #882 | Live refresh | Design-only compose note; no job this cycle (`D-S059-882=3a`) | confirmed |
+| EV-050 / Fn | Deepen | F6/F12/F15/F20/F23/F24/F28 (no new Fn); UI N/A | amended |
+| EV-050 / profiles | annex3 vs iwxxm_us | All F6 products; `iwxxm_us` N/A where unsupported; classify shared / intentional L5 / true error; fix true errors (`D-S059-profiles=1b`) | confirmed |
+| EV-050 / UI | Preview | N/A — no browser UI | confirmed |
+| EV-050 / Validated | #889 AC5 | Satisfied via offline harvest + membership CI (`D-S059-validated=1`); supersedes Lean `D-S055-validated=1` for Validated | confirmed |
+
+[Corpus: product §F6/F12/F15/F20/F23/F24/F28] [Corpus: tests] [Corpus: tech-spec]
+[Corpus: decisions]
+
+## EV-048 / S057 — Strip internal doc refs (#951) (`D-S057-01-ac=1`)
+
+| Prefix | Topic | Decision | Status |
+|--------|-------|----------|--------|
+| EV-048 / F7 | Operator UI copy | No Corpus/ADR/EV/S0/`docs/` cites in operator-visible strings | confirmed |
+| EV-048 / F21 | Public OpenAPI + errors | Operator language only in descriptions/`detail` | confirmed |
+| EV-048 / guard | Patterns | `\[Corpus:`, `docs/sessions/`, `docs/feature-list`, `ADR-\d+`, `EV-\d+`, `S0\d+` (`D-S057-guard-s0=1`) + `TC-*`, `E##-##`, `#NNN` (`D-S057-04-guard-ext=1`) | confirmed |
+| EV-048 / UJ | UJ-055 | New journey; T0/T2; T3 if UI audit finds hits | confirmed |
+| EV-048 / UI | 01 preview | Non-deployed local Vite (`D-S057-ui-preview=1`) | confirmed |
+| EV-048 / route | Standard | 04/05/07–11 required; 12/13 waived | confirmed |
 
 ## EV-047 / S056 — M0 husky + converter perf + operator docs (`D-S056-01-ac=1`)
 

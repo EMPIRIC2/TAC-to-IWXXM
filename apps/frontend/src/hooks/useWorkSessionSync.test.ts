@@ -178,6 +178,23 @@ describe('useWorkSessionSync', () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
   });
 
+  it('flushAutoSave persists immediately when no debounce timer is active', async () => {
+    const { result } = renderHook(() =>
+      useWorkSessionSync({
+        sessionId: 'existing-session',
+        sessionStatus: 'draft',
+        onSessionSaved: vi.fn(),
+        onSessionIdAssigned: vi.fn(),
+      }),
+    );
+
+    await act(async () => {
+      await result.current.flushAutoSave(snapshot);
+    });
+
+    expect(mockUpdate).toHaveBeenCalledTimes(1);
+  });
+
   it('marks save indicator error when persist fails', async () => {
     mockCreate.mockRejectedValueOnce(new Error('save failed'));
     const { result } = renderHook(() =>

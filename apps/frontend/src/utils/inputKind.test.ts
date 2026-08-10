@@ -29,6 +29,8 @@ describe('inputKind', () => {
   it('handles empty AHL text and xml unknowns', () => {
     expect(looksLikeAhlBulletin('')).toBe(false);
     expect(looksLikeAhlBulletin('   \n')).toBe(false);
+    expect(detectInputKind('plain.txt')).toBe('tac');
+    expect(detectInputKind('document.xml')).toBe('unknown');
     expect(detectInputKind('plain.txt', 'METAR KJFK')).toBe('tac');
     expect(detectInputKind('other.xml', '<root/>')).toBe('unknown');
     expect(detectInputKind('other.xml', '<iwxxm:METAR xmlns:iwxxm="x"/>')).toBe(
@@ -36,5 +38,34 @@ describe('inputKind', () => {
     );
     expect(kindToMode('unknown')).toBe('tac');
     expect(kindToMode('tac')).toBe('tac');
+  });
+
+  it('uses the first non-empty line for AHL detection', () => {
+    expect(looksLikeAhlBulletin('\r\n\r\nSAUS31 KZNY 121200\nMETAR KJFK=')).toBe(true);
+  });
+
+  it('classifies .xml by content when present', () => {
+    const collectXml =
+      '<?xml version="1.0"?><collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/1.2"/>';
+    expect(detectInputKind('report.xml', collectXml)).toBe('collect_iwxxm');
+    expect(detectInputKind('report.xml')).toBe('unknown');
+  });
+
+  it('handles alternative headers, compressed extensions, and IWXXM XML without COLLECT', () => {
+    expect(
+      looksLikeAhlBulletin('\n  \nSAUS31 KZNY 121200 COR\nMETAR KJFK 121251Z='),
+    ).toBe(true);
+    expect(
+      looksLikeCollectIwxxm(
+        '<collect:MeteorologicalBulletin xmlns:iwxxm="https://icao.int/iwxxm"/>',
+      ),
+    ).toBe(true);
+    expect(looksLikeCollectIwxxm('<collect:Bulletin/>')).toBe(true);
+    expect(looksLikeCollectIwxxm('not a bulletin')).toBe(false);
+    expect(detectInputKind('report.gzip')).toBe('gzip');
+    expect(detectInputKind('single.xml', '<iwxxm:METAR xmlns:iwxxm="example"/>')).toBe(
+      'collect_iwxxm',
+    );
+    expect(kindToMode('collect_iwxxm')).toBe('collect_iwxxm');
   });
 });

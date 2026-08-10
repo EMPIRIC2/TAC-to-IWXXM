@@ -2,7 +2,7 @@
  * T2.6 — Decode panel Code | Explanation + residual display (UJ-015).
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DecodePanel } from './DecodePanel';
@@ -141,5 +141,38 @@ describe('DecodePanel', () => {
       />,
     );
     expect(screen.queryByTestId('decode-plain-language')).not.toBeInTheDocument();
+  });
+
+  it('reports toggles and renders loading, errors, and an empty result independently', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    const { rerender } = render(
+      <DecodePanel
+        segments={[]}
+        residuals={[]}
+        defaultOpen
+        loading
+        onOpenChange={onOpenChange}
+      />,
+    );
+
+    expect(screen.getByRole('status')).toHaveTextContent('Decoding…');
+    expect(screen.queryByText('No decode segments yet.')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Decode' }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+
+    rerender(
+      <DecodePanel
+        segments={[]}
+        residuals={[]}
+        defaultOpen
+        error="Decode service unavailable"
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Decode' }));
+    expect(screen.getByRole('alert')).toHaveTextContent('Decode service unavailable');
+
+    rerender(<DecodePanel segments={[]} residuals={[]} defaultOpen />);
+    expect(screen.getByText('No decode segments yet.')).toBeInTheDocument();
   });
 });

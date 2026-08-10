@@ -99,4 +99,19 @@ describe('AdminWorkSessionsPanel', () => {
       expect(screen.getByText('Failed to load work sessions')).toBeInTheDocument();
     });
   });
+
+  it('falls back to raw status text for unknown session statuses', async () => {
+    mockListAdmin.mockResolvedValueOnce({
+      items: [sampleSession({ status: 'archived' as WorkSession['status'] })],
+      total: 1,
+      page: 1,
+      limit: 50,
+    });
+
+    render(<AdminWorkSessionsPanel accessToken="admin-token" />);
+
+    await waitFor(() => {
+      expect(screen.getByText('archived')).toBeInTheDocument();
+    });
+  });
 });

@@ -1,7 +1,20 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-08-08 (S054 / EV-045)
+> Last updated: 2026-08-08 (S057 / EV-048)
+
+## S057 / EV-048 05-verify-tech (2026-08-08)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| D-S057-04-plan | 2026-08-08 | Plan | Approve M1–M3 / T1.1–T3.3 → 05 then 07 | confirmed |
+| D-S057-04-guard-ext | 2026-08-08 | Guard | Also fail on `TC-*`, `E##-##`, `#NNN` in scanned surfaces | confirmed |
+| S5.M1 | 2026-08-08 | Patterns | Duplicate BE pytest + FE Vitest lists (no shared pkg) | confirmed |
+| S5.M2 | 2026-08-08 | `#NNN` | Allowlist path if domain false positive | confirmed |
+| S5.M3 | 2026-08-08 | ADR in exceptions | OK if never HTTP `detail` (T2.3 spot-check) | confirmed |
+| D-S057-gateB | 2026-08-08 | Gate B | PASS → 07-build M1 | confirmed |
+
+Session report: `docs/sessions/S057-strip-internal-doc-refs/reports/05-verify-tech.md`.
 
 ## S054 / EV-045 05-verify-tech (2026-08-08)
 

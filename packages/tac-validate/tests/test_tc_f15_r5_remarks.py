@@ -65,7 +65,8 @@ def test_r5_accept_body_with_rmk_ok(case: dict[str, Any]) -> None:
 
 @pytest.mark.parametrize("case", _REMARK_INFO, ids=_case_ids(_REMARK_INFO))
 def test_r5_us_remark_emits_info(case: dict[str, Any]) -> None:
-    report = lint(_read_tac(case["tac"]), product=case["product"])
+    # REMARK_US_EXTENSION is L5 — only under profile=iwxxm_us (EV-050 / AC8).
+    report = lint(_read_tac(case["tac"]), product=case["product"], profile="iwxxm_us")
     assert report.ok is True
     matched = [i for i in report.issues if i.code == "REMARK_US_EXTENSION"]
     assert matched
@@ -74,6 +75,13 @@ def test_r5_us_remark_emits_info(case: dict[str, Any]) -> None:
     assert any("iwxxm_us" in i.message.lower() for i in matched)
     if case.get("require_spans"):
         assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
+
+
+@pytest.mark.parametrize("case", _REMARK_INFO, ids=_case_ids(_REMARK_INFO))
+def test_r5_us_remark_info_suppressed_under_annex3(case: dict[str, Any]) -> None:
+    report = lint(_read_tac(case["tac"]), product=case["product"], profile="annex3")
+    assert report.ok is True
+    assert "REMARK_US_EXTENSION" not in {i.code for i in report.issues}
 
 
 @pytest.mark.parametrize("case", _REMARK_ERRORS, ids=_case_ids(_REMARK_ERRORS))
