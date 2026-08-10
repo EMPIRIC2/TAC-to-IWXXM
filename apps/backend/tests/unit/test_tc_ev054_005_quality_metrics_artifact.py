@@ -97,3 +97,11 @@ def test_tc_ev054_005_missing_artifact_raises(tmp_path) -> None:
     missing = tmp_path / "nope.json"
     with pytest.raises(QualityMetricsArtifactMissing):
         load_corpus_metrics(str(missing))
+
+
+def test_tc_ev054_005_get_detail_handles_malformed_details() -> None:
+    assert get_detail({"details": "not-a-map"}, "metar-A3-1") is None
+    assert get_detail({"details": {"metar-A3-1": "not-a-dict"}}, "metar-A3-1") is None
+    assert get_detail({"details": {}}, "unknown-stem") is None
+    assert list_file_rows({"files": None}) == []
+    assert list_file_rows({"files": [{"product": "taf"}]}, product=" METAR ") == []
