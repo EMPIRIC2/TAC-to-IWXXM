@@ -14,12 +14,13 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Vitest branches / FileConverter |
-| **Active milestone** | M3 Inventory + docs + tip CI |
-| **Active task** | T3.3 |
-| **Tasks completed** | 8 / 9 (M1+M2+T3.1–T3.2 complete) |
-| **Stage** | 07-build |
+| **Active milestone** | M3 complete — handoff 08/09/11 |
+| **Active task** | — (07 complete) |
+| **Tasks completed** | 9 / 9 |
+| **Stage** | 08-verify-build |
 | **Last updated** | 2026-08-10 |
 | **Plan approval** | `D-S062-04-plan=1` |
+| **PR** | [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` (CI green) |
 
 ## Tech decisions (locked `D-S062-04-plan=1`)
 
@@ -93,12 +94,12 @@ None.
 |---|------|------|--------|-------------|------------|-----------|
 | T3.1 | Resolve `branch_waiver` in coverage inventory; remove FileConverter intentional exclude | Docs | **completed** | AC3; TC-EV053-003 | T2.3 | — |
 | T3.2 | Record FileConverter branch % in session verify artifact (AC5 proof); update evolve-decisions closeout notes as needed | Docs | **completed** | AC5; D-S062-ac5-proof | T2.3 | — |
-| T3.3 | Push tip; confirm frontend coverage CI green; prepare PR → `stage` after 08/09/11 | CI | **in_progress** | AC4; TC-EV053-004 | T3.1, T3.2 | — |
+| T3.3 | Push tip; confirm frontend coverage CI green; prepare PR → `stage` after 08/09/11 | CI | **completed** | AC4; TC-EV053-004 | T3.1, T3.2 | — |
 
 ## Git Strategy
 
 - Branch: `evolve/EV-053-vitest-branches-95` (base `stage`)
-- PR target: `stage` (not `main`)
+- PR: [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` — CI green @ run `31416416906`
 - One logical commit per task when practical; M2 may batch related tests
 
 ## Out of scope
