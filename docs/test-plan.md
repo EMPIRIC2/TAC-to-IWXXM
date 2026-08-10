@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated membership; prior EV-046/048)
+> **Last updated**: 2026-08-10 (S063 / EV-054 — #836 Quality metrics tab; prior EV-050/053)
 
 ## Scope
 
@@ -110,6 +110,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
+| UJ-056 | F7.q deepen (EV-054) | Quality metrics primary tab — official corpus match/residuals/lint/validate (#836) | **H4–H5 required** | TC-EV054-001..008 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -1979,6 +1980,81 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Coverage report (json/html or per-file summary) shows FileConverter
   branches ≥95; documented in session verify report
 - **Source**: EV-053 AC5 (`D-S062-01-ac` Q3=2)
+
+### EV-054 / S063 — Quality metrics tab (#836 / F7.q)
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Primary **Quality metrics** shell tab browses official WMO corpus by
+  product with precomputed match / residuals / lint / validate and unified XML diff.
+- **Pass criteria**: AC1–AC7 in evolve-decisions §EV-054; TC-EV054-001..008; **UJ-056**
+- **Source**: F7.q deepen; EV-054 / S063; [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836);
+  ADR-032; ADR-025
+
+### TC-EV054-001: Quality metrics is a primary shell tab
+
+- **Level**: T0 / T2
+- **Objective**: App exposes a dedicated Quality metrics view peer to Convert / History
+  (not a panel inside FileConverter)
+- **Pass criteria**: Navigation reaches the tab; Vitest and/or Playwright assert shell route/view
+- **Source**: EV-054 AC1; UJ-056; `D-S063-shell-tab`
+
+### TC-EV054-002: Corpus listed by product / file type
+
+- **Level**: T0 / T2
+- **Objective**: Official corpus inventory grouped by product; ADR-032 tiers visible;
+  FIXTURE_GAPS / deferred stems labeled
+- **Pass criteria**: Catalog ∪ gaps completeness; no silent omission of in-scope pin stems
+- **Source**: EV-054 AC1 / AC5; UJ-039 deepen
+
+### TC-EV054-003: File detail — match + unified XML diff
+
+- **Level**: T0 / T2
+- **Objective**: Selecting a stem shows official + our XML/TAC, match status, and a
+  **unified XML diff** (`D-S063-diff=2`)
+- **Pass criteria**: Diff visible for a non-equal pair or documented equal/empty-diff state
+  for a passer; raw panes remain inspectable
+- **Source**: EV-054 AC2
+
+### TC-EV054-004: Residuals / lint / validate panels
+
+- **Level**: T0 / T2
+- **Objective**: Detail pane surfaces decode residuals, tac-validate issues, and
+  iwxxm-validate XSD/Schematron results (empty states when clean)
+- **Pass criteria**: Clean passer shows empty/expected allowlisted diagnostics; dirty fixture
+  (when present) shows non-empty panel content
+- **Source**: EV-054 AC3; ADR-025
+
+### TC-EV054-005: Product summary counts match precomputed fixture
+
+- **Level**: T0
+- **Objective**: Aggregate counts per product equal the precomputed metrics artifact
+  served by `GET /api/v1/quality-metrics`
+- **Pass criteria**: Backend unit/fixture test compares response summaries to golden artifact
+- **Source**: EV-054 AC4; `D-S063-compute=1`; `D-S063-gateA=2`
+
+### TC-EV054-006: No Supabase / no live upstream WMO fetch
+
+- **Level**: T0 / T2
+- **Objective**: Metrics routes and FE tab do not call Supabase or download upstream WMO
+  trees; data comes from precomputed fixtures via our API
+- **Pass criteria**: Tests assert handler reads local artifact only; no Supabase client on path
+- **Source**: EV-054 AC7; `D-S063-gateA=2`
+
+### TC-EV054-007: Playwright / H4–H5 smoke (UJ-056)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Open Quality metrics tab → filter one product → open one passer → see
+  clean or expected diagnostics (+ unified diff pane present); FE calls quality-metrics API
+- **Pass criteria**: Playwright green locally/CI; H4–H5 after staging deploy (12/13)
+- **Source**: EV-054 AC6; UJ-056; connectivity gates
+
+### TC-EV054-008: Public quality-metrics HTTP API
+
+- **Level**: T0 / T2 / H0i
+- **Objective**: `GET /api/v1/quality-metrics` and `GET /api/v1/quality-metrics/{stem}` are
+  public (no JWT), return msgspec JSON, 404 unknown stem, serve precomputed data
+- **Pass criteria**: Backend tests + OpenAPI paths; CORS covered by existing H0c patterns
+- **Source**: EV-054 AC4/AC7; [Corpus: api]; `D-S063-gateA=2`
 
 ### Live harness — staging (EV-043 / EV-044)
 

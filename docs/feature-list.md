@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated harvest + membership; prior EV-046/048)
+> **Last updated**: 2026-08-10 (S063 / EV-054 — #836 Quality metrics tab; prior EV-050/053)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX; **deepen** S057 / EV-048 #951 no internal-doc cites in operator UI |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX; **deepen** S057 / EV-048 #951 no internal-doc cites in operator UI; **deepen** S063 / EV-054 **F7.q** Quality metrics tab (#836) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -302,6 +302,7 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
+  | F7.q | #836 | Quality metrics tab — official WMO corpus by product (match, residuals, lint, validate) — S063 / EV-054 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -369,6 +370,27 @@
   2. No operator-visible UI string matches guard patterns (see test-plan TC-EV048).
   3. Automated guard covers FE string catalogs; comments/tests excluded.
   4. UJ-055 / TC-EV048-003 green.
+- **S063 / EV-054 deepen (F7.q / #836 — Quality metrics tab)**: Primary **app shell tab**
+  (peer to Convert / History — not a panel inside the convert workbench) that browses the
+  official WMO IWXXM example corpus by product/file type and surfaces **precomputed** match,
+  residuals, lint, and validate diagnostics via public **`GET /api/v1/quality-metrics*`**
+  (`D-S063-compute=1` + `D-S063-gateA=2`). Per-file detail includes **unified XML diff** of
+  official vs our conversion (`D-S063-diff=2`). Does **not** flip F7 → Implemented;
+  complements CI matrices (#815 / #831 / F29) without replacing them.
+- **Acceptance (EV-054 / #836 — F7.q)** — **approved** (`D-S063-01-ac=1`; Gate A amend
+  `D-S063-gateA=2`):
+  1. Quality metrics is a **separate primary tab** (shell navigation); lists official corpus
+     files by product / file type (ADR-032 tiers visible).
+  2. Selecting a file shows official peer + our conversion (TAC/XML inspectable) with
+     **match status** and a **unified XML diff**.
+  3. Residuals, lint, and validation issue panels visible (empty states when clean).
+  4. Product-level summary counts match the precomputed fixture run (or documented refresh),
+     loaded via **`GET /api/v1/quality-metrics`**.
+  5. Deferred / FIXTURE_GAPS stems labeled; no silent missing in-scope official files.
+  6. H4–H5 or Playwright smoke: open tab → filter one product → open one passer → clean or
+     expected diagnostics (**UJ-056** / TC-EV054).
+  7. No Supabase and no live upstream WMO fetch; metrics come from our public API backed by
+     precomputed fixtures (same API host as convert — not FE-only bundle).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

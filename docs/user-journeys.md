@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-08 (S057 / EV-048 UJ-055 strip internal doc refs; prior UJ-054 / EV-047)
+> **Last updated**: 2026-08-10 (S063 / EV-054 UJ-056 Quality metrics tab; prior UJ-055 / EV-048)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -72,6 +72,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
+| UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -811,6 +812,37 @@ representative privacy/auth empty-state copy without seeing internal planning vo
 `docs/…` path citations in those surfaces. TC-EV048-001..005. **Tier: T0 / T2**;
 **T3** if UI audit finds visible hits.
 [Corpus: product §F7] [Corpus: product §F21] [Corpus: api] [Corpus: journeys]
+
+---
+
+### UJ-056: Browse Official Corpus Quality Metrics Tab (F7.q / #836)
+
+**Actor**: Meteorological operator / maintainer / demo presenter
+
+**Goal**: Open a **dedicated Quality metrics tab** (primary shell navigation — not inside
+the convert workbench) and explore official WMO IWXXM example quality by product: match,
+residuals, lint, validate, with a unified XML diff vs our conversion.
+
+**Steps**:
+
+1. From the operator app, open the **Quality metrics** primary tab (peer to Convert /
+   History — not a sub-panel of the convert workbench).
+2. See product-level summary counts (match / residual / lint / validate) loaded from
+   public **`GET /api/v1/quality-metrics`** (precomputed fixture-backed — not live WMO fetch).
+3. Filter to one product (e.g. METAR); open a known passer stem
+   (`GET /api/v1/quality-metrics/{stem}`).
+4. In the detail pane: inspect TAC, official XML, our XML; confirm **match status** and a
+   **unified XML diff**; residuals / lint / validate panels show empty or expected diagnostics.
+5. Confirm a deferred / gap stem is labeled (not silently missing).
+6. Optional later: deep-link the same stem into the convert workbench.
+
+**Acceptance**: AC1–AC7 in evolve-decisions §EV-054; TC-EV054-001..008. Default view needs
+no Supabase and no live upstream WMO fetch — metrics come from public
+`GET /api/v1/quality-metrics*` backed by precomputed fixtures (`D-S063-gateA=2`).
+**Tier: T0 / T2 / T3 / H4–H5**.
+Related: UJ-032 / UJ-039 / UJ-042.
+[Corpus: product §F7] [Corpus: product §F25] [Corpus: journeys] [Corpus: tests]
+[Corpus: api] [Corpus: adr/ADR-032]
 
 ---
 

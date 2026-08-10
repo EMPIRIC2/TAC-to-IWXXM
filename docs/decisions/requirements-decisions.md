@@ -1,6 +1,24 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-10 (S062 / EV-053)
+> Stage: 01-requirements | Last updated: 2026-08-10 (S063 / EV-054)
+
+## EV-054 / S063 — Quality metrics tab (#836 / F7.q) (`D-S063-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-054 / Fn | Deepen F7 + **F7.q** | No F34 (`D-S063-fn=1`) | confirmed |
+| EV-054 / shell | Separate primary app-shell tab | Peer to Convert / History — not FileConverter panel (`D-S063-shell-tab=1`) | confirmed |
+| EV-054 / compute | Precomputed metrics JSON | Served via public `GET /api/v1/quality-metrics*` (`D-S063-compute=1` + Gate A=2) | amended |
+| EV-054 / Gate A | PASS + metrics HTTP API | Re-open api-contract; re-enable 05 (`D-S063-gateA=2`) | confirmed |
+| EV-054 / diff | Unified XML diff in v1 | Plus inspectable raw panes (`D-S063-diff=2`) | confirmed |
+| EV-054 / journey | **UJ-056** | TC-EV054-001..007; H4–H5 required | confirmed |
+| EV-054 / AC | AC1–AC7 | See evolve-decisions §EV-054 | confirmed |
+| EV-054 / docs | Delta manifest | feature-list + journeys + test-plan + decisions; skip API/config unless 04 | confirmed |
+| EV-054 / UI preview | Declined at open | `D-S063-ui-preview=2`; re-offer at 11 | confirmed |
+| EV-054 / route | Standard | include 10/12/13; skip 03/05*/06 | confirmed |
+
+[Corpus: product §F7] [Corpus: journeys] [Corpus: tests] [Corpus: adr/ADR-032]
+[Corpus: decisions §EV-054]
 
 ## EV-053 / S062 — Vitest branches ≥95 FileConverter (#968) (`D-S062-01-ac=1`)
 

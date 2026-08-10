@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-04 (S038 / EV-031 F30/F31 Auth + DO sessions; S040 / EV-032 F32 VONA `product=vona`; #846)
+> **Last updated**: 2026-08-10 (S063 / EV-054 — #836 `GET /api/v1/quality-metrics*`; prior EV-031/032)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -34,7 +34,7 @@ Convert/lint/validate/disseminate remain **public** (no JWT). JWT required only 
 
 | Surface | Runtime | OpenAPI |
 |---------|---------|---------|
-| High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
+| High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`, `/quality-metrics*`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
 | High-churn **requests** (same routes) | **multipart/form-data** via FastAPI `Form`/`File` (unchanged intake) | Form fields documented as today |
 | `/auth/*`, work-sessions | **pydantic** (restored F31) | pydantic |
 | airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
@@ -366,6 +366,94 @@ provenance from `PROVENANCE_MAP` so the FE catalog spells out WMO/ICAO/IWXXM sou
 `code` / default `severity` / `message_template` match the registry module. FE uses this for
 code tooltips; live lint findings still come from `POST /lint-tac`.
 
+### Quality metrics corpus (S063 / EV-054 / #836 / F7.q)
+
+Public read API for the operator **Quality metrics** tab. Serves **precomputed** official
+WMO corpus quality data (match / residuals / lint / validate) generated at fixture/CI time —
+not a live re-download of upstream WMO trees and not a per-request full convert pipeline
+for the default view (`D-S063-compute=1` + `D-S063-gateA=2`).
+
+**Auth**: **None** (F21 public) — same as convert / lint-issue-catalog.
+
+```
+GET /api/v1/quality-metrics
+```
+
+**Purpose**: Product-level summary counts + file inventory for the corpus browser.
+
+**Query** (optional):
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `product` | no | Filter inventory to one product (e.g. `metar`, `taf`, `sigmet`) |
+
+**Response** (msgspec encode; pydantic OpenAPI alias) — minimum fields:
+
+```json
+{
+  "generated_at": "2026-08-10T00:00:00Z",
+  "iwxxm_pin": "2025-2",
+  "summaries": [
+    {
+      "product": "metar",
+      "match_pass": 12,
+      "match_fail": 1,
+      "residual_nonempty": 0,
+      "lint_fail": 0,
+      "validate_fail": 0,
+      "deferred_gaps": 1
+    }
+  ],
+  "files": [
+    {
+      "stem": "metar-A3-1",
+      "product": "metar",
+      "tier": "wmoPass",
+      "match_status": "equal",
+      "residual_count": 0,
+      "lint_error_count": 0,
+      "validate_error_count": 0,
+      "deferred": false
+    }
+  ]
+}
+```
+
+```
+GET /api/v1/quality-metrics/{stem}
+```
+
+**Purpose**: Per-file detail for the master–detail pane (TAC, official XML, our XML,
+match status, residuals, lint issues, validate issues). Unified XML diff is computed
+**client-side** from `official_xml` / `converted_xml` (no server `diff` field in v1;
+`D-S063-diff=2` + `D-S063-diff-impl`).
+
+**Path**: `stem` — catalog / fixture stem (e.g. `metar-A3-1`).
+
+**Response** (msgspec; minimum fields):
+
+```json
+{
+  "stem": "metar-A3-1",
+  "product": "metar",
+  "tier": "wmoPass",
+  "deferred": false,
+  "tac": "METAR …=",
+  "official_xml": "<?xml …",
+  "converted_xml": "<?xml …",
+  "match_status": "equal",
+  "residuals": [],
+  "lint_issues": [],
+  "validate_issues": []
+}
+```
+
+**Errors**: `404` when stem unknown; `503` when precomputed artifact missing at runtime
+(misconfigured deploy) — operator-facing `detail` must stay free of internal doc refs
+(EV-048).
+
+**Non-goals**: Live upstream WMO fetch; replacing CI matrix jobs; JWT/Supabase for this route.
+
 ### Decode TAC (S011 / #702)
 
 ```
@@ -596,6 +684,9 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 ### Session changelog
 
+- S063 / EV-054 (2026-08-10): F7.q #836 — additive public `GET /api/v1/quality-metrics` +
+  `GET /api/v1/quality-metrics/{stem}` (precomputed corpus quality; msgspec). Gate A M1
+  override (`D-S063-gateA=2`).
 - S038 / EV-031 (2026-08-03): F30/F31 — `/auth/*` + work-sessions restored; convert public;
   DO Postgres; ADR-033; amend TC-F21-auth-gone semantics
 - S008 (2026-07-12): product required; profile; tac2iwxxm_available; validate profile; error codes

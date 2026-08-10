@@ -3,10 +3,268 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 62
-evolve_cycle_counter: 53
-active_session: null
+session_counter: 63
+evolve_cycle_counter: 54
+active_session:
+  id: S063-quality-metrics-tab
+  type: feature
+  title: "UI: Quality metrics tab — official IWXXM corpus (#836)"
+  intent: "EV-054: Operator Quality metrics tab for official WMO IWXXM corpus by product (match, residuals, lint, validate). F7 deepen (possible F7.q). Preset Standard. Issue #836."
+  status: in_progress
+  started: '2026-08-10'
+  started_at: '2026-08-10'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-054
+  branch: evolve/EV-054-quality-metrics-tab
+  branch_base: stage@f2926ac8
+  branch_base_sha: f2926ac8
+  branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  branch_status: active
+  branch_exists: true
+  tip_sha: f2926ac8
+  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  tip_sha_pushed: false
+  tip_sha_note: 'branch from stage@f2926ac8; tip not pushed'
+  artifacts_dir: docs/sessions/S063-quality-metrics-tab/
+  github_issues:
+  - 836
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  prior_session: S062-vitest-branches-95
+  current_stage: 07-build
+  current_stage_note: "07-build M1 COMPLETE (T1.1–T1.3); next M2 T2.1"
+  decisions:
+    D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
+    D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
+    D-S063-scope: "1 — full #836 scope"
+    D-S063-fn: "1 — deepen F7 only; note F7.q; no F34"
+    D-S063-compute: "1 — precomputed fixture/CI JSON default"
+    D-S063-01-manifest: "1 — feature-list + journeys + test-plan + decisions"
+    D-S063-01-ac: "1 — AC1–AC7 locked"
+    D-S063-diff: "2 — unified XML diff in v1"
+    D-S063-shell-tab: "1 — separate primary app-shell tab (not FileConverter panel)"
+    D-S063-gateA: "2 — PASS; require public GET /api/v1/quality-metrics* in v1; reopen api-contract; re-enable 05"
+    D-S063-04-plan: "1 — approve as drafted; no npm diff; single corpus blob"
+    D-S063-05: "1 — Gate B PASS; C1=15; C2 Impl→Test; C3–C7 hygiene; → 07 M1"
+  artifacts:
+  - path: docs/sessions/S063-quality-metrics-tab/
+    status: present
+    note: "session-brief + routing-plan + evolve-plan-card"
+  - path: docs/sessions/S063-quality-metrics-tab/session-brief.md
+    status: present
+  - path: docs/sessions/S063-quality-metrics-tab/routing-plan.md
+    status: present
+    note: "amended — 05-verify-tech required; ordered includes 05"
+  - path: docs/sessions/S063-quality-metrics-tab/evolve-plan-card.md
+    status: present
+    note: "updated — Phase 0–1 locked; F7 deepen / F7.q note; precomputed default"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/01-requirements.md
+    status: present
+    note: "01 COMPLETE D-S063-01-ac=1 / manifest=1; AC1–AC7"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/02-verify-plan-audit.md
+    status: completed
+    note: "02 COMPLETE — Gate A PASS D-S063-gateA=2; M1 DENIED; M1′ APPROVED"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/execution-plan.md
+    status: present
+    note: "04 COMPLETE D-S063-04-plan=1 — 15 tasks M1–M5"
+  - path: docs/sessions/S063-quality-metrics-tab/build-plan-card.md
+    status: present
+    note: "04 COMPLETE D-S063-04-plan=1"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/05-verify-tech.md
+    status: present
+    note: "05 COMPLETE D-S063-05=1 Gate B PASS"
+  - path: docs/api-contract.md
+    status: present
+    note: "delta — public GET /api/v1/quality-metrics*"
+  - path: docs/feature-list.md
+    status: present
+    note: "delta — Quality metrics tab / F7 deepen (F7.q note)"
+  - path: docs/user-journeys.md
+    status: present
+    note: "UJ-056 Quality metrics tab"
+  - path: docs/test-plan.md
+    status: present
+    note: "TC-EV054 Quality metrics"
+  - path: docs/decisions/evolve-decisions.md
+    status: present
+    note: "EV-054 — Gate B PASS D-S063-05=1; handoff 07 M1"
+  routing_plan:
+  - stage: 00-context
+    status: completed
+    note: "D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
+  - stage: 16-evolve
+    status: in_progress
+    note: "Phase C — 05 done; 07-build M1 in progress"
+  - stage: 01-requirements
+    status: completed
+    note: "COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; report reports/01-requirements.md; handoff 02-verify-plan"
+  - stage: 02-verify-plan
+    status: completed
+    note: "COMPLETE — Gate A PASS D-S063-gateA=2; report reports/02-verify-plan-audit.md; handoff 04; 05 re-enabled"
+  - stage: 04-tech-plan
+    status: completed
+    note: "COMPLETE — D-S063-04-plan=1; execution-plan + build-plan-card; 15 tasks"
+  - stage: 05-verify-tech
+    status: completed
+    note: "COMPLETE — D-S063-05=1 Gate B PASS; report reports/05-verify-tech.md"
+  - stage: 07-build
+    status: in_progress
+    note: "M1 COMPLETE T1.1–T1.3; next M2 API"
+  - stage: 08-verify-build
+    status: pending
+  - stage: 09-qa
+    status: pending
+  - stage: 10-e2e
+    status: pending
+  - stage: 11-verify-impl
+    status: pending
+  - stage: 12-verify-deploy
+    status: pending
+  - stage: 13-deploy-smoke
+    status: pending
+  notes:
+  - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
+  - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
+  - "2026-08-10 D-S063-04-plan=1 — 04 COMPLETE; 05-verify-tech started; await D-S063-05 (C1–C7); report reports/05-verify-tech.md"
+  - "2026-08-10 04 execution-plan + build-plan-card drafted; await D-S063-04-plan; 04 remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-10 D-S063-gateA=2 — Gate A PASS; M1 FE-only bundle DENIED; M1′ API APPROVED; require public GET /api/v1/quality-metrics*; reopen api-contract; re-enable 05; 02 COMPLETE; handoff 04-tech-plan"
+  - "2026-08-10 01 COMPLETE — D-S063-01-ac=1 / D-S063-01-manifest=1 / D-S063-diff=2 / D-S063-shell-tab=1; deepen F7 (note F7.q); separate primary app-shell tab (not FileConverter panel); unified XML diff in v1; handoff 02-verify-plan Gate A"
+  - "2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements"
+  - "2026-08-10 board — #836 In progress; #959 Done"
+  - "2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; branch evolve/EV-054-quality-metrics-tab @ f2926ac8; → 16-evolve Phase 0–1"
+  - "2026-08-10 open_session — S063/EV-054 allocated; 00-context intake in_progress; branch evolve/EV-054-quality-metrics-tab not created; Preset Standard pending approval; #836; deepen F7"
 sessions:
+
+
+- id: S063-quality-metrics-tab
+  type: feature
+  title: "UI: Quality metrics tab — official IWXXM corpus (#836)"
+  intent: "EV-054: Operator Quality metrics tab for official WMO IWXXM corpus by product (match, residuals, lint, validate). F7 deepen (possible F7.q). Preset Standard. Issue #836."
+  status: in_progress
+  started: '2026-08-10'
+  started_at: '2026-08-10'
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-054
+  branch: evolve/EV-054-quality-metrics-tab
+  branch_base: stage@f2926ac8
+  branch_base_sha: f2926ac8
+  branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  branch_status: active
+  branch_exists: true
+  tip_sha: f2926ac8
+  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  tip_sha_pushed: false
+  tip_sha_note: 'branch from stage@f2926ac8; tip not pushed'
+  artifacts_dir: docs/sessions/S063-quality-metrics-tab/
+  github_issues:
+  - 836
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  prior_session: S062-vitest-branches-95
+  current_stage: 07-build
+  current_stage_note: "07-build M1 COMPLETE (T1.1–T1.3); next M2 T2.1"
+  decisions:
+    D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
+    D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
+    D-S063-scope: "1 — full #836 scope"
+    D-S063-fn: "1 — deepen F7 only; note F7.q; no F34"
+    D-S063-compute: "1 — precomputed fixture/CI JSON default"
+    D-S063-01-manifest: "1 — feature-list + journeys + test-plan + decisions"
+    D-S063-01-ac: "1 — AC1–AC7 locked"
+    D-S063-diff: "2 — unified XML diff in v1"
+    D-S063-shell-tab: "1 — separate primary app-shell tab (not FileConverter panel)"
+    D-S063-gateA: "2 — PASS; require public GET /api/v1/quality-metrics* in v1; reopen api-contract; re-enable 05"
+    D-S063-04-plan: "1 — approve as drafted; no npm diff; single corpus blob"
+    D-S063-05: "1 — Gate B PASS; C1=15; C2 Impl→Test; C3–C7 hygiene; → 07 M1"
+  artifacts:
+  - path: docs/sessions/S063-quality-metrics-tab/
+    status: present
+    note: "session-brief + routing-plan + evolve-plan-card"
+  - path: docs/sessions/S063-quality-metrics-tab/session-brief.md
+    status: present
+  - path: docs/sessions/S063-quality-metrics-tab/routing-plan.md
+    status: present
+    note: "amended — 05-verify-tech required; ordered includes 05"
+  - path: docs/sessions/S063-quality-metrics-tab/evolve-plan-card.md
+    status: present
+    note: "updated — Phase 0–1 locked; F7 deepen / F7.q note; precomputed default"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/01-requirements.md
+    status: present
+    note: "01 COMPLETE D-S063-01-ac=1 / manifest=1; AC1–AC7"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/02-verify-plan-audit.md
+    status: completed
+    note: "02 COMPLETE — Gate A PASS D-S063-gateA=2; M1 DENIED; M1′ APPROVED"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/execution-plan.md
+    status: present
+    note: "04 COMPLETE D-S063-04-plan=1 — 15 tasks M1–M5"
+  - path: docs/sessions/S063-quality-metrics-tab/build-plan-card.md
+    status: present
+    note: "04 COMPLETE D-S063-04-plan=1"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/05-verify-tech.md
+    status: present
+    note: "05 COMPLETE D-S063-05=1 Gate B PASS"
+  - path: docs/api-contract.md
+    status: present
+    note: "delta — public GET /api/v1/quality-metrics*"
+  - path: docs/feature-list.md
+    status: present
+    note: "delta — Quality metrics tab / F7 deepen (F7.q note)"
+  - path: docs/user-journeys.md
+    status: present
+    note: "UJ-056 Quality metrics tab"
+  - path: docs/test-plan.md
+    status: present
+    note: "TC-EV054 Quality metrics"
+  - path: docs/decisions/evolve-decisions.md
+    status: present
+    note: "EV-054 — Gate B PASS D-S063-05=1; handoff 07 M1"
+  routing_plan:
+  - stage: 00-context
+    status: completed
+    note: "D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
+  - stage: 16-evolve
+    status: in_progress
+    note: "Phase C — 05 done; 07-build M1 in progress"
+  - stage: 01-requirements
+    status: completed
+    note: "COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; report reports/01-requirements.md; handoff 02-verify-plan"
+  - stage: 02-verify-plan
+    status: completed
+    note: "COMPLETE — Gate A PASS D-S063-gateA=2; report reports/02-verify-plan-audit.md; handoff 04; 05 re-enabled"
+  - stage: 04-tech-plan
+    status: completed
+    note: "COMPLETE — D-S063-04-plan=1; execution-plan + build-plan-card; 15 tasks"
+  - stage: 05-verify-tech
+    status: completed
+    note: "COMPLETE — D-S063-05=1 Gate B PASS; report reports/05-verify-tech.md"
+  - stage: 07-build
+    status: in_progress
+    note: "M1 COMPLETE T1.1–T1.3; next M2 API"
+  - stage: 08-verify-build
+    status: pending
+  - stage: 09-qa
+    status: pending
+  - stage: 10-e2e
+    status: pending
+  - stage: 11-verify-impl
+    status: pending
+  - stage: 12-verify-deploy
+    status: pending
+  - stage: 13-deploy-smoke
+    status: pending
+  notes:
+  - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
+  - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
+  - "2026-08-10 D-S063-04-plan=1 — 04 COMPLETE; 05-verify-tech started; await D-S063-05 (C1–C7); report reports/05-verify-tech.md"
+  - "2026-08-10 04 execution-plan + build-plan-card drafted; await D-S063-04-plan; 04 remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-10 D-S063-gateA=2 — Gate A PASS; M1 FE-only bundle DENIED; M1′ API APPROVED; require public GET /api/v1/quality-metrics*; reopen api-contract; re-enable 05; 02 COMPLETE; handoff 04-tech-plan"
+  - "2026-08-10 01 COMPLETE — D-S063-01-ac=1 / D-S063-01-manifest=1 / D-S063-diff=2 / D-S063-shell-tab=1; deepen F7 (note F7.q); separate primary app-shell tab (not FileConverter panel); unified XML diff in v1; handoff 02-verify-plan Gate A"
+  - "2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements"
+  - "2026-08-10 board — #836 In progress; #959 Done"
+  - "2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; branch evolve/EV-054-quality-metrics-tab @ f2926ac8; → 16-evolve Phase 0–1"
+  - "2026-08-10 open_session — S063/EV-054 allocated; 00-context intake in_progress; branch not created; Preset Standard pending approval; #836; deepen F7"
 
 - id: S062-vitest-branches-95
   type: feature
@@ -17263,6 +17521,99 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S063-01-ac
+  date: '2026-08-10'
+  timestamp: '2026-08-10'
+  resolved_at: '2026-08-10'
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: acceptance
+  status: confirmed
+  topic: 'S063/EV-054 01-requirements AC lock'
+  summary: 'D-S063-01-ac=1 — AC1–AC7 locked'
+  decision: |
+    D-S063-01-ac=1 — AC1–AC7 locked.
+    01-requirements COMPLETE. Handoff 02-verify-plan Gate A.
+    Related: D-S063-01-manifest=1; D-S063-diff=2 (unified XML diff in v1);
+    D-S063-shell-tab=1 (separate primary app-shell tab, not FileConverter panel).
+    deepen F7 (note F7.q). 16-evolve remains orchestrator.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-054-quality-metrics-tab
+  related_features:
+  - F7
+  related_decisions:
+  - D-S063-01-manifest
+  - D-S063-diff
+  - D-S063-shell-tab
+  report: docs/sessions/S063-quality-metrics-tab/reports/01-requirements.md
+  note: '01 COMPLETE; handoff 02-verify-plan Gate A'
+- id: D-S063-shell-tab
+  date: '2026-08-10'
+  timestamp: '2026-08-10'
+  resolved_at: '2026-08-10'
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: ux_placement
+  status: confirmed
+  topic: 'S063 Quality metrics UI placement'
+  summary: 'D-S063-shell-tab=1 — separate primary app-shell tab (not FileConverter panel)'
+  decision: |
+    D-S063-shell-tab=1 — separate primary app-shell tab (not FileConverter panel).
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-054-quality-metrics-tab
+  related_features:
+  - F7
+  note: 'separate shell tab; deepen F7 (note F7.q)'
+- id: D-S063-diff
+  date: '2026-08-10'
+  timestamp: '2026-08-10'
+  resolved_at: '2026-08-10'
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: product_scope
+  status: confirmed
+  topic: 'S063 XML diff scope for Quality metrics v1'
+  summary: 'D-S063-diff=2 — unified XML diff in v1'
+  decision: |
+    D-S063-diff=2 — unified XML diff in v1.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '2'
+  branch: evolve/EV-054-quality-metrics-tab
+  related_features:
+  - F7
+  note: 'unified XML diff in v1'
+- id: D-S063-01-manifest
+  date: '2026-08-10'
+  timestamp: '2026-08-10'
+  resolved_at: '2026-08-10'
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: manifest
+  status: confirmed
+  topic: 'S063/EV-054 01-requirements doc manifest'
+  summary: 'D-S063-01-manifest=1 — feature-list + journeys + test-plan + decisions'
+  decision: |
+    D-S063-01-manifest=1 — feature-list + journeys + test-plan + decisions.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-054-quality-metrics-tab
+  related_features:
+  - F7
+  note: 'delta standing docs for Quality metrics tab'
 - id: D-S061-cov-branches
   date: '2026-08-09'
   timestamp: '2026-08-09'
@@ -32089,6 +32440,86 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S063-quality-metrics-tab/reports/execution-plan.md
+  type: execution-plan
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'S063/EV-054 04 drafted — await D-S063-04-plan'
+- path: docs/sessions/S063-quality-metrics-tab/build-plan-card.md
+  type: build-plan-card
+  stage: 04-tech-plan
+  skill_id: 04-tech-plan
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'S063/EV-054 04 drafted — await D-S063-04-plan'
+- path: docs/sessions/S063-quality-metrics-tab/reports/01-requirements.md
+  type: report
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'S063/EV-054 01 COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; handoff 02-verify-plan'
+- path: docs/feature-list.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'S063/EV-054 delta — Quality metrics / F7 deepen (F7.q note)'
+- path: docs/user-journeys.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'S063/EV-054 UJ-056 Quality metrics tab'
+- path: docs/test-plan.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'S063/EV-054 TC-EV054 Quality metrics'
+- path: docs/decisions/evolve-decisions.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'S063/EV-054 01 COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; handoff 02-verify-plan'
+- path: docs/sessions/S063-quality-metrics-tab/evolve-plan-card.md
+  type: session-artifact
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  created_at: '2026-08-10'
+  updated_at: '2026-08-10'
+  status: present
+  note: 'updated — Phase 0–1 locked; F7 deepen / F7.q note; precomputed default'
 - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/qa-report.md
   type: report
   kind: qa
@@ -35720,13 +36151,198 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-054
+  session_id: S063-quality-metrics-tab
+  type: feature
+  cycle_type: feature
+  status: in_progress
+  started: '2026-08-10'
+  started_at: '2026-08-10'
+  title: "Quality metrics tab — official IWXXM corpus (#836)"
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  deepen_note: "Deepen F7 only; document F7.q as sub-id note; no F34 (D-S063-fn=1)"
+  github_issues:
+  - 836
+  issues:
+  - 836
+  preset: Standard
+  scope_summary: "LOCKED D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1 — full #836 Quality metrics tab (workbench/F7): official WMO IWXXM corpus by product with match/residuals/lint/validate; deepen F7 only (note F7.q; no F34); default view precomputed fixture/CI metrics JSON (on-demand refresh optional later); complements CI matrices #815/#831; Standard routing"
+  current_stage: 07-build
+  current_stage_note: "07-build M1 COMPLETE (T1.1–T1.3); next M2 T2.1"
+  branch: evolve/EV-054-quality-metrics-tab
+  branch_base: stage@f2926ac8
+  branch_base_sha: f2926ac8
+  branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  branch_status: active
+  tip_sha: f2926ac8
+  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  tip_sha_pushed: false
+  routing_plan:
+    status: approved
+    decision: D-S063-route=1
+    preset: Standard
+    required_stages:
+    - 00-context
+    - 16-evolve
+    - 01-requirements
+    - 02-verify-plan
+    - 04-tech-plan
+    - 05-verify-tech
+    - 07-build
+    - 08-verify-build
+    - 09-qa
+    - 10-e2e
+    - 11-verify-impl
+    - 12-verify-deploy
+    - 13-deploy-smoke
+    skipped_stages:
+    - 03-plan-tooling
+    - 06-tech-tooling
+    ordered: "00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13"
+  routing_plan_note: "D-S063-route=1 Standard; amended D-S063-gateA=2 — 05-verify-tech required (not skipped); ordered includes 05; artifact docs/sessions/S063-quality-metrics-tab/routing-plan.md"
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-10'
+      completed: '2026-08-10'
+      note: "COMPLETE — D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
+    16-evolve:
+      status: in_progress
+      started: '2026-08-10'
+      note: "Phase C — 05 done; 07-build M1 in progress"
+      phase0_status: completed
+      phase0_note: "COMPLETE — scope/fn/compute locked (D-S063-scope=1, D-S063-fn=1, D-S063-compute=1)"
+      phase1_status: completed
+      phase1_note: "COMPLETE — deepen F7 (note F7.q; no F34); routing unchanged Standard; proceed 01-requirements"
+    01-requirements:
+      status: completed
+      started: '2026-08-10'
+      completed: '2026-08-10'
+      note: "COMPLETE — D-S063-01-ac=1 / D-S063-01-manifest=1 / D-S063-diff=2 / D-S063-shell-tab=1; report docs/sessions/S063-quality-metrics-tab/reports/01-requirements.md; handoff 02-verify-plan"
+    02-verify-plan:
+      status: completed
+      started: '2026-08-10'
+      completed: '2026-08-10'
+      note: "COMPLETE — Gate A PASS D-S063-gateA=2; report docs/sessions/S063-quality-metrics-tab/reports/02-verify-plan-audit.md; handoff 04; 05 re-enabled"
+    04-tech-plan:
+      status: in_progress
+      started: '2026-08-10'
+      note: "drafted — execution-plan + build-plan-card present; plan pending approval (D-S063-04-plan)"
+    05-verify-tech:
+      status: pending
+      note: "required — re-enabled D-S063-gateA=2 (public quality-metrics API); not skipped"
+    07-build:
+      status: pending
+    08-verify-build:
+      status: pending
+    09-qa:
+      status: pending
+    10-e2e:
+      status: pending
+    11-verify-impl:
+      status: pending
+    12-verify-deploy:
+      status: pending
+    13-deploy-smoke:
+      status: pending
+  gates:
+    a_to_b: passed
+    a_to_b_note: "D-S063-gateA=2 — PASS; require public GET /api/v1/quality-metrics*; reopen api-contract; re-enable 05"
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  checkpoints:
+    phase_a: passed
+    phase_a_note: "D-S063-gateA=2 — Gate A PASS; M1 FE-only DENIED; M1′ API APPROVED"
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  decisions:
+    D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
+    D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
+    D-S063-scope: "1 — full #836 scope"
+    D-S063-fn: "1 — deepen F7 only; note F7.q; no F34"
+    D-S063-compute: "1 — precomputed fixture/CI JSON default"
+    D-S063-01-manifest: "1 — feature-list + journeys + test-plan + decisions"
+    D-S063-01-ac: "1 — AC1–AC7 locked"
+    D-S063-diff: "2 — unified XML diff in v1"
+    D-S063-shell-tab: "1 — separate primary app-shell tab (not FileConverter panel)"
+    D-S063-gateA: "2 — PASS; require public GET /api/v1/quality-metrics* in v1; reopen api-contract; re-enable 05"
+  decisions_locked:
+  - D-S063-route=1
+  - D-S063-ui-preview=2
+  - D-S063-scope=1
+  - D-S063-fn=1
+  - D-S063-compute=1
+  - D-S063-01-manifest=1
+  - D-S063-01-ac=1
+  - D-S063-diff=2
+  - D-S063-shell-tab=1
+  - D-S063-gateA=2
+  artifacts:
+  - path: docs/sessions/S063-quality-metrics-tab/reports/execution-plan.md
+    status: present
+    note: "04 COMPLETE D-S063-04-plan=1 — 15 tasks M1–M5"
+  - path: docs/sessions/S063-quality-metrics-tab/build-plan-card.md
+    status: present
+    note: "04 COMPLETE D-S063-04-plan=1"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/05-verify-tech.md
+    status: present
+    note: "05 COMPLETE D-S063-05=1 Gate B PASS"
+  - path: docs/decisions/evolve-decisions.md
+    status: present
+    note: "EV-054 — Gate B PASS D-S063-05=1; handoff 07 M1"
+  - path: docs/sessions/S063-quality-metrics-tab/session-brief.md
+    status: present
+  - path: docs/sessions/S063-quality-metrics-tab/routing-plan.md
+    status: present
+    note: "amended — 05-verify-tech required; ordered includes 05"
+  - path: docs/sessions/S063-quality-metrics-tab/evolve-plan-card.md
+    status: present
+    note: "updated — Phase 0–1 locked; F7 deepen / F7.q note; precomputed default"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/01-requirements.md
+    status: present
+    note: "01 COMPLETE D-S063-01-ac=1 / manifest=1; AC1–AC7"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/02-verify-plan-audit.md
+    status: completed
+    note: "02 COMPLETE — Gate A PASS D-S063-gateA=2; M1 DENIED; M1′ APPROVED"
+  - path: docs/api-contract.md
+    status: present
+    note: "delta — public GET /api/v1/quality-metrics*"
+  - path: docs/feature-list.md
+    status: present
+    note: "delta — Quality metrics tab / F7 deepen (F7.q note)"
+  - path: docs/user-journeys.md
+    status: present
+    note: "UJ-056 Quality metrics tab"
+  - path: docs/test-plan.md
+    status: present
+    note: "TC-EV054 Quality metrics"
+  notes:
+  - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
+  - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
+  - "2026-08-10 D-S063-04-plan=1 — 04 COMPLETE; 05-verify-tech started; await D-S063-05 (C1–C7); report reports/05-verify-tech.md"
+  - "2026-08-10 04 execution-plan + build-plan-card drafted; await D-S063-04-plan; 04 remains in_progress; no git commit by workflow-state-manager"
+  - "2026-08-10 D-S063-gateA=2 — Gate A PASS; M1 FE-only bundle DENIED; M1′ API APPROVED; require public GET /api/v1/quality-metrics*; reopen api-contract; re-enable 05; 02 COMPLETE; handoff 04-tech-plan"
+  - "2026-08-10 01 COMPLETE — D-S063-01-ac=1 / D-S063-01-manifest=1 / D-S063-diff=2 / D-S063-shell-tab=1; deepen F7 (note F7.q); separate primary app-shell tab (not FileConverter panel); unified XML diff in v1; handoff 02-verify-plan Gate A"
+  - "2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements"
+  - "2026-08-10 board — #836 In progress; #959 Done"
+  - "2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; EV-054 created; → 16-evolve Phase 0–1"
+  note: "IN PROGRESS — 04 drafted; await D-S063-04-plan; current_stage 04-tech-plan; 05 re-enabled; Gate A PASS D-S063-gateA=2; deepen F7 (note F7.q); branch evolve/EV-054-quality-metrics-tab @ f2926ac8"
 - id: EV-053
   session_id: S062-vitest-branches-95
   type: feature
   cycle_type: general
-  status: in_progress
+  status: completed
   started: '2026-08-10'
   started_at: '2026-08-10'
+  completed: '2026-08-10'
+  completed_at: '2026-08-10'
+  close_decision: D-S062-close=1
+  close_note: 'Close #968; complete EV-053 / S062; #973 → stage @ ef68ac67; no stage→main'
   title: "Vitest branches ≥95 FileConverter follow-up (#968)"
   feature_ids: [F29, M5]
   deepen_feature_ids: [F29, M5]
@@ -35734,22 +36350,25 @@ evolve_cycles:
   parent_waiver: D-S061-cov-branches=3
   parent_cycle: EV-052
   preset: Standard
-  current_stage: 07-build
-  current_stage_note: "D-S062-04-plan=1; M1 in_progress"
+  current_stage: completed
+  current_stage_note: "CLOSED — D-S062-merge=1 / D-S062-close=1; EV-053 COMPLETE; #973 → stage @ ef68ac67; #968 closed"
   branch: evolve/EV-053-vitest-branches-95
   branch_base: stage@6f25c0b1
   branch_base_sha: 6f25c0b1
   branch_base_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
-  branch_status: open
-  tip_sha: 9bb5f851
-  tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
-  tip_sha_pushed: false
+  branch_status: merged
+  tip_sha: ef68ac67
+  tip_sha_full: ef68ac673481d895b5ae1c0c434554a3b883a0a5
+  tip_sha_pushed: true
+  merge_pr: 973
+  merge_sha: ef68ac673481d895b5ae1c0c434554a3b883a0a5
   gates:
     a_to_b: passed
     a_to_b_note: "D-S062-gateA=1 — Gate A PASS; M1=1"
     b_to_c: passed
     b_to_c_note: "D-S062-04-plan=1; 05 skipped per route"
-    c_to_d: pending
+    c_to_d: passed
+    c_to_d_note: "08/09/11 COMPLETE; #973 merged"
     deploy: waived
     deploy_note: "12/13 skipped per D-S062-route (CI-only)"
   checkpoints:
@@ -35757,8 +36376,8 @@ evolve_cycles:
     phase_a_note: "D-S062-gateA=1"
     phase_b: passed
     phase_b_note: "D-S062-04-plan=1"
-    phase_c: pending
-    phase_d: pending
+    phase_c: passed
+    phase_d: passed
   decisions:
     D-S062-route: "1 — Standard; skip 03,05,06,10,12,13"
     D-S062-ui-preview: "2 — no local UI preview"
@@ -35769,6 +36388,8 @@ evolve_cycles:
     D-S062-gateA: "1 — PASS + M1 approve"
     D-S062-m1: "1 — AC5 verify-report proof; optional CI if cheap"
     D-S062-04-plan: "1 — approve as drafted; skip 05; 07 M1"
+    D-S062-merge: "1 — Merge #973 → stage @ ef68ac67"
+    D-S062-close: "1 — Close #968; complete EV-053 / S062; no stage→main"
   decisions_locked:
   - D-S062-route=1
   - D-S062-ui-preview=2
@@ -35779,6 +36400,8 @@ evolve_cycles:
   - D-S062-gateA=1
   - D-S062-m1=1
   - D-S062-04-plan=1
+  - D-S062-merge=1
+  - D-S062-close=1
   artifacts:
   - path: docs/sessions/S062-vitest-branches-95/session-brief.md
     status: present
@@ -35796,7 +36419,7 @@ evolve_cycles:
   - "2026-08-10 D-S062-gateA=1 / M1=1 — Gate A PASS; 04 START"
   - "2026-08-10 D-S062-01-ac=1 — 01 COMPLETE; Gate A / 02 next"
   - "2026-08-10 opened after D-S062-route=1; parent D-S061-cov-branches=3 / #968"
-  note: "IN_PROGRESS — 07-build M1"
+  note: "CLOSED — D-S062-close=1; EV-053 COMPLETE; #973 → stage @ ef68ac67"
 - id: EV-052
   session_id: S061-ci-polish-quality-pr-stats
   type: feature
@@ -46796,24 +47419,24 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-053-vitest-branches-95
-  ahead_of_origin: 1
+  current_branch: evolve/EV-054-quality-metrics-tab
+  ahead_of_origin: 0
   pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: false
   dirty_note:
-  tip_sha: 9bb5f851
-  tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
-  tip_note: 'S062/EV-053 OPENED — tip 9bb5f851 session open commit'
-  evolve_branch: evolve/EV-053-vitest-branches-95
-  evolve_tip_sha: 9bb5f851
-  evolve_tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
+  tip_sha: f2926ac8
+  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  tip_note: 'S063/EV-054 — branch from stage@f2926ac8; tip not pushed'
+  evolve_branch: evolve/EV-054-quality-metrics-tab
+  evolve_tip_sha: f2926ac8
+  evolve_tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   evolve_tip_sha_pushed: false
-  stage_merge_sha: 6f25c0b1
-  stage_merge_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
-  stage_tip_sha: 6f25c0b1
-  stage_tip_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
+  stage_merge_sha: f2926ac8
+  stage_merge_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  stage_tip_sha: f2926ac8
+  stage_tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -46824,10 +47447,14 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-053-vitest-branches-95
-  note: 'S062/EV-053 OPENED — D-S062-route=1; Vitest branches ≥95 #968; base stage@6f25c0b1'
+  recommended_branch: evolve/EV-054-quality-metrics-tab
+  note: 'S063/EV-054 — 01 COMPLETE (D-S063-01-ac=1 / diff=2 / shell-tab=1); current_stage 02-verify-plan Gate A; deepen F7 (note F7.q); separate app-shell tab; unified XML diff v1; branch evolve/EV-054-quality-metrics-tab @ f2926ac8; tip_sha_pushed=false; #836 In progress'
 
   notes:
+  - '2026-08-10 01 COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; deepen F7 (note F7.q); separate primary app-shell tab; unified XML diff v1; handoff 02-verify-plan Gate A; no git commit by workflow-state-manager'
+  - '2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements; no git commit by workflow-state-manager'
+  - '2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; branch evolve/EV-054-quality-metrics-tab @ stage@f2926ac8; tip f2926ac8 not pushed; → 16-evolve Phase 0–1; no git commit by workflow-state-manager'
+  - '2026-08-10 open_session S063/EV-054 — allocated; 00-context intake; branch evolve/EV-054-quality-metrics-tab pending create from stage; tip null; Preset Standard pending approval; #836; no git commit by workflow-state-manager'
   - '2026-08-10 D-S062-route=1 — opened S062/EV-053 on evolve/EV-053-vitest-branches-95 @ stage@6f25c0b1; #968 In progress'
   - '2026-08-09 D-S060-close=1 — EV-051 / S060 completed; active_session cleared; PR #966 MERGED → stage @ 8882856b; no git commit by workflow-state-manager'
   - '2026-08-09 D-S060-merge=1 — PR #966 MERGED → stage @ 8882856b; CI green on PR; post-merge stage CI/Deploy queued; awaiting D-S060-close; no git commit by workflow-state-manager'
@@ -47364,6 +47991,20 @@ git_history:
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
 
+  - name: evolve/EV-054-quality-metrics-tab
+    base: stage
+    base_sha: f2926ac8
+    base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+    status: active
+    created: '2026-08-10'
+    exists: true
+    purpose: "EV-054 / S063 Quality metrics tab — official IWXXM corpus (#836)"
+    session_id: S063-quality-metrics-tab
+    evolve_cycle_id: EV-054
+    tip_sha: f2926ac8
+    tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+    tip_sha_pushed: false
+    note: "Opened after D-S063-route=1; tip f2926ac8 (stage base); not pushed"
   - name: evolve/EV-053-vitest-branches-95
     base: stage
     base_sha: 6f25c0b1
