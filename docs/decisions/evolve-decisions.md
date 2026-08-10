@@ -3,6 +3,68 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-053 — Vitest branches ≥95 FileConverter follow-up (S062)
+
+**Session**: S062-vitest-branches-95  
+**Features**: deepen **F29**, **M5** (no new Fn)  
+**Started**: 2026-08-10  
+**Branch**: `evolve/EV-053-vitest-branches-95` (base `stage@6f25c0b1`)  
+**Status**: **in_progress** — 07 M2 COMPLETE; M3 inventory/AC5 proof done; tip CI + 08→11 next  
+**Corpus**: [Corpus: product §F29] [Corpus: product §M5] [Corpus: tests]
+[Corpus: adr/ADR-007] [Corpus: decisions §EV-052] [Corpus: decisions §EV-053]
+
+### Build closeout notes (2026-08-10)
+
+| Item | Evidence |
+|------|----------|
+| Aggregate Vitest branches | **96.39%** @ `b3416505` (suite green) |
+| FileConverter branches (AC5) | **95.95%** (521/543) — `reports/m3-ac5-coverage-proof.md` |
+| Inventory `branch_waiver` | **resolved** — S061 `coverage-surface-inventory.yaml` |
+| Parent waiver | `D-S061-cov-branches=3` closed by EV-053 / #968 |
+
+### Scope (Phase 0–1 — locked 2026-08-10)
+
+| ID | Decision |
+|----|----------|
+| D-S062-route | **1** — Standard: `00→16→01→02→04→07→08→09→11`; skip `03,05,06,10,12,13` |
+| D-S062-ui-preview | **2** — No non-deployed UI preview; Vitest/docs only |
+| D-S062-dirty | **2** — S061 closeout already on `stage` via [#972](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/972); open clean from `stage` |
+| D-S062-fc-strategy | **1** — Re-include `FileConverter.tsx` in Vitest coverage; fill tests until aggregate ≥95 |
+| D-S062-01-manifest | **1** — Delta: feature-list + test-plan + decisions (+ inventory in 07) |
+| D-S062-01-ac | **1** — Lock AC1–AC5 (AC5 = FileConverter ≥95% branches when included) |
+| D-S062-gateA | **1** — PASS Gate A + M1 approve (AC5 via coverage JSON/html + session verify; optional CI if cheap) |
+| D-S062-m1 | **1** — Same as Gate A M1 verdict |
+| D-S062-04-plan | **1** — Approve execution plan as drafted; skip 05; start 07 M1 |
+
+### Acceptance (locked `D-S062-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Vitest `branches` threshold ≥95 in `apps/frontend/vitest.config.ts` (lines/stmts/funcs remain ≥95) | TC-EV053-001 |
+| AC2 | FE coverage suite green with FileConverter in the coverage set | TC-EV053-002 |
+| AC3 | Coverage inventory `branch_waiver` resolved; excludes justified (no silent soft gate) | TC-EV053-003 |
+| AC4 | Standing docs cite closeout; #968 closable after merge | TC-EV053-004 |
+| AC5 | With FileConverter included, **that file’s** branch coverage ≥95% | TC-EV053-005 |
+
+### Out of scope
+
+- Lowering lines/stmts/funcs below 95
+- #874 mutation / #727 Schemathesis / #836 UI metrics
+- stage→main this cycle
+- Operator UI redesign
+- Keeping FileConverter excluded while only raising aggregate branches
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 11`.
+
+### Parent waiver
+
+`D-S061-cov-branches=3` — EV-052 enforced lines/stmts/funcs ≥95; branches floor 84 +
+explicit child #968 (not silent). This cycle **closes** that waiver.
+
+---
+
 ## Cycle EV-052 — CI polish + quality PR stats + free Sentry/Redis/Orval (S061)
 
 **Session**: S061-ci-polish-quality-pr-stats  

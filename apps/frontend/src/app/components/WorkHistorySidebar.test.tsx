@@ -166,4 +166,19 @@ describe('WorkHistorySidebar', () => {
     expect(mockListServer).toHaveBeenCalledWith('jwt-token', { limit: 5 });
     expect(mockList).not.toHaveBeenCalled();
   });
+
+  it('falls back to raw status text for unknown session statuses', async () => {
+    mockList.mockResolvedValue({
+      items: [sampleSession({ status: 'archived' as WorkSession['status'] })],
+      total: 1,
+      page: 1,
+      limit: 5,
+    });
+
+    render(<WorkHistorySidebar onSelectSession={onSelectSession} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('archived')).toBeInTheDocument();
+    });
+  });
 });

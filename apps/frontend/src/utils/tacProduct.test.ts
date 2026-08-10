@@ -49,6 +49,17 @@ describe('detectTacProduct', () => {
   it('honors an explicit defaultProduct when no keyword matches', () => {
     expect(detectTacProduct('KJFK 121851Z 24008KT 10SM FEW250', 'TAF')).toBe('TAF');
   });
+
+  it('falls back to defaultProduct when a matched token is not in TAC_PRODUCTS', () => {
+    const includesSpy = vi.spyOn(Array.prototype, 'includes').mockReturnValue(false);
+    try {
+      expect(detectTacProduct('METAR KJFK 121851Z 24008KT 10SM FEW250', 'TAF')).toBe(
+        'TAF',
+      );
+    } finally {
+      includesSpy.mockRestore();
+    }
+  });
 });
 
 describe('resolveConvertProduct', () => {

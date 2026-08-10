@@ -59,10 +59,10 @@ class TestTcEv052CoverageGates:
             path = ROOT / surface["config_path"]
             assert _fail_under_from_toml(path) >= 95, surface["id"]
 
-    def test_frontend_vitest_lines_stmts_funcs_at_least_95(self) -> None:
-        """D-S061-cov-branches=3 — branches waived via child issue; others ≥95."""
+    def test_frontend_vitest_all_metrics_at_least_95(self) -> None:
+        """EV-053 / #968 closes D-S061-cov-branches — all four Vitest metrics ≥95."""
         thresholds = _vitest_thresholds(FRONTEND_VITEST)
-        for metric in ("lines", "statements", "functions"):
+        for metric in ("lines", "statements", "functions", "branches"):
             assert thresholds[metric] >= 95, (
                 f"frontend {metric}={thresholds[metric]} < 95"
             )
@@ -70,8 +70,19 @@ class TestTcEv052CoverageGates:
         fe = next(s for s in data["surfaces"] if s["id"] == "frontend")
         waiver = fe.get("branch_waiver") or {}
         assert waiver.get("decision") == "D-S061-cov-branches=3"
-        assert thresholds["branches"] == int(waiver["threshold"])
-        assert int(waiver["threshold"]) < 95
+        assert waiver.get("status") == "resolved", (
+            "EV-053 / #968 must resolve frontend branch_waiver (was D-S061-cov-branches)"
+        )
+        assert waiver.get("child_issue") == 968
+        assert waiver.get("resolve_cycle") == "EV-053"
+        assert (
+            "FileConverter.tsx"
+            not in (
+                FRONTEND_VITEST.read_text(encoding="utf-8")
+                .split("exclude:")[1]
+                .split("thresholds:")[0]
+            )
+        )
 
     def test_shared_js_vitest_at_least_95(self) -> None:
         thresholds = _vitest_thresholds(ROOT / "packages/shared/vitest.config.ts")

@@ -289,6 +289,27 @@ describe('API Utils', () => {
       await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow();
     });
 
+    it('falls back to top-level message when convert error detail is absent', async () => {
+      mockFetchResponse({ message: 'Validation rejected' }, false, 422);
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow(
+        'Validation rejected',
+      );
+    });
+
+    it('falls back to HTTP status when convert error body has no message fields', async () => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: false,
+        status: 503,
+        statusText: '',
+        json: vi.fn().mockResolvedValueOnce({}),
+      });
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow(
+        'HTTP 503',
+      );
+    });
+
     it('should handle network errors during conversion', async () => {
       (global.fetch as any).mockRejectedValueOnce(new Error('Network timeout'));
 
@@ -761,6 +782,21 @@ describe('API Utils', () => {
       ).rejects.toThrow();
     });
 
+    it('prefers nested API details and falls back to message fields', async () => {
+      mockFetchResponse({ detail: { message: 'nested lint failure' } }, false, 422);
+      await expect(lintTac({ manualText: 'METAR' })).rejects.toThrow(
+        'nested lint failure',
+      );
+
+      mockFetchResponse({ message: 'validation message' }, false, 422);
+      await expect(validateIwxxm({ manualText: 'METAR' })).rejects.toThrow(
+        'validation message',
+      );
+
+      mockFetchResponse({ detail: { message: ['not text'] }, message: '' }, false, 503);
+      await expect(lintTac({ manualText: 'METAR' })).rejects.toThrow('HTTP 503');
+    });
+
     it('posts validate with TAC/XML and returns ValidateResponse', async () => {
       mockFetchResponse({
         is_valid: true,
@@ -927,6 +963,48 @@ describe('API Utils', () => {
       ).rejects.toThrow('bulletin too large');
     });
 
+    it('uses string detail and message fallbacks for convert-bulletin errors', async () => {
+      mockFetchResponse({ detail: 'plain bulletin failure' }, false, 400);
+      await expect(convertBulletin({ product: 'metar' })).rejects.toThrow(
+        'plain bulletin failure',
+      );
+
+      mockFetchResponse({ message: 'missing bulletin body' }, false, 422);
+      await expect(convertBulletin({ product: 'metar' })).rejects.toThrow(
+        'missing bulletin body',
+      );
+    });
+
+    it('uses bulletin defaults and stringifies a non-string detail error', async () => {
+      mockFetchResponse(
+        { detail: { code: 'invalid_bulletin' }, message: '' },
+        false,
+        422,
+      );
+      await expect(convertBulletin({ product: 'metar' })).rejects.toThrow(
+        JSON.stringify({ code: 'invalid_bulletin' }),
+      );
+
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: null,
+          report_count: 0,
+          tt: null,
+          aa: null,
+          cccc: null,
+          yygggg: null,
+          bbb: null,
+        },
+        results: [],
+      });
+      await convertBulletin({ product: 'taf' });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('manual_text')).toBeNull();
+      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('lint')).toBe('true');
+    });
+
     it('throws EndpointNotImplementedError on ingest-collect 501', async () => {
       mockFetchResponse(
         {
@@ -947,6 +1025,15 @@ describe('API Utils', () => {
       ).rejects.toBeInstanceOf(EndpointNotImplementedError);
     });
 
+    it('uses COLLECT placeholder defaults when the 501 body has no details', async () => {
+      mockFetchResponse({}, false, 501);
+      await expect(ingestCollect({ manualText: '<collect/>' })).rejects.toMatchObject({
+        message: 'COLLECT / FTBP ingest is not implemented yet (placeholder).',
+        status: 501,
+        code: 'not_implemented',
+      });
+    });
+
     it('posts ingest-collect success path', async () => {
       mockFetchResponse({ message: 'ok', status: 'accepted' });
       const file = new File(['<c/>'], 'c.xml', { type: 'application/xml' });
@@ -961,9 +1048,45 @@ describe('API Utils', () => {
       );
     });
 
+    it('uses configured validation layers and false stop-on-error', async () => {
+      mockFetchResponse({
+        is_valid: false,
+        version: '2025-2',
+        profile: 'annex3',
+        layers_run: ['XSD'],
+        layers_passed: [],
+        layers_failed: ['XSD'],
+        total_issues: 1,
+        issues: [],
+        issues_by_layer: {},
+        package_ok: false,
+        package_issues: [],
+      });
+
+      await validateIwxxm({
+        xmlContent: ' <iwxxm:METAR/> ',
+        iwxxmVersion: '2023-1',
+        layers: ['XSD', 'SCHEMATRON'],
+        stopOnError: false,
+      });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('xml_content')).toBe('<iwxxm:METAR/>');
+      expect(body.get('iwxxm_version')).toBe('2023-1');
+      expect(body.get('stop_on_error')).toBe('false');
+      expect(body.getAll('layers')).toEqual(['XSD', 'SCHEMATRON']);
+    });
+
     it('throws on ingest-collect non-501 failure', async () => {
       mockFetchResponse({ detail: { message: 'bad upload' } }, false, 400);
       await expect(ingestCollect({ manualText: 'x' })).rejects.toThrow('bad upload');
+    });
+
+    it('falls back to top-level message for ingest-collect failures', async () => {
+      mockFetchResponse({ message: 'collect payload invalid' }, false, 400);
+      await expect(ingestCollect({ manualText: 'x' })).rejects.toThrow(
+        'collect payload invalid',
+      );
     });
 
     it('sends convert optional bulletin/log fields', async () => {
@@ -984,6 +1107,25 @@ describe('API Utils', () => {
         accessToken: 'tok',
       });
       expect(global.fetch).toHaveBeenCalled();
+    });
+
+    it('uses default conversion fields when optional values are omitted', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({ manualText: '   ' });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('manual_text')).toBeNull();
+      expect(body.get('product')).toBe('METAR');
+      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('validate_output')).toBe('false');
+      expect(body.get('include_nil_reasons')).toBe('true');
+      expect(body.get('preview')).toBeNull();
     });
   });
 

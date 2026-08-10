@@ -17,6 +17,33 @@ describe('resultTraceability', () => {
     });
   });
 
+  it('defaults a product-less headline to METAR', () => {
+    expect(parseTacHeadline('KJFK 121251Z 18012KT')).toEqual({
+      product: 'METAR',
+      station: 'KJFK',
+      time: '121251Z',
+    });
+  });
+
+  it('returns null fields for blank or unparseable TAC', () => {
+    expect(parseTacHeadline('')).toEqual({
+      product: null,
+      station: null,
+      time: null,
+    });
+    expect(parseTacHeadline('\n\n')).toEqual({
+      product: null,
+      station: null,
+      time: null,
+    });
+  });
+
+  it('deriveTacDisplayTitle uses METAR fallback in headline labels', () => {
+    expect(deriveTacDisplayTitle('KJFK 121251Z 18012KT', 'manual_input.txt')).toBe(
+      'METAR KJFK 121251Z',
+    );
+  });
+
   it('deriveTacDisplayTitle builds headline label', () => {
     const tac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
     expect(deriveTacDisplayTitle(tac, 'manual_input.txt')).toBe('METAR FAOR 101200Z');
@@ -26,10 +53,20 @@ describe('resultTraceability', () => {
     expect(deriveTacDisplayTitle('', 'uploaded.metar')).toBe('uploaded.metar');
   });
 
+  it('uses a compact unknown TAC as the display title', () => {
+    expect(deriveTacDisplayTitle('  unusual   input  ', 'uploaded.metar')).toBe(
+      'unusual input',
+    );
+  });
+
   it('truncateTacSnippet shortens long TAC', () => {
     const long = 'METAR ' + 'X'.repeat(100);
     expect(truncateTacSnippet(long, 20).endsWith('…')).toBe(true);
     expect(truncateTacSnippet(long, 20).length).toBe(20);
+  });
+
+  it('keeps snippets at or below the requested length', () => {
+    expect(truncateTacSnippet('  METAR   KJFK  ', 20)).toBe('METAR KJFK');
   });
 
   it('resolveOriginalTac prefers API tac_input', () => {
@@ -43,5 +80,7 @@ describe('resultTraceability', () => {
       'METAR MANUAL',
     );
     expect(resolveOriginalTac('', '', 'METAR FILE')).toBe('METAR FILE');
+    expect(resolveOriginalTac('  ', undefined, undefined)).toBe('');
+    expect(resolveOriginalTac('', undefined, ' METAR FILE ')).toBe('METAR FILE');
   });
 });

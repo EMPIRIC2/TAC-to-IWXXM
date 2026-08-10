@@ -43,18 +43,15 @@ export default defineConfig({
         'src/utils/gunzip.ts',
         // App shell / router — covered by Playwright smoke + UJ-045..047 live (T7.1)
         'src/app/App.tsx',
-        // Workbench shell — dense UI; unit + Playwright cover paths. Excluded so
-        // lines/stmts/funcs hard-gates stay honest (EV-052 / #950). Branch uplift
-        // for this file tracked on the D-S061-cov-branches=3 child issue.
-        'src/app/components/FileConverter.tsx',
+        // FileConverter.tsx re-included for EV-053 / #968 (D-S062-fc-strategy=1) —
+        // branches ≥95 with file-level AC5; do not re-exclude without a new explicit waiver.
       ],
       thresholds: {
-        // ADR-007 / EV-052 / #950 — lines/statements/functions ≥95.
-        // Branches: explicit waiver D-S061-cov-branches=3 — child issue under #950
-        // (FileConverter-heavy); do not treat 84 as a silent soft gate.
+        // ADR-007 / EV-053 / #968 — lines/statements/functions/branches ≥95.
+        // Closes D-S061-cov-branches=3 (prior branches floor 84).
         lines: 95,
         functions: 95,
-        branches: 84,
+        branches: 95,
         statements: 95,
       },
     },

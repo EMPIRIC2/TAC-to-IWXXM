@@ -199,6 +199,42 @@ describe('privacyPreferences (TC-F22)', () => {
       expect(loaded.necessary).toBe(true);
     });
 
+    it('ignores non-record stored JSON and invalid field types', () => {
+      localStorage.setItem(
+        PRIVACY_PREFS_STORAGE_KEY,
+        JSON.stringify(['not', 'a', 'record']),
+      );
+      expect(loadPrivacyPreferences().schemaVersion).toBe(PRIVACY_SCHEMA_VERSION);
+
+      localStorage.setItem(
+        PRIVACY_PREFS_STORAGE_KEY,
+        JSON.stringify({
+          schemaVersion: 'not-a-number',
+          workHistoryLocal: 'yes',
+          analytics: true,
+        }),
+      );
+      const loaded = loadPrivacyPreferences();
+      expect(loaded.schemaVersion).toBe(PRIVACY_SCHEMA_VERSION);
+      expect(loaded.workHistoryLocal).toBe(true);
+    });
+
+    it('returns false when navigator is unavailable', () => {
+      const originalNavigator = globalThis.navigator;
+      Object.defineProperty(globalThis, 'navigator', {
+        configurable: true,
+        value: undefined,
+      });
+      try {
+        expect(detectGlobalPrivacyControl()).toBe(false);
+      } finally {
+        Object.defineProperty(globalThis, 'navigator', {
+          configurable: true,
+          value: originalNavigator,
+        });
+      }
+    });
+
     it('tolerates missing localStorage APIs', () => {
       const original = globalThis.localStorage;
       Object.defineProperty(globalThis, 'localStorage', {

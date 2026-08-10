@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   consoleLevelPasses,
   issueLevelPasses,
+  issueSeverityRank,
   mapOnErrorToStopOnError,
   mapStrictToValidation,
 } from './convertParams';
@@ -46,5 +47,12 @@ describe('convertParams', () => {
     expect(issueLevelPasses('info', 'INFO')).toBe(true);
     expect(issueLevelPasses('warning', 'ERROR')).toBe(false);
     expect(issueLevelPasses('error', 'WARNING')).toBe(true);
+  });
+
+  it('ranks debug, information aliases, and unknown issue severity', () => {
+    expect(issueSeverityRank('debug')).toBe(0);
+    expect(issueSeverityRank('information')).toBe(1);
+    expect(issueSeverityRank('unexpected')).toBe(3);
+    expect(issueSeverityRank(undefined)).toBe(3);
   });
 });

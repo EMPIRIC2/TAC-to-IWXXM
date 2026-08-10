@@ -50,6 +50,32 @@ describe('authService', () => {
     expect(localStorage.getItem('expires_at')).toBe(String(mockSession.expires_at));
   });
 
+  it('falls back to default register message when error body has no detail', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      json: async () => ({}),
+      status: 400,
+      statusText: 'Bad Request',
+    } as Response);
+
+    await expect(
+      register({ email: mockUser.email, password: 'Password123!' }),
+    ).rejects.toThrow('Registration failed');
+  });
+
+  it('falls back to default login message when error body has no detail', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      json: async () => ({}),
+      status: 401,
+      statusText: 'Unauthorized',
+    } as Response);
+
+    await expect(
+      login({ email: mockUser.email, password: 'Password123!' }),
+    ).rejects.toThrow('Login failed');
+  });
+
   it('returns service detail on register failure', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: false,
@@ -257,6 +283,11 @@ describe('authService', () => {
     expect(isLoggedIn()).toBe(false);
   });
 
+  it('treats missing expiry as logged out even when access token exists', () => {
+    localStorage.setItem('access_token', 'token');
+    expect(isLoggedIn()).toBe(false);
+  });
+
   it('requests password reset and returns backend message', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
@@ -275,6 +306,17 @@ describe('authService', () => {
     } as Response);
 
     await expect(requestPasswordReset(mockUser.email)).rejects.toThrow('Rate limited');
+  });
+
+  it('falls back to default reset message when error body has no detail', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      json: async () => ({}),
+    } as Response);
+
+    await expect(requestPasswordReset(mockUser.email)).rejects.toThrow(
+      'Failed to request password reset',
+    );
   });
 
   it('confirms password reset with bearer token', async () => {

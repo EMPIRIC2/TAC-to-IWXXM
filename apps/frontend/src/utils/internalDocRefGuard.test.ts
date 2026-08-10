@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { findInternalDocRefs } from './internalDocRefGuard';
+import { findInternalDocRefs, INTERNAL_DOC_REF_ALLOWLIST } from './internalDocRefGuard';
 import { collectOperatorVisibleCopy } from './operatorVisibleCopy';
 
 describe('TC-EV048 internal doc ref guard (FE)', () => {
@@ -31,6 +31,15 @@ describe('TC-EV048 internal doc ref guard (FE)', () => {
         'Soft-preview: best-effort IWXXM with failure spans on partial convert.',
       ),
     ).toEqual([]);
+  });
+
+  it('does not report an explicitly documented allowlisted token', () => {
+    INTERNAL_DOC_REF_ALLOWLIST.add('ADR-022');
+    try {
+      expect(findInternalDocRefs('ADR-022')).toEqual([]);
+    } finally {
+      INTERNAL_DOC_REF_ALLOWLIST.delete('ADR-022');
+    }
   });
 
   it('TC-EV048-003: operator-visible catalogs pass guard', () => {
