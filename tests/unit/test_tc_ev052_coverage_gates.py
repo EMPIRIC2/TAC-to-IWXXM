@@ -70,8 +70,11 @@ class TestTcEv052CoverageGates:
         fe = next(s for s in data["surfaces"] if s["id"] == "frontend")
         waiver = fe.get("branch_waiver") or {}
         assert waiver.get("decision") == "D-S061-cov-branches=3"
-        assert waiver.get("status") in {"resolving", "resolved"}
+        assert waiver.get("status") == "resolved", (
+            "EV-053 / #968 must resolve frontend branch_waiver (was D-S061-cov-branches)"
+        )
         assert waiver.get("child_issue") == 968
+        assert waiver.get("resolve_cycle") == "EV-053"
         assert (
             "FileConverter.tsx"
             not in (

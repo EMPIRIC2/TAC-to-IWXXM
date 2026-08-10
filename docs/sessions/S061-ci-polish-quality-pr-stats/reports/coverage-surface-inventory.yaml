@@ -101,19 +101,25 @@ surfaces:
     soft_gate: false
     branch_waiver:
       decision: D-S061-cov-branches=3
-      status: resolving  # EV-053 / #968 — thresholds raised; close after AC2/AC5 green (M3)
+      status: resolved  # EV-053 / #968 — AC2+AC5 green @ tip b3416505 (2026-08-10)
       prior_threshold: 84
       child_issue: 968
       resolve_cycle: EV-053
+      resolved_at: "2026-08-10"
+      proof:
+        tip_sha: b3416505
+        aggregate_branches_pct: 96.39
+        fileconverter_branches_pct: 95.95
+        report: docs/sessions/S062-vitest-branches-95/reports/m3-ac5-coverage-proof.md
       reason: >
         Re-included FileConverter.tsx; Vitest branches floor raised to 95.
-        Waiver closes when suite green + FileConverter file branches ≥95 (AC5).
+        Suite green with aggregate branches ≥95 and FileConverter file branches ≥95 (AC5).
     intentional_excludes:
       - "src/hooks/useLiveWorkbenchAssist.ts — covered by dedicated unit + FileConverter live"
       - "src/utils/gunzip.ts — DecompressionStream happy-path needs Chromium"
       - "src/app/App.tsx — Playwright smoke + UJ live"
       # FileConverter.tsx removed from excludes (EV-053 / D-S062-fc-strategy=1)
-    notes: "EV-053 — closing D-S061-cov-branches; FileConverter in coverage set"
+    notes: "EV-053 — D-S061-cov-branches closed; FileConverter in coverage set; branches ≥95"
 
   - id: per-file-checker
     config_path: scripts/ci/check_per_file_coverage.py

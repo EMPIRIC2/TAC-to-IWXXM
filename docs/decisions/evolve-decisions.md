@@ -9,9 +9,18 @@
 **Features**: deepen **F29**, **M5** (no new Fn)  
 **Started**: 2026-08-10  
 **Branch**: `evolve/EV-053-vitest-branches-95` (base `stage@6f25c0b1`)  
-**Status**: **in_progress** — 01 COMPLETE (`D-S062-01-ac=1`); next 02-verify-plan  
+**Status**: **in_progress** — 07 M2 COMPLETE; M3 inventory/AC5 proof done; tip CI + 08→11 next  
 **Corpus**: [Corpus: product §F29] [Corpus: product §M5] [Corpus: tests]
 [Corpus: adr/ADR-007] [Corpus: decisions §EV-052] [Corpus: decisions §EV-053]
+
+### Build closeout notes (2026-08-10)
+
+| Item | Evidence |
+|------|----------|
+| Aggregate Vitest branches | **96.39%** @ `b3416505` (suite green) |
+| FileConverter branches (AC5) | **95.95%** (521/543) — `reports/m3-ac5-coverage-proof.md` |
+| Inventory `branch_waiver` | **resolved** — S061 `coverage-surface-inventory.yaml` |
+| Parent waiver | `D-S061-cov-branches=3` closed by EV-053 / #968 |
 
 ### Scope (Phase 0–1 — locked 2026-08-10)
 

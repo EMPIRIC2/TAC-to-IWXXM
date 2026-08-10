@@ -23,8 +23,8 @@ sessions:
   branch_base_sha_full: 6f25c0b189679d9ac00afaed97fb6b30a9791451
   branch_status: open
   branch_exists: true
-  tip_sha: 9bb5f851
-  tip_sha_full: 9bb5f851368a6aa28d39cde0ca5899faf3613170
+  tip_sha: b3416505
+  tip_sha_full: b34165052d4132124cb7092cefb6f1f8213c7fc4
   tip_sha_pushed: false
   artifacts_dir: docs/sessions/S062-vitest-branches-95/
   github_issues:
@@ -37,7 +37,7 @@ sessions:
   - M5
   prior_session: S061-ci-polish-quality-pr-stats
   current_stage: 07-build
-  current_stage_note: 'D-S062-04-plan=1; 04 COMPLETE; 05 skipped; 07 M1 in_progress'
+  current_stage_note: 'M2 COMPLETE AC1/AC2/AC5 green; M3 T3.1–T3.2 docs; T3.3 push CI next'
   decisions:
     D-S062-route: "1 — Standard 00→16→01→02→04→07→08→09→11; skip 03,05,06,10,12,13"
     D-S062-ui-preview: "2 — no local UI preview; Vitest/docs only"
@@ -64,6 +64,12 @@ sessions:
   - path: docs/sessions/S062-vitest-branches-95/reports/02-verify-plan-audit.md
     status: present
     note: "02 COMPLETE Gate A PASS D-S062-gateA=1"
+  - path: docs/sessions/S062-vitest-branches-95/reports/m3-ac5-coverage-proof.md
+    status: present
+    note: "AC5 FileConverter 95.95%; aggregate branches 96.39%"
+  - path: docs/sessions/S061-ci-polish-quality-pr-stats/reports/coverage-surface-inventory.yaml
+    status: present
+    note: "branch_waiver status=resolved (EV-053)"
   routing_plan:
   - stage: 00-context
     status: completed
@@ -82,7 +88,7 @@ sessions:
     note: "D-S062-04-plan=1; skip 05"
   - stage: 07-build
     status: in_progress
-    note: "M1 T1.1 in_progress"
+    note: "M2 done; M3 T3.3 push CI"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -90,6 +96,7 @@ sessions:
   - stage: 11-verify-impl
     status: pending
   notes:
+  - "2026-08-10 M2 COMPLETE @ b3416505 — aggregate branches 96.39%; FileConverter 95.95% (AC5); M3 inventory resolved"
   - "2026-08-10 D-S062-04-plan=1 — 04 COMPLETE; 05 skipped; 07-build M1 START"
   - "2026-08-10 D-S062-gateA=1 / M1=1 — Gate A PASS; AC5 verify-report proof; 02 COMPLETE; 04-tech-plan START"
   - "2026-08-10 D-S062-01-ac=1 — AC1–AC5; re-include FileConverter; AC5 file branches ≥95; handoff 02-verify-plan"
