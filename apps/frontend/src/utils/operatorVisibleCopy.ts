@@ -6,6 +6,11 @@
  */
 
 import { EXAMPLES } from '@/fixtures/examples/examplesCatalog';
+import { SHELL_NAV_LABELS } from '@/app/components/AppShellNav';
+import {
+  QUALITY_METRICS_DEFERRED_LABEL,
+  QUALITY_METRICS_PAGE_TITLE,
+} from '@/app/components/QualityMetricsPage';
 import {
   SOFT_PREVIEW_HELP,
   SOFT_PREVIEW_LABEL,
@@ -31,6 +36,11 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'guest.loss-of-progress', text: GUEST_LOSS_OF_PROGRESS_MESSAGE },
     { id: 'help.one-pager-url', text: OPERATOR_ONE_PAGER_URL },
     { id: 'help.handbook-url', text: OPERATOR_HANDBOOK_URL },
+    { id: 'shell.nav.convert', text: SHELL_NAV_LABELS.converter },
+    { id: 'shell.nav.history', text: SHELL_NAV_LABELS.history },
+    { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
+    { id: 'quality-metrics.title', text: QUALITY_METRICS_PAGE_TITLE },
+    { id: 'quality-metrics.deferred-label', text: QUALITY_METRICS_DEFERRED_LABEL },
   ];
 
   for (const item of STORAGE_INVENTORY) {

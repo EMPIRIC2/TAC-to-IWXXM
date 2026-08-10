@@ -1,6 +1,8 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
+import { QualityMetricsPage } from './components/QualityMetricsPage';
+import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
 import { EmailVerification } from './components/auth/EmailVerification';
@@ -38,13 +40,16 @@ function validateApiEnv() {
 }
 
 type AppView =
-  | 'converter'
-  | 'history'
+  | ShellPrimaryView
   | 'login'
   | 'register'
   | 'verify'
   | 'callback'
   | 'reset';
+
+function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
+  return view === 'converter' || view === 'history' || view === 'quality';
+}
 
 /**
  * Operator shell — boots to the public converter (guest). Optional Supabase Auth
@@ -204,6 +209,10 @@ function App() {
     setCurrentView('history');
   };
 
+  const handleShellNavigate = (view: ShellPrimaryView) => {
+    setCurrentView(view);
+  };
+
   const handleRequestLogin = () => {
     setCurrentView('login');
   };
@@ -232,6 +241,10 @@ function App() {
 
   return (
     <ThemeProvider>
+      {isPrimaryShellView(currentView) && (
+        <AppShellNav activeView={currentView} onNavigate={handleShellNavigate} />
+      )}
+
       {currentView === 'login' && (
         <Login
           onLogin={handleLogin}
@@ -285,6 +298,8 @@ function App() {
           onOpenSession={handleLoadWorkSession}
         />
       )}
+
+      {currentView === 'quality' && <QualityMetricsPage />}
 
       {currentView === 'callback' && (
         <AuthCallback

@@ -14,8 +14,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: Quality metrics (F7.q) |
-| **Active milestone** | M2 — Public quality-metrics API (complete) |
-| **Active task** | — (next: M3 T3.1) |
+| **Active milestone** | M3 — Shell tab + corpus browser (complete) |
+| **Active task** | — (next: M4 T4.1) |
 | **Tasks completed** | 6 / 15 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-10 |
@@ -100,9 +100,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | `AppView` + shell nav (Convert \| History \| Quality metrics); mount page | Impl | pending | AC1; `D-S063-shell-tab` | — | — |
-| T3.2 | `QualityMetricsPage`: fetch list API; product filter; summary strip; file rows + gap labels | Impl | pending | AC1/AC4/AC5; UJ-056 | T2.3, T3.1 | — |
-| T3.3 | Vitest: nav reaches tab; list renders mocked API; deferred stem labeled | Test | pending | TC-EV054-001..002 | T3.2 | — |
+| T3.1 | `AppView` + shell nav (Convert \| History \| Quality metrics); mount page | Impl | completed | AC1; `D-S063-shell-tab` | — | — |
+| T3.2 | `QualityMetricsPage`: fetch list API; product filter; summary strip; file rows + gap labels | Impl | completed | AC1/AC4/AC5; UJ-056 | T2.3, T3.1 | — |
+| T3.3 | Vitest: nav reaches tab; list renders mocked API; deferred stem labeled | Test | completed | TC-EV054-001..002 | T3.2 | — |
 
 #### M4: Detail pane + unified XML diff — P0
 

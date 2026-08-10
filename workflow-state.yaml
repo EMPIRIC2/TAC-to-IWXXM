@@ -21,10 +21,10 @@ active_session:
   branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   branch_status: active
   branch_exists: true
-  tip_sha: efac83e6
-  tip_sha_full: efac83e6c7a5bbddec39099ec1fe802d90b61b3d
+  tip_sha: edd21b21
+  tip_sha_full: edd21b211ef689f95c00e27aba06d44bb5758660
   tip_sha_pushed: false
-  tip_sha_note: 'branch from stage@f2926ac8; tip not pushed'
+  tip_sha_note: 'last committed tip edd21b21 (M2 tip-record); workspace has uncommitted M3 FE shell work (AppShellNav + QualityMetricsPage + Vitest) — no M3 commit sha yet'
   artifacts_dir: docs/sessions/S063-quality-metrics-tab/
   github_issues:
   - 836
@@ -33,7 +33,7 @@ active_session:
   - F7
   prior_session: S062-vitest-branches-95
   current_stage: 07-build
-  current_stage_note: "07-build M1+M2 COMPLETE (T1.1–T2.3); next M3 T3.1"
+  current_stage_note: "07-build M1–M3 COMPLETE (T1.1–T3.3); next M4 T4.1 detail+diff — uncommitted FE shell work on tip"
   decisions:
     D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
     D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
@@ -95,7 +95,7 @@ active_session:
     note: "D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
   - stage: 16-evolve
     status: in_progress
-    note: "Phase C — 05 done; 07-build M1 in progress"
+    note: "Phase C — 05 done; 07-build M1–M3 COMPLETE (uncommitted FE); next M4"
   - stage: 01-requirements
     status: completed
     note: "COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; report reports/01-requirements.md; handoff 02-verify-plan"
@@ -110,7 +110,7 @@ active_session:
     note: "COMPLETE — D-S063-05=1 Gate B PASS; report reports/05-verify-tech.md"
   - stage: 07-build
     status: in_progress
-    note: "M1+M2 COMPLETE T1.1–T2.3; next M3 shell tab"
+    note: "M1–M3 COMPLETE T1.1–T3.3 (M3 FE uncommitted); next M4 T4.1 detail+diff"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -124,6 +124,7 @@ active_session:
   - stage: 13-deploy-smoke
     status: pending
   notes:
+  - "2026-08-10 07 M3 COMPLETE — AppShellNav + QualityMetricsPage list/summary; Vitest TC-EV054-001..002 green; next M4 (FE uncommitted; no M3 commit sha)"
   - "2026-08-10 07 M2 COMPLETE — T2.1–T2.3 quality-metrics API + OpenAPI/FE clients; next M3"
   - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
   - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
@@ -153,10 +154,10 @@ sessions:
   branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   branch_status: active
   branch_exists: true
-  tip_sha: f2926ac8
-  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  tip_sha: edd21b21
+  tip_sha_full: edd21b211ef689f95c00e27aba06d44bb5758660
   tip_sha_pushed: false
-  tip_sha_note: 'branch from stage@f2926ac8; tip not pushed'
+  tip_sha_note: 'last committed tip edd21b21 (M2 tip-record); workspace has uncommitted M3 FE shell work (AppShellNav + QualityMetricsPage + Vitest) — no M3 commit sha yet'
   artifacts_dir: docs/sessions/S063-quality-metrics-tab/
   github_issues:
   - 836
@@ -165,7 +166,7 @@ sessions:
   - F7
   prior_session: S062-vitest-branches-95
   current_stage: 07-build
-  current_stage_note: "07-build M1+M2 COMPLETE (T1.1–T2.3); next M3 T3.1"
+  current_stage_note: "07-build M1–M3 COMPLETE (T1.1–T3.3); next M4 T4.1 detail+diff — uncommitted FE shell work on tip"
   decisions:
     D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
     D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
@@ -227,7 +228,7 @@ sessions:
     note: "D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
   - stage: 16-evolve
     status: in_progress
-    note: "Phase C — 05 done; 07-build M1 in progress"
+    note: "Phase C — 05 done; 07-build M1–M3 COMPLETE (uncommitted FE); next M4"
   - stage: 01-requirements
     status: completed
     note: "COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; report reports/01-requirements.md; handoff 02-verify-plan"
@@ -242,7 +243,7 @@ sessions:
     note: "COMPLETE — D-S063-05=1 Gate B PASS; report reports/05-verify-tech.md"
   - stage: 07-build
     status: in_progress
-    note: "M1+M2 COMPLETE T1.1–T2.3; next M3 shell tab"
+    note: "M1–M3 COMPLETE T1.1–T3.3 (M3 FE uncommitted); next M4 T4.1 detail+diff"
   - stage: 08-verify-build
     status: pending
   - stage: 09-qa
@@ -256,6 +257,7 @@ sessions:
   - stage: 13-deploy-smoke
     status: pending
   notes:
+  - "2026-08-10 07 M3 COMPLETE — AppShellNav + QualityMetricsPage list/summary; Vitest TC-EV054-001..002 green; next M4 (FE uncommitted; no M3 commit sha)"
   - "2026-08-10 07 M2 COMPLETE — T2.1–T2.3 quality-metrics API + OpenAPI/FE clients; next M3"
   - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
   - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
@@ -36172,15 +36174,16 @@ evolve_cycles:
   preset: Standard
   scope_summary: "LOCKED D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1 — full #836 Quality metrics tab (workbench/F7): official WMO IWXXM corpus by product with match/residuals/lint/validate; deepen F7 only (note F7.q; no F34); default view precomputed fixture/CI metrics JSON (on-demand refresh optional later); complements CI matrices #815/#831; Standard routing"
   current_stage: 07-build
-  current_stage_note: "07-build M1+M2 COMPLETE (T1.1–T2.3); next M3 T3.1"
+  current_stage_note: "07-build M1–M3 COMPLETE (T1.1–T3.3); next M4 T4.1 detail+diff — uncommitted FE shell work on tip"
   branch: evolve/EV-054-quality-metrics-tab
   branch_base: stage@f2926ac8
   branch_base_sha: f2926ac8
   branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   branch_status: active
-  tip_sha: f2926ac8
-  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  tip_sha: edd21b21
+  tip_sha_full: edd21b211ef689f95c00e27aba06d44bb5758660
   tip_sha_pushed: false
+  tip_sha_note: 'last committed tip edd21b21 (M2 tip-record); workspace has uncommitted M3 FE shell work (AppShellNav + QualityMetricsPage + Vitest) — no M3 commit sha yet'
   routing_plan:
     status: approved
     decision: D-S063-route=1
@@ -36213,7 +36216,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-10'
-      note: "Phase C — 05 done; 07-build M1 in progress"
+      note: "Phase C — 05 done; 07-build M1–M3 COMPLETE (uncommitted FE); next M4"
       phase0_status: completed
       phase0_note: "COMPLETE — scope/fn/compute locked (D-S063-scope=1, D-S063-fn=1, D-S063-compute=1)"
       phase1_status: completed
@@ -36229,14 +36232,19 @@ evolve_cycles:
       completed: '2026-08-10'
       note: "COMPLETE — Gate A PASS D-S063-gateA=2; report docs/sessions/S063-quality-metrics-tab/reports/02-verify-plan-audit.md; handoff 04; 05 re-enabled"
     04-tech-plan:
+      status: completed
+      started: '2026-08-10'
+      completed: '2026-08-10'
+      note: "COMPLETE — D-S063-04-plan=1; execution-plan + build-plan-card; 15 tasks"
+    05-verify-tech:
+      status: completed
+      started: '2026-08-10'
+      completed: '2026-08-10'
+      note: "COMPLETE — D-S063-05=1 Gate B PASS; report docs/sessions/S063-quality-metrics-tab/reports/05-verify-tech.md"
+    07-build:
       status: in_progress
       started: '2026-08-10'
-      note: "drafted — execution-plan + build-plan-card present; plan pending approval (D-S063-04-plan)"
-    05-verify-tech:
-      status: pending
-      note: "required — re-enabled D-S063-gateA=2 (public quality-metrics API); not skipped"
-    07-build:
-      status: pending
+      note: "M1–M3 COMPLETE T1.1–T3.3 (M3 FE uncommitted); next M4 T4.1 detail+diff"
     08-verify-build:
       status: pending
     09-qa:
@@ -36252,13 +36260,15 @@ evolve_cycles:
   gates:
     a_to_b: passed
     a_to_b_note: "D-S063-gateA=2 — PASS; require public GET /api/v1/quality-metrics*; reopen api-contract; re-enable 05"
-    b_to_c: pending
+    b_to_c: passed
+    b_to_c_note: "D-S063-05=1 Gate B PASS"
     c_to_d: pending
     deploy: pending
   checkpoints:
     phase_a: passed
     phase_a_note: "D-S063-gateA=2 — Gate A PASS; M1 FE-only DENIED; M1′ API APPROVED"
-    phase_b: pending
+    phase_b: passed
+    phase_b_note: "D-S063-05=1 Gate B PASS; 07 M1–M3 complete (M3 FE uncommitted); next M4"
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -36273,6 +36283,8 @@ evolve_cycles:
     D-S063-diff: "2 — unified XML diff in v1"
     D-S063-shell-tab: "1 — separate primary app-shell tab (not FileConverter panel)"
     D-S063-gateA: "2 — PASS; require public GET /api/v1/quality-metrics* in v1; reopen api-contract; re-enable 05"
+    D-S063-04-plan: "1 — approve as drafted; no npm diff; single corpus blob"
+    D-S063-05: "1 — Gate B PASS; C1=15; C2 Impl→Test; C3–C7 hygiene; → 07 M1"
   decisions_locked:
   - D-S063-route=1
   - D-S063-ui-preview=2
@@ -36284,6 +36296,8 @@ evolve_cycles:
   - D-S063-diff=2
   - D-S063-shell-tab=1
   - D-S063-gateA=2
+  - D-S063-04-plan=1
+  - D-S063-05=1
   artifacts:
   - path: docs/sessions/S063-quality-metrics-tab/reports/execution-plan.md
     status: present
@@ -36324,6 +36338,7 @@ evolve_cycles:
     status: present
     note: "TC-EV054 Quality metrics"
   notes:
+  - "2026-08-10 M3 COMPLETE — AppShellNav + QualityMetricsPage list/summary; Vitest TC-EV054-001..002 green; next M4"
   - "2026-08-10 07 M2 COMPLETE — T2.1–T2.3 quality-metrics API + OpenAPI/FE clients; next M3"
   - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
   - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
@@ -36334,7 +36349,7 @@ evolve_cycles:
   - "2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements"
   - "2026-08-10 board — #836 In progress; #959 Done"
   - "2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; EV-054 created; → 16-evolve Phase 0–1"
-  note: "IN PROGRESS — 04 drafted; await D-S063-04-plan; current_stage 04-tech-plan; 05 re-enabled; Gate A PASS D-S063-gateA=2; deepen F7 (note F7.q); branch evolve/EV-054-quality-metrics-tab @ f2926ac8"
+  note: "IN PROGRESS — 07-build M1–M3 COMPLETE (T1.1–T3.3); M3 FE uncommitted on tip edd21b21; next M4 T4.1; deepen F7 (note F7.q); branch evolve/EV-054-quality-metrics-tab"
 - id: EV-053
   session_id: S062-vitest-branches-95
   type: feature
@@ -47425,16 +47440,16 @@ git_history:
   current_branch: evolve/EV-054-quality-metrics-tab
   ahead_of_origin: 0
   pushed: false
-  pending_commit: false
-  pending_commit_note:
-  dirty: false
-  dirty_note:
-  tip_sha: f2926ac8
-  tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
-  tip_note: 'S063/EV-054 — branch from stage@f2926ac8; tip not pushed'
+  pending_commit: true
+  pending_commit_note: 'M3 FE shell uncommitted (AppShellNav + QualityMetricsPage + Vitest + session docs) — no commit sha invented'
+  dirty: true
+  dirty_note: 'uncommitted M3 FE + session plan docs; optional untracked .cursor/rules/optional/* not in M3 scope'
+  tip_sha: edd21b21
+  tip_sha_full: edd21b211ef689f95c00e27aba06d44bb5758660
+  tip_note: 'S063/EV-054 — last committed tip edd21b21; M3 FE uncommitted; tip not pushed; no upstream'
   evolve_branch: evolve/EV-054-quality-metrics-tab
-  evolve_tip_sha: f2926ac8
-  evolve_tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  evolve_tip_sha: edd21b21
+  evolve_tip_sha_full: edd21b211ef689f95c00e27aba06d44bb5758660
   evolve_tip_sha_pushed: false
   stage_merge_sha: f2926ac8
   stage_merge_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
@@ -47451,9 +47466,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-054-quality-metrics-tab
-  note: 'S063/EV-054 — 01 COMPLETE (D-S063-01-ac=1 / diff=2 / shell-tab=1); current_stage 02-verify-plan Gate A; deepen F7 (note F7.q); separate app-shell tab; unified XML diff v1; branch evolve/EV-054-quality-metrics-tab @ f2926ac8; tip_sha_pushed=false; #836 In progress'
+  note: 'S063/EV-054 — 07-build M1–M3 COMPLETE (M3 FE uncommitted); next M4 T4.1; tip edd21b21 not pushed; #836 In progress'
 
   notes:
+  - '2026-08-10 07 M3 COMPLETE — AppShellNav + QualityMetricsPage list/summary; Vitest TC-EV054-001..002 green; next M4; FE uncommitted (no M3 commit sha); no git commit by workflow-state-manager'
   - '2026-08-10 01 COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; deepen F7 (note F7.q); separate primary app-shell tab; unified XML diff v1; handoff 02-verify-plan Gate A; no git commit by workflow-state-manager'
   - '2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements; no git commit by workflow-state-manager'
   - '2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; branch evolve/EV-054-quality-metrics-tab @ stage@f2926ac8; tip f2926ac8 not pushed; → 16-evolve Phase 0–1; no git commit by workflow-state-manager'

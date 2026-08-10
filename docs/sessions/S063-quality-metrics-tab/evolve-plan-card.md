@@ -30,7 +30,7 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 
 ## Next child stage
 
-**07-build** M1 — `D-S063-05=1` Gate B PASS; generator + `corpus_metrics.json`
+**07-build** M4 — detail panes + unified XML diff (T4.1–T4.3); M1–M3 done
 
 ## Risks / open decisions
 
