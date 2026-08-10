@@ -9,7 +9,7 @@
 **Features**: deepen **F29**, **M5** (no new Fn)  
 **Started**: 2026-08-10  
 **Branch**: `evolve/EV-053-vitest-branches-95` (base `stage@6f25c0b1`)  
-**Status**: **in_progress** — 07 M2 COMPLETE; M3 inventory/AC5 proof done; tip CI + 08→11 next  
+**Status**: **completed** (`D-S062-merge=1` / `D-S062-close=1`) — [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` @ `ef68ac67`; [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) closed; no stage→main  
 **Corpus**: [Corpus: product §F29] [Corpus: product §M5] [Corpus: tests]
 [Corpus: adr/ADR-007] [Corpus: decisions §EV-052] [Corpus: decisions §EV-053]
 
@@ -21,6 +21,15 @@
 | FileConverter branches (AC5) | **95.95%** (521/543) — `reports/m3-ac5-coverage-proof.md` |
 | Inventory `branch_waiver` | **resolved** — S061 `coverage-surface-inventory.yaml` |
 | Parent waiver | `D-S061-cov-branches=3` closed by EV-053 / #968 |
+| Merge | [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` @ `ef68ac67` (`D-S062-merge=1`) |
+| Issue | [#968](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/968) **CLOSED** (`D-S062-close=1`) |
+
+### Close decisions (2026-08-10)
+
+| ID | Decision |
+|----|----------|
+| D-S062-merge | **1** — Merge [#973](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/973) → `stage` |
+| D-S062-close | **1** — Close #968; complete EV-053 / S062; no stage→main this cycle |
 
 ### Scope (Phase 0–1 — locked 2026-08-10)
 
