@@ -43,7 +43,9 @@ kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secr
   --from-literal=DISSEMINATION_EGRESS_ALLOWLIST='…'
 ```
 
-Also copy `ghcr-pull` and (if still required) `work-session-ssl-fix` into the staging namespace.
+Also copy `ghcr-pull` into the staging namespace. Do **not** remount
+`work_session_service.py` via ConfigMap (`work-session-ssl-fix` was a T7.1
+interim only — removed after BUG-2026-08-10; sslmode rewrite is in-image).
 
 ## CD image rollout (EV-034 / EV-043 / EV-044)
 

@@ -19,6 +19,8 @@ All notable user-facing and deployable changes for METAR to IWXXM.
 ### Changed
 - **EV-048 / F7 / F21**: Strip internal doc refs (Corpus/ADR/EV/TC ids) from operator UI,
   OpenAPI descriptions, and client-visible error copy.
+- **BUG-2026-08-10**: Remove DOKS ConfigMap mount over `work_session_service.py` (stale
+  overlay caused staging `NameError: UUID` on work-sessions).
 
 ### Packages
 - `tac-validate` **0.1.2 → 0.1.3** (WMO membership Validated + dual-profile).
