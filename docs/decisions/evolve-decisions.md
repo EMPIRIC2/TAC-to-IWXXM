@@ -147,12 +147,23 @@ Operator-facing consumer remains the Quality metrics tab; engine changes allowed
 **Session**: S063-quality-metrics-tab  
 **Features**: deepen **F7** (note **F7.q** in feature-list; no new top-level Fn)  
 **Started**: 2026-08-10  
+**Completed**: 2026-08-11  
 **Branch**: `evolve/EV-054-quality-metrics-tab` (base `stage@f2926ac8`)  
-**Status**: **in_progress** — Phase C: **07-build M1–M5 COMPLETE**; next **08-verify-build**  
-**Issue**: [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836)  
+**Status**: **completed** (`D-S063-13=1` / `D-S063-close=1`) — [#977](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977) → `stage` @ `4fd51e39`; [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) closed; **no stage→main** (stay on stage)  
+**Issue**: [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
+**Follow-ups**: [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)–[#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983)  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F25] [Corpus: journeys]
 [Corpus: tests] [Corpus: adr/ADR-032] [Corpus: adr/ADR-025] [Corpus: api]
 [Corpus: system-spec] [Corpus: decisions §EV-054]
+
+### Closeout (2026-08-11)
+
+| ID | Decision |
+|----|----------|
+| D-S063-13 | **1** — Approve staging smoke; close EV-054 / S063; stay on stage (no promote) |
+| D-S063-close | **1** — Close #836; clear `active_session`; file follow-ups #979–#983 |
+
+Evidence: CI/CD [31453072506](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31453072506) SUCCESS; H0c/H1/H3/H4/H5 + live UJ-056 PASS; `reports/deploy-smoke.md` / `reports/evolve-summary.md`.
 
 ### Scope (Phase 0–1 — locked 2026-08-10)
 
