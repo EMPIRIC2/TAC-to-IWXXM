@@ -833,9 +833,11 @@ residuals, lint, validate, with a unified XML diff vs our conversion.
    (`GET /api/v1/quality-metrics/{stem}`).
 4. In the detail pane: inspect TAC, official XML, our XML; confirm **match status** and a
    **unified XML diff**; residuals / lint / validate panels show empty or expected diagnostics.
-   **EV-055**: whitespace-only formatting must not dominate the unified diff; `match_status`
-   reflects **normalized** equality of both XML sides (`D-S064-normalize=1`). Validate chips
-   reflect 2025-2 Schematron/XSD disposition (#980 / #979) without internal planning ids.
+   **EV-055**: detail XML panes **default to C14N-normalized** official/converted with an
+   operator override to show un-normalized (`D-S064-gateA-M2=override`); `match_status` and
+   unified diff use the same C14N peers (`D-S064-c14n=1`). Validate chips reflect **enabled**
+   Schematron / **fixed** schema-import disposition for 2025-2 (#980 / #979) without internal
+   planning ids.
 5. Confirm a deferred / gap stem is labeled (not silently missing).
 6. Optional later: deep-link the same stem into the convert workbench.
 

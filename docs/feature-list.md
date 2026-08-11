@@ -94,9 +94,10 @@
 - **Limitations**: Schema bundles must match vendored snapshot version; no official US `.sch`.
   **2025-2** may emit `SCHEMATRON_SKIPPED` (xslt2) and/or `SCHEMA_IMPORT_WARNING` until EV-055
   disposition lands (#980 / #979).
-- **S064 / EV-055 deepen (#980 / #979)**: Investigate and disposition 2025-2 Schematron xslt2
-  skip (prefer native enable) and schema import warning (fix optional); Quality metrics
-  consume outcomes. See F7.q EV-055 AC4–AC6 and F13.
+- **S064 / EV-055 deepen (#980 / #979)**: **Hard** this cycle (`D-S064-sch-hard=1` /
+  `D-S064-xsd-hard=1`): enable Schematron evaluation for 2025-2 xslt2 (prefer native) and
+  fix `SCHEMA_IMPORT_WARNING` import resolution. Quality metrics consume outcomes. See F7.q
+  EV-055 AC4–AC6 and F13.
 - **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md);
   [Context: package-publish-validation](context/package-publish-validation.md);
   **S043 / EV-035** · [Context: rule-source-traceability](context/rule-source-traceability.md);
@@ -397,27 +398,30 @@
      expected diagnostics (**UJ-056** / TC-EV054).
   7. No Supabase and no live upstream WMO fetch; metrics come from our public API backed by
      precomputed fixtures (same API host as convert — not FE-only bundle).
-- **S064 / EV-055 deepen (F7.q / #982 + validate follow-ups #980/#979)**: Whitespace-normalize
-  **both** official and converted XML for Quality metrics comparison so `match_status` and
-  unified diffs reflect semantic differences (`D-S064-normalize=1`). Regenerate precomputed
-  `corpus_metrics` so stored match semantics match (`D-S064-regen=1`). Investigate
-  `SCHEMATRON_SKIPPED` for IWXXM **2025-2** (xslt2) preferring native enable (`D-S064-spike-pref=3`);
-  investigate `SCHEMA_IMPORT_WARNING` with fix optional. Engine changes allowed in
+- **S064 / EV-055 deepen (F7.q / #982 + validate follow-ups #980/#979)**: Compare official and
+  converted XML with **W3C C14N** (`D-S064-c14n=1`) so `match_status` and unified diffs reflect
+  semantic differences (`D-S064-normalize=1`). Shared normalize semantics in generator + FE
+  (`D-S064-gateA-M1=1`). Detail panes show **normalized** XML by default with operator override
+  to un-normalized (`D-S064-gateA-M2=override`). Regenerate precomputed `corpus_metrics`
+  (`D-S064-regen=1`). **Hard** this cycle: enable Schematron for IWXXM **2025-2** xslt2 via
+  native when required (`D-S064-sch-hard=1`) and **fix** `SCHEMA_IMPORT_WARNING` for 2025-2
+  (`D-S064-xsd-hard=1`) — overrides earlier soft “prefer/optional” intake. Engine changes in
   `packages/iwxxm-validate` (F2/F13); operator surface remains Quality metrics. Does **not**
   flip F7 → Implemented.
-- **Acceptance (EV-055 / #982/#980/#979 — F7.q + F2/F13)** — **approved** (`D-S064-01-ac=1`):
-  1. Whitespace-only official↔converted pairs no longer dominate unified diff; semantic diffs remain.
-  2. `match_status` uses equality of **normalized** XML on both sides; API/product copy free of
-     internal planning ids.
-  3. Normalize helper unit tests + ≥1 golden stem; vendor schemas remain read-only.
-  4. #980: lxml vs native engine matrix documented; prefer **enable** Schematron for 2025-2 when
-     native can evaluate xslt2; else UX/label disposition + child ticket.
-  5. #979: root cause (file + import URI) documented; fix if low-risk, else operator-facing
-     message + test-plan note.
-  6. Quality metrics validate chips/copy reflect disposition (no false hard-fail for intentional
-     skip; no internal planning ids).
-  7. `corpus_metrics` regenerated for new match semantics; UJ-056 deepen / TC-EV055 smoke for
-     quieter diff.
+- **Acceptance (EV-055 / #982/#980/#979 — F7.q + F2/F13)** — **approved** (`D-S064-01-ac=1`;
+  Gate A `D-S064-gateA=1`):
+  1. Whitespace/formatting-only official↔converted pairs no longer dominate unified diff;
+     semantic diffs remain (C14N peers).
+  2. `match_status` uses equality of **C14N-normalized** XML on both sides; API/product copy
+     free of internal planning ids.
+  3. Normalize helper (C14N) unit tests + ≥1 golden stem; vendor schemas remain read-only;
+     shared by generator and FE.
+  4. #980: Schematron for 2025-2 **enabled** (native path); engine matrix documented; not
+     closed as UX-only skip.
+  5. #979: root cause (file + import URI) documented **and fixed** this cycle (regression test).
+  6. Quality metrics: validate chips reflect fixed/enabled disposition; detail XML panes
+     default to normalized with override to un-normalized; no internal planning ids.
+  7. `corpus_metrics` regenerated for new match semantics; UJ-056 deepen / TC-EV055 smoke.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -597,10 +601,9 @@
   4. Maturin/PyO3 integration smoke required for `iwxxm-validate` (not only `tac2iwxxm`)
   5. Required check name(s) documented so red Rust CI blocks merge (**ops** ruleset
      apply may be deferred — D-S054-ac6-waive=2)
-- **S064 / EV-055 deepen (#980 — Schematron 2025-2 xslt2)**: Confirm native
-  (`iwxxm_validate._rust`) vs lxml fallback behavior for vendor 2025-2 Schematron with
-  `queryBinding="xslt2"`; prefer enabling evaluation on native when feasible; else document
-  skip + Quality metrics UX. Parity with F2 deepen AC.
+- **S064 / EV-055 deepen (#980 — Schematron 2025-2 xslt2)**: Native path must **enable**
+  evaluation for vendor 2025-2 Schematron with `queryBinding="xslt2"` (`D-S064-sch-hard=1`);
+  document lxml vs native matrix. Soft UX-only skip is **not** an acceptable cycle close.
 - **Source**: #699; E10-6/7/19/22; ADR-017; #781; #725; #980
 
 ### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI

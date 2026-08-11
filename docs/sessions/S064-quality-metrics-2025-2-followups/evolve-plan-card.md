@@ -4,19 +4,18 @@
 
 ## Goal
 
-Whitespace-normalize Quality metrics XML diffs (#982) and disposition/fix 2025-2
-`SCHEMATRON_SKIPPED` (#980) and `SCHEMA_IMPORT_WARNING` (#979), preferring native
-Schematron enable for xslt2 when feasible.
+C14N-normalize Quality metrics XML diffs (#982) and **hard-fix** 2025-2
+`SCHEMATRON_SKIPPED` (#980) and `SCHEMA_IMPORT_WARNING` (#979); panes default to
+normalized XML with override to raw.
 
 ## Features
 
-- F7.q — Quality metrics deepen (normalize + validate UX) — [Corpus: product §F7]
-- F2 / F13 — iwxxm-validate Schematron/XSD for 2025-2 — [Corpus: product §F2] [Corpus: product §F13]
-- F4 — only if version-line messaging needs it — [Corpus: product §F4]
+- F7.q — Quality metrics deepen (C14N diffs + pane override + validate UX) — [Corpus: product §F7]
+- F2 / F13 — iwxxm-validate Schematron enable + XSD import fix for 2025-2 — [Corpus: product §F2] [Corpus: product §F13]
 
 ## In / out of scope
 
-- In: #982 normalize both sides + match_status; #980 investigate→prefer enable; #979 investigate→fix optional; operator Quality metrics surface; PR → stage
+- In: #982 C14N both sides + match_status; #980 Schematron **enable required**; #979 import **fix required**; Quality metrics UI; PR → stage
 - Out: vendor hand-edits; redo #836 tab; DOKS EV-043/044; encode parity; stage→main unless asked
 
 ## Preset + routing
@@ -27,11 +26,11 @@ Schematron enable for xslt2 when feasible.
 
 ## Next child stage
 
-**02-verify-plan** — Gate A on AC1–AC7 + TC-EV055 + UJ-056 deepen + api-contract match_status
+**04-tech-plan** — execution plan + Build Plan Card (Gate A PASS `D-S064-gateA=1`)
 
 ## Risks / open decisions
 
-- Native Schematron may not fully support xslt2 → fall back to UX/document + child ticket
-- XSD import fix may be catalog/packaging vs upstream pin gap
+- Native Schematron xslt2 support may be hard — cycle blocks/re-scopes if enable impossible (`D-S064-sch-hard=1`)
+- XSD import fix may need catalog/packaging changes (`D-S064-xsd-hard=1`)
 - Board WIP 3 > policy ≤2 (explicit override)
-- Regenerating `corpus_metrics` blob after normalize may churn large fixtures
+- C14N regen may churn large `corpus_metrics` fixtures

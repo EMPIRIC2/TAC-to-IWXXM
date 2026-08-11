@@ -8,7 +8,9 @@
 | 00-context | yes | session | **completed** | `D-S064-route=1` / Phase 0 intake locked |
 | 16-evolve | yes | orchestrate | **in_progress** | Phase 0–1 locked; 01 COMPLETE → **02-verify-plan** |
 | 01-requirements | yes | delta | **completed** | `D-S064-01-ac=1`; AC1–AC7; TC-EV055; UJ-056 deepen |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S064-gateA=1` (C14N hard; #979/#980 hard; pane override) |
+| 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
+| 04-tech-plan | yes | delta | pending | Execution plan + Build Plan Card |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
 | 04-tech-plan | yes | delta | pending | Execution plan + Build Plan Card |
 | 05-verify-tech | yes | delta | pending | Gate B (engine + metrics paths) |
@@ -58,3 +60,4 @@
 | D-S064-uj | **1** — Deepen UJ-056 |
 | D-S064-01-ac | **1** — AC1–AC7 |
 | D-S064-regen | **1** — Regenerate corpus_metrics |
+| D-S064-gateA | **1** — PASS; C14N; #979/#980 hard; pane override; → 04 |

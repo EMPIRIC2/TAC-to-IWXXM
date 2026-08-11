@@ -2064,61 +2064,61 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980),
   [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979); parent #836 / EV-054
 
-### TC-EV055-001: Whitespace-only diffs no longer dominate
+### TC-EV055-001: Formatting-only diffs no longer dominate
 
 - **Level**: T0 / T2
 - **Objective**: For a representative stem whose official vs converted XML differ mainly in
-  pretty-print/whitespace, unified line diff hunks are dominated by semantic changes (or empty
-  when only whitespace differs)
-- **Pass criteria**: Fixture/unit assertion on normalize + diff; Vitest or generator test
-- **Source**: EV-055 AC1; #982; UJ-056
+  pretty-print/whitespace, unified line diff on **C14N** peers is empty or semantic-only
+- **Pass criteria**: Fixture/unit assertion on C14N + diff; Vitest or generator test
+- **Source**: EV-055 AC1; #982; UJ-056; `D-S064-c14n=1`
 
-### TC-EV055-002: match_status uses normalized equality
+### TC-EV055-002: match_status uses C14N equality
 
 - **Level**: T0 / H0i
-- **Objective**: `match_status` on list/detail quality-metrics payloads equals when normalized
-  official and converted XML are equal (even if raw bytes differ in whitespace)
-- **Pass criteria**: Backend/generator tests; OpenAPI/docs state normalized semantics
-- **Source**: EV-055 AC2; [Corpus: api]; `D-S064-normalize=1`
+- **Objective**: `match_status` on list/detail quality-metrics payloads equals when C14N
+  official and converted XML are equal (even if raw bytes differ in formatting)
+- **Pass criteria**: Backend/generator tests; OpenAPI/docs state C14N semantics
+- **Source**: EV-055 AC2; [Corpus: api]; `D-S064-normalize=1`; `D-S064-c14n=1`
 
-### TC-EV055-003: Normalize helper + golden stem
+### TC-EV055-003: C14N helper + golden stem (shared generator + FE)
 
 - **Level**: T0
-- **Objective**: Shared normalize helper covered by unit tests; ≥1 golden stem; vendor trees
-  not rewritten in place
+- **Objective**: Shared C14N helper covered by unit tests; ≥1 golden stem; vendor trees
+  not rewritten in place; used by metrics generator and FE diff
 - **Pass criteria**: Unit tests green; vendor/schemas read-only
-- **Source**: EV-055 AC3; #982
+- **Source**: EV-055 AC3; #982; `D-S064-gateA-M1=1`
 
-### TC-EV055-004: SCHEMATRON_SKIPPED 2025-2 disposition
-
-- **Level**: T0 / T2
-- **Objective**: Document lxml vs native matrix for 2025-2 xslt2 Schematron; enable when
-  native can evaluate, else documented skip/UX labeling
-- **Pass criteria**: Report or tests assert disposition; no false hard-fail chip for intentional skip
-- **Source**: EV-055 AC4 / AC6; #980; F2/F13
-
-### TC-EV055-005: SCHEMA_IMPORT_WARNING 2025-2 disposition
+### TC-EV055-004: SCHEMATRON enabled for 2025-2 (hard)
 
 - **Level**: T0 / T2
-- **Objective**: Root cause (file + import URI) recorded; fix if low-risk else operator message
-- **Pass criteria**: Regression test if fixed; else test-plan note + operator-facing copy
-- **Source**: EV-055 AC5 / AC6; #979; F2
+- **Objective**: 2025-2 Schematron with xslt2 binding is **evaluated** (prefer native);
+  `SCHEMATRON_SKIPPED` is not an acceptable close for this cycle
+- **Pass criteria**: Engine tests assert evaluation path; matrix documented
+- **Source**: EV-055 AC4; #980; `D-S064-sch-hard=1`; F2/F13
 
-### TC-EV055-006: corpus_metrics regen for normalized match
+### TC-EV055-005: SCHEMA_IMPORT_WARNING fixed for 2025-2 (hard)
+
+- **Level**: T0 / T2
+- **Objective**: Root cause (file + import URI) fixed; strict XSD path no longer skipped for
+  the resolved case
+- **Pass criteria**: Regression test green; warning absent on representative stems
+- **Source**: EV-055 AC5; #979; `D-S064-xsd-hard=1`; F2
+
+### TC-EV055-006: corpus_metrics regen for C14N match
 
 - **Level**: T0 / CI
-- **Objective**: Regenerated `corpus_metrics.json` (or documented artifact) reflects normalized
-  `match_status` counts after `make generate-quality-metrics`
+- **Objective**: Regenerated `corpus_metrics.json` reflects C14N `match_status` counts after
+  `make generate-quality-metrics`
 - **Pass criteria**: Generator CI/job green; summary counts consistent with AC2
 - **Source**: EV-055 AC7; `D-S064-regen=1`
 
-### TC-EV055-007: UJ-056 smoke — quieter diff / validate chips
+### TC-EV055-007: UJ-056 smoke — C14N panes + validate chips
 
 - **Level**: T2 / T3 / H4–H5
-- **Objective**: Quality metrics detail shows quieter whitespace behavior and validate chips
-  matching disposition (extend UJ-056 Playwright or Vitest)
+- **Objective**: Quality metrics detail defaults to normalized XML panes with override to
+  un-normalized; quieter C14N diff; validate chips match enabled/fixed disposition
 - **Pass criteria**: Local Playwright/Vitest green; H4–H5 after staging deploy (12/13)
-- **Source**: EV-055 AC1 / AC6 / AC7; UJ-056
+- **Source**: EV-055 AC1 / AC6 / AC7; UJ-056; `D-S064-gateA-M2=override`
 
 ### Live harness — staging (EV-043 / EV-044)
 

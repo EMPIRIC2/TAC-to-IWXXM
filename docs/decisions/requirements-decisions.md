@@ -9,11 +9,15 @@
 | EV-055 / Fn | Deepen F7.q + F2/F13 | F4 only if messaging; no new top-level Fn (`D-S064-engine=1`) | confirmed |
 | EV-055 / normalize | Both sides; match_status = normalized equality | `D-S064-normalize=1` | confirmed |
 | EV-055 / regen | Regenerate corpus_metrics | Stored match semantics match AC2 (`D-S064-regen=1`) | confirmed |
-| EV-055 / Schematron | Prefer native enable for 2025-2 xslt2 | Else UX/label + child (`D-S064-spike-pref=3`) | confirmed |
-| EV-055 / XSD import | Investigate; fix optional | #979 | confirmed |
+| EV-055 / Schematron | **Hard enable** for 2025-2 | Overrides soft prefer (`D-S064-sch-hard=1`) | confirmed |
+| EV-055 / XSD import | **Hard fix** for 2025-2 | Overrides optional (`D-S064-xsd-hard=1`) | confirmed |
+| EV-055 / algorithm | **W3C C14N** always | `D-S064-c14n=1` | confirmed |
+| EV-055 / panes | Normalized default + override to raw | `D-S064-gateA-M2=override` | confirmed |
+| EV-055 / helper | Shared generator + FE | `D-S064-gateA-M1=1` | confirmed |
+| EV-055 / Gate A | **PASS** | `D-S064-gateA=1` → 04 | confirmed |
 | EV-055 / journey | Deepen **UJ-056** only | No UJ-057 (`D-S064-uj=1`) | confirmed |
-| EV-055 / AC | AC1–AC7 | See evolve-decisions §EV-055 | confirmed |
-| EV-055 / docs | Delta manifest | feature-list + journeys + test-plan + api-contract + decisions; skip spec/config/deploy (`D-S064-01-manifest=1`) | confirmed |
+| EV-055 / AC | AC1–AC7 (amended Gate A) | See evolve-decisions §EV-055 | confirmed |
+| EV-055 / docs | Delta manifest | feature-list + journeys + test-plan + api-contract + decisions | confirmed |
 | EV-055 / UI preview | Declined | Docs/repo only (`D-S064-ui-preview=2`); re-offer at 11 | confirmed |
 | EV-055 / route | Standard | PR → stage; skip 03/06 | confirmed |
 

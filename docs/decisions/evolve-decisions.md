@@ -36,15 +36,21 @@
 | D-S064-uj | **1** — Deepen UJ-056 only (no UJ-057) |
 | D-S064-01-ac | **1** — Lock AC1–AC7 as drafted |
 | D-S064-regen | **1** — Regenerate corpus_metrics for normalized match_status |
+| D-S064-gateA-M1 | **1** — Shared C14N helper: generator + FE |
+| D-S064-gateA-M2 | **override** — Panes default normalized; override → un-normalized |
+| D-S064-sch-hard | **1** — #980 Schematron enable hard (overrides `D-S064-spike-pref=3`) |
+| D-S064-c14n | **1** — Always W3C C14N (`D-S064-gateA-M4=2`) |
+| D-S064-xsd-hard | **1** — #979 SCHEMA_IMPORT fix required (H3=2) |
+| D-S064-gateA | **1** — PASS Gate A; → 04-tech-plan |
 
 ### Approved scope (verbatim)
 
-Whitespace-normalize official and converted XML for Quality metrics comparison so
-`match_status` and unified diffs reflect semantic differences (#982). Investigate
-`SCHEMATRON_SKIPPED` for IWXXM 2025-2 xslt2 (#980) and prefer enabling evaluation via
-the native engine when feasible. Investigate `SCHEMA_IMPORT_WARNING` for 2025-2 (#979)
-with fix optional this cycle. Operator-facing consumer remains the Quality metrics tab;
-engine changes allowed in `packages/iwxxm-validate`.
+Whitespace-normalize via **W3C C14N** for official and converted XML so Quality metrics
+`match_status` and unified diffs reflect semantic differences (#982). Shared helper in
+generator + FE; panes default to normalized XML with override to raw. **Hard** this cycle:
+enable Schematron for IWXXM 2025-2 xslt2 (#980) and fix `SCHEMA_IMPORT_WARNING` (#979).
+Operator-facing consumer remains the Quality metrics tab; engine changes allowed in
+`packages/iwxxm-validate`.
 
 ### Out of scope
 
@@ -76,13 +82,13 @@ engine changes allowed in `packages/iwxxm-validate`.
 
 | AC | Criterion | TC |
 |----|-----------|-----|
-| AC1 | Whitespace-only pairs no longer dominate unified diff; semantic diffs remain | TC-EV055-001 |
-| AC2 | `match_status` = normalized equality both sides; no internal doc ids in copy | TC-EV055-002 |
-| AC3 | Normalize helper tests + ≥1 golden; vendor read-only | TC-EV055-003 |
-| AC4 | #980 engine matrix; prefer Schematron enable; else UX + child | TC-EV055-004 |
-| AC5 | #979 root cause; fix optional; else operator message | TC-EV055-005 |
-| AC6 | Quality metrics validate chips reflect disposition | TC-EV055-004..005 / 007 |
-| AC7 | corpus_metrics regen + UJ-056 smoke for quieter diff | TC-EV055-006..007 |
+| AC1 | Formatting-only diffs no longer dominate; semantic remain (C14N) | TC-EV055-001 |
+| AC2 | `match_status` = C14N equality both sides; no internal doc ids | TC-EV055-002 |
+| AC3 | C14N helper tests + golden; vendor read-only; shared generator+FE | TC-EV055-003 |
+| AC4 | #980 Schematron **enabled** for 2025-2 (hard) | TC-EV055-004 |
+| AC5 | #979 SCHEMA_IMPORT **fixed** (hard) | TC-EV055-005 |
+| AC6 | Validate chips + normalized panes w/ override | TC-EV055-004..005 / 007 |
+| AC7 | corpus_metrics regen + UJ-056 smoke | TC-EV055-006..007 |
 
 ---
 

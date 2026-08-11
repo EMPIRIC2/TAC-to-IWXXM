@@ -20,10 +20,9 @@ opened: 2026-08-11
 
 ## Goal
 
-Ship quieter Quality-metrics XML diffs via whitespace normalization (#982), and
-investigate then disposition/fix **2025-2** `SCHEMATRON_SKIPPED` (#980) and
-`SCHEMA_IMPORT_WARNING` (#979) — preferring Schematron enable when the native
-engine can evaluate the xslt2 binding; XSD import fix optional.
+Ship quieter Quality-metrics XML diffs via **W3C C14N** (#982), with normalized XML
+panes (override to raw), and **hard-fix** IWXXM 2025-2 `SCHEMATRON_SKIPPED` (#980) and
+`SCHEMA_IMPORT_WARNING` (#979) in `iwxxm-validate`.
 
 ## Intent (locked — Phase 0 intake)
 
