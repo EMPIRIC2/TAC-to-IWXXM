@@ -9,10 +9,8 @@ import {
   QUALITY_METRICS_DIFF_EMPTY_LABEL,
   QUALITY_METRICS_EMPTY_DIAGNOSTICS,
 } from './QualityMetricsDetail';
-import {
-  QUALITY_METRICS_DEFERRED_LABEL,
-  QualityMetricsPage,
-} from './QualityMetricsPage';
+import { QualityMetricsPage } from './QualityMetricsPage';
+import { QUALITY_METRICS_DEFERRED_LABEL } from '@/utils/qualityMetricsCopy';
 
 const apiMocks = vi.hoisted(() => ({
   fetchQualityMetrics: vi.fn(),
@@ -129,7 +127,7 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     expect(screen.getByTestId('quality-metrics-row-taf-A5-1')).toBeInTheDocument();
 
     const summary = screen.getByTestId('quality-metrics-summary');
-    expect(within(summary).getByText('Match pass')).toBeInTheDocument();
+    expect(within(summary).getByText('Matches')).toBeInTheDocument();
     expect(within(summary).getByText('2')).toBeInTheDocument();
   });
 
@@ -225,7 +223,7 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
       stem: 'metar-A3-1',
     });
     expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
-      'equal',
+      'Matches official',
     );
     expect(screen.getByTestId('quality-metrics-pane-tac')).toHaveTextContent(
       'METAR YUDO',
@@ -277,7 +275,7 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
     });
 
     expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
-      'unequal',
+      'Differs from official',
     );
     expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent('<a>');
     expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent('</a>');
@@ -324,7 +322,7 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
     await user.click(screen.getByTestId('quality-metrics-row-metar-A3-1'));
 
     await waitFor(() => {
-      expect(screen.getByText('Failed to load stem detail')).toBeInTheDocument();
+      expect(screen.getByText('Failed to load file detail')).toBeInTheDocument();
     });
   });
 

@@ -155,8 +155,6 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
       validate_issues: [{ code: 'X', other: true }],
     };
     render(<QualityMetricsDetail detail={detail} />);
-    expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent(
-      '"code":"X"',
-    );
+    expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent('X');
   });
 });

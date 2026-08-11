@@ -17,12 +17,15 @@ import {
   QualityMetricsDetail,
 } from './QualityMetricsDetail';
 import { Card } from './ui/card';
-
-/** Operator-visible label for deferred / gap stems (AC5). */
-export const QUALITY_METRICS_DEFERRED_LABEL = 'Deferred gap';
-
-/** Page title — primary shell tab. */
-export const QUALITY_METRICS_PAGE_TITLE = 'Quality metrics';
+import {
+  formatMatchStatusLabel,
+  QUALITY_METRICS_DEFERRED_LABEL,
+  QUALITY_METRICS_DETAIL_LOAD_FAILED,
+  QUALITY_METRICS_DETAIL_LOADING,
+  QUALITY_METRICS_EMPTY_LIST,
+  QUALITY_METRICS_PAGE_SUBTITLE,
+  QUALITY_METRICS_PAGE_TITLE,
+} from '@/utils/qualityMetricsCopy';
 
 interface QualityMetricsPageProps {
   /** Optional stem select hook (in addition to route navigation). */
@@ -108,7 +111,7 @@ export function QualityMetricsPage({
         if (!cancelled) {
           setDetail(null);
           setDetailError(
-            err instanceof Error ? err.message : 'Failed to load stem detail',
+            err instanceof Error ? err.message : QUALITY_METRICS_DETAIL_LOAD_FAILED,
           );
         }
       } finally {
@@ -194,7 +197,7 @@ export function QualityMetricsPage({
                 {QUALITY_METRICS_PAGE_TITLE}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Official WMO corpus match, residuals, lint, and validate diagnostics
+                {QUALITY_METRICS_PAGE_SUBTITLE}
                 {iwxxmPin ? ` · IWXXM ${iwxxmPin}` : ''}
                 {generatedAt ? ` · generated ${generatedAt}` : ''}
               </p>
@@ -208,7 +211,7 @@ export function QualityMetricsPage({
                     className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
                     value={productFilter}
                     data-testid="quality-metrics-product-filter"
-                    aria-label="Filter corpus by product"
+                    aria-label="Filter by product"
                     onChange={(e) => setProductFilter(e.target.value)}
                   >
                     <option value="all">All products</option>
@@ -243,21 +246,18 @@ export function QualityMetricsPage({
                   data-testid="quality-metrics-summary"
                   aria-label="Quality metrics summary"
                 >
-                  <SummaryStat label="Match pass" value={activeSummary.match_pass} />
-                  <SummaryStat label="Match fail" value={activeSummary.match_fail} />
+                  <SummaryStat label="Matches" value={activeSummary.match_pass} />
+                  <SummaryStat label="Mismatches" value={activeSummary.match_fail} />
                   <SummaryStat
-                    label="Residuals"
+                    label="With residuals"
                     value={activeSummary.residual_nonempty}
                   />
-                  <SummaryStat label="Lint fail" value={activeSummary.lint_fail} />
+                  <SummaryStat label="Lint fails" value={activeSummary.lint_fail} />
                   <SummaryStat
-                    label="Validate fail"
+                    label="Validation fails"
                     value={activeSummary.validate_fail}
                   />
-                  <SummaryStat
-                    label="Deferred gaps"
-                    value={activeSummary.deferred_gaps}
-                  />
+                  <SummaryStat label="Deferred" value={activeSummary.deferred_gaps} />
                 </div>
               )}
 
@@ -268,7 +268,7 @@ export function QualityMetricsPage({
                 >
                   {files.length === 0 ? (
                     <li className="py-3 text-sm text-gray-500 dark:text-gray-400">
-                      No corpus files for this filter.
+                      {QUALITY_METRICS_EMPTY_LIST}
                     </li>
                   ) : (
                     files.map((row) => (
@@ -284,8 +284,8 @@ export function QualityMetricsPage({
                               {row.stem}
                             </div>
                             <div className="text-xs text-gray-500 dark:text-gray-400">
-                              {row.product.toUpperCase()} · {row.tier} · match{' '}
-                              {row.match_status}
+                              {row.product.toUpperCase()} · {row.tier} ·{' '}
+                              {formatMatchStatusLabel(row.match_status)}
                             </div>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -297,8 +297,12 @@ export function QualityMetricsPage({
                                 {QUALITY_METRICS_DEFERRED_LABEL}
                               </span>
                             ) : null}
-                            <span className="text-gray-500 dark:text-gray-400">
-                              R{row.residual_count} L{row.lint_error_count} V
+                            <span
+                              className="text-gray-500 dark:text-gray-400"
+                              title="Counts of residuals, lint findings, and validation issues"
+                            >
+                              Residuals {row.residual_count} · Lint{' '}
+                              {row.lint_error_count} · Validation{' '}
                               {row.validate_error_count}
                             </span>
                           </div>
@@ -320,7 +324,7 @@ export function QualityMetricsPage({
                 data-testid="quality-metrics-detail-loading"
               >
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                Loading stem detail…
+                {QUALITY_METRICS_DETAIL_LOADING}
               </div>
             )}
             {detailError && (
@@ -346,7 +350,7 @@ export function QualityMetricsPage({
                 data-testid="quality-metrics-detail-loading"
               >
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                Loading stem detail…
+                {QUALITY_METRICS_DETAIL_LOADING}
               </div>
             )}
             {detailError && (

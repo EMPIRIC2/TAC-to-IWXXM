@@ -11,10 +11,10 @@ export const VALIDATE_CODE_SCHEMATRON_SKIPPED = 'SCHEMATRON_SKIPPED';
 /** Soft schema-import warning code from the validate engine. */
 export const VALIDATE_CODE_SCHEMA_IMPORT_WARNING = 'SCHEMA_IMPORT_WARNING';
 
-export const QUALITY_METRICS_SCHEMATRON_EVALUATED = 'Schematron: evaluated';
-export const QUALITY_METRICS_SCHEMATRON_SKIPPED = 'Schematron: skipped';
-export const QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED = 'Schema import: resolved';
-export const QUALITY_METRICS_SCHEMA_IMPORT_WARNING = 'Schema import: unresolved';
+export const QUALITY_METRICS_SCHEMATRON_EVALUATED = 'Schematron rules: checked';
+export const QUALITY_METRICS_SCHEMATRON_SKIPPED = 'Schematron rules: skipped';
+export const QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED = 'XML schema imports: OK';
+export const QUALITY_METRICS_SCHEMA_IMPORT_WARNING = 'XML schema imports: unresolved';
 
 export type ValidateDispositionChip = {
   /** Stable test id suffix. */

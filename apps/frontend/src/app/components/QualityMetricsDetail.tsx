@@ -19,6 +19,10 @@ import {
   type UnifiedDiffLine,
 } from '@/utils/unifiedLineDiff';
 import { validateDispositionChips } from '@/utils/validateDispositionChips';
+import {
+  formatMatchStatusLabel,
+  QUALITY_METRICS_DEFERRED_LABEL,
+} from '@/utils/qualityMetricsCopy';
 import { Card } from './ui/card';
 
 export const QUALITY_METRICS_DIFF_EMPTY_LABEL = 'No XML differences';
@@ -26,10 +30,17 @@ export const QUALITY_METRICS_EMPTY_DIAGNOSTICS = 'None';
 export const QUALITY_METRICS_XML_VIEW_NORMALIZED = 'Normalized XML';
 export const QUALITY_METRICS_XML_VIEW_RAW = 'Raw XML';
 export const QUALITY_METRICS_XML_VIEW_HELP =
-  'Official and converted panes default to normalized, pretty-printed XML. Turn on raw to inspect original formatting. The unified diff always compares normalized forms.';
-export const QUALITY_METRICS_DIFF_EXPAND_ALL = 'Expand all context';
-export const QUALITY_METRICS_DIFF_COLLAPSE_ALL = 'Collapse unchanged context';
+  'Official and converted panes default to normalized, pretty-printed XML so formatting noise is hidden. Turn on Raw XML to inspect original whitespace. The line-by-line diff below always compares the normalized forms.';
+export const QUALITY_METRICS_DIFF_EXPAND_ALL = 'Show all unchanged lines';
+export const QUALITY_METRICS_DIFF_COLLAPSE_ALL = 'Hide distant unchanged lines';
 export const QUALITY_METRICS_BACK_TO_LIST = 'Back to list';
+export const QUALITY_METRICS_DIFF_HEADING = 'Line-by-line XML differences';
+export const QUALITY_METRICS_RESIDUALS_HELP =
+  'TAC tokens left over after conversion (should usually be empty).';
+export const QUALITY_METRICS_LINT_HELP =
+  'TAC business-rule findings from the lint engine.';
+export const QUALITY_METRICS_VALIDATE_HELP =
+  'IWXXM schema and Schematron findings from the validate engine.';
 
 interface QualityMetricsDetailProps {
   /** Detail payload from GET /quality-metrics/{stem}. */
@@ -115,11 +126,13 @@ export function QualityMetricsDetail({
             {detail.stem}
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {detail.product.toUpperCase()} · {detail.tier} · match{' '}
+            {detail.product.toUpperCase()} · {detail.tier} ·{' '}
             <span data-testid="quality-metrics-match-status">
-              {detail.match_status}
+              {formatMatchStatusLabel(detail.match_status)}
             </span>
-            {detail.deferred ? ' · deferred' : ''}
+            {detail.deferred && detail.match_status !== 'deferred'
+              ? ` · ${QUALITY_METRICS_DEFERRED_LABEL}`
+              : ''}
           </p>
           {detail.deferral_reason ? (
             <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
@@ -129,7 +142,7 @@ export function QualityMetricsDetail({
           <div
             className="mt-2 flex flex-wrap gap-2"
             data-testid="quality-metrics-validate-chips"
-            aria-label="Validate disposition"
+            aria-label="Validation status"
           >
             {dispositionChips.map((chip) => (
               <span
@@ -209,7 +222,7 @@ export function QualityMetricsDetail({
       <Card className="p-4" data-testid="quality-metrics-unified-diff">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            Unified XML diff
+            {QUALITY_METRICS_DIFF_HEADING}
           </h3>
           {!diffEmpty && hasCollapseSegments ? (
             <button
@@ -276,16 +289,19 @@ export function QualityMetricsDetail({
       <div className="grid gap-4 md:grid-cols-3">
         <DiagnosticsPane
           title="Residuals"
+          help={QUALITY_METRICS_RESIDUALS_HELP}
           testId="quality-metrics-pane-residuals"
           items={detail.residuals}
         />
         <DiagnosticsPane
           title="Lint issues"
+          help={QUALITY_METRICS_LINT_HELP}
           testId="quality-metrics-pane-lint"
           items={detail.lint_issues}
         />
         <DiagnosticsPane
-          title="Validate issues"
+          title="Validation issues"
+          help={QUALITY_METRICS_VALIDATE_HELP}
           testId="quality-metrics-pane-validate"
           items={detail.validate_issues}
         />
@@ -324,18 +340,21 @@ function TextPane({
 
 function DiagnosticsPane({
   title,
+  help,
   testId,
   items,
 }: {
   title: string;
+  help: string;
   testId: string;
   items: Record<string, unknown>[];
 }) {
   return (
     <Card className="p-3" data-testid={testId}>
-      <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
+      <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">
         {title}
       </h3>
+      <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">{help}</p>
       {items.length === 0 ? (
         <p
           className="text-sm text-gray-500 dark:text-gray-400"
@@ -376,9 +395,22 @@ function DiffLineRow({ line }: { line: UnifiedDiffLine }) {
 }
 
 function formatDiagnostic(item: Record<string, unknown>): string {
-  if (typeof item.message === 'string' && item.message.trim()) {
-    const code = typeof item.code === 'string' ? `${item.code}: ` : '';
-    return `${code}${item.message}`;
+  const message =
+    typeof item.message === 'string' && item.message.trim()
+      ? item.message.trim()
+      : typeof item.detail === 'string' && item.detail.trim()
+        ? item.detail.trim()
+        : '';
+  const code =
+    typeof item.code === 'string' && item.code.trim() ? item.code.trim() : '';
+  if (message && code) {
+    return `${code}: ${message}`;
+  }
+  if (message) {
+    return message;
+  }
+  if (code) {
+    return code;
   }
   try {
     return JSON.stringify(item);

@@ -71,7 +71,7 @@ test.describe('UJ-056 Quality metrics tab (TC-EV054-007 / TC-EV055-007 / TC-EV05
       timeout: 15_000,
     });
     await expect(page.getByTestId('quality-metrics-match-status')).toContainText(
-      /equal/i,
+      /Matches official/i,
     );
     await expect(page.getByTestId('quality-metrics-pane-tac')).toBeVisible();
     await expect(page.getByTestId('quality-metrics-pane-official-xml')).toBeVisible();
@@ -112,10 +112,10 @@ test.describe('UJ-056 Quality metrics tab (TC-EV054-007 / TC-EV055-007 / TC-EV05
     );
     await expect(
       page.getByTestId('quality-metrics-validate-chip-schematron'),
-    ).toContainText(/Schematron: evaluated/i);
+    ).toContainText(/Schematron rules: checked/i);
     await expect(
       page.getByTestId('quality-metrics-validate-chip-schema-import'),
-    ).toContainText(/Schema import: resolved/i);
+    ).toContainText(/XML schema imports: OK/i);
     await expect(page.getByTestId('quality-metrics-diff-empty')).toBeVisible();
 
     const officialBefore = await page
@@ -145,7 +145,7 @@ test.describe('UJ-056 Quality metrics tab (TC-EV054-007 / TC-EV055-007 / TC-EV05
       timeout: 15_000,
     });
     await expect(page.getByTestId('quality-metrics-match-status')).toContainText(
-      /equal/i,
+      /Matches official/i,
     );
     await expect(page.getByTestId('quality-metrics-detail-close')).toBeVisible();
   });
