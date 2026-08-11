@@ -3,6 +3,46 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-056 — Quality metrics detail page + collapsible diffs (#988) (S066)
+
+**Session**: S066-quality-metrics-diff-page  
+**Features**: deepen **F7.q** only  
+**Started**: 2026-08-11  
+**Branch**: `evolve/EV-056-quality-metrics-diff-page` (base `stage@340b3cf6`)  
+**Status**: **in_progress** — 02-verify-plan (Gate A) after `D-S066-01-ac=1`  
+**Issues**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988)  
+**Parent**: S065 / #987 pretty-print hotfix; EV-054 / EV-055 Quality metrics  
+**Corpus**: [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests]
+[Corpus: decisions §EV-056]
+
+### Scope (Phase 0 — locked 2026-08-11)
+
+| ID | Decision |
+|----|----------|
+| D-S066-route | **1** — Lean (`00→16→01→02→10→13`); PR → stage |
+| D-S066-ui-preview | **1** — non-deployed http://127.0.0.1:18000/ |
+| D-S066-route-shape | **1** — `/quality/:stem` + back-to-list |
+| D-S066-context-n | **1** — default 3 context lines |
+| D-S066-list | **1** — navigate to detail; list via back |
+| D-S066-board | **1** — #988 In progress |
+
+### Acceptance (`D-S066-01-ac=1`)
+
+1. List row opens dedicated `/quality/:stem` (shareable) with back-to-list.
+2. Official/Converted/TAC panes remain; normalized = pretty C14N.
+3. Diff shows collapsible equal-context hunks (default 3; expand hunk / expand all).
+4. Unequal SIGMET stems remain navigable and readable on staging.
+5. UJ-056 / TC-EV056; FE unit + Playwright; H4–H5 via 13.
+
+### Out of scope
+
+- `match_status` / C14N equality / fixture generator changes
+- New npm diff library unless AskQuestion
+- Promote to `main` unless asked
+- API contract change unless routing requires it
+
+---
+
 ## Cycle EV-055 — Quality metrics 2025-2 follow-ups (#982 / #980 / #979) (S064)
 
 **Session**: S064-quality-metrics-2025-2-followups  

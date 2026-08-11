@@ -33,6 +33,9 @@ Follow-up from [S065 FOLLOWUP.md](../S065-quality-metrics-diff-long-line/FOLLOWU
 | D-S066-route | **1** — Lean as drafted (`00 → 16 → 01 → 02 → 10 → 13`) |
 | D-S066-ui-preview | **1** — non-deployed local UI at http://127.0.0.1:18000/ |
 | D-S066-board | **1** — #988 → In progress (WIP 0→1) |
+| D-S066-route-shape | **1** — shareable `/quality/:stem` + back-to-list |
+| D-S066-context-n | **1** — default **3** context lines around hunks |
+| D-S066-list | **1** — navigate to detail; list via back |
 
 ## Out of scope
 

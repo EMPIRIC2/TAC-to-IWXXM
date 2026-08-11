@@ -110,7 +110,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054 / EV-055) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -2122,6 +2122,52 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   un-normalized; quieter C14N diff; validate chips match enabled/fixed disposition
 - **Pass criteria**: Local Playwright/Vitest green; H4–H5 after staging deploy (12/13)
 - **Source**: EV-055 AC1 / AC6 / AC7; UJ-056; `D-S064-gateA-M2=override`
+
+### EV-056 / S066 — Quality metrics detail page + collapsible diffs (#988 / F7.q)
+
+- **Mode**: delta deepen F7.q (UX/docs/tests; C14N semantics unchanged)
+- **Pass criteria**: AC1–AC5 in evolve-decisions §EV-056; TC-EV056-001..005; **UJ-056** deepen
+- **Source**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988); S065 FOLLOWUP;
+  parent EV-054 / EV-055; pretty-print hotfix #987
+
+### TC-EV056-001: Dedicated `/quality/:stem` detail route
+
+- **Level**: T0 / T2
+- **Objective**: List row navigates to shareable `/quality/:stem` with back-to-list
+  (`D-S066-route-shape=1` / `D-S066-list=1`)
+- **Pass criteria**: Vitest and/or Playwright assert route + back navigation
+- **Source**: EV-056 AC1; UJ-056
+
+### TC-EV056-002: Pretty C14N panes preserved
+
+- **Level**: T0 / T2
+- **Objective**: Official/Converted/TAC panes remain; normalized = pretty C14N (S065 helpers)
+- **Pass criteria**: FE unit asserts pretty multi-line display XML for C14N peers
+- **Source**: EV-056 AC2; S065; UJ-056
+
+### TC-EV056-003: Collapsible equal-context hunks (default 3)
+
+- **Level**: T0 / T2
+- **Objective**: Unified diff collapses unchanged context to GitHub-like expand controls;
+  default **3** context lines; expand hunk / expand all (`D-S066-context-n=1`)
+- **Pass criteria**: Unit test on `collapseEqualContext` (or equivalent); UI control smoke
+- **Source**: EV-056 AC3; UJ-056
+
+### TC-EV056-004: Unequal SIGMET stems remain readable
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Non-equal SIGMET (or other unequal) stems open on detail route with
+  navigable collapsed hunks
+- **Pass criteria**: Playwright or staging smoke opens an unequal stem; no single-line dump
+- **Source**: EV-056 AC4; UJ-056
+
+### TC-EV056-005: UJ-056 smoke — detail route + hunk fold
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Open Quality metrics → open stem → land on `/quality/:stem` → see
+  collapsible unified diff; C14N/`match_status` unchanged
+- **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
+- **Source**: EV-056 AC5; UJ-056
 
 ### Live harness — staging (EV-043 / EV-044)
 

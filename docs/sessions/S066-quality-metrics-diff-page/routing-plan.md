@@ -12,8 +12,8 @@
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | Close S065; open S066; #988 In progress; `D-S066-route=1` / `D-S066-ui-preview=1` |
 | 16-evolve | yes | orchestrate | **in_progress** | Plan card + Phase 0–1 → child stages |
-| 01-requirements | yes | delta | pending | F7.q AC + UJ-056 deepen; no new Fn |
-| 02-verify-plan | yes | delta | pending | Gate A |
+| 01-requirements | yes | delta | **completed** | `D-S066-01-ac=1`; AC1–AC5; UJ-056 deepen |
+| 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S066-gateA=1` |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules expected |
 | 04-tech-plan | no | — | skipped | Lean — FE route + hunk fold; no API/arch |
 | 05-verify-tech | no | — | skipped | Lean |
@@ -49,3 +49,8 @@
 | D-S066-board | **1** — #988 → In progress |
 | D-S066-route | **1** — Lean as drafted (`00 → 16 → 01 → 02 → 10 → 13`) |
 | D-S066-ui-preview | **1** — non-deployed local UI at http://127.0.0.1:18000/ |
+| D-S066-route-shape | **1** — `/quality/:stem` + back-to-list |
+| D-S066-context-n | **1** — 3 context lines |
+| D-S066-list | **1** — navigate to detail; list via back |
+| D-S066-01-ac | **1** — AC1–AC5 + UJ-056 deepen + manifest |
+| D-S066-gateA | **1** — Gate A PASS → implement FE (Lean) |

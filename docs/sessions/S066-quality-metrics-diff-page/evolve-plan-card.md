@@ -25,10 +25,18 @@ Dedicated Quality metrics detail route with GitHub-style collapsible unified XML
 
 ## Next child stage
 
-**01-requirements** (delta) — lock AC1–AC5 from FOLLOWUP; deepen F7.q + UJ-056; no new Fn
+**Implement FE** (Lean) — `collapseEqualContext` + `/quality/:stem`; then **10-e2e**
+
+## Locked intake (Phase 0)
+
+| ID | Decision |
+|----|----------|
+| D-S066-route-shape | **1** — `/quality/:stem` + back-to-list |
+| D-S066-context-n | **1** — 3 context lines |
+| D-S066-list | **1** — navigate to detail; list via back |
+| D-S066-01-ac | **1** — AC1–AC5 approved |
+| D-S066-gateA | **1** — Gate A PASS |
 
 ## Risks / open decisions
 
-- Route shape (React Router path vs shell tab query) — decide in 01
-- Default collapsed context lines (suggest 3) — decide in 01
-- Staging CD for #987 still landing — evolve bases on merged stage tip
+- Staging CD for #987 may still be landing — evolve bases on merged stage tip `340b3cf6`
