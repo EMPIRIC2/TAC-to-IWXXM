@@ -55,6 +55,17 @@
 | D-S064-12-start | **1** — continue → 12-verify-deploy; open PR→stage |
 | D-S064-12 | **1** — Approve checklist + merge #985 → `stage`, then continue 13 |
 
+### Deploy smoke (13 — READY)
+
+| Item | Result |
+|------|--------|
+| Merge #985 | `4b48c8d8` on `stage` |
+| Staging CD | [31534191417](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31534191417) Deploy + Staging smoke **success** |
+| H1–H5 | PASS on `api\|app.staging.tac-to-iwxxm.com` |
+| Board | #982/#980/#979 **On stage** |
+| Docs follow-up | PR [#986](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986) |
+| Sign-off | pending `D-S064-13` |
+
 ### Build closeout (07 — M1–M5)
 
 | M | Tip note |
