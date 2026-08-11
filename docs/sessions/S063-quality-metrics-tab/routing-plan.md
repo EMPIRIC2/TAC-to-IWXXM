@@ -1,12 +1,12 @@
 # Routing plan — S063 / EV-054
 
-**Status:** approved (`D-S063-route=1`)  
+**Status:** approved (`D-S063-route=1`) · **cycle CLOSED** (`D-S063-close=1`)  
 **Preset:** **Standard** — not Auto-Lean (new operator UI tab + fixture metrics + H4–H5)
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | `D-S063-route=1` / `D-S063-ui-preview=2` |
-| 16-evolve | yes | orchestrate | **in_progress** | 12-verify-deploy in_progress `D-S063-12-path=1`; opening PR → stage then 12 checklist |
+| 16-evolve | yes | orchestrate | **completed** | `D-S063-13=1` / `D-S063-close=1` — stay on stage; #836 CLOSED; follow-ups #979–#983 Ready |
 | 01-requirements | yes | delta | **completed** | `D-S063-01-ac=1`; UJ-056; TC-EV054; shell-tab + unified diff |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S063-gateA=2`; api-contract + 05 |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
@@ -18,8 +18,8 @@
 | 09-qa | yes | delta | **completed** | pass_with_advisories; `reports/qa-report.md`; tip `be9e3b07` |
 | 10-e2e | yes | delta | **completed** | UJ-056 PASS local; `reports/e2e-report.md`; H4–H5 deferred 12/13; tip `be9e3b07` |
 | 11-verify-impl | yes | delta | **completed** | PASS `D-S063-11=1`; `D-S063-ui-preview-11=1`; `D-S063-uj056=1`; `reports/verify-impl.md` |
-| 12-verify-deploy | yes | delta | **in_progress** | `D-S063-12-path=1`; opening PR → stage then 12 checklist; not completed |
-| 13-deploy-smoke | yes | delta | pending | Staging smoke; promote later |
+| 12-verify-deploy | yes | delta | **completed** | `D-S063-12=1`; PR #977 MERGED → stage @ `4fd51e39` |
+| 13-deploy-smoke | yes | delta | **completed** | `D-S063-13=1` approve smoke; stay on stage (no promote); `reports/deploy-smoke.md` |
 
 ## Recommended ordered stages
 
@@ -35,8 +35,8 @@
 
 ## Board
 
-- Project [#7](https://github.com/orgs/EMPIRIC2/projects/7) — #836 **In progress**; #959 **Done**
-- Ready queue = 2 (`#948`, `#958`) — below 3–5; refill later
+- Project [#7](https://github.com/orgs/EMPIRIC2/projects/7) — #836 **Done**; follow-ups #979–#983 **Ready**
+- Ready queue refilled at close (#979–#983)
 
 ## Locked intake
 
@@ -51,3 +51,6 @@
 | D-S063-uj056 | **1** — Approve UJ-056; waive live T3 until 12/13 |
 | D-S063-11 | **1** — Approve F7.q; finish 11; toward 12 |
 | D-S063-12-path | **1** — Open PR → stage, then 12-verify-deploy (user) |
+| D-S063-12 | **1** — Approve checklist; merge #977 → stage then 13 |
+| D-S063-13 | **1** — Approve smoke; close EV-054 / S063; stay on stage (no promote) |
+| D-S063-close | **1** — Close #836; clear `active_session`; follow-ups #979–#983 |
