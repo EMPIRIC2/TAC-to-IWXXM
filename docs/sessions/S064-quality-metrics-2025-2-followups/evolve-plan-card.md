@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**07-build** M4 — FE panes + C14N diff + validate chips (M1–M3 done; `D-S064-c14n-volatile=1`)
+**07-build** M5 — Playwright UJ-056 deepen + docs/CI (M1–M4 done)
 
 ## Risks / open decisions
 

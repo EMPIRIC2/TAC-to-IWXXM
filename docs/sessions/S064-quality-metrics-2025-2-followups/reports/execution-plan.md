@@ -17,7 +17,7 @@
 |-------|-------|
 | **Active phase** | Phase 1: EV-055 follow-ups |
 | **Active milestone** | M2 — W3C C14N helpers (**complete**) |
-| **Active task** | — (M3 complete; next M4) |
+| **Active task** | — (M4 complete; next M5) |
 | **Tasks completed** | 8 / 17 |
 | **Stage** | 07-build (M1 complete → M2) |
 | **Last updated** | 2026-08-11 |
@@ -121,9 +121,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T4.1 | Vitest: default panes show C14N; toggle shows raw; diff empty/semantic-only for formatting stem | Test | pending | TC-EV055-001; AC1; `D-S064-gateA-M2=override` | T2.3 | — |
-| T4.2 | Wire `QualityMetricsDetail`: default C14N panes, override control, `unifiedLineDiff` on C14N peers | Impl | pending | AC1/AC6; UJ-056 | T4.1, T3.3 | — |
-| T4.3 | Validate chip/copy reflects enabled/fixed disposition (no skip-as-OK); EV-048 operator copy clean | Impl/Test | pending | AC6; TC-EV055-004..005 | T1.2, T1.4, T4.2 | — |
+| T4.1 | Vitest: default panes show C14N; toggle shows raw; diff empty/semantic-only for formatting stem | Test | completed | TC-EV055-001; AC1; `D-S064-gateA-M2=override` | T2.3 | — |
+| T4.2 | Wire `QualityMetricsDetail`: default C14N panes, override control, `unifiedLineDiff` on C14N peers | Impl | completed | AC1/AC6; UJ-056 | T4.1, T3.3 | — |
+| T4.3 | Validate chip/copy reflects enabled/fixed disposition (no skip-as-OK); EV-048 operator copy clean | Impl/Test | completed | AC6; TC-EV055-004..005 | T1.2, T1.4, T4.2 | — |
 
 #### M5: E2E / CI / docs closeout — P0
 
@@ -153,9 +153,9 @@
 | T3.1 | M3 | completed | T2.2 |
 | T3.2 | M3 | completed | T3.1, T1.2, T1.4 |
 | T3.3 | M3 | completed | T3.2 |
-| T4.1 | M4 | pending | T2.3 |
-| T4.2 | M4 | pending | T4.1, T3.3 |
-| T4.3 | M4 | pending | T1.2, T1.4, T4.2 |
+| T4.1 | M4 | completed | T2.3 |
+| T4.2 | M4 | completed | T4.1, T3.3 |
+| T4.3 | M4 | completed | T1.2, T1.4, T4.2 |
 | T5.1 | M5 | pending | T4.3 |
 | T5.2 | M5 | pending | T5.1 |
 | T5.3 | M5 | pending | T5.2 |

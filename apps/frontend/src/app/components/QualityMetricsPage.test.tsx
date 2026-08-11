@@ -213,14 +213,20 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
       'METAR YUDO',
     );
     expect(screen.getByTestId('quality-metrics-pane-official-xml')).toHaveTextContent(
-      '<a/>',
+      '<a></a>',
     );
     expect(screen.getByTestId('quality-metrics-pane-converted-xml')).toHaveTextContent(
-      '<a/>',
+      '<a></a>',
     );
     expect(screen.getByTestId('quality-metrics-diff-empty')).toHaveTextContent(
       QUALITY_METRICS_DIFF_EMPTY_LABEL,
     );
+    expect(
+      screen.getByTestId('quality-metrics-validate-chip-schematron'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('quality-metrics-validate-chip-schema-import'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('quality-metrics-pane-residuals-empty'),
     ).toHaveTextContent(QUALITY_METRICS_EMPTY_DIAGNOSTICS);
@@ -249,8 +255,12 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
     expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
       'unequal',
     );
-    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent('<a/>');
-    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent('<b/>');
+    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent(
+      '<a></a>',
+    );
+    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent(
+      '<b></b>',
+    );
     expect(screen.getByTestId('quality-metrics-pane-residuals')).toHaveTextContent(
       'token leftover',
     );
