@@ -1,7 +1,7 @@
 /**
  * Quality metrics corpus browser — product filter, summary strip, file list, detail.
  *
- * List + detail for F7.q / EV-054 (AC1–AC5).
+ * List + detail for F7.q / EV-054 (AC1–AC5) + EV-056 shareable `/quality/:stem`.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -12,7 +12,10 @@ import type {
   QualityMetricsFileRow,
   QualityMetricsSummary,
 } from '@/utils/openapiTypes';
-import { QualityMetricsDetail } from './QualityMetricsDetail';
+import {
+  QUALITY_METRICS_BACK_TO_LIST,
+  QualityMetricsDetail,
+} from './QualityMetricsDetail';
 import { Card } from './ui/card';
 
 /** Operator-visible label for deferred / gap stems (AC5). */
@@ -22,16 +25,30 @@ export const QUALITY_METRICS_DEFERRED_LABEL = 'Deferred gap';
 export const QUALITY_METRICS_PAGE_TITLE = 'Quality metrics';
 
 interface QualityMetricsPageProps {
-  /** Optional stem select hook (in addition to in-page detail). */
+  /** Optional stem select hook (in addition to route navigation). */
   onSelectStem?: (stem: string) => void;
+  /** Stem from `/quality/:stem` — when set, show detail-only view. */
+  routeStem?: string | null;
+  /** Navigate to shareable detail path (list → detail). */
+  onOpenDetailRoute?: (stem: string) => void;
+  /** Return to list path (`/quality`). */
+  onBackToList?: () => void;
 }
 
 /**
  * Browse precomputed official-corpus quality metrics by product.
  *
  * @param props.onSelectStem - Optional callback when a file row is activated
+ * @param props.routeStem - Active detail stem from the URL
+ * @param props.onOpenDetailRoute - Push `/quality/:stem`
+ * @param props.onBackToList - Push `/quality`
  */
-export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
+export function QualityMetricsPage({
+  onSelectStem,
+  routeStem = null,
+  onOpenDetailRoute,
+  onBackToList,
+}: QualityMetricsPageProps) {
   const [productFilter, setProductFilter] = useState<string>('all');
   const [summaries, setSummaries] = useState<QualityMetricsSummary[]>([]);
   const [files, setFiles] = useState<QualityMetricsFileRow[]>([]);
@@ -39,10 +56,13 @@ export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
   const [iwxxmPin, setIwxxmPin] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedStem, setSelectedStem] = useState<string | null>(null);
+  const [localStem, setLocalStem] = useState<string | null>(null);
   const [detail, setDetail] = useState<QualityMetricsDetailResponse | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState<string | null>(null);
+
+  const useRoute = typeof onOpenDetailRoute === 'function';
+  const selectedStem = useRoute ? routeStem : localStem;
 
   const loadMetrics = useCallback(async () => {
     setLoading(true);
@@ -136,19 +156,30 @@ export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
   }, [productFilter, summaries]);
 
   const handleSelectStem = (stem: string) => {
-    setSelectedStem(stem);
+    onSelectStem?.(stem);
+    if (useRoute && onOpenDetailRoute) {
+      onOpenDetailRoute(stem);
+      return;
+    }
+    setLocalStem(stem);
     setDetail(null);
     setDetailError(null);
     setDetailLoading(true);
-    onSelectStem?.(stem);
   };
 
   const handleCloseDetail = () => {
-    setSelectedStem(null);
+    if (useRoute && onBackToList) {
+      onBackToList();
+      return;
+    }
+    setLocalStem(null);
     setDetail(null);
     setDetailError(null);
     setDetailLoading(false);
   };
+
+  const detailOnly = useRoute && Boolean(selectedStem);
+  const showInlineDetail = !useRoute && Boolean(selectedStem);
 
   return (
     <div
@@ -156,127 +187,158 @@ export function QualityMetricsPage({ onSelectStem }: QualityMetricsPageProps) {
       data-testid="quality-metrics-page"
     >
       <div className="mx-auto max-w-5xl space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {QUALITY_METRICS_PAGE_TITLE}
-          </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Official WMO corpus match, residuals, lint, and validate diagnostics
-            {iwxxmPin ? ` · IWXXM ${iwxxmPin}` : ''}
-            {generatedAt ? ` · generated ${generatedAt}` : ''}
-          </p>
-        </div>
-
-        <Card className="p-4">
-          <div className="mb-4 flex flex-wrap items-center gap-3">
-            <label className="text-sm text-gray-700 dark:text-gray-300">
-              Product
-              <select
-                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
-                value={productFilter}
-                data-testid="quality-metrics-product-filter"
-                aria-label="Filter corpus by product"
-                onChange={(e) => setProductFilter(e.target.value)}
-              >
-                <option value="all">All products</option>
-                {productOptions.map((product) => (
-                  <option key={product} value={product}>
-                    {product.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          {loading && (
-            <div
-              className="flex items-center gap-2 text-sm text-gray-500"
-              data-testid="quality-metrics-loading"
-            >
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              Loading quality metrics…
+        {!detailOnly ? (
+          <>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {QUALITY_METRICS_PAGE_TITLE}
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Official WMO corpus match, residuals, lint, and validate diagnostics
+                {iwxxmPin ? ` · IWXXM ${iwxxmPin}` : ''}
+                {generatedAt ? ` · generated ${generatedAt}` : ''}
+              </p>
             </div>
-          )}
 
-          {error && (
-            <p className="text-sm text-red-600 dark:text-red-400" role="alert">
-              {error}
-            </p>
-          )}
+            <Card className="p-4">
+              <div className="mb-4 flex flex-wrap items-center gap-3">
+                <label className="text-sm text-gray-700 dark:text-gray-300">
+                  Product
+                  <select
+                    className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                    value={productFilter}
+                    data-testid="quality-metrics-product-filter"
+                    aria-label="Filter corpus by product"
+                    onChange={(e) => setProductFilter(e.target.value)}
+                  >
+                    <option value="all">All products</option>
+                    {productOptions.map((product) => (
+                      <option key={product} value={product}>
+                        {product.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
 
-          {!loading && !error && activeSummary && (
-            <div
-              className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6"
-              data-testid="quality-metrics-summary"
-              aria-label="Quality metrics summary"
-            >
-              <SummaryStat label="Match pass" value={activeSummary.match_pass} />
-              <SummaryStat label="Match fail" value={activeSummary.match_fail} />
-              <SummaryStat label="Residuals" value={activeSummary.residual_nonempty} />
-              <SummaryStat label="Lint fail" value={activeSummary.lint_fail} />
-              <SummaryStat label="Validate fail" value={activeSummary.validate_fail} />
-              <SummaryStat label="Deferred gaps" value={activeSummary.deferred_gaps} />
-            </div>
-          )}
-
-          {!loading && !error && (
-            <ul
-              className="divide-y divide-gray-200 dark:divide-gray-700"
-              data-testid="quality-metrics-file-list"
-            >
-              {files.length === 0 ? (
-                <li className="py-3 text-sm text-gray-500 dark:text-gray-400">
-                  No corpus files for this filter.
-                </li>
-              ) : (
-                files.map((row) => {
-                  const selected = selectedStem === row.stem;
-                  return (
-                    <li key={row.stem}>
-                      <button
-                        type="button"
-                        className={`flex w-full flex-wrap items-center justify-between gap-2 px-1 py-3 text-left text-sm ${
-                          selected
-                            ? 'bg-blue-50 dark:bg-blue-950/40'
-                            : 'hover:bg-gray-50 dark:hover:bg-gray-800/60'
-                        }`}
-                        data-testid={`quality-metrics-row-${row.stem}`}
-                        aria-pressed={selected}
-                        onClick={() => handleSelectStem(row.stem)}
-                      >
-                        <div className="min-w-0">
-                          <div className="font-medium text-gray-900 dark:text-gray-100">
-                            {row.stem}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            {row.product.toUpperCase()} · {row.tier} · match{' '}
-                            {row.match_status}
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2 text-xs">
-                          {row.deferred ? (
-                            <span
-                              className="rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200"
-                              data-testid={`quality-metrics-deferred-${row.stem}`}
-                            >
-                              {QUALITY_METRICS_DEFERRED_LABEL}
-                            </span>
-                          ) : null}
-                          <span className="text-gray-500 dark:text-gray-400">
-                            R{row.residual_count} L{row.lint_error_count} V
-                            {row.validate_error_count}
-                          </span>
-                        </div>
-                      </button>
-                    </li>
-                  );
-                })
+              {loading && (
+                <div
+                  className="flex items-center gap-2 text-sm text-gray-500"
+                  data-testid="quality-metrics-loading"
+                >
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  Loading quality metrics…
+                </div>
               )}
-            </ul>
-          )}
-        </Card>
 
-        {selectedStem ? (
+              {error && (
+                <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+                  {error}
+                </p>
+              )}
+
+              {!loading && !error && activeSummary && (
+                <div
+                  className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6"
+                  data-testid="quality-metrics-summary"
+                  aria-label="Quality metrics summary"
+                >
+                  <SummaryStat label="Match pass" value={activeSummary.match_pass} />
+                  <SummaryStat label="Match fail" value={activeSummary.match_fail} />
+                  <SummaryStat
+                    label="Residuals"
+                    value={activeSummary.residual_nonempty}
+                  />
+                  <SummaryStat label="Lint fail" value={activeSummary.lint_fail} />
+                  <SummaryStat
+                    label="Validate fail"
+                    value={activeSummary.validate_fail}
+                  />
+                  <SummaryStat
+                    label="Deferred gaps"
+                    value={activeSummary.deferred_gaps}
+                  />
+                </div>
+              )}
+
+              {!loading && !error && (
+                <ul
+                  className="divide-y divide-gray-200 dark:divide-gray-700"
+                  data-testid="quality-metrics-file-list"
+                >
+                  {files.length === 0 ? (
+                    <li className="py-3 text-sm text-gray-500 dark:text-gray-400">
+                      No corpus files for this filter.
+                    </li>
+                  ) : (
+                    files.map((row) => (
+                      <li key={row.stem}>
+                        <button
+                          type="button"
+                          className="flex w-full flex-wrap items-center justify-between gap-2 px-1 py-3 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-800/60"
+                          data-testid={`quality-metrics-row-${row.stem}`}
+                          onClick={() => handleSelectStem(row.stem)}
+                        >
+                          <div className="min-w-0">
+                            <div className="font-medium text-gray-900 dark:text-gray-100">
+                              {row.stem}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {row.product.toUpperCase()} · {row.tier} · match{' '}
+                              {row.match_status}
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2 text-xs">
+                            {row.deferred ? (
+                              <span
+                                className="rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200"
+                                data-testid={`quality-metrics-deferred-${row.stem}`}
+                              >
+                                {QUALITY_METRICS_DEFERRED_LABEL}
+                              </span>
+                            ) : null}
+                            <span className="text-gray-500 dark:text-gray-400">
+                              R{row.residual_count} L{row.lint_error_count} V
+                              {row.validate_error_count}
+                            </span>
+                          </div>
+                        </button>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              )}
+            </Card>
+          </>
+        ) : null}
+
+        {detailOnly ? (
+          <Card className="p-4" data-testid="quality-metrics-detail-route">
+            {detailLoading && (
+              <div
+                className="flex items-center gap-2 text-sm text-gray-500"
+                data-testid="quality-metrics-detail-loading"
+              >
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Loading stem detail…
+              </div>
+            )}
+            {detailError && (
+              <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+                {detailError}
+              </p>
+            )}
+            {!detailLoading && !detailError && detail ? (
+              <QualityMetricsDetail
+                detail={detail}
+                onClose={handleCloseDetail}
+                closeLabel={QUALITY_METRICS_BACK_TO_LIST}
+              />
+            ) : null}
+          </Card>
+        ) : null}
+
+        {showInlineDetail ? (
           <Card className="p-4">
             {detailLoading && (
               <div

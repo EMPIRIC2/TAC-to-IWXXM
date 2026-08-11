@@ -1,11 +1,17 @@
 /**
  * Per-stem Quality metrics detail — TAC/XML panes, diagnostics, unified diff.
  *
- * F7.q / EV-054 M4 + EV-055 M4 (AC1/AC6 — C14N panes + validate chips).
+ * F7.q / EV-054 M4 + EV-055 M4 (AC1/AC6 — C14N panes + validate chips) +
+ * EV-056 collapsible equal-context hunks (`D-S066-context-n=1`).
  */
 
 import { useMemo, useState } from 'react';
 import type { QualityMetricsDetailResponse } from '@/utils/openapiTypes';
+import {
+  collapseEqualContext,
+  DEFAULT_DIFF_CONTEXT,
+  type CollapsedDiffSegment,
+} from '@/utils/collapseEqualContext';
 import { qualityMetricsDisplayXml } from '@/utils/qualityMetricsDisplayXml';
 import {
   isUnifiedDiffEmpty,
@@ -21,12 +27,17 @@ export const QUALITY_METRICS_XML_VIEW_NORMALIZED = 'Normalized XML';
 export const QUALITY_METRICS_XML_VIEW_RAW = 'Raw XML';
 export const QUALITY_METRICS_XML_VIEW_HELP =
   'Official and converted panes default to normalized, pretty-printed XML. Turn on raw to inspect original formatting. The unified diff always compares normalized forms.';
+export const QUALITY_METRICS_DIFF_EXPAND_ALL = 'Expand all context';
+export const QUALITY_METRICS_DIFF_COLLAPSE_ALL = 'Collapse unchanged context';
+export const QUALITY_METRICS_BACK_TO_LIST = 'Back to list';
 
 interface QualityMetricsDetailProps {
   /** Detail payload from GET /quality-metrics/{stem}. */
   detail: QualityMetricsDetailResponse;
   /** Clear selection / return to list focus. */
   onClose?: () => void;
+  /** Label for the close / back control (default Close detail). */
+  closeLabel?: string;
 }
 
 /**
@@ -34,9 +45,18 @@ interface QualityMetricsDetailProps {
  *
  * @param props.detail - Stem detail response
  * @param props.onClose - Optional close handler
+ * @param props.closeLabel - Optional close button label
  */
-export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailProps) {
+export function QualityMetricsDetail({
+  detail,
+  onClose,
+  closeLabel = 'Close detail',
+}: QualityMetricsDetailProps) {
   const [showRawXml, setShowRawXml] = useState(false);
+  const [expandAll, setExpandAll] = useState(false);
+  const [expandedCollapseKeys, setExpandedCollapseKeys] = useState<Set<string>>(
+    () => new Set(),
+  );
 
   const officialC14n = useMemo(
     () => qualityMetricsDisplayXml(detail.official_xml ?? ''),
@@ -56,10 +76,32 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
   );
   const diffEmpty = isUnifiedDiffEmpty(diffLines);
 
+  const collapsedSegments = useMemo(
+    () => collapseEqualContext(diffLines, { context: DEFAULT_DIFF_CONTEXT }),
+    [diffLines],
+  );
+
   const dispositionChips = useMemo(
     () => validateDispositionChips(detail.validate_issues ?? []),
     [detail.validate_issues],
   );
+
+  const hasCollapseSegments = collapsedSegments.some((s) => s.type === 'collapse');
+
+  const collapseKey = (segment: CollapsedDiffSegment): string =>
+    `c-${segment.startIndex}-${segment.lines.length}`;
+
+  const toggleCollapse = (key: string) => {
+    setExpandedCollapseKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
 
   return (
     <section
@@ -112,7 +154,7 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
             data-testid="quality-metrics-detail-close"
             onClick={onClose}
           >
-            Close detail
+            {closeLabel}
           </button>
         ) : null}
       </div>
@@ -165,9 +207,28 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
       </div>
 
       <Card className="p-4" data-testid="quality-metrics-unified-diff">
-        <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
-          Unified XML diff
-        </h3>
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Unified XML diff
+          </h3>
+          {!diffEmpty && hasCollapseSegments ? (
+            <button
+              type="button"
+              className="rounded-md border border-gray-300 px-2 py-1 text-xs dark:border-gray-600"
+              data-testid="quality-metrics-diff-expand-all"
+              onClick={() => {
+                setExpandAll((prev) => !prev);
+                if (expandAll) {
+                  setExpandedCollapseKeys(new Set());
+                }
+              }}
+            >
+              {expandAll
+                ? QUALITY_METRICS_DIFF_COLLAPSE_ALL
+                : QUALITY_METRICS_DIFF_EXPAND_ALL}
+            </button>
+          ) : null}
+        </div>
         {diffEmpty ? (
           <p
             className="text-sm text-gray-500 dark:text-gray-400"
@@ -180,9 +241,34 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
             className="max-h-96 overflow-auto rounded border border-gray-200 bg-gray-950 p-3 font-mono text-xs text-gray-100 dark:border-gray-700"
             data-testid="quality-metrics-diff-body"
           >
-            {diffLines.map((line, index) => (
-              <DiffLineRow key={`${line.op}-${index}`} line={line} />
-            ))}
+            {collapsedSegments.map((segment) => {
+              if (segment.type === 'lines') {
+                return segment.lines.map((line, index) => (
+                  <DiffLineRow key={`l-${segment.startIndex}-${index}`} line={line} />
+                ));
+              }
+              const key = collapseKey(segment);
+              const expanded = expandAll || expandedCollapseKeys.has(key);
+              if (expanded) {
+                return segment.lines.map((line, index) => (
+                  <DiffLineRow key={`${key}-${index}`} line={line} />
+                ));
+              }
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className="block w-full bg-gray-900 py-1 text-left text-blue-300 hover:bg-gray-800"
+                  data-testid="quality-metrics-diff-expand-hunk"
+                  data-hidden-count={segment.lines.length}
+                  onClick={() => toggleCollapse(key)}
+                >
+                  {`Expand ${segment.lines.length} unchanged line${
+                    segment.lines.length === 1 ? '' : 's'
+                  }`}
+                </button>
+              );
+            })}
           </pre>
         )}
       </Card>
