@@ -17,7 +17,7 @@
 | 08-verify-build | yes | delta | **completed** | Gate C PASS `D-S064-gateC=1` @ `af7b61dc` |
 | 09-qa | yes | delta | **completed** | `qa-report.md` PASS @ `af7b61dc` |
 | 10-e2e | yes | delta | **completed** | `e2e-report.md` UJ-056 2/2 PASS |
-| 11-verify-impl | yes | delta | pending | Per-AC; UI preview AskQuestion |
+| 11-verify-impl | yes | delta | **completed** | PASS `D-S064-11=1`; `D-S064-ui-preview-11=1`; `D-S064-uj056=1` |
 | 12-verify-deploy | yes | delta | pending | PR → **stage** |
 | 13-deploy-smoke | yes | delta | pending | Staging smoke; promote only if asked |
 
@@ -60,3 +60,7 @@
 | D-S064-regen | **1** — Regenerate corpus_metrics |
 | D-S064-gateA | **1** — PASS; C14N; #979/#980 hard; pane override; → 04 |
 | D-S064-gateC | **1** — PASS; push tip + continue 09-qa (recommended) |
+| D-S064-09-10-continue | **1** — continue → 11-verify-impl (recommended) |
+| D-S064-ui-preview-11 | **1** — Non-deployed preview at http://127.0.0.1:18000/ |
+| D-S064-uj056 | **1** — Approve UJ-056; waive live T3 until 12/13 |
+| D-S064-11 | **1** — Approve F7.q + F2/F13; proceed toward 12 |

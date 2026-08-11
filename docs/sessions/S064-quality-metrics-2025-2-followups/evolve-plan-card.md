@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**11-verify-impl next** — 09+10 PASS (`qa-report.md`, `e2e-report.md`); tip `af7b61dc` pushed; then 12/13
+**12-verify-deploy next** (`D-S064-11=1`) — open PR → `stage` for tip CI; then 13 staging smoke
 
 ## Risks / open decisions
 
