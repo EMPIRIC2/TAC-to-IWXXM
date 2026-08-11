@@ -26,11 +26,11 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**07-build** M1 — engine hard fixes (`D-S064-05=1`; `D-S064-c14n-host=1`)
+**07-build** M4 — FE panes + C14N diff + validate chips (M1–M3 done; `D-S064-c14n-volatile=1`)
 
 ## Risks / open decisions
 
 - Native Schematron xslt2 support may be hard — cycle blocks/re-scopes if enable impossible (`D-S064-sch-hard=1`)
 - XSD import fix may need catalog/packaging changes (`D-S064-xsd-hard=1`)
 - Board WIP 3 > policy ≤2 (explicit override)
-- C14N regen may churn large `corpus_metrics` fixtures
+- C14N regen may churn large `corpus_metrics` fixtures — mitigated by volatile-attr strip before C14N (`D-S064-c14n-volatile=1`)

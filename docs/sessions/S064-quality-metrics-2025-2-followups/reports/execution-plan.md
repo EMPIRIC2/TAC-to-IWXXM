@@ -17,7 +17,7 @@
 |-------|-------|
 | **Active phase** | Phase 1: EV-055 follow-ups |
 | **Active milestone** | M2 — W3C C14N helpers (**complete**) |
-| **Active task** | — (M2 complete; next M3) |
+| **Active task** | — (M3 complete; next M4) |
 | **Tasks completed** | 8 / 17 |
 | **Stage** | 07-build (M1 complete → M2) |
 | **Last updated** | 2026-08-11 |
@@ -110,9 +110,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | Generator tests: formatting-only pair → `match_status=equal` under C14N | Test | pending | TC-EV055-002; AC2 | T2.2 | — |
-| T3.2 | Switch `generate_quality_metrics.py` from ADR-032 canonicalize to C14N for match | Impl | pending | AC2; [Corpus: api] | T3.1, T1.2, T1.4 | — |
-| T3.3 | `make generate-quality-metrics`; commit `corpus_metrics.json`; loader/summary smoke | Data/Test | pending | TC-EV055-006; AC7; `D-S064-regen=1` | T3.2 | artifact |
+| T3.1 | Generator tests: formatting-only pair → `match_status=equal` under C14N | Test | completed | TC-EV055-002; AC2; `D-S064-c14n-volatile=1` | T2.2 | — |
+| T3.2 | Switch `generate_quality_metrics.py` from ADR-032 canonicalize to C14N for match | Impl | completed | AC2; [Corpus: api]; [Corpus: adr/ADR-035] | T3.1, T1.2, T1.4 | — |
+| T3.3 | `make generate-quality-metrics`; commit `corpus_metrics.json`; loader/summary smoke | Data/Test | completed | TC-EV055-006; AC7; `D-S064-regen=1` | T3.2 | artifact |
 
 #### M4: FE panes + C14N diff + validate chips — P0
 
@@ -150,9 +150,9 @@
 | T2.2 | M2 | completed | T2.1 |
 | T2.3 | M2 | completed | T2.1 |
 | T2.4 | M2 | completed | T2.2 |
-| T3.1 | M3 | pending | T2.2 |
-| T3.2 | M3 | pending | T3.1, T1.2, T1.4 |
-| T3.3 | M3 | pending | T3.2 |
+| T3.1 | M3 | completed | T2.2 |
+| T3.2 | M3 | completed | T3.1, T1.2, T1.4 |
+| T3.3 | M3 | completed | T3.2 |
 | T4.1 | M4 | pending | T2.3 |
 | T4.2 | M4 | pending | T4.1, T3.3 |
 | T4.3 | M4 | pending | T1.2, T1.4, T4.2 |

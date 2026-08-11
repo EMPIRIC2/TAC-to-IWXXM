@@ -12,6 +12,7 @@
 | EV-055 / Schematron | **Hard enable** for 2025-2 | Overrides soft prefer (`D-S064-sch-hard=1`) | confirmed |
 | EV-055 / XSD import | **Hard fix** for 2025-2 | Overrides optional (`D-S064-xsd-hard=1`) | confirmed |
 | EV-055 / algorithm | **W3C C14N** always | `D-S064-c14n=1` | confirmed |
+| EV-055 / volatile | **C14N after volatile-attr strip** | `D-S064-c14n-volatile=1` / ADR-035 | confirmed |
 | EV-055 / panes | Normalized default + override to raw | `D-S064-gateA-M2=override` | confirmed |
 | EV-055 / helper | Shared generator + FE | `D-S064-gateA-M1=1` | confirmed |
 | EV-055 / Gate A | **PASS** | `D-S064-gateA=1` → 04 | confirmed |

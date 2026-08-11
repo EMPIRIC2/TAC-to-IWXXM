@@ -9,12 +9,12 @@
 **Features**: deepen **F7.q**; deepen **F2** / **F13** as needed for 2025-2 validate; **F4** only if messaging requires  
 **Started**: 2026-08-11  
 **Branch**: `evolve/EV-055-quality-metrics-2025-2-followups` (base `stage@4fd51e39`)  
-**Status**: **in_progress** — Gate B PASS (`D-S064-05=1`); next **07-build** M1  
+**Status**: **in_progress** — M1+M2 done (`158cff00`); M3 unblocked by `D-S064-c14n-volatile=1`
 **Issues**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982), [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980), [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)  
 **Parent**: EV-054 / S063 / [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13]
 [Corpus: product §F4] [Corpus: api] [Corpus: tests] [Corpus: system-spec]
-[Corpus: decisions §EV-055]
+[Corpus: adr/ADR-035] [Corpus: decisions §EV-055]
 
 ### Scope (Phase 0–1 — locked 2026-08-11)
 
@@ -45,6 +45,7 @@
 | D-S064-04-plan | **1** — Approve EP as drafted: 17 tasks M1–M5; engine→C14N→regen→FE→E2E; lxml+TS C14N; ADR vs ADR-032; no new deps/CORS |
 | D-S064-c14n-host | **1** — Python C14N in `packages/iwxxm-validate` (not shared); FE TS helper |
 | D-S064-05 | **1** — Gate B PASS; C1 resolved; → 07 M1 |
+| D-S064-c14n-volatile | **1** — C14N **after** volatile-attr strip (`gml:id` / UUID / codes.wmo.int hrefs per ADR-032 rules); not pure C14N; not C14N-of-ADR-032-repr — ADR-035 amend 2026-08-11 |
 
 ### Tech plan (04 — `D-S064-04-plan=1`)
 

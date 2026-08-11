@@ -46,3 +46,18 @@ def test_tc_ev055_003_c14n_rejects_malformed() -> None:
 
     with pytest.raises(ValueError, match="XML"):
         c14n_xml("<not-closed>")
+
+
+def test_tc_ev055_003_c14n_ignores_volatile_gml_id() -> None:
+    """Volatile gml:id / UUID noise must not break C14N equality (D-S064-c14n-volatile=1)."""
+    from iwxxm_validate.c14n import c14n_equal
+
+    a = (
+        '<r xmlns="urn:x" xmlns:gml="http://www.opengis.net/gml/3.2">'
+        '<n gml:id="uuid.aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"><v>1</v></n></r>'
+    )
+    b = (
+        '<r xmlns="urn:x" xmlns:gml="http://www.opengis.net/gml/3.2">'
+        '<n gml:id="uuid.bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"><v>1</v></n></r>'
+    )
+    assert c14n_equal(a, b) is True

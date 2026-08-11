@@ -39,4 +39,14 @@ describe('c14nXml (TC-EV055-003)', () => {
   it('throws on malformed XML', () => {
     expect(() => c14nXml('<not-closed>')).toThrow(/XML parse failed/);
   });
+
+  it('ignores volatile gml:id differences (D-S064-c14n-volatile=1)', () => {
+    const a =
+      '<r xmlns="urn:x" xmlns:gml="http://www.opengis.net/gml/3.2">' +
+      '<n gml:id="uuid.aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"><v>1</v></n></r>';
+    const b =
+      '<r xmlns="urn:x" xmlns:gml="http://www.opengis.net/gml/3.2">' +
+      '<n gml:id="uuid.bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"><v>1</v></n></r>';
+    expect(c14nEqual(a, b)).toBe(true);
+  });
 });

@@ -2075,10 +2075,13 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV055-002: match_status uses C14N equality
 
 - **Level**: T0 / H0i
-- **Objective**: `match_status` on list/detail quality-metrics payloads equals when C14N
-  official and converted XML are equal (even if raw bytes differ in formatting)
-- **Pass criteria**: Backend/generator tests; OpenAPI/docs state C14N semantics
-- **Source**: EV-055 AC2; [Corpus: api]; `D-S064-normalize=1`; `D-S064-c14n=1`
+- **Objective**: `match_status` on list/detail quality-metrics payloads equals when
+  post–volatile-strip **C14N** official and converted XML are equal (even if raw bytes
+  differ in formatting or `gml:id` / UUID attrs — `D-S064-c14n-volatile=1` / ADR-035)
+- **Pass criteria**: Backend/generator tests; OpenAPI/docs state C14N + volatile-strip
+  semantics
+- **Source**: EV-055 AC2; [Corpus: api]; [Corpus: adr/ADR-035]; `D-S064-normalize=1`;
+  `D-S064-c14n=1`; `D-S064-c14n-volatile=1`
 
 ### TC-EV055-003: C14N helper + golden stem (shared generator + FE)
 

@@ -412,8 +412,8 @@
   Gate A `D-S064-gateA=1`):
   1. Whitespace/formatting-only official↔converted pairs no longer dominate unified diff;
      semantic diffs remain (C14N peers).
-  2. `match_status` uses equality of **C14N-normalized** XML on both sides; API/product copy
-     free of internal planning ids.
+  2. `match_status` uses equality of **C14N** XML on both sides **after** volatile-attr
+     strip (`D-S064-c14n-volatile=1` / ADR-035); API/product copy free of internal planning ids.
   3. Normalize helper (C14N) unit tests + ≥1 golden stem; vendor schemas remain read-only;
      shared by generator and FE.
   4. #980: Schematron for 2025-2 **enabled** (native path); engine matrix documented; not

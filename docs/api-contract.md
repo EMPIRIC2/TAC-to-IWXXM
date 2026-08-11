@@ -428,16 +428,19 @@ match status, residuals, lint issues, validate issues). Unified XML diff is comp
 **client-side** from `official_xml` / `converted_xml` (no server `diff` field in v1;
 `D-S063-diff=2` + `D-S063-diff-impl`).
 
-**Match semantics (S064 / EV-055 / #982 — `D-S064-normalize=1` / `D-S064-c14n=1`)**:
-`match_status` is equality of **W3C C14N-normalized** forms of `official_xml` and
-`converted_xml` (both sides; shared helper used by the metrics generator and the FE unified
-diff — `D-S064-gateA-M1=1`). Raw pretty-print differences alone must not yield `match_status`
-fail. Client unified diff uses the same C14N peers. Precomputed `corpus_metrics` is
-regenerated to match (`D-S064-regen=1`). Detail responses may expose both raw and normalized
-XML (or the UI normalizes client-side); operator panes **default to normalized** with an
-explicit override to un-normalized (`D-S064-gateA-M2=override`). Operator-facing `detail` /
-chip copy must stay free of internal doc refs (EV-048). Cycle hard requirements: Schematron
-enabled for 2025-2 (`D-S064-sch-hard=1`) and `SCHEMA_IMPORT_WARNING` fixed (`D-S064-xsd-hard=1`).
+**Match semantics (S064 / EV-055 / #982 — `D-S064-normalize=1` / `D-S064-c14n=1` /
+`D-S064-c14n-volatile=1`)**:
+`match_status` is equality of **W3C C14N** forms of `official_xml` and `converted_xml`
+**after** volatile-attribute strip (ADR-032 local-name / UUID-href / `codes.wmo.int` href
+rules), then whitespace-only text strip (both sides; shared helper used by the metrics
+generator and the FE unified diff — `D-S064-gateA-M1=1`; [Corpus: adr/ADR-035]). Raw
+pretty-print or `gml:id` / UUID churn alone must not yield `match_status` fail. Client
+unified diff uses the same C14N peers. Precomputed `corpus_metrics` is regenerated to match
+(`D-S064-regen=1`). Detail responses may expose both raw and normalized XML (or the UI
+normalizes client-side); operator panes **default to normalized** with an explicit override
+to un-normalized (`D-S064-gateA-M2=override`). Operator-facing `detail` / chip copy must stay
+free of internal doc refs (EV-048). Cycle hard requirements: Schematron enabled for 2025-2
+(`D-S064-sch-hard=1`) and `SCHEMA_IMPORT_WARNING` fixed (`D-S064-xsd-hard=1`).
 
 **Path**: `stem` — catalog / fixture stem (e.g. `metar-A3-1`).
 
