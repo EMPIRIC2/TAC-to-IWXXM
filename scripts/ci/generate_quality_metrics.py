@@ -145,14 +145,14 @@ def generate_corpus_metrics() -> dict[str, Any]:
         Artifact matching [Corpus: api] quality-metrics shape plus ``details``.
     """
     _ensure_imports()
-    from iwxxm_validate import validate
+    from iwxxm_validate import validate_for_quality_metrics
+    from iwxxm_validate.c14n import c14n_equal
     from tac_validate import lint
     from wmo_official_tac_inventory import (
         OFFICIAL_TAC_PEERS,
         annex3_path,
     )
 
-    from metar_shared.xml_canonical import canonicalize_xml
     from tac2iwxxm import convert, decode_tac
 
     details: dict[str, dict[str, Any]] = {}
@@ -217,7 +217,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
         converted_xml = conv.xml or ""
         if not conv.ok or not converted_xml:
             match_status = "convert_fail"
-        elif canonicalize_xml(converted_xml) == canonicalize_xml(official_xml):
+        elif c14n_equal(converted_xml, official_xml):
             match_status = "equal"
         else:
             match_status = "unequal"
@@ -231,7 +231,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
         lint_issues = _serialize_lint_issues(lint_report.issues)
 
         if converted_xml:
-            val_report = validate(
+            val_report = validate_for_quality_metrics(
                 converted_xml,
                 iwxxm_version=_IWXXM_PIN,
                 profile=_PROFILE,

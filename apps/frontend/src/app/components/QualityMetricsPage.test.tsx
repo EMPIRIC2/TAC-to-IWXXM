@@ -179,6 +179,24 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
       screen.queryByTestId('quality-metrics-row-taf-A5-1'),
     ).not.toBeInTheDocument();
   });
+
+  it('surfaces list fetch errors', async () => {
+    apiMocks.fetchQualityMetrics.mockRejectedValueOnce(new Error('list boom'));
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('list boom')).toBeInTheDocument();
+    });
+  });
+
+  it('surfaces list fetch errors for non-Error throws', async () => {
+    apiMocks.fetchQualityMetrics.mockRejectedValueOnce('list string boom');
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load quality metrics')).toBeInTheDocument();
+    });
+  });
 });
 
 describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
@@ -213,14 +231,20 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
       'METAR YUDO',
     );
     expect(screen.getByTestId('quality-metrics-pane-official-xml')).toHaveTextContent(
-      '<a/>',
+      '<a></a>',
     );
     expect(screen.getByTestId('quality-metrics-pane-converted-xml')).toHaveTextContent(
-      '<a/>',
+      '<a></a>',
     );
     expect(screen.getByTestId('quality-metrics-diff-empty')).toHaveTextContent(
       QUALITY_METRICS_DIFF_EMPTY_LABEL,
     );
+    expect(
+      screen.getByTestId('quality-metrics-validate-chip-schematron'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('quality-metrics-validate-chip-schema-import'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('quality-metrics-pane-residuals-empty'),
     ).toHaveTextContent(QUALITY_METRICS_EMPTY_DIAGNOSTICS);
@@ -249,8 +273,12 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
     expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
       'unequal',
     );
-    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent('<a/>');
-    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent('<b/>');
+    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent(
+      '<a></a>',
+    );
+    expect(screen.getByTestId('quality-metrics-diff-body')).toHaveTextContent(
+      '<b></b>',
+    );
     expect(screen.getByTestId('quality-metrics-pane-residuals')).toHaveTextContent(
       'token leftover',
     );
@@ -260,5 +288,62 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
     expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent(
       'schematron hit',
     );
+  });
+
+  it('surfaces detail fetch errors', async () => {
+    const user = userEvent.setup();
+    apiMocks.fetchQualityMetricsDetail.mockRejectedValueOnce(new Error('detail boom'));
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-row-metar-A3-1')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('quality-metrics-row-metar-A3-1'));
+
+    await waitFor(() => {
+      expect(screen.getByText('detail boom')).toBeInTheDocument();
+    });
+  });
+
+  it('surfaces detail fetch errors for non-Error throws', async () => {
+    const user = userEvent.setup();
+    apiMocks.fetchQualityMetricsDetail.mockRejectedValueOnce('detail string boom');
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-row-metar-A3-1')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('quality-metrics-row-metar-A3-1'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load stem detail')).toBeInTheDocument();
+    });
+  });
+
+  it('closes the detail panel via Close detail', async () => {
+    const user = userEvent.setup();
+    apiMocks.fetchQualityMetricsDetail.mockResolvedValue(MOCK_DETAIL_EQUAL);
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-row-metar-A3-1')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('quality-metrics-row-metar-A3-1'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-detail')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: /close detail/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('quality-metrics-detail')).not.toBeInTheDocument();
+    });
   });
 });

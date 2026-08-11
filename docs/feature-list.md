@@ -2,25 +2,25 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-10 (S063 / EV-054 — #836 Quality metrics tab; prior EV-050/053)
+> **Last updated**: 2026-08-11 (S064 / EV-055 — #982/#980/#979 Quality metrics + 2025-2 validate; prior EV-054)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S046 / EV-038 corpus residuals (#856–#860); prior S045 / EV-037 |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038 |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX; **deepen** S057 / EV-048 #951 no internal-doc cites in operator UI; **deepen** S063 / EV-054 **F7.q** Quality metrics tab (#836) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063 / EV-054 **F7.q** (#836); **deepen** S064 / EV-055 F7.q whitespace-normalize + validate disposition (#982/#980/#979) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated |
-| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725) |
+| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
@@ -92,10 +92,17 @@
 - **Acceptance (this amend)**: Library API + CI tests; backend thin wrappers for validate
   endpoints call `iwxxm-validate` (no behavior regression vs current F2).
 - **Limitations**: Schema bundles must match vendored snapshot version; no official US `.sch`.
+  **2025-2** may emit `SCHEMATRON_SKIPPED` (xslt2) and/or `SCHEMA_IMPORT_WARNING` until EV-055
+  disposition lands (#980 / #979).
+- **S064 / EV-055 deepen (#980 / #979)**: **Hard** this cycle (`D-S064-sch-hard=1` /
+  `D-S064-xsd-hard=1`): enable Schematron evaluation for 2025-2 xslt2 (prefer native) and
+  fix `SCHEMA_IMPORT_WARNING` import resolution. Quality metrics consume outcomes. See F7.q
+  EV-055 AC4–AC6 and F13.
 - **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md);
   [Context: package-publish-validation](context/package-publish-validation.md);
   **S043 / EV-035** · [Context: rule-source-traceability](context/rule-source-traceability.md);
-  **S045 / EV-037** · [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md)
+  **S045 / EV-037** · [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md);
+  **S064 / EV-055** · #980 / #979
 
 ### F3: Airport Data Services
 
@@ -302,7 +309,7 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
-  | F7.q | #836 | Quality metrics tab — official WMO corpus by product (match, residuals, lint, validate) — S063 / EV-054 |
+  | F7.q | #836 / #982 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055) |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -391,6 +398,30 @@
      expected diagnostics (**UJ-056** / TC-EV054).
   7. No Supabase and no live upstream WMO fetch; metrics come from our public API backed by
      precomputed fixtures (same API host as convert — not FE-only bundle).
+- **S064 / EV-055 deepen (F7.q / #982 + validate follow-ups #980/#979)**: Compare official and
+  converted XML with **W3C C14N** (`D-S064-c14n=1`) so `match_status` and unified diffs reflect
+  semantic differences (`D-S064-normalize=1`). Shared normalize semantics in generator + FE
+  (`D-S064-gateA-M1=1`). Detail panes show **normalized** XML by default with operator override
+  to un-normalized (`D-S064-gateA-M2=override`). Regenerate precomputed `corpus_metrics`
+  (`D-S064-regen=1`). **Hard** this cycle: enable Schematron for IWXXM **2025-2** xslt2 via
+  native when required (`D-S064-sch-hard=1`) and **fix** `SCHEMA_IMPORT_WARNING` for 2025-2
+  (`D-S064-xsd-hard=1`) — overrides earlier soft “prefer/optional” intake. Engine changes in
+  `packages/iwxxm-validate` (F2/F13); operator surface remains Quality metrics. Does **not**
+  flip F7 → Implemented.
+- **Acceptance (EV-055 / #982/#980/#979 — F7.q + F2/F13)** — **approved** (`D-S064-01-ac=1`;
+  Gate A `D-S064-gateA=1`):
+  1. Whitespace/formatting-only official↔converted pairs no longer dominate unified diff;
+     semantic diffs remain (C14N peers).
+  2. `match_status` uses equality of **C14N** XML on both sides **after** volatile-attr
+     strip (`D-S064-c14n-volatile=1` / ADR-035); API/product copy free of internal planning ids.
+  3. Normalize helper (C14N) unit tests + ≥1 golden stem; vendor schemas remain read-only;
+     shared by generator and FE.
+  4. #980: Schematron for 2025-2 **enabled** (native path); engine matrix documented; not
+     closed as UX-only skip.
+  5. #979: root cause (file + import URI) documented **and fixed** this cycle (regression test).
+  6. Quality metrics: validate chips reflect fixed/enabled disposition; detail XML panes
+     default to normalized with override to un-normalized; no internal planning ids.
+  7. `corpus_metrics` regenerated for new match semantics; UJ-056 deepen / TC-EV055 smoke.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -570,7 +601,10 @@
   4. Maturin/PyO3 integration smoke required for `iwxxm-validate` (not only `tac2iwxxm`)
   5. Required check name(s) documented so red Rust CI blocks merge (**ops** ruleset
      apply may be deferred — D-S054-ac6-waive=2)
-- **Source**: #699; E10-6/7/19/22; ADR-017; #781; #725
+- **S064 / EV-055 deepen (#980 — Schematron 2025-2 xslt2)**: Native path must **enable**
+  evaluation for vendor 2025-2 Schematron with `queryBinding="xslt2"` (`D-S064-sch-hard=1`);
+  document lxml vs native matrix. Soft UX-only skip is **not** an acceptable cycle close.
+- **Source**: #699; E10-6/7/19/22; ADR-017; #781; #725; #980
 
 ### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI
 

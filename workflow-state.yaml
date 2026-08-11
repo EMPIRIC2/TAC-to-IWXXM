@@ -3,206 +3,180 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 63
-evolve_cycle_counter: 54
+session_counter: 64
+evolve_cycle_counter: 55
 active_session:
-  id: S063-quality-metrics-tab
+  id: S064-quality-metrics-2025-2-followups
   type: feature
-  title: "UI: Quality metrics tab — official IWXXM corpus (#836)"
-  intent: "EV-054: Operator Quality metrics tab for official WMO IWXXM corpus by product (match, residuals, lint, validate). F7 deepen (possible F7.q). Preset Standard. Issue #836."
+  intent: "EV-055: Quality metrics whitespace-normalize (#982) + investigate/fix 2025-2 SCHEMATRON_SKIPPED (#980) and SCHEMA_IMPORT_WARNING (#979). Deepen F7.q + F2/F13. Standard → stage."
   status: in_progress
-  started: '2026-08-10'
-  started_at: '2026-08-10'
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-054
-  branch: evolve/EV-054-quality-metrics-tab
-  branch_base: stage@f2926ac8
-  branch_base_sha: f2926ac8
-  branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  branch_base: stage@4fd51e39
+  branch_base_sha: 4fd51e39
+  branch_base_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   branch_status: active
   branch_exists: true
-  tip_sha: 6dd76b66
-  tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-055
+  artifacts_dir: docs/sessions/S064-quality-metrics-2025-2-followups/
+  routing_plan:
+    - stage: 00-context
+      mode: session
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 16-evolve
+      mode: orchestrate
+      required: true
+      status: in_progress
+      skip_rationale: null
+    - stage: 01-requirements
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 02-verify-plan
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 03-plan-tooling
+      mode: null
+      required: false
+      status: skipped
+      skip_rationale: "No new Cursor rule expected"
+    - stage: 04-tech-plan
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 05-verify-tech
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 06-tech-tooling
+      mode: null
+      required: false
+      status: skipped
+      skip_rationale: "No new deps expected"
+    - stage: 07-build
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 08-verify-build
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 09-qa
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 10-e2e
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 11-verify-impl
+      mode: delta
+      required: true
+      status: completed
+      skip_rationale: null
+    - stage: 12-verify-deploy
+      mode: delta
+      required: true
+      status: in_progress
+      skip_rationale: null
+    - stage: 13-deploy-smoke
+      mode: delta
+      required: true
+      status: pending
+      skip_rationale: null
+  current_stage: 12-verify-deploy
+  current_stage_note: "12 in_progress; PR #985→stage; tip CI run 31532484425 watching @ abeba590"
+  tip_sha: "abeba590"
+  tip_sha_full: "abeba590009acfd4340ee0da8b49db27983c2c57"
   tip_sha_pushed: true
-  tip_sha_note: "HEAD 6dd76b66 (12-verify-deploy in_progress; PR #977→stage; tip CI 31449643455 success; deploy-checklist awaiting D-S063-12 sign-off; #836 In review); tip_sha_pushed=true"
-  pr_number: 977
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+  tip_sha_note: "12 in_progress; PR #985→stage; tip CI 31532484425 queued/running @ abeba590"
+  pr_number: 985
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985
   pr_status: open
   pr_base: stage
-  tip_ci_run: '31449643455'
-  tip_ci_status: success
-  artifacts_dir: docs/sessions/S063-quality-metrics-tab/
+  tip_ci_run: '31532484425'
+  tip_ci_status: in_progress
+  started_at: "2026-08-11"
+  started: "2026-08-11"
   github_issues:
-  - 836
-  feature_ids: []
-  deepen_feature_ids:
-  - F7
-  prior_session: S062-vitest-branches-95
-  current_stage: 12-verify-deploy
-  current_stage_note: "PR #977→stage open; tip CI 31449643455 success; deploy-checklist awaiting sign-off; #836 In review"
+    - 982
+    - 980
+    - 979
+  context_briefs: []
   decisions:
-    D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
-    D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
-    D-S063-scope: "1 — full #836 scope"
-    D-S063-fn: "1 — deepen F7 only; note F7.q; no F34"
-    D-S063-compute: "1 — precomputed fixture/CI JSON default"
-    D-S063-01-manifest: "1 — feature-list + journeys + test-plan + decisions"
-    D-S063-01-ac: "1 — AC1–AC7 locked"
-    D-S063-diff: "2 — unified XML diff in v1"
-    D-S063-shell-tab: "1 — separate primary app-shell tab (not FileConverter panel)"
-    D-S063-gateA: "2 — PASS; require public GET /api/v1/quality-metrics* in v1; reopen api-contract; re-enable 05"
-    D-S063-04-plan: "1 — approve as drafted; no npm diff; single corpus blob"
-    D-S063-05: "1 — Gate B PASS; C1=15; C2 Impl→Test; C3–C7 hygiene; → 07 M1"
-    D-S063-phaseC: "1 — Phase C PASS; continue → 09-qa (user: recommended)"
-    D-S063-09-10-continue: "1 — continue → 11-verify-impl (user: Continue)"
-    D-S063-ui-preview-11: "1 — non-deployed preview at http://127.0.0.1:18000/"
-    D-S063-uj056: "1 — Approve UJ-056; waive live T3 until 12/13"
-    D-S063-11: "1 — Approve F7.q; finish 11; toward 12"
-    D-S063-12-path: "1 — Open PR → stage, then 12-verify-deploy (user); #836 Status In review (PR #977 open; tip CI 31449643455 success)"
+    - D-S064-intent=1
+    - D-S064-parked=1
+    - D-S064-success=1
+    - D-S064-normalize=1
+    - D-S064-spike-pref=3
+    - D-S064-surface=1
+    - D-S064-engine=1
+    - D-S064-oos=1
+    - D-S064-route=1
+    - D-S064-branch=1
+    - D-S064-board=1
+    - D-S064-01-ac=1
+    - D-S064-gateA=1
+    - D-S064-04-plan=1
+    - D-S064-c14n-host=1
+    - D-S064-05=1
+    - D-S064-gateC=1
+    - D-S064-09-10-continue=1
+    - D-S064-ui-preview-11=1
+    - D-S064-uj056=1
+    - D-S064-11=1
+    - D-S064-12-start=1
   artifacts:
-  - path: docs/sessions/S063-quality-metrics-tab/
-    status: present
-    note: "session-brief + routing-plan + evolve-plan-card"
-  - path: docs/sessions/S063-quality-metrics-tab/session-brief.md
-    status: present
-  - path: docs/sessions/S063-quality-metrics-tab/routing-plan.md
-    status: present
-    note: "amended — 05-verify-tech required; ordered includes 05"
-  - path: docs/sessions/S063-quality-metrics-tab/evolve-plan-card.md
-    status: present
-    note: "updated — Phase 0–1 locked; F7 deepen / F7.q note; precomputed default"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/01-requirements.md
-    status: present
-    note: "01 COMPLETE D-S063-01-ac=1 / manifest=1; AC1–AC7"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/02-verify-plan-audit.md
-    status: completed
-    note: "02 COMPLETE — Gate A PASS D-S063-gateA=2; M1 DENIED; M1′ APPROVED"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/execution-plan.md
-    status: present
-    note: "04 COMPLETE D-S063-04-plan=1 — 15 tasks M1–M5"
-  - path: docs/sessions/S063-quality-metrics-tab/build-plan-card.md
-    status: present
-    note: "04 COMPLETE D-S063-04-plan=1"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/05-verify-tech.md
-    status: present
-    note: "05 COMPLETE D-S063-05=1 Gate B PASS"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/verification-report.md
-    status: present
-    note: "08 COMPLETE — local Gate C PASS @ 7a1d1845; tip now be9e3b07"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/qa-report.md
-    status: completed
-    note: "09 COMPLETE — pass_with_advisories @ be9e3b07"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/e2e-report.md
-    status: completed
-    note: "10 COMPLETE — PASS local UJ-056; H4–H5 deferred 12/13 @ be9e3b07"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
-    status: completed
-    note: "11 COMPLETE — PASS D-S063-11=1; UJ-056 approve; preview :18000"
-  - path: docs/reports/implementation-verification.md
-    status: completed
-    note: "11 COMPLETE — synced from session verify-impl.md; D-S063-11=1"
-  - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
-    status: present
-    stage: 12-verify-deploy
-    skill_id: 12-verify-deploy
-    note: "draft/ready awaiting D-S063-12; tip CI 31449643455 success; PR #977→stage"
-  - path: docs/api-contract.md
-    status: present
-    note: "delta — public GET /api/v1/quality-metrics*"
-  - path: docs/feature-list.md
-    status: present
-    note: "delta — Quality metrics tab / F7 deepen (F7.q note)"
-  - path: docs/user-journeys.md
-    status: present
-    note: "UJ-056 Quality metrics tab"
-  - path: docs/test-plan.md
-    status: present
-    note: "TC-EV054 Quality metrics"
-  - path: docs/decisions/evolve-decisions.md
-    status: present
-    note: "EV-054 — Gate B PASS D-S063-05=1; handoff 07 M1"
-  routing_plan:
-  - stage: 00-context
-    status: completed
-    note: "D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
-  - stage: 16-evolve
-    status: in_progress
-    note: "12-verify-deploy in_progress D-S063-12-path=1; PR #977→stage; tip CI 31449643455 success; awaiting checklist sign-off; #836 In review"
-  - stage: 01-requirements
-    status: completed
-    note: "COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; report reports/01-requirements.md; handoff 02-verify-plan"
-  - stage: 02-verify-plan
-    status: completed
-    note: "COMPLETE — Gate A PASS D-S063-gateA=2; report reports/02-verify-plan-audit.md; handoff 04; 05 re-enabled"
-  - stage: 04-tech-plan
-    status: completed
-    note: "COMPLETE — D-S063-04-plan=1; execution-plan + build-plan-card; 15 tasks"
-  - stage: 05-verify-tech
-    status: completed
-    note: "COMPLETE — D-S063-05=1 Gate B PASS; report reports/05-verify-tech.md"
-  - stage: 07-build
-    status: completed
-    note: "M1–M5 COMPLETE T5.1–T5.3 Playwright UJ-056 @ 66886bd5"
-  - stage: 08-verify-build
-    status: completed
-    note: "COMPLETE — local Gate C PASS @ 7a1d1845; report verification-report.md; CI via PR→stage"
-  - stage: 09-qa
-    status: completed
-    started: '2026-08-10'
-    started_at: '2026-08-10'
-    completed: '2026-08-10'
-    completed_at: '2026-08-10'
-    note: "COMPLETE — pass_with_advisories; report reports/qa-report.md; tip be9e3b07"
-  - stage: 10-e2e
-    status: completed
-    started: '2026-08-10'
-    started_at: '2026-08-10'
-    completed: '2026-08-10'
-    completed_at: '2026-08-10'
-    note: "COMPLETE — PASS local UJ-056; report reports/e2e-report.md; H4–H5 deferred 12/13; tip be9e3b07"
-  - stage: 11-verify-impl
-    status: completed
-    started: '2026-08-10'
-    started_at: '2026-08-10'
-    completed: '2026-08-10'
-    completed_at: '2026-08-10'
-    note: "COMPLETE — PASS D-S063-11=1; D-S063-ui-preview-11=1; D-S063-uj056=1; report verify-impl.md; tip be9e3b07; next 12 pending"
-  - stage: 12-verify-deploy
-    status: in_progress
-    started: '2026-08-10'
-    started_at: '2026-08-10'
-    report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
-    tip_ci_run: '31449643455'
-    tip_ci_status: success
-    pr_number: 977
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
-    pr_base: stage
-    note: "in_progress — PR #977→stage; tip CI 31449643455 success; deploy-checklist.md draft/ready awaiting D-S063-12 user sign-off; D-S063-12-path=1; #836 In review; not completed"
-  - stage: 13-deploy-smoke
-    status: pending
-  notes:
-  - "2026-08-10 12-verify-deploy progress — tip_sha 6dd76b66 tip_sha_pushed=true; PR #977 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977); tip CI success run 31449643455; D-S063-12-path already set; #836 Status In review; artifact deploy-checklist.md present (draft/ready awaiting D-S063-12); 12 still in_progress awaiting user checklist sign-off; no git commit by workflow-state-manager"
-  - "2026-08-10 D-S063-12-path=1 — Open PR → stage, then 12-verify-deploy (user); 12-verify-deploy in_progress; current_stage_note opening PR → stage then 12 checklist; tip be9e3b07; not completed; no git commit by workflow-state-manager"
-  - "2026-08-10 D-S063-11=1 — 11-verify-impl COMPLETE PASS; D-S063-ui-preview-11=1 (non-deployed preview http://127.0.0.1:18000/); D-S063-uj056=1 (Approve UJ-056; waive live T3 until 12/13); report docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md + docs/reports/implementation-verification.md; current_stage 12-verify-deploy pending (awaiting continue → 12; recommend PR→stage); tip be9e3b07; no git commit by workflow-state-manager"
-  - "2026-08-10 D-S063-09-10-continue=1 — continue → 11-verify-impl (user: Continue); 11-verify-impl in_progress; tip be9e3b07; no git commit by workflow-state-manager"
-  - "2026-08-10 09+10 complete — 09-qa pass_with_advisories (qa-report.md) + 10-e2e PASS local UJ-056 (e2e-report.md; H4–H5 deferred 12/13); tip be9e3b07; current_stage 11-verify-impl pending (awaiting continue → 11); no git commit by workflow-state-manager"
-  - "2026-08-10 10-e2e in_progress — parallel with 09-qa per Standard routing (user recommended Phase C continue); 09-qa unchanged; tip be9e3b07; no git commit by workflow-state-manager"
-  - "2026-08-10 D-S063-phaseC=1 — Phase C PASS; gates.c_to_d=passed; checkpoints.phase_c=passed; continue → 09-qa in_progress; tip be9e3b07; user recommended; no git commit by workflow-state-manager"
-  - "2026-08-10 08-verify-build COMPLETE — local Gate C PASS @ 7a1d1845; report docs/sessions/S063-quality-metrics-tab/reports/verification-report.md; CI only on PR→stage; Phase C checkpoint — next 09-qa"
-  - "2026-08-10 07 M5 COMPLETE — T5.1–T5.3 Playwright UJ-056 + generate-quality-metrics @ 66886bd5; next 08-verify-build"
-  - "2026-08-10 07 M4 COMPLETE — T4.1–T4.3 detail panes + unified XML diff @ 6a385f79; next M5 T5.1 Playwright UJ-056"
-  - "2026-08-10 07 M3 COMPLETE — AppShellNav + QualityMetricsPage list/summary; Vitest TC-EV054-001..002 green @ 1668e55b; next M4"
-  - "2026-08-10 07 M2 COMPLETE — T2.1–T2.3 quality-metrics API + OpenAPI/FE clients; next M3"
-  - "2026-08-10 07 M1 COMPLETE — T1.1 generator + T1.2 corpus_metrics.json + T1.3 TC-EV054-005; next M2"
-  - "2026-08-10 D-S063-05=1 — Gate B PASS; C1–C7 applied; 05 COMPLETE; 07-build M1 started"
-  - "2026-08-10 D-S063-04-plan=1 — 04 COMPLETE; 05-verify-tech started; await D-S063-05 (C1–C7); report reports/05-verify-tech.md"
-  - "2026-08-10 04 execution-plan + build-plan-card drafted; await D-S063-04-plan; 04 remains in_progress; no git commit by workflow-state-manager"
-  - "2026-08-10 D-S063-gateA=2 — Gate A PASS; M1 FE-only bundle DENIED; M1′ API APPROVED; require public GET /api/v1/quality-metrics*; reopen api-contract; re-enable 05; 02 COMPLETE; handoff 04-tech-plan"
-  - "2026-08-10 01 COMPLETE — D-S063-01-ac=1 / D-S063-01-manifest=1 / D-S063-diff=2 / D-S063-shell-tab=1; deepen F7 (note F7.q); separate primary app-shell tab (not FileConverter panel); unified XML diff in v1; handoff 02-verify-plan Gate A"
-  - "2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements"
-  - "2026-08-10 board — #836 In progress; #959 Done"
-  - "2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; branch evolve/EV-054-quality-metrics-tab @ f2926ac8; → 16-evolve Phase 0–1"
-  - "2026-08-10 open_session — S063/EV-054 allocated; 00-context intake in_progress; branch evolve/EV-054-quality-metrics-tab not created; Preset Standard pending approval; #836; deepen F7"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/
+      status: present
+      note: "session-brief + routing-plan + evolve-plan-card"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      status: approved
+      stage: 04-tech-plan
+      skill_id: 04-tech-plan
+      note: "D-S064-04-plan=1 — approved (17 tasks M1–M5)"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+      status: approved
+      stage: 04-tech-plan
+      skill_id: 04-tech-plan
+      note: "D-S064-04-plan=1 — approved"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+      status: completed
+      stage: 05-verify-tech
+      skill_id: 05-verify-tech
+      note: "D-S064-05=1 — Gate B PASS; C1 resolved; handoff 07 M1"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+      status: completed
+      stage: 09-qa
+      skill_id: 09-qa
+      note: "COMPLETE — PASS (advisories); tip 68552747; handoff 11-verify-impl"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
+      status: completed
+      stage: 10-e2e
+      skill_id: 10-e2e
+      note: "COMPLETE — PASS local UJ-056; H4–H5 deferred 12/13; tip 68552747; handoff 11-verify-impl"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+      status: completed
+      stage: 11-verify-impl
+      skill_id: 11-verify-impl
+      note: "COMPLETE — PASS D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1; tip abeba590; next 12 pending (recommend PR→stage)"
+    - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
+      status: present
+      stage: 12-verify-deploy
+      skill_id: 12-verify-deploy
+      note: "12 in_progress; PR #985→stage; tip CI 31532484425 watching @ abeba590; D-S064-12-start=1"
+
 sessions:
 
 
@@ -10656,32 +10630,48 @@ stages:
   04-tech-plan:
     status: completed
     mode: delta
-    started_at: '2026-08-09'
-    started: '2026-08-09'
-    completed_at: '2026-08-09'
-    completed: '2026-08-09'
-    session_id: S061-ci-polish-quality-pr-stats
-    evolve_cycle_id: EV-052
+    started_at: '2026-08-11'
+    started: '2026-08-11'
+    completed_at: '2026-08-11'
+    completed: '2026-08-11'
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
     skill_id: 04-tech-plan
-    tip_sha: 80197a58
-    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
-    deepen_feature_ids: [F29, F6, F21, F30, M5]
+    tip_sha: e5714f08
+    tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
+    deepen_feature_ids: [F7, F2, F13]
     feature_ids: []
     delta_only: true
-    report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+    report_status: approved
+    build_plan_card: docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+    build_plan_card_status: approved
     decision_refs:
+    - D-S064-04-plan
+    - D-S064-gateA
+    - D-S064-01-ac
+    awaiting_user_decision: false
+    awaiting_user_decision_note: null
+    note: 'S064/EV-055 COMPLETE — D-S064-04-plan=1; 17 tasks M1–M5; handoff 05-verify-tech; tip e5714f08; no git commit by workflow-state-manager'
+    previous_started_at: '2026-08-09'
+    previous_started: '2026-08-09'
+    previous_completed_at: '2026-08-09'
+    previous_completed: '2026-08-09'
+    previous_session_id: S061-ci-polish-quality-pr-stats
+    previous_evolve_cycle_id: EV-052
+    previous_tip_sha: 80197a58
+    previous_tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    previous_note: 'S061/EV-052 COMPLETE — D-S061-04-plan=1; openapi-typescript; handoff 05-verify-tech'
+    previous_decision_refs:
     - D-S061-04-plan
     - D-S061-gateA
     - D-S061-01-ac
-    note: 'S061/EV-052 COMPLETE — D-S061-04-plan=1; openapi-typescript; handoff 05-verify-tech'
-    previous_started_at: '2026-08-08'
-    previous_completed_at: '2026-08-08'
-    previous_session_id: S057-strip-internal-doc-refs
-    previous_evolve_cycle_id: EV-048
-    previous_note: 'S057/EV-048 COMPLETE — D-S057-04-plan=1 + D-S057-04-guard-ext=1; execution-plan + build-plan-card; handoff 05-verify-tech'
-    prior_previous_session_id: S054-rust-ci-crates
-    prior_previous_evolve_cycle_id: EV-045
-    prior_previous_note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
+    prior_previous_session_id: S057-strip-internal-doc-refs
+    prior_previous_evolve_cycle_id: EV-048
+    prior_previous_note: 'S057/EV-048 COMPLETE — D-S057-04-plan=1 + D-S057-04-guard-ext=1; execution-plan + build-plan-card; handoff 05-verify-tech'
+    prior_previous_previous_session_id: S054-rust-ci-crates
+    prior_previous_previous_evolve_cycle_id: EV-045
+    prior_previous_previous_note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
     prior_session_id: S047-sql-ingest-live-e2e
     prior_evolve_cycle_id: EV-039
     prior_started: '2026-08-06'
@@ -10698,6 +10688,31 @@ stages:
     - D-S054-01-ac
     - D-S054-open
     active_session:
+      session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 04-tech-plan
+      status: completed
+      mode: delta
+      started_at: '2026-08-11'
+      started: '2026-08-11'
+      completed_at: '2026-08-11'
+      completed: '2026-08-11'
+      tip_sha: e5714f08
+      tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
+      note: 'COMPLETE — D-S064-04-plan=1; 17 tasks M1–M5; handoff 05-verify-tech'
+      feature_ids: []
+      deepen_feature_ids:
+      - F7
+      - F2
+      - F13
+      decision_refs:
+      - D-S064-04-plan
+      - D-S064-gateA
+      - D-S064-01-ac
+      artifacts:
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+    prior_active_session:
       session_id: S061-ci-polish-quality-pr-stats
       evolve_cycle_id: EV-052
       skill_id: 04-tech-plan
@@ -10724,7 +10739,7 @@ stages:
       - docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
       - docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
       - docs/sessions/S061-ci-polish-quality-pr-stats/reports/01-requirements.md
-    prior_active_session:
+    prior_prior_active_session:
       session_id: S057-strip-internal-doc-refs
       evolve_cycle_id: EV-048
       skill_id: 04-tech-plan
@@ -10751,7 +10766,7 @@ stages:
       - docs/sessions/S057-strip-internal-doc-refs/build-plan-card.md
       - docs/sessions/S057-strip-internal-doc-refs/reports/02-verify-plan.md
       - docs/sessions/S057-strip-internal-doc-refs/reports/01-requirements.md
-    prior_prior_active_session:
+    prior_prior_prior_active_session:
       session_id: S054-rust-ci-crates
       evolve_cycle_id: EV-045
       skill_id: 04-tech-plan
@@ -11664,6 +11679,7 @@ stages:
       - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
       - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
     notes:
+    - '2026-08-11 S064/EV-055 04 COMPLETE (D-S064-04-plan=1) — approve 17 tasks M1–M5; tip e5714f08; handoff 05-verify-tech; no git commit by workflow-state-manager'
     - '2026-08-09 S061/EV-052 04 COMPLETE (D-S061-04-plan=1) — approve as drafted; openapi-typescript; handoff 05-verify-tech; no git commit by workflow-state-manager'
     - '2026-08-09 S061/EV-052 04 DRAFT (D-S061-04-plan pending) — execution-plan + build-plan-card drafted; 04 remains in_progress; no git commit by workflow-state-manager'
     - '2026-08-09 S061/EV-052 04-tech-plan STARTED (D-S061-gateA=1) — Gate A PASS; gates.a_to_b passed; mode delta; no git commit by workflow-state-manager'
@@ -11723,44 +11739,55 @@ stages:
     - '2026-08-05 S046/EV-038 04-tech-plan COMPLETE (D-S046-04-plan=1) — execution-plan approved M1–M5; handoff 05-verify-tech; tip f03ed255'
   05-verify-tech:
     status: completed
-    session_id: S061-ci-polish-quality-pr-stats
-    evolve_cycle_id: EV-052
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
     skill_id: 05-verify-tech
     mode: delta
-    started_at: '2026-08-09'
-    started: '2026-08-09'
-    completed_at: '2026-08-09'
-    completed: '2026-08-09'
-    tip_sha: 80197a58
-    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
-    deepen_feature_ids: [F29, F6, F21, F30, M5]
+    started_at: '2026-08-11'
+    started: '2026-08-11'
+    completed_at: '2026-08-11'
+    completed: '2026-08-11'
+    tip_sha: 82455712
+    tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+    deepen_feature_ids: [F7, F2, F13]
     feature_ids: []
     delta_only: true
-    gate_b: PASS
-    gate_b_status: pass
-    gate_b_decision: D-S061-gateB=1
     overall: pass
-    previous_started_at: '2026-08-08'
-    previous_completed_at: '2026-08-08'
-    previous_session_id: S057-strip-internal-doc-refs
-    previous_evolve_cycle_id: EV-048
+    gate_b: PASS
+    gate_b_status: PASS
+    gate_b_decision: D-S064-05=1
+    awaiting_user_decision: false
+    awaiting_user_decision_note: null
+    previous_started_at: '2026-08-09'
+    previous_completed_at: '2026-08-09'
+    previous_started: '2026-08-09'
+    previous_completed: '2026-08-09'
+    previous_session_id: S061-ci-polish-quality-pr-stats
+    previous_evolve_cycle_id: EV-052
+    previous_tip_sha: 80197a58
+    previous_tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
     previous_overall: pass
-    previous_note: 'COMPLETE — D-S057-gateB=1 PASS; S5.M1–S5.M3 defaults; report 05-verify-tech.md'
-    prior_previous_session_id: S054-rust-ci-crates
-    prior_previous_evolve_cycle_id: EV-045
+    previous_gate_b: PASS
+    previous_gate_b_decision: D-S061-gateB=1
+    previous_note: 'S061/EV-052 COMPLETE — Gate B PASS D-S061-gateB=1; handoff 07-build M1 (06 skipped)'
+    prior_previous_session_id: S057-strip-internal-doc-refs
+    prior_previous_evolve_cycle_id: EV-048
     prior_previous_overall: pass
-    prior_previous_note: 'COMPLETE — Gate B PASS (D-S054-gateB=1); medium/low syncs confirmed; handoff 07-build M1 T1.1; 06 skipped ADR-017'
+    prior_previous_note: 'COMPLETE — D-S057-gateB=1 PASS; S5.M1–S5.M3 defaults; report 05-verify-tech.md'
     prior_session_id: S047-sql-ingest-live-e2e
     prior_evolve_cycle_id: EV-039
     prior_started: '2026-08-06'
     prior_completed: '2026-08-06'
     prior_note: 'S047/EV-039 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
-    note: 'S061/EV-052 COMPLETE — Gate B PASS D-S061-gateB=1; handoff 07-build M1 (06 skipped)'
-    report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+    note: 'S064/EV-055 COMPLETE — D-S064-05=1 Gate B PASS; D-S064-c14n-host=1; C1 resolved; handoff 07-build M1 pending start; tip 82455712; no git commit by workflow-state-manager'
+    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+    report_status: completed
     decision_refs:
-    - D-S061-gateB
-    - D-S061-04-plan
-    - D-S061-gateA
+    - D-S064-05
+    - D-S064-c14n-host
+    - D-S064-04-plan
+    - D-S064-gateA
+    - D-S064-01-ac
     substeps:
       inventory:
         status: completed
@@ -11771,10 +11798,67 @@ stages:
     current_document:
     current_statement:
     artifacts:
-    - docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
-    - docs/decisions/tech-audit.md
-    - docs/decisions/tech-decisions.md
+    - docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+    - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+    - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+    active_session:
+      session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 05-verify-tech
+      status: completed
+      mode: delta
+      started_at: '2026-08-11'
+      started: '2026-08-11'
+      completed_at: '2026-08-11'
+      completed: '2026-08-11'
+      tip_sha: 82455712
+      tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+      overall: pass
+      gate_b: PASS
+      gate_b_decision: D-S064-05=1
+      note: 'COMPLETE — D-S064-05=1 Gate B PASS; C1 resolved; handoff 07-build M1'
+      feature_ids: []
+      deepen_feature_ids:
+      - F7
+      - F2
+      - F13
+      decision_refs:
+      - D-S064-05
+      - D-S064-c14n-host
+      - D-S064-04-plan
+      - D-S064-gateA
+      - D-S064-01-ac
+      artifacts:
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
     delta_substages:
+    - session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 05-verify-tech
+      status: completed
+      started_at: '2026-08-11'
+      started: '2026-08-11'
+      completed_at: '2026-08-11'
+      completed: '2026-08-11'
+      mode: delta
+      overall: pass
+      gate_b: PASS
+      gate_b_decision: D-S064-05=1
+      feature_ids: []
+      deepen_feature_ids: [F7, F2, F13]
+      decision_refs:
+      - D-S064-05
+      - D-S064-c14n-host
+      - D-S064-04-plan
+      - D-S064-gateA
+      - D-S064-01-ac
+      note: 'COMPLETE — D-S064-05=1 Gate B PASS; C1 resolved; tip 82455712; handoff 07 M1'
+      report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+      artifacts:
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
     - session_id: S061-ci-polish-quality-pr-stats
       evolve_cycle_id: EV-052
       skill_id: 05-verify-tech
@@ -11976,6 +12060,8 @@ stages:
       overall: pass
       note: PASS — 12 auto + 44A–47A (feature-list ADR-027, matrix docs, T5.6 CORS, T3.7a/T3.8a)
     notes:
+    - '2026-08-11 S064/EV-055 05 COMPLETE (D-S064-05=1) — Gate B PASS; D-S064-c14n-host=1; C1 resolved; tip 82455712; handoff 07-build M1 pending start; no git commit by workflow-state-manager'
+    - '2026-08-11 S064/EV-055 05-verify-tech STARTED (D-S064-04-plan=1) — 04 COMPLETE; Gate B pending; tip e5714f08; no git commit by workflow-state-manager'
     - '2026-08-09 S061/EV-052 05 COMPLETE (D-S061-gateB=1) — Gate B PASS; handoff 07-build M1; 06 skipped; no git commit by workflow-state-manager'
     - '2026-08-09 S061/EV-052 05 AUDIT (D-S061-gateB pending) — PASS recommended; I-01/I-02 fixed; medium defaults in 05-verify-tech.md; 05 remains in_progress; no git commit by workflow-state-manager'
     - '2026-08-09 S061/EV-052 05-verify-tech STARTED (D-S061-04-plan=1) — plan approved openapi-typescript; Gate B pending; no git commit by workflow-state-manager'
@@ -12189,18 +12275,28 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: completed
-    started_at: '2026-08-09'
-    started: '2026-08-09'
-    completed_at: '2026-08-09'
-    completed: '2026-08-09'
+    status: pending
+    in_progress: false
+    started_at: null
+    started: null
+    completed_at: null
+    completed: null
     previous_started_at: '2026-08-09'
     previous_completed_at: '2026-08-09'
-    previous_session_id: S060-tag-driven-prod-deploy
-    previous_evolve_cycle_id: EV-051
-    previous_tip_sha: cb8d9771
-    previous_tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
-    previous_note: 'COMPLETE — S060/EV-051 @ cb8d9771; ci-cd.yml / ADR-034 / deploy docs / promote rule; D-S060-gateA=1'
+    previous_started: '2026-08-09'
+    previous_completed: '2026-08-09'
+    previous_session_id: S061-ci-polish-quality-pr-stats
+    previous_evolve_cycle_id: EV-052
+    previous_tip_sha: 828c7087
+    previous_tip_sha_full: 828c708723549fd480a93203b600e742bf88a343
+    previous_note: 'COMPLETE — S061/EV-052 M1–M5 done @ 828c7087; tip CI green; PR #969; handoff 08-verify-build'
+    previous_s060_started_at: '2026-08-09'
+    previous_s060_completed_at: '2026-08-09'
+    previous_s060_session_id: S060-tag-driven-prod-deploy
+    previous_s060_evolve_cycle_id: EV-051
+    previous_s060_tip_sha: cb8d9771
+    previous_s060_tip_sha_full: cb8d97719d89a97b540115a21a533640c6397e4c
+    previous_s060_note: 'COMPLETE — S060/EV-051 @ cb8d9771; ci-cd.yml / ADR-034 / deploy docs / promote rule; D-S060-gateA=1'
     previous_s057_started_at: '2026-08-08'
     previous_s057_completed_at: '2026-08-08'
     previous_s057_session_id: S057-strip-internal-doc-refs
@@ -12225,40 +12321,45 @@ stages:
     prior_prior_session_id: S050-remove-db-tools-operator-throughput
     prior_prior_evolve_cycle_id: EV-042
     prior_prior_note: 'S050/EV-042 07-build COMPLETE — M4 done; superseded by S054/EV-045'
-    session_id: S061-ci-polish-quality-pr-stats
-    evolve_cycle_id: EV-052
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
     skill_id: 07-build
     mode: delta
-    note: 'COMPLETE — M1–M5 done @ 828c7087; tip CI green; PR #969; handoff 08-verify-build'
-    tip_sha: 828c7087
-    tip_sha_full: 828c708723549fd480a93203b600e742bf88a343
-    tip_sha_pushed: true
-    pr_number: 969
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/969
-    pr_status: open
+    note: 'PENDING start — D-S064-05=1 Gate B PASS; next M1 T1.1; tip 82455712; no git commit by workflow-state-manager'
+    tip_sha: 82455712
+    tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+    tip_sha_pushed: false
+    pr_number:
+    pr_url:
+    pr_status:
     pr_base: stage
     pr_supersedes:
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
     ci_cd_pipeline_note:
     pending_commit: false
-    current_milestone: M5
-    current_task:
-    active_milestone: M5
-    active_task:
-    active_task_status: completed
-    completed_through: T5.2
-    progress: M1–M5 done
+    current_milestone: M1
+    current_task: T1.1
+    active_milestone: null
+    active_task: null
+    active_task_status: pending
+    completed_through: null
+    progress: pending M1 start
     skipped_tasks: []
-    deepen_feature_ids: [F29, F6, F21, F30, M5]
+    deepen_feature_ids: [F7, F2, F13]
     feature_ids: []
     decision_refs:
+    - D-S064-05
+    - D-S064-c14n-host
+    - D-S064-04-plan
+    - D-S064-gateA
+    child_issue:
+    child_issue_note:
+    decision_refs_s061:
     - D-S061-cov-branches
     - D-S061-gateB
     - D-S061-04-plan
     - D-S061-gateA
-    child_issue: 968
-    child_issue_note: 'branches ≥95 waiver tracking (D-S061-cov-branches=3)'
     decision_refs_s060:
     - D-S060-gateA
     - D-S060-11-next
@@ -12289,6 +12390,14 @@ stages:
     - D-S054-gateA
     - D-S054-01-ac
     - D-S054-open
+    artifacts:
+    - docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+    - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+    - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+    artifacts_s061:
+    - docs/sessions/S061-ci-polish-quality-pr-stats/reports/05-verify-tech.md
+    - docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
+    - docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
     artifacts_s057:
     - docs/sessions/S057-strip-internal-doc-refs/reports/05-verify-tech.md
     - docs/sessions/S057-strip-internal-doc-refs/reports/execution-plan.md
@@ -12302,7 +12411,7 @@ stages:
     - D-S044-r1-ac
     - D-S044-g1-g2
     - D-S044-batch-b
-    artifacts:
+    artifacts_s047:
     - docs/sessions/S047-sql-ingest-live-e2e/reports/execution-plan.md
     - docs/sessions/S047-sql-ingest-live-e2e/reports/05-verify-tech-audit.md
     artifacts_s046:
@@ -12332,6 +12441,40 @@ stages:
     - tests/test_tc_ev036_local_precommit_ci.py
     - tests/unit/test_format_coverage_pr_comment.py
     active_session:
+      session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 07-build
+      status: pending
+      mode: delta
+      started_at: null
+      started: null
+      tip_sha: 82455712
+      tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+      tip_sha_pushed: false
+      note: 'PENDING start — Gate B PASS D-S064-05=1; next M1 T1.1'
+      feature_ids: []
+      deepen_feature_ids:
+      - F7
+      - F2
+      - F13
+      decision_refs:
+      - D-S064-05
+      - D-S064-c14n-host
+      - D-S064-04-plan
+      - D-S064-gateA
+      active_milestone: null
+      current_milestone: M1
+      active_task: null
+      current_task: T1.1
+      active_task_status: pending
+      completed_through: null
+      progress: pending M1 start
+      skipped_tasks: []
+      artifacts:
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+    prior_active_session:
       session_id: S061-ci-polish-quality-pr-stats
       evolve_cycle_id: EV-052
       skill_id: 07-build
@@ -13686,10 +13829,10 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
     status: completed
-    started_at: '2026-08-10'
-    started: '2026-08-10'
-    completed_at: '2026-08-10'
-    completed: '2026-08-10'
+    started_at: '2026-08-11'
+    started: '2026-08-11'
+    completed_at: '2026-08-11'
+    completed: '2026-08-11'
     previous_started_at: '2026-08-09'
     previous_started: '2026-08-09'
     previous_completed_at: '2026-08-09'
@@ -13762,10 +13905,10 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S063-quality-metrics-tab
-    evolve_cycle_id: EV-054
-    tip_sha: be9e3b07
-    tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    tip_sha: "68552747"
+    tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
     tip_sha_pushed: true
     pr_number:
     pr_url:
@@ -13773,10 +13916,19 @@ stages:
     pr_base: stage
     mode: delta
     overall: pass_with_advisories
-    report: docs/sessions/S063-quality-metrics-tab/reports/qa-report.md
-    expected_report: docs/sessions/S063-quality-metrics-tab/reports/qa-report.md
-    note: 'COMPLETE — pass_with_advisories; report docs/sessions/S063-quality-metrics-tab/reports/qa-report.md; tip be9e3b07; handoff 11-verify-impl (awaiting continue)'
+    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+    note: 'COMPLETE — PASS (advisories); report qa-report.md; tip 68552747; handoff 11-verify-impl (await AskQuestion)'
     skill_id: 09-qa
+    previous_s063_session_id: S063-quality-metrics-tab
+    previous_s063_evolve_cycle_id: EV-054
+    previous_s063_tip_sha: be9e3b07
+    previous_s063_tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    previous_s063_started_at: '2026-08-10'
+    previous_s063_completed_at: '2026-08-10'
+    previous_s063_overall: pass_with_advisories
+    previous_s063_report: docs/sessions/S063-quality-metrics-tab/reports/qa-report.md
+    previous_s063_note: 'COMPLETE — pass_with_advisories; tip be9e3b07; superseded by S064/EV-055'
     previous_s057_session_id: S057-strip-internal-doc-refs
     previous_s057_evolve_cycle_id: EV-048
     previous_s057_tip_sha: 3a43da37
@@ -13792,9 +13944,9 @@ stages:
     previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/qa-report.md
     previous_s056_note: 'COMPLETE — pass_with_advisories; report qa-report.md; handoff 10-e2e'
     advisories: []
-    advisories_note: 'QA-ADV-001 tip CI pending PR→stage; QA-ADV-002 H0i skipped locally; QA-ADV-003 H4–H5→12/13; QA-ADV-004 pre-existing basedpyright Unknown'
+    advisories_note: 'QA-ADV-001 tip CI pending PR→stage; QA-ADV-002 integration docker race then retry PASS; QA-ADV-003 Vitest coverage clash solo re-run PASS; QA-ADV-004 H4–H5→12/13; QA-ADV-005 pre-existing basedpyright Unknown'
     decision_refs:
-    - D-S063-phaseC
+    - D-S064-gateC
     pending_commit: false
     active_milestone:
     active_task:
@@ -13807,6 +13959,21 @@ stages:
     main_ci_cd_pipeline_run:
     main_ci_cd_pipeline_status:
     delta_substages:
+    - id: S064-quality-metrics-2025-2-followups-09
+      session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-11'
+      started_at: '2026-08-11'
+      completed: '2026-08-11'
+      completed_at: '2026-08-11'
+      tip_sha: "68552747"
+      tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+      overall: pass_with_advisories
+      report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+      note: 'COMPLETE — PASS (advisories); tip 68552747; handoff 11-verify-impl (await AskQuestion)'
     - id: S063-quality-metrics-tab-09
       session_id: S063-quality-metrics-tab
       evolve_cycle_id: EV-054
@@ -14146,21 +14313,29 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
     status: completed
-    started_at: '2026-08-10'
-    started: '2026-08-10'
-    completed: '2026-08-10'
-    completed_at: '2026-08-10'
-    previous_started_at: '2026-08-09'
-    previous_started: '2026-08-09'
-    previous_completed: '2026-08-09'
-    previous_completed_at: '2026-08-09'
-    previous_session_id: S061-ci-polish-quality-pr-stats
-    previous_evolve_cycle_id: EV-052
+    started_at: '2026-08-11'
+    started: '2026-08-11'
+    completed: '2026-08-11'
+    completed_at: '2026-08-11'
+    overall: pass
+    previous_started_at: '2026-08-10'
+    previous_started: '2026-08-10'
+    previous_completed: '2026-08-10'
+    previous_completed_at: '2026-08-10'
+    previous_session_id: S063-quality-metrics-tab
+    previous_evolve_cycle_id: EV-054
     previous_overall: pass
-    previous_report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/verify-impl.md
-    previous_tip_sha: 828c7087
-    previous_tip_sha_full: 828c708723549fd480a93203b600e742bf88a343
-    previous_note: 'S061/EV-052 11 COMPLETE PASS D-S061-11=1 @ 828c7087 — superseded by S063/EV-054'
+    previous_report: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
+    previous_tip_sha: be9e3b07
+    previous_tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    previous_note: 'S063/EV-054 11 COMPLETE PASS D-S063-11=1 @ be9e3b07 — superseded by S064/EV-055 COMPLETE'
+    previous_s063_session_id: S063-quality-metrics-tab
+    previous_s063_evolve_cycle_id: EV-054
+    previous_s063_overall: pass
+    previous_s063_report: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
+    previous_s063_tip_sha: be9e3b07
+    previous_s063_tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    previous_s063_note: 'COMPLETE — PASS D-S063-11=1; UI preview local :18000; handoff 12-verify-deploy; tip be9e3b07'
     previous_s061_session_id: S061-ci-polish-quality-pr-stats
     previous_s061_evolve_cycle_id: EV-052
     previous_s061_overall: pass
@@ -14240,25 +14415,25 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S063-quality-metrics-tab
-    evolve_cycle_id: EV-054
-    tip_sha: be9e3b07
-    tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    tip_sha: "abeba590"
+    tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
     tip_sha_pushed: true
     mode: delta
     overall: pass
-    report: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
-    expected_report: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
+    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
     standing_report: docs/reports/implementation-verification.md
-    note: 'COMPLETE — PASS D-S063-11=1; D-S063-ui-preview-11=1; D-S063-uj056=1; report verify-impl.md; tip be9e3b07; next 12-verify-deploy pending (awaiting continue; recommend PR→stage)'
+    note: 'COMPLETE — PASS D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1; tip abeba590; next 12-verify-deploy pending (recommend PR→stage)'
     skill_id: 11-verify-impl
     pr_number:
     pr_url:
     pr_status:
     pr_base: stage
     awaiting_user_decision: false
-    awaiting_user_decision_note: 'D-S063-11=1 approved; awaiting continue → 12'
-    decision_id: D-S063-11
+    awaiting_user_decision_note: '11 COMPLETE; await continue → 12-verify-deploy (recommend open PR→stage)'
+    decision_id: D-S064-11
     previous_s057_session_id: S057-strip-internal-doc-refs
     previous_s057_evolve_cycle_id: EV-048
     previous_s057_tip_sha: 014c9125
@@ -14274,31 +14449,33 @@ stages:
     previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
     previous_s056_note: 'COMPLETE — PASS @ 3ca4f438; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; phase_d passed; handoff phase4-close / PR #961'
     decision_refs:
-    - D-S063-11
-    - D-S063-ui-preview-11
-    - D-S063-uj056
-    - D-S063-09-10-continue
-    - D-S063-gateA
+    - D-S064-gateC
+    - D-S064-09-10-continue
+    - D-S064-ui-preview-11
+    - D-S064-uj056
+    - D-S064-11
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_overall: approved
     prior_s050_note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
     prior_s050_report_note: 'S050/EV-042 11 COMPLETE — superseded by S054/EV-045'
     report_status: approved
-    tip_note: 'S063/EV-054 tip be9e3b07 — 11-verify-impl COMPLETE PASS D-S063-11=1; awaiting continue → 12 (recommend PR→stage)'
+    tip_note: 'S064/EV-055 tip 68552747 — 11 COMPLETE PASS D-S064-11=1; await continue → 12'
     decision_ids:
-    - D-S063-11
-    - D-S063-ui-preview-11
-    - D-S063-uj056
-    - D-S063-09-10-continue
-    - D-S063-gateA
+    - D-S064-09-10-continue
+    - D-S064-gateC
+    - D-S064-ui-preview-11
+    - D-S064-uj056
+    - D-S064-11
     deepen_feature_ids:
     - F7
+    - F2
+    - F13
     feature_ids: []
     active_milestone:
     active_task:
     active_task_status: completed
-    active_task_note: '11-verify-impl COMPLETE PASS — D-S063-11=1; handoff 12-verify-deploy pending'
+    active_task_note: '11-verify-impl COMPLETE PASS — D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1 @ 68552747; next 12 pending'
     previous_s046_decision_id: D-S046-11
     previous_s045_session_id: S045-matrix-disposition-residuals
     previous_s045_evolve_cycle_id: EV-037
@@ -14322,27 +14499,51 @@ stages:
     substeps:
       collect_results:
         status: completed
-        note: 08 PASS; 09 pass_with_advisories; 10 PASS local UJ-056; 11 PASS D-S063-11=1
+        note: 08 PASS; 09 pass_with_advisories; 10 PASS local UJ-056; 11 PASS D-S064-11=1
       feature_completeness:
         status: completed
-        note: F7.q AC1–AC7 met D-S063-11=1
+        note: F7.q + F2/F13 deepen AC met D-S064-11=1
       journey_signoff:
         status: completed
-        note: UJ-056 approved D-S063-uj056=1; live T3 waived until 12/13
+        note: UJ-056 approved D-S064-uj056=1; live T3 waived until 12/13
       feature_approval:
         status: completed
-        note: D-S063-11=1 Approve F7.q
+        note: D-S064-11=1 Approve F7.q + F2/F13 deepen
       ui_preview:
         status: completed
-        note: D-S063-ui-preview-11=1 non-deployed http://127.0.0.1:18000/
+        note: D-S064-ui-preview-11=1 non-deployed http://127.0.0.1:18000/ (+ API :18001)
       fixes_applied:
         status: n/a
       scope_analysis:
         status: completed
       summary:
         status: completed
-        path: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
+        path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
     delta_substages:
+    - id: S064-quality-metrics-2025-2-followups-11
+      session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 11-verify-impl
+      status: completed
+      mode: delta
+      started: '2026-08-11'
+      started_at: '2026-08-11'
+      completed: '2026-08-11'
+      completed_at: '2026-08-11'
+      tip_sha: "68552747"
+      tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+      tip_sha_pushed: true
+      overall: pass
+      report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+      standing_report: docs/reports/implementation-verification.md
+      report_status: approved
+      expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+      deepen_feature_ids:
+      - F7
+      - F2
+      - F13
+      decision_id: D-S064-11
+      note: 'COMPLETE — PASS D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1; tip 68552747; next 12 pending'
     - id: S063-quality-metrics-tab-11
       session_id: S063-quality-metrics-tab
       evolve_cycle_id: EV-054
@@ -14640,10 +14841,10 @@ stages:
     skill_id: 11-verify-impl
   10-e2e:
     status: completed
-    started_at: '2026-08-10'
-    started: '2026-08-10'
-    completed_at: '2026-08-10'
-    completed: '2026-08-10'
+    started_at: '2026-08-11'
+    started: '2026-08-11'
+    completed_at: '2026-08-11'
+    completed: '2026-08-11'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -14680,16 +14881,25 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S063-quality-metrics-tab
-    evolve_cycle_id: EV-054
-    tip_sha: be9e3b07
-    tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    tip_sha: "68552747"
+    tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
     tip_sha_pushed: true
     mode: delta
     overall: pass
-    report: docs/sessions/S063-quality-metrics-tab/reports/e2e-report.md
-    note: 'COMPLETE — PASS local UJ-056; report docs/sessions/S063-quality-metrics-tab/reports/e2e-report.md; H4–H5 deferred 12/13; tip be9e3b07; handoff 11-verify-impl (awaiting continue)'
+    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
+    note: 'COMPLETE — PASS local UJ-056; report e2e-report.md; H4–H5 deferred 12/13; tip 68552747; handoff 11-verify-impl (await AskQuestion)'
     skill_id: 10-e2e
+    previous_s063_session_id: S063-quality-metrics-tab
+    previous_s063_evolve_cycle_id: EV-054
+    previous_s063_tip_sha: be9e3b07
+    previous_s063_tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    previous_s063_started_at: '2026-08-10'
+    previous_s063_completed_at: '2026-08-10'
+    previous_s063_overall: pass
+    previous_s063_report: docs/sessions/S063-quality-metrics-tab/reports/e2e-report.md
+    previous_s063_note: 'COMPLETE — PASS local UJ-056; tip be9e3b07; superseded by S064/EV-055'
     previous_s057_session_id: S057-strip-internal-doc-refs
     previous_s057_evolve_cycle_id: EV-048
     previous_s057_tip_sha: 3a43da37
@@ -14709,6 +14919,21 @@ stages:
     active_task_status:
     pending_commit: false
     delta_substages:
+    - id: S064-quality-metrics-2025-2-followups-10
+      session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 10-e2e
+      status: completed
+      mode: delta
+      started: '2026-08-11'
+      started_at: '2026-08-11'
+      completed: '2026-08-11'
+      completed_at: '2026-08-11'
+      tip_sha: "68552747"
+      tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+      overall: pass
+      report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
+      note: 'COMPLETE — PASS local UJ-056; H4–H5 deferred 12/13; tip 68552747; handoff 11-verify-impl (await AskQuestion)'
     - id: S063-quality-metrics-tab-10
       session_id: S063-quality-metrics-tab
       evolve_cycle_id: EV-054
@@ -15186,10 +15411,10 @@ stages:
   08-verify-build:
     status: completed
     mode: delta
-    started_at: '2026-08-10'
-    started: '2026-08-10'
-    completed_at: '2026-08-10'
-    completed: '2026-08-10'
+    started_at: '2026-08-11'
+    started: '2026-08-11'
+    completed_at: '2026-08-11'
+    completed: '2026-08-11'
     previous_started_at: '2026-08-09'
     previous_completed_at: '2026-08-09'
     previous_session_id: S061-ci-polish-quality-pr-stats
@@ -15271,10 +15496,10 @@ stages:
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S063-quality-metrics-tab
-    evolve_cycle_id: EV-054
-    tip_sha: be9e3b07
-    tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    tip_sha: af7b61dc
+    tip_sha_full: af7b61dc87b4eeffce9ea0b0dabf4c8fbf935427
     tip_sha_pushed: true
     pr_number:
     pr_url:
@@ -15282,11 +15507,20 @@ stages:
     pr_base: stage
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
-    ci_cd_pipeline_note: 'S063/EV-054 local Gate C PASS @ 7a1d1845; Phase C PASS D-S063-phaseC=1; tip be9e3b07; CI via PR→stage'
-    note: 'COMPLETE — S063/EV-054 local Gate C PASS @ 7a1d1845; report verification-report.md; D-S063-phaseC=1 Phase C PASS; 09-qa in_progress; tip be9e3b07'
-    expected_report: docs/sessions/S063-quality-metrics-tab/reports/verification-report.md
-    report: docs/sessions/S063-quality-metrics-tab/reports/verification-report.md
+    ci_cd_pipeline_note: 'S064/EV-055 Gate C PASS D-S064-gateC=1 @ af7b61dc pushed; tip CI via PR→stage'
+    note: 'COMPLETE — S064/EV-055 Gate C PASS D-S064-gateC=1; overall pass; report verification-report.md; tip af7b61dc pushed; 09-qa + 10-e2e in_progress'
+    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verification-report.md
+    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verification-report.md
     overall: pass
+    previous_s063_session_id: S063-quality-metrics-tab
+    previous_s063_evolve_cycle_id: EV-054
+    previous_s063_tip_sha: be9e3b07
+    previous_s063_tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
+    previous_s063_started_at: '2026-08-10'
+    previous_s063_completed_at: '2026-08-10'
+    previous_s063_report: docs/sessions/S063-quality-metrics-tab/reports/verification-report.md
+    previous_s063_overall: pass
+    previous_s063_note: 'COMPLETE — S063/EV-054 local Gate C PASS @ 7a1d1845; D-S063-phaseC=1; superseded by S064/EV-055'
     previous_s061_session_id: S061-ci-polish-quality-pr-stats
     previous_s061_evolve_cycle_id: EV-052
     previous_s061_tip_sha: 828c7087
@@ -16082,27 +16316,47 @@ stages:
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
     status: in_progress
-    started_at: '2026-08-10'
-    started: '2026-08-10'
-    session_id: S063-quality-metrics-tab
-    evolve_cycle_id: EV-054
+    started_at: '2026-08-11'
+    started: '2026-08-11'
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
     skill_id: 12-verify-deploy
+    mode: delta
     overall: pending
-    report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
+    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
     report_status: present
-    tip_sha: 6dd76b66
-    tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
+    tip_sha: "abeba590"
+    tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
     tip_sha_pushed: true
-    tip_ci_run: '31449643455'
-    tip_ci_status: success
-    pr_number: 977
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+    tip_ci_run: '31532484425'
+    tip_ci_status: in_progress
+    pr_number: 985
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985
     pr_status: open
     pr_base: stage
-    decision_id: D-S063-12-path
-    awaiting_user_decision: true
-    awaiting_user_decision_note: 'Awaiting D-S063-12 checklist sign-off; #836 Status In review'
-    note: 'in_progress — PR #977→stage; tip CI 31449643455 success; deploy-checklist.md draft/ready awaiting D-S063-12 user sign-off; D-S063-12-path=1; #836 In review; not completed'
+    decision_id: D-S064-12-start
+    awaiting_user_decision: false
+    awaiting_user_decision_note: '12 in_progress; tip CI watching; checklist not yet signed off'
+    note: 'in_progress — D-S064-12-start=1; PR #985→stage; tip CI 31532484425 watching @ abeba590; deploy-checklist.md present; #982/#980/#979 In review; D-S064-11=1 retained; not completed'
+    previous_s063_started_at: '2026-08-10'
+    previous_s063_started: '2026-08-10'
+    previous_s063_session_id: S063-quality-metrics-tab
+    previous_s063_evolve_cycle_id: EV-054
+    previous_s063_overall: pending
+    previous_s063_report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
+    previous_s063_report_status: present
+    previous_s063_tip_sha: 6dd76b66
+    previous_s063_tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+    previous_s063_tip_sha_pushed: true
+    previous_s063_tip_ci_run: '31449643455'
+    previous_s063_tip_ci_status: success
+    previous_s063_pr_number: 977
+    previous_s063_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+    previous_s063_pr_status: open
+    previous_s063_pr_base: stage
+    previous_s063_decision_id: D-S063-12-path
+    previous_s063_note: 'in_progress — PR #977→stage; tip CI 31449643455 success; deploy-checklist.md draft/ready awaiting D-S063-12 user sign-off; D-S063-12-path=1; #836 In review; not completed — superseded as active by S064/EV-055'
     previous_s050_started_at: '2026-08-07'
     previous_s050_started: '2026-08-07'
     previous_s050_completed: '2026-08-07'
@@ -16210,6 +16464,9 @@ stages:
     previous_s050_awaiting_user_decision: false
     previous_s050_awaiting_user_decision_note: 'Next: decide merge #899 then start 13-deploy-smoke'
     decision_ids:
+    - D-S064-12-start
+    - D-S064-11
+    - D-S063-12-path
     - D-S050-12
     - D-S047-12
     - D-S047-11
@@ -16221,11 +16478,63 @@ stages:
     - D-S045-12-13-waive
     deepen_feature_ids:
     - F7
+    - F2
+    - F13
     - F16
     - F17
     - F18
     - F19
     delta_substages:
+    - id: S064-quality-metrics-2025-2-followups-12
+      session_id: S064-quality-metrics-2025-2-followups
+      evolve_cycle_id: EV-055
+      skill_id: 12-verify-deploy
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-11'
+      started: '2026-08-11'
+      tip_sha: "abeba590"
+      tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+      tip_sha_pushed: true
+      tip_ci_run: '31532484425'
+      tip_ci_status: in_progress
+      pr_number: 985
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985
+      pr_status: open
+      pr_base: stage
+      report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
+      report_status: present
+      overall: pending
+      decision_id: D-S064-12-start
+      deepen_feature_ids:
+      - F7
+      - F2
+      - F13
+      note: 'in_progress — D-S064-12-start=1; PR #985→stage; tip CI 31532484425 watching @ abeba590'
+    - id: S063-quality-metrics-tab-12
+      session_id: S063-quality-metrics-tab
+      evolve_cycle_id: EV-054
+      skill_id: 12-verify-deploy
+      status: in_progress
+      mode: delta
+      started_at: '2026-08-10'
+      started: '2026-08-10'
+      tip_sha: 6dd76b66
+      tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+      tip_sha_pushed: true
+      tip_ci_run: '31449643455'
+      tip_ci_status: success
+      pr_number: 977
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+      pr_status: open
+      pr_base: stage
+      report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
+      report_status: present
+      overall: pending
+      decision_id: D-S063-12-path
+      deepen_feature_ids:
+      - F7
+      note: 'in_progress — PR #977→stage; tip CI 31449643455 success; awaiting D-S063-12; superseded as active by S064'
     - id: S050-remove-db-tools-operator-throughput-12
       session_id: S050-remove-db-tools-operator-throughput
       evolve_cycle_id: EV-042
@@ -17760,6 +18069,347 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S064-12-start
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: stage_start
+  status: confirmed
+  topic: 'S064/EV-055 continue → 12-verify-deploy; open PR→stage'
+  summary: '1 — continue → 12-verify-deploy; open PR→stage'
+  decision: |
+    D-S064-12-start=1 — continue → 12-verify-deploy; open PR→stage.
+    PR #985 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985).
+    Tip abeba590 tip_sha_pushed=true; tip CI run 31532484425 in_progress/queued.
+    Report docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md.
+    D-S064-11=1 retained. Board #982/#980/#979 Status In review.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  related_decisions:
+  - D-S064-11
+  - D-S064-uj056
+  - D-S064-gateC
+  report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
+  tip_sha: 'abeba590'
+  tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+  tip_sha_pushed: true
+  tip_ci_run: '31532484425'
+  tip_ci_status: in_progress
+  pr_number: 985
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985
+  pr_status: open
+  pr_base: stage
+  current_stage: 12-verify-deploy
+  note: '12 in_progress; PR #985→stage; tip CI 31532484425 watching @ abeba590'
+- id: D-S064-11
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: verify_impl_approval
+  status: confirmed
+  topic: 'S064/EV-055 11-verify-impl approve F7.q + F2/F13 deepen'
+  summary: '1 — Approve F7.q + F2/F13 deepen; proceed toward 12'
+  decision: |
+    D-S064-11=1 — Approve F7.q + F2/F13 deepen; proceed toward 12.
+    Related: D-S064-ui-preview-11=1; D-S064-uj056=1; D-S064-gateC=1; D-S064-09-10-continue=1 retained.
+    Report docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md.
+    Tip 68552747 tip_sha_pushed=true. current_stage 12-verify-deploy pending (await continue → 12; recommend open PR→stage).
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  related_decisions:
+  - D-S064-ui-preview-11
+  - D-S064-uj056
+  - D-S064-gateC
+  - D-S064-09-10-continue
+  report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+  tip_sha: '68552747'
+  tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+  tip_sha_pushed: true
+  current_stage: 12-verify-deploy
+  note: '11 COMPLETE PASS; awaiting continue → 12 (recommend open PR→stage)'
+- id: D-S064-uj056
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: journey_signoff
+  status: confirmed
+  topic: 'S064/EV-055 UJ-056 journey approval'
+  summary: '1 — Approve UJ-056; waive live T3 until 12/13'
+  decision: |
+    D-S064-uj056=1 — Approve UJ-056; waive live T3 until 12/13.
+    Local T0 PASS (e2e-report.md). Live H4–H5/T3 deferred to 12/13.
+    Tip 68552747 tip_sha_pushed=true. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  tip_sha: '68552747'
+  tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+  tip_sha_pushed: true
+  note: 'UJ-056 approved; live T3 waived until 12/13'
+- id: D-S064-ui-preview-11
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: ui_preview
+  status: confirmed
+  topic: 'S064/EV-055 11 UI preview'
+  summary: '1 — non-deployed preview at http://127.0.0.1:18000/ (+ API :18001)'
+  decision: |
+    D-S064-ui-preview-11=1 — non-deployed preview at http://127.0.0.1:18000/ (+ API :18001).
+    Frontend http://127.0.0.1:18000/; API http://127.0.0.1:18001/.
+    Tip 68552747 tip_sha_pushed=true. 11-verify-impl remains in_progress.
+    Await UJ-056 + D-S064-11 feature sign-off.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  related_decisions:
+  - D-S064-09-10-continue
+  tip_sha: '68552747'
+  tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+  tip_sha_pushed: true
+  current_stage: 11-verify-impl
+  note: 'non-deployed local preview accepted at 11; await UJ-056 + D-S064-11'
+- id: D-S064-09-10-continue
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: stage_continue
+  status: confirmed
+  topic: 'S064/EV-055 continue → 11-verify-impl'
+  summary: '1 — continue → 11-verify-impl (recommended)'
+  decision: |
+    D-S064-09-10-continue=1 — continue → 11-verify-impl (recommended).
+    09-qa + 10-e2e COMPLETE. 11-verify-impl in_progress; verify-impl.md drafted.
+    Tip 68552747 tip_sha_pushed=true. Await UI preview AskQuestion + AC/UJ sign-off.
+    D-S064-gateC=1 retained. 16-evolve remains orchestrator.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  related_decisions:
+  - D-S064-gateC
+  report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+  tip_sha: '68552747'
+  tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+  tip_sha_pushed: true
+  current_stage: 11-verify-impl
+  note: 'continue → 11-verify-impl in_progress; await UI preview + AC/UJ sign-off'
+- id: D-S064-gateC
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: gate_c
+  status: confirmed
+  topic: 'S064/EV-055 Gate C → 09-qa + 10-e2e'
+  summary: '1 — PASS; push tip + continue 09-qa (recommended)'
+  decision: |
+    D-S064-gateC=1 — PASS; push tip + continue 09-qa (recommended).
+    checkpoints.phase_c=passed; gates.c_to_d=passed.
+    Tip af7b61dc tip_sha_pushed=true. 08-verify-build COMPLETE overall pass.
+    Report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verification-report.md.
+    09-qa + 10-e2e in_progress. 16-evolve remains orchestrator.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  related_decisions:
+  - D-S064-05
+  - D-S064-gateA
+  report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verification-report.md
+  tip_sha: af7b61dc
+  tip_sha_full: af7b61dc87b4eeffce9ea0b0dabf4c8fbf935427
+  tip_sha_pushed: true
+  current_stage: 09-qa
+  note: 'Gate C PASS; tip pushed; 09-qa + 10-e2e in_progress'
+- id: D-S064-05
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 05-verify-tech
+  skill_id: 05-verify-tech
+  stage: 05-verify-tech
+  category: gate_b
+  status: confirmed
+  topic: 'S064/EV-055 Gate B PASS → 07-build M1'
+  summary: 'D-S064-05=1 — Gate B PASS; C1 resolved; proceed 07-build M1'
+  decision: |
+    D-S064-05=1 — Gate B PASS. C1 resolved via D-S064-c14n-host=1
+    (Python C14N in packages/iwxxm-validate; FE TS helper).
+    05-verify-tech COMPLETE. Next: 07-build M1 pending start.
+    Report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md.
+    tip 82455712. 16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  related_decisions:
+  - D-S064-c14n-host
+  - D-S064-04-plan
+  - D-S064-gateA
+  report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+  tip_sha: 82455712
+  tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+  tip_sha_pushed: false
+  current_stage: 07-build
+  note: 'Gate B PASS; handoff 07-build M1 pending start'
+- id: D-S064-c14n-host
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 05-verify-tech
+  skill_id: 05-verify-tech
+  stage: 05-verify-tech
+  category: design
+  status: confirmed
+  topic: 'S064/EV-055 C14N host package'
+  summary: 'D-S064-c14n-host=1 — Python C14N in packages/iwxxm-validate (not shared); FE TS helper'
+  decision: |
+    D-S064-c14n-host=1 — Host Python W3C C14N in packages/iwxxm-validate
+    (not packages/shared). Frontend uses a TypeScript helper.
+    Resolves Gate B C1. Paired with D-S064-05=1.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  related_decisions:
+  - D-S064-05
+  - D-S064-c14n
+  - D-S064-gateA
+  tip_sha: 82455712
+  tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+  tip_sha_pushed: false
+  current_stage: 07-build
+  note: 'C1 resolved for Gate B'
+- id: D-S064-04-plan
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  skill: 04-tech-plan
+  skill_id: 04-tech-plan
+  stage: 04-tech-plan
+  category: plan_approval
+  status: confirmed
+  topic: 'S064/EV-055 approve 04 execution plan → 05'
+  summary: 'D-S064-04-plan=1 — approve 17 tasks M1–M5; proceed 05-verify-tech'
+  decision: |
+    D-S064-04-plan=1 — Approve execution plan as drafted (17 tasks M1–M5).
+    04-tech-plan COMPLETE (delta). Proceed 05-verify-tech (in_progress awaiting Gate B).
+    Artifacts: docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+    + docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md.
+    tip e5714f08. 16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  related_features:
+  - F7
+  - F2
+  - F13
+  related_issues:
+  - '982'
+  - '980'
+  - '979'
+  related_decisions:
+  - D-S064-gateA
+  - D-S064-01-ac
+  report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+  build_plan_card: docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+  tip_sha: e5714f08
+  tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
+  tip_sha_pushed: false
+  current_stage: 05-verify-tech
+  note: '04 approved; handoff 05-verify-tech awaiting Gate B'
 - id: D-S063-12-path
   date: '2026-08-10'
   timestamp: '2026-08-10'
@@ -32866,6 +33516,36 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+  type: report
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  created_at: '2026-08-11'
+  updated_at: '2026-08-11'
+  status: completed
+  note: 'S064/EV-055 11 COMPLETE PASS — D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1 @ 68552747; next 12 pending'
+- path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+  type: report
+  stage: 09-qa
+  skill_id: 09-qa
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  created_at: '2026-08-11'
+  updated_at: '2026-08-11'
+  status: completed
+  note: 'S064/EV-055 09 COMPLETE — pass_with_advisories @ 68552747'
+- path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
+  type: report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S064-quality-metrics-2025-2-followups
+  evolve_cycle_id: EV-055
+  created_at: '2026-08-11'
+  updated_at: '2026-08-11'
+  status: completed
+  note: 'S064/EV-055 10 COMPLETE — PASS local UJ-056 @ 68552747; H4–H5 deferred 12/13'
 - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
   type: report
   stage: 12-verify-deploy
@@ -36617,6 +37297,138 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-055
+  title: "Quality metrics 2025-2 follow-ups (#982/#980/#979)"
+  status: in_progress
+  cycle_type: feature
+  session_id: S064-quality-metrics-2025-2-followups
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  - F2
+  - F13
+  feature_note: "Deepen F7.q + F2/F13 (F4 only if messaging); no new top-level Fn"
+  github_issues:
+  - 982
+  - 980
+  - 979
+  issues:
+  - 982
+  - 980
+  - 979
+  branch: evolve/EV-055-quality-metrics-2025-2-followups
+  branch_base: stage@4fd51e39
+  branch_base_sha: 4fd51e39
+  branch_base_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+  branch_status: active
+  branch_exists: true
+  tip_sha: "abeba590"
+  tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+  tip_sha_pushed: true
+  tip_sha_note: "12 in_progress; PR #985→stage; tip CI 31532484425 queued/running @ abeba590"
+  current_stage: 12-verify-deploy
+  current_stage_status: in_progress
+  current_stage_note: "12 in_progress; PR #985→stage; tip CI run 31532484425 watching @ abeba590"
+  pr_number: 985
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985
+  pr_status: open
+  pr_base: stage
+  tip_ci_run: '31532484425'
+  tip_ci_status: in_progress
+  started: "2026-08-11"
+  started_at: "2026-08-11"
+  completed: false
+  preset: Standard
+  routing_plan:
+  - 00-context
+  - 16-evolve
+  - 01-requirements
+  - 02-verify-plan
+  - 04-tech-plan
+  - 05-verify-tech
+  - 07-build
+  - 08-verify-build
+  - 09-qa
+  - 10-e2e
+  - 11-verify-impl
+  - 12-verify-deploy
+  - 13-deploy-smoke
+  skip_stages:
+  - 03-plan-tooling
+  - 06-tech-tooling
+  scope_summary: "Normalize Quality metrics XML diffs (#982); prefer Schematron enable for 2025-2 (#980); investigate SCHEMA_IMPORT_WARNING (#979) fix optional; PR→stage"
+  decisions_locked: true
+  decisions:
+    D-S064-gateC: "1 — PASS; push tip + continue 09-qa (recommended)"
+    D-S064-09-10-continue: "1 — continue → 11-verify-impl (recommended)"
+    D-S064-ui-preview-11: "1 — non-deployed preview at http://127.0.0.1:18000/ (+ API :18001)"
+    D-S064-uj056: "1 — Approve UJ-056; waive live T3 until 12/13"
+    D-S064-11: "1 — Approve F7.q + F2/F13 deepen; proceed toward 12"
+    D-S064-12-start: "1 — continue → 12-verify-deploy; open PR→stage"
+  artifacts:
+  - docs/sessions/S064-quality-metrics-2025-2-followups/session-brief.md
+  - docs/sessions/S064-quality-metrics-2025-2-followups/routing-plan.md
+  - docs/sessions/S064-quality-metrics-2025-2-followups/evolve-plan-card.md
+  - docs/decisions/evolve-decisions.md
+  - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+    status: approved
+    stage: 04-tech-plan
+    note: "D-S064-04-plan=1 — approved (17 tasks M1–M5)"
+  - path: docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+    status: approved
+    stage: 04-tech-plan
+    note: "D-S064-04-plan=1 — approved"
+  - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+    status: completed
+    stage: 05-verify-tech
+    note: "D-S064-05=1 — Gate B PASS; C1 resolved; handoff 07 M1"
+  - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+    status: completed
+    stage: 09-qa
+    note: "COMPLETE — pass_with_advisories; tip 68552747; handoff 11-verify-impl"
+  - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
+    status: completed
+    stage: 10-e2e
+    note: "COMPLETE — PASS; tip 68552747; handoff 11-verify-impl"
+  - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+    status: completed
+    stage: 11-verify-impl
+    note: "COMPLETE — PASS D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1; tip abeba590; next 12 pending"
+  - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
+    status: present
+    stage: 12-verify-deploy
+    note: "12 in_progress; PR #985→stage; tip CI 31532484425 watching @ abeba590; D-S064-12-start=1"
+  checkpoints:
+    phase_a: passed
+    phase_b: passed
+    phase_c: passed
+    phase_c_note: "Gate C PASS D-S064-gateC=1; Phase C closed; 09+10+11 done @ 68552747; 12-verify-deploy pending"
+    phase_d: in_progress
+    phase_d_note: "12 in_progress D-S064-12-start=1; PR #985→stage; tip CI 31532484425 watching @ abeba590; #982/#980/#979 In review"
+    deploy: pending
+  gates:
+    a_to_b: passed
+    b_to_c: passed
+    c_to_d: passed
+    c_to_d_note: "D-S064-gateC=1 — PASS; push tip + continue 09-qa (recommended)"
+    deploy: pending
+  notes:
+  - "2026-08-11 D-S064-12-start=1 — continue → 12-verify-deploy; open PR→stage; PR #985 open → stage; tip CI 31532484425 in_progress/queued @ abeba590; deploy-checklist.md present; board #982/#980/#979 In review; D-S064-11=1 retained; no git commit by workflow-state-manager"
+  - "2026-08-11 tip abeba590 — 11 COMPLETE docs commit pushed; tip_sha_pushed=true; current_stage 12-verify-deploy; D-S064-11=1 / D-S064-uj056=1 retained; await continue → 12 (recommend open PR→stage for tip CI); no git commit by workflow-state-manager"
+  - "2026-08-11 D-S064-11=1 / D-S064-uj056=1 — 11-verify-impl COMPLETE PASS; D-S064-ui-preview-11=1 retained; approve F7.q + F2/F13 deepen; UJ-056 approve (waive live T3 until 12/13); report docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md; current_stage 12-verify-deploy pending (await continue → 12; recommend open PR→stage); tip 68552747 tip_sha_pushed=true; D-S064-gateC=1 / D-S064-09-10-continue=1 retained; no git commit by workflow-state-manager"
+  - "2026-08-11 D-S064-ui-preview-11=1 — non-deployed preview at http://127.0.0.1:18000/ (+ API :18001); 11-verify-impl remains in_progress; tip 68552747 tip_sha_pushed=true; await UJ-056 + D-S064-11; no git commit by workflow-state-manager"
+  - "2026-08-11 D-S064-09-10-continue=1 — continue → 11-verify-impl (recommended); 11-verify-impl in_progress; verify-impl.md drafted; await UI preview AskQuestion + AC/UJ sign-off; tip 68552747; D-S064-gateC=1 retained; no git commit by workflow-state-manager"
+  - "2026-08-11 09+10 COMPLETE — tip 68552747 pushed; 09-qa pass_with_advisories + 10-e2e PASS; current_stage 11-verify-impl pending (await continue); D-S064-gateC=1 retained; no git commit by workflow-state-manager"
+  - "2026-08-11 D-S064-gateC=1 — Gate C PASS; tip af7b61dc pushed; 08 COMPLETE; 09-qa + 10-e2e in_progress; no git commit by workflow-state-manager"
+  - "2026-08-11 D-S064-route=1 — 00 COMPLETE; EV-055 created; Phase 0–1 locked; → 01-requirements; board #982/#980/#979 In progress; EV-043/044 remain parked"
+  - "2026-08-11 D-S064-01-ac=1 — 01 COMPLETE; AC1–AC7; TC-EV055; UJ-056 deepen; api-contract match_status; → 02-verify-plan"
+  - "2026-08-11 commit 0e364bcc — session open + 01 docs; 02-verify-plan in_progress (Gate A pending)"
+  - "2026-08-11 D-S064-gateA=1 — Gate A PASS; C14N hard; #979/#980 hard; pane override; → 04-tech-plan"
+  - "2026-08-11 04-tech-plan in_progress — draft reports/execution-plan.md + build-plan-card.md; tip be13212c ahead of stage by 2; awaiting D-S064-04-plan (not approved); no git commit by workflow-state-manager"
+  - "2026-08-11 D-S064-04-plan=1 — 04 COMPLETE; 17 tasks M1–M5; tip e5714f08; 05-verify-tech in_progress awaiting Gate B; no git commit by workflow-state-manager"
+  - "2026-08-11 D-S064-05=1 / D-S064-c14n-host=1 — Gate B PASS; C1 resolved (C14N host iwxxm-validate); tip 82455712; 05 COMPLETE; next 07-build M1; no git commit by workflow-state-manager"
+  - "2026-08-11 07-build M1 DONE — commit 4b49adb3 [T1.1-T1.4] native 2025-2 Schematron/XSD; next M2 C14N; tip_sha_pushed=false; ahead 6; no git commit by workflow-state-manager"
+  parked: false
 - id: EV-054
   session_id: S063-quality-metrics-tab
   type: feature
@@ -47985,24 +48797,24 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-054-quality-metrics-tab
+  current_branch: evolve/EV-055-quality-metrics-2025-2-followups
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty (state manager); untracked optional .cursor/rules/optional/*'
-  tip_sha: 6dd76b66
-  tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
-  tip_note: "HEAD 6dd76b66 (12-verify-deploy in_progress; PR #977→stage; tip CI 31449643455 success; deploy-checklist awaiting D-S063-12 sign-off; #836 In review); tip_sha_pushed=true"
-  evolve_branch: evolve/EV-054-quality-metrics-tab
-  evolve_tip_sha: 6dd76b66
-  evolve_tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+  dirty_note: 'workflow-state.yaml dirty (state manager after D-S064-12-start=1 / PR #985 / tip CI 31532484425); tip abeba590 pushed; 12 in_progress; no git commit by workflow-state-manager'
+  tip_sha: "abeba590"
+  tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+  tip_note: "HEAD abeba590; tip_sha_pushed=true; 12 in_progress; PR #985→stage; tip CI 31532484425 watching"
+  evolve_branch: evolve/EV-055-quality-metrics-2025-2-followups
+  evolve_tip_sha: "abeba590"
+  evolve_tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
   evolve_tip_sha_pushed: true
-  stage_merge_sha: f2926ac8
-  stage_merge_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
-  stage_tip_sha: f2926ac8
-  stage_tip_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
+  stage_merge_sha: 4fd51e39
+  stage_merge_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+  stage_tip_sha: 4fd51e39
+  stage_tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   stash:
   - name: S039-EV031-WIP
     note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
@@ -48013,10 +48825,18 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-054-quality-metrics-tab
-  note: 'S063/EV-054 — 12-verify-deploy in_progress; tip 6dd76b66; PR #977→stage; tip CI 31449643455 success; #836 In review'
+  recommended_branch: evolve/EV-055-quality-metrics-2025-2-followups
+  note: 'S064/EV-055 — 12 in_progress D-S064-12-start=1; PR #985→stage; tip CI 31532484425 watching @ abeba590; D-S064-11=1 retained; dirty workflow-state'
 
   notes:
+  - '2026-08-11 D-S064-12-start=1 — continue → 12-verify-deploy; open PR→stage; PR #985 open; tip CI 31532484425 in_progress/queued @ abeba590; deploy-checklist.md present; board #982/#980/#979 In review; D-S064-11=1 retained; no git commit by workflow-state-manager'
+  - '2026-08-11 tip abeba590 — [11] docs verify-impl PASS committed+pushed; tip_sha_pushed=true; current_stage 12-verify-deploy; D-S064-11=1 / D-S064-uj056=1 retained; stages.11 completed; await continue → 12 (recommend open PR→stage for tip CI); no git commit by workflow-state-manager'
+  - '2026-08-11 D-S064-11=1 / D-S064-uj056=1 — 11-verify-impl COMPLETE PASS; approve F7.q + F2/F13 deepen; UJ-056 approve (waive live T3 until 12/13); tip 68552747 tip_sha_pushed=true; current_stage 12-verify-deploy pending; D-S064-gateC=1 / D-S064-ui-preview-11=1 / D-S064-09-10-continue=1 retained; no git commit by workflow-state-manager'
+  - '2026-08-11 D-S064-ui-preview-11=1 — non-deployed preview at http://127.0.0.1:18000/ (+ API :18001); 11 remains in_progress; tip 68552747 tip_sha_pushed=true; await UJ-056 + D-S064-11; no git commit by workflow-state-manager'
+  - '2026-08-11 D-S064-09-10-continue=1 — continue → 11-verify-impl (recommended); 11-verify-impl in_progress; verify-impl.md drafted; await UI preview AskQuestion + AC/UJ sign-off; tip 68552747; D-S064-gateC=1 retained; no git commit by workflow-state-manager'
+  - '2026-08-11 09+10 complete — 09-qa PASS (advisories; qa-report.md) + 10-e2e PASS local UJ-056 (e2e-report.md; H4–H5 deferred 12/13); tip 68552747 pushed; current_stage 11-verify-impl pending (await AskQuestion → 11); no git commit by workflow-state-manager'
+  - '2026-08-11 commit 4b49adb3 — [T1.1-T1.4] feat native 2025-2 Schematron/XSD; 07-build M1 complete; next M2 C14N; ahead 6 not pushed; dirty workflow-state expected; no git commit by workflow-state-manager'
+  - '2026-08-11 D-S064-05=1 / D-S064-c14n-host=1 — Gate B PASS; tip 82455712; 05 COMPLETE; next 07-build M1 pending; ahead 4 not pushed; dirty workflow-state expected; no git commit by workflow-state-manager'
   - '2026-08-10 12-verify-deploy progress — tip_sha 6dd76b66 tip_sha_pushed=true; PR #977 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977); tip CI success run 31449643455; D-S063-12-path already set; #836 Status In review; artifact deploy-checklist.md present (draft/ready awaiting D-S063-12); 12 still in_progress awaiting user checklist sign-off; no git commit by workflow-state-manager'
   - '2026-08-10 D-S063-09-10-continue=1 — continue → 11-verify-impl (user: Continue); 11-verify-impl in_progress; tip be9e3b07; no git commit by workflow-state-manager'
   - '2026-08-10 09+10 complete — 09-qa pass_with_advisories (qa-report.md) + 10-e2e PASS local UJ-056 (e2e-report.md; H4–H5 deferred 12/13); tip be9e3b07; current_stage 11-verify-impl pending (awaiting continue → 11); no git commit by workflow-state-manager'
@@ -48563,6 +49383,17 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-055-quality-metrics-2025-2-followups
+    base: stage@4fd51e39
+    purpose: "EV-055 / S064 Quality metrics 2025-2 follow-ups"
+    status: active
+    created: "2026-08-11"
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    tip_sha: abeba590
+    tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+    tip_sha_pushed: true
+    note: "11 COMPLETE @ abeba590 pushed; current_stage 12-verify-deploy (recommend open PR→stage for tip CI)"
 
   - name: evolve/EV-054-quality-metrics-tab
     base: stage
@@ -50009,6 +50840,137 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "abeba590"
+    sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+    message: "[11] docs: EV-055 verify-impl PASS — UJ-056 and Fn approve"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: 11-verify-impl
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    files_changed:
+      - docs/reports/implementation-verification.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/evolve-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/routing-plan.md
+      - workflow-state.yaml
+    pushed: true
+    tip_sha: abeba590
+    tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+    note: "11 COMPLETE PASS D-S064-11=1 / D-S064-uj056=1; tip pushed; await continue → 12-verify-deploy"
+
+  - sha: "68552747"
+    sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+    message: "[09][10] docs: EV-055 qa and e2e reports after Gate C"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: 09-qa
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    files_changed:
+      - docs/sessions/S064-quality-metrics-2025-2-followups/evolve-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/routing-plan.md
+      - workflow-state.yaml
+    pushed: true
+    tip_sha: 68552747
+    tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+    note: "09+10 PASS; tip pushed; await AskQuestion → 11-verify-impl"
+
+  - sha: af7b61dc
+    sha_full: af7b61dc87b4eeffce9ea0b0dabf4c8fbf935427
+    message: "[08] fix: Gate C coverage for C14N and native-first orchestrator"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: 08-verify-build
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    pushed: false
+
+  - sha: 4b49adb3
+    sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
+    message: "[T1.1-T1.4] feat: native 2025-2 Schematron/XSD for quality metrics"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: 07-build
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    files_changed:
+      - apps/backend/src/services/validation_orchestrator.py
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - packages/iwxxm-validate/docs/ENGINE_MATRIX_2025-2.md
+      - packages/iwxxm-validate/src/iwxxm_validate/__init__.py
+      - packages/iwxxm-validate/src/iwxxm_validate/metrics_validate.py
+      - packages/iwxxm-validate/tests/test_tc_ev055_004_schematron_2025_2.py
+      - packages/iwxxm-validate/tests/test_tc_ev055_005_schema_import_2025_2.py
+      - scripts/ci/generate_quality_metrics.py
+    pushed: false
+    tip_sha: 4b49adb3
+    tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
+    note: "07-build M1 complete (T1.1–T1.4); next M2 C14N"
+
+  - sha: 82455712
+    sha_full: 824557121a249386cd02de18705d6f44719e7e22
+    message: "docs: [S064/EV-055] Gate B PASS — C14N host iwxxm-validate"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: 05-verify-tech
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    files_changed:
+      - docs/decisions/evolve-decisions.md
+      - docs/feature-list.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/evolve-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/routing-plan.md
+      - docs/test-plan.md
+      - docs/user-journeys.md
+      - workflow-state.yaml
+    pushed: false
+    tip_sha: 82455712
+    tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+    note: "D-S064-05=1 / D-S064-c14n-host=1 — Gate B PASS; handoff 07-build M1"
+
+  - sha: e5714f08
+    sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
+    message: "docs: [S064/EV-055] approve 04 tech plan (17 tasks M1–M5)"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: 04-tech-plan
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    files_changed:
+      - docs/decisions/evolve-decisions.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/evolve-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/routing-plan.md
+      - workflow-state.yaml
+    pushed: false
+    tip_sha: e5714f08
+    tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
+    note: "D-S064-04-plan=1 — 04 approve; handoff 05-verify-tech"
+
+  - sha: 0e364bcc
+    message: "docs: [S064/EV-055] open session and lock 01-requirements for #982/#980/#979"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: "01-requirements"
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    files_changed:
+      - docs/sessions/S064-quality-metrics-2025-2-followups/
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/api-contract.md
+      - docs/decisions/
+      - workflow-state.yaml
 
   - sha: 7a1d1845
     sha_full: 7a1d1845fca326023719d914bba5222277aae91c

@@ -3,6 +3,132 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-055 — Quality metrics 2025-2 follow-ups (#982 / #980 / #979) (S064)
+
+**Session**: S064-quality-metrics-2025-2-followups  
+**Features**: deepen **F7.q**; deepen **F2** / **F13** as needed for 2025-2 validate; **F4** only if messaging requires  
+**Started**: 2026-08-11  
+**Branch**: `evolve/EV-055-quality-metrics-2025-2-followups` (base `stage@4fd51e39`)  
+**Status**: **in_progress** — M1+M2 done (`158cff00`); M3 unblocked by `D-S064-c14n-volatile=1`
+**Issues**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982), [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980), [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)  
+**Parent**: EV-054 / S063 / [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13]
+[Corpus: product §F4] [Corpus: api] [Corpus: tests] [Corpus: system-spec]
+[Corpus: adr/ADR-035] [Corpus: decisions §EV-055]
+
+### Scope (Phase 0–1 — locked 2026-08-11)
+
+| ID | Decision |
+|----|----------|
+| D-S064-intent | **1** — Investigate and fix/ship all three when disposition is clear |
+| D-S064-parked | **1** — Leave EV-043 / EV-044 parked; open S064 / EV-055 |
+| D-S064-success | **1** — Quieter diffs + clear disposition for both 2025-2 warnings |
+| D-S064-normalize | **1** — Normalize both official and converted XML; `match_status` = normalized equality |
+| D-S064-spike-pref | **3** — Prefer enable Schematron for 2025-2 if native can evaluate xslt2; XSD fix optional |
+| D-S064-surface | **1** — Operator surface = Quality metrics tab (F7.q) |
+| D-S064-engine | **1** — Allow F2/F13 (`iwxxm-validate`) changes for #980/#979 |
+| D-S064-oos | **1** — Accept OOS: no vendor hand-edits; no #836 redo; no DOKS; no encode parity |
+| D-S064-route | **1** — Standard; PR → `stage` |
+| D-S064-branch | **1** — Branch from `stage@4fd51e39` |
+| D-S064-board | **1** — #982/#980/#979 → In progress (WIP 3 > ≤2; user override) |
+| D-S064-01-manifest | **1** — feature-list + journeys + test-plan + api-contract + decisions; skip spec/config/deploy |
+| D-S064-ui-preview | **2** — No non-deployed UI preview at 01; docs/repo only |
+| D-S064-uj | **1** — Deepen UJ-056 only (no UJ-057) |
+| D-S064-01-ac | **1** — Lock AC1–AC7 as drafted |
+| D-S064-regen | **1** — Regenerate corpus_metrics for normalized match_status |
+| D-S064-gateA-M1 | **1** — Shared C14N helper: generator + FE |
+| D-S064-gateA-M2 | **override** — Panes default normalized; override → un-normalized |
+| D-S064-sch-hard | **1** — #980 Schematron enable hard (overrides `D-S064-spike-pref=3`) |
+| D-S064-c14n | **1** — Always W3C C14N (`D-S064-gateA-M4=2`) |
+| D-S064-xsd-hard | **1** — #979 SCHEMA_IMPORT fix required (H3=2) |
+| D-S064-gateA | **1** — PASS Gate A; → 04-tech-plan |
+| D-S064-04-plan | **1** — Approve EP as drafted: 17 tasks M1–M5; engine→C14N→regen→FE→E2E; lxml+TS C14N; ADR vs ADR-032; no new deps/CORS |
+| D-S064-c14n-host | **1** — Python C14N in `packages/iwxxm-validate` (not shared); FE TS helper |
+| D-S064-05 | **1** — Gate B PASS; C1 resolved; → 07 M1 |
+| D-S064-c14n-volatile | **1** — C14N **after** volatile-attr strip (`gml:id` / UUID / codes.wmo.int hrefs per ADR-032 rules); not pure C14N; not C14N-of-ADR-032-repr — ADR-035 amend 2026-08-11 |
+| D-S064-m5 | **1** — M5 local Playwright deepen done; tip push for CI; board stays **In progress** until implementing PR opens (`D-S064-board=1`) |
+| D-S064-gateC | **1** — PASS Gate C; push tip + continue 09-qa |
+| D-S064-09-10-continue | **1** — continue → 11-verify-impl |
+| D-S064-ui-preview-11 | **1** — Non-deployed preview at http://127.0.0.1:18000/ |
+| D-S064-uj056 | **1** — Approve UJ-056; waive live T3 until 12/13 |
+| D-S064-11 | **1** — Approve F7.q + F2/F13 deepen; proceed toward 12 |
+| D-S064-12-start | **1** — continue → 12-verify-deploy; open PR→stage |
+| D-S064-12 | **1** — Approve checklist + merge #985 → `stage`, then continue 13 |
+
+### Build closeout (07 — M1–M5)
+
+| M | Tip note |
+|---|----------|
+| M1 | Native Schematron/XSD for quality metrics |
+| M2 | `c14n_xml` + FE `c14nXml.ts` + ADR-035 |
+| M3 | Generator `c14n_equal` + corpus regen (`D-S064-c14n-volatile=1`) |
+| M4 | C14N panes + raw override + validate chips |
+| M5 | UJ-056 / TC-EV055-007 Playwright deepen; E2E badge 83 |
+
+### Tech plan (04 — `D-S064-04-plan=1`)
+
+| Artifact | Path |
+|----------|------|
+| Execution plan | `docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md` |
+| Build Plan Card | `docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md` |
+
+| M | Goal |
+|---|------|
+| M1 | Engine #980/#979 hard |
+| M2 | C14N helpers Py+FE + ADR |
+| M3 | Generator + corpus_metrics regen |
+| M4 | FE panes + diff + validate chips |
+| M5 | Playwright + docs/CI |
+
+### Approved scope (verbatim)
+
+Whitespace-normalize via **W3C C14N** for official and converted XML so Quality metrics
+`match_status` and unified diffs reflect semantic differences (#982). Shared helper in
+generator + FE; panes default to normalized XML with override to raw. **Hard** this cycle:
+enable Schematron for IWXXM 2025-2 xslt2 (#980) and fix `SCHEMA_IMPORT_WARNING` (#979).
+Operator-facing consumer remains the Quality metrics tab; engine changes allowed in
+`packages/iwxxm-validate`.
+
+### Out of scope
+
+- Hand-editing `vendor/schemas/*`
+- Reopening / redoing closed #836 Quality metrics shell
+- DOKS / F30 (EV-043 / EV-044 remain parked)
+- New product families / encode parity
+- `stage`→`main` unless explicitly approved later
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`
+(skip `03`, `06`).
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product §F7]` | cite | F7.q deepen — diffs + validate UX | |
+| `[Corpus: product §F2]` | cite | validate engine / SCHEMA_* / SCHEMATRON_* | |
+| `[Corpus: product §F13]` | cite | native Rust Schematron path | |
+| `[Corpus: product §F4]` | cite | version-line skip messaging if needed | |
+| `[Corpus: api]` | cite | quality-metrics match_status semantics | |
+| `[Corpus: tests]` | cite | TC-EV055 + UJ-056 | |
+| `[Corpus: journeys]` | cite | UJ-056 deepen | |
+| — | waiver | none | |
+
+### Acceptance criteria (01 — `D-S064-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Formatting-only diffs no longer dominate; semantic remain (C14N) | TC-EV055-001 |
+| AC2 | `match_status` = C14N equality both sides; no internal doc ids | TC-EV055-002 |
+| AC3 | C14N helper tests + golden; vendor read-only; shared generator+FE | TC-EV055-003 |
+| AC4 | #980 Schematron **enabled** for 2025-2 (hard) | TC-EV055-004 |
+| AC5 | #979 SCHEMA_IMPORT **fixed** (hard) | TC-EV055-005 |
+| AC6 | Validate chips + normalized panes w/ override | TC-EV055-004..005 / 007 |
+| AC7 | corpus_metrics regen + UJ-056 smoke | TC-EV055-006..007 |
+
+---
+
 ## Cycle EV-054 — Quality metrics tab / official IWXXM corpus (#836) (S063)
 
 **Session**: S063-quality-metrics-tab  

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-10 (S063 / EV-054 — #836 Quality metrics tab; prior EV-050/053)
+> **Last updated**: 2026-08-11 (S064 / EV-055 — #982/#980/#979; prior EV-054)
 
 ## Scope
 
@@ -110,7 +110,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054) | Quality metrics primary tab — official corpus match/residuals/lint/validate (#836) | **H4–H5 required** | TC-EV054-001..008 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -2055,6 +2055,73 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   public (no JWT), return msgspec JSON, 404 unknown stem, serve precomputed data
 - **Pass criteria**: Backend tests + OpenAPI paths; CORS covered by existing H0c patterns
 - **Source**: EV-054 AC4/AC7; [Corpus: api]; `D-S063-gateA=2`
+
+### EV-055 / S064 — Quality metrics normalize + 2025-2 validate (#982 / #980 / #979)
+
+- **Mode**: delta deepen F7.q + F2/F13
+- **Pass criteria**: AC1–AC7 in evolve-decisions §EV-055; TC-EV055-001..007; **UJ-056** deepen
+- **Source**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982),
+  [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980),
+  [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979); parent #836 / EV-054
+
+### TC-EV055-001: Formatting-only diffs no longer dominate
+
+- **Level**: T0 / T2
+- **Objective**: For a representative stem whose official vs converted XML differ mainly in
+  pretty-print/whitespace, unified line diff on **C14N** peers is empty or semantic-only
+- **Pass criteria**: Fixture/unit assertion on C14N + diff; Vitest or generator test
+- **Source**: EV-055 AC1; #982; UJ-056; `D-S064-c14n=1`
+
+### TC-EV055-002: match_status uses C14N equality
+
+- **Level**: T0 / H0i
+- **Objective**: `match_status` on list/detail quality-metrics payloads equals when
+  post–volatile-strip **C14N** official and converted XML are equal (even if raw bytes
+  differ in formatting or `gml:id` / UUID attrs — `D-S064-c14n-volatile=1` / ADR-035)
+- **Pass criteria**: Backend/generator tests; OpenAPI/docs state C14N + volatile-strip
+  semantics
+- **Source**: EV-055 AC2; [Corpus: api]; [Corpus: adr/ADR-035]; `D-S064-normalize=1`;
+  `D-S064-c14n=1`; `D-S064-c14n-volatile=1`
+
+### TC-EV055-003: C14N helper + golden stem (shared generator + FE)
+
+- **Level**: T0
+- **Objective**: Shared C14N helper covered by unit tests; ≥1 golden stem; vendor trees
+  not rewritten in place; used by metrics generator and FE diff
+- **Pass criteria**: Unit tests green; vendor/schemas read-only
+- **Source**: EV-055 AC3; #982; `D-S064-gateA-M1=1`
+
+### TC-EV055-004: SCHEMATRON enabled for 2025-2 (hard)
+
+- **Level**: T0 / T2
+- **Objective**: 2025-2 Schematron with xslt2 binding is **evaluated** (prefer native);
+  `SCHEMATRON_SKIPPED` is not an acceptable close for this cycle
+- **Pass criteria**: Engine tests assert evaluation path; matrix documented
+- **Source**: EV-055 AC4; #980; `D-S064-sch-hard=1`; F2/F13
+
+### TC-EV055-005: SCHEMA_IMPORT_WARNING fixed for 2025-2 (hard)
+
+- **Level**: T0 / T2
+- **Objective**: Root cause (file + import URI) fixed; strict XSD path no longer skipped for
+  the resolved case
+- **Pass criteria**: Regression test green; warning absent on representative stems
+- **Source**: EV-055 AC5; #979; `D-S064-xsd-hard=1`; F2
+
+### TC-EV055-006: corpus_metrics regen for C14N match
+
+- **Level**: T0 / CI
+- **Objective**: Regenerated `corpus_metrics.json` reflects C14N `match_status` counts after
+  `make generate-quality-metrics`
+- **Pass criteria**: Generator CI/job green; summary counts consistent with AC2
+- **Source**: EV-055 AC7; `D-S064-regen=1`
+
+### TC-EV055-007: UJ-056 smoke — C14N panes + validate chips
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Quality metrics detail defaults to normalized XML panes with override to
+  un-normalized; quieter C14N diff; validate chips match enabled/fixed disposition
+- **Pass criteria**: Local Playwright/Vitest green; H4–H5 after staging deploy (12/13)
+- **Source**: EV-055 AC1 / AC6 / AC7; UJ-056; `D-S064-gateA-M2=override`
 
 ### Live harness — staging (EV-043 / EV-044)
 

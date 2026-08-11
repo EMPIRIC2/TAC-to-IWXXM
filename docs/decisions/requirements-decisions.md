@@ -1,6 +1,29 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-10 (S063 / EV-054)
+> Stage: 01-requirements | Last updated: 2026-08-11 (S064 / EV-055)
+
+## EV-055 / S064 — Quality metrics normalize + 2025-2 validate (#982 / #980 / #979) (`D-S064-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-055 / Fn | Deepen F7.q + F2/F13 | F4 only if messaging; no new top-level Fn (`D-S064-engine=1`) | confirmed |
+| EV-055 / normalize | Both sides; match_status = normalized equality | `D-S064-normalize=1` | confirmed |
+| EV-055 / regen | Regenerate corpus_metrics | Stored match semantics match AC2 (`D-S064-regen=1`) | confirmed |
+| EV-055 / Schematron | **Hard enable** for 2025-2 | Overrides soft prefer (`D-S064-sch-hard=1`) | confirmed |
+| EV-055 / XSD import | **Hard fix** for 2025-2 | Overrides optional (`D-S064-xsd-hard=1`) | confirmed |
+| EV-055 / algorithm | **W3C C14N** always | `D-S064-c14n=1` | confirmed |
+| EV-055 / volatile | **C14N after volatile-attr strip** | `D-S064-c14n-volatile=1` / ADR-035 | confirmed |
+| EV-055 / panes | Normalized default + override to raw | `D-S064-gateA-M2=override` | confirmed |
+| EV-055 / helper | Shared generator + FE | `D-S064-gateA-M1=1` | confirmed |
+| EV-055 / Gate A | **PASS** | `D-S064-gateA=1` → 04 | confirmed |
+| EV-055 / journey | Deepen **UJ-056** only | No UJ-057 (`D-S064-uj=1`) | confirmed |
+| EV-055 / AC | AC1–AC7 (amended Gate A) | See evolve-decisions §EV-055 | confirmed |
+| EV-055 / docs | Delta manifest | feature-list + journeys + test-plan + api-contract + decisions | confirmed |
+| EV-055 / UI preview | Declined | Docs/repo only (`D-S064-ui-preview=2`); re-offer at 11 | confirmed |
+| EV-055 / route | Standard | PR → stage; skip 03/06 | confirmed |
+
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: api]
+[Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-055]
 
 ## EV-054 / S063 — Quality metrics tab (#836 / F7.q) (`D-S063-01-ac=1`)
 
