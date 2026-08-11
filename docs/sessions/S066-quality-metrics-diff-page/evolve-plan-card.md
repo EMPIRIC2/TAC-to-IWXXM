@@ -25,7 +25,7 @@ Dedicated Quality metrics detail route with GitHub-style collapsible unified XML
 
 ## Next child stage
 
-**Implement FE** (Lean) — `collapseEqualContext` + `/quality/:stem`; then **10-e2e**
+**13-deploy-smoke** — after merge of PR #989 → `stage` + Staging smoke green (`D-S066-pr=1`)
 
 ## Locked intake (Phase 0)
 
@@ -36,7 +36,9 @@ Dedicated Quality metrics detail route with GitHub-style collapsible unified XML
 | D-S066-list | **1** — navigate to detail; list via back |
 | D-S066-01-ac | **1** — AC1–AC5 approved |
 | D-S066-gateA | **1** — Gate A PASS |
+| D-S066-pr | **1** — Push + PR → stage → CI → 13 |
 
 ## Risks / open decisions
 
-- Staging CD for #987 may still be landing — evolve bases on merged stage tip `340b3cf6`
+- PR #989 CI green @ `c87f67b8` — awaiting merge approval for stage + 13-deploy-smoke
+- Plain-language UI copy pass landed (no operator-visible planning ids; EV-048)
