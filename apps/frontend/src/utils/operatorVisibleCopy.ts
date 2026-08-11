@@ -9,15 +9,25 @@ import { EXAMPLES } from '@/fixtures/examples/examplesCatalog';
 import { SHELL_NAV_LABELS } from '@/app/components/AppShellNav';
 import {
   QUALITY_METRICS_DIFF_EMPTY_LABEL,
+  QUALITY_METRICS_DIFF_EXPAND_ALL,
+  QUALITY_METRICS_DIFF_COLLAPSE_ALL,
+  QUALITY_METRICS_DIFF_HEADING,
   QUALITY_METRICS_EMPTY_DIAGNOSTICS,
+  QUALITY_METRICS_LINT_HELP,
+  QUALITY_METRICS_RESIDUALS_HELP,
+  QUALITY_METRICS_VALIDATE_HELP,
   QUALITY_METRICS_XML_VIEW_HELP,
   QUALITY_METRICS_XML_VIEW_NORMALIZED,
   QUALITY_METRICS_XML_VIEW_RAW,
 } from '@/app/components/QualityMetricsDetail';
 import {
   QUALITY_METRICS_DEFERRED_LABEL,
+  QUALITY_METRICS_DETAIL_LOAD_FAILED,
+  QUALITY_METRICS_DETAIL_LOADING,
+  QUALITY_METRICS_EMPTY_LIST,
+  QUALITY_METRICS_PAGE_SUBTITLE,
   QUALITY_METRICS_PAGE_TITLE,
-} from '@/app/components/QualityMetricsPage';
+} from '@/utils/qualityMetricsCopy';
 import {
   SOFT_PREVIEW_HELP,
   SOFT_PREVIEW_LABEL,
@@ -53,12 +63,34 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'shell.nav.history', text: SHELL_NAV_LABELS.history },
     { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
     { id: 'quality-metrics.title', text: QUALITY_METRICS_PAGE_TITLE },
+    { id: 'quality-metrics.subtitle', text: QUALITY_METRICS_PAGE_SUBTITLE },
     { id: 'quality-metrics.deferred-label', text: QUALITY_METRICS_DEFERRED_LABEL },
+    { id: 'quality-metrics.empty-list', text: QUALITY_METRICS_EMPTY_LIST },
+    {
+      id: 'quality-metrics.detail-load-failed',
+      text: QUALITY_METRICS_DETAIL_LOAD_FAILED,
+    },
+    {
+      id: 'quality-metrics.detail-loading',
+      text: QUALITY_METRICS_DETAIL_LOADING,
+    },
     { id: 'quality-metrics.diff-empty', text: QUALITY_METRICS_DIFF_EMPTY_LABEL },
+    { id: 'quality-metrics.diff-heading', text: QUALITY_METRICS_DIFF_HEADING },
+    {
+      id: 'quality-metrics.diff-expand-all',
+      text: QUALITY_METRICS_DIFF_EXPAND_ALL,
+    },
+    {
+      id: 'quality-metrics.diff-collapse-all',
+      text: QUALITY_METRICS_DIFF_COLLAPSE_ALL,
+    },
     {
       id: 'quality-metrics.empty-diagnostics',
       text: QUALITY_METRICS_EMPTY_DIAGNOSTICS,
     },
+    { id: 'quality-metrics.residuals-help', text: QUALITY_METRICS_RESIDUALS_HELP },
+    { id: 'quality-metrics.lint-help', text: QUALITY_METRICS_LINT_HELP },
+    { id: 'quality-metrics.validate-help', text: QUALITY_METRICS_VALIDATE_HELP },
     {
       id: 'quality-metrics.xml-view-normalized',
       text: QUALITY_METRICS_XML_VIEW_NORMALIZED,

@@ -1,11 +1,17 @@
 /**
  * Per-stem Quality metrics detail — TAC/XML panes, diagnostics, unified diff.
  *
- * F7.q / EV-054 M4 + EV-055 M4 (AC1/AC6 — C14N panes + validate chips).
+ * F7.q / EV-054 M4 + EV-055 M4 (AC1/AC6 — C14N panes + validate chips) +
+ * EV-056 collapsible equal-context hunks (`D-S066-context-n=1`).
  */
 
 import { useMemo, useState } from 'react';
 import type { QualityMetricsDetailResponse } from '@/utils/openapiTypes';
+import {
+  collapseEqualContext,
+  DEFAULT_DIFF_CONTEXT,
+  type CollapsedDiffSegment,
+} from '@/utils/collapseEqualContext';
 import { qualityMetricsDisplayXml } from '@/utils/qualityMetricsDisplayXml';
 import {
   isUnifiedDiffEmpty,
@@ -13,6 +19,10 @@ import {
   type UnifiedDiffLine,
 } from '@/utils/unifiedLineDiff';
 import { validateDispositionChips } from '@/utils/validateDispositionChips';
+import {
+  formatMatchStatusLabel,
+  QUALITY_METRICS_DEFERRED_LABEL,
+} from '@/utils/qualityMetricsCopy';
 import { Card } from './ui/card';
 
 export const QUALITY_METRICS_DIFF_EMPTY_LABEL = 'No XML differences';
@@ -20,13 +30,25 @@ export const QUALITY_METRICS_EMPTY_DIAGNOSTICS = 'None';
 export const QUALITY_METRICS_XML_VIEW_NORMALIZED = 'Normalized XML';
 export const QUALITY_METRICS_XML_VIEW_RAW = 'Raw XML';
 export const QUALITY_METRICS_XML_VIEW_HELP =
-  'Official and converted panes default to normalized, pretty-printed XML. Turn on raw to inspect original formatting. The unified diff always compares normalized forms.';
+  'Official and converted panes default to normalized, pretty-printed XML so formatting noise is hidden. Turn on Raw XML to inspect original whitespace. The line-by-line diff below always compares the normalized forms.';
+export const QUALITY_METRICS_DIFF_EXPAND_ALL = 'Show all unchanged lines';
+export const QUALITY_METRICS_DIFF_COLLAPSE_ALL = 'Hide distant unchanged lines';
+export const QUALITY_METRICS_BACK_TO_LIST = 'Back to list';
+export const QUALITY_METRICS_DIFF_HEADING = 'Line-by-line XML differences';
+export const QUALITY_METRICS_RESIDUALS_HELP =
+  'TAC tokens left over after conversion (should usually be empty).';
+export const QUALITY_METRICS_LINT_HELP =
+  'TAC business-rule findings from the lint engine.';
+export const QUALITY_METRICS_VALIDATE_HELP =
+  'IWXXM schema and Schematron findings from the validate engine.';
 
 interface QualityMetricsDetailProps {
   /** Detail payload from GET /quality-metrics/{stem}. */
   detail: QualityMetricsDetailResponse;
   /** Clear selection / return to list focus. */
   onClose?: () => void;
+  /** Label for the close / back control (default Close detail). */
+  closeLabel?: string;
 }
 
 /**
@@ -34,9 +56,18 @@ interface QualityMetricsDetailProps {
  *
  * @param props.detail - Stem detail response
  * @param props.onClose - Optional close handler
+ * @param props.closeLabel - Optional close button label
  */
-export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailProps) {
+export function QualityMetricsDetail({
+  detail,
+  onClose,
+  closeLabel = 'Close detail',
+}: QualityMetricsDetailProps) {
   const [showRawXml, setShowRawXml] = useState(false);
+  const [expandAll, setExpandAll] = useState(false);
+  const [expandedCollapseKeys, setExpandedCollapseKeys] = useState<Set<string>>(
+    () => new Set(),
+  );
 
   const officialC14n = useMemo(
     () => qualityMetricsDisplayXml(detail.official_xml ?? ''),
@@ -56,10 +87,32 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
   );
   const diffEmpty = isUnifiedDiffEmpty(diffLines);
 
+  const collapsedSegments = useMemo(
+    () => collapseEqualContext(diffLines, { context: DEFAULT_DIFF_CONTEXT }),
+    [diffLines],
+  );
+
   const dispositionChips = useMemo(
     () => validateDispositionChips(detail.validate_issues ?? []),
     [detail.validate_issues],
   );
+
+  const hasCollapseSegments = collapsedSegments.some((s) => s.type === 'collapse');
+
+  const collapseKey = (segment: CollapsedDiffSegment): string =>
+    `c-${segment.startIndex}-${segment.lines.length}`;
+
+  const toggleCollapse = (key: string) => {
+    setExpandedCollapseKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
 
   return (
     <section
@@ -73,11 +126,13 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
             {detail.stem}
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {detail.product.toUpperCase()} · {detail.tier} · match{' '}
+            {detail.product.toUpperCase()} · {detail.tier} ·{' '}
             <span data-testid="quality-metrics-match-status">
-              {detail.match_status}
+              {formatMatchStatusLabel(detail.match_status)}
             </span>
-            {detail.deferred ? ' · deferred' : ''}
+            {detail.deferred && detail.match_status !== 'deferred'
+              ? ` · ${QUALITY_METRICS_DEFERRED_LABEL}`
+              : ''}
           </p>
           {detail.deferral_reason ? (
             <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
@@ -87,7 +142,7 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
           <div
             className="mt-2 flex flex-wrap gap-2"
             data-testid="quality-metrics-validate-chips"
-            aria-label="Validate disposition"
+            aria-label="Validation status"
           >
             {dispositionChips.map((chip) => (
               <span
@@ -112,7 +167,7 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
             data-testid="quality-metrics-detail-close"
             onClick={onClose}
           >
-            Close detail
+            {closeLabel}
           </button>
         ) : null}
       </div>
@@ -165,9 +220,28 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
       </div>
 
       <Card className="p-4" data-testid="quality-metrics-unified-diff">
-        <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
-          Unified XML diff
-        </h3>
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {QUALITY_METRICS_DIFF_HEADING}
+          </h3>
+          {!diffEmpty && hasCollapseSegments ? (
+            <button
+              type="button"
+              className="rounded-md border border-gray-300 px-2 py-1 text-xs dark:border-gray-600"
+              data-testid="quality-metrics-diff-expand-all"
+              onClick={() => {
+                setExpandAll((prev) => !prev);
+                if (expandAll) {
+                  setExpandedCollapseKeys(new Set());
+                }
+              }}
+            >
+              {expandAll
+                ? QUALITY_METRICS_DIFF_COLLAPSE_ALL
+                : QUALITY_METRICS_DIFF_EXPAND_ALL}
+            </button>
+          ) : null}
+        </div>
         {diffEmpty ? (
           <p
             className="text-sm text-gray-500 dark:text-gray-400"
@@ -180,9 +254,34 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
             className="max-h-96 overflow-auto rounded border border-gray-200 bg-gray-950 p-3 font-mono text-xs text-gray-100 dark:border-gray-700"
             data-testid="quality-metrics-diff-body"
           >
-            {diffLines.map((line, index) => (
-              <DiffLineRow key={`${line.op}-${index}`} line={line} />
-            ))}
+            {collapsedSegments.map((segment) => {
+              if (segment.type === 'lines') {
+                return segment.lines.map((line, index) => (
+                  <DiffLineRow key={`l-${segment.startIndex}-${index}`} line={line} />
+                ));
+              }
+              const key = collapseKey(segment);
+              const expanded = expandAll || expandedCollapseKeys.has(key);
+              if (expanded) {
+                return segment.lines.map((line, index) => (
+                  <DiffLineRow key={`${key}-${index}`} line={line} />
+                ));
+              }
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className="block w-full bg-gray-900 py-1 text-left text-blue-300 hover:bg-gray-800"
+                  data-testid="quality-metrics-diff-expand-hunk"
+                  data-hidden-count={segment.lines.length}
+                  onClick={() => toggleCollapse(key)}
+                >
+                  {`Expand ${segment.lines.length} unchanged line${
+                    segment.lines.length === 1 ? '' : 's'
+                  }`}
+                </button>
+              );
+            })}
           </pre>
         )}
       </Card>
@@ -190,16 +289,19 @@ export function QualityMetricsDetail({ detail, onClose }: QualityMetricsDetailPr
       <div className="grid gap-4 md:grid-cols-3">
         <DiagnosticsPane
           title="Residuals"
+          help={QUALITY_METRICS_RESIDUALS_HELP}
           testId="quality-metrics-pane-residuals"
           items={detail.residuals}
         />
         <DiagnosticsPane
           title="Lint issues"
+          help={QUALITY_METRICS_LINT_HELP}
           testId="quality-metrics-pane-lint"
           items={detail.lint_issues}
         />
         <DiagnosticsPane
-          title="Validate issues"
+          title="Validation issues"
+          help={QUALITY_METRICS_VALIDATE_HELP}
           testId="quality-metrics-pane-validate"
           items={detail.validate_issues}
         />
@@ -238,18 +340,21 @@ function TextPane({
 
 function DiagnosticsPane({
   title,
+  help,
   testId,
   items,
 }: {
   title: string;
+  help: string;
   testId: string;
   items: Record<string, unknown>[];
 }) {
   return (
     <Card className="p-3" data-testid={testId}>
-      <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
+      <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">
         {title}
       </h3>
+      <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">{help}</p>
       {items.length === 0 ? (
         <p
           className="text-sm text-gray-500 dark:text-gray-400"
@@ -290,9 +395,22 @@ function DiffLineRow({ line }: { line: UnifiedDiffLine }) {
 }
 
 function formatDiagnostic(item: Record<string, unknown>): string {
-  if (typeof item.message === 'string' && item.message.trim()) {
-    const code = typeof item.code === 'string' ? `${item.code}: ` : '';
-    return `${code}${item.message}`;
+  const message =
+    typeof item.message === 'string' && item.message.trim()
+      ? item.message.trim()
+      : typeof item.detail === 'string' && item.detail.trim()
+        ? item.detail.trim()
+        : '';
+  const code =
+    typeof item.code === 'string' && item.code.trim() ? item.code.trim() : '';
+  if (message && code) {
+    return `${code}: ${message}`;
+  }
+  if (message) {
+    return message;
+  }
+  if (code) {
+    return code;
   }
   try {
     return JSON.stringify(item);

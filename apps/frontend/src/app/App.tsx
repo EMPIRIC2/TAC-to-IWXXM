@@ -20,6 +20,11 @@ import {
   listLocalWorkSessions,
   migrateGuestSessionStorageToIndexedDb,
 } from '@/utils/localWorkSessionStore';
+import {
+  parseQualityMetricsPath,
+  QUALITY_METRICS_LIST_PATH,
+  qualityMetricsDetailPath,
+} from '@/utils/qualityMetricsPath';
 import { listWorkSessions } from '@/utils/workSessionApi';
 
 /**
@@ -57,7 +62,13 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
  */
 function App() {
   const initiallyLoggedIn = isLoggedIn();
-  const [currentView, setCurrentView] = useState<AppView>('converter');
+  const initialQuality = parseQualityMetricsPath(window.location.pathname);
+  const [currentView, setCurrentView] = useState<AppView>(() =>
+    initialQuality ? 'quality' : 'converter',
+  );
+  const [qualityStem, setQualityStem] = useState<string | null>(() =>
+    initialQuality?.kind === 'detail' ? initialQuality.stem : null,
+  );
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initiallyLoggedIn);
   const [accessToken, setAccessToken] = useState(() =>
@@ -69,6 +80,22 @@ function App() {
 
   useEffect(() => {
     validateApiEnv();
+  }, []);
+
+  useEffect(() => {
+    const onPopState = () => {
+      const parsed = parseQualityMetricsPath(window.location.pathname);
+      if (parsed) {
+        setCurrentView('quality');
+        setQualityStem(parsed.kind === 'detail' ? parsed.stem : null);
+        return;
+      }
+      if (window.location.pathname.includes('/auth/callback')) {
+        setCurrentView('callback');
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   const initializeWorkSessions = useCallback(async (token?: string | null) => {
@@ -211,6 +238,36 @@ function App() {
 
   const handleShellNavigate = (view: ShellPrimaryView) => {
     setCurrentView(view);
+    if (view === 'quality') {
+      setQualityStem(null);
+      if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
+        window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
+      }
+      return;
+    }
+    if (
+      window.location.pathname === QUALITY_METRICS_LIST_PATH ||
+      window.location.pathname.startsWith(`${QUALITY_METRICS_LIST_PATH}/`)
+    ) {
+      window.history.pushState({}, '', '/');
+    }
+  };
+
+  const handleOpenQualityDetail = (stem: string) => {
+    setCurrentView('quality');
+    setQualityStem(stem);
+    const path = qualityMetricsDetailPath(stem);
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+    }
+  };
+
+  const handleBackToQualityList = () => {
+    setCurrentView('quality');
+    setQualityStem(null);
+    if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
+      window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
+    }
   };
 
   const handleRequestLogin = () => {
@@ -299,7 +356,13 @@ function App() {
         />
       )}
 
-      {currentView === 'quality' && <QualityMetricsPage />}
+      {currentView === 'quality' && (
+        <QualityMetricsPage
+          routeStem={qualityStem}
+          onOpenDetailRoute={handleOpenQualityDetail}
+          onBackToList={handleBackToQualityList}
+        />
+      )}
 
       {currentView === 'callback' && (
         <AuthCallback

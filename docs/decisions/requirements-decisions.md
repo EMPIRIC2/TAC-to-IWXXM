@@ -1,6 +1,23 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-11 (S064 / EV-055)
+> Stage: 01-requirements | Last updated: 2026-08-11 (S066 / EV-056)
+
+## EV-056 / S066 — Quality metrics detail page + collapsible diffs (#988) (`D-S066-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-056 / Fn | Deepen **F7.q** only | No new top-level Fn; no F2/F13 this cycle | confirmed |
+| EV-056 / journey | Deepen **UJ-056** only | No UJ-057 (`D-S066-uj=1`) | confirmed |
+| EV-056 / route | `/quality/:stem` + back-to-list | `D-S066-route-shape=1` / `D-S066-list=1` | confirmed |
+| EV-056 / context | Default **3** lines | Expand hunk / expand all (`D-S066-context-n=1`) | confirmed |
+| EV-056 / C14N | Unchanged | No `match_status` / fixture regen | confirmed |
+| EV-056 / deps | Reuse LCS helpers | No new npm diff lib unless AskQuestion | confirmed |
+| EV-056 / AC | AC1–AC5 | See feature-list §F7.q EV-056 (`D-S066-01-ac=1`) | confirmed |
+| EV-056 / docs | Delta manifest | feature-list + journeys + test-plan + decisions; skip api/config/spec | confirmed |
+| EV-056 / UI preview | Accepted | Non-deployed http://127.0.0.1:18000/ (`D-S066-ui-preview=1`) | confirmed |
+| EV-056 / route preset | Lean | PR → stage; `00→16→01→02→10→13` | confirmed |
+
+[Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests] [Corpus: decisions §EV-056]
 
 ## EV-055 / S064 — Quality metrics normalize + 2025-2 validate (#982 / #980 / #979) (`D-S064-01-ac=1`)
 

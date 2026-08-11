@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-11 (S064 / EV-055 — #982/#980/#979 Quality metrics + 2025-2 validate; prior EV-054)
+> **Last updated**: 2026-08-11 (S066 / EV-056 — #988 Quality metrics detail page + collapsible diffs; prior EV-055)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063 / EV-054 **F7.q** (#836); **deepen** S064 / EV-055 F7.q whitespace-normalize + validate disposition (#982/#980/#979) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063 / EV-054 **F7.q** (#836); **deepen** S064 / EV-055 F7.q whitespace-normalize + validate disposition (#982/#980/#979); **deepen** S066 / EV-056 F7.q detail page + collapsible diffs (#988) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -309,7 +309,7 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
-  | F7.q | #836 / #982 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055) |
+  | F7.q | #836 / #982 / #988 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056) |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -422,6 +422,20 @@
   6. Quality metrics: validate chips reflect fixed/enabled disposition; detail XML panes
      default to normalized with override to un-normalized; no internal planning ids.
   7. `corpus_metrics` regenerated for new match semantics; UJ-056 deepen / TC-EV055 smoke.
+- **S066 / EV-056 deepen (F7.q / #988 — detail page + collapsible diffs)**: After S065
+  pretty-print hotfix (#987), replace inline Quality metrics detail+diff with a **dedicated
+  shareable route** `/quality/:stem` (`D-S066-route-shape=1`) and **GitHub-style** unified
+  diff hunk folding (default **3** context lines; expand hunk / expand all —
+  `D-S066-context-n=1`). List navigates to detail; back returns to list (`D-S066-list=1`).
+  Keep **C14N equality** / `match_status` unchanged; no API contract change unless shell
+  routing needs it; reuse `unifiedLineDiff` + pretty C14N helpers (no new npm diff lib
+  unless AskQuestion). Does **not** flip F7 → Implemented.
+- **Acceptance (EV-056 / #988 — F7.q)** — **approved** (`D-S066-01-ac=1`):
+  1. List row opens dedicated detail route `/quality/:stem` (shareable URL) with back-to-list.
+  2. Official/Converted/TAC panes remain; normalized panes = pretty C14N (S065 helpers).
+  3. Diff shows collapsible equal-context hunks (default 3 lines; expand N / expand all).
+  4. Unequal SIGMET stems remain navigable and readable on staging.
+  5. UJ-056 / TC-EV056 updated; FE unit + Playwright smoke (H4–H5 via 13).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

@@ -3,23 +3,156 @@ project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 65
-evolve_cycle_counter: 55
+session_counter: 66
+evolve_cycle_counter: 56
 active_session:
-  id: S065-quality-metrics-diff-long-line
+  id: S066-quality-metrics-diff-page
+  type: feature
+  intent: "EV-056: F7.q deepen — dedicated Quality metrics detail page + GitHub-style collapsible unified XML diffs (expand/collapse unchanged context). Keep C14N equality; no API change unless routing needs it. Base stage. Cite UJ-056 / F7.q. Follow-up from S065 / #988."
+  status: in_progress
+  started: '2026-08-11'
+  started_at: '2026-08-11'
+  branch: evolve/EV-056-quality-metrics-diff-page
+  branch_base: stage@340b3cf6
+  branch_base_sha: 340b3cf6
+  branch_base_sha_full: 340b3cf66388b18da4381955f3721c3f04b1ea7d
+  branch_status: ACTIVE
+  branch_exists: true
+  branch_pushed: false
+  branch_note: "local evolve/EV-056-quality-metrics-diff-page @ stage@340b3cf6 (not pushed yet)"
+  tip_sha: "f065d808"
+  tip_sha_full: f065d808b015612a876dc4a10687e33a5f192629
+  tip_sha_pushed: false
+  tip_sha_note: "session open commit; Lean approved; local UI preview"
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-056
+  artifacts_dir: docs/sessions/S066-quality-metrics-diff-page/
+  github_issues:
+  - 988
+  prior_session: S065-quality-metrics-diff-long-line
+  deepen_feature_ids:
+  - F7
+  feature_note: "F7.q Quality metrics dedicated detail page + collapsible diffs"
+  corpus_cites:
+  - '[Corpus: product §F7.q]'
+  - '[Corpus: tests §UJ-056]'
+  - '[Corpus: journeys §UJ-056]'
+  preset: Lean
+  auto_lean: false
+  auto_lean_rationale: "User requested Lean; UX route+tests deepen — not Auto-Lean skip"
+  goal: "Dedicated Quality metrics detail route with GitHub-style collapsible unified XML diffs; C14N semantics unchanged."
+  out_of_scope:
+  - match_status/C14N equality changes
+  - new npm diff library unless AskQuestion
+  - promote to main unless asked
+  - API contract change unless routing requires
+  ui_preview: accepted
+  ui_preview_url: http://127.0.0.1:18000/
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-11'
+    completed: '2026-08-11'
+    note: "COMPLETE — open_session S066; Lean preset; Phase 0 open; handoff routing + UI preview AskQuestion"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrate
+    status: in_progress
+    started: '2026-08-11'
+    note: "IN PROGRESS — D-S066-route=1 / ui-preview=1; Plan orchestrator Phase 0–1; next 01-requirements"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+  - stage: 03-plan-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — tooling plan not in path; implementation via 16-evolve child Agent stages"
+  - stage: 04-tech-plan
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — tech plan not in path; implementation via 16-evolve child Agent stages"
+  - stage: 05-verify-tech
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — verify-tech not in path"
+  - stage: 06-tech-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — tech tooling not in path"
+  - stage: 07-build
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — build stage not in path; implementation via 16-evolve child Agent stages"
+  - stage: 08-verify-build
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — verify-build not in path"
+  - stage: 09-qa
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — qa not in path"
+  - stage: 11-verify-impl
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — verify-impl not in path"
+  - stage: 12-verify-deploy
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — verify-deploy not in path"
+  current_stage: 16-evolve
+  current_stage_note: "16-evolve in_progress — Lean approved; local UI preview; next child 01-requirements"
+  decisions:
+    D-S065-close: "1 — recorded on archived S065; PR #987 MERGED → stage @ 340b3cf6; open S066/EV-056"
+    D-S066-route: "1 — Lean as drafted"
+    D-S066-ui-preview: "1 — non-deployed local http://127.0.0.1:18000/"
+    D-S066-board: "1 — #988 → In progress"
+  context_briefs: []
+  note: "IN PROGRESS — D-S066-route=1 / ui-preview=1 / board=1; Lean approved; local UI preview http://127.0.0.1:18000/; 16-evolve Phase 0–1; next 01-requirements; base stage@340b3cf6; branch evolve/EV-056-quality-metrics-diff-page (not pushed); #988; [Corpus: product §F7.q] [Corpus: tests §UJ-056] [Corpus: journeys §UJ-056]"
+
+sessions:
+
+
+- id: S065-quality-metrics-diff-long-line
   type: hotfix
   intent: "Fix Quality metrics unified XML diff rendering as one long C14N line; pretty-print for human-readable line diffs. Defer separate detail page + GitHub-style hunk collapse to a later evolve."
-  status: in_progress
+  status: completed
+  completed: '2026-08-11'
+  completed_at: '2026-08-11'
+  closed_at: '2026-08-11'
   started: '2026-08-11'
   started_at: '2026-08-11'
   branch: fix/quality-metrics-diff-long-line
   branch_base: stage@d80db688
   branch_base_sha: d80db688
   branch_base_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
-  branch_status: ACTIVE
+  branch_status: merged
   branch_exists: true
   branch_pushed: true
-  branch_note: "ACTIVE — created+pushed; tip da1e48f8; PR #987 open → stage; CI 31541069003 watching"
+  branch_note: "CLOSED — D-S065-close=1; PR #987 MERGED → stage @ 340b3cf6 (hotfix tip was da1e48f8); follow-up #988 → S066/EV-056"
   orchestrator: 14-hotfix
   evolve_cycle_id:
   artifacts_dir: docs/sessions/S065-quality-metrics-diff-long-line/
@@ -30,7 +163,7 @@ active_session:
   github_issues_note: "hotfix from staging UX report (no origin issue); follow-up evolve tracked as #988"
   followup_github_issue: 988
   followup_github_issue_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988
-  followup_github_issue_note: "evolve later — dedicated /quality/:stem page + GitHub-style hunk collapse (D-S065-scope=4 / D-S065-page=inline-for-now)"
+  followup_github_issue_note: "S066/EV-056 — dedicated /quality/:stem page + GitHub-style hunk collapse (D-S065-scope=4 / D-S065-page=inline-for-now)"
   remediation_path: local-first
   goal: "Pretty-print Quality metrics unified XML diff for human-readable line diffs (C14N currently one long line)."
   out_of_scope:
@@ -48,22 +181,28 @@ active_session:
   auto_lean: true
   auto_lean_rationale: "hotfix UX readability — Auto-Lean"
   prior_session: S064-quality-metrics-2025-2-followups
-  tip_sha: "da1e48f8"
-  tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+  tip_sha: "340b3cf6"
+  tip_sha_full: 340b3cf66388b18da4381955f3721c3f04b1ea7d
   tip_sha_pushed: true
-  tip_sha_note: "tip da1e48f8 pushed on fix/quality-metrics-diff-long-line; PR #987 open → stage; CI 31541069003 watching"
-  tip_ci_run: '31541069003'
-  tip_ci_status: watching
-  tip_ci_note: "CI run 31541069003 watching on PR #987 / fix/quality-metrics-diff-long-line"
+  tip_sha_note: "CLOSED D-S065-close=1 — PR #987 MERGED → stage @ 340b3cf6 (hotfix tip da1e48f8); Staging CI/CD 31541772688 queued/running (close without waiting green)"
+  tip_ci_run: '31541772688'
+  tip_ci_status: queued
+  tip_ci_note: "Staging CI/CD run 31541772688 queued/running on stage@340b3cf6; close without waiting green (D-S065-close=1)"
   pr_number: 987
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987
-  pr_status: open
+  pr_status: merged
   pr_base: stage
+  merge_sha: 340b3cf6
+  merge_sha_full: 340b3cf66388b18da4381955f3721c3f04b1ea7d
+  merge_at: '2026-08-11T22:17:31Z'
+  close_decision_id: D-S065-close
+  close_note: "D-S065-close=1 — PR #987 MERGED → stage @ 340b3cf6; follow-up #988 → S066/EV-056; Staging CI/CD 31541772688 not awaited"
   decisions:
     D-S065-scope: "4 — hotfix readability now; evolve later for page+hunks"
     D-S065-products: "all"
     D-S065-page: "inline-for-now"
     D-S065-pr: "1 — PR #987 opened → stage; follow-up #988; CI 31541069003 watching"
+    D-S065-close: "1 — close S065 after #987 MERGED → stage @ 340b3cf6; open S066/EV-056 for #988"
   routing_plan:
   - stage: 00-context
     required: true
@@ -75,21 +214,19 @@ active_session:
   - stage: 14-hotfix
     required: true
     mode: full
-    status: in_progress
+    status: completed
     started: '2026-08-11'
-    note: "IN PROGRESS — tip da1e48f8; PR #987 open → stage; follow-up #988; CI 31541069003 watching; awaiting CI + merge + user close"
+    completed: '2026-08-11'
+    note: "COMPLETE — D-S065-close=1; tip da1e48f8; PR #987 MERGED → stage @ 340b3cf6; follow-up #988 → S066/EV-056"
   - stage: 15-service-health
     required: false
     mode: when_deployed
-    status: pending
-    skip_rationale: "optional after deploy; not required at Lean hotfix open"
-  current_stage: 14-hotfix
-  current_stage_note: "14-hotfix in_progress — tip da1e48f8 pushed; PR #987 open → stage; follow-up #988; CI 31541069003 watching; awaiting CI + merge + user close"
+    status: skipped
+    skip_rationale: "optional after deploy; not required at D-S065-close=1; Staging CI/CD 31541772688 left running"
+  current_stage: completed
+  current_stage_note: "CLOSED — D-S065-close=1; PR #987 MERGED → stage @ 340b3cf6; follow-up #988 → S066/EV-056"
   context_briefs: []
-  note: "IN PROGRESS — Auto-Lean hotfix; tip da1e48f8; PR #987 open → stage; follow-up evolve #988; CI 31541069003 watching; D-S065-scope=4 / products=all / page=inline-for-now; session remains open; [Corpus: product §F7.q] [Corpus: tests §UJ-056]"
-
-sessions:
-
+  note: "CLOSED — D-S065-close=1; PR #987 MERGED → stage @ 340b3cf6 (hotfix tip da1e48f8); follow-up #988 → S066/EV-056; Staging CI/CD 31541772688 queued/running (not awaited); [Corpus: product §F7.q] [Corpus: tests §UJ-056]"
 
 - id: S064-quality-metrics-2025-2-followups
   type: feature
@@ -37812,6 +37949,68 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-056
+  title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
+  status: in_progress
+  cycle_type: feature
+  session_id: S066-quality-metrics-diff-page
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  feature_note: "F7.q Quality metrics dedicated detail page + collapsible diffs"
+  github_issues:
+  - 988
+  issues:
+  - 988
+  branch: evolve/EV-056-quality-metrics-diff-page
+  branch_base: stage@340b3cf6
+  branch_base_sha: 340b3cf6
+  branch_base_sha_full: 340b3cf66388b18da4381955f3721c3f04b1ea7d
+  branch_status: ACTIVE
+  branch_exists: true
+  branch_pushed: false
+  branch_note: "local evolve/EV-056-quality-metrics-diff-page @ stage@340b3cf6 (not pushed yet)"
+  tip_sha:
+  tip_sha_full:
+  tip_sha_pushed: false
+  current_stage: 16-evolve
+  current_stage_status: in_progress
+  current_stage_note: "16-evolve in_progress — Lean approved; local UI preview; next child 01-requirements"
+  started: "2026-08-11"
+  started_at: "2026-08-11"
+  preset: Lean
+  auto_lean: false
+  auto_lean_rationale: "User requested Lean; UX route+tests deepen — not Auto-Lean skip"
+  ui_preview_url: http://127.0.0.1:18000/
+  routing_plan:
+  - 00-context
+  - 16-evolve
+  - 01-requirements
+  - 02-verify-plan
+  - 10-e2e
+  - 13-deploy-smoke
+  skip_stages:
+  - 03-plan-tooling
+  - 04-tech-plan
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 07-build
+  - 08-verify-build
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  scope_summary: "Dedicated Quality metrics detail route + GitHub-style collapsible unified XML diffs; keep C14N equality; follow-up from S065 / #988; base stage@340b3cf6"
+  decisions_locked: false
+  decisions:
+    D-S065-close: "1 — prior session closed; #987@340b3cf6; open EV-056/S066"
+    D-S066-route: "1 — Lean as drafted"
+    D-S066-ui-preview: "1 — non-deployed local http://127.0.0.1:18000/"
+    D-S066-board: "1 — #988 → In progress"
+  artifacts:
+  - docs/sessions/S066-quality-metrics-diff-page/
+  prior_session: S065-quality-metrics-diff-long-line
+  prior_evolve_note: "Follow-up from S065 hotfix #987 (pretty-print); page+hunks deferred to EV-056 / #988"
+  note: "IN PROGRESS — D-S066-route=1 / ui-preview=1; Plan orchestrator Phase 0–1; next 01-requirements; [Corpus: product §F7.q] [Corpus: tests §UJ-056] [Corpus: journeys §UJ-056]"
 - id: EV-055
   title: "Quality metrics 2025-2 follow-ups (#982/#980/#979)"
   status: completed
@@ -51480,6 +51679,18 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "f065d808"
+    sha_full: f065d808b015612a876dc4a10687e33a5f192629
+    message: "docs: open S066/EV-056 Quality metrics detail page session"
+    branch: evolve/EV-056-quality-metrics-diff-page
+    stage: 00-context
+    session_id: S066-quality-metrics-diff-page
+    timestamp: "2026-08-11"
+    pushed: false
+    tip_sha: f065d808
+    tip_sha_full: f065d808b015612a876dc4a10687e33a5f192629
+    tip_sha_pushed: false
+    note: "session open commit; Lean approved; local UI preview"
   - sha: "da1e48f8"
     sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
     message: "[BUG-2026-08-11] fix: pretty-print Quality metrics C14N diffs"

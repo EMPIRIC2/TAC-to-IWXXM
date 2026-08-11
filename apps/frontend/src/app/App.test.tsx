@@ -126,8 +126,6 @@ vi.mock('./components/MyMetarsPage', () => ({
 
 vi.mock('./components/QualityMetricsPage', () => ({
   QualityMetricsPage: () => <div data-testid="quality-metrics-page" />,
-  QUALITY_METRICS_PAGE_TITLE: 'Quality metrics',
-  QUALITY_METRICS_DEFERRED_LABEL: 'Deferred gap',
 }));
 
 vi.mock('./components/ThemeProvider', () => ({

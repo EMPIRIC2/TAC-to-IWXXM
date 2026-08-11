@@ -25,7 +25,9 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S064-quality-metrics-2025-2-followups](S064-quality-metrics-2025-2-followups/session-brief.md) | feature | in_progress | #982/#980/#979 Quality metrics normalize + 2025-2 validate; EV-055 Standard | evolve/EV-055-quality-metrics-2025-2-followups | 2026-08-11 | — |
+| [S066-quality-metrics-diff-page](S066-quality-metrics-diff-page/session-brief.md) | feature | in_progress | #988 F7.q detail page + GitHub-style collapsible diffs; EV-056 Lean | evolve/EV-056-quality-metrics-diff-page | 2026-08-11 | — |
+| [S065-quality-metrics-diff-long-line](S065-quality-metrics-diff-long-line/session-brief.md) | hotfix | completed | Pretty-print Quality metrics C14N diffs; PR #987 → stage | fix/quality-metrics-diff-long-line | 2026-08-11 | 2026-08-11 |
+| [S064-quality-metrics-2025-2-followups](S064-quality-metrics-2025-2-followups/session-brief.md) | feature | completed | #982/#980/#979 Quality metrics normalize + 2025-2 validate; EV-055 Standard | evolve/EV-055-quality-metrics-2025-2-followups | 2026-08-11 | 2026-08-11 |
 | [S059-codes-wmo-validated](S059-codes-wmo-validated/session-brief.md) | feature | in_progress | #959 codes.wmo.int Validated harvest + tac-validate; EV-050 Standard | evolve/EV-050-codes-wmo-validated | 2026-08-09 | — |
 | [S058-ams-2027-abstract](S058-ams-2027-abstract/session-brief.md) | feature | parked | #958 AMS 2027 abstract (handwritten); EV-049 Lean — parked `D-S058-park=1a` | evolve/EV-049-ams-2027-abstract | 2026-08-09 | parked 2026-08-09 |
 | [S057-strip-internal-doc-refs](S057-strip-internal-doc-refs/session-brief.md) | feature | completed | #951 strip internal doc refs from UI/API; EV-048; PR #963 → stage | evolve/EV-048-strip-internal-doc-refs | 2026-08-08 | 2026-08-09 |
