@@ -14,9 +14,9 @@
 | 05-verify-tech | yes | delta | **completed** | Gate B PASS `D-S064-05=1` (`D-S064-c14n-host=1`) |
 | 06-tech-tooling | no | — | skipped | No new deps (`D-S064-c14n-host=1` keeps lxml on iwxxm-validate) |
 | 07-build | yes | delta | **completed** | M1–M5; tip push for CI; board stays In progress until PR |
-| 08-verify-build | yes | delta | **in_progress** | Gate C — local checks |
-| 09-qa | yes | delta | pending | |
-| 10-e2e | yes | delta | pending | Quality metrics UJ smoke (extend UJ-056 or child) |
+| 08-verify-build | yes | delta | **completed** | Gate C PASS `D-S064-gateC=1` @ `af7b61dc` |
+| 09-qa | yes | delta | **completed** | `qa-report.md` PASS @ `af7b61dc` |
+| 10-e2e | yes | delta | **completed** | `e2e-report.md` UJ-056 2/2 PASS |
 | 11-verify-impl | yes | delta | pending | Per-AC; UI preview AskQuestion |
 | 12-verify-deploy | yes | delta | pending | PR → **stage** |
 | 13-deploy-smoke | yes | delta | pending | Staging smoke; promote only if asked |
@@ -59,3 +59,4 @@
 | D-S064-01-ac | **1** — AC1–AC7 |
 | D-S064-regen | **1** — Regenerate corpus_metrics |
 | D-S064-gateA | **1** — PASS; C14N; #979/#980 hard; pane override; → 04 |
+| D-S064-gateC | **1** — PASS; push tip + continue 09-qa (recommended) |

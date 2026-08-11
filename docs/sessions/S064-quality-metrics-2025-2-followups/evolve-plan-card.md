@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**08-verify-build in progress** — local Gate C; then draft/open PR → `stage` for tip CI; next **09-qa** after Gate C PASS
+**11-verify-impl next** — 09+10 PASS (`qa-report.md`, `e2e-report.md`); tip `af7b61dc` pushed; then 12/13
 
 ## Risks / open decisions
 
