@@ -1,6 +1,7 @@
 # Evolve Plan Card
 
-> Cycle: EV-055 | Session: S064-quality-metrics-2025-2-followups | Updated: 2026-08-11
+> Cycle: EV-055 | Session: S064-quality-metrics-2025-2-followups | Updated: 2026-08-11  
+> **Status: CLOSED** (`D-S064-close=1`)
 
 ## Goal
 
@@ -21,17 +22,14 @@ normalized XML with override to raw.
 ## Preset + routing
 
 - Preset: **Standard**
-- Stages (ordered): `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`
+- Stages (ordered): `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13` — **all completed**
 - Skip: `03`, `06`
 
 ## Next child stage
 
-**13-deploy-smoke READY for sign-off** — #985 merged; Staging Deploy+smoke [31534191417](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31534191417); H1–H5 PASS; await `D-S064-13`
+**None** — cycle closed on stage (`D-S064-13=1`). Promote only if asked later.
 
 ## Risks / open decisions
 
-- Native Schematron xslt2 support may be hard — cycle blocks/re-scopes if enable impossible (`D-S064-sch-hard=1`)
-- XSD import fix may need catalog/packaging changes (`D-S064-xsd-hard=1`)
-- Board WIP 3 > policy ≤2 (explicit override) — move to **On stage** after Staging smoke green
-- C14N regen may churn large `corpus_metrics` fixtures — mitigated by volatile-attr strip before C14N (`D-S064-c14n-volatile=1`)
-- Live H4–H5 for UJ-056 in progress at 13
+- Promote `stage`→`main` deferred (explicit AskQuestion later)
+- Live UJ-056 Playwright optional deferred (local T0 PASS)

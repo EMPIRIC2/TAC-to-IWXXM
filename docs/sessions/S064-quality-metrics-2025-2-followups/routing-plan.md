@@ -1,12 +1,12 @@
 # Routing plan — S064 / EV-055
 
-**Status:** approved (`D-S064-route=1`) · **cycle OPEN**  
+**Status:** approved (`D-S064-route=1`) · **cycle CLOSED** (`D-S064-close=1`)  
 **Preset:** **Standard** — not Auto-Lean (FE metrics normalize + validate-engine spike/fix + H4–H5)
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | `D-S064-route=1` / Phase 0 intake locked |
-| 16-evolve | yes | orchestrate | **in_progress** | Phase 0–1 locked; 01 COMPLETE → **02-verify-plan** |
+| 16-evolve | yes | orchestrate | **completed** | Closed on stage |
 | 01-requirements | yes | delta | **completed** | `D-S064-01-ac=1`; AC1–AC7; TC-EV055; UJ-056 deepen |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S064-gateA=1` (C14N hard; #979/#980 hard; pane override) |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
@@ -19,7 +19,7 @@
 | 10-e2e | yes | delta | **completed** | `e2e-report.md` UJ-056 2/2 PASS |
 | 11-verify-impl | yes | delta | **completed** | PASS `D-S064-11=1`; `D-S064-ui-preview-11=1`; `D-S064-uj056=1` |
 | 12-verify-deploy | yes | delta | **completed** | `D-S064-12=1` — checklist APPROVED; merge #985 → stage |
-| 13-deploy-smoke | yes | delta | **in_progress** | Staging Deploy+smoke green; H1–H5 PASS; await `D-S064-13` |
+| 13-deploy-smoke | yes | delta | **completed** | `D-S064-13=1` — Staging Deploy+smoke+H1–H5 PASS |
 
 ## Recommended ordered stages
 
@@ -35,8 +35,8 @@
 
 ## Board
 
-- Project [#7](https://github.com/orgs/EMPIRIC2/projects/7) — #982 / #980 / #979 **On stage**
-- WIP advisory closed for In progress (moved after Staging smoke)
+- Project [#7](https://github.com/orgs/EMPIRIC2/projects/7) — #982 / #980 / #979 **Done**
+- Closed on stage (`D-S064-close=1`); promote deferred
 
 ## Locked intake
 
@@ -66,3 +66,5 @@
 | D-S064-11 | **1** — Approve F7.q + F2/F13; proceed toward 12 |
 | D-S064-12-start | **1** — continue → 12; open PR→stage |
 | D-S064-12 | **1** — Approve checklist + merge #985 → stage → 13 |
+| D-S064-13 | **1** — Approve 13; close on stage |
+| D-S064-close | **1** — EV-055 / S064 closed |

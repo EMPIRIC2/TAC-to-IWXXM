@@ -1,12 +1,13 @@
 ---
 session_id: S064-quality-metrics-2025-2-followups
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-055-quality-metrics-2025-2-followups
 orchestrator: 16-evolve
 evolve_cycle_id: EV-055
 github_issues: [982, 980, 979]
 opened: 2026-08-11
+closed: 2026-08-11
 ---
 
 # Session brief — S064-quality-metrics-2025-2-followups
