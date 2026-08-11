@@ -1,22 +1,23 @@
 ---
 session_id: S066-quality-metrics-diff-page
 type: feature
-status: in_progress
+status: completed
 branch: evolve/EV-056-quality-metrics-diff-page
 orchestrator: 16-evolve
 evolve_cycle_id: EV-056
 github_issues: [988]
 prior_session: S065-quality-metrics-diff-long-line
 opened: 2026-08-11
+closed: 2026-08-11
 ---
 
 # Session brief — S066-quality-metrics-diff-page
 
-> **Cycle**: EV-056 · **Type**: feature · **Opened**: 2026-08-11  
-> **Branch**: `evolve/EV-056-quality-metrics-diff-page` (base `stage@340b3cf6`)  
-> **Orchestrator**: **16-evolve** · **Preset**: Lean (user-requested)  
-> **Issue**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988)  
-> **Prior**: S065 pretty-print hotfix ([#987](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987) merged)  
+> **Cycle**: EV-056 · **Type**: feature · **Opened**: 2026-08-11 · **Closed**: 2026-08-11  
+> **Branch**: `evolve/EV-056-quality-metrics-diff-page` → [#989](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989) **MERGED** `stage` @ `b4a63ab8`  
+> **Orchestrator**: **16-evolve** · **Preset**: Lean  
+> **Issue**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988) → **Done**  
+> **Close**: `D-S066-13=1` / `D-S066-close=1` — [evolve-summary](reports/evolve-summary.md) · [deploy-smoke](reports/deploy-smoke.md)  
 > **Corpus**: [Corpus: product §F7.q] [Corpus: tests §UJ-056] [Corpus: journeys §UJ-056]
 
 ## Goal
@@ -70,8 +71,7 @@ Follow-up from [S065 FOLLOWUP.md](../S065-quality-metrics-diff-long-line/FOLLOWU
 ## Board
 
 - Project [#7 TAC-to-IWXXM](https://github.com/orgs/EMPIRIC2/projects/7)
-- #988 → **In progress**
-- Ready queue remains 3–5 (currently 4: #948, #958, #981, #983)
+- #988 → **Done** (`D-S066-close=1`)
 
 ## Routing plan
 
