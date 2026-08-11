@@ -9,7 +9,7 @@
 **Features**: deepen **F7.q**; deepen **F2** / **F13** as needed for 2025-2 validate; **F4** only if messaging requires  
 **Started**: 2026-08-11  
 **Branch**: `evolve/EV-055-quality-metrics-2025-2-followups` (base `stage@4fd51e39`)  
-**Status**: **in_progress** — Phase 0–1 locked; next **01-requirements**  
+**Status**: **in_progress** — 04 COMPLETE (`D-S064-04-plan=1`); next **05-verify-tech**  
 **Issues**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982), [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980), [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)  
 **Parent**: EV-054 / S063 / [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13]
@@ -42,6 +42,22 @@
 | D-S064-c14n | **1** — Always W3C C14N (`D-S064-gateA-M4=2`) |
 | D-S064-xsd-hard | **1** — #979 SCHEMA_IMPORT fix required (H3=2) |
 | D-S064-gateA | **1** — PASS Gate A; → 04-tech-plan |
+| D-S064-04-plan | **1** — Approve EP as drafted: 17 tasks M1–M5; engine→C14N→regen→FE→E2E; lxml+TS C14N; ADR vs ADR-032; no new deps/CORS |
+
+### Tech plan (04 — `D-S064-04-plan=1`)
+
+| Artifact | Path |
+|----------|------|
+| Execution plan | `docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md` |
+| Build Plan Card | `docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md` |
+
+| M | Goal |
+|---|------|
+| M1 | Engine #980/#979 hard |
+| M2 | C14N helpers Py+FE + ADR |
+| M3 | Generator + corpus_metrics regen |
+| M4 | FE panes + diff + validate chips |
+| M5 | Playwright + docs/CI |
 
 ### Approved scope (verbatim)
 

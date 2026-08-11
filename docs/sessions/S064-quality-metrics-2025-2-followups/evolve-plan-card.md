@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**04-tech-plan** — execution plan + Build Plan Card (Gate A PASS `D-S064-gateA=1`)
+**05-verify-tech** — Gate B (`D-S064-04-plan=1` approved)
 
 ## Risks / open decisions
 

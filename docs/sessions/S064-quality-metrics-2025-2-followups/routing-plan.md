@@ -10,9 +10,7 @@
 | 01-requirements | yes | delta | **completed** | `D-S064-01-ac=1`; AC1–AC7; TC-EV055; UJ-056 deepen |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S064-gateA=1` (C14N hard; #979/#980 hard; pane override) |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
-| 04-tech-plan | yes | delta | pending | Execution plan + Build Plan Card |
-| 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
-| 04-tech-plan | yes | delta | pending | Execution plan + Build Plan Card |
+| 04-tech-plan | yes | delta | **completed** | `D-S064-04-plan=1` — 17 tasks M1–M5 |
 | 05-verify-tech | yes | delta | pending | Gate B (engine + metrics paths) |
 | 06-tech-tooling | no | — | skipped | No new deps expected (inventory in 04 if native tooling changes) |
 | 07-build | yes | delta | pending | Normalize + Schematron/XSD disposition |
