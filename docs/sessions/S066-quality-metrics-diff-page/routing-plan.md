@@ -22,7 +22,7 @@
 | 08-verify-build | no | — | skipped | Lean |
 | 09-qa | no | — | skipped | Lean |
 | 10-e2e | yes | delta | **completed** | UJ-056 3/3 PASS local; H4–H5 via 13 |
-| 13-deploy-smoke | yes | delta | pending | Staging smoke after PR → stage |
+| 13-deploy-smoke | yes | delta | **completed** | #989 merged; Deploy+Staging smoke [31545833142](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31545833142); H0c–H5 PASS — await `D-S066-13` |
 
 ## Recommended ordered stages
 
@@ -52,3 +52,5 @@
 | D-S066-list | **1** — navigate to detail; list via back |
 | D-S066-01-ac | **1** — AC1–AC5 + UJ-056 deepen + manifest |
 | D-S066-gateA | **1** — Gate A PASS → implement FE (Lean) |
+| D-S066-pr | **1** — Push + PR → stage → CI → 13 |
+| D-S066-13 | pending — approve 13 / close on stage |

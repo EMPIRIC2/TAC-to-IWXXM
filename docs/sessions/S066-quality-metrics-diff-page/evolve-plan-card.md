@@ -25,7 +25,7 @@ Dedicated Quality metrics detail route with GitHub-style collapsible unified XML
 
 ## Next child stage
 
-**13-deploy-smoke** — after merge of PR #989 → `stage` + Staging smoke green (`D-S066-pr=1`)
+**None** — 13 evidence PASS; awaiting `D-S066-13` / cycle close AskQuestion
 
 ## Locked intake (Phase 0)
 
@@ -40,5 +40,5 @@ Dedicated Quality metrics detail route with GitHub-style collapsible unified XML
 
 ## Risks / open decisions
 
-- PR #989 CI green @ `c87f67b8` — awaiting merge approval for stage + 13-deploy-smoke
-- Plain-language UI copy pass landed (no operator-visible planning ids; EV-048)
+- #989 **MERGED** → `stage` @ `b4a63ab8`; Staging Deploy + smoke green; H0c–H5 PASS
+- Promote to `main` deferred unless asked
