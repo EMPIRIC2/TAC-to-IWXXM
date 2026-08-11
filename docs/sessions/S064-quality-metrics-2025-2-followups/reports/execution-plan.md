@@ -17,7 +17,7 @@
 |-------|-------|
 | **Active phase** | Phase 1: EV-055 follow-ups |
 | **Active milestone** | M2 — W3C C14N helpers (**complete**) |
-| **Active task** | — (M4 complete; next M5) |
+| **Active task** | — (M5 complete; handoff 08-verify-build) |
 | **Tasks completed** | 8 / 17 |
 | **Stage** | 07-build (M1 complete → M2) |
 | **Last updated** | 2026-08-11 |
@@ -132,9 +132,9 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T5.1 | Playwright UJ-056 deepen: C14N panes + override + validate chips | Test | pending | TC-EV055-007; UJ-056; H4–H5 @ 12/13 | T4.3 | — |
-| T5.2 | Docs touch-up if wire/ADR drifted; evolve-decisions 04 log; tip push + CI | Docs/CI | pending | AC6/AC7 | T5.1 | — |
-| T5.3 | Board: keep #982/#980/#979 In progress until PR; then In review | Config | pending | `D-S064-board=1` | T5.2 | — |
+| T5.1 | Playwright UJ-056 deepen: C14N panes + override + validate chips | Test | completed | TC-EV055-007; UJ-056; H4–H5 @ 12/13 | T4.3 | — |
+| T5.2 | Docs touch-up if wire/ADR drifted; evolve-decisions 04 log; tip push + CI | Docs/CI | completed | AC6/AC7 | T5.1 | — |
+| T5.3 | Board: keep #982/#980/#979 In progress until PR; then In review | Config | completed | `D-S064-board=1` | T5.2 | — |
 
 **M5 exit / connectivity**: T5.1 covers local Playwright. Live **H4–H5** staging smoke → stages **12-verify-deploy** + **13-deploy-smoke**.
 
@@ -156,9 +156,9 @@
 | T4.1 | M4 | completed | T2.3 |
 | T4.2 | M4 | completed | T4.1, T3.3 |
 | T4.3 | M4 | completed | T1.2, T1.4, T4.2 |
-| T5.1 | M5 | pending | T4.3 |
-| T5.2 | M5 | pending | T5.1 |
-| T5.3 | M5 | pending | T5.2 |
+| T5.1 | M5 | completed | T4.3 |
+| T5.2 | M5 | completed | T5.1 |
+| T5.3 | M5 | completed | T5.2 |
 
 ## Git Strategy
 

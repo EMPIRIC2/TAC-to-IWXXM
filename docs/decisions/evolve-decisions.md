@@ -46,6 +46,17 @@
 | D-S064-c14n-host | **1** — Python C14N in `packages/iwxxm-validate` (not shared); FE TS helper |
 | D-S064-05 | **1** — Gate B PASS; C1 resolved; → 07 M1 |
 | D-S064-c14n-volatile | **1** — C14N **after** volatile-attr strip (`gml:id` / UUID / codes.wmo.int hrefs per ADR-032 rules); not pure C14N; not C14N-of-ADR-032-repr — ADR-035 amend 2026-08-11 |
+| D-S064-m5 | **1** — M5 local Playwright deepen done; tip push for CI; board stays **In progress** until implementing PR opens (`D-S064-board=1`) |
+
+### Build closeout (07 — M1–M5)
+
+| M | Tip note |
+|---|----------|
+| M1 | Native Schematron/XSD for quality metrics |
+| M2 | `c14n_xml` + FE `c14nXml.ts` + ADR-035 |
+| M3 | Generator `c14n_equal` + corpus regen (`D-S064-c14n-volatile=1`) |
+| M4 | C14N panes + raw override + validate chips |
+| M5 | UJ-056 / TC-EV055-007 Playwright deepen; E2E badge 83 |
 
 ### Tech plan (04 — `D-S064-04-plan=1`)
 

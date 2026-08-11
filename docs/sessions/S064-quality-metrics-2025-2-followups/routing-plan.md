@@ -13,8 +13,8 @@
 | 04-tech-plan | yes | delta | **completed** | `D-S064-04-plan=1` — 17 tasks M1–M5 |
 | 05-verify-tech | yes | delta | **completed** | Gate B PASS `D-S064-05=1` (`D-S064-c14n-host=1`) |
 | 06-tech-tooling | no | — | skipped | No new deps (`D-S064-c14n-host=1` keeps lxml on iwxxm-validate) |
-| 07-build | yes | delta | pending | Normalize + Schematron/XSD disposition |
-| 08-verify-build | yes | delta | pending | Gate C |
+| 07-build | yes | delta | **completed** | M1–M5; tip push for CI; board stays In progress until PR |
+| 08-verify-build | yes | delta | pending | Gate C — next |
 | 09-qa | yes | delta | pending | |
 | 10-e2e | yes | delta | pending | Quality metrics UJ smoke (extend UJ-056 or child) |
 | 11-verify-impl | yes | delta | pending | Per-AC; UI preview AskQuestion |

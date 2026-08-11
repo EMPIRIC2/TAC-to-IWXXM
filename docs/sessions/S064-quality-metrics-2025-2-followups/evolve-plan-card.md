@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**07-build** M5 — Playwright UJ-056 deepen + docs/CI (M1–M4 done)
+**07 COMPLETE (M1–M5)** — handoff **08-verify-build**; PR → stage after 08; board In progress until PR
 
 ## Risks / open decisions
 
@@ -34,3 +34,4 @@ normalized XML with override to raw.
 - XSD import fix may need catalog/packaging changes (`D-S064-xsd-hard=1`)
 - Board WIP 3 > policy ≤2 (explicit override)
 - C14N regen may churn large `corpus_metrics` fixtures — mitigated by volatile-attr strip before C14N (`D-S064-c14n-volatile=1`)
+- Live H4–H5 for UJ-056 remains stages 12/13 after staging deploy
