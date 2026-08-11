@@ -157,4 +157,104 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     render(<QualityMetricsDetail detail={detail} />);
     expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent('X');
   });
+
+  it('formats diagnostics from detail when message is absent', () => {
+    const detail: QualityMetricsDetailResponse = {
+      ...FORMATTING_ONLY,
+      residuals: [{ detail: 'leftover token' }],
+      lint_issues: [{ code: 'LINT1', message: 'bad group' }],
+    };
+    render(<QualityMetricsDetail detail={detail} />);
+    expect(screen.getByTestId('quality-metrics-pane-residuals')).toHaveTextContent(
+      'leftover token',
+    );
+    expect(screen.getByTestId('quality-metrics-pane-lint')).toHaveTextContent(
+      'LINT1: bad group',
+    );
+  });
+
+  it('collapses distant equal context and expands on click', async () => {
+    const user = userEvent.setup();
+    const makeXml = (mid: string) => {
+      const rows = Array.from({ length: 40 }, (_, i) =>
+        i === 20 ? `  <v>${mid}</v>` : `  <n${i}/>`,
+      );
+      return `<root xmlns="urn:x">\n${rows.join('\n')}\n</root>`;
+    };
+    const detail: QualityMetricsDetailResponse = {
+      ...FORMATTING_ONLY,
+      stem: 'metar-long-diff',
+      match_status: 'unequal',
+      official_xml: makeXml('1'),
+      converted_xml: makeXml('2'),
+    };
+    render(<QualityMetricsDetail detail={detail} />);
+
+    expect(screen.getByTestId('quality-metrics-diff-body')).toBeInTheDocument();
+    const expandHunks = screen.getAllByTestId('quality-metrics-diff-expand-hunk');
+    expect(expandHunks.length).toBeGreaterThan(0);
+    expect(screen.getByTestId('quality-metrics-diff-expand-all')).toHaveTextContent(
+      /Show all unchanged lines/i,
+    );
+
+    await user.click(expandHunks[0]!);
+    // Expanding one hunk may leave other collapse controls.
+    expect(screen.getByTestId('quality-metrics-diff-expand-all')).toBeInTheDocument();
+
+    await user.click(screen.getByTestId('quality-metrics-diff-expand-all'));
+    expect(screen.getByTestId('quality-metrics-diff-expand-all')).toHaveTextContent(
+      /Hide distant unchanged lines/i,
+    );
+    expect(screen.queryAllByTestId('quality-metrics-diff-expand-hunk')).toHaveLength(0);
+
+    await user.click(screen.getByTestId('quality-metrics-diff-expand-all'));
+    expect(
+      screen.getAllByTestId('quality-metrics-diff-expand-hunk').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('shows plain-language match status for unequal and deferred', () => {
+    const unequal: QualityMetricsDetailResponse = {
+      ...SEMANTIC_DIFF,
+      deferred: true,
+      match_status: 'unequal',
+    };
+    const { rerender } = render(<QualityMetricsDetail detail={unequal} />);
+    expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
+      'Differs from official',
+    );
+    expect(screen.getByText(/Deferred — not scored yet/i)).toBeInTheDocument();
+
+    rerender(
+      <QualityMetricsDetail
+        detail={{
+          ...FORMATTING_ONLY,
+          match_status: 'deferred',
+          deferred: true,
+        }}
+      />,
+    );
+    expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
+      'Deferred — not scored yet',
+    );
+  });
+
+  it('shows empty pane placeholders when payloads are blank', () => {
+    render(
+      <QualityMetricsDetail
+        detail={{
+          ...FORMATTING_ONLY,
+          tac: '',
+          official_xml: '',
+          converted_xml: '',
+        }}
+      />,
+    );
+    expect(screen.getByTestId('quality-metrics-pane-tac')).toHaveTextContent(
+      /No TAC available/i,
+    );
+    expect(screen.getByTestId('quality-metrics-pane-official-xml')).toHaveTextContent(
+      /No official XML available/i,
+    );
+  });
 });

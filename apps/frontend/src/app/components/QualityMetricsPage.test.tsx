@@ -348,4 +348,54 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
       expect(screen.queryByTestId('quality-metrics-detail')).not.toBeInTheDocument();
     });
   });
+
+  it('uses route callbacks for open and back navigation', async () => {
+    const user = userEvent.setup();
+    const onOpenDetailRoute = vi.fn();
+    const onBackToList = vi.fn();
+    apiMocks.fetchQualityMetricsDetail.mockResolvedValue(MOCK_DETAIL_EQUAL);
+
+    const { rerender } = render(
+      <QualityMetricsPage
+        onOpenDetailRoute={onOpenDetailRoute}
+        onBackToList={onBackToList}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-row-metar-A3-1')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('quality-metrics-row-metar-A3-1'));
+    expect(onOpenDetailRoute).toHaveBeenCalledWith('metar-A3-1');
+
+    rerender(
+      <QualityMetricsPage
+        routeStem="metar-A3-1"
+        onOpenDetailRoute={onOpenDetailRoute}
+        onBackToList={onBackToList}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-detail')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('quality-metrics-detail-close'));
+    expect(onBackToList).toHaveBeenCalled();
+  });
+
+  it('shows empty-list copy when the filter has no files', async () => {
+    apiMocks.fetchQualityMetrics.mockResolvedValue({
+      ...MOCK_LIST,
+      files: [],
+      summaries: [],
+    });
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/No files for this product filter/i)).toBeInTheDocument();
+    });
+  });
 });

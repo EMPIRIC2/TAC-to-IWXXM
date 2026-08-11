@@ -40,4 +40,18 @@ describe('qualityMetricsPath', () => {
       stem: 'sigmet/foo',
     });
   });
+
+  it('returns list path for blank stems', () => {
+    expect(qualityMetricsDetailPath('')).toBe(QUALITY_METRICS_LIST_PATH);
+    expect(qualityMetricsDetailPath('   ')).toBe(QUALITY_METRICS_LIST_PATH);
+  });
+
+  it('rejects multi-segment or empty detail segments', () => {
+    expect(parseQualityMetricsPath('/quality/a/b')).toBeNull();
+    expect(parseQualityMetricsPath('/quality/%20%20')).toEqual({ kind: 'list' });
+  });
+
+  it('returns null when the stem cannot be decoded', () => {
+    expect(parseQualityMetricsPath('/quality/%E0%A4%A')).toBeNull();
+  });
 });
