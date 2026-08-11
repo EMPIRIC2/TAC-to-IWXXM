@@ -13,8 +13,8 @@ Ship W3C C14N Quality-metrics match/diff (#982) with normalized panes (override�
 - [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13]
   [Corpus: api] [Corpus: journeys §UJ-056] [Corpus: tests] [Corpus: decisions §EV-055]
 - Branch base `stage@4fd51e39`; PR → `stage` only
-- Vendor schemas read-only; no new npm; no new runtime deps unless amended
-- Hard: C14N always; #980 enable; #979 fix; shared generator+FE helper
+- Vendor schemas read-only; no new npm; no new runtime deps (C14N Python in iwxxm-validate)
+- Hard: C14N always; #980 enable; #979 fix; generator+FE helper semantics (`D-S064-c14n-host=1`)
 
 ## In scope (this batch — M1)
 
@@ -64,4 +64,4 @@ Do not implement.
 
 ## Next
 
-**05-verify-tech** (Gate B) → then **07-build** M1.
+**07-build** M1 — T1.1–T1.4 (`D-S064-05=1`).

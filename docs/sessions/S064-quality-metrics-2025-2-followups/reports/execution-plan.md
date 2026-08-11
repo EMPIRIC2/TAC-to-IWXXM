@@ -28,7 +28,8 @@
 
 | ID | Choice |
 |----|--------|
-| D-S064-c14n-impl | **W3C C14N 1.0** via existing **lxml** in `packages/shared` (new helper alongside ADR-032 `canonicalize_xml` — do **not** overload ADR-032). FE: small **TypeScript exclusive-C14N** helper (no new npm). Same semantics for generator `match_status` and FE unified diff (`D-S064-gateA-M1=1`). |
+| D-S064-c14n-impl | **W3C C14N 1.0** via existing **lxml** in **`packages/iwxxm-validate`** (new helper; do **not** put lxml in `packages/shared`; do **not** overload ADR-032 `canonicalize_xml`). FE: small **TypeScript exclusive-C14N** helper (no new npm). Generator imports validate-package helper; FE uses TS peer (`D-S064-gateA-M1=1`; Gate B `D-S064-c14n-host=1`). |
+| D-S064-c14n-host | **1** — Python C14N lives in `packages/iwxxm-validate` (lxml already declared); shared stays dep-free. |
 | D-S064-adr-c14n | Short ADR: Quality-metrics equality/diff uses W3C C14N; ADR-032 canonicalize remains for other comparative/CI paths until callers migrate. |
 | D-S064-engine-path | #980: enable Schematron for 2025-2 on **native (F13)** path so evaluation occurs; document lxml vs native matrix. #979: fix XSD import resolution in `packages/iwxxm-validate` (+ backend parity utilities if they still soft-skip). |
 | D-S064-pane-ux | Detail panes default to **C14N XML**; control toggles to **raw** (`D-S064-gateA-M2=override`). Diff always on C14N peers. |
@@ -55,7 +56,7 @@
 
 | Category | Choice | Source |
 |----------|--------|--------|
-| C14N (Python) | lxml C14N helper in `packages/shared` | `D-S064-c14n-impl`; inventory lxml |
+| C14N (Python) | lxml C14N helper in `packages/iwxxm-validate` | `D-S064-c14n-host=1`; inventory lxml |
 | C14N (FE) | Local TS helper; no new npm | `D-S064-gateA-M1` |
 | Match / artifact | `scripts/ci/generate_quality_metrics.py` → `corpus_metrics.json` | EV-054 path; switch to C14N |
 | Validate engine | `packages/iwxxm-validate` (+ backend utilities parity) | F2/F13; #980/#979 |
@@ -98,7 +99,7 @@
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
 | T2.1 | Unit tests + ≥1 golden for Python W3C C14N helper (whitespace-equal peers) | Test | pending | TC-EV055-003; AC3 | — | — |
-| T2.2 | Implement `c14n_xml` (name TBD) in `packages/shared`; keep ADR-032 `canonicalize_xml` intact | Impl | pending | AC3; `D-S064-c14n=1` | T2.1 | lxml |
+| T2.2 | Implement `c14n_xml` (name TBD) in `packages/iwxxm-validate`; keep ADR-032 `canonicalize_xml` intact; no lxml on `packages/shared` | Impl | pending | AC3; `D-S064-c14n=1`; `D-S064-c14n-host=1` | T2.1 | lxml (validate pkg) |
 | T2.3 | FE TS C14N helper tests + implement; Vitest parity with Python golden | Test/Impl | pending | TC-EV055-003; `D-S064-gateA-M1=1` | T2.1 | — |
 | T2.4 | ADR: Quality metrics C14N vs ADR-032 canonicalize | Docs | pending | `D-S064-adr-c14n` | T2.2 | — |
 

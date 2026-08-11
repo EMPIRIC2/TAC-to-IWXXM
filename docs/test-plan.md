@@ -110,7 +110,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054 / EV-055) | Quality metrics primary tab — match/residuals/lint/validate; whitespace-normalized diffs (#982); 2025-2 validate disposition (#980/#979) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 

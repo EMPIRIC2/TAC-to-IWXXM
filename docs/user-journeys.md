@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-11 (S064 / EV-055 UJ-056 deepen — whitespace-normalize + 2025-2 validate; prior EV-054)
+> **Last updated**: 2026-08-11 (S064 / EV-055 UJ-056 deepen — W3C C14N + 2025-2 validate; prior EV-054)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.

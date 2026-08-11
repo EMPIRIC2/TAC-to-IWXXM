@@ -11,8 +11,8 @@
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S064-gateA=1` (C14N hard; #979/#980 hard; pane override) |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
 | 04-tech-plan | yes | delta | **completed** | `D-S064-04-plan=1` — 17 tasks M1–M5 |
-| 05-verify-tech | yes | delta | pending | Gate B (engine + metrics paths) |
-| 06-tech-tooling | no | — | skipped | No new deps expected (inventory in 04 if native tooling changes) |
+| 05-verify-tech | yes | delta | **completed** | Gate B PASS `D-S064-05=1` (`D-S064-c14n-host=1`) |
+| 06-tech-tooling | no | — | skipped | No new deps (`D-S064-c14n-host=1` keeps lxml on iwxxm-validate) |
 | 07-build | yes | delta | pending | Normalize + Schematron/XSD disposition |
 | 08-verify-build | yes | delta | pending | Gate C |
 | 09-qa | yes | delta | pending | |

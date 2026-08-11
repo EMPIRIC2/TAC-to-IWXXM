@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**05-verify-tech** — Gate B (`D-S064-04-plan=1` approved)
+**07-build** M1 — engine hard fixes (`D-S064-05=1`; `D-S064-c14n-host=1`)
 
 ## Risks / open decisions
 
