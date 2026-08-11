@@ -9,7 +9,7 @@
 **Features**: deepen **F7.q**; deepen **F2** / **F13** as needed for 2025-2 validate; **F4** only if messaging requires  
 **Started**: 2026-08-11  
 **Branch**: `evolve/EV-055-quality-metrics-2025-2-followups` (base `stage@4fd51e39`)  
-**Status**: **in_progress** — M1+M2 done (`158cff00`); M3 unblocked by `D-S064-c14n-volatile=1`
+**Status**: **completed** — closed on stage (`D-S064-13=1` / `D-S064-close=1`; #985 @ `4b48c8d8`)
 **Issues**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982), [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980), [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)  
 **Parent**: EV-054 / S063 / [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13]
@@ -54,6 +54,19 @@
 | D-S064-11 | **1** — Approve F7.q + F2/F13 deepen; proceed toward 12 |
 | D-S064-12-start | **1** — continue → 12-verify-deploy; open PR→stage |
 | D-S064-12 | **1** — Approve checklist + merge #985 → `stage`, then continue 13 |
+| D-S064-13 | **1** — Approve 13; close EV-055 / S064 on stage (no promote) |
+| D-S064-close | **1** — Cycle + session closed on stage |
+
+### Deploy smoke (13 — COMPLETE `D-S064-13=1`)
+
+| Item | Result |
+|------|--------|
+| Merge #985 | `4b48c8d8` on `stage` |
+| Staging CD | [31534191417](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31534191417) Deploy + Staging smoke **success** |
+| H1–H5 | PASS on `api\|app.staging.tac-to-iwxxm.com` |
+| Board | #982/#980/#979 **Done** |
+| Docs follow-up | PR [#986](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986) |
+| Sign-off | `D-S064-13=1` / `D-S064-close=1` |
 
 ### Build closeout (07 — M1–M5)
 
