@@ -20,7 +20,7 @@ export const QUALITY_METRICS_EMPTY_DIAGNOSTICS = 'None';
 export const QUALITY_METRICS_XML_VIEW_NORMALIZED = 'Normalized XML';
 export const QUALITY_METRICS_XML_VIEW_RAW = 'Raw XML';
 export const QUALITY_METRICS_XML_VIEW_HELP =
-  'Official and converted panes default to normalized XML. Turn on raw to inspect original formatting. The unified diff always compares normalized forms.';
+  'Official and converted panes default to normalized, pretty-printed XML. Turn on raw to inspect original formatting. The unified diff always compares normalized forms.';
 
 interface QualityMetricsDetailProps {
   /** Detail payload from GET /quality-metrics/{stem}. */
@@ -282,7 +282,7 @@ function DiffLineRow({ line }: { line: UnifiedDiffLine }) {
         ? 'text-red-400'
         : 'text-gray-300';
   return (
-    <div className={color}>
+    <div className={`${color} whitespace-pre-wrap break-all`}>
       {prefix}
       {line.text}
     </div>

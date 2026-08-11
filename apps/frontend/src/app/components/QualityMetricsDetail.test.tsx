@@ -19,7 +19,6 @@ import {
   QUALITY_METRICS_SCHEMATRON_SKIPPED,
   validateDispositionChips,
 } from '@/utils/validateDispositionChips';
-import { c14nXml } from '@/utils/c14nXml';
 import type { QualityMetricsDetailResponse } from '@/utils/openapiTypes';
 
 const FORMATTING_ONLY: QualityMetricsDetailResponse = {
@@ -86,16 +85,19 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
   it('defaults to normalized panes and empty diff for formatting-only peers', () => {
     render(<QualityMetricsDetail detail={FORMATTING_ONLY} />);
 
-    const expected = c14nXml(FORMATTING_ONLY.official_xml);
+    const expected = qualityMetricsDisplayXml(FORMATTING_ONLY.official_xml);
     expect(screen.getByTestId('quality-metrics-xml-view-mode')).toHaveTextContent(
       QUALITY_METRICS_XML_VIEW_NORMALIZED,
     );
-    expect(screen.getByTestId('quality-metrics-pane-official-xml')).toHaveTextContent(
-      expected,
-    );
-    expect(screen.getByTestId('quality-metrics-pane-converted-xml')).toHaveTextContent(
-      expected,
-    );
+    const officialPre = screen
+      .getByTestId('quality-metrics-pane-official-xml')
+      .querySelector('pre');
+    const convertedPre = screen
+      .getByTestId('quality-metrics-pane-converted-xml')
+      .querySelector('pre');
+    expect(officialPre?.textContent).toBe(expected);
+    expect(convertedPre?.textContent).toBe(expected);
+    expect(expected.includes('\n')).toBe(true);
     expect(screen.getByTestId('quality-metrics-diff-empty')).toHaveTextContent(
       QUALITY_METRICS_DIFF_EMPTY_LABEL,
     );
