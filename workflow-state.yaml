@@ -1,34 +1,55 @@
-overall_status: in_progress
+overall_status: idle
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 66
 evolve_cycle_counter: 56
-active_session:
-  id: S066-quality-metrics-diff-page
+active_session: null
+
+sessions:
+
+- id: S066-quality-metrics-diff-page
   type: feature
   intent: "EV-056: F7.q deepen — dedicated Quality metrics detail page + GitHub-style collapsible unified XML diffs (expand/collapse unchanged context). Keep C14N equality; no API change unless routing needs it. Base stage. Cite UJ-056 / F7.q. Follow-up from S065 / #988."
-  status: in_progress
+  status: completed
+  completed: '2026-08-11'
+  completed_at: '2026-08-11'
+  closed_at: '2026-08-11'
   started: '2026-08-11'
   started_at: '2026-08-11'
   branch: evolve/EV-056-quality-metrics-diff-page
   branch_base: stage@340b3cf6
   branch_base_sha: 340b3cf6
   branch_base_sha_full: 340b3cf66388b18da4381955f3721c3f04b1ea7d
-  branch_status: ACTIVE
+  branch_status: merged
   branch_exists: true
-  branch_pushed: false
-  branch_note: "local evolve/EV-056-quality-metrics-diff-page @ stage@340b3cf6 (not pushed yet)"
-  tip_sha: "f065d808"
-  tip_sha_full: f065d808b015612a876dc4a10687e33a5f192629
-  tip_sha_pushed: false
-  tip_sha_note: "session open commit; Lean approved; local UI preview"
+  branch_pushed: true
+  branch_note: "CLOSED — D-S066-13=1 / D-S066-close=1; PR #989 MERGED → stage @ b4a63ab8; Staging CD 31545833142 success; promote deferred"
+  tip_sha: "b4a63ab8"
+  tip_sha_full: b4a63ab8ec09f47d8ea95a50008c698fa37b7734
+  tip_sha_pushed: true
+  tip_sha_note: "CLOSED D-S066-13=1 / D-S066-close=1 — #989 → stage @ b4a63ab8; Staging CD 31545833142 success; H0c–H5 PASS; #988 Done; promote deferred"
+  tip_ci_run: '31545833142'
+  tip_ci_status: success
+  tip_ci_note: "Staging CD run 31545833142 success on stage@b4a63ab8; H0c–H5 PASS; D-S066-13=1"
+  pr_number: 989
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989
+  pr_status: merged
+  pr_base: stage
+  merge_sha: b4a63ab8
+  merge_sha_full: b4a63ab8ec09f47d8ea95a50008c698fa37b7734
+  merge_at: '2026-08-11T23:16:21Z'
+  followup_pr_number: 990
+  followup_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/990
+  followup_pr_status: open
+  followup_pr_note: "docs closeout PR #990 open → stage; product tip remains #989@b4a63ab8"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-056
   artifacts_dir: docs/sessions/S066-quality-metrics-diff-page/
   github_issues:
   - 988
+  board_note: "#988 Done"
   prior_session: S065-quality-metrics-diff-long-line
   deepen_feature_ids:
   - F7
@@ -48,6 +69,8 @@ active_session:
   - API contract change unless routing requires
   ui_preview: accepted
   ui_preview_url: http://127.0.0.1:18000/
+  close_decision_id: D-S066-close
+  close_note: "D-S066-13=1 / D-S066-close=1 — #989 → stage @ b4a63ab8; Staging CD 31545833142 success; H0c–H5 PASS; #988 Done; promote deferred"
   routing_plan:
   - stage: 00-context
     required: true
@@ -59,25 +82,38 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrate
-    status: in_progress
+    status: completed
     started: '2026-08-11'
-    note: "IN PROGRESS — D-S066-route=1 / ui-preview=1; Plan orchestrator Phase 0–1; next 01-requirements"
+    completed: '2026-08-11'
+    note: "COMPLETE — D-S066-13=1 / D-S066-close=1; #989 → stage @ b4a63ab8; Staging CD 31545833142 success"
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-11'
+    completed: '2026-08-11'
+    note: "COMPLETE — Lean delta requirements for F7.q detail page + collapsible diffs"
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-11'
+    completed: '2026-08-11'
+    note: "COMPLETE — plan gate PASS"
   - stage: 10-e2e
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-11'
+    completed: '2026-08-11'
+    note: "COMPLETE — UJ-056 / quality metrics e2e delta"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-11'
+    completed: '2026-08-11'
+    note: "COMPLETE — D-S066-13=1; Staging CD 31545833142 success; H0c–H5 PASS; promote deferred"
   - stage: 03-plan-tooling
     required: false
     mode: null
@@ -123,18 +159,18 @@ active_session:
     mode: null
     status: skipped
     skip_rationale: "Lean preset — verify-deploy not in path"
-  current_stage: 16-evolve
-  current_stage_note: "16-evolve in_progress — Lean approved; local UI preview; next child 01-requirements"
+  current_stage: 13-deploy-smoke
+  current_stage_note: "CLOSED — D-S066-13=1 / D-S066-close=1; #989 → stage @ b4a63ab8; Staging CD 31545833142 success; H0c–H5 PASS; #988 Done; promote deferred; active_session=null"
   decisions:
     D-S065-close: "1 — recorded on archived S065; PR #987 MERGED → stage @ 340b3cf6; open S066/EV-056"
     D-S066-route: "1 — Lean as drafted"
     D-S066-ui-preview: "1 — non-deployed local http://127.0.0.1:18000/"
     D-S066-board: "1 — #988 → In progress"
+    D-S066-pr: "1 — PR #989 opened/merged → stage @ b4a63ab8"
+    D-S066-13: "1 — Approve 13-deploy-smoke; Staging CD 31545833142 success; H0c–H5 PASS; promote deferred"
+    D-S066-close: "1 — Close S066/EV-056; #989 → stage @ b4a63ab8; #988 Done; docs #990; active_session=null"
   context_briefs: []
-  note: "IN PROGRESS — D-S066-route=1 / ui-preview=1 / board=1; Lean approved; local UI preview http://127.0.0.1:18000/; 16-evolve Phase 0–1; next 01-requirements; base stage@340b3cf6; branch evolve/EV-056-quality-metrics-diff-page (not pushed); #988; [Corpus: product §F7.q] [Corpus: tests §UJ-056] [Corpus: journeys §UJ-056]"
-
-sessions:
-
+  note: "CLOSED — D-S066-13=1 / D-S066-close=1 — #989 → stage @ b4a63ab8; Staging CD 31545833142 success; H0c–H5 PASS; #988 Done; promote deferred; docs PR #990; [Corpus: product §F7.q] [Corpus: tests §UJ-056] [Corpus: journeys §UJ-056]"
 
 - id: S065-quality-metrics-diff-long-line
   type: hotfix
@@ -37951,7 +37987,7 @@ retrospective_cycles:
 evolve_cycles:
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
-  status: in_progress
+  status: completed
   cycle_type: feature
   session_id: S066-quality-metrics-diff-page
   feature_ids: []
@@ -37966,16 +38002,35 @@ evolve_cycles:
   branch_base: stage@340b3cf6
   branch_base_sha: 340b3cf6
   branch_base_sha_full: 340b3cf66388b18da4381955f3721c3f04b1ea7d
-  branch_status: ACTIVE
+  branch_status: merged
   branch_exists: true
-  branch_pushed: false
-  branch_note: "local evolve/EV-056-quality-metrics-diff-page @ stage@340b3cf6 (not pushed yet)"
-  tip_sha:
-  tip_sha_full:
-  tip_sha_pushed: false
-  current_stage: 16-evolve
-  current_stage_status: in_progress
-  current_stage_note: "16-evolve in_progress — Lean approved; local UI preview; next child 01-requirements"
+  branch_pushed: true
+  branch_note: "CLOSED — D-S066-13=1 / D-S066-close=1; #989 → stage @ b4a63ab8; Staging CD 31545833142 success; promote deferred"
+  tip_sha: "b4a63ab8"
+  tip_sha_full: b4a63ab8ec09f47d8ea95a50008c698fa37b7734
+  tip_sha_pushed: true
+  tip_sha_note: "COMPLETE D-S066-13=1 / D-S066-close=1; #989@b4a63ab8 Staging CD 31545833142 success; H0c–H5 PASS; closed on stage (no promote)"
+  pr_number: 989
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989
+  pr_status: merged
+  pr_base: stage
+  merge_sha: b4a63ab8
+  merge_sha_full: b4a63ab8ec09f47d8ea95a50008c698fa37b7734
+  merge_at: '2026-08-11T23:16:21Z'
+  followup_pr_number: 990
+  followup_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/990
+  followup_pr_status: open
+  followup_pr_note: "docs closeout PR #990 open → stage; product tip remains #989@b4a63ab8"
+  tip_ci_run: '31545833142'
+  tip_ci_status: success
+  tip_ci_note: "Staging CD 31545833142 success; H0c–H5 PASS; D-S066-13=1"
+  board_note: "#988 Done"
+  completed: '2026-08-11'
+  completed_at: '2026-08-11'
+  close_decision_id: D-S066-close
+  current_stage: 13-deploy-smoke
+  current_stage_status: completed
+  current_stage_note: "CLOSED — D-S066-13=1 / D-S066-close=1; #989 → stage @ b4a63ab8; Staging CD 31545833142 success; H0c–H5 PASS; promote deferred"
   started: "2026-08-11"
   started_at: "2026-08-11"
   preset: Lean
@@ -38000,17 +38055,20 @@ evolve_cycles:
   - 11-verify-impl
   - 12-verify-deploy
   scope_summary: "Dedicated Quality metrics detail route + GitHub-style collapsible unified XML diffs; keep C14N equality; follow-up from S065 / #988; base stage@340b3cf6"
-  decisions_locked: false
+  decisions_locked: true
   decisions:
     D-S065-close: "1 — prior session closed; #987@340b3cf6; open EV-056/S066"
     D-S066-route: "1 — Lean as drafted"
     D-S066-ui-preview: "1 — non-deployed local http://127.0.0.1:18000/"
     D-S066-board: "1 — #988 → In progress"
+    D-S066-pr: "1 — PR #989 opened/merged → stage @ b4a63ab8"
+    D-S066-13: "1 — Approve 13-deploy-smoke; Staging CD 31545833142 success; H0c–H5 PASS; promote deferred"
+    D-S066-close: "1 — Close S066/EV-056; #989 → stage @ b4a63ab8; #988 Done; docs #990"
   artifacts:
   - docs/sessions/S066-quality-metrics-diff-page/
   prior_session: S065-quality-metrics-diff-long-line
   prior_evolve_note: "Follow-up from S065 hotfix #987 (pretty-print); page+hunks deferred to EV-056 / #988"
-  note: "IN PROGRESS — D-S066-route=1 / ui-preview=1; Plan orchestrator Phase 0–1; next 01-requirements; [Corpus: product §F7.q] [Corpus: tests §UJ-056] [Corpus: journeys §UJ-056]"
+  note: "CLOSED — D-S066-13=1 / D-S066-close=1; #989 → stage @ b4a63ab8; Staging CD 31545833142 success; H0c–H5 PASS; #988 Done; promote deferred; session_id S066; [Corpus: product §F7.q]"
 - id: EV-055
   title: "Quality metrics 2025-2 follow-ups (#982/#980/#979)"
   status: completed
@@ -51679,6 +51737,25 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "b4a63ab8"
+    sha_full: b4a63ab8ec09f47d8ea95a50008c698fa37b7734
+    message: "Merge pull request #989 from EMPIRIC2/evolve/EV-056-quality-metrics-diff-page"
+    branch: stage
+    stage: 13-deploy-smoke
+    session_id: S066-quality-metrics-diff-page
+    evolve_cycle_id: EV-056
+    timestamp: "2026-08-11"
+    pushed: true
+    tip_sha: b4a63ab8
+    tip_sha_full: b4a63ab8ec09f47d8ea95a50008c698fa37b7734
+    tip_ci_run: '31545833142'
+    tip_ci_status: success
+    pr_number: 989
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989
+    pr_status: merged
+    pr_base: stage
+    merge_at: '2026-08-11T23:16:21Z'
+    note: "CLOSED D-S066-13=1 / D-S066-close=1 — #989 → stage @ b4a63ab8; Staging CD 31545833142 success"
   - sha: "f065d808"
     sha_full: f065d808b015612a876dc4a10687e33a5f192629
     message: "docs: open S066/EV-056 Quality metrics detail page session"

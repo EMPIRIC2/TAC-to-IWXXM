@@ -9,7 +9,7 @@
 **Features**: deepen **F7.q** only  
 **Started**: 2026-08-11  
 **Branch**: `evolve/EV-056-quality-metrics-diff-page` (base `stage@340b3cf6`)  
-**Status**: **in_progress** — 02-verify-plan (Gate A) after `D-S066-01-ac=1`  
+**Status**: **completed** — closed on stage (`D-S066-13=1` / `D-S066-close=1`; #989 @ `b4a63ab8`)  
 **Issues**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988)  
 **Parent**: S065 / #987 pretty-print hotfix; EV-054 / EV-055 Quality metrics  
 **Corpus**: [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests]
@@ -25,6 +25,9 @@
 | D-S066-context-n | **1** — default 3 context lines |
 | D-S066-list | **1** — navigate to detail; list via back |
 | D-S066-board | **1** — #988 In progress |
+| D-S066-pr | **1** — Push + PR → stage → CI → 13 |
+| D-S066-13 | **1** — Approve 13; H0c–H5 PASS on staging |
+| D-S066-close | **1** — Close EV-056 / S066 on stage; #988 Done; promote deferred |
 
 ### Acceptance (`D-S066-01-ac=1`)
 

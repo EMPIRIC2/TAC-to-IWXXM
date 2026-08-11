@@ -25,7 +25,7 @@ Dedicated Quality metrics detail route with GitHub-style collapsible unified XML
 
 ## Next child stage
 
-**None** — 13 evidence PASS; awaiting `D-S066-13` / cycle close AskQuestion
+**None** — cycle closed (`D-S066-13=1` / `D-S066-close=1`)
 
 ## Locked intake (Phase 0)
 
@@ -37,8 +37,9 @@ Dedicated Quality metrics detail route with GitHub-style collapsible unified XML
 | D-S066-01-ac | **1** — AC1–AC5 approved |
 | D-S066-gateA | **1** — Gate A PASS |
 | D-S066-pr | **1** — Push + PR → stage → CI → 13 |
+| D-S066-13 | **1** — Approve 13; H0c–H5 PASS |
+| D-S066-close | **1** — Close on stage; #988 Done |
 
 ## Risks / open decisions
 
-- #989 **MERGED** → `stage` @ `b4a63ab8`; Staging Deploy + smoke green; H0c–H5 PASS
-- Promote to `main` deferred unless asked
+- Closed on stage @ `b4a63ab8`; promote deferred unless asked

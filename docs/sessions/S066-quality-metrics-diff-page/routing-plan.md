@@ -53,4 +53,5 @@
 | D-S066-01-ac | **1** — AC1–AC5 + UJ-056 deepen + manifest |
 | D-S066-gateA | **1** — Gate A PASS → implement FE (Lean) |
 | D-S066-pr | **1** — Push + PR → stage → CI → 13 |
-| D-S066-13 | pending — approve 13 / close on stage |
+| D-S066-13 | **1** — Approve 13; close on stage |
+| D-S066-close | **1** — Close EV-056 / S066; #988 Done; promote deferred |

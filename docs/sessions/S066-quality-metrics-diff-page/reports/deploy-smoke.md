@@ -1,13 +1,13 @@
 # Deploy smoke — S066 / EV-056 (13-deploy-smoke)
 
 > Date: 2026-08-11  
-> Status: **COMPLETE** — awaiting `D-S066-13` user approve  
+> Status: **COMPLETE** — `D-S066-13=1` / `D-S066-close=1`  
 > PR: [#989](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989) **MERGED** → `stage` @ `b4a63ab8`  
 > Product tip (pre-merge): `d63265c2` · merge: `b4a63ab8ec09f47d8ea95a50008c698fa37b7734`  
 > `env_role`: **staging** (`api|app.staging.tac-to-iwxxm.com`; cluster `metar-iwxxm-staging`)  
 > CD: [CI/CD Pipeline 31545833142](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31545833142) **success** — Deploy (stage) + Staging smoke  
 > Corpus: [Corpus: tests] [Corpus: tech-spec] [Corpus: product §F7.q] [Corpus: journeys §UJ-056]  
-> Board: #988 → **On stage** (after smoke)
+> Board: #988 → **Done** (session close)
 
 ## Sequence
 
@@ -52,4 +52,4 @@ Promote `stage`→`main` only after Staging gate green + explicit user request. 
 
 - [x] #989 merged + Staging Deploy + Staging smoke green
 - [x] H0c + H1–H5 on staging
-- [ ] User approves 13 complete (`D-S066-13`) — then close EV-056 / S066 on stage
+- [x] User approves 13 complete (`D-S066-13=1`) — EV-056 / S066 closed on stage (`D-S066-close=1`)
