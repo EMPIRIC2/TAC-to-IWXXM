@@ -1,11 +1,11 @@
 # Deploy Checklist — S064 / EV-055 (12-verify-deploy)
 
 > Generated: 2026-08-11  
-> Status: **IN PROGRESS** — PR open; tip CI pending  
+> Status: **READY** — tip CI green; awaiting user sign-off  
 > Prior: 11 **APPROVED** (`D-S064-11=1`)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · dual DOKS (ADR-034)  
-> Tip: `abeba590` · PR [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → `stage`  
-> Tip CI: pending  
+> Tip: `442a13a6` · PR [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → `stage`  
+> Tip CI: [CI/CD Pipeline 31532920375](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31532920375) **success**  
 > `env_role`: **staging** first (PR → `stage` → cluster `metar-iwxxm-staging`); promote to prod later via `stage`→`main` only  
 > Corpus: [Corpus: tech-spec] [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: tests]  
 > connectivity-gates §12–13
@@ -21,7 +21,7 @@
 | Env / secrets | No new secrets | Confirm staging CORS includes `https://app.staging.tac-to-iwxxm.com` |
 | Worker / DB migrations | None | N/A |
 
-**Path:** Merge PR → `stage` → Staging Deploy + Staging smoke → **13** H4–H5. Do **not** open feature→`main`.
+**Path:** Merge #985 → `stage` → Staging Deploy + Staging smoke → **13** H4–H5. Do **not** open feature→`main`.
 
 ## Pre-Deploy
 
@@ -32,8 +32,8 @@
 - [x] Rollback — prior GHCR/DOKS tag on staging
 - [x] H0c CORS — `tests/unit/test_cors_policy.py` **6/6 PASS** (09-qa)
 - [x] Connectivity scripts — `scripts/deploy/verify_connectivity.sh` + `tests/smoke/test_staging_connectivity.py` present
-- [x] Branch pushed — tip `abeba590`
-- [ ] Tip CI green — pending on [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985)
+- [x] Branch pushed — tip `442a13a6`
+- [x] Tip CI green — [31532920375](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31532920375) @ `442a13a6` (prior fail `31532484425` fixed: orchestrator native-path coverage)
 - [x] PR open — [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985)
 - [ ] Merge + Staging CD — pending user merge after CI
 - [ ] Post-deploy H1 + **H4–H5** (13)
@@ -42,9 +42,9 @@
 
 | # | Risk | Mitigation | Status |
 |---|------|------------|--------|
-| 1 | Image/CD failure on stage | Tip CI on PR before merge | pending CI |
+| 1 | Image/CD failure on stage | Tip CI on PR #985 before merge | **approved** (CI green) |
 | 2 | Staging CORS miss for Quality metrics XHR | Existing CORS matrix; H4 at 13 | verify at 13 |
-| 3 | Native Schematron/XSD path regression on stage image | TC-EV055-004/005 + unit gates | approved (local) |
+| 3 | Native Schematron/XSD path regression on stage image | TC-EV055-004/005 + unit gates + CI coverage | approved |
 | 4 | C14N pane/override UX miss | UJ-056 T0 PASS; live at 13 | verify at 13 |
 | 5 | Accidental promote to main | Dual-env rule: stage smoke + Staging gate only | approved |
 
@@ -56,9 +56,9 @@
 
 ## Recommended path (13)
 
-1. Tip CI green on PR → `stage`.
+1. Tip CI green on `442a13a6` / PR #985 — **done**.
 2. User approve this checklist (12).
-3. **Merge** PR → `stage` (explicit approval) → Staging Deploy + Staging smoke.
+3. **Merge** #985 → `stage` (explicit approval) → Staging Deploy + Staging smoke.
 4. H1–H3 → **H4–H5** via `verify_connectivity.sh` + optional live UJ-056.
 5. Later: promote `stage`→`main` only after Staging gate green (not this AskQuestion).
 
