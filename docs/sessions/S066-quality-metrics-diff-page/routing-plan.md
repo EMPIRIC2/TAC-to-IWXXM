@@ -21,9 +21,7 @@
 | 07-build | no | — | skipped | Implementation via 16 Agent after Gate A (Lean) |
 | 08-verify-build | no | — | skipped | Lean |
 | 09-qa | no | — | skipped | Lean |
-| 10-e2e | yes | delta | pending | UJ-056 / Playwright deepen |
-| 11-verify-impl | no | — | skipped | Lean |
-| 12-verify-deploy | no | — | skipped | Lean — merge path via 13 |
+| 10-e2e | yes | delta | **completed** | UJ-056 3/3 PASS local; H4–H5 via 13 |
 | 13-deploy-smoke | yes | delta | pending | Staging smoke after PR → stage |
 
 ## Recommended ordered stages
