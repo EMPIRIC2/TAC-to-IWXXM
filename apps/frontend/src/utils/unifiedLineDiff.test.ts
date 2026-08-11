@@ -26,6 +26,19 @@ describe('unifiedLineDiff', () => {
     expect(isUnifiedDiffEmpty(lines)).toBe(false);
   });
 
+  it('emits trailing removes when left is longer', () => {
+    const lines = unifiedLineDiff('a\nb\nc', 'a');
+    expect(lines.filter((l) => l.op === 'remove').map((l) => l.text)).toEqual([
+      'b',
+      'c',
+    ]);
+  });
+
+  it('emits trailing adds when right is longer', () => {
+    const lines = unifiedLineDiff('a', 'a\nb\nc');
+    expect(lines.filter((l) => l.op === 'add').map((l) => l.text)).toEqual(['b', 'c']);
+  });
+
   it('splitLines normalizes CRLF', () => {
     expect(splitLines('a\r\nb\r\n')).toEqual(['a', 'b', '']);
   });

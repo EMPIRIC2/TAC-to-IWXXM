@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**07 COMPLETE (M1–M5)** — handoff **08-verify-build**; PR → stage after 08; board In progress until PR
+**08-verify-build in progress** — local Gate C; then draft/open PR → `stage` for tip CI; next **09-qa** after Gate C PASS
 
 ## Risks / open decisions
 

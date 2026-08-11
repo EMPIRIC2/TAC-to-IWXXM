@@ -51,6 +51,11 @@ def make_result(layer: ValidationLayer, passed: bool = True, code: str | None = 
     return ValidationResult(passed=passed, layer=layer, issues=issues)
 
 
+def force_legacy_xml_validators(monkeypatch) -> None:
+    """Disable native iwxxm-validate so unit tests exercise lxml validators."""
+    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: False)
+
+
 class TestValidationOrchestratorBranches:
     """Exercise key validation orchestrator decision branches."""
 
@@ -90,6 +95,7 @@ class TestValidationOrchestratorBranches:
 
     def test_validate_xml_schema_helper_delegates_to_xsd_validator(self, monkeypatch):
         """Schema helper should delegate directly to the XSD validator."""
+        force_legacy_xml_validators(monkeypatch)
         orchestrator = ValidationOrchestrator()
         captured = {}
         expected = DummyValidationOutcome(True, [])
@@ -332,6 +338,7 @@ class TestValidationOrchestratorBranches:
 
     def test_parallel_layer_warning_paths(self, monkeypatch):
         """Setup warnings for parallel layers should not fail entire run."""
+        force_legacy_xml_validators(monkeypatch)
         orchestrator = ValidationOrchestrator()
 
         monkeypatch.setattr(orchestrator, "schematron_validator", None)
@@ -368,6 +375,7 @@ class TestValidationOrchestratorBranches:
 
     def test_parallel_layer_runtime_error_adds_validation_error(self, monkeypatch):
         """Runtime failures from parallel futures should mark the layer as failed."""
+        force_legacy_xml_validators(monkeypatch)
         orchestrator = ValidationOrchestrator()
 
         class _BoomValidator:
@@ -697,6 +705,7 @@ class TestValidationOrchestratorBranches:
 
     def test_parallel_future_result_with_issues_and_failure(self, monkeypatch):
         """Parallel future returning issues+failure covers lines 374-375 and 380."""
+        force_legacy_xml_validators(monkeypatch)
         orchestrator = ValidationOrchestrator()
 
         issue = make_issue(ValidationLayer.SCHEMATRON, "SCH_FAIL")

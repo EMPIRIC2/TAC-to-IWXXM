@@ -63,12 +63,12 @@ active_session:
     - stage: 07-build
       mode: delta
       required: true
-      status: in_progress
+      status: completed
       skip_rationale: null
     - stage: 08-verify-build
       mode: delta
       required: true
-      status: pending
+      status: in_progress
       skip_rationale: null
     - stage: 09-qa
       mode: delta
@@ -95,11 +95,11 @@ active_session:
       required: true
       status: pending
       skip_rationale: null
-  current_stage: 07-build
-  current_stage_note: "07-build in_progress — M1 complete (T1.1–T1.4 @ 4b49adb3); next M2 C14N; tip 4b49adb3"
-  tip_sha: 4b49adb3
-  tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
-  tip_sha_pushed: false
+  current_stage: 08-verify-build
+  current_stage_note: "08-verify-build in_progress — post 07 M1–M5 @ 333cd694; delta verify before PR to stage"
+  tip_sha: 333cd694
+  tip_sha_full: 333cd6947e46ba528ad4a83f29d06248de2b4cc9
+  tip_sha_pushed: true
   tip_sha_note: "HEAD 4b49adb3 ([T1.1-T1.4] native 2025-2 Schematron/XSD); tip_sha_pushed=false; ahead of stage by 6; M1 done → M2 C14N"
   started_at: "2026-08-11"
   started: "2026-08-11"
@@ -15295,7 +15295,7 @@ stages:
     - D-S039-tls
     - D-S039-route
   08-verify-build:
-    status: completed
+    status: in_progress
     mode: delta
     started_at: '2026-08-10'
     started: '2026-08-10'
@@ -36869,9 +36869,9 @@ evolve_cycles:
   tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
   tip_sha_pushed: false
   tip_sha_note: "HEAD 4b49adb3 ([T1.1-T1.4] native 2025-2 Schematron/XSD); tip_sha_pushed=false; M1 done → M2 C14N"
-  current_stage: 07-build
+  current_stage: 08-verify-build
   current_stage_status: in_progress
-  current_stage_note: "07-build in_progress — M1 complete (T1.1–T1.4 @ 4b49adb3); next M2 C14N"
+  current_stage_note: "08-verify-build in_progress — post 07 M1–M5 @ 333cd694; delta verify before PR to stage"
   started: "2026-08-11"
   started_at: "2026-08-11"
   completed: false

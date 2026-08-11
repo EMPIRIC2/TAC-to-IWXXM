@@ -39,6 +39,11 @@ function localName(name: string): string {
   return name;
 }
 
+/** @internal Vitest/helper export — Clark / prefixed local-name parity with Python. */
+export function localNameForC14n(name: string): string {
+  return localName(name);
+}
+
 function normText(value: string): string {
   return value.trim().split(/\s+/).join(' ');
 }

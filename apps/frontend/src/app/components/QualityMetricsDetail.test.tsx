@@ -140,4 +140,21 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
   it('qualityMetricsDisplayXml falls back to raw on malformed input', () => {
     expect(qualityMetricsDisplayXml('<not-closed>')).toBe('<not-closed>');
   });
+
+  it('qualityMetricsDisplayXml returns empty for blank input', () => {
+    expect(qualityMetricsDisplayXml('')).toBe('');
+    expect(qualityMetricsDisplayXml('   ')).toBe('');
+    expect(qualityMetricsDisplayXml(undefined as unknown as string)).toBe('');
+  });
+
+  it('formats validate diagnostics without a message via JSON', () => {
+    const detail: QualityMetricsDetailResponse = {
+      ...FORMATTING_ONLY,
+      validate_issues: [{ code: 'X', other: true }],
+    };
+    render(<QualityMetricsDetail detail={detail} />);
+    expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent(
+      '"code":"X"',
+    );
+  });
 });

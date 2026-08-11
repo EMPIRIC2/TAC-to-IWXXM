@@ -376,6 +376,11 @@ class ValidationOrchestrator:
                 # Layer 5: SCHEMATRON
                 if ValidationLayer.SCHEMATRON in parallel_layers:
                     try:
+                        # Native-first (EV-055); legacy lxml only when Rust unavailable.
+                        from iwxxm_validate import rust_available as _rust_schematron_ok
+
+                        if not _rust_schematron_ok() and self.schematron_validator is None:
+                            raise RuntimeError("Schematron validator unavailable")
                         futures[ValidationLayer.SCHEMATRON] = executor.submit(
                             self._validate_schematron, xml_content, version
                         )
