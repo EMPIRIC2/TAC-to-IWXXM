@@ -23,6 +23,8 @@ import type {
   LintIssueCatalogEntry,
   LintIssueCatalogResponse,
   LintTacResponse,
+  QualityMetricsDetailResponse,
+  QualityMetricsListResponse,
   ValidateResponse,
 } from './openapiTypes';
 
@@ -42,6 +44,8 @@ export type {
   LintIssueCatalogEntry,
   LintIssueCatalogResponse,
   LintTacResponse,
+  QualityMetricsDetailResponse,
+  QualityMetricsListResponse,
   ValidateResponse,
 };
 
@@ -478,6 +482,77 @@ export async function fetchLintIssueCatalog(params?: {
 }
 
 /**
+ * List precomputed official-corpus quality metrics.
+ *
+ * **Endpoint**: GET /api/v1/quality-metrics
+ *
+ * @param params.product - Optional product filter (e.g. metar)
+ * @returns Summaries and file inventory rows
+ */
+export async function fetchQualityMetrics(params?: {
+  product?: string;
+  signal?: AbortSignal;
+}): Promise<QualityMetricsListResponse> {
+  const qs =
+    params?.product && params.product.trim()
+      ? `?product=${encodeURIComponent(params.product.trim().toLowerCase())}`
+      : '';
+  const response = await withTimeout(
+    fetch(apiUrl(`/quality-metrics${qs}`), {
+      method: 'GET',
+      signal: params?.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Quality metrics fetch failed: ${response.statusText}`,
+    }));
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
+  }
+
+  const body = (await response.json()) as QualityMetricsListResponse;
+  return {
+    generated_at: body.generated_at,
+    iwxxm_pin: body.iwxxm_pin,
+    summaries: body.summaries ?? [],
+    files: body.files ?? [],
+  };
+}
+
+/**
+ * Fetch quality metrics detail for one corpus stem.
+ *
+ * **Endpoint**: GET /api/v1/quality-metrics/{stem}
+ *
+ * @param params.stem - Catalog / fixture stem (e.g. metar-A3-1)
+ * @returns Per-stem TAC, XML, match, residuals, lint, validate
+ */
+export async function fetchQualityMetricsDetail(params: {
+  stem: string;
+  signal?: AbortSignal;
+}): Promise<QualityMetricsDetailResponse> {
+  const stem = encodeURIComponent(params.stem.trim());
+  const response = await withTimeout(
+    fetch(apiUrl(`/quality-metrics/${stem}`), {
+      method: 'GET',
+      signal: params.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Quality metrics detail failed: ${response.statusText}`,
+    }));
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
+  }
+
+  return (await response.json()) as QualityMetricsDetailResponse;
+}
+
+/**
  * Decode TAC into ordered Code | Explanation segments.
  *
  * **Endpoint**: POST /api/v1/decode-tac
@@ -676,6 +751,8 @@ export default {
   validateIwxxm,
   decodeTac,
   fetchLintIssueCatalog,
+  fetchQualityMetrics,
+  fetchQualityMetricsDetail,
   fetchAirportRegion,
   massIngestFiles,
   downloadBlob,

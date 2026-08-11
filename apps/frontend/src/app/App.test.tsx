@@ -124,6 +124,12 @@ vi.mock('./components/MyMetarsPage', () => ({
   ),
 }));
 
+vi.mock('./components/QualityMetricsPage', () => ({
+  QualityMetricsPage: () => <div data-testid="quality-metrics-page" />,
+  QUALITY_METRICS_PAGE_TITLE: 'Quality metrics',
+  QUALITY_METRICS_DEFERRED_LABEL: 'Deferred gap',
+}));
+
 vi.mock('./components/ThemeProvider', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -193,6 +199,29 @@ describe('App Component (F31 optional Auth)', () => {
     expect(screen.getByTestId('history-view')).toBeInTheDocument();
     await user.click(screen.getByTestId('back-converter'));
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+  });
+
+  it('reaches Quality metrics via primary shell nav (TC-EV054-001)', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(screen.getByTestId('app-shell-nav')).toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-converter')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    await user.click(screen.getByTestId('shell-nav-quality'));
+    expect(screen.getByTestId('quality-metrics-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+    expect(screen.getByTestId('shell-nav-quality')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    await user.click(screen.getByTestId('shell-nav-history'));
+    expect(screen.getByTestId('history-view')).toBeInTheDocument();
+    expect(screen.queryByTestId('quality-metrics-page')).not.toBeInTheDocument();
   });
 
   it('resumes an active draft from IndexedDB on load', async () => {

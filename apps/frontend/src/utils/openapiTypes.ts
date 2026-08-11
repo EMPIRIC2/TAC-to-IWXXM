@@ -92,3 +92,23 @@ export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
 export type LintIssueCatalogResponse = {
   issues: LintIssueCatalogEntry[];
 };
+
+export type QualityMetricsSummary = Schemas['QualityMetricsSummaryModel'];
+export type QualityMetricsFileRow = Schemas['QualityMetricsFileRowModel'];
+
+export type QualityMetricsListResponse = {
+  generated_at: string;
+  iwxxm_pin: string;
+  summaries: QualityMetricsSummary[];
+  files: QualityMetricsFileRow[];
+};
+
+export type QualityMetricsDetailResponse = Schemas['QualityMetricsDetailResponse'] & {
+  stem: string;
+  product: string;
+  tier: string;
+  match_status: string;
+  residuals: Record<string, unknown>[];
+  lint_issues: Record<string, unknown>[];
+  validate_issues: Record<string, unknown>[];
+};

@@ -2230,6 +2230,216 @@
         "title": "PendingFilePayload",
         "type": "object"
       },
+      "QualityMetricsDetailResponse": {
+        "description": "Response for GET /api/v1/quality-metrics/{stem}.",
+        "properties": {
+          "converted_xml": {
+            "default": "",
+            "title": "Converted Xml",
+            "type": "string"
+          },
+          "deferral_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deferral Reason"
+          },
+          "deferred": {
+            "default": false,
+            "title": "Deferred",
+            "type": "boolean"
+          },
+          "lint_issues": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Lint Issues",
+            "type": "array"
+          },
+          "match_status": {
+            "title": "Match Status",
+            "type": "string"
+          },
+          "official_xml": {
+            "default": "",
+            "title": "Official Xml",
+            "type": "string"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "residuals": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Residuals",
+            "type": "array"
+          },
+          "stem": {
+            "title": "Stem",
+            "type": "string"
+          },
+          "tac": {
+            "default": "",
+            "title": "Tac",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "validate_issues": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Validate Issues",
+            "type": "array"
+          }
+        },
+        "required": [
+          "stem",
+          "product",
+          "tier",
+          "match_status"
+        ],
+        "title": "QualityMetricsDetailResponse",
+        "type": "object"
+      },
+      "QualityMetricsFileRowModel": {
+        "description": "Slim inventory row for the corpus file list.",
+        "properties": {
+          "deferred": {
+            "default": false,
+            "title": "Deferred",
+            "type": "boolean"
+          },
+          "lint_error_count": {
+            "default": 0,
+            "title": "Lint Error Count",
+            "type": "integer"
+          },
+          "match_status": {
+            "title": "Match Status",
+            "type": "string"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "residual_count": {
+            "default": 0,
+            "title": "Residual Count",
+            "type": "integer"
+          },
+          "stem": {
+            "title": "Stem",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "validate_error_count": {
+            "default": 0,
+            "title": "Validate Error Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "stem",
+          "product",
+          "tier",
+          "match_status"
+        ],
+        "title": "QualityMetricsFileRowModel",
+        "type": "object"
+      },
+      "QualityMetricsListResponse": {
+        "description": "Response for GET /api/v1/quality-metrics.",
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/QualityMetricsFileRowModel"
+            },
+            "title": "Files",
+            "type": "array"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "iwxxm_pin": {
+            "title": "Iwxxm Pin",
+            "type": "string"
+          },
+          "summaries": {
+            "items": {
+              "$ref": "#/components/schemas/QualityMetricsSummaryModel"
+            },
+            "title": "Summaries",
+            "type": "array"
+          }
+        },
+        "required": [
+          "generated_at",
+          "iwxxm_pin"
+        ],
+        "title": "QualityMetricsListResponse",
+        "type": "object"
+      },
+      "QualityMetricsSummaryModel": {
+        "description": "Per-product aggregate counts for the corpus browser.",
+        "properties": {
+          "deferred_gaps": {
+            "default": 0,
+            "title": "Deferred Gaps",
+            "type": "integer"
+          },
+          "lint_fail": {
+            "default": 0,
+            "title": "Lint Fail",
+            "type": "integer"
+          },
+          "match_fail": {
+            "default": 0,
+            "title": "Match Fail",
+            "type": "integer"
+          },
+          "match_pass": {
+            "default": 0,
+            "title": "Match Pass",
+            "type": "integer"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "residual_nonempty": {
+            "default": 0,
+            "title": "Residual Nonempty",
+            "type": "integer"
+          },
+          "validate_fail": {
+            "default": 0,
+            "title": "Validate Fail",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "title": "QualityMetricsSummaryModel",
+        "type": "object"
+      },
       "SessionResponse": {
         "description": "Session tokens.",
         "properties": {
@@ -4217,6 +4427,101 @@
         "summary": "Lint Tac",
         "tags": [
           "Validation"
+        ]
+      }
+    },
+    "/api/v1/quality-metrics": {
+      "get": {
+        "description": "Serve product summaries and file inventory from the precomputed artifact.",
+        "operationId": "list_quality_metrics_api_v1_quality_metrics_get",
+        "parameters": [
+          {
+            "description": "Optional product filter (e.g. metar, taf, sigmet)",
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional product filter (e.g. metar, taf, sigmet)",
+              "title": "Product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityMetricsListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List corpus quality metrics",
+        "tags": [
+          "Quality metrics"
+        ]
+      }
+    },
+    "/api/v1/quality-metrics/{stem}": {
+      "get": {
+        "description": "Serve per-stem TAC / XML / match / residual / lint / validate detail.",
+        "operationId": "get_quality_metrics_detail_api_v1_quality_metrics__stem__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "stem",
+            "required": true,
+            "schema": {
+              "title": "Stem",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityMetricsDetailResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Corpus quality metrics for one stem",
+        "tags": [
+          "Quality metrics"
         ]
       }
     },

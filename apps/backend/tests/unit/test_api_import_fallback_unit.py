@@ -179,6 +179,10 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         install_fastapi_observability=lambda **_kwargs: None,
         setup_logging=lambda *_args, **_kwargs: None,
     )
+    fake_util_sentry = _stub_module(
+        "utilities.sentry_init",
+        init_sentry=lambda **_kwargs: None,
+    )
     fake_util_abuse = _stub_module(
         "utilities.abuse_controls",
         install_abuse_controls=lambda *_a, **_k: None,
@@ -196,6 +200,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         evaluation=fake_router_module,
         icao_opmet=fake_router_module,
         mass_ingest=fake_router_module,
+        quality_metrics=fake_router_module,
         validation=fake_router_module,
         work_sessions=fake_router_module,
     )
@@ -227,6 +232,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities.conversion": fake_util_conversion,
         "utilities.metar_normalizer": fake_util_metar_normalizer,
         "utilities.observability": fake_util_observability,
+        "utilities.sentry_init": fake_util_sentry,
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,
         "iwxxm_validate": _stub_module(

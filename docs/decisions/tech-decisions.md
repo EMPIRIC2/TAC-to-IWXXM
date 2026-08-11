@@ -1,7 +1,19 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-08-08 (S057 / EV-048)
+> Last updated: 2026-08-10 (S063 / EV-054)
+
+## S063 / EV-054 05-verify-tech (2026-08-10)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| D-S063-04-plan | 2026-08-10 | Plan | Approve M1–M5 / 15 tasks; single corpus blob; no npm `diff` | confirmed |
+| C1 | 2026-08-10 | Task count | **15** tasks (not 18) | confirmed |
+| C2 | 2026-08-10 | TDD | Keep Impl→Test; milestone exit requires tests green | confirmed |
+| C3–C7 | 2026-08-10 | Hygiene | UJ/API/test-plan/evolve-decisions/H4–H5 handoff fixed | confirmed |
+| D-S063-05 | 2026-08-10 | Gate B | PASS → 07-build M1 (06 skipped) | confirmed |
+
+Session report: `docs/sessions/S063-quality-metrics-tab/reports/05-verify-tech.md`.
 
 ## S057 / EV-048 05-verify-tech (2026-08-08)
 

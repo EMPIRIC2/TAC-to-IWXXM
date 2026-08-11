@@ -1,9 +1,8 @@
-# Implementation Verification — S050 / EV-042
+# Implementation verification — EV-054 / S063
 
-> Canonical session report: [`docs/sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md`](../sessions/S050-remove-db-tools-operator-throughput/reports/verify-impl.md)
+> Synced from `docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md`  
+> Date: 2026-08-10 · Tip: `be9e3b07`
 
-**Status:** APPROVED (`D-S050-11-verify`) — F33 + F7/F16–F19 deepen + UJ-051..053.  
-**Tip:** `adad127c` · [Corpus: product §F7/F16–F19/F33]  
-**T3/H4–H5:** waived until **13-deploy-smoke**.
+**Verdict:** User-approved (`D-S063-11=1`). F7.q Quality metrics tab (#836) matches AC1–AC7 locally; UJ-056 T0 PASS; live H4–H5 and tip CI deferred to PR → stage + 12/13.
 
-Next: **12-verify-deploy**.
+**Corpus:** [Corpus: product §F7] [Corpus: journeys §UJ-056] [Corpus: tests]

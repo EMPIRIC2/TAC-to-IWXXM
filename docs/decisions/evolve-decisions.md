@@ -3,6 +3,111 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-054 — Quality metrics tab / official IWXXM corpus (#836) (S063)
+
+**Session**: S063-quality-metrics-tab  
+**Features**: deepen **F7** (note **F7.q** in feature-list; no new top-level Fn)  
+**Started**: 2026-08-10  
+**Branch**: `evolve/EV-054-quality-metrics-tab` (base `stage@f2926ac8`)  
+**Status**: **in_progress** — Phase C: **07-build M1–M5 COMPLETE**; next **08-verify-build**  
+**Issue**: [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836)  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F25] [Corpus: journeys]
+[Corpus: tests] [Corpus: adr/ADR-032] [Corpus: adr/ADR-025] [Corpus: api]
+[Corpus: system-spec] [Corpus: decisions §EV-054]
+
+### Scope (Phase 0–1 — locked 2026-08-10)
+
+| ID | Decision |
+|----|----------|
+| D-S063-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→10→11→12→13`; skip `03,06` (05 re-enabled Gate A) |
+| D-S063-ui-preview | **2** — No non-deployed UI preview at open; docs/repo only |
+| D-S063-scope | **1** — Full #836 scope (not METAR/SPECI-only shell); iterative ship OK in build |
+| D-S063-fn | **1** — Deepen **F7** only; document **F7.q** as sub-id note (no F34) |
+| D-S063-compute | **1** — Prefer **precomputed** fixture/CI metrics JSON for default view; on-demand refresh optional later |
+| D-S063-01-manifest | **1** — feature-list + journeys (UJ-056) + test-plan + decisions; skip API/config unless 04 needs them |
+| D-S063-01-ac | **1** — Lock AC1–AC7 |
+| D-S063-diff | **2** — Unified XML diff in v1 (plus inspectable raw panes) |
+| D-S063-shell-tab | **1** — **Separate primary app-shell tab** (peer to Convert / History), not a FileConverter panel |
+| D-S063-gateA | **2** — PASS Gate A; **require public metrics HTTP API in v1** (re-open api-contract; override FE-only bundle M1) |
+| D-S063-04-plan | **1** — Approve 04 execution plan as drafted (single corpus blob; no npm `diff`) |
+| D-S063-05 | **1** — Gate B PASS; C1=15 tasks; C2 keep Impl→Test (milestone-exit green); C3–C7 hygiene applied |
+
+### Approved scope (verbatim)
+
+Add an operator **Quality metrics** primary shell tab (F7.q / F7 deepen — **not** a panel
+inside the convert workbench) that imports the official WMO IWXXM example corpus
+(vendor pin + mirrored TAC peers) and lets operators explore conversion quality **by
+file / product type**: corpus browser, official match / comparison with **unified XML
+diff**, residuals, lint issues, validation issues, and drill-down. Default view offline /
+bundled (precomputed metrics JSON). UI complements CI matrices (#815 / #831); does not
+replace them.
+
+### Out of scope
+
+- Replacing CI residual / encode / lint matrices
+- Promoting `wmoReference` → `wmoPass` encode equality
+- Live re-download of upstream WMO trees on every page load
+- New products beyond catalog / F6 (+ deferred) inventory
+- Mutation testing (#874), Schemathesis (#727)
+- Workbench epic (#840) unless tiny deep-link
+- `stage`→`main` unless explicitly approved later
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`.
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product §F7]` | cite | Fn deepen + F7.q note | |
+| `[Corpus: product §F25]` / F7.g | cite | catalog inventory | |
+| `[Corpus: journeys]` | cite | new UJ + UJ-039 deepen | |
+| `[Corpus: tests]` | cite | H4–H5 / Playwright smoke | |
+| `[Corpus: adr/ADR-032]` | cite | wmoPass / wmoReference tiers | |
+| `[Corpus: adr/ADR-025]` | cite | decode residuals | |
+| — | waiver | none | |
+
+### Acceptance (locked `D-S063-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Separate primary Quality metrics tab; corpus by product / file type | TC-EV054-001..002 |
+| AC2 | File select → official + our XML/TAC + match + **unified XML diff** | TC-EV054-003 |
+| AC3 | Residuals / lint / validate panels (empty when clean) | TC-EV054-004 |
+| AC4 | Product summary counts match precomputed fixture via `GET /quality-metrics` | TC-EV054-005 / 008 |
+| AC5 | Gap / deferred stems labeled; no silent omissions | TC-EV054-002 |
+| AC6 | H4–H5 or Playwright: open → filter → passer → expected diagnostics | TC-EV054-007 |
+| AC7 | No Supabase / no live WMO fetch; metrics from public API + precomputed fixtures | TC-EV054-006 / 008 |
+
+Journey: **UJ-056**. API: [Corpus: api] `GET /api/v1/quality-metrics*`.
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-10 | D-S063-route=1; ui-preview=2; board #836 In progress |
+| 16-evolve Phase 0–1 | 2026-08-10 | scope/fn/compute locked |
+| 01-requirements | 2026-08-10 | D-S063-01-ac=1; diff=2; shell-tab=1; UJ-056 + TC-EV054 |
+| 02-verify-plan | 2026-08-10 | Gate A PASS (`D-S063-gateA=2`); api-contract reopened; **05 re-enabled** |
+| 04-tech-plan | 2026-08-10 | `D-S063-04-plan=1` — M1→M5 / 15 tasks; client-side line diff; single corpus blob |
+| 05-verify-tech | 2026-08-10 | `D-S063-05=1` — Gate B PASS; C1–C7 resolved; handoff 07 M1 |
+| 07-build M1–M4 | 2026-08-10 | Generator + API + shell/list + detail/diff; tip through `6a385f79` |
+| 07-build M5 | 2026-08-10 | T5.1 Playwright UJ-056 / TC-EV054-007 green; T5.2 `make generate-quality-metrics`; T5.3 docs + tip push |
+| 08-verify-build | 2026-08-10 | Gate C local PASS — lint/format/typecheck/units/H0c/UJ-056; `reports/verification-report.md`; CI via PR→stage |
+
+### Build M5 notes (2026-08-10)
+
+| Item | Evidence |
+|------|----------|
+| Playwright | `apps/e2e/uj056-quality-metrics.e2e.spec.ts` — open tab → METAR filter → `metar-A3-1` detail + deferred `metar-NIL-collect`; asserts list/detail API calls |
+| Diff pane | Semantic `match_status=equal` may still show line hunks (gml:id / whitespace); assert `unified-diff` + empty\|body |
+| Regen | `make generate-quality-metrics` → `scripts/ci/generate_quality_metrics.py`; artifact README notes CI does not auto-regen |
+| E2E badge | README `E2E_tests-82` |
+| H4–H5 live | Deferred to stages **12/13** after staging deploy (C7) |
+
+---
+
 ## Cycle EV-053 — Vitest branches ≥95 FileConverter follow-up (S062)
 
 **Session**: S062-vitest-branches-95  
