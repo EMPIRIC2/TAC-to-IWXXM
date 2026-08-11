@@ -18,8 +18,8 @@
 | 09-qa | yes | delta | **completed** | `qa-report.md` PASS @ `af7b61dc` |
 | 10-e2e | yes | delta | **completed** | `e2e-report.md` UJ-056 2/2 PASS |
 | 11-verify-impl | yes | delta | **completed** | PASS `D-S064-11=1`; `D-S064-ui-preview-11=1`; `D-S064-uj056=1` |
-| 12-verify-deploy | yes | delta | **in_progress** | PR [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → stage; tip CI watch |
-| 13-deploy-smoke | yes | delta | pending | Staging smoke; promote only if asked |
+| 12-verify-deploy | yes | delta | **completed** | `D-S064-12=1` — checklist APPROVED; merge #985 → stage |
+| 13-deploy-smoke | yes | delta | **in_progress** | Staging Deploy + H1–H5 after merge |
 
 ## Recommended ordered stages
 
@@ -64,3 +64,5 @@
 | D-S064-ui-preview-11 | **1** — Non-deployed preview at http://127.0.0.1:18000/ |
 | D-S064-uj056 | **1** — Approve UJ-056; waive live T3 until 12/13 |
 | D-S064-11 | **1** — Approve F7.q + F2/F13; proceed toward 12 |
+| D-S064-12-start | **1** — continue → 12; open PR→stage |
+| D-S064-12 | **1** — Approve checklist + merge #985 → stage → 13 |

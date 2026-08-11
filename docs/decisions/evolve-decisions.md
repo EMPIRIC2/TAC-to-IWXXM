@@ -47,6 +47,13 @@
 | D-S064-05 | **1** — Gate B PASS; C1 resolved; → 07 M1 |
 | D-S064-c14n-volatile | **1** — C14N **after** volatile-attr strip (`gml:id` / UUID / codes.wmo.int hrefs per ADR-032 rules); not pure C14N; not C14N-of-ADR-032-repr — ADR-035 amend 2026-08-11 |
 | D-S064-m5 | **1** — M5 local Playwright deepen done; tip push for CI; board stays **In progress** until implementing PR opens (`D-S064-board=1`) |
+| D-S064-gateC | **1** — PASS Gate C; push tip + continue 09-qa |
+| D-S064-09-10-continue | **1** — continue → 11-verify-impl |
+| D-S064-ui-preview-11 | **1** — Non-deployed preview at http://127.0.0.1:18000/ |
+| D-S064-uj056 | **1** — Approve UJ-056; waive live T3 until 12/13 |
+| D-S064-11 | **1** — Approve F7.q + F2/F13 deepen; proceed toward 12 |
+| D-S064-12-start | **1** — continue → 12-verify-deploy; open PR→stage |
+| D-S064-12 | **1** — Approve checklist + merge #985 → `stage`, then continue 13 |
 
 ### Build closeout (07 — M1–M5)
 

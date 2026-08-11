@@ -1,11 +1,11 @@
 # Deploy Checklist — S064 / EV-055 (12-verify-deploy)
 
 > Generated: 2026-08-11  
-> Status: **READY** — tip CI green; awaiting user sign-off  
+> Status: **APPROVED** (`D-S064-12=1`) — merge #985 → `stage` → 13  
 > Prior: 11 **APPROVED** (`D-S064-11=1`)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · dual DOKS (ADR-034)  
-> Tip: `442a13a6` · PR [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → `stage`  
-> Tip CI: [CI/CD Pipeline 31532920375](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31532920375) **success**  
+> Tip: `1099fb5c` · PR [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → `stage`  
+> Tip CI: [CI/CD Pipeline 31533338595](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31533338595) **success** @ `1099fb5c` (code tip also green [31532920375](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31532920375) @ `442a13a6`)  
 > `env_role`: **staging** first (PR → `stage` → cluster `metar-iwxxm-staging`); promote to prod later via `stage`→`main` only  
 > Corpus: [Corpus: tech-spec] [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: tests]  
 > connectivity-gates §12–13
@@ -32,10 +32,10 @@
 - [x] Rollback — prior GHCR/DOKS tag on staging
 - [x] H0c CORS — `tests/unit/test_cors_policy.py` **6/6 PASS** (09-qa)
 - [x] Connectivity scripts — `scripts/deploy/verify_connectivity.sh` + `tests/smoke/test_staging_connectivity.py` present
-- [x] Branch pushed — tip `442a13a6`
-- [x] Tip CI green — [31532920375](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31532920375) @ `442a13a6` (prior fail `31532484425` fixed: orchestrator native-path coverage)
+- [x] Branch pushed — tip `1099fb5c`
+- [x] Tip CI green — [31533338595](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31533338595) @ `1099fb5c` (prior fail `31532484425` fixed: orchestrator native-path coverage)
 - [x] PR open — [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985)
-- [ ] Merge + Staging CD — pending user merge after CI
+- [x] Merge + Staging CD — approved (`D-S064-12=1`); merge in progress / follow 13
 - [ ] Post-deploy H1 + **H4–H5** (13)
 
 ## Failure Mitigations
@@ -56,8 +56,8 @@
 
 ## Recommended path (13)
 
-1. Tip CI green on `442a13a6` / PR #985 — **done**.
-2. User approve this checklist (12).
+1. Tip CI green on `1099fb5c` / PR #985 — **done**.
+2. User approve this checklist (12) — **`D-S064-12=1`**.
 3. **Merge** #985 → `stage` (explicit approval) → Staging Deploy + Staging smoke.
 4. H1–H3 → **H4–H5** via `verify_connectivity.sh` + optional live UJ-056.
 5. Later: promote `stage`→`main` only after Staging gate green (not this AskQuestion).
@@ -65,5 +65,5 @@
 ## Sign-Off
 
 - [x] User approved implementation (11) — `D-S064-11=1`
-- [ ] User approved deploy strategy (this checklist) — pending
-- [ ] Ready for 13-deploy-smoke after merge + CI green
+- [x] User approved deploy strategy (this checklist) — `D-S064-12=1`
+- [x] Ready for 13-deploy-smoke after merge + Staging CD

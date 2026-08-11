@@ -26,12 +26,12 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**12-verify-deploy in progress** — PR [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → `stage`; watch tip CI; then 13
+**13-deploy-smoke** — after merge #985 → `stage` (`D-S064-12=1`); Staging Deploy + H1–H5
 
 ## Risks / open decisions
 
 - Native Schematron xslt2 support may be hard — cycle blocks/re-scopes if enable impossible (`D-S064-sch-hard=1`)
 - XSD import fix may need catalog/packaging changes (`D-S064-xsd-hard=1`)
-- Board WIP 3 > policy ≤2 (explicit override)
+- Board WIP 3 > policy ≤2 (explicit override) — move to **On stage** after Staging smoke green
 - C14N regen may churn large `corpus_metrics` fixtures — mitigated by volatile-attr strip before C14N (`D-S064-c14n-volatile=1`)
-- Live H4–H5 for UJ-056 remains stages 12/13 after staging deploy
+- Live H4–H5 for UJ-056 in progress at 13
