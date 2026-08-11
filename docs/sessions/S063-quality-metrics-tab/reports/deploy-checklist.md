@@ -1,7 +1,7 @@
 # Deploy Checklist — S063 / EV-054 (12-verify-deploy)
 
 > Generated: 2026-08-10  
-> Status: **READY** — tip CI green; awaiting user sign-off  
+> Status: **APPROVED** (`D-S063-12=1`) — tip CI green; merge #977 → stage then 13  
 > Prior: 11 **APPROVED** (`D-S063-11=1`)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · dual DOKS (ADR-034)  
 > Tip: `6dd76b66` · PR [#977](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977) → `stage`  

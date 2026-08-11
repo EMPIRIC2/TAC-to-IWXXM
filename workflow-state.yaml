@@ -21,16 +21,26 @@ active_session:
   branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   branch_status: active
   branch_exists: true
-  tip_sha: 6dd76b66
-  tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+  tip_sha: 4fd51e39
+  tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   tip_sha_pushed: true
-  tip_sha_note: "HEAD 6dd76b66 (12-verify-deploy in_progress; PR #977→stage; tip CI 31449643455 success; deploy-checklist awaiting D-S063-12 sign-off; #836 In review); tip_sha_pushed=true"
+  tip_sha_note: "stage@4fd51e39 (PR #977 MERGED; 13-deploy-smoke in_progress awaiting D-S063-13; tip CI/CD 31453072506 success Deploy stage + Staging smoke; H0c/H1/H3/H4/H5 + live UJ-056 PASS; #836 On stage); tip_sha_pushed=true"
+  tip_before_merge: f7cdafb1
+  tip_before_merge_full: f7cdafb1bd0b14b15e2ea9244f3bc53a34389056
   pr_number: 977
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
-  pr_status: open
+  pr_status: merged
+  pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+  pr_merge_commit_short: 4fd51e39
+  merge_sha: 4fd51e39
+  merge_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   pr_base: stage
-  tip_ci_run: '31449643455'
+  tip_ci_run: '31453072506'
   tip_ci_status: success
+  stage_ci_cd_pipeline_run: '31453072506'
+  stage_ci_cd_pipeline_status: SUCCESS
+  stage_ci_cd_pipeline_note: "Deploy (stage) + Staging smoke SUCCESS"
+  env_role: staging
   artifacts_dir: docs/sessions/S063-quality-metrics-tab/
   github_issues:
   - 836
@@ -38,8 +48,8 @@ active_session:
   deepen_feature_ids:
   - F7
   prior_session: S062-vitest-branches-95
-  current_stage: 12-verify-deploy
-  current_stage_note: "PR #977→stage open; tip CI 31449643455 success; deploy-checklist awaiting sign-off; #836 In review"
+  current_stage: 13-deploy-smoke
+  current_stage_note: "awaiting D-S063-13 user smoke approval; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 SUCCESS"
   decisions:
     D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
     D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
@@ -58,6 +68,7 @@ active_session:
     D-S063-ui-preview-11: "1 — non-deployed preview at http://127.0.0.1:18000/"
     D-S063-uj056: "1 — Approve UJ-056; waive live T3 until 12/13"
     D-S063-11: "1 — Approve F7.q; finish 11; toward 12"
+    D-S063-12: "1 — Approve checklist; merge #977 → stage then 13 (user: recommended)"
     D-S063-12-path: "1 — Open PR → stage, then 12-verify-deploy (user); #836 Status In review (PR #977 open; tip CI 31449643455 success)"
   artifacts:
   - path: docs/sessions/S063-quality-metrics-tab/
@@ -102,10 +113,15 @@ active_session:
     status: completed
     note: "11 COMPLETE — synced from session verify-impl.md; D-S063-11=1"
   - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
-    status: present
+    status: completed
     stage: 12-verify-deploy
     skill_id: 12-verify-deploy
-    note: "draft/ready awaiting D-S063-12; tip CI 31449643455 success; PR #977→stage"
+    note: "12 COMPLETE D-S063-12=1; report deploy-checklist.md; tip CI 31449643455 success; PR #977→stage"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+    status: present
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    note: "13 in_progress smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 SUCCESS; H0c/H1/H3/H4/H5 + live UJ-056 PASS; env_role staging"
   - path: docs/api-contract.md
     status: present
     note: "delta — public GET /api/v1/quality-metrics*"
@@ -127,7 +143,7 @@ active_session:
     note: "D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
   - stage: 16-evolve
     status: in_progress
-    note: "12-verify-deploy in_progress D-S063-12-path=1; PR #977→stage; tip CI 31449643455 success; awaiting checklist sign-off; #836 In review"
+    note: "13-deploy-smoke in_progress awaiting D-S063-13; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 success; H0c/H1/H3/H4/H5 + UJ-056 PASS; #836 On stage"
   - stage: 01-requirements
     status: completed
     note: "COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; report reports/01-requirements.md; handoff 02-verify-plan"
@@ -168,19 +184,46 @@ active_session:
     completed_at: '2026-08-10'
     note: "COMPLETE — PASS D-S063-11=1; D-S063-ui-preview-11=1; D-S063-uj056=1; report verify-impl.md; tip be9e3b07; next 12 pending"
   - stage: 12-verify-deploy
-    status: in_progress
+    status: completed
     started: '2026-08-10'
     started_at: '2026-08-10'
+    completed: '2026-08-10'
+    completed_at: '2026-08-10'
     report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
     tip_ci_run: '31449643455'
     tip_ci_status: success
     pr_number: 977
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
     pr_base: stage
-    note: "in_progress — PR #977→stage; tip CI 31449643455 success; deploy-checklist.md draft/ready awaiting D-S063-12 user sign-off; D-S063-12-path=1; #836 In review; not completed"
+    decision_id: D-S063-12
+    note: "COMPLETE — D-S063-12=1 approve checklist; merge #977 → stage then 13; report deploy-checklist.md; tip CI 31449643455 success; tip 6dd76b66"
   - stage: 13-deploy-smoke
-    status: pending
+    status: in_progress
+    started: '2026-08-10'
+    started_at: '2026-08-10'
+    report: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+    tip_sha: 4fd51e39
+    tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+    tip_before_merge: f7cdafb1
+    tip_before_merge_full: f7cdafb1bd0b14b15e2ea9244f3bc53a34389056
+    tip_ci_run: '31453072506'
+    tip_ci_status: success
+    stage_ci_cd_pipeline_run: '31453072506'
+    stage_ci_cd_pipeline_status: SUCCESS
+    pr_number: 977
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+    pr_status: merged
+    pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+    pr_base: stage
+    env_role: staging
+    overall: pass_pending_signoff
+    awaiting_user_decision: true
+    awaiting_user_decision_note: 'awaiting D-S063-13 user smoke approval'
+    decision_pending: D-S063-13
+    note: "in_progress — smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39 → stage; CI/CD 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 + live UJ-056 PASS; report deploy-smoke.md; env_role staging"
   notes:
+  - "2026-08-10 13-deploy-smoke smoke PASS pending D-S063-13 — PR #977 MERGED @ 4fd51e39 → stage; tip before merge f7cdafb1; CI/CD Pipeline run 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 PASS; live UJ-056 PASS on staging; report docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md; deployment.staging deployed env_role staging urls api|app.staging.tac-to-iwxxm.com; commit_deployed 4fd51e39; #836 On stage already set; 13 still in_progress awaiting D-S063-13 user smoke approval; no git commit by workflow-state-manager"
+  - "2026-08-10 D-S063-12=1 — Approve checklist; merge #977 → stage then 13 (user: recommended); 12-verify-deploy COMPLETE report docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md; 13-deploy-smoke in_progress; current_stage 13-deploy-smoke; note merging PR #977 → stage then smoke; tip 6dd76b66 tip_sha_pushed=true; tip CI 31449643455 success; #836 In review; no git commit by workflow-state-manager"
   - "2026-08-10 12-verify-deploy progress — tip_sha 6dd76b66 tip_sha_pushed=true; PR #977 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977); tip CI success run 31449643455; D-S063-12-path already set; #836 Status In review; artifact deploy-checklist.md present (draft/ready awaiting D-S063-12); 12 still in_progress awaiting user checklist sign-off; no git commit by workflow-state-manager"
   - "2026-08-10 D-S063-12-path=1 — Open PR → stage, then 12-verify-deploy (user); 12-verify-deploy in_progress; current_stage_note opening PR → stage then 12 checklist; tip be9e3b07; not completed; no git commit by workflow-state-manager"
   - "2026-08-10 D-S063-11=1 — 11-verify-impl COMPLETE PASS; D-S063-ui-preview-11=1 (non-deployed preview http://127.0.0.1:18000/); D-S063-uj056=1 (Approve UJ-056; waive live T3 until 12/13); report docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md + docs/reports/implementation-verification.md; current_stage 12-verify-deploy pending (awaiting continue → 12; recommend PR→stage); tip be9e3b07; no git commit by workflow-state-manager"
@@ -221,16 +264,26 @@ sessions:
   branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   branch_status: active
   branch_exists: true
-  tip_sha: 6dd76b66
-  tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+  tip_sha: 4fd51e39
+  tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   tip_sha_pushed: true
-  tip_sha_note: "HEAD 6dd76b66 (12-verify-deploy in_progress; PR #977→stage; tip CI 31449643455 success; deploy-checklist awaiting D-S063-12 sign-off; #836 In review); tip_sha_pushed=true"
+  tip_sha_note: "stage@4fd51e39 (PR #977 MERGED; 13-deploy-smoke in_progress awaiting D-S063-13; tip CI/CD 31453072506 success Deploy stage + Staging smoke; H0c/H1/H3/H4/H5 + live UJ-056 PASS; #836 On stage); tip_sha_pushed=true"
+  tip_before_merge: f7cdafb1
+  tip_before_merge_full: f7cdafb1bd0b14b15e2ea9244f3bc53a34389056
   pr_number: 977
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
-  pr_status: open
+  pr_status: merged
+  pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+  pr_merge_commit_short: 4fd51e39
+  merge_sha: 4fd51e39
+  merge_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   pr_base: stage
-  tip_ci_run: '31449643455'
+  tip_ci_run: '31453072506'
   tip_ci_status: success
+  stage_ci_cd_pipeline_run: '31453072506'
+  stage_ci_cd_pipeline_status: SUCCESS
+  stage_ci_cd_pipeline_note: "Deploy (stage) + Staging smoke SUCCESS"
+  env_role: staging
   artifacts_dir: docs/sessions/S063-quality-metrics-tab/
   github_issues:
   - 836
@@ -238,8 +291,8 @@ sessions:
   deepen_feature_ids:
   - F7
   prior_session: S062-vitest-branches-95
-  current_stage: 12-verify-deploy
-  current_stage_note: "PR #977→stage open; tip CI 31449643455 success; deploy-checklist awaiting sign-off; #836 In review"
+  current_stage: 13-deploy-smoke
+  current_stage_note: "awaiting D-S063-13 user smoke approval; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 SUCCESS"
   decisions:
     D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
     D-S063-ui-preview: "2 — no local UI preview; docs/repo only"
@@ -258,6 +311,7 @@ sessions:
     D-S063-ui-preview-11: "1 — non-deployed preview at http://127.0.0.1:18000/"
     D-S063-uj056: "1 — Approve UJ-056; waive live T3 until 12/13"
     D-S063-11: "1 — Approve F7.q; finish 11; toward 12"
+    D-S063-12: "1 — Approve checklist; merge #977 → stage then 13 (user: recommended)"
     D-S063-12-path: "1 — Open PR → stage, then 12-verify-deploy (user); #836 Status In review (PR #977 open; tip CI 31449643455 success)"
   artifacts:
   - path: docs/sessions/S063-quality-metrics-tab/
@@ -302,10 +356,15 @@ sessions:
     status: completed
     note: "11 COMPLETE — synced from session verify-impl.md; D-S063-11=1"
   - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
-    status: present
+    status: completed
     stage: 12-verify-deploy
     skill_id: 12-verify-deploy
-    note: "draft/ready awaiting D-S063-12; tip CI 31449643455 success; PR #977→stage"
+    note: "12 COMPLETE D-S063-12=1; report deploy-checklist.md; tip CI 31449643455 success; PR #977→stage"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+    status: present
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    note: "13 in_progress smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 SUCCESS; H0c/H1/H3/H4/H5 + live UJ-056 PASS; env_role staging"
   - path: docs/api-contract.md
     status: present
     note: "delta — public GET /api/v1/quality-metrics*"
@@ -327,7 +386,7 @@ sessions:
     note: "D-S063-route=1 / D-S063-ui-preview=2; Standard; branch stage@f2926ac8"
   - stage: 16-evolve
     status: in_progress
-    note: "12-verify-deploy in_progress D-S063-12-path=1; PR #977→stage; tip CI 31449643455 success; awaiting checklist sign-off; #836 In review"
+    note: "13-deploy-smoke in_progress awaiting D-S063-13; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 success; H0c/H1/H3/H4/H5 + UJ-056 PASS; #836 On stage"
   - stage: 01-requirements
     status: completed
     note: "COMPLETE — D-S063-01-ac=1 / manifest=1 / diff=2 / shell-tab=1; report reports/01-requirements.md; handoff 02-verify-plan"
@@ -368,19 +427,46 @@ sessions:
     completed_at: '2026-08-10'
     note: "COMPLETE — PASS D-S063-11=1; D-S063-ui-preview-11=1; D-S063-uj056=1; report verify-impl.md; tip be9e3b07; next 12 pending"
   - stage: 12-verify-deploy
-    status: in_progress
+    status: completed
     started: '2026-08-10'
     started_at: '2026-08-10'
+    completed: '2026-08-10'
+    completed_at: '2026-08-10'
     report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
     tip_ci_run: '31449643455'
     tip_ci_status: success
     pr_number: 977
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
     pr_base: stage
-    note: "in_progress — PR #977→stage; tip CI 31449643455 success; deploy-checklist.md draft/ready awaiting D-S063-12 user sign-off; D-S063-12-path=1; #836 In review; not completed"
+    decision_id: D-S063-12
+    note: "COMPLETE — D-S063-12=1 approve checklist; merge #977 → stage then 13; report deploy-checklist.md; tip CI 31449643455 success; tip 6dd76b66"
   - stage: 13-deploy-smoke
-    status: pending
+    status: in_progress
+    started: '2026-08-10'
+    started_at: '2026-08-10'
+    report: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+    tip_sha: 4fd51e39
+    tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+    tip_before_merge: f7cdafb1
+    tip_before_merge_full: f7cdafb1bd0b14b15e2ea9244f3bc53a34389056
+    tip_ci_run: '31453072506'
+    tip_ci_status: success
+    stage_ci_cd_pipeline_run: '31453072506'
+    stage_ci_cd_pipeline_status: SUCCESS
+    pr_number: 977
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+    pr_status: merged
+    pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+    pr_base: stage
+    env_role: staging
+    overall: pass_pending_signoff
+    awaiting_user_decision: true
+    awaiting_user_decision_note: 'awaiting D-S063-13 user smoke approval'
+    decision_pending: D-S063-13
+    note: "in_progress — smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39 → stage; CI/CD 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 + live UJ-056 PASS; report deploy-smoke.md; env_role staging"
   notes:
+  - "2026-08-10 13-deploy-smoke smoke PASS pending D-S063-13 — PR #977 MERGED @ 4fd51e39 → stage; tip before merge f7cdafb1; CI/CD Pipeline run 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 PASS; live UJ-056 PASS on staging; report docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md; deployment.staging deployed env_role staging urls api|app.staging.tac-to-iwxxm.com; commit_deployed 4fd51e39; #836 On stage already set; 13 still in_progress awaiting D-S063-13 user smoke approval; no git commit by workflow-state-manager"
+  - "2026-08-10 D-S063-12=1 — Approve checklist; merge #977 → stage then 13 (user: recommended); 12-verify-deploy COMPLETE report docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md; 13-deploy-smoke in_progress; current_stage 13-deploy-smoke; note merging PR #977 → stage then smoke; tip 6dd76b66 tip_sha_pushed=true; tip CI 31449643455 success; #836 In review; no git commit by workflow-state-manager"
   - "2026-08-10 12-verify-deploy progress — tip_sha 6dd76b66 tip_sha_pushed=true; PR #977 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977); tip CI success run 31449643455; D-S063-12-path already set; #836 Status In review; artifact deploy-checklist.md present (draft/ready awaiting D-S063-12); 12 still in_progress awaiting user checklist sign-off; no git commit by workflow-state-manager"
   - "2026-08-10 D-S063-12-path=1 — Open PR → stage, then 12-verify-deploy (user); 12-verify-deploy in_progress; current_stage_note opening PR → stage then 12 checklist; tip be9e3b07; not completed; no git commit by workflow-state-manager"
   - "2026-08-10 D-S063-11=1 — 11-verify-impl COMPLETE PASS; D-S063-ui-preview-11=1 (non-deployed preview http://127.0.0.1:18000/); D-S063-uj056=1 (Approve UJ-056; waive live T3 until 12/13); report docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md + docs/reports/implementation-verification.md; current_stage 12-verify-deploy pending (awaiting continue → 12; recommend PR→stage); tip be9e3b07; no git commit by workflow-state-manager"
@@ -16081,15 +16167,17 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: in_progress
+    status: completed
     started_at: '2026-08-10'
     started: '2026-08-10'
+    completed: '2026-08-10'
+    completed_at: '2026-08-10'
     session_id: S063-quality-metrics-tab
     evolve_cycle_id: EV-054
     skill_id: 12-verify-deploy
-    overall: pending
+    overall: approved
     report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
-    report_status: present
+    report_status: completed
     tip_sha: 6dd76b66
     tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
     tip_sha_pushed: true
@@ -16099,10 +16187,10 @@ stages:
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
     pr_status: open
     pr_base: stage
-    decision_id: D-S063-12-path
-    awaiting_user_decision: true
-    awaiting_user_decision_note: 'Awaiting D-S063-12 checklist sign-off; #836 Status In review'
-    note: 'in_progress — PR #977→stage; tip CI 31449643455 success; deploy-checklist.md draft/ready awaiting D-S063-12 user sign-off; D-S063-12-path=1; #836 In review; not completed'
+    decision_id: D-S063-12
+    awaiting_user_decision: false
+    awaiting_user_decision_note: 'D-S063-12=1 approved; merge #977 → stage then 13'
+    note: 'COMPLETE — D-S063-12=1 approve checklist; merge #977 → stage then 13; report deploy-checklist.md; tip CI 31449643455 success; tip 6dd76b66'
     previous_s050_started_at: '2026-08-07'
     previous_s050_started: '2026-08-07'
     previous_s050_completed: '2026-08-07'
@@ -16519,12 +16607,14 @@ stages:
     - S004 / EV-004 — strategy verified 2026-06-24; H0c 6/6 PASS; H4 FAIL (CORS); H5 PASS (/config.json); operator T1.3 + S003 keys + redeploy required before 13
     # S050 active override (duplicate-key last-wins trailer)
   13-deploy-smoke:
-    status: completed
+    status: in_progress
     mode: delta
-    started_at: '2026-08-07'
-    started: '2026-08-07'
-    completed: '2026-08-08'
-    completed_at: '2026-08-08'
+    started_at: '2026-08-10'
+    started: '2026-08-10'
+    previous_s047_close_started_at: '2026-08-07'
+    previous_s047_close_started: '2026-08-07'
+    previous_s047_close_completed: '2026-08-08'
+    previous_s047_close_completed_at: '2026-08-08'
     previous_started_at: '2026-08-06'
     previous_started: '2026-08-06'
     previous_completed: '2026-08-06'
@@ -16577,46 +16667,117 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 8bd111c
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
-    overall: approved
-    note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-    report_status: approved
-    tip_sha: 3502af27
-    tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
-    tip_before_merge: 5558c7e4
-    tip_before_merge_full: 5558c7e44107c6389b30f90189c477a183490792
-    tip_note: 'CLOSED D-S050-13=1 — PR #899 MERGED @ e3d1c7c8; CI/CD 31197264636 SUCCESS; H0c/H1/H4–H5 + UJ-051..053 6/6; advisories accepted; Epic #897 noted for close; #898 open; docs tip commit pending on main'
+    previous_completed_session_id: S047-sql-ingest-live-e2e
+    previous_completed_evolve_cycle_id: EV-039
+    previous_completed_overall: approved
+    previous_completed_note: 'CLOSED 2026-08-08 D-S047-13=1 + D-S047-close=1 — PR #891 MERGED @ fea30aba; CD 31130303373 SUCCESS; H0c/H1/H4–H5 PASS; live tag 20260808004030-3502af2; reports deploy-smoke.md + evolve-report-EV-039.md; closeout docs branch docs/EV-039-closeout'
+    previous_completed_report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
+    previous_completed_tip_sha: 3502af27
+    previous_completed_tip_sha_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
+    session_id: S063-quality-metrics-tab
+    evolve_cycle_id: EV-054
+    skill_id: 13-deploy-smoke
+    overall: pass_pending_signoff
+    note: "in_progress — smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39 → stage; CI/CD 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 + live UJ-056 PASS; report deploy-smoke.md; env_role staging"
+    report: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+    report_status: pending_signoff
+    tip_sha: 4fd51e39
+    tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+    tip_before_merge: f7cdafb1
+    tip_before_merge_full: f7cdafb1bd0b14b15e2ea9244f3bc53a34389056
+    tip_note: "stage@4fd51e39 (PR #977 MERGED; 13-deploy-smoke in_progress awaiting D-S063-13; tip CI/CD 31453072506 success Deploy stage + Staging smoke; H0c/H1/H3/H4/H5 + live UJ-056 PASS; #836 On stage); tip_sha_pushed=true"
+    tip_ci_run: '31453072506'
+    tip_ci_status: success
+    stage_ci_cd_pipeline_run: '31453072506'
+    stage_ci_cd_pipeline_status: SUCCESS
+    stage_ci_cd_pipeline_note: "Deploy (stage) + Staging smoke SUCCESS"
     main_ci_cd_pipeline_run: '31130303373'
     main_ci_cd_pipeline_status: SUCCESS
+    main_ci_cd_pipeline_note: "prior live_prod tip retained from S047; S063 targets staging"
     doks_tag: 20260808004030-3502af2
-    doks_tag_note: 'Deploy job SUCCESS on run 31197264636 @ e3d1c7c8; exact GHCR/DOKS tag not recorded in smoke facts'
-    env_role: live_prod
+    doks_tag_note: 'prior live_prod tag retained; S063 staging deploy via CI/CD 31453072506 @ 4fd51e39'
+    env_role: staging
     active_milestone:
     active_task:
     active_task_status:
     progress:
     completed_through:
     awaiting_deploy_approval: false
-    awaiting_user_decision: false
-    awaiting_user_decision_note: ''
-    decision_id: D-S047-13
-    decision_pending:
+    awaiting_user_decision: true
+    awaiting_user_decision_note: 'awaiting D-S063-13 user smoke approval'
+    decision_id:
+    decision_pending: D-S063-13
     decision_ids:
+    - D-S063-12
     - D-S050-13
     - D-S050-merge
     - D-S050-12
     - D-S047-12
-    pr_number: 891
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/891
+    pr_number: 977
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
     pr_status: merged
-    pr_merged_at: '2026-08-06T23:01:57Z'
-    pr_merge_commit: fea30abacf14a8d6106637c99d7cce8d7652dabf
+    pr_base: stage
+    pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+    pr_merge_commit_short: 4fd51e39
     feature_ids: []
     deepen_feature_ids:
-    - F16
+    - F7
+    health_tiers:
+      H0c: pass
+      H1: pass
+      H3: pass
+      H4: pass
+      H5: pass
+      h0c: pass
+      h1: pass
+      h3: pass
+      h4: pass
+      h5: pass
+      note: "H0c/H1/H3/H4/H5 PASS; live UJ-056 PASS on staging; CI/CD 31453072506; pending D-S063-13"
+    live_uj: "UJ-056 PASS 1/1 on app.staging.tac-to-iwxxm.com"
     delta_substages:
+    - id: S063-quality-metrics-tab-13
+      session_id: S063-quality-metrics-tab
+      evolve_cycle_id: EV-054
+      skill_id: 13-deploy-smoke
+      status: in_progress
+      mode: delta
+      started: '2026-08-10'
+      started_at: '2026-08-10'
+      branch: evolve/EV-054-quality-metrics-tab
+      tip_sha: 4fd51e39
+      tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+      tip_before_merge: f7cdafb1
+      tip_before_merge_full: f7cdafb1bd0b14b15e2ea9244f3bc53a34389056
+      stage_ci_cd_pipeline_run: '31453072506'
+      stage_ci_cd_pipeline_status: SUCCESS
+      env_role: staging
+      pr_number: 977
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+      pr_status: merged
+      pr_base: stage
+      pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+      report: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+      report_status: pending_signoff
+      overall: pass_pending_signoff
+      awaiting_user_decision: true
+      awaiting_user_decision_note: 'awaiting D-S063-13 user smoke approval'
+      decision_pending: D-S063-13
+      deepen_feature_ids:
+      - F7
+      health_tiers:
+        H0c: pass
+        H1: pass
+        H3: pass
+        H4: pass
+        H5: pass
+        h0c: pass
+        h1: pass
+        h3: pass
+        h4: pass
+        h5: pass
+      live_uj: "UJ-056 PASS 1/1"
+      note: "in_progress — smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39 → stage; CI/CD 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 + live UJ-056 PASS; report deploy-smoke.md; env_role staging"
     - id: S047-sql-ingest-live-e2e-13
       session_id: S047-sql-ingest-live-e2e
       evolve_cycle_id: EV-039
@@ -17525,38 +17686,52 @@ deployment:
     t0_result: pass
     t0_journeys_passed: 4
   staging:
-    status: 'deployed (live=prod DOKS; public DNS + TLS)'
-    last_verified: '2026-08-08'
-    commit_deployed: 3502af27
-    commit_deployed_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
-    commit_head: 3502af27
-    commit_head_full: 3502af279cf5b5b7e521ac17a6f62d75a3777481
+    status: deployed
+    last_verified: '2026-08-10'
+    commit_deployed: 4fd51e39
+    commit_deployed_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+    commit_head: 4fd51e39
+    commit_head_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
     doks_tag: 20260808004030-3502af2
-    doks_tag_note: 'live images 2026-08-08 re-verify 20260808004030-3502af2; EV-039 product on main via #891 @ fea30aba; post-merge CD 31130303373 SUCCESS; later tip includes S050/S051'
+    doks_tag_note: 'prior live_prod tag retained for prod DNS; S063 staging pointer @ 4fd51e39 via CI/CD 31453072506'
     drift: false
     platform: doks
-    env_role: live_prod
+    env_role: staging
     namespace: metar-iwxxm
     urls:
       lb: 'http://168.144.12.70'
-      api: 'https://api.tac-to-iwxxm.com'
-      frontend: 'https://app.tac-to-iwxxm.com'
-      note: 'Public PorkBun DNS + Let''s Encrypt TLS (S039); D-S038-t63-waive lifted; HTTP still served for ACME renewals'
+      api: 'https://api.staging.tac-to-iwxxm.com'
+      frontend: 'https://app.staging.tac-to-iwxxm.com'
+      prod_api_retained: 'https://api.tac-to-iwxxm.com'
+      prod_frontend_retained: 'https://app.tac-to-iwxxm.com'
+      note: 'S063/EV-054 staging smoke @ api|app.staging.tac-to-iwxxm.com; prior live_prod URLs retained as prod_*_retained'
     deploy_ids:
       api:
       frontend:
-      ci_cd_run: '31130303373'
-      ci_cd_run_note: 'post-merge #891 CI/CD Pipeline SUCCESS incl Deploy'
-    report: docs/sessions/S047-sql-ingest-live-e2e/reports/deploy-smoke.md
-    session_id: S047-sql-ingest-live-e2e
-    evolve_cycle_id: EV-039
+      ci_cd_run: '31453072506'
+      ci_cd_run_note: 'post-merge #977 → stage CI/CD Pipeline SUCCESS — Deploy (stage) + Staging smoke'
+    report: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+    session_id: S063-quality-metrics-tab
+    evolve_cycle_id: EV-054
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260808004030-3502af2
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260808004030-3502af2
       worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260808004030-3502af2
-      note: S047/EV-039 13 evidence 2026-08-08 — 20260808004030-3502af2; pending D-S047-13; prior S050 closed record superseded for live tip
-    health_tiers: *id001
+      note: 'prior live_prod images retained; S063 staging tip commit_deployed 4fd51e39 pending exact GHCR tag capture'
+    health_tiers:
+      H0c: pass
+      H1: pass
+      H3: pass
+      H4: pass
+      H5: pass
+      h0c: pass
+      h1: pass
+      h3: pass
+      h4: pass
+      h5: pass
+      note: "S063 staging H0c/H1/H3/H4/H5 PASS; live UJ-056 PASS; CI/CD 31453072506; pending D-S063-13"
     notes:
+    - "2026-08-10 S063/EV-054 13-deploy-smoke smoke PASS pending D-S063-13 — PR #977 MERGED @ 4fd51e39 → stage; CI/CD 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 + live UJ-056 PASS; env_role staging; urls api|app.staging.tac-to-iwxxm.com; report deploy-smoke.md; prior live_prod tip 3502af27 retained in notes"
     - 2026-08-08 S047/EV-039 CLOSED D-S047-13=1 + D-S047-close=1 — H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; active_session=null
     - 2026-08-08 S047/EV-039 13-deploy-smoke EVIDENCE (pending D-S047-13) — H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS; images 20260808004030-3502af2; CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; active_session remains S047; NOT closed
     - '2026-08-07 S050/EV-042 CLOSED D-S050-13=1 — PR #899 MERGED @ e3d1c7c8; CI/CD 31197264636 SUCCESS; H0c/H1/H4–H5 + UJ-051..053 6/6 PASS; advisories accepted; Epic #897 noted for close; #898 open; report deploy-smoke.md; active_session=null; deployment remains live prod'
@@ -17760,6 +17935,46 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S063-12
+  date: '2026-08-10'
+  timestamp: '2026-08-10'
+  resolved_at: '2026-08-10'
+  session_id: S063-quality-metrics-tab
+  evolve_cycle_id: EV-054
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: deploy_checklist_approval
+  status: confirmed
+  topic: 'S063/EV-054 12-verify-deploy approve checklist'
+  summary: '1 — Approve checklist; merge #977 → stage then 13 (user: recommended)'
+  decision: |
+    D-S063-12=1 — Approve checklist; merge #977 → stage then 13 (user: recommended).
+    Report docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md.
+    12-verify-deploy COMPLETE; 13-deploy-smoke in_progress.
+    current_stage 13-deploy-smoke; note merging PR #977 → stage then smoke.
+    Tip 6dd76b66 tip_sha_pushed=true; tip CI success run 31449643455; PR #977 → stage; #836 In review.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-054-quality-metrics-tab
+  related_features:
+  - F7
+  related_issues:
+  - '836'
+  related_decisions:
+  - D-S063-12-path
+  - D-S063-11
+  report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
+  tip_sha: 6dd76b66
+  tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+  tip_sha_pushed: true
+  tip_ci_run: '31449643455'
+  tip_ci_status: success
+  pr_number: 977
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
+  pr_base: stage
+  current_stage: 13-deploy-smoke
+  note: '12 COMPLETE; merge #977 → stage then 13 smoke'
 - id: D-S063-12-path
   date: '2026-08-10'
   timestamp: '2026-08-10'
@@ -32874,8 +33089,8 @@ artifacts:
   evolve_cycle_id: EV-054
   created_at: '2026-08-10'
   updated_at: '2026-08-10'
-  status: present
-  note: 'S063/EV-054 12 draft/ready awaiting D-S063-12; tip CI 31449643455 success; PR #977→stage'
+  status: completed
+  note: 'S063/EV-054 12 COMPLETE D-S063-12=1; report deploy-checklist.md; tip CI 31449643455 success; PR #977→stage'
 - path: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
   type: report
   stage: 11-verify-impl
@@ -36635,23 +36850,33 @@ evolve_cycles:
   - 836
   preset: Standard
   scope_summary: "LOCKED D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1 — full #836 Quality metrics tab (workbench/F7): official WMO IWXXM corpus by product with match/residuals/lint/validate; deepen F7 only (note F7.q; no F34); default view precomputed fixture/CI metrics JSON (on-demand refresh optional later); complements CI matrices #815/#831; Standard routing"
-  current_stage: 12-verify-deploy
-  current_stage_note: "PR #977→stage open; tip CI 31449643455 success; deploy-checklist awaiting sign-off; #836 In review"
+  current_stage: 13-deploy-smoke
+  current_stage_note: "awaiting D-S063-13 user smoke approval; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 SUCCESS"
   branch: evolve/EV-054-quality-metrics-tab
   branch_base: stage@f2926ac8
   branch_base_sha: f2926ac8
   branch_base_sha_full: f2926ac80544b8dcf0d157175e646a39779e7366
   branch_status: active
-  tip_sha: 6dd76b66
-  tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
+  tip_sha: 4fd51e39
+  tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   tip_sha_pushed: true
-  tip_sha_note: "HEAD 6dd76b66 (12-verify-deploy in_progress; PR #977→stage; tip CI 31449643455 success; deploy-checklist awaiting D-S063-12 sign-off; #836 In review); tip_sha_pushed=true"
+  tip_sha_note: "stage@4fd51e39 (PR #977 MERGED; 13-deploy-smoke in_progress awaiting D-S063-13; tip CI/CD 31453072506 success Deploy stage + Staging smoke; H0c/H1/H3/H4/H5 + live UJ-056 PASS; #836 On stage); tip_sha_pushed=true"
+  tip_before_merge: f7cdafb1
+  tip_before_merge_full: f7cdafb1bd0b14b15e2ea9244f3bc53a34389056
   pr_number: 977
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
-  pr_status: open
+  pr_status: merged
+  pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+  pr_merge_commit_short: 4fd51e39
+  merge_sha: 4fd51e39
+  merge_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   pr_base: stage
-  tip_ci_run: '31449643455'
+  tip_ci_run: '31453072506'
   tip_ci_status: success
+  stage_ci_cd_pipeline_run: '31453072506'
+  stage_ci_cd_pipeline_status: SUCCESS
+  stage_ci_cd_pipeline_note: "Deploy (stage) + Staging smoke SUCCESS"
+  env_role: staging
   routing_plan:
     status: approved
     decision: D-S063-route=1
@@ -36684,7 +36909,7 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-10'
-      note: "12-verify-deploy in_progress D-S063-12-path=1; PR #977→stage; tip CI 31449643455 success; awaiting checklist sign-off; #836 In review"
+      note: "13-deploy-smoke in_progress awaiting D-S063-13; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 success; H0c/H1/H3/H4/H5 + UJ-056 PASS; #836 On stage"
       phase0_status: completed
       phase0_note: "COMPLETE — scope/fn/compute locked (D-S063-scope=1, D-S063-fn=1, D-S063-compute=1)"
       phase1_status: completed
@@ -36750,18 +36975,40 @@ evolve_cycles:
       standing_report: docs/reports/implementation-verification.md
       note: "COMPLETE — PASS D-S063-11=1; D-S063-ui-preview-11=1; D-S063-uj056=1; tip be9e3b07; next 12 pending"
     12-verify-deploy:
-      status: in_progress
+      status: completed
       started: '2026-08-10'
       started_at: '2026-08-10'
+      completed: '2026-08-10'
+      completed_at: '2026-08-10'
       report: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
       tip_ci_run: '31449643455'
       tip_ci_status: success
       pr_number: 977
       pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977
       pr_base: stage
-      note: "in_progress — PR #977→stage; tip CI 31449643455 success; deploy-checklist.md draft/ready awaiting D-S063-12 user sign-off; D-S063-12-path=1; #836 In review; not completed"
+      decision_id: D-S063-12
+      overall: approved
+      note: "COMPLETE — D-S063-12=1 approve checklist; merge #977 → stage then 13; report deploy-checklist.md; tip CI 31449643455 success; tip 6dd76b66"
     13-deploy-smoke:
-      status: pending
+      status: in_progress
+      started: '2026-08-10'
+      started_at: '2026-08-10'
+      report: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+      tip_sha: 4fd51e39
+      tip_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+      tip_before_merge: f7cdafb1
+      tip_ci_run: '31453072506'
+      tip_ci_status: success
+      stage_ci_cd_pipeline_run: '31453072506'
+      stage_ci_cd_pipeline_status: SUCCESS
+      pr_number: 977
+      pr_status: merged
+      pr_merge_commit: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
+      env_role: staging
+      overall: pass_pending_signoff
+      awaiting_user_decision: true
+      decision_pending: D-S063-13
+      note: "in_progress — smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39 → stage; CI/CD 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 + live UJ-056 PASS; report deploy-smoke.md; env_role staging"
   gates:
     a_to_b: passed
     a_to_b_note: "D-S063-gateA=2 — PASS; require public GET /api/v1/quality-metrics*; reopen api-contract; re-enable 05"
@@ -36777,8 +37024,8 @@ evolve_cycles:
     phase_b_note: "D-S063-05=1 Gate B PASS; 07 M1–M5 COMPLETE @ 66886bd5; 08-verify-build started"
     phase_c: passed
     phase_c_note: "D-S063-phaseC=1 — Phase C PASS; continue → 09-qa; tip be9e3b07"
-    phase_d: pending
-    phase_d_note: "12-verify-deploy in_progress D-S063-12-path=1; PR #977→stage; tip CI 31449643455 success; awaiting checklist sign-off; #836 In review"
+    phase_d: passed
+    phase_d_note: "D-S063-12=1 — 12-verify-deploy COMPLETE; checklist approved; merge #977 → stage then 13"
     deploy: pending
   decisions:
     D-S063-route: "1 — Standard; branch from stage; #836 In progress; → 16-evolve"
@@ -36798,6 +37045,7 @@ evolve_cycles:
     D-S063-ui-preview-11: "1 — non-deployed preview at http://127.0.0.1:18000/"
     D-S063-uj056: "1 — Approve UJ-056; waive live T3 until 12/13"
     D-S063-11: "1 — Approve F7.q; finish 11; toward 12"
+    D-S063-12: "1 — Approve checklist; merge #977 → stage then 13 (user: recommended)"
     D-S063-12-path: "1 — Open PR → stage, then 12-verify-deploy (user); #836 Status In review (PR #977 open; tip CI 31449643455 success)"
   decisions_locked:
   - D-S063-route=1
@@ -36818,12 +37066,18 @@ evolve_cycles:
   - D-S063-uj056=1
   - D-S063-11=1
   - D-S063-12-path=1
+  - D-S063-12=1
   artifacts:
   - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md
-    status: present
+    status: completed
     stage: 12-verify-deploy
     skill_id: 12-verify-deploy
-    note: "draft/ready awaiting D-S063-12; tip CI 31449643455 success; PR #977→stage"
+    note: "12 COMPLETE D-S063-12=1; report deploy-checklist.md; tip CI 31449643455 success; PR #977→stage"
+  - path: docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md
+    status: present
+    stage: 13-deploy-smoke
+    skill_id: 13-deploy-smoke
+    note: "13 in_progress smoke PASS pending D-S063-13; PR #977 MERGED @ 4fd51e39; CI/CD 31453072506 SUCCESS; H0c/H1/H3/H4/H5 + live UJ-056 PASS; env_role staging"
   - path: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
     status: completed
     note: "11 COMPLETE — PASS D-S063-11=1; UJ-056 approve; preview :18000"
@@ -36878,6 +37132,8 @@ evolve_cycles:
     status: present
     note: "TC-EV054 Quality metrics"
   notes:
+  - "2026-08-10 13-deploy-smoke smoke PASS pending D-S063-13 — PR #977 MERGED @ 4fd51e39 → stage; tip before merge f7cdafb1; CI/CD Pipeline run 31453072506 SUCCESS (Deploy stage + Staging smoke); H0c/H1/H3/H4/H5 PASS; live UJ-056 PASS on staging; report docs/sessions/S063-quality-metrics-tab/reports/deploy-smoke.md; deployment.staging deployed env_role staging urls api|app.staging.tac-to-iwxxm.com; commit_deployed 4fd51e39; #836 On stage already set; 13 still in_progress awaiting D-S063-13 user smoke approval; no git commit by workflow-state-manager"
+  - "2026-08-10 D-S063-12=1 — Approve checklist; merge #977 → stage then 13 (user: recommended); 12-verify-deploy COMPLETE report docs/sessions/S063-quality-metrics-tab/reports/deploy-checklist.md; 13-deploy-smoke in_progress; current_stage 13-deploy-smoke; note merging PR #977 → stage then smoke; tip 6dd76b66 tip_sha_pushed=true; tip CI 31449643455 success; #836 In review; no git commit by workflow-state-manager"
   - "2026-08-10 D-S063-11=1 — 11-verify-impl COMPLETE PASS; D-S063-ui-preview-11=1 (non-deployed preview http://127.0.0.1:18000/); D-S063-uj056=1 (Approve UJ-056; waive live T3 until 12/13); report docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md + docs/reports/implementation-verification.md; current_stage 12-verify-deploy pending (awaiting continue → 12; recommend PR→stage); tip be9e3b07; no git commit by workflow-state-manager"
   - "2026-08-10 D-S063-09-10-continue=1 — continue → 11-verify-impl (user: Continue); 11-verify-impl in_progress; tip be9e3b07; no git commit by workflow-state-manager"
   - "2026-08-10 09+10 complete — 09-qa pass_with_advisories (qa-report.md) + 10-e2e PASS local UJ-056 (e2e-report.md; H4–H5 deferred 12/13); tip be9e3b07; current_stage 11-verify-impl pending (awaiting continue → 11); no git commit by workflow-state-manager"
@@ -36897,7 +37153,7 @@ evolve_cycles:
   - "2026-08-10 Phase 0–1 locked — D-S063-scope=1 / D-S063-fn=1 / D-S063-compute=1; deepen F7 (note F7.q, no F34); precomputed fixture/CI JSON default; → 01-requirements"
   - "2026-08-10 board — #836 In progress; #959 Done"
   - "2026-08-10 D-S063-route=1 / ui-preview=2 — 00 COMPLETE; EV-054 created; → 16-evolve Phase 0–1"
-  note: "IN PROGRESS — 11 COMPLETE D-S063-11=1; current_stage 12-verify-deploy pending (awaiting continue → 12; recommend PR→stage); tip be9e3b07; deepen F7 (note F7.q); tip pushed; branch evolve/EV-054-quality-metrics-tab"
+  note: "IN PROGRESS — 12 COMPLETE D-S063-12=1; current_stage 13-deploy-smoke; merging PR #977 → stage then smoke; tip 6dd76b66; deepen F7 (note F7.q); tip pushed; branch evolve/EV-054-quality-metrics-tab"
 - id: EV-053
   session_id: S062-vitest-branches-95
   type: feature
@@ -47994,7 +48250,7 @@ git_history:
   dirty_note: 'workflow-state.yaml dirty (state manager); untracked optional .cursor/rules/optional/*'
   tip_sha: 6dd76b66
   tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f
-  tip_note: "HEAD 6dd76b66 (12-verify-deploy in_progress; PR #977→stage; tip CI 31449643455 success; deploy-checklist awaiting D-S063-12 sign-off; #836 In review); tip_sha_pushed=true"
+  tip_note: "HEAD 6dd76b66 (12 COMPLETE D-S063-12=1; 13-deploy-smoke in_progress; merging PR #977 → stage then smoke; tip CI 31449643455 success; #836 In review); tip_sha_pushed=true"
   evolve_branch: evolve/EV-054-quality-metrics-tab
   evolve_tip_sha: 6dd76b66
   evolve_tip_sha_full: 6dd76b660ca1d4d38d3b2eb6a3e8e542982f323f

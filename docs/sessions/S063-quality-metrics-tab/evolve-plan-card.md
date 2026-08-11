@@ -30,7 +30,7 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 
 ## Next child stage
 
-**12-verify-deploy** — **pending** (`D-S063-11=1`; awaiting continue → 12; recommend PR→stage)
+**13-deploy-smoke** — **in_progress** (smoke PASS pending `D-S063-13`; PR #977 MERGED @ `4fd51e39`; CI/CD 31453072506 SUCCESS; H0c/H1/H3/H4/H5 + live UJ-056 PASS; `reports/deploy-smoke.md`)
 
 ## Risks / open decisions
 
@@ -43,4 +43,6 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 7. ~~07 M5~~ → Playwright TC-EV054-007 green; regen Make target; H4–H5 → 12/13
 8. Ready queue thin (2) — refill from M0 Backlog
 9. ~~09-qa / 10-e2e~~ → **COMPLETE** 2026-08-10 — QA pass_with_advisories + UJ-056 local PASS; H4–H5→12/13
-10. ~~11-verify-impl~~ → **COMPLETE** 2026-08-10 — `D-S063-11=1` Approve F7.q; `D-S063-ui-preview-11=1`; `D-S063-uj056=1`; next 12 pending
+10. ~~11-verify-impl~~ → **COMPLETE** 2026-08-10 — `D-S063-11=1` Approve F7.q; `D-S063-ui-preview-11=1`; `D-S063-uj056=1`
+11. ~~12-verify-deploy~~ → **COMPLETE** 2026-08-10 — `D-S063-12=1` approve checklist; merge #977 → stage then 13; report `reports/deploy-checklist.md`
+12. **13-deploy-smoke** → **in_progress** 2026-08-10 — PR #977 MERGED @ `4fd51e39`; CI/CD 31453072506 SUCCESS; H0c/H1/H3/H4/H5 + live UJ-056 PASS; report `reports/deploy-smoke.md`; awaiting `D-S063-13`
