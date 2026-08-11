@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**12-verify-deploy next** (`D-S064-11=1`) — open PR → `stage` for tip CI; then 13 staging smoke
+**12-verify-deploy in progress** — PR [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → `stage`; watch tip CI; then 13
 
 ## Risks / open decisions
 

@@ -763,3 +763,138 @@ def test_validate_xml_helper_delegates_to_validate_complete(monkeypatch):
     assert captured["version"] == "2025-2"
     assert captured["layers"] == [ValidationLayer.XML_SCHEMA]
     assert result.passed is True
+
+
+@dataclass
+class _PkgIssue:
+    """Minimal iwxxm_validate.Issue stand-in for native-path mapping."""
+
+    severity: str
+    message: str
+    location: str | None = None
+    code: str = "NATIVE_ISSUE"
+
+
+@dataclass
+class _PkgReport:
+    """Minimal validate_iwxxm report stand-in."""
+
+    ok: bool
+    issues: list
+
+
+def test_pkg_issue_to_backend_maps_error_and_warning():
+    """Native Issue severity maps to ValidationSeverity (TC-EV055 / Gate C CI)."""
+    err = ValidationOrchestrator._pkg_issue_to_backend(
+        _PkgIssue(severity="error", message="bad", location="L1", code="E1"),
+        layer=ValidationLayer.XML_SCHEMA,
+    )
+    warn = ValidationOrchestrator._pkg_issue_to_backend(
+        _PkgIssue(severity="warning", message="soft", code="W1"),
+        layer=ValidationLayer.SCHEMATRON,
+    )
+    assert err.level == ValidationSeverity.ERROR
+    assert err.code == "E1"
+    assert warn.level == ValidationSeverity.WARNING
+    assert warn.layer == ValidationLayer.SCHEMATRON
+
+
+def test_validate_xml_schema_native_path(monkeypatch):
+    """When rust_available, XSD uses validate_iwxxm levels=('xsd',)."""
+    orchestrator = ValidationOrchestrator()
+    called: dict = {}
+
+    def _validate_iwxxm(xml, *, iwxxm_version, profile, levels):
+        called.update(
+            {
+                "xml": xml,
+                "version": iwxxm_version,
+                "profile": profile,
+                "levels": levels,
+            }
+        )
+        return _PkgReport(
+            ok=False,
+            issues=[_PkgIssue(severity="error", message="xsd fail", code="XSD_E")],
+        )
+
+    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
+    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _validate_iwxxm)
+
+    result = orchestrator.validate_xml_schema("<r/>", "2025-2")
+    assert called["levels"] == ("xsd",)
+    assert called["version"] == "2025-2"
+    assert result.is_valid is False
+    assert result.issues[0].code == "XSD_E"
+    assert result.schema_version == "2025-2"
+
+
+def test_validate_xml_schema_native_exception_falls_back(monkeypatch):
+    """Native XSD exceptions fall back to lxml xsd_validator."""
+    orchestrator = ValidationOrchestrator()
+    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
+
+    def _boom(*_a, **_k):
+        raise RuntimeError("native xsd down")
+
+    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _boom)
+
+    class _Legacy:
+        def validate(self, xml, version):
+            return type("R", (), {"is_valid": True, "issues": [], "schema_version": version})()
+
+    monkeypatch.setattr(orchestrator, "xsd_validator", _Legacy())
+    result = orchestrator.validate_xml_schema("<r/>", "2023-1")
+    assert result.is_valid is True
+    assert result.schema_version == "2023-1"
+
+
+def test_validate_schematron_native_path(monkeypatch):
+    """When rust_available, Schematron uses validate_iwxxm levels=('schematron',)."""
+    orchestrator = ValidationOrchestrator()
+    called: dict = {}
+
+    def _validate_iwxxm(xml, *, iwxxm_version, profile, levels):
+        called["levels"] = levels
+        return _PkgReport(
+            ok=True,
+            issues=[_PkgIssue(severity="warning", message="sch warn", code="SCH_W")],
+        )
+
+    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
+    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _validate_iwxxm)
+
+    result = orchestrator._validate_schematron("<r/>", "2025-2")
+    assert called["levels"] == ("schematron",)
+    assert result.is_valid is True
+    assert result.issues[0].code == "SCH_W"
+    assert result.rules_evaluated == 1
+
+
+def test_validate_schematron_native_exception_falls_back(monkeypatch):
+    """Native Schematron exceptions fall back to lxml schematron_validator."""
+    orchestrator = ValidationOrchestrator()
+    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
+
+    def _boom(*_a, **_k):
+        raise RuntimeError("native sch down")
+
+    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _boom)
+
+    class _Legacy:
+        def validate(self, xml, version):
+            return type(
+                "R",
+                (),
+                {
+                    "is_valid": True,
+                    "issues": [],
+                    "schema_version": version,
+                    "rules_evaluated": 0,
+                },
+            )()
+
+    monkeypatch.setattr(orchestrator, "schematron_validator", _Legacy())
+    result = orchestrator._validate_schematron("<r/>", "2025-2")
+    assert result.is_valid is True
+    assert result.schema_version == "2025-2"
