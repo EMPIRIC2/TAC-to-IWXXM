@@ -35,8 +35,8 @@
 - [x] Branch pushed — tip `1099fb5c`
 - [x] Tip CI green — [31533338595](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31533338595) @ `1099fb5c` (prior fail `31532484425` fixed: orchestrator native-path coverage)
 - [x] PR open — [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985)
-- [x] Merge + Staging CD — approved (`D-S064-12=1`); merge in progress / follow 13
-- [ ] Post-deploy H1 + **H4–H5** (13)
+- [x] Merge + Staging CD — **MERGED** #985 @ `4b48c8d8`; Deploy+Staging smoke [31534191417](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31534191417) **success**
+- [x] Post-deploy H1 + **H4–H5** (13) — local staging verify PASS; await `D-S064-13`
 
 ## Failure Mitigations
 

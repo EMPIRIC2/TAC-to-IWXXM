@@ -26,7 +26,7 @@ normalized XML with override to raw.
 
 ## Next child stage
 
-**13-deploy-smoke** — after merge #985 → `stage` (`D-S064-12=1`); Staging Deploy + H1–H5
+**13-deploy-smoke READY for sign-off** — #985 merged; Staging Deploy+smoke [31534191417](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31534191417); H1–H5 PASS; await `D-S064-13`
 
 ## Risks / open decisions
 

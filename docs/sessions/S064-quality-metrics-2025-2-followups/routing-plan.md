@@ -19,7 +19,7 @@
 | 10-e2e | yes | delta | **completed** | `e2e-report.md` UJ-056 2/2 PASS |
 | 11-verify-impl | yes | delta | **completed** | PASS `D-S064-11=1`; `D-S064-ui-preview-11=1`; `D-S064-uj056=1` |
 | 12-verify-deploy | yes | delta | **completed** | `D-S064-12=1` — checklist APPROVED; merge #985 → stage |
-| 13-deploy-smoke | yes | delta | **in_progress** | Staging Deploy + H1–H5 after merge |
+| 13-deploy-smoke | yes | delta | **in_progress** | Staging Deploy+smoke green; H1–H5 PASS; await `D-S064-13` |
 
 ## Recommended ordered stages
 
@@ -35,8 +35,8 @@
 
 ## Board
 
-- Project [#7](https://github.com/orgs/EMPIRIC2/projects/7) — #982 / #980 / #979 **In progress**
-- WIP advisory: 3 tickets > policy ≤2 (`D-S064-board=1` override)
+- Project [#7](https://github.com/orgs/EMPIRIC2/projects/7) — #982 / #980 / #979 **On stage**
+- WIP advisory closed for In progress (moved after Staging smoke)
 
 ## Locked intake
 
