@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-10 (S063 / EV-054 — #836 Quality metrics tab; prior EV-050/053)
+> **Last updated**: 2026-08-11 (S064 / EV-055 — #982/#980/#979; prior EV-054)
 
 ## Scope
 
@@ -110,7 +110,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054) | Quality metrics primary tab — official corpus match/residuals/lint/validate (#836) | **H4–H5 required** | TC-EV054-001..008 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055) | Quality metrics primary tab — match/residuals/lint/validate; whitespace-normalized diffs (#982); 2025-2 validate disposition (#980/#979) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -2055,6 +2055,70 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   public (no JWT), return msgspec JSON, 404 unknown stem, serve precomputed data
 - **Pass criteria**: Backend tests + OpenAPI paths; CORS covered by existing H0c patterns
 - **Source**: EV-054 AC4/AC7; [Corpus: api]; `D-S063-gateA=2`
+
+### EV-055 / S064 — Quality metrics normalize + 2025-2 validate (#982 / #980 / #979)
+
+- **Mode**: delta deepen F7.q + F2/F13
+- **Pass criteria**: AC1–AC7 in evolve-decisions §EV-055; TC-EV055-001..007; **UJ-056** deepen
+- **Source**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982),
+  [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980),
+  [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979); parent #836 / EV-054
+
+### TC-EV055-001: Whitespace-only diffs no longer dominate
+
+- **Level**: T0 / T2
+- **Objective**: For a representative stem whose official vs converted XML differ mainly in
+  pretty-print/whitespace, unified line diff hunks are dominated by semantic changes (or empty
+  when only whitespace differs)
+- **Pass criteria**: Fixture/unit assertion on normalize + diff; Vitest or generator test
+- **Source**: EV-055 AC1; #982; UJ-056
+
+### TC-EV055-002: match_status uses normalized equality
+
+- **Level**: T0 / H0i
+- **Objective**: `match_status` on list/detail quality-metrics payloads equals when normalized
+  official and converted XML are equal (even if raw bytes differ in whitespace)
+- **Pass criteria**: Backend/generator tests; OpenAPI/docs state normalized semantics
+- **Source**: EV-055 AC2; [Corpus: api]; `D-S064-normalize=1`
+
+### TC-EV055-003: Normalize helper + golden stem
+
+- **Level**: T0
+- **Objective**: Shared normalize helper covered by unit tests; ≥1 golden stem; vendor trees
+  not rewritten in place
+- **Pass criteria**: Unit tests green; vendor/schemas read-only
+- **Source**: EV-055 AC3; #982
+
+### TC-EV055-004: SCHEMATRON_SKIPPED 2025-2 disposition
+
+- **Level**: T0 / T2
+- **Objective**: Document lxml vs native matrix for 2025-2 xslt2 Schematron; enable when
+  native can evaluate, else documented skip/UX labeling
+- **Pass criteria**: Report or tests assert disposition; no false hard-fail chip for intentional skip
+- **Source**: EV-055 AC4 / AC6; #980; F2/F13
+
+### TC-EV055-005: SCHEMA_IMPORT_WARNING 2025-2 disposition
+
+- **Level**: T0 / T2
+- **Objective**: Root cause (file + import URI) recorded; fix if low-risk else operator message
+- **Pass criteria**: Regression test if fixed; else test-plan note + operator-facing copy
+- **Source**: EV-055 AC5 / AC6; #979; F2
+
+### TC-EV055-006: corpus_metrics regen for normalized match
+
+- **Level**: T0 / CI
+- **Objective**: Regenerated `corpus_metrics.json` (or documented artifact) reflects normalized
+  `match_status` counts after `make generate-quality-metrics`
+- **Pass criteria**: Generator CI/job green; summary counts consistent with AC2
+- **Source**: EV-055 AC7; `D-S064-regen=1`
+
+### TC-EV055-007: UJ-056 smoke — quieter diff / validate chips
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Quality metrics detail shows quieter whitespace behavior and validate chips
+  matching disposition (extend UJ-056 Playwright or Vitest)
+- **Pass criteria**: Local Playwright/Vitest green; H4–H5 after staging deploy (12/13)
+- **Source**: EV-055 AC1 / AC6 / AC7; UJ-056
 
 ### Live harness — staging (EV-043 / EV-044)
 

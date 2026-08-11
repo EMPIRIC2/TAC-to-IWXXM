@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-10 (S063 / EV-054 — #836 `GET /api/v1/quality-metrics*`; prior EV-031/032)
+> **Last updated**: 2026-08-11 (S064 / EV-055 — #982 match_status normalized equality; prior EV-054)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -428,6 +428,15 @@ match status, residuals, lint issues, validate issues). Unified XML diff is comp
 **client-side** from `official_xml` / `converted_xml` (no server `diff` field in v1;
 `D-S063-diff=2` + `D-S063-diff-impl`).
 
+**Match semantics (S064 / EV-055 / #982 — `D-S064-normalize=1`)**: `match_status` is
+equality of **whitespace-normalized** forms of `official_xml` and `converted_xml` (both
+sides). Raw pretty-print differences alone must not yield `match_status` fail. Client
+unified diff SHOULD normalize both sides the same way before `unifiedLineDiff` so operators
+see semantic hunks. Precomputed `corpus_metrics` is regenerated to match (`D-S064-regen=1`).
+Operator-facing `detail` / chip copy for validate issues must stay free of internal doc refs
+(EV-048) when reflecting `SCHEMATRON_SKIPPED` / `SCHEMA_IMPORT_WARNING` dispositions
+(#980 / #979).
+
 **Path**: `stem` — catalog / fixture stem (e.g. `metar-A3-1`).
 
 **Response** (msgspec; minimum fields):
@@ -684,6 +693,9 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 ### Session changelog
 
+- S064 / EV-055 (2026-08-11): F7.q #982 — `match_status` = whitespace-normalized equality of
+  official vs converted XML; regen precomputed corpus metrics; validate chip dispositions for
+  2025-2 #980/#979 (engine may change under F2/F13; HTTP field names unchanged).
 - S063 / EV-054 (2026-08-10): F7.q #836 — additive public `GET /api/v1/quality-metrics` +
   `GET /api/v1/quality-metrics/{stem}` (precomputed corpus quality; msgspec). Gate A M1
   override (`D-S063-gateA=2`).

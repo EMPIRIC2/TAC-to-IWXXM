@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-10 (S063 / EV-054 UJ-056 Quality metrics tab; prior UJ-055 / EV-048)
+> **Last updated**: 2026-08-11 (S064 / EV-055 UJ-056 deepen — whitespace-normalize + 2025-2 validate; prior EV-054)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -72,7 +72,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
-| UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836) | T0 / T2 / **T3** / H4–H5 |
+| UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -833,16 +833,21 @@ residuals, lint, validate, with a unified XML diff vs our conversion.
    (`GET /api/v1/quality-metrics/{stem}`).
 4. In the detail pane: inspect TAC, official XML, our XML; confirm **match status** and a
    **unified XML diff**; residuals / lint / validate panels show empty or expected diagnostics.
+   **EV-055**: whitespace-only formatting must not dominate the unified diff; `match_status`
+   reflects **normalized** equality of both XML sides (`D-S064-normalize=1`). Validate chips
+   reflect 2025-2 Schematron/XSD disposition (#980 / #979) without internal planning ids.
 5. Confirm a deferred / gap stem is labeled (not silently missing).
 6. Optional later: deep-link the same stem into the convert workbench.
 
-**Acceptance**: AC1–AC7 in evolve-decisions §EV-054; TC-EV054-001..008. Default view needs
-no Supabase and no live upstream WMO fetch — metrics come from public
-`GET /api/v1/quality-metrics*` backed by precomputed fixtures (`D-S063-gateA=2`).
+**Acceptance**: AC1–AC7 in evolve-decisions §EV-054 (tab shell) **and** AC1–AC7 in
+evolve-decisions §EV-055 (normalize + validate disposition); TC-EV054-001..008 +
+TC-EV055-001..007. Default view needs no Supabase and no live upstream WMO fetch — metrics
+come from public `GET /api/v1/quality-metrics*` backed by precomputed fixtures
+(`D-S063-gateA=2`; regen under `D-S064-regen=1`).
 **Tier: T0 / T2 / T3 / H4–H5**.
 Related: UJ-032 / UJ-039 / UJ-042.
-[Corpus: product §F7] [Corpus: product §F25] [Corpus: journeys] [Corpus: tests]
-[Corpus: api] [Corpus: adr/ADR-032]
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: product §F25]
+[Corpus: journeys] [Corpus: tests] [Corpus: api] [Corpus: adr/ADR-032]
 
 ---
 
