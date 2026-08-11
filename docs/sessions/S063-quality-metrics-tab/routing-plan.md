@@ -6,7 +6,7 @@
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | `D-S063-route=1` / `D-S063-ui-preview=2` |
-| 16-evolve | yes | orchestrate | **in_progress** | Phase C — 07 M1–M5 done; next 08 |
+| 16-evolve | yes | orchestrate | **in_progress** | 12-verify-deploy in_progress `D-S063-12-path=1`; opening PR → stage then 12 checklist |
 | 01-requirements | yes | delta | **completed** | `D-S063-01-ac=1`; UJ-056; TC-EV054; shell-tab + unified diff |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S063-gateA=2`; api-contract + 05 |
 | 03-plan-tooling | no | — | skipped | No new Cursor rule expected |
@@ -15,10 +15,10 @@
 | 06-tech-tooling | no | — | skipped | No new deps expected |
 | 07-build | yes | delta | **completed** | M1–M5; UJ-056 Playwright; `make generate-quality-metrics` |
 | 08-verify-build | yes | delta | **completed** | Gate C local PASS @ `7a1d1845`; report `reports/verification-report.md`; tip CI via PR→stage |
-| 09-qa | yes | delta | pending | AC map |
-| 10-e2e | yes | delta | pending | Playwright / H4–H5 smoke per #836 AC |
-| 11-verify-impl | yes | delta | pending | AC sign-off; close #836 |
-| 12-verify-deploy | yes | delta | pending | Staging path when UI ships |
+| 09-qa | yes | delta | **completed** | pass_with_advisories; `reports/qa-report.md`; tip `be9e3b07` |
+| 10-e2e | yes | delta | **completed** | UJ-056 PASS local; `reports/e2e-report.md`; H4–H5 deferred 12/13; tip `be9e3b07` |
+| 11-verify-impl | yes | delta | **completed** | PASS `D-S063-11=1`; `D-S063-ui-preview-11=1`; `D-S063-uj056=1`; `reports/verify-impl.md` |
+| 12-verify-deploy | yes | delta | **in_progress** | `D-S063-12-path=1`; opening PR → stage then 12 checklist; not completed |
 | 13-deploy-smoke | yes | delta | pending | Staging smoke; promote later |
 
 ## Recommended ordered stages
@@ -46,3 +46,8 @@
 | D-S063-ui-preview | **2** — No local UI preview |
 | D-S063-gateA | **2** — PASS; public `GET /api/v1/quality-metrics*` required; 05 re-enabled |
 | D-S063-04-plan | **1** — Approve execution plan as drafted; no npm `diff`; single corpus blob |
+| D-S063-09-10-continue | **1** — Continue → 11-verify-impl (user: Continue) |
+| D-S063-ui-preview-11 | **1** — Non-deployed preview at http://127.0.0.1:18000/ |
+| D-S063-uj056 | **1** — Approve UJ-056; waive live T3 until 12/13 |
+| D-S063-11 | **1** — Approve F7.q; finish 11; toward 12 |
+| D-S063-12-path | **1** — Open PR → stage, then 12-verify-deploy (user) |

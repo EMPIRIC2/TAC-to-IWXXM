@@ -30,7 +30,7 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 
 ## Next child stage
 
-**08-verify-build** — Gate C after 07 M1–M5 complete (UJ-056 Playwright green)
+**12-verify-deploy** — **pending** (`D-S063-11=1`; awaiting continue → 12; recommend PR→stage)
 
 ## Risks / open decisions
 
@@ -42,3 +42,5 @@ match / residuals / lint / validate diagnostics ([#836](https://github.com/EMPIR
 6. ~~05 Gate B~~ → **PASS** (`D-S063-05=1`); C1–C7 resolved
 7. ~~07 M5~~ → Playwright TC-EV054-007 green; regen Make target; H4–H5 → 12/13
 8. Ready queue thin (2) — refill from M0 Backlog
+9. ~~09-qa / 10-e2e~~ → **COMPLETE** 2026-08-10 — QA pass_with_advisories + UJ-056 local PASS; H4–H5→12/13
+10. ~~11-verify-impl~~ → **COMPLETE** 2026-08-10 — `D-S063-11=1` Approve F7.q; `D-S063-ui-preview-11=1`; `D-S063-uj056=1`; next 12 pending
