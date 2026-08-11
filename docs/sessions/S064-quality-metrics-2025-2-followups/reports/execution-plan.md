@@ -16,9 +16,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: EV-055 follow-ups |
-| **Active milestone** | M1 — Engine hard fixes (#980 / #979) (**complete**) |
-| **Active task** | — (M1 complete; next M2) |
-| **Tasks completed** | 4 / 17 |
+| **Active milestone** | M2 — W3C C14N helpers (**complete**) |
+| **Active task** | — (M2 complete; next M3) |
+| **Tasks completed** | 8 / 17 |
 | **Stage** | 07-build (M1 complete → M2) |
 | **Last updated** | 2026-08-11 |
 | **Plan approval** | **approved** `D-S064-04-plan=1`; Gate B `D-S064-05=1` |
@@ -98,10 +98,10 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Unit tests + ≥1 golden for Python W3C C14N helper (whitespace-equal peers) | Test | pending | TC-EV055-003; AC3 | — | — |
-| T2.2 | Implement `c14n_xml` (name TBD) in `packages/iwxxm-validate`; keep ADR-032 `canonicalize_xml` intact; no lxml on `packages/shared` | Impl | pending | AC3; `D-S064-c14n=1`; `D-S064-c14n-host=1` | T2.1 | lxml (validate pkg) |
-| T2.3 | FE TS C14N helper tests + implement; Vitest parity with Python golden | Test/Impl | pending | TC-EV055-003; `D-S064-gateA-M1=1` | T2.1 | — |
-| T2.4 | ADR: Quality metrics C14N vs ADR-032 canonicalize | Docs | pending | `D-S064-adr-c14n` | T2.2 | — |
+| T2.1 | Unit tests + ≥1 golden for Python W3C C14N helper (whitespace-equal peers) | Test | completed | TC-EV055-003; AC3 | — | — |
+| T2.2 | Implement `c14n_xml` in `packages/iwxxm-validate`; keep ADR-032 `canonicalize_xml` intact; no lxml on `packages/shared` | Impl | completed | AC3; `D-S064-c14n=1`; `D-S064-c14n-host=1` | T2.1 | lxml (validate pkg) |
+| T2.3 | FE TS C14N helper tests + implement; Vitest parity with Python golden | Test/Impl | completed | TC-EV055-003; `D-S064-gateA-M1=1` | T2.1 | — |
+| T2.4 | ADR: Quality metrics C14N vs ADR-032 canonicalize | Docs | completed | `D-S064-adr-c14n` / ADR-035 | T2.2 | — |
 
 #### M3: Generator match_status + corpus_metrics regen — P0
 
@@ -146,10 +146,10 @@
 | T1.2 | M1 | completed | T1.1 |
 | T1.3 | M1 | completed | — |
 | T1.4 | M1 | completed | T1.3 |
-| T2.1 | M2 | pending | — |
-| T2.2 | M2 | pending | T2.1 |
-| T2.3 | M2 | pending | T2.1 |
-| T2.4 | M2 | pending | T2.2 |
+| T2.1 | M2 | completed | — |
+| T2.2 | M2 | completed | T2.1 |
+| T2.3 | M2 | completed | T2.1 |
+| T2.4 | M2 | completed | T2.2 |
 | T3.1 | M3 | pending | T2.2 |
 | T3.2 | M3 | pending | T3.1, T1.2, T1.4 |
 | T3.3 | M3 | pending | T3.2 |

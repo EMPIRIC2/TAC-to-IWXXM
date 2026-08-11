@@ -63,7 +63,7 @@ active_session:
     - stage: 07-build
       mode: delta
       required: true
-      status: pending
+      status: in_progress
       skip_rationale: null
     - stage: 08-verify-build
       mode: delta
@@ -96,11 +96,11 @@ active_session:
       status: pending
       skip_rationale: null
   current_stage: 07-build
-  current_stage_note: "D-S064-05=1 — Gate B PASS; 05 COMPLETE; next 07-build M1 pending start; tip 82455712"
-  tip_sha: 82455712
-  tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+  current_stage_note: "07-build in_progress — M1 complete (T1.1–T1.4 @ 4b49adb3); next M2 C14N; tip 4b49adb3"
+  tip_sha: 4b49adb3
+  tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
   tip_sha_pushed: false
-  tip_sha_note: "HEAD 82455712 (Gate B PASS — C14N host iwxxm-validate); tip_sha_pushed=false; ahead of stage by 4"
+  tip_sha_note: "HEAD 4b49adb3 ([T1.1-T1.4] native 2025-2 Schematron/XSD); tip_sha_pushed=false; ahead of stage by 6; M1 done → M2 C14N"
   started_at: "2026-08-11"
   started: "2026-08-11"
   github_issues:
@@ -36865,13 +36865,13 @@ evolve_cycles:
   branch_base_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
   branch_status: active
   branch_exists: true
-  tip_sha: 82455712
-  tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+  tip_sha: 4b49adb3
+  tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
   tip_sha_pushed: false
-  tip_sha_note: "HEAD 82455712 (Gate B PASS — C14N host iwxxm-validate); tip_sha_pushed=false; next 07-build M1"
+  tip_sha_note: "HEAD 4b49adb3 ([T1.1-T1.4] native 2025-2 Schematron/XSD); tip_sha_pushed=false; M1 done → M2 C14N"
   current_stage: 07-build
-  current_stage_status: pending
-  current_stage_note: "Gate B PASS (D-S064-05=1); 05 COMPLETE; next 07-build M1 pending start; tip 82455712"
+  current_stage_status: in_progress
+  current_stage_note: "07-build in_progress — M1 complete (T1.1–T1.4 @ 4b49adb3); next M2 C14N"
   started: "2026-08-11"
   started_at: "2026-08-11"
   completed: false
@@ -36931,6 +36931,7 @@ evolve_cycles:
   - "2026-08-11 04-tech-plan in_progress — draft reports/execution-plan.md + build-plan-card.md; tip be13212c ahead of stage by 2; awaiting D-S064-04-plan (not approved); no git commit by workflow-state-manager"
   - "2026-08-11 D-S064-04-plan=1 — 04 COMPLETE; 17 tasks M1–M5; tip e5714f08; 05-verify-tech in_progress awaiting Gate B; no git commit by workflow-state-manager"
   - "2026-08-11 D-S064-05=1 / D-S064-c14n-host=1 — Gate B PASS; C1 resolved (C14N host iwxxm-validate); tip 82455712; 05 COMPLETE; next 07-build M1; no git commit by workflow-state-manager"
+  - "2026-08-11 07-build M1 DONE — commit 4b49adb3 [T1.1-T1.4] native 2025-2 Schematron/XSD; next M2 C14N; tip_sha_pushed=false; ahead 6; no git commit by workflow-state-manager"
   parked: false
 - id: EV-054
   session_id: S063-quality-metrics-tab
@@ -48301,18 +48302,18 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-055-quality-metrics-2025-2-followups
-  ahead_of_origin: 4
+  ahead_of_origin: 6
   pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty (state manager after Gate B); tip 82455712 not pushed; no git commit by workflow-state-manager'
-  tip_sha: 82455712
-  tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
-  tip_note: "HEAD 82455712 Gate B PASS (D-S064-05=1); next 07-build M1 pending; tip_sha_pushed=false; ahead of stage by 4"
+  dirty_note: 'workflow-state.yaml dirty (state manager after M1 @ 4b49adb3); tip not pushed; no git commit by workflow-state-manager'
+  tip_sha: 4b49adb3
+  tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
+  tip_note: "HEAD 4b49adb3 [T1.1-T1.4] native 2025-2 Schematron/XSD; M1 done → M2 C14N; tip_sha_pushed=false; ahead of stage by 6"
   evolve_branch: evolve/EV-055-quality-metrics-2025-2-followups
-  evolve_tip_sha: 82455712
-  evolve_tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+  evolve_tip_sha: 4b49adb3
+  evolve_tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
   evolve_tip_sha_pushed: false
   stage_merge_sha: 4fd51e39
   stage_merge_sha_full: 4fd51e397ccf91f9cefeb0d367b811eb0c09fbb1
@@ -48329,9 +48330,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-055-quality-metrics-2025-2-followups
-  note: 'S064/EV-055 — Gate B PASS; tip 82455712; next 07-build M1 pending start; dirty workflow-state'
+  note: 'S064/EV-055 — 07-build M1 done @ 4b49adb3; next M2 C14N; dirty workflow-state'
 
   notes:
+  - '2026-08-11 commit 4b49adb3 — [T1.1-T1.4] feat native 2025-2 Schematron/XSD; 07-build M1 complete; next M2 C14N; ahead 6 not pushed; dirty workflow-state expected; no git commit by workflow-state-manager'
   - '2026-08-11 D-S064-05=1 / D-S064-c14n-host=1 — Gate B PASS; tip 82455712; 05 COMPLETE; next 07-build M1 pending; ahead 4 not pushed; dirty workflow-state expected; no git commit by workflow-state-manager'
   - '2026-08-10 12-verify-deploy progress — tip_sha 6dd76b66 tip_sha_pushed=true; PR #977 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977); tip CI success run 31449643455; D-S063-12-path already set; #836 Status In review; artifact deploy-checklist.md present (draft/ready awaiting D-S063-12); 12 still in_progress awaiting user checklist sign-off; no git commit by workflow-state-manager'
   - '2026-08-10 D-S063-09-10-continue=1 — continue → 11-verify-impl (user: Continue); 11-verify-impl in_progress; tip be9e3b07; no git commit by workflow-state-manager'
@@ -48886,10 +48888,10 @@ git_history:
     created: "2026-08-11"
     session_id: S064-quality-metrics-2025-2-followups
     evolve_cycle_id: EV-055
-    tip_sha: 82455712
-    tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+    tip_sha: 4b49adb3
+    tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
     tip_sha_pushed: false
-    note: "Gate B PASS D-S064-05=1; tip 82455712; next 07-build M1 pending"
+    note: "07-build M1 done @ 4b49adb3; next M2 C14N"
 
   - name: evolve/EV-054-quality-metrics-tab
     base: stage
@@ -50336,6 +50338,29 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 4b49adb3
+    sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
+    message: "[T1.1-T1.4] feat: native 2025-2 Schematron/XSD for quality metrics"
+    branch: evolve/EV-055-quality-metrics-2025-2-followups
+    stage: 07-build
+    session_id: S064-quality-metrics-2025-2-followups
+    evolve_cycle_id: EV-055
+    timestamp: "2026-08-11"
+    files_changed:
+      - apps/backend/src/services/validation_orchestrator.py
+      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
+      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
+      - packages/iwxxm-validate/docs/ENGINE_MATRIX_2025-2.md
+      - packages/iwxxm-validate/src/iwxxm_validate/__init__.py
+      - packages/iwxxm-validate/src/iwxxm_validate/metrics_validate.py
+      - packages/iwxxm-validate/tests/test_tc_ev055_004_schematron_2025_2.py
+      - packages/iwxxm-validate/tests/test_tc_ev055_005_schema_import_2025_2.py
+      - scripts/ci/generate_quality_metrics.py
+    pushed: false
+    tip_sha: 4b49adb3
+    tip_sha_full: 4b49adb36d6f3131c9fcf059d285e956bb49fe93
+    note: "07-build M1 complete (T1.1–T1.4); next M2 C14N"
+
   - sha: 82455712
     sha_full: 824557121a249386cd02de18705d6f44719e7e22
     message: "docs: [S064/EV-055] Gate B PASS — C14N host iwxxm-validate"
