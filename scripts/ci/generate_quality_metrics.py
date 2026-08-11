@@ -145,7 +145,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
         Artifact matching [Corpus: api] quality-metrics shape plus ``details``.
     """
     _ensure_imports()
-    from iwxxm_validate import validate
+    from iwxxm_validate import validate_for_quality_metrics
     from tac_validate import lint
     from wmo_official_tac_inventory import (
         OFFICIAL_TAC_PEERS,
@@ -231,7 +231,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
         lint_issues = _serialize_lint_issues(lint_report.issues)
 
         if converted_xml:
-            val_report = validate(
+            val_report = validate_for_quality_metrics(
                 converted_xml,
                 iwxxm_version=_IWXXM_PIN,
                 profile=_PROFILE,

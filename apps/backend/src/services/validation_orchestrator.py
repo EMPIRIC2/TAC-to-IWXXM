@@ -109,9 +109,71 @@ class ValidationOrchestrator:
         """Public XML well-formedness validation helper."""
         return self._validate_wellformed(xml_content)
 
+    @staticmethod
+    def _pkg_issue_to_backend(
+        issue: object,
+        *,
+        layer: ValidationLayer,
+    ) -> ValidationIssue:
+        """Map ``iwxxm_validate.Issue`` fields onto backend ``ValidationIssue``."""
+        severity_raw = str(getattr(issue, "severity", "error")).lower()
+        level = ValidationSeverity.ERROR if severity_raw == "error" else ValidationSeverity.WARNING
+        return ValidationIssue(
+            layer=layer,
+            level=level,
+            message=str(getattr(issue, "message", "")),
+            location=getattr(issue, "location", None),
+            code=str(getattr(issue, "code", "NATIVE_ISSUE")),
+        )
+
     def validate_xml_schema(self, xml_content: str, version: str) -> XSDValidationResult:
-        """Public XML schema validation helper."""
+        """Public XML schema validation helper (native-first when Rust is built)."""
+        try:
+            from iwxxm_validate import rust_available, validate_iwxxm
+
+            if rust_available():
+                report = validate_iwxxm(
+                    xml_content,
+                    iwxxm_version=version,
+                    profile="annex3",
+                    levels=("xsd",),
+                )
+                issues = [self._pkg_issue_to_backend(i, layer=ValidationLayer.XML_SCHEMA) for i in report.issues]
+                return XSDValidationResult(
+                    is_valid=report.ok,
+                    issues=issues,
+                    schema_version=version,
+                )
+        except Exception as exc:  # noqa: BLE001 — fall back to legacy lxml
+            logger.warning("Native XSD path unavailable; using lxml validator: %s", exc)
+
         return self.xsd_validator.validate(xml_content, version)
+
+    def _validate_schematron(self, xml_content: str, version: str):
+        """Schematron layer (native-first when Rust is built)."""
+        try:
+            from iwxxm_validate import rust_available, validate_iwxxm
+
+            from ..utilities.schematron_validator import SchematronValidationResult
+
+            if rust_available():
+                report = validate_iwxxm(
+                    xml_content,
+                    iwxxm_version=version,
+                    profile="annex3",
+                    levels=("schematron",),
+                )
+                issues = [self._pkg_issue_to_backend(i, layer=ValidationLayer.SCHEMATRON) for i in report.issues]
+                return SchematronValidationResult(
+                    is_valid=report.ok,
+                    issues=issues,
+                    schema_version=version,
+                    rules_evaluated=0 if not report.issues else 1,
+                )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Native Schematron path unavailable; using lxml validator: %s", exc)
+
+        return self.schematron_validator.validate(xml_content, version)
 
     def validate(
         self,
@@ -315,7 +377,7 @@ class ValidationOrchestrator:
                 if ValidationLayer.SCHEMATRON in parallel_layers:
                     try:
                         futures[ValidationLayer.SCHEMATRON] = executor.submit(
-                            self.schematron_validator.validate, xml_content, version
+                            self._validate_schematron, xml_content, version
                         )
                     except Exception as e:
                         logger.warning(f"Schematron setup warning: {e}")

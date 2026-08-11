@@ -16,12 +16,12 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: EV-055 follow-ups |
-| **Active milestone** | M1 — Engine hard fixes (#980 / #979) |
-| **Active task** | T1.1 (pending approval) |
-| **Tasks completed** | 0 / 17 |
-| **Stage** | 04-tech-plan **completed** → 05-verify-tech |
+| **Active milestone** | M1 — Engine hard fixes (#980 / #979) (**complete**) |
+| **Active task** | — (M1 complete; next M2) |
+| **Tasks completed** | 4 / 17 |
+| **Stage** | 07-build (M1 complete → M2) |
 | **Last updated** | 2026-08-11 |
-| **Plan approval** | **approved** `D-S064-04-plan=1` |
+| **Plan approval** | **approved** `D-S064-04-plan=1`; Gate B `D-S064-05=1` |
 | **PR** | — |
 
 ## Tech decisions (locked `D-S064-04-plan=1`)
@@ -86,10 +86,10 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T1.1 | Red tests: 2025-2 must not close with `SCHEMATRON_SKIPPED`; matrix stub (lxml vs native) | Test | pending | TC-EV055-004; AC4; `D-S064-sch-hard=1` | — | vendor 2025-2 |
-| T1.2 | Enable Schematron for 2025-2 (native path); stop soft-skip as success; document matrix | Impl | pending | AC4; F13; #980 | T1.1 | native build |
-| T1.3 | Red tests: SCHEMA_IMPORT_WARNING absent / XSD compiles for resolved 2025-2 import | Test | pending | TC-EV055-005; AC5; `D-S064-xsd-hard=1` | — | vendor 2025-2 |
-| T1.4 | Fix XSD import resolution (file + URI); backend utility parity if still soft-skipping | Impl | pending | AC5; F2; #979 | T1.3 | — |
+| T1.1 | Red tests: 2025-2 must not close with `SCHEMATRON_SKIPPED`; matrix stub (lxml vs native) | Test | completed | TC-EV055-004; AC4; `D-S064-sch-hard=1` | — | vendor 2025-2 |
+| T1.2 | Enable Schematron for 2025-2 (native path); stop soft-skip as success; document matrix | Impl | completed | AC4; F13; #980 | T1.1 | native build |
+| T1.3 | Red tests: SCHEMA_IMPORT_WARNING absent / XSD compiles for resolved 2025-2 import | Test | completed | TC-EV055-005; AC5; `D-S064-xsd-hard=1` | — | vendor 2025-2 |
+| T1.4 | Fix XSD import resolution (file + URI); backend utility parity if still soft-skipping | Impl | completed | AC5; F2; #979 | T1.3 | — |
 
 #### M2: W3C C14N helpers (shared) — P0
 
@@ -142,10 +142,10 @@
 
 | Task | Milestone | Status | Blocked by |
 |------|-----------|--------|------------|
-| T1.1 | M1 | pending | — |
-| T1.2 | M1 | pending | T1.1 |
-| T1.3 | M1 | pending | — |
-| T1.4 | M1 | pending | T1.3 |
+| T1.1 | M1 | completed | — |
+| T1.2 | M1 | completed | T1.1 |
+| T1.3 | M1 | completed | — |
+| T1.4 | M1 | completed | T1.3 |
 | T2.1 | M2 | pending | — |
 | T2.2 | M2 | pending | T2.1 |
 | T2.3 | M2 | pending | T2.1 |
