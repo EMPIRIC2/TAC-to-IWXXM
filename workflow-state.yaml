@@ -16,9 +16,10 @@ active_session:
   branch_base: stage@d80db688
   branch_base_sha: d80db688
   branch_base_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
-  branch_status: pending_create
-  branch_exists: false
-  branch_note: "Parent will create from stage@d80db688; workflow-state-manager records only (no git branch create)"
+  branch_status: ACTIVE
+  branch_exists: true
+  branch_pushed: true
+  branch_note: "ACTIVE — created+pushed; tip da1e48f8; PR #987 open → stage; CI 31541069003 watching"
   orchestrator: 14-hotfix
   evolve_cycle_id:
   artifacts_dir: docs/sessions/S065-quality-metrics-diff-long-line/
@@ -26,7 +27,10 @@ active_session:
   bug_id: BUG-2026-08-11-quality-metrics-diff-long-line
   bug_report_status: open
   github_issues: []
-  github_issues_note: "none — user report from staging"
+  github_issues_note: "hotfix from staging UX report (no origin issue); follow-up evolve tracked as #988"
+  followup_github_issue: 988
+  followup_github_issue_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988
+  followup_github_issue_note: "evolve later — dedicated /quality/:stem page + GitHub-style hunk collapse (D-S065-scope=4 / D-S065-page=inline-for-now)"
   remediation_path: local-first
   goal: "Pretty-print Quality metrics unified XML diff for human-readable line diffs (C14N currently one long line)."
   out_of_scope:
@@ -44,15 +48,22 @@ active_session:
   auto_lean: true
   auto_lean_rationale: "hotfix UX readability — Auto-Lean"
   prior_session: S064-quality-metrics-2025-2-followups
-  tip_sha:
-  tip_sha_full:
-  tip_sha_pushed: false
-  tip_sha_note: "branch pending_create; base stage@d80db688"
+  tip_sha: "da1e48f8"
+  tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+  tip_sha_pushed: true
+  tip_sha_note: "tip da1e48f8 pushed on fix/quality-metrics-diff-long-line; PR #987 open → stage; CI 31541069003 watching"
+  tip_ci_run: '31541069003'
+  tip_ci_status: watching
+  tip_ci_note: "CI run 31541069003 watching on PR #987 / fix/quality-metrics-diff-long-line"
+  pr_number: 987
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987
+  pr_status: open
   pr_base: stage
   decisions:
     D-S065-scope: "4 — hotfix readability now; evolve later for page+hunks"
     D-S065-products: "all"
     D-S065-page: "inline-for-now"
+    D-S065-pr: "1 — PR #987 opened → stage; follow-up #988; CI 31541069003 watching"
   routing_plan:
   - stage: 00-context
     required: true
@@ -66,17 +77,16 @@ active_session:
     mode: full
     status: in_progress
     started: '2026-08-11'
-    note: "IN PROGRESS — pretty-print unified XML diff; BUG-2026-08-11-quality-metrics-diff-long-line"
+    note: "IN PROGRESS — tip da1e48f8; PR #987 open → stage; follow-up #988; CI 31541069003 watching; awaiting CI + merge + user close"
   - stage: 15-service-health
     required: false
     mode: when_deployed
     status: pending
     skip_rationale: "optional after deploy; not required at Lean hotfix open"
   current_stage: 14-hotfix
-  current_stage_note: "open_session complete; 00 done; 14-hotfix in_progress; branch pending_create fix/quality-metrics-diff-long-line @ stage@d80db688"
+  current_stage_note: "14-hotfix in_progress — tip da1e48f8 pushed; PR #987 open → stage; follow-up #988; CI 31541069003 watching; awaiting CI + merge + user close"
   context_briefs: []
-  note: "OPEN — Auto-Lean hotfix; D-S065-scope=4 / products=all / page=inline-for-now; no github issue; BUG-2026-08-11-quality-metrics-diff-long-line; [Corpus: product §F7.q] [Corpus: tests §UJ-056]"
-
+  note: "IN PROGRESS — Auto-Lean hotfix; tip da1e48f8; PR #987 open → stage; follow-up evolve #988; CI 31541069003 watching; D-S065-scope=4 / products=all / page=inline-for-now; session remains open; [Corpus: product §F7.q] [Corpus: tests §UJ-056]"
 
 sessions:
 
@@ -17926,32 +17936,32 @@ stages:
     bug_id: BUG-2026-08-11-quality-metrics-diff-long-line
     bug_status: open
     github_issues: []
-    github_issues_note: none — user report from staging
+    github_issues_note: 'hotfix from staging UX report; follow-up evolve #988'
+    followup_github_issue: 988
+    followup_github_issue_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988
     remediation_path: local-first
     branch: fix/quality-metrics-diff-long-line
     branch_base: stage@d80db688
-    branch_status: pending_create
+    branch_status: ACTIVE
+    branch_exists: true
+    branch_pushed: true
     started_at: '2026-08-11'
     started: '2026-08-11'
     completed:
     completed_at:
-    tip_sha:
-    tip_sha_full:
-    tip_sha_note: 'branch pending_create from stage@d80db688; parent creates branch'
-    note: 'IN PROGRESS — S065 Auto-Lean hotfix; pretty-print Quality metrics unified XML diff (C14N one long line); D-S065-scope=4 / products=all / page=inline-for-now; defer /quality/:stem + hunk collapse to evolve; [Corpus: product §F7.q] [Corpus: tests §UJ-056]'
-    prior_session_id: S051-output-filename-download-stale
-    prior_bug: docs/bug-reports/BUG-2026-08-07-output-filename-download-stale.md
-    prior_bug_status: resolved
-    prior_completed: '2026-08-07'
-    prior_completed_at: '2026-08-07'
-    prior_pr_number: 905
-    prior_merge_sha: a15541e5
-    prior_prior_session_id: S028-sigmet-multiline-split
-    prior_prior_bug: docs/bug-reports/BUG-2026-07-30-sigmet-multiline-split.md
-    prior_prior_bug_status: resolved
-    prior_prior_pr_number: 796
-    prior_prior_merge_sha: 17c93bd
+    tip_sha: da1e48f8
+    tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+    tip_sha_pushed: true
+    tip_sha_note: 'tip da1e48f8 pushed; PR #987 open → stage; CI 31541069003 watching'
+    tip_ci_run: '31541069003'
+    tip_ci_status: watching
+    pr_number: 987
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987
+    pr_status: open
+    pr_base: stage
+    note: 'IN PROGRESS — tip da1e48f8; PR #987 open → stage; follow-up #988; CI 31541069003 watching; awaiting CI + merge + user close; session remains open'
     notes:
+    - '2026-08-11 S065 PR #987 opened → stage; tip da1e48f8; follow-up #988; CI 31541069003 watching; 14 remains in_progress; session open'
     - '2026-08-11 — S065-quality-metrics-diff-long-line open (BUG-2026-08-11-quality-metrics-diff-long-line); staging UX report; Auto-Lean; D-S065-scope=4 / products=all / page=inline-for-now; branch pending_create fix/quality-metrics-diff-long-line @ stage@d80db688; cleared S051 as current'
     - '2026-08-07 D-S051-close=1 — S051 CLOSED; closeout da2a6656; PR #905 @ a15541e5; 14-hotfix completed; active_session=null; optional 15 skipped; follow-ups deferred'
     - '2026-08-07 D-S051-cursor_rule=1 — Phase 5 complete; prevention_plan confirmed; Cursor rule `.cursor/rules/optional/workbench-live-output-filename-download.mdc` created; hotfix-log #13; bug_status resolved; tip PR #905 MERGED @ a15541e5; main CI 31226647517 SUCCESS'
@@ -18336,6 +18346,45 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S065-pr
+  date: '2026-08-11'
+  timestamp: '2026-08-11'
+  resolved_at: '2026-08-11'
+  session_id: S065-quality-metrics-diff-long-line
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 14-hotfix
+  category: pr_open
+  status: confirmed
+  topic: 'S065 PR opened + evolve follow-up issue'
+  summary: 'PR #987 open → stage; follow-up #988; CI 31541069003 watching'
+  decision: |
+    D-S065-pr — PR opened; follow-up #988; CI run 31541069003 watching.
+    Commit da1e48f88b62aec754aa74c5ae6f84918551b493 on fix/quality-metrics-diff-long-line: "[BUG-2026-08-11] fix: pretty-print Quality metrics C14N diffs".
+    PR #987 → stage: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987 (status open).
+    Follow-up GitHub issue #988 tracks later evolve for dedicated /quality/:stem page + GitHub-style hunk collapse (D-S065-scope=4 / D-S065-page=inline-for-now).
+    stages.14-hotfix remains in_progress — awaiting CI + merge + user close.
+    Session S065 remains open (not closed).
+  user_option: recorded
+  branch: fix/quality-metrics-diff-long-line
+  tip_sha: 'da1e48f8'
+  tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+  tip_sha_pushed: true
+  tip_ci_run: '31541069003'
+  tip_ci_status: watching
+  pr_number: 987
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987
+  pr_status: open
+  pr_base: stage
+  followup_github_issue: 988
+  followup_github_issue_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988
+  related_features:
+  - F7
+  related_decisions:
+  - D-S065-scope
+  - D-S065-page
+  bug_id: BUG-2026-08-11-quality-metrics-diff-long-line
+  note: '14-hotfix in_progress; session remains open'
 - id: D-S065-scope
   date: '2026-08-11'
   timestamp: '2026-08-11'
@@ -49349,16 +49398,16 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: stage
+  current_branch: fix/quality-metrics-diff-long-line
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after open_session S065; branch fix/quality-metrics-diff-long-line pending_create from stage@d80db688; no git commit by workflow-state-manager'
-  tip_sha: "d80db688"
-  tip_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
-  tip_note: "OPEN S065 — stage tip d80db688 (post EV-055/EV-054 closeouts); hotfix branch pending_create"
+  dirty_note: 'workflow-state.yaml dirty after S065 PR #987 / tip da1e48f8 / follow-up #988 / CI 31541069003; no git commit by workflow-state-manager'
+  tip_sha: "da1e48f8"
+  tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+  tip_note: "S065 tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; CI 31541069003 watching; follow-up #988"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -49384,9 +49433,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: fix/quality-metrics-diff-long-line
-  note: 'S065 OPEN — Auto-Lean hotfix quality-metrics-diff-long-line; active_session=S065; session_counter=65; branch pending_create from stage@d80db688; D-S065-scope=4 / products=all / page=inline-for-now; dirty workflow-state; no git commit by workflow-state-manager'
+  note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-11 S065 PR #987 opened → stage; tip da1e48f8 pushed on fix/quality-metrics-diff-long-line; follow-up #988 (evolve page+hunks); CI 31541069003 watching; 14-hotfix in_progress; session remains open; no git commit by workflow-state-manager'
   - '2026-08-11 open_session S065 — Auto-Lean hotfix; session_counter 64→65; active_session=S065-quality-metrics-diff-long-line; stages.00 completed / 14 in_progress; branch pending_create fix/quality-metrics-diff-long-line @ stage@d80db688; D-S065-scope=4 / products=all / page=inline-for-now; BUG-2026-08-11-quality-metrics-diff-long-line; [Corpus: product §F7.q] [Corpus: tests §UJ-056]; no git commit by workflow-state-manager'
   - '2026-08-11 D-S064-close=1 — Cycle + session closed on stage; EV-055/S064 completed; active_session=null; no git commit by workflow-state-manager'
   - '2026-08-11 D-S064-13=1 — Approve 13; close EV-055/S064 on stage (no promote); tip_ci 31534191417 success; tip_sha 4b48c8d8; board #982/#980/#979 Done'
@@ -49956,14 +50006,22 @@ git_history:
     base_sha: d80db688
     base_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
     purpose: "S065 hotfix — Quality metrics unified XML diff pretty-print (C14N long line)"
-    status: pending_create
+    status: ACTIVE
     created: "2026-08-11"
-    exists: false
+    exists: true
+    pushed: true
     session_id: S065-quality-metrics-diff-long-line
-    tip_sha:
-    tip_sha_full:
-    tip_sha_pushed: false
-    note: "Recorded only — parent creates branch from stage@d80db688; Auto-Lean hotfix; D-S065-scope=4"
+    tip_sha: da1e48f8
+    tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+    tip_sha_pushed: true
+    pr_number: 987
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987
+    pr_status: open
+    pr_base: stage
+    tip_ci_run: '31541069003'
+    tip_ci_status: watching
+    followup_github_issue: 988
+    note: "ACTIVE — tip da1e48f8 pushed; PR #987 open → stage; follow-up #988; CI 31541069003 watching"
 
   - name: evolve/EV-055-quality-metrics-2025-2-followups
     base: stage@4fd51e39
@@ -51422,6 +51480,24 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "da1e48f8"
+    sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+    message: "[BUG-2026-08-11] fix: pretty-print Quality metrics C14N diffs"
+    branch: fix/quality-metrics-diff-long-line
+    stage: 14-hotfix
+    session_id: S065-quality-metrics-diff-long-line
+    timestamp: "2026-08-11"
+    pushed: true
+    tip_sha: da1e48f8
+    tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+    tip_ci_run: '31541069003'
+    tip_ci_status: watching
+    pr_number: 987
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987
+    pr_status: open
+    pr_base: stage
+    followup_github_issue: 988
+    note: "S065 hotfix commit; PR #987 open; CI 31541069003 watching; follow-up #988"
   - sha: "4af0dd90"
     sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
     message: "[13] docs: record EV-055 staging smoke READY in evolve-decisions"

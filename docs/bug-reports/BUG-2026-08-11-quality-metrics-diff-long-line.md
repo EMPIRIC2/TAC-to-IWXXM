@@ -2,11 +2,8 @@
 
 | Field | Value |
 |-------|-------|
-| **Status** | fix ready — PR pending |
-| **Feature** | F7.q (Quality metrics tab) |
-| **Severity** | medium |
-| **Classification** | code bug / UX regression after C14N |
-| **Remediation path** | 14-hotfix S065 |
+| **Status** | fix in review — PR #987 |
+| **Remediation path** | 14-hotfix S065 / PR #987 → stage |
 | **Environment** | staging — https://app.staging.tac-to-iwxxm.com/ |
 | **Session** | S065-quality-metrics-diff-long-line |
 
