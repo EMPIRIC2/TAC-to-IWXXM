@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-11 (S064 / EV-055 — #982/#980/#979; prior EV-054)
+> **Last updated**: 2026-08-12 (docs sync — Quality metrics detail + collapsible diffs on stage)
 
 ## Scope
 

@@ -1,6 +1,6 @@
 # Development Guide
 
-Complete setup, local development, and testing for the METAR to IWXXM monorepo.
+Complete setup, local development, and testing for the TAC to IWXXM monorepo.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ Complete setup, local development, and testing for the METAR to IWXXM monorepo.
 | [pnpm](https://pnpm.io/) | `pnpm@9.15.4` via corepack | From root `package.json` `packageManager` — do not brew-install pnpm |
 | Rust (cargo/rustc) | ≥1.74 | Native maturin builds (ADR-017); Homebrew `rust` in Brewfile |
 | Docker (optional) | Compose v2 | Local stack: db + backend + frontend |
-| Supabase project | — | Auth and optional Postgres |
+| Supabase project | — | Auth (Auth-only); product DB is DO Postgres in staging/prod |
 
 **macOS:** install system deps from the root [`Brewfile`](../../Brewfile) (exact formulae +
 verified bottle versions in comments):
@@ -71,35 +71,43 @@ credentials in `.env`.
 ## Repository layout
 
 ```
-apps/backend/     FastAPI app — conversion, validation, /auth/*
-apps/frontend/    React UI
-apps/e2e/         Playwright tests
-packages/auth/    Supabase middleware (library, not a deployable)
-packages/gifts/   TAC → IWXXM conversion
-packages/shared/  Shared Python/TS types
-vendor/schemas/   Read-only wmo-im XSD snapshots
-tests/            Migration gates (TC-M001–M005), smoke, integration
+apps/backend/            FastAPI — conversion, validation, /auth/*, dissemination
+apps/frontend/           React operator UI (incl. Quality metrics /quality)
+apps/worker/             near-RT ingest poller
+apps/e2e/                Playwright tests
+packages/auth/           Supabase Auth JWT middleware (library, not a deployable)
+packages/tac2iwxxm/      TAC → IWXXM (PyPI)
+packages/tac-validate/   TAC lint (PyPI)
+packages/iwxxm-validate/ XSD + Schematron (PyPI)
+packages/dissemination/  destination sink adapters / SSRF helpers
+packages/shared/         Shared Python/TS types
+vendor/schemas/          Read-only wmo-im + iwxxm-us snapshots
+deploy/doks/             Staging + prod Kubernetes overlays
+tests/                   Migration gates, smoke, integration, bug repros
 ```
 
-Legacy top-level `backend/`, `frontend/`, `auth/`, and `GIFTs/` trees may still exist
-during transition; **new work targets `apps/` and `packages/` only**.
+`packages/gifts` was removed at the general TAC→IWXXM cutover. Do not reintroduce GIFTs paths.
 
 ## Architecture
 
 ```
-┌─────────────────┐     VITE_API_BASE_URL      ┌──────────────────────────┐
-│ apps/frontend   │ ─────────────────────────► │ apps/backend             │
-│ (React + Vite)  │     /api/v1/*  /auth/*     │  ├─ packages/auth        │
-└─────────────────┘                            │  ├─ packages/gifts       │
-                                               │  └─ vendor/schemas       │
-                                               └───────────┬──────────────┘
-                                                           │
-                                                           ▼
-                                                    Supabase (remote)
+┌─────────────────┐     VITE_API_BASE_URL      ┌──────────────────────────────┐
+│ apps/frontend   │ ─────────────────────────► │ apps/backend                 │
+│ (React + Vite)  │     /api/v1/*  /auth/*     │  ├─ packages/auth             │
+└─────────────────┘                            │  ├─ packages/tac2iwxxm        │
+                                               │  ├─ packages/tac-validate     │
+                                               │  ├─ packages/iwxxm-validate   │
+                                               │  ├─ packages/dissemination    │
+                                               │  └─ vendor/schemas            │
+                                               └───────────┬──────────────────┘
+                     apps/worker (ingest)                 │
+                           │                              ▼
+                           └──────────────► DO Postgres · Supabase Auth
 ```
 
 Auth endpoints (`/auth/register`, `/auth/login`, `/auth/me`, …) live on the same host
-as conversion APIs. The frontend uses a single `VITE_API_BASE_URL` for both.
+as conversion APIs. The frontend uses a single `VITE_API_BASE_URL` (or runtime
+`/config.json`) for both.
 
 ## Environment variables
 
@@ -163,8 +171,10 @@ cd apps/frontend
 METAR_CONFIG_ENV=local bash ../../scripts/frontend/prepare-config.sh
 pnpm dev --host 0.0.0.0 --port 18000
 
-# GIFTs tests
-cd packages/gifts && uv run pytest tests/ -v
+# Package unit examples
+cd packages/tac2iwxxm && uv run pytest tests/ -v
+cd packages/tac-validate && uv run pytest tests/ -v
+cd packages/iwxxm-validate && uv run pytest tests/ -v
 ```
 
 ## Testing
@@ -178,11 +188,11 @@ make test-unit
 Runs migration smoke tests, root `tests/unit/`, and `packages/shared` with 95% coverage
 gate.
 
-### Backend / package coverage (legacy paths still supported)
+### Backend / package coverage
 
 ```bash
-make test-unit-backend    # apps/backend via legacy Makefile target
-make test-unit-gifts
+make test-unit-backend    # apps/backend
+# Prefer workspace: make test-unit
 ```
 
 Prefer `make test-unit` for CI-aligned workspace checks.
@@ -221,7 +231,7 @@ Primary workflow: `.github/workflows/ci-cd.yml` (**EV-036** local-first amend).
 | Fast units (EV-047) | husky **pre-push** | `make test-unit-fast` — workspace + tac2iwxxm units (not Compose / not validate-ci). |
 | Opt-in full local | `make` | `validate-ci` / `ci-prepush` / `make ci` (units + Compose on **18000/18001**) when you want full parity. |
 | Remote PR/push | GitHub Actions | **No** `validate` job; **no** Compose integration. **Keeps** package **unit matrix** + coverage + sticky **PR coverage comment** + sticky **quality/golden PR comment** (EV-052). Also `rust-crates` / `Rust crates (fmt/clippy/test)` gate, `tac2iwxxm-native` maturin matrix (both packages), `e2e-smoke`, `test-alembic` (EV-045). |
-| Deploy | `main`/`stage` push | needs `test` + `test-alembic` + `rust-crates-gate` + `tac2iwxxm-native`; GHCR + DOKS; Render optional |
+| Deploy | `main`/`stage` push | needs `test` + `test-alembic` + `rust-crates-gate` + `tac2iwxxm-native`; GHCR + DOKS |
 
 Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgURL`, with REST
 `imageUrl` fallback when `RENDER_API_KEY` is set — BUG-2026-08-03).
@@ -236,7 +246,7 @@ Image deploys use `scripts/deploy/trigger_render_image_deploy.py` (hook + `imgUR
 | **make rust-check** | Local mirror of rust crates + both native smokes |
 | **e2e-smoke** | Playwright smoke |
 | **test-alembic** | Alembic upgrade head (TC-EV031-002) |
-| **deploy** | Docker build/push + DOKS/Render (`main` push only; skipped if CD credentials incomplete) |
+| **deploy** | Docker build/push + DOKS (`stage` / `main` / deploy tags; skipped if CD credentials incomplete) |
 
 Local gates:
 
@@ -340,8 +350,10 @@ Docker).
 
 ## Deployment
 
-Production uses **two Render services** (API + static frontend). See [deploy.md](../deploy.md)
-for topology, env vars, and post-deploy connectivity checks (H4/H5).
+**Primary:** DigitalOcean Kubernetes (DOKS) — staging from `stage`, production from `main`
+/ deploy tags (`vYYYY.MM.DD-deploy`). See [deploy.md](../deploy.md) and
+[deploy-state.md](../deploy-state.md) for topology, env vars, and connectivity checks
+(H0c–H5). Render services are legacy/suspended.
 
 ## Agent workflow (pipeline sessions)
 

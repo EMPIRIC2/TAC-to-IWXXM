@@ -1,6 +1,36 @@
 # Changelog
 
-All notable user-facing and deployable changes for METAR to IWXXM.
+All notable user-facing and deployable changes for TAC to IWXXM.
+
+## Unreleased on `stage` (promote deferred)
+
+Landed on staging only — **not** yet promoted to `main` / prod.
+
+### Added
+- Operator **Quality metrics** primary shell tab — browse official WMO IWXXM corpus examples
+  with match / residuals / lint / validate summaries (`GET /api/v1/quality-metrics`, UI
+  `/quality`). Issue [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836).
+- Shareable Quality metrics **detail page** `/quality/:stem` with back-to-list and
+  GitHub-style collapsible equal-context hunks in the unified XML diff (default 3 context
+  lines). Issue [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988).
+
+### Changed
+- Quality metrics match/diff use **W3C C14N** (volatile-attribute strip); IWXXM **2025-2**
+  Schematron enabled; schema-import warning for 2025-2 fixed. Issues
+  [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982),
+  [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980),
+  [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979).
+- Pretty-print C14N XML in Quality metrics panes/diffs for readable line wrapping
+  ([#987](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987)).
+
+### Deploy
+- Staging tips: product [#989](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989) @ `b4a63ab8`;
+  docs [#990](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/990) @ `c4d2cf68`.
+- Live: https://app.staging.tac-to-iwxxm.com/quality
+- Promote `stage`→`main` deferred until explicitly requested.
+- Standing reports: [evolve-report-EV-054.md](evolve-report-EV-054.md),
+  [evolve-report-EV-055.md](evolve-report-EV-055.md),
+  [evolve-report-EV-056.md](evolve-report-EV-056.md).
 
 ## 2026-08-10 — Promote EV-048..EV-053 (`stage` → `main`)
 

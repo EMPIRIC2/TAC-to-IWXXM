@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-11 (S064 / EV-055 — #982 match_status normalized equality; prior EV-054)
+> **Last updated**: 2026-08-12 (docs sync — Quality metrics detail route; prior C14N match semantics)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -698,6 +698,9 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 ### Session changelog
 
+- S066 / EV-056 (2026-08-11): F7.q #988 — **no HTTP contract change**. FE shareable route
+  `/quality/:stem` + collapsible equal-context hunks consume existing
+  `GET /api/v1/quality-metrics` + `/{stem}` (pretty C14N panes from S065).
 - S064 / EV-055 (2026-08-11): F7.q #982 — `match_status` = **W3C C14N** equality of official
   vs converted XML; shared generator+FE helper; panes default normalized with override;
   regen corpus metrics; **hard** Schematron enable (#980) + SCHEMA_IMPORT fix (#979).

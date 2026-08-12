@@ -1,25 +1,25 @@
 # Technical Specification
 
-> **Project**: METAR to IWXXM Converter
-> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 platform independence; Auth/DO/DOKS)
+> **Project**: TAC to IWXXM  
+> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM  
+> **Version**: monorepo + `tac2iwxxm` + operator UI (Quality metrics on stage)  
+> **Last updated**: 2026-08-12 (docs sync — Quality metrics detail + collapsible diffs on staging)
 
 ## Overview
 
-METAR to IWXXM converts aviation TAC messages (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA)
-to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via `packages/tac-validate`, and
-validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authoritative WMO
-and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
-**single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
-(read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **Planned**
-(S011). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019; **F30** moves
-store to DigitalOcean Postgres). **F21** is **Amended** (S038 / EV-031): public convert APIs
-remain unauthenticated; **optional Supabase Auth** gates long-term work sessions only (**F31**).
+TAC to IWXXM converts aviation TAC messages (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA,
+and related products) to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via
+`packages/tac-validate`, and validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron)
+against authoritative WMO and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`.
+The system is a **single-git monorepo** with `apps/` (deployables), `packages/` (libraries),
+and `vendor/` (read-only upstream snapshots). Multi-product operator UI remains the umbrella
+product track; **Quality metrics** (list + detail) is live on **staging** (promote deferred).
+Near-realtime ingest worker is implemented (product store on DigitalOcean Postgres). Public
+convert APIs remain unauthenticated; **optional Supabase Auth** gates long-term work sessions.
 **Supabase** is **Auth/JWT verify only**; product DB is **DigitalOcean Postgres** (`DATABASE_URL`).
-Hosting target this cycle: **DOKS** (Render retired after soak) — **F30** / #712.
-**Dissemination destinations** (F16–F19) use **one-shot user-pasted BYOC** credentials
-(memory-only; never saved profiles) under SSRF + required egress allowlist (ADR-029).
+Hosting: **DOKS** (Render retired after soak).
+**Dissemination destinations** use **one-shot user-pasted BYOC** credentials
+(memory-only; never saved profiles) under SSRF + required egress allowlist.
 
 ## System Architecture
 
@@ -240,6 +240,9 @@ metar-to-IWXXM/
   **F33**: Auth-gated mass file/folder ingest (caps 200 / 5 MiB / 50 MiB; sniff/zip-bomb).
   **F7 deepen EV-042**: Queue + keyboard + batch convert/validate (UJ-052). **No**
   AdminDashboard, `/admin/*` (F21 public convert; Auth optional for F31/F33 mass).
+- **Quality metrics (staging)**: Primary shell tab `/quality` lists official WMO corpus
+  stems; detail `/quality/:stem` with Official/Converted panes and GitHub-style collapsible
+  unified diffs (C14N match; promote deferred).
 - **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
   version control; values passed via `conversion_params` / multipart to `/api/v1/convert`.
 - **F7 delta (S011; F21 amend)**: Debounced **public** calls to lint/decode/validate/preview with

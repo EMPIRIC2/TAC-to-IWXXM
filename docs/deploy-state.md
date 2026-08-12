@@ -1,31 +1,44 @@
 # Deploy State
 
-> Last updated: 2026-08-07  
-> Status: **deployed** (S050 / EV-042 — `D-S050-13=1`)
+> Last updated: 2026-08-12  
+> Status: **staging current** (Quality metrics detail + collapsible diffs closed on `stage`);
+> **production** last promoted 2026-08-10. Promote `stage`→`main` **deferred**.
 
-## Deployment Log
+## Environments
 
-| # | Step | Status | Started | Completed | Notes |
-|---|------|--------|---------|-----------|-------|
-| 1 | Deploy | done | 2026-08-07 | 2026-08-07 | #899 → main `e3d1c7c8`; CI/CD Deploy [31197264636](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31197264636) |
-| 2 | Smoke tests | done | 2026-08-07 | 2026-08-07 | H0c/H1/H4–H5 + UJ-051..053 6/6; see S050 deploy-smoke.md |
-| 3 | Health check | done | 2026-08-07 | 2026-08-07 | `https://api.tac-to-iwxxm.com/health` healthy |
-| 4 | Changelog | done | 2026-08-07 | 2026-08-07 | Unreleased S050 / EV-042 |
-| 5 | Monitoring baseline | done | 2026-08-07 | 2026-08-07 | Live DOKS prod hostnames |
+| Env | Branch tip | Cluster / ns | FE | API | Notes |
+|-----|------------|--------------|----|-----|-------|
+| **Staging** | `stage` @ `c4d2cf68` (docs [#990](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/990); product [#989](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989) @ `b4a63ab8`) | `metar-iwxxm-staging` | https://app.staging.tac-to-iwxxm.com | https://api.staging.tac-to-iwxxm.com | Quality metrics live; Staging Deploy + smoke + connectivity checks **PASS** |
+| **Production** | `main` @ `d7117ca4` ([#976](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/976) promote) | `metar-iwxxm` | https://app.tac-to-iwxxm.com | https://api.tac-to-iwxxm.com | Last CHANGELOG window 2026-08-10; deploy tag path per [deploy.md](deploy.md) |
 
-## Current Deployment
+## Staging log (recent)
 
-| Field | Value |
-|-------|-------|
-| App name | metar-api + metar-frontend + metar-worker (DOKS) |
-| Deploy URL (API) | `https://api.tac-to-iwxxm.com` |
-| Deploy URL (FE) | `https://app.tac-to-iwxxm.com` |
-| Deploy mode | Live = prod (sole DOKS); Render suspended |
-| Commit | `e3d1c7c8` (merge #899) |
-| Branch | `main` |
-| Session report | docs/sessions/S050-remove-db-tools-operator-throughput/reports/deploy-smoke.md |
-| Prior | S048 / EV-040 workbench lint; see session archive |
+| # | Step | Status | Date | Notes |
+|---|------|--------|------|-------|
+| 1 | Quality metrics tab (official corpus compare) | done | 2026-08-10+ | Landed on `stage`; see session S063 reports |
+| 2 | C14N match/diff + IWXXM 2025-2 validate disposition | done | 2026-08-11 | [#985](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985) → `stage` @ `4b48c8d8`; CD [31534191417](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31534191417) |
+| 3 | Pretty-print C14N diffs (readability hotfix) | done | 2026-08-11 | [#987](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987) → `stage` @ `340b3cf6` |
+| 4 | Quality metrics detail page + collapsible diffs | done | 2026-08-11 | [#989](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989) → `stage` @ `b4a63ab8`; CD [31545833142](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31545833142); docs [#990](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/990) @ `c4d2cf68` |
+| 5 | Promote `stage`→`main` | **deferred** | — | Explicit ask required |
+
+## Production log (last promote)
+
+| # | Step | Status | Date | Notes |
+|---|------|--------|------|-------|
+| 1 | Promote (2026-08-10 window) | done | 2026-08-10 | [#976](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/976) `stage`→`main`; see [CHANGELOG.md](CHANGELOG.md) |
+| 2 | Deploy / smoke | done | 2026-08-10 | Tag-driven prod Deploy |
+| 3 | Prior | historical | 2026-08-07 | [#899](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/899) @ `e3d1c7c8` |
 
 ## Rollback
 
-Prior DOKS/GHCR image tag via `scripts/deploy/doks_rollout_images.sh`; no DB migrations this cycle.
+Prior DOKS/GHCR image tag via `scripts/deploy/doks_rollout_images.sh` against the matching
+cluster secret (staging ≠ prod). See [deploy.md](deploy.md).
+
+## Session pointers
+
+| Topic | Report |
+|-------|--------|
+| Quality metrics detail + collapsible diffs | [evolve-report-EV-056.md](evolve-report-EV-056.md) · [S066 deploy-smoke](sessions/S066-quality-metrics-diff-page/reports/deploy-smoke.md) |
+| C14N + 2025-2 validate | [evolve-report-EV-055.md](evolve-report-EV-055.md) |
+| Quality metrics tab | [evolve-report-EV-054.md](evolve-report-EV-054.md) |
+| Diff long-line hotfix | [BUG-2026-08-11](bug-reports/BUG-2026-08-11-quality-metrics-diff-long-line.md) |

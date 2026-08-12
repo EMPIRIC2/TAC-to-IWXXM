@@ -2,7 +2,7 @@
 
 > **Corpus ID:** `tech-spec` — see [CORPUS.md](CORPUS.md).  
 > **Architecture / components:** [spec.md](spec.md) (`system-spec`).  
-> **Last updated:** 2026-08-09 (S059 / EV-050 — WMO membership harvest; prior S054 / EV-045)
+> **Last updated:** 2026-08-12 (docs sync — Quality metrics on stage; prior membership harvest)
 
 This file is the **entry point** for runtime, configuration, deployment, and dependency
 truth. Detail lives in the satellites below — do not duplicate long tables here.
@@ -13,7 +13,7 @@ truth. Detail lives in the satellites below — do not duplicate long tables her
 |-----|----------------|
 | [config-spec.md](config-spec.md) | `config/{env}.json` fields, defaults, precedence, non-secret vs secret |
 | [env-contract.md](env-contract.md) | Env var names, who consumes them (API / frontend / CI) |
-| [deploy.md](deploy.md) | Render (and related) topology, deploy commands, integration checklist |
+| [deploy.md](deploy.md) | DOKS staging/prod topology, promote path, live harness |
 | [dependency-inventory.md](dependency-inventory.md) | Allowed packages; new deps need `[Decision]` + inventory update |
 
 ## Related corpus
