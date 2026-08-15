@@ -1,27 +1,23 @@
 # Build Plan Card — S067 / EV-057
 
 > Updated: 2026-08-15 · Branch: `evolve/EV-057-m0-ready-apex-accumulate-validate`  
-> Active: **07-build** — next **M1 / T1.1** (DNS/TLS verify for apex)
+> Active: **07-build** — **M1 repo complete**; next DNS cutover AskQuestion → **M2**
 
 ## Goal
 
 Ship M0 Ready **#948** (apex → app), **#903** (accumulate ZIP ≤200), **#838** (validate-only)
 to `stage` under Standard routing; promote later after re-approve.
 
-## In scope (this batch — M1)
+## In scope (M1 — done in-repo)
 
-- [ ] T1.1 DNS/TLS verify for `tac-to-iwxxm.com` (+ `www`)
-- [ ] T1.2 Sibling Ingress `metar-frontend-apex` + permanent-redirect
-- [ ] T1.3–T1.4 deploy docs + ops smoke notes
+- [x] T1.1 DNS/TLS verify — **gap**: Porkbun parking → `l.ink` (not LB)
+- [x] T1.2 Sibling Ingress `metar-frontend-apex` + permanent-redirect
+- [x] T1.3–T1.4 deploy.md + ops curl checklist
 
-## Out of scope
+## Blocked for live #948 AC
 
-- #841 / #727 / #874; S056 ruleset-admin; auto-promote; new deps; batch disseminate
-
-## Acceptance
-
-- TC-EV057-948-*; UJ-OPS-002; `D-S067-948-impl` sibling Ingress
+DNS A/`www` must move to `168.144.12.70` before redirect works in production.
 
 ## Next
 
-**07-build M1** (`D-S067-04-plan=1`; 05/06 skipped).
+AskQuestion DNS cutover timing → then **M2 #903** (or pause).

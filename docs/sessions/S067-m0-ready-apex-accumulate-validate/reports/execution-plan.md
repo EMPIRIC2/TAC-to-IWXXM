@@ -17,9 +17,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: EV-057 M0 Ready pack |
-| **Active milestone** | — (await EP approval) |
-| **Active task** | — |
-| **Tasks completed** | 0 / 14 |
+| **Active milestone** | M1 — #948 apex (**manifests complete**; live DNS cutover pending) |
+| **Active task** | — (M1 repo tasks done; AskQuestion DNS cutover → M2) |
+| **Tasks completed** | 4 / 14 |
 | **Stage** | 04-tech-plan |
 | **Last updated** | 2026-08-15 |
 | **Plan approval** | **approved** `D-S067-04-plan=1` (2026-08-15) |
@@ -82,10 +82,10 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T1.1 | Verify DNS/TLS coverage for `tac-to-iwxxm.com` (+ `www`); document gaps | Spike/Docs | pending | #948 AC4; deploy.md | — | DNS/cert |
-| T1.2 | Add sibling Ingress `metar-frontend-apex` (hosts + permanent-redirect + TLS) in prod overlay | Impl | pending | `D-S067-948-impl`; deploy.md | T1.1 | — |
-| T1.3 | Update `docs/deploy.md` with applied resource names; ops curl checklist | Docs | pending | TC-EV057-948-003 | T1.2 | — |
-| T1.4 | Ops smoke script or Makefile target notes for UJ-OPS-002 (prod) | Test/Docs | pending | TC-EV057-948-001..002 | T1.2 | prod LB |
+| T1.1 | Verify DNS/TLS coverage for `tac-to-iwxxm.com` (+ `www`); document gaps | Spike/Docs | **completed** | #948 AC4; deploy.md | — | DNS/cert |
+| T1.2 | Add sibling Ingress `metar-frontend-apex` (hosts + permanent-redirect + TLS) in prod overlay | Impl | **completed** | `D-S067-948-impl`; deploy.md | T1.1 | — |
+| T1.3 | Update `docs/deploy.md` with applied resource names; ops curl checklist | Docs | **completed** | TC-EV057-948-003 | T1.2 | — |
+| T1.4 | Ops smoke script or Makefile target notes for UJ-OPS-002 (prod) | Test/Docs | **completed** | TC-EV057-948-001..002 | T1.2 | prod LB |
 
 #### M2: Accumulate conversions → one ZIP (#903 / F7.r) — P0
 

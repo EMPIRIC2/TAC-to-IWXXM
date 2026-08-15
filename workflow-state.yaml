@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "7db2c724"
-  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+  tip_sha: "bdc7f2c9"
+  tip_sha_full: bdc7f2c96168ac423f1c6312102d0bac9b270950
   tip_sha_pushed: false
-  tip_sha_note: "04-tech-plan tip 7db2c724 local — D-S067-04-plan=1; tip not pushed"
+  tip_sha_note: "07-build tip bdc7f2c9 local — D-S067-07-proceed=1a; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -66,7 +66,7 @@ active_session:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 07-build
-  current_stage_note: "04 complete; awaiting 07 startup before M1 T1.1"
+  current_stage_note: "07 M1 #948 — T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -100,6 +100,9 @@ active_session:
     D-S067-04-plan: "1"
     D-S067-04-next: "1a"
     D-S067-948-impl: "sibling Ingress metar-frontend-apex"
+    D-S067-07-batch: "1a"
+    D-S067-07-kube: "1a"
+    D-S067-07-proceed: "1a"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -115,7 +118,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 04 COMPLETE (D-S067-04-plan=1); awaiting 07-build startup before M1 T1.1"
+    note: "IN PROGRESS — EV-057; 07-build in_progress M1 #948 T1.1 (D-S067-07-proceed=1a / batch=1a / kube=1a)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -136,11 +139,13 @@ active_session:
     status: completed
     started: '2026-08-15'
     completed: '2026-08-15'
-    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3 approved; 05/06 remain skipped; handoff 07-build (awaiting startup)"
+    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3 approved; 05/06 remain skipped; handoff 07-build"
   - stage: 07-build
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-15'
+    note: "IN PROGRESS — M1 #948 T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote (D-S067-07-batch=1a / kube=1a / proceed=1a)"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -198,10 +203,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "7db2c724"
-  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+  tip_sha: "bdc7f2c9"
+  tip_sha_full: bdc7f2c96168ac423f1c6312102d0bac9b270950
   tip_sha_pushed: false
-  tip_sha_note: "04-tech-plan tip 7db2c724 local — D-S067-04-plan=1; tip not pushed"
+  tip_sha_note: "07-build tip bdc7f2c9 local — D-S067-07-proceed=1a; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -244,7 +249,7 @@ sessions:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 07-build
-  current_stage_note: "04 complete; awaiting 07 startup before M1 T1.1"
+  current_stage_note: "07 M1 #948 — T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -278,6 +283,9 @@ sessions:
     D-S067-04-plan: "1"
     D-S067-04-next: "1a"
     D-S067-948-impl: "sibling Ingress metar-frontend-apex"
+    D-S067-07-batch: "1a"
+    D-S067-07-kube: "1a"
+    D-S067-07-proceed: "1a"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -293,7 +301,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 04 COMPLETE (D-S067-04-plan=1); awaiting 07-build startup before M1 T1.1"
+    note: "IN PROGRESS — EV-057; 07-build in_progress M1 #948 T1.1 (D-S067-07-proceed=1a / batch=1a / kube=1a)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -314,11 +322,13 @@ sessions:
     status: completed
     started: '2026-08-15'
     completed: '2026-08-15'
-    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3 approved; 05/06 remain skipped; handoff 07-build (awaiting startup)"
+    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3 approved; 05/06 remain skipped; handoff 07-build"
   - stage: 07-build
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-15'
+    note: "IN PROGRESS — M1 #948 T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote (D-S067-07-batch=1a / kube=1a / proceed=1a)"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -11178,10 +11188,10 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: pending
-    in_progress: false
-    started_at: null
-    started: null
+    status: in_progress
+    in_progress: true
+    started_at: '2026-08-15'
+    started: '2026-08-15'
     completed_at: null
     completed: null
     previous_s064_session_id: S064-quality-metrics-2025-2-followups
@@ -11233,9 +11243,9 @@ stages:
     evolve_cycle_id: EV-057
     skill_id: 07-build
     mode: delta
-    note: 'PENDING — S067/EV-057 awaiting 07 startup before M1 T1.1 (D-S067-04-plan=1 / D-S067-04-next=1a); tip 7db2c724; no git commit by workflow-state-manager'
-    tip_sha: 7db2c724
-    tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+    note: 'IN PROGRESS — S067/EV-057 M1 #948 T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote (D-S067-07-batch=1a / kube=1a / proceed=1a); tip bdc7f2c9; no git commit by workflow-state-manager'
+    tip_sha: bdc7f2c9
+    tip_sha_full: bdc7f2c96168ac423f1c6312102d0bac9b270950
     tip_sha_pushed: false
     pr_number:
     pr_url:
@@ -11248,15 +11258,18 @@ stages:
     pending_commit: false
     current_milestone: M1
     current_task: T1.1
-    active_milestone: null
-    active_task: null
-    active_task_status: pending
+    active_milestone: M1
+    active_task: T1.1
+    active_task_status: in_progress
     completed_through: null
-    progress: awaiting 07 startup before M1 T1.1
+    progress: M1 #948 T1.1 DNS/TLS verify; batch M1 only
     skipped_tasks: []
     deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     decision_refs:
+    - D-S067-07-batch
+    - D-S067-07-kube
+    - D-S067-07-proceed
     - D-S067-04-plan
     - D-S067-04-next
     - D-S067-948-impl

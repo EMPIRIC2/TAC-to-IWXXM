@@ -48,24 +48,46 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 
 **Canonical operator app host** remains `https://app.tac-to-iwxxm.com` (staging:
 `https://app.staging.tac-to-iwxxm.com`). Prod apex `https://tac-to-iwxxm.com` (and
-`https://www.tac-to-iwxxm.com` when DNS/cert covers it) must **permanently redirect** to the
-app host by **extending the prod frontend Ingress**
-([`deploy/doks/overlays/prod/patch-ingress-frontend.yaml`](../deploy/doks/overlays/prod/patch-ingress-frontend.yaml))
-with apex/www hosts and a permanent redirect to `https://app.tac-to-iwxxm.com$request_uri`
-(`D-S067-948-ingress=2a`).
+`https://www.tac-to-iwxxm.com`) must **permanently redirect** to the app host via sibling
+Ingress **`metar-frontend-apex`**
+([`deploy/doks/overlays/prod/ingress-frontend-apex.yaml`](../deploy/doks/overlays/prod/ingress-frontend-apex.yaml))
+with annotation
+`nginx.ingress.kubernetes.io/permanent-redirect: https://app.tac-to-iwxxm.com$request_uri`
+(`D-S067-948-impl`). Do **not** put that annotation on `metar-frontend` (would loop `app.`).
 
 | Requirement | Behavior |
 |-------------|----------|
-| HTTPS apex | `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent) |
-| Path/query | Preserve (e.g. `/foo?bar=1` → same on app host) |
-| `www` | Include when DNS/cert covers it |
-| HTTP | Chain must end on HTTPS app URL |
-| TLS | Cert covers apex (and `www` if enabled) |
-| Implementation | Prod FE Ingress host rules + permanent-redirect annotation (not a separate Service unless spike forces it) |
+| HTTPS apex | `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301/308) |
+| Path/query | Preserved via `$request_uri` |
+| `www` | Included on the same sibling Ingress + TLS secret `metar-frontend-apex-tls` |
+| HTTP | After DNS cutover, nginx/cert-manager path; must end on HTTPS app URL |
+| TLS | cert-manager `letsencrypt-prod` issues `metar-frontend-apex-tls` once DNS hits LB |
 | Staging apex | Out of scope unless free with the same change |
 
-Ops smoke: **UJ-OPS-002** / **TC-EV057-948-***. [Corpus: product §F30]
-[Corpus: deploy] [Corpus: tech-spec]
+#### DNS prerequisite (T1.1 — 2026-08-15)
+
+**Before live AC**: apex/`www` must point at prod LB **`168.144.12.70`**.
+
+As of probe: apex A records and `www` still resolve to **Porkbun parking**
+(`207.207.210.*` / `uixie.porkbun.com`) and HTTPS **302**s to
+`https://tac-to-iwxxm-com.l.ink/` — not the DOKS stack. `app.tac-to-iwxxm.com` correctly
+uses `168.144.12.70`.
+
+Cutover: see
+[`docs/sessions/S067-…/reports/t1.1-apex-dns-tls.md`](sessions/S067-m0-ready-apex-accumulate-validate/reports/t1.1-apex-dns-tls.md).
+Apply Ingress with prod overlay after DNS (or apply early and wait for cert once DNS moves).
+
+#### Ops smoke (UJ-OPS-002 / TC-EV057-948)
+
+```bash
+# Expect permanent redirect to app (after DNS + Ingress live)
+curl -sI "https://tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
+# Expect: HTTP/2 301 (or 308) and Location: https://app.tac-to-iwxxm.com/foo?bar=1
+
+curl -sI "https://www.tac-to-iwxxm.com/" | egrep -i '^(HTTP|location):'
+```
+
+[Corpus: product §F30] [Corpus: deploy] [Corpus: tech-spec]
 
 Soak checklist (closed early under `D-S038-t65-waive`):
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).
