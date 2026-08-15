@@ -32,6 +32,9 @@
 | D-S067-ui-preview | **3a** — Remind at 11-verify-impl (non-deployed) |
 | D-S067-proceed | **4a** — Open S067 + EV-057; write brief/routing/plan card |
 | D-S067-board | **1** — #948 → In progress (WIP 1); #903/#838 stay Ready until started |
+| D-S067-903-cap | **1c** — Soft accumulate cap **≤200** |
+| D-S067-948-ingress | **2a** — Extend prod FE Ingress apex/www → app `$request_uri` |
+| D-S067-gateA | **1** — PASS Gate A → 04-tech-plan |
 
 ### Acceptance (`D-S067-01-ac=1`)
 
@@ -40,7 +43,7 @@
 2. Path + query preserved.
 3. `www` if DNS/cert covers; HTTP ends on HTTPS app URL.
 4. TLS covers apex (and `www` if enabled).
-5. Document DOKS/ingress mechanism in deploy docs.
+5. Document **prod FE Ingress** extension in deploy docs (`D-S067-948-ingress=2a`).
 
 **#903 / F7.r / UJ-057**
 1. N≥2 sequential successes remain visible.
@@ -49,7 +52,7 @@
 4. Custom basename → `{base}.zip` (#664).
 5. Explicit clear/reset.
 6. Failed convert leaves prior successes.
-7. Soft accumulate cap (04 locks number).
+7. Soft accumulate cap **≤200**; clear error when over (`D-S067-903-cap=1c`).
 8. UJ-057 / TC-EV057-903-* + H4–H5.
 
 **#838 / F7.s / UJ-058**

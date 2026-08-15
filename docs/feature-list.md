@@ -444,8 +444,9 @@
   output name is empty: sanitize **first ~8 characters** of the **first** successful conversion’s
   TAC + timestamp (`{stem}_{yyyyMMddHHmmss}.zip`). Custom basename keeps `{base}.zip` (#664 /
   EV-005). Explicit clear/reset restores empty batch. Failed convert leaves prior successes.
-  Soft accumulate cap aligned with existing workbench/F33-ish limits (exact number in 04).
-  Does **not** flip F7 → Implemented. Notes F1/F6 download path only — no batch disseminate.
+  Soft accumulate cap **≤200** results (`D-S067-903-cap=1c` — align with F33 file-count
+  ceiling for sequential UI; clear error when over). Does **not** flip F7 → Implemented.
+  Notes F1/F6 download path only — no batch disseminate.
 - **Acceptance (EV-057 / #903 — F7.r)** — **approved** (`D-S067-01-ac=1`):
   1. N≥2 sequential successful converts remain visible without re-pasting earlier TAC.
   2. Download all packages every accumulated IWXXM into one ZIP (per-file naming unchanged).
@@ -453,7 +454,7 @@
   4. Custom basename → `{base}.zip` per #664.
   5. Explicit clear/reset of the accumulated set.
   6. Failed convert leaves prior successes untouched.
-  7. Soft accumulate cap (04 locks number from existing caps).
+  7. Soft accumulate cap **≤200**; clear error when over (`D-S067-903-cap=1c`).
   8. UJ-057 / TC-EV057-* unit + Playwright; H4–H5 via 13.
 - **S067 / EV-057 deepen (F7.s / #838 — validate existing IWXXM)**: Dedicated **Validate**
   mode: paste IWXXM XML and/or upload **one** `.xml` file through F2 `iwxxm-validate` **without**
@@ -1474,16 +1475,18 @@
       `e2e-smoke` (**TC-F30-014** / TC-EV051-*)
 - **S067 / EV-057 deepen (#948 — apex → app redirect)**: Configure prod apex
   `https://tac-to-iwxxm.com` (and `www` when DNS/cert covers it) to permanently redirect to
-  canonical `https://app.tac-to-iwxxm.com` via **DOKS / ingress** (or equivalent in-cluster
-  redirect). Preserve path + query. HTTP must end on HTTPS app URL. Document mechanism in
-  [deploy.md](deploy.md). Staging apex optional / out of scope unless free with same change.
-  No new Fn.
+  canonical `https://app.tac-to-iwxxm.com` by **extending the prod frontend Ingress**
+  (`deploy/doks/overlays/prod/patch-ingress-frontend.yaml`) with apex/www hosts and a
+  permanent redirect to `https://app.tac-to-iwxxm.com$request_uri`
+  (`D-S067-948-ingress=2a`). Preserve path + query. HTTP must end on HTTPS app URL.
+  Document mechanism in [deploy.md](deploy.md). Staging apex optional / out of scope unless
+  free with the same change. No new Fn.
 - **Acceptance (EV-057 / #948 — F30 deepen)** — **approved** (`D-S067-01-ac=1`):
   1. `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent).
   2. Path + query preserved.
   3. `www` included if DNS/cert covers it; HTTP→HTTPS app URL.
   4. TLS covers apex (and `www` if enabled).
-  5. Deploy docs state where redirect is implemented; TC-EV057-948 / ops smoke.
+  5. Deploy docs state prod FE Ingress extension; TC-EV057-948 / ops smoke.
 - **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer Environment
   approvals (solo uses tag/dispatch); changing canonical app host away from `app.`
 - **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; E57-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886/#948; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051; S067 / EV-057

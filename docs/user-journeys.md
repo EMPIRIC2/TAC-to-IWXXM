@@ -880,7 +880,7 @@ workbench, and download them together as **one ZIP** with a content-derived defa
 8. Clear / reset the accumulated set; confirm the batch is empty.
 
 **Acceptance**: AC1–AC8 in evolve-decisions / feature-list §F7.r EV-057; TC-EV057-903-*.
-Soft accumulate cap locked in 04 from existing workbench/F33-ish limits.
+Soft accumulate cap **≤200** (`D-S067-903-cap=1c`).
 **Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-001 / UJ-005 / UJ-052; F33 mass ingest orthogonal.
 [Corpus: product §F7] [Corpus: product §F1] [Corpus: product §F6] [Corpus: journeys]
 [Corpus: tests]

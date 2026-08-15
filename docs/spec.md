@@ -245,7 +245,7 @@ metar-to-IWXXM/
   unified diffs (C14N match; promote deferred).
 - **F7.r accumulate ZIP (EV-057 / #903)**: Workbench accumulates sequential successful IWXXM
   results; Download all → one ZIP; default stem ≈ first 8 sanitized TAC chars of first
-  success + timestamp; clear/reset; soft cap (04). Dissemination multi-select unchanged.
+  success + timestamp; clear/reset; soft cap **≤200**. Dissemination multi-select unchanged.
 - **F7.s validate-only (EV-057 / #838)**: Dedicated Validate mode — paste or single `.xml`
   upload via existing `POST /api/v1/validate` (reuse unless 04 finds a gap); F4
   version/profile parity; guest-usable. Orthogonal to Quality metrics.

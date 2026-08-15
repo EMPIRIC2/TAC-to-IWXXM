@@ -31,29 +31,24 @@ Ship M0 Ready **#948**, **#903**, and **#838** to `stage` (Standard); promote on
 
 ## Next child stage
 
-**02-verify-plan** — Gate A on EV-057 delta specs (`D-S067-01-ac=1`).
+**04-tech-plan** — execution plan / milestones (#948 → #903 → #838). Gate A PASS.
 
 ## Risks / open decisions
 
-- #948: concrete Ingress/Service name after live DNS/ingress read in 04/07
-- #903: soft cap exact number in 04 from existing caps
-- #838: re-open api-contract only if validate wire gap found in 04
+- #948: TLS/DNS for apex/www must exist or be provisioned with Ingress change
+- #838: confirm validate multipart covers paste/upload in 04 (re-open api only on gap)
 - Promote held until all three on stage (`D-S067-promote=2b`)
 - WIP: only #948 In progress until later milestones start #903/#838
 
-## Locked intake (Phase 0 + 01)
+## Locked intake (Phase 0 + 01 + Gate A)
 
 | ID | Decision |
 |----|----------|
 | D-S067-first | **1a** — #948 first |
 | D-S067-pack | **2c** — one cycle all three Ready |
-| D-S067-success | **3c** — stage + promote path |
-| D-S067-oos | **1a** — defaults |
-| D-S067-promote | **2b** — stage all three; promote after re-approve |
-| D-S067-blockers | **3a** — none known |
 | D-S067-preset | **4a** — Standard |
 | D-S067-order | **2a** — #948 → #903 → #838 |
-| D-S067-ui-preview | **3a** — remind at 11 |
-| D-S067-proceed | **4a** — open session |
-| D-S067-board | **1** — #948 In progress |
-| D-S067-01-ac | **1** — AC approved; specs written |
+| D-S067-01-ac | **1** — AC approved |
+| D-S067-903-cap | **1c** — ≤200 |
+| D-S067-948-ingress | **2a** — extend prod FE Ingress |
+| D-S067-gateA | **1** — PASS → 04 |

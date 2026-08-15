@@ -14,7 +14,7 @@
 | 00-context | yes | session | **completed** | Open S067/EV-057; #948 In progress; interview locked |
 | 16-evolve | yes | orchestrate | **in_progress** | Plan card + Phase 0–1 → child stages |
 | 01-requirements | yes | delta | **completed** | AC locked `D-S067-01-ac=1`; F7.r/F7.s/F30; UJ-057/058/OPS-002 |
-| 02-verify-plan | yes | delta | **pending** | Gate A |
+| 02-verify-plan | yes | delta | **completed** | Gate A **PASS** `D-S067-gateA=1`; cap≤200; FE Ingress redirect |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules expected unless AskQuestion |
 | 04-tech-plan | yes | delta | **pending** | Execution plan / milestones per issue order |
 | 05-verify-tech | no | — | skipped | Unless 04 surfaces arch/deps gaps |

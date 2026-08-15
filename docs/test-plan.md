@@ -111,7 +111,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
 | UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005 |
-| UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..006 |
+| UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..007 |
 | UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
@@ -2200,7 +2200,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T3 / ops / docs
 - **Objective**: `www` covered when DNS/cert allows; HTTP ends on HTTPS app; TLS valid;
-  deploy.md documents DOKS/ingress (or equivalent) mechanism
+  deploy.md documents **prod FE Ingress** extension + permanent redirect
+  (`D-S067-948-ingress=2a`)
 - **Pass criteria**: Checklist in deploy-smoke / ops report; docs section present
 - **Source**: EV-057 #948 AC3–AC5
 
@@ -2243,9 +2244,17 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV057-903-006: UJ-057 H4–H5 / Playwright smoke
 
 - **Level**: T2 / T3 / H4–H5
-- **Objective**: Accumulate two converts → Download all → named ZIP; soft cap documented
+- **Objective**: Accumulate two converts → Download all → named ZIP; soft cap **≤200**
+  (`D-S067-903-cap=1c`) with clear over-cap error
 - **Pass criteria**: Playwright green locally/CI; H4–H5 after staging deploy (13)
 - **Source**: EV-057 #903 AC7–AC8; UJ-057
+
+### TC-EV057-903-007: Soft accumulate cap ≤200
+
+- **Level**: T0 / T2
+- **Objective**: Attempting to accumulate beyond 200 results is blocked with a clear error
+- **Pass criteria**: Unit/UI test asserts cap and message
+- **Source**: EV-057 #903 AC7; `D-S067-903-cap=1c`
 
 ### TC-EV057-838-001: Paste IWXXM validate-only
 

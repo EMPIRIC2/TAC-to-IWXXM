@@ -11,13 +11,15 @@
 | EV-057 / #948 mech | DOKS / ingress | Preserve path+query; www if covered (`D-S067-948-*`) | confirmed |
 | EV-057 / #948 Fn | F30 / deploy deepen | No new Fn (`D-S067-948-fn=1a`) | confirmed |
 | EV-057 / #903 stem | ≈8 sanitized TAC chars of first success + ts | Custom basename → `{base}.zip` | confirmed |
-| EV-057 / #903 fail | Leave prior successes | Soft cap locked in 04 | confirmed |
+| EV-057 / #903 fail | Leave prior successes | Soft cap **≤200** (`D-S067-903-cap=1c`) | confirmed |
 | EV-057 / #903 journey | **UJ-057** | TC-EV057-903-* | confirmed |
 | EV-057 / #838 intake | Paste + single `.xml` | Multi-file/zip deferred | confirmed |
 | EV-057 / #838 API | Reuse `POST /api/v1/validate` | api-contract skip unless 04 gap | confirmed |
 | EV-057 / #838 journey | **UJ-058** | TC-EV057-838-*; F4 parity | confirmed |
 | EV-057 / #948 journey | **UJ-OPS-002** | TC-EV057-948-* | confirmed |
-| EV-057 / AC | All drafted AC approved | `D-S067-01-ac=1` | confirmed |
+| EV-057 / #948 ingress | Extend prod FE Ingress | apex/www → app `$request_uri` (`D-S067-948-ingress=2a`) | confirmed |
+| EV-057 / Gate A | **PASS** | M3/L1 approved; M1/M2 locked strict (`D-S067-gateA=1`) | confirmed |
+| EV-057 / AC | All drafted AC approved | `D-S067-01-ac=1` + Gate A locks | confirmed |
 | EV-057 / docs | Delta manifest | feature-list + journeys + test-plan + deploy + light spec; skip api/README | confirmed |
 | EV-057 / UI preview | Docs only at 01 | Remind at 11 (`D-S067-01-ui=1a`) | confirmed |
 | EV-057 / route | Standard | PR → stage; promote after re-approve | confirmed |

@@ -49,8 +49,10 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 **Canonical operator app host** remains `https://app.tac-to-iwxxm.com` (staging:
 `https://app.staging.tac-to-iwxxm.com`). Prod apex `https://tac-to-iwxxm.com` (and
 `https://www.tac-to-iwxxm.com` when DNS/cert covers it) must **permanently redirect** to the
-app host via **DOKS / ingress** (or a small in-cluster redirect Service — pick simplest durable
-option in 04/07).
+app host by **extending the prod frontend Ingress**
+([`deploy/doks/overlays/prod/patch-ingress-frontend.yaml`](../deploy/doks/overlays/prod/patch-ingress-frontend.yaml))
+with apex/www hosts and a permanent redirect to `https://app.tac-to-iwxxm.com$request_uri`
+(`D-S067-948-ingress=2a`).
 
 | Requirement | Behavior |
 |-------------|----------|
@@ -59,10 +61,10 @@ option in 04/07).
 | `www` | Include when DNS/cert covers it |
 | HTTP | Chain must end on HTTPS app URL |
 | TLS | Cert covers apex (and `www` if enabled) |
+| Implementation | Prod FE Ingress host rules + permanent-redirect annotation (not a separate Service unless spike forces it) |
 | Staging apex | Out of scope unless free with the same change |
 
-Document the concrete Ingress/annotation/Service name in the implement PR and this section
-once applied. Ops smoke: **UJ-OPS-002** / **TC-EV057-948-***. [Corpus: product §F30]
+Ops smoke: **UJ-OPS-002** / **TC-EV057-948-***. [Corpus: product §F30]
 [Corpus: deploy] [Corpus: tech-spec]
 
 Soak checklist (closed early under `D-S038-t65-waive`):
