@@ -1,0 +1,61 @@
+# Routing plan — S067 / EV-057
+
+**Status:** **approved** (`D-S067-proceed=4a` / `D-S067-preset=4a`)  
+**Preset:** **Standard**  
+**PR target:** `stage` (promote to `main` only after separate re-approve — `D-S067-promote=2b`)  
+**Branch:** `evolve/EV-057-m0-ready-apex-accumulate-validate` @ `stage@b796882e`  
+**UI preview:** **Remind at 11-verify-impl** (`D-S067-ui-preview=3a`)  
+**Issue order:** #948 → #903 → #838
+
+## Stages
+
+| Stage | Include? | Mode | Status | Notes |
+|-------|----------|------|--------|-------|
+| 00-context | yes | session | **completed** | Open S067/EV-057; #948 In progress; interview locked |
+| 16-evolve | yes | orchestrate | **in_progress** | Plan card + Phase 0–1 → child stages |
+| 01-requirements | yes | delta | **pending** | AC + journeys for #948/#903/#838; deepen F7 (+F1/F6/F2/F4) |
+| 02-verify-plan | yes | delta | **pending** | Gate A |
+| 03-plan-tooling | no | — | skipped | No new Cursor rules expected unless AskQuestion |
+| 04-tech-plan | yes | delta | **pending** | Execution plan / milestones per issue order |
+| 05-verify-tech | no | — | skipped | Unless 04 surfaces arch/deps gaps |
+| 06-tech-tooling | no | — | skipped | Unless new deps/hooks |
+| 07-build | yes | delta | **pending** | Milestones: M(#948) → M(#903) → M(#838) |
+| 08-verify-build | yes | delta | **pending** | After build batches |
+| 09-qa | yes | delta | **pending** | Parallel with 10 when ready |
+| 10-e2e | yes | delta | **pending** | UJ deepen for #903/#838; #948 smoke via deploy/docs |
+| 11-verify-impl | yes | delta | **pending** | Per-Fn AC + UI preview remind |
+| 12-verify-deploy | yes | delta | **pending** | PR → stage; release prep only if promote later |
+| 13-deploy-smoke | yes | delta | **pending** | Staging H0c–H5; then promote AskQuestion |
+
+## Recommended ordered stages
+
+`00 → 16 → 01 → 02 → 04 → 07 → 08 → 09 → 10 → 11 → 12 → 13`
+
+## Skip rationale
+
+- **Standard (user `D-S067-preset=4a`):** multi-issue pack with UI + infra + stage/smoke; not Auto-Lean.
+- **Skip 03/05/06** unless Gate A/B or deps force them back in via AskQuestion.
+- **Promote:** not automatic after 13 — `D-S067-promote=2b` requires re-approve after all three are on `stage`.
+
+## Board / velocity
+
+- WIP: #948 **In progress** (1 ≤ 2)
+- Ready: #903, #838 (held until their milestones)
+- Out: #841 Backlog
+
+## Locked intake decisions
+
+| ID | Decision |
+|----|----------|
+| D-S067-first | **1a** — #948 first |
+| D-S067-pack | **2c** — one cycle all three |
+| D-S067-success | **3c** — stage + promote path |
+| D-S067-oos | **1a** — defaults |
+| D-S067-promote | **2b** — stage all three; promote after re-approve |
+| D-S067-blockers | **3a** — none known |
+| D-S067-preset | **4a** — Standard |
+| D-S067-type | **1a** — feature / 16-evolve |
+| D-S067-order | **2a** — #948 → #903 → #838 |
+| D-S067-ui-preview | **3a** — remind at 11 |
+| D-S067-proceed | **4a** — open session |
+| D-S067-board | **1** — #948 In progress |

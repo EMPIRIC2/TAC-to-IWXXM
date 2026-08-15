@@ -3,6 +3,46 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-057 — M0 Ready: apex redirect + accumulate ZIP + validate IWXXM (#948 / #903 / #838) (S067)
+
+**Session**: S067-m0-ready-apex-accumulate-validate  
+**Features**: deepen **F7**; **F1**/**F6** (#903); **F2**/**F4** (#838); deploy hosts (#948)  
+**Started**: 2026-08-15  
+**Branch**: `evolve/EV-057-m0-ready-apex-accumulate-validate` (base `stage@b796882e`)  
+**Status**: **in_progress** — Phase 0 intake locked; next **01-requirements**  
+**Issues**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948), [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903), [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838)  
+**Parent**: M0 Ready queue after S066 / EV-056  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F1] [Corpus: product §F6]
+[Corpus: product §F2] [Corpus: product §F4] [Corpus: tech-spec] [Corpus: deploy]
+[Corpus: journeys] [Corpus: decisions §EV-057]
+
+### Scope (Phase 0 — locked 2026-08-15)
+
+| ID | Decision |
+|----|----------|
+| D-S067-first | **1a** — Open on #948 first within the pack |
+| D-S067-pack | **2c** — One evolve cycle for all three Ready issues |
+| D-S067-success | **3c** — Ship to `stage` + promote path available |
+| D-S067-oos | **1a** — Exclude #841/#727/#874; S056 ruleset-admin leftover; drive-bys |
+| D-S067-promote | **2b** — Land all three on `stage` first; promote only after re-approve |
+| D-S067-blockers | **3a** — None known; surface as found |
+| D-S067-preset | **4a** — Standard (`00→16→01→02→04→07→08→09→10→11→12→13`) |
+| D-S067-type | **1a** — `feature` session → 16-evolve |
+| D-S067-order | **2a** — #948 → #903 → #838 |
+| D-S067-ui-preview | **3a** — Remind at 11-verify-impl (non-deployed) |
+| D-S067-proceed | **4a** — Open S067 + EV-057; write brief/routing/plan card |
+| D-S067-board | **1** — #948 → In progress (WIP 1); #903/#838 stay Ready until started |
+
+### Out of scope
+
+- Epic [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) and children #727 / #874 (M4/M5)
+- S056 converter-perf ruleset apply (repo admin; not a ticket)
+- Batch disseminate of accumulated conversions; F33 as substitute for #903
+- Reverse-engineering TAC from IWXXM
+- Auto-promote to `main` without re-approve after full pack on `stage`
+
+---
+
 ## Cycle EV-056 — Quality metrics detail page + collapsible diffs (#988) (S066)
 
 **Session**: S066-quality-metrics-diff-page  

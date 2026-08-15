@@ -1,13 +1,299 @@
-overall_status: idle
+overall_status: in_progress
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 66
-evolve_cycle_counter: 56
-active_session: null
+session_counter: 67
+evolve_cycle_counter: 57
+active_session:
+  id: S067-m0-ready-apex-accumulate-validate
+  type: feature
+  intent: "EV-057 multi-issue M0 Ready: #948 apex redirect, #903 accumulate ZIP, #838 validate existing IWXXM. Ship to stage with Standard routing; promote only after separate user re-approve."
+  status: in_progress
+  started: '2026-08-15'
+  started_at: '2026-08-15'
+  branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  branch_base: stage@b796882e
+  branch_base_sha: b796882e
+  branch_base_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
+  branch_status: active
+  branch_exists: true
+  branch_pushed: false
+  branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-057
+  artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
+  github_issues:
+  - 948
+  - 903
+  - 838
+  board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
+  prior_session: S066-quality-metrics-diff-page
+  deepen_feature_ids:
+  - F7
+  - F1
+  - F6
+  - F2
+  - F4
+  feature_note: "Deepen F7 (+ F1/F6 for #903 accumulate ZIP; F2/F4 for #838 validate existing IWXXM; #948 apex/deploy)"
+  corpus_cites:
+  - '[Corpus: product §F7]'
+  - '[Corpus: product §F1]'
+  - '[Corpus: product §F6]'
+  - '[Corpus: product §F2]'
+  - '[Corpus: product §F4]'
+  - '[Corpus: tech-spec]'
+  - '[Corpus: deploy]'
+  - '[Corpus: journeys]'
+  preset: Standard
+  auto_lean: false
+  auto_lean_rationale: "User chose Standard (D-S067-preset=4a); multi-issue M0 Ready pack"
+  goal: "Ship #948+#903+#838 to stage with Standard routing; promote only after separate user re-approve."
+  out_of_scope:
+  - "#841 epic"
+  - "#727 / #874"
+  - "S056 converter-perf ruleset-admin leftover"
+  - "unchosen drive-bys"
+  ui_preview: remind_at_11
+  ui_preview_note: "D-S067-ui-preview=3a — remind at 11-verify-impl"
+  issue_order:
+  - 948
+  - 903
+  - 838
+  issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
+  current_stage: 16-evolve
+  current_stage_note: "ACTIVE — session-brief/routing-plan/evolve-plan-card written; branch local @ stage@b796882e; next 01-requirements"
+  decisions:
+    D-S067-first: "1a — #948 first"
+    D-S067-pack: "2c — one cycle all three Ready"
+    D-S067-success: "3c — stage+promote path but promote after re-approve (2b)"
+    D-S067-oos: "1a — defaults"
+    D-S067-promote: "2b — land all three on stage first; promote only after re-approve"
+    D-S067-blockers: "3a — none known"
+    D-S067-preset: "4a — Standard"
+    D-S067-type: "1a — feature / 16-evolve"
+    D-S067-order: "2a — #948 → #903 → #838"
+    D-S067-ui-preview: "3a — remind at 11-verify-impl"
+    D-S067-proceed: "4a — open session"
+    D-S067-board: "1 — #948 → In progress (WIP 1); #903/#838 stay Ready"
+  context_briefs: []
+  note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-15'
+    completed: '2026-08-15'
+    note: "COMPLETE — open_session S067-m0-ready-apex-accumulate-validate; Standard preset; Phase 0 open; handoff 16-evolve"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrate
+    status: in_progress
+    started: '2026-08-15'
+    note: "IN PROGRESS — EV-057 created; await Phase 0–1 / 01-requirements"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 07-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+    note: "UI preview remind_at_11 (D-S067-ui-preview=3a)"
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+  - stage: 03-plan-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Standard preset — skip 03 unless new Cursor rules/hooks needed"
+  - stage: 05-verify-tech
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Standard routing this cycle — skip 05 unless Gate B / tech verification required"
+  - stage: 06-tech-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Standard preset — skip 06 unless new tooling guardrails needed"
 
 sessions:
+
+- id: S067-m0-ready-apex-accumulate-validate
+  type: feature
+  intent: "EV-057 multi-issue M0 Ready: #948 apex redirect, #903 accumulate ZIP, #838 validate existing IWXXM. Ship to stage with Standard routing; promote only after separate user re-approve."
+  status: in_progress
+  started: '2026-08-15'
+  started_at: '2026-08-15'
+  branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  branch_base: stage@b796882e
+  branch_base_sha: b796882e
+  branch_base_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
+  branch_status: active
+  branch_exists: true
+  branch_pushed: false
+  branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-057
+  artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
+  github_issues:
+  - 948
+  - 903
+  - 838
+  board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
+  prior_session: S066-quality-metrics-diff-page
+  deepen_feature_ids:
+  - F7
+  - F1
+  - F6
+  - F2
+  - F4
+  feature_note: "Deepen F7 (+ F1/F6 for #903 accumulate ZIP; F2/F4 for #838 validate existing IWXXM; #948 apex/deploy)"
+  corpus_cites:
+  - '[Corpus: product §F7]'
+  - '[Corpus: product §F1]'
+  - '[Corpus: product §F6]'
+  - '[Corpus: product §F2]'
+  - '[Corpus: product §F4]'
+  - '[Corpus: tech-spec]'
+  - '[Corpus: deploy]'
+  - '[Corpus: journeys]'
+  preset: Standard
+  auto_lean: false
+  auto_lean_rationale: "User chose Standard (D-S067-preset=4a); multi-issue M0 Ready pack"
+  goal: "Ship #948+#903+#838 to stage with Standard routing; promote only after separate user re-approve."
+  out_of_scope:
+  - "#841 epic"
+  - "#727 / #874"
+  - "S056 converter-perf ruleset-admin leftover"
+  - "unchosen drive-bys"
+  ui_preview: remind_at_11
+  ui_preview_note: "D-S067-ui-preview=3a — remind at 11-verify-impl"
+  issue_order:
+  - 948
+  - 903
+  - 838
+  issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
+  current_stage: 16-evolve
+  current_stage_note: "ACTIVE — session-brief/routing-plan/evolve-plan-card written; branch local @ stage@b796882e; next 01-requirements"
+  decisions:
+    D-S067-first: "1a — #948 first"
+    D-S067-pack: "2c — one cycle all three Ready"
+    D-S067-success: "3c — stage+promote path but promote after re-approve (2b)"
+    D-S067-oos: "1a — defaults"
+    D-S067-promote: "2b — land all three on stage first; promote only after re-approve"
+    D-S067-blockers: "3a — none known"
+    D-S067-preset: "4a — Standard"
+    D-S067-type: "1a — feature / 16-evolve"
+    D-S067-order: "2a — #948 → #903 → #838"
+    D-S067-ui-preview: "3a — remind at 11-verify-impl"
+    D-S067-proceed: "4a — open session"
+    D-S067-board: "1 — #948 → In progress (WIP 1); #903/#838 stay Ready"
+  context_briefs: []
+  note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-15'
+    completed: '2026-08-15'
+    note: "COMPLETE — open_session S067-m0-ready-apex-accumulate-validate; Standard preset; Phase 0 open; handoff 16-evolve"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrate
+    status: in_progress
+    started: '2026-08-15'
+    note: "IN PROGRESS — EV-057 created; await Phase 0–1 / 01-requirements"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 07-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+    note: "UI preview remind_at_11 (D-S067-ui-preview=3a)"
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+  - stage: 03-plan-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Standard preset — skip 03 unless new Cursor rules/hooks needed"
+  - stage: 05-verify-tech
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Standard routing this cycle — skip 05 unless Gate B / tech verification required"
+  - stage: 06-tech-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Standard preset — skip 06 unless new tooling guardrails needed"
+
 
 - id: S066-quality-metrics-diff-page
   type: feature
@@ -37985,6 +38271,98 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-057
+  title: "M0 Ready: #948 apex redirect + #903 accumulate ZIP + #838 validate existing IWXXM"
+  status: in_progress
+  cycle_type: feature
+  session_id: S067-m0-ready-apex-accumulate-validate
+  feature_ids: []
+  deepen_feature_ids:
+  - F7
+  - F1
+  - F6
+  - F2
+  - F4
+  feature_note: "Deepen F7 (+ F1/F6 for #903; F2/F4 for #838; #948 apex/deploy via tech-spec/deploy)"
+  github_issues:
+  - 948
+  - 903
+  - 838
+  issues:
+  - 948
+  - 903
+  - 838
+  issue_order:
+  - 948
+  - 903
+  - 838
+  branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  branch_base: stage@b796882e
+  branch_base_sha: b796882e
+  branch_base_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
+  branch_status: active
+  branch_exists: true
+  branch_pushed: false
+  branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
+  current_stage: 16-evolve
+  current_stage_status: in_progress
+  current_stage_note: "ACTIVE — session-brief/routing-plan/evolve-plan-card written; branch local @ stage@b796882e; next 01-requirements"
+  started: "2026-08-15"
+  started_at: "2026-08-15"
+  preset: Standard
+  auto_lean: false
+  auto_lean_rationale: "User chose Standard (D-S067-preset=4a)"
+  ui_preview: remind_at_11
+  ui_preview_note: "D-S067-ui-preview=3a — remind at 11-verify-impl"
+  routing_plan:
+  - 00-context
+  - 16-evolve
+  - 01-requirements
+  - 02-verify-plan
+  - 04-tech-plan
+  - 07-build
+  - 08-verify-build
+  - 09-qa
+  - 10-e2e
+  - 11-verify-impl
+  - 12-verify-deploy
+  - 13-deploy-smoke
+  skip_stages:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  scope_summary: "Ship #948 apex redirect + #903 accumulate ZIP + #838 validate existing IWXXM to stage with Standard routing; order #948→#903→#838; promote only after separate user re-approve. OOS: #841 epic, #727/#874, S056 leftover, unchosen drive-bys. Base stage@b796882e."
+  decisions_locked: true
+  decisions:
+    D-S067-first: "1a — #948 first"
+    D-S067-pack: "2c — one cycle all three Ready"
+    D-S067-success: "3c — stage+promote path but promote after re-approve (2b)"
+    D-S067-oos: "1a — defaults"
+    D-S067-promote: "2b — land all three on stage first; promote only after re-approve"
+    D-S067-blockers: "3a — none known"
+    D-S067-preset: "4a — Standard"
+    D-S067-type: "1a — feature / 16-evolve"
+    D-S067-order: "2a — #948 → #903 → #838"
+    D-S067-ui-preview: "3a — remind at 11-verify-impl"
+    D-S067-proceed: "4a — open session"
+    D-S067-board: "1 — #948 → In progress (WIP 1); #903/#838 stay Ready"
+  checkpoints:
+    phase_a: pending
+    phase_b: pending
+    phase_c: pending
+    phase_d: pending
+    deploy: pending
+  gates:
+    a_to_b: pending
+    b_to_c: pending
+    c_to_d: pending
+    deploy: pending
+  artifacts:
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/
+  prior_session: S066-quality-metrics-diff-page
+  prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
+  board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
+  note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; Standard; #948+#903+#838; base stage@b796882e; branch pending; promote after re-approve; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -49661,7 +50039,7 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after S065 PR #987 / tip da1e48f8 / follow-up #988 / CI 31541069003; no git commit by workflow-state-manager'
+  dirty_note: 'workflow-state.yaml dirty after open_session S067-m0-ready-apex-accumulate-validate/EV-057; no git commit by workflow-state-manager'
   tip_sha: "da1e48f8"
   tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
   tip_note: "S065 tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; CI 31541069003 watching; follow-up #988"
@@ -49671,17 +50049,17 @@ git_history:
   docs_tip_pr_number: 986
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
-  evolve_branch: evolve/EV-055-quality-metrics-2025-2-followups
+  evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
   evolve_tip_sha: "a648f486"
   evolve_tip_sha_full: a648f48644a82fde07aba610ec0f27410b705591
   evolve_tip_sha_pushed: true
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
-  stage_tip_sha: d80db688
-  stage_tip_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
+  stage_tip_sha: b796882e
+  stage_tip_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
   stash:
   - name: S039-EV031-WIP
-    note: 'S048/EV-040 CLOSED D-S048-close=1,1,1 — tip 5a9f28ef; PR #893 merged (merge SHA pending); #894; active_session=null; no git commit by workflow-state-manager'
+    note: 'OPEN S067-m0-ready-apex-accumulate-validate/EV-057 — Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e; #948+#903+#838; no git commit by workflow-state-manager'
     prior_branch: evolve/EV-031-platform-independence-842
     session_id: S040-iwxxm-corpus-quality
     date: '2026-08-04'
@@ -49689,10 +50067,12 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: fix/quality-metrics-diff-long-line
+  recommended_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-15 branch ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed; D-S067-board=1 #948 In progress (WIP 1); session-brief/routing-plan/evolve-plan-card written; next 01-requirements; no git commit by workflow-state-manager'
+  - '2026-08-15 open_session S067-m0-ready-apex-accumulate-validate / EV-057 — session_counter 66→67; evolve_cycle_counter 56→57; active_session set; Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e (b796882e724d9d2dfb02199ab1e288931005ee00); issues #948→#903→#838; promote after re-approve; D-S067-proceed=4a; no git commit by workflow-state-manager'
   - '2026-08-11 S065 PR #987 opened → stage; tip da1e48f8 pushed on fix/quality-metrics-diff-long-line; follow-up #988 (evolve page+hunks); CI 31541069003 watching; 14-hotfix in_progress; session remains open; no git commit by workflow-state-manager'
   - '2026-08-11 open_session S065 — Auto-Lean hotfix; session_counter 64→65; active_session=S065-quality-metrics-diff-long-line; stages.00 completed / 14 in_progress; branch pending_create fix/quality-metrics-diff-long-line @ stage@d80db688; D-S065-scope=4 / products=all / page=inline-for-now; BUG-2026-08-11-quality-metrics-diff-long-line; [Corpus: product §F7.q] [Corpus: tests §UJ-056]; no git commit by workflow-state-manager'
   - '2026-08-11 D-S064-close=1 — Cycle + session closed on stage; EV-055/S064 completed; active_session=null; no git commit by workflow-state-manager'
@@ -50258,6 +50638,21 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-057-m0-ready-apex-accumulate-validate
+    base: stage@b796882e
+    base_sha: b796882e
+    base_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
+    purpose: "S067/EV-057 M0 Ready — #948 apex redirect + #903 accumulate ZIP + #838 validate existing IWXXM"
+    status: ACTIVE
+    created: "2026-08-15"
+    exists: true
+    pushed: false
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    tip_sha: b796882e
+    tip_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
+    tip_sha_pushed: false
+    note: "ACTIVE local — @ stage@b796882e; tip not pushed yet; D-S067-board=1"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
