@@ -20,6 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
+  tip_sha: "3dd07f65"
+  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  tip_sha_pushed: false
+  tip_sha_note: "session open commit local — 3dd07f65; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -165,6 +169,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
+  tip_sha: "3dd07f65"
+  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  tip_sha_pushed: false
+  tip_sha_note: "session open commit local — 3dd07f65; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -38304,6 +38312,10 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
+  tip_sha: "3dd07f65"
+  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  tip_sha_pushed: false
+  tip_sha_note: "session open commit local — 3dd07f65; tip not pushed"
   current_stage: 16-evolve
   current_stage_status: in_progress
   current_stage_note: "ACTIVE — session-brief/routing-plan/evolve-plan-card written; branch local @ stage@b796882e; next 01-requirements"
@@ -50040,8 +50052,8 @@ git_history:
   pending_commit_note:
   dirty: true
   dirty_note: 'workflow-state.yaml dirty after open_session S067-m0-ready-apex-accumulate-validate/EV-057; no git commit by workflow-state-manager'
-  tip_sha: "da1e48f8"
-  tip_sha_full: da1e48f88b62aec754aa74c5ae6f84918551b493
+  tip_sha: "3dd07f65"
+  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
   tip_note: "S065 tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; CI 31541069003 watching; follow-up #988"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
@@ -50050,9 +50062,9 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "a648f486"
-  evolve_tip_sha_full: a648f48644a82fde07aba610ec0f27410b705591
-  evolve_tip_sha_pushed: true
+  evolve_tip_sha: "3dd07f65"
+  evolve_tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  evolve_tip_sha_pushed: false
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
   stage_tip_sha: b796882e
@@ -50071,6 +50083,7 @@ git_history:
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-15 tip 3dd07f65 — session open commit recorded; active_session/S067/EV-057 tip_sha synced; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 branch ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed; D-S067-board=1 #948 In progress (WIP 1); session-brief/routing-plan/evolve-plan-card written; next 01-requirements; no git commit by workflow-state-manager'
   - '2026-08-15 open_session S067-m0-ready-apex-accumulate-validate / EV-057 — session_counter 66→67; evolve_cycle_counter 56→57; active_session set; Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e (b796882e724d9d2dfb02199ab1e288931005ee00); issues #948→#903→#838; promote after re-approve; D-S067-proceed=4a; no git commit by workflow-state-manager'
   - '2026-08-11 S065 PR #987 opened → stage; tip da1e48f8 pushed on fix/quality-metrics-diff-long-line; follow-up #988 (evolve page+hunks); CI 31541069003 watching; 14-hotfix in_progress; session remains open; no git commit by workflow-state-manager'
@@ -50649,10 +50662,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: b796882e
-    tip_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
+    tip_sha: 3dd07f65
+    tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
     tip_sha_pushed: false
-    note: "ACTIVE local — @ stage@b796882e; tip not pushed yet; D-S067-board=1"
+    note: "ACTIVE local tip 3dd07f65 session open; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -52132,6 +52145,25 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "3dd07f65"
+    sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+    message: "docs: [S067/EV-057] open M0 Ready evolve (#948 #903 #838)"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 00-context
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-15"
+    pushed: false
+    tip_sha: 3dd07f65
+    tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+    tip_sha_pushed: false
+    files_changed:
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/session-brief.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
+      - docs/decisions/evolve-decisions.md
+      - workflow-state.yaml
+    note: "session open commit local; Standard; #948 #903 #838; tip not pushed"
   - sha: "b4a63ab8"
     sha_full: b4a63ab8ec09f47d8ea95a50008c698fa37b7734
     message: "Merge pull request #989 from EMPIRIC2/evolve/EV-056-quality-metrics-diff-page"
