@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "3dd07f65"
-  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  tip_sha: "a6064563"
+  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
   tip_sha_pushed: false
-  tip_sha_note: "session open commit local — 3dd07f65; tip not pushed"
+  tip_sha_note: "01-requirements tip a6064563 local — AC approved; specs written; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -65,8 +65,8 @@ active_session:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 16-evolve
-  current_stage_note: "ACTIVE — session-brief/routing-plan/evolve-plan-card written; branch local @ stage@b796882e; next 01-requirements"
+  current_stage: 02-verify-plan
+  current_stage_note: "01-requirements COMPLETE (D-S067-01-ac=1); 02-verify-plan pending — awaiting Gate A AskQuestion"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -80,6 +80,11 @@ active_session:
     D-S067-ui-preview: "3a — remind at 11-verify-impl"
     D-S067-proceed: "4a — open session"
     D-S067-board: "1 — #948 → In progress (WIP 1); #903/#838 stay Ready"
+    D-S067-01-delta: "1a — no scope change"
+    D-S067-01-ui: "1a — docs only; honor remind at 11"
+    D-S067-01-manifest: "1a"
+    D-S067-01-goal: "1a"
+    D-S067-01-ac: "1 — AC approved; specs written"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -95,15 +100,19 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057 created; await Phase 0–1 / 01-requirements"
+    note: "IN PROGRESS — EV-057; 01-requirements COMPLETE; 02-verify-plan pending (Gate A)"
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-15'
+    completed: '2026-08-15'
+    note: "COMPLETE — D-S067-01-ac=1; AC approved; specs written; handoff 02-verify-plan (awaiting Gate A)"
   - stage: 02-verify-plan
     required: true
     mode: delta
     status: pending
+    note: "PENDING — awaiting Gate A AskQuestion"
   - stage: 04-tech-plan
     required: true
     mode: delta
@@ -169,10 +178,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "3dd07f65"
-  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  tip_sha: "a6064563"
+  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
   tip_sha_pushed: false
-  tip_sha_note: "session open commit local — 3dd07f65; tip not pushed"
+  tip_sha_note: "01-requirements tip a6064563 local — AC approved; specs written; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -214,8 +223,8 @@ sessions:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 16-evolve
-  current_stage_note: "ACTIVE — session-brief/routing-plan/evolve-plan-card written; branch local @ stage@b796882e; next 01-requirements"
+  current_stage: 02-verify-plan
+  current_stage_note: "01-requirements COMPLETE (D-S067-01-ac=1); 02-verify-plan pending — awaiting Gate A AskQuestion"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -229,6 +238,11 @@ sessions:
     D-S067-ui-preview: "3a — remind at 11-verify-impl"
     D-S067-proceed: "4a — open session"
     D-S067-board: "1 — #948 → In progress (WIP 1); #903/#838 stay Ready"
+    D-S067-01-delta: "1a — no scope change"
+    D-S067-01-ui: "1a — docs only; honor remind at 11"
+    D-S067-01-manifest: "1a"
+    D-S067-01-goal: "1a"
+    D-S067-01-ac: "1 — AC approved; specs written"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -244,15 +258,19 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057 created; await Phase 0–1 / 01-requirements"
+    note: "IN PROGRESS — EV-057; 01-requirements COMPLETE; 02-verify-plan pending (Gate A)"
   - stage: 01-requirements
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-15'
+    completed: '2026-08-15'
+    note: "COMPLETE — D-S067-01-ac=1; AC approved; specs written; handoff 02-verify-plan (awaiting Gate A)"
   - stage: 02-verify-plan
     required: true
     mode: delta
     status: pending
+    note: "PENDING — awaiting Gate A AskQuestion"
   - stage: 04-tech-plan
     required: true
     mode: delta
@@ -9554,800 +9572,66 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started_at: '2026-08-09'
-    started: '2026-08-09'
-    completed_at: '2026-08-09'
-    completed: '2026-08-09'
-    session_id: S060-tag-driven-prod-deploy
-    evolve_cycle_id: EV-051
+    started: '2026-08-15'
+    started_at: '2026-08-15'
+    completed: '2026-08-15'
+    completed_at: '2026-08-15'
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
     skill_id: 01-requirements
-    tip_sha: c146baec
-    tip_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
-    deepen_feature_ids: [F30]
+    tip_sha: a6064563
+    tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+    deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     delta_only: true
-    corpus_cites:
-    - '[Corpus: product §F30]'
-    - '[Corpus: deploy]'
-    - '[Corpus: adr/ADR-034]'
-    - '[Corpus: tests]'
-    report:
     decision_refs:
-    - D-S060-scope
-    - D-S060-route
-    note: 'S060/EV-051 COMPLETE — D-S060-scope=1 design 2+3+4; AC1–AC6 locked; handoff 02-verify-plan'
-    prior_session_id: S057-strip-internal-doc-refs
-    prior_evolve_cycle_id: EV-048
-    prior_started: '2026-08-08'
-    prior_completed: '2026-08-08'
-    prior_note: 'S057/EV-048 COMPLETE — D-S057-01-ac=1 + D-S057-guard-s0=1; AC1–AC6 + UJ-055; report 01-requirements.md; handoff 02-verify-plan'
-    prior_prior_session_id: S055-wmo-aviation-registers
-    prior_prior_evolve_cycle_id: EV-046
-    prior_prior_started: '2026-08-08'
-    prior_prior_completed: '2026-08-08'
-    prior_prior_note: 'S055/EV-046 COMPLETE — D-S055-01-ac=1; AC1–AC6 confirmed; handoff 02-verify-plan'
-    prior_prior_prior_session_id: S047-sql-ingest-live-e2e
-    prior_prior_prior_evolve_cycle_id: EV-039
-    prior_prior_prior_note: 'S047/EV-039 01-requirements COMPLETE (delta) — D-S047-ac=1 AC1–AC7 + manifest; reports/01-requirements-summary.md; tip a4f4d3a6; handoff 02-verify-plan'
-    prior_decision_refs:
-    - D-S055-01-ac
-    - D-S055-phase01
-    - D-S055-open
-    - D-S055-families
-    - D-S055-validated
-    - D-S055-cite
-    - D-S047-open
-    - D-S047-ac
+    - D-S067-01-ac
+    - D-S067-01-goal
+    - D-S067-01-manifest
+    - D-S067-01-ui
+    - D-S067-01-delta
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
     artifacts:
-    - docs/sessions/S055-wmo-aviation-registers/
-    - docs/sessions/S055-wmo-aviation-registers/reports/01-requirements.md
-    - docs/sessions/S047-sql-ingest-live-e2e/reports/01-requirements-summary.md
-    - docs/sessions/S047-sql-ingest-live-e2e/
-    - docs/context/sql-ingest-live-e2e.md
+    - docs/sessions/S067-m0-ready-apex-accumulate-validate/
+    - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
+    - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
+    - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
     - docs/feature-list.md
     - docs/user-journeys.md
     - docs/test-plan.md
-    - docs/tech-spec.md
-    - docs/env-contract.md
+    - docs/spec.md
+    - docs/deploy.md
     - docs/decisions/evolve-decisions.md
     - docs/decisions/requirements-decisions.md
-    - docs/sessions/S046-iwxxm-corpus-residuals/
-    - docs/sessions/S045-matrix-disposition-residuals/reports/01-requirements-summary.md
-    substeps:
-      interviews:
-        status: completed
-        completed: 1
-        current_template: done
-        current_section: done
-    delta_substages:
-    - status: completed
-      mode: delta
-      session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
-      started_at: '2026-08-03'
-      started: '2026-08-03'
-      completed_at: '2026-08-03'
-      completed: '2026-08-03'
-      note: 'COMPLETE (delta) — D-S038-tp=1,1,1; D-S038-01-gate-a lean docs accepted Gate A; commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan'
-      deepen:
-      - F5
-      - F7
-      - F8
-      - F21
-      - F22
-      - M4
-      feature_ids:
-      - F30
-      - F31
-      artifacts:
-      - docs/sessions/S038-platform-independence-842/reports/requirements-delta.md
-      - docs/test-plan.md
-      - docs/config-spec.md
-      - docs/env-contract.md
-      - docs/api-contract.md
-      - docs/deploy.md
-      - docs/dependency-inventory.md
-      - docs/adr/ADR-033-platform-independence-auth-do-doks.md
-      - docs/ops/supabase-to-do-postgres-migration.md
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/decisions/evolve-decisions.md
-      - docs/decisions/requirements-decisions.md
-      decision_refs:
-      - D-S038-fn
-      - D-S038-tp
-      - D-S038-01-gate-a
-      substeps:
-        interviews:
-          status: completed
-          completed: 1
-          current_template: complete
-          current_section: complete
-    - status: completed
-      mode: delta
-      session_id: S037-quality-residuals-831
-      evolve_cycle_id: EV-030
-      started_at: '2026-08-02'
-      started: '2026-08-02'
-      completed_at: '2026-08-02'
-      completed: '2026-08-02'
-      note: 'COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; requirements-delta.md; handoff 02-verify-plan; #831→#829→#820'
-      deepen:
-      - F23
-      - F12
-      - F2
-      - F13
-      - F9
-      - F26
-      - F27
-      feature_ids:
-      - F29
-      artifacts:
-      - docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/decisions/evolve-decisions.md
-      - docs/api-contract.md
-      decision_refs:
-      - D-S037-fn
-      - D-S037-E30-M
-    - status: completed
-      mode: delta
-      session_id: S035-empiric2-ops-leftovers-781
-      evolve_cycle_id: EV-028
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      note: 'COMPLETE (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; reports/requirements-delta.md; #781'
-      deepen:
-      - F12
-      - F13
-      - F14
-      feature_ids: []
-      artifacts:
-      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md
-      - docs/decisions/evolve-decisions.md
-      - docs/deploy.md
-      - docs/config-spec.md
-      - docs/test-plan.md
-      - docs/feature-list.md
-      decision_refs:
-      - E28-M
-      - E28-E1
-      - D-S035-E28-M
-      - D-S035-E28-E1
-    - status: completed
-      mode: delta
-      session_id: S034-wmo-decode-residual-matrix
-      evolve_cycle_id: EV-027
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'COMPLETE (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; reports/01-requirements.md; #815'
-      deepen:
-      - F25
-      - F9
-      - F7
-      feature_ids:
-      - F25
-      - F9
-      - F7
-      artifacts:
-      - docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md
-      - docs/feature-list.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/decisions/evolve-decisions.md
-      decision_refs:
-      - E27-E1
-      - E27-M
-      - E27-UJ
-      - E27-TC
-      - D-S034-E27-E1
-    - status: completed
-      mode: delta
-      session_id: S033-va-multi-location-equality
-      evolve_cycle_id: EV-026
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'COMPLETE (delta) — E26-E1=1; D-S033-E26-E1; reports/01-requirements.md; #809'
-      deepen:
-      - F23
-      - F6
-      - F7
-      feature_ids:
-      - F23
-      - F6
-      - F7
-      artifacts:
-      - docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md
-      - docs/feature-list.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/decisions/evolve-decisions.md
-      - docs/decisions/requirements-decisions.md
-      decision_refs:
-      - E26-E1
-      - E26-M
-      - E26-TC
-      - D-S033-E26-E1
-    - status: completed
-      mode: delta
-      session_id: S032-iwxxm-us-remarks-va
-      evolve_cycle_id: EV-025
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      note: 'S032/EV-025 01-requirements COMPLETE (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809'
-      deepen:
-      - F6
-      - F12
-      - F2
-      - F13
-      - F23
-      feature_ids:
-      - F6
-      - F12
-      - F2
-      - F13
-      - F23
-      artifacts:
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md
-      - docs/feature-list.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/decisions/requirements-decisions.md
-      decision_refs:
-      - E25-E1
-      - D-S032-E25-E1
-    - status: completed
-      mode: delta
-      session_id: S031-iwxxm-domain-mine
-      evolve_cycle_id: EV-024
-      started_at: '2026-07-30'
-      started: '2026-07-30'
-      completed_at: '2026-07-30'
-      completed: '2026-07-30'
-      note: 'S031/EV-024 01-requirements COMPLETE (delta) — E24-E1=1; deepen F6/F2/F4/F12/F13/F25; D-S031-E24-E1; report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan; #804/#807/#773'
-      deepen:
-      - F6
-      - F2
-      - F4
-      - F12
-      - F13
-      - F25
-      artifacts:
-      - docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md
-      decision_refs:
-      - E24-E1
-      - D-S031-E24-E1
-      - E24-ui
-      - D-S031-E24-ui
-      - D-S031-open
-    - status: completed
-      mode: delta
-      session_id: S030-apac-encode-validate
-      evolve_cycle_id: EV-023
-      started_at: '2026-07-30'
-      started: '2026-07-30'
-      completed_at: '2026-07-30'
-      note: S030/EV-023 01-requirements COMPLETE (delta) — E23-E1=1; deepen F6/F2/F12/F13; D-S030-E23-E1; report docs/sessions/S030-apac-encode-validate/reports/01-requirements.md; handoff 02-verify-plan;
-        #800
-      deepen:
-      - F6
-      - F2
-      - F12
-      - F13
-      artifacts:
-      - docs/sessions/S030-apac-encode-validate/reports/01-requirements.md
-      - docs/feature-list.md
-      - docs/decisions/evolve-decisions.md
-      decision_refs:
-      - D-S030-E23-E1
-      - E23-E1
-      - D-S030-E23-phase0
-    - status: completed
-      mode: delta
-      session_id: S027-vaa-quality
-      evolve_cycle_id: EV-021
-      started_at: '2026-07-29'
-      started: '2026-07-29'
-      completed_at: '2026-07-29'
-      note: S027/EV-021 01-requirements COMPLETE (delta) — E21-E1=1; F26/F27; D-S027-EV021-01-close; report docs/sessions/S027-vaa-quality/reports/01-requirements.md; handoff 02-verify-plan
-      feature_ids:
-      - F26
-      - F27
-      deepen:
-      - F6.f
-      - F12
-      - F7.g
-      artifacts:
-      - docs/sessions/S027-vaa-quality/reports/01-requirements.md
-      - docs/sessions/S027-vaa-quality/reports/acceptance-criteria.md
-      decision_refs:
-      - D-S027-EV021-01-close
-      - D-S027-EV021-01-batch-d
-      - E21-E1
-    - status: completed
-      mode: delta
-      session_id: S026-airmet-quality-wmo-examples
-      evolve_cycle_id: EV-020
-      started_at: '2026-07-29'
-      started: '2026-07-29'
-      completed_at: '2026-07-29'
-      note: S026/EV-020 01-requirements COMPLETE (delta) — E20-E1..E3; F24/F25; deepen F9/F7.g; glossary=official+YAML overrides; TAF A5-1+A5-2; report docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md; handoff 02-verify-plan
-      feature_ids:
-      - F24
-      - F25
-      deepen:
-      - F9
-      - F7.g
-      artifacts:
-      - docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md
-      - docs/sessions/S026-airmet-quality-wmo-examples/reports/acceptance-criteria.md
-      decision_refs:
-      - E20-E1
-      - E20-E2
-      - E20-E3
-    - status: completed
-      mode: delta
-      session_id: S025-sigmet-quality
-      evolve_cycle_id: EV-019
-      started_at: '2026-07-29'
-      started: '2026-07-29'
-      completed_at: '2026-07-29'
-      note: S025/EV-019 01-requirements delta COMPLETE — E19-9..14; F23 + deepen F6.d/F12; D-S025-01-complete; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md; handoff 02-verify-plan
-      feature_ids:
-      - F23
-      deepen:
-      - F6.d
-      - F12
-      artifacts:
-      - docs/sessions/S025-sigmet-quality/reports/01-requirements.md
-      decision_refs:
-      - D-S025-01-complete
-      - D-S025-E19-01-batch3
-    - status: completed
-      mode: delta
-      session_id: S023-public-app-privacy
-      evolve_cycle_id: EV-017
-      started_at: '2026-07-27'
-      started: '2026-07-27'
-      completed_at: '2026-07-27'
-      note: S023/EV-017 01-requirements delta COMPLETE — F21/F22 corpus deltas; deepen F5/F7 IndexedDB; deprecate operator M4; D-S023-01-requirements-delta; handoff 02-verify-plan (pending)
-      proposed_features:
-      - F21
-      - F22
-      deepen:
-      - F5
-      - F7
-      feature_ids:
-      - F21
-      - F22
-      artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/api-contract.md
-      - docs/decisions/evolve-decisions.md
-      - docs/context/public-app-privacy.md
-      - docs/sessions/S023-public-app-privacy/reports/01-requirements.md
-      - docs/sessions/S023-public-app-privacy/reports/impact-analysis.md
-      document_manifest:
-        status: approved
-        approved_at: '2026-07-27'
-        decision_id: D-S023-01-requirements-delta
-        mode: delta
-        approved_documents:
-        - feature-list
-        - spec
-        - user-journeys
-        - test-plan
-        - api-contract
-        - evolve-decisions
-        - requirements-decisions
-        skipped_documents:
-        - coverage-matrix
-        deferred_documents:
-        - ADR
-      substeps:
-        interviews:
-          status: completed
-          completed: 1
-          total: 1
-          current_template: complete
-          current_section: complete
-    - status: completed
-      mode: delta
-      session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
-      started_at: '2026-07-22'
-      completed_at: '2026-07-22'
-      note: S021/EV-016 01-requirements delta COMPLETE (E16-5..E16-9 all A) — F7 stays Planned; slice F7.g; UJ-032 + TC-F7-008; happy-path IWXXM only; thin hazard fixtures in-repo; light spec set; handoff 02-verify-plan (pending)
-      proposed_features: []
-      deepen:
-      - F7
-      artifacts:
-      - docs/feature-list.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/spec.md
-      - docs/sessions/S021-golden-examples-ui/reports/01-requirements.md
-      - docs/decisions/evolve-decisions.md
-      - docs/decisions/requirements-decisions.md
-      document_manifest:
-        status: approved
-        approved_at: '2026-07-22'
-        decision_id: E16-9
-        mode: delta
-        approved_documents:
-        - feature-list
-        - user-journeys
-        - test-plan
-        - spec
-        skipped_documents:
-        - api-contract
-        - config-spec
-        - coverage-matrix
-        - ADR
-      substeps:
-        interviews:
-          status: completed
-          completed: 6
-          total: 6
-          current_template:
-          current_section: complete
-          planned_docs:
-            status:
-              feature-list: completed
-              spec: completed
-              user-journeys: completed
-              test-plan: completed
-              api-contract: skipped
-              coverage-matrix: skipped
-              ADR: skipped
-    - status: completed
-      mode: delta
-      session_id: S020-aerodrome-quality
-      evolve_cycle_id: EV-015
-      started_at: '2026-07-22'
-      completed_at: '2026-07-22'
-      note: S020/EV-015 01-requirements delta COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; document_manifest approved B (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); proposed_features [F20]; deepen F6.b/F6.c/F12; handoff 02-verify-plan
-      proposed_features:
-      - F20
-      deepen:
-      - F6.b
-      - F6.c
-      - F12
-      artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/api-contract.md
-      - docs/domain/rules/COVERAGE_MATRIX.md
-      - docs/decisions/requirements-decisions.md
-      - docs/sessions/S020-aerodrome-quality/reports/01-requirements.md
-      - .cursor/rules/core/plan-adherence.mdc
-      document_manifest:
-        status: approved
-        approved_at: '2026-07-22'
-        decision_id: D-S020-EV015-manifest-1
-        option: B
-        mode: delta
-        approved_documents:
-        - feature-list
-        - spec
-        - user-journeys
-        - test-plan
-        - api-contract
-        - coverage-matrix
-        skipped_documents:
-        - ADR
-        skip_note: ADR skipped — ADR-028 reuse
-      substeps:
-        interviews:
-          status: completed
-          completed: 6
-          total: 6
-          current_template:
-          current_section: complete
-          planned_docs:
-            status:
-              feature-list: completed
-              spec: completed
-              user-journeys: completed
-              test-plan: completed
-              api-contract: completed
-              coverage-matrix: completed
-              ADR: skipped
-    - status: completed
-      mode: delta
-      session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
-      started_at: '2026-07-21'
-      completed_at: '2026-07-21'
-      note: S019/EV-014 01-requirements delta COMPLETE — Phase 0 approved (Q23+Q24=A); F16–F19 Planned; non-goals push-sinks/paste-keys/AMHS amended; ADR-021 dest-paste amend; ADR-029 SSRF+allowlist Proposed; UJ-027–030; TC-F16..F19; resolves I-S019-EV014-Q20C-vendors + I-S019-EV014-corpus-contradictions
-      proposed_features:
-      - F16
-      - F17
-      - F18
-      - F19
-      artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/adr/ADR-021-byo-credentials-admin-removal.md
-      - docs/adr/ADR-029-dissemination-ssrf-allowlist.md
-      - docs/decisions/evolve-decisions.md
-      - docs/decisions/requirements-decisions.md
-      - docs/sessions/S019-dissemination-upload/reports/01-requirements.md
-      - docs/sessions/S019-dissemination-upload/session-brief.md
-      - docs/sessions/S019-dissemination-upload/routing-plan.md
-      document_manifest:
-        approved_at: '2026-07-21'
-        decision_id: D-S019-EV014-01-requirements-delta
-        mode: delta
-        approved_documents:
-        - feature-list
-        - spec
-        - user-journeys
-        - test-plan
-        - ADRs
-        skipped_documents:
-        - api-contract
-        - config-spec
-        - dependency-inventory
-    - status: completed
-      mode: delta
-      session_id: S003-supabase-keys-config
-      completed_at: '2026-06-23'
-      note: Delta requirements for Supabase keys, config split, env sync
-      artifacts:
-      - docs/config-spec.md
-      - docs/env-contract.md
-      - docs/ops/env-sync-runbook.md
-      - docs/adr/ADR-010-supabase-keys-config-split.md
-      - docs/sessions/S003-supabase-keys-config/reports/01-requirements.md
-      - config/prod.json
-      - config/local.json
-    - status: completed
-      mode: delta
-      session_id: S008-general-tac-iwxxm-converter
-      started_at: '2026-07-12'
-      completed_at: '2026-07-12'
-      note: 'User approved: option 3 — include API Contract; full FAA-five feature coverage; F6 proposed. S008 01-requirements delta complete — F6 specs + ADR-014'
-      substeps:
-        interviews:
-          completed: 7
-          total: 7
-          current_template:
-          current_section: complete
-    - status: completed
-      mode: delta
-      id: S008-realtime-ingest
-      session_id: S008-general-tac-iwxxm-converter
-      started_at: '2026-07-12'
-      completed_at: '2026-07-12'
-      note: S008-realtime-ingest delta COMPLETED — interviews 7/7; ADR-015; API Q51=A validate→iwxxm-validate; Q52=B POST /lint-tac; Q53=B POST /convert-bulletin; Q54=A write API+ADR. F7/F8 Planned; package APIs + thin wrappers this cycle.
-      proposed_features:
-      - F7
-      - F8
-      build_scope_this_cycle: package APIs + backend thin wrappers for tac-validate and iwxxm-validate (D-S008-01-feature-list-q29q33 Q30=B; expands Q19=A package-first)
-      artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/dependency-inventory.md
-      - docs/api-contract.md
-      - docs/adr/ADR-015-validate-packages-bulletin-api-f7-f8.md
-      - docs/decisions/requirements-decisions.md
-      - docs/sessions/S008-general-tac-iwxxm-converter/reports/01-requirements-realtime-amend.md
-      substeps:
-        manifest:
-          status: completed
-          decision_id: D-S008-01-manifest-q23
-        interviews:
-          completed: 7
-          total: 7
-          current_template:
-          current_section: complete
-          planned_docs:
-            mandatory:
-            - feature-list
-            - spec
-            - user-journeys
-            - test-plan
-            recommended:
-            - dependency-inventory
-            - api-contract
-            - adr
-            skipped:
-            - config-spec
-            - deployment-plan
-            status:
-              feature-list: completed
-              spec: completed
-              user-journeys: completed
-              test-plan: completed
-              dependency-inventory: completed
-              api-contract: completed
-              adr: completed
-          interview_plan: 7 docs (4 mandatory + 3 recommended); skip Config Spec and Deploy
-    - status: completed
-      mode: delta
-      session_id: S011-f7-operator-ui
-      evolve_cycle_id: EV-008
-      started_at: '2026-07-13'
-      completed_at: '2026-07-13'
-      note: S011/EV-008 01-requirements delta COMPLETE — interviews 8/8; Config/env Batch option B (D-S011-01-cfg-B); ADR-020/021/022 accepted; all approved docs done. Phase A checkpoint pending before 02-verify-plan.
-      artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/api-contract.md
-      - docs/config-spec.md
-      - docs/env-contract.md
-      - docs/dependency-inventory.md
-      - docs/adr/ADR-020-unified-tac-work-sessions.md
-      - docs/adr/ADR-021-byo-credentials-admin-removal.md
-      - docs/adr/ADR-022-convert-preview-flag.md
-      - docs/context/f7-operator-ui.md
-      document_manifest:
-        approved_at: '2026-07-13'
-        decision_id: D-S011-01-manifest-A
-        mode: delta
-        approved_documents:
-        - feature-list
-        - spec
-        - user-journeys
-        - test-plan
-        - api-contract
-        - config-spec
-        - dependency-inventory
-        - ADRs
-        skipped_documents:
-        - acceptance-criteria
-        - README rewrite
-        - data-management-plan
-        - roadmap
-      substeps:
-        interviews:
-          completed: 8
-          total: 8
-          current_template:
-          current_section: complete
-    - status: completed
-      mode: delta
-      session_id: S015-metar-lint-quality
-      evolve_cycle_id: EV-011
-      started_at: '2026-07-19'
-      completed_at: '2026-07-19'
-      note: S015/EV-011 01-requirements delta COMPLETE — interviews 7/7; E11-12/13/14 approved (D-S015-EV011-spec-2/speci-3/phase-a-next); all approved docs done incl. api-contract; Phase A checkpoint pending before 02-verify-plan
-      artifacts:
-      - docs/feature-list.md
-      - docs/spec.md
-      - docs/user-journeys.md
-      - docs/test-plan.md
-      - docs/api-contract.md
-      - docs/domain/rules/COVERAGE_MATRIX.md
-      - docs/sessions/S015-metar-lint-quality/reports/metar-research-catalog.md
-      - docs/sessions/S015-metar-lint-quality/checkpoints/phase-a.md
-      - docs/adr/ADR-028-tac-validate-issue-registry.md
-      document_manifest:
-        approved_at: '2026-07-19'
-        decision_id: D-S015-EV011-manifest-1
-      registry_home:
-        decision_id: D-S015-EV011-registry-1
-        location: packages/tac-validate registry module + generated/docs catalog
-        adr_required: true
-        adr_number: 028
-        adr_path: docs/adr/ADR-028-tac-validate-issue-registry.md
-        adr_status: Accepted
-      substeps:
-        interviews:
-          status: completed
-          completed: 7
-          total: 7
-          current_template:
-          current_section: complete
-          planned_docs:
-            status:
-              feature-list: completed
-              spec: completed
-              user-journeys: completed
-              test-plan: completed
-              api-contract: completed
-              domain-research-catalog: completed
-              ADR: completed
-    notes:
-    - '2026-08-03 S038/EV-031 01-requirements COMPLETE (delta) — D-S038-tp=1,1,1 lean docs accepted Gate A (D-S038-01-gate-a); commit fc3bbe5; gaps deferred to 04; handoff 02-verify-plan; #842/#830/#712'
-    - '2026-08-03 S038/EV-031 01-requirements IN_PROGRESS (delta) — D-S038-tp=1,1,1; Test Plan TC-F30/F31/EV031 written; H4–H5 required; lean pass drafted (config-spec, env-contract, api-contract, deploy, dependency-inventory, ADR-033, ops/supabase-to-do-postgres-migration.md); current_template=lean docs complete awaiting acceptance → 02-verify-plan; status remains in_progress; #842/#830/#712'
-    - '2026-08-02 S037/EV-030 01-requirements COMPLETE (delta) — D-S037-E30-M (2,1) lean + API/catalog #829; report docs/sessions/S037-quality-residuals-831/reports/requirements-delta.md; handoff 02-verify-plan; sha pending parent commit; #831→#829→#820'
-    - '2026-08-02 S037/EV-030 01-requirements STARTED (delta) — D-S037-fn (1,1,1); F29 + deepen F23/F12/F2/F13/F9/F26/F27; #831→#829→#820'
-    - 'S035/EV-028 01-requirements COMPLETE 2026-08-01 (delta) — E28-M=7a; E28-E1=8a; D-S035-E28-M/E1; report docs/sessions/S035-empiric2-ops-leftovers-781/reports/requirements-delta.md; handoff 02-verify-plan; #781'
-    - 'S034/EV-027 01-requirements COMPLETE 2026-07-31 (delta) — E27-E1=1; E27-M/UJ/TC=1,1,1; D-S034-E27-E1; report docs/sessions/S034-wmo-decode-residual-matrix/reports/01-requirements.md; handoff 02-verify-plan; #815'
-    - '2026-07-31 S034/EV-027 01-requirements STARTED (delta) — deepen F25/F9/F7.g; D-S034-open=1,1,2,1; starting delta interview; #815'
-    - 'S033/EV-026 01-requirements COMPLETE 2026-07-31 (delta) — E26-E1=1; deepen F23/F6/F7.g; D-S033-E26-E1; report docs/sessions/S033-va-multi-location-equality/reports/01-requirements.md; handoff 02-verify-plan; #809'
-    - '2026-07-31 S033/EV-026 01-requirements STARTED (delta) — #809 ADR-032 equality; F23/F6/F7; D-S033-open; interview pending'
-    - 'S032/EV-025 01-requirements COMPLETE 2026-07-31 (delta) — E25-E1=1; deepen F6/F12/F2/F13/F23; D-S032-E25-E1; report docs/sessions/S032-iwxxm-us-remarks-va/reports/01-requirements.md; handoff 02-verify-plan; #810/#811/#812/#809'
-    - '2026-07-30 S031/EV-024 01-requirements COMPLETE (E24-E1=1 / D-S031-E24-E1) — deepen F6/F2/F4/F12/F13/F25; report docs/sessions/S031-iwxxm-domain-mine/reports/01-requirements.md; handoff 02-verify-plan; #804/#807/#773'
-    - '2026-07-30 S030/EV-023 01-requirements COMPLETE (E23-E1=1 / D-S030-E23-E1) — deepen F6/F2/F12/F13; report docs/sessions/S030-apac-encode-validate/reports/01-requirements.md; handoff 02-verify-plan; #800'
-    - 2026-07-29 S026/EV-020 01-requirements COMPLETE (E20-E1..E3) — F24/F25; deepen F9/F7.g; glossary=official sources+YAML overrides; TAF both A5-1+A5-2; report docs/sessions/S026-airmet-quality-wmo-examples/reports/01-requirements.md; handoff 02-verify-plan
-    - 2026-07-29 S025/EV-019 01-requirements COMPLETE (D-S025-01-complete) — E19-9..14; F23 + deepen F6.d/F12; report docs/sessions/S025-sigmet-quality/reports/01-requirements.md; handoff 02-verify-plan
-    - 2026-07-27 S023/EV-017 01-requirements COMPLETE (D-S023-01-requirements-delta) — F21/F22 corpus deltas from recommended architecture; deepen F5/F7; reports 01-requirements.md + impact-analysis.md; handoff 02-verify-plan (pending user gate)
-    - 2026-07-27 S023/EV-017 01-requirements STARTED (delta) — F21/F22; deepen F5/F7 IndexedDB; D-S023-E17-scope-lock; interview pending
-    - '2026-07-22 S021/EV-016 01-requirements STARTED (delta) — deepen F7 / #780 goldens UI; interview in progress'
-    - 2026-07-22 S020/EV-015 01-requirements COMPLETE (E15-10 / D-S020-EV015-01-confirm = A) — interviews 6/6 done; manifest B; ADR skipped (ADR-028 reuse); handoff 02-verify-plan
-    - 2026-07-22 S020/EV-015 01-requirements interviews 6/6 written — manifest B approved (D-S020-EV015-manifest-1 / E15-9); ADR skipped (ADR-028 reuse); current_template=user_confirm / pending_confirm; status remains in_progress pending user confirm of written deltas
-    - 2026-07-22 S020/EV-015 01-requirements STARTED (delta) — Phase 0 approved E15-5..E15-8 all A; feature-list F20 completed (1); current_template pending document_manifest; proposed_features [F20]; deepen F6.b/F6.c/F12
-    - 2026-07-21 S019/EV-014 01-requirements COMPLETE (D-S019-EV014-01-requirements-delta) — F16–F19 Planned; non-goals amended; ADR-021/029; UJ-027–030; TC-F16..F19; handoff 02-verify-plan; Phase A checkpoint pending
-    - 2026-07-19 S015/EV-011 02-verify-plan COMPLETE (D-S015-EV011-s1m1-1/s1m2-1/s9m1-1) — PASS; handoff 03-plan-tooling
-    - 2026-07-19 S015/EV-011 02-verify-plan audit pending medium review — 12 auto-approved; 3 medium pending (S1.M1, S1.M2, S9.M1); fix-in-place F11–F14 status + F15 SPECI naming
-    - 2026-07-19 S015/EV-011 D-S015-EV011-phase-a-pass — Phase A passed (option A); Phase A digest accepted; 02-verify-plan in_progress
-    - 2026-07-19 S015/EV-011 01-requirements COMPLETE (D-S015-EV011-spec-2/speci-3/phase-a-next) — interviews 7/7; api-contract wire-shape note; SPECI adjacency UJ-024/TC-F15-005; Phase A checkpoint pending before 02-verify-plan
-    - 2026-07-19 S015/EV-011 D-S015-EV011-f15-1/codes-1/f7-1 — Feature List E11-9/10/11 approved; F15 as written; stable codes; F7 stays Planned; ADR-028 Accepted; interviews 1/7 → user-journeys+test-plan confirmation
-    - 2026-07-19 S015/EV-011 D-S015-EV011-manifest-1 — 01 document manifest approved option A (E11-7); interviews starting feature-list (0/7)
-    - 2026-07-19 S015/EV-011 D-S015-EV011-registry-1 — registry home packages/tac-validate module + generated/docs catalog (E11-8 option A); ADR-028 Accepted
-    - Monorepo migration requirements interview complete; big-bang approach approved
-    - 2026-07-13 S011/EV-008 01-requirements COMPLETE (D-S011-01-cfg-B) — interviews 8/8; BYO + deprecate ADMIN_*→E2E_USER_*; ADR-020/021/022; Phase A checkpoint pending before 02-verify-plan
-    - '2026-07-13 S011/EV-008 Spec Batch 1–2 + ADR-020 (D-S011-01-spec-r2-prime) — Override R2 unified tac_work_sessions; interviews 2/8; current_template=user-journeys; current_section=f7-journeys; artifacts: feature-list, spec, ADR-020, f7-operator-ui context'
-    - 2026-07-13 S011/EV-008 Feature List done (D-S011-01-fl-batch2-A) — docs/feature-list.md updated for F7; interviews 1/8; current_template=spec; current_section=architecture
-    - 2026-07-13 S011/EV-008 document manifest approved option A (D-S011-01-manifest-A) — mandatory + api-contract/config/deps/ADRs; skip acceptance-criteria; interviews at feature-list/core (0/8)
-    - 2026-07-12 S008 amend — delta S008-realtime-ingest in_progress after 00 scoped brief (realtime-tac-ingest); prior S008 F6 delta remains completed
-    - '2026-07-12 proposed features for S008-realtime-ingest delta: F7, F8 (D-S008-realtime-amend-q9q13)'
-    - 2026-07-12 D-S008-realtime-amend-q19q22 — this-cycle build = package APIs only; F7/F8 Planned in docs; worker/UI/auth/sinks out of build scope
-    - '2026-07-12 D-S008-01-manifest-q23 — Q23=A approve mandatory Feature List, Spec, User Journeys, Test Plan + Deps, API light, ADRs; skip Config Spec and Deploy. Interview plan: 7 docs (4 mandatory + 3 recommended); interviews started at feature-list/core (completed 0/7)'
-    - '2026-07-12 D-S008-01-feature-list-q24q28 — Q24=A F6 bulletin acceptance; Q25=A iwxxm-validate + tac-validate; Q26=A F7 stub; Q27=A F8 stub; Q28=A F2→iwxxm-validate wrapper. Feature List current_section: non-goals (still feature-list; completed 0/7)'
-    - '2026-07-12 D-S008-01-feature-list-q29q33 — Q29=C leave F6 non-goals unchanged (worker only under F8); Q30=B package APIs + API thin wrappers this cycle (expands package-first to include backend thin wrappers for tac-validate and iwxxm-validate); Q31=A F6.bulletin with/before METAR; Q32=A F7/F8/auth/sinks/AMHS out of build; Q33=A write feature-list then Spec. interviews.current_section: writing feature-list (completed 0/7)'
-    - 2026-07-12 Feature List document written (docs/feature-list.md delta) — interviews.completed 1/7; planned_docs.status.feature-list=completed; current_template=spec; current_section=components
-    - '2026-07-12 D-S008-01-spec-q34q38 — Q34=A add both packages; Q35=A unified pipeline; Q36=A SoC no FastAPI/Supabase; Q37=B dashed future worker in diagram; Q38=A write Spec then Journeys. interviews.current_section: writing-spec (completed 1/7)'
-    - 2026-07-12 Spec written (docs/spec.md delta) — interviews.completed 2/7; planned_docs.status.spec=completed; current_template=user-journeys; current_section=happy-paths
-    - '2026-07-12 D-S008-01-journeys-q39q43 — Q39=A update UJ-002/007/005/006; Q40=A UJ-011/012 + UJ-DEV-004; Q41=A stub UJ-013/014; Q42=A T2 for 011/012; Q43=A write journeys then test plan. interviews.current_section: writing-journeys (completed 2/7)'
-    - 2026-07-12 User Journeys written (docs/user-journeys.md delta) — interviews.completed 3/7; planned_docs.status.user-journeys=completed; current_template=test-plan; current_section=types
-    - '2026-07-12 D-S008-01-test-plan-q44q47 — Q44=B; Q44b=B H7; Q45=A; Q46=A; Q47=A. interviews.current_section: writing-test-plan then dependency-inventory (completed 3/7)'
-    - 2026-07-12 Test Plan written (docs/test-plan.md delta) — interviews.completed 4/7; planned_docs.status.test-plan=completed; current_template=dependency-inventory; current_section=packages
-    - '2026-07-12 D-S008-01-deps-q48q50 — Q48=A MIT; Q49=B pydantic/msgspec in 04; Q50=A. interviews.current_section: writing-deps then api-contract (completed 4/7)'
-    - 2026-07-12 Dependency Inventory written (docs/dependency-inventory.md delta) — interviews.completed 5/7; planned_docs.status.dependency-inventory=completed; current_template=api-contract; current_section=endpoints
-    - 2026-07-12 D-S008-01-api-q51q54 — Q51=A; Q52=B lint-tac; Q53=B convert-bulletin; Q54=A; ADR-015 written. interviews.completed 7/7; planned_docs api-contract+adr completed
-    - 2026-07-12 S008-realtime-ingest amend COMPLETE — delta status completed; overall 01-requirements completed; advancing to 04-tech-plan (pending)
+    note: "COMPLETE — D-S067-01-ac=1; AC approved; specs written; handoff 02-verify-plan (awaiting Gate A)"
+    previous_session_id: S060-tag-driven-prod-deploy
+    previous_evolve_cycle_id: EV-051
+    previous_status: completed
+    previous_completed: '2026-08-09'
   02-verify-plan:
-    status: completed
+    status: pending
     mode: delta
-    started_at: '2026-08-09'
-    started: '2026-08-09'
-    completed_at: '2026-08-09'
-    completed: '2026-08-09'
-    session_id: S061-ci-polish-quality-pr-stats
-    evolve_cycle_id: EV-052
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
     skill_id: 02-verify-plan
-    tip_sha: 80197a58
-    tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
-    deepen_feature_ids: [F29, F6, F21, F30, M5]
+    tip_sha: a6064563
+    tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+    deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     delta_only: true
-    gate_a: PASS
-    gate_a_status: pass
-    gate_a_decision: D-S061-gateA=1
-    gate_a_note: 'D-S061-gateA=1 — Gate A PASS; gates.a_to_b passed'
-    report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
-    decision_refs:
-    - D-S061-gateA
-    - D-S061-01-ac
-    - D-S061-redis
-    note: 'S061/EV-052 COMPLETE — Gate A PASS D-S061-gateA=1; handoff 04-tech-plan (delta)'
+    gate_a: pending
+    gate_a_status: pending
+    note: "PENDING — 01 COMPLETE; awaiting Gate A AskQuestion"
+    previous_session_id: S061-ci-polish-quality-pr-stats
+    previous_evolve_cycle_id: EV-052
+    previous_status: completed
+    previous_completed: '2026-08-09'
+    previous_tip_sha: 80197a58
+    previous_tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    previous_gate_a: PASS
+    previous_gate_a_status: pass
+    previous_gate_a_decision: D-S061-gateA=1
+    previous_note: 'S061/EV-052 COMPLETE — Gate A PASS D-S061-gateA=1; handoff 04-tech-plan (delta)'
     prior_session_id: S060-tag-driven-prod-deploy
     prior_evolve_cycle_id: EV-051
     prior_started: '2026-08-09'
@@ -38312,13 +37596,13 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "3dd07f65"
-  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  tip_sha: "a6064563"
+  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
   tip_sha_pushed: false
-  tip_sha_note: "session open commit local — 3dd07f65; tip not pushed"
-  current_stage: 16-evolve
-  current_stage_status: in_progress
-  current_stage_note: "ACTIVE — session-brief/routing-plan/evolve-plan-card written; branch local @ stage@b796882e; next 01-requirements"
+  tip_sha_note: "01-requirements tip a6064563 local — AC approved; specs written; tip not pushed"
+  current_stage: 02-verify-plan
+  current_stage_status: pending
+  current_stage_note: "01-requirements COMPLETE (D-S067-01-ac=1); 02-verify-plan pending — awaiting Gate A AskQuestion"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -38358,6 +37642,11 @@ evolve_cycles:
     D-S067-ui-preview: "3a — remind at 11-verify-impl"
     D-S067-proceed: "4a — open session"
     D-S067-board: "1 — #948 → In progress (WIP 1); #903/#838 stay Ready"
+    D-S067-01-delta: "1a — no scope change"
+    D-S067-01-ui: "1a — docs only; honor remind at 11"
+    D-S067-01-manifest: "1a"
+    D-S067-01-goal: "1a"
+    D-S067-01-ac: "1 — AC approved; specs written"
   checkpoints:
     phase_a: pending
     phase_b: pending
@@ -38371,10 +37660,20 @@ evolve_cycles:
     deploy: pending
   artifacts:
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
+  - docs/feature-list.md
+  - docs/user-journeys.md
+  - docs/test-plan.md
+  - docs/spec.md
+  - docs/deploy.md
+  - docs/decisions/evolve-decisions.md
+  - docs/decisions/requirements-decisions.md
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
   board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
-  note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; Standard; #948+#903+#838; base stage@b796882e; branch pending; promote after re-approve; [Corpus: product §F7/F1/F6/F2/F4]"
+  note: "OPEN — EV-057/S067; 01 COMPLETE D-S067-01-ac=1; 02 pending Gate A; tip a6064563 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -50051,10 +49350,10 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after open_session S067-m0-ready-apex-accumulate-validate/EV-057; no git commit by workflow-state-manager'
-  tip_sha: "3dd07f65"
-  tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
-  tip_note: "S065 tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; CI 31541069003 watching; follow-up #988"
+  dirty_note: 'workflow-state.yaml dirty after 01-requirements COMPLETE S067/EV-057 tip a6064563; no git commit by workflow-state-manager'
+  tip_sha: "a6064563"
+  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+  tip_note: "S067/EV-057 tip a6064563 on evolve/EV-057-m0-ready-apex-accumulate-validate (01-requirements); tip not pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -50062,8 +49361,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "3dd07f65"
-  evolve_tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+  evolve_tip_sha: "a6064563"
+  evolve_tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
   evolve_tip_sha_pushed: false
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
@@ -50083,6 +49382,8 @@ git_history:
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-15 01-requirements COMPLETE — D-S067-01-ac=1; tip a6064563 (a606456354a8eaa859120405e0581c8e1873987e); current_stage 02-verify-plan pending (awaiting Gate A AskQuestion); stages.01 completed / 02 pending; commit appended; tip_sha_pushed=false; no git commit by workflow-state-manager'
+  - '2026-08-15 01-requirements IN PROGRESS — D-S067-01-goal=1a / manifest=1a / ui=1a (docs only; remind at 11) / delta=1a; interviewing AC; current_stage 01-requirements; no git commit by workflow-state-manager'
   - '2026-08-15 tip 3dd07f65 — session open commit recorded; active_session/S067/EV-057 tip_sha synced; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 branch ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed; D-S067-board=1 #948 In progress (WIP 1); session-brief/routing-plan/evolve-plan-card written; next 01-requirements; no git commit by workflow-state-manager'
   - '2026-08-15 open_session S067-m0-ready-apex-accumulate-validate / EV-057 — session_counter 66→67; evolve_cycle_counter 56→57; active_session set; Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e (b796882e724d9d2dfb02199ab1e288931005ee00); issues #948→#903→#838; promote after re-approve; D-S067-proceed=4a; no git commit by workflow-state-manager'
@@ -50662,10 +49963,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: 3dd07f65
-    tip_sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
+    tip_sha: a6064563
+    tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
     tip_sha_pushed: false
-    note: "ACTIVE local tip 3dd07f65 session open; not pushed"
+    note: "ACTIVE local tip a6064563 01-requirements; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -52145,6 +51446,30 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "a6064563"
+    sha_full: a606456354a8eaa859120405e0581c8e1873987e
+    message: "docs: [S067/EV-057] 01-requirements delta for #948 #903 #838"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 01-requirements
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-15"
+    pushed: false
+    tip_sha: a6064563
+    tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+    tip_sha_pushed: false
+    files_changed:
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
+      - docs/deploy.md
+      - docs/feature-list.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
+      - docs/spec.md
+      - docs/test-plan.md
+      - docs/user-journeys.md
+    note: "01-requirements COMPLETE; D-S067-01-ac=1; tip not pushed"
   - sha: "3dd07f65"
     sha_full: 3dd07f65945ca3a0e51e1816db9adf2a85f4e652
     message: "docs: [S067/EV-057] open M0 Ready evolve (#948 #903 #838)"
