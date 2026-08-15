@@ -66,7 +66,7 @@ active_session:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 04-tech-plan
-  current_stage_note: "Gate A PASS (D-S067-gateA=1); next 04-tech-plan startup"
+  current_stage_note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -93,6 +93,10 @@ active_session:
     D-S067-948-ingress: "2a"
     D-S067-gateA: "1 — Gate A PASS"
     D-S067-02-ml: "1b — strict then locked"
+    D-S067-04-goal: "1a"
+    D-S067-04-deps: "1a"
+    D-S067-04-planmode: "1a"
+    D-S067-04-proceed: "1a"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -108,7 +112,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; Gate A PASS; next 04-tech-plan"
+    note: "IN PROGRESS — EV-057; 04-tech-plan in_progress (drafting EP)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -126,8 +130,9 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — awaiting 04-tech-plan startup"
+    status: in_progress
+    started: '2026-08-15'
+    note: "IN PROGRESS — startup recommended; delta EP 3 milestones; no new deps; skip Plan mode; drafting EP"
   - stage: 07-build
     required: true
     mode: delta
@@ -235,7 +240,7 @@ sessions:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 04-tech-plan
-  current_stage_note: "Gate A PASS (D-S067-gateA=1); next 04-tech-plan startup"
+  current_stage_note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -262,6 +267,10 @@ sessions:
     D-S067-948-ingress: "2a"
     D-S067-gateA: "1 — Gate A PASS"
     D-S067-02-ml: "1b — strict then locked"
+    D-S067-04-goal: "1a"
+    D-S067-04-deps: "1a"
+    D-S067-04-planmode: "1a"
+    D-S067-04-proceed: "1a"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -277,7 +286,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; Gate A PASS; next 04-tech-plan"
+    note: "IN PROGRESS — EV-057; 04-tech-plan in_progress (drafting EP)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -295,8 +304,9 @@ sessions:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — awaiting 04-tech-plan startup"
+    status: in_progress
+    started: '2026-08-15'
+    note: "IN PROGRESS — startup recommended; delta EP 3 milestones; no new deps; skip Plan mode; drafting EP"
   - stage: 07-build
     required: true
     mode: delta
@@ -10575,8 +10585,10 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: pending
+    status: in_progress
     mode: delta
+    started: '2026-08-15'
+    started_at: '2026-08-15'
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
     skill_id: 04-tech-plan
@@ -10585,7 +10597,12 @@ stages:
     deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     delta_only: true
-    note: "PENDING — Gate A PASS; awaiting 04-tech-plan startup"
+    decision_refs:
+    - D-S067-04-goal
+    - D-S067-04-deps
+    - D-S067-04-planmode
+    - D-S067-04-proceed
+    note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
     previous_session_id: S064-quality-metrics-2025-2-followups
     previous_evolve_cycle_id: EV-055
     previous_status: completed
@@ -36549,8 +36566,8 @@ evolve_cycles:
   tip_sha_pushed: false
   tip_sha_note: "02-verify-plan tip d319180f local — Gate A PASS; tip not pushed"
   current_stage: 04-tech-plan
-  current_stage_status: pending
-  current_stage_note: "Gate A PASS (D-S067-gateA=1); next 04-tech-plan startup"
+  current_stage_status: in_progress
+  current_stage_note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -36603,6 +36620,10 @@ evolve_cycles:
     D-S067-948-ingress: "2a"
     D-S067-gateA: "1 — Gate A PASS"
     D-S067-02-ml: "1b — strict then locked"
+    D-S067-04-goal: "1a"
+    D-S067-04-deps: "1a"
+    D-S067-04-planmode: "1a"
+    D-S067-04-proceed: "1a"
   checkpoints:
     phase_a: passed
     phase_b: pending
