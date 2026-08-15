@@ -1,6 +1,29 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-11 (S066 / EV-056)
+> Stage: 01-requirements | Last updated: 2026-08-15 (S067 / EV-057)
+
+## EV-057 / S067 — M0 Ready: #948 / #903 / #838 (`D-S067-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-057 / pack | One cycle all three Ready | `D-S067-pack=2c`; order #948→#903→#838 | confirmed |
+| EV-057 / Fn | Deepen F7.r + F7.s + F30 | No new top-level Fn; F1/F6/F2/F4 notes | confirmed |
+| EV-057 / #948 mech | DOKS / ingress | Preserve path+query; www if covered (`D-S067-948-*`) | confirmed |
+| EV-057 / #948 Fn | F30 / deploy deepen | No new Fn (`D-S067-948-fn=1a`) | confirmed |
+| EV-057 / #903 stem | ≈8 sanitized TAC chars of first success + ts | Custom basename → `{base}.zip` | confirmed |
+| EV-057 / #903 fail | Leave prior successes | Soft cap locked in 04 | confirmed |
+| EV-057 / #903 journey | **UJ-057** | TC-EV057-903-* | confirmed |
+| EV-057 / #838 intake | Paste + single `.xml` | Multi-file/zip deferred | confirmed |
+| EV-057 / #838 API | Reuse `POST /api/v1/validate` | api-contract skip unless 04 gap | confirmed |
+| EV-057 / #838 journey | **UJ-058** | TC-EV057-838-*; F4 parity | confirmed |
+| EV-057 / #948 journey | **UJ-OPS-002** | TC-EV057-948-* | confirmed |
+| EV-057 / AC | All drafted AC approved | `D-S067-01-ac=1` | confirmed |
+| EV-057 / docs | Delta manifest | feature-list + journeys + test-plan + deploy + light spec; skip api/README | confirmed |
+| EV-057 / UI preview | Docs only at 01 | Remind at 11 (`D-S067-01-ui=1a`) | confirmed |
+| EV-057 / route | Standard | PR → stage; promote after re-approve | confirmed |
+
+[Corpus: product §F7] [Corpus: product §F30] [Corpus: product §F2] [Corpus: product §F4]
+[Corpus: deploy] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-057]
 
 ## EV-056 / S066 — Quality metrics detail page + collapsible diffs (#988) (`D-S066-01-ac=1`)
 

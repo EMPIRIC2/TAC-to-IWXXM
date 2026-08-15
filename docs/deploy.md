@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
-> **Last updated**: 2026-08-08 (S053 / EV-044 — dual DOKS clusters + DO Projects)
+> **Last updated**: 2026-08-15 (S067 / EV-057 — #948 apex → app redirect)
 
 ## Topology (F30 — DOKS dual env / dual cluster)
 
@@ -43,6 +43,27 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 | LB | `168.144.12.70` (prod) | `143.244.202.13` (staging; re-check if LB replaced) |
 | Config profile | `config/prod.json` | `config/staging.json` |
 | Product DB | DO Postgres `metar-iwxxm` / `defaultdb` | DO Postgres `metar-iwxxm-staging` (dedicated) |
+
+### Apex domain redirect (EV-057 / #948)
+
+**Canonical operator app host** remains `https://app.tac-to-iwxxm.com` (staging:
+`https://app.staging.tac-to-iwxxm.com`). Prod apex `https://tac-to-iwxxm.com` (and
+`https://www.tac-to-iwxxm.com` when DNS/cert covers it) must **permanently redirect** to the
+app host via **DOKS / ingress** (or a small in-cluster redirect Service — pick simplest durable
+option in 04/07).
+
+| Requirement | Behavior |
+|-------------|----------|
+| HTTPS apex | `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent) |
+| Path/query | Preserve (e.g. `/foo?bar=1` → same on app host) |
+| `www` | Include when DNS/cert covers it |
+| HTTP | Chain must end on HTTPS app URL |
+| TLS | Cert covers apex (and `www` if enabled) |
+| Staging apex | Out of scope unless free with the same change |
+
+Document the concrete Ingress/annotation/Service name in the implement PR and this section
+once applied. Ops smoke: **UJ-OPS-002** / **TC-EV057-948-***. [Corpus: product §F30]
+[Corpus: deploy] [Corpus: tech-spec]
 
 Soak checklist (closed early under `D-S038-t65-waive`):
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).

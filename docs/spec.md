@@ -3,7 +3,7 @@
 > **Project**: TAC to IWXXM  
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM  
 > **Version**: monorepo + `tac2iwxxm` + operator UI (Quality metrics on stage)  
-> **Last updated**: 2026-08-12 (docs sync — Quality metrics detail + collapsible diffs on staging)
+> **Last updated**: 2026-08-15 (S067 / EV-057 — F7.r accumulate ZIP + F7.s validate-only + F30 apex redirect)
 
 ## Overview
 
@@ -243,6 +243,12 @@ metar-to-IWXXM/
 - **Quality metrics (staging)**: Primary shell tab `/quality` lists official WMO corpus
   stems; detail `/quality/:stem` with Official/Converted panes and GitHub-style collapsible
   unified diffs (C14N match; promote deferred).
+- **F7.r accumulate ZIP (EV-057 / #903)**: Workbench accumulates sequential successful IWXXM
+  results; Download all → one ZIP; default stem ≈ first 8 sanitized TAC chars of first
+  success + timestamp; clear/reset; soft cap (04). Dissemination multi-select unchanged.
+- **F7.s validate-only (EV-057 / #838)**: Dedicated Validate mode — paste or single `.xml`
+  upload via existing `POST /api/v1/validate` (reuse unless 04 finds a gap); F4
+  version/profile parity; guest-usable. Orthogonal to Quality metrics.
 - **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
   version control; values passed via `conversion_params` / multipart to `/api/v1/convert`.
 - **F7 delta (S011; F21 amend)**: Debounced **public** calls to lint/decode/validate/preview with

@@ -33,6 +33,33 @@
 | D-S067-proceed | **4a** — Open S067 + EV-057; write brief/routing/plan card |
 | D-S067-board | **1** — #948 → In progress (WIP 1); #903/#838 stay Ready until started |
 
+### Acceptance (`D-S067-01-ac=1`)
+
+**#948 / F30**
+1. `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent).
+2. Path + query preserved.
+3. `www` if DNS/cert covers; HTTP ends on HTTPS app URL.
+4. TLS covers apex (and `www` if enabled).
+5. Document DOKS/ingress mechanism in deploy docs.
+
+**#903 / F7.r / UJ-057**
+1. N≥2 sequential successes remain visible.
+2. Download all → one ZIP of accumulated IWXXM.
+3. Empty custom name → `{stem}_{yyyyMMddHHmmss}.zip` (≈8 sanitized TAC chars of first success).
+4. Custom basename → `{base}.zip` (#664).
+5. Explicit clear/reset.
+6. Failed convert leaves prior successes.
+7. Soft accumulate cap (04 locks number).
+8. UJ-057 / TC-EV057-903-* + H4–H5.
+
+**#838 / F7.s / UJ-058**
+1. Paste IWXXM → validate without TAC convert.
+2. Upload one `.xml` → F2 results.
+3. Invalid/non-IWXXM → structured fail.
+4. F4 version/profile parity.
+5. Guest-usable (no Supabase).
+6. UJ-058 / TC-EV057-838-* + H4–H5.
+
 ### Out of scope
 
 - Epic [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) and children #727 / #874 (M4/M5)

@@ -111,6 +111,9 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
 | UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005 |
+| UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..006 |
+| UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
+| UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -2168,6 +2171,116 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   collapsible unified diff; C14N/`match_status` unchanged
 - **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
 - **Source**: EV-056 AC5; UJ-056
+
+### EV-057 / S067 — M0 Ready: apex redirect + accumulate ZIP + validate-only (#948 / #903 / #838)
+
+- **Mode**: delta deepen F7.r / F7.s + F30; F1/F6/F2/F4 notes as applicable
+- **Pass criteria**: AC in evolve-decisions §EV-057; TC-EV057-*; **UJ-057** / **UJ-058** /
+  **UJ-OPS-002**
+- **Source**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948),
+  [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903),
+  [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838); S067 / EV-057
+
+### TC-EV057-948-001: Apex HTTPS redirects to app
+
+- **Level**: T3 / ops
+- **Objective**: `https://tac-to-iwxxm.com` permanently redirects to
+  `https://app.tac-to-iwxxm.com` (301 or equivalent)
+- **Pass criteria**: Live curl/HEAD shows permanent redirect Location to app host
+- **Source**: EV-057 #948 AC1; UJ-OPS-002; [Corpus: deploy]
+
+### TC-EV057-948-002: Path and query preserved
+
+- **Level**: T3 / ops
+- **Objective**: `/foo?bar=1` on apex redirects to same path+query on app host
+- **Pass criteria**: Location includes `/foo?bar=1` on `app.tac-to-iwxxm.com`
+- **Source**: EV-057 #948 AC2; `D-S067-948-path=1`
+
+### TC-EV057-948-003: www / HTTP / TLS + docs
+
+- **Level**: T3 / ops / docs
+- **Objective**: `www` covered when DNS/cert allows; HTTP ends on HTTPS app; TLS valid;
+  deploy.md documents DOKS/ingress (or equivalent) mechanism
+- **Pass criteria**: Checklist in deploy-smoke / ops report; docs section present
+- **Source**: EV-057 #948 AC3–AC5
+
+### TC-EV057-903-001: Accumulate N≥2 successes
+
+- **Level**: T0 / T2
+- **Objective**: Two sequential successful converts leave both results visible
+- **Pass criteria**: Vitest and/or Playwright assert N≥2 result cards after sequential converts
+- **Source**: EV-057 #903 AC1; UJ-057
+
+### TC-EV057-903-002: Download all ZIP contents
+
+- **Level**: T0 / T2
+- **Objective**: Download all produces one ZIP with one IWXXM per accumulated success
+- **Pass criteria**: Unit/e2e asserts ZIP member count and names
+- **Source**: EV-057 #903 AC2; UJ-057
+
+### TC-EV057-903-003: Default ZIP stem from first TAC
+
+- **Level**: T0
+- **Objective**: Empty custom basename → `{stem}_{yyyyMMddHHmmss}.zip` with ≈8 sanitized
+  chars from first success TAC
+- **Pass criteria**: Unit test on `outputArchiveName` (or successor) helper
+- **Source**: EV-057 #903 AC3; #664; `D-S067-903-stem=1`
+
+### TC-EV057-903-004: Custom basename ZIP
+
+- **Level**: T0
+- **Objective**: Custom output name → `{base}.zip`
+- **Pass criteria**: Unit test matches #664 rule
+- **Source**: EV-057 #903 AC4
+
+### TC-EV057-903-005: Clear + failed convert isolation
+
+- **Level**: T0 / T2
+- **Objective**: Clear empties batch; failed convert does not remove prior successes
+- **Pass criteria**: Unit/UI tests for clear and failure paths
+- **Source**: EV-057 #903 AC5–AC6
+
+### TC-EV057-903-006: UJ-057 H4–H5 / Playwright smoke
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Accumulate two converts → Download all → named ZIP; soft cap documented
+- **Pass criteria**: Playwright green locally/CI; H4–H5 after staging deploy (13)
+- **Source**: EV-057 #903 AC7–AC8; UJ-057
+
+### TC-EV057-838-001: Paste IWXXM validate-only
+
+- **Level**: T0 / T2
+- **Objective**: Paste known-good IWXXM and validate without TAC convert
+- **Pass criteria**: FE + API test; no convert call required
+- **Source**: EV-057 #838 AC1; UJ-058
+
+### TC-EV057-838-002: Upload single XML
+
+- **Level**: T0 / T2
+- **Objective**: Upload one `.xml` IWXXM file and show F2 results
+- **Pass criteria**: Playwright/Vitest asserts upload → validate results
+- **Source**: EV-057 #838 AC2; UJ-058
+
+### TC-EV057-838-003: Broken XML structured fail
+
+- **Level**: T0 / T2
+- **Objective**: Invalid / non-IWXXM input returns structured fail (no opaque 5xx)
+- **Pass criteria**: Backend/FE assert structured error body
+- **Source**: EV-057 #838 AC3
+
+### TC-EV057-838-004: F4 version/profile parity
+
+- **Level**: T0 / T2
+- **Objective**: Version/profile controls match convert/validate elsewhere
+- **Pass criteria**: UI test asserts shared control behavior
+- **Source**: EV-057 #838 AC4; F4
+
+### TC-EV057-838-005: UJ-058 guest + H4–H5 smoke
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Guest paste good fixture → pass; broken → structured fail; no Supabase
+- **Pass criteria**: Playwright green; H4–H5 after staging deploy (13)
+- **Source**: EV-057 #838 AC5–AC6; UJ-058
 
 ### Live harness — staging (EV-043 / EV-044)
 

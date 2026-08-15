@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-11 (S066 / EV-056 UJ-056 deepen — detail route + collapsible diffs; prior EV-055)
+> **Last updated**: 2026-08-15 (S067 / EV-057 UJ-057 accumulate ZIP + UJ-058 validate-only IWXXM; #948 deploy)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -73,6 +73,9 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
 | UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979; EV-056 / #988) | T0 / T2 / **T3** / H4–H5 |
+| UJ-057 | Accumulate conversions → Download all ZIP | apps/frontend | F7.r deepen (EV-057 / #903) | T0 / T2 / **T3** / H4–H5 |
+| UJ-058 | Validate existing IWXXM (paste / upload; no TAC) | apps/frontend | F7.s deepen (EV-057 / #838) | T0 / T2 / **T3** / H4–H5 |
+| UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -854,6 +857,77 @@ precomputed fixtures (`D-S063-gateA=2`; regen under `D-S064-regen=1`).
 Related: UJ-032 / UJ-039 / UJ-042.
 [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: product §F25]
 [Corpus: journeys] [Corpus: tests] [Corpus: api] [Corpus: adr/ADR-032]
+
+---
+
+### UJ-057: Accumulate Conversions → Download All ZIP (F7.r / #903)
+
+**Actor**: Meteorological operator (guest or logged-in)
+
+**Goal**: Convert several TAC reports back-to-back, keep all successful IWXXM results in the
+workbench, and download them together as **one ZIP** with a content-derived default name.
+
+**Steps**:
+
+1. Open the convert workbench; leave custom output basename empty (or clear it).
+2. Convert report A successfully — result card visible.
+3. Convert report B (and optionally C) without clearing the batch — prior successes remain.
+4. Optionally trigger a failed convert — prior successes stay; failure is shown for the attempt.
+5. Choose **Download all** / ZIP — receive one archive containing each accumulated IWXXM.
+6. Confirm default ZIP name is `{stem}_{yyyyMMddHHmmss}.zip` where `stem` is ≈ first 8
+   sanitized characters of the **first** successful conversion’s TAC.
+7. Set a custom output basename and Download all — archive is `{base}.zip` (#664).
+8. Clear / reset the accumulated set; confirm the batch is empty.
+
+**Acceptance**: AC1–AC8 in evolve-decisions / feature-list §F7.r EV-057; TC-EV057-903-*.
+Soft accumulate cap locked in 04 from existing workbench/F33-ish limits.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-001 / UJ-005 / UJ-052; F33 mass ingest orthogonal.
+[Corpus: product §F7] [Corpus: product §F1] [Corpus: product §F6] [Corpus: journeys]
+[Corpus: tests]
+
+---
+
+### UJ-058: Validate Existing IWXXM Without TAC Convert (F7.s / #838)
+
+**Actor**: Meteorological operator (guest OK — no Supabase required)
+
+**Goal**: Paste or upload an existing IWXXM document and run F2 XSD + Schematron validation
+without performing TAC→IWXXM conversion.
+
+**Steps**:
+
+1. Open the operator UI **Validate** mode (dedicated validate-only intake — not Quality metrics).
+2. Paste a known-good IWXXM fixture; select version/profile with the same F4 controls used on
+   convert/validate elsewhere; run validate — pass (or expected clean diagnostics).
+3. Upload one `.xml` IWXXM file; run validate — F2 issue list / pass-fail shown.
+4. Paste broken / non-IWXXM XML — structured fail (no opaque 5xx).
+5. Confirm no TAC convert was required and no Supabase login was needed for the happy path.
+
+**Acceptance**: AC1–AC6 in feature-list §F7.s EV-057; TC-EV057-838-*. Multi-file/zip deferred.
+Does not replace UJ-056 Quality metrics corpus browse.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-002 / UJ-007 / UJ-032.
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F4] [Corpus: api]
+[Corpus: journeys] [Corpus: tests]
+
+---
+
+### UJ-OPS-002: Prod Apex Redirects to App Host (F30 / #948)
+
+**Actor**: Ops / maintainer / anonymous visitor
+
+**Goal**: Hitting the apex domain lands on the canonical operator app host.
+
+**Steps**:
+
+1. Request `https://tac-to-iwxxm.com/` (and a path+query such as `/foo?bar=1`).
+2. Observe permanent redirect to `https://app.tac-to-iwxxm.com/` (path+query preserved).
+3. If `www` is in DNS/cert coverage, repeat for `https://www.tac-to-iwxxm.com`.
+4. Confirm HTTP apex (if served) ends on HTTPS app URL.
+5. Confirm deploy docs describe the DOKS/ingress (or equivalent) mechanism.
+
+**Acceptance**: AC1–AC5 in feature-list §F30 EV-057 / #948; TC-EV057-948-*. Staging apex out of
+scope unless free with the same change.
+**Tier: T3 / ops smoke**. [Corpus: product §F30] [Corpus: deploy] [Corpus: tech-spec]
 
 ---
 

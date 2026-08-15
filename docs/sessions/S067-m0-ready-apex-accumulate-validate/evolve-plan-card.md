@@ -8,10 +8,12 @@ Ship M0 Ready **#948**, **#903**, and **#838** to `stage` (Standard); promote on
 
 ## Features
 
-- F7 (operator UI deepen) — #903 / #838 — [Corpus: product §F7]
-- F1 / F6 (convert + archive path) — #903 — [Corpus: product §F1] [Corpus: product §F6]
-- F2 / F4 (validate + version) — #838 — [Corpus: product §F2] [Corpus: product §F4]
-- Deploy / hosts — #948 apex redirect — [Corpus: tech-spec] [Corpus: deploy]
+- F7.r — Accumulate conversions → one ZIP (#903) — [Corpus: product §F7]
+- F7.s — Validate existing IWXXM paste/upload (#838) — [Corpus: product §F7]
+- F30 deepen — Apex → app redirect (#948) — [Corpus: product §F30] [Corpus: deploy]
+- F1/F6 notes (#903); F2/F4 notes (#838) — [Corpus: product §F1] [Corpus: product §F6]
+  [Corpus: product §F2] [Corpus: product §F4]
+- Journeys: UJ-057 / UJ-058 / UJ-OPS-002 — [Corpus: journeys] [Corpus: tests]
 
 ## In / out of scope
 
@@ -29,17 +31,17 @@ Ship M0 Ready **#948**, **#903**, and **#838** to `stage` (Standard); promote on
 
 ## Next child stage
 
-**01-requirements** (delta) — lock AC / journeys / corpus deltas for #948, #903, #838 before Gate A.
+**02-verify-plan** — Gate A on EV-057 delta specs (`D-S067-01-ac=1`).
 
 ## Risks / open decisions
 
-- #948: DNS / ingress / cert ownership — surface early in 01/04 if access unclear
-- #903: stem length / ICAO vs TAC prefix; accumulate caps — interview in 01
-- #838: which validate endpoint(s) for raw IWXXM; multi-file/zip stretch vs v1 paste+single upload
+- #948: concrete Ingress/Service name after live DNS/ingress read in 04/07
+- #903: soft cap exact number in 04 from existing caps
+- #838: re-open api-contract only if validate wire gap found in 04
 - Promote held until all three on stage (`D-S067-promote=2b`)
 - WIP: only #948 In progress until later milestones start #903/#838
 
-## Locked intake (Phase 0)
+## Locked intake (Phase 0 + 01)
 
 | ID | Decision |
 |----|----------|
@@ -54,3 +56,4 @@ Ship M0 Ready **#948**, **#903**, and **#838** to `stage` (Standard); promote on
 | D-S067-ui-preview | **3a** — remind at 11 |
 | D-S067-proceed | **4a** — open session |
 | D-S067-board | **1** — #948 In progress |
+| D-S067-01-ac | **1** — AC approved; specs written |
