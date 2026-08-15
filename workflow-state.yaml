@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "d319180f"
-  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+  tip_sha: "7db2c724"
+  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
   tip_sha_pushed: false
-  tip_sha_note: "02-verify-plan tip d319180f local — Gate A PASS; tip not pushed"
+  tip_sha_note: "04-tech-plan tip 7db2c724 local — D-S067-04-plan=1; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -65,8 +65,8 @@ active_session:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 04-tech-plan
-  current_stage_note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
+  current_stage: 07-build
+  current_stage_note: "04 complete; awaiting 07 startup before M1 T1.1"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -97,6 +97,9 @@ active_session:
     D-S067-04-deps: "1a"
     D-S067-04-planmode: "1a"
     D-S067-04-proceed: "1a"
+    D-S067-04-plan: "1"
+    D-S067-04-next: "1a"
+    D-S067-948-impl: "sibling Ingress metar-frontend-apex"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -112,7 +115,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 04-tech-plan in_progress (drafting EP)"
+    note: "IN PROGRESS — EV-057; 04 COMPLETE (D-S067-04-plan=1); awaiting 07-build startup before M1 T1.1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -130,9 +133,10 @@ active_session:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-15'
-    note: "IN PROGRESS — startup recommended; delta EP 3 milestones; no new deps; skip Plan mode; drafting EP"
+    completed: '2026-08-15'
+    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3 approved; 05/06 remain skipped; handoff 07-build (awaiting startup)"
   - stage: 07-build
     required: true
     mode: delta
@@ -194,10 +198,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "d319180f"
-  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+  tip_sha: "7db2c724"
+  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
   tip_sha_pushed: false
-  tip_sha_note: "02-verify-plan tip d319180f local — Gate A PASS; tip not pushed"
+  tip_sha_note: "04-tech-plan tip 7db2c724 local — D-S067-04-plan=1; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -239,8 +243,8 @@ sessions:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 04-tech-plan
-  current_stage_note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
+  current_stage: 07-build
+  current_stage_note: "04 complete; awaiting 07 startup before M1 T1.1"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -271,6 +275,9 @@ sessions:
     D-S067-04-deps: "1a"
     D-S067-04-planmode: "1a"
     D-S067-04-proceed: "1a"
+    D-S067-04-plan: "1"
+    D-S067-04-next: "1a"
+    D-S067-948-impl: "sibling Ingress metar-frontend-apex"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -286,7 +293,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 04-tech-plan in_progress (drafting EP)"
+    note: "IN PROGRESS — EV-057; 04 COMPLETE (D-S067-04-plan=1); awaiting 07-build startup before M1 T1.1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -304,9 +311,10 @@ sessions:
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-15'
-    note: "IN PROGRESS — startup recommended; delta EP 3 milestones; no new deps; skip Plan mode; drafting EP"
+    completed: '2026-08-15'
+    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3 approved; 05/06 remain skipped; handoff 07-build (awaiting startup)"
   - stage: 07-build
     required: true
     mode: delta
@@ -10585,15 +10593,17 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started: '2026-08-15'
     started_at: '2026-08-15'
+    completed: '2026-08-15'
+    completed_at: '2026-08-15'
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
     skill_id: 04-tech-plan
-    tip_sha: d319180f
-    tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+    tip_sha: 7db2c724
+    tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
     deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     delta_only: true
@@ -10602,7 +10612,14 @@ stages:
     - D-S067-04-deps
     - D-S067-04-planmode
     - D-S067-04-proceed
-    note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
+    - D-S067-04-plan
+    - D-S067-04-next
+    - D-S067-948-impl
+    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3; 05/06 skipped; handoff 07-build awaiting startup; tip 7db2c724"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+    artifacts:
+    - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+    - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
     previous_session_id: S064-quality-metrics-2025-2-followups
     previous_evolve_cycle_id: EV-055
     previous_status: completed
@@ -10612,9 +10629,13 @@ stages:
     previous_note: 'S064/EV-055 prior 04-tech-plan completed'
 
   05-verify-tech:
-    status: completed
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
+    status: skipped
+    skip_rationale: "S067/EV-057 Standard routing — skip 05 (D-S067-04-plan=1); prior S064 Gate B retained below"
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    skipped: '2026-08-15'
+    prior_completed_session_id: S064-quality-metrics-2025-2-followups
+    prior_completed_evolve_cycle_id: EV-055
     skill_id: 05-verify-tech
     mode: delta
     started_at: '2026-08-11'
@@ -10653,7 +10674,8 @@ stages:
     prior_started: '2026-08-06'
     prior_completed: '2026-08-06'
     prior_note: 'S047/EV-039 05-verify-tech COMPLETE (delta) — Gate B PASS (D-S047-05-gate-b=1); S05.M*/L1 as 07; handoff 07-build M1 T1.1; tip f03ed255'
-    note: 'S064/EV-055 COMPLETE — D-S064-05=1 Gate B PASS; D-S064-c14n-host=1; C1 resolved; handoff 07-build M1 pending start; tip 82455712; no git commit by workflow-state-manager'
+    prior_s064_note: 'S064/EV-055 COMPLETE — D-S064-05=1 Gate B PASS; D-S064-c14n-host=1; C1 resolved; tip 82455712'
+    note: 'SKIPPED — S067/EV-057 Standard (D-S067-04-plan=1); prior S064 Gate B retained; no Gate B this cycle'
     report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/05-verify-tech.md
     report_status: completed
     decision_refs:
@@ -11056,7 +11078,14 @@ stages:
       overall: pass
       report: docs/sessions/S019-dissemination-upload/reports/05-verify-tech-audit.md
   06-tech-tooling:
-    status: completed
+    status: skipped
+    skip_rationale: "S067/EV-057 Standard routing — skip 06 (D-S067-04-plan=1); historical completed deltas retained below"
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    skill_id: 06-tech-tooling
+    skipped: '2026-08-15'
+    prior_baseline_status: completed
+    note: "SKIPPED — S067/EV-057 Standard; prior delta_substages retained"
     started_at: '2026-06-14T12:00:00Z'
     completed_at: '2026-06-14T12:30:00Z'
     substeps:
@@ -11155,6 +11184,11 @@ stages:
     started: null
     completed_at: null
     completed: null
+    previous_s064_session_id: S064-quality-metrics-2025-2-followups
+    previous_s064_evolve_cycle_id: EV-055
+    previous_s064_tip_sha: 82455712
+    previous_s064_tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+    previous_s064_note: 'S064/EV-055 prior 07 pending after Gate B; superseded by S067/EV-057'
     previous_started_at: '2026-08-09'
     previous_completed_at: '2026-08-09'
     previous_started: '2026-08-09'
@@ -11195,13 +11229,13 @@ stages:
     prior_prior_session_id: S050-remove-db-tools-operator-throughput
     prior_prior_evolve_cycle_id: EV-042
     prior_prior_note: 'S050/EV-042 07-build COMPLETE — M4 done; superseded by S054/EV-045'
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
     skill_id: 07-build
     mode: delta
-    note: 'PENDING start — D-S064-05=1 Gate B PASS; next M1 T1.1; tip 82455712; no git commit by workflow-state-manager'
-    tip_sha: 82455712
-    tip_sha_full: 824557121a249386cd02de18705d6f44719e7e22
+    note: 'PENDING — S067/EV-057 awaiting 07 startup before M1 T1.1 (D-S067-04-plan=1 / D-S067-04-next=1a); tip 7db2c724; no git commit by workflow-state-manager'
+    tip_sha: 7db2c724
+    tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
     tip_sha_pushed: false
     pr_number:
     pr_url:
@@ -11218,15 +11252,15 @@ stages:
     active_task: null
     active_task_status: pending
     completed_through: null
-    progress: pending M1 start
+    progress: awaiting 07 startup before M1 T1.1
     skipped_tasks: []
-    deepen_feature_ids: [F7, F2, F13]
+    deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     decision_refs:
-    - D-S064-05
-    - D-S064-c14n-host
-    - D-S064-04-plan
-    - D-S064-gateA
+    - D-S067-04-plan
+    - D-S067-04-next
+    - D-S067-948-impl
+    - D-S067-gateA
     child_issue:
     child_issue_note:
     decision_refs_s061:
@@ -36561,13 +36595,13 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "d319180f"
-  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+  tip_sha: "7db2c724"
+  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
   tip_sha_pushed: false
-  tip_sha_note: "02-verify-plan tip d319180f local — Gate A PASS; tip not pushed"
-  current_stage: 04-tech-plan
-  current_stage_status: in_progress
-  current_stage_note: "04-tech-plan — startup recommended — delta EP 3 milestones, no new deps, skip Plan mode; drafting EP"
+  tip_sha_note: "04-tech-plan tip 7db2c724 local — D-S067-04-plan=1; tip not pushed"
+  current_stage: 07-build
+  current_stage_status: pending
+  current_stage_note: "04 complete; awaiting 07 startup before M1 T1.1"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -36624,9 +36658,13 @@ evolve_cycles:
     D-S067-04-deps: "1a"
     D-S067-04-planmode: "1a"
     D-S067-04-proceed: "1a"
+    D-S067-04-plan: "1"
+    D-S067-04-next: "1a"
+    D-S067-948-impl: "sibling Ingress metar-frontend-apex"
   checkpoints:
     phase_a: passed
-    phase_b: pending
+    phase_b: passed
+    phase_b_note: "D-S067-04-plan=1 — 04 COMPLETE; 05/06 skipped (Standard)"
     phase_c: pending
     phase_d: pending
     deploy: pending
@@ -36639,6 +36677,8 @@ evolve_cycles:
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
   - docs/feature-list.md
@@ -36651,7 +36691,7 @@ evolve_cycles:
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
   board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
-  note: "OPEN — EV-057/S067; Gate A PASS D-S067-gateA=1; next 04-tech-plan; tip d319180f local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
+  note: "OPEN — EV-057/S067; 04 COMPLETE D-S067-04-plan=1; phase_b passed; awaiting 07 startup before M1 T1.1; tip 7db2c724 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -48322,16 +48362,16 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: fix/quality-metrics-diff-long-line
-  ahead_of_origin: 0
-  pushed: true
+  current_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  ahead_of_origin: 23
+  pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after Gate A PASS S067/EV-057 tip d319180f; no git commit by workflow-state-manager'
-  tip_sha: "d319180f"
-  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
-  tip_note: "S067/EV-057 tip d319180f on evolve/EV-057-m0-ready-apex-accumulate-validate (02-verify-plan Gate A PASS); tip not pushed"
+  dirty_note: 'workflow-state.yaml dirty after 04 COMPLETE S067/EV-057 tip 7db2c724; no git commit by workflow-state-manager'
+  tip_sha: "7db2c724"
+  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+  tip_note: "S067/EV-057 tip 7db2c724 on evolve/EV-057-m0-ready-apex-accumulate-validate (04 draft; D-S067-04-plan=1); tip not pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -48339,8 +48379,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "d319180f"
-  evolve_tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+  evolve_tip_sha: "7db2c724"
+  evolve_tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
   evolve_tip_sha_pushed: false
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
@@ -48360,6 +48400,7 @@ git_history:
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-15 D-S067-04-plan=1 — 04 COMPLETE; tip 7db2c724 (7db2c7246b57868bb9a0032694bec23f27405305); 05/06 remain skipped; phase_b passed; current_stage 07-build pending (awaiting startup before M1 T1.1); D-S067-04-next=1a; D-S067-948-impl=sibling Ingress metar-frontend-apex; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 Gate A PASS — D-S067-gateA=1 / 903-cap=1c / 948-ingress=2a / 02-ml=1b; tip d319180f (d319180febf4e794bb4dfb0a7bdc0bbd58eca027); 02 COMPLETE; current_stage 04-tech-plan pending startup; checkpoints.phase_a=passed gates.a_to_b=passed; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 01-requirements COMPLETE — D-S067-01-ac=1; tip a6064563 (a606456354a8eaa859120405e0581c8e1873987e); current_stage 02-verify-plan pending (awaiting Gate A AskQuestion); stages.01 completed / 02 pending; commit appended; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 01-requirements IN PROGRESS — D-S067-01-goal=1a / manifest=1a / ui=1a (docs only; remind at 11) / delta=1a; interviewing AC; current_stage 01-requirements; no git commit by workflow-state-manager'
@@ -48942,10 +48983,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: d319180f
-    tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+    tip_sha: 7db2c724
+    tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
     tip_sha_pushed: false
-    note: "ACTIVE local tip d319180f Gate A PASS; not pushed"
+    note: "ACTIVE local tip 7db2c724 04 draft D-S067-04-plan=1; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -50425,6 +50466,23 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "7db2c724"
+    sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+    message: "docs: [S067/EV-057] draft 04 execution plan (M1–M3)"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 04-tech-plan
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-15"
+    pushed: false
+    tip_sha: 7db2c724
+    tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+    tip_sha_pushed: false
+    files_changed:
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+      - workflow-state.yaml
+    note: "04 draft EP M1–M3; D-S067-04-plan=1; tip not pushed"
   - sha: "d319180f"
     sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
     message: "docs: [S067/EV-057] Gate A PASS — cap≤200 + FE Ingress redirect"

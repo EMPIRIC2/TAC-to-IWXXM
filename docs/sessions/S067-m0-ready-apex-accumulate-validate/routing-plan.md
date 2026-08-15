@@ -16,10 +16,10 @@
 | 01-requirements | yes | delta | **completed** | AC locked `D-S067-01-ac=1`; F7.r/F7.s/F30; UJ-057/058/OPS-002 |
 | 02-verify-plan | yes | delta | **completed** | Gate A **PASS** `D-S067-gateA=1`; cap≤200; FE Ingress redirect |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules expected unless AskQuestion |
-| 04-tech-plan | yes | delta | **pending** | Execution plan / milestones per issue order |
-| 05-verify-tech | no | — | skipped | Unless 04 surfaces arch/deps gaps |
-| 06-tech-tooling | no | — | skipped | Unless new deps/hooks |
-| 07-build | yes | delta | **pending** | Milestones: M(#948) → M(#903) → M(#838) |
+| 04-tech-plan | yes | delta | **completed** | EP approved `D-S067-04-plan=1`; sibling apex Ingress |
+| 05-verify-tech | no | — | skipped | Per `D-S067-04-next=1a` |
+| 06-tech-tooling | no | — | skipped | No new deps |
+| 07-build | yes | delta | **pending** | Start M1 (#948) |
 | 08-verify-build | yes | delta | **pending** | After build batches |
 | 09-qa | yes | delta | **pending** | Parallel with 10 when ready |
 | 10-e2e | yes | delta | **pending** | UJ deepen for #903/#838; #948 smoke via deploy/docs |

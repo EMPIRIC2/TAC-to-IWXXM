@@ -22,7 +22,7 @@
 | **Tasks completed** | 0 / 14 |
 | **Stage** | 04-tech-plan |
 | **Last updated** | 2026-08-15 |
-| **Plan approval** | **pending** `D-S067-04-plan` |
+| **Plan approval** | **approved** `D-S067-04-plan=1` (2026-08-15) |
 | **PR** | — |
 
 ## Tech decisions (proposed — confirm with `D-S067-04-plan`)
@@ -140,4 +140,4 @@
 
 ## Approval
 
-Pending AskQuestion `D-S067-04-plan`.
+**Approved** `D-S067-04-plan=1` — sibling apex Ingress; M1→M2→M3; no new deps; skip 05/06 → 07 M1.

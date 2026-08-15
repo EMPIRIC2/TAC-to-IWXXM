@@ -35,6 +35,8 @@
 | D-S067-903-cap | **1c** — Soft accumulate cap **≤200** |
 | D-S067-948-ingress | **2a** — Extend prod FE Ingress apex/www → app `$request_uri` |
 | D-S067-gateA | **1** — PASS Gate A → 04-tech-plan |
+| D-S067-04-plan | **1** — EP approved (sibling apex Ingress; M1→M2→M3) |
+| D-S067-04-next | **1a** — skip 05/06 → 07-build M1 |
 
 ### Acceptance (`D-S067-01-ac=1`)
 
