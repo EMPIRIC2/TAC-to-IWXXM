@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "a6064563"
-  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+  tip_sha: "d319180f"
+  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
   tip_sha_pushed: false
-  tip_sha_note: "01-requirements tip a6064563 local — AC approved; specs written; tip not pushed"
+  tip_sha_note: "02-verify-plan tip d319180f local — Gate A PASS; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -65,8 +65,8 @@ active_session:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 02-verify-plan
-  current_stage_note: "01-requirements COMPLETE (D-S067-01-ac=1); 02-verify-plan pending — awaiting Gate A AskQuestion"
+  current_stage: 04-tech-plan
+  current_stage_note: "Gate A PASS (D-S067-gateA=1); next 04-tech-plan startup"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -85,6 +85,14 @@ active_session:
     D-S067-01-manifest: "1a"
     D-S067-01-goal: "1a"
     D-S067-01-ac: "1 — AC approved; specs written"
+    D-S067-02-goal: "1a"
+    D-S067-02-trust: "1a"
+    D-S067-02-depth: "1a"
+    D-S067-02-delta: "1a"
+    D-S067-903-cap: "1c"
+    D-S067-948-ingress: "2a"
+    D-S067-gateA: "1 — Gate A PASS"
+    D-S067-02-ml: "1b — strict then locked"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -100,7 +108,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 01-requirements COMPLETE; 02-verify-plan pending (Gate A)"
+    note: "IN PROGRESS — EV-057; Gate A PASS; next 04-tech-plan"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -111,12 +119,15 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — awaiting Gate A AskQuestion"
+    status: completed
+    started: '2026-08-15'
+    completed: '2026-08-15'
+    note: "COMPLETE — Gate A PASS D-S067-gateA=1; handoff 04-tech-plan"
   - stage: 04-tech-plan
     required: true
     mode: delta
     status: pending
+    note: "PENDING — awaiting 04-tech-plan startup"
   - stage: 07-build
     required: true
     mode: delta
@@ -178,10 +189,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "a6064563"
-  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+  tip_sha: "d319180f"
+  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
   tip_sha_pushed: false
-  tip_sha_note: "01-requirements tip a6064563 local — AC approved; specs written; tip not pushed"
+  tip_sha_note: "02-verify-plan tip d319180f local — Gate A PASS; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -223,8 +234,8 @@ sessions:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 02-verify-plan
-  current_stage_note: "01-requirements COMPLETE (D-S067-01-ac=1); 02-verify-plan pending — awaiting Gate A AskQuestion"
+  current_stage: 04-tech-plan
+  current_stage_note: "Gate A PASS (D-S067-gateA=1); next 04-tech-plan startup"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -243,6 +254,14 @@ sessions:
     D-S067-01-manifest: "1a"
     D-S067-01-goal: "1a"
     D-S067-01-ac: "1 — AC approved; specs written"
+    D-S067-02-goal: "1a"
+    D-S067-02-trust: "1a"
+    D-S067-02-depth: "1a"
+    D-S067-02-delta: "1a"
+    D-S067-903-cap: "1c"
+    D-S067-948-ingress: "2a"
+    D-S067-gateA: "1 — Gate A PASS"
+    D-S067-02-ml: "1b — strict then locked"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -258,7 +277,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 01-requirements COMPLETE; 02-verify-plan pending (Gate A)"
+    note: "IN PROGRESS — EV-057; Gate A PASS; next 04-tech-plan"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -269,12 +288,15 @@ sessions:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — awaiting Gate A AskQuestion"
+    status: completed
+    started: '2026-08-15'
+    completed: '2026-08-15'
+    note: "COMPLETE — Gate A PASS D-S067-gateA=1; handoff 04-tech-plan"
   - stage: 04-tech-plan
     required: true
     mode: delta
     status: pending
+    note: "PENDING — awaiting 04-tech-plan startup"
   - stage: 07-build
     required: true
     mode: delta
@@ -9609,19 +9631,35 @@ stages:
     previous_status: completed
     previous_completed: '2026-08-09'
   02-verify-plan:
-    status: pending
+    status: completed
     mode: delta
+    started: '2026-08-15'
+    started_at: '2026-08-15'
+    completed: '2026-08-15'
+    completed_at: '2026-08-15'
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
     skill_id: 02-verify-plan
-    tip_sha: a6064563
-    tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+    tip_sha: d319180f
+    tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
     deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     delta_only: true
-    gate_a: pending
-    gate_a_status: pending
-    note: "PENDING — 01 COMPLETE; awaiting Gate A AskQuestion"
+    gate_a: PASS
+    gate_a_status: pass
+    gate_a_decision: D-S067-gateA=1
+    gate_a_note: 'D-S067-gateA=1 — Gate A PASS; D-S067-903-cap=1c; D-S067-948-ingress=2a; D-S067-02-ml=1b'
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
+    decision_refs:
+    - D-S067-gateA
+    - D-S067-903-cap
+    - D-S067-948-ingress
+    - D-S067-02-ml
+    - D-S067-02-goal
+    - D-S067-02-trust
+    - D-S067-02-depth
+    - D-S067-02-delta
+    note: "COMPLETE — Gate A PASS D-S067-gateA=1; handoff 04-tech-plan"
     previous_session_id: S061-ci-polish-quality-pr-stats
     previous_evolve_cycle_id: EV-052
     previous_status: completed
@@ -10537,1115 +10575,25 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: completed
+    status: pending
     mode: delta
-    started_at: '2026-08-11'
-    started: '2026-08-11'
-    completed_at: '2026-08-11'
-    completed: '2026-08-11'
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
     skill_id: 04-tech-plan
-    tip_sha: e5714f08
-    tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
-    deepen_feature_ids: [F7, F2, F13]
+    tip_sha: d319180f
+    tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+    deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
     delta_only: true
-    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
-    report_status: approved
-    build_plan_card: docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
-    build_plan_card_status: approved
-    decision_refs:
-    - D-S064-04-plan
-    - D-S064-gateA
-    - D-S064-01-ac
-    awaiting_user_decision: false
-    awaiting_user_decision_note: null
-    note: 'S064/EV-055 COMPLETE — D-S064-04-plan=1; 17 tasks M1–M5; handoff 05-verify-tech; tip e5714f08; no git commit by workflow-state-manager'
-    previous_started_at: '2026-08-09'
-    previous_started: '2026-08-09'
-    previous_completed_at: '2026-08-09'
-    previous_completed: '2026-08-09'
-    previous_session_id: S061-ci-polish-quality-pr-stats
-    previous_evolve_cycle_id: EV-052
-    previous_tip_sha: 80197a58
-    previous_tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
-    previous_note: 'S061/EV-052 COMPLETE — D-S061-04-plan=1; openapi-typescript; handoff 05-verify-tech'
-    previous_decision_refs:
-    - D-S061-04-plan
-    - D-S061-gateA
-    - D-S061-01-ac
-    prior_previous_session_id: S057-strip-internal-doc-refs
-    prior_previous_evolve_cycle_id: EV-048
-    prior_previous_note: 'S057/EV-048 COMPLETE — D-S057-04-plan=1 + D-S057-04-guard-ext=1; execution-plan + build-plan-card; handoff 05-verify-tech'
-    prior_previous_previous_session_id: S054-rust-ci-crates
-    prior_previous_previous_evolve_cycle_id: EV-045
-    prior_previous_previous_note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
-    prior_session_id: S047-sql-ingest-live-e2e
-    prior_evolve_cycle_id: EV-039
-    prior_started: '2026-08-06'
-    prior_completed: '2026-08-06'
-    prior_note: 'S047/EV-039 04-tech-plan COMPLETE (delta) — D-S047-04-plan=1; execution-plan approved M1–M5; handoff 05-verify-tech'
-    prior_decision_refs:
-    - D-S054-04-plan
-    - D-S054-04-jobs
-    - D-S054-04-maturin
-    - D-S054-04-trigger
-    - D-S054-04-local
-    - D-S054-ac6-waive
-    - D-S054-gateA
-    - D-S054-01-ac
-    - D-S054-open
-    active_session:
-      session_id: S064-quality-metrics-2025-2-followups
-      evolve_cycle_id: EV-055
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-11'
-      started: '2026-08-11'
-      completed_at: '2026-08-11'
-      completed: '2026-08-11'
-      tip_sha: e5714f08
-      tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
-      note: 'COMPLETE — D-S064-04-plan=1; 17 tasks M1–M5; handoff 05-verify-tech'
-      feature_ids: []
-      deepen_feature_ids:
-      - F7
-      - F2
-      - F13
-      decision_refs:
-      - D-S064-04-plan
-      - D-S064-gateA
-      - D-S064-01-ac
-      artifacts:
-      - docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md
-      - docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md
-    prior_active_session:
-      session_id: S061-ci-polish-quality-pr-stats
-      evolve_cycle_id: EV-052
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-09'
-      started: '2026-08-09'
-      completed_at: '2026-08-09'
-      completed: '2026-08-09'
-      note: 'COMPLETE — D-S061-04-plan=1; openapi-typescript; handoff 05-verify-tech'
-      feature_ids: []
-      deepen_feature_ids:
-      - F29
-      - F6
-      - F21
-      - F30
-      - M5
-      decision_refs:
-      - D-S061-04-plan
-      - D-S061-gateA
-      - D-S061-01-ac
-      artifacts:
-      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/execution-plan.md
-      - docs/sessions/S061-ci-polish-quality-pr-stats/build-plan-card.md
-      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/02-verify-plan-audit.md
-      - docs/sessions/S061-ci-polish-quality-pr-stats/reports/01-requirements.md
-    prior_prior_active_session:
-      session_id: S057-strip-internal-doc-refs
-      evolve_cycle_id: EV-048
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-08'
-      started: '2026-08-08'
-      completed_at: '2026-08-08'
-      completed: '2026-08-08'
-      note: 'COMPLETE — D-S057-04-plan=1 + D-S057-04-guard-ext=1; execution-plan + build-plan-card; handoff 05-verify-tech'
-      feature_ids: []
-      deepen_feature_ids:
-      - F7
-      - F21
-      decision_refs:
-      - D-S057-04-plan
-      - D-S057-04-guard-ext
-      - D-S057-gateA
-      - D-S057-01-ac
-      - D-S057-guard-s0
-      artifacts:
-      - docs/sessions/S057-strip-internal-doc-refs/reports/04-tech-plan.md
-      - docs/sessions/S057-strip-internal-doc-refs/reports/execution-plan.md
-      - docs/sessions/S057-strip-internal-doc-refs/build-plan-card.md
-      - docs/sessions/S057-strip-internal-doc-refs/reports/02-verify-plan.md
-      - docs/sessions/S057-strip-internal-doc-refs/reports/01-requirements.md
-    prior_prior_prior_active_session:
-      session_id: S054-rust-ci-crates
-      evolve_cycle_id: EV-045
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-08'
-      started: '2026-08-08'
-      completed_at: '2026-08-08'
-      completed: '2026-08-08'
-      note: 'COMPLETE — D-S054-04-plan=1; execution-plan + build-plan-card approved; handoff 05-verify-tech'
-      feature_ids: [F13, F14]
-      deepen_feature_ids: [F13, F14]
-      decision_refs:
-      - D-S054-04-plan
-      - D-S054-04-jobs
-      - D-S054-04-maturin
-      - D-S054-04-trigger
-      - D-S054-04-local
-      - D-S054-ac6-waive
-      - D-S054-gateA
-      - D-S054-01-ac
-      - D-S054-open
-      artifacts:
-      - docs/sessions/S054-rust-ci-crates/reports/execution-plan.md
-      - docs/sessions/S054-rust-ci-crates/build-plan-card.md
-      - docs/sessions/S054-rust-ci-crates/reports/04-tech-plan.md
-    prior_prior_active_session_s047:
-      session_id: S047-sql-ingest-live-e2e
-      evolve_cycle_id: EV-039
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-06'
-      started: '2026-08-06'
-      completed_at: '2026-08-06'
-      completed: '2026-08-06'
-      note: 'COMPLETE D-S047-04-plan=1'
-      feature_ids: []
-      deepen_feature_ids:
-      - F16
-      decision_refs:
-      - D-S047-02-gate-a
-      - D-S047-ac
-      - D-S047-open
-      artifacts:
-      - docs/sessions/S047-sql-ingest-live-e2e/reports/02-verify-plan-audit.md
-    prior_prior_active_session:
-      session_id: S046-iwxxm-corpus-residuals
-      evolve_cycle_id: EV-038
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      completed_at: '2026-08-05'
-      completed: '2026-08-05'
-      note: 'COMPLETE — D-S046-04-plan=1; execution-plan approved; handoff 05-verify-tech'
-      feature_ids: []
-      deepen_feature_ids:
-      - F2
-      - F4
-      - F6
-      - F7
-      - F32
-      decision_refs:
-      - D-S046-04-plan
-      - D-S046-02-gate-a
-      - D-S046-sot
-      - D-S046-ac
-      - D-S046-mplan
-    artifacts:
-    - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
-    - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
-    - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
-    - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
-    - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
-    - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
-    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
-    - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
-    - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
-    - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
-    - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
-    - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
-    - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
-    - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
-    - docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
-    - .cursor/artifacts/execution-plan-monorepo.md
-    - docs/ops/staging-secrets-matrix.md
-    - docs/adr/ADR-005-runtime-toolchain-pins.md
-    - docs/adr/ADR-006-render-topology-simplification.md
-    - docs/adr/ADR-007-universal-coverage-gate.md
-    - docs/adr/ADR-011-work-sessions-data-access.md
-    - docs/adr/ADR-012-metar-work-sessions-retention.md
-    - docs/adr/ADR-032-wmo-default-golden-glossary.md
-    - docs/sessions/S030-apac-encode-validate/reports/execution-plan.md
-    - docs/sessions/S027-vaa-quality/reports/04-tech-plan.md
-    - docs/sessions/S027-vaa-quality/reports/execution-plan.md
-    - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
-    - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
-    delta_substages:
-    - session_id: S046-iwxxm-corpus-residuals
-      evolve_cycle_id: EV-038
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      completed_at: '2026-08-05'
-      completed: '2026-08-05'
-      mode: delta
-      feature_ids: []
-      deepen:
-      - F2
-      - F4
-      - F6
-      - F7
-      - F32
-      decision_refs:
-      - D-S046-04-plan
-      - D-S046-02-gate-a
-      - D-S046-sot
-      - D-S046-ac
-      - D-S046-mplan
-      note: 'COMPLETE (delta) — D-S046-04-plan=1; execution-plan approved M1–M5; handoff 05-verify-tech'
-      artifacts:
-      - docs/sessions/S046-iwxxm-corpus-residuals/reports/execution-plan.md
-    - session_id: S043-rule-source-traceability
-      evolve_cycle_id: EV-035
-      skill_id: 04-tech-plan
-      status: in_progress
-      started_at: '2026-08-05'
-      started: '2026-08-05'
-      mode: delta
-      feature_ids: []
-      deepen:
-      - F6
-      - F12
-      - F15
-      - F2
-      decision_refs:
-      - D-S043-02-phase-a
-      - D-S043-02-batch-a
-      note: 'STARTED (delta) — Gate A PASS; Batch A 1,1,1,1; after 02-verify-plan'
-    - session_id: S040-iwxxm-corpus-quality
-      evolve_cycle_id: EV-032
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-08-04'
-      started: '2026-08-04'
-      completed_at: '2026-08-04'
-      completed: '2026-08-04'
-      mode: delta
-      feature_ids:
-      - F32
-      deepen:
-      - F23
-      - F4
-      - F6
-      - F2
-      - F13
-      decision_refs:
-      - D-S040-04-plan
-      - D-S040-02-phase-a
-      - D-S040-02-batch-f
-      - D-S040-E32-M
-      - D-S040-04-batch-1
-      - D-S040-04-batch-2
-      note: 'COMPLETE — Gate B PASS (D-S040-04-plan=1); approve M0-M4 (28 tasks); handoff 07 @ T0.1; #846'
-    - session_id: S038-platform-independence-842
-      evolve_cycle_id: EV-031
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-08-03T18:31:51Z'
-      started: '2026-08-03'
-      completed_at: '2026-08-03'
-      completed: '2026-08-03'
-      mode: delta
-      feature_ids:
-      - F30
-      - F31
-      deepen:
-      - F5
-      - F7
-      - F8
-      - F21
-      - F22
-      - M4
-      decision_refs:
-      - D-S038-04-plan
-      - D-S038-04-b1
-      - D-S038-04-b2
-      - D-S038-02-phase-a
-      - D-S038-02-batch-c
-      - D-S038-01-gate-a
-      - D-S038-tp
-      - D-S038-fn
-      note: 'COMPLETE (delta) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; #842/#830/#712'
-      artifacts:
-      - docs/sessions/S038-platform-independence-842/reports/04-tech-plan.md
-      - docs/sessions/S038-platform-independence-842/reports/execution-plan.md
-    - session_id: S037-quality-residuals-831
-      evolve_cycle_id: EV-030
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-08-03'
-      started: '2026-08-03'
-      completed_at: '2026-08-03T12:13:10Z'
-      completed: '2026-08-03'
-      mode: delta
-      feature_ids:
-      - F29
-      - F23
-      - F12
-      - F2
-      - F13
-      - F9
-      - F26
-      - F27
-      decision_refs:
-      - D-S037-04-plan
-      - D-S037-04-batch-2
-      - D-S037-04-batch-1
-      - D-S037-02-phase-a
-      - D-S037-02-batch-f
-      - D-S037-E30-M
-      note: 'COMPLETE (delta) — Gate B PASS (D-S037-04-plan=1); approve M0–M4 27 tasks; handoff 07 @ T0.1; #831→#829→#820'
-      artifacts:
-      - docs/sessions/S037-quality-residuals-831/reports/execution-plan.md
-      - docs/sessions/S037-quality-residuals-831/reports/04-tech-plan.md
-    - session_id: S036-eight-family-ahl-rules-823
-      evolve_cycle_id: EV-029
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      mode: delta
-      note: 'COMPLETE (delta) — Gate B PASS (D-S036-04-plan); handoff 07 @ T0.1; #823'
-      decision_refs:
-      - D-S036-04-plan
-      - D-S036-04-batch-1
-      - D-S036-04-batch-2
-      - D-S036-02-phase-a
-      - D-S036-02-batch-f
-      artifacts:
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/execution-plan.md
-      - docs/sessions/S036-eight-family-ahl-rules-823/reports/04-tech-plan.md
-    - session_id: S035-empiric2-ops-leftovers-781
-      evolve_cycle_id: EV-028
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-08-01'
-      started: '2026-08-01'
-      completed_at: '2026-08-01'
-      completed: '2026-08-01'
-      mode: delta
-      deepen:
-      - F12
-      - F13
-      - F14
-      feature_ids: []
-      note: 'COMPLETE (delta) — Gate B PASS (D-S035-04-plan-approve); 11b tag-from-evolve; 12a → 07 @ T0.1; #781'
-      decision_refs:
-      - D-S035-04-plan-approve
-      - D-S035-02-phase-a
-      - D-S035-E28-S21
-      artifacts:
-      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/execution-plan.md
-      - docs/sessions/S035-empiric2-ops-leftovers-781/reports/04-tech-plan.md
-    - session_id: S034-wmo-decode-residual-matrix
-      evolve_cycle_id: EV-027
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      mode: delta
-      deepen:
-      - F25
-      - F9
-      - F7
-      feature_ids:
-      - F25
-      - F9
-      - F7
-      note: 'COMPLETE — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); Gate B → 07 @ T0.1 (D-S034-04-plan-approve); #815'
-      decision_refs:
-      - D-S034-04-plan-approve
-      - D-S034-E27-T-batch
-      - D-S034-02-phase-a
-      - D-S034-E27-E1
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      - E27-02
-      - E27-T1
-      - E27-T2
-      - E27-T3
-      - E27-T4
-      - E27-T5
-      - E27-04
-      artifacts:
-      - docs/sessions/S034-wmo-decode-residual-matrix/reports/execution-plan.md
-      - docs/sessions/S034-wmo-decode-residual-matrix/reports/04-tech-plan.md
-    - session_id: S033-va-multi-location-equality
-      evolve_cycle_id: EV-026
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      mode: delta
-      deepen:
-      - F23
-      - F6
-      - F7
-      note: 'COMPLETE — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); Gate B Lean → 07 @ T0.1 (D-S033-04-plan-approve)'
-      decision_refs:
-      - D-S033-04-plan-approve
-      - D-S033-E26-T-batch
-      - E26-T1
-      - E26-T2
-      - E26-T3
-      - E26-T4
-      - E26-T5
-      - D-S033-02-phase-a
-      artifacts:
-      - docs/sessions/S033-va-multi-location-equality/reports/execution-plan.md
-      - docs/sessions/S033-va-multi-location-equality/reports/04-tech-plan.md
-    - session_id: S032-iwxxm-us-remarks-va
-      evolve_cycle_id: EV-025
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-31'
-      started: '2026-07-31'
-      completed_at: '2026-07-31'
-      completed: '2026-07-31'
-      mode: delta
-      deepen:
-      - F6
-      - F12
-      - F2
-      - F13
-      - F23
-      note: 'S032/EV-025 04 COMPLETE Gate B=1; D-S032-04-plan-approve; E25-T1..T6=1,1,2,1,3,1; handoff 07 @ T0.1; #810/#811/#812/#809'
-      decision_refs:
-      - D-S032-04-plan-approve
-      - E25-T1
-      - E25-T2
-      - E25-T3
-      - E25-T4
-      - E25-T5
-      - E25-T6
-      - D-S032-EV025-t1-1
-      - D-S032-EV025-t2-1
-      - D-S032-EV025-t3-2
-      - D-S032-EV025-t4-1
-      - D-S032-EV025-t5-3
-      - D-S032-EV025-t6-1
-      artifacts:
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/execution-plan.md
-      - docs/sessions/S032-iwxxm-us-remarks-va/reports/04-tech-plan.md
-    - session_id: S031-iwxxm-domain-mine
-      evolve_cycle_id: EV-024
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-30'
-      started: '2026-07-30'
-      completed_at: '2026-07-30'
-      completed: '2026-07-30'
-      mode: delta
-      deepen:
-      - F6
-      - F2
-      - F4
-      - F12
-      - F13
-      - F25
-      decision_refs:
-      - D-S031-04-plan-approve
-      - D-S031-E24-T-batch
-      - E24-T1
-      - E24-T2
-      - E24-T3
-      - E24-T4
-      - E24-T5
-      - D-S031-02-phase-a
-      - D-S031-EV024-s02m1-1
-      - D-S031-EV024-s02m2-1
-      - D-S031-EV024-s02l1-1
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      note: 'S031/EV-024 04-tech-plan COMPLETE 2026-07-30 (delta) — E24-T1..T5=1,1,2,2,1; Gate B Lean → 07 @ T0.1; #804/#807/#773'
-      artifacts:
-      - docs/sessions/S031-iwxxm-domain-mine/reports/execution-plan.md
-    - session_id: S030-apac-encode-validate
-      evolve_cycle_id: EV-023
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-30'
-      started: '2026-07-30'
-      completed_at: '2026-07-30'
-      completed: '2026-07-30'
-      mode: delta
-      deepen:
-      - F6
-      - F2
-      - F12
-      - F13
-      decision_refs:
-      - D-S030-04-plan-approve
-      - D-S030-E23-T-batch
-      - E23-T1
-      - E23-T2
-      - E23-T3
-      - E23-T4
-      - E23-T5
-      - E23-T6
-      - D-S030-02-phase-a
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      - D-S030-EV023-s02m1-1
-      - D-S030-EV023-s02m2-1
-      - D-S030-EV023-s02l1-1
-      note: 'S030/EV-023 04-tech-plan COMPLETE 2026-07-30 (delta) — Batch T E23-T1..T6=1,1,2,2,1,1; Gate B Lean → 07 @ T0.1; #800'
-    - session_id: S027-vaa-quality
-      evolve_cycle_id: EV-021
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-29'
-      started: '2026-07-29'
-      completed_at: '2026-07-29'
-      completed: '2026-07-29'
-      mode: delta
-      feature_ids:
-      - F26
-      - F27
-      deepen:
-      - F6.f
-      - F12
-      - F7.g
-      decision_refs:
-      - D-S027-02-phase-a
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      - D-S027-EV021-s02m1-1
-      - D-S027-EV021-s02m2-1
-      - D-S027-EV021-s02l1-1
-      - E21-T1
-      - E21-T2
-      - E21-T3
-      - E21-T4
-      - E21-T5
-      - E21-T6
-      - D-S027-04-plan-approve
-      note: 'S027/EV-021 04 COMPLETE 2026-07-29 — Batch T all 1; plan approved (D-S027-04-plan-approve); Gate B Lean → 07 @ T0.1; #736/#737'
-      artifacts:
-      - docs/sessions/S027-vaa-quality/reports/04-tech-plan.md
-      - docs/sessions/S027-vaa-quality/reports/execution-plan.md
-    - session_id: S026-airmet-quality-wmo-examples
-      evolve_cycle_id: EV-020
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-29'
-      started: '2026-07-29'
-      completed_at: '2026-07-29'
-      completed: '2026-07-29'
-      mode: delta
-      feature_ids:
-      - F24
-      - F25
-      deepen:
-      - F9
-      - F7.g
-      decision_refs:
-      - D-S026-02-phase-a
-      - S02.M1
-      - S02.M2
-      - S02.L1
-      - S02.L2
-      - D-S026-EV020-s02m1-1
-      - D-S026-EV020-s02m2-1
-      - D-S026-EV020-s02l1-1
-      - D-S026-EV020-s02l2-1
-      - E20-F1
-      - E20-F2
-      - E20-F3
-      - E20-F4
-      - E20-F5
-      - E20-F6
-      - E20-F7
-      - E20-F8
-      - D-S026-04-plan-approve
-      note: 'S026/EV-020 04 COMPLETE 2026-07-29 — E20-F1..F8; plan approved (D-S026-04-plan-approve); Gate B→C PASS; handoff 07 @ T0.1; #731'
-      interview:
-        batch_1:
-          status: locked
-          decision_ids:
-          - E20-F1
-          - E20-F2
-          - E20-F3
-          - E20-F4
-          locked_at: '2026-07-29'
-          note: E20-F1=1 milestone order; E20-F2=1 full mining; E20-F3=3 wmo-quality.yml; E20-F4=1 incremental catalog
-        batch_2:
-          status: locked
-          decision_ids:
-          - E20-F5
-          - E20-F6
-          - E20-F7
-          - E20-F8
-          - D-S026-04-plan-approve
-          locked_at: '2026-07-29'
-          note: E20-F5=2 PyYAML; E20-F6=1 H4–H5; E20-F7=1 kill-switch; E20-F8=1 plan approve B→C → 07 @ T0.1
-      artifacts:
-      - docs/sessions/S026-airmet-quality-wmo-examples/reports/04-tech-plan.md
-      - docs/sessions/S026-airmet-quality-wmo-examples/reports/execution-plan.md
-    - session_id: S025-sigmet-quality
-      evolve_cycle_id: EV-019
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-29'
-      started: '2026-07-29'
-      completed: '2026-07-29'
-      completed_at: '2026-07-29'
-      mode: delta
-      feature_ids:
-      - F23
-      deepen:
-      - F6.d
-      - F12
-      decision_refs:
-      - D-S025-02-phase-a-A
-      - D-S025-02-pass
-      - D-S025-04-plan-approve-A
-      - E19-19
-      - E19-20
-      - E19-21
-      - E19-22
-      note: 'S025/EV-019 04-tech-plan COMPLETE 2026-07-29 (D-S025-04-plan-approve-A) — E19-15..22; plan approved (~29 tasks); 04-exit PASS; B→C; handoff 07 @ T0.1; #733/#739'
-      interview:
-        batch_1:
-          status: locked
-          decision_ids:
-          - E19-19
-          - E19-20
-          - E19-21
-          - E19-22
-          locked_at: '2026-07-29'
-          note: E19-19 dedicated sigmet-quality.yml; E19-20 B+A sibling light notes; E19-21 H4-H5 required; E19-22 approve plan
-        plan_approve:
-          status: locked
-          note: Option A — execution plan approved (~29 tasks); complete 04; skip 05/06; start 07 @ T0.1
-          decision_id: D-S025-04-plan-approve-A
-          answers:
-            '1': A
-          locked_at: '2026-07-29'
-      artifacts:
-      - docs/sessions/S025-sigmet-quality/reports/execution-plan.md
-    - session_id: S024-dissemination-file-select
-      evolve_cycle_id: EV-018
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-28T23:04:36Z'
-      started: '2026-07-28'
-      completed: '2026-07-28'
-      completed_at: '2026-07-28T23:21:03Z'
-      mode: delta
-      feature_ids:
-      - F16
-      deepen:
-      - F16
-      deferred_from_02:
-      - M1
-      - M2
-      note: 'COMPLETE 2026-07-28 (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 04-exit via Lean+build skip 05/06; B→C passed; handoff 07 @ T1.1; #785'
-      interview:
-        batch_1:
-          status: locked
-          decision_ids:
-          - E18-9
-          - E18-10
-          - E18-11
-          - E18-12
-          - D-S024-04-E18-9
-          - D-S024-04-E18-10
-          - D-S024-04-E18-11
-          - D-S024-04-E18-12
-          locked_at: '2026-07-28'
-          note: A single-candidate auto-select; B interleaved preflight→send + progress graphic; A continue-on-fail; A M1–M4
-        batch_2:
-          status: locked
-          decision_ids:
-          - E18-13
-          - E18-14
-          - E18-15
-          - E18-16
-          - D-S024-04-E18-13
-          - D-S024-04-E18-14
-          - D-S024-04-E18-15
-          - D-S024-04-E18-16
-          locked_at: '2026-07-28'
-          note: A CSS+motion+lucide no new deps; C hide graphic text-only reduced-motion; A Disseminate+optional Preflight-only; B Vitest+Playwright+progress-row screenshot; H6′ @ 13
-        plan_approve:
-          status: locked
-          note: Option A — execution plan approved (M1–M4 / 14 tasks); complete 04; skip 05/06; start 07 @ T1.1
-          decision_id: D-S024-04-plan-approve-A
-          answers:
-            '1': A
-          locked_at: '2026-07-28'
-      artifacts:
-      - docs/sessions/S024-dissemination-file-select/reports/execution-plan.md
-    - session_id: S023-public-app-privacy
-      evolve_cycle_id: EV-017
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-28'
-      started: '2026-07-28'
-      mode: delta
-      feature_ids:
-      - F21
-      - F22
-      note: COMPLETE 2026-07-28 (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved (7 milestones; delete packages/auth; single-deploy; slowapi); 04-exit via Standard skip 05/06; B→C passed; handoff 07 @ T1.1
-      artifacts:
-      - docs/adr/ADR-031-public-app-indexeddb-history.md
-      - docs/sessions/S023-public-app-privacy/reports/execution-plan.md
-      - docs/sessions/S023-public-app-privacy/reports/04-tech-plan.md
-      interview:
-        batch_1_architecture:
-          status: locked
-          decision_id: D-S023-04-batch1-arch
-          decision_ids:
-          - E17-12
-          - E17-13
-          - E17-14
-          - E17-15
-          locked_at: '2026-07-28'
-          note: idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB migrate; slowapi
-        batch_2_privacy_ops:
-          status: locked
-          decision_id: D-S023-04-batch2-privacy-ops
-          decision_ids:
-          - E17-16
-          - E17-17
-          - E17-18
-          - E17-19
-          - E17-20
-          locked_at: '2026-07-28'
-          note: GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON export v1
-        batch_3_milestones_adr_env:
-          status: locked
-          decision_id: D-S023-04-batch3
-          decision_ids:
-          - E17-21
-          - E17-22
-          - E17-23
-          - E17-24
-          - E17-25
-          locked_at: '2026-07-28'
-          note: 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve
-        plan_approve:
-          status: locked
-          note: Option A — ADR-031 Accepted + execution plan approved; complete 04; start 07 @ T1.1 (05/06 skipped Standard)
-          decision_id: D-S023-04-plan-approve-A
-          answers:
-            '1': A
-          locked_at: '2026-07-28'
-      completed: '2026-07-28'
-      completed_at: '2026-07-28'
-    - session_id: S021-golden-examples-ui
-      evolve_cycle_id: EV-016
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-26'
-      started: '2026-07-26'
-      mode: delta
-      feature_ids:
-      - F7
-      deepen:
-      - F7
-      note: COMPLETE 2026-07-26 (E16-16=A) — Batch 2 approve execution plan as written (M1–M3, 11 tasks); 04-exit consistency via Lean+build (05/06 skipped); B→C passed; handoff 07-build @ T1.1
-      artifacts:
-      - docs/sessions/S021-golden-examples-ui/reports/04-tech-plan.md
-      - docs/sessions/S021-golden-examples-ui/reports/execution-plan.md
-      interview:
-        batch_1_architecture:
-          status: locked
-          decision_ids:
-          - E16-11
-          - E16-12
-          - E16-13
-          - E16-14
-          - E16-15
-          locked_at: '2026-07-26'
-          note: Catalog/fixtures UX + Radix select (5B′); Batch 2 approved E16-16
-        batch_2_approve_plan:
-          status: locked
-          decision_id: E16-16
-          answers:
-            '1': A
-          locked_at: '2026-07-26'
-          note: Approve execution plan M1–M3 / 11 tasks as written → complete 04, B→C, start 07 @ T1.1
-      completed: '2026-07-26'
-      completed_at: '2026-07-26'
-    - session_id: S020-aerodrome-quality
-      evolve_cycle_id: EV-015
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-22'
-      started: '2026-07-22'
-      completed_at: '2026-07-22'
-      completed: '2026-07-22'
-      mode: delta
-      feature_ids:
-      - F20
-      note: COMPLETE 2026-07-22 — Batch2 E15-16..19 all A; plan approved D-S020-EV015-plan-1; M0–M5 (28 tasks); 04-exit consistency PASS (05/06 skipped); Phase B checkpoint pending (do not start 07)
-      artifacts:
-      - docs/sessions/S020-aerodrome-quality/reports/execution-plan.md
-      - docs/sessions/S020-aerodrome-quality/reports/04-tech-plan.md
-      - docs/sessions/S020-aerodrome-quality/checkpoints/phase-b.md
-      - docs/decisions/tech-decisions.md
-      interview:
-        batch_2_ci_deploy_approve:
-          status: locked
-          decision_id: D-S020-EV015-plan-1
-          answers:
-            '1': A
-            '2': A
-            '3': A
-            '4': A
-          ids:
-          - E15-16
-          - E15-17
-          - E15-18
-          - E15-19
-    - session_id: S019-dissemination-upload
-      evolve_cycle_id: EV-014
-      skill_id: 04-tech-plan
-      status: completed
-      started_at: '2026-07-21'
-      completed: '2026-07-21'
-      completed_at: '2026-07-21'
-      mode: delta
-      feature_ids:
-      - F16
-      - F17
-      - F18
-      - F19
-      note: COMPLETE Q34=A — execution-plan approved; Batch 1–2; ADR-030; handoff to 05
-      deferred_from_01:
-      - API sketch (preflight/send)
-      - writer-contract column DDL per engine
-      - wis2box Render service shape
-      - EDIS SMTP library choice
-      - AMHS/SWIM/AFS protocol details
-      - DISSEMINATION_EGRESS_ALLOWLIST in config-spec/env-contract
-      artifacts:
-      - docs/sessions/S019-dissemination-upload/reports/04-tech-plan.md
-      - docs/adr/ADR-030-dissemination-package-architecture.md
-      - docs/sessions/S019-dissemination-upload/reports/execution-plan.md
-      - docs/sessions/S019-dissemination-upload/HANDOFF.md
-      interview:
-        batch_1_architecture:
-          status: locked
-          decision_id: D-S019-EV014-Q32A-04-batch1
-          answers:
-            '1': B
-            '2': A
-            '3': A
-            '4': B
-            '5': A
-          ids:
-          - E14-01
-          - E14-02
-          - E14-03
-          - E14-04
-          - E14-05
-        batch_2_deploy_test:
-          status: locked
-          decision_id: D-S019-EV014-Q33A-04-batch2
-          answers:
-            '1': A
-            '2': A
-            '3': A
-            '4': A
-            '5': A
-          ids:
-          - E14-06
-          - E14-07
-          - E14-08
-          - E14-09
-          - E14-10
-    - status: completed
-      mode: delta
-      session_id: S004-issue-555-feedback
-      evolve_cycle_id: EV-004
-      started_at: '2026-06-23'
-      completed_at: '2026-06-23'
-      artifacts:
-      - docs/sessions/S004-issue-555-feedback/reports/execution-plan-ev004.md
-      - docs/sessions/S004-issue-555-feedback/reports/04-tech-plan-summary.md
-    - id: S008-f6-tac2iwxxm
-      session_id: S008-general-tac-iwxxm-converter
-      status: completed
-      started_at: '2026-07-12'
-      completed_at: '2026-07-12'
-      mode: delta
-      focus:
-      - package layout (tac2iwxxm, iwxxm-validate, tac-validate)
-      - bulletin multi-result schema
-      - POST /lint-tac content-type
-      - H7 harness
-      - pydantic vs msgspec
-      phase: completed
-      artifacts:
-      - docs/sessions/S008-general-tac-iwxxm-converter/reports/execution-plan.md
-      - docs/sessions/S008-general-tac-iwxxm-converter/reports/04-tech-plan.md
-      - docs/adr/ADR-016-msgspec-subsecond-perf.md
-      - docs/adr/ADR-017-pyo3-cutover-gate.md
-      - docs/adr/ADR-018-f8-worker-template.md
-      interview:
-        batch_1_architecture:
-          status: completed
-          answers:
-            Q1: A
-            Q2: B
-            Q3: B
-            Q4: A
-            Q5: B
-        batch_2_api_h7:
-          status: completed
-          answers:
-            Q6: A
-            Q7: C
-            Q8: A
-            Q9: C
-            Q10: A
-        batch_3_perf_deploy:
-          status: completed
-          answers:
-            Q11: C
-            Q12: full_pyo3_required
-            Q13: A
-            Q14: C
-            Q15: new_render_service
-        batch_3_clarifications:
-          Q12b: A
-          Q15c: B
-          Q15b: B
-        batch_4_f8_worker:
-          status: completed
-          answers:
-            Q16: A
-            Q17: A
-            Q18: B
-            Q19: A
-            Q20: C
-        q5_cutover_clarification: (ii) aggressive — delete gifts when METAR/SPECI annex3 + wrappers + bulletin green; other products post-delete on tac2iwxxm only
-      interview_review:
-        Q21: A
-        Q22: A
-        Q23: A
-        Q24: A
-      blocking_clarifications: []
-      notes: 'Perf constraint on Q2: msgspec path must support sub-second convert/validate for typical report sizes.
+    note: "PENDING — Gate A PASS; awaiting 04-tech-plan startup"
+    previous_session_id: S064-quality-metrics-2025-2-followups
+    previous_evolve_cycle_id: EV-055
+    previous_status: completed
+    previous_completed: '2026-08-11'
+    previous_tip_sha: e5714f08
+    previous_tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
+    previous_note: 'S064/EV-055 prior 04-tech-plan completed'
 
-        Phase 4 user review approved 2026-07-12 (Q21–Q24=A).
-
-        '
-    - id: S011-f7-operator-ui
-      session_id: S011-f7-operator-ui
-      evolve_cycle_id: EV-008
-      status: completed
-      started_at: '2026-07-13'
-      completed_at: '2026-07-13'
-      mode: delta
-      artifacts:
-      - docs/sessions/S011-f7-operator-ui/reports/execution-plan.md
-      notes: 'D-S011-04-plan-approve-A — execution-plan.md approved; historical baseline status remains completed.
-
-        '
-    - id: S014-package-publish-validation
-      session_id: S014-package-publish-validation
-      evolve_cycle_id: EV-010
-      status: completed
-      mode: delta
-      started: '2026-07-18'
-      completed: '2026-07-18'
-      note: M1–M6 execution plan approved (43A); ADR-027 xsdata
-      artifacts:
-      - docs/sessions/S014-package-publish-validation/reports/execution-plan.md
-      - docs/adr/ADR-027-xsdata-codegen.md
-    - id: S015-metar-lint-quality
-      session_id: S015-metar-lint-quality
-      evolve_cycle_id: EV-011
-      skill_id: 04-tech-plan
-      status: completed
-      mode: delta
-      started_at: '2026-07-19'
-      started: '2026-07-19'
-      completed_at: '2026-07-19'
-      completed: '2026-07-19'
-      note: COMPLETE E11-31 — plan approved; GET /api/v1/lint-issue-catalog; 31 tasks M1–M5+T6.0 (D-S015-EV011-04-approve)
-      artifacts:
-      - docs/sessions/S015-metar-lint-quality/reports/execution-plan.md
-      - docs/sessions/S015-metar-lint-quality/reports/04-tech-plan.md
-    notes:
-    - '2026-08-11 S064/EV-055 04 COMPLETE (D-S064-04-plan=1) — approve 17 tasks M1–M5; tip e5714f08; handoff 05-verify-tech; no git commit by workflow-state-manager'
-    - '2026-08-09 S061/EV-052 04 COMPLETE (D-S061-04-plan=1) — approve as drafted; openapi-typescript; handoff 05-verify-tech; no git commit by workflow-state-manager'
-    - '2026-08-09 S061/EV-052 04 DRAFT (D-S061-04-plan pending) — execution-plan + build-plan-card drafted; 04 remains in_progress; no git commit by workflow-state-manager'
-    - '2026-08-09 S061/EV-052 04-tech-plan STARTED (D-S061-gateA=1) — Gate A PASS; gates.a_to_b passed; mode delta; no git commit by workflow-state-manager'
-    - '2026-08-05 S046/EV-038 04-tech-plan STARTED (D-S046-02-gate-a + D-S046-sot) — Gate A PASS; gates.a_to_b passed; SoT python_to_generated_json_fe_openapi_ci; execution plan M1–M4; commit sha pending; no git commit by workflow-state-manager'
-    - '2026-08-03 S038/EV-031 04 COMPLETE Gate B (D-S038-04-plan=1) — Gate B PASS (D-S038-04-plan=1); ADR-033 Accepted; 38 tasks M0–M7; CI auto idempotent alembic; handoff 07 @ T0.1; gates.b_to_c passed; sha pending parent commit; #842/#830/#712'
-    - '2026-08-03 S038/EV-031 — D-S038-04-b2=1,1,1(+CI),1 Batches 1–2 locked (placeholder DOKS DNS; 7d soak; pg_dump+verify; CI auto idempotent alembic upgrade head; ADR-020 wire; ADR-033 accept at Gate B); execution-plan.md drafted (38 tasks M0–M7); Gate B pending (D-S038-04-plan); 04 remains in_progress; tip 6b7fd0e; #842/#830/#712'
-    - '2026-08-03 S038/EV-031 04 Batch 1 locked (D-S038-04-b1=1,2,1,1) — M0–M7; JWT=JWKS-only; Alembic under apps/backend (+ SQLAlchemy session repo); restore packages/auth from c9cebfa^ strip admin; reports/04-tech-plan.md started; Batch 2 pending; tip 6b7fd0e; #842/#830/#712'
-    - '2026-08-03 S037/EV-030 04 COMPLETE Gate B (D-S037-04-plan=1) — approve M0–M4 27 tasks; handoff 07 @ T0.1; gates.b_to_c passed; tip d721de6; #831→#829→#820'
-    - '2026-08-01 S036/EV-029 04 COMPLETE Gate B (D-S036-04-plan) — approve M0–M12 48 tasks; handoff 07 @ T0.1; gates.b_to_c passed; #823'
-    - '2026-08-01 S035/EV-028 04 COMPLETE Gate B (D-S035-04-plan-approve) — 11b tag-from-evolve; 12a → 07 @ T0.1; tip b8e37ae; #781'
-    - '2026-07-31 S034/EV-027 04 COMPLETE Gate B=1 (D-S034-04-plan-approve) — Batch T E27-T1..T5=2,1,2,1,1; execution-plan approved M0–M3 (14 tasks); handoff 07 @ T0.1; gates.b_to_c pending (plan approved); #815'
-    - '2026-07-31 S033/EV-026 04 COMPLETE Gate B=1 (D-S033-04-plan-approve) — Batch T E26-T1..T5=1,1,2,1,1; execution-plan approved M0–M3 (12 tasks); B→C; handoff 07 @ T0.1; #809'
-    - '2026-07-31 S033/EV-026 04 Batch T locked E26-T1..T5=1,1,2,1,1 (D-S033-E26-T-batch) — draft execution-plan 12 tasks M0–M3 + 04-tech-plan.md; Gate B approved; #809'
-    - '2026-08-01 S035/EV-028 04-tech-plan STARTED (D-S035-02-phase-a) — Gate A PASS; gates.a_to_b passed; mode delta; #781'
-    - '2026-07-31 S033/EV-026 04-tech-plan STARTED (D-S033-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #809'
-    - '2026-07-31 S032/EV-025 04 COMPLETE Gate B=1 (D-S032-04-plan-approve) — execution-plan approved; B→C; handoff 07 @ T0.1; #810/#811/#812/#809'
-    - '2026-07-31 S032/EV-025 04 Batch T locked E25-T1..T6=1,1,2,1,3,1 — draft execution-plan 28 tasks M0–M7 + 04-tech-plan.md; Gate B pending (do not start 07); T5=3 supersedes S02.M2 Gate C soft deferral; #810/#811/#812/#809'
-    - '2026-07-31 S032/EV-025 04-tech-plan STARTED (D-S032-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #810/#811/#812/#809'
-    - '2026-07-30 S031/EV-024 04-tech-plan STARTED (D-S031-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #804/#807/#773'
-    - '2026-07-30 S030/EV-023 04 COMPLETE Batch T E23-T1..T6=1,1,2,2,1,1; execution-plan approved (D-S030-04-plan-approve); Gate B Lean → 07 @ T0.1; plan docs/sessions/S030-apac-encode-validate/reports/execution-plan.md; #800'
-    - '2026-07-29 S027/EV-021 04 COMPLETE Batch T all 1; execution-plan approved (D-S027-04-plan-approve); Gate B Lean → 07 @ T0.1; #736/#737'
-    - '2026-07-29 S027/EV-021 04-tech-plan STARTED (D-S027-02-phase-a) — Gate A Lean (Batch F 1,1,1 + consistency PASS); gates.a_to_b passed; mode delta; interview pending; #736/#737'
-    - '2026-07-29 S026/EV-020 04 COMPLETE E20-F1..F8; plan approved (D-S026-04-plan-approve); Gate B→C PASS; handoff 07 @ T0.1; #731'
-    - '2026-07-29 S026/EV-020 04 Batch1 locked E20-F1=1 F2=1 F3=3 (wmo-quality.yml) F4=1 (incremental catalog); Batch2 pending; #731'
-    - '2026-07-29 S026/EV-020 04-tech-plan STARTED (D-S026-02-phase-a) — Gate A PASS (Lean auto — Batch F + consistency PASS); ADR-032 Accepted; gates.a_to_b passed; mode delta; interview pending; #731'
-    - '2026-07-29 S025/EV-019 04-tech-plan COMPLETE (D-S025-04-plan-approve-A) — E19-15..22; plan approved (~29 tasks); 04-exit PASS; B→C; handoff 07 @ T0.1; #733/#739'
-    - '2026-07-29 S025/EV-019 04-tech-plan STARTED (D-S025-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; Batch 1 interview pending; #733/#739'
-    - '2026-07-28 S024/EV-018 04-tech-plan COMPLETE (D-S024-04-plan-approve-A / option A) — execution plan approved (M1–M4 / 14 tasks); 05/06 skipped Lean+build; B→C; start 07 @ T1.1; #785'
-    - '2026-07-28 S024/EV-018 04 Batch 2 locked (E18-13..16 / D-S024-04-E18-13..16) — progress A CSS+motion+lucide; reduced-motion C hide; Disseminate A + optional Preflight-only; tests B Vitest+Playwright+screenshot; H6′ @ 13; execution-plan.md pending_approval (B→C); stage remains in_progress; #785'
-    - '2026-07-28 S024/EV-018 04 Batch 1 locked (E18-9..12 / D-S024-04-E18-9..12) — single-candidate A; sequencing B interleaved+progress graphic; mid-run A continue; milestones A M1–M4; Batch 2 pending (progress graphic impl + tests); stage remains in_progress; #785'
-    - '2026-07-28 S024/EV-018 04-tech-plan STARTED (D-S024-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; M1/M2 deferred from 02; interview pending; #785'
-    - 2026-07-28 S023/EV-017 04-tech-plan COMPLETE (D-S023-04-plan-approve-A / option A) — ADR-031 Accepted; execution plan approved; 05/06 skipped Standard; B→C; start 07 @ T1.1
-    - 2026-07-28 S023/EV-017 04 Batch 3 locked (E17-21..25 / D-S023-04-batch3) — 7 milestones; delete packages/auth; ADR-031 supersedes ADR-020; full env-contract rewrite; draft ADR+plan+inventory then approve; artifacts drafted; awaiting plan approve AskQuestion
-    - 2026-07-28 S023/EV-017 04 Batch 2 privacy/ops locked (E17-16..20 / D-S023-04-batch2-privacy-ops) — GPC Sec-GPC+navigator; prefs localStorage / sessions IndexedDB; single deploy cutover; slowapi 60/10 + 2MB; JSON tac-work-sessions-export-v1; interview Batch 3 pending
-    - 2026-07-28 S023/EV-017 04 Batch 1 architecture locked (E17-12..15 / D-S023-04-batch1-arch) — idb; reuse workSessionPayload; one-time sessionStorage→IndexedDB; slowapi; interview Batch 2 pending
-    - 2026-07-28 S023/EV-017 04-tech-plan STARTED (D-S023-02-phase-a-A) — Phase A PASSED; gates.a_to_b passed; mode delta; interview pending; C5 env rewrite in scope; ADR public-app pending
-    - 2026-07-26 S021/EV-016 04-tech-plan COMPLETE (E16-16=A) — Batch 2 approve execution plan as written (M1–M3, 11 tasks); artifacts approved; 05/06 skipped Lean+build; B→C; start 07 @ T1.1
-    - 2026-07-26 S021/EV-016 04-tech-plan STARTED (E16-10 Phase A→B) — gates.a_to_b passed; mode delta; FE catalog + FileConverter wiring; execution plan TBD by parent
-    - 2026-07-22 S021/EV-016 04-tech-plan remains pending — awaiting Phase A→B (gates.a_to_b); do not start
-    - 2026-07-22 S020/EV-015 04-tech-plan COMPLETE (D-S020-EV015-plan-1; E15-16..19 all A) — M0–M5 (28 tasks); 04-exit consistency PASS; 05/06 skipped; Phase B checkpoint pending (do not start 07)
-    - 2026-07-22 S020/EV-015 04-tech-plan STARTED (D-S020-EV015-phase-a-pass) — Phase A PASSED; gates.a_to_b passed; mode delta; execution plan TBD by parent
-    - '2026-07-21 S019/EV-014 04 COMPLETE (Q34=A) — plan approved; handoff #753→main'
-    - 2026-07-21 S019/EV-014 04 Batch 2 LOCKED (all A) — E14-06..10; plan pending Q34
-    - 2026-07-21 S019/EV-014 04 Batch 1 LOCKED (Q32=A) — E14-01..05 / ADR-030; Batch 2 pending
-    - 2026-07-21 S019/EV-014 04-tech-plan delta starting (Q31=A Phase A passed) — F16–F19 deferred tech intake
-    - 2026-07-19 S015/EV-011 04-tech-plan COMPLETE (D-S015-EV011-04-approve / E11-31) — plan approved with GET /api/v1/lint-issue-catalog; 31 tasks M1–M5+T6.0; awaiting 05-verify-tech
-    - 2026-07-19 S015/EV-011 04-tech-plan execution plan drafted (29 tasks) — awaiting user approval (milestones + FE catalog delivery); stage remains in_progress
-    - 2026-07-19 S015/EV-011 04-tech-plan Batch 3 done (1/2/2/1) — D-S015-EV011-04-ci-1/r8-1/fe-1/06-1 (E11-27..30); drafting execution-plan.md next
-    - 2026-07-19 S015/EV-011 04-tech-plan Batch 2 done (2/1/1/1) — D-S015-EV011-04-qual-1..4 (E11-23..26); Batch 3 pending
-    - 2026-07-19 S015/EV-011 04-tech-plan STARTED (D-S015-EV011-04-start) — Phase B in_progress; historical baseline status remains completed; tracked via delta_substages + active_session
-    - Monorepo plan 2026-06-15; EV-004 delta completed 2026-06-23
-    - Historical baseline status remains completed — S008 tracked via delta_substages only
-    - S008 delta 04-tech-plan completed 2026-07-12 — execution plan + ADR-016/017/018 approved
-    - S011/EV-008 delta 04-tech-plan completed 2026-07-13 — execution-plan.md approved (D-S011-04-plan-approve-A)
-    - S014/EV-010 delta 04-tech-plan completed 2026-07-18 — M1–M6 approved (43A); ADR-027 xsdata
-    - S015/EV-011 delta 04-tech-plan completed 2026-07-19 — E11-31 GET lint-issue-catalog; 31 tasks approved
-    - '2026-08-05 S046/EV-038 04-tech-plan COMPLETE (D-S046-04-plan=1) — execution-plan approved M1–M5; handoff 05-verify-tech; tip f03ed255'
   05-verify-tech:
     status: completed
     session_id: S064-quality-metrics-2025-2-followups
@@ -37596,13 +36544,13 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "a6064563"
-  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+  tip_sha: "d319180f"
+  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
   tip_sha_pushed: false
-  tip_sha_note: "01-requirements tip a6064563 local — AC approved; specs written; tip not pushed"
-  current_stage: 02-verify-plan
+  tip_sha_note: "02-verify-plan tip d319180f local — Gate A PASS; tip not pushed"
+  current_stage: 04-tech-plan
   current_stage_status: pending
-  current_stage_note: "01-requirements COMPLETE (D-S067-01-ac=1); 02-verify-plan pending — awaiting Gate A AskQuestion"
+  current_stage_note: "Gate A PASS (D-S067-gateA=1); next 04-tech-plan startup"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -37647,20 +36595,29 @@ evolve_cycles:
     D-S067-01-manifest: "1a"
     D-S067-01-goal: "1a"
     D-S067-01-ac: "1 — AC approved; specs written"
+    D-S067-02-goal: "1a"
+    D-S067-02-trust: "1a"
+    D-S067-02-depth: "1a"
+    D-S067-02-delta: "1a"
+    D-S067-903-cap: "1c"
+    D-S067-948-ingress: "2a"
+    D-S067-gateA: "1 — Gate A PASS"
+    D-S067-02-ml: "1b — strict then locked"
   checkpoints:
-    phase_a: pending
+    phase_a: passed
     phase_b: pending
     phase_c: pending
     phase_d: pending
     deploy: pending
   gates:
-    a_to_b: pending
+    a_to_b: passed
     b_to_c: pending
     c_to_d: pending
     deploy: pending
   artifacts:
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
   - docs/feature-list.md
@@ -37673,7 +36630,7 @@ evolve_cycles:
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
   board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
-  note: "OPEN — EV-057/S067; 01 COMPLETE D-S067-01-ac=1; 02 pending Gate A; tip a6064563 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
+  note: "OPEN — EV-057/S067; Gate A PASS D-S067-gateA=1; next 04-tech-plan; tip d319180f local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -49350,10 +48307,10 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after 01-requirements COMPLETE S067/EV-057 tip a6064563; no git commit by workflow-state-manager'
-  tip_sha: "a6064563"
-  tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
-  tip_note: "S067/EV-057 tip a6064563 on evolve/EV-057-m0-ready-apex-accumulate-validate (01-requirements); tip not pushed"
+  dirty_note: 'workflow-state.yaml dirty after Gate A PASS S067/EV-057 tip d319180f; no git commit by workflow-state-manager'
+  tip_sha: "d319180f"
+  tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+  tip_note: "S067/EV-057 tip d319180f on evolve/EV-057-m0-ready-apex-accumulate-validate (02-verify-plan Gate A PASS); tip not pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -49361,8 +48318,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "a6064563"
-  evolve_tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+  evolve_tip_sha: "d319180f"
+  evolve_tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
   evolve_tip_sha_pushed: false
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
@@ -49382,6 +48339,7 @@ git_history:
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-15 Gate A PASS — D-S067-gateA=1 / 903-cap=1c / 948-ingress=2a / 02-ml=1b; tip d319180f (d319180febf4e794bb4dfb0a7bdc0bbd58eca027); 02 COMPLETE; current_stage 04-tech-plan pending startup; checkpoints.phase_a=passed gates.a_to_b=passed; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 01-requirements COMPLETE — D-S067-01-ac=1; tip a6064563 (a606456354a8eaa859120405e0581c8e1873987e); current_stage 02-verify-plan pending (awaiting Gate A AskQuestion); stages.01 completed / 02 pending; commit appended; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 01-requirements IN PROGRESS — D-S067-01-goal=1a / manifest=1a / ui=1a (docs only; remind at 11) / delta=1a; interviewing AC; current_stage 01-requirements; no git commit by workflow-state-manager'
   - '2026-08-15 tip 3dd07f65 — session open commit recorded; active_session/S067/EV-057 tip_sha synced; tip_sha_pushed=false; no git commit by workflow-state-manager'
@@ -49963,10 +48921,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: a6064563
-    tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+    tip_sha: d319180f
+    tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
     tip_sha_pushed: false
-    note: "ACTIVE local tip a6064563 01-requirements; not pushed"
+    note: "ACTIVE local tip d319180f Gate A PASS; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -51446,6 +50404,30 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "d319180f"
+    sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+    message: "docs: [S067/EV-057] Gate A PASS — cap≤200 + FE Ingress redirect"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 02-verify-plan
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-15"
+    pushed: false
+    tip_sha: d319180f
+    tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
+    tip_sha_pushed: false
+    files_changed:
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
+      - docs/deploy.md
+      - docs/feature-list.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
+      - docs/spec.md
+      - docs/test-plan.md
+      - docs/user-journeys.md
+    note: "Gate A PASS D-S067-gateA=1; tip not pushed"
   - sha: "a6064563"
     sha_full: a606456354a8eaa859120405e0581c8e1873987e
     message: "docs: [S067/EV-057] 01-requirements delta for #948 #903 #838"
