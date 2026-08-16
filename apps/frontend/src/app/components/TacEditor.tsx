@@ -138,6 +138,17 @@ export function TacEditor({
     view.contentDOM.contentEditable = readOnly ? 'false' : 'true';
   }, [readOnly]);
 
+  // Mount-once CodeMirror keeps initial contentAttributes; sync a11y label when
+  // FileConverter switches modes (e.g. TAC → Validate IWXXM / UJ-058 live).
+  useEffect(() => {
+    const view = viewRef.current;
+    if (!view) {
+      return;
+    }
+    view.contentDOM.setAttribute('aria-label', ariaLabel);
+    view.contentDOM.id = id;
+  }, [ariaLabel, id]);
+
   useEffect(() => {
     const view = viewRef.current;
     if (!view) {
