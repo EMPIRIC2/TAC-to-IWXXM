@@ -2305,7 +2305,7 @@ describe('FileConverter Component', () => {
       expect(convertAndSend).not.toBeDisabled();
     });
 
-    it('replaces prior result cards on successful convert (#555 / F1-R555-1)', async () => {
+    it('accumulates prior result cards on successful convert (#903 / F7.r; supersedes #555 replace)', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm
         .mockResolvedValueOnce({
@@ -2324,12 +2324,15 @@ describe('FileConverter Component', () => {
         expect(screen.getByText('<iwxxm>first-batch</iwxxm>')).toBeInTheDocument();
       });
 
-      await user.type(textarea, 'METAR SECOND BATCH');
+      fireEvent.change(textarea, { target: { value: 'METAR SECOND BATCH' } });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
         expect(screen.getByText('<iwxxm>second-batch</iwxxm>')).toBeInTheDocument();
       });
-      expect(screen.queryByText('<iwxxm>first-batch</iwxxm>')).not.toBeInTheDocument();
+      expect(screen.getByText('<iwxxm>first-batch</iwxxm>')).toBeInTheDocument();
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 2 converted files as zip/i,
+      );
     });
 
     it('keeps prior results when convert fails and shows error log panel (#555)', async () => {
