@@ -4,6 +4,7 @@ import {
   kindToMode,
   looksLikeAhlBulletin,
   looksLikeCollectIwxxm,
+  looksLikeIwxxmDocument,
 } from './inputKind';
 
 describe('inputKind', () => {
@@ -34,10 +35,11 @@ describe('inputKind', () => {
     expect(detectInputKind('plain.txt', 'METAR KJFK')).toBe('tac');
     expect(detectInputKind('other.xml', '<root/>')).toBe('unknown');
     expect(detectInputKind('other.xml', '<iwxxm:METAR xmlns:iwxxm="x"/>')).toBe(
-      'collect_iwxxm',
+      'iwxxm_document',
     );
     expect(kindToMode('unknown')).toBe('tac');
     expect(kindToMode('tac')).toBe('tac');
+    expect(kindToMode('iwxxm_document')).toBe('validate_iwxxm');
   });
 
   it('uses the first non-empty line for AHL detection', () => {
@@ -64,8 +66,12 @@ describe('inputKind', () => {
     expect(looksLikeCollectIwxxm('not a bulletin')).toBe(false);
     expect(detectInputKind('report.gzip')).toBe('gzip');
     expect(detectInputKind('single.xml', '<iwxxm:METAR xmlns:iwxxm="example"/>')).toBe(
-      'collect_iwxxm',
+      'iwxxm_document',
     );
+    expect(looksLikeIwxxmDocument('<iwxxm:METAR xmlns:iwxxm="example"/>')).toBe(true);
+    expect(
+      looksLikeIwxxmDocument('<collect:MeteorologicalBulletin xmlns:iwxxm="x"/>'),
+    ).toBe(false);
     expect(kindToMode('collect_iwxxm')).toBe('collect_iwxxm');
   });
 });

@@ -17,9 +17,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: EV-057 M0 Ready pack |
-| **Active milestone** | M2 — #903 accumulate (**impl in progress**) |
-| **Active task** | T2.3–T2.5 (accumulate + ZIP + UJ-057) |
-| **Tasks completed** | 4 / 14 (M1); M2 in progress |
+| **Active milestone** | M3 — #838 validate-only (**repo complete**) |
+| **Active task** | — (M1–M3 done; next 08-verify-build) |
+| **Tasks completed** | 14 / 14 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-16 |
 | **Plan approval** | **approved** `D-S067-04-plan=1` (2026-08-15) |
@@ -98,7 +98,7 @@
 | T2.2 | Red tests: default ZIP stem from first TAC (~8); custom `{base}.zip` | Test | **completed** | TC-EV057-903-003/004 | — | — |
 | T2.3 | Implement accumulate state + clear + cap in FileConverter (or extract) | Impl | **completed** | F7.r AC1/5/6/7 | T2.1 | — |
 | T2.4 | Implement ZIP Download all + `outputArchiveName` stem rules | Impl | **completed** | F7.r AC2–4 | T2.2, T2.3 | — |
-| T2.5 | Playwright UJ-057 smoke (local) | Test | in_progress | TC-EV057-903-006 | T2.3, T2.4 | — |
+| T2.5 | Playwright UJ-057 smoke (local) | Test | **completed** | TC-EV057-903-006 | T2.3, T2.4 | — |
 
 #### M3: Validate existing IWXXM (#838 / F7.s) — P0
 
@@ -107,11 +107,11 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T3.1 | Spike: confirm `POST /api/v1/validate` accepts paste text + single file; note gap | Spike | pending | `D-S067-838-api` | — | — |
-| T3.2 | Red tests: paste good → pass; broken → structured fail; upload one xml | Test | pending | TC-EV057-838-001..003 | T3.1 | fixtures |
-| T3.3 | Implement Validate mode UI (paste + upload) + F4 controls; wire validate API | Impl | pending | F7.s AC1–5 | T3.2 | — |
-| T3.4 | Playwright UJ-058 smoke (guest) | Test | pending | TC-EV057-838-005 | T3.3 | — |
-| T3.5 | api-contract delta **only if** T3.1 found wire gap; else doc note “reuse” | Docs | pending | `D-S067-01-api` | T3.1 | — |
+| T3.1 | Spike: confirm `POST /api/v1/validate` accepts paste text + single file; note gap | Spike | **completed** | `D-S067-838-api` | — | — |
+| T3.2 | Red tests: paste good → pass; broken → structured fail; upload one xml | Test | **completed** | TC-EV057-838-001..003 | T3.1 | fixtures |
+| T3.3 | Implement Validate mode UI (paste + upload) + F4 controls; wire validate API | Impl | **completed** | F7.s AC1–5 | T3.2 | — |
+| T3.4 | Playwright UJ-058 smoke (guest) | Test | **completed** | TC-EV057-838-005 | T3.3 | — |
+| T3.5 | api-contract delta **only if** T3.1 found wire gap; else doc note “reuse” | Docs | **completed** | `D-S067-01-api` | T3.1 | — |
 
 ## Git Strategy
 

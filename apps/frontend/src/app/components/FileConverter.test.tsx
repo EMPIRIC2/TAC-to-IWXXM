@@ -77,9 +77,20 @@ const mockMassIngestFiles = vi.hoisted(() =>
     ],
   }),
 );
+const mockValidateIwxxm = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    is_valid: true,
+    version: '2025-2',
+    layers_passed: ['XML_WELLFORMED', 'XML_SCHEMA'],
+    layers_failed: [],
+    package_ok: true,
+    package_issues: [],
+  }),
+);
 const mockUploadConvertedFiles = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
 );
+
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
   error: vi.fn(),
@@ -120,6 +131,7 @@ vi.mock('/utils/api', () => ({
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
   lintTac: mockLintTac,
   decodeTac: mockDecodeTac,
+  validateIwxxm: mockValidateIwxxm,
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
@@ -271,6 +283,7 @@ describe('FileConverter Component', () => {
     mockLintTac.mockReset();
     mockMassIngestFiles.mockReset();
     mockInflateGzipToText.mockReset();
+    mockValidateIwxxm.mockReset();
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
@@ -295,6 +308,14 @@ describe('FileConverter Component', () => {
     mockConvertMetarToIwxxm.mockResolvedValue({
       success: true,
       data: '<iwxxm>test</iwxxm>',
+    });
+    mockValidateIwxxm.mockResolvedValue({
+      is_valid: true,
+      version: '2025-2',
+      layers_passed: ['XML_WELLFORMED', 'XML_SCHEMA'],
+      layers_failed: [],
+      package_ok: true,
+      package_issues: [],
     });
     mockConvertBulletin.mockResolvedValue({
       bulletin_meta: {
@@ -4919,6 +4940,71 @@ describe('FileConverter Component', () => {
       });
       expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
         /download all 1 converted files as zip/i,
+      );
+    });
+  });
+
+  describe('EV-057 / #838 validate-only IWXXM (F7.s)', () => {
+    const goodXml =
+      '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><ok/></iwxxm:METAR>';
+
+    it('pastes XML in Validate mode and shows a pass report without convert', async () => {
+      const user = userEvent.setup();
+      mockValidateIwxxm.mockResolvedValueOnce({
+        is_valid: true,
+        version: '2025-2',
+        layers_passed: ['XML_WELLFORMED', 'XML_SCHEMA', 'SCHEMATRON'],
+        layers_failed: [],
+        package_ok: true,
+        package_issues: [],
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      expect(screen.getByTestId('validate-iwxxm-help')).toBeInTheDocument();
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: goodXml },
+      });
+      await user.click(screen.getByRole('button', { name: /validate iwxxm xml/i }));
+
+      await waitFor(() => {
+        expect(mockValidateIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ xmlContent: goodXml }),
+        );
+      });
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+      expect(screen.getByTestId('validate-iwxxm-report')).toBeInTheDocument();
+      expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(/Valid/i);
+    });
+
+    it('shows structured fail for invalid XML validate response', async () => {
+      const user = userEvent.setup();
+      mockValidateIwxxm.mockResolvedValueOnce({
+        is_valid: false,
+        version: '2025-2',
+        layers_passed: ['XML_WELLFORMED'],
+        layers_failed: ['XML_SCHEMA'],
+        package_ok: false,
+        package_issues: [{ message: 'Element METAR unexpected', code: 'XSD' }],
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: '<not-iwxxm/>' },
+      });
+      await user.click(screen.getByRole('button', { name: /validate iwxxm xml/i }));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(
+          /Invalid/i,
+        );
+      });
+      expect(screen.getByTestId('validate-iwxxm-failed-layers')).toHaveTextContent(
+        'XML_SCHEMA',
+      );
+      expect(screen.getByTestId('validate-iwxxm-issues')).toHaveTextContent(
+        /Element METAR unexpected/i,
       );
     });
   });
