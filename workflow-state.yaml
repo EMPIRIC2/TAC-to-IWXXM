@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "6568f664"
-  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+  tip_sha: "0e7833d1"
+  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip 6568f664 local — M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; tip not pushed"
+  tip_sha_note: "08-verify-build COMPLETE PASS @ 0e7833d1 local — report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -31,7 +31,7 @@ active_session:
   - 948
   - 903
   - 838
-  board_note: "#948 live AC met on prod; repo M1–M3 done; next 08-verify-build; #903/#838 done in-repo"
+  board_note: "#948 live AC met on prod; 08-verify-build PASS; next 09-qa + 10-e2e parallel (not started); #903/#838 done in-repo"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -65,8 +65,8 @@ active_session:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 07-build
-  current_stage_note: "07-build M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build"
+  current_stage: 08-verify-build
+  current_stage_note: "08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -105,6 +105,7 @@ active_session:
     D-S067-07-proceed: "1a"
     D-S067-948-redirect: "1a"
     D-S067-948-apply: "1a"
+    D-S067-948-next: "1a — next 09-qa + 10-e2e parallel"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -120,7 +121,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 07-build M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build"
+    note: "IN PROGRESS — EV-057; 08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -145,22 +146,29 @@ active_session:
   - stage: 07-build
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-15'
-    note: "IN PROGRESS — M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build"
+    completed: '2026-08-16'
+    note: "COMPLETE — M1 live AC met + M2/M3 repo done; handoff 08-verify-build"
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
-    note: "NEXT — pending after 07-build M1–M3 complete including #948 live UJ-OPS-002"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — PASS 2026-08-16; report verification-report.md; next 09-qa + 10-e2e parallel (not started)"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+    overall: PASS
   - stage: 09-qa
     required: true
     mode: delta
     status: pending
+    note: "PENDING — next after 08 COMPLETE; parallel with 10-e2e (not started)"
   - stage: 10-e2e
     required: true
     mode: delta
     status: pending
+    note: "PENDING — next after 08 COMPLETE; parallel with 09-qa (not started)"
   - stage: 11-verify-impl
     required: true
     mode: delta
@@ -206,10 +214,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "6568f664"
-  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+  tip_sha: "0e7833d1"
+  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip 6568f664 local — M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; tip not pushed"
+  tip_sha_note: "08-verify-build COMPLETE PASS @ 0e7833d1 local — report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -217,7 +225,7 @@ sessions:
   - 948
   - 903
   - 838
-  board_note: "#948 live AC met on prod; repo M1–M3 done; next 08-verify-build; #903/#838 done in-repo"
+  board_note: "#948 live AC met on prod; 08-verify-build PASS; next 09-qa + 10-e2e parallel (not started); #903/#838 done in-repo"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -251,8 +259,8 @@ sessions:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 07-build
-  current_stage_note: "07-build M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build"
+  current_stage: 08-verify-build
+  current_stage_note: "08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -291,6 +299,7 @@ sessions:
     D-S067-07-proceed: "1a"
     D-S067-948-redirect: "1a"
     D-S067-948-apply: "1a"
+    D-S067-948-next: "1a — next 09-qa + 10-e2e parallel"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -306,7 +315,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 07-build M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build"
+    note: "IN PROGRESS — EV-057; 08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -331,22 +340,29 @@ sessions:
   - stage: 07-build
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-15'
-    note: "IN PROGRESS — M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build"
+    completed: '2026-08-16'
+    note: "COMPLETE — M1 live AC met + M2/M3 repo done; handoff 08-verify-build"
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
-    note: "NEXT — pending after 07-build M1–M3 complete including #948 live UJ-OPS-002"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — PASS 2026-08-16; report verification-report.md; next 09-qa + 10-e2e parallel (not started)"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+    overall: PASS
   - stage: 09-qa
     required: true
     mode: delta
     status: pending
+    note: "PENDING — next after 08 COMPLETE; parallel with 10-e2e (not started)"
   - stage: 10-e2e
     required: true
     mode: delta
     status: pending
+    note: "PENDING — next after 08 COMPLETE; parallel with 09-qa (not started)"
   - stage: 11-verify-impl
     required: true
     mode: delta
@@ -11194,12 +11210,12 @@ stages:
       completed_at: '2026-07-21'
       note: T0.1 done — coverage + CI Compose hooks; Phase B Assumed PASS; next 07-build
   07-build:
-    status: in_progress
-    in_progress: true
+    status: completed
+    in_progress: false
     started_at: '2026-08-15'
     started: '2026-08-15'
-    completed_at: null
-    completed: null
+    completed_at: '2026-08-16'
+    completed: '2026-08-16'
     previous_s064_session_id: S064-quality-metrics-2025-2-followups
     previous_s064_evolve_cycle_id: EV-055
     previous_s064_tip_sha: 82455712
@@ -11249,9 +11265,9 @@ stages:
     evolve_cycle_id: EV-057
     skill_id: 07-build
     mode: delta
-    note: 'IN PROGRESS — S067/EV-057 M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; tip 6568f664'
-    tip_sha: 6568f664
-    tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+    note: 'COMPLETE — S067/EV-057 M1 live AC met + M2/M3 repo done; T1.2 tip 0e7833d1; handoff 08-verify-build'
+    tip_sha: 0e7833d1
+    tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
     tip_sha_pushed: false
     pr_number:
     pr_url:
@@ -11268,7 +11284,7 @@ stages:
     active_task: T3.5
     active_task_status: completed
     completed_through: T3.5
-    progress: M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build
+    progress: M1 live AC met + M2/M3 repo done; handoff 08-verify-build
     skipped_tasks: []
     deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
@@ -14339,11 +14355,12 @@ stages:
     - D-S039-route
   08-verify-build:
     status: completed
+    in_progress: false
     mode: delta
-    started_at: '2026-08-11'
-    started: '2026-08-11'
-    completed_at: '2026-08-11'
-    completed: '2026-08-11'
+    started_at: '2026-08-16'
+    started: '2026-08-16'
+    completed_at: '2026-08-16'
+    completed: '2026-08-16'
     previous_started_at: '2026-08-09'
     previous_completed_at: '2026-08-09'
     previous_session_id: S061-ci-polish-quality-pr-stats
@@ -14425,22 +14442,31 @@ stages:
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
-    tip_sha: af7b61dc
-    tip_sha_full: af7b61dc87b4eeffce9ea0b0dabf4c8fbf935427
-    tip_sha_pushed: true
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    tip_sha: 0e7833d1
+    tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+    tip_sha_pushed: false
     pr_number:
     pr_url:
     pr_status:
     pr_base: stage
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
-    ci_cd_pipeline_note: 'S064/EV-055 Gate C PASS D-S064-gateC=1 @ af7b61dc pushed; tip CI via PR→stage'
-    note: 'COMPLETE — S064/EV-055 Gate C PASS D-S064-gateC=1; overall pass; report verification-report.md; tip af7b61dc pushed; 09-qa + 10-e2e in_progress'
-    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verification-report.md
-    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verification-report.md
-    overall: pass
+    ci_cd_pipeline_note:
+    note: 'COMPLETE — S067/EV-057 08-verify-build PASS 2026-08-16 @ 0e7833d1; report verification-report.md; next 09-qa + 10-e2e parallel (not started)'
+    expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+    overall: PASS
+    previous_s064_started_at: '2026-08-11'
+    previous_s064_completed_at: '2026-08-11'
+    previous_s064_session_id: S064-quality-metrics-2025-2-followups
+    previous_s064_evolve_cycle_id: EV-055
+    previous_s064_tip_sha: af7b61dc
+    previous_s064_tip_sha_full: af7b61dc87b4eeffce9ea0b0dabf4c8fbf935427
+    previous_s064_note: 'COMPLETE — S064/EV-055 Gate C PASS D-S064-gateC=1; overall pass; report verification-report.md; tip af7b61dc pushed; superseded by S067/EV-057'
+    previous_s064_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verification-report.md
+    previous_s064_overall: pass
     previous_s063_session_id: S063-quality-metrics-tab
     previous_s063_evolve_cycle_id: EV-054
     previous_s063_tip_sha: be9e3b07
@@ -14472,9 +14498,10 @@ stages:
     previous_s056_overall: pass
     previous_s056_phase_c_checkpoint: passed
     skill_id: 08-verify-build
-    next_stage: 12-verify-deploy
+    next_stage: 09-qa
+    next_stage_parallel: 10-e2e
     next_stage_status: pending
-    next_stage_note: 'S063/EV-054 11 COMPLETE D-S063-11=1; next 12-verify-deploy (awaiting continue; recommend PR→stage)'
+    next_stage_note: 'S067/EV-057 08 COMPLETE PASS; next 09-qa + 10-e2e parallel (not started)'
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_tip_sha: 6bc756ef
@@ -32802,6 +32829,17 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+  type: report
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  created_at: '2026-08-16'
+  updated_at: '2026-08-16'
+  status: completed
+  overall: PASS
+  note: 'S067/EV-057 08-verify-build COMPLETE PASS @ 0e7833d1; next 09-qa + 10-e2e parallel (not started)'
 - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
   type: report
   stage: 11-verify-impl
@@ -36616,13 +36654,13 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "6568f664"
-  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+  tip_sha: "0e7833d1"
+  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip 6568f664 local — M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; tip not pushed"
-  current_stage: 07-build
-  current_stage_status: in_progress
-  current_stage_note: "07-build M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build"
+  tip_sha_note: "08-verify-build COMPLETE PASS @ 0e7833d1 local — report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed"
+  current_stage: 08-verify-build
+  current_stage_status: completed
+  current_stage_note: "08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -36684,16 +36722,18 @@ evolve_cycles:
     D-S067-948-impl: "sibling Ingress metar-frontend-apex"
     D-S067-948-redirect: "1a"
     D-S067-948-apply: "1a"
+    D-S067-948-next: "1a — next 09-qa + 10-e2e parallel"
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_b_note: "D-S067-04-plan=1 — 04 COMPLETE; 05/06 skipped (Standard)"
-    phase_c: pending
+    phase_c: passed
+    phase_c_note: "08-verify-build PASS 2026-08-16; report verification-report.md; next 09+10 parallel (not started)"
     phase_d: pending
     deploy: pending
   gates:
     a_to_b: passed
-    b_to_c: pending
+    b_to_c: passed
     c_to_d: pending
     deploy: pending
   artifacts:
@@ -36701,6 +36741,7 @@ evolve_cycles:
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
@@ -36713,8 +36754,8 @@ evolve_cycles:
   - docs/decisions/requirements-decisions.md
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
-  board_note: "#948 live AC met on prod; repo M1–M3 done; next 08-verify-build; #903/#838 done in-repo"
-  note: "OPEN — EV-057/S067; status in_progress; 07-build M1–M3 complete including #948 live UJ-OPS-002; live apex redirect applied 2026-08-16; Ingress metar-frontend-apex + metar-apex-redirect; cert Ready; next 08-verify-build; tip 6568f664 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
+  board_note: "#948 live AC met on prod; 08-verify-build PASS; next 09-qa + 10-e2e parallel (not started); #903/#838 done in-repo"
+  note: "OPEN — EV-057/S067; status in_progress; 08-verify-build COMPLETE PASS 2026-08-16 @ 0e7833d1; report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -48391,10 +48432,10 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after #948 live AC MET (D-S067-948-redirect=1a / D-S067-948-apply=1a); 07-build remains in_progress; no git commit by workflow-state-manager'
-  tip_sha: "6568f664"
-  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
-  tip_note: "S067/EV-057 tip 6568f664 on evolve/EV-057-m0-ready-apex-accumulate-validate — 07-build M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; tip not pushed"
+  dirty_note: 'dirty expected — verification-report.md + routing-plan.md + workflow-state.yaml after 08-verify-build COMPLETE PASS; tip remains 0e7833d1; no git commit by workflow-state-manager'
+  tip_sha: "0e7833d1"
+  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+  tip_note: "S067/EV-057 tip 0e7833d1 on evolve/EV-057-m0-ready-apex-accumulate-validate — 08-verify-build COMPLETE PASS; next 09-qa + 10-e2e parallel (not started); tip not pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -48402,8 +48443,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "6568f664"
-  evolve_tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+  evolve_tip_sha: "0e7833d1"
+  evolve_tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
   evolve_tip_sha_pushed: false
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
@@ -48423,6 +48464,7 @@ git_history:
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-16 08-verify-build COMPLETE PASS — report docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md; overall PASS; routing_plan 08 completed; current_stage 08-verify-build completed; next 09-qa + 10-e2e parallel (not started); tip 0e7833d1 unchanged; dirty report+routing+yaml expected; no git commit by workflow-state-manager'
   - '2026-08-16 #948 live AC MET — D-S067-948-redirect=1a / D-S067-948-apply=1a; live apex redirect applied; Ingress metar-frontend-apex + metar-apex-redirect; cert Ready; UJ-OPS-002 met on prod; Porkbun DNS blocker cleared; 07-build remains in_progress; next 08-verify-build; tip left 6568f664 (HEAD 93e60d45 not recorded); no git commit by workflow-state-manager'
   - '2026-08-16 tip 6568f664 — [T3.1-T3.5] Validate IWXXM mode; 07-build M1–M3 repo complete (14/14); next stage 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS; EV-057 status remains in_progress; current_stage 07-build; tip_sha_pushed=false; commit recorded; no git commit by workflow-state-manager'
   - '2026-08-15 D-S067-04-plan=1 — 04 COMPLETE; tip 7db2c724 (7db2c7246b57868bb9a0032694bec23f27405305); 05/06 remain skipped; phase_b passed; current_stage 07-build pending (awaiting startup before M1 T1.1); D-S067-04-next=1a; D-S067-948-impl=sibling Ingress metar-frontend-apex; tip_sha_pushed=false; no git commit by workflow-state-manager'
@@ -49008,10 +49050,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: 6568f664
-    tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+    tip_sha: 0e7833d1
+    tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
     tip_sha_pushed: false
-    note: "ACTIVE local tip 6568f664 07-build M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; not pushed"
+    note: "ACTIVE local tip 0e7833d1 07-build T1.2 apex redirect via nginx pod; M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -50491,6 +50533,36 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "0e7833d1"
+    sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+    message: "[T1.2] fix: apex redirect via nginx pod after webhook reject"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 07-build
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-16"
+    pushed: false
+    tip_sha: 0e7833d1
+    tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+    tip_sha_pushed: false
+    files_changed:
+      - deploy/doks/README.md
+      - deploy/doks/overlays/prod/ingress-frontend-apex.yaml
+      - deploy/doks/overlays/prod/kustomization.yaml
+      - deploy/doks/overlays/prod/redirect-apex.yaml
+      - deploy/doks/overlays/staging/ingress-frontend-staging-short.yaml
+      - deploy/doks/overlays/staging/kustomization.yaml
+      - deploy/doks/overlays/staging/redirect-staging-short.yaml
+      - docs/decisions/evolve-decisions.md
+      - docs/deploy.md
+      - docs/feature-list.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/porkbun-dns-cutover.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/t1.1-apex-dns-tls.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/t1.2-apex-live-apply.md
+      - workflow-state.yaml
+    note: "07-build T1.2 apex redirect via nginx pod after webhook reject; M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; tip not pushed"
   - sha: "6568f664"
     sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
     message: "[T3.1-T3.5] feat: Validate IWXXM mode without TAC convert"

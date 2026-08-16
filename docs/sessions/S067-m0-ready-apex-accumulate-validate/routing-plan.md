@@ -19,10 +19,10 @@
 | 04-tech-plan | yes | delta | **completed** | EP approved `D-S067-04-plan=1`; sibling apex Ingress |
 | 05-verify-tech | no | — | skipped | Per `D-S067-04-next=1a` |
 | 06-tech-tooling | no | — | skipped | No new deps |
-| 07-build | yes | delta | **pending** | Start M1 (#948) |
-| 08-verify-build | yes | delta | **pending** | After build batches |
-| 09-qa | yes | delta | **pending** | Parallel with 10 when ready |
-| 10-e2e | yes | delta | **pending** | UJ deepen for #903/#838; #948 smoke via deploy/docs |
+| 07-build | yes | delta | **completed** | M1 live #948 AC met; M2/M3 repo done (`D-S067-948-apply=1a`) |
+| 08-verify-build | yes | delta | **completed** | PASS 2026-08-16; live UJ-OPS-002 green |
+| 09-qa | yes | delta | **pending** | Parallel with 10 |
+| 10-e2e | yes | delta | **pending** | UJ-057/UJ-058 Playwright; UJ-OPS-002 live curl done |
 | 11-verify-impl | yes | delta | **pending** | Per-Fn AC + UI preview remind |
 | 12-verify-deploy | yes | delta | **pending** | PR → stage; release prep only if promote later |
 | 13-deploy-smoke | yes | delta | **pending** | Staging H0c–H5; then promote AskQuestion |
