@@ -9,8 +9,10 @@
 **Features**: deepen **F7**; **F1**/**F6** (#903); **F2**/**F4** (#838); deploy hosts (#948)  
 **Started**: 2026-08-15  
 **Branch**: `evolve/EV-057-m0-ready-apex-accumulate-validate` (base `stage@b796882e`)  
-**Status**: **in_progress** — Phase 0 intake locked; next **01-requirements**  
-**Issues**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948), [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903), [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838)  
+**Status**: **completed** — `D-S067-13=1a` / `D-S067-close=1a`; on `stage`; promote deferred (`D-S067-promote=2b`)  
+**Issues**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948), [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903), [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838) — board **Done**  
+**PRs**: [#991](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991) @ `d7022f1f`; follow-up [#992](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/992) @ `3af364fb`  
+**Reports**: [evolve-report-EV-057.md](../evolve-report-EV-057.md) · [evolve-summary.md](../sessions/S067-m0-ready-apex-accumulate-validate/reports/evolve-summary.md)
 **Parent**: M0 Ready queue after S066 / EV-056  
 **Corpus**: [Corpus: product §F7] [Corpus: product §F1] [Corpus: product §F6]
 [Corpus: product §F2] [Corpus: product §F4] [Corpus: tech-spec] [Corpus: deploy]
@@ -39,6 +41,16 @@
 | D-S067-gateA | **1** — PASS Gate A → 04-tech-plan |
 | D-S067-04-plan | **1** — EP approved (sibling apex Ingress; M1→M2→M3) |
 | D-S067-04-next | **1a** — skip 05/06 → 07-build M1 |
+| D-S067-12-resume | **1a** — finish checklist tip `d05c23b7` / #991 |
+| D-S067-12-scope | **1a** — no delta; promote held |
+| D-S067-12-risks | **1a** — approve standard stage mitigations |
+| D-S067-12-merge | **1a** — merge #991 → stage → 13 |
+| D-S067-13-start | **1a** — smoke staging H1–H5 + UJ-057/058 |
+| D-S067-13-scope | **1a** — staging only; promote later |
+| D-S067-13-depth | **1a** — CI smoke + verify_connectivity + quick UJ |
+| D-S067-13-uj058 | **1a** — fix TacEditor aria-label + #992 → stage |
+| D-S067-13 | **1a** — approve 13 complete; promote deferred |
+| D-S067-close | **1a** — close cycle on stage; promote later on request |
 
 ### Acceptance (`D-S067-01-ac=1`)
 
