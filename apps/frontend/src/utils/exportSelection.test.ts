@@ -53,6 +53,20 @@ describe('buildExportCandidates', () => {
     expect(list).toEqual([]);
   });
 
+  it('skips rows whose source is neither session nor drop', () => {
+    const list = buildExportCandidates({
+      sessionOutputs: [
+        candidate({
+          id: 'hist',
+          name: 'hist.xml',
+          source: 'history' as ExportCandidateInput['source'],
+        }),
+        candidate({ id: 'ok', name: 'ok.xml', source: 'session' }),
+      ],
+    });
+    expect(list.map((c) => c.id)).toEqual(['ok']);
+  });
+
   it('skips entries with no payload body', () => {
     const list = buildExportCandidates({
       sessionOutputs: [

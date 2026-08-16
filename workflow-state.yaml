@@ -18,12 +18,19 @@ active_session:
   branch_base_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
   branch_status: active
   branch_exists: true
-  branch_pushed: false
-  branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "ffdd1961"
-  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-  tip_sha_pushed: false
-  tip_sha_note: "11-verify-impl COMPLETE 2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a @ ffdd1961; report verify-impl.md; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
+  branch_pushed: true
+  branch_note: "ACTIVE — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip a730d7a3 pushed; PR #991 → stage"
+  tip_sha: "a730d7a3"
+  tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+  tip_sha_pushed: true
+  tip_sha_note: "12-verify-deploy in_progress — PR #991 → stage; watching CI 31964710714; tip a730d7a3 pushed; promote held"
+  pr_number: 991
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+  pr_status: open
+  pr_base: stage
+  tip_ci_run: '31964710714'
+  tip_ci_status: watching
+  tip_ci_note: "CI 31964710714 watching on PR #991 @ a730d7a3"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -31,7 +38,7 @@ active_session:
   - 948
   - 903
   - 838
-  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); #903/#838 done in-repo"
+  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714; #903/#838 done in-repo"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -66,7 +73,7 @@ active_session:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 12-verify-deploy
-  current_stage_note: "12-verify-deploy PR → stage (promote held)"
+  current_stage_note: "12-verify-deploy PR #991 → stage; watching CI 31964710714"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -125,7 +132,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held)"
+    note: "IN PROGRESS — EV-057; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -196,7 +203,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-16'
-    note: "IN PROGRESS — PR → stage (promote held)"
+    note: "IN PROGRESS — PR #991 → stage; watching CI 31964710714 (promote held)"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
@@ -231,12 +238,19 @@ sessions:
   branch_base_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
   branch_status: active
   branch_exists: true
-  branch_pushed: false
-  branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "ffdd1961"
-  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-  tip_sha_pushed: false
-  tip_sha_note: "11-verify-impl COMPLETE 2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a @ ffdd1961; report verify-impl.md; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
+  branch_pushed: true
+  branch_note: "ACTIVE — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip a730d7a3 pushed; PR #991 → stage"
+  tip_sha: "a730d7a3"
+  tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+  tip_sha_pushed: true
+  tip_sha_note: "12-verify-deploy in_progress — PR #991 → stage; watching CI 31964710714; tip a730d7a3 pushed; promote held"
+  pr_number: 991
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+  pr_status: open
+  pr_base: stage
+  tip_ci_run: '31964710714'
+  tip_ci_status: watching
+  tip_ci_note: "CI 31964710714 watching on PR #991 @ a730d7a3"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -244,7 +258,7 @@ sessions:
   - 948
   - 903
   - 838
-  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); #903/#838 done in-repo"
+  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714; #903/#838 done in-repo"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -279,7 +293,7 @@ sessions:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 12-verify-deploy
-  current_stage_note: "12-verify-deploy PR → stage (promote held)"
+  current_stage_note: "12-verify-deploy PR #991 → stage; watching CI 31964710714"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -338,7 +352,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held)"
+    note: "IN PROGRESS — EV-057; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -409,7 +423,7 @@ sessions:
     mode: delta
     status: in_progress
     started: '2026-08-16'
-    note: "IN PROGRESS — PR → stage (promote held)"
+    note: "IN PROGRESS — PR #991 → stage; watching CI 31964710714 (promote held)"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
@@ -15400,22 +15414,22 @@ stages:
     report:
     report_status:
     expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/deploy-checklist.md
-    tip_sha: "ffdd1961"
-    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-    tip_sha_pushed: false
-    tip_ci_run:
-    tip_ci_status:
-    tip_ci_note: "S067/EV-057 12 in_progress — PR → stage (promote held); tip ffdd1961 not pushed"
-    pr_number:
-    pr_url:
-    pr_status:
+    tip_sha: "a730d7a3"
+    tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+    tip_sha_pushed: true
+    tip_ci_run: '31964710714'
+    tip_ci_status: watching
+    tip_ci_note: "S067/EV-057 12 in_progress — PR #991 → stage; watching CI 31964710714; tip a730d7a3 pushed"
+    pr_number: 991
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+    pr_status: open
     pr_base: stage
     merge_sha:
     merge_sha_full:
     decision_id:
     awaiting_user_decision: false
-    awaiting_user_decision_note: '12-verify-deploy in_progress — PR → stage (promote held); D-S067-promote=2b'
-    note: 'IN PROGRESS — S067/EV-057 12-verify-deploy PR → stage (promote held); 11 COMPLETE D-S067-11-ac=1a; tip ffdd1961'
+    awaiting_user_decision_note: '12-verify-deploy in_progress — PR #991 → stage; watching CI 31964710714; D-S067-promote=2b'
+    note: 'IN PROGRESS — S067/EV-057 12-verify-deploy PR #991 → stage; watching CI 31964710714; 11 COMPLETE D-S067-11-ac=1a; tip a730d7a3 pushed'
     previous_s064_started_at: '2026-08-11'
     previous_s064_started: '2026-08-11'
     previous_s064_completed_at: '2026-08-11'
@@ -15599,12 +15613,17 @@ stages:
       mode: delta
       started: '2026-08-16'
       started_at: '2026-08-16'
-      tip_sha: "ffdd1961"
-      tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-      tip_sha_pushed: false
+      tip_sha: "a730d7a3"
+      tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+      tip_sha_pushed: true
+      pr_number: 991
+      pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+      pr_status: open
       pr_base: stage
+      tip_ci_run: '31964710714'
+      tip_ci_status: watching
       expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/deploy-checklist.md
-      note: 'IN PROGRESS — PR → stage (promote held); D-S067-promote=2b'
+      note: 'IN PROGRESS — PR #991 → stage; watching CI 31964710714; D-S067-promote=2b'
     - id: S064-quality-metrics-2025-2-followups-12
       session_id: S064-quality-metrics-2025-2-followups
       evolve_cycle_id: EV-055
@@ -37003,15 +37022,22 @@ evolve_cycles:
   branch_base_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
   branch_status: active
   branch_exists: true
-  branch_pushed: false
-  branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "ffdd1961"
-  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-  tip_sha_pushed: false
-  tip_sha_note: "11-verify-impl COMPLETE 2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a @ ffdd1961; report verify-impl.md; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
+  branch_pushed: true
+  branch_note: "ACTIVE — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip a730d7a3 pushed; PR #991 → stage"
+  tip_sha: "a730d7a3"
+  tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+  tip_sha_pushed: true
+  tip_sha_note: "12-verify-deploy in_progress — PR #991 → stage; watching CI 31964710714; tip a730d7a3 pushed; promote held"
+  pr_number: 991
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+  pr_status: open
+  pr_base: stage
+  tip_ci_run: '31964710714'
+  tip_ci_status: watching
+  tip_ci_note: "CI 31964710714 watching on PR #991 @ a730d7a3"
   current_stage: 12-verify-deploy
   current_stage_status: in_progress
-  current_stage_note: "12-verify-deploy PR → stage (promote held)"
+  current_stage_note: "12-verify-deploy PR #991 → stage; watching CI 31964710714"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -37083,7 +37109,7 @@ evolve_cycles:
     phase_b: passed
     phase_b_note: "D-S067-04-plan=1 — 04 COMPLETE; 05/06 skipped (Standard)"
     phase_c: passed
-    phase_c_note: "08-verify-build PASS 2026-08-16 @ ffdd1961; 09-qa PASS (delta) + 10-e2e PASS D-S067-10-pw=1a; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress"
+    phase_c_note: "08-verify-build PASS 2026-08-16 @ ffdd1961; 09-qa PASS (delta) + 10-e2e PASS D-S067-10-pw=1a; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714"
     phase_d: pending
     deploy: pending
   gates:
@@ -37112,8 +37138,8 @@ evolve_cycles:
   - docs/decisions/requirements-decisions.md
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
-  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); #903/#838 done in-repo"
-  note: "OPEN — EV-057/S067; status in_progress; 11-verify-impl COMPLETE D-S067-11-preview=2a D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held) @ ffdd1961; tip not pushed; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
+  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714; #903/#838 done in-repo"
+  note: "OPEN — EV-057/S067; status in_progress; 11-verify-impl COMPLETE D-S067-11-preview=2a D-S067-11-ac=1a; 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714 @ a730d7a3 pushed; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -48785,15 +48811,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  ahead_of_origin: 14
-  pushed: false
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'dirty expected — workflow-state.yaml after D-S067-11-preview=2a D-S067-11-ac=1a complete 11-verify-impl and start 12-verify-deploy; tip ffdd1961; no git commit by workflow-state-manager'
-  tip_sha: "ffdd1961"
-  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-  tip_note: "S067/EV-057 tip ffdd1961 on evolve/EV-057-m0-ready-apex-accumulate-validate — 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
+  dirty_note: 'dirty expected — workflow-state.yaml after PR #991 open → stage; tip a730d7a3 pushed; watching CI 31964710714; no git commit by workflow-state-manager'
+  tip_sha: "a730d7a3"
+  tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+  tip_note: "S067/EV-057 tip a730d7a3 pushed on evolve/EV-057-m0-ready-apex-accumulate-validate — 12-verify-deploy in_progress PR #991 → stage; watching CI 31964710714; 0e7833d1 also pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -48801,9 +48827,9 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "ffdd1961"
-  evolve_tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-  evolve_tip_sha_pushed: false
+  evolve_tip_sha: "a730d7a3"
+  evolve_tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+  evolve_tip_sha_pushed: true
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
   stage_tip_sha: b796882e
@@ -48819,9 +48845,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
+  note: 'S067/EV-057 IN PROGRESS — tip a730d7a3 pushed on evolve/EV-057-m0-ready-apex-accumulate-validate; PR #991 open → stage; watching CI 31964710714; 12-verify-deploy in_progress; 0e7833d1 also pushed; dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-16 PR #991 open → stage @ a730d7a3 pushed; watching CI 31964710714; 12-verify-deploy remains in_progress (promote held); current_stage_note 12-verify-deploy PR #991 → stage; watching CI 31964710714; 0e7833d1 now pushed; no git commit by workflow-state-manager'
   - '2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a — 11-verify-impl COMPLETE PASS; report verify-impl.md; UI preview declined (reports/tests only); AC approved #948/#903/#838; current_stage 12-verify-deploy in_progress started 2026-08-16; current_stage_note 12-verify-deploy PR → stage (promote held); tip ffdd1961; tip not pushed; no git commit by workflow-state-manager'
   - '2026-08-16 D-S067-10-pw=1a — 09-qa COMPLETE PASS (delta) qa-report.md; 10-e2e COMPLETE PASS with T2 Playwright waive (T0 vitest + T3 UJ-OPS-002 PASS) e2e-report.md; current_stage 11-verify-impl in_progress started 2026-08-16; current_stage_note 11-verify-impl per-Fn AC; UI preview remind_at_11; tip ffdd1961; tip not pushed; no git commit by workflow-state-manager'
   - '2026-08-16 D-S067-09-10=1a — start 09-qa + 10-e2e parallel (not completed); current_stage 09-qa; current_stage_note 09-qa delta validate-fast ∥ 10-e2e T0 UJ-057/058; routing 09-qa + 10-e2e in_progress started 2026-08-16; tip ffdd1961 (08 report commit); tip not pushed; no git commit by workflow-state-manager'
@@ -49408,13 +49435,19 @@ git_history:
     status: ACTIVE
     created: "2026-08-15"
     exists: true
-    pushed: false
+    pushed: true
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: ffdd1961
-    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-    tip_sha_pushed: false
-    note: "ACTIVE local tip ffdd1961; 09-qa PASS (delta) + 10-e2e PASS D-S067-10-pw=1a; 11-verify-impl in_progress; not pushed"
+    tip_sha: a730d7a3
+    tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+    tip_sha_pushed: true
+    pr_number: 991
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+    pr_status: open
+    pr_base: stage
+    tip_ci_run: '31964710714'
+    tip_ci_status: watching
+    note: "ACTIVE tip a730d7a3 pushed; PR #991 open → stage; watching CI 31964710714; 12-verify-deploy in_progress; 0e7833d1 also pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -50894,6 +50927,31 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "a730d7a3"
+    sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+    message: "docs: [S067] 09-qa / 10-e2e / 11-verify-impl — AC approved"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 12-verify-deploy
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-16"
+    pushed: true
+    tip_sha: a730d7a3
+    tip_sha_full: a730d7a3afc93843cd85448bc6a464cdbd7e83cb
+    tip_sha_pushed: true
+    pr_number: 991
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+    pr_status: open
+    pr_base: stage
+    tip_ci_run: '31964710714'
+    tip_ci_status: watching
+    files_changed:
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
+      - workflow-state.yaml
+    note: "current tip; PR #991 open → stage; watching CI 31964710714; 12-verify-deploy in_progress; pushed"
   - sha: "ffdd1961"
     sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
     message: "docs: [S067] 08-verify-build PASS after live #948 apex redirect"
@@ -50902,15 +50960,15 @@ git_history:
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
     timestamp: "2026-08-16"
-    pushed: false
+    pushed: true
     tip_sha: ffdd1961
     tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-    tip_sha_pushed: false
+    tip_sha_pushed: true
     files_changed:
       - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
       - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
       - workflow-state.yaml
-    note: "08-verify-build PASS report commit; current tip; 09-qa + 10-e2e started in_progress (D-S067-09-10=1a); not pushed"
+    note: "08-verify-build PASS report commit; now pushed with tip a730d7a3 / PR #991"
   - sha: "0e7833d1"
     sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
     message: "[T1.2] fix: apex redirect via nginx pod after webhook reject"
@@ -50919,10 +50977,10 @@ git_history:
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
     timestamp: "2026-08-16"
-    pushed: false
+    pushed: true
     tip_sha: 0e7833d1
     tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
-    tip_sha_pushed: false
+    tip_sha_pushed: true
     files_changed:
       - deploy/doks/README.md
       - deploy/doks/overlays/prod/ingress-frontend-apex.yaml
@@ -50940,7 +50998,7 @@ git_history:
       - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/t1.1-apex-dns-tls.md
       - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/t1.2-apex-live-apply.md
       - workflow-state.yaml
-    note: "07-build T1.2 apex redirect via nginx pod after webhook reject; M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; tip not pushed"
+    note: "07-build T1.2 apex redirect via nginx pod after webhook reject; M1–M3 complete including #948 live UJ-OPS-002; now pushed with tip a730d7a3 / PR #991"
   - sha: "6568f664"
     sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
     message: "[T3.1-T3.5] feat: Validate IWXXM mode without TAC convert"

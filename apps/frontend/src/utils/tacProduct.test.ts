@@ -77,6 +77,12 @@ describe('resolveConvertProduct', () => {
 });
 
 describe('splitManualEntries', () => {
+  it('returns no entries for empty or whitespace-only buffers', () => {
+    expect(splitManualEntries('', 'METAR')).toEqual([]);
+    expect(splitManualEntries('  \n\t  ', 'SIGMET')).toEqual([]);
+    expect(splitManualEntries('  \n  ', 'METAR')).toEqual([]);
+  });
+
   it('splits METAR-style products one entry per non-empty line', () => {
     expect(splitManualEntries('METAR A\n\n METAR B ', 'METAR')).toEqual([
       'METAR A',

@@ -2,7 +2,7 @@
  * TC-EV055-001 / AC6 — C14N panes, raw override, validate disposition chips.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -201,6 +201,10 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     // Expanding one hunk may leave other collapse controls.
     expect(screen.getByTestId('quality-metrics-diff-expand-all')).toBeInTheDocument();
 
+    // Toggle the same hunk off (covers expandedCollapseKeys delete branch).
+    const hunksAfterExpand = screen.getAllByTestId('quality-metrics-diff-expand-hunk');
+    await user.click(hunksAfterExpand[0]!);
+
     await user.click(screen.getByTestId('quality-metrics-diff-expand-all'));
     expect(screen.getByTestId('quality-metrics-diff-expand-all')).toHaveTextContent(
       /Hide distant unchanged lines/i,
@@ -255,6 +259,53 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     );
     expect(screen.getByTestId('quality-metrics-pane-official-xml')).toHaveTextContent(
       /No official XML available/i,
+    );
+  });
+
+  it('treats missing official/converted XML as empty, including raw view', async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <QualityMetricsDetail
+        detail={{
+          ...FORMATTING_ONLY,
+          official_xml: undefined as unknown as string,
+          converted_xml: undefined as unknown as string,
+        }}
+        onClose={onClose}
+        closeLabel="Back to list"
+      />,
+    );
+    expect(screen.getByTestId('quality-metrics-pane-official-xml')).toHaveTextContent(
+      /No official XML available/i,
+    );
+    expect(screen.getByTestId('quality-metrics-pane-converted-xml')).toHaveTextContent(
+      /No converted XML available/i,
+    );
+    await user.click(screen.getByTestId('quality-metrics-xml-view-raw'));
+    expect(screen.getByTestId('quality-metrics-xml-view-mode')).toHaveTextContent(
+      QUALITY_METRICS_XML_VIEW_RAW,
+    );
+    await user.click(screen.getByTestId('quality-metrics-detail-close'));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('formats diagnostics for message-only, empty object, and circular payload', () => {
+    const circular: Record<string, unknown> = { mark: 'circ' };
+    circular.self = circular;
+    const detail: QualityMetricsDetailResponse = {
+      ...FORMATTING_ONLY,
+      residuals: [{ message: 'only-msg' }],
+      lint_issues: [{ other: true }],
+      validate_issues: [circular],
+    };
+    render(<QualityMetricsDetail detail={detail} />);
+    expect(screen.getByTestId('quality-metrics-pane-residuals')).toHaveTextContent(
+      'only-msg',
+    );
+    expect(screen.getByTestId('quality-metrics-pane-lint')).toHaveTextContent('{');
+    expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent(
+      '[object Object]',
     );
   });
 });

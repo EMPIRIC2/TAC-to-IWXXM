@@ -382,6 +382,13 @@ describe('FileConverter Component', () => {
 
       await user.click(screen.getByTestId('sign-in-button'));
       expect(onRequestLogin).toHaveBeenCalled();
+      onRequestLogin.mockClear();
+      await user.click(
+        screen
+          .getByTestId('guest-loss-notice')
+          .querySelector('button') as HTMLButtonElement,
+      );
+      expect(onRequestLogin).toHaveBeenCalled();
     });
 
     it('shows first-visit privacy notice and opens settings from footer', async () => {
@@ -394,6 +401,8 @@ describe('FileConverter Component', () => {
 
       await user.click(screen.getByRole('button', { name: /open privacy settings/i }));
       expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: /^close$/i }));
+      expect(screen.queryByTestId('privacy-settings-dialog')).not.toBeInTheDocument();
     });
 
     it('opens privacy settings from the first-visit notice CTA', async () => {
