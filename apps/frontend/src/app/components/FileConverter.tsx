@@ -101,6 +101,7 @@ import {
 import { readGuestConverterState } from '/utils/guestConverterState';
 import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
 import {
+  ACCUMULATE_RESULT_CAP,
   manualDownloadXmlName,
   manualOutputName,
   outputArchiveName,
@@ -208,6 +209,8 @@ export function FileConverter({
   );
   const [isBatchValidating, setIsBatchValidating] = useState(false);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
+  /** TAC of the first accumulated success — used for default ZIP stem (#903). */
+  const [firstAccumulatedTac, setFirstAccumulatedTac] = useState<string | null>(null);
   const [manualInput, setManualInput] = useState('');
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
@@ -403,8 +406,11 @@ export function FileConverter({
           };
         }),
       );
+      const firstTac = String(loadedWorkSession.converted_results[0]?.tac_input ?? '');
+      setFirstAccumulatedTac(firstTac || null);
     } else {
       setConvertedFiles([]);
+      setFirstAccumulatedTac(null);
     }
     const hasLog =
       (loadedWorkSession.errors?.length ?? 0) > 0 ||
@@ -783,7 +789,24 @@ export function FileConverter({
           }
         });
         const failed = bulletinResponse.results.filter((r) => !r.ok).length;
-        setConvertedFiles(newConvertedFiles);
+        if (newConvertedFiles.length > 0) {
+          let appended = false;
+          setConvertedFiles((prev) => {
+            if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
+              toast.error(
+                `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+              );
+              return prev;
+            }
+            appended = true;
+            return [...prev, ...newConvertedFiles];
+          });
+          if (appended) {
+            setFirstAccumulatedTac(
+              (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+            );
+          }
+        }
         clearConvertedFromQueue();
         // EV-040: keep manual TAC input after convert (do not clear).
         setConversionLog(issueBag.length > 0 ? { errors: [], issues: issueBag } : null);
@@ -910,7 +933,24 @@ export function FileConverter({
         }
       }
 
-      setConvertedFiles(newConvertedFiles);
+      if (newConvertedFiles.length > 0) {
+        let appended = false;
+        setConvertedFiles((prev) => {
+          if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
+            toast.error(
+              `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+            );
+            return prev;
+          }
+          appended = true;
+          return [...prev, ...newConvertedFiles];
+        });
+        if (appended) {
+          setFirstAccumulatedTac(
+            (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+          );
+        }
+      }
       clearConvertedFromQueue();
       // EV-040: keep manual TAC input after convert. Clear failed spans only on hard success.
       if (!softFail) {
@@ -1061,6 +1101,7 @@ export function FileConverter({
     setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     onActiveSessionIdChange?.(null);
@@ -1076,6 +1117,7 @@ export function FileConverter({
     // Drop prior conversion/preview state so demo TAC is never paired with stale XML.
     setPendingFiles([]);
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
@@ -1136,7 +1178,9 @@ export function FileConverter({
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
-    a.download = outputArchiveName(outputFilename);
+    a.download = outputArchiveName(outputFilename, {
+      firstTac: firstAccumulatedTac ?? convertedFiles[0]?.originalContent,
+    });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1335,6 +1379,7 @@ export function FileConverter({
     setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
@@ -1709,6 +1754,7 @@ export function FileConverter({
               </Button>
             ) : null}
             <Button
+              data-testid="download-zip-button"
               onClick={handleDownloadAll}
               disabled={isBusy || !hasConverted}
               variant="outline"
@@ -1721,6 +1767,7 @@ export function FileConverter({
               </span>
             </Button>
             <Button
+              data-testid="clear-queue-button"
               onClick={handleClear}
               variant="outline"
               className="min-w-[5.5rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"

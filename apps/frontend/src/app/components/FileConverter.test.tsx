@@ -4750,4 +4750,176 @@ describe('FileConverter Component', () => {
       }
     });
   });
+
+  describe('EV-057 / #903 accumulate conversions (F7.r)', () => {
+    const tacA = 'METAR KJFK 011200Z 18012KT 10SM FEW030 15/07 A3005';
+    const tacB = 'METAR KLAX 011300Z 25008KT 10SM SCT040 20/12 A2990';
+
+    it('accumulates sequential successes and clears the batch', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>a</iwxxm>',
+              tac_input: tacA,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        })
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>b</iwxxm>',
+              tac_input: tacB,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /conversion results/i }),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.change(screen.getByTestId('tac-editor'), { target: { value: tacB } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(2);
+      });
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 2 converted files as zip/i,
+      );
+
+      await user.click(screen.getByTestId('clear-queue-button'));
+      expect(
+        screen.queryByRole('region', { name: /conversion results/i }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('keeps prior successes when a later convert fails', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>a</iwxxm>',
+              tac_input: tacA,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        })
+        .mockRejectedValueOnce(new Error('network down'));
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /conversion results/i }),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'NOT A METAR' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(2);
+      });
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 1 converted files as zip/i,
+      );
+    });
+
+    it('names Download ZIP from first TAC stem when custom name is empty', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            iwxxm_xml: '<iwxxm>a</iwxxm>',
+            tac_input: tacA,
+            name: 'manual_input.txt',
+          },
+        ],
+        errors: [],
+        issues: [],
+      });
+      let downloadedName = '';
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(function (this: HTMLAnchorElement) {
+          downloadedName = this.download;
+        });
+      vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:zip');
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('download-zip-button')).toBeEnabled();
+      });
+      await user.click(screen.getByTestId('download-zip-button'));
+
+      expect(downloadedName).toMatch(/^METARKJF_\d{14}\.zip$/);
+      clickSpy.mockRestore();
+    });
+
+    it('blocks accumulating beyond the soft cap of 200', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>a</iwxxm>',
+              tac_input: tacA,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        })
+        .mockResolvedValueOnce({
+          results: Array.from({ length: 200 }, (_, i) => ({
+            iwxxm_xml: `<x${i}/>`,
+            tac_input: `METAR X${i}=`,
+            name: `r${i}.txt`,
+          })),
+          errors: [],
+          issues: [],
+        });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('download-zip-button')).toBeEnabled();
+      });
+
+      fireEvent.change(screen.getByTestId('tac-editor'), { target: { value: tacB } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          expect.stringMatching(/Cannot keep more than 200 conversions/i),
+        );
+      });
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 1 converted files as zip/i,
+      );
+    });
+  });
 });

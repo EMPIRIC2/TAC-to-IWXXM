@@ -17,11 +17,11 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: EV-057 M0 Ready pack |
-| **Active milestone** | M1 — #948 apex (**manifests complete**; live DNS cutover pending) |
-| **Active task** | — (M1 repo tasks done; AskQuestion DNS cutover → M2) |
-| **Tasks completed** | 4 / 14 |
-| **Stage** | 04-tech-plan |
-| **Last updated** | 2026-08-15 |
+| **Active milestone** | M2 — #903 accumulate (**impl in progress**) |
+| **Active task** | T2.3–T2.5 (accumulate + ZIP + UJ-057) |
+| **Tasks completed** | 4 / 14 (M1); M2 in progress |
+| **Stage** | 07-build |
+| **Last updated** | 2026-08-16 |
 | **Plan approval** | **approved** `D-S067-04-plan=1` (2026-08-15) |
 | **PR** | — |
 
@@ -94,11 +94,11 @@
 
 | # | Task | Type | Status | Spec Source | Depends On | Data Deps |
 |---|------|------|--------|-------------|------------|-----------|
-| T2.1 | Red tests: accumulate N≥2; clear; fail leaves priors; cap≤200 | Test | pending | TC-EV057-903-001/005/007 | — | — |
-| T2.2 | Red tests: default ZIP stem from first TAC (~8); custom `{base}.zip` | Test | pending | TC-EV057-903-003/004 | — | — |
-| T2.3 | Implement accumulate state + clear + cap in FileConverter (or extract) | Impl | pending | F7.r AC1/5/6/7 | T2.1 | — |
-| T2.4 | Implement ZIP Download all + `outputArchiveName` stem rules | Impl | pending | F7.r AC2–4 | T2.2, T2.3 | — |
-| T2.5 | Playwright UJ-057 smoke (local) | Test | pending | TC-EV057-903-006 | T2.3, T2.4 | — |
+| T2.1 | Red tests: accumulate N≥2; clear; fail leaves priors; cap≤200 | Test | **completed** | TC-EV057-903-001/005/007 | — | — |
+| T2.2 | Red tests: default ZIP stem from first TAC (~8); custom `{base}.zip` | Test | **completed** | TC-EV057-903-003/004 | — | — |
+| T2.3 | Implement accumulate state + clear + cap in FileConverter (or extract) | Impl | **completed** | F7.r AC1/5/6/7 | T2.1 | — |
+| T2.4 | Implement ZIP Download all + `outputArchiveName` stem rules | Impl | **completed** | F7.r AC2–4 | T2.2, T2.3 | — |
+| T2.5 | Playwright UJ-057 smoke (local) | Test | in_progress | TC-EV057-903-006 | T2.3, T2.4 | — |
 
 #### M3: Validate existing IWXXM (#838 / F7.s) — P0
 
