@@ -1475,13 +1475,12 @@
       `e2e-smoke` (**TC-F30-014** / TC-EV051-*)
 - **S067 / EV-057 deepen (#948 — apex → app redirect)**: Configure prod apex
   `https://tac-to-iwxxm.com` (and `www` when DNS/cert covers it) to permanently redirect to
-  canonical `https://app.tac-to-iwxxm.com` by **extending the prod frontend Ingress**
-  (`deploy/doks/overlays/prod/patch-ingress-frontend.yaml`) with apex/www hosts and a
-  permanent redirect to `https://app.tac-to-iwxxm.com$request_uri`
-  (`D-S067-948-ingress=2a`). Preserve path + query. HTTP must end on HTTPS app URL.
+  canonical `https://app.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-apex`**
+  plus tiny nginx **`metar-apex-redirect`** (`D-S067-948-ingress=2a`,
+  `D-S067-948-redirect=1a`). Preserve path + query. HTTP must end on HTTPS app URL.
   Document mechanism in [deploy.md](deploy.md). Staging short host
-  `staging.tac-to-iwxxm.com` → `app.staging.tac-to-iwxxm.com` mirrors the sibling-Ingress
-  pattern (`metar-frontend-staging-short`). No new Fn.
+  `staging.tac-to-iwxxm.com` → `app.staging.tac-to-iwxxm.com` mirrors the same
+  sibling-Ingress + redirect-pod pattern. No new Fn.
 - **Acceptance (EV-057 / #948 — F30 deepen)** — **approved** (`D-S067-01-ac=1`):
   1. `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent).
   2. Path + query preserved.

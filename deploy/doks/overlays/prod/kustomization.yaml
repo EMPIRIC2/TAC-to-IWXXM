@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: metar-iwxxm
 resources:
   - ../../base
+  - redirect-apex.yaml
   - ingress-frontend-apex.yaml
 patches:
   - path: patch-ingress-api.yaml

@@ -5,10 +5,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    acme.cert-manager.io/http01-edit-in-place: "true"
-    # Sibling Ingress only — do NOT put permanent-redirect on metar-frontend (app.staging).
-    # DNS: staging.tac-to-iwxxm.com must A → staging LB 143.244.202.13 (not the prod * wildcard).
-    nginx.ingress.kubernetes.io/permanent-redirect: https://app.staging.tac-to-iwxxm.com$request_uri
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
   rules:
@@ -19,7 +16,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: metar-frontend
+                name: metar-staging-short-redirect
                 port:
                   name: http
   tls:

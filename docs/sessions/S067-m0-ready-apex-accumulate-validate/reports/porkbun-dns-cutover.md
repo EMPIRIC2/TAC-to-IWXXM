@@ -72,22 +72,26 @@ curl -sI "https://tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
 
 ## 7. Apply Ingress on prod (when DNS is correct)
 
-Manifests are already on branch `evolve/EV-057-…` (`deploy/doks/overlays/prod/ingress-frontend-apex.yaml`). After merge to `stage` / promote path you choose:
+Manifests: `deploy/doks/overlays/prod/redirect-apex.yaml` + `ingress-frontend-apex.yaml`.
+Apply **only those** on prod (not the full overlay) after Dig is green (`D-S067-948-apply=1a`):
 
 ```bash
-# kube context = prod cluster
-kubectl apply -k deploy/doks/overlays/prod
+# kube context = prod cluster (do-nyc1-metar-iwxxm)
+kubectl apply -n metar-iwxxm -f deploy/doks/overlays/prod/redirect-apex.yaml
+kubectl apply -n metar-iwxxm -f deploy/doks/overlays/prod/ingress-frontend-apex.yaml
 kubectl -n metar-iwxxm get ingress metar-frontend-apex
-kubectl -n metar-iwxxm describe certificate metar-frontend-apex-tls   # if cert-manager CR exists
+kubectl -n metar-iwxxm rollout status deploy/metar-apex-redirect --timeout=90s
+kubectl -n metar-iwxxm describe certificate metar-frontend-apex-tls
 ```
 
 cert-manager should issue `metar-frontend-apex-tls` for `tac-to-iwxxm.com` + `www.tac-to-iwxxm.com` once DNS hits the LB.
 
 ## 8. Done checklist
 
-- [ ] No Porkbun URL forward / `l.ink`
-- [ ] Apex A → `168.144.12.70`
-- [ ] `www` → LB (A or CNAME to apex)
-- [ ] `dig` shows LB IPs
-- [ ] Ingress `metar-frontend-apex` applied on prod
-- [ ] `curl -sI https://tac-to-iwxxm.com/foo?bar=1` → permanent redirect to app with path/query
+- [x] No Porkbun URL forward / `l.ink` (public Dig 2026-08-16)
+- [x] Apex A → `168.144.12.70`
+- [x] `www` → LB (A `168.144.12.70`)
+- [x] `dig` shows LB IPs (`@1.1.1.1` / `@8.8.8.8` / local)
+- [x] Ingress `metar-frontend-apex` + Deployment `metar-apex-redirect` applied on prod
+- [x] `curl -sI https://tac-to-iwxxm.com/foo?bar=1` → **301** `Location: https://app.tac-to-iwxxm.com/foo?bar=1`
+- [x] TLS `metar-frontend-apex-tls` Ready (SAN: apex + www)

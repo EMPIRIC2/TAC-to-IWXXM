@@ -5,7 +5,7 @@ Kustomize **base** + **overlays** for DigitalOcean Kubernetes — API, static FE
 
 | Overlay | Namespace | Hosts |
 |---------|-----------|-------|
-| `overlays/prod` | `metar-iwxxm` | `api.tac-to-iwxxm.com`, `app.tac-to-iwxxm.com`, apex/`www` → app via `metar-frontend-apex` |
+| `overlays/prod` | `metar-iwxxm` | `api.tac-to-iwxxm.com`, `app.tac-to-iwxxm.com`, apex/`www` → app via `metar-frontend-apex` + `metar-apex-redirect` |
 | `overlays/staging` | `metar-iwxxm-staging` | `api.staging.tac-to-iwxxm.com`, `app.staging.tac-to-iwxxm.com` |
 
 | Env | Cluster | LB |

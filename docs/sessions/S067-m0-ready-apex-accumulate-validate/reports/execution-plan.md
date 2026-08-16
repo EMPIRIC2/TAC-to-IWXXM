@@ -17,8 +17,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Phase 1: EV-057 M0 Ready pack |
-| **Active milestone** | M3 — #838 validate-only (**repo complete**) |
-| **Active task** | — (M1–M3 done; next 08-verify-build) |
+| **Active milestone** | M1–M3 complete (incl. #948 **live** UJ-OPS-002) |
+| **Active task** | — (next **08-verify-build**) |
 | **Tasks completed** | 14 / 14 |
 | **Stage** | 07-build |
 | **Last updated** | 2026-08-16 |
@@ -30,7 +30,7 @@
 | ID | Choice |
 |----|--------|
 | D-S067-m-order | **M1 #948 → M2 #903 → M3 #838** (issue order; infra first) |
-| D-S067-948-impl | **Sibling prod Ingress** `metar-frontend-apex` in `deploy/doks/overlays/prod/` with hosts `tac-to-iwxxm.com` (+ `www` if cert) and `nginx.ingress.kubernetes.io/permanent-redirect: https://app.tac-to-iwxxm.com$request_uri` — same overlay as FE Ingress (**does not** put permanent-redirect on `metar-frontend` or `app.` loops). TLS secret extended or dedicated. Realizes `D-S067-948-ingress=2a`. |
+| D-S067-948-impl | **Sibling prod Ingress** `metar-frontend-apex` + **`metar-apex-redirect`** nginx pod (`return 301 …$request_uri`). ingress-nginx v1.12 webhook rejects `$` on `permanent-redirect`; snippets disabled (`D-S067-948-redirect=1a`). Same overlay as FE Ingress; **do not** redirect `metar-frontend` / `app.`. TLS secret `metar-frontend-apex-tls`. Realizes `D-S067-948-ingress=2a`. |
 | D-S067-903-state | FE accumulate list in workbench state (FileConverter / result cards); clear control; cap **≤200** with clear error. |
 | D-S067-903-zip | Extend `outputArchiveName` / helpers: empty custom → `{stem8}_{yyyyMMddHHmmss}.zip` from first success TAC; custom → `{base}.zip`. |
 | D-S067-838-ui | Dedicated Validate mode: paste + single `.xml` upload; call existing `POST /api/v1/validate`; F4 controls shared. |

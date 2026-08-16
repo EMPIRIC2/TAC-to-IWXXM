@@ -51,18 +51,23 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 `https://www.tac-to-iwxxm.com`) must **permanently redirect** to the app host via sibling
 Ingress **`metar-frontend-apex`**
 ([`deploy/doks/overlays/prod/ingress-frontend-apex.yaml`](../deploy/doks/overlays/prod/ingress-frontend-apex.yaml))
-with annotation
-`nginx.ingress.kubernetes.io/permanent-redirect: https://app.tac-to-iwxxm.com$request_uri`
-(`D-S067-948-impl`). Do **not** put that annotation on `metar-frontend` (would loop `app.`).
+backed by **`metar-apex-redirect`**
+([`deploy/doks/overlays/prod/redirect-apex.yaml`](../deploy/doks/overlays/prod/redirect-apex.yaml))
+(`D-S067-948-impl`, amended `D-S067-948-redirect=1a`). ingress-nginx **v1.12+** rejects
+`$request_uri` on `permanent-redirect` (annotation validation / CVE-2023-5044) and this
+cluster has snippet annotations **disabled**, so the 301 lives in a tiny nginx pod
+(`return 301 https://app.tac-to-iwxxm.com$request_uri`). Do **not** put a redirect
+annotation on `metar-frontend` (would loop `app.`). ACME HTTP-01 uses a **separate**
+solver Ingress (no `http01-edit-in-place`) so challenges are not redirected.
 
 | Requirement | Behavior |
 |-------------|----------|
 | HTTPS apex | `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301/308) |
-| Path/query | Preserved via `$request_uri` |
+| Path/query | Preserved via nginx `$request_uri` in `metar-apex-redirect` |
 | `www` | Included on the same sibling Ingress + TLS secret `metar-frontend-apex-tls` |
-| HTTP | After DNS cutover, nginx/cert-manager path; must end on HTTPS app URL |
+| HTTP | `ssl-redirect: false` on the sibling Ingress; redirect pod 301s HTTP and HTTPS to the HTTPS app URL |
 | TLS | cert-manager `letsencrypt-prod` issues `metar-frontend-apex-tls` once DNS hits LB |
-| Staging short host | `https://staging.tac-to-iwxxm.com` → `https://app.staging.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-staging-short`** ([`deploy/doks/overlays/staging/ingress-frontend-staging-short.yaml`](../deploy/doks/overlays/staging/ingress-frontend-staging-short.yaml)); TLS secret `metar-frontend-staging-short-tls`. DNS A must be **staging LB** `143.244.202.13` (override prod `*` wildcard). |
+| Staging short host | `https://staging.tac-to-iwxxm.com` → `https://app.staging.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-staging-short`** + **`metar-staging-short-redirect`**; TLS secret `metar-frontend-staging-short-tls`. DNS A must be **staging LB** `143.244.202.13` (override prod `*` wildcard). |
 
 #### Staging short-host smoke
 

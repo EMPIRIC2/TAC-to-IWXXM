@@ -34,6 +34,8 @@
 | D-S067-board | **1** — #948 → In progress (WIP 1); #903/#838 stay Ready until started |
 | D-S067-903-cap | **1c** — Soft accumulate cap **≤200** |
 | D-S067-948-ingress | **2a** — Extend prod FE Ingress apex/www → app `$request_uri` |
+| D-S067-948-redirect | **1a** — Tiny nginx redirect Deployment (webhook blocks `$` on `permanent-redirect`; snippets off) |
+| D-S067-948-apply | **1a** — Apply sibling apex Ingress on prod after public Dig green (2026-08-16) |
 | D-S067-gateA | **1** — PASS Gate A → 04-tech-plan |
 | D-S067-04-plan | **1** — EP approved (sibling apex Ingress; M1→M2→M3) |
 | D-S067-04-next | **1a** — skip 05/06 → 07-build M1 |
@@ -45,7 +47,7 @@
 2. Path + query preserved.
 3. `www` if DNS/cert covers; HTTP ends on HTTPS app URL.
 4. TLS covers apex (and `www` if enabled).
-5. Document **prod FE Ingress** extension in deploy docs (`D-S067-948-ingress=2a`).
+5. Document **prod FE Ingress** + **`metar-apex-redirect`** in deploy docs (`D-S067-948-ingress=2a`, `D-S067-948-redirect=1a`).
 
 **#903 / F7.r / UJ-057**
 1. N≥2 sequential successes remain visible.

@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: metar-iwxxm-staging
 resources:
   - ../../base
+  - redirect-staging-short.yaml
   - ingress-frontend-staging-short.yaml
 patches:
   - target:
