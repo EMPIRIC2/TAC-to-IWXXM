@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: metar-iwxxm-staging
 resources:
   - ../../base
+  - ingress-frontend-staging-short.yaml
 patches:
   - target:
       kind: Namespace

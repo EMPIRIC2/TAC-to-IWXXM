@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
-> **Last updated**: 2026-08-15 (S067 / EV-057 — #948 apex → app redirect)
+> **Last updated**: 2026-08-16 (S067 / EV-057 — #948 apex → app; staging short-host mirror)
 
 ## Topology (F30 — DOKS dual env / dual cluster)
 
@@ -62,20 +62,24 @@ with annotation
 | `www` | Included on the same sibling Ingress + TLS secret `metar-frontend-apex-tls` |
 | HTTP | After DNS cutover, nginx/cert-manager path; must end on HTTPS app URL |
 | TLS | cert-manager `letsencrypt-prod` issues `metar-frontend-apex-tls` once DNS hits LB |
-| Staging apex | Out of scope unless free with the same change |
+| Staging short host | `https://staging.tac-to-iwxxm.com` → `https://app.staging.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-staging-short`** ([`deploy/doks/overlays/staging/ingress-frontend-staging-short.yaml`](../deploy/doks/overlays/staging/ingress-frontend-staging-short.yaml)); TLS secret `metar-frontend-staging-short-tls`. DNS A must be **staging LB** `143.244.202.13` (override prod `*` wildcard). |
 
-#### DNS prerequisite (T1.1 — 2026-08-15)
+#### Staging short-host smoke
 
-**Before live AC**: apex/`www` must point at prod LB **`168.144.12.70`**.
+```bash
+dig +short A staging.tac-to-iwxxm.com
+# expect: 143.244.202.13  (NOT 168.144.12.70)
 
-As of probe: apex A records and `www` still resolve to **Porkbun parking**
-(`207.207.210.*` / `uixie.porkbun.com`) and HTTPS **302**s to
-`https://tac-to-iwxxm-com.l.ink/` — not the DOKS stack. `app.tac-to-iwxxm.com` correctly
-uses `168.144.12.70`.
+curl -sI "https://staging.tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
+# Expect: 301/308 → https://app.staging.tac-to-iwxxm.com/foo?bar=1
+```
 
-Cutover: see
-[`docs/sessions/S067-…/reports/t1.1-apex-dns-tls.md`](sessions/S067-m0-ready-apex-accumulate-validate/reports/t1.1-apex-dns-tls.md).
-Apply Ingress with prod overlay after DNS (or apply early and wait for cert once DNS moves).
+#### DNS prerequisite (T1.1 — 2026-08-15; apex cutover 2026-08-16)
+
+**Prod**: apex/`www` → prod LB **`168.144.12.70`** (operator cutover done 2026-08-16).
+
+**Staging short host**: add explicit A `staging.tac-to-iwxxm.com` → **`143.244.202.13`**.
+A bare `*.tac-to-iwxxm.com` pointing at prod will otherwise send `staging` to the wrong LB.
 
 #### Ops smoke (UJ-OPS-002 / TC-EV057-948)
 
