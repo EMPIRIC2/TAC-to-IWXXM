@@ -24,8 +24,8 @@
 | 09-qa | yes | delta | **completed** | PASS 2026-08-16 (`D-S067-09-10=1a`) |
 | 10-e2e | yes | delta | **completed** | PASS + T2 Playwright waive `D-S067-10-pw=1a` |
 | 11-verify-impl | yes | delta | **completed** | PASS 2026-08-16; `D-S067-11-preview=2a` / `D-S067-11-ac=1a`; report verify-impl.md |
-| 12-verify-deploy | yes | delta | **in_progress** | PR → stage (promote held) |
-| 13-deploy-smoke | yes | delta | **pending** | Staging H0c–H5; then promote AskQuestion |
+| 12-verify-deploy | yes | delta | **completed** | Checklist APPROVED; #991 MERGED; Deploy+Staging smoke green `d7022f1f` / 31966102210; promote held |
+| 13-deploy-smoke | yes | delta | **completed** | H0c–H5 + UJ-057/058 PASS; #992 aria-label fix; `D-S067-13=1a`; promote deferred |
 
 ## Recommended ordered stages
 
