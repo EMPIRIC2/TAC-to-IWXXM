@@ -67,9 +67,12 @@ import {
   ingestCollect,
   massIngestFiles,
   lintTac,
+  validateIwxxm,
   EndpointNotImplementedError,
   type FailedSpan,
 } from '/utils/api';
+import type { ValidateResponse } from '/utils/openapiTypes';
+import { ValidateIwxxmReport } from './ValidateIwxxmReport';
 import {
   clampQueueIndex,
   nextQueueIndex,
@@ -101,6 +104,7 @@ import {
 import { readGuestConverterState } from '/utils/guestConverterState';
 import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
 import {
+  ACCUMULATE_RESULT_CAP,
   manualDownloadXmlName,
   manualOutputName,
   outputArchiveName,
@@ -208,6 +212,10 @@ export function FileConverter({
   );
   const [isBatchValidating, setIsBatchValidating] = useState(false);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
+  /** TAC of the first accumulated success — used for default ZIP stem (#903). */
+  const [firstAccumulatedTac, setFirstAccumulatedTac] = useState<string | null>(null);
+  /** F7.s validate-only report (POST /api/v1/validate with xml_content). */
+  const [validateReport, setValidateReport] = useState<ValidateResponse | null>(null);
   const [manualInput, setManualInput] = useState('');
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
@@ -403,8 +411,11 @@ export function FileConverter({
           };
         }),
       );
+      const firstTac = String(loadedWorkSession.converted_results[0]?.tac_input ?? '');
+      setFirstAccumulatedTac(firstTac || null);
     } else {
       setConvertedFiles([]);
+      setFirstAccumulatedTac(null);
     }
     const hasLog =
       (loadedWorkSession.errors?.length ?? 0) > 0 ||
@@ -783,7 +794,24 @@ export function FileConverter({
           }
         });
         const failed = bulletinResponse.results.filter((r) => !r.ok).length;
-        setConvertedFiles(newConvertedFiles);
+        if (newConvertedFiles.length > 0) {
+          let appended = false;
+          setConvertedFiles((prev) => {
+            if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
+              toast.error(
+                `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+              );
+              return prev;
+            }
+            appended = true;
+            return [...prev, ...newConvertedFiles];
+          });
+          if (appended) {
+            setFirstAccumulatedTac(
+              (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+            );
+          }
+        }
         clearConvertedFromQueue();
         // EV-040: keep manual TAC input after convert (do not clear).
         setConversionLog(issueBag.length > 0 ? { errors: [], issues: issueBag } : null);
@@ -910,7 +938,24 @@ export function FileConverter({
         }
       }
 
-      setConvertedFiles(newConvertedFiles);
+      if (newConvertedFiles.length > 0) {
+        let appended = false;
+        setConvertedFiles((prev) => {
+          if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
+            toast.error(
+              `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+            );
+            return prev;
+          }
+          appended = true;
+          return [...prev, ...newConvertedFiles];
+        });
+        if (appended) {
+          setFirstAccumulatedTac(
+            (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+          );
+        }
+      }
       clearConvertedFromQueue();
       // EV-040: keep manual TAC input after convert. Clear failed spans only on hard success.
       if (!softFail) {
@@ -952,8 +997,54 @@ export function FileConverter({
     }
   };
 
+  const handleValidateOnly = async () => {
+    if (isReadOnly) {
+      return;
+    }
+    const xmlFromPaste = manualInput.trim();
+    const xmlFiles = pendingFiles.filter((f) => f.name.toLowerCase().endsWith('.xml'));
+    if (xmlFiles.length > 1) {
+      toast.error('Validate mode accepts one .xml file at a time.');
+      return;
+    }
+    const xmlContent = xmlFromPaste || xmlFiles[0]?.content?.trim() || '';
+    if (!xmlContent) {
+      toast.error('Paste IWXXM XML or upload one .xml file to validate.');
+      return;
+    }
+    setIsConverting(true);
+    setValidateReport(null);
+    setConversionStatus({ type: 'loading', message: 'Validating IWXXM…' });
+    try {
+      const report = await validateIwxxm({
+        xmlContent,
+        profile: conversionParams.profile,
+        iwxxmVersion: conversionParams.iwxxmVersion,
+        stopOnError: true,
+      });
+      setValidateReport(report);
+      setConversionStatus({ type: 'idle' });
+      if (report.is_valid) {
+        toast.success('IWXXM validation passed');
+      } else {
+        toast.warning('IWXXM validation reported failures');
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'IWXXM validation failed';
+      setConversionStatus({ type: 'error', message });
+      toast.error(message);
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
   const handleConvert = async () => {
     if (isReadOnly) {
+      return;
+    }
+    if (inputMode === 'validate_iwxxm') {
+      await handleValidateOnly();
       return;
     }
     setIsConverting(true);
@@ -1061,6 +1152,8 @@ export function FileConverter({
     setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
+    setValidateReport(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     onActiveSessionIdChange?.(null);
@@ -1076,6 +1169,8 @@ export function FileConverter({
     // Drop prior conversion/preview state so demo TAC is never paired with stale XML.
     setPendingFiles([]);
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
+    setValidateReport(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
@@ -1136,7 +1231,9 @@ export function FileConverter({
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
-    a.download = outputArchiveName(outputFilename);
+    a.download = outputArchiveName(outputFilename, {
+      firstTac: firstAccumulatedTac ?? convertedFiles[0]?.originalContent,
+    });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1335,6 +1432,8 @@ export function FileConverter({
     setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
+    setValidateReport(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
@@ -1649,17 +1748,22 @@ export function FileConverter({
               aria-busy={isConverting}
               aria-label={
                 isConverting
-                  ? 'Converting files, please wait'
-                  : 'Convert TAC to IWXXM XML'
+                  ? inputMode === 'validate_iwxxm'
+                    ? 'Validating IWXXM, please wait'
+                    : 'Converting files, please wait'
+                  : inputMode === 'validate_iwxxm'
+                    ? 'Validate IWXXM XML'
+                    : 'Convert TAC to IWXXM XML'
               }
             >
               <Loader2
                 className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
                 aria-hidden="true"
               />
-              Convert
+              {inputMode === 'validate_iwxxm' ? 'Validate' : 'Convert'}
             </Button>
-            {isOperatorDisseminationDestinationsEnabled() ? (
+            {isOperatorDisseminationDestinationsEnabled() &&
+            inputMode !== 'validate_iwxxm' ? (
               <Button
                 data-testid="convert-and-send-button"
                 onClick={handleConvertAndSend}
@@ -1709,6 +1813,7 @@ export function FileConverter({
               </Button>
             ) : null}
             <Button
+              data-testid="download-zip-button"
               onClick={handleDownloadAll}
               disabled={isBusy || !hasConverted}
               variant="outline"
@@ -1721,6 +1826,7 @@ export function FileConverter({
               </span>
             </Button>
             <Button
+              data-testid="clear-queue-button"
               onClick={handleClear}
               variant="outline"
               className="min-w-[5.5rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
@@ -1749,7 +1855,9 @@ export function FileConverter({
                   htmlFor="manual-input"
                   className="block text-base font-medium text-gray-900 dark:text-white"
                 >
-                  Manual TAC Input
+                  {inputMode === 'validate_iwxxm'
+                    ? 'Manual IWXXM Input'
+                    : 'Manual TAC Input'}
                 </label>
                 <div className="flex flex-wrap items-center gap-2">
                   <div
@@ -1763,6 +1871,7 @@ export function FileConverter({
                         ['tac', 'TAC report'],
                         ['ahl_bulletin', 'AHL bulletin'],
                         ['collect_iwxxm', 'IWXXM COLLECT'],
+                        ['validate_iwxxm', 'Validate IWXXM'],
                       ] as const
                     ).map(([value, label]) => (
                       <button
@@ -1840,6 +1949,15 @@ export function FileConverter({
                   until member extract ships).
                 </p>
               )}
+              {inputMode === 'validate_iwxxm' && (
+                <p
+                  className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                  data-testid="validate-iwxxm-help"
+                >
+                  Paste IWXXM XML or upload one <code>.xml</code> file. Runs layered
+                  validation only — no TAC conversion.
+                </p>
+              )}
               {bulletinSummary && (
                 <p
                   className="mb-2 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-100"
@@ -1866,7 +1984,11 @@ export function FileConverter({
                     onChange={setManualInput}
                     readOnly={isReadOnly}
                     placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
-                    aria-label="Enter METAR data manually"
+                    aria-label={
+                      inputMode === 'validate_iwxxm'
+                        ? 'Enter IWXXM XML manually'
+                        : 'Enter METAR data manually'
+                    }
                     className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
                     failedSpans={failedSpans}
                     issueSpans={issueSpans}
@@ -2300,6 +2422,8 @@ export function FileConverter({
                 minLogLevel={conversionParams.logLevel as ConvertLogLevel}
               />
             )}
+
+            {validateReport && <ValidateIwxxmReport report={validateReport} />}
 
             {/* Conversion Status Display */}
             {conversionStatus.type !== 'idle' && (

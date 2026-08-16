@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: metar-frontend-apex
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Do not use http01-edit-in-place: ACME must use a separate solver Ingress so
+    # /.well-known/acme-challenge is not 301'd by metar-apex-redirect.
+    # ssl-redirect false: HTTP apex hits the redirect pod → HTTPS app in one hop.
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: tac-to-iwxxm.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: metar-apex-redirect
+                port:
+                  name: http
+    - host: www.tac-to-iwxxm.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: metar-apex-redirect
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - tac-to-iwxxm.com
+        - www.tac-to-iwxxm.com
+      secretName: metar-frontend-apex-tls

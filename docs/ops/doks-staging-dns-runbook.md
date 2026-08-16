@@ -19,8 +19,14 @@ kubectl --context <staging> -n ingress-nginx get svc ingress-nginx-controller \
 |------|------|--------|-----|
 | A | `api.staging` | `143.244.202.13` | 300 |
 | A | `app.staging` | `143.244.202.13` | 300 |
+| A | `staging` | `143.244.202.13` | 300 |
 
 (`$STAGING_LB_IP` as of EV-044 provision 2026-08-08 — re-check if LB is replaced.)
+
+Host `staging` is the short redirect host (`staging.tac-to-iwxxm.com` →
+`app.staging.tac-to-iwxxm.com` via Ingress `metar-frontend-staging-short`).
+**Required** when a prod wildcard `*.tac-to-iwxxm.com` points at the prod LB — otherwise
+`staging` incorrectly resolves to prod.
 
 (Or CNAME both to the same LB hostname if preferred.)
 
@@ -32,10 +38,13 @@ retired after EV-044 dual-cluster cutover).
 ```bash
 dig +short api.staging.tac-to-iwxxm.com
 dig +short app.staging.tac-to-iwxxm.com
-# expect $STAGING_LB_IP
+dig +short staging.tac-to-iwxxm.com
+# expect $STAGING_LB_IP (143.244.202.13) — staging must NOT be 168.144.12.70
 
 curl -fsS https://api.staging.tac-to-iwxxm.com/health
 curl -fsSI https://app.staging.tac-to-iwxxm.com/ | head -5
+curl -sI "https://staging.tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
+# expect 301/308 → https://app.staging.tac-to-iwxxm.com/foo?bar=1
 
 kubectl --context <staging> -n metar-iwxxm-staging get certificate
 # READY=True after ACME succeeds

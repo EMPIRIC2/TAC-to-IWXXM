@@ -1,11 +1,14 @@
 /**
  * TC-EV055-003 — FE C14N helper parity with Python iwxxm_validate.c14n.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, afterEach } from 'vitest';
 
 import { c14nEqual, c14nXml, localNameForC14n } from './c14nXml';
 
 describe('c14nXml (TC-EV055-003)', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
   const pretty = `<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">
   <iwxxm:observation>
@@ -100,5 +103,39 @@ describe('c14nXml (TC-EV055-003)', () => {
     expect(localNameForC14n('{http://www.opengis.net/gml/3.2}id')).toBe('id');
     expect(localNameForC14n('gml:id')).toBe('id');
     expect(localNameForC14n('id')).toBe('id');
+  });
+
+  it('omits comment and processing-instruction children from C14N output', () => {
+    expect(c14nXml('<r><!--skip--><?pi data?><c>x</c></r>')).toBe('<r><c>x</c></r>');
+  });
+
+  it('skips a null attributes.item slot while serializing', () => {
+    const orig = NamedNodeMap.prototype.item;
+    vi.spyOn(NamedNodeMap.prototype, 'item').mockImplementation(function (
+      this: NamedNodeMap,
+      index: number,
+    ) {
+      if (index === 1) {
+        return null;
+      }
+      return orig.call(this, index);
+    });
+    expect(c14nXml('<r a="1" b="2"><c/></r>')).toContain('<r');
+  });
+
+  it('uses unknown when parsererror has empty textContent', () => {
+    vi.spyOn(DOMParser.prototype, 'parseFromString').mockReturnValue({
+      querySelector: () => ({ textContent: null }),
+      documentElement: {} as Element,
+    } as unknown as Document);
+    expect(() => c14nXml('<ok/>')).toThrow(/XML parse failed for C14N: unknown/);
+  });
+
+  it('throws when the parsed document has no root element', () => {
+    vi.spyOn(DOMParser.prototype, 'parseFromString').mockReturnValue({
+      querySelector: () => null,
+      documentElement: null,
+    } as unknown as Document);
+    expect(() => c14nXml('<ok/>')).toThrow(/missing document element/);
   });
 });

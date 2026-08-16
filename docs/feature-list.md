@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-11 (S066 / EV-056 — #988 Quality metrics detail page + collapsible diffs; prior EV-055)
+> **Last updated**: 2026-08-15 (S067 / EV-057 — #948 apex redirect + #903 accumulate ZIP + #838 validate-only IWXXM)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063 / EV-054 **F7.q** (#836); **deepen** S064 / EV-055 F7.q whitespace-normalize + validate disposition (#982/#980/#979); **deepen** S066 / EV-056 F7.q detail page + collapsible diffs (#988) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -37,7 +37,7 @@
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy; **deepen** S067 / EV-057 apex → app redirect (#948) |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
@@ -310,6 +310,8 @@
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
   | F7.q | #836 / #982 / #988 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056) |
+  | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
+  | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -436,6 +438,36 @@
   3. Diff shows collapsible equal-context hunks (default 3 lines; expand N / expand all).
   4. Unequal SIGMET stems remain navigable and readable on staging.
   5. UJ-056 / TC-EV056 updated; FE unit + Playwright smoke (H4–H5 via 13).
+- **S067 / EV-057 deepen (F7.r / #903 — accumulate conversions → one ZIP)**: Successful
+  converts **append** to the current result set instead of wiping prior successes so operators
+  can convert A→B→C and **Download all** as one ZIP. Default archive basename when custom
+  output name is empty: sanitize **first ~8 characters** of the **first** successful conversion’s
+  TAC + timestamp (`{stem}_{yyyyMMddHHmmss}.zip`). Custom basename keeps `{base}.zip` (#664 /
+  EV-005). Explicit clear/reset restores empty batch. Failed convert leaves prior successes.
+  Soft accumulate cap **≤200** results (`D-S067-903-cap=1c` — align with F33 file-count
+  ceiling for sequential UI; clear error when over). Does **not** flip F7 → Implemented.
+  Notes F1/F6 download path only — no batch disseminate.
+- **Acceptance (EV-057 / #903 — F7.r)** — **approved** (`D-S067-01-ac=1`):
+  1. N≥2 sequential successful converts remain visible without re-pasting earlier TAC.
+  2. Download all packages every accumulated IWXXM into one ZIP (per-file naming unchanged).
+  3. Empty custom name → `{stem}_{yyyyMMddHHmmss}.zip` (≈8 sanitized TAC chars of first success).
+  4. Custom basename → `{base}.zip` per #664.
+  5. Explicit clear/reset of the accumulated set.
+  6. Failed convert leaves prior successes untouched.
+  7. Soft accumulate cap **≤200**; clear error when over (`D-S067-903-cap=1c`).
+  8. UJ-057 / TC-EV057-* unit + Playwright; H4–H5 via 13.
+- **S067 / EV-057 deepen (F7.s / #838 — validate existing IWXXM)**: Dedicated **Validate**
+  mode: paste IWXXM XML and/or upload **one** `.xml` file through F2 `iwxxm-validate` **without**
+  TAC→IWXXM convert. Reuse existing `POST /api/v1/validate` unless 04 finds a wire gap.
+  Same F4 version/profile controls as convert/validate elsewhere. Multi-file/zip deferred.
+  Guest-usable (no Supabase). Does **not** flip F7 → Implemented; does not replace F7.q.
+- **Acceptance (EV-057 / #838 — F7.s)** — **approved** (`D-S067-01-ac=1`):
+  1. Paste IWXXM and run validate without converting TAC.
+  2. Upload one IWXXM `.xml` and see F2 XSD+Schematron results.
+  3. Invalid / non-IWXXM XML fails clearly (structured error; no opaque 5xx for bad input).
+  4. Version/profile selection consistent with convert/validate UI (F4).
+  5. Happy path works without Supabase.
+  6. UJ-058 / TC-EV057-* : good fixture pass; broken XML structured fail; H4–H5 via 13.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -1441,9 +1473,23 @@
   13. Shared-cluster staging namespace removed after dual-cluster cutover (**TC-F30-013**)
   14. Prod Deploy via `vYYYY.MM.DD-deploy` tag (or `workflow_dispatch`) after full CI incl.
       `e2e-smoke` (**TC-F30-014** / TC-EV051-*)
+- **S067 / EV-057 deepen (#948 — apex → app redirect)**: Configure prod apex
+  `https://tac-to-iwxxm.com` (and `www` when DNS/cert covers it) to permanently redirect to
+  canonical `https://app.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-apex`**
+  plus tiny nginx **`metar-apex-redirect`** (`D-S067-948-ingress=2a`,
+  `D-S067-948-redirect=1a`). Preserve path + query. HTTP must end on HTTPS app URL.
+  Document mechanism in [deploy.md](deploy.md). Staging short host
+  `staging.tac-to-iwxxm.com` → `app.staging.tac-to-iwxxm.com` mirrors the same
+  sibling-Ingress + redirect-pod pattern. No new Fn.
+- **Acceptance (EV-057 / #948 — F30 deepen)** — **approved** (`D-S067-01-ac=1`):
+  1. `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent).
+  2. Path + query preserved.
+  3. `www` included if DNS/cert covers it; HTTP→HTTPS app URL.
+  4. TLS covers apex (and `www` if enabled).
+  5. Deploy docs state prod FE Ingress extension; TC-EV057-948 / ops smoke.
 - **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer Environment
-  approvals (solo uses tag/dispatch)
-- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051
+  approvals (solo uses tag/dispatch); changing canonical app host away from `app.`
+- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; E57-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886/#948; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051; S067 / EV-057
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 

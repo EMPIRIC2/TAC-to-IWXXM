@@ -42,4 +42,8 @@ describe('unifiedLineDiff', () => {
   it('splitLines normalizes CRLF', () => {
     expect(splitLines('a\r\nb\r\n')).toEqual(['a', 'b', '']);
   });
+
+  it('splitLines normalizes bare CR', () => {
+    expect(splitLines('a\rb')).toEqual(['a', 'b']);
+  });
 });

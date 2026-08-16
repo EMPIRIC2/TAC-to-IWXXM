@@ -6,10 +6,15 @@ export type OperatorInputKind =
   | 'tac'
   | 'ahl_bulletin'
   | 'collect_iwxxm'
+  | 'iwxxm_document'
   | 'gzip'
   | 'unknown';
 
-export type OperatorInputMode = 'tac' | 'ahl_bulletin' | 'collect_iwxxm';
+export type OperatorInputMode =
+  | 'tac'
+  | 'ahl_bulletin'
+  | 'collect_iwxxm'
+  | 'validate_iwxxm';
 
 const AHL_LINE = /^[A-Z]{4}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$/m;
 
@@ -43,6 +48,23 @@ export function looksLikeCollectIwxxm(text: string): boolean {
 }
 
 /**
+ * Detect a standalone IWXXM document (not a COLLECT wrapper) for validate-only mode.
+ *
+ * @param text - Raw XML text
+ */
+export function looksLikeIwxxmDocument(text: string): boolean {
+  const trimmed = text.trim();
+  if (!trimmed.startsWith('<')) {
+    return false;
+  }
+  if (looksLikeCollectIwxxm(trimmed)) {
+    return false;
+  }
+  const head = trimmed.slice(0, 4000).toLowerCase();
+  return head.includes('iwxxm');
+}
+
+/**
  * Guess kind from filename extension and optional content.
  *
  * @param fileName - File name
@@ -57,17 +79,21 @@ export function detectInputKind(fileName: string, content?: string): OperatorInp
     if (looksLikeCollectIwxxm(content)) {
       return 'collect_iwxxm';
     }
+    if (looksLikeIwxxmDocument(content)) {
+      return 'iwxxm_document';
+    }
     if (looksLikeAhlBulletin(content)) {
       return 'ahl_bulletin';
     }
-    if (looksLikeCollectIwxxm(content) === false && content.trim().startsWith('<')) {
-      if (content.toLowerCase().includes('iwxxm')) {
-        return 'collect_iwxxm';
-      }
-    }
   }
   if (lower.endsWith('.xml')) {
-    return content && looksLikeCollectIwxxm(content) ? 'collect_iwxxm' : 'unknown';
+    if (content && looksLikeCollectIwxxm(content)) {
+      return 'collect_iwxxm';
+    }
+    if (content && looksLikeIwxxmDocument(content)) {
+      return 'iwxxm_document';
+    }
+    return 'unknown';
   }
   return 'tac';
 }
@@ -83,6 +109,9 @@ export function kindToMode(kind: OperatorInputKind): OperatorInputMode {
   }
   if (kind === 'collect_iwxxm') {
     return 'collect_iwxxm';
+  }
+  if (kind === 'iwxxm_document') {
+    return 'validate_iwxxm';
   }
   return 'tac';
 }

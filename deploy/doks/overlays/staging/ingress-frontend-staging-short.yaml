@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: metar-frontend-staging-short
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: staging.tac-to-iwxxm.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: metar-staging-short-redirect
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - staging.tac-to-iwxxm.com
+      secretName: metar-frontend-staging-short-tls

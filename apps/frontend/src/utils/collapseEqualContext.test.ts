@@ -24,6 +24,23 @@ describe('collapseEqualContext', () => {
     expect(DEFAULT_DIFF_CONTEXT).toBe(3);
   });
 
+  it('returns no segments for an empty diff and uses default options', () => {
+    expect(collapseEqualContext([])).toEqual([]);
+    const segments = collapseEqualContext(equals(2));
+    expect(segments).toHaveLength(1);
+    expect(segments[0]?.type).toBe('lines');
+  });
+
+  it('treats a negative context as zero', () => {
+    const lines: UnifiedDiffLine[] = [
+      { op: 'equal', text: 'a', leftLine: 1, rightLine: 1 },
+      { op: 'add', text: 'b', leftLine: null, rightLine: 2 },
+      { op: 'equal', text: 'c', leftLine: 2, rightLine: 3 },
+    ];
+    const mask = visibleEqualContextMask(lines, -1);
+    expect(mask).toEqual([false, true, false]);
+  });
+
   it('shows all lines when there are no changes', () => {
     const lines = equals(10);
     const segments = collapseEqualContext(lines, { context: 3 });

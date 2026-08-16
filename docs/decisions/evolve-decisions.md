@@ -3,6 +3,80 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-057 — M0 Ready: apex redirect + accumulate ZIP + validate IWXXM (#948 / #903 / #838) (S067)
+
+**Session**: S067-m0-ready-apex-accumulate-validate  
+**Features**: deepen **F7**; **F1**/**F6** (#903); **F2**/**F4** (#838); deploy hosts (#948)  
+**Started**: 2026-08-15  
+**Branch**: `evolve/EV-057-m0-ready-apex-accumulate-validate` (base `stage@b796882e`)  
+**Status**: **in_progress** — Phase 0 intake locked; next **01-requirements**  
+**Issues**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948), [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903), [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838)  
+**Parent**: M0 Ready queue after S066 / EV-056  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F1] [Corpus: product §F6]
+[Corpus: product §F2] [Corpus: product §F4] [Corpus: tech-spec] [Corpus: deploy]
+[Corpus: journeys] [Corpus: decisions §EV-057]
+
+### Scope (Phase 0 — locked 2026-08-15)
+
+| ID | Decision |
+|----|----------|
+| D-S067-first | **1a** — Open on #948 first within the pack |
+| D-S067-pack | **2c** — One evolve cycle for all three Ready issues |
+| D-S067-success | **3c** — Ship to `stage` + promote path available |
+| D-S067-oos | **1a** — Exclude #841/#727/#874; S056 ruleset-admin leftover; drive-bys |
+| D-S067-promote | **2b** — Land all three on `stage` first; promote only after re-approve |
+| D-S067-blockers | **3a** — None known; surface as found |
+| D-S067-preset | **4a** — Standard (`00→16→01→02→04→07→08→09→10→11→12→13`) |
+| D-S067-type | **1a** — `feature` session → 16-evolve |
+| D-S067-order | **2a** — #948 → #903 → #838 |
+| D-S067-ui-preview | **3a** — Remind at 11-verify-impl (non-deployed) |
+| D-S067-proceed | **4a** — Open S067 + EV-057; write brief/routing/plan card |
+| D-S067-board | **1** — #948 → In progress (WIP 1); #903/#838 stay Ready until started |
+| D-S067-903-cap | **1c** — Soft accumulate cap **≤200** |
+| D-S067-948-ingress | **2a** — Extend prod FE Ingress apex/www → app `$request_uri` |
+| D-S067-948-redirect | **1a** — Tiny nginx redirect Deployment (webhook blocks `$` on `permanent-redirect`; snippets off) |
+| D-S067-948-apply | **1a** — Apply sibling apex Ingress on prod after public Dig green (2026-08-16) |
+| D-S067-gateA | **1** — PASS Gate A → 04-tech-plan |
+| D-S067-04-plan | **1** — EP approved (sibling apex Ingress; M1→M2→M3) |
+| D-S067-04-next | **1a** — skip 05/06 → 07-build M1 |
+
+### Acceptance (`D-S067-01-ac=1`)
+
+**#948 / F30**
+1. `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent).
+2. Path + query preserved.
+3. `www` if DNS/cert covers; HTTP ends on HTTPS app URL.
+4. TLS covers apex (and `www` if enabled).
+5. Document **prod FE Ingress** + **`metar-apex-redirect`** in deploy docs (`D-S067-948-ingress=2a`, `D-S067-948-redirect=1a`).
+
+**#903 / F7.r / UJ-057**
+1. N≥2 sequential successes remain visible.
+2. Download all → one ZIP of accumulated IWXXM.
+3. Empty custom name → `{stem}_{yyyyMMddHHmmss}.zip` (≈8 sanitized TAC chars of first success).
+4. Custom basename → `{base}.zip` (#664).
+5. Explicit clear/reset.
+6. Failed convert leaves prior successes.
+7. Soft accumulate cap **≤200**; clear error when over (`D-S067-903-cap=1c`).
+8. UJ-057 / TC-EV057-903-* + H4–H5.
+
+**#838 / F7.s / UJ-058**
+1. Paste IWXXM → validate without TAC convert.
+2. Upload one `.xml` → F2 results.
+3. Invalid/non-IWXXM → structured fail.
+4. F4 version/profile parity.
+5. Guest-usable (no Supabase).
+6. UJ-058 / TC-EV057-838-* + H4–H5.
+
+### Out of scope
+
+- Epic [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) and children #727 / #874 (M4/M5)
+- S056 converter-perf ruleset apply (repo admin; not a ticket)
+- Batch disseminate of accumulated conversions; F33 as substitute for #903
+- Reverse-engineering TAC from IWXXM
+- Auto-promote to `main` without re-approve after full pack on `stage`
+
+---
+
 ## Cycle EV-056 — Quality metrics detail page + collapsible diffs (#988) (S066)
 
 **Session**: S066-quality-metrics-diff-page  

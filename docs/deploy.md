@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
-> **Last updated**: 2026-08-08 (S053 / EV-044 — dual DOKS clusters + DO Projects)
+> **Last updated**: 2026-08-16 (S067 / EV-057 — #948 apex → app; staging short-host mirror)
 
 ## Topology (F30 — DOKS dual env / dual cluster)
 
@@ -43,6 +43,60 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 | LB | `168.144.12.70` (prod) | `143.244.202.13` (staging; re-check if LB replaced) |
 | Config profile | `config/prod.json` | `config/staging.json` |
 | Product DB | DO Postgres `metar-iwxxm` / `defaultdb` | DO Postgres `metar-iwxxm-staging` (dedicated) |
+
+### Apex domain redirect (EV-057 / #948)
+
+**Canonical operator app host** remains `https://app.tac-to-iwxxm.com` (staging:
+`https://app.staging.tac-to-iwxxm.com`). Prod apex `https://tac-to-iwxxm.com` (and
+`https://www.tac-to-iwxxm.com`) must **permanently redirect** to the app host via sibling
+Ingress **`metar-frontend-apex`**
+([`deploy/doks/overlays/prod/ingress-frontend-apex.yaml`](../deploy/doks/overlays/prod/ingress-frontend-apex.yaml))
+backed by **`metar-apex-redirect`**
+([`deploy/doks/overlays/prod/redirect-apex.yaml`](../deploy/doks/overlays/prod/redirect-apex.yaml))
+(`D-S067-948-impl`, amended `D-S067-948-redirect=1a`). ingress-nginx **v1.12+** rejects
+`$request_uri` on `permanent-redirect` (annotation validation / CVE-2023-5044) and this
+cluster has snippet annotations **disabled**, so the 301 lives in a tiny nginx pod
+(`return 301 https://app.tac-to-iwxxm.com$request_uri`). Do **not** put a redirect
+annotation on `metar-frontend` (would loop `app.`). ACME HTTP-01 uses a **separate**
+solver Ingress (no `http01-edit-in-place`) so challenges are not redirected.
+
+| Requirement | Behavior |
+|-------------|----------|
+| HTTPS apex | `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301/308) |
+| Path/query | Preserved via nginx `$request_uri` in `metar-apex-redirect` |
+| `www` | Included on the same sibling Ingress + TLS secret `metar-frontend-apex-tls` |
+| HTTP | `ssl-redirect: false` on the sibling Ingress; redirect pod 301s HTTP and HTTPS to the HTTPS app URL |
+| TLS | cert-manager `letsencrypt-prod` issues `metar-frontend-apex-tls` once DNS hits LB |
+| Staging short host | `https://staging.tac-to-iwxxm.com` → `https://app.staging.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-staging-short`** + **`metar-staging-short-redirect`**; TLS secret `metar-frontend-staging-short-tls`. DNS A must be **staging LB** `143.244.202.13` (override prod `*` wildcard). |
+
+#### Staging short-host smoke
+
+```bash
+dig +short A staging.tac-to-iwxxm.com
+# expect: 143.244.202.13  (NOT 168.144.12.70)
+
+curl -sI "https://staging.tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
+# Expect: 301/308 → https://app.staging.tac-to-iwxxm.com/foo?bar=1
+```
+
+#### DNS prerequisite (T1.1 — 2026-08-15; apex cutover 2026-08-16)
+
+**Prod**: apex/`www` → prod LB **`168.144.12.70`** (operator cutover done 2026-08-16).
+
+**Staging short host**: add explicit A `staging.tac-to-iwxxm.com` → **`143.244.202.13`**.
+A bare `*.tac-to-iwxxm.com` pointing at prod will otherwise send `staging` to the wrong LB.
+
+#### Ops smoke (UJ-OPS-002 / TC-EV057-948)
+
+```bash
+# Expect permanent redirect to app (after DNS + Ingress live)
+curl -sI "https://tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
+# Expect: HTTP/2 301 (or 308) and Location: https://app.tac-to-iwxxm.com/foo?bar=1
+
+curl -sI "https://www.tac-to-iwxxm.com/" | egrep -i '^(HTTP|location):'
+```
+
+[Corpus: product §F30] [Corpus: deploy] [Corpus: tech-spec]
 
 Soak checklist (closed early under `D-S038-t65-waive`):
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).

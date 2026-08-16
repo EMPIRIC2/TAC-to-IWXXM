@@ -77,9 +77,20 @@ const mockMassIngestFiles = vi.hoisted(() =>
     ],
   }),
 );
+const mockValidateIwxxm = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    is_valid: true,
+    version: '2025-2',
+    layers_passed: ['XML_WELLFORMED', 'XML_SCHEMA'],
+    layers_failed: [],
+    package_ok: true,
+    package_issues: [],
+  }),
+);
 const mockUploadConvertedFiles = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
 );
+
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
   error: vi.fn(),
@@ -120,6 +131,7 @@ vi.mock('/utils/api', () => ({
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
   lintTac: mockLintTac,
   decodeTac: mockDecodeTac,
+  validateIwxxm: mockValidateIwxxm,
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
@@ -271,6 +283,7 @@ describe('FileConverter Component', () => {
     mockLintTac.mockReset();
     mockMassIngestFiles.mockReset();
     mockInflateGzipToText.mockReset();
+    mockValidateIwxxm.mockReset();
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
@@ -295,6 +308,14 @@ describe('FileConverter Component', () => {
     mockConvertMetarToIwxxm.mockResolvedValue({
       success: true,
       data: '<iwxxm>test</iwxxm>',
+    });
+    mockValidateIwxxm.mockResolvedValue({
+      is_valid: true,
+      version: '2025-2',
+      layers_passed: ['XML_WELLFORMED', 'XML_SCHEMA'],
+      layers_failed: [],
+      package_ok: true,
+      package_issues: [],
     });
     mockConvertBulletin.mockResolvedValue({
       bulletin_meta: {
@@ -361,6 +382,13 @@ describe('FileConverter Component', () => {
 
       await user.click(screen.getByTestId('sign-in-button'));
       expect(onRequestLogin).toHaveBeenCalled();
+      onRequestLogin.mockClear();
+      await user.click(
+        screen
+          .getByTestId('guest-loss-notice')
+          .querySelector('button') as HTMLButtonElement,
+      );
+      expect(onRequestLogin).toHaveBeenCalled();
     });
 
     it('shows first-visit privacy notice and opens settings from footer', async () => {
@@ -373,6 +401,8 @@ describe('FileConverter Component', () => {
 
       await user.click(screen.getByRole('button', { name: /open privacy settings/i }));
       expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: /^close$/i }));
+      expect(screen.queryByTestId('privacy-settings-dialog')).not.toBeInTheDocument();
     });
 
     it('opens privacy settings from the first-visit notice CTA', async () => {
@@ -2284,7 +2314,7 @@ describe('FileConverter Component', () => {
       expect(convertAndSend).not.toBeDisabled();
     });
 
-    it('replaces prior result cards on successful convert (#555 / F1-R555-1)', async () => {
+    it('accumulates prior result cards on successful convert (#903 / F7.r; supersedes #555 replace)', async () => {
       const user = userEvent.setup();
       mockConvertMetarToIwxxm
         .mockResolvedValueOnce({
@@ -2303,12 +2333,15 @@ describe('FileConverter Component', () => {
         expect(screen.getByText('<iwxxm>first-batch</iwxxm>')).toBeInTheDocument();
       });
 
-      await user.type(textarea, 'METAR SECOND BATCH');
+      fireEvent.change(textarea, { target: { value: 'METAR SECOND BATCH' } });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
         expect(screen.getByText('<iwxxm>second-batch</iwxxm>')).toBeInTheDocument();
       });
-      expect(screen.queryByText('<iwxxm>first-batch</iwxxm>')).not.toBeInTheDocument();
+      expect(screen.getByText('<iwxxm>first-batch</iwxxm>')).toBeInTheDocument();
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 2 converted files as zip/i,
+      );
     });
 
     it('keeps prior results when convert fails and shows error log panel (#555)', async () => {
@@ -4748,6 +4781,243 @@ describe('FileConverter Component', () => {
       } finally {
         vi.useRealTimers();
       }
+    });
+  });
+
+  describe('EV-057 / #903 accumulate conversions (F7.r)', () => {
+    const tacA = 'METAR KJFK 011200Z 18012KT 10SM FEW030 15/07 A3005';
+    const tacB = 'METAR KLAX 011300Z 25008KT 10SM SCT040 20/12 A2990';
+
+    it('accumulates sequential successes and clears the batch', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>a</iwxxm>',
+              tac_input: tacA,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        })
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>b</iwxxm>',
+              tac_input: tacB,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /conversion results/i }),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.change(screen.getByTestId('tac-editor'), { target: { value: tacB } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(2);
+      });
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 2 converted files as zip/i,
+      );
+
+      await user.click(screen.getByTestId('clear-queue-button'));
+      expect(
+        screen.queryByRole('region', { name: /conversion results/i }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('keeps prior successes when a later convert fails', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>a</iwxxm>',
+              tac_input: tacA,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        })
+        .mockRejectedValueOnce(new Error('network down'));
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /conversion results/i }),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'NOT A METAR' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(2);
+      });
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 1 converted files as zip/i,
+      );
+    });
+
+    it('names Download ZIP from first TAC stem when custom name is empty', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            iwxxm_xml: '<iwxxm>a</iwxxm>',
+            tac_input: tacA,
+            name: 'manual_input.txt',
+          },
+        ],
+        errors: [],
+        issues: [],
+      });
+      let downloadedName = '';
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(function (this: HTMLAnchorElement) {
+          downloadedName = this.download;
+        });
+      vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:zip');
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('download-zip-button')).toBeEnabled();
+      });
+      await user.click(screen.getByTestId('download-zip-button'));
+
+      expect(downloadedName).toMatch(/^METARKJF_\d{14}\.zip$/);
+      clickSpy.mockRestore();
+    });
+
+    it('blocks accumulating beyond the soft cap of 200', async () => {
+      const user = userEvent.setup();
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            {
+              iwxxm_xml: '<iwxxm>a</iwxxm>',
+              tac_input: tacA,
+              name: 'manual_input.txt',
+            },
+          ],
+          errors: [],
+          issues: [],
+        })
+        .mockResolvedValueOnce({
+          results: Array.from({ length: 200 }, (_, i) => ({
+            iwxxm_xml: `<x${i}/>`,
+            tac_input: `METAR X${i}=`,
+            name: `r${i}.txt`,
+          })),
+          errors: [],
+          issues: [],
+        });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.type(screen.getByTestId('tac-editor'), tacA);
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('download-zip-button')).toBeEnabled();
+      });
+
+      fireEvent.change(screen.getByTestId('tac-editor'), { target: { value: tacB } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockToast.error).toHaveBeenCalledWith(
+          expect.stringMatching(/Cannot keep more than 200 conversions/i),
+        );
+      });
+      expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
+        /download all 1 converted files as zip/i,
+      );
+    });
+  });
+
+  describe('EV-057 / #838 validate-only IWXXM (F7.s)', () => {
+    const goodXml =
+      '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><ok/></iwxxm:METAR>';
+
+    it('pastes XML in Validate mode and shows a pass report without convert', async () => {
+      const user = userEvent.setup();
+      mockValidateIwxxm.mockResolvedValueOnce({
+        is_valid: true,
+        version: '2025-2',
+        layers_passed: ['XML_WELLFORMED', 'XML_SCHEMA', 'SCHEMATRON'],
+        layers_failed: [],
+        package_ok: true,
+        package_issues: [],
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      expect(screen.getByTestId('validate-iwxxm-help')).toBeInTheDocument();
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: goodXml },
+      });
+      await user.click(screen.getByRole('button', { name: /validate iwxxm xml/i }));
+
+      await waitFor(() => {
+        expect(mockValidateIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ xmlContent: goodXml }),
+        );
+      });
+      expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+      expect(screen.getByTestId('validate-iwxxm-report')).toBeInTheDocument();
+      expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(/Valid/i);
+    });
+
+    it('shows structured fail for invalid XML validate response', async () => {
+      const user = userEvent.setup();
+      mockValidateIwxxm.mockResolvedValueOnce({
+        is_valid: false,
+        version: '2025-2',
+        layers_passed: ['XML_WELLFORMED'],
+        layers_failed: ['XML_SCHEMA'],
+        package_ok: false,
+        package_issues: [{ message: 'Element METAR unexpected', code: 'XSD' }],
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: '<not-iwxxm/>' },
+      });
+      await user.click(screen.getByRole('button', { name: /validate iwxxm xml/i }));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(
+          /Invalid/i,
+        );
+      });
+      expect(screen.getByTestId('validate-iwxxm-failed-layers')).toHaveTextContent(
+        'XML_SCHEMA',
+      );
+      expect(screen.getByTestId('validate-iwxxm-issues')).toHaveTextContent(
+        /Element METAR unexpected/i,
+      );
     });
   });
 });
