@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "23808386"
-  tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
+  tip_sha: "6568f664"
+  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip 23808386 local — M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; Porkbun DNS cutover pending; tip not pushed"
+  tip_sha_note: "07-build tip 6568f664 local — M1–M3 repo tasks complete (14/14); next 08-verify-build; M1 #948 live AC still blocked on Porkbun DNS; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -31,7 +31,7 @@ active_session:
   - 948
   - 903
   - 838
-  board_note: "#948 repo done (live DNS pending Porkbun); #903 M2 nearly done (T2.1–T2.5); next M3 #838"
+  board_note: "#948 repo done (live AC blocked on Porkbun DNS); #903 M2 done; #838 M3 done; M1–M3 repo 14/14 complete; next 08-verify-build"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -66,7 +66,7 @@ active_session:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 07-build
-  current_stage_note: "07 M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
+  current_stage_note: "07-build M1–M3 repo tasks complete (14/14); next stage 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -118,7 +118,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 07-build in_progress M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; live DNS pending Porkbun; next M3 #838"
+    note: "IN PROGRESS — EV-057; 07-build M1–M3 repo complete (14/14); next 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -145,11 +145,12 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
+    note: "IN PROGRESS — M1–M3 repo tasks complete (14/14); next 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS"
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
+    note: "NEXT — pending after 07-build M1–M3 repo complete (14/14); M1 #948 live AC still blocked on Porkbun DNS"
   - stage: 09-qa
     required: true
     mode: delta
@@ -203,10 +204,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "23808386"
-  tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
+  tip_sha: "6568f664"
+  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip 23808386 local — M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; Porkbun DNS cutover pending; tip not pushed"
+  tip_sha_note: "07-build tip 6568f664 local — M1–M3 repo tasks complete (14/14); next 08-verify-build; M1 #948 live AC still blocked on Porkbun DNS; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -214,7 +215,7 @@ sessions:
   - 948
   - 903
   - 838
-  board_note: "#948 repo done (live DNS pending Porkbun); #903 M2 nearly done (T2.1–T2.5); next M3 #838"
+  board_note: "#948 repo done (live AC blocked on Porkbun DNS); #903 M2 done; #838 M3 done; M1–M3 repo 14/14 complete; next 08-verify-build"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -249,7 +250,7 @@ sessions:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 07-build
-  current_stage_note: "07 M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
+  current_stage_note: "07-build M1–M3 repo tasks complete (14/14); next stage 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -301,7 +302,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 07-build in_progress M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; live DNS pending Porkbun; next M3 #838"
+    note: "IN PROGRESS — EV-057; 07-build M1–M3 repo complete (14/14); next 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -328,11 +329,12 @@ sessions:
     mode: delta
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
+    note: "IN PROGRESS — M1–M3 repo tasks complete (14/14); next 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS"
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
+    note: "NEXT — pending after 07-build M1–M3 repo complete (14/14); M1 #948 live AC still blocked on Porkbun DNS"
   - stage: 09-qa
     required: true
     mode: delta
@@ -11243,9 +11245,9 @@ stages:
     evolve_cycle_id: EV-057
     skill_id: 07-build
     mode: delta
-    note: 'IN PROGRESS — S067/EV-057 M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover; tip 23808386'
-    tip_sha: 23808386
-    tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
+    note: 'IN PROGRESS — S067/EV-057 M1–M3 repo tasks complete (14/14); next stage 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS; tip 6568f664'
+    tip_sha: 6568f664
+    tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
     tip_sha_pushed: false
     pr_number:
     pr_url:
@@ -11256,13 +11258,13 @@ stages:
     ci_cd_pipeline_status:
     ci_cd_pipeline_note:
     pending_commit: false
-    current_milestone: M2
-    current_task: T2.5
-    active_milestone: M2
-    active_task: T2.5
-    active_task_status: in_progress
-    completed_through: T2.4
-    progress: M2 #903 nearly done (T2.1–T2.4 done; T2.5 UJ-057 added); next M3 #838; M1 #948 repo done (Porkbun DNS pending)
+    current_milestone: M3
+    current_task: T3.5
+    active_milestone: M3
+    active_task: T3.5
+    active_task_status: completed
+    completed_through: T3.5
+    progress: M1–M3 repo tasks complete (14/14); next 08-verify-build; M1 #948 live AC still blocked on Porkbun DNS
     skipped_tasks: []
     deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
@@ -36608,13 +36610,13 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "23808386"
-  tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
+  tip_sha: "6568f664"
+  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip 23808386 local — M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; Porkbun DNS cutover pending; tip not pushed"
+  tip_sha_note: "07-build tip 6568f664 local — M1–M3 repo tasks complete (14/14); next 08-verify-build; M1 #948 live AC still blocked on Porkbun DNS; tip not pushed"
   current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "07-build M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838). M1 #948 repo done; live DNS still pending operator Porkbun cutover."
+  current_stage_note: "07-build M1–M3 repo tasks complete (14/14); next stage 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -36703,8 +36705,8 @@ evolve_cycles:
   - docs/decisions/requirements-decisions.md
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
-  board_note: "#948 repo done (live DNS pending Porkbun); #903 M2 nearly done (T2.1–T2.5); next M3 #838"
-  note: "OPEN — EV-057/S067; 07-build M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; live DNS pending Porkbun; next M3 #838; tip 23808386 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
+  board_note: "#948 repo done (live AC blocked on Porkbun DNS); #903 M2 done; #838 M3 done; M1–M3 repo 14/14 complete; next 08-verify-build"
+  note: "OPEN — EV-057/S067; status in_progress; 07-build M1–M3 repo complete (14/14); next 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS; tip 6568f664 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -48376,15 +48378,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  ahead_of_origin: 23
+  ahead_of_origin: 13
   pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'workflow-state.yaml dirty after 04 COMPLETE S067/EV-057 tip 7db2c724; no git commit by workflow-state-manager'
-  tip_sha: "7db2c724"
-  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
-  tip_note: "S067/EV-057 tip 7db2c724 on evolve/EV-057-m0-ready-apex-accumulate-validate (04 draft; D-S067-04-plan=1); tip not pushed"
+  dirty_note: 'workflow-state.yaml dirty after recording tip 6568f664 S067/EV-057 M1–M3 repo complete; no git commit by workflow-state-manager'
+  tip_sha: "6568f664"
+  tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+  tip_note: "S067/EV-057 tip 6568f664 on evolve/EV-057-m0-ready-apex-accumulate-validate — 07-build M1–M3 repo complete (14/14); next 08-verify-build; M1 #948 live AC blocked on Porkbun DNS; tip not pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -48392,8 +48394,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "7db2c724"
-  evolve_tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+  evolve_tip_sha: "6568f664"
+  evolve_tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
   evolve_tip_sha_pushed: false
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
@@ -48413,6 +48415,7 @@ git_history:
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-16 tip 6568f664 — [T3.1-T3.5] Validate IWXXM mode; 07-build M1–M3 repo complete (14/14); next stage 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS; EV-057 status remains in_progress; current_stage 07-build; tip_sha_pushed=false; commit recorded; no git commit by workflow-state-manager'
   - '2026-08-15 D-S067-04-plan=1 — 04 COMPLETE; tip 7db2c724 (7db2c7246b57868bb9a0032694bec23f27405305); 05/06 remain skipped; phase_b passed; current_stage 07-build pending (awaiting startup before M1 T1.1); D-S067-04-next=1a; D-S067-948-impl=sibling Ingress metar-frontend-apex; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 Gate A PASS — D-S067-gateA=1 / 903-cap=1c / 948-ingress=2a / 02-ml=1b; tip d319180f (d319180febf4e794bb4dfb0a7bdc0bbd58eca027); 02 COMPLETE; current_stage 04-tech-plan pending startup; checkpoints.phase_a=passed gates.a_to_b=passed; tip_sha_pushed=false; no git commit by workflow-state-manager'
   - '2026-08-15 01-requirements COMPLETE — D-S067-01-ac=1; tip a6064563 (a606456354a8eaa859120405e0581c8e1873987e); current_stage 02-verify-plan pending (awaiting Gate A AskQuestion); stages.01 completed / 02 pending; commit appended; tip_sha_pushed=false; no git commit by workflow-state-manager'
@@ -48996,10 +48999,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: 23808386
-    tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
+    tip_sha: 6568f664
+    tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
     tip_sha_pushed: false
-    note: "ACTIVE local tip 23808386 07-build M2 #903 nearly done; M1 #948 repo done; Porkbun DNS pending; not pushed"
+    note: "ACTIVE local tip 6568f664 07-build M1–M3 repo complete (14/14); next 08-verify-build; M1 #948 live AC blocked on Porkbun DNS; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -50479,6 +50482,30 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "6568f664"
+    sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+    message: "[T3.1-T3.5] feat: Validate IWXXM mode without TAC convert"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 07-build
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-16"
+    pushed: false
+    tip_sha: 6568f664
+    tip_sha_full: 6568f66420853f73a80d6320d565ce55a24b00b6
+    tip_sha_pushed: false
+    files_changed:
+      - README.md
+      - apps/e2e/uj058-validate-iwxxm.e2e.spec.ts
+      - apps/frontend/src/app/components/FileConverter.test.tsx
+      - apps/frontend/src/app/components/FileConverter.tsx
+      - apps/frontend/src/app/components/ValidateIwxxmReport.tsx
+      - apps/frontend/src/utils/inputKind.test.ts
+      - apps/frontend/src/utils/inputKind.ts
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/t3.1-validate-api-spike.md
+    note: "07-build M1–M3 repo complete (14/14); next 08-verify-build; M1 #948 live AC still blocked on Porkbun DNS; tip not pushed"
   - sha: "23808386"
     sha_full: 238083864546126fdf817ffc6482256bed7ce77c
     message: "[T2.1-T2.5] feat: accumulate conversions and content-derived ZIP names"
