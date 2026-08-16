@@ -21,10 +21,10 @@
 | 06-tech-tooling | no | — | skipped | No new deps |
 | 07-build | yes | delta | **completed** | M1 live #948 AC met; M2/M3 repo done (`D-S067-948-apply=1a`) |
 | 08-verify-build | yes | delta | **completed** | PASS 2026-08-16; live UJ-OPS-002 green |
-| 09-qa | yes | delta | **pending** | Parallel with 10 |
-| 10-e2e | yes | delta | **pending** | UJ-057/UJ-058 Playwright; UJ-OPS-002 live curl done |
-| 11-verify-impl | yes | delta | **pending** | Per-Fn AC + UI preview remind |
-| 12-verify-deploy | yes | delta | **pending** | PR → stage; release prep only if promote later |
+| 09-qa | yes | delta | **completed** | PASS 2026-08-16 (`D-S067-09-10=1a`) |
+| 10-e2e | yes | delta | **completed** | PASS + T2 Playwright waive `D-S067-10-pw=1a` |
+| 11-verify-impl | yes | delta | **completed** | PASS 2026-08-16; `D-S067-11-preview=2a` / `D-S067-11-ac=1a`; report verify-impl.md |
+| 12-verify-deploy | yes | delta | **in_progress** | PR → stage (promote held) |
 | 13-deploy-smoke | yes | delta | **pending** | Staging H0c–H5; then promote AskQuestion |
 
 ## Recommended ordered stages

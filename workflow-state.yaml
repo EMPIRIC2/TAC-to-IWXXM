@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "0e7833d1"
-  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+  tip_sha: "ffdd1961"
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
   tip_sha_pushed: false
-  tip_sha_note: "08-verify-build COMPLETE PASS @ 0e7833d1 local — report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed"
+  tip_sha_note: "11-verify-impl COMPLETE 2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a @ ffdd1961; report verify-impl.md; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -31,7 +31,7 @@ active_session:
   - 948
   - 903
   - 838
-  board_note: "#948 live AC met on prod; 08-verify-build PASS; next 09-qa + 10-e2e parallel (not started); #903/#838 done in-repo"
+  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); #903/#838 done in-repo"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -65,8 +65,8 @@ active_session:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 08-verify-build
-  current_stage_note: "08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
+  current_stage: 12-verify-deploy
+  current_stage_note: "12-verify-deploy PR → stage (promote held)"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -106,6 +106,10 @@ active_session:
     D-S067-948-redirect: "1a"
     D-S067-948-apply: "1a"
     D-S067-948-next: "1a — next 09-qa + 10-e2e parallel"
+    D-S067-09-10: "1a"
+    D-S067-10-pw: "1a"
+    D-S067-11-preview: "2a — declined UI preview (reports/tests only)"
+    D-S067-11-ac: "1a — approve #948/#903/#838"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -121,7 +125,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
+    note: "IN PROGRESS — EV-057; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -156,28 +160,43 @@ active_session:
     status: completed
     started: '2026-08-16'
     completed: '2026-08-16'
-    note: "COMPLETE — PASS 2026-08-16; report verification-report.md; next 09-qa + 10-e2e parallel (not started)"
+    note: "COMPLETE — PASS 2026-08-16; report verification-report.md @ ffdd1961; 09-qa + 10-e2e completed; 11-verify-impl in_progress"
     report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
     overall: PASS
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — next after 08 COMPLETE; parallel with 10-e2e (not started)"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — PASS (delta) 2026-08-16; report qa-report.md @ ffdd1961"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+    overall: PASS
   - stage: 10-e2e
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — next after 08 COMPLETE; parallel with 09-qa (not started)"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — PASS with D-S067-10-pw=1a (Playwright T2 waived; T0 vitest + T3 UJ-OPS-002 PASS); report e2e-report.md @ ffdd1961"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+    overall: PASS
+    waiver: D-S067-10-pw=1a
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
-    note: "UI preview remind_at_11 (D-S067-ui-preview=3a)"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — D-S067-11-preview=2a (declined UI preview); D-S067-11-ac=1a approve #948/#903/#838; report verify-impl.md @ ffdd1961; handoff 12-verify-deploy"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
+    overall: PASS
   - stage: 12-verify-deploy
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-16'
+    note: "IN PROGRESS — PR → stage (promote held)"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
@@ -214,10 +233,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "0e7833d1"
-  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+  tip_sha: "ffdd1961"
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
   tip_sha_pushed: false
-  tip_sha_note: "08-verify-build COMPLETE PASS @ 0e7833d1 local — report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed"
+  tip_sha_note: "11-verify-impl COMPLETE 2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a @ ffdd1961; report verify-impl.md; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -225,7 +244,7 @@ sessions:
   - 948
   - 903
   - 838
-  board_note: "#948 live AC met on prod; 08-verify-build PASS; next 09-qa + 10-e2e parallel (not started); #903/#838 done in-repo"
+  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); #903/#838 done in-repo"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -259,8 +278,8 @@ sessions:
   - 903
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
-  current_stage: 08-verify-build
-  current_stage_note: "08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
+  current_stage: 12-verify-deploy
+  current_stage_note: "12-verify-deploy PR → stage (promote held)"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -300,6 +319,10 @@ sessions:
     D-S067-948-redirect: "1a"
     D-S067-948-apply: "1a"
     D-S067-948-next: "1a — next 09-qa + 10-e2e parallel"
+    D-S067-09-10: "1a"
+    D-S067-10-pw: "1a"
+    D-S067-11-preview: "2a — declined UI preview (reports/tests only)"
+    D-S067-11-ac: "1a — approve #948/#903/#838"
   context_briefs: []
   note: "OPEN — EV-057/S067-m0-ready-apex-accumulate-validate; M0 Ready #948+#903+#838; Standard; base stage@b796882e; promote deferred until re-approve; [Corpus: product §F7/F1/F6/F2/F4] [Corpus: tech-spec] [Corpus: deploy] [Corpus: journeys]"
   routing_plan:
@@ -315,7 +338,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
+    note: "IN PROGRESS — EV-057; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -350,28 +373,43 @@ sessions:
     status: completed
     started: '2026-08-16'
     completed: '2026-08-16'
-    note: "COMPLETE — PASS 2026-08-16; report verification-report.md; next 09-qa + 10-e2e parallel (not started)"
+    note: "COMPLETE — PASS 2026-08-16; report verification-report.md @ ffdd1961; 09-qa + 10-e2e completed; 11-verify-impl in_progress"
     report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
     overall: PASS
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — next after 08 COMPLETE; parallel with 10-e2e (not started)"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — PASS (delta) 2026-08-16; report qa-report.md @ ffdd1961"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+    overall: PASS
   - stage: 10-e2e
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — next after 08 COMPLETE; parallel with 09-qa (not started)"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — PASS with D-S067-10-pw=1a (Playwright T2 waived; T0 vitest + T3 UJ-OPS-002 PASS); report e2e-report.md @ ffdd1961"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+    overall: PASS
+    waiver: D-S067-10-pw=1a
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
-    note: "UI preview remind_at_11 (D-S067-ui-preview=3a)"
+    status: completed
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    note: "COMPLETE — D-S067-11-preview=2a (declined UI preview); D-S067-11-ac=1a approve #948/#903/#838; report verify-impl.md @ ffdd1961; handoff 12-verify-deploy"
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
+    overall: PASS
   - stage: 12-verify-deploy
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-16'
+    note: "IN PROGRESS — PR → stage (promote held)"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
@@ -12774,21 +12812,21 @@ stages:
     - 2026-07-14 S011/EV-008 T6.3 11-verify-impl in_progress (user option 1 — start without committing first); active_task T6.3 in_progress
   09-qa:
     status: completed
-    started_at: '2026-08-11'
-    started: '2026-08-11'
-    completed_at: '2026-08-11'
-    completed: '2026-08-11'
-    previous_started_at: '2026-08-09'
-    previous_started: '2026-08-09'
-    previous_completed_at: '2026-08-09'
-    previous_completed: '2026-08-09'
-    previous_session_id: S061-ci-polish-quality-pr-stats
-    previous_evolve_cycle_id: EV-052
-    previous_tip_sha: 828c7087
-    previous_tip_sha_full: 828c708723549fd480a93203b600e742bf88a343
+    started_at: '2026-08-16'
+    started: '2026-08-16'
+    completed_at: '2026-08-16'
+    completed: '2026-08-16'
+    previous_started_at: '2026-08-11'
+    previous_started: '2026-08-11'
+    previous_completed_at: '2026-08-11'
+    previous_completed: '2026-08-11'
+    previous_session_id: S064-quality-metrics-2025-2-followups
+    previous_evolve_cycle_id: EV-055
+    previous_tip_sha: 68552747
+    previous_tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
     previous_overall: pass_with_advisories
-    previous_report: docs/sessions/S061-ci-polish-quality-pr-stats/reports/qa-report.md
-    previous_note: 'S061/EV-052 09 COMPLETE pass_with_advisories @ 828c7087 — superseded by S063/EV-054'
+    previous_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+    previous_note: 'S064/EV-055 09 COMPLETE pass_with_advisories @ 68552747 — superseded by S067/EV-057'
     previous_s057_started_at: '2026-08-08'
     previous_s057_started: '2026-08-08'
     previous_s057_completed_at: '2026-08-08'
@@ -12850,21 +12888,30 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
-    tip_sha: "68552747"
-    tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
-    tip_sha_pushed: true
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    tip_sha: "ffdd1961"
+    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    tip_sha_pushed: false
     pr_number:
     pr_url:
     pr_status:
     pr_base: stage
     mode: delta
-    overall: pass_with_advisories
-    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
-    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
-    note: 'COMPLETE — PASS (advisories); report qa-report.md; tip 68552747; handoff 11-verify-impl (await AskQuestion)'
+    overall: PASS
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+    expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+    note: 'COMPLETE — PASS (delta) 2026-08-16; report qa-report.md; tip ffdd1961; handoff 11-verify-impl'
     skill_id: 09-qa
+    previous_s064_session_id: S064-quality-metrics-2025-2-followups
+    previous_s064_evolve_cycle_id: EV-055
+    previous_s064_tip_sha: 68552747
+    previous_s064_tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+    previous_s064_started_at: '2026-08-11'
+    previous_s064_completed_at: '2026-08-11'
+    previous_s064_overall: pass_with_advisories
+    previous_s064_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/qa-report.md
+    previous_s064_note: 'COMPLETE — PASS (advisories); tip 68552747; superseded by S067/EV-057'
     previous_s063_session_id: S063-quality-metrics-tab
     previous_s063_evolve_cycle_id: EV-054
     previous_s063_tip_sha: be9e3b07
@@ -12891,7 +12938,7 @@ stages:
     advisories: []
     advisories_note: 'QA-ADV-001 tip CI pending PR→stage; QA-ADV-002 integration docker race then retry PASS; QA-ADV-003 Vitest coverage clash solo re-run PASS; QA-ADV-004 H4–H5→12/13; QA-ADV-005 pre-existing basedpyright Unknown'
     decision_refs:
-    - D-S064-gateC
+    - D-S067-09-10
     pending_commit: false
     active_milestone:
     active_task:
@@ -12904,6 +12951,21 @@ stages:
     main_ci_cd_pipeline_run:
     main_ci_cd_pipeline_status:
     delta_substages:
+    - id: S067-m0-ready-apex-accumulate-validate-09
+      session_id: S067-m0-ready-apex-accumulate-validate
+      evolve_cycle_id: EV-057
+      skill_id: 09-qa
+      status: completed
+      mode: delta
+      started: '2026-08-16'
+      started_at: '2026-08-16'
+      completed: '2026-08-16'
+      completed_at: '2026-08-16'
+      tip_sha: "ffdd1961"
+      tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+      overall: PASS
+      report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+      note: 'COMPLETE — PASS (delta) 2026-08-16; tip ffdd1961; handoff 11-verify-impl'
     - id: S064-quality-metrics-2025-2-followups-09
       session_id: S064-quality-metrics-2025-2-followups
       evolve_cycle_id: EV-055
@@ -13258,22 +13320,22 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
     status: completed
-    started_at: '2026-08-11'
-    started: '2026-08-11'
-    completed: '2026-08-11'
-    completed_at: '2026-08-11'
-    overall: pass
-    previous_started_at: '2026-08-10'
-    previous_started: '2026-08-10'
-    previous_completed: '2026-08-10'
-    previous_completed_at: '2026-08-10'
-    previous_session_id: S063-quality-metrics-tab
-    previous_evolve_cycle_id: EV-054
+    started_at: '2026-08-16'
+    started: '2026-08-16'
+    completed: '2026-08-16'
+    completed_at: '2026-08-16'
+    overall: PASS
+    previous_started_at: '2026-08-11'
+    previous_started: '2026-08-11'
+    previous_completed: '2026-08-11'
+    previous_completed_at: '2026-08-11'
+    previous_session_id: S064-quality-metrics-2025-2-followups
+    previous_evolve_cycle_id: EV-055
     previous_overall: pass
-    previous_report: docs/sessions/S063-quality-metrics-tab/reports/verify-impl.md
-    previous_tip_sha: be9e3b07
-    previous_tip_sha_full: be9e3b07a03e6b9b46547d9b499e1ebaeb5148f9
-    previous_note: 'S063/EV-054 11 COMPLETE PASS D-S063-11=1 @ be9e3b07 — superseded by S064/EV-055 COMPLETE'
+    previous_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+    previous_tip_sha: abeba590
+    previous_tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+    previous_note: 'S064/EV-055 11 COMPLETE PASS D-S064-11=1 @ abeba590 — superseded by S067/EV-057 COMPLETE'
     previous_s063_session_id: S063-quality-metrics-tab
     previous_s063_evolve_cycle_id: EV-054
     previous_s063_overall: pass
@@ -13360,25 +13422,25 @@ stages:
     prior_s037_session_id: S037-quality-residuals-831
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 3889e4c
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
-    tip_sha: "abeba590"
-    tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
-    tip_sha_pushed: true
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    tip_sha: "ffdd1961"
+    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    tip_sha_pushed: false
     mode: delta
-    overall: pass
-    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
-    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+    overall: PASS
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
+    expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
     standing_report: docs/reports/implementation-verification.md
-    note: 'COMPLETE — PASS D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1; tip abeba590; next 12-verify-deploy pending (recommend PR→stage)'
+    note: 'COMPLETE — D-S067-11-preview=2a (declined UI preview); D-S067-11-ac=1a approve #948/#903/#838; report verify-impl.md @ ffdd1961; handoff 12-verify-deploy'
     skill_id: 11-verify-impl
     pr_number:
     pr_url:
     pr_status:
     pr_base: stage
     awaiting_user_decision: false
-    awaiting_user_decision_note: '11 COMPLETE; await continue → 12-verify-deploy (recommend open PR→stage)'
-    decision_id: D-S064-11
+    awaiting_user_decision_note: '11 COMPLETE D-S067-11-ac=1a; next 12-verify-deploy PR → stage (promote held)'
+    decision_id:
     previous_s057_session_id: S057-strip-internal-doc-refs
     previous_s057_evolve_cycle_id: EV-048
     previous_s057_tip_sha: 014c9125
@@ -13394,33 +13456,42 @@ stages:
     previous_s056_report: docs/sessions/S056-m0-stabilize-operator-trust/reports/verify-impl.md
     previous_s056_note: 'COMPLETE — PASS @ 3ca4f438; D-S056-ac-bundle=1, D-S056-uj054=1, D-S056-advisories=1, D-S056-11-ui-preview=2; report verify-impl.md; phase_d passed; handoff phase4-close / PR #961'
     decision_refs:
-    - D-S064-gateC
-    - D-S064-09-10-continue
-    - D-S064-ui-preview-11
-    - D-S064-uj056
-    - D-S064-11
+    - D-S067-11-ac
+    - D-S067-11-preview
+    - D-S067-10-pw
+    - D-S067-ui-preview
+    - D-S067-09-10
+    previous_s064_session_id: S064-quality-metrics-2025-2-followups
+    previous_s064_evolve_cycle_id: EV-055
+    previous_s064_overall: pass
+    previous_s064_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
+    previous_s064_tip_sha: abeba590
+    previous_s064_tip_sha_full: abeba590009acfd4340ee0da8b49db27983c2c57
+    previous_s064_note: 'COMPLETE — PASS D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1; tip abeba590; superseded by S067/EV-057'
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_overall: approved
     prior_s050_note: 'COMPLETE — D-S050-11-verify approve F33 + F7 deepen + F16–F19 deepen; UJ-051..053 approved (T3/H4–H5 waived until 13); UI preview accepted localhost:18000; fix adad127c hide Upload to Database; report verify-impl.md; tip adad127c; next 12-verify-deploy'
     prior_s050_report_note: 'S050/EV-042 11 COMPLETE — superseded by S054/EV-045'
     report_status: approved
-    tip_note: 'S064/EV-055 tip 68552747 — 11 COMPLETE PASS D-S064-11=1; await continue → 12'
+    tip_note: 'S067/EV-057 tip ffdd1961 — 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held)'
     decision_ids:
-    - D-S064-09-10-continue
-    - D-S064-gateC
-    - D-S064-ui-preview-11
-    - D-S064-uj056
-    - D-S064-11
+    - D-S067-11-ac
+    - D-S067-11-preview
+    - D-S067-10-pw
+    - D-S067-ui-preview
+    - D-S067-09-10
     deepen_feature_ids:
     - F7
+    - F1
+    - F6
     - F2
-    - F13
+    - F4
     feature_ids: []
     active_milestone:
     active_task:
     active_task_status: completed
-    active_task_note: '11-verify-impl COMPLETE PASS — D-S064-11=1; D-S064-uj056=1; D-S064-ui-preview-11=1 @ 68552747; next 12 pending'
+    active_task_note: '11-verify-impl COMPLETE D-S067-11-ac=1a @ ffdd1961; handoff 12-verify-deploy'
     previous_s046_decision_id: D-S046-11
     previous_s045_session_id: S045-matrix-disposition-residuals
     previous_s045_evolve_cycle_id: EV-037
@@ -13465,6 +13536,25 @@ stages:
         status: completed
         path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
     delta_substages:
+    - id: S067-m0-ready-apex-accumulate-validate-11
+      session_id: S067-m0-ready-apex-accumulate-validate
+      evolve_cycle_id: EV-057
+      skill_id: 11-verify-impl
+      status: completed
+      mode: delta
+      started: '2026-08-16'
+      started_at: '2026-08-16'
+      completed: '2026-08-16'
+      completed_at: '2026-08-16'
+      tip_sha: "ffdd1961"
+      tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+      tip_sha_pushed: false
+      overall: PASS
+      report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
+      standing_report: docs/reports/implementation-verification.md
+      report_status: approved
+      expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
+      note: 'COMPLETE — D-S067-11-preview=2a; D-S067-11-ac=1a; report verify-impl.md; handoff 12-verify-deploy'
     - id: S064-quality-metrics-2025-2-followups-11
       session_id: S064-quality-metrics-2025-2-followups
       evolve_cycle_id: EV-055
@@ -13786,10 +13876,10 @@ stages:
     skill_id: 11-verify-impl
   10-e2e:
     status: completed
-    started_at: '2026-08-11'
-    started: '2026-08-11'
-    completed_at: '2026-08-11'
-    completed: '2026-08-11'
+    started_at: '2026-08-16'
+    started: '2026-08-16'
+    completed_at: '2026-08-16'
+    completed: '2026-08-16'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -13826,16 +13916,26 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
-    tip_sha: "68552747"
-    tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
-    tip_sha_pushed: true
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    tip_sha: "ffdd1961"
+    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    tip_sha_pushed: false
     mode: delta
-    overall: pass
-    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
-    note: 'COMPLETE — PASS local UJ-056; report e2e-report.md; H4–H5 deferred 12/13; tip 68552747; handoff 11-verify-impl (await AskQuestion)'
+    overall: PASS
+    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+    note: 'COMPLETE — PASS with D-S067-10-pw=1a (Playwright T2 waived; T0 vitest + T3 UJ-OPS-002 PASS); report e2e-report.md; tip ffdd1961; handoff 11-verify-impl'
     skill_id: 10-e2e
+    waiver: D-S067-10-pw=1a
+    previous_s064_session_id: S064-quality-metrics-2025-2-followups
+    previous_s064_evolve_cycle_id: EV-055
+    previous_s064_tip_sha: 68552747
+    previous_s064_tip_sha_full: 685527471ac836ca1c2d454baf56dc5ee4593322
+    previous_s064_started_at: '2026-08-11'
+    previous_s064_completed_at: '2026-08-11'
+    previous_s064_overall: pass
+    previous_s064_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/e2e-report.md
+    previous_s064_note: 'COMPLETE — PASS local UJ-056; tip 68552747; superseded by S067/EV-057'
     previous_s063_session_id: S063-quality-metrics-tab
     previous_s063_evolve_cycle_id: EV-054
     previous_s063_tip_sha: be9e3b07
@@ -13864,6 +13964,22 @@ stages:
     active_task_status:
     pending_commit: false
     delta_substages:
+    - id: S067-m0-ready-apex-accumulate-validate-10
+      session_id: S067-m0-ready-apex-accumulate-validate
+      evolve_cycle_id: EV-057
+      skill_id: 10-e2e
+      status: completed
+      mode: delta
+      started: '2026-08-16'
+      started_at: '2026-08-16'
+      completed: '2026-08-16'
+      completed_at: '2026-08-16'
+      tip_sha: "ffdd1961"
+      tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+      overall: PASS
+      waiver: D-S067-10-pw=1a
+      report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+      note: 'COMPLETE — PASS with D-S067-10-pw=1a (Playwright T2 waived; T0 vitest + T3 UJ-OPS-002 PASS); tip ffdd1961; handoff 11-verify-impl'
     - id: S064-quality-metrics-2025-2-followups-10
       session_id: S064-quality-metrics-2025-2-followups
       evolve_cycle_id: EV-055
@@ -14444,8 +14560,8 @@ stages:
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: 0e7833d1
-    tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+    tip_sha: ffdd1961
+    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
     tip_sha_pushed: false
     pr_number:
     pr_url:
@@ -14454,7 +14570,7 @@ stages:
     ci_cd_pipeline_run:
     ci_cd_pipeline_status:
     ci_cd_pipeline_note:
-    note: 'COMPLETE — S067/EV-057 08-verify-build PASS 2026-08-16 @ 0e7833d1; report verification-report.md; next 09-qa + 10-e2e parallel (not started)'
+    note: 'COMPLETE — S067/EV-057 08-verify-build PASS 2026-08-16 @ ffdd1961; report verification-report.md; 09-qa + 10-e2e + 11-verify-impl completed; 12-verify-deploy in_progress'
     expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
     report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
     overall: PASS
@@ -14498,10 +14614,10 @@ stages:
     previous_s056_overall: pass
     previous_s056_phase_c_checkpoint: passed
     skill_id: 08-verify-build
-    next_stage: 09-qa
-    next_stage_parallel: 10-e2e
-    next_stage_status: pending
-    next_stage_note: 'S067/EV-057 08 COMPLETE PASS; next 09-qa + 10-e2e parallel (not started)'
+    next_stage: 12-verify-deploy
+    next_stage_parallel:
+    next_stage_status: in_progress
+    next_stage_note: 'S067/EV-057 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held)'
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_tip_sha: 6bc756ef
@@ -15271,35 +15387,57 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: completed
-    started_at: '2026-08-11'
-    started: '2026-08-11'
-    completed_at: '2026-08-11'
-    completed: '2026-08-11'
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
+    status: in_progress
+    started_at: '2026-08-16'
+    started: '2026-08-16'
+    completed_at:
+    completed:
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
     skill_id: 12-verify-deploy
     mode: delta
-    overall: approved
-    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
-    report_status: completed
-    expected_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
-    tip_sha: "a648f486"
-    tip_sha_full: a648f48644a82fde07aba610ec0f27410b705591
-    tip_sha_pushed: true
-    tip_ci_run: '31534191417'
-    tip_ci_status: success
-    tip_ci_note: "12 COMPLETE; #985 MERGED→stage @ 4b48c8d8; stage CI/CD 31534191417 success (tracked on 13 READY)"
-    pr_number: 985
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985
-    pr_status: merged
+    overall:
+    report:
+    report_status:
+    expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/deploy-checklist.md
+    tip_sha: "ffdd1961"
+    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    tip_sha_pushed: false
+    tip_ci_run:
+    tip_ci_status:
+    tip_ci_note: "S067/EV-057 12 in_progress — PR → stage (promote held); tip ffdd1961 not pushed"
+    pr_number:
+    pr_url:
+    pr_status:
     pr_base: stage
-    merge_sha: 4b48c8d8
-    merge_sha_full: 4b48c8d85ff88b16641cd7f7fa66b1450dfbe6a3
-    decision_id: D-S064-12
+    merge_sha:
+    merge_sha_full:
+    decision_id:
     awaiting_user_decision: false
-    awaiting_user_decision_note: 'D-S064-12=1 recorded; #985 MERGED→stage @ 4b48c8d8; 13-deploy-smoke in_progress'
-    note: 'D-S064-12=1 — Approve checklist + merge #985 → stage COMPLETE @ 4b48c8d8; handoff 13-deploy-smoke (await Staging Deploy+smoke then H1–H5)'
+    awaiting_user_decision_note: '12-verify-deploy in_progress — PR → stage (promote held); D-S067-promote=2b'
+    note: 'IN PROGRESS — S067/EV-057 12-verify-deploy PR → stage (promote held); 11 COMPLETE D-S067-11-ac=1a; tip ffdd1961'
+    previous_s064_started_at: '2026-08-11'
+    previous_s064_started: '2026-08-11'
+    previous_s064_completed_at: '2026-08-11'
+    previous_s064_completed: '2026-08-11'
+    previous_s064_session_id: S064-quality-metrics-2025-2-followups
+    previous_s064_evolve_cycle_id: EV-055
+    previous_s064_overall: approved
+    previous_s064_report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-checklist.md
+    previous_s064_report_status: completed
+    previous_s064_tip_sha: "a648f486"
+    previous_s064_tip_sha_full: a648f48644a82fde07aba610ec0f27410b705591
+    previous_s064_tip_sha_pushed: true
+    previous_s064_tip_ci_run: '31534191417'
+    previous_s064_tip_ci_status: success
+    previous_s064_pr_number: 985
+    previous_s064_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/985
+    previous_s064_pr_status: merged
+    previous_s064_pr_base: stage
+    previous_s064_merge_sha: 4b48c8d8
+    previous_s064_merge_sha_full: 4b48c8d85ff88b16641cd7f7fa66b1450dfbe6a3
+    previous_s064_decision_id: D-S064-12
+    previous_s064_note: 'D-S064-12=1 — Approve checklist + merge #985 → stage COMPLETE @ 4b48c8d8 — superseded by S067/EV-057 in_progress'
     previous_s063_started_at: '2026-08-10'
     previous_s063_started: '2026-08-10'
     previous_s063_session_id: S063-quality-metrics-tab
@@ -15425,6 +15563,9 @@ stages:
     previous_s050_awaiting_user_decision: false
     previous_s050_awaiting_user_decision_note: 'Next: decide merge #899 then start 13-deploy-smoke'
     decision_ids:
+    - D-S067-11-ac
+    - D-S067-11-preview
+    - D-S067-promote
     - D-S064-12
     - D-S064-12-start
     - D-S064-11
@@ -15440,13 +15581,30 @@ stages:
     - D-S045-12-13-waive
     deepen_feature_ids:
     - F7
+    - F1
+    - F6
     - F2
+    - F4
     - F13
     - F16
     - F17
     - F18
     - F19
     delta_substages:
+    - id: S067-m0-ready-apex-accumulate-validate-12
+      session_id: S067-m0-ready-apex-accumulate-validate
+      evolve_cycle_id: EV-057
+      skill_id: 12-verify-deploy
+      status: in_progress
+      mode: delta
+      started: '2026-08-16'
+      started_at: '2026-08-16'
+      tip_sha: "ffdd1961"
+      tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+      tip_sha_pushed: false
+      pr_base: stage
+      expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/deploy-checklist.md
+      note: 'IN PROGRESS — PR → stage (promote held); D-S067-promote=2b'
     - id: S064-quality-metrics-2025-2-followups-12
       session_id: S064-quality-metrics-2025-2-followups
       evolve_cycle_id: EV-055
@@ -17144,6 +17302,165 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+- id: D-S067-11-ac
+  date: '2026-08-16'
+  timestamp: '2026-08-16'
+  resolved_at: '2026-08-16'
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 11-verify-impl
+  category: feature_approval
+  status: confirmed
+  topic: 'S067/EV-057 11-verify-impl approve per-Fn AC; start 12-verify-deploy'
+  summary: '1a — approve #948/#903/#838; 11 COMPLETE; 12 in_progress'
+  decision: |
+    D-S067-11-ac=1a — approve all three (#948 apex / #903 accumulate ZIP / #838 validate existing IWXXM).
+    D-S067-11-preview=2a — declined UI preview (reports/tests only).
+    11-verify-impl COMPLETE 2026-08-16 — report docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md.
+    current_stage 12-verify-deploy in_progress started 2026-08-16.
+    current_stage_note: 12-verify-deploy PR → stage (promote held).
+    Tip ffdd1961. Tip not pushed. Promote remains D-S067-promote=2b.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  related_features:
+  - F7
+  - F1
+  - F6
+  - F2
+  - F4
+  related_issues:
+  - '948'
+  - '903'
+  - '838'
+  related_decisions:
+  - D-S067-11-preview
+  - D-S067-ui-preview
+  - D-S067-10-pw
+  - D-S067-promote
+  tip_sha: 'ffdd1961'
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+  tip_sha_pushed: false
+  current_stage: 12-verify-deploy
+  note: '11-verify-impl COMPLETE; 12-verify-deploy in_progress; promote held'
+- id: D-S067-11-preview
+  date: '2026-08-16'
+  timestamp: '2026-08-16'
+  resolved_at: '2026-08-16'
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 11-verify-impl
+  category: ui_preview
+  status: confirmed
+  topic: 'S067/EV-057 11-verify-impl UI preview remind_at_11'
+  summary: '2a — declined UI preview (reports/tests only)'
+  decision: |
+    D-S067-11-preview=2a — declined UI preview at 11-verify-impl (reports/tests only).
+    Remind was D-S067-ui-preview=3a. Offered this turn; operator chose reports/tests only.
+    11-verify-impl COMPLETE with D-S067-11-ac=1a. Next 12-verify-deploy.
+    Tip ffdd1961. Tip not pushed. No git commit by workflow-state-manager.
+  user_option: '2a'
+  branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  related_features:
+  - F7
+  - F1
+  - F6
+  - F2
+  - F4
+  related_issues:
+  - '948'
+  - '903'
+  - '838'
+  related_decisions:
+  - D-S067-11-ac
+  - D-S067-ui-preview
+  tip_sha: 'ffdd1961'
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+  tip_sha_pushed: false
+  current_stage: 12-verify-deploy
+  note: 'UI preview declined; 11 COMPLETE; 12 in_progress'
+- id: D-S067-10-pw
+  date: '2026-08-16'
+  timestamp: '2026-08-16'
+  resolved_at: '2026-08-16'
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 10-e2e
+  category: waiver
+  status: confirmed
+  topic: 'S067/EV-057 10-e2e Playwright T2 waive; complete 09-qa + 10-e2e; start 11-verify-impl'
+  summary: '1a — waive T2 Playwright (webServer timeout); T0 vitest + T3 UJ-OPS-002 PASS'
+  decision: |
+    D-S067-10-pw=1a — waive 10-e2e T2 local Playwright (webServer probe timeout).
+    09-qa COMPLETE PASS (delta) — report qa-report.md.
+    10-e2e COMPLETE PASS with waiver — T0 vitest PASS; T3 #948 UJ-OPS-002 PASS; T2 waived.
+    current_stage 11-verify-impl in_progress started 2026-08-16.
+    current_stage_note: 11-verify-impl per-Fn AC; UI preview remind_at_11.
+    Tip ffdd1961 (08 report commit). Tip not pushed.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  related_features:
+  - F7
+  - F1
+  - F6
+  - F2
+  - F4
+  related_issues:
+  - '948'
+  - '903'
+  - '838'
+  related_decisions:
+  - D-S067-09-10
+  - D-S067-ui-preview
+  tip_sha: 'ffdd1961'
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+  tip_sha_pushed: false
+  current_stage: 11-verify-impl
+  note: '09-qa + 10-e2e completed; 11-verify-impl in_progress; T2 Playwright waived'
+- id: D-S067-09-10
+  date: '2026-08-16'
+  timestamp: '2026-08-16'
+  resolved_at: '2026-08-16'
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 09-qa
+  category: stage_start
+  status: confirmed
+  topic: 'S067/EV-057 start 09-qa + 10-e2e parallel'
+  summary: '1a — 09-qa delta validate-fast ∥ 10-e2e T0 UJ-057/058'
+  decision: |
+    D-S067-09-10=1a — start 09-qa (delta validate-fast) in parallel with 10-e2e (T0 UJ-057/058).
+    Routing 09-qa and 10-e2e set in_progress, started 2026-08-16. Do not complete.
+    current_stage 09-qa. Tip ffdd1961 (08 report commit). Tip not pushed.
+    16-evolve remains orchestrator. No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  related_features:
+  - F7
+  - F1
+  - F6
+  - F2
+  - F4
+  related_issues:
+  - '948'
+  - '903'
+  - '838'
+  related_decisions:
+  - D-S067-948-next
+  tip_sha: 'ffdd1961'
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+  tip_sha_pushed: false
+  current_stage: 09-qa
+  note: '09-qa + 10-e2e in_progress; not completed'
 - id: D-S065-pr
   date: '2026-08-11'
   timestamp: '2026-08-11'
@@ -32829,6 +33146,40 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
+  type: report
+  stage: 11-verify-impl
+  skill_id: 11-verify-impl
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  created_at: '2026-08-16'
+  updated_at: '2026-08-16'
+  status: completed
+  overall: PASS
+  note: 'S067/EV-057 11-verify-impl COMPLETE D-S067-11-preview=2a D-S067-11-ac=1a @ ffdd1961; report verify-impl.md; next 12-verify-deploy'
+- path: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+  type: report
+  stage: 09-qa
+  skill_id: 09-qa
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  created_at: '2026-08-16'
+  updated_at: '2026-08-16'
+  status: completed
+  overall: PASS
+  note: 'S067/EV-057 09-qa COMPLETE PASS (delta) @ ffdd1961; report qa-report.md'
+- path: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+  type: report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S067-m0-ready-apex-accumulate-validate
+  evolve_cycle_id: EV-057
+  created_at: '2026-08-16'
+  updated_at: '2026-08-16'
+  status: completed
+  overall: PASS
+  waiver: D-S067-10-pw=1a
+  note: 'S067/EV-057 10-e2e COMPLETE PASS with D-S067-10-pw=1a (Playwright T2 waived; T0 vitest + T3 UJ-OPS-002 PASS) @ ffdd1961'
 - path: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
   type: report
   stage: 08-verify-build
@@ -32839,7 +33190,7 @@ artifacts:
   updated_at: '2026-08-16'
   status: completed
   overall: PASS
-  note: 'S067/EV-057 08-verify-build COMPLETE PASS @ 0e7833d1; next 09-qa + 10-e2e parallel (not started)'
+  note: 'S067/EV-057 08-verify-build COMPLETE PASS @ ffdd1961; 09-qa + 10-e2e completed; 11-verify-impl in_progress'
 - path: docs/sessions/S064-quality-metrics-2025-2-followups/reports/verify-impl.md
   type: report
   stage: 11-verify-impl
@@ -36654,13 +37005,13 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "0e7833d1"
-  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+  tip_sha: "ffdd1961"
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
   tip_sha_pushed: false
-  tip_sha_note: "08-verify-build COMPLETE PASS @ 0e7833d1 local — report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed"
-  current_stage: 08-verify-build
-  current_stage_status: completed
-  current_stage_note: "08-verify-build COMPLETE PASS 2026-08-16; next 09-qa + 10-e2e parallel (not started)"
+  tip_sha_note: "11-verify-impl COMPLETE 2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a @ ffdd1961; report verify-impl.md; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
+  current_stage: 12-verify-deploy
+  current_stage_status: in_progress
+  current_stage_note: "12-verify-deploy PR → stage (promote held)"
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -36723,12 +37074,16 @@ evolve_cycles:
     D-S067-948-redirect: "1a"
     D-S067-948-apply: "1a"
     D-S067-948-next: "1a — next 09-qa + 10-e2e parallel"
+    D-S067-09-10: "1a"
+    D-S067-10-pw: "1a"
+    D-S067-11-preview: "2a — declined UI preview (reports/tests only)"
+    D-S067-11-ac: "1a — approve #948/#903/#838"
   checkpoints:
     phase_a: passed
     phase_b: passed
     phase_b_note: "D-S067-04-plan=1 — 04 COMPLETE; 05/06 skipped (Standard)"
     phase_c: passed
-    phase_c_note: "08-verify-build PASS 2026-08-16; report verification-report.md; next 09+10 parallel (not started)"
+    phase_c_note: "08-verify-build PASS 2026-08-16 @ ffdd1961; 09-qa PASS (delta) + 10-e2e PASS D-S067-10-pw=1a; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress"
     phase_d: pending
     deploy: pending
   gates:
@@ -36742,6 +37097,9 @@ evolve_cycles:
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/qa-report.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+  - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verify-impl.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
   - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
@@ -36754,8 +37112,8 @@ evolve_cycles:
   - docs/decisions/requirements-decisions.md
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
-  board_note: "#948 live AC met on prod; 08-verify-build PASS; next 09-qa + 10-e2e parallel (not started); #903/#838 done in-repo"
-  note: "OPEN — EV-057/S067; status in_progress; 08-verify-build COMPLETE PASS 2026-08-16 @ 0e7833d1; report verification-report.md; next 09-qa + 10-e2e parallel (not started); tip not pushed; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
+  board_note: "#948 live AC met on prod; 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); #903/#838 done in-repo"
+  note: "OPEN — EV-057/S067; status in_progress; 11-verify-impl COMPLETE D-S067-11-preview=2a D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held) @ ffdd1961; tip not pushed; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -48427,15 +48785,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  ahead_of_origin: 13
+  ahead_of_origin: 14
   pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'dirty expected — verification-report.md + routing-plan.md + workflow-state.yaml after 08-verify-build COMPLETE PASS; tip remains 0e7833d1; no git commit by workflow-state-manager'
-  tip_sha: "0e7833d1"
-  tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
-  tip_note: "S067/EV-057 tip 0e7833d1 on evolve/EV-057-m0-ready-apex-accumulate-validate — 08-verify-build COMPLETE PASS; next 09-qa + 10-e2e parallel (not started); tip not pushed"
+  dirty_note: 'dirty expected — workflow-state.yaml after D-S067-11-preview=2a D-S067-11-ac=1a complete 11-verify-impl and start 12-verify-deploy; tip ffdd1961; no git commit by workflow-state-manager'
+  tip_sha: "ffdd1961"
+  tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+  tip_note: "S067/EV-057 tip ffdd1961 on evolve/EV-057-m0-ready-apex-accumulate-validate — 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held); tip not pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -48443,8 +48801,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "0e7833d1"
-  evolve_tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+  evolve_tip_sha: "ffdd1961"
+  evolve_tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
   evolve_tip_sha_pushed: false
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
@@ -48464,6 +48822,9 @@ git_history:
   note: 'S065 IN PROGRESS — tip da1e48f8 on fix/quality-metrics-diff-long-line; PR #987 open → stage; follow-up #988; CI 31541069003 watching; 14-hotfix remains in_progress (await CI+merge+close); dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a — 11-verify-impl COMPLETE PASS; report verify-impl.md; UI preview declined (reports/tests only); AC approved #948/#903/#838; current_stage 12-verify-deploy in_progress started 2026-08-16; current_stage_note 12-verify-deploy PR → stage (promote held); tip ffdd1961; tip not pushed; no git commit by workflow-state-manager'
+  - '2026-08-16 D-S067-10-pw=1a — 09-qa COMPLETE PASS (delta) qa-report.md; 10-e2e COMPLETE PASS with T2 Playwright waive (T0 vitest + T3 UJ-OPS-002 PASS) e2e-report.md; current_stage 11-verify-impl in_progress started 2026-08-16; current_stage_note 11-verify-impl per-Fn AC; UI preview remind_at_11; tip ffdd1961; tip not pushed; no git commit by workflow-state-manager'
+  - '2026-08-16 D-S067-09-10=1a — start 09-qa + 10-e2e parallel (not completed); current_stage 09-qa; current_stage_note 09-qa delta validate-fast ∥ 10-e2e T0 UJ-057/058; routing 09-qa + 10-e2e in_progress started 2026-08-16; tip ffdd1961 (08 report commit); tip not pushed; no git commit by workflow-state-manager'
   - '2026-08-16 08-verify-build COMPLETE PASS — report docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md; overall PASS; routing_plan 08 completed; current_stage 08-verify-build completed; next 09-qa + 10-e2e parallel (not started); tip 0e7833d1 unchanged; dirty report+routing+yaml expected; no git commit by workflow-state-manager'
   - '2026-08-16 #948 live AC MET — D-S067-948-redirect=1a / D-S067-948-apply=1a; live apex redirect applied; Ingress metar-frontend-apex + metar-apex-redirect; cert Ready; UJ-OPS-002 met on prod; Porkbun DNS blocker cleared; 07-build remains in_progress; next 08-verify-build; tip left 6568f664 (HEAD 93e60d45 not recorded); no git commit by workflow-state-manager'
   - '2026-08-16 tip 6568f664 — [T3.1-T3.5] Validate IWXXM mode; 07-build M1–M3 repo complete (14/14); next stage 08-verify-build pending; M1 #948 live AC still blocked on Porkbun DNS; EV-057 status remains in_progress; current_stage 07-build; tip_sha_pushed=false; commit recorded; no git commit by workflow-state-manager'
@@ -49050,10 +49411,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: 0e7833d1
-    tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
+    tip_sha: ffdd1961
+    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
     tip_sha_pushed: false
-    note: "ACTIVE local tip 0e7833d1 07-build T1.2 apex redirect via nginx pod; M1–M3 complete including #948 live UJ-OPS-002; next 08-verify-build; not pushed"
+    note: "ACTIVE local tip ffdd1961; 09-qa PASS (delta) + 10-e2e PASS D-S067-10-pw=1a; 11-verify-impl in_progress; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -50533,6 +50894,23 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "ffdd1961"
+    sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    message: "docs: [S067] 08-verify-build PASS after live #948 apex redirect"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 08-verify-build
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-16"
+    pushed: false
+    tip_sha: ffdd1961
+    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    tip_sha_pushed: false
+    files_changed:
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
+      - workflow-state.yaml
+    note: "08-verify-build PASS report commit; current tip; 09-qa + 10-e2e started in_progress (D-S067-09-10=1a); not pushed"
   - sha: "0e7833d1"
     sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
     message: "[T1.2] fix: apex redirect via nginx pod after webhook reject"
