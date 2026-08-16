@@ -20,10 +20,10 @@ active_session:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "bdc7f2c9"
-  tip_sha_full: bdc7f2c96168ac423f1c6312102d0bac9b270950
+  tip_sha: "23808386"
+  tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip bdc7f2c9 local — D-S067-07-proceed=1a; tip not pushed"
+  tip_sha_note: "07-build tip 23808386 local — M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; Porkbun DNS cutover pending; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -31,7 +31,7 @@ active_session:
   - 948
   - 903
   - 838
-  board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
+  board_note: "#948 repo done (live DNS pending Porkbun); #903 M2 nearly done (T2.1–T2.5); next M3 #838"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -66,7 +66,7 @@ active_session:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 07-build
-  current_stage_note: "07 M1 #948 — T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote"
+  current_stage_note: "07 M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -118,7 +118,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 07-build in_progress M1 #948 T1.1 (D-S067-07-proceed=1a / batch=1a / kube=1a)"
+    note: "IN PROGRESS — EV-057; 07-build in_progress M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; live DNS pending Porkbun; next M3 #838"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -145,7 +145,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — M1 #948 T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote (D-S067-07-batch=1a / kube=1a / proceed=1a)"
+    note: "IN PROGRESS — M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -203,10 +203,10 @@ sessions:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "bdc7f2c9"
-  tip_sha_full: bdc7f2c96168ac423f1c6312102d0bac9b270950
+  tip_sha: "23808386"
+  tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
   tip_sha_pushed: false
-  tip_sha_note: "07-build tip bdc7f2c9 local — D-S067-07-proceed=1a; tip not pushed"
+  tip_sha_note: "07-build tip 23808386 local — M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; Porkbun DNS cutover pending; tip not pushed"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-057
   artifacts_dir: docs/sessions/S067-m0-ready-apex-accumulate-validate/
@@ -214,7 +214,7 @@ sessions:
   - 948
   - 903
   - 838
-  board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
+  board_note: "#948 repo done (live DNS pending Porkbun); #903 M2 nearly done (T2.1–T2.5); next M3 #838"
   prior_session: S066-quality-metrics-diff-page
   deepen_feature_ids:
   - F7
@@ -249,7 +249,7 @@ sessions:
   - 838
   issue_order_note: "D-S067-order=2a — #948 → #903 → #838"
   current_stage: 07-build
-  current_stage_note: "07 M1 #948 — T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote"
+  current_stage_note: "07 M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
   decisions:
     D-S067-first: "1a — #948 first"
     D-S067-pack: "2c — one cycle all three Ready"
@@ -301,7 +301,7 @@ sessions:
     mode: orchestrate
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — EV-057; 07-build in_progress M1 #948 T1.1 (D-S067-07-proceed=1a / batch=1a / kube=1a)"
+    note: "IN PROGRESS — EV-057; 07-build in_progress M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; live DNS pending Porkbun; next M3 #838"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -328,7 +328,7 @@ sessions:
     mode: delta
     status: in_progress
     started: '2026-08-15'
-    note: "IN PROGRESS — M1 #948 T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote (D-S067-07-batch=1a / kube=1a / proceed=1a)"
+    note: "IN PROGRESS — M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -11243,9 +11243,9 @@ stages:
     evolve_cycle_id: EV-057
     skill_id: 07-build
     mode: delta
-    note: 'IN PROGRESS — S067/EV-057 M1 #948 T1.1 DNS/TLS verify; batch M1 only; manifests on stage, live redirect on promote (D-S067-07-batch=1a / kube=1a / proceed=1a); tip bdc7f2c9; no git commit by workflow-state-manager'
-    tip_sha: bdc7f2c9
-    tip_sha_full: bdc7f2c96168ac423f1c6312102d0bac9b270950
+    note: 'IN PROGRESS — S067/EV-057 M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838); M1 #948 repo done; live DNS still pending operator Porkbun cutover; tip 23808386'
+    tip_sha: 23808386
+    tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
     tip_sha_pushed: false
     pr_number:
     pr_url:
@@ -11256,13 +11256,13 @@ stages:
     ci_cd_pipeline_status:
     ci_cd_pipeline_note:
     pending_commit: false
-    current_milestone: M1
-    current_task: T1.1
-    active_milestone: M1
-    active_task: T1.1
+    current_milestone: M2
+    current_task: T2.5
+    active_milestone: M2
+    active_task: T2.5
     active_task_status: in_progress
-    completed_through: null
-    progress: M1 #948 T1.1 DNS/TLS verify; batch M1 only
+    completed_through: T2.4
+    progress: M2 #903 nearly done (T2.1–T2.4 done; T2.5 UJ-057 added); next M3 #838; M1 #948 repo done (Porkbun DNS pending)
     skipped_tasks: []
     deepen_feature_ids: [F7, F1, F6, F2, F4]
     feature_ids: []
@@ -36608,13 +36608,13 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: false
   branch_note: "ACTIVE local — evolve/EV-057-m0-ready-apex-accumulate-validate @ stage@b796882e; tip not pushed yet"
-  tip_sha: "7db2c724"
-  tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+  tip_sha: "23808386"
+  tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
   tip_sha_pushed: false
-  tip_sha_note: "04-tech-plan tip 7db2c724 local — D-S067-04-plan=1; tip not pushed"
+  tip_sha_note: "07-build tip 23808386 local — M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; Porkbun DNS cutover pending; tip not pushed"
   current_stage: 07-build
-  current_stage_status: pending
-  current_stage_note: "04 complete; awaiting 07 startup before M1 T1.1"
+  current_stage_status: in_progress
+  current_stage_note: "07-build M2 #903 nearly done (T2.1–T2.4 completed; T2.5 UJ-057 added; next M3 #838). M1 #948 repo done; live DNS still pending operator Porkbun cutover."
   started: "2026-08-15"
   started_at: "2026-08-15"
   preset: Standard
@@ -36703,8 +36703,8 @@ evolve_cycles:
   - docs/decisions/requirements-decisions.md
   prior_session: S066-quality-metrics-diff-page
   prior_evolve_note: "Prior S066/EV-056 Quality metrics detail page closed on stage; promote deferred"
-  board_note: "#948 In progress (WIP 1); #903/#838 Ready until milestones; D-S067-board=1"
-  note: "OPEN — EV-057/S067; 04 COMPLETE D-S067-04-plan=1; phase_b passed; awaiting 07 startup before M1 T1.1; tip 7db2c724 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
+  board_note: "#948 repo done (live DNS pending Porkbun); #903 M2 nearly done (T2.1–T2.5); next M3 #838"
+  note: "OPEN — EV-057/S067; 07-build M2 #903 nearly done (T2.1–T2.5); M1 #948 repo done; live DNS pending Porkbun; next M3 #838; tip 23808386 local; Standard; #948+#903+#838; [Corpus: product §F7/F1/F6/F2/F4]"
 - id: EV-056
   title: "F7.q Quality metrics detail page + collapsible diffs (#988)"
   status: completed
@@ -48996,10 +48996,10 @@ git_history:
     pushed: false
     session_id: S067-m0-ready-apex-accumulate-validate
     evolve_cycle_id: EV-057
-    tip_sha: 7db2c724
-    tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+    tip_sha: 23808386
+    tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
     tip_sha_pushed: false
-    note: "ACTIVE local tip 7db2c724 04 draft D-S067-04-plan=1; not pushed"
+    note: "ACTIVE local tip 23808386 07-build M2 #903 nearly done; M1 #948 repo done; Porkbun DNS pending; not pushed"
   - name: fix/quality-metrics-diff-long-line
     base: stage@d80db688
     base_sha: d80db688
@@ -50479,6 +50479,28 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "23808386"
+    sha_full: 238083864546126fdf817ffc6482256bed7ce77c
+    message: "[T2.1-T2.5] feat: accumulate conversions and content-derived ZIP names"
+    branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+    stage: 07-build
+    session_id: S067-m0-ready-apex-accumulate-validate
+    evolve_cycle_id: EV-057
+    timestamp: "2026-08-16"
+    pushed: false
+    tip_sha: 23808386
+    tip_sha_full: 238083864546126fdf817ffc6482256bed7ce77c
+    tip_sha_pushed: false
+    files_changed:
+      - README.md
+      - apps/e2e/uj057-accumulate-zip.e2e.spec.ts
+      - apps/frontend/src/app/components/FileConverter.test.tsx
+      - apps/frontend/src/app/components/FileConverter.tsx
+      - apps/frontend/src/utils/outputFilename.test.ts
+      - apps/frontend/src/utils/outputFilename.ts
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
+      - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+    note: "07-build M2 #903 T2.1–T2.5 accumulate ZIP; next M3 #838; tip not pushed"
   - sha: "7db2c724"
     sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
     message: "docs: [S067/EV-057] draft 04 execution plan (M1–M3)"
