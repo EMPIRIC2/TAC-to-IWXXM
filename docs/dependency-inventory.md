@@ -144,8 +144,8 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | docker / compose | system | Local multi-service |
 | Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
 | schemathesis | **dev** (F34 / EV-059 / #727) | OpenAPI property-based suite vs `apps/backend` ASGI — **MIT**; pinned `==4.24.3` (workspace `dev`) |
-| pytest-gremlins | **dev** (F34 / EV-059 / #874) | Python mutation testing (pytest plugin) — **MIT**; nightly/manual; pin in 07-build |
-| @stryker-mutator/core (+ runners/plugins as needed) | **dev** (F34 / EV-059 / #874) | TypeScript mutation testing — **Apache-2.0**; nightly/manual; pin in 07-build |
+| pytest-gremlins | **dev** (F34 / EV-059 / #874) | Python mutation testing (pytest plugin) — **MIT**; pinned `==1.9.0` (workspace `dev`); nightly/manual |
+| @stryker-mutator/core (+ vitest-runner / typescript-checker) | **dev** (F34 / EV-059 / #874) | TypeScript mutation testing — **Apache-2.0**; pinned `10.0.0` in `apps/frontend` + `packages/shared`; nightly/manual |
 | cargo / maturin | **required before cutover** | PyO3 wheel build in CI/API image (ADR-017) |
 | xsdata | **dev/codegen** (F11 / ADR-027) | XSD → Python models from pinned IWXXM schemas — `xsdata[cli]>=24.5` in workspace `dev` |
 | xsdata-pydantic | **dev/codegen** (F11 / ADR-027) | pydantic v2 output plugin — `>=24.5` in workspace `dev`; also `metar-shared[xsd]` for importing committed models |
@@ -192,8 +192,9 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 ### Session changelog
 
 - S069 / EV-059 (2026-08-17): **schemathesis==4.24.3** (MIT) pinned in workspace `dev`;
-  **pytest-gremlins** (MIT) + **@stryker-mutator/core** (Apache-2.0) reserved for #874 —
-  F34 quality gates (`D-S069-tool`); mutation not a every-PR required gate
+  **pytest-gremlins==1.9.0** (MIT) + **@stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0**
+  (Apache-2.0) pinned for #874 — F34 quality gates (`D-S069-tool`); mutation not a every-PR
+  required gate; workflow `.github/workflows/mutation.yml` (schedule + workflow_dispatch)
 - S008 (2026-07-12): tac2iwxxm MIT; gifts removed; iwxxm-us; optional PyO3; IR lib TBD in 04
 - S008 amend (2026-07-12): tac-validate + iwxxm-validate MIT; lxml for Schematron; tac-validate
   may use pydantic/msgspec (04)

@@ -33,6 +33,7 @@ dev = [
   "metar-auth",
   "testcontainers[mysql,postgres]>=4.8",
   "schemathesis==4.24.3",
+  "pytest-gremlins==1.9.0",
 ]
 
 [tool.uv.sources]
@@ -119,6 +120,24 @@ omit = [
 fail_under = 98
 show_missing = true
 skip_covered = false
+
+# F34 / EV-059 / #874 — pytest-gremlins (TC-F34-003). Nightly/manual only; not every-PR.
+# Per-target paths are passed via --gremlin-targets from scripts/ci/run_mutation_python.sh.
+[tool.pytest-gremlins]
+exclude = [
+  "**/tests/**",
+  "**/test_*.py",
+  "**/conftest.py",
+  "**/__pycache__/**",
+  "**/migrations/**",
+  "**/iwxxm_xsd/v*/**",
+  "**/rust/**",
+  "**/*.egg-info/**",
+]
+operators = ["comparison", "boundary", "boolean", "arithmetic", "return"]
+report = ["console", "json"]
+workers = 2
+cache = true
 
 [tool.ruff]
 extend-exclude = [

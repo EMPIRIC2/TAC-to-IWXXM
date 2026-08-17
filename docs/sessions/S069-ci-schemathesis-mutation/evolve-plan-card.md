@@ -39,7 +39,7 @@ Close epic #841: Schemathesis OpenAPI property suite (#727) + broad Python/TS mu
 
 ## Next child stage
 
-**07-build** — M1 Schemathesis (#727) only until that PR is verified; then M2 mutation (#874)
+**Merge AskQuestion** — PR [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) → `stage` (#874); Lean 08 **PASS** (`reports/verification-report.md`); GitHub outage bypass active
 
 ## Locked intake
 

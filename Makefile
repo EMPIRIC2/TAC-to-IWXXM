@@ -19,6 +19,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
+	test-schemathesis test-mutation test-mutation-poc test-mutation-python test-mutation-js \
 	build-tac2iwxxm-native build-iwxxm-validate-native \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
 	perf-converter-baseline test-converter-pr-gate test-unit-fast lint-fast \
@@ -240,6 +241,26 @@ test-schemathesis:
 		$(UV) run pytest tests/contract/test_schemathesis_openapi.py \
 		-m schemathesis --override-ini addopts= -v \
 		--tb=short)
+
+# F34 / EV-059 / #874 — Mutation testing (TC-F34-003..005). Nightly/manual only.
+# Usage: make test-mutation-python TARGET=poc-shared-env
+#        make test-mutation-js TARGET=frontend
+#        make test-mutation-poc   # narrow Python + docs note
+# Knobs: MUTATION_TIMEOUT_SEC (default 1200), GREMLIN_EXTRA_ARGS
+test-mutation-python:
+	@test -n "$(TARGET)" || (echo "Set TARGET=backend|worker|auth|shared|tac-validate|tac2iwxxm|iwxxm-validate|dissemination|poc-shared-env" >&2; exit 2)
+	bash scripts/ci/run_mutation_python.sh "$(TARGET)"
+
+test-mutation-js:
+	@test -n "$(TARGET)" || (echo "Set TARGET=frontend|shared" >&2; exit 2)
+	bash scripts/ci/run_mutation_js.sh "$(TARGET)"
+
+test-mutation-poc:
+	MUTATION_TIMEOUT_SEC=$${MUTATION_TIMEOUT_SEC:-300} bash scripts/ci/run_mutation_python.sh poc-shared-env
+
+test-mutation: test-mutation-poc
+	@echo "Full matrix: workflow .github/workflows/mutation.yml (schedule / workflow_dispatch)"
+	@echo "Chunked local: make test-mutation-python TARGET=… / make test-mutation-js TARGET=…"
 
 # F31 / EV-047 — auth package + per-file ≥95%.
 test-unit-auth:

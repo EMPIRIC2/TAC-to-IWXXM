@@ -24,8 +24,8 @@
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 07-build | yes | delta | **pending** | Two PRs: #727 Schemathesis then #874 mutation; startup interview next |
-| 08-verify-build | yes | delta | **pending** | Local + CI green for new suites (per PR / milestone) |
+| 07-build | yes | delta | **in_progress** | M1 #997 merged; M2 PR [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) open (`Closes #874`) |
+| 08-verify-build | yes | delta | **completed** | Lean M2 PASS — `reports/verification-report.md`; CI comment jobs waived (`D-S069-ci-comment-waiver`) |
 | 09-qa | no | — | skipped | Lean |
 | 10-e2e | no | — | skipped | No UI / H4–H5 |
 | 11-verify-impl | no | — | skipped | Lean |

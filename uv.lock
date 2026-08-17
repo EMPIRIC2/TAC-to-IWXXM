@@ -1592,6 +1592,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
+    { name = "pytest-gremlins" },
     { name = "respx" },
     { name = "ruff" },
     { name = "schemathesis" },
@@ -1620,6 +1621,7 @@ dev = [
     { name = "pytest", specifier = ">=8.4" },
     { name = "pytest-asyncio", specifier = ">=0.24" },
     { name = "pytest-cov", specifier = ">=6.0" },
+    { name = "pytest-gremlins", specifier = "==1.9.0" },
     { name = "respx", specifier = ">=0.21" },
     { name = "ruff", specifier = ">=0.9" },
     { name = "schemathesis", specifier = "==4.24.3" },
@@ -2271,6 +2273,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b1/51/a849f96e117386044471c8ec2bd6cfebacda285da9525c9106aeb28da671/pytest_cov-7.1.0.tar.gz", hash = "sha256:30674f2b5f6351aa09702a9c8c364f6a01c27aae0c1366ae8016160d1efc56b2", size = 55592, upload-time = "2026-03-21T20:11:16.284Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9d/7a/d968e294073affff457b041c2be9868a40c1c71f4a35fcc1e45e5493067b/pytest_cov-7.1.0-py3-none-any.whl", hash = "sha256:a0461110b7865f9a271aa1b51e516c9a95de9d696734a2f71e3e78f46e1d4678", size = 22876, upload-time = "2026-03-21T20:11:14.438Z" },
+]
+
+[[package]]
+name = "pytest-gremlins"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "coverage" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3b/b6/74470cd5b97eb0cf5f3d7e2ef7feb2d6136b5cbe2df6e070299c5faf5e7c/pytest_gremlins-1.9.0.tar.gz", hash = "sha256:12966b4d24146b46d58aa1dc8a6d0881918863ca4454a44d109b295f22d27c24", size = 4013393, upload-time = "2026-07-01T12:55:33.149Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f6/f7/f582cd587ebdfad6e7f6426ca3220b051d7adb41c824576851732843777a/pytest_gremlins-1.9.0-py3-none-any.whl", hash = "sha256:26997e1e6ac0cbdef70c68ddadbbd2bf93c7d41e143d9f2d84ec318b7d552b67", size = 118421, upload-time = "2026-07-01T12:55:31.708Z" },
 ]
 
 [[package]]
