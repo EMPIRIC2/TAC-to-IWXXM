@@ -8,12 +8,16 @@
 **Session**: S068-quality-metrics-diff-layout  
 **Features**: deepen **F7.q** only  
 **Started**: 2026-08-17  
+**Closed**: 2026-08-17  
 **Branch**: `evolve/EV-058-quality-metrics-diff-layout` (base `stage@c2ca9a3f`)  
-**Status**: **in_progress** — Spec-development; Spec→Build gate **closed**  
-**Issue**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983) — board **In progress**  
+**Status**: **completed** — `D-S068-13=1` / `D-S068-close=1`; on `stage` @ `2c320c45`; promote held  
+**Issue**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983) — **CLOSED** · board **Done**  
+**PR**: [#994](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994) → `stage` @ `2c320c45`  
+**Staging CD**: [32038222032](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32038222032)  
+**Reports**: [evolve-report-EV-058.md](../evolve-report-EV-058.md) · [evolve-summary.md](../sessions/S068-quality-metrics-diff-layout/reports/evolve-summary.md)  
 **Predecessor**: S066 / EV-056 / #988 (unified + collapsible on stage)  
 **Corpus**: [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056]
-[Corpus: decisions §EV-058]
+[Corpus: decisions §EV-058] [Corpus: deploy] [Corpus: adr/ADR-034]
 
 ### Scope (Phase 0 — locked 2026-08-17)
 
@@ -27,6 +31,9 @@
 | D-S068-01-ac | **2b** — AC1–AC5; synced scroll **best-effort** (not blocking) |
 | D-S068-01-control | **3a** — segmented Inline \| Side-by-side |
 | D-S068-01-uj | **4a** — deepen UJ-056 + TC-EV058-001..005 |
+| D-S068-merge | **1** — Merge #994 → stage; run 13 |
+| D-S068-13 | **1** — Approve 13; close on stage (no promote) |
+| D-S068-close | **1** — Close EV-058/S068; #983 Done; `active_session=null` |
 
 ### Acceptance (approved `D-S068-01-ac=2b`)
 

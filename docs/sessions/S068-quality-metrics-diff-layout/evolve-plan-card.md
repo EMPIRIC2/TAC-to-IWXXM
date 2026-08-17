@@ -38,7 +38,7 @@ Selectable **inline (unified)** vs **side-by-side** XML diff on F7.q `/quality/:
 
 ## Next child stage
 
-**13-deploy-smoke** — after commit + PR → `stage` (CI green)
+**CLOSED** — `D-S068-13=1` / `D-S068-close=1`; #994 → stage @ `2c320c45`; #983 Done; promote held
 
 ## Locked intake
 
