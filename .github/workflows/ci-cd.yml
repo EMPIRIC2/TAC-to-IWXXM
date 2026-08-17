@@ -306,27 +306,39 @@ jobs:
               core.setFailed('coverage comment missing sticky marker');
               return;
             }
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              per_page: 100,
-            });
-            const existing = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes(marker));
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
+            // Soft-fail transient GitHub API outages (503/502/500/429) so sticky
+            // comments never fail the required CI suite (D-S069-ci-comment-waiver).
+            const transient = new Set([429, 500, 502, 503]);
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body,
+                per_page: 100,
               });
+              const existing = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes(marker));
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existing.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (err) {
+              const status = err.status ?? err.response?.status;
+              if (transient.has(status)) {
+                core.warning(`Coverage sticky comment skipped (GitHub API ${status}): ${err.message}`);
+                return;
+              }
+              throw err;
             }
 
   # EV-052 / TC-EV052-004 — sticky PR comment #2: quality-matrix + golden outcomes.
@@ -379,27 +391,39 @@ jobs:
               core.setFailed('quality comment must not reuse coverage sticky marker');
               return;
             }
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              per_page: 100,
-            });
-            const existing = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes(marker));
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
+            // Soft-fail transient GitHub API outages (503/502/500/429) so sticky
+            // comments never fail the required CI suite (D-S069-ci-comment-waiver).
+            const transient = new Set([429, 500, 502, 503]);
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body,
+                per_page: 100,
               });
+              const existing = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes(marker));
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existing.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (err) {
+              const status = err.status ?? err.response?.status;
+              if (transient.has(status)) {
+                core.warning(`Quality sticky comment skipped (GitHub API ${status}): ${err.message}`);
+                return;
+              }
+              throw err;
             }
 
   # F30 / EV-031 T2.3 — Postgres service + idempotent alembic upgrade head (TC-EV031-002).

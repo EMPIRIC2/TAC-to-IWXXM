@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S069/EV-059 OPEN — Gate A PASS; Spec→Build OPEN; 07-build in_progress; M1 Schemathesis MERGED (#997→stage @ c08bc30f; #727 Done); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); next open PR #874 → stage; #874 In progress; #841 In progress; branch evolve/EV-059-ci-schemathesis-mutation"
+overall_status_note: "S069/EV-059 OPEN — Gate A PASS; Spec→Build OPEN; 07-build in_progress (T2.3 PR #998 open → stage @ 78b0b082); Lean 08-verify-build COMPLETE PASS (D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); M1 Schemathesis MERGED (#997→stage @ c08bc30f; #727 Done); next merge AskQuestion for #998 (do not merge yet; session open); #874 In progress; #841 In progress"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -19,11 +19,23 @@ active_session:
   branch_base_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
   branch_status: active
   branch_exists: true
-  branch_pushed: false
-  tip_sha: c08bc30f
-  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  branch_pushed: true
+  tip_sha: 78b0b082
+  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
   tip_sha_pushed: true
-  tip_sha_note: "OPEN — M1 MERGED (#997→stage @ c08bc30f; #727 Done); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); next open PR #874 → stage; Spec→Build OPEN; 07-build in_progress; promote held"
+  tip_sha_note: "OPEN — M1 MERGED (#997→stage @ c08bc30f; #727 Done); M2 tip 78b0b082 on origin; T2.3 PR #998 open → stage (D-S069-m2-pr=1 success); CI/CD 32049951760 substantive green + sticky-comment waive; Spec→Build OPEN; 07-build in_progress; Lean 08-verify-build COMPLETE PASS; next merge AskQuestion; promote held"
+  pr_number: 998
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+  pr_status: open
+  pr_base: stage
+  pr_title: "[EV-059] M2: mutation testing scaffolding (#874)"
+  tip_ci_run: '32049951760'
+  tip_ci_status: waived
+  tip_ci_note: "Run 32049951760 — substantive test jobs green on PR #998; Quality+Coverage PR comment failures waived (D-S069-ci-comment-waiver=2; GitHub 503 sticky comments); GitHub API mutations bypassed until user says otherwise (D-S069-github-outage-bypass); Lean 08-verify-build COMPLETE PASS (local format/lint/typecheck/test-unit/H0c); next merge AskQuestion for #998"
+  m1_pr_number: 997
+  m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997
+  m1_pr_status: merged
+  m1_pr_note: "M1 Schemathesis MERGED → stage @ c08bc30f; #727 Done"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-059
   artifacts_dir: docs/sessions/S069-ci-schemathesis-mutation/
@@ -31,7 +43,7 @@ active_session:
   - 841
   - 727
   - 874
-  board_note: "#727 Done; #874 In progress; #841 In progress; Gate A PASS; Spec→Build OPEN; 07-build M2 T2.3 PR pending"
+  board_note: "#727 Done; #874 In progress; #841 In progress; Gate A PASS; Spec→Build OPEN; 07-build M2 T2.3 PR #998 open → stage; Lean 08-verify-build COMPLETE PASS; D-S069-ci-comment-waiver=2; D-S069-github-outage-bypass; next merge AskQuestion"
   prior_session: S068-quality-metrics-diff-layout
   feature_ids:
   - F34
@@ -58,8 +70,8 @@ active_session:
   ui_preview_note: "N/A — CI/DX cycle; no product UI preview"
   spec_to_build_gate: open
   current_stage: 16-evolve
-  current_stage_note: "M1 MERGED (#997→stage; #727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — next open PR #874 → stage; Spec→Build still open; 07-build in_progress"
-  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; 07-build in_progress (M1 done #997; M2 T2.1/T2.2 done; T2.3 PR pending #874); skip 03-06,09-13"
+  current_stage_note: "M1 MERGED (#997→stage; #727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 PR #998 open → stage (D-S069-m2-pr=1 success; tip 78b0b082); 07-build in_progress until #998 merge; Lean 08-verify-build COMPLETE PASS (verification-report.md; D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); Spec→Build still open; next merge AskQuestion for #998 (do not merge yet; session open)"
+  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; 07-build in_progress (M1 done #997; M2 T2.1/T2.2 done; T2.3 PR #998 open → stage @ 78b0b082); 08-verify-build COMPLETE PASS; next merge AskQuestion; skip 03-06,09-13"
   routing_plan:
   - stage: 00-context
     required: true
@@ -73,7 +85,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-17'
-    note: "IN PROGRESS — Spec→Build open; current_child 07-build in_progress; M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 PR pending (#874)"
+    note: "IN PROGRESS — Spec→Build open; current_child 07-build in_progress (await merge AskQuestion #998); Lean 08-verify-build COMPLETE PASS; M1 done PR#997 (#727 Done); M2 T2.3 PR #998 open → stage (D-S069-m2-pr=1 success; tip 78b0b082); D-S069-ci-comment-waiver=2; D-S069-github-outage-bypass"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -95,13 +107,16 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-17'
-    note: "IN PROGRESS — M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — PR pending (#874); Spec→Build open"
+    note: "IN PROGRESS — M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 PR #998 open → stage (closes #874; tip 78b0b082; D-S069-m2-pr=1 success); Spec→Build open; Lean 08 COMPLETE PASS; awaiting merge AskQuestion (do not merge yet)"
     report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — Spec→Build open; awaits 07-build M2 PR #874 → stage; then 08"
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    note: "COMPLETE — Overall PASS (D-S069-ci-comment-waiver + D-S069-github-outage-bypass); local format/lint/typecheck/test-unit/H0c CORS PASS; tip 78b0b082; PR #998 still open → stage; next merge AskQuestion"
+    report: docs/sessions/S069-ci-schemathesis-mutation/reports/verification-report.md
   - stage: 03-plan-tooling
     required: false
     mode: null
@@ -161,8 +176,11 @@ active_session:
     D-S069-m1-merge: "1a — merge #997; start M2 mutation #874"
     D-S069-m2-pins: "pytest-gremlins==1.9.0; @stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0"
     D-S069-m2-survivors: "waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins (trim/empty short-circuit)"
+    D-S069-m2-pr: "1 — success; PR #998 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998); closes #874"
+    D-S069-ci-comment-waiver: "2 — waive Quality PR comment + Coverage PR comment failures on run 32049951760 (GitHub 503 sticky comments); substantive test jobs green on PR #998"
+    D-S069-github-outage-bypass: "waive/bypass GitHub API mutations (rerun, status sync, sticky comments) until user says otherwise — long-running Partial System Outage; prefer local verification"
   context_briefs: []
-  note: "OPEN — S069/EV-059; Gate A PASS; Spec→Build OPEN; 07-build in_progress; M1 MERGED (#997→stage @ c08bc30f; #727 Done; D-S069-m1-merge=1a); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending; D-S069-m2-pins + D-S069-m2-survivors); next open PR #874 → stage; #874 In progress; #841 In progress; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
+  note: "OPEN — S069/EV-059; Gate A PASS; Spec→Build OPEN; 07-build in_progress (await merge #998); Lean 08-verify-build COMPLETE PASS (verification-report.md; D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); M1 MERGED (#997→stage @ c08bc30f; #727 Done; D-S069-m1-merge=1a); M2 PR #998 open → stage (tip 78b0b082; D-S069-m2-pr=1 success); next merge AskQuestion (do not merge; session open); #874 In progress; #841 In progress; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
 
 
 
@@ -14684,17 +14702,17 @@ stages:
     status: completed
     in_progress: false
     mode: delta
-    started_at: '2026-08-16'
-    started: '2026-08-16'
-    completed_at: '2026-08-16'
-    completed: '2026-08-16'
-    previous_started_at: '2026-08-09'
-    previous_completed_at: '2026-08-09'
-    previous_session_id: S061-ci-polish-quality-pr-stats
-    previous_evolve_cycle_id: EV-052
-    previous_tip_sha: 828c7087
-    previous_tip_sha_full: 828c708723549fd480a93203b600e742bf88a343
-    previous_note: 'COMPLETE — S061/EV-052 PASS @ 828c7087; report verification-report.md; superseded by S063/EV-054'
+    started_at: '2026-08-17'
+    started: '2026-08-17'
+    completed_at: '2026-08-17'
+    completed: '2026-08-17'
+    previous_started_at: '2026-08-16'
+    previous_completed_at: '2026-08-16'
+    previous_session_id: S067-m0-ready-apex-accumulate-validate
+    previous_evolve_cycle_id: EV-057
+    previous_tip_sha: ffdd1961
+    previous_tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    previous_note: 'COMPLETE — S067/EV-057 PASS 2026-08-16 @ ffdd1961; report verification-report.md; superseded by S069/EV-059'
     previous_s057_started_at: '2026-08-08'
     previous_s057_completed_at: '2026-08-08'
     previous_s057_session_id: S057-strip-internal-doc-refs
@@ -14769,21 +14787,21 @@ stages:
     prior_s037_evolve_cycle_id: EV-030
     prior_s037_tip_sha: 1f47eb5
     prior_s037_note: 'COMPLETE (M3 gate + T4.1) — PASS @ tip 1f47eb5; report docs/sessions/S037-quality-residuals-831/reports/verification-report-m3.md; prior M2 verification-report-m2.md; CI 30823368642 SUCCESS; reopen for final M4 08; PR #832 open; #831→#835'
-    session_id: S067-m0-ready-apex-accumulate-validate
-    evolve_cycle_id: EV-057
-    tip_sha: ffdd1961
-    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
-    tip_sha_pushed: false
-    pr_number:
-    pr_url:
-    pr_status:
+    session_id: S069-ci-schemathesis-mutation
+    evolve_cycle_id: EV-059
+    tip_sha: 78b0b082
+    tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
+    tip_sha_pushed: true
+    pr_number: 998
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+    pr_status: open
     pr_base: stage
-    ci_cd_pipeline_run:
-    ci_cd_pipeline_status:
-    ci_cd_pipeline_note:
-    note: 'COMPLETE — S067/EV-057 08-verify-build PASS 2026-08-16 @ ffdd1961; report verification-report.md; 09-qa + 10-e2e + 11-verify-impl completed; 12-verify-deploy in_progress'
-    expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
-    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/verification-report.md
+    ci_cd_pipeline_run: '32049951760'
+    ci_cd_pipeline_status: waived
+    ci_cd_pipeline_note: 'substantive green; Quality+Coverage sticky comments waived (D-S069-ci-comment-waiver=2)'
+    note: 'COMPLETE — S069/EV-059 Lean 08-verify-build PASS @ 78b0b082; report verification-report.md; D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS; PR #998 open → stage; 07-build remains in_progress; next merge AskQuestion'
+    expected_report: docs/sessions/S069-ci-schemathesis-mutation/reports/verification-report.md
+    report: docs/sessions/S069-ci-schemathesis-mutation/reports/verification-report.md
     overall: PASS
     previous_s064_started_at: '2026-08-11'
     previous_s064_completed_at: '2026-08-11'
@@ -14825,10 +14843,10 @@ stages:
     previous_s056_overall: pass
     previous_s056_phase_c_checkpoint: passed
     skill_id: 08-verify-build
-    next_stage: 12-verify-deploy
+    next_stage: 07-build
     next_stage_parallel:
     next_stage_status: in_progress
-    next_stage_note: 'S067/EV-057 11-verify-impl COMPLETE D-S067-11-ac=1a; 12-verify-deploy in_progress (PR → stage; promote held)'
+    next_stage_note: 'S069/EV-059 Lean 08 COMPLETE PASS; 07-build remains in_progress until merge AskQuestion for PR #998 → stage (do not merge yet; session open)'
     prior_s050_session_id: S050-remove-db-tools-operator-throughput
     prior_s050_evolve_cycle_id: EV-042
     prior_s050_tip_sha: 6bc756ef
@@ -17609,6 +17627,133 @@ issue_log:
   resolved_at: '2026-07-12'
 decisions_log:
 
+- id: D-S069-ci-comment-waiver
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S069-ci-schemathesis-mutation
+  evolve_cycle_id: EV-059
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: ci_waiver
+  status: confirmed
+  topic: 'S069/EV-059 — waive Quality + Coverage PR comment failures on run 32049951760'
+  summary: 'Waive sticky PR comment job failures (GitHub 503); substantive test jobs green on PR #998'
+  decision: |
+    D-S069-ci-comment-waiver — 2 — waive Quality PR comment + Coverage PR comment failures
+    on run 32049951760 (GitHub 503 sticky comments); substantive test jobs green on PR #998.
+    Lean 08-verify-build in_progress; 07-build / T2.3 still progressing; PR #998 remains open → stage.
+    Merge still needs user approval; session not closed.
+    No git commit by workflow-state-manager.
+  branch: evolve/EV-059-ci-schemathesis-mutation
+  related_features:
+  - F34
+  related_issues:
+  - '874'
+  - '841'
+  related_decisions:
+  - D-S069-github-outage-bypass
+  - D-S069-m2-pr
+  tip_sha: '78b0b082'
+  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
+  tip_sha_pushed: true
+  pr_number: 998
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+  pr_status: open
+  pr_base: stage
+  tip_ci_run: '32049951760'
+  tip_ci_status: waived
+  current_stage: 08-verify-build
+  note: 'Sticky comment failures waived; substantive tests green; no merge invented'
+
+- id: D-S069-github-outage-bypass
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S069-ci-schemathesis-mutation
+  evolve_cycle_id: EV-059
+  skill: 08-verify-build
+  skill_id: 08-verify-build
+  stage: 08-verify-build
+  category: outage_bypass
+  status: confirmed
+  topic: 'S069/EV-059 — bypass GitHub API mutations during Partial System Outage'
+  summary: 'Waive/bypass GitHub API mutations until user says otherwise; prefer local verification'
+  decision: |
+    D-S069-github-outage-bypass — waive/bypass GitHub API mutations (rerun, status sync,
+    sticky comments) until user says otherwise — long-running Partial System Outage;
+    prefer local verification.
+    Applies while PR #998 open → stage; Lean 08-verify-build in_progress; 07-build progressing.
+    Session not closed; no merge invented.
+    No git commit by workflow-state-manager.
+  branch: evolve/EV-059-ci-schemathesis-mutation
+  related_features:
+  - F34
+  related_issues:
+  - '874'
+  - '841'
+  related_decisions:
+  - D-S069-ci-comment-waiver
+  - D-S069-m2-pr
+  tip_sha: '78b0b082'
+  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
+  tip_sha_pushed: true
+  pr_number: 998
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+  pr_status: open
+  pr_base: stage
+  tip_ci_run: '32049951760'
+  tip_ci_status: waived
+  current_stage: 08-verify-build
+  note: 'GitHub API mutation bypass active until user lifts; prefer local verification'
+
+- id: D-S069-m2-pr
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S069-ci-schemathesis-mutation
+  evolve_cycle_id: EV-059
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: pr_open
+  status: confirmed
+  topic: 'S069/EV-059 M2 — open PR #874 → stage'
+  summary: 'User chose option 1 — keep retrying; GitHub recovered; PR #998 open → stage'
+  decision: |
+    D-S069-m2-pr — 1 — success; PR #998 open → stage.
+    Title: [EV-059] M2: mutation testing scaffolding (#874)
+    Head: evolve/EV-059-ci-schemathesis-mutation @ 78b0b082; Base: stage.
+    URL: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+    Closes #874 in PR body. Prior 503 recovered after keep-retrying.
+    CI/CD Pipeline run 32049951760 in_progress on the PR.
+    T2.3 / 07-build remain in_progress; Spec→Build still open; cycle not closed.
+    Next: Lean 08-verify-build after CI green; merge still needs user approval.
+    No git commit by workflow-state-manager.
+  branch: evolve/EV-059-ci-schemathesis-mutation
+  related_features:
+  - F34
+  related_issues:
+  - '874'
+  - '841'
+  related_decisions:
+  - D-S069-m2-pins
+  - D-S069-m2-survivors
+  - D-S069-m1-merge
+  tip_sha: '78b0b082'
+  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
+  tip_sha_pushed: true
+  pr_number: 998
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+  pr_status: open
+  pr_base: stage
+  tip_ci_run: '32049951760'
+  tip_ci_status: in_progress
+  current_stage: 07-build
+  report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
+  note: 'PR #998 open → stage; CI watching 32049951760; T2.3 opened; merge needs user approval'
+
 - id: D-S069-m2-survivors
   date: '2026-08-17'
   timestamp: '2026-08-17'
@@ -17641,7 +17786,7 @@ decisions_log:
   tip_sha_pushed: true
   current_stage: 07-build
   report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
-  note: 'M2 T2.3 survivor waiver; PR #874 pending'
+  note: 'M2 T2.3 survivor waiver; PR #998 open → stage'
 
 - id: D-S069-m2-pins
   date: '2026-08-17'
@@ -34190,6 +34335,18 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S069-ci-schemathesis-mutation/reports/verification-report.md
+  type: session-report
+  kind: verification-report
+  stage: 08-verify-build
+  skill_id: 08-verify-build
+  session_id: S069-ci-schemathesis-mutation
+  evolve_cycle_id: EV-059
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: completed
+  overall: PASS
+  note: 'S069/EV-059 Lean 08-verify-build COMPLETE PASS — D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS; PR #998 open → stage @ 78b0b082; next merge AskQuestion'
 - path: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
   type: session-report
   kind: build-m2
@@ -34200,7 +34357,7 @@ artifacts:
   created_at: '2026-08-17'
   updated_at: '2026-08-17'
   status: in_progress
-  note: 'S069/EV-059 M2 scaffolding complete — T2.1/T2.2 done; T2.3 in_progress PR pending; D-S069-m2-pins + D-S069-m2-survivors; next open PR #874 → stage'
+  note: 'S069/EV-059 M2 scaffolding complete — T2.1/T2.2 done; T2.3 PR #998 open → stage (D-S069-m2-pr=1 success; tip 78b0b082); Lean 08 COMPLETE PASS; awaiting merge AskQuestion'
 - path: docs/sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md
   type: session-report
   kind: verify-plan-audit
@@ -38176,19 +38333,31 @@ evolve_cycles:
   branch_base_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
   branch_status: active
   branch_exists: true
-  branch_pushed: false
-  tip_sha: c08bc30f
-  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  branch_pushed: true
+  tip_sha: 78b0b082
+  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
   tip_sha_pushed: true
-  tip_sha_note: "OPEN — M1 MERGED (#997→stage @ c08bc30f; #727 Done); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); next open PR #874 → stage; Spec→Build OPEN; 07-build in_progress; promote held"
+  tip_sha_note: "OPEN — M1 MERGED (#997→stage @ c08bc30f; #727 Done); M2 tip 78b0b082 on origin; T2.3 PR #998 open → stage (D-S069-m2-pr=1 success); CI/CD 32049951760 substantive green + sticky-comment waive; Spec→Build OPEN; 07-build in_progress; Lean 08-verify-build COMPLETE PASS; next merge AskQuestion; promote held"
+  pr_number: 998
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+  pr_status: open
+  pr_base: stage
+  pr_title: "[EV-059] M2: mutation testing scaffolding (#874)"
+  tip_ci_run: '32049951760'
+  tip_ci_status: waived
+  tip_ci_note: "Run 32049951760 — substantive test jobs green on PR #998; Quality+Coverage PR comment failures waived (D-S069-ci-comment-waiver=2; GitHub 503 sticky comments); GitHub API mutations bypassed until user says otherwise (D-S069-github-outage-bypass); Lean 08-verify-build COMPLETE PASS (local format/lint/typecheck/test-unit/H0c); next merge AskQuestion for #998"
+  m1_pr_number: 997
+  m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997
+  m1_pr_status: merged
+  m1_pr_note: "M1 Schemathesis MERGED → stage @ c08bc30f; #727 Done"
   current_stage: 16-evolve
   current_stage_status: in_progress
-  current_stage_note: "M1 MERGED (#997→stage; #727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — next open PR #874 → stage; Spec→Build still open; 07-build in_progress"
+  current_stage_note: "M1 MERGED (#997→stage; #727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 PR #998 open → stage (D-S069-m2-pr=1 success; tip 78b0b082); 07-build in_progress until #998 merge; Lean 08-verify-build COMPLETE PASS (verification-report.md; D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); Spec→Build still open; next merge AskQuestion for #998 (do not merge yet; session open)"
   current_child: 07-build
   current_child_stage: 07-build
   current_child_stage_status: in_progress
-  current_child_note: "M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 in_progress — PR pending (#874)"
-  current_child_stage_note: "IN PROGRESS — M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — PR pending (#874); Spec→Build open"
+  current_child_note: "07-build in_progress until merge of PR #998; Lean 08-verify-build COMPLETE PASS; next merge AskQuestion (do not merge yet; session open)"
+  current_child_stage_note: "IN PROGRESS — T2.3 PR #998 open → stage @ 78b0b082; Lean 08 COMPLETE PASS; awaiting merge AskQuestion"
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Lean
@@ -38197,7 +38366,7 @@ evolve_cycles:
   ui_preview: N/A
   ui_preview_url: null
   ui_preview_note: "N/A — CI/DX cycle; no product UI preview"
-  board_note: "#727 Done; #874 In progress; #841 In progress; Gate A PASS; Spec→Build OPEN; 07-build M2 T2.3 PR pending"
+  board_note: "#727 Done; #874 In progress; #841 In progress; Gate A PASS; Spec→Build OPEN; 07-build M2 T2.3 PR #998 open → stage; Lean 08-verify-build COMPLETE PASS; D-S069-ci-comment-waiver=2; D-S069-github-outage-bypass; next merge AskQuestion"
   spec_to_build_gate: open
   corpus_cites:
   - '[Corpus: product §F34]'
@@ -38221,7 +38390,7 @@ evolve_cycles:
   - 11-verify-impl
   - 12-verify-deploy
   - 13-deploy-smoke
-  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; 07-build in_progress (M1 done #997; M2 T2.1/T2.2 done; T2.3 PR pending #874); skip 03-06,09-13"
+  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; 07-build in_progress (M1 done #997; M2 T2.1/T2.2 done; T2.3 PR #998 open → stage @ 78b0b082); 08-verify-build COMPLETE PASS; next merge AskQuestion; skip 03-06,09-13"
   scope_summary: "Close epic #841 via Schemathesis (#727) + mutation testing (#874); fix findings; keep CI cheap. OOS: required mutation every PR; Rust mutation; live staging/prod Schemathesis merge gate; product UI; weaken coverage≥95%; stage→main promote; replace hand-written UJ/pytest. Base stage@c458669e."
   decisions_locked: false
   decisions:
@@ -38239,6 +38408,9 @@ evolve_cycles:
     D-S069-m1-merge: "1a — merge #997; start M2 mutation #874"
     D-S069-m2-pins: "pytest-gremlins==1.9.0; @stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0"
     D-S069-m2-survivors: "waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins (trim/empty short-circuit)"
+    D-S069-m2-pr: "1 — success; PR #998 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998); closes #874"
+    D-S069-ci-comment-waiver: "2 — waive Quality PR comment + Coverage PR comment failures on run 32049951760 (GitHub 503 sticky comments); substantive test jobs green on PR #998"
+    D-S069-github-outage-bypass: "waive/bypass GitHub API mutations (rerun, status sync, sticky comments) until user says otherwise — long-running Partial System Outage; prefer local verification"
   artifacts:
   - docs/sessions/S069-ci-schemathesis-mutation/
   - docs/sessions/S069-ci-schemathesis-mutation/session-brief.md
@@ -38247,12 +38419,17 @@ evolve_cycles:
   - docs/sessions/S069-ci-schemathesis-mutation/reports/01-requirements.md
   - docs/sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md
   - docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
+  - docs/sessions/S069-ci-schemathesis-mutation/reports/verification-report.md
   prior_session: S068-quality-metrics-diff-layout
   prior_evolve_note: "Follow-on after EV-058/S068 Quality metrics diff layout closed on stage"
   gates:
     spec_to_build: open
     spec_to_build_note: "Opened 2026-08-17 D-S069-gateA=1a PASS; D-S069-spec-build=2a Open Build"
   notes:
+  - "2026-08-17 Lean 08-verify-build COMPLETE PASS — report docs/sessions/S069-ci-schemathesis-mutation/reports/verification-report.md; Overall PASS with D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c CORS PASS; PR #998 still open → stage tip 78b0b082; 07-build remains in_progress until merge; next merge AskQuestion for #998 (do not merge; session not closed); no git commit by workflow-state-manager"
+  - "2026-08-17 D-S069-ci-comment-waiver=2 + D-S069-github-outage-bypass — waive Quality+Coverage PR comment failures on run 32049951760 (GitHub 503 sticky comments); substantive test jobs green on PR #998; bypass GitHub API mutations (rerun/status sync/sticky comments) until user says otherwise (Partial System Outage; prefer local verification); Lean 08-verify-build in_progress; 07-build/T2.3 still progressing; PR #998 open → stage; session not closed; no merge invented; no git commit by workflow-state-manager"
+  - "2026-08-17 D-S069-m2-pr=1 success — PR #998 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998); title [EV-059] M2: mutation testing scaffolding (#874); tip 78b0b082; closes #874; GitHub recovered after keep-retrying; CI/CD 32049951760 in_progress; T2.3/07-build in_progress; Spec→Build still open; next Lean 08 after CI green (merge needs user approval); cycle not closed; no git commit by workflow-state-manager"
+  - "2026-08-17 D-S069-m2-pr=1 — retry open PR #874 → stage; gh pr create + REST POST /pulls both HTTP 503; branch on origin tip 78b0b082 (7060cb82, 0b610b12, 78b0b082); compare stage...evolve/EV-059-ci-schemathesis-mutation; no PR URL; T2.3/07-build in_progress; Spec→Build still open; will retry; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-m2-pins + D-S069-m2-survivors — M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); pins pytest-gremlins==1.9.0 + @stryker-mutator/*@10.0.0; waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins; report docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md; next open PR #874 → stage; #727 Done; #874/#841 In progress; 07-build in_progress; Spec→Build still open; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-m1-merge=1a — PR #997 MERGED → stage @ c08bc30f (2026-08-17T16:39:06Z); M1 Schemathesis (#727) complete; M2 mutation (#874) starting T2.1–T2.3 on evolve/EV-059-ci-schemathesis-mutation; 07-build in_progress; Spec→Build still open; no git commit by workflow-state-manager"
   - "2026-08-17 Gate A PASS (D-S069-gateA=1a); Spec→Build OPEN (D-S069-spec-build=2a); 02 COMPLETE; 07/08 unblocked pending 07 startup; Schemathesis #727 before mutation #874"
@@ -38261,7 +38438,7 @@ evolve_cycles:
   - "2026-08-17 01-requirements in_progress — writing F34 deltas; not completed; 16-evolve remains in_progress orchestrating; no git commit by workflow-state-manager"
   - "2026-08-17 branch ACTIVE — evolve/EV-059-ci-schemathesis-mutation @ stage@c458669e; session artifacts written: session-brief.md, routing-plan.md, evolve-plan-card.md; board #841/#727/#874 In progress on project #7; 01 startup interview pending; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-open — open_session S069/EV-059; Lean Spec 01→02; Build 07→08 blocked_until_spec_gate; Spec→Build closed; CI posture: Schemathesis path-filtered required (tight budget); mutation nightly/manual only (pytest-gremlins + Stryker); two PRs; OpenAPI breaking cleanup allowed when Schemathesis proves export wrong; broad Python+TS mutation via nightly matrix; no git commit by workflow-state-manager"
-  note: "OPEN — S069/EV-059; Gate A PASS; Spec→Build OPEN; 07-build in_progress; M1 MERGED (#997→stage @ c08bc30f; #727 Done; D-S069-m1-merge=1a); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending; D-S069-m2-pins + D-S069-m2-survivors); next open PR #874 → stage; #874 In progress; #841 In progress; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
+  note: "OPEN — S069/EV-059; Gate A PASS; Spec→Build OPEN; 07-build in_progress (await merge #998); Lean 08-verify-build COMPLETE PASS (verification-report.md; D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); M1 MERGED (#997→stage @ c08bc30f; #727 Done; D-S069-m1-merge=1a); M2 PR #998 open → stage (tip 78b0b082; D-S069-m2-pr=1 success); next merge AskQuestion (do not merge; session open); #874 In progress; #841 In progress; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
 - id: EV-058
   title: "F7.q #983 selectable side-by-side vs inline XML diff layout"
   topic: "F7.q #983 selectable XML diff layout"
@@ -50248,10 +50425,10 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'dirty expected — workflow-state.yaml M2 progress + mutation scaffolding WIP; no git commit by workflow-state-manager'
-  tip_sha: "c08bc30f"
-  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
-  tip_note: "OPEN S069/EV-059 — stage tip c08bc30f after #997 merge; M1/#727 Done; M2 scaffolding complete T2.1/T2.2; T2.3 PR pending #874; Spec→Build OPEN; 07-build in_progress; promote held"
+  dirty_note: 'dirty expected — workflow-state.yaml CI waiver + 08-verify-build in_progress; no git commit by workflow-state-manager'
+  tip_sha: "78b0b082"
+  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
+  tip_note: "OPEN S069/EV-059 — evolve tip 78b0b082; M2 PR #998 open → stage; M1/#727 Done (#997→stage @ c08bc30f); CI/CD 32049951760 substantive green + sticky-comment waive; Spec→Build OPEN; 07-build + 08-verify-build in_progress; promote held"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -50259,8 +50436,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-059-ci-schemathesis-mutation
-  evolve_tip_sha: "c08bc30f"
-  evolve_tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  evolve_tip_sha: "78b0b082"
+  evolve_tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
   evolve_tip_sha_pushed: true
   stage_merge_sha: c08bc30f
   stage_merge_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
@@ -50277,9 +50454,12 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-059-ci-schemathesis-mutation
-  note: "S069/EV-059 OPEN — branch evolve/EV-059-ci-schemathesis-mutation; M1 #997 merged → stage @ c08bc30f (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 PR pending #874; next open PR #874 → stage; no git commit by workflow-state-manager"
+  note: "S069/EV-059 OPEN — branch evolve/EV-059-ci-schemathesis-mutation on origin tip 78b0b082; M1 #997 merged → stage @ c08bc30f (#727 Done); M2 PR #998 open → stage (D-S069-m2-pr=1 success); 07-build + 08-verify-build in_progress; D-S069-ci-comment-waiver=2; D-S069-github-outage-bypass; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-17 D-S069-ci-comment-waiver=2 + D-S069-github-outage-bypass — waive Quality+Coverage sticky comment failures on run 32049951760; substantive tests green on PR #998; bypass GitHub API mutations until user says otherwise; Lean 08-verify-build in_progress; 07-build progressing; session open; no merge; no git commit by workflow-state-manager"
+  - "2026-08-17 D-S069-m2-pr=1 success — PR #998 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998); tip 78b0b082; closes #874; CI/CD 32049951760 in_progress; T2.3/07-build in_progress; Spec→Build open; next Lean 08 after CI green (merge needs user approval); no git commit by workflow-state-manager"
+  - "2026-08-17 D-S069-m2-pr=1 — retry open PR #874 → stage; GitHub API 503 on gh + REST; tip 78b0b082 on origin; compare stage...evolve/EV-059-ci-schemathesis-mutation; T2.3/07-build in_progress; Spec→Build open; no PR URL; no git commit by workflow-state-manager"
   - "2026-08-17 M2 scaffolding progress — D-S069-m2-pins + D-S069-m2-survivors; T2.1/T2.2 done; T2.3 in_progress PR pending; report 07-build-m2.md; next open PR #874 → stage; #727 Done; #874/#841 In progress; no git commit by workflow-state-manager"
   - "2026-08-17 Gate A PASS / Spec→Build OPEN — D-S069-gateA=1a; D-S069-spec-build=2a; 02 COMPLETE; 07/08 pending 07 startup; Schemathesis #727 first; no git commit by workflow-state-manager"
   - "2026-08-17 branch ACTIVE — evolve/EV-059-ci-schemathesis-mutation @ stage@c458669e; session artifacts written: session-brief.md, routing-plan.md, evolve-plan-card.md; board In progress project #7; 01 startup interview pending; no git commit by workflow-state-manager"
@@ -50872,13 +51052,17 @@ git_history:
     status: active
     created: "2026-08-17"
     exists: true
-    pushed: false
+    pushed: true
     session_id: S069-ci-schemathesis-mutation
     evolve_cycle_id: EV-059
-    tip_sha: c08bc30f
-    tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+    tip_sha: 78b0b082
+    tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
     tip_sha_pushed: true
-    note: "OPEN — M1 #997 merged → stage @ c08bc30f (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 in_progress — next open PR #874 → stage; promote held"
+    pr_number: 998
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
+    pr_status: open
+    pr_base: stage
+    note: "OPEN — M1 #997 merged → stage @ c08bc30f (#727 Done); M2 PR #998 open → stage (T2.3; tip 78b0b082); Lean 08 COMPLETE PASS; 07-build in_progress awaiting merge AskQuestion; promote held"
 
   - name: evolve/EV-058-quality-metrics-diff-layout
     base: stage@c2ca9a3f

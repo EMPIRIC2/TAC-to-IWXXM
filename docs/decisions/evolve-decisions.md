@@ -36,6 +36,10 @@
 | D-S069-m1-merge | **1a** — merge PR #997 → `stage`; start M2 mutation (#874) |
 | D-S069-m2-pins | **pytest-gremlins==1.9.0**; **@stryker-mutator/*@10.0.0** |
 | D-S069-m2-survivors | Waive 3 equivalent Stryker survivors on `packages/shared` `parseCommaSeparatedOrigins` outer trim/empty short-circuit (see `reports/07-build-m2.md`) |
+| D-S069-m2-pr | **1** — open PR #998 → `stage` for #874 (after GitHub 503 recovery) |
+| D-S069-ci-comment-waiver | **2** — waive Quality PR comment + Coverage PR comment failures on CI run `32049951760` (GitHub 503 sticky comments); all substantive test jobs green on PR #998 |
+| D-S069-github-outage-bypass | Bypass GitHub API mutations (rerun, board sync, sticky comments) until user says otherwise — long-running Partial System Outage; prefer local verification |
+| D-S069-sticky-softfail | Soft-fail Coverage/Quality sticky PR comment posts on GitHub API 429/500/502/503 (warn + continue); marker validation still hard-fails |
 
 ### Acceptance (approved `D-S069-01-ac=2b`)
 
