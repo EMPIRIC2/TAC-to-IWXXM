@@ -232,6 +232,15 @@ test-unit-backend:
 		--cov-fail-under=98 -v)
 	$(UV) run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
 
+# F34 / EV-059 / #727 — Schemathesis OpenAPI property suite (TC-F34-001..002 / TC-F34-007).
+# Knobs: SCHEMATHESIS_MAX_EXAMPLES (≤25), Hypothesis seed via --hypothesis-seed.
+# Budget ceiling locked — do not raise max-examples above 25 without AskQuestion.
+test-schemathesis:
+	(cd apps/backend && SCHEMATHESIS_MAX_EXAMPLES=$${SCHEMATHESIS_MAX_EXAMPLES:-25} \
+		$(UV) run pytest tests/contract/test_schemathesis_openapi.py \
+		-m schemathesis --override-ini addopts= -v \
+		--tb=short)
+
 # F31 / EV-047 — auth package + per-file ≥95%.
 test-unit-auth:
 	$(UV) run pytest tests/unit/auth --cov=metar_auth \

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-15 (S067 / EV-057 — #948 apex redirect + #903 accumulate ZIP + #838 validate-only IWXXM)
+> **Last updated**: 2026-08-17 (S069 / EV-059 — F34 Schemathesis + mutation quality gates #841/#727/#874)
 
 ## Summary
 
@@ -41,6 +41,7 @@
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
+| F34 | Contract + mutation quality gates | Planned | Platform | S069 / EV-059; epic #841; #727 Schemathesis; #874 Stryker + pytest-gremlins |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1638,6 +1639,47 @@
 - **Source**: E42-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-042;
   [Context: remove-db-tools-operator-throughput](context/remove-db-tools-operator-throughput.md);
   #897; ADR-029 / ADR-030
+
+### F34: Contract + mutation quality gates — S069 / EV-059
+
+- **Status**: **Planned** (S069 / EV-059; Spec-development).
+- **What it does**: Adds developer/CI quality gates that complement line coverage:
+  1. **Schemathesis** property-based suite against `apps/backend` OpenAPI (ASGI) — no unexpected
+     5xx; response schema conformance; auth strategy so protected routes are exercised.
+  2. **Mutation testing** — **pytest-gremlins** (Python) + **Stryker** (TypeScript) across
+     packages/services, run as **nightly / `workflow_dispatch`** (not every PR).
+- **Issues**: Epic [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841);
+  [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) (Schemathesis);
+  [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) (mutation).
+- **CI posture** (`D-S069-ci`): Schemathesis = **path-filtered required** on
+  `apps/backend/**` / OpenAPI-related paths with **Hypothesis max-examples ≤ 25** and job
+  timeout ≤ **10 min**. Mutation = **nightly/manual only**, chunked matrix + hard timeouts.
+- **PRs**: Two separate PRs (do not bundle #727 + #874). Target `stage`; promote held.
+- **Acceptance** (`D-S069-01-ac=2b`):
+  1. Schemathesis loads OpenAPI from backend ASGI; auth strategy exercises protected routes
+     (**TC-F34-001**)
+  2. `make test-schemathesis` + path-filtered required CI within budget ceilings (**TC-F34-002**,
+     **TC-F34-007**)
+  3. pytest-gremlins + Stryker configs + `make` targets; nightly/manual matrix covers Python
+     packages/services + TS surfaces (**TC-F34-003**, **TC-F34-004**, **TC-F34-005**)
+  4. Deps listed in [dependency-inventory.md](dependency-inventory.md); notes in
+     [test-plan.md](test-plan.md) (**TC-F34-006**)
+  5. Findings: product/schema bugs fixed (bug-investigation) or survivors/waivers documented
+     (**TC-F34-006**)
+  6. Two PRs land; epic #841 closable when #727 and #874 Done (**TC-F34-006**)
+  7. Documented Hypothesis `max-examples` ≤ 25 and Schemathesis job timeout ≤ 10 min in
+     test-plan (**TC-F34-007**)
+- **Mutation matrix (Python)**: `apps/backend`, `apps/worker`,
+  `packages/{auth,shared,tac-validate,tac2iwxxm,iwxxm-validate,dissemination}`
+- **Mutation matrix (TS)**: `apps/frontend` (+ `packages/shared` JS if present)
+- **Excluded**: `apps/e2e` Playwright; Rust crate mutation (first pass)
+- **Journeys / tests**: No new UJ (dev/CI only); **TC-F34-001..007**; cycle **TC-EV059-***
+- **Out of scope**: Mutation required on every PR; Rust mutation; live staging/prod Schemathesis
+  as merge gate; product UI; weaken coverage ≥95%; promote `stage`→`main`; replace hand-written
+  UJ/pytest with Schemathesis alone
+- **OpenAPI**: Breaking cleanup **allowed** when Schemathesis proves export wrong (`D-S069-e5`)
+- **Source**: E0–E8 / 01 intake; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-059;
+  #841 / #727 / #874; [Corpus: tests] [Corpus: tech-spec] [Corpus: api]
 
 ### F7 / F16–F19 deepen (S050 / EV-042 — #897 destinations UI hide + churn)
 

@@ -10,7 +10,7 @@ read the rows below that apply — do not invent alternate doc sets.
 
 | ID | Role | Path | Skills use it to… |
 |----|------|------|-------------------|
-| **product** | Approved features & acceptance | [feature-list.md](feature-list.md) | Scope (F1–F33 / M1–M6); reject out-of-list work |
+| **product** | Approved features & acceptance | [feature-list.md](feature-list.md) | Scope (F1–F34 / M1–M6); reject out-of-list work |
 | **journeys** | End-user journeys | [user-journeys.md](user-journeys.md) | E2E / verify-impl sign-off (UJ-*) |
 | **system-spec** | Architecture, components, constraints | [spec.md](spec.md) | Design parity vs `apps/` + `packages/` + `vendor/` |
 | **tech-spec** | Runtime / config / deploy / deps hub | [tech-spec.md](tech-spec.md) | Config names, env, deploy topology, dependency pins |
