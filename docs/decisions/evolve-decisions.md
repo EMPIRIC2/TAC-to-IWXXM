@@ -9,9 +9,9 @@
 **Features**: **F34** (new) — contract + mutation quality gates  
 **Started**: 2026-08-17  
 **Branch**: `evolve/EV-059-ci-schemathesis-mutation` (base `stage@c458669e`)  
-**Status**: **in_progress** — **Build** phase; Spec→Build gate **open**  
-**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — board **In progress**  
-**Artifacts**: [session-brief](../sessions/S069-ci-schemathesis-mutation/session-brief.md) · [routing-plan](../sessions/S069-ci-schemathesis-mutation/routing-plan.md) · [evolve-plan-card](../sessions/S069-ci-schemathesis-mutation/evolve-plan-card.md) · [02-verify-plan](../sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md)  
+**Status**: **in_progress** — **Build** M2 mutation; M1 #997 merged; #727 Done  
+**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) (Done) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — board **In progress**  
+**Artifacts**: [session-brief](../sessions/S069-ci-schemathesis-mutation/session-brief.md) · [routing-plan](../sessions/S069-ci-schemathesis-mutation/routing-plan.md) · [evolve-plan-card](../sessions/S069-ci-schemathesis-mutation/evolve-plan-card.md) · [02-verify-plan](../sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md) · [07-build-m1](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m1.md) · [07-build-m2](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md)  
 **Corpus**: [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]
 [Corpus: decisions §EV-059]
 
@@ -33,6 +33,9 @@
 | D-S069-01-deps | **3a** — schemathesis, pytest-gremlins, @stryker-mutator/core |
 | D-S069-gateA | **1a** — PASS (2026-08-17) |
 | D-S069-spec-build | **2a** — Open Build 07→08; Schemathesis (#727) before mutation (#874) |
+| D-S069-m1-merge | **1a** — merge PR #997 → `stage`; start M2 mutation (#874) |
+| D-S069-m2-pins | **pytest-gremlins==1.9.0**; **@stryker-mutator/*@10.0.0** |
+| D-S069-m2-survivors | Waive 3 equivalent Stryker survivors on `packages/shared` `parseCommaSeparatedOrigins` outer trim/empty short-circuit (see `reports/07-build-m2.md`) |
 
 ### Acceptance (approved `D-S069-01-ac=2b`)
 

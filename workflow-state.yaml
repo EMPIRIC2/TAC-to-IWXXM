@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S069/EV-059 OPEN — Gate A PASS; Spec→Build OPEN; Build 07→08 pending startup; next M1 Schemathesis #727 then #874; branch evolve/EV-059-ci-schemathesis-mutation @ stage@c458669e"
+overall_status_note: "S069/EV-059 OPEN — Gate A PASS; Spec→Build OPEN; 07-build in_progress; M1 Schemathesis MERGED (#997→stage @ c08bc30f; #727 Done); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); next open PR #874 → stage; #874 In progress; #841 In progress; branch evolve/EV-059-ci-schemathesis-mutation"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -20,10 +20,10 @@ active_session:
   branch_status: active
   branch_exists: true
   branch_pushed: false
-  tip_sha: c458669e
-  tip_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
-  tip_sha_pushed: false
-  tip_sha_note: "OPEN — tip c458669e (= stage base); Spec→Build OPEN (Gate A PASS); 07/08 pending 07 startup; Schemathesis #727 first; promote held"
+  tip_sha: c08bc30f
+  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  tip_sha_pushed: true
+  tip_sha_note: "OPEN — M1 MERGED (#997→stage @ c08bc30f; #727 Done); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); next open PR #874 → stage; Spec→Build OPEN; 07-build in_progress; promote held"
   orchestrator: 16-evolve
   evolve_cycle_id: EV-059
   artifacts_dir: docs/sessions/S069-ci-schemathesis-mutation/
@@ -31,7 +31,7 @@ active_session:
   - 841
   - 727
   - 874
-  board_note: "#841/#727/#874 → In progress on project #7; Gate A PASS; Spec→Build OPEN; next 07 Schemathesis #727"
+  board_note: "#727 Done; #874 In progress; #841 In progress; Gate A PASS; Spec→Build OPEN; 07-build M2 T2.3 PR pending"
   prior_session: S068-quality-metrics-diff-layout
   feature_ids:
   - F34
@@ -58,8 +58,8 @@ active_session:
   ui_preview_note: "N/A — CI/DX cycle; no product UI preview"
   spec_to_build_gate: open
   current_stage: 16-evolve
-  current_stage_note: "Gate A PASS; Spec→Build open; next child 07-build pending startup interview; Schemathesis #727 first"
-  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; Build 07→08 pending; skip 03-06,09-13"
+  current_stage_note: "M1 MERGED (#997→stage; #727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — next open PR #874 → stage; Spec→Build still open; 07-build in_progress"
+  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; 07-build in_progress (M1 done #997; M2 T2.1/T2.2 done; T2.3 PR pending #874); skip 03-06,09-13"
   routing_plan:
   - stage: 00-context
     required: true
@@ -73,7 +73,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-17'
-    note: "IN PROGRESS — Spec→Build open; current_child 07-build pending startup; Gate A PASS; Schemathesis #727 first"
+    note: "IN PROGRESS — Spec→Build open; current_child 07-build in_progress; M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 PR pending (#874)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -93,13 +93,15 @@ active_session:
   - stage: 07-build
     required: true
     mode: delta
-    status: pending
-    note: "PENDING — Spec→Build open; awaiting 07-build startup interview; Schemathesis #727 first"
+    status: in_progress
+    started: '2026-08-17'
+    note: "IN PROGRESS — M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — PR pending (#874); Spec→Build open"
+    report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
-    note: "PENDING — Spec→Build open; awaits 07-build; Schemathesis then mutation"
+    note: "PENDING — Spec→Build open; awaits 07-build M2 PR #874 → stage; then 08"
   - stage: 03-plan-tooling
     required: false
     mode: null
@@ -156,8 +158,11 @@ active_session:
     D-S069-01-deps: "3a — schemathesis, pytest-gremlins, @stryker-mutator/core"
     D-S069-gateA: "1a — PASS"
     D-S069-spec-build: "2a — Open Build 07→08"
+    D-S069-m1-merge: "1a — merge #997; start M2 mutation #874"
+    D-S069-m2-pins: "pytest-gremlins==1.9.0; @stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0"
+    D-S069-m2-survivors: "waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins (trim/empty short-circuit)"
   context_briefs: []
-  note: "OPEN — S069/EV-059; Gate A PASS (D-S069-gateA=1a); Spec→Build OPEN (D-S069-spec-build=2a); 02 COMPLETE; current_child 07-build pending startup interview; Schemathesis #727 first then #874; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
+  note: "OPEN — S069/EV-059; Gate A PASS; Spec→Build OPEN; 07-build in_progress; M1 MERGED (#997→stage @ c08bc30f; #727 Done; D-S069-m1-merge=1a); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending; D-S069-m2-pins + D-S069-m2-survivors); next open PR #874 → stage; #874 In progress; #841 In progress; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
 
 
 
@@ -17604,6 +17609,75 @@ issue_log:
   resolved_at: '2026-07-12'
 decisions_log:
 
+- id: D-S069-m2-survivors
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S069-ci-schemathesis-mutation
+  evolve_cycle_id: EV-059
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: mutation_waiver
+  status: confirmed
+  topic: 'S069/EV-059 M2 — waive equivalent Stryker survivors'
+  summary: 'Waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins'
+  decision: |
+    D-S069-m2-survivors — accept 3 equivalent mutants on parseCommaSeparatedOrigins
+    (outer trim / empty short-circuit identical after split+map(trim)+filter).
+    Do not weaken coverage≥95%. Report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md.
+    No git commit by workflow-state-manager.
+  branch: evolve/EV-059-ci-schemathesis-mutation
+  related_features:
+  - F34
+  related_issues:
+  - '874'
+  - '841'
+  related_decisions:
+  - D-S069-m2-pins
+  - D-S069-m1-merge
+  tip_sha: 'c08bc30f'
+  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  tip_sha_pushed: true
+  current_stage: 07-build
+  report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
+  note: 'M2 T2.3 survivor waiver; PR #874 pending'
+
+- id: D-S069-m2-pins
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S069-ci-schemathesis-mutation
+  evolve_cycle_id: EV-059
+  skill: 07-build
+  skill_id: 07-build
+  stage: 07-build
+  category: dependency_pin
+  status: confirmed
+  topic: 'S069/EV-059 M2 — mutation tool version pins'
+  summary: 'Pin pytest-gremlins==1.9.0; @stryker-mutator/*@10.0.0'
+  decision: |
+    D-S069-m2-pins — pytest-gremlins==1.9.0;
+    @stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0.
+    T2.1/T2.2 scaffolding complete; T2.3 in_progress — PR pending.
+    Report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md.
+    No git commit by workflow-state-manager.
+  branch: evolve/EV-059-ci-schemathesis-mutation
+  related_features:
+  - F34
+  related_issues:
+  - '874'
+  - '841'
+  related_decisions:
+  - D-S069-m2-survivors
+  - D-S069-01-deps
+  tip_sha: 'c08bc30f'
+  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  tip_sha_pushed: true
+  current_stage: 07-build
+  report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
+  note: 'M2 dependency pins locked for mutation scaffolding'
+
 - id: D-S068-gateA
   date: '2026-08-17'
   timestamp: '2026-08-17'
@@ -34116,6 +34190,17 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
+  type: session-report
+  kind: build-m2
+  stage: 07-build
+  skill_id: 07-build
+  session_id: S069-ci-schemathesis-mutation
+  evolve_cycle_id: EV-059
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: in_progress
+  note: 'S069/EV-059 M2 scaffolding complete — T2.1/T2.2 done; T2.3 in_progress PR pending; D-S069-m2-pins + D-S069-m2-survivors; next open PR #874 → stage'
 - path: docs/sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md
   type: session-report
   kind: verify-plan-audit
@@ -38092,18 +38177,18 @@ evolve_cycles:
   branch_status: active
   branch_exists: true
   branch_pushed: false
-  tip_sha: c458669e
-  tip_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
-  tip_sha_pushed: false
-  tip_sha_note: "OPEN — tip c458669e (= stage base); Spec→Build OPEN (Gate A PASS); 07/08 pending 07 startup; Schemathesis #727 first; promote held"
+  tip_sha: c08bc30f
+  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  tip_sha_pushed: true
+  tip_sha_note: "OPEN — M1 MERGED (#997→stage @ c08bc30f; #727 Done); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); next open PR #874 → stage; Spec→Build OPEN; 07-build in_progress; promote held"
   current_stage: 16-evolve
   current_stage_status: in_progress
-  current_stage_note: "OPEN — 16-evolve orchestrating; Gate A PASS; Spec→Build OPEN; current_child 07-build pending startup; Schemathesis #727 first"
+  current_stage_note: "M1 MERGED (#997→stage; #727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — next open PR #874 → stage; Spec→Build still open; 07-build in_progress"
   current_child: 07-build
   current_child_stage: 07-build
-  current_child_stage_status: pending
-  current_child_note: "pending 07 startup interview; Schemathesis #727 first"
-  current_child_stage_note: "PENDING — awaiting 07-build startup interview; Schemathesis #727 first"
+  current_child_stage_status: in_progress
+  current_child_note: "M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 in_progress — PR pending (#874)"
+  current_child_stage_note: "IN PROGRESS — M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 in_progress — PR pending (#874); Spec→Build open"
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Lean
@@ -38112,7 +38197,7 @@ evolve_cycles:
   ui_preview: N/A
   ui_preview_url: null
   ui_preview_note: "N/A — CI/DX cycle; no product UI preview"
-  board_note: "#841/#727/#874 → In progress on project #7; Gate A PASS; Spec→Build OPEN; next 07 Schemathesis #727"
+  board_note: "#727 Done; #874 In progress; #841 In progress; Gate A PASS; Spec→Build OPEN; 07-build M2 T2.3 PR pending"
   spec_to_build_gate: open
   corpus_cites:
   - '[Corpus: product §F34]'
@@ -38136,7 +38221,7 @@ evolve_cycles:
   - 11-verify-impl
   - 12-verify-deploy
   - 13-deploy-smoke
-  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; Build 07→08 pending; skip 03-06,09-13"
+  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; 07-build in_progress (M1 done #997; M2 T2.1/T2.2 done; T2.3 PR pending #874); skip 03-06,09-13"
   scope_summary: "Close epic #841 via Schemathesis (#727) + mutation testing (#874); fix findings; keep CI cheap. OOS: required mutation every PR; Rust mutation; live staging/prod Schemathesis merge gate; product UI; weaken coverage≥95%; stage→main promote; replace hand-written UJ/pytest. Base stage@c458669e."
   decisions_locked: false
   decisions:
@@ -38151,6 +38236,9 @@ evolve_cycles:
     D-S069-01-deps: "3a — schemathesis, pytest-gremlins, @stryker-mutator/core"
     D-S069-gateA: "1a — PASS"
     D-S069-spec-build: "2a — Open Build 07→08"
+    D-S069-m1-merge: "1a — merge #997; start M2 mutation #874"
+    D-S069-m2-pins: "pytest-gremlins==1.9.0; @stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0"
+    D-S069-m2-survivors: "waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins (trim/empty short-circuit)"
   artifacts:
   - docs/sessions/S069-ci-schemathesis-mutation/
   - docs/sessions/S069-ci-schemathesis-mutation/session-brief.md
@@ -38158,19 +38246,22 @@ evolve_cycles:
   - docs/sessions/S069-ci-schemathesis-mutation/evolve-plan-card.md
   - docs/sessions/S069-ci-schemathesis-mutation/reports/01-requirements.md
   - docs/sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md
+  - docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
   prior_session: S068-quality-metrics-diff-layout
   prior_evolve_note: "Follow-on after EV-058/S068 Quality metrics diff layout closed on stage"
   gates:
     spec_to_build: open
     spec_to_build_note: "Opened 2026-08-17 D-S069-gateA=1a PASS; D-S069-spec-build=2a Open Build"
   notes:
+  - "2026-08-17 D-S069-m2-pins + D-S069-m2-survivors — M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending); pins pytest-gremlins==1.9.0 + @stryker-mutator/*@10.0.0; waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins; report docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md; next open PR #874 → stage; #727 Done; #874/#841 In progress; 07-build in_progress; Spec→Build still open; no git commit by workflow-state-manager"
+  - "2026-08-17 D-S069-m1-merge=1a — PR #997 MERGED → stage @ c08bc30f (2026-08-17T16:39:06Z); M1 Schemathesis (#727) complete; M2 mutation (#874) starting T2.1–T2.3 on evolve/EV-059-ci-schemathesis-mutation; 07-build in_progress; Spec→Build still open; no git commit by workflow-state-manager"
   - "2026-08-17 Gate A PASS (D-S069-gateA=1a); Spec→Build OPEN (D-S069-spec-build=2a); 02 COMPLETE; 07/08 unblocked pending 07 startup; Schemathesis #727 before mutation #874"
   - "2026-08-17 02-verify-plan in_progress — started 2026-08-17; audit report written at docs/sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md; awaiting Gate A user confirm; Spec→Build closed; 07/08 blocked_until_spec_gate; no git commit by workflow-state-manager"
   - "2026-08-17 01-requirements COMPLETE — report docs/sessions/S069-ci-schemathesis-mutation/reports/01-requirements.md; standing deltas written; current_child 02-verify-plan pending; Spec→Build closed; 07/08 blocked_until_spec_gate; no git commit by workflow-state-manager"
   - "2026-08-17 01-requirements in_progress — writing F34 deltas; not completed; 16-evolve remains in_progress orchestrating; no git commit by workflow-state-manager"
   - "2026-08-17 branch ACTIVE — evolve/EV-059-ci-schemathesis-mutation @ stage@c458669e; session artifacts written: session-brief.md, routing-plan.md, evolve-plan-card.md; board #841/#727/#874 In progress on project #7; 01 startup interview pending; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-open — open_session S069/EV-059; Lean Spec 01→02; Build 07→08 blocked_until_spec_gate; Spec→Build closed; CI posture: Schemathesis path-filtered required (tight budget); mutation nightly/manual only (pytest-gremlins + Stryker); two PRs; OpenAPI breaking cleanup allowed when Schemathesis proves export wrong; broad Python+TS mutation via nightly matrix; no git commit by workflow-state-manager"
-  note: "OPEN — S069/EV-059; Gate A PASS (D-S069-gateA=1a); Spec→Build OPEN (D-S069-spec-build=2a); 02 COMPLETE; current_child 07-build pending startup interview; Schemathesis #727 first then #874; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
+  note: "OPEN — S069/EV-059; Gate A PASS; Spec→Build OPEN; 07-build in_progress; M1 MERGED (#997→stage @ c08bc30f; #727 Done; D-S069-m1-merge=1a); M2 scaffolding complete (T2.1/T2.2 done; T2.3 in_progress — PR pending; D-S069-m2-pins + D-S069-m2-survivors); next open PR #874 → stage; #874 In progress; #841 In progress; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
 - id: EV-058
   title: "F7.q #983 selectable side-by-side vs inline XML diff layout"
   topic: "F7.q #983 selectable XML diff layout"
@@ -50157,10 +50248,10 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'dirty expected — workflow-state.yaml Gate A PASS / Spec→Build open; no git commit by workflow-state-manager'
-  tip_sha: "c458669e"
-  tip_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
-  tip_note: "OPEN S069/EV-059 — tip c458669e (= stage base) on evolve/EV-059-ci-schemathesis-mutation; Gate A PASS; Spec→Build OPEN; 07/08 pending 07 startup; Schemathesis #727 first; promote held"
+  dirty_note: 'dirty expected — workflow-state.yaml M2 progress + mutation scaffolding WIP; no git commit by workflow-state-manager'
+  tip_sha: "c08bc30f"
+  tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  tip_note: "OPEN S069/EV-059 — stage tip c08bc30f after #997 merge; M1/#727 Done; M2 scaffolding complete T2.1/T2.2; T2.3 PR pending #874; Spec→Build OPEN; 07-build in_progress; promote held"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -50168,13 +50259,13 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-059-ci-schemathesis-mutation
-  evolve_tip_sha: "c458669e"
-  evolve_tip_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
-  evolve_tip_sha_pushed: false
-  stage_merge_sha: d80db688
-  stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
-  stage_tip_sha: c458669e
-  stage_tip_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
+  evolve_tip_sha: "c08bc30f"
+  evolve_tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  evolve_tip_sha_pushed: true
+  stage_merge_sha: c08bc30f
+  stage_merge_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  stage_tip_sha: c08bc30f
+  stage_tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
   stash:
   - name: S039-EV031-WIP
     note: 'OPEN S067-m0-ready-apex-accumulate-validate/EV-057 — Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e; #948+#903+#838; no git commit by workflow-state-manager'
@@ -50186,9 +50277,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-059-ci-schemathesis-mutation
-  note: "S069/EV-059 OPEN — branch evolve/EV-059-ci-schemathesis-mutation active @ stage@c458669e; Gate A PASS; Spec→Build OPEN; Build 07→08 pending startup; next Schemathesis #727; no git commit by workflow-state-manager"
+  note: "S069/EV-059 OPEN — branch evolve/EV-059-ci-schemathesis-mutation; M1 #997 merged → stage @ c08bc30f (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 PR pending #874; next open PR #874 → stage; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-17 M2 scaffolding progress — D-S069-m2-pins + D-S069-m2-survivors; T2.1/T2.2 done; T2.3 in_progress PR pending; report 07-build-m2.md; next open PR #874 → stage; #727 Done; #874/#841 In progress; no git commit by workflow-state-manager"
   - "2026-08-17 Gate A PASS / Spec→Build OPEN — D-S069-gateA=1a; D-S069-spec-build=2a; 02 COMPLETE; 07/08 pending 07 startup; Schemathesis #727 first; no git commit by workflow-state-manager"
   - "2026-08-17 branch ACTIVE — evolve/EV-059-ci-schemathesis-mutation @ stage@c458669e; session artifacts written: session-brief.md, routing-plan.md, evolve-plan-card.md; board In progress project #7; 01 startup interview pending; no git commit by workflow-state-manager"
   - '2026-08-17 commit+push+PR — tip b3db3413 on evolve/EV-058-quality-metrics-diff-layout; PR #994 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994); #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; no git commit by workflow-state-manager'
@@ -50783,10 +50875,10 @@ git_history:
     pushed: false
     session_id: S069-ci-schemathesis-mutation
     evolve_cycle_id: EV-059
-    tip_sha: c458669e
-    tip_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
-    tip_sha_pushed: false
-    note: "OPEN — branch created @ stage@c458669e; tip equals base until first commit; Spec→Build closed; session artifacts written: session-brief.md, routing-plan.md, evolve-plan-card.md; promote held"
+    tip_sha: c08bc30f
+    tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+    tip_sha_pushed: true
+    note: "OPEN — M1 #997 merged → stage @ c08bc30f (#727 Done); M2 scaffolding complete T2.1/T2.2; T2.3 in_progress — next open PR #874 → stage; promote held"
 
   - name: evolve/EV-058-quality-metrics-diff-layout
     base: stage@c2ca9a3f

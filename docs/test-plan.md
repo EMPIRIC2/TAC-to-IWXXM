@@ -2231,7 +2231,14 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
     Workflow: `.github/workflows/schemathesis.yml`. Local: `make test-schemathesis`
     (override with `SCHEMATHESIS_MAX_EXAMPLES`, still capped at 25 in-suite).
   - **Mutation** (pytest-gremlins + Stryker): **nightly / `workflow_dispatch` only**;
-    chunked matrix + hard timeouts; **not** required on every PR
+    chunked matrix + hard timeouts; **not** required on every PR.
+    Workflow: `.github/workflows/mutation.yml`. Local:
+    `make test-mutation-poc` (narrow), `make test-mutation-python TARGET=…`,
+    `make test-mutation-js TARGET=frontend|shared`.
+    Excludes: e2e, Rust crates, generated `iwxxm_xsd` trees.
+    Interpreting survivors: a surviving mutant means tests execute the line but do not
+    assert behavior that would fail under the mutation — strengthen assertions or waive
+    with rationale in the session build report / bug report (not a PR merge blocker).
 - **Schemathesis exclusions** (explicit): `/api/v1/work-sessions*`, `/api/v1/eval/*`,
   `/auth/*` (Postgres / Supabase Auth — covered by unit/integration). Documented HTTP 501
   on `/api/v1/ingest-collect` is an allowed expected status.

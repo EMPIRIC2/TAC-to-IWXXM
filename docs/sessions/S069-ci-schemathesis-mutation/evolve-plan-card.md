@@ -39,7 +39,7 @@ Close epic #841: Schemathesis OpenAPI property suite (#727) + broad Python/TS mu
 
 ## Next child stage
 
-**07-build** — M1 Schemathesis (#727) only until that PR is verified; then M2 mutation (#874)
+**07-build / 08** — M2 mutation PR for #874 → `stage`; then close #874/#841
 
 ## Locked intake
 
