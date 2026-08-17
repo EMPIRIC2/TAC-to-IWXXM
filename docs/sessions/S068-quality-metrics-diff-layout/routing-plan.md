@@ -13,7 +13,7 @@
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | Open S068; #983 In progress; Lean routing approved |
-| 16-evolve | yes | orchestrate | **in_progress** | Build open; FE implement → 10 → 13 |
+| 16-evolve | yes | orchestrate | **completed** | `D-S068-13=1` / `D-S068-close=1`; #994 → stage @ `2c320c45`; #983 Done; promote held |
 | 01-requirements | yes | delta | **completed** | `D-S068-01-ac=2b`; AC1–AC5; UJ-056 + TC-EV058 |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S068-gateA=1` |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules expected |
@@ -31,7 +31,7 @@
 | 10-e2e | yes | delta | **completed** | UJ-056 4/4 PASS local; H4–H5 via 13 |
 | 11-verify-impl | no | — | skipped | Lean |
 | 12-verify-deploy | no | — | skipped | Lean (PR path via 13) |
-| 13-deploy-smoke | yes | delta | pending | Stage smoke after merge |
+| 13-deploy-smoke | yes | delta | **completed** | `D-S068-13=1` — CD [32038222032](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32038222032); H0c–H5 + live UJ-056 4/4; report `deploy-smoke.md` |
 
 ## Recommended ordered stages
 
@@ -45,8 +45,8 @@
 
 ## Board / velocity
 
-- WIP: #983 **In progress** (1 ≤ 2)
-- Ready: refill after this pull as needed (3–5 target)
+- WIP: #983 **Done** / CLOSED (promote held)
+- Ready: refill as needed (3–5 target)
 
 ## Locked / pending decisions
 
@@ -58,7 +58,10 @@
 | D-S068-e5e6 | **1a–4a** — out-of-scope fence; H4–H5; local preview |
 | D-S068-route | **1a/2a/3a** — Lean bands; Spec→Build closed; open Spec |
 | D-S068-ui-preview | **1** — http://127.0.0.1:18000/ |
-| D-S068-board | **1** — #983 → In progress |
+| D-S068-board | **1** — #983 → In progress (later → On stage after merge) |
 | D-S068-01-ac | **2b** — AC1–AC5; synced scroll best-effort |
 | D-S068-01-control | **3a** — segmented Inline \| Side-by-side |
 | D-S068-01-uj | **4a** — deepen UJ-056 + TC-EV058-001..005 |
+| D-S068-merge | **1** — Merge #994 → stage; run 13 |
+| D-S068-13 | **1** — Approve 13; close EV-058/S068 on stage (no promote) |
+| D-S068-close | **1** — Close session; #983 Done; `active_session=null` |

@@ -1,39 +1,49 @@
 overall_status: in_progress
-overall_status_note: "S068/EV-058 F7.q #983 — PR #994 open → stage @ b3db3413; tip pushed; board #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+overall_status_note: "EV-058/S068 COMPLETE on stage tip 2c320c45; PR #994 MERGED; CD 32038222032; H0c–H5 + UJ-056 4/4 PASS; #983 Done/CLOSED; D-S068-13=1 / D-S068-close=1; promote held; active_session=null"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 68
 evolve_cycle_counter: 58
-active_session:
-  id: S068-quality-metrics-diff-layout
+active_session: null
+
+
+sessions:
+
+- id: S068-quality-metrics-diff-layout
   type: feature
   intent: "EV-058 deepen F7.q #983: selectable side-by-side vs inline (unified) XML diff on /quality/:stem; persist preference + synced scroll; ship to stage; promote held"
-  status: active
+  status: completed
+  completed: '2026-08-17'
+  completed_at: '2026-08-17'
+  closed_at: '2026-08-17'
   started: '2026-08-17'
   started_at: '2026-08-17'
   branch: evolve/EV-058-quality-metrics-diff-layout
   branch_base: stage@c2ca9a3f
   branch_base_sha: c2ca9a3f
   branch_base_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
-  branch_status: active
+  branch_status: merged
+  branch_note: "CLOSED — D-S068-close=1; tip 2c320c45; PR #994 MERGED → stage; #983 Done/CLOSED; promote held; EV-058 completed"
   branch_exists: true
   branch_pushed: true
-  tip_sha: b3db3413
-  tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+  tip_sha: 2c320c45
+  tip_sha_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
   tip_sha_pushed: true
-  tip_sha_note: "OPEN — tip b3db3413 pushed on evolve/EV-058-quality-metrics-diff-layout; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  tip_sha_note: "CLOSED D-S068-close=1 — tip 2c320c45; PR #994 MERGED → stage; CD 32038222032 success; H0c–H5 + UJ-056 4/4; #983 Done; promote held; cycle completed"
   pr_number: 994
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
-  pr_status: open
+  pr_status: merged
   pr_base: stage
+  merge_sha: 2c320c45
+  merge_sha_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
   orchestrator: 16-evolve
   evolve_cycle_id: EV-058
   artifacts_dir: docs/sessions/S068-quality-metrics-diff-layout/
   github_issues:
   - 983
-  board_note: "#983 In review"
+  board_note: "#983 Done; GitHub issue #983 CLOSED; closed on stage tip 2c320c45; promote held; PR #994"
   prior_session: S067-m0-ready-apex-accumulate-validate
   deepen_feature_ids:
   - F7
@@ -42,6 +52,8 @@ active_session:
   - '[Corpus: product §F7.q]'
   - '[Corpus: journeys §UJ-056]'
   - '[Corpus: tests §UJ-056]'
+  - '[Corpus: deploy]'
+  - '[Corpus: adr/ADR-034]'
   preset: Lean
   auto_lean: false
   auto_lean_rationale: "User chose Lean (D-S068-route=1a); pure UI; full entry interview completed"
@@ -55,9 +67,12 @@ active_session:
   ui_preview: http://127.0.0.1:18000/
   ui_preview_url: http://127.0.0.1:18000/
   ui_preview_note: "D-S068-ui-preview=1 — non-deployed local http://127.0.0.1:18000/"
-  current_stage: 16-evolve
-  current_stage_note: "OPEN — Gate A PASS; Spec→Build open; FE+10 COMPLETE; PR #994 open → stage @ b3db3413; tip pushed; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
-  routing_plan_summary: "Lean 00→16→01→02→10→13 (skip 03/04/05/06/07/08/09/11/12); Spec→Build open; Build unlocked"
+  tip_ci_run: '32038222032'
+  tip_ci_status: success
+  tip_ci_note: "CI/CD Pipeline SUCCESS on stage @ 2c320c45 (run 32038222032); Deploy(stage)+Staging smoke success; H0c–H5 + UJ-056 4/4 PASS"
+  current_stage: completed
+  current_stage_note: "CLOSED — D-S068-close=1; EV-058 COMPLETE on stage tip 2c320c45; promote held; PR #994; #983 Done/CLOSED; active_session=null"
+  routing_plan_summary: "Lean 00→16→01→02→10→13 COMPLETE; closed on stage; promote held"
   routing_plan:
   - stage: 00-context
     required: true
@@ -69,9 +84,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrate
-    status: in_progress
+    status: completed
     started: '2026-08-17'
-    note: "IN PROGRESS — orchestrator; PR #994 open → stage @ b3db3413; tip pushed; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+    completed: '2026-08-17'
+    note: "COMPLETE — D-S068-close=1; EV-058/S068 closed on stage tip 2c320c45; promote held; PR #994; #983 Done; active_session=null"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -97,8 +113,15 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: pending
-    note: "pending — awaiting tip CI on PR #994, then merge→stage, then 13-deploy-smoke; promote held"
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    note: "COMPLETE — D-S068-13=1; CD 32038222032 Deploy+Staging smoke SUCCESS; H0c–H5 PASS; live UJ-056 4/4; promote held; report deploy-smoke.md"
+    report: docs/sessions/S068-quality-metrics-diff-layout/reports/deploy-smoke.md
+    tip_ci_run: '32038222032'
+    tip_ci_status: success
+    overall: PASS
+    decision_id: D-S068-13
   - stage: 03-plan-tooling
     required: false
     mode: null
@@ -156,11 +179,14 @@ active_session:
     D-S068-01-uj: "4a — deepen UJ-056 + TC-EV058-*"
     D-S068-gateA: "1 — Gate A PASS"
     D-S068-spec-build: "1a — Spec→Build open; Build band unlocked"
+    D-S068-merge: "1 — Merge PR #994 → stage (user chose recommended), then run 13-deploy-smoke; promote still held"
+    D-S068-13: "1 — approve 13 complete; close EV-058/S068 on stage; #983 Done; no promote"
+    D-S068-close: "1 — close cycle on stage; promote deferred"
+  close_decision_id: D-S068-close
+  close_note: "D-S068-close=1 — close cycle on stage; promote deferred; tip 2c320c45; PR #994; #983 Done/CLOSED"
   context_briefs: []
-  note: "OPEN — S068/EV-058 F7.q #983; Lean; Gate A PASS; Spec→Build open; FE+10 done; PR #994 open → stage @ b3db3413 (pushed); board #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056]"
+  note: "CLOSED — D-S068-close=1; EV-058 COMPLETE on stage tip 2c320c45; promote held; PR #994; #983 Done/CLOSED; active_session=null; [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056] [Corpus: deploy] [Corpus: adr/ADR-034]"
 
-
-sessions:
 
 - id: S067-m0-ready-apex-accumulate-validate
   type: feature
@@ -17047,15 +17073,20 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: in_progress
-    completed:
-    completed_at:
-    close_decision:
+    status: completed
+    completed: '2026-08-17'
+    completed_at: '2026-08-17'
+    close_decision: D-S068-close=1
     mode: orchestrator
     session_id: S068-quality-metrics-diff-layout
     evolve_cycle_id: EV-058
     started_at: '2026-08-17'
     started: '2026-08-17'
+    previous_s068_session_id: S068-quality-metrics-diff-layout
+    previous_s068_evolve_cycle_id: EV-058
+    previous_s068_completed: '2026-08-17'
+    previous_s068_close_decision: D-S068-close=1
+    previous_s068_note: 'COMPLETE — D-S068-close=1; EV-058/S068 closed on stage tip 2c320c45; promote held; PR #994; #983 Done; active_session=null'
     previous_s067_session_id: S067-m0-ready-apex-accumulate-validate
     previous_s067_evolve_cycle_id: EV-057
     previous_s067_completed: '2026-08-16'
@@ -17097,25 +17128,25 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: implement
+    current_child_stage: 13-deploy-smoke
     current_child_stage_status: completed
-    current_child_stage_note: 'FE implement done; commit+push+PR #994 @ b3db3413; awaiting tip CI then merge→stage then 13'
-    tip_sha: c2ca9a3f
-    tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
-    tip_sha_pushed: false
-    tip_sha_note: 'OPEN S068/EV-058 — tip c2ca9a3f (= stage base); FE+10 done uncommitted; awaiting user commit approval'
+    current_child_stage_note: 'COMPLETE D-S068-13=1 — CD 32038222032; H0c–H5; UJ-056 4/4; report deploy-smoke.md'
+    tip_sha: 2c320c45
+    tip_sha_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
+    tip_sha_pushed: true
+    tip_sha_note: 'CLOSED D-S068-close=1 — tip 2c320c45; PR #994 MERGED → stage; CD 32038222032; promote held'
     branch: evolve/EV-058-quality-metrics-diff-layout
     branch_base: stage@c2ca9a3f
-    branch_status: active
+    branch_status: merged
     branch_exists: true
     branch_pushed: true
-    pr_number:
-    pr_url:
-    pr_status:
-    merge_sha:
-    merge_sha_full:
-    merge_target:
-    note: 'IN PROGRESS — S068/EV-058; Gate A PASS; Spec→Build open; FE implement done; 10-e2e COMPLETE local PASS; next commit/PR→stage then 13-deploy-smoke (awaiting user commit approval); promote held'
+    pr_number: 994
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
+    pr_status: merged
+    merge_sha: 2c320c45
+    merge_sha_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
+    merge_target: stage
+    note: 'COMPLETE — D-S068-close=1; EV-058/S068 closed on stage tip 2c320c45; promote held; PR #994; #983 Done; active_session=null'
     prior_s057_pr_number: 963
     prior_s057_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
     prior_s057_merge_sha: 06a9543f
@@ -17150,11 +17181,11 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: '2026-08-11'
-    commit_deployed: 4b48c8d8
-    commit_deployed_full: 4b48c8d85ff88b16641cd7f7fa66b1450dfbe6a3
-    commit_head: 4b48c8d8
-    commit_head_full: 4b48c8d85ff88b16641cd7f7fa66b1450dfbe6a3
+    last_verified: '2026-08-17'
+    commit_deployed: 2c320c45
+    commit_deployed_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
+    commit_head: 2c320c45
+    commit_head_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
     drift: false
     platform: doks
     env_role: staging
@@ -17164,15 +17195,15 @@ deployment:
       api: 'https://api.staging.tac-to-iwxxm.com'
       frontend: 'https://app.staging.tac-to-iwxxm.com'
       app: 'https://app.staging.tac-to-iwxxm.com'
-      note: 'S064/EV-055 staging env (api|app.staging); live=prod URLs retained under previous_live_*'
+      note: 'S068/EV-058 staging env (api|app.staging); live=prod URLs retained under previous_live_*'
     deploy_ids:
       api:
       frontend:
-      ci_cd_run: '31534191417'
-      ci_cd_run_note: 'stage CI/CD SUCCESS — Deploy (stage) + Staging smoke; H1–H5 PASS'
-    report: docs/sessions/S064-quality-metrics-2025-2-followups/reports/deploy-smoke.md
-    session_id: S064-quality-metrics-2025-2-followups
-    evolve_cycle_id: EV-055
+      ci_cd_run: '32038222032'
+      ci_cd_run_note: 'stage CI/CD SUCCESS — Deploy (stage) + Staging smoke; H0c–H5 + UJ-056 4/4 PASS; D-S068-13=1'
+    report: docs/sessions/S068-quality-metrics-diff-layout/reports/deploy-smoke.md
+    session_id: S068-quality-metrics-diff-layout
+    evolve_cycle_id: EV-058
     health_tiers:
       H0c: pass
       H1: pass
@@ -17186,7 +17217,7 @@ deployment:
       h3: pass
       h4: pass
       h5: pass
-      note: 'S064/EV-055 staging — H0c 6/6; H1 13p/8s; H2 health 200; H3 quality-metrics+versions 2025-2; H4 3/3; H5 api.baseUrl=https://api.staging.tac-to-iwxxm.com; CD 31534191417; D-S064-13=1'
+      note: 'S068/EV-058 staging — H0c 6/6; H1 20p/1s; H2 staging_smoke PASS; H3 test_t72_h3 3/3; H4 3/3; H5 config.json OK; live UJ-056 4/4 incl TC-EV058-005; CD 32038222032; D-S068-13=1 / D-S068-close=1'
     previous_live_status: 'deployed (live=prod DOKS; public DNS + TLS)'
     previous_live_last_verified: '2026-08-08'
     previous_live_commit_deployed: 3502af27
@@ -17207,13 +17238,15 @@ deployment:
       worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260808004030-3502af2
     previous_live_health_tiers: *id001
     doks_tag: 20260808004030-3502af2
-    doks_tag_note: 'prior live_prod tag retained under previous_live_*; S064 staging Deploy via CD 31534191417 @ 4b48c8d8'
+    doks_tag_note: 'prior live_prod tag retained under previous_live_*; S068 staging Deploy via CD 32038222032 @ 2c320c45'
     images:
       api: ghcr.io/empiric2/tac-to-iwxxm/backend:20260808004030-3502af2
       frontend: ghcr.io/empiric2/tac-to-iwxxm/frontend:20260808004030-3502af2
       worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260808004030-3502af2
-      note: 'previous live images retained; staging Deploy CD 31534191417 @ 4b48c8d8 (exact staging GHCR tag not asserted in smoke report)'
+      note: 'previous live images retained; staging Deploy CD 32038222032 @ 2c320c45 (exact staging GHCR tag not asserted in smoke report)'
     notes:
+    - '2026-08-17 S068/EV-058 CLOSED D-S068-13=1 / D-S068-close=1 — staging DEPLOYED @ 2c320c45; CD 32038222032; H0c–H5 + UJ-056 4/4 PASS; #983 Done/CLOSED; promote held; report deploy-smoke.md; active_session=null'
+    - '2026-08-17 S068/EV-058 staging DEPLOYED @ 2c320c45 — CD 32038222032 success (Deploy+Staging smoke); H0c–H5 PASS; live UJ-056 4/4; report deploy-smoke.md; board #983 On stage; await D-S068-13; promote held'
     - '2026-08-11 S064/EV-055 staging DEPLOYED @ 4b48c8d8 — CD 31534191417 success (Deploy+Staging smoke); H1–H5 PASS on api|app.staging; report deploy-smoke.md present; board #982/#980/#979 On stage; await D-S064-13'
     - 2026-08-08 S047/EV-039 CLOSED D-S047-13=1 + D-S047-close=1 — H0c/H1/H4–H5 PASS; images 20260808004030-3502af2; CD 31130303373; active_session=null
     - 2026-08-08 S047/EV-039 13-deploy-smoke EVIDENCE (pending D-S047-13) — H0c 6/6; H1 20p/1s; H4 3/3; H5 PASS; images 20260808004030-3502af2; CD 31130303373 SUCCESS; report deploy-smoke.md PENDING SIGN-OFF; active_session remains S047; NOT closed
@@ -37864,7 +37897,11 @@ evolve_cycles:
   title: "F7.q #983 selectable side-by-side vs inline XML diff layout"
   topic: "F7.q #983 selectable XML diff layout"
   goal: "F7.q #983 selectable XML diff layout"
-  status: in_progress
+  status: completed
+  completed: '2026-08-17'
+  completed_at: '2026-08-17'
+  close_decision_id: D-S068-close
+  close_note: "D-S068-close=1 — close EV-058/S068 on stage tip 2c320c45; PR #994; #983 Done/CLOSED; promote held"
   cycle_type: feature
   session_id: S068-quality-metrics-diff-layout
   feature_ids:
@@ -37880,25 +37917,27 @@ evolve_cycles:
   branch_base: stage@c2ca9a3f
   branch_base_sha: c2ca9a3f
   branch_base_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
-  branch_status: active
+  branch_status: merged
   branch_exists: true
   branch_pushed: true
-  tip_sha: b3db3413
-  tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+  tip_sha: 2c320c45
+  tip_sha_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
   tip_sha_pushed: true
-  tip_sha_note: "OPEN — tip b3db3413 pushed; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  tip_sha_note: "CLOSED D-S068-close=1 — tip 2c320c45; PR #994 MERGED → stage; CD 32038222032; H0c–H5 + UJ-056 4/4; #983 Done; promote held"
   pr_number: 994
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
-  pr_status: open
+  pr_status: merged
   pr_base: stage
-  current_stage: 16-evolve
-  current_stage_status: in_progress
-  current_stage_note: "OPEN — orchestrator; PR #994 open → stage @ b3db3413; tip pushed; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
-  current_child: implement
-  current_child_stage: implement
+  merge_sha: 2c320c45
+  merge_sha_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: "CLOSED — D-S068-close=1; EV-058 COMPLETE on stage tip 2c320c45; promote held; PR #994; #983 Done; active_session=null"
+  current_child: 13-deploy-smoke
+  current_child_stage: 13-deploy-smoke
   current_child_stage_status: completed
-  current_child_note: "FE implement done (layout toggle); Vitest 20 + UJ-056 4/4 PASS"
-  current_child_stage_note: "FE implement done (layout toggle); Vitest 20 + UJ-056 4/4 PASS"
+  current_child_note: "COMPLETE D-S068-13=1 — CD 32038222032; H0c–H5; UJ-056 4/4; report deploy-smoke.md"
+  current_child_stage_note: "COMPLETE D-S068-13=1 — CD 32038222032; H0c–H5; UJ-056 4/4; report deploy-smoke.md"
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Lean
@@ -37907,12 +37946,14 @@ evolve_cycles:
   ui_preview: http://127.0.0.1:18000/
   ui_preview_url: http://127.0.0.1:18000/
   ui_preview_note: "D-S068-ui-preview=1 — non-deployed local http://127.0.0.1:18000/"
-  board_note: "#983 In review"
+  board_note: "#983 Done; GitHub issue #983 CLOSED"
   spec_to_build_gate: open
   corpus_cites:
   - '[Corpus: product §F7.q]'
   - '[Corpus: journeys §UJ-056]'
   - '[Corpus: tests §UJ-056]'
+  - '[Corpus: deploy]'
+  - '[Corpus: adr/ADR-034]'
   routing_plan:
   - 00-context
   - 16-evolve
@@ -37930,9 +37971,9 @@ evolve_cycles:
   - 09-qa
   - 11-verify-impl
   - 12-verify-deploy
-  routing_plan_summary: "Lean 00→16→01→02→10→13; Spec→Build open; Build unlocked"
+  routing_plan_summary: "Lean 00→16→01→02→10→13 COMPLETE; closed on stage; promote held"
   scope_summary: "Selectable side-by-side vs inline (unified) XML diff on /quality/:stem; persist preference + synced scroll; ship to stage; promote held. OOS: API/backend, new npm diff package, C14N/match_status, promote, non-Quality-metrics UI. Base stage@c2ca9a3f."
-  decisions_locked: false
+  decisions_locked: true
   decisions:
     D-S068-open: "1 — open S068/EV-058"
     D-S068-route: "1a/2a/3a — Lean bands; Spec→Build closed; open Spec"
@@ -37945,6 +37986,9 @@ evolve_cycles:
     D-S068-01-uj: "4a — deepen UJ-056 + TC-EV058-*"
     D-S068-gateA: "1 — Gate A PASS"
     D-S068-spec-build: "1a — Spec→Build open; Build band unlocked"
+    D-S068-merge: "1 — Merge PR #994 → stage (user chose recommended), then run 13-deploy-smoke; promote still held"
+    D-S068-13: "1 — approve 13 complete; close EV-058/S068 on stage; #983 Done; no promote"
+    D-S068-close: "1 — close cycle on stage; promote deferred"
   artifacts:
   - docs/sessions/S068-quality-metrics-diff-layout/
   - docs/sessions/S068-quality-metrics-diff-layout/evolve-plan-card.md
@@ -37953,6 +37997,9 @@ evolve_cycles:
   - docs/sessions/S068-quality-metrics-diff-layout/reports/01-requirements.md
   - docs/sessions/S068-quality-metrics-diff-layout/reports/02-verify-plan.md
   - docs/sessions/S068-quality-metrics-diff-layout/reports/e2e-report.md
+  - docs/sessions/S068-quality-metrics-diff-layout/reports/deploy-smoke.md
+  - docs/sessions/S068-quality-metrics-diff-layout/reports/evolve-summary.md
+  - docs/evolve-report-EV-058.md
   - docs/feature-list.md
   - docs/user-journeys.md
   - docs/test-plan.md
@@ -37960,10 +38007,16 @@ evolve_cycles:
   - docs/decisions/requirements-decisions.md
   prior_session: S067-m0-ready-apex-accumulate-validate
   prior_evolve_note: "Follow-on deepen after S066/EV-056 detail page + collapsible diffs; S067 closed on stage"
+  tip_ci_run: '32038222032'
+  tip_ci_status: success
+  tip_ci_note: "stage CI/CD 32038222032 SUCCESS — Deploy (stage) + Staging smoke; H0c–H5 + live UJ-056 4/4 PASS; D-S068-13=1"
   gates:
     spec_to_build: open
-    spec_to_build_note: "D-S068-spec-build=1a — Spec→Build open; PR #994 @ b3db3413; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+    spec_to_build_note: "D-S068-spec-build=1a — Spec→Build open; cycle CLOSED D-S068-close=1 on stage @ 2c320c45; promote held"
   notes:
+  - "2026-08-17 D-S068-13=1 / D-S068-close=1 — EV-058/S068 CLOSED on stage tip 2c320c45; PR #994; CD 32038222032; H0c–H5 + UJ-056 4/4; #983 Done/CLOSED; promote held; reports deploy-smoke.md + evolve-summary.md + docs/evolve-report-EV-058.md; active_session=null; no git commit by workflow-state-manager"
+  - "2026-08-17 13-deploy-smoke PASS pending D-S068-13 — CD 32038222032 Deploy+Staging smoke SUCCESS; H0c 6/6; H1 20p/1s; H2 staging_smoke PASS; H3 test_t72_h3 3/3; H4 3/3; H5 config.json OK; live UJ-056 4/4 incl TC-EV058-005; board #983 On stage; report deploy-smoke.md; promote held; no git commit by workflow-state-manager"
+  - "2026-08-17 D-S068-merge=1 — PR #994 MERGED → stage @ 2c320c45 (feature tip incl. 56cc0564); 13-deploy-smoke in_progress awaiting CD Deploy+Staging smoke 32038222032 then H0c–H5; board #983 On stage pending; promote held; no git commit by workflow-state-manager"
   - "2026-08-17 commit+push+PR — tip b3db3413; PR #994 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994); #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; no git commit by workflow-state-manager"
   - "2026-08-17 10-e2e COMPLETE — local PASS; report reports/e2e-report.md; Vitest 20 + Playwright UJ-056 4/4; FE implement done (layout toggle); Spec→Build open; next commit/PR→stage then 13 (awaiting user commit approval); no git commit by workflow-state-manager"
   - "2026-08-17 Gate A PASS — D-S068-gateA=1 / D-S068-spec-build=1a; report reports/02-verify-plan.md; Spec→Build open; Build band unlocked; Lean implement via 16 Agent (no 07); current_child implement (FE); next 10-e2e then 13 after FE+PR; no git commit by workflow-state-manager"
@@ -37971,7 +38024,7 @@ evolve_cycles:
   - "2026-08-17 D-S068-01-start=1a / ac=2b / control=3a / uj=4a — 01-requirements in_progress (not completed); writing standing doc deltas; no git commit by workflow-state-manager"
   - "2026-08-17 D-S068-ev-confirm=1a — Phase 0–1 done; evolve-plan-card written; Spec→Build still closed; awaiting 01 startup+AC interview (01 not in_progress); no git commit by workflow-state-manager"
   - "2026-08-17 D-S068-open — open_session S068/EV-058; Lean; Spec-development; Spec→Build closed; #983 In progress; no git commit by workflow-state-manager"
-  note: "OPEN — EV-058/S068 in_progress; F7.q #983; PR #994 open → stage @ b3db3413; tip pushed; board #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056]"
+  note: "CLOSED — D-S068-close=1; EV-058 COMPLETE on stage tip 2c320c45; promote held; PR #994; #983 Done/CLOSED; active_session=null; [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056] [Corpus: deploy] [Corpus: adr/ADR-034]"
 - id: EV-057
   title: "M0 Ready: #948 apex redirect + #903 accumulate ZIP + #838 validate existing IWXXM"
   status: completed
