@@ -173,7 +173,9 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 
 **Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
 Python also enforces **per-file ≥95%** via `scripts/ci/check_per_file_coverage.py` (EV-047 /
-D-S056-cov95-scope=2), including auth and worker.
+`D-S056-cov95-scope=2`), including auth and worker. **F34** adds Schemathesis (path-filtered
+required, tight budget) and mutation testing (nightly/manual only) — see **TC-F34-001..007** /
+EV-059.
 
 ## Migration Test Cases
 
@@ -2217,6 +2219,89 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   collapse remain; C14N/`match_status` unchanged. Synced scroll best-effort only.
 - **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
 - **Source**: EV-058 AC5; UJ-056; `D-S068-01-ac=2b`
+
+### EV-059 / S069 — F34 Contract + mutation quality gates (#841 / #727 / #874)
+
+- **Mode**: new **F34** (Platform / CI·DX); no operator UJ; no H4–H5
+- **Pass criteria**: AC1–AC7 in evolve-decisions §EV-059; **TC-F34-001..007**;
+  optional cycle aliases **TC-EV059-001..007**
+- **CI posture** (`D-S069-ci`):
+  - **Schemathesis**: path-filtered **required** when `apps/backend/**` or OpenAPI-related
+    paths change; Hypothesis **max-examples ≤ 25**; job timeout ≤ **10 min**.
+    Workflow: `.github/workflows/schemathesis.yml`. Local: `make test-schemathesis`
+    (override with `SCHEMATHESIS_MAX_EXAMPLES`, still capped at 25 in-suite).
+  - **Mutation** (pytest-gremlins + Stryker): **nightly / `workflow_dispatch` only**;
+    chunked matrix + hard timeouts; **not** required on every PR
+- **Schemathesis exclusions** (explicit): `/api/v1/work-sessions*`, `/api/v1/eval/*`,
+  `/auth/*` (Postgres / Supabase Auth — covered by unit/integration). Documented HTTP 501
+  on `/api/v1/ingest-collect` is an allowed expected status.
+- **Source**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841);
+  [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727);
+  [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874); [Corpus: product §F34]
+
+### TC-F34-001: Schemathesis ASGI + auth
+
+- **Level**: T0 / T2 (in-process ASGI; no external network)
+- **Objective**: Suite loads OpenAPI from backend app; Bearer/test JWT (or dependency
+  override) exercises protected routes; no unexpected 5xx; responses match schema
+- **Pass criteria**: `make test-schemathesis` green locally; failures minimize to seed/cURL
+- **Source**: F34 AC1; #727
+
+### TC-F34-002: Path-filtered Schemathesis CI
+
+- **Level**: CI
+- **Objective**: Required job runs on PRs touching backend/OpenAPI paths; skipped otherwise
+- **Pass criteria**: Workflow path filters documented; job respects max-examples ≤ 25 and
+  timeout ≤ 10 min (**TC-F34-007**)
+- **Source**: F34 AC2 / AC7; `D-S069-ci`
+
+### TC-F34-003: pytest-gremlins Python mutation targets
+
+- **Level**: T0 / nightly
+- **Objective**: Config + `make` target(s) mutate
+  `apps/backend`, `apps/worker`,
+  `packages/{auth,shared,tac-validate,tac2iwxxm,iwxxm-validate,dissemination}`
+- **Pass criteria**: Local/nightly run produces score + survivors report; exclusions
+  (e2e, Rust) documented
+- **Source**: F34 AC3; #874; `D-S069-tool`
+
+### TC-F34-004: Stryker TypeScript mutation targets
+
+- **Level**: T0 / nightly
+- **Objective**: Stryker config + `make`/pnpm script for `apps/frontend` (+ shared JS if
+  present)
+- **Pass criteria**: Nightly/manual run produces mutation report; hard timeout enforced
+- **Source**: F34 AC3; #874
+
+### TC-F34-005: Nightly / manual mutation matrix
+
+- **Level**: CI (non-PR-required)
+- **Objective**: Chunked workflow covers full Python + TS matrix without blocking every PR
+- **Pass criteria**: `workflow_dispatch` and/or schedule green or flaky survivors tracked;
+  minutes bounded by per-chunk timeouts
+- **Source**: F34 AC3; `D-S069-e4`
+
+### TC-F34-006: Inventory, docs, findings, epic close path
+
+- **Level**: Docs / process
+- **Objective**: Deps in dependency-inventory; test-plan notes; findings fixed via
+  bug-investigation or waived; two PRs; #841 closable when children Done
+- **Pass criteria**: Inventory rows present; waivers recorded; #727/#874 Done ⇒ epic Done
+- **Source**: F34 AC4–AC6
+
+### TC-F34-007: Schemathesis budget ceilings documented
+
+- **Level**: Docs / CI
+- **Objective**: Standing test-plan (this section) + workflow comments state
+  max-examples ≤ 25 and job timeout ≤ 10 min
+- **Pass criteria**: Docs and CI config agree; Build does not raise budgets without
+  AskQuestion
+- **Source**: F34 AC7; `D-S069-01-ac=2b`
+
+### TC-EV059-001..007
+
+- Aliases of **TC-F34-001..007** for evolve-cycle traceability (EV-059 / S069).
+
 
 ### EV-057 / S067 — M0 Ready: apex redirect + accumulate ZIP + validate-only (#948 / #903 / #838)
 

@@ -3,6 +3,55 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-059 — CI Schemathesis + mutation quality gates (#841 / #727 / #874) (S069)
+
+**Session**: S069-ci-schemathesis-mutation  
+**Features**: **F34** (new) — contract + mutation quality gates  
+**Started**: 2026-08-17  
+**Branch**: `evolve/EV-059-ci-schemathesis-mutation` (base `stage@c458669e`)  
+**Status**: **in_progress** — **Build** phase; Spec→Build gate **open**  
+**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — board **In progress**  
+**Artifacts**: [session-brief](../sessions/S069-ci-schemathesis-mutation/session-brief.md) · [routing-plan](../sessions/S069-ci-schemathesis-mutation/routing-plan.md) · [evolve-plan-card](../sessions/S069-ci-schemathesis-mutation/evolve-plan-card.md) · [02-verify-plan](../sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md)  
+**Corpus**: [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]
+[Corpus: decisions §EV-059]
+
+### Scope (Phase 0 — locked 2026-08-17)
+
+| ID | Decision |
+|----|----------|
+| D-S069-e0 | Close #841 via #727+#874; minimal CI cost; two PRs; fix findings |
+| D-S069-ci | Schemathesis path-filtered **required** (tight budget); mutation **nightly/manual only** |
+| D-S069-tool | **pytest-gremlins** (Python) + **Stryker** (TS) |
+| D-S069-fn | Allocate **F34** |
+| D-S069-e4 | Broad Python+TS mutation coverage via nightly matrix (not one-package PoC) |
+| D-S069-e5 | Breaking OpenAPI cleanup **allowed** when Schemathesis proves export wrong |
+| D-S069-route | Lean Spec `00→16→01→02`; Build `07→08`; skip 03–06, 09–13 |
+| D-S069-e8 | Open session; Spec-development only — **superseded** by Spec→Build open |
+| D-S069-01-ac | **2b** — AC1–AC7 (budgets in Spec) |
+| D-S069-01-uj | **1a** — no new UJ |
+| D-S069-01-tc | **2a** — TC-F34-001..007 |
+| D-S069-01-deps | **3a** — schemathesis, pytest-gremlins, @stryker-mutator/core |
+| D-S069-gateA | **1a** — PASS (2026-08-17) |
+| D-S069-spec-build | **2a** — Open Build 07→08; Schemathesis (#727) before mutation (#874) |
+
+### Acceptance (approved `D-S069-01-ac=2b`)
+
+1. Schemathesis ASGI + auth on protected routes (**TC-F34-001**).
+2. `make test-schemathesis` + path-filtered required CI (**TC-F34-002**).
+3. pytest-gremlins + Stryker + `make` + nightly matrix across Python packages/services + TS
+   (**TC-F34-003..005**).
+4. Inventory + test-plan notes (**TC-F34-006**).
+5. Findings fixed or waived; two PRs; #841 closable (**TC-F34-006**).
+6. (AC6 in feature-list) epic close path via children Done.
+7. Documented max-examples ≤ 25 and Schemathesis job timeout ≤ 10 min (**TC-F34-007**).
+
+### Out of scope
+
+- Mutation required on every PR; Rust mutation; live staging/prod Schemathesis merge gate;
+  product UI; weaken ≥95% coverage; promote `stage`→`main`; replace hand-written UJ/pytest
+
+---
+
 ## Cycle EV-058 — Quality metrics side-by-side vs inline XML diff (#983) (S068)
 
 **Session**: S068-quality-metrics-diff-layout  
