@@ -6,12 +6,16 @@
 ## Cycle EV-059 — CI Schemathesis + mutation quality gates (#841 / #727 / #874) (S069)
 
 **Session**: S069-ci-schemathesis-mutation  
-**Features**: **F34** (new) — contract + mutation quality gates  
+**Features**: **F34** — contract + mutation quality gates (**Done**)  
 **Started**: 2026-08-17  
+**Closed**: 2026-08-17  
 **Branch**: `evolve/EV-059-ci-schemathesis-mutation` (base `stage@c458669e`)  
-**Status**: **in_progress** — **Build** M2 mutation; M1 #997 merged; #727 Done  
-**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) (Done) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — board **In progress**  
-**Artifacts**: [session-brief](../sessions/S069-ci-schemathesis-mutation/session-brief.md) · [routing-plan](../sessions/S069-ci-schemathesis-mutation/routing-plan.md) · [evolve-plan-card](../sessions/S069-ci-schemathesis-mutation/evolve-plan-card.md) · [02-verify-plan](../sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md) · [07-build-m1](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m1.md) · [07-build-m2](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md)  
+**Status**: **completed** — `D-S069-close=1`; on `stage` @ `8755ae87`; promote held  
+**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — all **CLOSED** / Done  
+**PRs**: [#997](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997) (M1) @ `c08bc30f` · [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) (M2) @ `8755ae87`  
+**Tip CI**: [32054972352](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32054972352) SUCCESS  
+**Reports**: [evolve-report-EV-059.md](../evolve-report-EV-059.md) · [evolve-summary.md](../sessions/S069-ci-schemathesis-mutation/reports/evolve-summary.md) · [07-build-m1](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m1.md) · [07-build-m2](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md) · [verification-report](../sessions/S069-ci-schemathesis-mutation/reports/verification-report.md)  
+**Artifacts**: [session-brief](../sessions/S069-ci-schemathesis-mutation/session-brief.md) · [routing-plan](../sessions/S069-ci-schemathesis-mutation/routing-plan.md) · [evolve-plan-card](../sessions/S069-ci-schemathesis-mutation/evolve-plan-card.md) · [02-verify-plan](../sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md)  
 **Corpus**: [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]
 [Corpus: decisions §EV-059]
 
@@ -40,6 +44,8 @@
 | D-S069-ci-comment-waiver | **2** — waive Quality PR comment + Coverage PR comment failures on CI run `32049951760` (GitHub 503 sticky comments); all substantive test jobs green on PR #998 |
 | D-S069-github-outage-bypass | Bypass GitHub API mutations (rerun, board sync, sticky comments) until user says otherwise — long-running Partial System Outage; prefer local verification |
 | D-S069-sticky-softfail | Soft-fail Coverage/Quality sticky PR comment posts on GitHub API 429/500/502/503 (warn + continue); marker validation still hard-fails |
+| D-S069-m2-merge | **1** — merge PR [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) → `stage` @ `8755ae87` after sticky soft-fail CI green (`32054972352`) |
+| D-S069-close | **1** — Close EV-059/S069 on stage; F34 Done; #841/#727/#874 CLOSED; `active_session=null`; promote held |
 
 ### Acceptance (approved `D-S069-01-ac=2b`)
 
