@@ -2,7 +2,7 @@
  * Unit tests for Quality metrics diff layout helpers (TC-EV058).
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { unifiedLineDiff } from './unifiedLineDiff';
 import {
   QUALITY_METRICS_DIFF_LAYOUT_STORAGE_KEY,
@@ -56,5 +56,33 @@ describe('qualityMetricsDiffLayout (TC-EV058)', () => {
     );
     const onlyAdd = sideBySideFromUnified(unifiedLineDiff('a', 'a\nb'));
     expect(onlyAdd.some((r) => r.rightOp === 'add' && r.left === null)).toBe(true);
+  });
+
+  it('readDiffLayoutPreference falls back when localStorage throws', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    expect(readDiffLayoutPreference()).toBe('unified');
+  });
+
+  it('writeDiffLayoutPreference swallows setItem errors', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota');
+    });
+    expect(() => writeDiffLayoutPreference('side-by-side')).not.toThrow();
+  });
+
+  it('read/write tolerate missing localStorage', () => {
+    const original = window.localStorage;
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      value: undefined,
+    });
+    expect(readDiffLayoutPreference()).toBe('unified');
+    expect(() => writeDiffLayoutPreference('unified')).not.toThrow();
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      value: original,
+    });
   });
 });
