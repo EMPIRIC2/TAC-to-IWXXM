@@ -1,12 +1,163 @@
-overall_status: completed
-overall_status_note: "no active_session; last EV-057 completed on stage"
+overall_status: in_progress
+overall_status_note: "S068/EV-058 F7.q #983 — PR #994 open → stage @ b3db3413; tip pushed; board #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 67
-evolve_cycle_counter: 57
-active_session: null
+session_counter: 68
+evolve_cycle_counter: 58
+active_session:
+  id: S068-quality-metrics-diff-layout
+  type: feature
+  intent: "EV-058 deepen F7.q #983: selectable side-by-side vs inline (unified) XML diff on /quality/:stem; persist preference + synced scroll; ship to stage; promote held"
+  status: active
+  started: '2026-08-17'
+  started_at: '2026-08-17'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  branch_base: stage@c2ca9a3f
+  branch_base_sha: c2ca9a3f
+  branch_base_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+  branch_status: active
+  branch_exists: true
+  branch_pushed: true
+  tip_sha: b3db3413
+  tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+  tip_sha_pushed: true
+  tip_sha_note: "OPEN — tip b3db3413 pushed on evolve/EV-058-quality-metrics-diff-layout; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  pr_number: 994
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
+  pr_status: open
+  pr_base: stage
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-058
+  artifacts_dir: docs/sessions/S068-quality-metrics-diff-layout/
+  github_issues:
+  - 983
+  board_note: "#983 In review"
+  prior_session: S067-m0-ready-apex-accumulate-validate
+  deepen_feature_ids:
+  - F7
+  feature_note: "Deepen F7.q — side-by-side vs inline XML diff layout"
+  corpus_cites:
+  - '[Corpus: product §F7.q]'
+  - '[Corpus: journeys §UJ-056]'
+  - '[Corpus: tests §UJ-056]'
+  preset: Lean
+  auto_lean: false
+  auto_lean_rationale: "User chose Lean (D-S068-route=1a); pure UI; full entry interview completed"
+  goal: "Selectable side-by-side vs inline XML diff on Quality metrics detail; stage ship; promote held"
+  out_of_scope:
+  - "API/backend"
+  - "new npm diff package"
+  - "C14N/match_status semantics"
+  - "promote stage→main"
+  - "non-Quality-metrics UI"
+  ui_preview: http://127.0.0.1:18000/
+  ui_preview_url: http://127.0.0.1:18000/
+  ui_preview_note: "D-S068-ui-preview=1 — non-deployed local http://127.0.0.1:18000/"
+  current_stage: 16-evolve
+  current_stage_note: "OPEN — Gate A PASS; Spec→Build open; FE+10 COMPLETE; PR #994 open → stage @ b3db3413; tip pushed; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  routing_plan_summary: "Lean 00→16→01→02→10→13 (skip 03/04/05/06/07/08/09/11/12); Spec→Build open; Build unlocked"
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    note: "COMPLETE — open_session S068-quality-metrics-diff-layout; Lean preset; #983 In progress; handoff 16-evolve"
+  - stage: 16-evolve
+    required: true
+    mode: orchestrate
+    status: in_progress
+    started: '2026-08-17'
+    note: "IN PROGRESS — orchestrator; PR #994 open → stage @ b3db3413; tip pushed; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    note: "COMPLETE — D-S068-01-ac=2b; report reports/01-requirements.md; standing doc deltas written; handoff 02-verify-plan"
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    note: "COMPLETE — Gate A PASS D-S068-gateA=1; report reports/02-verify-plan.md; Spec→Build open D-S068-spec-build=1a"
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    note: "COMPLETE — local PASS; Vitest 20 + Playwright UJ-056 4/4; report reports/e2e-report.md; H4–H5 via 13; next commit/PR→stage then 13"
+    report: docs/sessions/S068-quality-metrics-diff-layout/reports/e2e-report.md
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+    note: "pending — awaiting tip CI on PR #994, then merge→stage, then 13-deploy-smoke; promote held"
+  - stage: 03-plan-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — no new Cursor rules expected"
+  - stage: 04-tech-plan
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — FE layout toggle only; no Standard milestones"
+  - stage: 05-verify-tech
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — verify-tech not in path"
+  - stage: 06-tech-tooling
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — no new deps unless AskQuestion"
+  - stage: 07-build
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean — 16 Agent implements after Gate A"
+  - stage: 08-verify-build
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — verify-build not in path"
+  - stage: 09-qa
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — qa not in path"
+  - stage: 11-verify-impl
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — verify-impl not in path"
+  - stage: 12-verify-deploy
+    required: false
+    mode: null
+    status: skipped
+    skip_rationale: "Lean preset — PR path via 13"
+  decisions:
+    D-S068-open: "1 — open S068/EV-058"
+    D-S068-route: "1a/2a/3a — Lean bands; Spec→Build closed; open Spec"
+    D-S068-ui-preview: "1 — non-deployed local http://127.0.0.1:18000/"
+    D-S068-board: "1 — #983 → In progress"
+    D-S068-ev-confirm: "1a — confirm evolve intake; proceed Spec children"
+    D-S068-01-start: "1a — delta F7.q #983"
+    D-S068-01-ac: "2b — AC1–AC5 with synced scroll best-effort (not blocking)"
+    D-S068-01-control: "3a — radio/segmented Inline | Side-by-side"
+    D-S068-01-uj: "4a — deepen UJ-056 + TC-EV058-*"
+    D-S068-gateA: "1 — Gate A PASS"
+    D-S068-spec-build: "1a — Spec→Build open; Build band unlocked"
+  context_briefs: []
+  note: "OPEN — S068/EV-058 F7.q #983; Lean; Gate A PASS; Spec→Build open; FE+10 done; PR #994 open → stage @ b3db3413 (pushed); board #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056]"
 
 
 sessions:
@@ -4219,7 +4370,7 @@ sessions:
     started_at: "2026-08-05"
     completed: "2026-08-05"
     completed_at: "2026-08-05"
-    note: 'COMPLETE — EV-037 closed; PR #887 MERGED @ b7302fe4; tip 2d8202f3; deploy waived; CI 31049365217 SUCCESS'
+    note: 'IN PROGRESS — S068/EV-058; PR #994 open → stage @ b3db3413; tip pushed; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held'
   - stage: 01-requirements
     mode: delta
     required: true
@@ -4239,7 +4390,7 @@ sessions:
     status: completed
     started: "2026-08-05"
     completed: "2026-08-05"
-    tip_sha: c51e6e9b
+    tip_sha: b3db3413
     note: "COMPLETE @ c51e6e9b — matrix/provenance + #869/#870/#872 closed; handoff 08"
   - stage: 08-verify-build
     mode: delta
@@ -4248,7 +4399,7 @@ sessions:
     started: "2026-08-05"
     completed: "2026-08-05"
     tip_sha: 90c2e8a3
-    tip_sha_full: 90c2e8a3f090d49341fccb1f397b6ff4033d32df
+    tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
     report: docs/sessions/S045-matrix-disposition-residuals/reports/verification-report.md
     overall: pass
     note: "PASS @ 90c2e8a3 — verification-report.md; provenance quality 188 green; handoff 11; c_to_d pending Gate"
@@ -4935,8 +5086,8 @@ sessions:
     pending_commit: false
     tip_sha: 9ae9c323
     tip_sha_full: 9ae9c3235d9380f493290ab318c0e0ecf5de2efa
-    pr_number: 867
-    pr_status: merged
+    pr_number: 994
+    pr_status: open
     hotfix_pr_number: 868
     hotfix_pr_status: merged
   - stage: 08-verify-build
@@ -9514,90 +9665,111 @@ stages:
   01-requirements:
     status: completed
     mode: delta
-    started: '2026-08-15'
-    started_at: '2026-08-15'
-    completed: '2026-08-15'
-    completed_at: '2026-08-15'
-    session_id: S067-m0-ready-apex-accumulate-validate
-    evolve_cycle_id: EV-057
+    started: '2026-08-17'
+    started_at: '2026-08-17'
+    completed: '2026-08-17'
+    completed_at: '2026-08-17'
+    session_id: S068-quality-metrics-diff-layout
+    evolve_cycle_id: EV-058
     skill_id: 01-requirements
-    tip_sha: a6064563
-    tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
-    deepen_feature_ids: [F7, F1, F6, F2, F4]
+    tip_sha: c2ca9a3f
+    tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+    deepen_feature_ids: [F7]
     feature_ids: []
     delta_only: true
     decision_refs:
+    - D-S068-01-start
+    - D-S068-01-ac
+    - D-S068-01-control
+    - D-S068-01-uj
+    report: docs/sessions/S068-quality-metrics-diff-layout/reports/01-requirements.md
+    artifacts:
+    - docs/sessions/S068-quality-metrics-diff-layout/
+    - docs/sessions/S068-quality-metrics-diff-layout/evolve-plan-card.md
+    - docs/sessions/S068-quality-metrics-diff-layout/session-brief.md
+    - docs/sessions/S068-quality-metrics-diff-layout/routing-plan.md
+    - docs/sessions/S068-quality-metrics-diff-layout/reports/01-requirements.md
+    - docs/feature-list.md
+    - docs/user-journeys.md
+    - docs/test-plan.md
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/requirements-decisions.md
+    note: "COMPLETE — D-S068-01-ac=2b; report reports/01-requirements.md; standing doc deltas (feature-list, user-journeys, test-plan, evolve-decisions, requirements-decisions); handoff 02-verify-plan"
+    previous_session_id: S067-m0-ready-apex-accumulate-validate
+    previous_evolve_cycle_id: EV-057
+    previous_status: completed
+    previous_completed: '2026-08-15'
+    previous_tip_sha: a6064563
+    previous_tip_sha_full: a606456354a8eaa859120405e0581c8e1873987e
+    previous_decision_refs:
     - D-S067-01-ac
     - D-S067-01-goal
     - D-S067-01-manifest
     - D-S067-01-ui
     - D-S067-01-delta
-    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
-    artifacts:
-    - docs/sessions/S067-m0-ready-apex-accumulate-validate/
-    - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
-    - docs/sessions/S067-m0-ready-apex-accumulate-validate/routing-plan.md
-    - docs/sessions/S067-m0-ready-apex-accumulate-validate/evolve-plan-card.md
-    - docs/feature-list.md
-    - docs/user-journeys.md
-    - docs/test-plan.md
-    - docs/spec.md
-    - docs/deploy.md
-    - docs/decisions/evolve-decisions.md
-    - docs/decisions/requirements-decisions.md
-    note: "COMPLETE — D-S067-01-ac=1; AC approved; specs written; handoff 02-verify-plan (awaiting Gate A)"
-    previous_session_id: S060-tag-driven-prod-deploy
-    previous_evolve_cycle_id: EV-051
-    previous_status: completed
-    previous_completed: '2026-08-09'
+    previous_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/01-requirements.md
+    previous_note: "COMPLETE — D-S067-01-ac=1; AC approved; specs written; handoff 02-verify-plan (awaiting Gate A)"
+    prior_session_id: S060-tag-driven-prod-deploy
+    prior_evolve_cycle_id: EV-051
+    prior_status: completed
+    prior_completed: '2026-08-09'
   02-verify-plan:
     status: completed
     mode: delta
-    started: '2026-08-15'
-    started_at: '2026-08-15'
-    completed: '2026-08-15'
-    completed_at: '2026-08-15'
-    session_id: S067-m0-ready-apex-accumulate-validate
-    evolve_cycle_id: EV-057
+    started: '2026-08-17'
+    started_at: '2026-08-17'
+    completed: '2026-08-17'
+    completed_at: '2026-08-17'
+    session_id: S068-quality-metrics-diff-layout
+    evolve_cycle_id: EV-058
     skill_id: 02-verify-plan
-    tip_sha: d319180f
-    tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
-    deepen_feature_ids: [F7, F1, F6, F2, F4]
+    tip_sha: c2ca9a3f
+    tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+    deepen_feature_ids: [F7]
     feature_ids: []
     delta_only: true
     gate_a: PASS
     gate_a_status: pass
-    gate_a_decision: D-S067-gateA=1
-    gate_a_note: 'D-S067-gateA=1 — Gate A PASS; D-S067-903-cap=1c; D-S067-948-ingress=2a; D-S067-02-ml=1b'
-    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
+    gate_a_decision: D-S068-gateA=1
+    gate_a_note: "PASS — D-S068-gateA=1; Spec→Build open D-S068-spec-build=1a; Build band unlocked"
+    report: docs/sessions/S068-quality-metrics-diff-layout/reports/02-verify-plan.md
     decision_refs:
-    - D-S067-gateA
-    - D-S067-903-cap
-    - D-S067-948-ingress
-    - D-S067-02-ml
-    - D-S067-02-goal
-    - D-S067-02-trust
-    - D-S067-02-depth
-    - D-S067-02-delta
-    note: "COMPLETE — Gate A PASS D-S067-gateA=1; handoff 04-tech-plan"
-    previous_session_id: S061-ci-polish-quality-pr-stats
-    previous_evolve_cycle_id: EV-052
+    - D-S068-01-ac
+    - D-S068-01-start
+    - D-S068-01-control
+    - D-S068-01-uj
+    - D-S068-gateA
+    - D-S068-spec-build
+    artifacts:
+    - docs/sessions/S068-quality-metrics-diff-layout/reports/01-requirements.md
+    - docs/sessions/S068-quality-metrics-diff-layout/reports/02-verify-plan.md
+    - docs/feature-list.md
+    - docs/user-journeys.md
+    - docs/test-plan.md
+    - docs/decisions/evolve-decisions.md
+    - docs/decisions/requirements-decisions.md
+    note: "COMPLETE — Gate A PASS D-S068-gateA=1; report reports/02-verify-plan.md; Spec→Build open D-S068-spec-build=1a; Build unlocked — Lean implement via 16 Agent (no 07)"
+    previous_session_id: S067-m0-ready-apex-accumulate-validate
+    previous_evolve_cycle_id: EV-057
     previous_status: completed
-    previous_completed: '2026-08-09'
-    previous_tip_sha: 80197a58
-    previous_tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
+    previous_completed: '2026-08-15'
+    previous_tip_sha: d319180f
+    previous_tip_sha_full: d319180febf4e794bb4dfb0a7bdc0bbd58eca027
     previous_gate_a: PASS
     previous_gate_a_status: pass
-    previous_gate_a_decision: D-S061-gateA=1
-    previous_note: 'S061/EV-052 COMPLETE — Gate A PASS D-S061-gateA=1; handoff 04-tech-plan (delta)'
-    prior_session_id: S060-tag-driven-prod-deploy
-    prior_evolve_cycle_id: EV-051
-    prior_started: '2026-08-09'
+    previous_gate_a_decision: D-S067-gateA=1
+    previous_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/02-verify-plan.md
+    previous_note: "COMPLETE — Gate A PASS D-S067-gateA=1; handoff 04-tech-plan"
+    prior_session_id: S061-ci-polish-quality-pr-stats
+    prior_evolve_cycle_id: EV-052
+    prior_status: completed
     prior_completed: '2026-08-09'
-    prior_note: 'S060/EV-051 COMPLETE — Gate A PASS D-S060-gateA=1; Lean+ skip 04/05 → 07-build'
+    prior_tip_sha: 80197a58
+    prior_tip_sha_full: 80197a58c533bcda7045c6b60fede1d62f79dd1b
     prior_gate_a: PASS
     prior_gate_a_status: pass
-    prior_gate_a_decision: D-S060-gateA=1
+    prior_gate_a_decision: D-S061-gateA=1
+    prior_note: 'S061/EV-052 COMPLETE — Gate A PASS D-S061-gateA=1; handoff 04-tech-plan (delta)'
     prior_prior_session_id: S057-strip-internal-doc-refs
     prior_prior_evolve_cycle_id: EV-048
     prior_prior_started: '2026-08-08'
@@ -11138,7 +11310,7 @@ stages:
     note: 'COMPLETE — S067/EV-057 M1 live AC met + M2/M3 repo done; T1.2 tip 0e7833d1; handoff 08-verify-build'
     tip_sha: 0e7833d1
     tip_sha_full: 0e7833d1f272e547896cc2d5d8af018742b73c68
-    tip_sha_pushed: false
+    tip_sha_pushed: true
     pr_number:
     pr_url:
     pr_status:
@@ -13708,10 +13880,10 @@ stages:
     skill_id: 11-verify-impl
   10-e2e:
     status: completed
-    started_at: '2026-08-16'
-    started: '2026-08-16'
-    completed_at: '2026-08-16'
-    completed: '2026-08-16'
+    started_at: '2026-08-17'
+    started: '2026-08-17'
+    completed_at: '2026-08-17'
+    completed: '2026-08-17'
     previous_s048_started_at: '2026-08-06'
     previous_s048_started: '2026-08-06'
     previous_s048_completed_at: '2026-08-06'
@@ -13748,17 +13920,26 @@ stages:
     prior_s036_session_id: S036-eight-family-ahl-rules-823
     prior_s036_evolve_cycle_id: EV-029
     prior_s036_tip_sha: 0e00000
-    session_id: S067-m0-ready-apex-accumulate-validate
-    evolve_cycle_id: EV-057
-    tip_sha: "ffdd1961"
-    tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    session_id: S068-quality-metrics-diff-layout
+    evolve_cycle_id: EV-058
+    tip_sha: c2ca9a3f
+    tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
     tip_sha_pushed: false
     mode: delta
     overall: PASS
-    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
-    note: 'COMPLETE — PASS with D-S067-10-pw=1a (Playwright T2 waived; T0 vitest + T3 UJ-OPS-002 PASS); report e2e-report.md; tip ffdd1961; handoff 11-verify-impl'
+    report: docs/sessions/S068-quality-metrics-diff-layout/reports/e2e-report.md
+    note: 'COMPLETE — local PASS; Vitest 20 + Playwright UJ-056 4/4; report e2e-report.md; FE layout toggle done; tip still stage base c2ca9a3f (uncommitted); next commit/PR→stage then 13; Spec→Build open'
     skill_id: 10-e2e
-    waiver: D-S067-10-pw=1a
+    previous_s067_session_id: S067-m0-ready-apex-accumulate-validate
+    previous_s067_evolve_cycle_id: EV-057
+    previous_s067_tip_sha: "ffdd1961"
+    previous_s067_tip_sha_full: ffdd19613a00679253431054a5fba957f1d0a4db
+    previous_s067_started_at: '2026-08-16'
+    previous_s067_completed_at: '2026-08-16'
+    previous_s067_overall: PASS
+    previous_s067_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/e2e-report.md
+    previous_s067_note: 'COMPLETE — PASS with D-S067-10-pw=1a (Playwright T2 waived; T0 vitest + T3 UJ-OPS-002 PASS); tip ffdd1961; superseded by S068/EV-058'
+    previous_s067_waiver: D-S067-10-pw=1a
     previous_s064_session_id: S064-quality-metrics-2025-2-followups
     previous_s064_evolve_cycle_id: EV-055
     previous_s064_tip_sha: 68552747
@@ -13796,6 +13977,21 @@ stages:
     active_task_status:
     pending_commit: false
     delta_substages:
+    - id: S068-quality-metrics-diff-layout-10
+      session_id: S068-quality-metrics-diff-layout
+      evolve_cycle_id: EV-058
+      skill_id: 10-e2e
+      status: completed
+      mode: delta
+      started: '2026-08-17'
+      started_at: '2026-08-17'
+      completed: '2026-08-17'
+      completed_at: '2026-08-17'
+      tip_sha: c2ca9a3f
+      tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+      overall: PASS
+      report: docs/sessions/S068-quality-metrics-diff-layout/reports/e2e-report.md
+      note: 'COMPLETE — local PASS; Vitest 20 + Playwright UJ-056 4/4; FE layout toggle done; tip uncommitted (stage base); next commit/PR→stage then 13'
     - id: S067-m0-ready-apex-accumulate-validate-10
       session_id: S067-m0-ready-apex-accumulate-validate
       evolve_cycle_id: EV-057
@@ -15240,7 +15436,7 @@ stages:
     tip_ci_status: success
     tip_ci_note: "S067/EV-057 12 COMPLETE — #991 MERGED → stage @ d7022f1f; CI/CD 31966102210 success; Deploy(stage)+Staging smoke success; promote held D-S067-promote=2b"
     pr_number: 991
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
     pr_status: merged
     pr_base: stage
     merge_sha: d7022f1f
@@ -15893,7 +16089,7 @@ stages:
     tip_sha: "3af364fb"
     tip_sha_full: 3af364fbc6caeb4dd1eb56a1f214ae8938a9d878
     tip_sha_pushed: true
-    tip_sha_note: "13 COMPLETE D-S067-13=1a; tip 3af364fb; #992 MERGED; CD 31967444673 success; live UJ-057+UJ-058 PASS; promote deferred"
+    tip_sha_note: 'OPEN S068/EV-058 — tip b3db3413 pushed; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held'
     tip_ci_run: '31967444673'
     tip_ci_status: success
     tip_ci_note: "stage CI/CD 31967444673 success (Deploy+Staging smoke) @ 3af364fb; live UJ-057+UJ-058 PASS; D-S067-13=1a"
@@ -16851,15 +17047,15 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
-    completed: '2026-08-16'
-    completed_at: '2026-08-16'
-    close_decision: D-S067-close=1a
+    status: in_progress
+    completed:
+    completed_at:
+    close_decision:
     mode: orchestrator
-    session_id: S067-m0-ready-apex-accumulate-validate
-    evolve_cycle_id: EV-057
-    started_at: '2026-08-15'
-    started: '2026-08-15'
+    session_id: S068-quality-metrics-diff-layout
+    evolve_cycle_id: EV-058
+    started_at: '2026-08-17'
+    started: '2026-08-17'
     previous_s067_session_id: S067-m0-ready-apex-accumulate-validate
     previous_s067_evolve_cycle_id: EV-057
     previous_s067_completed: '2026-08-16'
@@ -16901,20 +17097,25 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: completed
+    current_child_stage: implement
     current_child_stage_status: completed
-    current_child_stage_note: 'COMPLETE — D-S067-close=1a; EV-057/S067 closed on stage tip 3af364fb; promote held; PRs #991+#992; board Done; active_session=null'
-    tip_sha: 3af364fb
-    tip_sha_full: 3af364fbc6caeb4dd1eb56a1f214ae8938a9d878
-    tip_sha_pushed: true
-    pr_number: 991
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
-    pr_status: merged
-    merge_sha: 3af364fb
-    merge_sha_full: 3af364fbc6caeb4dd1eb56a1f214ae8938a9d878
-    merge_target: stage
-    branch_status: merged
-    note: 'COMPLETE — D-S067-close=1a; EV-057/S067 closed on stage tip 3af364fb; promote held; PRs #991+#992; board Done; active_session=null'
+    current_child_stage_note: 'FE implement done; commit+push+PR #994 @ b3db3413; awaiting tip CI then merge→stage then 13'
+    tip_sha: c2ca9a3f
+    tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+    tip_sha_pushed: false
+    tip_sha_note: 'OPEN S068/EV-058 — tip c2ca9a3f (= stage base); FE+10 done uncommitted; awaiting user commit approval'
+    branch: evolve/EV-058-quality-metrics-diff-layout
+    branch_base: stage@c2ca9a3f
+    branch_status: active
+    branch_exists: true
+    branch_pushed: true
+    pr_number:
+    pr_url:
+    pr_status:
+    merge_sha:
+    merge_sha_full:
+    merge_target:
+    note: 'IN PROGRESS — S068/EV-058; Gate A PASS; Spec→Build open; FE implement done; 10-e2e COMPLETE local PASS; next commit/PR→stage then 13-deploy-smoke (awaiting user commit approval); promote held'
     prior_s057_pr_number: 963
     prior_s057_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/963
     prior_s057_merge_sha: 06a9543f
@@ -17217,6 +17418,345 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S068-gateA
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate_a
+  status: confirmed
+  topic: 'S068/EV-058 Gate A — Spec band verify-plan'
+  summary: '1 — Gate A PASS'
+  decision: |
+    D-S068-gateA=1 — Gate A PASS for F7.q #983 side-by-side vs inline XML diff.
+    Report: docs/sessions/S068-quality-metrics-diff-layout/reports/02-verify-plan.md.
+    Spec→Build opened via D-S068-spec-build=1a; Build band unlocked.
+    Lean implement via 16 Agent (no 07); next 10-e2e then 13 after FE+PR.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-spec-build
+  - D-S068-01-ac
+  tip_sha: 'c2ca9a3f'
+  tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+  tip_sha_pushed: false
+  current_stage: 16-evolve
+  report: docs/sessions/S068-quality-metrics-diff-layout/reports/02-verify-plan.md
+  note: '02-verify-plan COMPLETE; Gate A PASS; Spec→Build open'
+
+- id: D-S068-spec-build
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: spec_to_build_gate
+  status: confirmed
+  topic: 'S068/EV-058 Spec→Build gate open'
+  summary: '1a — Spec→Build open; Build band unlocked'
+  decision: |
+    D-S068-spec-build=1a — Open Spec→Build after Gate A PASS (D-S068-gateA=1).
+    Build band unlocked: Lean implement via 16 Agent (no 07); then 10-e2e; then 13 after FE+PR.
+    active_session.current_stage=16-evolve (implementing FE); 10/13 pending (unblocked).
+    No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-gateA
+  tip_sha: 'c2ca9a3f'
+  tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+  tip_sha_pushed: false
+  current_stage: 16-evolve
+  note: 'Spec→Build open; Build unlocked; Lean FE implement'
+
+- id: D-S068-01-start
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: requirements_start
+  status: confirmed
+  topic: 'S068/EV-058 01-requirements start — F7.q delta scope'
+  summary: '1a — delta F7.q #983'
+  decision: |
+    D-S068-01-start=1a — delta F7.q #983 (side-by-side vs inline XML diff layout).
+    Mark 01-requirements in_progress (not completed); writing standing doc deltas.
+    Related: D-S068-01-ac=2b; D-S068-01-control=3a; D-S068-01-uj=4a.
+    active_session.current_stage=01-requirements; 16-evolve remains in_progress (orchestrator).
+    Spec→Build gate still closed. No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-01-ac
+  - D-S068-01-control
+  - D-S068-01-uj
+  - D-S068-ev-confirm
+  tip_sha: 'c2ca9a3f'
+  tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+  tip_sha_pushed: false
+  current_stage: 01-requirements
+  note: '01-requirements in_progress; AC locked; writing standing doc deltas; not completed'
+
+- id: D-S068-01-ac
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: acceptance_criteria
+  status: confirmed
+  topic: 'S068/EV-058 AC lock for F7.q diff layout'
+  summary: '2b — AC1–AC5 with synced scroll best-effort (not blocking)'
+  decision: |
+    D-S068-01-ac=2b — AC1–AC5 with synced scroll best-effort (not blocking).
+    Synced scroll is desirable but does not block AC pass.
+  user_option: '2b'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-01-start
+  - D-S068-01-control
+  - D-S068-01-uj
+  current_stage: 01-requirements
+  note: 'AC locked; 01 not completed'
+
+- id: D-S068-01-control
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: ux_control
+  status: confirmed
+  topic: 'S068/EV-058 diff layout control pattern'
+  summary: '3a — radio/segmented Inline | Side-by-side'
+  decision: |
+    D-S068-01-control=3a — radio/segmented control for Inline | Side-by-side layout toggle.
+  user_option: '3a'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-01-start
+  - D-S068-01-ac
+  - D-S068-01-uj
+  current_stage: 01-requirements
+  note: 'control pattern locked'
+
+- id: D-S068-01-uj
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: 01-requirements
+  skill_id: 01-requirements
+  stage: 01-requirements
+  category: journeys_tests
+  status: confirmed
+  topic: 'S068/EV-058 journey + test deepen'
+  summary: '4a — deepen UJ-056 + TC-EV058-*'
+  decision: |
+    D-S068-01-uj=4a — deepen UJ-056 and add/extend TC-EV058-* coverage for both layout modes.
+  user_option: '4a'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-01-start
+  - D-S068-01-ac
+  - D-S068-01-control
+  current_stage: 01-requirements
+  note: 'UJ/TC deepen locked'
+
+- id: D-S068-ev-confirm
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: 16-evolve
+  category: evolve_confirm
+  status: confirmed
+  topic: 'S068/EV-058 evolve intake confirm (Phase 0–1)'
+  summary: '1a — confirm evolve intake; proceed Spec children'
+  decision: |
+    D-S068-ev-confirm=1a — confirm evolve intake; Phase 0–1 done; evolve-plan-card written.
+    Spec→Build gate still closed; next child 01-requirements pending startup+AC interview
+    (do not mark 01 in_progress until interview complete).
+    Artifacts: evolve-plan-card.md, session-brief.md, routing-plan.md.
+    No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-open
+  - D-S068-route
+  - D-S068-ui-preview
+  - D-S068-board
+  tip_sha: 'c2ca9a3f'
+  tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+  tip_sha_pushed: false
+  current_stage: 16-evolve
+  note: 'OPEN — Phase 0–1 done; awaiting 01 startup+AC interview'
+
+- id: D-S068-open
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: open_session
+  category: session_open
+  status: confirmed
+  topic: 'S068/EV-058 open session + cycle'
+  summary: '1 — open S068/EV-058 for F7.q #983 side-by-side vs inline XML diff'
+  decision: |
+    D-S068-open=1 — open_session S068-quality-metrics-diff-layout / EV-058.
+    overall_status=in_progress; session_counter=68; evolve_cycle_counter=58.
+    Branch evolve/EV-058-quality-metrics-diff-layout @ stage@c2ca9a3f (full c2ca9a3f106c69fb83abeae9ca583409a20f779f).
+    Lean preset; Spec-development; Spec→Build gate closed; promote held.
+    No git commit by workflow-state-manager.
+  user_option: '1'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-route
+  - D-S068-ui-preview
+  - D-S068-board
+  tip_sha: 'c2ca9a3f'
+  tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+  tip_sha_pushed: false
+  current_stage: 16-evolve
+  note: 'OPEN — active_session set; EV-058 in_progress'
+
+- id: D-S068-route
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: open_session
+  category: routing
+  status: confirmed
+  topic: 'S068/EV-058 Lean routing bands + Spec→Build gate'
+  summary: '1a/2a/3a — Lean bands; Spec→Build closed; open Spec'
+  decision: |
+    D-S068-route=1a/2a/3a — Lean as drafted: 00→16→01→02→10→13; skip 03/04/05/06/07/08/09/11/12.
+    Spec→Build gate closed; Build band (10/13) blocked_until_spec_gate until Gate A.
+    User chose Lean (not Auto-Lean); pure UI; full entry interview completed.
+  user_option: '1a/2a/3a'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-open
+  - D-S068-ui-preview
+  - D-S068-board
+  note: 'routing-plan.md approved; Lean Spec-development'
+
+- id: D-S068-ui-preview
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: open_session
+  category: ux
+  status: confirmed
+  topic: 'S068 UI preview location'
+  summary: '1 — non-deployed local http://127.0.0.1:18000/'
+  decision: |
+    D-S068-ui-preview=1 — non-deployed local preview at http://127.0.0.1:18000/.
+  user_option: '1'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-open
+  - D-S068-route
+
+- id: D-S068-board
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: open_session
+  category: board
+  status: confirmed
+  topic: 'S068 board — #983 In progress'
+  summary: '1 — #983 → In progress'
+  decision: |
+    D-S068-board=1 — move #983 to In progress (WIP 1 ≤ 2).
+  user_option: '1'
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  related_features:
+  - F7
+  related_issues:
+  - '983'
+  related_decisions:
+  - D-S068-open
+  - D-S068-route
+  note: 'board_note: #983 In progress'
 
 - id: D-S067-close
   date: '2026-08-16'
@@ -33391,6 +33931,78 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S068-quality-metrics-diff-layout/reports/e2e-report.md
+  type: report
+  stage: 10-e2e
+  skill_id: 10-e2e
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: completed
+  overall: PASS
+  note: 'S068/EV-058 10-e2e COMPLETE local PASS — Vitest 20 + Playwright UJ-056 4/4; FE layout toggle done; next commit/PR→stage then 13 (awaiting user commit approval)'
+- path: docs/sessions/S068-quality-metrics-diff-layout/reports/01-requirements.md
+  type: session-report
+  kind: requirements
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: completed
+  note: 'S068/EV-058 01 COMPLETE — D-S068-01-ac=2b; AC1–AC5 synced scroll best-effort; handoff 02-verify-plan'
+- path: docs/feature-list.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: written
+  note: 'F7.q EV-058 deepen + AC1–AC5 (#983)'
+- path: docs/user-journeys.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: written
+  note: 'UJ-056 deepen — layout toggle + persist'
+- path: docs/test-plan.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: written
+  note: 'TC-EV058-001..005; UJ-056 map'
+- path: docs/decisions/evolve-decisions.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: written
+  note: 'Cycle EV-058 scope + decisions'
+- path: docs/decisions/requirements-decisions.md
+  type: standing-doc-delta
+  stage: 01-requirements
+  skill_id: 01-requirements
+  session_id: S068-quality-metrics-diff-layout
+  evolve_cycle_id: EV-058
+  created_at: '2026-08-17'
+  updated_at: '2026-08-17'
+  status: written
+  note: 'EV-058 / D-S068-01-ac=2b section'
 - path: docs/evolve-report-EV-057.md
   type: report
   stage: 16-evolve
@@ -37248,6 +37860,118 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-058
+  title: "F7.q #983 selectable side-by-side vs inline XML diff layout"
+  topic: "F7.q #983 selectable XML diff layout"
+  goal: "F7.q #983 selectable XML diff layout"
+  status: in_progress
+  cycle_type: feature
+  session_id: S068-quality-metrics-diff-layout
+  feature_ids:
+  - F7
+  deepen_feature_ids:
+  - F7
+  feature_note: "Deepen F7.q — side-by-side vs inline XML diff layout"
+  github_issues:
+  - 983
+  issues:
+  - 983
+  branch: evolve/EV-058-quality-metrics-diff-layout
+  branch_base: stage@c2ca9a3f
+  branch_base_sha: c2ca9a3f
+  branch_base_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+  branch_status: active
+  branch_exists: true
+  branch_pushed: true
+  tip_sha: b3db3413
+  tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+  tip_sha_pushed: true
+  tip_sha_note: "OPEN — tip b3db3413 pushed; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  pr_number: 994
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
+  pr_status: open
+  pr_base: stage
+  current_stage: 16-evolve
+  current_stage_status: in_progress
+  current_stage_note: "OPEN — orchestrator; PR #994 open → stage @ b3db3413; tip pushed; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  current_child: implement
+  current_child_stage: implement
+  current_child_stage_status: completed
+  current_child_note: "FE implement done (layout toggle); Vitest 20 + UJ-056 4/4 PASS"
+  current_child_stage_note: "FE implement done (layout toggle); Vitest 20 + UJ-056 4/4 PASS"
+  started: "2026-08-17"
+  started_at: "2026-08-17"
+  preset: Lean
+  auto_lean: false
+  auto_lean_rationale: "User chose Lean (D-S068-route=1a); pure UI; full entry interview completed"
+  ui_preview: http://127.0.0.1:18000/
+  ui_preview_url: http://127.0.0.1:18000/
+  ui_preview_note: "D-S068-ui-preview=1 — non-deployed local http://127.0.0.1:18000/"
+  board_note: "#983 In review"
+  spec_to_build_gate: open
+  corpus_cites:
+  - '[Corpus: product §F7.q]'
+  - '[Corpus: journeys §UJ-056]'
+  - '[Corpus: tests §UJ-056]'
+  routing_plan:
+  - 00-context
+  - 16-evolve
+  - 01-requirements
+  - 02-verify-plan
+  - 10-e2e
+  - 13-deploy-smoke
+  skip_stages:
+  - 03-plan-tooling
+  - 04-tech-plan
+  - 05-verify-tech
+  - 06-tech-tooling
+  - 07-build
+  - 08-verify-build
+  - 09-qa
+  - 11-verify-impl
+  - 12-verify-deploy
+  routing_plan_summary: "Lean 00→16→01→02→10→13; Spec→Build open; Build unlocked"
+  scope_summary: "Selectable side-by-side vs inline (unified) XML diff on /quality/:stem; persist preference + synced scroll; ship to stage; promote held. OOS: API/backend, new npm diff package, C14N/match_status, promote, non-Quality-metrics UI. Base stage@c2ca9a3f."
+  decisions_locked: false
+  decisions:
+    D-S068-open: "1 — open S068/EV-058"
+    D-S068-route: "1a/2a/3a — Lean bands; Spec→Build closed; open Spec"
+    D-S068-ui-preview: "1 — non-deployed local http://127.0.0.1:18000/"
+    D-S068-board: "1 — #983 → In progress"
+    D-S068-ev-confirm: "1a — confirm evolve intake; proceed Spec children"
+    D-S068-01-start: "1a — delta F7.q #983"
+    D-S068-01-ac: "2b — AC1–AC5 with synced scroll best-effort (not blocking)"
+    D-S068-01-control: "3a — radio/segmented Inline | Side-by-side"
+    D-S068-01-uj: "4a — deepen UJ-056 + TC-EV058-*"
+    D-S068-gateA: "1 — Gate A PASS"
+    D-S068-spec-build: "1a — Spec→Build open; Build band unlocked"
+  artifacts:
+  - docs/sessions/S068-quality-metrics-diff-layout/
+  - docs/sessions/S068-quality-metrics-diff-layout/evolve-plan-card.md
+  - docs/sessions/S068-quality-metrics-diff-layout/session-brief.md
+  - docs/sessions/S068-quality-metrics-diff-layout/routing-plan.md
+  - docs/sessions/S068-quality-metrics-diff-layout/reports/01-requirements.md
+  - docs/sessions/S068-quality-metrics-diff-layout/reports/02-verify-plan.md
+  - docs/sessions/S068-quality-metrics-diff-layout/reports/e2e-report.md
+  - docs/feature-list.md
+  - docs/user-journeys.md
+  - docs/test-plan.md
+  - docs/decisions/evolve-decisions.md
+  - docs/decisions/requirements-decisions.md
+  prior_session: S067-m0-ready-apex-accumulate-validate
+  prior_evolve_note: "Follow-on deepen after S066/EV-056 detail page + collapsible diffs; S067 closed on stage"
+  gates:
+    spec_to_build: open
+    spec_to_build_note: "D-S068-spec-build=1a — Spec→Build open; PR #994 @ b3db3413; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
+  notes:
+  - "2026-08-17 commit+push+PR — tip b3db3413; PR #994 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994); #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; no git commit by workflow-state-manager"
+  - "2026-08-17 10-e2e COMPLETE — local PASS; report reports/e2e-report.md; Vitest 20 + Playwright UJ-056 4/4; FE implement done (layout toggle); Spec→Build open; next commit/PR→stage then 13 (awaiting user commit approval); no git commit by workflow-state-manager"
+  - "2026-08-17 Gate A PASS — D-S068-gateA=1 / D-S068-spec-build=1a; report reports/02-verify-plan.md; Spec→Build open; Build band unlocked; Lean implement via 16 Agent (no 07); current_child implement (FE); next 10-e2e then 13 after FE+PR; no git commit by workflow-state-manager"
+  - "2026-08-17 01 COMPLETE — D-S068-01-ac=2b; report reports/01-requirements.md; standing deltas feature-list/user-journeys/test-plan/evolve-decisions/requirements-decisions; handoff 02-verify-plan; Spec→Build still closed; no git commit by workflow-state-manager"
+  - "2026-08-17 D-S068-01-start=1a / ac=2b / control=3a / uj=4a — 01-requirements in_progress (not completed); writing standing doc deltas; no git commit by workflow-state-manager"
+  - "2026-08-17 D-S068-ev-confirm=1a — Phase 0–1 done; evolve-plan-card written; Spec→Build still closed; awaiting 01 startup+AC interview (01 not in_progress); no git commit by workflow-state-manager"
+  - "2026-08-17 D-S068-open — open_session S068/EV-058; Lean; Spec-development; Spec→Build closed; #983 In progress; no git commit by workflow-state-manager"
+  note: "OPEN — EV-058/S068 in_progress; F7.q #983; PR #994 open → stage @ b3db3413; tip pushed; board #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056]"
 - id: EV-057
   title: "M0 Ready: #948 apex redirect + #903 accumulate ZIP + #838 validate existing IWXXM"
   status: completed
@@ -49096,30 +49820,30 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
+  current_branch: evolve/EV-058-quality-metrics-diff-layout
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'dirty expected — workflow-state.yaml after D-S067-12-scope/risks/merge=1a; checklist APPROVED; merging #991 → stage; 12 in_progress until merge+Staging CD; no git commit by workflow-state-manager'
-  tip_sha: "d05c23b7"
-  tip_sha_full: d05c23b73dcceccfed2171c99896142937aa3f0f
-  tip_note: "S067/EV-057 tip d05c23b7 pushed on evolve/EV-057-m0-ready-apex-accumulate-validate — 12-verify-deploy in_progress; checklist APPROVED; merging #991 → stage; tip CI green 31965556483; promote held"
+  dirty_note: 'dirty expected — workflow-state.yaml after S068 commit+push+PR #994 record; no git commit by workflow-state-manager'
+  tip_sha: "b3db3413"
+  tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+  tip_note: "OPEN S068/EV-058 — tip b3db3413 pushed on evolve/EV-058-quality-metrics-diff-layout; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13; promote held"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
   docs_tip_pr_number: 986
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
-  evolve_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  evolve_tip_sha: "d05c23b7"
-  evolve_tip_sha_full: d05c23b73dcceccfed2171c99896142937aa3f0f
+  evolve_branch: evolve/EV-058-quality-metrics-diff-layout
+  evolve_tip_sha: "b3db3413"
+  evolve_tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
   evolve_tip_sha_pushed: true
   stage_merge_sha: d80db688
   stage_merge_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
-  stage_tip_sha: b796882e
-  stage_tip_sha_full: b796882e724d9d2dfb02199ab1e288931005ee00
+  stage_tip_sha: c2ca9a3f
+  stage_tip_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
   stash:
   - name: S039-EV031-WIP
     note: 'OPEN S067-m0-ready-apex-accumulate-validate/EV-057 — Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e; #948+#903+#838; no git commit by workflow-state-manager'
@@ -49130,10 +49854,11 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-057-m0-ready-apex-accumulate-validate
-  note: 'S067/EV-057 IN PROGRESS — tip d05c23b7 pushed on evolve/EV-057-m0-ready-apex-accumulate-validate; PR #991 open → stage; tip CI green 31965556483; 12-verify-deploy in_progress checklist sign-off pending; dirty workflow-state; no git commit by workflow-state-manager'
+  recommended_branch: evolve/EV-058-quality-metrics-diff-layout
+  note: 'S068/EV-058 IN PROGRESS — tip b3db3413 pushed on evolve/EV-058-quality-metrics-diff-layout; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; dirty workflow-state; no git commit by workflow-state-manager'
 
   notes:
+  - '2026-08-17 commit+push+PR — tip b3db3413 on evolve/EV-058-quality-metrics-diff-layout; PR #994 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994); #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held; no git commit by workflow-state-manager'
   - '2026-08-16 tip CI SUCCESS 31965556483 @ d05c23b7 on PR #991 → stage; prior a730d7a3 run 31964710714 failed (coverage) fixed by tip; 12-verify-deploy remains in_progress awaiting checklist sign-off; promote held; no git commit by workflow-state-manager'
   - '2026-08-16 PR #991 open → stage @ a730d7a3 pushed; watching CI 31964710714; 12-verify-deploy remains in_progress (promote held); current_stage_note 12-verify-deploy PR #991 → stage; watching CI 31964710714; 0e7833d1 now pushed; no git commit by workflow-state-manager'
   - '2026-08-16 D-S067-11-preview=2a D-S067-11-ac=1a — 11-verify-impl COMPLETE PASS; report verify-impl.md; UI preview declined (reports/tests only); AC approved #948/#903/#838; current_stage 12-verify-deploy in_progress started 2026-08-16; current_stage_note 12-verify-deploy PR → stage (promote held); tip ffdd1961; tip not pushed; no git commit by workflow-state-manager'
@@ -49714,6 +50439,26 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-058-quality-metrics-diff-layout
+    base: stage@c2ca9a3f
+    base_sha: c2ca9a3f
+    base_sha_full: c2ca9a3f106c69fb83abeae9ca583409a20f779f
+    purpose: "S068/EV-058 F7.q #983 — selectable side-by-side vs inline XML diff layout"
+    status: active
+    created: "2026-08-17"
+    exists: true
+    pushed: true
+    session_id: S068-quality-metrics-diff-layout
+    evolve_cycle_id: EV-058
+    tip_sha: b3db3413
+    tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+    tip_sha_pushed: true
+    note: "OPEN — tip b3db3413 pushed; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13; promote held"
+    pr_number: 994
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
+    pr_status: open
+    pr_base: stage
+
   - name: evolve/EV-057-m0-ready-apex-accumulate-validate
     base: stage@b796882e
     base_sha: b796882e
@@ -51220,6 +51965,42 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "b3db3413"
+    sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+    message: "[EV-058] feat: side-by-side vs inline XML diff on Quality metrics detail"
+    branch: evolve/EV-058-quality-metrics-diff-layout
+    stage: 16-evolve
+    session_id: S068-quality-metrics-diff-layout
+    evolve_cycle_id: EV-058
+    timestamp: "2026-08-17"
+    pushed: true
+    tip_sha: b3db3413
+    tip_sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
+    tip_sha_pushed: true
+    pr_number: 994
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
+    pr_status: open
+    pr_base: stage
+    files_changed:
+      - README.md
+      - apps/e2e/uj056-quality-metrics.e2e.spec.ts
+      - apps/frontend/src/app/components/QualityMetricsDetail.test.tsx
+      - apps/frontend/src/app/components/QualityMetricsDetail.tsx
+      - apps/frontend/src/utils/qualityMetricsDiffLayout.test.ts
+      - apps/frontend/src/utils/qualityMetricsDiffLayout.ts
+      - docs/decisions/evolve-decisions.md
+      - docs/decisions/requirements-decisions.md
+      - docs/feature-list.md
+      - docs/sessions/S068-quality-metrics-diff-layout/evolve-plan-card.md
+      - docs/sessions/S068-quality-metrics-diff-layout/reports/01-requirements.md
+      - docs/sessions/S068-quality-metrics-diff-layout/reports/02-verify-plan.md
+      - docs/sessions/S068-quality-metrics-diff-layout/reports/e2e-report.md
+      - docs/sessions/S068-quality-metrics-diff-layout/routing-plan.md
+      - docs/sessions/S068-quality-metrics-diff-layout/session-brief.md
+      - docs/test-plan.md
+      - docs/user-journeys.md
+      - workflow-state.yaml
+    note: "feat commit pushed; PR #994 open → stage; #983 In review; awaiting tip CI then merge→stage then 13-deploy-smoke; promote held"
   - sha: "3af364fb"
     sha_full: 3af364fbc6caeb4dd1eb56a1f214ae8938a9d878
     message: "[S067] fix: TacEditor aria-label sync for UJ-058 (follow-up #992)"

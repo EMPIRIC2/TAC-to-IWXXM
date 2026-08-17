@@ -2,7 +2,7 @@
  * TC-EV055-001 / AC6 — C14N panes, raw override, validate disposition chips.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -307,5 +307,88 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent(
       '[object Object]',
     );
+  });
+});
+
+describe('QualityMetricsDetail diff layout (TC-EV058)', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    window.localStorage.clear();
+  });
+
+  it('defaults to unified and switches to side-by-side without reload', async () => {
+    const user = userEvent.setup();
+    render(<QualityMetricsDetail detail={SEMANTIC_DIFF} />);
+
+    expect(screen.getByTestId('quality-metrics-diff-layout-unified')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    expect(screen.getByTestId('quality-metrics-diff-body')).toBeInTheDocument();
+
+    await user.click(screen.getByTestId('quality-metrics-diff-layout-side-by-side'));
+
+    expect(
+      screen.getByTestId('quality-metrics-diff-layout-side-by-side'),
+    ).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByTestId('quality-metrics-diff-side-by-side')).toBeInTheDocument();
+    expect(screen.getByTestId('quality-metrics-diff-side-left')).toHaveTextContent(
+      '<v>1</v>',
+    );
+    expect(screen.getByTestId('quality-metrics-diff-side-right')).toHaveTextContent(
+      '<v>2</v>',
+    );
+    expect(screen.queryByTestId('quality-metrics-diff-body')).not.toBeInTheDocument();
+  });
+
+  it('persists layout preference in localStorage across remount', async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<QualityMetricsDetail detail={SEMANTIC_DIFF} />);
+    await user.click(screen.getByTestId('quality-metrics-diff-layout-side-by-side'));
+    unmount();
+
+    render(<QualityMetricsDetail detail={SEMANTIC_DIFF} />);
+    expect(
+      screen.getByTestId('quality-metrics-diff-layout-side-by-side'),
+    ).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByTestId('quality-metrics-diff-side-by-side')).toBeInTheDocument();
+  });
+
+  it('renders unpaired add/remove rows and best-effort syncs side-by-side scroll', async () => {
+    const user = userEvent.setup();
+    const detail: QualityMetricsDetailResponse = {
+      ...FORMATTING_ONLY,
+      stem: 'metar-unpaired',
+      match_status: 'unequal',
+      official_xml: '<root xmlns="urn:x"><a/><b/></root>',
+      converted_xml: '<root xmlns="urn:x"><a/><c/><d/></root>',
+    };
+    render(<QualityMetricsDetail detail={detail} />);
+    await user.click(screen.getByTestId('quality-metrics-diff-layout-side-by-side'));
+
+    const left = screen.getByTestId('quality-metrics-diff-side-left');
+    const right = screen.getByTestId('quality-metrics-diff-side-right');
+    expect(left.querySelectorAll('[data-op="empty"]').length).toBeGreaterThan(0);
+    expect(right.querySelectorAll('[data-op="add"]').length).toBeGreaterThan(0);
+    expect(left.querySelectorAll('[data-op="remove"]').length).toBeGreaterThan(0);
+
+    // Best-effort sync — fire both scroll handlers without asserting DOM scrollTop
+    // (jsdom scroll assignment is unreliable).
+    left.dispatchEvent(new Event('scroll'));
+    right.dispatchEvent(new Event('scroll'));
+  });
+
+  it('switches back to unified layout from side-by-side', async () => {
+    const user = userEvent.setup();
+    render(<QualityMetricsDetail detail={SEMANTIC_DIFF} />);
+    await user.click(screen.getByTestId('quality-metrics-diff-layout-side-by-side'));
+    await user.click(screen.getByTestId('quality-metrics-diff-layout-unified'));
+    expect(screen.getByTestId('quality-metrics-diff-body')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('quality-metrics-diff-side-by-side'),
+    ).not.toBeInTheDocument();
   });
 });

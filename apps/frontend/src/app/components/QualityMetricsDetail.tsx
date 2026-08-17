@@ -1,17 +1,25 @@
 /**
- * Per-stem Quality metrics detail — TAC/XML panes, diagnostics, unified diff.
+ * Per-stem Quality metrics detail — TAC/XML panes, diagnostics, XML diff.
  *
  * F7.q / EV-054 M4 + EV-055 M4 (AC1/AC6 — C14N panes + validate chips) +
- * EV-056 collapsible equal-context hunks (`D-S066-context-n=1`).
+ * EV-056 collapsible equal-context hunks (`D-S066-context-n=1`) +
+ * EV-058 selectable Inline vs Side-by-side (`D-S068-01-control=3a`).
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type Ref } from 'react';
 import type { QualityMetricsDetailResponse } from '@/utils/openapiTypes';
 import {
   collapseEqualContext,
   DEFAULT_DIFF_CONTEXT,
   type CollapsedDiffSegment,
 } from '@/utils/collapseEqualContext';
+import {
+  readDiffLayoutPreference,
+  sideBySideFromUnified,
+  writeDiffLayoutPreference,
+  type QualityMetricsDiffLayout,
+  type SideBySideDiffRow,
+} from '@/utils/qualityMetricsDiffLayout';
 import { qualityMetricsDisplayXml } from '@/utils/qualityMetricsDisplayXml';
 import {
   isUnifiedDiffEmpty,
@@ -35,6 +43,10 @@ export const QUALITY_METRICS_DIFF_EXPAND_ALL = 'Show all unchanged lines';
 export const QUALITY_METRICS_DIFF_COLLAPSE_ALL = 'Hide distant unchanged lines';
 export const QUALITY_METRICS_BACK_TO_LIST = 'Back to list';
 export const QUALITY_METRICS_DIFF_HEADING = 'Line-by-line XML differences';
+export const QUALITY_METRICS_DIFF_LAYOUT_INLINE = 'Inline (unified)';
+export const QUALITY_METRICS_DIFF_LAYOUT_SIDE_BY_SIDE = 'Side-by-side';
+export const QUALITY_METRICS_DIFF_LAYOUT_LEGEND =
+  'Choose how to compare official vs converted XML. The default is a single inline (unified) diff.';
 export const QUALITY_METRICS_RESIDUALS_HELP =
   'TAC tokens left over after conversion (should usually be empty).';
 export const QUALITY_METRICS_LINT_HELP =
@@ -52,7 +64,7 @@ interface QualityMetricsDetailProps {
 }
 
 /**
- * Render inspectable TAC/XML panes, match status, diagnostics, and unified diff.
+ * Render inspectable TAC/XML panes, match status, diagnostics, and XML diff.
  *
  * @param props.detail - Stem detail response
  * @param props.onClose - Optional close handler
@@ -68,6 +80,16 @@ export function QualityMetricsDetail({
   const [expandedCollapseKeys, setExpandedCollapseKeys] = useState<Set<string>>(
     () => new Set(),
   );
+  const [diffLayout, setDiffLayout] = useState<QualityMetricsDiffLayout>(() =>
+    readDiffLayoutPreference(),
+  );
+  const sideBySideLeftRef = useRef<HTMLPreElement | null>(null);
+  const sideBySideRightRef = useRef<HTMLPreElement | null>(null);
+  const syncingScroll = useRef(false);
+
+  useEffect(() => {
+    writeDiffLayoutPreference(diffLayout);
+  }, [diffLayout]);
 
   const officialC14n = useMemo(
     () => qualityMetricsDisplayXml(detail.official_xml ?? ''),
@@ -92,6 +114,8 @@ export function QualityMetricsDetail({
     [diffLines],
   );
 
+  const sideBySideRows = useMemo(() => sideBySideFromUnified(diffLines), [diffLines]);
+
   const dispositionChips = useMemo(
     () => validateDispositionChips(detail.validate_issues ?? []),
     [detail.validate_issues],
@@ -111,6 +135,26 @@ export function QualityMetricsDetail({
         next.add(key);
       }
       return next;
+    });
+  };
+
+  /** Best-effort synced scroll between side-by-side panes (`D-S068-01-ac=2b`). */
+  const onSideBySideScroll = (source: 'left' | 'right') => {
+    if (syncingScroll.current) {
+      return;
+    }
+    const from =
+      source === 'left' ? sideBySideLeftRef.current : sideBySideRightRef.current;
+    const to =
+      source === 'left' ? sideBySideRightRef.current : sideBySideLeftRef.current;
+    if (!from || !to) {
+      return;
+    }
+    syncingScroll.current = true;
+    to.scrollTop = from.scrollTop;
+    to.scrollLeft = from.scrollLeft;
+    requestAnimationFrame(() => {
+      syncingScroll.current = false;
     });
   };
 
@@ -224,24 +268,64 @@ export function QualityMetricsDetail({
           <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
             {QUALITY_METRICS_DIFF_HEADING}
           </h3>
-          {!diffEmpty && hasCollapseSegments ? (
-            <button
-              type="button"
-              className="rounded-md border border-gray-300 px-2 py-1 text-xs dark:border-gray-600"
-              data-testid="quality-metrics-diff-expand-all"
-              onClick={() => {
-                setExpandAll((prev) => !prev);
-                if (expandAll) {
-                  setExpandedCollapseKeys(new Set());
-                }
-              }}
+          <div className="flex flex-wrap items-center gap-2">
+            <div
+              className="inline-flex rounded-md border border-gray-300 dark:border-gray-600"
+              role="radiogroup"
+              aria-label="XML diff layout"
+              data-testid="quality-metrics-diff-layout"
             >
-              {expandAll
-                ? QUALITY_METRICS_DIFF_COLLAPSE_ALL
-                : QUALITY_METRICS_DIFF_EXPAND_ALL}
-            </button>
-          ) : null}
+              <button
+                type="button"
+                role="radio"
+                aria-checked={diffLayout === 'unified'}
+                className={
+                  diffLayout === 'unified'
+                    ? 'bg-gray-800 px-2 py-1 text-xs text-white dark:bg-gray-200 dark:text-gray-900'
+                    : 'px-2 py-1 text-xs text-gray-700 dark:text-gray-300'
+                }
+                data-testid="quality-metrics-diff-layout-unified"
+                onClick={() => setDiffLayout('unified')}
+              >
+                {QUALITY_METRICS_DIFF_LAYOUT_INLINE}
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={diffLayout === 'side-by-side'}
+                className={
+                  diffLayout === 'side-by-side'
+                    ? 'bg-gray-800 px-2 py-1 text-xs text-white dark:bg-gray-200 dark:text-gray-900'
+                    : 'px-2 py-1 text-xs text-gray-700 dark:text-gray-300'
+                }
+                data-testid="quality-metrics-diff-layout-side-by-side"
+                onClick={() => setDiffLayout('side-by-side')}
+              >
+                {QUALITY_METRICS_DIFF_LAYOUT_SIDE_BY_SIDE}
+              </button>
+            </div>
+            {diffLayout === 'unified' && !diffEmpty && hasCollapseSegments ? (
+              <button
+                type="button"
+                className="rounded-md border border-gray-300 px-2 py-1 text-xs dark:border-gray-600"
+                data-testid="quality-metrics-diff-expand-all"
+                onClick={() => {
+                  setExpandAll((prev) => !prev);
+                  if (expandAll) {
+                    setExpandedCollapseKeys(new Set());
+                  }
+                }}
+              >
+                {expandAll
+                  ? QUALITY_METRICS_DIFF_COLLAPSE_ALL
+                  : QUALITY_METRICS_DIFF_EXPAND_ALL}
+              </button>
+            ) : null}
+          </div>
         </div>
+        <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+          {QUALITY_METRICS_DIFF_LAYOUT_LEGEND}
+        </p>
         {diffEmpty ? (
           <p
             className="text-sm text-gray-500 dark:text-gray-400"
@@ -249,6 +333,14 @@ export function QualityMetricsDetail({
           >
             {QUALITY_METRICS_DIFF_EMPTY_LABEL}
           </p>
+        ) : diffLayout === 'side-by-side' ? (
+          <SideBySideDiff
+            rows={sideBySideRows}
+            leftRef={sideBySideLeftRef}
+            rightRef={sideBySideRightRef}
+            onScrollLeft={() => onSideBySideScroll('left')}
+            onScrollRight={() => onSideBySideScroll('right')}
+          />
         ) : (
           <pre
             className="max-h-96 overflow-auto rounded border border-gray-200 bg-gray-950 p-3 font-mono text-xs text-gray-100 dark:border-gray-700"
@@ -390,6 +482,97 @@ function DiffLineRow({ line }: { line: UnifiedDiffLine }) {
     <div className={`${color} whitespace-pre-wrap break-all`}>
       {prefix}
       {line.text}
+    </div>
+  );
+}
+
+function SideBySideDiff({
+  rows,
+  leftRef,
+  rightRef,
+  onScrollLeft,
+  onScrollRight,
+}: {
+  rows: SideBySideDiffRow[];
+  leftRef: Ref<HTMLPreElement>;
+  rightRef: Ref<HTMLPreElement>;
+  onScrollLeft: () => void;
+  onScrollRight: () => void;
+}) {
+  return (
+    <div
+      className="grid max-h-96 grid-cols-2 gap-2"
+      data-testid="quality-metrics-diff-side-by-side"
+    >
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          Official
+        </p>
+        <pre
+          ref={leftRef}
+          className="max-h-80 overflow-auto rounded border border-gray-200 bg-gray-950 p-3 font-mono text-xs text-gray-100 dark:border-gray-700"
+          data-testid="quality-metrics-diff-side-left"
+          onScroll={onScrollLeft}
+        >
+          {rows.map((row, index) => (
+            <SideBySideCell
+              key={`L-${index}`}
+              text={row.left}
+              op={row.leftOp}
+              side="left"
+            />
+          ))}
+        </pre>
+      </div>
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          Converted
+        </p>
+        <pre
+          ref={rightRef}
+          className="max-h-80 overflow-auto rounded border border-gray-200 bg-gray-950 p-3 font-mono text-xs text-gray-100 dark:border-gray-700"
+          data-testid="quality-metrics-diff-side-right"
+          onScroll={onScrollRight}
+        >
+          {rows.map((row, index) => (
+            <SideBySideCell
+              key={`R-${index}`}
+              text={row.right}
+              op={row.rightOp}
+              side="right"
+            />
+          ))}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+function SideBySideCell({
+  text,
+  op,
+  side,
+}: {
+  text: string | null;
+  op: SideBySideDiffRow['leftOp'] | SideBySideDiffRow['rightOp'];
+  side: 'left' | 'right';
+}) {
+  const color =
+    op === 'add'
+      ? 'text-green-400'
+      : op === 'remove'
+        ? 'text-red-400'
+        : op === 'empty'
+          ? 'text-gray-600'
+          : 'text-gray-300';
+  const display = text === null ? ' ' : text;
+  return (
+    <div
+      className={`${color} whitespace-pre-wrap break-all`}
+      data-op={op}
+      data-side={side}
+    >
+      {display}
     </div>
   );
 }

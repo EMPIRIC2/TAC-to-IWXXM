@@ -72,7 +72,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
-| UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979; EV-056 / #988) | T0 / T2 / **T3** / H4–H5 |
+| UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979; EV-056 / #988; EV-058 / #983) | T0 / T2 / **T3** / H4–H5 |
 | UJ-057 | Accumulate conversions → Download all ZIP | apps/frontend | F7.r deepen (EV-057 / #903) | T0 / T2 / **T3** / H4–H5 |
 | UJ-058 | Validate existing IWXXM (paste / upload; no TAC) | apps/frontend | F7.s deepen (EV-057 / #838) | T0 / T2 / **T3** / H4–H5 |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
@@ -840,19 +840,27 @@ residuals, lint, validate, with a unified XML diff vs our conversion.
    **GitHub-style** unified diff with collapsible equal-context hunks (default **3**
    context lines; expand hunk / expand all — `D-S066-context-n=1`). C14N /
    `match_status` semantics unchanged from EV-055.
-5. In the detail view: confirm **match status** and unified XML diff; residuals / lint /
-   validate panels show empty or expected diagnostics. **EV-055**: panes default to
-   C14N-normalized with override to un-normalized; validate chips reflect enabled /
-   fixed 2025-2 disposition without internal planning ids.
-6. Confirm a deferred / gap stem is labeled (not silently missing).
-7. Optional later: deep-link the same stem into the convert workbench.
+5. **EV-058 / #983**: on the detail page, use a **segmented control** —
+   **Inline (unified)** | **Side-by-side** — to switch XML diff layout without reload
+   (`D-S068-01-control=3a`). Default is **Inline**. Side-by-side reuses existing
+   line-diff helpers (no new npm `diff`). Preference persists in **localStorage**.
+   Synced scroll between panes is **best-effort** (`D-S068-01-ac=2b`). Raw TAC /
+   diagnostics / collapse-equal-context remain available.
+6. In the detail view: confirm **match status** and the active XML diff layout;
+   residuals / lint / validate panels show empty or expected diagnostics. **EV-055**:
+   panes default to C14N-normalized with override to un-normalized; validate chips
+   reflect enabled / fixed 2025-2 disposition without internal planning ids.
+7. Confirm a deferred / gap stem is labeled (not silently missing).
+8. Optional later: deep-link the same stem into the convert workbench.
 
 **Acceptance**: AC1–AC7 in evolve-decisions §EV-054 (tab shell) **and** AC1–AC7 in
 evolve-decisions §EV-055 (normalize + validate disposition) **and** AC1–AC5 in
-evolve-decisions §EV-056 (detail route + collapsible diffs); TC-EV054-001..008 +
-TC-EV055-001..007 + TC-EV056-001..005. Default view needs no Supabase and no live
-upstream WMO fetch — metrics come from public `GET /api/v1/quality-metrics*` backed by
-precomputed fixtures (`D-S063-gateA=2`; regen under `D-S064-regen=1`).
+evolve-decisions §EV-056 (detail route + collapsible diffs) **and** AC1–AC5 in
+evolve-decisions §EV-058 (side-by-side vs inline); TC-EV054-001..008 +
+TC-EV055-001..007 + TC-EV056-001..005 + TC-EV058-001..005. Default view needs no
+Supabase and no live upstream WMO fetch — metrics come from public
+`GET /api/v1/quality-metrics*` backed by precomputed fixtures (`D-S063-gateA=2`;
+regen under `D-S064-regen=1`).
 **Tier: T0 / T2 / T3 / H4–H5**.
 Related: UJ-032 / UJ-039 / UJ-042.
 [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: product §F25]

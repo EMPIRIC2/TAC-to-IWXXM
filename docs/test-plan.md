@@ -110,7 +110,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005 |
 | UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..007 |
 | UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -2171,6 +2171,52 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   collapsible unified diff; C14N/`match_status` unchanged
 - **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
 - **Source**: EV-056 AC5; UJ-056
+
+### EV-058 / S068 — Quality metrics side-by-side vs inline XML diff (#983 / F7.q)
+
+- **Mode**: delta deepen F7.q (FE-only UX/docs/tests; C14N semantics unchanged)
+- **Pass criteria**: AC1–AC5 in evolve-decisions §EV-058; TC-EV058-001..005; **UJ-056** deepen
+- **Source**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983); predecessor
+  EV-056 / #988; parent EV-054 / #836
+
+### TC-EV058-001: Layout segmented control on `/quality/:stem`
+
+- **Level**: T0 / T2
+- **Objective**: Detail page exposes Inline (unified) | Side-by-side control; switch
+  without reload (`D-S068-01-control=3a`)
+- **Pass criteria**: Vitest and/or Playwright assert control + both layouts render
+- **Source**: EV-058 AC1; UJ-056
+
+### TC-EV058-002: Default remains unified
+
+- **Level**: T0 / T2
+- **Objective**: First visit (no stored preference) shows unified/inline layout
+- **Pass criteria**: Default view matches prior UJ-056 unified assertions
+- **Source**: EV-058 AC2; UJ-056
+
+### TC-EV058-003: Side-by-side uses existing line-diff helpers
+
+- **Level**: T0 / T2
+- **Objective**: Side-by-side highlights changed lines via `unifiedLineDiff` (or sibling
+  helpers); no new npm `diff` package
+- **Pass criteria**: FE unit asserts side-by-side changed-line markers; package.json
+  unchanged for diff libs
+- **Source**: EV-058 AC3; UJ-056
+
+### TC-EV058-004: Preference persists in localStorage
+
+- **Level**: T0 / T2
+- **Objective**: Selected layout survives reload via localStorage
+- **Pass criteria**: Vitest and/or Playwright set side-by-side → reload → still side-by-side
+- **Source**: EV-058 AC4; UJ-056
+
+### TC-EV058-005: UJ-056 smoke — both layout modes
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Open `/quality/:stem` → toggle Inline ↔ Side-by-side; TAC/diagnostics/
+  collapse remain; C14N/`match_status` unchanged. Synced scroll best-effort only.
+- **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
+- **Source**: EV-058 AC5; UJ-056; `D-S068-01-ac=2b`
 
 ### EV-057 / S067 — M0 Ready: apex redirect + accumulate ZIP + validate-only (#948 / #903 / #838)
 

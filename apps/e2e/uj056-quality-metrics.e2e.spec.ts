@@ -149,4 +149,35 @@ test.describe('UJ-056 Quality metrics tab (TC-EV054-007 / TC-EV055-007 / TC-EV05
     );
     await expect(page.getByTestId('quality-metrics-detail-close')).toBeVisible();
   });
+
+  test('TC-EV058-005: switch Inline ↔ Side-by-side and persist preference', async ({
+    page,
+  }) => {
+    await page.goto(`/quality/${PASSER_STEM}`);
+    await dismissPrivacyNoticeIfPresent(page);
+
+    await expect(page.getByTestId('quality-metrics-detail')).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.getByTestId('quality-metrics-diff-layout')).toBeVisible();
+    await expect(
+      page.getByTestId('quality-metrics-diff-layout-unified'),
+    ).toHaveAttribute('aria-checked', 'true');
+
+    await page.getByTestId('quality-metrics-diff-layout-side-by-side').click();
+    await expect(
+      page.getByTestId('quality-metrics-diff-layout-side-by-side'),
+    ).toHaveAttribute('aria-checked', 'true');
+    // Equal passer still shows empty diff in both layouts.
+    await expect(page.getByTestId('quality-metrics-diff-empty')).toBeVisible();
+
+    await page.reload();
+    await dismissPrivacyNoticeIfPresent(page);
+    await expect(page.getByTestId('quality-metrics-detail')).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(
+      page.getByTestId('quality-metrics-diff-layout-side-by-side'),
+    ).toHaveAttribute('aria-checked', 'true');
+  });
 });
