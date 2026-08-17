@@ -29,28 +29,52 @@ on:
           - shared-js
 
 jobs:
+  select-matrix:
+    runs-on: ubuntu-latest
+    name: Select mutation matrix
+    outputs:
+      python: ${{ steps.select.outputs.python }}
+      js: ${{ steps.select.outputs.js }}
+    steps:
+      - id: select
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TARGET: ${{ github.event.inputs.target || 'all' }}
+        run: |
+          set -euo pipefail
+          all_py='["poc-shared-env","backend","worker","auth","shared","tac-validate","tac2iwxxm","iwxxm-validate","dissemination"]'
+          all_js='["frontend","shared"]'
+          if [[ "${EVENT_NAME}" == "schedule" || "${TARGET}" == "all" ]]; then
+            echo "python=${all_py}" >> "$GITHUB_OUTPUT"
+            echo "js=${all_js}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          case "${TARGET}" in
+            frontend)
+              echo "python=[]" >> "$GITHUB_OUTPUT"
+              echo 'js=["frontend"]' >> "$GITHUB_OUTPUT"
+              ;;
+            shared-js)
+              echo "python=[]" >> "$GITHUB_OUTPUT"
+              echo 'js=["shared"]' >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "python=[\"${TARGET}\"]" >> "$GITHUB_OUTPUT"
+              echo "js=[]" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
   python-mutation:
     name: gremlins (${{ matrix.target }})
     runs-on: ubuntu-latest
+    needs: select-matrix
+    if: needs.select-matrix.outputs.python != '[]'
     # Hard ceiling per chunk (TC-F34-005); soft timeout inside script is MUTATION_TIMEOUT_SEC.
     timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        target:
-          - poc-shared-env
-          - backend
-          - worker
-          - auth
-          - shared
-          - tac-validate
-          - tac2iwxxm
-          - iwxxm-validate
-          - dissemination
-    if: >
-      github.event_name == 'schedule' ||
-      github.event.inputs.target == 'all' ||
-      github.event.inputs.target == matrix.target
+        target: ${{ fromJSON(needs.select-matrix.outputs.python) }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -84,16 +108,13 @@ jobs:
   js-mutation:
     name: stryker (${{ matrix.target }})
     runs-on: ubuntu-latest
+    needs: select-matrix
+    if: needs.select-matrix.outputs.js != '[]'
     timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
-        target: [frontend, shared]
-    if: >
-      github.event_name == 'schedule' ||
-      github.event.inputs.target == 'all' ||
-      (github.event.inputs.target == 'frontend' && matrix.target == 'frontend') ||
-      (github.event.inputs.target == 'shared-js' && matrix.target == 'shared')
+        target: ${{ fromJSON(needs.select-matrix.outputs.js) }}
     steps:
       - uses: actions/checkout@v5
         with:
