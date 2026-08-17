@@ -1,6 +1,25 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-15 (S067 / EV-057)
+> Stage: 01-requirements | Last updated: 2026-08-17 (S068 / EV-058)
+
+## EV-058 / S068 — Quality metrics side-by-side vs inline XML diff (#983) (`D-S068-01-ac=2b`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-058 / Fn | Deepen **F7.q** only | No new top-level Fn | confirmed |
+| EV-058 / journey | Deepen **UJ-056** | + TC-EV058-001..005 (`D-S068-01-uj=4a`) | confirmed |
+| EV-058 / control | Segmented Inline \| Side-by-side | `D-S068-01-control=3a` | confirmed |
+| EV-058 / default | Unified / inline | UJ-056 compatible | confirmed |
+| EV-058 / persist | localStorage | Preference across visits | confirmed |
+| EV-058 / sync scroll | Best-effort | Not blocking AC (`D-S068-01-ac=2b`) | confirmed |
+| EV-058 / deps | Reuse line-diff helpers | No new npm `diff` | confirmed |
+| EV-058 / C14N | Unchanged | No `match_status` / fixture regen | confirmed |
+| EV-058 / AC | AC1–AC5 | See feature-list §F7.q EV-058 | confirmed |
+| EV-058 / docs | Delta manifest | feature-list + journeys + test-plan + decisions; skip api/deploy | confirmed |
+| EV-058 / UI preview | Local :18000 | `D-S068-ui-preview=1` | confirmed |
+| EV-058 / route | Lean | PR → stage; promote held | confirmed |
+
+[Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests] [Corpus: decisions §EV-058]
 
 ## EV-057 / S067 — M0 Ready: #948 / #903 / #838 (`D-S067-01-ac=1`)
 

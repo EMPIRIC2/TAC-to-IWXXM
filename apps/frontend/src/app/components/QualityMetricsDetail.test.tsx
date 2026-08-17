@@ -2,7 +2,7 @@
  * TC-EV055-001 / AC6 — C14N panes, raw override, validate disposition chips.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
@@ -307,5 +307,53 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent(
       '[object Object]',
     );
+  });
+});
+
+describe('QualityMetricsDetail diff layout (TC-EV058)', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    window.localStorage.clear();
+  });
+
+  it('defaults to unified and switches to side-by-side without reload', async () => {
+    const user = userEvent.setup();
+    render(<QualityMetricsDetail detail={SEMANTIC_DIFF} />);
+
+    expect(screen.getByTestId('quality-metrics-diff-layout-unified')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    expect(screen.getByTestId('quality-metrics-diff-body')).toBeInTheDocument();
+
+    await user.click(screen.getByTestId('quality-metrics-diff-layout-side-by-side'));
+
+    expect(
+      screen.getByTestId('quality-metrics-diff-layout-side-by-side'),
+    ).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByTestId('quality-metrics-diff-side-by-side')).toBeInTheDocument();
+    expect(screen.getByTestId('quality-metrics-diff-side-left')).toHaveTextContent(
+      '<v>1</v>',
+    );
+    expect(screen.getByTestId('quality-metrics-diff-side-right')).toHaveTextContent(
+      '<v>2</v>',
+    );
+    expect(screen.queryByTestId('quality-metrics-diff-body')).not.toBeInTheDocument();
+  });
+
+  it('persists layout preference in localStorage across remount', async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(<QualityMetricsDetail detail={SEMANTIC_DIFF} />);
+    await user.click(screen.getByTestId('quality-metrics-diff-layout-side-by-side'));
+    unmount();
+
+    render(<QualityMetricsDetail detail={SEMANTIC_DIFF} />);
+    expect(
+      screen.getByTestId('quality-metrics-diff-layout-side-by-side'),
+    ).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByTestId('quality-metrics-diff-side-by-side')).toBeInTheDocument();
   });
 });

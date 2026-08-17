@@ -3,6 +3,47 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-058 — Quality metrics side-by-side vs inline XML diff (#983) (S068)
+
+**Session**: S068-quality-metrics-diff-layout  
+**Features**: deepen **F7.q** only  
+**Started**: 2026-08-17  
+**Branch**: `evolve/EV-058-quality-metrics-diff-layout` (base `stage@c2ca9a3f`)  
+**Status**: **in_progress** — Spec-development; Spec→Build gate **closed**  
+**Issue**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983) — board **In progress**  
+**Predecessor**: S066 / EV-056 / #988 (unified + collapsible on stage)  
+**Corpus**: [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056]
+[Corpus: decisions §EV-058]
+
+### Scope (Phase 0 — locked 2026-08-17)
+
+| ID | Decision |
+|----|----------|
+| D-S068-e0 | **1a/2b/3a/4a/5a** — evolve #983; persist + synced-scroll AC; stage; proceed |
+| D-S068-route | **1a/2a/3a** — Lean `00→16→01→02→10→13`; Spec→Build closed |
+| D-S068-ui-preview | **1** — http://127.0.0.1:18000/ |
+| D-S068-board | **1** — #983 → In progress |
+| D-S068-ev-confirm | **1a** — EV0–EV9 carry-forward |
+| D-S068-01-ac | **2b** — AC1–AC5; synced scroll **best-effort** (not blocking) |
+| D-S068-01-control | **3a** — segmented Inline \| Side-by-side |
+| D-S068-01-uj | **4a** — deepen UJ-056 + TC-EV058-001..005 |
+
+### Acceptance (approved `D-S068-01-ac=2b`)
+
+1. Switch Inline ↔ Side-by-side without reload.
+2. Default remains unified.
+3. Side-by-side via existing line-diff util; no new npm `diff`.
+4. Preference in localStorage.
+5. TAC/diagnostics/collapse kept; Vitest + Playwright both modes; H4–H5 via 13.
+   Synced scroll is best-effort polish only.
+
+### Out of scope
+
+- API/backend; new npm `diff`; C14N/`match_status`; #982 whitespace; promote to main;
+  non–Quality-metrics UI
+
+---
+
 ## Cycle EV-057 — M0 Ready: apex redirect + accumulate ZIP + validate IWXXM (#948 / #903 / #838) (S067)
 
 **Session**: S067-m0-ready-apex-accumulate-validate  

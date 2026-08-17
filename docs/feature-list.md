@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -309,7 +309,7 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
-  | F7.q | #836 / #982 / #988 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056) |
+  | F7.q | #836 / #982 / #988 / #983 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058) |
   | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
   | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
@@ -438,6 +438,21 @@
   3. Diff shows collapsible equal-context hunks (default 3 lines; expand N / expand all).
   4. Unequal SIGMET stems remain navigable and readable on staging.
   5. UJ-056 / TC-EV056 updated; FE unit + Playwright smoke (H4–H5 via 13).
+- **S068 / EV-058 deepen (F7.q / #983 — side-by-side vs inline XML diff)**: On
+  `/quality/:stem`, add a **segmented control** — **Inline (unified)** | **Side-by-side** —
+  so operators can switch layouts without reload (`D-S068-01-control=3a`). Default remains
+  **unified** (UJ-056 backward compatible). Side-by-side uses existing `unifiedLineDiff` /
+  line-diff helpers (no new npm `diff` unless Gate B re-approved). Preference persists in
+  **localStorage**. Synced scroll between side-by-side panes is **best-effort** (not a
+  blocking AC — `D-S068-01-ac=2b`). Keep raw TAC / diagnostics / collapse-equal-context.
+  C14N / `match_status` unchanged; FE-only. Does **not** flip F7 → Implemented.
+- **Acceptance (EV-058 / #983 — F7.q)** — **approved** (`D-S068-01-ac=2b`):
+  1. Operator switches Inline (unified) ↔ Side-by-side without reload.
+  2. Default layout is unified (compatible with prior UJ-056 assertions unless updated).
+  3. Side-by-side highlights changed lines via existing line-diff util; no new npm `diff`.
+  4. Layout preference persists in localStorage across visits.
+  5. Raw TAC / diagnostics / collapsible unified equal-context remain; Vitest + Playwright
+     cover both modes; H4–H5 via 13. Synced scroll is best-effort polish, not required to pass.
 - **S067 / EV-057 deepen (F7.r / #903 — accumulate conversions → one ZIP)**: Successful
   converts **append** to the current result set instead of wiping prior successes so operators
   can convert A→B→C and **Download all** as one ZIP. Default archive basename when custom
