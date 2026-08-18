@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S070/EV-060 12-verify-deploy in_progress; CI tip HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place (auth tests + openapi-refresh); pending_commit dirty; env_role staging; promote held; NO merge #1007; Spec→Build open"
+overall_status_note: "S070/EV-060 12 in_progress; tip CI GREEN 4d29ee0c run 32171946188; no merge #1007; promote held"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -16,12 +16,13 @@ active_session:
   branch_status: open
   branch_pushed: true
   branch_tracking: origin/evolve/EV-060-converter-operator-bugs
-  tip_sha: c57eeef1
-  tip_sha_full: c57eeef1b78c5b0ee9d43d9feee0a1579e8b4a17
+  tip_sha: 4d29ee0c
+  tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
   tip_sha_pushed: true
-  tip_ci_run: '32169922030'
-  tip_ci_status: failure
-  tip_ci_note: "HARD STOP on c57eeef1 run 32169922030 — auth cov + OpenAPI drift; D-S070-12-ci-fix in place; do not invent tip SHA"
+  tip_ci_run: '32171946188'
+  tip_ci_status: success
+  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+  tip_ci_note: "GREEN on 4d29ee0c run 32171946188 SUCCESS (after cancel+rerun; E2E smoke hung twice on playwright install then passed on fresh runner); original HARD STOP 32169922030 on c57eeef1 resolved; D-S070-12-ci-fix confirmed"
   pr_number: 1007
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   pr_status: open
@@ -32,7 +33,7 @@ active_session:
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   m1_pr_status: open
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007); 12 in_progress; CI HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place; D-S070-12-env staging; D-S070-12-merge no merge — checklist only; epic #1000 Backlog; promote held; pending_commit dirty"
+  board_note: "#1001 In review (PR #1007); 12 in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; D-S070-12-env staging; D-S070-12-merge no merge — checklist only; epic #1000 Backlog; promote held; pending_commit dirty"
   promote: held
   orchestrator: 16-evolve
   evolve_cycle_id: EV-060
@@ -154,7 +155,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-18'
-    note: "12 in_progress; CI tip HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place (auth tests + openapi-refresh); pending_commit dirty; env_role staging; promote held; NO merge #1007 — checklist only; D-S070-12-env; D-S070-12-merge; do not invent tip SHA"
+    note: "12 in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); env_role staging; promote held; NO merge #1007 — checklist only; D-S070-12-env; D-S070-12-merge; do not start 13"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
@@ -186,9 +187,9 @@ active_session:
     D-S070-11-t3: "T3/H4–H5 deferred to 12/13"
     D-S070-12-env: "staging only; promote held"
     D-S070-12-merge: "no merge #1007; checklist only"
-    D-S070-12-ci-fix: "fix in place — auth-job sign_out/logout tests + openapi-refresh"
+    D-S070-12-ci-fix: "fix in place — auth-job sign_out/logout tests + openapi-refresh; confirmed @ 4d29ee0c; CI 32171946188 success"
   context_briefs: []
-  note: "S070/EV-060 12-verify-deploy in_progress; CI tip HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place (auth tests + openapi-refresh); pending_commit dirty; env_role staging; promote held; NO merge #1007; PR #1007; Spec→Build open; do not invent tip SHA"
+  note: "S070/EV-060 12-verify-deploy in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); env_role staging; promote held; NO merge #1007; PR #1007; Spec→Build open; next 12 checklist only; do not start 13"
 
 sessions:
 
@@ -15642,11 +15643,14 @@ stages:
     skill_id: 12-verify-deploy
     mode: delta
     env_role: staging
-    note: 'S070/EV-060 12 in_progress — CI HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place (auth tests + openapi-refresh); pending_commit dirty; env_role staging; promote held; NO merge #1007 — readiness checklist only; D-S070-12-env; D-S070-12-merge; do not invent tip SHA'
-    s070_tip_sha: c57eeef1
-    s070_tip_ci_run: '32169922030'
-    s070_tip_ci_status: failure
-    s070_tip_ci_note: "HARD STOP on c57eeef1 run 32169922030 — auth cov + OpenAPI drift; D-S070-12-ci-fix in place"
+    note: 'S070/EV-060 12 in_progress — tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); env_role staging; promote held; NO merge #1007 — readiness checklist only; D-S070-12-env; D-S070-12-merge; do not start 13'
+    s070_tip_sha: 4d29ee0c
+    s070_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
+    s070_tip_sha_pushed: true
+    s070_tip_ci_run: '32171946188'
+    s070_tip_ci_status: success
+    s070_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+    s070_tip_ci_note: "GREEN on 4d29ee0c run 32171946188 SUCCESS (after cancel+rerun); original HARD STOP 32169922030 on c57eeef1 resolved; D-S070-12-ci-fix confirmed"
     previous_s067_started_at: '2026-08-16'
     previous_s067_started: '2026-08-16'
     previous_s067_completed_at: '2026-08-16'
@@ -17511,15 +17515,21 @@ issue_log:
   skill_id: 12-verify-deploy
   session_id: S070-converter-operator-bugs
   evolve_cycle_id: EV-060
-  summary: 'CI HARD STOP on tip c57eeef1 (run 32169922030) — auth-job coverage gap (sign_out / POST /auth/logout) + OpenAPI snapshot drift after logout restore. D-S070-12-ci-fix = fix in place (not waive). Local proof: make test-unit-auth 87 passed, metar_auth 100%; OpenAPI snapshot + openapi:check pass. Status resolving until parent commit+push greens CI.'
-  status: resolving
+  summary: 'CI HARD STOP on tip c57eeef1 (run 32169922030) — auth-job coverage gap (sign_out / POST /auth/logout) + OpenAPI snapshot drift after logout restore. D-S070-12-ci-fix = fix in place (not waive). Local proof: make test-unit-auth 87 passed, metar_auth 100%; OpenAPI snapshot + openapi:check pass. Resolved: auth-job tests + openapi-refresh @ 4d29ee0c; CI 32171946188 success.'
+  status: resolved
   blocking_for: 12-verify-deploy
   related_pr: 1007
   related_decision: D-S070-12-ci-fix
   ci_run: '32169922030'
   tip_sha: c57eeef1
   date: '2026-08-18'
-  note: 'in_progress until commit+push greens CI; pending_commit dirty; do not invent tip SHA; no merge #1007; promote held'
+  resolved_at: '2026-08-18'
+  resolution: 'auth-job tests + openapi-refresh @ 4d29ee0c; CI 32171946188 success'
+  resolution_sha: 4d29ee0c
+  resolution_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
+  resolution_ci_run: '32171946188'
+  resolution_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+  note: 'resolved; original HARD STOP 32169922030 Test (auth)/Test (backend)/E2E Smoke success; 12 remains in_progress — checklist only; no merge #1007; promote held'
 - id: I-S021-EV016-781-ghcr-cutover
   category: Blocker
   stage: 13-deploy-smoke
@@ -17683,16 +17693,17 @@ decisions_log:
   stage: 12-verify-deploy
   category: ci / deploy
   status: confirmed
-  topic: 'S070/EV-060 12-verify-deploy — CI HARD STOP c57eeef1 run 32169922030; fix in place'
-  summary: 'fix in place — auth-job sign_out/logout tests + openapi-refresh'
+  topic: 'S070/EV-060 12-verify-deploy — CI HARD STOP c57eeef1 run 32169922030; fix in place; confirmed GREEN @ 4d29ee0c'
+  summary: 'fix in place — auth-job sign_out/logout tests + openapi-refresh; confirmed @ 4d29ee0c; CI 32171946188 success'
   decision: |
-    D-S070-12-ci-fix — fix in place (not waive).
-    User continued 16-evolve with Decision "Fix in place?" for CI tip HARD STOP on c57eeef1 (run 32169922030).
-    Parent treated "Please continue" as accepting fix-in-place.
-    Auth-job tests for sign_out + logout errors; make openapi-refresh.
+    D-S070-12-ci-fix — fix in place (not waive). CONFIRMED.
+    Landed @ 4d29ee0c ([EV-060] test: cover auth logout in the auth job and refresh OpenAPI); pushed.
+    CI 32171946188 SUCCESS (after cancel+rerun; E2E smoke hung twice on playwright install then passed on fresh runner).
+    Original HARD STOP run 32169922030 on c57eeef1 resolved: Test (auth) success, Test (backend) success, E2E Smoke success.
+    Local proof before push: make test-unit-auth 87 passed, metar_auth 100%; openapi snapshot tests pass.
     Keep D-S070-12-env (staging; promote held) and D-S070-12-merge (no merge #1007; checklist only).
-    12 remains in_progress. Tip stays c57eeef1 (do not invent SHA). Spec→Build remains open.
-    pending_commit dirty — parent will commit CI-fix files + this yaml. No git commit by workflow-state-manager.
+    12 remains in_progress — checklist only; do not start 13. Spec→Build remains open.
+    pending_commit dirty — parent will commit this yaml. No git commit by workflow-state-manager.
   user_option: 'fix in place'
   branch: evolve/EV-060-converter-operator-bugs
   related_features:
@@ -17701,9 +17712,12 @@ decisions_log:
   - '1000'
   - '1006'
   related_ci_run: '32169922030'
+  related_ci_run_success: '32171946188'
+  related_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+  resolution_sha: 4d29ee0c
   current_stage: 12-verify-deploy
   current_child: 12-verify-deploy
-  note: '12 in_progress; CI red on c57eeef1; fix-in-place in progress; pending_commit dirty; no merge #1007; promote held'
+  note: 'confirmed; fix @ 4d29ee0c; CI 32171946188 success; 12 in_progress checklist only; no merge #1007; promote held'
 
 - id: D-S070-12-env
   date: '2026-08-18'
@@ -17721,9 +17735,9 @@ decisions_log:
   decision: |
     D-S070-12-env — staging only; promote held.
     D-S070-12-merge — no merge #1007; readiness checklist only.
-    12-verify-deploy in_progress. Tip c57eeef1 pushed (11-verify-impl docs on PR #1007).
+    12-verify-deploy in_progress. Tip 4d29ee0c pushed (CI-fix on PR #1007).
     Keep prior-cycle staging URLs; do not invent. Spec→Build remains open. Promote held.
-    Cycle not completed. No git commit by workflow-state-manager.
+    Cycle not completed. Next: 12 checklist only; do not start 13. No git commit by workflow-state-manager.
   user_option: 'staging / no-merge'
   branch: evolve/EV-060-converter-operator-bugs
   related_features:
@@ -17751,7 +17765,7 @@ decisions_log:
   decision: |
     D-S070-12-merge — no merge #1007; readiness checklist only.
     Paired with D-S070-12-env (staging only; promote held).
-    Tip c57eeef1 pushed. Cycle not completed. No git commit by workflow-state-manager.
+    Tip 4d29ee0c pushed (CI GREEN run 32171946188). Cycle not completed. Do not start 13. No git commit by workflow-state-manager.
   user_option: 'no-merge'
   branch: evolve/EV-060-converter-operator-bugs
   related_features:
@@ -38729,12 +38743,13 @@ evolve_cycles:
   branch_status: open
   branch_pushed: true
   branch_tracking: origin/evolve/EV-060-converter-operator-bugs
-  tip_sha: c57eeef1
-  tip_sha_full: c57eeef1b78c5b0ee9d43d9feee0a1579e8b4a17
+  tip_sha: 4d29ee0c
+  tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
   tip_sha_pushed: true
-  tip_ci_run: '32169922030'
-  tip_ci_status: failure
-  tip_ci_note: "HARD STOP on c57eeef1 run 32169922030 — auth cov + OpenAPI drift; D-S070-12-ci-fix in place; do not invent tip SHA"
+  tip_ci_run: '32171946188'
+  tip_ci_status: success
+  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+  tip_ci_note: "GREEN on 4d29ee0c run 32171946188 SUCCESS (after cancel+rerun; E2E smoke hung twice on playwright install then passed on fresh runner); original HARD STOP 32169922030 on c57eeef1 resolved; D-S070-12-ci-fix confirmed"
   pr_number: 1007
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   pr_status: open
@@ -38745,15 +38760,15 @@ evolve_cycles:
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   m1_pr_status: open
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007); 12 in_progress; CI HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place; D-S070-12-env staging; D-S070-12-merge no merge — checklist only; epic #1000 Backlog; promote held; pending_commit dirty"
+  board_note: "#1001 In review (PR #1007); 12 in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; D-S070-12-env staging; D-S070-12-merge no merge — checklist only; epic #1000 Backlog; promote held; pending_commit dirty"
   promote: held
   current_stage: 12-verify-deploy
   current_stage_status: in_progress
-  current_stage_note: "12 in_progress; CI tip HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place (auth tests + openapi-refresh); pending_commit dirty; env_role staging; promote held; NO merge #1007 — checklist only; do not invent tip SHA"
+  current_stage_note: "12 in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); env_role staging; promote held; NO merge #1007 — checklist only; do not start 13"
   current_child: 12-verify-deploy
   current_child_stage: 12-verify-deploy
   current_child_stage_status: in_progress
-  current_child_note: "12 in_progress; CI HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place; D-S070-12-env staging; D-S070-12-merge no merge #1007; pending_commit dirty; promote held"
+  current_child_note: "12 in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; D-S070-12-env staging; D-S070-12-merge no merge #1007; pending_commit dirty; promote held"
   active_milestone: M4
   active_task: "12-verify-deploy"
   stages:
@@ -38789,7 +38804,7 @@ evolve_cycles:
     12-verify-deploy:
       status: in_progress
       started: '2026-08-18'
-      note: "12 in_progress; CI tip HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place (auth tests + openapi-refresh); pending_commit dirty; env_role staging; promote held; NO merge #1007 — checklist only; do not invent tip SHA"
+      note: "12 in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); env_role staging; promote held; NO merge #1007 — checklist only; do not start 13"
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Standard
@@ -38837,7 +38852,7 @@ evolve_cycles:
     D-S070-11-t3: "T3/H4–H5 deferred to 12/13"
     D-S070-12-env: "staging only; promote held"
     D-S070-12-merge: "no merge #1007; checklist only"
-    D-S070-12-ci-fix: "fix in place — auth-job sign_out/logout tests + openapi-refresh"
+    D-S070-12-ci-fix: "fix in place — auth-job sign_out/logout tests + openapi-refresh; confirmed @ 4d29ee0c; CI 32171946188 success"
   gates:
     spec_to_build: open
     spec_to_build_note: "D-S070-spec-build=1a — Open Build; 07-build M1 #1001 first"
@@ -38868,6 +38883,7 @@ evolve_cycles:
   - docs/sessions/S070-converter-operator-bugs/reports/verify-impl.md
   - docs/reports/implementation-verification.md
   notes:
+  - "2026-08-18 tip CI GREEN 4d29ee0c run 32171946188 SUCCESS; original HARD STOP 32169922030 on c57eeef1 resolved; D-S070-12-ci-fix confirmed (auth-job tests + openapi-refresh); I-S070-12-ci-32169922030 resolved; 12 remains in_progress — checklist only (D-S070-12-env, D-S070-12-merge); no merge #1007; promote held; Spec→Build remains open; do not start 13; pending_commit dirty — parent will commit this yaml; no git commit by workflow-state-manager"
   - "2026-08-18 D-S070-12-ci-fix — fix in place (not waive) for CI HARD STOP c57eeef1 run 32169922030 (auth cov + OpenAPI drift); auth tests + openapi-refresh on disk; 12 remains in_progress; pending_commit dirty; parent will commit CI-fix files + this yaml; tip stays c57eeef1 (do not invent SHA); no merge #1007; promote held; Spec→Build remains open; cycle in_progress; no git commit by workflow-state-manager"
   - "2026-08-18 12-verify-deploy START in_progress; D-S070-12-env staging only; D-S070-12-merge no merge #1007 checklist only; tip c57eeef1 pushed; keep prior staging URLs (do not invent); Spec→Build remains open; promote held; cycle in_progress; no git commit by workflow-state-manager"
   - "2026-08-18 11-verify-impl COMPLETE; all 5 Fn + UJ-059..063 approved; D-S070-11-t3 T3/H4–H5 deferred to 12/13; next 12 staging; reports verify-impl.md + implementation-verification.md; tip 0e857b78 unchanged (no SHA invented); PR #1007; Spec→Build remains open; promote held; cycle in_progress; no git commit by workflow-state-manager"
@@ -38887,7 +38903,7 @@ evolve_cycles:
   - "2026-08-18 M1 #1001 T1.1–T1.4 complete @ 1f2859d0; next 08-verify-build then PR → stage; then M2 #1003; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-spec-build=1a open Build; 07 M1 #1001"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; 01-requirements COMPLETE; 02-verify-plan pending; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
-  note: "S070/EV-060 12-verify-deploy in_progress; CI tip HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place (auth tests + openapi-refresh); pending_commit dirty; env_role staging; promote held; NO merge #1007; PR #1007; Spec→Build remains open; cycle in_progress; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060] [Corpus: deploy]"
+  note: "S070/EV-060 12-verify-deploy in_progress; tip CI GREEN 4d29ee0c run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); env_role staging; promote held; NO merge #1007; PR #1007; Spec→Build remains open; cycle in_progress; next 12 checklist only; do not start 13; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060] [Corpus: deploy]"
 - id: EV-059
   title: "F34 CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   topic: "F34 Schemathesis + mutation; close #841"
@@ -51003,15 +51019,16 @@ git_history:
   ahead_of_origin: 0
   pushed: true
   pending_commit: true
-  pending_commit_note: "parent will commit CI-fix files (tests/unit/auth/test_proxy.py, tests/unit/auth/test_router_edges.py, apps/frontend/openapi/openapi.json, apps/frontend/src/generated/openapi.d.ts, docs/decisions/evolve-decisions.md) + this yaml; no git commit by workflow-state-manager"
+  pending_commit_note: "parent will commit this yaml; CI-fix already @ 4d29ee0c pushed; no git commit by workflow-state-manager"
   dirty: true
-  dirty_note: "CI-fix in progress on disk vs tip c57eeef1 (do not invent SHA); auth tests + openapi-refresh + evolve-decisions.md + workflow-state.yaml"
-  tip_sha: "c57eeef1"
-  tip_sha_full: c57eeef1b78c5b0ee9d43d9feee0a1579e8b4a17
+  dirty_note: "workflow-state.yaml dirty vs tip 4d29ee0c (CI-fix already pushed); parent will commit this yaml"
+  tip_sha: "4d29ee0c"
+  tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
   tip_sha_pushed: true
-  tip_ci_run: '32169922030'
-  tip_ci_status: failure
-  tip_note: "CI HARD STOP run 32169922030 on c57eeef1; D-S070-12-ci-fix in place; do not invent tip SHA; 12 readiness checklist (no merge)"
+  tip_ci_run: '32171946188'
+  tip_ci_status: success
+  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+  tip_note: "CI GREEN run 32171946188 on 4d29ee0c; original HARD STOP 32169922030 resolved; D-S070-12-ci-fix confirmed; 12 readiness checklist (no merge)"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -51019,8 +51036,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-060-converter-operator-bugs
-  evolve_tip_sha: "c57eeef1"
-  evolve_tip_sha_full: c57eeef1b78c5b0ee9d43d9feee0a1579e8b4a17
+  evolve_tip_sha: "4d29ee0c"
+  evolve_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
   evolve_tip_sha_pushed: true
   stage_merge_sha: c08bc30f
   stage_merge_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
@@ -51037,9 +51054,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-060-converter-operator-bugs
-  note: "S070/EV-060 12-verify-deploy in_progress; CI tip HARD STOP c57eeef1 run 32169922030; D-S070-12-ci-fix in place; pending_commit dirty — parent will commit CI-fix files + this yaml; env_role staging; promote held; NO merge #1007; Spec→Build remains open; no git commit by workflow-state-manager"
+  note: "S070/EV-060 12-verify-deploy in_progress; tip CI GREEN 4d29ee0c run 32171946188; no merge #1007; promote held; pending_commit dirty — parent will commit this yaml; env_role staging; Spec→Build remains open; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 commit 4d29ee0c — [EV-060] test: cover auth logout in the auth job and refresh OpenAPI; tip_sha_pushed=true; CI 32171946188 SUCCESS; original HARD STOP 32169922030 resolved; I-S070-12-ci-32169922030 resolved; 12 remains in_progress — checklist only; no merge #1007; promote held; Spec→Build remains open; pending_commit dirty (this yaml); no git commit by workflow-state-manager"
   - "2026-08-18 D-S070-12-ci-fix — fix in place (not waive) for CI HARD STOP c57eeef1 run 32169922030; pending_commit dirty; parent will commit CI-fix files + this yaml; tip stays c57eeef1 (do not invent SHA); 12 remains in_progress; no merge #1007; promote held; Spec→Build remains open; no git commit by workflow-state-manager"
   - "2026-08-18 commit c57eeef1 — [EV-060] docs: record 11-verify-impl user approval for converter and Auth; 12 START in_progress; D-S070-12-env staging; D-S070-12-merge no merge; tip_sha_pushed=true; PR #1007; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 11-verify-impl COMPLETE; all 5 Fn + UJ-059..063 approved; D-S070-11-t3 T3/H4–H5 deferred; next 12 staging; tip 0e857b78 unchanged (no SHA invented); dirty+pending_commit yaml+reports; PR #1007; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
@@ -51654,8 +51672,8 @@ git_history:
     tracking: origin/evolve/EV-060-converter-operator-bugs
     session_id: S070-converter-operator-bugs
     evolve_cycle_id: EV-060
-    tip_sha: c57eeef1
-    tip_sha_full: c57eeef1b78c5b0ee9d43d9feee0a1579e8b4a17
+    tip_sha: 4d29ee0c
+    tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
     tip_sha_pushed: true
     pr_number: 1007
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
@@ -51663,7 +51681,7 @@ git_history:
     pr_base: stage
     pr_head: evolve/EV-060-converter-operator-bugs
     pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-    note: "OPEN — 12 in_progress @ c57eeef1 pushed; CI HARD STOP run 32169922030; D-S070-12-ci-fix in place; pending_commit dirty; D-S070-12-env staging; D-S070-12-merge no merge #1007 checklist only; #1001 In review; epic #1000 Backlog; promote held; Spec→Build remains open; tracking origin/evolve/EV-060-converter-operator-bugs"
+    note: "OPEN — 12 in_progress @ 4d29ee0c pushed; tip CI GREEN run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); D-S070-12-env staging; D-S070-12-merge no merge #1007 checklist only; #1001 In review; epic #1000 Backlog; promote held; Spec→Build remains open; tracking origin/evolve/EV-060-converter-operator-bugs"
 
   - name: evolve/EV-059-ci-schemathesis-mutation
     base: stage@c458669e
@@ -53211,6 +53229,24 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "4d29ee0c"
+    sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
+    message: "[EV-060] test: cover auth logout in the auth job and refresh OpenAPI"
+    branch: evolve/EV-060-converter-operator-bugs
+    stage: 12-verify-deploy
+    skill_id: 16-evolve
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    timestamp: "2026-08-18T19:59:00Z"
+    pushed: true
+    tip_sha: 4d29ee0c
+    tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
+    pr_number: 1007
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+    tip_ci_run: '32171946188'
+    tip_ci_status: success
+    tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+    note: "CI-fix committed+pushed; run 32171946188 SUCCESS; original HARD STOP 32169922030 resolved; 12 checklist only; no merge #1007"
   - sha: "c57eeef1"
     sha_full: c57eeef1b78c5b0ee9d43d9feee0a1579e8b4a17
     message: "[EV-060] docs: record 11-verify-impl user approval for converter and Auth"
