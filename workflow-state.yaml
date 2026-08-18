@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S070/EV-060 OPEN — Build in_progress @ 07-build M1 #1001; Spec→Build OPEN; epic #1000; branch evolve/EV-060-converter-operator-bugs"
+overall_status_note: "S070/EV-060 M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -93,11 +93,15 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-17'
-    note: "M1 #1001 AHL first (D-S070-spec-build=1a)"
+    note: "M1 #1001 08 PASS; next M2 #1003 after PR → stage"
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-18'
+    completed: '2026-08-18'
+    report: docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
+    note: "M1 PASS; VAA keep-whole D-S070-08-vaa; re-run after M2"
   - stage: 09-qa
     required: true
     mode: delta
@@ -134,7 +138,7 @@ active_session:
     D-S070-e9: "Spec-development only; gate closed."
     D-S070-spec-build: "Open Build; 07+ as routed; M1 #1001 first"
   context_briefs: []
-  note: "OPEN Build; gate open; M1 #1001"
+  note: "S070/EV-060 M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress"
 
 sessions:
 
@@ -38360,10 +38364,22 @@ evolve_cycles:
   branch_status: open
   current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "Build band; 07-build M1 #1001 in_progress; Spec→Build gate open; 02/04 + dual Spec complete"
+  current_stage_note: "M1 08 PASS; 07-build in_progress — next M2 #1003 after PR → stage; promote held"
   current_child: 07-build
   current_child_stage: 07-build
   current_child_stage_status: in_progress
+  current_child_note: "M1 08 done; next M2 #1003 after PR → stage"
+  stages:
+    07-build:
+      status: in_progress
+      started: '2026-08-17'
+      note: "M1 #1001 08 PASS; next M2 #1003 after PR → stage"
+    08-verify-build:
+      status: completed
+      started: '2026-08-18'
+      completed: '2026-08-18'
+      report: docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
+      note: "M1 PASS; VAA keep-whole D-S070-08-vaa; re-run after M2"
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Standard
@@ -38419,10 +38435,14 @@ evolve_cycles:
   - docs/sessions/S070-converter-operator-bugs/uat-script.md
   - docs/sessions/S070-converter-operator-bugs/build-plan-card.md
   - docs/decisions/evolve-decisions.md
+  - docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
   notes:
+  - "2026-08-18 08-verify-build M1 PASS — report docs/sessions/S070-converter-operator-bugs/reports/verification-report.md; VAA keep-whole D-S070-08-vaa; re-run after M2; 07-build remains in_progress (next M2 #1003 after PR → stage); spec_to_build_gate open; promote held; cycle not completed; no git commit by workflow-state-manager"
+  - "2026-08-18 08-verify-build START — in_progress for M1 #1001 @ 1f2859d0; 07-build remains in_progress (M2 #1003 not started); then PR → stage; promote held; no git commit by workflow-state-manager"
+  - "2026-08-18 M1 #1001 T1.1–T1.4 complete @ 1f2859d0; next 08-verify-build then PR → stage; then M2 #1003; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-spec-build=1a open Build; 07 M1 #1001"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; 01-requirements COMPLETE; 02-verify-plan pending; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
-  note: "OPEN Build; gate open; M1 #1001; epic #1000; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
+  note: "S070/EV-060 M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress; spec_to_build_gate open; cycle in_progress; epic #1000; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
 - id: EV-059
   title: "F34 CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   topic: "F34 Schemathesis + mutation; close #841"
@@ -50534,15 +50554,15 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-060-converter-operator-bugs
-  ahead_of_origin: 0
-  pushed: true
+  ahead_of_origin: 4
+  pushed: false
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'dirty expected — workflow-state.yaml CI waiver + 08-verify-build in_progress; no git commit by workflow-state-manager'
-  tip_sha: "78b0b082"
-  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
-  tip_note: "OPEN S069/EV-059 — evolve tip 78b0b082; M2 PR #998 open → stage; M1/#727 Done (#997→stage @ c08bc30f); CI/CD 32049951760 substantive green + sticky-comment waive; Spec→Build OPEN; 07-build + 08-verify-build in_progress; promote held"
+  dirty_note: 'dirty expected — workflow-state.yaml update; no git commit by workflow-state-manager'
+  tip_sha: "37d1e58c"
+  tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
+  tip_note: "OPEN S070/EV-060 — tip 37d1e58c; M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held; local ahead 4 not pushed"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -50550,9 +50570,9 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-060-converter-operator-bugs
-  evolve_tip_sha: "78b0b082"
-  evolve_tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
-  evolve_tip_sha_pushed: true
+  evolve_tip_sha: "37d1e58c"
+  evolve_tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
+  evolve_tip_sha_pushed: false
   stage_merge_sha: c08bc30f
   stage_merge_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
   stage_tip_sha: c08bc30f
@@ -50568,9 +50588,12 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-060-converter-operator-bugs
-  note: "S070/EV-060 OPEN — branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; Build in_progress @ 07-build M1 #1001; Spec→Build gate open; prior S069/EV-059 not closed (PR #998 open on evolve/EV-059); no git commit by workflow-state-manager"
+  note: "S070/EV-060 M1 08 PASS; tip 37d1e58c; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress; local ahead 4 not pushed; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 08-verify-build M1 PASS — commits 2c5025cd (07-build T1.2 AHL remainder) + 37d1e58c (08 M1 report); 07-build remains in_progress (next M2 #1003 after PR → stage); spec_to_build_gate open; promote held; cycle not completed; no git commit by workflow-state-manager"
+  - "2026-08-18 08-verify-build START — in_progress for M1 #1001 @ 1f2859d0; 07-build remains in_progress (M2 #1003 not started); then PR → stage; promote held; no git commit by workflow-state-manager"
+  - "2026-08-18 commit 1f2859d0 — [T1.2] M1 #1001 T1.1–T1.4 complete; next 08-verify-build then PR → stage; then M2 #1003; tip not pushed; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-spec-build=1a — Spec→Build OPEN; 07-build M1 #1001 in_progress; 02/04 + dual Spec complete; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; branch evolve/EV-060-converter-operator-bugs @ origin/stage@8755ae87; session_counter=70; evolve_cycle_counter=60; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-ci-comment-waiver=2 + D-S069-github-outage-bypass — waive Quality+Coverage sticky comment failures on run 32049951760; substantive tests green on PR #998; bypass GitHub API mutations until user says otherwise; Lean 08-verify-build in_progress; 07-build progressing; session open; no merge; no git commit by workflow-state-manager"
@@ -51164,13 +51187,16 @@ git_history:
     base: origin/stage@8755ae87
     base_sha: 8755ae87
     purpose: "S070/EV-060 — converter operator bugs + F7.t IWXXM pass-through + Auth UAT; epic #1000"
-    status: open
+    status: active
     created: "2026-08-17"
-    exists: false
+    exists: true
     pushed: false
     session_id: S070-converter-operator-bugs
     evolve_cycle_id: EV-060
-    note: "OPEN — Standard Spec-development; Spec→Build gate closed; 02-verify-plan pending; no git commit by workflow-state-manager"
+    tip_sha: 37d1e58c
+    tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
+    tip_sha_pushed: false
+    note: "OPEN — M1 08 PASS @ 37d1e58c; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress; local ahead 4 not pushed; no git commit by workflow-state-manager"
 
   - name: evolve/EV-059-ci-schemathesis-mutation
     base: stage@c458669e
@@ -52718,6 +52744,52 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "37d1e58c"
+    sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
+    message: "docs: [S070] 08-verify-build M1 AHL bulletin quality (#1001)"
+    branch: evolve/EV-060-converter-operator-bugs
+    stage: 08-verify-build
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    files_changed:
+      - docs/decisions/evolve-decisions.md
+      - docs/sessions/S070-converter-operator-bugs/build-plan-card.md
+      - docs/sessions/S070-converter-operator-bugs/evolve-plan-card.md
+      - docs/sessions/S070-converter-operator-bugs/reports/07-build-m1.md
+      - docs/sessions/S070-converter-operator-bugs/reports/execution-plan.md
+      - docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
+      - docs/sessions/S070-converter-operator-bugs/routing-plan.md
+    timestamp: "2026-08-18"
+    pushed: false
+    tip_sha: 37d1e58c
+    tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
+    note: "docs 08-verify-build M1 report; M1 PASS; VAA keep-whole D-S070-08-vaa; re-run after M2"
+  - sha: "2c5025cd"
+    sha_full: 2c5025cdbcb77f9efa30dcae9f782d2b08ceadea
+    message: "[T1.2] fix: lint AHL remainder when reports omit ="
+    branch: evolve/EV-060-converter-operator-bugs
+    stage: 07-build
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    files_changed:
+      - packages/tac-validate/src/tac_validate/ahl.py
+      - packages/tac-validate/tests/test_tc_ev060_1001_ahl_heading.py
+    timestamp: "2026-08-18"
+    pushed: false
+    note: "M1 #1001 T1.2 AHL remainder lint when reports omit ="
+  - sha: "1f2859d0"
+    sha_full: 1f2859d09ea8e5ce414e653cdd263bac1adf646a
+    message: "[T1.2] feat: lint AHL heading as COM and split contained reports"
+    branch: evolve/EV-060-converter-operator-bugs
+    stage: 07-build
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    files_changed: 21
+    timestamp: "2026-08-18T01:25:55Z"
+    pushed: false
+    tip_sha: 1f2859d0
+    tip_sha_full: 1f2859d09ea8e5ce414e653cdd263bac1adf646a
+    note: "M1 #1001 T1.1–T1.4 complete; next 08-verify-build then PR → stage; then M2 #1003"
   - sha: "b3db3413"
     sha_full: b3db34132057593e1bc9789ef261a4bf950abbbd
     message: "[EV-058] feat: side-by-side vs inline XML diff on Quality metrics detail"
