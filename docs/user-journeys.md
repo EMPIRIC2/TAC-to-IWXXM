@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-17 (S070 / EV-060 UJ-059 AHL + UJ-060 IWXXM product + UJ-061..063 converter params; Auth UAT deepen UJ-003/046)
+> **Last updated**: 2026-08-18 (S071 / EV-061 UJ-064..068 pre-promote; catalog UJ-068 blocked on link crawl)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -80,6 +80,12 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-061 | Profile labeled at converter top (Annex 3 / IWXXM-US) | apps/frontend | F7/F6 deepen (EV-060 / #1002) | T0 / T2 / **T3** / H4–H5 |
 | UJ-062 | Bulletin ID + Issuing Center labeled and applied | apps/frontend / API | F7/F6 deepen (EV-060 / #1005) | T0 / T2 / **T3** / H4–H5 |
 | UJ-063 | Conversion log_level changes logger verbosity | UI / API | F29 deepen (EV-060 / #1004) | T0 / T2 |
+| UJ-064 | Validate IWXXM shows item-by-item readable decode | apps/frontend | F2/F9/F10 deepen (EV-061 / #1010) | T0 / T2 / **T3** / H4–H5 |
+| UJ-065 | AHL bulletin decode + convert end-to-end | apps/frontend / API | F6/F7 deepen (EV-061 / #1012) | T0 / T2 / **T3** / H4–H5 |
+| UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
+| UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** |
+| UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014) | T0 / T2 / **T3** / H4–H5 — **blocked** until source URLs fixed |
+| UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -1019,6 +1025,117 @@ Does not replace UJ-056 Quality metrics corpus browse.
 
 **Acceptance**: feature-list EV-060 / #1004; TC-EV060-1004-*. No live in-app log panel required.
 **Tier: T0 / T2**. [Corpus: product §F29] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-064: Validate IWXXM Shows Item-by-Item Readable Decode (EV-061 / #1010)
+
+**Actor**: Public/guest operator
+
+**Goal**: When Validate IWXXM still produces decode, the UI shows the same item-by-item readable
+description pattern used for other product types.
+
+**Steps**:
+
+1. Open Validate IWXXM (or product=IWXXM validate path) with a sample IWXXM document.
+2. Observe decode/summary presentation as structured readable item rows (parity with TAC decode).
+3. Confirm F7.s validate-only and F7.t pass-through still work.
+
+**Acceptance**: feature-list F9/F2 deepen EV-061 / #1010; TC-EV061-1010-*.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F2] [Corpus: product §F9] [Corpus: product §F10]
+
+---
+
+### UJ-065: AHL Bulletin Decode + Convert End-to-End (EV-061 / #1012)
+
+**Actor**: Public/guest operator
+
+**Goal**: Well-formed AHL METAR bulletin decodes per report and converts via convert-bulletin.
+
+**Context required**: Heading `T1T2A1A2ii CCCC YYGGgg [BBB]` + TAC body (`=` terminators);
+product/profile; optional Bulletin ID / Issuing Center. Golden: `SAUS31 KZNY` multi-METAR.
+
+**Steps**:
+
+1. Paste golden multi-report AHL METAR bulletin in AHL / auto-detect mode.
+2. Observe decode: bulletin framing + item-by-item readable rows per report.
+3. Convert — per-report IWXXM results (convert-bulletin).
+4. Paste malformed AHL — clear `INVALID_AHL` / empty_bulletin (no silent success).
+
+**Acceptance**: feature-list F6 deepen EV-061 / #1012; TC-EV061-1012-*. Distinct from #1011 harness.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F6] [Corpus: product §F7] [Corpus: domain/IWXXM_CONVERSION §AHL]
+
+---
+
+### UJ-066: Product Type + Profile Bars No-Wrap / Aligned (EV-061 / #1013)
+
+**Actor**: Public/guest operator
+
+**Goal**: Product Type and Profile controls do not wrap awkwardly at desktop widths and look polished.
+
+**Steps**:
+
+1. Open converter at viewport ≥1024px.
+2. Confirm Product Type + Profile stay on one visual bar without wrap.
+3. Confirm mode selects share one aligned row.
+4. Resize below 1024px — stacking OK.
+
+**Acceptance**: feature-list F7.u / #1013; TC-EV061-1013-*.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7] [Corpus: journeys]
+
+---
+
+### UJ-067: Conversion Parameter Bar Aligned (EV-061 / #1013)
+
+**Actor**: Public/guest operator
+
+**Goal**: Conversion parameters sit on one aligned bar/row consistent with Product/Profile chrome.
+
+**Steps**:
+
+1. Open converter at ≥1024px with conversion parameters visible.
+2. Confirm parameters share one centered/aligned bar with mode chrome.
+
+**Acceptance**: feature-list F7.u / #1013; TC-EV061-1013-*.
+**Tier: T0 / T2 / T3**. [Corpus: product §F7]
+
+---
+
+### UJ-068: Lint & Validation Catalog Top-Level Tab (EV-061 / #1014)
+
+**Actor**: Public/guest operator
+
+**Goal**: Browse a top-level catalog page of lint **and** validation checks with code, description,
+level, and working source links.
+
+**Blocker**: Source URL crawl failures must be replaced before Build (`D-S071-links`;
+`reports/catalog-link-crawl-2026-08-18.md`).
+
+**Steps**:
+
+1. Open top-level **Lint & validation catalog** nav tab.
+2. See rows with code, description, level, clickable source URL(s).
+3. Spot-check that listed source links resolve (HTTP 2xx/3xx).
+
+**Acceptance**: feature-list F7.v / F15 / #1014; TC-EV061-1014-*. Distinct from #996.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F10] [Corpus: product §F15] [Corpus: api]
+
+---
+
+### UJ-DEV-009: stage→main Promote Requires Full Quality Gate (EV-061 / #1015)
+
+**Actor**: Maintainer
+
+**Goal**: Promote PRs `stage`→`main` cannot merge without full CI unit + lint + typecheck + full E2E.
+
+**Steps**:
+
+1. Open a `stage`→`main` PR.
+2. Confirm required checks include full CI unit jobs, lint, typecheck, and full E2E (not smoke-only).
+3. Confirm merge is blocked while any required check is red/missing.
+
+**Acceptance**: feature-list F34 deepen / #1015; deploy.md §Promote; TC-EV061-1015-*.
+**Tier: CI**. [Corpus: product §F34] [Corpus: tech-spec] [Corpus: deploy] [Corpus: tests]
 
 ---
 
@@ -2008,3 +2125,6 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
 - S070 / EV-060 (2026-08-17): UJ-059 AHL bulletin quality (#1001); UJ-060 IWXXM product
   pass-through (#1003); UJ-061 profile picker (#1002); UJ-062 bulletin fields (#1005);
   UJ-063 log_level (#1004); deepen UJ-003/046 Auth UAT (#1006)
+- S071 / EV-061 (2026-08-18): UJ-064 validate readable decode (#1010); UJ-065 AHL decode+convert
+  (#1012); UJ-066/067 Product/Profile + param bars (#1013); UJ-068 catalog tab (#1014, link
+  crawl blocked); UJ-DEV-009 stage→main full gate (#1015)

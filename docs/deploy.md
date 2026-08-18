@@ -141,6 +141,10 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
    (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
    successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
+   **EV-061 / #1015 (stricter promote):** In addition, the promote PR must not merge until
+   **required** checks covering **full CI unit jobs**, **lint**, **typecheck**, and **full
+   E2E** (broader than smoke-only) are green on that PR. Branch protection / required-check
+   configuration may be updated accordingly (no new app secrets).
 5. Merge to `main` → full CI on `main` (**no** prod Deploy).
 6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
    `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
@@ -162,6 +166,8 @@ Treat every prod cutover as a release:
       `pyproject.toml`, `__version__`, and Cargo/locks when present
 - [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
 - [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
+- [ ] **EV-061 / #1015:** required checks for full CI unit + lint + typecheck + full E2E green
+      on the promote PR (stricter than smoke-only)
 - [ ] Merge to `main`; wait for tip CI green (**Deploy must not run** on that push)
 - [ ] `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>` → prod Deploy
 - [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,

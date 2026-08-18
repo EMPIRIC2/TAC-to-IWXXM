@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-17 (S070 / EV-060 — TC-EV060-* converter operator bugs + F7.t + Auth UAT)
+> **Last updated**: 2026-08-18 (S071 / EV-061 — TC-EV061-* pre-promote UX + AHL + catalog + stage→main gate)
 
 ## Scope
 
@@ -119,6 +119,12 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-062 | F7/F6 deepen (EV-060) | Bulletin ID + Issuing Center applied (#1005) | **H4–H5 required** | TC-EV060-1005-001..003 |
 | UJ-063 | F29 deepen (EV-060) | Conversion log_level sets logger verbosity (#1004) | T0/T2 | TC-EV060-1004-001..002 |
 | UJ-003 / UJ-046 | F31 deepen (EV-060) | Auth register/login/logout/persist UAT (#1006) | **H4–H5 required** | TC-EV060-1006-001..004 |
+| UJ-064 | F2/F9/F10 deepen (EV-061) | Validate IWXXM item-by-item readable decode (#1010) | **H4–H5 required** | TC-EV061-1010-001..003 |
+| UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
+| UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
+| UJ-068 | F7.v/F15 (EV-061) | Lint+validation catalog tab (#1014) | **H4–H5 required** — **blocked** on link crawl | TC-EV061-1014-001..004 |
+| UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
+| LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
