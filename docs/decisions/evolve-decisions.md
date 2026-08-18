@@ -3,6 +3,74 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-060 — Converter operator bugs + IWXXM pass-through (#1000) (S070)
+
+**Session**: S070-converter-operator-bugs  
+**Features**: deepen **F7.t** (IWXXM product) + F6/F2/F10/F29/F31; no new top-level Fn  
+**Started**: 2026-08-17  
+**Status**: **in_progress** — Spec-development; Spec→Build **closed**  
+**Branch**: `evolve/EV-060-converter-operator-bugs` (base `stage@8755ae87`)  
+**Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
+**Milestone**: GitHub **M0 — Stabilize + operator trust + narrative**  
+**Later (not this cycle)**: profile view/create [#933](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/933) / [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924)  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: product §F10]
+[Corpus: product §F29] [Corpus: product §F31] [Corpus: api] [Corpus: journeys] [Corpus: tests]
+[Corpus: decisions §EV-060]
+
+### Scope (Phase 0 — locked 2026-08-17)
+
+| ID | Decision |
+|----|----------|
+| D-S070-e0 | Tickets + Spec first; M0 pack; in/out as written |
+| D-S070-e1 | Deepen F7.t (no F35); file tickets at EV9; six success observables |
+| D-S070-e2 | Operator + API/CLI; FileConverter/accumulate/QM honor; UI preview at 11 |
+| D-S070-e3a | AHL split then lint reports; product=IWXXM pass-through; F7.s stays |
+| D-S070-e3b | Profile at converter top; editable Bulletin ID + Issuing Center; wire log_level; a11y must |
+| D-S070-e3c | Auth UAT + Playwright; API same fields |
+| D-S070-e4 | Standing docs delta; existing CORPUS (no waiver); uat+verify-qa Spec; Standard 01→02→04 |
+| D-S070-e5 | Four Build PRs; 09+10+11+uat; staging smoke; promote held |
+| D-S070-e6 | OOS: #933/#924/#912/F16–F19/#898/F8 auto-push/promote/new auth; additive API; no JWT in DEBUG |
+| D-S070-e7 | No new secrets; existing CORS; H0c + H4–H5; no new observability contract |
+| D-S070-e8 | Spec 00→16→01→02→04; Build 07–13 blocked; skip 03/05/06 |
+| D-S070-e9 | Open session; Spec-development only; Spec→Build **closed** |
+| D-S070-board | Epic #1000 Backlog; children Ready |
+
+### Intake decisions
+
+| ID | Category | Question | Decision | ADR |
+|----|----------|----------|----------|-----|
+| E60-1 | decision | cycle_type | feature deepen F7.t | — |
+| E60-2 | decision | GitHub pack | epic #1000 + #1001–#1006 on M0; no duplicate #933 | — |
+| E60-3 | decision | F7.s | keep Validate-only alongside F7.t | — |
+| E60-4 | decision | log_level | wire logger verbosity (not client echo only) | ADR-023 deepen |
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product §F7]` | cite | F7.t + picker/bulletin | |
+| `[Corpus: product §F6]` | cite | AHL / convert-bulletin | |
+| `[Corpus: product §F2]` | cite | IWXXM validate pass-through | |
+| `[Corpus: api]` | cite | `product=iwxxm`, log_level, bulletin fields | |
+| `[Corpus: journeys]` | cite | UJ-059..063; UJ-003/046 | |
+| `[Corpus: tests]` | cite | TC-EV060-* | |
+| — | waiver | none | existing CORPUS rows |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-17 | S070 opened; EV0–EV9 recommended |
+| 16-evolve | — | orchestrating; gate closed |
+| 01-requirements | 2026-08-17 | complete; report reports/01-requirements.md |
+
+### Out of scope
+
+- #933/#924 profile editor; #912 national packs; F16–F19/#898; F8 auto-push;
+  stage→main promote; new auth providers; live log panel; new CLI product
+
+---
+
 ## Cycle EV-059 — CI Schemathesis + mutation quality gates (#841 / #727 / #874) (S069)
 
 **Session**: S069-ci-schemathesis-mutation  

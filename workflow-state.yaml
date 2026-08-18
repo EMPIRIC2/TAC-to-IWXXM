@@ -1,77 +1,46 @@
 overall_status: in_progress
-overall_status_note: "S069/EV-059 OPEN — Gate A PASS; Spec→Build OPEN; 07-build in_progress (T2.3 PR #998 open → stage @ 78b0b082); Lean 08-verify-build COMPLETE PASS (D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); M1 Schemathesis MERGED (#997→stage @ c08bc30f; #727 Done); next merge AskQuestion for #998 (do not merge yet; session open); #874 In progress; #841 In progress"
+overall_status_note: "S070/EV-060 OPEN — Standard Spec-development in_progress @ 02-verify-plan; Spec→Build gate closed; epic #1000 on GitHub M0; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; 01-requirements COMPLETE; next 02-verify-plan"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 69
-evolve_cycle_counter: 59
+session_counter: 70
+evolve_cycle_counter: 60
 active_session:
-  id: S069-ci-schemathesis-mutation
+  id: S070-converter-operator-bugs
   type: feature
-  intent: "EV-059 close epic #841 via Schemathesis (#727) + mutation testing (#874); fix findings; keep CI cheap"
-  status: active
+  intent: "EV-060 converter operator bugs + F7.t IWXXM pass-through + Auth UAT; epic #1000 on GitHub M0"
+  status: in_progress
+  branch: evolve/EV-060-converter-operator-bugs
+  branch_base: stage@8755ae87
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-060
+  artifacts_dir: docs/sessions/S070-converter-operator-bugs/
+  github_issues:
+  - 1000
+  - 1001
+  - 1002
+  - 1003
+  - 1004
+  - 1005
+  - 1006
+  prior_session: S069-ci-schemathesis-mutation
+  feature_ids:
+  - F7
+  feature_note: "F7.t IWXXM product pass-through + F6/F2/F10/F29/F31 deepen"
+  preset: Standard
+  spec_to_build_gate: closed
+  current_stage: 02-verify-plan
   started: '2026-08-17'
   started_at: '2026-08-17'
-  branch: evolve/EV-059-ci-schemathesis-mutation
-  branch_base: stage@c458669e
-  branch_base_sha: c458669e
-  branch_base_sha_full: c458669e0b39203cc68631723b250a92e84d9ab3
-  branch_status: active
-  branch_exists: true
-  branch_pushed: true
-  tip_sha: 78b0b082
-  tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
-  tip_sha_pushed: true
-  tip_sha_note: "OPEN — M1 MERGED (#997→stage @ c08bc30f; #727 Done); M2 tip 78b0b082 on origin; T2.3 PR #998 open → stage (D-S069-m2-pr=1 success); CI/CD 32049951760 substantive green + sticky-comment waive; Spec→Build OPEN; 07-build in_progress; Lean 08-verify-build COMPLETE PASS; next merge AskQuestion; promote held"
-  pr_number: 998
-  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998
-  pr_status: open
-  pr_base: stage
-  pr_title: "[EV-059] M2: mutation testing scaffolding (#874)"
-  tip_ci_run: '32049951760'
-  tip_ci_status: waived
-  tip_ci_note: "Run 32049951760 — substantive test jobs green on PR #998; Quality+Coverage PR comment failures waived (D-S069-ci-comment-waiver=2; GitHub 503 sticky comments); GitHub API mutations bypassed until user says otherwise (D-S069-github-outage-bypass); Lean 08-verify-build COMPLETE PASS (local format/lint/typecheck/test-unit/H0c); next merge AskQuestion for #998"
-  m1_pr_number: 997
-  m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997
-  m1_pr_status: merged
-  m1_pr_note: "M1 Schemathesis MERGED → stage @ c08bc30f; #727 Done"
-  orchestrator: 16-evolve
-  evolve_cycle_id: EV-059
-  artifacts_dir: docs/sessions/S069-ci-schemathesis-mutation/
-  github_issues:
-  - 841
-  - 727
-  - 874
-  board_note: "#727 Done; #874 In progress; #841 In progress; Gate A PASS; Spec→Build OPEN; 07-build M2 T2.3 PR #998 open → stage; Lean 08-verify-build COMPLETE PASS; D-S069-ci-comment-waiver=2; D-S069-github-outage-bypass; next merge AskQuestion"
-  prior_session: S068-quality-metrics-diff-layout
-  feature_ids:
-  - F34
-  feature_note: "F34 — CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   corpus_cites:
-  - '[Corpus: product §F34]'
-  - '[Corpus: tests]'
-  - '[Corpus: tech-spec]'
+  - '[Corpus: product §F7]'
+  - '[Corpus: product §F6]'
+  - '[Corpus: product §F2]'
   - '[Corpus: api]'
-  preset: Lean
-  auto_lean: false
-  auto_lean_rationale: "Lean (Spec 01→02 COMPLETE; Build 07→08 unblocked pending 07 startup); CI/DX; skip 03/04/05/06/09/10/11/12/13"
-  goal: "Close epic #841 via Schemathesis (#727) + mutation testing (#874); fix findings; keep CI cheap"
-  out_of_scope:
-  - "required mutation on every PR"
-  - "Rust mutation"
-  - "live staging/prod Schemathesis as merge gate"
-  - "product UI features"
-  - "weaken coverage≥95%"
-  - "stage→main promote"
-  - "replace hand-written UJ/pytest"
-  ui_preview: N/A
-  ui_preview_url: null
-  ui_preview_note: "N/A — CI/DX cycle; no product UI preview"
-  spec_to_build_gate: open
-  current_stage: 16-evolve
-  current_stage_note: "M1 MERGED (#997→stage; #727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 PR #998 open → stage (D-S069-m2-pr=1 success; tip 78b0b082); 07-build in_progress until #998 merge; Lean 08-verify-build COMPLETE PASS (verification-report.md; D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); Spec→Build still open; next merge AskQuestion for #998 (do not merge yet; session open)"
-  routing_plan_summary: "Lean 00→16→01→02 COMPLETE; Spec→Build OPEN; 07-build in_progress (M1 done #997; M2 T2.1/T2.2 done; T2.3 PR #998 open → stage @ 78b0b082); 08-verify-build COMPLETE PASS; next merge AskQuestion; skip 03-06,09-13"
+  - '[Corpus: journeys]'
+  - '[Corpus: tests]'
+  - '[Corpus: decisions §EV-060]'
   routing_plan:
   - stage: 00-context
     required: true
@@ -79,110 +48,70 @@ active_session:
     status: completed
     started: '2026-08-17'
     completed: '2026-08-17'
-    note: "COMPLETE — open_session S069-ci-schemathesis-mutation; Lean preset; Spec→Build closed; handoff 16-evolve"
   - stage: 16-evolve
     required: true
     mode: orchestrate
     status: in_progress
     started: '2026-08-17'
-    note: "IN PROGRESS — Spec→Build open; current_child 07-build in_progress (await merge AskQuestion #998); Lean 08-verify-build COMPLETE PASS; M1 done PR#997 (#727 Done); M2 T2.3 PR #998 open → stage (D-S069-m2-pr=1 success; tip 78b0b082); D-S069-ci-comment-waiver=2; D-S069-github-outage-bypass"
   - stage: 01-requirements
     required: true
     mode: delta
     status: completed
     started: '2026-08-17'
     completed: '2026-08-17'
-    note: "COMPLETE — report reports/01-requirements.md; standing doc deltas written; handoff 02-verify-plan"
-    report: docs/sessions/S069-ci-schemathesis-mutation/reports/01-requirements.md
+    report: docs/sessions/S070-converter-operator-bugs/reports/01-requirements.md
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: completed
-    started: '2026-08-17'
-    completed: '2026-08-17'
-    note: "COMPLETE — Gate A PASS (D-S069-gateA=1a); report reports/02-verify-plan.md"
-    report: docs/sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md
+    status: pending
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
   - stage: 07-build
     required: true
     mode: delta
-    status: in_progress
-    started: '2026-08-17'
-    note: "IN PROGRESS — M1 done PR#997 (#727 Done); M2 scaffolding complete T2.1/T2.2 done; T2.3 PR #998 open → stage (closes #874; tip 78b0b082; D-S069-m2-pr=1 success); Spec→Build open; Lean 08 COMPLETE PASS; awaiting merge AskQuestion (do not merge yet)"
-    report: docs/sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md
+    status: blocked_until_spec_gate
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: completed
-    started: '2026-08-17'
-    completed: '2026-08-17'
-    note: "COMPLETE — Overall PASS (D-S069-ci-comment-waiver + D-S069-github-outage-bypass); local format/lint/typecheck/test-unit/H0c CORS PASS; tip 78b0b082; PR #998 still open → stage; next merge AskQuestion"
-    report: docs/sessions/S069-ci-schemathesis-mutation/reports/verification-report.md
+    status: blocked_until_spec_gate
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: blocked_until_spec_gate
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: blocked_until_spec_gate
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: blocked_until_spec_gate
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: blocked_until_spec_gate
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: blocked_until_spec_gate
   - stage: 03-plan-tooling
     required: false
-    mode: null
     status: skipped
-    skip_rationale: "Lean preset — skip 03"
-  - stage: 04-tech-plan
-    required: false
-    mode: null
-    status: skipped
-    skip_rationale: "Lean preset — skip 04"
+    skip_rationale: "Standard Spec — skip 03 unless 04 finds rules"
   - stage: 05-verify-tech
     required: false
-    mode: null
     status: skipped
-    skip_rationale: "Lean preset — skip 05"
+    skip_rationale: "Standard Spec — skip 05 unless 04 finds deps"
   - stage: 06-tech-tooling
     required: false
-    mode: null
     status: skipped
-    skip_rationale: "Lean preset — skip 06"
-  - stage: 09-qa
-    required: false
-    mode: null
-    status: skipped
-    skip_rationale: "Lean preset — skip 09"
-  - stage: 10-e2e
-    required: false
-    mode: null
-    status: skipped
-    skip_rationale: "Lean preset — skip 10"
-  - stage: 11-verify-impl
-    required: false
-    mode: null
-    status: skipped
-    skip_rationale: "Lean preset — skip 11"
-  - stage: 12-verify-deploy
-    required: false
-    mode: null
-    status: skipped
-    skip_rationale: "Lean preset — skip 12"
-  - stage: 13-deploy-smoke
-    required: false
-    mode: null
-    status: skipped
-    skip_rationale: "Lean preset — skip 13"
+    skip_rationale: "No new deps expected"
   decisions:
-    D-S069-open: "1 — open S069/EV-059"
-    D-S069-01-title: "1a — F34 Contract + mutation quality gates"
-    D-S069-01-ac: "2b — AC1–AC7 (include budget ceilings)"
-    D-S069-01-budget: "3a — max-examples ≤ 25; Schemathesis job ≤ 10 min"
-    D-S069-01-matrix: "4a — full Python + TS matrix (nightly); exclude e2e + Rust"
-    D-S069-01-uj: "1a — no new UJ"
-    D-S069-01-tc: "2a — TC-F34-001..007"
-    D-S069-01-deps: "3a — schemathesis, pytest-gremlins, @stryker-mutator/core"
-    D-S069-gateA: "1a — PASS"
-    D-S069-spec-build: "2a — Open Build 07→08"
-    D-S069-m1-merge: "1a — merge #997; start M2 mutation #874"
-    D-S069-m2-pins: "pytest-gremlins==1.9.0; @stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0"
-    D-S069-m2-survivors: "waive 3 equivalent Stryker survivors on packages/shared parseCommaSeparatedOrigins (trim/empty short-circuit)"
-    D-S069-m2-pr: "1 — success; PR #998 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998); closes #874"
-    D-S069-ci-comment-waiver: "2 — waive Quality PR comment + Coverage PR comment failures on run 32049951760 (GitHub 503 sticky comments); substantive test jobs green on PR #998"
-    D-S069-github-outage-bypass: "waive/bypass GitHub API mutations (rerun, status sync, sticky comments) until user says otherwise — long-running Partial System Outage; prefer local verification"
+    D-S070-e9: "Spec-development only; gate closed."
   context_briefs: []
-  note: "OPEN — S069/EV-059; Gate A PASS; Spec→Build OPEN; 07-build in_progress (await merge #998); Lean 08-verify-build COMPLETE PASS (verification-report.md; D-S069-ci-comment-waiver + D-S069-github-outage-bypass; local format/lint/typecheck/test-unit/H0c PASS); M1 MERGED (#997→stage @ c08bc30f; #727 Done; D-S069-m1-merge=1a); M2 PR #998 open → stage (tip 78b0b082; D-S069-m2-pr=1 success); next merge AskQuestion (do not merge; session open); #874 In progress; #841 In progress; [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]"
-
-
+  note: "OPEN — S070/EV-060; Standard Spec-development @ 02-verify-plan pending; Spec→Build gate closed; 01-requirements COMPLETE; Build band blocked_until_spec_gate; epic #1000; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; prior S069/EV-059 not closed (PR #998 still open on evolve/EV-059); [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
 
 sessions:
 
@@ -17626,6 +17555,41 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S070-e9
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: open_session
+  category: routing
+  status: confirmed
+  topic: 'S070/EV-060 routing band — Spec-development only'
+  summary: 'Spec-development only; gate closed.'
+  decision: |
+    D-S070-e9 — Spec-development only; gate closed.
+    open_session S070-converter-operator-bugs / EV-060.
+    overall_status=in_progress; session_counter=70; evolve_cycle_counter=60.
+    Branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87.
+    Standard preset; Spec→Build gate closed; Build band blocked_until_spec_gate.
+    No git commit by workflow-state-manager.
+  user_option: 'e9'
+  branch: evolve/EV-060-converter-operator-bugs
+  related_features:
+  - F7
+  related_issues:
+  - '1000'
+  - '1001'
+  - '1002'
+  - '1003'
+  - '1004'
+  - '1005'
+  - '1006'
+  current_stage: 02-verify-plan
+  note: 'OPEN — active_session set; EV-060 in_progress; Spec→Build gate closed'
 
 - id: D-S069-ci-comment-waiver
   date: '2026-08-17'
@@ -38309,6 +38273,90 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-060
+  title: "Converter operator bugs + IWXXM pass-through (#1000)"
+  topic: "Converter operator bugs + F7.t IWXXM pass-through + Auth UAT"
+  goal: "EV-060 converter operator bugs + F7.t IWXXM pass-through + Auth UAT; epic #1000 on GitHub M0"
+  status: in_progress
+  cycle_type: feature
+  session_id: S070-converter-operator-bugs
+  feature_ids:
+  - F7
+  feature_note: "F7.t IWXXM product pass-through + F6/F2/F10/F29/F31 deepen"
+  github_issues:
+  - 1000
+  - 1001
+  - 1002
+  - 1003
+  - 1004
+  - 1005
+  - 1006
+  issues:
+  - 1000
+  - 1001
+  - 1002
+  - 1003
+  - 1004
+  - 1005
+  - 1006
+  branch: evolve/EV-060-converter-operator-bugs
+  branch_base: stage@8755ae87
+  branch_status: open
+  current_stage: 02-verify-plan
+  current_stage_status: pending
+  current_stage_note: "Standard Spec-development; 01-requirements COMPLETE; 02-verify-plan pending; Spec→Build gate closed; Build band blocked_until_spec_gate"
+  current_child: 02-verify-plan
+  current_child_stage: 02-verify-plan
+  current_child_stage_status: pending
+  started: "2026-08-17"
+  started_at: "2026-08-17"
+  preset: Standard
+  spec_to_build_gate: closed
+  corpus_cites:
+  - '[Corpus: product §F7]'
+  - '[Corpus: product §F6]'
+  - '[Corpus: product §F2]'
+  - '[Corpus: api]'
+  - '[Corpus: journeys]'
+  - '[Corpus: tests]'
+  - '[Corpus: decisions §EV-060]'
+  routing_plan:
+  - 00-context
+  - 16-evolve
+  - 01-requirements
+  - 02-verify-plan
+  - 04-tech-plan
+  - 07-build
+  - 08-verify-build
+  - 09-qa
+  - 10-e2e
+  - 11-verify-impl
+  - 12-verify-deploy
+  - 13-deploy-smoke
+  skip_stages:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  prior_session: S069-ci-schemathesis-mutation
+  decisions:
+    D-S070-e9: "Spec-development only; gate closed."
+  gates:
+    spec_to_build: closed
+    spec_to_build_note: "D-S070-e9 — Spec-development only; gate closed."
+  phase_bands:
+    spec_development:
+      status: in_progress
+    build:
+      status: blocked_until_spec_gate
+  artifacts:
+  - docs/sessions/S070-converter-operator-bugs/session-brief.md
+  - docs/sessions/S070-converter-operator-bugs/routing-plan.md
+  - docs/sessions/S070-converter-operator-bugs/evolve-plan-card.md
+  - docs/sessions/S070-converter-operator-bugs/reports/01-requirements.md
+  - docs/decisions/evolve-decisions.md
+  notes:
+  - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; 01-requirements COMPLETE; 02-verify-plan pending; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
+  note: "OPEN — S070/EV-060; Standard Spec-development @ 02-verify-plan pending; Spec→Build gate closed; epic #1000; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
 - id: EV-059
   title: "F34 CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   topic: "F34 Schemathesis + mutation; close #841"
@@ -50419,7 +50467,7 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-059-ci-schemathesis-mutation
+  current_branch: evolve/EV-060-converter-operator-bugs
   ahead_of_origin: 0
   pushed: true
   pending_commit: false
@@ -50435,7 +50483,7 @@ git_history:
   docs_tip_pr_number: 986
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
-  evolve_branch: evolve/EV-059-ci-schemathesis-mutation
+  evolve_branch: evolve/EV-060-converter-operator-bugs
   evolve_tip_sha: "78b0b082"
   evolve_tip_sha_full: 78b0b082e87a45f5456bf0b26464770d27fda893
   evolve_tip_sha_pushed: true
@@ -50453,10 +50501,11 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-059-ci-schemathesis-mutation
-  note: "S069/EV-059 OPEN — branch evolve/EV-059-ci-schemathesis-mutation on origin tip 78b0b082; M1 #997 merged → stage @ c08bc30f (#727 Done); M2 PR #998 open → stage (D-S069-m2-pr=1 success); 07-build + 08-verify-build in_progress; D-S069-ci-comment-waiver=2; D-S069-github-outage-bypass; no git commit by workflow-state-manager"
+  recommended_branch: evolve/EV-060-converter-operator-bugs
+  note: "S070/EV-060 OPEN — branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; Standard Spec-development @ 02-verify-plan; Spec→Build gate closed; 01-requirements COMPLETE; prior S069/EV-059 not closed (PR #998 open on evolve/EV-059); no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; branch evolve/EV-060-converter-operator-bugs @ origin/stage@8755ae87; session_counter=70; evolve_cycle_counter=60; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-ci-comment-waiver=2 + D-S069-github-outage-bypass — waive Quality+Coverage sticky comment failures on run 32049951760; substantive tests green on PR #998; bypass GitHub API mutations until user says otherwise; Lean 08-verify-build in_progress; 07-build progressing; session open; no merge; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-m2-pr=1 success — PR #998 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998); tip 78b0b082; closes #874; CI/CD 32049951760 in_progress; T2.3/07-build in_progress; Spec→Build open; next Lean 08 after CI green (merge needs user approval); no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-m2-pr=1 — retry open PR #874 → stage; GitHub API 503 on gh + REST; tip 78b0b082 on origin; compare stage...evolve/EV-059-ci-schemathesis-mutation; T2.3/07-build in_progress; Spec→Build open; no PR URL; no git commit by workflow-state-manager"
@@ -51044,6 +51093,18 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-060-converter-operator-bugs
+    base: origin/stage@8755ae87
+    base_sha: 8755ae87
+    purpose: "S070/EV-060 — converter operator bugs + F7.t IWXXM pass-through + Auth UAT; epic #1000"
+    status: open
+    created: "2026-08-17"
+    exists: false
+    pushed: false
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    note: "OPEN — Standard Spec-development; Spec→Build gate closed; 02-verify-plan pending; no git commit by workflow-state-manager"
+
   - name: evolve/EV-059-ci-schemathesis-mutation
     base: stage@c458669e
     base_sha: c458669e

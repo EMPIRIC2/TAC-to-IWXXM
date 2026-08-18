@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-17 (S069 / EV-059 — F34 Schemathesis + mutation quality gates #841/#727/#874)
+> **Last updated**: 2026-08-17 (S070 / EV-060 — F7.t IWXXM product pass-through + converter operator bugs #1000)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -313,6 +313,7 @@
   | F7.q | #836 / #982 / #988 / #983 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058) |
   | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
   | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
+  | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -484,6 +485,32 @@
   4. Version/profile selection consistent with convert/validate UI (F4).
   5. Happy path works without Supabase.
   6. UJ-058 / TC-EV057-* : good fixture pass; broken XML structured fail; H4–H5 via 13.
+- **S070 / EV-060 deepen (F7.t / #1003 — IWXXM product pass-through)**: Add **IWXXM** to the
+  product select. Selecting it skips TAC→IWXXM convert; paste/upload XML is linted
+  (well-formed / COLLECT vs report) and validated (F2) only. Convert is disabled or no-ops
+  with a clear operator message. **F7.s Validate-only stays**. FileConverter / accumulate /
+  Quality metrics honor `product=iwxxm`. API enum adds `iwxxm`. Does **not** flip F7 →
+  Implemented. Parent epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000).
+- **Acceptance (EV-060 / #1003 — F7.t)** — **approved** (`D-S070-e3a` / `D-S070-e9`):
+  1. Given product=IWXXM and valid IWXXM XML, when lint+validate, then no TAC convert runs and F2 result is shown.
+  2. Given product=IWXXM and TAC text, when run, then operator/API get a not-XML error.
+  3. FileConverter / accumulate / Quality metrics honor product=IWXXM.
+  4. API `product=iwxxm` on convert/lint/validate; OpenAPI updated.
+- **S070 / EV-060 deepen (#1001 AHL bulletin lint noise)**: AHL wrapper lints as bulletin COM;
+  contained TAC reports lint/validate with the selected product. Heading tokens are not
+  product-syntax errors. Same on workbench, FileConverter, and `/convert-bulletin` / lint.
+- **Acceptance (EV-060 / #1001)**: Given a well-formed AHL METAR bulletin, when lint/validate,
+  then heading is not a flood of product-syntax errors and contained METARs are checked.
+- **S070 / EV-060 deepen (#1002 profile picker)**: Clearly labeled Profile (Annex 3 / IWXXM-US)
+  at converter **top** (not buried in params); applied to convert/lint/validate; keyboard
+  accessible name+label. Not the #933 editor.
+- **S070 / EV-060 deepen (#1005 Bulletin ID / Issuing Center)**: Labeled, editable fields;
+  sent on convert; empty → discover-from-AHL or defaults; invalid CCCC/ID → one field error.
+- **S070 / EV-060 deepen (#1004 log_level)**: Existing UI/API log-level enum sets **logger
+  verbosity** in backend + packages (not client-echo filter only). DEBUG must not dump JWTs,
+  passwords, or Authorization headers.
+- **S070 / EV-060 deepen (#1006 Auth UAT)**: Facilitated UAT + Playwright register, login,
+  logout, session persist; guest convert still works (F21). Deepens F31 / UJ-003 / UJ-046.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -1443,6 +1470,9 @@
   cycle **TC-EV030-***
 - **Out of scope**: Claiming 100% Annex-3 coverage in first PR; duplicating entire WMO trees
   ×20; coupling matrix to live network
+- **S070 / EV-060 deepen (#1004)**: Conversion parameter `log_level` must set backend/package
+  logger verbosity (not only client-echoed process-issue filter). DEBUG must not dump JWTs,
+  passwords, or Authorization headers. UJ-063 / TC-EV060-1004-*.
 - **Source**: E30-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-030;
   [Context: quality-residuals-831](context/quality-residuals-831.md); #831
 
@@ -1523,6 +1553,9 @@
   6. H4–H5 + UJs for notice, login, privacy interplay (**TC-F31-006**)
 - **Out of scope**: Forced login for convert; CMP; selling personal data
 - **Journeys / tests**: **UJ-045+** (assign in user-journeys delta); **TC-F30-*** / **TC-F31-***; **TC-EV031-***
+- **S070 / EV-060 deepen (#1006)**: Auth/Register UAT — Playwright register, login, logout,
+  session persist; guest convert still works. Facilitated `uat` Spec then Build. UJ-003 /
+  UJ-046 / TC-EV060-1006-*.
 - **Source**: E31-*; [Context: platform-independence-842](context/platform-independence-842.md)
 
 ### F23 / F12 / F2 / F13 deepen (S037 / EV-030 — #829 TC SIGMET)
