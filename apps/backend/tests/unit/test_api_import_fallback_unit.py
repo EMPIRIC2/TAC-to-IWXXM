@@ -182,6 +182,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     fake_util_observability = _stub_module(
         "utilities.observability",
         install_fastapi_observability=lambda **_kwargs: None,
+        set_request_log_level=lambda *_args, **_kwargs: "INFO",
         setup_logging=lambda *_args, **_kwargs: None,
     )
     fake_util_sentry = _stub_module(
