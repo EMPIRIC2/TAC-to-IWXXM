@@ -1,12 +1,158 @@
-overall_status: completed
-overall_status_note: "S070/EV-060 CLOSED on stage @ 6ef540bc; D-S070-13=1 / D-S070-close=1; PR #1007 squash MERGED; CD 32183276810 SUCCESS; H0c–H5 + live Playwright 14/14 PASS; epic #1000 + #1001–#1006 CLOSED; promote held; active_session=null; docs/S070-13-deploy-smoke uncommitted (no docs tip SHA invented)"
+overall_status: in_progress
+overall_status_note: "S071/EV-061 Spec-development started; Phase 0–1 intake complete; spec_to_build_gate closed; next 01-requirements; branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01; epic #1009 + #1010–#1015; prior S070/EV-060 CLOSED on stage @ 6ef540bc; promote held; do not invent product tip SHA beyond verified origin/stage@a1650b01"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
-session_counter: 70
-evolve_cycle_counter: 60
-active_session: null
+session_counter: 71
+evolve_cycle_counter: 61
+active_session:
+  id: S071-pre-promote-ux-catalog
+  type: feature
+  intent: "EV-061 pre-promote: IWXXM validate readable decode, AHL decode/convert, Product/Profile UI bars, lint/validation catalog tab, multipart live test fix, stricter stage→main gate; epic #1009"
+  status: in_progress
+  started: '2026-08-18'
+  started_at: '2026-08-18'
+  branch: evolve/EV-061-pre-promote-ux-catalog
+  branch_base: stage@a1650b01
+  branch_base_sha: a1650b01
+  branch_base_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
+  branch_status: active
+  branch_exists: true
+  branch_pushed: false
+  branch_tracking: origin/stage
+  orchestrator: 16-evolve
+  evolve_cycle_id: EV-061
+  artifacts_dir: docs/sessions/S071-pre-promote-ux-catalog/
+  github_issues:
+  - 1009
+  - 1010
+  - 1011
+  - 1012
+  - 1013
+  - 1014
+  - 1015
+  prior_session: S070-converter-operator-bugs
+  feature_ids:
+  - F7
+  - F2
+  - F6
+  - F9
+  - F10
+  - F15
+  - F34
+  feature_note: "Deepen only — no new top-level Fn"
+  preset: Standard
+  spec_to_build_gate: closed
+  current_stage: 16-evolve
+  current_stage_note: "Phase 0–1 intake complete; Spec band next = 01-requirements; spec_to_build_gate closed"
+  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07→13 blocked_until_spec_gate; skip 03/05/06"
+  sessions_index_note: "Active S071/EV-061; archived S070 remains first in sessions[]; do not re-archive S070"
+  corpus_cites:
+  - '[Corpus: product §F2]'
+  - '[Corpus: product §F6]'
+  - '[Corpus: product §F7]'
+  - '[Corpus: product §F9]'
+  - '[Corpus: product §F10]'
+  - '[Corpus: product §F15]'
+  - '[Corpus: api]'
+  - '[Corpus: journeys]'
+  - '[Corpus: tests]'
+  - '[Corpus: tech-spec]'
+  - '[Corpus: decisions §EV-061]'
+  routing_plan:
+  - stage: 00-context
+    required: true
+    mode: session
+    status: completed
+    started: '2026-08-18'
+    completed: '2026-08-18'
+  - stage: 16-evolve
+    required: true
+    mode: orchestrate
+    status: in_progress
+    started: '2026-08-18'
+    note: "Phase 0–1 intake complete; Spec band next = 01-requirements"
+  - stage: 01-requirements
+    required: true
+    mode: delta
+    status: pending
+  - stage: 02-verify-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: 04-tech-plan
+    required: true
+    mode: delta
+    status: pending
+  - stage: uat (Spec)
+    required: true
+    mode: dual Spec
+    status: pending
+  - stage: verify-qa (Spec)
+    required: true
+    mode: dual Spec
+    status: pending
+  - stage: 07-build
+    required: true
+    mode: delta
+    status: pending
+    note: blocked_until_spec_gate
+  - stage: 08-verify-build
+    required: true
+    mode: delta
+    status: pending
+    note: blocked_until_spec_gate
+  - stage: 09-qa
+    required: true
+    mode: delta
+    status: pending
+    note: blocked_until_spec_gate
+  - stage: 10-e2e
+    required: true
+    mode: delta
+    status: pending
+    note: blocked_until_spec_gate
+  - stage: 11-verify-impl
+    required: true
+    mode: delta
+    status: pending
+    note: blocked_until_spec_gate
+  - stage: 12-verify-deploy
+    required: true
+    mode: delta
+    status: pending
+    note: blocked_until_spec_gate
+  - stage: 13-deploy-smoke
+    required: true
+    mode: delta
+    status: pending
+    note: blocked_until_spec_gate
+  - stage: 03-plan-tooling
+    required: false
+    status: skipped
+    skip_rationale: "Standard Spec — skip 03 unless 04 finds rules"
+  - stage: 05-verify-tech
+    required: false
+    status: skipped
+    skip_rationale: "Standard Spec — skip 05 unless 04 finds deps"
+  - stage: 06-tech-tooling
+    required: false
+    status: skipped
+    skip_rationale: "No new deps expected"
+  decisions:
+    D-S071-e0: "Proceed evolve intake; M0 epic #1009; in/out as written; promote held"
+    D-S071-e1: "Feature cycle; tickets #1009–#1015; deepen only; success = six child ACs"
+    D-S071-e2: "Operator + convert/validate/lint; UI preview at 11; fence existing convert"
+    D-S071-e3: "Readable IWXXM decode; AHL decode/convert; Product/Profile bars; catalog tab; multipart files; strict promote gate"
+    D-S071-e4: "Standard Spec 01→02→04 + uat/verify-qa Spec; existing CORPUS rows"
+    D-S071-e5: "FE/BE/packages/e2e/CI; Standard Build 07–13 blocked; staging smoke; promote held until #1015"
+    D-S071-e6: "No new top-level Fn; OOS M1+ national/dissemination, #996, #837"
+    D-S071-e7: "API+FE+CI; no new secrets; existing CORS; H0c + H4–H5"
+    D-S071-e8: "Spec 00→16→01→02→04 + dual Spec; Build 07→13 blocked; skip 03/05/06"
+    D-S071-e9: "Spec-development only; spec_to_build_gate closed"
+  context_briefs: []
+  note: "OPEN — S071/EV-061 Spec-development started; spec_to_build_gate closed; branch @ origin/stage@a1650b01; do not invent product tip SHA; [Corpus: product §F7] [Corpus: decisions §EV-061]"
 
 sessions:
 
@@ -9856,22 +10002,22 @@ stages:
   00-context:
     status: completed
     mode: session
-    scoped_slug: quality-metrics-diff-long-line
-    session_id: S065-quality-metrics-diff-long-line
-    evolve_cycle_id:
-    started: '2026-08-11'
-    started_at: '2026-08-11'
-    completed: '2026-08-11'
-    completed_at: '2026-08-11'
-    note: 'S065 open_session COMPLETE — Auto-Lean hotfix; D-S065-scope=4 / products=all / page=inline-for-now; handoff 14-hotfix; branch pending_create fix/quality-metrics-diff-long-line @ stage@d80db688; [Corpus: product §F7.q] [Corpus: tests §UJ-056]'
-    prior_note: 'S060/EV-051 COMPLETE — D-S060-open=1 + D-S060-scope=1 (2+3+4) + D-S060-route=1 Lean+; session-brief + routing-plan + evolve-plan-card; handoff 07-build (Gate A confirm pending)'
-    prior_session_id: S060-tag-driven-prod-deploy
-    prior_evolve_cycle_id: EV-051
-    prior_scoped_slug: tag-driven-prod-deploy
-    prior_completed: '2026-08-09'
-    prior_started: '2026-08-09'
-    prior_tip_sha: c146baec
-    prior_tip_sha_full: c146baecabdc5f1db429954e8f0eb66d3b391c84
+    scoped_slug: pre-promote-ux-catalog
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
+    started: '2026-08-18'
+    started_at: '2026-08-18'
+    completed: '2026-08-18'
+    completed_at: '2026-08-18'
+    note: 'S071 open_session COMPLETE — Standard Spec-development; D-S071-e9 gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01; next 16-evolve Spec band 01-requirements; [Corpus: product §F7] [Corpus: decisions §EV-061]'
+    prior_note: 'S065 open_session COMPLETE — Auto-Lean hotfix; D-S065-scope=4 / products=all / page=inline-for-now; handoff 14-hotfix; branch pending_create fix/quality-metrics-diff-long-line @ stage@d80db688; [Corpus: product §F7.q] [Corpus: tests §UJ-056]'
+    prior_session_id: S065-quality-metrics-diff-long-line
+    prior_evolve_cycle_id: null
+    prior_scoped_slug: quality-metrics-diff-long-line
+    prior_completed: '2026-08-11'
+    prior_started: '2026-08-11'
+    prior_tip_sha: d80db688
+    prior_tip_sha_full: d80db68887a753692842ee7398a9c60ddd4660d7
     prior_prior_note: 'S057/EV-048 COMPLETE — D-S057-preset-reconfirm=1 Standard amend; exit 00 → 16-evolve; session-brief + routing-plan written'
     prior_prior_session_id: S057-strip-internal-doc-refs
     prior_prior_evolve_cycle_id: EV-048
@@ -17357,15 +17503,18 @@ stages:
     retrospective_cycle_id: RET-001
     note: RET-001 skill-trim COMPLETE — corpus-first, lean routing, archive legacy; workshop applied RA-001..RA-006; RA-007/RA-008 remain open
   16-evolve:
-    status: completed
-    completed: '2026-08-17'
-    completed_at: '2026-08-17'
-    close_decision: D-S068-close=1
+    status: in_progress
+    started: '2026-08-18'
+    started_at: '2026-08-18'
     mode: orchestrator
-    session_id: S068-quality-metrics-diff-layout
-    evolve_cycle_id: EV-058
-    started_at: '2026-08-17'
-    started: '2026-08-17'
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
+    note: 'OPEN — S071/EV-061 in_progress; Phase 0–1 intake complete; Spec band next = 01-requirements; spec_to_build_gate closed; branch @ origin/stage@a1650b01'
+    previous_s070_session_id: S070-converter-operator-bugs
+    previous_s070_evolve_cycle_id: EV-060
+    previous_s070_completed: '2026-08-18'
+    previous_s070_close_decision: D-S070-close=1
+    previous_s070_note: 'COMPLETE — D-S070-close=1; EV-060/S070 closed on stage tip 6ef540bc; promote held; PR #1007; epic #1000+#1001–#1006 CLOSED'
     previous_s068_session_id: S068-quality-metrics-diff-layout
     previous_s068_evolve_cycle_id: EV-058
     previous_s068_completed: '2026-08-17'
@@ -17764,6 +17913,158 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S071-e9
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: workflow-state-manager
+  skill_id: workflow-state-manager
+  stage: open_session
+  category: routing
+  status: confirmed
+  topic: 'S071/EV-061 EV9 — proceed Spec-development only'
+  summary: 'Spec-development only; spec_to_build_gate closed'
+  decision: |
+    D-S071-e9 — Allocate deepen F7/F2/F6/F9/F10/F15/F34 (no new top-level Fn).
+    Start Spec-development only. Spec→Build gate closed. Build 07+ blocked.
+    open_session S071-pre-promote-ux-catalog / EV-061.
+    overall_status=in_progress; session_counter=71; evolve_cycle_counter=61.
+    Branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01.
+    No git commit by workflow-state-manager.
+  user_option: 'e9'
+  branch: evolve/EV-061-pre-promote-ux-catalog
+  related_features:
+  - F7
+  - F2
+  - F6
+  - F9
+  - F10
+  - F15
+  - F34
+  related_issues:
+  - '1009'
+  - '1010'
+  - '1011'
+  - '1012'
+  - '1013'
+  - '1014'
+  - '1015'
+  current_stage: 16-evolve
+  note: 'OPEN — active_session set; EV-061 in_progress; Spec→Build gate closed'
+
+- id: D-S071-e8
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: routing
+  status: confirmed
+  topic: 'S071/EV-061 EV8 — routing bands'
+  summary: 'Standard Spec 00→16→01→02→04 + dual Spec; Build 07→13 blocked; skip 03/05/06'
+  decision: 'Approve Spec-band stages; Build-band blocked_until_spec_gate; checkpoints at Spec→Build.'
+  related_issues: ['1009']
+
+- id: D-S071-e7
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: platform
+  status: confirmed
+  topic: 'S071/EV-061 EV7 — platform & connectivity'
+  summary: 'API+FE+CI; no new secrets; existing CORS; H0c + H4–H5'
+  decision: 'Apps: backend, frontend, e2e, CI. No new env/secrets expected. H0c plus H4–H5 when UI ships.'
+  related_issues: ['1009', '1015']
+
+- id: D-S071-e6
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: scope
+  status: confirmed
+  topic: 'S071/EV-061 EV6 — boundaries & risk'
+  summary: 'No new top-level Fn; OOS M1+ national/dissemination, #996, #837'
+  decision: 'Deepen F7/F2/F6/F9/F10/F15/F34 only. Out of scope: later-milestone national/dissemination spikes, #996 click-for-detail, #837 decode visuals.'
+  related_issues: ['1009']
+
+- id: D-S071-e5
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: build_intent
+  status: confirmed
+  topic: 'S071/EV-061 EV5 — Build intent (deferred)'
+  summary: 'FE/BE/packages/e2e/CI; Standard Build 07–13 blocked; staging smoke; promote held until #1015'
+  decision: 'Record Build intent only — no 07 yet. Staging smoke after gate; promote held until stricter stage→main gate (#1015).'
+  related_issues: ['1009', '1015']
+
+- id: D-S071-e4
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: spec_plan
+  status: confirmed
+  topic: 'S071/EV-061 EV4 — Spec-development plan'
+  summary: 'Standard Spec 01→02→04 + uat/verify-qa Spec; existing CORPUS rows'
+  decision: 'Docs: product/api/journeys/tests/tech-spec/decisions EV-061. Dual Spec skills uat + verify-qa. Spec-band Standard (01–02–04).'
+  related_issues: ['1009']
+
+- id: D-S071-e3
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: behavior
+  status: confirmed
+  topic: 'S071/EV-061 EV3 — behavior'
+  summary: 'Readable IWXXM decode; AHL decode/convert; Product/Profile bars; catalog tab; multipart files; strict promote gate'
+  decision: |
+    #1010 readable item-by-item IWXXM validate decode; #1011 live bulletin multipart file→files;
+    #1012 AHL bulletin decode+convert; #1013 Product/Profile bars no-wrap aligned;
+    #1014 lint/validation catalog tab with working source links; #1015 stricter stage→main gate.
+  related_issues: ['1010', '1011', '1012', '1013', '1014', '1015']
+
+- id: D-S071-e2
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: journeys
+  status: confirmed
+  topic: 'S071/EV-061 EV2 — users & journeys'
+  summary: 'Operator + convert/validate/lint; UI preview at 11; fence existing convert'
+  decision: 'Primary persona operator. Must-not-break convert/validate/lint. UI in scope → non-deployed preview at 11-verify-impl.'
+  related_issues: ['1009']
+
+- id: D-S071-e1
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: intent
+  status: confirmed
+  topic: 'S071/EV-061 EV1 — intent'
+  summary: 'Feature cycle; tickets #1009–#1015; deepen only; success = six child ACs'
+  decision: 'cycle_type feature. Why now: pre-promote cleanup before stage→main. Success = #1010–#1015 ACs. Prior S070/EV-060.'
+  related_issues: ['1009', '1010', '1011', '1012', '1013', '1014', '1015']
+
+- id: D-S071-e0
+  date: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 16-evolve
+  category: intake
+  status: confirmed
+  topic: 'S071/EV-061 EV0 — shared core'
+  summary: 'Proceed evolve intake; M0 epic #1009; in/out as written; promote held'
+  decision: 'Goal: pre-promote operator UX + catalog + AHL + strict stage→main gate. Constraints: M0 only; promote held until this cycle + #1015. Proceed into evolve intake.'
+  related_issues: ['1009']
 
 - id: D-S070-close
   date: '2026-08-18'
@@ -39129,6 +39430,156 @@ retrospective_cycles:
   - path: docs/retrospective-actions.md
     status: completed
 evolve_cycles:
+- id: EV-061
+  title: "Pre-promote operator UX + catalog + AHL + strict stage→main gate (#1009)"
+  topic: "Pre-promote UX, lint/validation catalog, AHL decode/convert, stricter promote gate"
+  goal: "EV-061 pre-promote: IWXXM validate readable decode, AHL decode/convert, Product/Profile UI bars, lint/validation catalog tab, multipart live test fix, stricter stage→main gate; epic #1009"
+  status: in_progress
+  cycle_type: feature
+  session_id: S071-pre-promote-ux-catalog
+  feature_ids:
+  - F7
+  - F2
+  - F6
+  - F9
+  - F10
+  - F15
+  - F34
+  feature_note: "Deepen only — no new top-level Fn"
+  github_issues:
+  - 1009
+  - 1010
+  - 1011
+  - 1012
+  - 1013
+  - 1014
+  - 1015
+  issues:
+  - 1009
+  - 1010
+  - 1011
+  - 1012
+  - 1013
+  - 1014
+  - 1015
+  branch: evolve/EV-061-pre-promote-ux-catalog
+  branch_base: stage@a1650b01
+  branch_base_sha: a1650b01
+  branch_base_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
+  branch_status: active
+  branch_exists: true
+  branch_pushed: false
+  branch_tracking: origin/stage
+  tip_sha: a1650b01
+  tip_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
+  tip_sha_pushed: true
+  tip_sha_note: "HEAD = verified origin/stage@a1650b01 (git rev-parse); evolve branch not yet pushed as origin/evolve/EV-061; do not invent product tip SHA"
+  current_stage: 16-evolve
+  current_stage_status: in_progress
+  current_stage_note: "Phase 0–1 intake complete; Spec band next = 01-requirements; spec_to_build_gate closed"
+  current_child: 01-requirements
+  current_child_stage: 01-requirements
+  current_child_stage_status: pending
+  current_child_note: "Spec band next after 16-evolve Phase 0–1"
+  active_milestone: null
+  active_task: null
+  decision_pending: null
+  started: "2026-08-18"
+  started_at: "2026-08-18"
+  preset: Standard
+  spec_to_build_gate: closed
+  corpus_cites:
+  - '[Corpus: product §F2]'
+  - '[Corpus: product §F6]'
+  - '[Corpus: product §F7]'
+  - '[Corpus: product §F9]'
+  - '[Corpus: product §F10]'
+  - '[Corpus: product §F15]'
+  - '[Corpus: api]'
+  - '[Corpus: journeys]'
+  - '[Corpus: tests]'
+  - '[Corpus: tech-spec]'
+  - '[Corpus: decisions §EV-061]'
+  routing_plan:
+  - 00-context
+  - 16-evolve
+  - 01-requirements
+  - 02-verify-plan
+  - 04-tech-plan
+  - uat (Spec)
+  - verify-qa (Spec)
+  - 07-build
+  - 08-verify-build
+  - 09-qa
+  - 10-e2e
+  - 11-verify-impl
+  - 12-verify-deploy
+  - 13-deploy-smoke
+  skip_stages:
+  - 03-plan-tooling
+  - 05-verify-tech
+  - 06-tech-tooling
+  prior_session: S070-converter-operator-bugs
+  decisions:
+    D-S071-e0: "Proceed evolve intake; M0 epic #1009; in/out as written; promote held"
+    D-S071-e1: "Feature cycle; tickets #1009–#1015; deepen only; success = six child ACs"
+    D-S071-e2: "Operator + convert/validate/lint; UI preview at 11; fence existing convert"
+    D-S071-e3: "Readable IWXXM decode; AHL decode/convert; Product/Profile bars; catalog tab; multipart files; strict promote gate"
+    D-S071-e4: "Standard Spec 01→02→04 + uat/verify-qa Spec; existing CORPUS rows"
+    D-S071-e5: "FE/BE/packages/e2e/CI; Standard Build 07–13 blocked; staging smoke; promote held until #1015"
+    D-S071-e6: "No new top-level Fn; OOS M1+ national/dissemination, #996, #837"
+    D-S071-e7: "API+FE+CI; no new secrets; existing CORS; H0c + H4–H5"
+    D-S071-e8: "Spec 00→16→01→02→04 + dual Spec; Build 07→13 blocked; skip 03/05/06"
+    D-S071-e9: "Spec-development only; spec_to_build_gate closed"
+  gates:
+    spec_to_build: closed
+    spec_to_build_note: "D-S071-e9 — Spec-development only; Build 07+ blocked_until_spec_gate"
+  phase_bands:
+    spec_development:
+      status: in_progress
+      note: "Phase 0–1 complete; next 01-requirements"
+    build:
+      status: blocked_until_spec_gate
+  stages:
+    00-context:
+      status: completed
+      started: '2026-08-18'
+      completed: '2026-08-18'
+    16-evolve:
+      status: in_progress
+      started: '2026-08-18'
+      note: "Phase 0–1 intake complete; Spec band next = 01-requirements"
+    01-requirements:
+      status: pending
+    02-verify-plan:
+      status: pending
+    04-tech-plan:
+      status: pending
+    07-build:
+      status: pending
+      note: blocked_until_spec_gate
+    08-verify-build:
+      status: pending
+      note: blocked_until_spec_gate
+    09-qa:
+      status: pending
+      note: blocked_until_spec_gate
+    10-e2e:
+      status: pending
+      note: blocked_until_spec_gate
+    11-verify-impl:
+      status: pending
+      note: blocked_until_spec_gate
+    12-verify-deploy:
+      status: pending
+      note: blocked_until_spec_gate
+    13-deploy-smoke:
+      status: pending
+      note: blocked_until_spec_gate
+  artifacts: []
+  notes:
+  - "2026-08-18 D-S071-e9 — open_session S071/EV-061; Standard Spec-development only; Spec→Build gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01; epic #1009 + #1010–#1015; session_counter=71; evolve_cycle_counter=61; no git commit by workflow-state-manager"
+  note: "OPEN — S071/EV-061 Spec-development started; spec_to_build_gate closed; next 01-requirements; [Corpus: product §F7] [Corpus: decisions §EV-061]"
 - id: EV-060
   title: "Converter operator bugs + IWXXM pass-through (#1000)"
   topic: "Converter operator bugs + F7.t IWXXM pass-through + Auth UAT"
@@ -51483,26 +51934,26 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: docs/S070-13-deploy-smoke
-  current_branch_tracking: null
-  ahead_of_origin: null
+  current_branch: evolve/EV-061-pre-promote-ux-catalog
+  current_branch_tracking: origin/stage
+  ahead_of_origin: 0
   pushed: false
   pending_commit: true
-  pending_commit_note: "docs/S070-13-deploy-smoke uncommitted (closeout docs + this yaml); do not invent docs tip SHA; no git commit by workflow-state-manager"
+  pending_commit_note: "workflow-state.yaml open_session S071/EV-061 uncommitted — parent will commit; do not invent product tip SHA beyond verified origin/stage@a1650b01; no git commit by workflow-state-manager"
   dirty: true
-  dirty_note: "docs/S070-13-deploy-smoke working tree dirty — closeout docs + workflow-state.yaml uncommitted; stage tip 6ef540bc; S070/EV-060 CLOSED"
-  tip_sha: "6ef540bc"
-  tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  dirty_note: "workflow-state.yaml dirty after S071/EV-061 open_session; HEAD a1650b01 = origin/stage"
+  tip_sha: "a1650b01"
+  tip_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
   tip_sha_pushed: true
-  tip_ci_run: '32183276810'
-  tip_ci_status: success
-  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
-  tip_note: "stage tip 6ef540bc = PR #1007 squash mergeCommit; CI/CD 32183276810 SUCCESS; D-S070-13=1 / D-S070-close=1; S070/EV-060 CLOSED; docs tip SHA null; promote held"
-  product_tip_sha: "6ef540bc"
-  product_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
-  product_tip_ci_run: '32183276810'
-  product_tip_ci_status: success
-  product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  tip_note: "HEAD = verified origin/stage@a1650b01 (git rev-parse); evolve/EV-061-pre-promote-ux-catalog tracks origin/stage; not pushed as origin/evolve/EV-061; do not invent product tip SHA"
+  product_tip_sha: null
+  product_tip_sha_full: null
+  product_tip_note: "do not invent product tip SHA — no new product commit on S071 yet; stage HEAD a1650b01 verified separately as tip_sha"
+  previous_product_tip_sha: "6ef540bc"
+  previous_product_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  previous_product_tip_ci_run: '32183276810'
+  previous_product_tip_ci_status: success
+  previous_product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
   docs_tip_sha: null
   docs_tip_sha_full: null
   docs_tip_branch: docs/S070-13-deploy-smoke
@@ -51514,15 +51965,19 @@ git_history:
   previous_docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   previous_docs_tip_branch: docs/EV-055-13-deploy-smoke
   previous_docs_tip_pr_number: 986
-  evolve_branch: evolve/EV-060-converter-operator-bugs
-  evolve_tip_sha: "4d29ee0c"
-  evolve_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
+  evolve_branch: evolve/EV-061-pre-promote-ux-catalog
+  evolve_tip_sha: "a1650b01"
+  evolve_tip_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
   evolve_tip_sha_pushed: true
-  evolve_pr_status: merged
+  evolve_pr_status: null
+  previous_evolve_branch: evolve/EV-060-converter-operator-bugs
+  previous_evolve_tip_sha: "4d29ee0c"
+  previous_evolve_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
+  previous_evolve_pr_status: merged
   stage_merge_sha: 6ef540bc
   stage_merge_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
-  stage_tip_sha: 6ef540bc
-  stage_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  stage_tip_sha: a1650b01
+  stage_tip_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
   stash:
   - name: S039-EV031-WIP
     note: 'OPEN S067-m0-ready-apex-accumulate-validate/EV-057 — Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e; #948+#903+#838; no git commit by workflow-state-manager'
@@ -51533,10 +51988,11 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: docs/S070-13-deploy-smoke
-  note: "S070/EV-060 12 COMPLETE checklist-only; no merge #1007; 13 blocked; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; pending_commit dirty — parent will commit checklist + this yaml; env_role staging; Spec→Build remains open; cycle in_progress; no git commit by workflow-state-manager"
+  recommended_branch: evolve/EV-061-pre-promote-ux-catalog
+  note: "S071/EV-061 OPEN — Spec-development started; spec_to_build_gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01; pending_commit dirty (this yaml); no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 D-S071-e9 — open_session S071/EV-061; Standard Spec-development only; Spec→Build gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01; session_counter=71; evolve_cycle_counter=61; no git commit by workflow-state-manager"
   - "2026-08-18 12-verify-deploy COMPLETE checklist-only PASS; D-S070-12-close / D-S070-12-risks / D-S070-12-rollback; tip_sha c2880375 (current HEAD; do not invent next SHA); tip CI 32180225018 SUCCESS; product CI 32171946188 @ 4d29ee0c; no merge #1007; 13 blocked until merge; Spec→Build remains open; promote held; pending_commit dirty (checklist + this yaml); no git commit by workflow-state-manager"
   - "2026-08-18 commit c2880375 — [EV-060] docs: record tip CI green after auth coverage and OpenAPI refresh; tip_sha_pushed=true; CI 32180225018 SUCCESS; product tip 4d29ee0c CI 32171946188 retained; 12 then COMPLETE checklist-only; no merge #1007; promote held; Spec→Build remains open; pending_commit dirty (this yaml + checklist after close); no git commit by workflow-state-manager"
   - "2026-08-18 commit 4d29ee0c — [EV-060] test: cover auth logout in the auth job and refresh OpenAPI; tip_sha_pushed=true; CI 32171946188 SUCCESS; original HARD STOP 32169922030 resolved; I-S070-12-ci-32169922030 resolved; 12 remains in_progress — checklist only; no merge #1007; promote held; Spec→Build remains open; pending_commit dirty (this yaml); no git commit by workflow-state-manager"
@@ -52143,6 +52599,24 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: evolve/EV-061-pre-promote-ux-catalog
+    base: stage
+    base_sha: a1650b01
+    base_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
+    purpose: "S071/EV-061 — pre-promote UX + catalog + AHL + strict stage→main gate; epic #1009"
+    status: active
+    created: "2026-08-18"
+    exists: true
+    pushed: false
+    tracking: origin/stage
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
+    tip_sha: a1650b01
+    tip_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
+    tip_sha_pushed: true
+    tip_sha_note: "HEAD = verified origin/stage@a1650b01; evolve remote branch not yet published; do not invent product tip SHA"
+    note: "ACTIVE — open_session S071/EV-061; Spec-development started; spec_to_build_gate closed; next 01-requirements"
+
   - name: docs/S070-13-deploy-smoke
     base: stage@6ef540bc
     base_sha: 6ef540bc
