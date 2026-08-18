@@ -1,12 +1,11 @@
 # Deploy Checklist — S070 / EV-060 (12-verify-deploy)
 
 > Generated: 2026-08-18  
-> Status: **checklist ready** — **no merge** (`D-S070-12-merge` / `D-S070-12-close`)  
+> Status: **complete** — 12 checklist + 13 smoke (`D-S070-12-*` / `D-S070-13`)  
 > Deployment: [docs/deploy.md](../../../deploy.md) · dual DOKS (ADR-034)  
-> Product tip: `4d29ee0c` · state tip: `c2880375` · PR [#1007](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007) → `stage` **OPEN**  
-> Tip CI: [CI/CD Pipeline 32171946188](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188) **success** @ `4d29ee0c`  
-> (prior HARD STOP [32169922030](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32169922030) @ `c57eeef1` — auth coverage + OpenAPI drift; fixed in place `D-S070-12-ci-fix`)  
-> Follow-up yaml CI: [32180225018](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32180225018) **success** @ `c2880375`  
+> Stage tip: `6ef540bc` · PR [#1007](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007) → `stage` **MERGED**  
+> Staging CD: [32183276810](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810) **success**  
+> Prior tip CI (pre-merge): [32171946188](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188) @ `4d29ee0c`  
 > `env_role`: **staging** (`D-S070-12-env`); promote held  
 > Corpus: [Corpus: deploy] [Corpus: adr/ADR-034] [Corpus: product §F7] [Corpus: product §F31] [Corpus: api] [Corpus: tests]
 
@@ -35,9 +34,9 @@
 - [x] Connectivity scripts — `scripts/deploy/verify_connectivity.sh` + `tests/smoke/test_staging_connectivity.py` present
 - [x] Branch pushed — tip `c2880375` (product fix `4d29ee0c`)
 - [x] Tip CI green — [32171946188](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188) @ `4d29ee0c`; [32180225018](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32180225018) @ `c2880375`
-- [x] PR open — [#1007](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007) **not merged** (`D-S070-12-merge`)
-- [ ] Merge + Staging CD — **held** until a later merge decision
-- [ ] Post-deploy H1 + **H4–H5** (13) — after merge + Staging smoke (`D-S070-11-t3`)
+- [x] PR open then merged — [#1007](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007) (`D-S070-12-merge` held at 12; merge at 13)
+- [x] Merge + Staging CD — #1007 squash-merged `6ef540bc`; CD [32183276810](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810) success
+- [x] Post-deploy H1 + **H4–H5** (13) — see `reports/deploy-smoke.md`
 
 ## Failure Mitigations
 
@@ -61,9 +60,9 @@
 
 1. Tip CI green on `4d29ee0c` / PR #1007 — **done**.
 2. User approved this checklist (12) — **`D-S070-12-*`**.
-3. **Later:** merge #1007 → `stage` → Staging Deploy + Staging smoke.
-4. **13** H1–H3 → **H4–H5** via `verify_connectivity.sh` + live UJ-059..063 / Auth.
-5. Promote `stage`→`main` only after Staging gate green + re-approve.
+3. Merge #1007 → `stage` → Staging Deploy + Staging smoke — **done**.
+4. **13** H1–H3 → **H4–H5** + live UJ-059..063 / Auth — **done**.
+5. Promote `stage`→`main` only after Staging gate green + re-approve — **still held**.
 
 ## Sign-Off
 
@@ -72,5 +71,5 @@
 - [x] Risks approved — `D-S070-12-risks`
 - [x] Rollback approved — `D-S070-12-rollback`
 - [x] CI HARD STOP fixed in place — `D-S070-12-ci-fix`
-- [x] No merge #1007 — `D-S070-12-merge` / `D-S070-12-close`
-- [ ] Ready for 13-deploy-smoke — **blocked until #1007 merges**
+- [x] 12 closed without merge — `D-S070-12-merge` / `D-S070-12-close` (merge deferred to 13)
+- [x] Ready for 13-deploy-smoke — unblocked; 13 evidence in `reports/deploy-smoke.md`

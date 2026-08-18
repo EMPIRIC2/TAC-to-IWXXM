@@ -1,21 +1,25 @@
 ---
 session_id: S070-converter-operator-bugs
 type: feature
-status: in_progress
+status: closed
 branch: evolve/EV-060-converter-operator-bugs
 orchestrator: 16-evolve
 evolve_cycle_id: EV-060
 github_issues: [1000, 1001, 1002, 1003, 1004, 1005, 1006]
 prior_session: S069-ci-schemathesis-mutation
 opened: 2026-08-17
+closed: 2026-08-18
+merge_sha: 6ef540bc
+pr: 1007
 ---
 
 # Session brief — S070-converter-operator-bugs
 
-> **Cycle**: EV-060 · **Type**: feature · **Opened**: 2026-08-17  
-> **Branch**: `evolve/EV-060-converter-operator-bugs` @ `stage@8755ae87`  
+> **Cycle**: EV-060 · **Type**: feature · **Opened**: 2026-08-17 · **Closed**: 2026-08-18  
+> **Branch**: `evolve/EV-060-converter-operator-bugs` → PR [#1007](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007) **MERGED** @ `6ef540bc`  
 > **Orchestrator**: **16-evolve** · **Preset**: **Standard** · **Promote**: held  
-> **Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
+> **Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) + children #1001–#1006 **CLOSED**  
+> **13**: [deploy-smoke.md](reports/deploy-smoke.md) · **Summary**: [evolve-summary.md](reports/evolve-summary.md)  
 > **Corpus**: [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: product §F10] [Corpus: product §F29] [Corpus: product §F31] [Corpus: product §F21] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]
 
 ## Goal

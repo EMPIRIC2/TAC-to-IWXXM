@@ -1,45 +1,64 @@
-overall_status: in_progress
-overall_status_note: "S070/EV-060 12 COMPLETE checklist-only; no merge #1007; 13 blocked; tip CI green c2880375 run 32180225018; promote held"
+overall_status: completed
+overall_status_note: "S070/EV-060 CLOSED on stage @ 6ef540bc; D-S070-13=1 / D-S070-close=1; PR #1007 squash MERGED; CD 32183276810 SUCCESS; H0c–H5 + live Playwright 14/14 PASS; epic #1000 + #1001–#1006 CLOSED; promote held; active_session=null; docs/S070-13-deploy-smoke uncommitted (no docs tip SHA invented)"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 70
 evolve_cycle_counter: 60
-active_session:
-  id: S070-converter-operator-bugs
+active_session: null
+
+sessions:
+
+- id: S070-converter-operator-bugs
   type: feature
   intent: "EV-060 converter operator bugs + F7.t IWXXM pass-through + Auth UAT; epic #1000 on GitHub M0"
-  status: in_progress
+  status: completed
+  completed: '2026-08-18'
+  completed_at: '2026-08-18'
+  closed_at: '2026-08-18'
+  started: '2026-08-17'
+  started_at: '2026-08-17'
   branch: evolve/EV-060-converter-operator-bugs
   branch_base: stage@8755ae87
-  branch_status: open
+  branch_status: merged
   branch_pushed: true
   branch_tracking: origin/evolve/EV-060-converter-operator-bugs
-  tip_sha: c2880375
-  tip_sha_full: c2880375041e0a2d508e53da45051579753d93eb
+  branch_note: "CLOSED — D-S070-close=1; tip 6ef540bc; PR #1007 MERGED squash → stage; epic #1000 + #1001–#1006 CLOSED; promote held; EV-060 completed"
+  tip_sha: 6ef540bc
+  tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
   tip_sha_pushed: true
-  tip_ci_run: '32180225018'
+  tip_sha_note: "CLOSED D-S070-13=1 / D-S070-close=1 — tip 6ef540bc; PR #1007 MERGED → stage; CD 32183276810 success; H0c–H5 + live Playwright 14/14; epic #1000+#1001–#1006 CLOSED; promote held; cycle completed"
+  tip_ci_run: '32183276810'
   tip_ci_status: success
-  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32180225018
-  tip_ci_note: "yaml-tip GREEN c2880375 run 32180225018 SUCCESS (current HEAD before this yaml update); product CI GREEN 4d29ee0c run 32171946188 SUCCESS; original HARD STOP 32169922030 on c57eeef1 resolved; D-S070-12-ci-fix confirmed; do not invent next SHA — parent will commit checklist + this yaml"
-  product_tip_sha: 4d29ee0c
-  product_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
-  product_tip_ci_run: '32171946188'
+  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  tip_ci_note: "stage CI/CD 32183276810 SUCCESS — Deploy (stage) + Staging smoke; H0c–H5 + live Playwright EV-060 14/14 PASS; D-S070-13=1"
+  product_tip_sha: 6ef540bc
+  product_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  product_tip_ci_run: '32183276810'
   product_tip_ci_status: success
-  product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+  product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
   pr_number: 1007
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
-  pr_status: open
+  pr_status: merged
   pr_base: stage
   pr_head: evolve/EV-060-converter-operator-bugs
   pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
+  pr_merge_commit: 6ef540bc
+  pr_merge_commit_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  pr_merge_method: squash
+  merge_sha: 6ef540bc
+  merge_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
   m1_pr_number: 1007
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
-  m1_pr_status: open
+  m1_pr_status: merged
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007 OPEN not merged); 12 COMPLETE checklist-only; 13 blocked until #1007 merges; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; D-S070-12-close; D-S070-12-env staging; D-S070-12-merge no merge; epic #1000 Backlog; promote held; pending_commit dirty"
+  board_note: "#1000 + #1001–#1006 CLOSED; PR #1007 MERGED squash → stage @ 6ef540bc; CD 32183276810; closed on stage; promote held"
   promote: held
+  env_role: staging
+  docs_branch: docs/S070-13-deploy-smoke
+  docs_branch_note: "docs commit not yet committed — do not invent tip SHA"
+  docs_tip_sha: null
   orchestrator: 16-evolve
   evolve_cycle_id: EV-060
   artifacts_dir: docs/sessions/S070-converter-operator-bugs/
@@ -57,14 +76,9 @@ active_session:
   feature_note: "F7.t IWXXM product pass-through + F6/F2/F10/F29/F31 deepen"
   preset: Standard
   spec_to_build_gate: open
-  current_stage: 13-deploy-smoke
-  current_stage_status: blocked_until_merge
-  current_child: 13-deploy-smoke
-  current_child_status: pending
-  active_milestone: M4
-  active_task: 13-deploy-smoke
-  started: '2026-08-17'
-  started_at: '2026-08-17'
+  current_stage: completed
+  current_stage_note: "CLOSED — D-S070-13=1 / D-S070-close=1; EV-060 COMPLETE on stage tip 6ef540bc; promote held; PR #1007; epic #1000+#1001–#1006 CLOSED; active_session=null"
+  routing_plan_summary: "Standard 00→16→01→02→04→uat→verify-qa→07→08→09→10→11→12→13 COMPLETE; closed on stage; promote held"
   corpus_cites:
   - '[Corpus: product §F7]'
   - '[Corpus: product §F6]'
@@ -83,8 +97,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrate
-    status: in_progress
+    status: completed
     started: '2026-08-17'
+    completed: '2026-08-18'
+    note: "COMPLETE — D-S070-close=1; EV-060/S070 closed on stage tip 6ef540bc; promote held; PR #1007; epic #1000+#1001–#1006 CLOSED; active_session=null"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -164,12 +180,19 @@ active_session:
     started: '2026-08-18'
     completed: '2026-08-18'
     report: docs/sessions/S070-converter-operator-bugs/reports/deploy-checklist.md
-    note: "12 COMPLETE checklist-only PASS; D-S070-12-close; D-S070-12-risks approve all four; D-S070-12-rollback approve prior GHCR/stage-latest; NO merge #1007; 13 blocked until merge; tip CI green c2880375 run 32180225018; product CI 4d29ee0c run 32171946188; env_role staging; promote held"
+    note: "12 COMPLETE checklist-only PASS; later D-S070-13-merge landed #1007"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: pending
-    note: "blocked until #1007 merges (D-S070-12-close / D-S070-12-merge); do not start 13; env_role staging; promote held"
+    status: completed
+    started: '2026-08-18'
+    completed: '2026-08-18'
+    report: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md
+    note: "COMPLETE — D-S070-13=1; CD 32183276810 Deploy+Staging smoke SUCCESS; H0c–H5 PASS; live Playwright 14/14; promote held; report deploy-smoke.md"
+    tip_ci_run: '32183276810'
+    tip_ci_status: success
+    overall: PASS
+    decision_id: D-S070-13
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -201,12 +224,17 @@ active_session:
     D-S070-12-risks: "approve all four mitigations"
     D-S070-12-rollback: "approve prior GHCR/stage-latest"
     D-S070-12-close: "checklist only; keep no-merge #1007; hold 13 until later merge (honors D-S070-12-merge)"
+    D-S070-13-merge: "squash-merge PR #1007 → stage @ 6ef540bc; CD 32183276810 SUCCESS"
+    D-S070-13-issues: "#1001–#1006 CLOSED; epic #1000 CLOSED with children"
+    D-S070-13: "1 — approve 13-deploy-smoke complete; close EV-060/S070 on stage; no promote"
+    D-S070-close: "1 — close cycle on stage; promote deferred"
+  close_decision_id: D-S070-close
+  close_note: "D-S070-close=1 — close cycle on stage; promote deferred; tip 6ef540bc; PR #1007; epic #1000+#1001–#1006 CLOSED"
   context_briefs: []
-  note: "S070/EV-060 12-verify-deploy COMPLETE checklist-only PASS; D-S070-12-close; NO merge #1007; 13-deploy-smoke pending blocked until #1007 merges; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; pending_commit dirty (this yaml + checklist); env_role staging; promote held; PR #1007 OPEN; Spec→Build open; cycle in_progress; do not start 13"
-
-sessions:
+  note: "CLOSED — D-S070-13=1 / D-S070-close=1; EV-060 COMPLETE on stage tip 6ef540bc; promote held; PR #1007; epic #1000+#1001–#1006 CLOSED; active_session=null; docs/S070-13-deploy-smoke uncommitted (no docs tip SHA invented); [Corpus: product §F7] [Corpus: decisions §EV-060]"
 
 - id: S068-quality-metrics-diff-layout
+
   type: feature
   intent: "EV-058 deepen F7.q #983: selectable side-by-side vs inline (unified) XML diff on /quality/:stem; persist preference + synced scroll; ship to stage; promote held"
   status: completed
@@ -16259,13 +16287,28 @@ stages:
     # S050 active override (duplicate-key last-wins trailer)
   13-deploy-smoke:
     status: completed
-    s070_status: pending
-    s070_status_note: blocked_until_merge
+    s070_status: completed
+    s070_status_note: completed
     s070_session_id: S070-converter-operator-bugs
     s070_evolve_cycle_id: EV-060
-    s070_note: "pending; blocked until #1007 merges (D-S070-12-close / D-S070-12-merge); do not start 13; env_role staging; promote held"
+    s070_started: '2026-08-18'
+    s070_started_at: '2026-08-18'
+    s070_completed: '2026-08-18'
+    s070_completed_at: '2026-08-18'
+    s070_overall: PASS
+    s070_overall_note: "COMPLETE — D-S070-13=1 / D-S070-close=1"
+    s070_report: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md
+    s070_tip_sha: 6ef540bc
+    s070_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+    s070_tip_ci_run: '32183276810'
+    s070_tip_ci_status: success
+    s070_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+    s070_note: "COMPLETE — D-S070-13=1; CD 32183276810 SUCCESS @ 6ef540bc; H0c–H5 + live Playwright 14/14; promote held; session closed"
     s070_pr_number: 1007
-    s070_pr_status: open
+    s070_pr_status: merged
+    s070_pr_merge_commit: 6ef540bc
+    s070_decision_id: D-S070-13
+    s070_close_decision_id: D-S070-close
     mode: delta
     started_at: '2026-08-16'
     started: '2026-08-16'
@@ -17422,11 +17465,11 @@ deployment:
     t0_journeys_passed: 4
   staging:
     status: deployed
-    last_verified: '2026-08-17'
-    commit_deployed: 2c320c45
-    commit_deployed_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
-    commit_head: 2c320c45
-    commit_head_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
+    last_verified: '2026-08-18'
+    commit_deployed: 6ef540bc
+    commit_deployed_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+    commit_head: 6ef540bc
+    commit_head_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
     drift: false
     platform: doks
     env_role: staging
@@ -17436,15 +17479,15 @@ deployment:
       api: 'https://api.staging.tac-to-iwxxm.com'
       frontend: 'https://app.staging.tac-to-iwxxm.com'
       app: 'https://app.staging.tac-to-iwxxm.com'
-      note: 'S068/EV-058 staging env (api|app.staging); live=prod URLs retained under previous_live_*'
+      note: 'S070/EV-060 staging env (api|app.staging); live=prod URLs retained under previous_live_*'
     deploy_ids:
       api:
       frontend:
-      ci_cd_run: '32038222032'
-      ci_cd_run_note: 'stage CI/CD SUCCESS — Deploy (stage) + Staging smoke; H0c–H5 + UJ-056 4/4 PASS; D-S068-13=1'
-    report: docs/sessions/S068-quality-metrics-diff-layout/reports/deploy-smoke.md
-    session_id: S068-quality-metrics-diff-layout
-    evolve_cycle_id: EV-058
+      ci_cd_run: '32183276810'
+      ci_cd_run_note: 'stage CI/CD SUCCESS — Deploy (stage) + Staging smoke; H0c–H5 + live Playwright EV-060 14/14 PASS; D-S070-13=1 / D-S070-close=1'
+    report: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
     health_tiers:
       H0c: pass
       H1: pass
@@ -17458,7 +17501,13 @@ deployment:
       h3: pass
       h4: pass
       h5: pass
-      note: 'S068/EV-058 staging — H0c 6/6; H1 20p/1s; H2 staging_smoke PASS; H3 test_t72_h3 3/3; H4 3/3; H5 config.json OK; live UJ-056 4/4 incl TC-EV058-005; CD 32038222032; D-S068-13=1 / D-S068-close=1'
+      note: 'S070/EV-060 staging — H0c 6/6; H1 20p/1s; H3 convert 3/3; H4 3/3; H5 PASS; live Playwright 14/14 (UJ-059..063 + TC-EV060-1006); CD 32183276810; D-S070-13=1 / D-S070-close=1; promote held'
+    previous_s068_commit_deployed: 2c320c45
+    previous_s068_commit_deployed_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
+    previous_s068_ci_cd_run: '32038222032'
+    previous_s068_session_id: S068-quality-metrics-diff-layout
+    previous_s068_evolve_cycle_id: EV-058
+    previous_s068_report: docs/sessions/S068-quality-metrics-diff-layout/reports/deploy-smoke.md
     previous_live_status: 'deployed (live=prod DOKS; public DNS + TLS)'
     previous_live_last_verified: '2026-08-08'
     previous_live_commit_deployed: 3502af27
@@ -17486,6 +17535,8 @@ deployment:
       worker: ghcr.io/empiric2/tac-to-iwxxm/worker:20260808004030-3502af2
       note: 'previous live images retained; staging Deploy CD 32038222032 @ 2c320c45 (exact staging GHCR tag not asserted in smoke report)'
     notes:
+    - '2026-08-18 S070/EV-060 CLOSED D-S070-13=1 / D-S070-close=1 — staging DEPLOYED @ 6ef540bc; CD 32183276810; H0c–H5 + live Playwright 14/14 PASS; epic #1000 + #1001–#1006 CLOSED; promote held; report deploy-smoke.md; docs/S070-13-deploy-smoke uncommitted (no docs tip SHA invented); active_session=null'
+    - '2026-08-18 S070/EV-060 13-deploy-smoke smoke PASS pending D-S070-13 — staging DEPLOYED @ 6ef540bc (PR #1007 squash merge); CD 32183276810 SUCCESS (Deploy stage + Staging smoke); H0c 6/6; H1 20p/1s; H3 convert 3/3; H4 3/3; H5 PASS; live Playwright EV-060 14/14 (UJ-059..063 + TC-EV060-1006); #1001–#1006 CLOSED; epic #1000 OPEN; report deploy-smoke.md; docs/S070-13-deploy-smoke uncommitted (no docs SHA invented); promote held; session NOT closed'
     - '2026-08-17 S068/EV-058 CLOSED D-S068-13=1 / D-S068-close=1 — staging DEPLOYED @ 2c320c45; CD 32038222032; H0c–H5 + UJ-056 4/4 PASS; #983 Done/CLOSED; promote held; report deploy-smoke.md; active_session=null'
     - '2026-08-17 S068/EV-058 staging DEPLOYED @ 2c320c45 — CD 32038222032 success (Deploy+Staging smoke); H0c–H5 PASS; live UJ-056 4/4; report deploy-smoke.md; board #983 On stage; await D-S068-13; promote held'
     - '2026-08-11 S064/EV-055 staging DEPLOYED @ 4b48c8d8 — CD 31534191417 success (Deploy+Staging smoke); H1–H5 PASS on api|app.staging; report deploy-smoke.md present; board #982/#980/#979 On stage; await D-S064-13'
@@ -17713,6 +17764,165 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S070-close
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 16-evolve
+  category: close
+  status: confirmed
+  topic: 'S070/EV-060 — close cycle on stage; promote deferred'
+  summary: '1 — close cycle on stage; promote deferred'
+  decision: |
+    D-S070-close=1 — close EV-060 / S070 on stage tip 6ef540bc.
+    PR #1007 squash MERGED; CD 32183276810 SUCCESS; H0c–H5 + live Playwright 14/14 PASS.
+    Epic #1000 and children #1001–#1006 CLOSED. Promote held (deferred).
+    active_session cleared (null). Docs branch docs/S070-13-deploy-smoke uncommitted — do not invent docs tip SHA.
+    No git commit by workflow-state-manager.
+  user_option: '1 — close on stage; promote deferred'
+  branch: docs/S070-13-deploy-smoke
+  related_features:
+  - F7
+  related_issues:
+  - '1000'
+  - '1001'
+  - '1002'
+  - '1003'
+  - '1004'
+  - '1005'
+  - '1006'
+  related_pr: 1007
+  related_ci_run: '32183276810'
+  related_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  merge_commit: 6ef540bc
+  merge_commit_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  current_stage: completed
+  note: 'EV-060/S070 CLOSED on stage @ 6ef540bc; promote held; active_session=null'
+
+- id: D-S070-13
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: deploy
+  status: confirmed
+  topic: 'S070/EV-060 — approve 13-deploy-smoke; close on stage'
+  summary: '1 — approve 13 complete; close EV-060/S070 on stage; no promote'
+  decision: |
+    D-S070-13=1 — Approve 13-deploy-smoke COMPLETE.
+    Staging DEPLOYED @ 6ef540bc (PR #1007 squash mergeCommit).
+    CI/CD run 32183276810 SUCCESS (Deploy stage + Staging smoke).
+    H0c 6/6; H1 20p/1s; H3 convert 3/3; H4 3/3; H5 PASS; live Playwright EV-060 14/14 PASS (UJ-059..063 + TC-EV060-1006).
+    Report: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md.
+    env_role staging; promote held. Paired with D-S070-close.
+    Docs branch docs/S070-13-deploy-smoke uncommitted — do not invent docs tip SHA.
+    No git commit by workflow-state-manager.
+  user_option: '1 — approve 13; close on stage; no promote'
+  branch: docs/S070-13-deploy-smoke
+  related_features:
+  - F7
+  related_issues:
+  - '1000'
+  - '1001'
+  - '1002'
+  - '1003'
+  - '1004'
+  - '1005'
+  - '1006'
+  related_pr: 1007
+  related_ci_run: '32183276810'
+  related_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  merge_commit: 6ef540bc
+  merge_commit_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  current_stage: completed
+  note: '13 COMPLETE D-S070-13=1; promote held'
+
+- id: D-S070-13-merge
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: deploy
+  status: confirmed
+  topic: 'S070/EV-060 — squash-merge PR #1007 → stage'
+  summary: 'squash-merge PR #1007 → stage @ 6ef540bc; CD 32183276810 SUCCESS'
+  decision: |
+    D-S070-13-merge — PR #1007 MERGED squash into stage at mergeCommit 6ef540bcb003ef20bcd433b5f4cce391be8507c8.
+    Stage CI/CD run 32183276810 SUCCESS (Deploy stage + Staging smoke).
+    H0c 6/6; H1 20p/1s; H3 convert 3/3; H4 3/3; H5 PASS; live Playwright EV-060 14/14 PASS.
+    Report: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md.
+    env_role staging; promote held. 13 remains awaiting_signoff pending D-S070-13 AskQuestion.
+    Docs branch docs/S070-13-deploy-smoke uncommitted — do not invent docs tip SHA.
+    No git commit by workflow-state-manager. Session NOT closed.
+  user_option: 'squash merge #1007 → stage'
+  branch: docs/S070-13-deploy-smoke
+  related_features:
+  - F7
+  related_issues:
+  - '1000'
+  - '1001'
+  - '1002'
+  - '1003'
+  - '1004'
+  - '1005'
+  - '1006'
+  related_pr: 1007
+  related_ci_run: '32183276810'
+  related_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  merge_commit: 6ef540bc
+  merge_commit_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  merge_method: squash
+  current_stage: 13-deploy-smoke
+  current_child: 13-deploy-smoke
+  note: 'PR #1007 MERGED → stage @ 6ef540bc; CD 32183276810; 13 awaiting D-S070-13; promote held'
+
+- id: D-S070-13-issues
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  stage: 13-deploy-smoke
+  category: board
+  status: confirmed
+  topic: 'S070/EV-060 — close issues #1001–#1006; epic #1000 remains open'
+  summary: '#1001–#1006 CLOSED; epic #1000 remains OPEN'
+  decision: |
+    D-S070-13-issues — Issues #1001, #1002, #1003, #1004, #1005, #1006 CLOSED after PR #1007 land on stage.
+    Epic #1000 remains OPEN. Board reflects M1–M4 issue closes; cycle EV-060 still in_progress
+    awaiting D-S070-13 smoke sign-off. Promote held. Session NOT closed.
+    No git commit by workflow-state-manager.
+  user_option: 'close #1001–#1006; keep #1000 open'
+  branch: docs/S070-13-deploy-smoke
+  related_features:
+  - F7
+  related_issues:
+  - '1000'
+  - '1001'
+  - '1002'
+  - '1003'
+  - '1004'
+  - '1005'
+  - '1006'
+  related_pr: 1007
+  current_stage: 13-deploy-smoke
+  current_child: 13-deploy-smoke
+  note: '#1001–#1006 CLOSED; epic #1000 OPEN; promote held'
 
 - id: D-S070-12-close
   date: '2026-08-18'
@@ -34841,6 +35051,44 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md
+  type: session-report
+  kind: deploy-smoke
+  stage: 13-deploy-smoke
+  skill_id: 13-deploy-smoke
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  created_at: '2026-08-18'
+  updated_at: '2026-08-18'
+  status: completed
+  overall: PASS
+  overall_note: COMPLETE — D-S070-13=1
+  tip_sha: 6ef540bc
+  tip_ci_run: '32183276810'
+  decision_id: D-S070-13
+  note: 'S070/EV-060 13 COMPLETE D-S070-13=1 — CD 32183276810; H0c–H5 + live Playwright 14/14; promote held; closed with D-S070-close=1; docs tip SHA null'
+- path: docs/sessions/S070-converter-operator-bugs/reports/evolve-summary.md
+  type: session-report
+  kind: evolve-summary
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  created_at: '2026-08-18'
+  updated_at: '2026-08-18'
+  status: completed
+  note: 'S070/EV-060 close summary — D-S070-close=1; docs tip SHA null'
+- path: docs/evolve-report-EV-060.md
+  type: report
+  kind: evolve-report
+  stage: 16-evolve
+  skill_id: 16-evolve
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  created_at: '2026-08-18'
+  updated_at: '2026-08-18'
+  status: completed
+  note: 'EV-060 cycle close report — D-S070-close=1; docs tip SHA null'
 - path: docs/sessions/S070-converter-operator-bugs/reports/deploy-checklist.md
   type: session-report
   kind: deploy-checklist
@@ -38885,7 +39133,10 @@ evolve_cycles:
   title: "Converter operator bugs + IWXXM pass-through (#1000)"
   topic: "Converter operator bugs + F7.t IWXXM pass-through + Auth UAT"
   goal: "EV-060 converter operator bugs + F7.t IWXXM pass-through + Auth UAT; epic #1000 on GitHub M0"
-  status: in_progress
+  status: completed
+  completed: '2026-08-18'
+  completed_at: '2026-08-18'
+  closed_at: '2026-08-18'
   cycle_type: feature
   session_id: S070-converter-operator-bugs
   feature_ids:
@@ -38909,42 +39160,53 @@ evolve_cycles:
   - 1006
   branch: evolve/EV-060-converter-operator-bugs
   branch_base: stage@8755ae87
-  branch_status: open
+  branch_status: merged
   branch_pushed: true
   branch_tracking: origin/evolve/EV-060-converter-operator-bugs
-  tip_sha: c2880375
-  tip_sha_full: c2880375041e0a2d508e53da45051579753d93eb
+  tip_sha: 6ef540bc
+  tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
   tip_sha_pushed: true
-  tip_ci_run: '32180225018'
+  tip_ci_run: '32183276810'
   tip_ci_status: success
-  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32180225018
-  tip_ci_note: "yaml-tip GREEN c2880375 run 32180225018 SUCCESS (current HEAD before this yaml update); product CI GREEN 4d29ee0c run 32171946188 SUCCESS; original HARD STOP 32169922030 on c57eeef1 resolved; D-S070-12-ci-fix confirmed; do not invent next SHA — parent will commit checklist + this yaml"
-  product_tip_sha: 4d29ee0c
-  product_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
-  product_tip_ci_run: '32171946188'
+  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  tip_ci_note: "stage tip GREEN 6ef540bc; CI/CD 32183276810 SUCCESS; H0c–H5 + live Playwright 14/14 PASS; D-S070-13=1 / D-S070-close=1; docs tip SHA null"
+  tip_sha_note: "CLOSED D-S070-13=1 / D-S070-close=1 — tip 6ef540bc; PR #1007 MERGED → stage; CD 32183276810; epic #1000+#1001–#1006 CLOSED; promote held"
+  product_tip_sha: 6ef540bc
+  product_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  product_tip_ci_run: '32183276810'
   product_tip_ci_status: success
-  product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
+  product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
   pr_number: 1007
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
-  pr_status: open
+  pr_status: merged
   pr_base: stage
   pr_head: evolve/EV-060-converter-operator-bugs
   pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
+  pr_merge_commit: 6ef540bc
+  pr_merge_commit_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  pr_merge_method: squash
   m1_pr_number: 1007
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
-  m1_pr_status: open
+  m1_pr_status: merged
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007 OPEN not merged); 12 COMPLETE checklist-only; 13 blocked until #1007 merges; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; D-S070-12-close; D-S070-12-env staging; D-S070-12-merge no merge; epic #1000 Backlog; promote held; pending_commit dirty"
+  board_note: "#1000 + #1001–#1006 CLOSED; PR #1007 MERGED squash → stage @ 6ef540bc; CD 32183276810; closed on stage; promote held"
   promote: held
-  current_stage: 13-deploy-smoke
-  current_stage_status: blocked_until_merge
-  current_stage_note: "13 pending blocked_until_merge — #1007 OPEN not merged (D-S070-12-close / D-S070-12-merge); 12 COMPLETE checklist-only PASS; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; env_role staging; promote held; do not start 13"
-  current_child: 13-deploy-smoke
-  current_child_stage: 13-deploy-smoke
-  current_child_stage_status: pending
-  current_child_note: "13 pending blocked until #1007 merges; do not start 13; promote held"
-  active_milestone: M4
-  active_task: "13-deploy-smoke"
+  env_role: staging
+  docs_branch: docs/S070-13-deploy-smoke
+  docs_tip_sha: null
+  current_stage: completed
+  current_stage_status: completed
+  current_stage_note: "CLOSED — D-S070-13=1 / D-S070-close=1; EV-060 COMPLETE on stage tip 6ef540bc; promote held; PR #1007; epic #1000+#1001–#1006 CLOSED; active_session=null"
+  current_child: null
+  current_child_stage: null
+  current_child_stage_status: completed
+  current_child_note: "COMPLETE D-S070-13=1 — CD 32183276810; H0c–H5; live Playwright 14/14; report deploy-smoke.md"
+  active_milestone: null
+  active_task: null
+  decision_pending: null
+  close_decision_id: D-S070-close
+  close_note: "D-S070-close=1 — close EV-060/S070 on stage tip 6ef540bc; PR #1007; epic #1000+#1001–#1006 CLOSED; promote held"
+  note: "CLOSED — D-S070-13=1 / D-S070-close=1; EV-060 COMPLETE on stage tip 6ef540bc; promote held; PR #1007; epic #1000+#1001–#1006 CLOSED; active_session=null; docs tip SHA null; [Corpus: product §F7] [Corpus: decisions §EV-060]"
   stages:
     07-build:
       status: completed
@@ -38984,9 +39246,20 @@ evolve_cycles:
       report: docs/sessions/S070-converter-operator-bugs/reports/deploy-checklist.md
       note: "12 COMPLETE checklist-only PASS; D-S070-12-close; D-S070-12-risks approve all four; D-S070-12-rollback approve; NO merge #1007; 13 blocked until merge; tip CI green c2880375 run 32180225018; product CI 4d29ee0c run 32171946188; promote held"
     13-deploy-smoke:
-      status: pending
-      status_note: blocked_until_merge
-      note: "blocked until #1007 merges (D-S070-12-close / D-S070-12-merge); do not start 13; env_role staging; promote held"
+      status: completed
+      status_note: completed
+      started: '2026-08-18'
+      completed: '2026-08-18'
+      overall: PASS
+      overall_note: "COMPLETE — D-S070-13=1"
+      report: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md
+      note: "COMPLETE — D-S070-13=1; CD 32183276810 Deploy+Staging smoke SUCCESS; H0c–H5 PASS; live Playwright 14/14; promote held; report deploy-smoke.md"
+      decision_id: D-S070-13
+    16-evolve:
+      status: completed
+      started: '2026-08-17'
+      completed: '2026-08-18'
+      note: "COMPLETE — D-S070-close=1; EV-060/S070 closed on stage tip 6ef540bc; promote held; active_session=null"
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Standard
@@ -39038,14 +39311,18 @@ evolve_cycles:
     D-S070-12-risks: "approve all four mitigations"
     D-S070-12-rollback: "approve prior GHCR/stage-latest"
     D-S070-12-close: "checklist only; keep no-merge #1007; hold 13 until later merge (honors D-S070-12-merge)"
+    D-S070-13-merge: "squash-merge PR #1007 → stage @ 6ef540bc; CD 32183276810 SUCCESS"
+    D-S070-13-issues: "#1001–#1006 CLOSED; epic #1000 CLOSED with children"
+    D-S070-13: "1 — approve 13-deploy-smoke complete; close EV-060/S070 on stage; no promote"
+    D-S070-close: "1 — close cycle on stage; promote deferred"
   gates:
     spec_to_build: open
-    spec_to_build_note: "D-S070-spec-build=1a — Open Build; 07-build M1 #1001 first"
+    spec_to_build_note: "D-S070-spec-build=1a — Open Build; cycle CLOSED D-S070-close=1 on stage @ 6ef540bc; promote held"
   phase_bands:
     spec_development:
       status: completed
     build:
-      status: in_progress
+      status: completed
   artifacts:
   - docs/sessions/S070-converter-operator-bugs/session-brief.md
   - docs/sessions/S070-converter-operator-bugs/routing-plan.md
@@ -39068,7 +39345,12 @@ evolve_cycles:
   - docs/sessions/S070-converter-operator-bugs/reports/verify-impl.md
   - docs/reports/implementation-verification.md
   - docs/sessions/S070-converter-operator-bugs/reports/deploy-checklist.md
+  - docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md
+  - docs/sessions/S070-converter-operator-bugs/reports/evolve-summary.md
+  - docs/evolve-report-EV-060.md
   notes:
+  - "2026-08-18 D-S070-13=1 / D-S070-close=1 — EV-060/S070 CLOSED on stage tip 6ef540bc; PR #1007; CD 32183276810; H0c–H5 + live Playwright 14/14; epic #1000+#1001–#1006 CLOSED; promote held; reports deploy-smoke.md + evolve-summary.md + docs/evolve-report-EV-060.md; active_session=null; docs tip SHA null; no git commit by workflow-state-manager"
+  - "2026-08-18 13-deploy-smoke smoke PASS pending D-S070-13; PR #1007 MERGED squash → stage @ 6ef540bc; CD 32183276810 SUCCESS; H0c 6/6 H1 20p/1s H3 3/3 H4 3/3 H5 PASS; live Playwright 14/14; #1001–#1006 CLOSED; epic #1000 OPEN; report deploy-smoke.md; docs/S070-13-deploy-smoke uncommitted (no docs SHA invented); Spec→Build remains open; promote held; cycle in_progress; session NOT closed; no git commit by workflow-state-manager"
   - "2026-08-18 12-verify-deploy COMPLETE checklist-only PASS; D-S070-12-close / D-S070-12-risks / D-S070-12-rollback; NO merge #1007; 13 pending blocked_until_merge; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; Spec→Build remains open; promote held; cycle in_progress (13 held); pending_commit dirty — parent will commit checklist + this yaml; do not invent next tip SHA; no git commit by workflow-state-manager; do not start 13"
   - "2026-08-18 tip CI GREEN 4d29ee0c run 32171946188 SUCCESS; original HARD STOP 32169922030 on c57eeef1 resolved; D-S070-12-ci-fix confirmed (auth-job tests + openapi-refresh); I-S070-12-ci-32169922030 resolved; 12 remains in_progress — checklist only (D-S070-12-env, D-S070-12-merge); no merge #1007; promote held; Spec→Build remains open; do not start 13; pending_commit dirty — parent will commit this yaml; no git commit by workflow-state-manager"
   - "2026-08-18 D-S070-12-ci-fix — fix in place (not waive) for CI HARD STOP c57eeef1 run 32169922030 (auth cov + OpenAPI drift); auth tests + openapi-refresh on disk; 12 remains in_progress; pending_commit dirty; parent will commit CI-fix files + this yaml; tip stays c57eeef1 (do not invent SHA); no merge #1007; promote held; Spec→Build remains open; cycle in_progress; no git commit by workflow-state-manager"
@@ -51201,40 +51483,46 @@ evolve_cycles:
   epic_846_status: open
   pr_merged_sha: dfecba46
 git_history:
-  current_branch: evolve/EV-060-converter-operator-bugs
-  current_branch_tracking: origin/evolve/EV-060-converter-operator-bugs
-  ahead_of_origin: 0
-  pushed: true
+  current_branch: docs/S070-13-deploy-smoke
+  current_branch_tracking: null
+  ahead_of_origin: null
+  pushed: false
   pending_commit: true
-  pending_commit_note: "parent will commit checklist + this yaml; tip stays c2880375 until that commit (do not invent next SHA); no git commit by workflow-state-manager"
+  pending_commit_note: "docs/S070-13-deploy-smoke uncommitted (closeout docs + this yaml); do not invent docs tip SHA; no git commit by workflow-state-manager"
   dirty: true
-  dirty_note: "workflow-state.yaml + deploy-checklist.md + routing-plan.md + evolve-plan-card.md + evolve-decisions.md dirty vs tip c2880375; parent will commit"
-  tip_sha: "c2880375"
-  tip_sha_full: c2880375041e0a2d508e53da45051579753d93eb
+  dirty_note: "docs/S070-13-deploy-smoke working tree dirty — closeout docs + workflow-state.yaml uncommitted; stage tip 6ef540bc; S070/EV-060 CLOSED"
+  tip_sha: "6ef540bc"
+  tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
   tip_sha_pushed: true
-  tip_ci_run: '32180225018'
+  tip_ci_run: '32183276810'
   tip_ci_status: success
-  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32180225018
-  tip_note: "yaml-tip CI GREEN run 32180225018 on c2880375 (current HEAD before this yaml update); product CI GREEN run 32171946188 on 4d29ee0c; original HARD STOP 32169922030 resolved; D-S070-12-ci-fix confirmed; 12 COMPLETE checklist-only; no merge #1007; 13 blocked"
-  product_tip_sha: "4d29ee0c"
-  product_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
-  product_tip_ci_run: '32171946188'
+  tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  tip_note: "stage tip 6ef540bc = PR #1007 squash mergeCommit; CI/CD 32183276810 SUCCESS; D-S070-13=1 / D-S070-close=1; S070/EV-060 CLOSED; docs tip SHA null; promote held"
+  product_tip_sha: "6ef540bc"
+  product_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  product_tip_ci_run: '32183276810'
   product_tip_ci_status: success
-  product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32171946188
-  docs_tip_sha: "4af0dd90"
-  docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
-  docs_tip_branch: docs/EV-055-13-deploy-smoke
-  docs_tip_pr_number: 986
-  docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
-  docs_tip_pr_status: merged
+  product_tip_ci_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32183276810
+  docs_tip_sha: null
+  docs_tip_sha_full: null
+  docs_tip_branch: docs/S070-13-deploy-smoke
+  docs_tip_pr_number: null
+  docs_tip_pr_url: null
+  docs_tip_pr_status: uncommitted
+  docs_tip_note: "docs/S070-13-deploy-smoke not yet committed — do not invent SHA; prior docs tip was 4af0dd90 on docs/EV-055-13-deploy-smoke PR #986 merged"
+  previous_docs_tip_sha: "4af0dd90"
+  previous_docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
+  previous_docs_tip_branch: docs/EV-055-13-deploy-smoke
+  previous_docs_tip_pr_number: 986
   evolve_branch: evolve/EV-060-converter-operator-bugs
-  evolve_tip_sha: "c2880375"
-  evolve_tip_sha_full: c2880375041e0a2d508e53da45051579753d93eb
+  evolve_tip_sha: "4d29ee0c"
+  evolve_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
   evolve_tip_sha_pushed: true
-  stage_merge_sha: c08bc30f
-  stage_merge_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
-  stage_tip_sha: c08bc30f
-  stage_tip_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
+  evolve_pr_status: merged
+  stage_merge_sha: 6ef540bc
+  stage_merge_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+  stage_tip_sha: 6ef540bc
+  stage_tip_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
   stash:
   - name: S039-EV031-WIP
     note: 'OPEN S067-m0-ready-apex-accumulate-validate/EV-057 — Standard; branch evolve/EV-057-m0-ready-apex-accumulate-validate pending @ stage@b796882e; #948+#903+#838; no git commit by workflow-state-manager'
@@ -51245,7 +51533,7 @@ git_history:
   main_merge_sha_full: a15541e5b7c7b99bed7355fd42c5774be3e22eeb
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
-  recommended_branch: evolve/EV-060-converter-operator-bugs
+  recommended_branch: docs/S070-13-deploy-smoke
   note: "S070/EV-060 12 COMPLETE checklist-only; no merge #1007; 13 blocked; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; pending_commit dirty — parent will commit checklist + this yaml; env_role staging; Spec→Build remains open; cycle in_progress; no git commit by workflow-state-manager"
 
   notes:
@@ -51855,11 +52143,26 @@ git_history:
   - 2026-07-12 48037c1 Phase C/D reports committed; COR hotfix commit SHA pending (record after commits done)
   - 2026-07-12 COR hotfix committed ca11b59; Playwright smoke 12/12; ready for Phase D checkpoint → 11-verify-impl
   branches:
+  - name: docs/S070-13-deploy-smoke
+    base: stage@6ef540bc
+    base_sha: 6ef540bc
+    base_sha_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+    purpose: "S070/EV-060 — closeout docs (deploy-smoke + evolve-summary + evolve-report + workflow-state); uncommitted"
+    status: active
+    created: "2026-08-18"
+    exists: true
+    pushed: false
+    tip_sha: null
+    tip_sha_note: "uncommitted — do not invent SHA"
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    note: "ACTIVE uncommitted — S070/EV-060 CLOSED D-S070-13=1 / D-S070-close=1; stage tip 6ef540bc; CD 32183276810; promote held; docs tip SHA null"
+
   - name: evolve/EV-060-converter-operator-bugs
     base: origin/stage@8755ae87
     base_sha: 8755ae87
     purpose: "S070/EV-060 — converter operator bugs + F7.t IWXXM pass-through + Auth UAT; epic #1000"
-    status: active
+    status: merged
     created: "2026-08-17"
     exists: true
     pushed: true
@@ -51871,11 +52174,15 @@ git_history:
     tip_sha_pushed: true
     pr_number: 1007
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
-    pr_status: open
+    pr_status: merged
     pr_base: stage
     pr_head: evolve/EV-060-converter-operator-bugs
     pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-    note: "OPEN — 12 in_progress @ 4d29ee0c pushed; tip CI GREEN run 32171946188; D-S070-12-ci-fix confirmed; pending_commit dirty (this yaml); D-S070-12-env staging; D-S070-12-merge no merge #1007 checklist only; #1001 In review; epic #1000 Backlog; promote held; Spec→Build remains open; tracking origin/evolve/EV-060-converter-operator-bugs"
+    merge_commit: 6ef540bc
+    merge_commit_full: 6ef540bcb003ef20bcd433b5f4cce391be8507c8
+    merge_method: squash
+    merged_at: "2026-08-18"
+    note: "MERGED squash → stage @ 6ef540bc via PR #1007; CD 32183276810 SUCCESS; epic #1000+#1001–#1006 CLOSED; D-S070-13=1 / D-S070-close=1; promote held"
 
   - name: evolve/EV-059-ci-schemathesis-mutation
     base: stage@c458669e
