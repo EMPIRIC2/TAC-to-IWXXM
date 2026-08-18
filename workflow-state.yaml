@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S070/EV-060 09-qa PASS; 10-e2e UJ-059..063 PASS; Auth logout 404; next 11-verify-impl; PR #1007; promote held"
+overall_status_note: "S070/EV-060 09/10 pushed @ 7762b88b; D-S070-logout=1a restore POST /auth/logout pending commit; next 11-verify-impl; PR #1007; promote held"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -16,8 +16,8 @@ active_session:
   branch_status: open
   branch_pushed: true
   branch_tracking: origin/evolve/EV-060-converter-operator-bugs
-  tip_sha: 6a87c96a
-  tip_sha_full: 6a87c96a051471c416c16b59a8900a68af07dc1d
+  tip_sha: 7762b88b
+  tip_sha_full: 7762b88b06bd554cf1fbd66663f6c8e52352ad31
   tip_sha_pushed: true
   pr_number: 1007
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
@@ -29,7 +29,7 @@ active_session:
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   m1_pr_status: open
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007); M1–M4 08 PASS stacked; T4.2 UAT-003 ACCEPTED; tip 6a87c96a pushed; next 09-qa+10-e2e; epic #1000 Backlog; promote held"
+  board_note: "#1001 In review (PR #1007); M1–M4 08 PASS stacked; 09/10 @ 7762b88b pushed; D-S070-logout=1a restore pending commit; next 11-verify-impl; epic #1000 Backlog; promote held"
   promote: held
   orchestrator: 16-evolve
   evolve_cycle_id: EV-060
@@ -172,8 +172,9 @@ active_session:
     D-S070-09-depth: "2a — delta QA + blocking H0c"
     D-S070-10-journeys: "3a — UJ-059..063 + TC-EV060-1006 on local :18000"
     D-S070-local-dev: "4a — reuse/restart make-dev local :18000/:18001"
+    D-S070-logout: "1a restore POST /auth/logout"
   context_briefs: []
-  note: "S070/EV-060 09-qa PASS + 10-e2e UJ-059..063 PASS; Auth logout 404; next 11-verify-impl; tip 6a87c96a; PR #1007; Spec→Build open; promote held"
+  note: "S070/EV-060 09/10 pushed @ 7762b88b; D-S070-logout=1a restore POST /auth/logout pending commit; next 11-verify-impl after 1006-003 re-run PASS; PR #1007; Spec→Build open; promote held"
 
 sessions:
 
@@ -17617,6 +17618,36 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S070-logout
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 10-e2e
+  category: contradiction
+  status: confirmed
+  topic: 'S070/EV-060 Auth logout 404 vs UAT-003 — restore POST /auth/logout'
+  summary: '1a restore POST /auth/logout'
+  decision: |
+    D-S070-logout=1a — restore POST /auth/logout.
+    UAT-003 vs T2 404 contradiction; GoTrue proxy + optional scope.
+    Tip 7762b88b pushed (09/10 reports + UJ Playwright on PR #1007); logout restore pending commit.
+    Re-run TC-EV060-1006-003; expect PASS; then 11-verify-impl.
+    Spec→Build remains open. PR #1007 open. Promote held.
+    Cycle not completed. No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-060-converter-operator-bugs
+  related_features:
+  - F7
+  related_issues:
+  - '1006'
+  current_stage: 11-verify-impl
+  current_child: 11-verify-impl
+  note: 'D-S070-logout=1a restore in progress (uncommitted); tip 7762b88b pushed; next 11-verify-impl after 1006-003 re-run PASS; promote held'
 
 - id: D-S070-phase-d
   date: '2026-08-18'
@@ -38502,8 +38533,8 @@ evolve_cycles:
   branch_status: open
   branch_pushed: true
   branch_tracking: origin/evolve/EV-060-converter-operator-bugs
-  tip_sha: 6a87c96a
-  tip_sha_full: 6a87c96a051471c416c16b59a8900a68af07dc1d
+  tip_sha: 7762b88b
+  tip_sha_full: 7762b88b06bd554cf1fbd66663f6c8e52352ad31
   tip_sha_pushed: true
   pr_number: 1007
   pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
@@ -38515,15 +38546,15 @@ evolve_cycles:
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   m1_pr_status: open
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007); M1–M4 08 PASS stacked; T4.2 UAT-003 ACCEPTED; tip 6a87c96a pushed; next 09-qa+10-e2e; epic #1000 Backlog; promote held"
+  board_note: "#1001 In review (PR #1007); M1–M4 08 PASS stacked; 09/10 @ 7762b88b pushed; D-S070-logout=1a restore pending commit; next 11-verify-impl; epic #1000 Backlog; promote held"
   promote: held
   current_stage: 11-verify-impl
   current_stage_status: pending
-  current_stage_note: "09 PASS; 10 UJ-059..063 PASS; Auth logout 404; next 11-verify-impl; PR #1007; promote held"
+  current_stage_note: "D-S070-logout=1a; tip 7762b88b pushed; 1006-003 PASS after restore; starting 11 after logout commit; PR #1007; promote held"
   current_child: 11-verify-impl
   current_child_stage: 11-verify-impl
   current_child_stage_status: pending
-  current_child_note: "11-verify-impl next; Auth logout T2 FAIL vs UAT-003"
+  current_child_note: "D-S070-logout=1a restore POST /auth/logout pending commit; then 1006-003 re-run PASS; then 11-verify-impl"
   active_milestone: M4
   active_task: "11-verify-impl"
   stages:
@@ -38592,6 +38623,7 @@ evolve_cycles:
     D-S070-09-depth: "2a — delta QA + blocking H0c"
     D-S070-10-journeys: "3a — UJ-059..063 + TC-EV060-1006 on local :18000"
     D-S070-local-dev: "4a — reuse/restart make-dev local :18000/:18001"
+    D-S070-logout: "1a restore POST /auth/logout"
   gates:
     spec_to_build: open
     spec_to_build_note: "D-S070-spec-build=1a — Open Build; 07-build M1 #1001 first"
@@ -38620,6 +38652,7 @@ evolve_cycles:
   - docs/sessions/S070-converter-operator-bugs/reports/qa-report.md
   - docs/sessions/S070-converter-operator-bugs/reports/e2e-report.md
   notes:
+  - "2026-08-18 D-S070-logout=1a restore POST /auth/logout (GoTrue proxy + optional scope); tip 7762b88b pushed (09/10 reports + UJ Playwright on PR #1007); logout restore pending commit; 1006-003 re-run PASS then 11-verify-impl; Spec→Build remains open; promote held; cycle in_progress; no git commit by workflow-state-manager"
   - "2026-08-18 09-qa COMPLETE pass_with_advisories + 10-e2e COMPLETE with TC-EV060-1006-003 FAIL (POST /auth/logout 404); UJ-059..063 PASS; reports qa-report.md + e2e-report.md; next 11-verify-impl; PR #1007; Spec→Build remains open; promote held; cycle in_progress; no git commit by workflow-state-manager yet"
   - "2026-08-18 D-S070-phase-d=1a — 09-qa + 10-e2e in_progress; delta QA + T2 local :18000; PR #1007; Spec→Build remains open; promote held; cycle in_progress; no git commit by workflow-state-manager"
   - "2026-08-18 M4 08-verify-build PASS — T4.2 UAT-003 ACCEPTED; report docs/sessions/S070-converter-operator-bugs/reports/verification-report.md; tip 6a87c96a pushed; PR #1007; 07-build completed; next 09-qa+10-e2e; Spec→Build remains open; promote held; cycle in_progress; no git commit by workflow-state-manager"
@@ -38633,7 +38666,7 @@ evolve_cycles:
   - "2026-08-18 M1 #1001 T1.1–T1.4 complete @ 1f2859d0; next 08-verify-build then PR → stage; then M2 #1003; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-spec-build=1a open Build; 07 M1 #1001"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; 01-requirements COMPLETE; 02-verify-plan pending; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
-  note: "S070/EV-060 M4 08 PASS; T4.2 UAT-003 ACCEPTED; tip 6a87c96a pushed; PR #1007; next 09-qa+10-e2e; Spec→Build remains open; cycle in_progress; promote held; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
+  note: "S070/EV-060 09/10 @ 7762b88b pushed; D-S070-logout=1a restore pending commit; next 11-verify-impl after 1006-003 re-run PASS; PR #1007; Spec→Build remains open; cycle in_progress; promote held; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
 - id: EV-059
   title: "F34 CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   topic: "F34 Schemathesis + mutation; close #841"
@@ -50748,13 +50781,14 @@ git_history:
   current_branch_tracking: origin/evolve/EV-060-converter-operator-bugs
   ahead_of_origin: 0
   pushed: true
-  pending_commit: false
-  pending_commit_note:
+  pending_commit: true
+  pending_commit_note: 'D-S070-logout=1a restore POST /auth/logout — not yet committed; parent will re-update after commit'
   dirty: true
-  dirty_note: 'dirty expected — workflow-state.yaml M4 08 PASS / 09-qa handoff; no git commit by workflow-state-manager'
-  tip_sha: "6a87c96a"
-  tip_sha_full: 6a87c96a051471c416c16b59a8900a68af07dc1d
-  tip_note: "OPEN S070/EV-060 — M4 08 PASS; T4.2 UAT-003 ACCEPTED; tip 6a87c96a pushed; PR #1007; next 09-qa+10-e2e; Spec→Build remains open; promote held; tracking origin/evolve/EV-060-converter-operator-bugs"
+  dirty_note: 'dirty expected — logout restore uncommitted + workflow-state.yaml this update; no git commit by workflow-state-manager'
+  tip_sha: "7762b88b"
+  tip_sha_full: 7762b88b06bd554cf1fbd66663f6c8e52352ad31
+  tip_sha_pushed: true
+  tip_note: "09/10 reports + UJ Playwright pushed to PR #1007; D-S070-logout=1a restore in progress"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -50762,8 +50796,8 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-060-converter-operator-bugs
-  evolve_tip_sha: "6a87c96a"
-  evolve_tip_sha_full: 6a87c96a051471c416c16b59a8900a68af07dc1d
+  evolve_tip_sha: "7762b88b"
+  evolve_tip_sha_full: 7762b88b06bd554cf1fbd66663f6c8e52352ad31
   evolve_tip_sha_pushed: true
   stage_merge_sha: c08bc30f
   stage_merge_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
@@ -50780,9 +50814,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-060-converter-operator-bugs
-  note: "S070/EV-060 M4 08 PASS; T4.2 UAT-003 ACCEPTED; tip 6a87c96a pushed; PR #1007; next 09-qa+10-e2e; Spec→Build remains open; promote held; 07-build completed; no git commit by workflow-state-manager"
+  note: "S070/EV-060 09/10 @ 7762b88b pushed; D-S070-logout=1a restore pending commit; next 11-verify-impl after 1006-003 re-run PASS; PR #1007; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 D-S070-logout=1a + tip 7762b88b — [EV-060] test: add UJ-059..063 Playwright and record 09/10 reports; tip_sha_pushed=true; logout restore pending commit; next 11-verify-impl after 1006-003 re-run PASS; PR #1007; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 M4 08-verify-build PASS — commit 6a87c96a [T4.2] docs: record Auth UAT sign-off and M4 08-verify-build PASS; tip_sha_pushed=true; PR #1007; 07-build completed; next 09-qa+10-e2e; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 D-S070-resume-m4 — continue recommended = T4.2 facilitated UAT-003 now; sync stale yaml M3 T3.1 → M4 T4.2; M1–M3 complete + 08 PASS; T4.1+T4.3 complete; PR #1007 open; Spec→Build remains open; promote held; tip sha unchanged (do not invent); no git commit by workflow-state-manager"
   - "2026-08-18 M2 #1003 T2.1–T2.4 COMPLETE + 08-verify-build M2 PASS — report docs/sessions/S070-converter-operator-bugs/reports/verification-report.md; stacked on PR #1007 (no new PR); tip 76f7e725; next M3 T3.1 #1002/#1005/#1004; 07-build remains in_progress; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
@@ -51391,8 +51426,8 @@ git_history:
     tracking: origin/evolve/EV-060-converter-operator-bugs
     session_id: S070-converter-operator-bugs
     evolve_cycle_id: EV-060
-    tip_sha: 6a87c96a
-    tip_sha_full: 6a87c96a051471c416c16b59a8900a68af07dc1d
+    tip_sha: 7762b88b
+    tip_sha_full: 7762b88b06bd554cf1fbd66663f6c8e52352ad31
     tip_sha_pushed: true
     pr_number: 1007
     pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
@@ -51400,7 +51435,7 @@ git_history:
     pr_base: stage
     pr_head: evolve/EV-060-converter-operator-bugs
     pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-    note: "OPEN — M1–M4 08 PASS stacked on PR #1007 @ 6a87c96a pushed; T4.2 UAT-003 ACCEPTED; next 09-qa+10-e2e; #1001 In review; epic #1000 Backlog; promote held; 07-build completed; Spec→Build remains open; tracking origin/evolve/EV-060-converter-operator-bugs"
+    note: "OPEN — 09/10 reports + UJ Playwright on PR #1007 @ 7762b88b pushed; D-S070-logout=1a restore pending commit; next 11-verify-impl after 1006-003 re-run PASS; #1001 In review; epic #1000 Backlog; promote held; Spec→Build remains open; tracking origin/evolve/EV-060-converter-operator-bugs"
 
   - name: evolve/EV-059-ci-schemathesis-mutation
     base: stage@c458669e
@@ -52948,6 +52983,26 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "7762b88b"
+    sha_full: 7762b88b06bd554cf1fbd66663f6c8e52352ad31
+    message: "[EV-060] test: add UJ-059..063 Playwright and record 09/10 reports"
+    branch: evolve/EV-060-converter-operator-bugs
+    stage: 10-e2e
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    files_changed:
+      - apps/e2e/tc-ev060-uj059-063.e2e.spec.ts
+      - apps/e2e/tc-ev060-1006-auth.e2e.spec.ts
+      - docs/sessions/S070-converter-operator-bugs/reports/qa-report.md
+      - docs/sessions/S070-converter-operator-bugs/reports/e2e-report.md
+      - workflow-state.yaml
+    timestamp: "2026-08-18T17:45:00Z"
+    pushed: true
+    tip_sha: 7762b88b
+    tip_sha_full: 7762b88b06bd554cf1fbd66663f6c8e52352ad31
+    pr_number: 1007
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+    note: "09/10 reports + UJ Playwright pushed to PR #1007; D-S070-logout=1a restore pending commit"
   - sha: "6a87c96a"
     sha_full: 6a87c96a051471c416c16b59a8900a68af07dc1d
     message: "[T4.2] docs: record Auth UAT sign-off and M4 08-verify-build PASS"

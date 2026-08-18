@@ -10,11 +10,11 @@
 | Tier | Scope | Result |
 |------|-------|--------|
 | T0 | EV-060 unit/Vitest (see 09-qa) | PASS |
-| T2 local browser + API | UJ-059..063 + TC-EV060-1006 | **13 passed / 1 failed** |
+| T2 local browser + API | UJ-059..063 + TC-EV060-1006 | **14 passed** (after `D-S070-logout=1a`) |
 | T2 connectivity H4–H5 | staging frontend | **DEFERRED** → 12/13 |
 | T3 live | staging/prod | **DEFERRED** → 13 / 15 |
 
-**Overall (local T2 for EV-060):** **FAIL** — TC-EV060-1006-003 logout (see below). Converter journeys UJ-059..063 **PASS**.
+**Overall (local T2 for EV-060):** **PASS** after `D-S070-logout=1a` (restore `POST /auth/logout`). Converter journeys UJ-059..063 **PASS**. Auth 001/002/003 **PASS**.
 
 ## Journey matrix (delta)
 
@@ -25,7 +25,7 @@
 | UJ-061 Profile at top | same + Vitest 1002 | PASS | **PASS** (1) | deferred |
 | UJ-062 Bulletin fields | same + Vitest 1005 | PASS | **PASS** (2) | deferred |
 | UJ-063 log_level | same + backend 1004 | PASS | **PASS** (2) — control sent; API accepts DEBUG/ERROR | n/a (T0/T2 only) |
-| UJ-003 / UJ-046 Auth | `tc-ev060-1006-auth.e2e.spec.ts` | — | **001/002 PASS; 003 FAIL** | deferred |
+| UJ-003 / UJ-046 Auth | `tc-ev060-1006-auth.e2e.spec.ts` | — | **001/002/003 PASS** (`D-S070-logout=1a`) | deferred |
 | UAT-003 | facilitated | — | **ACCEPTED** 2026-08-18 (`D-S070-uat003`) | — |
 
 ## Execution
@@ -73,23 +73,21 @@ Bulletin ID + Issuing Center visible without expanding parameters; convert sends
 
 `#param-log-level` DEBUG is sent on convert; live `POST /api/v1/convert` accepts DEBUG and ERROR (`<500`, 200 or 422). Verbosity/secret redaction remains T0 (`test_tc_ev060_1004_log_level.py`).
 
-### TC-EV060-1006 Auth — mixed
+### TC-EV060-1006 Auth — PASS
 
 | Case | Result |
 |------|--------|
 | 001 register (stubbed `/auth/register`, no production PII) | PASS |
 | 002 login + reload persist (`E2E_USER_*` / `ADMIN_*`) | PASS |
-| 003 logout → guest convert | **FAIL** |
+| 003 logout → guest convert | **PASS** (re-run after `D-S070-logout=1a`) |
 
-**003 evidence:** FileConverter scoped logout POSTs `http://localhost:18001/auth/logout`. Local OpenAPI paths under `/auth` are only `/auth/login` and `/auth/me` (`packages/auth` router is login+me per ADR-033). Response **404** → `signOutWithScope` returns false → UI stays on **Logout options** with the scope menu open. Guest convert after logout did not run.
-
-**[Contradiction]** Facilitated **UAT-003 ACCEPTED** (`D-S070-uat003`) vs T2 **404** on the same local converter. For 11-verify-impl: restore `POST /auth/logout`, change the FE not to require it, or waive 003 with rationale. 10-e2e did not change product code.
+**003 history:** First T2 run failed — FileConverter scoped logout POSTed `/auth/logout` → **404** (router was login+me only). User chose **1a** restore `POST /auth/logout` (GoTrue proxy + optional `{scope}`). Re-run 2026-08-18 local `:18000`/`:18001`: **PASS** (8.6s). Aligns with UAT-003 ACCEPTED and `[Corpus: api]`.
 
 Register remains stubbed (no production PII). Persist used existing `E2E_USER_*` / `ADMIN_*`.
 
 ## Outcome
 
 - Converter operator journeys **UJ-059..063: PASS** on local T2.  
-- Auth **login persist: PASS**; **logout: FAIL** (missing `/auth/logout`).  
+- Auth **login persist + logout: PASS** after logout route restore.  
 - Live H4–H5 stays **12/13**. UI preview stays **11** (`D-S070-e2`).  
 - PR #1007 still OPEN → `stage`. Promote held.

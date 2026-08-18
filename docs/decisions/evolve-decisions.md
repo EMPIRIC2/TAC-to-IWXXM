@@ -79,6 +79,8 @@
 | uat Build | 2026-08-18 | T4.2 UAT-003 ACCEPTED local :18000 |
 | 09-qa | 2026-08-18 | PASS (advisories); `reports/qa-report.md`; H0c 6/6 |
 | 10-e2e | 2026-08-18 | UJ-059..063 PASS; TC-EV060-1006-003 FAIL (`POST /auth/logout` 404); `reports/e2e-report.md` |
+| D-S070-logout | 2026-08-18 | **1a** — restore `POST /auth/logout` (GoTrue proxy + scope); 1006-003 re-run **PASS**; then 11 |
+| push | 2026-08-18 | `7762b88b` (09/10) pushed to PR #1007; promote held |
 
 ### Out of scope
 

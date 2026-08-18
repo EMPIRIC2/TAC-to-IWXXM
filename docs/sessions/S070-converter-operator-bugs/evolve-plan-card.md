@@ -41,10 +41,11 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Next child stage
 
-**11-verify-impl** — 09 PASS (advisories); 10 UJ-059..063 PASS; Auth logout T2 FAIL vs UAT-003; UI preview (`D-S070-e2`); promote held
+**11-verify-impl** — 09 PASS (advisories); 10 UJ-059..063 + Auth 001..003 PASS (`D-S070-logout=1a`); UI preview (`D-S070-e2`); promote held
 
 ## Risks / open decisions
 
 - F7.s Validate-only (#838) stays alongside F7.t product=IWXXM — do not silently delete
 - `log_level` already on the API as client-echoed process-issue filter; EV-060 also wires **logger verbosity**
 - Quality metrics honor (not redesign) profile/IWXXM product
+- Logout contradiction **resolved** (`D-S070-logout=1a`) — `POST /auth/logout` restored

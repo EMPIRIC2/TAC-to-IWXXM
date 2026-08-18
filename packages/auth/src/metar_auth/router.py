@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Body, Depends, Header, HTTPException, status
 from pydantic import BaseModel, Field, field_validator
 
 from metar_auth.jwks import JwtVerificationError, verify_access_token
@@ -64,6 +64,31 @@ class AuthResponse(BaseModel):
     session: SessionResponse | None = None
 
 
+class LogoutRequest(BaseModel):
+    """Optional scoped logout body (FileConverter / AdminDashboard)."""
+
+    scope: str | None = Field(
+        default=None,
+        description="GoTrue logout scope: global, local, or others",
+    )
+
+    @field_validator("scope")
+    @classmethod
+    def _scope(cls, value: str | None) -> str | None:
+        if value is None or value == "":
+            return None
+        allowed = {"global", "local", "others"}
+        if value not in allowed:
+            raise ValueError(f"Unsupported logout scope {value!r}")
+        return value
+
+
+class Message(BaseModel):
+    """Simple success message."""
+
+    message: str
+
+
 def get_token_from_header(
     authorization: str | None = Header(default=None),
 ) -> str:
@@ -89,7 +114,7 @@ def create_auth_router(
     supabase_url: str | None = None,
 ) -> APIRouter:
     """
-    Build the Auth-only router (login + me). No ``/admin`` routes.
+    Build the Auth-only router (login + logout + me). No ``/admin`` routes.
 
     Parameters
     ----------
@@ -119,6 +144,22 @@ def create_auth_router(
         """Authenticate via Supabase Auth password grant."""
         try:
             return client.sign_in(request.email, request.password)
+        except AuthProxyError as exc:
+            raise HTTPException(
+                status_code=exc.status_code,
+                detail=str(exc),
+            ) from exc
+
+    @router.post("/logout", response_model=Message)
+    def logout(
+        request: LogoutRequest | None = Body(default=None),  # noqa: B008
+        token: str = Depends(get_token_from_header),
+        client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
+    ) -> dict[str, str]:
+        """Sign out via GoTrue; optional body ``{scope}`` for local/global/others."""
+        body = request or LogoutRequest()
+        try:
+            return client.sign_out(token, scope=body.scope)
         except AuthProxyError as exc:
             raise HTTPException(
                 status_code=exc.status_code,
@@ -155,5 +196,5 @@ def create_auth_router(
         return user
 
     # Keep nested handlers referenced for typecheckers that miss FastAPI decorators.
-    _ = (login, me)
+    _ = (login, logout, me)
     return router

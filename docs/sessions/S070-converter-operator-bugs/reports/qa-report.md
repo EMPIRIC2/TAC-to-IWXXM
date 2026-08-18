@@ -67,7 +67,7 @@ Subset pytest exits 1 on `--cov-fail-under=98` when run alone (24.95% of the who
 | QA-002 | advisory | `make dev` rewrites `apps/frontend/public/config.json` (Prettier drift). | Restore before commit; do not commit the generated file. |
 | QA-003 | advisory | H4–H5 live staging not run. | 12/13 after PR → `stage`. |
 | QA-004 | advisory | pip-audit not run in this delta. | CI medium / user-requested remediation. |
-| QA-005 | **see 10-e2e** | Local OpenAPI has `/auth/login` and `/auth/me` only — **no `POST /auth/logout`**. Scoped logout in FileConverter POSTs `/auth/logout` → **404**. | 11: reconcile UAT-003 ACCEPTED vs T2 FAIL; restore logout route or change FE. Not fixed in 09 (report-only). |
+| QA-005 | **resolved** (`D-S070-logout=1a`) | Was: no `POST /auth/logout` → 404. Restored GoTrue proxy logout + scope; 1006-003 re-run **PASS**. | — |
 
 ## Connectivity
 
