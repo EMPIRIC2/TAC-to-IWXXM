@@ -1,7 +1,7 @@
 # Build Plan Card
 
 > Cycle: EV-060 | Session: S070-converter-operator-bugs | Updated: 2026-08-18
-> Active: Build / M3 T3.1–T3.6 — profile + bulletin fields + log_level
+> Active: Build / M3 complete — next 08-verify-build then M4 #1006
 
 ## Goal
 
@@ -20,8 +20,8 @@ Ship epic #1000 children to `stage`. This batch: M3 Profile picker (#1002), Bull
 - [x] T3.2 — Code — Profile control at converter top — Spec: [Corpus: product §F7]
 - [x] T3.3 — Test — Bulletin ID / Issuing Center round-trip + invalid CCCC — Spec: [Corpus: tests §TC-EV060-1005]
 - [x] T3.4 — Code — Labeled editable fields wired to existing API — Spec: [Corpus: product §F6]
-- [ ] T3.5 — Test — DEBUG vs ERROR verbosity; no secrets — Spec: [Corpus: tests §TC-EV060-1004]
-- [ ] T3.6 — Code — Apply `log_level` to loggers — Spec: [Corpus: product §F29]
+- [x] T3.5 — Test — DEBUG vs ERROR verbosity; no secrets — Spec: [Corpus: tests §TC-EV060-1004]
+- [x] T3.6 — Code — Apply `log_level` to loggers — Spec: [Corpus: product §F29]
 
 ## Out of scope (explicit)
 

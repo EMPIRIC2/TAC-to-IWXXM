@@ -70,7 +70,11 @@ try:
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
-    from .utilities.observability import install_fastapi_observability, setup_logging
+    from .utilities.observability import (
+        install_fastapi_observability,
+        set_request_log_level,
+        setup_logging,
+    )
     from .utilities.sentry_init import init_sentry
     from .utilities.tac_parser import extract_airport_code
 except ImportError:
@@ -123,7 +127,11 @@ except ImportError:
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from utilities.metar_normalizer import normalize_recent_weather_tokens
-    from utilities.observability import install_fastapi_observability, setup_logging
+    from utilities.observability import (
+        install_fastapi_observability,
+        set_request_log_level,
+        setup_logging,
+    )
     from utilities.sentry_init import init_sentry
     from utilities.tac_parser import extract_airport_code
 
@@ -1961,7 +1969,8 @@ async def convert(
         "icao_opmet",
         "schema",
     ]
-    log_level_norm = (log_level or "INFO").strip().upper()
+    log_level_norm = set_request_log_level(request, log_level)
+    logger.debug("[CONVERT] logger verbosity applied level=%s", log_level_norm)
     logger.info(
         "[CONVERT] include_nil_reasons=%s log_level=%s",
         include_nil_reasons,
