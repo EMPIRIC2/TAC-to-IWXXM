@@ -67,6 +67,7 @@ try:
     from .services.webhooks import webhook_service
     from .utilities.abuse_controls import install_abuse_controls
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from .utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import install_fastapi_observability, setup_logging
     from .utilities.sentry_init import init_sentry
@@ -119,6 +120,7 @@ except ImportError:
     from services.webhooks import webhook_service
     from utilities.abuse_controls import install_abuse_controls
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import install_fastapi_observability, setup_logging
     from utilities.sentry_init import init_sentry
@@ -396,10 +398,12 @@ async def parse_files(request: Request) -> List[UploadFile]:
 # Multi-line TAC products — keep the whole buffer as one entry (do not line-split).
 # SIGMET/AIRMET: WMO examples are header- + body= across lines (BUG-2026-07-30 / F23 UI).
 # VAA/TCA/SWXA/VONA: advisory / notice templates with labeled fields (F26/F27/F28/F32).
-_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
+# IWXXM: pass-through XML document (F7.t / EV-060 / #1003) — never line-split.
+_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA", "IWXXM"})
 
-# Wire product enum (api-contract EV-029 / F28 / EV-032 F32). Canonical ``swxa`` / ``vona``.
-_API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA"})
+# Wire product enum (api-contract EV-029 / F28 / EV-032 F32 / EV-060 F7.t).
+# Canonical ``swxa`` / ``vona`` / ``iwxxm``.
+_API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA", "IWXXM"})
 
 
 def normalize_api_product(
@@ -426,7 +430,8 @@ def normalize_api_product(
                     f"Unknown product {raw!r}; expected one of "
                     f"{', '.join(sorted(p.lower() for p in _API_PRODUCTS))} "
                     "(canonical SWXA wire value is swxa, not swx; "
-                    "canonical VONA wire value is vona)"
+                    "canonical VONA wire value is vona; "
+                    "canonical IWXXM wire value is iwxxm)"
                 ),
             },
         )
@@ -952,8 +957,11 @@ async def lint_issue_catalog(
 )
 async def lint_tac(
     request: Request,
-    manual_text: str = Form(default="", description="TAC text to lint"),
-    product: str = Form(default="METAR", description="Product hint when known"),
+    manual_text: str = Form(default="", description="TAC or IWXXM XML to lint"),
+    product: str = Form(
+        default="METAR",
+        description="Product type, or iwxxm for XML lint (default METAR)",
+    ),
     files: Optional[List[UploadFile]] = File(None),
 ) -> Response:
     """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
@@ -973,6 +981,26 @@ async def lint_tac(
             tac_text = joined
 
     product_u = normalize_api_product(product, default="METAR")
+    if product_u == "IWXXM":
+        report = lint_iwxxm_pass_through(tac_text)
+        return msgspec_json_response(
+            LintTacResponse(
+                ok=report.ok,
+                product=report.product,
+                issues=[
+                    LintIssueModel(
+                        severity=i.severity,
+                        code=i.code,
+                        message=i.message,
+                        location=i.location,
+                        start=i.start,
+                        end=i.end,
+                    )
+                    for i in report.issues
+                ],
+                fixes=[],
+            )
+        )
     report = tac_lint_fn(tac_text, product=product_u)
     return msgspec_json_response(
         LintTacResponse(
@@ -1057,7 +1085,7 @@ async def decode_tac_endpoint(
 )
 async def convert_bulletin(
     request: Request,
-    product: str = Form(..., description="TAC product (required)"),
+    product: str = Form(..., description="TAC product, or iwxxm for XML pass-through"),
     files: Optional[List[UploadFile]] = File(None),
     manual_text: str = Form(default="", description="Bulletin string"),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
@@ -1091,6 +1119,54 @@ async def convert_bulletin(
         )
 
     product = normalize_api_product(product, default=None)
+
+    # F7.t: convert-bulletin with product=iwxxm treats the body as one XML document.
+    if product == "IWXXM":
+        iwxxm_lint = lint_iwxxm_pass_through(bulletin_text)
+        issues = [
+            LintIssueModel(
+                severity=i.severity,
+                code=i.code,
+                message=i.message,
+                location=i.location,
+                start=i.start,
+                end=i.end,
+            )
+            for i in iwxxm_lint.issues
+        ]
+        if not iwxxm_lint.ok:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": NOT_XML_CODE,
+                    "message": issues[0].message if issues else "Expected IWXXM XML",
+                    "issues": [i.model_dump() for i in issues],
+                },
+            )
+        xml_body = bulletin_text.strip()
+        return msgspec_json_response(
+            ConvertBulletinResponse(
+                bulletin_meta=BulletinMetaModel(
+                    ahl="",
+                    report_count=1,
+                    tt="",
+                    aa="",
+                    cccc="",
+                    yygggg="",
+                    bbb=None,
+                ),
+                results=[
+                    BulletinReportResultModel(
+                        report_index=0,
+                        ok=True,
+                        tac_input="",
+                        xml=xml_body,
+                        issues=[],
+                        fixes=[],
+                    )
+                ],
+            )
+        )
 
     try:
         split = tac2iwxxm_split_bulletin(bulletin_text, product=product)
@@ -1482,7 +1558,7 @@ async def convert(
     lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
     product: str = Form(
         default="METAR",
-        description="TAC product type (default METAR for legacy clients)",
+        description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     preview: bool = Form(
@@ -1682,6 +1758,117 @@ async def convert(
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
 
     product = normalize_api_product(product, default="METAR")
+
+    # F7.t / EV-060 / #1003: product=iwxxm is XML pass-through (no TAC convert).
+    if product == "IWXXM":
+        xml_payload = (manual_text or "").strip()
+        if request_body is not None and getattr(request_body, "metars", None):
+            xml_payload = (request_body.metars[0] or "").strip() if request_body.metars else xml_payload
+        if not xml_payload and files:
+            joined, err = await read_upload_files_text(files)
+            if err:
+                raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+            xml_payload = (joined or "").strip()
+        if not xml_payload:
+            raise HTTPException(
+                status_code=400,
+                detail=ErrorDetail(
+                    message="No IWXXM XML provided",
+                    errors=["Provide XML via manual_text, files, or JSON metars."],
+                    issues=[
+                        ConversionIssue(
+                            source="request",
+                            message="Expected IWXXM XML for product IWXXM",
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Paste or upload IWXXM XML, or choose a TAC product to convert.",
+                            code=NOT_XML_CODE,
+                        )
+                    ],
+                    total_errors=1,
+                ).model_dump(),
+            )
+        iwxxm_lint = lint_iwxxm_pass_through(xml_payload)
+        if not iwxxm_lint.ok:
+            issues = [
+                ConversionIssue(
+                    source="manual",
+                    message=i.message,
+                    severity=ConversionIssueSeverity.ERROR,
+                    code=i.code,
+                    location=i.location,
+                )
+                for i in iwxxm_lint.issues
+            ]
+            raise HTTPException(
+                status_code=400,
+                detail=ErrorDetail(
+                    message="IWXXM pass-through rejected input",
+                    errors=[i.message for i in issues],
+                    issues=issues,
+                    total_errors=len(issues),
+                ).model_dump(),
+            )
+        pass_issues: List[ConversionIssue] = []
+        want_validate = bool(validate_output) or str(validation_level or "").lower() in {
+            "comprehensive",
+            "schematron",
+            "icao_opmet",
+            "schema",
+        }
+        if want_validate:
+            try:
+                report = iwxxm_validate_fn(
+                    xml_payload,
+                    iwxxm_version=iwxxm_version,
+                    profile=(profile or "annex3"),
+                )
+                if not getattr(report, "ok", True):
+                    for issue in getattr(report, "issues", []) or []:
+                        pass_issues.append(
+                            ConversionIssue(
+                                source="manual",
+                                message=str(getattr(issue, "message", "") or "IWXXM validation issue"),
+                                severity=ConversionIssueSeverity.WARNING,
+                                code=str(getattr(issue, "code", None) or "IWXXM_VALIDATE"),
+                                location=getattr(issue, "location", None),
+                            )
+                        )
+            except Exception as exc:  # noqa: BLE001 — pass-through must not 500 on optional F2
+                logger.warning("[CONVERT] IWXXM pass-through validate_output failed: %s", exc)
+                pass_issues.append(
+                    ConversionIssue(
+                        source="manual",
+                        message=f"Optional IWXXM validation could not complete: {exc}",
+                        severity=ConversionIssueSeverity.WARNING,
+                        code="IWXXM_VALIDATE_ERROR",
+                    )
+                )
+        return msgspec_json_response(
+            ConversionResponse(
+                results=[
+                    ConversionResult(
+                        name="iwxxm_pass_through.xml",
+                        content=xml_payload,
+                        tac_input=None,
+                        source="manual",
+                        size_bytes=len(xml_payload.encode("utf-8")),
+                    )
+                ],
+                errors=[],
+                issues=pass_issues,
+                total_processed=1,
+                successful=1,
+                failed=0,
+                metadata={
+                    "bulletin_id": normalize_code(bulletin_id, 6) or "",
+                    "issuing_center": normalize_code(issuing_center, 4) or "",
+                    "validation_level": validation_level,
+                    "stop_on_error": bool(stop_on_error),
+                    "product": "iwxxm",
+                    "pass_through": True,
+                },
+            )
+        )
 
     # Q14=C: lint default on — soft-wire tac-validate (hard fails use POST /lint-tac)
     if lint:

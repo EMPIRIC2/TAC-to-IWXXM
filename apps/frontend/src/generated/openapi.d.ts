@@ -1272,7 +1272,7 @@ export interface components {
             preview: boolean;
             /**
              * Product
-             * @description TAC product type (default METAR for legacy clients)
+             * @description TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)
              * @default METAR
              */
             product: string;
@@ -1337,7 +1337,7 @@ export interface components {
             manual_text: string;
             /**
              * Product
-             * @description TAC product (required)
+             * @description TAC product, or iwxxm for XML pass-through
              */
             product: string;
             /**
@@ -1405,13 +1405,13 @@ export interface components {
             files?: string[] | null;
             /**
              * Manual Text
-             * @description TAC text to lint
+             * @description TAC or IWXXM XML to lint
              * @default
              */
             manual_text: string;
             /**
              * Product
-             * @description Product hint when known
+             * @description Product type, or iwxxm for XML lint (default METAR)
              * @default METAR
              */
             product: string;
