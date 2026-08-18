@@ -27,8 +27,8 @@
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 07-build | yes | delta | **in_progress** | M1 #1001 AHL first (`D-S070-spec-build=1a`) |
-| 08-verify-build | yes | delta | blocked_until_spec_gate | After each milestone / before C→D |
+| 07-build | yes | delta | **in_progress** | M1 #1001 08 PASS; next M2 #1003 |
+| 08-verify-build | yes | delta | **completed** (M1) | Report `reports/verification-report.md`; re-run after M2 |
 | 09-qa | yes | delta | blocked_until_spec_gate | Converter + Auth |
 | 10-e2e | yes | delta | blocked_until_spec_gate | Playwright AHL, product=IWXXM, profile a11y, bulletin fields, Auth |
 | 11-verify-impl | yes | delta | blocked_until_spec_gate | Per-Fn AC; UI preview offer |

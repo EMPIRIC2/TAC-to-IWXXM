@@ -1,7 +1,7 @@
 # Build Plan Card
 
-> Cycle: EV-060 | Session: S070-converter-operator-bugs | Updated: 2026-08-17
-> Active: Build / M1 / T1.1
+> Cycle: EV-060 | Session: S070-converter-operator-bugs | Updated: 2026-08-18
+> Active: Build / M1 08 PASS / next M2 T2.1
 
 ## Goal
 
@@ -30,7 +30,7 @@ T1.1 then T1.2 (TDD). T1.3 after T1.2. T1.4 last.
 
 ## Verify / PR
 
-08-verify-build after M1; PR → `stage` for #1001.
+08-verify-build M1 **PASS**; PR → `stage` for #1001.
 
 ## Gate
 

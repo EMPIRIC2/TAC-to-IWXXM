@@ -1,6 +1,6 @@
 # Evolve Plan Card
 
-> Cycle: EV-060 | Session: S070-converter-operator-bugs | Updated: 2026-08-17
+> Cycle: EV-060 | Session: S070-converter-operator-bugs | Updated: 2026-08-18
 
 ## Goal
 
@@ -41,7 +41,7 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Next child stage
 
-**07-build** M1 T1.1 — AHL bulletin quality (#1001); gate open
+**07-build** M2 T2.1 — IWXXM product pass-through (#1003) after M1 PR → `stage`
 
 ## Risks / open decisions
 

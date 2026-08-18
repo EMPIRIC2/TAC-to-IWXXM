@@ -15,9 +15,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (gate **open** `D-S070-spec-build=1a`) |
-| **Active milestone** | M1 #1001 AHL bulletin quality |
+| **Active milestone** | M1 #1001 08 PASS — next M2 #1003 |
 | **Tasks completed** | 4 / 18 |
-| **Stage** | 07-build |
+| **Stage** | 08-verify-build (M1) → PR → 07-build M2 |
 | **Plan approval** | **approved** `D-S070-04-plan=1a` |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M4 |
 

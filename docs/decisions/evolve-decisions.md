@@ -8,7 +8,7 @@
 **Session**: S070-converter-operator-bugs  
 **Features**: deepen **F7.t** (IWXXM product) + F6/F2/F10/F29/F31; no new top-level Fn  
 **Started**: 2026-08-17  
-**Status**: **in_progress** — Build M1 #1001; Spec→Build **open** (`D-S070-spec-build=1a`)  
+**Status**: **in_progress** — M1 #1001 08 PASS; PR → `stage`; then M2 #1003  
 **Branch**: `evolve/EV-060-converter-operator-bugs` (base `stage@8755ae87`)  
 **Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
 **Milestone**: GitHub **M0 — Stabilize + operator trust + narrative**  
@@ -35,6 +35,7 @@
 | D-S070-e9 | Open session; Spec-development only; Spec→Build **closed** |
 | D-S070-spec-build | Open Build; 07+ as routed; M1 #1001 first |
 | D-S070-board | Epic #1000 Backlog; children Ready until 07 |
+| D-S070-08-vaa | AHL lint keep-whole remainder when no `=` (VAA/TCA/SWXA/VONA); heading-only still INVALID_AHL |
 
 ### Intake decisions
 
@@ -67,7 +68,8 @@
 | 04-tech-plan | 2026-08-17 | EP approved `D-S070-04-plan=1a` |
 | uat Spec / verify-qa Spec | 2026-08-17 | checklists written |
 | Spec→Build | 2026-08-17 | **open** (`D-S070-spec-build=1a`) |
-| 07-build | — | M1 #1001 in_progress |
+| 07-build | — | M1 #1001 complete locally; next M2 #1003 |
+| 08-verify-build | 2026-08-18 | M1 PASS; VAA keep-whole (`D-S070-08-vaa`); report `reports/verification-report.md` |
 
 ### Out of scope
 
