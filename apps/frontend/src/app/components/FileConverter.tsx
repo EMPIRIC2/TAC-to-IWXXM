@@ -83,11 +83,17 @@ import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
 import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
+  isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
   type IwxxmProfile,
   type TacProductSelection,
 } from '/utils/tacProduct';
+import {
+  IWXXM_PRODUCT_CONVERT_ARIA,
+  IWXXM_PRODUCT_CONVERT_LABEL,
+  IWXXM_PRODUCT_HELP,
+} from '/utils/iwxxmProductCopy';
 import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
@@ -116,11 +122,17 @@ import {
   truncateTacSnippet,
 } from '/utils/resultTraceability';
 import {
+  isValidBulletinId,
+  isValidIssuingCenter,
   mapOnErrorToStopOnError,
   mapStrictToValidation,
   type ConvertLogLevel,
   type ConvertOnError,
 } from '/utils/convertParams';
+import {
+  BULLETIN_ID_FIELD_ERROR,
+  ISSUING_CENTER_FIELD_ERROR,
+} from '/utils/bulletinFieldsCopy';
 import {
   detectInputKind,
   kindToMode,
@@ -254,6 +266,10 @@ export function FileConverter({
     shouldShowPrivacyNotice(),
   );
   const [isParamsExpanded, setIsParamsExpanded] = useState(false);
+  const [bulletinFieldError, setBulletinFieldError] = useState<string | null>(null);
+  const [issuingCenterFieldError, setIssuingCenterFieldError] = useState<string | null>(
+    null,
+  );
   const [conversionParams, setConversionParams] = useState<ConversionParams>({
     bulletinId: '',
     issuingCenter: '',
@@ -438,14 +454,8 @@ export function FileConverter({
       setConversionParams((prev) => {
         const next = { ...prev };
         const rawProduct = params.product;
-        if (
-          typeof rawProduct === 'string' &&
-          (rawProduct === 'auto' ||
-            ['AIRMET', 'METAR', 'SIGMET', 'SPECI', 'TAF', 'VAA', 'TCA'].includes(
-              rawProduct,
-            ))
-        ) {
-          next.product = rawProduct as TacProductSelection;
+        if (typeof rawProduct === 'string' && isConvertProductSelection(rawProduct)) {
+          next.product = rawProduct;
         }
         if (params.profile === 'iwxxm_us' || params.profile === 'annex3') {
           next.profile = params.profile;
@@ -704,7 +714,11 @@ export function FileConverter({
         conversionParams.product,
         tacForDetect,
       );
-      if (conversionParams.product !== 'auto' && tacForDetect.trim()) {
+      if (
+        conversionParams.product !== 'auto' &&
+        conversionParams.product !== 'IWXXM' &&
+        tacForDetect.trim()
+      ) {
         const detected = detectTacProduct(tacForDetect);
         if (detected !== resolvedProduct) {
           toast.warning(
@@ -1045,6 +1059,13 @@ export function FileConverter({
     }
     if (inputMode === 'validate_iwxxm') {
       await handleValidateOnly();
+      return;
+    }
+    const bulletinOk = isValidBulletinId(conversionParams.bulletinId);
+    const centerOk = isValidIssuingCenter(conversionParams.issuingCenter);
+    setBulletinFieldError(bulletinOk ? null : BULLETIN_ID_FIELD_ERROR);
+    setIssuingCenterFieldError(centerOk ? null : ISSUING_CENTER_FIELD_ERROR);
+    if (!bulletinOk || !centerOk) {
       return;
     }
     setIsConverting(true);
@@ -1748,22 +1769,30 @@ export function FileConverter({
               aria-busy={isConverting}
               aria-label={
                 isConverting
-                  ? inputMode === 'validate_iwxxm'
+                  ? inputMode === 'validate_iwxxm' ||
+                    conversionParams.product === 'IWXXM'
                     ? 'Validating IWXXM, please wait'
                     : 'Converting files, please wait'
                   : inputMode === 'validate_iwxxm'
                     ? 'Validate IWXXM XML'
-                    : 'Convert TAC to IWXXM XML'
+                    : conversionParams.product === 'IWXXM'
+                      ? IWXXM_PRODUCT_CONVERT_ARIA
+                      : 'Convert TAC to IWXXM XML'
               }
             >
               <Loader2
                 className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
                 aria-hidden="true"
               />
-              {inputMode === 'validate_iwxxm' ? 'Validate' : 'Convert'}
+              {inputMode === 'validate_iwxxm'
+                ? 'Validate'
+                : conversionParams.product === 'IWXXM'
+                  ? IWXXM_PRODUCT_CONVERT_LABEL
+                  : 'Convert'}
             </Button>
             {isOperatorDisseminationDestinationsEnabled() &&
-            inputMode !== 'validate_iwxxm' ? (
+            inputMode !== 'validate_iwxxm' &&
+            conversionParams.product !== 'IWXXM' ? (
               <Button
                 data-testid="convert-and-send-button"
                 onClick={handleConvertAndSend}
@@ -1920,6 +1949,30 @@ export function FileConverter({
                     <option value="TCA">TCA</option>
                     <option value="SWXA">SWXA</option>
                     <option value="VONA">VONA</option>
+                    <option value="IWXXM">IWXXM</option>
+                  </select>
+                  <Label
+                    htmlFor="param-profile"
+                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    Profile
+                  </Label>
+                  <select
+                    id="param-profile"
+                    aria-label="Profile"
+                    data-testid="profile-type-select"
+                    value={conversionParams.profile}
+                    disabled={isReadOnly}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        profile: e.target.value as IwxxmProfile,
+                      }))
+                    }
+                    className="min-w-[9.5rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="annex3">Annex 3</option>
+                    <option value="iwxxm_us">IWXXM-US</option>
                   </select>
                   <GoldenExamplesSelect
                     disabled={isReadOnly}
@@ -1958,6 +2011,16 @@ export function FileConverter({
                   validation only — no TAC conversion.
                 </p>
               )}
+              {conversionParams.product === 'IWXXM' &&
+                inputMode !== 'validate_iwxxm' && (
+                  <p
+                    className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                    data-testid="iwxxm-product-help"
+                    role="status"
+                  >
+                    {IWXXM_PRODUCT_HELP}
+                  </p>
+                )}
               {bulletinSummary && (
                 <p
                   className="mb-2 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-100"
@@ -2221,70 +2284,81 @@ export function FileConverter({
                   )}
                 </Button>
               </div>
-              <div
-                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
-              >
-                {/* Bulletin ID */}
+              <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
                     Bulletin ID
                   </Label>
                   <Input
                     id="param-bulletin-id"
+                    data-testid="bulletin-id-input"
                     value={conversionParams.bulletinId}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      setBulletinFieldError(null);
                       setConversionParams((prev) => ({
                         ...prev,
                         bulletinId: e.target.value.toUpperCase(),
-                      }))
-                    }
+                      }));
+                    }}
                     placeholder="SAAA00"
                     maxLength={6}
+                    aria-invalid={bulletinFieldError ? true : undefined}
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Format: 4 letters + 2 digits. Sent as <code>bulletin_id</code> on
-                    Convert.
-                  </p>
+                  {bulletinFieldError ? (
+                    <p
+                      className="mt-1 text-xs text-red-600 dark:text-red-400"
+                      data-testid="bulletin-id-field-error"
+                      role="alert"
+                    >
+                      {bulletinFieldError}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Format: 4 letters + 2 digits. Leave blank to discover from the
+                      AHL.
+                    </p>
+                  )}
                 </div>
-
-                {/* Issuing Center */}
-                <IcaoAutocomplete
-                  label="Issuing Center (ICAO)"
-                  id="param-issuing-center"
-                  value={conversionParams.issuingCenter}
-                  onChange={(value) =>
-                    setConversionParams((prev) => ({ ...prev, issuingCenter: value }))
-                  }
-                  placeholder="KWBC"
-                  maxLength={4}
-                  helperText="4-letter ICAO code — sent as issuing_center on Convert"
-                />
-                <AirportDetailsCard icao={conversionParams.issuingCenter} />
-
-                {/* F6.e Product — primary control next to Manual TAC Input (#param-product) */}
-
-                {/* F6.e Profile */}
                 <div>
-                  <Label htmlFor="param-profile" className="dark:text-white mb-2">
-                    Profile
-                  </Label>
-                  <select
-                    id="param-profile"
-                    aria-label="Profile"
-                    value={conversionParams.profile}
-                    onChange={(e) =>
+                  <IcaoAutocomplete
+                    label="Issuing Center (ICAO)"
+                    id="param-issuing-center"
+                    inputTestId="issuing-center-input"
+                    formatOnly
+                    value={conversionParams.issuingCenter}
+                    onChange={(value) => {
+                      setIssuingCenterFieldError(null);
                       setConversionParams((prev) => ({
                         ...prev,
-                        profile: e.target.value as IwxxmProfile,
-                      }))
+                        issuingCenter: value,
+                      }));
+                    }}
+                    placeholder="KWBC"
+                    maxLength={4}
+                    helperText={
+                      issuingCenterFieldError
+                        ? undefined
+                        : '4-letter ICAO code. Leave blank to discover from the AHL.'
                     }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="annex3">annex3 (International)</option>
-                    <option value="iwxxm_us">iwxxm_us (US extensions)</option>
-                  </select>
+                  />
+                  {issuingCenterFieldError ? (
+                    <p
+                      className="mt-1 text-xs text-red-600 dark:text-red-400"
+                      data-testid="issuing-center-field-error"
+                      role="alert"
+                    >
+                      {issuingCenterFieldError}
+                    </p>
+                  ) : null}
                 </div>
+              </div>
+              <div
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
+              >
+                <AirportDetailsCard icao={conversionParams.issuingCenter} />
+
+                {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}
 
                 {/* IWXXM Version */}
                 <div>

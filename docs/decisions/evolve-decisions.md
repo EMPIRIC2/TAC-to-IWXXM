@@ -3,6 +3,98 @@
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 
+## Cycle EV-060 — Converter operator bugs + IWXXM pass-through (#1000) (S070)
+
+**Session**: S070-converter-operator-bugs  
+**Features**: deepen **F7.t** (IWXXM product) + F6/F2/F10/F29/F31; no new top-level Fn  
+**Started**: 2026-08-17  
+**Status**: **in_progress** — 09-qa PASS (advisories); 10-e2e UJ-059..063 PASS; Auth logout T2 FAIL  
+**Branch**: `evolve/EV-060-converter-operator-bugs` (base `stage@8755ae87`)  
+**Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
+**Milestone**: GitHub **M0 — Stabilize + operator trust + narrative**  
+**Later (not this cycle)**: profile view/create [#933](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/933) / [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924)  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: product §F10]
+[Corpus: product §F29] [Corpus: product §F31] [Corpus: api] [Corpus: journeys] [Corpus: tests]
+[Corpus: decisions §EV-060]
+
+### Scope (Phase 0 — locked 2026-08-17)
+
+| ID | Decision |
+|----|----------|
+| D-S070-e0 | Tickets + Spec first; M0 pack; in/out as written |
+| D-S070-e1 | Deepen F7.t (no F35); file tickets at EV9; six success observables |
+| D-S070-e2 | Operator + API/CLI; FileConverter/accumulate/QM honor; UI preview at 11 |
+| D-S070-e3a | AHL split then lint reports; product=IWXXM pass-through; F7.s stays |
+| D-S070-e3b | Profile at converter top; editable Bulletin ID + Issuing Center; wire log_level; a11y must |
+| D-S070-e3c | Auth UAT + Playwright; API same fields |
+| D-S070-e4 | Standing docs delta; existing CORPUS (no waiver); uat+verify-qa Spec; Standard 01→02→04 |
+| D-S070-e5 | Four Build PRs; 09+10+11+uat; staging smoke; promote held |
+| D-S070-e6 | OOS: #933/#924/#912/F16–F19/#898/F8 auto-push/promote/new auth; additive API; no JWT in DEBUG |
+| D-S070-e7 | No new secrets; existing CORS; H0c + H4–H5; no new observability contract |
+| D-S070-e8 | Spec 00→16→01→02→04; Build 07–13 blocked; skip 03/05/06 |
+| D-S070-e9 | Open session; Spec-development only; Spec→Build **closed** |
+| D-S070-spec-build | Open Build; 07+ as routed; M1 #1001 first |
+| D-S070-board | Epic #1000 Backlog; children Ready until 07 |
+| D-S070-08-vaa | AHL lint keep-whole remainder when no `=` (VAA/TCA/SWXA/VONA); heading-only still INVALID_AHL |
+| D-S070-resume-m4 | Continue recommended: T4.2 facilitated UAT-003 now on local :18000 |
+| D-S070-uat003 | **all-pass** — UAT-003 ACCEPTED 2026-08-18 local :18000 (product owner) |
+| D-S070-phase-d | **1a** — 09-qa + 10-e2e in parallel |
+| D-S070-09-depth | **2a** — delta QA + blocking H0c |
+| D-S070-10-journeys | **3a** — UJ-059..063 + TC-EV060-1006 on local :18000 |
+| D-S070-local-dev | **4a** — restart make-dev `:18000`/`:18001` |
+
+### Intake decisions
+
+| ID | Category | Question | Decision | ADR |
+|----|----------|----------|----------|-----|
+| E60-1 | decision | cycle_type | feature deepen F7.t | — |
+| E60-2 | decision | GitHub pack | epic #1000 + #1001–#1006 on M0; no duplicate #933 | — |
+| E60-3 | decision | F7.s | keep Validate-only alongside F7.t | — |
+| E60-4 | decision | log_level | wire logger verbosity (not client echo only) | ADR-023 deepen |
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product §F7]` | cite | F7.t + picker/bulletin | |
+| `[Corpus: product §F6]` | cite | AHL / convert-bulletin | |
+| `[Corpus: product §F2]` | cite | IWXXM validate pass-through | |
+| `[Corpus: api]` | cite | `product=iwxxm`, log_level, bulletin fields | |
+| `[Corpus: journeys]` | cite | UJ-059..063; UJ-003/046 | |
+| `[Corpus: tests]` | cite | TC-EV060-* | |
+| — | waiver | none | existing CORPUS rows |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-17 | S070 opened; EV0–EV9 recommended |
+| 16-evolve | — | orchestrating; Spec→Build **open** |
+| 02-verify-plan | 2026-08-17 | Gate A PASS (`D-S070-gateA=1a`) |
+| 04-tech-plan | 2026-08-17 | EP approved `D-S070-04-plan=1a` |
+| uat Spec / verify-qa Spec | 2026-08-17 | checklists written |
+| Spec→Build | 2026-08-17 | **open** (`D-S070-spec-build=1a`) |
+| 07-build | 2026-08-18 | M1–M4 complete; 08 M4 PASS |
+| 08-verify-build | 2026-08-18 | M4 PASS; report `reports/verification-report.md` |
+| uat Build | 2026-08-18 | T4.2 UAT-003 ACCEPTED local :18000 |
+| 09-qa | 2026-08-18 | PASS (advisories); `reports/qa-report.md`; H0c 6/6 |
+| 10-e2e | 2026-08-18 | UJ-059..063 PASS; TC-EV060-1006-003 FAIL (`POST /auth/logout` 404); `reports/e2e-report.md` |
+| D-S070-logout | 2026-08-18 | **1a** — restore `POST /auth/logout` (GoTrue proxy + scope); 1006-003 re-run **PASS**; then 11 |
+| 11-verify-impl | 2026-08-18 | All 5 Fn + UJ-059..063 **Approve**; UI preview accepted `:18000`; T3 → 12/13 (`D-S070-11-t3`); `reports/verify-impl.md` |
+| push | 2026-08-18 | `7762b88b` (09/10) pushed to PR #1007; promote held |
+| 12-verify-deploy | 2026-08-18 | CI tip HARD STOP `c57eeef1` run 32169922030 (auth cov + OpenAPI drift) |
+| D-S070-12-ci-fix | 2026-08-18 | **fix in place** — auth-job tests for `sign_out` + logout errors; `make openapi-refresh`; CI **success** 32171946188 @ `4d29ee0c` |
+| D-S070-12-risks | 2026-08-18 | **approve** image/CD, CORS/Auth XHR, accidental promote, Playwright install hang |
+| D-S070-12-rollback | 2026-08-18 | **approve** prior GHCR / `stage-latest`; no DB migrations |
+| D-S070-12-close | 2026-08-18 | **checklist only** — keep no-merge #1007; hold 13 until a later merge |
+
+### Out of scope
+
+- #933/#924 profile editor; #912 national packs; F16–F19/#898; F8 auto-push;
+  stage→main promote; new auth providers; live log panel; new CLI product
+
+---
+
 ## Cycle EV-059 — CI Schemathesis + mutation quality gates (#841 / #727 / #874) (S069)
 
 **Session**: S069-ci-schemathesis-mutation  

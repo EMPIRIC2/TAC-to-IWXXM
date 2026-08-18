@@ -5020,4 +5020,84 @@ describe('FileConverter Component', () => {
       );
     });
   });
+
+  describe('EV-060 / #1003 IWXXM product pass-through (F7.t)', () => {
+    it('shows IWXXM product option and pass-through help (TC-EV060-1003-003)', async () => {
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+      const select = screen.getByTestId('product-type-select');
+      expect(screen.getByRole('option', { name: 'IWXXM' })).toBeInTheDocument();
+      await user.selectOptions(select, 'IWXXM');
+      expect(screen.getByTestId('iwxxm-product-help')).toHaveTextContent(
+        /pass-through/i,
+      );
+      expect(screen.getByTestId('convert-button')).toHaveAccessibleName(
+        /Lint and validate IWXXM XML/i,
+      );
+      expect(screen.getByTestId('convert-button')).toHaveTextContent(
+        /Lint & validate/i,
+      );
+    });
+
+    it('hides Convert&Send when product is IWXXM (TC-EV060-1003-003)', async () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      const user = userEvent.setup();
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.getByTestId('convert-and-send-button')).toBeInTheDocument();
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'IWXXM');
+      expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
+    });
+
+    it('sends product=iwxxm on convert and skips TAC convert message path', async () => {
+      const user = userEvent.setup();
+      const goodXml =
+        '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><ok/></iwxxm:METAR>';
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [
+          {
+            name: 'iwxxm_pass_through.xml',
+            content: goodXml,
+            source: 'manual',
+            size_bytes: goodXml.length,
+          },
+        ],
+        errors: [],
+        issues: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+        metadata: { product: 'iwxxm', pass_through: true },
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'IWXXM');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: goodXml },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ product: 'IWXXM' }),
+        );
+      });
+    });
+
+    it('hydrates IWXXM product from a stored session (TC-EV060-1003-004)', () => {
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'ev060-iwxxm-product',
+              status: 'draft',
+              conversion_params: { product: 'IWXXM', profile: 'annex3' },
+            } as any
+          }
+        />,
+      );
+      expect(screen.getByTestId('product-type-select')).toHaveValue('IWXXM');
+      expect(screen.getByTestId('iwxxm-product-help')).toBeInTheDocument();
+    });
+  });
 });

@@ -75,6 +75,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("parse_gate", "header"),
     ),
     _row(
+        "INVALID_AHL",
+        "error",
+        "WMO abbreviated heading is not valid communications format",
+        tags=("bulletin", "ahl", "parse_gate"),
+    ),
+    _row(
         "MISSING_TERMINATOR",
         "info",
         "Reports in bulletins end with '=' — add it before publishing",
