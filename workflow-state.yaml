@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S070/EV-060 M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held"
+overall_status_note: "S070/EV-060 M1 PR #1007 → stage; 08 PASS; waiting CI; then M2 #1003; promote held"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -13,6 +13,24 @@ active_session:
   status: in_progress
   branch: evolve/EV-060-converter-operator-bugs
   branch_base: stage@8755ae87
+  branch_status: open
+  branch_pushed: true
+  branch_tracking: origin/evolve/EV-060-converter-operator-bugs
+  tip_sha: a8dfc17c
+  tip_sha_full: a8dfc17c6acd305941f43b40435be873b7b74d06
+  tip_sha_pushed: true
+  pr_number: 1007
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+  pr_status: open
+  pr_base: stage
+  pr_head: evolve/EV-060-converter-operator-bugs
+  pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
+  m1_pr_number: 1007
+  m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+  m1_pr_status: open
+  m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
+  board_note: "#1001 In review (PR #1007 opened); epic #1000 Backlog; then M2 #1003; promote held"
+  promote: held
   orchestrator: 16-evolve
   evolve_cycle_id: EV-060
   artifacts_dir: docs/sessions/S070-converter-operator-bugs/
@@ -93,7 +111,7 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-17'
-    note: "M1 #1001 08 PASS; next M2 #1003 after PR → stage"
+    note: "M1 #1001 08 PASS; PR #1007 open → stage; waiting CI; next M2 #1003; promote held"
   - stage: 08-verify-build
     required: true
     mode: delta
@@ -138,7 +156,7 @@ active_session:
     D-S070-e9: "Spec-development only; gate closed."
     D-S070-spec-build: "Open Build; 07+ as routed; M1 #1001 first"
   context_briefs: []
-  note: "S070/EV-060 M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress"
+  note: "S070/EV-060 M1 PR #1007 → stage; 08 PASS; waiting CI; then M2 #1003; promote held; 07-build in_progress"
 
 sessions:
 
@@ -38362,18 +38380,35 @@ evolve_cycles:
   branch: evolve/EV-060-converter-operator-bugs
   branch_base: stage@8755ae87
   branch_status: open
+  branch_pushed: true
+  branch_tracking: origin/evolve/EV-060-converter-operator-bugs
+  tip_sha: a8dfc17c
+  tip_sha_full: a8dfc17c6acd305941f43b40435be873b7b74d06
+  tip_sha_pushed: true
+  pr_number: 1007
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+  pr_status: open
+  pr_base: stage
+  pr_head: evolve/EV-060-converter-operator-bugs
+  pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
+  m1_pr_number: 1007
+  m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+  m1_pr_status: open
+  m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
+  board_note: "#1001 In review (PR #1007 opened); epic #1000 Backlog; then M2 #1003; promote held"
+  promote: held
   current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "M1 08 PASS; 07-build in_progress — next M2 #1003 after PR → stage; promote held"
+  current_stage_note: "M1 PR #1007 open → stage; 08 PASS; waiting CI; 07-build in_progress — next M2 #1003; promote held"
   current_child: 07-build
   current_child_stage: 07-build
   current_child_stage_status: in_progress
-  current_child_note: "M1 08 done; next M2 #1003 after PR → stage"
+  current_child_note: "M1 PR #1007 open → stage; waiting CI; next M2 #1003"
   stages:
     07-build:
       status: in_progress
       started: '2026-08-17'
-      note: "M1 #1001 08 PASS; next M2 #1003 after PR → stage"
+      note: "M1 #1001 08 PASS; PR #1007 open → stage; waiting CI; next M2 #1003; promote held"
     08-verify-build:
       status: completed
       started: '2026-08-18'
@@ -38437,12 +38472,13 @@ evolve_cycles:
   - docs/decisions/evolve-decisions.md
   - docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
   notes:
+  - "2026-08-18 M1 PR #1007 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007); title [EV-060] M1 AHL bulletin quality (#1001); tip a8dfc17c pushed; tracking origin/evolve/EV-060-converter-operator-bugs; #1001 In review; epic #1000 Backlog; 08 PASS; waiting CI; then M2 #1003; 07-build in_progress; promote held; cycle not completed; no git commit by workflow-state-manager"
   - "2026-08-18 08-verify-build M1 PASS — report docs/sessions/S070-converter-operator-bugs/reports/verification-report.md; VAA keep-whole D-S070-08-vaa; re-run after M2; 07-build remains in_progress (next M2 #1003 after PR → stage); spec_to_build_gate open; promote held; cycle not completed; no git commit by workflow-state-manager"
   - "2026-08-18 08-verify-build START — in_progress for M1 #1001 @ 1f2859d0; 07-build remains in_progress (M2 #1003 not started); then PR → stage; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 M1 #1001 T1.1–T1.4 complete @ 1f2859d0; next 08-verify-build then PR → stage; then M2 #1003; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-spec-build=1a open Build; 07 M1 #1001"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; 01-requirements COMPLETE; 02-verify-plan pending; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
-  note: "S070/EV-060 M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress; spec_to_build_gate open; cycle in_progress; epic #1000; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
+  note: "S070/EV-060 M1 PR #1007 → stage; 08 PASS; waiting CI; then M2 #1003; promote held; 07-build in_progress; spec_to_build_gate open; cycle in_progress; #1001 In review; epic #1000 Backlog; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
 - id: EV-059
   title: "F34 CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   topic: "F34 Schemathesis + mutation; close #841"
@@ -50554,15 +50590,16 @@ evolve_cycles:
   pr_merged_sha: dfecba46
 git_history:
   current_branch: evolve/EV-060-converter-operator-bugs
-  ahead_of_origin: 4
-  pushed: false
+  current_branch_tracking: origin/evolve/EV-060-converter-operator-bugs
+  ahead_of_origin: 0
+  pushed: true
   pending_commit: false
   pending_commit_note:
   dirty: true
   dirty_note: 'dirty expected — workflow-state.yaml update; no git commit by workflow-state-manager'
-  tip_sha: "37d1e58c"
-  tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
-  tip_note: "OPEN S070/EV-060 — tip 37d1e58c; M1 08 PASS; PR → stage for #1001; then M2 #1003; promote held; local ahead 4 not pushed"
+  tip_sha: "a8dfc17c"
+  tip_sha_full: a8dfc17c6acd305941f43b40435be873b7b74d06
+  tip_note: "OPEN S070/EV-060 — tip a8dfc17c pushed; M1 PR #1007 → stage; 08 PASS; waiting CI; then M2 #1003; promote held; tracking origin/evolve/EV-060-converter-operator-bugs"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -50570,9 +50607,9 @@ git_history:
   docs_tip_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986
   docs_tip_pr_status: merged
   evolve_branch: evolve/EV-060-converter-operator-bugs
-  evolve_tip_sha: "37d1e58c"
-  evolve_tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
-  evolve_tip_sha_pushed: false
+  evolve_tip_sha: "a8dfc17c"
+  evolve_tip_sha_full: a8dfc17c6acd305941f43b40435be873b7b74d06
+  evolve_tip_sha_pushed: true
   stage_merge_sha: c08bc30f
   stage_merge_sha_full: c08bc30f2f5a5292d87c9ee12b25cbee4be86060
   stage_tip_sha: c08bc30f
@@ -50588,9 +50625,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-060-converter-operator-bugs
-  note: "S070/EV-060 M1 08 PASS; tip 37d1e58c; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress; local ahead 4 not pushed; no git commit by workflow-state-manager"
+  note: "S070/EV-060 M1 PR #1007 → stage; 08 PASS; waiting CI; then M2 #1003; promote held; tip a8dfc17c pushed; tracking origin/evolve/EV-060-converter-operator-bugs; 07-build in_progress; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 M1 PR #1007 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007); title [EV-060] M1 AHL bulletin quality (#1001); tip a8dfc17c pushed; tracking origin/evolve/EV-060-converter-operator-bugs; #1001 In review; epic #1000 Backlog; 08 PASS; waiting CI; then M2 #1003; 07-build in_progress; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 08-verify-build M1 PASS — commits 2c5025cd (07-build T1.2 AHL remainder) + 37d1e58c (08 M1 report); 07-build remains in_progress (next M2 #1003 after PR → stage); spec_to_build_gate open; promote held; cycle not completed; no git commit by workflow-state-manager"
   - "2026-08-18 08-verify-build START — in_progress for M1 #1001 @ 1f2859d0; 07-build remains in_progress (M2 #1003 not started); then PR → stage; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 commit 1f2859d0 — [T1.2] M1 #1001 T1.1–T1.4 complete; next 08-verify-build then PR → stage; then M2 #1003; tip not pushed; no git commit by workflow-state-manager"
@@ -51190,13 +51228,20 @@ git_history:
     status: active
     created: "2026-08-17"
     exists: true
-    pushed: false
+    pushed: true
+    tracking: origin/evolve/EV-060-converter-operator-bugs
     session_id: S070-converter-operator-bugs
     evolve_cycle_id: EV-060
-    tip_sha: 37d1e58c
-    tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
-    tip_sha_pushed: false
-    note: "OPEN — M1 08 PASS @ 37d1e58c; PR → stage for #1001; then M2 #1003; promote held; 07-build in_progress; local ahead 4 not pushed; no git commit by workflow-state-manager"
+    tip_sha: a8dfc17c
+    tip_sha_full: a8dfc17c6acd305941f43b40435be873b7b74d06
+    tip_sha_pushed: true
+    pr_number: 1007
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+    pr_status: open
+    pr_base: stage
+    pr_head: evolve/EV-060-converter-operator-bugs
+    pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
+    note: "OPEN — M1 PR #1007 → stage @ a8dfc17c pushed; #1001 In review; epic #1000 Backlog; waiting CI; then M2 #1003; promote held; 07-build in_progress; tracking origin/evolve/EV-060-converter-operator-bugs"
 
   - name: evolve/EV-059-ci-schemathesis-mutation
     base: stage@c458669e
@@ -52744,6 +52789,22 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: "a8dfc17c"
+    sha_full: a8dfc17c6acd305941f43b40435be873b7b74d06
+    message: "chore: [S070] record EV-060 M1 08-verify-build PASS"
+    branch: evolve/EV-060-converter-operator-bugs
+    stage: 16-evolve
+    session_id: S070-converter-operator-bugs
+    evolve_cycle_id: EV-060
+    files_changed:
+      - workflow-state.yaml
+    timestamp: "2026-08-18"
+    pushed: true
+    tip_sha: a8dfc17c
+    tip_sha_full: a8dfc17c6acd305941f43b40435be873b7b74d06
+    pr_number: 1007
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
+    note: "M1 tip pushed; PR #1007 open → stage; #1001 In review; epic #1000 Backlog; waiting CI; then M2 #1003; promote held"
   - sha: "37d1e58c"
     sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
     message: "docs: [S070] 08-verify-build M1 AHL bulletin quality (#1001)"
@@ -52760,7 +52821,7 @@ git_history:
       - docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
       - docs/sessions/S070-converter-operator-bugs/routing-plan.md
     timestamp: "2026-08-18"
-    pushed: false
+    pushed: true
     tip_sha: 37d1e58c
     tip_sha_full: 37d1e58cc60db92a94ad61e14f4b56c240054a73
     note: "docs 08-verify-build M1 report; M1 PASS; VAA keep-whole D-S070-08-vaa; re-run after M2"
