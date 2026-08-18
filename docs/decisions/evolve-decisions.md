@@ -83,7 +83,10 @@
 | 11-verify-impl | 2026-08-18 | All 5 Fn + UJ-059..063 **Approve**; UI preview accepted `:18000`; T3 → 12/13 (`D-S070-11-t3`); `reports/verify-impl.md` |
 | push | 2026-08-18 | `7762b88b` (09/10) pushed to PR #1007; promote held |
 | 12-verify-deploy | 2026-08-18 | CI tip HARD STOP `c57eeef1` run 32169922030 (auth cov + OpenAPI drift) |
-| D-S070-12-ci-fix | 2026-08-18 | **fix in place** — auth-job tests for `sign_out` + logout errors; `make openapi-refresh` |
+| D-S070-12-ci-fix | 2026-08-18 | **fix in place** — auth-job tests for `sign_out` + logout errors; `make openapi-refresh`; CI **success** 32171946188 @ `4d29ee0c` |
+| D-S070-12-risks | 2026-08-18 | **approve** image/CD, CORS/Auth XHR, accidental promote, Playwright install hang |
+| D-S070-12-rollback | 2026-08-18 | **approve** prior GHCR / `stage-latest`; no DB migrations |
+| D-S070-12-close | 2026-08-18 | **checklist only** — keep no-merge #1007; hold 13 until a later merge |
 
 ### Out of scope
 

@@ -32,8 +32,8 @@
 | 09-qa | yes | delta | **completed** | `reports/qa-report.md` — PASS (advisories); H0c 6/6 |
 | 10-e2e | yes | delta | **completed** | `reports/e2e-report.md` — UJ-059..063 PASS; 1006-003 PASS after `D-S070-logout=1a` |
 | 11-verify-impl | yes | delta | **completed** | `reports/verify-impl.md` — all 5 Fn + UJ-059..063 approved; T3 → 12/13 (`D-S070-11-t3`) |
-| 12-verify-deploy | yes | delta | pending | Staging — next |
-| 13-deploy-smoke | yes | delta | pending | `env_role: staging`; promote held |
+| 12-verify-deploy | yes | delta | **completed** | Checklist ready; **no merge** (`D-S070-12-close`); report `reports/deploy-checklist.md` |
+| 13-deploy-smoke | yes | delta | pending | **blocked until #1007 merges**; `env_role: staging`; promote held |
 | uat (Build) | yes | dual Build | **completed** | T4.2 UAT-003 ACCEPTED; UAT-059..063 accepted at 11 |
 
 ## Recommended ordered stages

@@ -41,7 +41,7 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Next child stage
 
-**12-verify-deploy** — 11 user-approved; staging; H4–H5; promote held
+**13-deploy-smoke** — **blocked until #1007 merges** (`D-S070-12-close`); staging; H4–H5; promote held
 
 ## Risks / open decisions
 
