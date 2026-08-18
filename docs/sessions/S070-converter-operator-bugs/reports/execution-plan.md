@@ -15,9 +15,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (gate **open** `D-S070-spec-build=1a`) |
-| **Active milestone** | M1 #1001 08 PASS — next M2 #1003 |
-| **Tasks completed** | 4 / 18 |
-| **Stage** | 08-verify-build (M1) → PR → 07-build M2 |
+| **Active milestone** | M2 #1003 complete — next 08-verify-build then PR |
+| **Tasks completed** | 12 / 18 |
+| **Stage** | 07-build M2 done; 08 next |
 | **Plan approval** | **approved** `D-S070-04-plan=1a` |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M4 |
 
@@ -58,10 +58,10 @@
 
 | ID | Type | Task | Status | Tests |
 |----|------|------|--------|-------|
-| T2.1 | Test | Red product=iwxxm XML vs TAC text | pending | TC-EV060-1003-001..002 |
-| T2.2 | Code | Additive enum `iwxxm`; convert no-op; lint XML; OpenAPI | pending | T2.1 |
-| T2.3 | Code | FE product select + Convert disabled/no-op copy | pending | TC-EV060-1003-003 |
-| T2.4 | Code | FileConverter / accumulate / QM honor | pending | TC-EV060-1003-004 |
+| T2.1 | Test | Red product=iwxxm XML vs TAC text | completed | TC-EV060-1003-001..002 |
+| T2.2 | Code | Additive enum `iwxxm`; convert no-op; lint XML; OpenAPI | completed | T2.1 |
+| T2.3 | Code | FE product select + Convert disabled/no-op copy | completed | TC-EV060-1003-003 |
+| T2.4 | Code | FileConverter / accumulate / QM honor | completed | TC-EV060-1003-004 |
 
 #### M3: Profile + bulletin fields + log_level (#1002/#1005/#1004) — P0
 
