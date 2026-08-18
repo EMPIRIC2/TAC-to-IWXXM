@@ -15,9 +15,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (gate **open** `D-S070-spec-build=1a`) |
-| **Active milestone** | M3 #1002/#1005/#1004 — T3.1–T3.6 complete; next 08-verify-build |
-| **Tasks completed** | 18 / 18 (M1–M3); M4 T4.1–T4.3 pending |
-| **Stage** | 07-build M3 → 08-verify-build |
+| **Active milestone** | M4 #1006 Auth UAT — next T4.1 |
+| **Tasks completed** | 18 / 21 |
+| **Stage** | 07-build M4 |
 | **Plan approval** | **approved** `D-S070-04-plan=1a` |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M4 |
 

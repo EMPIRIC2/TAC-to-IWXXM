@@ -27,8 +27,8 @@
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 07-build | yes | delta | **in_progress** | M1 #1001 + M2 #1003 08 PASS; next M3 #1002/#1005/#1004 |
-| 08-verify-build | yes | delta | **completed** (M2) | Report `reports/verification-report.md`; re-run after M3 |
+| 07-build | yes | delta | **in_progress** | M1–M3 08 PASS; next M4 #1006 |
+| 08-verify-build | yes | delta | **completed** (M3) | Report `reports/verification-report.md`; re-run after M4 |
 | 09-qa | yes | delta | blocked_until_spec_gate | Converter + Auth |
 | 10-e2e | yes | delta | blocked_until_spec_gate | Playwright AHL, product=IWXXM, profile a11y, bulletin fields, Auth |
 | 11-verify-impl | yes | delta | blocked_until_spec_gate | Per-Fn AC; UI preview offer |

@@ -41,7 +41,7 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Next child stage
 
-**08-verify-build M2 PASS** — next 07-build M3 (#1002/#1005/#1004) after M2 PR record; promote held
+**08-verify-build M3 PASS** — next 07-build M4 Auth UAT (#1006); PR #1007 stacks M1–M3; promote held
 
 ## Risks / open decisions
 
