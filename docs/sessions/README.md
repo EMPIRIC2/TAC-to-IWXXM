@@ -25,7 +25,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
-| [S070-converter-operator-bugs](S070-converter-operator-bugs/session-brief.md) | feature | in_progress | Epic #1000 converter bugs + F7.t IWXXM pass-through + Auth UAT; EV-060 Standard | evolve/EV-060-converter-operator-bugs | 2026-08-17 | — |
+| [S070-converter-operator-bugs](S070-converter-operator-bugs/session-brief.md) | feature | completed | Epic #1000 converter bugs + F7.t IWXXM pass-through + Auth UAT; EV-060; PR #1007 → stage | evolve/EV-060-converter-operator-bugs | 2026-08-17 | 2026-08-18 |
 | [S066-quality-metrics-diff-page](S066-quality-metrics-diff-page/session-brief.md) | feature | in_progress | #988 F7.q detail page + GitHub-style collapsible diffs; EV-056 Lean | evolve/EV-056-quality-metrics-diff-page | 2026-08-11 | — |
 | [S065-quality-metrics-diff-long-line](S065-quality-metrics-diff-long-line/session-brief.md) | hotfix | completed | Pretty-print Quality metrics C14N diffs; PR #987 → stage | fix/quality-metrics-diff-long-line | 2026-08-11 | 2026-08-11 |
 | [S064-quality-metrics-2025-2-followups](S064-quality-metrics-2025-2-followups/session-brief.md) | feature | completed | #982/#980/#979 Quality metrics normalize + 2025-2 validate; EV-055 Standard | evolve/EV-055-quality-metrics-2025-2-followups | 2026-08-11 | 2026-08-11 |
