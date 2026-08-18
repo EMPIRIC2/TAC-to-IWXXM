@@ -83,11 +83,17 @@ import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
 import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
+  isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
   type IwxxmProfile,
   type TacProductSelection,
 } from '/utils/tacProduct';
+import {
+  IWXXM_PRODUCT_CONVERT_ARIA,
+  IWXXM_PRODUCT_CONVERT_LABEL,
+  IWXXM_PRODUCT_HELP,
+} from '/utils/iwxxmProductCopy';
 import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
@@ -438,14 +444,8 @@ export function FileConverter({
       setConversionParams((prev) => {
         const next = { ...prev };
         const rawProduct = params.product;
-        if (
-          typeof rawProduct === 'string' &&
-          (rawProduct === 'auto' ||
-            ['AIRMET', 'METAR', 'SIGMET', 'SPECI', 'TAF', 'VAA', 'TCA'].includes(
-              rawProduct,
-            ))
-        ) {
-          next.product = rawProduct as TacProductSelection;
+        if (typeof rawProduct === 'string' && isConvertProductSelection(rawProduct)) {
+          next.product = rawProduct;
         }
         if (params.profile === 'iwxxm_us' || params.profile === 'annex3') {
           next.profile = params.profile;
@@ -704,7 +704,11 @@ export function FileConverter({
         conversionParams.product,
         tacForDetect,
       );
-      if (conversionParams.product !== 'auto' && tacForDetect.trim()) {
+      if (
+        conversionParams.product !== 'auto' &&
+        conversionParams.product !== 'IWXXM' &&
+        tacForDetect.trim()
+      ) {
         const detected = detectTacProduct(tacForDetect);
         if (detected !== resolvedProduct) {
           toast.warning(
@@ -1748,22 +1752,30 @@ export function FileConverter({
               aria-busy={isConverting}
               aria-label={
                 isConverting
-                  ? inputMode === 'validate_iwxxm'
+                  ? inputMode === 'validate_iwxxm' ||
+                    conversionParams.product === 'IWXXM'
                     ? 'Validating IWXXM, please wait'
                     : 'Converting files, please wait'
                   : inputMode === 'validate_iwxxm'
                     ? 'Validate IWXXM XML'
-                    : 'Convert TAC to IWXXM XML'
+                    : conversionParams.product === 'IWXXM'
+                      ? IWXXM_PRODUCT_CONVERT_ARIA
+                      : 'Convert TAC to IWXXM XML'
               }
             >
               <Loader2
                 className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
                 aria-hidden="true"
               />
-              {inputMode === 'validate_iwxxm' ? 'Validate' : 'Convert'}
+              {inputMode === 'validate_iwxxm'
+                ? 'Validate'
+                : conversionParams.product === 'IWXXM'
+                  ? IWXXM_PRODUCT_CONVERT_LABEL
+                  : 'Convert'}
             </Button>
             {isOperatorDisseminationDestinationsEnabled() &&
-            inputMode !== 'validate_iwxxm' ? (
+            inputMode !== 'validate_iwxxm' &&
+            conversionParams.product !== 'IWXXM' ? (
               <Button
                 data-testid="convert-and-send-button"
                 onClick={handleConvertAndSend}
@@ -1920,6 +1932,7 @@ export function FileConverter({
                     <option value="TCA">TCA</option>
                     <option value="SWXA">SWXA</option>
                     <option value="VONA">VONA</option>
+                    <option value="IWXXM">IWXXM</option>
                   </select>
                   <GoldenExamplesSelect
                     disabled={isReadOnly}
@@ -1958,6 +1971,16 @@ export function FileConverter({
                   validation only — no TAC conversion.
                 </p>
               )}
+              {conversionParams.product === 'IWXXM' &&
+                inputMode !== 'validate_iwxxm' && (
+                  <p
+                    className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                    data-testid="iwxxm-product-help"
+                    role="status"
+                  >
+                    {IWXXM_PRODUCT_HELP}
+                  </p>
+                )}
               {bulletinSummary && (
                 <p
                   className="mb-2 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-100"

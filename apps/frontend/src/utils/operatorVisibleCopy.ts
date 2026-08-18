@@ -29,6 +29,11 @@ import {
   QUALITY_METRICS_PAGE_TITLE,
 } from '@/utils/qualityMetricsCopy';
 import {
+  IWXXM_PRODUCT_CONVERT_ARIA,
+  IWXXM_PRODUCT_CONVERT_LABEL,
+  IWXXM_PRODUCT_HELP,
+} from '@/utils/iwxxmProductCopy';
+import {
   SOFT_PREVIEW_HELP,
   SOFT_PREVIEW_LABEL,
 } from '@/app/components/SoftPreviewControl';
@@ -56,6 +61,9 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
   const entries: OperatorVisibleCopyEntry[] = [
     { id: 'soft-preview.label', text: SOFT_PREVIEW_LABEL },
     { id: 'soft-preview.help', text: SOFT_PREVIEW_HELP },
+    { id: 'iwxxm-product.help', text: IWXXM_PRODUCT_HELP },
+    { id: 'iwxxm-product.convert-label', text: IWXXM_PRODUCT_CONVERT_LABEL },
+    { id: 'iwxxm-product.convert-aria', text: IWXXM_PRODUCT_CONVERT_ARIA },
     { id: 'guest.loss-of-progress', text: GUEST_LOSS_OF_PROGRESS_MESSAGE },
     { id: 'help.one-pager-url', text: OPERATOR_ONE_PAGER_URL },
     { id: 'help.handbook-url', text: OPERATOR_HANDBOOK_URL },
