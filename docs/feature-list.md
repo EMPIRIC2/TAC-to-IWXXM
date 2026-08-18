@@ -524,9 +524,11 @@
   aligned bar/row; visually polished; stacked OK below 1024px. Keyboard labels preserved.
 - **S071 / EV-061 deepen (F7.v / #1014)**: Top-level **Lint & validation catalog** nav tab +
   page listing code, description, level, and **working** source links for TAC lint **and**
-  IWXXM validation checks. **Build blocked** until catalog source URL crawl failures are
-  replaced (`D-S071-links`; see session report `catalog-link-crawl-2026-08-18.md`). Related
-  but distinct from #996 click-for-detail.
+  IWXXM validation checks. Source policy (`D-S071-links-resolve`): three tiers; `codes.wmo.int`
+  concept paths may be **semantic-only**; operator hrefs use verified landings (registry guide,
+  wmo-im/iwxxm, AHL knowledge-hub, NWS iwxxm-us, APAC FAQ). See
+  [mining/ev061-catalog-source-replacements-2026-08-18.md](domain/mining/ev061-catalog-source-replacements-2026-08-18.md).
+  Related but distinct from #996 click-for-detail.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

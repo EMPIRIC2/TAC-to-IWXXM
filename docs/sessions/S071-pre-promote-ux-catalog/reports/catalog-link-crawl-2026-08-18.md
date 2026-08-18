@@ -1,58 +1,38 @@
 # Catalog source URL crawl — 2026-08-18
 
-**Policy:** `D-S071-links` — Build blocked on failures until user supplies replacements.
+**Policy:** `D-S071-links` → **`D-S071-links-resolve`** (tiered replacements; semantic IDs OK).  
+**Mining note:** [docs/domain/mining/ev061-catalog-source-replacements-2026-08-18.md](../../../domain/mining/ev061-catalog-source-replacements-2026-08-18.md)
+
+## Initial crawl
 
 - Unique URLs: 34
 - OK: 23
-- FAIL: 11
+- FAIL: 11 (listed below — **resolved** for operator-visible hrefs)
 
-## Failures (need user research)
+## Failures → resolution
 
-- `http://codes.wmo.int/306/4678/{TAC`
-  - error: HTTPError:HTTP Error 400: 
-- `https://codes.wmo.int/49-2`
-  - error: HTTPError:HTTP Error 404: 
-- `https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather`
-  - error: HTTPError:HTTP Error 404: 
-- `https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome`
-  - error: HTTPError:HTTP Error 404: 
-- `https://codes.wmo.int/49-2/SigConvectiveCloudType`
-  - error: HTTPError:HTTP Error 404: 
-- `https://codes.wmo.int/common/nil`
-  - error: HTTPError:HTTP Error 404: 
-- `https://community.wmo.int/en/activity-areas/wis/ahl`
-  - error: HTTPError:HTTP Error 404: Not Found
-- `https://github.com/wmo-im/iwxxm-us`
-  - error: HTTPError:HTTP Error 404: Not Found
-- `https://www.icao.int/APAC/Pages/default.aspx`
-  - error: HTTPError:HTTP Error 404: Not Found
-- `https://www.icao.int/safety/meteorology/Pages/IWXXM.aspx`
-  - error: HTTPError:HTTP Error 404: Not Found
-- `https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf`
-  - error: HTTPError:HTTP Error 404: Not Found
+| Failed source | Resolution |
+|---------------|------------|
+| `codes.wmo.int/49-2` + children | Operator href → Codes Registry User Guide PDF; keep concept path as semantic/legacy in attribution |
+| `codes.wmo.int/common/nil` | Operator href → IWXXM ReleaseNotes; semantic ID retained |
+| `community.wmo.int/en/activity-areas/wis/ahl` | → knowledge-hub AHL aviation AFS page (200) |
+| `github.com/wmo-im/iwxxm-us` | → `nws.weather.gov/schemas/iwxxm-us/3.0/` + vendor pin |
+| ICAO APAC / meteorology pages | → APAC IWXXM FAQs 3rd Ed PDF / wmo-im/iwxxm (bot-verified) |
+| `weather.gov/.../pd10-13.pdf` | → NWS iwxxm-us 3.0 landing |
+| `codes.wmo.int/306/4678/{TAC` | Do not crawl templates; registry guide for humans |
 
-## OK (sample complete list)
+## Post-retarget check (`catalog_attribution.json` `source_url`)
 
-- `https://aviationweather.gov/data/api/`
-- `https://codes.wmo.int/`
-- `https://codes.wmo.int/common/nil/notObservable`
-- `https://community.wmo.int/`
-- `https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959`
-- `https://github.com/wmo-im`
-- `https://github.com/wmo-im/collect`
-- `https://github.com/wmo-im/iwxxm`
-- `https://github.com/wmo-im/iwxxm-modelling`
-- `https://github.com/wmo-im/iwxxm-translation`
-- `https://library.wmo.int/`
-- `https://schemas.wmo.int/iwxxm/2025-2/`
-- `https://schemas.wmo.int/iwxxm/2025-2/examples/TAC-to-XML-Guidance.txt`
-- `https://schemas.wmo.int/metce/`
-- `https://schemas.wmo.int/opm/`
-- `https://schemas.wmo.int/rule/`
-- `https://schemas.wmo.int/saf/`
-- `https://schemas.wmo.int/tsml/`
-- `https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1`
-- `https://web.archive.org/`
-- `https://www.icao.int/`
-- `https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf`
-- `https://www.weather.gov/`
+- Distinct HTTP `source_url` values: 6 verified 200 + 1 non-HTTP `vendor:…` pseudo-path (not an operator web link)
+- **#1014 Spec/Build unblocked** under tier policy (operator links verified; semantic aliases preserved)
+
+## Tier roots to prefer
+
+1. https://github.com/wmo-im/iwxxm  
+2. https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt  
+3. https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf  
+4. https://codes.wmo.int/  
+5. https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs  
+6. https://nws.weather.gov/schemas/iwxxm-us/3.0/  
+7. https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf  
+8. https://www.icao.int/2024-met-ie-wg-22-all-documents  

@@ -84,7 +84,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-065 | AHL bulletin decode + convert end-to-end | apps/frontend / API | F6/F7 deepen (EV-061 / #1012) | T0 / T2 / **T3** / H4–H5 |
 | UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** |
-| UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014) | T0 / T2 / **T3** / H4–H5 — **blocked** until source URLs fixed |
+| UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -1108,14 +1108,15 @@ product/profile; optional Bulletin ID / Issuing Center. Golden: `SAUS31 KZNY` mu
 **Goal**: Browse a top-level catalog page of lint **and** validation checks with code, description,
 level, and working source links.
 
-**Blocker**: Source URL crawl failures must be replaced before Build (`D-S071-links`;
-`reports/catalog-link-crawl-2026-08-18.md`).
+**Source policy**: Operator click-targets are verified landings (`D-S071-links-resolve`);
+`codes.wmo.int/49-2*` / `common/nil` may appear as semantic/legacy aliases without being the
+href. See crawl report + mining note.
 
 **Steps**:
 
 1. Open top-level **Lint & validation catalog** nav tab.
 2. See rows with code, description, level, clickable source URL(s).
-3. Spot-check that listed source links resolve (HTTP 2xx/3xx).
+3. Spot-check that **operator** source links resolve (HTTP 2xx/3xx).
 
 **Acceptance**: feature-list F7.v / F15 / #1014; TC-EV061-1014-*. Distinct from #996.
 **Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F10] [Corpus: product §F15] [Corpus: api]

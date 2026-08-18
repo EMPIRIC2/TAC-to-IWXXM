@@ -21,6 +21,7 @@
 | D-S071-e9 | Open S071; deepen F7/F2/F6/F9/F10/F15/F34 (no new Fn); Spec-only |
 | D-S071-ahl | AHL context brief acknowledged — golden SAUS31 multi-METAR; #1011 harness vs #1012 product |
 | D-S071-links | Crawl catalog URLs in Spec; **block Build** on broken links until user searches; normalize official copies OK |
+| D-S071-links-resolve | User research 2026-08-18 — **3-tier source model**; treat `49-2`/`nil` as semantic IDs; operator hrefs → verified landings; IWXXM-US → NWS schemas + vendor pin; **unblock #1014** Spec/Build; mining note `docs/domain/mining/ev061-catalog-source-replacements-2026-08-18.md` |
 
 ### Prior session closeout
 

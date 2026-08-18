@@ -1,8 +1,8 @@
 # 01-requirements — S071 / EV-061 (delta)
 
-> **Status**: in_progress — non-catalog deltas drafted; **catalog (#1014) blocked** on source URL research  
+> **Status**: ready for Gate A / digest — catalog link policy resolved (`D-S071-links-resolve`)  
 > **Date**: 2026-08-18  
-> **Corpus**: [Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F34] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: tech-spec] [Corpus: deploy]
+> **Corpus**: [Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F34] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: tech-spec] [Corpus: deploy] [Corpus: decisions §EV-061]
 
 ## Locked decisions (01)
 
@@ -19,27 +19,24 @@
 | D-S071-01-ahl | Golden multi-METAR + malformed clear errors |
 | D-S071-01-ci | Required checks on stage→main: full CI + lint + typecheck + full E2E |
 | D-S071-01-cors | No new origins |
-| D-S071-links | **11 URL failures** — user searching replacements; Build blocked |
+| D-S071-links | Initial crawl 11 failures — user research |
+| D-S071-links-resolve | 3-tier model; semantic IDs OK; verified operator hrefs; #1014 unblocked |
 
 ## Artifacts touched
 
-- `docs/feature-list.md` — F7.u / F7.v; F2/F6/F9/F34 deepen; summary rows
-- `docs/user-journeys.md` — UJ-064..068, UJ-DEV-009
-- `docs/test-plan.md` — UJ ↔ TC-EV061-* mapping
-- `docs/deploy.md` — §Promote stricter gate (#1015)
-- `docs/sessions/S071-…/reports/catalog-link-crawl-2026-08-18.md` — crawl results
-- Catalog AC / UJ-068 **not finalized** until URLs fixed
+- Standing: `feature-list.md`, `user-journeys.md`, `test-plan.md`, `deploy.md`
+- Domain: `mining/ev061-catalog-source-replacements-2026-08-18.md`, `RULE_SOURCE_URLS.md` policy note, `TAC_VALIDATION.md` note
+- Provenance retarget: `catalog_attribution.json`, `PROVENANCE_MAP.json`, `ISSUE_CATALOG.json` (operator `source_url` → verified landings; no planning ids in attribution)
+- Session: this report + `catalog-link-crawl-2026-08-18.md`
 
 ## AHL context (for #1012)
 
 - Heading: `T1T2A1A2ii CCCC YYGGgg [BBB]`
 - Body: TAC reports, often `=`-terminated
 - Golden: `SAUS31 KZNY 121200` + two METARs (live fixture)
-- EV-060 fixed lint heading noise; #1011 is harness `file`→`files`; product decode/convert is #1012
+- EV-060 fixed lint heading noise; #1011 harness `file`→`files`; product decode/convert is #1012
 
 ## Next
 
-1. User supplies replacement URLs for crawl failures
-2. Finish catalog (#1014) Spec AC + any api-contract delta
-3. 02-verify-plan Gate A
-4. Spec→Build remains **closed**
+1. Approve 01 digest → **02-verify-plan** Gate A
+2. Spec→Build remains **closed** until Spec band complete

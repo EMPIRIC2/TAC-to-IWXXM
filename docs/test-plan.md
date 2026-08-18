@@ -122,7 +122,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-064 | F2/F9/F10 deepen (EV-061) | Validate IWXXM item-by-item readable decode (#1010) | **H4–H5 required** | TC-EV061-1010-001..003 |
 | UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
-| UJ-068 | F7.v/F15 (EV-061) | Lint+validation catalog tab (#1014) | **H4–H5 required** — **blocked** on link crawl | TC-EV061-1014-001..004 |
+| UJ-068 | F7.v/F15 (EV-061) | Lint+validation catalog tab (#1014) | **H4–H5 required** | TC-EV061-1014-001..004 |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |

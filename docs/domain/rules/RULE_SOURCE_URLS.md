@@ -1,10 +1,21 @@
 # Rule source URL catalog
 
 **Status:** living catalog (discovery from [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)).  
-**Updated:** 2026-07-30 (… · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798).  
+**Updated:** 2026-08-18 (EV-061 catalog source retarget — see mining/ev061-catalog-source-replacements-2026-08-18.md) (… · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798).  
 **Vendor pin:** `vendor/manifest.json` → `iwxxm` **v2025-2**, `iwxxm-codelists` **49-2**, `iwxxm-us` **3.0**.
 
 **Inventory pass:** [mining/iwxxm-2025-2-reference-set-mining-notes.md](../mining/iwxxm-2025-2-reference-set-mining-notes.md)
+
+**EV-061 operator-link policy:** `codes.wmo.int/49-2*` and `common/nil` are **semantic
+identifiers** (may 404 as HTML). Operator-visible catalog hrefs use verified landings:
+[WMO Codes Registry User Guide](https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf),
+[wmo-im/iwxxm](https://github.com/wmo-im/iwxxm),
+[IWXXM ReleaseNotes](https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt),
+[AHL aviation AFS](https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs),
+[NWS iwxxm-us 3.0](https://nws.weather.gov/schemas/iwxxm-us/3.0/),
+[APAC IWXXM FAQs 3rd Ed](https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf).
+Detail: [mining/ev061-catalog-source-replacements-2026-08-18.md](../mining/ev061-catalog-source-replacements-2026-08-18.md).
+
 
 **How to apply URLs:**
 

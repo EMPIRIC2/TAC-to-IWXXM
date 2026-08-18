@@ -41,7 +41,7 @@
         "iwxxm-validation"
       ],
       "status": "ok",
-      "source_url": "https://www.icao.int/safety/meteorology/Pages/IWXXM.aspx",
+      "source_url": "https://github.com/wmo-im/iwxxm",
       "source_id": "opmet-guidelines-5th",
       "ticket": null,
       "note": "Landing/cite — see RULE_SOURCE_URLS for exact PDF"
@@ -146,10 +146,10 @@
         "iwxxm-validation"
       ],
       "status": "ok",
-      "source_url": "https://codes.wmo.int/49-2",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "source_id": "codes-wmo-int",
       "ticket": null,
-      "note": " | EV-046: prefer register landings over bare root"
+      "note": "| : prefer register landings over bare root"
     },
     {
       "path": "docs/domain/mining/community-wmo-iwxxm-wayback-mining-notes.md",
@@ -180,7 +180,7 @@
         "conversion"
       ],
       "status": "ok",
-      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "source_id": "fmh-1",
       "ticket": null,
       "note": "FMH-1 US national; URL may redirect — cite RULE_SOURCE_URLS"
@@ -224,7 +224,7 @@
         "bulletin"
       ],
       "status": "ok",
-      "source_url": "https://www.icao.int/APAC/Pages/default.aspx",
+      "source_url": "https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf",
       "source_id": "icao-apac-faqs",
       "ticket": null,
       "note": null
@@ -325,7 +325,7 @@
         "iwxxm-validation"
       ],
       "status": "ok",
-      "source_url": "https://github.com/wmo-im/iwxxm-us",
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "source_id": "iwxxm-us",
       "ticket": null,
       "note": "validate column ⚠ — no US SCH in pin · #870"
@@ -581,11 +581,11 @@
       "code": "CLOUD_CB_OR_TCU",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/SigConvectiveCloudType",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/SigConvectiveCloudType",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/SigConvectiveCloudType · prior landing: https://codes.wmo.int/49-2/SigConvectiveCloudType",
       "note": "CB/TCU convective type register"
     },
     {
@@ -662,11 +662,11 @@
       "code": "INVALID_CLOUD_TOKEN",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome · prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "note": "Cloud amount register landing"
     },
     {
@@ -713,7 +713,7 @@
       "code": "INVALID_REMARK",
       "status": "ok",
       "source_id": "fmh-1",
-      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
       "ticket": null
@@ -722,11 +722,11 @@
       "code": "INVALID_RVR",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar)",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar) · prior landing: https://codes.wmo.int/49-2",
       "note": "No single RVR concept register — cite 49-2 family + grammar sources"
     },
     {
@@ -783,44 +783,44 @@
       "code": "INVALID_VISIBILITY",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes)",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes) · prior landing: https://codes.wmo.int/49-2",
       "note": "Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
     },
     {
       "code": "INVALID_WEATHER",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC})",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC}) · prior landing: https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
       "note": "Prefer register landing + 306/4678 concept pattern over bare root"
     },
     {
       "code": "UNKNOWN_WMO_MEMBERSHIP",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959",
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership)",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership) · prior landing: https://codes.wmo.int/49-2",
       "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     {
       "code": "INVALID_WIND",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list)",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list) · prior landing: https://codes.wmo.int/49-2",
       "note": "Wind not in AerodromePresentWeather list"
     },
     {
@@ -1087,11 +1087,11 @@
       "code": "NCD_PRESENT",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome · prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "note": "NCD cloud amount notation family"
     },
     {
@@ -1208,7 +1208,7 @@
       "code": "REMARK_US_EXTENSION",
       "status": "ok",
       "source_id": "fmh-1",
-      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
       "ticket": null
@@ -1508,11 +1508,11 @@
       "code": "VV_NOT_OBSERVABLE",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/common/nil",
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable · prior landing: https://codes.wmo.int/common/nil",
       "note": "Vertical visibility missingness via nil"
     },
     {
@@ -1549,11 +1549,11 @@
       "code": "WX_NOT_OBSERVABLE",
       "status": "ok",
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/common/nil",
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil)",
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil) · prior landing: https://codes.wmo.int/common/nil",
       "note": "nilReason notObservable; prefer iwxxm/nil when pin policy says so"
     }
   ],
@@ -1588,9 +1588,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "SPECI",
@@ -1622,9 +1622,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "TAF",
@@ -1656,9 +1656,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "SIGMET",
@@ -1690,9 +1690,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "AIRMET",
@@ -1724,9 +1724,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "VAA",
@@ -1758,9 +1758,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "TCA",
@@ -1792,9 +1792,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "SWXA",
@@ -1826,9 +1826,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "VONA",
@@ -1845,7 +1845,7 @@
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "ticket": "#869",
-      "note": "Guidance silence non-blocking (EV-037); SoT=ICAO+FM205+AHL+XSD/SCH+A7-1; cookbook derived"
+      "note": "Guidance silence non-blocking (); SoT=ICAO+FM205+AHL+XSD/SCH+A7-1; cookbook derived"
     },
     {
       "product": "VONA",
@@ -1861,9 +1861,9 @@
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037); impl splitter/fixtures tracked separately from source"
+      "note": "AHL T1T2 source OK (); impl splitter/fixtures tracked separately from source"
     },
     {
       "product": "METAR_US",
@@ -1886,18 +1886,18 @@
       "role": "iwxxm-validation",
       "disposition": "ok",
       "source_id": "iwxxm-us",
-      "source_url": "https://github.com/wmo-im/iwxxm-us",
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "ticket": "#870",
-      "note": "WMO XSD/SCH + US XSD OK; official US Schematron N/A not published (EV-037)"
+      "note": "WMO XSD/SCH + US XSD OK; official US Schematron N/A not published ()"
     },
     {
       "product": "METAR_US",
       "role": "bulletin",
       "disposition": "ok",
       "source_id": "opmet-guidelines-5th",
-      "source_url": "https://community.wmo.int/en/activity-areas/wis/ahl",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
-      "note": "AHL T1T2 source OK (EV-037 / #872 closed as source-availability)"
+      "note": "AHL T1T2 source OK ( / #872 closed as source-availability)"
     }
   ],
   "full_stack_rules": [
@@ -1931,7 +1931,7 @@
       "status": "N/A",
       "pin_version": "2025-2",
       "ticket": "#869",
-      "note": "Upstream Guidance silence — non-blocking encode; SoT hierarchy documented EV-037"
+      "note": "Upstream Guidance silence — non-blocking encode; SoT hierarchy documented"
     },
     {
       "rule_id": "IWXXM_SCH_PIN",
@@ -1947,12 +1947,12 @@
       "rule_id": "US_SCH_ABSENT",
       "role": "iwxxm-validation",
       "source_id": "iwxxm-us",
-      "source_url": "https://github.com/wmo-im/iwxxm-us",
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "dig": "docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md",
       "status": "N/A",
       "pin_version": "3.0",
       "ticket": "#870",
-      "note": "Official US Schematron not published — N/A artifact (EV-037)"
+      "note": "Official US Schematron not published — N/A artifact ()"
     },
     {
       "rule_id": "AHL_SPECI_SP_LP",
