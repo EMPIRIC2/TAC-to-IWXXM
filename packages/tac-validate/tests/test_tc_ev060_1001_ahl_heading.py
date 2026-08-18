@@ -8,9 +8,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from tac_validate import lint
+from tac_validate.ahl import _ahl_heading_ok
 
 REPO = Path(__file__).resolve().parents[3]
 AHL_MULTI = REPO / "apps" / "frontend" / "src" / "fixtures" / "examples" / "bodies" / "metar_multi_ahl.txt"
+VAA_A7_2 = REPO / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "annex3_golden" / "vaa_a7_2.tac"
 
 WELL_FORMED_AHL_METAR = """\
 SAUS31 KZNY 121200
@@ -85,6 +87,16 @@ def test_heading_only_ahl_not_metar_keyword_error() -> None:
     assert any(i.location == "bulletin" for i in report.issues)
 
 
+def test_heading_only_without_newline_is_empty_bulletin() -> None:
+    report = lint("SAUS31 KZNY 121200", product="METAR")
+    assert any(i.code == "INVALID_AHL" and i.location == "bulletin" for i in report.issues)
+    assert not any(i.code == "MISSING_PRODUCT_KEYWORD" for i in report.issues)
+
+
+def test_ahl_heading_ok_rejects_non_ahl() -> None:
+    assert _ahl_heading_ok("not an AHL heading") is False
+
+
 def test_invalid_ahl_bbb_is_bulletin_error() -> None:
     text = "SAUS31 KZNY 121200 AAZ\nMETAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=\n"
     report = lint(text, product="METAR")
@@ -96,3 +108,12 @@ def test_crlf_ahl_splits_without_heading_flood() -> None:
     report = lint(text, product="METAR")
     assert "MISSING_PRODUCT_KEYWORD" not in [i.code for i in report.issues]
     assert "MULTI_REPORT_BULLETIN" not in [i.code for i in report.issues]
+
+
+def test_vaa_ahl_without_equals_lints_body() -> None:
+    """VAA AHL may omit '=' (convert-bulletin keep-whole); not empty-bulletin INVALID_AHL."""
+    text = VAA_A7_2.read_text(encoding="utf-8")
+    report = lint(text, product="VAA")
+    empty_body = [i for i in report.issues if i.code == "INVALID_AHL" and "no TAC reports" in i.message]
+    assert empty_body == []
+    assert report.ok is True

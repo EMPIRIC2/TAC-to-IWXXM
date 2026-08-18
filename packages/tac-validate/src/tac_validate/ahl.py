@@ -23,6 +23,7 @@ _AHL_LINE = re.compile(
 )
 _BBB_VALID = re.compile(r"^(?:AA|CC|RR)[A-X]$")
 _KNOWN_TT: frozenset[str] = frozenset({"SA", "SP", "FC", "FT", "FK", "FN", "FV", "WA", "WS", "WC", "WV", "WM"})
+# METAR/SPECI/TAF/SIGMET/AIRMET use '='. VAA/TCA/SWXA/VONA may omit it (convert-bulletin §3.2).
 _REPORT = re.compile(r".+?=", re.DOTALL)
 
 LintReportFn = Callable[[str, str, str], LintReport]
@@ -48,6 +49,29 @@ def _first_nonempty_line(text: str) -> tuple[str, int, int] | None:
             return stripped, start, end
         offset += len(line)
     return None
+
+
+def _contained_reports(remainder: str) -> list[tuple[int, str]]:
+    """
+    Return ``(offset_in_remainder, report_text)`` for each contained TAC.
+
+    Prefer ``=``-terminated slices (METAR/SPECI/TAF/SIGMET/AIRMET). When none
+    are present, keep the stripped remainder as one report so advisories that
+    omit ``=`` (VAA/TCA/SWXA/VONA) still lint — same keep-whole rule as
+    ``tac2iwxxm.bulletin`` body regexes.
+    """
+    found: list[tuple[int, str]] = []
+    for match in _REPORT.finditer(remainder):
+        raw = match.group(0)
+        lstrip = len(raw) - len(raw.lstrip())
+        found.append((match.start() + lstrip, raw.strip()))
+    if found:
+        return found
+    stripped = remainder.strip()
+    if not stripped:
+        return []
+    lstrip = len(remainder) - len(remainder.lstrip())
+    return [(lstrip, stripped)]
 
 
 def _remainder_start(text: str, heading_end: int) -> int:
@@ -136,21 +160,15 @@ def lint_ahl_bulletin(
 
     rest_start = _remainder_start(text, h_end)
     remainder = text[rest_start:]
-    found = False
-    for match in _REPORT.finditer(remainder):
-        raw = match.group(0)
-        lstrip = len(raw) - len(raw.lstrip())
-        report_text = raw.strip()
-        if not report_text:
-            continue
-        found = True
-        delta = rest_start + match.start() + lstrip
+    contained = _contained_reports(remainder)
+    for rel_start, report_text in contained:
+        delta = rest_start + rel_start
         inner = lint_report(report_text, product, profile)
         shifted, inner_fixes = _shift_report(inner, delta)
         issues.extend(shifted)
         fixes.extend(inner_fixes)
 
-    if heading_ok and not found:
+    if heading_ok and not contained:
         issues.append(
             issue_from(
                 "INVALID_AHL",
