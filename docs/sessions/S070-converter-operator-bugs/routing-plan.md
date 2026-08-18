@@ -27,14 +27,14 @@
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 07-build | yes | delta | **in_progress** | M1–M3 08 PASS; next M4 #1006 |
-| 08-verify-build | yes | delta | **completed** (M3) | Report `reports/verification-report.md`; re-run after M4 |
-| 09-qa | yes | delta | blocked_until_spec_gate | Converter + Auth |
-| 10-e2e | yes | delta | blocked_until_spec_gate | Playwright AHL, product=IWXXM, profile a11y, bulletin fields, Auth |
+| 07-build | yes | delta | **completed** | M1–M4 complete; 08 M4 PASS |
+| 08-verify-build | yes | delta | **completed** (M4) | Report `reports/verification-report.md`; Phase C exit |
+| 09-qa | yes | delta | pending | Converter + Auth |
+| 10-e2e | yes | delta | pending | Playwright AHL, product=IWXXM, profile a11y, bulletin fields, Auth |
 | 11-verify-impl | yes | delta | blocked_until_spec_gate | Per-Fn AC; UI preview offer |
 | 12-verify-deploy | yes | delta | blocked_until_spec_gate | Staging |
 | 13-deploy-smoke | yes | delta | blocked_until_spec_gate | `env_role: staging`; promote held |
-| uat (Build) | yes | dual Build | blocked_until_spec_gate | Facilitated Auth + converter UAT |
+| uat (Build) | yes | dual Build | **completed** | T4.2 UAT-003 ACCEPTED local :18000; UAT-059..063 deferred to 11 |
 
 ## Recommended ordered stages
 

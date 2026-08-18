@@ -15,9 +15,9 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (gate **open** `D-S070-spec-build=1a`) |
-| **Active milestone** | M4 #1006 Auth UAT — T4.1 complete; next T4.2 facilitated UAT |
-| **Tasks completed** | 18 / 21 |
-| **Stage** | 07-build M4 |
+| **Active milestone** | M4 #1006 complete — 08-verify-build PASS; next 09-qa + 10-e2e |
+| **Tasks completed** | 21 / 21 |
+| **Stage** | 09-qa / 10-e2e |
 | **Plan approval** | **approved** `D-S070-04-plan=1a` |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M4 |
 
@@ -79,7 +79,7 @@
 | ID | Type | Task | Status | Tests |
 |----|------|------|--------|-------|
 | T4.1 | Test | Playwright register/login/logout/persist | completed | TC-EV060-1006-001..003 |
-| T4.2 | UAT | Facilitated uat Build checklist | pending | TC-EV060-1006-004 |
+| T4.2 | UAT | Facilitated uat Build checklist | completed | TC-EV060-1006-004 |
 | T4.3 | Verify | Guest convert still works (F21) | completed | UJ-001 |
 
 ## Connectivity

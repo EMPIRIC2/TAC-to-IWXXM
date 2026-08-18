@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S070/EV-060 M2 #1003 08 PASS; stacked on PR #1007; next M3; promote held"
+overall_status_note: "S070/EV-060 M4 Auth UAT T4.1–T4.3 complete; T4.2 UAT-003 ACCEPTED local; 08 M4 next; PR #1007; promote held"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -29,7 +29,7 @@ active_session:
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   m1_pr_status: open
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007); M2 #1003 stacked on evolve branch 08 PASS; next M3; epic #1000 Backlog; promote held"
+  board_note: "#1001 In review (PR #1007); M1–M3 08 PASS stacked; M4 #1006 T4.1+T4.3 done, T4.2 facilitated UAT next; epic #1000 Backlog; promote held"
   promote: held
   orchestrator: 16-evolve
   evolve_cycle_id: EV-060
@@ -48,10 +48,10 @@ active_session:
   feature_note: "F7.t IWXXM product pass-through + F6/F2/F10/F29/F31 deepen"
   preset: Standard
   spec_to_build_gate: open
-  current_stage: 07-build
-  current_child: 07-build
-  active_milestone: M3
-  active_task: T3.1
+  current_stage: 08-verify-build
+  current_child: 08-verify-build
+  active_milestone: M4
+  active_task: 08-verify-build
   started: '2026-08-17'
   started_at: '2026-08-17'
   corpus_cites:
@@ -114,15 +114,14 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-17'
-    note: "M1+M2 08 PASS; next M3 T3.1"
+    note: "M4 T4.1–T4.3 complete"
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: completed
+    status: in_progress
     started: '2026-08-18'
-    completed: '2026-08-18'
     report: docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
-    note: "M2 PASS; re-run after M3"
+    note: "M4 Auth UAT"
   - stage: 09-qa
     required: true
     mode: delta
@@ -159,8 +158,10 @@ active_session:
     D-S070-e9: "Spec-development only; gate closed."
     D-S070-spec-build: "Open Build; 07+ as routed; M1 #1001 first"
     D-S070-resume: "1a — start M2 #1003 now; M1 PR #1007 CI green (mergeable); promote held"
+    D-S070-resume-m4: "continue recommended = T4.2 facilitated UAT-003 now"
+    D-S070-uat003: "all-pass UAT-003 ACCEPTED 2026-08-18 local :18000"
   context_briefs: []
-  note: "S070/EV-060 M2 #1003 T2.1–T2.4 COMPLETE; 08-verify-build M2 PASS; stacked on PR #1007; next M3 T3.1; 07-build in_progress; Spec→Build remains open; promote held"
+  note: "T4.2 UAT-003 ACCEPTED (D-S070-uat003=all-pass); M4 T4.1–T4.3 complete; 08-verify-build M4 next; PR #1007 open; promote held"
 
 sessions:
 
@@ -17604,6 +17605,39 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S070-resume-m4
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 07-build
+  category: resume
+  status: confirmed
+  topic: 'S070/EV-060 resume — continue recommended = M4 T4.2 facilitated Auth UAT'
+  summary: 'continue recommended = T4.2 facilitated UAT-003 now'
+  decision: |
+    D-S070-resume-m4 — continue recommended = T4.2 facilitated UAT-003 now.
+    M1–M3 complete + 08 PASS; T4.1 + T4.3 complete; next T4.2 facilitated Auth UAT (#1006).
+    Active milestone M4 active_task T4.2; 07-build in_progress.
+    Spec→Build gate remains open (unchanged). PR #1007 open; promote held.
+    Cycle not completed. No git commit by workflow-state-manager.
+  user_option: 'recommended'
+  user_intent: 'Please continue with recommended'
+  branch: evolve/EV-060-converter-operator-bugs
+  related_features:
+  - F7
+  related_issues:
+  - '1000'
+  - '1006'
+  current_stage: 07-build
+  current_child: 07-build
+  active_milestone: M4
+  active_task: T4.2
+  note: '07-build in_progress M4 T4.2; Spec→Build remains open; promote held'
 
 - id: D-S070-resume
   date: '2026-08-18'
@@ -38433,28 +38467,27 @@ evolve_cycles:
   m1_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007
   m1_pr_status: open
   m1_pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-  board_note: "#1001 In review (PR #1007); M2 #1003 stacked on evolve branch 08 PASS; next M3; epic #1000 Backlog; promote held"
+  board_note: "#1001 In review (PR #1007); M1–M3 08 PASS stacked; M4 #1006 T4.1+T4.3 done, T4.2 facilitated UAT next; epic #1000 Backlog; promote held"
   promote: held
-  current_stage: 07-build
+  current_stage: 08-verify-build
   current_stage_status: in_progress
-  current_stage_note: "M2 #1003 08 PASS; stacked on PR #1007; next M3 T3.1; Spec→Build remains open; promote held"
-  current_child: 07-build
-  current_child_stage: 07-build
+  current_stage_note: "M4 complete pending 08"
+  current_child: 08-verify-build
+  current_child_stage: 08-verify-build
   current_child_stage_status: in_progress
-  current_child_note: "M1+M2 08 PASS; next M3 T3.1"
-  active_milestone: M3
-  active_task: T3.1
+  current_child_note: "M4 complete pending 08"
+  active_milestone: M4
+  active_task: "08"
   stages:
     07-build:
       status: in_progress
       started: '2026-08-17'
-      note: "M1+M2 08 PASS; next M3 T3.1"
+      note: "M4 T4.1–T4.3 complete"
     08-verify-build:
-      status: completed
+      status: in_progress
       started: '2026-08-18'
-      completed: '2026-08-18'
       report: docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
-      note: "M2 PASS; re-run after M3"
+      note: "M4 Auth UAT"
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Standard
@@ -38491,6 +38524,8 @@ evolve_cycles:
     D-S070-e9: "Spec-development only; gate closed."
     D-S070-spec-build: "Open Build; 07+ as routed; M1 #1001 first"
     D-S070-resume: "1a — start M2 #1003 now; M1 PR #1007 CI green (mergeable); promote held"
+    D-S070-resume-m4: "continue recommended = T4.2 facilitated UAT-003 now"
+    D-S070-uat003: "all-pass UAT-003 ACCEPTED 2026-08-18 local :18000"
   gates:
     spec_to_build: open
     spec_to_build_note: "D-S070-spec-build=1a — Open Build; 07-build M1 #1001 first"
@@ -38513,7 +38548,10 @@ evolve_cycles:
   - docs/decisions/evolve-decisions.md
   - docs/sessions/S070-converter-operator-bugs/reports/verification-report.md
   - docs/sessions/S070-converter-operator-bugs/reports/07-build-m2.md
+  - docs/sessions/S070-converter-operator-bugs/reports/07-build-m3.md
   notes:
+  - "2026-08-18 D-S070-uat003=all-pass — T4.2 UAT-003 ACCEPTED local :18000; M4 T4.1–T4.3 complete; 08-verify-build M4 next; PR #1007 open; Spec→Build remains open; promote held; cycle not completed; no git commit by workflow-state-manager"
+  - "2026-08-18 D-S070-resume-m4 — continue recommended = T4.2 facilitated UAT-003 now; sync stale yaml M3 T3.1 → M4 T4.2; M1–M3 complete + 08 PASS; T4.1+T4.3 complete; next T4.2 Auth UAT (#1006); PR #1007 open; Spec→Build remains open; promote held; cycle not completed; no git commit by workflow-state-manager"
   - "2026-08-18 M2 #1003 T2.1–T2.4 COMPLETE + 08-verify-build M2 PASS — report docs/sessions/S070-converter-operator-bugs/reports/verification-report.md; stacked on PR #1007 (no new PR); tip 76f7e725; next M3 T3.1 #1002/#1005/#1004; 07-build remains in_progress; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 D-S070-resume=1a — start M2 #1003 now; M1 PR #1007 CI green (mergeable); active milestone M2 T2.1–T2.4; 07-build in_progress T2.1; Spec→Build remains open; promote held; M1 tasks remain completed; cycle not completed; no git commit by workflow-state-manager"
   - "2026-08-18 M1 PR #1007 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007); title [EV-060] M1 AHL bulletin quality (#1001); tip a8dfc17c pushed; tracking origin/evolve/EV-060-converter-operator-bugs; #1001 In review; epic #1000 Backlog; 08 PASS; waiting CI; then M2 #1003; 07-build in_progress; promote held; cycle not completed; no git commit by workflow-state-manager"
@@ -38522,7 +38560,7 @@ evolve_cycles:
   - "2026-08-18 M1 #1001 T1.1–T1.4 complete @ 1f2859d0; next 08-verify-build then PR → stage; then M2 #1003; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-spec-build=1a open Build; 07 M1 #1001"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; 01-requirements COMPLETE; 02-verify-plan pending; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
-  note: "S070/EV-060 M2 #1003 08 PASS; stacked on PR #1007; next M3 T3.1; 07-build in_progress; spec_to_build_gate open (unchanged); cycle in_progress; #1001 In review; epic #1000 Backlog; promote held; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
+  note: "S070/EV-060 M4 Auth UAT T4.1–T4.3 complete; T4.2 UAT-003 ACCEPTED local; 08-verify-build M4 next; PR #1007 open; Spec→Build remains open; cycle in_progress; promote held; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
 - id: EV-059
   title: "F34 CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   topic: "F34 Schemathesis + mutation; close #841"
@@ -50640,10 +50678,10 @@ git_history:
   pending_commit: false
   pending_commit_note:
   dirty: true
-  dirty_note: 'dirty expected — workflow-state.yaml M2 COMPLETE/08 PASS update; 08 docs commit pending; no git commit by workflow-state-manager'
+  dirty_note: 'dirty expected — workflow-state.yaml M4 T4.2 resume sync; no git commit by workflow-state-manager'
   tip_sha: "76f7e725"
   tip_sha_full: 76f7e72556e49b5d27e5eb6b8a91157e3c3c7771
-  tip_note: "OPEN S070/EV-060 — M2 #1003 08 PASS; stacked on PR #1007; next M3 T3.1; Spec→Build remains open; promote held; tip 76f7e725 local ahead 3; tracking origin/evolve/EV-060-converter-operator-bugs"
+  tip_note: "OPEN S070/EV-060 — M1–M3 complete + 08 PASS; T4.1+T4.3 complete; next T4.2 facilitated Auth UAT (#1006); PR #1007 open; Spec→Build remains open; promote held; tip 76f7e725 (recorded; do not invent); tracking origin/evolve/EV-060-converter-operator-bugs"
   docs_tip_sha: "4af0dd90"
   docs_tip_sha_full: 4af0dd9064116c465a204f74c9ae5c697b8f137d
   docs_tip_branch: docs/EV-055-13-deploy-smoke
@@ -50669,9 +50707,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-060-converter-operator-bugs
-  note: "S070/EV-060 M2 #1003 08 PASS; stacked on PR #1007; next M3 T3.1; Spec→Build remains open; promote held; tip 76f7e725 local ahead 3; tracking origin/evolve/EV-060-converter-operator-bugs; 07-build in_progress; no git commit by workflow-state-manager"
+  note: "S070/EV-060 M1–M3 complete + 08 PASS; T4.1+T4.3 complete; next T4.2 facilitated Auth UAT (#1006); PR #1007 open; Spec→Build remains open; promote held; tip 76f7e725 (recorded; do not invent); 07-build in_progress M4 T4.2; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 D-S070-resume-m4 — continue recommended = T4.2 facilitated UAT-003 now; sync stale yaml M3 T3.1 → M4 T4.2; M1–M3 complete + 08 PASS; T4.1+T4.3 complete; PR #1007 open; Spec→Build remains open; promote held; tip sha unchanged (do not invent); no git commit by workflow-state-manager"
   - "2026-08-18 M2 #1003 T2.1–T2.4 COMPLETE + 08-verify-build M2 PASS — report docs/sessions/S070-converter-operator-bugs/reports/verification-report.md; stacked on PR #1007 (no new PR); tip 76f7e725; next M3 T3.1 #1002/#1005/#1004; 07-build remains in_progress; Spec→Build remains open; promote held; no git commit by workflow-state-manager"
   - "2026-08-18 D-S070-resume=1a — start M2 #1003 now; M1 PR #1007 CI green (mergeable); active milestone M2 T2.1–T2.4; 07-build in_progress T2.1; Spec→Build remains open; promote held; M1 tasks remain completed; no git commit by workflow-state-manager"
   - "2026-08-18 M1 PR #1007 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1007); title [EV-060] M1 AHL bulletin quality (#1001); tip a8dfc17c pushed; tracking origin/evolve/EV-060-converter-operator-bugs; #1001 In review; epic #1000 Backlog; 08 PASS; waiting CI; then M2 #1003; 07-build in_progress; promote held; no git commit by workflow-state-manager"
@@ -51287,7 +51326,7 @@ git_history:
     pr_base: stage
     pr_head: evolve/EV-060-converter-operator-bugs
     pr_title: "[EV-060] M1 AHL bulletin quality (#1001)"
-    note: "OPEN — M2 #1003 08 PASS stacked on PR #1007 @ 76f7e725 (local ahead 3); #1001 In review; epic #1000 Backlog; next M3; promote held; 07-build in_progress; Spec→Build remains open; tracking origin/evolve/EV-060-converter-operator-bugs"
+    note: "OPEN — M1–M3 08 PASS stacked on PR #1007 @ 76f7e725 (recorded); M4 #1006 T4.1+T4.3 done, T4.2 next; #1001 In review; epic #1000 Backlog; promote held; 07-build in_progress M4 T4.2; Spec→Build remains open; tracking origin/evolve/EV-060-converter-operator-bugs"
 
   - name: evolve/EV-059-ci-schemathesis-mutation
     base: stage@c458669e
