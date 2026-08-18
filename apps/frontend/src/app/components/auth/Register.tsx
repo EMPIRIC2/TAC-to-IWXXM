@@ -73,7 +73,7 @@ export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
           </div>
         </div>
 
-        <Card className="p-8 bg-card border-border">
+        <Card className="p-8 bg-card border-border" data-testid="register-view">
           {/* Header */}
           <div className="mb-8 border-b border-border pb-6">
             <h1 className="text-xl font-semibold text-foreground mb-1 tracking-tight uppercase">

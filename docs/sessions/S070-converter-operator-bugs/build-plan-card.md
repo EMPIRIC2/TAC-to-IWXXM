@@ -16,9 +16,9 @@ Ship epic #1000 children to `stage`. This batch: M4 Auth register/login/logout/p
 
 ## In scope (this batch)
 
-- [ ] T4.1 — Test — Playwright register/login/logout/persist — Spec: [Corpus: tests §TC-EV060-1006-001..003]
+- [x] T4.1 — Test — Playwright register/login/logout/persist — Spec: [Corpus: tests §TC-EV060-1006-001..003]
 - [ ] T4.2 — UAT — Facilitated uat Build checklist — Spec: [Corpus: tests §TC-EV060-1006-004]
-- [ ] T4.3 — Verify — Guest convert still works (F21) — Spec: UJ-001
+- [x] T4.3 — Verify — Guest convert still works (F21) — Spec: UJ-001
 
 ## Out of scope (explicit)
 
