@@ -1,22 +1,25 @@
 ---
 session_id: S069-ci-schemathesis-mutation
 type: feature
-status: active
+status: completed
 branch: evolve/EV-059-ci-schemathesis-mutation
 orchestrator: 16-evolve
 evolve_cycle_id: EV-059
 github_issues: [841, 727, 874]
 prior_session: S068-quality-metrics-diff-layout
 opened: 2026-08-17
+closed: 2026-08-17
+close_decision: D-S069-close=1
 ---
 
 # Session brief — S069-ci-schemathesis-mutation
 
-> **Cycle**: EV-059 · **Type**: feature · **Opened**: 2026-08-17  
-> **Branch**: `evolve/EV-059-ci-schemathesis-mutation` @ `stage@c458669e`  
-> **Orchestrator**: **16-evolve** · **Preset**: Lean  
-> **Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) (epic) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874)  
-> **Corpus**: [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]
+> **Cycle**: EV-059 · **Type**: feature · **Opened**: 2026-08-17 · **Closed**: 2026-08-17 (`D-S069-close=1`)  
+> **Branch**: `evolve/EV-059-ci-schemathesis-mutation` @ `stage@c458669e` → tip `8755ae87`  
+> **Orchestrator**: **16-evolve** · **Preset**: Lean · **Promote**: held  
+> **Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — all **CLOSED**  
+> **PRs**: [#997](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997) · [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) → `stage`  
+> **Corpus**: [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api] [Corpus: decisions §EV-059]
 
 ## Goal
 

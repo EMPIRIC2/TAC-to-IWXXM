@@ -1,6 +1,7 @@
 # Evolve Plan Card
 
-> Cycle: EV-059 | Session: S069-ci-schemathesis-mutation | Updated: 2026-08-17
+> Cycle: EV-059 | Session: S069-ci-schemathesis-mutation | Updated: 2026-08-17  
+> Status: **completed** (`D-S069-close=1`; promote held)
 
 ## Goal
 
@@ -18,7 +19,7 @@ Close epic #841: Schemathesis OpenAPI property suite (#727) + broad Python/TS mu
 
 ## Phase split
 
-- Active phase: **Build**
+- Active phase: **closed** (Build complete)
 - Spec→Build gate: **open** (`D-S069-gateA=1a`, `D-S069-spec-build=2a`)
 - Preset: **Lean** (`D-S069-route`)
 
@@ -31,15 +32,15 @@ Close epic #841: Schemathesis OpenAPI property suite (#727) + broad Python/TS mu
 
 ## Build band (07–13)
 
-- Stages (ordered): `07 → 08` — **unblocked**
+- Stages (ordered): `07 → 08` — **complete**
 - Dual-mode Build skills: none
 - Deploy intent: **none** (promote held)
 - Skip: `09`, `10`, `11`, `12`, `13`
-- PR sequencing: **#727 Schemathesis first**, then **#874 mutation**
+- PRs: [#997](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997) (M1) · [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) (M2) → `stage` @ `8755ae87`
 
 ## Next child stage
 
-**Merge AskQuestion** — PR [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) → `stage` (#874); Lean 08 **PASS** (`reports/verification-report.md`); GitHub outage bypass active
+**None** — cycle closed. Promote only on separate re-approve.
 
 ## Locked intake
 
@@ -49,16 +50,11 @@ Close epic #841: Schemathesis OpenAPI property suite (#727) + broad Python/TS mu
 | D-S069-tool | pytest-gremlins + Stryker |
 | D-S069-fn | F34 |
 | D-S069-route | Lean Spec 01→02; Build 07→08 |
-| D-S069-e8 | Spec-only until gate — **superseded** by Spec→Build open |
 | D-S069-gateA | **1a** — PASS |
 | D-S069-spec-build | **2a** — Open Build |
-| D-S069-01-ac | **2b** — AC1–AC7 |
-| D-S069-01-budget | max-examples ≤ 25; job ≤ 10 min |
-| D-S069-01-matrix | Full Python + TS nightly matrix |
+| D-S069-sticky-softfail | Soft-fail sticky PR comments on GitHub API 429/5xx |
+| D-S069-close | **1** — Close on stage; promote held |
 
 ## Risks / open decisions
 
-- Broad mutation coverage vs CI cost — mitigate with nightly matrix + hard timeouts (not PR-required)
-- OpenAPI multipart / msgspec alias quirks may need schema fixes (allowed breaking cleanup `D-S069-e5=2b`)
-- Two-PR sequencing: #727 first, then #874
-- Medium Gate A items (api-contract defer; nightly cost; exact CLI pins) accepted as Build detail
+- None open — cycle complete; promote deferred

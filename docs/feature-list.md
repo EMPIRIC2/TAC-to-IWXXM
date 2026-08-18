@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-17 (S070 / EV-060 — F7.t IWXXM product pass-through + converter operator bugs #1000)
+> **Last updated**: 2026-08-18 (S070 / EV-060 closed; S069 / EV-059 F34 Done on stage; promote held)
 
 ## Summary
 
@@ -41,7 +41,7 @@
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
-| F34 | Contract + mutation quality gates | Planned | Platform | S069 / EV-059; epic #841; #727 Schemathesis; #874 Stryker + pytest-gremlins |
+| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; promote held |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
