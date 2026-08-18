@@ -18,8 +18,8 @@ Ship epic #1000 children to `stage`. This batch: M3 Profile picker (#1002), Bull
 
 - [x] T3.1 — Test — Profile a11y + applied `profile=` — Spec: [Corpus: tests §TC-EV060-1002]
 - [x] T3.2 — Code — Profile control at converter top — Spec: [Corpus: product §F7]
-- [ ] T3.3 — Test — Bulletin ID / Issuing Center round-trip + invalid CCCC — Spec: [Corpus: tests §TC-EV060-1005]
-- [ ] T3.4 — Code — Labeled editable fields wired to existing API — Spec: [Corpus: product §F6]
+- [x] T3.3 — Test — Bulletin ID / Issuing Center round-trip + invalid CCCC — Spec: [Corpus: tests §TC-EV060-1005]
+- [x] T3.4 — Code — Labeled editable fields wired to existing API — Spec: [Corpus: product §F6]
 - [ ] T3.5 — Test — DEBUG vs ERROR verbosity; no secrets — Spec: [Corpus: tests §TC-EV060-1004]
 - [ ] T3.6 — Code — Apply `log_level` to loggers — Spec: [Corpus: product §F29]
 

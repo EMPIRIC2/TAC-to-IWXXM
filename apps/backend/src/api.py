@@ -7,6 +7,7 @@ import io
 import logging
 import os
 import pathlib
+import re
 import sys
 import time
 import zipfile
@@ -633,6 +634,74 @@ def normalize_code(value: Optional[str], max_length: int) -> Optional[str]:
     if not normalized:
         return None
     return normalized[:max_length]
+
+
+_BULLETIN_ID_RE = re.compile(r"^[A-Z]{4}[0-9]{2}$")
+_CCCC_RE = re.compile(r"^[A-Z]{4}$")
+
+
+def parse_optional_bulletin_id(value: Optional[str]) -> str:
+    """Return uppercase bulletin id, or empty when omitted.
+
+    Raises
+    ------
+    HTTPException
+        400 when a non-empty value is not 4 letters + 2 digits.
+    """
+    raw = (value or "").strip().upper()
+    if not raw:
+        return ""
+    if _BULLETIN_ID_RE.fullmatch(raw) is None:
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message="Bulletin ID must be 4 letters followed by 2 digits.",
+                errors=["bulletin_id"],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message="Bulletin ID must be 4 letters followed by 2 digits.",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Example: SAAA00. Leave blank to discover from the AHL or use defaults.",
+                        code="INVALID_BULLETIN_ID",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        )
+    return raw
+
+
+def parse_optional_issuing_center(value: Optional[str]) -> str:
+    """Return uppercase ICAO CCCC, or empty when omitted.
+
+    Raises
+    ------
+    HTTPException
+        400 when a non-empty value is not exactly 4 letters.
+    """
+    raw = (value or "").strip().upper()
+    if not raw:
+        return ""
+    if _CCCC_RE.fullmatch(raw) is None:
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message="Issuing center must be a 4-letter ICAO code.",
+                errors=["issuing_center"],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message="Issuing center must be a 4-letter ICAO code.",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Example: KWBC. Leave blank to discover from the AHL or use defaults.",
+                        code="INVALID_ISSUING_CENTER",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        )
+    return raw
 
 
 def normalize_validation_level(value: Optional[str]) -> str:
@@ -1758,6 +1827,8 @@ async def convert(
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
 
     product = normalize_api_product(product, default="METAR")
+    bulletin_id = parse_optional_bulletin_id(bulletin_id)
+    issuing_center = parse_optional_issuing_center(issuing_center)
 
     # F7.t / EV-060 / #1003: product=iwxxm is XML pass-through (no TAC convert).
     if product == "IWXXM":
@@ -1860,8 +1931,8 @@ async def convert(
                 successful=1,
                 failed=0,
                 metadata={
-                    "bulletin_id": normalize_code(bulletin_id, 6) or "",
-                    "issuing_center": normalize_code(issuing_center, 4) or "",
+                    "bulletin_id": bulletin_id,
+                    "issuing_center": issuing_center,
                     "validation_level": validation_level,
                     "stop_on_error": bool(stop_on_error),
                     "product": "iwxxm",
@@ -1890,8 +1961,6 @@ async def convert(
         "icao_opmet",
         "schema",
     ]
-    bulletin_id = normalize_code(bulletin_id, 6) or ""
-    issuing_center = normalize_code(issuing_center, 4) or ""
     log_level_norm = (log_level or "INFO").strip().upper()
     logger.info(
         "[CONVERT] include_nil_reasons=%s log_level=%s",

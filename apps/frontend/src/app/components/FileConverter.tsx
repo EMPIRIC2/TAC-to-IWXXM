@@ -122,11 +122,17 @@ import {
   truncateTacSnippet,
 } from '/utils/resultTraceability';
 import {
+  isValidBulletinId,
+  isValidIssuingCenter,
   mapOnErrorToStopOnError,
   mapStrictToValidation,
   type ConvertLogLevel,
   type ConvertOnError,
 } from '/utils/convertParams';
+import {
+  BULLETIN_ID_FIELD_ERROR,
+  ISSUING_CENTER_FIELD_ERROR,
+} from '/utils/bulletinFieldsCopy';
 import {
   detectInputKind,
   kindToMode,
@@ -260,6 +266,10 @@ export function FileConverter({
     shouldShowPrivacyNotice(),
   );
   const [isParamsExpanded, setIsParamsExpanded] = useState(false);
+  const [bulletinFieldError, setBulletinFieldError] = useState<string | null>(null);
+  const [issuingCenterFieldError, setIssuingCenterFieldError] = useState<string | null>(
+    null,
+  );
   const [conversionParams, setConversionParams] = useState<ConversionParams>({
     bulletinId: '',
     issuingCenter: '',
@@ -1049,6 +1059,13 @@ export function FileConverter({
     }
     if (inputMode === 'validate_iwxxm') {
       await handleValidateOnly();
+      return;
+    }
+    const bulletinOk = isValidBulletinId(conversionParams.bulletinId);
+    const centerOk = isValidIssuingCenter(conversionParams.issuingCenter);
+    setBulletinFieldError(bulletinOk ? null : BULLETIN_ID_FIELD_ERROR);
+    setIssuingCenterFieldError(centerOk ? null : ISSUING_CENTER_FIELD_ERROR);
+    if (!bulletinOk || !centerOk) {
       return;
     }
     setIsConverting(true);
@@ -2267,45 +2284,78 @@ export function FileConverter({
                   )}
                 </Button>
               </div>
-              <div
-                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
-              >
-                {/* Bulletin ID */}
+              <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
                     Bulletin ID
                   </Label>
                   <Input
                     id="param-bulletin-id"
+                    data-testid="bulletin-id-input"
                     value={conversionParams.bulletinId}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      setBulletinFieldError(null);
                       setConversionParams((prev) => ({
                         ...prev,
                         bulletinId: e.target.value.toUpperCase(),
-                      }))
-                    }
+                      }));
+                    }}
                     placeholder="SAAA00"
                     maxLength={6}
+                    aria-invalid={bulletinFieldError ? true : undefined}
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Format: 4 letters + 2 digits. Sent as <code>bulletin_id</code> on
-                    Convert.
-                  </p>
+                  {bulletinFieldError ? (
+                    <p
+                      className="mt-1 text-xs text-red-600 dark:text-red-400"
+                      data-testid="bulletin-id-field-error"
+                      role="alert"
+                    >
+                      {bulletinFieldError}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Format: 4 letters + 2 digits. Leave blank to discover from the
+                      AHL.
+                    </p>
+                  )}
                 </div>
-
-                {/* Issuing Center */}
-                <IcaoAutocomplete
-                  label="Issuing Center (ICAO)"
-                  id="param-issuing-center"
-                  value={conversionParams.issuingCenter}
-                  onChange={(value) =>
-                    setConversionParams((prev) => ({ ...prev, issuingCenter: value }))
-                  }
-                  placeholder="KWBC"
-                  maxLength={4}
-                  helperText="4-letter ICAO code — sent as issuing_center on Convert"
-                />
+                <div>
+                  <IcaoAutocomplete
+                    label="Issuing Center (ICAO)"
+                    id="param-issuing-center"
+                    inputTestId="issuing-center-input"
+                    formatOnly
+                    value={conversionParams.issuingCenter}
+                    onChange={(value) => {
+                      setIssuingCenterFieldError(null);
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        issuingCenter: value,
+                      }));
+                    }}
+                    placeholder="KWBC"
+                    maxLength={4}
+                    helperText={
+                      issuingCenterFieldError
+                        ? undefined
+                        : '4-letter ICAO code. Leave blank to discover from the AHL.'
+                    }
+                  />
+                  {issuingCenterFieldError ? (
+                    <p
+                      className="mt-1 text-xs text-red-600 dark:text-red-400"
+                      data-testid="issuing-center-field-error"
+                      role="alert"
+                    >
+                      {issuingCenterFieldError}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              <div
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
+              >
                 <AirportDetailsCard icao={conversionParams.issuingCenter} />
 
                 {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}

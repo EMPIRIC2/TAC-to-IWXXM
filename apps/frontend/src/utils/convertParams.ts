@@ -101,3 +101,18 @@ export function issueLevelPasses(
 ): boolean {
   return issueSeverityRank(severity) >= MIN_RANK[minLevel];
 }
+
+const BULLETIN_ID_RE = /^[A-Z]{4}[0-9]{2}$/;
+const ISSUING_CENTER_RE = /^[A-Z]{4}$/;
+
+/** True when Bulletin ID is empty or 4 letters + 2 digits. */
+export function isValidBulletinId(value: string): boolean {
+  const raw = value.trim().toUpperCase();
+  return raw === '' || BULLETIN_ID_RE.test(raw);
+}
+
+/** True when Issuing Center is empty or exactly 4 letters (CCCC). */
+export function isValidIssuingCenter(value: string): boolean {
+  const raw = value.trim().toUpperCase();
+  return raw === '' || ISSUING_CENTER_RE.test(raw);
+}

@@ -13,6 +13,9 @@ interface IcaoAutocompleteProps {
   helperText?: string;
   className?: string;
   id?: string;
+  inputTestId?: string;
+  /** When true, accept any 4-letter CCCC (WMO centres), not only airports. */
+  formatOnly?: boolean;
 }
 
 interface AirportSuggestion {
@@ -31,6 +34,8 @@ export function IcaoAutocomplete({
   helperText,
   className = '',
   id = 'icao-input',
+  inputTestId,
+  formatOnly = false,
 }: IcaoAutocompleteProps) {
   const [suggestions, setSuggestions] = useState<AirportSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -50,6 +55,9 @@ export function IcaoAutocomplete({
 
   const validateIcao = (code: string): boolean => {
     if (!code || code.length !== 4) return false;
+    if (formatOnly) {
+      return /^[A-Z]{4}$/.test(code);
+    }
     return airports.isValid(code);
   };
 
@@ -103,6 +111,7 @@ export function IcaoAutocomplete({
       <div className="relative">
         <Input
           id={id}
+          data-testid={inputTestId}
           value={value}
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={placeholder}

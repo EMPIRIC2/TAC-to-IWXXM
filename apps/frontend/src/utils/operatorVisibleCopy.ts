@@ -34,6 +34,10 @@ import {
   IWXXM_PRODUCT_HELP,
 } from '@/utils/iwxxmProductCopy';
 import {
+  BULLETIN_ID_FIELD_ERROR,
+  ISSUING_CENTER_FIELD_ERROR,
+} from '@/utils/bulletinFieldsCopy';
+import {
   SOFT_PREVIEW_HELP,
   SOFT_PREVIEW_LABEL,
 } from '@/app/components/SoftPreviewControl';
@@ -64,6 +68,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'iwxxm-product.help', text: IWXXM_PRODUCT_HELP },
     { id: 'iwxxm-product.convert-label', text: IWXXM_PRODUCT_CONVERT_LABEL },
     { id: 'iwxxm-product.convert-aria', text: IWXXM_PRODUCT_CONVERT_ARIA },
+    { id: 'bulletin-id.field-error', text: BULLETIN_ID_FIELD_ERROR },
+    { id: 'issuing-center.field-error', text: ISSUING_CENTER_FIELD_ERROR },
     { id: 'guest.loss-of-progress', text: GUEST_LOSS_OF_PROGRESS_MESSAGE },
     { id: 'help.one-pager-url', text: OPERATOR_ONE_PAGER_URL },
     { id: 'help.handbook-url', text: OPERATOR_HANDBOOK_URL },

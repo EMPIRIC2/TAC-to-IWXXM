@@ -15,8 +15,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (gate **open** `D-S070-spec-build=1a`) |
-| **Active milestone** | M3 #1002/#1005/#1004 — T3.1–T3.2 complete; next T3.3 |
-| **Tasks completed** | 14 / 18 |
+| **Active milestone** | M3 #1002/#1005/#1004 — T3.1–T3.4 complete; next T3.5 |
+| **Tasks completed** | 16 / 18 |
 | **Stage** | 07-build M3 |
 | **Plan approval** | **approved** `D-S070-04-plan=1a` |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M4 |
@@ -69,8 +69,8 @@
 |----|------|------|--------|-------|
 | T3.1 | Test | Profile a11y + applied `profile=` | completed | TC-EV060-1002-* |
 | T3.2 | Code | Profile control at converter top | completed | T3.1 |
-| T3.3 | Test | Bulletin ID / Issuing Center round-trip + invalid CCCC | pending | TC-EV060-1005-* |
-| T3.4 | Code | Labeled editable fields wired to existing API | pending | T3.3 |
+| T3.3 | Test | Bulletin ID / Issuing Center round-trip + invalid CCCC | completed | TC-EV060-1005-* |
+| T3.4 | Code | Labeled editable fields wired to existing API | completed | T3.3 |
 | T3.5 | Test | DEBUG vs ERROR verbosity; no secrets | pending | TC-EV060-1004-* |
 | T3.6 | Code | Apply `log_level` to loggers | pending | T3.5 |
 
