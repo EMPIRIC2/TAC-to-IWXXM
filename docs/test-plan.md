@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-12 (docs sync — Quality metrics detail + collapsible diffs on stage)
+> **Last updated**: 2026-08-17 (S070 / EV-060 — TC-EV060-* converter operator bugs + F7.t + Auth UAT)
 
 ## Scope
 
@@ -113,6 +113,12 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005 |
 | UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..007 |
 | UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
+| UJ-059 | F7/F6 deepen (EV-060) | AHL bulletin lint/validate without heading flood (#1001) | **H4–H5 required** | TC-EV060-1001-001..003 |
+| UJ-060 | F7.t (EV-060) | IWXXM product pass-through lint+F2 (#1003) | **H4–H5 required** | TC-EV060-1003-001..004 |
+| UJ-061 | F7/F6 deepen (EV-060) | Profile labeled at converter top (#1002) | **H4–H5 required** | TC-EV060-1002-001..003 |
+| UJ-062 | F7/F6 deepen (EV-060) | Bulletin ID + Issuing Center applied (#1005) | **H4–H5 required** | TC-EV060-1005-001..003 |
+| UJ-063 | F29 deepen (EV-060) | Conversion log_level sets logger verbosity (#1004) | T0/T2 | TC-EV060-1004-001..002 |
+| UJ-003 / UJ-046 | F31 deepen (EV-060) | Auth register/login/logout/persist UAT (#1006) | **H4–H5 required** | TC-EV060-1006-001..004 |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
@@ -2308,6 +2314,145 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV059-001..007
 
 - Aliases of **TC-F34-001..007** for evolve-cycle traceability (EV-059 / S069).
+
+### EV-060 / S070 — Converter operator bugs + IWXXM pass-through (#1000)
+
+- **Mode**: delta deepen F7.t + F6/F2/F10/F29/F31
+- **Pass criteria**: AC in evolve-decisions §EV-060; **UJ-059..063**; UJ-003/046 UAT
+- **Source**: [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000)–[#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)
+
+### TC-EV060-1001-001: AHL heading not product-syntax flood
+
+- **Level**: T0 / T2
+- **Objective**: Well-formed AHL METAR bulletin lint does not score AHL tokens as METAR syntax
+- **Pass criteria**: Heading issues are bulletin-level (or none); contained METARs still linted
+- **Source**: #1001; UJ-059
+
+### TC-EV060-1001-002: Malformed AHL one bulletin error
+
+- **Level**: T0
+- **Objective**: Malformed AHL yields one bulletin-level error and still attempts split
+- **Pass criteria**: Structured bulletin error; no opaque 5xx
+- **Source**: #1001
+
+### TC-EV060-1001-003: FileConverter + convert-bulletin parity
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Same AHL behavior on workbench, FileConverter, and `/convert-bulletin`
+- **Pass criteria**: No heading flood on all three
+- **Source**: #1001; `D-S070-e3c`
+
+### TC-EV060-1003-001: Valid IWXXM product pass-through
+
+- **Level**: T0 / T2
+- **Objective**: `product=iwxxm` + valid XML → F2 result; no TAC convert
+- **Pass criteria**: No TAC lint-as-METAR; F2 issues/pass shown
+- **Source**: #1003; F7.t AC1
+
+### TC-EV060-1003-002: TAC text under product=iwxxm is not-XML
+
+- **Level**: T0
+- **Objective**: TAC text with product=iwxxm returns structured not-XML error
+- **Pass criteria**: Not METAR lint flood
+- **Source**: #1003; F7.t AC2
+
+### TC-EV060-1003-003: Convert disabled or no-op
+
+- **Level**: T0 / T2
+- **Objective**: Convert control disabled or no-ops with clear operator message
+- **Pass criteria**: Message has no internal doc refs
+- **Source**: #1003
+
+### TC-EV060-1003-004: FileConverter / QM / accumulate honor IWXXM product
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Those surfaces honor product=iwxxm
+- **Pass criteria**: Same pass-through semantics
+- **Source**: #1003; `D-S070-e3c`
+
+### TC-EV060-1002-001: Profile labeled at converter top
+
+- **Level**: T0 / T2
+- **Objective**: Profile control labeled at top; changing it is used on convert/lint/validate
+- **Pass criteria**: Accessible name + visible label; API `profile=` matches
+- **Source**: #1002; UJ-061
+
+### TC-EV060-1002-002: Keyboard/accessible Profile
+
+- **Level**: T0
+- **Objective**: Profile has accessible name (not icon-only)
+- **Pass criteria**: axe/vitest accessible name present
+- **Source**: #1002; `D-S070-e3b`
+
+### TC-EV060-1002-003: FileConverter / QM honor profile
+
+- **Level**: T2
+- **Objective**: Shared chrome or inherit; no QM redesign
+- **Pass criteria**: Same profile value used
+- **Source**: #1002
+
+### TC-EV060-1005-001: Bulletin fields used on convert
+
+- **Level**: T0 / T2
+- **Objective**: Filled Bulletin ID + Issuing Center appear in output/API payload
+- **Pass criteria**: Values round-trip
+- **Source**: #1005; UJ-062
+
+### TC-EV060-1005-002: Empty uses discover/defaults
+
+- **Level**: T0
+- **Objective**: Empty fields keep discover-from-AHL or current defaults
+- **Pass criteria**: No silent drop of discovered AHL CCCC
+- **Source**: #1005
+
+### TC-EV060-1005-003: Invalid CCCC/ID field error
+
+- **Level**: T0
+- **Objective**: Invalid issuing center → one operator-visible field error
+- **Pass criteria**: Not silent ignore
+- **Source**: #1005
+
+### TC-EV060-1004-001: DEBUG vs ERROR log verbosity differs
+
+- **Level**: T0 / T2
+- **Objective**: Same convert at DEBUG vs ERROR emits different log verbosity
+- **Pass criteria**: Logger level applied in backend/packages
+- **Source**: #1004; UJ-063
+
+### TC-EV060-1004-002: DEBUG does not dump secrets
+
+- **Level**: T0
+- **Objective**: DEBUG logs omit JWTs, passwords, Authorization headers
+- **Pass criteria**: Fixture/scan assertion
+- **Source**: #1004; `D-S070-e6`
+
+### TC-EV060-1006-001: Register happy path
+
+- **Level**: T2 / T3
+- **Objective**: Playwright register with test account
+- **Pass criteria**: Account created; no production PII
+- **Source**: #1006; UJ-003
+
+### TC-EV060-1006-002: Login + session persist
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Login then reload still logged in
+- **Pass criteria**: UJ-046 persist
+- **Source**: #1006
+
+### TC-EV060-1006-003: Logout
+
+- **Level**: T2 / T3
+- **Objective**: Logout returns to guest convert
+- **Pass criteria**: Convert still works without JWT
+- **Source**: #1006; F21
+
+### TC-EV060-1006-004: Facilitated UAT sign-off
+
+- **Level**: UAT
+- **Objective**: `uat` Build checklist signed for register/login/logout/persist
+- **Pass criteria**: Session UAT report
+- **Source**: #1006; `D-S070-e4`
 
 
 ### EV-057 / S067 — M0 Ready: apex redirect + accumulate ZIP + validate-only (#948 / #903 / #838)

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-08-09",
+  "generated": "2026-08-17",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -86,6 +86,13 @@
       "status": "ok",
       "note": "EUR Doc 014 public; Annex 3 paywall companion",
       "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+    },
+    "INVALID_AHL": {
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "status": "ok",
+      "note": "WMO AHL TTAAii CCCC YYGGgg communications heading",
+      "source_attribution": "opmet-guidelines-5th \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 WMO AHL TTAAii CCCC YYGGgg communications heading"
     },
     "INVALID_CLOUD_TOKEN": {
       "source_id": "codes-wmo-int",

@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-15 (S067 / EV-057 UJ-057 accumulate ZIP + UJ-058 validate-only IWXXM; #948 deploy)
+> **Last updated**: 2026-08-17 (S070 / EV-060 UJ-059 AHL + UJ-060 IWXXM product + UJ-061..063 converter params; Auth UAT deepen UJ-003/046)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -75,6 +75,11 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979; EV-056 / #988; EV-058 / #983) | T0 / T2 / **T3** / H4–H5 |
 | UJ-057 | Accumulate conversions → Download all ZIP | apps/frontend | F7.r deepen (EV-057 / #903) | T0 / T2 / **T3** / H4–H5 |
 | UJ-058 | Validate existing IWXXM (paste / upload; no TAC) | apps/frontend | F7.s deepen (EV-057 / #838) | T0 / T2 / **T3** / H4–H5 |
+| UJ-059 | AHL bulletin lint/validate without heading flood | apps/frontend / API | F7/F6 deepen (EV-060 / #1001) | T0 / T2 / **T3** / H4–H5 |
+| UJ-060 | IWXXM product pass-through (lint + F2; no TAC convert) | apps/frontend / API | F7.t (EV-060 / #1003) | T0 / T2 / **T3** / H4–H5 |
+| UJ-061 | Profile labeled at converter top (Annex 3 / IWXXM-US) | apps/frontend | F7/F6 deepen (EV-060 / #1002) | T0 / T2 / **T3** / H4–H5 |
+| UJ-062 | Bulletin ID + Issuing Center labeled and applied | apps/frontend / API | F7/F6 deepen (EV-060 / #1005) | T0 / T2 / **T3** / H4–H5 |
+| UJ-063 | Conversion log_level changes logger verbosity | UI / API | F29 deepen (EV-060 / #1004) | T0 / T2 |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -183,6 +188,11 @@ mapping (ADR-023) + E2E where exposed (T2); H3 + H6 (T3)
 
 **Automated tests**: Restore/adapt `apps/e2e/auth.e2e.spec.ts` for login happy path; convert
 still works without JWT.
+
+**EV-060 / #1006 UAT**: Facilitated UAT plus Playwright covering **register, login, logout,
+and logged-in session persist**. Guest/public convert (F21 / UJ-001) still works without an
+account. Test accounts only — no production PII in fixtures. [Corpus: product §F31]
+[Corpus: tests]
 
 ---
 
@@ -916,6 +926,99 @@ Does not replace UJ-056 Quality metrics corpus browse.
 **Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-002 / UJ-007 / UJ-032.
 [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F4] [Corpus: api]
 [Corpus: journeys] [Corpus: tests]
+
+---
+
+### UJ-059: AHL Bulletin Lint/Validate Without Heading Flood (EV-060 / #1001)
+
+**Actor**: Meteorological operator (guest OK) or API/CLI client
+
+**Goal**: Lint/validate a WMO AHL bulletin without scoring heading tokens as product TAC errors.
+
+**Steps**:
+
+1. Set input mode to AHL bulletin (or `POST /api/v1/convert-bulletin` / lint equivalent).
+2. Paste a well-formed AHL METAR bulletin.
+3. Run lint/validate — heading is bulletin COM; contained METARs are checked as METAR.
+4. Optionally paste malformed AHL — one bulletin-level error; still try to split reports.
+
+**Acceptance**: feature-list EV-060 / #1001; TC-EV060-1001-*. FileConverter same behavior.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-011 / UJ-025.
+[Corpus: product §F6] [Corpus: product §F7] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-060: IWXXM Product Pass-Through (F7.t / #1003)
+
+**Actor**: Meteorological operator (guest OK) or API/CLI client
+
+**Goal**: Select product **IWXXM** and lint + F2-validate XML without TAC convert.
+
+**Steps**:
+
+1. Choose product IWXXM (workbench, FileConverter, accumulate, Quality metrics honor).
+2. Paste valid IWXXM XML; run lint+validate — F2 result; no TAC convert.
+3. Paste TAC text — structured not-XML error (not METAR lint).
+4. Confirm Convert is disabled or no-ops with a clear operator message.
+5. F7.s Validate-only mode still exists.
+
+**Acceptance**: feature-list §F7.t AC1–4; TC-EV060-1003-*.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-058 / UJ-002.
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-061: Profile Labeled at Converter Top (EV-060 / #1002)
+
+**Actor**: Meteorological operator
+
+**Goal**: Annex 3 vs IWXXM-US profile is obvious at the top of the converter and is what convert/lint/validate use.
+
+**Steps**:
+
+1. Open converter — Profile control is labeled at the top (not only inside conversion parameters).
+2. Change profile; run convert/lint/validate — requests use the selected `profile`.
+3. Keyboard: visible label + accessible name.
+4. FileConverter / accumulate / Quality metrics honor the same profile.
+
+**Acceptance**: feature-list EV-060 / #1002; TC-EV060-1002-*. Not #933 editor.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-005 / UJ-007.
+[Corpus: product §F6] [Corpus: product §F7] [Corpus: journeys] [Corpus: tests]
+
+---
+
+### UJ-062: Bulletin ID and Issuing Center Applied (EV-060 / #1005)
+
+**Actor**: Meteorological operator or API client
+
+**Goal**: Labeled, editable Bulletin ID and Issuing Center are sent on convert and appear in output.
+
+**Steps**:
+
+1. Fill Bulletin ID and Issuing Center; convert — output/API payload uses those values.
+2. Leave empty — discover-from-AHL or existing defaults.
+3. Invalid CCCC/ID — one operator-visible field error, not a silent drop.
+
+**Acceptance**: feature-list EV-060 / #1005; TC-EV060-1005-*.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-011.
+[Corpus: product §F6] [Corpus: product §F7] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-063: Conversion Log Level Changes Logger Verbosity (EV-060 / #1004)
+
+**Actor**: Operator / API client / maintainer reading logs
+
+**Goal**: The conversion-parameters log-level control actually changes backend/package logger verbosity.
+
+**Steps**:
+
+1. Run the same convert at DEBUG vs ERROR.
+2. Observe emitted logs differ in verbosity.
+3. Confirm DEBUG does not dump JWTs, passwords, or Authorization headers.
+
+**Acceptance**: feature-list EV-060 / #1004; TC-EV060-1004-*. No live in-app log panel required.
+**Tier: T0 / T2**. [Corpus: product §F29] [Corpus: api] [Corpus: tests]
 
 ---
 
@@ -1902,3 +2005,6 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
 - S047 / EV-039 (2026-08-06): UJ-027 live local Compose multi-DB path + TC-F16-LIVE-*;
   teardown hygiene across integration / e2e / local (F16 deepen)
 - S054 / EV-045 (2026-08-08): UJ-DEV-006 Rust crate CI (F13/F14 deepen; #725)
+- S070 / EV-060 (2026-08-17): UJ-059 AHL bulletin quality (#1001); UJ-060 IWXXM product
+  pass-through (#1003); UJ-061 profile picker (#1002); UJ-062 bulletin fields (#1005);
+  UJ-063 log_level (#1004); deepen UJ-003/046 Auth UAT (#1006)

@@ -25,6 +25,7 @@ _EXISTING_EMITTED_CODES = frozenset(
         "UNKNOWN_PRODUCT",
         "EMPTY_TAC",
         "MISSING_PRODUCT_KEYWORD",
+        "INVALID_AHL",
         "MISSING_TERMINATOR",
         "MISSING_CCCC",
         "MISSING_OBS_TIME",

@@ -649,6 +649,16 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "INVALID_AHL",
+      "status": "ok",
+      "source_id": "opmet-guidelines-5th",
+      "source_url": "vendor:documentation/webpages/AHL.asciidoc",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md",
+      "ticket": null,
+      "note": "WMO AHL TTAAii CCCC YYGGgg communications heading"
+    },
+    {
       "code": "INVALID_CLOUD_TOKEN",
       "status": "ok",
       "source_id": "codes-wmo-int",

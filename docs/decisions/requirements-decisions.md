@@ -1,6 +1,24 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-17 (S068 / EV-058)
+> Stage: 01-requirements | Last updated: 2026-08-17 (S070 / EV-060)
+
+## EV-060 / S070 — Converter operator bugs + IWXXM pass-through (#1000) (`D-S070-e9`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-060 / Fn | Deepen **F7.t** + F6/F2/F10/F29/F31 | No new top-level Fn | confirmed |
+| EV-060 / tickets | Epic #1000 + #1001–#1006 on GitHub M0 | No duplicate #933/#924 | confirmed |
+| EV-060 / F7.s | Keep Validate-only | Alongside F7.t | confirmed |
+| EV-060 / journeys | **UJ-059..063** + UJ-003/046 UAT | H4–H5 | confirmed |
+| EV-060 / API | Additive `product=iwxxm` | log_level = logger verbosity | confirmed |
+| EV-060 / a11y | Profile label+name must-have | `D-S070-e3b` | confirmed |
+| EV-060 / honor | FileConverter / accumulate / QM | Profile + IWXXM product | confirmed |
+| EV-060 / UAT | Playwright + facilitated uat | Register/login/logout/persist | confirmed |
+| EV-060 / docs | Delta manifest below | No new CORPUS member | confirmed |
+| EV-060 / UI preview | Remind at 11 | `D-S070-e2` | confirmed |
+| EV-060 / route | Standard Spec 01→02→04 | Build 07–13 blocked | confirmed |
+
+[Corpus: product §F7] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]
 
 ## EV-058 / S068 — Quality metrics side-by-side vs inline XML diff (#983) (`D-S068-01-ac=2b`)
 

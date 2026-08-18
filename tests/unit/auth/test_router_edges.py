@@ -112,6 +112,89 @@ def test_validate_email_permissive_rejects_invalid_via_validator() -> None:
         validate_email_permissive("not an email@bad domain")
 
 
+def test_logout_maps_auth_proxy_400() -> None:
+    """POST /auth/logout maps AuthProxyError to HTTP 400. [Corpus: api] #1006."""
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.sign_out.side_effect = AuthProxyError(
+        "logout failed: denied", status_code=400
+    )
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/logout",
+        headers={"Authorization": "Bearer test-access"},
+        json={"scope": "local"},
+    )
+    assert response.status_code == 400
+    assert "logout failed" in response.json()["detail"]
+    proxy.sign_out.assert_called_once_with("test-access", scope="local")
+
+
+def test_logout_maps_auth_proxy_502() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.sign_out.side_effect = AuthProxyError(
+        "logout failed: upstream", status_code=502
+    )
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/logout",
+        headers={"Authorization": "Bearer test-access"},
+    )
+    assert response.status_code == 502
+    proxy.sign_out.assert_called_once_with("test-access", scope=None)
+
+
+def test_logout_rejects_unsupported_scope() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/logout",
+        headers={"Authorization": "Bearer test-access"},
+        json={"scope": "everywhere"},
+    )
+    assert response.status_code == 422
+    proxy.sign_out.assert_not_called()
+
+
+def test_logout_empty_scope_passes_none() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.sign_out.return_value = {"message": "Successfully signed out"}
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/logout",
+        headers={"Authorization": "Bearer test-access"},
+        json={"scope": ""},
+    )
+    assert response.status_code == 200
+    proxy.sign_out.assert_called_once_with("test-access", scope=None)
+
+
+def test_logout_invalid_bearer_format() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/logout",
+        headers={"Authorization": "Token abc"},
+        json={"scope": "local"},
+    )
+    assert response.status_code == 401
+    proxy.sign_out.assert_not_called()
+
+
 def test_login_maps_auth_proxy_503() -> None:
     proxy = MagicMock(spec=SupabaseAuthProxy)
     proxy.sign_in.side_effect = AuthProxyError("missing env", status_code=503)
@@ -251,4 +334,5 @@ def test_create_auth_router_default_proxy() -> None:
     router = create_auth_router(supabase_url="https://proj.supabase.co")
     paths = {getattr(r, "path", None) for r in router.routes}
     assert "/auth/login" in paths
+    assert "/auth/logout" in paths
     assert "/auth/me" in paths

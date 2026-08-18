@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import contextvars
 import json
 import logging
 import os
 import queue
+import re
 import threading
 import time
 from collections import defaultdict
@@ -266,6 +268,8 @@ def setup_logging(service_name: str) -> None:
             loki_handler.setFormatter(formatter)
             root_logger.addHandler(loki_handler)
 
+    ensure_request_log_filters()
+
 
 def record_translation_metric(
     status: str,
@@ -297,7 +301,10 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
     @app.middleware("http")
     async def prometheus_http_metrics(request: Request, call_next):
         start = time.perf_counter()
-        response = await call_next(request)
+        try:
+            response = await call_next(request)
+        finally:
+            _reset_request_log_level(request)
         duration_seconds = time.perf_counter() - start
 
         route = request.scope.get("route")
@@ -323,3 +330,99 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
     async def metrics_endpoint() -> Response:
         data = generate_latest()
         return Response(content=data, media_type=CONTENT_TYPE_LATEST)
+
+
+_REQUEST_LOG_LEVEL: contextvars.ContextVar[int | None] = contextvars.ContextVar(
+    "convert_request_log_level",
+    default=None,
+)
+_ALLOWED_LOG_LEVELS = frozenset({"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"})
+_JWT_RE = re.compile(r"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+")
+_AUTH_RE = re.compile(r"(?i)(authorization\s*[:=]\s*)(\S+)")
+_FILTERS_INSTALLED = False
+
+
+class RequestLogLevelFilter(logging.Filter):
+    """Drop records below the per-request convert ``log_level`` ContextVar."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        minimum = _REQUEST_LOG_LEVEL.get()
+        if minimum is None:
+            return True
+        return record.levelno >= minimum
+
+
+class SecretRedactFilter(logging.Filter):
+    """Strip JWTs and Authorization header values from log records."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        try:
+            message = record.getMessage()
+        except Exception:
+            return True
+        if "eyJ" not in message and "authorization" not in message.lower():
+            return True
+        redacted = _AUTH_RE.sub(r"\1[REDACTED]", _JWT_RE.sub("[REDACTED_JWT]", message))
+        record.msg = redacted
+        record.args = ()
+        return True
+
+
+def ensure_request_log_filters() -> None:
+    """Attach request-level and secret filters once (safe for tests)."""
+    global _FILTERS_INSTALLED
+    if _FILTERS_INSTALLED:
+        return
+    level_filter = RequestLogLevelFilter()
+    redact_filter = SecretRedactFilter()
+    names = ("", "src", "src.api", "tac2iwxxm", "tac_validate", "iwxxm_validate")
+    for name in names:
+        target = logging.getLogger(name)
+        target.addFilter(level_filter)
+        target.addFilter(redact_filter)
+    _FILTERS_INSTALLED = True
+
+
+_REQUEST_LOGGERS = ("src", "src.api", "tac2iwxxm", "tac_validate", "iwxxm_validate")
+
+
+def set_request_log_level(request: Request, level_name: str | None) -> str:
+    """Apply convert ``log_level`` to this request's log ContextVar.
+
+    Returns
+    -------
+    str
+        Normalized level name (DEBUG/INFO/WARNING/ERROR/CRITICAL).
+    """
+    ensure_request_log_filters()
+    name = (level_name or "INFO").strip().upper()
+    if name not in _ALLOWED_LOG_LEVELS:
+        name = "INFO"
+    levelno = getattr(logging, name)
+    token = _REQUEST_LOG_LEVEL.set(levelno)
+    request.state.convert_log_level_token = token
+    previous: list[tuple[logging.Logger, int]] = []
+    for logger_name in _REQUEST_LOGGERS:
+        target = logging.getLogger(logger_name)
+        previous.append((target, target.level))
+        if target.level == logging.NOTSET or target.level > levelno:
+            target.setLevel(levelno)
+    request.state.convert_log_level_prev = previous
+    return name
+
+
+def _reset_request_log_level(request: Request) -> None:
+    token = getattr(request.state, "convert_log_level_token", None)
+    if token is not None:
+        try:
+            _REQUEST_LOG_LEVEL.reset(token)
+        except ValueError:
+            # Starlette BaseHTTPMiddleware runs the route in a different Context
+            # than dispatch(); Token.reset is invalid across contexts.
+            pass
+        request.state.convert_log_level_token = None
+    previous = getattr(request.state, "convert_log_level_prev", None)
+    if previous:
+        for target, prior in previous:
+            target.setLevel(prior)
+        request.state.convert_log_level_prev = None

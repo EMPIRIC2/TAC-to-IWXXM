@@ -4,6 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   detectTacProduct,
+  isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
 } from './tacProduct';
@@ -74,6 +75,19 @@ describe('resolveConvertProduct', () => {
       'TAF',
     );
   });
+
+  it('returns IWXXM when selected (F7.t / #1003)', () => {
+    expect(resolveConvertProduct('IWXXM', 'METAR KJFK 121851Z')).toBe('IWXXM');
+  });
+});
+
+describe('isConvertProductSelection', () => {
+  it('accepts auto, TAC products, and IWXXM', () => {
+    expect(isConvertProductSelection('auto')).toBe(true);
+    expect(isConvertProductSelection('METAR')).toBe(true);
+    expect(isConvertProductSelection('IWXXM')).toBe(true);
+    expect(isConvertProductSelection('not-a-product')).toBe(false);
+  });
 });
 
 describe('splitManualEntries', () => {
@@ -134,5 +148,11 @@ describe('splitManualEntries', () => {
   it('keeps SWXA multi-line advisory as a single document', () => {
     const swxa = 'SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\n';
     expect(splitManualEntries(swxa, 'SWXA')).toEqual([swxa.trim()]);
+  });
+
+  it('keeps IWXXM XML as a single document (F7.t)', () => {
+    const xml =
+      '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">\n<ok/>\n</iwxxm:METAR>';
+    expect(splitManualEntries(xml, 'IWXXM')).toEqual([xml.trim()]);
   });
 });

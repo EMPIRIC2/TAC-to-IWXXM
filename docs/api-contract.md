@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-12 (docs sync — Quality metrics detail route; prior C14N match semantics)
+> **Last updated**: 2026-08-17 (S070 / EV-060 — `product=iwxxm` pass-through + log_level logger verbosity)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -109,7 +109,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 |-------|----------|---------|-------------|
 | `files` | no* | — | TAC files |
 | `manual_text` | no* | — | TAC string |
-| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` |
+| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` \| `iwxxm` (EV-060 / F7.t — pass-through; no TAC convert) |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
 | `iwxxm_version` | no | SoT default (`2025-2`) | Enum = Python `SUPPORTED_VERSIONS` via generated JSON (`apps/frontend/src/generated/iwxxm_versions.json`; `make export-iwxxm-versions`; #851 / D-S046-sot) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
@@ -120,7 +120,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `bulletin_id` | no | `""` | Optional bulletin identifier (translation metadata) |
 | `issuing_center` | no | `""` | Optional issuing centre ICAO (4-letter) |
 | `include_nil_reasons` | no | `true` | Prefer emitting nilReason attributes (engine may still emit NIL shells) |
-| `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients |
+| `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients **and** backend/package logger verbosity (EV-060 / #1004). Must not log JWTs, passwords, or Authorization headers at DEBUG. |
 
 \* At least one of `files` or `manual_text` required (unchanged).
 
@@ -137,6 +137,11 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
   `va_sigmet` / `tc_sigmet` enum values (E19-13=A; EV-029 / #738).
 - **`product=swxa`**: Space Weather Advisory → `iwxxm:SpaceWeatherAdvisory` (F28 / #740).
   Canonical wire value is **`swxa`** (not `swx`). Unknown aliases → `unknown_product` **400**.
+- **`product=iwxxm` (EV-060 / F7.t / #1003)**: Pass-through. `/convert` and `/convert-bulletin`
+  do **not** run TAC→IWXXM; they lint XML (well-formed / COLLECT vs report) and may run F2
+  validate. TAC text → structured not-XML error (not METAR lint). `/lint-tac` with
+  `product=iwxxm` uses XML lint rules, not TAC product syntax. `/validate` unchanged engine
+  (F2); product field documents the pass-through path.
 - **`product=vona`**: Volcano Observatory Notice for Aviation →
   `iwxxm:VolcanoObservatoryNoticeForAviation` (F32 / #741). Canonical wire value is **`vona`**.
   Unknown aliases → `unknown_product` **400**.

@@ -1005,6 +1005,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout
+         * @description Sign out via GoTrue; optional body ``{scope}`` for local/global/others.
+         */
+        post: operations["logout_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/me": {
         parameters: {
             query?: never;
@@ -1272,7 +1292,7 @@ export interface components {
             preview: boolean;
             /**
              * Product
-             * @description TAC product type (default METAR for legacy clients)
+             * @description TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)
              * @default METAR
              */
             product: string;
@@ -1337,7 +1357,7 @@ export interface components {
             manual_text: string;
             /**
              * Product
-             * @description TAC product (required)
+             * @description TAC product, or iwxxm for XML pass-through
              */
             product: string;
             /**
@@ -1405,13 +1425,13 @@ export interface components {
             files?: string[] | null;
             /**
              * Manual Text
-             * @description TAC text to lint
+             * @description TAC or IWXXM XML to lint
              * @default
              */
             manual_text: string;
             /**
              * Product
-             * @description Product hint when known
+             * @description Product type, or iwxxm for XML lint (default METAR)
              * @default METAR
              */
             product: string;
@@ -2344,6 +2364,25 @@ export interface components {
             email: string;
             /** Password */
             password: string;
+        };
+        /**
+         * LogoutRequest
+         * @description Optional scoped logout body (FileConverter / AdminDashboard).
+         */
+        LogoutRequest: {
+            /**
+             * Scope
+             * @description GoTrue logout scope: global, local, or others
+             */
+            scope?: string | null;
+        };
+        /**
+         * Message
+         * @description Simple success message.
+         */
+        Message: {
+            /** Message */
+            message: string;
         };
         /**
          * PackageIssueModel
@@ -4344,6 +4383,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LogoutRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
                 };
             };
             /** @description Validation Error */

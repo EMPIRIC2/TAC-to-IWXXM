@@ -280,7 +280,7 @@
           },
           "product": {
             "default": "METAR",
-            "description": "TAC product type (default METAR for legacy clients)",
+            "description": "TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)",
             "title": "Product",
             "type": "string"
           },
@@ -360,7 +360,7 @@
             "type": "string"
           },
           "product": {
-            "description": "TAC product (required)",
+            "description": "TAC product, or iwxxm for XML pass-through",
             "title": "Product",
             "type": "string"
           },
@@ -486,13 +486,13 @@
           },
           "manual_text": {
             "default": "",
-            "description": "TAC text to lint",
+            "description": "TAC or IWXXM XML to lint",
             "title": "Manual Text",
             "type": "string"
           },
           "product": {
             "default": "METAR",
-            "description": "Product hint when known",
+            "description": "Product type, or iwxxm for XML lint (default METAR)",
             "title": "Product",
             "type": "string"
           }
@@ -2138,6 +2138,39 @@
           "password"
         ],
         "title": "LoginRequest",
+        "type": "object"
+      },
+      "LogoutRequest": {
+        "description": "Optional scoped logout body (FileConverter / AdminDashboard).",
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "GoTrue logout scope: global, local, or others",
+            "title": "Scope"
+          }
+        },
+        "title": "LogoutRequest",
+        "type": "object"
+      },
+      "Message": {
+        "description": "Simple success message.",
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "Message",
         "type": "object"
       },
       "PackageIssueModel": {
@@ -5402,6 +5435,73 @@
           }
         },
         "summary": "Login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "description": "Sign out via GoTrue; optional body ``{scope}`` for local/global/others.",
+        "operationId": "logout_auth_logout_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/LogoutRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Logout",
         "tags": [
           "Auth"
         ]

@@ -134,9 +134,11 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
       expect(productValues).toContain(p);
     }
 
+    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
+    expect(profile).toBeVisible();
+
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    const profile = screen.getByLabelText(/^profile$/i) as HTMLSelectElement;
     const version = screen.getByLabelText(/iwxxm version/i) as HTMLSelectElement;
 
     expect(profile).toBeInTheDocument();
@@ -164,7 +166,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     await user.click(screen.getByLabelText(/expand parameters/i));
 
     const product = container.querySelector('#param-product') as HTMLSelectElement;
-    const profile = container.querySelector('#param-profile') as HTMLSelectElement;
+    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
     const version = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
@@ -205,7 +207,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     await user.click(screen.getByLabelText(/expand parameters/i));
 
     const product = container.querySelector('#param-product') as HTMLSelectElement;
-    const profile = container.querySelector('#param-profile') as HTMLSelectElement;
+    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
 
     await user.selectOptions(product, 'TAF');
     await user.selectOptions(profile, 'iwxxm_us');
