@@ -14,7 +14,12 @@
 | UAT-003 Login + reload persist | UJ-046 | local :18000 | **pass** | Reload still signed in | product owner |
 | UAT-003 Logout | UJ-003 / F21 | local :18000 | **pass** | Sign out this device; Sign in returns | product owner |
 | UAT-003 Guest convert | UJ-001 / F21 | local :18000 | **pass** | Convert without JWT | product owner |
-| UAT-059..063 | UJ-059..063 | — | deferred | Remainder of converter UAT with 11-verify-impl / 10-e2e (`D-S070-e2`) | — |
+| UAT-059 AHL | UJ-059 | local :18000 | **pass** | T2 + 11 journey approve | product owner |
+| UAT-060 IWXXM product | UJ-060 | local :18000 | **pass** | T2 + 11 journey approve | product owner |
+| UAT-061 Profile | UJ-061 | local :18000 | **pass** | T2 + 11 journey approve | product owner |
+| UAT-062 Bulletin fields | UJ-062 | local :18000 | **pass** | T2 + 11 journey approve | product owner |
+| UAT-063 log_level | UJ-063 | local T0+T2 | **pass** | T0 DEBUG>ERROR + redact; 11 checks-ok | product owner |
+| UAT-059..063 | UJ-059..063 | local :18000 | **pass** | Accepted at 11-verify-impl (`D-S070-e2`) | product owner |
 
 ## Facilitated steps (operator)
 

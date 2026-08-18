@@ -41,7 +41,7 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Next child stage
 
-**11-verify-impl** — 09 PASS (advisories); 10 UJ-059..063 + Auth 001..003 PASS (`D-S070-logout=1a`); UI preview (`D-S070-e2`); promote held
+**12-verify-deploy** — 11 user-approved; staging; H4–H5; promote held
 
 ## Risks / open decisions
 
@@ -49,3 +49,4 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 - `log_level` already on the API as client-echoed process-issue filter; EV-060 also wires **logger verbosity**
 - Quality metrics honor (not redesign) profile/IWXXM product
 - Logout contradiction **resolved** (`D-S070-logout=1a`) — `POST /auth/logout` restored
+- T3/H4–H5 **deferred** (`D-S070-11-t3`) — 12/13
