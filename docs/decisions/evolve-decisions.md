@@ -8,7 +8,7 @@
 **Session**: S070-converter-operator-bugs  
 **Features**: deepen **F7.t** (IWXXM product) + F6/F2/F10/F29/F31; no new top-level Fn  
 **Started**: 2026-08-17  
-**Status**: **in_progress** — M1–M3 08 PASS; M4 T4.2 facilitated Auth UAT (#1006)  
+**Status**: **in_progress** — 09-qa PASS (advisories); 10-e2e UJ-059..063 PASS; Auth logout T2 FAIL  
 **Branch**: `evolve/EV-060-converter-operator-bugs` (base `stage@8755ae87`)  
 **Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
 **Milestone**: GitHub **M0 — Stabilize + operator trust + narrative**  
@@ -38,6 +38,10 @@
 | D-S070-08-vaa | AHL lint keep-whole remainder when no `=` (VAA/TCA/SWXA/VONA); heading-only still INVALID_AHL |
 | D-S070-resume-m4 | Continue recommended: T4.2 facilitated UAT-003 now on local :18000 |
 | D-S070-uat003 | **all-pass** — UAT-003 ACCEPTED 2026-08-18 local :18000 (product owner) |
+| D-S070-phase-d | **1a** — 09-qa + 10-e2e in parallel |
+| D-S070-09-depth | **2a** — delta QA + blocking H0c |
+| D-S070-10-journeys | **3a** — UJ-059..063 + TC-EV060-1006 on local :18000 |
+| D-S070-local-dev | **4a** — restart make-dev `:18000`/`:18001` |
 
 ### Intake decisions
 
@@ -70,9 +74,11 @@
 | 04-tech-plan | 2026-08-17 | EP approved `D-S070-04-plan=1a` |
 | uat Spec / verify-qa Spec | 2026-08-17 | checklists written |
 | Spec→Build | 2026-08-17 | **open** (`D-S070-spec-build=1a`) |
-| 07-build | — | M1–M4 T4.1–T4.3 complete; 08 M4 next |
-| 08-verify-build | 2026-08-18 | M3 PASS; M4 in progress; report `reports/verification-report.md` |
+| 07-build | 2026-08-18 | M1–M4 complete; 08 M4 PASS |
+| 08-verify-build | 2026-08-18 | M4 PASS; report `reports/verification-report.md` |
 | uat Build | 2026-08-18 | T4.2 UAT-003 ACCEPTED local :18000 |
+| 09-qa | 2026-08-18 | PASS (advisories); `reports/qa-report.md`; H0c 6/6 |
+| 10-e2e | 2026-08-18 | UJ-059..063 PASS; TC-EV060-1006-003 FAIL (`POST /auth/logout` 404); `reports/e2e-report.md` |
 
 ### Out of scope
 

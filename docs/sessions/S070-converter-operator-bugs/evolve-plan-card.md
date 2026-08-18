@@ -41,7 +41,7 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Next child stage
 
-**09-qa + 10-e2e** — Phase C complete; 08 M4 PASS; PR #1007 stacks M1–M4; promote held
+**11-verify-impl** — 09 PASS (advisories); 10 UJ-059..063 PASS; Auth logout T2 FAIL vs UAT-003; UI preview (`D-S070-e2`); promote held
 
 ## Risks / open decisions
 

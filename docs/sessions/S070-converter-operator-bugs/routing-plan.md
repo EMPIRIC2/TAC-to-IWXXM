@@ -29,11 +29,11 @@
 |-------|----------|------|--------|-------|
 | 07-build | yes | delta | **completed** | M1–M4 complete; 08 M4 PASS |
 | 08-verify-build | yes | delta | **completed** (M4) | Report `reports/verification-report.md`; Phase C exit |
-| 09-qa | yes | delta | pending | Converter + Auth |
-| 10-e2e | yes | delta | pending | Playwright AHL, product=IWXXM, profile a11y, bulletin fields, Auth |
-| 11-verify-impl | yes | delta | blocked_until_spec_gate | Per-Fn AC; UI preview offer |
-| 12-verify-deploy | yes | delta | blocked_until_spec_gate | Staging |
-| 13-deploy-smoke | yes | delta | blocked_until_spec_gate | `env_role: staging`; promote held |
+| 09-qa | yes | delta | **completed** | `reports/qa-report.md` — PASS (advisories); H0c 6/6 |
+| 10-e2e | yes | delta | **completed** | `reports/e2e-report.md` — UJ-059..063 PASS; TC-EV060-1006-003 FAIL (`/auth/logout` 404) |
+| 11-verify-impl | yes | delta | pending | Per-Fn AC; UI preview offer (`D-S070-e2`) |
+| 12-verify-deploy | yes | delta | pending | Staging |
+| 13-deploy-smoke | yes | delta | pending | `env_role: staging`; promote held |
 | uat (Build) | yes | dual Build | **completed** | T4.2 UAT-003 ACCEPTED local :18000; UAT-059..063 deferred to 11 |
 
 ## Recommended ordered stages

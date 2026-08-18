@@ -80,11 +80,26 @@ test.describe('TC-EV060-1006 — Auth UAT Playwright', () => {
 
     if (E2E_USER_EMAIL && E2E_USER_PASSWORD) {
       await loginAsE2EUser(page);
+      await expect(page.getByTestId('logout-button')).toBeVisible();
       await page.getByTestId('logout-button').click();
-      await page
-        .getByRole('button', { name: /sign out from this device only/i })
-        .click();
+      const localSignOut = page.getByRole('button', {
+        name: /sign out from this device only/i,
+      });
+      await expect(localSignOut).toBeVisible();
+      const logoutResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('/auth/logout') &&
+          response.request().method() === 'POST',
+        { timeout: 15_000 },
+      );
+      await localSignOut.click();
+      const loggedOut = await logoutResponse;
+      expect(
+        loggedOut.ok(),
+        `POST /auth/logout returned ${loggedOut.status()}`,
+      ).toBeTruthy();
       await expect(page.getByTestId('sign-in-button')).toBeVisible({ timeout: 20_000 });
+      await expect(page.getByTestId('logout-button')).toHaveCount(0);
     } else {
       await openPublicConverter(page);
       await expect(page.getByTestId('sign-in-button')).toBeVisible();
