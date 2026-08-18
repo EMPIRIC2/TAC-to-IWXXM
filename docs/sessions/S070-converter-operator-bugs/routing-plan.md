@@ -5,7 +5,7 @@
 **PR target:** `stage` (promote held — `D-S070-e5`)  
 **Branch:** `evolve/EV-060-converter-operator-bugs` @ `stage@8755ae87`  
 **UI preview:** **Remind at 11-verify-impl** (`D-S070-e2`)  
-**Spec→Build gate:** **closed**  
+**Spec→Build gate:** **open** (`D-S070-spec-build=1a`)  
 **Issue order (Build PRs):** #1001 → #1003 → (#1002+#1004+#1005) → #1006
 
 ## Spec-development band
@@ -13,21 +13,21 @@
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | Open S070/EV-060; EV0–EV9 locked recommended |
-| 16-evolve | yes | orchestrate | **in_progress** | Plan card + Phase 0–1; gate closed |
+| 16-evolve | yes | orchestrate | **in_progress** | Spec→Build **open**; 07 M1 #1001 |
 | 01-requirements | yes | delta | **completed** | F7.t + F6/F2/F10/F29/F31; UJ-059..063; api product=iwxxm; report `reports/01-requirements.md` |
-| 02-verify-plan | yes | delta | pending | Gate A after 01 |
+| 02-verify-plan | yes | delta | **completed** | Gate A **PASS** (`D-S070-gateA=1a`); report `reports/02-verify-plan.md` |
 | 03-plan-tooling | no | — | skipped | No new Cursor rules expected |
-| 04-tech-plan | yes | delta | pending | Execution plan M1–M4 (GitHub M0 ≠ plan M1) |
+| 04-tech-plan | yes | delta | **completed** | EP approved `D-S070-04-plan=1a`; M1–M4 four PRs |
 | 05-verify-tech | no | — | skipped | Unless 04 finds deps |
 | 06-tech-tooling | no | — | skipped | No new deps expected |
-| uat (Spec) | yes | dual Spec | pending | Auth/Register + converter AC checklists |
-| verify-qa (Spec) | yes | dual Spec | pending | AHL / IWXXM / profile / log-level cases |
+| uat (Spec) | yes | dual Spec | **completed** | `uat-script.md` Auth + converter AC |
+| verify-qa (Spec) | yes | dual Spec | **completed** | `reports/verify-qa-spec.md` |
 
 ## Build band (blocked until Spec→Build gate)
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 07-build | yes | delta | blocked_until_spec_gate | Four PRs: AHL → IWXXM product → UI params → Auth UAT |
+| 07-build | yes | delta | **in_progress** | M1 #1001 AHL first (`D-S070-spec-build=1a`) |
 | 08-verify-build | yes | delta | blocked_until_spec_gate | After each milestone / before C→D |
 | 09-qa | yes | delta | blocked_until_spec_gate | Converter + Auth |
 | 10-e2e | yes | delta | blocked_until_spec_gate | Playwright AHL, product=IWXXM, profile a11y, bulletin fields, Auth |
@@ -38,7 +38,7 @@
 
 ## Recommended ordered stages
 
-`00 → 16 → 01 → 02 → 04` (+ uat Spec / verify-qa Spec) → ★ Spec→Build **closed** → `07 → 08 → 09 → 10 → 11 → 12 → 13`
+`00 → 16 → 01 → 02 → 04` (+ uat Spec / verify-qa Spec) → ★ Spec→Build **open** → `07 → 08 → 09 → 10 → 11 → 12 → 13`
 
 ## Skip rationale
 

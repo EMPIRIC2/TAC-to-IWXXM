@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
-> **Generated**: 2026-08-09 via `make catalog-regen`  
+> **Generated**: 2026-08-17 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -22,6 +22,7 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `FIR_OR_CTA` | `info` | SIGMET FIR/CTA/UIR airspace identity — research G2 | sigmet | fir, cta, sigmet, g2 | icao-eur-doc-014 — https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf — EUR Doc 014 public; Annex 3 paywall companion |
 | `FM_PRESENT` | `info` | {product} FM change group present — research T2 | taf | change, taf, t2, fm | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |
 | `INTENSITY_CHANGE` | `info` | SIGMET/AIRMET intensity change INTSF/WKN/NC — research G2 / F24 A2 | sigmet | intensity, sigmet, airmet, g2, a2 | icao-eur-doc-014 — https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf — EUR Doc 014 public; Annex 3 paywall companion |
+| `INVALID_AHL` | `error` | WMO abbreviated heading is not valid communications format | — | bulletin, ahl, parse_gate | opmet-guidelines-5th — vendor:documentation/webpages/AHL.asciidoc — WMO AHL TTAAii CCCC YYGGgg communications heading |
 | `INVALID_CLOUD_TOKEN` | `error` | {product} invalid cloud/VV token {token!r} — A3-2 #9 | — | cloud, metar, speci, r4 | codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome — Cloud amount register landing |
 | `INVALID_CNL_SHAPE` | `error` | TAF CNL must end the message — A5-1 #6 | taf | cnl, taf, t1 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |
 | `INVALID_NIL` | `error` | {product} NIL must not include body groups — research R8 / T1 / C1 | — | nil, metar, speci, taf, r8, t1, c1 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |

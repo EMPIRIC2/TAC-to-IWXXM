@@ -8,7 +8,7 @@
 **Session**: S070-converter-operator-bugs  
 **Features**: deepen **F7.t** (IWXXM product) + F6/F2/F10/F29/F31; no new top-level Fn  
 **Started**: 2026-08-17  
-**Status**: **in_progress** — Spec-development; Spec→Build **closed**  
+**Status**: **in_progress** — Build M1 #1001; Spec→Build **open** (`D-S070-spec-build=1a`)  
 **Branch**: `evolve/EV-060-converter-operator-bugs` (base `stage@8755ae87`)  
 **Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
 **Milestone**: GitHub **M0 — Stabilize + operator trust + narrative**  
@@ -33,7 +33,8 @@
 | D-S070-e7 | No new secrets; existing CORS; H0c + H4–H5; no new observability contract |
 | D-S070-e8 | Spec 00→16→01→02→04; Build 07–13 blocked; skip 03/05/06 |
 | D-S070-e9 | Open session; Spec-development only; Spec→Build **closed** |
-| D-S070-board | Epic #1000 Backlog; children Ready |
+| D-S070-spec-build | Open Build; 07+ as routed; M1 #1001 first |
+| D-S070-board | Epic #1000 Backlog; children Ready until 07 |
 
 ### Intake decisions
 
@@ -61,8 +62,12 @@
 | Stage | Completed | Notes |
 |-------|-----------|-------|
 | 00-context | 2026-08-17 | S070 opened; EV0–EV9 recommended |
-| 16-evolve | — | orchestrating; gate closed |
-| 01-requirements | 2026-08-17 | complete; report reports/01-requirements.md |
+| 16-evolve | — | orchestrating; Spec→Build **open** |
+| 02-verify-plan | 2026-08-17 | Gate A PASS (`D-S070-gateA=1a`) |
+| 04-tech-plan | 2026-08-17 | EP approved `D-S070-04-plan=1a` |
+| uat Spec / verify-qa Spec | 2026-08-17 | checklists written |
+| Spec→Build | 2026-08-17 | **open** (`D-S070-spec-build=1a`) |
+| 07-build | — | M1 #1001 in_progress |
 
 ### Out of scope
 

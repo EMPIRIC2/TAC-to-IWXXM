@@ -21,8 +21,8 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Phase split
 
-- Active phase: **Spec-development**
-- Spec→Build gate: **closed**
+- Active phase: **Build**
+- Spec→Build gate: **open** (`D-S070-spec-build=1a`)
 - Preset: **Standard**
 
 ## Spec-development band (00–06)
@@ -41,7 +41,7 @@ Operator converter bugs + IWXXM product pass-through + Auth UAT, tracked by epic
 
 ## Next child stage
 
-**01-requirements** — Spec-band; gate closed; no product code
+**07-build** M1 T1.1 — AHL bulletin quality (#1001); gate open
 
 ## Risks / open decisions
 

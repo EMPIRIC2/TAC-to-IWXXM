@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S070/EV-060 OPEN — Standard Spec-development in_progress @ 02-verify-plan; Spec→Build gate closed; epic #1000 on GitHub M0; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; 01-requirements COMPLETE; next 02-verify-plan"
+overall_status_note: "S070/EV-060 OPEN — Build in_progress @ 07-build M1 #1001; Spec→Build OPEN; epic #1000; branch evolve/EV-060-converter-operator-bugs"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -29,8 +29,8 @@ active_session:
   - F7
   feature_note: "F7.t IWXXM product pass-through + F6/F2/F10/F29/F31 deepen"
   preset: Standard
-  spec_to_build_gate: closed
-  current_stage: 02-verify-plan
+  spec_to_build_gate: open
+  current_stage: 07-build
   started: '2026-08-17'
   started_at: '2026-08-17'
   corpus_cites:
@@ -63,39 +63,61 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    report: docs/sessions/S070-converter-operator-bugs/reports/02-verify-plan.md
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    report: docs/sessions/S070-converter-operator-bugs/reports/04-tech-plan.md
+  - stage: uat (Spec)
+    required: true
+    mode: dual Spec
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    report: docs/sessions/S070-converter-operator-bugs/uat-script.md
+  - stage: verify-qa (Spec)
+    required: true
+    mode: dual Spec
+    status: completed
+    started: '2026-08-17'
+    completed: '2026-08-17'
+    report: docs/sessions/S070-converter-operator-bugs/reports/verify-qa-spec.md
   - stage: 07-build
     required: true
     mode: delta
-    status: blocked_until_spec_gate
+    status: in_progress
+    started: '2026-08-17'
+    note: "M1 #1001 AHL first (D-S070-spec-build=1a)"
   - stage: 08-verify-build
     required: true
     mode: delta
-    status: blocked_until_spec_gate
+    status: pending
   - stage: 09-qa
     required: true
     mode: delta
-    status: blocked_until_spec_gate
+    status: pending
   - stage: 10-e2e
     required: true
     mode: delta
-    status: blocked_until_spec_gate
+    status: pending
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: blocked_until_spec_gate
+    status: pending
   - stage: 12-verify-deploy
     required: true
     mode: delta
-    status: blocked_until_spec_gate
+    status: pending
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: blocked_until_spec_gate
+    status: pending
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -110,8 +132,9 @@ active_session:
     skip_rationale: "No new deps expected"
   decisions:
     D-S070-e9: "Spec-development only; gate closed."
+    D-S070-spec-build: "Open Build; 07+ as routed; M1 #1001 first"
   context_briefs: []
-  note: "OPEN — S070/EV-060; Standard Spec-development @ 02-verify-plan pending; Spec→Build gate closed; 01-requirements COMPLETE; Build band blocked_until_spec_gate; epic #1000; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; prior S069/EV-059 not closed (PR #998 still open on evolve/EV-059); [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
+  note: "OPEN Build; gate open; M1 #1001"
 
 sessions:
 
@@ -17590,6 +17613,39 @@ decisions_log:
   - '1006'
   current_stage: 02-verify-plan
   note: 'OPEN — active_session set; EV-060 in_progress; Spec→Build gate closed'
+
+- id: D-S070-spec-build
+  date: '2026-08-17'
+  timestamp: '2026-08-17'
+  resolved_at: '2026-08-17'
+  session_id: S070-converter-operator-bugs
+  evolve_cycle_id: EV-060
+  skill: 16-evolve
+  skill_id: 16-evolve
+  stage: 07-build
+  category: spec_to_build_gate
+  status: confirmed
+  topic: 'S070/EV-060 Spec→Build gate open — start 07-build M1 #1001'
+  summary: 'Open Build; 07+ as routed; M1 #1001 first'
+  decision: |
+    D-S070-spec-build=1a — Open Spec→Build; start 07-build M1 #1001.
+    Build band unlocked: 07→08→09→10→11→12→13 as routed.
+    active_session.current_stage=07-build; phase_bands.spec_development=completed; phase_bands.build=in_progress.
+    No git commit by workflow-state-manager.
+  user_option: '1a'
+  branch: evolve/EV-060-converter-operator-bugs
+  related_features:
+  - F7
+  related_issues:
+  - '1000'
+  - '1001'
+  - '1002'
+  - '1003'
+  - '1004'
+  - '1005'
+  - '1006'
+  current_stage: 07-build
+  note: 'Spec→Build open; 07-build M1 #1001 in_progress'
 
 - id: D-S069-ci-comment-waiver
   date: '2026-08-17'
@@ -38302,16 +38358,16 @@ evolve_cycles:
   branch: evolve/EV-060-converter-operator-bugs
   branch_base: stage@8755ae87
   branch_status: open
-  current_stage: 02-verify-plan
-  current_stage_status: pending
-  current_stage_note: "Standard Spec-development; 01-requirements COMPLETE; 02-verify-plan pending; Spec→Build gate closed; Build band blocked_until_spec_gate"
-  current_child: 02-verify-plan
-  current_child_stage: 02-verify-plan
-  current_child_stage_status: pending
+  current_stage: 07-build
+  current_stage_status: in_progress
+  current_stage_note: "Build band; 07-build M1 #1001 in_progress; Spec→Build gate open; 02/04 + dual Spec complete"
+  current_child: 07-build
+  current_child_stage: 07-build
+  current_child_stage_status: in_progress
   started: "2026-08-17"
   started_at: "2026-08-17"
   preset: Standard
-  spec_to_build_gate: closed
+  spec_to_build_gate: open
   corpus_cites:
   - '[Corpus: product §F7]'
   - '[Corpus: product §F6]'
@@ -38326,6 +38382,8 @@ evolve_cycles:
   - 01-requirements
   - 02-verify-plan
   - 04-tech-plan
+  - uat (Spec)
+  - verify-qa (Spec)
   - 07-build
   - 08-verify-build
   - 09-qa
@@ -38340,23 +38398,31 @@ evolve_cycles:
   prior_session: S069-ci-schemathesis-mutation
   decisions:
     D-S070-e9: "Spec-development only; gate closed."
+    D-S070-spec-build: "Open Build; 07+ as routed; M1 #1001 first"
   gates:
-    spec_to_build: closed
-    spec_to_build_note: "D-S070-e9 — Spec-development only; gate closed."
+    spec_to_build: open
+    spec_to_build_note: "D-S070-spec-build=1a — Open Build; 07-build M1 #1001 first"
   phase_bands:
     spec_development:
-      status: in_progress
+      status: completed
     build:
-      status: blocked_until_spec_gate
+      status: in_progress
   artifacts:
   - docs/sessions/S070-converter-operator-bugs/session-brief.md
   - docs/sessions/S070-converter-operator-bugs/routing-plan.md
   - docs/sessions/S070-converter-operator-bugs/evolve-plan-card.md
   - docs/sessions/S070-converter-operator-bugs/reports/01-requirements.md
+  - docs/sessions/S070-converter-operator-bugs/reports/02-verify-plan.md
+  - docs/sessions/S070-converter-operator-bugs/reports/04-tech-plan.md
+  - docs/sessions/S070-converter-operator-bugs/reports/execution-plan.md
+  - docs/sessions/S070-converter-operator-bugs/reports/verify-qa-spec.md
+  - docs/sessions/S070-converter-operator-bugs/uat-script.md
+  - docs/sessions/S070-converter-operator-bugs/build-plan-card.md
   - docs/decisions/evolve-decisions.md
   notes:
+  - "2026-08-17 D-S070-spec-build=1a open Build; 07 M1 #1001"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; 01-requirements COMPLETE; 02-verify-plan pending; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
-  note: "OPEN — S070/EV-060; Standard Spec-development @ 02-verify-plan pending; Spec→Build gate closed; epic #1000; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
+  note: "OPEN Build; gate open; M1 #1001; epic #1000; [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]"
 - id: EV-059
   title: "F34 CI Schemathesis (#727) + mutation testing (#874); close epic #841"
   topic: "F34 Schemathesis + mutation; close #841"
@@ -50502,9 +50568,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-060-converter-operator-bugs
-  note: "S070/EV-060 OPEN — branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; Standard Spec-development @ 02-verify-plan; Spec→Build gate closed; 01-requirements COMPLETE; prior S069/EV-059 not closed (PR #998 open on evolve/EV-059); no git commit by workflow-state-manager"
+  note: "S070/EV-060 OPEN — branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; Build in_progress @ 07-build M1 #1001; Spec→Build gate open; prior S069/EV-059 not closed (PR #998 open on evolve/EV-059); no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-17 D-S070-spec-build=1a — Spec→Build OPEN; 07-build M1 #1001 in_progress; 02/04 + dual Spec complete; branch evolve/EV-060-converter-operator-bugs @ stage@8755ae87; no git commit by workflow-state-manager"
   - "2026-08-17 D-S070-e9 — open_session S070/EV-060; Standard Spec-development only; Spec→Build gate closed; branch evolve/EV-060-converter-operator-bugs @ origin/stage@8755ae87; session_counter=70; evolve_cycle_counter=60; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-ci-comment-waiver=2 + D-S069-github-outage-bypass — waive Quality+Coverage sticky comment failures on run 32049951760; substantive tests green on PR #998; bypass GitHub API mutations until user says otherwise; Lean 08-verify-build in_progress; 07-build progressing; session open; no merge; no git commit by workflow-state-manager"
   - "2026-08-17 D-S069-m2-pr=1 success — PR #998 open → stage (https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998); tip 78b0b082; closes #874; CI/CD 32049951760 in_progress; T2.3/07-build in_progress; Spec→Build open; next Lean 08 after CI green (merge needs user approval); no git commit by workflow-state-manager"
