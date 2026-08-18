@@ -1934,6 +1934,29 @@ export function FileConverter({
                     <option value="VONA">VONA</option>
                     <option value="IWXXM">IWXXM</option>
                   </select>
+                  <Label
+                    htmlFor="param-profile"
+                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    Profile
+                  </Label>
+                  <select
+                    id="param-profile"
+                    aria-label="Profile"
+                    data-testid="profile-type-select"
+                    value={conversionParams.profile}
+                    disabled={isReadOnly}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        profile: e.target.value as IwxxmProfile,
+                      }))
+                    }
+                    className="min-w-[9.5rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="annex3">Annex 3</option>
+                    <option value="iwxxm_us">IWXXM-US</option>
+                  </select>
                   <GoldenExamplesSelect
                     disabled={isReadOnly}
                     onSelectExample={handleLoadGoldenExample}
@@ -2285,29 +2308,7 @@ export function FileConverter({
                 />
                 <AirportDetailsCard icao={conversionParams.issuingCenter} />
 
-                {/* F6.e Product — primary control next to Manual TAC Input (#param-product) */}
-
-                {/* F6.e Profile */}
-                <div>
-                  <Label htmlFor="param-profile" className="dark:text-white mb-2">
-                    Profile
-                  </Label>
-                  <select
-                    id="param-profile"
-                    aria-label="Profile"
-                    value={conversionParams.profile}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        profile: e.target.value as IwxxmProfile,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="annex3">annex3 (International)</option>
-                    <option value="iwxxm_us">iwxxm_us (US extensions)</option>
-                  </select>
-                </div>
+                {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}
 
                 {/* IWXXM Version */}
                 <div>
