@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 + M2 #1012 complete; next M3 #1010; promote held until #1015"
+overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M3 complete; next M4 #1013; promote held until #1015"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -45,11 +45,11 @@ active_session:
   preset: Standard
   spec_to_build_gate: open
   current_stage: 07-build
-  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 + M2 #1012 complete; next M3 #1010; promote held until #1015"
+  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M3 complete; next M4 #1013; promote held until #1015"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
-  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07 in_progress (M1 #1011 + M2 #1012 done, M3 next); 08 M1+M2 PASS; 08→13 pending remainder; skip 03/05/06"
+  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07 in_progress (M1–M3 done, M4 next); 08 M1+M2+M3 PASS; 08→13 pending remainder; skip 03/05/06"
   sessions_index_note: "Active S071/EV-061; archived S070 remains first in sessions[]; do not re-archive S070"
   corpus_cites:
   - '[Corpus: product §F2]'
@@ -75,7 +75,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-18'
-    note: "Spec→Build open; orchestrating Build (M1+M2 done, M3 next)"
+    note: "Spec→Build open; orchestrating Build (M1–M3 done, M4 next)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -125,12 +125,12 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-18'
-    note: "M1 #1011 + M2 #1012 complete; continue M3 #1010 after M2 recorded on PR #1016"
+    note: "M1 #1011 + M2 #1012 + M3 #1010 complete; continue M4 #1013 after M3 recorded on PR #1016"
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
-    note: "M1 PASS (reports/08-verify-build-m1.md); M2 PASS (reports/08-verify-build-m2.md); remaining milestones pending"
+    note: "M1 PASS (reports/08-verify-build-m1.md); M2 PASS (reports/08-verify-build-m2.md); M3 PASS (reports/08-verify-build-m3.md); remaining milestones pending"
   - stage: 09-qa
     required: true
     mode: delta
@@ -52644,16 +52644,16 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-061-pre-promote-ux-catalog
   current_branch_tracking: origin/evolve/EV-061-pre-promote-ux-catalog
-  ahead_of_origin: 2
+  ahead_of_origin: 4
   pushed: false
   pending_commit: true
-  pending_commit_note: "Spec band COMPLETE state (04+verify-qa+uat Spec; D-S071-04-plan=1a); Spec→Build closed pending AskQuestion; this yaml dirty; no git commit by workflow-state-manager"
+  pending_commit_note: "M3 #1010 08-verify-build PASS report + plan card refresh for M4 #1013"
   dirty: true
-  dirty_note: "workflow-state.yaml dirty after Spec-band COMPLETE (D-S071-04-plan=1a + uat/verify-qa Spec); HEAD 9bf0bb77 local not pushed"
-  tip_sha: "9bf0bb77"
-  tip_sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
+  dirty_note: "08-verify-build-m3.md + execution/evolve/build plan cards + this yaml"
+  tip_sha: "5eb14971"
+  tip_sha_full: 5eb14971c9f87a096d042ec05a49b849266e6862
   tip_sha_pushed: false
-  tip_note: "HEAD 9bf0bb77 local; Spec band complete (04+verify-qa+uat Spec); D-S071-04-plan=1a; Spec→Build closed pending AskQuestion"
+  tip_note: "HEAD 5eb14971 [T3.3]; M3 tasks complete; 08 M3 PASS pending this chore commit; next M4 #1013"
   product_tip_sha: null
   product_tip_sha_full: null
   product_tip_note: "do not invent product tip SHA — no new product commit on S071 yet; stage HEAD a1650b01 verified separately as tip_sha"
@@ -52674,10 +52674,12 @@ git_history:
   previous_docs_tip_branch: docs/EV-055-13-deploy-smoke
   previous_docs_tip_pr_number: 986
   evolve_branch: evolve/EV-061-pre-promote-ux-catalog
-  evolve_tip_sha: "9bf0bb77"
-  evolve_tip_sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
+  evolve_tip_sha: "5eb14971"
+  evolve_tip_sha_full: 5eb14971c9f87a096d042ec05a49b849266e6862
   evolve_tip_sha_pushed: false
-  evolve_pr_status: null
+  evolve_pr_status: open
+  evolve_pr_number: 1016
+  evolve_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016
   previous_evolve_branch: evolve/EV-060-converter-operator-bugs
   previous_evolve_tip_sha: "4d29ee0c"
   previous_evolve_tip_sha_full: 4d29ee0c397d09761499afacc1b1ede3e507623b
@@ -52697,9 +52699,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-061-pre-promote-ux-catalog
-  note: "S071/EV-061 Spec band complete (04+verify-qa+uat Spec); D-S071-04-plan=1a; Spec→Build closed pending AskQuestion; tip 9bf0bb77 local; pending_commit dirty; no git commit by workflow-state-manager"
+  note: "S071/EV-061 07-build M1–M3 complete; 08 M3 PASS; next M4 #1013; PR #1016; tip 5eb14971 local ahead 4; promote held until #1015"
 
   notes:
+  - "2026-08-19 08-verify-build M3 PASS — reports/08-verify-build-m3.md; T3.1@7fc0086c T3.2@c7ba58c2 T3.3@5eb14971; next M4 #1013 T4.1; PR #1016; promote held until #1015"
   - "2026-08-18 Spec band COMPLETE — D-S071-04-plan=1a + uat (Spec) + verify-qa (Spec); reports 04-tech-plan.md + uat-script.md + verify-qa-spec.md; Spec→Build closed pending AskQuestion; 07+ blocked_until_spec_gate; no git commit by workflow-state-manager"
   - "2026-08-18 commit 9bf0bb77 — docs: [S071] EV-061 04-tech-plan draft (M1–M6); files_changed 10; pushed=false; 04-tech-plan remains in_progress; Spec→Build closed; no git commit by workflow-state-manager"
   - "2026-08-18 commit 79c6c408 — docs: [S071] EV-061 Gate A PASS — 02-verify-plan complete; files evolve-decisions, product-decisions, 02-verify-plan.md, user-journeys, workflow-state.yaml; pushed=false; 04-tech-plan remains in_progress; Spec→Build closed; no git commit by workflow-state-manager"

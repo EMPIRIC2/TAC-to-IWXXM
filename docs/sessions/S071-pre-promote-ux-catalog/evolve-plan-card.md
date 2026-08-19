@@ -21,7 +21,7 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Phase split
 
-- Active phase: **Build** — M1 #1011
+- Active phase: **Build** — M4 #1013
 - Spec→Build gate: **open** (`D-S071-spec-build=1a`)
 - Preset: **Standard**
 
@@ -35,12 +35,12 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 ## Build band (07–13)
 
 - Order: M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015
-- Active: **M1 #1011** (live bulletin multipart `files`)
+- Active: **M3 #1010 complete** — next **M4 #1013**
 - Deploy intent: **staging**; promote held until #1015
 
 ## Next child stage
 
-07-build M1 T1.1 → T1.2 (#1011); then 08-verify-build + PR to `stage`.
+07-build M4 T4.1 → T4.2 (#1013); then 08-verify-build + stack on PR to `stage`.
 
 ## Risks / open decisions
 

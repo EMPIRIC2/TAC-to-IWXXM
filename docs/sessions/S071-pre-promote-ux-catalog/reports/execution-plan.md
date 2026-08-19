@@ -16,7 +16,7 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (07-build) |
-| **Active milestone** | M3 #1010 — Validate IWXXM readable decode (**tasks complete**; 08-verify-build next) |
+| **Active milestone** | M4 #1013 — Product/Profile + param bars (next after M3 08 PASS) |
 | **Tasks completed** | 9 / 24 |
 | **Stage** | 07-build |
 | **Plan approval** | **approved** `D-S071-04-plan=1a` |
@@ -74,7 +74,7 @@
 
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
-| T4.1 | Test | Red: no-wrap ≥1024px; stack below; a11y labels | pending | — | UJ-066/067 F7.u | TC-EV061-1013-001..003 |
+| T4.1 | Test | Red: no-wrap ≥1024px; stack below; a11y labels | in_progress | — | UJ-066/067 F7.u | TC-EV061-1013-001..003 |
 | T4.2 | Code | Product Type + Profile one bar; mode selects one row; params one row | pending | T4.1 | feature-list F7.u | T4.1 |
 
 #### M5: Lint & validation catalog tab (#1014) — P0
