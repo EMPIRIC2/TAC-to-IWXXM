@@ -130,6 +130,59 @@ describe('DecodePanel', () => {
     );
   });
 
+  it('shows AHL bulletin framing and per-report Code | Explanation rows (TC-EV061-1012-003)', () => {
+    render(
+      <DecodePanel
+        product="METAR"
+        defaultOpen
+        summary="Bulletin SAUS31 KZNY 121200 (2 reports). Station KJFK. Station KLGA."
+        segments={[
+          {
+            start: 0,
+            end: 18,
+            code: 'SAUS31 KZNY 121200',
+            explanation:
+              'WMO abbreviated heading — SAUS31 from KZNY at day-time 121200',
+          },
+          {
+            start: 19,
+            end: 24,
+            code: 'METAR',
+            explanation: 'Report type (routine meteorological aerodrome report)',
+          },
+          {
+            start: 25,
+            end: 29,
+            code: 'KJFK',
+            explanation: 'ICAO station location indicator (KJFK)',
+          },
+          {
+            start: 71,
+            end: 76,
+            code: 'METAR',
+            explanation: 'Report type (routine meteorological aerodrome report)',
+          },
+          {
+            start: 77,
+            end: 81,
+            code: 'KLGA',
+            explanation: 'ICAO station location indicator (KLGA)',
+          },
+        ]}
+        residuals={[]}
+      />,
+    );
+    expect(screen.getByTestId('decode-plain-language')).toHaveTextContent(
+      /Bulletin SAUS31 KZNY 121200/,
+    );
+    expect(screen.getByTestId('decode-plain-language')).toHaveTextContent(/KJFK/);
+    expect(screen.getByTestId('decode-plain-language')).toHaveTextContent(/KLGA/);
+    expect(screen.getByText('SAUS31 KZNY 121200')).toBeInTheDocument();
+    expect(screen.getByText(/abbreviated heading/i)).toBeInTheDocument();
+    expect(screen.getByText('KJFK')).toBeInTheDocument();
+    expect(screen.getByText('KLGA')).toBeInTheDocument();
+  });
+
   it('hides Plain language block when summary is empty', () => {
     render(
       <DecodePanel
