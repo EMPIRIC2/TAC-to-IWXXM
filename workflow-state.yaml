@@ -11132,8 +11132,8 @@ stages:
     session_id: S071-pre-promote-ux-catalog
     evolve_cycle_id: EV-061
     skill_id: 04-tech-plan
-    tip_sha: afda1daf
-    tip_sha_full: afda1daf3089d8080b2cade4b64e699982bac5a4
+    tip_sha: 9bf0bb77
+    tip_sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
     deepen_feature_ids: [F7, F2, F6, F9, F10, F15, F34]
     feature_ids: [F7, F2, F6, F9, F10, F15, F34]
     delta_only: true
@@ -52550,16 +52550,16 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-061-pre-promote-ux-catalog
   current_branch_tracking: origin/evolve/EV-061-pre-promote-ux-catalog
-  ahead_of_origin: 1
+  ahead_of_origin: 2
   pushed: false
   pending_commit: true
-  pending_commit_note: "git_history.commits append for 79c6c408 (02-verify-plan Gate A PASS); 04-tech-plan remains in_progress; this yaml dirty after state-manager update; no git commit by workflow-state-manager"
+  pending_commit_note: "git_history.commits append for 9bf0bb77 (04-tech-plan draft M1–M6); 04-tech-plan remains in_progress; Spec→Build closed; this yaml dirty after state-manager update; no git commit by workflow-state-manager"
   dirty: true
-  dirty_note: "workflow-state.yaml dirty after recording commit 79c6c408 in git_history.commits; HEAD 79c6c408 local not pushed; 04-tech-plan remains in_progress"
-  tip_sha: "79c6c408"
-  tip_sha_full: 79c6c40804822fb117dede5ad3871017924e29b4
+  dirty_note: "workflow-state.yaml dirty after recording commit 9bf0bb77 in git_history.commits; HEAD 9bf0bb77 local not pushed; 04-tech-plan remains in_progress"
+  tip_sha: "9bf0bb77"
+  tip_sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
   tip_sha_pushed: false
-  tip_note: "HEAD 79c6c408 local (02-verify-plan COMPLETE / Gate A PASS); predecessor afda1daf; not pushed; 04-tech-plan remains in_progress"
+  tip_note: "HEAD 9bf0bb77 local (04-tech-plan draft M1–M6); predecessor 79c6c408; not pushed; 04-tech-plan remains in_progress; Spec→Build closed"
   product_tip_sha: null
   product_tip_sha_full: null
   product_tip_note: "do not invent product tip SHA — no new product commit on S071 yet; stage HEAD a1650b01 verified separately as tip_sha"
@@ -52580,8 +52580,8 @@ git_history:
   previous_docs_tip_branch: docs/EV-055-13-deploy-smoke
   previous_docs_tip_pr_number: 986
   evolve_branch: evolve/EV-061-pre-promote-ux-catalog
-  evolve_tip_sha: "79c6c408"
-  evolve_tip_sha_full: 79c6c40804822fb117dede5ad3871017924e29b4
+  evolve_tip_sha: "9bf0bb77"
+  evolve_tip_sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
   evolve_tip_sha_pushed: false
   evolve_pr_status: null
   previous_evolve_branch: evolve/EV-060-converter-operator-bugs
@@ -52603,9 +52603,10 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-061-pre-promote-ux-catalog
-  note: "S071/EV-061 04-tech-plan remains IN_PROGRESS after Gate A PASS; Spec→Build closed; 02 COMPLETE D-S071-gateA=1a; commit 79c6c408 local not pushed; pending_commit dirty; no git commit by workflow-state-manager"
+  note: "S071/EV-061 04-tech-plan remains IN_PROGRESS after 04 draft commit 9bf0bb77; Spec→Build closed; pending D-S071-04-plan; local not pushed; pending_commit dirty; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 commit 9bf0bb77 — docs: [S071] EV-061 04-tech-plan draft (M1–M6); files_changed 10; pushed=false; 04-tech-plan remains in_progress; Spec→Build closed; no git commit by workflow-state-manager"
   - "2026-08-18 commit 79c6c408 — docs: [S071] EV-061 Gate A PASS — 02-verify-plan complete; files evolve-decisions, product-decisions, 02-verify-plan.md, user-journeys, workflow-state.yaml; pushed=false; 04-tech-plan remains in_progress; Spec→Build closed; no git commit by workflow-state-manager"
   - "2026-08-18 02-verify-plan COMPLETE / 04-tech-plan START — S071/EV-061; Gate A PASS D-S071-gateA=1a; C1/M1 modify; M2–M4 approve/defer to 04; report docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md; Spec→Build closed; 16-evolve orchestrating; no git commit by workflow-state-manager"
   - "2026-08-18 02-verify-plan Gate A pending user confirm — S071/EV-061; audit drafted; C1/M1 surgical fixes applied to user-journeys; D-S071-02-c1-pending / D-S071-02-m1-pending; awaiting M2–M4 + Gate A PASS; report docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md; 02 remains in_progress; Spec→Build closed; no git commit by workflow-state-manager"
@@ -53230,11 +53231,11 @@ git_history:
     tracking: origin/evolve/EV-061-pre-promote-ux-catalog
     session_id: S071-pre-promote-ux-catalog
     evolve_cycle_id: EV-061
-    tip_sha: 79c6c408
-    tip_sha_full: 79c6c40804822fb117dede5ad3871017924e29b4
+    tip_sha: 9bf0bb77
+    tip_sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
     tip_sha_pushed: false
-    tip_sha_note: "HEAD 79c6c408 local not pushed; 02-verify-plan COMPLETE / Gate A PASS; 04-tech-plan remains in_progress; predecessor afda1daf"
-    note: "ACTIVE — S071/EV-061 04-tech-plan remains IN_PROGRESS after Gate A PASS; Spec→Build closed; 02 COMPLETE D-S071-gateA=1a; tip 79c6c408 local"
+    tip_sha_note: "HEAD 9bf0bb77 local not pushed; 04-tech-plan draft M1–M6; 04-tech-plan remains in_progress; Spec→Build closed; predecessor 79c6c408"
+    note: "ACTIVE — S071/EV-061 04-tech-plan remains IN_PROGRESS after 04 draft 9bf0bb77; Spec→Build closed; pending D-S071-04-plan; tip 9bf0bb77 local"
 
   - name: docs/S070-13-deploy-smoke
     base: stage@6ef540bc
@@ -54823,6 +54824,31 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 9bf0bb77f489d32d2e61b39f32713c1158099df6
+    short: "9bf0bb77"
+    sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
+    message: "docs: [S071] EV-061 04-tech-plan draft (M1–M6)"
+    branch: evolve/EV-061-pre-promote-ux-catalog
+    stage: 04-tech-plan
+    skill_id: 04-tech-plan
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
+    files_changed:
+      - .github/PULL_REQUEST_TEMPLATE/promote-stage-to-main.md
+      - docs/api-contract.md
+      - docs/decisions/evolve-decisions.md
+      - docs/sessions/S071-pre-promote-ux-catalog/build-plan-card.md
+      - docs/sessions/S071-pre-promote-ux-catalog/evolve-plan-card.md
+      - docs/sessions/S071-pre-promote-ux-catalog/reports/04-tech-plan.md
+      - docs/sessions/S071-pre-promote-ux-catalog/reports/execution-plan.md
+      - docs/sessions/S071-pre-promote-ux-catalog/routing-plan.md
+      - docs/test-plan.md
+      - workflow-state.yaml
+    timestamp: "2026-08-18"
+    pushed: false
+    tip_sha: 9bf0bb77
+    tip_sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
+    note: "04-tech-plan drafted M1 #1011→M6 #1015; pending D-S071-04-plan; Spec→Build closed; local tip not pushed"
   - sha: 79c6c40804822fb117dede5ad3871017924e29b4
     short: "79c6c408"
     sha_full: 79c6c40804822fb117dede5ad3871017924e29b4
