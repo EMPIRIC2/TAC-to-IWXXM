@@ -73,6 +73,9 @@ export interface paths {
         /**
          * Decode Tac Endpoint
          * @description Decode TAC into annotated segments and a plain-language summary.
+         *
+         *     Multi-report abbreviated-heading bulletins are split so each report is decoded
+         *     independently; the heading is a bulletin-framing row, not a leftover dump.
          */
         post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
         delete?: never;
@@ -1351,7 +1354,7 @@ export interface components {
             lint: boolean;
             /**
              * Manual Text
-             * @description Bulletin string
+             * @description Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports. Empty Bulletin ID / Issuing Center uses the heading TTAAii and CCCC.
              * @default
              */
             manual_text: string;
@@ -2919,8 +2922,18 @@ export interface components {
              * @default annex3
              */
             profile: string;
+            /**
+             * Segments
+             * @description Optional item-by-item decode rows (code and explanation) when a readable decode exists. Omitted when there is no decode.
+             */
+            segments?: components["schemas"]["DecodeSegmentModel"][] | null;
             /** Stopped At Layer */
             stopped_at_layer?: string | null;
+            /**
+             * Summary
+             * @description Optional plain-language paragraph of the decoded report when a readable decode exists. Omitted when there is no decode.
+             */
+            summary?: string | null;
             /**
              * Total Issues
              * @default 0
@@ -3357,7 +3370,7 @@ export interface operations {
                     "application/json": components["schemas"]["ConvertBulletinResponse"];
                 };
             };
-            /** @description Empty bulletin (no reports after split) */
+            /** @description Empty bulletin — no TAC reports after the abbreviated heading */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3371,7 +3384,7 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description AHL split failed or missing required fields */
+            /** @description Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed. */
             422: {
                 headers: {
                     [name: string]: unknown;

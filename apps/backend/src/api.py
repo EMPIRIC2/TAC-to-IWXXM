@@ -69,6 +69,7 @@ try:
     from .utilities.abuse_controls import install_abuse_controls
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
+    from .utilities.iwxxm_readable_decode import decode_for_validate
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import (
         install_fastapi_observability,
@@ -126,6 +127,7 @@ except ImportError:
     from utilities.abuse_controls import install_abuse_controls
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
+    from utilities.iwxxm_readable_decode import decode_for_validate
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import (
         install_fastapi_observability,
@@ -1617,51 +1619,63 @@ async def validate_comprehensive(
         )
 
         # Format response (HTTP shape unchanged; package metadata additive)
-        return msgspec_json_response(
-            {
-                "is_valid": result.is_valid,
-                "version": result.version,
-                "profile": profile or "annex3",
-                "layers_run": [layer.name for layer in result.layers_run],
-                "layers_passed": [layer.name for layer in result.layers_passed],
-                "layers_failed": [layer.name for layer in result.layers_failed],
-                "total_issues": len(result.all_issues),
-                "issues": [
+        payload: dict[str, Any] = {
+            "is_valid": result.is_valid,
+            "version": result.version,
+            "profile": profile or "annex3",
+            "layers_run": [layer.name for layer in result.layers_run],
+            "layers_passed": [layer.name for layer in result.layers_passed],
+            "layers_failed": [layer.name for layer in result.layers_failed],
+            "total_issues": len(result.all_issues),
+            "issues": [
+                {
+                    "layer": issue.layer.name,
+                    "level": issue.level.name,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "code": issue.code,
+                }
+                for issue in result.all_issues
+            ],
+            "issues_by_layer": {
+                layer.name: [
                     {
-                        "layer": issue.layer.name,
                         "level": issue.level.name,
                         "message": issue.message,
                         "location": issue.location,
                         "code": issue.code,
                     }
-                    for issue in result.all_issues
-                ],
-                "issues_by_layer": {
-                    layer.name: [
-                        {
-                            "level": issue.level.name,
-                            "message": issue.message,
-                            "location": issue.location,
-                            "code": issue.code,
-                        }
-                        for issue in issues
-                    ]
-                    for layer, issues in result.issues_by_layer.items()
-                },
-                "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
-                "package_ok": pkg_report.ok,
-                "package_issues": [
-                    {
-                        "layer": issue.layer,
-                        "severity": issue.severity,
-                        "message": issue.message,
-                        "location": issue.location,
-                        "code": issue.code,
-                    }
-                    for issue in pkg_report.issues
-                ],
-            }
-        )
+                    for issue in issues
+                ]
+                for layer, issues in result.issues_by_layer.items()
+            },
+            "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
+            "package_ok": pkg_report.ok,
+            "package_issues": [
+                {
+                    "layer": issue.layer,
+                    "severity": issue.severity,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "code": issue.code,
+                }
+                for issue in pkg_report.issues
+            ],
+        }
+        decoded = decode_for_validate(xml_content=xml_content, manual_text=manual_text)
+        if decoded.segments:
+            payload["segments"] = [
+                {
+                    "start": seg.start,
+                    "end": seg.end,
+                    "code": seg.code,
+                    "explanation": seg.explanation,
+                }
+                for seg in decoded.segments
+            ]
+            if decoded.summary:
+                payload["summary"] = decoded.summary
+        return msgspec_json_response(payload)
 
     except HTTPException:
         raise

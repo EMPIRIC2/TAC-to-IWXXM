@@ -371,6 +371,20 @@ class ValidateResponse(BaseModel):
     stopped_at_layer: Optional[str] = None
     package_ok: bool = True
     package_issues: List[PackageIssueModel] = Field(default_factory=list)
+    segments: Optional[List[DecodeSegmentModel]] = Field(
+        default=None,
+        description=(
+            "Optional item-by-item decode rows (code and explanation) when a readable decode exists. "
+            "Omitted when there is no decode."
+        ),
+    )
+    summary: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional plain-language paragraph of the decoded report when a readable decode exists. "
+            "Omitted when there is no decode."
+        ),
+    )
 
 
 class BulletinMetaModel(BaseModel):
