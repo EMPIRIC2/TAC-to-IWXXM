@@ -21,7 +21,7 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Phase split
 
-- Active phase: **Spec-development** (04 drafted; pending plan approval)
+- Active phase: **Spec-development complete** (pending Spec→Build gate)
 - Spec→Build gate: **closed**
 - Preset: **Standard**
 
@@ -39,7 +39,7 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Next child stage
 
-Approve 04 plan → **verify-qa Spec** + **uat Spec** → Spec→Build AskQuestion
+Spec→Build gate AskQuestion (Spec band complete). Dual Spec artifacts written.
 
 ## Risks / open decisions
 

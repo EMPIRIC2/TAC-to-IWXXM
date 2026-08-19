@@ -12,15 +12,15 @@
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | Open S071/EV-061; EV0–EV9 locked |
-| 16-evolve | yes | orchestrate | **in_progress** | Spec→Build **closed**; 04 drafted; dual Spec next after plan approve |
+| 16-evolve | yes | orchestrate | **in_progress** | Spec band complete; Spec→Build **closed** pending gate |
 | 01-requirements | yes | delta | **completed** | Deepen F7/F2/F6/F9/F10/F15/F34; UJs for catalog/AHL/bars/validate |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S071-gateA=1a` |
 | 03-plan-tooling | no | — | skipped | Unless 04 finds Cursor rules |
-| 04-tech-plan | yes | delta | **in_progress** | Execution plan M1–M6; TC stubs; api delta; pending `D-S071-04-plan` |
-| 05-verify-tech | no | — | skipped | Unless 04 finds deps |
-| 06-tech-tooling | no | — | skipped | CI gate may be workflow-only under 04/07 |
-| uat (Spec) | yes | dual Spec | pending | Catalog + AHL + validate UX + bars |
-| verify-qa (Spec) | yes | dual Spec | pending | TC matrix for #1010–#1015 |
+| 04-tech-plan | yes | delta | **completed** | Approved `D-S071-04-plan=1a`; M1–M6 |
+| 05-verify-tech | no | — | skipped | No new deps |
+| 06-tech-tooling | no | — | skipped | CI jobs in M6 / 07 |
+| uat (Spec) | yes | dual Spec | **completed** | `uat-script.md` — sign-off deferred to Build |
+| verify-qa (Spec) | yes | dual Spec | **completed** | `reports/verify-qa-spec.md` |
 
 ## Build band (`blocked_until_spec_gate`)
 

@@ -1,6 +1,6 @@
 # 04-tech-plan — S071 / EV-061 (delta)
 
-**Status:** drafted — pending `D-S071-04-plan`  
+**Status:** **approved** `D-S071-04-plan=1a`  
 **No new deps / no new ADR / no new CORS origins**  
 **Corpus:** [Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: api]
 [Corpus: tests] [Corpus: deploy] [Corpus: decisions §EV-061]
@@ -28,5 +28,4 @@ No new dependencies. CI job names are workflow-only under M6 / 07.
 
 ## Next
 
-Approve plan (`D-S071-04-plan`) → dual-mode Spec `verify-qa` + `uat` → Spec→Build gate
-AskQuestion (**still closed**).
+Plan **approved** (`D-S071-04-plan=1a`). Dual Spec `verify-qa` + `uat` next. Spec→Build **closed** until gate AskQuestion.

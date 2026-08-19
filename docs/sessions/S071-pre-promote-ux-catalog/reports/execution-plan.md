@@ -19,7 +19,7 @@
 | **Active milestone** | (Build) M1 #1011 — after Spec→Build opens |
 | **Tasks completed** | 0 / 24 |
 | **Stage** | 04-tech-plan |
-| **Plan approval** | pending |
+| **Plan approval** | **approved** `D-S071-04-plan=1a` |
 | **Spec→Build gate** | **closed** |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M6 |
 
