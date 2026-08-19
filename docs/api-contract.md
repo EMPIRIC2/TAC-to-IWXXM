@@ -256,7 +256,7 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | code | HTTP | When |
 |------|------|------|
 | `bulletin_split_failed` | 422 | Cannot parse AHL / split reports |
-| `INVALID_AHL` | 400 or 422 | Malformed AHL heading/body (EV-061 / #1012). Prefer this code for operator-facing malformed heading; may coexist with `bulletin_split_failed` |
+| `INVALID_AHL` | 400 or 422 | Malformed AHL heading/body (EV-061 / #1012). Prefer this code for operator-facing malformed heading; engine `bulletin_split_failed` / `invalid_bbb` appear as additive `detail.alias` |
 | `empty_bulletin` | 400 | No reports after split |
 
 **EV-061 / #1011**: Live/clients must post multipart field **`files`** (not `file`). Contract unchanged; harness fix only.
@@ -907,17 +907,16 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 | Endpoint | Change for EV-061? | Notes |
 |----------|--------------------|-------|
 | `POST /api/v1/convert` | **None (wire)** | Unchanged |
-| `POST /api/v1/convert-bulletin` | **Additive codes** | `INVALID_AHL` for malformed heading; `files` field already required (#1011 harness). Decode/convert e2e is #1012 |
+| `POST /api/v1/convert-bulletin` | **Additive codes** | `INVALID_AHL` for malformed heading (`detail.alias` = `bulletin_split_failed`); `files` field already required (#1011 harness). Decode/convert e2e is #1012 |
 | `POST /api/v1/lint-tac` | **None (wire)** | Unchanged |
 | `GET /api/v1/lint-issue-catalog` | **Additive fields + content** | IWXXM validation rows (`family=iwxxm`); `source_type` / `status` / `semantic_identifier` / `last_verified` / `replacement_url`. No new route. #1014 |
-| `POST /api/v1/decode-tac` | **None (wire)** | AHL decode may reuse this or bulletin framing + per-report segments (#1012) |
+| `POST /api/v1/decode-tac` | **None (wire)** | AHL bulletins reuse this route: bulletin framing + per-report segments (#1012) |
 | `POST /api/v1/validate` | **Additive optional** | `segments` / `summary` (F9 shape) when Validate IWXXM still produces decode (#1010) |
 | FE catalog tab | **New page** | Top-level nav; consumes catalog GET; H4–H5 when FE ships |
 | FE Product/Profile bars | **None (HTTP)** | Layout only (#1013) |
 | Dissemination / auth / sessions | **None** | Unchanged |
 | CI promote | **N/A HTTP** | #1015 required checks — not an API change |
 
-**Breaking changes**: None required. Additive fields only (`D-S071-api`). Document if a code
-rename from `bulletin_split_failed` → `INVALID_AHL` is treated as alias vs replace in 07.
+**Breaking changes**: None required. Additive fields only (`D-S071-api`). `INVALID_AHL` is the operator-facing convert-bulletin code for malformed heading; `bulletin_split_failed` is retained as `detail.alias` (`D-S071-ahl-code`).
 
 - S071 / EV-061 (2026-08-18): #1010–#1015 endpoint review (`D-S071-api`).

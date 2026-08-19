@@ -23,10 +23,10 @@ report and convert-bulletin succeeds; malformed heading/body yields clear `INVAL
 
 ## In scope (this batch — M2)
 
-- [ ] T2.1 — Test — Red golden multi-METAR decode + convert; malformed `INVALID_AHL` — Spec: UJ-065 TC-EV061-1012-001..004
-- [ ] T2.2 — Code — AHL split/decode: per-report F9 rows + convert-bulletin success — Spec: feature-list F6 EV-061
-- [ ] T2.3 — Code — Malformed AHL → `INVALID_AHL` / `empty_bulletin` (no silent 200) — Spec: [Corpus: api]
-- [ ] T2.4 — Docs — OpenAPI / operator copy for AHL errors (no internal doc refs) — Spec: [Corpus: api] EV-048
+- [x] T2.1 — Test — Red golden multi-METAR decode + convert; malformed `INVALID_AHL` — Spec: UJ-065 TC-EV061-1012-001..004
+- [x] T2.2 — Code — AHL split/decode: per-report F9 rows + convert-bulletin success — Spec: feature-list F6 EV-061
+- [x] T2.3 — Code — Malformed AHL → `INVALID_AHL` / `empty_bulletin` (no silent 200) — Spec: [Corpus: api]
+- [x] T2.4 — Docs — OpenAPI / operator copy for AHL errors (no internal doc refs) — Spec: [Corpus: api] EV-048
 
 ## Out of scope (explicit)
 

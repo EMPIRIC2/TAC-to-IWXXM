@@ -46,6 +46,7 @@ Report: `docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md`
 | D-S071-api | Additive: `INVALID_AHL`; validate `segments`/`summary`; catalog fields on existing GET. No new catalog endpoint |
 | D-S071-cors | No new origins; H4–H5 in 12/13 |
 | D-S071-ci | Restore lint/typecheck CI + full E2E as required on `stage`→`main` (plus unit + Staging gate) |
+| D-S071-ahl-code | Prefer `INVALID_AHL` for malformed convert-bulletin heading; keep `bulletin_split_failed` as `detail.alias` (additive, not a rename) |
 
 Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-card.md`  
 **Approved:** `D-S071-04-plan=1a` (2026-08-18)

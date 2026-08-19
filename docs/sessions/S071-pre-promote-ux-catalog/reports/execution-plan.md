@@ -16,8 +16,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (07-build) |
-| **Active milestone** | M2 #1012 — AHL decode + convert-bulletin |
-| **Tasks completed** | 2 / 24 |
+| **Active milestone** | M2 #1012 — AHL decode + convert-bulletin (**tasks complete**; 08-verify-build next) |
+| **Tasks completed** | 6 / 24 |
 | **Stage** | 07-build |
 | **Plan approval** | **approved** `D-S071-04-plan=1a` |
 | **Spec→Build gate** | **open** (`D-S071-spec-build=1a`) |
@@ -57,10 +57,10 @@
 
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
-| T2.1 | Test | Red golden multi-METAR decode + convert; malformed `INVALID_AHL` | in_progress | — | [Corpus: product §F6] UJ-065 | TC-EV061-1012-001..004 |
-| T2.2 | Code | AHL split/decode: per-report F9 rows + convert-bulletin success | pending | T2.1 | feature-list F6 EV-061 | T2.1 |
-| T2.3 | Code | Malformed AHL → clear `INVALID_AHL` / `empty_bulletin` (no silent 200) | pending | T2.1 | [Corpus: api] | TC-EV061-1012-004 |
-| T2.4 | Docs | OpenAPI / operator copy for AHL errors (no internal doc refs) | pending | T2.3 | [Corpus: api] EV-048 | — |
+| T2.1 | Test | Red golden multi-METAR decode + convert; malformed `INVALID_AHL` | completed | — | [Corpus: product §F6] UJ-065 | TC-EV061-1012-001..004 |
+| T2.2 | Code | AHL split/decode: per-report F9 rows + convert-bulletin success | completed | T2.1 | feature-list F6 EV-061 | T2.1 |
+| T2.3 | Code | Malformed AHL → clear `INVALID_AHL` / `empty_bulletin` (no silent 200) | completed | T2.1 | [Corpus: api] | TC-EV061-1012-004 |
+| T2.4 | Docs | OpenAPI / operator copy for AHL errors (no internal doc refs) | completed | T2.3 | [Corpus: api] EV-048 | — |
 
 #### M3: Validate IWXXM readable decode (#1010) — P0
 
