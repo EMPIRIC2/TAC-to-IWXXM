@@ -90,3 +90,8 @@
 | 2026-08-03 | C1–C5 | modified | D-S038-02-batch-c=1 — fix stale F21 leftovers (config/spec/feature-list/api/UJ/TC-LIVE) |
 | 2026-08-03 | M1–M3 | approved | D-S038-02-batch-c=1 — ADR-033 Proposed; Alembic+JWT draft until 04 |
 | 2026-08-03 | D-S038-02-phase-a | approved | Gate A PASS → 04-tech-plan (03 skipped Standard) |
+| 2026-08-18 | EV061-H1–10 | auto-approved | 10 high-confidence EV-061 deepen locks (S071 02-verify-plan) |
+| 2026-08-18 | C1 | modified | D-S071-02-c1 — journeys header: UJ-068 links resolved / #1014 unblocked |
+| 2026-08-18 | M1 | modified | D-S071-02-m1 — UJ-067 includes H4–H5 |
+| 2026-08-18 | M2–M4 | approved | D-S071-02-m2/m3/m4 — TC detail + api-contract + catalog schema → 04 |
+| 2026-08-18 | D-S071-gateA | approved | Gate A PASS → 04-tech-plan; Spec→Build closed |

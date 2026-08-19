@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-18 (S071 / EV-061 UJ-064..068 pre-promote; catalog UJ-068 blocked on link crawl)
+> **Last updated**: 2026-08-18 (S071 / EV-061 UJ-064..068 pre-promote; catalog UJ-068 links resolved / #1014 unblocked)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -83,7 +83,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-064 | Validate IWXXM shows item-by-item readable decode | apps/frontend | F2/F9/F10 deepen (EV-061 / #1010) | T0 / T2 / **T3** / H4–H5 |
 | UJ-065 | AHL bulletin decode + convert end-to-end | apps/frontend / API | F6/F7 deepen (EV-061 / #1012) | T0 / T2 / **T3** / H4–H5 |
 | UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
-| UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** |
+| UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
@@ -1097,7 +1097,7 @@ product/profile; optional Bulletin ID / Issuing Center. Golden: `SAUS31 KZNY` mu
 2. Confirm parameters share one centered/aligned bar with mode chrome.
 
 **Acceptance**: feature-list F7.u / #1013; TC-EV061-1013-*.
-**Tier: T0 / T2 / T3**. [Corpus: product §F7]
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7]
 
 ---
 
@@ -2127,5 +2127,5 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
   pass-through (#1003); UJ-061 profile picker (#1002); UJ-062 bulletin fields (#1005);
   UJ-063 log_level (#1004); deepen UJ-003/046 Auth UAT (#1006)
 - S071 / EV-061 (2026-08-18): UJ-064 validate readable decode (#1010); UJ-065 AHL decode+convert
-  (#1012); UJ-066/067 Product/Profile + param bars (#1013); UJ-068 catalog tab (#1014, link
-  crawl blocked); UJ-DEV-009 stage→main full gate (#1015)
+  (#1012); UJ-066/067 Product/Profile + param bars (#1013); UJ-068 catalog tab (#1014, links
+  resolved / unblocked); UJ-DEV-009 stage→main full gate (#1015)

@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "S071/EV-061 02-verify-plan IN_PROGRESS; 01-requirements COMPLETE 2026-08-18; 16-evolve orchestrating; spec_to_build_gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ afda1daf; epic #1009 + #1010–#1015; prior S070/EV-060 CLOSED on stage @ 6ef540bc; promote held"
+overall_status_note: "04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -44,8 +44,11 @@ active_session:
   feature_note: "Deepen only — no new top-level Fn"
   preset: Standard
   spec_to_build_gate: closed
-  current_stage: 02-verify-plan
-  current_stage_note: "02-verify-plan IN_PROGRESS — S071/EV-061 Gate A; 01-requirements COMPLETE 2026-08-18; 16-evolve orchestrating; spec_to_build_gate closed"
+  current_stage: 04-tech-plan
+  current_stage_note: "04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed"
+  gate_a: PASS
+  gate_a_status: pass
+  gate_a_decision: D-S071-gateA=1a
   routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07→13 blocked_until_spec_gate; skip 03/05/06"
   sessions_index_note: "Active S071/EV-061; archived S070 remains first in sessions[]; do not re-archive S070"
   corpus_cites:
@@ -72,7 +75,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-18'
-    note: "Orchestrating — 02-verify-plan IN_PROGRESS; 01-requirements COMPLETE; spec_to_build_gate closed"
+    note: "Orchestrating — 04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed; report reports/02-verify-plan.md"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -84,13 +87,19 @@ active_session:
   - stage: 02-verify-plan
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-18'
-    note: "IN_PROGRESS — Gate A; 01 digest approved; 16-evolve remains orchestrator"
+    completed: '2026-08-18'
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+    gate_a_status: pass
+    gate_a_decision: D-S071-gateA=1a
+    note: "COMPLETE — Gate A PASS; C1/M1 applied; M2–M4 deferred/approved to 04; report reports/02-verify-plan.md; D-S071-gateA=1a; spec_to_build_gate closed"
   - stage: 04-tech-plan
     required: true
     mode: delta
-    status: pending
+    status: in_progress
+    started: '2026-08-18'
+    note: "IN_PROGRESS after Gate A PASS; Spec→Build closed"
   - stage: uat (Spec)
     required: true
     mode: dual Spec
@@ -158,8 +167,14 @@ active_session:
     D-S071-e8: "Spec 00→16→01→02→04 + dual Spec; Build 07→13 blocked; skip 03/05/06"
     D-S071-e9: "Spec-development only; spec_to_build_gate closed"
     D-S071-links-resolve: "3-tier source model; semantic IDs OK; verified operator hrefs; #1014 unblocked"
+    D-S071-02-c1: "modify — journeys header + changelog → links resolved / #1014 unblocked"
+    D-S071-02-m1: "modify — UJ-067 index + body → include H4–H5"
+    D-S071-02-m2: "approve — Reserve TC-EV061-* IDs; detail in 04"
+    D-S071-02-m3: "approve — Defer api-contract delta to 04"
+    D-S071-02-m4: "approve — Spec UI minimum now; richer catalog schema in 04/Build"
+    D-S071-gateA: "1a — Gate A PASS; C1/M1 applied; M2–M4 deferred/approved to 04; proceed 04-tech-plan; Spec→Build stays closed"
   context_briefs: []
-  note: "OPEN — S071/EV-061 02-verify-plan IN_PROGRESS; 01-requirements COMPLETE 2026-08-18; 16-evolve orchestrating; spec_to_build_gate closed; branch @ afda1daf; [Corpus: product §F7] [Corpus: decisions §EV-061]"
+  note: "OPEN — 04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed; branch @ afda1daf; [Corpus: product §F7] [Corpus: decisions §EV-061]"
 
 sessions:
 
@@ -10123,10 +10138,12 @@ stages:
     prior_status: completed
     prior_completed: '2026-08-09'
   02-verify-plan:
-    status: in_progress
+    status: completed
     mode: delta
     started: '2026-08-18'
     started_at: '2026-08-18'
+    completed: '2026-08-18'
+    completed_at: '2026-08-18'
     session_id: S071-pre-promote-ux-catalog
     evolve_cycle_id: EV-061
     skill_id: 02-verify-plan
@@ -10136,9 +10153,20 @@ stages:
     feature_ids: [F7, F2, F6, F9, F10, F15, F34]
     delta_only: true
     spec_to_build_gate: closed
-    gate_a: pending
-    gate_a_status: pending
-    note: "IN_PROGRESS — Gate A; 01-requirements COMPLETE; D-S071-links-resolve; 16-evolve orchestrating; spec_to_build_gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ afda1daf"
+    gate_a: PASS
+    gate_a_status: pass
+    gate_a_decision: D-S071-gateA=1a
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+    decision_refs:
+    - D-S071-02-c1
+    - D-S071-02-m1
+    - D-S071-02-m2
+    - D-S071-02-m3
+    - D-S071-02-m4
+    - D-S071-gateA
+    artifacts:
+    - docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+    note: "COMPLETE — Gate A PASS; C1/M1 applied; M2–M4 deferred/approved to 04; report docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md; D-S071-gateA=1a; spec_to_build_gate closed; handoff 04-tech-plan; branch evolve/EV-061-pre-promote-ux-catalog @ afda1daf"
     previous_session_id: S067-m0-ready-apex-accumulate-validate
     previous_evolve_cycle_id: EV-057
     previous_status: completed
@@ -10192,10 +10220,40 @@ stages:
         pending: 0
         reviewed: 0
         status: completed
-        note: 'S055 Gate A PASS — D-S055-gateA=1; accept M1/M2/L1'
+        note: 'S071 Gate A PASS — D-S071-gateA=1a; C1/M1 modify; M2–M4 approve/defer to 04'
     current_document:
     current_statement:
     active_session:
+      session_id: S071-pre-promote-ux-catalog
+      evolve_cycle_id: EV-061
+      skill_id: 02-verify-plan
+      status: completed
+      mode: delta
+      started_at: '2026-08-18'
+      started: '2026-08-18'
+      completed_at: '2026-08-18'
+      completed: '2026-08-18'
+      note: 'COMPLETE — Gate A PASS D-S071-gateA=1a; C1/M1 applied; M2–M4 deferred/approved to 04; handoff 04-tech-plan'
+      gate_a: PASS
+      gate_a_status: pass
+      gate_a_decision: D-S071-gateA=1a
+      feature_ids: [F7, F2, F6, F9, F10, F15, F34]
+      deepen_feature_ids: [F7, F2, F6, F9, F10, F15, F34]
+      decision_refs:
+      - D-S071-02-c1
+      - D-S071-02-m1
+      - D-S071-02-m2
+      - D-S071-02-m3
+      - D-S071-02-m4
+      - D-S071-gateA
+      artifacts:
+      - docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+      - docs/sessions/S071-pre-promote-ux-catalog/reports/01-requirements.md
+      - docs/feature-list.md
+      - docs/user-journeys.md
+      - docs/test-plan.md
+      - docs/decisions/evolve-decisions.md
+    prior_active_session_s061:
       session_id: S061-ci-polish-quality-pr-stats
       evolve_cycle_id: EV-052
       skill_id: 02-verify-plan
@@ -11057,21 +11115,36 @@ stages:
       - .cursor/hooks.json
       - .cursor/hooks/feature_drift.py
   04-tech-plan:
-    status: completed
+    status: in_progress
     mode: delta
-    started: '2026-08-15'
-    started_at: '2026-08-15'
-    completed: '2026-08-15'
-    completed_at: '2026-08-15'
-    session_id: S067-m0-ready-apex-accumulate-validate
-    evolve_cycle_id: EV-057
+    started: '2026-08-18'
+    started_at: '2026-08-18'
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
     skill_id: 04-tech-plan
-    tip_sha: 7db2c724
-    tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
-    deepen_feature_ids: [F7, F1, F6, F2, F4]
-    feature_ids: []
+    tip_sha: afda1daf
+    tip_sha_full: afda1daf3089d8080b2cade4b64e699982bac5a4
+    deepen_feature_ids: [F7, F2, F6, F9, F10, F15, F34]
+    feature_ids: [F7, F2, F6, F9, F10, F15, F34]
     delta_only: true
+    spec_to_build_gate: closed
     decision_refs:
+    - D-S071-gateA
+    - D-S071-02-c1
+    - D-S071-02-m1
+    - D-S071-02-m2
+    - D-S071-02-m3
+    - D-S071-02-m4
+    note: "IN_PROGRESS after Gate A PASS; Spec→Build closed; flesh TC-EV061-*, api-contract additive shapes, execution plan + Build Plan Card"
+    artifacts: []
+    previous_session_id: S067-m0-ready-apex-accumulate-validate
+    previous_evolve_cycle_id: EV-057
+    previous_status: completed
+    previous_started: '2026-08-15'
+    previous_completed: '2026-08-15'
+    previous_tip_sha: 7db2c724
+    previous_tip_sha_full: 7db2c7246b57868bb9a0032694bec23f27405305
+    previous_decision_refs:
     - D-S067-04-goal
     - D-S067-04-deps
     - D-S067-04-planmode
@@ -11079,18 +11152,15 @@ stages:
     - D-S067-04-plan
     - D-S067-04-next
     - D-S067-948-impl
-    note: "COMPLETE — D-S067-04-plan=1; EP M1–M3; 05/06 skipped; handoff 07-build awaiting startup; tip 7db2c724"
-    report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
-    artifacts:
-    - docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
-    - docs/sessions/S067-m0-ready-apex-accumulate-validate/build-plan-card.md
-    previous_session_id: S064-quality-metrics-2025-2-followups
-    previous_evolve_cycle_id: EV-055
-    previous_status: completed
-    previous_completed: '2026-08-11'
-    previous_tip_sha: e5714f08
-    previous_tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
-    previous_note: 'S064/EV-055 prior 04-tech-plan completed'
+    previous_note: "COMPLETE — D-S067-04-plan=1; EP M1–M3; 05/06 skipped; handoff 07-build awaiting startup; tip 7db2c724"
+    previous_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/execution-plan.md
+    prior_session_id: S064-quality-metrics-2025-2-followups
+    prior_evolve_cycle_id: EV-055
+    prior_status: completed
+    prior_completed: '2026-08-11'
+    prior_tip_sha: e5714f08
+    prior_tip_sha_full: e5714f088fd0f63e33663feb5d398b833bfb162a
+    prior_note: 'S064/EV-055 prior 04-tech-plan completed'
 
   05-verify-tech:
     status: skipped
@@ -17504,7 +17574,7 @@ stages:
     mode: orchestrator
     session_id: S071-pre-promote-ux-catalog
     evolve_cycle_id: EV-061
-    note: 'OPEN — S071/EV-061 in_progress; 02-verify-plan IN_PROGRESS; 01-requirements COMPLETE; 16-evolve orchestrating; spec_to_build_gate closed; branch @ afda1daf'
+    note: 'OPEN — S071/EV-061 in_progress; 04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed; report reports/02-verify-plan.md; branch @ afda1daf'
     previous_s070_session_id: S070-converter-operator-bugs
     previous_s070_evolve_cycle_id: EV-060
     previous_s070_completed: '2026-08-18'
@@ -17556,9 +17626,9 @@ stages:
     prior_s047_evolve_cycle_id: EV-039
     prior_s047_completed_at: '2026-08-08'
     prior_s047_note: 'COMPLETE — D-S047-close=1; EV-039 closed; PR #891 @ fea30aba; CD 31130303373; closeout docs #939 @ 81701500'
-    current_child_stage: 02-verify-plan
+    current_child_stage: 04-tech-plan
     current_child_stage_status: in_progress
-    current_child_stage_note: 'IN_PROGRESS — S071/EV-061 02-verify-plan Gate A; 01-requirements COMPLETE 2026-08-18; 16-evolve orchestrating'
+    current_child_stage_note: 'IN_PROGRESS — S071/EV-061 04-tech-plan after Gate A PASS; Spec→Build closed; 02-verify-plan COMPLETE 2026-08-18; 16-evolve orchestrating'
     tip_sha: 2c320c45
     tip_sha_full: 2c320c45df0d6616ead41ec90f376e7d5ebb0ce7
     tip_sha_pushed: true
@@ -17908,6 +17978,228 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S071-gateA
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: gate
+  status: confirmed
+  topic: 'S071/EV-061 Gate A PASS'
+  summary: '1a — Gate A PASS; C1/M1 applied; M2–M4 deferred/approved to 04; proceed 04-tech-plan; Spec→Build stays closed'
+  decision: |
+    D-S071-gateA=1a — Gate A PASS (user 2026-08-18).
+    C1/M1 surgical fixes applied and confirmed (modify).
+    M2–M4 approved deferrals to 04-tech-plan.
+    Proceed to 04-tech-plan. Spec→Build remains closed.
+  related_features:
+  - F7
+  - F2
+  - F6
+  - F9
+  - F10
+  - F15
+  - F34
+  related_issues:
+  - '1009'
+  - '1010'
+  - '1011'
+  - '1012'
+  - '1013'
+  - '1014'
+  - '1015'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+  note: '02 COMPLETE; 04-tech-plan IN_PROGRESS; Spec→Build closed; no git commit by workflow-state-manager'
+
+- id: D-S071-02-m4
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: consistency
+  status: confirmed
+  topic: 'S071/EV-061 Gate A M4 — catalog schema depth'
+  summary: 'approve — Spec UI minimum now; richer catalog schema in 04/Build'
+  decision: |
+    D-S071-02-m4 — approve.
+    Spec UI minimum accepted now; richer catalog schema deferred to 04/Build.
+  related_features:
+  - F7
+  - F15
+  related_issues:
+  - '1014'
+  - '1009'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+
+- id: D-S071-02-m3
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: consistency
+  status: confirmed
+  topic: 'S071/EV-061 Gate A M3 — api-contract deferral'
+  summary: 'approve — Defer api-contract delta to 04'
+  decision: |
+    D-S071-02-m3 — approve.
+    Defer api-contract EV-061 shapes to 04-tech-plan.
+  related_features:
+  - F7
+  - F2
+  related_issues:
+  - '1009'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+
+- id: D-S071-02-m2
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: consistency
+  status: confirmed
+  topic: 'S071/EV-061 Gate A M2 — TC-EV061-* detail'
+  summary: 'approve — Reserve TC-EV061-* IDs; detail in 04'
+  decision: |
+    D-S071-02-m2 — approve.
+    Reserve TC-EV061-* IDs now; detailed sections in 04-tech-plan.
+  related_features:
+  - F7
+  related_issues:
+  - '1009'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+
+- id: D-S071-02-c1
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: consistency
+  status: confirmed
+  topic: 'S071/EV-061 Gate A C1 — journeys header vs D-S071-links-resolve'
+  summary: 'modify — journeys header + changelog → links resolved / #1014 unblocked'
+  decision: |
+    D-S071-02-c1 — modify (resolved from D-S071-02-c1-pending).
+    Stale journeys header “UJ-068 blocked on link crawl” contradicted D-S071-links-resolve.
+    Surgical fix applied to docs/user-journeys.md (header + changelog → links resolved / #1014 unblocked).
+    User confirmed modify. Spec→Build remains closed.
+  related_features:
+  - F7
+  - F15
+  related_issues:
+  - '1014'
+  - '1009'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+  note: 'Resolved; Gate A PASS; 02 COMPLETE'
+
+- id: D-S071-02-m1
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: consistency
+  status: confirmed
+  topic: 'S071/EV-061 Gate A M1 — UJ-067 H4–H5 tier'
+  summary: 'modify — UJ-067 index + body → include H4–H5'
+  decision: |
+    D-S071-02-m1 — modify (resolved from D-S071-02-m1-pending).
+    UJ-067 missing H4–H5 vs test-plan UJ-066/067 connectivity row.
+    Surgical fix applied to docs/user-journeys.md (index + body tier now include H4–H5).
+    User confirmed modify. Spec→Build remains closed.
+  related_features:
+  - F7
+  related_issues:
+  - '1013'
+  - '1009'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+  note: 'Resolved; Gate A PASS; 02 COMPLETE'
+
+- id: D-S071-02-c1-pending
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: consistency
+  status: completed
+  superseded_by: D-S071-02-c1
+  topic: 'S071/EV-061 Gate A C1 — journeys header vs D-S071-links-resolve'
+  summary: 'completed/resolved as D-S071-02-c1 modify'
+  decision: |
+    D-S071-02-c1-pending — 02-verify-plan Gate A medium/low C1.
+    Stale journeys header “UJ-068 blocked on link crawl” contradicted D-S071-links-resolve.
+    Surgical fix applied to docs/user-journeys.md (header + changelog → links resolved / #1014 unblocked).
+    Resolved as D-S071-02-c1 modify. Spec→Build remains closed.
+  related_features:
+  - F7
+  - F15
+  related_issues:
+  - '1014'
+  - '1009'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+  note: 'Resolved → D-S071-02-c1 modify; Gate A PASS'
+
+- id: D-S071-02-m1-pending
+  date: '2026-08-18'
+  timestamp: '2026-08-18'
+  resolved_at: '2026-08-18'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 02-verify-plan
+  skill_id: 02-verify-plan
+  stage: 02-verify-plan
+  category: consistency
+  status: completed
+  superseded_by: D-S071-02-m1
+  topic: 'S071/EV-061 Gate A M1 — UJ-067 H4–H5 tier'
+  summary: 'completed as D-S071-02-m1 modify'
+  decision: |
+    D-S071-02-m1-pending — 02-verify-plan Gate A medium M1.
+    UJ-067 missing H4–H5 vs test-plan UJ-066/067 connectivity row.
+    Surgical fix applied to docs/user-journeys.md (index + body tier now include H4–H5).
+    Resolved as D-S071-02-m1 modify. Spec→Build remains closed.
+  related_features:
+  - F7
+  related_issues:
+  - '1013'
+  - '1009'
+  current_stage: 04-tech-plan
+  report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+  note: 'Resolved → D-S071-02-m1 modify; Gate A PASS'
 
 - id: D-S071-links-resolve
   date: '2026-08-18'
@@ -35379,6 +35671,27 @@ decisions_log:
   related_issues: ['823']
   related_decisions: ['D-S036-04-batch-1', 'D-S036-04-batch-2']
 artifacts:
+- path: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+  type: session-report
+  kind: verify-plan
+  stage: 02-verify-plan
+  skill_id: 02-verify-plan
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  created_at: '2026-08-18'
+  updated_at: '2026-08-18'
+  status: completed
+  gate_a: PASS
+  gate_a_status: pass
+  gate_a_decision: D-S071-gateA=1a
+  decision_refs:
+  - D-S071-02-c1
+  - D-S071-02-m1
+  - D-S071-02-m2
+  - D-S071-02-m3
+  - D-S071-02-m4
+  - D-S071-gateA
+  note: 'S071/EV-061 02-verify-plan COMPLETE — Gate A PASS D-S071-gateA=1a; C1/M1 applied; M2–M4 deferred/approved to 04; Spec→Build closed'
 - path: docs/sessions/S070-converter-operator-bugs/reports/deploy-smoke.md
   type: session-report
   kind: deploy-smoke
@@ -39501,13 +39814,13 @@ evolve_cycles:
   tip_sha_full: afda1daf3089d8080b2cade4b64e699982bac5a4
   tip_sha_pushed: false
   tip_sha_note: "HEAD afda1daf local (01-requirements COMPLETE); catalog source links + workflow-state pending parent push; predecessor d37e450e pushed"
-  current_stage: 02-verify-plan
+  current_stage: 04-tech-plan
   current_stage_status: in_progress
-  current_stage_note: "02-verify-plan IN_PROGRESS — Gate A; 01-requirements COMPLETE 2026-08-18; 16-evolve orchestrating; spec_to_build_gate closed"
-  current_child: 02-verify-plan
-  current_child_stage: 02-verify-plan
+  current_stage_note: "04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed"
+  current_child: 04-tech-plan
+  current_child_stage: 04-tech-plan
   current_child_stage_status: in_progress
-  current_child_note: "02-verify-plan IN_PROGRESS; Gate A pending; 01-requirements COMPLETE"
+  current_child_note: "04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed; 02 COMPLETE D-S071-gateA=1a"
   active_milestone: null
   active_task: null
   decision_pending: null
@@ -39559,13 +39872,22 @@ evolve_cycles:
     D-S071-e8: "Spec 00→16→01→02→04 + dual Spec; Build 07→13 blocked; skip 03/05/06"
     D-S071-e9: "Spec-development only; spec_to_build_gate closed"
     D-S071-links-resolve: "3-tier source model; semantic IDs OK; verified operator hrefs; #1014 unblocked"
+    D-S071-02-c1: "modify — journeys header + changelog → links resolved / #1014 unblocked"
+    D-S071-02-m1: "modify — UJ-067 index + body → include H4–H5"
+    D-S071-02-m2: "approve — Reserve TC-EV061-* IDs; detail in 04"
+    D-S071-02-m3: "approve — Defer api-contract delta to 04"
+    D-S071-02-m4: "approve — Spec UI minimum now; richer catalog schema in 04/Build"
+    D-S071-gateA: "1a — Gate A PASS; C1/M1 applied; M2–M4 deferred/approved to 04; proceed 04-tech-plan; Spec→Build stays closed"
   gates:
     spec_to_build: closed
     spec_to_build_note: "D-S071-e9 — Spec-development only; Build 07+ blocked_until_spec_gate"
+    gate_a: PASS
+    gate_a_status: pass
+    gate_a_decision: D-S071-gateA=1a
   phase_bands:
     spec_development:
       status: in_progress
-      note: "02-verify-plan IN_PROGRESS Gate A; 01-requirements COMPLETE 2026-08-18"
+      note: "04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed"
     build:
       status: blocked_until_spec_gate
   stages:
@@ -39576,17 +39898,24 @@ evolve_cycles:
     16-evolve:
       status: in_progress
       started: '2026-08-18'
-      note: "Orchestrating — 02-verify-plan IN_PROGRESS; 01-requirements COMPLETE"
+      note: "Orchestrating — 04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed"
     01-requirements:
       status: completed
       started: '2026-08-18'
       completed: '2026-08-18'
       report: docs/sessions/S071-pre-promote-ux-catalog/reports/01-requirements.md
     02-verify-plan:
+      status: completed
+      started: '2026-08-18'
+      completed: '2026-08-18'
+      report: docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md
+      gate_a_status: pass
+      gate_a_decision: D-S071-gateA=1a
+      note: "COMPLETE — Gate A PASS; C1/M1 applied; M2–M4 deferred/approved to 04; D-S071-gateA=1a"
+    04-tech-plan:
       status: in_progress
       started: '2026-08-18'
-    04-tech-plan:
-      status: pending
+      note: "IN_PROGRESS after Gate A PASS; Spec→Build closed"
     07-build:
       status: pending
       note: blocked_until_spec_gate
@@ -52023,9 +52352,11 @@ git_history:
   main_tip_sha: d0a51f5a
   main_tip_sha_full: d0a51f5a863daac91a2cac5ca545f4d5459baac8
   recommended_branch: evolve/EV-061-pre-promote-ux-catalog
-  note: "S071/EV-061 02-verify-plan IN_PROGRESS — 01-requirements COMPLETE; 16-evolve orchestrating; spec_to_build_gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ afda1daf local; pending_commit dirty (catalog source links + this yaml); no git commit by workflow-state-manager"
+  note: "S071/EV-061 04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed; 02 COMPLETE D-S071-gateA=1a; branch evolve/EV-061-pre-promote-ux-catalog @ afda1daf local; pending_commit dirty; no git commit by workflow-state-manager"
 
   notes:
+  - "2026-08-18 02-verify-plan COMPLETE / 04-tech-plan START — S071/EV-061; Gate A PASS D-S071-gateA=1a; C1/M1 modify; M2–M4 approve/defer to 04; report docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md; Spec→Build closed; 16-evolve orchestrating; no git commit by workflow-state-manager"
+  - "2026-08-18 02-verify-plan Gate A pending user confirm — S071/EV-061; audit drafted; C1/M1 surgical fixes applied to user-journeys; D-S071-02-c1-pending / D-S071-02-m1-pending; awaiting M2–M4 + Gate A PASS; report docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md; 02 remains in_progress; Spec→Build closed; no git commit by workflow-state-manager"
   - "2026-08-18 01-requirements COMPLETE — S071/EV-061; report docs/sessions/S071-pre-promote-ux-catalog/reports/01-requirements.md; D-S071-links-resolve; handoff 02-verify-plan Gate A; commit afda1daf local; catalog source links pending parent commit+push successor; pending_commit dirty (this yaml); no git commit by workflow-state-manager"
   - "2026-08-18 01-requirements IN_PROGRESS — S071/EV-061 Spec band started; stages.01-requirements + active_session.current_stage set; 16-evolve orchestrating; commit d37e450e pushed; tip d37e450e; branch tracking origin/evolve/EV-061-pre-promote-ux-catalog; pending_commit dirty (this yaml); no git commit by workflow-state-manager"
   - "2026-08-18 D-S071-e9 — open_session S071/EV-061; Standard Spec-development only; Spec→Build gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01; session_counter=71; evolve_cycle_counter=61; no git commit by workflow-state-manager"
@@ -52651,7 +52982,7 @@ git_history:
     tip_sha_full: afda1daf3089d8080b2cade4b64e699982bac5a4
     tip_sha_pushed: false
     tip_sha_note: "HEAD afda1daf local; catalog source links pending parent push; predecessor d37e450e pushed"
-    note: "ACTIVE — S071/EV-061 02-verify-plan IN_PROGRESS; 01-requirements COMPLETE; 16-evolve orchestrating; spec_to_build_gate closed"
+    note: "ACTIVE — S071/EV-061 04-tech-plan IN_PROGRESS after Gate A PASS; Spec→Build closed; 02 COMPLETE D-S071-gateA=1a; report reports/02-verify-plan.md"
 
   - name: docs/S070-13-deploy-smoke
     base: stage@6ef540bc

@@ -23,6 +23,19 @@
 | D-S071-links | Crawl catalog URLs in Spec; **block Build** on broken links until user searches; normalize official copies OK |
 | D-S071-links-resolve | User research 2026-08-18 — **3-tier source model**; treat `49-2`/`nil` as semantic IDs; operator hrefs → verified landings; IWXXM-US → NWS schemas + vendor pin; **unblock #1014** Spec/Build; mining note `docs/domain/mining/ev061-catalog-source-replacements-2026-08-18.md` |
 
+### 02-verify-plan Gate A — PASS (`D-S071-gateA=1a`)
+
+| ID | Verdict |
+|----|---------|
+| D-S071-02-c1 | Modify — journeys header/changelog: links resolved / #1014 unblocked |
+| D-S071-02-m1 | Modify — UJ-067 tier includes H4–H5 |
+| D-S071-02-m2 | Approve — TC-EV061-* detail deferred to 04 |
+| D-S071-02-m3 | Approve — api-contract delta deferred to 04 |
+| D-S071-02-m4 | Approve — Spec UI minimum; richer catalog schema in 04/Build |
+| D-S071-gateA | **PASS** → 04-tech-plan; Spec→Build stays closed |
+
+Report: `docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md`
+
 ### Prior session closeout
 
 - S070/EV-060 closed; PRs #1007 (product), #1008 (S070 docs), #999 (S069 docs) merged to `stage`
