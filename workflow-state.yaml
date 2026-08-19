@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M3 complete; next M4 #1013; promote held until #1015"
+overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M4 complete; next M5 #1014; promote held until #1015"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -45,11 +45,11 @@ active_session:
   preset: Standard
   spec_to_build_gate: open
   current_stage: 07-build
-  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M3 complete; next M4 #1013; promote held until #1015"
+  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M4 complete; next M5 #1014; promote held until #1015"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
-  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07 in_progress (M1–M3 done, M4 next); 08 M1+M2+M3 PASS; 08→13 pending remainder; skip 03/05/06"
+  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07 in_progress (M1–M4 done, M5 next); 08 M1–M4 PASS; 08→13 pending remainder; skip 03/05/06"
   sessions_index_note: "Active S071/EV-061; archived S070 remains first in sessions[]; do not re-archive S070"
   corpus_cites:
   - '[Corpus: product §F2]'
@@ -125,12 +125,12 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-18'
-    note: "M1 #1011 + M2 #1012 + M3 #1010 complete; continue M4 #1013 after M3 recorded on PR #1016"
+    note: "M1 #1011 + M2 #1012 + M3 #1010 + M4 #1013 complete; continue M5 #1014 after M4 recorded on PR #1016"
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
-    note: "M1 PASS (reports/08-verify-build-m1.md); M2 PASS (reports/08-verify-build-m2.md); M3 PASS (reports/08-verify-build-m3.md); remaining milestones pending"
+    note: "M1 PASS (reports/08-verify-build-m1.md); M2 PASS (reports/08-verify-build-m2.md); M3 PASS (reports/08-verify-build-m3.md); M4 PASS (reports/08-verify-build-m4.md); remaining milestones pending"
   - stage: 09-qa
     required: true
     mode: delta
@@ -52644,16 +52644,16 @@ evolve_cycles:
 git_history:
   current_branch: evolve/EV-061-pre-promote-ux-catalog
   current_branch_tracking: origin/evolve/EV-061-pre-promote-ux-catalog
-  ahead_of_origin: 4
+  ahead_of_origin: 2
   pushed: false
   pending_commit: true
-  pending_commit_note: "M3 #1010 08-verify-build PASS report + plan card refresh for M4 #1013"
+  pending_commit_note: "M4 #1013 08-verify-build PASS report + plan card refresh for M5 #1014"
   dirty: true
-  dirty_note: "08-verify-build-m3.md + execution/evolve/build plan cards + this yaml"
-  tip_sha: "5eb14971"
-  tip_sha_full: 5eb14971c9f87a096d042ec05a49b849266e6862
+  dirty_note: "08-verify-build-m4.md + execution/evolve/build plan cards + this yaml"
+  tip_sha: "e36151f5"
+  tip_sha_full: e36151f50daaf5cf020cd0046585fbc712c28d18
   tip_sha_pushed: false
-  tip_note: "HEAD 5eb14971 [T3.3]; M3 tasks complete; 08 M3 PASS pending this chore commit; next M4 #1013"
+  tip_note: "HEAD e36151f5 [T4.2]; M4 tasks complete; 08 M4 PASS pending this chore commit; next M5 #1014"
   product_tip_sha: null
   product_tip_sha_full: null
   product_tip_note: "do not invent product tip SHA — no new product commit on S071 yet; stage HEAD a1650b01 verified separately as tip_sha"

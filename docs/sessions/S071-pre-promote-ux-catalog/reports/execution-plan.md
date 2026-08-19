@@ -16,7 +16,7 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (07-build) |
-| **Active milestone** | M4 #1013 — Product/Profile + param bars (**tasks complete**; 08-verify-build next) |
+| **Active milestone** | M5 #1014 — Lint & validation catalog tab (next after M4 08 PASS) |
 | **Tasks completed** | 11 / 24 |
 | **Stage** | 07-build |
 | **Plan approval** | **approved** `D-S071-04-plan=1a` |
