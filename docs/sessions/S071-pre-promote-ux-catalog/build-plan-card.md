@@ -20,8 +20,8 @@ Keyboard labels preserved. Promote held until #1015.
 
 ## In scope (this batch — M4)
 
-- [ ] T4.1 — Test — Red: no-wrap ≥1024px; stack below; a11y labels — Spec: UJ-066/067 F7.u
-- [ ] T4.2 — Code — Product Type + Profile one bar; mode selects one row; params one row — Spec: feature-list F7.u
+- [x] T4.1 — Test — Red: no-wrap ≥1024px; stack below; a11y labels — Spec: UJ-066/067 F7.u
+- [x] T4.2 — Code — Product Type + Profile one bar; mode selects one row; params one row — Spec: feature-list F7.u
 
 ## Out of scope (explicit)
 
@@ -33,7 +33,7 @@ T4.1 → T4.2 (TDD)
 
 ## Verify / PR
 
-08-verify-build M4 after T4.2; stack on PR #1016 to `stage`.
+08-verify-build M4 next; stack on PR #1016 to `stage`.
 
 ## Gate
 

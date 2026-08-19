@@ -16,8 +16,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (07-build) |
-| **Active milestone** | M4 #1013 — Product/Profile + param bars (next after M3 08 PASS) |
-| **Tasks completed** | 9 / 24 |
+| **Active milestone** | M4 #1013 — Product/Profile + param bars (**tasks complete**; 08-verify-build next) |
+| **Tasks completed** | 11 / 24 |
 | **Stage** | 07-build |
 | **Plan approval** | **approved** `D-S071-04-plan=1a` |
 | **Spec→Build gate** | **open** (`D-S071-spec-build=1a`) |
@@ -74,8 +74,8 @@
 
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
-| T4.1 | Test | Red: no-wrap ≥1024px; stack below; a11y labels | in_progress | — | UJ-066/067 F7.u | TC-EV061-1013-001..003 |
-| T4.2 | Code | Product Type + Profile one bar; mode selects one row; params one row | pending | T4.1 | feature-list F7.u | T4.1 |
+| T4.1 | Test | Red: no-wrap ≥1024px; stack below; a11y labels | completed | — | UJ-066/067 F7.u | TC-EV061-1013-001..003 |
+| T4.2 | Code | Product Type + Profile one bar; mode selects one row; params one row | completed | T4.1 | feature-list F7.u | T4.1 |
 
 #### M5: Lint & validation catalog tab (#1014) — P0
 

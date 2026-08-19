@@ -1879,46 +1879,56 @@ export function FileConverter({
                   to start fresh.
                 </p>
               )}
-              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <label
-                  htmlFor="manual-input"
-                  className="block text-base font-medium text-gray-900 dark:text-white"
-                >
-                  {inputMode === 'validate_iwxxm'
-                    ? 'Manual IWXXM Input'
-                    : 'Manual TAC Input'}
-                </label>
-                <div className="flex flex-wrap items-center gap-2">
-                  <div
-                    className="flex rounded-md border border-gray-300 dark:border-gray-600"
-                    role="group"
-                    aria-label="Input mode"
-                    data-testid="input-mode-group"
+              <div className="mb-2 flex flex-col gap-2">
+                <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+                  <label
+                    htmlFor="manual-input"
+                    className="block text-base font-medium text-gray-900 dark:text-white"
                   >
-                    {(
-                      [
-                        ['tac', 'TAC report'],
-                        ['ahl_bulletin', 'AHL bulletin'],
-                        ['collect_iwxxm', 'IWXXM COLLECT'],
-                        ['validate_iwxxm', 'Validate IWXXM'],
-                      ] as const
-                    ).map(([value, label]) => (
-                      <button
-                        key={value}
-                        type="button"
-                        data-testid={`input-mode-${value}`}
-                        disabled={isReadOnly}
-                        onClick={() => setInputMode(value)}
-                        className={`px-2 py-1 text-xs ${
-                          inputMode === value
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
+                    {inputMode === 'validate_iwxxm'
+                      ? 'Manual IWXXM Input'
+                      : 'Manual TAC Input'}
+                  </label>
+                  <div
+                    className="flex flex-col gap-2 lg:flex-row lg:flex-nowrap lg:items-center"
+                    data-testid="input-mode-bar"
+                  >
+                    <div
+                      className="flex shrink-0 rounded-md border border-gray-300 dark:border-gray-600"
+                      role="group"
+                      aria-label="Input mode"
+                      data-testid="input-mode-group"
+                    >
+                      {(
+                        [
+                          ['tac', 'TAC report'],
+                          ['ahl_bulletin', 'AHL bulletin'],
+                          ['collect_iwxxm', 'IWXXM COLLECT'],
+                          ['validate_iwxxm', 'Validate IWXXM'],
+                        ] as const
+                      ).map(([value, label]) => (
+                        <button
+                          key={value}
+                          type="button"
+                          data-testid={`input-mode-${value}`}
+                          disabled={isReadOnly}
+                          onClick={() => setInputMode(value)}
+                          className={`px-2 py-1 text-xs whitespace-nowrap ${
+                            inputMode === value
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                </div>
+                <div
+                  className="flex flex-col gap-2 overflow-x-auto rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
+                  data-testid="product-profile-bar"
+                >
                   <Label
                     htmlFor="param-product"
                     className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
@@ -1937,7 +1947,7 @@ export function FileConverter({
                         product: e.target.value as TacProductSelection,
                       }))
                     }
-                    className="min-w-[9.5rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="auto">Auto-detect</option>
                     <option value="AIRMET">AIRMET</option>
@@ -1969,7 +1979,7 @@ export function FileConverter({
                         profile: e.target.value as IwxxmProfile,
                       }))
                     }
-                    className="min-w-[9.5rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="annex3">Annex 3</option>
                     <option value="iwxxm_us">IWXXM-US</option>
@@ -2284,8 +2294,11 @@ export function FileConverter({
                   )}
                 </Button>
               </div>
-              <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
+              <div
+                className="flex flex-col gap-4 overflow-x-auto lg:flex-row lg:flex-nowrap lg:items-end"
+                data-testid="conversion-params-bar"
+              >
+                <div className="min-w-[14rem] shrink-0">
                   <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
                     Bulletin ID
                   </Label>
@@ -2320,7 +2333,7 @@ export function FileConverter({
                     </p>
                   )}
                 </div>
-                <div>
+                <div className="min-w-[14rem] shrink-0">
                   <IcaoAutocomplete
                     label="Issuing Center (ICAO)"
                     id="param-issuing-center"
@@ -2352,16 +2365,18 @@ export function FileConverter({
                     </p>
                   ) : null}
                 </div>
-              </div>
-              <div
-                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
-              >
-                <AirportDetailsCard icao={conversionParams.issuingCenter} />
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
+                  <AirportDetailsCard icao={conversionParams.issuingCenter} />
+                </div>
 
                 {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}
 
                 {/* IWXXM Version */}
-                <div>
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label htmlFor="param-iwxxm-version" className="dark:text-white mb-2">
                     IWXXM Version
                   </Label>
@@ -2385,7 +2400,9 @@ export function FileConverter({
                 </div>
 
                 {/* On Error */}
-                <div>
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label htmlFor="param-on-error" className="dark:text-white mb-2">
                     On Error Behavior
                   </Label>
@@ -2411,7 +2428,9 @@ export function FileConverter({
                 </div>
 
                 {/* Log Level */}
-                <div>
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label htmlFor="param-log-level" className="dark:text-white mb-2">
                     Log Level
                   </Label>
@@ -2441,7 +2460,9 @@ export function FileConverter({
                 </div>
 
                 {/* Validation Options */}
-                <div className="flex flex-col gap-3">
+                <div
+                  className={`flex min-w-[16rem] shrink-0 flex-col gap-3 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label className="dark:text-white">Validation Options</Label>
                   <label className="flex items-center cursor-pointer">
                     <input
