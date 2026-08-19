@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "Spec band complete (04+verify-qa+uat Spec); Spec→Build closed pending gate"
+overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; promote held until #1015"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -43,13 +43,13 @@ active_session:
   - F34
   feature_note: "Deepen only — no new top-level Fn"
   preset: Standard
-  spec_to_build_gate: closed
-  current_stage: 16-evolve
-  current_stage_note: "Spec band complete; Spec→Build closed pending AskQuestion"
+  spec_to_build_gate: open
+  current_stage: 07-build
+  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; 16-evolve orchestrating; promote held until #1015"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
-  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07→13 blocked_until_spec_gate; skip 03/05/06"
+  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07 in_progress (M1 #1011); 08→13 pending; skip 03/05/06"
   sessions_index_note: "Active S071/EV-061; archived S070 remains first in sessions[]; do not re-archive S070"
   corpus_cites:
   - '[Corpus: product §F2]'
@@ -75,7 +75,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-18'
-    note: "Orchestrating — Spec band complete (04+verify-qa+uat Spec); Spec→Build closed pending AskQuestion"
+    note: "Spec→Build open; orchestrating Build M1"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -123,38 +123,39 @@ active_session:
   - stage: 07-build
     required: true
     mode: delta
-    status: pending
-    note: blocked_until_spec_gate
+    status: in_progress
+    started: '2026-08-18'
+    note: "M1 #1011 in progress"
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
-    note: blocked_until_spec_gate
+    note: pending
   - stage: 09-qa
     required: true
     mode: delta
     status: pending
-    note: blocked_until_spec_gate
+    note: pending
   - stage: 10-e2e
     required: true
     mode: delta
     status: pending
-    note: blocked_until_spec_gate
+    note: pending
   - stage: 11-verify-impl
     required: true
     mode: delta
     status: pending
-    note: blocked_until_spec_gate
+    note: pending
   - stage: 12-verify-deploy
     required: true
     mode: delta
     status: pending
-    note: blocked_until_spec_gate
+    note: pending
   - stage: 13-deploy-smoke
     required: true
     mode: delta
     status: pending
-    note: blocked_until_spec_gate
+    note: pending
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -192,9 +193,10 @@ active_session:
     D-S071-cors: "Unchanged"
     D-S071-ci: "Restore lint/typecheck CI + full E2E as required on stage→main"
     D-S071-04-plan: "1a — approve execution plan M1 #1011→M6 #1015 as drafted; dual Spec uat/verify-qa next; Spec→Build stays closed"
+    D-S071-spec-build: "1a — Open Spec→Build; start 07-build M1 (#1011); promote held until #1015"
   decision_pending: null
   context_briefs: []
-  note: "OPEN — Spec band complete (04+verify-qa+uat Spec); D-S071-04-plan=1a; Spec→Build closed pending gate AskQuestion; 07+ blocked_until_spec_gate; [Corpus: product §F7] [Corpus: decisions §EV-061]"
+  note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; promote held until #1015"
 
 sessions:
 
@@ -17612,7 +17614,7 @@ stages:
     mode: orchestrator
     session_id: S071-pre-promote-ux-catalog
     evolve_cycle_id: EV-061
-    note: 'OPEN — S071/EV-061 Spec band complete (04+verify-qa+uat Spec); D-S071-04-plan=1a; Spec→Build closed pending AskQuestion'
+    note: 'Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; promote held until #1015'
     previous_s070_session_id: S070-converter-operator-bugs
     previous_s070_evolve_cycle_id: EV-060
     previous_s070_completed: '2026-08-18'
@@ -40127,20 +40129,20 @@ evolve_cycles:
   tip_sha_full: afda1daf3089d8080b2cade4b64e699982bac5a4
   tip_sha_pushed: false
   tip_sha_note: "HEAD afda1daf local (01-requirements COMPLETE); catalog source links + workflow-state pending parent push; predecessor d37e450e pushed"
-  current_stage: 16-evolve
+  current_stage: 07-build
   current_stage_status: in_progress
-  current_stage_note: "Spec band complete; Spec→Build closed pending AskQuestion"
-  current_child: 16-evolve
-  current_child_stage: 16-evolve
+  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; 16-evolve orchestrating; promote held until #1015"
+  current_child: 07-build
+  current_child_stage: 07-build
   current_child_stage_status: in_progress
-  current_child_note: "WAITING — Spec→Build closed pending AskQuestion; 07+ blocked_until_spec_gate"
-  active_milestone: null
+  current_child_note: "Spec→Build open; orchestrating Build M1 #1011"
+  active_milestone: M1
   active_task: null
   decision_pending: null
   started: "2026-08-18"
   started_at: "2026-08-18"
   preset: Standard
-  spec_to_build_gate: closed
+  spec_to_build_gate: open
   corpus_cites:
   - '[Corpus: product §F2]'
   - '[Corpus: product §F6]'

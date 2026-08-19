@@ -3,7 +3,7 @@
 ## Cycle EV-061 — Pre-promote UX + catalog + AHL + stage→main gate (#1009) (S071)
 
 **Opened:** 2026-08-18 · **Session:** S071-pre-promote-ux-catalog · **Branch:** `evolve/EV-061-pre-promote-ux-catalog` @ `stage@a1650b01`  
-**Preset:** Standard · **Spec→Build gate:** closed · **Promote:** held until #1015
+**Preset:** Standard · **Spec→Build gate:** **open** (`D-S071-spec-build=1a`) · **Promote:** held until #1015
 
 ### Locked intake (EV0–EV9)
 
@@ -54,6 +54,12 @@ Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-c
 
 - verify-qa Spec: `reports/verify-qa-spec.md` — **completed**
 - uat Spec: `uat-script.md` — **completed** (Build sign-off pending)
+
+### Spec→Build gate — OPEN (`D-S071-spec-build=1a`)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-spec-build | **1a** — Open Spec→Build; start 07-build M1 (#1011 live bulletin `file` → `files`); promote held until #1015 |
 
 ### Prior session closeout
 

@@ -21,25 +21,26 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Phase split
 
-- Active phase: **Spec-development complete** (pending Spec→Build gate)
-- Spec→Build gate: **closed**
+- Active phase: **Build** — M1 #1011
+- Spec→Build gate: **open** (`D-S071-spec-build=1a`)
 - Preset: **Standard**
 
 ## Spec-development band (00–06)
 
 - Preset slice: Standard (`01 → 02 → 04`)
-- Stages (ordered): `00 → 16 → 01 → 02 → 04`
-- Dual-mode Spec skills: `uat`, `verify-qa` (next after `D-S071-04-plan`)
+- Stages (ordered): `00 → 16 → 01 → 02 → 04` + dual Spec — **completed**
+- Dual-mode Spec skills: `uat`, `verify-qa` — **completed**
 - Skip: `03`, `05`, `06`
 
-## Build band (07–13) — blocked until gate
+## Build band (07–13)
 
 - Order: M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015
+- Active: **M1 #1011** (live bulletin multipart `files`)
 - Deploy intent: **staging**; promote held until #1015
 
 ## Next child stage
 
-Spec→Build gate AskQuestion (Spec band complete). Dual Spec artifacts written.
+07-build M1 T1.1 → T1.2 (#1011); then 08-verify-build + PR to `stage`.
 
 ## Risks / open decisions
 

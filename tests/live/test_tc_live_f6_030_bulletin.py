@@ -73,7 +73,7 @@ def test_tc_live_f6_030_convert_bulletin(live_api: str, live_token: str | None) 
             f"{live_api}/api/v1/convert-bulletin",
             headers=headers,
             files={
-                "file": ("metar_multi_ahl_bulletin.txt", bulletin, "text/plain"),
+                "files": ("metar_multi_ahl_bulletin.txt", bulletin, "text/plain"),
                 "product": (None, "METAR"),
                 "profile": (None, "annex3"),
                 "iwxxm_version": (None, "2025-2"),

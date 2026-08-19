@@ -5,7 +5,7 @@
 > **Branch**: `evolve/EV-061-pre-promote-ux-catalog`  
 > **Issues**: [#1009](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1009)–[#1015](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1015)  
 > **Build Plan Card**: `docs/sessions/S071-pre-promote-ux-catalog/build-plan-card.md`  
-> **Plan approval**: pending `D-S071-04-plan`
+> **Plan approval**: **approved** `D-S071-04-plan=1a`
 
 **Corpus**: [Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9]
 [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F34] [Corpus: api]
@@ -15,12 +15,12 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Spec-development (04-tech-plan) |
-| **Active milestone** | (Build) M1 #1011 — after Spec→Build opens |
-| **Tasks completed** | 0 / 24 |
-| **Stage** | 04-tech-plan |
+| **Active phase** | Build (07-build) |
+| **Active milestone** | M1 #1011 — live bulletin multipart `files` |
+| **Tasks completed** | 2 / 24 |
+| **Stage** | 07-build |
 | **Plan approval** | **approved** `D-S071-04-plan=1a` |
-| **Spec→Build gate** | **closed** |
+| **Spec→Build gate** | **open** (`D-S071-spec-build=1a`) |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M6 |
 
 ## Tech decisions (intake A — 2026-08-18)
@@ -49,8 +49,8 @@
 
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
-| T1.1 | Test | Assert live harness posts multipart `files` | pending | — | [Corpus: api] [Corpus: tests §TC-LIVE-F6-030] | TC-LIVE-F6-030 |
-| T1.2 | Code | `tests/live/test_tc_live_f6_030_bulletin.py`: `file` → `files` | pending | T1.1 | #1011 | T1.1 |
+| T1.1 | Test | Assert live harness posts multipart `files` | completed | — | [Corpus: api] [Corpus: tests §TC-LIVE-F6-030] | TC-LIVE-F6-030 |
+| T1.2 | Code | `tests/live/test_tc_live_f6_030_bulletin.py`: `file` → `files` | completed | T1.1 | #1011 | T1.1 |
 
 #### M2: AHL decode + convert-bulletin (#1012) — P0
 
@@ -112,9 +112,11 @@ milestone (or stacked). Promote held until #1015 required checks exist.
 
 03 / 05 / 06 — no new Cursor rules or dependencies.
 
-## Dual Spec (after this plan is approved)
+## Dual Spec
 
-- `verify-qa` Spec — TC matrix coverage for TC-EV061-*
-- `uat` Spec — catalog + AHL + validate UX + bars checklists
+- `verify-qa` Spec — **completed** (`reports/verify-qa-spec.md`)
+- `uat` Spec — **completed** (`uat-script.md`; Build sign-off pending)
 
-Then **Spec→Build AskQuestion** (still closed until that gate).
+## Spec→Build
+
+**Open** `D-S071-spec-build=1a` — 07-build M1 in progress; promote held until #1015.

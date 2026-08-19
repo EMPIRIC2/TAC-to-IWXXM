@@ -5,14 +5,14 @@
 **PR target:** `stage` (promote held until #1015)  
 **Branch:** `evolve/EV-061-pre-promote-ux-catalog` @ `stage@a1650b01`  
 **UI preview:** **Remind at 11-verify-impl** (`D-S071-e2`)  
-**Spec→Build gate:** **closed**
+**Spec→Build gate:** **open** (`D-S071-spec-build=1a`)
 
 ## Spec-development band
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | Open S071/EV-061; EV0–EV9 locked |
-| 16-evolve | yes | orchestrate | **in_progress** | Spec band complete; Spec→Build **closed** pending gate |
+| 16-evolve | yes | orchestrate | **in_progress** | Spec→Build **open**; 07-build M1 in progress |
 | 01-requirements | yes | delta | **completed** | Deepen F7/F2/F6/F9/F10/F15/F34; UJs for catalog/AHL/bars/validate |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S071-gateA=1a` |
 | 03-plan-tooling | no | — | skipped | Unless 04 finds Cursor rules |
@@ -22,23 +22,23 @@
 | uat (Spec) | yes | dual Spec | **completed** | `uat-script.md` — sign-off deferred to Build |
 | verify-qa (Spec) | yes | dual Spec | **completed** | `reports/verify-qa-spec.md` |
 
-## Build band (`blocked_until_spec_gate`)
+## Build band
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 07-build | yes | delta | blocked_until_spec_gate | After Spec→Build open |
-| 08-verify-build | yes | delta | blocked_until_spec_gate | |
-| 09-qa | yes | delta | blocked_until_spec_gate | |
-| 10-e2e | yes | delta | blocked_until_spec_gate | Catalog tab + AHL + bars |
-| 11-verify-impl | yes | delta | blocked_until_spec_gate | Non-deployed UI preview |
-| 12-verify-deploy | yes | delta | blocked_until_spec_gate | |
-| 13-deploy-smoke | yes | delta | blocked_until_spec_gate | staging; promote held until #1015 |
-| uat (Build) | yes | dual Build | blocked_until_spec_gate | |
+| 07-build | yes | delta | **in_progress** | M1 #1011 (`D-S071-spec-build=1a`) |
+| 08-verify-build | yes | delta | pending | After M1 tasks complete |
+| 09-qa | yes | delta | pending | |
+| 10-e2e | yes | delta | pending | Catalog tab + AHL + bars |
+| 11-verify-impl | yes | delta | pending | Non-deployed UI preview |
+| 12-verify-deploy | yes | delta | pending | |
+| 13-deploy-smoke | yes | delta | pending | staging; promote held until #1015 |
+| uat (Build) | yes | dual Build | pending | |
 
 ## Spec → Build gate
 
-- **status:** `closed`
-- **rule:** No product implementation / 07+ until AskQuestion opens or waives gate
+- **status:** `open` (`D-S071-spec-build=1a`)
+- **rule:** Build band unblocked; promote still held until #1015
 
 ## Recommended ordered stages
 
