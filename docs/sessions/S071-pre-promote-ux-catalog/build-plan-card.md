@@ -1,46 +1,39 @@
 # Build Plan Card
 
 > Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-19  
-> Active: **07-build M2 #1012** — Spec→Build **open** (`D-S071-spec-build=1a`)  
-> M1 PR: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016 (open → `stage`, CI green)
+> Active: **07-build M3 #1010** — Spec→Build **open** (`D-S071-spec-build=1a`)  
+> M1+M2 PR: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016 (open → `stage`)
 
 ## Goal
 
-Well-formed multi-report METAR AHL (`SAUS31 KZNY`) decodes with item-by-item rows per
-report and convert-bulletin succeeds; malformed heading/body yields clear `INVALID_AHL`
-/ `empty_bulletin`. Promote held until #1015.
+Validate IWXXM shows item-by-item F9 decode rows (not a raw dump) when decode exists;
+keep F7.s / F7.t. Promote held until #1015.
 
 ## Constraints
 
-- [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9] [Corpus: api]
-  [Corpus: tests §TC-EV061-1012] [Corpus: journeys §UJ-065]
-- Branch `evolve/EV-061-pre-promote-ux-catalog` → PRs to `stage`
+- [Corpus: product §F2] [Corpus: product §F7] [Corpus: product §F9] [Corpus: api]
+  [Corpus: tests §TC-EV061-1010] [Corpus: journeys §UJ-064]
+- Additive optional `segments`/`summary` on `/validate` **or** FE maps existing decode
 - No new deps / ADR / CORS origins
-- Decode-tac **no new required fields** (`D-S071-api`); `INVALID_AHL` additive
-- Operator copy: no internal doc refs (EV-048)
-- Alias vs replace: prefer `INVALID_AHL` for malformed heading; keep
-  `bulletin_split_failed` as `detail.alias` (`D-S071-ahl-code` in 07)
+- Keep F7.s Validate-only and F7.t IWXXM product pass-through
 
-## In scope (this batch — M2)
+## In scope (this batch — M3)
 
-- [x] T2.1 — Test — Red golden multi-METAR decode + convert; malformed `INVALID_AHL` — Spec: UJ-065 TC-EV061-1012-001..004
-- [x] T2.2 — Code — AHL split/decode: per-report F9 rows + convert-bulletin success — Spec: feature-list F6 EV-061
-- [x] T2.3 — Code — Malformed AHL → `INVALID_AHL` / `empty_bulletin` (no silent 200) — Spec: [Corpus: api]
-- [x] T2.4 — Docs — OpenAPI / operator copy for AHL errors (no internal doc refs) — Spec: [Corpus: api] EV-048
+- [ ] T3.1 — Test — Red: validate IWXXM shows item-by-item rows not raw dump — Spec: UJ-064 F9/F2
+- [ ] T3.2 — Code — Additive optional `segments`/`summary` on `/validate` (F9 shape) or FE maps existing decode — Spec: [Corpus: api] D-S071-api
+- [ ] T3.3 — Code — FE decode panel parity; keep F7.s / F7.t — Spec: [Corpus: product §F7]
 
 ## Out of scope (explicit)
 
-#1011 harness (M1 done); #1010 validate decode (M3); #1013 bars; #1014 catalog;
-#1015 promote gate; #996; #837; M1+ national profiles; dissemination spikes
+#1011/#1012 (M1–M2 done); #1013 bars; #1014 catalog; #1015 promote gate
 
 ## Parallelism
 
-T2.1 → T2.2 / T2.3 (T2.3 independent of T2.2 after T2.1) → T2.4. Sequential in parent
-(shared convert-bulletin error mapping).
+T3.1 → T3.2 → T3.3 (TDD).
 
 ## Verify / PR
 
-08-verify-build M2 after T2.1–T2.4; minor PR to `stage` (stacked on #1016 or new).
+08-verify-build M3 after T3.1–T3.3; stack on PR #1016 or new PR to `stage`.
 
 ## Gate
 
