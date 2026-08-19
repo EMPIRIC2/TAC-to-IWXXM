@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; promote held until #1015"
+overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 complete; next M2 #1012; promote held until #1015"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -45,11 +45,11 @@ active_session:
   preset: Standard
   spec_to_build_gate: open
   current_stage: 07-build
-  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; 16-evolve orchestrating; promote held until #1015"
+  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 complete; next M2 #1012; promote held until #1015"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
-  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07 in_progress (M1 #1011); 08→13 pending; skip 03/05/06"
+  routing_plan_summary: "Standard Spec 00→16→01→02→04 + uat/verify-qa Spec; Build 07 in_progress (M1 #1011 done, M2 next); 08 M1 PASS; 08→13 pending remainder; skip 03/05/06"
   sessions_index_note: "Active S071/EV-061; archived S070 remains first in sessions[]; do not re-archive S070"
   corpus_cites:
   - '[Corpus: product §F2]'
@@ -75,7 +75,7 @@ active_session:
     mode: orchestrate
     status: in_progress
     started: '2026-08-18'
-    note: "Spec→Build open; orchestrating Build M1"
+    note: "Spec→Build open; orchestrating Build (M1 done, M2 next)"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -125,12 +125,12 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-18'
-    note: "M1 #1011 in progress"
+    note: "M1 #1011 complete (T1.1–T1.2); continue M2 #1012 after M1 PR"
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
-    note: pending
+    note: "M1 PASS (reports/08-verify-build-m1.md); remaining milestones pending"
   - stage: 09-qa
     required: true
     mode: delta
@@ -196,7 +196,7 @@ active_session:
     D-S071-spec-build: "1a — Open Spec→Build; start 07-build M1 (#1011); promote held until #1015"
   decision_pending: null
   context_briefs: []
-  note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; promote held until #1015"
+  note: "Spec→Build OPEN (D-S071-spec-build=1a); M1 #1011 complete; next M2 #1012; promote held until #1015"
 
 sessions:
 
@@ -54919,6 +54919,45 @@ git_history:
     merge_sha: 101f555
     merge_sha_full: 101f55586efacaee67bcd4260a04aa6758502123
   commits:
+  - sha: 1efd1c4942e4a4363a1fee63aff2ded744a6c300
+    short: "1efd1c49"
+    sha_full: 1efd1c4942e4a4363a1fee63aff2ded744a6c300
+    message: "[T1.2] fix: live bulletin harness multipart file → files"
+    branch: evolve/EV-061-pre-promote-ux-catalog
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
+    files_changed:
+      - docs/decisions/evolve-decisions.md
+      - docs/sessions/S071-pre-promote-ux-catalog/build-plan-card.md
+      - docs/sessions/S071-pre-promote-ux-catalog/evolve-plan-card.md
+      - docs/sessions/S071-pre-promote-ux-catalog/reports/08-verify-build-m1.md
+      - docs/sessions/S071-pre-promote-ux-catalog/reports/execution-plan.md
+      - docs/sessions/S071-pre-promote-ux-catalog/routing-plan.md
+      - tests/live/test_tc_live_f6_030_bulletin.py
+      - workflow-state.yaml
+    timestamp: "2026-08-19T12:43:40Z"
+    pushed: false
+    tip_sha: 1efd1c49
+    tip_sha_full: 1efd1c4942e4a4363a1fee63aff2ded744a6c300
+    note: "M1 #1011 T1.2; Spec→Build open D-S071-spec-build=1a; 08-verify-build M1 PASS"
+  - sha: 61ba634007c2854b44b787712be5c215799ab6c2
+    short: "61ba6340"
+    sha_full: 61ba634007c2854b44b787712be5c215799ab6c2
+    message: "[T1.1] test: assert live bulletin harness posts multipart files"
+    branch: evolve/EV-061-pre-promote-ux-catalog
+    stage: 07-build
+    skill_id: 07-build
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
+    files_changed:
+      - tests/unit/test_tc_ev061_1011_live_bulletin_files.py
+    timestamp: "2026-08-19T12:41:18Z"
+    pushed: false
+    tip_sha: 61ba6340
+    tip_sha_full: 61ba634007c2854b44b787712be5c215799ab6c2
+    note: "M1 #1011 T1.1 TC-EV061-1011"
   - sha: 9bf0bb77f489d32d2e61b39f32713c1158099df6
     short: "9bf0bb77"
     sha_full: 9bf0bb77f489d32d2e61b39f32713c1158099df6
