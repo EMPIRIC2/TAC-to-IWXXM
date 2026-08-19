@@ -16,8 +16,8 @@
 | Field | Value |
 |-------|-------|
 | **Active phase** | Build (07-build) |
-| **Active milestone** | M2 #1012 — AHL decode + convert-bulletin (**tasks complete**; 08-verify-build next) |
-| **Tasks completed** | 6 / 24 |
+| **Active milestone** | M3 #1010 — Validate IWXXM readable decode (**tasks complete**; 08-verify-build next) |
+| **Tasks completed** | 9 / 24 |
 | **Stage** | 07-build |
 | **Plan approval** | **approved** `D-S071-04-plan=1a` |
 | **Spec→Build gate** | **open** (`D-S071-spec-build=1a`) |
@@ -66,9 +66,9 @@
 
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
-| T3.1 | Test | Red: validate IWXXM shows item-by-item rows not raw dump | pending | — | UJ-064 F9/F2 | TC-EV061-1010-001..003 |
-| T3.2 | Code | Additive optional `segments`/`summary` on `/validate` (F9 shape) **or** FE maps existing decode | pending | T3.1 | [Corpus: api] D-S071-api | T3.1 |
-| T3.3 | Code | FE decode panel parity; keep F7.s / F7.t | pending | T3.2 | [Corpus: product §F7] | TC-EV061-1010-003 |
+| T3.1 | Test | Red: validate IWXXM shows item-by-item rows not raw dump | completed | — | UJ-064 F9/F2 | TC-EV061-1010-001..003 |
+| T3.2 | Code | Additive optional `segments`/`summary` on `/validate` (F9 shape) **or** FE maps existing decode | completed | T3.1 | [Corpus: api] D-S071-api | T3.1 |
+| T3.3 | Code | FE decode panel parity; keep F7.s / F7.t | completed | T3.2 | [Corpus: product §F7] | TC-EV061-1010-003 |
 
 #### M4: Product/Profile + param bars (#1013) — P0
 

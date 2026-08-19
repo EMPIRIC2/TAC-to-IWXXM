@@ -1559,7 +1559,7 @@ export function FileConverter({
   } = useLiveWorkbenchAssist({
     text: manualInput,
     product: liveAssistProduct,
-    enabled: !isReadOnly,
+    enabled: !isReadOnly && inputMode !== 'validate_iwxxm',
     liveIwxxm,
     liveIwxxmRunner,
   });

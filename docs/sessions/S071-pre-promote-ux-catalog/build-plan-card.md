@@ -1,8 +1,8 @@
 # Build Plan Card
 
 > Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-19  
-> Active: **07-build M3 #1010** — Spec→Build **open** (`D-S071-spec-build=1a`)  
-> M1+M2 PR: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016 (open → `stage`)
+> Active: **08-verify-build M3 #1010** — Spec→Build **open** (`D-S071-spec-build=1a`)  
+> M1+M2+M3 PR: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016 (open → `stage`)
 
 ## Goal
 
@@ -19,9 +19,9 @@ keep F7.s / F7.t. Promote held until #1015.
 
 ## In scope (this batch — M3)
 
-- [ ] T3.1 — Test — Red: validate IWXXM shows item-by-item rows not raw dump — Spec: UJ-064 F9/F2
-- [ ] T3.2 — Code — Additive optional `segments`/`summary` on `/validate` (F9 shape) or FE maps existing decode — Spec: [Corpus: api] D-S071-api
-- [ ] T3.3 — Code — FE decode panel parity; keep F7.s / F7.t — Spec: [Corpus: product §F7]
+- [x] T3.1 — Test — Red: validate IWXXM shows item-by-item rows not raw dump — Spec: UJ-064 F9/F2
+- [x] T3.2 — Code — Additive optional `segments`/`summary` on `/validate` (F9 shape) or FE maps existing decode — Spec: [Corpus: api] D-S071-api
+- [x] T3.3 — Code — FE decode panel parity; keep F7.s / F7.t — Spec: [Corpus: product §F7]
 
 ## Out of scope (explicit)
 
@@ -29,11 +29,11 @@ keep F7.s / F7.t. Promote held until #1015.
 
 ## Parallelism
 
-T3.1 → T3.2 → T3.3 (TDD).
+T3.1 → T3.2 → T3.3 (TDD) — complete.
 
 ## Verify / PR
 
-08-verify-build M3 after T3.1–T3.3; stack on PR #1016 or new PR to `stage`.
+08-verify-build M3 next; stack on PR #1016 to `stage`.
 
 ## Gate
 

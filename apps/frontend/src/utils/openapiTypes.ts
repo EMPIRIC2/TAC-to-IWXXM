@@ -50,6 +50,8 @@ export type ConversionResponse = {
 export type ValidateResponse = Schemas['ValidateResponse'] & {
   is_valid: boolean;
   version: string;
+  segments?: Schemas['DecodeSegmentModel'][];
+  summary?: string | null;
 };
 
 export type ValidateIssue = Schemas['ValidateIssueModel'];
