@@ -16,12 +16,12 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## In / out of scope
 
-- In: #1009–#1015; FE tab/route; H4–H5 after Build; API field rename OK if documented; block on broken catalog URLs
+- In: #1009–#1015; FE tab/route; H4–H5 after Build; additive API; catalog 3-tier sources
 - Out: #996 click-detail; #837 mini-map; M1+ profiles; dissemination spikes; auto-promote before #1015
 
 ## Phase split
 
-- Active phase: **Spec-development**
+- Active phase: **Spec-development** (04 drafted; pending plan approval)
 - Spec→Build gate: **closed**
 - Preset: **Standard**
 
@@ -29,22 +29,20 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 - Preset slice: Standard (`01 → 02 → 04`)
 - Stages (ordered): `00 → 16 → 01 → 02 → 04`
-- Dual-mode Spec skills: `uat`, `verify-qa`
-- Skip: `03`, `05`, `06` (unless 04 finds gaps)
+- Dual-mode Spec skills: `uat`, `verify-qa` (next after `D-S071-04-plan`)
+- Skip: `03`, `05`, `06`
 
 ## Build band (07–13) — blocked until gate
 
-- Stages (ordered): `07 → 08 → 09 → 10 → 11 → 12 → 13`
-- Dual-mode Build skills: `uat`
+- Order: M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015
 - Deploy intent: **staging**; promote held until #1015
 
 ## Next child stage
 
-**01-requirements** (delta) — Spec-band only; crawl catalog source URLs; document AHL context for #1012
+Approve 04 plan → **verify-qa Spec** + **uat Spec** → Spec→Build AskQuestion
 
 ## Risks / open decisions
 
-- Broken catalog source links → **block** until user supplies replacements (`D-S071-links`)
-- AHL failures may need operator-pasted samples if golden fixture already converts
-- Multipart `file`→`files` is test-only (#1011) vs product AHL (#1012)
-- stage→main gate may need GitHub required-check admin (no app secrets)
+- `INVALID_AHL` vs existing `bulletin_split_failed` — alias vs replace (07)
+- Lint/typecheck are local pre-commit today; #1015 restores them as CI required checks
+- Branch protection admin for `stage`→`main` (no app secrets)

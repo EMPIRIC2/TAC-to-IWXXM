@@ -36,6 +36,19 @@
 
 Report: `docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md`
 
+### 04-tech-plan (drafted — pending `D-S071-04-plan`)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-m-order | M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015 |
+| D-S071-deps | No new npm/PyPI deps |
+| D-S071-adr | No new ADR |
+| D-S071-api | Additive: `INVALID_AHL`; validate `segments`/`summary`; catalog fields on existing GET. No new catalog endpoint |
+| D-S071-cors | No new origins; H4–H5 in 12/13 |
+| D-S071-ci | Restore lint/typecheck CI + full E2E as required on `stage`→`main` (plus unit + Staging gate) |
+
+Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-card.md`
+
 ### Prior session closeout
 
 - S070/EV-060 closed; PRs #1007 (product), #1008 (S070 docs), #999 (S069 docs) merged to `stage`

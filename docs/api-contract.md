@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-17 (S070 / EV-060 — `product=iwxxm` pass-through + log_level logger verbosity)
+> **Last updated**: 2026-08-18 (S071 / EV-061 — AHL `INVALID_AHL`; validate decode segments; catalog additive fields)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -256,7 +256,10 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | code | HTTP | When |
 |------|------|------|
 | `bulletin_split_failed` | 422 | Cannot parse AHL / split reports |
+| `INVALID_AHL` | 400 or 422 | Malformed AHL heading/body (EV-061 / #1012). Prefer this code for operator-facing malformed heading; may coexist with `bulletin_split_failed` |
 | `empty_bulletin` | 400 | No reports after split |
+
+**EV-061 / #1011**: Live/clients must post multipart field **`files`** (not `file`). Contract unchanged; harness fix only.
 
 ### COLLECT ingest (placeholder — ADR-024)
 
@@ -367,6 +370,22 @@ lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response s
 **Additive (S048 / EV-040)**: optional `source_id`, `source_url`, `source_attribution` join
 provenance from `PROVENANCE_MAP` so the FE catalog spells out WMO/ICAO/IWXXM sources
 (citations/URLs only — no copyrighted Annex prose). Older clients may ignore the fields.
+
+**Additive (S071 / EV-061 / #1014)**: optional fields for operator catalog + IWXXM validation
+rows (same route — **no** new endpoint). Older clients ignore extras.
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `family` | no | `lint` (TAC registry) or `iwxxm` (F2/Schematron-style checks) |
+| `source_type` | no | `tier1` \| `tier2` \| `tier3` (`D-S071-links-resolve`) |
+| `status` | no | `verified` \| `legacy_alias` \| `semantic_only` |
+| `semantic_identifier` | no | e.g. `codes.wmo.int/49-2/…` when href is a verified landing |
+| `last_verified` | no | ISO date of last HTTP check |
+| `replacement_url` | no | If `source_url` is alias |
+
+Query: optional `family=lint\|iwxxm` in addition to `product`. Operator-visible `source_url`
+must be a verified HTTP landing when `status=verified`; do not put planning ids in
+`source_attribution` (EV-048).
 
 `code` / default `severity` / `message_template` match the registry module. FE uses this for
 code tooltips; live lint findings still come from `POST /lint-tac`.
@@ -534,6 +553,11 @@ POST /api/v1/validate
 
 **Response**: Pass/fail + messages; each issue may include optional integer `start` / `end`
 (S011) when the validator can map to TAC or XML offsets — otherwise omit.
+
+**Additive (S071 / EV-061 / #1010)**: optional `segments` / `summary` using the same F9
+shape as `POST /decode-tac` when Validate IWXXM still produces a readable decode. Omitted
+when there is no decode. FE shows item-by-item rows (parity with TAC products), not a raw
+dump. F7.s validate-only and F7.t pass-through stay. Older clients ignore extras.
 
 ### Work sessions (F5+F7+F31 — **restored HTTP**; hybrid storage — S038 / EV-031)
 
@@ -877,3 +901,23 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 - S040 / EV-032 (2026-08-04): F32 VONA `product=vona` + full F7 surface; #835 catalog tier;
   #808 docs — **endpoint review**; full pack (`D-S040-E32-M` Q1=2).
+
+## S071 / EV-061 — Endpoint review (pre-promote UX + catalog + AHL)
+
+| Endpoint | Change for EV-061? | Notes |
+|----------|--------------------|-------|
+| `POST /api/v1/convert` | **None (wire)** | Unchanged |
+| `POST /api/v1/convert-bulletin` | **Additive codes** | `INVALID_AHL` for malformed heading; `files` field already required (#1011 harness). Decode/convert e2e is #1012 |
+| `POST /api/v1/lint-tac` | **None (wire)** | Unchanged |
+| `GET /api/v1/lint-issue-catalog` | **Additive fields + content** | IWXXM validation rows (`family=iwxxm`); `source_type` / `status` / `semantic_identifier` / `last_verified` / `replacement_url`. No new route. #1014 |
+| `POST /api/v1/decode-tac` | **None (wire)** | AHL decode may reuse this or bulletin framing + per-report segments (#1012) |
+| `POST /api/v1/validate` | **Additive optional** | `segments` / `summary` (F9 shape) when Validate IWXXM still produces decode (#1010) |
+| FE catalog tab | **New page** | Top-level nav; consumes catalog GET; H4–H5 when FE ships |
+| FE Product/Profile bars | **None (HTTP)** | Layout only (#1013) |
+| Dissemination / auth / sessions | **None** | Unchanged |
+| CI promote | **N/A HTTP** | #1015 required checks — not an API change |
+
+**Breaking changes**: None required. Additive fields only (`D-S071-api`). Document if a code
+rename from `bulletin_split_failed` → `INVALID_AHL` is treated as alias vs replace in 07.
+
+- S071 / EV-061 (2026-08-18): #1010–#1015 endpoint review (`D-S071-api`).
