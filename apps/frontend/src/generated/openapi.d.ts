@@ -254,7 +254,7 @@ export interface paths {
         };
         /**
          * Lint Issue Catalog
-         * @description Export the tac-validate issue registry for FE tooltips / catalog panel.
+         * @description Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
          */
         get: operations["lint_issue_catalog_api_v1_lint_issue_catalog_get"];
         put?: never;
@@ -2297,18 +2297,48 @@ export interface components {
         LintIssueCatalogEntryModel: {
             /** Code */
             code: string;
+            /**
+             * Family
+             * @description lint (TAC registry) or iwxxm (validation checks)
+             */
+            family?: string | null;
+            /**
+             * Last Verified
+             * @description ISO date of last HTTP check for operator source_url
+             */
+            last_verified?: string | null;
             /** Message Template */
             message_template: string;
             /** Product */
             product?: string | null;
+            /**
+             * Replacement Url
+             * @description Verified landing when source_url is a legacy alias
+             */
+            replacement_url?: string | null;
+            /**
+             * Semantic Identifier
+             * @description Vocabulary concept path when href is a verified landing
+             */
+            semantic_identifier?: string | null;
             /** Severity */
             severity: string;
             /** Source Attribution */
             source_attribution?: string | null;
             /** Source Id */
             source_id?: string | null;
+            /**
+             * Source Type
+             * @description tier1, tier2, or tier3 source policy
+             */
+            source_type?: string | null;
             /** Source Url */
             source_url?: string | null;
+            /**
+             * Status
+             * @description verified, legacy_alias, or semantic_only
+             */
+            status?: string | null;
             /** Tags */
             tags?: string[];
         };
@@ -3712,6 +3742,8 @@ export interface operations {
         parameters: {
             query?: {
                 product?: string | null;
+                /** @description Optional filter: lint (TAC) or iwxxm (validation). Omit for both. */
+                family?: string | null;
             };
             header?: never;
             path?: never;

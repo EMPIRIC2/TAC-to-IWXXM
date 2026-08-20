@@ -1941,6 +1941,30 @@
             "title": "Code",
             "type": "string"
           },
+          "family": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "lint (TAC registry) or iwxxm (validation checks)",
+            "title": "Family"
+          },
+          "last_verified": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ISO date of last HTTP check for operator source_url",
+            "title": "Last Verified"
+          },
           "message_template": {
             "title": "Message Template",
             "type": "string"
@@ -1955,6 +1979,30 @@
               }
             ],
             "title": "Product"
+          },
+          "replacement_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Verified landing when source_url is a legacy alias",
+            "title": "Replacement Url"
+          },
+          "semantic_identifier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Vocabulary concept path when href is a verified landing",
+            "title": "Semantic Identifier"
           },
           "severity": {
             "title": "Severity",
@@ -1982,6 +2030,18 @@
             ],
             "title": "Source Id"
           },
+          "source_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "tier1, tier2, or tier3 source policy",
+            "title": "Source Type"
+          },
           "source_url": {
             "anyOf": [
               {
@@ -1992,6 +2052,18 @@
               }
             ],
             "title": "Source Url"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "verified, legacy_alias, or semantic_only",
+            "title": "Status"
           },
           "tags": {
             "items": {
@@ -4398,7 +4470,7 @@
     },
     "/api/v1/lint-issue-catalog": {
       "get": {
-        "description": "Export the tac-validate issue registry for FE tooltips / catalog panel.",
+        "description": "Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.",
         "operationId": "lint_issue_catalog_api_v1_lint_issue_catalog_get",
         "parameters": [
           {
@@ -4415,6 +4487,24 @@
                 }
               ],
               "title": "Product"
+            }
+          },
+          {
+            "description": "Optional filter: lint (TAC) or iwxxm (validation). Omit for both.",
+            "in": "query",
+            "name": "family",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional filter: lint (TAC) or iwxxm (validation). Omit for both.",
+              "title": "Family"
             }
           }
         ],

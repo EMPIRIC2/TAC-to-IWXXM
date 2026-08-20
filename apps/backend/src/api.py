@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Tuple, TypeGuard
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, StreamingResponse
 
@@ -1003,7 +1003,10 @@ def get_schema_status():
 )
 async def lint_issue_catalog(
     product: Optional[str] = None,
-    family: Optional[str] = None,
+    family: Optional[str] = Query(
+        default=None,
+        description="Optional filter: lint (TAC) or iwxxm (validation). Omit for both.",
+    ),
 ) -> Response:
     """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
     from tac_validate.catalog_attribution import attribution_for
