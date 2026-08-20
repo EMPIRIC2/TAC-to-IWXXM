@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "12 COMPLETE (D-S071-12-merge=1); merging #1016 → stage then 13-deploy-smoke; promote held; #1017 backlog"
+overall_status_note: "13 READY — #1016 → stage @ 86867a11; CD 32398410519 Deploy+Staging smoke success; H0c–H5 + UJ-064..068 PASS; await D-S071-13; promote held; #1017 backlog"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -46,7 +46,7 @@ active_session:
   preset: Standard
   spec_to_build_gate: open
   current_stage: 13-deploy-smoke
-  current_stage_note: "12 COMPLETE (D-S071-12-merge=1); merge #1016 → stage then Staging CD + H4–H5; promote held"
+  current_stage_note: "13 READY — #1016 MERGED stage @ 86867a11; CD 32398410519 success; H0c–H5 + live UJ-064..068 PASS; await D-S071-13; promote held"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
@@ -170,7 +170,8 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-20'
-    note: "in_progress — D-S071-12-merge=1; await #1016 merge + Staging Deploy/smoke then H1–H5 UJ-064..068"
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/deploy-smoke.md
+    note: "READY — #1016 → stage @ 86867a11; CD 32398410519 Deploy+Staging smoke success; H0c–H5 + UJ-064..068 6/6 PASS; await D-S071-13; promote held"
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -217,9 +218,9 @@ active_session:
     D-S071-12-risks: "1a — approve standard mitigations (CI green, CORS/H4–H5 at 13, no accidental main, admin rulesets before promote)"
     D-S071-12-rollback: "1a — prior GHCR stage-latest / DOKS rollback; no DB migrations"
     D-S071-12-merge: "1 — Commit 11/12 docs → push → merge #1016 → stage → watch Staging CD → start 13 H4–H5"
-  decision_pending: null
+  decision_pending: D-S071-13
   context_briefs: []
-  note: "12 COMPLETE (D-S071-12-merge=1); merging #1016 → stage then 13; promote held; #1017 backlog"
+  note: "13 READY — stage @ 86867a11; H0c–H5 + UJ-064..068 PASS; await D-S071-13; promote held; #1017 backlog"
 
 sessions:
 
