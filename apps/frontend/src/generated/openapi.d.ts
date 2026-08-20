@@ -3742,7 +3742,6 @@ export interface operations {
         parameters: {
             query?: {
                 product?: string | null;
-                /** @description Optional filter: lint (TAC) or iwxxm (validation). Omit for both. */
                 family?: string | null;
             };
             header?: never;

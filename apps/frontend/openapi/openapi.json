@@ -4490,7 +4490,6 @@
             }
           },
           {
-            "description": "Optional filter: lint (TAC) or iwxxm (validation). Omit for both.",
             "in": "query",
             "name": "family",
             "required": false,
@@ -4503,7 +4502,6 @@
                   "type": "null"
                 }
               ],
-              "description": "Optional filter: lint (TAC) or iwxxm (validation). Omit for both.",
               "title": "Family"
             }
           }
