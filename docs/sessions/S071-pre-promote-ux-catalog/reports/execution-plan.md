@@ -81,7 +81,7 @@
 
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
-| T5.1 | Test | Red: tab/page lists code, description, level, working source hrefs | pending | — | UJ-068 F7.v/F15 | TC-EV061-1014-001..004 |
+| T5.1 | Test | Red: tab/page lists code, description, level, working source hrefs | in_progress | — | UJ-068 F7.v/F15 | TC-EV061-1014-001..004 |
 | T5.2 | Code | Additive catalog fields + IWXXM validation rows on `GET /lint-issue-catalog` | pending | T5.1 | [Corpus: api] D-S071-api | TC-EV061-1014-002 |
 | T5.3 | Code | Top-level nav tab/page; operator hrefs = verified landings (`D-S071-links-resolve`) | pending | T5.2 | mining note | TC-EV061-1014-003 |
 | T5.4 | Docs | OpenAPI aliases for additive catalog fields; no planning ids in attribution | pending | T5.2 | EV-048 | TC-EV061-1014-004 |
