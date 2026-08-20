@@ -1,6 +1,6 @@
 # Evolve Plan Card
 
-> Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-18
+> Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-20
 
 ## Goal
 
@@ -21,7 +21,7 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Phase split
 
-- Active phase: **Build** — M6 #1015
+- Active phase: **Build** — M1–M6 complete; Verify band next
 - Spec→Build gate: **open** (`D-S071-spec-build=1a`)
 - Preset: **Standard**
 
@@ -35,15 +35,14 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 ## Build band (07–13)
 
 - Order: M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015
-- Active: **M5 #1014 complete** — next **M6 #1015**
-- Deploy intent: **staging**; promote held until #1015
+- Active: **M6 #1015 complete** (08 PASS) — next **09-qa / 10-e2e** (Standard)
+- Deploy intent: **staging**; promote held until admin applies #1015 rulesets
 
 ## Next child stage
 
-07-build M6 T6.1 → T6.3 (#1015); then 08-verify-build + stack on PR to `stage`.
+09-qa + 10-e2e (parallel OK) after PR #1016 tip CI green; then 11-verify-impl.
 
 ## Risks / open decisions
 
-- `INVALID_AHL` vs existing `bulletin_split_failed` — alias vs replace (07)
-- Lint/typecheck are local pre-commit today; #1015 restores them as CI required checks
-- Branch protection admin for `stage`→`main` (no app secrets)
+- Live GitHub rulesets empty until admin runs `apply_gh_branch_rulesets.sh`
+- Lint/Typecheck restored as CI; E2E Full only on stage→main PRs

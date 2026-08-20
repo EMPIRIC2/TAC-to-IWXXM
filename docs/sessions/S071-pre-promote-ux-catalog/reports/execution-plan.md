@@ -15,14 +15,14 @@
 
 | Field | Value |
 |-------|-------|
-| **Active phase** | Build (07-build) |
-| **Active milestone** | M6 #1015 — Stricter stage→main gate (next after M5 08) |
-| **Tasks completed** | 15 / 24 |
-| **Stage** | 07-build |
+| **Active phase** | Build (07-build complete M1–M6; 09+ next) |
+| **Active milestone** | M6 #1015 — COMPLETE (08 PASS) |
+| **Tasks completed** | 18 / 24 |
+| **Stage** | 07-build (M1–M6 done) |
 | **Plan approval** | **approved** `D-S071-04-plan=1a` |
 | **Spec→Build gate** | **open** (`D-S071-spec-build=1a`) |
 | **GitHub milestone** | **M0** (roadmap) — not the same as plan M1–M6 |
-| **M1 PR** | [#1016](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016) open → `stage` (CI green) |
+| **M1–M6 PR** | [#1016](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016) open → `stage` |
 
 ## Tech decisions (intake A — 2026-08-18)
 
@@ -91,8 +91,8 @@
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
 | T6.1 | Test/Docs | Inventory current required checks vs target set | completed | — | UJ-DEV-009 deploy.md | TC-EV061-1015-001 |
-| T6.2 | Config | CI jobs: lint + typecheck + full Playwright E2E on promote PRs | in_progress | T6.1 | [Corpus: tech-spec] D-S071-ci | TC-EV061-1015-002 |
-| T6.3 | Docs | deploy.md + promote PR template; branch-protection runbook (admin) | in_progress | T6.2 | [Corpus: deploy] | T6.1 |
+| T6.2 | Config | CI jobs: lint + typecheck + full Playwright E2E on promote PRs | completed | T6.1 | [Corpus: tech-spec] D-S071-ci | TC-EV061-1015-002 |
+| T6.3 | Docs | deploy.md + promote PR template; branch-protection runbook (admin) | completed | T6.2 | [Corpus: deploy] | T6.1 |
 
 ## Connectivity
 
