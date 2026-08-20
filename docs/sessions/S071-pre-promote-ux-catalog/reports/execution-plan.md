@@ -90,7 +90,7 @@
 
 | ID | Type | Task | Status | Depends On | Spec Source | Tests |
 |----|------|------|--------|------------|-------------|-------|
-| T6.1 | Test/Docs | Inventory current required checks vs target set | pending | — | UJ-DEV-009 deploy.md | TC-EV061-1015-001 |
+| T6.1 | Test/Docs | Inventory current required checks vs target set | in_progress | — | UJ-DEV-009 deploy.md | TC-EV061-1015-001 |
 | T6.2 | Config | CI jobs: lint + typecheck + full Playwright E2E on promote PRs | pending | T6.1 | [Corpus: tech-spec] D-S071-ci | TC-EV061-1015-002 |
 | T6.3 | Docs | deploy.md + promote PR template; branch-protection runbook (admin) | pending | T6.2 | [Corpus: deploy] | T6.1 |
 
