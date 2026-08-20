@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M4 complete; next M5 #1014; promote held until #1015"
+overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M6 COMPLETE; next 09-qa/10-e2e; promote held until admin applies #1015 rulesets"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -45,7 +45,7 @@ active_session:
   preset: Standard
   spec_to_build_gate: open
   current_stage: 07-build
-  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M4 complete; next M5 #1014; promote held until #1015"
+  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M6 COMPLETE (08 M6 PASS); next 09-qa/10-e2e; PR #1016"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
@@ -125,12 +125,14 @@ active_session:
     mode: delta
     status: in_progress
     started: '2026-08-18'
-    note: "M1 #1011 + M2 #1012 + M3 #1010 + M4 #1013 complete; continue M5 #1014 after M4 recorded on PR #1016"
+    note: "M1–M6 COMPLETE; 08 M6 PASS (reports/08-verify-build-m6.md); tip on PR #1016"
+    status: completed
+    completed: '2026-08-20'
   - stage: 08-verify-build
     required: true
     mode: delta
     status: pending
-    note: "M1 PASS (reports/08-verify-build-m1.md); M2 PASS (reports/08-verify-build-m2.md); M3 PASS (reports/08-verify-build-m3.md); M4 PASS (reports/08-verify-build-m4.md); remaining milestones pending"
+    note: "M1–M6 PASS (reports/08-verify-build-m1.md … m6.md); remaining Verify band pending"
   - stage: 09-qa
     required: true
     mode: delta
