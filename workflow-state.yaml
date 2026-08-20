@@ -44,7 +44,7 @@ active_session:
   feature_note: "Deepen only — no new top-level Fn"
   preset: Standard
   spec_to_build_gate: open
-  current_stage: 07-build
+  current_stage: 09-qa
   current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M6 COMPLETE (08 M6 PASS); next 09-qa/10-e2e; PR #1016"
   gate_a: PASS
   gate_a_status: pass
@@ -123,11 +123,10 @@ active_session:
   - stage: 07-build
     required: true
     mode: delta
-    status: in_progress
-    started: '2026-08-18'
-    note: "M1–M6 COMPLETE; 08 M6 PASS (reports/08-verify-build-m6.md); tip on PR #1016"
     status: completed
+    started: '2026-08-18'
     completed: '2026-08-20'
+    note: "M1–M6 COMPLETE; 08 M6 PASS (reports/08-verify-build-m6.md); tip on PR #1016"
   - stage: 08-verify-build
     required: true
     mode: delta
