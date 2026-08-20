@@ -1,6 +1,6 @@
 # Evolve Plan Card
 
-> Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-20
+> Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-20 · **CLOSED**
 
 ## Goal
 
@@ -21,7 +21,7 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Phase split
 
-- Active phase: **Build** — **13 READY** (smokes PASS; await `D-S071-13`)
+- Active phase: **CLOSED** — `D-S071-13=1` / `D-S071-close=1`; promote held
 - Spec→Build gate: **open** (`D-S071-spec-build=1a`)
 - Preset: **Standard**
 
@@ -35,16 +35,14 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 ## Build band (07–13)
 
 - Order: M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015
-- Active: **13-deploy-smoke** — #1016 → `stage` @ `86867a11`; H0c–H5 + UJ-064..068 PASS
+- Active: **COMPLETE** — #1016 → `stage` @ `86867a11`; H0c–H5 + UJ-064..068 PASS
 - Deploy intent: **staging**; promote held until admin applies #1015 rulesets
 
 ## Next child stage
 
-Await **`D-S071-13`** sign-off → closeout / board; promote held.
+None — session closed. Backlog [#1017](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1017). Promote deferred.
 
 ## Risks / open decisions
 
 - Live GitHub rulesets empty until admin runs `apply_gh_branch_rulesets.sh`
-- Lint/Typecheck restored as CI; E2E Full only on stage→main PRs
 - Catalog source quality + category sort/filter → **#1017** (after promote; `D-S071-11-1017`)
-- Merge #1016 done (`D-S071-12-merge=1`); 13 sign-off pending

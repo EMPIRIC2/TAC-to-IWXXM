@@ -1,23 +1,29 @@
-overall_status: in_progress
-overall_status_note: "13 READY — #1016 → stage @ 86867a11; CD 32398410519 Deploy+Staging smoke success; H0c–H5 + UJ-064..068 PASS; await D-S071-13; promote held; #1017 backlog"
+overall_status: completed
+overall_status_note: "CLOSED — D-S071-13=1 / D-S071-close=1; EV-061/S071 COMPLETE on stage tip 86867a11; PR #1016+#1018; CD 32398410519; H0c–H5 + UJ-064..068 6/6; #1009+#1010–#1015 CLOSED; #1017 backlog; promote held; active_session=null"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
   output_directory: docs/
 session_counter: 71
 evolve_cycle_counter: 61
-active_session:
-  id: S071-pre-promote-ux-catalog
+active_session: null
+
+sessions:
+
+- id: S071-pre-promote-ux-catalog
   type: feature
   intent: "EV-061 pre-promote: IWXXM validate readable decode, AHL decode/convert, Product/Profile UI bars, lint/validation catalog tab, multipart live test fix, stricter stage→main gate; epic #1009"
-  status: in_progress
+  status: completed
+  completed: '2026-08-20'
+  completed_at: '2026-08-20'
+  closed_at: '2026-08-20'
   started: '2026-08-18'
   started_at: '2026-08-18'
   branch: evolve/EV-061-pre-promote-ux-catalog
   branch_base: stage@a1650b01
   branch_base_sha: a1650b01
   branch_base_sha_full: a1650b0161eefe4e8e408623339cecbef55d0246
-  branch_status: active
+  branch_status: merged
   branch_exists: true
   branch_pushed: true
   branch_tracking: origin/evolve/EV-061-pre-promote-ux-catalog
@@ -46,7 +52,7 @@ active_session:
   preset: Standard
   spec_to_build_gate: open
   current_stage: 13-deploy-smoke
-  current_stage_note: "13 READY — #1016 MERGED stage @ 86867a11; CD 32398410519 success; H0c–H5 + live UJ-064..068 PASS; await D-S071-13; promote held"
+  current_stage_note: "CLOSED — D-S071-13=1 / D-S071-close=1; EV-061 COMPLETE on stage tip 86867a11; promote held; PR #1016+#1018; epic #1009+#1010–#1015 CLOSED; active_session=null"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
@@ -74,9 +80,10 @@ active_session:
   - stage: 16-evolve
     required: true
     mode: orchestrate
-    status: in_progress
+    status: completed
     started: '2026-08-18'
-    note: "Spec→Build open; orchestrating Build (M1–M3 done, M4 next)"
+    completed: '2026-08-20'
+    note: "COMPLETE — D-S071-close=1; EV-061/S071 closed on stage tip 86867a11; promote held; PR #1016+#1018; epic #1009+#1010–#1015 CLOSED; active_session=null"
   - stage: 01-requirements
     required: true
     mode: delta
@@ -168,10 +175,11 @@ active_session:
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: in_progress
+    status: completed
     started: '2026-08-20'
+    completed: '2026-08-20'
     report: docs/sessions/S071-pre-promote-ux-catalog/reports/deploy-smoke.md
-    note: "READY — #1016 → stage @ 86867a11; CD 32398410519 Deploy+Staging smoke success; H0c–H5 + UJ-064..068 6/6 PASS; await D-S071-13; promote held"
+    note: "COMPLETE — D-S071-13=1 / D-S071-close=1; stage @ 86867a11; CD 32398410519; H0c–H5 + UJ-064..068 6/6; promote held"
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -218,11 +226,14 @@ active_session:
     D-S071-12-risks: "1a — approve standard mitigations (CI green, CORS/H4–H5 at 13, no accidental main, admin rulesets before promote)"
     D-S071-12-rollback: "1a — prior GHCR stage-latest / DOKS rollback; no DB migrations"
     D-S071-12-merge: "1 — Commit 11/12 docs → push → merge #1016 → stage → watch Staging CD → start 13 H4–H5"
-  decision_pending: D-S071-13
+    D-S071-13: "1 — Approve 13; H0c–H5 + UJ-064..068 PASS; stage @ 86867a11"
+    D-S071-close: "1 — Close S071/EV-061; merge #1018; close #1009+#1010–#1015; #1017 backlog; promote held"
+  decision_pending: null
+  close_decision_id: D-S071-close
+  close_note: "D-S071-close=1 — close EV-061/S071 on stage tip 86867a11; PR #1016+#1018; epic #1009+#1010–#1015 CLOSED; #1017 backlog; promote held"
   context_briefs: []
-  note: "13 READY — stage @ 86867a11; H0c–H5 + UJ-064..068 PASS; await D-S071-13; promote held; #1017 backlog"
+  note: "CLOSED — D-S071-13=1 / D-S071-close=1; EV-061 COMPLETE on stage tip 86867a11; promote held; PR #1016+#1018; epic #1009+#1010–#1015 CLOSED; #1017 backlog; active_session=null; [Corpus: product §F7] [Corpus: decisions §EV-061]"
 
-sessions:
 
 - id: S070-converter-operator-bugs
   type: feature
