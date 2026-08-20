@@ -1,8 +1,8 @@
-# Implementation verification — EV-060 / S070
+# Implementation verification — EV-061 / S071
 
-> Synced from `docs/sessions/S070-converter-operator-bugs/reports/verify-impl.md`  
-> Date: 2026-08-18 · Tip: `0e857b78`
+> Synced from `docs/sessions/S071-pre-promote-ux-catalog/reports/verify-impl.md`  
+> Date: 2026-08-20 · Tip: `dba4e21a` · PR [#1016](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016)
 
-**Verdict:** User-approved. F7.t IWXXM product + AHL/profile/bulletin/`log_level` + Auth UAT (#1001–#1006) match AC locally; UJ-059..063 + UJ-003/046 approved; logout 404 restored (`D-S070-logout=1a`). Live H4–H5 and tip CI deferred to PR → `stage` + 12/13 (`D-S070-11-t3`). Promote held.
+**Verdict:** User-approved (`D-S071-11-ac=1a`). Pre-promote UX + catalog + AHL + validate decode + stage→main CI gate (#1010–#1015) match AC locally; UJ-064..068 + UJ-DEV-009 approved; UI preview at http://localhost:18000/. Staging H4–H5 deferred to 12/13. Catalog source deepen → [#1017](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1017). Promote held until admin rulesets.
 
-**Corpus:** [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: product §F29] [Corpus: product §F31] [Corpus: journeys] [Corpus: tests] [Corpus: api] [Corpus: decisions §EV-060]
+**Corpus:** [Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F34] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-061]

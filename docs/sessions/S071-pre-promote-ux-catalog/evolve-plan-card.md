@@ -21,7 +21,7 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Phase split
 
-- Active phase: **Build** — Verify band (09+10 done; next 11)
+- Active phase: **Build** — **12 COMPLETE** (`D-S071-12-merge=1`); next **13-deploy-smoke**
 - Spec→Build gate: **open** (`D-S071-spec-build=1a`)
 - Preset: **Standard**
 
@@ -35,14 +35,16 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 ## Build band (07–13)
 
 - Order: M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015
-- Active: **09-qa + 10-e2e COMPLETE** — next **11-verify-impl**
+- Active: **13-deploy-smoke** — 12 APPROVED (`D-S071-12-merge=1`); merge #1016 → stage then H4–H5
 - Deploy intent: **staging**; promote held until admin applies #1015 rulesets
 
 ## Next child stage
 
-11-verify-impl (non-deployed UI preview per `D-S071-e2`); then 12/13.
+**13-deploy-smoke** after Staging Deploy + Staging smoke green (UJ-064..068 H4–H5).
 
 ## Risks / open decisions
 
 - Live GitHub rulesets empty until admin runs `apply_gh_branch_rulesets.sh`
 - Lint/Typecheck restored as CI; E2E Full only on stage→main PRs
+- Catalog source quality + category sort/filter → **#1017** (after promote; `D-S071-11-1017`)
+- Merge #1016 approved (`D-S071-12-merge=1`)

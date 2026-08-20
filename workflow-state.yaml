@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "Spec→Build OPEN; 07–10 COMPLETE (09/10 PASS); next 11-verify-impl; PR #1016; promote held until admin rulesets"
+overall_status_note: "12 COMPLETE (D-S071-12-merge=1); merging #1016 → stage then 13-deploy-smoke; promote held; #1017 backlog"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -32,6 +32,7 @@ active_session:
   - 1013
   - 1014
   - 1015
+  - 1017
   prior_session: S070-converter-operator-bugs
   feature_ids:
   - F7
@@ -44,8 +45,8 @@ active_session:
   feature_note: "Deepen only — no new top-level Fn"
   preset: Standard
   spec_to_build_gate: open
-  current_stage: 11-verify-impl
-  current_stage_note: "09-qa + 10-e2e PASS; next 11-verify-impl (UI preview); PR #1016"
+  current_stage: 13-deploy-smoke
+  current_stage_note: "12 COMPLETE (D-S071-12-merge=1); merge #1016 → stage then Staging CD + H4–H5; promote held"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
@@ -151,18 +152,25 @@ active_session:
   - stage: 11-verify-impl
     required: true
     mode: delta
-    status: pending
-    note: pending
+    status: completed
+    started: '2026-08-20'
+    completed: '2026-08-20'
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/verify-impl.md
+    note: "COMPLETE — D-S071-11-ac=1a approve all UJ-064..068 + UJ-DEV-009 + #1010–#1015; UI preview localhost:18000; T3/H4–H5 deferred 12/13; #1017 backlog; handoff 12-verify-deploy"
   - stage: 12-verify-deploy
     required: true
     mode: delta
-    status: pending
-    note: pending
+    status: completed
+    started: '2026-08-20'
+    completed: '2026-08-20'
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/deploy-checklist.md
+    note: "COMPLETE — D-S071-12-merge=1; checklist APPROVED; tip dba4e21a CI green; merge #1016 → stage then 13"
   - stage: 13-deploy-smoke
     required: true
     mode: delta
-    status: pending
-    note: pending
+    status: in_progress
+    started: '2026-08-20'
+    note: "in_progress — D-S071-12-merge=1; await #1016 merge + Staging Deploy/smoke then H1–H5 UJ-064..068"
   - stage: 03-plan-tooling
     required: false
     status: skipped
@@ -201,9 +209,17 @@ active_session:
     D-S071-ci: "Restore lint/typecheck CI + full E2E as required on stage→main"
     D-S071-04-plan: "1a — approve execution plan M1 #1011→M6 #1015 as drafted; dual Spec uat/verify-qa next; Spec→Build stays closed"
     D-S071-spec-build: "1a — Open Spec→Build; start 07-build M1 (#1011); promote held until #1015"
+    D-S071-11-preview: "1 — Yes, non-deployed local preview"
+    D-S071-11-scope: "1 — Full EV-061 delta UJ-064..068 + #1010–#1015"
+    D-S071-11-1017: "1 — After EV-061 promote; backlog #1017"
+    D-S071-11-ac: "1a — Approve all journeys UJ-064..068 + UJ-DEV-009 and features #1010–#1015; proceed 12"
+    D-S071-12-scope: "1a — staging via PR #1016 → stage; dual DOKS env_role staging; promote held"
+    D-S071-12-risks: "1a — approve standard mitigations (CI green, CORS/H4–H5 at 13, no accidental main, admin rulesets before promote)"
+    D-S071-12-rollback: "1a — prior GHCR stage-latest / DOKS rollback; no DB migrations"
+    D-S071-12-merge: "1 — Commit 11/12 docs → push → merge #1016 → stage → watch Staging CD → start 13 H4–H5"
   decision_pending: null
   context_briefs: []
-  note: "Spec→Build OPEN (D-S071-spec-build=1a); M1 #1011 + M2 #1012 complete; next M3 #1010; promote held until #1015"
+  note: "12 COMPLETE (D-S071-12-merge=1); merging #1016 → stage then 13; promote held; #1017 backlog"
 
 sessions:
 
@@ -13831,16 +13847,25 @@ stages:
     - 2026-07-14 S011/EV-008 09-qa completed — pass_with_advisories; see reports/qa-report.md
   11-verify-impl:
     status: completed
-    started_at: '2026-08-18'
-    started: '2026-08-18'
-    completed: '2026-08-18'
-    completed_at: '2026-08-18'
-    session_id: S070-converter-operator-bugs
-    evolve_cycle_id: EV-060
+    started_at: '2026-08-20'
+    started: '2026-08-20'
+    completed: '2026-08-20'
+    completed_at: '2026-08-20'
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
     overall: PASS
-    report: docs/sessions/S070-converter-operator-bugs/reports/verify-impl.md
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/verify-impl.md
     report_alt: docs/reports/implementation-verification.md
-    note: 'S070/EV-060 11 COMPLETE — all 5 Fn + UJ-059..063 approved; D-S070-e2 preview :18000; D-S070-11-t3 T3/H4–H5 deferred to 12/13; next 12 staging; tip 0e857b78; promote held'
+    note: 'S071/EV-061 11 COMPLETE — D-S071-11-ac=1a approve all UJ-064..068 + UJ-DEV-009 + #1010–#1015; UI preview localhost:18000; T3/H4–H5 deferred 12/13; #1017 backlog; report docs/sessions/S071-pre-promote-ux-catalog/reports/verify-impl.md; handoff 12-verify-deploy; PR #1016; promote held'
+    previous_s070_started_at: '2026-08-18'
+    previous_s070_started: '2026-08-18'
+    previous_s070_completed: '2026-08-18'
+    previous_s070_completed_at: '2026-08-18'
+    previous_s070_session_id: S070-converter-operator-bugs
+    previous_s070_evolve_cycle_id: EV-060
+    previous_s070_overall: PASS
+    previous_s070_report: docs/sessions/S070-converter-operator-bugs/reports/verify-impl.md
+    previous_s070_note: 'S070/EV-060 11 COMPLETE — all 5 Fn + UJ-059..063 approved; D-S070-e2 preview :18000; D-S070-11-t3 T3/H4–H5 deferred to 12/13; next 12 staging; tip 0e857b78; promote held — superseded by S071/EV-061'
     previous_s067_started_at: '2026-08-16'
     previous_s067_started: '2026-08-16'
     previous_s067_completed: '2026-08-16'
@@ -15934,20 +15959,39 @@ stages:
     - 'PRM-014 completed — PR #710 MERGED after remediation (B1 1358b6e, B2 4e5d84b, A1/A2 1e3358b; merge e4fe492)'
     - '2026-07-12 PRM-012/013 complete; PRs #706–#709 merged into evolve (D-S008-EV006-merge-m4-m7)'
   12-verify-deploy:
-    status: completed
-    started_at: '2026-08-18'
-    started: '2026-08-18'
-    completed: '2026-08-18'
-    completed_at: '2026-08-18'
-    session_id: S070-converter-operator-bugs
-    evolve_cycle_id: EV-060
+    status: in_progress
+    started_at: '2026-08-20'
+    started: '2026-08-20'
+    completed: null
+    completed_at: null
+    session_id: S071-pre-promote-ux-catalog
+    evolve_cycle_id: EV-061
     skill_id: 12-verify-deploy
     mode: delta
     env_role: staging
-    overall: PASS
-    overall_note: checklist-only
-    report: docs/sessions/S070-converter-operator-bugs/reports/deploy-checklist.md
-    note: 'S070/EV-060 12 COMPLETE checklist-only PASS 2026-08-18 — D-S070-12-close; D-S070-12-risks approve all four; D-S070-12-rollback approve prior GHCR/stage-latest; NO merge #1007; 13 blocked until merge; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; env_role staging; promote held; pending_commit dirty (parent will commit checklist + this yaml); do not start 13'
+    overall: null
+    overall_note: null
+    report: null
+    note: 'S071/EV-061 12 in_progress — pending checklist + merge; PR #1016 → stage MERGEABLE tip dba4e21a CI green; promote held; D-S071-12-scope/risks/rollback proposed 1a; await D-S071-12-merge'
+    tip_sha: dba4e21a
+    tip_sha_note: "PR #1016 → stage MERGEABLE tip dba4e21a CI green; promote held; await merge approval"
+    pr_number: 1016
+    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016
+    pr_status: open
+    pr_base: stage
+    awaiting_user_decision: true
+    awaiting_user_decision_note: 'D-S071-12-merge pending until user says merge; checklist in progress; promote held'
+    previous_s070_status: completed
+    previous_s070_started_at: '2026-08-18'
+    previous_s070_started: '2026-08-18'
+    previous_s070_completed: '2026-08-18'
+    previous_s070_completed_at: '2026-08-18'
+    previous_s070_session_id: S070-converter-operator-bugs
+    previous_s070_evolve_cycle_id: EV-060
+    previous_s070_overall: PASS
+    previous_s070_overall_note: checklist-only
+    previous_s070_report: docs/sessions/S070-converter-operator-bugs/reports/deploy-checklist.md
+    previous_s070_note: 'S070/EV-060 12 COMPLETE checklist-only PASS 2026-08-18 — D-S070-12-close; D-S070-12-risks approve all four; D-S070-12-rollback approve prior GHCR/stage-latest; NO merge #1007; 13 blocked until merge; tip CI GREEN c2880375 run 32180225018; product CI GREEN 4d29ee0c run 32171946188; env_role staging; promote held — superseded by S071/EV-061'
     s070_tip_sha: c2880375
     s070_tip_sha_full: c2880375041e0a2d508e53da45051579753d93eb
     s070_tip_sha_pushed: true
@@ -15972,24 +16016,21 @@ stages:
     previous_s067_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/deploy-checklist.md
     previous_s067_tip_sha: "d7022f1f"
     previous_s067_pr_number: 991
-    report_alt: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/12-verify-deploy.md
-    report_status: completed
-    expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/deploy-checklist.md
-    tip_sha: "d7022f1f"
-    tip_sha_full: d7022f1f331c21665ae16df1cf82bd764d9a92ff
-    tip_sha_pushed: true
-    tip_ci_run: '31966102210'
-    tip_ci_status: success
-    tip_ci_note: "S067/EV-057 12 COMPLETE — #991 MERGED → stage @ d7022f1f; CI/CD 31966102210 success; Deploy(stage)+Staging smoke success; promote held D-S067-promote=2b"
-    pr_number: 991
-    pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994
-    pr_status: merged
-    pr_base: stage
-    merge_sha: d7022f1f
-    merge_sha_full: d7022f1f331c21665ae16df1cf82bd764d9a92ff
-    decision_id: D-S067-12-merge
-    awaiting_user_decision: false
-    awaiting_user_decision_note: '12 COMPLETE; #991 MERGED → stage @ d7022f1f; promote held (D-S067-promote=2b — no promote approval invented); handoff 13-deploy-smoke IN PROGRESS'
+    previous_s067_report_alt: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/12-verify-deploy.md
+    previous_s067_report_status: completed
+    previous_s067_expected_report: docs/sessions/S067-m0-ready-apex-accumulate-validate/reports/deploy-checklist.md
+    previous_s067_tip_sha_full: d7022f1f331c21665ae16df1cf82bd764d9a92ff
+    previous_s067_tip_sha_pushed: true
+    previous_s067_tip_ci_run: '31966102210'
+    previous_s067_tip_ci_status: success
+    previous_s067_tip_ci_note: "S067/EV-057 12 COMPLETE — #991 MERGED → stage @ d7022f1f; CI/CD 31966102210 success; Deploy(stage)+Staging smoke success; promote held D-S067-promote=2b"
+    previous_s067_pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991
+    previous_s067_pr_status: merged
+    previous_s067_pr_base: stage
+    previous_s067_merge_sha: d7022f1f
+    previous_s067_merge_sha_full: d7022f1f331c21665ae16df1cf82bd764d9a92ff
+    previous_s067_decision_id: D-S067-12-merge
+    previous_s067_awaiting_note: 'superseded by S071 — was COMPLETE; #991 MERGED → stage @ d7022f1f; promote held'
     previous_s067_complete_note: 'COMPLETE — S067/EV-057 12-verify-deploy PASS 2026-08-16; #991 MERGED → stage @ d7022f1f; CI/CD 31966102210 success; Deploy(stage)+Staging smoke success; reports deploy-checklist.md + 12-verify-deploy.md; promote held; handoff 13-deploy-smoke pending'
     previous_s064_started_at: '2026-08-11'
     previous_s064_started: '2026-08-11'
@@ -17621,7 +17662,7 @@ stages:
     mode: orchestrator
     session_id: S071-pre-promote-ux-catalog
     evolve_cycle_id: EV-061
-    note: 'Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; promote held until #1015'
+    note: 'S071/EV-061 orchestrating — 11 COMPLETE; current_child 12-verify-deploy; promote held; await D-S071-12-merge'
     previous_s070_session_id: S070-converter-operator-bugs
     previous_s070_evolve_cycle_id: EV-060
     previous_s070_completed: '2026-08-18'
@@ -18025,6 +18066,243 @@ issue_log:
   date: '2026-07-12'
   resolved_at: '2026-07-12'
 decisions_log:
+
+- id: D-S071-11-ac
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: '2026-08-20'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: acceptance
+  status: confirmed
+  topic: 'S071/EV-061 11-verify-impl — journey/feature acceptance'
+  summary: '1a — Approve all journeys UJ-064..068 + UJ-DEV-009 and features #1010–#1015; proceed 12'
+  choice: '1a'
+  decision: |
+    D-S071-11-ac=1a (2026-08-20).
+    Approve all journeys UJ-064..068 + UJ-DEV-009 and features #1010–#1015.
+    UI preview localhost:18000; T3/H4–H5 deferred 12/13; #1017 backlog.
+    Report: docs/sessions/S071-pre-promote-ux-catalog/reports/verify-impl.md.
+    11-verify-impl COMPLETE; handoff 12-verify-deploy.
+  related_features:
+  - F7
+  - F2
+  - F6
+  - F9
+  - F10
+  - F15
+  - F34
+  related_issues:
+  - '1009'
+  - '1010'
+  - '1011'
+  - '1012'
+  - '1013'
+  - '1014'
+  - '1015'
+  - '1017'
+  related_pr: 1016
+  current_stage: 12-verify-deploy
+  note: '11 COMPLETE; proceed 12; no git commit by workflow-state-manager'
+
+- id: D-S071-12-scope
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: null
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: scope
+  status: proposed
+  topic: 'S071/EV-061 12-verify-deploy — deploy scope'
+  summary: '1a — staging via PR #1016 → stage; dual DOKS env_role staging; promote held'
+  choice: '1a'
+  decision: |
+    D-S071-12-scope=1a (proposed 2026-08-20).
+    Staging via PR #1016 → stage; dual DOKS env_role staging; promote held.
+  related_issues:
+  - '1009'
+  - '1016'
+  tip_sha: dba4e21a
+  pr_number: 1016
+  current_stage: 12-verify-deploy
+  note: 'proposed/set recommended; await confirm with merge; no git commit by workflow-state-manager'
+
+- id: D-S071-12-risks
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: null
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: risk_mitigation
+  status: proposed
+  topic: 'S071/EV-061 12-verify-deploy — risk mitigations'
+  summary: '1a — approve standard mitigations (CI green, CORS/H4–H5 at 13, no accidental main, admin rulesets before promote)'
+  choice: '1a'
+  decision: |
+    D-S071-12-risks=1a (proposed 2026-08-20).
+    Approve standard mitigations: CI green, CORS/H4–H5 at 13, no accidental main, admin rulesets before promote.
+  related_issues:
+  - '1009'
+  - '1016'
+  tip_sha: dba4e21a
+  pr_number: 1016
+  current_stage: 12-verify-deploy
+  note: 'proposed/set recommended; no git commit by workflow-state-manager'
+
+- id: D-S071-12-rollback
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: null
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: rollback
+  status: proposed
+  topic: 'S071/EV-061 12-verify-deploy — rollback plan'
+  summary: '1a — prior GHCR stage-latest / DOKS rollback; no DB migrations'
+  choice: '1a'
+  decision: |
+    D-S071-12-rollback=1a (proposed 2026-08-20).
+    Prior GHCR stage-latest / DOKS rollback; no DB migrations.
+  related_issues:
+  - '1009'
+  - '1016'
+  tip_sha: dba4e21a
+  pr_number: 1016
+  current_stage: 12-verify-deploy
+  note: 'proposed/set recommended; no git commit by workflow-state-manager'
+
+- id: D-S071-12-merge
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: null
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 12-verify-deploy
+  skill_id: 12-verify-deploy
+  stage: 12-verify-deploy
+  category: merge_approval
+  status: pending
+  topic: 'S071/EV-061 12-verify-deploy — merge #1016 → stage'
+  summary: 'pending until user says merge'
+  choice: null
+  decision: |
+    D-S071-12-merge — pending until user says merge.
+    PR #1016 → stage MERGEABLE tip dba4e21a CI green; promote held.
+    Do not merge without explicit user approval.
+  related_issues:
+  - '1009'
+  - '1016'
+  tip_sha: dba4e21a
+  pr_number: 1016
+  current_stage: 12-verify-deploy
+  note: 'pending; decision_pending=D-S071-12-merge; no git commit by workflow-state-manager'
+
+- id: D-S071-11-preview
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: '2026-08-20'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: process
+  status: confirmed
+  topic: 'S071/EV-061 11-verify-impl — UI preview mode'
+  summary: '1 — Yes, non-deployed local preview'
+  choice: '1'
+  decision: |
+    D-S071-11-preview=1 (2026-08-20).
+    Non-deployed local UI preview accepted (make-dev http://localhost:18000, API :18001).
+    Aligns with D-S071-e2 UI preview at 11. 11-verify-impl in_progress; promote held; PR #1016.
+  related_features:
+  - F7
+  - F2
+  - F6
+  - F9
+  - F10
+  - F15
+  related_issues:
+  - '1009'
+  - '1016'
+  current_stage: 11-verify-impl
+  note: '11-verify-impl in_progress; local preview :18000/:18001; no git commit by workflow-state-manager'
+
+- id: D-S071-11-scope
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: '2026-08-20'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: scope
+  status: confirmed
+  topic: 'S071/EV-061 11-verify-impl — signoff scope'
+  summary: '1 — Full EV-061 delta UJ-064..068 + #1010–#1015'
+  choice: '1'
+  decision: |
+    D-S071-11-scope=1 (2026-08-20).
+    Full EV-061 delta signoff: UJ-064..068 (+ UJ-DEV-009) covering #1010–#1015.
+    Collecting operator signoff; 11-verify-impl in_progress.
+  related_features:
+  - F7
+  - F2
+  - F6
+  - F9
+  - F10
+  - F15
+  - F34
+  related_issues:
+  - '1009'
+  - '1010'
+  - '1011'
+  - '1012'
+  - '1013'
+  - '1014'
+  - '1015'
+  current_stage: 11-verify-impl
+  note: '11-verify-impl in_progress; collecting UJ-064..068 + UJ-DEV-009; no git commit by workflow-state-manager'
+
+- id: D-S071-11-1017
+  date: '2026-08-20'
+  timestamp: '2026-08-20'
+  resolved_at: '2026-08-20'
+  session_id: S071-pre-promote-ux-catalog
+  evolve_cycle_id: EV-061
+  skill: 11-verify-impl
+  skill_id: 11-verify-impl
+  stage: 11-verify-impl
+  category: backlog
+  status: confirmed
+  topic: 'S071/EV-061 11-verify-impl — #1017 catalog follow-up timing'
+  summary: '1 — After EV-061 promote; backlog #1017'
+  choice: '1'
+  decision: |
+    D-S071-11-1017=1 (2026-08-20).
+    Catalog source/filter follow-up #1017 filed; defer until after EV-061 promote (backlog).
+    Does not block 11-verify-impl signoff for EV-061 delta.
+  related_features:
+  - F7
+  - F15
+  related_issues:
+  - '1017'
+  - '1009'
+  current_stage: 11-verify-impl
+  note: '#1017 backlog after promote; 11-verify-impl continues; no git commit by workflow-state-manager'
 
 - id: D-S071-04-plan
   date: '2026-08-18'
@@ -40116,6 +40394,7 @@ evolve_cycles:
   - 1013
   - 1014
   - 1015
+  - 1017
   issues:
   - 1009
   - 1010
@@ -40124,6 +40403,7 @@ evolve_cycles:
   - 1013
   - 1014
   - 1015
+  - 1017
   branch: evolve/EV-061-pre-promote-ux-catalog
   branch_base: stage@a1650b01
   branch_base_sha: a1650b01
@@ -40132,20 +40412,20 @@ evolve_cycles:
   branch_exists: true
   branch_pushed: true
   branch_tracking: origin/evolve/EV-061-pre-promote-ux-catalog
-  tip_sha: afda1daf
-  tip_sha_full: afda1daf3089d8080b2cade4b64e699982bac5a4
-  tip_sha_pushed: false
-  tip_sha_note: "HEAD afda1daf local (01-requirements COMPLETE); catalog source links + workflow-state pending parent push; predecessor d37e450e pushed"
-  current_stage: 07-build
+  tip_sha: dba4e21a
+  tip_sha_full: null
+  tip_sha_pushed: true
+  tip_sha_note: "PR #1016 → stage MERGEABLE tip dba4e21a CI green; promote held; await merge approval"
+  current_stage: 12-verify-deploy
   current_stage_status: in_progress
-  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1 #1011 in progress; 16-evolve orchestrating; promote held until #1015"
-  current_child: 07-build
-  current_child_stage: 07-build
+  current_stage_note: "11 COMPLETE (D-S071-11-ac=1a); 12 checklist in progress; PR #1016 → stage MERGEABLE tip dba4e21a CI green; promote held; await merge approval"
+  current_child: 12-verify-deploy
+  current_child_stage: 12-verify-deploy
   current_child_stage_status: in_progress
-  current_child_note: "Spec→Build open; orchestrating Build M1 #1011"
-  active_milestone: M1
+  current_child_note: "pending checklist + merge; D-S071-12-scope/risks/rollback proposed 1a; await D-S071-12-merge"
+  active_milestone: null
   active_task: null
-  decision_pending: null
+  decision_pending: D-S071-12-merge
   started: "2026-08-18"
   started_at: "2026-08-18"
   preset: Standard
@@ -40207,6 +40487,14 @@ evolve_cycles:
     D-S071-cors: "Unchanged"
     D-S071-ci: "Restore lint/typecheck CI + full E2E as required on stage→main"
     D-S071-04-plan: "1a — approve execution plan M1 #1011→M6 #1015 as drafted; dual Spec uat/verify-qa next; Spec→Build stays closed"
+    D-S071-11-preview: "1 — Yes, non-deployed local preview"
+    D-S071-11-scope: "1 — Full EV-061 delta UJ-064..068 + #1010–#1015"
+    D-S071-11-1017: "1 — After EV-061 promote; backlog #1017"
+    D-S071-11-ac: "1a — Approve all journeys UJ-064..068 + UJ-DEV-009 and features #1010–#1015; proceed 12"
+    D-S071-12-scope: "1a — staging via PR #1016 → stage; dual DOKS env_role staging; promote held"
+    D-S071-12-risks: "1a — approve standard mitigations (CI green, CORS/H4–H5 at 13, no accidental main, admin rulesets before promote)"
+    D-S071-12-rollback: "1a — prior GHCR stage-latest / DOKS rollback; no DB migrations"
+    D-S071-12-merge: "pending until user says merge"
   gates:
     spec_to_build: closed
     spec_to_build_note: "D-S071-e9 — Spec-development only; Spec band complete; Build 07+ blocked_until_spec_gate pending gate AskQuestion"
@@ -40274,14 +40562,18 @@ evolve_cycles:
       status: pending
       note: blocked_until_spec_gate
     11-verify-impl:
-      status: pending
-      note: blocked_until_spec_gate
+      status: completed
+      started: '2026-08-20'
+      completed: '2026-08-20'
+      report: docs/sessions/S071-pre-promote-ux-catalog/reports/verify-impl.md
+      note: "COMPLETE — D-S071-11-ac=1a approve all UJ-064..068 + UJ-DEV-009 + #1010–#1015; UI preview localhost:18000; T3/H4–H5 deferred 12/13; #1017 backlog; handoff 12-verify-deploy"
     12-verify-deploy:
-      status: pending
-      note: blocked_until_spec_gate
+      status: in_progress
+      started: '2026-08-20'
+      note: "in_progress — pending checklist + merge; PR #1016 → stage MERGEABLE tip dba4e21a CI green; promote held; await D-S071-12-merge"
     13-deploy-smoke:
       status: pending
-      note: blocked_until_spec_gate
+      note: pending
   artifacts:
   - docs/sessions/S071-pre-promote-ux-catalog/reports/04-tech-plan.md
   - docs/sessions/S071-pre-promote-ux-catalog/reports/execution-plan.md
@@ -40289,12 +40581,13 @@ evolve_cycles:
   - docs/sessions/S071-pre-promote-ux-catalog/uat-script.md
   - docs/sessions/S071-pre-promote-ux-catalog/reports/verify-qa-spec.md
   notes:
+  - "2026-08-20 11-verify-impl COMPLETE — D-S071-11-ac=1a; report docs/sessions/S071-pre-promote-ux-catalog/reports/verify-impl.md; current_stage 12-verify-deploy in_progress; PR #1016 MERGEABLE tip dba4e21a CI green; promote held; D-S071-12-scope/risks/rollback proposed; D-S071-12-merge pending; no git commit by workflow-state-manager"
   - "2026-08-18 Spec band COMPLETE — 04-tech-plan D-S071-04-plan=1a + uat (Spec) + verify-qa (Spec); reports 04-tech-plan.md + uat-script.md + verify-qa-spec.md; Spec→Build remains closed pending gate AskQuestion; 07+ blocked_until_spec_gate; no git commit by workflow-state-manager"
   - "2026-08-18 04-tech-plan DRAFTED — M1 #1011→M6 #1015; intake A D-S071-m-order/deps/adr/api/cors/ci; pending D-S071-04-plan; Spec→Build closed; reports 04-tech-plan.md + execution-plan.md + build-plan-card.md; no git commit by workflow-state-manager"
   - "2026-08-18 01-requirements COMPLETE — S071/EV-061 Spec delta; report docs/sessions/S071-pre-promote-ux-catalog/reports/01-requirements.md; D-S071-links-resolve; handoff 02-verify-plan Gate A; commit afda1daf local; catalog source links pending parent commit+push; spec_to_build_gate closed; no git commit by workflow-state-manager"
   - "2026-08-18 01-requirements IN_PROGRESS — S071/EV-061 Spec band started; 16-evolve orchestrating; tip d37e450e; commit d37e450e docs: [S071] open EV-061 pre-promote UX + catalog session; branch evolve/EV-061-pre-promote-ux-catalog tracking origin/evolve/EV-061-pre-promote-ux-catalog; spec_to_build_gate closed; no git commit by workflow-state-manager"
   - "2026-08-18 D-S071-e9 — open_session S071/EV-061; Standard Spec-development only; Spec→Build gate closed; branch evolve/EV-061-pre-promote-ux-catalog @ origin/stage@a1650b01; epic #1009 + #1010–#1015; session_counter=71; evolve_cycle_counter=61; no git commit by workflow-state-manager"
-  note: "OPEN — Spec band complete (04+verify-qa+uat Spec); D-S071-04-plan=1a; Spec→Build closed pending gate; [Corpus: product §F7] [Corpus: decisions §EV-061]"
+  note: "OPEN — 11 COMPLETE (D-S071-11-ac=1a); 12-verify-deploy in_progress; PR #1016 MERGEABLE tip dba4e21a; promote held; await merge; [Corpus: product §F7] [Corpus: decisions §EV-061]"
 - id: EV-060
   title: "Converter operator bugs + IWXXM pass-through (#1000)"
   topic: "Converter operator bugs + F7.t IWXXM pass-through + Auth UAT"
