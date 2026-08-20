@@ -12,7 +12,7 @@
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
 | 00-context | yes | session | **completed** | Open S071/EV-061; EV0–EV9 locked |
-| 16-evolve | yes | orchestrate | **in_progress** | Spec→Build **open**; 07-build M1 in progress |
+| 16-evolve | yes | orchestrate | **in_progress** | Spec→Build **open**; 09+10 PASS; next 11 |
 | 01-requirements | yes | delta | **completed** | Deepen F7/F2/F6/F9/F10/F15/F34; UJs for catalog/AHL/bars/validate |
 | 02-verify-plan | yes | delta | **completed** | Gate A PASS `D-S071-gateA=1a` |
 | 03-plan-tooling | no | — | skipped | Unless 04 finds Cursor rules |
@@ -26,13 +26,13 @@
 
 | Stage | Include? | Mode | Status | Notes |
 |-------|----------|------|--------|-------|
-| 07-build | yes | delta | **in_progress** | M1 #1011 (`D-S071-spec-build=1a`) |
-| 08-verify-build | yes | delta | pending | After M1 tasks complete |
-| 09-qa | yes | delta | pending | |
-| 10-e2e | yes | delta | pending | Catalog tab + AHL + bars |
+| 07-build | yes | delta | **completed** | M1–M6 #1011–#1015 |
+| 08-verify-build | yes | delta | **completed** | M1–M6 PASS reports |
+| 09-qa | yes | delta | **completed** | `reports/qa-report.md` PASS |
+| 10-e2e | yes | delta | **completed** | `reports/e2e-report.md` — UJ-064..068 T2 PASS |
 | 11-verify-impl | yes | delta | pending | Non-deployed UI preview |
 | 12-verify-deploy | yes | delta | pending | |
-| 13-deploy-smoke | yes | delta | pending | staging; promote held until #1015 |
+| 13-deploy-smoke | yes | delta | pending | staging; promote held until admin rulesets |
 | uat (Build) | yes | dual Build | pending | |
 
 ## Spec → Build gate

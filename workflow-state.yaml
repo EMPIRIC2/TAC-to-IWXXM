@@ -1,5 +1,5 @@
 overall_status: in_progress
-overall_status_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M6 COMPLETE; next 09-qa/10-e2e; promote held until admin applies #1015 rulesets"
+overall_status_note: "Spec→Build OPEN; 07–10 COMPLETE (09/10 PASS); next 11-verify-impl; PR #1016; promote held until admin rulesets"
 project:
   name: TAC-to-IWXXM
   description: TAC (METAR/SPECI/TAF) to IWXXM XML converter — monorepo
@@ -44,8 +44,8 @@ active_session:
   feature_note: "Deepen only — no new top-level Fn"
   preset: Standard
   spec_to_build_gate: open
-  current_stage: 09-qa
-  current_stage_note: "Spec→Build OPEN (D-S071-spec-build=1a); 07-build M1–M6 COMPLETE (08 M6 PASS); next 09-qa/10-e2e; PR #1016"
+  current_stage: 11-verify-impl
+  current_stage_note: "09-qa + 10-e2e PASS; next 11-verify-impl (UI preview); PR #1016"
   gate_a: PASS
   gate_a_status: pass
   gate_a_decision: D-S071-gateA=1a
@@ -135,13 +135,19 @@ active_session:
   - stage: 09-qa
     required: true
     mode: delta
-    status: pending
-    note: pending
+    status: completed
+    started: '2026-08-20'
+    completed: '2026-08-20'
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/qa-report.md
+    note: "COMPLETE — delta PASS; H0c/H0i green; report reports/qa-report.md"
   - stage: 10-e2e
     required: true
     mode: delta
-    status: pending
-    note: pending
+    status: completed
+    started: '2026-08-20'
+    completed: '2026-08-20'
+    report: docs/sessions/S071-pre-promote-ux-catalog/reports/e2e-report.md
+    note: "COMPLETE — UJ-064..068 T2 6 passed; report reports/e2e-report.md"
   - stage: 11-verify-impl
     required: true
     mode: delta

@@ -21,7 +21,7 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 
 ## Phase split
 
-- Active phase: **Build** — M1–M6 complete; Verify band next
+- Active phase: **Build** — Verify band (09+10 done; next 11)
 - Spec→Build gate: **open** (`D-S071-spec-build=1a`)
 - Preset: **Standard**
 
@@ -35,12 +35,12 @@ Pre-promote operator UX + AHL decode/convert + lint/validation catalog tab + str
 ## Build band (07–13)
 
 - Order: M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015
-- Active: **M6 #1015 complete** (08 PASS) — next **09-qa / 10-e2e** (Standard)
+- Active: **09-qa + 10-e2e COMPLETE** — next **11-verify-impl**
 - Deploy intent: **staging**; promote held until admin applies #1015 rulesets
 
 ## Next child stage
 
-09-qa + 10-e2e (parallel OK) after PR #1016 tip CI green; then 11-verify-impl.
+11-verify-impl (non-deployed UI preview per `D-S071-e2`); then 12/13.
 
 ## Risks / open decisions
 
