@@ -91,6 +91,15 @@ Create Environments + rulesets in the GitHub UI (or as a repo admin):
 3. Settings → Rules → New ruleset targeting `stage` and `main`:
    - Require pull request before merging
    - Block force pushes
-   - Required status checks: CI Test jobs; on `main` also **Staging gate**
+   - Required status checks (exact job `name:` strings from `ci-cd.yml`):
+     - **Both `stage` and `main`:** full `Test (*)` matrix (shared/auth/backend/frontend/
+       tac2iwxxm/iwxxm-validate/tac-validate/dissemination/worker/bugs + alembic),
+       `Lint`, `Typecheck`, Rust crates / maturin / Converter perf
+     - **`main` only (promote):** also `Staging gate` and `E2E Full (Playwright)`
+       (not `E2E Smoke (Playwright)` — smoke-only is insufficient for EV-061 / #1015)
+4. Re-apply after #1015 / EV-061 so live rulesets match the script (admin token required).
 
 Script (admin token): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
+
+Canonical name inventory: [docs/deploy.md](../deploy.md) §Promote (EV-061 table).
+[Corpus: deploy] [Corpus: tests §TC-EV061-1015]

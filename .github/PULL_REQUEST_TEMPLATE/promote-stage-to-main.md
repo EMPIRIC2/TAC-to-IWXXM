@@ -26,5 +26,7 @@ See docs/deploy.md §Promote / §Release checklist. ADR-034.
 
 - [ ] Staging smoke green for tip SHA
 - [ ] Staging gate green on this PR
-- [ ] **EV-061 / #1015:** full CI unit jobs, lint, typecheck, and **full E2E** (not smoke-only) green
-- [ ] Post-merge: confirm Deploy (main) + prod `/health`
+- [ ] **EV-061 / #1015:** full CI unit jobs (`Test (*)`), `Lint`, `Typecheck`, and
+      **`E2E Full (Playwright)`** (not smoke-only) green — see `docs/deploy.md` §Promote table
+- [ ] Post-merge: confirm tip CI on `main` green (**Deploy must not run** on bare main push);
+      ship prod via `vYYYY.MM.DD-deploy` tag
