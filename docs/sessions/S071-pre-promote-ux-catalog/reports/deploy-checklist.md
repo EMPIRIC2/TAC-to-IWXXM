@@ -38,8 +38,8 @@ Do **not** open feature→`main`. Promote only after Staging gate + admin rulese
 - [x] Branch pushed — tip `dba4e21a`
 - [x] Tip CI green — [32370411164](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32370411164) @ `dba4e21a`
 - [x] PR open — [#1016](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016) **MERGEABLE**
-- [x] Merge + Staging CD — `D-S071-12-merge=1` (merge in progress / watch CD)
-- [ ] Post-deploy H1 + **H4–H5** (13) — UJ-064..068 on staging
+- [x] Merge + Staging CD — `D-S071-12-merge=1`; CD [32398410519](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32398410519) success
+- [x] Post-deploy H1 + **H4–H5** (13) — UJ-064..068 PASS — see `reports/deploy-smoke.md`
 
 ## Failure Mitigations
 
@@ -73,5 +73,5 @@ Do **not** open feature→`main`. Promote only after Staging gate + admin rulese
 - [x] Scope — staging via #1016 (`D-S071-12-scope=1a` proposed)
 - [x] Risks — standard mitigations (`D-S071-12-risks=1a` proposed)
 - [x] Rollback — GHCR/DOKS (`D-S071-12-rollback=1a` proposed)
-- [x] Merge #1016 → `stage` — **approved** (`D-S071-12-merge=1`)
-- [ ] Ready for 13 after Staging CD green
+- [x] Merge #1016 → `stage` — **approved** (`D-S071-12-merge=1`); merged `86867a11`
+- [x] Ready for 13 after Staging CD green — **done**; await `D-S071-13`
