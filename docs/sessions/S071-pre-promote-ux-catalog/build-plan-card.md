@@ -1,42 +1,39 @@
 # Build Plan Card
 
-> Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-19  
-> Active: **07-build M5 #1014** — Spec→Build **open** (`D-S071-spec-build=1a`)  
-> M1–M4 PR: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016 (open → `stage`)
+> Cycle: EV-061 | Session: S071-pre-promote-ux-catalog | Updated: 2026-08-20  
+> Active: **07-build M6 #1015** — Spec→Build **open** (`D-S071-spec-build=1a`)  
+> M1–M5 PR: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016 (open → `stage`)
 
 ## Goal
 
-Top-level **Lint & validation catalog** nav tab/page listing code, description, level,
-and working source hrefs for TAC lint and IWXXM validation. Operator hrefs are verified
-landings. Promote held until #1015.
+Stricter **stage→main** promote gate: required checks include full unit, lint, typecheck,
+and full Playwright E2E (not smoke-only), plus Staging gate. Document in deploy.md.
 
 ## Constraints
 
-- [Corpus: product §F7] [Corpus: product §F15] [Corpus: journeys §UJ-068]
-  [Corpus: tests §TC-EV061-1014] [Corpus: api]
-- Additive fields + IWXXM rows on existing `GET /lint-issue-catalog` — **no** new route
-- No new deps / ADR / CORS origins
-- No planning ids in OpenAPI or operator copy (EV-048)
-- Source policy `D-S071-links-resolve`: operator hrefs = verified landings
+- [Corpus: product §F34] [Corpus: journeys §UJ-DEV-009] [Corpus: deploy]
+  [Corpus: tests §TC-EV061-1015] [Corpus: tech-spec]
+- Restore lint/typecheck as CI jobs on promote PRs (`D-S071-ci`)
+- No new product deps / ADR / CORS origins
+- Branch protection may need maintainer admin
 
-## In scope (this batch — M5)
+## In scope (this batch — M6)
 
-- [ ] T5.1 — Test — Red: tab/page lists code, description, level, working source hrefs — Spec: UJ-068 F7.v/F15
-- [ ] T5.2 — Code — Additive catalog fields + IWXXM validation rows on `GET /lint-issue-catalog` — Spec: [Corpus: api] D-S071-api
-- [ ] T5.3 — Code — Top-level nav tab/page; operator hrefs = verified landings — Spec: mining note
-- [ ] T5.4 — Docs — OpenAPI aliases for additive catalog fields; no planning ids in attribution — Spec: EV-048
+- [ ] T6.1 — Test/Docs — Inventory current required checks vs target set — Spec: UJ-DEV-009 deploy.md
+- [ ] T6.2 — Config — CI jobs: lint + typecheck + full Playwright E2E on promote PRs — Spec: D-S071-ci
+- [ ] T6.3 — Docs — deploy.md + promote PR template; branch-protection runbook — Spec: [Corpus: deploy]
 
 ## Out of scope (explicit)
 
-#1010–#1013 (M1–M4 done); #1015 promote gate; #996 click-for-detail
+#1010–#1014 (M1–M5 done); live H4–H5 (12/13)
 
 ## Parallelism
 
-T5.1 → T5.2 → T5.3 → T5.4 (TDD)
+T6.1 → T6.2 → T6.3
 
 ## Verify / PR
 
-08-verify-build M5 after T5.4; stack on PR #1016 to `stage`.
+08-verify-build M6 after T6.3; stack on PR #1016 to `stage`. Promote held until #1015 lands.
 
 ## Gate
 
