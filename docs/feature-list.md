@@ -2,19 +2,19 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-18 (S070 / EV-060 closed; S069 / EV-059 F34 Done on stage; promote held)
+> **Last updated**: 2026-08-18 (S071 / EV-061 Spec — pre-promote UX + AHL + catalog tab + stage→main gate #1009; promote held)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038 |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010) |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006) |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -41,7 +41,7 @@
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
-| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; promote held |
+| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -499,6 +499,14 @@
 - **S070 / EV-060 deepen (#1001 AHL bulletin lint noise)**: AHL wrapper lints as bulletin COM;
   contained TAC reports lint/validate with the selected product. Heading tokens are not
   product-syntax errors. Same on workbench, FileConverter, and `/convert-bulletin` / lint.
+- **S071 / EV-061 deepen (#1012 AHL decode + convert)**: Well-formed multi-report METAR AHL
+  (canonical heading `T1T2A1A2ii CCCC YYGGgg [BBB]` + `=`-terminated reports; golden
+  `SAUS31 KZNY` fixture) **decodes** with item-by-item readable rows per report **and**
+  **convert-bulletin** succeeds. Malformed AHL → clear `INVALID_AHL` / `empty_bulletin`.
+  Context for operators/API: product, profile, optional Bulletin ID / Issuing Center.
+  Distinct from #1011 (stale live harness field name).
+- **S071 / EV-061 chore (#1011)**: `tests/live/test_tc_live_f6_030_bulletin.py` posts multipart
+  field `files` (API contract), not `file`.
 - **Acceptance (EV-060 / #1001)**: Given a well-formed AHL METAR bulletin, when lint/validate,
   then heading is not a flood of product-syntax errors and contained METARs are checked.
 - **S070 / EV-060 deepen (#1002 profile picker)**: Clearly labeled Profile (Annex 3 / IWXXM-US)
@@ -511,6 +519,16 @@
   passwords, or Authorization headers.
 - **S070 / EV-060 deepen (#1006 Auth UAT)**: Facilitated UAT + Playwright register, login,
   logout, session persist; guest convert still works (F21). Deepens F31 / UJ-003 / UJ-046.
+- **S071 / EV-061 deepen (F7.u / #1013)**: Product Type + Profile at converter top do **not
+  wrap** at ≥1024px; mode selects share one aligned bar/row; conversion parameters share one
+  aligned bar/row; visually polished; stacked OK below 1024px. Keyboard labels preserved.
+- **S071 / EV-061 deepen (F7.v / #1014)**: Top-level **Lint & validation catalog** nav tab +
+  page listing code, description, level, and **working** source links for TAC lint **and**
+  IWXXM validation checks. Source policy (`D-S071-links-resolve`): three tiers; `codes.wmo.int`
+  concept paths may be **semantic-only**; operator hrefs use verified landings (registry guide,
+  wmo-im/iwxxm, AHL knowledge-hub, NWS iwxxm-us, APAC FAQ). See
+  [mining/ev061-catalog-source-replacements-2026-08-18.md](domain/mining/ev061-catalog-source-replacements-2026-08-18.md).
+  Related but distinct from #996 click-for-detail.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -574,8 +592,12 @@
      while typing
   3. Residuals named in summary via "Not decoded: …" when present
   4. Decode response stays backward-compatible (additive `summary` only)
+- **S071 / EV-061 deepen (#1010)**: When Validate IWXXM (or product=IWXXM validate path)
+  still produces decode, the UI shows the **same item-by-item readable description panel**
+  used for other TAC product types (parity with F9 decode rows / plain-language patterns) —
+  not a raw dump. F7.s validate-only and F7.t pass-through remain. UJ-064.
 - **Source**: S013 intake E9-2/E9-3/E9-4/E9-6; Batch 1 (all recommended, 2026-07-16);
-  [evolve-decisions §EV-009](decisions/evolve-decisions.md)
+  [evolve-decisions §EV-009](decisions/evolve-decisions.md); S071 / EV-061 #1010
 
 ### F10: Workbench Preview Clarity (IWXXM Pane + Lint UX)
 
@@ -1711,8 +1733,12 @@
   as merge gate; product UI; weaken coverage ≥95%; promote `stage`→`main`; replace hand-written
   UJ/pytest with Schemathesis alone
 - **OpenAPI**: Breaking cleanup **allowed** when Schemathesis proves export wrong (`D-S069-e5`)
+- **S071 / EV-061 deepen (#1015)**: PRs **`stage` → `main`** require a stricter merge gate than
+  Staging gate alone: **full CI** (unit suites), **lint**, **typecheck**, and **full E2E**
+  (not smoke-only) as required status checks before merge. Documented in deploy.md; GitHub
+  branch protection / required checks as needed. No new app secrets. UJ-DEV-009 (doc/CI).
 - **Source**: E0–E8 / 01 intake; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-059;
-  #841 / #727 / #874; [Corpus: tests] [Corpus: tech-spec] [Corpus: api]
+  #841 / #727 / #874; [Corpus: tests] [Corpus: tech-spec] [Corpus: api]; S071 / EV-061 #1015
 
 ### F7 / F16–F19 deepen (S050 / EV-042 — #897 destinations UI hide + churn)
 

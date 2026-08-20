@@ -114,7 +114,8 @@ def test_convert_bulletin_split_failed_422(client: TestClient) -> None:
     )
     assert response.status_code == 422
     detail = response.json()["detail"]
-    assert detail["code"] == "bulletin_split_failed"
+    assert detail["code"] == "INVALID_AHL"
+    assert detail.get("alias") == "bulletin_split_failed"
 
 
 def test_convert_bulletin_requires_product(client: TestClient) -> None:

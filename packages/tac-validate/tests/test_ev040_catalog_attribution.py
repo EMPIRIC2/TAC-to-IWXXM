@@ -44,6 +44,12 @@ def test_attribution_for_unknown_code_returns_nones() -> None:
         "source_id": None,
         "source_url": None,
         "source_attribution": None,
+        "family": "lint",
+        "source_type": None,
+        "status": None,
+        "semantic_identifier": None,
+        "last_verified": None,
+        "replacement_url": None,
     }
 
 

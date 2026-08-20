@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-08-17",
+  "generated": "2026-08-18",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -94,8 +94,8 @@
         "tcu"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/SigConvectiveCloudType",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/SigConvectiveCloudType \u2014 CB/TCU convective type register"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 CB/TCU convective type register"
     },
     {
       "code": "CNL_REPORT",
@@ -214,8 +214,8 @@
         "r4"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u2014 Cloud amount register landing"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Cloud amount register landing"
     },
     {
       "code": "INVALID_CNL_SHAPE",
@@ -292,8 +292,8 @@
         "iwxxm_us"
       ],
       "source_id": "fmh-1",
-      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
-      "source_attribution": "fmh-1 \u2014 https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf"
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
+      "source_attribution": "fmh-1 \u2014 https://nws.weather.gov/schemas/iwxxm-us/3.0/"
     },
     {
       "code": "INVALID_RVR",
@@ -307,8 +307,8 @@
         "r8"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 No single RVR concept register \u2014 cite 49-2 family + grammar sources"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 No single RVR concept register \u2014 cite 49-2 family + grammar sources"
     },
     {
       "code": "INVALID_SIGMET_CNL",
@@ -396,8 +396,8 @@
         "r2"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
     },
     {
       "code": "INVALID_WEATHER",
@@ -411,8 +411,8 @@
         "r3"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather \u2014 Prefer register landing + 306/4678 concept pattern over bare root"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Prefer register landing + 306/4678 concept pattern over bare root"
     },
     {
       "code": "INVALID_WIND",
@@ -426,8 +426,8 @@
         "r8"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 Wind not in AerodromePresentWeather list"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Wind not in AerodromePresentWeather list"
     },
     {
       "code": "MISSING_CCCC",
@@ -825,8 +825,8 @@
         "auto"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u2014 NCD cloud amount notation family"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 NCD cloud amount notation family"
     },
     {
       "code": "NIL_REPORT",
@@ -1023,8 +1023,8 @@
         "iwxxm_us"
       ],
       "source_id": "fmh-1",
-      "source_url": "https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf",
-      "source_attribution": "fmh-1 \u2014 https://www.weather.gov/media/directives/010_directives/directives_pdf/010_directives/pd10-13.pdf"
+      "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
+      "source_attribution": "fmh-1 \u2014 https://nws.weather.gov/schemas/iwxxm-us/3.0/"
     },
     {
       "code": "RVR_PRESENT",
@@ -1332,8 +1332,8 @@
         "phenomenon"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/49-2",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 \u2014 Validated: tac-validate membership gate vs harvested wmo_membership.json"
+      "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     {
       "code": "VAA_FCST_NO_VA_EXP",
@@ -1506,8 +1506,8 @@
         "vv"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/common/nil",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil \u2014 Vertical visibility missingness via nil"
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
+      "source_attribution": "codes-wmo-int \u2014 https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt \u2014 Vertical visibility missingness via nil"
     },
     {
       "code": "VV_OMIT",
@@ -1566,8 +1566,8 @@
         "s1"
       ],
       "source_id": "codes-wmo-int",
-      "source_url": "https://codes.wmo.int/common/nil",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil \u2014 nilReason notObservable; prefer iwxxm/nil when pin policy says so"
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
+      "source_attribution": "codes-wmo-int \u2014 https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt \u2014 nilReason notObservable; prefer iwxxm/nil when pin policy says so"
     }
   ]
 }

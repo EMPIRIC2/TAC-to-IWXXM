@@ -175,6 +175,10 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         NOT_XML_CODE="NOT_XML",
         lint_iwxxm_pass_through=lambda _text: types.SimpleNamespace(ok=True, product="IWXXM", issues=[]),
     )
+    fake_util_iwxxm_readable_decode = _stub_module(
+        "utilities.iwxxm_readable_decode",
+        decode_for_validate=lambda **_kwargs: types.SimpleNamespace(segments=[], summary=""),
+    )
     fake_util_metar_normalizer = _stub_module(
         "utilities.metar_normalizer",
         normalize_recent_weather_tokens=lambda tac: (tac, []),
@@ -237,6 +241,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities.abuse_controls": fake_util_abuse,
         "utilities.conversion": fake_util_conversion,
         "utilities.iwxxm_pass_through": fake_util_iwxxm_pass_through,
+        "utilities.iwxxm_readable_decode": fake_util_iwxxm_readable_decode,
         "utilities.metar_normalizer": fake_util_metar_normalizer,
         "utilities.observability": fake_util_observability,
         "utilities.sentry_init": fake_util_sentry,

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-17 (S070 / EV-060 — TC-EV060-* converter operator bugs + F7.t + Auth UAT)
+> **Last updated**: 2026-08-18 (S071 / EV-061 — TC-EV061-* pre-promote UX + AHL + catalog + stage→main gate)
 
 ## Scope
 
@@ -119,6 +119,12 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-062 | F7/F6 deepen (EV-060) | Bulletin ID + Issuing Center applied (#1005) | **H4–H5 required** | TC-EV060-1005-001..003 |
 | UJ-063 | F29 deepen (EV-060) | Conversion log_level sets logger verbosity (#1004) | T0/T2 | TC-EV060-1004-001..002 |
 | UJ-003 / UJ-046 | F31 deepen (EV-060) | Auth register/login/logout/persist UAT (#1006) | **H4–H5 required** | TC-EV060-1006-001..004 |
+| UJ-064 | F2/F9/F10 deepen (EV-061) | Validate IWXXM item-by-item readable decode (#1010) | **H4–H5 required** | TC-EV061-1010-001..003 |
+| UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
+| UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
+| UJ-068 | F7.v/F15 (EV-061) | Lint+validation catalog tab (#1014) | **H4–H5 required** | TC-EV061-1014-001..004 |
+| UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
+| LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
@@ -2454,6 +2460,130 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Session UAT report
 - **Source**: #1006; `D-S070-e4`
 
+### EV-061 / S071 — Pre-promote UX + catalog + AHL + stage→main gate (#1009)
+
+- **Mode**: delta deepen F7.u/F7.v + F2/F6/F9/F10/F15/F34
+- **Pass criteria**: AC in evolve-decisions §EV-061; **UJ-064..068**; UJ-DEV-009; TC-LIVE-F6-030 `files`
+- **Source**: [#1009](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1009)–[#1015](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1015)
+
+### TC-EV061-1011 / TC-LIVE-F6-030: Live bulletin multipart `files`
+
+- **Level**: Live H7
+- **Objective**: Harness posts convert-bulletin multipart field **`files`**, not `file`
+- **Pass criteria**: Request matches [Corpus: api] `/convert-bulletin`; fixture still converts
+- **Source**: #1011; UJ-011
+
+### TC-EV061-1012-001: Golden AHL multi-METAR decode rows
+
+- **Level**: T0 / T2
+- **Objective**: `SAUS31 KZNY` multi-report METAR AHL decodes with item-by-item rows per report
+- **Pass criteria**: Bulletin framing + F9-shaped rows; not a raw dump
+- **Source**: #1012; UJ-065
+
+### TC-EV061-1012-002: Golden AHL convert-bulletin
+
+- **Level**: T0 / T2
+- **Objective**: Same golden bulletin succeeds on `/convert-bulletin`
+- **Pass criteria**: Per-report IWXXM results (or structured per-report errors); HTTP not 5xx
+- **Source**: #1012
+
+### TC-EV061-1012-003: FileConverter / workbench AHL parity
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Decode + convert-bulletin behavior matches API on operator UI
+- **Pass criteria**: Golden path works; product/profile/Bulletin ID context honored
+- **Source**: #1012; UJ-065
+
+### TC-EV061-1012-004: Malformed AHL clear error
+
+- **Level**: T0
+- **Objective**: Malformed heading/body yields `INVALID_AHL` and/or `empty_bulletin`
+- **Pass criteria**: No silent success; operator-facing message has no internal doc refs
+- **Source**: #1012; [Corpus: api]
+
+### TC-EV061-1010-001: Validate IWXXM item-by-item decode
+
+- **Level**: T0 / T2
+- **Objective**: Validate IWXXM path that still produces decode shows F9 item rows
+- **Pass criteria**: Same panel pattern as TAC products; not a raw XML/text dump
+- **Source**: #1010; UJ-064
+
+### TC-EV061-1010-002: Additive decode fields backward-compatible
+
+- **Level**: T0
+- **Objective**: `/validate` optional `segments`/`summary` (if added) do not break existing clients
+- **Pass criteria**: Older clients ignore extras; OpenAPI documents additive fields
+- **Source**: #1010; D-S071-api
+
+### TC-EV061-1010-003: F7.s / F7.t still work
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Validate-only and IWXXM pass-through remain after decode-panel work
+- **Pass criteria**: UJ-058 / UJ-060 still pass
+- **Source**: #1010; F7.s / F7.t
+
+### TC-EV061-1013-001: Product Type + Profile no-wrap ≥1024px
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Top Product Type + Profile stay on one bar without wrap at ≥1024px
+- **Pass criteria**: No wrap; keyboard labels preserved
+- **Source**: #1013; UJ-066
+
+### TC-EV061-1013-002: Mode selects one aligned row
+
+- **Level**: T0 / T2
+- **Objective**: Mode selects share one aligned bar/row at ≥1024px
+- **Pass criteria**: Visual alignment with Product/Profile chrome
+- **Source**: #1013; UJ-066
+
+### TC-EV061-1013-003: Conversion parameters one bar; stack below 1024px
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Parameters share one aligned bar ≥1024px; stacking OK below
+- **Pass criteria**: UJ-067; a11y names unchanged
+- **Source**: #1013; UJ-067
+
+### TC-EV061-1014-001: Catalog tab reachable
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Top-level **Lint & validation catalog** nav opens a page
+- **Pass criteria**: Public/guest can open without JWT
+- **Source**: #1014; UJ-068
+
+### TC-EV061-1014-002: Rows include code, description, level, source
+
+- **Level**: T0 / T2
+- **Objective**: Catalog lists TAC lint **and** IWXXM validation checks
+- **Pass criteria**: code, description, level, clickable source URL when status=verified
+- **Source**: #1014; F7.v / F15
+
+### TC-EV061-1014-003: Operator source hrefs resolve
+
+- **Level**: T0 / T2
+- **Objective**: Operator-visible `source_url` values are verified landings (HTTP 2xx/3xx)
+- **Pass criteria**: Semantic `codes.wmo.int/49-2*` may be aliases, not hrefs (`D-S071-links-resolve`)
+- **Source**: #1014; mining note
+
+### TC-EV061-1014-004: No internal planning ids in catalog copy
+
+- **Level**: T0
+- **Objective**: Catalog attribution / OpenAPI / UI free of `[Corpus:]`, ADR, EV, UJ ids
+- **Pass criteria**: EV-048 guards green
+- **Source**: #1014; [Corpus: product §F7]
+
+### TC-EV061-1015-001: Promote PR required-check inventory
+
+- **Level**: Docs / CI
+- **Objective**: `stage`→`main` required checks include full unit, lint, typecheck, full E2E (not smoke-only), Staging gate
+- **Pass criteria**: Names documented in deploy.md; match workflow `name:` fields
+- **Source**: #1015; UJ-DEV-009
+
+### TC-EV061-1015-002: Merge blocked when a required check is red/missing
+
+- **Level**: CI
+- **Objective**: Promote PR cannot merge without the stricter set
+- **Pass criteria**: Branch protection (or equivalent) enforces the documented checks; no new app secrets
+- **Source**: #1015; D-S071-ci
 
 ### EV-057 / S067 — M0 Ready: apex redirect + accumulate ZIP + validate-only (#948 / #903 / #838)
 
@@ -3462,8 +3592,8 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
   → Schematron pass (or documented quarantine-style fail)
 - **Command**: `make test-live-bulletin` (planned; wire in 04/07)
 - **Pass criteria**: Exit 0; N IWXXM results or structured per-report errors; Schematron via
-  `iwxxm-validate`
-- **Source**: UJ-011; Q44b=B
+  `iwxxm-validate`. Multipart field name is **`files`** (EV-061 / #1011; not `file`).
+- **Source**: UJ-011; Q44b=B; #1011
 
 ### TC-F6-M001: tac2iwxxm workspace + iwxxm-us manifest
 

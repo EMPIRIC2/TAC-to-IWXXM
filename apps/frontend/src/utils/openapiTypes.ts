@@ -50,6 +50,8 @@ export type ConversionResponse = {
 export type ValidateResponse = Schemas['ValidateResponse'] & {
   is_valid: boolean;
   version: string;
+  segments?: Schemas['DecodeSegmentModel'][];
+  summary?: string | null;
 };
 
 export type ValidateIssue = Schemas['ValidateIssueModel'];
@@ -87,6 +89,12 @@ export type DecodeTacResponse = {
 
 export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
   tags: string[];
+  family?: string | null;
+  source_type?: string | null;
+  status?: string | null;
+  semantic_identifier?: string | null;
+  last_verified?: string | null;
+  replacement_url?: string | null;
 };
 
 export type LintIssueCatalogResponse = {

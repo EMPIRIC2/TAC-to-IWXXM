@@ -856,6 +856,26 @@ describe('API Utils', () => {
       );
     });
 
+    it('GETs lint-issue-catalog with optional family filter', async () => {
+      mockFetchResponse({
+        issues: [
+          {
+            code: 'XML_SCHEMA',
+            severity: 'error',
+            message_template: 'XSD',
+            family: 'iwxxm',
+            tags: ['xsd'],
+          },
+        ],
+      });
+      const result = await fetchLintIssueCatalog({ family: 'IWXXM' });
+      expect(result.issues).toHaveLength(1);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/lint-issue-catalog\?family=iwxxm$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
     it('posts decode-tac with abort signal', async () => {
       mockFetchResponse({
         product: 'METAR',

@@ -25,6 +25,7 @@ Then invoke stages from the approved plan (e.g. `@10-e2e`, `@16-evolve`).
 
 | Session ID | Type | Status | Intent | Branch | Started | Completed |
 |------------|------|--------|--------|--------|---------|-----------|
+| [S071-pre-promote-ux-catalog](S071-pre-promote-ux-catalog/session-brief.md) | feature | in_progress | Epic #1009 pre-promote UX + AHL + catalog tab + stage→main gate; EV-061 Standard | evolve/EV-061-pre-promote-ux-catalog | 2026-08-18 | — |
 | [S070-converter-operator-bugs](S070-converter-operator-bugs/session-brief.md) | feature | completed | Epic #1000 converter bugs + F7.t IWXXM pass-through + Auth UAT; EV-060; PR #1007 → stage | evolve/EV-060-converter-operator-bugs | 2026-08-17 | 2026-08-18 |
 | [S069-ci-schemathesis-mutation](S069-ci-schemathesis-mutation/session-brief.md) | feature | completed | F34 Schemathesis (#727) + mutation (#874); close #841; EV-059 Lean | evolve/EV-059-ci-schemathesis-mutation | 2026-08-17 | 2026-08-17 |
 | [S068-quality-metrics-diff-layout](S068-quality-metrics-diff-layout/session-brief.md) | feature | completed | #983 F7.q side-by-side vs inline XML diff; EV-058 Lean | evolve/EV-058-quality-metrics-diff-layout | 2026-08-17 | 2026-08-17 |

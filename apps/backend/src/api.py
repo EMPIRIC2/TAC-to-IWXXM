@@ -69,6 +69,7 @@ try:
     from .utilities.abuse_controls import install_abuse_controls
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
+    from .utilities.iwxxm_readable_decode import decode_for_validate
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import (
         install_fastapi_observability,
@@ -126,6 +127,7 @@ except ImportError:
     from utilities.abuse_controls import install_abuse_controls
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
+    from utilities.iwxxm_readable_decode import decode_for_validate
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import (
         install_fastapi_observability,
@@ -1001,26 +1003,48 @@ def get_schema_status():
 )
 async def lint_issue_catalog(
     product: Optional[str] = None,
+    family: Optional[str] = None,
 ) -> Response:
-    """Export the tac-validate issue registry for FE tooltips / catalog panel."""
+    """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
     from tac_validate.catalog_attribution import attribution_for
 
-    entries = tac_catalog_entries(product=product)
+    from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
+
+    family_key = (family or "").strip().lower() or None
+    if family_key is not None and family_key not in {"lint", "iwxxm"}:
+        family_key = None
+
     issues: list[LintIssueCatalogEntryModel] = []
-    for spec in entries:
-        attr = attribution_for(spec.code)
-        issues.append(
-            LintIssueCatalogEntryModel(
-                code=spec.code,
-                severity=spec.severity,
-                message_template=spec.message_template,
-                product=spec.product,
-                tags=list(spec.tags),
-                source_id=attr.get("source_id"),
-                source_url=attr.get("source_url"),
-                source_attribution=attr.get("source_attribution"),
+
+    if family_key in (None, "lint"):
+        entries = tac_catalog_entries(product=product)
+        for spec in entries:
+            attr = attribution_for(spec.code)
+            issues.append(
+                LintIssueCatalogEntryModel(
+                    code=spec.code,
+                    severity=spec.severity,
+                    message_template=spec.message_template,
+                    product=spec.product,
+                    tags=list(spec.tags),
+                    source_id=attr.get("source_id"),
+                    source_url=attr.get("source_url"),
+                    source_attribution=attr.get("source_attribution"),
+                    family=attr.get("family") or "lint",
+                    source_type=attr.get("source_type"),
+                    status=attr.get("status"),
+                    semantic_identifier=attr.get("semantic_identifier"),
+                    last_verified=attr.get("last_verified"),
+                    replacement_url=attr.get("replacement_url"),
+                )
             )
-        )
+
+    if family_key in (None, "iwxxm"):
+        # IWXXM validation rows are product-agnostic; always include unless
+        # family=lint. Product filter does not drop them.
+        for row in iwxxm_validation_catalog_rows():
+            issues.append(LintIssueCatalogEntryModel(**row))
+
     return msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 
 
@@ -1114,7 +1138,11 @@ async def decode_tac_endpoint(
     manual_text: str = Form(default="", description="TAC text to decode"),
     files: Optional[List[UploadFile]] = File(None),
 ) -> Response:
-    """Decode TAC into annotated segments and a plain-language summary."""
+    """Decode TAC into annotated segments and a plain-language summary.
+
+    Multi-report abbreviated-heading bulletins are split so each report is decoded
+    independently; the heading is a bulletin-framing row, not a leftover dump.
+    """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -1150,21 +1178,77 @@ async def decode_tac_endpoint(
     )
 
 
+_AHL_HEADING_SPLIT_CODES = frozenset({"bulletin_split_failed", "invalid_bbb"})
+_INVALID_AHL_MESSAGE = (
+    "The abbreviated heading is not valid. Use TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports."
+)
+_EMPTY_BULLETIN_MESSAGE = "No TAC reports found after the abbreviated heading."
+
+
+def bulletin_split_http_error(exc: BulletinSplitError) -> HTTPException:
+    """
+    Map a bulletin split failure to an operator-facing HTTP error.
+
+    Malformed heading codes become ``INVALID_AHL`` with ``alias`` preserving the
+    engine code. Empty body after a valid heading stays ``empty_bulletin``.
+
+    Parameters
+    ----------
+    exc :
+        Split failure from ``tac2iwxxm.split_bulletin``.
+
+    Returns
+    -------
+    HTTPException
+        400 for empty bulletins; 422 for malformed headings.
+    """
+    if exc.code == "empty_bulletin":
+        return HTTPException(
+            status_code=400,
+            detail={"code": "empty_bulletin", "message": _EMPTY_BULLETIN_MESSAGE},
+        )
+    if exc.code in _AHL_HEADING_SPLIT_CODES:
+        return HTTPException(
+            status_code=422,
+            detail={
+                "code": "INVALID_AHL",
+                "alias": exc.code,
+                "message": _INVALID_AHL_MESSAGE,
+            },
+        )
+    return HTTPException(
+        status_code=422,
+        detail={"code": exc.code, "message": exc.message},
+    )
+
+
 @app.post(
     "/api/v1/convert-bulletin",
     tags=["Conversion"],
     response_model=ConvertBulletinResponse,
     responses={
-        400: {"description": "Empty bulletin (no reports after split)"},
+        400: {"description": "Empty bulletin — no TAC reports after the abbreviated heading"},
         415: {"description": "Unsupported Media Type — multipart/form-data required"},
-        422: {"description": "AHL split failed or missing required fields"},
+        422: {
+            "description": (
+                "Malformed abbreviated heading (INVALID_AHL) or missing required fields. "
+                "Engine split failures may include an alias of bulletin_split_failed."
+            )
+        },
     },
 )
 async def convert_bulletin(
     request: Request,
     product: str = Form(..., description="TAC product, or iwxxm for XML pass-through"),
     files: Optional[List[UploadFile]] = File(None),
-    manual_text: str = Form(default="", description="Bulletin string"),
+    manual_text: str = Form(
+        default="",
+        description=(
+            "Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), "
+            "then one or more TAC reports. Empty Bulletin ID / Issuing Center uses "
+            "the heading TTAAii and CCCC."
+        ),
+    ),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
@@ -1248,8 +1332,7 @@ async def convert_bulletin(
     try:
         split = tac2iwxxm_split_bulletin(bulletin_text, product=product)
     except BulletinSplitError as exc:
-        status = 400 if exc.code == "empty_bulletin" else 422
-        raise HTTPException(status_code=status, detail={"code": exc.code, "message": exc.message}) from exc
+        raise bulletin_split_http_error(exc) from exc
 
     if split.meta.report_count > MAX_BULLETIN_REPORTS:
         raise HTTPException(
@@ -1558,51 +1641,63 @@ async def validate_comprehensive(
         )
 
         # Format response (HTTP shape unchanged; package metadata additive)
-        return msgspec_json_response(
-            {
-                "is_valid": result.is_valid,
-                "version": result.version,
-                "profile": profile or "annex3",
-                "layers_run": [layer.name for layer in result.layers_run],
-                "layers_passed": [layer.name for layer in result.layers_passed],
-                "layers_failed": [layer.name for layer in result.layers_failed],
-                "total_issues": len(result.all_issues),
-                "issues": [
+        payload: dict[str, Any] = {
+            "is_valid": result.is_valid,
+            "version": result.version,
+            "profile": profile or "annex3",
+            "layers_run": [layer.name for layer in result.layers_run],
+            "layers_passed": [layer.name for layer in result.layers_passed],
+            "layers_failed": [layer.name for layer in result.layers_failed],
+            "total_issues": len(result.all_issues),
+            "issues": [
+                {
+                    "layer": issue.layer.name,
+                    "level": issue.level.name,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "code": issue.code,
+                }
+                for issue in result.all_issues
+            ],
+            "issues_by_layer": {
+                layer.name: [
                     {
-                        "layer": issue.layer.name,
                         "level": issue.level.name,
                         "message": issue.message,
                         "location": issue.location,
                         "code": issue.code,
                     }
-                    for issue in result.all_issues
-                ],
-                "issues_by_layer": {
-                    layer.name: [
-                        {
-                            "level": issue.level.name,
-                            "message": issue.message,
-                            "location": issue.location,
-                            "code": issue.code,
-                        }
-                        for issue in issues
-                    ]
-                    for layer, issues in result.issues_by_layer.items()
-                },
-                "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
-                "package_ok": pkg_report.ok,
-                "package_issues": [
-                    {
-                        "layer": issue.layer,
-                        "severity": issue.severity,
-                        "message": issue.message,
-                        "location": issue.location,
-                        "code": issue.code,
-                    }
-                    for issue in pkg_report.issues
-                ],
-            }
-        )
+                    for issue in issues
+                ]
+                for layer, issues in result.issues_by_layer.items()
+            },
+            "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
+            "package_ok": pkg_report.ok,
+            "package_issues": [
+                {
+                    "layer": issue.layer,
+                    "severity": issue.severity,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "code": issue.code,
+                }
+                for issue in pkg_report.issues
+            ],
+        }
+        decoded = decode_for_validate(xml_content=xml_content, manual_text=manual_text)
+        if decoded.segments:
+            payload["segments"] = [
+                {
+                    "start": seg.start,
+                    "end": seg.end,
+                    "code": seg.code,
+                    "explanation": seg.explanation,
+                }
+                for seg in decoded.segments
+            ]
+            if decoded.summary:
+                payload["summary"] = decoded.summary
+        return msgspec_json_response(payload)
 
     except HTTPException:
         raise

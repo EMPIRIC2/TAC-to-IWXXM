@@ -2,6 +2,7 @@
  * Display F2 validate results for validate-only IWXXM mode (F7.s / #838).
  */
 import type { ValidateResponse } from '/utils/openapiTypes';
+import { DecodePanel } from './DecodePanel';
 
 type ValidateIwxxmReportProps = {
   report: ValidateResponse;
@@ -16,6 +17,8 @@ export function ValidateIwxxmReport({ report }: ValidateIwxxmReportProps) {
   const failed = report.layers_failed ?? [];
   const passed = report.layers_passed ?? [];
   const issues = report.package_issues ?? report.issues ?? [];
+  const segments = report.segments ?? [];
+  const summary = report.summary ?? '';
 
   return (
     <div
@@ -74,6 +77,15 @@ export function ValidateIwxxmReport({ report }: ValidateIwxxmReportProps) {
           No package issues reported.
         </p>
       )}
+      {segments.length > 0 || summary.trim() ? (
+        <DecodePanel
+          segments={segments}
+          residuals={[]}
+          summary={summary}
+          product="IWXXM"
+          defaultOpen
+        />
+      ) : null}
     </div>
   );
 }

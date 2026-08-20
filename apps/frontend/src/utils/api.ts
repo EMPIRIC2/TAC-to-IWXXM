@@ -456,13 +456,18 @@ export async function validateIwxxm(params: {
  */
 export async function fetchLintIssueCatalog(params?: {
   product?: string;
+  family?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<LintIssueCatalogResponse> {
-  const qs =
-    params?.product && params.product.trim()
-      ? `?product=${encodeURIComponent(params.product.trim().toLowerCase())}`
-      : '';
+  const query = new URLSearchParams();
+  if (params?.product && params.product.trim()) {
+    query.set('product', params.product.trim().toLowerCase());
+  }
+  if (params?.family && params.family.trim()) {
+    query.set('family', params.family.trim().toLowerCase());
+  }
+  const qs = query.toString() ? `?${query.toString()}` : '';
   const response = await withTimeout(
     fetch(apiUrl(`/lint-issue-catalog${qs}`), {
       method: 'GET',

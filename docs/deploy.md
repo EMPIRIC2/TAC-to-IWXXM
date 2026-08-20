@@ -141,6 +141,35 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
    (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
    successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
+   **EV-061 / #1015 (stricter promote):** In addition, the promote PR must not merge until
+   **required** checks covering **full CI unit jobs**, **lint**, **typecheck**, and **full
+   E2E** (broader than smoke-only) are green on that PR. Branch protection / required-check
+   configuration may be updated accordingly (no new app secrets).
+
+   | Required check context (exact `name:`) | Role |
+   |----------------------------------------|------|
+   | `Test (shared)` | Full unit (`Test (*)`) |
+   | `Test (auth)` | Full unit |
+   | `Test (backend)` | Full unit |
+   | `Test (frontend)` | Full unit |
+   | `Test (tac2iwxxm)` | Full unit |
+   | `Test (iwxxm-validate)` | Full unit |
+   | `Test (tac-validate)` | Full unit |
+   | `Test (dissemination)` | Full unit |
+   | `Test (worker)` | Full unit |
+   | `Test (bugs)` | Full unit |
+   | `Test (alembic / TC-EV031-002)` | Alembic idempotency |
+   | `Lint` | ruff + eslint (`make lint`) |
+   | `Typecheck` | basedpyright + tsc (`make typecheck`) |
+   | `E2E Full (Playwright)` | Full Playwright suite on promote PRs only — **not** smoke-only |
+   | `Staging gate` | Head=`stage` + tip Staging smoke (existing) |
+   | Also retained | `Rust crates (fmt/clippy/test)`, `tac2iwxxm PyO3 (maturin)`, `iwxxm-validate PyO3 (maturin)`, `Converter perf (tac2iwxxm)` |
+
+   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes; smoke-only is
+   **insufficient** as the promote E2E bar (#1015).
+
+   Apply / refresh rulesets (admin): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
+   (see [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md) §GitHub admin).
 5. Merge to `main` → full CI on `main` (**no** prod Deploy).
 6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
    `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
@@ -162,6 +191,8 @@ Treat every prod cutover as a release:
       `pyproject.toml`, `__version__`, and Cargo/locks when present
 - [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
 - [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
+- [ ] **EV-061 / #1015:** required checks for full CI unit + lint + typecheck + full E2E green
+      on the promote PR (stricter than smoke-only) — contexts in the table above
 - [ ] Merge to `main`; wait for tip CI green (**Deploy must not run** on that push)
 - [ ] `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>` → prod Deploy
 - [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,

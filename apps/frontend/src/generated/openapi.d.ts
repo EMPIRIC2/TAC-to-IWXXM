@@ -73,6 +73,9 @@ export interface paths {
         /**
          * Decode Tac Endpoint
          * @description Decode TAC into annotated segments and a plain-language summary.
+         *
+         *     Multi-report abbreviated-heading bulletins are split so each report is decoded
+         *     independently; the heading is a bulletin-framing row, not a leftover dump.
          */
         post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
         delete?: never;
@@ -251,7 +254,7 @@ export interface paths {
         };
         /**
          * Lint Issue Catalog
-         * @description Export the tac-validate issue registry for FE tooltips / catalog panel.
+         * @description Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
          */
         get: operations["lint_issue_catalog_api_v1_lint_issue_catalog_get"];
         put?: never;
@@ -1351,7 +1354,7 @@ export interface components {
             lint: boolean;
             /**
              * Manual Text
-             * @description Bulletin string
+             * @description Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports. Empty Bulletin ID / Issuing Center uses the heading TTAAii and CCCC.
              * @default
              */
             manual_text: string;
@@ -2294,18 +2297,48 @@ export interface components {
         LintIssueCatalogEntryModel: {
             /** Code */
             code: string;
+            /**
+             * Family
+             * @description lint (TAC registry) or iwxxm (validation checks)
+             */
+            family?: string | null;
+            /**
+             * Last Verified
+             * @description ISO date of last HTTP check for operator source_url
+             */
+            last_verified?: string | null;
             /** Message Template */
             message_template: string;
             /** Product */
             product?: string | null;
+            /**
+             * Replacement Url
+             * @description Verified landing when source_url is a legacy alias
+             */
+            replacement_url?: string | null;
+            /**
+             * Semantic Identifier
+             * @description Vocabulary concept path when href is a verified landing
+             */
+            semantic_identifier?: string | null;
             /** Severity */
             severity: string;
             /** Source Attribution */
             source_attribution?: string | null;
             /** Source Id */
             source_id?: string | null;
+            /**
+             * Source Type
+             * @description tier1, tier2, or tier3 source policy
+             */
+            source_type?: string | null;
             /** Source Url */
             source_url?: string | null;
+            /**
+             * Status
+             * @description verified, legacy_alias, or semantic_only
+             */
+            status?: string | null;
             /** Tags */
             tags?: string[];
         };
@@ -2919,8 +2952,18 @@ export interface components {
              * @default annex3
              */
             profile: string;
+            /**
+             * Segments
+             * @description Optional item-by-item decode rows (code and explanation) when a readable decode exists. Omitted when there is no decode.
+             */
+            segments?: components["schemas"]["DecodeSegmentModel"][] | null;
             /** Stopped At Layer */
             stopped_at_layer?: string | null;
+            /**
+             * Summary
+             * @description Optional plain-language paragraph of the decoded report when a readable decode exists. Omitted when there is no decode.
+             */
+            summary?: string | null;
             /**
              * Total Issues
              * @default 0
@@ -3357,7 +3400,7 @@ export interface operations {
                     "application/json": components["schemas"]["ConvertBulletinResponse"];
                 };
             };
-            /** @description Empty bulletin (no reports after split) */
+            /** @description Empty bulletin — no TAC reports after the abbreviated heading */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3371,7 +3414,7 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description AHL split failed or missing required fields */
+            /** @description Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -3699,6 +3742,7 @@ export interface operations {
         parameters: {
             query?: {
                 product?: string | null;
+                family?: string | null;
             };
             header?: never;
             path?: never;

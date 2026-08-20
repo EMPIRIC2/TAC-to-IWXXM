@@ -1,5 +1,78 @@
 # Evolve Decisions
 
+## Cycle EV-061 — Pre-promote UX + catalog + AHL + stage→main gate (#1009) (S071)
+
+**Opened:** 2026-08-18 · **Session:** S071-pre-promote-ux-catalog · **Branch:** `evolve/EV-061-pre-promote-ux-catalog` @ `stage@a1650b01`  
+**Preset:** Standard · **Spec→Build gate:** **open** (`D-S071-spec-build=1a`) · **Promote:** held until #1015
+
+### Locked intake (EV0–EV9)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-e0 | Goal = validate UX + AHL + Product/Profile UI + catalog; in = all listed + stage→main gate; API breaking OK if documented |
+| D-S071-e1 | Pre-promote cleanup; `cycle_type: feature`; M0 epic #1009 + #1010–#1015 |
+| D-S071-e2 | Public/guest ops + CI reviewers; must-not-break F21/F7/F10; UI preview at 11 |
+| D-S071-e3 | Readable item-by-item IWXXM validate decode; fix AHL decode+convert; new catalog tab; full stage→main checks |
+| D-S071-e4 | Docs: product/api/journeys/tests/tech; Spec 01→02→04 + uat/verify-qa Spec; AHL brief shown |
+| D-S071-e5 | FE/BE/tac-validate(+AHL)/CI; full H4–H5+UAT; stage then hold promote |
+| D-S071-e6 | OOS: M1+ profiles, dissemination spikes, #996, #837 |
+| D-S071-e7 | New FE tab; no new secrets; H4–H5 |
+| D-S071-e8 | Standard Spec/Build bands; Build blocked until gate |
+| D-S071-e9 | Open S071; deepen F7/F2/F6/F9/F10/F15/F34 (no new Fn); Spec-only |
+| D-S071-ahl | AHL context brief acknowledged — golden SAUS31 multi-METAR; #1011 harness vs #1012 product |
+| D-S071-links | Crawl catalog URLs in Spec; **block Build** on broken links until user searches; normalize official copies OK |
+| D-S071-links-resolve | User research 2026-08-18 — **3-tier source model**; treat `49-2`/`nil` as semantic IDs; operator hrefs → verified landings; IWXXM-US → NWS schemas + vendor pin; **unblock #1014** Spec/Build; mining note `docs/domain/mining/ev061-catalog-source-replacements-2026-08-18.md` |
+
+### 02-verify-plan Gate A — PASS (`D-S071-gateA=1a`)
+
+| ID | Verdict |
+|----|---------|
+| D-S071-02-c1 | Modify — journeys header/changelog: links resolved / #1014 unblocked |
+| D-S071-02-m1 | Modify — UJ-067 tier includes H4–H5 |
+| D-S071-02-m2 | Approve — TC-EV061-* detail deferred to 04 |
+| D-S071-02-m3 | Approve — api-contract delta deferred to 04 |
+| D-S071-02-m4 | Approve — Spec UI minimum; richer catalog schema in 04/Build |
+| D-S071-gateA | **PASS** → 04-tech-plan; Spec→Build stays closed |
+
+Report: `docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md`
+
+### 04-tech-plan (drafted — pending `D-S071-04-plan`)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-m-order | M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015 |
+| D-S071-deps | No new npm/PyPI deps |
+| D-S071-adr | No new ADR |
+| D-S071-api | Additive: `INVALID_AHL`; validate `segments`/`summary`; catalog fields on existing GET. No new catalog endpoint |
+| D-S071-cors | No new origins; H4–H5 in 12/13 |
+| D-S071-ci | Restore lint/typecheck CI + full E2E as required on `stage`→`main` (plus unit + Staging gate) |
+| D-S071-ahl-code | Prefer `INVALID_AHL` for malformed convert-bulletin heading; keep `bulletin_split_failed` as `detail.alias` (additive, not a rename) |
+
+Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-card.md`  
+**Approved:** `D-S071-04-plan=1a` (2026-08-18)
+
+### Dual Spec
+
+- verify-qa Spec: `reports/verify-qa-spec.md` — **completed**
+- uat Spec: `uat-script.md` — **completed** (Build sign-off pending)
+
+### Spec→Build gate — OPEN (`D-S071-spec-build=1a`)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-spec-build | **1a** — Open Spec→Build; start 07-build M1 (#1011 live bulletin `file` → `files`); promote held until #1015 |
+
+### Prior session closeout
+
+- S070/EV-060 closed; PRs #1007 (product), #1008 (S070 docs), #999 (S069 docs) merged to `stage`
+- Tickets: epic [#1009](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1009); children #1010–#1015 on milestone M0
+
+### Corpus
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F34] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: tech-spec]
+
+---
+
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
 

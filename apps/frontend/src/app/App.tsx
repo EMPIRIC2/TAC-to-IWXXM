@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
 import { QualityMetricsPage } from './components/QualityMetricsPage';
+import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
@@ -53,7 +54,12 @@ type AppView =
   | 'reset';
 
 function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
-  return view === 'converter' || view === 'history' || view === 'quality';
+  return (
+    view === 'converter' ||
+    view === 'history' ||
+    view === 'quality' ||
+    view === 'catalog'
+  );
 }
 
 /**
@@ -363,6 +369,8 @@ function App() {
           onBackToList={handleBackToQualityList}
         />
       )}
+
+      {currentView === 'catalog' && <LintValidationCatalogPage />}
 
       {currentView === 'callback' && (
         <AuthCallback
