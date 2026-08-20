@@ -303,6 +303,140 @@ describe('LintValidationCatalogPage', () => {
     expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
   });
 
+  it('sorts by code and breaks level ties by code', async () => {
+    const user = userEvent.setup();
+    fetchLintIssueCatalog.mockResolvedValueOnce({
+      issues: [
+        {
+          code: 'Z_LAST',
+          severity: 'error',
+          message_template: 'Z',
+          family: 'lint',
+          issue_type: 'content',
+          source_access: 'public',
+          source_url: 'https://example.invalid/z',
+          status: 'verified',
+        },
+        {
+          code: 'A_FIRST',
+          severity: 'error',
+          message_template: 'A',
+          family: 'iwxxm',
+          issue_type: 'iwxxm_schema',
+          source_access: 'paywall',
+          source_url: 'https://example.invalid/a',
+          status: 'verified',
+        },
+        {
+          code: 'M_MID',
+          severity: 'warning',
+          message_template: 'M',
+          family: '',
+          issue_type: '',
+          source_access: '',
+          source_url: 'http://example.invalid/m',
+          status: 'verified',
+        },
+      ],
+    });
+    render(<LintValidationCatalogPage />);
+    const list = await screen.findByTestId('lint-validation-catalog-list');
+
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-sort'),
+      'code',
+    );
+    let codes = within(list)
+      .getAllByRole('row')
+      .slice(1)
+      .map((row) => row.querySelector('td')?.textContent?.trim());
+    expect(codes).toEqual(['A_FIRST', 'M_MID', 'Z_LAST']);
+
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-sort'),
+      'level',
+    );
+    codes = within(list)
+      .getAllByRole('row')
+      .slice(1)
+      .map((row) => row.querySelector('td')?.textContent?.trim());
+    // errors first (A before Z), then warning
+    expect(codes).toEqual(['A_FIRST', 'Z_LAST', 'M_MID']);
+
+    // http:// verified landing is clickable
+    expect(
+      within(list)
+        .getByTestId('lint-validation-catalog-entry-M_MID')
+        .querySelector('a'),
+    ).toHaveAttribute('href', 'http://example.invalid/m');
+  });
+
+  it('ranks unknown severity last when sorting by level', async () => {
+    const user = userEvent.setup();
+    fetchLintIssueCatalog.mockResolvedValueOnce({
+      issues: [
+        {
+          code: 'UNKNOWN_SEV',
+          severity: 'notice',
+          message_template: 'odd',
+          family: 'lint',
+          issue_type: 'other',
+          source_access: 'public',
+          source_url: 'https://example.invalid/u',
+          status: 'verified',
+        },
+        {
+          code: 'INFO_SEV',
+          severity: 'info',
+          message_template: 'info',
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'public',
+          source_url: 'https://example.invalid/i',
+          status: 'verified',
+        },
+      ],
+    });
+    render(<LintValidationCatalogPage />);
+    const list = await screen.findByTestId('lint-validation-catalog-list');
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-sort'),
+      'level',
+    );
+    const codes = within(list)
+      .getAllByRole('row')
+      .slice(1)
+      .map((row) => row.querySelector('td')?.textContent?.trim());
+    expect(codes).toEqual(['INFO_SEV', 'UNKNOWN_SEV']);
+  });
+
+  it('passes combined family, type, and access filters to the API', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+
+    fetchLintIssueCatalog.mockResolvedValue({ issues: [] });
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-family-filter'),
+      'lint',
+    );
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-type-filter'),
+      'structure',
+    );
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-access-filter'),
+      'paywall',
+    );
+
+    expect(fetchLintIssueCatalog).toHaveBeenCalledWith({
+      family: 'lint',
+      issue_type: 'structure',
+      source_access: 'paywall',
+    });
+    expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+  });
+
   it('shows empty and error states', async () => {
     fetchLintIssueCatalog.mockResolvedValueOnce({ issues: [] });
     const { unmount } = render(<LintValidationCatalogPage />);

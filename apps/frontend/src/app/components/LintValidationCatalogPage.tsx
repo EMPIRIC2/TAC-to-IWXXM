@@ -74,12 +74,10 @@ function isClickableSource(entry: LintIssueCatalogEntry): boolean {
 }
 
 /**
- * Read a sortable string field from a catalog row.
+ * Read a sortable string field from a catalog row (non-level sorts).
  */
 function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
   switch (sortBy) {
-    case 'level':
-      return entry.severity || '';
     case 'family':
       return entry.family || '';
     case 'issue_type':
@@ -87,6 +85,7 @@ function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
     case 'source_access':
       return entry.source_access || '';
     case 'code':
+    case 'level':
     default:
       return entry.code || '';
   }
