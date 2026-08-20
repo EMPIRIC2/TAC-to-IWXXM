@@ -39,12 +39,15 @@ def test_lint_issue_catalog_shape_and_registry_subset(client: TestClient) -> Non
     payload = response.json()
     assert "issues" in payload
     assert isinstance(payload["issues"], list)
-    assert len(payload["issues"]) == len(ISSUES)
-    assert len(payload["issues"]) >= 1
+    lint_rows = [row for row in payload["issues"] if row.get("family") == "lint"]
+    iwxxm_rows = [row for row in payload["issues"] if row.get("family") == "iwxxm"]
+    assert len(lint_rows) == len(ISSUES)
+    assert len(iwxxm_rows) >= 1
+    assert len(payload["issues"]) == len(lint_rows) + len(iwxxm_rows)
 
     registry_codes = {spec.code for spec in ISSUES}
     seen: set[str] = set()
-    for row in payload["issues"]:
+    for row in lint_rows:
         assert set(row.keys()) >= {"code", "severity", "message_template", "product", "tags"}
         assert row["code"] in registry_codes
         assert row["code"] not in seen

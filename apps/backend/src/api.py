@@ -1003,26 +1003,48 @@ def get_schema_status():
 )
 async def lint_issue_catalog(
     product: Optional[str] = None,
+    family: Optional[str] = None,
 ) -> Response:
-    """Export the tac-validate issue registry for FE tooltips / catalog panel."""
+    """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
     from tac_validate.catalog_attribution import attribution_for
 
-    entries = tac_catalog_entries(product=product)
+    from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
+
+    family_key = (family or "").strip().lower() or None
+    if family_key is not None and family_key not in {"lint", "iwxxm"}:
+        family_key = None
+
     issues: list[LintIssueCatalogEntryModel] = []
-    for spec in entries:
-        attr = attribution_for(spec.code)
-        issues.append(
-            LintIssueCatalogEntryModel(
-                code=spec.code,
-                severity=spec.severity,
-                message_template=spec.message_template,
-                product=spec.product,
-                tags=list(spec.tags),
-                source_id=attr.get("source_id"),
-                source_url=attr.get("source_url"),
-                source_attribution=attr.get("source_attribution"),
+
+    if family_key in (None, "lint"):
+        entries = tac_catalog_entries(product=product)
+        for spec in entries:
+            attr = attribution_for(spec.code)
+            issues.append(
+                LintIssueCatalogEntryModel(
+                    code=spec.code,
+                    severity=spec.severity,
+                    message_template=spec.message_template,
+                    product=spec.product,
+                    tags=list(spec.tags),
+                    source_id=attr.get("source_id"),
+                    source_url=attr.get("source_url"),
+                    source_attribution=attr.get("source_attribution"),
+                    family=attr.get("family") or "lint",
+                    source_type=attr.get("source_type"),
+                    status=attr.get("status"),
+                    semantic_identifier=attr.get("semantic_identifier"),
+                    last_verified=attr.get("last_verified"),
+                    replacement_url=attr.get("replacement_url"),
+                )
             )
-        )
+
+    if family_key in (None, "iwxxm"):
+        # IWXXM validation rows are product-agnostic; always include unless
+        # family=lint. Product filter does not drop them.
+        for row in iwxxm_validation_catalog_rows():
+            issues.append(LintIssueCatalogEntryModel(**row))
+
     return msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 
 

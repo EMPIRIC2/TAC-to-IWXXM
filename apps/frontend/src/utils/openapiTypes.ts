@@ -89,6 +89,12 @@ export type DecodeTacResponse = {
 
 export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
   tags: string[];
+  family?: string | null;
+  source_type?: string | null;
+  status?: string | null;
+  semantic_identifier?: string | null;
+  last_verified?: string | null;
+  replacement_url?: string | null;
 };
 
 export type LintIssueCatalogResponse = {

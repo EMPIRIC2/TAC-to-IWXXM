@@ -286,6 +286,31 @@ class LintIssueCatalogEntryModel(BaseModel):
     source_id: Optional[str] = None
     source_url: Optional[str] = None
     source_attribution: Optional[str] = None
+    # Additive EV-061 / #1014 (optional; older clients ignore).
+    family: Optional[str] = Field(
+        default=None,
+        description="lint (TAC registry) or iwxxm (validation checks)",
+    )
+    source_type: Optional[str] = Field(
+        default=None,
+        description="tier1, tier2, or tier3 source policy",
+    )
+    status: Optional[str] = Field(
+        default=None,
+        description="verified, legacy_alias, or semantic_only",
+    )
+    semantic_identifier: Optional[str] = Field(
+        default=None,
+        description="Vocabulary concept path when href is a verified landing",
+    )
+    last_verified: Optional[str] = Field(
+        default=None,
+        description="ISO date of last HTTP check for operator source_url",
+    )
+    replacement_url: Optional[str] = Field(
+        default=None,
+        description="Verified landing when source_url is a legacy alias",
+    )
 
 
 class LintIssueCatalogResponse(BaseModel):
