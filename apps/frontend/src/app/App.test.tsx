@@ -128,6 +128,10 @@ vi.mock('./components/QualityMetricsPage', () => ({
   QualityMetricsPage: () => <div data-testid="quality-metrics-page" />,
 }));
 
+vi.mock('./components/LintValidationCatalogPage', () => ({
+  LintValidationCatalogPage: () => <div data-testid="lint-validation-catalog-page" />,
+}));
+
 vi.mock('./components/ThemeProvider', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));

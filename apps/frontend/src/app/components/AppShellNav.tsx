@@ -1,15 +1,17 @@
 /**
- * Primary operator shell navigation — Convert | History | Quality metrics.
+ * Primary operator shell navigation — Convert | History | Quality metrics |
+ * Lint & validation catalog.
  *
- * Peer tabs for F7 / F7.q (EV-054); not a FileConverter panel.
+ * Peer tabs for F7 / F7.q / F7.v; not a FileConverter panel.
  */
 
-export type ShellPrimaryView = 'converter' | 'history' | 'quality';
+export type ShellPrimaryView = 'converter' | 'history' | 'quality' | 'catalog';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
   history: 'History',
   quality: 'Quality metrics',
+  catalog: 'Lint & validation catalog',
 } as const;
 
 interface AppShellNavProps {
@@ -19,10 +21,10 @@ interface AppShellNavProps {
   onNavigate: (view: ShellPrimaryView) => void;
 }
 
-const TABS: ShellPrimaryView[] = ['converter', 'history', 'quality'];
+const TABS: ShellPrimaryView[] = ['converter', 'history', 'quality', 'catalog'];
 
 /**
- * Render Convert / History / Quality metrics primary tabs.
+ * Render Convert / History / Quality metrics / catalog primary tabs.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler
@@ -34,7 +36,7 @@ export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
       aria-label="Primary"
       data-testid="app-shell-nav"
     >
-      <div className="mx-auto flex max-w-6xl gap-1 px-4 py-2">
+      <div className="mx-auto flex max-w-6xl flex-wrap gap-1 px-4 py-2">
         {TABS.map((view) => {
           const selected = activeView === view;
           return (
