@@ -1,5 +1,32 @@
 # Evolve Decisions
 
+## Cycle EV-062 — Validation Issues Catalog (#1017) (EV-062-validation-issues-catalog)
+
+**Opened:** 2026-08-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-062-validation-issues-catalog` · **Branch:** `evolve/EV-062-validation-issues-catalog` @ `origin/stage`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Promote:** not in scope (EV-061 promote remains held)
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV062-scope | Full [#1017](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1017) A+B **plus** rename to **Validation Issues Catalog**, operator **issue_type**, richer natural-language descriptions with section locators (or explicit unavailable) |
+| D-EV062-996 | **Out** — keep [#996](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/996) click-detail distinct |
+| D-EV062-scale | Standard; evolve default angles |
+| D-EV062-session | One session Documenting → Implementing |
+| D-EV062-fn | Deepen **F7.v** / **F15** only — **no new Fn** |
+| D-EV062-api | Additive fields on existing `GET /lint-issue-catalog` — no new route |
+| D-EV062-issue-type | Closed vocab: `presence` \| `structure` \| `content` \| `consistency` \| `iwxxm_schema` \| `other` |
+| D-EV062-copy | Descriptions must explain what + why + severity; natural-language section cite or “Source section unavailable”; ban thin research-only stubs as sole copy |
+| D-EV062-sources | Prefer public primary hrefs; paywall labeled; `source_locator` + `source_access`; re-crawl; no engine changes for link polish alone |
+| D-EV062-gate | **open** — Documenting twins PASS 11/11; intake locked one-session Implementing (`D-EV062-session`); proceed Build |
+
+### Corpus
+
+[Corpus: product §F15] [Corpus: product §F7] [Corpus: api §lint-issue-catalog] [Corpus: adr/ADR-028]
+[Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-062]
+
+---
+
 ## Cycle EV-061 — Pre-promote UX + catalog + AHL + stage→main gate (#1009) (S071)
 
 **Opened:** 2026-08-18 · **Session:** S071-pre-promote-ux-catalog · **Branch:** `evolve/EV-061-pre-promote-ux-catalog` @ `stage@a1650b01`  

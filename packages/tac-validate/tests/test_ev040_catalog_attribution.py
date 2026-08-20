@@ -50,6 +50,8 @@ def test_attribution_for_unknown_code_returns_nones() -> None:
         "semantic_identifier": None,
         "last_verified": None,
         "replacement_url": None,
+        "source_locator": None,
+        "source_access": None,
     }
 
 

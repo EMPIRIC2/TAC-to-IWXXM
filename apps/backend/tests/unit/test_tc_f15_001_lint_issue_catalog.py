@@ -75,3 +75,36 @@ def test_lint_issue_catalog_product_filter_speci(client: TestClient) -> None:
     codes = {row["code"] for row in response.json()["issues"]}
     assert "MISSING_CCCC" in codes
     assert "INVALID_WEATHER" in codes
+
+
+def test_lint_issue_catalog_issue_type_filter(client: TestClient) -> None:
+    response = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"issue_type": "iwxxm_schema", "family": "iwxxm"},
+    )
+    assert response.status_code == 200
+    rows = response.json()["issues"]
+    assert rows
+    assert all(row.get("issue_type") == "iwxxm_schema" for row in rows)
+    assert any(row["code"] == "XML_SCHEMA" for row in rows)
+
+
+def test_lint_issue_catalog_source_access_filter(client: TestClient) -> None:
+    response = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"source_access": "paywall", "family": "lint"},
+    )
+    assert response.status_code == 200
+    rows = response.json()["issues"]
+    assert rows
+    assert all(row.get("source_access") == "paywall" for row in rows)
+    assert any(row["code"] == "AMD_PRESENT" for row in rows)
+
+
+def test_lint_issue_catalog_lint_row_has_ev062_fields(client: TestClient) -> None:
+    response = client.get("/api/v1/lint-issue-catalog", params={"family": "lint"})
+    assert response.status_code == 200
+    amd = next(row for row in response.json()["issues"] if row["code"] == "AMD_PRESENT")
+    assert amd.get("issue_type") == "presence"
+    assert amd.get("source_locator")
+    assert amd.get("source_access") == "paywall"

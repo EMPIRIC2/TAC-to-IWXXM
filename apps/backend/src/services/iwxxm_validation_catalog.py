@@ -3,6 +3,9 @@
 Static operator-facing descriptions of F2 validation layers / common issue codes.
 Operator ``source_url`` values are verified landings from
 ``D-S071-links-resolve`` (2026-08-18 crawl).
+
+EV-062 / #1017: richer what/why copy, ``issue_type``, ``source_access``,
+``source_locator``.
 """
 
 from __future__ import annotations
@@ -31,7 +34,11 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
         {
             "code": "XML_WELLFORMED",
             "severity": "error",
-            "message_template": "IWXXM document must be well-formed XML",
+            "message_template": (
+                "Malformed XML cannot be parsed or validated further. Error: fix "
+                "well-formedness before XSD or Schematron checks can run — downstream "
+                "systems reject unreadable documents outright."
+            ),
             "product": None,
             "tags": ["xml", "wellformed", "iwxxm"],
             "family": "iwxxm",
@@ -43,11 +50,18 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "semantic_identifier": None,
             "last_verified": _LAST_VERIFIED,
             "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "WMO IWXXM repository — XML well-formedness requirements",
         },
         {
             "code": "XML_SCHEMA",
             "severity": "error",
-            "message_template": ("IWXXM document must validate against the pinned XSD schema"),
+            "message_template": (
+                "IWXXM document must conform to the pinned XSD schema for the selected "
+                "release. Error: schema violations block interchange with systems that "
+                "enforce element order, cardinality, and type constraints."
+            ),
             "product": None,
             "tags": ["xsd", "schema", "iwxxm"],
             "family": "iwxxm",
@@ -59,12 +73,17 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "semantic_identifier": None,
             "last_verified": _LAST_VERIFIED,
             "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "Pinned XSD schema bundle in vendor/schemas",
         },
         {
             "code": "SCHEMATRON",
             "severity": "error",
             "message_template": (
-                "IWXXM document must satisfy Schematron business rules for the selected IWXXM version"
+                "IWXXM document must satisfy Schematron business rules for the selected "
+                "IWXXM version. Error: co-occurrence and cross-field rules catch "
+                "semantically invalid reports that pass XSD alone."
             ),
             "product": None,
             "tags": ["schematron", "iwxxm"],
@@ -77,11 +96,18 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "semantic_identifier": None,
             "last_verified": _LAST_VERIFIED,
             "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "ReleaseNotes-IWXXM.txt — Schematron rule changes",
         },
         {
             "code": "GML_REFERENCES",
             "severity": "error",
-            "message_template": ("GML identifiers and xlink references in the IWXXM document must resolve"),
+            "message_template": (
+                "GML identifiers and xlink references in the IWXXM document must resolve. "
+                "Error: broken geometry or feature links cause silent data loss in GIS "
+                "and SWIM consumers."
+            ),
             "product": None,
             "tags": ["gml", "iwxxm"],
             "family": "iwxxm",
@@ -93,11 +119,18 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "semantic_identifier": None,
             "last_verified": _LAST_VERIFIED,
             "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "WMO IWXXM repository — GML / xlink reference rules",
         },
         {
             "code": "WMO_CODELISTS",
             "severity": "warning",
-            "message_template": ("Coded values should resolve against WMO Codes Registry entries"),
+            "message_template": (
+                "Coded values should resolve against WMO Codes Registry entries. "
+                "Warning: unknown or deprecated codes may still parse but can fail "
+                "registry validation or downstream filtering."
+            ),
             "product": None,
             "tags": ["codelist", "iwxxm"],
             "family": "iwxxm",
@@ -109,11 +142,18 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "semantic_identifier": "https://codes.wmo.int/",
             "last_verified": _LAST_VERIFIED,
             "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "WMO Codes Registry user guide",
         },
         {
             "code": "IWXXM_US_EXTENSION",
             "severity": "error",
-            "message_template": ("United States IWXXM profile validation uses the NWS iwxxm-us schema catalog"),
+            "message_template": (
+                "United States IWXXM profile validation uses the NWS iwxxm-us schema "
+                "catalog. Error: US-profile extensions and constraints differ from the "
+                "baseline IWXXM bundle and must validate against the NWS catalog."
+            ),
             "product": None,
             "tags": ["iwxxm_us", "iwxxm"],
             "family": "iwxxm",
@@ -125,6 +165,9 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "semantic_identifier": None,
             "last_verified": _LAST_VERIFIED,
             "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "NWS iwxxm-us schema catalog",
         },
     ]
 

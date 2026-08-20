@@ -457,6 +457,8 @@ export async function validateIwxxm(params: {
 export async function fetchLintIssueCatalog(params?: {
   product?: string;
   family?: string;
+  issue_type?: string;
+  source_access?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<LintIssueCatalogResponse> {
@@ -466,6 +468,12 @@ export async function fetchLintIssueCatalog(params?: {
   }
   if (params?.family && params.family.trim()) {
     query.set('family', params.family.trim().toLowerCase());
+  }
+  if (params?.issue_type && params.issue_type.trim()) {
+    query.set('issue_type', params.issue_type.trim().toLowerCase());
+  }
+  if (params?.source_access && params.source_access.trim()) {
+    query.set('source_access', params.source_access.trim().toLowerCase());
   }
   const qs = query.toString() ? `?${query.toString()}` : '';
   const response = await withTimeout(

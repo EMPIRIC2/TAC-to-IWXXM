@@ -95,6 +95,9 @@ export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
   semantic_identifier?: string | null;
   last_verified?: string | null;
   replacement_url?: string | null;
+  issue_type?: string | null;
+  source_locator?: string | null;
+  source_access?: string | null;
 };
 
 export type LintIssueCatalogResponse = {

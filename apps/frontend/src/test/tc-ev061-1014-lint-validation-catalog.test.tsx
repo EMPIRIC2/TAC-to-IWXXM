@@ -1,5 +1,5 @@
 /**
- * T5.1 / TC-EV061-1014 — Lint & validation catalog tab (#1014).
+ * T5.1 / TC-EV061-1014 — Validation Issues Catalog tab (#1014).
  *
  * Spec: docs/test-plan.md TC-EV061-1014-001..004; UJ-068; F7.v;
  * [Corpus: product §F7] [Corpus: journeys] [Corpus: tests]
@@ -135,20 +135,20 @@ vi.mock('sonner', () => ({
 
 import App from '../app/App';
 
-describe('T5.1 / TC-EV061-1014: Lint & validation catalog', () => {
+describe('T5.1 / TC-EV061-1014: Validation Issues Catalog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
   });
 
-  it('opens Lint & validation catalog via primary shell nav (TC-EV061-1014-001)', async () => {
+  it('opens Validation Issues Catalog via primary shell nav (TC-EV061-1014-001)', async () => {
     const user = userEvent.setup();
     render(<App />);
 
     expect(screen.getByTestId('app-shell-nav')).toBeInTheDocument();
     const catalogTab = screen.getByTestId('shell-nav-catalog');
-    expect(catalogTab).toHaveTextContent(/Lint & validation catalog/i);
+    expect(catalogTab).toHaveTextContent(/Validation Issues Catalog/i);
 
     await user.click(catalogTab);
     expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();

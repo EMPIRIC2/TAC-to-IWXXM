@@ -66,3 +66,15 @@ Until Build, Spec documents the policy; provenance JSON gets **clickable URL swa
 - Recursively crawling Codes Registry HTML branches
 - Replacing vendor pins / encode logic because a registry HTML 404'd
 - Treating ChatGPT `utm_source` tracking params as canonical (strip on store)
+
+## EV-062 follow-on (#1017)
+
+Extend the Build schema with operator-facing:
+
+- `issue_type` — see [Corpus: decisions §EV-062]
+- `source_locator` — section/appendix/table/page (or unavailable)
+- `source_access` — `public` | `paywall` | `login` | `semantic_only`
+
+Prefer public companions over sole `store.icao.int` Annex 3 hrefs when lawful free citations
+exist; keep storefront as secondary/labeled. PDF/HTML citations must carry locators when known.
+Re-crawl after retarget. [Corpus: product §F15] [Corpus: product §F7.v]

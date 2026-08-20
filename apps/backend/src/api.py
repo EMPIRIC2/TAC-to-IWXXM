@@ -1004,15 +1004,20 @@ def get_schema_status():
 async def lint_issue_catalog(
     product: Optional[str] = None,
     family: Optional[str] = None,
+    issue_type: Optional[str] = None,
+    source_access: Optional[str] = None,
 ) -> Response:
     """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
     from tac_validate.catalog_attribution import attribution_for
+    from tac_validate.issue_catalog_meta import classify_issue_type
 
     from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
 
     family_key = (family or "").strip().lower() or None
     if family_key is not None and family_key not in {"lint", "iwxxm"}:
         family_key = None
+    issue_type_key = (issue_type or "").strip().lower() or None
+    source_access_key = (source_access or "").strip().lower() or None
 
     issues: list[LintIssueCatalogEntryModel] = []
 
@@ -1036,6 +1041,13 @@ async def lint_issue_catalog(
                     semantic_identifier=attr.get("semantic_identifier"),
                     last_verified=attr.get("last_verified"),
                     replacement_url=attr.get("replacement_url"),
+                    issue_type=classify_issue_type(
+                        code=spec.code,
+                        tags=spec.tags,
+                        family="lint",
+                    ),
+                    source_locator=attr.get("source_locator"),
+                    source_access=attr.get("source_access"),
                 )
             )
 
@@ -1044,6 +1056,16 @@ async def lint_issue_catalog(
         # family=lint. Product filter does not drop them.
         for row in iwxxm_validation_catalog_rows():
             issues.append(LintIssueCatalogEntryModel(**row))
+
+    if issue_type_key or source_access_key:
+        filtered: list[LintIssueCatalogEntryModel] = []
+        for row in issues:
+            if issue_type_key and (row.issue_type or "").lower() != issue_type_key:
+                continue
+            if source_access_key and (row.source_access or "").lower() != source_access_key:
+                continue
+            filtered.append(row)
+        issues = filtered
 
     return msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 

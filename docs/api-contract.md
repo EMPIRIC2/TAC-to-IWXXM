@@ -390,6 +390,22 @@ must be a verified HTTP landing when `status=verified`; do not put planning ids 
 `code` / default `severity` / `message_template` match the registry module. FE uses this for
 code tooltips; live lint findings still come from `POST /lint-tac`.
 
+**Additive (EV-062 / #1017)**: optional fields for Validation Issues Catalog UX + provenance
+quality. Older clients ignore extras. **No** new route.
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `issue_type` | no | `presence` \| `structure` \| `content` \| `consistency` \| `iwxxm_schema` \| `other` |
+| `source_locator` | no | Section / appendix / table / paragraph / page; omit or null when unavailable |
+| `source_access` | no | `public` \| `paywall` \| `login` \| `semantic_only` |
+
+Operator-visible `message_template` / description must explain **what** and **why** at the
+stated severity and include a natural-language section reference **or** an explicit
+unavailable marker (not thin research-only stubs). Prefer public primary `source_url` when a
+lawful free citation exists; paywall rows keep `source_access=paywall` and may expose a
+public companion via `replacement_url`. Query params may add `issue_type` and
+`source_access` filters (additive).
+
 ### Quality metrics corpus (S063 / EV-054 / #836 / F7.q)
 
 Public read API for the operator **Quality metrics** tab. Serves **precomputed** official
@@ -920,3 +936,16 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None required. Additive fields only (`D-S071-api`). `INVALID_AHL` is the operator-facing convert-bulletin code for malformed heading; `bulletin_split_failed` is retained as `detail.alias` (`D-S071-ahl-code`).
 
 - S071 / EV-061 (2026-08-18): #1010–#1015 endpoint review (`D-S071-api`).
+
+## EV-062 — Endpoint review (Validation Issues Catalog / #1017)
+
+| Endpoint | Change for EV-062? | Notes |
+|----------|--------------------|-------|
+| `GET /api/v1/lint-issue-catalog` | **Additive fields + content** | `issue_type`, `source_locator`, `source_access`; richer `message_template`s; optional query `issue_type` / `source_access`. No new route |
+| `POST /api/v1/lint-tac` | **None (wire)** | Codes/severity unchanged; message text may deepen via registry |
+| FE Validation Issues Catalog | **UX deepen** | Rename; type + multi-filter/sort; locator + access display |
+| Dissemination / auth / sessions / convert / validate | **None** | Unchanged |
+
+**Breaking changes**: None. Additive only (`D-EV062-api`).
+
+- EV-062 (2026-08-20): #1017 Validation Issues Catalog deepen.

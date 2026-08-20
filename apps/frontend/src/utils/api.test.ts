@@ -876,6 +876,20 @@ describe('API Utils', () => {
       );
     });
 
+    it('GETs lint-issue-catalog with issue_type and source_access filters', async () => {
+      mockFetchResponse({ issues: [] });
+      await fetchLintIssueCatalog({
+        issue_type: 'Presence',
+        source_access: 'Paywall',
+      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\/lint-issue-catalog\?issue_type=presence&source_access=paywall$/,
+        ),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
     it('posts decode-tac with abort signal', async () => {
       mockFetchResponse({
         product: 'METAR',

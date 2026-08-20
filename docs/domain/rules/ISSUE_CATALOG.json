@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-08-18",
+  "generated": "2026-08-20",
   "issues": [
     {
       "code": "AMD_PRESENT",
       "severity": "info",
-      "message_template": "{product} AMD modifier present \u2014 research T1 / C1",
+      "message_template": "{product} includes the AMD (amendment) modifier, indicating an amended forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "modifier",
@@ -21,7 +21,7 @@
     {
       "code": "AT_PRESENT",
       "severity": "info",
-      "message_template": "{product} AT time group present \u2014 research T2",
+      "message_template": "{product} includes an AT time qualifier on a change group. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "change",
@@ -36,7 +36,7 @@
     {
       "code": "AUTO_PRESENT",
       "severity": "info",
-      "message_template": "{product} AUTO modifier present \u2014 research R8",
+      "message_template": "{product} includes the AUTO modifier, meaning the observation was produced by an automatic station. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "modifier",
@@ -51,7 +51,7 @@
     {
       "code": "BECMG_PRESENT",
       "severity": "info",
-      "message_template": "{product} BECMG change group present \u2014 research T2",
+      "message_template": "{product} includes a BECMG (becoming) change group describing a gradual change. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "change",
@@ -66,7 +66,7 @@
     {
       "code": "CAVOK_PRESENT",
       "severity": "info",
-      "message_template": "{product} CAVOK present \u2014 research T3 / S1",
+      "message_template": "{product} includes CAVOK (ceiling and visibility OK). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "cavok",
@@ -100,7 +100,7 @@
     {
       "code": "CNL_REPORT",
       "severity": "info",
-      "message_template": "{product} CNL cancel report \u2014 research T1",
+      "message_template": "{product} is a CNL (cancel) report that withdraws a previously issued forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "cnl",
@@ -114,7 +114,7 @@
     {
       "code": "COR_PRESENT",
       "severity": "info",
-      "message_template": "{product} COR modifier present \u2014 research R8 / T1 / C1",
+      "message_template": "{product} includes the COR (correction) modifier, indicating a corrected report replacing a prior issue. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "modifier",
@@ -145,7 +145,7 @@
     {
       "code": "FIR_OR_CTA",
       "severity": "info",
-      "message_template": "SIGMET FIR/CTA/UIR airspace identity \u2014 research G2",
+      "message_template": "SIGMET FIR/CTA/UIR airspace identity. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "fir",
@@ -160,7 +160,7 @@
     {
       "code": "FM_PRESENT",
       "severity": "info",
-      "message_template": "{product} FM change group present \u2014 research T2",
+      "message_template": "{product} includes an FM (from) change group that starts a new forecast period. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "change",
@@ -175,7 +175,7 @@
     {
       "code": "INTENSITY_CHANGE",
       "severity": "info",
-      "message_template": "SIGMET/AIRMET intensity change INTSF/WKN/NC \u2014 research G2 / F24 A2",
+      "message_template": "SIGMET/AIRMET intensity change INTSF/WKN/NC. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "intensity",
@@ -234,7 +234,7 @@
     {
       "code": "INVALID_NIL",
       "severity": "error",
-      "message_template": "{product} NIL must not include body groups \u2014 research R8 / T1 / C1",
+      "message_template": "{product} NIL report also contains body groups; NIL must stand alone without observation/forecast body content. Error: the TAC does not meet a required format or product rule and should be corrected. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "nil",
@@ -252,7 +252,7 @@
     {
       "code": "INVALID_NO_VA_EXP",
       "severity": "error",
-      "message_template": "VA SIGMET NO VA EXP must not include VA CLD body \u2014 research V1",
+      "message_template": "VA SIGMET NO VA EXP must not include VA CLD body. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",
@@ -267,7 +267,7 @@
     {
       "code": "INVALID_PROB",
       "severity": "error",
-      "message_template": "{product} invalid PROB (only 30|40; must not qualify BECMG/FM) \u2014 App 5 \u00a71.4 / research T2",
+      "message_template": "{product} has an invalid PROB group (only PROB30/PROB40 are allowed; PROB must not qualify BECMG/FM). Error: the TAC does not meet a required format or product rule and should be corrected. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "change",
@@ -298,7 +298,7 @@
     {
       "code": "INVALID_RVR",
       "severity": "error",
-      "message_template": "{product} invalid RVR token {token!r} \u2014 research R8",
+      "message_template": "{product} has an invalid RVR token {token!r} that does not match allowed RVR syntax. Error: the TAC does not meet a required format or product rule and should be corrected. Source: No single RVR concept register \u2014 cite 49-2 family + grammar sources.",
       "product": null,
       "tags": [
         "rvr",
@@ -313,7 +313,7 @@
     {
       "code": "INVALID_SIGMET_CNL",
       "severity": "error",
-      "message_template": "SIGMET CNL must omit phenomenon/analysis body \u2014 research G1",
+      "message_template": "SIGMET CNL must omit phenomenon/analysis body. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "cnl",
@@ -327,7 +327,7 @@
     {
       "code": "INVALID_SIGMET_COR",
       "severity": "error",
-      "message_template": "SIGMET must not use COR (cancel + re-issue) \u2014 research G1 / C1",
+      "message_template": "SIGMET must not use COR (cancel + re-issue). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "cor",
@@ -342,7 +342,7 @@
     {
       "code": "INVALID_STNR_MOVEMENT",
       "severity": "error",
-      "message_template": "SIGMET/AIRMET STNR conflicts with MOV \u2014 research G1 / F24 A2",
+      "message_template": "SIGMET/AIRMET STNR conflicts with MOV. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "stnr",
@@ -359,7 +359,7 @@
     {
       "code": "INVALID_TX_TN",
       "severity": "error",
-      "message_template": "{product} TX/TN allowed on base forecast only \u2014 research T3",
+      "message_template": "{product} places TX/TN temperature groups outside the base forecast where they are not allowed. Error: the TAC does not meet a required format or product rule and should be corrected. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "temperature",
@@ -373,7 +373,7 @@
     {
       "code": "INVALID_VALIDITY_DURATION",
       "severity": "error",
-      "message_template": "SIGMET VALID period exceeds 4 hours (WS) \u2014 research G2",
+      "message_template": "SIGMET VALID period exceeds 4 hours (WS). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "valid",
@@ -417,7 +417,7 @@
     {
       "code": "INVALID_WIND",
       "severity": "error",
-      "message_template": "{product} invalid wind token {token!r} \u2014 research R8",
+      "message_template": "{product} has an invalid wind token {token!r}. Error: the TAC does not meet a required format or product rule and should be corrected. Source: Wind not in AerodromePresentWeather list.",
       "product": null,
       "tags": [
         "wind",
@@ -463,7 +463,7 @@
     {
       "code": "MISSING_FIR_OR_CTA",
       "severity": "error",
-      "message_template": "SIGMET/AIRMET missing FIR/CTA/UIR airspace identity \u2014 research G2 / F24 A1",
+      "message_template": "SIGMET/AIRMET missing FIR/CTA/UIR airspace identity. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "fir",
@@ -506,7 +506,7 @@
     {
       "code": "MISSING_OBS_OR_FCST",
       "severity": "error",
-      "message_template": "SIGMET/AIRMET missing OBS or FCST \u2014 research G2 / F24 A2",
+      "message_template": "SIGMET/AIRMET missing OBS or FCST. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "obs",
@@ -564,7 +564,7 @@
     {
       "code": "MISSING_SEQUENCE",
       "severity": "error",
-      "message_template": "SIGMET/AIRMET missing sequence number \u2014 research G2 / F24 A1",
+      "message_template": "SIGMET/AIRMET missing sequence number. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "sequence",
@@ -625,7 +625,7 @@
     {
       "code": "MISSING_TC_IDENTITY",
       "severity": "error",
-      "message_template": "TC SIGMET missing cyclone identity (TC \u2026 PSN) \u2014 #829 / TC-EV030-004",
+      "message_template": "TC SIGMET missing cyclone identity (TC \u2026 PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "tc",
@@ -709,7 +709,7 @@
     {
       "code": "MISSING_VA_VOLCANO",
       "severity": "error",
-      "message_template": "VA SIGMET missing volcano identity (MT \u2026 PSN) \u2014 research V1",
+      "message_template": "VA SIGMET missing volcano identity (MT \u2026 PSN). Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",
@@ -815,7 +815,7 @@
     {
       "code": "NCD_PRESENT",
       "severity": "info",
-      "message_template": "{product} NCD present \u2014 research S1",
+      "message_template": "{product} includes NCD (no cloud detected), typically from AUTO stations. Informational: noted for operator awareness; does not by itself block conversion. Source: NCD cloud amount notation family.",
       "product": null,
       "tags": [
         "cloud",
@@ -831,7 +831,7 @@
     {
       "code": "NIL_REPORT",
       "severity": "info",
-      "message_template": "{product} NIL report \u2014 research R8 / T1 / C1",
+      "message_template": "{product} is a NIL report (no observation/forecast available for the period). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "nil",
@@ -849,7 +849,7 @@
     {
       "code": "NOSIG_PRESENT",
       "severity": "info",
-      "message_template": "{product} NOSIG trend present \u2014 research R8",
+      "message_template": "{product} includes a NOSIG trend, meaning no significant change is expected. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "trend",
@@ -864,7 +864,7 @@
     {
       "code": "NO_VA_EXP",
       "severity": "info",
-      "message_template": "VA SIGMET NO VA EXP absence token \u2014 research V1 / C1",
+      "message_template": "VA SIGMET NO VA EXP absence token. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",
@@ -880,7 +880,7 @@
     {
       "code": "NSC_PRESENT",
       "severity": "info",
-      "message_template": "{product} NSC present \u2014 research T3 / S1 / C1",
+      "message_template": "{product} includes NSC (no significant cloud). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "cloud",
@@ -898,7 +898,7 @@
     {
       "code": "NSC_WITH_CLOUD_LAYERS",
       "severity": "warning",
-      "message_template": "{product} NSC with FEW/SCT/BKN/OVC in same group \u2014 FAQ \u00a714.3 exclusivity (TC-EV023-001)",
+      "message_template": "{product} combines NSC (no significant cloud) with FEW/SCT/BKN/OVC cloud layers in the same group \u2014 FAQ \u00a714.3 exclusivity. Warning: conflicting cloud amounts may confuse downstream systems; review before dissemination. Source: ICAO Annex 3 FAQ \u00a714.3. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "cloud",
@@ -917,7 +917,7 @@
     {
       "code": "NSW_PRESENT",
       "severity": "info",
-      "message_template": "{product} NSW present \u2014 research T3 / S1",
+      "message_template": "{product} includes NSW (nil significant weather). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "weather",
@@ -934,7 +934,7 @@
     {
       "code": "OBS_OR_FCST",
       "severity": "info",
-      "message_template": "SIGMET/AIRMET OBS or FCST analysis \u2014 research G2 / F24 A2",
+      "message_template": "SIGMET/AIRMET OBS or FCST analysis. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "obs",
@@ -968,7 +968,7 @@
     {
       "code": "POINT_LOCATION",
       "severity": "info",
-      "message_template": "SIGMET single-point location (encode CircleByCenterPoint r=0) \u2014 research G1",
+      "message_template": "SIGMET single-point location (encode CircleByCenterPoint r=0). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "geometry",
@@ -983,7 +983,7 @@
     {
       "code": "POLYGON_LOCATION",
       "severity": "info",
-      "message_template": "SIGMET polygon/line WI geometry \u2014 research G1",
+      "message_template": "SIGMET polygon/line WI geometry. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "geometry",
@@ -998,7 +998,7 @@
     {
       "code": "PROB_PRESENT",
       "severity": "info",
-      "message_template": "{product} PROB30/40 change group present \u2014 research T2",
+      "message_template": "{product} includes a PROB30 or PROB40 probability change group. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "change",
@@ -1029,7 +1029,7 @@
     {
       "code": "RVR_PRESENT",
       "severity": "info",
-      "message_template": "{product} RVR group present \u2014 research R8",
+      "message_template": "{product} includes one or more runway visual range (RVR) groups. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "rvr",
@@ -1044,7 +1044,7 @@
     {
       "code": "SIGMET_CNL",
       "severity": "info",
-      "message_template": "SIGMET CNL cancel report \u2014 research G1 / C1",
+      "message_template": "SIGMET CNL cancel report. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "cnl",
@@ -1059,7 +1059,7 @@
     {
       "code": "SIGMET_SEQUENCE",
       "severity": "info",
-      "message_template": "SIGMET sequence number present \u2014 research G2",
+      "message_template": "{product} includes a recognized SIGMET SEQUENCE element/group in the TAC text. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "sequence",
@@ -1073,7 +1073,7 @@
     {
       "code": "SINGLE_ALTITUDE",
       "severity": "info",
-      "message_template": "SIGMET single altitude (same lower/upper) \u2014 research G1",
+      "message_template": "SIGMET single altitude (same lower/upper). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "altitude",
@@ -1087,7 +1087,7 @@
     {
       "code": "STNR_MOVEMENT",
       "severity": "info",
-      "message_template": "SIGMET/AIRMET STNR stationary movement \u2014 research G1 / C1 / F24 A2",
+      "message_template": "SIGMET/AIRMET STNR stationary movement. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "stnr",
@@ -1215,7 +1215,7 @@
     {
       "code": "TC_CB_GEOMETRY",
       "severity": "info",
-      "message_template": "TC SIGMET CB geometry WI \u2026 OF TC CENTRE \u2014 #829 / TC-EV030-004",
+      "message_template": "TC SIGMET CB geometry uses WI \u2026 OF TC CENTRE wording. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "tc",
@@ -1230,7 +1230,7 @@
     {
       "code": "TC_CYCLONE_IDENTITY",
       "severity": "info",
-      "message_template": "TC SIGMET tropical cyclone identity (TC \u2026 PSN) \u2014 #829 / TC-EV030-004",
+      "message_template": "TC SIGMET includes tropical cyclone identity (TC \u2026 PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "tc",
@@ -1245,7 +1245,7 @@
     {
       "code": "TEMPO_PRESENT",
       "severity": "info",
-      "message_template": "{product} TEMPO trend present \u2014 research R8 / T2",
+      "message_template": "{product} includes a TEMPO trend/change group for temporary fluctuations. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "trend",
@@ -1263,7 +1263,7 @@
     {
       "code": "TL_PRESENT",
       "severity": "info",
-      "message_template": "{product} TL time group present \u2014 research T2",
+      "message_template": "{product} includes a TL (until) time qualifier on a change group. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "change",
@@ -1278,7 +1278,7 @@
     {
       "code": "TOP_ABV_OR_BLW",
       "severity": "info",
-      "message_template": "SIGMET/AIRMET TOP ABV/BLW level grammar \u2014 research G1 / F24 A2",
+      "message_template": "SIGMET/AIRMET TOP ABV/BLW level grammar. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "altitude",
@@ -1295,7 +1295,7 @@
     {
       "code": "TX_TN_PRESENT",
       "severity": "info",
-      "message_template": "{product} TX/TN temperature forecasts on base \u2014 research T3",
+      "message_template": "{product} includes TX/TN temperature forecast groups on the base forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "temperature",
@@ -1417,7 +1417,7 @@
     {
       "code": "VA_ASH_GEOMETRY",
       "severity": "info",
-      "message_template": "VA SIGMET ash cloud geometry / forecast position \u2014 research V1",
+      "message_template": "VA SIGMET ash cloud geometry / forecast position. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",
@@ -1432,7 +1432,7 @@
     {
       "code": "VA_CNL_FIR_MOVED",
       "severity": "info",
-      "message_template": "VA SIGMET CNL identifies FIR to which ash has moved \u2014 research V1 / C1",
+      "message_template": "VA SIGMET CNL identifies FIR to which ash has moved. Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",
@@ -1449,7 +1449,7 @@
     {
       "code": "VA_VOLCANO_IDENTITY",
       "severity": "info",
-      "message_template": "VA SIGMET erupting volcano identity (MT/PSN) \u2014 research V1",
+      "message_template": "VA SIGMET erupting volcano identity (MT/PSN). Informational: noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.",
       "product": "sigmet",
       "tags": [
         "va",
@@ -1496,7 +1496,7 @@
     {
       "code": "VV_NOT_OBSERVABLE",
       "severity": "info",
-      "message_template": "{product} VV/// \u2014 verticalVisibility nil notObservable \u2014 research S1",
+      "message_template": "{product} uses VV/// meaning vertical visibility is not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: Vertical visibility missingness via nil.",
       "product": null,
       "tags": [
         "cloud",
@@ -1512,7 +1512,7 @@
     {
       "code": "VV_OMIT",
       "severity": "info",
-      "message_template": "{product} VV/// \u2014 omit verticalVisibility without nilReason \u2014 research T3",
+      "message_template": "{product} uses VV///; vertical visibility should be omitted without a nil reason in this product context. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",
       "product": "taf",
       "tags": [
         "cloud",
@@ -1527,7 +1527,7 @@
     {
       "code": "WIND_DIR_VARIATION",
       "severity": "info",
-      "message_template": "{product} wind direction variation dddVddd \u2014 research S1",
+      "message_template": "{product} includes wind direction variation in dddVddd form. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "wind",
@@ -1542,7 +1542,7 @@
     {
       "code": "WIND_VRB_OR_GUST",
       "severity": "info",
-      "message_template": "{product} wind uses VRB and/or gust \u2014 research R8",
+      "message_template": "{product} wind group uses variable direction (VRB) and/or a gust value. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "wind",
@@ -1557,7 +1557,7 @@
     {
       "code": "WX_NOT_OBSERVABLE",
       "severity": "info",
-      "message_template": "{product} present weather // \u2014 nil notObservable \u2014 research S1",
+      "message_template": "{product} present weather uses // meaning weather phenomena are not observable. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable; prefer iwxxm/nil when pin policy says so.",
       "product": null,
       "tags": [
         "weather",
