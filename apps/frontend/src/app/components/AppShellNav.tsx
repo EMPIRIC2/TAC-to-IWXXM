@@ -1,6 +1,6 @@
 /**
  * Primary operator shell navigation — Convert | History | Quality metrics |
- * Lint & validation catalog.
+ * Validation Issues Catalog.
  *
  * Peer tabs for F7 / F7.q / F7.v; not a FileConverter panel.
  */
@@ -11,7 +11,7 @@ export const SHELL_NAV_LABELS = {
   converter: 'Convert',
   history: 'History',
   quality: 'Quality metrics',
-  catalog: 'Lint & validation catalog',
+  catalog: 'Validation Issues Catalog',
 } as const;
 
 interface AppShellNavProps {

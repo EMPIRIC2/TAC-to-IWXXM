@@ -1953,6 +1953,18 @@
             "description": "lint (TAC registry) or iwxxm (validation checks)",
             "title": "Family"
           },
+          "issue_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other",
+            "title": "Issue Type"
+          },
           "last_verified": {
             "anyOf": [
               {
@@ -2008,6 +2020,18 @@
             "title": "Severity",
             "type": "string"
           },
+          "source_access": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Operator access tier: public, paywall, login, semantic_only",
+            "title": "Source Access"
+          },
           "source_attribution": {
             "anyOf": [
               {
@@ -2029,6 +2053,18 @@
               }
             ],
             "title": "Source Id"
+          },
+          "source_locator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Section/table/page locator for the cited source",
+            "title": "Source Locator"
           },
           "source_type": {
             "anyOf": [
@@ -4503,6 +4539,38 @@
                 }
               ],
               "title": "Family"
+            }
+          },
+          {
+            "in": "query",
+            "name": "issue_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Issue Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source_access",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Access"
             }
           }
         ],

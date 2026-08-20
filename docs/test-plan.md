@@ -122,7 +122,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-064 | F2/F9/F10 deepen (EV-061) | Validate IWXXM item-by-item readable decode (#1010) | **H4–H5 required** | TC-EV061-1010-001..003 |
 | UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
-| UJ-068 | F7.v/F15 (EV-061) | Lint+validation catalog tab (#1014) | **H4–H5 required** | TC-EV061-1014-001..004 |
+| UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -2546,9 +2546,9 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV061-1014-001: Catalog tab reachable
 
 - **Level**: T2 / T3 / H4–H5
-- **Objective**: Top-level **Lint & validation catalog** nav opens a page
+- **Objective**: Top-level **Validation Issues Catalog** nav opens a page (EV-062 rename; was Lint & validation catalog)
 - **Pass criteria**: Public/guest can open without JWT
-- **Source**: #1014; UJ-068
+- **Source**: #1014; #1017; UJ-068
 
 ### TC-EV061-1014-002: Rows include code, description, level, source
 
@@ -2570,6 +2570,48 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Catalog attribution / OpenAPI / UI free of `[Corpus:]`, ADR, EV, UJ ids
 - **Pass criteria**: EV-048 guards green
 - **Source**: #1014; [Corpus: product §F7]
+
+### TC-EV062-001: Catalog title is Validation Issues Catalog
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Nav + page title use **Validation Issues Catalog**
+- **Pass criteria**: No operator-visible “Lint & validation catalog” title
+- **Source**: #1017; UJ-068; FR1
+
+### TC-EV062-002: issue_type present and filterable
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Each row has `issue_type`; UI filter narrows by type
+- **Pass criteria**: Closed vocab; empty state when no matches
+- **Source**: #1017; FR2
+
+### TC-EV062-003: Descriptions explain what/why + locator or unavailable
+
+- **Level**: T0 / T2
+- **Objective**: No thin research-only stubs as sole description; section cite or unavailable marker
+- **Pass criteria**: Spot-check former research codes (e.g. AMD_PRESENT); API `source_locator` or unavailable copy
+- **Source**: #1017; FR3
+
+### TC-EV062-004: source_access + public-prefer primary href
+
+- **Level**: T0 / T2
+- **Objective**: `source_access` exposed; public primary when lawful free cite exists; paywall labeled
+- **Pass criteria**: Inventory + crawl after retarget; EV-048 clean attribution
+- **Source**: #1017; FR4
+
+### TC-EV062-005: Sort + multi-filter
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Sort by code/level/type/access; combine filters
+- **Pass criteria**: Intersection semantics; keyboard accessible
+- **Source**: #1017; FR5
+
+### TC-EV062-006: Catalog regen / drift + OpenAPI additive
+
+- **Level**: T0 / T2
+- **Objective**: Registry/catalog drift green; OpenAPI includes new optional fields
+- **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
+- **Source**: #1017; ADR-028; NFR1–NFR4
 
 ### TC-EV061-1015-001: Promote PR required-check inventory
 

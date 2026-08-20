@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-18 (S071 / EV-061 UJ-064..068 pre-promote; catalog UJ-068 links resolved / #1014 unblocked)
+> **Last updated**: 2026-08-20 (EV-062 Validation Issues Catalog / #1017 deepen UJ-068)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -84,7 +84,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-065 | AHL bulletin decode + convert end-to-end | apps/frontend / API | F6/F7 deepen (EV-061 / #1012) | T0 / T2 / **T3** / H4–H5 |
 | UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
-| UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014) | T0 / T2 / **T3** / H4–H5 |
+| UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -1101,25 +1101,28 @@ product/profile; optional Bulletin ID / Issuing Center. Golden: `SAUS31 KZNY` mu
 
 ---
 
-### UJ-068: Lint & Validation Catalog Top-Level Tab (EV-061 / #1014)
+### UJ-068: Validation Issues Catalog Top-Level Tab (EV-061 / #1014; EV-062 / #1017)
 
 **Actor**: Public/guest operator
 
-**Goal**: Browse a top-level catalog page of lint **and** validation checks with code, description,
-level, and working source links.
+**Goal**: Browse a top-level **Validation Issues Catalog** of lint **and** validation checks with
+code, descriptive what/why text, level, **issue type**, working source links, and section
+locators (or explicit unavailable).
 
 **Source policy**: Operator click-targets are verified landings (`D-S071-links-resolve`);
-`codes.wmo.int/49-2*` / `common/nil` may appear as semantic/legacy aliases without being the
-href. See crawl report + mining note.
+prefer public primary hrefs (`D-EV062-sources`); `codes.wmo.int/49-2*` / `common/nil` may
+appear as semantic/legacy aliases without being the href. Paywall access is labeled.
 
 **Steps**:
 
-1. Open top-level **Lint & validation catalog** nav tab.
-2. See rows with code, description, level, clickable source URL(s).
-3. Spot-check that **operator** source links resolve (HTTP 2xx/3xx).
+1. Open top-level **Validation Issues Catalog** nav tab.
+2. See rows with code, description (what/why + section cite or unavailable), level, issue type,
+   clickable source URL(s), and access/locator when present.
+3. Filter by family, issue type, level, and/or source access; sort by code/level/type/access.
+4. Spot-check that **operator** source links resolve (HTTP 2xx/3xx) for public rows.
 
-**Acceptance**: feature-list F7.v / F15 / #1014; TC-EV061-1014-*. Distinct from #996.
-**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F10] [Corpus: product §F15] [Corpus: api]
+**Acceptance**: feature-list F7.v / F15 / #1014 + #1017; TC-EV061-1014-* + TC-EV062-*. Distinct from #996.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7] [Corpus: product §F15] [Corpus: api]
 
 ---
 

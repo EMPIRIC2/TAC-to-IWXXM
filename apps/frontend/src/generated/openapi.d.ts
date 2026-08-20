@@ -2303,6 +2303,11 @@ export interface components {
              */
             family?: string | null;
             /**
+             * Issue Type
+             * @description Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other
+             */
+            issue_type?: string | null;
+            /**
              * Last Verified
              * @description ISO date of last HTTP check for operator source_url
              */
@@ -2323,10 +2328,20 @@ export interface components {
             semantic_identifier?: string | null;
             /** Severity */
             severity: string;
+            /**
+             * Source Access
+             * @description Operator access tier: public, paywall, login, semantic_only
+             */
+            source_access?: string | null;
             /** Source Attribution */
             source_attribution?: string | null;
             /** Source Id */
             source_id?: string | null;
+            /**
+             * Source Locator
+             * @description Section/table/page locator for the cited source
+             */
+            source_locator?: string | null;
             /**
              * Source Type
              * @description tier1, tier2, or tier3 source policy
@@ -3743,6 +3758,8 @@ export interface operations {
             query?: {
                 product?: string | null;
                 family?: string | null;
+                issue_type?: string | null;
+                source_access?: string | null;
             };
             header?: never;
             path?: never;

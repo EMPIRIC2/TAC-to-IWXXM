@@ -311,6 +311,19 @@ class LintIssueCatalogEntryModel(BaseModel):
         default=None,
         description="Verified landing when source_url is a legacy alias",
     )
+    # Additive EV-062 / #1017 (optional; older clients ignore).
+    issue_type: Optional[str] = Field(
+        default=None,
+        description="Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other",
+    )
+    source_locator: Optional[str] = Field(
+        default=None,
+        description="Section/table/page locator for the cited source",
+    )
+    source_access: Optional[str] = Field(
+        default=None,
+        description="Operator access tier: public, paywall, login, semantic_only",
+    )
 
 
 class LintIssueCatalogResponse(BaseModel):

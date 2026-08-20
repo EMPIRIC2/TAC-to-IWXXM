@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -22,7 +22,7 @@
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; **S050 / EV-042** operator UI hidden with F16–F19 (restore #898) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; **S050 / EV-042** operator UI hidden (restore #898) |
@@ -529,6 +529,12 @@
   wmo-im/iwxxm, AHL knowledge-hub, NWS iwxxm-us, APAC FAQ). See
   [mining/ev061-catalog-source-replacements-2026-08-18.md](domain/mining/ev061-catalog-source-replacements-2026-08-18.md).
   Related but distinct from #996 click-for-detail.
+- **EV-062 deepen (F7.v / #1017)**: Rename operator surface to **Validation Issues Catalog**.
+  Expose **issue_type** (`presence` \| `structure` \| `content` \| `consistency` \|
+  `iwxxm_schema` \| `other`) with sort + multi-filter (type, level, family, product,
+  source access/tier). Descriptions are natural-language **what / why / severity** with
+  section-level citations or explicit **Source section unavailable**. Prefer public primary
+  `source_url`; label paywall; expose `source_locator` + `source_access`. Distinct from #996.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -808,6 +814,20 @@
   7. WMO A3-1 + AHL demo lint without false-positive errors; FPs logged — F15
 - **Source**: [Context: workbench-lint-ux](context/workbench-lint-ux.md);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-040
+
+### F15 / F7.v deepen (EV-062 — Validation Issues Catalog / #1017)
+
+- **Status note**: F15 remains **Done**; F7 remains **Planned**; **no new Fn**. Catalog UX +
+  provenance presentation deepen only (encode engines unchanged for link polish).
+- **Acceptance (EV-062)**:
+  1. Operator surface titled **Validation Issues Catalog**
+  2. Each row has filterable `issue_type` (closed vocab)
+  3. Descriptions explain what/why/severity with section cite or explicit unavailable
+  4. `source_locator` + `source_access` on API; public-prefer primary hrefs; paywall labeled
+  5. Sort + multi-filter; H4–H5 + TC-EV062-*; #996 remains OOS
+- **Source**: [#1017](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1017);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-062;
+  [mining/ev061-catalog-source-replacements-2026-08-18.md](domain/mining/ev061-catalog-source-replacements-2026-08-18.md)
 
 ### F6 deepen (S015 / EV-011 — METAR)
 

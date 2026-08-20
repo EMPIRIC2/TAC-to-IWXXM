@@ -1,5 +1,5 @@
 /**
- * Top-level Lint & validation catalog page — code, level, description, source links.
+ * Top-level Validation Issues Catalog page — code, type, level, description, source links.
  *
  * Consumes GET /lint-issue-catalog (additive family + source fields). Peer shell tab
  * for F7.v / #1014; distinct from the workbench browse panel.
@@ -11,18 +11,50 @@ import { fetchLintIssueCatalog } from '@/utils/api';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
 import { Card } from './ui/card';
 import {
+  LINT_VALIDATION_CATALOG_ACCESS_LABEL,
   LINT_VALIDATION_CATALOG_COL_CODE,
   LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
   LINT_VALIDATION_CATALOG_COL_LEVEL,
   LINT_VALIDATION_CATALOG_COL_SOURCE,
+  LINT_VALIDATION_CATALOG_COL_TYPE,
   LINT_VALIDATION_CATALOG_EMPTY,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
+  LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LOADING,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
+  LINT_VALIDATION_CATALOG_SORT_LABEL,
+  LINT_VALIDATION_CATALOG_TYPE_LABEL,
 } from '@/utils/lintValidationCatalogCopy';
 
 type FamilyFilter = 'all' | 'lint' | 'iwxxm';
+type SortKey = 'code' | 'level' | 'family' | 'issue_type' | 'source_access';
+
+const LEVEL_OPTIONS = ['all', 'critical', 'error', 'warning', 'info'] as const;
+const TYPE_OPTIONS = [
+  'all',
+  'presence',
+  'structure',
+  'content',
+  'consistency',
+  'iwxxm_schema',
+  'other',
+] as const;
+const ACCESS_OPTIONS = ['all', 'public', 'paywall', 'login', 'semantic_only'] as const;
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: 'code', label: 'Code' },
+  { value: 'level', label: 'Level' },
+  { value: 'family', label: 'Family' },
+  { value: 'issue_type', label: 'Type' },
+  { value: 'source_access', label: 'Access' },
+];
+
+const LEVEL_RANK: Record<string, number> = {
+  critical: 0,
+  error: 1,
+  warning: 2,
+  info: 3,
+};
 
 /**
  * Whether an operator source URL should be rendered as a clickable link.
@@ -42,10 +74,65 @@ function isClickableSource(entry: LintIssueCatalogEntry): boolean {
 }
 
 /**
+ * Read a sortable string field from a catalog row (non-level sorts).
+ */
+function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
+  switch (sortBy) {
+    case 'family':
+      return entry.family || '';
+    case 'issue_type':
+      return entry.issue_type || '';
+    case 'source_access':
+      return entry.source_access || '';
+    case 'code':
+    case 'level':
+    default:
+      return entry.code || '';
+  }
+}
+
+/**
+ * Compare catalog rows for client-side sort.
+ */
+function compareEntries(
+  a: LintIssueCatalogEntry,
+  b: LintIssueCatalogEntry,
+  sortBy: SortKey,
+): number {
+  if (sortBy === 'level') {
+    const rankA = LEVEL_RANK[(a.severity || '').toLowerCase()] ?? 99;
+    const rankB = LEVEL_RANK[(b.severity || '').toLowerCase()] ?? 99;
+    if (rankA !== rankB) {
+      return rankA - rankB;
+    }
+    return (a.code || '').localeCompare(b.code || '', undefined, {
+      sensitivity: 'base',
+    });
+  }
+  const cmp = sortFieldValue(a, sortBy).localeCompare(
+    sortFieldValue(b, sortBy),
+    undefined,
+    {
+      sensitivity: 'base',
+    },
+  );
+  if (cmp !== 0) {
+    return cmp;
+  }
+  return (a.code || '').localeCompare(b.code || '', undefined, { sensitivity: 'base' });
+}
+
+/**
  * Browse TAC lint and IWXXM validation catalog rows from the public API.
  */
 export function LintValidationCatalogPage() {
   const [familyFilter, setFamilyFilter] = useState<FamilyFilter>('all');
+  const [issueTypeFilter, setIssueTypeFilter] =
+    useState<(typeof TYPE_OPTIONS)[number]>('all');
+  const [levelFilter, setLevelFilter] = useState<(typeof LEVEL_OPTIONS)[number]>('all');
+  const [sourceAccessFilter, setSourceAccessFilter] =
+    useState<(typeof ACCESS_OPTIONS)[number]>('all');
+  const [sortBy, setSortBy] = useState<SortKey>('code');
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +143,8 @@ export function LintValidationCatalogPage() {
     try {
       const response = await fetchLintIssueCatalog({
         family: familyFilter === 'all' ? undefined : familyFilter,
+        issue_type: issueTypeFilter === 'all' ? undefined : issueTypeFilter,
+        source_access: sourceAccessFilter === 'all' ? undefined : sourceAccessFilter,
       });
       setEntries(response.issues ?? []);
     } catch (err) {
@@ -64,28 +153,31 @@ export function LintValidationCatalogPage() {
     } finally {
       setLoading(false);
     }
-  }, [familyFilter]);
+  }, [familyFilter, issueTypeFilter, sourceAccessFilter]);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- refetch when family filter changes */
+  /* eslint-disable react-hooks/set-state-in-effect -- refetch when filters change */
   useEffect(() => {
     void loadCatalog();
   }, [loadCatalog]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const sorted = useMemo(
-    () =>
-      [...entries].sort((a, b) =>
-        (a.code || '').localeCompare(b.code || '', undefined, { sensitivity: 'base' }),
-      ),
-    [entries],
-  );
+  const sorted = useMemo(() => {
+    const levelKey = levelFilter === 'all' ? null : levelFilter;
+    const filtered = entries.filter((entry) => {
+      if (levelKey && (entry.severity || '').toLowerCase() !== levelKey) {
+        return false;
+      }
+      return true;
+    });
+    return [...filtered].sort((a, b) => compareEntries(a, b, sortBy));
+  }, [entries, levelFilter, sortBy]);
 
   return (
     <div
       className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900"
       data-testid="lint-validation-catalog-page"
     >
-      <div className="mx-auto max-w-5xl space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {LINT_VALIDATION_CATALOG_PAGE_TITLE}
@@ -109,6 +201,78 @@ export function LintValidationCatalogPage() {
                 <option value="all">All</option>
                 <option value="lint">TAC lint</option>
                 <option value="iwxxm">IWXXM validation</option>
+              </select>
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_TYPE_LABEL}
+              <select
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={issueTypeFilter}
+                data-testid="lint-validation-catalog-type-filter"
+                aria-label="Filter by type"
+                onChange={(e) =>
+                  setIssueTypeFilter(e.target.value as (typeof TYPE_OPTIONS)[number])
+                }
+              >
+                {TYPE_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt === 'all' ? 'All' : opt.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_LEVEL_LABEL}
+              <select
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={levelFilter}
+                data-testid="lint-validation-catalog-level-filter"
+                aria-label="Filter by level"
+                onChange={(e) =>
+                  setLevelFilter(e.target.value as (typeof LEVEL_OPTIONS)[number])
+                }
+              >
+                {LEVEL_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt === 'all' ? 'All' : opt}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_ACCESS_LABEL}
+              <select
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={sourceAccessFilter}
+                data-testid="lint-validation-catalog-access-filter"
+                aria-label="Filter by source access"
+                onChange={(e) =>
+                  setSourceAccessFilter(
+                    e.target.value as (typeof ACCESS_OPTIONS)[number],
+                  )
+                }
+              >
+                {ACCESS_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt === 'all' ? 'All' : opt.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_SORT_LABEL}
+              <select
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={sortBy}
+                data-testid="lint-validation-catalog-sort"
+                aria-label="Sort catalog rows"
+                onChange={(e) => setSortBy(e.target.value as SortKey)}
+              >
+                {SORT_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </label>
           </div>
@@ -136,11 +300,14 @@ export function LintValidationCatalogPage() {
                   {LINT_VALIDATION_CATALOG_EMPTY}
                 </p>
               ) : (
-                <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+                <table className="w-full min-w-[48rem] border-collapse text-left text-sm">
                   <thead>
                     <tr className="border-b border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300">
                       <th className="px-2 py-2 font-medium">
                         {LINT_VALIDATION_CATALOG_COL_CODE}
+                      </th>
+                      <th className="px-2 py-2 font-medium">
+                        {LINT_VALIDATION_CATALOG_COL_TYPE}
                       </th>
                       <th className="px-2 py-2 font-medium">
                         {LINT_VALIDATION_CATALOG_COL_LEVEL}
@@ -164,28 +331,43 @@ export function LintValidationCatalogPage() {
                           {entry.code}
                         </td>
                         <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
+                          {entry.issue_type ?? '—'}
+                        </td>
+                        <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
                           {entry.severity}
                         </td>
                         <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
                           {entry.message_template}
                         </td>
                         <td className="px-2 py-2">
-                          {isClickableSource(entry) ? (
-                            <a
-                              href={entry.source_url!}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
-                            >
-                              {entry.source_url}
-                            </a>
-                          ) : entry.source_url ? (
-                            <span className="break-all text-gray-500 dark:text-gray-400">
-                              {entry.source_url}
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
+                          <div className="space-y-1">
+                            {entry.source_locator ? (
+                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                                {entry.source_locator}
+                              </p>
+                            ) : null}
+                            {entry.source_access ? (
+                              <p className="text-xs text-gray-500 dark:text-gray-500">
+                                Access: {entry.source_access.replace('_', ' ')}
+                              </p>
+                            ) : null}
+                            {isClickableSource(entry) ? (
+                              <a
+                                href={entry.source_url!}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
+                              >
+                                {entry.source_url}
+                              </a>
+                            ) : entry.source_url ? (
+                              <span className="break-all text-gray-500 dark:text-gray-400">
+                                {entry.source_url}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">—</span>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
