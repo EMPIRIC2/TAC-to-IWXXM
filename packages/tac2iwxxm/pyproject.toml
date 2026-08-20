@@ -1,6 +1,6 @@
 [project]
 name = "tac2iwxxm"
-version = "0.2.4"
+version = "0.2.5"
 description = "Convert TAC aviation weather reports to IWXXM XML"
 readme = "README.md"
 license = { text = "MIT" }
