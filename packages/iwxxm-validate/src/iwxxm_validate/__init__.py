@@ -9,7 +9,7 @@ from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.native import clear_schema_caches, rust_available, rust_module
 from iwxxm_validate.validate_iwxxm import validate_iwxxm
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 
 __all__ = [
     "Issue",

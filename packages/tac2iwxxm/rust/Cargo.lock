@@ -156,7 +156,7 @@ dependencies = [
 
 [[package]]
 name = "tac2iwxxm_rust"
-version = "0.2.5"
+version = "0.3.0"
 dependencies = [
  "pyo3",
 ]

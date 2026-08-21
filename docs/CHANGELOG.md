@@ -2,7 +2,7 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
-## 2026-08-20 — Production release
+## 2026-08-21 — Production release
 
 Operator-facing improvements validated on staging, now promoting to production.
 
@@ -30,16 +30,16 @@ Operator-facing improvements validated on staging, now promoting to production.
   jargon.
 
 ### Packages
-- `tac2iwxxm` **0.2.4 → 0.2.5** (AHL-aware decode)
-- `tac-validate` **0.1.3 → 0.1.4** (AHL helpers + catalog metadata)
-- `iwxxm-validate` **0.1.2 → 0.1.3** (C14N helpers + 2025-2 Schematron path)
+- `tac2iwxxm` **0.2.4 → 0.3.0** (AHL-aware decode — minor: additive bulletin capability)
+- `tac-validate` **0.1.3 → 0.2.0** (AHL helpers + catalog metadata — minor: new public APIs)
+- `iwxxm-validate` **0.1.2 → 0.2.0** (C14N helpers + 2025-2 Schematron path — minor: new public APIs)
 
 ### Deploy
-- Promote PR: `stage` → `main` (this release).
-- After merge + tip CI green: tag `v2026.08.20-deploy` to roll production.
+- Promote PR: [#1022](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1022) (`stage` → `main`).
+- After merge + tip CI green: tag `v2026.08.21-deploy` to roll production.
 - Staging tip before release prep: `61b2ccae` (Staging smoke green).
-- Optional PyPI tags after checklist: `tac2iwxxm-v0.2.5`, `tac-validate-v0.1.4`,
-  `iwxxm-validate-v0.1.3`.
+- Optional PyPI tags after checklist: `tac2iwxxm-v0.3.0`, `tac-validate-v0.2.0`,
+  `iwxxm-validate-v0.2.0`.
 
 ### Provenance
 
