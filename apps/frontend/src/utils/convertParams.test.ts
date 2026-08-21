@@ -4,6 +4,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   consoleLevelPasses,
+  isValidBulletinId,
+  isValidIssuingCenter,
   issueLevelPasses,
   issueSeverityRank,
   mapOnErrorToStopOnError,
@@ -54,5 +56,14 @@ describe('convertParams', () => {
     expect(issueSeverityRank('information')).toBe(1);
     expect(issueSeverityRank('unexpected')).toBe(3);
     expect(issueSeverityRank(undefined)).toBe(3);
+  });
+
+  it('accepts empty or TTAAii Bulletin ID and 4-letter issuing center', () => {
+    expect(isValidBulletinId('')).toBe(true);
+    expect(isValidBulletinId('saaa00')).toBe(true);
+    expect(isValidBulletinId('SAAA0X')).toBe(false);
+    expect(isValidIssuingCenter('')).toBe(true);
+    expect(isValidIssuingCenter('kwbc')).toBe(true);
+    expect(isValidIssuingCenter('KW1C')).toBe(false);
   });
 });

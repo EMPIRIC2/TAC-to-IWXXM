@@ -280,7 +280,7 @@
           },
           "product": {
             "default": "METAR",
-            "description": "TAC product type (default METAR for legacy clients)",
+            "description": "TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)",
             "title": "Product",
             "type": "string"
           },
@@ -355,12 +355,12 @@
           },
           "manual_text": {
             "default": "",
-            "description": "Bulletin string",
+            "description": "Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports. Empty Bulletin ID / Issuing Center uses the heading TTAAii and CCCC.",
             "title": "Manual Text",
             "type": "string"
           },
           "product": {
-            "description": "TAC product (required)",
+            "description": "TAC product, or iwxxm for XML pass-through",
             "title": "Product",
             "type": "string"
           },
@@ -486,13 +486,13 @@
           },
           "manual_text": {
             "default": "",
-            "description": "TAC text to lint",
+            "description": "TAC or IWXXM XML to lint",
             "title": "Manual Text",
             "type": "string"
           },
           "product": {
             "default": "METAR",
-            "description": "Product hint when known",
+            "description": "Product type, or iwxxm for XML lint (default METAR)",
             "title": "Product",
             "type": "string"
           }
@@ -1941,6 +1941,42 @@
             "title": "Code",
             "type": "string"
           },
+          "family": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "lint (TAC registry) or iwxxm (validation checks)",
+            "title": "Family"
+          },
+          "issue_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other",
+            "title": "Issue Type"
+          },
+          "last_verified": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "ISO date of last HTTP check for operator source_url",
+            "title": "Last Verified"
+          },
           "message_template": {
             "title": "Message Template",
             "type": "string"
@@ -1956,9 +1992,45 @@
             ],
             "title": "Product"
           },
+          "replacement_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Verified landing when source_url is a legacy alias",
+            "title": "Replacement Url"
+          },
+          "semantic_identifier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Vocabulary concept path when href is a verified landing",
+            "title": "Semantic Identifier"
+          },
           "severity": {
             "title": "Severity",
             "type": "string"
+          },
+          "source_access": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Operator access tier: public, paywall, login, semantic_only",
+            "title": "Source Access"
           },
           "source_attribution": {
             "anyOf": [
@@ -1982,6 +2054,30 @@
             ],
             "title": "Source Id"
           },
+          "source_locator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Section/table/page locator for the cited source",
+            "title": "Source Locator"
+          },
+          "source_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "tier1, tier2, or tier3 source policy",
+            "title": "Source Type"
+          },
           "source_url": {
             "anyOf": [
               {
@@ -1992,6 +2088,18 @@
               }
             ],
             "title": "Source Url"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "verified, legacy_alias, or semantic_only",
+            "title": "Status"
           },
           "tags": {
             "items": {
@@ -2140,6 +2248,39 @@
         "title": "LoginRequest",
         "type": "object"
       },
+      "LogoutRequest": {
+        "description": "Optional scoped logout body (FileConverter / AdminDashboard).",
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "GoTrue logout scope: global, local, or others",
+            "title": "Scope"
+          }
+        },
+        "title": "LogoutRequest",
+        "type": "object"
+      },
+      "Message": {
+        "description": "Simple success message.",
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "Message",
+        "type": "object"
+      },
       "PackageIssueModel": {
         "description": "HTTP DTO for an iwxxm-validate package finding (additive on /validate).",
         "properties": {
@@ -2228,6 +2369,216 @@
           "name"
         ],
         "title": "PendingFilePayload",
+        "type": "object"
+      },
+      "QualityMetricsDetailResponse": {
+        "description": "Response for GET /api/v1/quality-metrics/{stem}.",
+        "properties": {
+          "converted_xml": {
+            "default": "",
+            "title": "Converted Xml",
+            "type": "string"
+          },
+          "deferral_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deferral Reason"
+          },
+          "deferred": {
+            "default": false,
+            "title": "Deferred",
+            "type": "boolean"
+          },
+          "lint_issues": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Lint Issues",
+            "type": "array"
+          },
+          "match_status": {
+            "title": "Match Status",
+            "type": "string"
+          },
+          "official_xml": {
+            "default": "",
+            "title": "Official Xml",
+            "type": "string"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "residuals": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Residuals",
+            "type": "array"
+          },
+          "stem": {
+            "title": "Stem",
+            "type": "string"
+          },
+          "tac": {
+            "default": "",
+            "title": "Tac",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "validate_issues": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Validate Issues",
+            "type": "array"
+          }
+        },
+        "required": [
+          "stem",
+          "product",
+          "tier",
+          "match_status"
+        ],
+        "title": "QualityMetricsDetailResponse",
+        "type": "object"
+      },
+      "QualityMetricsFileRowModel": {
+        "description": "Slim inventory row for the corpus file list.",
+        "properties": {
+          "deferred": {
+            "default": false,
+            "title": "Deferred",
+            "type": "boolean"
+          },
+          "lint_error_count": {
+            "default": 0,
+            "title": "Lint Error Count",
+            "type": "integer"
+          },
+          "match_status": {
+            "title": "Match Status",
+            "type": "string"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "residual_count": {
+            "default": 0,
+            "title": "Residual Count",
+            "type": "integer"
+          },
+          "stem": {
+            "title": "Stem",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "validate_error_count": {
+            "default": 0,
+            "title": "Validate Error Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "stem",
+          "product",
+          "tier",
+          "match_status"
+        ],
+        "title": "QualityMetricsFileRowModel",
+        "type": "object"
+      },
+      "QualityMetricsListResponse": {
+        "description": "Response for GET /api/v1/quality-metrics.",
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/QualityMetricsFileRowModel"
+            },
+            "title": "Files",
+            "type": "array"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "iwxxm_pin": {
+            "title": "Iwxxm Pin",
+            "type": "string"
+          },
+          "summaries": {
+            "items": {
+              "$ref": "#/components/schemas/QualityMetricsSummaryModel"
+            },
+            "title": "Summaries",
+            "type": "array"
+          }
+        },
+        "required": [
+          "generated_at",
+          "iwxxm_pin"
+        ],
+        "title": "QualityMetricsListResponse",
+        "type": "object"
+      },
+      "QualityMetricsSummaryModel": {
+        "description": "Per-product aggregate counts for the corpus browser.",
+        "properties": {
+          "deferred_gaps": {
+            "default": 0,
+            "title": "Deferred Gaps",
+            "type": "integer"
+          },
+          "lint_fail": {
+            "default": 0,
+            "title": "Lint Fail",
+            "type": "integer"
+          },
+          "match_fail": {
+            "default": 0,
+            "title": "Match Fail",
+            "type": "integer"
+          },
+          "match_pass": {
+            "default": 0,
+            "title": "Match Pass",
+            "type": "integer"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "residual_nonempty": {
+            "default": 0,
+            "title": "Residual Nonempty",
+            "type": "integer"
+          },
+          "validate_fail": {
+            "default": 0,
+            "title": "Validate Fail",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "product"
+        ],
+        "title": "QualityMetricsSummaryModel",
         "type": "object"
       },
       "SessionResponse": {
@@ -2864,6 +3215,21 @@
             "title": "Profile",
             "type": "string"
           },
+          "segments": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DecodeSegmentModel"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional item-by-item decode rows (code and explanation) when a readable decode exists. Omitted when there is no decode.",
+            "title": "Segments"
+          },
           "stopped_at_layer": {
             "anyOf": [
               {
@@ -2874,6 +3240,18 @@
               }
             ],
             "title": "Stopped At Layer"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional plain-language paragraph of the decoded report when a readable decode exists. Omitted when there is no decode.",
+            "title": "Summary"
           },
           "total_issues": {
             "default": 0,
@@ -3683,13 +4061,13 @@
             "description": "Successful Response"
           },
           "400": {
-            "description": "Empty bulletin (no reports after split)"
+            "description": "Empty bulletin \u2014 no TAC reports after the abbreviated heading"
           },
           "415": {
             "description": "Unsupported Media Type \u2014 multipart/form-data required"
           },
           "422": {
-            "description": "AHL split failed or missing required fields"
+            "description": "Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed."
           }
         },
         "summary": "Convert Bulletin",
@@ -3733,7 +4111,7 @@
     },
     "/api/v1/decode-tac": {
       "post": {
-        "description": "Decode TAC into annotated segments and a plain-language summary.",
+        "description": "Decode TAC into annotated segments and a plain-language summary.\n\nMulti-report abbreviated-heading bulletins are split so each report is decoded\nindependently; the heading is a bulletin-framing row, not a leftover dump.",
         "operationId": "decode_tac_endpoint_api_v1_decode_tac_post",
         "requestBody": {
           "content": {
@@ -4128,7 +4506,7 @@
     },
     "/api/v1/lint-issue-catalog": {
       "get": {
-        "description": "Export the tac-validate issue registry for FE tooltips / catalog panel.",
+        "description": "Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.",
         "operationId": "lint_issue_catalog_api_v1_lint_issue_catalog_get",
         "parameters": [
           {
@@ -4145,6 +4523,54 @@
                 }
               ],
               "title": "Product"
+            }
+          },
+          {
+            "in": "query",
+            "name": "family",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Family"
+            }
+          },
+          {
+            "in": "query",
+            "name": "issue_type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Issue Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source_access",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source Access"
             }
           }
         ],
@@ -4217,6 +4643,101 @@
         "summary": "Lint Tac",
         "tags": [
           "Validation"
+        ]
+      }
+    },
+    "/api/v1/quality-metrics": {
+      "get": {
+        "description": "Serve product summaries and file inventory from the precomputed artifact.",
+        "operationId": "list_quality_metrics_api_v1_quality_metrics_get",
+        "parameters": [
+          {
+            "description": "Optional product filter (e.g. metar, taf, sigmet)",
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional product filter (e.g. metar, taf, sigmet)",
+              "title": "Product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityMetricsListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List corpus quality metrics",
+        "tags": [
+          "Quality metrics"
+        ]
+      }
+    },
+    "/api/v1/quality-metrics/{stem}": {
+      "get": {
+        "description": "Serve per-stem TAC / XML / match / residual / lint / validate detail.",
+        "operationId": "get_quality_metrics_detail_api_v1_quality_metrics__stem__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "stem",
+            "required": true,
+            "schema": {
+              "title": "Stem",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityMetricsDetailResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Corpus quality metrics for one stem",
+        "tags": [
+          "Quality metrics"
         ]
       }
     },
@@ -5097,6 +5618,73 @@
           }
         },
         "summary": "Login",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "description": "Sign out via GoTrue; optional body ``{scope}`` for local/global/others.",
+        "operationId": "logout_auth_logout_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/LogoutRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Logout",
         "tags": [
           "Auth"
         ]

@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-04 (S038 / EV-031 F30/F31 Auth + DO sessions; S040 / EV-032 F32 VONA `product=vona`; #846)
+> **Last updated**: 2026-08-18 (S071 / EV-061 — AHL `INVALID_AHL`; validate decode segments; catalog additive fields)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -34,7 +34,7 @@ Convert/lint/validate/disseminate remain **public** (no JWT). JWT required only 
 
 | Surface | Runtime | OpenAPI |
 |---------|---------|---------|
-| High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
+| High-churn **responses** (`/convert`, `/convert-zip`, `/convert-bulletin`, `/validate`, `/lint-tac`, `/decode-tac`, `/lint-issue-catalog`, `/quality-metrics*`) | **msgspec** encode (+ optional Struct validate after assemble) | Thin **pydantic** aliases / JSON Schema export — **no** dual runtime validation |
 | High-churn **requests** (same routes) | **multipart/form-data** via FastAPI `Form`/`File` (unchanged intake) | Form fields documented as today |
 | `/auth/*`, work-sessions | **pydantic** (restored F31) | pydantic |
 | airports, ICAO OPMET stats | **pydantic** | pydantic (unchanged) |
@@ -109,7 +109,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 |-------|----------|---------|-------------|
 | `files` | no* | — | TAC files |
 | `manual_text` | no* | — | TAC string |
-| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` |
+| `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` \| `iwxxm` (EV-060 / F7.t — pass-through; no TAC convert) |
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
 | `iwxxm_version` | no | SoT default (`2025-2`) | Enum = Python `SUPPORTED_VERSIONS` via generated JSON (`apps/frontend/src/generated/iwxxm_versions.json`; `make export-iwxxm-versions`; #851 / D-S046-sot) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
@@ -120,7 +120,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `bulletin_id` | no | `""` | Optional bulletin identifier (translation metadata) |
 | `issuing_center` | no | `""` | Optional issuing centre ICAO (4-letter) |
 | `include_nil_reasons` | no | `true` | Prefer emitting nilReason attributes (engine may still emit NIL shells) |
-| `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients |
+| `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients **and** backend/package logger verbosity (EV-060 / #1004). Must not log JWTs, passwords, or Authorization headers at DEBUG. |
 
 \* At least one of `files` or `manual_text` required (unchanged).
 
@@ -137,6 +137,11 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
   `va_sigmet` / `tc_sigmet` enum values (E19-13=A; EV-029 / #738).
 - **`product=swxa`**: Space Weather Advisory → `iwxxm:SpaceWeatherAdvisory` (F28 / #740).
   Canonical wire value is **`swxa`** (not `swx`). Unknown aliases → `unknown_product` **400**.
+- **`product=iwxxm` (EV-060 / F7.t / #1003)**: Pass-through. `/convert` and `/convert-bulletin`
+  do **not** run TAC→IWXXM; they lint XML (well-formed / COLLECT vs report) and may run F2
+  validate. TAC text → structured not-XML error (not METAR lint). `/lint-tac` with
+  `product=iwxxm` uses XML lint rules, not TAC product syntax. `/validate` unchanged engine
+  (F2); product field documents the pass-through path.
 - **`product=vona`**: Volcano Observatory Notice for Aviation →
   `iwxxm:VolcanoObservatoryNoticeForAviation` (F32 / #741). Canonical wire value is **`vona`**.
   Unknown aliases → `unknown_product` **400**.
@@ -251,7 +256,10 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | code | HTTP | When |
 |------|------|------|
 | `bulletin_split_failed` | 422 | Cannot parse AHL / split reports |
+| `INVALID_AHL` | 400 or 422 | Malformed AHL heading/body (EV-061 / #1012). Prefer this code for operator-facing malformed heading; engine `bulletin_split_failed` / `invalid_bbb` appear as additive `detail.alias` |
 | `empty_bulletin` | 400 | No reports after split |
+
+**EV-061 / #1011**: Live/clients must post multipart field **`files`** (not `file`). Contract unchanged; harness fix only.
 
 ### COLLECT ingest (placeholder — ADR-024)
 
@@ -363,8 +371,142 @@ lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response s
 provenance from `PROVENANCE_MAP` so the FE catalog spells out WMO/ICAO/IWXXM sources
 (citations/URLs only — no copyrighted Annex prose). Older clients may ignore the fields.
 
+**Additive (S071 / EV-061 / #1014)**: optional fields for operator catalog + IWXXM validation
+rows (same route — **no** new endpoint). Older clients ignore extras.
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `family` | no | `lint` (TAC registry) or `iwxxm` (F2/Schematron-style checks) |
+| `source_type` | no | `tier1` \| `tier2` \| `tier3` (`D-S071-links-resolve`) |
+| `status` | no | `verified` \| `legacy_alias` \| `semantic_only` |
+| `semantic_identifier` | no | e.g. `codes.wmo.int/49-2/…` when href is a verified landing |
+| `last_verified` | no | ISO date of last HTTP check |
+| `replacement_url` | no | If `source_url` is alias |
+
+Query: optional `family=lint\|iwxxm` in addition to `product`. Operator-visible `source_url`
+must be a verified HTTP landing when `status=verified`; do not put planning ids in
+`source_attribution` (EV-048).
+
 `code` / default `severity` / `message_template` match the registry module. FE uses this for
 code tooltips; live lint findings still come from `POST /lint-tac`.
+
+**Additive (EV-062 / #1017)**: optional fields for Validation Issues Catalog UX + provenance
+quality. Older clients ignore extras. **No** new route.
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `issue_type` | no | `presence` \| `structure` \| `content` \| `consistency` \| `iwxxm_schema` \| `other` |
+| `source_locator` | no | Section / appendix / table / paragraph / page; omit or null when unavailable |
+| `source_access` | no | `public` \| `paywall` \| `login` \| `semantic_only` |
+
+Operator-visible `message_template` / description must explain **what** and **why** at the
+stated severity and include a natural-language section reference **or** an explicit
+unavailable marker (not thin research-only stubs). Prefer public primary `source_url` when a
+lawful free citation exists; paywall rows keep `source_access=paywall` and may expose a
+public companion via `replacement_url`. Query params may add `issue_type` and
+`source_access` filters (additive).
+
+### Quality metrics corpus (S063 / EV-054 / #836 / F7.q)
+
+Public read API for the operator **Quality metrics** tab. Serves **precomputed** official
+WMO corpus quality data (match / residuals / lint / validate) generated at fixture/CI time —
+not a live re-download of upstream WMO trees and not a per-request full convert pipeline
+for the default view (`D-S063-compute=1` + `D-S063-gateA=2`).
+
+**Auth**: **None** (F21 public) — same as convert / lint-issue-catalog.
+
+```
+GET /api/v1/quality-metrics
+```
+
+**Purpose**: Product-level summary counts + file inventory for the corpus browser.
+
+**Query** (optional):
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `product` | no | Filter inventory to one product (e.g. `metar`, `taf`, `sigmet`) |
+
+**Response** (msgspec encode; pydantic OpenAPI alias) — minimum fields:
+
+```json
+{
+  "generated_at": "2026-08-10T00:00:00Z",
+  "iwxxm_pin": "2025-2",
+  "summaries": [
+    {
+      "product": "metar",
+      "match_pass": 12,
+      "match_fail": 1,
+      "residual_nonempty": 0,
+      "lint_fail": 0,
+      "validate_fail": 0,
+      "deferred_gaps": 1
+    }
+  ],
+  "files": [
+    {
+      "stem": "metar-A3-1",
+      "product": "metar",
+      "tier": "wmoPass",
+      "match_status": "equal",
+      "residual_count": 0,
+      "lint_error_count": 0,
+      "validate_error_count": 0,
+      "deferred": false
+    }
+  ]
+}
+```
+
+```
+GET /api/v1/quality-metrics/{stem}
+```
+
+**Purpose**: Per-file detail for the master–detail pane (TAC, official XML, our XML,
+match status, residuals, lint issues, validate issues). Unified XML diff is computed
+**client-side** from `official_xml` / `converted_xml` (no server `diff` field in v1;
+`D-S063-diff=2` + `D-S063-diff-impl`).
+
+**Match semantics (S064 / EV-055 / #982 — `D-S064-normalize=1` / `D-S064-c14n=1` /
+`D-S064-c14n-volatile=1`)**:
+`match_status` is equality of **W3C C14N** forms of `official_xml` and `converted_xml`
+**after** volatile-attribute strip (ADR-032 local-name / UUID-href / `codes.wmo.int` href
+rules), then whitespace-only text strip (both sides; shared helper used by the metrics
+generator and the FE unified diff — `D-S064-gateA-M1=1`; [Corpus: adr/ADR-035]). Raw
+pretty-print or `gml:id` / UUID churn alone must not yield `match_status` fail. Client
+unified diff uses the same C14N peers. Precomputed `corpus_metrics` is regenerated to match
+(`D-S064-regen=1`). Detail responses may expose both raw and normalized XML (or the UI
+normalizes client-side); operator panes **default to normalized** with an explicit override
+to un-normalized (`D-S064-gateA-M2=override`). Operator-facing `detail` / chip copy must stay
+free of internal doc refs (EV-048). Cycle hard requirements: Schematron enabled for 2025-2
+(`D-S064-sch-hard=1`) and `SCHEMA_IMPORT_WARNING` fixed (`D-S064-xsd-hard=1`).
+
+**Path**: `stem` — catalog / fixture stem (e.g. `metar-A3-1`).
+
+**Response** (msgspec; minimum fields):
+
+```json
+{
+  "stem": "metar-A3-1",
+  "product": "metar",
+  "tier": "wmoPass",
+  "deferred": false,
+  "tac": "METAR …=",
+  "official_xml": "<?xml …",
+  "converted_xml": "<?xml …",
+  "match_status": "equal",
+  "residuals": [],
+  "lint_issues": [],
+  "validate_issues": []
+}
+```
+
+**Errors**: `404` when stem unknown; `503` when precomputed artifact missing at runtime
+(misconfigured deploy) — operator-facing `detail` must stay free of internal doc refs
+(EV-048).
+
+**Non-goals**: Live upstream WMO fetch; replacing CI matrix jobs; JWT/Supabase for this route.
 
 ### Decode TAC (S011 / #702)
 
@@ -427,6 +569,11 @@ POST /api/v1/validate
 
 **Response**: Pass/fail + messages; each issue may include optional integer `start` / `end`
 (S011) when the validator can map to TAC or XML offsets — otherwise omit.
+
+**Additive (S071 / EV-061 / #1010)**: optional `segments` / `summary` using the same F9
+shape as `POST /decode-tac` when Validate IWXXM still produces a readable decode. Omitted
+when there is no decode. FE shows item-by-item rows (parity with TAC products), not a raw
+dump. F7.s validate-only and F7.t pass-through stay. Older clients ignore extras.
 
 ### Work sessions (F5+F7+F31 — **restored HTTP**; hybrid storage — S038 / EV-031)
 
@@ -596,6 +743,15 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 ### Session changelog
 
+- S066 / EV-056 (2026-08-11): F7.q #988 — **no HTTP contract change**. FE shareable route
+  `/quality/:stem` + collapsible equal-context hunks consume existing
+  `GET /api/v1/quality-metrics` + `/{stem}` (pretty C14N panes from S065).
+- S064 / EV-055 (2026-08-11): F7.q #982 — `match_status` = **W3C C14N** equality of official
+  vs converted XML; shared generator+FE helper; panes default normalized with override;
+  regen corpus metrics; **hard** Schematron enable (#980) + SCHEMA_IMPORT fix (#979).
+- S063 / EV-054 (2026-08-10): F7.q #836 — additive public `GET /api/v1/quality-metrics` +
+  `GET /api/v1/quality-metrics/{stem}` (precomputed corpus quality; msgspec). Gate A M1
+  override (`D-S063-gateA=2`).
 - S038 / EV-031 (2026-08-03): F30/F31 — `/auth/*` + work-sessions restored; convert public;
   DO Postgres; ADR-033; amend TC-F21-auth-gone semantics
 - S008 (2026-07-12): product required; profile; tac2iwxxm_available; validate profile; error codes
@@ -761,3 +917,35 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 
 - S040 / EV-032 (2026-08-04): F32 VONA `product=vona` + full F7 surface; #835 catalog tier;
   #808 docs — **endpoint review**; full pack (`D-S040-E32-M` Q1=2).
+
+## S071 / EV-061 — Endpoint review (pre-promote UX + catalog + AHL)
+
+| Endpoint | Change for EV-061? | Notes |
+|----------|--------------------|-------|
+| `POST /api/v1/convert` | **None (wire)** | Unchanged |
+| `POST /api/v1/convert-bulletin` | **Additive codes** | `INVALID_AHL` for malformed heading (`detail.alias` = `bulletin_split_failed`); `files` field already required (#1011 harness). Decode/convert e2e is #1012 |
+| `POST /api/v1/lint-tac` | **None (wire)** | Unchanged |
+| `GET /api/v1/lint-issue-catalog` | **Additive fields + content** | IWXXM validation rows (`family=iwxxm`); `source_type` / `status` / `semantic_identifier` / `last_verified` / `replacement_url`. No new route. #1014 |
+| `POST /api/v1/decode-tac` | **None (wire)** | AHL bulletins reuse this route: bulletin framing + per-report segments (#1012) |
+| `POST /api/v1/validate` | **Additive optional** | `segments` / `summary` (F9 shape) when Validate IWXXM still produces decode (#1010) |
+| FE catalog tab | **New page** | Top-level nav; consumes catalog GET; H4–H5 when FE ships |
+| FE Product/Profile bars | **None (HTTP)** | Layout only (#1013) |
+| Dissemination / auth / sessions | **None** | Unchanged |
+| CI promote | **N/A HTTP** | #1015 required checks — not an API change |
+
+**Breaking changes**: None required. Additive fields only (`D-S071-api`). `INVALID_AHL` is the operator-facing convert-bulletin code for malformed heading; `bulletin_split_failed` is retained as `detail.alias` (`D-S071-ahl-code`).
+
+- S071 / EV-061 (2026-08-18): #1010–#1015 endpoint review (`D-S071-api`).
+
+## EV-062 — Endpoint review (Validation Issues Catalog / #1017)
+
+| Endpoint | Change for EV-062? | Notes |
+|----------|--------------------|-------|
+| `GET /api/v1/lint-issue-catalog` | **Additive fields + content** | `issue_type`, `source_locator`, `source_access`; richer `message_template`s; optional query `issue_type` / `source_access`. No new route |
+| `POST /api/v1/lint-tac` | **None (wire)** | Codes/severity unchanged; message text may deepen via registry |
+| FE Validation Issues Catalog | **UX deepen** | Rename; type + multi-filter/sort; locator + access display |
+| Dissemination / auth / sessions / convert / validate | **None** | Unchanged |
+
+**Breaking changes**: None. Additive only (`D-EV062-api`).
+
+- EV-062 (2026-08-20): #1017 Validation Issues Catalog deepen.

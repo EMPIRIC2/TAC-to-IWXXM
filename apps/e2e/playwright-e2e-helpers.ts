@@ -103,6 +103,13 @@ export async function gotoLogin(page: Page): Promise<void> {
   await expect(page.getByTestId('login-view')).toBeVisible({ timeout: 10_000 });
 }
 
+/** Open the optional register view from the public converter (F31 / UJ-003). */
+export async function gotoRegister(page: Page): Promise<void> {
+  await gotoLogin(page);
+  await page.getByRole('button', { name: /go to registration page/i }).click();
+  await expect(page.getByTestId('register-view')).toBeVisible({ timeout: 10_000 });
+}
+
 /**
  * Sign in with E2E_USER_* / ADMIN_* and return to the converter (UJ-046).
  *

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Platform**: **DOKS** (F30 primary) · Render **suspended** (T6.5 / `D-S038-t65-waive`)
-> **Last updated**: 2026-08-08 (S053 / EV-044 — dual DOKS clusters + DO Projects)
+> **Last updated**: 2026-08-16 (S067 / EV-057 — #948 apex → app; staging short-host mirror)
 
 ## Topology (F30 — DOKS dual env / dual cluster)
 
@@ -43,6 +43,60 @@ Staging DNS: [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md).
 | LB | `168.144.12.70` (prod) | `143.244.202.13` (staging; re-check if LB replaced) |
 | Config profile | `config/prod.json` | `config/staging.json` |
 | Product DB | DO Postgres `metar-iwxxm` / `defaultdb` | DO Postgres `metar-iwxxm-staging` (dedicated) |
+
+### Apex domain redirect (EV-057 / #948)
+
+**Canonical operator app host** remains `https://app.tac-to-iwxxm.com` (staging:
+`https://app.staging.tac-to-iwxxm.com`). Prod apex `https://tac-to-iwxxm.com` (and
+`https://www.tac-to-iwxxm.com`) must **permanently redirect** to the app host via sibling
+Ingress **`metar-frontend-apex`**
+([`deploy/doks/overlays/prod/ingress-frontend-apex.yaml`](../deploy/doks/overlays/prod/ingress-frontend-apex.yaml))
+backed by **`metar-apex-redirect`**
+([`deploy/doks/overlays/prod/redirect-apex.yaml`](../deploy/doks/overlays/prod/redirect-apex.yaml))
+(`D-S067-948-impl`, amended `D-S067-948-redirect=1a`). ingress-nginx **v1.12+** rejects
+`$request_uri` on `permanent-redirect` (annotation validation / CVE-2023-5044) and this
+cluster has snippet annotations **disabled**, so the 301 lives in a tiny nginx pod
+(`return 301 https://app.tac-to-iwxxm.com$request_uri`). Do **not** put a redirect
+annotation on `metar-frontend` (would loop `app.`). ACME HTTP-01 uses a **separate**
+solver Ingress (no `http01-edit-in-place`) so challenges are not redirected.
+
+| Requirement | Behavior |
+|-------------|----------|
+| HTTPS apex | `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301/308) |
+| Path/query | Preserved via nginx `$request_uri` in `metar-apex-redirect` |
+| `www` | Included on the same sibling Ingress + TLS secret `metar-frontend-apex-tls` |
+| HTTP | `ssl-redirect: false` on the sibling Ingress; redirect pod 301s HTTP and HTTPS to the HTTPS app URL |
+| TLS | cert-manager `letsencrypt-prod` issues `metar-frontend-apex-tls` once DNS hits LB |
+| Staging short host | `https://staging.tac-to-iwxxm.com` → `https://app.staging.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-staging-short`** + **`metar-staging-short-redirect`**; TLS secret `metar-frontend-staging-short-tls`. DNS A must be **staging LB** `143.244.202.13` (override prod `*` wildcard). |
+
+#### Staging short-host smoke
+
+```bash
+dig +short A staging.tac-to-iwxxm.com
+# expect: 143.244.202.13  (NOT 168.144.12.70)
+
+curl -sI "https://staging.tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
+# Expect: 301/308 → https://app.staging.tac-to-iwxxm.com/foo?bar=1
+```
+
+#### DNS prerequisite (T1.1 — 2026-08-15; apex cutover 2026-08-16)
+
+**Prod**: apex/`www` → prod LB **`168.144.12.70`** (operator cutover done 2026-08-16).
+
+**Staging short host**: add explicit A `staging.tac-to-iwxxm.com` → **`143.244.202.13`**.
+A bare `*.tac-to-iwxxm.com` pointing at prod will otherwise send `staging` to the wrong LB.
+
+#### Ops smoke (UJ-OPS-002 / TC-EV057-948)
+
+```bash
+# Expect permanent redirect to app (after DNS + Ingress live)
+curl -sI "https://tac-to-iwxxm.com/foo?bar=1" | egrep -i '^(HTTP|location):'
+# Expect: HTTP/2 301 (or 308) and Location: https://app.tac-to-iwxxm.com/foo?bar=1
+
+curl -sI "https://www.tac-to-iwxxm.com/" | egrep -i '^(HTTP|location):'
+```
+
+[Corpus: product §F30] [Corpus: deploy] [Corpus: tech-spec]
 
 Soak checklist (closed early under `D-S038-t65-waive`):
 [ops/doks-cutover-soak-checklist.md](ops/doks-cutover-soak-checklist.md).
@@ -87,6 +141,35 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
    (`scripts/ci/staging_gate.sh` / TC-F30-012) must pass: head branch = `stage` and tip has a
    successful **Staging smoke** check-run. The gate prints a **release reminder** (advisory).
+   **EV-061 / #1015 (stricter promote):** In addition, the promote PR must not merge until
+   **required** checks covering **full CI unit jobs**, **lint**, **typecheck**, and **full
+   E2E** (broader than smoke-only) are green on that PR. Branch protection / required-check
+   configuration may be updated accordingly (no new app secrets).
+
+   | Required check context (exact `name:`) | Role |
+   |----------------------------------------|------|
+   | `Test (shared)` | Full unit (`Test (*)`) |
+   | `Test (auth)` | Full unit |
+   | `Test (backend)` | Full unit |
+   | `Test (frontend)` | Full unit |
+   | `Test (tac2iwxxm)` | Full unit |
+   | `Test (iwxxm-validate)` | Full unit |
+   | `Test (tac-validate)` | Full unit |
+   | `Test (dissemination)` | Full unit |
+   | `Test (worker)` | Full unit |
+   | `Test (bugs)` | Full unit |
+   | `Test (alembic / TC-EV031-002)` | Alembic idempotency |
+   | `Lint` | ruff + eslint (`make lint`) |
+   | `Typecheck` | basedpyright + tsc (`make typecheck`) |
+   | `E2E Full (Playwright)` | Full Playwright suite on promote PRs only — **not** smoke-only |
+   | `Staging gate` | Head=`stage` + tip Staging smoke (existing) |
+   | Also retained | `Rust crates (fmt/clippy/test)`, `tac2iwxxm PyO3 (maturin)`, `iwxxm-validate PyO3 (maturin)`, `Converter perf (tac2iwxxm)` |
+
+   `E2E Smoke (Playwright)` remains for Deploy `needs` on `stage` pushes; smoke-only is
+   **insufficient** as the promote E2E bar (#1015).
+
+   Apply / refresh rulesets (admin): `bash scripts/deploy/apply_gh_branch_rulesets.sh`
+   (see [ops/doks-staging-dns-runbook.md](ops/doks-staging-dns-runbook.md) §GitHub admin).
 5. Merge to `main` → full CI on `main` (**no** prod Deploy).
 6. **Ship prod:** on the merged `main` tip, `git tag vYYYY.MM.DD-deploy` &&
    `git push origin <tag>` (triggers prod Deploy after CI). Optional escape hatch:
@@ -108,6 +191,8 @@ Treat every prod cutover as a release:
       `pyproject.toml`, `__version__`, and Cargo/locks when present
 - [ ] Cut `docs/CHANGELOG.md` (dated section; link the promote PR when known)
 - [ ] Open/update PR `stage` → `main`; Staging smoke + Staging gate green
+- [ ] **EV-061 / #1015:** required checks for full CI unit + lint + typecheck + full E2E green
+      on the promote PR (stricter than smoke-only) — contexts in the table above
 - [ ] Merge to `main`; wait for tip CI green (**Deploy must not run** on that push)
 - [ ] `git tag vYYYY.MM.DD-deploy` on `main` tip; `git push origin <tag>` → prod Deploy
 - [ ] If publishing to PyPI: per-package tags (`tac2iwxxm-v*`, `tac-validate-v*`,

@@ -1,0 +1,81 @@
+# F34 / EV-059 / #727 — Schemathesis OpenAPI property suite (TC-F34-002 / TC-F34-007).
+# Path-filtered required gate: suite runs only when backend/OpenAPI paths change;
+# `schemathesis-gate` always reports so branch protection can require it.
+# Budget: Hypothesis max-examples ≤ 25; job timeout ≤ 10 min (D-S069-01-budget).
+name: Schemathesis
+
+on:
+  push:
+    branches: [main, stage]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    name: Schemathesis path filter
+    outputs:
+      run: ${{ steps.filter.outputs.schemathesis }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            schemathesis:
+              - 'apps/backend/**'
+              - 'packages/auth/**'
+              - 'packages/shared/**'
+              - 'docs/api-contract.md'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - 'Makefile'
+              - '.github/workflows/schemathesis.yml'
+
+  schemathesis:
+    runs-on: ubuntu-latest
+    name: Schemathesis (OpenAPI ASGI)
+    needs: changes
+    if: needs.changes.outputs.run == 'true'
+    # TC-F34-007 — hard ceiling; do not raise without AskQuestion.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip uv
+          uv sync
+
+      - name: Run Schemathesis suite
+        env:
+          # TC-F34-007 / D-S069-01-budget — max-examples ≤ 25
+          SCHEMATHESIS_MAX_EXAMPLES: "25"
+        run: make test-schemathesis
+
+  schemathesis-gate:
+    runs-on: ubuntu-latest
+    name: Schemathesis gate
+    needs: [changes, schemathesis]
+    if: always()
+    steps:
+      - name: Require suite when paths matched
+        run: |
+          run="${{ needs.changes.outputs.run }}"
+          result="${{ needs.schemathesis.result }}"
+          echo "path_filter_run=${run} schemathesis_result=${result}"
+          if [ "${run}" != "true" ]; then
+            echo "Paths outside Schemathesis filter — gate pass"
+            exit 0
+          fi
+          test "${result}" = "success"

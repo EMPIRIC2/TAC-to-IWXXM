@@ -7,6 +7,7 @@ import io
 import logging
 import os
 import pathlib
+import re
 import sys
 import time
 import zipfile
@@ -28,6 +29,7 @@ try:
         evaluation,
         icao_opmet,
         mass_ingest,
+        quality_metrics,
         validation,
         work_sessions,
     )
@@ -66,8 +68,14 @@ try:
     from .services.webhooks import webhook_service
     from .utilities.abuse_controls import install_abuse_controls
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from .utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
+    from .utilities.iwxxm_readable_decode import decode_for_validate
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
-    from .utilities.observability import install_fastapi_observability, setup_logging
+    from .utilities.observability import (
+        install_fastapi_observability,
+        set_request_log_level,
+        setup_logging,
+    )
     from .utilities.sentry_init import init_sentry
     from .utilities.tac_parser import extract_airport_code
 except ImportError:
@@ -79,6 +87,7 @@ except ImportError:
         evaluation,
         icao_opmet,
         mass_ingest,
+        quality_metrics,
         validation,
         work_sessions,
     )
@@ -117,8 +126,14 @@ except ImportError:
     from services.webhooks import webhook_service
     from utilities.abuse_controls import install_abuse_controls
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
+    from utilities.iwxxm_readable_decode import decode_for_validate
     from utilities.metar_normalizer import normalize_recent_weather_tokens
-    from utilities.observability import install_fastapi_observability, setup_logging
+    from utilities.observability import (
+        install_fastapi_observability,
+        set_request_log_level,
+        setup_logging,
+    )
     from utilities.sentry_init import init_sentry
     from utilities.tac_parser import extract_airport_code
 
@@ -394,10 +409,12 @@ async def parse_files(request: Request) -> List[UploadFile]:
 # Multi-line TAC products — keep the whole buffer as one entry (do not line-split).
 # SIGMET/AIRMET: WMO examples are header- + body= across lines (BUG-2026-07-30 / F23 UI).
 # VAA/TCA/SWXA/VONA: advisory / notice templates with labeled fields (F26/F27/F28/F32).
-_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
+# IWXXM: pass-through XML document (F7.t / EV-060 / #1003) — never line-split.
+_MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA", "IWXXM"})
 
-# Wire product enum (api-contract EV-029 / F28 / EV-032 F32). Canonical ``swxa`` / ``vona``.
-_API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA"})
+# Wire product enum (api-contract EV-029 / F28 / EV-032 F32 / EV-060 F7.t).
+# Canonical ``swxa`` / ``vona`` / ``iwxxm``.
+_API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA", "IWXXM"})
 
 
 def normalize_api_product(
@@ -424,7 +441,8 @@ def normalize_api_product(
                     f"Unknown product {raw!r}; expected one of "
                     f"{', '.join(sorted(p.lower() for p in _API_PRODUCTS))} "
                     "(canonical SWXA wire value is swxa, not swx; "
-                    "canonical VONA wire value is vona)"
+                    "canonical VONA wire value is vona; "
+                    "canonical IWXXM wire value is iwxxm)"
                 ),
             },
         )
@@ -628,6 +646,74 @@ def normalize_code(value: Optional[str], max_length: int) -> Optional[str]:
     return normalized[:max_length]
 
 
+_BULLETIN_ID_RE = re.compile(r"^[A-Z]{4}[0-9]{2}$")
+_CCCC_RE = re.compile(r"^[A-Z]{4}$")
+
+
+def parse_optional_bulletin_id(value: Optional[str]) -> str:
+    """Return uppercase bulletin id, or empty when omitted.
+
+    Raises
+    ------
+    HTTPException
+        400 when a non-empty value is not 4 letters + 2 digits.
+    """
+    raw = (value or "").strip().upper()
+    if not raw:
+        return ""
+    if _BULLETIN_ID_RE.fullmatch(raw) is None:
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message="Bulletin ID must be 4 letters followed by 2 digits.",
+                errors=["bulletin_id"],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message="Bulletin ID must be 4 letters followed by 2 digits.",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Example: SAAA00. Leave blank to discover from the AHL or use defaults.",
+                        code="INVALID_BULLETIN_ID",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        )
+    return raw
+
+
+def parse_optional_issuing_center(value: Optional[str]) -> str:
+    """Return uppercase ICAO CCCC, or empty when omitted.
+
+    Raises
+    ------
+    HTTPException
+        400 when a non-empty value is not exactly 4 letters.
+    """
+    raw = (value or "").strip().upper()
+    if not raw:
+        return ""
+    if _CCCC_RE.fullmatch(raw) is None:
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message="Issuing center must be a 4-letter ICAO code.",
+                errors=["issuing_center"],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message="Issuing center must be a 4-letter ICAO code.",
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Example: KWBC. Leave blank to discover from the AHL or use defaults.",
+                        code="INVALID_ISSUING_CENTER",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        )
+    return raw
+
+
 def normalize_validation_level(value: Optional[str]) -> str:
     """Normalize validation level to one of the supported API values."""
     allowed_levels = {"basic", "schema", "schematron", "icao_opmet", "comprehensive"}
@@ -718,11 +804,23 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include ICAO OPMET router: {e}", exc_info=True)
 
+try:
+    app.include_router(quality_metrics.router)
+    logger.info("DEBUG: included quality_metrics router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include quality_metrics router: {e}", exc_info=True)
+
 # Auth routers restored (F31 / ADR-033) — JWKS-only Supabase Auth; no /admin.
 try:
     from metar_auth import create_auth_router
+    from metar_shared.supabase_env import get_supabase_url
 
-    app.include_router(create_auth_router())
+    # CI E2E Full has no .env; fall back to config/local.json via get_supabase_url().
+    _supabase_url = get_supabase_url()
+    if _supabase_url and not (os.environ.get("SUPABASE_URL") or "").strip():
+        os.environ["SUPABASE_URL"] = _supabase_url
+
+    app.include_router(create_auth_router(supabase_url=_supabase_url or None))
     logger.info("DEBUG: included metar_auth /auth router successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include auth router: {e}", exc_info=True)
@@ -911,26 +1009,70 @@ def get_schema_status():
 )
 async def lint_issue_catalog(
     product: Optional[str] = None,
+    family: Optional[str] = None,
+    issue_type: Optional[str] = None,
+    source_access: Optional[str] = None,
 ) -> Response:
-    """Export the tac-validate issue registry for FE tooltips / catalog panel."""
+    """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
     from tac_validate.catalog_attribution import attribution_for
+    from tac_validate.issue_catalog_meta import classify_issue_type
 
-    entries = tac_catalog_entries(product=product)
+    from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
+
+    family_key = (family or "").strip().lower() or None
+    if family_key is not None and family_key not in {"lint", "iwxxm"}:
+        family_key = None
+    issue_type_key = (issue_type or "").strip().lower() or None
+    source_access_key = (source_access or "").strip().lower() or None
+
     issues: list[LintIssueCatalogEntryModel] = []
-    for spec in entries:
-        attr = attribution_for(spec.code)
-        issues.append(
-            LintIssueCatalogEntryModel(
-                code=spec.code,
-                severity=spec.severity,
-                message_template=spec.message_template,
-                product=spec.product,
-                tags=list(spec.tags),
-                source_id=attr.get("source_id"),
-                source_url=attr.get("source_url"),
-                source_attribution=attr.get("source_attribution"),
+
+    if family_key in (None, "lint"):
+        entries = tac_catalog_entries(product=product)
+        for spec in entries:
+            attr = attribution_for(spec.code)
+            issues.append(
+                LintIssueCatalogEntryModel(
+                    code=spec.code,
+                    severity=spec.severity,
+                    message_template=spec.message_template,
+                    product=spec.product,
+                    tags=list(spec.tags),
+                    source_id=attr.get("source_id"),
+                    source_url=attr.get("source_url"),
+                    source_attribution=attr.get("source_attribution"),
+                    family=attr.get("family") or "lint",
+                    source_type=attr.get("source_type"),
+                    status=attr.get("status"),
+                    semantic_identifier=attr.get("semantic_identifier"),
+                    last_verified=attr.get("last_verified"),
+                    replacement_url=attr.get("replacement_url"),
+                    issue_type=classify_issue_type(
+                        code=spec.code,
+                        tags=spec.tags,
+                        family="lint",
+                    ),
+                    source_locator=attr.get("source_locator"),
+                    source_access=attr.get("source_access"),
+                )
             )
-        )
+
+    if family_key in (None, "iwxxm"):
+        # IWXXM validation rows are product-agnostic; always include unless
+        # family=lint. Product filter does not drop them.
+        for row in iwxxm_validation_catalog_rows():
+            issues.append(LintIssueCatalogEntryModel(**row))
+
+    if issue_type_key or source_access_key:
+        filtered: list[LintIssueCatalogEntryModel] = []
+        for row in issues:
+            if issue_type_key and (row.issue_type or "").lower() != issue_type_key:
+                continue
+            if source_access_key and (row.source_access or "").lower() != source_access_key:
+                continue
+            filtered.append(row)
+        issues = filtered
+
     return msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 
 
@@ -944,8 +1086,11 @@ async def lint_issue_catalog(
 )
 async def lint_tac(
     request: Request,
-    manual_text: str = Form(default="", description="TAC text to lint"),
-    product: str = Form(default="METAR", description="Product hint when known"),
+    manual_text: str = Form(default="", description="TAC or IWXXM XML to lint"),
+    product: str = Form(
+        default="METAR",
+        description="Product type, or iwxxm for XML lint (default METAR)",
+    ),
     files: Optional[List[UploadFile]] = File(None),
 ) -> Response:
     """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
@@ -965,6 +1110,26 @@ async def lint_tac(
             tac_text = joined
 
     product_u = normalize_api_product(product, default="METAR")
+    if product_u == "IWXXM":
+        report = lint_iwxxm_pass_through(tac_text)
+        return msgspec_json_response(
+            LintTacResponse(
+                ok=report.ok,
+                product=report.product,
+                issues=[
+                    LintIssueModel(
+                        severity=i.severity,
+                        code=i.code,
+                        message=i.message,
+                        location=i.location,
+                        start=i.start,
+                        end=i.end,
+                    )
+                    for i in report.issues
+                ],
+                fixes=[],
+            )
+        )
     report = tac_lint_fn(tac_text, product=product_u)
     return msgspec_json_response(
         LintTacResponse(
@@ -1001,7 +1166,11 @@ async def decode_tac_endpoint(
     manual_text: str = Form(default="", description="TAC text to decode"),
     files: Optional[List[UploadFile]] = File(None),
 ) -> Response:
-    """Decode TAC into annotated segments and a plain-language summary."""
+    """Decode TAC into annotated segments and a plain-language summary.
+
+    Multi-report abbreviated-heading bulletins are split so each report is decoded
+    independently; the heading is a bulletin-framing row, not a leftover dump.
+    """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -1037,21 +1206,77 @@ async def decode_tac_endpoint(
     )
 
 
+_AHL_HEADING_SPLIT_CODES = frozenset({"bulletin_split_failed", "invalid_bbb"})
+_INVALID_AHL_MESSAGE = (
+    "The abbreviated heading is not valid. Use TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports."
+)
+_EMPTY_BULLETIN_MESSAGE = "No TAC reports found after the abbreviated heading."
+
+
+def bulletin_split_http_error(exc: BulletinSplitError) -> HTTPException:
+    """
+    Map a bulletin split failure to an operator-facing HTTP error.
+
+    Malformed heading codes become ``INVALID_AHL`` with ``alias`` preserving the
+    engine code. Empty body after a valid heading stays ``empty_bulletin``.
+
+    Parameters
+    ----------
+    exc :
+        Split failure from ``tac2iwxxm.split_bulletin``.
+
+    Returns
+    -------
+    HTTPException
+        400 for empty bulletins; 422 for malformed headings.
+    """
+    if exc.code == "empty_bulletin":
+        return HTTPException(
+            status_code=400,
+            detail={"code": "empty_bulletin", "message": _EMPTY_BULLETIN_MESSAGE},
+        )
+    if exc.code in _AHL_HEADING_SPLIT_CODES:
+        return HTTPException(
+            status_code=422,
+            detail={
+                "code": "INVALID_AHL",
+                "alias": exc.code,
+                "message": _INVALID_AHL_MESSAGE,
+            },
+        )
+    return HTTPException(
+        status_code=422,
+        detail={"code": exc.code, "message": exc.message},
+    )
+
+
 @app.post(
     "/api/v1/convert-bulletin",
     tags=["Conversion"],
     response_model=ConvertBulletinResponse,
     responses={
-        400: {"description": "Empty bulletin (no reports after split)"},
+        400: {"description": "Empty bulletin — no TAC reports after the abbreviated heading"},
         415: {"description": "Unsupported Media Type — multipart/form-data required"},
-        422: {"description": "AHL split failed or missing required fields"},
+        422: {
+            "description": (
+                "Malformed abbreviated heading (INVALID_AHL) or missing required fields. "
+                "Engine split failures may include an alias of bulletin_split_failed."
+            )
+        },
     },
 )
 async def convert_bulletin(
     request: Request,
-    product: str = Form(..., description="TAC product (required)"),
+    product: str = Form(..., description="TAC product, or iwxxm for XML pass-through"),
     files: Optional[List[UploadFile]] = File(None),
-    manual_text: str = Form(default="", description="Bulletin string"),
+    manual_text: str = Form(
+        default="",
+        description=(
+            "Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), "
+            "then one or more TAC reports. Empty Bulletin ID / Issuing Center uses "
+            "the heading TTAAii and CCCC."
+        ),
+    ),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
@@ -1084,11 +1309,58 @@ async def convert_bulletin(
 
     product = normalize_api_product(product, default=None)
 
+    # F7.t: convert-bulletin with product=iwxxm treats the body as one XML document.
+    if product == "IWXXM":
+        iwxxm_lint = lint_iwxxm_pass_through(bulletin_text)
+        issues = [
+            LintIssueModel(
+                severity=i.severity,
+                code=i.code,
+                message=i.message,
+                location=i.location,
+                start=i.start,
+                end=i.end,
+            )
+            for i in iwxxm_lint.issues
+        ]
+        if not iwxxm_lint.ok:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": NOT_XML_CODE,
+                    "message": issues[0].message if issues else "Expected IWXXM XML",
+                    "issues": [i.model_dump() for i in issues],
+                },
+            )
+        xml_body = bulletin_text.strip()
+        return msgspec_json_response(
+            ConvertBulletinResponse(
+                bulletin_meta=BulletinMetaModel(
+                    ahl="",
+                    report_count=1,
+                    tt="",
+                    aa="",
+                    cccc="",
+                    yygggg="",
+                    bbb=None,
+                ),
+                results=[
+                    BulletinReportResultModel(
+                        report_index=0,
+                        ok=True,
+                        tac_input="",
+                        xml=xml_body,
+                        issues=[],
+                        fixes=[],
+                    )
+                ],
+            )
+        )
+
     try:
         split = tac2iwxxm_split_bulletin(bulletin_text, product=product)
     except BulletinSplitError as exc:
-        status = 400 if exc.code == "empty_bulletin" else 422
-        raise HTTPException(status_code=status, detail={"code": exc.code, "message": exc.message}) from exc
+        raise bulletin_split_http_error(exc) from exc
 
     if split.meta.report_count > MAX_BULLETIN_REPORTS:
         raise HTTPException(
@@ -1397,51 +1669,63 @@ async def validate_comprehensive(
         )
 
         # Format response (HTTP shape unchanged; package metadata additive)
-        return msgspec_json_response(
-            {
-                "is_valid": result.is_valid,
-                "version": result.version,
-                "profile": profile or "annex3",
-                "layers_run": [layer.name for layer in result.layers_run],
-                "layers_passed": [layer.name for layer in result.layers_passed],
-                "layers_failed": [layer.name for layer in result.layers_failed],
-                "total_issues": len(result.all_issues),
-                "issues": [
+        payload: dict[str, Any] = {
+            "is_valid": result.is_valid,
+            "version": result.version,
+            "profile": profile or "annex3",
+            "layers_run": [layer.name for layer in result.layers_run],
+            "layers_passed": [layer.name for layer in result.layers_passed],
+            "layers_failed": [layer.name for layer in result.layers_failed],
+            "total_issues": len(result.all_issues),
+            "issues": [
+                {
+                    "layer": issue.layer.name,
+                    "level": issue.level.name,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "code": issue.code,
+                }
+                for issue in result.all_issues
+            ],
+            "issues_by_layer": {
+                layer.name: [
                     {
-                        "layer": issue.layer.name,
                         "level": issue.level.name,
                         "message": issue.message,
                         "location": issue.location,
                         "code": issue.code,
                     }
-                    for issue in result.all_issues
-                ],
-                "issues_by_layer": {
-                    layer.name: [
-                        {
-                            "level": issue.level.name,
-                            "message": issue.message,
-                            "location": issue.location,
-                            "code": issue.code,
-                        }
-                        for issue in issues
-                    ]
-                    for layer, issues in result.issues_by_layer.items()
-                },
-                "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
-                "package_ok": pkg_report.ok,
-                "package_issues": [
-                    {
-                        "layer": issue.layer,
-                        "severity": issue.severity,
-                        "message": issue.message,
-                        "location": issue.location,
-                        "code": issue.code,
-                    }
-                    for issue in pkg_report.issues
-                ],
-            }
-        )
+                    for issue in issues
+                ]
+                for layer, issues in result.issues_by_layer.items()
+            },
+            "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
+            "package_ok": pkg_report.ok,
+            "package_issues": [
+                {
+                    "layer": issue.layer,
+                    "severity": issue.severity,
+                    "message": issue.message,
+                    "location": issue.location,
+                    "code": issue.code,
+                }
+                for issue in pkg_report.issues
+            ],
+        }
+        decoded = decode_for_validate(xml_content=xml_content, manual_text=manual_text)
+        if decoded.segments:
+            payload["segments"] = [
+                {
+                    "start": seg.start,
+                    "end": seg.end,
+                    "code": seg.code,
+                    "explanation": seg.explanation,
+                }
+                for seg in decoded.segments
+            ]
+            if decoded.summary:
+                payload["summary"] = decoded.summary
+        return msgspec_json_response(payload)
 
     except HTTPException:
         raise
@@ -1474,7 +1758,7 @@ async def convert(
     lint: bool = Form(default=True, description="Run tac-validate before convert (Q14=C; default on)"),
     product: str = Form(
         default="METAR",
-        description="TAC product type (default METAR for legacy clients)",
+        description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
     profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
     preview: bool = Form(
@@ -1674,6 +1958,119 @@ async def convert(
         validate_output = validation_level in ["comprehensive", "schematron", "icao_opmet", "schema"]
 
     product = normalize_api_product(product, default="METAR")
+    bulletin_id = parse_optional_bulletin_id(bulletin_id)
+    issuing_center = parse_optional_issuing_center(issuing_center)
+
+    # F7.t / EV-060 / #1003: product=iwxxm is XML pass-through (no TAC convert).
+    if product == "IWXXM":
+        xml_payload = (manual_text or "").strip()
+        if request_body is not None and getattr(request_body, "metars", None):
+            xml_payload = (request_body.metars[0] or "").strip() if request_body.metars else xml_payload
+        if not xml_payload and files:
+            joined, err = await read_upload_files_text(files)
+            if err:
+                raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
+            xml_payload = (joined or "").strip()
+        if not xml_payload:
+            raise HTTPException(
+                status_code=400,
+                detail=ErrorDetail(
+                    message="No IWXXM XML provided",
+                    errors=["Provide XML via manual_text, files, or JSON metars."],
+                    issues=[
+                        ConversionIssue(
+                            source="request",
+                            message="Expected IWXXM XML for product IWXXM",
+                            severity=ConversionIssueSeverity.ERROR,
+                            hint="Paste or upload IWXXM XML, or choose a TAC product to convert.",
+                            code=NOT_XML_CODE,
+                        )
+                    ],
+                    total_errors=1,
+                ).model_dump(),
+            )
+        iwxxm_lint = lint_iwxxm_pass_through(xml_payload)
+        if not iwxxm_lint.ok:
+            issues = [
+                ConversionIssue(
+                    source="manual",
+                    message=i.message,
+                    severity=ConversionIssueSeverity.ERROR,
+                    code=i.code,
+                    location=i.location,
+                )
+                for i in iwxxm_lint.issues
+            ]
+            raise HTTPException(
+                status_code=400,
+                detail=ErrorDetail(
+                    message="IWXXM pass-through rejected input",
+                    errors=[i.message for i in issues],
+                    issues=issues,
+                    total_errors=len(issues),
+                ).model_dump(),
+            )
+        pass_issues: List[ConversionIssue] = []
+        want_validate = bool(validate_output) or str(validation_level or "").lower() in {
+            "comprehensive",
+            "schematron",
+            "icao_opmet",
+            "schema",
+        }
+        if want_validate:
+            try:
+                report = iwxxm_validate_fn(
+                    xml_payload,
+                    iwxxm_version=iwxxm_version,
+                    profile=(profile or "annex3"),
+                )
+                if not getattr(report, "ok", True):
+                    for issue in getattr(report, "issues", []) or []:
+                        pass_issues.append(
+                            ConversionIssue(
+                                source="manual",
+                                message=str(getattr(issue, "message", "") or "IWXXM validation issue"),
+                                severity=ConversionIssueSeverity.WARNING,
+                                code=str(getattr(issue, "code", None) or "IWXXM_VALIDATE"),
+                                location=getattr(issue, "location", None),
+                            )
+                        )
+            except Exception as exc:  # noqa: BLE001 — pass-through must not 500 on optional F2
+                logger.warning("[CONVERT] IWXXM pass-through validate_output failed: %s", exc)
+                pass_issues.append(
+                    ConversionIssue(
+                        source="manual",
+                        message=f"Optional IWXXM validation could not complete: {exc}",
+                        severity=ConversionIssueSeverity.WARNING,
+                        code="IWXXM_VALIDATE_ERROR",
+                    )
+                )
+        return msgspec_json_response(
+            ConversionResponse(
+                results=[
+                    ConversionResult(
+                        name="iwxxm_pass_through.xml",
+                        content=xml_payload,
+                        tac_input=None,
+                        source="manual",
+                        size_bytes=len(xml_payload.encode("utf-8")),
+                    )
+                ],
+                errors=[],
+                issues=pass_issues,
+                total_processed=1,
+                successful=1,
+                failed=0,
+                metadata={
+                    "bulletin_id": bulletin_id,
+                    "issuing_center": issuing_center,
+                    "validation_level": validation_level,
+                    "stop_on_error": bool(stop_on_error),
+                    "product": "iwxxm",
+                    "pass_through": True,
+                },
+            )
+        )
 
     # Q14=C: lint default on — soft-wire tac-validate (hard fails use POST /lint-tac)
     if lint:
@@ -1695,9 +2092,8 @@ async def convert(
         "icao_opmet",
         "schema",
     ]
-    bulletin_id = normalize_code(bulletin_id, 6) or ""
-    issuing_center = normalize_code(issuing_center, 4) or ""
-    log_level_norm = (log_level or "INFO").strip().upper()
+    log_level_norm = set_request_log_level(request, log_level)
+    logger.debug("[CONVERT] logger verbosity applied level=%s", log_level_norm)
     logger.info(
         "[CONVERT] include_nil_reasons=%s log_level=%s",
         include_nil_reasons,

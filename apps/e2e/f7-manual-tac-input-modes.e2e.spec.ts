@@ -9,7 +9,7 @@ import { gzipSync } from 'node:zlib';
 import {
   fillManualTac,
   openConverterForE2e,
-  openConverterWithMockSession,
+  seedLocalWorkSession,
 } from './playwright-e2e-helpers';
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
@@ -254,9 +254,11 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
   });
 
   test('T6: finished session disables mode buttons', async ({ page }) => {
-    const finishedSession = {
+    // Guest path uses IndexedDB (not /work-sessions) — seed locally like UJ-004.
+    await page.goto('/');
+    await seedLocalWorkSession(page, {
       id: 'finished-modes-1',
-      user_id: 'user-1',
+      user_id: 'local',
       product: 'metar',
       status: 'finished',
       title: 'KJFK finished modes',
@@ -276,26 +278,10 @@ test.describe('TC-F7-007 / UJ-025: Manual TAC Input modes', () => {
       deleted_at: null,
       created_at: '2026-07-20T00:00:00Z',
       updated_at: '2026-07-20T00:00:00Z',
-    };
-
-    await page.route('**/api/v1/work-sessions**', async (route) => {
-      if (route.request().method() === 'GET') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            items: [finishedSession],
-            total: 1,
-            page: 1,
-            limit: 20,
-          }),
-        });
-        return;
-      }
-      await route.continue();
     });
 
-    await openConverterWithMockSession(page);
+    await page.reload();
+    await openConverterForE2e(page);
     await expect(
       page.getByRole('button', { name: /KJFK finished modes/i }),
     ).toBeVisible({

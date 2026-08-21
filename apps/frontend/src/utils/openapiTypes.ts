@@ -50,6 +50,8 @@ export type ConversionResponse = {
 export type ValidateResponse = Schemas['ValidateResponse'] & {
   is_valid: boolean;
   version: string;
+  segments?: Schemas['DecodeSegmentModel'][];
+  summary?: string | null;
 };
 
 export type ValidateIssue = Schemas['ValidateIssueModel'];
@@ -87,8 +89,37 @@ export type DecodeTacResponse = {
 
 export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
   tags: string[];
+  family?: string | null;
+  source_type?: string | null;
+  status?: string | null;
+  semantic_identifier?: string | null;
+  last_verified?: string | null;
+  replacement_url?: string | null;
+  issue_type?: string | null;
+  source_locator?: string | null;
+  source_access?: string | null;
 };
 
 export type LintIssueCatalogResponse = {
   issues: LintIssueCatalogEntry[];
+};
+
+export type QualityMetricsSummary = Schemas['QualityMetricsSummaryModel'];
+export type QualityMetricsFileRow = Schemas['QualityMetricsFileRowModel'];
+
+export type QualityMetricsListResponse = {
+  generated_at: string;
+  iwxxm_pin: string;
+  summaries: QualityMetricsSummary[];
+  files: QualityMetricsFileRow[];
+};
+
+export type QualityMetricsDetailResponse = Schemas['QualityMetricsDetailResponse'] & {
+  stem: string;
+  product: string;
+  tier: string;
+  match_status: string;
+  residuals: Record<string, unknown>[];
+  lint_issues: Record<string, unknown>[];
+  validate_issues: Record<string, unknown>[];
 };

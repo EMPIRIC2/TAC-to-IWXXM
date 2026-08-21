@@ -27,6 +27,13 @@ you will archive or distribute.
 Pick the IWXXM release line your centre or partner expects (for example a recent WMO
 line). If you are unsure, ask your aviation MET supervisor before changing the default.
 
+## Quality metrics (corpus compare)
+
+Open the **Quality metrics** tab to compare the app’s converted IWXXM against official
+WMO example products. Pick a row to open a detail view with Official / Converted panes
+and a readable unified diff (unchanged sections can be collapsed). Use this for training
+and parity checks — not as a substitute for Validate on your live product.
+
 ## Dissemination (when available)
 
 Some deployments offer send/upload destinations after convert. If that panel is hidden
@@ -35,4 +42,4 @@ or disabled at your site, download the XML and use your organisation’s normal 
 ## Need more?
 
 Open **Help** in the app header, or read the [Operator handbook](operator-handbook.md)
-for login, work history, ingest, and troubleshooting.
+for login, work history, Quality metrics, ingest, and troubleshooting.

@@ -1,0 +1,93 @@
+# Staging short-host redirect (same webhook constraint as prod apex).
+# DNS: staging.tac-to-iwxxm.com must A → staging LB 143.244.202.13.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metar-staging-short-redirect
+  labels:
+    app.kubernetes.io/name: metar-staging-short-redirect
+    app.kubernetes.io/component: redirect
+data:
+  default.conf: |
+    server {
+      listen 80;
+      server_name _;
+      location = /healthz {
+        access_log off;
+        add_header Content-Type text/plain;
+        return 200 "ok\n";
+      }
+      location / {
+        return 301 https://app.staging.tac-to-iwxxm.com$request_uri;
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metar-staging-short-redirect
+  labels:
+    app.kubernetes.io/name: metar-staging-short-redirect
+    app.kubernetes.io/component: redirect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metar-staging-short-redirect
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metar-staging-short-redirect
+        app.kubernetes.io/component: redirect
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 64Mi
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: metar-staging-short-redirect
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metar-staging-short-redirect
+  labels:
+    app.kubernetes.io/name: metar-staging-short-redirect
+    app.kubernetes.io/component: redirect
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: metar-staging-short-redirect
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

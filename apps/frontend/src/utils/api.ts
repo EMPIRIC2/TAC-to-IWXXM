@@ -23,6 +23,8 @@ import type {
   LintIssueCatalogEntry,
   LintIssueCatalogResponse,
   LintTacResponse,
+  QualityMetricsDetailResponse,
+  QualityMetricsListResponse,
   ValidateResponse,
 } from './openapiTypes';
 
@@ -42,6 +44,8 @@ export type {
   LintIssueCatalogEntry,
   LintIssueCatalogResponse,
   LintTacResponse,
+  QualityMetricsDetailResponse,
+  QualityMetricsListResponse,
   ValidateResponse,
 };
 
@@ -452,13 +456,26 @@ export async function validateIwxxm(params: {
  */
 export async function fetchLintIssueCatalog(params?: {
   product?: string;
+  family?: string;
+  issue_type?: string;
+  source_access?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<LintIssueCatalogResponse> {
-  const qs =
-    params?.product && params.product.trim()
-      ? `?product=${encodeURIComponent(params.product.trim().toLowerCase())}`
-      : '';
+  const query = new URLSearchParams();
+  if (params?.product && params.product.trim()) {
+    query.set('product', params.product.trim().toLowerCase());
+  }
+  if (params?.family && params.family.trim()) {
+    query.set('family', params.family.trim().toLowerCase());
+  }
+  if (params?.issue_type && params.issue_type.trim()) {
+    query.set('issue_type', params.issue_type.trim().toLowerCase());
+  }
+  if (params?.source_access && params.source_access.trim()) {
+    query.set('source_access', params.source_access.trim().toLowerCase());
+  }
+  const qs = query.toString() ? `?${query.toString()}` : '';
   const response = await withTimeout(
     fetch(apiUrl(`/lint-issue-catalog${qs}`), {
       method: 'GET',
@@ -475,6 +492,77 @@ export async function fetchLintIssueCatalog(params?: {
   }
 
   return (await response.json()) as LintIssueCatalogResponse;
+}
+
+/**
+ * List precomputed official-corpus quality metrics.
+ *
+ * **Endpoint**: GET /api/v1/quality-metrics
+ *
+ * @param params.product - Optional product filter (e.g. metar)
+ * @returns Summaries and file inventory rows
+ */
+export async function fetchQualityMetrics(params?: {
+  product?: string;
+  signal?: AbortSignal;
+}): Promise<QualityMetricsListResponse> {
+  const qs =
+    params?.product && params.product.trim()
+      ? `?product=${encodeURIComponent(params.product.trim().toLowerCase())}`
+      : '';
+  const response = await withTimeout(
+    fetch(apiUrl(`/quality-metrics${qs}`), {
+      method: 'GET',
+      signal: params?.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Quality metrics fetch failed: ${response.statusText}`,
+    }));
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
+  }
+
+  const body = (await response.json()) as QualityMetricsListResponse;
+  return {
+    generated_at: body.generated_at,
+    iwxxm_pin: body.iwxxm_pin,
+    summaries: body.summaries ?? [],
+    files: body.files ?? [],
+  };
+}
+
+/**
+ * Fetch quality metrics detail for one corpus stem.
+ *
+ * **Endpoint**: GET /api/v1/quality-metrics/{stem}
+ *
+ * @param params.stem - Catalog / fixture stem (e.g. metar-A3-1)
+ * @returns Per-stem TAC, XML, match, residuals, lint, validate
+ */
+export async function fetchQualityMetricsDetail(params: {
+  stem: string;
+  signal?: AbortSignal;
+}): Promise<QualityMetricsDetailResponse> {
+  const stem = encodeURIComponent(params.stem.trim());
+  const response = await withTimeout(
+    fetch(apiUrl(`/quality-metrics/${stem}`), {
+      method: 'GET',
+      signal: params.signal,
+    }),
+    15000,
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({
+      message: `Quality metrics detail failed: ${response.statusText}`,
+    }));
+    throw new Error(apiErrorMessage(error, `HTTP ${response.status}`));
+  }
+
+  return (await response.json()) as QualityMetricsDetailResponse;
 }
 
 /**
@@ -676,6 +764,8 @@ export default {
   validateIwxxm,
   decodeTac,
   fetchLintIssueCatalog,
+  fetchQualityMetrics,
+  fetchQualityMetricsDetail,
   fetchAirportRegion,
   massIngestFiles,
   downloadBlob,

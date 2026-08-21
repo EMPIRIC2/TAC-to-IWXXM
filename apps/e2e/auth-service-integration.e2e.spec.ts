@@ -1,12 +1,12 @@
 /**
- * Merged API public-surface integration (F21 — Auth routes gone).
+ * Merged API Auth surface (F31 — Auth restored; supersedes S023 TC-F21-auth-gone).
  */
 import { expect, test } from '@playwright/test';
 import { openPublicConverter, playwrightApiBaseUrl } from './playwright-e2e-helpers';
 
 const API_BASE_URL = playwrightApiBaseUrl();
 
-test.describe('Merged API public integration (F21)', () => {
+test.describe('Merged API Auth integration (F31)', () => {
   test('frontend boots without missing auth env errors', async ({ page }) => {
     const consoleErrors: string[] = [];
 
@@ -39,28 +39,33 @@ test.describe('Merged API public integration (F21)', () => {
     expect(body.tac2iwxxm_available).toBe(true);
   });
 
-  test('auth routes return 404 on the API host (TC-F21-auth-gone)', async ({
-    request,
-  }) => {
+  test('auth login rejects bad credentials (TC-F31-003)', async ({ request }) => {
     const response = await request.post(`${API_BASE_URL}/auth/login`, {
       data: { email: 'missing@example.com', password: 'invalid' },
-      timeout: 5000,
+      timeout: 15_000,
     });
 
-    expect(response.status()).toBe(404);
+    // Route exists (F31); invalid credentials → 401 (not 404/503).
+    expect(response.status()).toBe(401);
   });
 
-  test('app load does not generate auth bootstrap requests', async ({ page }) => {
-    const authRequests: string[] = [];
+  test('app load does not call Auth HTTP bootstrap endpoints', async ({ page }) => {
+    const authHttpRequests: string[] = [];
 
     page.on('request', (request) => {
       const url = request.url();
-      if (url.includes('/auth/')) {
-        authRequests.push(`${request.method()} ${url}`);
+      // Ignore Vite module graph loads under /src/.../auth/*.tsx
+      if (
+        (url.includes('/auth/') || url.includes('/auth?')) &&
+        !url.includes('/src/') &&
+        !url.includes('.tsx') &&
+        !url.includes('.ts')
+      ) {
+        authHttpRequests.push(`${request.method()} ${url}`);
       }
     });
 
     await openPublicConverter(page);
-    expect(authRequests).toEqual([]);
+    expect(authHttpRequests).toEqual([]);
   });
 });

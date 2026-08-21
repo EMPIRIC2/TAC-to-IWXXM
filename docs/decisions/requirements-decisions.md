@@ -1,6 +1,126 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-10 (S062 / EV-053)
+> Stage: 01-requirements | Last updated: 2026-08-17 (S070 / EV-060)
+
+## EV-060 / S070 — Converter operator bugs + IWXXM pass-through (#1000) (`D-S070-e9`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-060 / Fn | Deepen **F7.t** + F6/F2/F10/F29/F31 | No new top-level Fn | confirmed |
+| EV-060 / tickets | Epic #1000 + #1001–#1006 on GitHub M0 | No duplicate #933/#924 | confirmed |
+| EV-060 / F7.s | Keep Validate-only | Alongside F7.t | confirmed |
+| EV-060 / journeys | **UJ-059..063** + UJ-003/046 UAT | H4–H5 | confirmed |
+| EV-060 / API | Additive `product=iwxxm` | log_level = logger verbosity | confirmed |
+| EV-060 / a11y | Profile label+name must-have | `D-S070-e3b` | confirmed |
+| EV-060 / honor | FileConverter / accumulate / QM | Profile + IWXXM product | confirmed |
+| EV-060 / UAT | Playwright + facilitated uat | Register/login/logout/persist | confirmed |
+| EV-060 / docs | Delta manifest below | No new CORPUS member | confirmed |
+| EV-060 / UI preview | Remind at 11 | `D-S070-e2` | confirmed |
+| EV-060 / route | Standard Spec 01→02→04 | Build 07–13 blocked | confirmed |
+
+[Corpus: product §F7] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-060]
+
+## EV-058 / S068 — Quality metrics side-by-side vs inline XML diff (#983) (`D-S068-01-ac=2b`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-058 / Fn | Deepen **F7.q** only | No new top-level Fn | confirmed |
+| EV-058 / journey | Deepen **UJ-056** | + TC-EV058-001..005 (`D-S068-01-uj=4a`) | confirmed |
+| EV-058 / control | Segmented Inline \| Side-by-side | `D-S068-01-control=3a` | confirmed |
+| EV-058 / default | Unified / inline | UJ-056 compatible | confirmed |
+| EV-058 / persist | localStorage | Preference across visits | confirmed |
+| EV-058 / sync scroll | Best-effort | Not blocking AC (`D-S068-01-ac=2b`) | confirmed |
+| EV-058 / deps | Reuse line-diff helpers | No new npm `diff` | confirmed |
+| EV-058 / C14N | Unchanged | No `match_status` / fixture regen | confirmed |
+| EV-058 / AC | AC1–AC5 | See feature-list §F7.q EV-058 | confirmed |
+| EV-058 / docs | Delta manifest | feature-list + journeys + test-plan + decisions; skip api/deploy | confirmed |
+| EV-058 / UI preview | Local :18000 | `D-S068-ui-preview=1` | confirmed |
+| EV-058 / route | Lean | PR → stage; promote held | confirmed |
+
+[Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests] [Corpus: decisions §EV-058]
+
+## EV-057 / S067 — M0 Ready: #948 / #903 / #838 (`D-S067-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-057 / pack | One cycle all three Ready | `D-S067-pack=2c`; order #948→#903→#838 | confirmed |
+| EV-057 / Fn | Deepen F7.r + F7.s + F30 | No new top-level Fn; F1/F6/F2/F4 notes | confirmed |
+| EV-057 / #948 mech | DOKS / ingress | Preserve path+query; www if covered (`D-S067-948-*`) | confirmed |
+| EV-057 / #948 Fn | F30 / deploy deepen | No new Fn (`D-S067-948-fn=1a`) | confirmed |
+| EV-057 / #903 stem | ≈8 sanitized TAC chars of first success + ts | Custom basename → `{base}.zip` | confirmed |
+| EV-057 / #903 fail | Leave prior successes | Soft cap **≤200** (`D-S067-903-cap=1c`) | confirmed |
+| EV-057 / #903 journey | **UJ-057** | TC-EV057-903-* | confirmed |
+| EV-057 / #838 intake | Paste + single `.xml` | Multi-file/zip deferred | confirmed |
+| EV-057 / #838 API | Reuse `POST /api/v1/validate` | api-contract skip unless 04 gap | confirmed |
+| EV-057 / #838 journey | **UJ-058** | TC-EV057-838-*; F4 parity | confirmed |
+| EV-057 / #948 journey | **UJ-OPS-002** | TC-EV057-948-* | confirmed |
+| EV-057 / #948 ingress | Extend prod FE Ingress | apex/www → app `$request_uri` (`D-S067-948-ingress=2a`) | confirmed |
+| EV-057 / Gate A | **PASS** | M3/L1 approved; M1/M2 locked strict (`D-S067-gateA=1`) | confirmed |
+| EV-057 / AC | All drafted AC approved | `D-S067-01-ac=1` + Gate A locks | confirmed |
+| EV-057 / docs | Delta manifest | feature-list + journeys + test-plan + deploy + light spec; skip api/README | confirmed |
+| EV-057 / UI preview | Docs only at 01 | Remind at 11 (`D-S067-01-ui=1a`) | confirmed |
+| EV-057 / route | Standard | PR → stage; promote after re-approve | confirmed |
+
+[Corpus: product §F7] [Corpus: product §F30] [Corpus: product §F2] [Corpus: product §F4]
+[Corpus: deploy] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-057]
+
+## EV-056 / S066 — Quality metrics detail page + collapsible diffs (#988) (`D-S066-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-056 / Fn | Deepen **F7.q** only | No new top-level Fn; no F2/F13 this cycle | confirmed |
+| EV-056 / journey | Deepen **UJ-056** only | No UJ-057 (`D-S066-uj=1`) | confirmed |
+| EV-056 / route | `/quality/:stem` + back-to-list | `D-S066-route-shape=1` / `D-S066-list=1` | confirmed |
+| EV-056 / context | Default **3** lines | Expand hunk / expand all (`D-S066-context-n=1`) | confirmed |
+| EV-056 / C14N | Unchanged | No `match_status` / fixture regen | confirmed |
+| EV-056 / deps | Reuse LCS helpers | No new npm diff lib unless AskQuestion | confirmed |
+| EV-056 / AC | AC1–AC5 | See feature-list §F7.q EV-056 (`D-S066-01-ac=1`) | confirmed |
+| EV-056 / docs | Delta manifest | feature-list + journeys + test-plan + decisions; skip api/config/spec | confirmed |
+| EV-056 / UI preview | Accepted | Non-deployed http://127.0.0.1:18000/ (`D-S066-ui-preview=1`) | confirmed |
+| EV-056 / route preset | Lean | PR → stage; `00→16→01→02→10→13` | confirmed |
+
+[Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests] [Corpus: decisions §EV-056]
+
+## EV-055 / S064 — Quality metrics normalize + 2025-2 validate (#982 / #980 / #979) (`D-S064-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-055 / Fn | Deepen F7.q + F2/F13 | F4 only if messaging; no new top-level Fn (`D-S064-engine=1`) | confirmed |
+| EV-055 / normalize | Both sides; match_status = normalized equality | `D-S064-normalize=1` | confirmed |
+| EV-055 / regen | Regenerate corpus_metrics | Stored match semantics match AC2 (`D-S064-regen=1`) | confirmed |
+| EV-055 / Schematron | **Hard enable** for 2025-2 | Overrides soft prefer (`D-S064-sch-hard=1`) | confirmed |
+| EV-055 / XSD import | **Hard fix** for 2025-2 | Overrides optional (`D-S064-xsd-hard=1`) | confirmed |
+| EV-055 / algorithm | **W3C C14N** always | `D-S064-c14n=1` | confirmed |
+| EV-055 / volatile | **C14N after volatile-attr strip** | `D-S064-c14n-volatile=1` / ADR-035 | confirmed |
+| EV-055 / panes | Normalized default + override to raw | `D-S064-gateA-M2=override` | confirmed |
+| EV-055 / helper | Shared generator + FE | `D-S064-gateA-M1=1` | confirmed |
+| EV-055 / Gate A | **PASS** | `D-S064-gateA=1` → 04 | confirmed |
+| EV-055 / journey | Deepen **UJ-056** only | No UJ-057 (`D-S064-uj=1`) | confirmed |
+| EV-055 / AC | AC1–AC7 (amended Gate A) | See evolve-decisions §EV-055 | confirmed |
+| EV-055 / docs | Delta manifest | feature-list + journeys + test-plan + api-contract + decisions | confirmed |
+| EV-055 / UI preview | Declined | Docs/repo only (`D-S064-ui-preview=2`); re-offer at 11 | confirmed |
+| EV-055 / route | Standard | PR → stage; skip 03/06 | confirmed |
+
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: api]
+[Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-055]
+
+## EV-054 / S063 — Quality metrics tab (#836 / F7.q) (`D-S063-01-ac=1`)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-054 / Fn | Deepen F7 + **F7.q** | No F34 (`D-S063-fn=1`) | confirmed |
+| EV-054 / shell | Separate primary app-shell tab | Peer to Convert / History — not FileConverter panel (`D-S063-shell-tab=1`) | confirmed |
+| EV-054 / compute | Precomputed metrics JSON | Served via public `GET /api/v1/quality-metrics*` (`D-S063-compute=1` + Gate A=2) | amended |
+| EV-054 / Gate A | PASS + metrics HTTP API | Re-open api-contract; re-enable 05 (`D-S063-gateA=2`) | confirmed |
+| EV-054 / diff | Unified XML diff in v1 | Plus inspectable raw panes (`D-S063-diff=2`) | confirmed |
+| EV-054 / journey | **UJ-056** | TC-EV054-001..007; H4–H5 required | confirmed |
+| EV-054 / AC | AC1–AC7 | See evolve-decisions §EV-054 | confirmed |
+| EV-054 / docs | Delta manifest | feature-list + journeys + test-plan + decisions; skip API/config unless 04 | confirmed |
+| EV-054 / UI preview | Declined at open | `D-S063-ui-preview=2`; re-offer at 11 | confirmed |
+| EV-054 / route | Standard | include 10/12/13; skip 03/05*/06 | confirmed |
+
+[Corpus: product §F7] [Corpus: journeys] [Corpus: tests] [Corpus: adr/ADR-032]
+[Corpus: decisions §EV-054]
 
 ## EV-053 / S062 — Vitest branches ≥95 FileConverter (#968) (`D-S062-01-ac=1`)
 

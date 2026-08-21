@@ -30,7 +30,9 @@ DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
    package semver when those packages changed, cut `docs/CHANGELOG.md`, commit on
    `stage` — see §Release on promote and [Corpus: deploy] §Promote.
 4. Promote: PR **`stage` → `main` only**. CI **Staging gate** (`staging-gate`) must pass
-   (head=`stage` + tip Staging smoke green). No feature→`main`.
+   (head=`stage` + tip Staging smoke green). No feature→`main`. **EV-061 / #1015:** also
+   require `Lint`, `Typecheck`, full `Test (*)`, and `E2E Full (Playwright)` (not smoke-only)
+   — see [Corpus: deploy] §Promote table and `scripts/deploy/apply_gh_branch_rulesets.sh`.
 5. Merge to `main` → **full CI only** (no auto prod Deploy — EV-051).
 6. **Ship prod:** push `vYYYY.MM.DD-deploy` on the merged `main` tip (triggers prod
    Deploy after CI). Optional escape hatch: `workflow_dispatch` → production. Then any
@@ -38,7 +40,8 @@ DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
 
 Never push directly to `stage`/`main` when rulesets are enabled. Solo-dev gates: PR
 `stage`→`main`, then deploy tag (or dispatch). No Environment reviewers. Do not promote
-while Staging smoke or Staging gate is red/missing.
+while Staging smoke or Staging gate is red/missing (or while #1015 required checks are
+red/missing on the promote PR).
 
 ## Release on promote
 

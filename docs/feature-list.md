@@ -2,27 +2,27 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated harvest + membership; prior EV-046/048)
+> **Last updated**: 2026-08-18 (S071 / EV-061 Spec — pre-promote UX + AHL + catalog tab + stage→main gate #1009; promote held)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S046 / EV-038 corpus residuals (#856–#860); prior S045 / EV-037 |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010) |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S046 / EV-038 picker Latest/Previous (#854); **deepen** S048 / EV-040 New TAC + official AHL/Collect examples + slim prefs; **deepen** S050 / EV-042 #897 queue/keyboard + batch churn UX; **deepen** S057 / EV-048 #951 no internal-doc cites in operator UI |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated |
-| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725) |
+| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; **S050 / EV-042** operator UI hidden with F16–F19 (restore #898) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; **S050 / EV-042** operator UI hidden (restore #898) |
@@ -37,10 +37,11 @@
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
-| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy |
+| F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy; **deepen** S067 / EV-057 apex → app redirect (#948) |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
+| F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -92,10 +93,17 @@
 - **Acceptance (this amend)**: Library API + CI tests; backend thin wrappers for validate
   endpoints call `iwxxm-validate` (no behavior regression vs current F2).
 - **Limitations**: Schema bundles must match vendored snapshot version; no official US `.sch`.
+  **2025-2** may emit `SCHEMATRON_SKIPPED` (xslt2) and/or `SCHEMA_IMPORT_WARNING` until EV-055
+  disposition lands (#980 / #979).
+- **S064 / EV-055 deepen (#980 / #979)**: **Hard** this cycle (`D-S064-sch-hard=1` /
+  `D-S064-xsd-hard=1`): enable Schematron evaluation for 2025-2 xslt2 (prefer native) and
+  fix `SCHEMA_IMPORT_WARNING` import resolution. Quality metrics consume outcomes. See F7.q
+  EV-055 AC4–AC6 and F13.
 - **Source**: `apps/backend` validation routers; [Context: realtime-tac-ingest](context/realtime-tac-ingest.md);
   [Context: package-publish-validation](context/package-publish-validation.md);
   **S043 / EV-035** · [Context: rule-source-traceability](context/rule-source-traceability.md);
-  **S045 / EV-037** · [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md)
+  **S045 / EV-037** · [Context: matrix-disposition-residuals](context/matrix-disposition-residuals.md);
+  **S064 / EV-055** · #980 / #979
 
 ### F3: Airport Data Services
 
@@ -302,6 +310,10 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
+  | F7.q | #836 / #982 / #988 / #983 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058) |
+  | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
+  | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
+  | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -369,6 +381,160 @@
   2. No operator-visible UI string matches guard patterns (see test-plan TC-EV048).
   3. Automated guard covers FE string catalogs; comments/tests excluded.
   4. UJ-055 / TC-EV048-003 green.
+- **S063 / EV-054 deepen (F7.q / #836 — Quality metrics tab)**: Primary **app shell tab**
+  (peer to Convert / History — not a panel inside the convert workbench) that browses the
+  official WMO IWXXM example corpus by product/file type and surfaces **precomputed** match,
+  residuals, lint, and validate diagnostics via public **`GET /api/v1/quality-metrics*`**
+  (`D-S063-compute=1` + `D-S063-gateA=2`). Per-file detail includes **unified XML diff** of
+  official vs our conversion (`D-S063-diff=2`). Does **not** flip F7 → Implemented;
+  complements CI matrices (#815 / #831 / F29) without replacing them.
+- **Acceptance (EV-054 / #836 — F7.q)** — **approved** (`D-S063-01-ac=1`; Gate A amend
+  `D-S063-gateA=2`):
+  1. Quality metrics is a **separate primary tab** (shell navigation); lists official corpus
+     files by product / file type (ADR-032 tiers visible).
+  2. Selecting a file shows official peer + our conversion (TAC/XML inspectable) with
+     **match status** and a **unified XML diff**.
+  3. Residuals, lint, and validation issue panels visible (empty states when clean).
+  4. Product-level summary counts match the precomputed fixture run (or documented refresh),
+     loaded via **`GET /api/v1/quality-metrics`**.
+  5. Deferred / FIXTURE_GAPS stems labeled; no silent missing in-scope official files.
+  6. H4–H5 or Playwright smoke: open tab → filter one product → open one passer → clean or
+     expected diagnostics (**UJ-056** / TC-EV054).
+  7. No Supabase and no live upstream WMO fetch; metrics come from our public API backed by
+     precomputed fixtures (same API host as convert — not FE-only bundle).
+- **S064 / EV-055 deepen (F7.q / #982 + validate follow-ups #980/#979)**: Compare official and
+  converted XML with **W3C C14N** (`D-S064-c14n=1`) so `match_status` and unified diffs reflect
+  semantic differences (`D-S064-normalize=1`). Shared normalize semantics in generator + FE
+  (`D-S064-gateA-M1=1`). Detail panes show **normalized** XML by default with operator override
+  to un-normalized (`D-S064-gateA-M2=override`). Regenerate precomputed `corpus_metrics`
+  (`D-S064-regen=1`). **Hard** this cycle: enable Schematron for IWXXM **2025-2** xslt2 via
+  native when required (`D-S064-sch-hard=1`) and **fix** `SCHEMA_IMPORT_WARNING` for 2025-2
+  (`D-S064-xsd-hard=1`) — overrides earlier soft “prefer/optional” intake. Engine changes in
+  `packages/iwxxm-validate` (F2/F13); operator surface remains Quality metrics. Does **not**
+  flip F7 → Implemented.
+- **Acceptance (EV-055 / #982/#980/#979 — F7.q + F2/F13)** — **approved** (`D-S064-01-ac=1`;
+  Gate A `D-S064-gateA=1`):
+  1. Whitespace/formatting-only official↔converted pairs no longer dominate unified diff;
+     semantic diffs remain (C14N peers).
+  2. `match_status` uses equality of **C14N** XML on both sides **after** volatile-attr
+     strip (`D-S064-c14n-volatile=1` / ADR-035); API/product copy free of internal planning ids.
+  3. Normalize helper (C14N) unit tests + ≥1 golden stem; vendor schemas remain read-only;
+     shared by generator and FE.
+  4. #980: Schematron for 2025-2 **enabled** (native path); engine matrix documented; not
+     closed as UX-only skip.
+  5. #979: root cause (file + import URI) documented **and fixed** this cycle (regression test).
+  6. Quality metrics: validate chips reflect fixed/enabled disposition; detail XML panes
+     default to normalized with override to un-normalized; no internal planning ids.
+  7. `corpus_metrics` regenerated for new match semantics; UJ-056 deepen / TC-EV055 smoke.
+- **S066 / EV-056 deepen (F7.q / #988 — detail page + collapsible diffs)**: After S065
+  pretty-print hotfix (#987), replace inline Quality metrics detail+diff with a **dedicated
+  shareable route** `/quality/:stem` (`D-S066-route-shape=1`) and **GitHub-style** unified
+  diff hunk folding (default **3** context lines; expand hunk / expand all —
+  `D-S066-context-n=1`). List navigates to detail; back returns to list (`D-S066-list=1`).
+  Keep **C14N equality** / `match_status` unchanged; no API contract change unless shell
+  routing needs it; reuse `unifiedLineDiff` + pretty C14N helpers (no new npm diff lib
+  unless AskQuestion). Does **not** flip F7 → Implemented.
+- **Acceptance (EV-056 / #988 — F7.q)** — **approved** (`D-S066-01-ac=1`):
+  1. List row opens dedicated detail route `/quality/:stem` (shareable URL) with back-to-list.
+  2. Official/Converted/TAC panes remain; normalized panes = pretty C14N (S065 helpers).
+  3. Diff shows collapsible equal-context hunks (default 3 lines; expand N / expand all).
+  4. Unequal SIGMET stems remain navigable and readable on staging.
+  5. UJ-056 / TC-EV056 updated; FE unit + Playwright smoke (H4–H5 via 13).
+- **S068 / EV-058 deepen (F7.q / #983 — side-by-side vs inline XML diff)**: On
+  `/quality/:stem`, add a **segmented control** — **Inline (unified)** | **Side-by-side** —
+  so operators can switch layouts without reload (`D-S068-01-control=3a`). Default remains
+  **unified** (UJ-056 backward compatible). Side-by-side uses existing `unifiedLineDiff` /
+  line-diff helpers (no new npm `diff` unless Gate B re-approved). Preference persists in
+  **localStorage**. Synced scroll between side-by-side panes is **best-effort** (not a
+  blocking AC — `D-S068-01-ac=2b`). Keep raw TAC / diagnostics / collapse-equal-context.
+  C14N / `match_status` unchanged; FE-only. Does **not** flip F7 → Implemented.
+- **Acceptance (EV-058 / #983 — F7.q)** — **approved** (`D-S068-01-ac=2b`):
+  1. Operator switches Inline (unified) ↔ Side-by-side without reload.
+  2. Default layout is unified (compatible with prior UJ-056 assertions unless updated).
+  3. Side-by-side highlights changed lines via existing line-diff util; no new npm `diff`.
+  4. Layout preference persists in localStorage across visits.
+  5. Raw TAC / diagnostics / collapsible unified equal-context remain; Vitest + Playwright
+     cover both modes; H4–H5 via 13. Synced scroll is best-effort polish, not required to pass.
+- **S067 / EV-057 deepen (F7.r / #903 — accumulate conversions → one ZIP)**: Successful
+  converts **append** to the current result set instead of wiping prior successes so operators
+  can convert A→B→C and **Download all** as one ZIP. Default archive basename when custom
+  output name is empty: sanitize **first ~8 characters** of the **first** successful conversion’s
+  TAC + timestamp (`{stem}_{yyyyMMddHHmmss}.zip`). Custom basename keeps `{base}.zip` (#664 /
+  EV-005). Explicit clear/reset restores empty batch. Failed convert leaves prior successes.
+  Soft accumulate cap **≤200** results (`D-S067-903-cap=1c` — align with F33 file-count
+  ceiling for sequential UI; clear error when over). Does **not** flip F7 → Implemented.
+  Notes F1/F6 download path only — no batch disseminate.
+- **Acceptance (EV-057 / #903 — F7.r)** — **approved** (`D-S067-01-ac=1`):
+  1. N≥2 sequential successful converts remain visible without re-pasting earlier TAC.
+  2. Download all packages every accumulated IWXXM into one ZIP (per-file naming unchanged).
+  3. Empty custom name → `{stem}_{yyyyMMddHHmmss}.zip` (≈8 sanitized TAC chars of first success).
+  4. Custom basename → `{base}.zip` per #664.
+  5. Explicit clear/reset of the accumulated set.
+  6. Failed convert leaves prior successes untouched.
+  7. Soft accumulate cap **≤200**; clear error when over (`D-S067-903-cap=1c`).
+  8. UJ-057 / TC-EV057-* unit + Playwright; H4–H5 via 13.
+- **S067 / EV-057 deepen (F7.s / #838 — validate existing IWXXM)**: Dedicated **Validate**
+  mode: paste IWXXM XML and/or upload **one** `.xml` file through F2 `iwxxm-validate` **without**
+  TAC→IWXXM convert. Reuse existing `POST /api/v1/validate` unless 04 finds a wire gap.
+  Same F4 version/profile controls as convert/validate elsewhere. Multi-file/zip deferred.
+  Guest-usable (no Supabase). Does **not** flip F7 → Implemented; does not replace F7.q.
+- **Acceptance (EV-057 / #838 — F7.s)** — **approved** (`D-S067-01-ac=1`):
+  1. Paste IWXXM and run validate without converting TAC.
+  2. Upload one IWXXM `.xml` and see F2 XSD+Schematron results.
+  3. Invalid / non-IWXXM XML fails clearly (structured error; no opaque 5xx for bad input).
+  4. Version/profile selection consistent with convert/validate UI (F4).
+  5. Happy path works without Supabase.
+  6. UJ-058 / TC-EV057-* : good fixture pass; broken XML structured fail; H4–H5 via 13.
+- **S070 / EV-060 deepen (F7.t / #1003 — IWXXM product pass-through)**: Add **IWXXM** to the
+  product select. Selecting it skips TAC→IWXXM convert; paste/upload XML is linted
+  (well-formed / COLLECT vs report) and validated (F2) only. Convert is disabled or no-ops
+  with a clear operator message. **F7.s Validate-only stays**. FileConverter / accumulate /
+  Quality metrics honor `product=iwxxm`. API enum adds `iwxxm`. Does **not** flip F7 →
+  Implemented. Parent epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000).
+- **Acceptance (EV-060 / #1003 — F7.t)** — **approved** (`D-S070-e3a` / `D-S070-e9`):
+  1. Given product=IWXXM and valid IWXXM XML, when lint+validate, then no TAC convert runs and F2 result is shown.
+  2. Given product=IWXXM and TAC text, when run, then operator/API get a not-XML error.
+  3. FileConverter / accumulate / Quality metrics honor product=IWXXM.
+  4. API `product=iwxxm` on convert/lint/validate; OpenAPI updated.
+- **S070 / EV-060 deepen (#1001 AHL bulletin lint noise)**: AHL wrapper lints as bulletin COM;
+  contained TAC reports lint/validate with the selected product. Heading tokens are not
+  product-syntax errors. Same on workbench, FileConverter, and `/convert-bulletin` / lint.
+- **S071 / EV-061 deepen (#1012 AHL decode + convert)**: Well-formed multi-report METAR AHL
+  (canonical heading `T1T2A1A2ii CCCC YYGGgg [BBB]` + `=`-terminated reports; golden
+  `SAUS31 KZNY` fixture) **decodes** with item-by-item readable rows per report **and**
+  **convert-bulletin** succeeds. Malformed AHL → clear `INVALID_AHL` / `empty_bulletin`.
+  Context for operators/API: product, profile, optional Bulletin ID / Issuing Center.
+  Distinct from #1011 (stale live harness field name).
+- **S071 / EV-061 chore (#1011)**: `tests/live/test_tc_live_f6_030_bulletin.py` posts multipart
+  field `files` (API contract), not `file`.
+- **Acceptance (EV-060 / #1001)**: Given a well-formed AHL METAR bulletin, when lint/validate,
+  then heading is not a flood of product-syntax errors and contained METARs are checked.
+- **S070 / EV-060 deepen (#1002 profile picker)**: Clearly labeled Profile (Annex 3 / IWXXM-US)
+  at converter **top** (not buried in params); applied to convert/lint/validate; keyboard
+  accessible name+label. Not the #933 editor.
+- **S070 / EV-060 deepen (#1005 Bulletin ID / Issuing Center)**: Labeled, editable fields;
+  sent on convert; empty → discover-from-AHL or defaults; invalid CCCC/ID → one field error.
+- **S070 / EV-060 deepen (#1004 log_level)**: Existing UI/API log-level enum sets **logger
+  verbosity** in backend + packages (not client-echo filter only). DEBUG must not dump JWTs,
+  passwords, or Authorization headers.
+- **S070 / EV-060 deepen (#1006 Auth UAT)**: Facilitated UAT + Playwright register, login,
+  logout, session persist; guest convert still works (F21). Deepens F31 / UJ-003 / UJ-046.
+- **S071 / EV-061 deepen (F7.u / #1013)**: Product Type + Profile at converter top do **not
+  wrap** at ≥1024px; mode selects share one aligned bar/row; conversion parameters share one
+  aligned bar/row; visually polished; stacked OK below 1024px. Keyboard labels preserved.
+- **S071 / EV-061 deepen (F7.v / #1014)**: Top-level **Lint & validation catalog** nav tab +
+  page listing code, description, level, and **working** source links for TAC lint **and**
+  IWXXM validation checks. Source policy (`D-S071-links-resolve`): three tiers; `codes.wmo.int`
+  concept paths may be **semantic-only**; operator hrefs use verified landings (registry guide,
+  wmo-im/iwxxm, AHL knowledge-hub, NWS iwxxm-us, APAC FAQ). See
+  [mining/ev061-catalog-source-replacements-2026-08-18.md](domain/mining/ev061-catalog-source-replacements-2026-08-18.md).
+  Related but distinct from #996 click-for-detail.
+- **EV-062 deepen (F7.v / #1017)**: Rename operator surface to **Validation Issues Catalog**.
+  Expose **issue_type** (`presence` \| `structure` \| `content` \| `consistency` \|
+  `iwxxm_schema` \| `other`) with sort + multi-filter (type, level, family, product,
+  source access/tier). Descriptions are natural-language **what / why / severity** with
+  section-level citations or explicit **Source section unavailable**. Prefer public primary
+  `source_url`; label paywall; expose `source_locator` + `source_access`. Distinct from #996.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -432,8 +598,12 @@
      while typing
   3. Residuals named in summary via "Not decoded: …" when present
   4. Decode response stays backward-compatible (additive `summary` only)
+- **S071 / EV-061 deepen (#1010)**: When Validate IWXXM (or product=IWXXM validate path)
+  still produces decode, the UI shows the **same item-by-item readable description panel**
+  used for other TAC product types (parity with F9 decode rows / plain-language patterns) —
+  not a raw dump. F7.s validate-only and F7.t pass-through remain. UJ-064.
 - **Source**: S013 intake E9-2/E9-3/E9-4/E9-6; Batch 1 (all recommended, 2026-07-16);
-  [evolve-decisions §EV-009](decisions/evolve-decisions.md)
+  [evolve-decisions §EV-009](decisions/evolve-decisions.md); S071 / EV-061 #1010
 
 ### F10: Workbench Preview Clarity (IWXXM Pane + Lint UX)
 
@@ -548,7 +718,10 @@
   4. Maturin/PyO3 integration smoke required for `iwxxm-validate` (not only `tac2iwxxm`)
   5. Required check name(s) documented so red Rust CI blocks merge (**ops** ruleset
      apply may be deferred — D-S054-ac6-waive=2)
-- **Source**: #699; E10-6/7/19/22; ADR-017; #781; #725
+- **S064 / EV-055 deepen (#980 — Schematron 2025-2 xslt2)**: Native path must **enable**
+  evaluation for vendor 2025-2 Schematron with `queryBinding="xslt2"` (`D-S064-sch-hard=1`);
+  document lxml vs native matrix. Soft UX-only skip is **not** an acceptable cycle close.
+- **Source**: #699; E10-6/7/19/22; ADR-017; #781; #725; #980
 
 ### F14: Publish `tac2iwxxm` + Validate Extras + PyPI/Release CI
 
@@ -641,6 +814,20 @@
   7. WMO A3-1 + AHL demo lint without false-positive errors; FPs logged — F15
 - **Source**: [Context: workbench-lint-ux](context/workbench-lint-ux.md);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-040
+
+### F15 / F7.v deepen (EV-062 — Validation Issues Catalog / #1017)
+
+- **Status note**: F15 remains **Done**; F7 remains **Planned**; **no new Fn**. Catalog UX +
+  provenance presentation deepen only (encode engines unchanged for link polish).
+- **Acceptance (EV-062)**:
+  1. Operator surface titled **Validation Issues Catalog**
+  2. Each row has filterable `issue_type` (closed vocab)
+  3. Descriptions explain what/why/severity with section cite or explicit unavailable
+  4. `source_locator` + `source_access` on API; public-prefer primary hrefs; paywall labeled
+  5. Sort + multi-filter; H4–H5 + TC-EV062-*; #996 remains OOS
+- **Source**: [#1017](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1017);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-062;
+  [mining/ev061-catalog-source-replacements-2026-08-18.md](domain/mining/ev061-catalog-source-replacements-2026-08-18.md)
 
 ### F6 deepen (S015 / EV-011 — METAR)
 
@@ -1325,6 +1512,9 @@
   cycle **TC-EV030-***
 - **Out of scope**: Claiming 100% Annex-3 coverage in first PR; duplicating entire WMO trees
   ×20; coupling matrix to live network
+- **S070 / EV-060 deepen (#1004)**: Conversion parameter `log_level` must set backend/package
+  logger verbosity (not only client-echoed process-issue filter). DEBUG must not dump JWTs,
+  passwords, or Authorization headers. UJ-063 / TC-EV060-1004-*.
 - **Source**: E30-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-030;
   [Context: quality-residuals-831](context/quality-residuals-831.md); #831
 
@@ -1371,9 +1561,23 @@
   13. Shared-cluster staging namespace removed after dual-cluster cutover (**TC-F30-013**)
   14. Prod Deploy via `vYYYY.MM.DD-deploy` tag (or `workflow_dispatch`) after full CI incl.
       `e2e-smoke` (**TC-F30-014** / TC-EV051-*)
+- **S067 / EV-057 deepen (#948 — apex → app redirect)**: Configure prod apex
+  `https://tac-to-iwxxm.com` (and `www` when DNS/cert covers it) to permanently redirect to
+  canonical `https://app.tac-to-iwxxm.com` via sibling Ingress **`metar-frontend-apex`**
+  plus tiny nginx **`metar-apex-redirect`** (`D-S067-948-ingress=2a`,
+  `D-S067-948-redirect=1a`). Preserve path + query. HTTP must end on HTTPS app URL.
+  Document mechanism in [deploy.md](deploy.md). Staging short host
+  `staging.tac-to-iwxxm.com` → `app.staging.tac-to-iwxxm.com` mirrors the same
+  sibling-Ingress + redirect-pod pattern. No new Fn.
+- **Acceptance (EV-057 / #948 — F30 deepen)** — **approved** (`D-S067-01-ac=1`):
+  1. `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent).
+  2. Path + query preserved.
+  3. `www` included if DNS/cert covers it; HTTP→HTTPS app URL.
+  4. TLS covers apex (and `www` if enabled).
+  5. Deploy docs state prod FE Ingress extension; TC-EV057-948 / ops smoke.
 - **Out of scope**: Convert/validate engine rewrites; App Platform; multi-reviewer Environment
-  approvals (solo uses tag/dispatch)
-- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051
+  approvals (solo uses tag/dispatch); changing canonical app host away from `app.`
+- **Source**: E31-*; E34-*; E43-*; E44-*; E51-*; E57-*; [Context: platform-independence-842](context/platform-independence-842.md); #842/#830/#712/#886/#948; S042 / EV-034; S052 / EV-043; S053 / EV-044; S060 / EV-051; S067 / EV-057
 
 ### F31: Hybrid Operator Sessions — S038 / EV-031
 
@@ -1391,6 +1595,9 @@
   6. H4–H5 + UJs for notice, login, privacy interplay (**TC-F31-006**)
 - **Out of scope**: Forced login for convert; CMP; selling personal data
 - **Journeys / tests**: **UJ-045+** (assign in user-journeys delta); **TC-F30-*** / **TC-F31-***; **TC-EV031-***
+- **S070 / EV-060 deepen (#1006)**: Auth/Register UAT — Playwright register, login, logout,
+  session persist; guest convert still works. Facilitated `uat` Spec then Build. UJ-003 /
+  UJ-046 / TC-EV060-1006-*.
 - **Source**: E31-*; [Context: platform-independence-842](context/platform-independence-842.md)
 
 ### F23 / F12 / F2 / F13 deepen (S037 / EV-030 — #829 TC SIGMET)
@@ -1507,6 +1714,51 @@
 - **Source**: E42-*; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-042;
   [Context: remove-db-tools-operator-throughput](context/remove-db-tools-operator-throughput.md);
   #897; ADR-029 / ADR-030
+
+### F34: Contract + mutation quality gates — S069 / EV-059
+
+- **Status**: **Planned** (S069 / EV-059; Spec-development).
+- **What it does**: Adds developer/CI quality gates that complement line coverage:
+  1. **Schemathesis** property-based suite against `apps/backend` OpenAPI (ASGI) — no unexpected
+     5xx; response schema conformance; auth strategy so protected routes are exercised.
+  2. **Mutation testing** — **pytest-gremlins** (Python) + **Stryker** (TypeScript) across
+     packages/services, run as **nightly / `workflow_dispatch`** (not every PR).
+- **Issues**: Epic [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841);
+  [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) (Schemathesis);
+  [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) (mutation).
+- **CI posture** (`D-S069-ci`): Schemathesis = **path-filtered required** on
+  `apps/backend/**` / OpenAPI-related paths with **Hypothesis max-examples ≤ 25** and job
+  timeout ≤ **10 min**. Mutation = **nightly/manual only**, chunked matrix + hard timeouts.
+- **PRs**: Two separate PRs (do not bundle #727 + #874). Target `stage`; promote held.
+- **Acceptance** (`D-S069-01-ac=2b`):
+  1. Schemathesis loads OpenAPI from backend ASGI; auth strategy exercises protected routes
+     (**TC-F34-001**)
+  2. `make test-schemathesis` + path-filtered required CI within budget ceilings (**TC-F34-002**,
+     **TC-F34-007**)
+  3. pytest-gremlins + Stryker configs + `make` targets; nightly/manual matrix covers Python
+     packages/services + TS surfaces (**TC-F34-003**, **TC-F34-004**, **TC-F34-005**)
+  4. Deps listed in [dependency-inventory.md](dependency-inventory.md); notes in
+     [test-plan.md](test-plan.md) (**TC-F34-006**)
+  5. Findings: product/schema bugs fixed (bug-investigation) or survivors/waivers documented
+     (**TC-F34-006**)
+  6. Two PRs land; epic #841 closable when #727 and #874 Done (**TC-F34-006**)
+  7. Documented Hypothesis `max-examples` ≤ 25 and Schemathesis job timeout ≤ 10 min in
+     test-plan (**TC-F34-007**)
+- **Mutation matrix (Python)**: `apps/backend`, `apps/worker`,
+  `packages/{auth,shared,tac-validate,tac2iwxxm,iwxxm-validate,dissemination}`
+- **Mutation matrix (TS)**: `apps/frontend` (+ `packages/shared` JS if present)
+- **Excluded**: `apps/e2e` Playwright; Rust crate mutation (first pass)
+- **Journeys / tests**: No new UJ (dev/CI only); **TC-F34-001..007**; cycle **TC-EV059-***
+- **Out of scope**: Mutation required on every PR; Rust mutation; live staging/prod Schemathesis
+  as merge gate; product UI; weaken coverage ≥95%; promote `stage`→`main`; replace hand-written
+  UJ/pytest with Schemathesis alone
+- **OpenAPI**: Breaking cleanup **allowed** when Schemathesis proves export wrong (`D-S069-e5`)
+- **S071 / EV-061 deepen (#1015)**: PRs **`stage` → `main`** require a stricter merge gate than
+  Staging gate alone: **full CI** (unit suites), **lint**, **typecheck**, and **full E2E**
+  (not smoke-only) as required status checks before merge. Documented in deploy.md; GitHub
+  branch protection / required checks as needed. No new app secrets. UJ-DEV-009 (doc/CI).
+- **Source**: E0–E8 / 01 intake; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-059;
+  #841 / #727 / #874; [Corpus: tests] [Corpus: tech-spec] [Corpus: api]; S071 / EV-061 #1015
 
 ### F7 / F16–F19 deepen (S050 / EV-042 — #897 destinations UI hide + churn)
 

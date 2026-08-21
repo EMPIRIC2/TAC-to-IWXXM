@@ -170,6 +170,15 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         ConversionError=RuntimeError,
         convert_metar_tac_with_metadata=lambda *args, **kwargs: ("<xml/>", None),
     )
+    fake_util_iwxxm_pass_through = _stub_module(
+        "utilities.iwxxm_pass_through",
+        NOT_XML_CODE="NOT_XML",
+        lint_iwxxm_pass_through=lambda _text: types.SimpleNamespace(ok=True, product="IWXXM", issues=[]),
+    )
+    fake_util_iwxxm_readable_decode = _stub_module(
+        "utilities.iwxxm_readable_decode",
+        decode_for_validate=lambda **_kwargs: types.SimpleNamespace(segments=[], summary=""),
+    )
     fake_util_metar_normalizer = _stub_module(
         "utilities.metar_normalizer",
         normalize_recent_weather_tokens=lambda tac: (tac, []),
@@ -177,7 +186,12 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     fake_util_observability = _stub_module(
         "utilities.observability",
         install_fastapi_observability=lambda **_kwargs: None,
+        set_request_log_level=lambda *_args, **_kwargs: "INFO",
         setup_logging=lambda *_args, **_kwargs: None,
+    )
+    fake_util_sentry = _stub_module(
+        "utilities.sentry_init",
+        init_sentry=lambda **_kwargs: None,
     )
     fake_util_abuse = _stub_module(
         "utilities.abuse_controls",
@@ -196,6 +210,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         evaluation=fake_router_module,
         icao_opmet=fake_router_module,
         mass_ingest=fake_router_module,
+        quality_metrics=fake_router_module,
         validation=fake_router_module,
         work_sessions=fake_router_module,
     )
@@ -225,8 +240,11 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities": _stub_module("utilities"),
         "utilities.abuse_controls": fake_util_abuse,
         "utilities.conversion": fake_util_conversion,
+        "utilities.iwxxm_pass_through": fake_util_iwxxm_pass_through,
+        "utilities.iwxxm_readable_decode": fake_util_iwxxm_readable_decode,
         "utilities.metar_normalizer": fake_util_metar_normalizer,
         "utilities.observability": fake_util_observability,
+        "utilities.sentry_init": fake_util_sentry,
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,
         "iwxxm_validate": _stub_module(

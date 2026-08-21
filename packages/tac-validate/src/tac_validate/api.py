@@ -2,10 +2,25 @@
 
 from __future__ import annotations
 
+from tac_validate.ahl import lint_ahl_bulletin, looks_like_ahl
 from tac_validate.models import LintReport
 from tac_validate.products import PRODUCTS
 from tac_validate.profiles import PROFILE_ANNEX3, iwxxm_us_applicable, normalize_profile
 from tac_validate.rules import check_parse_gate, check_product_rules
+
+
+def _lint_tac_report(
+    tac_text: str,
+    product: str,
+    profile: str,
+) -> LintReport:
+    """Lint a single TAC report (no AHL split)."""
+    product_u = product.upper()
+    issues, fixes = check_parse_gate(tac_text, product_u)
+    if not any(i.severity == "error" for i in issues):
+        issues.extend(check_product_rules(tac_text, product_u, profile=profile))
+    ok = not any(i.severity == "error" for i in issues)
+    return LintReport(ok=ok, product=product_u, issues=issues, fixes=fixes)
 
 
 def lint(
@@ -17,10 +32,13 @@ def lint(
     """
     Lint TAC text for ``product`` using the shared rule-pack skeleton.
 
+    When ``tac_text`` starts with a WMO AHL, the heading is treated as
+    communications format and each contained report is linted as ``product``.
+
     Parameters
     ----------
     tac_text :
-        TAC report or fragment.
+        TAC report, fragment, or WMO AHL bulletin.
     product :
         One of AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, SWXA, VONA.
     profile :
@@ -45,13 +63,15 @@ def lint(
     if profile_l == "iwxxm_us" and not iwxxm_us_applicable(product_u):
         raise ValueError(f"profile iwxxm_us is not applicable for product {product_u!r} (N/A — use annex3)")
 
-    issues, fixes = check_parse_gate(tac_text, product_u)
-    if not any(i.severity == "error" for i in issues):
-        # profile reserved for L5 gating (T3.3); L3 membership shared today.
-        issues.extend(check_product_rules(tac_text, product_u, profile=profile_l))
+    if looks_like_ahl(tac_text):
+        return lint_ahl_bulletin(
+            tac_text,
+            product=product_u,
+            profile=profile_l,
+            lint_report=_lint_tac_report,
+        )
 
-    ok = not any(i.severity == "error" for i in issues)
-    return LintReport(ok=ok, product=product_u, issues=issues, fixes=fixes)
+    return _lint_tac_report(tac_text, product_u, profile_l)
 
 
 __all__ = ["PRODUCTS", "lint"]

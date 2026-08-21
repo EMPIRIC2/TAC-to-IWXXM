@@ -535,13 +535,10 @@ _AHL_LINE = re.compile(
 )
 
 
-def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
-    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on VAA/TCA peers."""
-    if product not in {"VAA", "TCA"}:
-        return []
+def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
+    """Decode a leading WMO abbreviated heading on any product bulletin."""
     m = _AHL_LINE.match(tac.lstrip("\ufeff"))
     if m is None:
-        # Allow optional leading blank lines before AHL.
         stripped = tac.lstrip()
         offset = len(tac) - len(stripped)
         m = _AHL_LINE.match(stripped)
@@ -554,6 +551,13 @@ def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, s
     code = tac[start:end]
     explanation = f"WMO abbreviated heading — {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
     return [(start, end, code, explanation)]
+
+
+def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
+    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on VAA/TCA peers."""
+    if product not in {"VAA", "TCA"}:
+        return []
+    return _iter_ahl_heading(tac)
 
 
 def _iter_advisory_fields(
@@ -745,42 +749,96 @@ def _build_summary(
     return paragraph
 
 
-def decode_tac(tac: str, *, product: str) -> DecodeResult:
+def _looks_like_ahl_bulletin(text: str) -> bool:
+    """Return True when the first non-empty line is a WMO abbreviated heading."""
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        return _AHL_LINE.match(stripped) is not None
+    return False
+
+
+def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
+    """Translate segment/residual offsets into the parent bulletin string."""
+    return DecodeResult(
+        product=result.product,
+        segments=[
+            DecodeSegment(
+                start=s.start + offset,
+                end=s.end + offset,
+                code=s.code,
+                explanation=s.explanation,
+            )
+            for s in result.segments
+        ],
+        residuals=[
+            DecodeResidual(
+                start=r.start + offset,
+                end=r.end + offset,
+                text=r.text,
+            )
+            for r in result.residuals
+            if r.text.strip()
+        ],
+        summary=result.summary,
+    )
+
+
+def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
+    """Split a WMO AHL bulletin and decode each contained TAC report.
+
+    Returns None when the text is not a splittable bulletin so the caller can
+    fall through to single-report decode.
     """
-    Decode TAC text into ordered explanation segments and residuals.
+    from tac2iwxxm.bulletin import BulletinSplitError, split_bulletin
 
-    Parameters
-    ----------
-    tac :
-        Raw TAC report text.
-    product :
-        One of the F6 product ids or ``SWXA`` (case-insensitive).
+    if not _looks_like_ahl_bulletin(tac):
+        return None
+    try:
+        split = split_bulletin(tac, product=product)
+    except BulletinSplitError:
+        return None
 
-    Returns
-    -------
-    DecodeResult
-        ``segments`` for recognized groups; ``residuals`` for undecoded spans;
-        ``summary`` plain-language paragraph (F9 / ADR-025).
-        METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA are best-effort (G4).
-    """
-    product_u = product.upper()
-    if product_u not in _SUPPORTED:
-        # Entire body residual — unknown product still returns a well-formed shape.
-        text = tac
-        residuals = [DecodeResidual(start=0, end=len(text), text=text)] if text else []
-        summary = _build_summary(product_u, [], residuals)
-        return DecodeResult(product=product_u, segments=[], residuals=residuals, summary=summary)
+    segments: list[DecodeSegment] = []
+    for start, end, code, explanation in _iter_ahl_heading(tac):
+        segments.append(DecodeSegment(start=start, end=end, code=code, explanation=explanation))
 
+    residuals: list[DecodeResidual] = []
+    summaries: list[str] = []
+    search_from = 0
+    for report in split.reports:
+        pos = tac.find(report, search_from)
+        if pos < 0:
+            pos = tac.find(report)
+        if pos < 0:
+            pos = 0
+        inner = _shift_decode(_decode_single_report(report, product=product), pos)
+        segments.extend(inner.segments)
+        residuals.extend(inner.residuals)
+        if inner.summary:
+            summaries.append(inner.summary.rstrip("."))
+        search_from = pos + len(report)
+
+    segments.sort(key=lambda s: (s.start, s.end))
+    n = split.meta.report_count
+    numbered = " ".join(f"{i + 1}) {clause}." for i, clause in enumerate(summaries))
+    summary = f"Bulletin {split.meta.ahl} ({n} report{'s' if n != 1 else ''}). {numbered}".strip()
+    return DecodeResult(product=product, segments=segments, residuals=residuals, summary=summary)
+
+
+def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
+    """Decode one TAC report (no bulletin split)."""
     tokens = _iter_tokens(tac)
-    classify = _classify(product_u)
+    classify = _classify(product)
     seen: dict[str, int] = {}
     segments: list[DecodeSegment] = []
     explained: set[int] = set()
 
     # VAA/TCA: structured LABEL: value fields first (EV-030 / #820 / TC-EV030-006).
-    if product_u in {"VAA", "TCA"}:
+    if product in {"VAA", "TCA"}:
         field_spans: list[tuple[int, int]] = []
-        advisory_parts = _iter_advisory_ahl(tac, product=product_u) + _iter_advisory_fields(tac, product=product_u)
+        advisory_parts = _iter_advisory_ahl(tac, product=product) + _iter_advisory_fields(tac, product=product)
         for start, end, code, explanation in advisory_parts:
             segments.append(DecodeSegment(start=start, end=end, code=code, explanation=explanation))
             field_spans.append((start, end))
@@ -804,8 +862,42 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
 
     segments.sort(key=lambda s: (s.start, s.end))
     residuals = _coalesce_residuals(tokens, explained, tac)
-    summary = _build_summary(product_u, segments, residuals)
-    return DecodeResult(product=product_u, segments=segments, residuals=residuals, summary=summary)
+    summary = _build_summary(product, segments, residuals)
+    return DecodeResult(product=product, segments=segments, residuals=residuals, summary=summary)
+
+
+def decode_tac(tac: str, *, product: str) -> DecodeResult:
+    """
+    Decode TAC text into ordered explanation segments and residuals.
+
+    Parameters
+    ----------
+    tac :
+        Raw TAC report text, or a WMO AHL bulletin containing one or more reports.
+    product :
+        One of the F6 product ids or ``SWXA`` (case-insensitive).
+
+    Returns
+    -------
+    DecodeResult
+        ``segments`` for recognized groups; ``residuals`` for undecoded spans;
+        ``summary`` plain-language paragraph (F9 / ADR-025).
+        METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA are best-effort (G4).
+        Multi-report AHL bulletins are split so each report is decoded independently
+        (heading is a bulletin-framing segment, not a product residual).
+    """
+    product_u = product.upper()
+    if product_u not in _SUPPORTED:
+        # Entire body residual — unknown product still returns a well-formed shape.
+        text = tac
+        residuals = [DecodeResidual(start=0, end=len(text), text=text)] if text else []
+        summary = _build_summary(product_u, [], residuals)
+        return DecodeResult(product=product_u, segments=[], residuals=residuals, summary=summary)
+
+    bulletin = _decode_bulletin(tac, product=product_u)
+    if bulletin is not None:
+        return bulletin
+    return _decode_single_report(tac, product=product_u)
 
 
 __all__ = [

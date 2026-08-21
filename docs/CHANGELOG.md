@@ -1,6 +1,55 @@
 # Changelog
 
-All notable user-facing and deployable changes for METAR to IWXXM.
+All notable user-facing and deployable changes for TAC to IWXXM.
+
+## 2026-08-21 — Production release
+
+Operator-facing improvements validated on staging, now promoting to production.
+
+### Added
+- **Quality metrics** — Browse official WMO IWXXM examples with match, residual, lint, and
+  validate summaries (`/quality`), plus shareable detail pages with collapsible XML diffs.
+- **Validation Issues Catalog** — New shell tab listing lint and IWXXM validation issues with
+  plain-language descriptions, issue type, severity, and verified source links; supports
+  sort/filter by category.
+- **Readable IWXXM validate output** — Item-by-item decode rows on Validate IWXXM (aligned with
+  other products), including optional segment/summary fields from the API.
+- **AHL bulletin handling** — Decode and convert Traditional Alphanumeric Code bulletins that
+  carry WMO abbreviated headings, with clear errors for malformed headings.
+- **Workbench layout polish** — Product Type and Profile bars stay on one row at laptop widths
+  with aligned controls.
+- **Apex redirect** — `tac-to-iwxxm.com` / `www` permanently redirect to the operator app host
+  (staging short host mirrors the same pattern).
+
+### Changed
+- Quality metrics compare XML with **W3C canonicalization** (fewer false diffs); IWXXM **2025-2**
+  Schematron runs; schema-import warnings for 2025-2 addressed; diffs pretty-print for reading.
+- Stricter **stage → production** gate: full unit suites, lint, typecheck, and full Playwright
+  E2E (not smoke-only) required on the promote PR.
+- Operator-facing UI, OpenAPI text, and client error messages stay free of internal planning
+  jargon.
+
+### Packages
+- `tac2iwxxm` **0.2.4 → 0.3.0** (AHL-aware decode — minor: additive bulletin capability)
+- `tac-validate` **0.1.3 → 0.2.0** (AHL helpers + catalog metadata — minor: new public APIs)
+- `iwxxm-validate` **0.1.2 → 0.2.0** (C14N helpers + 2025-2 Schematron path — minor: new public APIs)
+
+### Deploy
+- Promote PR: [#1022](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1022) (`stage` → `main`).
+- After merge + tip CI green: tag `v2026.08.21-deploy` to roll production.
+- Staging tip before release prep: `61b2ccae` (Staging smoke green).
+- Optional PyPI tags after checklist: `tac2iwxxm-v0.3.0`, `tac-validate-v0.2.0`,
+  `iwxxm-validate-v0.2.0`.
+
+### Provenance
+
+| Topic | Tracking |
+|-------|----------|
+| Quality metrics tab / detail / C14N / 2025-2 | [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836), [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988), [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982), [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980), [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979), [#987](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/987), [#989](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/989) |
+| Apex → app redirect | [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948) |
+| Strip internal refs from operator/API copy | [#951](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/951) |
+| Pre-promote UX epic (decode, AHL, layout, catalog, CI gate) | [#1009](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1009), [#1010](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1010), [#1011](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1011), [#1012](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1012), [#1013](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1013), [#1014](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1014), [#1015](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1015), [#1016](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1016) |
+| Validation Issues Catalog deepen | [#1017](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1017), [#1020](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1020) |
 
 ## 2026-08-10 — Promote EV-048..EV-053 (`stage` → `main`)
 

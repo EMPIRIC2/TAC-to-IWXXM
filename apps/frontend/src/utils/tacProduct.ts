@@ -17,9 +17,24 @@ export const TAC_PRODUCTS = [
   'VONA',
 ] as const;
 
+/** Wire products including IWXXM pass-through (F7.t / EV-060 / #1003). */
+export const CONVERT_PRODUCTS = [...TAC_PRODUCTS, 'IWXXM'] as const;
+
 export type TacProduct = (typeof TAC_PRODUCTS)[number];
 
-export type TacProductSelection = TacProduct | 'auto';
+export type ConvertProduct = (typeof CONVERT_PRODUCTS)[number];
+
+export type TacProductSelection = ConvertProduct | 'auto';
+
+/**
+ * Whether a stored/UI product string is a known convert selection (incl. auto).
+ *
+ * @param value - Candidate product string
+ * @returns True when `value` is auto or a CONVERT_PRODUCTS member
+ */
+export function isConvertProductSelection(value: string): value is TacProductSelection {
+  return value === 'auto' || (CONVERT_PRODUCTS as readonly string[]).includes(value);
+}
 
 export type IwxxmProfile = 'annex3' | 'iwxxm_us';
 
@@ -66,7 +81,7 @@ export function detectTacProduct(
 export function resolveConvertProduct(
   selection: TacProductSelection,
   tacText: string,
-): TacProduct {
+): ConvertProduct {
   if (selection === 'auto') {
     return detectTacProduct(tacText);
   }
@@ -74,13 +89,14 @@ export function resolveConvertProduct(
 }
 
 /** Products whose TAC is a multi-line document (must not be line-split). */
-const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>([
+const MULTILINE_TEMPLATE_PRODUCTS = new Set<string>([
   'SIGMET',
   'AIRMET',
   'VAA',
   'TCA',
   'SWXA',
   'VONA',
+  'IWXXM',
 ]);
 
 /**
@@ -88,7 +104,7 @@ const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>([
  * ``split_manual_entries``).
  *
  * METAR/SPECI/TAF: one entry per non-empty line.
- * SIGMET/AIRMET/VAA/TCA/SWXA/VONA: entire buffer is one document (header/body or notice).
+ * SIGMET/AIRMET/VAA/TCA/SWXA/VONA/IWXXM: entire buffer is one document.
  *
  * @param manualText - Editor buffer
  * @param product - Resolved convert product
@@ -96,13 +112,13 @@ const MULTILINE_TEMPLATE_PRODUCTS = new Set<TacProduct>([
  */
 export function splitManualEntries(
   manualText: string,
-  product: TacProduct | string,
+  product: ConvertProduct | string,
 ): string[] {
   if (!manualText) {
     return [];
   }
   const productU = product.trim().toUpperCase();
-  if (MULTILINE_TEMPLATE_PRODUCTS.has(productU as TacProduct)) {
+  if (MULTILINE_TEMPLATE_PRODUCTS.has(productU)) {
     const text = manualText.trim();
     return text ? [text] : [];
   }

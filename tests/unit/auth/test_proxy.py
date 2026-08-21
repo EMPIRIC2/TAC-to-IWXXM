@@ -93,9 +93,11 @@ def test_headers_missing_env_raises_503() -> None:
 def test_headers_missing_key_only_raises_503(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    # CI injects SUPABASE_PUBLISHABLE_KEY; empty constructor arg falls through to env.
+    # CI injects publishable / Vite shim keys; explicit empty must not fall through.
     monkeypatch.delenv("SUPABASE_PUBLISHABLE_KEY", raising=False)
     monkeypatch.delenv("SUPABASE_ANON_KEY", raising=False)
+    monkeypatch.delenv("FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY", raising=False)
+    monkeypatch.delenv("VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY", raising=False)
     proxy = SupabaseAuthProxy(
         supabase_url="https://proj.supabase.co",
         publishable_key="",
@@ -162,6 +164,74 @@ def test_sign_in_maps_http_errors(status_code: int, expected: int) -> None:
     with pytest.raises(AuthProxyError, match="login failed") as exc_info:
         proxy.sign_in("a@example.com", "bad")
     assert exc_info.value.status_code == expected
+
+
+def _proxy_with_post(
+    status_code: int, text: str = ""
+) -> tuple[SupabaseAuthProxy, MagicMock]:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(status_code=status_code, text=text)
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    return proxy, client
+
+
+def test_sign_out_success_with_scope() -> None:
+    """GoTrue 204 + scope query + user Bearer. [Corpus: api] POST /auth/logout."""
+    proxy, client = _proxy_with_post(204)
+    out = proxy.sign_out("user-jwt", scope="local")
+    assert out == {"message": "Successfully signed out"}
+    url, kwargs = client.post.call_args.args[0], client.post.call_args.kwargs
+    assert url == "https://proj.supabase.co/auth/v1/logout"
+    assert kwargs["params"] == {"scope": "local"}
+    assert kwargs["headers"]["Authorization"] == "Bearer user-jwt"
+    assert kwargs["headers"]["apikey"] == "pk"
+
+
+def test_sign_out_success_without_scope_omits_params() -> None:
+    proxy, client = _proxy_with_post(200)
+    out = proxy.sign_out("user-jwt")
+    assert out == {"message": "Successfully signed out"}
+    assert client.post.call_args.kwargs["params"] is None
+
+
+@pytest.mark.parametrize("status_code", [401, 403, 404])
+def test_sign_out_treats_already_invalid_session_as_success(status_code: int) -> None:
+    """Idempotent logout: GoTrue 401/403/404 still counts as signed out."""
+    proxy, _client = _proxy_with_post(status_code, "gone")
+    assert proxy.sign_out("stale-jwt") == {"message": "Successfully signed out"}
+
+
+@pytest.mark.parametrize(
+    ("status_code", "expected"),
+    [
+        (400, 400),
+        (422, 400),
+        (500, 502),
+        (503, 502),
+    ],
+)
+def test_sign_out_maps_http_errors(status_code: int, expected: int) -> None:
+    proxy, _client = _proxy_with_post(status_code, "denied")
+    with pytest.raises(AuthProxyError, match="logout failed") as exc_info:
+        proxy.sign_out("user-jwt", scope="global")
+    assert exc_info.value.status_code == expected
+
+
+def test_sign_out_missing_config_propagates_503() -> None:
+    client = MagicMock(spec=httpx.Client)
+    proxy = SupabaseAuthProxy(
+        supabase_url="",
+        publishable_key="",
+        client=client,
+    )
+    with pytest.raises(AuthProxyError) as exc_info:
+        proxy.sign_out("tok")
+    assert exc_info.value.status_code == 503
+    client.post.assert_not_called()
 
 
 def test_sign_in_missing_config_propagates_503() -> None:

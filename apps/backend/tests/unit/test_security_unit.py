@@ -25,6 +25,7 @@ async def test_verify_supabase_token_requires_auth_env(
 ) -> None:
     monkeypatch.delenv("SUPABASE_URL", raising=False)
     monkeypatch.delenv("SUPABASE_JWKS_URL", raising=False)
+    monkeypatch.setattr(sec, "get_supabase_url", lambda: "")
     with pytest.raises(HTTPException) as exc:
         await sec.verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok"))
     assert exc.value.status_code == 503

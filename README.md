@@ -1,40 +1,54 @@
-# METAR to IWXXM Converter
+# TAC to IWXXM
 
 [![CI/CD](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml)
 [![E2E](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml)
-[![E2E tests](https://img.shields.io/badge/E2E_tests-81-blue)](apps/e2e)
-[![Unit coverage gate](https://img.shields.io/badge/unit_coverage-%E2%89%A598%25-success)](docs/test-plan.md)
+[![E2E tests](https://img.shields.io/badge/E2E_tests-108-blue)](apps/e2e)
+[![Unit coverage gate](https://img.shields.io/badge/unit_coverage-%E2%89%A595%25-success)](docs/test-plan.md)
 
-Convert aviation METAR/SPECI TAC messages to WMO IWXXM XML. React frontend, FastAPI backend,
-and the in-repo [GIFTs](packages/gifts) library — all in a single git monorepo (no submodules).
+Convert aviation TAC (METAR, SPECI, TAF, SIGMET family, and related products) to WMO IWXXM
+XML. React frontend, FastAPI backend, near-RT ingest worker, and publishable Python packages —
+all in a single git monorepo (no submodules).
 
 ## Features
 
-- User registration and login via Supabase (auth routes on the API at `/auth/*`)
-- Drag-and-drop or paste METAR/SPECI TAC input
-- Batch conversion to IWXXM XML with copy, download, and ZIP export
-- IWXXM version selection (vendor snapshots under `vendor/schemas/`)
-- XSD and Schematron validation endpoints
+- Public convert workbench (guest mode) with optional Auth for saved history
+- Multi-product TAC → IWXXM via [`tac2iwxxm`](packages/tac2iwxxm/)
+- TAC lint ([`tac-validate`](packages/tac-validate/)) and IWXXM XSD + Schematron
+  ([`iwxxm-validate`](packages/iwxxm-validate/))
+- Soft preview / decode summaries and workbench lint UX
+- **Quality metrics** tab — compare converted IWXXM to the official WMO example corpus
+  (`/quality`, shareable `/quality/:stem`)
+- Near-real-time ingest worker
+- Dissemination sink APIs retained (operator UI destinations currently hidden — restore tracked separately)
 
 ## Architecture
 
-Two deployables: **static frontend** + **API** (conversion, validation, and auth).
+Three deployables on **DigitalOcean Kubernetes (DOKS)**: static frontend, API, and worker.
+Auth is Supabase Auth-only (JWT on the API). Product data uses DO Postgres.
 
 ```
 Browser
    │
    ▼
-apps/frontend          Vite dev :5173  ·  Docker :18000
-   │  VITE_API_BASE_URL
+apps/frontend          Vite :5173  ·  Docker :18000
+   │  VITE_API_BASE_URL / runtime /config.json
    ▼
 apps/backend           :8001 (dev)  ·  :18001 (Docker)
-   ├── packages/auth    Supabase JWT + /auth/* routes
-   ├── packages/gifts   TAC → IWXXM
-   └── vendor/schemas   read-only wmo-im snapshots
+   ├── packages/auth           Supabase JWT + /auth/*
+   ├── packages/tac2iwxxm      TAC → IWXXM
+   ├── packages/tac-validate   TAC lint
+   ├── packages/iwxxm-validate XSD + Schematron
+   ├── packages/dissemination  sink adapters (API-mediated)
+   └── vendor/schemas          read-only wmo-im + iwxxm-us snapshots
+
+apps/worker            near-RT ingest → DO Postgres
 ```
 
+**Staging:** https://app.staging.tac-to-iwxxm.com · https://api.staging.tac-to-iwxxm.com  
+**Production:** https://app.tac-to-iwxxm.com · https://api.tac-to-iwxxm.com  
+
 **Developer guide:** [docs/ops/DEVELOPMENT.md](docs/ops/DEVELOPMENT.md)  
-**Deployment:** [docs/deploy.md](docs/deploy.md)
+**Deployment:** [docs/deploy.md](docs/deploy.md) · [docs/deploy-state.md](docs/deploy-state.md)
 
 ## Quick start
 
@@ -45,7 +59,7 @@ cd TAC-to-IWXXM
 # macOS system deps (python@3.12, node@22, uv, rust, …) — see Brewfile
 brew bundle --file=Brewfile
 
-cp .env.example .env   # add Supabase credentials
+cp .env.example .env   # add Supabase + DB credentials as needed
 make install           # uv sync + pnpm install
 make dev               # API on :8001, frontend on :5173
 ```
@@ -60,34 +74,36 @@ docker compose up --build
 **Operator docs** (convert → validate → download):
 
 - [Operator one-pager](docs/guides/operator-one-pager.md) — one printed page
-- [Operator handbook](docs/guides/operator-handbook.md) — login, history, ingest, troubleshooting
+- [Operator handbook](docs/guides/operator-handbook.md) — login, history, Quality metrics, ingest, troubleshooting
 
 In the app, use **Help** in the converter header (same one-pager).
 
 Docker Compose ships a bundled PostgreSQL service (`db`), so the stack is
-self-contained out of the box — no external database is required for the API to
-start. The backend defaults `DATABASE_URL` to that service; override it in `.env`
-(e.g. a Supabase pooler URL) to point at another database. Auth and work-history
-(F5) still require Supabase credentials in `.env` — the bundled Postgres only
-backs the ORM tables (statistics/evaluation), not Supabase auth/RLS.
+self-contained out of the box for local API/ORM tables. Auth and cloud work-history
+still need Supabase credentials in `.env` when you exercise those paths.
 
 ## Project structure
 
 ```
-metar-to-IWXXM/
+TAC-to-IWXXM/
 ├── apps/
 │   ├── backend/       # FastAPI — /api/v1/* and /auth/*
-│   ├── frontend/      # React + Vite
+│   ├── frontend/      # React + Vite operator UI
+│   ├── worker/        # near-RT ingest
 │   └── e2e/           # Playwright suites
 ├── packages/
-│   ├── auth/          # Auth library (mounted in backend)
-│   ├── gifts/         # IWXXM conversion
+│   ├── auth/          # Supabase Auth JWT middleware
+│   ├── tac2iwxxm/     # TAC → IWXXM (PyPI)
+│   ├── tac-validate/  # TAC lint (PyPI)
+│   ├── iwxxm-validate/# XSD + Schematron (PyPI)
+│   ├── dissemination/ # destination sinks / SSRF helpers
 │   └── shared/        # Shared types and constants
-├── vendor/schemas/    # Read-only iwxxm snapshots (sync via make vendor-sync)
-├── tests/             # Migration gates, integration, smoke
-├── docs/              # Specs, deploy runbook, development guide
+├── vendor/schemas/    # Read-only iwxxm snapshots (make vendor-sync)
+├── deploy/doks/       # Staging + prod overlays
+├── tests/             # Migration gates, integration, smoke, bug repros
+├── docs/              # Specs and guides — start at docs/CORPUS.md
 ├── Makefile
-└── docker-compose.yml # db (Postgres) + backend + frontend
+└── docker-compose.yml # db + backend + frontend (+ optional mocks)
 ```
 
 ## Testing
@@ -98,20 +114,21 @@ make test-e2e-playwright-smoke   # Playwright smoke (no admin credentials)
 make tests:e2e              # Full Playwright suite (apps/e2e)
 ```
 
-Coverage gate: **95%** on all packages and apps. See [docs/test-plan.md](docs/test-plan.md).
+Coverage gate: **≥95%** lines/statements/functions (and Vitest branches ≥95%). See
+[docs/test-plan.md](docs/test-plan.md).
 
-### Live tests (Render T3 — manual)
+### Live / staging connectivity
 
-Populate `.env` with `LIVE_API_URL`, `LIVE_FRONTEND_URL`, and admin credentials, then:
+Populate `.env` with staging or prod URLs and credentials as needed, then:
 
 ```bash
 make test-live-connectivity   # H4–H5 CORS + bundle
 make test-live-api            # H3 live API pytest
-make test-live-e2e            # H6 Playwright UJ-001–003
+make test-live-e2e            # H6 Playwright journeys
 make test-live                # All tiers (pre-release signoff)
 ```
 
-See [docs/deploy.md](docs/deploy.md) §Live test harness. Requires E2E-001 schema path fix for full validation coverage.
+See [docs/deploy.md](docs/deploy.md) §Live test harness.
 
 ## Key technologies
 
@@ -119,20 +136,34 @@ See [docs/deploy.md](docs/deploy.md) §Live test harness. Requires E2E-001 schem
 |-------|--------|
 | Frontend | React 18, TypeScript, Vite 6, Tailwind, Vitest |
 | API | FastAPI, Python 3.12, uv workspace |
-| Auth | Supabase (via `packages/auth`) |
-| Conversion | GIFTs (`packages/gifts`) |
+| Worker | Python poller → DO Postgres |
+| Auth | Supabase Auth (via `packages/auth`) |
+| Conversion | `tac2iwxxm` (+ optional Rust/PyO3) |
+| Lint / validate | `tac-validate`, `iwxxm-validate` |
 | E2E | Playwright |
-| Deploy | Render — Docker API + static frontend |
+| Deploy | DOKS (staging from `stage`, prod from `main` / deploy tags) |
+
+## Branch / release posture (current)
+
+| Branch | Role | What’s live |
+|--------|------|-------------|
+| `stage` | Staging deploys | Quality metrics (list + detail pages) on staging; promote to production deferred |
+| `main` | Production | Last production promote: 2026-08-10 |
+
+Quality metrics on staging: https://app.staging.tac-to-iwxxm.com/quality
 
 ## Documentation
 
 | Doc | Purpose |
 |-----|---------|
+| [docs/CORPUS.md](docs/CORPUS.md) | Canonical doc index |
 | [docs/ops/DEVELOPMENT.md](docs/ops/DEVELOPMENT.md) | Setup, env vars, troubleshooting |
-| [docs/deploy.md](docs/deploy.md) | Render topology and connectivity runbook |
+| [docs/deploy.md](docs/deploy.md) | DOKS topology and connectivity runbook |
+| [docs/deploy-state.md](docs/deploy-state.md) | Current staging / prod tips |
 | [docs/api-contract.md](docs/api-contract.md) | HTTP API reference |
-| [docs/spec.md](docs/spec.md) | Technical specification |
+| [docs/spec.md](docs/spec.md) | System specification |
 | [docs/feature-list.md](docs/feature-list.md) | Product features |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md) | Release notes |
 
 ## License
 

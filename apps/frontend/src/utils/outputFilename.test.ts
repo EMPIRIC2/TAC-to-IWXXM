@@ -5,6 +5,9 @@ import {
   manualOutputName,
   manualDownloadXmlName,
   outputArchiveName,
+  stemFromFirstTac,
+  formatArchiveTimestamp,
+  ACCUMULATE_RESULT_CAP,
 } from './outputFilename';
 
 describe('sanitizeOutputFilename', () => {
@@ -77,15 +80,48 @@ describe('manualDownloadXmlName', () => {
   });
 });
 
+describe('stemFromFirstTac', () => {
+  it('takes the first 8 non-whitespace sanitized chars', () => {
+    expect(stemFromFirstTac('METAR KJFK 011200Z')).toBe('METARKJF');
+  });
+
+  it('falls back to converted when empty', () => {
+    expect(stemFromFirstTac('')).toBe('converted');
+    expect(stemFromFirstTac('   ')).toBe('converted');
+  });
+});
+
+describe('formatArchiveTimestamp', () => {
+  it('formats as yyyyMMddHHmmss', () => {
+    const d = new Date(2026, 7, 15, 9, 30, 45); // Aug 15 2026 local
+    expect(formatArchiveTimestamp(d)).toBe('20260815093045');
+  });
+});
+
 describe('outputArchiveName', () => {
   it('uses <base>.zip when a custom name is provided', () => {
     expect(outputArchiveName('report')).toBe('report.zip');
     expect(outputArchiveName('  weather.xml ')).toBe('weather.zip');
   });
 
-  it('uses the timestamped default when no custom name is set', () => {
-    const name = outputArchiveName('');
-    expect(name).toMatch(/^converted_files_\d+\.zip$/);
-    expect(outputArchiveName('   ')).toMatch(/^converted_files_\d+\.zip$/);
+  it('uses first-TAC stem + yyyyMMddHHmmss when custom name is empty (#903)', () => {
+    const now = new Date(2026, 7, 15, 9, 30, 45);
+    expect(outputArchiveName('', { firstTac: 'METAR KJFK 011200Z', now })).toBe(
+      'METARKJF_20260815093045.zip',
+    );
+  });
+
+  it('uses the timestamped converted_files fallback when no custom name and no firstTac', () => {
+    const now = new Date(1_700_000_000_000);
+    expect(outputArchiveName('', { now })).toBe(`converted_files_${now.getTime()}.zip`);
+    expect(outputArchiveName('   ', { now })).toBe(
+      `converted_files_${now.getTime()}.zip`,
+    );
+  });
+});
+
+describe('ACCUMULATE_RESULT_CAP', () => {
+  it('is 200 per EV-057 / D-S067-903-cap', () => {
+    expect(ACCUMULATE_RESULT_CAP).toBe(200);
   });
 });

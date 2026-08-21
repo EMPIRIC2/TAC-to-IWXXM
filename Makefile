@@ -19,6 +19,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-worker test-bugs \
+	test-schemathesis test-mutation test-mutation-poc test-mutation-python test-mutation-js \
 	build-tac2iwxxm-native build-iwxxm-validate-native \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
 	perf-converter-baseline test-converter-pr-gate test-unit-fast lint-fast \
@@ -64,6 +65,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
+	generate-quality-metrics \
 	issue-registry-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
@@ -114,6 +116,10 @@ catalog-check: catalog-regen
 membership-regen:
 	$(UV) run python scripts/iwxxm/harvest_wmo_membership.py
 	pnpm exec prettier --write packages/tac-validate/src/tac_validate/data/wmo_membership.json
+
+# EV-054 / F7.q — regenerate precomputed Quality metrics corpus artifact
+generate-quality-metrics:
+	$(UV) run python scripts/ci/generate_quality_metrics.py
 
 membership-check: membership-regen
 	@git diff --quiet -- packages/tac-validate/src/tac_validate/data/wmo_membership.json \
@@ -226,6 +232,35 @@ test-unit-backend:
 		--cov-report=term-missing \
 		--cov-fail-under=98 -v)
 	$(UV) run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
+
+# F34 / EV-059 / #727 — Schemathesis OpenAPI property suite (TC-F34-001..002 / TC-F34-007).
+# Knobs: SCHEMATHESIS_MAX_EXAMPLES (≤25), Hypothesis seed via --hypothesis-seed.
+# Budget ceiling locked — do not raise max-examples above 25 without AskQuestion.
+test-schemathesis:
+	(cd apps/backend && SCHEMATHESIS_MAX_EXAMPLES=$${SCHEMATHESIS_MAX_EXAMPLES:-25} \
+		$(UV) run pytest tests/contract/test_schemathesis_openapi.py \
+		-m schemathesis --override-ini addopts= -v \
+		--tb=short)
+
+# F34 / EV-059 / #874 — Mutation testing (TC-F34-003..005). Nightly/manual only.
+# Usage: make test-mutation-python TARGET=poc-shared-env
+#        make test-mutation-js TARGET=frontend
+#        make test-mutation-poc   # narrow Python + docs note
+# Knobs: MUTATION_TIMEOUT_SEC (default 1200), GREMLIN_EXTRA_ARGS
+test-mutation-python:
+	@test -n "$(TARGET)" || (echo "Set TARGET=backend|worker|auth|shared|tac-validate|tac2iwxxm|iwxxm-validate|dissemination|poc-shared-env" >&2; exit 2)
+	bash scripts/ci/run_mutation_python.sh "$(TARGET)"
+
+test-mutation-js:
+	@test -n "$(TARGET)" || (echo "Set TARGET=frontend|shared" >&2; exit 2)
+	bash scripts/ci/run_mutation_js.sh "$(TARGET)"
+
+test-mutation-poc:
+	MUTATION_TIMEOUT_SEC=$${MUTATION_TIMEOUT_SEC:-300} bash scripts/ci/run_mutation_python.sh poc-shared-env
+
+test-mutation: test-mutation-poc
+	@echo "Full matrix: workflow .github/workflows/mutation.yml (schedule / workflow_dispatch)"
+	@echo "Chunked local: make test-mutation-python TARGET=… / make test-mutation-js TARGET=…"
 
 # F31 / EV-047 — auth package + per-file ≥95%.
 test-unit-auth:

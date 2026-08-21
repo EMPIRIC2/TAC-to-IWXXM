@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-09 (S059 / EV-050 — #959 Validated membership; prior EV-046/048)
+> **Last updated**: 2026-08-18 (S071 / EV-061 — TC-EV061-* pre-promote UX + AHL + catalog + stage→main gate)
 
 ## Scope
 
@@ -110,6 +110,22 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005 |
+| UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..007 |
+| UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
+| UJ-059 | F7/F6 deepen (EV-060) | AHL bulletin lint/validate without heading flood (#1001) | **H4–H5 required** | TC-EV060-1001-001..003 |
+| UJ-060 | F7.t (EV-060) | IWXXM product pass-through lint+F2 (#1003) | **H4–H5 required** | TC-EV060-1003-001..004 |
+| UJ-061 | F7/F6 deepen (EV-060) | Profile labeled at converter top (#1002) | **H4–H5 required** | TC-EV060-1002-001..003 |
+| UJ-062 | F7/F6 deepen (EV-060) | Bulletin ID + Issuing Center applied (#1005) | **H4–H5 required** | TC-EV060-1005-001..003 |
+| UJ-063 | F29 deepen (EV-060) | Conversion log_level sets logger verbosity (#1004) | T0/T2 | TC-EV060-1004-001..002 |
+| UJ-003 / UJ-046 | F31 deepen (EV-060) | Auth register/login/logout/persist UAT (#1006) | **H4–H5 required** | TC-EV060-1006-001..004 |
+| UJ-064 | F2/F9/F10 deepen (EV-061) | Validate IWXXM item-by-item readable decode (#1010) | **H4–H5 required** | TC-EV061-1010-001..003 |
+| UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
+| UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
+| UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
+| UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
+| LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
+| UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
 | UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
 | UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
 
@@ -169,7 +185,9 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 
 **Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
 Python also enforces **per-file ≥95%** via `scripts/ci/check_per_file_coverage.py` (EV-047 /
-D-S056-cov95-scope=2), including auth and worker.
+`D-S056-cov95-scope=2`), including auth and worker. **F34** adds Schemathesis (path-filtered
+required, tight budget) and mutation testing (nightly/manual only) — see **TC-F34-001..007** /
+EV-059.
 
 ## Migration Test Cases
 
@@ -1980,6 +1998,754 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   branches ≥95; documented in session verify report
 - **Source**: EV-053 AC5 (`D-S062-01-ac` Q3=2)
 
+### EV-054 / S063 — Quality metrics tab (#836 / F7.q)
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Primary **Quality metrics** shell tab browses official WMO corpus by
+  product with precomputed match / residuals / lint / validate and unified XML diff.
+- **Pass criteria**: AC1–AC7 in evolve-decisions §EV-054; TC-EV054-001..008; **UJ-056**
+- **Source**: F7.q deepen; EV-054 / S063; [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836);
+  ADR-032; ADR-025
+
+### TC-EV054-001: Quality metrics is a primary shell tab
+
+- **Level**: T0 / T2
+- **Objective**: App exposes a dedicated Quality metrics view peer to Convert / History
+  (not a panel inside FileConverter)
+- **Pass criteria**: Navigation reaches the tab; Vitest and/or Playwright assert shell route/view
+- **Source**: EV-054 AC1; UJ-056; `D-S063-shell-tab`
+
+### TC-EV054-002: Corpus listed by product / file type
+
+- **Level**: T0 / T2
+- **Objective**: Official corpus inventory grouped by product; ADR-032 tiers visible;
+  FIXTURE_GAPS / deferred stems labeled
+- **Pass criteria**: Catalog ∪ gaps completeness; no silent omission of in-scope pin stems
+- **Source**: EV-054 AC1 / AC5; UJ-039 deepen
+
+### TC-EV054-003: File detail — match + unified XML diff
+
+- **Level**: T0 / T2
+- **Objective**: Selecting a stem shows official + our XML/TAC, match status, and a
+  **unified XML diff** (`D-S063-diff=2`)
+- **Pass criteria**: Diff visible for a non-equal pair or documented equal/empty-diff state
+  for a passer; raw panes remain inspectable
+- **Source**: EV-054 AC2
+
+### TC-EV054-004: Residuals / lint / validate panels
+
+- **Level**: T0 / T2
+- **Objective**: Detail pane surfaces decode residuals, tac-validate issues, and
+  iwxxm-validate XSD/Schematron results (empty states when clean)
+- **Pass criteria**: Clean passer shows empty/expected allowlisted diagnostics; dirty fixture
+  (when present) shows non-empty panel content
+- **Source**: EV-054 AC3; ADR-025
+
+### TC-EV054-005: Product summary counts match precomputed fixture
+
+- **Level**: T0
+- **Objective**: Aggregate counts per product equal the precomputed metrics artifact
+  served by `GET /api/v1/quality-metrics`
+- **Pass criteria**: Backend unit/fixture test compares response summaries to golden artifact
+- **Source**: EV-054 AC4; `D-S063-compute=1`; `D-S063-gateA=2`
+
+### TC-EV054-006: No Supabase / no live upstream WMO fetch
+
+- **Level**: T0 / T2
+- **Objective**: Metrics routes and FE tab do not call Supabase or download upstream WMO
+  trees; data comes from precomputed fixtures via our API
+- **Pass criteria**: Tests assert handler reads local artifact only; no Supabase client on path
+- **Source**: EV-054 AC7; `D-S063-gateA=2`
+
+### TC-EV054-007: Playwright / H4–H5 smoke (UJ-056)
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Open Quality metrics tab → filter one product → open one passer → see
+  clean or expected diagnostics (+ unified diff pane present); FE calls quality-metrics API
+- **Pass criteria**: Playwright green locally/CI; H4–H5 after staging deploy (12/13)
+- **Source**: EV-054 AC6; UJ-056; connectivity gates
+
+### TC-EV054-008: Public quality-metrics HTTP API
+
+- **Level**: T0 / T2 / H0i
+- **Objective**: `GET /api/v1/quality-metrics` and `GET /api/v1/quality-metrics/{stem}` are
+  public (no JWT), return msgspec JSON, 404 unknown stem, serve precomputed data
+- **Pass criteria**: Backend tests + OpenAPI paths; CORS covered by existing H0c patterns
+- **Source**: EV-054 AC4/AC7; [Corpus: api]; `D-S063-gateA=2`
+
+### EV-055 / S064 — Quality metrics normalize + 2025-2 validate (#982 / #980 / #979)
+
+- **Mode**: delta deepen F7.q + F2/F13
+- **Pass criteria**: AC1–AC7 in evolve-decisions §EV-055; TC-EV055-001..007; **UJ-056** deepen
+- **Source**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982),
+  [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980),
+  [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979); parent #836 / EV-054
+
+### TC-EV055-001: Formatting-only diffs no longer dominate
+
+- **Level**: T0 / T2
+- **Objective**: For a representative stem whose official vs converted XML differ mainly in
+  pretty-print/whitespace, unified line diff on **C14N** peers is empty or semantic-only
+- **Pass criteria**: Fixture/unit assertion on C14N + diff; Vitest or generator test
+- **Source**: EV-055 AC1; #982; UJ-056; `D-S064-c14n=1`
+
+### TC-EV055-002: match_status uses C14N equality
+
+- **Level**: T0 / H0i
+- **Objective**: `match_status` on list/detail quality-metrics payloads equals when
+  post–volatile-strip **C14N** official and converted XML are equal (even if raw bytes
+  differ in formatting or `gml:id` / UUID attrs — `D-S064-c14n-volatile=1` / ADR-035)
+- **Pass criteria**: Backend/generator tests; OpenAPI/docs state C14N + volatile-strip
+  semantics
+- **Source**: EV-055 AC2; [Corpus: api]; [Corpus: adr/ADR-035]; `D-S064-normalize=1`;
+  `D-S064-c14n=1`; `D-S064-c14n-volatile=1`
+
+### TC-EV055-003: C14N helper + golden stem (shared generator + FE)
+
+- **Level**: T0
+- **Objective**: Shared C14N helper covered by unit tests; ≥1 golden stem; vendor trees
+  not rewritten in place; used by metrics generator and FE diff
+- **Pass criteria**: Unit tests green; vendor/schemas read-only
+- **Source**: EV-055 AC3; #982; `D-S064-gateA-M1=1`
+
+### TC-EV055-004: SCHEMATRON enabled for 2025-2 (hard)
+
+- **Level**: T0 / T2
+- **Objective**: 2025-2 Schematron with xslt2 binding is **evaluated** (prefer native);
+  `SCHEMATRON_SKIPPED` is not an acceptable close for this cycle
+- **Pass criteria**: Engine tests assert evaluation path; matrix documented
+- **Source**: EV-055 AC4; #980; `D-S064-sch-hard=1`; F2/F13
+
+### TC-EV055-005: SCHEMA_IMPORT_WARNING fixed for 2025-2 (hard)
+
+- **Level**: T0 / T2
+- **Objective**: Root cause (file + import URI) fixed; strict XSD path no longer skipped for
+  the resolved case
+- **Pass criteria**: Regression test green; warning absent on representative stems
+- **Source**: EV-055 AC5; #979; `D-S064-xsd-hard=1`; F2
+
+### TC-EV055-006: corpus_metrics regen for C14N match
+
+- **Level**: T0 / CI
+- **Objective**: Regenerated `corpus_metrics.json` reflects C14N `match_status` counts after
+  `make generate-quality-metrics`
+- **Pass criteria**: Generator CI/job green; summary counts consistent with AC2
+- **Source**: EV-055 AC7; `D-S064-regen=1`
+
+### TC-EV055-007: UJ-056 smoke — C14N panes + validate chips
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Quality metrics detail defaults to normalized XML panes with override to
+  un-normalized; quieter C14N diff; validate chips match enabled/fixed disposition
+- **Pass criteria**: Local Playwright/Vitest green; H4–H5 after staging deploy (12/13)
+- **Source**: EV-055 AC1 / AC6 / AC7; UJ-056; `D-S064-gateA-M2=override`
+
+### EV-056 / S066 — Quality metrics detail page + collapsible diffs (#988 / F7.q)
+
+- **Mode**: delta deepen F7.q (UX/docs/tests; C14N semantics unchanged)
+- **Pass criteria**: AC1–AC5 in evolve-decisions §EV-056; TC-EV056-001..005; **UJ-056** deepen
+- **Source**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988); S065 FOLLOWUP;
+  parent EV-054 / EV-055; pretty-print hotfix #987
+
+### TC-EV056-001: Dedicated `/quality/:stem` detail route
+
+- **Level**: T0 / T2
+- **Objective**: List row navigates to shareable `/quality/:stem` with back-to-list
+  (`D-S066-route-shape=1` / `D-S066-list=1`)
+- **Pass criteria**: Vitest and/or Playwright assert route + back navigation
+- **Source**: EV-056 AC1; UJ-056
+
+### TC-EV056-002: Pretty C14N panes preserved
+
+- **Level**: T0 / T2
+- **Objective**: Official/Converted/TAC panes remain; normalized = pretty C14N (S065 helpers)
+- **Pass criteria**: FE unit asserts pretty multi-line display XML for C14N peers
+- **Source**: EV-056 AC2; S065; UJ-056
+
+### TC-EV056-003: Collapsible equal-context hunks (default 3)
+
+- **Level**: T0 / T2
+- **Objective**: Unified diff collapses unchanged context to GitHub-like expand controls;
+  default **3** context lines; expand hunk / expand all (`D-S066-context-n=1`)
+- **Pass criteria**: Unit test on `collapseEqualContext` (or equivalent); UI control smoke
+- **Source**: EV-056 AC3; UJ-056
+
+### TC-EV056-004: Unequal SIGMET stems remain readable
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Non-equal SIGMET (or other unequal) stems open on detail route with
+  navigable collapsed hunks
+- **Pass criteria**: Playwright or staging smoke opens an unequal stem; no single-line dump
+- **Source**: EV-056 AC4; UJ-056
+
+### TC-EV056-005: UJ-056 smoke — detail route + hunk fold
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Open Quality metrics → open stem → land on `/quality/:stem` → see
+  collapsible unified diff; C14N/`match_status` unchanged
+- **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
+- **Source**: EV-056 AC5; UJ-056
+
+### EV-058 / S068 — Quality metrics side-by-side vs inline XML diff (#983 / F7.q)
+
+- **Mode**: delta deepen F7.q (FE-only UX/docs/tests; C14N semantics unchanged)
+- **Pass criteria**: AC1–AC5 in evolve-decisions §EV-058; TC-EV058-001..005; **UJ-056** deepen
+- **Source**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983); predecessor
+  EV-056 / #988; parent EV-054 / #836
+
+### TC-EV058-001: Layout segmented control on `/quality/:stem`
+
+- **Level**: T0 / T2
+- **Objective**: Detail page exposes Inline (unified) | Side-by-side control; switch
+  without reload (`D-S068-01-control=3a`)
+- **Pass criteria**: Vitest and/or Playwright assert control + both layouts render
+- **Source**: EV-058 AC1; UJ-056
+
+### TC-EV058-002: Default remains unified
+
+- **Level**: T0 / T2
+- **Objective**: First visit (no stored preference) shows unified/inline layout
+- **Pass criteria**: Default view matches prior UJ-056 unified assertions
+- **Source**: EV-058 AC2; UJ-056
+
+### TC-EV058-003: Side-by-side uses existing line-diff helpers
+
+- **Level**: T0 / T2
+- **Objective**: Side-by-side highlights changed lines via `unifiedLineDiff` (or sibling
+  helpers); no new npm `diff` package
+- **Pass criteria**: FE unit asserts side-by-side changed-line markers; package.json
+  unchanged for diff libs
+- **Source**: EV-058 AC3; UJ-056
+
+### TC-EV058-004: Preference persists in localStorage
+
+- **Level**: T0 / T2
+- **Objective**: Selected layout survives reload via localStorage
+- **Pass criteria**: Vitest and/or Playwright set side-by-side → reload → still side-by-side
+- **Source**: EV-058 AC4; UJ-056
+
+### TC-EV058-005: UJ-056 smoke — both layout modes
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Open `/quality/:stem` → toggle Inline ↔ Side-by-side; TAC/diagnostics/
+  collapse remain; C14N/`match_status` unchanged. Synced scroll best-effort only.
+- **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
+- **Source**: EV-058 AC5; UJ-056; `D-S068-01-ac=2b`
+
+### EV-059 / S069 — F34 Contract + mutation quality gates (#841 / #727 / #874)
+
+- **Mode**: new **F34** (Platform / CI·DX); no operator UJ; no H4–H5
+- **Pass criteria**: AC1–AC7 in evolve-decisions §EV-059; **TC-F34-001..007**;
+  optional cycle aliases **TC-EV059-001..007**
+- **CI posture** (`D-S069-ci`):
+  - **Schemathesis**: path-filtered **required** when `apps/backend/**` or OpenAPI-related
+    paths change; Hypothesis **max-examples ≤ 25**; job timeout ≤ **10 min**.
+    Workflow: `.github/workflows/schemathesis.yml`. Local: `make test-schemathesis`
+    (override with `SCHEMATHESIS_MAX_EXAMPLES`, still capped at 25 in-suite).
+  - **Mutation** (pytest-gremlins + Stryker): **nightly / `workflow_dispatch` only**;
+    chunked matrix + hard timeouts; **not** required on every PR.
+    Workflow: `.github/workflows/mutation.yml`. Local:
+    `make test-mutation-poc` (narrow), `make test-mutation-python TARGET=…`,
+    `make test-mutation-js TARGET=frontend|shared`.
+    Excludes: e2e, Rust crates, generated `iwxxm_xsd` trees.
+    Interpreting survivors: a surviving mutant means tests execute the line but do not
+    assert behavior that would fail under the mutation — strengthen assertions or waive
+    with rationale in the session build report / bug report (not a PR merge blocker).
+- **Schemathesis exclusions** (explicit): `/api/v1/work-sessions*`, `/api/v1/eval/*`,
+  `/auth/*` (Postgres / Supabase Auth — covered by unit/integration). Documented HTTP 501
+  on `/api/v1/ingest-collect` is an allowed expected status.
+- **Source**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841);
+  [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727);
+  [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874); [Corpus: product §F34]
+
+### TC-F34-001: Schemathesis ASGI + auth
+
+- **Level**: T0 / T2 (in-process ASGI; no external network)
+- **Objective**: Suite loads OpenAPI from backend app; Bearer/test JWT (or dependency
+  override) exercises protected routes; no unexpected 5xx; responses match schema
+- **Pass criteria**: `make test-schemathesis` green locally; failures minimize to seed/cURL
+- **Source**: F34 AC1; #727
+
+### TC-F34-002: Path-filtered Schemathesis CI
+
+- **Level**: CI
+- **Objective**: Required job runs on PRs touching backend/OpenAPI paths; skipped otherwise
+- **Pass criteria**: Workflow path filters documented; job respects max-examples ≤ 25 and
+  timeout ≤ 10 min (**TC-F34-007**)
+- **Source**: F34 AC2 / AC7; `D-S069-ci`
+
+### TC-F34-003: pytest-gremlins Python mutation targets
+
+- **Level**: T0 / nightly
+- **Objective**: Config + `make` target(s) mutate
+  `apps/backend`, `apps/worker`,
+  `packages/{auth,shared,tac-validate,tac2iwxxm,iwxxm-validate,dissemination}`
+- **Pass criteria**: Local/nightly run produces score + survivors report; exclusions
+  (e2e, Rust) documented
+- **Source**: F34 AC3; #874; `D-S069-tool`
+
+### TC-F34-004: Stryker TypeScript mutation targets
+
+- **Level**: T0 / nightly
+- **Objective**: Stryker config + `make`/pnpm script for `apps/frontend` (+ shared JS if
+  present)
+- **Pass criteria**: Nightly/manual run produces mutation report; hard timeout enforced
+- **Source**: F34 AC3; #874
+
+### TC-F34-005: Nightly / manual mutation matrix
+
+- **Level**: CI (non-PR-required)
+- **Objective**: Chunked workflow covers full Python + TS matrix without blocking every PR
+- **Pass criteria**: `workflow_dispatch` and/or schedule green or flaky survivors tracked;
+  minutes bounded by per-chunk timeouts
+- **Source**: F34 AC3; `D-S069-e4`
+
+### TC-F34-006: Inventory, docs, findings, epic close path
+
+- **Level**: Docs / process
+- **Objective**: Deps in dependency-inventory; test-plan notes; findings fixed via
+  bug-investigation or waived; two PRs; #841 closable when children Done
+- **Pass criteria**: Inventory rows present; waivers recorded; #727/#874 Done ⇒ epic Done
+- **Source**: F34 AC4–AC6
+
+### TC-F34-007: Schemathesis budget ceilings documented
+
+- **Level**: Docs / CI
+- **Objective**: Standing test-plan (this section) + workflow comments state
+  max-examples ≤ 25 and job timeout ≤ 10 min
+- **Pass criteria**: Docs and CI config agree; Build does not raise budgets without
+  AskQuestion
+- **Source**: F34 AC7; `D-S069-01-ac=2b`
+
+### TC-EV059-001..007
+
+- Aliases of **TC-F34-001..007** for evolve-cycle traceability (EV-059 / S069).
+
+### EV-060 / S070 — Converter operator bugs + IWXXM pass-through (#1000)
+
+- **Mode**: delta deepen F7.t + F6/F2/F10/F29/F31
+- **Pass criteria**: AC in evolve-decisions §EV-060; **UJ-059..063**; UJ-003/046 UAT
+- **Source**: [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000)–[#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)
+
+### TC-EV060-1001-001: AHL heading not product-syntax flood
+
+- **Level**: T0 / T2
+- **Objective**: Well-formed AHL METAR bulletin lint does not score AHL tokens as METAR syntax
+- **Pass criteria**: Heading issues are bulletin-level (or none); contained METARs still linted
+- **Source**: #1001; UJ-059
+
+### TC-EV060-1001-002: Malformed AHL one bulletin error
+
+- **Level**: T0
+- **Objective**: Malformed AHL yields one bulletin-level error and still attempts split
+- **Pass criteria**: Structured bulletin error; no opaque 5xx
+- **Source**: #1001
+
+### TC-EV060-1001-003: FileConverter + convert-bulletin parity
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Same AHL behavior on workbench, FileConverter, and `/convert-bulletin`
+- **Pass criteria**: No heading flood on all three
+- **Source**: #1001; `D-S070-e3c`
+
+### TC-EV060-1003-001: Valid IWXXM product pass-through
+
+- **Level**: T0 / T2
+- **Objective**: `product=iwxxm` + valid XML → F2 result; no TAC convert
+- **Pass criteria**: No TAC lint-as-METAR; F2 issues/pass shown
+- **Source**: #1003; F7.t AC1
+
+### TC-EV060-1003-002: TAC text under product=iwxxm is not-XML
+
+- **Level**: T0
+- **Objective**: TAC text with product=iwxxm returns structured not-XML error
+- **Pass criteria**: Not METAR lint flood
+- **Source**: #1003; F7.t AC2
+
+### TC-EV060-1003-003: Convert disabled or no-op
+
+- **Level**: T0 / T2
+- **Objective**: Convert control disabled or no-ops with clear operator message
+- **Pass criteria**: Message has no internal doc refs
+- **Source**: #1003
+
+### TC-EV060-1003-004: FileConverter / QM / accumulate honor IWXXM product
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Those surfaces honor product=iwxxm
+- **Pass criteria**: Same pass-through semantics
+- **Source**: #1003; `D-S070-e3c`
+
+### TC-EV060-1002-001: Profile labeled at converter top
+
+- **Level**: T0 / T2
+- **Objective**: Profile control labeled at top; changing it is used on convert/lint/validate
+- **Pass criteria**: Accessible name + visible label; API `profile=` matches
+- **Source**: #1002; UJ-061
+
+### TC-EV060-1002-002: Keyboard/accessible Profile
+
+- **Level**: T0
+- **Objective**: Profile has accessible name (not icon-only)
+- **Pass criteria**: axe/vitest accessible name present
+- **Source**: #1002; `D-S070-e3b`
+
+### TC-EV060-1002-003: FileConverter / QM honor profile
+
+- **Level**: T2
+- **Objective**: Shared chrome or inherit; no QM redesign
+- **Pass criteria**: Same profile value used
+- **Source**: #1002
+
+### TC-EV060-1005-001: Bulletin fields used on convert
+
+- **Level**: T0 / T2
+- **Objective**: Filled Bulletin ID + Issuing Center appear in output/API payload
+- **Pass criteria**: Values round-trip
+- **Source**: #1005; UJ-062
+
+### TC-EV060-1005-002: Empty uses discover/defaults
+
+- **Level**: T0
+- **Objective**: Empty fields keep discover-from-AHL or current defaults
+- **Pass criteria**: No silent drop of discovered AHL CCCC
+- **Source**: #1005
+
+### TC-EV060-1005-003: Invalid CCCC/ID field error
+
+- **Level**: T0
+- **Objective**: Invalid issuing center → one operator-visible field error
+- **Pass criteria**: Not silent ignore
+- **Source**: #1005
+
+### TC-EV060-1004-001: DEBUG vs ERROR log verbosity differs
+
+- **Level**: T0 / T2
+- **Objective**: Same convert at DEBUG vs ERROR emits different log verbosity
+- **Pass criteria**: Logger level applied in backend/packages
+- **Source**: #1004; UJ-063
+
+### TC-EV060-1004-002: DEBUG does not dump secrets
+
+- **Level**: T0
+- **Objective**: DEBUG logs omit JWTs, passwords, Authorization headers
+- **Pass criteria**: Fixture/scan assertion
+- **Source**: #1004; `D-S070-e6`
+
+### TC-EV060-1006-001: Register happy path
+
+- **Level**: T2 / T3
+- **Objective**: Playwright register with test account
+- **Pass criteria**: Account created; no production PII
+- **Source**: #1006; UJ-003
+
+### TC-EV060-1006-002: Login + session persist
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Login then reload still logged in
+- **Pass criteria**: UJ-046 persist
+- **Source**: #1006
+
+### TC-EV060-1006-003: Logout
+
+- **Level**: T2 / T3
+- **Objective**: Logout returns to guest convert
+- **Pass criteria**: Convert still works without JWT
+- **Source**: #1006; F21
+
+### TC-EV060-1006-004: Facilitated UAT sign-off
+
+- **Level**: UAT
+- **Objective**: `uat` Build checklist signed for register/login/logout/persist
+- **Pass criteria**: Session UAT report
+- **Source**: #1006; `D-S070-e4`
+
+### EV-061 / S071 — Pre-promote UX + catalog + AHL + stage→main gate (#1009)
+
+- **Mode**: delta deepen F7.u/F7.v + F2/F6/F9/F10/F15/F34
+- **Pass criteria**: AC in evolve-decisions §EV-061; **UJ-064..068**; UJ-DEV-009; TC-LIVE-F6-030 `files`
+- **Source**: [#1009](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1009)–[#1015](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1015)
+
+### TC-EV061-1011 / TC-LIVE-F6-030: Live bulletin multipart `files`
+
+- **Level**: Live H7
+- **Objective**: Harness posts convert-bulletin multipart field **`files`**, not `file`
+- **Pass criteria**: Request matches [Corpus: api] `/convert-bulletin`; fixture still converts
+- **Source**: #1011; UJ-011
+
+### TC-EV061-1012-001: Golden AHL multi-METAR decode rows
+
+- **Level**: T0 / T2
+- **Objective**: `SAUS31 KZNY` multi-report METAR AHL decodes with item-by-item rows per report
+- **Pass criteria**: Bulletin framing + F9-shaped rows; not a raw dump
+- **Source**: #1012; UJ-065
+
+### TC-EV061-1012-002: Golden AHL convert-bulletin
+
+- **Level**: T0 / T2
+- **Objective**: Same golden bulletin succeeds on `/convert-bulletin`
+- **Pass criteria**: Per-report IWXXM results (or structured per-report errors); HTTP not 5xx
+- **Source**: #1012
+
+### TC-EV061-1012-003: FileConverter / workbench AHL parity
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Decode + convert-bulletin behavior matches API on operator UI
+- **Pass criteria**: Golden path works; product/profile/Bulletin ID context honored
+- **Source**: #1012; UJ-065
+
+### TC-EV061-1012-004: Malformed AHL clear error
+
+- **Level**: T0
+- **Objective**: Malformed heading/body yields `INVALID_AHL` and/or `empty_bulletin`
+- **Pass criteria**: No silent success; operator-facing message has no internal doc refs
+- **Source**: #1012; [Corpus: api]
+
+### TC-EV061-1010-001: Validate IWXXM item-by-item decode
+
+- **Level**: T0 / T2
+- **Objective**: Validate IWXXM path that still produces decode shows F9 item rows
+- **Pass criteria**: Same panel pattern as TAC products; not a raw XML/text dump
+- **Source**: #1010; UJ-064
+
+### TC-EV061-1010-002: Additive decode fields backward-compatible
+
+- **Level**: T0
+- **Objective**: `/validate` optional `segments`/`summary` (if added) do not break existing clients
+- **Pass criteria**: Older clients ignore extras; OpenAPI documents additive fields
+- **Source**: #1010; D-S071-api
+
+### TC-EV061-1010-003: F7.s / F7.t still work
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Validate-only and IWXXM pass-through remain after decode-panel work
+- **Pass criteria**: UJ-058 / UJ-060 still pass
+- **Source**: #1010; F7.s / F7.t
+
+### TC-EV061-1013-001: Product Type + Profile no-wrap ≥1024px
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Top Product Type + Profile stay on one bar without wrap at ≥1024px
+- **Pass criteria**: No wrap; keyboard labels preserved
+- **Source**: #1013; UJ-066
+
+### TC-EV061-1013-002: Mode selects one aligned row
+
+- **Level**: T0 / T2
+- **Objective**: Mode selects share one aligned bar/row at ≥1024px
+- **Pass criteria**: Visual alignment with Product/Profile chrome
+- **Source**: #1013; UJ-066
+
+### TC-EV061-1013-003: Conversion parameters one bar; stack below 1024px
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Parameters share one aligned bar ≥1024px; stacking OK below
+- **Pass criteria**: UJ-067; a11y names unchanged
+- **Source**: #1013; UJ-067
+
+### TC-EV061-1014-001: Catalog tab reachable
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Top-level **Validation Issues Catalog** nav opens a page (EV-062 rename; was Lint & validation catalog)
+- **Pass criteria**: Public/guest can open without JWT
+- **Source**: #1014; #1017; UJ-068
+
+### TC-EV061-1014-002: Rows include code, description, level, source
+
+- **Level**: T0 / T2
+- **Objective**: Catalog lists TAC lint **and** IWXXM validation checks
+- **Pass criteria**: code, description, level, clickable source URL when status=verified
+- **Source**: #1014; F7.v / F15
+
+### TC-EV061-1014-003: Operator source hrefs resolve
+
+- **Level**: T0 / T2
+- **Objective**: Operator-visible `source_url` values are verified landings (HTTP 2xx/3xx)
+- **Pass criteria**: Semantic `codes.wmo.int/49-2*` may be aliases, not hrefs (`D-S071-links-resolve`)
+- **Source**: #1014; mining note
+
+### TC-EV061-1014-004: No internal planning ids in catalog copy
+
+- **Level**: T0
+- **Objective**: Catalog attribution / OpenAPI / UI free of `[Corpus:]`, ADR, EV, UJ ids
+- **Pass criteria**: EV-048 guards green
+- **Source**: #1014; [Corpus: product §F7]
+
+### TC-EV062-001: Catalog title is Validation Issues Catalog
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Nav + page title use **Validation Issues Catalog**
+- **Pass criteria**: No operator-visible “Lint & validation catalog” title
+- **Source**: #1017; UJ-068; FR1
+
+### TC-EV062-002: issue_type present and filterable
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Each row has `issue_type`; UI filter narrows by type
+- **Pass criteria**: Closed vocab; empty state when no matches
+- **Source**: #1017; FR2
+
+### TC-EV062-003: Descriptions explain what/why + locator or unavailable
+
+- **Level**: T0 / T2
+- **Objective**: No thin research-only stubs as sole description; section cite or unavailable marker
+- **Pass criteria**: Spot-check former research codes (e.g. AMD_PRESENT); API `source_locator` or unavailable copy
+- **Source**: #1017; FR3
+
+### TC-EV062-004: source_access + public-prefer primary href
+
+- **Level**: T0 / T2
+- **Objective**: `source_access` exposed; public primary when lawful free cite exists; paywall labeled
+- **Pass criteria**: Inventory + crawl after retarget; EV-048 clean attribution
+- **Source**: #1017; FR4
+
+### TC-EV062-005: Sort + multi-filter
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Sort by code/level/type/access; combine filters
+- **Pass criteria**: Intersection semantics; keyboard accessible
+- **Source**: #1017; FR5
+
+### TC-EV062-006: Catalog regen / drift + OpenAPI additive
+
+- **Level**: T0 / T2
+- **Objective**: Registry/catalog drift green; OpenAPI includes new optional fields
+- **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
+- **Source**: #1017; ADR-028; NFR1–NFR4
+
+### TC-EV061-1015-001: Promote PR required-check inventory
+
+- **Level**: Docs / CI
+- **Objective**: `stage`→`main` required checks include full unit, lint, typecheck, full E2E (not smoke-only), Staging gate
+- **Pass criteria**: Names documented in deploy.md; match workflow `name:` fields
+- **Source**: #1015; UJ-DEV-009
+
+### TC-EV061-1015-002: Merge blocked when a required check is red/missing
+
+- **Level**: CI
+- **Objective**: Promote PR cannot merge without the stricter set
+- **Pass criteria**: Branch protection (or equivalent) enforces the documented checks; no new app secrets
+- **Source**: #1015; D-S071-ci
+
+### EV-057 / S067 — M0 Ready: apex redirect + accumulate ZIP + validate-only (#948 / #903 / #838)
+
+- **Mode**: delta deepen F7.r / F7.s + F30; F1/F6/F2/F4 notes as applicable
+- **Pass criteria**: AC in evolve-decisions §EV-057; TC-EV057-*; **UJ-057** / **UJ-058** /
+  **UJ-OPS-002**
+- **Source**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948),
+  [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903),
+  [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838); S067 / EV-057
+
+### TC-EV057-948-001: Apex HTTPS redirects to app
+
+- **Level**: T3 / ops
+- **Objective**: `https://tac-to-iwxxm.com` permanently redirects to
+  `https://app.tac-to-iwxxm.com` (301 or equivalent)
+- **Pass criteria**: Live curl/HEAD shows permanent redirect Location to app host
+- **Source**: EV-057 #948 AC1; UJ-OPS-002; [Corpus: deploy]
+
+### TC-EV057-948-002: Path and query preserved
+
+- **Level**: T3 / ops
+- **Objective**: `/foo?bar=1` on apex redirects to same path+query on app host
+- **Pass criteria**: Location includes `/foo?bar=1` on `app.tac-to-iwxxm.com`
+- **Source**: EV-057 #948 AC2; `D-S067-948-path=1`
+
+### TC-EV057-948-003: www / HTTP / TLS + docs
+
+- **Level**: T3 / ops / docs
+- **Objective**: `www` covered when DNS/cert allows; HTTP ends on HTTPS app; TLS valid;
+  deploy.md documents **prod FE Ingress** extension + permanent redirect
+  (`D-S067-948-ingress=2a`)
+- **Pass criteria**: Checklist in deploy-smoke / ops report; docs section present
+- **Source**: EV-057 #948 AC3–AC5
+
+### TC-EV057-903-001: Accumulate N≥2 successes
+
+- **Level**: T0 / T2
+- **Objective**: Two sequential successful converts leave both results visible
+- **Pass criteria**: Vitest and/or Playwright assert N≥2 result cards after sequential converts
+- **Source**: EV-057 #903 AC1; UJ-057
+
+### TC-EV057-903-002: Download all ZIP contents
+
+- **Level**: T0 / T2
+- **Objective**: Download all produces one ZIP with one IWXXM per accumulated success
+- **Pass criteria**: Unit/e2e asserts ZIP member count and names
+- **Source**: EV-057 #903 AC2; UJ-057
+
+### TC-EV057-903-003: Default ZIP stem from first TAC
+
+- **Level**: T0
+- **Objective**: Empty custom basename → `{stem}_{yyyyMMddHHmmss}.zip` with ≈8 sanitized
+  chars from first success TAC
+- **Pass criteria**: Unit test on `outputArchiveName` (or successor) helper
+- **Source**: EV-057 #903 AC3; #664; `D-S067-903-stem=1`
+
+### TC-EV057-903-004: Custom basename ZIP
+
+- **Level**: T0
+- **Objective**: Custom output name → `{base}.zip`
+- **Pass criteria**: Unit test matches #664 rule
+- **Source**: EV-057 #903 AC4
+
+### TC-EV057-903-005: Clear + failed convert isolation
+
+- **Level**: T0 / T2
+- **Objective**: Clear empties batch; failed convert does not remove prior successes
+- **Pass criteria**: Unit/UI tests for clear and failure paths
+- **Source**: EV-057 #903 AC5–AC6
+
+### TC-EV057-903-006: UJ-057 H4–H5 / Playwright smoke
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Accumulate two converts → Download all → named ZIP; soft cap **≤200**
+  (`D-S067-903-cap=1c`) with clear over-cap error
+- **Pass criteria**: Playwright green locally/CI; H4–H5 after staging deploy (13)
+- **Source**: EV-057 #903 AC7–AC8; UJ-057
+
+### TC-EV057-903-007: Soft accumulate cap ≤200
+
+- **Level**: T0 / T2
+- **Objective**: Attempting to accumulate beyond 200 results is blocked with a clear error
+- **Pass criteria**: Unit/UI test asserts cap and message
+- **Source**: EV-057 #903 AC7; `D-S067-903-cap=1c`
+
+### TC-EV057-838-001: Paste IWXXM validate-only
+
+- **Level**: T0 / T2
+- **Objective**: Paste known-good IWXXM and validate without TAC convert
+- **Pass criteria**: FE + API test; no convert call required
+- **Source**: EV-057 #838 AC1; UJ-058
+
+### TC-EV057-838-002: Upload single XML
+
+- **Level**: T0 / T2
+- **Objective**: Upload one `.xml` IWXXM file and show F2 results
+- **Pass criteria**: Playwright/Vitest asserts upload → validate results
+- **Source**: EV-057 #838 AC2; UJ-058
+
+### TC-EV057-838-003: Broken XML structured fail
+
+- **Level**: T0 / T2
+- **Objective**: Invalid / non-IWXXM input returns structured fail (no opaque 5xx)
+- **Pass criteria**: Backend/FE assert structured error body
+- **Source**: EV-057 #838 AC3
+
+### TC-EV057-838-004: F4 version/profile parity
+
+- **Level**: T0 / T2
+- **Objective**: Version/profile controls match convert/validate elsewhere
+- **Pass criteria**: UI test asserts shared control behavior
+- **Source**: EV-057 #838 AC4; F4
+
+### TC-EV057-838-005: UJ-058 guest + H4–H5 smoke
+
+- **Level**: T2 / T3 / H4–H5
+- **Objective**: Guest paste good fixture → pass; broken → structured fail; no Supabase
+- **Pass criteria**: Playwright green; H4–H5 after staging deploy (13)
+- **Source**: EV-057 #838 AC5–AC6; UJ-058
+
 ### Live harness — staging (EV-043 / EV-044)
 
 | Env | API | Frontend |
@@ -2868,8 +3634,8 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
   → Schematron pass (or documented quarantine-style fail)
 - **Command**: `make test-live-bulletin` (planned; wire in 04/07)
 - **Pass criteria**: Exit 0; N IWXXM results or structured per-report errors; Schematron via
-  `iwxxm-validate`
-- **Source**: UJ-011; Q44b=B
+  `iwxxm-validate`. Multipart field name is **`files`** (EV-061 / #1011; not `file`).
+- **Source**: UJ-011; Q44b=B; #1011
 
 ### TC-F6-M001: tac2iwxxm workspace + iwxxm-us manifest
 

@@ -1,25 +1,25 @@
 # Technical Specification
 
-> **Project**: METAR to IWXXM Converter
-> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Version**: monorepo + F6 tac2iwxxm + F7 operator UI (S011 / EV-008)
-> **Last updated**: 2026-08-03 (S038 / EV-031 — F30/F31 platform independence; Auth/DO/DOKS)
+> **Project**: TAC to IWXXM  
+> **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM  
+> **Version**: monorepo + `tac2iwxxm` + operator UI (Quality metrics on stage)  
+> **Last updated**: 2026-08-17 (S070 / EV-060 — F7.t IWXXM product pass-through + converter operator bugs)
 
 ## Overview
 
-METAR to IWXXM converts aviation TAC messages (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA)
-to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via `packages/tac-validate`, and
-validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron) against authoritative WMO
-and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`. The system is a
-**single-git monorepo** with `apps/` (deployables), `packages/` (libraries), and `vendor/`
-(read-only upstream snapshots). **F7** (multi-product operator UI / sessions) is **Planned**
-(S011). **F8** (near-realtime ingest worker) is **Implemented** (ADR-018/019; **F30** moves
-store to DigitalOcean Postgres). **F21** is **Amended** (S038 / EV-031): public convert APIs
-remain unauthenticated; **optional Supabase Auth** gates long-term work sessions only (**F31**).
+TAC to IWXXM converts aviation TAC messages (AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA,
+and related products) to WMO IWXXM XML via `packages/tac2iwxxm`, lints TAC via
+`packages/tac-validate`, and validates IWXXM via `packages/iwxxm-validate` (XSD + Schematron)
+against authoritative WMO and optional NOAA IWXXM-US schema bundles under `vendor/schemas/`.
+The system is a **single-git monorepo** with `apps/` (deployables), `packages/` (libraries),
+and `vendor/` (read-only upstream snapshots). Multi-product operator UI remains the umbrella
+product track; **Quality metrics** (list + detail) is live on **staging** (promote deferred).
+Near-realtime ingest worker is implemented (product store on DigitalOcean Postgres). Public
+convert APIs remain unauthenticated; **optional Supabase Auth** gates long-term work sessions.
 **Supabase** is **Auth/JWT verify only**; product DB is **DigitalOcean Postgres** (`DATABASE_URL`).
-Hosting target this cycle: **DOKS** (Render retired after soak) — **F30** / #712.
-**Dissemination destinations** (F16–F19) use **one-shot user-pasted BYOC** credentials
-(memory-only; never saved profiles) under SSRF + required egress allowlist (ADR-029).
+Hosting: **DOKS** (Render retired after soak).
+**Dissemination destinations** use **one-shot user-pasted BYOC** credentials
+(memory-only; never saved profiles) under SSRF + required egress allowlist.
 
 ## System Architecture
 
@@ -240,15 +240,36 @@ metar-to-IWXXM/
   **F33**: Auth-gated mass file/folder ingest (caps 200 / 5 MiB / 50 MiB; sniff/zip-bomb).
   **F7 deepen EV-042**: Queue + keyboard + batch convert/validate (UJ-052). **No**
   AdminDashboard, `/admin/*` (F21 public convert; Auth optional for F31/F33 mass).
-- **F6 delta**: Product select (7 values + auto-detect), profile select (`annex3` | `iwxxm_us`),
-  version control; values passed via `conversion_params` / multipart to `/api/v1/convert`.
-- **F7 delta (S011; F21 amend)**: Debounced **public** calls to lint/decode/validate/preview with
-  AbortController; span highlight + hover; collapsible Code|Explanation decode panel; toggleable
-  live IWXXM; pull-up console; **local** F7.h session persist/resume (IndexedDB — not server).
+- **Quality metrics (staging)**: Primary shell tab `/quality` lists official WMO corpus
+  stems; detail `/quality/:stem` with Official/Converted panes and GitHub-style collapsible
+  unified diffs (C14N match; promote deferred).
+- **F7.r accumulate ZIP (EV-057 / #903)**: Workbench accumulates sequential successful IWXXM
+  results; Download all → one ZIP; default stem ≈ first 8 sanitized TAC chars of first
+  success + timestamp; clear/reset; soft cap **≤200**. Dissemination multi-select unchanged.
+- **F7.s validate-only (EV-057 / #838)**: Dedicated Validate mode — paste or single `.xml`
+  upload via existing `POST /api/v1/validate` (reuse unless 04 finds a gap); F4
+  version/profile parity; guest-usable. Orthogonal to Quality metrics.
+- **F7.t IWXXM product (EV-060 / #1003)**: Product select includes **IWXXM**. Pass-through:
+  lint well-formed XML + F2 XSD/Schematron; **no** TAC convert. Convert control disabled or
+  no-ops with a clear operator message. F7.s Validate-only **remains**. FileConverter /
+  accumulate / Quality metrics honor `product=iwxxm`.
+- **EV-060 AHL bulletin (#1001)**: AHL heading is bulletin COM; contained reports lint with
+  the selected TAC product. Do not score AHL tokens as METAR/TAF syntax.
+- **EV-060 profile picker (#1002)**: Labeled Profile (Annex 3 / IWXXM-US) at converter **top**;
+  applied to convert/lint/validate; accessible name+label.
+- **F6 delta**: Product select (7 TAC values + **IWXXM** pass-through + auto-detect), profile
+  select (`annex3` | `iwxxm_us`), version control; values passed via `conversion_params` /
+  multipart to `/api/v1/convert`.
 - **F7 convert-params (ADR-023)**: Hard Convert maps Bulletin ID, Issuing Center, On Error →
   `stop_on_error`, and Strict Validation → `validate_output`/`validation_level`. Soft-preview
   skips post-convert validation. Console Log Level filters workbench lines client-side.
+  **EV-060 (#1004)**: `log_level` also sets backend/package **logger verbosity**. **EV-060
+  (#1005)**: Bulletin ID and Issuing Center are labeled, editable, and sent on convert
+  (empty → discover-from-AHL or defaults).
   Upload accept: `.txt`, `.metar`, `.tac`.
+- **F7 delta (S011; F21 amend)**: Debounced **public** calls to lint/decode/validate/preview with
+  AbortController; span highlight + hover; collapsible Code|Explanation decode panel; toggleable
+  live IWXXM; pull-up console; **local** F7.h session persist/resume (IndexedDB — not server).
 - **F7 input modes (ADR-024)**: TAC | AHL bulletin (`/convert-bulletin`) | IWXXM COLLECT
   (`/ingest-collect` 501 placeholder). Accept `.xml`/`.gz` (inflate). `log_level` +
   `include_nil_reasons` on Convert. Log Level filters Conversion log + console for lint/validate

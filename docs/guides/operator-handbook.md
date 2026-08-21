@@ -23,6 +23,20 @@ Start with the [Operator one-pager](operator-one-pager.md) for a single printed 
 **Soft preview** (live decode / sketch while editing) is advisory only. Official
 products come from Convert (+ Validate), not from the preview alone.
 
+## Quality metrics
+
+The **Quality metrics** tab browses official WMO IWXXM example products and shows how
+the converter’s output compares (match chip, residuals, lint, and validate summaries).
+
+1. Open **Quality metrics** in the app shell.
+2. Filter or scan the list; open a row to open a **detail** page for that example.
+3. Review Official vs Converted XML and the unified diff. Equal (unchanged) regions may
+   be collapsed — expand a hunk or expand all when you need full context.
+4. Use Validate on your own conversions for operational readiness; Quality metrics is for
+   corpus parity and operator training.
+
+Staging URL shape: `/quality` (list) and `/quality/<example-id>` (detail).
+
 ## Work history
 
 - When signed in, recent sessions appear in the work-history sidebar / history page.
@@ -55,6 +69,8 @@ with your systems contact whether ingest is active for your centre.
 | Cannot sign in | Confirm URL, account, and network; reset password only via the approved flow. |
 | History empty | Sign in; check privacy settings; confirm you are not in guest mode. |
 | Destinations missing | Likely disabled for your site — use download + local channels. |
+| Quality metrics empty / error | Confirm network to the API; retry; note the example id if a single row fails. |
+| Diff hard to read | Expand collapsed sections; scroll Official/Converted panes; try another stem. |
 | Slow or timeout | Retry once; if persistent, note the time and product and contact support. |
 
 ## Where to get help

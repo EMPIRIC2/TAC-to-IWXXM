@@ -22,7 +22,7 @@ from tac2iwxxm.models import (
 )
 from tac2iwxxm.native import rust_available, rust_module, scan_metar_tokens
 
-__version__ = "0.2.4"
+__version__ = "0.3.0"
 
 __all__ = [
     "AhlParts",

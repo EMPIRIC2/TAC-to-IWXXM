@@ -10,6 +10,8 @@ import {
   EndpointNotImplementedError,
   fetchAirportRegion,
   fetchLintIssueCatalog,
+  fetchQualityMetrics,
+  fetchQualityMetricsDetail,
   ingestCollect,
   lintTac,
   massIngestFiles,
@@ -854,6 +856,40 @@ describe('API Utils', () => {
       );
     });
 
+    it('GETs lint-issue-catalog with optional family filter', async () => {
+      mockFetchResponse({
+        issues: [
+          {
+            code: 'XML_SCHEMA',
+            severity: 'error',
+            message_template: 'XSD',
+            family: 'iwxxm',
+            tags: ['xsd'],
+          },
+        ],
+      });
+      const result = await fetchLintIssueCatalog({ family: 'IWXXM' });
+      expect(result.issues).toHaveLength(1);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/lint-issue-catalog\?family=iwxxm$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('GETs lint-issue-catalog with issue_type and source_access filters', async () => {
+      mockFetchResponse({ issues: [] });
+      await fetchLintIssueCatalog({
+        issue_type: 'Presence',
+        source_access: 'Paywall',
+      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\/lint-issue-catalog\?issue_type=presence&source_access=paywall$/,
+        ),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
     it('posts decode-tac with abort signal', async () => {
       mockFetchResponse({
         product: 'METAR',
@@ -883,6 +919,42 @@ describe('API Utils', () => {
     it('uses FastAPI string detail on lint-issue-catalog failure', async () => {
       mockFetchResponse({ detail: 'catalog unavailable' }, false, 503);
       await expect(fetchLintIssueCatalog()).rejects.toThrow('catalog unavailable');
+    });
+
+    it('fetches quality-metrics list with product filter', async () => {
+      mockFetchResponse({
+        generated_at: '2026-08-10T00:00:00Z',
+        iwxxm_pin: '2025-2',
+        summaries: [{ product: 'metar', match_pass: 1 }],
+        files: [{ stem: 'metar-A3-1', product: 'metar', tier: 'wmoPass' }],
+      });
+      const result = await fetchQualityMetrics({ product: 'METAR' });
+      expect(result.files).toHaveLength(1);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/quality-metrics\?product=metar$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('fetches quality-metrics detail by stem', async () => {
+      mockFetchResponse({
+        stem: 'metar-A3-1',
+        product: 'metar',
+        tier: 'wmoPass',
+        match_status: 'equal',
+        tac: 'METAR …=',
+        official_xml: '<a/>',
+        converted_xml: '<a/>',
+        residuals: [],
+        lint_issues: [],
+        validate_issues: [],
+      });
+      const result = await fetchQualityMetricsDetail({ stem: 'metar-A3-1' });
+      expect(result.match_status).toBe('equal');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/quality-metrics\/metar-A3-1$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
     });
 
     it('falls back when lint-issue-catalog error body is not JSON', async () => {

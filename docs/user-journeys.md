@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-08 (S057 / EV-048 UJ-055 strip internal doc refs; prior UJ-054 / EV-047)
+> **Last updated**: 2026-08-20 (EV-062 Validation Issues Catalog / #1017 deepen UJ-068)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -72,6 +72,21 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
+| UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979; EV-056 / #988; EV-058 / #983) | T0 / T2 / **T3** / H4–H5 |
+| UJ-057 | Accumulate conversions → Download all ZIP | apps/frontend | F7.r deepen (EV-057 / #903) | T0 / T2 / **T3** / H4–H5 |
+| UJ-058 | Validate existing IWXXM (paste / upload; no TAC) | apps/frontend | F7.s deepen (EV-057 / #838) | T0 / T2 / **T3** / H4–H5 |
+| UJ-059 | AHL bulletin lint/validate without heading flood | apps/frontend / API | F7/F6 deepen (EV-060 / #1001) | T0 / T2 / **T3** / H4–H5 |
+| UJ-060 | IWXXM product pass-through (lint + F2; no TAC convert) | apps/frontend / API | F7.t (EV-060 / #1003) | T0 / T2 / **T3** / H4–H5 |
+| UJ-061 | Profile labeled at converter top (Annex 3 / IWXXM-US) | apps/frontend | F7/F6 deepen (EV-060 / #1002) | T0 / T2 / **T3** / H4–H5 |
+| UJ-062 | Bulletin ID + Issuing Center labeled and applied | apps/frontend / API | F7/F6 deepen (EV-060 / #1005) | T0 / T2 / **T3** / H4–H5 |
+| UJ-063 | Conversion log_level changes logger verbosity | UI / API | F29 deepen (EV-060 / #1004) | T0 / T2 |
+| UJ-064 | Validate IWXXM shows item-by-item readable decode | apps/frontend | F2/F9/F10 deepen (EV-061 / #1010) | T0 / T2 / **T3** / H4–H5 |
+| UJ-065 | AHL bulletin decode + convert end-to-end | apps/frontend / API | F6/F7 deepen (EV-061 / #1012) | T0 / T2 / **T3** / H4–H5 |
+| UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
+| UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
+| UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
+| UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
+| UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
 | UJ-DEV-003 | ~~Merge GIFTs upstream~~ | — | M3 | **Deprecated** (ADR-014) |
@@ -179,6 +194,11 @@ mapping (ADR-023) + E2E where exposed (T2); H3 + H6 (T3)
 
 **Automated tests**: Restore/adapt `apps/e2e/auth.e2e.spec.ts` for login happy path; convert
 still works without JWT.
+
+**EV-060 / #1006 UAT**: Facilitated UAT plus Playwright covering **register, login, logout,
+and logged-in session persist**. Guest/public convert (F21 / UJ-001) still works without an
+account. Test accounts only — no production PII in fixtures. [Corpus: product §F31]
+[Corpus: tests]
 
 ---
 
@@ -811,6 +831,335 @@ representative privacy/auth empty-state copy without seeing internal planning vo
 `docs/…` path citations in those surfaces. TC-EV048-001..005. **Tier: T0 / T2**;
 **T3** if UI audit finds visible hits.
 [Corpus: product §F7] [Corpus: product §F21] [Corpus: api] [Corpus: journeys]
+
+---
+
+### UJ-056: Browse Official Corpus Quality Metrics Tab (F7.q / #836)
+
+**Actor**: Meteorological operator / maintainer / demo presenter
+
+**Goal**: Open a **dedicated Quality metrics tab** (primary shell navigation — not inside
+the convert workbench) and explore official WMO IWXXM example quality by product: match,
+residuals, lint, validate, with a unified XML diff vs our conversion.
+
+**Steps**:
+
+1. From the operator app, open the **Quality metrics** primary tab (peer to Convert /
+   History — not a sub-panel of the convert workbench).
+2. See product-level summary counts (match / residual / lint / validate) loaded from
+   public **`GET /api/v1/quality-metrics`** (precomputed fixture-backed — not live WMO fetch).
+3. Filter to one product (e.g. METAR); open a known passer stem
+   (`GET /api/v1/quality-metrics/{stem}`).
+4. **EV-056**: selecting a row **navigates** to shareable **`/quality/:stem`** with
+   back-to-list (`D-S066-route-shape=1` / `D-S066-list=1`). Detail remains Official /
+   Converted / TAC panes (normalized = pretty C14N by default with override) plus
+   **GitHub-style** unified diff with collapsible equal-context hunks (default **3**
+   context lines; expand hunk / expand all — `D-S066-context-n=1`). C14N /
+   `match_status` semantics unchanged from EV-055.
+5. **EV-058 / #983**: on the detail page, use a **segmented control** —
+   **Inline (unified)** | **Side-by-side** — to switch XML diff layout without reload
+   (`D-S068-01-control=3a`). Default is **Inline**. Side-by-side reuses existing
+   line-diff helpers (no new npm `diff`). Preference persists in **localStorage**.
+   Synced scroll between panes is **best-effort** (`D-S068-01-ac=2b`). Raw TAC /
+   diagnostics / collapse-equal-context remain available.
+6. In the detail view: confirm **match status** and the active XML diff layout;
+   residuals / lint / validate panels show empty or expected diagnostics. **EV-055**:
+   panes default to C14N-normalized with override to un-normalized; validate chips
+   reflect enabled / fixed 2025-2 disposition without internal planning ids.
+7. Confirm a deferred / gap stem is labeled (not silently missing).
+8. Optional later: deep-link the same stem into the convert workbench.
+
+**Acceptance**: AC1–AC7 in evolve-decisions §EV-054 (tab shell) **and** AC1–AC7 in
+evolve-decisions §EV-055 (normalize + validate disposition) **and** AC1–AC5 in
+evolve-decisions §EV-056 (detail route + collapsible diffs) **and** AC1–AC5 in
+evolve-decisions §EV-058 (side-by-side vs inline); TC-EV054-001..008 +
+TC-EV055-001..007 + TC-EV056-001..005 + TC-EV058-001..005. Default view needs no
+Supabase and no live upstream WMO fetch — metrics come from public
+`GET /api/v1/quality-metrics*` backed by precomputed fixtures (`D-S063-gateA=2`;
+regen under `D-S064-regen=1`).
+**Tier: T0 / T2 / T3 / H4–H5**.
+Related: UJ-032 / UJ-039 / UJ-042.
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13] [Corpus: product §F25]
+[Corpus: journeys] [Corpus: tests] [Corpus: api] [Corpus: adr/ADR-032]
+
+---
+
+### UJ-057: Accumulate Conversions → Download All ZIP (F7.r / #903)
+
+**Actor**: Meteorological operator (guest or logged-in)
+
+**Goal**: Convert several TAC reports back-to-back, keep all successful IWXXM results in the
+workbench, and download them together as **one ZIP** with a content-derived default name.
+
+**Steps**:
+
+1. Open the convert workbench; leave custom output basename empty (or clear it).
+2. Convert report A successfully — result card visible.
+3. Convert report B (and optionally C) without clearing the batch — prior successes remain.
+4. Optionally trigger a failed convert — prior successes stay; failure is shown for the attempt.
+5. Choose **Download all** / ZIP — receive one archive containing each accumulated IWXXM.
+6. Confirm default ZIP name is `{stem}_{yyyyMMddHHmmss}.zip` where `stem` is ≈ first 8
+   sanitized characters of the **first** successful conversion’s TAC.
+7. Set a custom output basename and Download all — archive is `{base}.zip` (#664).
+8. Clear / reset the accumulated set; confirm the batch is empty.
+
+**Acceptance**: AC1–AC8 in evolve-decisions / feature-list §F7.r EV-057; TC-EV057-903-*.
+Soft accumulate cap **≤200** (`D-S067-903-cap=1c`).
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-001 / UJ-005 / UJ-052; F33 mass ingest orthogonal.
+[Corpus: product §F7] [Corpus: product §F1] [Corpus: product §F6] [Corpus: journeys]
+[Corpus: tests]
+
+---
+
+### UJ-058: Validate Existing IWXXM Without TAC Convert (F7.s / #838)
+
+**Actor**: Meteorological operator (guest OK — no Supabase required)
+
+**Goal**: Paste or upload an existing IWXXM document and run F2 XSD + Schematron validation
+without performing TAC→IWXXM conversion.
+
+**Steps**:
+
+1. Open the operator UI **Validate** mode (dedicated validate-only intake — not Quality metrics).
+2. Paste a known-good IWXXM fixture; select version/profile with the same F4 controls used on
+   convert/validate elsewhere; run validate — pass (or expected clean diagnostics).
+3. Upload one `.xml` IWXXM file; run validate — F2 issue list / pass-fail shown.
+4. Paste broken / non-IWXXM XML — structured fail (no opaque 5xx).
+5. Confirm no TAC convert was required and no Supabase login was needed for the happy path.
+
+**Acceptance**: AC1–AC6 in feature-list §F7.s EV-057; TC-EV057-838-*. Multi-file/zip deferred.
+Does not replace UJ-056 Quality metrics corpus browse.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-002 / UJ-007 / UJ-032.
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F4] [Corpus: api]
+[Corpus: journeys] [Corpus: tests]
+
+---
+
+### UJ-059: AHL Bulletin Lint/Validate Without Heading Flood (EV-060 / #1001)
+
+**Actor**: Meteorological operator (guest OK) or API/CLI client
+
+**Goal**: Lint/validate a WMO AHL bulletin without scoring heading tokens as product TAC errors.
+
+**Steps**:
+
+1. Set input mode to AHL bulletin (or `POST /api/v1/convert-bulletin` / lint equivalent).
+2. Paste a well-formed AHL METAR bulletin.
+3. Run lint/validate — heading is bulletin COM; contained METARs are checked as METAR.
+4. Optionally paste malformed AHL — one bulletin-level error; still try to split reports.
+
+**Acceptance**: feature-list EV-060 / #1001; TC-EV060-1001-*. FileConverter same behavior.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-011 / UJ-025.
+[Corpus: product §F6] [Corpus: product §F7] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-060: IWXXM Product Pass-Through (F7.t / #1003)
+
+**Actor**: Meteorological operator (guest OK) or API/CLI client
+
+**Goal**: Select product **IWXXM** and lint + F2-validate XML without TAC convert.
+
+**Steps**:
+
+1. Choose product IWXXM (workbench, FileConverter, accumulate, Quality metrics honor).
+2. Paste valid IWXXM XML; run lint+validate — F2 result; no TAC convert.
+3. Paste TAC text — structured not-XML error (not METAR lint).
+4. Confirm Convert is disabled or no-ops with a clear operator message.
+5. F7.s Validate-only mode still exists.
+
+**Acceptance**: feature-list §F7.t AC1–4; TC-EV060-1003-*.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-058 / UJ-002.
+[Corpus: product §F7] [Corpus: product §F2] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-061: Profile Labeled at Converter Top (EV-060 / #1002)
+
+**Actor**: Meteorological operator
+
+**Goal**: Annex 3 vs IWXXM-US profile is obvious at the top of the converter and is what convert/lint/validate use.
+
+**Steps**:
+
+1. Open converter — Profile control is labeled at the top (not only inside conversion parameters).
+2. Change profile; run convert/lint/validate — requests use the selected `profile`.
+3. Keyboard: visible label + accessible name.
+4. FileConverter / accumulate / Quality metrics honor the same profile.
+
+**Acceptance**: feature-list EV-060 / #1002; TC-EV060-1002-*. Not #933 editor.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-005 / UJ-007.
+[Corpus: product §F6] [Corpus: product §F7] [Corpus: journeys] [Corpus: tests]
+
+---
+
+### UJ-062: Bulletin ID and Issuing Center Applied (EV-060 / #1005)
+
+**Actor**: Meteorological operator or API client
+
+**Goal**: Labeled, editable Bulletin ID and Issuing Center are sent on convert and appear in output.
+
+**Steps**:
+
+1. Fill Bulletin ID and Issuing Center; convert — output/API payload uses those values.
+2. Leave empty — discover-from-AHL or existing defaults.
+3. Invalid CCCC/ID — one operator-visible field error, not a silent drop.
+
+**Acceptance**: feature-list EV-060 / #1005; TC-EV060-1005-*.
+**Tier: T0 / T2 / T3 / H4–H5**. Related: UJ-011.
+[Corpus: product §F6] [Corpus: product §F7] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-063: Conversion Log Level Changes Logger Verbosity (EV-060 / #1004)
+
+**Actor**: Operator / API client / maintainer reading logs
+
+**Goal**: The conversion-parameters log-level control actually changes backend/package logger verbosity.
+
+**Steps**:
+
+1. Run the same convert at DEBUG vs ERROR.
+2. Observe emitted logs differ in verbosity.
+3. Confirm DEBUG does not dump JWTs, passwords, or Authorization headers.
+
+**Acceptance**: feature-list EV-060 / #1004; TC-EV060-1004-*. No live in-app log panel required.
+**Tier: T0 / T2**. [Corpus: product §F29] [Corpus: api] [Corpus: tests]
+
+---
+
+### UJ-064: Validate IWXXM Shows Item-by-Item Readable Decode (EV-061 / #1010)
+
+**Actor**: Public/guest operator
+
+**Goal**: When Validate IWXXM still produces decode, the UI shows the same item-by-item readable
+description pattern used for other product types.
+
+**Steps**:
+
+1. Open Validate IWXXM (or product=IWXXM validate path) with a sample IWXXM document.
+2. Observe decode/summary presentation as structured readable item rows (parity with TAC decode).
+3. Confirm F7.s validate-only and F7.t pass-through still work.
+
+**Acceptance**: feature-list F9/F2 deepen EV-061 / #1010; TC-EV061-1010-*.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F2] [Corpus: product §F9] [Corpus: product §F10]
+
+---
+
+### UJ-065: AHL Bulletin Decode + Convert End-to-End (EV-061 / #1012)
+
+**Actor**: Public/guest operator
+
+**Goal**: Well-formed AHL METAR bulletin decodes per report and converts via convert-bulletin.
+
+**Context required**: Heading `T1T2A1A2ii CCCC YYGGgg [BBB]` + TAC body (`=` terminators);
+product/profile; optional Bulletin ID / Issuing Center. Golden: `SAUS31 KZNY` multi-METAR.
+
+**Steps**:
+
+1. Paste golden multi-report AHL METAR bulletin in AHL / auto-detect mode.
+2. Observe decode: bulletin framing + item-by-item readable rows per report.
+3. Convert — per-report IWXXM results (convert-bulletin).
+4. Paste malformed AHL — clear `INVALID_AHL` / empty_bulletin (no silent success).
+
+**Acceptance**: feature-list F6 deepen EV-061 / #1012; TC-EV061-1012-*. Distinct from #1011 harness.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F6] [Corpus: product §F7] [Corpus: domain/IWXXM_CONVERSION §AHL]
+
+---
+
+### UJ-066: Product Type + Profile Bars No-Wrap / Aligned (EV-061 / #1013)
+
+**Actor**: Public/guest operator
+
+**Goal**: Product Type and Profile controls do not wrap awkwardly at desktop widths and look polished.
+
+**Steps**:
+
+1. Open converter at viewport ≥1024px.
+2. Confirm Product Type + Profile stay on one visual bar without wrap.
+3. Confirm mode selects share one aligned row.
+4. Resize below 1024px — stacking OK.
+
+**Acceptance**: feature-list F7.u / #1013; TC-EV061-1013-*.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7] [Corpus: journeys]
+
+---
+
+### UJ-067: Conversion Parameter Bar Aligned (EV-061 / #1013)
+
+**Actor**: Public/guest operator
+
+**Goal**: Conversion parameters sit on one aligned bar/row consistent with Product/Profile chrome.
+
+**Steps**:
+
+1. Open converter at ≥1024px with conversion parameters visible.
+2. Confirm parameters share one centered/aligned bar with mode chrome.
+
+**Acceptance**: feature-list F7.u / #1013; TC-EV061-1013-*.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7]
+
+---
+
+### UJ-068: Validation Issues Catalog Top-Level Tab (EV-061 / #1014; EV-062 / #1017)
+
+**Actor**: Public/guest operator
+
+**Goal**: Browse a top-level **Validation Issues Catalog** of lint **and** validation checks with
+code, descriptive what/why text, level, **issue type**, working source links, and section
+locators (or explicit unavailable).
+
+**Source policy**: Operator click-targets are verified landings (`D-S071-links-resolve`);
+prefer public primary hrefs (`D-EV062-sources`); `codes.wmo.int/49-2*` / `common/nil` may
+appear as semantic/legacy aliases without being the href. Paywall access is labeled.
+
+**Steps**:
+
+1. Open top-level **Validation Issues Catalog** nav tab.
+2. See rows with code, description (what/why + section cite or unavailable), level, issue type,
+   clickable source URL(s), and access/locator when present.
+3. Filter by family, issue type, level, and/or source access; sort by code/level/type/access.
+4. Spot-check that **operator** source links resolve (HTTP 2xx/3xx) for public rows.
+
+**Acceptance**: feature-list F7.v / F15 / #1014 + #1017; TC-EV061-1014-* + TC-EV062-*. Distinct from #996.
+**Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7] [Corpus: product §F15] [Corpus: api]
+
+---
+
+### UJ-DEV-009: stage→main Promote Requires Full Quality Gate (EV-061 / #1015)
+
+**Actor**: Maintainer
+
+**Goal**: Promote PRs `stage`→`main` cannot merge without full CI unit + lint + typecheck + full E2E.
+
+**Steps**:
+
+1. Open a `stage`→`main` PR.
+2. Confirm required checks include full CI unit jobs, lint, typecheck, and full E2E (not smoke-only).
+3. Confirm merge is blocked while any required check is red/missing.
+
+**Acceptance**: feature-list F34 deepen / #1015; deploy.md §Promote; TC-EV061-1015-*.
+**Tier: CI**. [Corpus: product §F34] [Corpus: tech-spec] [Corpus: deploy] [Corpus: tests]
+
+---
+
+### UJ-OPS-002: Prod Apex Redirects to App Host (F30 / #948)
+
+**Actor**: Ops / maintainer / anonymous visitor
+
+**Goal**: Hitting the apex domain lands on the canonical operator app host.
+
+**Steps**:
+
+1. Request `https://tac-to-iwxxm.com/` (and a path+query such as `/foo?bar=1`).
+2. Observe permanent redirect to `https://app.tac-to-iwxxm.com/` (path+query preserved).
+3. If `www` is in DNS/cert coverage, repeat for `https://www.tac-to-iwxxm.com`.
+4. Confirm HTTP apex (if served) ends on HTTPS app URL.
+5. Confirm deploy docs describe the DOKS/ingress (or equivalent) mechanism.
+
+**Acceptance**: AC1–AC5 in feature-list §F30 EV-057 / #948; TC-EV057-948-*. Staging apex out of
+scope unless free with the same change.
+**Tier: T3 / ops smoke**. [Corpus: product §F30] [Corpus: deploy] [Corpus: tech-spec]
 
 ---
 
@@ -1777,3 +2126,9 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
 - S047 / EV-039 (2026-08-06): UJ-027 live local Compose multi-DB path + TC-F16-LIVE-*;
   teardown hygiene across integration / e2e / local (F16 deepen)
 - S054 / EV-045 (2026-08-08): UJ-DEV-006 Rust crate CI (F13/F14 deepen; #725)
+- S070 / EV-060 (2026-08-17): UJ-059 AHL bulletin quality (#1001); UJ-060 IWXXM product
+  pass-through (#1003); UJ-061 profile picker (#1002); UJ-062 bulletin fields (#1005);
+  UJ-063 log_level (#1004); deepen UJ-003/046 Auth UAT (#1006)
+- S071 / EV-061 (2026-08-18): UJ-064 validate readable decode (#1010); UJ-065 AHL decode+convert
+  (#1012); UJ-066/067 Product/Profile + param bars (#1013); UJ-068 catalog tab (#1014, links
+  resolved / unblocked); UJ-DEV-009 stage→main full gate (#1015)

@@ -1,7 +1,693 @@
 # Evolve Decisions
 
+## Cycle EV-062 — Validation Issues Catalog (#1017) (EV-062-validation-issues-catalog)
+
+**Opened:** 2026-08-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-062-validation-issues-catalog` · **Branch:** `evolve/EV-062-validation-issues-catalog` @ `origin/stage`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Promote:** not in scope (EV-061 promote remains held)
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV062-scope | Full [#1017](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1017) A+B **plus** rename to **Validation Issues Catalog**, operator **issue_type**, richer natural-language descriptions with section locators (or explicit unavailable) |
+| D-EV062-996 | **Out** — keep [#996](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/996) click-detail distinct |
+| D-EV062-scale | Standard; evolve default angles |
+| D-EV062-session | One session Documenting → Implementing |
+| D-EV062-fn | Deepen **F7.v** / **F15** only — **no new Fn** |
+| D-EV062-api | Additive fields on existing `GET /lint-issue-catalog` — no new route |
+| D-EV062-issue-type | Closed vocab: `presence` \| `structure` \| `content` \| `consistency` \| `iwxxm_schema` \| `other` |
+| D-EV062-copy | Descriptions must explain what + why + severity; natural-language section cite or “Source section unavailable”; ban thin research-only stubs as sole copy |
+| D-EV062-sources | Prefer public primary hrefs; paywall labeled; `source_locator` + `source_access`; re-crawl; no engine changes for link polish alone |
+| D-EV062-gate | **open** — Documenting twins PASS 11/11; intake locked one-session Implementing (`D-EV062-session`); proceed Build |
+
+### Corpus
+
+[Corpus: product §F15] [Corpus: product §F7] [Corpus: api §lint-issue-catalog] [Corpus: adr/ADR-028]
+[Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-062]
+
+---
+
+## Cycle EV-061 — Pre-promote UX + catalog + AHL + stage→main gate (#1009) (S071)
+
+**Opened:** 2026-08-18 · **Session:** S071-pre-promote-ux-catalog · **Branch:** `evolve/EV-061-pre-promote-ux-catalog` @ `stage@a1650b01`  
+**Preset:** Standard · **Spec→Build gate:** **open** (`D-S071-spec-build=1a`) · **Promote:** held until #1015
+
+### Locked intake (EV0–EV9)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-e0 | Goal = validate UX + AHL + Product/Profile UI + catalog; in = all listed + stage→main gate; API breaking OK if documented |
+| D-S071-e1 | Pre-promote cleanup; `cycle_type: feature`; M0 epic #1009 + #1010–#1015 |
+| D-S071-e2 | Public/guest ops + CI reviewers; must-not-break F21/F7/F10; UI preview at 11 |
+| D-S071-e3 | Readable item-by-item IWXXM validate decode; fix AHL decode+convert; new catalog tab; full stage→main checks |
+| D-S071-e4 | Docs: product/api/journeys/tests/tech; Spec 01→02→04 + uat/verify-qa Spec; AHL brief shown |
+| D-S071-e5 | FE/BE/tac-validate(+AHL)/CI; full H4–H5+UAT; stage then hold promote |
+| D-S071-e6 | OOS: M1+ profiles, dissemination spikes, #996, #837 |
+| D-S071-e7 | New FE tab; no new secrets; H4–H5 |
+| D-S071-e8 | Standard Spec/Build bands; Build blocked until gate |
+| D-S071-e9 | Open S071; deepen F7/F2/F6/F9/F10/F15/F34 (no new Fn); Spec-only |
+| D-S071-ahl | AHL context brief acknowledged — golden SAUS31 multi-METAR; #1011 harness vs #1012 product |
+| D-S071-links | Crawl catalog URLs in Spec; **block Build** on broken links until user searches; normalize official copies OK |
+| D-S071-links-resolve | User research 2026-08-18 — **3-tier source model**; treat `49-2`/`nil` as semantic IDs; operator hrefs → verified landings; IWXXM-US → NWS schemas + vendor pin; **unblock #1014** Spec/Build; mining note `docs/domain/mining/ev061-catalog-source-replacements-2026-08-18.md` |
+
+### 02-verify-plan Gate A — PASS (`D-S071-gateA=1a`)
+
+| ID | Verdict |
+|----|---------|
+| D-S071-02-c1 | Modify — journeys header/changelog: links resolved / #1014 unblocked |
+| D-S071-02-m1 | Modify — UJ-067 tier includes H4–H5 |
+| D-S071-02-m2 | Approve — TC-EV061-* detail deferred to 04 |
+| D-S071-02-m3 | Approve — api-contract delta deferred to 04 |
+| D-S071-02-m4 | Approve — Spec UI minimum; richer catalog schema in 04/Build |
+| D-S071-gateA | **PASS** → 04-tech-plan; Spec→Build stays closed |
+
+Report: `docs/sessions/S071-pre-promote-ux-catalog/reports/02-verify-plan.md`
+
+### 04-tech-plan (drafted — pending `D-S071-04-plan`)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-m-order | M1 #1011 → M2 #1012 → M3 #1010 → M4 #1013 → M5 #1014 → M6 #1015 |
+| D-S071-deps | No new npm/PyPI deps |
+| D-S071-adr | No new ADR |
+| D-S071-api | Additive: `INVALID_AHL`; validate `segments`/`summary`; catalog fields on existing GET. No new catalog endpoint |
+| D-S071-cors | No new origins; H4–H5 in 12/13 |
+| D-S071-ci | Restore lint/typecheck CI + full E2E as required on `stage`→`main` (plus unit + Staging gate) |
+| D-S071-ahl-code | Prefer `INVALID_AHL` for malformed convert-bulletin heading; keep `bulletin_split_failed` as `detail.alias` (additive, not a rename) |
+
+Artifacts: `reports/04-tech-plan.md`, `reports/execution-plan.md`, `build-plan-card.md`  
+**Approved:** `D-S071-04-plan=1a` (2026-08-18)
+
+### Dual Spec
+
+- verify-qa Spec: `reports/verify-qa-spec.md` — **completed**
+- uat Spec: `uat-script.md` — **completed** (Build sign-off pending)
+
+### Spec→Build gate — OPEN (`D-S071-spec-build=1a`)
+
+| ID | Outcome |
+|----|---------|
+| D-S071-spec-build | **1a** — Open Spec→Build; start 07-build M1 (#1011 live bulletin `file` → `files`); promote held until #1015 |
+
+### Prior session closeout
+
+- S070/EV-060 closed; PRs #1007 (product), #1008 (S070 docs), #999 (S069 docs) merged to `stage`
+- Tickets: epic [#1009](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1009); children #1010–#1015 on milestone M0
+
+### Corpus
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9] [Corpus: product §F10] [Corpus: product §F15] [Corpus: product §F34] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: tech-spec]
+
+---
+
 > Standing log of approved evolve-cycle scope and product decisions.
 > Cycle metadata also recorded in `workflow-state.yaml` §`evolve_cycles`.
+
+## Cycle EV-060 — Converter operator bugs + IWXXM pass-through (#1000) (S070)
+
+**Session**: S070-converter-operator-bugs  
+**Features**: deepen **F7.t** (IWXXM product) + F6/F2/F10/F29/F31; no new top-level Fn  
+**Started**: 2026-08-17  
+**Status**: **in_progress** — 09-qa PASS (advisories); 10-e2e UJ-059..063 PASS; Auth logout T2 FAIL  
+**Branch**: `evolve/EV-060-converter-operator-bugs` (base `stage@8755ae87`)  
+**Issues**: epic [#1000](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1000) · [#1001](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1001) · [#1002](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1002) · [#1003](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1003) · [#1004](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1004) · [#1005](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1005) · [#1006](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1006)  
+**Milestone**: GitHub **M0 — Stabilize + operator trust + narrative**  
+**Later (not this cycle)**: profile view/create [#933](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/933) / [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924)  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F6] [Corpus: product §F2] [Corpus: product §F10]
+[Corpus: product §F29] [Corpus: product §F31] [Corpus: api] [Corpus: journeys] [Corpus: tests]
+[Corpus: decisions §EV-060]
+
+### Scope (Phase 0 — locked 2026-08-17)
+
+| ID | Decision |
+|----|----------|
+| D-S070-e0 | Tickets + Spec first; M0 pack; in/out as written |
+| D-S070-e1 | Deepen F7.t (no F35); file tickets at EV9; six success observables |
+| D-S070-e2 | Operator + API/CLI; FileConverter/accumulate/QM honor; UI preview at 11 |
+| D-S070-e3a | AHL split then lint reports; product=IWXXM pass-through; F7.s stays |
+| D-S070-e3b | Profile at converter top; editable Bulletin ID + Issuing Center; wire log_level; a11y must |
+| D-S070-e3c | Auth UAT + Playwright; API same fields |
+| D-S070-e4 | Standing docs delta; existing CORPUS (no waiver); uat+verify-qa Spec; Standard 01→02→04 |
+| D-S070-e5 | Four Build PRs; 09+10+11+uat; staging smoke; promote held |
+| D-S070-e6 | OOS: #933/#924/#912/F16–F19/#898/F8 auto-push/promote/new auth; additive API; no JWT in DEBUG |
+| D-S070-e7 | No new secrets; existing CORS; H0c + H4–H5; no new observability contract |
+| D-S070-e8 | Spec 00→16→01→02→04; Build 07–13 blocked; skip 03/05/06 |
+| D-S070-e9 | Open session; Spec-development only; Spec→Build **closed** |
+| D-S070-spec-build | Open Build; 07+ as routed; M1 #1001 first |
+| D-S070-board | Epic #1000 Backlog; children Ready until 07 |
+| D-S070-08-vaa | AHL lint keep-whole remainder when no `=` (VAA/TCA/SWXA/VONA); heading-only still INVALID_AHL |
+| D-S070-resume-m4 | Continue recommended: T4.2 facilitated UAT-003 now on local :18000 |
+| D-S070-uat003 | **all-pass** — UAT-003 ACCEPTED 2026-08-18 local :18000 (product owner) |
+| D-S070-phase-d | **1a** — 09-qa + 10-e2e in parallel |
+| D-S070-09-depth | **2a** — delta QA + blocking H0c |
+| D-S070-10-journeys | **3a** — UJ-059..063 + TC-EV060-1006 on local :18000 |
+| D-S070-local-dev | **4a** — restart make-dev `:18000`/`:18001` |
+
+### Intake decisions
+
+| ID | Category | Question | Decision | ADR |
+|----|----------|----------|----------|-----|
+| E60-1 | decision | cycle_type | feature deepen F7.t | — |
+| E60-2 | decision | GitHub pack | epic #1000 + #1001–#1006 on M0; no duplicate #933 | — |
+| E60-3 | decision | F7.s | keep Validate-only alongside F7.t | — |
+| E60-4 | decision | log_level | wire logger verbosity (not client echo only) | ADR-023 deepen |
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product §F7]` | cite | F7.t + picker/bulletin | |
+| `[Corpus: product §F6]` | cite | AHL / convert-bulletin | |
+| `[Corpus: product §F2]` | cite | IWXXM validate pass-through | |
+| `[Corpus: api]` | cite | `product=iwxxm`, log_level, bulletin fields | |
+| `[Corpus: journeys]` | cite | UJ-059..063; UJ-003/046 | |
+| `[Corpus: tests]` | cite | TC-EV060-* | |
+| — | waiver | none | existing CORPUS rows |
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-17 | S070 opened; EV0–EV9 recommended |
+| 16-evolve | — | orchestrating; Spec→Build **open** |
+| 02-verify-plan | 2026-08-17 | Gate A PASS (`D-S070-gateA=1a`) |
+| 04-tech-plan | 2026-08-17 | EP approved `D-S070-04-plan=1a` |
+| uat Spec / verify-qa Spec | 2026-08-17 | checklists written |
+| Spec→Build | 2026-08-17 | **open** (`D-S070-spec-build=1a`) |
+| 07-build | 2026-08-18 | M1–M4 complete; 08 M4 PASS |
+| 08-verify-build | 2026-08-18 | M4 PASS; report `reports/verification-report.md` |
+| uat Build | 2026-08-18 | T4.2 UAT-003 ACCEPTED local :18000 |
+| 09-qa | 2026-08-18 | PASS (advisories); `reports/qa-report.md`; H0c 6/6 |
+| 10-e2e | 2026-08-18 | UJ-059..063 PASS; TC-EV060-1006-003 FAIL (`POST /auth/logout` 404); `reports/e2e-report.md` |
+| D-S070-logout | 2026-08-18 | **1a** — restore `POST /auth/logout` (GoTrue proxy + scope); 1006-003 re-run **PASS**; then 11 |
+| 11-verify-impl | 2026-08-18 | All 5 Fn + UJ-059..063 **Approve**; UI preview accepted `:18000`; T3 → 12/13 (`D-S070-11-t3`); `reports/verify-impl.md` |
+| push | 2026-08-18 | `7762b88b` (09/10) pushed to PR #1007; promote held |
+| 12-verify-deploy | 2026-08-18 | CI tip HARD STOP `c57eeef1` run 32169922030 (auth cov + OpenAPI drift) |
+| D-S070-12-ci-fix | 2026-08-18 | **fix in place** — auth-job tests for `sign_out` + logout errors; `make openapi-refresh`; CI **success** 32171946188 @ `4d29ee0c` |
+| D-S070-12-risks | 2026-08-18 | **approve** image/CD, CORS/Auth XHR, accidental promote, Playwright install hang |
+| D-S070-12-rollback | 2026-08-18 | **approve** prior GHCR / `stage-latest`; no DB migrations |
+| D-S070-12-close | 2026-08-18 | **checklist only** — keep no-merge #1007; hold 13 until a later merge |
+
+### Out of scope
+
+- #933/#924 profile editor; #912 national packs; F16–F19/#898; F8 auto-push;
+  stage→main promote; new auth providers; live log panel; new CLI product
+
+---
+
+## Cycle EV-059 — CI Schemathesis + mutation quality gates (#841 / #727 / #874) (S069)
+
+**Session**: S069-ci-schemathesis-mutation  
+**Features**: **F34** — contract + mutation quality gates (**Done**)  
+**Started**: 2026-08-17  
+**Closed**: 2026-08-17  
+**Branch**: `evolve/EV-059-ci-schemathesis-mutation` (base `stage@c458669e`)  
+**Status**: **completed** — `D-S069-close=1`; on `stage` @ `8755ae87`; promote held  
+**Issues**: [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) · [#727](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/727) · [#874](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/874) — all **CLOSED** / Done  
+**PRs**: [#997](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/997) (M1) @ `c08bc30f` · [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) (M2) @ `8755ae87`  
+**Tip CI**: [32054972352](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32054972352) SUCCESS  
+**Reports**: [evolve-report-EV-059.md](../evolve-report-EV-059.md) · [evolve-summary.md](../sessions/S069-ci-schemathesis-mutation/reports/evolve-summary.md) · [07-build-m1](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m1.md) · [07-build-m2](../sessions/S069-ci-schemathesis-mutation/reports/07-build-m2.md) · [verification-report](../sessions/S069-ci-schemathesis-mutation/reports/verification-report.md)  
+**Artifacts**: [session-brief](../sessions/S069-ci-schemathesis-mutation/session-brief.md) · [routing-plan](../sessions/S069-ci-schemathesis-mutation/routing-plan.md) · [evolve-plan-card](../sessions/S069-ci-schemathesis-mutation/evolve-plan-card.md) · [02-verify-plan](../sessions/S069-ci-schemathesis-mutation/reports/02-verify-plan.md)  
+**Corpus**: [Corpus: product §F34] [Corpus: tests] [Corpus: tech-spec] [Corpus: api]
+[Corpus: decisions §EV-059]
+
+### Scope (Phase 0 — locked 2026-08-17)
+
+| ID | Decision |
+|----|----------|
+| D-S069-e0 | Close #841 via #727+#874; minimal CI cost; two PRs; fix findings |
+| D-S069-ci | Schemathesis path-filtered **required** (tight budget); mutation **nightly/manual only** |
+| D-S069-tool | **pytest-gremlins** (Python) + **Stryker** (TS) |
+| D-S069-fn | Allocate **F34** |
+| D-S069-e4 | Broad Python+TS mutation coverage via nightly matrix (not one-package PoC) |
+| D-S069-e5 | Breaking OpenAPI cleanup **allowed** when Schemathesis proves export wrong |
+| D-S069-route | Lean Spec `00→16→01→02`; Build `07→08`; skip 03–06, 09–13 |
+| D-S069-e8 | Open session; Spec-development only — **superseded** by Spec→Build open |
+| D-S069-01-ac | **2b** — AC1–AC7 (budgets in Spec) |
+| D-S069-01-uj | **1a** — no new UJ |
+| D-S069-01-tc | **2a** — TC-F34-001..007 |
+| D-S069-01-deps | **3a** — schemathesis, pytest-gremlins, @stryker-mutator/core |
+| D-S069-gateA | **1a** — PASS (2026-08-17) |
+| D-S069-spec-build | **2a** — Open Build 07→08; Schemathesis (#727) before mutation (#874) |
+| D-S069-m1-merge | **1a** — merge PR #997 → `stage`; start M2 mutation (#874) |
+| D-S069-m2-pins | **pytest-gremlins==1.9.0**; **@stryker-mutator/*@10.0.0** |
+| D-S069-m2-survivors | Waive 3 equivalent Stryker survivors on `packages/shared` `parseCommaSeparatedOrigins` outer trim/empty short-circuit (see `reports/07-build-m2.md`) |
+| D-S069-m2-pr | **1** — open PR #998 → `stage` for #874 (after GitHub 503 recovery) |
+| D-S069-ci-comment-waiver | **2** — waive Quality PR comment + Coverage PR comment failures on CI run `32049951760` (GitHub 503 sticky comments); all substantive test jobs green on PR #998 |
+| D-S069-github-outage-bypass | Bypass GitHub API mutations (rerun, board sync, sticky comments) until user says otherwise — long-running Partial System Outage; prefer local verification |
+| D-S069-sticky-softfail | Soft-fail Coverage/Quality sticky PR comment posts on GitHub API 429/500/502/503 (warn + continue); marker validation still hard-fails |
+| D-S069-m2-merge | **1** — merge PR [#998](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/998) → `stage` @ `8755ae87` after sticky soft-fail CI green (`32054972352`) |
+| D-S069-close | **1** — Close EV-059/S069 on stage; F34 Done; #841/#727/#874 CLOSED; `active_session=null`; promote held |
+
+### Acceptance (approved `D-S069-01-ac=2b`)
+
+1. Schemathesis ASGI + auth on protected routes (**TC-F34-001**).
+2. `make test-schemathesis` + path-filtered required CI (**TC-F34-002**).
+3. pytest-gremlins + Stryker + `make` + nightly matrix across Python packages/services + TS
+   (**TC-F34-003..005**).
+4. Inventory + test-plan notes (**TC-F34-006**).
+5. Findings fixed or waived; two PRs; #841 closable (**TC-F34-006**).
+6. (AC6 in feature-list) epic close path via children Done.
+7. Documented max-examples ≤ 25 and Schemathesis job timeout ≤ 10 min (**TC-F34-007**).
+
+### Out of scope
+
+- Mutation required on every PR; Rust mutation; live staging/prod Schemathesis merge gate;
+  product UI; weaken ≥95% coverage; promote `stage`→`main`; replace hand-written UJ/pytest
+
+---
+
+## Cycle EV-058 — Quality metrics side-by-side vs inline XML diff (#983) (S068)
+
+**Session**: S068-quality-metrics-diff-layout  
+**Features**: deepen **F7.q** only  
+**Started**: 2026-08-17  
+**Closed**: 2026-08-17  
+**Branch**: `evolve/EV-058-quality-metrics-diff-layout` (base `stage@c2ca9a3f`)  
+**Status**: **completed** — `D-S068-13=1` / `D-S068-close=1`; on `stage` @ `2c320c45`; promote held  
+**Issue**: [#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983) — **CLOSED** · board **Done**  
+**PR**: [#994](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/994) → `stage` @ `2c320c45`  
+**Staging CD**: [32038222032](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32038222032)  
+**Reports**: [evolve-report-EV-058.md](../evolve-report-EV-058.md) · [evolve-summary.md](../sessions/S068-quality-metrics-diff-layout/reports/evolve-summary.md)  
+**Predecessor**: S066 / EV-056 / #988 (unified + collapsible on stage)  
+**Corpus**: [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests §UJ-056]
+[Corpus: decisions §EV-058] [Corpus: deploy] [Corpus: adr/ADR-034]
+
+### Scope (Phase 0 — locked 2026-08-17)
+
+| ID | Decision |
+|----|----------|
+| D-S068-e0 | **1a/2b/3a/4a/5a** — evolve #983; persist + synced-scroll AC; stage; proceed |
+| D-S068-route | **1a/2a/3a** — Lean `00→16→01→02→10→13`; Spec→Build closed |
+| D-S068-ui-preview | **1** — http://127.0.0.1:18000/ |
+| D-S068-board | **1** — #983 → In progress |
+| D-S068-ev-confirm | **1a** — EV0–EV9 carry-forward |
+| D-S068-01-ac | **2b** — AC1–AC5; synced scroll **best-effort** (not blocking) |
+| D-S068-01-control | **3a** — segmented Inline \| Side-by-side |
+| D-S068-01-uj | **4a** — deepen UJ-056 + TC-EV058-001..005 |
+| D-S068-merge | **1** — Merge #994 → stage; run 13 |
+| D-S068-13 | **1** — Approve 13; close on stage (no promote) |
+| D-S068-close | **1** — Close EV-058/S068; #983 Done; `active_session=null` |
+
+### Acceptance (approved `D-S068-01-ac=2b`)
+
+1. Switch Inline ↔ Side-by-side without reload.
+2. Default remains unified.
+3. Side-by-side via existing line-diff util; no new npm `diff`.
+4. Preference in localStorage.
+5. TAC/diagnostics/collapse kept; Vitest + Playwright both modes; H4–H5 via 13.
+   Synced scroll is best-effort polish only.
+
+### Out of scope
+
+- API/backend; new npm `diff`; C14N/`match_status`; #982 whitespace; promote to main;
+  non–Quality-metrics UI
+
+---
+
+## Cycle EV-057 — M0 Ready: apex redirect + accumulate ZIP + validate IWXXM (#948 / #903 / #838) (S067)
+
+**Session**: S067-m0-ready-apex-accumulate-validate  
+**Features**: deepen **F7**; **F1**/**F6** (#903); **F2**/**F4** (#838); deploy hosts (#948)  
+**Started**: 2026-08-15  
+**Branch**: `evolve/EV-057-m0-ready-apex-accumulate-validate` (base `stage@b796882e`)  
+**Status**: **completed** — `D-S067-13=1a` / `D-S067-close=1a`; on `stage`; promote deferred (`D-S067-promote=2b`)  
+**Issues**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948), [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903), [#838](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/838) — board **Done**  
+**PRs**: [#991](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/991) @ `d7022f1f`; follow-up [#992](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/992) @ `3af364fb`  
+**Reports**: [evolve-report-EV-057.md](../evolve-report-EV-057.md) · [evolve-summary.md](../sessions/S067-m0-ready-apex-accumulate-validate/reports/evolve-summary.md)
+**Parent**: M0 Ready queue after S066 / EV-056  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F1] [Corpus: product §F6]
+[Corpus: product §F2] [Corpus: product §F4] [Corpus: tech-spec] [Corpus: deploy]
+[Corpus: journeys] [Corpus: decisions §EV-057]
+
+### Scope (Phase 0 — locked 2026-08-15)
+
+| ID | Decision |
+|----|----------|
+| D-S067-first | **1a** — Open on #948 first within the pack |
+| D-S067-pack | **2c** — One evolve cycle for all three Ready issues |
+| D-S067-success | **3c** — Ship to `stage` + promote path available |
+| D-S067-oos | **1a** — Exclude #841/#727/#874; S056 ruleset-admin leftover; drive-bys |
+| D-S067-promote | **2b** — Land all three on `stage` first; promote only after re-approve |
+| D-S067-blockers | **3a** — None known; surface as found |
+| D-S067-preset | **4a** — Standard (`00→16→01→02→04→07→08→09→10→11→12→13`) |
+| D-S067-type | **1a** — `feature` session → 16-evolve |
+| D-S067-order | **2a** — #948 → #903 → #838 |
+| D-S067-ui-preview | **3a** — Remind at 11-verify-impl (non-deployed) |
+| D-S067-proceed | **4a** — Open S067 + EV-057; write brief/routing/plan card |
+| D-S067-board | **1** — #948 → In progress (WIP 1); #903/#838 stay Ready until started |
+| D-S067-903-cap | **1c** — Soft accumulate cap **≤200** |
+| D-S067-948-ingress | **2a** — Extend prod FE Ingress apex/www → app `$request_uri` |
+| D-S067-948-redirect | **1a** — Tiny nginx redirect Deployment (webhook blocks `$` on `permanent-redirect`; snippets off) |
+| D-S067-948-apply | **1a** — Apply sibling apex Ingress on prod after public Dig green (2026-08-16) |
+| D-S067-gateA | **1** — PASS Gate A → 04-tech-plan |
+| D-S067-04-plan | **1** — EP approved (sibling apex Ingress; M1→M2→M3) |
+| D-S067-04-next | **1a** — skip 05/06 → 07-build M1 |
+| D-S067-12-resume | **1a** — finish checklist tip `d05c23b7` / #991 |
+| D-S067-12-scope | **1a** — no delta; promote held |
+| D-S067-12-risks | **1a** — approve standard stage mitigations |
+| D-S067-12-merge | **1a** — merge #991 → stage → 13 |
+| D-S067-13-start | **1a** — smoke staging H1–H5 + UJ-057/058 |
+| D-S067-13-scope | **1a** — staging only; promote later |
+| D-S067-13-depth | **1a** — CI smoke + verify_connectivity + quick UJ |
+| D-S067-13-uj058 | **1a** — fix TacEditor aria-label + #992 → stage |
+| D-S067-13 | **1a** — approve 13 complete; promote deferred |
+| D-S067-close | **1a** — close cycle on stage; promote later on request |
+
+### Acceptance (`D-S067-01-ac=1`)
+
+**#948 / F30**
+1. `https://tac-to-iwxxm.com` → `https://app.tac-to-iwxxm.com` (301 or equivalent).
+2. Path + query preserved.
+3. `www` if DNS/cert covers; HTTP ends on HTTPS app URL.
+4. TLS covers apex (and `www` if enabled).
+5. Document **prod FE Ingress** + **`metar-apex-redirect`** in deploy docs (`D-S067-948-ingress=2a`, `D-S067-948-redirect=1a`).
+
+**#903 / F7.r / UJ-057**
+1. N≥2 sequential successes remain visible.
+2. Download all → one ZIP of accumulated IWXXM.
+3. Empty custom name → `{stem}_{yyyyMMddHHmmss}.zip` (≈8 sanitized TAC chars of first success).
+4. Custom basename → `{base}.zip` (#664).
+5. Explicit clear/reset.
+6. Failed convert leaves prior successes.
+7. Soft accumulate cap **≤200**; clear error when over (`D-S067-903-cap=1c`).
+8. UJ-057 / TC-EV057-903-* + H4–H5.
+
+**#838 / F7.s / UJ-058**
+1. Paste IWXXM → validate without TAC convert.
+2. Upload one `.xml` → F2 results.
+3. Invalid/non-IWXXM → structured fail.
+4. F4 version/profile parity.
+5. Guest-usable (no Supabase).
+6. UJ-058 / TC-EV057-838-* + H4–H5.
+
+### Out of scope
+
+- Epic [#841](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/841) and children #727 / #874 (M4/M5)
+- S056 converter-perf ruleset apply (repo admin; not a ticket)
+- Batch disseminate of accumulated conversions; F33 as substitute for #903
+- Reverse-engineering TAC from IWXXM
+- Auto-promote to `main` without re-approve after full pack on `stage`
+
+---
+
+## Cycle EV-056 — Quality metrics detail page + collapsible diffs (#988) (S066)
+
+**Session**: S066-quality-metrics-diff-page  
+**Features**: deepen **F7.q** only  
+**Started**: 2026-08-11  
+**Branch**: `evolve/EV-056-quality-metrics-diff-page` (base `stage@340b3cf6`)  
+**Status**: **completed** — closed on stage (`D-S066-13=1` / `D-S066-close=1`; #989 @ `b4a63ab8`)  
+**Issues**: [#988](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/988)  
+**Parent**: S065 / #987 pretty-print hotfix; EV-054 / EV-055 Quality metrics  
+**Corpus**: [Corpus: product §F7.q] [Corpus: journeys §UJ-056] [Corpus: tests]
+[Corpus: decisions §EV-056]
+
+### Scope (Phase 0 — locked 2026-08-11)
+
+| ID | Decision |
+|----|----------|
+| D-S066-route | **1** — Lean (`00→16→01→02→10→13`); PR → stage |
+| D-S066-ui-preview | **1** — non-deployed http://127.0.0.1:18000/ |
+| D-S066-route-shape | **1** — `/quality/:stem` + back-to-list |
+| D-S066-context-n | **1** — default 3 context lines |
+| D-S066-list | **1** — navigate to detail; list via back |
+| D-S066-board | **1** — #988 In progress |
+| D-S066-pr | **1** — Push + PR → stage → CI → 13 |
+| D-S066-13 | **1** — Approve 13; H0c–H5 PASS on staging |
+| D-S066-close | **1** — Close EV-056 / S066 on stage; #988 Done; promote deferred |
+
+### Acceptance (`D-S066-01-ac=1`)
+
+1. List row opens dedicated `/quality/:stem` (shareable) with back-to-list.
+2. Official/Converted/TAC panes remain; normalized = pretty C14N.
+3. Diff shows collapsible equal-context hunks (default 3; expand hunk / expand all).
+4. Unequal SIGMET stems remain navigable and readable on staging.
+5. UJ-056 / TC-EV056; FE unit + Playwright; H4–H5 via 13.
+
+### Out of scope
+
+- `match_status` / C14N equality / fixture generator changes
+- New npm diff library unless AskQuestion
+- Promote to `main` unless asked
+- API contract change unless routing requires it
+
+---
+
+## Cycle EV-055 — Quality metrics 2025-2 follow-ups (#982 / #980 / #979) (S064)
+
+**Session**: S064-quality-metrics-2025-2-followups  
+**Features**: deepen **F7.q**; deepen **F2** / **F13** as needed for 2025-2 validate; **F4** only if messaging requires  
+**Started**: 2026-08-11  
+**Branch**: `evolve/EV-055-quality-metrics-2025-2-followups` (base `stage@4fd51e39`)  
+**Status**: **completed** — closed on stage (`D-S064-13=1` / `D-S064-close=1`; #985 @ `4b48c8d8`)
+**Issues**: [#982](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/982), [#980](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/980), [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)  
+**Parent**: EV-054 / S063 / [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F2] [Corpus: product §F13]
+[Corpus: product §F4] [Corpus: api] [Corpus: tests] [Corpus: system-spec]
+[Corpus: adr/ADR-035] [Corpus: decisions §EV-055]
+
+### Scope (Phase 0–1 — locked 2026-08-11)
+
+| ID | Decision |
+|----|----------|
+| D-S064-intent | **1** — Investigate and fix/ship all three when disposition is clear |
+| D-S064-parked | **1** — Leave EV-043 / EV-044 parked; open S064 / EV-055 |
+| D-S064-success | **1** — Quieter diffs + clear disposition for both 2025-2 warnings |
+| D-S064-normalize | **1** — Normalize both official and converted XML; `match_status` = normalized equality |
+| D-S064-spike-pref | **3** — Prefer enable Schematron for 2025-2 if native can evaluate xslt2; XSD fix optional |
+| D-S064-surface | **1** — Operator surface = Quality metrics tab (F7.q) |
+| D-S064-engine | **1** — Allow F2/F13 (`iwxxm-validate`) changes for #980/#979 |
+| D-S064-oos | **1** — Accept OOS: no vendor hand-edits; no #836 redo; no DOKS; no encode parity |
+| D-S064-route | **1** — Standard; PR → `stage` |
+| D-S064-branch | **1** — Branch from `stage@4fd51e39` |
+| D-S064-board | **1** — #982/#980/#979 → In progress (WIP 3 > ≤2; user override) |
+| D-S064-01-manifest | **1** — feature-list + journeys + test-plan + api-contract + decisions; skip spec/config/deploy |
+| D-S064-ui-preview | **2** — No non-deployed UI preview at 01; docs/repo only |
+| D-S064-uj | **1** — Deepen UJ-056 only (no UJ-057) |
+| D-S064-01-ac | **1** — Lock AC1–AC7 as drafted |
+| D-S064-regen | **1** — Regenerate corpus_metrics for normalized match_status |
+| D-S064-gateA-M1 | **1** — Shared C14N helper: generator + FE |
+| D-S064-gateA-M2 | **override** — Panes default normalized; override → un-normalized |
+| D-S064-sch-hard | **1** — #980 Schematron enable hard (overrides `D-S064-spike-pref=3`) |
+| D-S064-c14n | **1** — Always W3C C14N (`D-S064-gateA-M4=2`) |
+| D-S064-xsd-hard | **1** — #979 SCHEMA_IMPORT fix required (H3=2) |
+| D-S064-gateA | **1** — PASS Gate A; → 04-tech-plan |
+| D-S064-04-plan | **1** — Approve EP as drafted: 17 tasks M1–M5; engine→C14N→regen→FE→E2E; lxml+TS C14N; ADR vs ADR-032; no new deps/CORS |
+| D-S064-c14n-host | **1** — Python C14N in `packages/iwxxm-validate` (not shared); FE TS helper |
+| D-S064-05 | **1** — Gate B PASS; C1 resolved; → 07 M1 |
+| D-S064-c14n-volatile | **1** — C14N **after** volatile-attr strip (`gml:id` / UUID / codes.wmo.int hrefs per ADR-032 rules); not pure C14N; not C14N-of-ADR-032-repr — ADR-035 amend 2026-08-11 |
+| D-S064-m5 | **1** — M5 local Playwright deepen done; tip push for CI; board stays **In progress** until implementing PR opens (`D-S064-board=1`) |
+| D-S064-gateC | **1** — PASS Gate C; push tip + continue 09-qa |
+| D-S064-09-10-continue | **1** — continue → 11-verify-impl |
+| D-S064-ui-preview-11 | **1** — Non-deployed preview at http://127.0.0.1:18000/ |
+| D-S064-uj056 | **1** — Approve UJ-056; waive live T3 until 12/13 |
+| D-S064-11 | **1** — Approve F7.q + F2/F13 deepen; proceed toward 12 |
+| D-S064-12-start | **1** — continue → 12-verify-deploy; open PR→stage |
+| D-S064-12 | **1** — Approve checklist + merge #985 → `stage`, then continue 13 |
+| D-S064-13 | **1** — Approve 13; close EV-055 / S064 on stage (no promote) |
+| D-S064-close | **1** — Cycle + session closed on stage |
+
+### Deploy smoke (13 — COMPLETE `D-S064-13=1`)
+
+| Item | Result |
+|------|--------|
+| Merge #985 | `4b48c8d8` on `stage` |
+| Staging CD | [31534191417](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31534191417) Deploy + Staging smoke **success** |
+| H1–H5 | PASS on `api\|app.staging.tac-to-iwxxm.com` |
+| Board | #982/#980/#979 **Done** |
+| Docs follow-up | PR [#986](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/986) |
+| Sign-off | `D-S064-13=1` / `D-S064-close=1` |
+
+### Build closeout (07 — M1–M5)
+
+| M | Tip note |
+|---|----------|
+| M1 | Native Schematron/XSD for quality metrics |
+| M2 | `c14n_xml` + FE `c14nXml.ts` + ADR-035 |
+| M3 | Generator `c14n_equal` + corpus regen (`D-S064-c14n-volatile=1`) |
+| M4 | C14N panes + raw override + validate chips |
+| M5 | UJ-056 / TC-EV055-007 Playwright deepen; E2E badge 83 |
+
+### Tech plan (04 — `D-S064-04-plan=1`)
+
+| Artifact | Path |
+|----------|------|
+| Execution plan | `docs/sessions/S064-quality-metrics-2025-2-followups/reports/execution-plan.md` |
+| Build Plan Card | `docs/sessions/S064-quality-metrics-2025-2-followups/build-plan-card.md` |
+
+| M | Goal |
+|---|------|
+| M1 | Engine #980/#979 hard |
+| M2 | C14N helpers Py+FE + ADR |
+| M3 | Generator + corpus_metrics regen |
+| M4 | FE panes + diff + validate chips |
+| M5 | Playwright + docs/CI |
+
+### Approved scope (verbatim)
+
+Whitespace-normalize via **W3C C14N** for official and converted XML so Quality metrics
+`match_status` and unified diffs reflect semantic differences (#982). Shared helper in
+generator + FE; panes default to normalized XML with override to raw. **Hard** this cycle:
+enable Schematron for IWXXM 2025-2 xslt2 (#980) and fix `SCHEMA_IMPORT_WARNING` (#979).
+Operator-facing consumer remains the Quality metrics tab; engine changes allowed in
+`packages/iwxxm-validate`.
+
+### Out of scope
+
+- Hand-editing `vendor/schemas/*`
+- Reopening / redoing closed #836 Quality metrics shell
+- DOKS / F30 (EV-043 / EV-044 remain parked)
+- New product families / encode parity
+- `stage`→`main` unless explicitly approved later
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`
+(skip `03`, `06`).
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product §F7]` | cite | F7.q deepen — diffs + validate UX | |
+| `[Corpus: product §F2]` | cite | validate engine / SCHEMA_* / SCHEMATRON_* | |
+| `[Corpus: product §F13]` | cite | native Rust Schematron path | |
+| `[Corpus: product §F4]` | cite | version-line skip messaging if needed | |
+| `[Corpus: api]` | cite | quality-metrics match_status semantics | |
+| `[Corpus: tests]` | cite | TC-EV055 + UJ-056 | |
+| `[Corpus: journeys]` | cite | UJ-056 deepen | |
+| — | waiver | none | |
+
+### Acceptance criteria (01 — `D-S064-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Formatting-only diffs no longer dominate; semantic remain (C14N) | TC-EV055-001 |
+| AC2 | `match_status` = C14N equality both sides; no internal doc ids | TC-EV055-002 |
+| AC3 | C14N helper tests + golden; vendor read-only; shared generator+FE | TC-EV055-003 |
+| AC4 | #980 Schematron **enabled** for 2025-2 (hard) | TC-EV055-004 |
+| AC5 | #979 SCHEMA_IMPORT **fixed** (hard) | TC-EV055-005 |
+| AC6 | Validate chips + normalized panes w/ override | TC-EV055-004..005 / 007 |
+| AC7 | corpus_metrics regen + UJ-056 smoke | TC-EV055-006..007 |
+
+---
+
+## Cycle EV-054 — Quality metrics tab / official IWXXM corpus (#836) (S063)
+
+**Session**: S063-quality-metrics-tab  
+**Features**: deepen **F7** (note **F7.q** in feature-list; no new top-level Fn)  
+**Started**: 2026-08-10  
+**Completed**: 2026-08-11  
+**Branch**: `evolve/EV-054-quality-metrics-tab` (base `stage@f2926ac8`)  
+**Status**: **completed** (`D-S063-13=1` / `D-S063-close=1`) — [#977](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/977) → `stage` @ `4fd51e39`; [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) closed; **no stage→main** (stay on stage)  
+**Issue**: [#836](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/836) (closed)  
+**Follow-ups**: [#979](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/979)–[#983](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/983)  
+**Corpus**: [Corpus: product §F7] [Corpus: product §F25] [Corpus: journeys]
+[Corpus: tests] [Corpus: adr/ADR-032] [Corpus: adr/ADR-025] [Corpus: api]
+[Corpus: system-spec] [Corpus: decisions §EV-054]
+
+### Closeout (2026-08-11)
+
+| ID | Decision |
+|----|----------|
+| D-S063-13 | **1** — Approve staging smoke; close EV-054 / S063; stay on stage (no promote) |
+| D-S063-close | **1** — Close #836; clear `active_session`; file follow-ups #979–#983 |
+
+Evidence: CI/CD [31453072506](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/31453072506) SUCCESS; H0c/H1/H3/H4/H5 + live UJ-056 PASS; `reports/deploy-smoke.md` / `reports/evolve-summary.md`.
+
+### Scope (Phase 0–1 — locked 2026-08-10)
+
+| ID | Decision |
+|----|----------|
+| D-S063-route | **1** — Standard: `00→16→01→02→04→05→07→08→09→10→11→12→13`; skip `03,06` (05 re-enabled Gate A) |
+| D-S063-ui-preview | **2** — No non-deployed UI preview at open; docs/repo only |
+| D-S063-scope | **1** — Full #836 scope (not METAR/SPECI-only shell); iterative ship OK in build |
+| D-S063-fn | **1** — Deepen **F7** only; document **F7.q** as sub-id note (no F34) |
+| D-S063-compute | **1** — Prefer **precomputed** fixture/CI metrics JSON for default view; on-demand refresh optional later |
+| D-S063-01-manifest | **1** — feature-list + journeys (UJ-056) + test-plan + decisions; skip API/config unless 04 needs them |
+| D-S063-01-ac | **1** — Lock AC1–AC7 |
+| D-S063-diff | **2** — Unified XML diff in v1 (plus inspectable raw panes) |
+| D-S063-shell-tab | **1** — **Separate primary app-shell tab** (peer to Convert / History), not a FileConverter panel |
+| D-S063-gateA | **2** — PASS Gate A; **require public metrics HTTP API in v1** (re-open api-contract; override FE-only bundle M1) |
+| D-S063-04-plan | **1** — Approve 04 execution plan as drafted (single corpus blob; no npm `diff`) |
+| D-S063-05 | **1** — Gate B PASS; C1=15 tasks; C2 keep Impl→Test (milestone-exit green); C3–C7 hygiene applied |
+
+### Approved scope (verbatim)
+
+Add an operator **Quality metrics** primary shell tab (F7.q / F7 deepen — **not** a panel
+inside the convert workbench) that imports the official WMO IWXXM example corpus
+(vendor pin + mirrored TAC peers) and lets operators explore conversion quality **by
+file / product type**: corpus browser, official match / comparison with **unified XML
+diff**, residuals, lint issues, validation issues, and drill-down. Default view offline /
+bundled (precomputed metrics JSON). UI complements CI matrices (#815 / #831); does not
+replace them.
+
+### Out of scope
+
+- Replacing CI residual / encode / lint matrices
+- Promoting `wmoReference` → `wmoPass` encode equality
+- Live re-download of upstream WMO trees on every page load
+- New products beyond catalog / F6 (+ deferred) inventory
+- Mutation testing (#874), Schemathesis (#727)
+- Workbench epic (#840) unless tiny deep-link
+- `stage`→`main` unless explicitly approved later
+
+### Preset
+
+**Standard** — `00 → 16 → 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 → 11 → 12 → 13`.
+
+### Corpus cites / waivers
+
+| Ref | Kind | Target | Notes |
+|-----|------|--------|-------|
+| `[Corpus: product §F7]` | cite | Fn deepen + F7.q note | |
+| `[Corpus: product §F25]` / F7.g | cite | catalog inventory | |
+| `[Corpus: journeys]` | cite | new UJ + UJ-039 deepen | |
+| `[Corpus: tests]` | cite | H4–H5 / Playwright smoke | |
+| `[Corpus: adr/ADR-032]` | cite | wmoPass / wmoReference tiers | |
+| `[Corpus: adr/ADR-025]` | cite | decode residuals | |
+| — | waiver | none | |
+
+### Acceptance (locked `D-S063-01-ac=1`)
+
+| AC | Criterion | TC |
+|----|-----------|-----|
+| AC1 | Separate primary Quality metrics tab; corpus by product / file type | TC-EV054-001..002 |
+| AC2 | File select → official + our XML/TAC + match + **unified XML diff** | TC-EV054-003 |
+| AC3 | Residuals / lint / validate panels (empty when clean) | TC-EV054-004 |
+| AC4 | Product summary counts match precomputed fixture via `GET /quality-metrics` | TC-EV054-005 / 008 |
+| AC5 | Gap / deferred stems labeled; no silent omissions | TC-EV054-002 |
+| AC6 | H4–H5 or Playwright: open → filter → passer → expected diagnostics | TC-EV054-007 |
+| AC7 | No Supabase / no live WMO fetch; metrics from public API + precomputed fixtures | TC-EV054-006 / 008 |
+
+Journey: **UJ-056**. API: [Corpus: api] `GET /api/v1/quality-metrics*`.
+
+### Stage log
+
+| Stage | Completed | Notes |
+|-------|-----------|-------|
+| 00-context | 2026-08-10 | D-S063-route=1; ui-preview=2; board #836 In progress |
+| 16-evolve Phase 0–1 | 2026-08-10 | scope/fn/compute locked |
+| 01-requirements | 2026-08-10 | D-S063-01-ac=1; diff=2; shell-tab=1; UJ-056 + TC-EV054 |
+| 02-verify-plan | 2026-08-10 | Gate A PASS (`D-S063-gateA=2`); api-contract reopened; **05 re-enabled** |
+| 04-tech-plan | 2026-08-10 | `D-S063-04-plan=1` — M1→M5 / 15 tasks; client-side line diff; single corpus blob |
+| 05-verify-tech | 2026-08-10 | `D-S063-05=1` — Gate B PASS; C1–C7 resolved; handoff 07 M1 |
+| 07-build M1–M4 | 2026-08-10 | Generator + API + shell/list + detail/diff; tip through `6a385f79` |
+| 07-build M5 | 2026-08-10 | T5.1 Playwright UJ-056 / TC-EV054-007 green; T5.2 `make generate-quality-metrics`; T5.3 docs + tip push |
+| 08-verify-build | 2026-08-10 | Gate C local PASS — lint/format/typecheck/units/H0c/UJ-056; `reports/verification-report.md`; CI via PR→stage |
+
+### Build M5 notes (2026-08-10)
+
+| Item | Evidence |
+|------|----------|
+| Playwright | `apps/e2e/uj056-quality-metrics.e2e.spec.ts` — open tab → METAR filter → `metar-A3-1` detail + deferred `metar-NIL-collect`; asserts list/detail API calls |
+| Diff pane | Semantic `match_status=equal` may still show line hunks (gml:id / whitespace); assert `unified-diff` + empty\|body |
+| Regen | `make generate-quality-metrics` → `scripts/ci/generate_quality_metrics.py`; artifact README notes CI does not auto-regen |
+| E2E badge | README `E2E_tests-82` |
+| H4–H5 live | Deferred to stages **12/13** after staging deploy (C7) |
+
+---
 
 ## Cycle EV-053 — Vitest branches ≥95 FileConverter follow-up (S062)
 

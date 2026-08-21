@@ -67,9 +67,12 @@ import {
   ingestCollect,
   massIngestFiles,
   lintTac,
+  validateIwxxm,
   EndpointNotImplementedError,
   type FailedSpan,
 } from '/utils/api';
+import type { ValidateResponse } from '/utils/openapiTypes';
+import { ValidateIwxxmReport } from './ValidateIwxxmReport';
 import {
   clampQueueIndex,
   nextQueueIndex,
@@ -80,11 +83,17 @@ import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
 import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
+  isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
   type IwxxmProfile,
   type TacProductSelection,
 } from '/utils/tacProduct';
+import {
+  IWXXM_PRODUCT_CONVERT_ARIA,
+  IWXXM_PRODUCT_CONVERT_LABEL,
+  IWXXM_PRODUCT_HELP,
+} from '/utils/iwxxmProductCopy';
 import {
   CONVERT_AND_SEND_UPLOAD_OPTIONS,
   uploadConvertedFiles,
@@ -101,6 +110,7 @@ import {
 import { readGuestConverterState } from '/utils/guestConverterState';
 import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
 import {
+  ACCUMULATE_RESULT_CAP,
   manualDownloadXmlName,
   manualOutputName,
   outputArchiveName,
@@ -112,11 +122,17 @@ import {
   truncateTacSnippet,
 } from '/utils/resultTraceability';
 import {
+  isValidBulletinId,
+  isValidIssuingCenter,
   mapOnErrorToStopOnError,
   mapStrictToValidation,
   type ConvertLogLevel,
   type ConvertOnError,
 } from '/utils/convertParams';
+import {
+  BULLETIN_ID_FIELD_ERROR,
+  ISSUING_CENTER_FIELD_ERROR,
+} from '/utils/bulletinFieldsCopy';
 import {
   detectInputKind,
   kindToMode,
@@ -208,6 +224,10 @@ export function FileConverter({
   );
   const [isBatchValidating, setIsBatchValidating] = useState(false);
   const [convertedFiles, setConvertedFiles] = useState<ConvertedFile[]>([]);
+  /** TAC of the first accumulated success — used for default ZIP stem (#903). */
+  const [firstAccumulatedTac, setFirstAccumulatedTac] = useState<string | null>(null);
+  /** F7.s validate-only report (POST /api/v1/validate with xml_content). */
+  const [validateReport, setValidateReport] = useState<ValidateResponse | null>(null);
   const [manualInput, setManualInput] = useState('');
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
@@ -246,6 +266,10 @@ export function FileConverter({
     shouldShowPrivacyNotice(),
   );
   const [isParamsExpanded, setIsParamsExpanded] = useState(false);
+  const [bulletinFieldError, setBulletinFieldError] = useState<string | null>(null);
+  const [issuingCenterFieldError, setIssuingCenterFieldError] = useState<string | null>(
+    null,
+  );
   const [conversionParams, setConversionParams] = useState<ConversionParams>({
     bulletinId: '',
     issuingCenter: '',
@@ -403,8 +427,11 @@ export function FileConverter({
           };
         }),
       );
+      const firstTac = String(loadedWorkSession.converted_results[0]?.tac_input ?? '');
+      setFirstAccumulatedTac(firstTac || null);
     } else {
       setConvertedFiles([]);
+      setFirstAccumulatedTac(null);
     }
     const hasLog =
       (loadedWorkSession.errors?.length ?? 0) > 0 ||
@@ -427,14 +454,8 @@ export function FileConverter({
       setConversionParams((prev) => {
         const next = { ...prev };
         const rawProduct = params.product;
-        if (
-          typeof rawProduct === 'string' &&
-          (rawProduct === 'auto' ||
-            ['AIRMET', 'METAR', 'SIGMET', 'SPECI', 'TAF', 'VAA', 'TCA'].includes(
-              rawProduct,
-            ))
-        ) {
-          next.product = rawProduct as TacProductSelection;
+        if (typeof rawProduct === 'string' && isConvertProductSelection(rawProduct)) {
+          next.product = rawProduct;
         }
         if (params.profile === 'iwxxm_us' || params.profile === 'annex3') {
           next.profile = params.profile;
@@ -693,7 +714,11 @@ export function FileConverter({
         conversionParams.product,
         tacForDetect,
       );
-      if (conversionParams.product !== 'auto' && tacForDetect.trim()) {
+      if (
+        conversionParams.product !== 'auto' &&
+        conversionParams.product !== 'IWXXM' &&
+        tacForDetect.trim()
+      ) {
         const detected = detectTacProduct(tacForDetect);
         if (detected !== resolvedProduct) {
           toast.warning(
@@ -783,7 +808,24 @@ export function FileConverter({
           }
         });
         const failed = bulletinResponse.results.filter((r) => !r.ok).length;
-        setConvertedFiles(newConvertedFiles);
+        if (newConvertedFiles.length > 0) {
+          let appended = false;
+          setConvertedFiles((prev) => {
+            if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
+              toast.error(
+                `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+              );
+              return prev;
+            }
+            appended = true;
+            return [...prev, ...newConvertedFiles];
+          });
+          if (appended) {
+            setFirstAccumulatedTac(
+              (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+            );
+          }
+        }
         clearConvertedFromQueue();
         // EV-040: keep manual TAC input after convert (do not clear).
         setConversionLog(issueBag.length > 0 ? { errors: [], issues: issueBag } : null);
@@ -910,7 +952,24 @@ export function FileConverter({
         }
       }
 
-      setConvertedFiles(newConvertedFiles);
+      if (newConvertedFiles.length > 0) {
+        let appended = false;
+        setConvertedFiles((prev) => {
+          if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
+            toast.error(
+              `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+            );
+            return prev;
+          }
+          appended = true;
+          return [...prev, ...newConvertedFiles];
+        });
+        if (appended) {
+          setFirstAccumulatedTac(
+            (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+          );
+        }
+      }
       clearConvertedFromQueue();
       // EV-040: keep manual TAC input after convert. Clear failed spans only on hard success.
       if (!softFail) {
@@ -952,8 +1011,61 @@ export function FileConverter({
     }
   };
 
+  const handleValidateOnly = async () => {
+    if (isReadOnly) {
+      return;
+    }
+    const xmlFromPaste = manualInput.trim();
+    const xmlFiles = pendingFiles.filter((f) => f.name.toLowerCase().endsWith('.xml'));
+    if (xmlFiles.length > 1) {
+      toast.error('Validate mode accepts one .xml file at a time.');
+      return;
+    }
+    const xmlContent = xmlFromPaste || xmlFiles[0]?.content?.trim() || '';
+    if (!xmlContent) {
+      toast.error('Paste IWXXM XML or upload one .xml file to validate.');
+      return;
+    }
+    setIsConverting(true);
+    setValidateReport(null);
+    setConversionStatus({ type: 'loading', message: 'Validating IWXXM…' });
+    try {
+      const report = await validateIwxxm({
+        xmlContent,
+        profile: conversionParams.profile,
+        iwxxmVersion: conversionParams.iwxxmVersion,
+        stopOnError: true,
+      });
+      setValidateReport(report);
+      setConversionStatus({ type: 'idle' });
+      if (report.is_valid) {
+        toast.success('IWXXM validation passed');
+      } else {
+        toast.warning('IWXXM validation reported failures');
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'IWXXM validation failed';
+      setConversionStatus({ type: 'error', message });
+      toast.error(message);
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
   const handleConvert = async () => {
     if (isReadOnly) {
+      return;
+    }
+    if (inputMode === 'validate_iwxxm') {
+      await handleValidateOnly();
+      return;
+    }
+    const bulletinOk = isValidBulletinId(conversionParams.bulletinId);
+    const centerOk = isValidIssuingCenter(conversionParams.issuingCenter);
+    setBulletinFieldError(bulletinOk ? null : BULLETIN_ID_FIELD_ERROR);
+    setIssuingCenterFieldError(centerOk ? null : ISSUING_CENTER_FIELD_ERROR);
+    if (!bulletinOk || !centerOk) {
       return;
     }
     setIsConverting(true);
@@ -1061,6 +1173,8 @@ export function FileConverter({
     setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
+    setValidateReport(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     onActiveSessionIdChange?.(null);
@@ -1076,6 +1190,8 @@ export function FileConverter({
     // Drop prior conversion/preview state so demo TAC is never paired with stale XML.
     setPendingFiles([]);
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
+    setValidateReport(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
@@ -1136,7 +1252,9 @@ export function FileConverter({
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
     a.href = url;
-    a.download = outputArchiveName(outputFilename);
+    a.download = outputArchiveName(outputFilename, {
+      firstTac: firstAccumulatedTac ?? convertedFiles[0]?.originalContent,
+    });
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1335,6 +1453,8 @@ export function FileConverter({
     setDemoExampleLabel(null);
     setOutputFilename('');
     setConvertedFiles([]);
+    setFirstAccumulatedTac(null);
+    setValidateReport(null);
     setConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
@@ -1439,7 +1559,7 @@ export function FileConverter({
   } = useLiveWorkbenchAssist({
     text: manualInput,
     product: liveAssistProduct,
-    enabled: !isReadOnly,
+    enabled: !isReadOnly && inputMode !== 'validate_iwxxm',
     liveIwxxm,
     liveIwxxmRunner,
   });
@@ -1649,17 +1769,30 @@ export function FileConverter({
               aria-busy={isConverting}
               aria-label={
                 isConverting
-                  ? 'Converting files, please wait'
-                  : 'Convert TAC to IWXXM XML'
+                  ? inputMode === 'validate_iwxxm' ||
+                    conversionParams.product === 'IWXXM'
+                    ? 'Validating IWXXM, please wait'
+                    : 'Converting files, please wait'
+                  : inputMode === 'validate_iwxxm'
+                    ? 'Validate IWXXM XML'
+                    : conversionParams.product === 'IWXXM'
+                      ? IWXXM_PRODUCT_CONVERT_ARIA
+                      : 'Convert TAC to IWXXM XML'
               }
             >
               <Loader2
                 className={`w-4 h-4 animate-spin ${isConverting ? '' : 'invisible'}`}
                 aria-hidden="true"
               />
-              Convert
+              {inputMode === 'validate_iwxxm'
+                ? 'Validate'
+                : conversionParams.product === 'IWXXM'
+                  ? IWXXM_PRODUCT_CONVERT_LABEL
+                  : 'Convert'}
             </Button>
-            {isOperatorDisseminationDestinationsEnabled() ? (
+            {isOperatorDisseminationDestinationsEnabled() &&
+            inputMode !== 'validate_iwxxm' &&
+            conversionParams.product !== 'IWXXM' ? (
               <Button
                 data-testid="convert-and-send-button"
                 onClick={handleConvertAndSend}
@@ -1709,6 +1842,7 @@ export function FileConverter({
               </Button>
             ) : null}
             <Button
+              data-testid="download-zip-button"
               onClick={handleDownloadAll}
               disabled={isBusy || !hasConverted}
               variant="outline"
@@ -1721,6 +1855,7 @@ export function FileConverter({
               </span>
             </Button>
             <Button
+              data-testid="clear-queue-button"
               onClick={handleClear}
               variant="outline"
               className="min-w-[5.5rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
@@ -1744,43 +1879,56 @@ export function FileConverter({
                   to start fresh.
                 </p>
               )}
-              <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <label
-                  htmlFor="manual-input"
-                  className="block text-base font-medium text-gray-900 dark:text-white"
-                >
-                  Manual TAC Input
-                </label>
-                <div className="flex flex-wrap items-center gap-2">
-                  <div
-                    className="flex rounded-md border border-gray-300 dark:border-gray-600"
-                    role="group"
-                    aria-label="Input mode"
-                    data-testid="input-mode-group"
+              <div className="mb-2 flex flex-col gap-2">
+                <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
+                  <label
+                    htmlFor="manual-input"
+                    className="block text-base font-medium text-gray-900 dark:text-white"
                   >
-                    {(
-                      [
-                        ['tac', 'TAC report'],
-                        ['ahl_bulletin', 'AHL bulletin'],
-                        ['collect_iwxxm', 'IWXXM COLLECT'],
-                      ] as const
-                    ).map(([value, label]) => (
-                      <button
-                        key={value}
-                        type="button"
-                        data-testid={`input-mode-${value}`}
-                        disabled={isReadOnly}
-                        onClick={() => setInputMode(value)}
-                        className={`px-2 py-1 text-xs ${
-                          inputMode === value
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
+                    {inputMode === 'validate_iwxxm'
+                      ? 'Manual IWXXM Input'
+                      : 'Manual TAC Input'}
+                  </label>
+                  <div
+                    className="flex flex-col gap-2 lg:flex-row lg:flex-nowrap lg:items-center"
+                    data-testid="input-mode-bar"
+                  >
+                    <div
+                      className="flex shrink-0 rounded-md border border-gray-300 dark:border-gray-600"
+                      role="group"
+                      aria-label="Input mode"
+                      data-testid="input-mode-group"
+                    >
+                      {(
+                        [
+                          ['tac', 'TAC report'],
+                          ['ahl_bulletin', 'AHL bulletin'],
+                          ['collect_iwxxm', 'IWXXM COLLECT'],
+                          ['validate_iwxxm', 'Validate IWXXM'],
+                        ] as const
+                      ).map(([value, label]) => (
+                        <button
+                          key={value}
+                          type="button"
+                          data-testid={`input-mode-${value}`}
+                          disabled={isReadOnly}
+                          onClick={() => setInputMode(value)}
+                          className={`px-2 py-1 text-xs whitespace-nowrap ${
+                            inputMode === value
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-200'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                </div>
+                <div
+                  className="flex flex-col gap-2 overflow-x-auto rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
+                  data-testid="product-profile-bar"
+                >
                   <Label
                     htmlFor="param-product"
                     className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
@@ -1799,7 +1947,7 @@ export function FileConverter({
                         product: e.target.value as TacProductSelection,
                       }))
                     }
-                    className="min-w-[9.5rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="auto">Auto-detect</option>
                     <option value="AIRMET">AIRMET</option>
@@ -1811,6 +1959,30 @@ export function FileConverter({
                     <option value="TCA">TCA</option>
                     <option value="SWXA">SWXA</option>
                     <option value="VONA">VONA</option>
+                    <option value="IWXXM">IWXXM</option>
+                  </select>
+                  <Label
+                    htmlFor="param-profile"
+                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    Profile
+                  </Label>
+                  <select
+                    id="param-profile"
+                    aria-label="Profile"
+                    data-testid="profile-type-select"
+                    value={conversionParams.profile}
+                    disabled={isReadOnly}
+                    onChange={(e) =>
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        profile: e.target.value as IwxxmProfile,
+                      }))
+                    }
+                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="annex3">Annex 3</option>
+                    <option value="iwxxm_us">IWXXM-US</option>
                   </select>
                   <GoldenExamplesSelect
                     disabled={isReadOnly}
@@ -1840,6 +2012,25 @@ export function FileConverter({
                   until member extract ships).
                 </p>
               )}
+              {inputMode === 'validate_iwxxm' && (
+                <p
+                  className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                  data-testid="validate-iwxxm-help"
+                >
+                  Paste IWXXM XML or upload one <code>.xml</code> file. Runs layered
+                  validation only — no TAC conversion.
+                </p>
+              )}
+              {conversionParams.product === 'IWXXM' &&
+                inputMode !== 'validate_iwxxm' && (
+                  <p
+                    className="mb-2 text-xs text-gray-600 dark:text-gray-400"
+                    data-testid="iwxxm-product-help"
+                    role="status"
+                  >
+                    {IWXXM_PRODUCT_HELP}
+                  </p>
+                )}
               {bulletinSummary && (
                 <p
                   className="mb-2 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-100"
@@ -1866,7 +2057,11 @@ export function FileConverter({
                     onChange={setManualInput}
                     readOnly={isReadOnly}
                     placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
-                    aria-label="Enter METAR data manually"
+                    aria-label={
+                      inputMode === 'validate_iwxxm'
+                        ? 'Enter IWXXM XML manually'
+                        : 'Enter METAR data manually'
+                    }
                     className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
                     failedSpans={failedSpans}
                     issueSpans={issueSpans}
@@ -2100,72 +2295,88 @@ export function FileConverter({
                 </Button>
               </div>
               <div
-                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${isParamsExpanded ? '' : 'hidden'}`}
+                className="flex flex-col gap-4 overflow-x-auto lg:flex-row lg:flex-nowrap lg:items-end"
+                data-testid="conversion-params-bar"
               >
-                {/* Bulletin ID */}
-                <div>
+                <div className="min-w-[14rem] shrink-0">
                   <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
                     Bulletin ID
                   </Label>
                   <Input
                     id="param-bulletin-id"
+                    data-testid="bulletin-id-input"
                     value={conversionParams.bulletinId}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      setBulletinFieldError(null);
                       setConversionParams((prev) => ({
                         ...prev,
                         bulletinId: e.target.value.toUpperCase(),
-                      }))
-                    }
+                      }));
+                    }}
                     placeholder="SAAA00"
                     maxLength={6}
+                    aria-invalid={bulletinFieldError ? true : undefined}
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Format: 4 letters + 2 digits. Sent as <code>bulletin_id</code> on
-                    Convert.
-                  </p>
+                  {bulletinFieldError ? (
+                    <p
+                      className="mt-1 text-xs text-red-600 dark:text-red-400"
+                      data-testid="bulletin-id-field-error"
+                      role="alert"
+                    >
+                      {bulletinFieldError}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Format: 4 letters + 2 digits. Leave blank to discover from the
+                      AHL.
+                    </p>
+                  )}
                 </div>
-
-                {/* Issuing Center */}
-                <IcaoAutocomplete
-                  label="Issuing Center (ICAO)"
-                  id="param-issuing-center"
-                  value={conversionParams.issuingCenter}
-                  onChange={(value) =>
-                    setConversionParams((prev) => ({ ...prev, issuingCenter: value }))
-                  }
-                  placeholder="KWBC"
-                  maxLength={4}
-                  helperText="4-letter ICAO code — sent as issuing_center on Convert"
-                />
-                <AirportDetailsCard icao={conversionParams.issuingCenter} />
-
-                {/* F6.e Product — primary control next to Manual TAC Input (#param-product) */}
-
-                {/* F6.e Profile */}
-                <div>
-                  <Label htmlFor="param-profile" className="dark:text-white mb-2">
-                    Profile
-                  </Label>
-                  <select
-                    id="param-profile"
-                    aria-label="Profile"
-                    value={conversionParams.profile}
-                    onChange={(e) =>
+                <div className="min-w-[14rem] shrink-0">
+                  <IcaoAutocomplete
+                    label="Issuing Center (ICAO)"
+                    id="param-issuing-center"
+                    inputTestId="issuing-center-input"
+                    formatOnly
+                    value={conversionParams.issuingCenter}
+                    onChange={(value) => {
+                      setIssuingCenterFieldError(null);
                       setConversionParams((prev) => ({
                         ...prev,
-                        profile: e.target.value as IwxxmProfile,
-                      }))
+                        issuingCenter: value,
+                      }));
+                    }}
+                    placeholder="KWBC"
+                    maxLength={4}
+                    helperText={
+                      issuingCenterFieldError
+                        ? undefined
+                        : '4-letter ICAO code. Leave blank to discover from the AHL.'
                     }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="annex3">annex3 (International)</option>
-                    <option value="iwxxm_us">iwxxm_us (US extensions)</option>
-                  </select>
+                  />
+                  {issuingCenterFieldError ? (
+                    <p
+                      className="mt-1 text-xs text-red-600 dark:text-red-400"
+                      data-testid="issuing-center-field-error"
+                      role="alert"
+                    >
+                      {issuingCenterFieldError}
+                    </p>
+                  ) : null}
+                </div>
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
+                  <AirportDetailsCard icao={conversionParams.issuingCenter} />
                 </div>
 
+                {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}
+
                 {/* IWXXM Version */}
-                <div>
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label htmlFor="param-iwxxm-version" className="dark:text-white mb-2">
                     IWXXM Version
                   </Label>
@@ -2189,7 +2400,9 @@ export function FileConverter({
                 </div>
 
                 {/* On Error */}
-                <div>
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label htmlFor="param-on-error" className="dark:text-white mb-2">
                     On Error Behavior
                   </Label>
@@ -2215,7 +2428,9 @@ export function FileConverter({
                 </div>
 
                 {/* Log Level */}
-                <div>
+                <div
+                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label htmlFor="param-log-level" className="dark:text-white mb-2">
                     Log Level
                   </Label>
@@ -2245,7 +2460,9 @@ export function FileConverter({
                 </div>
 
                 {/* Validation Options */}
-                <div className="flex flex-col gap-3">
+                <div
+                  className={`flex min-w-[16rem] shrink-0 flex-col gap-3 ${isParamsExpanded ? '' : 'hidden'}`}
+                >
                   <Label className="dark:text-white">Validation Options</Label>
                   <label className="flex items-center cursor-pointer">
                     <input
@@ -2300,6 +2517,8 @@ export function FileConverter({
                 minLogLevel={conversionParams.logLevel as ConvertLogLevel}
               />
             )}
+
+            {validateReport && <ValidateIwxxmReport report={validateReport} />}
 
             {/* Conversion Status Display */}
             {conversionStatus.type !== 'idle' && (

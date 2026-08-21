@@ -1,6 +1,9 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { FileConverter } from './components/FileConverter';
 import { MyMetarsPage } from './components/MyMetarsPage';
+import { QualityMetricsPage } from './components/QualityMetricsPage';
+import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
+import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
 import { EmailVerification } from './components/auth/EmailVerification';
@@ -18,6 +21,11 @@ import {
   listLocalWorkSessions,
   migrateGuestSessionStorageToIndexedDb,
 } from '@/utils/localWorkSessionStore';
+import {
+  parseQualityMetricsPath,
+  QUALITY_METRICS_LIST_PATH,
+  qualityMetricsDetailPath,
+} from '@/utils/qualityMetricsPath';
 import { listWorkSessions } from '@/utils/workSessionApi';
 
 /**
@@ -38,13 +46,21 @@ function validateApiEnv() {
 }
 
 type AppView =
-  | 'converter'
-  | 'history'
+  | ShellPrimaryView
   | 'login'
   | 'register'
   | 'verify'
   | 'callback'
   | 'reset';
+
+function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
+  return (
+    view === 'converter' ||
+    view === 'history' ||
+    view === 'quality' ||
+    view === 'catalog'
+  );
+}
 
 /**
  * Operator shell — boots to the public converter (guest). Optional Supabase Auth
@@ -52,7 +68,13 @@ type AppView =
  */
 function App() {
   const initiallyLoggedIn = isLoggedIn();
-  const [currentView, setCurrentView] = useState<AppView>('converter');
+  const initialQuality = parseQualityMetricsPath(window.location.pathname);
+  const [currentView, setCurrentView] = useState<AppView>(() =>
+    initialQuality ? 'quality' : 'converter',
+  );
+  const [qualityStem, setQualityStem] = useState<string | null>(() =>
+    initialQuality?.kind === 'detail' ? initialQuality.stem : null,
+  );
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initiallyLoggedIn);
   const [accessToken, setAccessToken] = useState(() =>
@@ -64,6 +86,22 @@ function App() {
 
   useEffect(() => {
     validateApiEnv();
+  }, []);
+
+  useEffect(() => {
+    const onPopState = () => {
+      const parsed = parseQualityMetricsPath(window.location.pathname);
+      if (parsed) {
+        setCurrentView('quality');
+        setQualityStem(parsed.kind === 'detail' ? parsed.stem : null);
+        return;
+      }
+      if (window.location.pathname.includes('/auth/callback')) {
+        setCurrentView('callback');
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   const initializeWorkSessions = useCallback(async (token?: string | null) => {
@@ -204,6 +242,40 @@ function App() {
     setCurrentView('history');
   };
 
+  const handleShellNavigate = (view: ShellPrimaryView) => {
+    setCurrentView(view);
+    if (view === 'quality') {
+      setQualityStem(null);
+      if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
+        window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
+      }
+      return;
+    }
+    if (
+      window.location.pathname === QUALITY_METRICS_LIST_PATH ||
+      window.location.pathname.startsWith(`${QUALITY_METRICS_LIST_PATH}/`)
+    ) {
+      window.history.pushState({}, '', '/');
+    }
+  };
+
+  const handleOpenQualityDetail = (stem: string) => {
+    setCurrentView('quality');
+    setQualityStem(stem);
+    const path = qualityMetricsDetailPath(stem);
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+    }
+  };
+
+  const handleBackToQualityList = () => {
+    setCurrentView('quality');
+    setQualityStem(null);
+    if (window.location.pathname !== QUALITY_METRICS_LIST_PATH) {
+      window.history.pushState({}, '', QUALITY_METRICS_LIST_PATH);
+    }
+  };
+
   const handleRequestLogin = () => {
     setCurrentView('login');
   };
@@ -232,6 +304,10 @@ function App() {
 
   return (
     <ThemeProvider>
+      {isPrimaryShellView(currentView) && (
+        <AppShellNav activeView={currentView} onNavigate={handleShellNavigate} />
+      )}
+
       {currentView === 'login' && (
         <Login
           onLogin={handleLogin}
@@ -285,6 +361,16 @@ function App() {
           onOpenSession={handleLoadWorkSession}
         />
       )}
+
+      {currentView === 'quality' && (
+        <QualityMetricsPage
+          routeStem={qualityStem}
+          onOpenDetailRoute={handleOpenQualityDetail}
+          onBackToList={handleBackToQualityList}
+        />
+      )}
+
+      {currentView === 'catalog' && <LintValidationCatalogPage />}
 
       {currentView === 'callback' && (
         <AuthCallback

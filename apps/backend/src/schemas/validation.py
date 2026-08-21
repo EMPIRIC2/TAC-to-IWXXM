@@ -286,6 +286,44 @@ class LintIssueCatalogEntryModel(BaseModel):
     source_id: Optional[str] = None
     source_url: Optional[str] = None
     source_attribution: Optional[str] = None
+    # Additive EV-061 / #1014 (optional; older clients ignore).
+    family: Optional[str] = Field(
+        default=None,
+        description="lint (TAC registry) or iwxxm (validation checks)",
+    )
+    source_type: Optional[str] = Field(
+        default=None,
+        description="tier1, tier2, or tier3 source policy",
+    )
+    status: Optional[str] = Field(
+        default=None,
+        description="verified, legacy_alias, or semantic_only",
+    )
+    semantic_identifier: Optional[str] = Field(
+        default=None,
+        description="Vocabulary concept path when href is a verified landing",
+    )
+    last_verified: Optional[str] = Field(
+        default=None,
+        description="ISO date of last HTTP check for operator source_url",
+    )
+    replacement_url: Optional[str] = Field(
+        default=None,
+        description="Verified landing when source_url is a legacy alias",
+    )
+    # Additive EV-062 / #1017 (optional; older clients ignore).
+    issue_type: Optional[str] = Field(
+        default=None,
+        description="Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other",
+    )
+    source_locator: Optional[str] = Field(
+        default=None,
+        description="Section/table/page locator for the cited source",
+    )
+    source_access: Optional[str] = Field(
+        default=None,
+        description="Operator access tier: public, paywall, login, semantic_only",
+    )
 
 
 class LintIssueCatalogResponse(BaseModel):
@@ -371,6 +409,20 @@ class ValidateResponse(BaseModel):
     stopped_at_layer: Optional[str] = None
     package_ok: bool = True
     package_issues: List[PackageIssueModel] = Field(default_factory=list)
+    segments: Optional[List[DecodeSegmentModel]] = Field(
+        default=None,
+        description=(
+            "Optional item-by-item decode rows (code and explanation) when a readable decode exists. "
+            "Omitted when there is no decode."
+        ),
+    )
+    summary: Optional[str] = Field(
+        default=None,
+        description=(
+            "Optional plain-language paragraph of the decoded report when a readable decode exists. "
+            "Omitted when there is no decode."
+        ),
+    )
 
 
 class BulletinMetaModel(BaseModel):

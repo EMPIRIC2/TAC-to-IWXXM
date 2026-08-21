@@ -338,7 +338,17 @@ run_backend() {
   fi
 
   export METAR_CONFIG_ENV="${METAR_CONFIG_ENV:-local}"
-  export SUPABASE_PUBLISHABLE_KEY="${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-}}"
+  # CI E2E Full has workflow secrets but no .env — map Vite/shim names + config URL.
+  export SUPABASE_URL="${SUPABASE_URL:-${FRONTEND_VITE_SUPABASE_URL:-${VITE_SUPABASE_URL:-}}}"
+  if [[ -z "${SUPABASE_URL}" ]]; then
+    SUPABASE_URL="$(
+      cd "${ROOT_DIR}" && python3 -c \
+        'import json;print(json.load(open("config/local.json"))["supabase"]["url"])' \
+        2>/dev/null || true
+    )"
+    export SUPABASE_URL
+  fi
+  export SUPABASE_PUBLISHABLE_KEY="${SUPABASE_PUBLISHABLE_KEY:-${SUPABASE_ANON_KEY:-${FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-${VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY:-}}}}"
 
   uv run uvicorn src.api:app --reload --host 0.0.0.0 --port 18001
 }

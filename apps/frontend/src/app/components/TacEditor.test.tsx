@@ -3,7 +3,8 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { useState } from 'react';
 
 vi.mock('codemirror', () => {
   class FakeEditorView {
@@ -13,9 +14,13 @@ vi.mock('codemirror', () => {
     static contentAttributes = { of: () => ({}) };
     static theme = () => ({});
     state = { doc: { toString: () => '', length: 0 } };
-    contentDOM = { contentEditable: 'true' };
-    constructor() {
-      /* no-op for unit smoke */
+    contentDOM: HTMLElement;
+    constructor(config?: { parent?: HTMLElement | null }) {
+      this.contentDOM = document.createElement('div');
+      this.contentDOM.contentEditable = 'true';
+      this.contentDOM.setAttribute('aria-label', 'Enter TAC data manually');
+      this.contentDOM.id = 'manual-input';
+      config?.parent?.appendChild(this.contentDOM);
     }
     dispatch() {
       /* no-op */
@@ -69,5 +74,24 @@ describe('TacEditor', () => {
       'data-issue-span-count',
       '1',
     );
+  });
+
+  it('syncs contentDOM aria-label when the prop changes (UJ-058 / EV-057)', () => {
+    function Harness() {
+      const [label, setLabel] = useState('Enter METAR data manually');
+      return (
+        <div>
+          <button type="button" onClick={() => setLabel('Enter IWXXM XML manually')}>
+            switch-validate
+          </button>
+          <TacEditor value="<root/>" onChange={() => undefined} aria-label={label} />
+        </div>
+      );
+    }
+
+    render(<Harness />);
+    expect(screen.getByLabelText('Enter METAR data manually')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'switch-validate' }));
+    expect(screen.getByLabelText('Enter IWXXM XML manually')).toBeInTheDocument();
   });
 });

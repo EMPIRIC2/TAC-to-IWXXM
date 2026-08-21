@@ -267,6 +267,8 @@ Validate token **membership** / spellings against registry (not full Annex prose
 
 | Register | URL | Products |
 |----------|-----|----------|
+
+> **EV-061:** The `codes.wmo.int/49-2/…` rows below are **semantic concept identifiers** (XML vocabulary). Operator catalog click-targets use the [WMO Codes Registry User Guide](https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf) and [codes.wmo.int](https://codes.wmo.int/) landings — see [mining/ev061-catalog-source-replacements-2026-08-18.md](mining/ev061-catalog-source-replacements-2026-08-18.md).
 | Present / forecast weather | https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather | METAR SPECI TAF |
 | Recent weather | https://codes.wmo.int/49-2/AerodromeRecentWeather | METAR SPECI |
 | Cloud amount | https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome | METAR SPECI TAF |

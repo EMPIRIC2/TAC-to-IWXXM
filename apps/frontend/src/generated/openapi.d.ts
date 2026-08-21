@@ -73,6 +73,9 @@ export interface paths {
         /**
          * Decode Tac Endpoint
          * @description Decode TAC into annotated segments and a plain-language summary.
+         *
+         *     Multi-report abbreviated-heading bulletins are split so each report is decoded
+         *     independently; the heading is a bulletin-framing row, not a leftover dump.
          */
         post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
         delete?: never;
@@ -251,7 +254,7 @@ export interface paths {
         };
         /**
          * Lint Issue Catalog
-         * @description Export the tac-validate issue registry for FE tooltips / catalog panel.
+         * @description Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
          */
         get: operations["lint_issue_catalog_api_v1_lint_issue_catalog_get"];
         put?: never;
@@ -276,6 +279,46 @@ export interface paths {
          * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A).
          */
         post: operations["lint_tac_api_v1_lint_tac_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/quality-metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List corpus quality metrics
+         * @description Serve product summaries and file inventory from the precomputed artifact.
+         */
+        get: operations["list_quality_metrics_api_v1_quality_metrics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/quality-metrics/{stem}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Corpus quality metrics for one stem
+         * @description Serve per-stem TAC / XML / match / residual / lint / validate detail.
+         */
+        get: operations["get_quality_metrics_detail_api_v1_quality_metrics__stem__get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -965,6 +1008,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout
+         * @description Sign out via GoTrue; optional body ``{scope}`` for local/global/others.
+         */
+        post: operations["logout_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/me": {
         parameters: {
             query?: never;
@@ -1232,7 +1295,7 @@ export interface components {
             preview: boolean;
             /**
              * Product
-             * @description TAC product type (default METAR for legacy clients)
+             * @description TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)
              * @default METAR
              */
             product: string;
@@ -1291,13 +1354,13 @@ export interface components {
             lint: boolean;
             /**
              * Manual Text
-             * @description Bulletin string
+             * @description Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports. Empty Bulletin ID / Issuing Center uses the heading TTAAii and CCCC.
              * @default
              */
             manual_text: string;
             /**
              * Product
-             * @description TAC product (required)
+             * @description TAC product, or iwxxm for XML pass-through
              */
             product: string;
             /**
@@ -1365,13 +1428,13 @@ export interface components {
             files?: string[] | null;
             /**
              * Manual Text
-             * @description TAC text to lint
+             * @description TAC or IWXXM XML to lint
              * @default
              */
             manual_text: string;
             /**
              * Product
-             * @description Product hint when known
+             * @description Product type, or iwxxm for XML lint (default METAR)
              * @default METAR
              */
             product: string;
@@ -2234,18 +2297,63 @@ export interface components {
         LintIssueCatalogEntryModel: {
             /** Code */
             code: string;
+            /**
+             * Family
+             * @description lint (TAC registry) or iwxxm (validation checks)
+             */
+            family?: string | null;
+            /**
+             * Issue Type
+             * @description Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other
+             */
+            issue_type?: string | null;
+            /**
+             * Last Verified
+             * @description ISO date of last HTTP check for operator source_url
+             */
+            last_verified?: string | null;
             /** Message Template */
             message_template: string;
             /** Product */
             product?: string | null;
+            /**
+             * Replacement Url
+             * @description Verified landing when source_url is a legacy alias
+             */
+            replacement_url?: string | null;
+            /**
+             * Semantic Identifier
+             * @description Vocabulary concept path when href is a verified landing
+             */
+            semantic_identifier?: string | null;
             /** Severity */
             severity: string;
+            /**
+             * Source Access
+             * @description Operator access tier: public, paywall, login, semantic_only
+             */
+            source_access?: string | null;
             /** Source Attribution */
             source_attribution?: string | null;
             /** Source Id */
             source_id?: string | null;
+            /**
+             * Source Locator
+             * @description Section/table/page locator for the cited source
+             */
+            source_locator?: string | null;
+            /**
+             * Source Type
+             * @description tier1, tier2, or tier3 source policy
+             */
+            source_type?: string | null;
             /** Source Url */
             source_url?: string | null;
+            /**
+             * Status
+             * @description verified, legacy_alias, or semantic_only
+             */
+            status?: string | null;
             /** Tags */
             tags?: string[];
         };
@@ -2306,6 +2414,25 @@ export interface components {
             password: string;
         };
         /**
+         * LogoutRequest
+         * @description Optional scoped logout body (FileConverter / AdminDashboard).
+         */
+        LogoutRequest: {
+            /**
+             * Scope
+             * @description GoTrue logout scope: global, local, or others
+             */
+            scope?: string | null;
+        };
+        /**
+         * Message
+         * @description Simple success message.
+         */
+        Message: {
+            /** Message */
+            message: string;
+        };
+        /**
          * PackageIssueModel
          * @description HTTP DTO for an iwxxm-validate package finding (additive on /validate).
          */
@@ -2343,6 +2470,140 @@ export interface components {
             content: string;
             /** Name */
             name: string;
+        };
+        /**
+         * QualityMetricsDetailResponse
+         * @description Response for GET /api/v1/quality-metrics/{stem}.
+         */
+        QualityMetricsDetailResponse: {
+            /**
+             * Converted Xml
+             * @default
+             */
+            converted_xml: string;
+            /** Deferral Reason */
+            deferral_reason?: string | null;
+            /**
+             * Deferred
+             * @default false
+             */
+            deferred: boolean;
+            /** Lint Issues */
+            lint_issues?: {
+                [key: string]: unknown;
+            }[];
+            /** Match Status */
+            match_status: string;
+            /**
+             * Official Xml
+             * @default
+             */
+            official_xml: string;
+            /** Product */
+            product: string;
+            /** Residuals */
+            residuals?: {
+                [key: string]: unknown;
+            }[];
+            /** Stem */
+            stem: string;
+            /**
+             * Tac
+             * @default
+             */
+            tac: string;
+            /** Tier */
+            tier: string;
+            /** Validate Issues */
+            validate_issues?: {
+                [key: string]: unknown;
+            }[];
+        };
+        /**
+         * QualityMetricsFileRowModel
+         * @description Slim inventory row for the corpus file list.
+         */
+        QualityMetricsFileRowModel: {
+            /**
+             * Deferred
+             * @default false
+             */
+            deferred: boolean;
+            /**
+             * Lint Error Count
+             * @default 0
+             */
+            lint_error_count: number;
+            /** Match Status */
+            match_status: string;
+            /** Product */
+            product: string;
+            /**
+             * Residual Count
+             * @default 0
+             */
+            residual_count: number;
+            /** Stem */
+            stem: string;
+            /** Tier */
+            tier: string;
+            /**
+             * Validate Error Count
+             * @default 0
+             */
+            validate_error_count: number;
+        };
+        /**
+         * QualityMetricsListResponse
+         * @description Response for GET /api/v1/quality-metrics.
+         */
+        QualityMetricsListResponse: {
+            /** Files */
+            files?: components["schemas"]["QualityMetricsFileRowModel"][];
+            /** Generated At */
+            generated_at: string;
+            /** Iwxxm Pin */
+            iwxxm_pin: string;
+            /** Summaries */
+            summaries?: components["schemas"]["QualityMetricsSummaryModel"][];
+        };
+        /**
+         * QualityMetricsSummaryModel
+         * @description Per-product aggregate counts for the corpus browser.
+         */
+        QualityMetricsSummaryModel: {
+            /**
+             * Deferred Gaps
+             * @default 0
+             */
+            deferred_gaps: number;
+            /**
+             * Lint Fail
+             * @default 0
+             */
+            lint_fail: number;
+            /**
+             * Match Fail
+             * @default 0
+             */
+            match_fail: number;
+            /**
+             * Match Pass
+             * @default 0
+             */
+            match_pass: number;
+            /** Product */
+            product: string;
+            /**
+             * Residual Nonempty
+             * @default 0
+             */
+            residual_nonempty: number;
+            /**
+             * Validate Fail
+             * @default 0
+             */
+            validate_fail: number;
         };
         /**
          * SessionResponse
@@ -2706,8 +2967,18 @@ export interface components {
              * @default annex3
              */
             profile: string;
+            /**
+             * Segments
+             * @description Optional item-by-item decode rows (code and explanation) when a readable decode exists. Omitted when there is no decode.
+             */
+            segments?: components["schemas"]["DecodeSegmentModel"][] | null;
             /** Stopped At Layer */
             stopped_at_layer?: string | null;
+            /**
+             * Summary
+             * @description Optional plain-language paragraph of the decoded report when a readable decode exists. Omitted when there is no decode.
+             */
+            summary?: string | null;
             /**
              * Total Issues
              * @default 0
@@ -3144,7 +3415,7 @@ export interface operations {
                     "application/json": components["schemas"]["ConvertBulletinResponse"];
                 };
             };
-            /** @description Empty bulletin (no reports after split) */
+            /** @description Empty bulletin — no TAC reports after the abbreviated heading */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -3158,7 +3429,7 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description AHL split failed or missing required fields */
+            /** @description Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed. */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -3486,6 +3757,9 @@ export interface operations {
         parameters: {
             query?: {
                 product?: string | null;
+                family?: string | null;
+                issue_type?: string | null;
+                source_access?: string | null;
             };
             header?: never;
             path?: never;
@@ -3541,6 +3815,69 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_quality_metrics_api_v1_quality_metrics_get: {
+        parameters: {
+            query?: {
+                /** @description Optional product filter (e.g. metar, taf, sigmet) */
+                product?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityMetricsListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_quality_metrics_detail_api_v1_quality_metrics__stem__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stem: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityMetricsDetailResponse"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -4107,6 +4444,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LogoutRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
                 };
             };
             /** @description Validation Error */

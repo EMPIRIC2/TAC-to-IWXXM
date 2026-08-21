@@ -103,6 +103,11 @@ cover/
 .pytest_cache/
 .nyc_output
 **/coverage/
+**/.stryker-tmp/
+**/reports/mutation/
+**/stryker.log
+coverage/gremlins/
+coverage/stryker/
 
 # Playwright (apps/e2e and legacy frontend/)
 **/test-results/

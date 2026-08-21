@@ -4,10 +4,19 @@
  * The custom name applies to manual-input conversion results only. A blank or
  * unsafe value falls back to the historical `manual_input` default so existing
  * behavior is preserved.
+ *
+ * EV-057 / #903: empty custom archive name uses a short stem from the first
+ * accumulated TAC + ``yyyyMMddHHmmss`` when provided.
  */
 
 /** Default base name when no custom output filename is provided. */
 export const DEFAULT_OUTPUT_BASENAME = 'manual_input';
+
+/** Soft cap for accumulated convert results (F7.r / #903). */
+export const ACCUMULATE_RESULT_CAP = 200;
+
+/** Max length of the content-derived ZIP stem when custom name is empty. */
+export const ARCHIVE_TAC_STEM_LEN = 8;
 
 // Characters disallowed in filenames across common platforms, plus control chars.
 // eslint-disable-next-line no-control-regex
@@ -34,6 +43,36 @@ export function sanitizeOutputFilename(raw: string | null | undefined): string {
   // Remove illegal/control characters and re-trim.
   name = name.replace(ILLEGAL_CHARS_RE, '').trim();
   return name || DEFAULT_OUTPUT_BASENAME;
+}
+
+/**
+ * Derive a filesystem-safe ZIP stem from the first accumulated TAC text.
+ *
+ * Collapses whitespace, strips illegal characters, then takes the first
+ * {@link ARCHIVE_TAC_STEM_LEN} characters.
+ *
+ * @param tac - Raw TAC from the first successful conversion in the batch.
+ * @returns A non-empty stem (falls back to ``converted`` when empty after sanitize).
+ */
+export function stemFromFirstTac(tac: string): string {
+  const collapsed = tac.replace(/\s+/g, '');
+  const cleaned = collapsed.replace(ILLEGAL_CHARS_RE, '');
+  const stem = cleaned.slice(0, ARCHIVE_TAC_STEM_LEN);
+  return stem || 'converted';
+}
+
+/**
+ * Format a local timestamp as ``yyyyMMddHHmmss`` for default ZIP names.
+ *
+ * @param date - Instant to format (defaults to now).
+ * @returns Compact timestamp string.
+ */
+export function formatArchiveTimestamp(date: Date = new Date()): string {
+  const pad = (n: number): string => String(n).padStart(2, '0');
+  return (
+    `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}` +
+    `${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`
+  );
 }
 
 /**
@@ -72,18 +111,34 @@ export function manualDownloadXmlName(
   return manualOutputName(base, index, total).replace(/\.(txt|metar)$/i, '.xml');
 }
 
+export type OutputArchiveNameOptions = {
+  /** TAC text from the first successful conversion in the accumulate batch. */
+  firstTac?: string;
+  /** Clock override for tests. */
+  now?: Date;
+};
+
 /**
  * Build the "Download All" ZIP archive name.
  *
- * Uses `<base>.zip` when the user set a custom name; otherwise the historical
- * timestamped `converted_files_<ts>.zip`.
+ * Uses `<base>.zip` when the user set a custom name. When empty: if
+ * ``firstTac`` is provided, ``{stem8}_{yyyyMMddHHmmss}.zip`` (#903); otherwise
+ * the historical ``converted_files_<ms>.zip`` fallback.
  *
- * @param base - The raw custom output filename (empty ⇒ timestamped default).
+ * @param base - The raw custom output filename (empty ⇒ content-derived or legacy).
+ * @param options - Optional first-TAC stem and clock.
  * @returns The ZIP archive filename.
  */
-export function outputArchiveName(base: string): string {
-  if (base.trim().length === 0) {
-    return `converted_files_${Date.now()}.zip`;
+export function outputArchiveName(
+  base: string,
+  options?: OutputArchiveNameOptions,
+): string {
+  if (base.trim().length > 0) {
+    return `${sanitizeOutputFilename(base)}.zip`;
   }
-  return `${sanitizeOutputFilename(base)}.zip`;
+  const now = options?.now ?? new Date();
+  if (options?.firstTac !== undefined && options.firstTac.length > 0) {
+    return `${stemFromFirstTac(options.firstTac)}_${formatArchiveTimestamp(now)}.zip`;
+  }
+  return `converted_files_${now.getTime()}.zip`;
 }

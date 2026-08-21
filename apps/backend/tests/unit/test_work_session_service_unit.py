@@ -541,14 +541,15 @@ def test_soft_delete_db_error(monkeypatch: pytest.MonkeyPatch) -> None:
 
     from fastapi.security import HTTPAuthorizationCredentials
 
-    from src.utilities.security import verify_supabase_token
+    from src.utilities import security as sec
 
     monkeypatch.delenv("SUPABASE_URL", raising=False)
     monkeypatch.delenv("SUPABASE_JWKS_URL", raising=False)
+    monkeypatch.setattr(sec, "get_supabase_url", lambda: "")
 
     async def _run() -> None:
         with pytest.raises(HTTPException) as exc:
-            await verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="x"))
+            await sec.verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="x"))
         assert exc.value.status_code == 503
 
     import asyncio

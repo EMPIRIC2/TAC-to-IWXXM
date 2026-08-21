@@ -26,15 +26,26 @@ class SupabaseAuthProxy:
         publishable_key: str | None = None,
         client: httpx.Client | None = None,
     ) -> None:
-        self.supabase_url = (supabase_url or os.getenv("SUPABASE_URL") or "").rstrip(
-            "/"
-        )
-        self.publishable_key = (
-            publishable_key
-            or os.getenv("SUPABASE_PUBLISHABLE_KEY")
-            or os.getenv("SUPABASE_ANON_KEY")
-            or ""
-        )
+        # Explicit ``""`` means unset (tests); ``None`` falls back to env / Vite shims.
+        if supabase_url is not None:
+            self.supabase_url = supabase_url.rstrip("/")
+        else:
+            self.supabase_url = (
+                os.getenv("SUPABASE_URL")
+                or os.getenv("FRONTEND_VITE_SUPABASE_URL")
+                or os.getenv("VITE_SUPABASE_URL")
+                or ""
+            ).rstrip("/")
+        if publishable_key is not None:
+            self.publishable_key = publishable_key
+        else:
+            self.publishable_key = (
+                os.getenv("SUPABASE_PUBLISHABLE_KEY")
+                or os.getenv("SUPABASE_ANON_KEY")
+                or os.getenv("FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
+                or os.getenv("VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
+                or ""
+            )
         self._client = client
         self._owns_client = client is None
 
@@ -91,6 +102,41 @@ class SupabaseAuthProxy:
             )
         data = response.json()
         return _normalize_session_payload(data)
+
+    def sign_out(
+        self, access_token: str, *, scope: str | None = None
+    ) -> dict[str, str]:
+        """
+        Revoke the session via GoTrue ``POST /auth/v1/logout``.
+
+        Parameters
+        ----------
+        access_token : str
+            User access token (Bearer).
+        scope : str or None
+            Optional GoTrue logout scope: ``global``, ``local``, or ``others``.
+
+        Returns
+        -------
+        dict[str, str]
+            Success message payload for the API response.
+        """
+        url = f"{self.supabase_url}/auth/v1/logout"
+        params: dict[str, str] = {}
+        if scope:
+            params["scope"] = scope
+        headers = self._headers()
+        headers["Authorization"] = f"Bearer {access_token}"
+        response = self._http().post(url, headers=headers, params=params or None)
+        # Idempotent: already-invalid sessions still count as signed out for the UI.
+        if response.status_code in {401, 403, 404}:
+            return {"message": "Successfully signed out"}
+        if response.status_code >= 400:
+            raise AuthProxyError(
+                f"logout failed: {response.text}",
+                status_code=502 if response.status_code >= 500 else 400,
+            )
+        return {"message": "Successfully signed out"}
 
     def get_user(self, access_token: str) -> dict[str, Any]:
         """

@@ -80,6 +80,7 @@ markers = [
     "iwxxm_2023_1: tests specific to IWXXM 2023-1 version",
     "iwxxm_2025_2: tests specific to IWXXM 2025-2 version",
     "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA; E32-T7)",
+    "schemathesis: F34 Schemathesis OpenAPI property suite (EV-059 / #727)",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",
