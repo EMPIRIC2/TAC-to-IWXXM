@@ -5,7 +5,7 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 
@@ -134,7 +134,7 @@ describe('TC-EV061-1012 FileConverter AHL parity', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
-    await user.type(screen.getByTestId('tac-editor'), GOLDEN);
+    fireEvent.change(screen.getByTestId('tac-editor'), { target: { value: GOLDEN } });
     expect(screen.getByTestId('bulletin-id-input')).toBeInTheDocument();
     expect(screen.getByTestId('issuing-center-input')).toBeInTheDocument();
     await user.click(screen.getByTestId('convert-button'));
@@ -163,10 +163,9 @@ describe('TC-EV061-1012 FileConverter AHL parity', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
-    await user.type(
-      screen.getByTestId('tac-editor'),
-      'NOTANAHL XXXX 999999\nMETAR KJFK=\n',
-    );
+    fireEvent.change(screen.getByTestId('tac-editor'), {
+      target: { value: 'NOTANAHL XXXX 999999\nMETAR KJFK=\n' },
+    });
     await user.click(screen.getByTestId('convert-button'));
     await waitFor(() => {
       expect(mockToast.error).toHaveBeenCalled();

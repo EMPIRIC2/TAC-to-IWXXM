@@ -9,6 +9,7 @@ from typing import Any
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from metar_auth.jwks import JwtVerificationError, verify_access_token
+from metar_shared.supabase_env import get_supabase_url
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ async def verify_supabase_token(
     HTTPException
         401 when the token is missing/invalid; 503 when Auth URL env is missing.
     """
-    supabase_url = (os.environ.get("SUPABASE_URL") or "").strip()
+    supabase_url = get_supabase_url()
     jwks_url = (os.environ.get("SUPABASE_JWKS_URL") or "").strip() or None
     if not supabase_url and not jwks_url:
         raise HTTPException(

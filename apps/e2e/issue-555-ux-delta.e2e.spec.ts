@@ -1,8 +1,13 @@
+/**
+ * UJ-001 delta — error log + accumulate results (F7.r / #903 supersedes #555 replace).
+ */
 import { expect, test } from '@playwright/test';
 import { convertManualMetar, openConverterForE2e } from './playwright-e2e-helpers';
 
-test.describe('UJ-001 delta — #555 replace results + error log', () => {
-  test('second successful convert replaces first result card', async ({ page }) => {
+test.describe('UJ-001 delta — accumulate results + error log', () => {
+  test('second successful convert accumulates with first result card', async ({
+    page,
+  }) => {
     await openConverterForE2e(page);
 
     const metarA = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990';
@@ -18,8 +23,12 @@ test.describe('UJ-001 delta — #555 replace results + error log', () => {
     await convertManualMetar(page, metarB);
     const resultsRegion = page.getByRole('region', { name: /conversion results/i });
     await expect(resultsRegion).toBeVisible({ timeout: 10000 });
-    await expect(resultsRegion.getByText(/KJFK/i)).toHaveCount(0);
+    // F7.r / #903 — accumulate (do not replace) across successful converts.
+    await expect(resultsRegion.getByText(/KJFK/i).first()).toBeVisible();
     await expect(resultsRegion.getByText(/KDEN/i).first()).toBeVisible();
+    await expect(page.getByTestId('download-zip-button')).toHaveAccessibleName(
+      /download all 2 converted files as zip/i,
+    );
   });
 
   test('failed convert shows error log panel', async ({ page }) => {

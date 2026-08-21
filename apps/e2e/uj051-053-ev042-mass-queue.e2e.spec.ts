@@ -102,13 +102,10 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + no destinations
     page,
   }) => {
     await openPublicConverter(page);
+    // Sign-in chrome is always visible for guests — assert the toast specifically.
     await page.getByTestId('mass-ingest-folder-button').click();
-    // Guest path: toast and/or navigate toward login (onRequestLogin).
     await expect(
-      page
-        .getByText(/Sign in required for mass folder or zip ingest/i)
-        .or(page.getByTestId('login-view'))
-        .or(page.getByTestId('sign-in-button')),
+      page.getByText(/Sign in required for mass folder or zip ingest/i),
     ).toBeVisible({ timeout: 10_000 });
   });
 
