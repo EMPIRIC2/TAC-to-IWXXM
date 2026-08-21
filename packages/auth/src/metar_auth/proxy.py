@@ -26,21 +26,26 @@ class SupabaseAuthProxy:
         publishable_key: str | None = None,
         client: httpx.Client | None = None,
     ) -> None:
-        self.supabase_url = (
-            supabase_url
-            or os.getenv("SUPABASE_URL")
-            or os.getenv("FRONTEND_VITE_SUPABASE_URL")
-            or os.getenv("VITE_SUPABASE_URL")
-            or ""
-        ).rstrip("/")
-        self.publishable_key = (
-            publishable_key
-            or os.getenv("SUPABASE_PUBLISHABLE_KEY")
-            or os.getenv("SUPABASE_ANON_KEY")
-            or os.getenv("FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
-            or os.getenv("VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
-            or ""
-        )
+        # Explicit ``""`` means unset (tests); ``None`` falls back to env / Vite shims.
+        if supabase_url is not None:
+            self.supabase_url = supabase_url.rstrip("/")
+        else:
+            self.supabase_url = (
+                os.getenv("SUPABASE_URL")
+                or os.getenv("FRONTEND_VITE_SUPABASE_URL")
+                or os.getenv("VITE_SUPABASE_URL")
+                or ""
+            ).rstrip("/")
+        if publishable_key is not None:
+            self.publishable_key = publishable_key
+        else:
+            self.publishable_key = (
+                os.getenv("SUPABASE_PUBLISHABLE_KEY")
+                or os.getenv("SUPABASE_ANON_KEY")
+                or os.getenv("FRONTEND_VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
+                or os.getenv("VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
+                or ""
+            )
         self._client = client
         self._owns_client = client is None
 
