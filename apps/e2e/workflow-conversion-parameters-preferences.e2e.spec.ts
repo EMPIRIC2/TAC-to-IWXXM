@@ -1,5 +1,5 @@
 /**
- * Conversion parameters on the public converter (F21 — no Auth).
+ * Conversion parameters + slim user preferences (EV-040 / EV-061).
  */
 import { expect, test } from '@playwright/test';
 import { convertManualMetar, openPublicConverter } from './playwright-e2e-helpers';
@@ -30,9 +30,7 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
     ).toBeVisible();
   });
 
-  test('preferences save and apply to converter parameter controls', async ({
-    page,
-  }) => {
+  test('preferences save display name and output extension', async ({ page }) => {
     await openPublicConverter(page);
 
     await page.getByRole('button', { name: /Open user preferences/i }).click();
@@ -40,10 +38,21 @@ test.describe('Workflow: Conversion Parameters And Preferences', () => {
       page.getByRole('heading', { name: /User Preferences/i }),
     ).toBeVisible();
 
-    await page.locator('#iwxxm-version').selectOption('2023-1');
-    await page.getByRole('button', { name: /Save Preferences/i }).click();
+    await page.locator('#display-name').fill('E2E Operator');
+    await page.locator('#output-extension').selectOption('.iwxxm');
+    await page.getByRole('button', { name: /Save preferences/i }).click();
 
-    await page.getByLabel(/Expand parameters/i).click();
-    await expect(page.locator('#param-iwxxm-version')).toHaveValue('2023-1');
+    await expect(page.getByText(/Preferences saved successfully/i).first()).toBeVisible(
+      { timeout: 5000 },
+    );
+    // Dialog stays open after save — close before reopening.
+    await page.getByRole('button', { name: /^Cancel$/i }).click();
+    await expect(page.getByRole('heading', { name: /User Preferences/i })).toHaveCount(
+      0,
+    );
+
+    await page.getByRole('button', { name: /Open user preferences/i }).click();
+    await expect(page.locator('#display-name')).toHaveValue('E2E Operator');
+    await expect(page.locator('#output-extension')).toHaveValue('.iwxxm');
   });
 });

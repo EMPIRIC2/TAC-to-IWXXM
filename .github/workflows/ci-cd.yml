@@ -760,6 +760,8 @@ jobs:
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
     env:
       METAR_CONFIG_ENV: local
+      # Auth routes need URL (F31). Publishable key already set at workflow env.
+      SUPABASE_URL: ${{ secrets.FRONTEND_VITE_SUPABASE_URL }}
 
     steps:
       - uses: actions/checkout@v5

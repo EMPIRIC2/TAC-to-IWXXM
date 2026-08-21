@@ -813,8 +813,14 @@ except Exception as e:  # pragma: no cover - defensive
 # Auth routers restored (F31 / ADR-033) — JWKS-only Supabase Auth; no /admin.
 try:
     from metar_auth import create_auth_router
+    from metar_shared.supabase_env import get_supabase_url
 
-    app.include_router(create_auth_router())
+    # CI E2E Full has no .env; fall back to config/local.json via get_supabase_url().
+    _supabase_url = get_supabase_url()
+    if _supabase_url and not (os.environ.get("SUPABASE_URL") or "").strip():
+        os.environ["SUPABASE_URL"] = _supabase_url
+
+    app.include_router(create_auth_router(supabase_url=_supabase_url or None))
     logger.info("DEBUG: included metar_auth /auth router successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include auth router: {e}", exc_info=True)
