@@ -109,7 +109,7 @@ def sync(*, clean: bool = True) -> dict:
     Parameters
     ----------
     clean :
-        When True, remove previous ``iwxxm`` / ``iwxxm-us`` trees before copy
+        When True, remove previous ``iwxxm`` / ``iwxxm-us`` / ``iwxxm-ca`` trees before copy
         (keeps ``MANIFEST.json``).
 
     Returns
@@ -124,7 +124,7 @@ def sync(*, clean: bool = True) -> dict:
     versions: list[str] = list(policy["iwxxm_versions"])
 
     if clean:
-        for name in ("iwxxm", "iwxxm-us"):
+        for name in ("iwxxm", "iwxxm-us", "iwxxm-ca"):
             target = DEST_ROOT / name
             if target.exists():
                 shutil.rmtree(target)
@@ -140,6 +140,9 @@ def sync(*, clean: bool = True) -> dict:
 
     us_src = VENDOR / "iwxxm-us"
     counts["iwxxm-us"] = _copy_tree(us_src, DEST_ROOT / "iwxxm-us")
+
+    ca_src = VENDOR / "iwxxm-ca"
+    counts["iwxxm-ca"] = _copy_tree(ca_src, DEST_ROOT / "iwxxm-ca")
 
     total_files = sum(counts.values())
     total_bytes = sum(p.stat().st_size for p in DEST_ROOT.rglob("*") if p.is_file() and p.name != "MANIFEST.json")

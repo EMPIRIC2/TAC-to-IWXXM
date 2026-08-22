@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema elementFormDefault="qualified" targetNamespace="https://dd.meteo.gc.ca/today/aviation/iwxxm/" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:aixm="http://www.aixm.aero/schema/5.1.1" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/">
+  <import namespace="http://icao.int/iwxxm/3.0" schemaLocation="http://schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd"/>
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <import namespace="http://www.aixm.aero/schema/5.1.1" schemaLocation="http://www.aixm.aero/schema/5.1.1_profiles/AIXM_WX/5.1.1b/AIXM_Features.xsd"/>
+  <element name="surfaceVisibility" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:surfaceVisibilityType" xmlns="http://www.w3.org/2001/XMLSchema">
+    <annotation>
+      <documentation>This element allows for the use of a range in visibility values. MANAIR Appendix E.5. https://publications.gc.ca/site/eng/9.941904/publication.html  </documentation>
+    </annotation>
+  </element>
+  <complexType name="surfaceVisibilityType" xmlns="http://www.w3.org/2001/XMLSchema">
+    <sequence>
+      <element name="surfaceVisibilityLower" type="gml:LengthType">
+        <annotation>
+          <documentation>Surface visibility lower value in the range.</documentation>
+        </annotation>
+      </element>
+      <element name="surfaceVisibilityHigher" type="gml:LengthType">
+        <annotation>
+          <documentation>Surface visibility higher value in the range.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="surfaceVisibilityPropertyType" xmlns="http://www.w3.org/2001/XMLSchema">
+    <sequence>
+      <element ref="iwxxm-ca:surfaceVisibility"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="cloudBase" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:cloudBaseType">
+    <annotation>
+      <documentation>This element allows for the use of a range in visibility values. MANAIR Appendix E.5. https://publications.gc.ca/site/eng/9.941904/publication.html  </documentation>
+    </annotation>
+  </element>
+  <complexType name="cloudBaseType">
+    <sequence>
+      <element name="cloudBaseLower" type="gml:LengthType">
+        <annotation>
+          <documentation>Cloud base lower value in the range.</documentation>
+        </annotation>
+      </element>
+      <element name="cloudBaseHigher" type="gml:LengthType">
+        <annotation>
+          <documentation>Cloud base higher value in the range.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="cloudBasePropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:cloudBase"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="cloudBaseReference" type="aixm:CodeVerticalReferenceBaseType">
+    <annotation>
+      <documentation>The reference surface used for the value of the cloud base. For example, Mean Sea Level, Ground, standard pressure,  etc..</documentation>
+    </annotation>
+  </element>
+  <element name="surfaceWindSpeed" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:surfaceWindSpeedType">
+    <annotation>
+      <documentation>This element allows for the use of a range in visibility values. MANAIR Appendix E.5. https://publications.gc.ca/site/eng/9.941904/publication.html  </documentation>
+    </annotation>
+  </element>
+  <complexType name="surfaceWindSpeedType">
+    <sequence>
+      <element name="surfaceWindSpeedLower" type="gml:LengthType">
+        <annotation>
+          <documentation>Surface wind speed lower value in the range.</documentation>
+        </annotation>
+      </element>
+      <element name="surfaceWindSpeedHigher" type="gml:LengthType">
+        <annotation>
+          <documentation>Surface wind speed higher value in the range.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="surfaceWindSpeedPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:surfaceWindSpeed"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="surfaceVisibilityCause" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:surfaceVisibilityCauseType">
+    <annotation>
+      <documentation>This element allows for the use of a Canadian specific present/forecast weather code (IC).Reference: MANAIR 6.8.3.2 subsection 2).  https://publications.gc.ca/site/eng/9.941904/publication.html  </documentation>
+    </annotation>
+  </element>
+  <complexType name="surfaceVisibilityCauseType" xmlns="http://www.w3.org/2001/XMLSchema">
+    <annotation>
+      <documentation>A fall of non-branched ice crystals, in the form of needles, columns or plates, often so tiny that they seem to be suspended in the air. These crystals may fall from cloud or from a cloudless sky. The crystals are visible mainly when they glitter in the sunshine; they may then produce a luminous pillar or other halo. This hydrometeor, which is frequent in Polar Regions, occurs only at very low temperatures and in stable air masses. In WMO terminology, ice crystals are referred to as “diamond dust.”</documentation>
+      <appinfo>
+        <vocabulary>https://dd.meteo.gc.ca/today/aviation/iwxxm/code-ca/present_and_forecast_weather</vocabulary>
+        <extensibility>none</extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <complexType name="surfaceVisibilityCausePropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:surfaceVisibilityCause"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+</schema>

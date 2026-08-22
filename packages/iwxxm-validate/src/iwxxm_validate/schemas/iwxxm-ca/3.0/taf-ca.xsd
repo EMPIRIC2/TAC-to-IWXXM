@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/" elementFormDefault="qualified" targetNamespace="https://dd.meteo.gc.ca/today/aviation/iwxxm/">
+  <import namespace="http://icao.int/iwxxm/3.0" schemaLocation="http://schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd" />
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <element name="NonConvectiveLowLevelWindShear" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:NonConvectiveLowLevelWindShearType">
+    <annotation>
+      <documentation>Significant, non-convective wind shear which could adversely affect aircraft operation within 1,500 feet AGL. MANAIR 2.6.9. https://publications.gc.ca/site/eng/9.941904/publication.html  </documentation>
+    </annotation>
+  </element>
+  <complexType name="NonConvectiveLowLevelWindShearType">
+    <sequence>
+      <element name="windDirection" type="gml:AngleType">
+        <annotation>
+          <documentation>Wind direction at the top of the wind-shear layer.</documentation>
+        </annotation>
+      </element>
+      <element name="windSpeed" type="gml:SpeedType">
+        <annotation>
+          <documentation>Wind speed at the top of the wind shear layer.</documentation>
+        </annotation>
+      </element>
+      <element name="layerAboveAerodrome" type="iwxxm-ca:LayerAboveAerodromeType">
+        <annotation>
+          <documentation>Vertical extent of wind shear layer above/near the aerodrome.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="NonConvectiveLowLevelWindShearPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:NonConvectiveLowLevelWindShear" />
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup" />
+  </complexType>
+  <complexType name="LayerAboveAerodromeType">
+    <sequence>
+      <element name="lowerLimit" type="gml:LengthType">
+        <annotation>
+          <documentation>Measured or estimated lower limit (height) of phenomenon.</documentation>
+        </annotation>
+      </element>
+      <element name="upperLimit" type="gml:LengthType">
+        <annotation>
+          <documentation>Measured or estimated upper limit (height) of phenomenon.</documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <element name="weather" type="iwxxm-ca:AerodromeForecastWeatherType">
+    <annotation>
+      <documentation>Forecast of Canadian-specific weather phenomena.</documentation>
+    </annotation>
+  </element>
+  <complexType name="AerodromeForecastWeatherType">
+    <annotation>
+      <documentation>Canadian Aerodrome Forecast Weather enables the Canadian-specific forecast weather at an aerodrome to be reported. Only a specific set of weather phenomenon are reported within aviation meteorology. MANAIR Section 2.6.11 Table 2. https://publications.gc.ca/site/eng/9.941904/publication.html</documentation>
+      <appinfo>
+        <vocabulary>https://dd.meteo.gc.ca/today/aviation/iwxxm/code-ca/present_and_forecast_weather</vocabulary>
+        <extensibility>none</extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"></extension>
+    </complexContent>
+  </complexType>
+  <complexType name="AerodromeForecastWeatherPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:weather" />
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup" />
+  </complexType>
+</schema>

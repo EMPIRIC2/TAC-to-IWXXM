@@ -21,7 +21,7 @@ GITHUB_BUNDLE_NAMES: tuple[str, ...] = (
 )
 
 # HTTP archive snapshots — require source_url (+ optional archive_sha256).
-HTTP_BUNDLE_NAMES: tuple[str, ...] = ("iwxxm-us",)
+HTTP_BUNDLE_NAMES: tuple[str, ...] = ("iwxxm-us", "iwxxm-ca")
 
 VENDOR_BUNDLE_NAMES: tuple[str, ...] = GITHUB_BUNDLE_NAMES + HTTP_BUNDLE_NAMES
 
