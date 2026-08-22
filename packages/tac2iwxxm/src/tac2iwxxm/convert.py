@@ -29,7 +29,7 @@ from tac2iwxxm.profiles.annex3_products import (
     emit_vaa_annex3,
     emit_vona_annex3,
 )
-from tac2iwxxm.profiles.ca_eccc import emit_metar_speci_ca_eccc
+from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION, emit_airmet_ca_eccc, emit_metar_speci_ca_eccc, emit_taf_ca_eccc
 from tac2iwxxm.profiles.iwxxm_us import (
     emit_airmet_iwxxm_us,
     emit_metar_speci_iwxxm_us,
@@ -39,7 +39,7 @@ from tac2iwxxm.profiles.iwxxm_us import (
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI"})
+_CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
 # Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
@@ -277,6 +277,8 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
     if product == "TAF":
         if profile == "iwxxm_us":
             return emit_taf_iwxxm_us(ir, iwxxm_version=iwxxm_version)
+        if profile == EMIT_CA_ECCC:
+            return emit_taf_ca_eccc(ir, iwxxm_version=iwxxm_version)
         return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SIGMET":
         if profile == "iwxxm_us":
@@ -285,6 +287,8 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
     if product == "AIRMET":
         if profile == "iwxxm_us":
             return emit_airmet_iwxxm_us(ir, iwxxm_version=iwxxm_version)
+        if profile == EMIT_CA_ECCC:
+            return emit_airmet_ca_eccc(ir, iwxxm_version=iwxxm_version)
         return emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "VAA":
         return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
@@ -441,6 +445,11 @@ def convert(
             "UNSUPPORTED_PROFILE",
             f"profile ca_eccc not supported yet for product {product_u!r}",
         )
+    if profile_l == EMIT_CA_ECCC and iwxxm_version != CA_IWXXM_VERSION:
+        return _fail(
+            "INVALID_IWXXM_VERSION",
+            f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}",
+        )
 
     status_override: str | None = None
     if report_status is not None:
@@ -508,15 +517,7 @@ def convert(
                 end=rmk_match.end() if rmk_match else None,
             )
         )
-    if profile_l == EMIT_CA_ECCC:
-        issues.append(
-            ConvertIssue(
-                severity="info",
-                code="PROFILE_STUB",
-                message=("CA_ECCC uses annex3 METAR/SPECI encoding until iwxxm-ca vendor pin (#916)"),
-            )
-        )
-    if profile_l == EMIT_IWXXM_US:
+    if profile_l in {EMIT_CA_ECCC, EMIT_IWXXM_US}:
         raw_remarks: object = ir.get("remark_issues")
         if isinstance(raw_remarks, list):
             for item in cast(list[object], raw_remarks):

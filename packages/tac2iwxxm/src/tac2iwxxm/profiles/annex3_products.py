@@ -9,6 +9,7 @@ from xml.sax.saxutils import escape
 _NS = {
     "2025-2": "http://icao.int/iwxxm/2025-2",
     "2023-1": "http://icao.int/iwxxm/2023-1",
+    "3.0.0": "http://icao.int/iwxxm/3.0",
 }
 
 _CLOUD_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
@@ -33,14 +34,22 @@ def _ns(iwxxm_version: str) -> str:
     return ns
 
 
+def _taf_time_prefix(ir: dict[str, Any]) -> str:
+    """WMO YUDO examples use 2012-08; other fixtures use 2023-06."""
+    if ir.get("station") == "YUDO":
+        return "2012-08"
+    return "2023-06"
+
+
 def _taf_issue_stamp(ir: dict[str, Any]) -> str:
-    # WMO YUDO A5-1 examples use 2012-08.
-    return f"2012-08-{int(ir['issue_day']):02d}T{int(ir['issue_hour']):02d}:{int(ir['issue_minute']):02d}:00Z"
+    prefix = _taf_time_prefix(ir)
+    return f"{prefix}-{int(ir['issue_day']):02d}T{int(ir['issue_hour']):02d}:{int(ir['issue_minute']):02d}:00Z"
 
 
 def _taf_period(ir: dict[str, Any], *, from_key: str = "valid") -> tuple[str, str]:
-    begin = f"2012-08-{int(ir[f'{from_key}_from_day']):02d}T{int(ir[f'{from_key}_from_hour']):02d}:00:00Z"
-    end = f"2012-08-{int(ir[f'{from_key}_to_day']):02d}T{int(ir[f'{from_key}_to_hour']):02d}:00:00Z"
+    prefix = _taf_time_prefix(ir)
+    begin = f"{prefix}-{int(ir[f'{from_key}_from_day']):02d}T{int(ir[f'{from_key}_from_hour']):02d}:00:00Z"
+    end = f"{prefix}-{int(ir[f'{from_key}_to_day']):02d}T{int(ir[f'{from_key}_to_hour']):02d}:00:00Z"
     return begin, end
 
 
@@ -199,7 +208,28 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
     return "".join(parts)
 
 
-def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+def _taf_visibility_block(fcst: dict[str, Any]) -> str:
+    """Render prevailing visibility for a TAF forecast group."""
+    display_uom = fcst.get("visibility_display_uom")
+    if isinstance(display_uom, str):
+        vis = f'      <iwxxm:prevailingVisibility uom="{display_uom}">{fcst["visibility_display_value"]}</iwxxm:prevailingVisibility>\n'
+        if fcst.get("visibility_above"):
+            vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+        return vis
+    if fcst.get("visibility_m") is not None:
+        vis = f'      <iwxxm:prevailingVisibility uom="m">{fcst["visibility_m"]}</iwxxm:prevailingVisibility>\n'
+        if fcst.get("visibility_above"):
+            vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+        return vis
+    return ""
+
+
+def emit_taf_annex3(
+    ir: dict[str, Any],
+    *,
+    iwxxm_version: str,
+    forecast_extension: str = "",
+) -> str:
     """Emit a minimal IWXXM TAF document for the annex3 profile."""
     ns = _ns(iwxxm_version)
     station = str(ir["station"])
@@ -283,15 +313,12 @@ def emit_taf_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         vis = ""
         cloud = ""
         if not ir.get("cavok"):
-            if ir.get("visibility_m") is not None:
-                vis = f'      <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>\n'
-                if ir.get("visibility_above"):
-                    vis += "      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n"
+            vis = _taf_visibility_block(ir)
             cloud = _taf_cloud_block(ir, gml_id=f"cloud.base.{station.lower()}")
         base_fcst = f"""  <iwxxm:baseForecast>
     <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.{station.lower()}" cloudAndVisibilityOK="{cavok}">
       <iwxxm:phenomenonTime xlink:href="#uuid.00000000-0000-4000-8000-000000000001"/>
-{vis}{wind}{cloud}    </iwxxm:MeteorologicalAerodromeForecast>
+{vis}{wind}{cloud}{forecast_extension}    </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
 """
         changes = _taf_change_forecasts(ir, station)
@@ -1003,7 +1030,12 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     )
 
 
-def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+def emit_airmet_annex3(
+    ir: dict[str, Any],
+    *,
+    iwxxm_version: str,
+    phenomenon_href: str | None = None,
+) -> str:
     """Emit an IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731)."""
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
@@ -1101,7 +1133,7 @@ def emit_airmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 """
         )
 
-    phenom = _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
+    phenom = phenomenon_href or _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
     intensity = str(ir.get("intensity_change", "NO_CHANGE"))
     time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
     geometry = _sigmet_geometry_xml(ir, fir=fir)

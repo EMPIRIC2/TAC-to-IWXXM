@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "EV-063 M8 \u2014 CA_ECCC stub fixture (#916 started)",
+  "description": "EV-064 M3/M4/M5 — CA_ECCC MANOBS METAR + MANAIR TAF/AIRMET golden pack",
   "profile": "CA_ECCC",
   "cases": [
     {
@@ -8,8 +8,48 @@
       "product": "METAR",
       "tac": "METAR/valid/metar_basic.tac",
       "golden": "METAR/valid/metar_basic.golden.xml",
-      "rule_id": "CA.METAR.BASIC",
-      "status": "stub"
+      "rule_id": "CA.METAR.ALT.A",
+      "status": "active"
+    },
+    {
+      "id": "metar_vis_sm",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_vis_sm.tac",
+      "golden": "METAR/valid/metar_vis_sm.golden.xml",
+      "rule_id": "CA.METAR.VIS.SM",
+      "status": "active"
+    },
+    {
+      "id": "metar_auto",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_auto.tac",
+      "golden": "METAR/valid/metar_auto.golden.xml",
+      "rule_id": "CA.METAR.AUTO",
+      "status": "active"
+    },
+    {
+      "id": "metar_rmk_presfr",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rmk_presfr.tac",
+      "golden": "METAR/valid/metar_rmk_presfr.golden.xml",
+      "rule_id": "CA.METAR.RMK.PRESFR",
+      "status": "active"
+    },
+    {
+      "id": "taf_nclws",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_nclws.tac",
+      "golden": "TAF/valid/taf_nclws.golden.xml",
+      "rule_id": "CA.TAF.NCLWS",
+      "status": "active"
+    },
+    {
+      "id": "airmet_gfa",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_gfa.tac",
+      "golden": "AIRMET/valid/airmet_gfa.golden.xml",
+      "rule_id": "CA.AIRMET.GFA",
+      "status": "active"
     }
   ]
 }

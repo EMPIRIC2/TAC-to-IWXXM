@@ -18,6 +18,8 @@ _TAF_NIL_ONLY = re.compile(
 )
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
+_VIS_SM = re.compile(r"\b(?P<mod>P)?(?P<vis>\d{1,2})SM\b")
+_NCLWS = re.compile(r"\bWS(?P<height>\d{3})/(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})(?P<ctype>CB|TCU)?\b")
 _ALT_INHG = re.compile(r"\bA(?P<alt>\d{4})\b")
 _NIL = re.compile(r"\bNIL\b")
@@ -92,6 +94,18 @@ def _parse_wx(text: str) -> list[str]:
     return [m.group("wx") for m in _WX_TOKEN.finditer(text)]
 
 
+def _parse_nclws(text: str) -> dict[str, Any] | None:
+    """Parse MANAIR low-level wind shear group ``WShhh/dddffKT``."""
+    match = _NCLWS.search(text)
+    if match is None:
+        return None
+    return {
+        "layer_top_ft": int(match.group("height")) * 100,
+        "wind_dir_deg": int(match.group("dir")),
+        "wind_speed_kt": int(match.group("spd")),
+    }
+
+
 def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
     """Parse wind / vis / cloud / weather from a base or change-group body."""
     out: dict[str, Any] = {}
@@ -99,11 +113,16 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
         out["cavok"] = True
         return out
     _parse_wind(text, out)
-    vis = _VIS_M.search(text)
-    if vis is not None:
-        metres = int(vis.group("vis"))
-        out["visibility_m"] = 10000 if metres >= 9999 else metres
-        out["visibility_above"] = metres >= 9999
+    vis_sm = _VIS_SM.search(text)
+    if vis_sm is not None:
+        out["visibility_sm"] = int(vis_sm.group("vis"))
+        out["visibility_above"] = vis_sm.group("mod") == "P"
+    else:
+        vis = _VIS_M.search(text)
+        if vis is not None:
+            metres = int(vis.group("vis"))
+            out["visibility_m"] = 10000 if metres >= 9999 else metres
+            out["visibility_above"] = metres >= 9999
     clouds = _parse_clouds(text)
     if clouds:
         out["clouds"] = clouds
@@ -116,13 +135,15 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
 
 
 def _taf_day_hour_stamp(ir: dict[str, Any], ddhh: str, *, minute: int = 0) -> str:
+    prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
     day = int(ddhh[0:2])
     hour = int(ddhh[2:4])
-    return f"2012-08-{day:02d}T{hour:02d}:{minute:02d}:00Z"
+    return f"{prefix}-{day:02d}T{hour:02d}:{minute:02d}:00Z"
 
 
 def _taf_valid_end_stamp(ir: dict[str, Any]) -> str:
-    return f"2012-08-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:00:00Z"
+    prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
+    return f"{prefix}-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:00:00Z"
 
 
 def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
@@ -266,6 +287,10 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
     ir.update(base)
     if ir.get("cavok"):
         ir["cavok"] = True
+
+    nclws = _parse_nclws(base_body)
+    if nclws is not None:
+        ir["nclws"] = nclws
 
     alt = _ALT_INHG.search(base_body)
     if alt is not None:

@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iwxxm:TAF xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0"
-    xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+<iwxxm:TAF xmlns:iwxxm="http://icao.int/iwxxm/3.0"
+    xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    gml:id="taf.us.kjfk"
+    gml:id="taf.ca.nclws.cyul"
     reportStatus="NORMAL"
     permissibleUsage="OPERATIONAL">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
-      <gml:timePosition>2023-06-15T18:00:00Z</gml:timePosition>
+      <gml:timePosition>2023-06-23T18:00:00Z</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:issueTime>
   <iwxxm:aerodrome>
-    <aixm:AirportHeliport gml:id="ad.kjfk">
+    <aixm:AirportHeliport gml:id="ad.cyul">
       <aixm:timeSlice>
-        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.kjfk">
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.cyul">
           <gml:validTime/>
           <aixm:interpretation>SNAPSHOT</aixm:interpretation>
-          <aixm:designator>KJFK</aixm:designator>
-          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>
+          <aixm:designator>CYUL</aixm:designator>
+          <aixm:locationIndicatorICAO>CYUL</aixm:locationIndicatorICAO>
         </aixm:AirportHeliportTimeSlice>
       </aixm:timeSlice>
     </aixm:AirportHeliport>
   </iwxxm:aerodrome>
   <iwxxm:validPeriod>
     <gml:TimePeriod gml:id="t.valid">
-      <gml:beginPosition>2023-06-16T00:00:00Z</gml:beginPosition>
-      <gml:endPosition>2023-06-16T18:00:00Z</gml:endPosition>
+      <gml:beginPosition>2023-06-23T19:00:00Z</gml:beginPosition>
+      <gml:endPosition>2023-06-24T18:00:00Z</gml:endPosition>
     </gml:TimePeriod>
   </iwxxm:validPeriod>
   <iwxxm:baseForecast>
-    <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.kjfk" cloudAndVisibilityOK="false">
+    <iwxxm:MeteorologicalAerodromeForecast gml:id="fcst.base.cyul" cloudAndVisibilityOK="false">
       <iwxxm:phenomenonTime xlink:href="#uuid.00000000-0000-4000-8000-000000000001"/>
-      <iwxxm:prevailingVisibility uom="m">5000</iwxxm:prevailingVisibility>
+      <iwxxm:prevailingVisibility uom="[mi_i]">6</iwxxm:prevailingVisibility>
+      <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>
       <iwxxm:surfaceWind>
         <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="false">
-          <iwxxm:meanWindDirection uom="deg">130</iwxxm:meanWindDirection>
-          <iwxxm:meanWindSpeed uom="[kn_i]">8</iwxxm:meanWindSpeed>
+          <iwxxm:meanWindDirection uom="deg">240</iwxxm:meanWindDirection>
+          <iwxxm:meanWindSpeed uom="[kn_i]">10</iwxxm:meanWindSpeed>
         </iwxxm:AerodromeSurfaceWindForecast>
       </iwxxm:surfaceWind>
       <iwxxm:cloud>
-        <iwxxm:AerodromeCloudForecast gml:id="cloud.base.kjfk">
+        <iwxxm:AerodromeCloudForecast gml:id="cloud.base.cyul">
           <iwxxm:layer>
             <iwxxm:CloudLayer>
               <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN"/>
@@ -52,10 +53,16 @@
         </iwxxm:AerodromeCloudForecast>
       </iwxxm:cloud>
       <iwxxm:extension>
-        <iwxxm-us:MeteorologicalAerodromeForecastExtension>
-          <iwxxm-us:altimeter uom="[in_i'Hg]">29.92</iwxxm-us:altimeter>
-        </iwxxm-us:MeteorologicalAerodromeForecastExtension>
+        <iwxxm-ca:NonConvectiveLowLevelWindShear gml:id="nclws.cyul">
+          <iwxxm-ca:windDirection uom="deg">240</iwxxm-ca:windDirection>
+          <iwxxm-ca:windSpeed uom="[kn_i]">45</iwxxm-ca:windSpeed>
+          <iwxxm-ca:layerAboveAerodrome>
+            <iwxxm-ca:lowerLimit uom="[ft_i]">0</iwxxm-ca:lowerLimit>
+            <iwxxm-ca:upperLimit uom="[ft_i]">1500</iwxxm-ca:upperLimit>
+          </iwxxm-ca:layerAboveAerodrome>
+        </iwxxm-ca:NonConvectiveLowLevelWindShear>
       </iwxxm:extension>
     </iwxxm:MeteorologicalAerodromeForecast>
   </iwxxm:baseForecast>
 </iwxxm:TAF>
+

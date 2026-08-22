@@ -5,10 +5,10 @@
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    gml:id="metar.ca.alt.a.cyul"
+    gml:id="metar.ca.auto.cyul"
     reportStatus="NORMAL"
     permissibleUsage="OPERATIONAL"
-    automatedStation="false">
+    automatedStation="true">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
       <gml:timePosition>2023-06-23T18:00:00Z</gml:timePosition>
@@ -44,8 +44,7 @@
       </iwxxm:surfaceWind>
       <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">9999</iwxxm:prevailingVisibility>
-          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>
+          <iwxxm:prevailingVisibility uom="[mi_i]">5</iwxxm:prevailingVisibility>
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
       <iwxxm:cloud>
@@ -58,6 +57,11 @@
           </iwxxm:layer>
         </iwxxm:AerodromeCloud>
       </iwxxm:cloud>
+      <iwxxm:extension>
+        <iwxxm-ca:Addendum>
+          <iwxxm-ca:observingSystemType xlink:href="https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/AWOS"/>
+        </iwxxm-ca:Addendum>
+      </iwxxm:extension>
     </iwxxm:MeteorologicalAerodromeObservation>
   </iwxxm:observation>
 </iwxxm:METAR>

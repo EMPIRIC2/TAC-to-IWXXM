@@ -104,6 +104,16 @@ _AIR_PHENOMENA = (
     ("MTW", "MTW"),
     ("TS", "TS"),
 )
+# MANAIR GFA compound phenomena → MSC code-ca vocabulary (EV-064 M5).
+_CA_GFA_PHENOMENA = (
+    ("FRQ TCU ISOL TSGR", "FRQ_TCU_ISOL_TSGR"),
+    ("FRQ TCU ISOL TS", "FRQ_TCU_ISOL_TS"),
+    ("OCNL TCU ISOL TSGR", "OCNL_TCU_ISOL_TSGR"),
+    ("OCNL TCU ISOL TS", "OCNL_TCU_ISOL_TS"),
+    ("SFC VIS AND OVC CLD", "SFC_VIS_and_OVC_CLD"),
+    ("SFC VIS AND BKN CLD", "SFC_VIS_and_BKN_CLD"),
+)
+_GFA_CHART = re.compile(r"\bRMK\s+(GFACN\d+)\b", re.IGNORECASE)
 
 _DIR_DEG = {
     "N": 0,
@@ -137,6 +147,15 @@ def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
         if needle in upper:
             return code
     return "TS"
+
+
+def _detect_ca_gfa_phenomenon(body: str) -> str | None:
+    """Return MSC code-ca id when body encodes a MANAIR GFA compound phenomenon."""
+    upper = body.upper()
+    for needle, code in _CA_GFA_PHENOMENA:
+        if needle in upper:
+            return code
+    return None
 
 
 def _detect_intensity(body: str) -> str:
@@ -497,6 +516,12 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     }
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
+    gfa_code = _detect_ca_gfa_phenomenon(body)
+    if gfa_code is not None:
+        ir["ca_gfa_phenomenon"] = gfa_code
+    chart = _GFA_CHART.search(body)
+    if chart is not None:
+        ir["gfa_chart_id"] = chart.group(1).upper()
     _enrich_hazard_body(ir, body)
     return ir
 
