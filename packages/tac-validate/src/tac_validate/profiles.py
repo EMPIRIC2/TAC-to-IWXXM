@@ -10,11 +10,15 @@ from typing import Final
 
 PROFILE_ANNEX3: Final[str] = "annex3"
 PROFILE_IWXXM_US: Final[str] = "iwxxm_us"
+PROFILE_CA_ECCC: Final[str] = "ca_eccc"
 
-SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset({PROFILE_ANNEX3, PROFILE_IWXXM_US})
+SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset({PROFILE_ANNEX3, PROFILE_IWXXM_US, PROFILE_CA_ECCC})
 
 # Products with a defined US profile overlay (L5 REMARKS / FMH-1 / iwxxm-us encode).
 IWXXM_US_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
+
+# Products with CA_ECCC MANOBS/MANAIR overlay (EV-064 M3/M4).
+CA_ECCC_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
 
 # Full F6 + deepen products covered by the dual-profile matrix (AC7).
 F6_DUAL_PROFILE_PRODUCTS: Final[tuple[str, ...]] = (
@@ -45,17 +49,25 @@ def normalize_profile(profile: str) -> str:
     return key
 
 
+def ca_eccc_applicable(product: str) -> bool:
+    """Return True when ``profile=ca_eccc`` is defined for ``product``."""
+    return product.upper() in CA_ECCC_PRODUCTS
+
+
 def iwxxm_us_applicable(product: str) -> bool:
     """Return True when ``profile=iwxxm_us`` is defined for ``product``."""
     return product.upper() in IWXXM_US_PRODUCTS
 
 
 __all__ = [
+    "CA_ECCC_PRODUCTS",
     "F6_DUAL_PROFILE_PRODUCTS",
     "IWXXM_US_PRODUCTS",
     "PROFILE_ANNEX3",
+    "PROFILE_CA_ECCC",
     "PROFILE_IWXXM_US",
     "SUPPORTED_PROFILES",
+    "ca_eccc_applicable",
     "iwxxm_us_applicable",
     "normalize_profile",
 ]

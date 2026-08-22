@@ -3,6 +3,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  coerceIwxxmProfile,
   detectTacProduct,
   isConvertProductSelection,
   resolveConvertProduct,
@@ -87,6 +88,19 @@ describe('isConvertProductSelection', () => {
     expect(isConvertProductSelection('METAR')).toBe(true);
     expect(isConvertProductSelection('IWXXM')).toBe(true);
     expect(isConvertProductSelection('not-a-product')).toBe(false);
+  });
+});
+
+describe('coerceIwxxmProfile', () => {
+  it('accepts supported profiles including ca_eccc (EV-064)', () => {
+    expect(coerceIwxxmProfile('annex3')).toBe('annex3');
+    expect(coerceIwxxmProfile('iwxxm_us')).toBe('iwxxm_us');
+    expect(coerceIwxxmProfile('ca_eccc')).toBe('ca_eccc');
+  });
+
+  it('falls back to annex3 for unknown values', () => {
+    expect(coerceIwxxmProfile('GLOBAL_AFS')).toBe('annex3');
+    expect(coerceIwxxmProfile(null)).toBe('annex3');
   });
 });
 

@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
-> **Generated**: 2026-08-20 via `make catalog-regen`  
+> **Generated**: 2026-08-22 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -15,6 +15,11 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `AUTO_PRESENT` | `info` | {product} includes the AUTO modifier, meaning the observation was produced by an automatic station. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase. | — | modifier, metar, speci, r8 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — Table A3-2 / App 3 |
 | `BECMG_PRESENT` | `info` | {product} includes a BECMG (becoming) change group describing a gradual change. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | taf | change, taf, t2, becmg | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |
 | `CAVOK_PRESENT` | `info` | {product} includes CAVOK (ceiling and visibility OK). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | — | cavok, metar, speci, taf, t3, s1 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |
+| `CA_AIRMET_GFA` | `info` | {product} encodes MANAIR GFA compound phenomenon — ca_eccc profile awareness | — | airmet, ca_eccc, manair, gfa | — |
+| `CA_ALTIMETER_INHG` | `info` | {product} uses inch-of-mercury altimeter (A####) — MANOBS Canadian overlay | — | pressure, metar, speci, ca_eccc, manobs | — |
+| `CA_REMARK_MANOBS` | `info` | {product} Canadian REMARKS present — ca_eccc profile awareness | — | remark, metar, speci, ca_eccc, manobs | — |
+| `CA_STATUTE_MILE_VIS` | `info` | {product} uses statute-mile visibility — MANOBS Canadian overlay | — | visibility, metar, speci, ca_eccc, manobs | — |
+| `CA_TAF_NCLWS` | `info` | {product} includes MANAIR non-convective low-level wind shear (WS group) | — | taf, ca_eccc, manair, nclws | — |
 | `CLOUD_CB_OR_TCU` | `info` | {product} cloud group includes convective type CB/TCU | — | cloud, metar, speci, r4, cb, tcu | codes-wmo-int — https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf — CB/TCU convective type register |
 | `CNL_REPORT` | `info` | {product} is a CNL (cancel) report that withdraws a previously issued forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | taf | cnl, taf, t1 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |
 | `COR_PRESENT` | `info` | {product} includes the COR (correction) modifier, indicating a corrected report replacing a prior issue. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | — | modifier, metar, speci, taf, r8, t1, c1 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |

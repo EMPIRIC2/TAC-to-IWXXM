@@ -134,7 +134,7 @@ describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
     expect(screen.getByLabelText(/^profile$/i)).toBe(profile);
 
     const values = Array.from(profile.options).map((o) => o.value);
-    expect(values).toEqual(expect.arrayContaining(['annex3', 'iwxxm_us']));
+    expect(values).toEqual(expect.arrayContaining(['annex3', 'iwxxm_us', 'ca_eccc']));
     expect(profile.value).toBe('annex3');
   });
 

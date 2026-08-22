@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-08-20",
+  "generated": "2026-08-22",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -79,6 +79,84 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+    },
+    {
+      "code": "CA_AIRMET_GFA",
+      "severity": "info",
+      "message_template": "{product} encodes MANAIR GFA compound phenomenon \u2014 ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "airmet",
+        "ca_eccc",
+        "manair",
+        "gfa"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
+      "code": "CA_ALTIMETER_INHG",
+      "severity": "info",
+      "message_template": "{product} uses inch-of-mercury altimeter (A####) \u2014 MANOBS Canadian overlay",
+      "product": null,
+      "tags": [
+        "pressure",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
+      "code": "CA_REMARK_MANOBS",
+      "severity": "info",
+      "message_template": "{product} Canadian REMARKS present \u2014 ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
+      "code": "CA_STATUTE_MILE_VIS",
+      "severity": "info",
+      "message_template": "{product} uses statute-mile visibility \u2014 MANOBS Canadian overlay",
+      "product": null,
+      "tags": [
+        "visibility",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
+      "code": "CA_TAF_NCLWS",
+      "severity": "info",
+      "message_template": "{product} includes MANAIR non-convective low-level wind shear (WS group)",
+      "product": null,
+      "tags": [
+        "taf",
+        "ca_eccc",
+        "manair",
+        "nclws"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
     },
     {
       "code": "CLOUD_CB_OR_TCU",

@@ -36,7 +36,25 @@ export function isConvertProductSelection(value: string): value is TacProductSel
   return value === 'auto' || (CONVERT_PRODUCTS as readonly string[]).includes(value);
 }
 
-export type IwxxmProfile = 'annex3' | 'iwxxm_us';
+export type IwxxmProfile = 'annex3' | 'iwxxm_us' | 'ca_eccc';
+
+const IWXXM_PROFILES: readonly IwxxmProfile[] = ['annex3', 'iwxxm_us', 'ca_eccc'];
+
+/**
+ * Narrow stored/UI profile strings to a supported IWXXM emit profile.
+ *
+ * @param value - Candidate profile string
+ * @returns Supported profile id
+ */
+export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
+  if (
+    typeof value === 'string' &&
+    (IWXXM_PROFILES as readonly string[]).includes(value)
+  ) {
+    return value as IwxxmProfile;
+  }
+  return 'annex3';
+}
 
 const PRODUCT_RE =
   /\b(AIRMET|SIGMET|SPECI|METAR|TAF|VAA|TCA|SWXA|VONA|SWX\s+ADVISORY|VOLCANIC\s+ASH|TROPICAL\s+CYCLONE)\b/i;

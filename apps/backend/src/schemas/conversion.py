@@ -235,7 +235,7 @@ class ConversionRequest(BaseModel):
     )
     semantic_profile: Optional[str] = Field(
         default=None,
-        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC)",
     )
     exchange_profile: Optional[str] = Field(
         default=None,

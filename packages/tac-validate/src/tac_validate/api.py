@@ -5,7 +5,7 @@ from __future__ import annotations
 from tac_validate.ahl import lint_ahl_bulletin, looks_like_ahl
 from tac_validate.models import LintReport
 from tac_validate.products import PRODUCTS
-from tac_validate.profiles import PROFILE_ANNEX3, iwxxm_us_applicable, normalize_profile
+from tac_validate.profiles import PROFILE_ANNEX3, ca_eccc_applicable, iwxxm_us_applicable, normalize_profile
 from tac_validate.rules import check_parse_gate, check_product_rules
 
 
@@ -62,6 +62,8 @@ def lint(
     product_u = product.upper()
     if profile_l == "iwxxm_us" and not iwxxm_us_applicable(product_u):
         raise ValueError(f"profile iwxxm_us is not applicable for product {product_u!r} (N/A — use annex3)")
+    if profile_l == "ca_eccc" and not ca_eccc_applicable(product_u):
+        raise ValueError(f"profile ca_eccc is not applicable for product {product_u!r} (N/A — use annex3)")
 
     if looks_like_ahl(tac_text):
         return lint_ahl_bulletin(

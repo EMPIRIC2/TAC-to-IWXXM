@@ -27,6 +27,13 @@ def test_resolve_canonical_semantic_profile() -> None:
     assert sel.deprecated_alias_used is False
 
 
+def test_resolve_ca_eccc_semantic_profile() -> None:
+    sel = pw.resolve_route_profiles(semantic_profile="CA_ECCC")
+    assert sel.emit_key == "ca_eccc"
+    assert sel.semantic_canonical == "ca_eccc"
+    assert sel.deprecated_alias_used is False
+
+
 def test_resolve_legacy_alias_marks_deprecation() -> None:
     sel = pw.resolve_route_profiles(profile="annex3")
     assert sel.emit_key == "annex3"
