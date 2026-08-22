@@ -231,5 +231,13 @@ class ConversionRequest(BaseModel):
     )
     profile: Optional[str] = Field(
         default=None,
-        description="IWXXM profile: annex3 or iwxxm_us",
+        description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+    )
+    semantic_profile: Optional[str] = Field(
+        default=None,
+        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS)",
+    )
+    exchange_profile: Optional[str] = Field(
+        default=None,
+        description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only",
     )

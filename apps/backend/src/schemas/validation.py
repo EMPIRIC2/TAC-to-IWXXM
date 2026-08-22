@@ -241,9 +241,19 @@ class ValidateRequest(BaseModel):
     )
     stop_on_error: bool = Field(default=False, description="Stop processing on first error")
     profile: str = Field(
-        default="annex3",
-        description="Schema profile: annex3 (WMO) or iwxxm_us",
+        default="",
+        description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)",
         examples=["annex3", "iwxxm_us"],
+    )
+    semantic_profile: Optional[str] = Field(
+        default=None,
+        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS)",
+        examples=["ICAO_2025", "US_FAA_NWS"],
+    )
+    exchange_profile: Optional[str] = Field(
+        default=None,
+        description="Exchange packaging profile (e.g. GLOBAL_AFS)",
+        examples=["GLOBAL_AFS"],
     )
 
 

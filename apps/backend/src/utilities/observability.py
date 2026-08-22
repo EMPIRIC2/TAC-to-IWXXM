@@ -12,11 +12,14 @@ import threading
 import time
 from collections import defaultdict
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
+
+if TYPE_CHECKING:
+    from .profile_wire import WireProfileSelection
 
 # Module-level registry avoids relying on prometheus_client's private internals
 # while still preventing duplicate-registration errors on module reload.
@@ -69,6 +72,24 @@ METAR_CONVERSION_DURATION_SECONDS = _get_or_create_histogram(
     "metar_conversion_duration_seconds",
     "METAR conversion duration in seconds",
     ["status", "iwxxm_version", "icao_region"],
+)
+
+TAC_SEMANTIC_PROFILE_REQUESTS_TOTAL = _get_or_create_counter(
+    "tac_semantic_profile_requests_total",
+    "Profile wire requests by canonical semantic profile id (F35 / EV-063)",
+    ["route", "semantic_profile"],
+)
+
+TAC_EXCHANGE_PROFILE_REQUESTS_TOTAL = _get_or_create_counter(
+    "tac_exchange_profile_requests_total",
+    "Profile wire requests with an explicit exchange profile id (F35 / EV-063)",
+    ["route", "exchange_profile"],
+)
+
+TAC_SEMANTIC_PROFILE_ALIAS_REQUESTS_TOTAL = _get_or_create_counter(
+    "tac_semantic_profile_alias_requests_total",
+    "Profile wire requests that used a deprecated semantic profile alias (F35 / EV-063)",
+    ["route", "semantic_profile"],
 )
 
 
@@ -269,6 +290,44 @@ def setup_logging(service_name: str) -> None:
             root_logger.addHandler(loki_handler)
 
     ensure_request_log_filters()
+
+
+def _metric_profile_id(profile_id: str) -> str:
+    """Normalize a profile id for Prometheus labels (uppercase, no PII)."""
+    return (profile_id or "unknown").strip().upper().replace("-", "_") or "unknown"
+
+
+def record_profile_wire_metrics(route: str, wire: WireProfileSelection) -> None:
+    """
+    Record semantic/exchange profile id counters for a resolved wire selection.
+
+    Parameters
+    ----------
+    route :
+        FastAPI route path (e.g. ``/api/v1/convert``).
+    wire :
+        ``WireProfileSelection`` from ``profile_wire.resolve_route_profiles``.
+    """
+    safe_route = (route or "unknown").strip() or "unknown"
+    semantic_id = _metric_profile_id(getattr(wire, "semantic_canonical", ""))
+
+    TAC_SEMANTIC_PROFILE_REQUESTS_TOTAL.labels(
+        route=safe_route,
+        semantic_profile=semantic_id,
+    ).inc()
+
+    if getattr(wire, "deprecated_alias_used", False):
+        TAC_SEMANTIC_PROFILE_ALIAS_REQUESTS_TOTAL.labels(
+            route=safe_route,
+            semantic_profile=semantic_id,
+        ).inc()
+
+    exchange = getattr(wire, "exchange_profile", None)
+    if exchange:
+        TAC_EXCHANGE_PROFILE_REQUESTS_TOTAL.labels(
+            route=safe_route,
+            exchange_profile=_metric_profile_id(exchange),
+        ).inc()
 
 
 def record_translation_metric(
