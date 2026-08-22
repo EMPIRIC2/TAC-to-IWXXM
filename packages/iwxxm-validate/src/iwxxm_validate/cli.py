@@ -30,7 +30,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--profile",
         default="annex3",
-        choices=("annex3", "iwxxm_us"),
+        choices=("annex3", "iwxxm_us", "ca_eccc"),
         help="Schema profile (default: annex3)",
     )
     parser.add_argument(

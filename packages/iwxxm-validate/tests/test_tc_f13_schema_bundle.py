@@ -128,6 +128,13 @@ def test_validate_iwxxm_guard_paths(monkeypatch: pytest.MonkeyPatch) -> None:
     missing_us = validate_iwxxm("<r/>", iwxxm_version="2023-1", profile="iwxxm_us")
     assert missing_us.issues[0].code == "US_CATALOG_NOT_FOUND"
 
+    wrong_ver = validate_iwxxm("<r/>", iwxxm_version="2025-2", profile="ca_eccc")
+    assert wrong_ver.issues[0].code == "INVALID_IWXXM_VERSION"
+
+    monkeypatch.setattr(vi, "ca_xsd_path", lambda **_: None)
+    missing_ca = validate_iwxxm("<r/>", iwxxm_version="3.0.0", profile="ca_eccc")
+    assert missing_ca.issues[0].code == "CA_SCHEMA_NOT_FOUND"
+
     monkeypatch.setattr(vi, "rust_available", lambda: False)
     monkeypatch.setattr(
         vi,
