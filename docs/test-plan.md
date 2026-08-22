@@ -2664,6 +2664,41 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: #916 acceptance “METAR + one forecast product”
 - **Source**: EV-064 M4/M5; R-EV064-03/04
 
+### EV-066 / #916 — CA_ECCC RMK + altimeter deepen
+
+- **Mode**: deepen F36; IWXXM 3.0.0 + `iwxxm-ca` line
+- **Pass criteria**: AC in evolve-decisions §EV-066; TC-EV066-*
+- **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916); EV-066;
+  [domain/profiles/semantic/CA_ECCC.md](domain/profiles/semantic/CA_ECCC.md)
+
+### TC-EV066-001: PRESRR remark golden
+
+- **Level**: T0 / T2
+- **Objective**: `CA_ECCC` converts METAR with `PRESRR` to golden with RISING pressureChangeIndicator
+- **Pass criteria**: Manifest case `metar_rmk_presrr`; canonicalize diff empty
+- **Source**: EV-066 M1/M2; FR-EV066-01
+
+### TC-EV066-002: Altimeter not observable (`A////`)
+
+- **Level**: T0 / T2
+- **Objective**: Body `A////` → nil-reason QNH; no false altimeter_inhg
+- **Pass criteria**: Golden + convert ok; nilReason notObservable on qnh
+- **Source**: EV-066 M1/M2; FR-EV066-02
+
+### TC-EV066-003: SLP + hourly T remark combo
+
+- **Level**: T0 / T2
+- **Objective**: Addendum encodes SLP; additive T preserved in humanReadableText
+- **Pass criteria**: Golden diff empty; Addendum contains seaLevelPressure
+- **Source**: EV-066 M2; FR-EV066-03
+
+### TC-EV066-004: Canadian RMK lint deepen
+
+- **Level**: T0
+- **Objective**: `lint(..., profile=ca_eccc)` emits extended MANOBS remark codes
+- **Pass criteria**: `CA_REMARK_PRESRR`, `CA_REMARK_NOSPECI`, `CA_REMARK_SECTOR_VIS`, `CA_ALTIMETER_NOT_OBS`
+- **Source**: EV-066 M3; FR-EV066-04
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

@@ -189,6 +189,30 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("remark", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
+        "CA_REMARK_PRESRR",
+        "info",
+        "{product} MANOBS pressure rising rapidly (PRESRR) — ca_eccc profile awareness",
+        tags=("remark", "metar", "speci", "ca_eccc", "manobs", "presrr"),
+    ),
+    _row(
+        "CA_REMARK_NOSPECI",
+        "info",
+        "{product} MANOBS no-specials remark (NOSPECI) — ca_eccc profile awareness",
+        tags=("remark", "metar", "speci", "ca_eccc", "manobs", "nospeci"),
+    ),
+    _row(
+        "CA_REMARK_SECTOR_VIS",
+        "info",
+        "{product} MANOBS sector visibility remark — ca_eccc profile awareness",
+        tags=("remark", "metar", "speci", "ca_eccc", "manobs", "visibility"),
+    ),
+    _row(
+        "CA_ALTIMETER_NOT_OBS",
+        "info",
+        "{product} altimeter not observable (A////) — MANOBS Canadian overlay",
+        tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
+    ),
+    _row(
         "CA_TAF_NCLWS",
         "info",
         "{product} includes MANAIR non-convective low-level wind shear (WS group)",

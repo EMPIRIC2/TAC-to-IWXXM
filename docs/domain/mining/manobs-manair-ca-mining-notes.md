@@ -44,9 +44,9 @@ Level 6 — Operational datamart XML (conformance corpus)
 | Priority | MANOBS/MANAIR section | Fixture product | Status |
 |----------|----------------------|-----------------|--------|
 | P0 | SM visibility vs statute miles | METAR | promoted (`CA.METAR.VIS.SM`) |
-| P0 | `A####` altimeter coding | METAR/SPECI | promoted (`CA.METAR.ALT.A`) |
+| P0 | `A####` altimeter coding | METAR/SPECI | promoted (`CA.METAR.ALT.A`, `CA.METAR.ALT.NOT_OBS`) |
 | P0 | AUTO / observing system types | METAR | promoted (`CA.METAR.AUTO`) |
-| P1 | Canadian RMK grammar (non-US) | METAR/SPECI | partial (`CA.METAR.RMK.PRESFR`) |
+| P1 | Canadian RMK grammar (non-US) | METAR/SPECI | promoted (`CA.METAR.RMK.PRESFR`, `CA.METAR.RMK.PRESRR`, `CA.METAR.RMK.SLP_T`) |
 | P1 | LWIS product path | METAR | pending (XSD ref) |
 | P1 | MANAIR TAF amendment / national TAF rules | TAF | partial (`CA.TAF.NCLWS`) |
 | P2 | GFA AIRMET semantics | AIRMET | pending |
