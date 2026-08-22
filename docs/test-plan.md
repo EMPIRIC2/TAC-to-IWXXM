@@ -2615,6 +2615,55 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
 - **Source**: #1017; ADR-028; NFR1–NFR4
 
+### EV-064 / F36 — CA_ECCC profile (#916)
+
+- **Mode**: deepen F36; IWXXM 3.0.0 + `iwxxm-ca` line
+- **Pass criteria**: AC in evolve-decisions §EV-064; TC-EV064-*
+- **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916); ADR-036;
+  [domain/profiles/semantic/CA_ECCC.md](domain/profiles/semantic/CA_ECCC.md)
+
+### TC-EV064-001: Vendor pin iwxxm-ca + IWXXM 3.0.0 core
+
+- **Level**: T0
+- **Objective**: `vendor/manifest.json` includes `iwxxm-ca`; core 3.0.0 refs resolve for CA XSD
+- **Pass criteria**: Manifest checksum gate; sync script copies `iwxxm-ca` tree
+- **Source**: EV-064 M1; R-EV064-01
+
+### TC-EV064-002: Convert METAR CA_ECCC golden
+
+- **Level**: T0 / T2
+- **Objective**: `semantic_profile=CA_ECCC` converts MANOBS fixture to golden IWXXM
+- **Pass criteria**: Profile fixture manifest green; not annex3 delegate for targeted rules
+- **Source**: EV-064 M3; R-EV064-02
+
+### TC-EV064-003: Validate CA extension XSD path
+
+- **Level**: T0
+- **Objective**: `validate_iwxxm(..., profile=ca_eccc)` uses CA catalog roots
+- **Pass criteria**: Valid CA golden passes XSD; missing pin fails closed
+- **Source**: EV-064 M2; R-EV064-05
+
+### TC-EV064-004: API CA_ECCC wire matrix
+
+- **Level**: T2 / T3
+- **Objective**: `semantic_profile=CA_ECCC` on convert/validate; unknown id → 400
+- **Pass criteria**: TC-EV063-003 pattern extended for `ca_eccc`
+- **Source**: R-EV064-06
+
+### TC-EV064-005: FE profile picker CA_ECCC
+
+- **Level**: T2 / H4–H5
+- **Objective**: FileConverter profile dropdown includes Canada (ECCC)
+- **Pass criteria**: Workflow test sends `CA_ECCC` (or canonical wire id) on convert
+- **Source**: #1024 slice; R-EV064-07
+
+### TC-EV064-006: Forecast product E2E (TAF or AIRMET)
+
+- **Level**: T0 / T2
+- **Objective**: At least one MANAIR TAF or GFA AIRMET golden + API convert path
+- **Pass criteria**: #916 acceptance “METAR + one forecast product”
+- **Source**: EV-064 M4/M5; R-EV064-03/04
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

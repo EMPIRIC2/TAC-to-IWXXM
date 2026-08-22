@@ -13,10 +13,12 @@ from iwxxm_validate import validate
 from iwxxm_validate.codec import json_decoder, json_encoder
 from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.paths import (
+    ca_xsd_path,
     codelists_dir,
     repo_root,
     schematron_path,
     us_catalog_path,
+    vendor_iwxxm_ca_root,
     vendor_iwxxm_us_root,
     version_dir,
     xsd_path,
@@ -64,6 +66,57 @@ def test_xsd_and_schematron_paths_resolve_2023_1() -> None:
     assert vendor_iwxxm_us_root().is_dir()
 
 
+def test_ca_eccc_paths_resolve_when_vendored() -> None:
+    """TC-EV064-003: iwxxm-ca pin paths resolve for ca_eccc profile."""
+    assert vendor_iwxxm_ca_root().is_dir()
+    assert ca_xsd_path() is not None
+    assert xsd_path("3.0.0").name == "iwxxm.xsd"
+    assert schematron_path("3.0.0").name == "iwxxm.sch"
+
+
+def test_vendor_iwxxm_ca_root_repo_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    """When packaged subset is absent, resolve CA schemas from monorepo vendor pin."""
+    from iwxxm_validate.paths import vendor_iwxxm_ca_root
+
+    monkeypatch.setattr("iwxxm_validate.paths.packaged_schemas_root", lambda: None)
+    root = vendor_iwxxm_ca_root()
+    assert root.name == "iwxxm-ca"
+    assert root.is_dir()
+
+
+def test_validate_iwxxm_catalog_roots_include_ca_pin() -> None:
+    import importlib
+
+    vi = importlib.import_module("iwxxm_validate.validate_iwxxm")
+    roots = vi._catalog_roots("3.0.0", profile="ca_eccc")
+    assert any("iwxxm-ca" in entry for entry in roots)
+
+
+def test_validate_iwxxm_ca_eccc_accepts_3_0_0_rust_path(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    import importlib
+
+    vi = importlib.import_module("iwxxm_validate.validate_iwxxm")
+    xsd = tmp_path / "iwxxm.xsd"
+    sch = tmp_path / "iwxxm.sch"
+    xsd.write_text("<schema/>", encoding="utf-8")
+    sch.write_text("<schema/>", encoding="utf-8")
+    monkeypatch.setattr(vi, "rust_available", lambda: True)
+    monkeypatch.setattr(
+        vi,
+        "rust_module",
+        lambda: type(
+            "R",
+            (),
+            {"validate_document": staticmethod(lambda *a, **k: [])},
+        )(),
+    )
+    monkeypatch.setattr(vi, "xsd_path", lambda _v: xsd)
+    monkeypatch.setattr(vi, "schematron_path", lambda _v: sch)
+    report = vi.validate_iwxxm("<root/>", iwxxm_version="3.0.0", profile="ca_eccc")
+    assert report.ok is True
+    assert report.profile == "ca_eccc"
+
+
 def test_validate_invalid_profile() -> None:
     report = validate("<root/>", iwxxm_version="2023-1", profile="nope")
     assert report.ok is False
@@ -81,6 +134,13 @@ def test_validate_us_catalog_missing(monkeypatch: pytest.MonkeyPatch) -> None:
     report = validate("<root/>", iwxxm_version="2023-1", profile="iwxxm_us")
     assert report.ok is False
     assert report.issues[0].code == "US_CATALOG_NOT_FOUND"
+
+
+def test_validate_ca_schema_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("iwxxm_validate.api.ca_xsd_path", lambda **_: None)
+    report = validate("<root/>", iwxxm_version="3.0.0", profile="ca_eccc")
+    assert report.ok is False
+    assert report.issues[0].code == "CA_SCHEMA_NOT_FOUND"
 
 
 def test_validate_xsd_schema_not_available(monkeypatch: pytest.MonkeyPatch) -> None:

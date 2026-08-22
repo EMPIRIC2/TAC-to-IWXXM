@@ -53,9 +53,10 @@ import {
 } from '@/utils/guestLossNotice';
 import {
   DEFAULT_IWXXM_VERSION,
-  IWXXM_VERSION_OPTIONS,
+  CA_ECCC_IWXXM_VERSION,
   type IwxxmVersionId,
   coerceIwxxmVersion,
+  iwxxmVersionOptionsForProfile,
 } from '@/utils/iwxxmVersions';
 import { signOutWithScope } from '/utils/supabase/logout';
 import { getExampleById } from '@/fixtures/examples/examplesCatalog';
@@ -83,6 +84,7 @@ import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
 import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
+  coerceIwxxmProfile,
   isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
@@ -358,13 +360,17 @@ export function FileConverter({
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
           const prefs = JSON.parse(stored);
-          const iwxxmVersion = coerceIwxxmVersion(prefs.iwxxmVersion);
+          const profile = coerceIwxxmProfile(prefs.profile);
+          const iwxxmVersion =
+            profile === 'ca_eccc'
+              ? CA_ECCC_IWXXM_VERSION
+              : coerceIwxxmVersion(prefs.iwxxmVersion);
 
           setConversionParams({
             bulletinId: prefs.bulletinIdExample || 'SAAA00',
             issuingCenter: prefs.issuingCenter || 'KWBC',
             product: (prefs.product as TacProductSelection) || 'auto',
-            profile: prefs.profile === 'iwxxm_us' ? 'iwxxm_us' : 'annex3',
+            profile,
             iwxxmVersion,
             strictValidation: prefs.strictValidation ?? true,
             includeNilReasons: prefs.includeNilReasons ?? true,
@@ -457,8 +463,15 @@ export function FileConverter({
         if (typeof rawProduct === 'string' && isConvertProductSelection(rawProduct)) {
           next.product = rawProduct;
         }
-        if (params.profile === 'iwxxm_us' || params.profile === 'annex3') {
-          next.profile = params.profile;
+        if (
+          params.profile === 'iwxxm_us' ||
+          params.profile === 'annex3' ||
+          params.profile === 'ca_eccc'
+        ) {
+          next.profile = coerceIwxxmProfile(params.profile);
+          if (next.profile === 'ca_eccc') {
+            next.iwxxmVersion = CA_ECCC_IWXXM_VERSION;
+          }
         }
         return next;
       });
@@ -487,13 +500,17 @@ export function FileConverter({
       const stored = localStorage.getItem('metar_converter_preferences');
       if (stored) {
         const prefs = JSON.parse(stored);
-        const iwxxmVersion = coerceIwxxmVersion(prefs.iwxxmVersion);
+        const profile = coerceIwxxmProfile(prefs.profile);
+        const iwxxmVersion =
+          profile === 'ca_eccc'
+            ? CA_ECCC_IWXXM_VERSION
+            : coerceIwxxmVersion(prefs.iwxxmVersion);
 
         setConversionParams({
           bulletinId: prefs.bulletinIdExample || 'SAAA00',
           issuingCenter: prefs.issuingCenter || 'KWBC',
           product: (prefs.product as TacProductSelection) || 'auto',
-          profile: prefs.profile === 'iwxxm_us' ? 'iwxxm_us' : 'annex3',
+          profile,
           iwxxmVersion,
           strictValidation: prefs.strictValidation ?? true,
           includeNilReasons: prefs.includeNilReasons ?? true,
@@ -1973,16 +1990,24 @@ export function FileConverter({
                     data-testid="profile-type-select"
                     value={conversionParams.profile}
                     disabled={isReadOnly}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const profile = coerceIwxxmProfile(e.target.value);
                       setConversionParams((prev) => ({
                         ...prev,
-                        profile: e.target.value as IwxxmProfile,
-                      }))
-                    }
+                        profile,
+                        iwxxmVersion:
+                          profile === 'ca_eccc'
+                            ? CA_ECCC_IWXXM_VERSION
+                            : prev.iwxxmVersion === CA_ECCC_IWXXM_VERSION
+                              ? DEFAULT_IWXXM_VERSION
+                              : prev.iwxxmVersion,
+                      }));
+                    }}
                     className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   >
                     <option value="annex3">Annex 3</option>
                     <option value="iwxxm_us">IWXXM-US</option>
+                    <option value="ca_eccc">Canada (ECCC)</option>
                   </select>
                   <GoldenExamplesSelect
                     disabled={isReadOnly}
@@ -2391,11 +2416,13 @@ export function FileConverter({
                     }
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
-                    {IWXXM_VERSION_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
+                    {iwxxmVersionOptionsForProfile(conversionParams.profile).map(
+                      (opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ),
+                    )}
                   </select>
                 </div>
 

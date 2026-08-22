@@ -8,6 +8,7 @@ from xml.sax.saxutils import escape
 NS = {
     "2025-2": "http://icao.int/iwxxm/2025-2",
     "2023-1": "http://icao.int/iwxxm/2023-1",
+    "3.0.0": "http://icao.int/iwxxm/3.0",
 }
 
 CLOUD_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
@@ -102,10 +103,12 @@ def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> 
                 f'\n          <iwxxm:minimumVisibilityDirection uom="deg">'
                 f"{ir['min_visibility_dir_deg']}</iwxxm:minimumVisibilityDirection>"
             )
+    vis_uom = str(ir.get("visibility_display_uom") or "m")
+    vis_val = ir.get("visibility_display_value", ir["visibility_m"])
     ext = f"\n{visibility_extension}" if visibility_extension else ""
     return f"""      <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}{min_vis}{ext}
+          <iwxxm:prevailingVisibility uom="{vis_uom}">{vis_val}</iwxxm:prevailingVisibility>{vis_op}{min_vis}{ext}
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
 """
@@ -458,6 +461,9 @@ def _aerodrome_block(station: str) -> str:
     </aixm:AirportHeliport>
   </iwxxm:aerodrome>
 """
+
+
+aerodrome_block = _aerodrome_block
 
 
 def emit_metar_speci_annex3(

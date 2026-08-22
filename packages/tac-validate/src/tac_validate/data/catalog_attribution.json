@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-08-20",
+  "generated": "2026-08-22",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -37,6 +37,41 @@
       "status": "paywall",
       "note": "App 5 / Table A5-1",
       "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+    },
+    "CA_AIRMET_GFA": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "CA_ALTIMETER_INHG": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "CA_REMARK_MANOBS": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "CA_STATUTE_MILE_VIS": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "CA_TAF_NCLWS": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
     },
     "CLOUD_CB_OR_TCU": {
       "source_id": "codes-wmo-int",

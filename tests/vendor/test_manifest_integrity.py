@@ -52,6 +52,24 @@ class TestTcM002ManifestIntegrity:
         assert len(entry["archive_sha256"]) == 64
         assert (ROOT / "vendor/schemas/iwxxm-us/3.0/metarSpeci.xsd").is_file()
 
+    def test_iwxxm_ca_http_pin_fields(self) -> None:
+        """TC-EV064-001: iwxxm-ca MSC HTTPS index + XSD tree (EV-064 / #916)."""
+        manifest = load_manifest(MANIFEST_PATH)
+        entry = manifest["bundles"]["iwxxm-ca"]
+        assert entry["source_url"].startswith(
+            "https://dd.weather.gc.ca/today/aviation/iwxxm/schema"
+        )
+        assert entry["tag"] == "3.0"
+        assert entry["local_path"] == "vendor/schemas/iwxxm-ca"
+        assert len(entry["tree_sha256"]) == 64
+        assert (ROOT / "vendor/schemas/iwxxm-ca/3.0/iwxxm-ca.xsd").is_file()
+        assert (ROOT / "vendor/schemas/iwxxm-ca/3.0/metar-speci-ca.xsd").is_file()
+
+    def test_iwxxm_3_0_0_core_tree_for_ca(self) -> None:
+        """TC-EV064-001: IWXXM 3.0.0 core vendored for CA extension imports."""
+        core = ROOT / "vendor/schemas/iwxxm/3.0.0/IWXXM/iwxxm.xsd"
+        assert core.is_file(), f"missing IWXXM 3.0.0 core: {core}"
+
     def test_manifest_schema_version(self) -> None:
         """Manifest uses the supported schema version."""
         assert MANIFEST_PATH.is_file()

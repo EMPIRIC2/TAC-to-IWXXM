@@ -72,6 +72,15 @@ _RMK_SLP_OK = re.compile(r"^SLP\d{3}$")
 _RMK_P_OK = re.compile(r"^P\d{4}$")
 _RMK_T_OK = re.compile(r"^T\d{8}$")
 _RMK_PK_VAL = re.compile(r"^\d{5}/\d{2,4}$")
+_RMK_PRES_CA = re.compile(r"^PRES(?:FR|RR)$")
+_NCLWS_TAC = re.compile(r"^WS\d{3}/\d{3}\d{2,3}KT$")
+_CA_GFA_PHENOM = re.compile(
+    r"\b(?:FRQ|OCNL)\s+TCU\s+ISOL\s+TS(?:GR)?\b|\bSFC\s+VIS\s+AND\s+(?:BKN|OVC)\s+CLD\b",
+    re.IGNORECASE,
+)
+_GFA_CHART = re.compile(r"\bRMK\s+GFACN\d+\b", re.IGNORECASE)
+_TAF_VIS_SM = re.compile(r"^P?\d{1,2}SM$")
+_ALT_INHG_BODY = re.compile(r"\bA\d{4}\b")
 _WX_TOKEN_SHAPE = re.compile(r"^(?://|[+-]{1,2}[A-Z]{2,8}|[A-Z]{2,8}[+-]|[+-]?[A-Z]{2,8})$")
 _TEMP = re.compile(r"\bM?\d{2}/M?\d{2}\b")
 _QNH = re.compile(r"\b[QA]\d{4}\b")
@@ -520,6 +529,136 @@ def _check_us_remarks(
             body_start=body_start,
             body_end=body_end,
             token="RMK",
+        )
+    return issues
+
+
+def _check_ca_manobs(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """MANOBS overlay hints for ``profile=ca_eccc`` (EV-064 M3)."""
+    if profile != "ca_eccc":
+        return []
+    issues: list[Issue] = []
+    for tok in tokens:
+        if tok.endswith("SM"):
+            vis_part = tok[:-2]
+            if vis_part.isdigit() or (vis_part.startswith("P") and vis_part[1:].isdigit()):
+                _emit_token_info(
+                    issues,
+                    code="CA_STATUTE_MILE_VIS",
+                    message=f"{product} statute-mile visibility ({tok}) — MANOBS CA overlay",
+                    core=core,
+                    body_start=body_start,
+                    body_end=body_end,
+                    token=tok,
+                )
+                break
+    alt = _ALT_INHG_BODY.search(core)
+    if alt is not None:
+        _emit_token_info(
+            issues,
+            code="CA_ALTIMETER_INHG",
+            message=f"{product} inch-of-mercury altimeter ({alt.group(0)}) — MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=alt.group(0),
+        )
+    if "RMK" in tokens:
+        rmk_i = tokens.index("RMK")
+        remark = tokens[rmk_i + 1 :]
+        saw_ca = any(_RMK_SLP_OK.fullmatch(t) for t in remark) or any(_RMK_PRES_CA.fullmatch(t) for t in remark)
+        if saw_ca:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_MANOBS",
+                message=f"{product} Canadian REMARKS (SLP/PRESFR/PRESRR) — ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="RMK",
+            )
+    return issues
+
+
+def _check_ca_manair(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """MANAIR overlay hints for ``profile=ca_eccc`` (EV-064 M4)."""
+    if profile != "ca_eccc" or product != "TAF":
+        return []
+    issues: list[Issue] = []
+    for tok in tokens:
+        if _NCLWS_TAC.fullmatch(tok):
+            _emit_token_info(
+                issues,
+                code="CA_TAF_NCLWS",
+                message=f"{product} MANAIR low-level wind shear ({tok}) — ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+            break
+        if _TAF_VIS_SM.fullmatch(tok):
+            _emit_token_info(
+                issues,
+                code="CA_STATUTE_MILE_VIS",
+                message=f"{product} statute-mile visibility ({tok}) — MANAIR CA overlay",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=tok,
+            )
+    return issues
+
+
+def _check_ca_gfa_airmet(
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """MANAIR GFA overlay hints for ``profile=ca_eccc`` AIRMET (EV-064 M5)."""
+    if profile != "ca_eccc" or product != "AIRMET":
+        return []
+    issues: list[Issue] = []
+    phenom = _CA_GFA_PHENOM.search(core)
+    if phenom is not None:
+        _emit_token_info(
+            issues,
+            code="CA_AIRMET_GFA",
+            message=f"{product} MANAIR GFA compound phenomenon ({phenom.group(0).strip()}) — ca_eccc profile awareness",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=phenom.group(0).strip(),
+        )
+    chart = _GFA_CHART.search(core)
+    if chart is not None:
+        _emit_token_info(
+            issues,
+            code="CA_AIRMET_GFA",
+            message=f"{product} GFA chart remark ({chart.group(0).strip()}) — ca_eccc profile awareness",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token=chart.group(0).strip(),
         )
     return issues
 
@@ -999,6 +1138,16 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
         )
     )
     issues.extend(
+        _check_ca_manobs(
+            tokens,
+            product=product,
+            core=core,
+            body_start=start,
+            body_end=end,
+            profile=profile,
+        )
+    )
+    issues.extend(
         _check_r8_pack(
             tokens,
             product=product,
@@ -1113,7 +1262,7 @@ def _check_s1_exceptional(
     return issues
 
 
-def _check_taf(tac: str) -> list[Issue]:
+def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
     """TAF checklist — A5-1 template gates + F20 T1 NIL/CNL/AMD/COR."""
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -1265,6 +1414,16 @@ def _check_taf(tac: str) -> list[Issue]:
         core=core,
         body_start=start,
         body_end=end,
+    )
+    issues.extend(
+        _check_ca_manair(
+            tokens,
+            product=product,
+            core=core,
+            body_start=start,
+            body_end=end,
+            profile=profile,
+        )
     )
 
     return issues
@@ -1960,9 +2119,10 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
     return issues
 
 
-def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
+def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
     start, end, body = _body_span(tac)
     upper = body.upper()
+    core = upper[:-1] if upper.endswith("=") else upper
     issues: list[Issue] = []
     # F23 theme C1 — one IWXXM report per TAC report (shared with METAR/SPECI/TAF).
     issues.extend(_check_c1_multi_report(tac, product))
@@ -1997,6 +2157,15 @@ def _check_sigmet_airmet(tac: str, product: str) -> list[Issue]:
             return issues
         # F24 theme A2 — OBS/STNR/intensity/TOP ABV (phenomenon families below).
         issues.extend(_check_airmet_a2(start=start, end=end, upper=upper))
+        issues.extend(
+            _check_ca_gfa_airmet(
+                product=product,
+                core=core,
+                body_start=start,
+                body_end=end,
+                profile=profile,
+            )
+        )
 
     families = _SIGMET_FAMILIES if product == "SIGMET" else _AIRMET_FAMILIES
     hit = _count_families(upper, families)
@@ -2418,9 +2587,9 @@ def check_product_rules(
     if product in {"METAR", "SPECI"}:
         return _check_metar_speci(tac_text, product, profile=profile)
     if product == "TAF":
-        return _check_taf(tac_text)
+        return _check_taf(tac_text, profile=profile)
     if product in {"SIGMET", "AIRMET"}:
-        return _check_sigmet_airmet(tac_text, product)
+        return _check_sigmet_airmet(tac_text, product, profile=profile)
     if product == "VAA":
         return _check_vaa(tac_text)
     if product == "TCA":

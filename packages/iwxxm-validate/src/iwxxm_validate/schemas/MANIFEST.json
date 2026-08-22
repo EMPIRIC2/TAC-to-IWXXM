@@ -3,10 +3,11 @@
   "decision": "E10-34",
   "related": ["E10-6"],
   "description": "Runtime IWXXM schema subset for the iwxxm-validate wheel (XSD + Schematron + RDF codelists + externalSchema catalogs + IWXXM-US). Excludes modelling/translation bulk and documentation trees.",
-  "iwxxm_versions": ["2023-1", "2025-2"],
+  "iwxxm_versions": ["3.0.0", "2023-1", "2025-2"],
   "include": {
     "iwxxm": ["{version}/IWXXM/*.xsd", "{version}/IWXXM/rule/**", "externalSchema/**"],
-    "iwxxm-us": ["**"]
+    "iwxxm-us": ["**"],
+    "iwxxm-ca": ["**"]
   },
   "exclude": [
     "**/html/**",

@@ -75,6 +75,7 @@ Engine layer names (`AIRPORT_ICAO`, `TAC_SYNTAX`, …) are implementation detail
 |---------|----------|
 | `annex3` | Vendor IWXXM 2025-2 XSD + SCH + RDF only |
 | `iwxxm_us` | Same **plus** iwxxm-us 3.0 combined catalogs / examples for `extension` content |
+| `ca_eccc` | IWXXM **3.0.0** core XSD + SCH + RDF **plus** `iwxxm-ca` 3.0 extension XSD tree and `code-ca` vocabularies (MSC operational line — not 2025-2) |
 
 ### Fixture priority
 

@@ -194,7 +194,7 @@ Legacy flat `profile=` remains as deprecated alias. Optional `PROFILE_WIRE_V2` e
 defaults (see env-contract).
 
 **Intent**: Separate **semantic** (TAC→IWXXM) from **exchange** (packaging). Canonical semantic
-ids: `ICAO_2025`, `US_FAA_NWS`. Legacy aliases during deprecation window (until **2026-10-31**,
+ids: `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`. Legacy aliases during deprecation window (until **2026-10-31**,
 [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)):
 
 | Alias | Canonical |
@@ -209,7 +209,7 @@ package-only routes):
 |-------|----------|---------|-------------|
 | `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id |
 | `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
-| `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`) |
+| `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`) |
 | `exchange_profile` | no | `GLOBAL_AFS` | Used when **packaging** / disseminate-prep invoked; ignored on convert-only |
 | `profile` | no | — | **Deprecated** — maps to `semantic_profile` via alias table |
 

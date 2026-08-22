@@ -1,0 +1,901 @@
+<?xml version='1.0' encoding='utf-8'?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified"
+  targetNamespace="https://dd.meteo.gc.ca/today/aviation/iwxxm/" xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:iwxxm="http://icao.int/iwxxm/3.0" xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/">
+  <import namespace="http://icao.int/iwxxm/3.0" schemaLocation="http://schemas.wmo.int/iwxxm/3.0/iwxxm.xsd"/>
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+
+  <element name="LWIS" type="iwxxm-ca:LWISType" substitutionGroup="iwxxm:MeteorologicalAerodromeObservationReport">
+    <annotation>
+      <documentation>
+		Limited Weather Information System (LWIS).  Ref: MANOBS 8 Chap 11.3; TC AIM MET 8.5.2
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="LWISType">
+    <complexContent>
+      <extension base="iwxxm:MeteorologicalAerodromeObservationReportType">
+        <sequence>
+          <element name="extension" type="iwxxm:ExtensionType" minOccurs="0" maxOccurs="unbounded">
+            <annotation>
+              <documentation>
+		Extension block for optional and/or additional parameters for element LWIS
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="LWISPropertyType">
+    <sequence minOccurs="0">
+      <element ref="iwxxm-ca:LWIS"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="SAWR" type="iwxxm-ca:SAWRType" substitutionGroup="iwxxm:MeteorologicalAerodromeObservationReport">
+    <annotation>
+      <documentation>
+		Supplementary Aviation Weather Reporting (SAWR) stations
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="SAWRType">
+    <complexContent>
+      <extension base="iwxxm:MeteorologicalAerodromeObservationReportType">
+        <sequence>
+          <element name="extension" type="iwxxm:ExtensionType" minOccurs="0" maxOccurs="unbounded">
+            <annotation>
+              <documentation>
+		Extension block for optional and/or additional parameters for element SAWR
+              </documentation>
+            </annotation>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <complexType name="SAWRPropertyType">
+    <sequence minOccurs="0">
+      <element ref="iwxxm-ca:SAWR"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="Addendum" type="iwxxm-ca:AddendumType">
+    <annotation>
+      <documentation>
+		Class containing meteorological parameters observed in Canada not already encoded in other IWXXM classes
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="AddendumType">
+    <sequence>
+      <element maxOccurs="1" minOccurs="0" name="observingSystemType" type="iwxxm-ca:ObservingSystemTypeType">
+        <annotation>
+          <documentation>
+		Observing system types in use in Canada
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="1" minOccurs="0" name="humanReadableText" type="string">
+        <annotation>
+          <documentation>
+		Plaintext which further elaborate on parameters reported in the body of the report, or contain information in an 
+		unstructured format and cannot be easily parsed. Examples include information on volcanic eruptions, funnel and 
+		rotor clouds, tornadoes, virga, aircraft mishaps, etc.
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="1" minOccurs="0" nillable="true" name="seaLevelPressure" type="iwxxm:MeasureWithNilReasonType">
+        <annotation>
+          <documentation>
+		Mean sea level pressure is computed from the station pressure and reported in observations so that the 
+		barometric pressures at stations of different elevations can be compared at a common level for synoptic purposes.
+		Ref: MANOBS 8 Chap. 9.2.2 and 13.2.8
+          </documentation>
+        </annotation>
+      </element>
+      <element nillable="true" name="densityAltitude" type="iwxxm:MeasureWithNilReasonType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+          	Density altitude is the altitude in ICAO Standard Atmosphere at which the air density would be equal to the air 
+		density at field elevation at the current temperature.
+		Ref: TC AIM MET 8.5.3 d)
+          </documentation>
+        </annotation>
+      </element>
+      <element name="reportingSite" type="string" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		A site that will transmit an observation on behalf of another. This is also known as the buddy site.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="AerodromeSurfaceWind" type="iwxxm-ca:WindType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		When suitable instruments are lacking or when the instruments are not in operating condition, 
+		the wind direction (to eight points of the compass) and the wind speed and 
+		character shall be estimated.
+		Ref: MANOBS 8 Chap. 3.3.6.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="icing" type="iwxxm-ca:AerodromeIcingType" minOccurs="0" maxOccurs="1">
+        <annotation>
+           <documentation>
+		Icing reported by either at staff sites when icing is observed on the ice accretion indicator or 
+		detected by the ice accretion sensor of an AWOS equiped with such a sensor. 
+		Ref: MANOBS 8 Chap. 6.6.2.4
+           </documentation>
+        </annotation>
+      </element>
+      <element name="presentWeather" type="iwxxm:AerodromePresentWeatherType" minOccurs="0" maxOccurs="unbounded">
+        <annotation>
+          <documentation>
+		When there are more than three present weather elements reported, the surplus elements shall be reported here.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="cloud" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		When there are more than four cloud layers reported OR there is a vertical visibility reported, 
+		those surplus elements or all of the cloud layers shall be reported here.
+          </documentation>
+        </annotation>
+        <complexType>
+          <complexContent>
+            <extension base="iwxxm:AerodromeCloudPropertyType">
+              <attribute name="nilReason" type="gml:NilReasonType"/>
+            </extension>
+          </complexContent>
+        </complexType>
+      </element>
+      <element name="pressureChangeIndicator" type="iwxxm-ca:PressureChangingRapidlyType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		The remark PRESRR is used when the pressure trace indicates that the station 
+		pressure is rising at the rate of 2.0 hPa per hour or more at the time of observation.
+		The remark PRESFR is used when the pressure trace indicates that the station 
+		pressure is falling at the rate of 2.0 hPa per hour or more at the time of observation.
+		Ref: MANOBS 8 Chap. 9.2.1
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="1" minOccurs="0" name="visuallyObservablePhenomena" type="iwxxm-ca:VisuallyObservablePhenomenaPropertyType"/>
+      <element maxOccurs="unbounded" minOccurs="0" name="processedQuantity" type="iwxxm-ca:ProcessedPropertyPropertyType"/>
+    </sequence>
+  </complexType>
+  <complexType name="AddendumPropertyType">
+    <sequence minOccurs="0">
+      <element ref="iwxxm-ca:Addendum"/>
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup"/>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="AerodromeAverageWind" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:AerodromeAverageWindType">
+    <annotation>
+      <documentation>
+		The average wind speed and direction between the start and end times listed.
+		Ref: MANOBS 8 Chap. 3.2.3 and 3.2.5
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="AerodromeAverageWindType">
+    <sequence>
+      <element nillable="true" name="windDirection" type="iwxxm:AngleWithNilReasonType">
+        <annotation>
+          <documentation>
+		The average wind direction
+		Ref: MANOBS 8 Chap. 3.2.3
+          </documentation>
+        </annotation>
+      </element>
+      <element nillable="true" name="windSpeed" type="iwxxm:VelocityWithNilReasonType">
+        <annotation>
+          <documentation>
+		The average wind speed
+		Ref: MANOBS 8 Chap. 3.2.5
+          </documentation>
+        </annotation>
+      </element>
+      <element name="startAveragePeriod" type="gml:TimeInstantPropertyType">
+        <annotation>
+          <documentation>
+		Start of the average period
+          </documentation>
+        </annotation>
+      </element>
+      <element name="endAveragePeriod" type="gml:TimeInstantPropertyType">
+        <annotation>
+          <documentation>
+		End of the average period
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="AerodromeAverageWindPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:AerodromeAverageWind"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="AerodromePrevailingVisibility" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:AerodromePrevailingVisibilityType">
+    <annotation>
+      <documentation>
+		It is the maximum visibility value common to sectors comprising one-half or more of the horizon circle.
+		Ref: MANOBS 8 Chap. 4.2
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="AerodromePrevailingVisibilityType">
+    <sequence>
+      <element name="prevailingVisibility" type="gml:LengthType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		The prevailing horizontal visibility reported in a trend forecast. Prevailing horizontal visibility shall be reported in meters ("m").
+          </documentation>
+          <appinfo>
+            <quantity>
+		http://codes.wmo.int/common/quantity-kind/aeronauticalPrevailingHorizontalVisibility
+            </quantity>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="AerodromePrevailingVisibilityPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:AerodromePrevailingVisibility"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="AerodromeVariableRVR" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:AerodromeVariableRVRType">
+    <annotation>
+      <documentation>
+		Two RVR values may be reported, the minimum and maximum 1-min mean RVR values during the 10-min period preceding the observation, 
+		if they vary from the 10-min mean by at least 20% (and by 150 ft).
+		Ref: TC AIM MET 8.3 i)
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="AerodromeVariableRVRType">
+    <sequence>
+      <element name="minimumRVR" type="gml:LengthType">
+        <annotation>
+          <documentation>
+		Lowest reportable RVR distance.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="maximumRVR" type="gml:LengthType">
+        <annotation>
+          <documentation>
+		Highest reportable RVR distance.
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute name="belowSensorMinimum" type="boolean">
+      <annotation>
+        <documentation>
+		Visibility is less than sensor's minimum limits.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="aboveSensorMaximum" type="boolean">
+      <annotation>
+        <documentation>
+		Visibility is greater than sensor's maximum limits.
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+  <complexType name="AerodromeVariableRVRPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:AerodromeVariableRVR"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="AerodromeWindShift" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:AerodromeWindShiftType">
+    <annotation>
+      <documentation>
+		A wind shift shall be indicated if a change in the wind direction of 45 degrees or more in less than 15 minutes
+		with sustained wind speeds of 10 [kn_i] or more throughout the period occurs.  Frontal passage may be indicated
+		if it is reasonably certain that the wind shift was the result.
+		Ref: MANOBS 8 Chap. 3.3.3
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="AerodromeWindShiftType">
+    <sequence>
+      <element name="timeOfWindShift" type="gml:TimeInstantPropertyType">
+        <annotation>
+          <documentation>
+		The time of the wind shift shall be the time at which the wind begins to shift
+		Ref: MANOBS 8 Chap. 3.3.3
+          </documentation>
+        </annotation>
+      </element>
+      <element nillable="true" name="windShiftDirection" type="iwxxm:AngleWithNilReasonType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		The direction at the completion of the shift (shall not be variable)
+		Ref: MANOBS 8 Chap. 3.3.3
+          </documentation>
+          <appinfo>
+            <quantity>
+		http://codes.wmo.int/common/quantity-kind/windDirection
+            </quantity>
+          </appinfo>
+        </annotation>
+      </element>
+      <element nillable="true" name="windShiftSpeed" type="iwxxm:VelocityWithNilReasonType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		The average wind speed at the completion of the shift (10 kt or more)
+		Ref: MANOBS 8 Chap. 3.3.3
+          </documentation>
+          <appinfo>
+            <quantity>
+		http://codes.wmo.int/common/quantity-kind/windSpeed
+            </quantity>
+          </appinfo>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="AerodromeWindShiftPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:AerodromeWindShift"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="FailedSensors" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:FailedSensorsType">
+    <annotation>
+      <documentation>
+		Type, and optionally, the location of the failed sensor(s).
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="FailedSensorsType">
+    <sequence>
+      <element maxOccurs="unbounded" minOccurs="1" name="parameter" type="iwxxm-ca:MeteorologicalSensorsType">
+        <annotation>
+          <documentation>
+		The parameter that cannot be measured due to an inoperable sensor.
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="FailedSensorsPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:FailedSensors"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="InoperativeSensors" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:InoperativeSensorsType">
+    <annotation>
+      <documentation>
+		Current list of inoperative sensors at the time of the report.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="InoperativeSensorsType">
+    <sequence>
+      <element maxOccurs="unbounded" minOccurs="1" name="failedSensors" type="iwxxm-ca:FailedSensorsPropertyType">
+        <annotation>
+          <documentation>
+		An observation system's sensor(s) which failed measurement standards and/or 
+		specifications at the time of the report.
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="InoperativeSensorsPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:InoperativeSensors"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="CloudTypes" type="iwxxm-ca:CloudTypesType"/>
+  <complexType name="CloudTypesType">
+    <annotation>
+      <documentation>
+		WMO International Cloud Atlas
+      </documentation>
+      <appinfo>
+        <vocabulary>
+		https://codes.wmo.int/bufr4/codeflag/0-20-012
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <element name="Obscurations" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:ObscurationsType">
+    <annotation>
+      <documentation>
+		Weather phenomenon, either surface-based or aloft or clouds, that completely or 
+		partially obscure the sky.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="ObscurationsType">
+    <sequence>
+      <element name="base" type="gml:LengthType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		Height of obscuring phenomenon or cloud above ground level. Value of zero indicates 
+		surface-based phenomenon.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="obscurationAmount" type="iwxxm:CloudAmountReportedAtAerodromeType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		Portion of the sky obscured by the phenomenon or cloud.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="weatherCausingObscuration" type="iwxxm:AerodromePresentWeatherType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		Weather phenomenon (surface-based or aloft) that completely or partially obscures the sky.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="cloudType" type="iwxxm-ca:CloudTypesType" minOccurs="0" maxOccurs="1">
+        <annotation>
+          <documentation>
+		The observed cloud type
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute name="traceCloud" type="boolean">
+      <annotation>
+        <documentation>
+		A layer aloft amount consisting of less than one okta
+		Ref: NC-SWOP Definitions, p. 15.
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+  <complexType name="ObscurationsPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:Obscurations"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="ObservedLightning" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:ObservedLightningType">
+    <annotation>
+      <documentation>
+		Records location and characteristics of observed lightning at the observation site.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="ObservedLightningType">
+    <sequence>
+      <element maxOccurs="2" minOccurs="0" name="qualitativeDistance" type="iwxxm-ca:QualitativeDistanceType">
+        <annotation>
+          <documentation>
+		Qualitative distance estimate from observation location to lightning  activity, 
+		e.g, distant or in the vicinity.
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="4" minOccurs="0" name="sector" nillable="true">
+        <annotation>
+          <documentation>
+		One or more arcs which the lightning activity extends along the local horizon.
+          </documentation>
+        </annotation>
+        <complexType>
+          <complexContent>
+            <extension base="iwxxm-ca:SectorPropertyType">
+              <attribute name="nilReason" type="gml:NilReasonType"/>
+            </extension>
+          </complexContent>
+        </complexType>                
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="ObservedLightningPropertyType">
+    <sequence>
+      <element maxOccurs="4" minOccurs="1" ref="iwxxm-ca:ObservedLightning"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="Sector" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:SectorType">
+    <annotation>
+      <documentation>
+		Endpoints of the azimuth angles and, optionally, measured distances to the 
+		phenomenon that defines the sector
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="SectorType">
+    <sequence>
+      <element maxOccurs="1" minOccurs="0" name="extremeCCWDirection" type="gml:AngleType">
+        <annotation>
+          <documentation>
+		The counterclockwise-most extent of the observed convective cloud on the local 
+		horizon as expressed in degrees from true north.
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="1" minOccurs="0" name="extremeCCWDistance" type="gml:LengthType">
+        <annotation>
+          <documentation>
+		Measured distance to the phenomena at the extreme counter-clockwise angle.
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="1" minOccurs="0" name="extremeCWDirection" type="gml:AngleType">
+        <annotation>
+          <documentation>
+		The clockwise-most extent of the observed convective cloud on the local horizon 
+		as expressed in degrees from true north.
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="1" minOccurs="0" name="extremeCWDistance" type="gml:LengthType">
+        <annotation>
+          <documentation>
+		Measured distance to the phenomena at the extreme clockwise angle.
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute name="inAllQuadrants" type="boolean">
+      <annotation>
+        <documentation>
+		If event is occurring in all quadrants of the horizon, this shall be set to true 
+		and no angles or distances provided.
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+  <complexType name="SectorPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:Sector"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="SectorVisibility" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:SectorVisibilityType">
+    <annotation>
+      <documentation>
+		Sector visibility shall be reported when it differs from the prevailing visibility 
+		by one or more reportable values and either the prevailing or sector visibility is 
+		less than 3 miles
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="SectorVisibilityType">
+    <sequence>
+      <element name="visibility" type="gml:LengthType">
+        <annotation>
+          <documentation>
+		Horizontal visibility in this sector
+          </documentation>
+        </annotation>
+      </element>
+      <element name="direction" type="gml:AngleType">
+        <annotation>
+          <documentation>
+		The sector's mid-point direction as expressed in degrees from true north.
+          </documentation>
+        </annotation>
+      </element>
+      <element maxOccurs="1" minOccurs="0" name="belowSensorMinimum" type="boolean">
+        <annotation>
+          <documentation>
+		If visibility in this sector is less than the nearest visual reference for distance 
+		or below sensors' minimum, this attribute shall be set to true.
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="SectorVisibilityPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:SectorVisibility"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="ProcessedProperty" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:ProcessedPropertyType">
+    <annotation>
+      <documentation>
+		This class supports a general need to capture statistically processed quantities in 
+		observation reports, such as maximum/minimum temperatures, precipitation amounts 
+		over a duration, etc. The processed value contains the actual measurement. The 
+		remaining attributes are needed to properly interpret the value.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="ProcessedPropertyType">
+    <sequence>
+      <element name="processedWeatherElement" type="iwxxm-ca:StatisticallyProcessedWeatherElementsType">
+        <annotation>
+          <documentation>
+		The meteorological parameter subjected to the statistical procedure.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="valueType" type="iwxxm-ca:StatisticalFunctionTypeType">
+        <annotation>
+          <documentation>
+		Type of extreme value, e.g., minimum or maximum.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="valuePeriod" type="duration">
+        <annotation>
+          <documentation>
+		The time duration of the set of values which the statistical processing was applied.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="processedValue" nillable="true" type="iwxxm:MeasureWithNilReasonType">
+        <annotation>
+          <documentation>
+		The measured value of the meteorological parameter.
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="ProcessedPropertyPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:ProcessedProperty"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="VariableVisibility" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:VariableVisibilityType">
+    <annotation>
+      <documentation>
+		If the prevailing visibility is observed to be fluctuating rapidly and increasing and 
+		decreasing from a mean value by 1/4 or more of the mean value, the range of variation 
+		shall be entered in Remarks beginning with the lowest visibility value. The mean value 
+		shall be entered as the prevailing visibility.
+		Ref: MANOBS 8 Chap. 4.5.2
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="VariableVisibilityType">
+    <sequence>
+      <element name="minimumVisibility" type="gml:LengthType">
+        <annotation>
+          <documentation>
+		The lower bound value of the prevailing visibility during the sampling period.
+          </documentation>
+        </annotation>
+      </element>
+      <element name="maximumVisibility" type="gml:LengthType">
+        <annotation>
+          <documentation>
+		The upper bound value of the prevailing visibility during the sampling period.
+          </documentation>
+        </annotation>
+      </element>
+    </sequence>
+    <attribute name="belowMinimum" type="boolean">
+      <annotation>
+        <documentation>
+		If minimum visibility is below sensor limitations or, for the human observer, the 
+		nearest reference point, this attribute shall be set to true.
+	</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+  <complexType name="VariableVisibilityPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:VariableVisibility"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="VisuallyObservablePhenomena" substitutionGroup="gml:AbstractObject" type="iwxxm-ca:VisuallyObservablePhenomenaType">
+    <annotation>
+      <documentation>
+		This class contains additive data that cannot be automated. As such, these reports 
+		are taken manually, or augmented by a trained observer.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="VisuallyObservablePhenomenaType">
+    <sequence>
+      <element maxOccurs="1" minOccurs="0" name="lightning" type="iwxxm-ca:ObservedLightningPropertyType"/>
+      <element maxOccurs="unbounded" minOccurs="0" name="obscuration" type="iwxxm-ca:ObscurationsPropertyType"/>
+    </sequence>
+  </complexType>
+  <complexType name="VisuallyObservablePhenomenaPropertyType">
+    <sequence>
+      <element ref="iwxxm-ca:VisuallyObservablePhenomena"/>
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup"/>
+  </complexType>
+  <element name="ConvectiveCloudTypes" type="iwxxm-ca:ConvectiveCloudTypesType"/>
+  <complexType name="ConvectiveCloudTypesType">
+    <annotation>
+      <documentation>
+		Convective type cloud observed within the celestial dome from the point of 
+		observation shall be reported in the sky condition. 
+		These type are CB, TCU in the body of the METAR/SPECI.
+		Ref: MANOBS 8 Chap. 7.3
+      </documentation>
+      <appinfo>
+        <vocabulary>
+		http://codes.wmo.int/49-2/_SigConvectiveCloudType
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <element name="MeteorologicalSensors" type="iwxxm-ca:MeteorologicalSensorsType"/>
+  <complexType name="MeteorologicalSensorsType">
+    <annotation>
+      <appinfo>
+        <vocabulary>
+		https://codes.ec.gc.ca/iwxxm/Sensor
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <element name="ObservingSystemType" type="iwxxm-ca:ObservingSystemTypeType"/>
+  <complexType name="ObservingSystemTypeType">
+    <annotation>
+      <appinfo>
+        <vocabulary>
+		In Canada there are Staff, SAWR, AWOS, and LWIS type of observing types
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <element name="PressureChangingRapidly" type="iwxxm-ca:PressureChangingRapidlyType"/>
+  <complexType name="PressureChangingRapidlyType">
+    <annotation>
+      <documentation>
+		The remark PRESRR is used when the pressure trace indicates that the station 
+		pressure is rising at the rate of 2.0 hPa per hour or more at the time of 
+		observation.
+		The remark PRESFR is used when the pressure trace indicates that the station 
+		pressure is falling at the rate of 2.0 hPa per hour or more at the time of 
+		observation.
+		Ref: MANOBS 8 Chap. 9.2.1
+      </documentation>
+      <appinfo>
+        <vocabulary>
+		The remark PRESRR and the remark PRESFR
+		Ref: MANOBS 8 Chap. 9.2.1
+	</vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <element name="QualitativeDistance" type="iwxxm-ca:QualitativeDistanceType"/>
+  <complexType name="QualitativeDistanceType">
+    <annotation>
+      <documentation>
+		For phenomena of, or associated with, a convective nature such as cumulonimbus 
+		clouds or lightning, the distance from the observer may be qualified and reported.
+      </documentation>
+      <appinfo>
+        <vocabulary>
+		https://codes.ec.gc.ca/iwxxm/QualitativeDistance
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <element name="StatisticalFunctionType" type="iwxxm-ca:StatisticalFunctionTypeType"/>
+  <complexType name="StatisticalFunctionTypeType">
+    <annotation>
+      <appinfo>
+        <vocabulary>
+		https://codes.wmo.int/grib2/codeflag/4.10
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <element name="StatisticallyProcessedWeatherElements" type="iwxxm-ca:StatisticallyProcessedWeatherElementsType"/>
+  <complexType name="StatisticallyProcessedWeatherElementsType">
+    <annotation>
+      <documentation>
+		List of weather parameters that are statistically processed in the report.
+      </documentation>
+      <appinfo>
+        <vocabulary>
+		https://codes.ec.gc.ca/iwxxm/StatisticallyProcessedWeatherElements
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <complexType name="AerodromeIcingType">
+    <annotation>
+      <documentation>
+		Icing reported by either at staff sites when icing is observed on the ice accretion 
+		indicator or detected by the ice accretion sensor of an AWOS equipted with such a 
+		sensor. 
+      </documentation>
+      <appinfo>
+        <vocabulary>
+		https://codes.ec.gc.ca/iwxxm/AerodromeIcing
+        </vocabulary>
+        <extensibility>
+		none
+        </extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+    <extension base="gml:ReferenceType"/>
+    </complexContent>
+  </complexType>
+  <complexType name="WindType">
+    <attribute name="windEstimated" type="boolean">
+      <annotation>
+        <documentation>
+		Boolean to indicate that the wind speed was estimated
+	</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+  <complexType name="TraceCloudType">
+    <attribute name="traceCloud" type="boolean">
+      <annotation>
+        <documentation>
+		Boolean to indicate the presence of a trace cloud
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+</schema>

@@ -1313,7 +1313,7 @@ export interface components {
             profile: string;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)
              * @default
              */
             semantic_profile: string;
@@ -1389,7 +1389,7 @@ export interface components {
             profile: string;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)
              * @default
              */
             semantic_profile: string;
@@ -1505,7 +1505,7 @@ export interface components {
             request_body?: components["schemas"]["ValidateRequest"] | null;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)
              * @default
              */
             semantic_profile: string;
@@ -2962,9 +2962,10 @@ export interface components {
             profile: string;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC)
              * @example ICAO_2025
              * @example US_FAA_NWS
+             * @example CA_ECCC
              */
             semantic_profile?: string | null;
             /**

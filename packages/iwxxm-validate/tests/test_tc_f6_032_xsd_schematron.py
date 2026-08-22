@@ -155,6 +155,31 @@ def test_validate_iwxxm_us_profile_resolves_without_fastapi() -> None:
     assert report.profile == "iwxxm_us"
 
 
+def test_validate_ca_eccc_profile_resolves_without_fastapi() -> None:
+    """TC-EV064-003: profile=ca_eccc accepted when vendor pin present."""
+    from iwxxm_validate import validate
+    from iwxxm_validate.paths import ca_xsd_path
+
+    assert ca_xsd_path() is not None, "iwxxm-ca vendor pin required for TC-EV064-003"
+
+    stub = """<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://icao.int/iwxxm/3.0"/>
+"""
+    report = validate(stub, iwxxm_version="3.0.0", profile="ca_eccc")
+    assert hasattr(report, "ok")
+    assert report.profile == "ca_eccc"
+    assert report.issues[0].code != "CA_SCHEMA_NOT_FOUND"
+
+
+def test_validate_ca_eccc_rejects_wrong_iwxxm_version() -> None:
+    """TC-EV064-003: ca_eccc requires IWXXM 3.0.0 operational line."""
+    from iwxxm_validate import validate
+
+    report = validate("<root/>", iwxxm_version="2025-2", profile="ca_eccc")
+    assert report.ok is False
+    assert report.issues[0].code == "INVALID_IWXXM_VERSION"
+
+
 def test_package_has_no_fastapi_or_supabase_imports() -> None:
     """SoC: iwxxm-validate must not import FastAPI or Supabase (spec.md)."""
     forbidden = {"fastapi", "supabase"}

@@ -171,6 +171,36 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("modifier", "metar", "speci", "r8"),
     ),
     _row(
+        "CA_STATUTE_MILE_VIS",
+        "info",
+        "{product} uses statute-mile visibility — MANOBS Canadian overlay",
+        tags=("visibility", "metar", "speci", "ca_eccc", "manobs"),
+    ),
+    _row(
+        "CA_ALTIMETER_INHG",
+        "info",
+        "{product} uses inch-of-mercury altimeter (A####) — MANOBS Canadian overlay",
+        tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
+    ),
+    _row(
+        "CA_REMARK_MANOBS",
+        "info",
+        "{product} Canadian REMARKS present — ca_eccc profile awareness",
+        tags=("remark", "metar", "speci", "ca_eccc", "manobs"),
+    ),
+    _row(
+        "CA_TAF_NCLWS",
+        "info",
+        "{product} includes MANAIR non-convective low-level wind shear (WS group)",
+        tags=("taf", "ca_eccc", "manair", "nclws"),
+    ),
+    _row(
+        "CA_AIRMET_GFA",
+        "info",
+        "{product} encodes MANAIR GFA compound phenomenon — ca_eccc profile awareness",
+        tags=("airmet", "ca_eccc", "manair", "gfa"),
+    ),
+    _row(
         "COR_PRESENT",
         "info",
         "{product} includes the COR (correction) modifier, indicating a corrected report replacing a prior issue. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.",

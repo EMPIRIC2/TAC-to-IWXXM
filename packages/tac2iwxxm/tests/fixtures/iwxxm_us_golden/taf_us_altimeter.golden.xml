@@ -10,7 +10,7 @@
     permissibleUsage="OPERATIONAL">
   <iwxxm:issueTime>
     <gml:TimeInstant gml:id="t.issue">
-      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>
+      <gml:timePosition>2023-06-15T18:00:00Z</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:issueTime>
   <iwxxm:aerodrome>
@@ -27,8 +27,8 @@
   </iwxxm:aerodrome>
   <iwxxm:validPeriod>
     <gml:TimePeriod gml:id="t.valid">
-      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>
-      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>
+      <gml:beginPosition>2023-06-16T00:00:00Z</gml:beginPosition>
+      <gml:endPosition>2023-06-16T18:00:00Z</gml:endPosition>
     </gml:TimePeriod>
   </iwxxm:validPeriod>
   <iwxxm:baseForecast>

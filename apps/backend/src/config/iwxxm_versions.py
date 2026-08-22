@@ -146,6 +146,22 @@ DEPRECATED_VERSIONS: Dict[str, Dict[str, str]] = {
     "3.0-dev": {"deprecated_date": "2026-02-13", "reason": "Legacy 3.x versions no longer supported"},
 }
 
+# Profile-scoped IWXXM lines (EV-064 / CA_ECCC) — not in general version picker.
+PROFILE_SCOPED_VERSIONS: Dict[str, Dict[str, Any]] = {
+    "3.0.0": {
+        "name": "IWXXM 3.0.0 (MSC operational)",
+        "namespace_uri": "http://icao.int/iwxxm/3.0",
+        "schema_url": "https://schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd",
+        "local_schema_base": _local_schema_base("3.0.0"),
+        "schema_file": "iwxxm.xsd",
+        "schematron_file": "rule/iwxxm.sch",
+        "codelists_dir": "rule",
+        "has_measures_xsd": True,
+        "split_nil_codelists": False,
+        "emit_profiles": frozenset({"ca_eccc"}),
+    },
+}
+
 # Version remapping (for non-existent or deprecated versions)
 VERSION_REMAPPING = {
     "2025-1": "2025-2",  # 2025-1 doesn't exist; remap to 2025-2
@@ -275,6 +291,39 @@ def get_version_config(version: str) -> Dict[str, Any]:
         raise ValueError(f"IWXXM version '{version}' is not supported. Supported versions: {VALID_VERSION_STRINGS}")
 
     return ALL_VERSIONS[normalized]
+
+
+def get_version_config_for_emit_profile(version: str, emit_profile: str | None = None) -> Dict[str, Any]:
+    """
+    Resolve IWXXM version config, allowing profile-scoped lines when appropriate.
+
+    Parameters
+    ----------
+    version :
+        IWXXM version string (e.g. ``2025-2``, ``3.0.0``).
+    emit_profile :
+        tac2iwxxm / iwxxm-validate emit key (e.g. ``ca_eccc``).
+
+    Returns
+    -------
+    dict
+        Version configuration dictionary.
+
+    Raises
+    ------
+    VersionDeprecatedError
+        When the version is deprecated and not allowed for ``emit_profile``.
+    ValueError
+        When the version is unknown.
+    """
+    normalized = normalize_version(version)
+    try:
+        return get_version_config(normalized)
+    except VersionDeprecatedError:
+        scoped = PROFILE_SCOPED_VERSIONS.get(normalized)
+        if scoped and emit_profile in scoped.get("emit_profiles", frozenset()):
+            return scoped
+        raise
 
 
 def normalize_version(version: str) -> str:

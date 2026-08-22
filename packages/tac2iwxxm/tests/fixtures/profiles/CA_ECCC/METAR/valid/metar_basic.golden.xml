@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0"
+    xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    gml:id="metar.basic.cyul"
+    gml:id="metar.ca.alt.a.cyul"
     reportStatus="NORMAL"
     permissibleUsage="OPERATIONAL"
     automatedStation="false">

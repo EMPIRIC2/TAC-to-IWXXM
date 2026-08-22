@@ -42,7 +42,7 @@ def _sample_for_bundle(
     name: str, local_path: str, *, tree_sha256: str = "a" * 64
 ) -> dict[str, str]:
     """Pick GitHub vs HTTP sample factory from bundle name."""
-    if name == "iwxxm-us":
+    if name in ("iwxxm-us", "iwxxm-ca"):
         return _sample_http_bundle(local_path, tree_sha256=tree_sha256)
     return _sample_bundle(local_path, tree_sha256=tree_sha256)
 
@@ -61,6 +61,7 @@ def _required_bundles(
             "iwxxm-modelling",
             "iwxxm-translation",
             "iwxxm-us",
+            "iwxxm-ca",
         )
     }
 
@@ -106,6 +107,7 @@ def test_verify_manifest_integrity_detects_checksum_drift(tmp_path: Path) -> Non
         "iwxxm-modelling",
         "iwxxm-translation",
         "iwxxm-us",
+        "iwxxm-ca",
     ):
         path = tmp_path / "vendor" / "schemas" / name
         path.mkdir(parents=True)
@@ -143,6 +145,7 @@ def test_validate_manifest_schema_reports_missing_required_bundle() -> None:
     errors = validate_manifest_schema(manifest)
     assert any("missing required bundle 'iwxxm-codelists'" in err for err in errors)
     assert any("missing required bundle 'iwxxm-us'" in err for err in errors)
+    assert any("missing required bundle 'iwxxm-ca'" in err for err in errors)
 
 
 def test_validate_manifest_schema_reports_bundle_field_errors() -> None:
@@ -243,7 +246,7 @@ def test_verify_manifest_integrity_skips_non_object_or_incomplete_bundle_entries
         "iwxxm": "not-an-object",
         "iwxxm-codelists": {"local_path": 123, "tree_sha256": "a" * 64},
     }
-    for name in ("iwxxm-modelling", "iwxxm-translation", "iwxxm-us"):
+    for name in ("iwxxm-modelling", "iwxxm-translation", "iwxxm-us", "iwxxm-ca"):
         root = tmp_path / "vendor" / "schemas" / name
         root.mkdir(parents=True)
         (root / "README.md").write_text(name, encoding="utf-8")
@@ -290,6 +293,7 @@ def test_verify_manifest_integrity_passes_for_matching_tree(tmp_path: Path) -> N
         "iwxxm-modelling",
         "iwxxm-translation",
         "iwxxm-us",
+        "iwxxm-ca",
     ):
         root = tmp_path / "vendor" / "schemas" / name
         root.mkdir(parents=True)

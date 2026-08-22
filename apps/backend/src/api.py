@@ -1308,7 +1308,7 @@ async def convert_bulletin(
     profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
     ),
     exchange_profile: str = Form(
         default="",
@@ -1597,7 +1597,7 @@ async def validate_comprehensive(
     profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
     ),
     exchange_profile: str = Form(
         default="",
@@ -1680,15 +1680,15 @@ async def validate_comprehensive(
 
         # Normalize version
         try:
-            from .config.iwxxm_versions import get_version_config, normalize_version
+            from .config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
         except ImportError:
-            from config.iwxxm_versions import get_version_config, normalize_version
+            from config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
 
         iwxxm_version = normalize_version(iwxxm_version)
 
         # Validate version is supported
         try:
-            get_version_config(iwxxm_version)
+            get_version_config_for_emit_profile(iwxxm_version, profile)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
 
@@ -1851,7 +1851,7 @@ async def convert(
     profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
     ),
     exchange_profile: str = Form(
         default="",
@@ -2214,13 +2214,13 @@ async def convert(
 
     # Validate and normalize IWXXM version
     try:
-        from .config.iwxxm_versions import get_version_config, normalize_version
+        from .config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
     except ImportError:
-        from config.iwxxm_versions import get_version_config, normalize_version
+        from config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
 
     try:
         iwxxm_version = normalize_version(iwxxm_version)
-        get_version_config(iwxxm_version)
+        get_version_config_for_emit_profile(iwxxm_version, profile)
     except ValueError as e:
         logger.warning("[CONVERT] Invalid IWXXM version requested: %s", iwxxm_version)
         raise HTTPException(

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="https://dd.meteo.gc.ca/today/aviation/iwxxm/" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/">
+  <import namespace="http://icao.int/iwxxm/3.0" schemaLocation="http://schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd" />
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd" />
+  <include schemaLocation="common-ca.xsd"/>
+  <include schemaLocation="taf-ca.xsd"/>
+  <include schemaLocation="airmet-ca.xsd"/>
+  <include schemaLocation="metar-speci-ca.xsd"/> 
+  <annotation>
+    <documentation>The Canadian (CA) extensions package provides the constructs needed to support Canadian variations and extensions to the
+ICAO models. This package builds upon the ISO 19100 family and the International Civil Aviation Organization's (ICAO) Aviation Meteorological eXchange Model (IWXXM).</documentation>
+    <appinfo>
+      <gml:gmlProfileSchema>http://schemas.wmo.int/iwxxm/3.0/gmliwxxm.xsd</gml:gmlProfileSchema>
+    </appinfo>
+  </annotation>
+</schema>

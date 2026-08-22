@@ -107,7 +107,7 @@ const PRODUCTS = [
   'VONA',
 ] as const;
 
-const PROFILES = ['annex3', 'iwxxm_us'] as const;
+const PROFILES = ['annex3', 'iwxxm_us', 'ca_eccc'] as const;
 
 describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
   const defaultProps = {

@@ -47,16 +47,22 @@ def test_generated_json_exists_and_matches_python_sot() -> None:
 
 
 def test_fe_pickers_render_options_from_sot_module() -> None:
-    """FE pickers must import SoT helpers and map ``IWXXM_VERSION_OPTIONS`` (not hardcodes)."""
+    """FE pickers must import SoT helpers (not hardcoded version lists)."""
     util = _FE_SOT_UTIL.read_text(encoding="utf-8")
     assert "generated/iwxxm_versions.json" in util
     assert "IWXXM_VERSION_OPTIONS" in util
+    assert "iwxxmVersionOptionsForProfile" in util
     assert "Latest" in util and "Previous" in util
 
     for path in _FE_PICKER_FILES:
         text = path.read_text(encoding="utf-8")
-        assert "IWXXM_VERSION_OPTIONS" in text, f"{path.name} must use IWXXM_VERSION_OPTIONS"
         assert "iwxxmVersions" in text, f"{path.name} must import iwxxmVersions SoT module"
+        if path.name == "FileConverter.tsx":
+            assert "iwxxmVersionOptionsForProfile" in text, (
+                f"{path.name} must use profile-scoped iwxxmVersionOptionsForProfile"
+            )
+        else:
+            assert "IWXXM_VERSION_OPTIONS" in text, f"{path.name} must use IWXXM_VERSION_OPTIONS"
 
 
 def test_api_form_default_matches_sot_default() -> None:
