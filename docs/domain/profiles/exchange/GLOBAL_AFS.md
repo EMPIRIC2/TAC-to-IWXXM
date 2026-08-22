@@ -1,6 +1,6 @@
 # GLOBAL_AFS — default exchange overlay
 
-> **Profile id**: `GLOBAL_AFS` · **Kind**: exchange · **Priority**: P0 · **Status**: default (packaging hook → [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921) / M6)  
+> **Profile id**: `GLOBAL_AFS` · **Kind**: exchange · **Priority**: P0 · **Status**: **implemented** (EV-065 / #921)  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Default **exchange** profile when packaging or disseminate-prep paths are invoked without an
@@ -34,15 +34,17 @@ and AFS routing defaults — **not** TAC grammar (semantic profiles own that).
 
 - [`OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md`](../../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md)
 
-## Implementation (M6)
+## Implementation (EV-065)
 
 | Target | Location |
 |--------|----------|
-| Exchange registry | TBD — `exchange_registry` per execution plan M6 |
-| Default wire | `exchange.profile=GLOBAL_AFS` when packaging invoked (TC-EV063-004) |
-| Tests | TC-EV063-004, TC-EV063-005 |
+| Exchange registry | `packages/dissemination/src/dissemination/exchange_registry.py` |
+| COLLECT packaging | `packages/dissemination/src/dissemination/packaging.py` |
+| API wire | `POST /api/v1/convert-bulletin` — default `exchange_profile=GLOBAL_AFS` |
+| Fixtures | `packages/dissemination/tests/fixtures/profiles/GLOBAL_AFS/` |
+| Tests | TC-EV063-004, TC-EV063-005, TC-EV065-001 |
 
 ## Gaps
 
-- `exchange_registry` + packaging hook not implemented until M6
-- Regional overlays (`APAC_ROBEX`, `EUR_RODEX`, …) deferred to P2
+- FTBP `A_TTAAii…xml.gz` filename synthesis from AHL (partial — `bulletinIdentifier` when AHL parseable)
+- Regional overlays (`APAC_ROBEX` P0 stub landed EV-065; `EUR_RODEX`, …) deepen separately

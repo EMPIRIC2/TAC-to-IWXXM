@@ -26,6 +26,32 @@
 
 ---
 
+## Cycle EV-065 — GLOBAL_AFS + APAC_ROBEX (#921) (EV-065-global-afs)
+
+**Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-065-global-afs`  
+**Preset:** Standard · **Documenting→Implementing gate:** open (pre-filled) · **Issue:** [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921)  
+**Parent:** EV-063 / F36 / [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV065-goal | Close #921 P0 — GLOBAL_AFS docs/fixtures + APAC_ROBEX regional stub with tests |
+| D-EV065-in | dissemination exchange registry/packaging; convert-bulletin wire; standing docs |
+| D-EV065-out | Dissemination drawer UI (#898); EUR_RODEX/AFI/CAR_SAM; semantic/TAC changes |
+| D-EV065-overlay | APAC_ROBEX P0 = GLOBAL_AFS COLLECT baseline; ROBEX deepen on backlog |
+| D-EV065-scale | Standard; all default evolve verifying angles |
+| D-EV065-fn | Deepen **F36** only |
+| D-EV065-feasibility | **FEASIBLE** — EV-063 foundation; stub overlay pattern |
+| D-EV065-gate | **open** (`open_build` 2026-08-22, pre-filled) |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §GLOBAL_AFS] [Corpus: adr/ADR-036]
+[Corpus: api] [Corpus: system-spec] [Corpus: tests] [Corpus: journeys §UJ-069]
+
+---
+
 ## Cycle EV-064 — CA_ECCC profile (#916) (EV-064-ca-eccc-profile)
 
 **Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-064-ca-eccc-profile`  
