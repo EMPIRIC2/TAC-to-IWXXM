@@ -21,7 +21,9 @@ GITHUB_API = "https://api.github.com"
 
 
 def _github_get(client: httpx.Client, path: str) -> Any:
-    response = client.get(f"{GITHUB_API}{path}", headers={"Accept": "application/vnd.github+json"})
+    response = client.get(
+        f"{GITHUB_API}{path}", headers={"Accept": "application/vnd.github+json"}
+    )
     response.raise_for_status()
     return response.json()
 
@@ -75,8 +77,21 @@ def check_upstream(manifest_path: Path, *, update: bool) -> bool:
             if entry.get("tag") == tag_name and entry.get("commit_sha") == commit_sha:
                 continue
 
+            # Release tag unchanged but tip commit moved — keep intentional pin
+            # (wmo-im may republish the same tag with a different tree layout).
+            if entry.get("tag") == tag_name:
+                pinned_sha = entry.get("commit_sha")
+                if isinstance(pinned_sha, str) and pinned_sha != commit_sha:
+                    print(
+                        f"{name}: release tag {tag_name} tip is {commit_sha[:7]}; "
+                        f"keeping pin {pinned_sha[:7]}"
+                    )
+                continue
+
             if not update:
-                print(f"{name}: upstream update available ({tag_name} @ {commit_sha[:7]})")
+                print(
+                    f"{name}: upstream update available ({tag_name} @ {commit_sha[:7]})"
+                )
                 changed = True
                 continue
 
@@ -89,7 +104,9 @@ def check_upstream(manifest_path: Path, *, update: bool) -> bool:
             print(f"{name}: pinned to {tag_name} @ {commit_sha}")
 
     if update and changed:
-        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+        manifest_path.write_text(
+            json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+        )
     return changed
 
 
@@ -132,7 +149,9 @@ def main() -> None:
     args = parser.parse_args()
 
     repo_root = Path.cwd()
-    manifest_path = args.manifest if args.manifest.is_absolute() else repo_root / args.manifest
+    manifest_path = (
+        args.manifest if args.manifest.is_absolute() else repo_root / args.manifest
+    )
 
     if args.refresh_tree_hashes:
         refresh_tree_hashes(repo_root, manifest_path)

@@ -90,7 +90,7 @@ def test_bug_2026_07_20_pin_update_clears_stale_tree_sha256(tmp_path: Path) -> N
     )
     new_sha = "1" * 40
     with (
-        patch.object(check, "latest_release_tag", return_value=("v2025-2", new_sha)),
+        patch.object(check, "latest_release_tag", return_value=("v2026-3", new_sha)),
         patch.object(check, "VENDOR_BUNDLE_NAMES", ("iwxxm",)),
     ):
         changed = check.check_upstream(manifest_path, update=True)
@@ -98,6 +98,7 @@ def test_bug_2026_07_20_pin_update_clears_stale_tree_sha256(tmp_path: Path) -> N
     assert changed is True
     updated = json.loads(manifest_path.read_text(encoding="utf-8"))
     entry = updated["bundles"]["iwxxm"]
+    assert entry["tag"] == "v2026-3"
     assert entry["commit_sha"] == new_sha
     assert "tree_sha256" not in entry
 
