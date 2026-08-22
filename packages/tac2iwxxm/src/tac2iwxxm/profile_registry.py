@@ -1,0 +1,101 @@
+"""Semantic profile id registry (F35 / ADR-036).
+
+Canonical semantic ids map to internal emitter keys (`annex3` / `iwxxm_us`).
+Legacy aliases remain accepted during the deprecation window ([#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+CANONICAL_ICAO_2025 = "icao_2025"
+CANONICAL_US_FAA_NWS = "us_faa_nws"
+
+EMIT_ANNEX3 = "annex3"
+EMIT_IWXXM_US = "iwxxm_us"
+
+_ALIAS_TO_CANONICAL: dict[str, str] = {
+    EMIT_ANNEX3: CANONICAL_ICAO_2025,
+    EMIT_IWXXM_US: CANONICAL_US_FAA_NWS,
+}
+
+_CANONICAL_TO_EMIT: dict[str, str] = {
+    CANONICAL_ICAO_2025: EMIT_ANNEX3,
+    CANONICAL_US_FAA_NWS: EMIT_IWXXM_US,
+}
+
+_KNOWN_WIRE_IDS: frozenset[str] = frozenset(_ALIAS_TO_CANONICAL) | frozenset(_CANONICAL_TO_EMIT)
+
+
+@dataclass(frozen=True, slots=True)
+class ResolvedSemanticProfile:
+    """Resolved semantic profile with canonical id and internal emit key."""
+
+    canonical: str
+    emit_key: str
+    alias_used: bool
+
+
+def normalize_profile_id(profile: str) -> str:
+    """
+    Normalize a wire or library profile id for lookup.
+
+    Parameters
+    ----------
+    profile :
+        Profile id (e.g. ``ICAO_2025``, ``annex3``).
+
+    Returns
+    -------
+    str
+        Lowercase id with hyphens as underscores.
+    """
+    return profile.strip().lower().replace("-", "_")
+
+
+def resolve_semantic_profile(profile: str) -> ResolvedSemanticProfile | None:
+    """
+    Resolve a semantic profile id to canonical + emitter key.
+
+    Parameters
+    ----------
+    profile :
+        Canonical id or legacy alias.
+
+    Returns
+    -------
+    ResolvedSemanticProfile | None
+        ``None`` when the id is unknown.
+    """
+    norm = normalize_profile_id(profile)
+    if norm in _ALIAS_TO_CANONICAL:
+        canonical = _ALIAS_TO_CANONICAL[norm]
+        return ResolvedSemanticProfile(
+            canonical=canonical,
+            emit_key=_CANONICAL_TO_EMIT[canonical],
+            alias_used=True,
+        )
+    if norm in _CANONICAL_TO_EMIT:
+        return ResolvedSemanticProfile(
+            canonical=norm,
+            emit_key=_CANONICAL_TO_EMIT[norm],
+            alias_used=False,
+        )
+    return None
+
+
+def known_semantic_profile_ids() -> frozenset[str]:
+    """Return all accepted semantic profile wire ids (canonical + aliases)."""
+    return _KNOWN_WIRE_IDS
+
+
+__all__ = [
+    "CANONICAL_ICAO_2025",
+    "CANONICAL_US_FAA_NWS",
+    "EMIT_ANNEX3",
+    "EMIT_IWXXM_US",
+    "ResolvedSemanticProfile",
+    "known_semantic_profile_ids",
+    "normalize_profile_id",
+    "resolve_semantic_profile",
+]

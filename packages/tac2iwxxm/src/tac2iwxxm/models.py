@@ -137,7 +137,11 @@ class ConvertResult(msgspec.Struct, frozen=True):
     product :
         Product id (e.g. ``METAR``, ``SPECI``).
     profile :
-        ``annex3`` or ``iwxxm_us``.
+        Internal emitter key (``annex3`` or ``iwxxm_us``).
+    semantic_profile :
+        Canonical semantic id (``icao_2025`` or ``us_faa_nws``).
+    deprecated_alias_used :
+        ``True`` when a legacy alias id was supplied on input.
     iwxxm_version :
         Target IWXXM release line.
     xml :
@@ -152,6 +156,8 @@ class ConvertResult(msgspec.Struct, frozen=True):
     product: str
     profile: str
     iwxxm_version: str
+    semantic_profile: str = ""
+    deprecated_alias_used: bool = False
     xml: str | None = None
     ir: dict[str, Any] | None = None
     issues: list[ConvertIssue] = msgspec.field(default_factory=list)
