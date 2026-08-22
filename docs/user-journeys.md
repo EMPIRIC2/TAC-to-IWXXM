@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-20 (EV-062 Validation Issues Catalog / #1017 deepen UJ-068)
+> **Last updated**: 2026-08-22 (EV-063 semantic + exchange profiles — UJ-069)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -85,6 +85,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
+| UJ-069 | Convert with semantic profile → package with exchange profile | API / library / optional UI (#1024) | F35+F36 (EV-063 / #912) | T2 / **T3** (API); H4–H5 if #1024 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -1123,6 +1124,27 @@ appear as semantic/legacy aliases without being the href. Paywall access is labe
 
 **Acceptance**: feature-list F7.v / F15 / #1014 + #1017; TC-EV061-1014-* + TC-EV062-*. Distinct from #996.
 **Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7] [Corpus: product §F15] [Corpus: api]
+
+---
+
+### UJ-069: Semantic Convert → Exchange Package (EV-063 / #912)
+
+**Actor**: Library integrator or operator (API; optional UI via #1024)
+
+**Goal**: Convert TAC with a **semantic** profile (`ICAO_2025` or `US_FAA_NWS`, or legacy alias
+during deprecation window), then prepare output for dissemination using an **exchange** profile
+(default `GLOBAL_AFS`) without conflating profile choice with sink credentials.
+
+**Steps**:
+
+1. Submit convert with `semantic_profile=ICAO_2025` (or alias `annex3`) and a supported product.
+2. Receive IWXXM matching pre-migration annex3 goldens; observe deprecation signal if alias used.
+3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default).
+4. Confirm packaging hooks run deterministically in CI (no live sink push).
+5. Confirm F16–F19 BYOC credentials are not stored or implied by exchange profile selection.
+
+**Acceptance**: feature-list F35/F36; ADR-036; api-contract EV-063 section; TC-EV063-*.
+**Tier: T2 / T3 (API)**; H4–H5 if #1024 FE ships. [Corpus: product §F35] [Corpus: api] [Corpus: adr/ADR-036]
 
 ---
 

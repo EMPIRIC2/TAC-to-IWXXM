@@ -110,7 +110,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `files` | no* | — | TAC files |
 | `manual_text` | no* | — | TAC string |
 | `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` \| `iwxxm` (EV-060 / F7.t — pass-through; no TAC convert) |
-| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
+| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` — **legacy**; see [EV-063 / F35 proposed wire](#ev-063--f35-proposed-semantic--exchange-wire-not-implemented-until-build-gate) |
 | `iwxxm_version` | no | SoT default (`2025-2`) | Enum = Python `SUPPORTED_VERSIONS` via generated JSON (`apps/frontend/src/generated/iwxxm_versions.json`; `make export-iwxxm-versions`; #851 / D-S046-sot) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
 | `preview` | no | `false` | Soft-preview mode (S011) — see below |
@@ -177,12 +177,71 @@ Each `ConversionResult` includes optional `tac_input` (original TAC echo) for in
 | code | HTTP | When |
 |------|------|------|
 | `unknown_product` | 400 | Invalid product enum / unsupported |
-| `invalid_profile` | 400 | Profile not in enum |
+| `invalid_profile` | 400 | Profile not in enum (semantic or exchange when applicable) |
+| `invalid_semantic_profile` | 400 | **Proposed (F35)** — unknown `conversion.semanticProfile` |
+| `invalid_exchange_profile` | 400 | **Proposed (F35)** — unknown `exchange.profile` |
+| `deprecated_profile_alias` | — | **Proposed (F35)** — not an error; deprecation signal when alias used |
 | `missing_iwxxm_us` | 400 | `profile=iwxxm_us` but vendor pin/catalog missing |
 | `parse_failed` | 422 | TAC fails product parse |
 | `tac_lint_failed` | 422 | Optional when convert path invokes lint (prefer `/lint-tac`) |
 
 Unexpected converter crashes remain **5xx**.
+
+### EV-063 / F35 — semantic + exchange wire (Build)
+
+**Status**: **Implemented** on convert/validate/convert-bulletin routes (M3 wire + M4 metrics).
+Legacy flat `profile=` remains as deprecated alias. Optional `PROFILE_WIRE_V2` env toggles
+defaults (see env-contract).
+
+**Intent**: Separate **semantic** (TAC→IWXXM) from **exchange** (packaging). Canonical semantic
+ids: `ICAO_2025`, `US_FAA_NWS`. Legacy aliases during deprecation window (until **2026-10-31**,
+[#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)):
+
+| Alias | Canonical |
+|-------|-----------|
+| `annex3` | `ICAO_2025` |
+| `iwxxm_us` | `US_FAA_NWS` |
+
+**Target request shape** (multipart field names TBD in 04-tech-plan — may be JSON body on
+package-only routes):
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id |
+| `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
+| `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`) |
+| `exchange_profile` | no | `GLOBAL_AFS` | Used when **packaging** / disseminate-prep invoked; ignored on convert-only |
+| `profile` | no | — | **Deprecated** — maps to `semantic_profile` via alias table |
+
+**Nested logical model** (for library / future JSON routes):
+
+```yaml
+conversion:
+  semanticProfile: US_FAA_NWS
+  iwxxmVersion: "2025-2"
+  extensions: [IWXXM_US_3]
+exchange:
+  profile: GLOBAL_AFS
+```
+
+**Behavior**:
+
+- Unknown semantic or exchange id → **400** (hard).
+- Alias use → same semantics as canonical id + deprecation signal (response header and/or
+  structured field — finalize in Build).
+- Exchange profile selects packaging rules only — **not** F16–F19 sink credentials.
+
+**Observability** (`GET /metrics`, Prometheus — TC-EV063-006):
+
+| Metric | Labels | When incremented |
+|--------|--------|------------------|
+| `tac_semantic_profile_requests_total` | `route`, `semantic_profile` | Each resolved profile wire on convert/validate/convert-bulletin (`semantic_profile` = canonical id, uppercase) |
+| `tac_exchange_profile_requests_total` | `route`, `exchange_profile` | When client supplies explicit `exchange_profile` |
+| `tac_semantic_profile_alias_requests_total` | `route`, `semantic_profile` | When a deprecated alias (`annex3`, `iwxxm_us`) was used |
+
+No PII in profile metric labels. Counters are **not** returned on convert JSON responses.
+
+**Corpus**: [Corpus: product] F35/F36; [Corpus: adr/ADR-036]; [Corpus: domain-profiles]
 
 ### Bulletin conversion (S008 amend)
 
@@ -202,7 +261,7 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | `files` | no* | — | Bulletin file(s) |
 | `manual_text` | no* | — | Bulletin string |
 | `product` | **yes** | — | Same enum as convert |
-| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
+| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` — **legacy**; see [EV-063 / F35 proposed wire](#ev-063--f35-proposed-semantic--exchange-wire-not-implemented-until-build-gate) |
 | `iwxxm_version` | no | SoT default | Same enum as convert (`iwxxm_versions.json` / #851) |
 | `lint` | no | `true` | When true, run `tac-validate` before each report convert |
 

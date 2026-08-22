@@ -58,6 +58,12 @@ Single source of truth for **what** each layer owns and **which name** to use ev
 | Live frontend URL | `LIVE_FRONTEND_URL` | Local/CI live harness |
 | DOKS prod DNS (prod + live) | `https://api.tac-to-iwxxm.com` / `https://app.tac-to-iwxxm.com` | `config/prod.json` + `LIVE_*` |
 | E2E Auth fixture | `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` | Live/local Auth session tests only |
+| Default semantic profile (F35) | `DEFAULT_SEMANTIC_PROFILE` | API / `.env` — default `ICAO_2025` (or `annex3` alias during window); non-secret |
+| Default exchange profile (F35) | `DEFAULT_EXCHANGE_PROFILE` | API / `.env` — default `GLOBAL_AFS` when packaging invoked; non-secret |
+| Profile wire v2 cutover (F35) | `PROFILE_WIRE_V2` | API / `.env` — `true` prefers nested semantic/exchange fields; `false` keeps flat `profile=` default |
+
+**F35 (EV-063):** Profile ids are **not** secrets. Exchange profile must not imply dissemination
+credentials (F16–F19 memory-only BYOC unchanged). See [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md).
 
 **F8 non-prod fixture (EV-033):**  
 `https://raw.githubusercontent.com/EMPIRIC2/TAC-to-IWXXM/main/apps/worker/tests/fixtures/ingest_feed.json`  
