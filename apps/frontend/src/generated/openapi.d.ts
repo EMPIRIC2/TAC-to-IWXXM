@@ -1252,6 +1252,12 @@ export interface components {
              */
             emit_translation_centre: boolean;
             /**
+             * Exchange Profile
+             * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
+             * @default
+             */
+            exchange_profile: string;
+            /**
              * Include Nil Reasons
              * @description When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)
              * @default true
@@ -1301,10 +1307,16 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Schema profile: annex3 or iwxxm_us
-             * @default annex3
+             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @default
              */
             profile: string;
+            /**
+             * Semantic Profile
+             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)
+             * @default
+             */
+            semantic_profile: string;
             /**
              * Stop On Error
              * @description Stop processing remaining inputs after first error
@@ -1338,6 +1350,12 @@ export interface components {
         };
         /** Body_convert_bulletin_api_v1_convert_bulletin_post */
         Body_convert_bulletin_api_v1_convert_bulletin_post: {
+            /**
+             * Exchange Profile
+             * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
+             * @default
+             */
+            exchange_profile: string;
             /** Files */
             files?: string[] | null;
             /**
@@ -1365,10 +1383,16 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Schema profile: annex3 or iwxxm_us
-             * @default annex3
+             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @default
              */
             profile: string;
+            /**
+             * Semantic Profile
+             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)
+             * @default
+             */
+            semantic_profile: string;
         };
         /** Body_convert_zip_api_v1_convert_zip_post */
         Body_convert_zip_api_v1_convert_zip_post: {
@@ -1447,6 +1471,12 @@ export interface components {
         /** Body_validate_comprehensive_api_v1_validate_post */
         Body_validate_comprehensive_api_v1_validate_post: {
             /**
+             * Exchange Profile
+             * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on validate-only paths
+             * @default
+             */
+            exchange_profile: string;
+            /**
              * Iwxxm Version
              * @description Target IWXXM version
              * @default 2025-2
@@ -1468,11 +1498,17 @@ export interface components {
             manual_text: string;
             /**
              * Profile
-             * @description Schema profile: annex3 or iwxxm_us
-             * @default annex3
+             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @default
              */
             profile: string;
             request_body?: components["schemas"]["ValidateRequest"] | null;
+            /**
+             * Semantic Profile
+             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)
+             * @default
+             */
+            semantic_profile: string;
             /**
              * Stop On Error
              * @description Stop at first blocking layer failure
@@ -1778,6 +1814,11 @@ export interface components {
          */
         ConvertBulletinResponse: {
             bulletin_meta: components["schemas"]["BulletinMetaModel"];
+            /**
+             * Exchange Profile
+             * @description Resolved exchange packaging profile (default GLOBAL_AFS on this route)
+             */
+            exchange_profile?: string | null;
             /** Results */
             results?: components["schemas"]["BulletinReportResultModel"][];
         };
@@ -2900,6 +2941,12 @@ export interface components {
          */
         ValidateRequest: {
             /**
+             * Exchange Profile
+             * @description Exchange packaging profile (e.g. GLOBAL_AFS)
+             * @example GLOBAL_AFS
+             */
+            exchange_profile?: string | null;
+            /**
              * Iwxxm Xml
              * @description IWXXM XML content to validate
              * @example <?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>
@@ -2907,12 +2954,19 @@ export interface components {
             iwxxm_xml: string;
             /**
              * Profile
-             * @description Schema profile: annex3 (WMO) or iwxxm_us
-             * @default annex3
+             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @default
              * @example annex3
              * @example iwxxm_us
              */
             profile: string;
+            /**
+             * Semantic Profile
+             * @description Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS)
+             * @example ICAO_2025
+             * @example US_FAA_NWS
+             */
+            semantic_profile?: string | null;
             /**
              * Stop On Error
              * @description Stop processing on first error

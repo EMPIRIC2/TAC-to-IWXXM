@@ -18,6 +18,7 @@ read the rows below that apply — do not invent alternate doc sets.
 | **tests** | Test matrix & gates | [test-plan.md](test-plan.md) | Parity checks, smoke TC-IDs, CI expectations |
 | **adr** | Architecture decisions | [adr/](adr/) ([index](adr/README.md)) | Non-obvious tech choices; cite ADR-NNN |
 | **decisions** | Interview / evolve decision logs | [decisions/](decisions/) | Trace *why* a standing doc says X |
+| **domain-profiles** | Semantic + exchange profile source catalog | [domain/profiles/](domain/profiles/) | National/exchange profile evidence (#912/#913); cite for F35/F36 scope |
 
 ### Tech-spec satellites (via [tech-spec.md](tech-spec.md))
 

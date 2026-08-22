@@ -10,6 +10,7 @@ Working notes from `mine-domain-sources` / `extract-pdf-to-repo` passes.
 - [`../rules/RULE_SOURCE_URLS.md`](../rules/RULE_SOURCE_URLS.md)
 - [`../rules/COVERAGE_MATRIX.md`](../rules/COVERAGE_MATRIX.md)
 - [`../rules/PROVENANCE_MAP.md`](../rules/PROVENANCE_MAP.md) (+ JSON twin) — dig index CI (S043 / EV-035)
+- [`../profiles/`](../profiles/) — **semantic + exchange profile source catalog** (EV-063 / F35–F36; #913)
 
 Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 

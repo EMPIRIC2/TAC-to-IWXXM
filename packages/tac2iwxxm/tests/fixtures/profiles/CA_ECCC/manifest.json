@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "description": "EV-063 M8 \u2014 CA_ECCC stub fixture (#916 started)",
+  "profile": "CA_ECCC",
+  "cases": [
+    {
+      "id": "metar_basic",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_basic.tac",
+      "golden": "METAR/valid/metar_basic.golden.xml",
+      "rule_id": "CA.METAR.BASIC",
+      "status": "stub"
+    }
+  ]
+}

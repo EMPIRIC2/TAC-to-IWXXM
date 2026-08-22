@@ -2,17 +2,18 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-18 (S071 / EV-061 — TC-EV061-* pre-promote UX + AHL + catalog + stage→main gate)
+> **Last updated**: 2026-08-22 (EV-063 / F35–F36 — semantic vs exchange profiles #912)
 
 ## Scope
 
-**In scope**: Product features F1–F32 (F1 superseded by F6 engine; F7 Planned — workbench
+**In scope**: Product features F1–**F36** (F1 superseded by F6 engine; F7 Planned — workbench
 smoke under F15/F20/F23–F27; **F7.g** golden examples #780 / UJ-032; **F7.h/i** hybrid sessions;
 F8–F15 as prior cycles; **F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality;
 **F21 Amended** public convert + optional Auth for long-term storage; **F22** privacy preference
 center (deepen F31); **F23** SIGMET family quality bar; **F24** AIRMET; **F25** WMO
 METAR/SPECI/TAF parity; **F26** VAA; **F27** TCA; **F30** platform independence; **F31** hybrid
-sessions; **F32** VONA quality bar); monorepo migration validation M1–M6 (M3 deprecated at F6 cutover; **M4 restore**);
+sessions; **F32** VONA quality bar; **F35** semantic vs exchange profile architecture;
+**F36** national/exchange profile content); monorepo migration validation M1–M6 (M3 deprecated at F6 cutover; **M4 restore**);
 connectivity tiers **H0c–H7** (local + live **DOKS** target; Render until cutover soak);
 tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics (library/CI); backend thin wrappers;
 F7 decode/spans/soft-preview/workbench/unified sessions; admin-route negative tests; **F15**
@@ -123,6 +124,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
 | UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
+| UJ-069 | F35/F36 (EV-063) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3** (API); H4–H5 if #1024 FE | TC-EV063-001..006 |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -2612,6 +2614,56 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Registry/catalog drift green; OpenAPI includes new optional fields
 - **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
 - **Source**: #1017; ADR-028; NFR1–NFR4
+
+### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
+
+- **Mode**: new F35/F36; amends F6 wire
+- **Pass criteria**: AC in evolve-decisions §EV-063; UJ-069; TC-EV063-*
+- **Source**: [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912),
+  [#914](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/914),
+  [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); ADR-036
+
+### TC-EV063-001: Alias annex3 ≡ ICAO_2025 convert parity
+
+- **Level**: T0 / T2 / T3
+- **Objective**: `annex3` alias produces same IWXXM as pre-migration goldens
+- **Pass criteria**: Golden diff empty under defaults; deprecation signal present when implemented
+- **Source**: UJ-069; FR-03; A1
+
+### TC-EV063-002: US_FAA_NWS ≡ iwxxm_us RMK semantics
+
+- **Level**: T0 / T2
+- **Objective**: Canonical `US_FAA_NWS` matches current `iwxxm_us` RMK behavior
+- **Pass criteria**: Existing iwxxm_us METAR RMK fixtures green
+- **Source**: UJ-069; A2; #919
+
+### TC-EV063-003: Unknown semantic or exchange profile → 400
+
+- **Level**: T2 / T3
+- **Objective**: Hard fail on invalid ids
+- **Pass criteria**: `invalid_profile` or successor codes; no 5xx
+- **Source**: UJ-069; FR-06
+
+### TC-EV063-004: Exchange packaging default GLOBAL_AFS
+
+- **Level**: T2
+- **Objective**: Package path without explicit exchange profile uses `GLOBAL_AFS`
+- **Pass criteria**: Deterministic packaging test artifact; no live sink
+- **Source**: UJ-069; A4; #921
+
+### TC-EV063-005: Exchange profile ≠ dissemination credentials
+
+- **Level**: T0 / T2
+- **Objective**: Selecting exchange profile does not persist or require BYOC secrets
+- **Pass criteria**: F16–F19 regression suite green; explicit negative test in Spec/Build
+- **Source**: UJ-069; A5; ADR-021/029
+
+### TC-EV063-006: Profile id metrics + alias counters (Build)
+
+- **Level**: T2 / observability
+- **Objective**: Metrics emitted for semantic/exchange ids and alias use
+- **Pass criteria**: Contract documented; smoke assert in integration test when implemented
+- **Source**: EV-063 observability; NFR observability skill
 
 ### TC-EV061-1015-001: Promote PR required-check inventory
 

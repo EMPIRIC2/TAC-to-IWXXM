@@ -186,8 +186,19 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     fake_util_observability = _stub_module(
         "utilities.observability",
         install_fastapi_observability=lambda **_kwargs: None,
+        record_profile_wire_metrics=lambda *_args, **_kwargs: None,
         set_request_log_level=lambda *_args, **_kwargs: "INFO",
         setup_logging=lambda *_args, **_kwargs: None,
+    )
+    fake_util_profile_wire = _stub_module(
+        "utilities.profile_wire",
+        WireProfileSelection=type("WireProfileSelection", (), {}),
+        resolve_route_profiles=lambda **_kwargs: types.SimpleNamespace(
+            emit_key="annex3",
+            semantic_canonical="icao_2025",
+            deprecated_alias_used=False,
+            exchange_profile=None,
+        ),
     )
     fake_util_sentry = _stub_module(
         "utilities.sentry_init",
@@ -244,6 +255,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities.iwxxm_readable_decode": fake_util_iwxxm_readable_decode,
         "utilities.metar_normalizer": fake_util_metar_normalizer,
         "utilities.observability": fake_util_observability,
+        "utilities.profile_wire": fake_util_profile_wire,
         "utilities.sentry_init": fake_util_sentry,
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,
@@ -256,6 +268,8 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
             "tac2iwxxm",
             BulletinSplitError=Exception,
             decode_tac=lambda *a, **k: None,
+            iwxxm_filename=lambda *a, **k: "stub.xml",
+            parse_ahl=lambda *a, **k: None,
             split_bulletin=lambda *a, **k: None,
         ),
         "tac_validate": _stub_module("tac_validate", lint=lambda *a, **k: None),

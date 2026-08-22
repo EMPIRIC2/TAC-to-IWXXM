@@ -114,9 +114,14 @@ metar-to-IWXXM/
 
 ### packages/tac2iwxxm
 
+- **EV-063 / F35 delta (#912)**: Profile plugins evolve from flat `annex3` / `iwxxm_us` to
+  **semantic** ids (`ICAO_2025`, `US_FAA_NWS`, …) with legacy aliases until #1025 cutover.
+  **Exchange** profiles (`GLOBAL_AFS`, `APAC_ROBEX`, …) apply on packaging paths in
+  `packages/dissemination` — not in the TAC lexer. See [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md)
+  and [domain/profiles/](domain/profiles/).
 - **Purpose**: General TAC→IWXXM library (F6). Python public API → **bulletin split** (WMO AHL)
-  → versioned IR → product plugins → profile plugins (`annex3` / `iwxxm_us`) → XML writer;
-  library/CI metrics via companion validate packages.
+  → versioned IR → product plugins → profile plugins (`annex3` / `iwxxm_us` → **F35** semantic ids)
+  → XML writer; library/CI metrics via companion validate packages.
 - **Products (v1)**: AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA.
 - **Inputs**: TAC string/files **or bulletins**; `product`; `profile`; `iwxxm_version`; schema paths under vendor.
 - **Outputs**: IWXXM XML bytes/strings (per report); metrics reports in tests/CI only (not convert API fields).

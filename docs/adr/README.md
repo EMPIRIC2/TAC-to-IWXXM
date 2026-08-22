@@ -39,6 +39,7 @@
 | [ADR-033](ADR-033-platform-independence-auth-do-doks.md) | Platform independence — Auth-only Supabase, DO Postgres, DOKS (F30/F31) | **Accepted** (amended by ADR-034) |
 | [ADR-034](ADR-034-doks-staging-promote-from-stage.md) | DOKS staging + promote-from-stage CD; release bump+tag on promote (F30 / #886) | **Accepted** |
 | [ADR-035](ADR-035-quality-metrics-c14n.md) | Quality metrics match/diff uses W3C C14N (not ADR-032 canonicalize) | **Accepted** |
+| [ADR-036](ADR-036-semantic-vs-exchange-profiles.md) | Semantic vs exchange profiles; canonical IDs + alias deprecation (#912) | **Accepted** (EV-063) |
 
 ## Process
 

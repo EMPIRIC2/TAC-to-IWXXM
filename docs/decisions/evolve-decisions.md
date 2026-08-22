@@ -1,5 +1,45 @@
 # Evolve Decisions
 
+## Cycle EV-063 — Multi-national semantic profiles (#912) (EV-063-multinational-profiles)
+
+**Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-063-multinational-profiles`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Epic:** [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
+
+### Locked intake (EV0–EV9 + requirements)
+
+| ID | Outcome |
+|----|---------|
+| D-EV063-goal | Drive #912 toward M1; stretch full roll-up; **Spec close** = ADR + #913 catalog + ≥1 P1 In Progress with fixtures |
+| D-EV063-scope | In = unblocked #912 children; out = epic non-goals + defer #908/#920/#1024 by default |
+| D-EV063-breaking | ADR + deprecation window; alias removal **2026-10-31** → [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025) |
+| D-EV063-fn | **F35** (semantic vs exchange arch/IDs/wire) + **F36** (national + exchange content) |
+| D-EV063-spine | #913 → #914 → #919 US → #916 CA first P1 → #921 exchange as capacity |
+| D-EV063-wire | Nested `conversion.semanticProfile` + `exchange.profile`; hard 4xx unknown ids |
+| D-EV063-journey | Operator + library; convert → exchange package; fence annex3/iwxxm_us + F16–F19 |
+| D-EV063-ui | Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024); preview later if Build includes FE |
+| D-EV063-corpus | New ADR-036 (Proposed); new CORPUS row **domain-profiles** |
+| D-EV063-build | 07–13 blocked; touch tac2iwxxm/validate/dissemination/backend; deploy at gate |
+| D-EV063-04-plan | **1a** — execution plan approved 2026-08-22 |
+| D-EV063-gate | **open** (`open_build` 2026-08-22) — 07-build M1–M2 in progress |
+| D-EV063-feasibility | **FEASIBLE** — Spec close by M1 (~2026-09-19) if gate opens ~2026-08-25; full M1 roll-up not feasible (#970/UI/nationals out) |
+| D-EV063-914 | Spike unblock = ADR-036 Accept + stable ID list; runtime F35 follows gate |
+| D-EV063-verify-doc | Documenting twins **11/11 PASS** (2026-08-22) |
+
+### Corpus
+
+[Corpus: product §F35] [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: domain-profiles]
+[Corpus: api] [Corpus: system-spec] [Corpus: tests] [Corpus: journeys] [Corpus: tech-spec]
+
+### Standing doc deltas (draft-docs)
+
+- `docs/adr/ADR-036-semantic-vs-exchange-profiles.md` (Proposed)
+- `docs/domain/profiles/README.md` + CORPUS `domain-profiles` row
+- `docs/feature-list.md` F35/F36
+- `docs/api-contract.md` EV-063 proposed wire section
+- `docs/spec.md`, `docs/env-contract.md`, `docs/test-plan.md`, `docs/user-journeys.md` (UJ-069)
+
+---
+
 ## Cycle EV-062 — Validation Issues Catalog (#1017) (EV-062-validation-issues-catalog)
 
 **Opened:** 2026-08-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-062-validation-issues-catalog` · **Branch:** `evolve/EV-062-validation-issues-catalog` @ `origin/stage`  

@@ -13,6 +13,12 @@ from tac2iwxxm.products.swxa import parse_swxa
 from tac2iwxxm.products.taf import parse_taf
 from tac2iwxxm.products.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.products.vona import parse_vona
+from tac2iwxxm.profile_registry import (
+    EMIT_ANNEX3,
+    EMIT_CA_ECCC,
+    EMIT_IWXXM_US,
+    resolve_semantic_profile,
+)
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
 from tac2iwxxm.profiles.annex3_products import (
     emit_airmet_annex3,
@@ -23,6 +29,7 @@ from tac2iwxxm.profiles.annex3_products import (
     emit_vaa_annex3,
     emit_vona_annex3,
 )
+from tac2iwxxm.profiles.ca_eccc import emit_metar_speci_ca_eccc
 from tac2iwxxm.profiles.iwxxm_us import (
     emit_airmet_iwxxm_us,
     emit_metar_speci_iwxxm_us,
@@ -31,8 +38,8 @@ from tac2iwxxm.profiles.iwxxm_us import (
 )
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
-_SUPPORTED_PROFILES = frozenset({"annex3", "iwxxm_us"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
+_CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI"})
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
 # Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
@@ -264,6 +271,8 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
     if product in {"METAR", "SPECI"}:
         if profile == "iwxxm_us":
             return emit_metar_speci_iwxxm_us(ir, product=product, iwxxm_version=iwxxm_version)
+        if profile == EMIT_CA_ECCC:
+            return emit_metar_speci_ca_eccc(ir, product=product, iwxxm_version=iwxxm_version)
         return emit_metar_speci_annex3(ir, product=product, iwxxm_version=iwxxm_version)
     if product == "TAF":
         if profile == "iwxxm_us":
@@ -370,9 +379,34 @@ def convert(
         Structured result with XML, IR, and issues.
     """
     product_u = product.upper()
-    profile_l = profile.lower()
+    resolved = resolve_semantic_profile(profile)
+    if resolved is None:
+        profile_l = profile.lower()
+        issue = ConvertIssue(
+            severity="error",
+            code="UNSUPPORTED_PROFILE",
+            message=f"profile {profile_l!r} not supported yet",
+        )
+        xml = _preview_stub_xml(product_u, iwxxm_version, f"UNSUPPORTED_PROFILE: {issue.message}") if preview else None
+        return ConvertResult(
+            ok=False,
+            product=product_u,
+            profile=profile_l,
+            iwxxm_version=iwxxm_version,
+            xml=xml,
+            issues=[issue],
+        )
 
-    def _fail(code: str, message: str, *, span: bool = False) -> ConvertResult:
+    profile_l = resolved.emit_key
+    semantic_profile = resolved.canonical
+    deprecated_alias_used = resolved.alias_used
+
+    def _fail(
+        code: str,
+        message: str,
+        *,
+        span: bool = False,
+    ) -> ConvertResult:
         span_start = span_end = None
         if span:
             span_start, span_end = _content_bounds(tac)
@@ -389,18 +423,23 @@ def convert(
             product=product_u,
             profile=profile_l,
             iwxxm_version=iwxxm_version,
+            semantic_profile=semantic_profile,
+            deprecated_alias_used=deprecated_alias_used,
             xml=xml,
             issues=[issue],
         )
 
     if product_u not in _SUPPORTED_PRODUCTS:
         return _fail("UNSUPPORTED_PRODUCT", f"product {product_u!r} not supported yet")
-    if profile_l not in _SUPPORTED_PROFILES:
-        return _fail("UNSUPPORTED_PROFILE", f"profile {profile_l!r} not supported yet")
-    if profile_l == "iwxxm_us" and product_u not in _US_PRODUCTS:
+    if profile_l == EMIT_IWXXM_US and product_u not in _US_PRODUCTS:
         return _fail(
             "UNSUPPORTED_PROFILE",
             f"profile iwxxm_us not supported yet for product {product_u!r}",
+        )
+    if profile_l == EMIT_CA_ECCC and product_u not in _CA_ECCC_PRODUCTS:
+        return _fail(
+            "UNSUPPORTED_PROFILE",
+            f"profile ca_eccc not supported yet for product {product_u!r}",
         )
 
     status_override: str | None = None
@@ -430,6 +469,8 @@ def convert(
                 product=product_u,
                 profile=profile_l,
                 iwxxm_version=iwxxm_version,
+                semantic_profile=semantic_profile,
+                deprecated_alias_used=deprecated_alias_used,
                 xml=_quarantine_xml(product_u, tac.strip(), iwxxm_version),
                 issues=[
                     ConvertIssue(
@@ -444,7 +485,15 @@ def convert(
         return _fail("PARSE_ERROR", message, span=True)
 
     issues: list[ConvertIssue] = []
-    if profile_l == "annex3" and product_u in {"METAR", "SPECI"} and ir.get("remarks_present"):
+    if deprecated_alias_used:
+        issues.append(
+            ConvertIssue(
+                severity="info",
+                code="DEPRECATED_PROFILE_ALIAS",
+                message=f"profile alias {profile!r} is deprecated; use canonical id {semantic_profile!r}",
+            )
+        )
+    if profile_l == EMIT_ANNEX3 and product_u in {"METAR", "SPECI"} and ir.get("remarks_present"):
         rmk_match = _RMK_TOKEN.search(tac)
         issues.append(
             ConvertIssue(
@@ -459,7 +508,15 @@ def convert(
                 end=rmk_match.end() if rmk_match else None,
             )
         )
-    if profile_l == "iwxxm_us":
+    if profile_l == EMIT_CA_ECCC:
+        issues.append(
+            ConvertIssue(
+                severity="info",
+                code="PROFILE_STUB",
+                message=("CA_ECCC uses annex3 METAR/SPECI encoding until iwxxm-ca vendor pin (#916)"),
+            )
+        )
+    if profile_l == EMIT_IWXXM_US:
         raw_remarks: object = ir.get("remark_issues")
         if isinstance(raw_remarks, list):
             for item in cast(list[object], raw_remarks):
@@ -488,6 +545,8 @@ def convert(
         product=product_u,
         profile=profile_l,
         iwxxm_version=iwxxm_version,
+        semantic_profile=semantic_profile,
+        deprecated_alias_used=deprecated_alias_used,
         xml=xml,
         ir=ir,
         issues=issues,

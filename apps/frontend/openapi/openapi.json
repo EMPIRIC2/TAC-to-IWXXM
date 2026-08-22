@@ -236,6 +236,12 @@
             "title": "Emit Translation Centre",
             "type": "boolean"
           },
+          "exchange_profile": {
+            "default": "",
+            "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+            "title": "Exchange Profile",
+            "type": "string"
+          },
           "include_nil_reasons": {
             "default": true,
             "description": "When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)",
@@ -285,9 +291,15 @@
             "type": "string"
           },
           "profile": {
-            "default": "annex3",
-            "description": "Schema profile: annex3 or iwxxm_us",
+            "default": "",
+            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
+            "type": "string"
+          },
+          "semantic_profile": {
+            "default": "",
+            "description": "Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+            "title": "Semantic Profile",
             "type": "string"
           },
           "stop_on_error": {
@@ -326,6 +338,12 @@
       },
       "Body_convert_bulletin_api_v1_convert_bulletin_post": {
         "properties": {
+          "exchange_profile": {
+            "default": "",
+            "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+            "title": "Exchange Profile",
+            "type": "string"
+          },
           "files": {
             "anyOf": [
               {
@@ -365,9 +383,15 @@
             "type": "string"
           },
           "profile": {
-            "default": "annex3",
-            "description": "Schema profile: annex3 or iwxxm_us",
+            "default": "",
+            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
+            "type": "string"
+          },
+          "semantic_profile": {
+            "default": "",
+            "description": "Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+            "title": "Semantic Profile",
             "type": "string"
           }
         },
@@ -519,6 +543,12 @@
       },
       "Body_validate_comprehensive_api_v1_validate_post": {
         "properties": {
+          "exchange_profile": {
+            "default": "",
+            "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on validate-only paths",
+            "title": "Exchange Profile",
+            "type": "string"
+          },
           "iwxxm_version": {
             "default": "2025-2",
             "description": "Target IWXXM version",
@@ -543,8 +573,8 @@
             "type": "string"
           },
           "profile": {
-            "default": "annex3",
-            "description": "Schema profile: annex3 or iwxxm_us",
+            "default": "",
+            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
             "type": "string"
           },
@@ -557,6 +587,12 @@
                 "type": "null"
               }
             ]
+          },
+          "semantic_profile": {
+            "default": "",
+            "description": "Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+            "title": "Semantic Profile",
+            "type": "string"
           },
           "stop_on_error": {
             "default": true,
@@ -1085,6 +1121,18 @@
         "properties": {
           "bulletin_meta": {
             "$ref": "#/components/schemas/BulletinMetaModel"
+          },
+          "exchange_profile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Resolved exchange packaging profile (default GLOBAL_AFS on this route)",
+            "title": "Exchange Profile"
           },
           "results": {
             "items": {
@@ -3093,6 +3141,21 @@
           "version": "2025-2"
         },
         "properties": {
+          "exchange_profile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Exchange packaging profile (e.g. GLOBAL_AFS)",
+            "examples": [
+              "GLOBAL_AFS"
+            ],
+            "title": "Exchange Profile"
+          },
           "iwxxm_xml": {
             "description": "IWXXM XML content to validate",
             "examples": [
@@ -3103,14 +3166,30 @@
             "type": "string"
           },
           "profile": {
-            "default": "annex3",
-            "description": "Schema profile: annex3 (WMO) or iwxxm_us",
+            "default": "",
+            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "examples": [
               "annex3",
               "iwxxm_us"
             ],
             "title": "Profile",
             "type": "string"
+          },
+          "semantic_profile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS)",
+            "examples": [
+              "ICAO_2025",
+              "US_FAA_NWS"
+            ],
+            "title": "Semantic Profile"
           },
           "stop_on_error": {
             "default": false,

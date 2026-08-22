@@ -73,9 +73,11 @@ try:
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
     from .utilities.observability import (
         install_fastapi_observability,
+        record_profile_wire_metrics,
         set_request_log_level,
         setup_logging,
     )
+    from .utilities.profile_wire import WireProfileSelection, resolve_route_profiles
     from .utilities.sentry_init import init_sentry
     from .utilities.tac_parser import extract_airport_code
 except ImportError:
@@ -131,16 +133,19 @@ except ImportError:
     from utilities.metar_normalizer import normalize_recent_weather_tokens
     from utilities.observability import (
         install_fastapi_observability,
+        record_profile_wire_metrics,
         set_request_log_level,
         setup_logging,
     )
+    from utilities.profile_wire import WireProfileSelection, resolve_route_profiles
     from utilities.sentry_init import init_sentry
     from utilities.tac_parser import extract_airport_code
 
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
 # Prefer validate_iwxxm (Rust hot path + lxml fallback) over legacy lxml-only validate.
+from dissemination.packaging import apply_exchange_packaging
 from iwxxm_validate import validate_iwxxm as iwxxm_validate_fn
-from tac2iwxxm import BulletinSplitError
+from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 from tac_validate import lint as tac_lint_fn
@@ -447,6 +452,29 @@ def normalize_api_product(
             },
         )
     return product_u
+
+
+def _resolve_request_profiles(
+    *,
+    route: str = "",
+    profile: str = "",
+    semantic_profile: str = "",
+    exchange_profile: str = "",
+    json_profile: str | None = None,
+    json_semantic_profile: str | None = None,
+    json_exchange_profile: str | None = None,
+    for_packaging: bool = False,
+) -> WireProfileSelection:
+    """Merge multipart and JSON profile fields, then resolve to emit keys."""
+    wire = resolve_route_profiles(
+        profile=json_profile if json_profile is not None else profile,
+        semantic_profile=json_semantic_profile if json_semantic_profile is not None else semantic_profile,
+        exchange_profile=json_exchange_profile if json_exchange_profile is not None else exchange_profile,
+        for_packaging=for_packaging,
+    )
+    if route:
+        record_profile_wire_metrics(route, wire)
+    return wire
 
 
 def _is_multiline_template_product(product: Optional[str]) -> bool:
@@ -1277,7 +1305,15 @@ async def convert_bulletin(
             "the heading TTAAii and CCCC."
         ),
     ),
-    profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
+    profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    semantic_profile: str = Form(
+        default="",
+        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+    ),
+    exchange_profile: str = Form(
+        default="",
+        description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+    ),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
 ) -> Response:
@@ -1286,6 +1322,15 @@ async def convert_bulletin(
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
     Per-report ``issues`` / ``fixes`` follow lint-style identity.
     """
+    wire = _resolve_request_profiles(
+        route="/api/v1/convert-bulletin",
+        profile=profile,
+        semantic_profile=semantic_profile,
+        exchange_profile=exchange_profile,
+        for_packaging=True,
+    )
+    profile = wire.emit_key
+
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -1371,6 +1416,17 @@ async def convert_bulletin(
             },
         )
 
+    bulletin_identifier: str | None = None
+    try:
+        ahl_parts = parse_ahl(split.meta.ahl)
+        yy = int(split.meta.yygggg[:2])
+        hh = int(split.meta.yygggg[2:4])
+        mm = int(split.meta.yygggg[4:6])
+        issued_at = datetime.datetime.now(datetime.UTC).replace(day=yy, hour=hh, minute=mm, second=0, microsecond=0)
+        bulletin_identifier = iwxxm_filename(ahl_parts, issued_at=issued_at)
+    except (TypeError, ValueError):
+        bulletin_identifier = None
+
     results: list[BulletinReportResultModel] = []
     for index, tac in enumerate(split.reports):
         issues: list[LintIssueModel] = []
@@ -1419,6 +1475,13 @@ async def convert_bulletin(
                     )
                 )
 
+        if ok and xml_out and wire.exchange_profile:
+            xml_out = apply_exchange_packaging(
+                xml_out,
+                exchange_profile=wire.exchange_profile,
+                bulletin_identifier=bulletin_identifier,
+            )
+
         results.append(
             BulletinReportResultModel(
                 report_index=index,
@@ -1442,6 +1505,7 @@ async def convert_bulletin(
                 bbb=split.meta.bbb,
                 report_status=split.meta.report_status,
             ),
+            exchange_profile=wire.exchange_profile,
             results=results,
         )
     )
@@ -1530,7 +1594,15 @@ async def validate_comprehensive(
         description="Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)",
     ),
     stop_on_error: bool = Form(default=True, description="Stop at first blocking layer failure"),
-    profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
+    profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    semantic_profile: str = Form(
+        default="",
+        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+    ),
+    exchange_profile: str = Form(
+        default="",
+        description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on validate-only paths",
+    ),
 ):
     """Perform comprehensive 7-layer IWXXM validation.
 
@@ -1570,12 +1642,17 @@ async def validate_comprehensive(
     ```
     """
     try:
+        json_profile = None
+        json_semantic = None
+        json_exchange = None
         # Handle JSON request body
         if request_body is not None:
             xml_content = request_body.iwxxm_xml
             iwxxm_version = request_body.version
             validation_level = request_body.validation_level or "comprehensive"
-            profile = request_body.profile or profile
+            json_profile = request_body.profile
+            json_semantic = getattr(request_body, "semantic_profile", None)
+            json_exchange = getattr(request_body, "exchange_profile", None)
             manual_text = ""  # Don't use form input
 
             # Map validation_level to layers
@@ -1589,6 +1666,17 @@ async def validate_comprehensive(
                 layers = ["WMO_CODELISTS", "GML_REFERENCES"]
             else:
                 layers = ["AIRPORT_ICAO", "TAC_SYNTAX"]
+
+        wire = _resolve_request_profiles(
+            route="/api/v1/validate",
+            profile=profile,
+            semantic_profile=semantic_profile,
+            exchange_profile=exchange_profile,
+            json_profile=json_profile,
+            json_semantic_profile=json_semantic,
+            json_exchange_profile=json_exchange,
+        )
+        profile = wire.emit_key
 
         # Normalize version
         try:
@@ -1760,7 +1848,15 @@ async def convert(
         default="METAR",
         description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
-    profile: str = Form(default="annex3", description="Schema profile: annex3 or iwxxm_us"),
+    profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    semantic_profile: str = Form(
+        default="",
+        description="Semantic profile id (e.g. ICAO_2025 or US_FAA_NWS; aliases annex3 / iwxxm_us accepted)",
+    ),
+    exchange_profile: str = Form(
+        default="",
+        description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+    ),
     preview: bool = Form(
         default=False,
         description="Soft-preview: best-effort IWXXM with failure spans on partial convert",
@@ -1940,9 +2036,6 @@ async def convert(
         body_product = getattr(request_body, "product", None)
         if body_product is not None:
             product = body_product
-        body_profile = getattr(request_body, "profile", None)
-        if body_profile is not None:
-            profile = body_profile
         manual_text = ""  # Override form input
         files = None  # Override file input
 
@@ -1960,6 +2053,20 @@ async def convert(
     product = normalize_api_product(product, default="METAR")
     bulletin_id = parse_optional_bulletin_id(bulletin_id)
     issuing_center = parse_optional_issuing_center(issuing_center)
+
+    json_profile = getattr(request_body, "profile", None) if request_body is not None else None
+    json_semantic = getattr(request_body, "semantic_profile", None) if request_body is not None else None
+    json_exchange = getattr(request_body, "exchange_profile", None) if request_body is not None else None
+    wire = _resolve_request_profiles(
+        route="/api/v1/convert",
+        profile=profile,
+        semantic_profile=semantic_profile,
+        exchange_profile=exchange_profile,
+        json_profile=json_profile,
+        json_semantic_profile=json_semantic,
+        json_exchange_profile=json_exchange,
+    )
+    profile = wire.emit_key
 
     # F7.t / EV-060 / #1003: product=iwxxm is XML pass-through (no TAC convert).
     if product == "IWXXM":
