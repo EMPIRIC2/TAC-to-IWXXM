@@ -1,0 +1,12 @@
+{
+  "profile_id": "GLOBAL_AFS",
+  "kind": "exchange",
+  "products": ["METAR"],
+  "fixtures": [
+    {
+      "id": "member_metar",
+      "path": "METAR/valid/member_metar.xml",
+      "bulletin_identifier": "A_LAFR31LFPW130000_C_LFPW_20250822120000.xml.gz"
+    }
+  ]
+}

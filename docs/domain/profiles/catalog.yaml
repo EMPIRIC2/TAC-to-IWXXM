@@ -180,10 +180,10 @@ profiles:
   - id: GLOBAL_AFS
     kind: exchange
     priority: P0
-    status: default
+    status: implemented
     implementation:
       issue: "#921"
-      note: Packaging hook lands in M6; default when exchange path invoked
+      note: EV-065 — registry + COLLECT packaging on convert-bulletin; fixtures under dissemination/tests/fixtures/profiles/GLOBAL_AFS
     products: [METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA]
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
@@ -202,14 +202,16 @@ profiles:
       - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
     stub: exchange/GLOBAL_AFS.md
     gaps:
-      - exchange_registry + packaging hook not implemented until M6 (#921)
+      - FTBP filename generation from AHL deepen (beyond bulletinIdentifier placeholder)
+      - Regional overlays beyond APAC_ROBEX P0 stub
 
   - id: APAC_ROBEX
     kind: exchange
     priority: P2
-    status: deferred
+    status: stub
     implementation:
       issue: "#921"
+      note: EV-065 P0 — registry + COLLECT baseline; ROBEX handbook rules deferred
     sources:
       - url: https://www.icao.int/APAC/apac-electronic-documents
         label: ICAO APAC electronic documents
@@ -221,10 +223,10 @@ profiles:
         proves: Regional exchange / COLLECT / translation practice
     mining_notes:
       - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
-    stub: null
+    stub: exchange/APAC_ROBEX.md
     gaps:
       - ROBEX handbook URL not pinned to a durable file row
-      - Overlay rules not scoped in #921
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
 
   - id: EUR_RODEX
     kind: exchange

@@ -43,7 +43,7 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; #919 US; **#916 CA_ECCC P1 slice (EV-064 M1–M6)**; #921 GLOBAL_AFS; fixture layout |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; #919 US; **#916 CA_ECCC P1 (EV-064)**; **#921 GLOBAL_AFS + APAC_ROBEX stub (EV-065)**; fixture layout |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1793,7 +1793,7 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **In progress** (EV-064 / [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) — full CA profile cycle opened 2026-08-22).
+- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065 #921 exchange overlays opened 2026-08-22).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
   `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
   ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), regional exchange
@@ -1809,7 +1809,7 @@
   1. `US_FAA_NWS` deepened per #919 scope (RMK matrix / SIGMET national layer as ticketed)
   2. `CA_ECCC` — EV-064 / #916: vendor `iwxxm-ca` + IWXXM 3.0.0 pin; METAR/SPECI/TAF/AIRMET
      convert + validate paths; API + FE picker; fixtures under `profiles/CA_ECCC/`
-  3. One exchange overlay path (`GLOBAL_AFS` minimum) exercised in packaging tests
+  3. One exchange overlay path (`GLOBAL_AFS` minimum) exercised in packaging tests — **EV-065**: `APAC_ROBEX` P0 stub added
 - **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA forks
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice

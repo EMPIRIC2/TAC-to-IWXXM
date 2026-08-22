@@ -58,6 +58,8 @@ def test_known_exchange_profile_ids_includes_wire_and_canonical() -> None:
     ids = known_exchange_profile_ids()
     assert "GLOBAL_AFS" in ids
     assert "global_afs" in ids
+    assert "APAC_ROBEX" in ids
+    assert "apac_robex" in ids
 
 
 def test_wrap_global_afs_collect_preserves_member() -> None:
@@ -78,9 +80,20 @@ def test_apply_exchange_packaging_global_afs() -> None:
     assert "A_TEST.xml" in packaged
 
 
+def test_apply_exchange_packaging_apac_robex_collect_wrap() -> None:
+    """TC-EV065-002 — APAC_ROBEX P0 stub uses GLOBAL_AFS COLLECT baseline."""
+    packaged = apply_exchange_packaging(
+        _MEMBER_XML,
+        exchange_profile="APAC_ROBEX",
+        bulletin_identifier="A_APAC.xml",
+    )
+    assert is_collect_bulletin(packaged)
+    assert "A_APAC.xml" in packaged
+
+
 def test_apply_exchange_packaging_rejects_unknown_profile() -> None:
     with pytest.raises(ValueError, match="unknown exchange profile"):
-        apply_exchange_packaging(_MEMBER_XML, exchange_profile="APAC_ROBEX")
+        apply_exchange_packaging(_MEMBER_XML, exchange_profile="EUR_RODEX")
 
 
 def test_apply_exchange_packaging_rejects_unimplemented_canonical(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -89,11 +102,11 @@ def test_apply_exchange_packaging_rejects_unimplemented_canonical(monkeypatch: p
     def fake_resolve(_profile: str):
         from dissemination.exchange_registry import ResolvedExchangeProfile
 
-        return ResolvedExchangeProfile(canonical="apac_robex", wire_id="APAC_ROBEX")
+        return ResolvedExchangeProfile(canonical="eur_rodex", wire_id="EUR_RODEX")
 
     monkeypatch.setattr("dissemination.packaging.resolve_exchange_profile", fake_resolve)
     with pytest.raises(ValueError, match="not implemented"):
-        apply_exchange_packaging(_MEMBER_XML, exchange_profile="APAC_ROBEX")
+        apply_exchange_packaging(_MEMBER_XML, exchange_profile="EUR_RODEX")
 
 
 def test_wrap_global_afs_collect_strips_xml_declaration() -> None:
