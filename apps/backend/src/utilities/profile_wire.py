@@ -42,7 +42,9 @@ def default_exchange_profile() -> str:
 
 
 def _clean(value: str | None) -> str:
-    return (value or "").strip()
+    if not isinstance(value, str):
+        return ""
+    return value.strip()
 
 
 def _resolve_exchange_profile(raw: str | None, *, for_packaging: bool) -> str | None:
