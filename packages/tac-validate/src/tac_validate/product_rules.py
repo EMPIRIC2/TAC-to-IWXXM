@@ -73,6 +73,8 @@ _RMK_P_OK = re.compile(r"^P\d{4}$")
 _RMK_T_OK = re.compile(r"^T\d{8}$")
 _RMK_PK_VAL = re.compile(r"^\d{5}/\d{2,4}$")
 _RMK_PRES_CA = re.compile(r"^PRES(?:FR|RR)$")
+_RMK_NOSPECI = re.compile(r"^NOSPECI$")
+_RMK_SECTOR_VIS_IN_TEXT = re.compile(r"\bVIS\s+M?(?:(?:\d+\s+)?\d/\d|\d+)(?!V)(?!\s+RWY)\s*(?:N|NE|E|SE|S|SW|W|NW)\b")
 _NCLWS_TAC = re.compile(r"^WS\d{3}/\d{3}\d{2,3}KT$")
 _CA_GFA_PHENOM = re.compile(
     r"\b(?:FRQ|OCNL)\s+TCU\s+ISOL\s+TS(?:GR)?\b|\bSFC\s+VIS\s+AND\s+(?:BKN|OVC)\s+CLD\b",
@@ -81,9 +83,11 @@ _CA_GFA_PHENOM = re.compile(
 _GFA_CHART = re.compile(r"\bRMK\s+GFACN\d+\b", re.IGNORECASE)
 _TAF_VIS_SM = re.compile(r"^P?\d{1,2}SM$")
 _ALT_INHG_BODY = re.compile(r"\bA\d{4}\b")
+_ALT_NOT_OBS_BODY = re.compile(r"\bA////(?=\s|$)")
 _WX_TOKEN_SHAPE = re.compile(r"^(?://|[+-]{1,2}[A-Z]{2,8}|[A-Z]{2,8}[+-]|[+-]?[A-Z]{2,8})$")
 _TEMP = re.compile(r"\bM?\d{2}/M?\d{2}\b")
 _QNH = re.compile(r"\b[QA]\d{4}\b")
+_QNH_NOT_OBS = re.compile(r"\b[QA]////(?=\s|$)")
 _TAF_VALIDITY = re.compile(r"\b\d{4}/\d{4}\b")
 _TAF_FM = re.compile(r"^FM(?:\d{6})?$")
 _TAF_PROB = re.compile(r"^PROB(\d{2})$")
@@ -571,11 +575,26 @@ def _check_ca_manobs(
             body_end=body_end,
             token=alt.group(0),
         )
+    elif _ALT_NOT_OBS_BODY.search(core):
+        _emit_token_info(
+            issues,
+            code="CA_ALTIMETER_NOT_OBS",
+            message=f"{product} altimeter not observable (A////) — MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="A////",
+        )
     if "RMK" in tokens:
         rmk_i = tokens.index("RMK")
         remark = tokens[rmk_i + 1 :]
-        saw_ca = any(_RMK_SLP_OK.fullmatch(t) for t in remark) or any(_RMK_PRES_CA.fullmatch(t) for t in remark)
-        if saw_ca:
+        saw_slp = any(_RMK_SLP_OK.fullmatch(t) for t in remark)
+        saw_presfr = any(t == "PRESFR" for t in remark)
+        saw_presrr = any(t == "PRESRR" for t in remark)
+        saw_nospeci = any(_RMK_NOSPECI.fullmatch(t) for t in remark)
+        remark_text = " ".join(remark)
+        sector_vis = _RMK_SECTOR_VIS_IN_TEXT.search(remark_text)
+        if saw_slp or saw_presfr or saw_presrr:
             _append_remark_issue(
                 issues,
                 code="CA_REMARK_MANOBS",
@@ -584,6 +603,36 @@ def _check_ca_manobs(
                 body_start=body_start,
                 body_end=body_end,
                 token="RMK",
+            )
+        if saw_presrr:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_PRESRR",
+                message=f"{product} MANOBS pressure rising rapidly (PRESRR) — ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="PRESRR",
+            )
+        if saw_nospeci:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_NOSPECI",
+                message=f"{product} MANOBS no-specials remark (NOSPECI) — ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="NOSPECI",
+            )
+        if sector_vis is not None:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_SECTOR_VIS",
+                message=f"{product} MANOBS sector visibility ({sector_vis.group(0)}) — ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token=sector_vis.group(0),
             )
     return issues
 
@@ -1063,7 +1112,7 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
             )
         )
 
-    if not _QNH.search(core):
+    if not _QNH.search(core) and not _QNH_NOT_OBS.search(core):
         issues.append(
             _issue(
                 "MISSING_QNH",

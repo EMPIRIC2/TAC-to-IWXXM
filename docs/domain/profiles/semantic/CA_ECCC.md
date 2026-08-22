@@ -43,7 +43,8 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 | Vendor pin (target) | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core |
 | Validate profile | `packages/iwxxm-validate` — `ca_eccc` path (EV-064 M2) |
 
-## Gaps (post EV-064 M6)
+## Gaps (post EV-064 M6 / EV-066)
 
-- MANOBS/MANAIR rule deepen beyond initial golden pack (LWIS/SAWR, additional phenomena)
+- MANOBS/MANAIR rule deepen: LWIS/SAWR, additional phenomena beyond EV-066 goldens
+- Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
 - SIGMET national overlay — out of #916 scope

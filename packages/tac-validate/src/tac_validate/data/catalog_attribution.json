@@ -52,7 +52,35 @@
       "note": null,
       "source_attribution": null
     },
+    "CA_ALTIMETER_NOT_OBS": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
     "CA_REMARK_MANOBS": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "CA_REMARK_NOSPECI": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "CA_REMARK_PRESRR": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
+    "CA_REMARK_SECTOR_VIS": {
       "source_id": null,
       "source_url": null,
       "status": null,

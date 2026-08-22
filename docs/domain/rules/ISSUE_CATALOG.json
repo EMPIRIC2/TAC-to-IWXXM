@@ -112,6 +112,22 @@
       "source_attribution": null
     },
     {
+      "code": "CA_ALTIMETER_NOT_OBS",
+      "severity": "info",
+      "message_template": "{product} altimeter not observable (A////) \u2014 MANOBS Canadian overlay",
+      "product": null,
+      "tags": [
+        "pressure",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
       "code": "CA_REMARK_MANOBS",
       "severity": "info",
       "message_template": "{product} Canadian REMARKS present \u2014 ca_eccc profile awareness",
@@ -122,6 +138,57 @@
         "speci",
         "ca_eccc",
         "manobs"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
+      "code": "CA_REMARK_NOSPECI",
+      "severity": "info",
+      "message_template": "{product} MANOBS no-specials remark (NOSPECI) \u2014 ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "nospeci"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
+      "code": "CA_REMARK_PRESRR",
+      "severity": "info",
+      "message_template": "{product} MANOBS pressure rising rapidly (PRESRR) \u2014 ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "presrr"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
+    },
+    {
+      "code": "CA_REMARK_SECTOR_VIS",
+      "severity": "info",
+      "message_template": "{product} MANOBS sector visibility remark \u2014 ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "visibility"
       ],
       "source_id": null,
       "source_url": null,

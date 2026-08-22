@@ -16,8 +16,26 @@ MANIFEST_PATH = FIXTURES / "manifest.json"
 
 IWXXM_VERSION = "3.0.0"
 PROFILE = "ca_eccc"
-CASE_IDS = ("metar_basic", "metar_vis_sm", "metar_auto", "metar_rmk_presfr", "taf_nclws", "airmet_gfa")
-METAR_CASE_IDS = ("metar_basic", "metar_vis_sm", "metar_auto", "metar_rmk_presfr")
+CASE_IDS = (
+    "metar_basic",
+    "metar_vis_sm",
+    "metar_auto",
+    "metar_rmk_presfr",
+    "metar_rmk_presrr",
+    "metar_alt_not_obs",
+    "metar_rmk_slp_t",
+    "taf_nclws",
+    "airmet_gfa",
+)
+METAR_CASE_IDS = (
+    "metar_basic",
+    "metar_vis_sm",
+    "metar_auto",
+    "metar_rmk_presfr",
+    "metar_rmk_presrr",
+    "metar_alt_not_obs",
+    "metar_rmk_slp_t",
+)
 TAF_CASE_IDS = ("taf_nclws",)
 AIRMET_CASE_IDS = ("airmet_gfa",)
 
@@ -37,7 +55,7 @@ def test_ca_eccc_golden_manifest_present(golden_manifest: dict) -> None:
     assert golden_manifest.get("schema_version") == 1
     assert golden_manifest.get("profile") == "CA_ECCC"
     cases = golden_manifest.get("cases", [])
-    assert len(cases) >= 6
+    assert len(cases) >= 9
     ids = {c["id"] for c in cases}
     assert set(CASE_IDS) <= ids
     for case in cases:

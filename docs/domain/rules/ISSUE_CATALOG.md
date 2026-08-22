@@ -17,7 +17,11 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `CAVOK_PRESENT` | `info` | {product} includes CAVOK (ceiling and visibility OK). Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | — | cavok, metar, speci, taf, t3, s1 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |
 | `CA_AIRMET_GFA` | `info` | {product} encodes MANAIR GFA compound phenomenon — ca_eccc profile awareness | — | airmet, ca_eccc, manair, gfa | — |
 | `CA_ALTIMETER_INHG` | `info` | {product} uses inch-of-mercury altimeter (A####) — MANOBS Canadian overlay | — | pressure, metar, speci, ca_eccc, manobs | — |
+| `CA_ALTIMETER_NOT_OBS` | `info` | {product} altimeter not observable (A////) — MANOBS Canadian overlay | — | pressure, metar, speci, ca_eccc, manobs | — |
 | `CA_REMARK_MANOBS` | `info` | {product} Canadian REMARKS present — ca_eccc profile awareness | — | remark, metar, speci, ca_eccc, manobs | — |
+| `CA_REMARK_NOSPECI` | `info` | {product} MANOBS no-specials remark (NOSPECI) — ca_eccc profile awareness | — | remark, metar, speci, ca_eccc, manobs, nospeci | — |
+| `CA_REMARK_PRESRR` | `info` | {product} MANOBS pressure rising rapidly (PRESRR) — ca_eccc profile awareness | — | remark, metar, speci, ca_eccc, manobs, presrr | — |
+| `CA_REMARK_SECTOR_VIS` | `info` | {product} MANOBS sector visibility remark — ca_eccc profile awareness | — | remark, metar, speci, ca_eccc, manobs, visibility | — |
 | `CA_STATUTE_MILE_VIS` | `info` | {product} uses statute-mile visibility — MANOBS Canadian overlay | — | visibility, metar, speci, ca_eccc, manobs | — |
 | `CA_TAF_NCLWS` | `info` | {product} includes MANAIR non-convective low-level wind shear (WS group) | — | taf, ca_eccc, manair, nclws | — |
 | `CLOUD_CB_OR_TCU` | `info` | {product} cloud group includes convective type CB/TCU | — | cloud, metar, speci, r4, cb, tcu | codes-wmo-int — https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf — CB/TCU convective type register |

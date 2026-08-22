@@ -1,5 +1,31 @@
 # Evolve Decisions
 
+## Cycle EV-066 — CA_ECCC RMK + altimeter deepen (#916) (EV-066-ca-eccc-rmk-deepen)
+
+**Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-066-ca-eccc-rmk-deepen`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916)  
+**Parent:** EV-063 / F36 / [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV066-goal | #916 deepen P1 — Canadian RMK grammar + `A####` altimeter edge cases with goldens |
+| D-EV066-in | tac2iwxxm parse/emit; tac-validate ca_eccc lint; CA_ECCC fixtures; standing docs |
+| D-EV066-out | LWIS/SAWR; MANAIR TAF amendments; exchange overlays (#921); SIGMET national |
+| D-EV066-slice | PRESRR; A//// not-observable; SLP+T combo; extended RMK lint codes |
+| D-EV066-scale | Standard; all default evolve verifying angles |
+| D-EV066-fn | Deepen **F36** only |
+| D-EV066-feasibility | **FEASIBLE** — EV-064 foundation; parser/emitter hooks exist |
+| D-EV066-gate | **open** (`open_build` 2026-08-22) |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
+[Corpus: api] [Corpus: system-spec] [Corpus: tests]
+
+---
+
 ## Cycle EV-065 — GLOBAL_AFS + APAC_ROBEX (#921) (EV-065-global-afs)
 
 **Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-065-global-afs`  
