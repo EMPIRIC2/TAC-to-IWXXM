@@ -30,8 +30,8 @@ profiles/
     CA_ECCC.md              # P1 planned (#916)
     ...
   exchange/
-    GLOBAL_AFS.md           # P0 default (#921 / M6)
-    APAC_ROBEX.md           # P2 deferred
+    GLOBAL_AFS.md           # P0 implemented (EV-065 / #921)
+    APAC_ROBEX.md           # P2 stub (EV-065 P0)
     ...
 ```
 

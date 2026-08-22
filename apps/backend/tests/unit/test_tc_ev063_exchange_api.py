@@ -128,6 +128,34 @@ def test_tc_ev063_004_explicit_global_afs_matches_default(
     assert is_collect_bulletin(explicit.json()["results"][0]["xml"])
 
 
+def test_tc_ev065_003_convert_bulletin_apac_robex(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """TC-EV065-003 — convert-bulletin accepts APAC_ROBEX and COLLECT-wraps output."""
+
+    def fake_convert(tac: str, **kwargs):
+        return _SAMPLE_METAR_XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        files={
+            "manual_text": (None, _BULLETIN_TEXT),
+            "product": (None, "METAR"),
+            "exchange_profile": (None, "APAC_ROBEX"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 200, response.text[:500]
+    payload = response.json()
+    assert payload["exchange_profile"] == "APAC_ROBEX"
+    xml = payload["results"][0]["xml"]
+    assert xml
+    assert is_collect_bulletin(xml)
+
+
 def test_convert_only_does_not_apply_exchange_packaging(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,

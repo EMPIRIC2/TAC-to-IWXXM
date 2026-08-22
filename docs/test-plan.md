@@ -2714,6 +2714,33 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Contract documented; smoke assert in integration test when implemented
 - **Source**: EV-063 observability; NFR observability skill
 
+### EV-065 / #921 — GLOBAL_AFS closure + APAC_ROBEX stub
+
+- **Mode**: delta deepen F36 exchange overlays
+- **Pass criteria**: TC-EV065-001..003; catalog + GLOBAL_AFS.md status updated
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921); EV-065
+
+### TC-EV065-001: GLOBAL_AFS fixture COLLECT golden
+
+- **Level**: T0 / T2
+- **Objective**: Profile fixture under `profiles/GLOBAL_AFS/` produces deterministic COLLECT wrap
+- **Pass criteria**: `is_collect_bulletin`; `bulletinIdentifier` present
+- **Source**: EV-065; FR-EV065-01
+
+### TC-EV065-002: APAC_ROBEX registry + packaging stub
+
+- **Level**: T0 / T2
+- **Objective**: `APAC_ROBEX` resolves and COLLECT-wraps member IWXXM
+- **Pass criteria**: Registry includes wire + canonical; packaging test green
+- **Source**: EV-065; FR-EV065-02
+
+### TC-EV065-003: convert-bulletin APAC_ROBEX API wire
+
+- **Level**: T2 / T3
+- **Objective**: `POST /api/v1/convert-bulletin` with `exchange_profile=APAC_ROBEX` returns COLLECT XML
+- **Pass criteria**: HTTP 200; `exchange_profile` echoed; COLLECT root in result
+- **Source**: EV-065; UJ-069
+
 ### TC-EV061-1015-001: Promote PR required-check inventory
 
 - **Level**: Docs / CI

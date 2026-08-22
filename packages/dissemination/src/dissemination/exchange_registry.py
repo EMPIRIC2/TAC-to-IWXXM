@@ -9,10 +9,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 CANONICAL_GLOBAL_AFS = "global_afs"
+CANONICAL_APAC_ROBEX = "apac_robex"
 DEFAULT_EXCHANGE_PROFILE_ID = "GLOBAL_AFS"
 
 _CANONICAL_TO_WIRE: dict[str, str] = {
     CANONICAL_GLOBAL_AFS: DEFAULT_EXCHANGE_PROFILE_ID,
+    CANONICAL_APAC_ROBEX: "APAC_ROBEX",
 }
 
 _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_CANONICAL_TO_WIRE) | frozenset(_CANONICAL_TO_WIRE.values())
@@ -81,6 +83,7 @@ def known_exchange_profile_ids() -> frozenset[str]:
 
 
 __all__ = [
+    "CANONICAL_APAC_ROBEX",
     "CANONICAL_GLOBAL_AFS",
     "DEFAULT_EXCHANGE_PROFILE_ID",
     "ResolvedExchangeProfile",
