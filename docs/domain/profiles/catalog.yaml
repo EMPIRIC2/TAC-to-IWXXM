@@ -88,12 +88,13 @@ profiles:
     stub: semantic/US_FAA_NWS.md
     gaps:
       - Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text (#919 deepen)
+      - M7 fixture pack: `fixtures/profiles/US_FAA_NWS/METAR/valid/` (15 RMK rows)
       - codes.nws.noaa.gov/FMH-1 registry probe timed out 2026-07-14
 
   - id: CA_ECCC
     kind: semantic
     priority: P1
-    status: planned
+    status: in_progress
     implementation:
       issue: "#916"
     products: [METAR, SPECI, TAF, AIRMET]
@@ -122,7 +123,7 @@ profiles:
     gaps:
       - MANOBS/MANAIR section-level rule stubs not yet mined into fixtures
       - Vendor pin for iwxxm-ca not in manifest.json — candidate URL above
-      - First golden fixture path not started (#916)
+      - Stub METAR convert via annex3 baseline (#916 M8); extensions pending
 
   - id: AU_BOM
     kind: semantic
