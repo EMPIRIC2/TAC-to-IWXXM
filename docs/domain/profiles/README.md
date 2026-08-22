@@ -68,7 +68,7 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 
 - [x] `catalog.yaml` with URL + access tier + gap status per profile id  
 - [x] Semantic stubs for `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`  
-- [ ] CA MANOBS/MANAIR section-level rule stubs for `CA_ECCC` (#916)  
+- [ ] CA MANOBS/MANAIR section-level rule stubs for `CA_ECCC` (#916 / EV-064 in progress)  
 - [ ] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM`  
 - [ ] NZ domestic vs international TAF refs for `NZ_CAA_MET`  
 - [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)  

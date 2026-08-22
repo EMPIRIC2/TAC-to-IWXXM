@@ -99,8 +99,8 @@ profiles:
       issue: "#916"
     products: [METAR, SPECI, TAF, AIRMET]
     vendor_pins:
-      candidate:
-        - https://dd.weather.gc.ca/today/aviation/iwxxm/schema/
+      iwxxm-ca: vendor/manifest.json → iwxxm-ca 3.0
+      iwxxm-core: vendor/schemas/iwxxm/3.0.0 (MSC operational line)
     sources:
       - url: https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html
         label: MANOBS — Surface Weather Observations
@@ -114,16 +114,25 @@ profiles:
         label: MSC IWXXM-CA XSD tree
         access: public
         proves: iwxxm-ca.xsd, common-ca.xsd, taf-ca.xsd, airmet-ca.xsd
-      - url: https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_fr/
-        label: MSC aviation IWXXM datamart readme
+      - url: https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/
+        label: MSC aviation IWXXM datamart readme (EN)
         access: public
-        proves: Operational IWXXM 3.0.0 + CA extensions note
-    mining_notes: []
+        proves: Operational IWXXM 3.0.0 + CA extensions + products
+      - url: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/
+        label: MSC IWXXM code-ca vocabularies
+        access: public
+        proves: Canadian AIRMET/TAF/METAR controlled vocabularies
+      - url: https://dd.weather.gc.ca/today/aviation/iwxxm/doc/
+        label: MSC IWXXM implementation documentation
+        access: public
+        proves: Canadian IWXXM implementation detail
+    mining_notes:
+      - docs/domain/mining/manobs-manair-ca-mining-notes.md
+      - docs/domain/mining/eccc-iwxxm-ca-mining-notes.md
     stub: semantic/CA_ECCC.md
     gaps:
-      - MANOBS/MANAIR section-level rule stubs not yet mined into fixtures
-      - Vendor pin for iwxxm-ca not in manifest.json — candidate URL above
-      - Stub METAR convert via annex3 baseline (#916 M8); extensions pending
+      - GFA AIRMET mappers + validate catalog path (EV-064 M5)
+      - FE semantic picker CA_ECCC (#1024 slice / EV-064 M6)
 
   - id: AU_BOM
     kind: semantic

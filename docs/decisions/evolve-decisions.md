@@ -1,5 +1,53 @@
 # Evolve Decisions
 
+## Cycle EV-064 — CA_ECCC profile (#916) (EV-064-ca-eccc-profile)
+
+**Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-064-ca-eccc-profile`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issue:** [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916)  
+**Parent:** EV-063 / F36 / [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV064-goal | Full #916 scope — METAR/SPECI/TAF/AIRMET + validate + fixtures + API + FE picker slice |
+| D-EV064-mining | Parallel MANOBS/MANAIR section mining → `manobs-manair-ca-mining-notes.md` |
+| D-EV064-iwxxm | IWXXM **3.0.0** core + `iwxxm-ca` extensions (MSC operational line) |
+| D-EV064-surface | API + tac2iwxxm + iwxxm-validate + FE #1024 slice |
+| D-EV064-scale | Standard; all default evolve verifying angles |
+| D-EV064-fn | Deepen **F36** only |
+| D-EV064-out | US RMK reuse as-is; exchange overlays; SIGMET national deepen |
+| D-EV064-feasibility | **FEASIBLE** — schedule risk on full roll-up; IWXXM 3.0.0 core pin required |
+| D-EV064-gate | **open** (`open_build` 2026-08-22) |
+
+### Closeout (2026-08-22)
+
+| ID | Outcome |
+|----|---------|
+| D-EV064-m1-m6 | M1–M6 complete: vendor pin, validate, METAR/TAF/AIRMET convert, API wire, FE picker |
+| D-EV064-verify | TC-EV064-001..006 green; implementing verify pending PR |
+| D-EV064-fn-status | **F36** CA_ECCC P1 slice implemented; deepen continues on backlog |
+
+**Closed:** pending PR · **Session status:** implementing (M7 docs)
+
+---
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
+[Corpus: api] [Corpus: system-spec] [Corpus: tests] [Corpus: journeys]
+
+### Standing doc deltas (draft-docs)
+
+- `docs/domain/profiles/semantic/CA_ECCC.md` — in progress status + IWXXM 3.0 line
+- `docs/domain/mining/manobs-manair-ca-mining-notes.md` — new parallel mining backlog
+- `docs/test-plan.md` §EV-064 TC rows
+- `docs/feature-list.md` F36 #916 deepen
+- `docs/api-contract.md` — `CA_ECCC` canonical semantic id + `IWXXM_CA` extension token
+- `docs/domain/profiles/catalog.yaml` — mining_notes link + gaps refresh
+
+---
+
 ## Cycle EV-063 — Multi-national semantic profiles (#912) (EV-063-multinational-profiles)
 
 **Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-063-multinational-profiles`  
@@ -37,6 +85,18 @@
 - `docs/feature-list.md` F35/F36
 - `docs/api-contract.md` EV-063 proposed wire section
 - `docs/spec.md`, `docs/env-contract.md`, `docs/test-plan.md`, `docs/user-journeys.md` (UJ-069)
+
+### Closeout (2026-08-22)
+
+| ID | Outcome |
+|----|---------|
+| D-EV063-merged | PR [#1026](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1026) → `stage` (M1–M9) |
+| D-EV063-verify-impl | Implementing twins **11/11 PASS**; `08-verify-build` PASS |
+| D-EV063-spec-close | Met: ADR-036 Accepted; #913 catalog; #916 fixtures started; UJ-069 API |
+| D-EV063-fn-status | **F35** → Implemented; **F36** → In progress (national deepen continues) |
+| D-EV063-follow-on | Epic #912 umbrella open; #1025 alias cutover 2026-10-31; #1024 FE deferred |
+
+**Closed:** 2026-08-22 · **Session status:** complete
 
 ---
 

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-22 (EV-063 / F35–F36 Spec — semantic vs exchange profiles #912)
+> **Last updated**: 2026-08-22 (EV-063 closeout — F35 Implemented, F36 in progress #912)
 
 ## Summary
 
@@ -42,8 +42,8 @@
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
-| F35 | Semantic vs exchange profiles + canonical ID migration | Planned | Product | EV-063 / #912 / #914; ADR-036; alias cutover #1025 (2026-10-31); amends F6 wire |
-| F36 | National semantic + regional exchange profile content | Planned | Product | EV-063 / #912; #913 catalog; #919 US deepen → #916 CA_ECCC first P1; #921 exchange; fixture layout |
+| F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; #919 US; **#916 CA_ECCC P1 slice (EV-064 M1–M6)**; #921 GLOBAL_AFS; fixture layout |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -51,7 +51,7 @@
 | M5 | Workspace tooling (uv + pnpm + Makefile) | Planned | Platform | REQ-005; **deepen** S056 / EV-047 slim husky (#833; supersedes EV-036 day-to-day hook weight) |
 | M6 | Vendor upstream sync (wmo-im iwxxm-*) | Planned | Platform | REQ-009 |
 
-**Status key**: Implemented = production-ready, Planned = approved in requirements interview, Experimental = works but not validated, Superseded / Deprecated = replaced by a later decision
+**Status key**: Implemented = production-ready, In progress = partial delivery on approved scope, Planned = approved in requirements interview, Experimental = works but not validated, Superseded / Deprecated = replaced by a later decision
 
 ## Product Feature Details
 
@@ -1764,7 +1764,7 @@
 
 ### F35: Semantic vs exchange profiles + canonical ID migration — EV-063 / #912
 
-- **Status**: **Planned** (EV-063 Spec-development; ADR-036 Proposed).
+- **Status**: **Implemented** (EV-063 / PR [#1026](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1026); ADR-036 Accepted).
 - **What it does**: Splits F6 **semantic** profile selection (TAC→IWXXM) from **exchange**
   profile selection (post-convert packaging). Introduces canonical ids `ICAO_2025` and
   `US_FAA_NWS` with legacy aliases `annex3` / `iwxxm_us` during a deprecation window ending
@@ -1793,12 +1793,12 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **Planned** (blocked on F35 / #914 ADR).
+- **Status**: **In progress** (EV-064 / [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) — full CA profile cycle opened 2026-08-22).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
-  `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), start first P1
-  national **`CA_ECCC`** ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916)), regional
-  exchange overlays ([#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921)) as capacity
-  allows. Data-driven rules mined from authoritative sources (#913).
+  `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
+  ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), regional exchange
+  overlays ([#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921)) as capacity allows.
+  Data-driven rules mined from authoritative sources (#913 / parallel MANOBS/MANAIR notes).
 - **Priority spine**: #913 → #914 → #919 → #916 → #921; defer #917/#918/#920 unless capacity.
 - **Fixture layout**: `profiles/<id>/<product>/{valid,invalid,expected-*}` with first heavy
   national profile.
@@ -1807,12 +1807,13 @@
   2. #913 catalog row per targeted profile id in [Corpus: domain-profiles]
 - **Acceptance (Build)**:
   1. `US_FAA_NWS` deepened per #919 scope (RMK matrix / SIGMET national layer as ticketed)
-  2. `CA_ECCC` converts at least one golden fixture path
+  2. `CA_ECCC` — EV-064 / #916: vendor `iwxxm-ca` + IWXXM 3.0.0 pin; METAR/SPECI/TAF/AIRMET
+     convert + validate paths; API + FE picker; fixtures under `profiles/CA_ECCC/`
   3. One exchange overlay path (`GLOBAL_AFS` minimum) exercised in packaging tests
 - **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA forks
-- **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024)
-  deferred unless Spec→Build pulls FE
-- **Source**: Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912); EV-063;
+- **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
+  **CA_ECCC** option in EV-064 Build slice
+- **Source**: Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912); EV-063; EV-064;
   [Corpus: domain-profiles]
 
 ### F7 / F16–F19 deepen (S050 / EV-042 — #897 destinations UI hide + churn)

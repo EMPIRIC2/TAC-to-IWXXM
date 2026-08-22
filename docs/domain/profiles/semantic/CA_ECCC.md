@@ -1,7 +1,7 @@
 # CA_ECCC — Canada semantic overlay (P1)
 
-> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: planned  
-> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) (first P1 national after US deepen)  
+> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064 M1–M6 / #916 P1 slice)  
+> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) · **Evolve**: EV-064-ca-eccc-profile  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Environment and Climate Change Canada (ECCC / MSC) national semantic overlay: MANOBS
@@ -24,21 +24,26 @@ surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension sc
 | [MSC IWXXM-CA XSD](https://dd.weather.gc.ca/today/aviation/iwxxm/schema/) | public | National extension schema tree |
 | [MSC aviation IWXXM datamart](https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_fr/) | public | Operational IWXXM 3.0.0 + CA extensions |
 
-## Mining notes
+## Mining notes (transitory)
 
-Not yet mined — URLs triaged from [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)
-initial list. Promote section-level findings into this stub when mining closes.
+- [`manobs-manair-ca-mining-notes.md`](../../mining/manobs-manair-ca-mining-notes.md) — MANOBS/MANAIR TAC rules
+- [`eccc-iwxxm-ca-mining-notes.md`](../../mining/eccc-iwxxm-ca-mining-notes.md) — IWXXM 3.0.0 + `*-ca.xsd` + code-ca + datamart
 
-## Implementation (not started)
+## IWXXM version line
 
-| Target | Location |
-|--------|----------|
-| Fixture layout | `profiles/CA_ECCC/<product>/{valid,invalid,expected-*}` |
-| Vendor pin candidate | `https://dd.weather.gc.ca/today/aviation/iwxxm/schema/` — not in `vendor/manifest.json` yet |
-| Child issue | #916 |
+MSC operational practice pins **IWXXM 3.0.0** core (`http://icao.int/iwxxm/3.0`) plus CA
+extensions — independent of the app default **2025-2** SoT line ([ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)).
 
-## Gaps
+## Implementation
 
-- MANOBS/MANAIR section-level rule stubs not yet extracted
-- No golden convert path or registry row in `profile_registry.py`
-- Vendor pin for `iwxxm-ca` not staged in manifest
+| Component | Location |
+|-----------|----------|
+| Registry | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` |
+| Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc.py` |
+| Vendor pin (target) | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core |
+| Validate profile | `packages/iwxxm-validate` — `ca_eccc` path (EV-064 M2) |
+
+## Gaps (post EV-064 M6)
+
+- MANOBS/MANAIR rule deepen beyond initial golden pack (LWIS/SAWR, additional phenomena)
+- SIGMET national overlay — out of #916 scope

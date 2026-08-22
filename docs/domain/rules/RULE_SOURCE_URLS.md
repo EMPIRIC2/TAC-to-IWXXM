@@ -590,6 +590,35 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 - **Caveats:** EA project binary; prefer published XSD/PDF/HTML as auditable trail; do not hand-edit `vendor/schemas/iwxxm-us`
 - **Mined:** 2026-07-30 (#773)
 
+### MSC IWXXM-CA extension schemas (Canada)
+
+- **Publisher:** Environment and Climate Change Canada / MSC
+- **URL:** https://dd.weather.gc.ca/today/aviation/iwxxm/schema/  
+  Code lists: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/  
+  Documentation: https://dd.weather.gc.ca/today/aviation/iwxxm/doc/  
+  Datamart readme: https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/  
+  Operational feed: https://dd.meteo.gc.ca/today/aviation/iwxxm/
+- **Namespace:** `https://dd.meteo.gc.ca/today/aviation/iwxxm/`
+- **Access:** public
+- **Applies to:** products=[METAR,SPECI,TAF,AIRMET,SIGMET,VAA]; profiles=[**ca_eccc** / `CA_ECCC`]; role=[conversion, iwxxm-validation]
+- **Gap vs GIFTs:** LWIS/SAWR/Addendum, Canadian RMK, GFA AIRMET phenomena, NCLWS TAF — not in historical GIFTs
+- **Consumer:** `tac2iwxxm`, `iwxxm-validate`
+- **Label:** normative-schema (national)
+- **Caveats:** Canada pins **IWXXM 3.0.0** core (`http://icao.int/iwxxm/3.0`) — not app default 2025-2. `iwxxm-ca.xsd` imports `schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd`. Vendor: `vendor/schemas/iwxxm-ca` + `vendor/schemas/iwxxm/3.0.0`. Dig: [mining/eccc-iwxxm-ca-mining-notes.md](../mining/eccc-iwxxm-ca-mining-notes.md), [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md)
+- **Mined:** 2026-08-22 (EV-064 / #916)
+
+### MANOBS — Manual of Surface Weather Observation Standards (Canada)
+
+- **Publisher:** Environment and Climate Change Canada
+- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html
+- **Access:** public
+- **Applies to:** products=[METAR,SPECI]; profiles=[**ca_eccc**]; role=[validation, conversion]
+- **Gap vs GIFTs:** Canadian visibility (SM), altimeter (`A####`), AUTO types, RMK grammar, IWXXM dissemination shall
+- **Consumer:** `tac-validate`, `tac2iwxxm`
+- **Label:** normative (national)
+- **Caveats:** Pair with [MANAIR](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html) for forecasts. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md)
+- **Mined:** 2026-08-22 (EV-064 / #916)
+
 ### Aviation Weather Center Data API (live fixtures)
 
 - **Publisher:** NOAA / NWS Aviation Weather Center
