@@ -143,8 +143,9 @@ except ImportError:
 
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
 # Prefer validate_iwxxm (Rust hot path + lxml fallback) over legacy lxml-only validate.
+from dissemination.packaging import apply_exchange_packaging
 from iwxxm_validate import validate_iwxxm as iwxxm_validate_fn
-from tac2iwxxm import BulletinSplitError
+from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 from tac_validate import lint as tac_lint_fn
@@ -462,12 +463,14 @@ def _resolve_request_profiles(
     json_profile: str | None = None,
     json_semantic_profile: str | None = None,
     json_exchange_profile: str | None = None,
+    for_packaging: bool = False,
 ) -> WireProfileSelection:
     """Merge multipart and JSON profile fields, then resolve to emit keys."""
     wire = resolve_route_profiles(
         profile=json_profile if json_profile is not None else profile,
         semantic_profile=json_semantic_profile if json_semantic_profile is not None else semantic_profile,
         exchange_profile=json_exchange_profile if json_exchange_profile is not None else exchange_profile,
+        for_packaging=for_packaging,
     )
     if route:
         record_profile_wire_metrics(route, wire)
@@ -1324,6 +1327,7 @@ async def convert_bulletin(
         profile=profile,
         semantic_profile=semantic_profile,
         exchange_profile=exchange_profile,
+        for_packaging=True,
     )
     profile = wire.emit_key
 
@@ -1412,6 +1416,17 @@ async def convert_bulletin(
             },
         )
 
+    bulletin_identifier: str | None = None
+    try:
+        ahl_parts = parse_ahl(split.meta.ahl)
+        yy = int(split.meta.yygggg[:2])
+        hh = int(split.meta.yygggg[2:4])
+        mm = int(split.meta.yygggg[4:6])
+        issued_at = datetime.datetime.now(datetime.UTC).replace(day=yy, hour=hh, minute=mm, second=0, microsecond=0)
+        bulletin_identifier = iwxxm_filename(ahl_parts, issued_at=issued_at)
+    except (TypeError, ValueError):
+        bulletin_identifier = None
+
     results: list[BulletinReportResultModel] = []
     for index, tac in enumerate(split.reports):
         issues: list[LintIssueModel] = []
@@ -1460,6 +1475,13 @@ async def convert_bulletin(
                     )
                 )
 
+        if ok and xml_out and wire.exchange_profile:
+            xml_out = apply_exchange_packaging(
+                xml_out,
+                exchange_profile=wire.exchange_profile,
+                bulletin_identifier=bulletin_identifier,
+            )
+
         results.append(
             BulletinReportResultModel(
                 report_index=index,
@@ -1483,6 +1505,7 @@ async def convert_bulletin(
                 bbb=split.meta.bbb,
                 report_status=split.meta.report_status,
             ),
+            exchange_profile=wire.exchange_profile,
             results=results,
         )
     )

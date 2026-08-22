@@ -9,14 +9,15 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
+from dissemination.exchange_registry import (
+    DEFAULT_EXCHANGE_PROFILE_ID,
+    resolve_exchange_profile,
+)
 from fastapi import HTTPException
 from tac2iwxxm.profile_registry import resolve_semantic_profile
 
 _LEGACY_DEFAULT_PROFILE = "annex3"
 _WIRE_V2_DEFAULT_SEMANTIC = "ICAO_2025"
-_DEFAULT_EXCHANGE_PROFILE = "GLOBAL_AFS"
-
-_KNOWN_EXCHANGE_PROFILES: frozenset[str] = frozenset({"global_afs"})
 
 
 def _truthy_env(name: str) -> bool:
@@ -37,23 +38,21 @@ def default_semantic_profile() -> str:
 
 def default_exchange_profile() -> str:
     """Default exchange profile id when packaging paths run."""
-    return os.getenv("DEFAULT_EXCHANGE_PROFILE", _DEFAULT_EXCHANGE_PROFILE).strip() or _DEFAULT_EXCHANGE_PROFILE
+    return os.getenv("DEFAULT_EXCHANGE_PROFILE", DEFAULT_EXCHANGE_PROFILE_ID).strip() or DEFAULT_EXCHANGE_PROFILE_ID
 
 
 def _clean(value: str | None) -> str:
     return (value or "").strip()
 
 
-def _normalize_exchange_id(profile: str) -> str:
-    return profile.strip().upper().replace("-", "_")
-
-
-def _resolve_exchange_profile(raw: str | None) -> str | None:
+def _resolve_exchange_profile(raw: str | None, *, for_packaging: bool) -> str | None:
     cleaned = _clean(raw)
     if not cleaned:
+        if for_packaging:
+            return default_exchange_profile()
         return None
-    norm = cleaned.lower().replace("-", "_")
-    if norm not in _KNOWN_EXCHANGE_PROFILES:
+    resolved = resolve_exchange_profile(cleaned)
+    if resolved is None:
         raise HTTPException(
             status_code=400,
             detail={
@@ -61,7 +60,7 @@ def _resolve_exchange_profile(raw: str | None) -> str | None:
                 "message": f"Unknown exchange profile {cleaned!r}",
             },
         )
-    return _normalize_exchange_id(cleaned)
+    return resolved.wire_id
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,6 +78,7 @@ def resolve_route_profiles(
     profile: str | None = None,
     semantic_profile: str | None = None,
     exchange_profile: str | None = None,
+    for_packaging: bool = False,
 ) -> WireProfileSelection:
     """
     Resolve semantic and exchange profile multipart/JSON fields.
@@ -91,6 +91,8 @@ def resolve_route_profiles(
         Canonical or alias semantic profile id.
     exchange_profile :
         Exchange packaging profile id (validated when provided).
+    for_packaging :
+        When ``True``, default to ``GLOBAL_AFS`` if exchange profile is omitted.
 
     Returns
     -------
@@ -122,7 +124,7 @@ def resolve_route_profiles(
             },
         )
 
-    exchange = _resolve_exchange_profile(exchange_profile)
+    exchange = _resolve_exchange_profile(exchange_profile, for_packaging=for_packaging)
     return WireProfileSelection(
         emit_key=resolved.emit_key,
         semantic_canonical=resolved.canonical,

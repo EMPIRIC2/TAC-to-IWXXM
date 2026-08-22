@@ -50,3 +50,13 @@ def test_unknown_exchange_raises_400() -> None:
 def test_global_afs_exchange_accepted() -> None:
     sel = pw.resolve_route_profiles(profile="annex3", exchange_profile="GLOBAL_AFS")
     assert sel.exchange_profile == "GLOBAL_AFS"
+
+
+def test_packaging_path_defaults_global_afs() -> None:
+    sel = pw.resolve_route_profiles(profile="annex3", for_packaging=True)
+    assert sel.exchange_profile == "GLOBAL_AFS"
+
+
+def test_convert_only_path_omits_exchange_default() -> None:
+    sel = pw.resolve_route_profiles(profile="annex3", for_packaging=False)
+    assert sel.exchange_profile is None

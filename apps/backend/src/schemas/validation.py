@@ -463,4 +463,8 @@ class ConvertBulletinResponse(BaseModel):
     """Response for POST /api/v1/convert-bulletin."""
 
     bulletin_meta: BulletinMetaModel
+    exchange_profile: Optional[str] = Field(
+        default=None,
+        description="Resolved exchange packaging profile (default GLOBAL_AFS on this route)",
+    )
     results: List[BulletinReportResultModel] = Field(default_factory=list)
