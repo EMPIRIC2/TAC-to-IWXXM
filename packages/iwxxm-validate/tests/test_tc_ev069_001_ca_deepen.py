@@ -14,6 +14,13 @@ from iwxxm_validate import rust_available, validate_iwxxm
 from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION
 from iwxxm_validate.ca_eccc_layers import pending_ca_stages
 from iwxxm_validate.ca_eccc_validate import STAGE_CA_XSD, STAGE_CODE_CA, STAGE_WMO_XSD
+from iwxxm_validate.ca_exchange_validate import validate_ca_exchange_packaging
+from iwxxm_validate.code_ca_registry import (
+    CODE_CA_BASE,
+    code_ca_membership_ok,
+    is_code_ca_href,
+    normalize_code_ca_href,
+)
 from iwxxm_validate.code_ca_validate import validate_code_ca_membership
 from iwxxm_validate.models import Issue
 
@@ -117,3 +124,63 @@ def test_tc_ev069_004_invalid_ca_extension_still_fails_at_ca_xsd_layer(
     assert ca_stage.ok is False
     assert "code_ca" not in [s.stage for s in report.stages]
     assert report.ok is False
+
+
+@pytest.mark.unit
+def test_tc_ev069_005_code_ca_registry_helpers() -> None:
+    """Registry normalization and membership helpers cover fragment/query stripping."""
+    lwis = f"{CODE_CA_BASE}/ObservingSystemType/LWIS"
+    assert normalize_code_ca_href(f"{lwis}/?cache=1") == lwis
+    assert normalize_code_ca_href(f"{lwis}#fragment") == lwis
+    assert is_code_ca_href(lwis) is True
+    assert is_code_ca_href("https://example.com/not-code-ca") is False
+    assert code_ca_membership_ok(lwis) is True
+    assert code_ca_membership_ok(f"{CODE_CA_BASE}/ObservingSystemType/NOT_A_REAL_CODE") is False
+
+
+@pytest.mark.unit
+def test_tc_ev069_006_code_ca_validate_edge_paths() -> None:
+    """Syntax errors and duplicate href deduplication are attributed to layer 5."""
+    issues = validate_code_ca_membership("<not-xml")
+    assert len(issues) == 1
+    assert issues[0].code == "XML_SYNTAX_ERROR"
+    assert issues[0].layer == STAGE_CODE_CA
+
+    golden = (CA_FIXTURES / "METAR" / "valid" / "metar_lwis.golden.xml").read_text(encoding="utf-8")
+    lwis_href = "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/LWIS"
+    duplicate = golden.replace(
+        "</iwxxm-ca:Addendum>",
+        f'</iwxxm-ca:Addendum><iwxxm-ca:Addendum><iwxxm-ca:observingSystemType xlink:href="{lwis_href}"/></iwxxm-ca:Addendum>',
+        1,
+    )
+    assert validate_code_ca_membership(duplicate) == []
+
+
+@pytest.mark.unit
+def test_tc_ev069_007_exchange_validate_error_paths() -> None:
+    """Exchange layer reports syntax, namespace, attribute, and AHL mismatches."""
+    golden = (CA_FIXTURES / "METAR" / "valid" / "metar_lwis.golden.xml").read_text(encoding="utf-8")
+
+    syntax_issues = validate_ca_exchange_packaging("<not-xml")
+    assert syntax_issues[0].code == "XML_SYNTAX_ERROR"
+
+    bad_root = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<doc xmlns="http://example.com" xmlns:gml="http://www.opengis.net/gml/3.2" '
+        'gml:id="x" reportStatus="NORMAL" permissibleUsage="OPERATIONAL"/>'
+    )
+    namespace_issues = validate_ca_exchange_packaging(bad_root)
+    assert any(issue.code == "CA_EXCHANGE_NAMESPACE" for issue in namespace_issues)
+
+    bad_status = golden.replace('reportStatus="NORMAL"', 'reportStatus="BOGUS"', 1)
+    status_issues = validate_ca_exchange_packaging(bad_status)
+    assert any(issue.code == "CA_EXCHANGE_REPORT_STATUS" for issue in status_issues)
+
+    bad_usage = golden.replace('permissibleUsage="OPERATIONAL"', 'permissibleUsage="BOGUS"', 1)
+    usage_issues = validate_ca_exchange_packaging(bad_usage)
+    assert any(issue.code == "CA_EXCHANGE_PERMISSIBLE_USAGE" for issue in usage_issues)
+
+    ahl_issues = validate_ca_exchange_packaging(golden, product="METAR", ahl_header="A_LTCN31 CYUL 291800")
+    assert any(issue.code == "CA_EXCHANGE_AHL_PRODUCT" for issue in ahl_issues)
+
+    assert validate_ca_exchange_packaging(golden) == []
