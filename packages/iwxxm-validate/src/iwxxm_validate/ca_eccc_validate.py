@@ -16,11 +16,15 @@ from iwxxm_validate.ca_eccc_bundle import (
 from iwxxm_validate.ca_eccc_layers import (
     CA_STAGE_LABELS,
     STAGE_CA_XSD,
+    STAGE_CODE_CA,
+    STAGE_EXCHANGE,
     STAGE_WELLFORMED,
     STAGE_WMO_SCH,
     STAGE_WMO_XSD,
     ca_product_xsd_path,
 )
+from iwxxm_validate.ca_exchange_validate import validate_ca_exchange_packaging
+from iwxxm_validate.code_ca_validate import validate_code_ca_membership
 from iwxxm_validate.models import Issue, StageResult, ValidationReport
 from iwxxm_validate.native import rust_available, rust_module
 from iwxxm_validate.schematron import validate_schematron
@@ -29,6 +33,7 @@ from iwxxm_validate.xsd import validate_xsd, validate_xsd_at_path
 CA_EXTENSION_NS = "https://dd.meteo.gc.ca/today/aviation/iwxxm/"
 CA_SUBSTITUTION_ROOTS = frozenset({"LWIS", "SAWR"})
 _WMO_PRODUCT_ROOTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
+_IWXXM_NS = "http://icao.int/iwxxm/3.0"
 
 # lxml ships without complete type stubs; bind as Any for strict basedpyright.
 etree: Any = _lxml_etree
@@ -136,22 +141,36 @@ def _is_ca_substitution_root(local_name: str | None, namespace: str | None) -> b
 
 
 def _extract_ca_extension_blocks(xml_content: str) -> list[str]:
-    """Return serialized ``iwxxm-ca`` extension blocks from a WMO product root document."""
+    """Return serialized ``iwxxm-ca`` extension payloads from ``iwxxm:extension`` children."""
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))
     except etree.XMLSyntaxError:
         return []
 
     blocks: list[str] = []
-    for element in root.iter():
-        if etree.QName(element).namespace != CA_EXTENSION_NS:
-            continue
-        blocks.append(etree.tostring(element, encoding="unicode"))
+    for extension in root.iter(f"{{{_IWXXM_NS}}}extension"):
+        for child in extension:
+            if etree.QName(child).namespace != CA_EXTENSION_NS:
+                continue
+            blocks.append(etree.tostring(child, encoding="unicode"))
     return blocks
 
 
-def _wrap_ca_extension_block(fragment_xml: str) -> str:
-    """Wrap a CA extension fragment in a minimal LWIS shell for product XSD validation."""
+def _ca_xsd_probe_document(fragment_xml: str, *, product: str) -> str:
+    """
+    Build a standalone document for layer-4 product XSD validation.
+
+    ``metar-speci-ca`` declares LWIS/SAWR substitution roots; ``taf-ca`` declares
+    extension elements such as ``NonConvectiveLowLevelWindShear`` only.
+    """
+    product_u = product.upper()
+    if product_u == "TAF":
+        return f'<?xml version="1.0" encoding="UTF-8"?>\n{fragment_xml}'
+    return _wrap_ca_lwis_extension_block(fragment_xml)
+
+
+def _wrap_ca_lwis_extension_block(fragment_xml: str) -> str:
+    """Wrap a METAR/SPECI CA extension fragment in a minimal LWIS shell."""
     designator = "CYXX"
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm-ca:LWIS xmlns:iwxxm="http://icao.int/iwxxm/3.0"
@@ -237,10 +256,10 @@ def _validate_ca_xsd_layer(
             return []
         issues: list[Issue] = []
         for block in blocks:
-            wrapped = _wrap_ca_extension_block(block)
+            probe = _ca_xsd_probe_document(block, product=product)
             issues.extend(
                 _validate_ca_xsd_document(
-                    wrapped,
+                    probe,
                     product_xsd=product_xsd,
                     core_sch=core_sch,
                     catalog_roots=catalog_roots,
@@ -395,6 +414,14 @@ def validate_ca_eccc_layered(
                 catalog_roots=catalog_roots,
             )
         append_stage(STAGE_CA_XSD, ca_issues)
+
+    if not _has_error(all_issues):
+        code_ca_issues = validate_code_ca_membership(xml_content)
+        append_stage(STAGE_CODE_CA, code_ca_issues)
+
+    if not _has_error(all_issues):
+        exchange_issues = validate_ca_exchange_packaging(xml_content, product=product)
+        append_stage(STAGE_EXCHANGE, exchange_issues)
 
     ok = not _has_error(all_issues)
     return ValidationReport(

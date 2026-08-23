@@ -97,6 +97,12 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 - API/CLI `extensions: [IWXXM_CA]` wire + `package_stages` on `/validate` (TC-EV068-004)
 - EV-067 golden XSD gate (`metar_lwis`, `metar_sawr`, `metar_rmk_icing`) — **TC-EV068-003**
 
+### EV-069 delivered (#1033 + #1032 + TAF gate)
+
+- Layer 5 `code_ca` vocabulary membership (offline curated registry; TC-EV069-003)
+- Layer 6 `exchange` packaging checks (operational attrs + optional AHL cross-check)
+- TAF `taf-ca.xsd` NCLWS extension probe (direct global element validation; TC-EV069-002)
+
 ### Out of scope (EV-068 / backlog)
 
 - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum

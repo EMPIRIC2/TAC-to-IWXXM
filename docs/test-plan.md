@@ -2741,6 +2741,40 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Document pass/fail in test or mining notes — gate per feasibility decision
 - **Source**: #1035 acceptance; R-EV068-NF-003
 
+### EV-069 / #1035 follow-on — CA_ECCC validation deepen
+
+- **Mode**: deepen F2/F13; layers 5–6 + TAF product XSD gate
+- **Pass criteria**: AC in evolve-decisions §EV-069; TC-EV069-*
+- **Source**: [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035), [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033), [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032); EV-069
+
+### TC-EV069-001: All CA stages implemented
+
+- **Level**: T0
+- **Objective**: `pending_ca_stages()` empty; registry matches catalog
+- **Pass criteria**: `IMPLEMENTED_CA_STAGES == CA_VALIDATION_STAGES`
+- **Source**: EV-069 M1
+
+### TC-EV069-002: TAF NCLWS full stack
+
+- **Level**: T0 / T2
+- **Objective**: `taf_nclws.golden.xml` passes layers 1–6 under `ca_eccc` + `product=TAF`
+- **Pass criteria**: All stage `ok`; `ca_xsd` validates NCLWS global element against `taf-ca.xsd`
+- **Source**: EV-069 M2; #1035 TAF acceptance
+
+### TC-EV069-003: code-ca membership gate
+
+- **Level**: T0
+- **Objective**: Unknown code-ca href fails at `code_ca` layer only
+- **Pass criteria**: `CODE_CA_UNKNOWN` on bad href; known goldens pass
+- **Source**: EV-069 M3; #1033
+
+### TC-EV069-004: Layer attribution preserved with full stack
+
+- **Level**: T0
+- **Objective**: CA XSD failures still attributed to `ca_xsd`; later stages skipped on error
+- **Pass criteria**: Monkeypatched `ca_xsd` failure; no `code_ca` stage appended
+- **Source**: EV-069 M4
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

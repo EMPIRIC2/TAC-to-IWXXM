@@ -24,9 +24,9 @@ EV067_CASES = (
 
 # Substitution-group roots skip WMO XSD/SCH; standard METAR root runs layers 2–4.
 _EXPECTED_STAGES = {
-    "metar_lwis": ("wellformed", "ca_xsd"),
-    "metar_sawr": ("wellformed", "ca_xsd"),
-    "metar_rmk_icing": ("wellformed", "wmo_xsd", "wmo_schematron", "ca_xsd"),
+    "metar_lwis": ("wellformed", "ca_xsd", "code_ca", "exchange"),
+    "metar_sawr": ("wellformed", "ca_xsd", "code_ca", "exchange"),
+    "metar_rmk_icing": ("wellformed", "wmo_xsd", "wmo_schematron", "ca_xsd", "code_ca", "exchange"),
 }
 
 
