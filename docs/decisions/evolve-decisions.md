@@ -18,6 +18,18 @@
 | D-EV067-fn | Deepen **F36** / **F1** |
 | D-EV067-gate | **open** (`open_build` 2026-08-22) |
 
+### Closeout (2026-08-23)
+
+| ID | Outcome |
+|----|---------|
+| D-EV067-build | P1 complete: LWIS/SAWR roots, Addendum deepen, API auto-detect, goldens + TC-EV067-001..003 |
+| D-EV067-pr | [#1049](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1049) → `stage` open, mergeable, CI green (run 32643349129) |
+| D-EV067-verify | Remote CI all required checks SUCCESS; local scoped tests 23 passed |
+| D-EV067-fn-status | **F36** / **F1** deepen — LWIS/SAWR + Addendum P1 slice; P2 residuals on backlog |
+| D-EV067-follow-on | #1035 XSD stack; P2 variable RVR/lightning; optional lint; [#1050](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1050) umbrella |
+
+**Closed:** 2026-08-23 · **Session status:** closed · **Issue #1039:** open until PR merge
+
 ### Corpus
 
 [Corpus: product §F36] [Corpus: product §F1] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
