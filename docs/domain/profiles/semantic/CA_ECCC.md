@@ -85,18 +85,17 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 | Parser (TAC leads) | `packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py` — `ca_iwxxm_root` IR |
 | Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc.py` — root tag + Addendum |
 | Golden fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/` |
-| Validate profile | `packages/iwxxm-validate` — `ca_eccc` scaffold (EV-064 M2); **EV-068** layered stack (#1035) |
+| Validate profile | `packages/iwxxm-validate` — layered `ca_eccc` stack (EV-068 M3–M5; API `extensions: [IWXXM_CA]`) |
 | Vendor pin | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core |
 
 ## Gaps
 
-### EV-068 in scope (#1027 + #1035)
+### EV-068 delivered (#1027 + #1035)
 
-- Layered `ca_eccc` validation: WMO 3.0.0 XSD+SCH + product `*-ca.xsd` + `code-ca` (#1035)
-- Profile-pinned 3.0.0 manifest formalization remainder (#1027)
-- API `extensions: [IWXXM_CA]` wire on validate/convert (#1027)
-- EV-067 golden XSD gate (`metar_lwis`, `metar_sawr`, `metar_rmk_icing`) — currently waived
-- Operator-visible per-stage validation results (no internal doc refs)
+- Layered `ca_eccc` validation: WMO 3.0.0 XSD+SCH + product `*-ca.xsd` (TC-EV068-002/003)
+- Profile-pinned 3.0.0 manifest (`vendor/manifest.json`; TC-EV068-001)
+- API/CLI `extensions: [IWXXM_CA]` wire + `package_stages` on `/validate` (TC-EV068-004)
+- EV-067 golden XSD gate (`metar_lwis`, `metar_sawr`, `metar_rmk_icing`) — **TC-EV068-003**
 
 ### Out of scope (EV-068 / backlog)
 
