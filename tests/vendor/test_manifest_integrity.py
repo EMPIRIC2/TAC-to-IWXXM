@@ -11,6 +11,7 @@ import pytest
 
 from metar_shared.vendor_manifest import (
     MANIFEST_SCHEMA_VERSION,
+    PROFILE_LINE_BUNDLE_NAMES,
     VENDOR_BUNDLE_NAMES,
     compute_tree_sha256,
     load_manifest,
@@ -69,6 +70,22 @@ class TestTcM002ManifestIntegrity:
         """TC-EV064-001: IWXXM 3.0.0 core vendored for CA extension imports."""
         core = ROOT / "vendor/schemas/iwxxm/3.0.0/IWXXM/iwxxm.xsd"
         assert core.is_file(), f"missing IWXXM 3.0.0 core: {core}"
+
+    def test_tc_ev068_001_profile_line_bundle_pin(self) -> None:
+        """TC-EV068-001: CA_ECCC profile line formalized in vendor manifest."""
+        manifest = load_manifest(MANIFEST_PATH)
+        assert "iwxxm-3.0.0" in manifest["bundles"]
+        entry = manifest["bundles"]["iwxxm-3.0.0"]
+        assert entry["parent_bundle"] == "iwxxm"
+        assert entry["version_line"] == "3.0.0"
+        assert entry["local_path"] == "vendor/schemas/iwxxm/3.0.0"
+        assert len(entry["tree_sha256"]) == 64
+        assert (ROOT / "vendor/schemas/iwxxm/3.0.0/IWXXM/iwxxm.xsd").is_file()
+
+    def test_tc_ev068_001_profile_line_in_required_bundles(self) -> None:
+        """TC-EV068-001: profile-line bundle participates in integrity checks."""
+        assert "iwxxm-3.0.0" in PROFILE_LINE_BUNDLE_NAMES
+        assert "iwxxm-3.0.0" in VENDOR_BUNDLE_NAMES
 
     def test_manifest_schema_version(self) -> None:
         """Manifest uses the supported schema version."""
