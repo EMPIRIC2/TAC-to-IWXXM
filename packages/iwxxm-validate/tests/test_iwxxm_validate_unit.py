@@ -112,6 +112,16 @@ def test_validate_iwxxm_ca_eccc_accepts_3_0_0_rust_path(monkeypatch: pytest.Monk
     )
     monkeypatch.setattr(vi, "xsd_path", lambda _v: xsd)
     monkeypatch.setattr(vi, "schematron_path", lambda _v: sch)
+    monkeypatch.setattr(
+        vi,
+        "validate_ca_eccc_layered",
+        lambda xml, **kwargs: ValidationReport(
+            ok=True,
+            iwxxm_version="3.0.0",
+            profile="ca_eccc",
+            issues=[],
+        ),
+    )
     report = vi.validate_iwxxm("<root/>", iwxxm_version="3.0.0", profile="ca_eccc")
     assert report.ok is True
     assert report.profile == "ca_eccc"

@@ -21,6 +21,7 @@ def validate(
     iwxxm_version: str,
     profile: str = "annex3",
     levels: Sequence[str] | None = None,
+    product: str | None = None,
 ) -> ValidationReport:
     """
     Validate IWXXM XML against vendored XSD and/or Schematron.
@@ -36,6 +37,8 @@ def validate(
         ``ca_eccc`` (requires vendored ``iwxxm-ca`` pin; IWXXM version ``3.0.0``).
     levels :
         Subset of ``xsd`` / ``schematron``. Default runs both.
+    product :
+        API product enum for Canadian extension XSD when ``profile=ca_eccc``.
 
     Returns
     -------
@@ -101,7 +104,7 @@ def validate(
                     message=(
                         f"profile=ca_eccc requires iwxxm_version {_CA_ECCC_IWXXM_VERSION!r}, got {iwxxm_version!r}"
                     ),
-                    layer="xsd",
+                    layer="wmo_xsd",
                 )
             )
             return ValidationReport(
@@ -110,6 +113,14 @@ def validate(
                 profile=profile,
                 issues=issues,
             )
+        from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+
+        return validate_ca_eccc_layered(
+            xml_content,
+            iwxxm_version=iwxxm_version,
+            product=product,
+            levels=selected,
+        )
 
     if profile == "iwxxm_us" and us_catalog_path() is None:
         issues.append(
