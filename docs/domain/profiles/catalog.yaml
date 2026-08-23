@@ -94,10 +94,50 @@ profiles:
   - id: CA_ECCC
     kind: semantic
     priority: P1
-    status: in_progress
+    status: implemented
+    emit_key: ca_eccc
     implementation:
       issue: "#916"
+      package: packages/tac2iwxxm
+      module: profiles/ca_eccc.py
+      validate_profile: ca_eccc
     products: [METAR, SPECI, TAF, AIRMET]
+    # MANOBS surface reports: METAR/SPECI are ICAO TAC leads; LWIS/SAWR are Canadian-only
+    # substitution-group roots in metar-speci-ca.xsd (not separate API product enums).
+    metar_family_variants:
+      - tac_lead: METAR
+        api_product: METAR
+        iwxxm_root: "iwxxm:METAR"
+        rule_id_prefix: CA.METAR
+      - tac_lead: SPECI
+        api_product: SPECI
+        iwxxm_root: "iwxxm:SPECI"
+        rule_id_prefix: CA.SPECI
+      - tac_lead: LWIS
+        api_product: METAR
+        iwxxm_root: "iwxxm-ca:LWIS"
+        rule_id: CA.METAR.LWIS
+        manobs: "MANOBS 8 Chap 11.3; TC AIM MET 8.5.2"
+        notes: Limited Weather Information System — minimal obs (wind/temp/dew/altimeter)
+      - tac_lead: SAWR
+        api_product: METAR
+        iwxxm_root: "iwxxm-ca:SAWR"
+        rule_id: CA.METAR.SAWR
+        notes: Surface Aviation Weather Report — full aerodrome obs + CA Addendum
+    metar_speci_ca_addendum:
+      - element: observingSystemType
+        rule_ids: [CA.METAR.AUTO, CA.METAR.LWIS, CA.METAR.SAWR]
+      - element: densityAltitude
+        tac_remark: "DENSITY ALT ####FT"
+      - element: icing
+        tac_remark: "ICE LGT|TRC|MOD|SEV|HVY"
+        rule_id: CA.METAR.RMK.ICING
+      - element: processedQuantity
+        tac_remark: "P/6/7 precip totals (shared IR with iwxxm_us)"
+      - element: seaLevelPressure
+        rule_id: CA.METAR.RMK.SLP_T
+      - element: pressureChangeIndicator
+        rule_ids: [CA.METAR.RMK.PRESFR, CA.METAR.RMK.PRESRR]
     vendor_pins:
       iwxxm-ca: vendor/manifest.json → iwxxm-ca 3.0
       iwxxm-core: vendor/schemas/iwxxm/3.0.0 (MSC operational line)
@@ -131,8 +171,10 @@ profiles:
       - docs/domain/mining/eccc-iwxxm-ca-mining-notes.md
     stub: semantic/CA_ECCC.md
     gaps:
-      - GFA AIRMET mappers + validate catalog path (EV-064 M5)
-      - FE semantic picker CA_ECCC (#1024 slice / EV-064 M6)
+      - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
+      - AerodromeVariableRVR / ObservedLightning (P2 / #1039)
+      - Full layered ca_eccc XSD validation (#1035)
+      - SIGMET national overlay — out of #916 scope
 
   - id: AU_BOM
     kind: semantic

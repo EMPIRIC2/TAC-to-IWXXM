@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "EV-064 M3/M4/M5 + EV-066 — CA_ECCC MANOBS METAR + MANAIR TAF/AIRMET golden pack",
+  "description": "EV-064 M3/M4/M5 + EV-066 + EV-067 — CA_ECCC MANOBS METAR + MANAIR TAF/AIRMET golden pack",
   "profile": "CA_ECCC",
   "cases": [
     {
@@ -57,6 +57,30 @@
       "tac": "METAR/valid/metar_rmk_slp_t.tac",
       "golden": "METAR/valid/metar_rmk_slp_t.golden.xml",
       "rule_id": "CA.METAR.RMK.SLP_T",
+      "status": "active"
+    },
+    {
+      "id": "metar_lwis",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_lwis.tac",
+      "golden": "METAR/valid/metar_lwis.golden.xml",
+      "rule_id": "CA.METAR.LWIS",
+      "status": "active"
+    },
+    {
+      "id": "metar_sawr",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_sawr.tac",
+      "golden": "METAR/valid/metar_sawr.golden.xml",
+      "rule_id": "CA.METAR.SAWR",
+      "status": "active"
+    },
+    {
+      "id": "metar_rmk_icing",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rmk_icing.tac",
+      "golden": "METAR/valid/metar_rmk_icing.golden.xml",
+      "rule_id": "CA.METAR.RMK.ICING",
       "status": "active"
     },
     {

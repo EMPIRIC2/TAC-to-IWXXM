@@ -21,15 +21,29 @@ CA_IWXXM_VERSION = "3.0.0"
 CA_NS = "https://dd.meteo.gc.ca/today/aviation/iwxxm/"
 _CODE_CA_BASE = "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca"
 CA_OBS_AWOS = f"{_CODE_CA_BASE}/ObservingSystemType/AWOS"
+CA_OBS_LWIS = f"{_CODE_CA_BASE}/ObservingSystemType/LWIS"
+CA_OBS_SAWR = f"{_CODE_CA_BASE}/ObservingSystemType/SAWR"
 CA_PRES_FALLING = f"{_CODE_CA_BASE}/PressureChangingRapidly/FALLING"
 CA_PRES_RISING = f"{_CODE_CA_BASE}/PressureChangingRapidly/RISING"
 CA_AIRMET_PHENOM_BASE = f"{_CODE_CA_BASE}/airmet_weather_phenomena"
+CA_ICING_BASE = f"{_CODE_CA_BASE}/AerodromeIcing"
+
+# MANOBS METAR-family TAC leads — catalogued in docs/domain/profiles/catalog.yaml
+# (CA_ECCC.metar_family_variants). API product stays METAR/SPECI; IR ca_iwxxm_root
+# selects IWXXM root (core iwxxm:METAR/SPECI vs national iwxxm-ca:LWIS/SAWR).
+CA_METAR_FAMILY_TAC_LEADS = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
+CA_IWXXM_CA_SUBSTITUTION_ROOTS = frozenset({"LWIS", "SAWR"})
 
 
 def _ca_gml_id(ir: dict[str, Any], product: str) -> str:
     """Stable gml:id for CA_ECCC golden fixtures."""
-    root = product.lower()
+    ca_root = str(ir.get("ca_iwxxm_root") or product).lower()
     station = str(ir["station"]).lower()
+    if ca_root == "lwis":
+        return f"lwis.ca.{station}"
+    if ca_root == "sawr":
+        return f"sawr.ca.{station}"
+    root = product.lower()
     if ir.get("auto"):
         return f"{root}.ca.auto.{station}"
     if ir.get("visibility_sm") is not None:
@@ -66,10 +80,74 @@ def _ca_pressure_change_href(ir: dict[str, Any]) -> str | None:
 
 
 def _ca_observing_system_href(ir: dict[str, Any]) -> str | None:
-    """Resolve Canadian observing-system vocabulary for AUTO / remarks."""
+    """Resolve Canadian observing-system vocabulary for AUTO / LWIS / SAWR."""
+    explicit = ir.get("ca_observing_system_href")
+    if isinstance(explicit, str) and explicit:
+        return explicit
+    ca_root = str(ir.get("ca_iwxxm_root") or "").upper()
+    if ca_root == "LWIS":
+        return CA_OBS_LWIS
+    if ca_root == "SAWR":
+        return CA_OBS_SAWR
     if ir.get("auto"):
         return CA_OBS_AWOS
     return None
+
+
+def _ca_iwxxm_root_tag(ir: dict[str, Any], product: str) -> tuple[str, str]:
+    """Return (namespace prefix, root local name) for CA METAR-family reports."""
+    ca_root = str(ir.get("ca_iwxxm_root") or product).upper()
+    if ca_root in {"LWIS", "SAWR"}:
+        return "iwxxm-ca", ca_root
+    return "iwxxm", product.upper()
+
+
+def _density_altitude_xml(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``densityAltitude`` from MANOBS DENSITY ALT remark."""
+    if ir.get("density_altitude_missing"):
+        return '          <iwxxm-ca:densityAltitude uom="[ft_i]" xsi:nil="true" nilReason="missing"/>\n'
+    ft = ir.get("density_altitude_ft")
+    if ft is None:
+        return ""
+    return f'          <iwxxm-ca:densityAltitude uom="[ft_i]">{int(ft)}</iwxxm-ca:densityAltitude>\n'
+
+
+def _icing_addendum_xml(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``icing`` from MANOBS ICE remark."""
+    href = ir.get("ca_icing_href")
+    if not isinstance(href, str) or not href:
+        return ""
+    return f'          <iwxxm-ca:icing xlink:href="{escape(href)}"/>\n'
+
+
+def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
+    """Serialize Addendum ``processedQuantity`` rows (shared IR with iwxxm_us P/6/7)."""
+    qty_raw = ir.get("processed_quantities")
+    if not isinstance(qty_raw, list) or not qty_raw:
+        return ""
+    parts: list[str] = []
+    for row_obj in cast(list[object], qty_raw):
+        if not isinstance(row_obj, dict):
+            continue
+        row: dict[str, Any] = row_obj
+        elem = escape(str(row["processed_weather_element_href"]))
+        vtype = escape(str(row["value_type_href"]))
+        period = escape(str(row.get("value_period") or "PT1H"))
+        uom = escape(str(row.get("uom") or "[in_i]"))
+        val = row.get("processed_value")
+        val_txt = f"{float(str(val)):.2f}" if val is not None else "0"
+        parts.append(
+            f"""          <iwxxm-ca:processedQuantity>
+            <iwxxm-ca:ProcessedProperty>
+              <iwxxm-ca:processedWeatherElement xlink:href="{elem}"/>
+              <iwxxm-ca:valueType xlink:href="{vtype}"/>
+              <iwxxm-ca:valuePeriod>{period}</iwxxm-ca:valuePeriod>
+              <iwxxm-ca:processedValue uom="{uom}">{val_txt}</iwxxm-ca:processedValue>
+            </iwxxm-ca:ProcessedProperty>
+          </iwxxm-ca:processedQuantity>
+"""
+        )
+    return "".join(parts)
 
 
 def _addendum_extension(ir: dict[str, Any]) -> str:
@@ -78,7 +156,10 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
     obs_href = _ca_observing_system_href(ir)
     pres_href = _ca_pressure_change_href(ir)
     has_slp = ir.get("sea_level_pressure_hpa") is not None
-    if not obs_href and not pres_href and not has_slp and not free_text:
+    density_xml = _density_altitude_xml(ir).rstrip("\n")
+    icing_xml = _icing_addendum_xml(ir).rstrip("\n")
+    processed_xml = _processed_quantity_addendum_inner(ir).rstrip("\n")
+    if not any([obs_href, pres_href, has_slp, free_text, density_xml, icing_xml, processed_xml]):
         return ""
 
     parts: list[str] = [
@@ -93,8 +174,14 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
         parts.append(
             f'          <iwxxm-ca:seaLevelPressure uom="hPa">{ir["sea_level_pressure_hpa"]}</iwxxm-ca:seaLevelPressure>'
         )
+    if density_xml:
+        parts.append(density_xml)
+    if icing_xml:
+        parts.append(icing_xml)
     if pres_href:
         parts.append(f'          <iwxxm-ca:pressureChangeIndicator xlink:href="{escape(pres_href)}"/>')
+    if processed_xml:
+        parts.append(processed_xml)
     parts.extend(
         [
             "        </iwxxm-ca:Addendum>",
@@ -300,8 +387,8 @@ def emit_metar_speci_ca_eccc(
     ca_ir = _prepare_ca_ir(ir)
     station = str(ca_ir["station"])
     stamp = obs_timestamp(ca_ir)
-    root = product.upper()
-    gml_id = _ca_gml_id(ca_ir, root)
+    ns_prefix, root_tag = _ca_iwxxm_root_tag(ca_ir, product)
+    gml_id = _ca_gml_id(ca_ir, product)
     override = ca_ir.get("report_status")
     if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
         report_status = str(override)
@@ -314,7 +401,7 @@ def emit_metar_speci_ca_eccc(
     aerodrome = aerodrome_block(station)
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<iwxxm:{root} xmlns:iwxxm="{ns}"
+<{ns_prefix}:{root_tag} xmlns:iwxxm="{ns}"
     xmlns:iwxxm-ca="{CA_NS}"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:gml="http://www.opengis.net/gml/3.2"
@@ -334,14 +421,18 @@ def emit_metar_speci_ca_eccc(
       <gml:timePosition>{stamp}</gml:timePosition>
     </gml:TimeInstant>
   </iwxxm:observationTime>
-{observation}{trends}</iwxxm:{root}>
+{observation}{trends}</{ns_prefix}:{root_tag}>
 """
 
 
 __all__ = [
     "CA_IWXXM_VERSION",
+    "CA_IWXXM_CA_SUBSTITUTION_ROOTS",
+    "CA_METAR_FAMILY_TAC_LEADS",
     "CA_NS",
     "CA_OBS_AWOS",
+    "CA_OBS_LWIS",
+    "CA_OBS_SAWR",
     "CA_PRES_FALLING",
     "CA_PRES_RISING",
     "emit_airmet_ca_eccc",

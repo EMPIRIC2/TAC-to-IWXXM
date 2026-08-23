@@ -1,5 +1,41 @@
 # Evolve Decisions
 
+## Cycle EV-067 — CA_ECCC metar-speci-ca extensions (#1039) (EV-067-ca-metar-speci-ca)
+
+**Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-067-ca-metar-speci-ca`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039)  
+**Parent:** #916 / EV-064 · **Prior:** EV-066
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV067-goal | P1 #1039 — LWIS + SAWR IWXXM roots, Addendum deepen (densityAltitude, icing), MANOBS TAC leads |
+| D-EV067-in | tac2iwxxm parse/emit; CA_ECCC fixtures; API LWIS/SAWR auto-detect → METAR product |
+| D-EV067-out | P2 AerodromeVariableRVR/ObservedLightning; full #1027/#1035 validation stack |
+| D-EV067-deps | Proceed on EV-064/066 foundation; waive #1027/#1035 gaps for this slice |
+| D-EV067-scale | Standard; all default evolve verifying angles |
+| D-EV067-fn | Deepen **F36** / **F1** |
+| D-EV067-gate | **open** (`open_build` 2026-08-22) |
+
+### Closeout (2026-08-23)
+
+| ID | Outcome |
+|----|---------|
+| D-EV067-build | P1 complete: LWIS/SAWR roots, Addendum deepen, API auto-detect, goldens + TC-EV067-001..003 |
+| D-EV067-pr | [#1049](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1049) → `stage` open, mergeable, CI green (run 32643349129) |
+| D-EV067-verify | Remote CI all required checks SUCCESS; local scoped tests 23 passed |
+| D-EV067-fn-status | **F36** / **F1** deepen — LWIS/SAWR + Addendum P1 slice; P2 residuals on backlog |
+| D-EV067-follow-on | #1035 XSD stack; P2 variable RVR/lightning; optional lint; [#1050](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1050) umbrella |
+
+**Closed:** 2026-08-23 · **Session status:** closed · **Issue #1039:** open until PR merge
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: product §F1] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
+
+---
+
 ## Cycle EV-066 — CA_ECCC RMK + altimeter deepen (#916) (EV-066-ca-eccc-rmk-deepen)
 
 **Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-066-ca-eccc-rmk-deepen`  
