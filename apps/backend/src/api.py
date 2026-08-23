@@ -465,6 +465,16 @@ def normalize_api_product(
     return product_u
 
 
+def _coerce_form_list(value: object) -> list[str]:
+    """Return list form field values; direct endpoint calls leave ``Form()`` defaults."""
+    return value if isinstance(value, list) else []
+
+
+def _coerce_form_str(value: object, default: str = "") -> str:
+    """Return string form field values; direct endpoint calls leave ``Form()`` defaults."""
+    return value if isinstance(value, str) else default
+
+
 def _resolve_request_extensions(
     form_extensions: List[str],
     json_extensions: list[str] | None,
@@ -1734,6 +1744,8 @@ async def validate_comprehensive(
         json_exchange = None
         json_extensions = None
         json_product = None
+        extensions = _coerce_form_list(extensions)
+        product = _coerce_form_str(product, "METAR")
         # Handle JSON request body
         if request_body is not None:
             xml_content = request_body.iwxxm_xml

@@ -1258,6 +1258,12 @@ export interface components {
              */
             exchange_profile: string;
             /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @default []
+             */
+            extensions: string[];
+            /**
              * Include Nil Reasons
              * @description When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)
              * @default true
@@ -1356,6 +1362,12 @@ export interface components {
              * @default
              */
             exchange_profile: string;
+            /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @default []
+             */
+            extensions: string[];
             /** Files */
             files?: string[] | null;
             /**
@@ -1477,6 +1489,12 @@ export interface components {
              */
             exchange_profile: string;
             /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @default []
+             */
+            extensions: string[];
+            /**
              * Iwxxm Version
              * @description Target IWXXM version
              * @default 2025-2
@@ -1496,6 +1514,12 @@ export interface components {
              * @default
              */
             manual_text: string;
+            /**
+             * Product
+             * @description TAC product for Canadian extension XSD when extensions include IWXXM_CA
+             * @default METAR
+             */
+            product: string;
             /**
              * Profile
              * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
@@ -2500,6 +2524,20 @@ export interface components {
             start?: number | null;
         };
         /**
+         * PackageStageModel
+         * @description Per-stage CA_ECCC validation outcome (additive on /validate).
+         */
+        PackageStageModel: {
+            /** Issues */
+            issues?: components["schemas"]["PackageIssueModel"][];
+            /** Label */
+            label: string;
+            /** Ok */
+            ok: boolean;
+            /** Stage */
+            stage: string;
+        };
+        /**
          * PendingFilePayload
          * @description Queued file content stored inline on the session row.
          */
@@ -2947,11 +2985,26 @@ export interface components {
              */
             exchange_profile?: string | null;
             /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @example [
+             *       "IWXXM_CA"
+             *     ]
+             */
+            extensions?: string[] | null;
+            /**
              * Iwxxm Xml
              * @description IWXXM XML content to validate
              * @example <?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>
              */
             iwxxm_xml: string;
+            /**
+             * Product
+             * @description TAC product for Canadian extension XSD selection when extensions include IWXXM_CA
+             * @example METAR
+             * @example TAF
+             */
+            product?: string | null;
             /**
              * Profile
              * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
@@ -2996,6 +3049,11 @@ export interface components {
          * @description Response for POST /api/v1/validate (validation layers + package_* extras).
          */
         ValidateResponse: {
+            /**
+             * Extensions
+             * @description Resolved national extension tokens from the request (when supplied)
+             */
+            extensions?: string[] | null;
             /** Is Valid */
             is_valid: boolean;
             /** Issues */
@@ -3017,6 +3075,11 @@ export interface components {
              * @default true
              */
             package_ok: boolean;
+            /**
+             * Package Stages
+             * @description Optional per-stage breakdown from iwxxm-validate when profile=ca_eccc and extensions include IWXXM_CA
+             */
+            package_stages?: components["schemas"]["PackageStageModel"][] | null;
             /**
              * Profile
              * @default annex3
