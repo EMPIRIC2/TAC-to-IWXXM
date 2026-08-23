@@ -63,6 +63,20 @@
 | D-EV068-feasibility | **FEASIBLE** — see session `feasibility.md` |
 | D-EV068-verify-doc | Documenting twins **11/11 PASS** (2026-08-23) |
 
+### Closeout (2026-08-23)
+
+| ID | Outcome |
+|----|---------|
+| D-EV068-build | M1–M7 complete: layered `ca_eccc` validate, vendor 3.0.0 bundle, `extensions=IWXXM_CA` API wire, TC-EV068-001..004, docs |
+| D-EV068-verify-impl | Implementing twins **11/11 PASS**; scoped tests 34 passed |
+| D-EV068-pr | [#1052](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1052) → `stage` **merged** @ `1828d9dc` |
+| D-EV068-hotfix | [#1053](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1053) — quality-pack native build for CA_ECCC XSD (GML catalog) |
+| D-EV068-staging-smoke | Local `scripts/deploy/staging_smoke.sh` **PASS** (pre-deploy image; await CI Deploy + Staging smoke on tip) |
+| D-EV068-fn-status | **F2** / **F4** / **F13** / **F36** deepen — CA_ECCC layered validation on `stage` |
+| D-EV068-follow-on | TAF `taf-ca.xsd` product gate gaps (TC-EV068-002 backlog); global 2025-2 default migration held |
+
+**Closed:** 2026-08-23 · **Session status:** closed · **PR merged to `stage`** · **Promote `stage`→`main`:** held (separate gate)
+
 ### Corpus
 
 [Corpus: product §F2] [Corpus: product §F4] [Corpus: product §F13] [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
