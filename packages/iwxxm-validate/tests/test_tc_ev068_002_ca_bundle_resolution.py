@@ -118,7 +118,7 @@ class TestTcEv068002CaBundleResolution:
             levels=("xsd", "schematron"),
         )
         stage_ids = [stage.stage for stage in report.stages]
-        assert stage_ids == ["wellformed", "wmo_xsd", "wmo_schematron", "ca_xsd"]
+        assert stage_ids == ["wellformed", "wmo_xsd", "wmo_schematron", "ca_xsd", "code_ca", "exchange"]
         assert all(stage.label for stage in report.stages)
         assert report.ok is True
 
@@ -138,7 +138,7 @@ class TestTcEv068002CaBundleResolution:
             levels=("xsd",),
         )
         stage_ids = [stage.stage for stage in report.stages]
-        assert stage_ids == ["wellformed", "ca_xsd"]
+        assert stage_ids == ["wellformed", "ca_xsd", "code_ca", "exchange"]
         assert report.ok is True
 
     def test_invalid_ca_extension_fails_at_ca_xsd_not_wmo_xsd(self, monkeypatch: pytest.MonkeyPatch) -> None:

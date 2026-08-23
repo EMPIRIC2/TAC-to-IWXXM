@@ -50,8 +50,8 @@ class TestTcEv068001CaEcccBundle:
     def test_layered_stage_registry_matches_catalog(self) -> None:
         assert CA_IWXXM_VERSION == "3.0.0"
         assert CA_VALIDATION_STAGES[:3] == ("wellformed", "wmo_xsd", "wmo_schematron")
-        assert IMPLEMENTED_CA_STAGES == frozenset(CA_VALIDATION_STAGES[:4])
-        assert pending_ca_stages() == ("code_ca", "exchange")
+        assert IMPLEMENTED_CA_STAGES == frozenset(CA_VALIDATION_STAGES)
+        assert pending_ca_stages() == ()
 
     def test_ca_eccc_bundle_unavailable_when_extension_missing(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(

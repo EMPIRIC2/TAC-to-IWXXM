@@ -173,8 +173,8 @@ profiles:
     gaps:
       - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
       - AerodromeVariableRVR / ObservedLightning (P2 / #1039)
-      - Layered ca_eccc validation stack — EV-068 / #1035 (+ #1027 bundle wire)
-      - code-ca vocabulary membership stage — #1033 (dependency of #1035)
+      - Layered ca_eccc validation stack — EV-068 / #1035 (+ #1027 bundle wire) **done**
+      - code-ca vocabulary membership stage — #1033 **done (EV-069)**
       - SIGMET national overlay — out of #916 scope
     validation_stages:
       - id: wellformed

@@ -83,6 +83,29 @@
 
 ---
 
+## Cycle EV-069 — CA_ECCC validation deepen (#1035 follow-on) (EV-069-ca-eccc-validation-deepen)
+
+**Opened:** 2026-08-23 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-069-ca-eccc-validation-deepen`  
+**Preset:** Standard · **Issues:** [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035) (remainder), [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033), [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032)  
+**Parent:** EV-068 merged to `stage` @ `71d400a3`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV069-goal | Complete #1035 remainder: code-ca layer, exchange layer, TAF `taf-ca.xsd` product gate |
+| D-EV069-in | `iwxxm-validate` layers 5–6; TAF NCLWS probe fix; TC-EV069-*; standing docs |
+| D-EV069-out | AIRMET convert (M5); datamart live fixture fetch; global 2025-2 migration |
+| D-EV069-deps | EV-068 on `stage` |
+| D-EV069-scale | Standard; all default evolve verifying angles |
+| D-EV069-fn | Deepen **F2** / **F13** / **F36** |
+
+### Corpus
+
+[Corpus: product §F2] [Corpus: product §F13] [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
+
+---
+
 ## Cycle EV-066 — CA_ECCC RMK + altimeter deepen (#916) (EV-066-ca-eccc-rmk-deepen)
 
 **Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-066-ca-eccc-rmk-deepen`  

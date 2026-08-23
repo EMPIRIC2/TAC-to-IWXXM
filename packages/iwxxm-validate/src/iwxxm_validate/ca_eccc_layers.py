@@ -1,7 +1,7 @@
 """CA_ECCC layered validation stages (EV-068 / #1035).
 
 Stage ids align with ``docs/domain/profiles/catalog.yaml`` ``validation_stages``.
-M1 scaffold: bundle resolution + stage registry; full pipeline wiring lands in M3–M4.
+M1 scaffold: bundle resolution + stage registry; full pipeline wired EV-068–069.
 """
 
 from __future__ import annotations
@@ -51,8 +51,17 @@ CA_PRODUCT_XSD: dict[str, str] = {
     "AIRMET": "airmet-ca.xsd",
 }
 
-# M3–M4: layers 1–4 in layered pipeline; 5–6 pending #1033 / #1032.
-IMPLEMENTED_CA_STAGES: frozenset[str] = frozenset({STAGE_WELLFORMED, STAGE_WMO_XSD, STAGE_WMO_SCH, STAGE_CA_XSD})
+# EV-068: layers 1–4; EV-069: layers 5–6 (#1033 / #1032).
+IMPLEMENTED_CA_STAGES: frozenset[str] = frozenset(
+    {
+        STAGE_WELLFORMED,
+        STAGE_WMO_XSD,
+        STAGE_WMO_SCH,
+        STAGE_CA_XSD,
+        STAGE_CODE_CA,
+        STAGE_EXCHANGE,
+    }
+)
 
 
 def ca_iwxxm_core_xsd_path() -> Path | None:
