@@ -52,7 +52,7 @@
 | D-EV068-deps | EV-067 on `stage`; bundle #1027 remainder with #1035 in one cycle |
 | D-EV068-scale | Standard; all default evolve verifying angles |
 | D-EV068-fn | Deepen **F2** / **F4** / **F13** / **F36** |
-| D-EV068-gate | **closed** — awaiting `open_build` after documenting band |
+| D-EV068-gate | **open** (`open_build` 2026-08-23) |
 
 ### Documenting band (2026-08-23)
 
