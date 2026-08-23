@@ -173,8 +173,30 @@ profiles:
     gaps:
       - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
       - AerodromeVariableRVR / ObservedLightning (P2 / #1039)
-      - Full layered ca_eccc XSD validation (#1035)
+      - Layered ca_eccc validation stack — EV-068 / #1035 (+ #1027 bundle wire)
+      - code-ca vocabulary membership stage — #1033 (dependency of #1035)
       - SIGMET national overlay — out of #916 scope
+    validation_stages:
+      - id: wellformed
+        label: Well-formed XML
+      - id: wmo_xsd
+        label: WMO IWXXM 3.0.0 schema
+      - id: wmo_schematron
+        label: WMO IWXXM 3.0.0 rules
+      - id: ca_xsd
+        label: Canadian extension schema
+        product_xsd:
+          METAR: metar-speci-ca.xsd
+          SPECI: metar-speci-ca.xsd
+          TAF: taf-ca.xsd
+          AIRMET: airmet-ca.xsd
+      - id: code_ca
+        label: Canadian code lists
+        issue: "#1033"
+      - id: exchange
+        label: Exchange packaging checks
+        optional: true
+        issue: "#1032"
 
   - id: AU_BOM
     kind: semantic

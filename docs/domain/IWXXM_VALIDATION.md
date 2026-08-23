@@ -77,6 +77,35 @@ Engine layer names (`AIRPORT_ICAO`, `TAC_SYNTAX`, …) are implementation detail
 | `iwxxm_us` | Same **plus** iwxxm-us 3.0 combined catalogs / examples for `extension` content |
 | `ca_eccc` | IWXXM **3.0.0** core XSD + SCH + RDF **plus** `iwxxm-ca` 3.0 extension XSD tree and `code-ca` vocabularies (MSC operational line — not 2025-2) |
 
+### CA_ECCC validation stages (EV-068 / #1035)
+
+MSC operational validation is a **staged stack** — not a single global XSD pass. Engine
+implementation today (EV-064 M2) runs layers **1–3** only; EV-068 adds **4–5** and staged
+issue reporting.
+
+| Order | Stage | Layer id (target) | Pass criterion | Today (EV-064 M2) |
+|-------|-------|-------------------|----------------|-------------------|
+| 1 | Well-formed XML | `wellformed` | Parses without fatal error | ✅ shared |
+| 2 | WMO IWXXM 3.0.0 XSD | `wmo_xsd` | Valid against vendored `3.0.0/IWXXM/iwxxm.xsd` import graph | ⚠ attempted (GML/catalog gaps may fail compile) |
+| 3 | WMO IWXXM 3.0.0 Schematron | `wmo_schematron` | No failed asserts for 3.0.0 `rule/iwxxm.sch` | ⚠ attempted; may skip on lxml path |
+| 4 | ECCC product `*-ca.xsd` | `ca_xsd` | Valid against product XSD (`metar-speci-ca`, `taf-ca`, or `airmet-ca`) | ❌ not executed |
+| 5 | `code-ca` vocabulary membership | `code_ca` | Observing-system / national code hrefs resolve in vendored `code-ca` | ❌ (#1033) |
+| 6 | Exchange checks (optional) | `exchange` | Headers / naming per #1032 | ❌ optional |
+
+**Product XSD selection (layer 4):**
+
+| API `product` | CA extension XSD |
+|---------------|------------------|
+| `METAR`, `SPECI` | `metar-speci-ca.xsd` |
+| `TAF` | `taf-ca.xsd` |
+| `AIRMET` | `airmet-ca.xsd` |
+
+**Operator-visible stage labels** must be plain language (EV-048) — no corpus ids or planning
+tokens in API/CLI issue text.
+
+Cross-reference: [eccc-iwxxm-ca-mining-notes.md](mining/eccc-iwxxm-ca-mining-notes.md) validation
+stack diagram · [CA_ECCC.md](profiles/semantic/CA_ECCC.md) §Validate profile.
+
 ### Fixture priority
 
 Same as conversion golden strategy — official pin examples are **P0**; US examples for US

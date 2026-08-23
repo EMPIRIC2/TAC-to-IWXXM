@@ -54,6 +54,15 @@
 | D-EV068-fn | Deepen **F2** / **F4** / **F13** / **F36** |
 | D-EV068-gate | **closed** — awaiting `open_build` after documenting band |
 
+### Documenting band (2026-08-23)
+
+| ID | Outcome |
+|----|---------|
+| D-EV068-context | Inventory complete — EV-064 M2 scaffold; layers 4–5 missing; GML/catalog risk on layer 2 |
+| D-EV068-docs | Deltas: `IWXXM_VALIDATION.md` §CA stages, `VERSION_SUPPORT_POLICY.md` profile lines, `CA_ECCC.md`, `catalog.yaml` validation_stages, `COVERAGE_MATRIX.md`, `api-contract.md`, `test-plan.md` TC-EV068-* |
+| D-EV068-feasibility | **FEASIBLE** — see session `feasibility.md` |
+| D-EV068-verify-doc | Documenting twins **11/11 PASS** (2026-08-23) |
+
 ### Corpus
 
 [Corpus: product §F2] [Corpus: product §F4] [Corpus: product §F13] [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]

@@ -29,6 +29,22 @@ The following IWXXM versions are **no longer supported** as of February 13, 2026
 ([../IWXXM_VALIDATION.md](../IWXXM_VALIDATION.md) §Validation strategy). Package × line numbers:
 [Appendix A](#appendix-a--package--iwxxm-line-matrix-informative).
 
+### Profile-scoped operational lines (not global defaults)
+
+Some **semantic profiles** pin a different IWXXM year line than the app default **2025-2**:
+
+| Profile | Operational line | Vendor core | National extension | API trigger |
+|---------|------------------|-------------|-------------------|-------------|
+| `CA_ECCC` | IWXXM **3.0.0** (`http://icao.int/iwxxm/3.0`) | `vendor/schemas/iwxxm/3.0.0/` | `vendor/schemas/iwxxm-ca/3.0/` | `semantic_profile=CA_ECCC` (+ optional `extensions: [IWXXM_CA]`) |
+
+**Important:** 3.0.0 is **not** a globally selectable convert default — it is profile-scoped per
+[ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md). Requests with `iwxxm_version`
+other than `3.0.0` while `semantic_profile=CA_ECCC` are rejected (fail-closed).
+
+Manifest truth today: `iwxxm-ca` is pinned in `vendor/manifest.json`; 3.0.0 core co-locates
+under `vendor/schemas/iwxxm/3.0.0/` (integrity test in `tests/vendor/`). EV-068 may formalize
+a separate manifest bundle entry for the 3.0.0 line (#1027).
+
 ## Support Window Policy
 
 ### Standard Support Window
