@@ -68,6 +68,11 @@ try:
     from .services.webhooks import webhook_service
     from .utilities.abuse_controls import install_abuse_controls
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from .utilities.extension_wire import (
+        ca_eccc_validate_product,
+        parse_extension_tokens,
+        validate_extension_tokens,
+    )
     from .utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from .utilities.iwxxm_readable_decode import decode_for_validate
     from .utilities.metar_normalizer import normalize_recent_weather_tokens
@@ -128,6 +133,11 @@ except ImportError:
     from services.webhooks import webhook_service
     from utilities.abuse_controls import install_abuse_controls
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from utilities.extension_wire import (
+        ca_eccc_validate_product,
+        parse_extension_tokens,
+        validate_extension_tokens,
+    )
     from utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from utilities.iwxxm_readable_decode import decode_for_validate
     from utilities.metar_normalizer import normalize_recent_weather_tokens
@@ -145,6 +155,7 @@ except ImportError:
 # Prefer validate_iwxxm (Rust hot path + lxml fallback) over legacy lxml-only validate.
 from dissemination.packaging import apply_exchange_packaging
 from iwxxm_validate import validate_iwxxm as iwxxm_validate_fn
+from iwxxm_validate.models import ValidationReport
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
@@ -452,6 +463,69 @@ def normalize_api_product(
             },
         )
     return product_u
+
+
+def _resolve_request_extensions(
+    form_extensions: List[str],
+    json_extensions: list[str] | None,
+) -> list[str]:
+    """Merge multipart and JSON extension tokens; reject unknown ids."""
+    if json_extensions is not None:
+        tokens = parse_extension_tokens(json_extensions)
+    else:
+        tokens = parse_extension_tokens(form_extensions)
+    validate_extension_tokens(tokens)
+    return tokens
+
+
+def _package_issue_payload(issue: object) -> dict[str, Any]:
+    return {
+        "layer": str(getattr(issue, "layer", "")),
+        "severity": str(getattr(issue, "severity", "error")),
+        "message": str(getattr(issue, "message", "")),
+        "location": getattr(issue, "location", None),
+        "code": getattr(issue, "code", None),
+        "start": getattr(issue, "start", None),
+        "end": getattr(issue, "end", None),
+    }
+
+
+def _package_stages_payload(report: object) -> list[dict[str, Any]] | None:
+    stages = getattr(report, "stages", None) or []
+    if not stages:
+        return None
+    out: list[dict[str, Any]] = []
+    for stage in stages:
+        stage_issues = getattr(stage, "issues", None) or []
+        out.append(
+            {
+                "stage": str(getattr(stage, "stage", "")),
+                "label": str(getattr(stage, "label", "")),
+                "ok": bool(getattr(stage, "ok", False)),
+                "issues": [_package_issue_payload(issue) for issue in stage_issues],
+            }
+        )
+    return out
+
+
+def _call_iwxxm_validate(
+    xml_content: str,
+    *,
+    iwxxm_version: str,
+    profile: str,
+    levels: tuple[str, ...],
+    emit_key: str,
+    extensions: list[str],
+    product: str,
+) -> ValidationReport:
+    validate_product = ca_eccc_validate_product(emit_key, extensions, product)
+    return iwxxm_validate_fn(
+        xml_content,
+        iwxxm_version=iwxxm_version,
+        profile=profile or "annex3",
+        levels=levels,
+        product=validate_product,
+    )
 
 
 def _resolve_request_profiles(
@@ -1316,6 +1390,10 @@ async def convert_bulletin(
     ),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
+    extensions: List[str] = Form(
+        default=[],
+        description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+    ),
 ) -> Response:
     """Split a WMO AHL bulletin and convert each TAC report.
 
@@ -1330,6 +1408,7 @@ async def convert_bulletin(
         for_packaging=True,
     )
     profile = wire.emit_key
+    _resolve_request_extensions(extensions, None)
 
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
@@ -1603,6 +1682,14 @@ async def validate_comprehensive(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on validate-only paths",
     ),
+    extensions: List[str] = Form(
+        default=[],
+        description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+    ),
+    product: str = Form(
+        default="METAR",
+        description="TAC product for Canadian extension XSD when extensions include IWXXM_CA",
+    ),
 ):
     """Perform comprehensive 7-layer IWXXM validation.
 
@@ -1645,6 +1732,8 @@ async def validate_comprehensive(
         json_profile = None
         json_semantic = None
         json_exchange = None
+        json_extensions = None
+        json_product = None
         # Handle JSON request body
         if request_body is not None:
             xml_content = request_body.iwxxm_xml
@@ -1653,6 +1742,8 @@ async def validate_comprehensive(
             json_profile = request_body.profile
             json_semantic = getattr(request_body, "semantic_profile", None)
             json_exchange = getattr(request_body, "exchange_profile", None)
+            json_extensions = getattr(request_body, "extensions", None)
+            json_product = getattr(request_body, "product", None)
             manual_text = ""  # Don't use form input
 
             # Map validation_level to layers
@@ -1677,6 +1768,12 @@ async def validate_comprehensive(
             json_exchange_profile=json_exchange,
         )
         profile = wire.emit_key
+
+        resolved_extensions = _resolve_request_extensions(extensions, json_extensions)
+        validate_product = normalize_api_product(
+            json_product if json_product is not None else product,
+            default="METAR",
+        )
 
         # Normalize version
         try:
@@ -1715,11 +1812,14 @@ async def validate_comprehensive(
         else:
             pkg_levels = ("xsd", "schematron")
 
-        pkg_report = iwxxm_validate_fn(
+        pkg_report = _call_iwxxm_validate(
             xml_content,
             iwxxm_version=iwxxm_version,
             profile=profile or "annex3",
             levels=pkg_levels,
+            emit_key=profile or "annex3",
+            extensions=resolved_extensions,
+            product=validate_product,
         )
 
         # Parse layer selection
@@ -1789,17 +1889,13 @@ async def validate_comprehensive(
             },
             "stopped_at_layer": result.stopped_at_layer.name if result.stopped_at_layer else None,
             "package_ok": pkg_report.ok,
-            "package_issues": [
-                {
-                    "layer": issue.layer,
-                    "severity": issue.severity,
-                    "message": issue.message,
-                    "location": issue.location,
-                    "code": issue.code,
-                }
-                for issue in pkg_report.issues
-            ],
+            "package_issues": [_package_issue_payload(issue) for issue in pkg_report.issues],
         }
+        package_stages = _package_stages_payload(pkg_report)
+        if package_stages is not None:
+            payload["package_stages"] = package_stages
+        if resolved_extensions:
+            payload["extensions"] = resolved_extensions
         decoded = decode_for_validate(xml_content=xml_content, manual_text=manual_text)
         if decoded.segments:
             payload["segments"] = [
@@ -1856,6 +1952,10 @@ async def convert(
     exchange_profile: str = Form(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+    ),
+    extensions: List[str] = Form(
+        default=[],
+        description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
     ),
     preview: bool = Form(
         default=False,
@@ -2068,6 +2168,9 @@ async def convert(
     )
     profile = wire.emit_key
 
+    json_extensions = getattr(request_body, "extensions", None) if request_body is not None else None
+    resolved_extensions = _resolve_request_extensions(extensions, json_extensions)
+
     # F7.t / EV-060 / #1003: product=iwxxm is XML pass-through (no TAC convert).
     if product == "IWXXM":
         xml_payload = (manual_text or "").strip()
@@ -2126,10 +2229,14 @@ async def convert(
         }
         if want_validate:
             try:
-                report = iwxxm_validate_fn(
+                report = _call_iwxxm_validate(
                     xml_payload,
                     iwxxm_version=iwxxm_version,
                     profile=(profile or "annex3"),
+                    levels=("xsd", "schematron"),
+                    emit_key=(profile or "annex3"),
+                    extensions=resolved_extensions,
+                    product=product,
                 )
                 if not getattr(report, "ok", True):
                     for issue in getattr(report, "issues", []) or []:
@@ -2572,11 +2679,14 @@ async def convert(
                 validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
 
                 if validation_orchestrator:
-                    pkg_out = iwxxm_validate_fn(
+                    pkg_out = _call_iwxxm_validate(
                         iwxxm_content,
                         iwxxm_version=iwxxm_version,
                         profile=profile or "annex3",
                         levels=("xsd", "schematron"),
+                        emit_key=profile or "annex3",
+                        extensions=resolved_extensions,
+                        product=product,
                     )
                     validation_result = validation_orchestrator.validate(
                         iwxxm_content,
@@ -2805,10 +2915,10 @@ async def convert(
             emit_recent_wx_issues(manual_source, _norm_warnings)
 
             soft_preview_buf = {}
-            xml_text, validation_result_from_conversion = convert_metar_tac_with_metadata(
+            xml_text, _ = convert_metar_tac_with_metadata(
                 _normalized_entry,
                 iwxxm_version=iwxxm_version,
-                validate=validate_output,
+                validate=False,
                 lenient=False,  # normalization already applied above
                 product=product,
                 profile=profile,
@@ -2832,28 +2942,65 @@ async def convert(
             layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
             validation_errors_dict = {}
 
-            if validate_output and validation_result_from_conversion:
-                if validation_result_from_conversion.is_valid:
-                    for layer in ValidationLayer:
-                        if layer.value not in layers_passed:
-                            layers_passed.append(layer.value)
-                else:
-                    warning_msg = (
-                        f"{manual_source}: IWXXM validation issues found - "
-                        f"{len(validation_result_from_conversion.all_issues)} issues"
+            if validate_output and validation_orchestrator:
+                try:
+                    pkg_out = _call_iwxxm_validate(
+                        xml_text,
+                        iwxxm_version=iwxxm_version,
+                        profile=profile or "annex3",
+                        levels=("xsd", "schematron"),
+                        emit_key=profile or "annex3",
+                        extensions=resolved_extensions,
+                        product=product,
                     )
-                    logger.warning(warning_msg)
+                    orch_layers = [
+                        layer
+                        for layer in ValidationLayer
+                        if layer
+                        not in (
+                            ValidationLayer.XML_SCHEMA,
+                            ValidationLayer.SCHEMATRON,
+                        )
+                    ]
+                    validation_result = validation_orchestrator.validate_complete(
+                        tac_text=manual_entry,
+                        xml_content=xml_text,
+                        version=iwxxm_version,
+                        layers=orch_layers,
+                        stop_on_error=False,
+                    )
+                    if pkg_out.ok and validation_result.is_valid:
+                        for layer in ValidationLayer:
+                            if layer.value not in layers_passed:
+                                layers_passed.append(layer.value)
+                    else:
+                        warning_msg = (
+                            f"{manual_source}: IWXXM validation issues found - "
+                            f"{len(validation_result.all_issues)} issues"
+                        )
+                        logger.warning(warning_msg)
+                        add_issue(
+                            source=manual_source,
+                            message=warning_msg,
+                            severity=ConversionIssueSeverity.WARNING,
+                            hint="Output converted, but IWXXM validation reported issues.",
+                            code="OUTPUT_VALIDATION_WARNING",
+                            layer="iwxxm_output",
+                        )
+                        validation_errors_dict = {
+                            "validation_issues": [str(issue) for issue in validation_result.all_issues[:10]]
+                        }
+                except Exception as ve:
+                    logger.warning(f"{manual_source}: Output validation failed: {ve}")
                     add_issue(
                         source=manual_source,
-                        message=warning_msg,
+                        message=f"Output validation failed: {ve}",
                         severity=ConversionIssueSeverity.WARNING,
-                        hint="Output converted, but IWXXM validation reported issues.",
-                        code="OUTPUT_VALIDATION_WARNING",
+                        hint="Conversion succeeded, but post-conversion validation could not complete.",
+                        code="OUTPUT_VALIDATION_FAILED",
                         layer="iwxxm_output",
                     )
-                    validation_errors_dict = {
-                        "validation_issues": [str(issue) for issue in validation_result_from_conversion.all_issues[:10]]
-                    }
+                    validation_errors_dict = {"validation_error": str(ve)}
 
             try:
                 soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
@@ -3070,11 +3217,14 @@ async def convert(
                 # Optionally validate output IWXXM XML (Layers 3-7); F11.4: SDK owns XSD+SCH
                 if validate_output and validation_orchestrator:
                     try:
-                        pkg_out = iwxxm_validate_fn(
+                        pkg_out = _call_iwxxm_validate(
                             xml_text,
                             iwxxm_version=iwxxm_version,
                             profile=profile or "annex3",
                             levels=("xsd", "schematron"),
+                            emit_key=profile or "annex3",
+                            extensions=resolved_extensions,
+                            product=product,
                         )
                         orch_layers = [
                             layer

@@ -255,6 +255,16 @@ class ValidateRequest(BaseModel):
         description="Exchange packaging profile (e.g. GLOBAL_AFS)",
         examples=["GLOBAL_AFS"],
     )
+    extensions: Optional[List[str]] = Field(
+        default=None,
+        description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+        examples=[["IWXXM_CA"]],
+    )
+    product: Optional[str] = Field(
+        default=None,
+        description="TAC product for Canadian extension XSD selection when extensions include IWXXM_CA",
+        examples=["METAR", "TAF"],
+    )
 
 
 class LintIssueModel(BaseModel):
@@ -383,6 +393,15 @@ class PackageIssueModel(BaseModel):
     end: Optional[int] = Field(default=None, description="Exclusive offset when known")
 
 
+class PackageStageModel(BaseModel):
+    """Per-stage CA_ECCC validation outcome (additive on /validate)."""
+
+    stage: str
+    label: str
+    ok: bool
+    issues: List[PackageIssueModel] = Field(default_factory=list)
+
+
 class ValidateIssueModel(BaseModel):
     """HTTP DTO for a validation orchestrator finding on /validate."""
 
@@ -419,6 +438,16 @@ class ValidateResponse(BaseModel):
     stopped_at_layer: Optional[str] = None
     package_ok: bool = True
     package_issues: List[PackageIssueModel] = Field(default_factory=list)
+    package_stages: Optional[List[PackageStageModel]] = Field(
+        default=None,
+        description=(
+            "Optional per-stage breakdown from iwxxm-validate when profile=ca_eccc and extensions include IWXXM_CA"
+        ),
+    )
+    extensions: Optional[List[str]] = Field(
+        default=None,
+        description="Resolved national extension tokens from the request (when supplied)",
+    )
     segments: Optional[List[DecodeSegmentModel]] = Field(
         default=None,
         description=(
