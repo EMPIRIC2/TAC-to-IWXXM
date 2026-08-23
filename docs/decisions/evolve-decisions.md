@@ -100,6 +100,18 @@
 | D-EV069-scale | Standard; all default evolve verifying angles |
 | D-EV069-fn | Deepen **F2** / **F13** / **F36** |
 
+### Closeout (2026-08-23)
+
+| ID | Outcome |
+|----|---------|
+| D-EV069-build | Layers 5 (`code_ca`) + 6 (`exchange`); TAF NCLWS `taf-ca.xsd` gate; TC-EV069-001..007; docs |
+| D-EV069-verify-impl | `iwxxm-validate` tests **156 passed**, 1 skipped; per-file coverage ≥95% |
+| D-EV069-pr | [#1054](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1054) → `stage` **merged** @ `ec782625` |
+| D-EV069-issues | [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035) **closed**; [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033) **closed**; [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) **open** (exchange layer only; full output-format scope held) |
+| D-EV069-fn-status | **F2** / **F13** / **F36** — CA_ECCC validation stack complete on `stage` (layers 1–6) |
+
+**Closed:** 2026-08-23 · **Session status:** closed · **PR merged to `stage`** · **Promote `stage`→`main`:** held
+
 ### Corpus
 
 [Corpus: product §F2] [Corpus: product §F13] [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
