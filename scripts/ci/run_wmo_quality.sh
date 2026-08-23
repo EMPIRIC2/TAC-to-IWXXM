@@ -10,6 +10,8 @@ cd "$ROOT"
 
 UV="${UV:-uv}"
 
+bash scripts/ci/ensure_iwxxm_validate_native.sh
+
 # Keep F23–F25 green while growing VAA/TCA (S027). "VolcanicAsh" covers VA SIGMET;
 # "vaa" / "VAA" / "va_advisory" / "va-advisory" cover VAA; same pattern for TCA.
 TV_K='sigmet or SIGMET or airmet or AIRMET or VolcanicAsh or vaa or VAA or va_advisory or va-advisory or tca or TCA or TropicalCyclone or tc_advisory or tc-advisory'
