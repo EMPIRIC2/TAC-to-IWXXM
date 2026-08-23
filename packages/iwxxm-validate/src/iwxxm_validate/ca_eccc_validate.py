@@ -164,7 +164,7 @@ def _ca_xsd_probe_document(fragment_xml: str, *, product: str) -> str:
     extension elements such as ``NonConvectiveLowLevelWindShear`` only.
     """
     product_u = product.upper()
-    if product_u == "TAF":
+    if product_u in {"TAF", "AIRMET"}:
         return f'<?xml version="1.0" encoding="UTF-8"?>\n{fragment_xml}'
     return _wrap_ca_lwis_extension_block(fragment_xml)
 

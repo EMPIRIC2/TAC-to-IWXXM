@@ -41,7 +41,7 @@ _WX_TOKEN = re.compile(
     r"(?<![A-Z0-9/])(?P<wx>"
     r"(?:\+|-|VC)?"
     r"(?:MI|PR|BC|DR|BL|SH|TS|FZ)?"
-    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+"
+    r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS|IC)+"
     r")(?![A-Z0-9/])"
 )
 _CHANGE_GROUP = re.compile(
@@ -92,6 +92,18 @@ def _parse_wind(text: str, target: dict[str, Any]) -> None:
 
 def _parse_wx(text: str) -> list[str]:
     return [m.group("wx") for m in _WX_TOKEN.finditer(text)]
+
+
+_CODE_CA_PRESENT_FORECAST_WEATHER = "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/present_and_forecast_weather"
+
+
+def _ca_forecast_weather_hrefs(wx_tokens: list[str]) -> list[str]:
+    """Map MANAIR TAF weather groups to MSC ``present_and_forecast_weather`` hrefs."""
+    hrefs: list[str] = []
+    for token in wx_tokens:
+        if token.upper() == "IC":
+            hrefs.append(f"{_CODE_CA_PRESENT_FORECAST_WEATHER}/IC")
+    return hrefs
 
 
 def _parse_nclws(text: str) -> dict[str, Any] | None:
@@ -291,6 +303,10 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
     nclws = _parse_nclws(base_body)
     if nclws is not None:
         ir["nclws"] = nclws
+
+    wx_hrefs = _ca_forecast_weather_hrefs(list(ir.get("weather") or []))
+    if wx_hrefs:
+        ir["ca_forecast_weather_hrefs"] = wx_hrefs
 
     alt = _ALT_INHG.search(base_body)
     if alt is not None:

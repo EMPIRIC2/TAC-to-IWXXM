@@ -2775,6 +2775,54 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Monkeypatched `ca_xsd` failure; no `code_ca` stage appended
 - **Source**: EV-069 M4
 
+### EV-070 / #1041 — CA_ECCC TAF + AIRMET convert deepen
+
+- **Mode**: deepen F6/F20/F36; `tac2iwxxm` national mappers
+- **Pass criteria**: AC in evolve-decisions §EV-070; TC-EV070-*
+- **Source**: [#1041](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1041); EV-069 follow-on
+
+### TC-EV070-001: TAF present_and_forecast_weather encode
+
+- **Level**: T0 / T2
+- **Objective**: TAF golden with Canadian forecast weather encodes `code-ca/present_and_forecast_weather/` href
+- **Pass criteria**: Convert matches golden; `code_ca` layer passes
+- **Source**: EV-070 M1; #1041 TAF
+
+### TC-EV070-002: TAF MANAIR amendment slice
+
+- **Level**: T2
+- **Objective**: At least one amendment/corrected TAF golden converts and validates
+- **Pass criteria**: Layered `ca_eccc` layers 1–6 pass
+- **Source**: EV-070 M1; #1041 TAF
+
+### TC-EV070-003: AIRMET GFA structured fields
+
+- **Level**: T0 / T2
+- **Objective**: SFC_VIS* phenomenon golden includes `surfaceVisibility` / `cloudBase` / `surfaceWindSpeed` where applicable
+- **Pass criteria**: Golden diff stable; `airmet-ca.xsd` layer passes
+- **Source**: EV-070 M2; #1041 AIRMET
+
+### TC-EV070-004: AIRMET phenomenon vocabulary
+
+- **Level**: T0
+- **Objective**: Root `phenomenon` xlink uses `airmet_weather_phenomena/` code-ca path
+- **Pass criteria**: `code_ca` membership passes; unknown code fails closed
+- **Source**: EV-070 M2
+
+### TC-EV070-005: Convert → validate round-trip
+
+- **Level**: T2
+- **Objective**: All new EV-070 goldens convert then pass full `ca_eccc` stack
+- **Pass criteria**: `report.valid` and per-stage `ok` for layers 1–6
+- **Source**: EV-070 M3; FR6
+
+### TC-EV070-006: Manifest rule_id promotion
+
+- **Level**: T0
+- **Objective**: New cases in `manifest.json` with `status: active` and unique `rule_id`
+- **Pass criteria**: `test_tc_ev064_002` parametrization includes new case ids
+- **Source**: EV-070 M3
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

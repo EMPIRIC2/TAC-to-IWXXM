@@ -24,8 +24,14 @@ CASE_IDS = (
     "metar_rmk_presrr",
     "metar_alt_not_obs",
     "metar_rmk_slp_t",
+    "metar_lwis",
+    "metar_sawr",
+    "metar_rmk_icing",
     "taf_nclws",
+    "taf_ic_weather",
+    "taf_amd",
     "airmet_gfa",
+    "airmet_gfa_sfc_vis",
 )
 METAR_CASE_IDS = (
     "metar_basic",
@@ -35,9 +41,12 @@ METAR_CASE_IDS = (
     "metar_rmk_presrr",
     "metar_alt_not_obs",
     "metar_rmk_slp_t",
+    "metar_lwis",
+    "metar_sawr",
+    "metar_rmk_icing",
 )
-TAF_CASE_IDS = ("taf_nclws",)
-AIRMET_CASE_IDS = ("airmet_gfa",)
+TAF_CASE_IDS = ("taf_nclws", "taf_ic_weather", "taf_amd")
+AIRMET_CASE_IDS = ("airmet_gfa", "airmet_gfa_sfc_vis")
 
 
 def _load_manifest() -> dict:
@@ -209,7 +218,7 @@ def test_tc_ev064_003_ca_manobs_lint_remarks() -> None:
 
 @pytest.mark.parametrize("case_id", TAF_CASE_IDS)
 def test_tc_ev064_006_convert_taf_ca_eccc(case_id: str, golden_manifest: dict) -> None:
-    """TC-EV064-006: MANAIR TAF converts with iwxxm-ca NCLWS extension."""
+    """TC-EV064-006 / EV-070: MANAIR TAF converts with iwxxm-ca extensions."""
     from tac2iwxxm import convert
 
     case = next(c for c in golden_manifest["cases"] if c["id"] == case_id)
@@ -223,9 +232,14 @@ def test_tc_ev064_006_convert_taf_ca_eccc(case_id: str, golden_manifest: dict) -
     )
     assert result.ok is True, f"convert failed for {case_id}: {result.issues!r}"
     assert result.xml
-    assert "NonConvectiveLowLevelWindShear" in result.xml
     assert "iwxxm-ca" in result.xml
     assert "http://icao.int/iwxxm/3.0" in result.xml
+    if case_id == "taf_nclws":
+        assert "NonConvectiveLowLevelWindShear" in result.xml
+    elif case_id == "taf_ic_weather":
+        assert "present_and_forecast_weather/IC" in result.xml
+    elif case_id == "taf_amd":
+        assert 'reportStatus="AMENDMENT"' in result.xml
 
 
 @pytest.mark.parametrize("case_id", TAF_CASE_IDS)
@@ -273,9 +287,13 @@ def test_tc_ev064_006_convert_airmet_ca_eccc(case_id: str, golden_manifest: dict
     )
     assert result.ok is True, f"convert failed for {case_id}: {result.issues!r}"
     assert result.xml
-    assert "airmet_weather_phenomena/FRQ_TCU_ISOL_TS" in result.xml
     assert "iwxxm-ca" in result.xml
     assert "http://icao.int/iwxxm/3.0" in result.xml
+    if case_id == "airmet_gfa":
+        assert "airmet_weather_phenomena/FRQ_TCU_ISOL_TS" in result.xml
+    elif case_id == "airmet_gfa_sfc_vis":
+        assert "SFC_VIS_and_BKN_CLD" in result.xml
+        assert "iwxxm-ca:surfaceVisibility" in result.xml
 
 
 @pytest.mark.parametrize("case_id", AIRMET_CASE_IDS)

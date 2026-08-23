@@ -92,11 +92,35 @@
       "status": "active"
     },
     {
+      "id": "taf_ic_weather",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_ic_weather.tac",
+      "golden": "TAF/valid/taf_ic_weather.golden.xml",
+      "rule_id": "CA.TAF.WEATHER.IC",
+      "status": "active"
+    },
+    {
+      "id": "taf_amd",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_amd.tac",
+      "golden": "TAF/valid/taf_amd.golden.xml",
+      "rule_id": "CA.TAF.AMD",
+      "status": "active"
+    },
+    {
       "id": "airmet_gfa",
       "product": "AIRMET",
       "tac": "AIRMET/valid/airmet_gfa.tac",
       "golden": "AIRMET/valid/airmet_gfa.golden.xml",
       "rule_id": "CA.AIRMET.GFA",
+      "status": "active"
+    },
+    {
+      "id": "airmet_gfa_sfc_vis",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_gfa_sfc_vis.tac",
+      "golden": "AIRMET/valid/airmet_gfa_sfc_vis.golden.xml",
+      "rule_id": "CA.AIRMET.GFA.SFC_VIS",
       "status": "active"
     }
   ]

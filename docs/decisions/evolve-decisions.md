@@ -1,5 +1,38 @@
 # Evolve Decisions
 
+## Cycle EV-070 — CA_ECCC TAF + AIRMET convert deepen (#1041) (EV-070-ca-eccc-taf-airmet-convert)
+
+**Opened:** 2026-08-23 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-070-ca-eccc-taf-airmet-convert`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issue:** [#1041](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1041)  
+**Parent:** #916 · **Prior:** EV-069 merged to `stage` @ `ec782625`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV070-goal | #1041 convert deepen — TAF `present_and_forecast_weather` + MANAIR amendment slice; AIRMET GFA structured fields |
+| D-EV070-in | `tac2iwxxm` parse/emit; CA_ECCC goldens; TC-EV070-*; layered `ca_eccc` validate round-trip |
+| D-EV070-out | `#1032` full exchange output; `#1050` reportVariant; datamart live fetch; promote |
+| D-EV070-deps | EV-069 on `stage`; #1033 code-ca closed |
+| D-EV070-scale | Standard; all default evolve verifying angles |
+| D-EV070-fn | Deepen **F6** / **F20** / **F36** — no new top-level Fn |
+| D-EV070-gate | **open** — documenting 11/11 PASS; implementing 11/11 PASS |
+
+### Build (complete)
+
+| ID | Outcome |
+|----|---------|
+| D-EV070-m1 | TAF `present_and_forecast_weather/IC` + `taf_amd` AMENDMENT golden |
+| D-EV070-m2 | AIRMET GFA `surfaceVisibility` / `cloudBase` / `surfaceWindSpeed` for SFC_VIS_and_BKN_CLD |
+| D-EV070-m3 | TC-EV070-001..007; `ca_xsd` AIRMET extension probe fix in `iwxxm-validate` |
+| D-EV070-verify | Local `make test` PASS; scoped EV-070/064/069 tests 79 passed |
+
+### Corpus
+
+[Corpus: product §F6] [Corpus: product §F20] [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
+
+---
+
 ## Cycle EV-067 — CA_ECCC metar-speci-ca extensions (#1039) (EV-067-ca-metar-speci-ca)
 
 **Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-067-ca-metar-speci-ca`  

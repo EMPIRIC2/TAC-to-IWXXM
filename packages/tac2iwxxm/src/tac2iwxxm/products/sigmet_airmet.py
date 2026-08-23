@@ -114,6 +114,9 @@ _CA_GFA_PHENOMENA = (
     ("SFC VIS AND BKN CLD", "SFC_VIS_and_BKN_CLD"),
 )
 _GFA_CHART = re.compile(r"\bRMK\s+(GFACN\d+)\b", re.IGNORECASE)
+_GFA_SFC_VIS_SM = re.compile(r"\b(?P<vis>\d{1,2})SM\b")
+_GFA_SFC_VIS_M = re.compile(r"\b(?P<vis>\d{4})M\b")
+_GFA_CLOUD_BASE = re.compile(r"\b(?:BKN|OVC)(?P<base>\d{3})\b")
 
 _DIR_DEG = {
     "N": 0,
@@ -156,6 +159,31 @@ def _detect_ca_gfa_phenomenon(body: str) -> str | None:
         if needle in upper:
             return code
     return None
+
+
+def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
+    """Extract GFA structured ranges for SFC VIS compound phenomena."""
+    if gfa_code not in {"SFC_VIS_and_BKN_CLD", "SFC_VIS_and_OVC_CLD"}:
+        return None
+    structured: dict[str, Any] = {}
+    sm = _GFA_SFC_VIS_SM.search(body)
+    if sm is not None:
+        metres = int(sm.group("vis")) * 1609
+        structured["surface_visibility_m"] = {"lower": metres, "higher": metres}
+    else:
+        vis_m = _GFA_SFC_VIS_M.search(body)
+        if vis_m is not None:
+            metres = int(vis_m.group("vis"))
+            structured["surface_visibility_m"] = {"lower": metres, "higher": metres}
+    cloud = _GFA_CLOUD_BASE.search(body)
+    if cloud is not None:
+        base_ft = int(cloud.group("base")) * 100
+        structured["cloud_base_ft"] = {"lower": base_ft, "higher": base_ft}
+    spd = re.search(r"\bMOV\s+[NSEW]{1,2}\s+(?P<spd>\d{2,3})KT\b", body.upper())
+    if spd is not None:
+        kt = int(spd.group("spd"))
+        structured["surface_wind_kt"] = {"lower": kt, "higher": kt}
+    return structured or None
 
 
 def _detect_intensity(body: str) -> str:
@@ -519,6 +547,9 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     gfa_code = _detect_ca_gfa_phenomenon(body)
     if gfa_code is not None:
         ir["ca_gfa_phenomenon"] = gfa_code
+        structured = _parse_ca_gfa_structured(body, gfa_code)
+        if structured is not None:
+            ir["ca_gfa_structured"] = structured
     chart = _GFA_CHART.search(body)
     if chart is not None:
         ir["gfa_chart_id"] = chart.group(1).upper()

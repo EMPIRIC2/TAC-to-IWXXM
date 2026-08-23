@@ -50,7 +50,7 @@ Level 6 — Operational datamart XML (conformance corpus)
 | P1 | LWIS product path | METAR | promoted (`CA.METAR.LWIS` / EV-067) |
 | P1 | SAWR product path | METAR | promoted (`CA.METAR.SAWR` / EV-067) |
 | P1 | MANAIR TAF amendment / national TAF rules | TAF | partial (`CA.TAF.NCLWS`) |
-| P2 | GFA AIRMET semantics | AIRMET | pending |
+| P2 | GFA AIRMET semantics | AIRMET | **in progress** (EV-070 / #1041) |
 
 ## MANOBS regulatory findings (2026-08-22)
 

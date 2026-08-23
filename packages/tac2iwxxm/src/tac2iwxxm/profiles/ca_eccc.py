@@ -27,6 +27,7 @@ CA_PRES_FALLING = f"{_CODE_CA_BASE}/PressureChangingRapidly/FALLING"
 CA_PRES_RISING = f"{_CODE_CA_BASE}/PressureChangingRapidly/RISING"
 CA_AIRMET_PHENOM_BASE = f"{_CODE_CA_BASE}/airmet_weather_phenomena"
 CA_ICING_BASE = f"{_CODE_CA_BASE}/AerodromeIcing"
+CA_PRESENT_FORECAST_WEATHER_BASE = f"{_CODE_CA_BASE}/present_and_forecast_weather"
 
 # MANOBS METAR-family TAC leads — catalogued in docs/domain/profiles/catalog.yaml
 # (CA_ECCC.metar_family_variants). API product stays METAR/SPECI; IR ca_iwxxm_root
@@ -194,8 +195,13 @@ def _addendum_extension(ir: dict[str, Any]) -> str:
 def _ca_taf_gml_id(ir: dict[str, Any]) -> str:
     """Stable gml:id for CA_ECCC TAF golden fixtures."""
     station = str(ir["station"]).lower()
+    if ir.get("amendment"):
+        return f"taf.ca.amd.{station}"
     if ir.get("nclws"):
         return f"taf.ca.nclws.{station}"
+    hrefs = ir.get("ca_forecast_weather_hrefs")
+    if isinstance(hrefs, list) and hrefs:
+        return f"taf.ca.wx.{station}"
     return f"taf.ca.basic.{station}"
 
 
@@ -211,7 +217,7 @@ def _prepare_ca_taf_ir(ir: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def _nclws_extension(ir: dict[str, Any]) -> str:
+def _nclws_extension_inner(ir: dict[str, Any]) -> str:
     """Serialize ``iwxxm-ca:NonConvectiveLowLevelWindShear`` for MANAIR TAF."""
     nclws = ir.get("nclws")
     if not isinstance(nclws, dict):
@@ -223,7 +229,6 @@ def _nclws_extension(ir: dict[str, Any]) -> str:
     wind_kt = int(nclws_data["wind_speed_kt"])
     return "\n".join(
         [
-            "      <iwxxm:extension>",
             f'        <iwxxm-ca:NonConvectiveLowLevelWindShear gml:id="nclws.{station}">',
             f'          <iwxxm-ca:windDirection uom="deg">{wind_dir}</iwxxm-ca:windDirection>',
             f'          <iwxxm-ca:windSpeed uom="[kn_i]">{wind_kt}</iwxxm-ca:windSpeed>',
@@ -232,10 +237,48 @@ def _nclws_extension(ir: dict[str, Any]) -> str:
             f'            <iwxxm-ca:upperLimit uom="[ft_i]">{top_ft}</iwxxm-ca:upperLimit>',
             "          </iwxxm-ca:layerAboveAerodrome>",
             "        </iwxxm-ca:NonConvectiveLowLevelWindShear>",
+        ]
+    )
+
+
+def _ca_taf_weather_extension_inner(ir: dict[str, Any]) -> str:
+    """Serialize ``iwxxm-ca:weather`` national forecast weather hrefs."""
+    hrefs = ir.get("ca_forecast_weather_hrefs")
+    if not isinstance(hrefs, list) or not hrefs:
+        return ""
+    parts: list[str] = []
+    for href_obj in cast(list[object], hrefs):
+        if not isinstance(href_obj, str) or not href_obj:
+            continue
+        parts.append(f'        <iwxxm-ca:weather xlink:href="{escape(href_obj)}"/>')
+    return "\n".join(parts)
+
+
+def _taf_forecast_extension(ir: dict[str, Any]) -> str:
+    """Build combined ``iwxxm:extension`` for MANAIR TAF national elements."""
+    inner = "\n".join(
+        block
+        for block in (
+            _nclws_extension_inner(ir),
+            _ca_taf_weather_extension_inner(ir),
+        )
+        if block
+    )
+    if not inner:
+        return ""
+    return "\n".join(
+        [
+            "      <iwxxm:extension>",
+            inner,
             "      </iwxxm:extension>",
             "",
         ]
     )
+
+
+def _nclws_extension(ir: dict[str, Any]) -> str:
+    """Backward-compatible wrapper — prefer ``_taf_forecast_extension``."""
+    return _taf_forecast_extension(ir)
 
 
 def _inject_ca_taf_namespace(xml: str, *, iwxxm_version: str) -> str:
@@ -255,9 +298,74 @@ def _inject_ca_taf_gml_id(xml: str, *, gml_id: str) -> str:
     return re.sub(r'gml:id="taf\.[^"]+"', f'gml:id="{gml_id}"', xml, count=1)
 
 
+def _gfa_structured_extension(ir: dict[str, Any]) -> str:
+    """Serialize ``airmet-ca`` GFA structured fields inside evolving condition."""
+    structured = ir.get("ca_gfa_structured")
+    if not isinstance(structured, dict):
+        return ""
+    data = cast(dict[str, Any], structured)
+    fir = str(ir["fir"]).lower()
+    parts: list[str] = ["      <iwxxm:extension>"]
+    vis = data.get("surface_visibility_m")
+    if isinstance(vis, dict):
+        vis_rng = cast(dict[str, Any], vis)
+        lo = int(vis_rng["lower"])
+        hi = int(vis_rng.get("higher", lo))
+        parts.extend(
+            [
+                f'        <iwxxm-ca:surfaceVisibility gml:id="gfa.vis.{fir}">',
+                f'          <iwxxm-ca:surfaceVisibilityLower uom="m">{lo}</iwxxm-ca:surfaceVisibilityLower>',
+                f'          <iwxxm-ca:surfaceVisibilityHigher uom="m">{hi}</iwxxm-ca:surfaceVisibilityHigher>',
+                "        </iwxxm-ca:surfaceVisibility>",
+            ]
+        )
+    cloud = data.get("cloud_base_ft")
+    if isinstance(cloud, dict):
+        cloud_rng = cast(dict[str, Any], cloud)
+        lo_ft = int(cloud_rng["lower"])
+        hi_ft = int(cloud_rng.get("higher", lo_ft))
+        parts.extend(
+            [
+                f'        <iwxxm-ca:cloudBase gml:id="gfa.cld.{fir}">',
+                f'          <iwxxm-ca:cloudBaseLower uom="[ft_i]">{lo_ft}</iwxxm-ca:cloudBaseLower>',
+                f'          <iwxxm-ca:cloudBaseHigher uom="[ft_i]">{hi_ft}</iwxxm-ca:cloudBaseHigher>',
+                "        </iwxxm-ca:cloudBase>",
+            ]
+        )
+    wind = data.get("surface_wind_kt")
+    if isinstance(wind, dict):
+        wind_rng = cast(dict[str, Any], wind)
+        lo_kt = int(wind_rng["lower"])
+        hi_kt = int(wind_rng.get("higher", lo_kt))
+        parts.extend(
+            [
+                f'        <iwxxm-ca:surfaceWindSpeed gml:id="gfa.wind.{fir}">',
+                f'          <iwxxm-ca:surfaceWindSpeedLower uom="[kn_i]">{lo_kt}</iwxxm-ca:surfaceWindSpeedLower>',
+                f'          <iwxxm-ca:surfaceWindSpeedHigher uom="[kn_i]">{hi_kt}</iwxxm-ca:surfaceWindSpeedHigher>',
+                "        </iwxxm-ca:surfaceWindSpeed>",
+            ]
+        )
+    if len(parts) == 1:
+        return ""
+    parts.append("      </iwxxm:extension>")
+    return "\n".join(parts) + "\n"
+
+
+def _inject_airmet_gfa_extension(xml: str, extension: str) -> str:
+    """Insert GFA extension block before closing ``AIRMETEvolvingCondition``."""
+    if not extension:
+        return xml
+    needle = "</iwxxm:AIRMETEvolvingCondition>"
+    if needle not in xml:
+        return xml
+    return xml.replace(needle, f"{extension}        {needle}", 1)
+
+
 def _ca_airmet_gml_id(ir: dict[str, Any]) -> str:
     """Stable gml:id for CA_ECCC AIRMET golden fixtures."""
     fir = str(ir["fir"]).lower()
+    if ir.get("ca_gfa_structured"):
+        return f"airmet.ca.gfa.vis.{fir}"
     if ir.get("ca_gfa_phenomenon"):
         return f"airmet.ca.gfa.{fir}"
     return f"airmet.ca.basic.{fir}"
@@ -318,7 +426,8 @@ def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         phenomenon_href=_ca_airmet_phenomenon_href(ir),
     )
     xml = _inject_ca_airmet_namespace(xml, iwxxm_version=iwxxm_version)
-    return _inject_ca_airmet_gml_id(xml, gml_id=_ca_airmet_gml_id(ir))
+    xml = _inject_ca_airmet_gml_id(xml, gml_id=_ca_airmet_gml_id(ir))
+    return _inject_airmet_gfa_extension(xml, _gfa_structured_extension(ir))
 
 
 def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
@@ -346,7 +455,7 @@ def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
 
     ca_ir = _prepare_ca_taf_ir(ir)
-    extension = _nclws_extension(ca_ir)
+    extension = _taf_forecast_extension(ca_ir)
     xml = emit_taf_annex3(ca_ir, iwxxm_version=iwxxm_version, forecast_extension=extension)
     xml = _inject_ca_taf_namespace(xml, iwxxm_version=iwxxm_version)
     return _inject_ca_taf_gml_id(xml, gml_id=_ca_taf_gml_id(ca_ir))
@@ -435,6 +544,7 @@ __all__ = [
     "CA_OBS_SAWR",
     "CA_PRES_FALLING",
     "CA_PRES_RISING",
+    "_nclws_extension",
     "emit_airmet_ca_eccc",
     "emit_metar_speci_ca_eccc",
     "emit_taf_ca_eccc",

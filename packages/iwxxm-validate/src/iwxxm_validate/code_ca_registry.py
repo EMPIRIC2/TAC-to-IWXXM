@@ -28,6 +28,7 @@ KNOWN_CODE_CA_HREFS: frozenset[str] = frozenset(
         f"{CODE_CA_BASE}/airmet_weather_phenomena/OCNL_TCU_ISOL_TSGR",
         f"{CODE_CA_BASE}/airmet_weather_phenomena/SFC_VIS_and_BKN_CLD",
         f"{CODE_CA_BASE}/airmet_weather_phenomena/SFC_VIS_and_OVC_CLD",
+        f"{CODE_CA_BASE}/present_and_forecast_weather/IC",
     }
 )
 

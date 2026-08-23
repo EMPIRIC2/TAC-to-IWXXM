@@ -129,7 +129,7 @@ https://dd.meteo.gc.ca/today/aviation/iwxxm/{product}/{code_issuer}/{HH}
 | P1 | LWIS product path | `CA.METAR.LWIS` | promoted (EV-067) |
 | P1 | SAWR product path | `CA.METAR.SAWR` | promoted (EV-067) |
 | P1 | MANAIR TAF NCLWS | `CA.TAF.NCLWS` | promoted (M4) |
-| P2 | GFA AIRMET code-ca phenomena | `CA.AIRMET.GFA` | pending |
+| P2 | GFA AIRMET code-ca phenomena | `CA.AIRMET.GFA` | **in progress** (EV-070 / #1041) |
 
 ## Related international sources
 
