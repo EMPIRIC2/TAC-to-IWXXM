@@ -23,16 +23,40 @@
 | ID | Outcome |
 |----|---------|
 | D-EV067-build | P1 complete: LWIS/SAWR roots, Addendum deepen, API auto-detect, goldens + TC-EV067-001..003 |
-| D-EV067-pr | [#1049](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1049) → `stage` open, mergeable, CI green (run 32643349129) |
+| D-EV067-pr | [#1049](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1049) → `stage` **merged** @ `615f156a` (2026-08-23) |
 | D-EV067-verify | Remote CI all required checks SUCCESS; local scoped tests 23 passed |
 | D-EV067-fn-status | **F36** / **F1** deepen — LWIS/SAWR + Addendum P1 slice; P2 residuals on backlog |
 | D-EV067-follow-on | #1035 XSD stack; P2 variable RVR/lightning; optional lint; [#1050](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1050) umbrella |
 
-**Closed:** 2026-08-23 · **Session status:** closed · **Issue #1039:** open until PR merge
+**Closed:** 2026-08-23 · **Session status:** closed · **PR merged to `stage`** · **Issue #1039:** open (close manually if desired)
 
 ### Corpus
 
 [Corpus: product §F36] [Corpus: product §F1] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
+
+---
+
+## Cycle EV-068 — CA_ECCC validation stack (#1035 + #1027) (EV-068-ca-eccc-validation-stack)
+
+**Opened:** 2026-08-23 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-068-ca-eccc-validation-stack`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issues:** [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035), [#1027](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1027)  
+**Parent:** #916 / EV-067 · **Prior:** EV-067 merged [#1049](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1049) @ `615f156a`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV068-goal | Layered `ca_eccc` validation: profile-pinned IWXXM 3.0.0 bundle (#1027) + staged pipeline (#1035) |
+| D-EV068-in | `iwxxm-validate` layers; vendor manifest; API/CLI CA_ECCC + IWXXM_CA; EV-067 golden XSD gate |
+| D-EV068-out | Global 2025-2 default migration; #1050 reportVariant; P2 #1039 residuals; SIGMET 3.0.0 |
+| D-EV068-deps | EV-067 on `stage`; bundle #1027 remainder with #1035 in one cycle |
+| D-EV068-scale | Standard; all default evolve verifying angles |
+| D-EV068-fn | Deepen **F2** / **F4** / **F13** / **F36** |
+| D-EV068-gate | **closed** — awaiting `open_build` after documenting band |
+
+### Corpus
+
+[Corpus: product §F2] [Corpus: product §F4] [Corpus: product §F13] [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
 
 ---
 
