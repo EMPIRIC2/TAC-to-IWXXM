@@ -41,6 +41,12 @@
       "tag": "3.0",
       "local_path": "vendor/schemas/iwxxm-ca",
       "tree_sha256": "23f986f8b8796d515c23fdeb15b5e47d0296cbb6901f3106bca53c949a58a5fc"
+    },
+    "iwxxm-3.0.0": {
+      "parent_bundle": "iwxxm",
+      "version_line": "3.0.0",
+      "local_path": "vendor/schemas/iwxxm/3.0.0",
+      "tree_sha256": "d3da94c85081f90ef120a112b4fac077a66f43d4b663d4464bf65a52a6475175"
     }
   }
 }

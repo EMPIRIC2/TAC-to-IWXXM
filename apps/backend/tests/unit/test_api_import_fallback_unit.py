@@ -213,6 +213,12 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     )
     fake_util_security = _stub_module("utilities.security", verify_supabase_token=verify_supabase_token)
     fake_util_tac = _stub_module("utilities.tac_parser", extract_airport_code=extract_airport_code)
+    fake_util_extension_wire = _stub_module(
+        "utilities.extension_wire",
+        parse_extension_tokens=lambda values: list(values or []),
+        validate_extension_tokens=lambda tokens: tokens,
+        ca_eccc_validate_product=lambda emit_key, extensions, product: product,
+    )
 
     fake_router_module = _stub_module("router_mod", router=object())
     fake_routers = _stub_module(
@@ -259,10 +265,15 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities.sentry_init": fake_util_sentry,
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,
+        "utilities.extension_wire": fake_util_extension_wire,
         "iwxxm_validate": _stub_module(
             "iwxxm_validate",
             validate=lambda *a, **k: None,
             validate_iwxxm=lambda *a, **k: None,
+        ),
+        "iwxxm_validate.models": _stub_module(
+            "iwxxm_validate.models",
+            ValidationReport=_StubModel,
         ),
         "tac2iwxxm": _stub_module(
             "tac2iwxxm",

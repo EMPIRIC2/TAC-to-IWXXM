@@ -241,3 +241,8 @@ class ConversionRequest(BaseModel):
         default=None,
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only",
     )
+    extensions: Optional[List[str]] = Field(
+        default=None,
+        description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+        examples=[["IWXXM_CA"]],
+    )

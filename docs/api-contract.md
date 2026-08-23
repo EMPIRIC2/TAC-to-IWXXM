@@ -209,7 +209,7 @@ package-only routes):
 |-------|----------|---------|-------------|
 | `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id |
 | `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
-| `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`) |
+| `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`). **EV-068:** when `IWXXM_CA` is present with `semantic_profile=CA_ECCC`, triggers the full Canadian validation stack (layers 1–5 in [IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages). When omitted, `CA_ECCC` alone selects profile-pinned 3.0.0 core XSD+SCH scaffold (backward compatible). |
 | `exchange_profile` | no | `GLOBAL_AFS` | Used when **packaging** / disseminate-prep invoked; ignored on convert-only |
 | `profile` | no | — | **Deprecated** — maps to `semantic_profile` via alias table |
 

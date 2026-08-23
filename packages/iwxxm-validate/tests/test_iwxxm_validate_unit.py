@@ -112,6 +112,16 @@ def test_validate_iwxxm_ca_eccc_accepts_3_0_0_rust_path(monkeypatch: pytest.Monk
     )
     monkeypatch.setattr(vi, "xsd_path", lambda _v: xsd)
     monkeypatch.setattr(vi, "schematron_path", lambda _v: sch)
+    monkeypatch.setattr(
+        vi,
+        "validate_ca_eccc_layered",
+        lambda xml, **kwargs: ValidationReport(
+            ok=True,
+            iwxxm_version="3.0.0",
+            profile="ca_eccc",
+            issues=[],
+        ),
+    )
     report = vi.validate_iwxxm("<root/>", iwxxm_version="3.0.0", profile="ca_eccc")
     assert report.ok is True
     assert report.profile == "ca_eccc"
@@ -464,3 +474,302 @@ def test_api_skips_schematron_after_xml_syntax() -> None:
     assert report.ok is False
     assert any(i.code == "XML_SYNTAX_ERROR" for i in report.issues)
     assert not any(i.layer == "schematron" and i.code != "XML_SYNTAX_ERROR" for i in report.issues)
+
+
+def test_resolve_ca_eccc_bundle_rejects_non_pinned_version() -> None:
+    from iwxxm_validate.ca_eccc_bundle import resolve_ca_eccc_bundle
+
+    assert resolve_ca_eccc_bundle(iwxxm_version="2025-2") is None
+
+
+def test_resolve_ca_eccc_bundle_missing_core_pin(monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.ca_eccc_bundle import resolve_ca_eccc_bundle
+
+    monkeypatch.setattr(
+        "iwxxm_validate.ca_eccc_bundle.xsd_path",
+        lambda _v: (_ for _ in ()).throw(FileNotFoundError("missing")),
+    )
+    assert resolve_ca_eccc_bundle() is None
+
+
+def test_ca_eccc_catalog_roots_missing_version_returns_empty(monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.ca_eccc_bundle import ca_eccc_catalog_roots
+
+    monkeypatch.setattr(
+        "iwxxm_validate.ca_eccc_bundle.version_dir",
+        lambda _v: (_ for _ in ()).throw(FileNotFoundError("missing")),
+    )
+    assert ca_eccc_catalog_roots("9999-9") == []
+
+
+def test_ca_product_xsd_path_unknown_product() -> None:
+    from iwxxm_validate.ca_eccc_layers import ca_product_xsd_path
+
+    assert ca_product_xsd_path("VONA") is None
+
+
+def test_validate_xsd_at_path_missing_schema(tmp_path: Path) -> None:
+    from iwxxm_validate.xsd import validate_xsd_at_path
+
+    issues = validate_xsd_at_path("<root/>", tmp_path / "missing.xsd", layer="ca_xsd")
+    assert issues[0].code == "SCHEMA_NOT_AVAILABLE"
+
+
+def test_validate_xsd_at_path_parse_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.xsd import clear_xsd_cache, validate_xsd_at_path
+
+    clear_xsd_cache()
+    xsd_file = tmp_path / "bad.xsd"
+    xsd_file.write_text("<?xml version='1.0'?><xs:schema/>", encoding="utf-8")
+
+    def boom(_path: str) -> etree.XMLSchema:
+        raise etree.XMLSchemaParseError("fatal schema")
+
+    monkeypatch.setattr("iwxxm_validate.xsd._compile_schema_file", boom)
+    issues = validate_xsd_at_path("<root/>", xsd_file, layer="ca_xsd")
+    assert issues[0].code == "SCHEMA_PARSE_ERROR"
+
+
+def test_validate_xsd_at_path_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from iwxxm_validate.xsd import clear_xsd_cache, validate_xsd_at_path
+
+    clear_xsd_cache()
+    xsd_file = tmp_path / "ok.xsd"
+    xsd_file.write_text(
+        '<?xml version="1.0"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"/>',
+        encoding="utf-8",
+    )
+
+    class _Ok:
+        error_log: list[object] = []
+
+        def validate(self, _doc: object) -> bool:
+            return True
+
+    monkeypatch.setattr("iwxxm_validate.xsd._compile_schema_file", lambda _p: _Ok())
+    assert validate_xsd_at_path("<root/>", xsd_file, layer="ca_xsd") == []
+
+
+def test_compile_schema_file_substitution_gap_returns_none(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from iwxxm_validate import xsd as xsd_mod
+    from iwxxm_validate.xsd import clear_xsd_cache
+
+    clear_xsd_cache()
+    xsd_file = tmp_path / "sub.xsd"
+    xsd_file.write_text(
+        '<?xml version="1.0"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"/>',
+        encoding="utf-8",
+    )
+
+    def raise_sub(_doc: object) -> etree.XMLSchema:
+        raise etree.XMLSchemaParseError("substitutionGroup missing")
+
+    monkeypatch.setattr(etree, "XMLSchema", raise_sub)
+    assert xsd_mod._compile_schema_file(str(xsd_file)) is None
+
+
+def test_run_wellformed_lxml_syntax_error() -> None:
+    from iwxxm_validate.ca_eccc_validate import _run_wellformed_lxml
+
+    issues = _run_wellformed_lxml("<unclosed>")
+    assert issues[0].code == "XML_SYNTAX_ERROR"
+
+
+def test_validate_ca_eccc_layered_bundle_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+
+    monkeypatch.setattr(
+        "iwxxm_validate.ca_eccc_validate.resolve_ca_eccc_bundle",
+        lambda **_: None,
+    )
+    report = validate_ca_eccc_layered("<root/>", iwxxm_version="3.0.0")
+    assert report.ok is False
+    assert report.issues[0].code == "CA_SCHEMA_NOT_FOUND"
+    assert report.stages and report.stages[0].stage == "wmo_xsd"
+
+
+def test_validate_ca_eccc_layered_lxml_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.rust_available", lambda: False)
+    report = validate_ca_eccc_layered(
+        "<?xml version='1.0'?><iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>",
+        iwxxm_version="3.0.0",
+        levels=("xsd",),
+    )
+    assert report.stages
+    assert report.stages[0].stage == "wellformed"
+
+
+def test_ca_product_xsd_path_missing_mapped_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from iwxxm_validate.ca_eccc_layers import ca_product_xsd_path
+
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_layers.vendor_iwxxm_ca_root", lambda: tmp_path)
+    assert ca_product_xsd_path("METAR") is None
+
+
+def test_validate_ca_xsd_layer_unknown_root() -> None:
+    from iwxxm_validate.ca_eccc_validate import _validate_ca_xsd_layer
+
+    issues = _validate_ca_xsd_layer(
+        "<?xml version='1.0'?><unknown xmlns='http://example.com'/>",
+        product="METAR",
+        product_xsd=Path("/nonexistent/metar-speci-ca.xsd"),
+        core_sch="",
+        catalog_roots=[],
+    )
+    assert issues[0].code == "CA_PRODUCT_ROOT_UNKNOWN"
+
+
+def test_document_root_name_invalid_xml() -> None:
+    from iwxxm_validate.ca_eccc_validate import _document_root_name
+
+    assert _document_root_name("<unclosed>") == (None, None)
+
+
+def test_extract_ca_extension_blocks_invalid_xml() -> None:
+    from iwxxm_validate.ca_eccc_validate import _extract_ca_extension_blocks
+
+    assert _extract_ca_extension_blocks("<unclosed>") == []
+
+
+def test_validate_ca_eccc_layered_wellformed_failure_returns_early(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.rust_available", lambda: False)
+    report = validate_ca_eccc_layered("<unclosed>", iwxxm_version="3.0.0", levels=("xsd",))
+    assert not report.ok
+    assert len(report.stages) == 1
+    assert report.stages[0].stage == "wellformed"
+
+
+def test_validate_ca_eccc_layered_schematron_lxml_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.rust_available", lambda: False)
+    monkeypatch.setattr(
+        "iwxxm_validate.ca_eccc_validate.validate_xsd",
+        lambda xml, _v: [],
+    )
+    report = validate_ca_eccc_layered(
+        "<?xml version='1.0'?><iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>",
+        iwxxm_version="3.0.0",
+        levels=("schematron",),
+    )
+    assert any(stage.stage == "wmo_schematron" for stage in report.stages)
+
+
+def test_validate_ca_xsd_document_lxml_fallback(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from iwxxm_validate.ca_eccc_validate import _validate_ca_xsd_document
+
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.rust_available", lambda: False)
+    xsd_file = tmp_path / "ca.xsd"
+    xsd_file.write_text(
+        '<?xml version="1.0"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"/>',
+        encoding="utf-8",
+    )
+
+    class _Ok:
+        error_log: list[object] = []
+
+        def validate(self, _doc: object) -> bool:
+            return True
+
+    monkeypatch.setattr("iwxxm_validate.xsd._compile_schema_file", lambda _p: _Ok())
+    issues = _validate_ca_xsd_document(
+        "<root/>",
+        product_xsd=xsd_file,
+        core_sch="",
+        catalog_roots=[],
+    )
+    assert issues == []
+
+
+def test_cli_validate_product_without_iwxxm_ca_extension() -> None:
+    from iwxxm_validate.cli import _cli_validate_product
+
+    assert _cli_validate_product("ca_eccc", [], "METAR") is None
+
+
+def test_validate_xsd_at_path_xml_syntax(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from iwxxm_validate.xsd import clear_xsd_cache, validate_xsd_at_path
+
+    clear_xsd_cache()
+    xsd_file = tmp_path / "ok.xsd"
+    xsd_file.write_text(
+        '<?xml version="1.0"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"/>',
+        encoding="utf-8",
+    )
+
+    class _Ok:
+        error_log: list[object] = []
+
+        def validate(self, _doc: object) -> bool:
+            return True
+
+    monkeypatch.setattr("iwxxm_validate.xsd._compile_schema_file", lambda _p: _Ok())
+    issues = validate_xsd_at_path("<unclosed>", xsd_file, layer="ca_xsd")
+    assert issues[0].code == "XML_SYNTAX_ERROR"
+
+
+def test_compile_schema_file_raises_non_substitution_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate import xsd as xsd_mod
+    from iwxxm_validate.xsd import clear_xsd_cache
+
+    clear_xsd_cache()
+    xsd_file = tmp_path / "fatal.xsd"
+    xsd_file.write_text(
+        '<?xml version="1.0"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"/>',
+        encoding="utf-8",
+    )
+
+    def raise_fatal(_doc: object) -> etree.XMLSchema:
+        raise etree.XMLSchemaParseError("fatal compile")
+
+    monkeypatch.setattr(etree, "XMLSchema", raise_fatal)
+    with pytest.raises(etree.XMLSchemaParseError):
+        xsd_mod._compile_schema_file(str(xsd_file))
+
+
+def test_validate_ca_xsd_layer_wmo_root_without_extensions() -> None:
+    from iwxxm_validate.ca_eccc_validate import _validate_ca_xsd_layer
+
+    issues = _validate_ca_xsd_layer(
+        "<?xml version='1.0'?><iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>",
+        product="METAR",
+        product_xsd=Path("/nonexistent/metar-speci-ca.xsd"),
+        core_sch="",
+        catalog_roots=[],
+    )
+    assert issues == []
+
+
+def test_validate_xsd_at_path_schema_none_import_warning(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from iwxxm_validate.xsd import clear_xsd_cache, validate_xsd_at_path
+
+    clear_xsd_cache()
+    xsd_file = tmp_path / "gap.xsd"
+    xsd_file.write_text("<?xml version='1.0'?><xs:schema/>", encoding="utf-8")
+    monkeypatch.setattr("iwxxm_validate.xsd._compile_schema_file", lambda _p: None)
+    issues = validate_xsd_at_path("<root/>", xsd_file, layer="ca_xsd")
+    assert issues[0].code == "SCHEMA_IMPORT_WARNING"
+
+
+def test_validate_ca_eccc_layered_missing_product_xsd(monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.ca_product_xsd_path", lambda _p: None)
+    report = validate_ca_eccc_layered(
+        "<?xml version='1.0'?><iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>",
+        iwxxm_version="3.0.0",
+        product="METAR",
+        levels=("xsd",),
+    )
+    ca_stage = next((s for s in report.stages if s.stage == "ca_xsd"), None)
+    assert ca_stage is not None
+    assert any(i.code == "CA_PRODUCT_XSD_NOT_FOUND" for i in ca_stage.issues)

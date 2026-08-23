@@ -2699,6 +2699,48 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: `CA_REMARK_PRESRR`, `CA_REMARK_NOSPECI`, `CA_REMARK_SECTOR_VIS`, `CA_ALTIMETER_NOT_OBS`
 - **Source**: EV-066 M3; FR-EV066-04
 
+### EV-068 / #1035 + #1027 — CA_ECCC layered validation stack
+
+- **Mode**: deepen F2/F4/F13/F36; IWXXM 3.0.0 profile-pinned bundle + staged `ca_eccc` validate
+- **Pass criteria**: AC in evolve-decisions §EV-068; TC-EV068-*
+- **Source**: [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035), [#1027](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1027); EV-068;
+  [domain/IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages
+
+### TC-EV068-001: Profile-pinned 3.0.0 bundle integrity
+
+- **Level**: T0
+- **Objective**: `vendor/manifest.json` + on-disk trees satisfy CA_ECCC bundle resolution
+- **Pass criteria**: `iwxxm-ca` pin present; `3.0.0/IWXXM/iwxxm.xsd` exists; manifest integrity test green
+- **Source**: EV-068 M1; #1027; R-EV068-001
+
+### TC-EV068-002: Layered validate stages + product XSD selection
+
+- **Level**: T0 / T2
+- **Objective**: `validate(..., profile=ca_eccc)` returns per-stage issues; METAR uses `metar-speci-ca.xsd` at layer 4
+- **Pass criteria**: Missing CA extension element fails at `ca_xsd` layer (not only `wmo_xsd`)
+- **Source**: EV-068 M3/M4; #1035; R-EV068-002..003
+
+### TC-EV068-003: EV-067 golden validate gate
+
+- **Level**: T0 / T2
+- **Objective**: `metar_lwis`, `metar_sawr`, `metar_rmk_icing` goldens pass layers 2–4 under `ca_eccc`
+- **Pass criteria**: Replaces EV-064/067 XSD waive in `test_tc_ev064_002_ca_eccc_goldens.py`
+- **Source**: EV-068 M6; R-EV068-007
+
+### TC-EV068-004: API `extensions=IWXXM_CA` wire
+
+- **Level**: T2 / H4
+- **Objective**: Convert/validate accept `extensions` with `IWXXM_CA`; triggers full CA stack
+- **Pass criteria**: OpenAPI + backend unit tests; backward compat when extensions omitted
+- **Source**: EV-068 M5; #1027; R-EV068-005
+
+### TC-EV068-005: Datamart METAR sample (informative)
+
+- **Level**: T2
+- **Objective**: Operational datamart METAR sample passes full CA stack when fixture available
+- **Pass criteria**: Document pass/fail in test or mining notes — gate per feasibility decision
+- **Source**: #1035 acceptance; R-EV068-NF-003
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

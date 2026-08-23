@@ -38,32 +38,60 @@ def _sample_http_bundle(
     }
 
 
+def _sample_profile_line_bundle(
+    local_path: str, *, tree_sha256: str = "a" * 64
+) -> dict[str, str]:
+    return {
+        "parent_bundle": "iwxxm",
+        "version_line": "3.0.0",
+        "local_path": local_path,
+        "tree_sha256": tree_sha256,
+    }
+
+
 def _sample_for_bundle(
     name: str, local_path: str, *, tree_sha256: str = "a" * 64
 ) -> dict[str, str]:
-    """Pick GitHub vs HTTP sample factory from bundle name."""
+    """Pick GitHub vs HTTP vs profile-line sample factory from bundle name."""
     if name in ("iwxxm-us", "iwxxm-ca"):
         return _sample_http_bundle(local_path, tree_sha256=tree_sha256)
+    if name == "iwxxm-3.0.0":
+        return _sample_profile_line_bundle(local_path, tree_sha256=tree_sha256)
     return _sample_bundle(local_path, tree_sha256=tree_sha256)
+
+
+def _bundle_local_path(name: str) -> str:
+    if name == "iwxxm-3.0.0":
+        return "vendor/schemas/iwxxm/3.0.0"
+    return f"vendor/schemas/{name}"
+
+
+def _bundle_tree_root(tmp_path: Path, name: str) -> Path:
+    if name == "iwxxm-3.0.0":
+        return tmp_path / "vendor" / "schemas" / "iwxxm" / "3.0.0"
+    return tmp_path / "vendor" / "schemas" / name
 
 
 def _required_bundles(
     *,
     tree_sha256: str = "a" * 64,
 ) -> dict[str, dict[str, str]]:
-    return {
-        name: _sample_for_bundle(
+    bundles: dict[str, dict[str, str]] = {}
+    for name in (
+        "iwxxm",
+        "iwxxm-codelists",
+        "iwxxm-modelling",
+        "iwxxm-translation",
+        "iwxxm-us",
+        "iwxxm-ca",
+    ):
+        bundles[name] = _sample_for_bundle(
             name, f"vendor/schemas/{name}", tree_sha256=tree_sha256
         )
-        for name in (
-            "iwxxm",
-            "iwxxm-codelists",
-            "iwxxm-modelling",
-            "iwxxm-translation",
-            "iwxxm-us",
-            "iwxxm-ca",
-        )
-    }
+    bundles["iwxxm-3.0.0"] = _sample_profile_line_bundle(
+        "vendor/schemas/iwxxm/3.0.0", tree_sha256=tree_sha256
+    )
+    return bundles
 
 
 def test_load_manifest_rejects_non_object_root(tmp_path: Path) -> None:
@@ -108,11 +136,14 @@ def test_verify_manifest_integrity_detects_checksum_drift(tmp_path: Path) -> Non
         "iwxxm-translation",
         "iwxxm-us",
         "iwxxm-ca",
+        "iwxxm-3.0.0",
     ):
-        path = tmp_path / "vendor" / "schemas" / name
+        path = _bundle_tree_root(tmp_path, name)
         path.mkdir(parents=True)
         bundle = _sample_for_bundle(
-            name, f"vendor/schemas/{name}", tree_sha256=compute_tree_sha256(path)
+            name,
+            _bundle_local_path(name),
+            tree_sha256=compute_tree_sha256(path),
         )
         data = json.loads(manifest_path.read_text(encoding="utf-8"))
         data["bundles"][name] = bundle
@@ -146,6 +177,24 @@ def test_validate_manifest_schema_reports_missing_required_bundle() -> None:
     assert any("missing required bundle 'iwxxm-codelists'" in err for err in errors)
     assert any("missing required bundle 'iwxxm-us'" in err for err in errors)
     assert any("missing required bundle 'iwxxm-ca'" in err for err in errors)
+    assert any("missing required bundle 'iwxxm-3.0.0'" in err for err in errors)
+
+
+def test_validate_profile_line_bundle_reports_field_errors() -> None:
+    bundles = _required_bundles()
+    bundles["iwxxm-3.0.0"] = {
+        "parent_bundle": "unknown",
+        "version_line": "",
+        "local_path": "schemas/iwxxm/3.0.0",
+        "tree_sha256": "short",
+    }
+    errors = validate_manifest_schema(
+        {"schema_version": MANIFEST_SCHEMA_VERSION, "bundles": bundles}
+    )
+    assert any("parent_bundle must be a GitHub bundle name" in err for err in errors)
+    assert any("missing or empty 'version_line'" in err for err in errors)
+    assert any("local_path must start with 'vendor/schemas/'" in err for err in errors)
+    assert any("tree_sha256 must be 64" in err for err in errors)
 
 
 def test_validate_manifest_schema_reports_bundle_field_errors() -> None:
@@ -246,13 +295,19 @@ def test_verify_manifest_integrity_skips_non_object_or_incomplete_bundle_entries
         "iwxxm": "not-an-object",
         "iwxxm-codelists": {"local_path": 123, "tree_sha256": "a" * 64},
     }
-    for name in ("iwxxm-modelling", "iwxxm-translation", "iwxxm-us", "iwxxm-ca"):
-        root = tmp_path / "vendor" / "schemas" / name
+    for name in (
+        "iwxxm-modelling",
+        "iwxxm-translation",
+        "iwxxm-us",
+        "iwxxm-ca",
+        "iwxxm-3.0.0",
+    ):
+        root = _bundle_tree_root(tmp_path, name)
         root.mkdir(parents=True)
         (root / "README.md").write_text(name, encoding="utf-8")
         bundles[name] = _sample_for_bundle(
             name,
-            f"vendor/schemas/{name}",
+            _bundle_local_path(name),
             tree_sha256=compute_tree_sha256(root),
         )
 
@@ -295,14 +350,29 @@ def test_verify_manifest_integrity_passes_for_matching_tree(tmp_path: Path) -> N
         "iwxxm-us",
         "iwxxm-ca",
     ):
-        root = tmp_path / "vendor" / "schemas" / name
+        root = _bundle_tree_root(tmp_path, name)
         root.mkdir(parents=True)
         (root / "README.md").write_text(name, encoding="utf-8")
         bundles[name] = _sample_for_bundle(
             name,
-            f"vendor/schemas/{name}",
+            _bundle_local_path(name),
             tree_sha256=compute_tree_sha256(root),
         )
+
+    profile_root = _bundle_tree_root(tmp_path, "iwxxm-3.0.0")
+    profile_root.mkdir(parents=True)
+    (profile_root / "README.md").write_text("iwxxm-3.0.0", encoding="utf-8")
+    bundles["iwxxm-3.0.0"] = _sample_profile_line_bundle(
+        _bundle_local_path("iwxxm-3.0.0"),
+        tree_sha256=compute_tree_sha256(profile_root),
+    )
+    # Profile line is nested under iwxxm — re-hash parent after subtree materialises.
+    iwxxm_root = _bundle_tree_root(tmp_path, "iwxxm")
+    bundles["iwxxm"] = _sample_for_bundle(
+        "iwxxm",
+        _bundle_local_path("iwxxm"),
+        tree_sha256=compute_tree_sha256(iwxxm_root),
+    )
 
     manifest_path = tmp_path / "vendor" / "manifest.json"
     manifest_path.write_text(

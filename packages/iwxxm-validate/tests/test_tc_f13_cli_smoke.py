@@ -89,6 +89,53 @@ def test_cli_missing_file_exits_nonzero(tmp_path: Path) -> None:
     assert main([str(missing)]) == 1
 
 
+def test_cli_ca_eccc_extensions_iwxxm_ca(tmp_path: Path) -> None:
+    """EV-068 M5: --extensions IWXXM_CA enables full ca_eccc product XSD path."""
+    import io
+    from contextlib import redirect_stdout
+
+    from iwxxm_validate.cli import main
+    from iwxxm_validate.native import rust_available
+
+    if not rust_available():
+        pytest.skip("iwxxm_validate._rust not built (make build-iwxxm-validate-native)")
+
+    golden = (
+        REPO_ROOT
+        / "packages"
+        / "tac2iwxxm"
+        / "tests"
+        / "fixtures"
+        / "profiles"
+        / "CA_ECCC"
+        / "METAR"
+        / "valid"
+        / "metar_rmk_icing.golden.xml"
+    )
+    assert golden.is_file()
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        code = main(
+            [
+                "--version",
+                "3.0.0",
+                "--profile",
+                "ca_eccc",
+                "--extensions",
+                "IWXXM_CA",
+                "--product",
+                "METAR",
+                "--json",
+                str(golden),
+            ]
+        )
+    payload = json.loads(buf.getvalue())
+    assert code == 0
+    assert payload["ok"] is True
+    stage_ids = [stage["stage"] for stage in payload.get("stages") or []]
+    assert "ca_xsd" in stage_ids
+
+
 def test_console_script_on_path() -> None:
     proc = subprocess.run(
         ["iwxxm-validate", "--help"],

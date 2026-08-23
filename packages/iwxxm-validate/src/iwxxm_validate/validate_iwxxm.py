@@ -6,6 +6,8 @@ from collections.abc import Sequence
 from typing import Any
 
 from iwxxm_validate.api import validate
+from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION, ca_eccc_catalog_roots
+from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
 from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.native import rust_available, rust_module
 from iwxxm_validate.paths import (
@@ -13,7 +15,6 @@ from iwxxm_validate.paths import (
     repo_root,
     schematron_path,
     us_catalog_path,
-    vendor_iwxxm_ca_root,
     vendor_iwxxm_root,
     version_dir,
     xsd_path,
@@ -21,7 +22,6 @@ from iwxxm_validate.paths import (
 
 _DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
 _VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc"})
-_CA_ECCC_IWXXM_VERSION = "3.0.0"
 _VALID_LEVELS = frozenset({"xsd", "schematron"})
 
 
@@ -44,13 +44,7 @@ def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
         repo_root() / "vendor" / "schemas" / "iwxxm-translation" / "externalSchema",
     ]
     if profile == "ca_eccc":
-        ca_root = vendor_iwxxm_ca_root()
-        candidates.extend(
-            [
-                ca_root / "3.0",
-                ca_root,
-            ]
-        )
+        return ca_eccc_catalog_roots(iwxxm_version)
     return [str(p) for p in candidates if p.is_dir()]
 
 
@@ -76,6 +70,7 @@ def validate_iwxxm(
     iwxxm_version: str,
     profile: str = "annex3",
     levels: Sequence[str] | None = None,
+    product: str | None = None,
 ) -> ValidationReport:
     """
     Validate IWXXM XML using the native Rust engine when available.
@@ -94,6 +89,8 @@ def validate_iwxxm(
         ``annex3`` (default), ``iwxxm_us``, or ``ca_eccc`` (MSC operational line).
     levels :
         Subset of ``xsd`` / ``schematron``. Default runs both.
+    product :
+        API product enum for Canadian extension XSD selection when ``profile=ca_eccc``.
 
     Returns
     -------
@@ -148,7 +145,7 @@ def validate_iwxxm(
                     )
                 ],
             )
-        if iwxxm_version != _CA_ECCC_IWXXM_VERSION:
+        if iwxxm_version != CA_ECCC_IWXXM_VERSION:
             return ValidationReport(
                 ok=False,
                 iwxxm_version=iwxxm_version,
@@ -158,12 +155,18 @@ def validate_iwxxm(
                         severity="error",
                         code="INVALID_IWXXM_VERSION",
                         message=(
-                            f"profile=ca_eccc requires iwxxm_version {_CA_ECCC_IWXXM_VERSION!r}, got {iwxxm_version!r}"
+                            f"profile=ca_eccc requires iwxxm_version {CA_ECCC_IWXXM_VERSION!r}, got {iwxxm_version!r}"
                         ),
-                        layer="xsd",
+                        layer="wmo_xsd",
                     )
                 ],
             )
+        return validate_ca_eccc_layered(
+            xml_content,
+            iwxxm_version=iwxxm_version,
+            product=product,
+            levels=selected,
+        )
 
     if profile == "iwxxm_us" and us_catalog_path() is None:
         return ValidationReport(

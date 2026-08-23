@@ -89,9 +89,40 @@ def test_tc_ev064_002_convert_profile_ca_eccc(case_id: str, golden_manifest: dic
     assert "PROFILE_STUB" not in {i.code for i in result.issues}
 
 
-@pytest.mark.parametrize("case_id", CASE_IDS)
-def test_tc_ev064_002_validate_ca_eccc_attempt(case_id: str, golden_manifest: dict) -> None:
-    """TC-EV064-002: validate path accepts ca_eccc profile (XSD may gap on 3.0.0 GML catalog)."""
+@pytest.mark.parametrize("case_id", METAR_CASE_IDS)
+def test_tc_ev064_002_validate_ca_eccc_metar_layers(case_id: str, golden_manifest: dict) -> None:
+    """TC-EV064-002 / EV-068: METAR convert output passes layered ca_eccc validate."""
+    from iwxxm_validate import validate
+
+    from tac2iwxxm import convert
+
+    case = next(c for c in golden_manifest["cases"] if c["id"] == case_id)
+    tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
+
+    result = convert(
+        tac,
+        product=case["product"],
+        profile=PROFILE,
+        iwxxm_version=IWXXM_VERSION,
+    )
+    assert result.ok and result.xml
+
+    report = validate(
+        result.xml,
+        iwxxm_version=IWXXM_VERSION,
+        profile="ca_eccc",
+        product=case["product"],
+        levels=("xsd", "schematron"),
+    )
+    assert report.profile == "ca_eccc"
+    codes = {i.code for i in report.issues}
+    assert "CA_SCHEMA_NOT_FOUND" not in codes
+    assert report.ok is True
+
+
+@pytest.mark.parametrize("case_id", (*TAF_CASE_IDS, *AIRMET_CASE_IDS))
+def test_tc_ev064_002_validate_ca_eccc_non_metar_attempt(case_id: str, golden_manifest: dict) -> None:
+    """TC-EV064-002: TAF/AIRMET ca_eccc scaffold accepts profile (product XSD may gap)."""
     from iwxxm_validate import validate
 
     from tac2iwxxm import convert
@@ -116,7 +147,6 @@ def test_tc_ev064_002_validate_ca_eccc_attempt(case_id: str, golden_manifest: di
     assert report.profile == "ca_eccc"
     codes = {i.code for i in report.issues}
     assert "CA_SCHEMA_NOT_FOUND" not in codes
-    # 3.0.0 GML catalog resolution is a known vendor-subset gap (M1/M2); never silent success.
     if report.ok:
         return
     assert codes & {

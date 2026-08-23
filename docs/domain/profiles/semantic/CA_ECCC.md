@@ -85,13 +85,23 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 | Parser (TAC leads) | `packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py` — `ca_iwxxm_root` IR |
 | Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc.py` — root tag + Addendum |
 | Golden fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/` |
-| Validate profile | `packages/iwxxm-validate` — `ca_eccc` path (EV-064 M2) |
+| Validate profile | `packages/iwxxm-validate` — layered `ca_eccc` stack (EV-068 M3–M5; API `extensions: [IWXXM_CA]`) |
 | Vendor pin | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core |
 
-## Gaps (post EV-067)
+## Gaps
+
+### EV-068 delivered (#1027 + #1035)
+
+- Layered `ca_eccc` validation: WMO 3.0.0 XSD+SCH + product `*-ca.xsd` (TC-EV068-002/003)
+- Profile-pinned 3.0.0 manifest (`vendor/manifest.json`; TC-EV068-001)
+- API/CLI `extensions: [IWXXM_CA]` wire + `package_stages` on `/validate` (TC-EV068-004)
+- EV-067 golden XSD gate (`metar_lwis`, `metar_sawr`, `metar_rmk_icing`) — **TC-EV068-003**
+
+### Out of scope (EV-068 / backlog)
 
 - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
 - `AerodromeVariableRVR` / `ObservedLightning` (P2 / #1039)
-- Full layered `ca_eccc` XSD validation on goldens ([#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035))
 - Optional `tac-validate` lint codes for LWIS/SAWR/density/icing awareness
+- `#1050` `reportVariant` wire / UI (#1024)
 - SIGMET national overlay — out of #916 scope
+- Global app default migration from 2025-2 to 3.0.0

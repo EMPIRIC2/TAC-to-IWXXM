@@ -242,6 +242,15 @@
             "title": "Exchange Profile",
             "type": "string"
           },
+          "extensions": {
+            "default": [],
+            "description": "Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Extensions",
+            "type": "array"
+          },
           "include_nil_reasons": {
             "default": true,
             "description": "When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)",
@@ -343,6 +352,15 @@
             "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
             "title": "Exchange Profile",
             "type": "string"
+          },
+          "extensions": {
+            "default": [],
+            "description": "Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Extensions",
+            "type": "array"
           },
           "files": {
             "anyOf": [
@@ -549,6 +567,15 @@
             "title": "Exchange Profile",
             "type": "string"
           },
+          "extensions": {
+            "default": [],
+            "description": "Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+            "items": {
+              "type": "string"
+            },
+            "title": "Extensions",
+            "type": "array"
+          },
           "iwxxm_version": {
             "default": "2025-2",
             "description": "Target IWXXM version",
@@ -570,6 +597,12 @@
             "default": "",
             "description": "METAR TAC text to validate",
             "title": "Manual Text",
+            "type": "string"
+          },
+          "product": {
+            "default": "METAR",
+            "description": "TAC product for Canadian extension XSD when extensions include IWXXM_CA",
+            "title": "Product",
             "type": "string"
           },
           "profile": {
@@ -2399,6 +2432,37 @@
         "title": "PackageIssueModel",
         "type": "object"
       },
+      "PackageStageModel": {
+        "description": "Per-stage CA_ECCC validation outcome (additive on /validate).",
+        "properties": {
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/PackageIssueModel"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          }
+        },
+        "required": [
+          "stage",
+          "label",
+          "ok"
+        ],
+        "title": "PackageStageModel",
+        "type": "object"
+      },
       "PendingFilePayload": {
         "description": "Queued file content stored inline on the session row.",
         "properties": {
@@ -3156,6 +3220,26 @@
             ],
             "title": "Exchange Profile"
           },
+          "extensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
+            "examples": [
+              [
+                "IWXXM_CA"
+              ]
+            ],
+            "title": "Extensions"
+          },
           "iwxxm_xml": {
             "description": "IWXXM XML content to validate",
             "examples": [
@@ -3164,6 +3248,22 @@
             "minLength": 1,
             "title": "Iwxxm Xml",
             "type": "string"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "TAC product for Canadian extension XSD selection when extensions include IWXXM_CA",
+            "examples": [
+              "METAR",
+              "TAF"
+            ],
+            "title": "Product"
           },
           "profile": {
             "default": "",
@@ -3236,6 +3336,21 @@
       "ValidateResponse": {
         "description": "Response for POST /api/v1/validate (validation layers + package_* extras).",
         "properties": {
+          "extensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Resolved national extension tokens from the request (when supplied)",
+            "title": "Extensions"
+          },
           "is_valid": {
             "title": "Is Valid",
             "type": "boolean"
@@ -3289,6 +3404,21 @@
             "default": true,
             "title": "Package Ok",
             "type": "boolean"
+          },
+          "package_stages": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PackageStageModel"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional per-stage breakdown from iwxxm-validate when profile=ca_eccc and extensions include IWXXM_CA",
+            "title": "Package Stages"
           },
           "profile": {
             "default": "annex3",

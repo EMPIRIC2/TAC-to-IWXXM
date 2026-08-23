@@ -334,7 +334,7 @@ def test_decode_tac_contract_shape(client: TestClient) -> None:
 def test_validate_contract_shape(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     from iwxxm_validate import ValidationReport
 
-    def fake_sdk(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None):
+    def fake_sdk(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None, product=None):
         return ValidationReport(ok=True, iwxxm_version=iwxxm_version, profile=profile, issues=[])
 
     monkeypatch.setattr(api_module, "iwxxm_validate_fn", fake_sdk)

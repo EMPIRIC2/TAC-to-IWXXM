@@ -46,6 +46,7 @@ def test_validate_calls_sdk_once_without_orchestrator_xsd_schematron(
         iwxxm_version: str,
         profile: str = "annex3",
         levels=None,
+        product: str | None = None,
     ) -> ValidationReport:
         sdk_calls.append(
             {
@@ -53,6 +54,7 @@ def test_validate_calls_sdk_once_without_orchestrator_xsd_schematron(
                 "iwxxm_version": iwxxm_version,
                 "profile": profile,
                 "levels": levels,
+                "product": product,
             }
         )
         return ValidationReport(
