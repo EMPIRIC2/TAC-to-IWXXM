@@ -28,6 +28,12 @@ CA_PRES_RISING = f"{_CODE_CA_BASE}/PressureChangingRapidly/RISING"
 CA_AIRMET_PHENOM_BASE = f"{_CODE_CA_BASE}/airmet_weather_phenomena"
 CA_ICING_BASE = f"{_CODE_CA_BASE}/AerodromeIcing"
 
+# MANOBS METAR-family TAC leads — catalogued in docs/domain/profiles/catalog.yaml
+# (CA_ECCC.metar_family_variants). API product stays METAR/SPECI; IR ca_iwxxm_root
+# selects IWXXM root (core iwxxm:METAR/SPECI vs national iwxxm-ca:LWIS/SAWR).
+CA_METAR_FAMILY_TAC_LEADS = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
+CA_IWXXM_CA_SUBSTITUTION_ROOTS = frozenset({"LWIS", "SAWR"})
+
 
 def _ca_gml_id(ir: dict[str, Any], product: str) -> str:
     """Stable gml:id for CA_ECCC golden fixtures."""
@@ -421,6 +427,8 @@ def emit_metar_speci_ca_eccc(
 
 __all__ = [
     "CA_IWXXM_VERSION",
+    "CA_IWXXM_CA_SUBSTITUTION_ROOTS",
+    "CA_METAR_FAMILY_TAC_LEADS",
     "CA_NS",
     "CA_OBS_AWOS",
     "CA_OBS_LWIS",

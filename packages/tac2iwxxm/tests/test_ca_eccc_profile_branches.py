@@ -7,6 +7,11 @@ import pytest
 from tac2iwxxm.profiles import ca_eccc as ca
 
 
+def test_ca_metar_family_variant_constants() -> None:
+    assert ca.CA_METAR_FAMILY_TAC_LEADS == frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
+    assert ca.CA_IWXXM_CA_SUBSTITUTION_ROOTS == frozenset({"LWIS", "SAWR"})
+
+
 def test_ca_gml_id_branches() -> None:
     assert ca._ca_gml_id({"station": "CYLA", "ca_iwxxm_root": "LWIS"}, "METAR") == "lwis.ca.cyla"
     assert ca._ca_gml_id({"station": "CYXX", "ca_iwxxm_root": "SAWR"}, "METAR") == "sawr.ca.cyxx"

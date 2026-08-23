@@ -1,7 +1,7 @@
 # CA_ECCC — Canada semantic overlay (P1)
 
-> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064 M1–M6 / #916 P1 slice)  
-> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) · **Evolve**: EV-064-ca-eccc-profile  
+> **Profile id**: `CA_ECCC` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-064–067 / #916, #1039 P1)  
+> **Implementation**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916), [#1039](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1039)  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Environment and Climate Change Canada (ECCC / MSC) national semantic overlay: MANOBS
@@ -11,9 +11,52 @@ surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension sc
 
 | Area | Scope |
 |------|-------|
-| TAC parse / normalize | MANOBS METAR/SPECI; MANAIR TAF/AIRMET |
-| IWXXM extensions | `iwxxm-ca.xsd`, `common-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd` |
-| Products | METAR, SPECI, TAF, AIRMET (initial P1 slice per #916) |
+| TAC parse / normalize | MANOBS METAR/SPECI/**LWIS**/**SAWR**; MANAIR TAF/AIRMET |
+| IWXXM extensions | `iwxxm-ca.xsd`, `common-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd`, **`metar-speci-ca.xsd`** |
+| Products | METAR, SPECI, TAF, AIRMET (API product enum) |
+
+## METAR-family national report variants
+
+Canada defines **four** MANOBS surface-report TAC leads. Only two are ICAO-standard; LWIS and
+SAWR are **Canadian national products** with their own IWXXM substitution-group roots in
+`metar-speci-ca.xsd`.
+
+| TAC lead | What it is | API `product` | IWXXM root | Fixture `rule_id` |
+|----------|------------|---------------|------------|-------------------|
+| `METAR` | ICAO routine aerodrome report | `METAR` | `iwxxm:METAR` | `CA.METAR.*` |
+| `SPECI` | ICAO special report | `SPECI` | `iwxxm:SPECI` | `CA.SPECI.*` |
+| `LWIS` | **L**imited **W**eather **I**nformation **S**ystem — sparse AUTO obs (MANOBS 8 §11.3) | `METAR` | **`iwxxm-ca:LWIS`** | `CA.METAR.LWIS` |
+| `SAWR` | **S**urface **A**viation **W**eather **R**eport — Canadian surface report product | `METAR` | **`iwxxm-ca:SAWR`** | `CA.METAR.SAWR` |
+
+### Why LWIS/SAWR use `product=METAR` in the API
+
+Per [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md), three layers stay separate:
+
+1. **`semanticProfile`** (`CA_ECCC`) — national parse/emit overlay (MANOBS + `*-ca.xsd`).
+2. **`product`** — converter dispatch family (`METAR` \| `SPECI` \| `TAF` \| …). LWIS/SAWR are
+   not global product enums; they share the METAR-family parser and fixture tree.
+3. **`ca_iwxxm_root`** (IR) — TAC lead preserved from bulletin; selects IWXXM root element and
+   observing-system vocabulary at emit time.
+
+So LWIS/SAWR are **not** “METAR with a different label” — they are distinct MANOBS report types
+and distinct `metar-speci-ca.xsd` roots. The API routes them through `product=METAR` because
+they are aerodrome **surface observation** reports, not because they encode as `iwxxm:METAR`.
+
+**LWIS vs SAWR vs METAR (behavioural):**
+
+| | METAR | LWIS | SAWR |
+|---|-------|------|------|
+| TAC prefix | `METAR` | `LWIS` | `SAWR` |
+| Typical content | Full Annex 3 body | Wind + temp/dew + altimeter only | Full body + Canadian RMK |
+| Visibility / clouds | Yes (when reported) | **Omitted** (`ca_minimal_observation`) | Yes |
+| IWXXM namespace | Core `iwxxm` | National `iwxxm-ca` | National `iwxxm-ca` |
+| `observingSystemType` | AWOS when `AUTO` | **LWIS** code-ca href | **SAWR** code-ca href |
+
+### `iwxxm-ca:Addendum` elements (EV-066 / EV-067)
+
+Structured MANOBS remarks and metadata map to `metar-speci-ca.xsd` Addendum children (not
+free-text-only RMK). Catalogued in [`catalog.yaml`](../catalog.yaml) under
+`metar_speci_ca_addendum`.
 
 ## Authoritative sources
 
@@ -39,12 +82,16 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 | Component | Location |
 |-----------|----------|
 | Registry | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` |
-| Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc.py` |
-| Vendor pin (target) | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core |
+| Parser (TAC leads) | `packages/tac2iwxxm/src/tac2iwxxm/products/metar_speci.py` — `ca_iwxxm_root` IR |
+| Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/ca_eccc.py` — root tag + Addendum |
+| Golden fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/` |
 | Validate profile | `packages/iwxxm-validate` — `ca_eccc` path (EV-064 M2) |
+| Vendor pin | `vendor/manifest.json` → `iwxxm-ca` 3.0 + IWXXM `3.0.0` core |
 
-## Gaps (post EV-064 M6 / EV-066 / EV-067)
+## Gaps (post EV-067)
 
 - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
-- AerodromeVariableRVR / ObservedLightning (P2)
+- `AerodromeVariableRVR` / `ObservedLightning` (P2 / #1039)
+- Full layered `ca_eccc` XSD validation on goldens ([#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035))
+- Optional `tac-validate` lint codes for LWIS/SAWR/density/icing awareness
 - SIGMET national overlay — out of #916 scope

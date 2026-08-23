@@ -992,6 +992,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         "auto": bool(_AUTO.search(rest)) or is_lwis,
     }
     if ca_root in _CA_SURFACE_TYPES:
+        # National report variant for CA_ECCC emit — see catalog.yaml metar_family_variants.
         ir["ca_iwxxm_root"] = ca_root
     if is_lwis:
         ir["ca_minimal_observation"] = True
