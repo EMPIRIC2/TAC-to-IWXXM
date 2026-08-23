@@ -8,6 +8,8 @@ from tac2iwxxm.profiles import ca_eccc as ca
 
 
 def test_ca_gml_id_branches() -> None:
+    assert ca._ca_gml_id({"station": "CYLA", "ca_iwxxm_root": "LWIS"}, "METAR") == "lwis.ca.cyla"
+    assert ca._ca_gml_id({"station": "CYXX", "ca_iwxxm_root": "SAWR"}, "METAR") == "sawr.ca.cyxx"
     assert ca._ca_gml_id({"station": "CYUL", "auto": True}, "METAR") == "metar.ca.auto.cyul"
     assert ca._ca_gml_id({"station": "CYUL", "visibility_sm": 3}, "METAR") == "metar.ca.vis.sm.cyul"
     assert ca._ca_gml_id({"station": "CYUL", "altimeter_inhg": 30.12}, "METAR") == "metar.ca.alt.a.cyul"
@@ -28,7 +30,14 @@ def test_pressure_change_and_observing_system_hrefs() -> None:
     assert ca._ca_pressure_change_href({"pressure_change_href": "PRESRR"}) == ca.CA_PRES_RISING
     assert ca._ca_pressure_change_href({"pressure_change_href": 1}) is None
     assert ca._ca_observing_system_href({"auto": True}) == ca.CA_OBS_AWOS
+    assert ca._ca_observing_system_href({"ca_iwxxm_root": "LWIS"}) == ca.CA_OBS_LWIS
+    assert ca._ca_observing_system_href({"ca_iwxxm_root": "SAWR"}) == ca.CA_OBS_SAWR
     assert ca._ca_observing_system_href({}) is None
+
+
+def test_ca_iwxxm_root_tag() -> None:
+    assert ca._ca_iwxxm_root_tag({"ca_iwxxm_root": "LWIS"}, "METAR") == ("iwxxm-ca", "LWIS")
+    assert ca._ca_iwxxm_root_tag({}, "METAR") == ("iwxxm", "METAR")
 
 
 def test_addendum_extension_remarks_and_slp() -> None:

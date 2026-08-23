@@ -126,7 +126,8 @@ https://dd.meteo.gc.ca/today/aviation/iwxxm/{product}/{code_issuer}/{HH}
 | P0 | `ca_eccc` validate profile fail-closed | `CA.VALIDATE.PROFILE` | promoted (EV-064 M2) |
 | P0 | Statute-mile visibility (`SM`) | `CA.METAR.VIS.SM` | promoted (M3) |
 | P0 | `A####` altimeter | `CA.METAR.ALT.A` | promoted (M3) |
-| P1 | LWIS product path | `CA.METAR.LWIS` | pending (XSD ref) |
+| P1 | LWIS product path | `CA.METAR.LWIS` | promoted (EV-067) |
+| P1 | SAWR product path | `CA.METAR.SAWR` | promoted (EV-067) |
 | P1 | MANAIR TAF NCLWS | `CA.TAF.NCLWS` | promoted (M4) |
 | P2 | GFA AIRMET code-ca phenomena | `CA.AIRMET.GFA` | pending |
 

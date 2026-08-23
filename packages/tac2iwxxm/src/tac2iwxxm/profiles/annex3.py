@@ -396,7 +396,9 @@ def build_observation_and_trends(
     rvr_block = ""
     wx_block = ""
     cloud = ""
-    if not cavok:
+    if ir.get("ca_minimal_observation"):
+        cavok_attr = "false"
+    elif not cavok:
         vis_block = _visibility_block(ir, visibility_extension=visibility_extension)
         rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)

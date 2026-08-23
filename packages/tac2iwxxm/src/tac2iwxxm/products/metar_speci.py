@@ -5,11 +5,15 @@ from __future__ import annotations
 import re
 from typing import Any
 
+_CA_SURFACE_TYPES = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
 _REPORT = re.compile(
-    r"^(?P<rtype>METAR|SPECI)\s+(?:(?P<cor_pre>COR)\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
+    r"^(?P<rtype>LWIS|SAWR|METAR|SPECI)\s+(?:(?P<cor_pre>COR)\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
     r"(?P<ddhhmm>\d{6})Z\b(?P<body>.*)$",
     re.DOTALL,
 )
+_CA_DENSITY_ALT = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+(?P<ft>\d{3,5})FT\b", re.I)
+_CA_DENSITY_ALT_MISG = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+MISG\b", re.I)
+_CA_ICE_REMARK = re.compile(r"\bICE\s+(?P<intensity>TRC|LGT|MOD|SEV|HVY)\b", re.I)
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
 _VIS_SM = re.compile(r"\b(?P<vis>\d{1,2})SM\b")
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
@@ -722,6 +726,32 @@ def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
     return qty
 
 
+def _product_matches_rtype(product: str, rtype: str) -> bool:
+    """Return True when ``product`` is compatible with the TAC lead token."""
+    product_u = product.upper()
+    rtype_u = rtype.upper()
+    if product_u == rtype_u:
+        return True
+    # CA_ECCC: API product METAR/SPECI accepts MANOBS LWIS/SAWR TAC leads (#1039).
+    if product_u in {"METAR", "SPECI"} and rtype_u in {"LWIS", "SAWR"}:
+        return True
+    return False
+
+
+def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
+    """Enrich IR with MANOBS Canadian REMARKS not covered by US FMH-1 path."""
+    density = _CA_DENSITY_ALT.search(remarks)
+    if density is not None:
+        ir["density_altitude_ft"] = int(density.group("ft"))
+    elif _CA_DENSITY_ALT_MISG.search(remarks):
+        ir["density_altitude_missing"] = True
+
+    ice = _CA_ICE_REMARK.search(remarks)
+    if ice is not None:
+        intensity = ice.group("intensity").upper()
+        ir["ca_icing_href"] = f"https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/AerodromeIcing/{intensity}"
+
+
 def _remarks_free_text(remarks: str) -> str:
     """
     Return REMARKS remainder after removing structured tokens.
@@ -914,13 +944,13 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     text = tac.strip()
     # Allow COR before station or immediately after observation time (ICAO #594).
     report_match = re.search(
-        r"((?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*?)=",
+        r"((?:LWIS|SAWR|METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*?)=",
         text,
         re.DOTALL,
     )
     if report_match is None:
         report_match = re.search(
-            r"((?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*)",
+            r"((?:LWIS|SAWR|METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*)",
             text,
             re.DOTALL,
         )
@@ -933,8 +963,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         raise ValueError(f"unable to parse METAR/SPECI report: {report!r}")
 
     rtype = m.group("rtype")
-    if rtype.upper() != product.upper():
+    if not _product_matches_rtype(product, rtype):
         raise ValueError(f"product mismatch: expected {product}, found {rtype}")
+
+    ca_root = rtype.upper()
+    is_lwis = ca_root == "LWIS"
+    is_sawr = ca_root == "SAWR"
 
     station = m.group("station")
     ddhhmm = m.group("ddhhmm")
@@ -955,8 +989,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         "minute": minute,
         "nil": bool(_NIL.search(rest)),
         "correction": correction,
-        "auto": bool(_AUTO.search(rest)),
+        "auto": bool(_AUTO.search(rest)) or is_lwis,
     }
+    if ca_root in _CA_SURFACE_TYPES:
+        ir["ca_iwxxm_root"] = ca_root
+    if is_lwis:
+        ir["ca_minimal_observation"] = True
 
     if ir["nil"]:
         return ir
@@ -982,7 +1020,9 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         else:
             ir["wind_gust_kt"] = gust_raw
 
-    if _CAVOK.search(rest):
+    if is_lwis:
+        pass
+    elif _CAVOK.search(rest):
         ir["cavok"] = True
         ir["visibility_m"] = 10000
         ir["visibility_above"] = True
@@ -1032,6 +1072,18 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     # Strip REMARKS; split observation vs trend groups before exceptional tokens.
     body_for_wx = _RMK.split(rest, maxsplit=1)[0]
     obs_body, trend_matches = _split_obs_and_trends(body_for_wx)
+
+    if is_lwis:
+        rmk = _RMK.search(rest)
+        if rmk is not None:
+            remarks = rmk.group("rmk")
+            ir["remarks_present"] = True
+            ir["remarks_text"] = remarks.strip().rstrip("=").strip()
+            _parse_ca_remarks(remarks, ir)
+            leftover = _remarks_free_text(remarks)
+            if leftover:
+                ir["remarks_free_text"] = leftover
+        return ir
 
     # Re-bind visibility from observation only (avoid trend 9999 / TL times).
     if not ir.get("cavok"):
@@ -1164,4 +1216,23 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             ir["nosig"] = True
 
     _parse_remarks(rest, ir)
+    rmk = _RMK.search(rest)
+    if rmk is not None:
+        remarks = rmk.group("rmk")
+        _parse_ca_remarks(remarks, ir)
+        leftover = str(ir.get("remarks_free_text") or "").strip()
+        if ir.get("density_altitude_ft") is not None or ir.get("density_altitude_missing"):
+            leftover = _CA_DENSITY_ALT.sub(" ", leftover)
+            leftover = _CA_DENSITY_ALT_MISG.sub(" ", leftover)
+        if ir.get("ca_icing_href"):
+            leftover = _CA_ICE_REMARK.sub(" ", leftover)
+        leftover = re.sub(r"\s+", " ", leftover).strip(" =")
+        if leftover:
+            ir["remarks_free_text"] = leftover
+        elif ir.get("density_altitude_ft") is not None or ir.get("ca_icing_href"):
+            ir.pop("remarks_free_text", None)
+    if is_sawr:
+        ir["ca_observing_system_href"] = (
+            "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/SAWR"
+        )
     return ir

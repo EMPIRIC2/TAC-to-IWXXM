@@ -75,10 +75,13 @@ def _extract_icao_from_tac(tac_text: str) -> Optional[str]:
 
 
 def _detect_product(tac_text: str, default: str = "METAR") -> str:
-    """Detect METAR vs SPECI from TAC text."""
-    match = re.search(r"\b(METAR|SPECI)\b", tac_text.upper())
+    """Detect METAR vs SPECI (and map CA LWIS/SAWR to METAR API product)."""
+    match = re.search(r"\b(LWIS|SAWR|METAR|SPECI)\b", tac_text.upper())
     if match:
-        return match.group(1)
+        token = match.group(1)
+        if token in {"LWIS", "SAWR"}:
+            return "METAR"
+        return token
     return default.upper()
 
 

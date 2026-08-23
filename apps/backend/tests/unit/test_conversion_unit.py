@@ -25,6 +25,14 @@ def test_detect_product_default_metar() -> None:
     assert _detect_product("KJFK 231751Z NIL=") == "METAR"
 
 
+def test_detect_product_lwis_maps_to_metar() -> None:
+    assert _detect_product("LWIS CYLA 292000Z AUTO 31006KT M00/M02 A2926=") == "METAR"
+
+
+def test_detect_product_sawr_maps_to_metar() -> None:
+    assert _detect_product("SAWR CYXX 231800Z AUTO 24010KT 5SM FEW030 M05/M10 A2998=") == "METAR"
+
+
 def test_convert_metar_tac_with_metadata_ok() -> None:
     xml, validation = convert_metar_tac_with_metadata(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
