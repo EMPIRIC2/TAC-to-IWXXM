@@ -346,7 +346,8 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] F36 acc — CA_ECCC lint pack METAR/TAF/AIRMET themes C1–C8 closed (EV-071 M1 / #1038; see table above)
 - [x] F36 acc — CA_ECCC exchange output + COLLECT themes X1–X5 closed; #1032 umbrella verified EV-075
 - [x] F36 acc — CA_ECCC SIGMET validate-first ops S1–S6 closed or waived (EV-074 / #1043)
-- [x] F36 acc — CA_ECCC SIGMET exchange emit closed (EV-076 / #1061); VAA exchange emit waived (D-EV074-vaa-follow)
+- [x] F36 acc — CA_ECCC SIGMET exchange emit closed (EV-076 / #1061); VAA exchange emit waived (D-EV074-vaa-follow); VAA TAC validate-first (EV-077)
+- [x] F36 acc — CA_ECCC #916 P1 closeout verified (EV-078)
 
 ---
 
