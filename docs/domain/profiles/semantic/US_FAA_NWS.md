@@ -40,6 +40,8 @@ grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.
 
 ## Gaps (#919 deepen)
 
-- Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text
+- Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text — **M7 done** (15 rows)
+- **SIGMET/AIRMET national layer** — **M8 in progress** (EV-079): fixture pack + US AIRMET phenomenon tokens; iwxxm-us weather-hazard extensions deferred
+- `ReferencePointGeometryParser` for VOR/airport reference geometry — deferred
 - `codes.nws.noaa.gov/FMH-1` machine registry — probe timed out 2026-07-14
 - US examples must **not** mix into WMO-only sample catalog (UJ-039 policy)

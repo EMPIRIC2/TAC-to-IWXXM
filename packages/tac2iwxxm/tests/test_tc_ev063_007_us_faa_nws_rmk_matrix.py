@@ -38,7 +38,7 @@ def test_tc_ev063_007_manifest_present(rmk_manifest: dict) -> None:
     """RMK matrix pack lists canonical profile and ≥10 structured remark cases."""
     assert rmk_manifest.get("schema_version") == 1
     assert rmk_manifest.get("profile") == PROFILE
-    cases = rmk_manifest.get("cases", [])
+    cases = [c for c in rmk_manifest.get("cases", []) if c.get("product") == "METAR"]
     assert len(cases) >= 10
     for case in cases:
         assert (FIXTURES / case["tac"]).is_file()

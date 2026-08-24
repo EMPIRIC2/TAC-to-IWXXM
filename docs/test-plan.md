@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-24 (EV-078 — #916 closeout audit)
+> **Last updated**: 2026-08-24 (EV-079 — US SIGMET/AIRMET national layer slice)
 
 ## Scope
 
@@ -3169,6 +3169,40 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Ops SIGMET IWXXM passes `validate_ca_exchange_packaging` with MSC context
 - **Pass criteria**: no blocking exchange issues; TC-EV072-010 includes SIGMET
 - **Source**: EV-076 M1
+
+### EV-079 / #919 — US_FAA_NWS SIGMET/AIRMET national layer (M8)
+
+- **Mode**: parser tokens + profile fixture pack + regression gate
+- **Pass criteria**: AC in evolve-decisions §EV-079; TC-EV079-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-063 M7 RMK matrix prior
+
+### TC-EV079-001: SIGMET/AIRMET manifest rows
+
+- **Level**: T0
+- **Objective**: `fixtures/profiles/US_FAA_NWS/manifest.json` lists ≥2 SIGMET + ≥3 AIRMET with `US.*` rule ids
+- **Pass criteria**: `test_tc_ev079_us_sigmet_airmet.py::test_tc_ev079_001_*`
+- **Source**: EV-079 REQ-EV079-001
+
+### TC-EV079-002: SIGMET phenomenon tokens
+
+- **Level**: T1
+- **Objective**: OBSC TS + SEV ICE parse to `OBSC_TS` / `SEV_ICE`; FL band geometry on SEV ICE
+- **Pass criteria**: `test_tc_ev079_002_*`
+- **Source**: EV-079 REQ-EV079-002
+
+### TC-EV079-003: AIRMET US phenomenon tokens
+
+- **Level**: T1
+- **Objective**: IFR → `SFC_VIS`; MOD TURB → `MOD_TURB`; ISOL TS unchanged
+- **Pass criteria**: `test_tc_ev079_003_*`
+- **Source**: EV-079 REQ-EV079-003
+
+### TC-EV079-004: SIGMET/AIRMET M-golden convert
+
+- **Level**: T1
+- **Objective**: `US_FAA_NWS` convert matches profile goldens; `iwxxm-us` namespace present
+- **Pass criteria**: `test_tc_ev079_004_*`
+- **Source**: EV-079 REQ-EV079-004
 
 ### EV-078 / #916 — CA_ECCC P1 closeout audit
 
