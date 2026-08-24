@@ -21,6 +21,7 @@ from iwxxm_validate.ca_eccc_layers import (
     STAGE_WELLFORMED,
     STAGE_WMO_SCH,
     STAGE_WMO_XSD,
+    ca_product_has_exchange_output,
     ca_product_has_national_xsd,
     ca_product_xsd_path,
 )
@@ -432,7 +433,9 @@ def validate_ca_eccc_layered(
         append_stage(STAGE_CODE_CA, code_ca_issues)
 
     if not _has_error(all_issues):
-        if product and not ca_product_has_national_xsd(product):
+        if product and ca_product_has_exchange_output(product):
+            exchange_issues = validate_ca_exchange_packaging(xml_content, product=product)
+        elif product and not ca_product_has_national_xsd(product):
             exchange_issues = [
                 Issue(
                     severity="info",

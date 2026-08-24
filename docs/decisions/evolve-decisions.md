@@ -1,5 +1,27 @@
 # Evolve Decisions
 
+## Cycle EV-076 — CA_ECCC SIGMET exchange output emit (#1061) (EV-076-ca-eccc-sigmet-exchange-emit)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-076-ca-eccc-sigmet-exchange-emit`  
+**Preset:** Standard · **Issues:** [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061)  
+**Parent:** #916 · **Prior:** EV-075 merged to `stage`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV076-goal | SIGMET MSC exchange-output emit + layer-6 ops packaging; catalog `ev076_slice` |
+| D-EV076-in | `exchange_output.py`, `ca_exchange_validate`, layered validate exchange stage, ops fixtures, API bare `output_spec` |
+| D-EV076-out | VAA emit (deferred D-EV074-vaa-follow); TAC convert SIGMET; promote |
+| D-EV076-vaa | **Deferred** — no MSC VAA datamart tree; VAA stays `ev074_validate_first` |
+| D-EV076-fn | Deepen **F36** / **F23** — no new top-level Fn |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests]
+
+---
+
 ## Cycle EV-075 — CA_ECCC #1032 closeout audit (EV-075-ca-eccc-1032-closeout)
 
 **Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-075-ca-eccc-1032-closeout`  

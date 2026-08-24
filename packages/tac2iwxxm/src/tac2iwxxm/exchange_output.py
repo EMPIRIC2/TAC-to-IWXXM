@@ -14,7 +14,7 @@ import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from tac2iwxxm.bulletin import iwxxm_filename
+from tac2iwxxm.bulletin import bbb_to_report_status, iwxxm_filename
 from tac2iwxxm.models import AhlParts
 
 CA_ECCC_IWXXM_VERSION = "3.0.0"
@@ -26,6 +26,14 @@ _WMO_HEADER_BY_PRODUCT: dict[str, str] = {
     "SPECI": "A_LPCN",
     "TAF": "A_LTCN",
     "AIRMET": "A_LWCN",
+    "SIGMET": "A_LSCN",
+    "VAA": "A_LUCN",
+}
+
+_SIGMET_KIND_DESIGNATOR: dict[str, str] = {
+    "weather": "A_LSCN",
+    "va": "A_LVCN",
+    "tc": "A_LYCN",
 }
 
 _DATAMART_PRODUCT_SEGMENT: dict[str, str] = {
@@ -33,7 +41,13 @@ _DATAMART_PRODUCT_SEGMENT: dict[str, str] = {
     "SPECI": "speci",
     "TAF": "taf",
     "AIRMET": "airmet",
+    "SIGMET": "sigmet",
+    "VAA": "vaa",
 }
+
+_MSC_FILENAME_PARTS_RE = re.compile(
+    r"^A_([A-Z]{2})([A-Z]{2})(\d{2})([A-Z]{4})(\d{6})(?:([A-Z0-9]{3}))?_C_([A-Z]{4})_(\d{14})\.xml$"
+)
 
 _MSC_FILENAME_RE = re.compile(r"^A_[A-Z]{2}[A-Z]{2}\d{2}[A-Z]{4}\d{6}(?:[A-Z0-9]{3})?_C_[A-Z]{4}_\d{14}\.xml$")
 
@@ -77,16 +91,20 @@ def default_ca_translation_centre() -> tuple[str, str]:
     return designator, name
 
 
-def ca_wmo_header_designator(product: str) -> str:
+def ca_wmo_header_designator(product: str, *, sigmet_kind: str | None = None) -> str:
     """Return MSC WMO AHL designator prefix for a product (e.g. ``A_LACN`` for METAR)."""
     key = product.strip().upper()
+    if key == "SIGMET" and sigmet_kind:
+        kind = sigmet_kind.strip().lower()
+        if kind in _SIGMET_KIND_DESIGNATOR:
+            return _SIGMET_KIND_DESIGNATOR[kind]
     try:
         return _WMO_HEADER_BY_PRODUCT[key]
     except KeyError as exc:
         raise ValueError(f"CA exchange output not defined for product {product!r}") from exc
 
 
-def format_ca_wmo_ahl(parts: AhlParts, *, product: str) -> str:
+def format_ca_wmo_ahl(parts: AhlParts, *, product: str, sigmet_kind: str | None = None) -> str:
     """
     Format a WMO AHL header line using MSC designator prefix.
 
@@ -102,7 +120,7 @@ def format_ca_wmo_ahl(parts: AhlParts, *, product: str) -> str:
     str
         ``A_LACN31 CYUL 231800`` style header for layer-6 cross-check.
     """
-    prefix = ca_wmo_header_designator(product)
+    prefix = ca_wmo_header_designator(product, sigmet_kind=sigmet_kind)
     line = f"{prefix}{parts.ii} {parts.cccc} {parts.yygggg}"
     if parts.bbb:
         line = f"{line} {parts.bbb.strip().upper()}"
@@ -172,12 +190,85 @@ def msc_filename_matches_pattern(filename: str) -> bool:
     return bool(_MSC_FILENAME_RE.match(filename.strip()))
 
 
+def parse_msc_exchange_filename(filename: str) -> tuple[AhlParts, datetime] | None:
+    """
+    Parse an MSC datamart filename into AHL parts and issue timestamp.
+
+    Returns
+    -------
+    tuple[AhlParts, datetime] | None
+        Parsed parts and UTC issue time, or ``None`` when the pattern does not match.
+    """
+    match = _MSC_FILENAME_PARTS_RE.match(filename.strip())
+    if not match:
+        return None
+    tt, aa, ii, cccc, yygggg, bbb, _centre, issued_stamp = match.groups()
+    iwxxm_tt = tt
+    designator = f"A_{tt}{aa}"
+    ahl = f"{designator}{ii} {cccc} {yygggg}"
+    bbb_norm = bbb.upper() if bbb else None
+    if bbb_norm:
+        ahl = f"{ahl} {bbb_norm}"
+        try:
+            report_status = bbb_to_report_status(bbb_norm)
+        except (KeyError, ValueError):
+            report_status = "NORMAL"
+    else:
+        report_status = "NORMAL"
+    parts = AhlParts(
+        ahl=ahl,
+        tt=tt,
+        aa=aa,
+        ii=ii,
+        cccc=cccc,
+        yygggg=yygggg,
+        bbb=bbb_norm,
+        iwxxm_tt=iwxxm_tt,
+        report_status=report_status,
+    )
+    issued = datetime.strptime(issued_stamp, "%Y%m%d%H%M%S").replace(tzinfo=UTC)
+    return parts, issued
+
+
+def build_ca_eccc_output_spec_from_msc_filename(
+    *,
+    product: str,
+    source_filename: str,
+    sigmet_kind: str | None = None,
+    include_translation_centre: bool = True,
+) -> ProfileOutputSpec | None:
+    """
+    Build output spec from an MSC datamart filename (ops corpus / validate-first path).
+
+    Parameters
+    ----------
+    product :
+        API product enum.
+    source_filename :
+        MSC filename such as ``A_LSCN22CWAO241540_C_CWAO_20260824154038.xml``.
+    sigmet_kind :
+        Optional SIGMET variant hint when product is ``SIGMET``.
+    """
+    parsed = parse_msc_exchange_filename(source_filename)
+    if parsed is None:
+        return None
+    parts, issued = parsed
+    return build_ca_eccc_output_spec(
+        product=product,
+        parts=parts,
+        issued_at=issued,
+        include_translation_centre=include_translation_centre,
+        sigmet_kind=sigmet_kind,
+    )
+
+
 def build_ca_eccc_output_spec(
     *,
     product: str,
     parts: AhlParts | None = None,
     issued_at: datetime | None = None,
     include_translation_centre: bool = True,
+    sigmet_kind: str | None = None,
 ) -> ProfileOutputSpec:
     """
     Build operator-visible output spec for CA_ECCC convert responses.
@@ -185,7 +276,7 @@ def build_ca_eccc_output_spec(
     Parameters
     ----------
     product :
-        API product enum (``METAR``, ``SPECI``, ``TAF``, ``AIRMET``).
+        API product enum (``METAR``, ``SPECI``, ``TAF``, ``AIRMET``, ``SIGMET``, ``VAA``).
     parts :
         Optional parsed AHL parts for filename/header expansion.
     issued_at :
@@ -199,12 +290,12 @@ def build_ca_eccc_output_spec(
         Contract fields for API ``metadata.output_spec``.
     """
     product_u = product.strip().upper()
-    designator = ca_wmo_header_designator(product_u)
+    designator = ca_wmo_header_designator(product_u, sigmet_kind=sigmet_kind)
     suggested: str | None = None
     wmo_ahl: str | None = None
     distribution: str | None = None
     if parts is not None:
-        wmo_ahl = format_ca_wmo_ahl(parts, product=product_u)
+        wmo_ahl = format_ca_wmo_ahl(parts, product=product_u, sigmet_kind=sigmet_kind)
         ts = issued_at or issued_at_from_yygggg(parts.yygggg)
         suggested = ca_msc_filename(parts, issued_at=ts)
         distribution = ca_distribution_path(product_u, issuer_code=parts.cccc, hour=ts.hour)
@@ -249,6 +340,7 @@ __all__ = [
     "CA_MSC_FILENAME_PATTERN",
     "ProfileOutputSpec",
     "build_ca_eccc_output_spec",
+    "build_ca_eccc_output_spec_from_msc_filename",
     "ca_distribution_path",
     "ca_msc_filename",
     "ca_wmo_header_designator",
@@ -256,5 +348,6 @@ __all__ = [
     "format_ca_wmo_ahl",
     "issued_at_from_yygggg",
     "msc_filename_matches_pattern",
+    "parse_msc_exchange_filename",
     "profile_output_spec_to_dict",
 ]

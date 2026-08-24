@@ -53,7 +53,7 @@ def test_tc_ev074_006_ca_xsd_skipped_for_unmapped_sigmet() -> None:
 
     exchange = next(s for s in report.stages if s.stage == STAGE_EXCHANGE)
     assert exchange.ok is True
-    assert any(issue.code == "CA_EXCHANGE_NOT_APPLICABLE" for issue in exchange.issues)
+    assert not any(issue.code == "CA_EXCHANGE_NOT_APPLICABLE" for issue in exchange.issues)
 
 
 def test_tc_ev074_006b_mapped_product_missing_xsd_still_errors(monkeypatch) -> None:
@@ -71,7 +71,8 @@ def test_tc_ev074_006b_mapped_product_missing_xsd_still_errors(monkeypatch) -> N
 def test_tc_ev074_007_catalog_lists_sigmet_vaa() -> None:
     block = _ca_eccc_catalog_text()
     assert "SIGMET" in block and "VAA" in block
-    assert "ev074_validate_first: [SIGMET, VAA]" in block
+    assert "ev074_validate_first: [VAA]" in block
+    assert "ev076_slice: [SIGMET]" in block
 
 
 def test_tc_ev074_001_harvest_script_includes_sigmet_vaa() -> None:

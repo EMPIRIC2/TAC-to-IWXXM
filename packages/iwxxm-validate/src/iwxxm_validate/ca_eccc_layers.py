@@ -51,6 +51,9 @@ CA_PRODUCT_XSD: dict[str, str] = {
     "AIRMET": "airmet-ca.xsd",
 }
 
+# Products with MSC exchange-output contract (EV-071..073 aerodrome; EV-076 / #1061 SIGMET).
+CA_EXCHANGE_OUTPUT_PRODUCTS: frozenset[str] = frozenset({"METAR", "SPECI", "TAF", "AIRMET", "SIGMET"})
+
 # EV-068: layers 1–4; EV-069: layers 5–6 (#1033 / #1032).
 IMPLEMENTED_CA_STAGES: frozenset[str] = frozenset(
     {
@@ -75,6 +78,11 @@ def ca_iwxxm_core_xsd_path() -> Path | None:
 def ca_product_has_national_xsd(product: str) -> bool:
     """Return whether ``product`` has a published ``*-ca`` XSD mapping."""
     return product.strip().upper() in CA_PRODUCT_XSD
+
+
+def ca_product_has_exchange_output(product: str) -> bool:
+    """Return whether ``product`` has an MSC exchange-output contract (filename + WMO header)."""
+    return product.strip().upper() in CA_EXCHANGE_OUTPUT_PRODUCTS
 
 
 def ca_product_xsd_path(product: str, *, tag: str = CA_EXTENSION_TAG) -> Path | None:
@@ -107,6 +115,7 @@ def pending_ca_stages() -> tuple[str, ...]:
 __all__ = [
     "CA_EXTENSION_TAG",
     "CA_IWXXM_VERSION",
+    "CA_EXCHANGE_OUTPUT_PRODUCTS",
     "CA_PRODUCT_XSD",
     "CA_STAGE_LABELS",
     "CA_VALIDATION_STAGES",
@@ -119,6 +128,7 @@ __all__ = [
     "STAGE_WMO_XSD",
     "ca_eccc_bundle_available",
     "ca_iwxxm_core_xsd_path",
+    "ca_product_has_exchange_output",
     "ca_product_has_national_xsd",
     "ca_product_xsd_path",
     "pending_ca_stages",
