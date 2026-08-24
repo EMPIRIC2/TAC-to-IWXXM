@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-24 (EV-075 — #1032 closeout audit)
+> **Last updated**: 2026-08-24 (EV-078 — #916 closeout audit)
 
 ## Scope
 
@@ -3169,6 +3169,40 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Ops SIGMET IWXXM passes `validate_ca_exchange_packaging` with MSC context
 - **Pass criteria**: no blocking exchange issues; TC-EV072-010 includes SIGMET
 - **Source**: EV-076 M1
+
+### EV-078 / #916 — CA_ECCC P1 closeout audit
+
+- **Mode**: doc audit + regression gate; no product code unless drift
+- **Pass criteria**: AC in evolve-decisions §EV-078; TC-EV078-*
+- **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) (verify close); EV-071..077 on `stage`
+
+### TC-EV078-001: SIGMET exchange + catalog slices documented
+
+- **Level**: T0 / docs
+- **Objective**: `ev076_slice: [SIGMET]`; `ev074_validate_first: [VAA]`; VAAC harvest script cited
+- **Pass criteria**: catalog row matches EV-076/077 implementation
+- **Source**: EV-078 REQ-EV078-001
+
+### TC-EV078-002: VAA TAC + AIRMET ops regression
+
+- **Level**: T1
+- **Objective**: ≥1 VAA `ops_tac`; ≥4 AIRMET datamart ops; `vaa_harvest=vaac_tac_waived`
+- **Pass criteria**: manifest fixtures on disk
+- **Source**: EV-078 REQ-EV078-002
+
+### TC-EV078-003: Coverage matrix residuals waived
+
+- **Level**: T0 / docs
+- **Objective**: X6 SIGMET emit met; X7 VAA emit waived; S2 EV-077 cited
+- **Pass criteria**: `COVERAGE_MATRIX.md` acceptance checklist current
+- **Source**: EV-078 REQ-EV078-003
+
+### TC-EV078-004: Standing docs parity post EV-077
+
+- **Level**: Docs
+- **Objective**: `feature-list.md`, `CA_ECCC.md`, `evolve-decisions.md` §EV-078 aligned; no stale bare “VAA harvest deferred”
+- **Pass criteria**: EV-077 / waiver cited; #916 closeout recorded
+- **Source**: EV-078 NFR-EV078-001
 
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 

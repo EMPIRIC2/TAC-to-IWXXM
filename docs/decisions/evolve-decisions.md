@@ -1,6 +1,52 @@
 # Evolve Decisions
 
+## Cycle EV-078 — CA_ECCC #916 closeout audit (EV-078-ca-eccc-916-closeout)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-078-ca-eccc-916-closeout`  
+**Preset:** Standard (doc-only) · **Documenting→Implementing gate:** closed · **Issues:** [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) (verify close)  
+**Parent:** #912 · **Prior:** EV-077 merged to `stage` @ `844f681a`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV078-goal | Audit standing docs vs `stage`; confirm #916 P1 AC met or waived; align corpus post EV-076/077 |
+| D-EV078-in | `catalog.yaml`, `COVERAGE_MATRIX.md`, `CA_ECCC.md`, `feature-list.md`, `test-plan.md`; TC-EV071..074, TC-EV1061, TC-EV078 pytest |
+| D-EV078-out | Promote; VAA exchange emit; TAC convert VAA; live datamart re-harvest |
+| D-EV078-916 | **Close verified** — CA_ECCC P1 build AC met on `stage`; residual VAA exchange emit waived |
+| D-EV078-vaa-emit | **Waived** — datamart `vaa/` HTTP 404 at probe 2026-08-24; inherits D-EV074-vaa-follow |
+| D-EV078-vaa-count | **1 of ≥2** — VAAC 31-day index still single FVCN bulletin; TC-EV074-003 objective met |
+| D-EV078-fn | Deepen **F36** / **tests** — no new top-level Fn |
+| D-EV078-scale | Standard verify angles; doc-only implementing |
+| D-EV078-gate | **closed** — doc deltas + regression gate only |
+
+### Probe result (2026-08-24)
+
+| Product | Datamart | VAAC TAC (31-day index) |
+|---------|----------|-------------------------|
+| VAA IWXXM | HTTP 404 | N/A |
+| VAA TAC | N/A | 1 live (FVCN01-0001 EDZIZA) — unchanged since EV-077 |
+
+### Audit result (2026-08-24)
+
+| Area | Verdict | Evidence |
+|------|---------|----------|
+| SIGMET exchange emit (#1061) | Met | EV-076 / TC-EV1061-* |
+| VAA validate-first TAC | Met | EV-077 / TC-EV074-005, TC-EV074-011 |
+| AIRMET ops deepen (+2) | Met | EV-077 / TC-EV072-007..010 |
+| VAA exchange emit | Waived | D-EV074-vaa-follow; datamart absent |
+| #916 P1 build AC | Met | EV-064..077 on `stage` |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests]
+
+---
+
 ## Cycle EV-077 — CA_ECCC ops corpus deepen + VAA VAAC TAC waiver (2026-08-24)
+
+**Opened:** 2026-08-24 · **Merged:** 2026-08-24 · **PR:** [#1064](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1064) → `stage` @ `844f681a`  
+**Parent:** #916 · **Prior:** EV-076 merged to `stage`
 
 **Opened:** 2026-08-24 · **Parent:** #916 · **Prior:** EV-076 merged to `stage`
 

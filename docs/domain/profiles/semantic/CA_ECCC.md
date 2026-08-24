@@ -13,7 +13,7 @@ surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension sc
 |------|-------|
 | TAC parse / normalize | MANOBS METAR/SPECI/**LWIS**/**SAWR**; MANAIR TAF/AIRMET |
 | IWXXM extensions | `iwxxm-ca.xsd`, `common-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd`, **`metar-speci-ca.xsd`** |
-| Products | METAR, SPECI, TAF, AIRMET (convert+validate); SIGMET (**validate-first** ops EV-074 / #1043); VAA listed validate-first, harvest deferred (D-EV074-vaa-follow) |
+| Products | METAR, SPECI, TAF, AIRMET (convert+validate); SIGMET (exchange emit EV-076 / validate-first ops EV-074); VAA validate-first TAC (EV-077 / `D-EV074-vaa-waiver-tac`) |
 
 ## METAR-family national report variants
 
@@ -169,11 +169,25 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - **Deferred:** VAA exchange emit — inherits `D-EV074-vaa-follow`
 - Tests: TC-EV1061-001..004
 
+### EV-077 delivered (ops corpus deepen + VAAC TAC VAA)
+
+- **M1:** +2 AIRMET ops fixtures (`czwg`, `czeg` GFA SFC_VIS); manifest pin 2026-08-24
+- **M2:** Montreal VAAC TAC harvest (`harvest_ca_eccc_vaac_tac.py`); 1 live FVCN at pin (target ≥2)
+- **Deferred:** VAA exchange emit — inherits `D-EV074-vaa-follow` (datamart `vaa/` absent)
+- Tests: TC-EV074-005, TC-EV074-011
+
+### EV-078 closeout (#916 P1 audit)
+
+- **Verified:** #916 P1 build AC met on `stage` — EV-064..077 delivered; SIGMET exchange emit (#1061) closed
+- **Waived:** VAA exchange *emit* — datamart `vaa/` HTTP 404 at probe 2026-08-24; follow `D-EV074-vaa-follow`
+- **Residual:** Re-harvest VAAC TAC when 31-day index publishes ≥2 bulletins
+- Docs aligned: `feature-list.md`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-078
+
 ### EV-075 closeout (#1032 umbrella audit)
 
 - **Verified:** #1032 GitHub close correct — aerodrome exchange output (EV-071..072), COLLECT (EV-073), ops corpus (#1036), translation metadata (#1040) met on `stage`
 - **Waived:** SIGMET/VAA exchange *emit* — remains validate-first; follow-on [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) (split from #1032)
-- **Waived:** VAA ops harvest — inherits `D-EV074-vaa-follow`
+- **Waived:** VAA ops IWXXM harvest — datamart `vaa/` absent; **EV-077** Montreal VAAC TAC validate-first instead
 - Docs aligned: `catalog.yaml`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-075
 
 ### Out of scope (EV-068 / backlog)
