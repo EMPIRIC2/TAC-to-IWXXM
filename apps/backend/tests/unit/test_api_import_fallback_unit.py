@@ -215,12 +215,14 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     fake_util_tac = _stub_module("utilities.tac_parser", extract_airport_code=extract_airport_code)
     fake_util_extension_wire = _stub_module(
         "utilities.extension_wire",
+        IWXXM_CA_TOKEN="IWXXM_CA",
         parse_extension_tokens=lambda values: list(values or []),
         validate_extension_tokens=lambda tokens: tokens,
         ca_eccc_validate_product=lambda emit_key, extensions, product: product,
     )
     fake_util_ca_exchange_wire = _stub_module(
         "utilities.ca_exchange_wire",
+        apply_ca_eccc_collect_output=lambda xml, **_kwargs: xml,
         ca_eccc_output_spec_for_request=lambda **_kwargs: None,
     )
 
