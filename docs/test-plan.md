@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-22 (EV-063 / F35–F36 — semantic vs exchange profiles #912)
+> **Last updated**: 2026-08-24 (EV-075 — #1032 closeout audit)
 
 ## Scope
 
@@ -3095,6 +3095,40 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Level**: T0
 - **Objective**: Catalog/coverage notes #1033 investigation without shipping SIGMET `code-ca` rules
 - **Source**: EV-074; D-EV074-1033
+
+### EV-075 / #1032 — CA_ECCC umbrella closeout audit
+
+- **Mode**: doc audit + regression gate; no product code unless drift
+- **Pass criteria**: AC in evolve-decisions §EV-075; TC-EV075-*
+- **Source**: [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) (verify close); EV-071..074 on `stage`
+
+### TC-EV075-001: #1032 aerodrome exchange output regression
+
+- **Level**: T0
+- **Objective**: TC-EV071-005..009 + TC-EV072-001..006 green on branch
+- **Pass criteria**: All exchange-output tests pass; catalog `ev072_slice` documents four aerodrome products
+- **Source**: EV-075 REQ-EV075-001
+
+### TC-EV075-002: COLLECT + ops corpus regression
+
+- **Level**: T0
+- **Objective**: TC-EV073-001..005 + TC-EV072-007..010 green
+- **Pass criteria**: COLLECT wrap + ops manifest counts unchanged
+- **Source**: EV-075 REQ-EV075-002..003
+
+### TC-EV075-003: SIGMET validate-first + waived residuals documented
+
+- **Level**: T0 / docs
+- **Objective**: TC-EV074-001..010 green; catalog/coverage note SIGMET/VAA exchange emit waived → #1061
+- **Pass criteria**: `ev074_validate_first` documented; VAA harvest waiver cited
+- **Source**: EV-075 REQ-EV075-004..005
+
+### TC-EV075-004: Standing docs parity
+
+- **Level**: Docs
+- **Objective**: `catalog.yaml`, `COVERAGE_MATRIX.md`, `CA_ECCC.md`, `evolve-decisions.md` §EV-075 aligned
+- **Pass criteria**: No stale “#1032 open” rows; acceptance checklist updated
+- **Source**: EV-075 NFR-EV075-001
 
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 

@@ -1,10 +1,47 @@
 # Evolve Decisions
 
+## Cycle EV-075 — CA_ECCC #1032 closeout audit (EV-075-ca-eccc-1032-closeout)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-075-ca-eccc-1032-closeout`  
+**Preset:** Standard (Full verify) · **Documenting→Implementing gate:** closed (doc-only) · **Issues:** [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) (verify close), follow-on SIGMET/VAA exchange emit  
+**Parent:** #916 · **Prior:** EV-074 merged to `stage` @ `cd19f80a`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV075-goal | Audit standing docs vs `stage`; confirm #1032 umbrella AC met or waived; align corpus |
+| D-EV075-in | `catalog.yaml`, `COVERAGE_MATRIX.md`, `CA_ECCC.md`, `test-plan.md`; TC-EV071..074 pytest |
+| D-EV075-out | Promote; new product surface; TAC convert SIGMET/VAA; live datamart re-harvest |
+| D-EV075-1032 | **Close verified correct** — aerodrome exchange + COLLECT + ops delivered EV-071..073; issue already closed on GitHub |
+| D-EV075-sigmet-vaa-emit | **Waived** — SIGMET/VAA exchange *emit* remains validate-first; split to [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) |
+| D-EV075-vaa-harvest | **Waived** — inherits D-EV074-vaa-follow (no MSC VAA datamart tree at pin) |
+| D-EV075-fn | Deepen **F36** / **tests** — no new top-level Fn |
+| D-EV075-scale | Full verify angles; doc-only implementing |
+| D-EV075-gate | **closed** — doc deltas only |
+
+### Audit result (2026-08-24)
+
+| Area | Verdict | Evidence |
+|------|---------|----------|
+| Exchange output METAR/SPECI/TAF/AIRMET | Met | TC-EV071-005..009, TC-EV072-001..006 — 68 passed |
+| COLLECT envelope | Met | TC-EV073-001..005 |
+| Ops corpus (#1036) | Met | TC-EV072-007..010 |
+| SIGMET validate-first (#1043) | Met | TC-EV074-001..010 |
+| VAA ops harvest | Waived | D-EV074-vaa-follow; TC-EV074-003 skipped objective |
+| SIGMET/VAA exchange emit | Waived | `catalog.yaml` `ev074_validate_first`; follow-on issue |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests]
+
+---
+
 ## Cycle EV-074 — CA_ECCC SIGMET + VAA datamart validate-first (#1043) (EV-074-ca-eccc-sigmet-vaa)
 
-**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-074-ca-eccc-sigmet-vaa`  
-**Preset:** Full · **Documenting→Implementing gate:** open · **Issues:** [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043)  
-**Parent:** #916 · **Prior:** EV-073 merged to `stage`
+**Opened:** 2026-08-24 · **Merged:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-074-ca-eccc-sigmet-vaa`  
+**Preset:** Full · **Documenting→Implementing gate:** closed · **Issues:** [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043) **closed**  
+**Parent:** #916 · **Prior:** EV-073 merged to `stage` · **PR:** #1060 → `stage` @ `cd19f80a`
 
 ### Locked intake
 
@@ -22,7 +59,7 @@
 | D-EV074-scale | Full; all default evolve verifying angles |
 | D-EV074-success | #1043 AC + documenting/implementing verify PASS; PR → `stage`; no promote |
 | D-EV074-deps | EV-073 on `stage` |
-| D-EV074-gate | **open** — Build in progress |
+| D-EV074-gate | **closed** — merged PR #1060 |
 | D-EV074-vaa-follow | MSC datamart 2026-08-24 has no `aviation/iwxxm/vaa` tree; ship SIGMET ops now; do **not** silent-fill encoder VAA; follow-on when MSC publishes VAA |
 
 ### Corpus
@@ -261,7 +298,7 @@
 | D-EV069-build | Layers 5 (`code_ca`) + 6 (`exchange`); TAF NCLWS `taf-ca.xsd` gate; TC-EV069-001..007; docs |
 | D-EV069-verify-impl | `iwxxm-validate` tests **156 passed**, 1 skipped; per-file coverage ≥95% |
 | D-EV069-pr | [#1054](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1054) → `stage` **merged** @ `ec782625` |
-| D-EV069-issues | [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035) **closed**; [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033) **closed**; [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) **open** (exchange layer only; full output-format scope held) |
+| D-EV069-issues | [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035) **closed**; [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033) **closed**; [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) **closed** (EV-075 umbrella audit; aerodrome emit EV-071..073; SIGMET/VAA emit → #1061) |
 | D-EV069-fn-status | **F2** / **F13** / **F36** — CA_ECCC validation stack complete on `stage` (layers 1–6) |
 
 **Closed:** 2026-08-23 · **Session status:** closed · **PR merged to `stage`** · **Promote `stage`→`main`:** held

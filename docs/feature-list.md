@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-22 (EV-063 closeout — F35 Implemented, F36 in progress #912)
+> **Last updated**: 2026-08-24 (EV-075 — #1032 closeout; F36 CA_ECCC exchange umbrella verified)
 
 ## Summary
 
@@ -43,7 +43,7 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; #919 US; **#916 CA_ECCC P1 (EV-064)**; **#921 GLOBAL_AFS + APAC_ROBEX stub (EV-065)**; fixture layout; **EV-074 / #1043 SIGMET+VAA validate-first ops** |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; #919 US; **#916 CA_ECCC P1 (EV-064)**; **#921 GLOBAL_AFS + APAC_ROBEX stub (EV-065)**; fixture layout; **#1032 closed (EV-075)** aerodrome exchange + COLLECT; **EV-074 / #1043 SIGMET validate-first**; SIGMET/VAA exchange emit → **#1061** |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1811,6 +1811,7 @@
      convert + validate paths; API + FE picker; fixtures under `profiles/CA_ECCC/`
   3. One exchange overlay path (`GLOBAL_AFS` minimum) exercised in packaging tests — **EV-065**: `APAC_ROBEX` P0 stub added
   4. **EV-074 / #1043:** CA_ECCC SIGMET **validate-first** ops corpus (≥2; VAA harvest deferred D-EV074-vaa-follow) against WMO 3.0.0; `ca_xsd` skipped N/A; no TAC convert
+  5. **EV-075 / #1032:** Umbrella closeout verified — aerodrome exchange output + COLLECT + ops met; SIGMET/VAA exchange *emit* waived → #1061
 - **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork)
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice

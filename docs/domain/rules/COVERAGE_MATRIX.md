@@ -235,7 +235,26 @@ TAF NCLWS, AIRMET GFA). Codes live in [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) /
 | **C7** API pre-convert lint wire | `semantic_profile=CA_ECCC` on `/convert` | — | — | ✅ closed M1 (TC-EV071-003) |
 | **C8** Quality matrix + catalog links | `tests/quality_matrices/inventory/ca_eccc_lint.yml` | — | — | ✅ closed M1 (TC-EV071-004) |
 
-Residual MANOBS book rules and exchange-output packaging are **M2 (#1032 / #1040)** — not silent omission.
+Residual MANOBS book rules (CONTRAILS/AURORA, AerodromeVariableRVR) remain P2 / #1039 — not silent omission.
+
+Exchange-output packaging for aerodrome products is **closed** ([#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) / EV-071..073). See table below.
+
+---
+
+## CA_ECCC exchange output + COLLECT (EV-071..073 / #1032)
+
+Profile-driven MSC operational packaging — reusable contract per playbook [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) type F.
+
+| Theme | Convert (F6) | Validate layer 6 | Status |
+|-------|--------------|------------------|--------|
+| **X1** METAR filename + WMO header (`A_LACN`) | `exchange_output` + API `output_spec` | packaging checks | ✅ EV-071 M2 (#1032, #1040) · TC-EV071-005..009 |
+| **X2** SPECI / TAF / AIRMET headers (`A_LPCN` / `A_LTCN` / `A_LWCN`) | same | layer-6 per product | ✅ EV-072 M1 · TC-EV072-001..006 |
+| **X3** MSC ops corpus (pin-date harvest) | — | layer-6 on fixtures | ✅ EV-072 M2 (#1036) · TC-EV072-007..010 |
+| **X4** COLLECT envelope + `bulletinIdentifier` | `wrap_ca_eccc_collect` | inner product unchanged | ✅ EV-073 M1 · TC-EV073-001..005 |
+| **X5** Profile + `IWXXM_CA` wire (#1042) | FE auto-wire | fail-closed vendor pin | ✅ EV-073 M2 · TC-EV073-006..009 |
+| **X6** SIGMET / VAA exchange *emit* | validate-first only | ops validate WMO 3.0.0 | **waived** D-EV075-sigmet-vaa-emit → [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) |
+
+#1032 umbrella **closed** on GitHub 2026-08-24; EV-075 audit confirms aerodrome + COLLECT AC met on `stage`.
 
 ---
 
@@ -324,6 +343,8 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] F27 acc — TCA WMO default golden + registry themes T1–T3/C1 (S027 / EV-021; #737)
 - [x] F32 acc — VONA themes N1–N4 / C1 closed or deferred to children (S040 / EV-032; #741)
 - [x] F36 acc — CA_ECCC lint pack METAR/TAF/AIRMET themes C1–C8 closed (EV-071 M1 / #1038; see table above)
+- [x] F36 acc — CA_ECCC exchange output + COLLECT themes X1–X5 closed; #1032 umbrella verified EV-075
+- [x] F36 acc — CA_ECCC SIGMET validate-first ops S1–S6 closed or waived (EV-074 / #1043; SIGMET/VAA exchange emit waived → #1061)
 
 ---
 

@@ -2,8 +2,8 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-063
-updated: "2026-08-22"
+cycle: EV-075
+updated: "2026-08-24"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -201,6 +201,7 @@ profiles:
     exchange_output:
       issue: "#1032"
       status: implemented
+      closeout: "EV-075 verified closed 2026-08-24 — aerodrome products + COLLECT + ops"
       ev_cycle: EV-071
       iwxxm_version_pin: "3.0.0"
       file_naming_pattern: "A_{TTAAiiCCCCYYGGggBBB}_C_{CCC}_{YYYYMMddhhmmss}.xml"
@@ -214,6 +215,7 @@ profiles:
         VAA: "A_LUCN"
       ev072_slice: [METAR, SPECI, TAF, AIRMET]
       ev074_validate_first: [SIGMET, VAA]
+      ev074_validate_first_note: "Exchange emit deferred — validate-first ops only (EV-074 / #1043); follow-on #1061"
       collect_envelope:
         issue: "#1032"
         status: implemented
