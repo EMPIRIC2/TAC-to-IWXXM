@@ -154,6 +154,21 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 
 Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) playbook §5 + §8.
 
+### EV-074 delivered (#1043 — SIGMET validate-first ops)
+
+- **M1:** ≥2 SIGMET ops IWXXM from MSC datamart (`czeg`, `czqm`); `sigmet_kind` in `ops_manifest.json`
+- **M2:** Layered validate — WMO 3.0.0 XSD+SCH; `ca_xsd` / exchange skipped as not-applicable for SIGMET/VAA
+- **M3:** COLLECT unwrap for SIGMET / VA SIGMET / TC SIGMET / VAA roots
+- **Deferred:** VAA ops harvest (`D-EV074-vaa-follow` — no MSC `aviation/iwxxm/vaa` tree at pin 2026-08-24)
+- Tests: TC-EV074-001..010
+
+### EV-075 closeout (#1032 umbrella audit)
+
+- **Verified:** #1032 GitHub close correct — aerodrome exchange output (EV-071..072), COLLECT (EV-073), ops corpus (#1036), translation metadata (#1040) met on `stage`
+- **Waived:** SIGMET/VAA exchange *emit* — remains validate-first; follow-on [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) (split from #1032)
+- **Waived:** VAA ops harvest — inherits `D-EV074-vaa-follow`
+- Docs aligned: `catalog.yaml`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-075
+
 ### Out of scope (EV-068 / backlog)
 
 - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
@@ -161,5 +176,6 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - LWIS/SAWR/density/icing tac-validate codes beyond EV-071 M1 slice (if not promoted)
 - `#1050` `reportVariant` wire / UI (#1024)
 - SIGMET/VAA TAC convert overlay — out of EV-074; **validate-first ops** EV-074 / #1043
+- SIGMET/VAA exchange *emit* — waived EV-075; follow-on #1061 (aerodrome emit closed #1032)
 - `#1033` SIGMET `code-ca` semantics — note-only in EV-074 (do not ship rules)
 - Global app default migration from 2025-2 to 3.0.0
