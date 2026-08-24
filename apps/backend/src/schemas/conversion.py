@@ -276,3 +276,7 @@ class ConversionRequest(BaseModel):
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
         examples=[["IWXXM_CA"]],
     )
+    exchange_output: Optional[bool] = Field(
+        default=None,
+        description=("When true with semantic_profile=CA_ECCC, wrap convert output in MSC COLLECT envelope"),
+    )

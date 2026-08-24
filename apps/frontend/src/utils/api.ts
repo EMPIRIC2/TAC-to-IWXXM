@@ -157,6 +157,8 @@ export async function convertMetarToIwxxm(params: {
   /** Filters conversion/validation/lint issue verbosity (sent when API accepts it). */
   logLevel?: string;
   preview?: boolean;
+  extensions?: string[];
+  exchangeOutput?: boolean;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ConversionResponse> {
@@ -200,6 +202,16 @@ export async function convertMetarToIwxxm(params: {
 
   if (params.preview) {
     formData.append('preview', 'true');
+  }
+
+  if (params.extensions?.length) {
+    for (const token of params.extensions) {
+      formData.append('extensions', token);
+    }
+  }
+
+  if (params.exchangeOutput) {
+    formData.append('exchange_output', 'true');
   }
 
   try {
@@ -412,6 +424,7 @@ export async function validateIwxxm(params: {
   iwxxmVersion?: string;
   layers?: string[];
   stopOnError?: boolean;
+  extensions?: string[];
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ValidateResponse> {
@@ -428,6 +441,12 @@ export async function validateIwxxm(params: {
   const layers = params.layers?.length ? params.layers : ['ALL'];
   for (const layer of layers) {
     formData.append('layers', layer);
+  }
+
+  if (params.extensions?.length) {
+    for (const token of params.extensions) {
+      formData.append('extensions', token);
+    }
   }
 
   const response = await withTimeout(
@@ -447,6 +466,33 @@ export async function validateIwxxm(params: {
   }
 
   return (await response.json()) as ValidateResponse;
+}
+
+/**
+ * Fetch IWXXM schema / profile pin status from the API.
+ *
+ * **Endpoint**: GET /api/v1/schema-status
+ */
+export async function fetchSchemaStatus(): Promise<{
+  profile_pins?: {
+    ca_eccc?: {
+      iwxxm_version?: string;
+      extension_bundle_available?: boolean;
+    };
+  };
+}> {
+  const response = await withTimeout(fetch(apiUrl('/schema-status')), 15000);
+  if (!response.ok) {
+    throw new Error(`Schema status request failed: HTTP ${response.status}`);
+  }
+  return (await response.json()) as {
+    profile_pins?: {
+      ca_eccc?: {
+        iwxxm_version?: string;
+        extension_bundle_available?: boolean;
+      };
+    };
+  };
 }
 
 /**

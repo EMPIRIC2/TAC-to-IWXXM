@@ -2970,6 +2970,66 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Pass or explicit waiver row in manifest notes
 - **Source**: EV-072 M2; FR-O5
 
+### EV-073 / #1032 COLLECT + #1042 — CA_ECCC envelope + profile wiring
+
+- **Mode**: deepen F36/F6/F7; COLLECT wrap + operator profile/extension wiring
+- **Pass criteria**: AC in evolve-decisions §EV-073; TC-EV073-*
+- **Source**: EV-072 deferred; [#1042](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1042)
+
+### TC-EV073-001: COLLECT wrap idempotency
+
+- **Level**: T0
+- **Objective**: `wrap_ca_eccc_collect` returns input unchanged when already COLLECT
+- **Source**: EV-073 M1
+
+### TC-EV073-002: MSC bulletinIdentifier
+
+- **Level**: T0
+- **Objective**: Wrapped output sets `collect:bulletinIdentifier` to MSC filename from AHL
+- **Source**: EV-073 M1; #1032
+
+### TC-EV073-003: Inner product round-trip
+
+- **Level**: T0
+- **Objective**: `extract_iwxxm_from_collect(wrap(product))` equals inner product XML
+- **Source**: EV-073 M1
+
+### TC-EV073-004: Ops fixture shell parity
+
+- **Level**: T2
+- **Objective**: Single-member ops fixtures match COLLECT shell structure after wrap
+- **Source**: EV-073 M1; FR-O5
+
+### TC-EV073-005: Convert COLLECT output mode
+
+- **Level**: T2
+- **Objective**: CA_ECCC convert with packaging flag returns COLLECT-wrapped XML
+- **Source**: EV-073 M1; FR-X6
+
+### TC-EV073-006: FE IWXXM_CA auto-wire
+
+- **Level**: T2
+- **Objective**: Selecting `ca_eccc` sends `extensions=IWXXM_CA` on convert/validate
+- **Source**: EV-073 M2; #1042
+
+### TC-EV073-007: Profile metadata surfacing
+
+- **Level**: T2
+- **Objective**: UI shows IWXXM 3.0.0 pin + extension label when CA_ECCC selected
+- **Source**: EV-073 M2; #1042
+
+### TC-EV073-008: Fail-closed vendor pin
+
+- **Level**: T2
+- **Objective**: Missing CA vendor bundle blocks convert with operator help
+- **Source**: EV-073 M2; #1042
+
+### TC-EV073-009: E2E CA_ECCC convert + validate
+
+- **Level**: T4 / H6
+- **Objective**: Select CA_ECCC → convert Canadian METAR → validate pass with ca_xsd
+- **Source**: EV-073 M2; #1042 acceptance
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

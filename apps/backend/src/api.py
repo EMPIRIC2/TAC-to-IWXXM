@@ -67,9 +67,13 @@ try:
     from .services.validation_orchestrator import get_validation_orchestrator
     from .services.webhooks import webhook_service
     from .utilities.abuse_controls import install_abuse_controls
-    from .utilities.ca_exchange_wire import ca_eccc_output_spec_for_request
+    from .utilities.ca_exchange_wire import (
+        apply_ca_eccc_collect_output,
+        ca_eccc_output_spec_for_request,
+    )
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.extension_wire import (
+        IWXXM_CA_TOKEN,
         ca_eccc_validate_product,
         parse_extension_tokens,
         validate_extension_tokens,
@@ -133,9 +137,13 @@ except ImportError:
     from services.validation_orchestrator import get_validation_orchestrator
     from services.webhooks import webhook_service
     from utilities.abuse_controls import install_abuse_controls
-    from utilities.ca_exchange_wire import ca_eccc_output_spec_for_request
+    from utilities.ca_exchange_wire import (
+        apply_ca_eccc_collect_output,
+        ca_eccc_output_spec_for_request,
+    )
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.extension_wire import (
+        IWXXM_CA_TOKEN,
         ca_eccc_validate_product,
         parse_extension_tokens,
         validate_extension_tokens,
@@ -1106,12 +1114,33 @@ def get_schema_status():
         if "RC" in version.upper():
             metadata_summary[version]["promoted_to_stable"] = data.get("promoted_to_stable")
 
+    try:
+        from iwxxm_validate.ca_eccc_bundle import (
+            CA_ECCC_IWXXM_VERSION,
+            ca_eccc_bundle_available,
+        )
+    except ImportError:
+        CA_ECCC_IWXXM_VERSION = "3.0.0"
+
+        def ca_eccc_bundle_available(
+            *,
+            iwxxm_version: str = CA_ECCC_IWXXM_VERSION,
+            extension_tag: str = "3.0",
+        ) -> bool:
+            return False
+
     return {
         "stable": stable_versions,
         "rc": rc_versions,
         "all": all_versions,
         "default": DEFAULT_VERSION,
         "metadata": metadata_summary,
+        "profile_pins": {
+            "ca_eccc": {
+                "iwxxm_version": CA_ECCC_IWXXM_VERSION,
+                "extension_bundle_available": ca_eccc_bundle_available(),
+            },
+        },
     }
 
 
@@ -1967,6 +1996,13 @@ async def convert(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
     ),
+    exchange_output: bool = Form(
+        default=False,
+        description=(
+            "When true with semantic_profile=CA_ECCC, wrap convert output in MSC COLLECT envelope "
+            "(inner product validate paths unchanged)"
+        ),
+    ),
     extensions: List[str] = Form(
         default=[],
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
@@ -2147,6 +2183,9 @@ async def convert(
         bulletin_id = request_body.bulletin_id or ""
         issuing_center = request_body.issuing_center or ""
         preview = bool(getattr(request_body, "preview", False))
+        body_exchange_output = getattr(request_body, "exchange_output", None)
+        if body_exchange_output is not None:
+            exchange_output = bool(body_exchange_output)
         body_product = getattr(request_body, "product", None)
         if body_product is not None:
             product = body_product
@@ -2184,6 +2223,30 @@ async def convert(
 
     json_extensions = getattr(request_body, "extensions", None) if request_body is not None else None
     resolved_extensions = _resolve_request_extensions(extensions, json_extensions)
+
+    if wire.semantic_canonical == "ca_eccc" and IWXXM_CA_TOKEN in resolved_extensions:
+        try:
+            from iwxxm_validate.ca_eccc_bundle import ca_eccc_bundle_available
+        except ImportError:
+
+            def ca_eccc_bundle_available(
+                *,
+                iwxxm_version: str = "3.0.0",
+                extension_tag: str = "3.0",
+            ) -> bool:
+                return False
+
+        if not ca_eccc_bundle_available():
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": "missing_ca_extension_bundle",
+                    "message": (
+                        "Canadian national extension schemas are not available on this deployment. "
+                        "Contact your administrator or choose Annex 3 / IWXXM-US."
+                    ),
+                },
+            )
 
     # F7.t / EV-060 / #1003: product=iwxxm is XML pass-through (no TAC convert).
     if product == "IWXXM":
@@ -2525,6 +2588,8 @@ async def convert(
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
     }
+    if exchange_output:
+        request_metadata["exchange_output"] = True
     sample_for_output_spec = manual_text.strip() if manual_text else ""
     if not sample_for_output_spec and metars_list:
         sample_for_output_spec = (metars_list[0] or "").strip()
@@ -2535,6 +2600,21 @@ async def convert(
     )
     if output_spec:
         request_metadata["output_spec"] = output_spec
+
+    def _finalize_exchange_xml(xml: str, tac_input: str | None) -> str:
+        spec_filename = None
+        meta_output_spec = request_metadata.get("output_spec")
+        if isinstance(meta_output_spec, dict):
+            spec_filename = meta_output_spec.get("suggested_filename")
+        return apply_ca_eccc_collect_output(
+            xml,
+            semantic_canonical=wire.semantic_canonical,
+            exchange_output=exchange_output,
+            product=product,
+            tac_input=tac_input,
+            bulletin_identifier=spec_filename,
+            bulletin_context=sample_for_output_spec or None,
+        )
 
     logger.info(
         "[CONVERT] Input summary files=%s manual_entries=%s json_metars=%s validate_output=%s validation_level=%s stop_on_error=%s iwxxm_version=%s bulletin_id=%s issuing_center=%s",
@@ -2730,12 +2810,13 @@ async def convert(
                         )
 
                 # Add to results
+                result_xml = _finalize_exchange_xml(iwxxm_content, metar_text.strip())
                 result = ConversionResult(
                     name=metar_name,
-                    content=iwxxm_content,
+                    content=result_xml,
                     tac_input=metar_text.strip(),
                     source="json",
-                    size_bytes=len(iwxxm_content.encode("utf-8")),
+                    size_bytes=len(result_xml.encode("utf-8")),
                 )
                 results.append(result)
 
@@ -3056,13 +3137,14 @@ async def convert(
             except Exception as log_err:
                 logger.error(f"Failed to log successful translation: {log_err}")
 
+            manual_xml = _finalize_exchange_xml(xml_text, manual_entry.strip())
             results.append(
                 ConversionResult(
                     name=manual_name,
-                    content=xml_text,
+                    content=manual_xml,
                     tac_input=manual_entry.strip(),
                     source=manual_source,
-                    size_bytes=len(xml_text.encode("utf-8")),
+                    size_bytes=len(manual_xml.encode("utf-8")),
                 )
             )
         except ConversionError as e:
@@ -3327,13 +3409,14 @@ async def convert(
                     logger.error(f"Failed to log successful translation: {log_err}")
 
                 out_name = pathlib.Path(uf.filename or "unknown").stem + ".txt"
+                file_xml = _finalize_exchange_xml(xml_text, (data or "").strip())
                 results.append(
                     ConversionResult(
                         name=out_name,
-                        content=xml_text,
+                        content=file_xml,
                         tac_input=(data or "").strip(),
                         source=source_name,
-                        size_bytes=len(xml_text.encode("utf-8")),
+                        size_bytes=len(file_xml.encode("utf-8")),
                     )
                 )
             except ConversionError as e:

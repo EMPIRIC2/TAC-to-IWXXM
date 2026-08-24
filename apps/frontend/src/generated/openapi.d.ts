@@ -1252,6 +1252,12 @@ export interface components {
              */
             emit_translation_centre: boolean;
             /**
+             * Exchange Output
+             * @description When true with semantic_profile=CA_ECCC, wrap convert output in MSC COLLECT envelope (inner product validate paths unchanged)
+             * @default false
+             */
+            exchange_output: boolean;
+            /**
              * Exchange Profile
              * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
              * @default
