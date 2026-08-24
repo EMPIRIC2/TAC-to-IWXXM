@@ -6,6 +6,7 @@ import re
 from typing import Any, Callable, cast
 from xml.sax.saxutils import escape
 
+from tac2iwxxm.exchange_output import default_ca_translation_centre
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
 from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
@@ -301,7 +302,7 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
     raise ValueError(f"no emitter for product {product!r}")
 
 
-_ROOT_OPEN = re.compile(r"(<iwxxm:[A-Za-z]+\b)([^>]*)(>)", re.DOTALL)
+_ROOT_OPEN = re.compile(r"(<(?:iwxxm|iwxxm-ca):[A-Za-z]+\b)([^>]*)(>)", re.DOTALL)
 
 
 def _inject_translation_centre(
@@ -533,6 +534,11 @@ def convert(
                         end=remark_end,
                     )
                 )
+
+    if profile_l == EMIT_CA_ECCC:
+        if not translation_centre_designator:
+            translation_centre_designator, translation_centre_name = default_ca_translation_centre()
+        emit_translation_centre = True
 
     if emit_translation_centre:
         xml = _inject_translation_centre(

@@ -550,6 +550,27 @@ def _check_ca_manobs(
     if profile != "ca_eccc":
         return []
     issues: list[Issue] = []
+    lead = tokens[0].upper() if tokens else ""
+    if lead == "LWIS":
+        _emit_token_info(
+            issues,
+            code="CA_METAR_LWIS",
+            message=f"{product} Limited Weather Information System (LWIS) report — MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="LWIS",
+        )
+    elif lead == "SAWR":
+        _emit_token_info(
+            issues,
+            code="CA_METAR_SAWR",
+            message=f"{product} Surface Aviation Weather Report (SAWR) — MANOBS CA overlay",
+            core=core,
+            body_start=body_start,
+            body_end=body_end,
+            token="SAWR",
+        )
     for tok in tokens:
         if tok.endswith("SM"):
             vis_part = tok[:-2]
@@ -613,6 +634,16 @@ def _check_ca_manobs(
                 body_start=body_start,
                 body_end=body_end,
                 token="PRESRR",
+            )
+        if saw_presfr:
+            _append_remark_issue(
+                issues,
+                code="CA_REMARK_PRESFR",
+                message=f"{product} MANOBS pressure falling rapidly (PRESFR) — ca_eccc profile awareness",
+                core=core,
+                body_start=body_start,
+                body_end=body_end,
+                token="PRESFR",
             )
         if saw_nospeci:
             _append_remark_issue(

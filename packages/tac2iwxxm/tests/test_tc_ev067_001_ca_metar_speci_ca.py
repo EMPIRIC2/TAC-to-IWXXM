@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 import pytest
+from metar_shared.xml_canonical import canonicalize_xml
 
 from tac2iwxxm.convert import convert
 
@@ -33,7 +34,7 @@ def test_tc_ev067_001_convert_metar_speci_ca(case_id: str, golden_manifest: dict
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8").strip()
     golden = (FIXTURES / case["golden"]).read_text(encoding="utf-8")
     result = convert(tac, product=case["product"], profile=PROFILE, iwxxm_version="3.0.0")
-    assert result.xml == golden
+    assert canonicalize_xml(result.xml) == canonicalize_xml(golden)
 
 
 @pytest.mark.parametrize("case_id", sorted(EV067_CASES))

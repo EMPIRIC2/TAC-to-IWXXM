@@ -197,6 +197,25 @@ profiles:
         label: Exchange packaging checks
         optional: true
         issue: "#1032"
+    exchange_output:
+      issue: "#1032"
+      status: implemented
+      ev_cycle: EV-071
+      iwxxm_version_pin: "3.0.0"
+      file_naming_pattern: "A_{TTAAiiCCCCYYGGggBBB}_C_{CCC}_{YYYYMMddhhmmss}.xml"
+      distribution_path_template: "https://dd.meteo.gc.ca/today/aviation/iwxxm/{product}/{issuer_code}/{HH}"
+      wmo_header_templates:
+        METAR: "A_LACN"
+        SPECI: "A_LPCN"
+        TAF: "A_LTCN"
+        AIRMET: "A_LWCN"
+      ev071_slice: METAR
+      translation_metadata:
+        issue: "#1040"
+        required_when_profile: true
+        config_keys:
+          - translation_centre_id
+          - translation_service_name
 
   - id: AU_BOM
     kind: semantic

@@ -60,6 +60,36 @@ class ConversionIssue(BaseModel):
     )
 
 
+class ProfileOutputSpecModel(BaseModel):
+    """Operator-visible CA_ECCC exchange output contract (EV-071 M2)."""
+
+    semantic_profile: str = Field(..., description="Semantic profile id (e.g. CA_ECCC)")
+    file_naming_pattern: str = Field(..., description="MSC IWXXM filename pattern")
+    wmo_header_designator: str = Field(..., description="WMO AHL designator prefix for the product")
+    distribution_path_template: str = Field(..., description="HTTPS distribution path template")
+    iwxxm_version_pin: str = Field(..., description="Pinned IWXXM version for this profile line")
+    suggested_filename: Optional[str] = Field(
+        default=None,
+        description="Suggested MSC filename when AHL context is known",
+    )
+    wmo_ahl_header: Optional[str] = Field(
+        default=None,
+        description="Formatted WMO AHL header when bulletin context is known",
+    )
+    distribution_path: Optional[str] = Field(
+        default=None,
+        description="Expanded distribution path when computable",
+    )
+    translation_centre_designator: Optional[str] = Field(
+        default=None,
+        description="Configured translation centre designator",
+    )
+    translation_centre_name: Optional[str] = Field(
+        default=None,
+        description="Configured translation centre name",
+    )
+
+
 class FailedSpan(BaseModel):
     """Character span marking a soft-preview failure."""
 

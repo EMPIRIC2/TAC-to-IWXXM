@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
+from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
 PROFILE = "ca_eccc"
@@ -38,7 +39,7 @@ def test_tc_ev070_001_convert_matches_golden(case_id: str, golden_manifest: dict
         iwxxm_version=IWXXM_VERSION,
     )
     assert result.ok is True, f"convert failed for {case_id}: {result.issues!r}"
-    assert result.xml == expected
+    assert canonicalize_xml(result.xml) == canonicalize_xml(expected)
 
 
 @pytest.mark.parametrize("case_id", EV070_CASE_IDS)

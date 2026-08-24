@@ -219,6 +219,10 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         validate_extension_tokens=lambda tokens: tokens,
         ca_eccc_validate_product=lambda emit_key, extensions, product: product,
     )
+    fake_util_ca_exchange_wire = _stub_module(
+        "utilities.ca_exchange_wire",
+        ca_eccc_output_spec_for_request=lambda **_kwargs: None,
+    )
 
     fake_router_module = _stub_module("router_mod", router=object())
     fake_routers = _stub_module(
@@ -266,6 +270,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         "utilities.security": fake_util_security,
         "utilities.tac_parser": fake_util_tac,
         "utilities.extension_wire": fake_util_extension_wire,
+        "utilities.ca_exchange_wire": fake_util_ca_exchange_wire,
         "iwxxm_validate": _stub_module(
             "iwxxm_validate",
             validate=lambda *a, **k: None,
