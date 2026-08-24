@@ -2823,6 +2823,77 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: `test_tc_ev064_002` parametrization includes new case ids
 - **Source**: EV-070 M3
 
+### EV-071 / #1038 + #1032 + #1040 — CA_ECCC lint pack + exchange output (METAR)
+
+- **Mode**: deepen F15/F6/F36; national lint pack + operational packaging
+- **Pass criteria**: AC in evolve-decisions §EV-071; TC-EV071-*
+- **Source**: [#1038](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1038),
+  [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032),
+  [#1040](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1040); EV-070 follow-on
+
+### TC-EV071-001: CA lint pack — ≥10 rules with fixtures
+
+- **Level**: T0
+- **Objective**: `profile=ca_eccc` lint returns ≥10 distinct CA rule codes on fixture matrix
+- **Pass criteria**: Each code has accept/negative fixture; registry + catalog in sync
+- **Source**: EV-071 M1; #1038
+
+### TC-EV071-002: Profile isolation CA vs US
+
+- **Level**: T0
+- **Objective**: Same TAC under `ca_eccc` vs `iwxxm_us` emits profile-appropriate codes only
+- **Pass criteria**: No cross-profile CA/US rule bleed
+- **Source**: EV-071 M1; #1038 acceptance
+
+### TC-EV071-003: API pre-convert CA lint wire
+
+- **Level**: T2
+- **Objective**: Convert with `semantic_profile=CA_ECCC` runs CA TAC lint before convert
+- **Pass criteria**: Lint issues include CA codes when applicable TAC supplied
+- **Source**: EV-071 M1; FR-L6
+
+### TC-EV071-004: Quality matrix METAR (CA) rows
+
+- **Level**: T0
+- **Objective**: Quality matrix includes CA lint rows with working catalog links
+- **Pass criteria**: Matrix CI passes; source links resolve
+- **Source**: EV-071 M1; #1038
+
+### TC-EV071-005: MSC METAR filename pattern
+
+- **Level**: T0 / T2
+- **Objective**: Convert/package with `CA_ECCC` emits `A_{TTAAiiCCCCYYGGggBBB}_C_{CCC}_{YYYYMMddhhmmss}.xml`
+- **Pass criteria**: Filename matches mining/datamart pattern for METAR golden
+- **Source**: EV-071 M2; #1032 acceptance
+
+### TC-EV071-006: WMO header METAR (`A_LACN`)
+
+- **Level**: T0
+- **Objective**: CA profile validates METAR WMO header designator
+- **Pass criteria**: Layer-6 exchange check passes; wrong designator fails closed
+- **Source**: EV-071 M2; #1032
+
+### TC-EV071-007: Translation centre metadata golden
+
+- **Level**: T0 / T2
+- **Objective**: CA convert populates translation centre attrs when profile requires
+- **Pass criteria**: Golden XML includes configured translation metadata elements
+- **Source**: EV-071 M2; #1040
+
+### TC-EV071-008: API convert output spec exposure
+
+- **Level**: T2
+- **Objective**: Convert response includes operator-visible profile output spec fields
+- **Pass criteria**: OpenAPI + integration test; no internal doc refs in strings
+- **Source**: EV-071 M2; #1032 FR-E6
+
+### TC-EV071-009: Datamart fixture round-trip
+
+- **Level**: T2
+- **Objective**: Operational datamart sample round-trips naming + header checks
+- **Pass criteria**: Filename, header, and layer-6 validate pass on fixture
+- **Source**: EV-071 M2; #1032 acceptance
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

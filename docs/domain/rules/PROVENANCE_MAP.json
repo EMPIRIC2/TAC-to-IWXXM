@@ -578,6 +578,126 @@
       "note": "App 5 / Table A5-1"
     },
     {
+      "code": "CA_AIRMET_GFA",
+      "status": "verified",
+      "source_id": "manair-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANAIR GFA compound phenomenon"
+    },
+    {
+      "code": "CA_ALTIMETER_INHG",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS altimeter in inches of mercury"
+    },
+    {
+      "code": "CA_ALTIMETER_NOT_OBS",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS altimeter not observable"
+    },
+    {
+      "code": "CA_METAR_LWIS",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS LWIS national report lead"
+    },
+    {
+      "code": "CA_METAR_SAWR",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS SAWR national report lead"
+    },
+    {
+      "code": "CA_REMARK_MANOBS",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS Canadian remarks"
+    },
+    {
+      "code": "CA_REMARK_NOSPECI",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS NOSPECI remark"
+    },
+    {
+      "code": "CA_REMARK_PRESFR",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS PRESFR remark"
+    },
+    {
+      "code": "CA_REMARK_PRESRR",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS PRESRR remark"
+    },
+    {
+      "code": "CA_REMARK_SECTOR_VIS",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS sector visibility remark"
+    },
+    {
+      "code": "CA_STATUTE_MILE_VIS",
+      "status": "verified",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANOBS statute-mile visibility"
+    },
+    {
+      "code": "CA_TAF_NCLWS",
+      "status": "verified",
+      "source_id": "manair-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
+      "ticket": null,
+      "note": "MANAIR NCLWS low-level wind shear"
+    },
+    {
       "code": "CLOUD_CB_OR_TCU",
       "status": "ok",
       "source_id": "codes-wmo-int",

@@ -195,6 +195,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "presrr"),
     ),
     _row(
+        "CA_REMARK_PRESFR",
+        "info",
+        "{product} MANOBS pressure falling rapidly (PRESFR) — ca_eccc profile awareness",
+        tags=("remark", "metar", "speci", "ca_eccc", "manobs", "presfr"),
+    ),
+    _row(
         "CA_REMARK_NOSPECI",
         "info",
         "{product} MANOBS no-specials remark (NOSPECI) — ca_eccc profile awareness",
@@ -211,6 +217,18 @@ ISSUES: tuple[IssueSpec, ...] = (
         "info",
         "{product} altimeter not observable (A////) — MANOBS Canadian overlay",
         tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
+    ),
+    _row(
+        "CA_METAR_LWIS",
+        "info",
+        "{product} Limited Weather Information System (LWIS) report — MANOBS CA overlay",
+        tags=("metar", "ca_eccc", "manobs", "lwis"),
+    ),
+    _row(
+        "CA_METAR_SAWR",
+        "info",
+        "{product} Surface Aviation Weather Report (SAWR) — MANOBS CA overlay",
+        tags=("metar", "ca_eccc", "manobs", "sawr"),
     ),
     _row(
         "CA_TAF_NCLWS",

@@ -16,7 +16,7 @@ def _lint_tac_report(
 ) -> LintReport:
     """Lint a single TAC report (no AHL split)."""
     product_u = product.upper()
-    issues, fixes = check_parse_gate(tac_text, product_u)
+    issues, fixes = check_parse_gate(tac_text, product_u, profile=profile)
     if not any(i.severity == "error" for i in issues):
         issues.extend(check_product_rules(tac_text, product_u, profile=profile))
     ok = not any(i.severity == "error" for i in issues)

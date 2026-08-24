@@ -21,7 +21,22 @@ def _content_bounds(tac_text: str) -> tuple[int, int, str]:
     return leading, leading + len(stripped), stripped
 
 
-def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix]]:
+_CA_METAR_FAMILY_LEADS: tuple[str, ...] = ("METAR", "LWIS", "SAWR")
+
+
+def _parse_gate_keywords(product: str, profile: str) -> tuple[str, ...]:
+    base = PRODUCT_KEYWORDS[product]
+    if profile == "ca_eccc" and product == "METAR":
+        return _CA_METAR_FAMILY_LEADS
+    return base
+
+
+def check_parse_gate(
+    tac_text: str,
+    product: str,
+    *,
+    profile: str = "annex3",
+) -> tuple[list[Issue], list[Fix]]:
     """
     Run parse-gate checks shared across products.
 
@@ -63,7 +78,7 @@ def check_parse_gate(tac_text: str, product: str) -> tuple[list[Issue], list[Fix
         )
         return issues, fixes
 
-    keywords = PRODUCT_KEYWORDS[product]
+    keywords = _parse_gate_keywords(product, profile)
     upper = stripped.upper()
     if not any(keyword in upper for keyword in keywords):
         issues.append(

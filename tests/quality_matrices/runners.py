@@ -55,7 +55,8 @@ def run_lint_case(case: RuleCase) -> None:
     apply_skip_policy(case)
     tac = _require_tac(case)
     product = _meta_str(case.meta, "product") or "METAR"
-    report = lint_tac(tac, product=product)
+    profile = _meta_str(case.meta, "profile") or _DEFAULT_PROFILE
+    report = lint_tac(tac, product=product, profile=profile)
     _assert_lint_expect(case, report)
 
 

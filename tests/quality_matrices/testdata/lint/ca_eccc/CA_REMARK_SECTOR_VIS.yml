@@ -1,0 +1,123 @@
+rule_id: CA_REMARK_SECTOR_VIS
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: happy
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: happy
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: happy
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: happy
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: sad
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: sad
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: sad
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: sad
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: sad
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_pass
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_pass
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_pass
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_pass
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_pass
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_fail
+  case_id: '01'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_fail
+  case_id: '02'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_fail
+  case_id: '03'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_fail
+  case_id: '04'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining
+- bucket: edge_fail
+  case_id: '05'
+  status: needs-fixture
+  meta:
+    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
+    cite: MANOBS/MANAIR mining

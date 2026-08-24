@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-08-22",
+  "generated": "2026-08-24",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -91,9 +91,9 @@
         "manair",
         "gfa"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manair-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
+      "source_attribution": "manair-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html \u2014 MANAIR GFA compound phenomenon"
     },
     {
       "code": "CA_ALTIMETER_INHG",
@@ -107,9 +107,9 @@
         "ca_eccc",
         "manobs"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS altimeter in inches of mercury"
     },
     {
       "code": "CA_ALTIMETER_NOT_OBS",
@@ -123,9 +123,39 @@
         "ca_eccc",
         "manobs"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS altimeter not observable"
+    },
+    {
+      "code": "CA_METAR_LWIS",
+      "severity": "info",
+      "message_template": "{product} Limited Weather Information System (LWIS) report \u2014 MANOBS CA overlay",
+      "product": null,
+      "tags": [
+        "metar",
+        "ca_eccc",
+        "manobs",
+        "lwis"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS LWIS national report lead"
+    },
+    {
+      "code": "CA_METAR_SAWR",
+      "severity": "info",
+      "message_template": "{product} Surface Aviation Weather Report (SAWR) \u2014 MANOBS CA overlay",
+      "product": null,
+      "tags": [
+        "metar",
+        "ca_eccc",
+        "manobs",
+        "sawr"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS SAWR national report lead"
     },
     {
       "code": "CA_REMARK_MANOBS",
@@ -139,9 +169,9 @@
         "ca_eccc",
         "manobs"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS Canadian remarks"
     },
     {
       "code": "CA_REMARK_NOSPECI",
@@ -156,9 +186,26 @@
         "manobs",
         "nospeci"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS NOSPECI remark"
+    },
+    {
+      "code": "CA_REMARK_PRESFR",
+      "severity": "info",
+      "message_template": "{product} MANOBS pressure falling rapidly (PRESFR) \u2014 ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "presfr"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS PRESFR remark"
     },
     {
       "code": "CA_REMARK_PRESRR",
@@ -173,9 +220,9 @@
         "manobs",
         "presrr"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS PRESRR remark"
     },
     {
       "code": "CA_REMARK_SECTOR_VIS",
@@ -190,9 +237,9 @@
         "manobs",
         "visibility"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS sector visibility remark"
     },
     {
       "code": "CA_STATUTE_MILE_VIS",
@@ -206,9 +253,9 @@
         "ca_eccc",
         "manobs"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html \u2014 MANOBS statute-mile visibility"
     },
     {
       "code": "CA_TAF_NCLWS",
@@ -221,9 +268,9 @@
         "manair",
         "nclws"
       ],
-      "source_id": null,
-      "source_url": null,
-      "source_attribution": null
+      "source_id": "manair-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
+      "source_attribution": "manair-ca \u2014 https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html \u2014 MANAIR NCLWS low-level wind shear"
     },
     {
       "code": "CLOUD_CB_OR_TCU",
