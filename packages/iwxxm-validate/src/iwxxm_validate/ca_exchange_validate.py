@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import lxml.etree as _lxml_etree
@@ -14,6 +15,7 @@ _CA_IWXXM_NS = "http://icao.int/iwxxm/3.0"
 _CA_EXTENSION_NS = "https://dd.meteo.gc.ca/today/aviation/iwxxm/"
 _VALID_REPORT_STATUS = frozenset({"NORMAL", "CORRECTION", "AMENDMENT"})
 _VALID_PERMISSIBLE_USAGE = frozenset({"OPERATIONAL", "NON-OPERATIONAL", "TEST"})
+_MSC_FILENAME_RE = re.compile(r"^A_[A-Z]{2}[A-Z]{2}\d{2}[A-Z]{4}\d{6}(?:[A-Z0-9]{3})?_C_[A-Z]{4}_\d{14}\.xml$")
 _PRODUCT_AHL_TTAAII: dict[str, str] = {
     "METAR": "A_LACN",
     "SPECI": "A_LPCN",
@@ -27,6 +29,8 @@ def validate_ca_exchange_packaging(
     *,
     product: str | None = None,
     ahl_header: str | None = None,
+    expected_filename: str | None = None,
+    require_translation_centre: bool = False,
 ) -> list[Issue]:
     """
     Validate MSC datamart exchange metadata on a CA IWXXM document.
@@ -39,6 +43,10 @@ def validate_ca_exchange_packaging(
         API product enum used to cross-check an optional AHL header.
     ahl_header :
         Optional WMO AHL header (``A_LACN31…``) supplied by the caller.
+    expected_filename :
+        Optional MSC filename to validate against the datamart pattern.
+    require_translation_centre :
+        When ``True``, require ``translationCentre*`` attrs on the document root.
 
     Returns
     -------
@@ -131,6 +139,30 @@ def validate_ca_exchange_packaging(
                     severity="error",
                     code="CA_EXCHANGE_AHL_PRODUCT",
                     message=f"AHL header {ahl_header!r} does not match product {product!r} (expected {expected})",
+                    layer=STAGE_EXCHANGE,
+                )
+            )
+
+    if expected_filename is not None:
+        if not _MSC_FILENAME_RE.match(expected_filename.strip()):
+            issues.append(
+                Issue(
+                    severity="error",
+                    code="CA_EXCHANGE_FILENAME",
+                    message=f"Filename {expected_filename!r} does not match MSC exchange pattern",
+                    layer=STAGE_EXCHANGE,
+                )
+            )
+
+    if require_translation_centre:
+        designator = root.get("translationCentreDesignator")
+        centre_name = root.get("translationCentreName")
+        if not designator or not centre_name:
+            issues.append(
+                Issue(
+                    severity="error",
+                    code="CA_EXCHANGE_TRANSLATION_CENTRE",
+                    message="Missing translationCentreDesignator or translationCentreName on document root",
                     layer=STAGE_EXCHANGE,
                 )
             )

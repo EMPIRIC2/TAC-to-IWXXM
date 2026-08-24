@@ -67,6 +67,7 @@ try:
     from .services.validation_orchestrator import get_validation_orchestrator
     from .services.webhooks import webhook_service
     from .utilities.abuse_controls import install_abuse_controls
+    from .utilities.ca_exchange_wire import ca_eccc_output_spec_for_request
     from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from .utilities.extension_wire import (
         ca_eccc_validate_product,
@@ -132,6 +133,7 @@ except ImportError:
     from services.validation_orchestrator import get_validation_orchestrator
     from services.webhooks import webhook_service
     from utilities.abuse_controls import install_abuse_controls
+    from utilities.ca_exchange_wire import ca_eccc_output_spec_for_request
     from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
     from utilities.extension_wire import (
         ca_eccc_validate_product,
@@ -1524,7 +1526,7 @@ async def convert_bulletin(
         ok = True
 
         if lint:
-            lint_report = tac_lint_fn(tac, product=product)
+            lint_report = tac_lint_fn(tac, product=product, profile=profile)
             issues.extend(
                 LintIssueModel(
                     severity=i.severity,
@@ -2298,18 +2300,14 @@ async def convert(
             )
         )
 
-    # Q14=C: lint default on — soft-wire tac-validate (hard fails use POST /lint-tac)
+    # Q14=C: lint default on — echo tac-validate issues on the convert response (FR-L6).
+    pre_convert_lint_report = None
     if lint:
         sample = manual_text.strip() if manual_text else ""
         if request_body is not None and getattr(request_body, "metars", None):
             sample = (request_body.metars[0] or "").strip() if request_body.metars else sample
         if sample:
-            lint_report = tac_lint_fn(sample, product=product)
-            if not lint_report.ok:
-                logger.info(
-                    "[CONVERT] tac-validate issues (non-blocking soft path): %s",
-                    [i.code for i in lint_report.issues],
-                )
+            pre_convert_lint_report = tac_lint_fn(sample, product=product, profile=profile)
 
     validation_level = normalize_validation_level(validation_level)
     validate_output = bool(validate_output) or validation_level in [
@@ -2525,7 +2523,18 @@ async def convert(
         "issuing_center": issuing_center,
         "validation_level": validation_level,
         "stop_on_error": bool(stop_on_error),
+        "semantic_profile": wire.semantic_canonical,
     }
+    sample_for_output_spec = manual_text.strip() if manual_text else ""
+    if not sample_for_output_spec and metars_list:
+        sample_for_output_spec = (metars_list[0] or "").strip()
+    output_spec = ca_eccc_output_spec_for_request(
+        semantic_canonical=wire.semantic_canonical,
+        product=product,
+        sample_text=sample_for_output_spec or None,
+    )
+    if output_spec:
+        request_metadata["output_spec"] = output_spec
 
     logger.info(
         "[CONVERT] Input summary files=%s manual_entries=%s json_metars=%s validate_output=%s validation_level=%s stop_on_error=%s iwxxm_version=%s bulletin_id=%s issuing_center=%s",
@@ -3393,6 +3402,28 @@ async def convert(
                     logger.error(f"Failed to log unexpected error: {log_err}")
                 if stop_on_error:
                     break
+
+    if pre_convert_lint_report is not None:
+        for lint_issue in pre_convert_lint_report.issues:
+            sev_raw = str(lint_issue.severity or "info").strip().lower()
+            if sev_raw == "error":
+                lint_severity = ConversionIssueSeverity.ERROR
+            elif sev_raw == "warning":
+                lint_severity = ConversionIssueSeverity.WARNING
+            else:
+                lint_severity = ConversionIssueSeverity.INFO
+            add_issue(
+                source="lint",
+                message=str(lint_issue.message or lint_issue.code or "Lint issue"),
+                severity=lint_severity,
+                code=str(lint_issue.code or "LINT"),
+                location=getattr(lint_issue, "location", None),
+            )
+        if not pre_convert_lint_report.ok:
+            logger.info(
+                "[CONVERT] tac-validate issues (non-blocking soft path): %s",
+                [i.code for i in pre_convert_lint_report.issues],
+            )
 
     if not results and errors:
         logger.error(

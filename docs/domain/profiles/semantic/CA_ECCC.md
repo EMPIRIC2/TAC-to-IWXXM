@@ -110,11 +110,28 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 - Validate: `ca_xsd` probes `airmet-ca` global elements directly (not LWIS shell)
 - Goldens: `taf_ic_weather`, `taf_amd`, `airmet_gfa_sfc_vis` + TC-EV070-001..006
 
+### EV-071 M1 delivered (#1038 — lint pack)
+
+- **M1 (#1038):** Full `ca_eccc` tac-validate rule pack — 12 promoted MANOBS/MANAIR rules with
+  fixtures, profile isolation vs `US_FAA_NWS`, lint catalog + quality matrix rows (TC-EV071-001..004)
+
+### EV-071 M2 delivered (#1032 + #1040 — exchange output METAR)
+
+- **M2 (#1032):** MSC METAR filename + WMO header (`A_LACN`); `tac2iwxxm.exchange_output` contract;
+  layer-6 validate extend (filename + translation centre); API `metadata.output_spec` (TC-EV071-005..009)
+- **M2 (#1040):** Profile-gated translation centre metadata on CA_ECCC convert (env-configurable)
+
+### EV-071 deferred (follow-on)
+
+- SPECI/TAF/AIRMET exchange output filename slice; full COLLECT envelope
+
+Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) playbook §5 + §8.
+
 ### Out of scope (EV-068 / backlog)
 
 - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
 - `AerodromeVariableRVR` / `ObservedLightning` (P2 / #1039)
-- Optional `tac-validate` lint codes for LWIS/SAWR/density/icing awareness
+- LWIS/SAWR/density/icing tac-validate codes beyond EV-071 M1 slice (if not promoted)
 - `#1050` `reportVariant` wire / UI (#1024)
 - SIGMET national overlay — out of #916 scope
 - Global app default migration from 2025-2 to 3.0.0

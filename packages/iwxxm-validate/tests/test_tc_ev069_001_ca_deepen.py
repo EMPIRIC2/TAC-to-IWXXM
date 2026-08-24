@@ -183,4 +183,10 @@ def test_tc_ev069_007_exchange_validate_error_paths() -> None:
     ahl_issues = validate_ca_exchange_packaging(golden, product="METAR", ahl_header="A_LTCN31 CYUL 291800")
     assert any(issue.code == "CA_EXCHANGE_AHL_PRODUCT" for issue in ahl_issues)
 
+    filename_issues = validate_ca_exchange_packaging(golden, expected_filename="not-a-valid-name.xml")
+    assert any(issue.code == "CA_EXCHANGE_FILENAME" for issue in filename_issues)
+
+    centre_issues = validate_ca_exchange_packaging(golden, require_translation_centre=True)
+    assert any(issue.code == "CA_EXCHANGE_TRANSLATION_CENTRE" for issue in centre_issues)
+
     assert validate_ca_exchange_packaging(golden) == []
