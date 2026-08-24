@@ -103,6 +103,13 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 - Layer 6 `exchange` packaging checks (operational attrs + optional AHL cross-check)
 - TAF `taf-ca.xsd` NCLWS extension probe (direct global element validation; TC-EV069-002)
 
+### EV-070 delivered (#1041 — convert deepen)
+
+- TAF: `present_and_forecast_weather/IC` via `iwxxm-ca:weather`; `TAF AMD` → `reportStatus=AMENDMENT`
+- AIRMET: GFA structured `surfaceVisibility` / `cloudBase` / `surfaceWindSpeed` for `SFC_VIS_and_BKN_CLD`
+- Validate: `ca_xsd` probes `airmet-ca` global elements directly (not LWIS shell)
+- Goldens: `taf_ic_weather`, `taf_amd`, `airmet_gfa_sfc_vis` + TC-EV070-001..006
+
 ### Out of scope (EV-068 / backlog)
 
 - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
