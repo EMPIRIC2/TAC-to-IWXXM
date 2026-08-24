@@ -3030,6 +3030,72 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Select CA_ECCC → convert Canadian METAR → validate pass with ca_xsd
 - **Source**: EV-073 M2; #1042 acceptance
 
+### EV-074 / #1043 — CA_ECCC SIGMET + VAA validate-first ops
+
+- **Mode**: deepen F23/F26/F36; datamart ops IWXXM + WMO 3.0.0 validate; no TAC convert
+- **Pass criteria**: AC in evolve-decisions §EV-074; TC-EV074-*
+- **Source**: [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043); playbook #1044 type P
+
+### TC-EV074-001: Harvest script SIGMET/VAA pin URLs
+
+- **Level**: T0
+- **Objective**: Harvest plan includes SIGMET and VAA datamart entries; CI uses committed fixtures only
+- **Source**: EV-074 M1; REQ-EV074-M1-001
+
+### TC-EV074-002: Ops SIGMET fixture count
+
+- **Level**: T1
+- **Objective**: Manifest contains ≥2 SIGMET ops IWXXM; kinds recorded
+- **Source**: EV-074 M1; REQ-EV074-M1-002
+
+### TC-EV074-003: Ops VAA fixture count
+
+- **Level**: T1
+- **Objective**: Manifest VAA list is empty until MSC publishes a VAA tree; `vaa_harvest=deferred_no_datamart_tree` (D-EV074-vaa-follow). Do not silent-fill encoder VAA.
+- **Source**: EV-074 M1; REQ-EV074-M1-002; D-EV074-vaa-follow
+
+### TC-EV074-004: SIGMET WMO 3.0.0 under CA profile
+
+- **Level**: T1
+- **Objective**: Harvested SIGMET fixtures pass wellformed + WMO 3.0.0 XSD+Schematron with `semantic_profile=CA_ECCC`
+- **Source**: EV-074 M2; REQ-EV074-M2-001
+
+### TC-EV074-005: VAA WMO 3.0.0 under CA profile
+
+- **Level**: T1
+- **Objective**: Deferred with TC-EV074-003 — no VAA ops fixtures this cycle (D-EV074-vaa-follow). Re-open when MSC publishes `aviation/iwxxm/vaa`.
+- **Source**: EV-074 M2; REQ-EV074-M2-001; D-EV074-vaa-follow
+
+### TC-EV074-006: ca_xsd skipped not-applicable
+
+- **Level**: T0
+- **Objective**: SIGMET/VAA CA layered validate skips `ca_xsd` as not-applicable (no `CA_PRODUCT_XSD_NOT_FOUND` error); mapped aerodrome products still fail-closed if XSD file missing
+- **Source**: EV-074 M2; REQ-EV074-M2-002
+
+### TC-EV074-007: Catalog lists SIGMET/VAA
+
+- **Level**: T0
+- **Objective**: `catalog.yaml` CA_ECCC products include SIGMET and VAA with validate-first status
+- **Source**: EV-074 M2; REQ-EV074-M2-004
+
+### TC-EV074-008: Coverage matrix CA SIGMET/VAA row
+
+- **Level**: T0
+- **Objective**: Coverage matrix documents validate-first ops slice + #1033 note-only
+- **Source**: EV-074 M2; REQ-EV074-M2-004
+
+### TC-EV074-009: Aerodrome CA regression
+
+- **Level**: T1
+- **Objective**: METAR/SPECI/TAF/AIRMET CA convert, exchange, COLLECT, and layered validate remain green
+- **Source**: EV-074 M2; REQ-EV074-M2-005
+
+### TC-EV074-010: code-ca SIGMET note-only
+
+- **Level**: T0
+- **Objective**: Catalog/coverage notes #1033 investigation without shipping SIGMET `code-ca` rules
+- **Source**: EV-074; D-EV074-1033
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

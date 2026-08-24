@@ -90,7 +90,7 @@ def test_extract_iwxxm_from_collect_non_ops_product_returns_none() -> None:
         '<?xml version="1.0"?>'
         '<collect:MeteorologicalBulletin xmlns:collect="http://def.wmo.int/collect/2014">'
         "<collect:meteorologicalInformation>"
-        '<iwxxm:SIGMET xmlns:iwxxm="http://icao.int/iwxxm/3.0"/>'
+        '<iwxxm:SpaceWeatherAdvisory xmlns:iwxxm="http://icao.int/iwxxm/3.0"/>'
         "</collect:meteorologicalInformation>"
         "</collect:MeteorologicalBulletin>"
     )
@@ -159,6 +159,8 @@ def test_tc_ev072_009_ops_speci_taf_airmet_fixture_counts() -> None:
 @pytest.mark.parametrize("case", load_ops_manifest(MANIFEST_PATH)["cases"], ids=lambda c: c["id"])
 def test_tc_ev072_010_ops_iwxxm_packaging_checks(case: dict) -> None:
     """Ops IWXXM passes layer-6 packaging checks or documents an explicit waiver."""
+    if case["product"] in {"SIGMET", "VAA"}:
+        pytest.skip("EV-074 validate-first: no CA exchange emit for SIGMET/VAA")
     from iwxxm_validate.ca_exchange_validate import validate_ca_exchange_packaging
 
     raw = (FIXTURES / case["ops_xml"]).read_text(encoding="utf-8")

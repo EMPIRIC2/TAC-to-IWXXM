@@ -101,7 +101,7 @@ profiles:
       package: packages/tac2iwxxm
       module: profiles/ca_eccc.py
       validate_profile: ca_eccc
-    products: [METAR, SPECI, TAF, AIRMET]
+    products: [METAR, SPECI, TAF, AIRMET, SIGMET, VAA]
     # MANOBS surface reports: METAR/SPECI are ICAO TAC leads; LWIS/SAWR are Canadian-only
     # substitution-group roots in metar-speci-ca.xsd (not separate API product enums).
     metar_family_variants:
@@ -175,7 +175,7 @@ profiles:
       - AerodromeVariableRVR / ObservedLightning (P2 / #1039)
       - Layered ca_eccc validation stack — EV-068 / #1035 (+ #1027 bundle wire) **done**
       - code-ca vocabulary membership stage — #1033 **done (EV-069)**
-      - SIGMET national overlay — out of #916 scope
+      - SIGMET/VAA TAC convert overlay — out of EV-074; validate-first SIGMET ops in EV-074 / #1043; VAA harvest deferred (D-EV074-vaa-follow, no MSC VAA tree at pin)
     validation_stages:
       - id: wellformed
         label: Well-formed XML
@@ -190,6 +190,7 @@ profiles:
           SPECI: metar-speci-ca.xsd
           TAF: taf-ca.xsd
           AIRMET: airmet-ca.xsd
+          # SIGMET/VAA: no published *-ca XSD — skip ca_xsd as not-applicable (EV-074 / #1043)
       - id: code_ca
         label: Canadian code lists
         issue: "#1033"
@@ -209,7 +210,10 @@ profiles:
         SPECI: "A_LPCN"
         TAF: "A_LTCN"
         AIRMET: "A_LWCN"
+        SIGMET: "A_LSCN"  # also A_LYCN (TC), A_LVCN (VA)
+        VAA: "A_LUCN"
       ev072_slice: [METAR, SPECI, TAF, AIRMET]
+      ev074_validate_first: [SIGMET, VAA]
       collect_envelope:
         issue: "#1032"
         status: implemented

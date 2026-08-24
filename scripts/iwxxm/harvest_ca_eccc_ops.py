@@ -61,7 +61,23 @@ _PINNED_FETCHES: list[dict[str, str]] = [
         "rel_path": "AIRMET/ops/airmet_czvr_13_001.xml",
         "url": f"{DEFAULT_BASE}/today/aviation/iwxxm/airmet/czvr/13/A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
     },
+    {
+        "id": "sigmet_czeg_15_001",
+        "product": "SIGMET",
+        "rel_path": "SIGMET/ops/sigmet_czeg_15_001.xml",
+        "url": f"{DEFAULT_BASE}/today/aviation/iwxxm/sigmet/czeg/15/A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
+        "sigmet_kind": "weather",
+    },
+    {
+        "id": "sigmet_czqm_08_001",
+        "product": "SIGMET",
+        "rel_path": "SIGMET/ops/sigmet_czqm_08_001.xml",
+        "url": f"{DEFAULT_BASE}/today/aviation/iwxxm/sigmet/czqm/08/A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
+        "sigmet_kind": "weather",
+    },
 ]
+
+# VAA: no MSC aviation/iwxxm VAA tree on 2026-08-24 (D-EV074-vaa-follow).
 
 _ENCODER_REFERENCE: list[dict[str, str]] = [
     {
@@ -208,17 +224,18 @@ def harvest(
                 dest.write_bytes(payload)
                 time.sleep(rate_limit)
             source_filename = msc_filename_from_url(url)
-            cases.append(
-                {
-                    "id": row["id"],
-                    "product": row["product"],
-                    "tier": "wmoReference",
-                    "ops_xml": row["rel_path"],
-                    "source_url": url,
-                    "source_filename": source_filename,
-                    "packaging_waiver": _DATAMART_WAIVER,
-                }
-            )
+            entry: dict[str, Any] = {
+                "id": row["id"],
+                "product": row["product"],
+                "tier": "wmoReference",
+                "ops_xml": row["rel_path"],
+                "source_url": url,
+                "source_filename": source_filename,
+                "packaging_waiver": _DATAMART_WAIVER,
+            }
+            if "sigmet_kind" in row:
+                entry["sigmet_kind"] = row["sigmet_kind"]
+            cases.append(entry)
 
     cases.extend(_bootstrap_encoder_reference(fixtures_root, dry_run=dry_run))
 
@@ -230,6 +247,7 @@ def harvest(
         "datamart_base": datamart_base.rstrip("/"),
         "rate_limit_seconds": rate_limit,
         "cases": cases,
+        "vaa_harvest": "deferred_no_datamart_tree",
     }
     manifest["manifest_sha256"] = manifest_checksum(manifest)
     if not dry_run:

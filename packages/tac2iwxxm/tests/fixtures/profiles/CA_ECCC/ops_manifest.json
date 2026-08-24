@@ -97,7 +97,28 @@
       "ops_xml": "SPECI/ops/speci_auto_ops.xml",
       "source": "encoder_reference",
       "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "sigmet_czeg_15_001",
+      "product": "SIGMET",
+      "tier": "wmoReference",
+      "ops_xml": "SIGMET/ops/sigmet_czeg_15_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czeg/15/A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
+      "source_filename": "A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
+      "sigmet_kind": "weather",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "sigmet_czqm_08_001",
+      "product": "SIGMET",
+      "tier": "wmoReference",
+      "ops_xml": "SIGMET/ops/sigmet_czqm_08_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czqm/08/A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
+      "source_filename": "A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
+      "sigmet_kind": "weather",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
     }
   ],
-  "manifest_sha256": "8dfc34637a16f07a9f50419b8a215fb64d4fab86e9a79ea7eaf24a8641101cf1"
+  "manifest_sha256": "0402b42adaa153b4eda31c97df6a6483688e9d1255d19a9263326275ef3f1400",
+  "vaa_harvest": "deferred_no_datamart_tree"
 }

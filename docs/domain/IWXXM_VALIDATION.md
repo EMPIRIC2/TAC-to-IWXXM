@@ -98,6 +98,7 @@ delivered layers **1–4**; EV-069 completes **5–6** (code-ca + exchange).
 | `METAR`, `SPECI` | `metar-speci-ca.xsd` |
 | `TAF` | `taf-ca.xsd` |
 | `AIRMET` | `airmet-ca.xsd` |
+| `SIGMET`, `VAA` | **none published** — skip `ca_xsd` as not-applicable (EV-074 / #1043); still run wellformed + WMO 3.0.0 XSD+SCH |
 
 **Operator-visible stage labels** must be plain language (EV-048) — no corpus ids or planning
 tokens in API/CLI issue text.
