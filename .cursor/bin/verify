@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Fail-closed verifier CLI. [Corpus: verifier]"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+
+def _pack_root() -> Path:
+    bin_path = Path(__file__).resolve()
+    skills_home = bin_path.parent.parent
+
+    pack_via_link = skills_home / "pack"
+    if pack_via_link.is_dir():
+        return pack_via_link.resolve()
+
+    in_tree = bin_path.parent.parent
+    if (in_tree / "verify" / "catalog.yaml").is_file():
+        return in_tree
+
+    if (skills_home / "verify" / "catalog.yaml").is_file():
+        return skills_home
+
+    plugin_pack = Path.home() / ".cursor/plugins/local/engineering-memory/pack"
+    if (plugin_pack / "verify" / "catalog.yaml").is_file():
+        return plugin_pack
+
+    em_root = os.environ.get("EM_ENGINEERING_MEMORY_ROOT")
+    if em_root:
+        cp = Path(em_root).expanduser() / "cursor-plugin" / "pack"
+        if (cp / "verify" / "catalog.yaml").is_file():
+            return cp
+
+    print(
+        "verify: cannot locate pack root; run cursor-plugin/scripts/install-cross-project.sh",
+        file=sys.stderr,
+    )
+    raise SystemExit(2)
+
+
+PACK_ROOT = _pack_root()
+sys.path.insert(0, str(PACK_ROOT))
+from verify.catalog_load import default_angles, load_catalog  # noqa: E402
+
+V1_SCRIPT = PACK_ROOT / "verify" / "packs"
+
+
+def _now() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def cmd_defaults() -> int:
+    cat = load_catalog()
+    scales = cat["orchestrator_default_scale"]
+    assert isinstance(scales, dict)
+    out: dict[str, object] = {}
+    for orch in scales:
+        scale, angles = default_angles(cat, str(orch))
+        out[str(orch)] = {"scale": scale, "angles": angles}
+    print(json.dumps(out, indent=2))
+    return 0
+
+
+def cmd_run(phase: str, angles: list[str], root: Path, evidence: Path | None) -> int:
+    cat = load_catalog()
+    packs = {str(p["id"]): p for p in cat["packs"]}  # type: ignore[index,union-attr]
+    evidence = evidence or (root / "evidence" / phase)
+    evidence.mkdir(parents=True, exist_ok=True)
+    reports: list[dict[str, object]] = []
+    overall = 0
+    for pid in angles:
+        pack = packs.get(pid)
+        if pack is None:
+            reports.append({"id": pid, "verdict": "FAIL", "reason": "unknown angle"})
+            overall = 1
+            continue
+        script = V1_SCRIPT / pid / "scripts" / "run.sh"
+        env = os.environ.copy()
+        env["VERIFY_PHASE"] = phase
+        env["VERIFY_ROOT"] = str(root)
+        if script.is_file():
+            proc = subprocess.run(
+                ["bash", str(script), str(root)],
+                check=False,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            log_path = evidence / f"{pid}.log"
+            log_path.write_text(proc.stdout + proc.stderr, encoding="utf-8")
+            verdict = "PASS" if proc.returncode == 0 else "FAIL"
+            if proc.returncode not in (0, 1):
+                verdict = "FAIL"
+            if proc.returncode != 0:
+                overall = 1
+            reports.append(
+                {
+                    "id": pid,
+                    "verdict": verdict,
+                    "exit": proc.returncode,
+                    "evidence": str(log_path),
+                    "scriptable": True,
+                }
+            )
+        else:
+            # stub: fail-closed unless waived via env
+            waived = os.environ.get(f"VERIFY_WAIVE_{pid.replace('-', '_').upper()}")
+            if waived:
+                reports.append({"id": pid, "verdict": "WAIVE", "reason": waived, "scriptable": False})
+            else:
+                reports.append(
+                    {
+                        "id": pid,
+                        "verdict": "FAIL",
+                        "reason": "stub pack has no script; waive or add evidence",
+                        "scriptable": False,
+                    }
+                )
+                overall = 1
+    payload = {"phase": phase, "when": _now(), "root": str(root), "results": reports}
+    out_json = evidence / "summary.json"
+    out_json.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(payload, indent=2))
+    return overall
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Pack verifier")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+    d = sub.add_parser("defaults")
+    d.add_argument("--json", action="store_true", help="JSON stdout (default)")
+    run_p = sub.add_parser("run")
+    run_p.add_argument("--phase", choices=("documenting", "implementing"), required=True)
+    run_p.add_argument("--angles", nargs="+", required=True)
+    run_p.add_argument("--root", type=Path, default=Path.cwd())
+    run_p.add_argument("--evidence", type=Path, default=None)
+    args = parser.parse_args()
+    if args.cmd == "defaults":
+        return cmd_defaults()
+    if args.cmd == "run":
+        return cmd_run(args.phase, args.angles, args.root.resolve(), args.evidence)
+    return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

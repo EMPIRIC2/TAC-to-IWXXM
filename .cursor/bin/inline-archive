@@ -1,0 +1,281 @@
+#!/usr/bin/env python3
+"""Inline _archive/numbered skills into spec-development/ and build/ children."""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+SKILLS = Path(__file__).resolve().parents[1]
+ARCHIVE = SKILLS / "_archive" / "numbered"
+
+BUILD_MAP = {
+    "07-build": ("build/build", "build-build", "Build — build"),
+    "08-verify-build": ("build/verify-build", "build-verify-build", "Build — verify-build"),
+    "09-qa": ("build/qa", "build-qa", "Build — QA"),
+    "10-e2e": ("build/e2e", "build-e2e", "Build — E2E"),
+    "11-verify-impl": ("build/verify-impl", "build-verify-impl", "Build — verify-impl"),
+    "12-verify-deploy": ("build/verify-deploy", "build-verify-deploy", "Build — verify-deploy"),
+    "13-deploy-smoke": ("build/deploy-smoke", "build-deploy-smoke", "Build — deploy-smoke"),
+    "15-service-health": ("build/health", "build-health", "Build — health"),
+    "17-retrospective": ("build/retrospective", "build-retrospective", "Build — retrospective"),
+    "18-pr-review": ("build/pr-review", "build-pr-review", "Build — PR review"),
+    "19-address-pr-review": (
+        "build/address-pr-review",
+        "build-address-pr-review",
+        "Build — address PR review",
+    ),
+}
+
+SPEC_MAP = {
+    "00-context": ("spec-development/context", "spec-development-context", "Spec-development — context"),
+    "01-requirements": (
+        "spec-development/requirements",
+        "spec-development-requirements",
+        "Spec-development — requirements",
+    ),
+    "02-verify-plan": (
+        "spec-development/verify-plan",
+        "spec-development-verify-plan",
+        "Spec-development — verify-plan",
+    ),
+    "03-plan-tooling": (
+        "spec-development/plan-tooling",
+        "spec-development-plan-tooling",
+        "Spec-development — plan-tooling",
+    ),
+    "04-tech-plan": (
+        "spec-development/tech-plan",
+        "spec-development-tech-plan",
+        "Spec-development — tech-plan",
+    ),
+    "05-verify-tech": (
+        "spec-development/verify-tech",
+        "spec-development-verify-tech",
+        "Spec-development — verify-tech",
+    ),
+    "06-tech-tooling": (
+        "spec-development/tech-tooling",
+        "spec-development-tech-tooling",
+        "Spec-development — tech-tooling",
+    ),
+}
+
+NUMBERED_TO_REL: dict[str, dict[str, str]] = {
+    "build": {
+        "07-build": "../build",
+        "08-verify-build": "../verify-build",
+        "09-qa": "../qa",
+        "10-e2e": "../e2e",
+        "11-verify-impl": "../verify-impl",
+        "12-verify-deploy": "../verify-deploy",
+        "13-deploy-smoke": "../deploy-smoke",
+        "15-service-health": "../health",
+        "17-retrospective": "../retrospective",
+        "18-pr-review": "../pr-review",
+        "19-address-pr-review": "../address-pr-review",
+        "06-tech-tooling": "../../spec-development/tech-tooling",
+        "05-verify-tech": "../../spec-development/verify-tech",
+        "04-tech-plan": "../../spec-development/tech-plan",
+        "03-plan-tooling": "../../spec-development/plan-tooling",
+        "02-verify-plan": "../../spec-development/verify-plan",
+        "01-requirements": "../../spec-development/requirements",
+        "00-context": "../../spec-development/context",
+    },
+    "spec": {
+        "00-context": "../context",
+        "01-requirements": "../requirements",
+        "02-verify-plan": "../verify-plan",
+        "03-plan-tooling": "../plan-tooling",
+        "04-tech-plan": "../tech-plan",
+        "05-verify-tech": "../verify-tech",
+        "06-tech-tooling": "../tech-tooling",
+        "07-build": "../../build/build",
+        "08-verify-build": "../../build/verify-build",
+        "09-qa": "../../build/qa",
+        "10-e2e": "../../build/e2e",
+        "11-verify-impl": "../../build/verify-impl",
+        "12-verify-deploy": "../../build/verify-deploy",
+        "13-deploy-smoke": "../../build/deploy-smoke",
+        "15-service-health": "../../build/health",
+        "17-retrospective": "../../build/retrospective",
+        "18-pr-review": "../../build/pr-review",
+        "19-address-pr-review": "../../build/address-pr-review",
+    },
+}
+
+LEGACY = {
+    "16-evolve": "../../_archive/legacy-orchestrators/16-evolve",
+    "14-hotfix": "../../_archive/legacy-orchestrators/14-hotfix",
+    "pipeline": "../../_archive/legacy-orchestrators/pipeline",
+}
+
+SUPPORT = [
+    "bug-investigation",
+    "github-projects",
+    "data-management",
+    "api-documentation",
+    "config-validator",
+    "audit-licenses",
+    "security-static-analysis",
+    "export-cursor-toolkit",
+]
+
+ROOT_MD = [
+    "pipeline-preamble.md",
+    "considerations.md",
+    "connectivity-gates.md",
+    "plan-mode-loop.md",
+    "sessions-reference.md",
+    "workflow-state-reference.md",
+    "workflow-state-agent-protocol.md",
+    "protocol-card.md",
+    "template-registry.md",
+    "skill-families.md",
+    "deployment-catalog.md",
+]
+
+REDIRECT_STUB = """---
+name: {name}
+description: >
+  Inlined into {target}. Do not invoke this archive copy for new work.
+disable-model-invocation: true
+---
+# {numbered} (archived)
+
+**Use [{title}]({rel_target}/SKILL.md)** — procedure inlined PT-003c.
+
+"""
+
+
+def strip_frontmatter(text: str) -> str:
+    if text.startswith("---"):
+        end = text.find("---", 3)
+        if end != -1:
+            return text[end + 3 :].lstrip("\n")
+    return text
+
+
+def read_description(archive_skill: Path) -> str:
+    text = archive_skill.read_text(encoding="utf-8")
+    if not text.startswith("---"):
+        return ""
+    end = text.find("---", 3)
+    block = text[3:end]
+    m = re.search(r"description:\s*>?\s*\n((?:\s+.+\n?)+)", block)
+    if m:
+        lines = [ln.strip() for ln in m.group(1).strip().splitlines()]
+        return " ".join(lines)
+    m = re.search(r'description:\s*(.+)', block)
+    return m.group(1).strip() if m else ""
+
+
+def transform_body(body: str, zone: str) -> str:
+    mapping = NUMBERED_TO_REL[zone]
+    for numbered, rel in sorted(mapping.items(), key=lambda x: -len(x[0])):
+        body = body.replace(f"](../{numbered}/", f"]({rel}/")
+        body = body.replace(f"](../{numbered})", f"]({rel}/SKILL.md)")
+    for leg, rel in LEGACY.items():
+        body = body.replace(f"](../{leg}/", f"]({rel}/")
+    for sup in SUPPORT:
+        body = body.replace(f"](../{sup}/", f"](../../support/{sup}/")
+    for md in ROOT_MD:
+        body = body.replace(f"](../{md}", f"](../../{md}")
+    body = body.replace("](../spec-development/draft-docs/", "](../draft-docs/")
+    body = body.replace("](../spec-development/tech-plan/", "](../tech-plan/")
+    body = re.sub(
+        r"^# \d+ — .+$",
+        lambda m: m.group(0),  # replaced per skill below
+        body,
+        count=1,
+        flags=re.MULTILINE,
+    )
+    body = body.replace("_archive/numbered/", "")
+    body = body.replace("stages.07-build", "build/build")
+    body = body.replace("stage: \"07-build\"", "stage: build/build")
+    body = body.replace("Stage field to `07-build`", "Stage field to `build/build`")
+    return body
+
+
+def inline_one(numbered: str, target_rel: str, skill_name: str, title: str, zone: str) -> None:
+    src = ARCHIVE / numbered / "SKILL.md"
+    if not src.is_file():
+        raise SystemExit(f"missing {src}")
+    desc = read_description(src)
+    body = strip_frontmatter(src.read_text(encoding="utf-8"))
+    body = transform_body(body, zone)
+    body = re.sub(r"^# \d+ — .+$", f"# {title}", body, count=1, flags=re.MULTILINE)
+    body = re.sub(r"^# \d+ — .+$", f"# {title}", body, count=1, flags=re.MULTILINE)
+    if numbered == "00-context":
+        body = (
+            "> Orchestrators run intake first. This skill continues **spec-band** context "
+            "when `spec-development/context` is routed.\n\n" + body
+        )
+    header = f"""---
+name: {skill_name}
+description: >
+  {desc}
+---
+"""
+    out = SKILLS / target_rel / "SKILL.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(header + body, encoding="utf-8")
+    # archive redirect stub
+    stub_name = numbered.replace("-", "_")
+    (ARCHIVE / numbered / "SKILL.md").write_text(
+        REDIRECT_STUB.format(
+            name=f"archived-{stub_name}",
+            target=target_rel,
+            numbered=numbered,
+            title=title,
+            rel_target=f"../../{target_rel}",
+        ),
+        encoding="utf-8",
+    )
+
+
+def copy_extras() -> None:
+    pairs = [
+        ("00-context/reference.md", "spec-development/context/reference.md"),
+        ("17-retrospective/reference.md", "build/retrospective/reference.md"),
+        ("18-pr-review/reference.md", "build/pr-review/reference.md"),
+        ("18-pr-review/checklist.md", "build/pr-review/checklist.md"),
+        ("19-address-pr-review/reference.md", "build/address-pr-review/reference.md"),
+    ]
+    for src_rel, dst_rel in pairs:
+        src = ARCHIVE / src_rel
+        dst = SKILLS / dst_rel
+        if src.is_file():
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            text = src.read_text(encoding="utf-8")
+            for numbered, rel in NUMBERED_TO_REL["build"].items():
+                text = text.replace(f"](../{numbered}/", f"]({rel}/")
+            for numbered, rel in NUMBERED_TO_REL["spec"].items():
+                text = text.replace(f"](../{numbered}/", f"]({rel}/")
+            for leg, rel in LEGACY.items():
+                text = text.replace(f"](../{leg}/", f"]({rel}/")
+            for md in ROOT_MD:
+                text = text.replace(f"](../{md}", f"](../../{md}")
+            dst.write_text(text, encoding="utf-8")
+
+
+def main() -> None:
+    for numbered, (target, name, title) in BUILD_MAP.items():
+        inline_one(numbered, target, name, title, "build")
+    for numbered, (target, name, title) in SPEC_MAP.items():
+        inline_one(numbered, target, name, title, "spec")
+    copy_extras()
+    # draft-docs: remove archive delegate line if present
+    draft = SKILLS / "spec-development/draft-docs/SKILL.md"
+    text = draft.read_text(encoding="utf-8")
+    text = re.sub(
+        r"\n\*\*Implementation:\*\* follow \[01-requirements\].*?\n",
+        "\n",
+        text,
+    )
+    draft.write_text(text, encoding="utf-8")
+    print("inlined", len(BUILD_MAP) + len(SPEC_MAP), "skills")
+
+
+if __name__ == "__main__":
+    main()

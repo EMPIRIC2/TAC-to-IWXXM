@@ -13,9 +13,7 @@ Before making any code change, verify:
    `workflow-state.yaml` §`artifacts` — not as standing docs. If no corpus row covers this
    change, raise a `[Decision]` via AskQuestion: proceed without a spec, or create one first.
 
-2. **Phased workflow**: Check `workflow-state.yaml` for the active stage and build session
-   artifacts (execution plan from 04-tech-plan / build-planner). Work must belong to the
-   active phase/milestone.
+2. **Phased workflow**: For **new** pack orchestrator sessions, read `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/state.yaml` and `routing-plan.md`. Legacy in-flight work may still use `workflow-state.yaml` at repo root (brownfield only). Work must belong to the active phase/milestone.
    - If the work is in a **future phase**, stop and raise a `[Decision]`.
    - If a task has **unmet dependencies**, do not start it.
    - After completing a task, update status in the execution plan artifact and

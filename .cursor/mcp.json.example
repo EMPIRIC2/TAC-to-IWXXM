@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "engineering-memory": {
+      "type": "stdio",
+      "command": "${userHome}/.cursor/skills/bin/engineering-memory-mcp"
+    }
+  }
+}

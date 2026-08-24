@@ -144,6 +144,9 @@ docs/_build/
 
 # --- Cursor (local indexing prefs only; .cursorignore is tracked) ---
 .cursorindexingignore
+.cursor/pack
+.cursor/bin/__pycache__/
+evidence/
 
 # --- Misc generated ---
 *.log
