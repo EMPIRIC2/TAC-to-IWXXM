@@ -21,7 +21,12 @@ _PRODUCT_AHL_TTAAII: dict[str, str] = {
     "SPECI": "A_LPCN",
     "TAF": "A_LTCN",
     "AIRMET": "A_LWCN",
+    "SIGMET": "A_LSCN",
+    "VAA": "A_LUCN",
 }
+_IWXXM_EXCHANGE_ROOTS = frozenset(
+    {"METAR", "SPECI", "TAF", "AIRMET", "SIGMET", "VolcanicAshSIGMET", "TropicalCycloneSIGMET", "VolcanicAshAdvisory"}
+)
 
 
 def validate_ca_exchange_packaging(
@@ -70,7 +75,7 @@ def validate_ca_exchange_packaging(
     local_name = qname.localname
     namespace = qname.namespace
     is_ca_substitution = namespace == _CA_EXTENSION_NS and local_name in {"LWIS", "SAWR"}
-    is_wmo_product = namespace == _CA_IWXXM_NS and local_name in {"METAR", "SPECI", "TAF", "AIRMET"}
+    is_wmo_product = namespace == _CA_IWXXM_NS and local_name in _IWXXM_EXCHANGE_ROOTS
     if not is_ca_substitution and not is_wmo_product:
         issues.append(
             Issue(

@@ -162,6 +162,13 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - **Deferred:** VAA ops harvest (`D-EV074-vaa-follow` — no MSC `aviation/iwxxm/vaa` tree at pin 2026-08-24)
 - Tests: TC-EV074-001..010
 
+### EV-076 delivered (#1061 — SIGMET exchange output emit)
+
+- **M1:** SIGMET MSC filename + WMO header (`A_LSCN` / VA `A_LVCN` / TC `A_LYCN` via `sigmet_kind`); ops output spec from datamart filename
+- **M2:** Layer-6 exchange packaging on SIGMET ops fixtures; catalog `ev076_slice: [SIGMET]`
+- **Deferred:** VAA exchange emit — inherits `D-EV074-vaa-follow`
+- Tests: TC-EV1061-001..004
+
 ### EV-075 closeout (#1032 umbrella audit)
 
 - **Verified:** #1032 GitHub close correct — aerodrome exchange output (EV-071..072), COLLECT (EV-073), ops corpus (#1036), translation metadata (#1040) met on `stage`
@@ -176,6 +183,6 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - LWIS/SAWR/density/icing tac-validate codes beyond EV-071 M1 slice (if not promoted)
 - `#1050` `reportVariant` wire / UI (#1024)
 - SIGMET/VAA TAC convert overlay — out of EV-074; **validate-first ops** EV-074 / #1043
-- SIGMET/VAA exchange *emit* — waived EV-075; follow-on #1061 (aerodrome emit closed #1032)
+- SIGMET exchange *emit* — **EV-076 / #1061** closed; VAA exchange emit deferred (`D-EV074-vaa-follow`)
 - `#1033` SIGMET `code-ca` semantics — note-only in EV-074 (do not ship rules)
 - Global app default migration from 2025-2 to 3.0.0

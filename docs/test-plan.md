@@ -3130,6 +3130,40 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: No stale “#1032 open” rows; acceptance checklist updated
 - **Source**: EV-075 NFR-EV075-001
 
+### EV-076 / #1061 — CA_ECCC SIGMET exchange output emit
+
+- **Mode**: delta deepen F36 exchange output
+- **Pass criteria**: AC in evolve-decisions §EV-076; TC-EV1061-*
+- **Source**: [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061); split from #1032 / EV-075
+
+### TC-EV1061-001: Catalog SIGMET exchange slice
+
+- **Level**: T0 / docs
+- **Objective**: `ev076_slice: [SIGMET]`; VAA remains `ev074_validate_first`
+- **Pass criteria**: catalog row matches implementation
+- **Source**: EV-076 M2
+
+### TC-EV1061-002: SIGMET WMO header designators
+
+- **Level**: T0
+- **Objective**: `A_LSCN` default; VA/TC via `sigmet_kind`
+- **Pass criteria**: unit tests green
+- **Source**: EV-076 M1
+
+### TC-EV1061-003: Ops MSC filename output spec
+
+- **Level**: T0
+- **Objective**: SIGMET ops fixtures expand filename + WMO AHL via `build_ca_eccc_output_spec_from_msc_filename`
+- **Pass criteria**: suggested_filename matches datamart source_filename
+- **Source**: EV-076 M1
+
+### TC-EV1061-004: SIGMET ops layer-6 packaging
+
+- **Level**: T0
+- **Objective**: Ops SIGMET IWXXM passes `validate_ca_exchange_packaging` with MSC context
+- **Pass criteria**: no blocking exchange issues; TC-EV072-010 includes SIGMET
+- **Source**: EV-076 M1
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

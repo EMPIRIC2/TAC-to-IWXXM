@@ -131,11 +131,13 @@ def test_tc_ev071_005_exchange_output_helpers(monkeypatch: pytest.MonkeyPatch) -
     parts = parse_ahl("SAUL31 CYUL 231800 AAA")
     assert format_ca_wmo_ahl(parts, product="METAR") == "A_LACN31 CYUL 231800 AAA"
     assert ca_distribution_path("METAR", issuer_code="CYUL", hour=6).endswith("/metar/CYUL/06")
+    assert ca_wmo_header_designator("SIGMET") == "A_LSCN"
+    assert ca_distribution_path("SIGMET", issuer_code="CYUL", hour=1).endswith("/sigmet/CYUL/01")
 
     with pytest.raises(ValueError, match="not defined"):
-        ca_wmo_header_designator("SIGMET")
+        ca_wmo_header_designator("TCA")
     with pytest.raises(ValueError, match="distribution path"):
-        ca_distribution_path("SIGMET", issuer_code="CYUL", hour=1)
+        ca_distribution_path("TCA", issuer_code="CYUL", hour=1)
 
     bare_spec = build_ca_eccc_output_spec(product="METAR", include_translation_centre=False)
     assert bare_spec.suggested_filename is None

@@ -252,7 +252,8 @@ Profile-driven MSC operational packaging — reusable contract per playbook [#10
 | **X3** MSC ops corpus (pin-date harvest) | — | layer-6 on fixtures | ✅ EV-072 M2 (#1036) · TC-EV072-007..010 |
 | **X4** COLLECT envelope + `bulletinIdentifier` | `wrap_ca_eccc_collect` | inner product unchanged | ✅ EV-073 M1 · TC-EV073-001..005 |
 | **X5** Profile + `IWXXM_CA` wire (#1042) | FE auto-wire | fail-closed vendor pin | ✅ EV-073 M2 · TC-EV073-006..009 |
-| **X6** SIGMET / VAA exchange *emit* | validate-first only | ops validate WMO 3.0.0 | **waived** D-EV075-sigmet-vaa-emit → [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061) |
+| **X6** SIGMET exchange *emit* | `exchange_output` + ops filename spec | layer-6 on ops fixtures | ✅ EV-076 / #1061 · TC-EV1061-* |
+| **X7** VAA exchange *emit* | validate-first only | ops validate when harvest available | **waived** D-EV074-vaa-follow |
 
 #1032 umbrella **closed** on GitHub 2026-08-24; EV-075 audit confirms aerodrome + COLLECT AC met on `stage`.
 
@@ -344,7 +345,8 @@ without TAC lint surface follow F20 C1 pattern — not silent omission.
 - [x] F32 acc — VONA themes N1–N4 / C1 closed or deferred to children (S040 / EV-032; #741)
 - [x] F36 acc — CA_ECCC lint pack METAR/TAF/AIRMET themes C1–C8 closed (EV-071 M1 / #1038; see table above)
 - [x] F36 acc — CA_ECCC exchange output + COLLECT themes X1–X5 closed; #1032 umbrella verified EV-075
-- [x] F36 acc — CA_ECCC SIGMET validate-first ops S1–S6 closed or waived (EV-074 / #1043; SIGMET/VAA exchange emit waived → #1061)
+- [x] F36 acc — CA_ECCC SIGMET validate-first ops S1–S6 closed or waived (EV-074 / #1043)
+- [x] F36 acc — CA_ECCC SIGMET exchange emit closed (EV-076 / #1061); VAA exchange emit waived (D-EV074-vaa-follow)
 
 ---
 

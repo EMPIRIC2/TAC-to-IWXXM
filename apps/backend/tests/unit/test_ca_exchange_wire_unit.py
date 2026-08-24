@@ -104,6 +104,16 @@ def test_apply_ca_eccc_collect_output_falls_back_to_bulletin_context() -> None:
     assert is_collect_bulletin(wrapped)
 
 
+def test_ca_eccc_output_spec_for_request_sigmet_bare_designator() -> None:
+    spec = ca_eccc_output_spec_for_request(
+        semantic_canonical="ca_eccc",
+        product="SIGMET",
+        sample_text=None,
+    )
+    assert spec is not None
+    assert spec["wmo_header_designator"] == "A_LSCN"
+
+
 def test_ca_eccc_output_spec_for_request_without_sample_text() -> None:
     spec = ca_eccc_output_spec_for_request(
         semantic_canonical="ca_eccc",
