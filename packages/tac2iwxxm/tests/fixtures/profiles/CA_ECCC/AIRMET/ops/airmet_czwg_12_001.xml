@@ -1,0 +1,102 @@
+<collect:MeteorologicalBulletin gml:id="uuid.2be9c9bf-571f-48b8-8db6-572ac568eada" xmlns:aixm="http://www.aixm.aero/schema/5.1.1" xmlns:collect="http://def.wmo.int/collect/2014" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:iwxxm="http://icao.int/iwxxm/3.0" xmlns:iwxxm-ca="http://dd.meteo.gc.ca/iwxxm-ca/3.0.0" xmlns:metce="http://def.wmo.int/metce/2013" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://icao.int/iwxxm/3.0 http://schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd http://dd.meteo.gc.ca/iwxxm-ca/3.0.0 https://dd.meteo.gc.ca/today/aviation/iwxxm/schema/iwxxm-ca.xsd http://def.wmo.int/collect/2014 http://schemas.wmo.int/collect/1.2/collect.xsd">
+    <collect:meteorologicalInformation>
+<iwxxm:AIRMET gml:id="uuid.9021fc76-0cb9-4a13-bd35-05595c7ef811" reportStatus="NORMAL" permissibleUsage="OPERATIONAL">
+    <iwxxm:issueTime>
+        <gml:TimeInstant gml:id="uuid.27be25a5-3fd6-462a-b95c-9a779281b5d0">
+            <gml:timePosition>2026-08-24T12:04:00.000Z</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:issueTime>
+    <iwxxm:issuingAirTrafficServicesUnit>
+        <aixm:Unit gml:id="uuid.a077ddac-729b-43a8-9291-4212ff3378ff">
+            <aixm:timeSlice>
+                <aixm:UnitTimeSlice gml:id="uuid.6b641e0d-f145-4cb1-b3f7-fffc5a50909d">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:name>CZWG FIC</aixm:name>
+                    <aixm:type>FIC</aixm:type>
+                    <aixm:designator>CZWG</aixm:designator>
+                </aixm:UnitTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Unit>
+    </iwxxm:issuingAirTrafficServicesUnit>
+    <iwxxm:originatingMeteorologicalWatchOffice>
+        <aixm:Unit gml:id="uuid.b64c0fed-8f13-44e1-adb3-0a7ee39a1c1e">
+            <aixm:timeSlice>
+                <aixm:UnitTimeSlice gml:id="uuid.7270e632-f905-4afe-894b-ddd2b6308797">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:name>CWEG MWO</aixm:name>
+                    <aixm:type>MWO</aixm:type>
+                    <aixm:designator>CWEG</aixm:designator>
+                </aixm:UnitTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Unit>
+    </iwxxm:originatingMeteorologicalWatchOffice>
+    <iwxxm:issuingAirTrafficServicesRegion>
+        <aixm:Airspace gml:id="uuid.72c9117f-55cf-43c1-a6d8-58c9727646ec">
+            <aixm:timeSlice>
+                <aixm:AirspaceTimeSlice gml:id="uuid.7449ea57-a0aa-4d8f-a206-55f7feb6d066">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:type>FIR</aixm:type>
+                    <aixm:designator>CZWG</aixm:designator>
+                    <aixm:name>WINNIPEG FIR</aixm:name>
+                </aixm:AirspaceTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Airspace>
+    </iwxxm:issuingAirTrafficServicesRegion>
+    <iwxxm:sequenceNumber>B1</iwxxm:sequenceNumber>
+    <iwxxm:validPeriod>
+        <gml:TimePeriod gml:id="uuid.96dd647b-5731-4d1a-ac3c-fb6de6162180">
+            <gml:beginPosition>2026-08-24T12:00:00.000Z</gml:beginPosition>
+            <gml:endPosition>2026-08-24T16:00:00.000Z</gml:endPosition>
+        </gml:TimePeriod>
+    </iwxxm:validPeriod>
+    <iwxxm:phenomenon xlink:href="http://codes.wmo.int/49-2/AirWxPhenomena/BKN_CLD"/>
+    <iwxxm:analysis>
+        <iwxxm:AIRMETEvolvingConditionCollection gml:id="uuid.dcb15487-b939-4a7f-b638-bca0b8af35f2" timeIndicator="OBSERVATION">
+            <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+            <iwxxm:member>
+                <iwxxm:AIRMETEvolvingCondition gml:id="uuid.d116b8a6-44d6-4f65-a186-991b036c1ee5" intensityChange="NO_CHANGE">
+                    <iwxxm:geometry>
+                        <aixm:AirspaceVolume gml:id="uuid.6c648ed8-5f40-4564-968f-16ff16bf6467">
+                            <aixm:horizontalProjection>
+                                <aixm:Surface gml:id="uuid.1b05b6eb-b4df-416d-a08d-92e21913dc06" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                                    <gml:polygonPatches>
+                                        <gml:PolygonPatch>
+                                            <gml:exterior>
+                                                <gml:LinearRing>
+                                                    <gml:posList>-103.72972794320951 52.59940716462081 -101.27195353296969 52.55451074457538 -101.42866258971252 50.390086725786205 -103.77276401243752 50.431447574958646 -103.72972794320951 52.59940716462081</gml:posList>
+                                                </gml:LinearRing>
+                                            </gml:exterior>
+                                        </gml:PolygonPatch>
+                                    </gml:polygonPatches>
+                                </aixm:Surface>
+                            </aixm:horizontalProjection>
+                        </aixm:AirspaceVolume>
+                    </iwxxm:geometry>
+                    <iwxxm:directionOfMotion uom="deg" nilReason="http://www.opengis.net/def/nil/OGC/0/inapplicable" xsi:nil="true"/>
+                    <iwxxm:speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>
+                    <iwxxm:cloudTop uom="[ft_i]">4000</iwxxm:cloudTop>
+                    <iwxxm:cloudTopReference>SFC</iwxxm:cloudTopReference>
+                    <iwxxm:extension>
+                        <iwxxm-ca:cloudBase>
+                            <iwxxm-ca:cloudBaseLower uom="[ft_i]">500</iwxxm-ca:cloudBaseLower>
+                            <iwxxm-ca:cloudBaseHigher uom="[ft_i]">800</iwxxm-ca:cloudBaseHigher>
+                        </iwxxm-ca:cloudBase>
+                        <iwxxm-ca:cloudBaseReference>SFC</iwxxm-ca:cloudBaseReference>
+                    </iwxxm:extension>
+                </iwxxm:AIRMETEvolvingCondition>
+            </iwxxm:member>
+        </iwxxm:AIRMETEvolvingConditionCollection>
+    </iwxxm:analysis>
+    <iwxxm:extension>
+        <iwxxm-ca:humanReadableText>WI 90NM WID LINE BTN 45 S CYQV - 15 SW CYHB</iwxxm-ca:humanReadableText>
+    </iwxxm:extension>
+    <iwxxm:extension>
+        <iwxxm-ca:humanReadableText>GFACN32</iwxxm-ca:humanReadableText>
+    </iwxxm:extension>
+</iwxxm:AIRMET>
+    </collect:meteorologicalInformation>
+    <collect:bulletinIdentifier>A_LWCN23CWAO241204_C_CWAO_20260824120414.XML</collect:bulletinIdentifier>
+</collect:MeteorologicalBulletin>

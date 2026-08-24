@@ -216,7 +216,8 @@ profiles:
       ev072_slice: [METAR, SPECI, TAF, AIRMET]
       ev076_slice: [SIGMET]
       ev074_validate_first: [VAA]
-      ev074_validate_first_note: "VAA exchange emit deferred — no MSC datamart tree (D-EV074-vaa-follow); SIGMET emit EV-076 / #1061"
+      ev074_validate_first_note: "VAA validate-first via Montreal VAAC TAC (D-EV074-vaa-waiver-tac); datamart vaa/ absent; exchange emit deferred; SIGMET emit EV-076 / #1061"
+      vaac_tac_harvest_script: scripts/iwxxm/harvest_ca_eccc_vaac_tac.py
       collect_envelope:
         issue: "#1032"
         status: implemented

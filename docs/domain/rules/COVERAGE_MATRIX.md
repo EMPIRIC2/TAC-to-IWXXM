@@ -268,7 +268,7 @@ validate-first slice before convert investment).
 | Theme | Harvest / fixtures | Validate | Convert | Status |
 |-------|--------------------|----------|---------|--------|
 | **S1** ≥2 SIGMET ops IWXXM | datamart pin-date (`weather` kinds, czeg+czqm) | wellformed + WMO 3.0.0 XSD+SCH | OOS | ✅ EV-074 |
-| **S2** ≥2 VAA ops IWXXM | datamart pin-date | same | OOS | deferred D-EV074-vaa-follow (no MSC VAA tree) |
+| **S2** ≥1 VAA ops TAC (target ≥2) | Montreal VAAC pin (D-EV074-vaa-waiver-tac) | annex3 VAA lint | OOS | ✅ EV-077 (1 live at pin; datamart vaa/ still 404) |
 | **S3** `ca_xsd` N/A skip | — | skip not-applicable; not `CA_PRODUCT_XSD_NOT_FOUND` | — | ✅ EV-074 |
 | **S4** Catalog + coverage | `catalog.yaml` products + this table | — | — | ✅ EV-074 |
 | **S5** `#1033` code-ca SIGMET | note only | do not ship rules | — | ✅ EV-074 (note-only) |

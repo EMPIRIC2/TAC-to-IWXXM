@@ -1,5 +1,34 @@
 # Evolve Decisions
 
+## Cycle EV-077 — CA_ECCC ops corpus deepen + VAA VAAC TAC waiver (2026-08-24)
+
+**Opened:** 2026-08-24 · **Parent:** #916 · **Prior:** EV-076 merged to `stage`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV077-goal | Deepen CA_ECCC ops corpus (AIRMET czwg + GFA SFC_VIS); VAA validate-first via Montreal VAAC TAC |
+| D-EV077-ops | +2 AIRMET datamart fixtures (`czwg`, `SFC_VIS_and_BKN_CLD`); manifest pin 2026-08-24 |
+| D-EV074-vaa-waiver-tac | **Waived** datamart `vaa/` gate — Montreal VAAC TAC from weather.gc.ca/eer/vaac as validate-first ops source; no exchange emit |
+| D-EV074-vaa-count | **1 of ≥2** live FVCN bulletins in VAAC 31-day index at pin 2026-08-24 (EDZIZA); re-harvest when second publishes |
+| D-EV077-out | Promote; VAA exchange emit; TAC convert VAA |
+
+### Probe result (2026-08-20..24)
+
+| Product | Datamart | VAAC TAC |
+|---------|----------|----------|
+| VAA IWXXM | HTTP 404 all days | N/A |
+| VAA TAC | N/A | 1 live (FVCN01-0001 EDZIZA 2026-08-18) |
+| AIRMET | 5–24 files/day | — |
+| SIGMET | 10–105 files/day (all LSCN weather) | — |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV074]
+
+---
+
 ## Cycle EV-076 — CA_ECCC SIGMET exchange output emit (#1061) (EV-076-ca-eccc-sigmet-exchange-emit)
 
 **Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-076-ca-eccc-sigmet-exchange-emit`  

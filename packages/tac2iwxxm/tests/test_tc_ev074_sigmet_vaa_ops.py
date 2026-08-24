@@ -77,9 +77,11 @@ def test_tc_ev074_007_catalog_lists_sigmet_vaa() -> None:
 
 def test_tc_ev074_001_harvest_script_includes_sigmet_vaa() -> None:
     text = _HARVEST.read_text(encoding="utf-8")
+    vaac_harvest = _REPO / "scripts" / "iwxxm" / "harvest_ca_eccc_vaac_tac.py"
     assert "SIGMET" in text
-    assert "VAA" in text
-    assert "D-EV074-vaa-follow" in text or "deferred" in text.lower()
+    assert "VAA" in text or vaac_harvest.is_file()
+    assert vaac_harvest.is_file()
+    assert "D-EV074-vaa" in vaac_harvest.read_text(encoding="utf-8")
 
 
 def test_tc_ev074_002_003_ops_fixture_counts() -> None:
@@ -92,9 +94,13 @@ def test_tc_ev074_002_003_ops_fixture_counts() -> None:
     for case in sigmet:
         assert (_FIXTURES / case["ops_xml"]).is_file()
         assert case.get("sigmet_kind")
-    # VAA: MSC datamart has no VAA tree as of pin (D-EV074-vaa-follow).
-    assert grouped.get("VAA", []) == []
-    assert manifest.get("vaa_harvest") == "deferred_no_datamart_tree"
+    vaa = grouped.get("VAA", [])
+    assert len(vaa) >= 1, f"VAA ops count {len(vaa)} < 1 (target ≥2 when VAAC publishes)"
+    assert manifest.get("vaa_harvest") == "vaac_tac_waived"
+    for case in vaa:
+        assert case.get("ops_tac")
+        assert (_FIXTURES / case["ops_tac"]).is_file()
+        assert case.get("source") == "vaac_tac"
 
 
 def test_tc_ev074_004_harvested_sigmet_wmo_under_ca_profile() -> None:
@@ -115,11 +121,26 @@ def test_tc_ev074_004_harvested_sigmet_wmo_under_ca_profile() -> None:
         assert not any(i.code == "CA_PRODUCT_XSD_NOT_FOUND" for i in report.issues)
 
 
-def test_tc_ev074_005_vaa_harvest_deferred() -> None:
-    """VAA ops harvest is deferred until MSC publishes a VAA tree (D-EV074-vaa-follow)."""
+def test_tc_ev074_005_vaa_harvest_vaac_tac_waived() -> None:
+    """VAA ops harvest uses Montreal VAAC TAC when datamart vaa/ absent (D-EV074-vaa-waiver-tac)."""
     manifest = load_ops_manifest(_FIXTURES / "ops_manifest.json")
-    assert [c for c in manifest["cases"] if c["product"] == "VAA"] == []
-    assert manifest.get("vaa_harvest") == "deferred_no_datamart_tree"
+    vaa = [c for c in manifest["cases"] if c["product"] == "VAA"]
+    assert len(vaa) >= 1
+    assert manifest.get("vaa_harvest") == "vaac_tac_waived"
+    assert "D-EV074-vaa-waiver-tac" in (manifest.get("vaa_harvest_note") or "")
+
+
+def test_tc_ev074_011_vaa_vaac_tac_validate_first() -> None:
+    """Montreal VAAC TAC ops fixtures pass annex3 VAA lint (validate-first; no IWXXM exchange)."""
+    from tac_validate import lint
+
+    manifest = load_ops_manifest(_FIXTURES / "ops_manifest.json")
+    for case in manifest["cases"]:
+        if case["product"] != "VAA":
+            continue
+        tac = (_FIXTURES / case["ops_tac"]).read_text(encoding="utf-8")
+        report = lint(tac, product="VAA")
+        assert report.ok, [(i.code, i.message) for i in report.issues if i.severity == "error"]
 
 
 def test_tc_ev074_collect_unwraps_sigmet() -> None:
