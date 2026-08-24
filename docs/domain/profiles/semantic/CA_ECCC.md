@@ -140,7 +140,17 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 
 ### EV-072 deferred (follow-on)
 
-- **EV-073+:** full COLLECT envelope packaging
+- **EV-073:** full COLLECT envelope packaging + #1042 profile/extension wiring
+
+### EV-073 M1 complete (#1032 residual — COLLECT envelope)
+
+- **M1:** `wrap_ca_eccc_collect` + convert `exchange_output` hook; MSC `bulletinIdentifier`;
+  ops-fixture shell parity (TC-EV073-001..005) — **implemented** EV-073
+
+### EV-073 M2 complete (#1042 — profile + extension wiring)
+
+- **M2:** FE auto-wire `IWXXM_CA` when `CA_ECCC` selected; profile metadata surfacing;
+  fail-closed missing vendor pin; E2E convert+validate (TC-EV073-006..009) — **implemented** EV-073
 
 Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) playbook §5 + §8.
 

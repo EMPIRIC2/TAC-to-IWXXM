@@ -12,6 +12,7 @@ import {
   fetchLintIssueCatalog,
   fetchQualityMetrics,
   fetchQualityMetricsDetail,
+  fetchSchemaStatus,
   ingestCollect,
   lintTac,
   massIngestFiles,
@@ -283,6 +284,28 @@ describe('API Utils', () => {
       expect(body.get('stop_on_error')).toBe('true');
       expect(body.get('bulletin_id')).toBe('SAAA00');
       expect(body.get('issuing_center')).toBe('KWBC');
+    });
+
+    it('appends CA_ECCC extensions and exchange_output (EV-073)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR CYUL 231800Z',
+        profile: 'ca_eccc',
+        extensions: ['IWXXM_CA'],
+        exchangeOutput: true,
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.getAll('extensions')).toEqual(['IWXXM_CA']);
+      expect(body.get('exchange_output')).toBe('true');
     });
 
     it('should throw error on conversion failure', async () => {
@@ -830,6 +853,52 @@ describe('API Utils', () => {
       expect(body.getAll('layers')).toEqual(['ALL']);
     });
 
+    it('posts validate with CA_ECCC extensions (EV-073)', async () => {
+      mockFetchResponse({
+        is_valid: true,
+        version: '3.0.0',
+        profile: 'ca_eccc',
+        layers_run: ['ALL'],
+        layers_passed: ['ALL'],
+        layers_failed: [],
+        total_issues: 0,
+        issues: [],
+        issues_by_layer: {},
+        package_ok: true,
+        package_issues: [],
+      });
+      await validateIwxxm({
+        xmlContent: '<iwxxm:METAR/>',
+        profile: 'ca_eccc',
+        extensions: ['IWXXM_CA'],
+      });
+      const [, init] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = init.body as FormData;
+      expect(body.getAll('extensions')).toEqual(['IWXXM_CA']);
+    });
+
+    it('posts validate with stop_on_error false when requested', async () => {
+      mockFetchResponse({
+        is_valid: true,
+        version: '2025-2',
+        profile: 'annex3',
+        layers_run: ['ALL'],
+        layers_passed: ['ALL'],
+        layers_failed: [],
+        total_issues: 0,
+        issues: [],
+        issues_by_layer: {},
+        package_ok: true,
+        package_issues: [],
+      });
+      await validateIwxxm({
+        xmlContent: '<iwxxm:METAR/>',
+        stopOnError: false,
+      });
+      const [, init] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      expect((init.body as FormData).get('stop_on_error')).toBe('false');
+    });
+
     it('GETs lint-issue-catalog with optional product filter', async () => {
       mockFetchResponse({
         issues: [
@@ -954,6 +1023,30 @@ describe('API Utils', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(/\/quality-metrics\/metar-A3-1$/),
         expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('falls back when quality-metrics list error body is not JSON', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 503,
+        statusText: 'Unavailable',
+        json: vi.fn().mockRejectedValueOnce(new Error('not json')),
+      });
+      await expect(fetchQualityMetrics()).rejects.toThrow(
+        /HTTP 503|Quality metrics fetch failed/,
+      );
+    });
+
+    it('falls back when quality-metrics detail error body is not JSON', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found',
+        json: vi.fn().mockRejectedValueOnce(new Error('not json')),
+      });
+      await expect(fetchQualityMetricsDetail({ stem: 'missing' })).rejects.toThrow(
+        /HTTP 404|Quality metrics detail failed/,
       );
     });
 
@@ -1265,6 +1358,29 @@ describe('API Utils', () => {
           accessToken: 'tok',
         }),
       ).rejects.toThrow(/HTTP 500|Mass ingest failed|Server Error/);
+    });
+  });
+
+  describe('fetchSchemaStatus', () => {
+    it('returns profile pin payload on success', async () => {
+      mockFetchResponse({
+        profile_pins: {
+          ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
+        },
+      });
+      await expect(fetchSchemaStatus()).resolves.toEqual({
+        profile_pins: {
+          ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
+        },
+      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/schema-status'),
+      );
+    });
+
+    it('throws on HTTP error', async () => {
+      mockFetchResponse({ detail: 'unavailable' }, false, 503);
+      await expect(fetchSchemaStatus()).rejects.toThrow(/Schema status request failed/);
     });
   });
 });

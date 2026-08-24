@@ -129,6 +129,11 @@ vi.mock('/utils/api', () => ({
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSchemaStatus: vi.fn().mockResolvedValue({
+    profile_pins: {
+      ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
+    },
+  }),
   lintTac: mockLintTac,
   decodeTac: mockDecodeTac,
   validateIwxxm: mockValidateIwxxm,

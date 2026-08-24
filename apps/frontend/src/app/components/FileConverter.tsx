@@ -69,6 +69,7 @@ import {
   massIngestFiles,
   lintTac,
   validateIwxxm,
+  fetchSchemaStatus,
   EndpointNotImplementedError,
   type FailedSpan,
 } from '/utils/api';
@@ -91,6 +92,12 @@ import {
   type IwxxmProfile,
   type TacProductSelection,
 } from '/utils/tacProduct';
+import {
+  CA_ECCC_EXTENSION_LABEL,
+  CA_ECCC_SUPPORTED_PRODUCTS,
+  exchangeOutputForProfile,
+  nationalExtensionsForProfile,
+} from '@/utils/profileWire';
 import {
   IWXXM_PRODUCT_CONVERT_ARIA,
   IWXXM_PRODUCT_CONVERT_LABEL,
@@ -272,6 +279,9 @@ export function FileConverter({
   const [issuingCenterFieldError, setIssuingCenterFieldError] = useState<string | null>(
     null,
   );
+  const [caExtensionBundleAvailable, setCaExtensionBundleAvailable] = useState<
+    boolean | null
+  >(null);
   const [conversionParams, setConversionParams] = useState<ConversionParams>({
     bulletinId: '',
     issuingCenter: '',
@@ -384,6 +394,27 @@ export function FileConverter({
     };
 
     loadPreferences();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchSchemaStatus()
+      .then((status) => {
+        if (cancelled) {
+          return;
+        }
+        setCaExtensionBundleAvailable(
+          status.profile_pins?.ca_eccc?.extension_bundle_available ?? null,
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setCaExtensionBundleAvailable(null);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   /* eslint-disable react-hooks/set-state-in-effect -- F5 hydrate converter when user loads a work session */
@@ -888,6 +919,8 @@ export function FileConverter({
         includeNilReasons: conversionParams.includeNilReasons,
         logLevel: conversionParams.logLevel,
         preview: softPreview,
+        extensions: nationalExtensionsForProfile(conversionParams.profile),
+        exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
       });
 
       console.log('[FileConverter] Conversion response:', response);
@@ -1052,6 +1085,7 @@ export function FileConverter({
         profile: conversionParams.profile,
         iwxxmVersion: conversionParams.iwxxmVersion,
         stopOnError: true,
+        extensions: nationalExtensionsForProfile(conversionParams.profile),
       });
       setValidateReport(report);
       setConversionStatus({ type: 'idle' });
@@ -1489,7 +1523,9 @@ export function FileConverter({
     isConverting || isConvertAndSending || isMassIngesting || isBatchValidating;
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
-  const convertDisabled = isBusy || !hasInput || isReadOnly;
+  const caProfileBlocked =
+    conversionParams.profile === 'ca_eccc' && caExtensionBundleAvailable === false;
+  const convertDisabled = isBusy || !hasInput || isReadOnly || caProfileBlocked;
   const safeQueueFocusIndex = clampQueueIndex(queueFocusIndex, pendingFiles.length);
   const activeSelectedCount = pendingFiles.filter((f) =>
     selectedPendingIds.has(f.id),
@@ -1515,6 +1551,8 @@ export function FileConverter({
           iwxxmVersion: conversionParams.iwxxmVersion,
           validateOutput: false,
           preview: true,
+          extensions: nationalExtensionsForProfile(conversionParams.profile),
+          exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
           signal,
         });
         if (signal.aborted) {
@@ -2009,6 +2047,24 @@ export function FileConverter({
                     <option value="iwxxm_us">IWXXM-US</option>
                     <option value="ca_eccc">Canada (ECCC)</option>
                   </select>
+                  {conversionParams.profile === 'ca_eccc' && (
+                    <div
+                      className="mt-2 rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
+                      data-testid="ca-eccc-profile-metadata"
+                      role="status"
+                    >
+                      <p>IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)</p>
+                      <p>{CA_ECCC_EXTENSION_LABEL}</p>
+                      <p>Supported products: {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}</p>
+                      {caProfileBlocked && (
+                        <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
+                          Canadian extension schemas are not available on this
+                          deployment. Conversion is blocked until the vendor bundle is
+                          installed.
+                        </p>
+                      )}
+                    </div>
+                  )}
                   <GoldenExamplesSelect
                     disabled={isReadOnly}
                     onSelectExample={handleLoadGoldenExample}

@@ -25,6 +25,11 @@ vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSchemaStatus: vi.fn().mockResolvedValue({
+    profile_pins: {
+      ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
+    },
+  }),
   lintTac: vi.fn().mockResolvedValue({
     ok: true,
     issues: [],

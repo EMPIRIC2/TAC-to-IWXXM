@@ -210,6 +210,10 @@ profiles:
         TAF: "A_LTCN"
         AIRMET: "A_LWCN"
       ev072_slice: [METAR, SPECI, TAF, AIRMET]
+      collect_envelope:
+        issue: "#1032"
+        status: implemented
+        ev_cycle: EV-073
       ops_corpus:
         issue: "#1036"
         status: implemented

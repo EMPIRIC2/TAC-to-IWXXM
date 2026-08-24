@@ -20,6 +20,11 @@ const apiMocks = vi.hoisted(() => ({
 vi.mock('@/utils/api', () => ({
   fetchQualityMetrics: apiMocks.fetchQualityMetrics,
   fetchQualityMetricsDetail: apiMocks.fetchQualityMetricsDetail,
+  fetchSchemaStatus: vi.fn().mockResolvedValue({
+    profile_pins: {
+      ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
+    },
+  }),
 }));
 
 const MOCK_LIST = {

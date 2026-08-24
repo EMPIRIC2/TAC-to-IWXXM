@@ -1,10 +1,36 @@
 # Evolve Decisions
 
+## Cycle EV-073 — CA_ECCC COLLECT envelope + profile wiring (#1042) (EV-073-ca-eccc-collect-envelope)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-073-ca-eccc-collect-envelope`  
+**Preset:** Full · **Documenting→Implementing gate:** closed · **Issues:** [#1042](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1042) (+ #1032 COLLECT residual)  
+**Parent:** #916 · **Prior:** EV-072 merged to `stage` @ `83c99d6f`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV073-goal | M1: full COLLECT envelope on CA_ECCC convert; M2: #1042 extension token + profile metadata wiring |
+| D-EV073-in | METAR/SPECI/TAF/AIRMET COLLECT wrap; MSC bulletinIdentifier; ops shell parity; FE `IWXXM_CA` auto-wire; fail-closed vendor pin |
+| D-EV073-out | SIGMET/VAA ops (#1043); live datamart CI; ConversionProfile editor (#933) |
+| D-EV073-deps | EV-072 on `stage` @ `83c99d6f` |
+| D-EV073-scale | Full; all default evolve verifying angles |
+| D-EV073-fn | Deepen **F36** / **F6** / **F7** / **tests** — no new top-level Fn |
+| D-EV073-gate | **open** — M1+M2 **complete**; implementing verify in progress |
+| D-EV073-m1 | COLLECT envelope: TC-EV073-001..005 — **complete** |
+| D-EV073-m2 | Profile wiring (#1042): TC-EV073-006..009 — **complete** |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: product §F6] [Corpus: product §F7] [Corpus: api] [Corpus: tests] [Corpus: domain-profiles §CA_ECCC]
+
+---
+
 ## Cycle EV-072 — CA_ECCC exchange aerodrome products + ops corpus (#1036) (EV-072-ca-eccc-exchange-ops)
 
-**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-072-ca-eccc-exchange-ops`  
-**Preset:** Full · **Documenting→Implementing gate:** closed · **Issues:** [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036) (+ #1032 residual exchange products)  
-**Parent:** #916 · **Prior:** EV-071 merged to `stage` @ `2d934ef2`
+**Opened:** 2026-08-24 · **Merged:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-072-ca-eccc-exchange-ops`  
+**Preset:** Full · **Documenting→Implementing gate:** open · **Issues:** [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036) (+ #1032 residual exchange products)  
+**Parent:** #916 · **Prior:** EV-071 merged to `stage` @ `2d934ef2` · **PR:** [#1057](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1057) → `stage` @ `83c99d6f`
 
 ### Locked intake
 
@@ -16,7 +42,7 @@
 | D-EV072-deps | EV-071 on `stage` @ `2d934ef2` |
 | D-EV072-scale | Full; all default evolve verifying angles |
 | D-EV072-fn | Deepen **F36** / **F6** / **tests** — no new top-level Fn |
-| D-EV072-gate | **open** — documenting 11/11 PASS; M1+M2 **complete**; implementing verify pending |
+| D-EV072-gate | **open** — documenting 11/11 PASS; M1+M2 **complete**; implementing verify **11/11 PASS**; merged #1057 |
 | D-EV072-m1 | Exchange SPECI/TAF/AIRMET: TC-EV072-001..006 — **complete** |
 | D-EV072-m2 | Ops corpus: harvest + fixtures; TC-EV072-007..010 — **complete** |
 
