@@ -99,6 +99,12 @@ https://dd.meteo.gc.ca/today/aviation/iwxxm/{product}/{code_issuer}/{HH}
 
 **Distribution:** HTTPS + AMQP (MSC open data). Excellent conformance corpus for paired TAC/IWXXM testing.
 
+**EV-072 M2 harvest (pin_date 2026-08-24):**
+
+- Script: `scripts/iwxxm/harvest_ca_eccc_ops.py` · manifest: `packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json`
+- Regenerate: `make ca-ops-harvest` (rate-limited; CI uses offline fixtures only)
+- At pin_date, MSC datamart publishes TAF/AIRMET/SIGMET IWXXM under COLLECT envelopes; METAR/SPECI paths return 404 — encoder-reference fixtures with manifest waiver
+
 ## Product × file matrix
 
 | Product | TAC input artifact | IWXXM output (root / XSD) | Official example / guidance | Gap vs GIFTs | Consumer |

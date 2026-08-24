@@ -1,5 +1,31 @@
 # Evolve Decisions
 
+## Cycle EV-072 — CA_ECCC exchange aerodrome products + ops corpus (#1036) (EV-072-ca-eccc-exchange-ops)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-072-ca-eccc-exchange-ops`  
+**Preset:** Full · **Documenting→Implementing gate:** closed · **Issues:** [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036) (+ #1032 residual exchange products)  
+**Parent:** #916 · **Prior:** EV-071 merged to `stage` @ `2d934ef2`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV072-goal | M1: SPECI/TAF/AIRMET exchange output (EV-071 deferred); M2: datamart ops conformance corpus (#1036) |
+| D-EV072-in | Per-product output_spec, layer-6 goldens, catalog/doc delta; harvest script + ops fixtures (≥5 METAR, ≥2 each other) |
+| D-EV072-out | Full COLLECT envelope; UI picker (#1042); SIGMET/VAA ops (#1043); live CI datamart fetch |
+| D-EV072-deps | EV-071 on `stage` @ `2d934ef2` |
+| D-EV072-scale | Full; all default evolve verifying angles |
+| D-EV072-fn | Deepen **F36** / **F6** / **tests** — no new top-level Fn |
+| D-EV072-gate | **open** — documenting 11/11 PASS; M1+M2 **complete**; implementing verify pending |
+| D-EV072-m1 | Exchange SPECI/TAF/AIRMET: TC-EV072-001..006 — **complete** |
+| D-EV072-m2 | Ops corpus: harvest + fixtures; TC-EV072-007..010 — **complete** |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: product §F6] [Corpus: tests] [Corpus: domain-profiles §CA_ECCC] [Corpus: api]
+
+---
+
 ## Cycle EV-071 — CA_ECCC lint pack + exchange output (#1038 / #1032 / #1040) (EV-071-ca-eccc-lint-exchange)
 
 **Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-071-ca-eccc-lint-exchange`  

@@ -65,6 +65,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
+	ca-ops-harvest ca-ops-check \
 	generate-quality-metrics \
 	issue-registry-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
@@ -125,6 +126,15 @@ membership-check: membership-regen
 	@git diff --quiet -- packages/tac-validate/src/tac_validate/data/wmo_membership.json \
 		|| (echo "wmo_membership.json drift — run make membership-regen and commit"; \
 		git diff --stat -- packages/tac-validate/src/tac_validate/data/wmo_membership.json; exit 1)
+
+# EV-072 M2 / #1036 — offline CA_ECCC MSC datamart ops corpus (pin-date harvest)
+ca-ops-harvest:
+	$(UV) run python scripts/iwxxm/harvest_ca_eccc_ops.py --pin-date 2026-08-24
+
+ca-ops-check: ca-ops-harvest
+	@git diff --quiet -- packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json \
+		|| (echo "ops_manifest.json drift — run make ca-ops-harvest and commit"; \
+		git diff --stat -- packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json; exit 1)
 
 # F15 — hard-fail on severity= literals in rule modules (T2.2a / E11-32)
 issue-registry-guard:

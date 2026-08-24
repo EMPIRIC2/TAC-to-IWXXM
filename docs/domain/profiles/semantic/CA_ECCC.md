@@ -125,6 +125,23 @@ extensions — independent of the app default **2025-2** SoT line ([ADR-036](../
 
 - SPECI/TAF/AIRMET exchange output filename slice; full COLLECT envelope
 
+### EV-072 M1 delivered (#1032 residual — exchange aerodrome products)
+
+- **M1:** SPECI (`A_LPCN`), TAF (`A_LTCN`), AIRMET (`A_LWCN`) exchange output wire +
+  layer-6 validate + API `output_spec`; catalog `ev072_slice` (TC-EV072-001..006)
+
+### EV-072 M2 delivered (#1036 — ops corpus)
+
+- **M2:** MSC datamart ops fixture corpus — pin-date harvest script, `ops_manifest.json`,
+  ≥5 METAR + ≥2 each SPECI/TAF/AIRMET `wmoReference` tier; layer-6 packaging checks
+  (TC-EV072-007..010)
+- **Note:** METAR/SPECI IWXXM not published on MSC datamart at pin_date 2026-08-24;
+  encoder-reference fixtures with documented waiver; TAF/AIRMET from live COLLECT envelopes
+
+### EV-072 deferred (follow-on)
+
+- **EV-073+:** full COLLECT envelope packaging
+
 Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044) playbook §5 + §8.
 
 ### Out of scope (EV-068 / backlog)
