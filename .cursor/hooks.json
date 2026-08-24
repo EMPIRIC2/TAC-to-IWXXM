@@ -17,7 +17,7 @@
     ],
     "preToolUse": [
       {
-        "command": "python3 .cursor/hooks/scope_check.py",
+        "command": "python3 .cursor/hooks/pack/scope_check.py",
         "matcher": "Write",
         "timeout": 10
       },
@@ -39,7 +39,7 @@
     ],
     "afterFileEdit": [
       {
-        "command": "python3 .cursor/hooks/feature_drift.py",
+        "command": "python3 .cursor/hooks/pack/feature_drift.py",
         "matcher": "Write|TabWrite",
         "timeout": 10
       },
@@ -68,6 +68,11 @@
       {
         "command": "bash .cursor/hooks/post-test-sync.sh",
         "timeout": 10
+      }
+    ],
+    "workspaceOpen": [
+      {
+        "command": ".cursor/hooks/register-workspace-plugins.sh"
       }
     ]
   }

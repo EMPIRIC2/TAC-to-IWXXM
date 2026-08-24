@@ -1,0 +1,156 @@
+{
+  "prefixes": [
+    {
+      "prefix": "apps/backend/src/utilities/conversion",
+      "label": "F1 \u2014 METAR \u2192 IWXXM conversion"
+    },
+    {
+      "prefix": "apps/backend/src/routers/validation",
+      "label": "F2 \u2014 IWXXM validation"
+    },
+    {
+      "prefix": "apps/backend/src/services/openaip",
+      "label": "F3 \u2014 Airport data services"
+    },
+    {
+      "prefix": "apps/backend/src/services/reconciliation",
+      "label": "F3 \u2014 Airport data services"
+    },
+    {
+      "prefix": "apps/backend/src/routers/dissemination",
+      "label": "F16\u2013F19 \u2014 Dissemination preflight/send (ADR-029)"
+    },
+    {
+      "prefix": "apps/backend/src/services/dissemination",
+      "label": "F16\u2013F19 \u2014 Dissemination egress / writers"
+    },
+    {
+      "prefix": "apps/backend/src/dissemination",
+      "label": "F16\u2013F19 \u2014 Dissemination module"
+    },
+    {
+      "prefix": "apps/frontend/src/components/Dissemination",
+      "label": "F16\u2013F19 \u2014 Dissemination drawer UI"
+    },
+    {
+      "prefix": "apps/frontend/src/dissemination",
+      "label": "F16\u2013F19 \u2014 Dissemination drawer UI"
+    },
+    {
+      "prefix": "apps/e2e/dissemination",
+      "label": "UJ-027\u2013030 \u2014 Dissemination E2E (H6\u2032)"
+    },
+    {
+      "prefix": "apps/backend",
+      "label": "F1\u2013F19, M4 \u2014 Backend API (msgspec = F11; dissemination = F16\u2013F19)"
+    },
+    {
+      "prefix": "apps/frontend",
+      "label": "F1\u2013F19 \u2014 Frontend UI (dissemination drawer = F16\u2013F19)"
+    },
+    {
+      "prefix": "apps/worker",
+      "label": "F8 \u2014 Near-RT ingest worker (no auto push sinks)"
+    },
+    {
+      "prefix": "apps/e2e",
+      "label": "UJ-001\u2013030 \u2014 E2E tests (T2 / H6\u2032)"
+    },
+    {
+      "prefix": "packages/tac2iwxxm",
+      "label": "F6, F9, F14 \u2014 tac2iwxxm convert/decode + PyPI"
+    },
+    {
+      "prefix": "packages/tac-validate",
+      "label": "F12, F15 \u2014 tac-validate PyPI + issue registry + TAC product rules"
+    },
+    {
+      "prefix": "packages/iwxxm-validate",
+      "label": "F2, F13 \u2014 iwxxm-validate Rust/XSD/Schematron + PyPI"
+    },
+    {
+      "prefix": "packages/dissemination",
+      "label": "F16\u2013F19 \u2014 Dissemination sinks / writer-contract / SSRF (ADR-030)"
+    },
+    {
+      "prefix": "packages/auth",
+      "label": "F31, M4 \u2014 Supabase Auth JWKS + /auth/* (ADR-033)"
+    },
+    {
+      "prefix": "packages/gifts",
+      "label": "F1, M3 \u2014 GIFTs library (transitional)"
+    },
+    {
+      "prefix": "packages/shared",
+      "label": "M1, M5 \u2014 Shared workspace package"
+    },
+    {
+      "prefix": "vendor",
+      "label": "M2, M6 \u2014 Vendor snapshot sync (read-only)"
+    },
+    {
+      "prefix": "docs/adr/ADR-029",
+      "label": "F16\u2013F19 \u2014 Dissemination SSRF / allowlist (ADR-029)"
+    },
+    {
+      "prefix": "docs/adr/ADR-030",
+      "label": "F16\u2013F19 \u2014 Dissemination package architecture (ADR-030)"
+    },
+    {
+      "prefix": "docs/adr/ADR-031",
+      "label": "F21/F22 \u2014 Public app + IndexedDB history (ADR-031)"
+    },
+    {
+      "prefix": "docs/adr/ADR-033",
+      "label": "F30/F31 \u2014 Platform independence Auth + DO Postgres + DOKS"
+    },
+    {
+      "prefix": "backend/src/utilities/conversion",
+      "label": "F1 \u2014 METAR \u2192 IWXXM (legacy path)"
+    },
+    {
+      "prefix": "backend/src/routers/validation",
+      "label": "F2 \u2014 IWXXM validation (legacy path)"
+    },
+    {
+      "prefix": "backend",
+      "label": "F1\u2013F4 \u2014 Legacy backend"
+    },
+    {
+      "prefix": "frontend",
+      "label": "F1\u2013F4 \u2014 Legacy frontend"
+    },
+    {
+      "prefix": "GIFTs",
+      "label": "F1, M3 \u2014 Legacy GIFTs"
+    },
+    {
+      "prefix": "auth",
+      "label": "Legacy top-level auth/ \u2014 use packages/auth (F31)"
+    },
+    {
+      "prefix": "schemas",
+      "label": "M2 \u2014 Legacy schemas"
+    },
+    {
+      "prefix": ".github/workflows",
+      "label": "F14, M5, M6, F16\u2013F19 \u2014 CI, vendor sync, PyPI, dissemination coverage/Compose"
+    },
+    {
+      "prefix": "Makefile",
+      "label": "M5, F16\u2013F19 \u2014 Workspace tooling (+ dissemination / wis2box targets)"
+    },
+    {
+      "prefix": "docker-compose.yml",
+      "label": "M4 \u2014 Deploy topology"
+    },
+    {
+      "prefix": "docker-compose.wis2box.yml",
+      "label": "F17 \u2014 wis2box Compose/CI harness overlay (E14-04; not Render)"
+    },
+    {
+      "prefix": "render.yaml",
+      "label": "M4, F16\u2013F19, UJ-OPS-001 \u2014 Render deploy (+ allowlist env; no wis2box service)"
+    }
+  ]
+}

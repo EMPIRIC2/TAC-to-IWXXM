@@ -1,0 +1,7 @@
+{
+  "prefixes": [
+    {"prefix": "apps", "label": "Application features — see docs/feature-list.md"},
+    {"prefix": "packages", "label": "Shared library features"},
+    {"prefix": "docs", "label": "Documentation / ADR features"}
+  ]
+}

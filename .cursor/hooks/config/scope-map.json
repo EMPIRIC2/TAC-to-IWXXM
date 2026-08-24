@@ -1,0 +1,111 @@
+{
+  "prefixes": [
+    {
+      "prefix": "apps/backend",
+      "label": "Backend API \u2014 conversion, validation, Planned F16\u2013F19 dissemination (public F21)"
+    },
+    {
+      "prefix": "apps/frontend",
+      "label": "Frontend UI (F1\u2013F22; Planned dissemination drawer UJ-027\u2013030)"
+    },
+    {
+      "prefix": "apps/worker",
+      "label": "F8 near-RT ingest poller \u2014 Background Worker (ADR-018; no auto push)"
+    },
+    {
+      "prefix": "apps/e2e",
+      "label": "E2E workspace \u2014 Playwright (T2 / H6\u2032 incl. UJ-027\u2013030)"
+    },
+    {
+      "prefix": "packages/tac2iwxxm",
+      "label": "General TAC \u2192 IWXXM converter (F6, F14)"
+    },
+    {
+      "prefix": "packages/tac-validate",
+      "label": "TAC product validation / lint (F12)"
+    },
+    {
+      "prefix": "packages/iwxxm-validate",
+      "label": "IWXXM XSD + Schematron engine (F2, F13)"
+    },
+    {
+      "prefix": "packages/dissemination",
+      "label": "Dissemination sinks / writer-contract / SSRF (F16\u2013F19; ADR-030)"
+    },
+    {
+      "prefix": "packages/auth",
+      "label": "Supabase Auth JWKS + /auth/* library (F31, M4; ADR-033)"
+    },
+    {
+      "prefix": "packages/gifts",
+      "label": "GIFTs \u2014 transitional until F6 cutover delete (F1, M3)"
+    },
+    {
+      "prefix": "packages/shared",
+      "label": "Shared types and utils (M1, M5)"
+    },
+    {
+      "prefix": "vendor",
+      "label": "Vendor schemas \u2014 read-only wmo-im snapshots (M2, M6)"
+    },
+    {
+      "prefix": "backend",
+      "label": "Legacy backend \u2014 migrate to apps/backend (M1)"
+    },
+    {
+      "prefix": "frontend",
+      "label": "Legacy frontend \u2014 migrate to apps/frontend (M1)"
+    },
+    {
+      "prefix": "GIFTs",
+      "label": "Legacy GIFTs \u2014 migrate to packages/gifts (M3)"
+    },
+    {
+      "prefix": "auth",
+      "label": "Legacy top-level auth/ \u2014 use packages/auth (F31)"
+    },
+    {
+      "prefix": "schemas",
+      "label": "Legacy schemas \u2014 migrate to vendor/schemas (M2)"
+    },
+    {
+      "prefix": "data/iwxxm-translation",
+      "label": "Legacy translation data \u2014 migrate to vendor/schemas (M2)"
+    },
+    {
+      "prefix": "tests",
+      "label": "Test suite"
+    },
+    {
+      "prefix": "test-data",
+      "label": "Golden fixtures (TC-M003)"
+    },
+    {
+      "prefix": "docs",
+      "label": "Documentation"
+    },
+    {
+      "prefix": ".cursor",
+      "label": "Cursor tooling"
+    },
+    {
+      "prefix": ".github",
+      "label": "CI/CD + PyPI publish workflows (F14, M5, M6, F16\u2013F19)"
+    },
+    {
+      "prefix": "scripts",
+      "label": "Automation \u2014 vendor sync, deploy smoke, dissemination/wis2box CI hooks"
+    }
+  ],
+  "exact_paths": {
+    "Makefile": "Monorepo infrastructure (M1, M5)",
+    "docker-compose.wis2box.yml": "Monorepo infrastructure (M1, M5)",
+    "docker-compose.yml": "Monorepo infrastructure (M1, M5)",
+    "package.json": "Monorepo infrastructure (M1, M5)",
+    "pnpm-lock.yaml": "Monorepo infrastructure (M1, M5)",
+    "pnpm-workspace.yaml": "Monorepo infrastructure (M1, M5)",
+    "pyproject.toml": "Monorepo infrastructure (M1, M5)",
+    "render.yaml": "Monorepo infrastructure (M1, M5)",
+    "uv.lock": "Monorepo infrastructure (M1, M5)"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "prefixes": [
+    {"prefix": "apps", "label": "Application services"},
+    {"prefix": "packages", "label": "Shared packages"},
+    {"prefix": "tests", "label": "Test suite"},
+    {"prefix": "docs", "label": "Documentation"},
+    {"prefix": ".cursor", "label": "Cursor tooling"},
+    {"prefix": ".github", "label": "CI/CD"}
+  ]
+}
