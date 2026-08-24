@@ -62,6 +62,18 @@ _PINNED_FETCHES: list[dict[str, str]] = [
         "url": f"{DEFAULT_BASE}/today/aviation/iwxxm/airmet/czvr/13/A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
     },
     {
+        "id": "airmet_czwg_12_001",
+        "product": "AIRMET",
+        "rel_path": "AIRMET/ops/airmet_czwg_12_001.xml",
+        "url": f"{DEFAULT_BASE}/today/aviation/iwxxm/airmet/czwg/12/A_LWCN23CWAO241204_C_CWAO_20260824120414.xml",
+    },
+    {
+        "id": "airmet_czeg_gfa_sfc_vis_001",
+        "product": "AIRMET",
+        "rel_path": "AIRMET/ops/airmet_czeg_gfa_sfc_vis_001.xml",
+        "url": f"{DEFAULT_BASE}/today/aviation/iwxxm/airmet/czeg/13/A_LWCN22CWAO241355_C_CWAO_20260824135540.xml",
+    },
+    {
         "id": "sigmet_czeg_15_001",
         "product": "SIGMET",
         "rel_path": "SIGMET/ops/sigmet_czeg_15_001.xml",
@@ -77,7 +89,7 @@ _PINNED_FETCHES: list[dict[str, str]] = [
     },
 ]
 
-# VAA: no MSC aviation/iwxxm VAA tree on 2026-08-24 (D-EV074-vaa-follow).
+# VAA: datamart tree absent — use scripts/iwxxm/harvest_ca_eccc_vaac_tac.py (D-EV074-vaa-waiver-tac).
 
 _ENCODER_REFERENCE: list[dict[str, str]] = [
     {
@@ -248,6 +260,7 @@ def harvest(
         "rate_limit_seconds": rate_limit,
         "cases": cases,
         "vaa_harvest": "deferred_no_datamart_tree",
+        "vaa_harvest_note": "Run harvest_ca_eccc_vaac_tac.py for Montreal VAAC TAC (D-EV074-vaa-waiver-tac).",
     }
     manifest["manifest_sha256"] = manifest_checksum(manifest)
     if not dry_run:

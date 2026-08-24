@@ -159,7 +159,7 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - **M1:** ≥2 SIGMET ops IWXXM from MSC datamart (`czeg`, `czqm`); `sigmet_kind` in `ops_manifest.json`
 - **M2:** Layered validate — WMO 3.0.0 XSD+SCH; `ca_xsd` / exchange skipped as not-applicable for SIGMET/VAA
 - **M3:** COLLECT unwrap for SIGMET / VA SIGMET / TC SIGMET / VAA roots
-- **Deferred:** VAA ops harvest (`D-EV074-vaa-follow` — no MSC `aviation/iwxxm/vaa` tree at pin 2026-08-24)
+- **Deferred:** VAA ops harvest — datamart `vaa/` absent; **EV-077:** Montreal VAAC TAC validate-first (`D-EV074-vaa-waiver-tac`, 1 live at pin; target ≥2)
 - Tests: TC-EV074-001..010
 
 ### EV-076 delivered (#1061 — SIGMET exchange output emit)

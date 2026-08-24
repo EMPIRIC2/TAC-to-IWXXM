@@ -160,7 +160,9 @@ def test_tc_ev072_009_ops_speci_taf_airmet_fixture_counts() -> None:
 def test_tc_ev072_010_ops_iwxxm_packaging_checks(case: dict) -> None:
     """Ops IWXXM passes layer-6 packaging checks or documents an explicit waiver."""
     if case["product"] == "VAA":
-        pytest.skip("D-EV074-vaa-follow: no VAA ops fixtures or exchange emit")
+        pytest.skip("VAA uses ops_tac validate-first (D-EV074-vaa-waiver-tac)")
+    if "ops_xml" not in case:
+        pytest.skip("non-IWXXM ops case")
     from iwxxm_validate.ca_exchange_validate import validate_ca_exchange_packaging
 
     raw = (FIXTURES / case["ops_xml"]).read_text(encoding="utf-8")

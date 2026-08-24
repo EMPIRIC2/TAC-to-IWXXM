@@ -3051,8 +3051,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV074-003: Ops VAA fixture count
 
 - **Level**: T1
-- **Objective**: Manifest VAA list is empty until MSC publishes a VAA tree; `vaa_harvest=deferred_no_datamart_tree` (D-EV074-vaa-follow). Do not silent-fill encoder VAA.
-- **Source**: EV-074 M1; REQ-EV074-M1-002; D-EV074-vaa-follow
+- **Objective**: Manifest VAA ≥1 Montreal VAAC TAC ops fixture; `vaa_harvest=vaac_tac_waived` (D-EV074-vaa-waiver-tac). Target ≥2 when VAAC 31-day index publishes more. Do not silent-fill encoder VAA.
+- **Source**: EV-074 M1; EV-077; D-EV074-vaa-waiver-tac
 
 ### TC-EV074-004: SIGMET WMO 3.0.0 under CA profile
 
@@ -3060,11 +3060,17 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Harvested SIGMET fixtures pass wellformed + WMO 3.0.0 XSD+Schematron with `semantic_profile=CA_ECCC`
 - **Source**: EV-074 M2; REQ-EV074-M2-001
 
-### TC-EV074-005: VAA WMO 3.0.0 under CA profile
+### TC-EV074-005: VAA VAAC TAC validate-first
 
 - **Level**: T1
-- **Objective**: Deferred with TC-EV074-003 — no VAA ops fixtures this cycle (D-EV074-vaa-follow). Re-open when MSC publishes `aviation/iwxxm/vaa`.
-- **Source**: EV-074 M2; REQ-EV074-M2-001; D-EV074-vaa-follow
+- **Objective**: Montreal VAAC TAC ops fixtures pass annex3 VAA lint; IWXXM exchange packaging N/A (no datamart vaa/)
+- **Source**: EV-077; D-EV074-vaa-waiver-tac
+
+### TC-EV074-011: VAA VAAC TAC lint green
+
+- **Level**: T1
+- **Objective**: Each manifest VAA `ops_tac` passes `tac_validate.lint(product=VAA)` with no errors
+- **Source**: EV-077; TC-EV074-005
 
 ### TC-EV074-006: ca_xsd skipped not-applicable
 

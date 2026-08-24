@@ -43,6 +43,44 @@
       "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
     },
     {
+      "id": "airmet_czwg_12_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czwg_12_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czwg/12/A_LWCN23CWAO241204_C_CWAO_20260824120414.xml",
+      "source_filename": "A_LWCN23CWAO241204_C_CWAO_20260824120414.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "airmet_czeg_gfa_sfc_vis_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czeg_gfa_sfc_vis_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czeg/13/A_LWCN22CWAO241355_C_CWAO_20260824135540.xml",
+      "source_filename": "A_LWCN22CWAO241355_C_CWAO_20260824135540.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "sigmet_czeg_15_001",
+      "product": "SIGMET",
+      "tier": "wmoReference",
+      "ops_xml": "SIGMET/ops/sigmet_czeg_15_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czeg/15/A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
+      "source_filename": "A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "sigmet_kind": "weather"
+    },
+    {
+      "id": "sigmet_czqm_08_001",
+      "product": "SIGMET",
+      "tier": "wmoReference",
+      "ops_xml": "SIGMET/ops/sigmet_czqm_08_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czqm/08/A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
+      "source_filename": "A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "sigmet_kind": "weather"
+    },
+    {
       "id": "metar_basic_ops",
       "product": "METAR",
       "tier": "wmoReference",
@@ -99,26 +137,18 @@
       "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
     },
     {
-      "id": "sigmet_czeg_15_001",
-      "product": "SIGMET",
-      "tier": "wmoReference",
-      "ops_xml": "SIGMET/ops/sigmet_czeg_15_001.xml",
-      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czeg/15/A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
-      "source_filename": "A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
-      "sigmet_kind": "weather",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
-    },
-    {
-      "id": "sigmet_czqm_08_001",
-      "product": "SIGMET",
-      "tier": "wmoReference",
-      "ops_xml": "SIGMET/ops/sigmet_czqm_08_001.xml",
-      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czqm/08/A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
-      "source_filename": "A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
-      "sigmet_kind": "weather",
-      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+      "id": "vaa_edziza_20260818_001",
+      "product": "VAA",
+      "tier": "vaacTac",
+      "ops_tac": "VAA/ops/vaa_edziza_20260818_001.tac",
+      "source": "vaac_tac",
+      "source_url": "https://weather.gc.ca/eer/vaac/viewData_e.html?product=FVCN&data=20260818-1859Z_FVCN01-0001_EDZIZA-320060.msg.sent.txt",
+      "vaac_header": "FVCN01-0001",
+      "volcano": "EDZIZA-320060",
+      "packaging_waiver": "VAA validate-first TAC from Montreal VAAC; no MSC datamart IWXXM (D-EV074-vaa-waiver-tac); exchange emit still deferred"
     }
   ],
-  "manifest_sha256": "0402b42adaa153b4eda31c97df6a6483688e9d1255d19a9263326275ef3f1400",
-  "vaa_harvest": "deferred_no_datamart_tree"
+  "vaa_harvest": "vaac_tac_waived",
+  "vaa_harvest_note": "Datamart vaa/ tree absent; Montreal VAAC TAC via D-EV074-vaa-waiver-tac. 1 bulletin(s) at pin 2026-08-24 (31-day index); \u22652 when published.",
+  "manifest_sha256": "dfface322d29c3afd0fe5b6bcb52167b858073a4bf0c4865c064ceeaedab427c"
 }

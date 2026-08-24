@@ -130,6 +130,7 @@ membership-check: membership-regen
 # EV-072 M2 / #1036 — offline CA_ECCC MSC datamart ops corpus (pin-date harvest)
 ca-ops-harvest:
 	$(UV) run python scripts/iwxxm/harvest_ca_eccc_ops.py --pin-date 2026-08-24
+	$(UV) run python scripts/iwxxm/harvest_ca_eccc_vaac_tac.py --pin-date 2026-08-24
 
 ca-ops-check: ca-ops-harvest
 	@git diff --quiet -- packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json \
