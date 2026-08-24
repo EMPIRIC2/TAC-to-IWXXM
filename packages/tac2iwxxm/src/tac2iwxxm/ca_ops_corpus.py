@@ -21,7 +21,18 @@ etree: Any = _lxml_etree
 _COLLECT_NS = "http://def.wmo.int/collect/2014"
 _IWXXM_NS = "http://icao.int/iwxxm/3.0"
 _CA_EXTENSION_NS = "https://dd.meteo.gc.ca/today/aviation/iwxxm/"
-_OPS_IWXXM_ROOTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
+_OPS_IWXXM_ROOTS = frozenset(
+    {
+        "METAR",
+        "SPECI",
+        "TAF",
+        "AIRMET",
+        "SIGMET",
+        "VolcanicAshSIGMET",
+        "TropicalCycloneSIGMET",
+        "VolcanicAshAdvisory",
+    }
+)
 _CA_SUBSTITUTION_ROOTS = frozenset({"LWIS", "SAWR"})
 _MSC_FILENAME_RE = re.compile(r"^A_[A-Z]{2}[A-Z]{2}\d{2}[A-Z]{4}\d{6}(?:[A-Z0-9]{3})?_C_[A-Z]{4}_\d{14}\.xml$")
 

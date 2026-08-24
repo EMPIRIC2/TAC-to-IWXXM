@@ -13,7 +13,7 @@ surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension sc
 |------|-------|
 | TAC parse / normalize | MANOBS METAR/SPECI/**LWIS**/**SAWR**; MANAIR TAF/AIRMET |
 | IWXXM extensions | `iwxxm-ca.xsd`, `common-ca.xsd`, `taf-ca.xsd`, `airmet-ca.xsd`, **`metar-speci-ca.xsd`** |
-| Products | METAR, SPECI, TAF, AIRMET (API product enum) |
+| Products | METAR, SPECI, TAF, AIRMET (convert+validate); SIGMET (**validate-first** ops EV-074 / #1043); VAA listed validate-first, harvest deferred (D-EV074-vaa-follow) |
 
 ## METAR-family national report variants
 
@@ -160,5 +160,6 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - `AerodromeVariableRVR` / `ObservedLightning` (P2 / #1039)
 - LWIS/SAWR/density/icing tac-validate codes beyond EV-071 M1 slice (if not promoted)
 - `#1050` `reportVariant` wire / UI (#1024)
-- SIGMET national overlay — out of #916 scope
+- SIGMET/VAA TAC convert overlay — out of EV-074; **validate-first ops** EV-074 / #1043
+- `#1033` SIGMET `code-ca` semantics — note-only in EV-074 (do not ship rules)
 - Global app default migration from 2025-2 to 3.0.0

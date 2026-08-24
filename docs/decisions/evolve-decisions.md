@@ -1,5 +1,36 @@
 # Evolve Decisions
 
+## Cycle EV-074 — CA_ECCC SIGMET + VAA datamart validate-first (#1043) (EV-074-ca-eccc-sigmet-vaa)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-074-ca-eccc-sigmet-vaa`  
+**Preset:** Full · **Documenting→Implementing gate:** open · **Issues:** [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043)  
+**Parent:** #916 · **Prior:** EV-073 merged to `stage`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV074-path | EV-074 on #1043 now (not #1032 closeout-first) |
+| D-EV074-goal | Validate-first SIGMET/VAA ops fixtures + catalog/coverage; reusable harvest/validate pattern |
+| D-EV074-in | ≥2 SIGMET IWXXM (VAA harvest deferred — D-EV074-vaa-follow); WMO 3.0.0 XSD+SCH under CA profile; skip `ca_xsd` N/A; catalog products; coverage matrix |
+| D-EV074-out | TAC convert; full F23/F26 bar; live datamart CI; promote; UI; COLLECT/exchange emit for SIGMET/VAA; shipping `code-ca` SIGMET rules |
+| D-EV074-counts | ≥2 SIGMET (ship now); ≥2 VAA **deferred** (D-EV074-vaa-follow) |
+| D-EV074-kinds | Any operational SIGMET mix; record kinds in manifest |
+| D-EV074-ca-xsd | Skip `ca_xsd` as not-applicable (not `CA_PRODUCT_XSD_NOT_FOUND`) |
+| D-EV074-1033 | Note-only |
+| D-EV074-fn | Deepen **F23** / **F26** / **F36** — no new top-level Fn |
+| D-EV074-scale | Full; all default evolve verifying angles |
+| D-EV074-success | #1043 AC + documenting/implementing verify PASS; PR → `stage`; no promote |
+| D-EV074-deps | EV-073 on `stage` |
+| D-EV074-gate | **open** — Build in progress |
+| D-EV074-vaa-follow | MSC datamart 2026-08-24 has no `aviation/iwxxm/vaa` tree; ship SIGMET ops now; do **not** silent-fill encoder VAA; follow-on when MSC publishes VAA |
+
+### Corpus
+
+[Corpus: product §F23] [Corpus: product §F26] [Corpus: product §F36] [Corpus: tests] [Corpus: api] [Corpus: domain-profiles §CA_ECCC]
+
+---
+
 ## Cycle EV-073 — CA_ECCC COLLECT envelope + profile wiring (#1042) (EV-073-ca-eccc-collect-envelope)
 
 **Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-073-ca-eccc-collect-envelope`  

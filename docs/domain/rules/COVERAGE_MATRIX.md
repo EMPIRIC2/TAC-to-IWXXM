@@ -239,6 +239,23 @@ Residual MANOBS book rules and exchange-output packaging are **M2 (#1032 / #1040
 
 ---
 
+## SIGMET / VAA — CA_ECCC validate-first ops (EV-074 / #1043)
+
+MSC publishes SIGMET (`A_LSCN` / `A_LYCN` / `A_LVCN`) and VAA (`A_LUCN`) IWXXM 3.0.0 on the
+datamart. No `sigmet-ca.xsd` / `vaa-ca.xsd` is published. Playbook type P (reusable
+validate-first slice before convert investment).
+
+| Theme | Harvest / fixtures | Validate | Convert | Status |
+|-------|--------------------|----------|---------|--------|
+| **S1** ≥2 SIGMET ops IWXXM | datamart pin-date (`weather` kinds, czeg+czqm) | wellformed + WMO 3.0.0 XSD+SCH | OOS | ✅ EV-074 |
+| **S2** ≥2 VAA ops IWXXM | datamart pin-date | same | OOS | deferred D-EV074-vaa-follow (no MSC VAA tree) |
+| **S3** `ca_xsd` N/A skip | — | skip not-applicable; not `CA_PRODUCT_XSD_NOT_FOUND` | — | ✅ EV-074 |
+| **S4** Catalog + coverage | `catalog.yaml` products + this table | — | — | ✅ EV-074 |
+| **S5** `#1033` code-ca SIGMET | note only | do not ship rules | — | ✅ EV-074 (note-only) |
+| **S6** Aerodrome CA regression | — | METAR/SPECI/TAF/AIRMET stack unchanged | unchanged | ✅ EV-074 (existing tests) |
+
+---
+
 ## TAF / SPECI — F20 quality themes (S020 / EV-015)
 
 Hard themes from [taf-speci-research-catalog.md](../../sessions/S020-aerodrome-quality/reports/taf-speci-research-catalog.md)

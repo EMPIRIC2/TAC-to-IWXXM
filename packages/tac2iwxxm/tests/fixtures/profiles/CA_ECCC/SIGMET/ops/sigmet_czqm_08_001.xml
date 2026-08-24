@@ -1,0 +1,68 @@
+<collect:MeteorologicalBulletin gml:id="uuid.ce5b9525-9c2e-4eca-8085-eef446b5b5e6" xmlns:aixm="http://www.aixm.aero/schema/5.1.1" xmlns:collect="http://def.wmo.int/collect/2014" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:iwxxm="http://icao.int/iwxxm/3.0" xmlns:iwxxm-ca="http://dd.meteo.gc.ca/iwxxm-ca/3.0.0" xmlns:metce="http://def.wmo.int/metce/2013" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://icao.int/iwxxm/3.0 http://schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd http://dd.meteo.gc.ca/iwxxm-ca/3.0.0 https://dd.meteo.gc.ca/today/aviation/iwxxm/schema/iwxxm-ca.xsd http://def.wmo.int/collect/2014 http://schemas.wmo.int/collect/1.2/collect.xsd">
+    <collect:meteorologicalInformation>
+<iwxxm:SIGMET gml:id="uuid.b33dc9dd-cabe-4109-b671-9c2ad5efe9d4" reportStatus="NORMAL" isCancelReport="true" permissibleUsage="OPERATIONAL">
+    <iwxxm:issueTime>
+        <gml:TimeInstant gml:id="uuid.a964f537-d23e-45a9-8a34-2413cb508999">
+            <gml:timePosition>2026-08-24T08:35:00.000Z</gml:timePosition>
+        </gml:TimeInstant>
+    </iwxxm:issueTime>
+    <iwxxm:issuingAirTrafficServicesUnit>
+        <aixm:Unit gml:id="uuid.9c4d797a-791c-49fe-bbbb-4bf42c133e13">
+            <aixm:timeSlice>
+                <aixm:UnitTimeSlice gml:id="uuid.1f01a1ee-d48c-4850-accb-9848dbbccf49">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:name>CZQM FIC</aixm:name>
+                    <aixm:type>FIC</aixm:type>
+                    <aixm:designator>CZQM</aixm:designator>
+                </aixm:UnitTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Unit>
+    </iwxxm:issuingAirTrafficServicesUnit>
+    <iwxxm:originatingMeteorologicalWatchOffice>
+        <aixm:Unit gml:id="uuid.3c36465c-e924-4023-85b8-2f8c6196e46c">
+            <aixm:timeSlice>
+                <aixm:UnitTimeSlice gml:id="uuid.914cdc2b-40f9-4673-8283-43ba61ab6a14">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:name>CWUL MWO</aixm:name>
+                    <aixm:type>MWO</aixm:type>
+                    <aixm:designator>CWUL</aixm:designator>
+                </aixm:UnitTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Unit>
+    </iwxxm:originatingMeteorologicalWatchOffice>
+    <iwxxm:issuingAirTrafficServicesRegion>
+        <aixm:Airspace gml:id="uuid.bf945c59-c088-4e57-9a39-4c0a65924899">
+            <aixm:timeSlice>
+                <aixm:AirspaceTimeSlice gml:id="uuid.a7abb6ed-2f1a-4ed9-893d-95c85544fcbf">
+                    <gml:validTime/>
+                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+                    <aixm:type>FIR</aixm:type>
+                    <aixm:designator>CZQM</aixm:designator>
+                    <aixm:name>MONCTON FIR</aixm:name>
+                </aixm:AirspaceTimeSlice>
+            </aixm:timeSlice>
+        </aixm:Airspace>
+    </iwxxm:issuingAirTrafficServicesRegion>
+    <iwxxm:sequenceNumber>Q2</iwxxm:sequenceNumber>
+    <iwxxm:validPeriod>
+        <gml:TimePeriod gml:id="uuid.48a28f89-1054-44b5-9647-5f41d6288f27">
+            <gml:beginPosition>2026-08-24T08:35:00.000Z</gml:beginPosition>
+            <gml:endPosition>2026-08-24T11:40:00.000Z</gml:endPosition>
+        </gml:TimePeriod>
+    </iwxxm:validPeriod>
+    <iwxxm:cancelledReportSequenceNumber>Q1</iwxxm:cancelledReportSequenceNumber>
+    <iwxxm:cancelledReportValidPeriod>
+        <gml:TimePeriod gml:id="uuid.f2170fd1-c22c-4a51-b91a-8d86895097c6">
+            <gml:beginPosition>2026-08-24T07:40:00.000Z</gml:beginPosition>
+            <gml:endPosition>2026-08-24T11:40:00.000Z</gml:endPosition>
+        </gml:TimePeriod>
+    </iwxxm:cancelledReportValidPeriod>
+    <iwxxm:extension>
+        <iwxxm-ca:humanReadableText>GFACN34</iwxxm-ca:humanReadableText>
+    </iwxxm:extension>
+</iwxxm:SIGMET>
+    </collect:meteorologicalInformation>
+    <collect:bulletinIdentifier>A_LSCN26CWAO240835_C_CWAO_20260824083546.XML</collect:bulletinIdentifier>
+</collect:MeteorologicalBulletin>

@@ -72,6 +72,11 @@ def ca_iwxxm_core_xsd_path() -> Path | None:
     return bundle.core_xsd if bundle is not None else None
 
 
+def ca_product_has_national_xsd(product: str) -> bool:
+    """Return whether ``product`` has a published ``*-ca`` XSD mapping."""
+    return product.strip().upper() in CA_PRODUCT_XSD
+
+
 def ca_product_xsd_path(product: str, *, tag: str = CA_EXTENSION_TAG) -> Path | None:
     """
     Resolve product-specific Canadian extension XSD for layer 4.
@@ -114,6 +119,7 @@ __all__ = [
     "STAGE_WMO_XSD",
     "ca_eccc_bundle_available",
     "ca_iwxxm_core_xsd_path",
+    "ca_product_has_national_xsd",
     "ca_product_xsd_path",
     "pending_ca_stages",
 ]

@@ -21,6 +21,7 @@ from iwxxm_validate.ca_eccc_layers import (
     STAGE_WELLFORMED,
     STAGE_WMO_SCH,
     STAGE_WMO_XSD,
+    ca_product_has_national_xsd,
     ca_product_xsd_path,
 )
 from iwxxm_validate.ca_exchange_validate import validate_ca_exchange_packaging
@@ -396,7 +397,18 @@ def validate_ca_eccc_layered(
 
     if run_xsd_stages and product and not _has_error(all_issues):
         product_xsd = ca_product_xsd_path(product)
-        if product_xsd is None:
+        if not ca_product_has_national_xsd(product):
+            ca_issues = [
+                Issue(
+                    severity="info",
+                    code="CA_XSD_NOT_APPLICABLE",
+                    message=(
+                        f"No published Canadian extension XSD for product {product!r}; ca_xsd skipped (not applicable)"
+                    ),
+                    layer=STAGE_CA_XSD,
+                )
+            ]
+        elif product_xsd is None:
             ca_issues = [
                 Issue(
                     severity="error",
@@ -420,7 +432,17 @@ def validate_ca_eccc_layered(
         append_stage(STAGE_CODE_CA, code_ca_issues)
 
     if not _has_error(all_issues):
-        exchange_issues = validate_ca_exchange_packaging(xml_content, product=product)
+        if product and not ca_product_has_national_xsd(product):
+            exchange_issues = [
+                Issue(
+                    severity="info",
+                    code="CA_EXCHANGE_NOT_APPLICABLE",
+                    message=(f"CA exchange packaging not required for validate-first product {product!r}"),
+                    layer=STAGE_EXCHANGE,
+                )
+            ]
+        else:
+            exchange_issues = validate_ca_exchange_packaging(xml_content, product=product)
         append_stage(STAGE_EXCHANGE, exchange_issues)
 
     ok = not _has_error(all_issues)
