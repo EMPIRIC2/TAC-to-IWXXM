@@ -2894,6 +2894,82 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Filename, header, and layer-6 validate pass on fixture
 - **Source**: EV-071 M2; #1032 acceptance
 
+### EV-072 / #1032 residual + #1036 — CA_ECCC exchange aerodrome products + ops corpus
+
+- **Mode**: deepen F36/F6; complete exchange output + operational fixtures
+- **Pass criteria**: AC in evolve-decisions §EV-072; TC-EV072-*
+- **Source**: EV-071 deferred; [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036)
+
+### TC-EV072-001: SPECI exchange output (`A_LPCN`)
+
+- **Level**: T0 / T2
+- **Objective**: CA_ECCC SPECI convert returns MSC filename + `A_LPCN` WMO header in output_spec
+- **Pass criteria**: Layer-6 validate passes; wrong designator fails closed
+- **Source**: EV-072 M1; #1032 residual
+
+### TC-EV072-002: TAF exchange output (`A_LTCN`)
+
+- **Level**: T0 / T2
+- **Objective**: CA_ECCC TAF convert returns MSC filename + `A_LTCN` WMO header in output_spec
+- **Pass criteria**: Layer-6 validate passes; distribution path segment `taf`
+- **Source**: EV-072 M1; #1032 residual
+
+### TC-EV072-003: AIRMET exchange output (`A_LWCN`)
+
+- **Level**: T0 / T2
+- **Objective**: CA_ECCC AIRMET convert returns MSC filename + `A_LWCN` WMO header in output_spec
+- **Pass criteria**: Layer-6 validate passes; distribution path segment `airmet`
+- **Source**: EV-072 M1; #1032 residual
+
+### TC-EV072-004: Layer-6 goldens per aerodrome product
+
+- **Level**: T0
+- **Objective**: `validate_ca_exchange_packaging` parametrized for METAR/SPECI/TAF/AIRMET goldens
+- **Pass criteria**: Each product has accept/negative packaging fixture
+- **Source**: EV-072 M1
+
+### TC-EV072-005: API output_spec SPECI/TAF/AIRMET
+
+- **Level**: T2
+- **Objective**: `/api/v1/convert` with `semantic_profile=CA_ECCC` returns populated output_spec per product
+- **Pass criteria**: No internal doc refs; product-appropriate designator and filename
+- **Source**: EV-072 M1; FR-X6
+
+### TC-EV072-006: Catalog exchange_output all products
+
+- **Level**: T0
+- **Objective**: `catalog.yaml` CA_ECCC exchange_output documents all four aerodrome products
+- **Pass criteria**: No `ev071_slice`-only marker; docs match `exchange_output.py`
+- **Source**: EV-072 M1; FR-X8
+
+### TC-EV072-007: Ops harvest script pin-date reproducibility
+
+- **Level**: T1
+- **Objective**: Harvest script fetches MSC datamart tree for pin date without live CI dependency
+- **Pass criteria**: Script documents rate limit + pin; manifest checksum stable
+- **Source**: EV-072 M2; #1036
+
+### TC-EV072-008: Ops METAR fixture count
+
+- **Level**: T0
+- **Objective**: ≥5 METAR ops fixtures under `CA_ECCC/METAR/ops/` in manifest
+- **Pass criteria**: Manifest `tier: wmoReference`; CI collects fixtures
+- **Source**: EV-072 M2; #1036 acceptance
+
+### TC-EV072-009: Ops SPECI/TAF/AIRMET fixture counts
+
+- **Level**: T0
+- **Objective**: ≥2 ops fixtures each for SPECI, TAF, AIRMET
+- **Pass criteria**: Manifest entries + layer-6 packaging check or documented waiver
+- **Source**: EV-072 M2; #1036 acceptance
+
+### TC-EV072-010: Ops IWXXM packaging checks
+
+- **Level**: T2
+- **Objective**: Ops IWXXM samples pass layer-6 filename/header checks where attrs present
+- **Pass criteria**: Pass or explicit waiver row in manifest notes
+- **Source**: EV-072 M2; FR-O5
+
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire

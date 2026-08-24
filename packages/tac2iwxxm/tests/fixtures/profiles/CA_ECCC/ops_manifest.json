@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "description": "EV-072 M2 \u2014 CA_ECCC MSC datamart ops conformance corpus",
+  "profile": "CA_ECCC",
+  "pin_date": "2026-08-24",
+  "datamart_base": "https://dd.weather.gc.ca",
+  "rate_limit_seconds": 1.0,
+  "cases": [
+    {
+      "id": "taf_cwao_12_001",
+      "product": "TAF",
+      "tier": "wmoReference",
+      "ops_xml": "TAF/ops/taf_cwao_12_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/taf/cwao/12/A_LTCN22CWAO241200_C_CWAO_20260824120000.xml",
+      "source_filename": "A_LTCN22CWAO241200_C_CWAO_20260824120000.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "taf_cwao_12_002",
+      "product": "TAF",
+      "tier": "wmoReference",
+      "ops_xml": "TAF/ops/taf_cwao_12_002.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/taf/cwao/12/A_LTCN31CWAO241200_C_CWAO_20260824120000.xml",
+      "source_filename": "A_LTCN31CWAO241200_C_CWAO_20260824120000.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "airmet_czul_05_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czul_05_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czul/05/A_LWCN25CWAO240529_C_CWAO_20260824052916.xml",
+      "source_filename": "A_LWCN25CWAO240529_C_CWAO_20260824052916.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "airmet_czvr_13_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czvr_13_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czvr/13/A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
+      "source_filename": "A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "metar_basic_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_basic_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_auto_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_auto_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_lwis_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_lwis_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_sawr_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_sawr_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_vis_sm_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_vis_sm_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "speci_basic_ops",
+      "product": "SPECI",
+      "tier": "wmoReference",
+      "ops_xml": "SPECI/ops/speci_basic_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "speci_auto_ops",
+      "product": "SPECI",
+      "tier": "wmoReference",
+      "ops_xml": "SPECI/ops/speci_auto_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    }
+  ],
+  "manifest_sha256": "8dfc34637a16f07a9f50419b8a215fb64d4fab86e9a79ea7eaf24a8641101cf1"
+}

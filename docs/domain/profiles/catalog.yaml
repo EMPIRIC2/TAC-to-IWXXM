@@ -209,7 +209,14 @@ profiles:
         SPECI: "A_LPCN"
         TAF: "A_LTCN"
         AIRMET: "A_LWCN"
-      ev071_slice: METAR
+      ev072_slice: [METAR, SPECI, TAF, AIRMET]
+      ops_corpus:
+        issue: "#1036"
+        status: implemented
+        ev_cycle: EV-072
+        pin_date: "2026-08-24"
+        harvest_script: scripts/iwxxm/harvest_ca_eccc_ops.py
+        manifest: packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json
       translation_metadata:
         issue: "#1040"
         required_when_profile: true

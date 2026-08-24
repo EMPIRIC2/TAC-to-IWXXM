@@ -168,7 +168,7 @@ def ca_distribution_path(product: str, *, issuer_code: str, hour: int) -> str:
 
 
 def msc_filename_matches_pattern(filename: str) -> bool:
-    """Return whether ``filename`` matches the MSC METAR exchange pattern."""
+    """Return whether ``filename`` matches the MSC IWXXM exchange pattern."""
     return bool(_MSC_FILENAME_RE.match(filename.strip()))
 
 
@@ -185,7 +185,7 @@ def build_ca_eccc_output_spec(
     Parameters
     ----------
     product :
-        API product enum (EV-071 M2 slice: ``METAR``).
+        API product enum (``METAR``, ``SPECI``, ``TAF``, ``AIRMET``).
     parts :
         Optional parsed AHL parts for filename/header expansion.
     issued_at :
