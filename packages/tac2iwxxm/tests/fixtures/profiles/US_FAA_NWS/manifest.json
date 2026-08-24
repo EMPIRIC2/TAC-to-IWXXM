@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "EV-063 M7 \u2014 US_FAA_NWS FMH-1 RMK matrix slice (#919 partial)",
+  "description": "EV-063 M7 + EV-079 M8 — US_FAA_NWS FMH-1 RMK matrix (#919) + SIGMET/AIRMET national layer slice",
   "profile": "US_FAA_NWS",
   "cases": [
     {
@@ -107,6 +107,41 @@
       "tac": "METAR/valid/rmk_combined.tac",
       "golden": "METAR/valid/rmk_combined.golden.xml",
       "rule_id": "US.METAR.RMK.RMK_COMBINED"
+    },
+    {
+      "id": "sigmet_obsc_ts",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_obsc_ts.tac",
+      "golden": "SIGMET/valid/sigmet_obsc_ts.golden.xml",
+      "rule_id": "US.SIGMET.PHEN.OBSC_TS"
+    },
+    {
+      "id": "sigmet_sev_ice",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_sev_ice.tac",
+      "golden": "SIGMET/valid/sigmet_sev_ice.golden.xml",
+      "rule_id": "US.SIGMET.PHEN.SEV_ICE"
+    },
+    {
+      "id": "airmet_isol_ts",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_isol_ts.tac",
+      "golden": "AIRMET/valid/airmet_isol_ts.golden.xml",
+      "rule_id": "US.AIRMET.PHEN.ISOL_TS"
+    },
+    {
+      "id": "airmet_ifr",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_ifr.tac",
+      "golden": "AIRMET/valid/airmet_ifr.golden.xml",
+      "rule_id": "US.AIRMET.PHEN.SFC_VIS"
+    },
+    {
+      "id": "airmet_mod_turb",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_mod_turb.tac",
+      "golden": "AIRMET/valid/airmet_mod_turb.golden.xml",
+      "rule_id": "US.AIRMET.PHEN.MOD_TURB"
     }
   ]
 }

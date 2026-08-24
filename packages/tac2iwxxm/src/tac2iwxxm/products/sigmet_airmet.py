@@ -98,9 +98,18 @@ _SIG_PHENOMENA = (
     ("TS", "TS"),
 )
 _AIR_PHENOMENA = (
+    ("ISOL TSGR", "ISOL_TSGR"),
+    ("OCNL TSGR", "OCNL_TSGR"),
+    ("FRQ TSGR", "FRQ_TSGR"),
     ("ISOL TS", "ISOL_TS"),
     ("OCNL TS", "OCNL_TS"),
     ("FRQ TS", "FRQ_TS"),
+    ("MOD ICE", "MOD_ICE"),
+    ("MOD TURB", "MOD_TURB"),
+    ("MOD MTW", "MOD_MTW"),
+    ("MT OBSC", "MT_OBSC"),
+    ("MTN OBSC", "MT_OBSC"),
+    ("IFR", "SFC_VIS"),
     ("MTW", "MTW"),
     ("TS", "TS"),
 )

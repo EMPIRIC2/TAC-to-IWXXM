@@ -1,5 +1,37 @@
 # Evolve Decisions
 
+## Cycle EV-079 — US_FAA_NWS SIGMET/AIRMET national layer (#919 M8) (EV-079-us-sigmet-airmet)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-079-us-sigmet-airmet`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+**Parent:** #912 · **Prior:** EV-078 merged to `stage` @ `e77b7ecb`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV079-goal | #919 M8 — US SIGMET/AIRMET national layer fixture pack + US AIRMET phenomenon tokens |
+| D-EV079-in | `sigmet_airmet.py` parser tokens; `fixtures/profiles/US_FAA_NWS/{SIGMET,AIRMET}/`; manifest; TC-EV079 |
+| D-EV079-out | VOR ReferencePointGeometryParser; iwxxm-us SIGMETWeatherHazards emit; promote; CA_ECCC |
+| D-EV079-ifr | US TAC `IFR` shorthand → WMO `AirWxPhenomena/SFC_VIS` (documented mapping) |
+| D-EV079-fn | Deepen **F36** / **F6.d** / **tests** — no new top-level Fn |
+| D-EV079-scale | Standard verify angles |
+| D-EV079-gate | **open** — parser + fixture pack + regression gate |
+
+### Delivered (M8 slice)
+
+| Area | Change |
+|------|--------|
+| Parser | `IFR`, `MOD ICE/TURB`, `MT OBSC`, `TSGR` variants in `_AIR_PHENOMENA` |
+| Fixtures | +2 SIGMET, +3 AIRMET under `profiles/US_FAA_NWS/` with `rule_id` |
+| Tests | TC-EV079-001..004 (`test_tc_ev079_us_sigmet_airmet.py`) |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §US_FAA_NWS] [Corpus: tests]
+
+---
+
 ## Cycle EV-078 — CA_ECCC #916 closeout audit (EV-078-ca-eccc-916-closeout)
 
 **Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-078-ca-eccc-916-closeout`  
