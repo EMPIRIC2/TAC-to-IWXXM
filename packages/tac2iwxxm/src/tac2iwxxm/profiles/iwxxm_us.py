@@ -783,6 +783,28 @@ def _inject_evolving_extension(xml: str, extension: str, closing_tag: str) -> st
     return xml.replace(closing_tag, f"{extension}\n            {closing_tag}", 1)
 
 
+def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, Any]) -> str:
+    """Serialize ``validTimeSubPeriod`` for an AIRMET outlook subsection."""
+    year_month = "2014-05"
+    from_day = int(outlook.get("valid_from_day", parent_ir["valid_from_day"]))
+    to_day = int(outlook.get("valid_to_day", from_day))
+    begin = (
+        f"{year_month}-{from_day:02d}T{int(outlook['valid_from_hour']):02d}:{int(outlook['valid_from_minute']):02d}:00Z"
+    )
+    end = f"{year_month}-{to_day:02d}T{int(outlook['valid_to_hour']):02d}:{int(outlook['valid_to_minute']):02d}:00Z"
+    return f"""              <iwxxm:extension>
+                <iwxxm-us:AIRMETEvolvingConditionExtension>
+                  <iwxxm-us:validTimeSubPeriod>
+                    <gml:TimePeriod gml:id="t.subperiod.outlook">
+                      <gml:beginPosition>{begin}</gml:beginPosition>
+                      <gml:endPosition>{end}</gml:endPosition>
+                    </gml:TimePeriod>
+                  </iwxxm-us:validTimeSubPeriod>
+                </iwxxm-us:AIRMETEvolvingConditionExtension>
+              </iwxxm:extension>
+"""
+
+
 def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
     """Serialize ``iwxxm-us:AIRMETWeatherHazards`` when IR carries US hazard metadata."""
     hazard = ir.get("us_airmet_hazard")
@@ -881,7 +903,18 @@ def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     xml = _with_us_namespace(xml)
     xml = xml.replace('gml:id="airmet.basic.', 'gml:id="airmet.us.', 1)
     ext = _airmet_weather_hazards_extension(ir)
-    return _inject_evolving_extension(xml, ext, "</iwxxm:AIRMETEvolvingCondition>")
+    xml = _inject_evolving_extension(xml, ext, "</iwxxm:AIRMETEvolvingCondition>")
+    outlook_raw = ir.get("outlook")
+    if isinstance(outlook_raw, dict):
+        outlook_ir = cast(dict[str, Any], outlook_raw)
+        subperiod = _airmet_subperiod_extension(ir, outlook_ir)
+        fir = str(ir["fir"]).lower()
+        member_token = f'gml:id="cond.{fir}.outlook.1"'
+        if member_token in xml:
+            start = xml.index(member_token)
+            close_idx = xml.index("</iwxxm:AIRMETEvolvingCondition>", start)
+            xml = xml[:close_idx] + subperiod + xml[close_idx:]
+    return xml
 
 
 __all__ = [
